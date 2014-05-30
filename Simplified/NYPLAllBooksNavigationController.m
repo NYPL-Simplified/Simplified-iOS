@@ -4,6 +4,8 @@
 
 @implementation NYPLAllBooksNavigationController
 
+#pragma mark NSObject
+
 - (id)init
 {
   self = [super initWithRootViewController:[[NYPLAllBooksViewController alloc] init]];
