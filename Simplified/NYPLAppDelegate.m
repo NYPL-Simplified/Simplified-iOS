@@ -4,6 +4,8 @@
 
 @implementation NYPLAppDelegate
 
+#pragma mark UIApplicationDelegate
+
 - (BOOL)application:(__attribute__((unused)) UIApplication *const)application
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *const)launchOptions
 {

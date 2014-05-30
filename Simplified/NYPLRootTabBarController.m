@@ -10,6 +10,8 @@
 
 @implementation NYPLRootTabBarController
 
+#pragma mark NSObject
+
 - (id)init
 {
   self = [super init];
