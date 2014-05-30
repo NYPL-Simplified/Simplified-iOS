@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */; };
+		11548C0E1939147D009DBF2E /* NYPLAllBooksNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11548C0D1939147D009DBF2E /* NYPLAllBooksNavigationController.m */; };
+		11548C1119391614009DBF2E /* NYPLAllBooksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11548C1019391614009DBF2E /* NYPLAllBooksViewController.m */; };
 		A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D810192BABA400B55DE2 /* Foundation.framework */; };
 		A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
 		A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D814192BABA400B55DE2 /* UIKit.framework */; };
@@ -32,6 +35,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		11548C091939136C009DBF2E /* NYPLRootTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRootTabBarController.h; sourceTree = "<group>"; };
+		11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLRootTabBarController.m; sourceTree = "<group>"; };
+		11548C0C1939147D009DBF2E /* NYPLAllBooksNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAllBooksNavigationController.h; sourceTree = "<group>"; };
+		11548C0D1939147D009DBF2E /* NYPLAllBooksNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAllBooksNavigationController.m; sourceTree = "<group>"; };
+		11548C0F19391614009DBF2E /* NYPLAllBooksViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAllBooksViewController.h; sourceTree = "<group>"; };
+		11548C1019391614009DBF2E /* NYPLAllBooksViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAllBooksViewController.m; sourceTree = "<group>"; };
 		A823D80D192BABA400B55DE2 /* Simplified.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simplified.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D810192BABA400B55DE2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A823D812192BABA400B55DE2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -107,8 +116,14 @@
 		A823D816192BABA400B55DE2 /* Simplified */ = {
 			isa = PBXGroup;
 			children = (
+				11548C0C1939147D009DBF2E /* NYPLAllBooksNavigationController.h */,
+				11548C0D1939147D009DBF2E /* NYPLAllBooksNavigationController.m */,
+				11548C0F19391614009DBF2E /* NYPLAllBooksViewController.h */,
+				11548C1019391614009DBF2E /* NYPLAllBooksViewController.m */,
 				A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */,
 				A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */,
+				11548C091939136C009DBF2E /* NYPLRootTabBarController.h */,
+				11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */,
 				A823D822192BABA400B55DE2 /* Images.xcassets */,
 				A823D817192BABA400B55DE2 /* Supporting Files */,
 			);
@@ -240,8 +255,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11548C0E1939147D009DBF2E /* NYPLAllBooksNavigationController.m in Sources */,
 				A823D81D192BABA400B55DE2 /* main.m in Sources */,
+				11548C1119391614009DBF2E /* NYPLAllBooksViewController.m in Sources */,
 				A823D821192BABA400B55DE2 /* NYPLAppDelegate.m in Sources */,
+				11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,6 +385,7 @@
 				WARNING_CFLAGS = (
 					"-Werror",
 					"-Wall",
+					"-Wextra",
 				);
 				WRAPPER_EXTENSION = app;
 			};
@@ -384,6 +403,7 @@
 				WARNING_CFLAGS = (
 					"-Werror",
 					"-Wall",
+					"-Wextra",
 				);
 				WRAPPER_EXTENSION = app;
 			};
@@ -448,6 +468,7 @@
 				A823D83B192BABA400B55DE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A823D83C192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "SimplifiedTests" */ = {
 			isa = XCConfigurationList;
@@ -456,6 +477,7 @@
 				A823D83E192BABA400B55DE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
