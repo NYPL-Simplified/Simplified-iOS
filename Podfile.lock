@@ -1,0 +1,10 @@
+PODS:
+  - SMXMLDocument (1.0.1)
+
+DEPENDENCIES:
+  - SMXMLDocument (~> 1.0.1)
+
+SPEC CHECKSUMS:
+  SMXMLDocument: aff6ceafde0c3cd6e6838cf549d08c481a6bd2ba
+
+COCOAPODS: 0.33.1

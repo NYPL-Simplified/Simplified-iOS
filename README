@@ -1,0 +1,5 @@
+To build this project:
+
+1. Install Cocoapods (if you haven't already).
+2. Run 'pod install' in this directory. 
+3. Open "Simplified.xcworkspace" -- not the project -- and build as normal.
