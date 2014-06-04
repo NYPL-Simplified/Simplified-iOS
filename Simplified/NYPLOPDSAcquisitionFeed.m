@@ -17,9 +17,9 @@
   self = [super init];
   if(!self) return nil;
   
-  self.identifier = [document.root childNamed:@"identifier"].value;
+  self.identifier = [document.root childNamed:@"id"].value;
   self.title = [document.root childNamed:@"title"].value;
-  self.updated = [NSDate dateWithRFC3339:[document.root childNamed:@"date"].value];
+  self.updated = [NSDate dateWithRFC3339:[document.root childNamed:@"updated"].value];
 
   return self;
 }

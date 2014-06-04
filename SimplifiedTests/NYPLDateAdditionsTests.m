@@ -18,20 +18,6 @@
   [super tearDown];
 }
 
-- (NSDateComponents *)dateComponentsFromDate:(NSDate *)date
-{
-  NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSISO8601Calendar];
-  calendar.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
-  
-  return [calendar components:(NSYearCalendarUnit |
-                               NSMonthCalendarUnit |
-                               NSDayCalendarUnit |
-                               NSHourCalendarUnit |
-                               NSMinuteCalendarUnit |
-                               NSSecondCalendarUnit)
-                     fromDate:date];
-}
-
 - (void)testInvalidStringReturnsNil
 {
   NSDate *date = [NSDate dateWithRFC3339:@"not a valid date"];
@@ -44,7 +30,7 @@
   
   XCTAssert(date);
   
-  NSDateComponents *dateComponents = [self dateComponentsFromDate:date];
+  NSDateComponents *dateComponents = [date UTCComponents];
   
   XCTAssertEqual(dateComponents.year, 1984);
   XCTAssertEqual(dateComponents.month, 9);
@@ -60,7 +46,7 @@
   
   XCTAssert(date);
   
-  NSDateComponents *dateComponents = [self dateComponentsFromDate:date];
+  NSDateComponents *dateComponents = [date UTCComponents];
   
   XCTAssertEqual(dateComponents.year, 1984);
   XCTAssertEqual(dateComponents.month, 9);

@@ -10,9 +10,12 @@
 		11396FA4193D1E7700E16EE8 /* NYPLOPDSAcquisitionFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 11396FA3193D1E7700E16EE8 /* NYPLOPDSAcquisitionFeed.m */; };
 		11396FB9193D289100E16EE8 /* NSDate+NYPLDateAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 11396FB8193D289100E16EE8 /* NSDate+NYPLDateAdditions.m */; };
 		11396FBB193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */; };
+		11396FC9193F674F00E16EE8 /* NYPLOPDSAcquisitionFeedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11396FC8193F674F00E16EE8 /* NYPLOPDSAcquisitionFeedTests.m */; };
+		11396FCA193F69FE00E16EE8 /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11396FBC193F66AA00E16EE8 /* main.xml */; };
 		11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */; };
 		11548C0E1939147D009DBF2E /* NYPLAllBooksNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11548C0D1939147D009DBF2E /* NYPLAllBooksNavigationController.m */; };
 		11548C1119391614009DBF2E /* NYPLAllBooksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11548C1019391614009DBF2E /* NYPLAllBooksViewController.m */; };
+		508BE2C812F2401A847793E5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5705D893E0FE4395A50F089E /* libPods.a */; };
 		A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D810192BABA400B55DE2 /* Foundation.framework */; };
 		A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
 		A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D814192BABA400B55DE2 /* UIKit.framework */; };
@@ -44,6 +47,8 @@
 		11396FB7193D289100E16EE8 /* NSDate+NYPLDateAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NYPLDateAdditions.h"; sourceTree = "<group>"; };
 		11396FB8193D289100E16EE8 /* NSDate+NYPLDateAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NYPLDateAdditions.m"; sourceTree = "<group>"; };
 		11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLDateAdditionsTests.m; sourceTree = "<group>"; };
+		11396FBC193F66AA00E16EE8 /* main.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = main.xml; path = ../Simplified/main.xml; sourceTree = "<group>"; };
+		11396FC8193F674F00E16EE8 /* NYPLOPDSAcquisitionFeedTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSAcquisitionFeedTests.m; sourceTree = "<group>"; };
 		11548C091939136C009DBF2E /* NYPLRootTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRootTabBarController.h; sourceTree = "<group>"; };
 		11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLRootTabBarController.m; sourceTree = "<group>"; };
 		11548C0C1939147D009DBF2E /* NYPLAllBooksNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAllBooksNavigationController.h; sourceTree = "<group>"; };
@@ -87,6 +92,7 @@
 				A823D82A192BABA400B55DE2 /* XCTest.framework in Frameworks */,
 				A823D82C192BABA400B55DE2 /* UIKit.framework in Frameworks */,
 				A823D82B192BABA400B55DE2 /* Foundation.framework in Frameworks */,
+				508BE2C812F2401A847793E5 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */,
+				11396FC8193F674F00E16EE8 /* NYPLOPDSAcquisitionFeedTests.m */,
 				A823D830192BABA400B55DE2 /* Supporting Files */,
 			);
 			path = SimplifiedTests;
@@ -169,6 +176,7 @@
 		A823D830192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				11396FBC193F66AA00E16EE8 /* main.xml */,
 				A823D831192BABA400B55DE2 /* SimplifiedTests-Info.plist */,
 				A823D832192BABA400B55DE2 /* InfoPlist.strings */,
 			);
@@ -201,9 +209,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A823D83C192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "SimplifiedTests" */;
 			buildPhases = (
+				32FADB3369524952B8C6D15A /* Check Pods Manifest.lock */,
 				A823D824192BABA400B55DE2 /* Sources */,
 				A823D825192BABA400B55DE2 /* Frameworks */,
 				A823D826192BABA400B55DE2 /* Resources */,
+				8329DEB41EC64366B046363C /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -263,13 +273,44 @@
 			buildActionMask = 2147483647;
 			files = (
 				A823D834192BABA400B55DE2 /* InfoPlist.strings in Resources */,
+				11396FCA193F69FE00E16EE8 /* main.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		32FADB3369524952B8C6D15A /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		73972F73E85F481581EF0BF2 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8329DEB41EC64366B046363C /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -320,6 +361,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11396FC9193F674F00E16EE8 /* NYPLOPDSAcquisitionFeedTests.m in Sources */,
 				11396FBB193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -466,6 +508,7 @@
 		};
 		A823D83D192BABA400B55DE2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 06AC6CF44934493BAEB7B266 /* Pods.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Simplified.app/Simplified";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -488,6 +531,7 @@
 		};
 		A823D83E192BABA400B55DE2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 06AC6CF44934493BAEB7B266 /* Pods.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Simplified.app/Simplified";
 				FRAMEWORK_SEARCH_PATHS = (
