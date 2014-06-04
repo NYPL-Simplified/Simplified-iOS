@@ -1,0 +1,1907 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">The Big Front Page</title>
+  <id>http://localhost/main</id>
+  <updated>2014-06-02T16:59:57Z</updated>
+  <link href="http://localhost/main" />
+  <link href="http://localhost/main" rel="self" />
+  <generator>PyAtom</generator>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Hans Brinker; Or, The Silver Skates</title>
+    <id>http://localhost/works/55d2f0e19bbc2163d63a95d01f49d3a6</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/55d2f0e19bbc2163d63a95d01f49d3a6" />
+    <author>
+      <name>Dodge, Mary Mapes</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/764.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/997431-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/997431-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Cast Upon the Breakers</title>
+    <id>http://localhost/works/82facbc61517e813337dfd1762988d2a</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/82facbc61517e813337dfd1762988d2a" />
+    <author>
+      <name>Alger, Horatio</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/399.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/911496-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/911496-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Sara Crewe; Or, What Happened at Miss Minchin's Boarding School</title>
+    <id>http://localhost/works/1fe8499ef19f54acff0989b5e151491c</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/1fe8499ef19f54acff0989b5e151491c" />
+    <author>
+      <name>Burnett, Frances Hodgson</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/137.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/964464-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/964464-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Light Princess</title>
+    <id>http://localhost/works/be3ed768068ea1b0bd583df4b6089ff3</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/be3ed768068ea1b0bd583df4b6089ff3" />
+    <author>
+      <name>MacDonald, George</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/697.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/434610-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/434610-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Die Abenteuer Tom Sawyers</title>
+    <id>http://localhost/works/76743644190305bffbb1724ba0a7a793</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/76743644190305bffbb1724ba0a7a793" />
+    <author>
+      <name>Twain, Mark</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/30165.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/995050-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/995050-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Adventures of Huckleberry Finn, Chapters 16 to 20</title>
+    <id>http://localhost/works/2cc51b245a94f2f71f1e0fae9229f001</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/2cc51b245a94f2f71f1e0fae9229f001" />
+    <author>
+      <name>Twain, Mark</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/7103.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/366355-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/366355-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Adventures of Huckleberry Finn, Chapters 36 to The Last</title>
+    <id>http://localhost/works/f7f3244a984e0abd55c7563f1ef5fe21</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/f7f3244a984e0abd55c7563f1ef5fe21" />
+    <author>
+      <name>Twain, Mark</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/7107.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/75665-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/75665-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Princess and the Goblin</title>
+    <id>http://localhost/works/b5eeaf6efcd2149397ad09e11f6c4c80</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/b5eeaf6efcd2149397ad09e11f6c4c80" />
+    <author>
+      <name>MacDonald, George</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/708.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/530006-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/530006-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Errand Boy; Or, How Phil Brent Won Success</title>
+    <id>http://localhost/works/2f39d03a5ea89a3cc97f4ea1980630b1</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/2f39d03a5ea89a3cc97f4ea1980630b1" />
+    <author>
+      <name>Alger, Horatio</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/462.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/4639-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/4639-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Somebody's Little Girl</title>
+    <id>http://localhost/works/d0e863329e0199a1e9fbf4c5543308be</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/d0e863329e0199a1e9fbf4c5543308be" />
+    <author>
+      <name>Young, Martha</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/702.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/823366-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/823366-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Cash Boy</title>
+    <id>http://localhost/works/44433ca67b5dd18a3892c4784fee466c</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/44433ca67b5dd18a3892c4784fee466c" />
+    <author>
+      <name>Alger, Horatio</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/296.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/234561-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/234561-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Phil, the Fiddler</title>
+    <id>http://localhost/works/715179f3c7c9f549d3044ada97ecd2ea</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/715179f3c7c9f549d3044ada97ecd2ea" />
+    <author>
+      <name>Alger, Horatio</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/671.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/549731-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/549731-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Adventures of Tom Sawyer, Part 4.</title>
+    <id>http://localhost/works/62979cb55b0198a77860907e5fe914df</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/62979cb55b0198a77860907e5fe914df" />
+    <author>
+      <name>Twain, Mark</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/7196.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/68788-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/68788-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Les Aventures De Tom Sawyer</title>
+    <id>http://localhost/works/8abf749f2d2dd53ecba6d1681e792e63</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/8abf749f2d2dd53ecba6d1681e792e63" />
+    <author>
+      <name>Twain, Mark</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/30890.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/504258-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/504258-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Adventures of Huckleberry Finn, Chapters 11 to 15</title>
+    <id>http://localhost/works/5e8dcbeab64845a7003bae0d20e2a5f3</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/5e8dcbeab64845a7003bae0d20e2a5f3" />
+    <author>
+      <name>Twain, Mark</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/7102.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/969153-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/969153-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Remember the Alamo</title>
+    <id>http://localhost/works/b6e525a3547bf4e95a3a4e254b286805</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/b6e525a3547bf4e95a3a4e254b286805" />
+    <author>
+      <name>Barr, Amelia Edith Huddleston</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/287.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/585727-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/585727-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Tin Woodman of Oz</title>
+    <id>http://localhost/works/3f21dcb09284dd90803f3767c5a61df6</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/3f21dcb09284dd90803f3767c5a61df6" />
+    <author>
+      <name>Baum, L. Frank (Lyman Frank)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/960.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/109540-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/109540-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Coral Island: A Tale of the Pacific Ocean</title>
+    <id>http://localhost/works/a4da9608ae04db7345283da3282b5fb7</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/a4da9608ae04db7345283da3282b5fb7" />
+    <author>
+      <name>Ballantyne, R. M. (Robert Michael)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/646.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/369969-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/369969-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Return of Tarzan</title>
+    <id>http://localhost/works/26dcfc9907353034a6e240ac98b7fb3c</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/26dcfc9907353034a6e240ac98b7fb3c" />
+    <author>
+      <name>Burroughs, Edgar Rice</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/81.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/786742-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/786742-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Lost Princess of Oz</title>
+    <id>http://localhost/works/7c33c7cdbb15bd2e97bfa6957f0df2c9</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/7c33c7cdbb15bd2e97bfa6957f0df2c9" />
+    <author>
+      <name>Baum, L. Frank (Lyman Frank)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/959.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/274173-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/274173-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Robin Hood</title>
+    <id>http://localhost/works/c8543b1f47f8a4932acb604e9928c84e</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/c8543b1f47f8a4932acb604e9928c84e" />
+    <author>
+      <name>McSpadden, J. Walker (Joseph Walker)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/832.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/38279-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/38279-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Birds' Christmas Carol</title>
+    <id>http://localhost/works/67ab1cfac5e663b33192728010bf47ea</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/67ab1cfac5e663b33192728010bf47ea" />
+    <author>
+      <name>Wiggin, Kate Douglas Smith</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/721.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/207836-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/207836-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Adventures of Huckleberry Finn, Chapters 31 to 35</title>
+    <id>http://localhost/works/1ff5fcccb579743542874973e4516884</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/1ff5fcccb579743542874973e4516884" />
+    <author>
+      <name>Twain, Mark</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/7106.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/236191-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/236191-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Glinda of Oz</title>
+    <id>http://localhost/works/51b858608d43f353fb123b465f606d0e</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/51b858608d43f353fb123b465f606d0e" />
+    <author>
+      <name>Baum, L. Frank (Lyman Frank)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/961.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/474942-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/474942-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Adventures of Tom Sawyer, Part 1.</title>
+    <id>http://localhost/works/98c39faa47aeeb9dca368470b5e5170d</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/98c39faa47aeeb9dca368470b5e5170d" />
+    <author>
+      <name>Twain, Mark</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/7193.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/832236-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/832236-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Tom Swift and His Electric Runabout; Or, The Speediest Car on the Road</title>
+    <id>http://localhost/works/1d904915b19e7c20f386e07726f74efd</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/1d904915b19e7c20f386e07726f74efd" />
+    <author>
+      <name>Appleton, Victor</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/950.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/264904-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/264904-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Le avventure d'Alice nel paese delle meraviglie</title>
+    <id>http://localhost/works/8a017d8c8addefd6a16e1eb3f804e245</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/8a017d8c8addefd6a16e1eb3f804e245" />
+    <author>
+      <name>Carroll, Lewis</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/28371.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/42641-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/42641-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Beasts of Tarzan</title>
+    <id>http://localhost/works/e20e090979915fa5e94d93ac73b5052b</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/e20e090979915fa5e94d93ac73b5052b" />
+    <author>
+      <name>Burroughs, Edgar Rice</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/85.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/474268-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/474268-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The King of the Golden River</title>
+    <id>http://localhost/works/307c9810428a866bb313dc7e10768fc8</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/307c9810428a866bb313dc7e10768fc8" />
+    <author>
+      <name>Ruskin, John</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/701.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/52499-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/52499-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Tom Swift and His Big Tunnel; Or, The Hidden City of the Andes</title>
+    <id>http://localhost/works/7c48c84e3967ca7a1ae768b71322c821</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/7c48c84e3967ca7a1ae768b71322c821" />
+    <author>
+      <name>Appleton, Victor</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/953.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/458909-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/458909-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Tik-Tok of Oz</title>
+    <id>http://localhost/works/bcaf87636c5b98805749c27eb68183fa</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/bcaf87636c5b98805749c27eb68183fa" />
+    <author>
+      <name>Baum, L. Frank (Lyman Frank)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/956.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/855484-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/855484-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Holiday Romance</title>
+    <id>http://localhost/works/1c822aeadcd8f95a8c6e45f90dd84d23</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/1c822aeadcd8f95a8c6e45f90dd84d23" />
+    <author>
+      <name>Dickens, Charles</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/809.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/605733-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/605733-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Violet Fairy Book</title>
+    <id>http://localhost/works/0f951f249b88cb632a0fab5cb6031bad</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/0f951f249b88cb632a0fab5cb6031bad" />
+    <author>
+      <name>Lang, Andrew</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/641.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/368111-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/368111-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Book of Nonsense</title>
+    <id>http://localhost/works/0d72d0879d84f89dc31f0d4c8676b218</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/0d72d0879d84f89dc31f0d4c8676b218" />
+    <author>
+      <name>Lear, Edward</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/982.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/199746-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/199746-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Adventures of Huckleberry Finn, Chapters 26 to 30</title>
+    <id>http://localhost/works/03d42a3576344f431f006c39aba060af</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/03d42a3576344f431f006c39aba060af" />
+    <author>
+      <name>Twain, Mark</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/7105.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/218067-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/218067-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Bobbsey Twins in the Country</title>
+    <id>http://localhost/works/8b36344b25bdf6a66739ba312ed322b6</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/8b36344b25bdf6a66739ba312ed322b6" />
+    <author>
+      <name>Hope, Laura Lee</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/714.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/143460-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/143460-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Princess and Curdie</title>
+    <id>http://localhost/works/8284a17fa16e2a7058d818e66d732a0a</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/8284a17fa16e2a7058d818e66d732a0a" />
+    <author>
+      <name>MacDonald, George</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/709.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/688495-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/688495-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Great Big Treasury of Beatrix Potter</title>
+    <id>http://localhost/works/ff5a594b054421d8c84aa9f95bb31af0</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/ff5a594b054421d8c84aa9f95bb31af0" />
+    <author>
+      <name>Potter, Beatrix</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/572.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/707332-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/707332-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Rinkitink in Oz</title>
+    <id>http://localhost/works/2ac5ef6a7d2685b88ca153bb92938e08</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/2ac5ef6a7d2685b88ca153bb92938e08" />
+    <author>
+      <name>Baum, L. Frank (Lyman Frank)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/958.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/490720-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/490720-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Alice in Wonderland, Retold in Words of One Syllable</title>
+    <id>http://localhost/works/3d347f3545af32f98509bef105255cdd</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/3d347f3545af32f98509bef105255cdd" />
+    <author>
+      <name>Gorham, J. C., Mrs.</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/19551.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/695733-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/695733-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Mansion</title>
+    <id>http://localhost/works/55b83ba83ffab19000798dd663368a35</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/55b83ba83ffab19000798dd663368a35" />
+    <author>
+      <name>Van Dyke, Henry</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/704.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/663833-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/663833-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Joe the Hotel Boy; Or, Winning out by Pluck</title>
+    <id>http://localhost/works/88def2452fc287d2ee81c306da1fef0c</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/88def2452fc287d2ee81c306da1fef0c" />
+    <author>
+      <name>Alger, Horatio</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/528.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/854423-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/854423-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Heroes; Or, Greek Fairy Tales for My Children</title>
+    <id>http://localhost/works/d837411a32785660de617adbc9a3086a</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/d837411a32785660de617adbc9a3086a" />
+    <author>
+      <name>Kingsley, Charles</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/677.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/700260-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/700260-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Tom Swift in the Land of Wonders; Or, The Underground Search for the Idol of Gold</title>
+    <id>http://localhost/works/c7a003bc279cd7d0f2ba5df53a692a60</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/c7a003bc279cd7d0f2ba5df53a692a60" />
+    <author>
+      <name>Appleton, Victor</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/499.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/516971-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/516971-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Adventures of Tom Sawyer, Part 7.</title>
+    <id>http://localhost/works/fbdee349e3d9ef441d3ba5040c06735d</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/fbdee349e3d9ef441d3ba5040c06735d" />
+    <author>
+      <name>Twain, Mark</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/7199.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/72154-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/72154-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Go Ahead Boys and the Racing Motor-Boat</title>
+    <id>http://localhost/works/3b9f01de2d2ab3532187a9884acb67a1</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/3b9f01de2d2ab3532187a9884acb67a1" />
+    <author>
+      <name>Kay, Ross</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/562.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/234076-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/234076-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Boyhood in Norway: Stories of Boy-Life in the Land of the Midnight Sun</title>
+    <id>http://localhost/works/44bcedb1c045ef5d5aa924af7da2ab60</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/44bcedb1c045ef5d5aa924af7da2ab60" />
+    <author>
+      <name>Boyesen, Hjalmar Hjorth</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/784.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/430499-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/430499-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Tom Swift and His Air Glider; Or, Seeking the Platinum Treasure</title>
+    <id>http://localhost/works/057de27862510834bfa5296520ad4620</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/057de27862510834bfa5296520ad4620" />
+    <author>
+      <name>Appleton, Victor</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/952.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/916955-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/916955-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Lost City</title>
+    <id>http://localhost/works/81f16ea4e1bf2ca903e8849d2533dc68</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/81f16ea4e1bf2ca903e8849d2533dc68" />
+    <author>
+      <name>Badger, Jos. E. (Joseph Edward)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/783.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/9481-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/9481-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The conflict a novel</title>
+    <id>http://localhost/works/4afaa6f193b4627acb2e7cd88d2014ce</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/4afaa6f193b4627acb2e7cd88d2014ce" />
+    <author>
+      <name>Phillips, David Graham</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/433.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/177925-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/177925-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Twenty thousand leagues under the sea</title>
+    <id>http://localhost/works/6660cb00a6aaa5a4dbca2d9e2f3fccf0</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/6660cb00a6aaa5a4dbca2d9e2f3fccf0" />
+    <author>
+      <name>Verne, Jules</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/164.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/823509-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/823509-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Ethics — Part 4</title>
+    <id>http://localhost/works/5cb4a98995356aa64059a2f78f91ef5f</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/5cb4a98995356aa64059a2f78f91ef5f" />
+    <author>
+      <name>Spinoza, Benedictus de</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/971.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/32181-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/32181-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Thomas Hart Benton's Remarks to the Senate on the Expunging Resolution</title>
+    <id>http://localhost/works/5dec5098113f6c12b250598ca2907d32</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/5dec5098113f6c12b250598ca2907d32" />
+    <author>
+      <name>Benton, Thomas Hart</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/741.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/314329-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/314329-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Breitmann ballads</title>
+    <id>http://localhost/works/ffd43f4fa199b20ece3ebe2cbee6b171</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/ffd43f4fa199b20ece3ebe2cbee6b171" />
+    <author>
+      <name>Leland, Charles Godfrey</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/454.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/987528-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/987528-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Just Folks</title>
+    <id>http://localhost/works/c4d9e02ee278b8ff08c780ea4439979e</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/c4d9e02ee278b8ff08c780ea4439979e" />
+    <author>
+      <name>Guest, Edgar A. (Edgar Albert)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/941.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/234780-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/234780-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The country of the pointed firs</title>
+    <id>http://localhost/works/a84a882ad508448f42c492ac44e5da1c</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/a84a882ad508448f42c492ac44e5da1c" />
+    <author>
+      <name>Jewett, Sarah Orne</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/367.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/123023-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/123023-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Pharsalia; Dramatic Episodes of the Civil Wars</title>
+    <id>http://localhost/works/b0411cfae53c381ddaf8bde262cc7d43</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/b0411cfae53c381ddaf8bde262cc7d43" />
+    <author>
+      <name>Lucan</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/602.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/818220-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/818220-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">In darkest England, and the way out</title>
+    <id>http://localhost/works/8d1bd5ba0945e2db831e8a2088cadfd1</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/8d1bd5ba0945e2db831e8a2088cadfd1" />
+    <author>
+      <name>Booth, William</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/475.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/511097-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/511097-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Gutenberg Webster's Unabridged Dictionary</title>
+    <id>http://localhost/works/d2544d78bef685d798ff58d488bed49b</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/d2544d78bef685d798ff58d488bed49b" />
+    <author>
+      <name>Webster, Noah</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/667.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/629074-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/629074-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The forged coupon and other stories</title>
+    <id>http://localhost/works/6ad147cb207d8dc08d2ece827e74119d</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/6ad147cb207d8dc08d2ece827e74119d" />
+    <author>
+      <name>Tolstoy, Leo, graf</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/243.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/1255-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/1255-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Within the Law: From the Play of Bayard Veiller</title>
+    <id>http://localhost/works/3fe20d515ceb7a4a55c857ce1b64ce30</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/3fe20d515ceb7a4a55c857ce1b64ce30" />
+    <author>
+      <name>Dana, Marvin</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/905.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/578327-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/578327-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Henry James, Jr.</title>
+    <id>http://localhost/works/0b97dda1127da907314b6b34300b76d7</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/0b97dda1127da907314b6b34300b76d7" />
+    <author>
+      <name>Howells, William Dean</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/723.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/782903-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/782903-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Price/Cost Indexes from 1875 to 1989; Estimated to 2010</title>
+    <id>http://localhost/works/508d2d6a642d0cc46f052d12ac2869b9</id>
+    <updated>2014-06-02T16:59:56Z</updated>
+    <link href="http://localhost/works/508d2d6a642d0cc46f052d12ac2869b9" />
+    <author>
+      <name>Hart, Michael</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/88.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/49506-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/49506-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">A Child's History of England</title>
+    <id>http://localhost/works/1be2f13ce4a6c5364a29fa001eff8419</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/1be2f13ce4a6c5364a29fa001eff8419" />
+    <author>
+      <name>Dickens, Charles</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/699.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/950616-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/950616-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Number "e"</title>
+    <id>http://localhost/works/dc9dff156523980b1cc87d95df181077</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/dc9dff156523980b1cc87d95df181077" />
+    <author>
+      <name>Unknown</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/63.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/785654-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/785654-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">In Flanders fields and other poems</title>
+    <id>http://localhost/works/030c282bb5a34dfc7a38049503c0ea6f</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/030c282bb5a34dfc7a38049503c0ea6f" />
+    <author>
+      <name>McCrae, John</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/353.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/329669-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/329669-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">A Brief History of the Internet</title>
+    <id>http://localhost/works/4c97b24aae56a7df815ba77f7ea81a1e</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/4c97b24aae56a7df815ba77f7ea81a1e" />
+    <author>
+      <name>Fuller, Maxwell</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/250.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/982455-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/982455-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The well at the world's end</title>
+    <id>http://localhost/works/0feea372dfeee78f8a97b768179c440a</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/0feea372dfeee78f8a97b768179c440a" />
+    <author>
+      <name>Morris, William</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/169.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/71847-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/71847-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Walden and, On the duty of civil disobedience</title>
+    <id>http://localhost/works/6f9d29474e5bde49e4c0a5a3cca7064e</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/6f9d29474e5bde49e4c0a5a3cca7064e" />
+    <author>
+      <name>Thoreau, Henry David</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/205.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/629719-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/629719-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Workshop on Electronic Texts: Proceedings, 9-10 June 1992</title>
+    <id>http://localhost/works/6d77e740922e4ee7721fd253d88787eb</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/6d77e740922e4ee7721fd253d88787eb" />
+    <author>
+      <name>Library of Congress</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/53.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/134952-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/134952-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Jargon File, Version 2.9.10, 01 Jul 1992</title>
+    <id>http://localhost/works/4d7b1dd35fdfd422220314c636ccab72</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/4d7b1dd35fdfd422220314c636ccab72" />
+    <author>
+      <name></name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/38.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/517333-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/517333-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">My Garden Acquaintance</title>
+    <id>http://localhost/works/cea8bfd54d0f0579f954e431cff6a0fb</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/cea8bfd54d0f0579f954e431cff6a0fb" />
+    <author>
+      <name>Lowell, James Russell</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/880.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/604326-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/604326-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Dust</title>
+    <id>http://localhost/works/a1265901257d1197f8ad288c5487dc97</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/a1265901257d1197f8ad288c5487dc97" />
+    <author>
+      <name>Haldeman-Julius, E. (Emanuel)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/945.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/338131-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/338131-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Abraham Lincoln's First Inaugural Address</title>
+    <id>http://localhost/works/e71d02efc96fb9d54cbc20e2918f938c</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/e71d02efc96fb9d54cbc20e2918f938c" />
+    <author>
+      <name>Lincoln, Abraham</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/9.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/80310-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/80310-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The souls of Black folk</title>
+    <id>http://localhost/works/940abc006e2676754f38144c6bf59f1f</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/940abc006e2676754f38144c6bf59f1f" />
+    <author>
+      <name>Du Bois, W. E. B. (William Edward Burghardt)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/408.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/836811-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/836811-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Philoktetes</title>
+    <id>http://localhost/works/89c6fea6353ba65d1c1a5b97c0551d84</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/89c6fea6353ba65d1c1a5b97c0551d84" />
+    <author>
+      <name>Sophocles</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/806.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/139030-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/139030-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The culprit fay and other poems</title>
+    <id>http://localhost/works/489da89ff027aee362e6c60a6560c636</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/489da89ff027aee362e6c60a6560c636" />
+    <author>
+      <name>Drake, Joseph Rodman</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/317.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/56881-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/56881-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Les Cenci</title>
+    <id>http://localhost/works/3abbe6bef3439e2d6f2610aba3b00259</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/3abbe6bef3439e2d6f2610aba3b00259" />
+    <author>
+      <name>Stendhal</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/801.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/974906-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/974906-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The ways of men</title>
+    <id>http://localhost/works/b41a31ac9792798de79087cba6f7af6a</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/b41a31ac9792798de79087cba6f7af6a" />
+    <author>
+      <name>Gregory, Eliot</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/319.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/284842-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/284842-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The time machine</title>
+    <id>http://localhost/works/53b8cc827321b1a2d57f363387ed8e6a</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/53b8cc827321b1a2d57f363387ed8e6a" />
+    <author>
+      <name>Wells, H. G. (Herbert George)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/35.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/589926-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/589926-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">North American Free Trade Agreement, 1992 Oct. 7 Tariff Phasing Descriptions</title>
+    <id>http://localhost/works/62dbfc995cc3594998b1f7afcf3392ff</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/62dbfc995cc3594998b1f7afcf3392ff" />
+    <author>
+      <name>Canada</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/89.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/13635-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/13635-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">John Jacob Astor</title>
+    <id>http://localhost/works/bb0e0b29378ac638687fd25bb61c36d8</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/bb0e0b29378ac638687fd25bb61c36d8" />
+    <author>
+      <name>Hubbard, Elbert</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/412.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/316116-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/316116-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Complete Works of Brann, the Iconoclast — Volume 01</title>
+    <id>http://localhost/works/657dfb60d5fc1586ab91e7b6e318ac45</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/657dfb60d5fc1586ab91e7b6e318ac45" />
+    <author>
+      <name>Brann, William Cowper</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/567.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/961060-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/961060-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Gods of Mars</title>
+    <id>http://localhost/works/7ef37c7268c07f4928741e2937918cfb</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/7ef37c7268c07f4928741e2937918cfb" />
+    <author>
+      <name>Burroughs, Edgar Rice</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/64.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/937699-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/937699-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Miscellaneous Mathematical Constants</title>
+    <id>http://localhost/works/7b77eb152934b54fc69279a6c7a25bca</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/7b77eb152934b54fc69279a6c7a25bca" />
+    <author>
+      <name></name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/634.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/421030-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/421030-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">A List of Factorial Math Constants</title>
+    <id>http://localhost/works/a7798261181a2ac246a26a70d776ed94</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/a7798261181a2ac246a26a70d776ed94" />
+    <author>
+      <name>Unknown</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/212.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/211349-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/211349-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Warlord of Mars</title>
+    <id>http://localhost/works/e0b06b6dda115f326658c581e767740e</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/e0b06b6dda115f326658c581e767740e" />
+    <author>
+      <name>Burroughs, Edgar Rice</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/68.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/23627-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/23627-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The fifth string</title>
+    <id>http://localhost/works/ec183b4da954aad51ef2c1d0991aa96b</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/ec183b4da954aad51ef2c1d0991aa96b" />
+    <author>
+      <name>Sousa, John Philip</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/504.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/941979-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/941979-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Orlando Furioso</title>
+    <id>http://localhost/works/16c61ab151492abe246954a47490d80f</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/16c61ab151492abe246954a47490d80f" />
+    <author>
+      <name>Ariosto, Lodovico</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/615.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/998000-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/998000-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The collected poems of Rupert Brooke</title>
+    <id>http://localhost/works/fb7ed6e3e08162b7c2a2815b11a04b19</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/fb7ed6e3e08162b7c2a2815b11a04b19" />
+    <author>
+      <name>Brooke, Rupert</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/262.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/608449-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/608449-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Sister Carrie</title>
+    <id>http://localhost/works/1e5aba93bdd5bcbc489ed5e4b5bb0419</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/1e5aba93bdd5bcbc489ed5e4b5bb0419" />
+    <author>
+      <name>Dreiser, Theodore</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/233.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/965143-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/965143-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Peter Pan</title>
+    <id>http://localhost/works/f6e10d17c3bb9dd8b0b6eac1537b2c0e</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/f6e10d17c3bb9dd8b0b6eac1537b2c0e" />
+    <author>
+      <name>Barrie, J. M. (James Matthew)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/16.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/816700-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/816700-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Star-Spangled Banner</title>
+    <id>http://localhost/works/a97e735e38a972ea24dc2e80f2ca9774</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/a97e735e38a972ea24dc2e80f2ca9774" />
+    <author>
+      <name>Carpenter, John A.</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/727.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/749119-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/749119-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Project Gutenberg Encyclopedia</title>
+    <id>http://localhost/works/9d59339a5cf9a309a49e4eb488d7c920</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/9d59339a5cf9a309a49e4eb488d7c920" />
+    <author>
+      <name>Project Gutenberg</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/200.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/669642-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/669642-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The American</title>
+    <id>http://localhost/works/4c87a3af9d312c5fd2d44403efc57e2b</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/4c87a3af9d312c5fd2d44403efc57e2b" />
+    <author>
+      <name>James, Henry</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/177.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/244619-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/244619-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Anglo-Saxon Chronicle</title>
+    <id>http://localhost/works/3c149681b542a50744a2969c38077b95</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/3c149681b542a50744a2969c38077b95" />
+    <author>
+      <name></name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/657.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/812611-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/812611-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Prisoner of Zenda</title>
+    <id>http://localhost/works/f76e0417305b2e298db7814df9c1af93</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/f76e0417305b2e298db7814df9c1af93" />
+    <author>
+      <name>Hope, Anthony</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/95.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/651727-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/651727-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Battle of Life</title>
+    <id>http://localhost/works/cdd3596a5d86955d7f68dafe1d937415</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/cdd3596a5d86955d7f68dafe1d937415" />
+    <author>
+      <name>Dickens, Charles</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/676.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/528634-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/528634-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Grace Abounding to the Chief of Sinners</title>
+    <id>http://localhost/works/7f01d542281f6f843a9e962212c8b95e</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/7f01d542281f6f843a9e962212c8b95e" />
+    <author>
+      <name>Bunyan, John</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/654.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/484283-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/484283-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Lazy Tour of Two Idle Apprentices</title>
+    <id>http://localhost/works/b7aee080f50259a3190800cc0aad28c8</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/b7aee080f50259a3190800cc0aad28c8" />
+    <author>
+      <name>Collins, Wilkie</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/888.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/92248-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/92248-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Further Adventures of Robinson Crusoe</title>
+    <id>http://localhost/works/207dec3521fecd69e1e26b470f22baae</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/207dec3521fecd69e1e26b470f22baae" />
+    <author>
+      <name>Defoe, Daniel</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/561.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/433813-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/433813-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Nicholas Nickleby</title>
+    <id>http://localhost/works/a2964944369ac81767b16297a0bbf9bb</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/a2964944369ac81767b16297a0bbf9bb" />
+    <author>
+      <name>Dickens, Charles</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/967.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/180043-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/180043-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Dombey and Son</title>
+    <id>http://localhost/works/e3400f5148e5992f32e69937f6eea0f4</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/e3400f5148e5992f32e69937f6eea0f4" />
+    <author>
+      <name>Dickens, Charles</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/821.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/313173-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/313173-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Evergreens</title>
+    <id>http://localhost/works/b9f982b3b53d37475333b9f28318358e</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/b9f982b3b53d37475333b9f28318358e" />
+    <author>
+      <name>Jerome, Jerome K. (Jerome Klapka)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/857.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/37656-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/37656-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Moon Endureth: Tales and Fancies</title>
+    <id>http://localhost/works/c476b7b29a349414c0be9e81de48fbe7</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/c476b7b29a349414c0be9e81de48fbe7" />
+    <author>
+      <name>Buchan, John</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/715.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/322038-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/322038-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Happy Prince, and Other Tales</title>
+    <id>http://localhost/works/275776f708437f0ff113d7f11023ea9f</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/275776f708437f0ff113d7f11023ea9f" />
+    <author>
+      <name>Wilde, Oscar</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/902.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/55384-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/55384-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Philosopher's Joke</title>
+    <id>http://localhost/works/863bb00cff4a10823c747001bfb12043</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/863bb00cff4a10823c747001bfb12043" />
+    <author>
+      <name>Jerome, Jerome K. (Jerome Klapka)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/868.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/927529-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/927529-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Ginx's Baby: His Birth and Other Misfortunes; a Satire</title>
+    <id>http://localhost/works/c40e2723d44a9f54b495b859708150e3</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/c40e2723d44a9f54b495b859708150e3" />
+    <author>
+      <name>Jenkins, Edward</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/581.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/678414-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/678414-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Chimes</title>
+    <id>http://localhost/works/e6b292edd52d74c7f11c9da9b0a4193e</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/e6b292edd52d74c7f11c9da9b0a4193e" />
+    <author>
+      <name>Dickens, Charles</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/653.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/99056-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/99056-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Poems of William Blake</title>
+    <id>http://localhost/works/b9bea55161a2fa154a22a1b86e321d39</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/b9bea55161a2fa154a22a1b86e321d39" />
+    <author>
+      <name>Blake, William</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/574.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/408694-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/408694-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Secret Agent: A Simple Tale</title>
+    <id>http://localhost/works/a5de7bd603c378ed229d9a45e64c382a</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/a5de7bd603c378ed229d9a45e64c382a" />
+    <author>
+      <name>Conrad, Joseph</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/974.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/108784-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/108784-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Life and Letters of Robert Browning</title>
+    <id>http://localhost/works/94298c226bbf5cc38f21e4def277fcfe</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/94298c226bbf5cc38f21e4def277fcfe" />
+    <author>
+      <name>Orr, Sutherland, Mrs.</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/655.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/723928-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/723928-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Catriona</title>
+    <id>http://localhost/works/6a396e91ad35a880dbe8e4b83c1e7c7d</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/6a396e91ad35a880dbe8e4b83c1e7c7d" />
+    <author>
+      <name>Stevenson, Robert Louis</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/589.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/192146-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/192146-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">A House of Pomegranates</title>
+    <id>http://localhost/works/1d66bb92b2c5a359c4e9cf630e9d3863</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/1d66bb92b2c5a359c4e9cf630e9d3863" />
+    <author>
+      <name>Wilde, Oscar</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/873.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/514525-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/514525-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Mr. Standfast</title>
+    <id>http://localhost/works/5ef45cb998bb76ac02dd36b095054c5c</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/5ef45cb998bb76ac02dd36b095054c5c" />
+    <author>
+      <name>Buchan, John</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/560.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/266103-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/266103-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Lavengro: The Scholar, the Gypsy, the Priest</title>
+    <id>http://localhost/works/5894ebac8d043dfdcff11f051d60bc3f</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/5894ebac8d043dfdcff11f051d60bc3f" />
+    <author>
+      <name>Borrow, George</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/452.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/452083-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/452083-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Poems by Adam Lindsay Gordon : including "Bush ballads" and "Sea Spray".</title>
+    <id>http://localhost/works/c096128880bfe4485a57b4bed6403676</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/c096128880bfe4485a57b4bed6403676" />
+    <author>
+      <name>Gordon, Adam Lindsay</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/258.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/226950-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/226950-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Verses, 1889-1896</title>
+    <id>http://localhost/works/240f3fee4520d7aab5a42c67b00e2d86</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/240f3fee4520d7aab5a42c67b00e2d86" />
+    <author>
+      <name>Kipling, Rudyard</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/323.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/350088-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/350088-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">When the Sleeper Wakes</title>
+    <id>http://localhost/works/2bdcb8811aa2f7e261733c57a744b736</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/2bdcb8811aa2f7e261733c57a744b736" />
+    <author>
+      <name>Wells, H. G. (Herbert George)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/775.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/709456-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/709456-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Haunted Man and the Ghost's Bargain</title>
+    <id>http://localhost/works/fb575662a17da8d47030b3c05f9a57cf</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/fb575662a17da8d47030b3c05f9a57cf" />
+    <author>
+      <name>Dickens, Charles</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/644.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/79087-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/79087-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Princess</title>
+    <id>http://localhost/works/71844af53acaabbeaeaf0fd6d4e0d53c</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/71844af53acaabbeaeaf0fd6d4e0d53c" />
+    <author>
+      <name>Tennyson, Alfred Tennyson, Baron</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/791.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/550161-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/550161-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Master Humphrey's Clock</title>
+    <id>http://localhost/works/544cb3521eac51e88d5c04d9f1acdaaa</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/544cb3521eac51e88d5c04d9f1acdaaa" />
+    <author>
+      <name>Dickens, Charles</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/588.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/363791-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/363791-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Grey Brethren, and Other Fragments in Prose and Verse</title>
+    <id>http://localhost/works/ef5fe134bf7f2e5e0357af49e816d653</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/ef5fe134bf7f2e5e0357af49e816d653" />
+    <author>
+      <name>Fairless, Michael</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/835.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/540616-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/540616-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Wuthering Heights</title>
+    <id>http://localhost/works/405a14070c17b923c65cea534195cdbe</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/405a14070c17b923c65cea534195cdbe" />
+    <author>
+      <name>Brontë, Emily</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/768.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/557804-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/557804-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Barnaby Rudge: A Tale of the Riots of 'Eighty</title>
+    <id>http://localhost/works/e3e67cbc9a47932015d8cc6508e43d4d</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/e3e67cbc9a47932015d8cc6508e43d4d" />
+    <author>
+      <name>Dickens, Charles</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/917.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/749346-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/749346-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Tragical History of Doctor Faustus</title>
+    <id>http://localhost/works/4a73d3899e9690c23266650a2dedab23</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/4a73d3899e9690c23266650a2dedab23" />
+    <author>
+      <name>Marlowe, Christopher</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/811.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/41474-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/41474-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Dreams</title>
+    <id>http://localhost/works/6f872fd9b4546f11be3d61313f036d06</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/6f872fd9b4546f11be3d61313f036d06" />
+    <author>
+      <name>Jerome, Jerome K. (Jerome Klapka)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/856.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/864209-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/864209-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Green Mansions: A Romance of the Tropical Forest</title>
+    <id>http://localhost/works/24fa9cd6e0b7595af8b01811a00d3ba7</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/24fa9cd6e0b7595af8b01811a00d3ba7" />
+    <author>
+      <name>Hudson, W. H. (William Henry)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/942.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/989219-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/989219-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Prayers Written At Vailima, and A Lowden Sabbath Morn</title>
+    <id>http://localhost/works/0b7aa7c58049c425a19a47523ca1ea02</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/0b7aa7c58049c425a19a47523ca1ea02" />
+    <author>
+      <name>Stevenson, Robert Louis</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/616.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/29614-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/29614-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Memoirs of Sherlock Holmes</title>
+    <id>http://localhost/works/9b88d3068759dd99952bcad34293e680</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/9b88d3068759dd99952bcad34293e680" />
+    <author>
+      <name>Doyle, Arthur Conan</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/834.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/433328-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/433328-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Speeches: Literary and Social</title>
+    <id>http://localhost/works/363f207be723501eee362885aa07a475</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/363f207be723501eee362885aa07a475" />
+    <author>
+      <name>Dickens, Charles</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/824.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/212089-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/212089-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Essays of Travel</title>
+    <id>http://localhost/works/deb482a92134c163b09fa769916751a2</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/deb482a92134c163b09fa769916751a2" />
+    <author>
+      <name>Stevenson, Robert Louis</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/627.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/326894-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/326894-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Ancient Poems, Ballads, and Songs of the Peasantry of England</title>
+    <id>http://localhost/works/2be7bde2764427a1bd179e1ae272e621</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/2be7bde2764427a1bd179e1ae272e621" />
+    <author>
+      <name></name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/649.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/579722-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/579722-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Roadmender</title>
+    <id>http://localhost/works/65d328760fab8dd56099a23641a2611c</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/65d328760fab8dd56099a23641a2611c" />
+    <author>
+      <name>Fairless, Michael</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/705.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/954579-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/954579-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Sylvie and Bruno</title>
+    <id>http://localhost/works/8516a630470de0c63dea254c844758df</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/8516a630470de0c63dea254c844758df" />
+    <author>
+      <name>Carroll, Lewis</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/620.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/363773-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/363773-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Mrs. Korner Sins Her Mercies</title>
+    <id>http://localhost/works/eff748b2979069358d139cb05d5aed38</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/eff748b2979069358d139cb05d5aed38" />
+    <author>
+      <name>Jerome, Jerome K. (Jerome Klapka)</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/867.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/280484-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/280484-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">A Journal of the Plague Year</title>
+    <id>http://localhost/works/fc5c05c58aef7b1fb26e55d0a41125ad</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/fc5c05c58aef7b1fb26e55d0a41125ad" />
+    <author>
+      <name>Defoe, Daniel</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/376.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/487314-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/487314-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Black Arrow: A Tale of Two Roses</title>
+    <id>http://localhost/works/ca0407f180a9275457d14cc4b2c2341c</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/ca0407f180a9275457d14cc4b2c2341c" />
+    <author>
+      <name>Stevenson, Robert Louis</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/848.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/696659-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/696659-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Prester John</title>
+    <id>http://localhost/works/545ab7b1ec2df6d9cb35100f7310308a</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/545ab7b1ec2df6d9cb35100f7310308a" />
+    <author>
+      <name>Buchan, John</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/611.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/867242-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/867242-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Letters of Robert Louis Stevenson — Volume 1</title>
+    <id>http://localhost/works/1657d535320f0d36a968bdf966db5658</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/1657d535320f0d36a968bdf966db5658" />
+    <author>
+      <name>Stevenson, Robert Louis</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/622.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/965531-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/965531-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Essays or Counsels, Civil and Moral</title>
+    <id>http://localhost/works/aa1860b2a25c5b3490c618c6d7a22700</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/aa1860b2a25c5b3490c618c6d7a22700" />
+    <author>
+      <name>Bacon, Francis</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/575.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/863313-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/863313-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Tenant of Wildfell Hall</title>
+    <id>http://localhost/works/59df1a31efc2bf03f2e83dffdbf93f2d</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/59df1a31efc2bf03f2e83dffdbf93f2d" />
+    <author>
+      <name>Brontë, Anne</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/969.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/759439-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/759439-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Frankenstein; Or, The Modern Prometheus</title>
+    <id>http://localhost/works/65be676cff442149eb09d6b572b3ef18</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/65be676cff442149eb09d6b572b3ef18" />
+    <author>
+      <name>Shelley, Mary Wollstonecraft</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/84.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/134808-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/134808-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">The Fortunes and Misfortunes of the Famous Moll Flanders</title>
+    <id>http://localhost/works/b7b03f1c1f122b7e9767e58a9f9639f5</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/b7b03f1c1f122b7e9767e58a9f9639f5" />
+    <author>
+      <name>Defoe, Daniel</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/370.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/855778-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/855778-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">A Personal Record</title>
+    <id>http://localhost/works/745da889aad7f4a6bf731d96efbded39</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/745da889aad7f4a6bf731d96efbded39" />
+    <author>
+      <name>Conrad, Joseph</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/687.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/402603-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/402603-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+  <entry xml:base="http://localhost/main">
+    <title type="text">Religio Medici, Hydriotaphia, and the Letter to a Friend</title>
+    <id>http://localhost/works/37a8fbaaa4a94b41a6acd5ae5e6fa66c</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/37a8fbaaa4a94b41a6acd5ae5e6fa66c" />
+    <author>
+      <name>Browne, Thomas, Sir</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/586.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/379801-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/379801-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Fiction" rel="collection" title="Fiction" />
+  </entry>
+</feed>

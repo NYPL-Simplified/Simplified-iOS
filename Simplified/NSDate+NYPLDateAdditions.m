@@ -20,4 +20,12 @@
   return date;
 }
 
+- (NSDateComponents *)UTCComponents
+{
+  NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSISO8601Calendar];
+  calendar.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+  
+  return [calendar components:0xFFFFFFFF fromDate:self];
+}
+
 @end
