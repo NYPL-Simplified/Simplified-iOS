@@ -4,7 +4,7 @@
 
 @interface NYPLRootTabBarController ()
 
-@property (nonatomic, retain) NYPLAllBooksViewController *allBooksViewController;
+@property (nonatomic) NYPLAllBooksViewController *allBooksViewController;
 
 @end
 
