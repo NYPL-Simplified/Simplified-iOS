@@ -17,7 +17,7 @@
     <link href="http://www.gutenberg.org/ebooks/764.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/997431-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/997431-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Cast Upon the Breakers</title>
@@ -30,7 +30,7 @@
     <link href="http://www.gutenberg.org/ebooks/399.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/911496-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/911496-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Sara Crewe; Or, What Happened at Miss Minchin's Boarding School</title>
@@ -43,7 +43,7 @@
     <link href="http://www.gutenberg.org/ebooks/137.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/964464-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/964464-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Light Princess</title>
@@ -56,7 +56,7 @@
     <link href="http://www.gutenberg.org/ebooks/697.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/434610-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/434610-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Die Abenteuer Tom Sawyers</title>
@@ -69,7 +69,7 @@
     <link href="http://www.gutenberg.org/ebooks/30165.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/995050-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/995050-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Adventures of Huckleberry Finn, Chapters 16 to 20</title>
@@ -82,7 +82,7 @@
     <link href="http://www.gutenberg.org/ebooks/7103.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/366355-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/366355-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Adventures of Huckleberry Finn, Chapters 36 to The Last</title>
@@ -95,7 +95,7 @@
     <link href="http://www.gutenberg.org/ebooks/7107.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/75665-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/75665-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Princess and the Goblin</title>
@@ -108,7 +108,7 @@
     <link href="http://www.gutenberg.org/ebooks/708.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/530006-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/530006-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Errand Boy; Or, How Phil Brent Won Success</title>
@@ -121,7 +121,7 @@
     <link href="http://www.gutenberg.org/ebooks/462.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/4639-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/4639-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Somebody's Little Girl</title>
@@ -134,7 +134,7 @@
     <link href="http://www.gutenberg.org/ebooks/702.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/823366-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/823366-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Cash Boy</title>
@@ -147,7 +147,7 @@
     <link href="http://www.gutenberg.org/ebooks/296.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/234561-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/234561-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Phil, the Fiddler</title>
@@ -160,7 +160,7 @@
     <link href="http://www.gutenberg.org/ebooks/671.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/549731-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/549731-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Adventures of Tom Sawyer, Part 4.</title>
@@ -173,7 +173,7 @@
     <link href="http://www.gutenberg.org/ebooks/7196.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/68788-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/68788-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Les Aventures De Tom Sawyer</title>
@@ -186,7 +186,7 @@
     <link href="http://www.gutenberg.org/ebooks/30890.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/504258-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/504258-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Adventures of Huckleberry Finn, Chapters 11 to 15</title>
@@ -199,7 +199,7 @@
     <link href="http://www.gutenberg.org/ebooks/7102.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/969153-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/969153-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Remember the Alamo</title>
@@ -212,7 +212,7 @@
     <link href="http://www.gutenberg.org/ebooks/287.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/585727-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/585727-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Tin Woodman of Oz</title>
@@ -225,7 +225,7 @@
     <link href="http://www.gutenberg.org/ebooks/960.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/109540-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/109540-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Coral Island: A Tale of the Pacific Ocean</title>
@@ -238,7 +238,7 @@
     <link href="http://www.gutenberg.org/ebooks/646.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/369969-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/369969-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Return of Tarzan</title>
@@ -251,7 +251,7 @@
     <link href="http://www.gutenberg.org/ebooks/81.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/786742-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/786742-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Lost Princess of Oz</title>
@@ -264,7 +264,7 @@
     <link href="http://www.gutenberg.org/ebooks/959.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/274173-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/274173-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Robin Hood</title>
@@ -277,7 +277,7 @@
     <link href="http://www.gutenberg.org/ebooks/832.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/38279-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/38279-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Birds' Christmas Carol</title>
@@ -290,7 +290,7 @@
     <link href="http://www.gutenberg.org/ebooks/721.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/207836-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/207836-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Adventures of Huckleberry Finn, Chapters 31 to 35</title>
@@ -303,7 +303,7 @@
     <link href="http://www.gutenberg.org/ebooks/7106.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/236191-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/236191-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Glinda of Oz</title>
@@ -316,7 +316,7 @@
     <link href="http://www.gutenberg.org/ebooks/961.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/474942-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/474942-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Adventures of Tom Sawyer, Part 1.</title>
@@ -329,7 +329,7 @@
     <link href="http://www.gutenberg.org/ebooks/7193.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/832236-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/832236-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Tom Swift and His Electric Runabout; Or, The Speediest Car on the Road</title>
@@ -342,7 +342,7 @@
     <link href="http://www.gutenberg.org/ebooks/950.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/264904-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/264904-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Le avventure d'Alice nel paese delle meraviglie</title>
@@ -355,7 +355,7 @@
     <link href="http://www.gutenberg.org/ebooks/28371.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/42641-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/42641-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Beasts of Tarzan</title>
@@ -368,7 +368,7 @@
     <link href="http://www.gutenberg.org/ebooks/85.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/474268-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/474268-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The King of the Golden River</title>
@@ -381,7 +381,7 @@
     <link href="http://www.gutenberg.org/ebooks/701.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/52499-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/52499-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Tom Swift and His Big Tunnel; Or, The Hidden City of the Andes</title>
@@ -394,7 +394,7 @@
     <link href="http://www.gutenberg.org/ebooks/953.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/458909-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/458909-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Tik-Tok of Oz</title>
@@ -407,7 +407,7 @@
     <link href="http://www.gutenberg.org/ebooks/956.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/855484-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/855484-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Holiday Romance</title>
@@ -420,7 +420,7 @@
     <link href="http://www.gutenberg.org/ebooks/809.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/605733-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/605733-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Violet Fairy Book</title>
@@ -433,7 +433,7 @@
     <link href="http://www.gutenberg.org/ebooks/641.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/368111-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/368111-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Book of Nonsense</title>
@@ -446,7 +446,7 @@
     <link href="http://www.gutenberg.org/ebooks/982.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/199746-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/199746-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Adventures of Huckleberry Finn, Chapters 26 to 30</title>
@@ -459,7 +459,7 @@
     <link href="http://www.gutenberg.org/ebooks/7105.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/218067-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/218067-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Bobbsey Twins in the Country</title>
@@ -472,7 +472,7 @@
     <link href="http://www.gutenberg.org/ebooks/714.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/143460-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/143460-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Princess and Curdie</title>
@@ -485,7 +485,7 @@
     <link href="http://www.gutenberg.org/ebooks/709.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/688495-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/688495-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Great Big Treasury of Beatrix Potter</title>
@@ -498,7 +498,7 @@
     <link href="http://www.gutenberg.org/ebooks/572.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/707332-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/707332-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Rinkitink in Oz</title>
@@ -511,7 +511,7 @@
     <link href="http://www.gutenberg.org/ebooks/958.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/490720-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/490720-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Alice in Wonderland, Retold in Words of One Syllable</title>
@@ -524,7 +524,7 @@
     <link href="http://www.gutenberg.org/ebooks/19551.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/695733-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/695733-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Mansion</title>
@@ -537,7 +537,7 @@
     <link href="http://www.gutenberg.org/ebooks/704.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/663833-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/663833-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Joe the Hotel Boy; Or, Winning out by Pluck</title>
@@ -550,7 +550,7 @@
     <link href="http://www.gutenberg.org/ebooks/528.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/854423-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/854423-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Heroes; Or, Greek Fairy Tales for My Children</title>
@@ -563,7 +563,7 @@
     <link href="http://www.gutenberg.org/ebooks/677.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/700260-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/700260-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Tom Swift in the Land of Wonders; Or, The Underground Search for the Idol of Gold</title>
@@ -576,7 +576,7 @@
     <link href="http://www.gutenberg.org/ebooks/499.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/516971-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/516971-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Adventures of Tom Sawyer, Part 7.</title>
@@ -589,7 +589,7 @@
     <link href="http://www.gutenberg.org/ebooks/7199.epub.images" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/72154-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/72154-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Go Ahead Boys and the Racing Motor-Boat</title>
@@ -602,7 +602,7 @@
     <link href="http://www.gutenberg.org/ebooks/562.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/234076-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/234076-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Boyhood in Norway: Stories of Boy-Life in the Land of the Midnight Sun</title>
@@ -615,7 +615,7 @@
     <link href="http://www.gutenberg.org/ebooks/784.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/430499-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/430499-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">Tom Swift and His Air Glider; Or, Seeking the Platinum Treasure</title>
@@ -628,7 +628,7 @@
     <link href="http://www.gutenberg.org/ebooks/952.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/916955-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/916955-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The Lost City</title>
@@ -641,7 +641,7 @@
     <link href="http://www.gutenberg.org/ebooks/783.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
     <link href="http://covers.openlibrary.org/b/id/9481-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/9481-L.jpg" rel="http://opds-spec.org/image" />
-    <link href="http://localhost/lanes/Children's Fiction" rel="collection" title="Children's Fiction" />
+    <link href="http://localhost/lanes/Children's%20Fiction" rel="collection" title="Children's Fiction" />
   </entry>
   <entry xml:base="http://localhost/main">
     <title type="text">The conflict a novel</title>
