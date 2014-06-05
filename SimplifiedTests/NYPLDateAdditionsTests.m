@@ -24,6 +24,11 @@
   XCTAssertNil(date);
 }
 
+- (void)testCanHandleNilArgument
+{
+  XCTAssertFalse([NSDate dateWithRFC3339:nil]);
+}
+
 - (void)testDateParsesCorrectly
 {
   NSDate *date = [NSDate dateWithRFC3339:@"1984-09-08T08:23:45Z"];
