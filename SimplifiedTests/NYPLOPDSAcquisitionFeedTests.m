@@ -33,6 +33,11 @@
   self.acquisitionFeed = nil;
 }
 
+- (void)testEntriesPresent
+{
+  XCTAssert(self.acquisitionFeed.entries);
+}
+
 - (void)testIdentifier
 {
   XCTAssertEqualObjects(self.acquisitionFeed.identifier, @"http://localhost/main");
