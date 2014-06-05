@@ -1,5 +1,6 @@
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLOPDSEntry.h"
+#import "SMXMLElement+NYPLElementAdditions.h"
 
 #import "NYPLOPDSAcquisitionFeed.h"
 
@@ -19,18 +20,18 @@
   self = [super init];
   if(!self) return nil;
   
-  if(!((self.identifier = [document.root childNamed:@"id"].value))) {
+  if(!((self.identifier = [document.root childNamed:@"id"].valueString))) {
     NSLog(@"NYPLOPDSAcquisitionFeed: Missing required 'id' element.");
     return nil;
   }
   
-  if(!((self.title = [document.root childNamed:@"title"].value))) {
+  if(!((self.title = [document.root childNamed:@"title"].valueString))) {
     NSLog(@"NYPLOPDSAcquisitionFeed: Missing required 'title' element.");
     return nil;
   }
   
   {
-    NSString *const updatedString = [document.root childNamed:@"updated"].value;
+    NSString *const updatedString = [document.root childNamed:@"updated"].valueString;
     if(!updatedString) {
       NSLog(@"NYPLOPDSAcquisitionFeed: Missing required 'updated' element.");
       return nil;

@@ -1,7 +1,8 @@
 #import "NSDate+NYPLDateAdditions.h"
+#import "NYPLOPDSLink.h"
+#import "SMXMLElement+NYPLElementAdditions.h"
 
 #import "NYPLOPDSEntry.h"
-#import "NYPLOPDSLink.h"
 
 @interface NYPLOPDSEntry ()
 
@@ -24,19 +25,19 @@
     NSMutableArray *const authorNames = [NSMutableArray array];
     
     for(SMXMLElement *const authorElement in [element childrenNamed:@"author"]) {
-      NSString *const name = [authorElement childNamed:@"name"].value;
-      if(!name) {
+      SMXMLElement *nameElement = [authorElement childNamed:@"name"];
+      if(!nameElement) {
         NSLog(@"NYPLOPDSEntry: 'author' element missing required 'name' element.");
         NSLog(@"NYPLOPDSEntry: Ignoring malformed 'author' element.");
         continue;
       }
-      [authorNames addObject:name];
+      [authorNames addObject:nameElement.valueString];
     }
-    
+
     self.authorNames = authorNames;
   }
   
-  if(!((self.identifier = [element childNamed:@"id"].value))) {
+  if(!((self.identifier = [element childNamed:@"id"].valueString))) {
     NSLog(@"NYPLOPDSEntry: Missing required 'id' element.");
     return nil;
   }
@@ -56,14 +57,23 @@
     self.links = links;
   }
   
-  if(!((self.title = [element childNamed:@"title"].value))) {
+  if(!((self.title = [element childNamed:@"title"].valueString))) {
     NSLog(@"NYPLOPDSEntry: Missing required 'title' element.");
     return nil;
   }
   
-  if(!((self.updated = [NSDate dateWithRFC3339:[element childNamed:@"updated"].value]))) {
-    NSLog(@"NYPLOPDSAcquisitionFeed: Missing required 'updated' element.");
-    return nil;
+  {
+    NSString *const updatedString = [element childNamed:@"updated"].valueString;
+    if(!updatedString) {
+      NSLog(@"NYPLOPDSEntry: Missing required 'updated' element.");
+      return nil;
+    }
+    
+    self.updated = [NSDate dateWithRFC3339:updatedString];
+    if(!self.updated) {
+      NSLog(@"NYPLOPDSEntry: Element 'updated' does not contain an RFC 3339 date.");
+      return nil;
+    }
   }
   
   return self;
