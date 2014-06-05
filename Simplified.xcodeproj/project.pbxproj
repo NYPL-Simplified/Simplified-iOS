@@ -27,6 +27,8 @@
 		11548C0E1939147D009DBF2E /* NYPLAllBooksNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11548C0D1939147D009DBF2E /* NYPLAllBooksNavigationController.m */; };
 		11548C1119391614009DBF2E /* NYPLAllBooksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11548C1019391614009DBF2E /* NYPLAllBooksViewController.m */; };
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
+		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
+		11F54C2719410C700086FCAF /* NYPLOPDSEntryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */; };
 		508BE2C812F2401A847793E5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5705D893E0FE4395A50F089E /* libPods.a */; };
 		A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D810192BABA400B55DE2 /* Foundation.framework */; };
 		A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
@@ -73,6 +75,8 @@
 		11548C0F19391614009DBF2E /* NYPLAllBooksViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAllBooksViewController.h; sourceTree = "<group>"; };
 		11548C1019391614009DBF2E /* NYPLAllBooksViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAllBooksViewController.m; sourceTree = "<group>"; };
 		11F54C1D194109120086FCAF /* main.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = main.xml; sourceTree = "<group>"; };
+		11F54C2419410BE40086FCAF /* single_entry.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = single_entry.xml; sourceTree = "<group>"; };
+		11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryTests.m; sourceTree = "<group>"; };
 		5705D893E0FE4395A50F089E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D80D192BABA400B55DE2 /* Simplified.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simplified.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D810192BABA400B55DE2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -192,6 +196,7 @@
 			children = (
 				11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */,
 				11396FC8193F674F00E16EE8 /* NYPLOPDSAcquisitionFeedTests.m */,
+				11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */,
 				A823D830192BABA400B55DE2 /* Supporting Files */,
 			);
 			path = SimplifiedTests;
@@ -201,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				11F54C1D194109120086FCAF /* main.xml */,
+				11F54C2419410BE40086FCAF /* single_entry.xml */,
 				A823D831192BABA400B55DE2 /* SimplifiedTests-Info.plist */,
 				A823D832192BABA400B55DE2 /* InfoPlist.strings */,
 			);
@@ -298,6 +304,7 @@
 			files = (
 				A823D834192BABA400B55DE2 /* InfoPlist.strings in Resources */,
 				11F54C1F194109550086FCAF /* main.xml in Resources */,
+				11F54C2519410BE40086FCAF /* single_entry.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,6 +396,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				11396FE51940F93900E16EE8 /* NYPLAppDelegate.m in Sources */,
+				11F54C2719410C700086FCAF /* NYPLOPDSEntryTests.m in Sources */,
 				11396FE71940F93900E16EE8 /* SMXMLElement+NYPLElementAdditions.m in Sources */,
 				11396FE41940F93900E16EE8 /* NYPLAllBooksViewController.m in Sources */,
 				11396FC9193F674F00E16EE8 /* NYPLOPDSAcquisitionFeedTests.m in Sources */,

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">The Big Front Page</title>
+  <id>http://localhost/main</id>
+  <updated>2014-06-02T16:59:57Z</updated>
+  <link href="http://localhost/main" />
+  <link href="http://localhost/main" rel="self" />
+  <entry xml:base="http://localhost/main">
+    <title type="text">The American</title>
+    <id>http://localhost/works/4c87a3af9d312c5fd2d44403efc57e2b</id>
+    <updated>2014-06-02T16:59:57Z</updated>
+    <link href="http://localhost/works/4c87a3af9d312c5fd2d44403efc57e2b" />
+    <author>
+      <name>James, Henry</name>
+    </author>
+    <author>
+      <name>Author, Fictional</name>
+    </author>
+    <link href="http://www.gutenberg.org/ebooks/177.epub.noimages" type="application/epub+zip" rel="http://opds-spec.org/acquisition/open-access" />
+    <link href="http://covers.openlibrary.org/b/id/244619-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
+    <link href="http://covers.openlibrary.org/b/id/244619-L.jpg" rel="http://opds-spec.org/image" />
+    <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+  </entry>
+</feed>
