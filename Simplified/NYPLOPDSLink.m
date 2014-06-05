@@ -2,7 +2,7 @@
 
 @interface NYPLOPDSLink ()
 
-@property (nonatomic) NSString *href;
+@property (nonatomic) NSURL *href;
 @property (nonatomic) NSString *rel;
 @property (nonatomic) NSString *type;
 @property (nonatomic) NSString *hreflang;
@@ -18,10 +18,19 @@
   self = [super init];
   if(!self) return nil;
   
-  self.href = [element attributeNamed:@"href"];
-  if(!self.href) {
-    NSLog(@"NYPLOPDSLink: Missing required 'href' attribute.");
-    return nil;
+  {
+    NSString *hrefString = [element attributeNamed:@"href"];
+    if(!hrefString) {
+      NSLog(@"NYPLOPDSLink: Missing required 'href' attribute.");
+      return nil;
+    }
+    
+    if(!((self.href = [NSURL URLWithString:hrefString]))) {
+      // Atom requires support for RFC 3986, but CFURL and NSURL only support RFC 2396. As such, a
+      // valid URI may be rejected in extremely rare cases.
+      NSLog(@"NYPLOPDSLink: 'href' attribute does not contain an RFC 2396 URI.");
+      return nil;
+    }
   }
   
   self.rel = [element attributeNamed:@"rel"];
