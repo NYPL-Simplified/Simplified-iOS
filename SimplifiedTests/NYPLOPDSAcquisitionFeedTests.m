@@ -17,7 +17,8 @@
   [super setUp];
   
   NSData *data = [NSData dataWithContentsOfFile:
-                  [[NSBundle mainBundle] pathForResource:@"main" ofType:@"xml"]];
+                  [[NSBundle bundleForClass:[self class]] pathForResource:@"main" ofType:@"xml"]];
+  assert(data);
   
   SMXMLDocument *document = [SMXMLDocument documentWithData:data error:NULL];
   assert(document);
