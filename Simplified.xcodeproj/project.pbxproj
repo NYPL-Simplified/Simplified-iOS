@@ -29,6 +29,7 @@
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
 		11F54C2719410C700086FCAF /* NYPLOPDSEntryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */; };
+		11F54C2A19423A040086FCAF /* NYPLOPDSLinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */; };
 		508BE2C812F2401A847793E5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5705D893E0FE4395A50F089E /* libPods.a */; };
 		A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D810192BABA400B55DE2 /* Foundation.framework */; };
 		A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
@@ -77,6 +78,7 @@
 		11F54C1D194109120086FCAF /* main.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = main.xml; sourceTree = "<group>"; };
 		11F54C2419410BE40086FCAF /* single_entry.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = single_entry.xml; sourceTree = "<group>"; };
 		11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryTests.m; sourceTree = "<group>"; };
+		11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLinkTests.m; sourceTree = "<group>"; };
 		5705D893E0FE4395A50F089E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D80D192BABA400B55DE2 /* Simplified.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simplified.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D810192BABA400B55DE2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -197,6 +199,7 @@
 				11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */,
 				11396FC8193F674F00E16EE8 /* NYPLOPDSAcquisitionFeedTests.m */,
 				11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */,
+				11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */,
 				A823D830192BABA400B55DE2 /* Supporting Files */,
 			);
 			path = SimplifiedTests;
@@ -403,6 +406,7 @@
 				11396FBB193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m in Sources */,
 				11396FDC1940F90100E16EE8 /* NSDate+NYPLDateAdditions.m in Sources */,
 				11396FE11940F93300E16EE8 /* NYPLOPDSEntry.m in Sources */,
+				11F54C2A19423A040086FCAF /* NYPLOPDSLinkTests.m in Sources */,
 				11396FE21940F93300E16EE8 /* NYPLOPDSLink.m in Sources */,
 				11396FDD1940F90400E16EE8 /* NYPLAllBooksNavigationController.m in Sources */,
 				11396FE61940F93900E16EE8 /* NYPLOPDSAcquisitionFeed.m in Sources */,
