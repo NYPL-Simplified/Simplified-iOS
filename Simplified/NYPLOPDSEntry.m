@@ -16,7 +16,7 @@
 
 @implementation NYPLOPDSEntry
 
-- (id)initWithElement:(SMXMLElement *)element
+- (id)initWithElement:(SMXMLElement *const)element
 {
   self = [super init];
   if(!self) return nil;
@@ -25,7 +25,7 @@
     NSMutableArray *const authorNames = [NSMutableArray array];
     
     for(SMXMLElement *const authorElement in [element childrenNamed:@"author"]) {
-      SMXMLElement *nameElement = [authorElement childNamed:@"name"];
+      SMXMLElement *const nameElement = [authorElement childNamed:@"name"];
       if(!nameElement) {
         NSLog(@"NYPLOPDSEntry: 'author' element missing required 'name' element.");
         NSLog(@"NYPLOPDSEntry: Ignoring malformed 'author' element.");

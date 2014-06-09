@@ -528,8 +528,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
 					"-Werror",
-					"-Wall",
-					"-Wextra",
+					"-Weverything",
+					"-Wno-objc-missing-property-synthesis",
 				);
 				WRAPPER_EXTENSION = app;
 			};
@@ -547,8 +547,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
 					"-Werror",
-					"-Wall",
-					"-Wextra",
+					"-Weverything",
+					"-Wno-objc-missing-property-synthesis",
 				);
 				WRAPPER_EXTENSION = app;
 			};
@@ -573,6 +573,13 @@
 				INFOPLIST_FILE = "SimplifiedTests/SimplifiedTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
+				WARNING_CFLAGS = (
+					"-Werror",
+					"-Weverything",
+					"-Wno-objc-missing-property-synthesis",
+					"-Wno-gnu-zero-variadic-macro-arguments",
+					"-Wno-gnu-statement-expression",
+				);
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Debug;
@@ -592,6 +599,13 @@
 				INFOPLIST_FILE = "SimplifiedTests/SimplifiedTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
+				WARNING_CFLAGS = (
+					"-Werror",
+					"-Weverything",
+					"-Wno-objc-missing-property-synthesis",
+					"-Wno-gnu-zero-variadic-macro-arguments",
+					"-Wno-gnu-statement-expression",
+				);
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;

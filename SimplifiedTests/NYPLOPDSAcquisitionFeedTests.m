@@ -1,5 +1,6 @@
+@import XCTest;
+
 #import <SMXMLDocument/SMXMLDocument.h>
-#import <XCTest/XCTest.h>
 
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLOPDSAcquisitionFeed.h"
@@ -16,11 +17,12 @@
 {
   [super setUp];
   
-  NSData *data = [NSData dataWithContentsOfFile:
-                  [[NSBundle bundleForClass:[self class]] pathForResource:@"main" ofType:@"xml"]];
+  NSData *const data =
+    [NSData dataWithContentsOfFile:
+     [[NSBundle bundleForClass:[self class]] pathForResource:@"main" ofType:@"xml"]];
   assert(data);
   
-  SMXMLDocument *document = [SMXMLDocument documentWithData:data error:NULL];
+  SMXMLDocument *const document = [SMXMLDocument documentWithData:data error:NULL];
   assert(document);
   
   self.acquisitionFeed = [[NYPLOPDSAcquisitionFeed alloc] initWithDocument:document];
@@ -51,12 +53,10 @@
 
 - (void)testUpdated
 {
-  NSDate *date = self.acquisitionFeed.updated;
-  
+  NSDate *const date = self.acquisitionFeed.updated;
   XCTAssert(date);
   
-  NSDateComponents *dateComponents = [date UTCComponents];
-
+  NSDateComponents *const dateComponents = [date UTCComponents];
   XCTAssertEqual(dateComponents.year, 2014);
   XCTAssertEqual(dateComponents.month, 6);
   XCTAssertEqual(dateComponents.day, 2);

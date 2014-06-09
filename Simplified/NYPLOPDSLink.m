@@ -13,13 +13,13 @@
 
 @implementation NYPLOPDSLink
 
-- (id)initWithElement:(SMXMLElement *)element
+- (id)initWithElement:(SMXMLElement *const)element
 {
   self = [super init];
   if(!self) return nil;
   
   {
-    NSString *hrefString = [element attributeNamed:@"href"];
+    NSString *const hrefString = [element attributeNamed:@"href"];
     if(!hrefString) {
       NSLog(@"NYPLOPDSLink: Missing required 'href' attribute.");
       return nil;

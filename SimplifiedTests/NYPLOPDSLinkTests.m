@@ -1,4 +1,4 @@
-#import <XCTest/XCTest.h>
+@import XCTest;
 
 #import "NYPLOPDSAcquisitionFeed.h"
 #import "NYPLOPDSEntry.h"
@@ -16,16 +16,16 @@
 {
   [super setUp];
   
-  NSData *data = [NSData dataWithContentsOfFile:
-                  [[NSBundle bundleForClass:[self class]]
-                   pathForResource:@"single_entry"
-                   ofType:@"xml"]];
+  NSData *const data = [NSData dataWithContentsOfFile:
+                        [[NSBundle bundleForClass:[self class]]
+                         pathForResource:@"single_entry"
+                         ofType:@"xml"]];
   assert(data);
   
-  SMXMLDocument *document = [SMXMLDocument documentWithData:data error:NULL];
+  SMXMLDocument *const document = [SMXMLDocument documentWithData:data error:NULL];
   assert(document);
   
-  NYPLOPDSAcquisitionFeed *acquisitionFeed =
+  NYPLOPDSAcquisitionFeed *const acquisitionFeed =
     [[NYPLOPDSAcquisitionFeed alloc] initWithDocument:document];
   assert(acquisitionFeed);
   
@@ -42,12 +42,12 @@
 
 - (void)testCount
 {
-  XCTAssertEqual(self.links.count, 5);
+  XCTAssertEqual(self.links.count, 5U);
 }
 
 - (void)testLink0
 {
-  NYPLOPDSLink *link = self.links[0];
+  NYPLOPDSLink *const link = self.links[0];
   XCTAssertEqualObjects(link.href, [NSURL URLWithString:
                                     @"http://localhost/works/4c87a3af9d312c5fd2d44403efc57e2b"]);
   XCTAssertNil(link.rel);
@@ -59,7 +59,7 @@
 
 - (void)testLink1
 {
-  NYPLOPDSLink *link = self.links[1];
+  NYPLOPDSLink *const link = self.links[1];
   XCTAssertEqualObjects(link.href, [NSURL URLWithString:
                                     @"http://www.gutenberg.org/ebooks/177.epub.noimages"]);
   XCTAssertEqualObjects(link.rel, @"http://opds-spec.org/acquisition/open-access");
@@ -71,7 +71,7 @@
 
 - (void)testLink2
 {
-  NYPLOPDSLink *link = self.links[2];
+  NYPLOPDSLink *const link = self.links[2];
   XCTAssertEqualObjects(link.href, [NSURL URLWithString:
                                     @"http://covers.openlibrary.org/b/id/244619-S.jpg"]);
   XCTAssertEqualObjects(link.rel, @"http://opds-spec.org/image/thumbnail");
@@ -83,7 +83,7 @@
 
 - (void)testLink3
 {
-  NYPLOPDSLink *link = self.links[3];
+  NYPLOPDSLink *const link = self.links[3];
   XCTAssertEqualObjects(link.href, [NSURL URLWithString:
                                     @"http://covers.openlibrary.org/b/id/244619-L.jpg"]);
   XCTAssertEqualObjects(link.rel, @"http://opds-spec.org/image");
@@ -95,7 +95,7 @@
 
 - (void)testLink4
 {
-  NYPLOPDSLink *link = self.links[4];
+  NYPLOPDSLink *const link = self.links[4];
   XCTAssertEqualObjects(link.href, [NSURL URLWithString:@"http://localhost/lanes/Nonfiction"]);
   XCTAssertEqualObjects(link.rel, @"collection");
   XCTAssertNil(link.type);
