@@ -1,7 +1,7 @@
 @import XCTest;
 
-#import "NYPLOPDSAcquisitionFeed.h"
 #import "NYPLOPDSEntry.h"
+#import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
 
 @interface NYPLOPDSLinkTests : XCTestCase
@@ -25,11 +25,10 @@
   SMXMLDocument *const document = [SMXMLDocument documentWithData:data error:NULL];
   assert(document);
   
-  NYPLOPDSAcquisitionFeed *const acquisitionFeed =
-    [[NYPLOPDSAcquisitionFeed alloc] initWithDocument:document];
-  assert(acquisitionFeed);
+  NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
+  assert(feed);
   
-  self.links = ((NYPLOPDSEntry *) acquisitionFeed.entries[0]).links;
+  self.links = ((NYPLOPDSEntry *) feed.entries[0]).links;
   assert(self.links);
 }
 

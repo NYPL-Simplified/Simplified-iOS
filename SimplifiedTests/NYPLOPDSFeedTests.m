@@ -3,15 +3,15 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
 #import "NSDate+NYPLDateAdditions.h"
-#import "NYPLOPDSAcquisitionFeed.h"
+#import "NYPLOPDSFeed.h"
 
-@interface NYPLOPDSAcquisitionFeedTests : XCTestCase
+@interface NYPLOPDSFeedTests : XCTestCase
 
-@property (nonatomic) NYPLOPDSAcquisitionFeed *acquisitionFeed;
+@property (nonatomic) NYPLOPDSFeed *feed;
 
 @end
 
-@implementation NYPLOPDSAcquisitionFeedTests
+@implementation NYPLOPDSFeedTests
 
 - (void)setUp
 {
@@ -25,35 +25,35 @@
   SMXMLDocument *const document = [SMXMLDocument documentWithData:data error:NULL];
   assert(document);
   
-  self.acquisitionFeed = [[NYPLOPDSAcquisitionFeed alloc] initWithDocument:document];
-  assert(self.acquisitionFeed);
+  self.feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
+  assert(self.feed);
 }
 
 - (void)tearDown
 {
   [super tearDown];
   
-  self.acquisitionFeed = nil;
+  self.feed = nil;
 }
 
 - (void)testEntriesPresent
 {
-  XCTAssert(self.acquisitionFeed.entries);
+  XCTAssert(self.feed.entries);
 }
 
 - (void)testIdentifier
 {
-  XCTAssertEqualObjects(self.acquisitionFeed.identifier, @"http://localhost/main");
+  XCTAssertEqualObjects(self.feed.identifier, @"http://localhost/main");
 }
 
 - (void)testTitle
 {
-  XCTAssertEqualObjects(self.acquisitionFeed.title, @"The Big Front Page");
+  XCTAssertEqualObjects(self.feed.title, @"The Big Front Page");
 }
 
 - (void)testUpdated
 {
-  NSDate *const date = self.acquisitionFeed.updated;
+  NSDate *const date = self.feed.updated;
   XCTAssert(date);
   
   NSDateComponents *const dateComponents = [date UTCComponents];
