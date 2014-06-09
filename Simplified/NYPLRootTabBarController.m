@@ -1,10 +1,10 @@
-#import "NYPLAllBooksViewController.h"
+#import "NYPLAllBooksNavigationController.h"
 
 #import "NYPLRootTabBarController.h"
 
 @interface NYPLRootTabBarController ()
 
-@property (nonatomic) NYPLAllBooksViewController *allBooksViewController;
+@property (nonatomic) NYPLAllBooksNavigationController *allBooksViewController;
 
 @end
 
@@ -17,7 +17,7 @@
   self = [super init];
   if(!self) return nil;
   
-  self.allBooksViewController = [[NYPLAllBooksViewController alloc] init];
+  self.allBooksViewController = [[NYPLAllBooksNavigationController alloc] init];
   
   self.viewControllers = @[self.allBooksViewController];
   
