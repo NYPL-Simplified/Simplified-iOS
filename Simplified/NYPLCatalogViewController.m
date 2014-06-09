@@ -1,6 +1,6 @@
-#import "NYPLAllBooksViewController.h"
+#import "NYPLCatalogViewController.h"
 
-@implementation NYPLAllBooksViewController
+@implementation NYPLCatalogViewController
 
 #pragma mark NSObject
 

@@ -1,6 +1,6 @@
 @import UIKit;
 
-@interface NYPLAllBooksViewController : UIViewController
+@interface NYPLCatalogViewController : UIViewController
 
 // designated initializer
 - (id)init;
