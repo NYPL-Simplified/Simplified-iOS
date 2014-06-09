@@ -22,7 +22,7 @@
   return self;
 }
 
-- (void)loadNavigationFeed
+- (void)downloadFeed
 {
   [self.activityIndicatorView startAnimating];
   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -30,13 +30,28 @@
   [[[NSURLSession sharedSession]
     dataTaskWithURL:[NYPLConfiguration mainFeedURL]
     completionHandler:^(NSData *const data, NSURLResponse *const response, NSError *const error) {
-      NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         [self.activityIndicatorView stopAnimating];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        if(!error) {
+          [self loadFeedAndDisplay];
+        } else {
+          [[[UIAlertView alloc]
+            initWithTitle:NSLocalizedString(@"CatalogFeedDownloadFailedTitle", nil)
+            message:NSLocalizedString(@"CatalogFeedDownloadFailedMessage", nil)
+            delegate:nil
+            cancelButtonTitle:nil
+            otherButtonTitles:@"OK", nil]
+           show];
+        }
       }];
     }]
    resume];
+}
+
+- (void)loadFeedAndDisplay
+{
+  
 }
 
 #pragma mark UIViewController
@@ -50,7 +65,7 @@
   self.activityIndicatorView.center = self.view.center;
   [self.view addSubview:self.activityIndicatorView];
   
-  [self loadNavigationFeed];
+  [self downloadFeed];
 }
 
 @end
