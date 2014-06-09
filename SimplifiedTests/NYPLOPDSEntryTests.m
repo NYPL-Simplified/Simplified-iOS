@@ -1,5 +1,6 @@
+@import XCTest;
+
 #import <SMXMLDocument/SMXMLDocument.h>
-#import <XCTest/XCTest.h>
 
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLOPDSAcquisitionFeed.h"
@@ -17,16 +18,16 @@
 {
   [super setUp];
   
-  NSData *data = [NSData dataWithContentsOfFile:
-                  [[NSBundle bundleForClass:[self class]]
-                   pathForResource:@"single_entry"
-                   ofType:@"xml"]];
+  NSData *const data = [NSData dataWithContentsOfFile:
+                        [[NSBundle bundleForClass:[self class]]
+                         pathForResource:@"single_entry"
+                         ofType:@"xml"]];
   assert(data);
   
-  SMXMLDocument *document = [SMXMLDocument documentWithData:data error:NULL];
+  SMXMLDocument *const document = [SMXMLDocument documentWithData:data error:NULL];
   assert(document);
   
-  NYPLOPDSAcquisitionFeed *acquisitionFeed =
+  NYPLOPDSAcquisitionFeed *const acquisitionFeed =
     [[NYPLOPDSAcquisitionFeed alloc] initWithDocument:document];
   assert(acquisitionFeed);
   
@@ -43,7 +44,7 @@
 
 - (void)testAuthorNames
 {
-  XCTAssertEqual(self.entry.authorNames.count, 2);
+  XCTAssertEqual(self.entry.authorNames.count, 2U);
   XCTAssertEqualObjects(self.entry.authorNames[0], @"James, Henry");
   XCTAssertEqualObjects(self.entry.authorNames[1], @"Author, Fictional");
 }
@@ -66,12 +67,10 @@
 
 - (void)testUpdated
 {
-  NSDate *date = self.entry.updated;
-  
+  NSDate *const date = self.entry.updated;
   XCTAssert(date);
   
-  NSDateComponents *dateComponents = [date UTCComponents];
-  
+  NSDateComponents *const dateComponents = [date UTCComponents];
   XCTAssertEqual(dateComponents.year, 2014);
   XCTAssertEqual(dateComponents.month, 6);
   XCTAssertEqual(dateComponents.day, 2);

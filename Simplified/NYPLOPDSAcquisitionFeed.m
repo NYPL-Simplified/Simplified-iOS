@@ -15,7 +15,7 @@
 
 @implementation NYPLOPDSAcquisitionFeed
 
-- (id)initWithDocument:(SMXMLDocument *)document
+- (id)initWithDocument:(SMXMLDocument *const)document
 {
   self = [super init];
   if(!self) return nil;

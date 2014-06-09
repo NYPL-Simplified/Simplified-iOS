@@ -1,4 +1,4 @@
-#import <XCTest/XCTest.h>
+@import XCTest;
 
 #import "NSDate+NYPLDateAdditions.h"
 
@@ -20,7 +20,7 @@
 
 - (void)testInvalidStringReturnsNil
 {
-  NSDate *date = [NSDate dateWithRFC3339:@"not a valid date"];
+  NSDate *const date = [NSDate dateWithRFC3339:@"not a valid date"];
   XCTAssertNil(date);
 }
 
@@ -31,12 +31,10 @@
 
 - (void)testDateParsesCorrectly
 {
-  NSDate *date = [NSDate dateWithRFC3339:@"1984-09-08T08:23:45Z"];
-  
+  NSDate *const date = [NSDate dateWithRFC3339:@"1984-09-08T08:23:45Z"];
   XCTAssert(date);
   
-  NSDateComponents *dateComponents = [date UTCComponents];
-  
+  NSDateComponents *const dateComponents = [date UTCComponents];
   XCTAssertEqual(dateComponents.year, 1984);
   XCTAssertEqual(dateComponents.month, 9);
   XCTAssertEqual(dateComponents.day, 8);
@@ -47,12 +45,10 @@
 
 - (void)testDateWithFractionalSecondsParsesCorrectly
 {
-  NSDate *date = [NSDate dateWithRFC3339:@"1984-09-08T08:23:45.99Z"];
-  
+  NSDate *const date = [NSDate dateWithRFC3339:@"1984-09-08T08:23:45.99Z"];
   XCTAssert(date);
   
-  NSDateComponents *dateComponents = [date UTCComponents];
-  
+  NSDateComponents *const dateComponents = [date UTCComponents];
   XCTAssertEqual(dateComponents.year, 1984);
   XCTAssertEqual(dateComponents.month, 9);
   XCTAssertEqual(dateComponents.day, 8);
