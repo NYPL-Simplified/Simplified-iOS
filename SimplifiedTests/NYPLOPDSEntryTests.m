@@ -3,8 +3,8 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
 #import "NSDate+NYPLDateAdditions.h"
-#import "NYPLOPDSAcquisitionFeed.h"
 #import "NYPLOPDSEntry.h"
+#import "NYPLOPDSFeed.h"
 
 @interface NYPLOPDSEntryTests : XCTestCase
 
@@ -27,11 +27,10 @@
   SMXMLDocument *const document = [SMXMLDocument documentWithData:data error:NULL];
   assert(document);
   
-  NYPLOPDSAcquisitionFeed *const acquisitionFeed =
-    [[NYPLOPDSAcquisitionFeed alloc] initWithDocument:document];
-  assert(acquisitionFeed);
+  NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
+  assert(feed);
   
-  self.entry = acquisitionFeed.entries[0];
+  self.entry = feed.entries[0];
   assert(self.entry);
 }
 

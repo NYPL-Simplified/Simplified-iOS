@@ -2,7 +2,7 @@
 
 #import <SMXMLDocument/SMXMLDocument.h>
 
-@interface NYPLOPDSAcquisitionFeed : NSObject
+@interface NYPLOPDSFeed : NSObject
 
 @property (nonatomic, readonly) NSArray *entries;
 @property (nonatomic, readonly) NSString *identifier;
