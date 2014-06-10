@@ -12,6 +12,7 @@ typedef enum {
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) FeedState feedState;
+@property (nonatomic) UITableView *tableView;
 
 @end
 
@@ -39,8 +40,11 @@ typedef enum {
   
   self.activityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  self.activityIndicatorView.center = self.view.center;
   [self.view addSubview:self.activityIndicatorView];
+  
+  self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
+  self.tableView.hidden = YES;
+  [self.view addSubview:self.tableView];
 }
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
@@ -54,6 +58,15 @@ typedef enum {
     case FeedStateLoaded:
       break;
   }
+}
+
+- (void)viewWillLayoutSubviews
+{
+  self.activityIndicatorView.center = self.view.center;
+  self.tableView.contentInset = UIEdgeInsetsMake(self.topLayoutGuide.length,
+                                                 0,
+                                                 self.bottomLayoutGuide.length,
+                                                 0);
 }
 
 #pragma mark -
@@ -92,7 +105,7 @@ typedef enum {
 
 - (void)loadFeedAndDisplay
 {
-  
+  self.tableView.hidden = NO;
 }
 
 @end
