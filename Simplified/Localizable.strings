@@ -2,3 +2,4 @@
 
 "CatalogFeedDownloadFailedTitle" = "Could Not Load Catalog";
 "CatalogFeedDownloadFailedMessage" = "Please check your connection or try again later.";
+"CatalogViewControllerTitle" = "Catalog";

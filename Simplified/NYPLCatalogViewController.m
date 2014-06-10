@@ -17,7 +17,7 @@
   self = [super init];
   if(!self) return nil;
   
-  self.title = @"All Books";
+  self.title = NSLocalizedString(@"CatalogViewControllerTitle", nil);
   
   return self;
 }
