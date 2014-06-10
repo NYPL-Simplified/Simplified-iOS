@@ -1,3 +1,7 @@
+// Shared
+
+"OK" = "OK";
+
 // NYPLCatalogViewController
 
 "CatalogFeedDownloadFailedTitle" = "Could Not Load Catalog";
