@@ -6,10 +6,9 @@
 
 #import "NYPLCatalogViewController.h"
 
-// TODO: Rename these states with more accurate names.
 typedef enum {
-  FeedStateNotDownloaded,
-  FeedStateDownloading,
+  FeedStateNotLoaded,
+  FeedStateLoading,
   FeedStateLoaded
 } FeedState;
 
@@ -31,7 +30,7 @@ typedef enum {
   self = [super init];
   if(!self) return nil;
   
-  self.feedState = FeedStateNotDownloaded;
+  self.feedState = FeedStateNotLoaded;
   
   // Given that we will only ever have a small number of cells, and given that each cell will
   // require much effort and network activity to create, we keep all of them around and do not use
@@ -66,10 +65,10 @@ typedef enum {
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
 {
   switch(self.feedState) {
-    case FeedStateNotDownloaded:
+    case FeedStateNotLoaded:
       [self downloadFeed];
       break;
-    case FeedStateDownloading:
+    case FeedStateLoading:
       break;
     case FeedStateLoaded:
       break;
@@ -107,7 +106,7 @@ typedef enum {
 
 - (void)downloadFeed
 {
-  self.feedState = FeedStateDownloading;
+  self.feedState = FeedStateLoading;
   
   [self.activityIndicatorView startAnimating];
   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -123,7 +122,7 @@ typedef enum {
         if(!error) {
           [self loadData:data];
         } else {
-          self.feedState = FeedStateNotDownloaded;
+          self.feedState = FeedStateNotLoaded;
           [[[UIAlertView alloc]
             initWithTitle:NSLocalizedString(@"CatalogViewControllerFeedDownloadFailedTitle", nil)
             message:NSLocalizedString(@"CatalogViewControllerFeedDownloadFailedMessage", nil)
@@ -143,7 +142,7 @@ typedef enum {
   NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
 
   if(!feed) {
-    self.feedState = FeedStateNotDownloaded;
+    self.feedState = FeedStateLoaded;
     [[[UIAlertView alloc]
       initWithTitle:NSLocalizedString(@"CatalogViewControllerBadDataTitle", nil)
       message:NSLocalizedString(@"CatalogViewControllerBadDataMessage", nil)
