@@ -10,7 +10,6 @@
 "CatalogViewControllerFeedDownloadFailedTitle" = "Could Not Load Catalog";
 "CatalogViewControllerFeedDownloadFailedMessage" =
   "Please check your connection or try again later.";
-"CatalogViewControllerFeedPath" = "https://www.dropbox.com/s/it2ql4oq099dggx/main.eng.xml?dl=1";
 "CatalogViewControllerTitle" = "Catalog";
 
 // MyBooksViewController
