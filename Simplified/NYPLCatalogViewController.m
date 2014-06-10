@@ -1,4 +1,7 @@
-#import "NYPLConfiguration.h"
+#import <SMXMLDocument/SMXMLDocument.h>
+
+#import "NYPLOPDSEntry.h"
+#import "NYPLOPDSFeed.h"
 
 #import "NYPLCatalogViewController.h"
 
@@ -11,6 +14,7 @@ typedef enum {
 @interface NYPLCatalogViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic) NYPLOPDSFeed *feed;
 @property (nonatomic) FeedState feedState;
 @property (nonatomic) UITableView *tableView;
 
@@ -74,15 +78,21 @@ typedef enum {
 #pragma mark UITableViewDataSource
 
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
-         cellForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
+         cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  return nil;
+  static NSString *const reuseIdentifier = @"NYPLCatalogViewControllerCell";
+  
+  NSLog(@"Creating dummy cell for '%@'.",
+        ((NYPLOPDSEntry *)self.feed.entries[[indexPath indexAtPosition:1]]).title);
+  
+  return [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                reuseIdentifier:reuseIdentifier];
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
  numberOfRowsInSection:(__attribute__((unused)) NSInteger)section
 {
-  return 0;
+  return self.feed.entries.count;
 }
 
 #pragma mark -
@@ -95,15 +105,15 @@ typedef enum {
   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   
   [[[NSURLSession sharedSession]
-    dataTaskWithURL:[NYPLConfiguration mainFeedURL]
-    completionHandler:^(__attribute__((unused)) NSData *data,
+    dataTaskWithURL:[NSURL URLWithString:NSLocalizedString(@"CatalogViewControllerFeedPath", nil)]
+    completionHandler:^(NSData *data,
                         __attribute__((unused)) NSURLResponse *response,
                         NSError *const error) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         [self.activityIndicatorView stopAnimating];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         if(!error) {
-          [self loadFeedAndDisplay];
+          [self loadData:data];
         } else {
           self.feedState = FeedStateNotDownloaded;
           [[[UIAlertView alloc]
@@ -119,8 +129,26 @@ typedef enum {
    resume];
 }
 
-- (void)loadFeedAndDisplay
+- (void)loadData:(NSData *)data
 {
+  SMXMLDocument *const document = [[SMXMLDocument alloc] initWithData:data error:NULL];
+  NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
+
+  if(!feed) {
+    self.feedState = FeedStateNotDownloaded;
+    [[[UIAlertView alloc]
+      initWithTitle:NSLocalizedString(@"CatalogViewControllerBadDataTitle", nil)
+      message:NSLocalizedString(@"CatalogViewControllerBadDataMessage", nil)
+      delegate:nil
+      cancelButtonTitle:nil
+      otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+     show];
+    return;
+  }
+  
+  self.feed = feed;
+  self.feedState = FeedStateLoaded;
+  [self.tableView reloadData];
   self.tableView.hidden = NO;
 }
 
