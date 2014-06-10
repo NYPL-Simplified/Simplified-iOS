@@ -6,8 +6,8 @@
 
 #pragma mark UIApplicationDelegate
 
-- (BOOL)application:(__attribute__((unused)) UIApplication *const)application
-didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *const)launchOptions
+- (BOOL)application:(__attribute__((unused)) UIApplication *)application
+didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.rootViewController = [[NYPLRootTabBarController alloc] init];
