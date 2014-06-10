@@ -1,6 +1,7 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
 #import "NYPLCatalogLaneCell.h"
+#import "NYPLConfiguration.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
 
@@ -112,7 +113,7 @@ typedef enum {
   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   
   [[[NSURLSession sharedSession]
-    dataTaskWithURL:[NSURL URLWithString:NSLocalizedString(@"CatalogViewControllerFeedPath", nil)]
+    dataTaskWithURL:[NYPLConfiguration mainFeedURL]
     completionHandler:^(NSData *const data,
                         __attribute__((unused)) NSURLResponse *response,
                         NSError *const error) {
