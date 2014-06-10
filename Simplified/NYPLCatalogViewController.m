@@ -2,9 +2,16 @@
 
 #import "NYPLCatalogViewController.h"
 
+typedef enum {
+  FeedStateNotDownloaded,
+  FeedStateDownloading,
+  FeedStateLoaded
+} FeedState;
+
 @interface NYPLCatalogViewController ()
 
-@property (nonatomic, retain) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic) FeedState feedState;
 
 @end
 
@@ -17,6 +24,8 @@
   self = [super init];
   if(!self) return nil;
   
+  self.feedState = FeedStateNotDownloaded;
+  
   self.title = NSLocalizedString(@"CatalogViewControllerTitle", nil);
   
   return self;
@@ -24,6 +33,8 @@
 
 - (void)downloadFeed
 {
+  self.feedState = FeedStateDownloading;
+  
   [self.activityIndicatorView startAnimating];
   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   
@@ -38,6 +49,7 @@
         if(!error) {
           [self loadFeedAndDisplay];
         } else {
+          self.feedState = FeedStateNotDownloaded;
           [[[UIAlertView alloc]
             initWithTitle:NSLocalizedString(@"CatalogFeedDownloadFailedTitle", nil)
             message:NSLocalizedString(@"CatalogFeedDownloadFailedMessage", nil)
@@ -66,8 +78,19 @@
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   self.activityIndicatorView.center = self.view.center;
   [self.view addSubview:self.activityIndicatorView];
-  
-  [self downloadFeed];
+}
+
+- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+{
+  switch(self.feedState) {
+    case FeedStateNotDownloaded:
+      [self downloadFeed];
+      break;
+    case FeedStateDownloading:
+      break;
+    case FeedStateLoaded:
+      break;
+  }
 }
 
 @end
