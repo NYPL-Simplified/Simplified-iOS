@@ -31,6 +31,33 @@ typedef enum {
   return self;
 }
 
+#pragma mark UIViewController
+
+- (void)viewDidLoad
+{
+  self.view.backgroundColor = [UIColor whiteColor];
+  
+  self.activityIndicatorView = [[UIActivityIndicatorView alloc]
+                                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  self.activityIndicatorView.center = self.view.center;
+  [self.view addSubview:self.activityIndicatorView];
+}
+
+- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+{
+  switch(self.feedState) {
+    case FeedStateNotDownloaded:
+      [self downloadFeed];
+      break;
+    case FeedStateDownloading:
+      break;
+    case FeedStateLoaded:
+      break;
+  }
+}
+
+#pragma mark -
+
 - (void)downloadFeed
 {
   self.feedState = FeedStateDownloading;
@@ -66,31 +93,6 @@ typedef enum {
 - (void)loadFeedAndDisplay
 {
   
-}
-
-#pragma mark UIViewController
-
-- (void)viewDidLoad
-{
-  self.view.backgroundColor = [UIColor whiteColor];
-  
-  self.activityIndicatorView = [[UIActivityIndicatorView alloc]
-                                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  self.activityIndicatorView.center = self.view.center;
-  [self.view addSubview:self.activityIndicatorView];
-}
-
-- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
-{
-  switch(self.feedState) {
-    case FeedStateNotDownloaded:
-      [self downloadFeed];
-      break;
-    case FeedStateDownloading:
-      break;
-    case FeedStateLoaded:
-      break;
-  }
 }
 
 @end
