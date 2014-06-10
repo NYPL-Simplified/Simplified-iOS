@@ -541,6 +541,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
 					"-Werror",
+					"-Wall",
+					"-Wextra",
 					"-Weverything",
 					"-Wno-objc-missing-property-synthesis",
 				);
@@ -560,6 +562,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
 					"-Werror",
+					"-Wall",
+					"-Wextra",
 					"-Weverything",
 					"-Wno-objc-missing-property-synthesis",
 				);
@@ -588,6 +592,8 @@
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WARNING_CFLAGS = (
 					"-Werror",
+					"-Wall",
+					"-Wextra",
 					"-Weverything",
 					"-Wno-objc-missing-property-synthesis",
 					"-Wno-gnu-zero-variadic-macro-arguments",
@@ -614,6 +620,8 @@
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WARNING_CFLAGS = (
 					"-Werror",
+					"-Wall",
+					"-Wextra",
 					"-Weverything",
 					"-Wno-objc-missing-property-synthesis",
 					"-Wno-gnu-zero-variadic-macro-arguments",
