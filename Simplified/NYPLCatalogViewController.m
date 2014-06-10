@@ -29,7 +29,9 @@
   
   [[[NSURLSession sharedSession]
     dataTaskWithURL:[NYPLConfiguration mainFeedURL]
-    completionHandler:^(NSData *const data, NSURLResponse *const response, NSError *const error) {
+    completionHandler:^(__attribute__((unused)) NSData *const data,
+                        __attribute__((unused)) NSURLResponse *const response,
+                        NSError *const error) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         [self.activityIndicatorView stopAnimating];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
