@@ -82,7 +82,7 @@ typedef enum {
             message:NSLocalizedString(@"CatalogFeedDownloadFailedMessage", nil)
             delegate:nil
             cancelButtonTitle:nil
-            otherButtonTitles:@"OK", nil]
+            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
            show];
         }
       }];
