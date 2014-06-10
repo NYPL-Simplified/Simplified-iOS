@@ -69,10 +69,14 @@ typedef enum {
 - (void)viewWillLayoutSubviews
 {
   self.activityIndicatorView.center = self.view.center;
-  self.tableView.contentInset = UIEdgeInsetsMake(self.topLayoutGuide.length,
-                                                 0,
-                                                 self.bottomLayoutGuide.length,
-                                                 0);
+  
+  UIEdgeInsets const insets = UIEdgeInsetsMake(self.topLayoutGuide.length,
+                                               0,
+                                               self.bottomLayoutGuide.length,
+                                               0);
+  
+  self.tableView.contentInset = insets;
+  self.tableView.scrollIndicatorInsets = insets;
 }
 
 #pragma mark UITableViewDataSource
