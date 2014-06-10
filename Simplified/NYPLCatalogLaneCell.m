@@ -2,13 +2,13 @@
 
 @implementation NYPLCatalogLaneCell
 
-- (id)initWithTitle:(NSString *)title
+- (id)initWithEntry:(NYPLOPDSEntry *)entry
 {
   self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
   if(!self) return nil;
   
   UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 200, 20)];
-  titleLabel.text = title;
+  titleLabel.text = entry.title;
   [self addSubview:titleLabel];
   
   return self;

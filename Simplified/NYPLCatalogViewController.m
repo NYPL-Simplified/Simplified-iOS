@@ -155,7 +155,7 @@ typedef enum {
   }
   
   for(NYPLOPDSEntry *const entry in feed.entries) {
-    NYPLCatalogLaneCell *const cell = [[NYPLCatalogLaneCell alloc] initWithTitle:entry.title];
+    NYPLCatalogLaneCell *const cell = [[NYPLCatalogLaneCell alloc] initWithEntry:entry];
     if(!cell) {
       NSLog(@"NYPLCatalogViewController: Failed to create NYPLCatalogLaneCell.");
       continue;

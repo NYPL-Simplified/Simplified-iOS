@@ -1,8 +1,10 @@
 @import UIKit;
 
+#include "NYPLOPDSEntry.h"
+
 @interface NYPLCatalogLaneCell : UITableViewCell
 
 // designated initializer
-- (id)initWithTitle:(NSString *)title;
+- (id)initWithEntry:(NYPLOPDSEntry *)entry;
 
 @end
