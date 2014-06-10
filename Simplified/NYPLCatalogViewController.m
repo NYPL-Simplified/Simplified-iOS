@@ -8,7 +8,7 @@ typedef enum {
   FeedStateLoaded
 } FeedState;
 
-@interface NYPLCatalogViewController ()
+@interface NYPLCatalogViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) FeedState feedState;
@@ -43,6 +43,8 @@ typedef enum {
   [self.view addSubview:self.activityIndicatorView];
   
   self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
+  self.tableView.dataSource = self;
+  self.tableView.delegate = self;
   self.tableView.hidden = YES;
   [self.view addSubview:self.tableView];
 }
@@ -67,6 +69,20 @@ typedef enum {
                                                  0,
                                                  self.bottomLayoutGuide.length,
                                                  0);
+}
+
+#pragma mark UITableViewDataSource
+
+- (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
+         cellForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
+{
+  return nil;
+}
+
+- (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
+ numberOfRowsInSection:(__attribute__((unused)) NSInteger)section
+{
+  return 0;
 }
 
 #pragma mark -
