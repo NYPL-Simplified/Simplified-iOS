@@ -87,7 +87,7 @@ typedef enum {
   static NSString *const reuseIdentifier = @"NYPLCatalogViewControllerCell";
   
   NSLog(@"Creating dummy cell for '%@'.",
-        ((NYPLOPDSEntry *)self.feed.entries[[indexPath indexAtPosition:1]]).title);
+        ((NYPLOPDSEntry *)self.feed.entries[indexPath.row]).title);
   
   return [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                 reuseIdentifier:reuseIdentifier];
