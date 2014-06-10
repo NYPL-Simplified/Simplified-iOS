@@ -84,13 +84,10 @@ typedef enum {
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  static NSString *const reuseIdentifier = @"NYPLCatalogViewControllerCell";
-  
   NSLog(@"Creating dummy cell for '%@'.",
         ((NYPLOPDSEntry *)self.feed.entries[indexPath.row]).title);
   
-  return [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                reuseIdentifier:reuseIdentifier];
+  return [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
