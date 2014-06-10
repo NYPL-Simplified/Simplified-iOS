@@ -78,8 +78,8 @@ typedef enum {
         } else {
           self.feedState = FeedStateNotDownloaded;
           [[[UIAlertView alloc]
-            initWithTitle:NSLocalizedString(@"CatalogFeedDownloadFailedTitle", nil)
-            message:NSLocalizedString(@"CatalogFeedDownloadFailedMessage", nil)
+            initWithTitle:NSLocalizedString(@"CatalogViewControllerFeedDownloadFailedTitle", nil)
+            message:NSLocalizedString(@"CatalogViewControllerFeedDownloadFailedMessage", nil)
             delegate:nil
             cancelButtonTitle:nil
             otherButtonTitles:NSLocalizedString(@"OK", nil), nil]

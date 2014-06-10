@@ -4,8 +4,9 @@
 
 // NYPLCatalogViewController
 
-"CatalogFeedDownloadFailedTitle" = "Could Not Load Catalog";
-"CatalogFeedDownloadFailedMessage" = "Please check your connection or try again later.";
+"CatalogViewControllerFeedDownloadFailedTitle" = "Could Not Load Catalog";
+"CatalogViewControllerFeedDownloadFailedMessage" =
+  "Please check your connection or try again later.";
 "CatalogViewControllerTitle" = "Catalog";
 
 // MyBooksViewController
