@@ -110,7 +110,7 @@ typedef enum {
   
   [[[NSURLSession sharedSession]
     dataTaskWithURL:[NSURL URLWithString:NSLocalizedString(@"CatalogViewControllerFeedPath", nil)]
-    completionHandler:^(NSData *data,
+    completionHandler:^(NSData *const data,
                         __attribute__((unused)) NSURLResponse *response,
                         NSError *const error) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
