@@ -41,6 +41,11 @@
   self.entry = nil;
 }
 
+- (void)testHandlesNilInit
+{
+  XCTAssertNil([[NYPLOPDSEntry alloc] initWithElement:nil]);
+}
+
 - (void)testAuthorNames
 {
   XCTAssertEqual(self.entry.authorNames.count, 2U);

@@ -36,6 +36,11 @@
   self.feed = nil;
 }
 
+- (void)testHandlesNilInit
+{
+  XCTAssertNil([[NYPLOPDSFeed alloc] initWithDocument:nil]);
+}
+
 - (void)testEntriesPresent
 {
   XCTAssert(self.feed.entries);

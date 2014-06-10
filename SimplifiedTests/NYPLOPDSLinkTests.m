@@ -39,6 +39,11 @@
   self.links = nil;
 }
 
+- (void)testHandlesNilInit
+{
+  XCTAssertNil([[NYPLOPDSLink alloc] initWithElement:nil]);
+}
+
 - (void)testCount
 {
   XCTAssertEqual(self.links.count, 5U);
