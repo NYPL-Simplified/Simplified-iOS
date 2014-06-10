@@ -1,10 +1,12 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
+#import "NYPLCatalogLaneCell.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
 
 #import "NYPLCatalogViewController.h"
 
+// TODO: Rename these states with more accurate names.
 typedef enum {
   FeedStateNotDownloaded,
   FeedStateDownloading,
@@ -14,9 +16,9 @@ typedef enum {
 @interface NYPLCatalogViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
-@property (nonatomic) NYPLOPDSFeed *feed;
 @property (nonatomic) FeedState feedState;
 @property (nonatomic) UITableView *tableView;
+@property (nonatomic) NSMutableArray *tableViewCells;
 
 @end
 
@@ -30,6 +32,12 @@ typedef enum {
   if(!self) return nil;
   
   self.feedState = FeedStateNotDownloaded;
+  
+  // Given that we will only ever have a small number of cells, and given that each cell will
+  // require much effort and network activity to create, we keep all of them around and do not use
+  // the usual reuse mechanism. All cells are created when the navigation feed is loaded, one
+  // benefit of which is that we do not need to keep the feed itself in memory.
+  self.tableViewCells = [NSMutableArray array];
   
   self.title = NSLocalizedString(@"CatalogViewControllerTitle", nil);
   
@@ -84,16 +92,13 @@ typedef enum {
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  NSLog(@"Creating dummy cell for '%@'.",
-        ((NYPLOPDSEntry *)self.feed.entries[indexPath.row]).title);
-  
-  return [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+  return self.tableViewCells[indexPath.row];
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
  numberOfRowsInSection:(__attribute__((unused)) NSInteger)section
 {
-  return self.feed.entries.count;
+  return self.tableViewCells.count;
 }
 
 #pragma mark -
@@ -147,10 +152,19 @@ typedef enum {
     return;
   }
   
-  self.feed = feed;
-  self.feedState = FeedStateLoaded;
+  for(NYPLOPDSEntry *const entry in feed.entries) {
+    NYPLCatalogLaneCell *const cell = [[NYPLCatalogLaneCell alloc] initWithTitle:entry.title];
+    if(!cell) {
+      NSLog(@"NYPLCatalogViewController: Failed to create NYPLCatalogLaneCell.");
+      continue;
+    }
+    [self.tableViewCells addObject:cell];
+  }
+  
   [self.tableView reloadData];
   self.tableView.hidden = NO;
+  
+  self.feedState = FeedStateLoaded;
 }
 
 @end
