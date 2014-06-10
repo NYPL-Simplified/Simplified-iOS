@@ -29,8 +29,8 @@
   
   [[[NSURLSession sharedSession]
     dataTaskWithURL:[NYPLConfiguration mainFeedURL]
-    completionHandler:^(__attribute__((unused)) NSData *const data,
-                        __attribute__((unused)) NSURLResponse *const response,
+    completionHandler:^(__attribute__((unused)) NSData *data,
+                        __attribute__((unused)) NSURLResponse *response,
                         NSError *const error) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         [self.activityIndicatorView stopAnimating];
