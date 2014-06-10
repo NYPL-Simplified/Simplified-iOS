@@ -14,4 +14,11 @@
   return self;
 }
 
+#pragma mark UIViewController
+
+- (void)viewDidLoad
+{
+  self.view.backgroundColor = [UIColor whiteColor];
+}
+
 @end
