@@ -2,6 +2,8 @@
 
 @implementation NYPLMyBooksViewController
 
+#pragma mark NSObject
+
 - (id)init
 {
   self = [super init];
