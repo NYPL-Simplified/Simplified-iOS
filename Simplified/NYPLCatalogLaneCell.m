@@ -1,10 +1,20 @@
+#import <SMXMLDocument/SMXMLDocument.h>
+
+#import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
 
 #import "NYPLCatalogLaneCell.h"
 
+@interface NYPLCatalogLaneCell ()
+
+@property volatile int32_t imageDownloadsRemaining;
+@property (atomic) NSMutableArray *coverImages;
+
+@end
+
 @implementation NYPLCatalogLaneCell
 
-- (id)initWithEntry:(NYPLOPDSEntry *)entry
+- (id)initWithEntry:(NYPLOPDSEntry *const)entry
 {
   self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
   if(!self) return nil;
@@ -13,22 +23,48 @@
   titleLabel.text = entry.title;
   [self addSubview:titleLabel];
 
-  NSUInteger index = [entry.links indexOfObjectPassingTest:
-                      ^BOOL(id const obj, __attribute__((unused)) NSUInteger i, BOOL *stop) {
-                        NSString *rel = ((NYPLOPDSLink *) obj).rel;
-                        if([rel isEqualToString:@"http://opds-spec.org/recommended"]) {
-                          *stop = YES;
-                          return YES;
-                        }
-                        return NO;
-                      }];
+  NSUInteger const index = [entry.links indexOfObjectPassingTest:
+                            ^BOOL(id const obj, __attribute__((unused)) NSUInteger i, BOOL *stop) {
+                              NSString *rel = ((NYPLOPDSLink *) obj).rel;
+                              if([rel isEqualToString:@"http://opds-spec.org/recommended"]) {
+                                *stop = YES;
+                                return YES;
+                              }
+                              return NO;
+                            }];
   
   if(index != NSNotFound) {
-    NSURL *url = [NSURL URLWithString:entry.links[index]];
-    NSURLSessionDataTask *task = ...
+    [self downloadRecommendedFeed:((NYPLOPDSLink *) entry.links[index]).href];
   }
   
   return self;
+}
+
+- (void)downloadRecommendedFeed:(NSURL *const)url
+{
+  [[[NSURLSession sharedSession]
+    dataTaskWithRequest:[NSURLRequest requestWithURL:url]
+    completionHandler:^(NSData *const data,
+                        __attribute__((unused)) NSURLResponse *response,
+                        NSError *const error) {
+      if(error) {
+        NSLog(@"NYPLCatalogLaneCell: Failed to download recommended feed.");
+        return;
+      }
+      SMXMLDocument *document = [[SMXMLDocument alloc] initWithData:data error:NULL];
+      NYPLOPDSFeed *feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
+      if(!feed) {
+        NSLog(@"NYPLCatalogLaneCell: Failed to load recommended feed.");
+        return;
+      }
+      [self downloadImagesForFeed:feed];
+    }]
+   resume];
+}
+
+- (void)downloadImagesForFeed:(__attribute__((unused)) NYPLOPDSFeed *const)feed
+{
+  
 }
 
 @end
