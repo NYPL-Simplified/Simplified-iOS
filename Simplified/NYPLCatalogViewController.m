@@ -59,6 +59,7 @@ typedef enum {
                                      UIViewAutoresizingFlexibleHeight);
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
+  self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   self.tableView.hidden = YES;
   [self.view addSubview:self.tableView];
 }
@@ -101,6 +102,14 @@ typedef enum {
  numberOfRowsInSection:(__attribute__((unused)) NSInteger)section
 {
   return self.tableViewCells.count;
+}
+
+#pragma mark UITableViewDelegate
+
+- (CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView
+heightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
+{
+  return 155;
 }
 
 #pragma mark -

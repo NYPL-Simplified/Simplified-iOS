@@ -44,7 +44,7 @@
           [results setObject:data forKey:url];
         }
         --tasksRemaining;
-        BOOL done = !tasksRemaining;
+        BOOL const done = !tasksRemaining;
         [lock unlock];
         
         if(done) {

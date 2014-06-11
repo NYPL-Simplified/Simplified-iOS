@@ -20,8 +20,11 @@
   self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
   if(!self) return nil;
   
-  UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 200, 20)];
+  self.selectionStyle = UITableViewCellSelectionStyleNone;
+  
+  UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 130, 200, 20)];
   titleLabel.text = entry.title;
+  titleLabel.font = [UIFont fontWithName:@"AvenirNext-Regular" size:16];
   [self addSubview:titleLabel];
 
   NSUInteger const index = [entry.links indexOfObjectPassingTest:
@@ -52,8 +55,8 @@
         NSLog(@"NYPLCatalogLaneCell: Failed to download recommended feed.");
         return;
       }
-      SMXMLDocument *document = [[SMXMLDocument alloc] initWithData:data error:NULL];
-      NYPLOPDSFeed *feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
+      SMXMLDocument *const document = [[SMXMLDocument alloc] initWithData:data error:NULL];
+      NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
       if(!feed) {
         NSLog(@"NYPLCatalogLaneCell: Failed to load recommended feed.");
         return;
@@ -69,19 +72,52 @@
   
   for(NYPLOPDSEntry *const entry in feed.entries) {
     for(NYPLOPDSLink *const link in entry.links) {
-      if([link.rel isEqualToString:@"http://opds-spec.org/image"]) {
+      if([link.rel isEqualToString:@"http://opds-spec.org/image/thumbnail"]) {
         [imageURLs addObject:link.href];
         break;
       }
     }
   }
   
-  __attribute__((unused)) NYPLURLSetSession *setSession =
+  __attribute__((unused)) NYPLURLSetSession *const setSession =
     [[NYPLURLSetSession alloc]
      initWithURLSet:imageURLs
      completionHandler:^(NSDictionary *const dataDictionary) {
-       NSLog(@"(%d) %@", dataDictionary.count, feed.title);
+       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+         [self displayImageData:dataDictionary forFeed:feed];
+       }];
      }];
+}
+
+- (void)displayImageData:(NSDictionary *)dataDictionary forFeed:(NYPLOPDSFeed *)feed
+{
+  CGFloat x = 0;
+  
+  for(NYPLOPDSEntry *const entry in feed.entries) {
+    for(NYPLOPDSLink *const link in entry.links) {
+      if([link.rel isEqualToString:@"http://opds-spec.org/image/thumbnail"]) {
+        id dataOrError = [dataDictionary objectForKey:link.href];
+        if([dataOrError isKindOfClass:[NSError class]]) {
+          // TODO: show default cover
+          NSLog(@"%@", dataOrError);
+          break;
+        }
+        NSData *const data = dataOrError;
+        UIImage *const image = [UIImage imageWithData:data];
+        UIImageView *const imageView = [[UIImageView alloc] initWithImage:image];
+        CGFloat const height = 124;
+        if(image.size.height >= height) {
+          CGFloat const width = height * image.size.width / image.size.height;
+          imageView.frame = CGRectMake(x + 5, 5, width, height);
+          x += width + 5.0;
+          imageView.contentMode = UIViewContentModeScaleAspectFit;
+          [self addSubview:imageView];
+        } else {
+          NSLog(@"NYPLCatalogLaneCell: Substituting default cover.");
+        }
+      }
+    }
+  }
 }
 
 @end
