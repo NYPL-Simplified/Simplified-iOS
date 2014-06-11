@@ -20,6 +20,10 @@
   self = [super init];
   if(!self) return nil;
   
+  if(!document) {
+    return nil;
+  }
+  
   if(!((self.identifier = [document.root childNamed:@"id"].valueString))) {
     NSLog(@"NYPLOPDSFeed: Missing required 'id' element.");
     return nil;
