@@ -2,6 +2,7 @@
 
 #import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
+#import "NYPLURLSetSession.h"
 
 #import "NYPLCatalogLaneCell.h"
 
@@ -62,9 +63,25 @@
    resume];
 }
 
-- (void)downloadImagesForFeed:(__attribute__((unused)) NYPLOPDSFeed *const)feed
+- (void)downloadImagesForFeed:(NYPLOPDSFeed *const)feed
 {
+  NSMutableSet *const imageURLs = [NSMutableSet set];
   
+  for(NYPLOPDSEntry *const entry in feed.entries) {
+    for(NYPLOPDSLink *const link in entry.links) {
+      if([link.rel isEqualToString:@"http://opds-spec.org/image"]) {
+        [imageURLs addObject:link.href];
+        break;
+      }
+    }
+  }
+  
+  __attribute__((unused)) NYPLURLSetSession *setSession =
+    [[NYPLURLSetSession alloc]
+     initWithURLSet:imageURLs
+     completionHandler:^(NSDictionary *const dataDictionary) {
+       NSLog(@"(%d) %@", dataDictionary.count, feed.title);
+     }];
 }
 
 @end

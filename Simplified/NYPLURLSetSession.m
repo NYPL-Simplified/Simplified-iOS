@@ -18,8 +18,14 @@
     @throw NSInvalidArgumentException;
   }
   
+  NSURLSessionConfiguration *configuration =
+    [NSURLSessionConfiguration ephemeralSessionConfiguration];
+  
+  configuration.HTTPMaximumConnectionsPerHost = 4;
+  configuration.HTTPShouldUsePipelining = YES;
+  
   // TODO: This should be handled more intelligently.
-  self.session = [NSURLSession sharedSession];
+  self.session = [NSURLSession sessionWithConfiguration:configuration];
   
   NSLock *const lock = [[NSLock alloc] init];
   NSMutableDictionary *const results = [NSMutableDictionary dictionaryWithCapacity:[urls count]];
