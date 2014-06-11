@@ -32,6 +32,9 @@
 		116A5EB3194767DC00491A21 /* NYPLMyBooksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 116A5EB2194767DC00491A21 /* NYPLMyBooksViewController.m */; };
 		116A5EB61947AE6400491A21 /* NYPLCatalogLaneCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 116A5EB51947AE6400491A21 /* NYPLCatalogLaneCell.m */; };
 		116A5EB91947B57500491A21 /* NYPLConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 116A5EB81947B57500491A21 /* NYPLConfiguration.m */; };
+		116A5EBA1948A9C500491A21 /* NYPLCatalogLaneCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 116A5EB51947AE6400491A21 /* NYPLCatalogLaneCell.m */; };
+		116A5EBB1948A9D100491A21 /* NYPLConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 116A5EB81947B57500491A21 /* NYPLConfiguration.m */; };
+		116A5EBC1948A9D500491A21 /* NYPLMyBooksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 116A5EB2194767DC00491A21 /* NYPLMyBooksViewController.m */; };
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
 		11F54C2719410C700086FCAF /* NYPLOPDSEntryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */; };
@@ -432,10 +435,13 @@
 				11F54C2719410C700086FCAF /* NYPLOPDSEntryTests.m in Sources */,
 				11396FE71940F93900E16EE8 /* SMXMLElement+NYPLElementAdditions.m in Sources */,
 				11396FE41940F93900E16EE8 /* NYPLCatalogViewController.m in Sources */,
+				116A5EBC1948A9D500491A21 /* NYPLMyBooksViewController.m in Sources */,
 				11396FC9193F674F00E16EE8 /* NYPLOPDSFeedTests.m in Sources */,
 				11396FBB193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m in Sources */,
+				116A5EBA1948A9C500491A21 /* NYPLCatalogLaneCell.m in Sources */,
 				11396FDC1940F90100E16EE8 /* NSDate+NYPLDateAdditions.m in Sources */,
 				11396FE11940F93300E16EE8 /* NYPLOPDSEntry.m in Sources */,
+				116A5EBB1948A9D100491A21 /* NYPLConfiguration.m in Sources */,
 				116A5EB0194767B800491A21 /* NYPLMyBooksNavigationController.m in Sources */,
 				11F54C2A19423A040086FCAF /* NYPLOPDSLinkTests.m in Sources */,
 				11396FE21940F93300E16EE8 /* NYPLOPDSLink.m in Sources */,
