@@ -8,9 +8,6 @@
 
 @interface NYPLCatalogLaneCell ()
 
-@property volatile int32_t imageDownloadsRemaining;
-@property (atomic) NSMutableArray *coverImages;
-
 @end
 
 @implementation NYPLCatalogLaneCell
