@@ -28,6 +28,7 @@
   self.scrollView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                       UIViewAutoresizingFlexibleHeight);
   self.scrollView.showsHorizontalScrollIndicator = NO;
+  self.scrollView.alwaysBounceHorizontal = YES;
   [self addSubview:self.scrollView];
   
   UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 130, 200, 20)];
