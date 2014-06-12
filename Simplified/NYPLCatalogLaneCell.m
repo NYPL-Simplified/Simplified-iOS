@@ -113,7 +113,7 @@
         NSData *const data = dataOrError;
         UIImage *const image = [UIImage imageWithData:data];
         UIImageView *const imageView = [[UIImageView alloc] initWithImage:image];
-        if(image.size.height >= height) {
+        if(image.size.height >= height && image.size.width < image.size.height * 1.5) {
           CGFloat const width = height * image.size.width / image.size.height;
           imageView.frame = CGRectMake(x + 5, 5, width, height);
           x += width + 5.0;
