@@ -8,6 +8,8 @@
 
 @interface NYPLCatalogLaneCell ()
 
+@property (nonatomic) UIScrollView *scrollView;
+
 @end
 
 @implementation NYPLCatalogLaneCell
@@ -18,6 +20,12 @@
   if(!self) return nil;
   
   self.selectionStyle = UITableViewCellSelectionStyleNone;
+  
+  self.scrollView = [[UIScrollView alloc] initWithFrame:[self bounds]];
+  self.scrollView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                      UIViewAutoresizingFlexibleHeight);
+  self.scrollView.showsHorizontalScrollIndicator = NO;
+  [self addSubview:self.scrollView];
   
   UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 130, 200, 20)];
   titleLabel.text = entry.title;
@@ -88,6 +96,7 @@
 
 - (void)displayImageData:(NSDictionary *)dataDictionary forFeed:(NYPLOPDSFeed *)feed
 {
+  CGFloat const height = 124;
   CGFloat x = 0;
   
   for(NYPLOPDSEntry *const entry in feed.entries) {
@@ -102,19 +111,20 @@
         NSData *const data = dataOrError;
         UIImage *const image = [UIImage imageWithData:data];
         UIImageView *const imageView = [[UIImageView alloc] initWithImage:image];
-        CGFloat const height = 124;
         if(image.size.height >= height) {
           CGFloat const width = height * image.size.width / image.size.height;
           imageView.frame = CGRectMake(x + 5, 5, width, height);
           x += width + 5.0;
           imageView.contentMode = UIViewContentModeScaleAspectFit;
-          [self addSubview:imageView];
+          [self.scrollView addSubview:imageView];
         } else {
           NSLog(@"NYPLCatalogLaneCell: Substituting default cover.");
         }
       }
     }
   }
+  
+  self.scrollView.contentSize = CGSizeMake(x + 5.0, height);
 }
 
 @end
