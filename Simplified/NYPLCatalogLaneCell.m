@@ -1,3 +1,6 @@
+// TODO: Non-retina devices should probably load thumbnail images.
+// TODO: General code refactoring is required.
+
 #import <SMXMLDocument/SMXMLDocument.h>
 
 #import "NYPLOPDSFeed.h"
@@ -77,7 +80,7 @@
   
   for(NYPLOPDSEntry *const entry in feed.entries) {
     for(NYPLOPDSLink *const link in entry.links) {
-      if([link.rel isEqualToString:@"http://opds-spec.org/image/thumbnail"]) {
+      if([link.rel isEqualToString:@"http://opds-spec.org/image"]) {
         [imageURLs addObject:link.href];
         break;
       }
@@ -96,15 +99,14 @@
 
 - (void)displayImageData:(NSDictionary *)dataDictionary forFeed:(NYPLOPDSFeed *)feed
 {
-  CGFloat const height = 124;
+  CGFloat const height = 125;
   CGFloat x = 0;
   
   for(NYPLOPDSEntry *const entry in feed.entries) {
     for(NYPLOPDSLink *const link in entry.links) {
-      if([link.rel isEqualToString:@"http://opds-spec.org/image/thumbnail"]) {
+      if([link.rel isEqualToString:@"http://opds-spec.org/image"]) {
         id dataOrError = [dataDictionary objectForKey:link.href];
         if([dataOrError isKindOfClass:[NSError class]]) {
-          // TODO: show default cover
           NSLog(@"%@", dataOrError);
           break;
         }
@@ -118,7 +120,14 @@
           imageView.contentMode = UIViewContentModeScaleAspectFit;
           [self.scrollView addSubview:imageView];
         } else {
-          NSLog(@"NYPLCatalogLaneCell: Substituting default cover.");
+          UIImageView *const imageView = [[UIImageView alloc]
+                                          initWithImage:[UIImage imageNamed:@"NoCover"]];
+          CGRect frame = imageView.frame;
+          frame.origin.x = x + 5.0;
+          frame.origin.y = 5.0;
+          imageView.frame = frame;
+          x += imageView.image.size.width + 5.0;
+          [self.scrollView addSubview:imageView];
         }
       }
     }
