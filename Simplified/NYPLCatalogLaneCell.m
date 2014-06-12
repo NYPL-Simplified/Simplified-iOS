@@ -120,6 +120,7 @@
           imageView.contentMode = UIViewContentModeScaleAspectFit;
           [self.scrollView addSubview:imageView];
         } else {
+          NSLog(@"NYPLCatalogLaneCell: Not showing poor-quality cover.");
           UIImageView *const imageView = [[UIImageView alloc]
                                           initWithImage:[UIImage imageNamed:@"NoCover"]];
           CGRect frame = imageView.frame;
