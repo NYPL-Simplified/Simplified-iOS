@@ -624,10 +624,6 @@
 					"-Werror",
 					"-Wall",
 					"-Wextra",
-					"-Weverything",
-					"-Wno-objc-missing-property-synthesis",
-					"-Wno-gnu-zero-variadic-macro-arguments",
-					"-Wno-gnu-statement-expression",
 				);
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -652,10 +648,6 @@
 					"-Werror",
 					"-Wall",
 					"-Wextra",
-					"-Weverything",
-					"-Wno-objc-missing-property-synthesis",
-					"-Wno-gnu-zero-variadic-macro-arguments",
-					"-Wno-gnu-statement-expression",
 				);
 				WRAPPER_EXTENSION = xctest;
 			};
