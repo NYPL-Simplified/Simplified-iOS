@@ -2,7 +2,7 @@
 
 @interface NYPLURLSetSession ()
 
-@property (nonatomic, retain) NSURLSession *session;
+@property (nonatomic) NSURLSession *session;
 
 @end
 
