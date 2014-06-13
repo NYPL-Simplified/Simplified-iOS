@@ -55,8 +55,7 @@ typedef enum {
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   [self.view addSubview:self.activityIndicatorView];
   
-  self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds
-                                                style:UITableViewStylePlain];
+  self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
   self.tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);
   self.tableView.dataSource = self;
