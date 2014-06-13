@@ -19,7 +19,7 @@ typedef enum {
 @property (nonatomic) FeedState feedState;
 @property (nonatomic) NSArray *sectionTitles;
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic) NSMutableArray *tableViewCells; // TODO: This should not be mutable.
+@property (nonatomic) NSArray *tableViewCells;
 
 @end
 
@@ -207,6 +207,7 @@ viewForFooterInSection:(__attribute__((unused)) NSInteger)section
   SMXMLDocument *const document = [[SMXMLDocument alloc] initWithData:data error:NULL];
   NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
   NSMutableArray *const sectionTitles = [NSMutableArray array];
+  NSMutableArray *const tableViewCells = [NSMutableArray array];
 
   if(!feed) {
     self.feedState = FeedStateLoaded;
@@ -227,13 +228,14 @@ viewForFooterInSection:(__attribute__((unused)) NSInteger)section
       NSLog(@"NYPLCatalogViewController: Failed to create NYPLCatalogLaneCell.");
       continue;
     }
-    [self.tableViewCells addObject:cell];
+    [tableViewCells addObject:cell];
   }
+  
+  self.sectionTitles = sectionTitles;
+  self.tableViewCells = tableViewCells;
   
   [self.tableView reloadData];
   self.tableView.hidden = NO;
-  
-  self.sectionTitles = sectionTitles;
   
   self.feedState = FeedStateLoaded;
 }
