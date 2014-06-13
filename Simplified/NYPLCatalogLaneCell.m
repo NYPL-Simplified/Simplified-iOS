@@ -31,11 +31,6 @@
   self.scrollView.alwaysBounceHorizontal = YES;
   [self addSubview:self.scrollView];
   
-  UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 130, 200, 20)];
-  titleLabel.text = entry.title;
-  titleLabel.font = [UIFont fontWithName:@"AvenirNext-Regular" size:16];
-  [self addSubview:titleLabel];
-
   NSUInteger const index = [entry.links indexOfObjectPassingTest:
                             ^BOOL(id const obj, __attribute__((unused)) NSUInteger i, BOOL *stop) {
                               NSString *rel = ((NYPLOPDSLink *) obj).rel;
@@ -116,7 +111,7 @@
         UIImageView *const imageView = [[UIImageView alloc] initWithImage:image];
         if(image.size.height >= height && image.size.width < image.size.height * 1.5) {
           CGFloat const width = height * image.size.width / image.size.height;
-          imageView.frame = CGRectMake(x + 5, 5, width, height);
+          imageView.frame = CGRectMake(x + 5, 0, width, height);
           x += width + 5.0;
           imageView.contentMode = UIViewContentModeScaleAspectFit;
           [self.scrollView addSubview:imageView];
@@ -126,7 +121,7 @@
                                           initWithImage:[UIImage imageNamed:@"NoCover"]];
           CGRect frame = imageView.frame;
           frame.origin.x = x + 5.0;
-          frame.origin.y = 5.0;
+          frame.origin.y = 0.0;
           imageView.frame = frame;
           x += imageView.image.size.width + 5.0;
           [self.scrollView addSubview:imageView];

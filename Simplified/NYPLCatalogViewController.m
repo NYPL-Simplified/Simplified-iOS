@@ -17,8 +17,9 @@ typedef enum {
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) FeedState feedState;
+@property (nonatomic) NSArray *sectionTitles;
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic) NSMutableArray *tableViewCells;
+@property (nonatomic) NSMutableArray *tableViewCells; // TODO: This should not be mutable.
 
 @end
 
@@ -54,11 +55,13 @@ typedef enum {
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   [self.view addSubview:self.activityIndicatorView];
   
-  self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
+  self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds
+                                                style:UITableViewStylePlain];
   self.tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
+  self.tableView.sectionHeaderHeight = 30.0;
   self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   self.tableView.hidden = YES;
   [self.view addSubview:self.tableView];
@@ -95,11 +98,16 @@ typedef enum {
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  return self.tableViewCells[indexPath.row];
+  return self.tableViewCells[indexPath.section];
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
  numberOfRowsInSection:(__attribute__((unused)) NSInteger)section
+{
+  return 1;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
   return self.tableViewCells.count;
 }
@@ -109,7 +117,56 @@ typedef enum {
 - (CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView
 heightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
 {
-  return 155;
+  return 125.0;
+}
+
+- (CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView
+heightForHeaderInSection:(__attribute__((unused)) NSInteger)section
+{
+  return 30.0;
+}
+
+- (CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView
+heightForFooterInSection:(__attribute__((unused)) NSInteger)section
+{
+  return 5.0;
+}
+
+- (UIView *)tableView:(__attribute__((unused)) UITableView *)tableView
+viewForHeaderInSection:(NSInteger const)section
+{
+  CGFloat const headerHeight = 30.0;
+  
+  CGRect const frame = CGRectMake(0, 0, self.tableView.frame.size.width, headerHeight);
+  UIView *view = [[UIView alloc] initWithFrame:frame];
+  view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  
+  {
+    CGRect const frame = CGRectMake(5, 5, self.tableView.frame.size.width, headerHeight - 10);
+    UILabel *label = [[UILabel alloc] initWithFrame:frame];
+    label.text = self.sectionTitles[section];
+    [view addSubview:label];
+  }
+  
+  view.backgroundColor = [UIColor whiteColor];
+  
+  return view;
+}
+
+- (NSString *)tableView:(__attribute__((unused)) UITableView *)tableView titleForHeaderInSection:(__attribute__((unused)) NSInteger)section
+{
+  return @"Category";
+}
+
+- (UIView *)tableView:(__attribute__((unused)) UITableView *)tableView
+viewForFooterInSection:(__attribute__((unused)) NSInteger)section
+{
+  CGRect const frame = CGRectMake(0, 0, self.tableView.frame.size.width, 5);
+  UIView *const view = [[UIView alloc] initWithFrame:frame];
+  
+  view.backgroundColor = [UIColor whiteColor];
+  
+  return view;
 }
 
 #pragma mark -
@@ -150,6 +207,7 @@ heightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
 {
   SMXMLDocument *const document = [[SMXMLDocument alloc] initWithData:data error:NULL];
   NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
+  NSMutableArray *const sectionTitles = [NSMutableArray array];
 
   if(!feed) {
     self.feedState = FeedStateLoaded;
@@ -164,6 +222,7 @@ heightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
   }
   
   for(NYPLOPDSEntry *const entry in feed.entries) {
+    [sectionTitles addObject:entry.title];
     NYPLCatalogLaneCell *const cell = [[NYPLCatalogLaneCell alloc] initWithEntry:entry];
     if(!cell) {
       NSLog(@"NYPLCatalogViewController: Failed to create NYPLCatalogLaneCell.");
@@ -174,6 +233,8 @@ heightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
   
   [self.tableView reloadData];
   self.tableView.hidden = NO;
+  
+  self.sectionTitles = sectionTitles;
   
   self.feedState = FeedStateLoaded;
 }
