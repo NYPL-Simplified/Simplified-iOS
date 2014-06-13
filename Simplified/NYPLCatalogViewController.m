@@ -221,9 +221,13 @@ viewForFooterInSection:(__attribute__((unused)) NSInteger)section
     return;
   }
   
+  NSUInteger categoryIndex = 0;
   for(NYPLOPDSEntry *const entry in feed.entries) {
     [sectionTitles addObject:entry.title];
-    NYPLCatalogLaneCell *const cell = [[NYPLCatalogLaneCell alloc] initWithEntry:entry];
+    NYPLCatalogLaneCell *const cell = [[NYPLCatalogLaneCell alloc]
+                                       initWithCategoryIndex:categoryIndex
+                                       reuseIdentifier:@"NYPLCatalogLaneCell"];
+    ++categoryIndex;
     if(!cell) {
       NSLog(@"NYPLCatalogViewController: Failed to create NYPLCatalogLaneCell.");
       continue;
