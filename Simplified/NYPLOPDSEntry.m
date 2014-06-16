@@ -6,7 +6,7 @@
 
 @interface NYPLOPDSEntry ()
 
-@property (nonatomic) NSArray *authorNames;
+@property (nonatomic) NSArray *authorStrings;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSArray *links;
 @property (nonatomic) NSString *title;
@@ -22,7 +22,7 @@
   if(!self) return nil;
 
   {
-    NSMutableArray *const authorNames = [NSMutableArray array];
+    NSMutableArray *const authorStrings = [NSMutableArray array];
     
     for(SMXMLElement *const authorElement in [element childrenNamed:@"author"]) {
       SMXMLElement *const nameElement = [authorElement childNamed:@"name"];
@@ -31,10 +31,10 @@
         NSLog(@"NYPLOPDSEntry: Ignoring malformed 'author' element.");
         continue;
       }
-      [authorNames addObject:nameElement.valueString];
+      [authorStrings addObject:nameElement.valueString];
     }
 
-    self.authorNames = authorNames;
+    self.authorStrings = authorStrings;
   }
   
   if(!((self.identifier = [element childNamed:@"id"].valueString))) {

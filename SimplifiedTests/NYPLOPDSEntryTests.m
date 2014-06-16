@@ -46,11 +46,11 @@
   XCTAssertNil([[NYPLOPDSEntry alloc] initWithElement:nil]);
 }
 
-- (void)testAuthorNames
+- (void)testAuthorStrings
 {
-  XCTAssertEqual(self.entry.authorNames.count, 2U);
-  XCTAssertEqualObjects(self.entry.authorNames[0], @"James, Henry");
-  XCTAssertEqualObjects(self.entry.authorNames[1], @"Author, Fictional");
+  XCTAssertEqual(self.entry.authorStrings.count, 2U);
+  XCTAssertEqualObjects(self.entry.authorStrings[0], @"James, Henry");
+  XCTAssertEqualObjects(self.entry.authorStrings[1], @"Author, Fictional");
 }
 
 - (void)testIdentifier
