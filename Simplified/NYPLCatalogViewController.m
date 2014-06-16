@@ -4,22 +4,24 @@
 #import "NYPLConfiguration.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
+#import "NYPLOPDSLink.h"
+#import "NYPLURLSetSession.h"
 
 #import "NYPLCatalogViewController.h"
 
-typedef enum {
-  FeedStateNotLoaded,
-  FeedStateLoading,
-  FeedStateLoaded
-} FeedState;
+static CGFloat const rowHeight = 125.0;
+static CGFloat const sectionBottomPadding = 5.0;
+static CGFloat const sectionHeaderHeight = 30.0;
 
 @interface NYPLCatalogViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
-@property (nonatomic) FeedState feedState;
+@property (nonatomic) NSMutableDictionary *imageDataDictionary;
+@property (nonatomic) NYPLOPDSFeed *navigationFeed;
+@property (nonatomic) NSUInteger nextRowToDownload;
 @property (nonatomic) NSArray *sectionTitles;
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic) NSArray *tableViewCells;
+@property (nonatomic) NSDictionary *urlToCategoryFeedDataDictionary;
 
 @end
 
@@ -31,14 +33,6 @@ typedef enum {
 {
   self = [super init];
   if(!self) return nil;
-  
-  self.feedState = FeedStateNotLoaded;
-  
-  // Given that we will only ever have a small number of cells, and given that each cell will
-  // require much effort and network activity to create, we keep all of them around and do not use
-  // the usual reuse mechanism. All cells are created when the navigation feed is loaded, one
-  // benefit of which is that we do not need to keep the feed itself in memory.
-  self.tableViewCells = [NSMutableArray array];
   
   self.title = NSLocalizedString(@"CatalogViewControllerTitle", nil);
   
@@ -60,23 +54,12 @@ typedef enum {
                                      UIViewAutoresizingFlexibleHeight);
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
-  self.tableView.sectionHeaderHeight = 30.0;
+  self.tableView.sectionHeaderHeight = sectionHeaderHeight;
   self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   self.tableView.hidden = YES;
   [self.view addSubview:self.tableView];
-}
-
-- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
-{
-  switch(self.feedState) {
-    case FeedStateNotLoaded:
-      [self downloadFeed];
-      break;
-    case FeedStateLoading:
-      break;
-    case FeedStateLoaded:
-      break;
-  }
+  
+  [self downloadFeed];
 }
 
 - (void)viewWillLayoutSubviews
@@ -95,9 +78,10 @@ typedef enum {
 #pragma mark UITableViewDataSource
 
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *const)indexPath
+         cellForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *const)indexPath
 {
-  return self.tableViewCells[indexPath.section];
+  // TODO: This needs to be a "loading" cell.
+  return [[UITableViewCell alloc] init];
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -108,7 +92,7 @@ typedef enum {
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return self.tableViewCells.count;
+  return self.sectionTitles.count;
 }
 
 #pragma mark UITableViewDelegate
@@ -116,33 +100,34 @@ typedef enum {
 - (CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView
 heightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
 {
-  return 125.0;
+  return rowHeight;
 }
 
 - (CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView
 heightForHeaderInSection:(__attribute__((unused)) NSInteger)section
 {
-  return 30.0;
+  return sectionHeaderHeight;
 }
 
 - (CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView
 heightForFooterInSection:(__attribute__((unused)) NSInteger)section
 {
-  return 5.0;
+  return sectionBottomPadding;
 }
 
 - (UIView *)tableView:(__attribute__((unused)) UITableView *)tableView
 viewForHeaderInSection:(NSInteger const)section
 {
-  CGFloat const headerHeight = 30.0;
-  
-  CGRect const frame = CGRectMake(0, 0, self.tableView.frame.size.width, headerHeight);
-  UIView *view = [[UIView alloc] initWithFrame:frame];
+  CGRect const frame = CGRectMake(0, 0, self.tableView.frame.size.width, sectionHeaderHeight);
+  UIView *const view = [[UIView alloc] initWithFrame:frame];
   view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
   
   {
-    CGRect const frame = CGRectMake(5, 5, self.tableView.frame.size.width, headerHeight - 10);
-    UILabel *label = [[UILabel alloc] initWithFrame:frame];
+    CGRect const frame = CGRectMake(5,
+                                    5,
+                                    self.tableView.frame.size.width,
+                                    sectionHeaderHeight - 10);
+    UILabel *const label = [[UILabel alloc] initWithFrame:frame];
     label.text = self.sectionTitles[section];
     [view addSubview:label];
   }
@@ -150,11 +135,6 @@ viewForHeaderInSection:(NSInteger const)section
   view.backgroundColor = [UIColor whiteColor];
   
   return view;
-}
-
-- (NSString *)tableView:(__attribute__((unused)) UITableView *)tableView titleForHeaderInSection:(__attribute__((unused)) NSInteger)section
-{
-  return @"Category";
 }
 
 - (UIView *)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -172,10 +152,9 @@ viewForFooterInSection:(__attribute__((unused)) NSInteger)section
 
 - (void)downloadFeed
 {
-  self.feedState = FeedStateLoading;
-  
+  self.tableView.hidden = YES;
+  self.activityIndicatorView.hidden = NO;
   [self.activityIndicatorView startAnimating];
-  [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   
   [[[NSURLSession sharedSession]
     dataTaskWithURL:[NYPLConfiguration mainFeedURL]
@@ -183,12 +162,12 @@ viewForFooterInSection:(__attribute__((unused)) NSInteger)section
                         __attribute__((unused)) NSURLResponse *response,
                         NSError *const error) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        self.tableView.hidden = NO;
+        self.activityIndicatorView.hidden = YES;
         [self.activityIndicatorView stopAnimating];
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         if(!error) {
-          [self loadData:data];
+          [self loadFeedData:data];
         } else {
-          self.feedState = FeedStateNotLoaded;
           [[[UIAlertView alloc]
             initWithTitle:NSLocalizedString(@"CatalogViewControllerFeedDownloadFailedTitle", nil)
             message:NSLocalizedString(@"CatalogViewControllerFeedDownloadFailedMessage", nil)
@@ -202,15 +181,12 @@ viewForFooterInSection:(__attribute__((unused)) NSInteger)section
    resume];
 }
 
-- (void)loadData:(NSData *)data
+- (void)loadFeedData:(NSData *)data
 {
   SMXMLDocument *const document = [[SMXMLDocument alloc] initWithData:data error:NULL];
-  NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
-  NSMutableArray *const sectionTitles = [NSMutableArray array];
-  NSMutableArray *const tableViewCells = [NSMutableArray array];
+  self.navigationFeed = [[NYPLOPDSFeed alloc] initWithDocument:document];
 
-  if(!feed) {
-    self.feedState = FeedStateLoaded;
+  if(!self.navigationFeed) {
     [[[UIAlertView alloc]
       initWithTitle:NSLocalizedString(@"CatalogViewControllerBadDataTitle", nil)
       message:NSLocalizedString(@"CatalogViewControllerBadDataMessage", nil)
@@ -220,28 +196,6 @@ viewForFooterInSection:(__attribute__((unused)) NSInteger)section
      show];
     return;
   }
-  
-  NSUInteger categoryIndex = 0;
-  for(NYPLOPDSEntry *const entry in feed.entries) {
-    [sectionTitles addObject:entry.title];
-    NYPLCatalogLaneCell *const cell = [[NYPLCatalogLaneCell alloc]
-                                       initWithCategoryIndex:categoryIndex
-                                       reuseIdentifier:@"NYPLCatalogLaneCell"];
-    ++categoryIndex;
-    if(!cell) {
-      NSLog(@"NYPLCatalogViewController: Failed to create NYPLCatalogLaneCell.");
-      continue;
-    }
-    [tableViewCells addObject:cell];
-  }
-  
-  self.sectionTitles = sectionTitles;
-  self.tableViewCells = tableViewCells;
-  
-  [self.tableView reloadData];
-  self.tableView.hidden = NO;
-  
-  self.feedState = FeedStateLoaded;
 }
 
 @end
