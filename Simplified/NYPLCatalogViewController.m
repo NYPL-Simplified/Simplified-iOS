@@ -5,7 +5,6 @@
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
-#import "NYPLURLSetSession.h"
 
 #import "NYPLCatalogViewController.h"
 
