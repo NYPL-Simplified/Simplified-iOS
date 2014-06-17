@@ -111,6 +111,7 @@
 		1183F352194F795800DC322F /* NYPLCatalogAcquisitions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogAcquisitions.m; sourceTree = "<group>"; };
 		1183F359194F847100DC322F /* NYPLAsyncData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAsyncData.h; sourceTree = "<group>"; };
 		1183F35A194F847100DC322F /* NYPLAsyncData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAsyncData.m; sourceTree = "<group>"; };
+		1183F35E19509C8500DC322F /* NYPLOPDSRelation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSRelation.h; sourceTree = "<group>"; };
 		11F54C1D194109120086FCAF /* main.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = main.xml; sourceTree = "<group>"; };
 		11F54C2419410BE40086FCAF /* single_entry.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = single_entry.xml; sourceTree = "<group>"; };
 		11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryTests.m; sourceTree = "<group>"; };
@@ -168,6 +169,7 @@
 				11396FA3193D1E7700E16EE8 /* NYPLOPDSFeed.m */,
 				11396FCE193FA9D900E16EE8 /* NYPLOPDSLink.h */,
 				11396FCF193FA9D900E16EE8 /* NYPLOPDSLink.m */,
+				1183F35E19509C8500DC322F /* NYPLOPDSRelation.h */,
 			);
 			name = OPDS;
 			sourceTree = "<group>";
