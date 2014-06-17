@@ -3,9 +3,9 @@
 
 #import <SMXMLDocument/SMXMLDocument.h>
 
+#import "NYPLAsyncData.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
-#import "NYPLURLSetSession.h"
 
 #import "NYPLCatalogLaneCellOld.h"
 
@@ -83,14 +83,11 @@
     }
   }
   
-  __attribute__((unused)) NYPLURLSetSession *const setSession =
-    [[NYPLURLSetSession alloc]
-     initWithURLSet:imageURLs
-     completionHandler:^(NSDictionary *const dataDictionary) {
-       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         [self displayImageData:dataDictionary forFeed:feed];
-       }];
-     }];
+  [NYPLAsyncData
+   withURLSet:imageURLs
+   completionHandler:^(NSDictionary *const dataDictionary) {
+     [self displayImageData:dataDictionary forFeed:feed];
+   }];
 }
 
 - (void)displayImageData:(NSDictionary *)dataDictionary forFeed:(NYPLOPDSFeed *)feed
