@@ -26,35 +26,29 @@
     @throw NSInvalidArgumentException;
   }
   
-  // TODO: None of this needs to happen on the main thread. It may be worth changing
-  // NYPLAsyncData to allow running some of this elsewhere if performance is an issue.
-  
   [NYPLAsyncData
    withURL:url
    completionHandler:^(NSData *const data) {
      if(!data) {
        NSLog(@"%@: Failed to download data.", [self class]);
-       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         handler(nil);
-       }];
+       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                      ^{handler(nil);});
        return;
      }
      
      SMXMLDocument *const document = [[SMXMLDocument alloc] initWithData:data error:NULL];
      if(!document) {
        NSLog(@"%@: Failed to parse data as XML.", [self class]);
-       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         handler(nil);
-       }];
+       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                      ^{handler(nil);});
        return;
      }
      
      NYPLOPDSFeed *const navigationFeed = [[NYPLOPDSFeed alloc] initWithDocument:document];
      if(!navigationFeed) {
        NSLog(@"%@: Could not interpret XML as OPDS.", [self class]);
-       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         handler(nil);
-       }];
+       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                      ^{handler(nil);});
        return;
      }
      
@@ -198,9 +192,8 @@
         NYPLCatalogRoot *const root = [[NYPLCatalogRoot alloc] initWithLanes:lanes];
         assert(root);
         
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-          handler(root);
-        }];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                       ^{handler(root);});
       }];
    }];
 }
