@@ -86,7 +86,9 @@
   [NYPLAsyncData
    withURLSet:imageURLs
    completionHandler:^(NSDictionary *const dataDictionary) {
-     [self displayImageData:dataDictionary forFeed:feed];
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       [self displayImageData:dataDictionary forFeed:feed];
+     }];
    }];
 }
 

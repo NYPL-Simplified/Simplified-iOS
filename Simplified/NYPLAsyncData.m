@@ -12,13 +12,11 @@ completionHandler:(void (^ const)(NSData *data))handler
                         NSError *const error) {
       if(error) {
         NSLog(@"NYPLAsyncData: Error: %@", error.localizedDescription);
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-          handler(nil);
-        }];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                       ^{handler(nil);});
       } else {
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-          handler(data);
-        }];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                       ^{handler(data);});
       }
     }]
    resume];
@@ -28,9 +26,8 @@ completionHandler:(void (^ const)(NSData *data))handler
  completionHandler:(void (^)(NSDictionary *dataDictionary))handler
 {
   if(!set.count) {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      handler([NSDictionary dictionary]);
-    }];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                   ^{handler([NSDictionary dictionary]);});
     return;
   }
   
@@ -50,9 +47,8 @@ completionHandler:(void (^ const)(NSData *data))handler
       [dataDictionary setObject:(data ? data : [NSNull null]) forKey:url];
       --remaining;
       if(!remaining) {
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-          handler(dataDictionary);
-        }];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                       ^{handler(dataDictionary);});
       }
       [lock unlock];
     }];
