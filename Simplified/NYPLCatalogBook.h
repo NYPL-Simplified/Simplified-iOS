@@ -1,12 +1,11 @@
 @import Foundation;
 
-#import "NYPLCatalogAcquisitions.h"
+#import "NYPLCatalogAcquisition.h"
 
 @interface NYPLCatalogBook : NSObject
 
-@property (nonatomic, readonly) NYPLCatalogAcquisitions *acquisitions;
+@property (nonatomic, readonly) NYPLCatalogAcquisition *acquisition;
 @property (nonatomic, readonly) NSArray *authorStrings;
-@property (nonatomic, readonly) NSURL *collectionURL; // nilable
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSURL *imageURL; // nilable
 @property (nonatomic, readonly) NSURL *imageThumbnailURL; // nilable
@@ -14,13 +13,12 @@
 @property (nonatomic, readonly) NSDate *updated;
 
 // designated initializer
-- (id)initWithAcquisitions:(NYPLCatalogAcquisitions *)acquisitions
-             authorStrings:(NSArray *)authorStrings
-             collectionURL:(NSURL *)collectionURL
-                identifier:(NSString *)identifier
-                  imageURL:(NSURL *)imageURL
-         imageThumbnailURL:(NSURL *)imageThumbnailURL
-                     title:(NSString *)title
-                   updated:(NSDate *)updated;
+- (id)initWithAcquisition:(NYPLCatalogAcquisition *)acquisition
+            authorStrings:(NSArray *)authorStrings
+               identifier:(NSString *)identifier
+                 imageURL:(NSURL *)imageURL
+        imageThumbnailURL:(NSURL *)imageThumbnailURL
+                    title:(NSString *)title
+                  updated:(NSDate *)updated;
 
 @end
