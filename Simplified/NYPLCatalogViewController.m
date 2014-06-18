@@ -1,6 +1,8 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
+#import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
+#import "NYPLCatalogRoot.h"
 #import "NYPLConfiguration.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
@@ -15,10 +17,8 @@ static CGFloat const sectionHeaderHeight = 30.0;
 @interface NYPLCatalogViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic) NYPLCatalogRoot *catalogRoot;
 @property (nonatomic) NSMutableDictionary *imageDataDictionary;
-@property (nonatomic) NYPLOPDSFeed *navigationFeed;
-@property (nonatomic) NSUInteger nextRowToDownload;
-@property (nonatomic) NSArray *sectionTitles;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) NSDictionary *urlToCategoryFeedDataDictionary;
 
@@ -91,7 +91,7 @@ static CGFloat const sectionHeaderHeight = 30.0;
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return self.sectionTitles.count;
+  return self.catalogRoot.lanes.count;
 }
 
 #pragma mark UITableViewDelegate
@@ -127,7 +127,7 @@ viewForHeaderInSection:(NSInteger const)section
                                     self.tableView.frame.size.width,
                                     sectionHeaderHeight - 10);
     UILabel *const label = [[UILabel alloc] initWithFrame:frame];
-    label.text = self.sectionTitles[section];
+    label.text = ((NYPLCatalogLane *) self.catalogRoot.lanes[section]).title;
     [view addSubview:label];
   }
   
@@ -155,46 +155,29 @@ viewForFooterInSection:(__attribute__((unused)) NSInteger)section
   self.activityIndicatorView.hidden = NO;
   [self.activityIndicatorView startAnimating];
   
-  [[[NSURLSession sharedSession]
-    dataTaskWithURL:[NYPLConfiguration mainFeedURL]
-    completionHandler:^(NSData *const data,
-                        __attribute__((unused)) NSURLResponse *response,
-                        NSError *const error) {
-      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        self.tableView.hidden = NO;
-        self.activityIndicatorView.hidden = YES;
-        [self.activityIndicatorView stopAnimating];
-        if(!error) {
-          [self loadFeedData:data];
-        } else {
-          [[[UIAlertView alloc]
-            initWithTitle:NSLocalizedString(@"CatalogViewControllerFeedDownloadFailedTitle", nil)
-            message:NSLocalizedString(@"CatalogViewControllerFeedDownloadFailedMessage", nil)
-            delegate:nil
-            cancelButtonTitle:nil
-            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-           show];
-        }
-      }];
-    }]
-   resume];
-}
-
-- (void)loadFeedData:(NSData *)data
-{
-  SMXMLDocument *const document = [[SMXMLDocument alloc] initWithData:data error:NULL];
-  self.navigationFeed = [[NYPLOPDSFeed alloc] initWithDocument:document];
-
-  if(!self.navigationFeed) {
-    [[[UIAlertView alloc]
-      initWithTitle:NSLocalizedString(@"CatalogViewControllerBadDataTitle", nil)
-      message:NSLocalizedString(@"CatalogViewControllerBadDataMessage", nil)
-      delegate:nil
-      cancelButtonTitle:nil
-      otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-     show];
-    return;
-  }
+  [NYPLCatalogRoot
+   withURL:[NYPLConfiguration mainFeedURL]
+   handler:^(NYPLCatalogRoot *const root) {
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       self.activityIndicatorView.hidden = YES;
+       [self.activityIndicatorView stopAnimating];
+       
+       if(!root) {
+         [[[UIAlertView alloc]
+           initWithTitle:NSLocalizedString(@"CatalogViewControllerFeedDownloadFailedTitle", nil)
+           message:NSLocalizedString(@"CatalogViewControllerFeedDownloadFailedMessage", nil)
+           delegate:nil
+           cancelButtonTitle:nil
+           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+          show];
+         return;
+       }
+       
+       self.tableView.hidden = NO;
+       self.catalogRoot = root;
+       [self.tableView reloadData];
+     }];
+   }];
 }
 
 @end
