@@ -2,9 +2,8 @@
 
 @interface NYPLCatalogBook ()
 
-@property (nonatomic) NYPLCatalogAcquisitions *acquisitions;
+@property (nonatomic) NYPLCatalogAcquisition *acquisition;
 @property (nonatomic) NSArray *authorStrings;
-@property (nonatomic) NSURL *collectionURL; // nilable
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSURL *imageURL; // nilable
 @property (nonatomic) NSURL *imageThumbnailURL; // nilable
@@ -15,19 +14,18 @@
 
 @implementation NYPLCatalogBook
 
-- (id)initWithAcquisitions:(NYPLCatalogAcquisitions *const)acquisitions
-             authorStrings:(NSArray *const)authorStrings
-             collectionURL:(NSURL *const)collectionURL
-                identifier:(NSString *const)identifier
-                  imageURL:(NSURL *const)imageURL
-         imageThumbnailURL:(NSURL *const)imageThumbnailURL
-                     title:(NSString *const)title
-                   updated:(NSDate *const)updated
+- (id)initWithAcquisition:(NYPLCatalogAcquisition *const)acquisition
+            authorStrings:(NSArray *const)authorStrings
+               identifier:(NSString *const)identifier
+                 imageURL:(NSURL *const)imageURL
+        imageThumbnailURL:(NSURL *const)imageThumbnailURL
+                    title:(NSString *const)title
+                  updated:(NSDate *const)updated
 {
   self = [super init];
   if(!self) return nil;
   
-  if(!(acquisitions && authorStrings && identifier && title && updated)) {
+  if(!(acquisition && authorStrings && identifier && title && updated)) {
     @throw NSInvalidArgumentException;
   }
   
@@ -37,9 +35,8 @@
     }
   }
   
-  self.acquisitions = acquisitions;
+  self.acquisition = acquisition;
   self.authorStrings = authorStrings;
-  self.collectionURL = collectionURL;
   self.identifier = identifier;
   self.imageURL = imageURL;
   self.imageThumbnailURL = imageThumbnailURL;

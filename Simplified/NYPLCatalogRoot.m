@@ -1,6 +1,8 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
 #import "NYPLAsyncData.h"
+#import "NYPLCatalogAcquisition.h"
+#import "NYPLCatalogBook.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
@@ -24,8 +26,8 @@
     @throw NSInvalidArgumentException;
   }
   
-  // TODO: Some parts of this do not need to happen on the main thread. It may be worth changing
-  // NYPLAsyncData to allow running some of this elsewhere.
+  // TODO: None of this needs to happen on the main thread. It may be worth changing
+  // NYPLAsyncData to allow running some of this elsewhere if performance is an issue.
   
   [NYPLAsyncData
    withURL:url
@@ -73,11 +75,11 @@
         NSMutableArray *const lanes =
           [NSMutableArray arrayWithCapacity:navigationFeed.entries.count];
         
-        for(NYPLOPDSEntry *const entry in navigationFeed.entries) {
+        for(NYPLOPDSEntry *const navigationEntry in navigationFeed.entries) {
           NSURL *recommendedURL = nil;
           NSURL *subsectionURL = nil;
           
-          for(NYPLOPDSLink *const link in entry.links) {
+          for(NYPLOPDSLink *const link in navigationEntry.links) {
             if([link.rel isEqualToString:NYPLOPDSRelationRecommended]) {
               recommendedURL = link.href;
             }
@@ -97,7 +99,7 @@
              [[NYPLCatalogLane alloc]
               initWithBooks:[NSArray array]
               subsectionURL:subsectionURL
-              title:entry.title]];
+              title:navigationEntry.title]];
             continue;
           }
           
@@ -108,7 +110,7 @@
              [[NYPLCatalogLane alloc]
               initWithBooks:[NSArray array]
               subsectionURL:subsectionURL
-              title:entry.title]];
+              title:navigationEntry.title]];
             continue;
           }
           
@@ -123,23 +125,82 @@
              [[NYPLCatalogLane alloc]
               initWithBooks:[NSArray array]
               subsectionURL:subsectionURL
-              title:entry.title]];
+              title:navigationEntry.title]];
             continue;
           }
           
-          NYPLOPDSFeed *recommendedFeed = [[NYPLOPDSFeed alloc] initWithDocument:document];
-          if(!recommendedFeed) {
+          NYPLOPDSFeed *recommendedAcquisitionFeed =
+            [[NYPLOPDSFeed alloc] initWithDocument:document];
+          
+          if(!recommendedAcquisitionFeed) {
             NSLog(@"%@: Creating lane without invalid recommended books.", [self class]);
             [lanes addObject:
              [[NYPLCatalogLane alloc]
               initWithBooks:[NSArray array]
               subsectionURL:subsectionURL
-              title:entry.title]];
+              title:navigationEntry.title]];
             continue;
           }
           
-          // TODO: Create lane WITH recommended books here!
+          NSMutableArray *const books =
+            [NSMutableArray arrayWithCapacity:recommendedAcquisitionFeed.entries.count];
+          
+          for(NYPLOPDSEntry *const acquisitionEntry in recommendedAcquisitionFeed.entries) {
+            NSURL *borrow, *generic, *openAccess, *sample, *image, *imageThumbnail = nil;
+            for(NYPLOPDSLink *const link in acquisitionEntry.links) {
+              if([link.rel isEqualToString:NYPLOPDSRelationAcquisition]) {
+                generic = link.href;
+                continue;
+              }
+              if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionBorrow]) {
+                borrow = link.href;
+                continue;
+              }
+              if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionOpenAccess]) {
+                openAccess = link.href;
+                continue;
+              }
+              if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionSample]) {
+                sample = link.href;
+                continue;
+              }
+              if([link.rel isEqualToString:NYPLOPDSRelationImage]) {
+                image = link.href;
+                continue;
+              }
+              if([link.rel isEqualToString:NYPLOPDSRelationImageThumbnail]) {
+                imageThumbnail = link.href;
+                continue;
+              }
+            }
+            [books addObject:
+             [[NYPLCatalogBook alloc]
+              initWithAcquisition:[[NYPLCatalogAcquisition alloc]
+                                   initWithBorrow:borrow
+                                   generic:generic
+                                   openAccess:openAccess
+                                   sample:sample]
+              authorStrings:acquisitionEntry.authorStrings
+              identifier:acquisitionEntry.identifier
+              imageURL:image
+              imageThumbnailURL:imageThumbnail
+              title:acquisitionEntry.title
+              updated:acquisitionEntry.updated]];
+          }
+          
+          [lanes addObject:
+           [[NYPLCatalogLane alloc]
+            initWithBooks:books
+            subsectionURL:subsectionURL
+            title:navigationEntry.title]];
         }
+        
+        NYPLCatalogRoot *const root = [[NYPLCatalogRoot alloc] initWithLanes:lanes];
+        assert(root);
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+          handler(root);
+        }];
       }];
    }];
 }
@@ -153,7 +214,7 @@
     @throw NSInvalidArgumentException;
   }
   
-  for(id object in lanes) {
+  for(id const object in lanes) {
     if(![object isKindOfClass:[NYPLCatalogLane class]]) {
       @throw NSInvalidArgumentException;
     }
