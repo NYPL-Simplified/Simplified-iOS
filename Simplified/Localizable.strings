@@ -4,9 +4,6 @@
 
 // NYPLCatalogViewController
 
-"CatalogViewControllerBadDataTitle" = "Could Not Load Catalog";
-"CatalogViewControllerBadDataMessage" =
-  "The catalog is currently unavailable.\nPlease try again later.";
 "CatalogViewControllerFeedDownloadFailedTitle" = "Could Not Load Catalog";
 "CatalogViewControllerFeedDownloadFailedMessage" =
   "Please check your connection or try again later.";
