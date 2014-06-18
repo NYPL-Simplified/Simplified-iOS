@@ -27,6 +27,13 @@ completionHandler:(void (^ const)(NSData *data))handler
 + (void)withURLSet:(NSSet *)set
  completionHandler:(void (^)(NSDictionary *dataDictionary))handler
 {
+  if(!set.count) {
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+      handler([NSDictionary dictionary]);
+    }];
+    return;
+  }
+  
   for(id const object in set) {
     if(![object isKindOfClass:[NSURL class]]) {
       @throw NSInvalidArgumentException;
