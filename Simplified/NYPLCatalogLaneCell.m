@@ -1,36 +1,57 @@
+#import "NYPLCatalogBook.h"
+
 #import "NYPLCatalogLaneCell.h"
 
 @interface NYPLCatalogLaneCell ()
 
-@property (nonatomic) NSMutableArray *buttons;
-@property (nonatomic) NSUInteger categoryIndex;
+@property (nonatomic) NSArray *buttons;
+@property (nonatomic) NSUInteger laneIndex;
 
 @end
 
 @implementation NYPLCatalogLaneCell
 
-- (id)initWithCategoryIndex:(NSUInteger const)index
-            reuseIdentifier:(NSString *const)reuseIdentifier
+- (id)initWithLaneIndex:(NSUInteger const)laneIndex
+                  books:(NSArray *const)books
+    imageDataDictionary:(NSDictionary *const)imageDataDictionary
 {
-  self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+  self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
   if(!self) return nil;
   
-  self.categoryIndex = index;
+  self.laneIndex = laneIndex;
+  
+  NSMutableArray *const buttons = [NSMutableArray arrayWithCapacity:books.count];
+  
+  for(NYPLCatalogBook *const book in books) {
+    UIButton *const button = [UIButton buttonWithType:UIButtonTypeCustom];
+    NSData *const imageData = [imageDataDictionary objectForKey:book.imageURL];
+    UIImage *const image =
+      imageData ? [UIImage imageWithData:imageData] : [UIImage imageNamed:@"NoCover"];
+    [button setImage:image forState:UIControlStateNormal];
+    [buttons addObject:button];
+    [self addSubview:button];
+  }
+  
+  self.buttons = buttons;
   
   return self;
 }
 
-- (void)useImageDataArray:(NSArray *)imageDataArray
+#pragma mark UIView
+
+- (void)layoutSubviews
 {
-  for(UIView *const button in self.buttons) {
-    [button removeFromSuperview];
-  }
+  CGFloat const padding = 20.0;
   
-  [self.buttons removeAllObjects];
+  CGFloat x = padding;
+  CGFloat const height = self.frame.size.height;
   
-  for(NSData *const data in imageDataArray) {
-    // TODO
-    NSLog(@"%@", data);
+  for(UIButton *const button in self.buttons) {
+    CGFloat width = button.imageView.image.size.width;
+    width *= height / button.imageView.image.size.height;
+    CGRect const frame = CGRectMake(x, 0.0, width, height);
+    button.frame = frame;
+    x += width + padding;
   }
 }
 

@@ -1,5 +1,6 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
+#import "NYPLAsyncData.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogRoot.h"
@@ -11,7 +12,6 @@
 #import "NYPLCatalogViewController.h"
 
 static CGFloat const rowHeight = 125.0;
-static CGFloat const sectionBottomPadding = 5.0;
 static CGFloat const sectionHeaderHeight = 30.0;
 
 @interface NYPLCatalogViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -19,6 +19,7 @@ static CGFloat const sectionHeaderHeight = 30.0;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogRoot *catalogRoot;
 @property (nonatomic) NSMutableDictionary *imageDataDictionary;
+@property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) NSDictionary *urlToCategoryFeedDataDictionary;
 
@@ -33,6 +34,7 @@ static CGFloat const sectionHeaderHeight = 30.0;
   self = [super init];
   if(!self) return nil;
   
+  self.imageDataDictionary = [NSMutableDictionary dictionary];
   self.title = NSLocalizedString(@"CatalogViewControllerTitle", nil);
   
   return self;
@@ -55,6 +57,7 @@ static CGFloat const sectionHeaderHeight = 30.0;
   self.tableView.delegate = self;
   self.tableView.sectionHeaderHeight = sectionHeaderHeight;
   self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+  self.tableView.allowsSelection = NO;
   self.tableView.hidden = YES;
   [self.view addSubview:self.tableView];
   
@@ -77,10 +80,17 @@ static CGFloat const sectionHeaderHeight = 30.0;
 #pragma mark UITableViewDataSource
 
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
-         cellForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *const)indexPath
+         cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  // TODO: This needs to be a "loading" cell.
-  return [[UITableViewCell alloc] init];
+  if(indexPath.section < (NSInteger) self.indexOfNextLaneRequiringImageDownload) {
+    return [[NYPLCatalogLaneCell alloc]
+            initWithLaneIndex:indexPath.section
+            books:((NYPLCatalogLane *) self.catalogRoot.lanes[indexPath.section]).books
+            imageDataDictionary:self.imageDataDictionary];
+  } else {
+    // FIXME: This does not always seem to show when it should.
+    return [[UITableViewCell alloc] init];
+  }
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -108,12 +118,6 @@ heightForHeaderInSection:(__attribute__((unused)) NSInteger)section
   return sectionHeaderHeight;
 }
 
-- (CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView
-heightForFooterInSection:(__attribute__((unused)) NSInteger)section
-{
-  return sectionBottomPadding;
-}
-
 - (UIView *)tableView:(__attribute__((unused)) UITableView *)tableView
 viewForHeaderInSection:(NSInteger const)section
 {
@@ -130,17 +134,6 @@ viewForHeaderInSection:(NSInteger const)section
     label.text = ((NYPLCatalogLane *) self.catalogRoot.lanes[section]).title;
     [view addSubview:label];
   }
-  
-  view.backgroundColor = [UIColor whiteColor];
-  
-  return view;
-}
-
-- (UIView *)tableView:(__attribute__((unused)) UITableView *)tableView
-viewForFooterInSection:(__attribute__((unused)) NSInteger)section
-{
-  CGRect const frame = CGRectMake(0, 0, self.tableView.frame.size.width, 5);
-  UIView *const view = [[UIView alloc] initWithFrame:frame];
   
   view.backgroundColor = [UIColor whiteColor];
   
@@ -176,6 +169,38 @@ viewForFooterInSection:(__attribute__((unused)) NSInteger)section
        self.tableView.hidden = NO;
        self.catalogRoot = root;
        [self.tableView reloadData];
+       
+       [self downloadImages];
+     }];
+   }];
+}
+
+- (void)downloadImages
+{
+  if(self.indexOfNextLaneRequiringImageDownload >= self.catalogRoot.lanes.count) {
+    return;
+  }
+  
+  NYPLCatalogLane *const lane = self.catalogRoot.lanes[self.indexOfNextLaneRequiringImageDownload];
+  
+  [NYPLAsyncData
+   withURLSet:lane.imageURLs
+   completionHandler:^(NSDictionary *const dataDictionary) {
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       [dataDictionary enumerateKeysAndObjectsUsingBlock:^(id const key,
+                                                           id const value,
+                                                           __attribute__((unused)) BOOL *stop) {
+         if(![value isKindOfClass:[NSNull class]]) {
+           assert([key isKindOfClass:[NSURL class]]);
+           assert([value isKindOfClass:[NSData class]]);
+           [self.imageDataDictionary setValue:value forKey:key];
+         }
+         
+         [self.tableView reloadData];
+         
+         ++self.indexOfNextLaneRequiringImageDownload;
+         [self downloadImages];
+       }];
      }];
    }];
 }

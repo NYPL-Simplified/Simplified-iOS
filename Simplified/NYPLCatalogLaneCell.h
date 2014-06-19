@@ -11,13 +11,12 @@
 
 @interface NYPLCatalogLaneCell : UITableViewCell
 
-@property (nonatomic, readonly) NSUInteger categoryIndex;
 @property (nonatomic, weak) id<NYPLCatalogLaneCellDelegate> delegate;
+@property (nonatomic, readonly) NSUInteger laneIndex;
 
 // designated initializer
-- (id)initWithCategoryIndex:(NSUInteger)index
-            reuseIdentifier:(NSString *)reuseIdentifier;
-
-- (void)useImageDataArray:(NSArray *)imageDataArray;
+- (id)initWithLaneIndex:(NSUInteger)laneIndex
+                  books:(NSArray *)books
+    imageDataDictionary:(NSDictionary *)imageDataDictionary;
 
 @end
