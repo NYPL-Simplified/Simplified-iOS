@@ -22,7 +22,8 @@
   self.laneIndex = laneIndex;
   
   self.scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
-  self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  self.scrollView.autoresizingMask = (UIViewAutoresizingFlexibleWidth
+                                      | UIViewAutoresizingFlexibleHeight);
   self.scrollView.showsHorizontalScrollIndicator = NO;
   self.scrollView.alwaysBounceHorizontal = YES;
   [self addSubview:self.scrollView];
@@ -63,9 +64,7 @@
   
   self.scrollView.contentSize = CGSizeMake(x, height);
   
-  CGRect frame = self.scrollView.frame;
-  frame.size.height = height;
-  self.scrollView.frame = frame;
+
 }
 
 @end
