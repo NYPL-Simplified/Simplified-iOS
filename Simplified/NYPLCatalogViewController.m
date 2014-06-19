@@ -18,6 +18,7 @@ static CGFloat const sectionHeaderHeight = 30.0;
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogRoot *catalogRoot;
+@property (nonatomic) NSMutableDictionary *cachedCells;
 @property (nonatomic) NSMutableDictionary *imageDataDictionary;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) UITableView *tableView;
@@ -34,6 +35,7 @@ static CGFloat const sectionHeaderHeight = 30.0;
   self = [super init];
   if(!self) return nil;
   
+  self.cachedCells = [NSMutableDictionary dictionary];
   self.imageDataDictionary = [NSMutableDictionary dictionary];
   self.title = NSLocalizedString(@"CatalogViewControllerTitle", nil);
   
@@ -82,11 +84,19 @@ static CGFloat const sectionHeaderHeight = 30.0;
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
+  UITableViewCell *const cachedCell = [self.cachedCells objectForKey:indexPath];
+  if(cachedCell) {
+    return cachedCell;
+  }
+  
   if(indexPath.section < (NSInteger) self.indexOfNextLaneRequiringImageDownload) {
-    return [[NYPLCatalogLaneCell alloc]
-            initWithLaneIndex:indexPath.section
-            books:((NYPLCatalogLane *) self.catalogRoot.lanes[indexPath.section]).books
-            imageDataDictionary:self.imageDataDictionary];
+    UITableViewCell *const cell =
+      [[NYPLCatalogLaneCell alloc]
+       initWithLaneIndex:indexPath.section
+       books:((NYPLCatalogLane *) self.catalogRoot.lanes[indexPath.section]).books
+       imageDataDictionary:self.imageDataDictionary];
+    [self.cachedCells setObject:cell forKey:indexPath];
+    return cell;
   } else {
     // FIXME: This does not always seem to show when it should.
     return [[UITableViewCell alloc] init];
@@ -195,12 +205,11 @@ viewForHeaderInSection:(NSInteger const)section
            assert([value isKindOfClass:[NSData class]]);
            [self.imageDataDictionary setValue:value forKey:key];
          }
-         
-         [self.tableView reloadData];
-         
-         ++self.indexOfNextLaneRequiringImageDownload;
-         [self downloadImages];
        }];
+       
+       [self.tableView reloadData];
+       ++self.indexOfNextLaneRequiringImageDownload;
+       [self downloadImages];
      }];
    }];
 }
