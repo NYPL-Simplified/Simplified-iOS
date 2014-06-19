@@ -1,10 +1,22 @@
-@import UIKit;
+@import Foundation;
 
-#include "NYPLOPDSEntry.h"
+@class NYPLCatalogLaneCell;
+
+@protocol NYPLCatalogLaneCellDelegate <NSObject>
+
+- (void)catalogLaneCell:(NYPLCatalogLaneCell *)cell
+ didSelectBookIndex:(NSUInteger)bookIndex;
+
+@end
 
 @interface NYPLCatalogLaneCell : UITableViewCell
 
+@property (nonatomic, weak) id<NYPLCatalogLaneCellDelegate> delegate;
+@property (nonatomic, readonly) NSUInteger laneIndex;
+
 // designated initializer
-- (id)initWithEntry:(NYPLOPDSEntry *)entry;
+- (id)initWithLaneIndex:(NSUInteger)laneIndex
+                  books:(NSArray *)books
+    imageDataDictionary:(NSDictionary *)imageDataDictionary;
 
 @end
