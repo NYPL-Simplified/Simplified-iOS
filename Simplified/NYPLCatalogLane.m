@@ -36,4 +36,17 @@
   return self;
 }
 
+- (NSSet *)imageURLs
+{
+  NSMutableSet *const set = [NSMutableSet set];
+  
+  for(NYPLCatalogBook *const book in self.books) {
+    if(book.imageURL) {
+      [set addObject:book.imageURL];
+    }
+  }
+  
+  return set;
+}
+
 @end

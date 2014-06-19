@@ -11,4 +11,6 @@
       subsectionURL:(NSURL *)subsectionURL
               title:(NSString *)title;
 
+- (NSSet *)imageURLs;
+
 @end
