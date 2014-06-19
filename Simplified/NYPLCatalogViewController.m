@@ -157,6 +157,7 @@ viewForHeaderInSection:(NSInteger const)section
   self.tableView.hidden = YES;
   self.activityIndicatorView.hidden = NO;
   [self.activityIndicatorView startAnimating];
+  [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   
   [NYPLCatalogRoot
    withURL:[NYPLConfiguration mainFeedURL]
@@ -164,6 +165,7 @@ viewForHeaderInSection:(NSInteger const)section
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.activityIndicatorView.hidden = YES;
        [self.activityIndicatorView stopAnimating];
+       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
        
        if(!root) {
          [[[UIAlertView alloc]
@@ -188,8 +190,11 @@ viewForHeaderInSection:(NSInteger const)section
 - (void)downloadImages
 {
   if(self.indexOfNextLaneRequiringImageDownload >= self.catalogRoot.lanes.count) {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     return;
   }
+  
+  [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   
   NYPLCatalogLane *const lane = self.catalogRoot.lanes[self.indexOfNextLaneRequiringImageDownload];
   
