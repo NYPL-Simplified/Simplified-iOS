@@ -98,7 +98,7 @@ static CGFloat const sectionHeaderHeight = 30.0;
     [self.cachedCells setObject:cell forKey:indexPath];
     return cell;
   } else {
-    // FIXME: This does not always seem to show when it should.
+    // TODO: Add loading cell.
     return [[UITableViewCell alloc] init];
   }
 }
