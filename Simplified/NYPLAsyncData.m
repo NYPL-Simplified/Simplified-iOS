@@ -11,7 +11,7 @@ completionHandler:(void (^ const)(NSData *data))handler
                         __attribute__((unused)) NSURLResponse *response,
                         NSError *const error) {
       if(error) {
-        NSLog(@"NYPLAsyncData: Error: %@", error.localizedDescription);
+        NYPLLOG_F(@"Error: %@", error.localizedDescription);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
                        ^{handler(nil);});
       } else {

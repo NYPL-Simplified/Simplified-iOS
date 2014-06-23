@@ -32,7 +32,7 @@
    withURL:url
    completionHandler:^(NSData *const data) {
      if(!data) {
-       NSLog(@"%@: Failed to download data.", [self class]);
+       NYPLLOG(@"Failed to download data.");
        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
                       ^{handler(nil);});
        return;
@@ -40,7 +40,7 @@
      
      SMXMLDocument *const document = [[SMXMLDocument alloc] initWithData:data error:NULL];
      if(!document) {
-       NSLog(@"%@: Failed to parse data as XML.", [self class]);
+       NYPLLOG(@"Failed to parse data as XML.");
        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
                       ^{handler(nil);});
        return;
@@ -48,7 +48,7 @@
      
      NYPLOPDSFeed *const navigationFeed = [[NYPLOPDSFeed alloc] initWithDocument:document];
      if(!navigationFeed) {
-       NSLog(@"%@: Could not interpret XML as OPDS.", [self class]);
+       NYPLLOG(@"Could not interpret XML as OPDS.");
        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
                       ^{handler(nil);});
        return;
@@ -78,7 +78,7 @@
           for(NYPLOPDSLink *const link in navigationEntry.links) {
             if([link.rel isEqualToString:NYPLOPDSRelationRecommended]) {
               if(!NYPLOPDSTypeStringIsAcquisition(link.type)) {
-                NSLog(@"%@: Ignoring recommended feed without acquisition type.", [self class]);
+                NYPLLOG(@"Ignoring recommended feed without acquisition type.");
               } else {
                 recommendedURL = link.href;
               }
@@ -93,18 +93,18 @@
                                   initWithType:NYPLCatalogSubsectionLinkTypeNavigation
                                   url:link.href];
               } else {
-                NSLog(@"%@: Ignoring subsection without known type.", [self class]);
+                NYPLLOG(@"Ignoring subsection without known type.");
               }
             }
           }
           
           if(!subsectionLink) {
-            NSLog(@"%@: Discarding entry without subsection.", [self class]);
+            NYPLLOG(@"Discarding entry without subsection.");
             continue;
           }
           
           if(!recommendedURL) {
-            NSLog(@"%@: Creating lane without recommended books.", [self class]);
+            NYPLLOG(@"Creating lane without recommended books.");
             [lanes addObject:
              [[NYPLCatalogLane alloc]
               initWithBooks:@[]
@@ -115,7 +115,7 @@
           
           id const recommendedDataObject = dataDictionary[recommendedURL];
           if([recommendedDataObject isKindOfClass:[NSNull class]]) {
-            NSLog(@"%@: Creating lane without unobtainable recommended books.", [self class]);
+            NYPLLOG(@"Creating lane without unobtainable recommended books.");
             [lanes addObject:
              [[NYPLCatalogLane alloc]
               initWithBooks:@[]
@@ -130,7 +130,7 @@
           SMXMLDocument *const document = [SMXMLDocument documentWithData:recommendedData
                                                                     error:NULL];
           if(!document) {
-            NSLog(@"%@: Creating lane without unparsable recommended books.", [self class]);
+            NYPLLOG(@"Creating lane without unparsable recommended books.");
             [lanes addObject:
              [[NYPLCatalogLane alloc]
               initWithBooks:@[]
@@ -143,7 +143,7 @@
             [[NYPLOPDSFeed alloc] initWithDocument:document];
           
           if(!recommendedAcquisitionFeed) {
-            NSLog(@"%@: Creating lane without invalid recommended books.", [self class]);
+            NYPLLOG(@"Creating lane without invalid recommended books.");
             [lanes addObject:
              [[NYPLCatalogLane alloc]
               initWithBooks:@[]

@@ -27,8 +27,8 @@
     for(SMXMLElement *const authorElement in [element childrenNamed:@"author"]) {
       SMXMLElement *const nameElement = [authorElement childNamed:@"name"];
       if(!nameElement) {
-        NSLog(@"NYPLOPDSEntry: 'author' element missing required 'name' element.");
-        NSLog(@"NYPLOPDSEntry: Ignoring malformed 'author' element.");
+        NYPLLOG(@"'author' element missing required 'name' element.");
+        NYPLLOG(@"Ignoring malformed 'author' element.");
         continue;
       }
       [authorStrings addObject:nameElement.valueString];
@@ -38,7 +38,7 @@
   }
   
   if(!((self.identifier = [element childNamed:@"id"].valueString))) {
-    NSLog(@"NYPLOPDSEntry: Missing required 'id' element.");
+    NYPLLOG(@"Missing required 'id' element.");
     return nil;
   }
   
@@ -48,7 +48,7 @@
     for(SMXMLElement *const linkElement in [element childrenNamed:@"link"]) {
       NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithElement:linkElement];
       if(!link) {
-        NSLog(@"NYPLOPDSEntry: Ignoring malformed 'link' element.");
+        NYPLLOG(@"Ignoring malformed 'link' element.");
         continue;
       }
       [links addObject:link];
@@ -58,20 +58,20 @@
   }
   
   if(!((self.title = [element childNamed:@"title"].valueString))) {
-    NSLog(@"NYPLOPDSEntry: Missing required 'title' element.");
+    NYPLLOG(@"Missing required 'title' element.");
     return nil;
   }
   
   {
     NSString *const updatedString = [element childNamed:@"updated"].valueString;
     if(!updatedString) {
-      NSLog(@"NYPLOPDSEntry: Missing required 'updated' element.");
+      NYPLLOG(@"Missing required 'updated' element.");
       return nil;
     }
     
     self.updated = [NSDate dateWithRFC3339:updatedString];
     if(!self.updated) {
-      NSLog(@"NYPLOPDSEntry: Element 'updated' does not contain an RFC 3339 date.");
+      NYPLLOG(@"Element 'updated' does not contain an RFC 3339 date.");
       return nil;
     }
   }

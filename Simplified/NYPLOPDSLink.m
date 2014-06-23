@@ -21,14 +21,14 @@
   {
     NSString *const hrefString = [element attributeNamed:@"href"];
     if(!hrefString) {
-      NSLog(@"NYPLOPDSLink: Missing required 'href' attribute.");
+      NYPLLOG(@"Missing required 'href' attribute.");
       return nil;
     }
     
     if(!((self.href = [NSURL URLWithString:hrefString]))) {
       // Atom requires support for RFC 3986, but CFURL and NSURL only support RFC 2396. As such, a
       // valid URI may be rejected in extremely rare cases.
-      NSLog(@"NYPLOPDSLink: 'href' attribute does not contain an RFC 2396 URI.");
+      NYPLLOG(@"'href' attribute does not contain an RFC 2396 URI.");
       return nil;
     }
   }
