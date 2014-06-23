@@ -1,7 +1,5 @@
 // This class provides convenience functions for retrieving remote data.
 
-@import Foundation;
-
 @interface NYPLAsyncData : NSObject
 
 // |data| will be |nil| if an error occurred.

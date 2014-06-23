@@ -1,5 +1,3 @@
-@import Foundation;
-
 @interface NYPLCatalogCategory : NSObject
 
 @property (nonatomic, readonly) NSArray *books;

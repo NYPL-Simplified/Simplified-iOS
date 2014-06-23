@@ -1,5 +1,3 @@
-@import UIKit;
-
 @interface NYPLMyBooksNavigationController : UINavigationController
 
 // designated initializer

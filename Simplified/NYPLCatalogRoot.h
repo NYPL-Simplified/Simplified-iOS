@@ -1,5 +1,3 @@
-@import Foundation;
-
 @interface NYPLCatalogRoot : NSObject
 
 @property (nonatomic, readonly) NSArray *lanes;

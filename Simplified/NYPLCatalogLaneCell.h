@@ -1,5 +1,3 @@
-@import Foundation;
-
 @class NYPLCatalogLaneCell;
 
 @protocol NYPLCatalogLaneCellDelegate <NSObject>

@@ -1,5 +1,3 @@
-@import UIKit;
-
 @interface NYPLRootTabBarController : UITabBarController
 
 // designated initializer

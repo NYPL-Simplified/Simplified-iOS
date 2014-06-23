@@ -1,5 +1,3 @@
-@import UIKit;
-
 @interface NYPLMyBooksViewController : UIViewController
 
 // designated initializer

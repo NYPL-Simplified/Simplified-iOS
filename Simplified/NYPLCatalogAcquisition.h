@@ -1,5 +1,3 @@
-@import Foundation;
-
 @interface NYPLCatalogAcquisition : NSObject
 
 @property (nonatomic, readonly) NSURL *borrow; // nilable

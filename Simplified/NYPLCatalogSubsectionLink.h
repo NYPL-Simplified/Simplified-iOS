@@ -1,5 +1,3 @@
-@import Foundation;
-
 typedef enum {
   NYPLCatalogSubsectionLinkTypeAcquisition,
   NYPLCatalogSubsectionLinkTypeNavigation
