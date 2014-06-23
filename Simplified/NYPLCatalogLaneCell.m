@@ -63,8 +63,6 @@
   }
   
   self.scrollView.contentSize = CGSizeMake(x, height);
-  
-
 }
 
 @end
