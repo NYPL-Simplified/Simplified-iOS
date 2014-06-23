@@ -1,4 +1,5 @@
 #import "NYPLAsync.h"
+#import "NYPLOPDSFeed.h"
 
 #import "NYPLCatalogCategory.h"
 
@@ -13,10 +14,18 @@
 
 + (void)withURL:(NSURL *)url handler:(void (^)(NYPLCatalogCategory *category))handler
 {
-  NYPLAsyncFetch(url, ^(__attribute__((unused)) NSData *const data) {
-     // TODO
-     handler(nil);
-  });
+  [NYPLOPDSFeed
+   withURL:url
+   completionHandler:^(NYPLOPDSFeed *const acquisitionFeed) {
+     if(!acquisitionFeed) {
+       NYPLLOG(@"Failed to retrieve acquisition feed.");
+       NYPLAsyncDispatch(^{handler(nil);});
+       return;
+     }
+     
+     // TODO: Load books and title.
+     // TODO: Use factored-out book loading from NYPLCatalogRoot.
+   }];
 }
 
 - (instancetype)initWithBooks:(NSArray *const)books title:(NSString *const)title
