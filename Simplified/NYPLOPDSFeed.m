@@ -1,4 +1,5 @@
 #import "NSDate+NYPLDateAdditions.h"
+#import "NYPLAsync.h"
 #import "NYPLOPDSEntry.h"
 #import "SMXMLElement+NYPLElementAdditions.h"
 
@@ -14,6 +15,37 @@
 @end
 
 @implementation NYPLOPDSFeed
+
++ (void)withURL:(NSURL *)url completionHandler:(void (^ const)(NYPLOPDSFeed *feed))handler
+{
+  NYPLAsyncFetch(url, ^(NSData *const data) {
+    if(!data) {
+      NYPLLOG(@"Failed to retrieve data.");
+      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                     ^{handler(nil);});
+      return;
+    }
+    
+    SMXMLDocument *const document = [[SMXMLDocument alloc] initWithData:data error:NULL];
+    if(!document) {
+      NYPLLOG(@"Failed to parse data as XML.");
+      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                     ^{handler(nil);});
+      return;
+    }
+    
+    NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
+    if(!feed) {
+      NYPLLOG(@"Could not interpret XML as OPDS.");
+      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                     ^{handler(nil);});
+      return;
+    }
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+                   ^{handler(feed);});
+  });
+}
 
 - (instancetype)initWithDocument:(SMXMLDocument *const)document
 {
