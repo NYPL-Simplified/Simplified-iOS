@@ -1,4 +1,4 @@
-#import "NYPLAsyncData.h"
+#import "NYPLAsync.h"
 
 #import "NYPLCatalogCategory.h"
 
@@ -13,12 +13,10 @@
 
 + (void)withURL:(NSURL *)url handler:(void (^)(NYPLCatalogCategory *category))handler
 {
-  [NYPLAsyncData
-   withURL:url
-   completionHandler:^(__attribute__((unused)) NSData *const data) {
+  NYPLAsyncFetch(url, ^(__attribute__((unused)) NSData *const data) {
      // TODO
      handler(nil);
-   }];
+  });
 }
 
 - (instancetype)initWithBooks:(NSArray *const)books title:(NSString *const)title

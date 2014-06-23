@@ -1,6 +1,6 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
-#import "NYPLAsyncData.h"
+#import "NYPLAsync.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogRoot.h"
@@ -198,25 +198,23 @@ viewForHeaderInSection:(NSInteger const)section
   
   NYPLCatalogLane *const lane = self.catalogRoot.lanes[self.indexOfNextLaneRequiringImageDownload];
   
-  [NYPLAsyncData
-   withURLSet:lane.imageURLs
-   completionHandler:^(NSDictionary *const dataDictionary) {
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       [dataDictionary enumerateKeysAndObjectsUsingBlock:^(id const key,
-                                                           id const value,
-                                                           __attribute__((unused)) BOOL *stop) {
-         if(![value isKindOfClass:[NSNull class]]) {
-           assert([key isKindOfClass:[NSURL class]]);
-           assert([value isKindOfClass:[NSData class]]);
-           [self.imageDataDictionary setValue:value forKey:key];
-         }
-       }];
-       
-       [self.tableView reloadData];
-       ++self.indexOfNextLaneRequiringImageDownload;
-       [self downloadImages];
-     }];
-   }];
+  NYPLAsyncFetchSet(lane.imageURLs, ^(NSDictionary *const dataDictionary) {
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+      [dataDictionary enumerateKeysAndObjectsUsingBlock:^(id const key,
+                                                          id const value,
+                                                          __attribute__((unused)) BOOL *stop) {
+        if(![value isKindOfClass:[NSNull class]]) {
+          assert([key isKindOfClass:[NSURL class]]);
+          assert([value isKindOfClass:[NSData class]]);
+          [self.imageDataDictionary setValue:value forKey:key];
+        }
+      }];
+      
+      [self.tableView reloadData];
+      ++self.indexOfNextLaneRequiringImageDownload;
+      [self downloadImages];
+    }];
+  });
 }
 
 @end
