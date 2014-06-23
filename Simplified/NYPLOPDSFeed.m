@@ -25,25 +25,25 @@
   }
   
   if(!((self.identifier = [document.root childNamed:@"id"].valueString))) {
-    NSLog(@"NYPLOPDSFeed: Missing required 'id' element.");
+    NYPLLOG(@"Missing required 'id' element.");
     return nil;
   }
   
   if(!((self.title = [document.root childNamed:@"title"].valueString))) {
-    NSLog(@"NYPLOPDSFeed: Missing required 'title' element.");
+    NYPLLOG(@"Missing required 'title' element.");
     return nil;
   }
   
   {
     NSString *const updatedString = [document.root childNamed:@"updated"].valueString;
     if(!updatedString) {
-      NSLog(@"NYPLOPDSFeed: Missing required 'updated' element.");
+      NYPLLOG(@"Missing required 'updated' element.");
       return nil;
     }
     
     self.updated = [NSDate dateWithRFC3339:updatedString];
     if(!self.updated) {
-      NSLog(@"NYPLOPDSFeed: Element 'updated' does not contain an RFC 3339 date.");
+      NYPLLOG(@"Element 'updated' does not contain an RFC 3339 date.");
       return nil;
     }
   }
@@ -54,7 +54,7 @@
     for(SMXMLElement *const entryElement in [document.root childrenNamed:@"entry"]) {
       NYPLOPDSEntry *const entry = [[NYPLOPDSEntry alloc] initWithElement:entryElement];
       if(!entry) {
-        NSLog(@"NYPLOPDSFeed: Ingoring malformed 'entry' element.");
+        NYPLLOG(@"Ingoring malformed 'entry' element.");
         continue;
       }
       [entries addObject:entry];
