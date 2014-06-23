@@ -7,6 +7,8 @@
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSDate *updated;
 
++ (void)withURL:(NSURL *)url completionHandler:(void (^)(NYPLOPDSFeed *feed))handler;
+
 // designated initializer
 - (instancetype)initWithDocument:(SMXMLDocument *)document;
 
