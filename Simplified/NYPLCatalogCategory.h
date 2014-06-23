@@ -9,7 +9,6 @@
 + (void)withURL:(NSURL *)url handler:(void (^)(NYPLCatalogCategory *category))handler;
 
 // designated initializer
-- (id)initWithBooks:(NSArray *)books
-              title:(NSString *)title;
+- (instancetype)initWithBooks:(NSArray *)books title:(NSString *)title;
 
 @end

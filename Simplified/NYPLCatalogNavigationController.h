@@ -3,6 +3,6 @@
 @interface NYPLCatalogNavigationController : UINavigationController
 
 // designated initializer
-- (id)init;
+- (instancetype)init;
 
 @end

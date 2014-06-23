@@ -11,6 +11,6 @@
 @property (nonatomic, readonly) NSDate *updated;
 
 // designated initializer
-- (id)initWithElement:(SMXMLElement *)element;
+- (instancetype)initWithElement:(SMXMLElement *)element;
 
 @end

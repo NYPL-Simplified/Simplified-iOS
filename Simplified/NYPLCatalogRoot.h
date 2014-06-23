@@ -8,6 +8,6 @@
 + (void)withURL:(NSURL *)url handler:(void (^)(NYPLCatalogRoot *root))handler;
 
 // designated initializer
-- (id)initWithLanes:(NSArray *)lanes;
+- (instancetype)initWithLanes:(NSArray *)lanes;
 
 @end

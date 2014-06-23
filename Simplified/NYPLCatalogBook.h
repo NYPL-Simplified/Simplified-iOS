@@ -13,12 +13,12 @@
 @property (nonatomic, readonly) NSDate *updated;
 
 // designated initializer
-- (id)initWithAcquisition:(NYPLCatalogAcquisition *)acquisition
-            authorStrings:(NSArray *)authorStrings
-               identifier:(NSString *)identifier
-                 imageURL:(NSURL *)imageURL
-        imageThumbnailURL:(NSURL *)imageThumbnailURL
-                    title:(NSString *)title
-                  updated:(NSDate *)updated;
+- (instancetype)initWithAcquisition:(NYPLCatalogAcquisition *)acquisition
+                      authorStrings:(NSArray *)authorStrings
+                         identifier:(NSString *)identifier
+                           imageURL:(NSURL *)imageURL
+                  imageThumbnailURL:(NSURL *)imageThumbnailURL
+                              title:(NSString *)title
+                            updated:(NSDate *)updated;
 
 @end

@@ -12,6 +12,6 @@
 @property (nonatomic, readonly) NSString *length;
 
 // designated initializer
-- (id)initWithElement:(SMXMLElement *)element;
+- (instancetype)initWithElement:(SMXMLElement *)element;
 
 @end

@@ -16,7 +16,7 @@
 
 @implementation NYPLOPDSEntry
 
-- (id)initWithElement:(SMXMLElement *const)element
+- (instancetype)initWithElement:(SMXMLElement *const)element
 {
   self = [super init];
   if(!self) return nil;

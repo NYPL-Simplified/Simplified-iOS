@@ -3,6 +3,6 @@
 @interface NYPLCatalogViewController : UIViewController
 
 // designated initializer
-- (id)init;
+- (instancetype)init;
 
 @end

@@ -14,13 +14,13 @@
 
 @implementation NYPLCatalogBook
 
-- (id)initWithAcquisition:(NYPLCatalogAcquisition *const)acquisition
-            authorStrings:(NSArray *const)authorStrings
-               identifier:(NSString *const)identifier
-                 imageURL:(NSURL *const)imageURL
-        imageThumbnailURL:(NSURL *const)imageThumbnailURL
-                    title:(NSString *const)title
-                  updated:(NSDate *const)updated
+- (instancetype)initWithAcquisition:(NYPLCatalogAcquisition *const)acquisition
+                      authorStrings:(NSArray *const)authorStrings
+                         identifier:(NSString *const)identifier
+                           imageURL:(NSURL *const)imageURL
+                  imageThumbnailURL:(NSURL *const)imageThumbnailURL
+                              title:(NSString *const)title
+                            updated:(NSDate *const)updated
 {
   self = [super init];
   if(!self) return nil;

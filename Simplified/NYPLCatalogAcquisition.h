@@ -8,10 +8,10 @@
 @property (nonatomic, readonly) NSURL *sample; // nilable
 
 // designated initializer
-- (id)initWithBorrow:(NSURL *)borrow
-             generic:(NSURL *)generic
-          openAccess:(NSURL *)openAccess
-              sample:(NSURL *)sample;
+- (instancetype)initWithBorrow:(NSURL *)borrow
+                       generic:(NSURL *)generic
+                    openAccess:(NSURL *)openAccess
+                        sample:(NSURL *)sample;
 
 
 @end

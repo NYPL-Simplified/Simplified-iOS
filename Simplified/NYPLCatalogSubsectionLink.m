@@ -9,7 +9,7 @@
 
 @implementation NYPLCatalogSubsectionLink
 
-- (id)initWithType:(NYPLCatalogSubsectionLinkType const)type url:(NSURL *const)url
+- (instancetype)initWithType:(NYPLCatalogSubsectionLinkType const)type url:(NSURL *const)url
 {
   self = [super init];
   if(!self) return nil;

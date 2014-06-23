@@ -12,9 +12,9 @@
 
 @implementation NYPLCatalogLaneCell
 
-- (id)initWithLaneIndex:(NSUInteger const)laneIndex
-                  books:(NSArray *const)books
-    imageDataDictionary:(NSDictionary *const)imageDataDictionary
+- (instancetype)initWithLaneIndex:(NSUInteger const)laneIndex
+                            books:(NSArray *const)books
+              imageDataDictionary:(NSDictionary *const)imageDataDictionary
 {
   self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
   if(!self) return nil;

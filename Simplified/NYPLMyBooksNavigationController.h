@@ -3,6 +3,6 @@
 @interface NYPLMyBooksNavigationController : UINavigationController
 
 // designated initializer
-- (id)init;
+- (instancetype)init;
 
 @end

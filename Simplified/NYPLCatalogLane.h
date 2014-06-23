@@ -9,9 +9,9 @@
 @property (nonatomic, readonly) NSString *title;
 
 // designated initializer
-- (id)initWithBooks:(NSArray *)books
-     subsectionLink:(NYPLCatalogSubsectionLink *)subsectionLink
-              title:(NSString *)title;
+- (instancetype)initWithBooks:(NSArray *)books
+               subsectionLink:(NYPLCatalogSubsectionLink *)subsectionLink
+                        title:(NSString *)title;
 
 - (NSSet *)imageURLs;
 
