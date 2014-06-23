@@ -1,5 +1,3 @@
-@import Foundation;
-
 #import "NYPLCatalogAcquisition.h"
 
 @interface NYPLCatalogBook : NSObject

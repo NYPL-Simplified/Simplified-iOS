@@ -1,5 +1,3 @@
-@import Foundation;
-
 #import "NYPLCatalogSubsectionLink.h"
 
 @interface NYPLCatalogLane : NSObject

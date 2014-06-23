@@ -1,5 +1,3 @@
-@import Foundation;
-
 #import <SMXMLDocument/SMXMLDocument.h>
 
 @interface NYPLOPDSEntry : NSObject
