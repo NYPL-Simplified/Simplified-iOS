@@ -4,10 +4,12 @@
 #import "NYPLCatalogAcquisition.h"
 #import "NYPLCatalogBook.h"
 #import "NYPLCatalogLane.h"
+#import "NYPLCatalogSubsectionLink.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
 #import "NYPLOPDSRelation.h"
+#import "NYPLOPDSType.h"
 
 #import "NYPLCatalogRoot.h"
 
@@ -71,18 +73,32 @@
         
         for(NYPLOPDSEntry *const navigationEntry in navigationFeed.entries) {
           NSURL *recommendedURL = nil;
-          NSURL *subsectionURL = nil;
+          NYPLCatalogSubsectionLink *subsectionLink = nil;
           
           for(NYPLOPDSLink *const link in navigationEntry.links) {
             if([link.rel isEqualToString:NYPLOPDSRelationRecommended]) {
-              recommendedURL = link.href;
+              if(!NYPLOPDSTypeStringIsAcquisition(link.type)) {
+                NSLog(@"%@: Ignoring recommended feed without acquisition type.", [self class]);
+              } else {
+                recommendedURL = link.href;
+              }
             }
             if([link.rel isEqualToString:NYPLOPDSRelationSubsection]) {
-              subsectionURL = link.href;
+              if(NYPLOPDSTypeStringIsAcquisition(link.type)) {
+                subsectionLink = [[NYPLCatalogSubsectionLink alloc]
+                                  initWithType:NYPLCatalogSubsectionLinkTypeAcquisition
+                                  url:link.href];
+              } else if(NYPLOPDSTypeStringIsNavigation(link.type)) {
+                subsectionLink = [[NYPLCatalogSubsectionLink alloc]
+                                  initWithType:NYPLCatalogSubsectionLinkTypeNavigation
+                                  url:link.href];
+              } else {
+                NSLog(@"%@: Ignoring subsection without known type.", [self class]);
+              }
             }
           }
           
-          if(!subsectionURL) {
+          if(!subsectionLink) {
             NSLog(@"%@: Discarding entry without subsection.", [self class]);
             continue;
           }
@@ -92,7 +108,7 @@
             [lanes addObject:
              [[NYPLCatalogLane alloc]
               initWithBooks:[NSArray array]
-              subsectionURL:subsectionURL
+              subsectionLink:subsectionLink
               title:navigationEntry.title]];
             continue;
           }
@@ -103,7 +119,7 @@
             [lanes addObject:
              [[NYPLCatalogLane alloc]
               initWithBooks:[NSArray array]
-              subsectionURL:subsectionURL
+              subsectionLink:subsectionLink
               title:navigationEntry.title]];
             continue;
           }
@@ -118,7 +134,7 @@
             [lanes addObject:
              [[NYPLCatalogLane alloc]
               initWithBooks:[NSArray array]
-              subsectionURL:subsectionURL
+              subsectionLink:subsectionLink
               title:navigationEntry.title]];
             continue;
           }
@@ -131,7 +147,7 @@
             [lanes addObject:
              [[NYPLCatalogLane alloc]
               initWithBooks:[NSArray array]
-              subsectionURL:subsectionURL
+              subsectionLink:subsectionLink
               title:navigationEntry.title]];
             continue;
           }
@@ -185,7 +201,7 @@
           [lanes addObject:
            [[NYPLCatalogLane alloc]
             initWithBooks:books
-            subsectionURL:subsectionURL
+            subsectionLink:subsectionLink
             title:navigationEntry.title]];
         }
         
