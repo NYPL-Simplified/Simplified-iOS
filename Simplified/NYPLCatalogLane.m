@@ -5,7 +5,7 @@
 @interface NYPLCatalogLane ()
 
 @property (nonatomic) NSArray *books;
-@property (nonatomic) NSURL *subsectionURL;
+@property (nonatomic) NYPLCatalogSubsectionLink *subsectionLink;
 @property (nonatomic) NSString *title;
 
 @end
@@ -13,13 +13,13 @@
 @implementation NYPLCatalogLane
 
 - (id)initWithBooks:(NSArray *const)books
-      subsectionURL:(NSURL *const)subsectionURL
+     subsectionLink:(NYPLCatalogSubsectionLink *const)subsectionLink
               title:(NSString *const)title
 {
   self = [super init];
   if(!self) return nil;
   
-  if(!(books && subsectionURL && title)) {
+  if(!(books && subsectionLink && title)) {
     @throw NSInvalidArgumentException;
   }
   
@@ -30,7 +30,7 @@
   }
   
   self.books = books;
-  self.subsectionURL = subsectionURL;
+  self.subsectionLink = subsectionLink;
   self.title = title;
   
   return self;
