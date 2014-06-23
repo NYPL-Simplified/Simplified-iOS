@@ -33,8 +33,7 @@
    completionHandler:^(NYPLOPDSFeed *const navigationFeed) {
      if(!navigationFeed) {
        NYPLLOG(@"Failed to retrieve main navigation feed.");
-       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-                      ^{handler(nil);});
+       NYPLAsyncDispatch(^{handler(nil);});
        return;
      }
      
@@ -122,7 +121,7 @@
          }
          
          NYPLOPDSFeed *recommendedAcquisitionFeed =
-         [[NYPLOPDSFeed alloc] initWithDocument:document];
+           [[NYPLOPDSFeed alloc] initWithDocument:document];
          
          if(!recommendedAcquisitionFeed) {
            NYPLLOG(@"Creating lane without invalid recommended books.");
@@ -151,8 +150,7 @@
        NYPLCatalogRoot *const root = [[NYPLCatalogRoot alloc] initWithLanes:lanes];
        assert(root);
        
-       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-                      ^{handler(root);});
+       NYPLAsyncDispatch(^{handler(root);});
      });
    }];
 }
