@@ -32,7 +32,7 @@
   
   for(NYPLCatalogBook *const book in books) {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeCustom];
-    NSData *const imageData = [imageDataDictionary objectForKey:book.imageURL];
+    NSData *const imageData = imageDataDictionary[book.imageURL];
     UIImage *const image =
       imageData ? [UIImage imageWithData:imageData] : [UIImage imageNamed:@"NoCover"];
     [button setImage:image forState:UIControlStateNormal];

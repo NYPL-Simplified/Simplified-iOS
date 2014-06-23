@@ -27,7 +27,7 @@ completionHandler:(void (^ const)(NSData *data))handler
 {
   if(!set.count) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-                   ^{handler([NSDictionary dictionary]);});
+                   ^{handler(@{});});
     return;
   }
   
@@ -44,7 +44,7 @@ completionHandler:(void (^ const)(NSData *data))handler
   for(NSURL *const url in set) {
     [NYPLAsyncData withURL:url completionHandler:^(NSData *const data) {
       [lock lock];
-      [dataDictionary setObject:(data ? data : [NSNull null]) forKey:url];
+      dataDictionary[url] = (data ? data : [NSNull null]);
       --remaining;
       if(!remaining) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),

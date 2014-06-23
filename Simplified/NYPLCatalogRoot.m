@@ -107,18 +107,18 @@
             NSLog(@"%@: Creating lane without recommended books.", [self class]);
             [lanes addObject:
              [[NYPLCatalogLane alloc]
-              initWithBooks:[NSArray array]
+              initWithBooks:@[]
               subsectionLink:subsectionLink
               title:navigationEntry.title]];
             continue;
           }
           
-          id const recommendedDataObject = [dataDictionary objectForKey:recommendedURL];
+          id const recommendedDataObject = dataDictionary[recommendedURL];
           if([recommendedDataObject isKindOfClass:[NSNull class]]) {
             NSLog(@"%@: Creating lane without unobtainable recommended books.", [self class]);
             [lanes addObject:
              [[NYPLCatalogLane alloc]
-              initWithBooks:[NSArray array]
+              initWithBooks:@[]
               subsectionLink:subsectionLink
               title:navigationEntry.title]];
             continue;
@@ -133,7 +133,7 @@
             NSLog(@"%@: Creating lane without unparsable recommended books.", [self class]);
             [lanes addObject:
              [[NYPLCatalogLane alloc]
-              initWithBooks:[NSArray array]
+              initWithBooks:@[]
               subsectionLink:subsectionLink
               title:navigationEntry.title]];
             continue;
@@ -146,7 +146,7 @@
             NSLog(@"%@: Creating lane without invalid recommended books.", [self class]);
             [lanes addObject:
              [[NYPLCatalogLane alloc]
-              initWithBooks:[NSArray array]
+              initWithBooks:@[]
               subsectionLink:subsectionLink
               title:navigationEntry.title]];
             continue;

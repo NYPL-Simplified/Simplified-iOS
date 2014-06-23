@@ -84,7 +84,7 @@ static CGFloat const sectionHeaderHeight = 30.0;
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  UITableViewCell *const cachedCell = [self.cachedCells objectForKey:indexPath];
+  UITableViewCell *const cachedCell = (self.cachedCells)[indexPath];
   if(cachedCell) {
     return cachedCell;
   }
@@ -95,7 +95,7 @@ static CGFloat const sectionHeaderHeight = 30.0;
        initWithLaneIndex:indexPath.section
        books:((NYPLCatalogLane *) self.catalogRoot.lanes[indexPath.section]).books
        imageDataDictionary:self.imageDataDictionary];
-    [self.cachedCells setObject:cell forKey:indexPath];
+    (self.cachedCells)[indexPath] = cell;
     return cell;
   } else {
     // TODO: Add loading cell.
