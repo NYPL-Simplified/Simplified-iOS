@@ -6,7 +6,7 @@
 
 #pragma mark NSObject
 
-- (id)init
+- (instancetype)init
 {
   self = [super initWithRootViewController:[[NYPLMyBooksViewController alloc] init]];
   if(!self) return nil;

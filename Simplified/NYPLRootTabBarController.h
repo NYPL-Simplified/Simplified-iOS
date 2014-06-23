@@ -3,6 +3,6 @@
 @interface NYPLRootTabBarController : UITabBarController
 
 // designated initializer
-- (id)init;
+- (instancetype)init;
 
 @end

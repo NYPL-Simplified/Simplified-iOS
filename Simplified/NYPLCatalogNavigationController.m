@@ -6,7 +6,7 @@
 
 #pragma mark NSObject
 
-- (id)init
+- (instancetype)init
 {
   self = [super initWithRootViewController:[[NYPLCatalogViewController alloc] init]];
   if(!self) return nil;

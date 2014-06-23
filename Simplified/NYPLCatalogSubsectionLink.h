@@ -11,6 +11,6 @@ typedef enum {
 @property (nonatomic, readonly) NSURL *url;
 
 // designated initializer
-- (id)initWithType:(NYPLCatalogSubsectionLinkType)type url:(NSURL *)url;
+- (instancetype)initWithType:(NYPLCatalogSubsectionLinkType)type url:(NSURL *)url;
 
 @end

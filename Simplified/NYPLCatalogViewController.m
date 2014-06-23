@@ -30,7 +30,7 @@ static CGFloat const sectionHeaderHeight = 30.0;
 
 #pragma mark NSObject
 
-- (id)init
+- (instancetype)init
 {
   self = [super init];
   if(!self) return nil;

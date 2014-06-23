@@ -12,9 +12,9 @@
 
 @implementation NYPLCatalogLane
 
-- (id)initWithBooks:(NSArray *const)books
-     subsectionLink:(NYPLCatalogSubsectionLink *const)subsectionLink
-              title:(NSString *const)title
+- (instancetype)initWithBooks:(NSArray *const)books
+               subsectionLink:(NYPLCatalogSubsectionLink *const)subsectionLink
+                        title:(NSString *const)title
 {
   self = [super init];
   if(!self) return nil;

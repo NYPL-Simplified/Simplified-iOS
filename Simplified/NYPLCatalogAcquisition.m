@@ -11,10 +11,10 @@
 
 @implementation NYPLCatalogAcquisition
 
-- (id)initWithBorrow:(NSURL *const)borrow
-             generic:(NSURL *const)generic
-          openAccess:(NSURL *const)openAccess
-              sample:(NSURL *const)sample
+- (instancetype)initWithBorrow:(NSURL *const)borrow
+                       generic:(NSURL *const)generic
+                    openAccess:(NSURL *const)openAccess
+                        sample:(NSURL *const)sample
 {
   self = [super init];
   if(!self) return nil;

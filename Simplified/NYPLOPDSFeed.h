@@ -10,6 +10,6 @@
 @property (nonatomic, readonly) NSDate *updated;
 
 // designated initializer
-- (id)initWithDocument:(SMXMLDocument *)document;
+- (instancetype)initWithDocument:(SMXMLDocument *)document;
 
 @end

@@ -15,8 +15,8 @@
 @property (nonatomic, readonly) NSUInteger laneIndex;
 
 // designated initializer
-- (id)initWithLaneIndex:(NSUInteger)laneIndex
-                  books:(NSArray *)books
-    imageDataDictionary:(NSDictionary *)imageDataDictionary;
+- (instancetype)initWithLaneIndex:(NSUInteger)laneIndex
+                            books:(NSArray *)books
+              imageDataDictionary:(NSDictionary *)imageDataDictionary;
 
 @end

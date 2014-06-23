@@ -214,7 +214,7 @@
    }];
 }
 
-- (id)initWithLanes:(NSArray *const)lanes
+- (instancetype)initWithLanes:(NSArray *const)lanes
 {
   self = [super init];
   if(!self) return nil;

@@ -21,8 +21,7 @@
    }];
 }
 
-- (id)initWithBooks:(NSArray *const)books
-              title:(NSString *const)title
+- (instancetype)initWithBooks:(NSArray *const)books title:(NSString *const)title
 {
   self = [super init];
   if(!self) return nil;
