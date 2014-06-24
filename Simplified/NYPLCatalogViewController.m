@@ -79,6 +79,11 @@ static CGFloat const sectionHeaderHeight = 40.0;
   self.tableView.scrollIndicatorInsets = insets;
 }
 
+- (void)didReceiveMemoryWarning
+{
+  [self.cachedCells removeAllObjects];
+}
+
 #pragma mark UITableViewDataSource
 
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
