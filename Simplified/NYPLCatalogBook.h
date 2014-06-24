@@ -1,4 +1,5 @@
 #import "NYPLCatalogAcquisition.h"
+#import "NYPLOPDSEntry.h"
 
 @interface NYPLCatalogBook : NSObject
 
@@ -9,6 +10,8 @@
 @property (nonatomic, readonly) NSURL *imageThumbnailURL; // nilable
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSDate *updated;
+
++ (NYPLCatalogBook *)bookWithEntry:(NYPLOPDSEntry *)entry;
 
 // designated initializer
 - (instancetype)initWithAcquisition:(NYPLCatalogAcquisition *)acquisition
