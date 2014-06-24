@@ -135,7 +135,7 @@
          }
          
          NSMutableArray *const books =
-         [NSMutableArray arrayWithCapacity:recommendedAcquisitionFeed.entries.count];
+           [NSMutableArray arrayWithCapacity:recommendedAcquisitionFeed.entries.count];
          
          for(NYPLOPDSEntry *const acquisitionEntry in recommendedAcquisitionFeed.entries) {
            NSURL *borrow, *generic, *openAccess, *sample, *image, *imageThumbnail = nil;
