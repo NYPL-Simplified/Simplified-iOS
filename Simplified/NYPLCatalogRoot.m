@@ -138,46 +138,7 @@
            [NSMutableArray arrayWithCapacity:recommendedAcquisitionFeed.entries.count];
          
          for(NYPLOPDSEntry *const acquisitionEntry in recommendedAcquisitionFeed.entries) {
-           NSURL *borrow, *generic, *openAccess, *sample, *image, *imageThumbnail = nil;
-           for(NYPLOPDSLink *const link in acquisitionEntry.links) {
-             if([link.rel isEqualToString:NYPLOPDSRelationAcquisition]) {
-               generic = link.href;
-               continue;
-             }
-             if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionBorrow]) {
-               borrow = link.href;
-               continue;
-             }
-             if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionOpenAccess]) {
-               openAccess = link.href;
-               continue;
-             }
-             if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionSample]) {
-               sample = link.href;
-               continue;
-             }
-             if([link.rel isEqualToString:NYPLOPDSRelationImage]) {
-               image = link.href;
-               continue;
-             }
-             if([link.rel isEqualToString:NYPLOPDSRelationImageThumbnail]) {
-               imageThumbnail = link.href;
-               continue;
-             }
-           }
-           [books addObject:
-            [[NYPLCatalogBook alloc]
-             initWithAcquisition:[[NYPLCatalogAcquisition alloc]
-                                  initWithBorrow:borrow
-                                  generic:generic
-                                  openAccess:openAccess
-                                  sample:sample]
-             authorStrings:acquisitionEntry.authorStrings
-             identifier:acquisitionEntry.identifier
-             imageURL:image
-             imageThumbnailURL:imageThumbnail
-             title:acquisitionEntry.title
-             updated:acquisitionEntry.updated]];
+           [books addObject:[NYPLCatalogBook bookWithEntry:acquisitionEntry]];
          }
          
          [lanes addObject:
