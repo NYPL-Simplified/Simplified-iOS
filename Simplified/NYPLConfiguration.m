@@ -4,7 +4,7 @@
 
 + (NSURL *)mainFeedURL
 {
-  return [NSURL URLWithString:@"http://johnnowak.com/nypl/Navigation.eng.xml"];
+  return [NSURL URLWithString:@"http://library-simplified.herokuapp.com"];
 }
 
 @end

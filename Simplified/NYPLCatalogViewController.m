@@ -11,8 +11,8 @@
 
 #import "NYPLCatalogViewController.h"
 
-static CGFloat const rowHeight = 125.0;
-static CGFloat const sectionHeaderHeight = 30.0;
+static CGFloat const rowHeight = 115.0;
+static CGFloat const sectionHeaderHeight = 40.0;
 
 @interface NYPLCatalogViewController () <UITableViewDataSource, UITableViewDelegate>
 
