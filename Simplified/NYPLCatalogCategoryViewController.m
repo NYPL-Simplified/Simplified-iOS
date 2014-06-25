@@ -150,18 +150,26 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 
 - (CGSize)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
                   layout:(__attribute__((unused)) UICollectionViewLayout*)collectionViewLayout
-  sizeForItemAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-  // TODO: Sizes need to be set properly.
-  switch(self.interfaceOrientation) {
-    case UIInterfaceOrientationPortrait:
-      // fallthrough
-    case UIInterfaceOrientationPortraitUpsideDown:
-      return CGSizeMake(384, 120);
-    case UIInterfaceOrientationLandscapeLeft:
-      // fallthrough
-    case UIInterfaceOrientationLandscapeRight:
-      return CGSizeMake(341, 120);
+  // FIXME: This size calulation is extremely ad-hoc.
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    switch(self.interfaceOrientation) {
+      case UIInterfaceOrientationPortrait:
+        // fallthrough
+      case UIInterfaceOrientationPortraitUpsideDown:
+        return CGSizeMake(384, 120);
+      case UIInterfaceOrientationLandscapeLeft:
+        // fallthrough
+      case UIInterfaceOrientationLandscapeRight:
+        if(indexPath.row % 3 == 0) {
+          return CGSizeMake(342, 120);
+        } else {
+          return CGSizeMake(341, 120);
+        }
+    }
+  } else {
+    return CGSizeMake(320, 120);;
   }
 }
 
