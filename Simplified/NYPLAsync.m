@@ -1,6 +1,6 @@
 #import "NYPLAsync.h"
 
-void NYPLAsyncFetch(NSURL *const url, void (^ const handler)(NSData *data))
+void NYPLAsyncFetch(NSURL *const url, void (^ handler)(NSData *data))
 {
   [[[NSURLSession sharedSession]
     dataTaskWithRequest:[NSURLRequest requestWithURL:url]
@@ -18,7 +18,7 @@ void NYPLAsyncFetch(NSURL *const url, void (^ const handler)(NSData *data))
    resume];
 }
 
-void NYPLAsyncFetchSet(NSSet *const set, void (^ const handler)(NSDictionary *dataDictionary))
+void NYPLAsyncFetchSet(NSSet *const set, void (^ handler)(NSDictionary *dataDictionary))
 {
   if(!set.count) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),

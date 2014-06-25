@@ -22,7 +22,7 @@
 @implementation NYPLCatalogRoot
 
 + (void)withURL:(NSURL *const)url
-        handler:(void (^ const)(NYPLCatalogRoot *root))handler
+        handler:(void (^)(NYPLCatalogRoot *root))handler
 {
   if(!(url && handler)) {
     @throw NSInvalidArgumentException;
