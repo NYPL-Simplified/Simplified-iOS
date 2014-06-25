@@ -16,7 +16,7 @@
 
 @implementation NYPLOPDSFeed
 
-+ (void)withURL:(NSURL *)url completionHandler:(void (^ const)(NYPLOPDSFeed *feed))handler
++ (void)withURL:(NSURL *)url completionHandler:(void (^)(NYPLOPDSFeed *feed))handler
 {
   NYPLAsyncFetch(url, ^(NSData *const data) {
     if(!data) {
