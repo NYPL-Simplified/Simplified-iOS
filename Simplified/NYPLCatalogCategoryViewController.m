@@ -17,9 +17,11 @@
   self = [super init];
   if(!self) return nil;
   
-  self.view.backgroundColor = [UIColor whiteColor];
   self.url = url;
+  
   self.title = title;
+  
+  self.view.backgroundColor = [UIColor whiteColor];
   
   return self;
 }
