@@ -1,4 +1,6 @@
 #import "NYPLAsync.h"
+#import "NYPLCatalogBook.h"
+#import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
 
 #import "NYPLCatalogCategory.h"
@@ -23,8 +25,22 @@
        return;
      }
      
-     // TODO: Load books and title.
-     // TODO: Use factored-out book loading from NYPLCatalogRoot.
+     NSMutableArray *const books = [NSMutableArray arrayWithCapacity:acquisitionFeed.entries.count];
+     
+     for(NYPLOPDSEntry *const entry in acquisitionFeed.entries) {
+       NYPLCatalogBook *const book = [NYPLCatalogBook bookWithEntry:entry];
+       if(!book) {
+         NYPLLOG(@"Failed to create book from entry.");
+         continue;
+       }
+       [books addObject:book];
+     }
+     
+     NYPLCatalogCategory *const category = [[NYPLCatalogCategory alloc]
+                                            initWithBooks:books
+                                            title:acquisitionFeed.title];
+     
+     NYPLAsyncDispatch(^{handler(category);});
    }];
 }
 
