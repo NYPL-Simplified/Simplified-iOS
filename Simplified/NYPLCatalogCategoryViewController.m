@@ -40,9 +40,33 @@
    withURL:self.url
    handler:^(NYPLCatalogCategory *const category) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       self.activityIndicatorView.hidden = YES;
+       [self.activityIndicatorView stopAnimating];
+       
+       if(!category) {
+         [[[UIAlertView alloc]
+           initWithTitle:
+            NSLocalizedString(@"CatalogCategoryViewControllerFeedDownloadFailedTitle", nil)
+           message:
+            NSLocalizedString(@"CatalogCategoryViewControllerFeedDownloadFailedMessage", nil)
+           delegate:nil
+           cancelButtonTitle:nil
+           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+          show];
+         return;
+       }
+       
        self.category = category;
+       [self didLoadCategory];
      }];
    }];
+}
+
+#pragma mark -
+
+- (void)didLoadCategory
+{
+  
 }
 
 @end

@@ -2,6 +2,12 @@
 
 "OK" = "OK";
 
+// NYPLCatalogCategoryViewController
+
+"CatalogCategoryViewControllerFeedDownloadFailedTitle" = "Could Not Load Category";
+"CatalogCategoryViewControllerFeedDownloadFailedMessage" =
+  "Please check your connection or try again later.";
+
 // NYPLCatalogViewController
 
 "CatalogViewControllerFeedDownloadFailedTitle" = "Could Not Load Catalog";
