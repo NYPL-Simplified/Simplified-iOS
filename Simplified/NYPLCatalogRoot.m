@@ -137,7 +137,12 @@
            [NSMutableArray arrayWithCapacity:recommendedAcquisitionFeed.entries.count];
          
          for(NYPLOPDSEntry *const acquisitionEntry in recommendedAcquisitionFeed.entries) {
-           [books addObject:[NYPLCatalogBook bookWithEntry:acquisitionEntry]];
+           NYPLCatalogBook *const book = [NYPLCatalogBook bookWithEntry:acquisitionEntry];
+           if(!book) {
+             NYPLLOG(@"Failed to create book from entry.");
+             continue;
+           }
+           [books addObject:book];
          }
          
          [lanes addObject:
