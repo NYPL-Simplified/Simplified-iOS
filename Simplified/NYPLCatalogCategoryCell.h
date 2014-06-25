@@ -1,0 +1,3 @@
+@interface NYPLCatalogCategoryCell : UICollectionViewCell
+
+@end
