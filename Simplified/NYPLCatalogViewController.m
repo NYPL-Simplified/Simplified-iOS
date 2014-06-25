@@ -1,6 +1,7 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
 #import "NYPLAsync.h"
+#import "NYPLCatalogCategoryViewController.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogRoot.h"
@@ -228,10 +229,17 @@ viewForHeaderInSection:(NSInteger const)section
 - (void)didSelectButton:(id)buttonObject
 {
   assert([buttonObject isKindOfClass:[UIButton class]]);
-  
   UIButton *const button = buttonObject;
   
-  NYPLLOG_F(@"%lu", (long)button.tag);
+  NYPLCatalogLane *const lane = self.catalogRoot.lanes[button.tag];
+  
+  // TODO: Show the correct controller based on the |lane.subsectionLink.type|.
+  NYPLCatalogCategoryViewController *const viewController =
+    [[NYPLCatalogCategoryViewController alloc]
+     initWithURL:lane.subsectionLink.url
+     title:lane.title];
+  
+  [self.navigationController pushViewController:viewController animated:YES];
 }
 
 @end

@@ -184,12 +184,12 @@
 		1183F34A194F74F800DC322F /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				11A16E67195B2BD3004147F4 /* NYPLCatalogCategoryViewController.h */,
+				11A16E68195B2BD3004147F4 /* NYPLCatalogCategoryViewController.m */,
 				11548C0C1939147D009DBF2E /* NYPLCatalogNavigationController.h */,
 				11548C0D1939147D009DBF2E /* NYPLCatalogNavigationController.m */,
 				11548C0F19391614009DBF2E /* NYPLCatalogViewController.h */,
 				11548C1019391614009DBF2E /* NYPLCatalogViewController.m */,
-				11A16E67195B2BD3004147F4 /* NYPLCatalogCategoryViewController.h */,
-				11A16E68195B2BD3004147F4 /* NYPLCatalogCategoryViewController.m */,
 				AE77E8DE5454517F1AE119BF /* OPDS */,
 			);
 			name = Controllers;

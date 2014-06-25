@@ -15,6 +15,7 @@
   self = [super init];
   if(!self) return nil;
   
+  self.view.backgroundColor = [UIColor whiteColor];
   self.title = title;
   
   [NYPLCatalogCategory
