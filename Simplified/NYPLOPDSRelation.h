@@ -19,6 +19,9 @@ static NSString *const NYPLOPDSRelationImage =
 static NSString *const NYPLOPDSRelationImageThumbnail =
   @"http://opds-spec.org/image/thumbnail";
 
+static NSString *const NYPLOPDSRelationPaginationNext =
+  @"next";
+
 static NSString *const NYPLOPDSRelationRecommended =
   @"http://opds-spec.org/recommended";
 
