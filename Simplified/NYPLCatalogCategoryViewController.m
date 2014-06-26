@@ -47,6 +47,7 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   [self.collectionView registerClass:[NYPLCatalogCategoryCell class]
           forCellWithReuseIdentifier:reuseIdentifier];
   self.collectionView.backgroundColor = [UIColor whiteColor];
+  self.collectionView.showsVerticalScrollIndicator = NO;
   self.collectionView.hidden = YES;
   [self.view addSubview:self.collectionView];
   
