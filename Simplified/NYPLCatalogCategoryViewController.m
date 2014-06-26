@@ -5,7 +5,8 @@
 #import "NYPLCatalogCategoryViewController.h"
 
 @interface NYPLCatalogCategoryViewController ()
-  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+  <NYPLCatalogCategoryDelegate, UICollectionViewDataSource, UICollectionViewDelegate,
+   UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogCategory *category;
@@ -77,6 +78,7 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
        }
        
        self.category = category;
+       self.category.delegate = self;
        [self didLoadCategory];
      }];
    }];
@@ -98,6 +100,7 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
 - (NSInteger)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
      numberOfItemsInSection:(__attribute__((unused)) NSInteger)section
 {
+  NSLog(@"Providing count (%lu)", (unsigned long) self.category.books.count);
   return self.category.books.count;
 }
 
@@ -121,6 +124,8 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
                                     saturation:1.0
                                     brightness:1.0
                                          alpha:1.0];
+  
+  [self.category prepareForBookIndex:indexPath.row];
   
   return cell;
 }
@@ -171,6 +176,15 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
   } else {
     return CGSizeMake(320, 120);;
   }
+}
+
+#pragma mark NYPLCatalogCategoryDelegate
+
+- (void)catalogCategory:(__attribute__((unused)) NYPLCatalogCategory *)catalogCategory
+         didUpdateBooks:(__attribute__((unused)) NSArray *)books
+{
+  NSLog(@"didUpdateBooks");
+  [self.collectionView reloadData];
 }
 
 #pragma mark -
