@@ -11,12 +11,8 @@ void NYPLAsyncFetch(NSURL *const url, void (^ handler)(NSData *data))
     dataTaskWithRequest:[NSURLRequest requestWithURL:url]
     completionHandler:^(NSData *const data,
                         __attribute__((unused)) NSURLResponse *response,
-                        NSError *const error) {
-      if(error) {
-        NYPLAsyncDispatch(^{handler(nil);});
-      } else {
-        NYPLAsyncDispatch(^{handler(data);});
-      }
+                        __attribute__((unused)) NSError *const error) {
+      handler(data);
     }]
    resume];
 }
