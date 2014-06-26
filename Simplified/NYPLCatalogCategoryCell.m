@@ -7,6 +7,7 @@
 @property (nonatomic) UILabel *author;
 @property (nonatomic) UIImageView *cover;
 @property (nonatomic) UILabel *title;
+@property (nonatomic) NSURL *coverURL;
 
 @end
 
@@ -52,6 +53,7 @@
   
   self.author.text = [book.authorStrings componentsJoinedByString:@"; "];
   self.cover.image = nil;
+  self.coverURL = book.imageURL;
   self.title.text = book.title;
   
   self.cover.image = [[NYPLCoverSession sharedSession] cachedImageForURL:book.imageURL];
@@ -61,8 +63,16 @@
      withURL:book.imageURL
      completionHandler:^(UIImage *const image) {
        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         self.cover.image = image;
-         [self.cover sizeToFit];
+         // TODO: This check prevents old operations from overwriting cover images in the case of
+         // cells being reused before those operations completed. It avoids visual bugs, but said
+         // operations should be killed to avoid unnecesssary bandwidth usage. Once that is in
+         // place, this check and |self.coverURL| may no longer be needed.
+         if([book.imageURL isEqual:self.coverURL]) {
+           self.cover.image = image;
+           [self.cover sizeToFit];
+           // Drop the now-useless URL reference.
+           self.coverURL = nil;
+         }
        }];
      }];
   }
