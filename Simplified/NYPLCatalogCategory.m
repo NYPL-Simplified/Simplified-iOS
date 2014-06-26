@@ -2,12 +2,15 @@
 #import "NYPLCatalogBook.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
+#import "NYPLOPDSLink.h"
+#import "NYPLOPDSRelation.h"
 
 #import "NYPLCatalogCategory.h"
 
 @interface NYPLCatalogCategory ()
 
 @property (nonatomic) NSArray *books;
+@property (nonatomic) NSURL *nextURL;
 @property (nonatomic) NSString *title;
 
 @end
@@ -36,15 +39,27 @@
        [books addObject:book];
      }
      
+     NSURL *nextURL = nil;
+     
+     for(NYPLOPDSLink *const link in acquisitionFeed.links) {
+       if([link.rel isEqualToString:NYPLOPDSRelationPaginationNext]) {
+         nextURL = link.href;
+         break;
+       }
+     }
+     
      NYPLCatalogCategory *const category = [[NYPLCatalogCategory alloc]
                                             initWithBooks:books
+                                            nextURL:nextURL
                                             title:acquisitionFeed.title];
      
      NYPLAsyncDispatch(^{handler(category);});
    }];
 }
 
-- (instancetype)initWithBooks:(NSArray *const)books title:(NSString *const)title
+- (instancetype)initWithBooks:(NSArray *const)books
+                      nextURL:(NSURL *const)nextURL
+                        title:(NSString *const)title
 {
   self = [super init];
   if(!self) return nil;
@@ -54,6 +69,7 @@
   }
   
   self.books = books;
+  self.nextURL = nextURL;
   self.title = title;
   
   return self;
