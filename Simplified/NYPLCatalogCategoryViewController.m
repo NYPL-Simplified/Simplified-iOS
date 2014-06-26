@@ -100,7 +100,6 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
 - (NSInteger)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
      numberOfItemsInSection:(__attribute__((unused)) NSInteger)section
 {
-  NSLog(@"Providing count (%lu)", (unsigned long) self.category.books.count);
   return self.category.books.count;
 }
 
@@ -183,7 +182,6 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 - (void)catalogCategory:(__attribute__((unused)) NYPLCatalogCategory *)catalogCategory
          didUpdateBooks:(__attribute__((unused)) NSArray *)books
 {
-  NSLog(@"didUpdateBooks");
   [self.collectionView reloadData];
 }
 
