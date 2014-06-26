@@ -107,22 +107,13 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-  UICollectionViewCell *const cell = [collectionView
-                                      dequeueReusableCellWithReuseIdentifier:reuseIdentifier
-                                      forIndexPath:indexPath];
+  NYPLCatalogCategoryCell *const cell = [collectionView
+                                         dequeueReusableCellWithReuseIdentifier:reuseIdentifier
+                                         forIndexPath:indexPath];
   
-  UILabel *const label = [[UILabel alloc] init];
-  label.text = ((NYPLCatalogBook *) self.category.books[indexPath.row]).title;
-  label.frame = cell.contentView.bounds;
-  for(UIView *const view in [[cell contentView] subviews]) {
-    [view removeFromSuperview];
-  }
-  [cell.contentView addSubview:label];
+  assert([cell isKindOfClass:[NYPLCatalogCategoryCell class]]);
   
-  cell.backgroundColor = [UIColor colorWithHue:([label.text hash] / (CGFloat) ULONG_MAX)
-                                    saturation:1.0
-                                    brightness:1.0
-                                         alpha:1.0];
+  [cell setBook:self.category.books[indexPath.row]];
   
   [self.category prepareForBookIndex:indexPath.row];
   
