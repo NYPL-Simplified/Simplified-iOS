@@ -1,6 +1,6 @@
 @class NYPLCatalogLaneCell;
 
-@protocol NYPLCatalogLaneCellDelegate <NSObject>
+@protocol NYPLCatalogLaneCellDelegate
 
 - (void)catalogLaneCell:(NYPLCatalogLaneCell *)cell
  didSelectBookIndex:(NSUInteger)bookIndex;

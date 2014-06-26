@@ -9,11 +9,17 @@
 
 @interface NYPLCatalogCategory ()
 
+@property (nonatomic) BOOL currentlyFetchingNextURL;
 @property (nonatomic) NSArray *books;
+@property (nonatomic) NSUInteger greatestPreparationIndex;
 @property (nonatomic) NSURL *nextURL;
 @property (nonatomic) NSString *title;
 
 @end
+
+// If fewer than this many books are currently available when |prepareForBookIndex:| is called, an
+// attempt to fetch more books will be made.
+static NSUInteger const preloadThreshold = 60;
 
 @implementation NYPLCatalogCategory
 
@@ -71,8 +77,53 @@
   self.books = books;
   self.nextURL = nextURL;
   self.title = title;
-  
+
   return self;
+}
+
+- (void)prepareForBookIndex:(NSUInteger)bookIndex
+{
+  if(bookIndex >= self.books.count) {
+    @throw NSInvalidArgumentException;
+  }
+  
+  if(bookIndex < self.greatestPreparationIndex) {
+    return;
+  }
+  
+  self.greatestPreparationIndex = bookIndex;
+  
+  if(self.currentlyFetchingNextURL) return;
+  
+  if(!self.nextURL) return;
+  
+  if(self.books.count - bookIndex > preloadThreshold) {
+    return;
+  }
+  
+  self.currentlyFetchingNextURL = YES;
+  
+  [NYPLCatalogCategory
+   withURL:self.nextURL
+   handler:^(NYPLCatalogCategory *const category) {
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       if(!category) {
+         NYPLLOG(@"Failed to fetch next page.");
+         self.currentlyFetchingNextURL = NO;
+         return;
+       }
+       
+       NSMutableArray *const books = [self.books mutableCopy];
+       [books addObjectsFromArray:category.books];
+       self.books = books;
+       self.nextURL = category.nextURL;
+       self.currentlyFetchingNextURL = NO;
+       
+       [self prepareForBookIndex:self.greatestPreparationIndex];
+       
+       [self.delegate catalogCategory:self didUpdateBooks:self.books];
+     }];
+   }];
 }
 
 @end
