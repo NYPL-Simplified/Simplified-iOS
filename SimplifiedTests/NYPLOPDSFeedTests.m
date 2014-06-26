@@ -51,6 +51,11 @@
   XCTAssertEqualObjects(self.feed.identifier, @"http://localhost/main");
 }
 
+- (void)testLinkCount
+{
+  XCTAssertEqual(self.feed.links.count, 2U);
+}
+
 - (void)testTitle
 {
   XCTAssertEqualObjects(self.feed.title, @"The Big Front Page");

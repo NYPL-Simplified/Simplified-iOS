@@ -4,6 +4,7 @@
 
 @property (nonatomic, readonly) NSArray *entries;
 @property (nonatomic, readonly) NSString *identifier;
+@property (nonatomic, readonly) NSArray *links;
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSDate *updated;
 

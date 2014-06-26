@@ -1,6 +1,7 @@
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLAsync.h"
 #import "NYPLOPDSEntry.h"
+#import "NYPLOPDSLink.h"
 #import "SMXMLElement+NYPLElementAdditions.h"
 
 #import "NYPLOPDSFeed.h"
@@ -9,6 +10,7 @@
 
 @property (nonatomic) NSArray *entries;
 @property (nonatomic) NSString *identifier;
+@property (nonatomic) NSArray *links;
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSDate *updated;
 
@@ -55,6 +57,21 @@
   if(!((self.identifier = [document.root childNamed:@"id"].valueString))) {
     NYPLLOG(@"Missing required 'id' element.");
     return nil;
+  }
+  
+  {
+    NSMutableArray *const links = [NSMutableArray array];
+    
+    for(SMXMLElement *const linkElement in [document.root childrenNamed:@"link"]) {
+      NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithElement:linkElement];
+      if(!link) {
+        NYPLLOG(@"Ignoring malformed 'link' element.");
+        continue;
+      }
+      [links addObject:link];
+    }
+    
+    self.links = links;
   }
   
   if(!((self.title = [document.root childNamed:@"title"].valueString))) {
