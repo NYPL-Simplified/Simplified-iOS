@@ -13,6 +13,9 @@ static NSString *const NYPLOPDSRelationAcquisitionBorrow =
 static NSString *const NYPLOPDSRelationAcquisitionSample =
   @"http://opds-spec.org/acquisition/sample";
 
+static NSString *const NYPLOPDSRelationFeatured =
+@"http://opds-spec.org/featured";
+
 static NSString *const NYPLOPDSRelationImage =
   @"http://opds-spec.org/image";
 
@@ -21,9 +24,6 @@ static NSString *const NYPLOPDSRelationImageThumbnail =
 
 static NSString *const NYPLOPDSRelationPaginationNext =
   @"next";
-
-static NSString *const NYPLOPDSRelationRecommended =
-  @"http://opds-spec.org/recommended";
 
 static NSString *const NYPLOPDSRelationSubsection =
   @"subsection";
