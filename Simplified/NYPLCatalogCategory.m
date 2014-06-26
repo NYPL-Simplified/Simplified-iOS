@@ -19,7 +19,7 @@
 
 // If fewer than this many books are currently available when |prepareForBookIndex:| is called, an
 // attempt to fetch more books will be made.
-static NSUInteger const preloadThreshold = 60;
+static NSUInteger const preloadThreshold = 100;
 
 @implementation NYPLCatalogCategory
 
