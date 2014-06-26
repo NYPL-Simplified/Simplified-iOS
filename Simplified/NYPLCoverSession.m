@@ -51,6 +51,8 @@ static NYPLCoverSession *sharedCoverSession = nil;
   return self;
 }
 
+#pragma mark -
+
 - (void)withURL:(NSURL *const)url completionHandler:(void (^)(UIImage *image))handler
 {
   [[self.session
@@ -62,5 +64,12 @@ static NYPLCoverSession *sharedCoverSession = nil;
     }]
    resume];
 }
-  
+
+- (UIImage *)cachedImageForURL:(NSURL *)url
+{
+  return [UIImage imageWithData:
+          [self.session.configuration.URLCache
+           cachedResponseForRequest:[NSURLRequest requestWithURL:url]].data];
+}
+
 @end
