@@ -193,7 +193,6 @@
 				11548C0D1939147D009DBF2E /* NYPLCatalogNavigationController.m */,
 				11548C0F19391614009DBF2E /* NYPLCatalogViewController.h */,
 				11548C1019391614009DBF2E /* NYPLCatalogViewController.m */,
-				AE77E8DE5454517F1AE119BF /* OPDS */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -274,6 +273,7 @@
 			isa = PBXGroup;
 			children = (
 				1183F349194F74EF00DC322F /* Catalog */,
+				AE77E8DE5454517F1AE119BF /* OPDS */,
 				11396FB7193D289100E16EE8 /* NSDate+NYPLDateAdditions.h */,
 				11396FB8193D289100E16EE8 /* NSDate+NYPLDateAdditions.m */,
 				A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */,
