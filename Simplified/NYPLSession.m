@@ -1,6 +1,6 @@
-#import "NYPLCoverSession.h"
+#import "NYPLSession.h"
 
-@interface NYPLCoverSession ()
+@interface NYPLSession ()
 
 @property (nonatomic) NSURLSession *session;
 
@@ -9,29 +9,29 @@
 static NSUInteger const diskCacheInMegabytes = 20;
 static NSUInteger const memoryCacheInMegabytes = 2;
 
-static NYPLCoverSession *sharedCoverSession = nil;
+static NYPLSession *sharedSession = nil;
 
-@implementation NYPLCoverSession
+@implementation NYPLSession
 
-+ (NYPLCoverSession *)sharedSession
++ (NYPLSession *)sharedSession
 {
   static dispatch_once_t predicate;
   
   dispatch_once(&predicate, ^{
-    sharedCoverSession = [[NYPLCoverSession alloc] init];
-    if(!sharedCoverSession) {
+    sharedSession = [[NYPLSession alloc] init];
+    if(!sharedSession) {
       NYPLLOG(@"Failed to create shared session.");
     }
   });
   
-  return sharedCoverSession;
+  return sharedSession;
 }
 
 #pragma mark NSObject
 
 - (instancetype)init
 {
-  if(sharedCoverSession) {
+  if(sharedSession) {
     @throw NSGenericException;
   }
   
@@ -53,23 +53,22 @@ static NYPLCoverSession *sharedCoverSession = nil;
 
 #pragma mark -
 
-- (void)withURL:(NSURL *const)url completionHandler:(void (^)(UIImage *image))handler
+- (void)withURL:(NSURL *const)url completionHandler:(void (^)(NSData *data))handler
 {
   [[self.session
     dataTaskWithURL:url
     completionHandler:^(NSData *const data,
                         __attribute__((unused)) NSURLResponse *response,
                         __attribute__((unused)) NSError *const error) {
-      handler([UIImage imageWithData:data]);
+      handler(data);
     }]
    resume];
 }
 
-- (UIImage *)cachedImageForURL:(NSURL *)url
+- (NSData *)cachedDataForURL:(NSURL *)url
 {
-  return [UIImage imageWithData:
-          [self.session.configuration.URLCache
-           cachedResponseForRequest:[NSURLRequest requestWithURL:url]].data];
+  return [self.session.configuration.URLCache
+           cachedResponseForRequest:[NSURLRequest requestWithURL:url]].data;
 }
 
 @end
