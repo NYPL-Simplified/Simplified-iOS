@@ -1,3 +1,5 @@
+#import "NYPLAsync.h"
+
 #import "NYPLSession.h"
 
 @interface NYPLSession ()
@@ -63,6 +65,36 @@ static NYPLSession *sharedSession = nil;
       handler(data);
     }]
    resume];
+}
+
+- (void)withURLs:(NSSet *const)urls handler:(void (^)(NSDictionary *dataDictionary))handler
+{
+  if(!urls.count) {
+    NYPLAsyncDispatch(^{handler(@{});});
+    return;
+  }
+  
+  for(id const object in urls) {
+    if(![object isKindOfClass:[NSURL class]]) {
+      @throw NSInvalidArgumentException;
+    }
+  }
+  
+  NSLock *const lock = [[NSLock alloc] init];
+  NSMutableDictionary *const dataDictionary = [NSMutableDictionary dictionary];
+  __block NSUInteger remaining = urls.count;
+  
+  for(NSURL *const url in urls) {
+    [self withURL:url completionHandler:^(NSData *const data) {
+      [lock lock];
+      dataDictionary[url] = (data ? data : [NSNull null]);
+      --remaining;
+      if(!remaining) {
+        NYPLAsyncDispatch(^{handler(dataDictionary);});
+      }
+      [lock unlock];
+    }];
+  }
 }
 
 - (NSData *)cachedDataForURL:(NSURL *)url
