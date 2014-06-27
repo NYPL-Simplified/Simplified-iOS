@@ -57,9 +57,16 @@
   CGFloat x = padding;
   CGFloat const height = self.frame.size.height;
   
+  // TODO: A guard against absurdly wide covers is needed.
+  
   for(UIButton *const button in self.buttons) {
     CGFloat width = button.imageView.image.size.width;
-    width *= height / button.imageView.image.size.height;
+    if(width > 10.0) {
+      width *= height / button.imageView.image.size.height;
+    } else {
+      NYPLLOG(@"Failing to correctly display cover with unusable width.");
+      width = height * 0.75;
+    }
     CGRect const frame = CGRectMake(x, 0.0, width, height);
     button.frame = frame;
     x += width + padding;
