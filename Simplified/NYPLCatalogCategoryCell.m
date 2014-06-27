@@ -56,9 +56,13 @@
   self.coverURL = book.imageURL;
   self.title.text = book.title;
   
-  // TODO: We currently get the cached data to avoid reloading images when the user scrolls back
-  // up, but doing so bypassing any Cache-Policy header sent by the server. Once the server starts
-  // sending such headers, we should reconsider how this works.
+  // TODO: The approach below will keep showing old covers across launches even if they've been
+  // updated on the server. Consider if there's a better way to do this.
+  
+  // This avoids hitting the server constantly when scrolling within a category and ensures images
+  // will still be there when the user scrolls back up. It also avoids creating tasks and refetching
+  // images when the collection view reloads its data in response to an additional page being
+  // fetched (which otherwise would cause a flickering effect and pointless bandwidth usage).
   self.cover.image = [UIImage imageWithData:
                       [[NYPLSession sharedSession] cachedDataForURL:book.imageURL]];
   
