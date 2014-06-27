@@ -1,4 +1,4 @@
-#import "NYPLCoverSession.h"
+#import "NYPLSession.h"
 
 #import "NYPLCatalogCategoryCell.h"
 
@@ -56,19 +56,23 @@
   self.coverURL = book.imageURL;
   self.title.text = book.title;
   
-  self.cover.image = [[NYPLCoverSession sharedSession] cachedImageForURL:book.imageURL];
+  // TODO: We currently get the cached data to avoid reloading images when the user scrolls back
+  // up, but doing so bypassing any Cache-Policy header sent by the server. Once the server starts
+  // sending such headers, we should reconsider how this works.
+  self.cover.image = [UIImage imageWithData:
+                      [[NYPLSession sharedSession] cachedDataForURL:book.imageURL]];
   
   if(!self.cover.image) {
-    [[NYPLCoverSession sharedSession]
+    [[NYPLSession sharedSession]
      withURL:book.imageURL
-     completionHandler:^(UIImage *const image) {
+     completionHandler:^(NSData *const data) {
        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
          // TODO: This check prevents old operations from overwriting cover images in the case of
          // cells being reused before those operations completed. It avoids visual bugs, but said
          // operations should be killed to avoid unnecesssary bandwidth usage. Once that is in
          // place, this check and |self.coverURL| may no longer be needed.
          if([book.imageURL isEqual:self.coverURL]) {
-           self.cover.image = image;
+           self.cover.image = [UIImage imageWithData:data];
            [self.cover sizeToFit];
            // Drop the now-useless URL reference.
            self.coverURL = nil;
