@@ -1,19 +1,18 @@
 #import "NYPLAsync.h"
 
+void NYPLAsyncDispatch(dispatch_block_t const block)
+{
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block);
+}
+
 void NYPLAsyncFetch(NSURL *const url, void (^ handler)(NSData *data))
 {
   [[[NSURLSession sharedSession]
     dataTaskWithRequest:[NSURLRequest requestWithURL:url]
     completionHandler:^(NSData *const data,
                         __attribute__((unused)) NSURLResponse *response,
-                        NSError *const error) {
-      if(error) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-                       ^{handler(nil);});
-      } else {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-                       ^{handler(data);});
-      }
+                        __attribute__((unused)) NSError *const error) {
+      handler(data);
     }]
    resume];
 }
@@ -21,8 +20,7 @@ void NYPLAsyncFetch(NSURL *const url, void (^ handler)(NSData *data))
 void NYPLAsyncFetchSet(NSSet *const set, void (^ handler)(NSDictionary *dataDictionary))
 {
   if(!set.count) {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-                   ^{handler(@{});});
+    NYPLAsyncDispatch(^{handler(@{});});
     return;
   }
   
@@ -42,8 +40,7 @@ void NYPLAsyncFetchSet(NSSet *const set, void (^ handler)(NSDictionary *dataDict
       dataDictionary[url] = (data ? data : [NSNull null]);
       --remaining;
       if(!remaining) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-                       ^{handler(dataDictionary);});
+        NYPLAsyncDispatch(^{handler(dataDictionary);});
       }
       [lock unlock];
     });

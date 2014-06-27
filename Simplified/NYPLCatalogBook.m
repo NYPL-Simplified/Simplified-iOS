@@ -19,6 +19,11 @@
 
 + (NYPLCatalogBook *)bookWithEntry:(NYPLOPDSEntry *const)entry
 {
+  if(!entry) {
+    NYPLLOG(@"Failed to create book from nil entry.");
+    return nil;
+  }
+  
   NSURL *borrow, *generic, *openAccess, *sample, *image, *imageThumbnail = nil;
   
   for(NYPLOPDSLink *const link in entry.links) {
