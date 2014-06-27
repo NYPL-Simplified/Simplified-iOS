@@ -1,6 +1,7 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
 #import "NYPLAsync.h"
+#import "NYPLCatalogCategoryViewController.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogRoot.h"
@@ -141,13 +142,16 @@ viewForHeaderInSection:(NSInteger const)section
   view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
   
   {
-    CGRect const frame = CGRectMake(5,
-                                    5,
-                                    self.tableView.frame.size.width,
-                                    sectionHeaderHeight - 10);
-    UILabel *const label = [[UILabel alloc] initWithFrame:frame];
-    label.text = ((NYPLCatalogLane *) self.catalogRoot.lanes[section]).title;
-    [view addSubview:label];
+    UIButton *const button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    NSString *const title = ((NYPLCatalogLane *) self.catalogRoot.lanes[section]).title;
+    [button setTitle:title forState:UIControlStateNormal];
+    [button sizeToFit];
+    button.frame = CGRectMake(5, 5, button.frame.size.width, button.frame.size.height);
+    button.tag = section;
+    [button addTarget:self
+               action:@selector(didSelectButton:)
+     forControlEvents:UIControlEventTouchUpInside];
+    [view addSubview:button];
   }
   
   view.backgroundColor = [UIColor whiteColor];
@@ -220,6 +224,22 @@ viewForHeaderInSection:(NSInteger const)section
       [self downloadImages];
     }];
   });
+}
+
+- (void)didSelectButton:(id)buttonObject
+{
+  assert([buttonObject isKindOfClass:[UIButton class]]);
+  UIButton *const button = buttonObject;
+  
+  NYPLCatalogLane *const lane = self.catalogRoot.lanes[button.tag];
+  
+  // TODO: Show the correct controller based on the |lane.subsectionLink.type|.
+  NYPLCatalogCategoryViewController *const viewController =
+    [[NYPLCatalogCategoryViewController alloc]
+     initWithURL:lane.subsectionLink.url
+     title:lane.title];
+  
+  [self.navigationController pushViewController:viewController animated:YES];
 }
 
 @end

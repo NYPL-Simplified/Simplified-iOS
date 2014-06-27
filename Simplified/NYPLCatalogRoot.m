@@ -33,36 +33,35 @@
    completionHandler:^(NYPLOPDSFeed *const navigationFeed) {
      if(!navigationFeed) {
        NYPLLOG(@"Failed to retrieve main navigation feed.");
-       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-                      ^{handler(nil);});
+       NYPLAsyncDispatch(^{handler(nil);});
        return;
      }
      
-     NSMutableSet *const recommendedURLs =
+     NSMutableSet *const featuredURLs =
        [NSMutableSet setWithCapacity:navigationFeed.entries.count];
      
      for(NYPLOPDSEntry *const entry in navigationFeed.entries) {
        for(NYPLOPDSLink *const link in entry.links) {
-         if([link.rel isEqualToString:NYPLOPDSRelationRecommended]) {
-           [recommendedURLs addObject:link.href];
+         if([link.rel isEqualToString:NYPLOPDSRelationFeatured]) {
+           [featuredURLs addObject:link.href];
          }
        }
      }
      
-     NYPLAsyncFetchSet(recommendedURLs, ^(NSDictionary *const dataDictionary) {
+     NYPLAsyncFetchSet(featuredURLs, ^(NSDictionary *const dataDictionary) {
        NSMutableArray *const lanes =
          [NSMutableArray arrayWithCapacity:navigationFeed.entries.count];
        
        for(NYPLOPDSEntry *const navigationEntry in navigationFeed.entries) {
-         NSURL *recommendedURL = nil;
+         NSURL *featuredURL = nil;
          NYPLCatalogSubsectionLink *subsectionLink = nil;
          
          for(NYPLOPDSLink *const link in navigationEntry.links) {
-           if([link.rel isEqualToString:NYPLOPDSRelationRecommended]) {
+           if([link.rel isEqualToString:NYPLOPDSRelationFeatured]) {
              if(!NYPLOPDSTypeStringIsAcquisition(link.type)) {
-               NYPLLOG(@"Ignoring recommended feed without acquisition type.");
+               NYPLLOG(@"Ignoring featured feed without acquisition type.");
              } else {
-               recommendedURL = link.href;
+               featuredURL = link.href;
              }
            }
            if([link.rel isEqualToString:NYPLOPDSRelationSubsection]) {
@@ -85,8 +84,8 @@
            continue;
          }
          
-         if(!recommendedURL) {
-           NYPLLOG(@"Creating lane without recommended books.");
+         if(!featuredURL) {
+           NYPLLOG(@"Creating lane without featured books.");
            [lanes addObject:
             [[NYPLCatalogLane alloc]
              initWithBooks:@[]
@@ -95,9 +94,9 @@
            continue;
          }
          
-         id const recommendedDataObject = dataDictionary[recommendedURL];
-         if([recommendedDataObject isKindOfClass:[NSNull class]]) {
-           NYPLLOG(@"Creating lane without unobtainable recommended books.");
+         id const featuredDataObject = dataDictionary[featuredURL];
+         if([featuredDataObject isKindOfClass:[NSNull class]]) {
+           NYPLLOG(@"Creating lane without unobtainable featured books.");
            [lanes addObject:
             [[NYPLCatalogLane alloc]
              initWithBooks:@[]
@@ -106,13 +105,13 @@
            continue;
          }
          
-         NSData *const recommendedData = recommendedDataObject;
-         assert([recommendedData isKindOfClass:[NSData class]]);
+         NSData *const featuredData = featuredDataObject;
+         assert([featuredData isKindOfClass:[NSData class]]);
          
-         SMXMLDocument *const document = [SMXMLDocument documentWithData:recommendedData
+         SMXMLDocument *const document = [SMXMLDocument documentWithData:featuredData
                                                                    error:NULL];
          if(!document) {
-           NYPLLOG(@"Creating lane without unparsable recommended books.");
+           NYPLLOG(@"Creating lane without unparsable featured books.");
            [lanes addObject:
             [[NYPLCatalogLane alloc]
              initWithBooks:@[]
@@ -121,11 +120,11 @@
            continue;
          }
          
-         NYPLOPDSFeed *recommendedAcquisitionFeed =
-         [[NYPLOPDSFeed alloc] initWithDocument:document];
+         NYPLOPDSFeed *featuredAcquisitionFeed =
+           [[NYPLOPDSFeed alloc] initWithDocument:document];
          
-         if(!recommendedAcquisitionFeed) {
-           NYPLLOG(@"Creating lane without invalid recommended books.");
+         if(!featuredAcquisitionFeed) {
+           NYPLLOG(@"Creating lane without invalid featured books.");
            [lanes addObject:
             [[NYPLCatalogLane alloc]
              initWithBooks:@[]
@@ -135,10 +134,15 @@
          }
          
          NSMutableArray *const books =
-           [NSMutableArray arrayWithCapacity:recommendedAcquisitionFeed.entries.count];
+           [NSMutableArray arrayWithCapacity:featuredAcquisitionFeed.entries.count];
          
-         for(NYPLOPDSEntry *const acquisitionEntry in recommendedAcquisitionFeed.entries) {
-           [books addObject:[NYPLCatalogBook bookWithEntry:acquisitionEntry]];
+         for(NYPLOPDSEntry *const acquisitionEntry in featuredAcquisitionFeed.entries) {
+           NYPLCatalogBook *const book = [NYPLCatalogBook bookWithEntry:acquisitionEntry];
+           if(!book) {
+             NYPLLOG(@"Failed to create book from entry.");
+             continue;
+           }
+           [books addObject:book];
          }
          
          [lanes addObject:
@@ -151,8 +155,7 @@
        NYPLCatalogRoot *const root = [[NYPLCatalogRoot alloc] initWithLanes:lanes];
        assert(root);
        
-       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
-                      ^{handler(root);});
+       NYPLAsyncDispatch(^{handler(root);});
      });
    }];
 }
