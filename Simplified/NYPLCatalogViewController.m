@@ -9,6 +9,7 @@
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
+#import "NYPLSession.h"
 
 #import "NYPLCatalogViewController.h"
 
@@ -207,23 +208,25 @@ viewForHeaderInSection:(NSInteger const)section
   
   NYPLCatalogLane *const lane = self.catalogRoot.lanes[self.indexOfNextLaneRequiringImageDownload];
   
-  NYPLAsyncFetchSet(lane.imageURLs, ^(NSDictionary *const dataDictionary) {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      [dataDictionary enumerateKeysAndObjectsUsingBlock:^(id const key,
-                                                          id const value,
-                                                          __attribute__((unused)) BOOL *stop) {
-        if(![value isKindOfClass:[NSNull class]]) {
-          assert([key isKindOfClass:[NSURL class]]);
-          assert([value isKindOfClass:[NSData class]]);
-          [self.imageDataDictionary setValue:value forKey:key];
-        }
-      }];
-      
-      [self.tableView reloadData];
-      ++self.indexOfNextLaneRequiringImageDownload;
-      [self downloadImages];
-    }];
-  });
+  [[NYPLSession sharedSession]
+   withURLs:lane.imageURLs
+   handler:^(NSDictionary *const dataDictionary) {
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       [dataDictionary enumerateKeysAndObjectsUsingBlock:^(id const key,
+                                                           id const value,
+                                                           __attribute__((unused)) BOOL *stop) {
+         if(![value isKindOfClass:[NSNull class]]) {
+           assert([key isKindOfClass:[NSURL class]]);
+           assert([value isKindOfClass:[NSData class]]);
+           [self.imageDataDictionary setValue:value forKey:key];
+         }
+       }];
+       
+       [self.tableView reloadData];
+       ++self.indexOfNextLaneRequiringImageDownload;
+       [self downloadImages];
+     }];
+   }];
 }
 
 - (void)didSelectButton:(id)buttonObject

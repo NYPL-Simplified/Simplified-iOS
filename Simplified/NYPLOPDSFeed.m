@@ -2,6 +2,7 @@
 #import "NYPLAsync.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSLink.h"
+#import "NYPLSession.h"
 #import "SMXMLElement+NYPLElementAdditions.h"
 
 #import "NYPLOPDSFeed.h"
@@ -20,7 +21,7 @@
 
 + (void)withURL:(NSURL *)url completionHandler:(void (^)(NYPLOPDSFeed *feed))handler
 {
-  NYPLAsyncFetch(url, ^(NSData *const data) {
+  [[NYPLSession sharedSession] withURL:url completionHandler:^(NSData *data) {
     if(!data) {
       NYPLLOG(@"Failed to retrieve data.");
       NYPLAsyncDispatch(^{handler(nil);});
@@ -42,7 +43,7 @@
     }
     
     NYPLAsyncDispatch(^{handler(feed);});
-  });
+  }];
 }
 
 - (instancetype)initWithDocument:(SMXMLDocument *const)document
