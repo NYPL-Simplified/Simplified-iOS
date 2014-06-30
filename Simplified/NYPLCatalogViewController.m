@@ -152,6 +152,7 @@ viewForHeaderInSection:(NSInteger const)section
     [button addTarget:self
                action:@selector(didSelectButton:)
      forControlEvents:UIControlEventTouchUpInside];
+    button.exclusiveTouch = YES;
     [view addSubview:button];
   }
   
