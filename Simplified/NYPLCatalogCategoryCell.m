@@ -37,17 +37,17 @@
 - (void)setBook:(NYPLCatalogBook *const)book
 {
   if(!self.author) {
-    self.author = [[UILabel alloc] initWithFrame:CGRectZero];
+    self.author = [[UILabel alloc] init];
     [self addSubview:self.author];
   }
   
   if(!self.cover) {
-    self.cover = [[UIImageView alloc] initWithFrame:CGRectZero];
+    self.cover = [[UIImageView alloc] init];
     [self addSubview:self.cover];
   }
   
   if(!self.title) {
-    self.title = [[UILabel alloc] initWithFrame:CGRectZero];
+    self.title = [[UILabel alloc] init];
     [self addSubview:self.title];
   }
   

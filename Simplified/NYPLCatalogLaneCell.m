@@ -37,7 +37,7 @@
     button.tag = bookIndex;
     NSData *const imageData = imageDataDictionary[book.imageURL];
     UIImage *const image =
-    imageData ? [UIImage imageWithData:imageData] : [UIImage imageNamed:@"NoCover"];
+      imageData ? [UIImage imageWithData:imageData] : [UIImage imageNamed:@"NoCover"];
     [button setImage:image forState:UIControlStateNormal];
     [button addTarget:self
                action:@selector(didSelectBookButton:)
