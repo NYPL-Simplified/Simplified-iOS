@@ -61,7 +61,12 @@ static NYPLSession *sharedSession = nil;
     dataTaskWithURL:url
     completionHandler:^(NSData *const data,
                         __attribute__((unused)) NSURLResponse *response,
-                        __attribute__((unused)) NSError *const error) {
+                        NSError *const error) {
+      if(error) {
+        handler(nil);
+        return;
+      }
+      
       handler(data);
     }]
    resume];
