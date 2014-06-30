@@ -16,7 +16,8 @@
 static CGFloat const rowHeight = 115.0;
 static CGFloat const sectionHeaderHeight = 40.0;
 
-@interface NYPLCatalogViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface NYPLCatalogViewController ()
+  <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogRoot *catalogRoot;
@@ -91,18 +92,19 @@ static CGFloat const sectionHeaderHeight = 40.0;
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  UITableViewCell *const cachedCell = (self.cachedCells)[indexPath];
+  UITableViewCell *const cachedCell = self.cachedCells[indexPath];
   if(cachedCell) {
     return cachedCell;
   }
   
   if(indexPath.section < (NSInteger) self.indexOfNextLaneRequiringImageDownload) {
-    UITableViewCell *const cell =
+    NYPLCatalogLaneCell *const cell =
       [[NYPLCatalogLaneCell alloc]
        initWithLaneIndex:indexPath.section
        books:((NYPLCatalogLane *) self.catalogRoot.lanes[indexPath.section]).books
        imageDataDictionary:self.imageDataDictionary];
-    (self.cachedCells)[indexPath] = cell;
+    cell.delegate = self;
+    self.cachedCells[indexPath] = cell;
     return cell;
   } else {
     // TODO: Add loading cell.
@@ -159,6 +161,14 @@ viewForHeaderInSection:(NSInteger const)section
   view.backgroundColor = [UIColor whiteColor];
   
   return view;
+}
+
+#pragma mark NYPLCatalogLaneCellDelegate
+
+- (void)catalogLaneCell:(NYPLCatalogLaneCell *const)cell
+     didSelectBookIndex:(NSUInteger const)bookIndex
+{
+  NSLog(@"==> %lu : %lu", (unsigned long) cell.laneIndex, (unsigned long) bookIndex);
 }
 
 #pragma mark -
