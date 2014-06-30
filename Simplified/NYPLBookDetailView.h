@@ -1,9 +1,10 @@
-#import "NYPLBook.h"
+#import "NYPLCatalogBook.h"
 
-@interface NYPLBookDetailView : UIView
+@interface NYPLBookDetailView : UIScrollView
 
 // designated initializer
 // |book| must not be nil.
-- (instancetype)initWithBook:(NYPLBook *)book coverImage:(UIImage *)coverImage frame:(CGRect)frame;
+- (instancetype)initWithBook:(NYPLCatalogBook *)book
+                  coverImage:(UIImage *)coverImage;
 
 @end

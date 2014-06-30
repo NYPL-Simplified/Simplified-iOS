@@ -1,7 +1,10 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
 #import "NYPLAsync.h"
+#import "NYPLBookDetailView.h"
+#import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogCategoryViewController.h"
+#import "NYPLCatalogBook.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogRoot.h"
@@ -168,7 +171,25 @@ viewForHeaderInSection:(NSInteger const)section
 - (void)catalogLaneCell:(NYPLCatalogLaneCell *const)cell
      didSelectBookIndex:(NSUInteger const)bookIndex
 {
-  NSLog(@"==> %lu : %lu", (unsigned long) cell.laneIndex, (unsigned long) bookIndex);
+  NYPLCatalogLane *const lane = self.catalogRoot.lanes[cell.laneIndex];
+  NYPLCatalogBook *const book = lane.books[bookIndex];
+  
+  UIImage *coverImage = [UIImage imageWithData:self.imageDataDictionary[book.imageURL]];
+  
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    [self.navigationController pushViewController:[[NYPLBookDetailViewController alloc]
+                                                   initWithBook:book
+                                                   coverImage:coverImage]
+                                         animated:YES];
+  } else {
+    NYPLBookDetailView *const detailView = [[NYPLBookDetailView alloc]
+                                            initWithBook:book
+                                            coverImage:coverImage];
+    
+    NYPLLOG_F(@"Unimplemented display for detail view (0x%016lu).", (uintptr_t) detailView);
+    
+    // TODO: Display view.
+  }
 }
 
 #pragma mark -
