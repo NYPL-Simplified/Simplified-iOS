@@ -705,6 +705,7 @@
 					"-Wextra",
 					"-Weverything",
 					"-Wno-objc-missing-property-synthesis",
+					"-Wno-c11-extensions",
 				);
 				WRAPPER_EXTENSION = app;
 			};
@@ -726,6 +727,7 @@
 					"-Wextra",
 					"-Weverything",
 					"-Wno-objc-missing-property-synthesis",
+					"-Wno-c11-extensions",
 				);
 				WRAPPER_EXTENSION = app;
 			};

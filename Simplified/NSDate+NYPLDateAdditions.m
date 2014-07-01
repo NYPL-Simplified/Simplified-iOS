@@ -27,7 +27,8 @@
   
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wassign-enum"
-  assert(sizeof(NSUInteger) == sizeof(NSCalendarUnit));
+  _Static_assert(sizeof(NSUInteger) == sizeof(NSCalendarUnit),
+                 "NSCalenderUnit is not of the expected size.");
   return [calendar components:NSUIntegerMax fromDate:self];
 #pragma clang diagnostic pop
 }
