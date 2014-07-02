@@ -8,6 +8,14 @@
 
 @end
 
+static CGFloat const coverHeight = 120.0;
+static CGFloat const coverWidth = 100.0;
+static CGFloat const coverPaddingLeft = 40.0;
+static CGFloat const coverPaddingTop = 10.0;
+static CGFloat const mainTextPaddingTop = 10.0;
+static CGFloat const mainTextPaddingLeft = 10.0;
+static CGFloat const mainTextPaddingRight = 10.0;
+
 @implementation NYPLBookDetailView
 
 // designated initializer
@@ -25,12 +33,16 @@
   self.backgroundColor = [UIColor whiteColor];
   
   self.authors = [[UILabel alloc] init];
+  self.authors.font = [UIFont fontWithName:@"AvenirNext-Medium" size:12.0];
+  self.authors.numberOfLines = 3;
   self.authors.text = [book.authorStrings componentsJoinedByString:@"; "];
   [self addSubview:self.authors];
   
   {
     if(coverImage) {
-      self.cover = [[UIImageView alloc] initWithImage:coverImage];
+      UIImageView *const imageView = [[UIImageView alloc] initWithImage:coverImage];
+      imageView.contentMode = UIViewContentModeScaleAspectFit;
+      self.cover = imageView;
     } else {
       // TODO: If |coverImage| is nil, a book cover should be generated.
       NYPLLOG(@"Book cover generation is required but unimplemented.");
@@ -41,6 +53,8 @@
   }
   
   self.title = [[UILabel alloc] init];
+  self.title.font = [UIFont fontWithName:@"AvenirNext-Bold" size:14.0];
+  self.title.numberOfLines = 3;
   self.title.text = book.title;
   [self addSubview:self.title];
 
@@ -49,27 +63,26 @@
 
 #pragma mark UIView
 
-// TODO: This is a near copy-paste of the code from NYPLCatalogLaneCell. It is probably necessary to
-// factor out a cover view class to eliminate this duplication.
 - (void)layoutSubviews
 {
-  CGFloat const padding = 10.0;
-  
-  CGFloat const height = 115.0;
-  
-  CGFloat width = self.cover.frame.size.width;
-  if(width > 10.0) {
-    width *= height / self.cover.frame.size.height;
-  } else {
-    NYPLLOG(@"Failing to correctly display cover with unusable width.");
-    width = height * 0.75;
-  }
-  CGRect const frame = CGRectMake(padding, 0.0, width, height);
+  CGRect const frame = CGRectMake(coverPaddingLeft, coverPaddingTop, coverWidth, coverHeight);
   self.cover.frame = frame;
   
-  // TODO: This needs to be done properly.
-  [self.authors sizeToFit];
-  [self.title sizeToFit];
+  {
+    CGFloat const x = self.cover.frame.size.width + self.cover.frame.origin.x + mainTextPaddingLeft;
+    CGFloat const y = mainTextPaddingTop;
+    CGFloat const w = self.bounds.size.width - x - mainTextPaddingRight;
+    CGFloat const h = [self.title sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+    self.title.frame = CGRectMake(x, y, w, h);
+  }
+  
+  {
+    CGFloat const x = self.title.frame.origin.x;
+    CGFloat const y = self.title.frame.origin.y + self.title.frame.size.height;
+    CGFloat const w = self.title.frame.size.width;
+    CGFloat const h = [self.title sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+    self.authors.frame = CGRectMake(x, y, w, h);
+  }
 }
 
 @end
