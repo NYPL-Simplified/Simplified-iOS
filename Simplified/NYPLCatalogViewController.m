@@ -3,6 +3,7 @@
 #import "NYPLAsync.h"
 #import "NYPLBookDetailView.h"
 #import "NYPLBookDetailViewController.h"
+#import "NYPLBookDetailViewiPad.h"
 #import "NYPLCatalogCategoryViewController.h"
 #import "NYPLCatalogBook.h"
 #import "NYPLCatalogLane.h"
@@ -23,6 +24,7 @@ static CGFloat const sectionHeaderHeight = 40.0;
   <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic) NYPLBookDetailViewiPad *bookDetailViewiPad;
 @property (nonatomic) NYPLCatalogRoot *catalogRoot;
 @property (nonatomic) NSMutableDictionary *cachedCells;
 @property (nonatomic) NSMutableDictionary *imageDataDictionary;
@@ -31,6 +33,8 @@ static CGFloat const sectionHeaderHeight = 40.0;
 @property (nonatomic) NSDictionary *urlToCategoryFeedDataDictionary;
 
 @end
+
+static CGFloat const bookDetailViewiPadAnimationSeconds = 0.333;
 
 @implementation NYPLCatalogViewController
 
@@ -186,9 +190,22 @@ viewForHeaderInSection:(NSInteger const)section
                                             initWithBook:book
                                             coverImage:coverImage];
     
-    NYPLLOG_F(@"Unimplemented display for detail view (0x%016lu).", (uintptr_t) detailView);
     
-    // TODO: Display view.
+    self.bookDetailViewiPad = [[NYPLBookDetailViewiPad alloc]
+                               initWithBookDetailView:detailView
+                               frame:self.view.bounds];
+    
+    [self.bookDetailViewiPad.closeButton addTarget:self
+                                            action:@selector(didCloseDetailView)
+                                  forControlEvents:UIControlEventTouchUpInside];
+    
+    self.bookDetailViewiPad.alpha = 0.0;
+    [self.view addSubview:self.bookDetailViewiPad];
+    
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:bookDetailViewiPadAnimationSeconds];
+    self.bookDetailViewiPad.alpha = 1.0;
+    [UIView commitAnimations];
   }
 }
 
@@ -275,6 +292,22 @@ viewForHeaderInSection:(NSInteger const)section
      title:lane.title];
   
   [self.navigationController pushViewController:viewController animated:YES];
+}
+
+- (void)didCloseDetailView
+{
+  [UIView beginAnimations:nil context:nil];
+  [UIView setAnimationDuration:bookDetailViewiPadAnimationSeconds];
+  self.bookDetailViewiPad.alpha = 0.0;
+  [UIView commitAnimations];
+  
+  [NSTimer scheduledTimerWithTimeInterval:1.0
+                                   target:self.bookDetailViewiPad
+                                 selector:@selector(removeFromSuperview)
+                                 userInfo:nil
+                                  repeats:NO];
+  
+  self.bookDetailViewiPad = nil;
 }
 
 @end
