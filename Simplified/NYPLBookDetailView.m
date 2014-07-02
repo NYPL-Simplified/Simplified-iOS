@@ -33,6 +33,7 @@ static CGFloat const mainTextPaddingRight = 10.0;
   self.backgroundColor = [UIColor whiteColor];
   
   self.authors = [[UILabel alloc] init];
+  self.authors.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
   self.authors.font = [UIFont fontWithName:@"AvenirNext-Medium" size:12.0];
   self.authors.numberOfLines = 3;
   self.authors.text = [book.authorStrings componentsJoinedByString:@"; "];
@@ -49,10 +50,12 @@ static CGFloat const mainTextPaddingRight = 10.0;
       self.cover = [[UIView alloc] init];
     }
     
+    self.cover.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
     [self addSubview:self.cover];
   }
   
   self.title = [[UILabel alloc] init];
+  self.title.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
   self.title.font = [UIFont fontWithName:@"AvenirNext-Bold" size:14.0];
   self.title.numberOfLines = 3;
   self.title.text = book.title;
