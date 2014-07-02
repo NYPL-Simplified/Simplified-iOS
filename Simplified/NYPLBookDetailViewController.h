@@ -4,6 +4,6 @@
 
 // designated initializer
 // |book| must not be nil.
-- (instancetype)initWithBook:(NYPLCatalogBook *)book coverImage:(UIImage *)coverImage;
+- (instancetype)initWithBook:(NYPLCatalogBook *)book;
 
 @end

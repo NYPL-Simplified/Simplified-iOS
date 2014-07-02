@@ -176,17 +176,12 @@ viewForHeaderInSection:(NSInteger const)section
   NYPLCatalogLane *const lane = self.catalogRoot.lanes[cell.laneIndex];
   NYPLCatalogBook *const book = lane.books[bookIndex];
   
-  UIImage *coverImage = [UIImage imageWithData:self.imageDataDictionary[book.imageURL]];
-  
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
     [self.navigationController pushViewController:[[NYPLBookDetailViewController alloc]
-                                                   initWithBook:book
-                                                   coverImage:coverImage]
+                                                   initWithBook:book]
                                          animated:YES];
   } else {
-    self.bookDetailViewiPad = [[NYPLBookDetailViewiPad alloc]
-                               initWithBook:book
-                               coverImage:coverImage];
+    self.bookDetailViewiPad = [[NYPLBookDetailViewiPad alloc] initWithBook:book];
     
     [self.bookDetailViewiPad.closeButton addTarget:self
                                             action:@selector(didCloseDetailView)

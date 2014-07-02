@@ -4,7 +4,7 @@
 
 @implementation NYPLBookDetailViewController
 
-- (instancetype)initWithBook:(NYPLCatalogBook *const)book coverImage:(UIImage *const)coverImage
+- (instancetype)initWithBook:(NYPLCatalogBook *const)book
 {
   self = [super initWithNibName:nil bundle:nil];
   if(!self) return nil;
@@ -17,8 +17,7 @@
     NYPLLOG(@"Being created for unexpected user interface idiom.");
   }
   
-  NYPLBookDetailView *const view =
-    [[NYPLBookDetailView alloc] initWithBook:book coverImage:coverImage];
+  NYPLBookDetailView *const view = [[NYPLBookDetailView alloc] initWithBook:book];
   
   self.view = view;
   
