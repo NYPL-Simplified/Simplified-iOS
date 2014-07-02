@@ -34,8 +34,6 @@ static CGFloat const sectionHeaderHeight = 40.0;
 
 @end
 
-static CGFloat const bookDetailViewiPadAnimationSeconds = 0.333;
-
 @implementation NYPLCatalogViewController
 
 #pragma mark NSObject
@@ -186,26 +184,17 @@ viewForHeaderInSection:(NSInteger const)section
                                                    coverImage:coverImage]
                                          animated:YES];
   } else {
-    NYPLBookDetailView *const detailView = [[NYPLBookDetailView alloc]
-                                            initWithBook:book
-                                            coverImage:coverImage];
-    
-    
     self.bookDetailViewiPad = [[NYPLBookDetailViewiPad alloc]
-                               initWithBookDetailView:detailView
-                               frame:self.view.bounds];
+                               initWithBook:book
+                               coverImage:coverImage];
     
     [self.bookDetailViewiPad.closeButton addTarget:self
                                             action:@selector(didCloseDetailView)
                                   forControlEvents:UIControlEventTouchUpInside];
     
-    self.bookDetailViewiPad.alpha = 0.0;
     [self.view addSubview:self.bookDetailViewiPad];
     
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:bookDetailViewiPadAnimationSeconds];
-    self.bookDetailViewiPad.alpha = 1.0;
-    [UIView commitAnimations];
+    [self.bookDetailViewiPad animateDisplay];
   }
 }
 
@@ -296,17 +285,7 @@ viewForHeaderInSection:(NSInteger const)section
 
 - (void)didCloseDetailView
 {
-  [UIView beginAnimations:nil context:nil];
-  [UIView setAnimationDuration:bookDetailViewiPadAnimationSeconds];
-  self.bookDetailViewiPad.alpha = 0.0;
-  [UIView commitAnimations];
-  
-  [NSTimer scheduledTimerWithTimeInterval:1.0
-                                   target:self.bookDetailViewiPad
-                                 selector:@selector(removeFromSuperview)
-                                 userInfo:nil
-                                  repeats:NO];
-  
+  [self.bookDetailViewiPad animateRemoveFromSuperview];
   self.bookDetailViewiPad = nil;
 }
 
