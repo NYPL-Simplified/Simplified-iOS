@@ -16,7 +16,6 @@ static CGFloat const bookDetailViewHeight = 440;
 @implementation NYPLBookDetailViewiPad
 
 - (instancetype)initWithBook:(NYPLCatalogBook *const)book
-                  coverImage:(UIImage *const)coverImage
 {
   self = [super init];
   if(!self) return nil;
@@ -34,7 +33,7 @@ static CGFloat const bookDetailViewHeight = 440;
   self.closeButton.exclusiveTouch = YES;
   [self addSubview:self.closeButton];
   
-  self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:book coverImage:coverImage];
+  self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:book];
   self.bookDetailView.frame = CGRectMake(0, 0, bookDetailViewWidth, bookDetailViewHeight);
   self.bookDetailView.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
                                           UIViewAutoresizingFlexibleRightMargin |

@@ -1,6 +1,8 @@
 #import "NYPLCatalogBook.h"
 #import "NYPLCatalogCategory.h"
 #import "NYPLCatalogCategoryCell.h"
+#import "NYPLBookDetailViewController.h"
+#import "NYPLBookDetailViewiPad.h"
 
 #import "NYPLCatalogCategoryViewController.h"
 
@@ -9,6 +11,7 @@
    UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic) NYPLBookDetailViewiPad *bookDetailViewiPad;
 @property (nonatomic) NYPLCatalogCategory *category;
 @property (nonatomic) UICollectionView *collectionView;
 @property (nonatomic) NSURL *url;
@@ -19,7 +22,8 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
 
 @implementation NYPLCatalogCategoryViewController
 
-- (instancetype)initWithURL:(NSURL *const)url title:(NSString *const)title
+- (instancetype)initWithURL:(NSURL *const)url
+                      title:(NSString *const)title
 {
   self = [super init];
   if(!self) return nil;
@@ -121,6 +125,30 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   return cell;
 }
 
+#pragma mark UICollectionViewDelegate
+
+- (void)collectionView:(__attribute__((unused)) UICollectionView *const)collectionView
+didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
+{
+  NYPLCatalogBook *const book = self.category.books[indexPath.row];
+  
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    [self.navigationController pushViewController:[[NYPLBookDetailViewController alloc]
+                                                   initWithBook:book]
+                                         animated:YES];
+  } else {
+    self.bookDetailViewiPad = [[NYPLBookDetailViewiPad alloc] initWithBook:book];
+    
+    [self.bookDetailViewiPad.closeButton addTarget:self
+                                            action:@selector(didCloseDetailView)
+                                  forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.view addSubview:self.bookDetailViewiPad];
+    
+    [self.bookDetailViewiPad animateDisplay];
+  }
+}
+
 #pragma mark UICollectionViewDelegateFlowLayout
 
 - (UIEdgeInsets)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
@@ -183,6 +211,12 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 {
   [self.collectionView reloadData];
   self.collectionView.hidden = NO;
+}
+
+- (void)didCloseDetailView
+{
+  [self.bookDetailViewiPad animateRemoveFromSuperview];
+  self.bookDetailViewiPad = nil;
 }
 
 @end

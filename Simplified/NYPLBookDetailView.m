@@ -1,9 +1,12 @@
+#import "NYPLCatalogBook.h"
+#import "NYPLSession.h"
+
 #import "NYPLBookDetailView.h"
 
 @interface NYPLBookDetailView ()
 
 @property (nonatomic) UILabel *authors;
-@property (nonatomic) UIView *cover;
+@property (nonatomic) UIImageView *cover;
 @property (nonatomic) UILabel *title;
 
 @end
@@ -20,8 +23,6 @@ static CGFloat const mainTextPaddingRight = 10.0;
 
 // designated initializer
 - (instancetype)initWithBook:(NYPLCatalogBook *const)book
-                  coverImage:(UIImage *const)coverImage
-
 {
   self = [super init];
   if(!self) return nil;
@@ -39,21 +40,24 @@ static CGFloat const mainTextPaddingRight = 10.0;
   self.authors.text = [book.authorStrings componentsJoinedByString:@"; "];
   [self addSubview:self.authors];
   
-  {
-    if(coverImage) {
-      UIImageView *const imageView = [[UIImageView alloc] initWithImage:coverImage];
-      imageView.contentMode = UIViewContentModeScaleAspectFit;
-      self.cover = imageView;
-    } else {
-      // TODO: If |coverImage| is nil, a book cover should be generated.
-      NYPLLOG(@"Book cover generation is required but unimplemented.");
-      self.cover = [[UIView alloc] init];
-    }
-    
-    self.cover.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-    [self addSubview:self.cover];
-  }
+  self.cover = [[UIImageView alloc] init];
+  self.cover.contentMode = UIViewContentModeScaleAspectFit;
+  self.cover.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+  [self addSubview:self.cover];
   
+  self.cover.image =
+    [UIImage imageWithData:[[NYPLSession sharedSession] cachedDataForURL:book.imageURL]];
+  
+  if(!self.cover.image) {
+    [[NYPLSession sharedSession]
+     withURL:book.imageURL
+     completionHandler:^(NSData *const data) {
+       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+         self.cover.image = [UIImage imageWithData:data];
+       }];
+     }];
+  }
+
   self.title = [[UILabel alloc] init];
   self.title.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
   self.title.font = [UIFont fontWithName:@"AvenirNext-Bold" size:14.0];
