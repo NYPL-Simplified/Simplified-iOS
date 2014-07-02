@@ -68,9 +68,4 @@ static CGFloat const bookDetailViewHeight = 440;
                                   repeats:NO];
 }
 
-- (void)dealloc
-{
-  NSLog(@"DEAD");
-}
-
 @end
