@@ -6,8 +6,12 @@
 @property (nonatomic, readonly) UIButton *closeButton;
 
 // designated initializer
-// |bookDetailView| must not be nil.
-- (instancetype)initWithBookDetailView:(NYPLBookDetailView *)bookDetailView
-                                 frame:(CGRect)frame;
+// |book| must not be nil.
+- (instancetype)initWithBook:(NYPLCatalogBook *)book
+                  coverImage:(UIImage *)coverImage;
+
+- (void)animateDisplay;
+
+- (void)animateRemoveFromSuperview;
 
 @end
