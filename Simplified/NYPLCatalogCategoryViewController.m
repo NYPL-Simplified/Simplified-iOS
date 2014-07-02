@@ -1,4 +1,4 @@
-#import "NYPLCatalogBook.h"
+#import "NYPLBook.h"
 #import "NYPLCatalogCategory.h"
 #import "NYPLCatalogCategoryCell.h"
 #import "NYPLBookDetailViewController.h"
@@ -130,7 +130,7 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
 - (void)collectionView:(__attribute__((unused)) UICollectionView *const)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
-  NYPLCatalogBook *const book = self.category.books[indexPath.row];
+  NYPLBook *const book = self.category.books[indexPath.row];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
     [self.navigationController pushViewController:[[NYPLBookDetailViewController alloc]

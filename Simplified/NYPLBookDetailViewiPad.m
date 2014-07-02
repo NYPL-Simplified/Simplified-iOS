@@ -15,7 +15,7 @@ static CGFloat const bookDetailViewHeight = 440;
 
 @implementation NYPLBookDetailViewiPad
 
-- (instancetype)initWithBook:(NYPLCatalogBook *const)book
+- (instancetype)initWithBook:(NYPLBook *const)book
 {
   self = [super init];
   if(!self) return nil;

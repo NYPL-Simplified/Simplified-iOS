@@ -7,7 +7,7 @@
 
 // designated initializer
 // |book| must not be nil.
-- (instancetype)initWithBook:(NYPLCatalogBook *)book;
+- (instancetype)initWithBook:(NYPLBook *)book;
 
 - (void)animateDisplay;
 

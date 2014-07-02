@@ -1,9 +1,9 @@
-#import "NYPLCatalogBook.h"
+#import "NYPLBook.h"
 
 @interface NYPLBookDetailView : UIScrollView
 
 // designated initializer
 // |book| must not be nil.
-- (instancetype)initWithBook:(NYPLCatalogBook *)book;
+- (instancetype)initWithBook:(NYPLBook *)book;
 
 @end

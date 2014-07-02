@@ -1,4 +1,4 @@
-#import "NYPLCatalogBook.h"
+#import "NYPLBook.h"
 
 #import "NYPLCatalogLane.h"
 
@@ -24,7 +24,7 @@
   }
   
   for(id object in books) {
-    if(![object isKindOfClass:[NYPLCatalogBook class]]) {
+    if(![object isKindOfClass:[NYPLBook class]]) {
       @throw NSInvalidArgumentException;
     }
   }
@@ -40,7 +40,7 @@
 {
   NSMutableSet *const set = [NSMutableSet set];
   
-  for(NYPLCatalogBook *const book in self.books) {
+  for(NYPLBook *const book in self.books) {
     if(book.imageURL) {
       [set addObject:book.imageURL];
     }

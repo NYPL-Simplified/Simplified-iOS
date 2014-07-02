@@ -1,8 +1,8 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
 #import "NYPLAsync.h"
-#import "NYPLCatalogAcquisition.h"
-#import "NYPLCatalogBook.h"
+#import "NYPLBookAcquisition.h"
+#import "NYPLBook.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogSubsectionLink.h"
 #import "NYPLOPDSEntry.h"
@@ -138,7 +138,7 @@
             [NSMutableArray arrayWithCapacity:featuredAcquisitionFeed.entries.count];
           
           for(NYPLOPDSEntry *const acquisitionEntry in featuredAcquisitionFeed.entries) {
-            NYPLCatalogBook *const book = [NYPLCatalogBook bookWithEntry:acquisitionEntry];
+            NYPLBook *const book = [NYPLBook bookWithEntry:acquisitionEntry];
             if(!book) {
               NYPLLOG(@"Failed to create book from entry.");
               continue;
