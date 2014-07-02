@@ -30,15 +30,22 @@
   
   NSMutableArray *const buttons = [NSMutableArray arrayWithCapacity:books.count];
   
-  for(NYPLCatalogBook *const book in books) {
+  [books enumerateObjectsUsingBlock:^(NYPLCatalogBook *const book,
+                                      NSUInteger const bookIndex,
+                                      __attribute__((unused)) BOOL *stop) {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.tag = bookIndex;
     NSData *const imageData = imageDataDictionary[book.imageURL];
     UIImage *const image =
       imageData ? [UIImage imageWithData:imageData] : [UIImage imageNamed:@"NoCover"];
     [button setImage:image forState:UIControlStateNormal];
+    [button addTarget:self
+               action:@selector(didSelectBookButton:)
+     forControlEvents:UIControlEventTouchUpInside];
+    button.exclusiveTouch = YES;
     [buttons addObject:button];
     [self.scrollView addSubview:button];
-  }
+  }];
   
   self.buttons = buttons;
   
@@ -70,6 +77,13 @@
   }
   
   self.scrollView.contentSize = CGSizeMake(x, height);
+}
+
+#pragma mark -
+
+- (void)didSelectBookButton:(UIButton *const)sender
+{
+  [self.delegate catalogLaneCell:self didSelectBookIndex:sender.tag];
 }
 
 @end

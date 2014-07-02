@@ -1,7 +1,11 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
 #import "NYPLAsync.h"
+#import "NYPLBookDetailView.h"
+#import "NYPLBookDetailViewController.h"
+#import "NYPLBookDetailViewiPad.h"
 #import "NYPLCatalogCategoryViewController.h"
+#import "NYPLCatalogBook.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogRoot.h"
@@ -16,9 +20,11 @@
 static CGFloat const rowHeight = 115.0;
 static CGFloat const sectionHeaderHeight = 40.0;
 
-@interface NYPLCatalogViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface NYPLCatalogViewController ()
+  <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic) NYPLBookDetailViewiPad *bookDetailViewiPad;
 @property (nonatomic) NYPLCatalogRoot *catalogRoot;
 @property (nonatomic) NSMutableDictionary *cachedCells;
 @property (nonatomic) NSMutableDictionary *imageDataDictionary;
@@ -91,18 +97,19 @@ static CGFloat const sectionHeaderHeight = 40.0;
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  UITableViewCell *const cachedCell = (self.cachedCells)[indexPath];
+  UITableViewCell *const cachedCell = self.cachedCells[indexPath];
   if(cachedCell) {
     return cachedCell;
   }
   
   if(indexPath.section < (NSInteger) self.indexOfNextLaneRequiringImageDownload) {
-    UITableViewCell *const cell =
+    NYPLCatalogLaneCell *const cell =
       [[NYPLCatalogLaneCell alloc]
        initWithLaneIndex:indexPath.section
        books:((NYPLCatalogLane *) self.catalogRoot.lanes[indexPath.section]).books
        imageDataDictionary:self.imageDataDictionary];
-    (self.cachedCells)[indexPath] = cell;
+    cell.delegate = self;
+    self.cachedCells[indexPath] = cell;
     return cell;
   } else {
     // TODO: Add loading cell.
@@ -159,6 +166,31 @@ viewForHeaderInSection:(NSInteger const)section
   view.backgroundColor = [UIColor whiteColor];
   
   return view;
+}
+
+#pragma mark NYPLCatalogLaneCellDelegate
+
+- (void)catalogLaneCell:(NYPLCatalogLaneCell *const)cell
+     didSelectBookIndex:(NSUInteger const)bookIndex
+{
+  NYPLCatalogLane *const lane = self.catalogRoot.lanes[cell.laneIndex];
+  NYPLCatalogBook *const book = lane.books[bookIndex];
+  
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    [self.navigationController pushViewController:[[NYPLBookDetailViewController alloc]
+                                                   initWithBook:book]
+                                         animated:YES];
+  } else {
+    self.bookDetailViewiPad = [[NYPLBookDetailViewiPad alloc] initWithBook:book];
+    
+    [self.bookDetailViewiPad.closeButton addTarget:self
+                                            action:@selector(didCloseDetailView)
+                                  forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.view addSubview:self.bookDetailViewiPad];
+    
+    [self.bookDetailViewiPad animateDisplay];
+  }
 }
 
 #pragma mark -
@@ -244,6 +276,12 @@ viewForHeaderInSection:(NSInteger const)section
      title:lane.title];
   
   [self.navigationController pushViewController:viewController animated:YES];
+}
+
+- (void)didCloseDetailView
+{
+  [self.bookDetailViewiPad animateRemoveFromSuperview];
+  self.bookDetailViewiPad = nil;
 }
 
 @end
