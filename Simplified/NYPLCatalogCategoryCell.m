@@ -34,7 +34,7 @@
 
 #pragma mark -
 
-- (void)setBook:(NYPLCatalogBook *const)book
+- (void)setBook:(NYPLBook *const)book
 {
   if(!self.author) {
     self.author = [[UILabel alloc] init];

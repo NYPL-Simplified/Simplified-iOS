@@ -4,7 +4,7 @@
 
 @implementation NYPLBookDetailViewController
 
-- (instancetype)initWithBook:(NYPLCatalogBook *const)book
+- (instancetype)initWithBook:(NYPLBook *const)book
 {
   self = [super initWithNibName:nil bundle:nil];
   if(!self) return nil;

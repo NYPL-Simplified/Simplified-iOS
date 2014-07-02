@@ -1,11 +1,11 @@
 #import "NYPLOPDSLink.h"
 #import "NYPLOPDSRelation.h"
 
-#import "NYPLCatalogBook.h"
+#import "NYPLBook.h"
 
-@interface NYPLCatalogBook ()
+@interface NYPLBook ()
 
-@property (nonatomic) NYPLCatalogAcquisition *acquisition;
+@property (nonatomic) NYPLBookAcquisition *acquisition;
 @property (nonatomic) NSArray *authorStrings;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSURL *imageURL; // nilable
@@ -15,9 +15,9 @@
 
 @end
 
-@implementation NYPLCatalogBook
+@implementation NYPLBook
 
-+ (NYPLCatalogBook *)bookWithEntry:(NYPLOPDSEntry *const)entry
++ (NYPLBook *)bookWithEntry:(NYPLOPDSEntry *const)entry
 {
   if(!entry) {
     NYPLLOG(@"Failed to create book from nil entry.");
@@ -53,8 +53,8 @@
     }
   }
   
-  return [[NYPLCatalogBook alloc]
-          initWithAcquisition:[[NYPLCatalogAcquisition alloc]
+  return [[NYPLBook alloc]
+          initWithAcquisition:[[NYPLBookAcquisition alloc]
                                initWithBorrow:borrow
                                generic:generic
                                openAccess:openAccess
@@ -67,7 +67,7 @@
           updated:entry.updated];
 }
 
-- (instancetype)initWithAcquisition:(NYPLCatalogAcquisition *const)acquisition
+- (instancetype)initWithAcquisition:(NYPLBookAcquisition *const)acquisition
                       authorStrings:(NSArray *const)authorStrings
                          identifier:(NSString *const)identifier
                            imageURL:(NSURL *const)imageURL

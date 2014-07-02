@@ -1,4 +1,4 @@
-#import "NYPLCatalogBook.h"
+#import "NYPLBook.h"
 
 #import "NYPLCatalogLaneCell.h"
 
@@ -30,7 +30,7 @@
   
   NSMutableArray *const buttons = [NSMutableArray arrayWithCapacity:books.count];
   
-  [books enumerateObjectsUsingBlock:^(NYPLCatalogBook *const book,
+  [books enumerateObjectsUsingBlock:^(NYPLBook *const book,
                                       NSUInteger const bookIndex,
                                       __attribute__((unused)) BOOL *stop) {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeCustom];

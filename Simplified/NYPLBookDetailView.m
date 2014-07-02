@@ -1,4 +1,4 @@
-#import "NYPLCatalogBook.h"
+#import "NYPLBook.h"
 #import "NYPLSession.h"
 
 #import "NYPLBookDetailView.h"
@@ -22,7 +22,7 @@ static CGFloat const mainTextPaddingRight = 10.0;
 @implementation NYPLBookDetailView
 
 // designated initializer
-- (instancetype)initWithBook:(NYPLCatalogBook *const)book
+- (instancetype)initWithBook:(NYPLBook *const)book
 {
   self = [super init];
   if(!self) return nil;

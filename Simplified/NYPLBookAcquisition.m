@@ -1,6 +1,6 @@
-#import "NYPLCatalogAcquisition.h"
+#import "NYPLBookAcquisition.h"
 
-@interface NYPLCatalogAcquisition ()
+@interface NYPLBookAcquisition ()
 
 @property (nonatomic) NSURL *borrow;
 @property (nonatomic) NSURL *generic;
@@ -9,7 +9,7 @@
 
 @end
 
-@implementation NYPLCatalogAcquisition
+@implementation NYPLBookAcquisition
 
 - (instancetype)initWithBorrow:(NSURL *const)borrow
                        generic:(NSURL *const)generic

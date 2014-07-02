@@ -5,7 +5,7 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookDetailViewiPad.h"
 #import "NYPLCatalogCategoryViewController.h"
-#import "NYPLCatalogBook.h"
+#import "NYPLBook.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogRoot.h"
@@ -174,7 +174,7 @@ viewForHeaderInSection:(NSInteger const)section
      didSelectBookIndex:(NSUInteger const)bookIndex
 {
   NYPLCatalogLane *const lane = self.catalogRoot.lanes[cell.laneIndex];
-  NYPLCatalogBook *const book = lane.books[bookIndex];
+  NYPLBook *const book = lane.books[bookIndex];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
     [self.navigationController pushViewController:[[NYPLBookDetailViewController alloc]
