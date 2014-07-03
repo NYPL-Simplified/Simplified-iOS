@@ -145,7 +145,7 @@ heightForHeaderInSection:(__attribute__((unused)) NSInteger)section
 - (UIView *)tableView:(__attribute__((unused)) UITableView *)tableView
 viewForHeaderInSection:(NSInteger const)section
 {
-  CGRect const frame = CGRectMake(0, 0, self.tableView.frame.size.width, sectionHeaderHeight);
+  CGRect const frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), sectionHeaderHeight);
   UIView *const view = [[UIView alloc] initWithFrame:frame];
   view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
   
@@ -154,7 +154,7 @@ viewForHeaderInSection:(NSInteger const)section
     NSString *const title = ((NYPLCatalogLane *) self.catalogRoot.lanes[section]).title;
     [button setTitle:title forState:UIControlStateNormal];
     [button sizeToFit];
-    button.frame = CGRectMake(5, 5, button.frame.size.width, button.frame.size.height);
+    button.frame = CGRectMake(5, 5, CGRectGetWidth(button.frame), CGRectGetHeight(button.frame));
     button.tag = section;
     [button addTarget:self
                action:@selector(didSelectButton:)

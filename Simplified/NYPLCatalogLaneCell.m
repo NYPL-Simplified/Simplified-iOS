@@ -62,7 +62,7 @@
   CGFloat const padding = 10.0;
   
   CGFloat x = padding;
-  CGFloat const height = self.frame.size.height;
+  CGFloat const height = CGRectGetHeight(self.frame);
   
   // TODO: A guard against absurdly wide covers is needed.
   

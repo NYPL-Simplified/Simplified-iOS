@@ -76,17 +76,17 @@ static CGFloat const mainTextPaddingRight = 10.0;
   self.cover.frame = frame;
   
   {
-    CGFloat const x = self.cover.frame.size.width + self.cover.frame.origin.x + mainTextPaddingLeft;
+    CGFloat const x = CGRectGetMaxX(self.cover.frame) + mainTextPaddingLeft;
     CGFloat const y = mainTextPaddingTop;
-    CGFloat const w = self.bounds.size.width - x - mainTextPaddingRight;
+    CGFloat const w = CGRectGetWidth(self.bounds) - x - mainTextPaddingRight;
     CGFloat const h = [self.title sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
     self.title.frame = CGRectMake(x, y, w, h);
   }
   
   {
-    CGFloat const x = self.title.frame.origin.x;
-    CGFloat const y = self.title.frame.origin.y + self.title.frame.size.height;
-    CGFloat const w = self.title.frame.size.width;
+    CGFloat const x = CGRectGetMinX(self.title.frame);
+    CGFloat const y = CGRectGetMaxY(self.title.frame);
+    CGFloat const w = CGRectGetWidth(self.title.frame);
     CGFloat const h = [self.title sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
     self.authors.frame = CGRectMake(x, y, w, h);
   }
