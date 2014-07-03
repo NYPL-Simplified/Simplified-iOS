@@ -93,9 +93,31 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   self.activityIndicatorView.center = self.view.center;
 }
 
--(void)willRotateToInterfaceOrientation:(__attribute__((unused)) UIInterfaceOrientation)orientation
+// The approach taken in this method was settled upon after several other approaches were tried.
+// It's not generic because it assumes two columns in portrait and three in landscape when using an
+// iPad, and it assumes row heights are constant, but it's simple and exact.
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
                                duration:(__attribute__((unused)) NSTimeInterval)duration
 {
+  CGFloat const top = self.collectionView.contentInset.top;
+  
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if(self.interfaceOrientation == UIInterfaceOrientationLandscapeRight ||
+       self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
+      if(orientation == UIInterfaceOrientationPortrait ||
+         orientation == UIInterfaceOrientationPortraitUpsideDown) {
+        CGFloat const y = (self.collectionView.contentOffset.y + top) * 1.5 - top;
+        self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, y);
+      }
+    } else {
+      if(orientation == UIInterfaceOrientationLandscapeRight ||
+         orientation == UIInterfaceOrientationLandscapeLeft) {
+        CGFloat const y = (self.collectionView.contentOffset.y + top) * (2.0 / 3.0) - top;
+        self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, y);
+      }
+    }
+  }
+
   [self.collectionView.collectionViewLayout invalidateLayout];
 }
 
