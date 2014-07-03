@@ -21,12 +21,15 @@
   
   self.laneIndex = laneIndex;
   
-  self.scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
+  self.contentView.autoresizingMask = (UIViewAutoresizingFlexibleWidth
+                                       | UIViewAutoresizingFlexibleHeight);
+  
+  self.scrollView = [[UIScrollView alloc] initWithFrame:self.contentView.bounds];
   self.scrollView.autoresizingMask = (UIViewAutoresizingFlexibleWidth
                                       | UIViewAutoresizingFlexibleHeight);
   self.scrollView.showsHorizontalScrollIndicator = NO;
   self.scrollView.alwaysBounceHorizontal = YES;
-  [self addSubview:self.scrollView];
+  [self.contentView addSubview:self.scrollView];
   
   NSMutableArray *const buttons = [NSMutableArray arrayWithCapacity:books.count];
   
