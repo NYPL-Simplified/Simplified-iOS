@@ -1,7 +1,7 @@
-typedef enum {
+typedef NS_ENUM(NSInteger, NYPLCatalogSubsectionLinkType) {
   NYPLCatalogSubsectionLinkTypeAcquisition,
   NYPLCatalogSubsectionLinkTypeNavigation
-} NYPLCatalogSubsectionLinkType;
+};
 
 @interface NYPLCatalogSubsectionLink : NSObject
 
