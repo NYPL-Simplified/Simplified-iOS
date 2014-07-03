@@ -17,6 +17,8 @@
 
 - (void)layoutSubviews
 {
+  self.contentView.frame = self.bounds;
+  
   self.cover.frame = CGRectMake(5, 5, 90, self.frame.size.height - 10);
   
   [self.title sizeToFit];
@@ -38,17 +40,17 @@
 {
   if(!self.author) {
     self.author = [[UILabel alloc] init];
-    [self addSubview:self.author];
+    [self.contentView addSubview:self.author];
   }
   
   if(!self.cover) {
     self.cover = [[UIImageView alloc] init];
-    [self addSubview:self.cover];
+    [self.contentView addSubview:self.cover];
   }
   
   if(!self.title) {
     self.title = [[UILabel alloc] init];
-    [self addSubview:self.title];
+    [self.contentView addSubview:self.title];
   }
   
   self.author.text = [book.authorStrings componentsJoinedByString:@"; "];
@@ -77,7 +79,6 @@
          // place, this check and |self.coverURL| may no longer be needed.
          if([book.imageURL isEqual:self.coverURL]) {
            self.cover.image = [UIImage imageWithData:data];
-           [self.cover sizeToFit];
            // Drop the now-useless URL reference.
            self.coverURL = nil;
          }
