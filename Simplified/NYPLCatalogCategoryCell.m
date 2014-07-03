@@ -19,18 +19,18 @@
 {
   self.contentView.frame = self.bounds;
   
-  self.cover.frame = CGRectMake(5, 5, 90, self.frame.size.height - 10);
+  self.cover.frame = CGRectMake(5, 5, 90, CGRectGetHeight(self.frame) - 10);
   
   [self.title sizeToFit];
   CGRect titleFrame = self.title.frame;
   titleFrame.origin = CGPointMake(100, 5);
-  titleFrame.size.width = self.frame.size.width - 105;
+  titleFrame.size.width = CGRectGetWidth(self.frame) - 105;
   self.title.frame = titleFrame;
   
   [self.author sizeToFit];
   CGRect authorFrame = self.author.frame;
-  authorFrame.origin = CGPointMake(100, titleFrame.origin.y + titleFrame.size.height + 5);
-  authorFrame.size.width = self.frame.size.width - 105;
+  authorFrame.origin = CGPointMake(100, CGRectGetMaxY(titleFrame) + 5);
+  authorFrame.size.width = CGRectGetWidth(self.frame) - 105;
   self.author.frame = authorFrame;
 }
 
