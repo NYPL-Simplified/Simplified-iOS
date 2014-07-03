@@ -2,10 +2,10 @@
 
 + (NYPLSession *)sharedSession;
 
-- (void)withURL:(NSURL *)url completionHandler:(void (^)(NSData *data))handler;
+- (void)withURL:(NSURL *)URL completionHandler:(void (^)(NSData *data))handler;
 
-- (void)withURLs:(NSSet *)urls handler:(void (^)(NSDictionary *dataDictionary))handler;
+- (void)withURLs:(NSSet *)URLs handler:(void (^)(NSDictionary *dataDictionary))handler;
 
-- (NSData *)cachedDataForURL:(NSURL *)url;
+- (NSData *)cachedDataForURL:(NSURL *)URL;
 
 @end

@@ -23,10 +23,10 @@ static NSUInteger const preloadThreshold = 100;
 
 @implementation NYPLCatalogCategory
 
-+ (void)withURL:(NSURL *)url handler:(void (^)(NYPLCatalogCategory *category))handler
++ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogCategory *category))handler
 {
   [NYPLOPDSFeed
-   withURL:url
+   withURL:URL
    completionHandler:^(NYPLOPDSFeed *const acquisitionFeed) {
      if(!acquisitionFeed) {
        NYPLLOG(@"Failed to retrieve acquisition feed.");

@@ -30,7 +30,7 @@ static CGFloat const sectionHeaderHeight = 40.0;
 @property (nonatomic) NSMutableDictionary *imageDataDictionary;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic) NSDictionary *urlToCategoryFeedDataDictionary;
+@property (nonatomic) NSDictionary *URLToCategoryFeedDataDictionary;
 
 @end
 
@@ -272,7 +272,7 @@ viewForHeaderInSection:(NSInteger const)section
   // TODO: Show the correct controller based on the |lane.subsectionLink.type|.
   NYPLCatalogCategoryViewController *const viewController =
     [[NYPLCatalogCategoryViewController alloc]
-     initWithURL:lane.subsectionLink.url
+     initWithURL:lane.subsectionLink.URL
      title:lane.title];
   
   [self.navigationController pushViewController:viewController animated:YES];

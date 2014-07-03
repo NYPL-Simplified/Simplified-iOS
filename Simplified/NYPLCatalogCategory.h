@@ -15,7 +15,7 @@
 @property (nonatomic, readonly) NSString *title;
 
 // In the callback, |root| will be |nil| if an error occurred.
-+ (void)withURL:(NSURL *)url handler:(void (^)(NYPLCatalogCategory *category))handler;
++ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogCategory *category))handler;
 
 // designated initializer
 - (instancetype)initWithBooks:(NSArray *)books
