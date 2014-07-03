@@ -55,10 +55,10 @@ static NYPLSession *sharedSession = nil;
 
 #pragma mark -
 
-- (void)withURL:(NSURL *const)url completionHandler:(void (^)(NSData *data))handler
+- (void)withURL:(NSURL *const)URL completionHandler:(void (^)(NSData *data))handler
 {
   [[self.session
-    dataTaskWithURL:url
+    dataTaskWithURL:URL
     completionHandler:^(NSData *const data,
                         __attribute__((unused)) NSURLResponse *response,
                         NSError *const error) {
@@ -72,14 +72,14 @@ static NYPLSession *sharedSession = nil;
    resume];
 }
 
-- (void)withURLs:(NSSet *const)urls handler:(void (^)(NSDictionary *dataDictionary))handler
+- (void)withURLs:(NSSet *const)URLs handler:(void (^)(NSDictionary *dataDictionary))handler
 {
-  if(!urls.count) {
+  if(!URLs.count) {
     NYPLAsyncDispatch(^{handler(@{});});
     return;
   }
   
-  for(id const object in urls) {
+  for(id const object in URLs) {
     if(![object isKindOfClass:[NSURL class]]) {
       @throw NSInvalidArgumentException;
     }
@@ -87,12 +87,12 @@ static NYPLSession *sharedSession = nil;
   
   NSLock *const lock = [[NSLock alloc] init];
   NSMutableDictionary *const dataDictionary = [NSMutableDictionary dictionary];
-  __block NSUInteger remaining = urls.count;
+  __block NSUInteger remaining = URLs.count;
   
-  for(NSURL *const url in urls) {
-    [self withURL:url completionHandler:^(NSData *const data) {
+  for(NSURL *const URL in URLs) {
+    [self withURL:URL completionHandler:^(NSData *const data) {
       [lock lock];
-      dataDictionary[url] = (data ? data : [NSNull null]);
+      dataDictionary[URL] = (data ? data : [NSNull null]);
       --remaining;
       if(!remaining) {
         NYPLAsyncDispatch(^{handler(dataDictionary);});
@@ -102,10 +102,10 @@ static NYPLSession *sharedSession = nil;
   }
 }
 
-- (NSData *)cachedDataForURL:(NSURL *)url
+- (NSData *)cachedDataForURL:(NSURL *)URL
 {
   return [self.session.configuration.URLCache
-           cachedResponseForRequest:[NSURLRequest requestWithURL:url]].data;
+           cachedResponseForRequest:[NSURLRequest requestWithURL:URL]].data;
 }
 
 @end

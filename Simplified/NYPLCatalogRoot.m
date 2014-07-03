@@ -22,15 +22,15 @@
 
 @implementation NYPLCatalogRoot
 
-+ (void)withURL:(NSURL *const)url
++ (void)withURL:(NSURL *const)URL
         handler:(void (^)(NYPLCatalogRoot *root))handler
 {
-  if(!(url && handler)) {
+  if(!(URL && handler)) {
     @throw NSInvalidArgumentException;
   }
   
   [NYPLOPDSFeed
-   withURL:url
+   withURL:URL
    completionHandler:^(NYPLOPDSFeed *const navigationFeed) {
      if(!navigationFeed) {
        NYPLLOG(@"Failed to retrieve main navigation feed.");
@@ -70,11 +70,11 @@
               if(NYPLOPDSTypeStringIsAcquisition(link.type)) {
                 subsectionLink = [[NYPLCatalogSubsectionLink alloc]
                                   initWithType:NYPLCatalogSubsectionLinkTypeAcquisition
-                                  url:link.href];
+                                  URL:link.href];
               } else if(NYPLOPDSTypeStringIsNavigation(link.type)) {
                 subsectionLink = [[NYPLCatalogSubsectionLink alloc]
                                   initWithType:NYPLCatalogSubsectionLinkTypeNavigation
-                                  url:link.href];
+                                  URL:link.href];
               } else {
                 NYPLLOG(@"Ignoring subsection without known type.");
               }

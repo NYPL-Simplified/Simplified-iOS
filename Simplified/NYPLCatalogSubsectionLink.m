@@ -3,23 +3,23 @@
 @interface NYPLCatalogSubsectionLink ()
 
 @property (nonatomic) NYPLCatalogSubsectionLinkType type;
-@property (nonatomic) NSURL *url;
+@property (nonatomic) NSURL *URL;
 
 @end
 
 @implementation NYPLCatalogSubsectionLink
 
-- (instancetype)initWithType:(NYPLCatalogSubsectionLinkType const)type url:(NSURL *const)url
+- (instancetype)initWithType:(NYPLCatalogSubsectionLinkType const)type URL:(NSURL *const)URL
 {
   self = [super init];
   if(!self) return nil;
   
-  if(!url) {
+  if(!URL) {
     @throw NSInvalidArgumentException;
   }
   
   self.type = type;
-  self.url = url;
+  self.URL = URL;
   
   return self;
 }

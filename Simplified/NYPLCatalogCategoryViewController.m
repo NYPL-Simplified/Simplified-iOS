@@ -14,7 +14,7 @@
 @property (nonatomic) NYPLBookDetailViewiPad *bookDetailViewiPad;
 @property (nonatomic) NYPLCatalogCategory *category;
 @property (nonatomic) UICollectionView *collectionView;
-@property (nonatomic) NSURL *url;
+@property (nonatomic) NSURL *URL;
 
 @end
 
@@ -22,13 +22,13 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
 
 @implementation NYPLCatalogCategoryViewController
 
-- (instancetype)initWithURL:(NSURL *const)url
+- (instancetype)initWithURL:(NSURL *const)URL
                       title:(NSString *const)title
 {
   self = [super init];
   if(!self) return nil;
   
-  self.url = url;
+  self.URL = URL;
   
   self.title = title;
   
@@ -51,7 +51,6 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   [self.collectionView registerClass:[NYPLCatalogCategoryCell class]
           forCellWithReuseIdentifier:reuseIdentifier];
   self.collectionView.backgroundColor = [UIColor whiteColor];
-  self.collectionView.showsVerticalScrollIndicator = NO;
   self.collectionView.hidden = YES;
   [self.view addSubview:self.collectionView];
   
@@ -62,7 +61,7 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   
   [NYPLCatalogCategory
-   withURL:self.url
+   withURL:self.URL
    handler:^(NYPLCatalogCategory *const category) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.activityIndicatorView.hidden = YES;

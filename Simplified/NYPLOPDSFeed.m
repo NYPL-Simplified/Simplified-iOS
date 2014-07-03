@@ -19,9 +19,9 @@
 
 @implementation NYPLOPDSFeed
 
-+ (void)withURL:(NSURL *)url completionHandler:(void (^)(NYPLOPDSFeed *feed))handler
++ (void)withURL:(NSURL *)URL completionHandler:(void (^)(NYPLOPDSFeed *feed))handler
 {
-  [[NYPLSession sharedSession] withURL:url completionHandler:^(NSData *data) {
+  [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data) {
     if(!data) {
       NYPLLOG(@"Failed to retrieve data.");
       NYPLAsyncDispatch(^{handler(nil);});
