@@ -20,18 +20,18 @@
 
 - (void)testInvalidStringReturnsNil
 {
-  NSDate *const date = [NSDate dateWithRFC3339:@"not a valid date"];
+  NSDate *const date = [NSDate dateWithRFC3339String:@"not a valid date"];
   XCTAssertNil(date);
 }
 
 - (void)testCanHandleNilArgument
 {
-  XCTAssertFalse([NSDate dateWithRFC3339:nil]);
+  XCTAssertFalse([NSDate dateWithRFC3339String:nil]);
 }
 
 - (void)testDateParsesCorrectly
 {
-  NSDate *const date = [NSDate dateWithRFC3339:@"1984-09-08T08:23:45Z"];
+  NSDate *const date = [NSDate dateWithRFC3339String:@"1984-09-08T08:23:45Z"];
   XCTAssert(date);
   
   NSDateComponents *const dateComponents = [date UTCComponents];
@@ -45,7 +45,7 @@
 
 - (void)testDateWithFractionalSecondsParsesCorrectly
 {
-  NSDate *const date = [NSDate dateWithRFC3339:@"1984-09-08T08:23:45.99Z"];
+  NSDate *const date = [NSDate dateWithRFC3339String:@"1984-09-08T08:23:45.99Z"];
   XCTAssert(date);
   
   NSDateComponents *const dateComponents = [date UTCComponents];
@@ -55,6 +55,17 @@
   XCTAssertEqual(dateComponents.hour, 8);
   XCTAssertEqual(dateComponents.minute, 23);
   XCTAssertEqual(dateComponents.second, 45);
+}
+
+- (void)testDateRoundTrip
+{
+  NSDate *const date = [NSDate dateWithRFC3339String:@"1984-09-08T10:23:45+0200"];
+  XCTAssert(date);
+  
+  NSString *const string = [date RFC3339String];
+  XCTAssert(string);
+  
+  XCTAssertEqualObjects(string, @"1984-09-08T08:23:45Z");
 }
 
 @end

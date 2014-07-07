@@ -4,9 +4,13 @@
 
 @interface NYPLBookRegistry : NSObject
 
-+ (NYPLBookRegistry *)sharedInstance;
++ (NYPLBookRegistry *)sharedRegistry;
 
-// This adds a book to the book registry until it is manually removed. It allows the application to
+// Returns the URL of the directory used by the registry for storing content and metadata. The
+// directory is not guaranteed to exist at the time this method is called.
+- (NSURL *)registryDirectory;
+
+// Adds a book to the book registry until it is manually removed. It allows the application to
 // present information about obtained books when offline. Attempting to add a book already present
 // will overwrite the existing book as if |updateBook:| were called.
 - (void)addBook:(NYPLBook *)book;
