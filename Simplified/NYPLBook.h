@@ -11,7 +11,7 @@
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSDate *updated;
 
-+ (NYPLBook *)bookWithEntry:(NYPLOPDSEntry *)entry;
++ (instancetype)bookWithEntry:(NYPLOPDSEntry *)entry;
 
 // designated initializer
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition

@@ -15,7 +15,7 @@ static NYPLSession *sharedSession = nil;
 
 @implementation NYPLSession
 
-+ (NYPLSession *)sharedSession
++ (instancetype)sharedSession
 {
   static dispatch_once_t predicate;
   
