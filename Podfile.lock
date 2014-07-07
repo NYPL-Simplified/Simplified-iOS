@@ -1,10 +1,13 @@
 PODS:
+  - JSONModel (0.13.0)
   - SMXMLDocument (1.0.1)
 
 DEPENDENCIES:
+  - JSONModel (~> 0.13.0)
   - SMXMLDocument (~> 1.0.1)
 
 SPEC CHECKSUMS:
+  JSONModel: 62ea96b49ea18a8b91ef89c249dba291d8601d82
   SMXMLDocument: aff6ceafde0c3cd6e6838cf549d08c481a6bd2ba
 
 COCOAPODS: 0.33.1
