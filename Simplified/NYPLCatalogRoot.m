@@ -50,7 +50,7 @@
      }
      
      [[NYPLSession sharedSession]
-      withURLs:featuredURLs handler:^(NSDictionary *const dataDictionary) {
+      withURLs:featuredURLs handler:^(NSDictionary *const URLToDataOrNull) {
         NSMutableArray *const lanes =
           [NSMutableArray arrayWithCapacity:navigationFeed.entries.count];
         
@@ -96,7 +96,7 @@
             continue;
           }
           
-          id const featuredDataObject = dataDictionary[featuredURL];
+          id const featuredDataObject = URLToDataOrNull[featuredURL];
           if([featuredDataObject isKindOfClass:[NSNull class]]) {
             NYPLLOG(@"Creating lane without unobtainable featured books.");
             [lanes addObject:
