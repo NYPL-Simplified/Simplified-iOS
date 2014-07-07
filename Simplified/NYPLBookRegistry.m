@@ -163,6 +163,13 @@ static NSString *const RegistryFilename = @"registry.json";
   }
 }
 
+- (NYPLBook *)bookForIdentifier:(NSString *const)identifier
+{
+  @synchronized(self) {
+    return self.identifiersToBooks[identifier];
+  }
+}
+
 - (void)removeBookForIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
