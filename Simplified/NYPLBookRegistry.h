@@ -22,6 +22,9 @@
 // call this method whenever new information is obtained regardless of a given book's state.
 - (void)updateBook:(NYPLBook *)book;
 
+// Returns the book for a given identifier if it is registered, else nil.
+- (NYPLBook *)bookForIdentifier:(NSString *const)identifier;
+
 // Given an identifier, this method removes a book from the registry. Attempting to remove a book
 // that is not present will result in an error being logged.
 - (void)removeBookForIdentifier:(NSString *const)book;
