@@ -1,6 +1,6 @@
 @interface NYPLSession : NSObject
 
-+ (NYPLSession *)sharedSession;
++ (instancetype)sharedSession;
 
 - (void)withURL:(NSURL *)URL completionHandler:(void (^)(NSData *data))handler;
 

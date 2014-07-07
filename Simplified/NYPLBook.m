@@ -17,7 +17,7 @@
 
 @implementation NYPLBook
 
-+ (NYPLBook *)bookWithEntry:(NYPLOPDSEntry *const)entry
++ (instancetype)bookWithEntry:(NYPLOPDSEntry *const)entry
 {
   if(!entry) {
     NYPLLOG(@"Failed to create book from nil entry.");
