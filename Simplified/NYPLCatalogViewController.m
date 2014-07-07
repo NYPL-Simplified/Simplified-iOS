@@ -30,7 +30,6 @@ static CGFloat const sectionHeaderHeight = 40.0;
 @property (nonatomic) NSMutableDictionary *URLsToImageData;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic) NSDictionary *URLToCategoryFeedData;
 
 @end
 
