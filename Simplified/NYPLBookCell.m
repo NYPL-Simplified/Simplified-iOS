@@ -1,8 +1,8 @@
 #import "NYPLSession.h"
 
-#import "NYPLCatalogCategoryCell.h"
+#import "NYPLBookCell.h"
 
-@interface NYPLCatalogCategoryCell ()
+@interface NYPLBookCell ()
 
 @property (nonatomic) UILabel *author;
 @property (nonatomic) UIImageView *cover;
@@ -11,7 +11,7 @@
 
 @end
 
-@implementation NYPLCatalogCategoryCell
+@implementation NYPLBookCell
 
 #pragma mark UIView
 

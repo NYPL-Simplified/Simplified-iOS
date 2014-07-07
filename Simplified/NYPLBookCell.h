@@ -1,6 +1,6 @@
 #import "NYPLBook.h"
 
-@interface NYPLCatalogCategoryCell : UICollectionViewCell
+@interface NYPLBookCell : UICollectionViewCell
 
 - (void)setBook:(NYPLBook *)book;
 
