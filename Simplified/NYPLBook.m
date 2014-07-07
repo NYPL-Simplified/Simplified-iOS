@@ -1,3 +1,4 @@
+#import "NSDate+NYPLDateAdditions.h"
 #import "NYPLOPDSLink.h"
 #import "NYPLOPDSRelation.h"
 
@@ -14,6 +15,14 @@
 @property (nonatomic) NSDate *updated;
 
 @end
+
+static NSString *const AcquisitionKey = @"acquisition";
+static NSString *const AuthorsKey = @"authors";
+static NSString *const IdentifierKey = @"id";
+static NSString *const ImageURLKey = @"image";
+static NSString *const ImageThumbnailURLKey = @"image-thumbnail";
+static NSString *const TitleKey = @"title";
+static NSString *const UpdatedKey = @"updated";
 
 @implementation NYPLBook
 
@@ -97,6 +106,46 @@
   self.updated = updated;
   
   return self;
+}
+
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary
+{
+  self = [super init];
+  if(!self) return nil;
+  
+  self.acquisition = [[NYPLBookAcquisition alloc] initWithDictionary:dictionary[AcquisitionKey]];
+  if(!self.acquisition) return nil;
+  
+  self.authorStrings = dictionary[AuthorsKey];
+  if(!self.authorStrings) return nil;
+  
+  self.identifier = dictionary[IdentifierKey];
+  if(!self.identifier) return nil;
+  
+  self.imageURL = [NSURL URLWithString:dictionary[ImageURLKey]];
+  if(!self.imageURL) return nil;
+  
+  self.imageThumbnailURL = [NSURL URLWithString:dictionary[ImageThumbnailURLKey]];
+  if(!self.imageThumbnailURL) return nil;
+  
+  self.title = dictionary[TitleKey];
+  if(!self.title) return nil;
+  
+  self.updated = [NSDate dateWithRFC3339String:dictionary[UpdatedKey]];
+  if(!self.updated) return nil;
+  
+  return self;
+}
+
+- (NSDictionary *)dictionaryRepresentation
+{
+  return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
+           AuthorsKey: self.authorStrings,
+           IdentifierKey: self.identifier,
+           ImageURLKey: [self.imageURL absoluteString],
+           ImageThumbnailURLKey: [self.imageThumbnailURL absoluteString],
+           TitleKey: self.title,
+           UpdatedKey: [self.updated RFC3339String]};
 }
 
 @end

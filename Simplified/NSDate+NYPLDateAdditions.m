@@ -2,7 +2,7 @@
 
 @implementation NSDate (NYPLDateAdditions)
 
-+ (instancetype)dateWithRFC3339:(NSString *const)string
++ (instancetype)dateWithRFC3339String:(NSString *const)string
 {
   NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
   
@@ -18,6 +18,17 @@
   }
   
   return date;
+}
+
+- (NSString *)RFC3339String
+{
+  NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
+  
+  dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+  dateFormatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'";
+  dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+  
+  return [dateFormatter stringFromDate:self];
 }
 
 - (NSDateComponents *)UTCComponents
