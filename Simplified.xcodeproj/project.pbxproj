@@ -41,7 +41,7 @@
 		1183F3601952194000DC322F /* NYPLCatalogRootTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1183F35F1952194000DC322F /* NYPLCatalogRootTests.m */; };
 		118B7ABF195CBF72005CE3E7 /* NYPLSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 118B7ABE195CBF72005CE3E7 /* NYPLSession.m */; };
 		11A16E69195B2BD3004147F4 /* NYPLCatalogCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E68195B2BD3004147F4 /* NYPLCatalogCategoryViewController.m */; };
-		11A16E6F195B60DF004147F4 /* NYPLCatalogCategoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E6E195B60DF004147F4 /* NYPLCatalogCategoryCell.m */; };
+		11A16E6F195B60DF004147F4 /* NYPLBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E6E195B60DF004147F4 /* NYPLBookCell.m */; };
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
 		11F54C2719410C700086FCAF /* NYPLOPDSEntryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */; };
@@ -127,8 +127,8 @@
 		118B7ABE195CBF72005CE3E7 /* NYPLSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSession.m; sourceTree = "<group>"; };
 		11A16E67195B2BD3004147F4 /* NYPLCatalogCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogCategoryViewController.h; sourceTree = "<group>"; };
 		11A16E68195B2BD3004147F4 /* NYPLCatalogCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogCategoryViewController.m; sourceTree = "<group>"; };
-		11A16E6D195B60DF004147F4 /* NYPLCatalogCategoryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogCategoryCell.h; sourceTree = "<group>"; };
-		11A16E6E195B60DF004147F4 /* NYPLCatalogCategoryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogCategoryCell.m; sourceTree = "<group>"; };
+		11A16E6D195B60DF004147F4 /* NYPLBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookCell.h; sourceTree = "<group>"; };
+		11A16E6E195B60DF004147F4 /* NYPLBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookCell.m; sourceTree = "<group>"; };
 		11F54C1D194109120086FCAF /* main.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = main.xml; sourceTree = "<group>"; };
 		11F54C2419410BE40086FCAF /* single_entry.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = single_entry.xml; sourceTree = "<group>"; };
 		11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryTests.m; sourceTree = "<group>"; };
@@ -211,18 +211,44 @@
 		110AF8901961D822004887C3 /* Book */ = {
 			isa = PBXGroup;
 			children = (
+				11616E0C196B035B003D60D9 /* Controllers */,
+				11616E0D196B0363003D60D9 /* Models */,
+				11616E0E196B036D003D60D9 /* Views */,
+			);
+			name = Book;
+			sourceTree = "<group>";
+		};
+		11616E0C196B035B003D60D9 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				110AF89A1961ED1F004887C3 /* NYPLBookDetailViewController.h */,
+				110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		11616E0D196B0363003D60D9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
 				1183F345194F744D00DC322F /* NYPLBook.h */,
 				1183F346194F744D00DC322F /* NYPLBook.m */,
 				1183F351194F795800DC322F /* NYPLBookAcquisition.h */,
 				1183F352194F795800DC322F /* NYPLBookAcquisition.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		11616E0E196B036D003D60D9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				11A16E6D195B60DF004147F4 /* NYPLBookCell.h */,
+				11A16E6E195B60DF004147F4 /* NYPLBookCell.m */,
 				110AF8941961D94D004887C3 /* NYPLBookDetailView.h */,
 				110AF8951961D94D004887C3 /* NYPLBookDetailView.m */,
-				110AF89A1961ED1F004887C3 /* NYPLBookDetailViewController.h */,
-				110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */,
 				1133A4831964664C00247362 /* NYPLBookDetailViewiPad.h */,
 				1133A4841964664C00247362 /* NYPLBookDetailViewiPad.m */,
 			);
-			name = Book;
+			name = Views;
 			sourceTree = "<group>";
 		};
 		1183F349194F74EF00DC322F /* Catalog */ = {
@@ -251,8 +277,6 @@
 		1183F34B194F751B00DC322F /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				11A16E6D195B60DF004147F4 /* NYPLCatalogCategoryCell.h */,
-				11A16E6E195B60DF004147F4 /* NYPLCatalogCategoryCell.m */,
 				1183F339194B775900DC322F /* NYPLCatalogLaneCell.h */,
 				1183F33A194B775900DC322F /* NYPLCatalogLaneCell.m */,
 			);
@@ -568,7 +592,7 @@
 				1183F347194F744D00DC322F /* NYPLBook.m in Sources */,
 				1183F341194F723D00DC322F /* NYPLCatalogLane.m in Sources */,
 				1133A4851964664C00247362 /* NYPLBookDetailViewiPad.m in Sources */,
-				11A16E6F195B60DF004147F4 /* NYPLCatalogCategoryCell.m in Sources */,
+				11A16E6F195B60DF004147F4 /* NYPLBookCell.m in Sources */,
 				11548C0E1939147D009DBF2E /* NYPLCatalogNavigationController.m in Sources */,
 				A823D81D192BABA400B55DE2 /* main.m in Sources */,
 				1183F353194F795800DC322F /* NYPLBookAcquisition.m in Sources */,

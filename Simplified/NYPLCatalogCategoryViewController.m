@@ -1,6 +1,6 @@
 #import "NYPLBook.h"
 #import "NYPLCatalogCategory.h"
-#import "NYPLCatalogCategoryCell.h"
+#import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookDetailViewiPad.h"
 
@@ -48,7 +48,7 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
                                           UIViewAutoresizingFlexibleHeight);
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
-  [self.collectionView registerClass:[NYPLCatalogCategoryCell class]
+  [self.collectionView registerClass:[NYPLBookCell class]
           forCellWithReuseIdentifier:reuseIdentifier];
   self.collectionView.backgroundColor = [UIColor whiteColor];
   self.collectionView.hidden = YES;
@@ -133,11 +133,11 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-  NYPLCatalogCategoryCell *const cell = [collectionView
+  NYPLBookCell *const cell = [collectionView
                                          dequeueReusableCellWithReuseIdentifier:reuseIdentifier
                                          forIndexPath:indexPath];
   
-  assert([cell isKindOfClass:[NYPLCatalogCategoryCell class]]);
+  assert([cell isKindOfClass:[NYPLBookCell class]]);
   
   [cell setBook:self.category.books[indexPath.row]];
   
