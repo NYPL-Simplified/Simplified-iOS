@@ -27,10 +27,10 @@ static CGFloat const sectionHeaderHeight = 40.0;
 @property (nonatomic) NYPLBookDetailViewiPad *bookDetailViewiPad;
 @property (nonatomic) NYPLCatalogRoot *catalogRoot;
 @property (nonatomic) NSMutableDictionary *cachedCells;
-@property (nonatomic) NSMutableDictionary *imageDataDictionary;
+@property (nonatomic) NSMutableDictionary *URLToImageData;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic) NSDictionary *URLToCategoryFeedDataDictionary;
+@property (nonatomic) NSDictionary *URLToCategoryFeedData;
 
 @end
 
@@ -44,7 +44,7 @@ static CGFloat const sectionHeaderHeight = 40.0;
   if(!self) return nil;
   
   self.cachedCells = [NSMutableDictionary dictionary];
-  self.imageDataDictionary = [NSMutableDictionary dictionary];
+  self.URLToImageData = [NSMutableDictionary dictionary];
   self.title = NSLocalizedString(@"CatalogViewControllerTitle", nil);
   
   return self;
@@ -107,7 +107,7 @@ static CGFloat const sectionHeaderHeight = 40.0;
       [[NYPLCatalogLaneCell alloc]
        initWithLaneIndex:indexPath.section
        books:((NYPLCatalogLane *) self.catalogRoot.lanes[indexPath.section]).books
-       imageDataDictionary:self.imageDataDictionary];
+       URLToImageData:self.URLToImageData];
     cell.delegate = self;
     self.cachedCells[indexPath] = cell;
     return cell;
@@ -243,15 +243,15 @@ viewForHeaderInSection:(NSInteger const)section
   
   [[NYPLSession sharedSession]
    withURLs:lane.imageURLs
-   handler:^(NSDictionary *const dataDictionary) {
+   handler:^(NSDictionary *const URLToDataOrNull) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       [dataDictionary enumerateKeysAndObjectsUsingBlock:^(id const key,
-                                                           id const value,
-                                                           __attribute__((unused)) BOOL *stop) {
+       [URLToDataOrNull enumerateKeysAndObjectsUsingBlock:^(id const key,
+                                                            id const value,
+                                                            __attribute__((unused)) BOOL *stop) {
          if(![value isKindOfClass:[NSNull class]]) {
            assert([key isKindOfClass:[NSURL class]]);
            assert([value isKindOfClass:[NSData class]]);
-           [self.imageDataDictionary setValue:value forKey:key];
+           [self.URLToImageData setValue:value forKey:key];
          }
        }];
        

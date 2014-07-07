@@ -72,7 +72,7 @@ static NYPLSession *sharedSession = nil;
    resume];
 }
 
-- (void)withURLs:(NSSet *const)URLs handler:(void (^)(NSDictionary *dataDictionary))handler
+- (void)withURLs:(NSSet *const)URLs handler:(void (^)(NSDictionary *URLToDataOrNull))handler
 {
   if(!URLs.count) {
     NYPLAsyncDispatch(^{handler(@{});});
@@ -86,16 +86,16 @@ static NYPLSession *sharedSession = nil;
   }
   
   NSLock *const lock = [[NSLock alloc] init];
-  NSMutableDictionary *const dataDictionary = [NSMutableDictionary dictionary];
+  NSMutableDictionary *const URLToDataOrNull = [NSMutableDictionary dictionary];
   __block NSUInteger remaining = URLs.count;
   
   for(NSURL *const URL in URLs) {
     [self withURL:URL completionHandler:^(NSData *const data) {
       [lock lock];
-      dataDictionary[URL] = (data ? data : [NSNull null]);
+      URLToDataOrNull[URL] = (data ? data : [NSNull null]);
       --remaining;
       if(!remaining) {
-        NYPLAsyncDispatch(^{handler(dataDictionary);});
+        NYPLAsyncDispatch(^{handler(URLToDataOrNull);});
       }
       [lock unlock];
     }];

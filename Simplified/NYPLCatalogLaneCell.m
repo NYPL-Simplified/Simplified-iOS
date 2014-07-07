@@ -14,7 +14,7 @@
 
 - (instancetype)initWithLaneIndex:(NSUInteger const)laneIndex
                             books:(NSArray *const)books
-              imageDataDictionary:(NSDictionary *const)imageDataDictionary
+                   URLToImageData:(NSDictionary *const)URLToImageData
 {
   self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
   if(!self) return nil;
@@ -38,7 +38,7 @@
                                       __attribute__((unused)) BOOL *stop) {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.tag = bookIndex;
-    NSData *const imageData = imageDataDictionary[book.imageURL];
+    NSData *const imageData = URLToImageData[book.imageURL];
     UIImage *const image =
       imageData ? [UIImage imageWithData:imageData] : [UIImage imageNamed:@"NoCover"];
     [button setImage:image forState:UIControlStateNormal];
