@@ -27,7 +27,7 @@ static CGFloat const sectionHeaderHeight = 40.0;
 @property (nonatomic) NYPLBookDetailViewiPad *bookDetailViewiPad;
 @property (nonatomic) NYPLCatalogRoot *catalogRoot;
 @property (nonatomic) NSMutableDictionary *cachedCells;
-@property (nonatomic) NSMutableDictionary *URLToImageData;
+@property (nonatomic) NSMutableDictionary *URLsToImageData;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) NSDictionary *URLToCategoryFeedData;
@@ -44,7 +44,7 @@ static CGFloat const sectionHeaderHeight = 40.0;
   if(!self) return nil;
   
   self.cachedCells = [NSMutableDictionary dictionary];
-  self.URLToImageData = [NSMutableDictionary dictionary];
+  self.URLsToImageData = [NSMutableDictionary dictionary];
   self.title = NSLocalizedString(@"CatalogViewControllerTitle", nil);
   
   return self;
@@ -107,7 +107,7 @@ static CGFloat const sectionHeaderHeight = 40.0;
       [[NYPLCatalogLaneCell alloc]
        initWithLaneIndex:indexPath.section
        books:((NYPLCatalogLane *) self.catalogRoot.lanes[indexPath.section]).books
-       URLToImageData:self.URLToImageData];
+       URLsToImageData:self.URLsToImageData];
     cell.delegate = self;
     self.cachedCells[indexPath] = cell;
     return cell;
@@ -251,7 +251,7 @@ viewForHeaderInSection:(NSInteger const)section
          if(![value isKindOfClass:[NSNull class]]) {
            assert([key isKindOfClass:[NSURL class]]);
            assert([value isKindOfClass:[NSData class]]);
-           [self.URLToImageData setValue:value forKey:key];
+           [self.URLsToImageData setValue:value forKey:key];
          }
        }];
        
