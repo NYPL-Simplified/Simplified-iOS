@@ -129,13 +129,12 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   return self.category.books.count;
 }
 
-// TODO: This test method needs to be replaced with one that returns the correct cell.
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
   NYPLBookCell *const cell = [collectionView
-                                         dequeueReusableCellWithReuseIdentifier:reuseIdentifier
-                                         forIndexPath:indexPath];
+                              dequeueReusableCellWithReuseIdentifier:reuseIdentifier
+                              forIndexPath:indexPath];
   
   assert([cell isKindOfClass:[NYPLBookCell class]]);
   
