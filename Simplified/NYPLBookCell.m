@@ -39,6 +39,7 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   self.contentView.frame = self.bounds;
   
   self.cover.frame = CGRectMake(5, 5, 90, CGRectGetHeight(self.frame) - 10);
+  self.cover.contentMode = UIViewContentModeScaleAspectFit;
   
   [self.title sizeToFit];
   CGRect titleFrame = self.title.frame;
