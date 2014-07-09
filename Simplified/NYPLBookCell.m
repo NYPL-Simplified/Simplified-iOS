@@ -2,6 +2,25 @@
 
 #import "NYPLBookCell.h"
 
+CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
+                                              UIInterfaceOrientation orientation)
+{
+  if(idiom == UIUserInterfaceIdiomPad) {
+    switch(orientation) {
+      case UIInterfaceOrientationPortrait:
+        // fallthrough
+      case UIInterfaceOrientationPortraitUpsideDown:
+        return CGSizeMake(384, 120);
+      case UIInterfaceOrientationLandscapeLeft:
+        // fallthrough
+      case UIInterfaceOrientationLandscapeRight:
+        return CGSizeMake(341, 120);
+    }
+  } else {
+    return CGSizeMake(320, 120);;
+  }
+}
+
 @interface NYPLBookCell ()
 
 @property (nonatomic) UILabel *author;
