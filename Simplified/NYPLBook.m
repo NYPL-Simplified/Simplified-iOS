@@ -1,4 +1,5 @@
 #import "NSDate+NYPLDateAdditions.h"
+#import "NYPLNull.h"
 #import "NYPLOPDSLink.h"
 #import "NYPLOPDSRelation.h"
 
@@ -122,11 +123,11 @@ static NSString *const UpdatedKey = @"updated";
   self.identifier = dictionary[IdentifierKey];
   if(!self.identifier) return nil;
   
-  self.imageURL = [NSURL URLWithString:dictionary[ImageURLKey]];
-  if(!self.imageURL) return nil;
+  NSString *const image = NYPLNullToNil(dictionary[ImageURLKey]);
+  self.imageURL = image ? [NSURL URLWithString:image] : nil;
   
-  self.imageThumbnailURL = [NSURL URLWithString:dictionary[ImageThumbnailURLKey]];
-  if(!self.imageThumbnailURL) return nil;
+  NSString *const imageThumbnail = NYPLNullToNil(dictionary[ImageThumbnailURLKey]);
+  self.imageThumbnailURL = imageThumbnail ? [NSURL URLWithString:imageThumbnail] : nil;
   
   self.title = dictionary[TitleKey];
   if(!self.title) return nil;
@@ -142,8 +143,8 @@ static NSString *const UpdatedKey = @"updated";
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
            AuthorsKey: self.authorStrings,
            IdentifierKey: self.identifier,
-           ImageURLKey: [self.imageURL absoluteString],
-           ImageThumbnailURLKey: [self.imageThumbnailURL absoluteString],
+           ImageURLKey: NYPLNilToNull([self.imageURL absoluteString]),
+           ImageThumbnailURLKey: NYPLNilToNull([self.imageThumbnailURL absoluteString]),
            TitleKey: self.title,
            UpdatedKey: [self.updated RFC3339String]};
 }

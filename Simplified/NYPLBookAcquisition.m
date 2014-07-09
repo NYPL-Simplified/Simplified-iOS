@@ -1,3 +1,5 @@
+#import "NYPLNull.h"
+
 #import "NYPLBookAcquisition.h"
 
 @interface NYPLBookAcquisition ()
@@ -37,20 +39,20 @@ static NSString *const SampleKey = @"sample";
   self = [super init];
   if(!self) return nil;
 
-  self.borrow = dictionary[BorrowKey];
-  self.generic = dictionary[GenericKey];
-  self.openAccess = dictionary[OpenAccessKey];
-  self.sample = dictionary[SampleKey];
+  self.borrow = [NSURL URLWithString:NYPLNullToNil(dictionary[BorrowKey])];
+  self.generic = [NSURL URLWithString:NYPLNullToNil(dictionary[GenericKey])];
+  self.openAccess = [NSURL URLWithString:NYPLNullToNil(dictionary[OpenAccessKey])];
+  self.sample = [NSURL URLWithString:NYPLNullToNil(dictionary[SampleKey])];
   
   return self;
 }
 
 - (NSDictionary *)dictionaryRepresentation
 {
-  return @{BorrowKey: self.borrow,
-           GenericKey: self.generic,
-           OpenAccessKey: self.openAccess,
-           SampleKey: self.sample};
+  return @{BorrowKey: NYPLNilToNull([self.borrow absoluteString]),
+           GenericKey: NYPLNilToNull([self.generic absoluteString]),
+           OpenAccessKey: NYPLNilToNull([self.openAccess absoluteString]),
+           SampleKey: NYPLNilToNull([self.sample absoluteString])};
 }
 
 @end

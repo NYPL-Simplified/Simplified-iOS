@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11068C55196DD37900E8A94B /* NYPLNull.m in Sources */ = {isa = PBXBuildFile; fileRef = 11068C54196DD37900E8A94B /* NYPLNull.m */; };
 		110AF8961961D94D004887C3 /* NYPLBookDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 110AF8951961D94D004887C3 /* NYPLBookDetailView.m */; };
 		110AF89C1961ED1F004887C3 /* NYPLBookDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */; };
 		1114A6A1195884CB007507A2 /* NYPLCatalogCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1114A6A0195884CB007507A2 /* NYPLCatalogCategory.m */; };
@@ -82,6 +83,8 @@
 
 /* Begin PBXFileReference section */
 		06AC6CF44934493BAEB7B266 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		11068C53196DD37900E8A94B /* NYPLNull.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLNull.h; sourceTree = "<group>"; };
+		11068C54196DD37900E8A94B /* NYPLNull.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLNull.m; sourceTree = "<group>"; };
 		110AF8941961D94D004887C3 /* NYPLBookDetailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailView.h; sourceTree = "<group>"; };
 		110AF8951961D94D004887C3 /* NYPLBookDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDetailView.m; sourceTree = "<group>"; };
 		110AF89A1961ED1F004887C3 /* NYPLBookDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailViewController.h; sourceTree = "<group>"; };
@@ -361,6 +364,8 @@
 				1183F35A194F847100DC322F /* NYPLAsync.m */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
+				11068C53196DD37900E8A94B /* NYPLNull.h */,
+				11068C54196DD37900E8A94B /* NYPLNull.m */,
 				118B7ABD195CBF72005CE3E7 /* NYPLSession.h */,
 				118B7ABE195CBF72005CE3E7 /* NYPLSession.m */,
 				1114A6AC1958B215007507A2 /* NYPLLOG.h */,
@@ -597,6 +602,7 @@
 				116A5EAF194767B200491A21 /* NYPLMyBooksNavigationController.m in Sources */,
 				1183F35B194F847100DC322F /* NYPLAsync.m in Sources */,
 				110AF8961961D94D004887C3 /* NYPLBookDetailView.m in Sources */,
+				11068C55196DD37900E8A94B /* NYPLNull.m in Sources */,
 				11396FB9193D289100E16EE8 /* NSDate+NYPLDateAdditions.m in Sources */,
 				1183F347194F744D00DC322F /* NYPLBook.m in Sources */,
 				1183F341194F723D00DC322F /* NYPLCatalogLane.m in Sources */,
