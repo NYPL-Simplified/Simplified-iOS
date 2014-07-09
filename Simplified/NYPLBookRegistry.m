@@ -56,6 +56,13 @@ static NSString *const RegistryFilename = @"registry.json";
           URLByAppendingPathComponent:@"registry"];
 }
 
+- (void)broadcastChange
+{
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLBookRegistryDidChange
+   object:self];
+}
+
 - (void)load
 {
   @synchronized(self) {
@@ -70,6 +77,8 @@ static NSString *const RegistryFilename = @"registry.json";
                                                     __attribute__((unused)) BOOL *stop) {
       self.identifiersToBooks[key] = [[NYPLBook alloc] initWithDictionary:value];
     }];
+    
+    [self broadcastChange];
   }
 }
 
@@ -147,6 +156,7 @@ static NSString *const RegistryFilename = @"registry.json";
   
   @synchronized(self) {
     self.identifiersToBooks[book.identifier] = book;
+    [self broadcastChange];
   }
 }
 
@@ -159,6 +169,7 @@ static NSString *const RegistryFilename = @"registry.json";
   @synchronized(self) {
     if(self.identifiersToBooks[book.identifier]) {
       self.identifiersToBooks[book.identifier] = book;
+      [self broadcastChange];
     }
   }
 }
@@ -174,6 +185,7 @@ static NSString *const RegistryFilename = @"registry.json";
 {
   @synchronized(self) {
     [self.identifiersToBooks removeObjectForKey:identifier];
+    [self broadcastChange];
   }
 }
 
@@ -192,5 +204,15 @@ static NSString *const RegistryFilename = @"registry.json";
     return dictionary;
   }
 }
-  
+
+- (NSUInteger)count
+{
+  return self.identifiersToBooks.count;
+}
+
+- (NSArray *)allBooksSortedByBlock:(NSComparisonResult (^)(NYPLBook *a, NYPLBook *b))block
+{
+  return [[self.identifiersToBooks allValues] sortedArrayUsingComparator:block];
+}
+
 @end

@@ -4,6 +4,9 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookDetailViewiPad.h"
 
+// FIXME: Temporary testing purposes only!
+#import "NYPLBookRegistry.h"
+
 #import "NYPLCatalogCategoryViewController.h"
 
 @interface NYPLCatalogCategoryViewController ()
@@ -41,6 +44,8 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
 
 - (void)viewDidLoad
 {
+  self.view.backgroundColor = [UIColor whiteColor];
+  
   self.collectionView = [[UICollectionView alloc]
                          initWithFrame:self.view.bounds
                          collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
@@ -147,7 +152,7 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
 
 #pragma mark UICollectionViewDelegate
 
-- (void)collectionView:(__attribute__((unused)) UICollectionView *const)collectionView
+- (void)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
   NYPLBook *const book = self.category.books[indexPath.row];
@@ -167,6 +172,9 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     
     [self.bookDetailViewiPad animateDisplay];
   }
+  
+  // FIXME: Temporary testing purposes only!
+  [[NYPLBookRegistry sharedRegistry] addBook:book];
 }
 
 #pragma mark UICollectionViewDelegateFlowLayout
