@@ -9,6 +9,9 @@ static NSString *const NYPLBookRegistryDidChange = @"NYPLBookRegistryDidChange";
 
 + (NYPLBookRegistry *)sharedRegistry;
 
+// Saves the registry. This should be called before the application is terminated.
+- (void)save;
+
 // Returns the URL of the directory used by the registry for storing content and metadata. The
 // directory is not guaranteed to exist at the time this method is called.
 - (NSURL *)registryDirectory;

@@ -1,3 +1,4 @@
+#import "NYPLBookRegistry.h"
 #import "NYPLRootTabBarController.h"
 
 #import "NYPLAppDelegate.h"
@@ -14,6 +15,11 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   [self.window makeKeyAndVisible];
 
   return YES;
+}
+
+- (void)applicationDidEnterBackground:(__attribute__((unused)) UIApplication *)application
+{
+  [[NYPLBookRegistry sharedRegistry] save];
 }
 
 @end
