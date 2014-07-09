@@ -41,6 +41,8 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
 
 - (void)viewDidLoad
 {
+  self.view.backgroundColor = [UIColor whiteColor];
+  
   self.collectionView = [[UICollectionView alloc]
                          initWithFrame:self.view.bounds
                          collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
@@ -129,13 +131,12 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   return self.category.books.count;
 }
 
-// TODO: This test method needs to be replaced with one that returns the correct cell.
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
   NYPLBookCell *const cell = [collectionView
-                                         dequeueReusableCellWithReuseIdentifier:reuseIdentifier
-                                         forIndexPath:indexPath];
+                              dequeueReusableCellWithReuseIdentifier:reuseIdentifier
+                              forIndexPath:indexPath];
   
   assert([cell isKindOfClass:[NYPLBookCell class]]);
   
@@ -148,7 +149,7 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
 
 #pragma mark UICollectionViewDelegate
 
-- (void)collectionView:(__attribute__((unused)) UICollectionView *const)collectionView
+- (void)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
   NYPLBook *const book = self.category.books[indexPath.row];
@@ -195,27 +196,10 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 
 - (CGSize)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
                   layout:(__attribute__((unused)) UICollectionViewLayout*)collectionViewLayout
-  sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+  sizeForItemAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
 {
-  // FIXME: This size calulation is extremely ad-hoc.
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    switch(self.interfaceOrientation) {
-      case UIInterfaceOrientationPortrait:
-        // fallthrough
-      case UIInterfaceOrientationPortraitUpsideDown:
-        return CGSizeMake(384, 120);
-      case UIInterfaceOrientationLandscapeLeft:
-        // fallthrough
-      case UIInterfaceOrientationLandscapeRight:
-        if(indexPath.row % 3 == 0) {
-          return CGSizeMake(342, 120);
-        } else {
-          return CGSizeMake(341, 120);
-        }
-    }
-  } else {
-    return CGSizeMake(320, 120);;
-  }
+  return NYPLBookCellSizeForIdiomAndOrientation(UI_USER_INTERFACE_IDIOM(),
+                                                self.interfaceOrientation);
 }
 
 #pragma mark NYPLCatalogCategoryDelegate

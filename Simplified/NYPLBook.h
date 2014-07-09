@@ -22,4 +22,9 @@
                               title:(NSString *)title
                             updated:(NSDate *)updated;
 
+// designated initializer
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary;
+
+- (NSDictionary *)dictionaryRepresentation;
+
 @end
