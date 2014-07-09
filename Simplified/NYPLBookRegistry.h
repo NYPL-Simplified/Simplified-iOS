@@ -2,6 +2,9 @@
 
 #import "NYPLBook.h"
 
+// This is broadcast whenever the book registry is modified.
+static NSString *const NYPLBookRegistryDidChange = @"NYPLBookRegistryDidChange";
+
 @interface NYPLBookRegistry : NSObject
 
 + (NYPLBookRegistry *)sharedRegistry;
@@ -28,5 +31,11 @@
 // Given an identifier, this method removes a book from the registry. Attempting to remove a book
 // that is not present will result in an error being logged.
 - (void)removeBookForIdentifier:(NSString *const)book;
+
+// Returns the number of books currently registered.
+- (NSUInteger)count;
+
+// Returns all registered books sorted via the block provided.
+- (NSArray *)allBooksSortedByBlock:(NSComparisonResult (^)(NYPLBook *a, NYPLBook *b))block;
 
 @end
