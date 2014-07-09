@@ -36,6 +36,11 @@ static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
   return self;
 }
 
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 #pragma mark UIViewController
 
 - (void)viewDidLoad
