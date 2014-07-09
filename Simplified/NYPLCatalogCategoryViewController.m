@@ -4,9 +4,6 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookDetailViewiPad.h"
 
-// FIXME: Temporary testing purposes only!
-#import "NYPLBookRegistry.h"
-
 #import "NYPLCatalogCategoryViewController.h"
 
 @interface NYPLCatalogCategoryViewController ()
@@ -172,9 +169,6 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     
     [self.bookDetailViewiPad animateDisplay];
   }
-  
-  // FIXME: Temporary testing purposes only!
-  [[NYPLBookRegistry sharedRegistry] addBook:book];
 }
 
 #pragma mark UICollectionViewDelegateFlowLayout
