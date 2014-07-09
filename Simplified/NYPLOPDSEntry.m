@@ -69,7 +69,7 @@
       return nil;
     }
     
-    self.updated = [NSDate dateWithRFC3339:updatedString];
+    self.updated = [NSDate dateWithRFC3339String:updatedString];
     if(!self.updated) {
       NYPLLOG(@"Element 'updated' does not contain an RFC 3339 date.");
       return nil;

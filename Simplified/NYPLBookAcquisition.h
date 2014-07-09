@@ -11,5 +11,9 @@
                     openAccess:(NSURL *)openAccess
                         sample:(NSURL *)sample;
 
+// designated initializer
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary;
+
+- (NSDictionary *)dictionaryRepresentation;
 
 @end

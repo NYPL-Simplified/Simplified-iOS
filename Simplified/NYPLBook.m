@@ -1,3 +1,5 @@
+#import "NSDate+NYPLDateAdditions.h"
+#import "NYPLNull.h"
 #import "NYPLOPDSLink.h"
 #import "NYPLOPDSRelation.h"
 
@@ -14,6 +16,14 @@
 @property (nonatomic) NSDate *updated;
 
 @end
+
+static NSString *const AcquisitionKey = @"acquisition";
+static NSString *const AuthorsKey = @"authors";
+static NSString *const IdentifierKey = @"id";
+static NSString *const ImageURLKey = @"image";
+static NSString *const ImageThumbnailURLKey = @"image-thumbnail";
+static NSString *const TitleKey = @"title";
+static NSString *const UpdatedKey = @"updated";
 
 @implementation NYPLBook
 
@@ -97,6 +107,46 @@
   self.updated = updated;
   
   return self;
+}
+
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary
+{
+  self = [super init];
+  if(!self) return nil;
+  
+  self.acquisition = [[NYPLBookAcquisition alloc] initWithDictionary:dictionary[AcquisitionKey]];
+  if(!self.acquisition) return nil;
+  
+  self.authorStrings = dictionary[AuthorsKey];
+  if(!self.authorStrings) return nil;
+  
+  self.identifier = dictionary[IdentifierKey];
+  if(!self.identifier) return nil;
+  
+  NSString *const image = NYPLNullToNil(dictionary[ImageURLKey]);
+  self.imageURL = image ? [NSURL URLWithString:image] : nil;
+  
+  NSString *const imageThumbnail = NYPLNullToNil(dictionary[ImageThumbnailURLKey]);
+  self.imageThumbnailURL = imageThumbnail ? [NSURL URLWithString:imageThumbnail] : nil;
+  
+  self.title = dictionary[TitleKey];
+  if(!self.title) return nil;
+  
+  self.updated = [NSDate dateWithRFC3339String:dictionary[UpdatedKey]];
+  if(!self.updated) return nil;
+  
+  return self;
+}
+
+- (NSDictionary *)dictionaryRepresentation
+{
+  return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
+           AuthorsKey: self.authorStrings,
+           IdentifierKey: self.identifier,
+           ImageURLKey: NYPLNilToNull([self.imageURL absoluteString]),
+           ImageThumbnailURLKey: NYPLNilToNull([self.imageThumbnailURL absoluteString]),
+           TitleKey: self.title,
+           UpdatedKey: [self.updated RFC3339String]};
 }
 
 @end
