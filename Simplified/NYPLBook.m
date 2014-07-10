@@ -63,7 +63,7 @@ static NSString *const UpdatedKey = @"updated";
     }
   }
   
-  return [[NYPLBook alloc]
+  return [[self alloc]
           initWithAcquisition:[[NYPLBookAcquisition alloc]
                                initWithBorrow:borrow
                                generic:generic
