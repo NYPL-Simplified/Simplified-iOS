@@ -2,7 +2,7 @@
 
 @implementation NSDate (NYPLDateAdditions)
 
-+ (instancetype)dateWithRFC3339String:(NSString *const)string
++ (NSDate *)dateWithRFC3339String:(NSString *const)string
 {
   NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
   
