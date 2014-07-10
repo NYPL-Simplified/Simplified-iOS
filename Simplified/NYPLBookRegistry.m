@@ -68,12 +68,17 @@ static NSString *const RegistryFilename = @"registry.json";
   @synchronized(self) {
     self.identifiersToBooks = [NSMutableDictionary dictionary];
     
+    NSData *const savedData = [NSData dataWithContentsOfURL:
+                               [[self registryDirectory]
+                                URLByAppendingPathComponent:RegistryFilename]];
+    
+    if(!savedData) return;
+    
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wassign-enum"
     NSDictionary *const dictionary =
       [NSJSONSerialization
-       JSONObjectWithData:[NSData dataWithContentsOfURL:
-                           [[self registryDirectory] URLByAppendingPathComponent:RegistryFilename]]
+       JSONObjectWithData:savedData
        options:0
        error:NULL];
 #pragma clang diagnostic pop
