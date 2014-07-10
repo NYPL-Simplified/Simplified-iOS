@@ -36,6 +36,14 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   
   self.view.backgroundColor = [UIColor whiteColor];
   
+  [[NSNotificationCenter defaultCenter]
+   addObserverForName:NYPLBookRegistryDidChange
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(__attribute__((unused)) NSNotification *note) {
+     [self.collectionView reloadData];
+   }];
+  
   return self;
 }
 
