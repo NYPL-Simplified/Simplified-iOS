@@ -28,10 +28,13 @@ static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
   [self updateBooks];
   
   [[NSNotificationCenter defaultCenter]
-   addObserver:self
-   selector:@selector(bookRegistryDidChange:)
-   name:NYPLBookRegistryDidChange
-   object:nil];
+   addObserverForName:NYPLBookRegistryDidChange
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(__attribute__((unused)) NSNotification *note) {
+     [self updateBooks];
+     [self.collectionView reloadData];
+   }];
   
   return self;
 }
@@ -129,12 +132,6 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
                 allBooksSortedByBlock:^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
                   return [a.title compare:b.title options:NSCaseInsensitiveSearch];
                 }];
-}
-
-- (void)bookRegistryDidChange:(__attribute__((unused)) NSNotification *)notification
-{
-  [self updateBooks];
-  [self.collectionView reloadData];
 }
 
 @end
