@@ -1,5 +1,6 @@
 #import "NYPLAsync.h"
 #import "NYPLBook.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
@@ -37,9 +38,9 @@ static NSUInteger const preloadThreshold = 100;
      NSMutableArray *const books = [NSMutableArray arrayWithCapacity:acquisitionFeed.entries.count];
      
      for(NYPLOPDSEntry *const entry in acquisitionFeed.entries) {
-       NYPLBook *const book = [NYPLBook bookWithEntry:entry];
+       NYPLBook *const book = [[NYPLBookRegistry sharedRegistry] bookWithEntry:entry];
        if(!book) {
-         NYPLLOG(@"Failed to create book from entry.");
+         NYPLLOG(@"Failed to get book from registry.");
          continue;
        }
        [books addObject:book];
