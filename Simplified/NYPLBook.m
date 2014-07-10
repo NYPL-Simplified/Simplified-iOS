@@ -12,6 +12,7 @@
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSURL *imageURL; // nilable
 @property (nonatomic) NSURL *imageThumbnailURL; // nilable
+@property (nonatomic) NYPLBookState state;
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSDate *updated;
 
@@ -22,12 +23,30 @@ static NSString *const AuthorsKey = @"authors";
 static NSString *const IdentifierKey = @"id";
 static NSString *const ImageURLKey = @"image";
 static NSString *const ImageThumbnailURLKey = @"image-thumbnail";
+static NSString *const StateKey = @"state";
 static NSString *const TitleKey = @"title";
 static NSString *const UpdatedKey = @"updated";
 
+static NSString *const StateDefaultKey = @"default";
+
+NSString *StringFromState(NYPLBookState const state)
+{
+  switch(state) {
+    case NYPLBookStateDefault:
+      return StateDefaultKey;
+  }
+}
+
+NYPLBookState StateFromString(NSString *const string)
+{
+  if([string isEqualToString:StateDefaultKey]) return NYPLBookStateDefault;
+  
+  @throw NSInvalidArgumentException;
+}
+
 @implementation NYPLBook
 
-+ (instancetype)bookWithEntry:(NYPLOPDSEntry *const)entry
++ (instancetype)bookWithEntry:(NYPLOPDSEntry *const)entry state:(NYPLBookState)state
 {
   if(!entry) {
     NYPLLOG(@"Failed to create book from nil entry.");
@@ -73,6 +92,7 @@ static NSString *const UpdatedKey = @"updated";
           identifier:entry.identifier
           imageURL:image
           imageThumbnailURL:imageThumbnail
+          state:state
           title:entry.title
           updated:entry.updated];
 }
@@ -82,6 +102,7 @@ static NSString *const UpdatedKey = @"updated";
                          identifier:(NSString *const)identifier
                            imageURL:(NSURL *const)imageURL
                   imageThumbnailURL:(NSURL *const)imageThumbnailURL
+                              state:(NYPLBookState)state
                               title:(NSString *const)title
                             updated:(NSDate *const)updated
 {
@@ -103,6 +124,7 @@ static NSString *const UpdatedKey = @"updated";
   self.identifier = identifier;
   self.imageURL = imageURL;
   self.imageThumbnailURL = imageThumbnailURL;
+  self.state = state;
   self.title = title;
   self.updated = updated;
   
@@ -129,6 +151,10 @@ static NSString *const UpdatedKey = @"updated";
   NSString *const imageThumbnail = NYPLNullToNil(dictionary[ImageThumbnailURLKey]);
   self.imageThumbnailURL = imageThumbnail ? [NSURL URLWithString:imageThumbnail] : nil;
   
+  NSString *const stateString = dictionary[StateKey];
+  if(!stateString) return nil;
+  self.state = StateFromString(stateString);
+  
   self.title = dictionary[TitleKey];
   if(!self.title) return nil;
   
@@ -145,6 +171,7 @@ static NSString *const UpdatedKey = @"updated";
            IdentifierKey: self.identifier,
            ImageURLKey: NYPLNilToNull([self.imageURL absoluteString]),
            ImageThumbnailURLKey: NYPLNilToNull([self.imageThumbnailURL absoluteString]),
+           StateKey: StringFromState(self.state),
            TitleKey: self.title,
            UpdatedKey: [self.updated RFC3339String]};
 }

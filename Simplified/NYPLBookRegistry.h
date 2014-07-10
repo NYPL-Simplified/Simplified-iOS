@@ -9,12 +9,17 @@ static NSString *const NYPLBookRegistryDidChange = @"NYPLBookRegistryDidChange";
 
 + (NYPLBookRegistry *)sharedRegistry;
 
-// Saves the registry. This should be called before the application is terminated.
-- (void)save;
-
 // Returns the URL of the directory used by the registry for storing content and metadata. The
 // directory is not guaranteed to exist at the time this method is called.
 - (NSURL *)registryDirectory;
+
+// Saves the registry. This should be called before the application is terminated.
+- (void)save;
+
+// Returns a book object given an OPDS entry. The advantage of creating a book via this method is
+// that the state of the book will be set approprtiately given the current state of the registry. It
+// will also update the metadata in the registry if the entry differs from what's currently stored.
+- (NYPLBook *)bookWithEntry:(NYPLOPDSEntry *)entry;
 
 // Adds a book to the book registry until it is manually removed. It allows the application to
 // present information about obtained books when offline. Attempting to add a book already present

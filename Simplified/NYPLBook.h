@@ -1,6 +1,10 @@
 #import "NYPLBookAcquisition.h"
 #import "NYPLOPDSEntry.h"
 
+typedef NS_ENUM(NSInteger, NYPLBookState) {
+  NYPLBookStateDefault
+};
+
 @interface NYPLBook : NSObject
 
 @property (nonatomic, readonly) NYPLBookAcquisition *acquisition;
@@ -8,10 +12,11 @@
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSURL *imageURL; // nilable
 @property (nonatomic, readonly) NSURL *imageThumbnailURL; // nilable
+@property (nonatomic, readonly) NYPLBookState state;
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSDate *updated;
 
-+ (instancetype)bookWithEntry:(NYPLOPDSEntry *)entry;
++ (instancetype)bookWithEntry:(NYPLOPDSEntry *const)entry state:(NYPLBookState)state;
 
 // designated initializer
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
@@ -19,6 +24,7 @@
                          identifier:(NSString *)identifier
                            imageURL:(NSURL *)imageURL
                   imageThumbnailURL:(NSURL *)imageThumbnailURL
+                              state:(NYPLBookState)state
                               title:(NSString *)title
                             updated:(NSDate *)updated;
 
