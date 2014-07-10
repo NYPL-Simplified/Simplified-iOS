@@ -83,6 +83,11 @@ static NSString *const RegistryFilename = @"registry.json";
        error:NULL];
 #pragma clang diagnostic pop
     
+    if(!dictionary) {
+      NYPLLOG(@"Failed to interpret saved registry data as JSON.");
+      return;
+    }
+    
     [dictionary enumerateKeysAndObjectsUsingBlock:^(id const key,
                                                     id const value,
                                                     __attribute__((unused)) BOOL *stop) {
