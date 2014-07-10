@@ -17,7 +17,7 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
         return CGSizeMake(341, 120);
     }
   } else {
-    return CGSizeMake(320, 120);;
+    return CGSizeMake(320, 120);
   }
 }
 
