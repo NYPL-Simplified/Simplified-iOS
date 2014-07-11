@@ -47,6 +47,8 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   return self;
 }
 
+#pragma mark NSObject
+
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];

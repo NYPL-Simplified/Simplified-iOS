@@ -78,6 +78,14 @@ static NSUInteger const preloadThreshold = 100;
   self.books = books;
   self.nextURL = nextURL;
   self.title = title;
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserverForName:NYPLBookRegistryDidChange
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(__attribute__((unused)) NSNotification *note) {
+     [self refreshBooks];
+   }];
 
   return self;
 }
@@ -125,6 +133,32 @@ static NSUInteger const preloadThreshold = 100;
        [self.delegate catalogCategory:self didUpdateBooks:self.books];
      }];
    }];
+}
+
+- (void)refreshBooks
+{
+  NSMutableArray *const refreshedBooks = [NSMutableArray arrayWithCapacity:self.books.count];
+  
+  for(NYPLBook *const book in self.books) {
+    NYPLBook *const refreshedBook = [[NYPLBookRegistry sharedRegistry]
+                                     bookForIdentifier:book.identifier];
+    if(refreshedBook) {
+      [refreshedBooks addObject:refreshedBook];
+    } else {
+      [refreshedBooks addObject:book];
+    }
+  }
+  
+  self.books = refreshedBooks;
+  
+  [self.delegate catalogCategory:self didUpdateBooks:self.books];
+}
+
+#pragma mark NSObject
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
