@@ -3,7 +3,7 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookDetailViewiPad.h"
 #import "NYPLCatalogCategory.h"
-#import "NYPLDownloadCenter.h"
+#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
 
 #import "NYPLCatalogCategoryViewController.h"
@@ -232,7 +232,7 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 
 - (void)didSelectDownloadForBookCell:(NYPLBookCell *const)cell
 {
-  [[NYPLDownloadCenter sharedDownloadCenter] startDownloadForBook:cell.book];
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:cell.book];
 }
 
 #pragma mark -
