@@ -1,10 +1,10 @@
 #import "NYPLAsync.h"
 #import "NYPLBook.h"
-#import "NYPLBookRegistry.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
 #import "NYPLOPDSRelation.h"
+#import "NYPLMyBooksRegistry.h"
 
 #import "NYPLCatalogCategory.h"
 
@@ -38,7 +38,7 @@ static NSUInteger const preloadThreshold = 100;
      NSMutableArray *const books = [NSMutableArray arrayWithCapacity:acquisitionFeed.entries.count];
      
      for(NYPLOPDSEntry *const entry in acquisitionFeed.entries) {
-       NYPLBook *const book = [[NYPLBookRegistry sharedRegistry] bookWithEntry:entry];
+       NYPLBook *const book = [[NYPLMyBooksRegistry sharedRegistry] bookWithEntry:entry];
        if(!book) {
          NYPLLOG(@"Failed to get book from registry.");
          continue;
@@ -140,7 +140,7 @@ static NSUInteger const preloadThreshold = 100;
   NSMutableArray *const refreshedBooks = [NSMutableArray arrayWithCapacity:self.books.count];
   
   for(NYPLBook *const book in self.books) {
-    NYPLBook *const refreshedBook = [[NYPLBookRegistry sharedRegistry]
+    NYPLBook *const refreshedBook = [[NYPLMyBooksRegistry sharedRegistry]
                                      bookForIdentifier:book.identifier];
     if(refreshedBook) {
       [refreshedBooks addObject:refreshedBook];

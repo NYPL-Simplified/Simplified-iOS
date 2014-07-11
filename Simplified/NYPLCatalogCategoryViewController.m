@@ -1,10 +1,10 @@
 #import "NYPLBook.h"
-#import "NYPLBookRegistry.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookDetailViewiPad.h"
 #import "NYPLCatalogCategory.h"
 #import "NYPLDownloadCenter.h"
+#import "NYPLMyBooksRegistry.h"
 
 #import "NYPLCatalogCategoryViewController.h"
 

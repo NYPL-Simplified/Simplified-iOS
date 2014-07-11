@@ -1,6 +1,6 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
-#import "NYPLBookRegistry.h"
+#import "NYPLMyBooksRegistry.h"
 
 #import "NYPLMyBooksViewController.h"
 
@@ -128,7 +128,7 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 
 - (void)updateBooks
 {
-  self.books = [[NYPLBookRegistry sharedRegistry]
+  self.books = [[NYPLMyBooksRegistry sharedRegistry]
                 allBooksSortedByBlock:^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
                   return [a.title compare:b.title options:NSCaseInsensitiveSearch];
                 }];
