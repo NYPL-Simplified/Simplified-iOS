@@ -3,9 +3,9 @@
 #import "NYPLAsync.h"
 #import "NYPLBookAcquisition.h"
 #import "NYPLBook.h"
-#import "NYPLBookRegistry.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogSubsectionLink.h"
+#import "NYPLMyBooksRegistry.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
@@ -139,7 +139,7 @@
             [NSMutableArray arrayWithCapacity:featuredAcquisitionFeed.entries.count];
           
           for(NYPLOPDSEntry *const acquisitionEntry in featuredAcquisitionFeed.entries) {
-            NYPLBook *const book = [[NYPLBookRegistry sharedRegistry]
+            NYPLBook *const book = [[NYPLMyBooksRegistry sharedRegistry]
                                     bookWithEntry:acquisitionEntry];
             if(!book) {
               NYPLLOG(@"Failed to get book from registry.");

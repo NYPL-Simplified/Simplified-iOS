@@ -1,6 +1,6 @@
-#import "NYPLBookRegistry.h"
+#import "NYPLMyBooksRegistry.h"
 
-@interface NYPLBookRegistry ()
+@interface NYPLMyBooksRegistry ()
 
 @property (nonatomic) NSMutableDictionary *identifiersToBooks;
 
@@ -8,15 +8,15 @@
 
 static NSString *const RegistryFilename = @"registry.json";
 
-@implementation NYPLBookRegistry
+@implementation NYPLMyBooksRegistry
 
-+ (NYPLBookRegistry *)sharedRegistry
++ (NYPLMyBooksRegistry *)sharedRegistry
 {
   static dispatch_once_t predicate;
-  static NYPLBookRegistry *sharedRegistry = nil;
+  static NYPLMyBooksRegistry *sharedRegistry = nil;
   
   dispatch_once(&predicate, ^{
-    sharedRegistry = [[NYPLBookRegistry alloc] init];
+    sharedRegistry = [[NYPLMyBooksRegistry alloc] init];
     if(!sharedRegistry) {
       NYPLLOG(@"Failed to create shared content registry.");
     }

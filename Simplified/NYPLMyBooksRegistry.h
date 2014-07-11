@@ -5,9 +5,9 @@
 // This is broadcast whenever the book registry is modified.
 static NSString *const NYPLBookRegistryDidChange = @"NYPLBookRegistryDidChange";
 
-@interface NYPLBookRegistry : NSObject
+@interface NYPLMyBooksRegistry : NSObject
 
-+ (NYPLBookRegistry *)sharedRegistry;
++ (NYPLMyBooksRegistry *)sharedRegistry;
 
 // Returns the URL of the directory used by the registry for storing content and metadata. The
 // directory is not guaranteed to exist at the time this method is called.
