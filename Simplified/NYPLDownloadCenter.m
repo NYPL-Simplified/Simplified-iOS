@@ -1,3 +1,6 @@
+#import "NYPLBook.h"
+#import "NYPLBookRegistry.h"
+
 #import "NYPLDownloadCenter.h"
 
 @implementation NYPLDownloadCenter
@@ -19,7 +22,7 @@
 
 - (void)startDownloadForBook:(NYPLBook *const)book
 {
-  NSLog(@"%@", book.title);
+  [[NYPLBookRegistry sharedRegistry] addBook:[book bookWithState:NYPLBookStateDownloading]];
 }
 
 @end

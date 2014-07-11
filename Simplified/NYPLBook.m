@@ -5,7 +5,7 @@
 
 #import "NYPLBook.h"
 
-@interface NYPLBook ()
+@interface NYPLBook () <NSCopying>
 
 @property (nonatomic) NYPLBookAcquisition *acquisition;
 @property (nonatomic) NSArray *authorStrings;
@@ -28,18 +28,22 @@ static NSString *const TitleKey = @"title";
 static NSString *const UpdatedKey = @"updated";
 
 static NSString *const StateDefaultKey = @"default";
+static NSString *const StateDownloadingKey = @"downloading";
 
 NSString *StringFromState(NYPLBookState const state)
 {
   switch(state) {
     case NYPLBookStateDefault:
       return StateDefaultKey;
+    case NYPLBookStateDownloading:
+      return StateDownloadingKey;
   }
 }
 
 NYPLBookState StateFromString(NSString *const string)
 {
   if([string isEqualToString:StateDefaultKey]) return NYPLBookStateDefault;
+  if([string isEqual:StateDownloadingKey]) return NYPLBookStateDownloading;
   
   @throw NSInvalidArgumentException;
 }
@@ -162,6 +166,27 @@ NYPLBookState StateFromString(NSString *const string)
   if(!self.updated) return nil;
   
   return self;
+}
+
+- (id)copyWithZone:(NSZone *const)zone
+{
+  return [[[self class] allocWithZone:zone]
+          initWithAcquisition:self.acquisition
+          authorStrings:self.authorStrings
+          identifier:self.identifier
+          imageURL:self.imageURL
+          imageThumbnailURL:self.imageThumbnailURL
+          state:self.state
+          title:self.title
+          updated:self.updated];
+}
+
+- (instancetype)bookWithState:(NYPLBookState)state
+{
+  NYPLBook *const book = [self copy];
+  book.state = state;
+  
+  return book;
 }
 
 - (NSDictionary *)dictionaryRepresentation
