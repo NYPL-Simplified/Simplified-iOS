@@ -25,6 +25,7 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 
 @property (nonatomic) UILabel *author;
 @property (nonatomic) UIImageView *cover;
+@property (nonatomic) UIButton *downloadButton;
 @property (nonatomic) UILabel *title;
 @property (nonatomic) NSURL *coverURL;
 
@@ -52,6 +53,11 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   authorFrame.origin = CGPointMake(100, CGRectGetMaxY(titleFrame) + 5);
   authorFrame.size.width = CGRectGetWidth(self.frame) - 105;
   self.author.frame = authorFrame;
+  
+  [self.downloadButton sizeToFit];
+  CGRect downloadButtonFrame = self.downloadButton.frame;
+  downloadButtonFrame.origin = CGPointMake(100, CGRectGetMaxY(authorFrame) + 5);
+  self.downloadButton.frame = downloadButtonFrame;
 }
 
 #pragma mark -
@@ -66,6 +72,12 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   if(!self.cover) {
     self.cover = [[UIImageView alloc] init];
     [self.contentView addSubview:self.cover];
+  }
+  
+  if(!self.downloadButton) {
+    self.downloadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [self.downloadButton setTitle:@"Download" forState:UIControlStateNormal];
+    [self.contentView addSubview:self.downloadButton];
   }
   
   if(!self.title) {
