@@ -1,14 +1,14 @@
 #import "NYPLBook.h"
 #import "NYPLMyBooksRegistry.h"
 
-#import "NYPLDownloadCenter.h"
+#import "NYPLMyBooksDownloadCenter.h"
 
-@implementation NYPLDownloadCenter
+@implementation NYPLMyBooksDownloadCenter
 
-+ (NYPLDownloadCenter *)sharedDownloadCenter
++ (NYPLMyBooksDownloadCenter *)sharedDownloadCenter
 {
   static dispatch_once_t predicate;
-  static NYPLDownloadCenter *sharedDownloadCenter = nil;
+  static NYPLMyBooksDownloadCenter *sharedDownloadCenter = nil;
   
   dispatch_once(&predicate, ^{
     sharedDownloadCenter = [[self alloc] init];
