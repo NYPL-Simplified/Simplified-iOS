@@ -3,8 +3,17 @@
 CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
                                               UIInterfaceOrientation orientation);
 
+@class NYPLBookCell;
+
+@protocol NYPLBookCellDelegate
+
+- (void)didSelectDownloadForBookCell:(NYPLBookCell *)cell;
+
+@end
+
 @interface NYPLBookCell : UICollectionViewCell
 
-- (void)setBook:(NYPLBook *)book;
+@property (nonatomic) NYPLBook *book;
+@property (nonatomic, weak) id<NYPLBookCellDelegate> delegate;
 
 @end
