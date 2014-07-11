@@ -2,7 +2,8 @@
 #import "NYPLOPDSEntry.h"
 
 typedef NS_ENUM(NSInteger, NYPLBookState) {
-  NYPLBookStateDefault
+  NYPLBookStateDefault,
+  NYPLBookStateDownloading
 };
 
 @interface NYPLBook : NSObject
@@ -30,6 +31,9 @@ typedef NS_ENUM(NSInteger, NYPLBookState) {
 
 // designated initializer
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
+
+// Returns a copy of the book with a new state.
+- (instancetype)bookWithState:(NYPLBookState)state;
 
 - (NSDictionary *)dictionaryRepresentation;
 
