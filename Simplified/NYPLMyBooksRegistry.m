@@ -18,7 +18,7 @@ static NSString *const RegistryFilename = @"registry.json";
   dispatch_once(&predicate, ^{
     sharedRegistry = [[NYPLMyBooksRegistry alloc] init];
     if(!sharedRegistry) {
-      NYPLLOG(@"Failed to create shared content registry.");
+      NYPLLOG(@"Failed to create shared registry.");
     }
     
     [sharedRegistry load];
