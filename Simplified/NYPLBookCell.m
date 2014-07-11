@@ -64,6 +64,8 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 
 - (void)setBook:(NYPLBook *const)book
 {
+  _book = book;
+  
   if(!self.author) {
     self.author = [[UILabel alloc] init];
     [self.contentView addSubview:self.author];
@@ -77,6 +79,9 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   if(!self.downloadButton) {
     self.downloadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [self.downloadButton setTitle:@"Download" forState:UIControlStateNormal];
+    [self.downloadButton addTarget:self
+                            action:@selector(didSelectDownload)
+                  forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.downloadButton];
   }
   
@@ -119,6 +124,11 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   }
   
   [self setNeedsLayout];
+}
+
+- (void)didSelectDownload
+{
+  [self.delegate didSelectDownloadForBookCell:self];
 }
 
 @end

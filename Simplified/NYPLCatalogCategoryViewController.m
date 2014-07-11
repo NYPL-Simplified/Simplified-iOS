@@ -1,14 +1,16 @@
 #import "NYPLBook.h"
-#import "NYPLCatalogCategory.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookDetailViewiPad.h"
+#import "NYPLCatalogCategory.h"
+#import "NYPLDownloadCenter.h"
 
 #import "NYPLCatalogCategoryViewController.h"
 
 @interface NYPLCatalogCategoryViewController ()
-  <NYPLCatalogCategoryDelegate, UICollectionViewDataSource, UICollectionViewDelegate,
-   UICollectionViewDelegateFlowLayout>
+  <NYPLBookCellDelegate, NYPLCatalogCategoryDelegate, UICollectionViewDataSource,
+   UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLBookDetailViewiPad *bookDetailViewiPad;
@@ -140,7 +142,8 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   
   assert([cell isKindOfClass:[NYPLBookCell class]]);
   
-  [cell setBook:self.category.books[indexPath.row]];
+  cell.book = self.category.books[indexPath.row];
+  cell.delegate = self;
   
   [self.category prepareForBookIndex:indexPath.row];
   
@@ -208,6 +211,13 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
          didUpdateBooks:(__attribute__((unused)) NSArray *)books
 {
   [self.collectionView reloadData];
+}
+
+#pragma mark NYPLBookCellDelegate
+
+- (void)didSelectDownloadForBookCell:(NYPLBookCell *const)cell
+{
+  [[NYPLDownloadCenter sharedDownloadCenter] startDownloadForBook:cell.book];
 }
 
 #pragma mark -
