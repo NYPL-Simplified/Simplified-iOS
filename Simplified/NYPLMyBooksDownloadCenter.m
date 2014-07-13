@@ -22,7 +22,7 @@
 
 - (void)startDownloadForBook:(NYPLBook *const)book
 {
-  [[NYPLMyBooksRegistry sharedRegistry] addBook:[book bookWithState:NYPLBookStateDownloading]];
+  [[NYPLMyBooksRegistry sharedRegistry] addBook:book];
 }
 
 @end
