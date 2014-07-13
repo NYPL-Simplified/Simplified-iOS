@@ -1,5 +1,6 @@
 #import "NYPLBook.h"
 #import "NYPLMyBooksRegistry.h"
+#import "NYPLMyBooksState.h"
 
 #import "NYPLMyBooksDownloadCenter.h"
 
@@ -22,7 +23,7 @@
 
 - (void)startDownloadForBook:(NYPLBook *const)book
 {
-  [[NYPLMyBooksRegistry sharedRegistry] addBook:book];
+  [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloading];
 }
 
 @end
