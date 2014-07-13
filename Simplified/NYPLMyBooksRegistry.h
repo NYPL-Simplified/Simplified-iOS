@@ -19,7 +19,8 @@ static NSString *const NYPLBookRegistryDidChange = @"NYPLBookRegistryDidChange";
 
 // Adds a book to the book registry until it is manually removed. It allows the application to
 // present information about obtained books when offline. Attempting to add a book already present
-// will overwrite the existing book as if |updateBook:| were called.
+// will overwrite the existing book as if |updateBook:| were called. The state provided must not be
+// |NYPLMyBooksStateUnregistered|.
 - (void)addBook:(NYPLBook *)book state:(NYPLMyBooksState)state;
 
 // This method should be called whenever new book information is retreived from a server. Doing so
@@ -30,11 +31,14 @@ static NSString *const NYPLBookRegistryDidChange = @"NYPLBookRegistryDidChange";
 - (void)updateBook:(NYPLBook *)book;
 
 // Returns the book for a given identifier if it is registered, else nil.
-- (NYPLBook *)bookForIdentifier:(NSString *const)identifier;
+- (NYPLBook *)bookForIdentifier:(NSString *)identifier;
+
+// Returns the state of a book for a given identifier.
+- (NYPLMyBooksState)stateForIdentifier:(NSString *)identifier;
 
 // Given an identifier, this method removes a book from the registry. Attempting to remove a book
 // that is not present will result in an error being logged.
-- (void)removeBookForIdentifier:(NSString *const)book;
+- (void)removeBookForIdentifier:(NSString *)book;
 
 // Returns the number of books currently registered.
 - (NSUInteger)count;

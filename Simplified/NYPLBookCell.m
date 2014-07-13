@@ -126,6 +126,20 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   [self setNeedsLayout];
 }
 
+- (void)setState:(NYPLMyBooksState const)state
+{
+  _state = state;
+  
+  switch(state) {
+    case NYPLMyBooksStateUnregistered:
+      self.downloadButton.hidden = NO;
+      break;
+    case NYPLMyBooksStateDownloading:
+      self.downloadButton.hidden = YES;
+      break;
+  }
+}
+
 - (void)didSelectDownload
 {
   [self.delegate didSelectDownloadForBookCell:self];

@@ -157,8 +157,11 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   
   assert([cell isKindOfClass:[NYPLBookCell class]]);
   
-  cell.book = self.category.books[indexPath.row];
+  NYPLBook *const book = self.category.books[indexPath.row];
+  
+  cell.book = book;
   cell.delegate = self;
+  cell.state = [[NYPLMyBooksRegistry sharedRegistry] stateForIdentifier:book.identifier];
   
   [self.category prepareForBookIndex:indexPath.row];
   

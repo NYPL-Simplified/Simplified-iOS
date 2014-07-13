@@ -1,4 +1,5 @@
 #import "NYPLBook.h"
+#import "NYPLMyBooksState.h"
 
 CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
                                               UIInterfaceOrientation orientation);
@@ -15,5 +16,6 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic, weak) id<NYPLBookCellDelegate> delegate;
+@property (nonatomic) NYPLMyBooksState state;
 
 @end
