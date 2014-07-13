@@ -92,13 +92,6 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   
   self.author.text = [book.authorStrings componentsJoinedByString:@"; "];
   self.cover.image = nil;
-  
-  if(book.state == NYPLBookStateDefault) {
-    self.downloadButton.hidden = NO;
-  } else {
-    self.downloadButton.hidden = YES;
-  }
-  
   self.coverURL = book.imageURL;
   self.title.text = book.title;
   

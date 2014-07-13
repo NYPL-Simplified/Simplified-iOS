@@ -5,14 +5,13 @@
 
 #import "NYPLBook.h"
 
-@interface NYPLBook () <NSCopying>
+@interface NYPLBook ()
 
 @property (nonatomic) NYPLBookAcquisition *acquisition;
 @property (nonatomic) NSArray *authorStrings;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSURL *imageURL; // nilable
 @property (nonatomic) NSURL *imageThumbnailURL; // nilable
-@property (nonatomic) NYPLBookState state;
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSDate *updated;
 
@@ -23,34 +22,12 @@ static NSString *const AuthorsKey = @"authors";
 static NSString *const IdentifierKey = @"id";
 static NSString *const ImageURLKey = @"image";
 static NSString *const ImageThumbnailURLKey = @"image-thumbnail";
-static NSString *const StateKey = @"state";
 static NSString *const TitleKey = @"title";
 static NSString *const UpdatedKey = @"updated";
 
-static NSString *const StateDefaultKey = @"default";
-static NSString *const StateDownloadingKey = @"downloading";
-
-NSString *StringFromState(NYPLBookState const state)
-{
-  switch(state) {
-    case NYPLBookStateDefault:
-      return StateDefaultKey;
-    case NYPLBookStateDownloading:
-      return StateDownloadingKey;
-  }
-}
-
-NYPLBookState StateFromString(NSString *const string)
-{
-  if([string isEqualToString:StateDefaultKey]) return NYPLBookStateDefault;
-  if([string isEqual:StateDownloadingKey]) return NYPLBookStateDownloading;
-  
-  @throw NSInvalidArgumentException;
-}
-
 @implementation NYPLBook
 
-+ (instancetype)bookWithEntry:(NYPLOPDSEntry *const)entry state:(NYPLBookState)state
++ (instancetype)bookWithEntry:(NYPLOPDSEntry *const)entry
 {
   if(!entry) {
     NYPLLOG(@"Failed to create book from nil entry.");
@@ -96,7 +73,6 @@ NYPLBookState StateFromString(NSString *const string)
           identifier:entry.identifier
           imageURL:image
           imageThumbnailURL:imageThumbnail
-          state:state
           title:entry.title
           updated:entry.updated];
 }
@@ -106,7 +82,6 @@ NYPLBookState StateFromString(NSString *const string)
                          identifier:(NSString *const)identifier
                            imageURL:(NSURL *const)imageURL
                   imageThumbnailURL:(NSURL *const)imageThumbnailURL
-                              state:(NYPLBookState)state
                               title:(NSString *const)title
                             updated:(NSDate *const)updated
 {
@@ -128,7 +103,6 @@ NYPLBookState StateFromString(NSString *const string)
   self.identifier = identifier;
   self.imageURL = imageURL;
   self.imageThumbnailURL = imageThumbnailURL;
-  self.state = state;
   self.title = title;
   self.updated = updated;
   
@@ -155,10 +129,6 @@ NYPLBookState StateFromString(NSString *const string)
   NSString *const imageThumbnail = NYPLNullToNil(dictionary[ImageThumbnailURLKey]);
   self.imageThumbnailURL = imageThumbnail ? [NSURL URLWithString:imageThumbnail] : nil;
   
-  NSString *const stateString = dictionary[StateKey];
-  if(!stateString) return nil;
-  self.state = StateFromString(stateString);
-  
   self.title = dictionary[TitleKey];
   if(!self.title) return nil;
   
@@ -168,27 +138,6 @@ NYPLBookState StateFromString(NSString *const string)
   return self;
 }
 
-- (id)copyWithZone:(NSZone *const)zone
-{
-  return [[[self class] allocWithZone:zone]
-          initWithAcquisition:self.acquisition
-          authorStrings:self.authorStrings
-          identifier:self.identifier
-          imageURL:self.imageURL
-          imageThumbnailURL:self.imageThumbnailURL
-          state:self.state
-          title:self.title
-          updated:self.updated];
-}
-
-- (instancetype)bookWithState:(NYPLBookState)state
-{
-  NYPLBook *const book = [self copy];
-  book.state = state;
-  
-  return book;
-}
-
 - (NSDictionary *)dictionaryRepresentation
 {
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
@@ -196,7 +145,6 @@ NYPLBookState StateFromString(NSString *const string)
            IdentifierKey: self.identifier,
            ImageURLKey: NYPLNilToNull([self.imageURL absoluteString]),
            ImageThumbnailURLKey: NYPLNilToNull([self.imageThumbnailURL absoluteString]),
-           StateKey: StringFromState(self.state),
            TitleKey: self.title,
            UpdatedKey: [self.updated RFC3339String]};
 }

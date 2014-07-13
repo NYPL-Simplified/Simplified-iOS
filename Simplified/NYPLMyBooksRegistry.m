@@ -164,36 +164,6 @@ static NSString *const RegistryFilename = @"registry.json";
   }
 }
 
-- (NYPLBook *)bookWithEntry:(NYPLOPDSEntry *const)entry
-{
-  if(!entry) {
-    NYPLLOG(@"Failed to create book from nil entry.");
-    return nil;
-  }
-  
-  @synchronized(self) {
-    NYPLBook *book = [self bookForIdentifier:entry.identifier];
-    
-    if(book) {
-      book = [NYPLBook bookWithEntry:entry state:book.state];
-      if(!book) {
-        NYPLLOG(@"Failed to create book from entry with existing state.");
-        return nil;
-      }
-      [self updateBook:book];
-      return book;
-    } else {
-      book = [NYPLBook bookWithEntry:entry state:NYPLBookStateDefault];
-      if(!book) {
-        NYPLLOG(@"Failed to create book from entry.");
-        return nil;
-      }
-      return book;
-    }
-  }
-}
-
-
 - (void)addBook:(NYPLBook *const)book
 {
   if(!book) {

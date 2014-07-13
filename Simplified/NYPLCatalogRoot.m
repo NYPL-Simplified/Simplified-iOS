@@ -139,10 +139,9 @@
             [NSMutableArray arrayWithCapacity:featuredAcquisitionFeed.entries.count];
           
           for(NYPLOPDSEntry *const acquisitionEntry in featuredAcquisitionFeed.entries) {
-            NYPLBook *const book = [[NYPLMyBooksRegistry sharedRegistry]
-                                    bookWithEntry:acquisitionEntry];
+            NYPLBook *const book = [NYPLBook bookWithEntry:acquisitionEntry];
             if(!book) {
-              NYPLLOG(@"Failed to get book from registry.");
+              NYPLLOG(@"Failed to create book from entry.");
               continue;
             }
             [books addObject:book];

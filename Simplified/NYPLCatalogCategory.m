@@ -38,9 +38,9 @@ static NSUInteger const preloadThreshold = 100;
      NSMutableArray *const books = [NSMutableArray arrayWithCapacity:acquisitionFeed.entries.count];
      
      for(NYPLOPDSEntry *const entry in acquisitionFeed.entries) {
-       NYPLBook *const book = [[NYPLMyBooksRegistry sharedRegistry] bookWithEntry:entry];
+       NYPLBook *const book = [NYPLBook bookWithEntry:entry];
        if(!book) {
-         NYPLLOG(@"Failed to get book from registry.");
+         NYPLLOG(@"Failed to create book from entry.");
          continue;
        }
        [books addObject:book];
