@@ -1,6 +1,7 @@
 // All methods of this class declared below are thread-safe.
 
 #import "NYPLBook.h"
+#import "NYPLMyBooksState.h"
 
 // This is broadcast whenever the book registry is modified.
 static NSString *const NYPLBookRegistryDidChange = @"NYPLBookRegistryDidChange";
@@ -19,7 +20,7 @@ static NSString *const NYPLBookRegistryDidChange = @"NYPLBookRegistryDidChange";
 // Adds a book to the book registry until it is manually removed. It allows the application to
 // present information about obtained books when offline. Attempting to add a book already present
 // will overwrite the existing book as if |updateBook:| were called.
-- (void)addBook:(NYPLBook *)book;
+- (void)addBook:(NYPLBook *)book state:(NYPLMyBooksState)state;
 
 // This method should be called whenever new book information is retreived from a server. Doing so
 // ensures that once the user has seen the new information, they will continue to do so when
