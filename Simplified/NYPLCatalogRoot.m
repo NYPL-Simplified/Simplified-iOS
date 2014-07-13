@@ -144,6 +144,7 @@
               NYPLLOG(@"Failed to create book from entry.");
               continue;
             }
+            [[NYPLMyBooksRegistry sharedRegistry] updateBook:book];
             [books addObject:book];
           }
           

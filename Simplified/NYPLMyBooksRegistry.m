@@ -175,6 +175,10 @@ static NSString *const StateKey = @"state";
     @throw NSInvalidArgumentException;
   }
   
+  if(state == NYPLMyBooksStateUnregistered) {
+    @throw NSInvalidArgumentException;
+  }
+  
   @synchronized(self) {
     self.identifiersToRecords[book.identifier] = [[NYPLMyBooksRecord alloc]
                                                   initWithBook:book
@@ -202,6 +206,18 @@ static NSString *const StateKey = @"state";
 {
   @synchronized(self) {
     return ((NYPLMyBooksRecord *) self.identifiersToRecords[identifier]).book;
+  }
+}
+
+- (NYPLMyBooksState)stateForIdentifier:(NSString *)identifier
+{
+  @synchronized(self) {
+    NYPLMyBooksRecord *const record = self.identifiersToRecords[identifier];
+    if(record) {
+      return record.state;
+    } else {
+      return NYPLMyBooksStateUnregistered;
+    }
   }
 }
 

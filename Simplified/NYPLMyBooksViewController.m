@@ -119,7 +119,10 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
   
   assert([cell isKindOfClass:[NYPLBookCell class]]);
   
-  [cell setBook:self.books[indexPath.row]];
+  NYPLBook *const book = self.books[indexPath.row];
+  
+  [cell setBook:book];
+  [cell setState:[[NYPLMyBooksRegistry sharedRegistry] stateForIdentifier:book.identifier]];
   
   return cell;
 }
