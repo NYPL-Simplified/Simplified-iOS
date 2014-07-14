@@ -1,4 +1,5 @@
 #import "NYPLBookDetailView.h"
+#import "NYPLBookDetailViewDelegate.h"
 
 #import "NYPLBookDetailViewiPad.h"
 
@@ -31,6 +32,9 @@ static CGFloat const bookDetailViewHeight = 440;
   self.closeButton.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                        UIViewAutoresizingFlexibleHeight);
   self.closeButton.exclusiveTouch = YES;
+  [self.closeButton addTarget:self
+                       action:@selector(didSelectClose)
+             forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.closeButton];
   
   self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:book];
@@ -39,13 +43,16 @@ static CGFloat const bookDetailViewHeight = 440;
                                           UIViewAutoresizingFlexibleRightMargin |
                                           UIViewAutoresizingFlexibleTopMargin |
                                           UIViewAutoresizingFlexibleBottomMargin);
+  self.bookDetailView.detailViewDelegate = [NYPLBookDetailViewDelegate sharedDelegate];
   [self addSubview:self.bookDetailView];
   
   return self;
 }
 
-- (void)animateDisplay
+- (void)animateDisplayInView:(UIView *)view
 {
+  [view addSubview:self];
+  
   [self setFrame:self.superview.bounds];
   self.bookDetailView.center = self.center;
   
@@ -65,6 +72,11 @@ static CGFloat const bookDetailViewHeight = 440;
                                  selector:@selector(removeFromSuperview)
                                  userInfo:nil
                                   repeats:NO];
+}
+
+- (void)didSelectClose
+{
+  [self animateRemoveFromSuperview];
 }
 
 @end

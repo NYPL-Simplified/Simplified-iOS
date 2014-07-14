@@ -13,7 +13,6 @@
    UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
-@property (nonatomic) NYPLBookDetailViewiPad *bookDetailViewiPad;
 @property (nonatomic) NYPLCatalogCategory *category;
 @property (nonatomic) UICollectionView *collectionView;
 @property (nonatomic) NSURL *URL;
@@ -180,15 +179,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
                                                    initWithBook:book]
                                          animated:YES];
   } else {
-    self.bookDetailViewiPad = [[NYPLBookDetailViewiPad alloc] initWithBook:book];
-    
-    [self.bookDetailViewiPad.closeButton addTarget:self
-                                            action:@selector(didCloseDetailView)
-                                  forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.view addSubview:self.bookDetailViewiPad];
-    
-    [self.bookDetailViewiPad animateDisplay];
+    [[[NYPLBookDetailViewiPad alloc] initWithBook:book] animateDisplayInView:self.view];
   }
 }
 
@@ -202,21 +193,21 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 }
 
 - (CGFloat)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
-                   layout:(__attribute__((unused)) UICollectionViewLayout*)collectionViewLayout
+                   layout:(__attribute__((unused)) UICollectionViewLayout *)collectionViewLayout
 minimumInteritemSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 {
   return 0.0;
 }
 
 - (CGFloat)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
-                   layout:(__attribute__((unused)) UICollectionViewLayout*)collectionViewLayout
+                   layout:(__attribute__((unused)) UICollectionViewLayout *)collectionViewLayout
 minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 {
   return 0.0;
 }
 
 - (CGSize)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
-                  layout:(__attribute__((unused)) UICollectionViewLayout*)collectionViewLayout
+                  layout:(__attribute__((unused)) UICollectionViewLayout *)collectionViewLayout
   sizeForItemAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
 {
   return NYPLBookCellSizeForIdiomAndOrientation(UI_USER_INTERFACE_IDIOM(),
@@ -244,12 +235,6 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 {
   [self.collectionView reloadData];
   self.collectionView.hidden = NO;
-}
-
-- (void)didCloseDetailView
-{
-  [self.bookDetailViewiPad animateRemoveFromSuperview];
-  self.bookDetailViewiPad = nil;
 }
 
 @end
