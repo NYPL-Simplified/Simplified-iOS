@@ -24,7 +24,6 @@ static CGFloat const sectionHeaderHeight = 40.0;
   <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
-@property (nonatomic) NYPLBookDetailViewiPad *bookDetailViewiPad;
 @property (nonatomic) NYPLCatalogRoot *catalogRoot;
 @property (nonatomic) NSMutableDictionary *cachedCells;
 @property (nonatomic) NSMutableDictionary *URLsToImageData;
@@ -180,15 +179,7 @@ viewForHeaderInSection:(NSInteger const)section
                                                    initWithBook:book]
                                          animated:YES];
   } else {
-    self.bookDetailViewiPad = [[NYPLBookDetailViewiPad alloc] initWithBook:book];
-    
-    [self.bookDetailViewiPad.closeButton addTarget:self
-                                            action:@selector(didCloseDetailView)
-                                  forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.view addSubview:self.bookDetailViewiPad];
-    
-    [self.bookDetailViewiPad animateDisplay];
+    [[[NYPLBookDetailViewiPad alloc] initWithBook:book] animateDisplayInView:self.view];
   }
 }
 
@@ -275,12 +266,6 @@ viewForHeaderInSection:(NSInteger const)section
      title:lane.title];
   
   [self.navigationController pushViewController:viewController animated:YES];
-}
-
-- (void)didCloseDetailView
-{
-  [self.bookDetailViewiPad animateRemoveFromSuperview];
-  self.bookDetailViewiPad = nil;
 }
 
 @end

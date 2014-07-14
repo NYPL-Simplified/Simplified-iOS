@@ -1,4 +1,5 @@
 #import "NYPLBookDetailView.h"
+#import "NYPLBookDetailViewDelegate.h"
 
 #import "NYPLBookDetailViewController.h"
 
@@ -18,6 +19,7 @@
   }
   
   NYPLBookDetailView *const view = [[NYPLBookDetailView alloc] initWithBook:book];
+  view.detailViewDelegate = [NYPLBookDetailViewDelegate sharedDelegate];
   
   self.view = view;
   
