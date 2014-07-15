@@ -173,7 +173,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
   NYPLBook *const book = self.category.books[indexPath.row];
   
-  [[[NYPLBookDetailController alloc] initWithBook:book] displayFromViewController:self];
+  [[NYPLBookDetailController sharedController] displayBook:book fromViewController:self];
 }
 
 #pragma mark UICollectionViewDelegateFlowLayout

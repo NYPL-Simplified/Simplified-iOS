@@ -1,38 +1,60 @@
 #import "NYPLBookDetailViewControllerPhone.h"
 #import "NYPLBookDetailViewPad.h"
+#import "NYPLMyBooksDownloadCenter.h"
 
 #import "NYPLBookDetailController.h"
 
-@interface NYPLBookDetailController ()
-
-@property (nonatomic) NYPLBook *book;
+@interface NYPLBookDetailController () <NYPLBookDetailViewDelegate, NYPLBookDetailViewPadDelegate>
 
 @end
 
 @implementation NYPLBookDetailController
 
-- (instancetype)initWithBook:(NYPLBook *const)book
++ (instancetype)sharedController
 {
-  self = [super init];
-  if(!self) return nil;
+  static dispatch_once_t predicate;
+  static NYPLBookDetailController *sharedBookDetailController;
   
-  self.book = book;
+  dispatch_once(&predicate, ^{
+    sharedBookDetailController = [[self alloc] init];
+    if(!sharedBookDetailController) {
+      NYPLLOG(@"Failed to created shared book detail controller.");
+    }
+  });
   
-  return self;
+  return sharedBookDetailController;
 }
 
-- (void)displayFromViewController:(UIViewController *const)controller
+- (void)displayBook:(NYPLBook *const)book fromViewController:(UIViewController *const)controller
 {
   switch(UI_USER_INTERFACE_IDIOM()) {
     case UIUserInterfaceIdiomPhone:
       [controller.navigationController
-       pushViewController:[[NYPLBookDetailViewControllerPhone alloc] initWithBook:self.book]
+       pushViewController:[[NYPLBookDetailViewControllerPhone alloc] initWithBook:book]
        animated:YES];
       break;
     case UIUserInterfaceIdiomPad:
-      [[[NYPLBookDetailViewPad alloc] initWithBook:self.book] animateDisplayInView:controller.view];
+      {
+        NYPLBookDetailViewPad *const view = [[NYPLBookDetailViewPad alloc] initWithBook:book];
+        view.delegate = self;
+        [view animateDisplayInView:controller.view];
+      }
       break;
   }
+}
+
+#pragma mark NYPLBookDetailViewDelegate
+
+- (void)didSelectDownloadForDetailView:(NYPLBookDetailView *const)detailView
+{
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:detailView.book];
+}
+
+#pragma mark NYPLBookDetailViewPadDelegate
+
+- (void)didSelectCloseForBookDetailViewPad:(NYPLBookDetailViewPad *const)bookDetailViewPad
+{
+  [bookDetailViewPad animateRemoveFromSuperview];
 }
 
 @end
