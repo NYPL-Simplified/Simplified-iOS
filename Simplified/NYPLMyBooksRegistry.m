@@ -63,9 +63,15 @@ static NSString *const StateKey = @"state";
 
 - (void)broadcastChange
 {
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLBookRegistryDidChange
-   object:self];
+  // We send the notification out on the next run through the run loop to avoid deadlocks that could
+  // occur due to calling synchronized methods on this object in response to a broadcast that
+  // originated from within a synchronized block.
+  
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLBookRegistryDidChange
+     object:self];
+  }];
 }
 
 - (void)load
