@@ -5,9 +5,8 @@
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
-// designated initializer
-- (instancetype)initWithBook:(NYPLBook *)book;
++ (instancetype)sharedController;
 
-- (void)displayFromViewController:(UIViewController *)controller;
+- (void)displayBook:(NYPLBook *)book fromViewController:(UIViewController *)controller;
 
 @end

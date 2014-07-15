@@ -3,7 +3,7 @@
 
 #import "NYPLBookDetailViewPad.h"
 
-@interface NYPLBookDetailViewPad ()
+@interface NYPLBookDetailViewPad () <NYPLBookDetailViewDelegate>
 
 @property (nonatomic) NYPLBookDetailView *bookDetailView;
 @property (nonatomic) UIButton *closeButton;
@@ -43,7 +43,7 @@ static CGFloat const bookDetailViewHeight = 440;
                                           UIViewAutoresizingFlexibleRightMargin |
                                           UIViewAutoresizingFlexibleTopMargin |
                                           UIViewAutoresizingFlexibleBottomMargin);
-  self.bookDetailView.detailViewDelegate = [NYPLBookDetailViewDelegate sharedDelegate];
+  self.bookDetailView.detailViewDelegate = self;
   [self addSubview:self.bookDetailView];
   
   return self;
@@ -55,6 +55,7 @@ static CGFloat const bookDetailViewHeight = 440;
   
   [self setFrame:self.superview.bounds];
   self.bookDetailView.center = self.center;
+  self.bookDetailView.detailViewDelegate = self;
   
   [UIView animateWithDuration:bookDetailViewiPadAnimationSeconds animations:^{
     self.alpha = 1.0;
@@ -76,7 +77,14 @@ static CGFloat const bookDetailViewHeight = 440;
 
 - (void)didSelectClose
 {
-  [self animateRemoveFromSuperview];
+  [self.delegate didSelectCloseForBookDetailViewPad:self];
+}
+
+#pragma mark NYPLBookDetailViewDelegate
+
+- (void)didSelectDownloadForDetailView:(NYPLBookDetailView *const)detailView
+{
+  [self.delegate didSelectDownloadForDetailView:detailView];
 }
 
 @end
