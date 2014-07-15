@@ -2,8 +2,7 @@
 
 #import "NYPLAsync.h"
 #import "NYPLBookDetailView.h"
-#import "NYPLBookDetailViewController.h"
-#import "NYPLBookDetailViewiPad.h"
+#import "NYPLBookDetailController.h"
 #import "NYPLCatalogCategoryViewController.h"
 #import "NYPLBook.h"
 #import "NYPLCatalogLane.h"
@@ -174,13 +173,7 @@ viewForHeaderInSection:(NSInteger const)section
   NYPLCatalogLane *const lane = self.catalogRoot.lanes[cell.laneIndex];
   NYPLBook *const book = lane.books[bookIndex];
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-    [self.navigationController pushViewController:[[NYPLBookDetailViewController alloc]
-                                                   initWithBook:book]
-                                         animated:YES];
-  } else {
-    [[[NYPLBookDetailViewiPad alloc] initWithBook:book] animateDisplayInView:self.view];
-  }
+  [[[NYPLBookDetailController alloc] initWithBook:book] displayFromViewController:self];
 }
 
 #pragma mark -

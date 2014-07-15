@@ -1,9 +1,9 @@
 #import "NYPLBookDetailView.h"
 #import "NYPLBookDetailViewDelegate.h"
 
-#import "NYPLBookDetailViewController.h"
+#import "NYPLBookDetailViewControllerPhone.h"
 
-@implementation NYPLBookDetailViewController
+@implementation NYPLBookDetailViewControllerPhone
 
 - (instancetype)initWithBook:(NYPLBook *const)book
 {

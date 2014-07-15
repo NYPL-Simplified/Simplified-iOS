@@ -1,7 +1,6 @@
 #import "NYPLBook.h"
 #import "NYPLBookCell.h"
-#import "NYPLBookDetailViewController.h"
-#import "NYPLBookDetailViewiPad.h"
+#import "NYPLBookDetailController.h"
 #import "NYPLCatalogCategory.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
@@ -174,13 +173,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
   NYPLBook *const book = self.category.books[indexPath.row];
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-    [self.navigationController pushViewController:[[NYPLBookDetailViewController alloc]
-                                                   initWithBook:book]
-                                         animated:YES];
-  } else {
-    [[[NYPLBookDetailViewiPad alloc] initWithBook:book] animateDisplayInView:self.view];
-  }
+  [[[NYPLBookDetailController alloc] initWithBook:book] displayFromViewController:self];
 }
 
 #pragma mark UICollectionViewDelegateFlowLayout

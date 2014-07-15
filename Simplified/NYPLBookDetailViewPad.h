@@ -1,9 +1,6 @@
-// While this class is technically a view, it's morally a view controller. As such, it handles tasks
-// like setting the |detailViewDelegate| of its underlying NYPLBookDetailView.
-
 #import "NYPLBookDetailView.h"
 
-@interface NYPLBookDetailViewiPad : UIView
+@interface NYPLBookDetailViewPad : UIView
 
 @property (nonatomic, readonly) NYPLBookDetailView *bookDetailView;
 

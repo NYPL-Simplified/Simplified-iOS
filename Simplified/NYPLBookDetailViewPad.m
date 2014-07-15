@@ -1,9 +1,9 @@
 #import "NYPLBookDetailView.h"
 #import "NYPLBookDetailViewDelegate.h"
 
-#import "NYPLBookDetailViewiPad.h"
+#import "NYPLBookDetailViewPad.h"
 
-@interface NYPLBookDetailViewiPad ()
+@interface NYPLBookDetailViewPad ()
 
 @property (nonatomic) NYPLBookDetailView *bookDetailView;
 @property (nonatomic) UIButton *closeButton;
@@ -14,7 +14,7 @@ static CGFloat const bookDetailViewiPadAnimationSeconds = 0.333;
 static CGFloat const bookDetailViewWidth = 380;
 static CGFloat const bookDetailViewHeight = 440;
 
-@implementation NYPLBookDetailViewiPad
+@implementation NYPLBookDetailViewPad
 
 - (instancetype)initWithBook:(NYPLBook *const)book
 {
