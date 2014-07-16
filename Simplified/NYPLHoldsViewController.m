@@ -1,0 +1,24 @@
+#import "NYPLHoldsViewController.h"
+
+@implementation NYPLHoldsViewController
+
+#pragma mark NSObject
+
+- (instancetype)init
+{
+  self = [super init];
+  if(!self) return nil;
+
+  self.title = NSLocalizedString(@"HoldsViewControllerTitle", nil);
+  
+  return self;
+}
+
+#pragma mark UIViewController
+
+- (void)viewDidLoad
+{
+  self.view.backgroundColor = [UIColor whiteColor];
+}
+
+@end

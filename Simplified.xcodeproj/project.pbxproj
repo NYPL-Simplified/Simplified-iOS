@@ -50,6 +50,10 @@
 		1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1196F75A1970727C00F62670 /* NYPLMyBooksDownloadCenter.m */; };
 		11A16E69195B2BD3004147F4 /* NYPLCatalogCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E68195B2BD3004147F4 /* NYPLCatalogCategoryViewController.m */; };
 		11A16E6F195B60DF004147F4 /* NYPLBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E6E195B60DF004147F4 /* NYPLBookCell.m */; };
+		11C5DCF21976D1E0005A9945 /* NYPLHoldsNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DCF11976D1E0005A9945 /* NYPLHoldsNavigationController.m */; };
+		11C5DCF51976D22F005A9945 /* NYPLHoldsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DCF41976D22F005A9945 /* NYPLHoldsViewController.m */; };
+		11C5DCF81976D2AF005A9945 /* NYPLSettingsNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DCF71976D2AF005A9945 /* NYPLSettingsNavigationController.m */; };
+		11C5DCFB1976D2F4005A9945 /* NYPLSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DCFA1976D2F4005A9945 /* NYPLSettingsViewController.m */; };
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
 		11F54C2719410C700086FCAF /* NYPLOPDSEntryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */; };
@@ -152,6 +156,14 @@
 		11A16E68195B2BD3004147F4 /* NYPLCatalogCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogCategoryViewController.m; sourceTree = "<group>"; };
 		11A16E6D195B60DF004147F4 /* NYPLBookCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookCell.h; sourceTree = "<group>"; };
 		11A16E6E195B60DF004147F4 /* NYPLBookCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookCell.m; sourceTree = "<group>"; };
+		11C5DCF01976D1E0005A9945 /* NYPLHoldsNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLHoldsNavigationController.h; sourceTree = "<group>"; };
+		11C5DCF11976D1E0005A9945 /* NYPLHoldsNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLHoldsNavigationController.m; sourceTree = "<group>"; };
+		11C5DCF31976D22F005A9945 /* NYPLHoldsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLHoldsViewController.h; sourceTree = "<group>"; };
+		11C5DCF41976D22F005A9945 /* NYPLHoldsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLHoldsViewController.m; sourceTree = "<group>"; };
+		11C5DCF61976D2AF005A9945 /* NYPLSettingsNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsNavigationController.h; sourceTree = "<group>"; };
+		11C5DCF71976D2AF005A9945 /* NYPLSettingsNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsNavigationController.m; sourceTree = "<group>"; };
+		11C5DCF91976D2F4005A9945 /* NYPLSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsViewController.h; sourceTree = "<group>"; };
+		11C5DCFA1976D2F4005A9945 /* NYPLSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsViewController.m; sourceTree = "<group>"; };
 		11F54C1D194109120086FCAF /* main.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = main.xml; sourceTree = "<group>"; };
 		11F54C2419410BE40086FCAF /* single_entry.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = single_entry.xml; sourceTree = "<group>"; };
 		11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryTests.m; sourceTree = "<group>"; };
@@ -351,6 +363,28 @@
 			name = Delegates;
 			sourceTree = "<group>";
 		};
+		11C5DCEE1976D19E005A9945 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				11C5DCF61976D2AF005A9945 /* NYPLSettingsNavigationController.h */,
+				11C5DCF71976D2AF005A9945 /* NYPLSettingsNavigationController.m */,
+				11C5DCF91976D2F4005A9945 /* NYPLSettingsViewController.h */,
+				11C5DCFA1976D2F4005A9945 /* NYPLSettingsViewController.m */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+		11C5DCEF1976D1BA005A9945 /* Holds */ = {
+			isa = PBXGroup;
+			children = (
+				11C5DCF01976D1E0005A9945 /* NYPLHoldsNavigationController.h */,
+				11C5DCF11976D1E0005A9945 /* NYPLHoldsNavigationController.m */,
+				11C5DCF31976D22F005A9945 /* NYPLHoldsViewController.h */,
+				11C5DCF41976D22F005A9945 /* NYPLHoldsViewController.m */,
+			);
+			name = Holds;
+			sourceTree = "<group>";
+		};
 		A823D804192BABA400B55DE2 = {
 			isa = PBXGroup;
 			children = (
@@ -389,8 +423,10 @@
 				110AF8891961D66C004887C3 /* Additions */,
 				110AF8901961D822004887C3 /* Book */,
 				1183F349194F74EF00DC322F /* Catalog */,
+				11C5DCEF1976D1BA005A9945 /* Holds */,
 				110AF8881961D652004887C3 /* My Books */,
 				AE77E8DE5454517F1AE119BF /* OPDS */,
+				11C5DCEE1976D19E005A9945 /* Settings */,
 				A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */,
 				A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */,
 				1183F359194F847100DC322F /* NYPLAsync.h */,
@@ -629,6 +665,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1114A6A4195888A1007507A2 /* NYPLCatalogSubsectionLink.m in Sources */,
+				11C5DCF81976D2AF005A9945 /* NYPLSettingsNavigationController.m in Sources */,
 				11616E11196B0531003D60D9 /* NYPLMyBooksRegistry.m in Sources */,
 				11396FDA1940DB7C00E16EE8 /* SMXMLElement+NYPLElementAdditions.m in Sources */,
 				116A5EB91947B57500491A21 /* NYPLConfiguration.m in Sources */,
@@ -651,8 +688,11 @@
 				112C694D197301FE00C48F95 /* NYPLMyBooksRecord.m in Sources */,
 				116A5EB3194767DC00491A21 /* NYPLMyBooksViewController.m in Sources */,
 				110AF89C1961ED1F004887C3 /* NYPLBookDetailViewControllerPhone.m in Sources */,
+				11C5DCFB1976D2F4005A9945 /* NYPLSettingsViewController.m in Sources */,
+				11C5DCF21976D1E0005A9945 /* NYPLHoldsNavigationController.m in Sources */,
 				1114A6A1195884CB007507A2 /* NYPLCatalogCategory.m in Sources */,
 				118992C51974868E0079658E /* NYPLBookDetailViewDelegate.m in Sources */,
+				11C5DCF51976D22F005A9945 /* NYPLHoldsViewController.m in Sources */,
 				A823D821192BABA400B55DE2 /* NYPLAppDelegate.m in Sources */,
 				1183F33E194F71A500DC322F /* NYPLCatalogRoot.m in Sources */,
 				11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */,

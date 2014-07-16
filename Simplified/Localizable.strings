@@ -15,6 +15,14 @@
   "Please check your connection or try again later.";
 "CatalogViewControllerTitle" = "Catalog";
 
-// MyBooksViewController
+// NYPLHoldsViewController
+
+"HoldsViewControllerTitle" = "Holds";
+
+// NYPLMyBooksViewController
 
 "MyBooksViewControllerTitle" = "My Books";
+
+// NYPLSettingsViewController
+
+"SettingsViewControllerTitle" = "Settings";
