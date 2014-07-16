@@ -4,6 +4,7 @@
 #import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
 #import "NYPLOPDSRelation.h"
+#import "NYPLMyBooksRegistry.h"
 
 #import "NYPLCatalogCategory.h"
 
@@ -42,6 +43,7 @@ static NSUInteger const preloadThreshold = 100;
          NYPLLOG(@"Failed to create book from entry.");
          continue;
        }
+       [[NYPLMyBooksRegistry sharedRegistry] updateBook:book];
        [books addObject:book];
      }
      
@@ -77,6 +79,14 @@ static NSUInteger const preloadThreshold = 100;
   self.books = books;
   self.nextURL = nextURL;
   self.title = title;
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserverForName:NYPLBookRegistryDidChange
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(__attribute__((unused)) NSNotification *note) {
+     [self refreshBooks];
+   }];
 
   return self;
 }
@@ -124,6 +134,32 @@ static NSUInteger const preloadThreshold = 100;
        [self.delegate catalogCategory:self didUpdateBooks:self.books];
      }];
    }];
+}
+
+- (void)refreshBooks
+{
+  NSMutableArray *const refreshedBooks = [NSMutableArray arrayWithCapacity:self.books.count];
+  
+  for(NYPLBook *const book in self.books) {
+    NYPLBook *const refreshedBook = [[NYPLMyBooksRegistry sharedRegistry]
+                                     bookForIdentifier:book.identifier];
+    if(refreshedBook) {
+      [refreshedBooks addObject:refreshedBook];
+    } else {
+      [refreshedBooks addObject:book];
+    }
+  }
+  
+  self.books = refreshedBooks;
+  
+  [self.delegate catalogCategory:self didUpdateBooks:self.books];
+}
+
+#pragma mark NSObject
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

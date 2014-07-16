@@ -1,6 +1,6 @@
 #import "NYPLBook.h"
 
-@interface NYPLBookDetailViewController : UIViewController
+@interface NYPLBookDetailViewControllerPhone : UIViewController
 
 // designated initializer
 // |book| must not be nil.

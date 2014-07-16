@@ -1,17 +1,17 @@
 #import "NYPLBook.h"
-#import "NYPLCatalogCategory.h"
 #import "NYPLBookCell.h"
-#import "NYPLBookDetailViewController.h"
-#import "NYPLBookDetailViewiPad.h"
+#import "NYPLBookDetailController.h"
+#import "NYPLCatalogCategory.h"
+#import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLMyBooksRegistry.h"
 
 #import "NYPLCatalogCategoryViewController.h"
 
 @interface NYPLCatalogCategoryViewController ()
-  <NYPLCatalogCategoryDelegate, UICollectionViewDataSource, UICollectionViewDelegate,
-   UICollectionViewDelegateFlowLayout>
+  <NYPLBookCellDelegate, NYPLCatalogCategoryDelegate, UICollectionViewDataSource,
+   UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
-@property (nonatomic) NYPLBookDetailViewiPad *bookDetailViewiPad;
 @property (nonatomic) NYPLCatalogCategory *category;
 @property (nonatomic) UICollectionView *collectionView;
 @property (nonatomic) NSURL *URL;
@@ -34,7 +34,30 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   
   self.view.backgroundColor = [UIColor whiteColor];
   
+  [[NSNotificationCenter defaultCenter]
+   addObserverForName:NYPLBookRegistryDidChange
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(__attribute__((unused)) NSNotification *note) {
+     [self.collectionView reloadData];
+   }];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserverForName:NYPLMyBooksDownloadCenterDidChange
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(__attribute__((unused)) NSNotification *note) {
+     [self.collectionView reloadData];
+   }];
+  
   return self;
+}
+
+#pragma mark NSObject
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark UIViewController
@@ -140,7 +163,13 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   
   assert([cell isKindOfClass:[NYPLBookCell class]]);
   
-  [cell setBook:self.category.books[indexPath.row]];
+  NYPLBook *const book = self.category.books[indexPath.row];
+  
+  cell.book = book;
+  cell.delegate = self;
+  cell.state = [[NYPLMyBooksRegistry sharedRegistry] stateForIdentifier:book.identifier];
+  cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                           downloadProgressForBookIdentifier:book.identifier];
   
   [self.category prepareForBookIndex:indexPath.row];
   
@@ -154,21 +183,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
   NYPLBook *const book = self.category.books[indexPath.row];
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-    [self.navigationController pushViewController:[[NYPLBookDetailViewController alloc]
-                                                   initWithBook:book]
-                                         animated:YES];
-  } else {
-    self.bookDetailViewiPad = [[NYPLBookDetailViewiPad alloc] initWithBook:book];
-    
-    [self.bookDetailViewiPad.closeButton addTarget:self
-                                            action:@selector(didCloseDetailView)
-                                  forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.view addSubview:self.bookDetailViewiPad];
-    
-    [self.bookDetailViewiPad animateDisplay];
-  }
+  [[NYPLBookDetailController sharedController] displayBook:book fromViewController:self];
 }
 
 #pragma mark UICollectionViewDelegateFlowLayout
@@ -181,21 +196,21 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 }
 
 - (CGFloat)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
-                   layout:(__attribute__((unused)) UICollectionViewLayout*)collectionViewLayout
+                   layout:(__attribute__((unused)) UICollectionViewLayout *)collectionViewLayout
 minimumInteritemSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 {
   return 0.0;
 }
 
 - (CGFloat)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
-                   layout:(__attribute__((unused)) UICollectionViewLayout*)collectionViewLayout
+                   layout:(__attribute__((unused)) UICollectionViewLayout *)collectionViewLayout
 minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 {
   return 0.0;
 }
 
 - (CGSize)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
-                  layout:(__attribute__((unused)) UICollectionViewLayout*)collectionViewLayout
+                  layout:(__attribute__((unused)) UICollectionViewLayout *)collectionViewLayout
   sizeForItemAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
 {
   return NYPLBookCellSizeForIdiomAndOrientation(UI_USER_INTERFACE_IDIOM(),
@@ -210,18 +225,19 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
   [self.collectionView reloadData];
 }
 
+#pragma mark NYPLBookCellDelegate
+
+- (void)didSelectDownloadForBookCell:(NYPLBookCell *const)cell
+{
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:cell.book];
+}
+
 #pragma mark -
 
 - (void)didLoadCategory
 {
   [self.collectionView reloadData];
   self.collectionView.hidden = NO;
-}
-
-- (void)didCloseDetailView
-{
-  [self.bookDetailViewiPad animateRemoveFromSuperview];
-  self.bookDetailViewiPad = nil;
 }
 
 @end

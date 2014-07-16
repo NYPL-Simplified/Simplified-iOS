@@ -1,24 +1,26 @@
-#import "NYPLBookRegistry.h"
+#import "NYPLMyBooksRecord.h"
 
-@interface NYPLBookRegistry ()
+#import "NYPLMyBooksRegistry.h"
 
-@property (nonatomic) NSMutableDictionary *identifiersToBooks;
+@interface NYPLMyBooksRegistry ()
+
+@property (nonatomic) NSMutableDictionary *identifiersToRecords;
 
 @end
 
 static NSString *const RegistryFilename = @"registry.json";
 
-@implementation NYPLBookRegistry
+@implementation NYPLMyBooksRegistry
 
-+ (NYPLBookRegistry *)sharedRegistry
++ (NYPLMyBooksRegistry *)sharedRegistry
 {
   static dispatch_once_t predicate;
-  static NYPLBookRegistry *sharedRegistry = nil;
+  static NYPLMyBooksRegistry *sharedRegistry = nil;
   
   dispatch_once(&predicate, ^{
-    sharedRegistry = [[NYPLBookRegistry alloc] init];
+    sharedRegistry = [[NYPLMyBooksRegistry alloc] init];
     if(!sharedRegistry) {
-      NYPLLOG(@"Failed to create shared content registry.");
+      NYPLLOG(@"Failed to create shared registry.");
     }
     
     [sharedRegistry load];
@@ -34,7 +36,7 @@ static NSString *const RegistryFilename = @"registry.json";
   self = [super init];
   if(!self) return nil;
   
-  self.identifiersToBooks = [NSMutableDictionary dictionary];
+  self.identifiersToRecords = [NSMutableDictionary dictionary];
   
   return self;
 }
@@ -58,15 +60,21 @@ static NSString *const RegistryFilename = @"registry.json";
 
 - (void)broadcastChange
 {
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLBookRegistryDidChange
-   object:self];
+  // We send the notification out on the next run through the run loop to avoid deadlocks that could
+  // occur due to calling synchronized methods on this object in response to a broadcast that
+  // originated from within a synchronized block.
+  
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLBookRegistryDidChange
+     object:self];
+  }];
 }
 
 - (void)load
 {
   @synchronized(self) {
-    self.identifiersToBooks = [NSMutableDictionary dictionary];
+    self.identifiersToRecords = [NSMutableDictionary dictionary];
     
     NSData *const savedData = [NSData dataWithContentsOfURL:
                                [[self registryDirectory]
@@ -91,7 +99,14 @@ static NSString *const RegistryFilename = @"registry.json";
     [dictionary enumerateKeysAndObjectsUsingBlock:^(id const key,
                                                     id const value,
                                                     __attribute__((unused)) BOOL *stop) {
-      self.identifiersToBooks[key] = [[NYPLBook alloc] initWithDictionary:value];
+      NYPLMyBooksRecord *const record = [NYPLMyBooksRecord recordWithDictionary:value];
+      
+      // If a download was still in progress when we quit, it must now be failed.
+      if(record.state == NYPLMyBooksStateDownloading) {
+        self.identifiersToRecords[key] = [record recordWithState:NYPLMyBooksStateDownloadFailed];
+      } else {
+        self.identifiersToRecords[key] = record;
+      }
     }];
     
     [self broadcastChange];
@@ -164,14 +179,20 @@ static NSString *const RegistryFilename = @"registry.json";
   }
 }
 
-- (void)addBook:(NYPLBook *const)book
+- (void)addBook:(NYPLBook *const)book state:(NYPLMyBooksState)state
 {
   if(!book) {
     @throw NSInvalidArgumentException;
   }
   
+  if(state == NYPLMyBooksStateUnregistered) {
+    @throw NSInvalidArgumentException;
+  }
+  
   @synchronized(self) {
-    self.identifiersToBooks[book.identifier] = book;
+    self.identifiersToRecords[book.identifier] = [[NYPLMyBooksRecord alloc]
+                                                  initWithBook:book
+                                                  state:state];
     [self broadcastChange];
   }
 }
@@ -183,8 +204,9 @@ static NSString *const RegistryFilename = @"registry.json";
   }
   
   @synchronized(self) {
-    if(self.identifiersToBooks[book.identifier]) {
-      self.identifiersToBooks[book.identifier] = book;
+    NYPLMyBooksRecord *const record = self.identifiersToRecords[book.identifier];
+    if(record) {
+      self.identifiersToRecords[book.identifier] = [record recordWithBook:book];
       [self broadcastChange];
     }
   }
@@ -193,14 +215,40 @@ static NSString *const RegistryFilename = @"registry.json";
 - (NYPLBook *)bookForIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
-    return self.identifiersToBooks[identifier];
+    return ((NYPLMyBooksRecord *) self.identifiersToRecords[identifier]).book;
+  }
+}
+
+- (NYPLMyBooksState)stateForIdentifier:(NSString *)identifier
+{
+  @synchronized(self) {
+    NYPLMyBooksRecord *const record = self.identifiersToRecords[identifier];
+    if(record) {
+      return record.state;
+    } else {
+      return NYPLMyBooksStateUnregistered;
+    }
+  }
+}
+
+- (void)setState:(NYPLMyBooksState)state forIdentifier:(NSString *)identifier
+{
+  @synchronized(self) {
+    NYPLMyBooksRecord *const record = self.identifiersToRecords[identifier];
+    if(!record) {
+      @throw NSInvalidArgumentException;
+    }
+    
+    self.identifiersToRecords[identifier] = [record recordWithState:state];
+    
+    [self broadcastChange];
   }
 }
 
 - (void)removeBookForIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
-    [self.identifiersToBooks removeObjectForKey:identifier];
+    [self.identifiersToRecords removeObjectForKey:identifier];
     [self broadcastChange];
   }
 }
@@ -210,11 +258,11 @@ static NSString *const RegistryFilename = @"registry.json";
   @synchronized(self) {
     NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
     
-    [self.identifiersToBooks
+    [self.identifiersToRecords
      enumerateKeysAndObjectsUsingBlock:^(NSString *const identifier,
-                                         NYPLBook *const book,
+                                         NYPLMyBooksRecord *const record,
                                          __attribute__((unused)) BOOL *stop) {
-      dictionary[identifier] = [book dictionaryRepresentation];
+      dictionary[identifier] = [record dictionaryRepresentation];
     }];
     
     return dictionary;
@@ -223,12 +271,21 @@ static NSString *const RegistryFilename = @"registry.json";
 
 - (NSUInteger)count
 {
-  return self.identifiersToBooks.count;
+  return self.identifiersToRecords.count;
 }
 
 - (NSArray *)allBooksSortedByBlock:(NSComparisonResult (^)(NYPLBook *a, NYPLBook *b))block
 {
-  return [[self.identifiersToBooks allValues] sortedArrayUsingComparator:block];
+  NSMutableArray *const books = [NSMutableArray arrayWithCapacity:self.identifiersToRecords.count];
+  
+  [self.identifiersToRecords
+   enumerateKeysAndObjectsUsingBlock:^(__attribute__((unused)) NSString *identifier,
+                                       NYPLMyBooksRecord *const record,
+                                       __attribute__((unused)) BOOL *stop) {
+     [books addObject:record.book];
+   }];
+  
+  return [books sortedArrayUsingComparator:block];
 }
 
 @end

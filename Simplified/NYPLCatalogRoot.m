@@ -5,6 +5,7 @@
 #import "NYPLBook.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogSubsectionLink.h"
+#import "NYPLMyBooksRegistry.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
@@ -143,6 +144,7 @@
               NYPLLOG(@"Failed to create book from entry.");
               continue;
             }
+            [[NYPLMyBooksRegistry sharedRegistry] updateBook:book];
             [books addObject:book];
           }
           
