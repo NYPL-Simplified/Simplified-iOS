@@ -6,6 +6,7 @@
 
 @interface NYPLMyBooksDownloadCenter () <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate>
 
+@property (nonatomic) BOOL broadcastScheduled;
 @property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadProgress;
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
@@ -90,6 +91,29 @@
   return [self.bookIdentifierToDownloadProgress[bookIdentifier] doubleValue];
 }
 
+- (void)broadcastUpdate
+{
+  // We avoid issuing redundant notifications to prevent overwhelming UI updates.
+  if(self.broadcastScheduled) return;
+  
+  self.broadcastScheduled = YES;
+  
+  [NSTimer scheduledTimerWithTimeInterval:0.2
+                                   target:self
+                                 selector:@selector(broadcastUpdateNow)
+                                 userInfo:nil
+                                  repeats:NO];
+}
+
+- (void)broadcastUpdateNow
+{
+  self.broadcastScheduled = NO;
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLMyBooksDownloadCenterDidChange
+   object:self];
+}
+
 #pragma mark NSURLSessionDownloadDelegate
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
@@ -113,9 +137,7 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
     self.bookIdentifierToDownloadProgress[book.identifier] =
       [NSNumber numberWithDouble:(totalBytesWritten / (double) totalBytesExpectedToWrite)];
     
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLMyBooksDownloadCenterDidChange
-     object:self];
+    [self broadcastUpdate];
   }
 }
 
@@ -133,9 +155,7 @@ didFinishDownloadingToURL:(__attribute__((unused)) NSURL *)location
   [[NYPLMyBooksRegistry sharedRegistry]
    setState:NYPLMyBooksStateDownloadSuccessful forIdentifier:book.identifier];
   
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLMyBooksDownloadCenterDidChange
-   object:self];
+  [self broadcastUpdate];
 }
 
 #pragma mark NSURLSessionTaskDelegate
@@ -153,9 +173,7 @@ didCompleteWithError:(NSError *)error
     [[NYPLMyBooksRegistry sharedRegistry]
      setState:NYPLMyBooksStateDownloadFailed forIdentifier:book.identifier];
     
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLMyBooksDownloadCenterDidChange
-     object:self];
+    [self broadcastUpdate];
   }
 }
 
