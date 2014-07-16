@@ -33,6 +33,9 @@ static NSString *const NYPLBookRegistryDidChange = @"NYPLBookRegistryDidChange";
 // Returns the book for a given identifier if it is registered, else nil.
 - (NYPLBook *)bookForIdentifier:(NSString *)identifier;
 
+// Sets the state for a book previously registered given its identifier.
+- (void)setState:(NYPLMyBooksState)state forIdentifier:(NSString *)identifier;
+
 // Returns the state of a book for a given identifier.
 - (NYPLMyBooksState)stateForIdentifier:(NSString *)identifier;
 

@@ -10,9 +10,6 @@
 
 static NSString *const RegistryFilename = @"registry.json";
 
-static NSString *const BookMetadataKey = @"metadata";
-static NSString *const StateKey = @"state";
-
 @implementation NYPLMyBooksRegistry
 
 + (NYPLMyBooksRegistry *)sharedRegistry
@@ -102,7 +99,14 @@ static NSString *const StateKey = @"state";
     [dictionary enumerateKeysAndObjectsUsingBlock:^(id const key,
                                                     id const value,
                                                     __attribute__((unused)) BOOL *stop) {
-      self.identifiersToRecords[key] = [NYPLMyBooksRecord recordWithDictionary:value];
+      NYPLMyBooksRecord *const record = [NYPLMyBooksRecord recordWithDictionary:value];
+      
+      // If a download was still in progress when we quit, it must now be failed.
+      if(record.state == NYPLMyBooksStateDownloading) {
+        self.identifiersToRecords[key] = [record recordWithState:NYPLMyBooksStateDownloadFailed];
+      } else {
+        self.identifiersToRecords[key] = record;
+      }
     }];
     
     [self broadcastChange];
@@ -224,6 +228,20 @@ static NSString *const StateKey = @"state";
     } else {
       return NYPLMyBooksStateUnregistered;
     }
+  }
+}
+
+- (void)setState:(NYPLMyBooksState)state forIdentifier:(NSString *)identifier
+{
+  @synchronized(self) {
+    NYPLMyBooksRecord *const record = self.identifiersToRecords[identifier];
+    if(!record) {
+      @throw NSInvalidArgumentException;
+    }
+    
+    self.identifiersToRecords[identifier] = [record recordWithState:state];
+    
+    [self broadcastChange];
   }
 }
 

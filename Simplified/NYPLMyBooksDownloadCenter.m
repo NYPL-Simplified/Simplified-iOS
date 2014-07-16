@@ -12,8 +12,6 @@
 
 @end
 
-static NSString *const sessionIdentifier = @"NYPLMyBooksDownloadCenterSession";
-
 @implementation NYPLMyBooksDownloadCenter
 
 + (NYPLMyBooksDownloadCenter *)sharedDownloadCenter
@@ -39,7 +37,7 @@ static NSString *const sessionIdentifier = @"NYPLMyBooksDownloadCenterSession";
   if(!self) return nil;
   
   NSURLSessionConfiguration *const configuration =
-    [NSURLSessionConfiguration backgroundSessionConfiguration:sessionIdentifier];
+    [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
   self.bookIdentifierToDownloadProgress = [NSMutableDictionary dictionary];
   
@@ -57,6 +55,21 @@ static NSString *const sessionIdentifier = @"NYPLMyBooksDownloadCenterSession";
 
 - (void)startDownloadForBook:(NYPLBook *const)book
 {
+  NYPLMyBooksState const state = [[NYPLMyBooksRegistry sharedRegistry]
+                                   stateForIdentifier:book.identifier];
+
+  switch(state) {
+    case NYPLMyBooksStateUnregistered:
+      break;
+    case NYPLMyBooksStateDownloading:
+      // Ignore double button presses, et cetera.
+      return;
+    case NYPLMyBooksStateDownloadFailed:
+      break;
+    case NYPLMyBooksStateDownloadSuccessful:
+      @throw NSInvalidArgumentException;
+  }
+  
   self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:0.0];
   
   // TODO: Use real open access URL.
@@ -113,9 +126,12 @@ didFinishDownloadingToURL:(__attribute__((unused)) NSURL *)location
   NSNumber *const key = [NSNumber numberWithUnsignedLong:downloadTask.taskIdentifier];
   NYPLBook *const book = self.taskIdentifierToBook[key];
   
-  // TODO: Copy file to permanent loction here.
+  // TODO: Copy file to permanent location here.
   
   self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:1.0];
+  
+  [[NYPLMyBooksRegistry sharedRegistry]
+   setState:NYPLMyBooksStateDownloadSuccessful forIdentifier:book.identifier];
   
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLMyBooksDownloadCenterDidChange
@@ -133,6 +149,9 @@ didCompleteWithError:(NSError *)error
   
   if(error) {
     self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:1.0];
+    
+    [[NYPLMyBooksRegistry sharedRegistry]
+     setState:NYPLMyBooksStateDownloadFailed forIdentifier:book.identifier];
     
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NYPLMyBooksDownloadCenterDidChange

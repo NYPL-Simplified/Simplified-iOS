@@ -1,10 +1,6 @@
 #import "NYPLBook.h"
 #import "NYPLMyBooksState.h"
 
-typedef NS_ENUM(NSInteger, NYPLMyBooksRecordState) {
-  NYPLMyBooksRecordStateDownloading
-};
-
 @interface NYPLMyBooksRecord : NSObject
 
 @property (nonatomic, readonly) NYPLBook *book;
