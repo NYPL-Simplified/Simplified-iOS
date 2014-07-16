@@ -25,6 +25,8 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 
 @property (nonatomic) UILabel *author;
 @property (nonatomic) UIImageView *cover;
+@property (nonatomic) UIButton *downloadButton;
+@property (nonatomic) UIProgressView *downloadProgressView;
 @property (nonatomic) UILabel *title;
 @property (nonatomic) NSURL *coverURL;
 
@@ -52,12 +54,23 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   authorFrame.origin = CGPointMake(100, CGRectGetMaxY(titleFrame) + 5);
   authorFrame.size.width = CGRectGetWidth(self.frame) - 105;
   self.author.frame = authorFrame;
+  
+  [self.downloadButton sizeToFit];
+  CGRect downloadButtonFrame = self.downloadButton.frame;
+  downloadButtonFrame.origin = CGPointMake(100, CGRectGetMaxY(authorFrame) + 5);
+  self.downloadButton.frame = downloadButtonFrame;
+  
+  CGRect downloadProgressViewFrame = self.downloadProgressView.frame;
+  downloadProgressViewFrame.origin = CGPointMake(100, CGRectGetMaxY(authorFrame) + 5);
+  self.downloadProgressView.frame = downloadProgressViewFrame;
 }
 
 #pragma mark -
 
 - (void)setBook:(NYPLBook *const)book
 {
+  _book = book;
+  
   if(!self.author) {
     self.author = [[UILabel alloc] init];
     [self.contentView addSubview:self.author];
@@ -68,6 +81,21 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
     [self.contentView addSubview:self.cover];
   }
   
+  if(!self.downloadButton) {
+    self.downloadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [self.downloadButton setTitle:@"Download" forState:UIControlStateNormal];
+    [self.downloadButton addTarget:self
+                            action:@selector(didSelectDownload)
+                  forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:self.downloadButton];
+  }
+  
+  if(!self.downloadProgressView) {
+    self.downloadProgressView = [[UIProgressView alloc]
+                                 initWithProgressViewStyle:UIProgressViewStyleDefault];
+    [self.contentView addSubview:self.downloadProgressView];
+  }
+  
   if(!self.title) {
     self.title = [[UILabel alloc] init];
     [self.contentView addSubview:self.title];
@@ -76,6 +104,7 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   self.author.text = [book.authorStrings componentsJoinedByString:@"; "];
   self.cover.image = nil;
   self.coverURL = book.imageURL;
+  self.state = NYPLMyBooksStateUnregistered;
   self.title.text = book.title;
   
   // TODO: The approach below will keep showing old covers across launches even if they've been
@@ -107,6 +136,42 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   }
   
   [self setNeedsLayout];
+}
+
+- (void)setDownloadProgress:(double)downloadProgress
+{
+  _downloadProgress = downloadProgress;
+  
+  self.downloadProgressView.progress = downloadProgress;
+}
+
+- (void)setState:(NYPLMyBooksState const)state
+{
+  _state = state;
+  
+  switch(state) {
+    case NYPLMyBooksStateUnregistered:
+      self.downloadButton.hidden = NO;
+      self.downloadProgressView.hidden = YES;
+      break;
+    case NYPLMyBooksStateDownloading:
+      self.downloadButton.hidden = YES;
+      self.downloadProgressView.hidden = NO;
+      break;
+    case NYPLMyBooksStateDownloadFailed:
+      self.downloadButton.hidden = YES;
+      self.downloadProgressView.hidden = YES;
+      break;
+    case NYPLMyBooksStateDownloadSuccessful:
+      self.downloadButton.hidden = YES;
+      self.downloadProgressView.hidden = YES;
+      break;
+  }
+}
+
+- (void)didSelectDownload
+{
+  [self.delegate didSelectDownloadForBookCell:self];
 }
 
 @end

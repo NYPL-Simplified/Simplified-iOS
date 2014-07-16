@@ -6,7 +6,9 @@
 @interface NYPLBookDetailView ()
 
 @property (nonatomic) UILabel *authors;
+@property (nonatomic) NYPLBook *book;
 @property (nonatomic) UIImageView *cover;
+@property (nonatomic) UIButton *downloadButton;
 @property (nonatomic) UILabel *title;
 
 @end
@@ -33,6 +35,8 @@ static CGFloat const mainTextPaddingRight = 10.0;
   
   self.backgroundColor = [UIColor whiteColor];
   
+  self.book = book;
+  
   self.authors = [[UILabel alloc] init];
   self.authors.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
   self.authors.font = [UIFont fontWithName:@"AvenirNext-Medium" size:12.0];
@@ -58,6 +62,16 @@ static CGFloat const mainTextPaddingRight = 10.0;
      }];
   }
 
+  self.downloadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+  [self.downloadButton setTitle:@"Download" forState:UIControlStateNormal];
+  [self.downloadButton addTarget:self
+                          action:@selector(didSelectDownload)
+                forControlEvents:UIControlEventTouchUpInside];
+  [self addSubview:self.downloadButton];
+
+  
+  [self addSubview:self.downloadButton];
+  
   self.title = [[UILabel alloc] init];
   self.title.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
   self.title.font = [UIFont fontWithName:@"AvenirNext-Bold" size:14.0];
@@ -66,6 +80,11 @@ static CGFloat const mainTextPaddingRight = 10.0;
   [self addSubview:self.title];
 
   return self;
+}
+
+- (void)didSelectDownload
+{
+  [self.detailViewDelegate didSelectDownloadForDetailView:self];
 }
 
 #pragma mark UIView
@@ -89,6 +108,14 @@ static CGFloat const mainTextPaddingRight = 10.0;
     CGFloat const w = CGRectGetWidth(self.title.frame);
     CGFloat const h = [self.title sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
     self.authors.frame = CGRectMake(x, y, w, h);
+  }
+  
+  {
+    [self.downloadButton sizeToFit];
+    CGRect frame = self.downloadButton.frame;
+    frame.origin.x = CGRectGetMinX(self.authors.frame);
+    frame.origin.y = CGRectGetMaxY(self.authors.frame) + mainTextPaddingTop;
+    self.downloadButton.frame = frame;
   }
 }
 

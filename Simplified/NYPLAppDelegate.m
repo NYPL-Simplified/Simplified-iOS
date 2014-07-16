@@ -1,4 +1,4 @@
-#import "NYPLBookRegistry.h"
+#import "NYPLMyBooksRegistry.h"
 #import "NYPLRootTabBarController.h"
 
 #import "NYPLAppDelegate.h"
@@ -19,7 +19,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 
 - (void)applicationDidEnterBackground:(__attribute__((unused)) UIApplication *)application
 {
-  [[NYPLBookRegistry sharedRegistry] save];
+  [[NYPLMyBooksRegistry sharedRegistry] save];
 }
 
 @end

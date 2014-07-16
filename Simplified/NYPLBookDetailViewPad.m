@@ -1,8 +1,9 @@
 #import "NYPLBookDetailView.h"
+#import "NYPLBookDetailViewDelegate.h"
 
-#import "NYPLBookDetailViewiPad.h"
+#import "NYPLBookDetailViewPad.h"
 
-@interface NYPLBookDetailViewiPad ()
+@interface NYPLBookDetailViewPad () <NYPLBookDetailViewDelegate>
 
 @property (nonatomic) NYPLBookDetailView *bookDetailView;
 @property (nonatomic) UIButton *closeButton;
@@ -13,7 +14,7 @@ static CGFloat const bookDetailViewiPadAnimationSeconds = 0.333;
 static CGFloat const bookDetailViewWidth = 380;
 static CGFloat const bookDetailViewHeight = 440;
 
-@implementation NYPLBookDetailViewiPad
+@implementation NYPLBookDetailViewPad
 
 - (instancetype)initWithBook:(NYPLBook *const)book
 {
@@ -31,6 +32,9 @@ static CGFloat const bookDetailViewHeight = 440;
   self.closeButton.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                        UIViewAutoresizingFlexibleHeight);
   self.closeButton.exclusiveTouch = YES;
+  [self.closeButton addTarget:self
+                       action:@selector(didSelectClose)
+             forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.closeButton];
   
   self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:book];
@@ -39,15 +43,19 @@ static CGFloat const bookDetailViewHeight = 440;
                                           UIViewAutoresizingFlexibleRightMargin |
                                           UIViewAutoresizingFlexibleTopMargin |
                                           UIViewAutoresizingFlexibleBottomMargin);
+  self.bookDetailView.detailViewDelegate = self;
   [self addSubview:self.bookDetailView];
   
   return self;
 }
 
-- (void)animateDisplay
+- (void)animateDisplayInView:(UIView *)view
 {
+  [view addSubview:self];
+  
   [self setFrame:self.superview.bounds];
   self.bookDetailView.center = self.center;
+  self.bookDetailView.detailViewDelegate = self;
   
   [UIView animateWithDuration:bookDetailViewiPadAnimationSeconds animations:^{
     self.alpha = 1.0;
@@ -65,6 +73,18 @@ static CGFloat const bookDetailViewHeight = 440;
                                  selector:@selector(removeFromSuperview)
                                  userInfo:nil
                                   repeats:NO];
+}
+
+- (void)didSelectClose
+{
+  [self.delegate didSelectCloseForBookDetailViewPad:self];
+}
+
+#pragma mark NYPLBookDetailViewDelegate
+
+- (void)didSelectDownloadForDetailView:(NYPLBookDetailView *const)detailView
+{
+  [self.delegate didSelectDownloadForDetailView:detailView];
 }
 
 @end

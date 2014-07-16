@@ -1,6 +1,7 @@
 #import "NYPLBookCell.h"
-#import "NYPLBookDetailViewController.h"
-#import "NYPLBookRegistry.h"
+#import "NYPLBookDetailViewControllerPhone.h"
+#import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLMyBooksRegistry.h"
 
 #import "NYPLMyBooksViewController.h"
 
@@ -28,10 +29,22 @@ static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
   [self updateBooks];
   
   [[NSNotificationCenter defaultCenter]
-   addObserver:self
-   selector:@selector(bookRegistryDidChange:)
-   name:NYPLBookRegistryDidChange
-   object:nil];
+   addObserverForName:NYPLBookRegistryDidChange
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(__attribute__((unused)) NSNotification *note) {
+     [self updateBooks];
+     [self.collectionView reloadData];
+   }];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserverForName:NYPLMyBooksDownloadCenterDidChange
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(__attribute__((unused)) NSNotification *note) {
+     [self updateBooks];
+     [self.collectionView reloadData];
+   }];
   
   return self;
 }
@@ -116,7 +129,12 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
   
   assert([cell isKindOfClass:[NYPLBookCell class]]);
   
-  [cell setBook:self.books[indexPath.row]];
+  NYPLBook *const book = self.books[indexPath.row];
+  
+  cell.book = book;
+  cell.state = [[NYPLMyBooksRegistry sharedRegistry] stateForIdentifier:book.identifier];
+  cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                           downloadProgressForBookIdentifier:book.identifier];
   
   return cell;
 }
@@ -125,16 +143,10 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 
 - (void)updateBooks
 {
-  self.books = [[NYPLBookRegistry sharedRegistry]
+  self.books = [[NYPLMyBooksRegistry sharedRegistry]
                 allBooksSortedByBlock:^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
                   return [a.title compare:b.title options:NSCaseInsensitiveSearch];
                 }];
-}
-
-- (void)bookRegistryDidChange:(__attribute__((unused)) NSNotification *)notification
-{
-  [self updateBooks];
-  [self.collectionView reloadData];
 }
 
 @end
