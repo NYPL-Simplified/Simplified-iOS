@@ -30,7 +30,7 @@
   NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key];
   
   NSMutableDictionary *const dictionary = [self defaultDictionary];
-  dictionary[(__bridge __strong id) kSecAttrGeneric] = keyData;
+  dictionary[(__bridge __strong id) kSecAttrAccount] = keyData;
   dictionary[(__bridge __strong id) kSecMatchLimit] = (__bridge id) kSecMatchLimitOne;
   dictionary[(__bridge __strong id) kSecReturnData] = (__bridge id) kCFBooleanTrue;
   
@@ -47,9 +47,9 @@
 {
   NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key];
   NSData *const valueData = [NSKeyedArchiver archivedDataWithRootObject:value];
-
+  
   NSMutableDictionary *const dictionary = [self defaultDictionary];
-  dictionary[(__bridge __strong id) kSecAttrGeneric] = keyData;
+  dictionary[(__bridge __strong id) kSecAttrAccount] = keyData;
   
   if([self objectForKey:key]) {
     NSMutableDictionary *const updateDictionary = [NSMutableDictionary dictionary];
@@ -67,7 +67,7 @@
   NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key];
   
   NSMutableDictionary *const dictionary = [self defaultDictionary];
-  dictionary[(__bridge __strong id) kSecAttrGeneric] = keyData;
+  dictionary[(__bridge __strong id) kSecAttrAccount] = keyData;
   
   SecItemDelete((__bridge CFDictionaryRef) dictionary);
 }
