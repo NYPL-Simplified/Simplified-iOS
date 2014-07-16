@@ -42,6 +42,14 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
      [self.collectionView reloadData];
    }];
   
+  [[NSNotificationCenter defaultCenter]
+   addObserverForName:NYPLMyBooksDownloadCenterDidChange
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(__attribute__((unused)) NSNotification *note) {
+     [self.collectionView reloadData];
+   }];
+  
   return self;
 }
 
@@ -160,6 +168,8 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   cell.book = book;
   cell.delegate = self;
   cell.state = [[NYPLMyBooksRegistry sharedRegistry] stateForIdentifier:book.identifier];
+  cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                           downloadProgressForBookIdentifier:book.identifier];
   
   [self.category prepareForBookIndex:indexPath.row];
   
