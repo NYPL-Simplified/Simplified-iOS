@@ -1,3 +1,6 @@
+#import "NYPLKeychain.h"
+#import "NYPLSettings.h"
+
 #import "NYPLSettingsViewController.h"
 
 @interface NYPLSettingsViewController ()
@@ -46,14 +49,30 @@
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
 {
+  NSString *const barcode = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsBarcodeKey];
+  if(barcode) {
+    self.barcodeField.text = barcode;
+  }
   
+  NSString *const PIN = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsPINKey];
+  if(PIN) {
+    self.PINField.text = PIN;
+  }
 }
 
 #pragma mark -
 
 - (void)fieldsDidChange
 {
-  NSLog(@"%@ : %@", self.barcodeField.text, self.PINField.text);
+  NSString *const barcode = self.barcodeField.text;
+  if(barcode && [barcode length] > 0) {
+    [[NYPLKeychain sharedKeychain] setObject:barcode forKey:NYPLSettingsBarcodeKey];
+  }
+  
+  NSString *const PIN = self.PINField.text;
+  if(PIN && [PIN length] > 0) {
+    [[NYPLKeychain sharedKeychain] setObject:PIN forKey:NYPLSettingsPINKey];
+  }
 }
 
 @end
