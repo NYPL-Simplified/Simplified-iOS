@@ -6,6 +6,7 @@
 
 @interface NYPLMyBooksDownloadCenter () <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate>
 
+@property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadProgress;
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
 
@@ -40,6 +41,8 @@ static NSString *const sessionIdentifier = @"NYPLMyBooksDownloadCenterSession";
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration backgroundSessionConfiguration:sessionIdentifier];
   
+  self.bookIdentifierToDownloadProgress = [NSMutableDictionary dictionary];
+  
   self.session = [NSURLSession
                   sessionWithConfiguration:configuration
                   delegate:self
@@ -54,9 +57,10 @@ static NSString *const sessionIdentifier = @"NYPLMyBooksDownloadCenterSession";
 
 - (void)startDownloadForBook:(NYPLBook *const)book
 {
-  [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloading];
+  self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:0.0];
   
-  NSURL *const testURL = [NSURL URLWithString:@"http://i.imgur.com/pLhJIXXXcm.gif"];
+  // TODO: Use real open access URL.
+  NSURL *const testURL = [NSURL URLWithString:@"http://i.imgur.com/pLhJIcm.gif"];
   
   NSURLSessionDownloadTask *const task =
     [self.session downloadTaskWithURL:testURL];
@@ -64,24 +68,13 @@ static NSString *const sessionIdentifier = @"NYPLMyBooksDownloadCenterSession";
   self.taskIdentifierToBook[[NSNumber numberWithUnsignedLong:task.taskIdentifier]] = book;
   
   [task resume];
+  
+  [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloading];
 }
 
-- (void)broadcastUpdateForBook:(NYPLBook *const)book
-                        status:(NYPLMyBooksDownloadCenterStatus)status
-                      progress:(double const)progress
-
+- (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier
 {
-  NSNumber *const progressNumber = [NSNumber numberWithDouble:progress];
-  NSNumber *const statusNumber = [NSNumber numberWithInteger:status];
-  
-  NSDictionary *const userInfo = @{NYPLMyBooksDownloadCenterNotificationBookKey: book,
-                                   NYPLMyBooksDownloadCenterNotificationProgressKey: progressNumber,
-                                   NYPLMyBooksDownloadCenterNotificationStatusKey: statusNumber};
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLMyBooksDownloadCenterNotification
-   object:self
-   userInfo:userInfo];
+  return [self.bookIdentifierToDownloadProgress[bookIdentifier] doubleValue];
 }
 
 #pragma mark NSURLSessionDownloadDelegate
@@ -104,9 +97,12 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
   NYPLBook *const book = self.taskIdentifierToBook[key];
   
   if(totalBytesExpectedToWrite > 0) {
-    [self broadcastUpdateForBook:book
-                          status:NYPLMyBooksDownloadCenterStatusDownloading
-                        progress:(totalBytesWritten / (double) totalBytesExpectedToWrite)];
+    self.bookIdentifierToDownloadProgress[book.identifier] =
+      [NSNumber numberWithDouble:(totalBytesWritten / (double) totalBytesExpectedToWrite)];
+    
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLMyBooksDownloadCenterDidChange
+     object:self];
   }
 }
 
@@ -119,9 +115,11 @@ didFinishDownloadingToURL:(__attribute__((unused)) NSURL *)location
   
   // TODO: Copy file to permanent loction here.
   
-  [self broadcastUpdateForBook:book
-                        status:NYPLMyBooksDownloadCenterStatusSucceeded
-                      progress:1.0];
+  self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:1.0];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLMyBooksDownloadCenterDidChange
+   object:self];
 }
 
 #pragma mark NSURLSessionTaskDelegate
@@ -134,9 +132,11 @@ didCompleteWithError:(NSError *)error
   NYPLBook *const book = self.taskIdentifierToBook[key];
   
   if(error) {
-    [self broadcastUpdateForBook:book
-                          status:NYPLMyBooksDownloadCenterStatusFailed
-                        progress:1.0];
+    self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:1.0];
+    
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLMyBooksDownloadCenterDidChange
+     object:self];
   }
 }
 

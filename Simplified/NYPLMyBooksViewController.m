@@ -1,5 +1,6 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewControllerPhone.h"
+#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
 
 #import "NYPLMyBooksViewController.h"
@@ -29,6 +30,15 @@ static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
   
   [[NSNotificationCenter defaultCenter]
    addObserverForName:NYPLBookRegistryDidChange
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(__attribute__((unused)) NSNotification *note) {
+     [self updateBooks];
+     [self.collectionView reloadData];
+   }];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserverForName:NYPLMyBooksDownloadCenterDidChange
    object:nil
    queue:[NSOperationQueue mainQueue]
    usingBlock:^(__attribute__((unused)) NSNotification *note) {
@@ -121,8 +131,10 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
   
   NYPLBook *const book = self.books[indexPath.row];
   
-  [cell setBook:book];
-  [cell setState:[[NYPLMyBooksRegistry sharedRegistry] stateForIdentifier:book.identifier]];
+  cell.book = book;
+  cell.state = [[NYPLMyBooksRegistry sharedRegistry] stateForIdentifier:book.identifier];
+  cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                           downloadProgressForBookIdentifier:book.identifier];
   
   return cell;
 }
