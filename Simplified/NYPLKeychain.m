@@ -17,7 +17,7 @@
   return sharedKeychain;
 }
 
-- (NSMutableDictionary *)defaultDictionary
+- (NSMutableDictionary *const)defaultDictionary
 {
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
   dictionary[(__bridge __strong id) kSecClass] = (__bridge id) kSecClassGenericPassword;
@@ -25,7 +25,7 @@
   return dictionary;
 }
 
-- (id)objectForKey:(NSString *)key
+- (id)objectForKey:(NSString *const)key
 {
   NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key];
   
@@ -43,7 +43,7 @@
   return [NSKeyedUnarchiver unarchiveObjectWithData:result];
 }
 
-- (void)setObject:(id)value forKey:(NSString *)key
+- (void)setObject:(id const)value forKey:(NSString *const)key
 {
   NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key];
   NSData *const valueData = [NSKeyedArchiver archivedDataWithRootObject:value];
@@ -62,7 +62,7 @@
   }
 }
 
-- (void)removeObjectForKey:(NSString *)key
+- (void)removeObjectForKey:(NSString *const)key
 {
   NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key];
   
