@@ -72,19 +72,14 @@
     case NYPLMyBooksStateDownloadSuccessful:
       @throw NSInvalidArgumentException;
   }
+
+  NSString *const barcode = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsBarcodeKey];
+  NSString *const PIN = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsPINKey];
   
   self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:0.0];
   
   NSMutableURLRequest *const request = [NSMutableURLRequest
                                         requestWithURL:book.acquisition.openAccess];
-  
-  NSString *const barcode = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsBarcodeKey];
-  NSString *const PIN = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsPINKey];
-  
-  if(!barcode || !PIN) {
-    // TODO: Pop up something so the user can set these things.
-    return;
-  }
   
   NSData *const authorizationData = [[NSString stringWithFormat:@"%@:%@", barcode, PIN]
                                      dataUsingEncoding:NSUTF8StringEncoding];
