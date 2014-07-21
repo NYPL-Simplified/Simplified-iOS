@@ -65,13 +65,15 @@
 - (void)fieldsDidChange
 {
   NSString *const barcode = self.barcodeField.text;
-  if(barcode && [barcode length] > 0) {
-    [[NYPLKeychain sharedKeychain] setObject:barcode forKey:NYPLSettingsBarcodeKey];
+  if(barcode) {
+    [[NYPLKeychain sharedKeychain] setObject:[barcode length] > 0 ? barcode : nil
+                                      forKey:NYPLSettingsBarcodeKey];
   }
   
   NSString *const PIN = self.PINField.text;
-  if(PIN && [PIN length] > 0) {
-    [[NYPLKeychain sharedKeychain] setObject:PIN forKey:NYPLSettingsPINKey];
+  if(PIN) {
+    [[NYPLKeychain sharedKeychain] setObject:[PIN length] > 0 ? PIN : nil
+                                      forKey:NYPLSettingsPINKey];
   }
 }
 
