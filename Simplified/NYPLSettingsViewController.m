@@ -3,7 +3,7 @@
 
 #import "NYPLSettingsViewController.h"
 
-@interface NYPLSettingsViewController ()
+@interface NYPLSettingsViewController () <UITextFieldDelegate>
 
 @property (nonatomic) UITextField *barcodeField;
 @property (nonatomic) UITextField *PINField;
@@ -31,6 +31,7 @@
   self.view.backgroundColor = [UIColor lightGrayColor];
   
   self.barcodeField = [[UITextField alloc] initWithFrame:CGRectMake(5, 69, 310, 31)];
+  self.barcodeField.delegate = self;
   self.barcodeField.backgroundColor = [UIColor whiteColor];
   self.barcodeField.placeholder = @"Barcode";
   [self.barcodeField addTarget:self
@@ -39,6 +40,7 @@
   [self.view addSubview:self.barcodeField];
   
   self.PINField = [[UITextField alloc] initWithFrame:CGRectMake(5, 69 + 31 + 5, 310, 31)];
+  self.PINField.delegate = self;
   self.PINField.backgroundColor = [UIColor whiteColor];
   self.PINField.placeholder = @"PIN";
   [self.PINField addTarget:self
@@ -58,6 +60,18 @@
   if(PIN) {
     self.PINField.text = PIN;
   }
+}
+
+#pragma mark UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *const)textField {
+  if(textField == self.barcodeField) {
+    [self.PINField becomeFirstResponder];
+  } else {
+    [self.PINField resignFirstResponder];
+  }
+  
+  return YES;
 }
 
 #pragma mark -
