@@ -2,4 +2,6 @@
 
 + (NSURL *)mainFeedURL;
 
++ (UIColor *)mainColor;
+
 @end

@@ -23,6 +23,13 @@
 
 "MyBooksViewControllerTitle" = "My Books";
 
+// NYPLSettingsCredentialView
+
+"NYPLSettingsCredentialViewBarcode" = "Barcode";
+"NYPLSettingsCredentialViewMessage" = "You need a library card to download this book.";
+"NYPLSettingsCredentialViewPIN" = "PIN";
+"NYPLSettingsCredentialViewScan" = "Scan Barcode";
+
 // NYPLSettingsViewController
 
 "SettingsViewControllerTitle" = "Settings";

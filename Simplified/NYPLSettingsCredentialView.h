@@ -1,13 +1,11 @@
-typedef NS_ENUM(NSInteger, NYPLSettingsCredentialViewMessage) {
-  NYPLSettingsCredentialViewMessageCardRequired,
-  NYPLSettingsCredentialViewMessageCardOrPINInvalid
-};
-
 @interface NYPLSettingsCredentialView : UIView
 
-- (id)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
-
-// designated initializer
-- (instancetype)init;
+@property (nonatomic) IBOutlet UITextField *barcodeField;
+@property (nonatomic) IBOutlet UILabel *barcodeLabel;
+@property (nonatomic) IBOutlet UILabel *messageLabel;
+@property (nonatomic) IBOutlet UINavigationItem *navigationItem;
+@property (nonatomic) IBOutlet UITextField *PINField;
+@property (nonatomic) IBOutlet UILabel *PINLabel;
+@property (nonatomic) IBOutlet UIButton *scanButton;
 
 @end

@@ -4,6 +4,7 @@
 #import "NYPLCatalogCategory.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
+#import "NYPLSettingsCredentialViewController.h"
 
 #import "NYPLCatalogCategoryViewController.h"
 
@@ -227,9 +228,12 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 
 #pragma mark NYPLBookCellDelegate
 
-- (void)didSelectDownloadForBookCell:(NYPLBookCell *const)cell
+- (void)didSelectDownloadForBookCell:(__attribute__((unused)) NYPLBookCell *const)cell
 {
-  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:cell.book];
+  [[NYPLSettingsCredentialViewController sharedController]
+   requestCredentialsFromViewController:self];
+  
+  // [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:cell.book];
 }
 
 #pragma mark -
