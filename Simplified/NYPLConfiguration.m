@@ -4,19 +4,18 @@
 
 + (void)initialize
 {
-  [[UIBarButtonItem appearance]
-   setTitleTextAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"AvenirNext-Medium"
-                                                                 size:18.0]}
-   forState:UIControlStateNormal];
-  
-  [[UIBarButtonItem appearance] setTintColor:[self mainColor]];
-  
-  [[[UIButton appearance] titleLabel] setFont:[UIFont fontWithName:@"AvenirNext-Medium" size:18.0]];
   [[UIButton appearance] setTintColor:[self mainColor]];
   
   [[UINavigationBar appearance]
    setTitleTextAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"AvenirNext-Bold"
                                                                  size:18.0]}];
+  
+  [[UINavigationBar appearance] setTintColor:[self mainColor]];
+  
+  [[UIBarButtonItem appearance]
+   setTitleTextAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"AvenirNext-Medium"
+                                                                 size:18.0]}
+   forState:UIControlStateNormal];
   
   [[UITabBarItem appearance]
    setTitleTextAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"AvenirNext-Medium"
