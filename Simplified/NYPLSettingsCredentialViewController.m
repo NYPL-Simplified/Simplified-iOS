@@ -4,7 +4,7 @@
 
 @interface NYPLSettingsCredentialViewController ()
 
-@property (nonatomic) NYPLSettingsCredentialView *credentialView;
+@property (nonatomic, readonly) NYPLSettingsCredentialView *credentialView;
 @property (nonatomic) UIViewController *viewController;
 
 @end
@@ -27,6 +27,11 @@
   return sharedController;
 }
 
+- (NYPLSettingsCredentialView *)credentialView
+{
+  return (NYPLSettingsCredentialView *)self.view;
+}
+
 #pragma mark UIViewController
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
@@ -36,7 +41,7 @@
 
 - (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
 {
-  [((NYPLSettingsCredentialView *) self.view).barcodeField becomeFirstResponder];
+  [self.credentialView.barcodeField becomeFirstResponder];
 }
 
 #pragma mark -
