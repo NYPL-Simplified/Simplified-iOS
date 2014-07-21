@@ -1,3 +1,5 @@
+#import "NYPLKeychain.h"
+#import "NYPLSettings.h"
 #import "NYPLSettingsCredentialView.h"
 
 #import "NYPLSettingsCredentialViewController.h"
@@ -47,12 +49,22 @@
   self.credentialView.navigationItem.rightBarButtonItem.action = @selector(didSelectContinue);
   self.credentialView.navigationItem.rightBarButtonItem.target = self;
   
+  [self.credentialView.barcodeField
+   addTarget:self
+   action:@selector(fieldsDidChange)
+   forControlEvents:UIControlEventEditingChanged];
+  
+  [self.credentialView.PINField
+   addTarget:self
+   action:@selector(fieldsDidChange)
+   forControlEvents:UIControlEventEditingChanged];
+  
   return self;
 }
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
 {
-
+  self.credentialView.navigationItem.rightBarButtonItem.enabled = NO;
 }
 
 - (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
@@ -94,6 +106,27 @@
   void (^handler)() = self.completionHandler;
   self.completionHandler = nil;
   handler();
+}
+
+- (void)fieldsDidChange
+{
+  // TODO: This code is very similar to the |fieldsDidChange| method in NYPLSettingsViewController.
+  // It should probably be factored out somehow.
+  
+  NSString *const barcode = self.credentialView.barcodeField.text;
+  if(barcode) {
+    [[NYPLKeychain sharedKeychain] setObject:[barcode length] > 0 ? barcode : nil
+                                      forKey:NYPLSettingsBarcodeKey];
+  }
+  
+  NSString *const PIN = self.credentialView.PINField.text;
+  if(PIN) {
+    [[NYPLKeychain sharedKeychain] setObject:[PIN length] > 0 ? PIN : nil
+                                      forKey:NYPLSettingsPINKey];
+  }
+  
+  self.credentialView.navigationItem.rightBarButtonItem.enabled =
+    [barcode length] > 0 && [PIN length] > 0;
 }
 
 @end
