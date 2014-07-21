@@ -4,7 +4,7 @@
 
 #import "NYPLSettingsCredentialViewController.h"
 
-@interface NYPLSettingsCredentialViewController ()
+@interface NYPLSettingsCredentialViewController () <UITextFieldDelegate>
 
 @property (nonatomic, readonly) NYPLSettingsCredentialView *credentialView;
 @property (nonatomic, copy) void (^completionHandler)();
@@ -54,10 +54,14 @@
    action:@selector(fieldsDidChange)
    forControlEvents:UIControlEventEditingChanged];
   
+  self.credentialView.barcodeField.delegate = self;
+  
   [self.credentialView.PINField
    addTarget:self
    action:@selector(fieldsDidChange)
    forControlEvents:UIControlEventEditingChanged];
+  
+  self.credentialView.PINField.delegate = self;
   
   return self;
 }
@@ -70,6 +74,19 @@
 - (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
 {
   [self.credentialView.barcodeField becomeFirstResponder];
+}
+
+#pragma mark UITextViewDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *const)textField
+{
+  if(textField == self.credentialView.barcodeField) {
+    [self.credentialView.PINField becomeFirstResponder];
+  } else {
+    [self.credentialView.PINField resignFirstResponder];
+  }
+  
+  return YES;
 }
 
 #pragma mark -
