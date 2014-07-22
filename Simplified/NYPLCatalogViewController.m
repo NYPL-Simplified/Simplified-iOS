@@ -160,7 +160,7 @@ viewForHeaderInSection:(NSInteger const)section
     [view addSubview:button];
   }
   
-  view.backgroundColor = [UIColor whiteColor];
+  view.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
   
   return view;
 }
