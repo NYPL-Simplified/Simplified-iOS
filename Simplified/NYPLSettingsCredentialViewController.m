@@ -1,7 +1,6 @@
 #import "NSMutableURLRequest+NYPLBasicAuthenticationAdditions.h"
+#import "NYPLAccount.h"
 #import "NYPLConfiguration.h"
-#import "NYPLKeychain.h"
-#import "NYPLSettings.h"
 #import "NYPLSettingsCredentialView.h"
 
 #import "NYPLSettingsCredentialViewController.h"
@@ -208,11 +207,8 @@
        }
        
        if(statusCode == 400) {
-         [[NYPLKeychain sharedKeychain] setObject:self.credentialView.barcodeField.text
-                                           forKey:NYPLSettingsBarcodeKey];
-         
-         [[NYPLKeychain sharedKeychain] setObject:self.credentialView.PINField.text
-                                           forKey:NYPLSettingsBarcodeKey];
+         [NYPLAccount sharedAccount].barcode = self.credentialView.barcodeField.text;
+         [NYPLAccount sharedAccount].PIN = self.credentialView.PINField.text;
          [self dismissViewControllerAnimated:YES completion:^{}];
          void (^handler)() = self.completionHandler;
          self.completionHandler = nil;

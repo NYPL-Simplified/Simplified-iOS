@@ -1,5 +1,4 @@
-#import "NYPLKeychain.h"
-#import "NYPLSettings.h"
+#import "NYPLAccount.h"
 
 #import "NYPLSettingsViewController.h"
 
@@ -39,12 +38,12 @@
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
 {
-  NSString *const barcode = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsBarcodeKey];
+  NSString *const barcode = [NYPLAccount sharedAccount].barcode;
   if(barcode) {
     self.barcodeLabel.text = barcode;
   }
   
-  NSString *const PIN = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsPINKey];
+  NSString *const PIN = [NYPLAccount sharedAccount].PIN;
   if(PIN) {
     self.PINLabel.text = PIN;
   }
