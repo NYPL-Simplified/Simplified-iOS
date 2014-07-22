@@ -4,4 +4,8 @@
 
 + (UIColor *)mainColor;
 
++ (NSString *)systemFontName;
+
++ (NSString *)boldSystemFontName;
+
 @end
