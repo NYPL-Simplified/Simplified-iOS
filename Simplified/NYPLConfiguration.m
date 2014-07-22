@@ -8,6 +8,11 @@
   // return [NSURL URLWithString:@"http://10.128.36.26:5000/lanes/eng"];
 }
 
++ (NSURL *)loanURL
+{
+  return [NSURL URLWithString:@"http://library-simplified.herokuapp.com/loans"];
+}
+
 + (UIColor *)mainColor
 {
   return [UIColor colorWithRed:240/255.0 green:115/255.0 blue:31/255.0 alpha:1.0];

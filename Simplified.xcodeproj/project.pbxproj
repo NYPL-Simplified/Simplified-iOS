@@ -12,6 +12,7 @@
 		110AF89C1961ED1F004887C3 /* NYPLBookDetailViewControllerPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = 110AF89B1961ED1F004887C3 /* NYPLBookDetailViewControllerPhone.m */; };
 		1114A6A1195884CB007507A2 /* NYPLCatalogCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1114A6A0195884CB007507A2 /* NYPLCatalogCategory.m */; };
 		1114A6A4195888A1007507A2 /* NYPLCatalogSubsectionLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 1114A6A3195888A1007507A2 /* NYPLCatalogSubsectionLink.m */; };
+		1117275E197F1FFE0043EFBF /* NSMutableURLRequest+NYPLBasicAuthenticationAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1117275D197F1FFE0043EFBF /* NSMutableURLRequest+NYPLBasicAuthenticationAdditions.m */; };
 		112C694D197301FE00C48F95 /* NYPLMyBooksRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 112C694C197301FE00C48F95 /* NYPLMyBooksRecord.m */; };
 		112C6953197309C500C48F95 /* NYPLMyBooksState.m in Sources */ = {isa = PBXBuildFile; fileRef = 112C6952197309C500C48F95 /* NYPLMyBooksState.m */; };
 		1133A4851964664C00247362 /* NYPLBookDetailViewPad.m in Sources */ = {isa = PBXBuildFile; fileRef = 1133A4841964664C00247362 /* NYPLBookDetailViewPad.m */; };
@@ -109,6 +110,8 @@
 		1114A6A2195888A1007507A2 /* NYPLCatalogSubsectionLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogSubsectionLink.h; sourceTree = "<group>"; };
 		1114A6A3195888A1007507A2 /* NYPLCatalogSubsectionLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogSubsectionLink.m; sourceTree = "<group>"; };
 		1114A6AC1958B215007507A2 /* NYPLLOG.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = NYPLLOG.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		1117275C197F1FFE0043EFBF /* NSMutableURLRequest+NYPLBasicAuthenticationAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+NYPLBasicAuthenticationAdditions.h"; sourceTree = "<group>"; };
+		1117275D197F1FFE0043EFBF /* NSMutableURLRequest+NYPLBasicAuthenticationAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableURLRequest+NYPLBasicAuthenticationAdditions.m"; sourceTree = "<group>"; };
 		112C694B197301FE00C48F95 /* NYPLMyBooksRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksRecord.h; sourceTree = "<group>"; };
 		112C694C197301FE00C48F95 /* NYPLMyBooksRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksRecord.m; sourceTree = "<group>"; };
 		112C6951197309C500C48F95 /* NYPLMyBooksState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksState.h; sourceTree = "<group>"; };
@@ -266,6 +269,8 @@
 				11396FD91940DB7C00E16EE8 /* SMXMLElement+NYPLElementAdditions.m */,
 				11E0208B197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.h */,
 				11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */,
+				1117275C197F1FFE0043EFBF /* NSMutableURLRequest+NYPLBasicAuthenticationAdditions.h */,
+				1117275D197F1FFE0043EFBF /* NSMutableURLRequest+NYPLBasicAuthenticationAdditions.m */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -724,6 +729,7 @@
 				11C5DCF21976D1E0005A9945 /* NYPLHoldsNavigationController.m in Sources */,
 				1114A6A1195884CB007507A2 /* NYPLCatalogCategory.m in Sources */,
 				118992C51974868E0079658E /* NYPLBookDetailViewDelegate.m in Sources */,
+				1117275E197F1FFE0043EFBF /* NSMutableURLRequest+NYPLBasicAuthenticationAdditions.m in Sources */,
 				11C5DCF51976D22F005A9945 /* NYPLHoldsViewController.m in Sources */,
 				A823D821192BABA400B55DE2 /* NYPLAppDelegate.m in Sources */,
 				1183F33E194F71A500DC322F /* NYPLCatalogRoot.m in Sources */,

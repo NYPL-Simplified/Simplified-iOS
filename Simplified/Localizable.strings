@@ -1,18 +1,15 @@
 // Shared
 
 "OK" = "OK";
+"CheckConnection" = "Please check your connection or try again later.";
 
 // NYPLCatalogCategoryViewController
 
 "CatalogCategoryViewControllerFeedDownloadFailedTitle" = "Could Not Load Category";
-"CatalogCategoryViewControllerFeedDownloadFailedMessage" =
-  "Please check your connection or try again later.";
 
 // NYPLCatalogViewController
 
 "CatalogViewControllerFeedDownloadFailedTitle" = "Could Not Load Catalog";
-"CatalogViewControllerFeedDownloadFailedMessage" =
-  "Please check your connection or try again later.";
 "CatalogViewControllerTitle" = "Catalog";
 
 // NYPLHoldsViewController
@@ -27,8 +24,11 @@
 
 "NYPLSettingsCredentialViewBarcode" = "Barcode";
 "NYPLSettingsCredentialViewMessage" = "You need a library card to download this book.";
+"NYPLSettingsCredentialViewInvalidCredentials" =
+  "Your barcode and pin combination was not valid. Please try again.";
 "NYPLSettingsCredentialViewPIN" = "PIN";
 "NYPLSettingsCredentialViewScan" = "Scan Barcode";
+"NYPLSettingsCredentialViewLoginFailed" = "Login Failed";
 
 // NYPLSettingsViewController
 
