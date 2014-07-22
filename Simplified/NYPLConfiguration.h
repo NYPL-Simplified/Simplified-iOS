@@ -2,6 +2,8 @@
 
 + (NSURL *)mainFeedURL;
 
++ (NSURL *)loanURL;
+
 + (UIColor *)mainColor;
 
 + (NSString *)systemFontName;

@@ -101,7 +101,7 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
            initWithTitle:
             NSLocalizedString(@"CatalogCategoryViewControllerFeedDownloadFailedTitle", nil)
            message:
-            NSLocalizedString(@"CatalogCategoryViewControllerFeedDownloadFailedMessage", nil)
+            NSLocalizedString(@"CheckConnection", nil)
            delegate:nil
            cancelButtonTitle:nil
            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
