@@ -1,9 +1,8 @@
 #import "NSMutableURLRequest+NYPLBasicAuthenticationAdditions.h"
+#import "NYPLAccount.h"
 #import "NYPLBook.h"
-#import "NYPLKeychain.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLMyBooksState.h"
-#import "NYPLSettings.h"
 
 #import "NYPLMyBooksDownloadCenter.h"
 
@@ -73,16 +72,14 @@
     case NYPLMyBooksStateDownloadSuccessful:
       @throw NSInvalidArgumentException;
   }
-
-  NSString *const barcode = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsBarcodeKey];
-  NSString *const PIN = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsPINKey];
   
   self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:0.0];
   
   NSMutableURLRequest *const request = [NSMutableURLRequest
                                         requestWithURL:book.acquisition.openAccess];
   
-  [request setBasicAuthenticationUsername:barcode password:PIN];
+  [request setBasicAuthenticationUsername:[NYPLAccount sharedAccount].barcode
+                                 password:[NYPLAccount sharedAccount].PIN];
   
   NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
   
