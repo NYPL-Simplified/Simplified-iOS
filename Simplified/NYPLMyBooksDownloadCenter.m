@@ -1,6 +1,8 @@
 #import "NYPLBook.h"
+#import "NYPLKeychain.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLMyBooksState.h"
+#import "NYPLSettings.h"
 
 #import "NYPLMyBooksDownloadCenter.h"
 
@@ -70,14 +72,30 @@
     case NYPLMyBooksStateDownloadSuccessful:
       @throw NSInvalidArgumentException;
   }
+
+  NSString *const barcode = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsBarcodeKey];
+  NSString *const PIN = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsPINKey];
   
   self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:0.0];
   
-  // TODO: Use real open access URL.
-  NSURL *const testURL = [NSURL URLWithString:@"http://i.imgur.com/pLhJIcm.gif"];
+  NSMutableURLRequest *const request = [NSMutableURLRequest
+                                        requestWithURL:book.acquisition.openAccess];
   
-  NSURLSessionDownloadTask *const task =
-    [self.session downloadTaskWithURL:testURL];
+  NSData *const authorizationData = [[NSString stringWithFormat:@"%@:%@", barcode, PIN]
+                                     dataUsingEncoding:NSUTF8StringEncoding];
+  
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wassign-enum"
+  NSString *authorizationString = [authorizationData base64EncodedStringWithOptions:0];
+#pragma clang diagnostic pop
+  
+  // Apple's documentation says not to do this, but there's no obvious way to handle basic auth
+  // through NSURLSession without dropping down to Core Foundation classes.
+  [request
+   setValue:[@"Basic " stringByAppendingString:authorizationString]
+   forHTTPHeaderField:@"Authorization"];
+  
+  NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
   
   self.taskIdentifierToBook[[NSNumber numberWithUnsignedLong:task.taskIdentifier]] = book;
   
@@ -113,6 +131,8 @@
    postNotificationName:NYPLMyBooksDownloadCenterDidChange
    object:self];
 }
+
+#pragma mark NSURLSessionDataDelegate
 
 #pragma mark NSURLSessionDownloadDelegate
 

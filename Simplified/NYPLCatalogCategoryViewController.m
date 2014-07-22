@@ -2,8 +2,11 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailController.h"
 #import "NYPLCatalogCategory.h"
+#import "NYPLKeychain.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
+#import "NYPLSettings.h"
+#import "NYPLSettingsCredentialViewController.h"
 
 #import "NYPLCatalogCategoryViewController.h"
 
@@ -229,7 +232,20 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 
 - (void)didSelectDownloadForBookCell:(NYPLBookCell *const)cell
 {
-  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:cell.book];
+  NYPLBook *const book = cell.book;
+  
+  NSString *const barcode = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsBarcodeKey];
+  NSString *const PIN = [[NYPLKeychain sharedKeychain] objectForKey:NYPLSettingsPINKey];
+  
+  if(!(barcode && PIN)) {
+    [[NYPLSettingsCredentialViewController sharedController]
+     requestCredentialsFromViewController:self
+     completionHandler:^{
+       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+     }];
+  } else {
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+  }
 }
 
 #pragma mark -
