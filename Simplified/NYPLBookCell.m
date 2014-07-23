@@ -162,7 +162,7 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
       self.downloadProgressView.hidden = NO;
       break;
     case NYPLMyBooksStateDownloadFailed:
-      self.downloadButton.hidden = YES;
+      self.downloadButton.hidden = NO;
       self.downloadProgressView.hidden = YES;
       break;
     case NYPLMyBooksStateDownloadSuccessful:
