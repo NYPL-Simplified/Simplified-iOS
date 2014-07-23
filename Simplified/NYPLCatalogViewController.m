@@ -196,7 +196,7 @@ viewForHeaderInSection:(NSInteger const)section
        if(!root) {
          [[[UIAlertView alloc]
            initWithTitle:NSLocalizedString(@"CatalogViewControllerFeedDownloadFailedTitle", nil)
-           message:NSLocalizedString(@"CatalogViewControllerFeedDownloadFailedMessage", nil)
+           message:NSLocalizedString(@"CheckConnection", nil)
            delegate:nil
            cancelButtonTitle:nil
            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]

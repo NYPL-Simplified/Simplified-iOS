@@ -14,6 +14,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   [NYPLConfiguration initialize];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+  self.window.tintColor = [NYPLConfiguration mainColor];
   self.window.rootViewController = [[NYPLRootTabBarController alloc] init];
   [self.window makeKeyAndVisible];
 
