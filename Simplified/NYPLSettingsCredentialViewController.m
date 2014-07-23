@@ -46,6 +46,8 @@
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
   if(!self) return nil;
   
+  self.modalPresentationStyle = UIModalPresentationFormSheet;
+  
   self.credentialView.navigationItem.leftBarButtonItem.action = @selector(didSelectCancel);
   self.credentialView.navigationItem.leftBarButtonItem.target = self;
   
@@ -113,8 +115,6 @@
   }
   
   self.completionHandler = handler;
-  
-  self.modalPresentationStyle = UIModalPresentationFormSheet;
   
   [viewController presentViewController:self animated:YES completion:^{}];
 }
