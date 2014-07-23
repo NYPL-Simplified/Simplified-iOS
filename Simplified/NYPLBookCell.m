@@ -73,6 +73,7 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   
   if(!self.author) {
     self.author = [[UILabel alloc] init];
+    self.author.font = [UIFont systemFontOfSize:12];
     [self.contentView addSubview:self.author];
   }
   
@@ -82,7 +83,7 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   }
   
   if(!self.downloadButton) {
-    self.downloadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    self.downloadButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.downloadButton setTitle:@"Download" forState:UIControlStateNormal];
     [self.downloadButton addTarget:self
                             action:@selector(didSelectDownload)
@@ -98,6 +99,8 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   
   if(!self.title) {
     self.title = [[UILabel alloc] init];
+    self.title.font = [UIFont boldSystemFontOfSize:17];
+    self.title.numberOfLines = 2;
     [self.contentView addSubview:self.title];
   }
   
