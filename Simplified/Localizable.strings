@@ -31,11 +31,11 @@
 "NYPLSettingsCredentialViewControllerInvalidCredentials" =
   "Your barcode and pin combination was not valid. Please try again.";
 "NYPLSettingsCredentialViewControllerLoginFailed" = "Login Failed";
-"NYPLSettingsCredentialViewControllerMessageLogIn" = "Please use your library card to log in.";
+"NYPLSettingsCredentialViewControllerMessageLogIn" = "Use your library card to log in.";
 "NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook" =
-  "You must use your library card to download this book.";
+  "You need a library card to download this book.";
 "NYPLSettingsCredentialViewControllerMessageInvalidPIN" =
-  "Your saved PIN is no longer valid. Please enter a new PIN.";
+  "Your PIN has changed. Enter your new PIN.";
 
 // NYPLSettingsViewController
 
