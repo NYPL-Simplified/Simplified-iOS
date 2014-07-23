@@ -233,7 +233,7 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 {
   NYPLBook *const book = cell.book;
 
-  if([NYPLAccount sharedAccount].loggedIn) {
+  if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
   } else {
     [[NYPLSettingsCredentialViewController sharedController]

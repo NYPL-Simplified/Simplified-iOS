@@ -22,26 +22,39 @@ static NSString *const PINKey = @"NYPLAccountPIN";
   return sharedAccount;
 }
 
-- (BOOL)loggedIn
+- (BOOL)hasBarcodeAndPIN
 {
-  return !!self.barcode && !!self.PIN;
+  if(self.barcode && self.PIN) return YES;
+  
+  if(!self.barcode && !self.PIN) return NO;
+  
+  @throw NSInternalInconsistencyException;
 }
 
-- (NSString *)barcode {
+- (NSString *)barcode
+{
   return [[NYPLKeychain sharedKeychain] objectForKey:barcodeKey];
 }
 
-- (void)setBarcode:(NSString *const)barcode
+- (NSString *)PIN
 {
-  [[NYPLKeychain sharedKeychain] setObject:barcode forKey:barcodeKey];
-}
-
-- (NSString *)PIN {
   return [[NYPLKeychain sharedKeychain] objectForKey:PINKey];
 }
 
-- (void)setPIN:(NSString *const)PIN {
+- (void)setBarcode:(NSString *const)barcode PIN:(NSString *)PIN
+{
+  if(!(barcode && PIN)) {
+    @throw NSInvalidArgumentException;
+  }
+  
+  [[NYPLKeychain sharedKeychain] setObject:barcode forKey:barcodeKey];
   [[NYPLKeychain sharedKeychain] setObject:PIN forKey:PINKey];
+}
+
+- (void)removeBarcodeAndPIN
+{
+  [[NYPLKeychain sharedKeychain] removeObjectForKey:barcodeKey];
+  [[NYPLKeychain sharedKeychain] removeObjectForKey:PINKey];
 }
 
 @end
