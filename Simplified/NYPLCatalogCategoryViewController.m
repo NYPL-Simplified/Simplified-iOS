@@ -49,7 +49,17 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
    object:nil
    queue:[NSOperationQueue mainQueue]
    usingBlock:^(__attribute__((unused)) NSNotification *note) {
-     [self.collectionView reloadData];
+     // Rather than reload the collection view as this block used to, we now simply update progress
+     // for visible cells instead. This change was made because constantly reloading the table
+     // resulted in cells shuffling around due to cell reuse. While said shuffling caused no visual
+     // problems because all states were reset appropropriately, it did cause problems with touch
+     // detection because any touch spanning a reload would cause the button to fail to fire its
+     // "touch up inside" event upon release. This approach is also quite a bit more efficient than
+     // constantly reloading.
+     for(NYPLBookCell *const cell in [self.collectionView visibleCells]) {
+       cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                                downloadProgressForBookIdentifier:cell.book.identifier];
+     }
    }];
   
   return self;
