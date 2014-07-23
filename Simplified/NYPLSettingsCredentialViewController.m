@@ -207,8 +207,8 @@
        }
        
        if(statusCode == 400) {
-         [NYPLAccount sharedAccount].barcode = self.credentialView.barcodeField.text;
-         [NYPLAccount sharedAccount].PIN = self.credentialView.PINField.text;
+         [[NYPLAccount sharedAccount] setBarcode:self.credentialView.barcodeField.text
+                                             PIN:self.credentialView.PINField.text];
          [self dismissViewControllerAnimated:YES completion:^{}];
          void (^handler)() = self.completionHandler;
          self.completionHandler = nil;
