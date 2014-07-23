@@ -1,4 +1,3 @@
-#import "NSMutableURLRequest+NYPLBasicAuthenticationAdditions.h"
 #import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLMyBooksRegistry.h"
@@ -75,11 +74,7 @@
   
   self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:0.0];
   
-  NSMutableURLRequest *const request = [NSMutableURLRequest
-                                        requestWithURL:book.acquisition.openAccess];
-  
-  [request setBasicAuthenticationUsername:[NYPLAccount sharedAccount].barcode
-                                 password:[NYPLAccount sharedAccount].PIN];
+  NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
   
   NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
   
@@ -117,8 +112,6 @@
    postNotificationName:NYPLMyBooksDownloadCenterDidChange
    object:self];
 }
-
-#pragma mark NSURLSessionDataDelegate
 
 #pragma mark NSURLSessionDownloadDelegate
 
@@ -165,6 +158,19 @@ didFinishDownloadingToURL:(__attribute__((unused)) NSURL *)location
 }
 
 #pragma mark NSURLSessionTaskDelegate
+
+- (void)URLSession:(__attribute__((unused)) NSURLSession *)session
+              task:(__attribute__((unused)) NSURLSessionTask *)task
+didReceiveChallenge:(__attribute__((unused)) NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
+                             NSURLCredential *credential))completionHandler
+{
+  completionHandler(NSURLSessionAuthChallengeUseCredential,
+                    [NSURLCredential
+                     credentialWithUser:[NYPLAccount sharedAccount].barcode
+                     password:[NYPLAccount sharedAccount].PIN
+                     persistence:NSURLCredentialPersistenceNone]);
+}
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
               task:(NSURLSessionTask *)task
