@@ -78,9 +78,7 @@
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
 {
-  self.credentialView.barcodeField.text = @"";
-  self.credentialView.PINField.text = @"";
-  self.credentialView.navigationItem.rightBarButtonItem.enabled = NO;
+
 }
 
 - (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
@@ -103,8 +101,11 @@
 
 #pragma mark -
 
-- (void)requestCredentialsFromViewController:(UIViewController *const)viewController
-                           completionHandler:(void (^)())handler
+- (void)
+requestCredentialsFromViewController:(UIViewController *const)viewController
+useExistingBarcode:(BOOL const)useExistingBarcode
+message:(NYPLSettingsCredentialViewControllerMessage const)message
+completionHandler:(void (^)())handler
 {
   if(!(viewController && handler)) {
     @throw NSInvalidArgumentException;
@@ -115,6 +116,34 @@
   }
   
   self.completionHandler = handler;
+  
+  if(useExistingBarcode) {
+    NSString *const barcode = [NYPLAccount sharedAccount].barcode;
+    if(!barcode) {
+      @throw NSInvalidArgumentException;
+    }
+    self.credentialView.barcodeField.text = barcode;
+  } else {
+    self.credentialView.barcodeField.text = @"";
+  }
+  
+  self.credentialView.PINField.text = @"";
+  self.credentialView.navigationItem.rightBarButtonItem.enabled = NO;
+  
+  switch(message) {
+    case NYPLSettingsCredentialViewControllerMessageLogIn:
+      self.credentialView.messageLabel.text =
+      NSLocalizedString(@"NYPLSettingsCredentialViewControllerMessageLogIn", nil);
+      break;
+    case NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook:
+      self.credentialView.messageLabel.text =
+        NSLocalizedString(@"NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook", nil);
+      break;
+    case NYPLSettingsCredentialViewControllerMessageInvalidPin:
+      self.credentialView.messageLabel.text =
+      NSLocalizedString(@"NYPLSettingsCredentialViewControllerMessageInvalidPIN", nil);
+      break;
+  }
   
   [viewController presentViewController:self animated:YES completion:^{}];
 }
@@ -197,7 +226,7 @@
            NYPLLOG(@"Ignoring unexpected HTTP status code.");
          }
          [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewLoginFailed", nil)
+           initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
            message:NSLocalizedString(@"CheckConnection", nil)
            delegate:nil
            cancelButtonTitle:nil
@@ -215,8 +244,8 @@
          handler();
        } else if(statusCode == 401) {
          [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewLoginFailed", nil)
-           message:NSLocalizedString(@"NYPLSettingsCredentialViewInvalidCredentials", nil)
+           initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
+           message:NSLocalizedString(@"NYPLSettingsCredentialViewControllerInvalidCredentials", nil)
            delegate:nil
            cancelButtonTitle:nil
            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]

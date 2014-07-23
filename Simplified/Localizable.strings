@@ -23,12 +23,19 @@
 // NYPLSettingsCredentialView
 
 "NYPLSettingsCredentialViewBarcode" = "Barcode";
-"NYPLSettingsCredentialViewMessage" = "You need a library card to download this book.";
-"NYPLSettingsCredentialViewInvalidCredentials" =
-  "Your barcode and pin combination was not valid. Please try again.";
 "NYPLSettingsCredentialViewPIN" = "PIN";
-"NYPLSettingsCredentialViewScan" = "Scan Barcode";
-"NYPLSettingsCredentialViewLoginFailed" = "Login Failed";
+"NYPLSettingsCredentialViewScanBarcode" = "Scan Barcode";
+
+// NYPLSettingsCredentialViewController
+
+"NYPLSettingsCredentialViewControllerInvalidCredentials" =
+  "Your barcode and pin combination was not valid. Please try again.";
+"NYPLSettingsCredentialViewControllerLoginFailed" = "Login Failed";
+"NYPLSettingsCredentialViewControllerMessageLogIn" = "Please use your library card to log in.";
+"NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook" =
+  "You must use your library card to download this book.";
+"NYPLSettingsCredentialViewControllerMessageInvalidPIN" =
+  "Your saved PIN is no longer valid. Please enter a new PIN.";
 
 // NYPLSettingsViewController
 
