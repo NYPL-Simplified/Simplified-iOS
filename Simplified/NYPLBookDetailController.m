@@ -13,7 +13,7 @@
 + (instancetype)sharedController
 {
   static dispatch_once_t predicate;
-  static NYPLBookDetailController *sharedBookDetailController;
+  static NYPLBookDetailController *sharedBookDetailController = nil;
   
   dispatch_once(&predicate, ^{
     sharedBookDetailController = [[self alloc] init];

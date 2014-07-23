@@ -17,7 +17,7 @@
 + (instancetype)sharedController
 {
   static dispatch_once_t predicate;
-  static NYPLSettingsCredentialViewController *sharedController;
+  static NYPLSettingsCredentialViewController *sharedController = nil;
   
   dispatch_once(&predicate, ^{
     sharedController = [[self alloc] initWithNibName:@"NYPLSettingsCredentialView"
