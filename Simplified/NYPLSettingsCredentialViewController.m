@@ -133,7 +133,7 @@ completionHandler:(void (^)())handler
   switch(message) {
     case NYPLSettingsCredentialViewControllerMessageLogIn:
       self.credentialView.messageLabel.text =
-      NSLocalizedString(@"NYPLSettingsCredentialViewControllerMessageLogIn", nil);
+        NSLocalizedString(@"NYPLSettingsCredentialViewControllerMessageLogIn", nil);
       break;
     case NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook:
       self.credentialView.messageLabel.text =
@@ -141,7 +141,7 @@ completionHandler:(void (^)())handler
       break;
     case NYPLSettingsCredentialViewControllerMessageInvalidPin:
       self.credentialView.messageLabel.text =
-      NSLocalizedString(@"NYPLSettingsCredentialViewControllerMessageInvalidPIN", nil);
+        NSLocalizedString(@"NYPLSettingsCredentialViewControllerMessageInvalidPIN", nil);
       break;
   }
   
