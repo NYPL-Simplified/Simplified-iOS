@@ -238,6 +238,8 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
   } else {
     [[NYPLSettingsCredentialViewController sharedController]
      requestCredentialsFromViewController:self
+     useExistingBarcode:NO
+     message:NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook
      completionHandler:^{
        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
      }];
