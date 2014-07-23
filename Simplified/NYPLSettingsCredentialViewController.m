@@ -1,11 +1,11 @@
-#import "NSMutableURLRequest+NYPLBasicAuthenticationAdditions.h"
 #import "NYPLAccount.h"
 #import "NYPLConfiguration.h"
 #import "NYPLSettingsCredentialView.h"
 
 #import "NYPLSettingsCredentialViewController.h"
 
-@interface NYPLSettingsCredentialViewController () <NSURLSessionDelegate, UITextFieldDelegate>
+@interface NYPLSettingsCredentialViewController ()
+  <NSURLSessionDelegate, NSURLSessionTaskDelegate, UITextFieldDelegate>
 
 @property (nonatomic, readonly) NYPLSettingsCredentialView *credentialView;
 @property (nonatomic, copy) void (^completionHandler)();
@@ -97,6 +97,21 @@
   }
   
   return YES;
+}
+
+#pragma mark NSURLSessionDelegate
+
+- (void)URLSession:(__attribute__((unused)) NSURLSession *)session
+              task:(__attribute__((unused)) NSURLSessionTask *)task
+didReceiveChallenge:(__attribute__((unused)) NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
+                             NSURLCredential *credential))completionHandler
+{
+  completionHandler(NSURLSessionAuthChallengeUseCredential,
+                    [NSURLCredential
+                     credentialWithUser:self.credentialView.barcodeField.text
+                     password:self.credentialView.PINField.text
+                     persistence:NSURLCredentialPersistenceNone]);
 }
 
 #pragma mark -
@@ -206,9 +221,6 @@ completionHandler:(void (^)())handler
   request.HTTPMethod = @"HEAD";
   request.timeoutInterval = 10.0;
   
-  [request setBasicAuthenticationUsername:self.credentialView.barcodeField.text
-                                 password:self.credentialView.PINField.text];
-  
   NSURLSessionDataTask *const task =
     [self.session
      dataTaskWithRequest:request
@@ -221,7 +233,7 @@ completionHandler:(void (^)())handler
        // This cast is always valid accord to Apple's documentation for NSHTTPURLResponse.
        NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
        
-       if(error || (statusCode != 400 && statusCode != 401)) {
+       if(error || (statusCode != 200 && statusCode != 401)) {
          if(!error) {
            NYPLLOG(@"Ignoring unexpected HTTP status code.");
          }
@@ -235,7 +247,7 @@ completionHandler:(void (^)())handler
          return;
        }
        
-       if(statusCode == 400) {
+       if(statusCode == 200) {
          [[NYPLAccount sharedAccount] setBarcode:self.credentialView.barcodeField.text
                                              PIN:self.credentialView.PINField.text];
          [self dismissViewControllerAnimated:YES completion:^{}];
