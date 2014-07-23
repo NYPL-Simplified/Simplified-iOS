@@ -147,7 +147,7 @@ viewForHeaderInSection:(NSInteger const)section
   view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
   
   {
-    UIButton *const button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    UIButton *const button = [UIButton buttonWithType:UIButtonTypeSystem];
     NSString *const title = ((NYPLCatalogLane *) self.catalogRoot.lanes[section]).title;
     [button setTitle:title forState:UIControlStateNormal];
     [button sizeToFit];

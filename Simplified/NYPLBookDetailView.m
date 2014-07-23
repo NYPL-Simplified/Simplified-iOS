@@ -61,7 +61,7 @@ static CGFloat const mainTextPaddingRight = 10.0;
      }];
   }
 
-  self.downloadButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+  self.downloadButton = [UIButton buttonWithType:UIButtonTypeSystem];
   [self.downloadButton setTitle:@"Download" forState:UIControlStateNormal];
   [self.downloadButton addTarget:self
                           action:@selector(didSelectDownload)
