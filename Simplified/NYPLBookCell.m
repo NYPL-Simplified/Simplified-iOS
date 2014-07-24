@@ -1,3 +1,4 @@
+#import "NYPLConfiguration.h"
 #import "NYPLSession.h"
 
 #import "NYPLBookCell.h"
@@ -26,7 +27,6 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 @property (nonatomic) UILabel *author;
 @property (nonatomic) UIImageView *cover;
 @property (nonatomic) UIButton *downloadButton;
-@property (nonatomic) UIProgressView *downloadProgressView;
 @property (nonatomic) UILabel *title;
 @property (nonatomic) NSURL *coverURL;
 
@@ -56,13 +56,10 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   self.author.frame = authorFrame;
   
   [self.downloadButton sizeToFit];
+  self.downloadButton.frame = CGRectInset(self.downloadButton.frame, -5, 3);
   CGRect downloadButtonFrame = self.downloadButton.frame;
   downloadButtonFrame.origin = CGPointMake(100, CGRectGetMaxY(authorFrame) + 5);
   self.downloadButton.frame = downloadButtonFrame;
-  
-  CGRect downloadProgressViewFrame = self.downloadProgressView.frame;
-  downloadProgressViewFrame.origin = CGPointMake(100, CGRectGetMaxY(authorFrame) + 5);
-  self.downloadProgressView.frame = downloadProgressViewFrame;
 }
 
 #pragma mark -
@@ -88,13 +85,10 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
     [self.downloadButton addTarget:self
                             action:@selector(didSelectDownload)
                   forControlEvents:UIControlEventTouchUpInside];
+    self.downloadButton.layer.cornerRadius = 2;
+    self.downloadButton.layer.borderWidth = 1;
+    self.downloadButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
     [self.contentView addSubview:self.downloadButton];
-  }
-  
-  if(!self.downloadProgressView) {
-    self.downloadProgressView = [[UIProgressView alloc]
-                                 initWithProgressViewStyle:UIProgressViewStyleDefault];
-    [self.contentView addSubview:self.downloadProgressView];
   }
   
   if(!self.title) {
@@ -102,12 +96,12 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
     self.title.font = [UIFont boldSystemFontOfSize:17];
     self.title.numberOfLines = 2;
     [self.contentView addSubview:self.title];
+    [self.contentView setNeedsLayout];
   }
   
   self.author.text = [book.authorStrings componentsJoinedByString:@"; "];
   self.cover.image = nil;
   self.coverURL = book.imageURL;
-  self.state = NYPLMyBooksStateUnregistered;
   self.title.text = book.title;
   
   // TODO: The approach below will keep showing old covers across launches even if they've been
@@ -141,40 +135,19 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   [self setNeedsLayout];
 }
 
-- (void)setDownloadProgress:(double)downloadProgress
-{
-  _downloadProgress = downloadProgress;
-  
-  self.downloadProgressView.progress = downloadProgress;
-}
-
-- (void)setState:(NYPLMyBooksState const)state
-{
-  _state = state;
-  
-  switch(state) {
-    case NYPLMyBooksStateUnregistered:
-      self.downloadButton.hidden = NO;
-      self.downloadProgressView.hidden = YES;
-      break;
-    case NYPLMyBooksStateDownloading:
-      self.downloadButton.hidden = YES;
-      self.downloadProgressView.hidden = NO;
-      break;
-    case NYPLMyBooksStateDownloadFailed:
-      self.downloadButton.hidden = NO;
-      self.downloadProgressView.hidden = YES;
-      break;
-    case NYPLMyBooksStateDownloadSuccessful:
-      self.downloadButton.hidden = YES;
-      self.downloadProgressView.hidden = YES;
-      break;
-  }
-}
-
 - (void)didSelectDownload
 {
   [self.delegate didSelectDownloadForBookCell:self];
+}
+
+- (BOOL)downloadButtonHidden
+{
+  return self.downloadButton.hidden;
+}
+
+- (void)setDownloadButtonHidden:(BOOL)hidden
+{
+  self.downloadButton.hidden = hidden;
 }
 
 @end

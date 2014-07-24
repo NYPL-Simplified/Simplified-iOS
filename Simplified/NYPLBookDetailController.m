@@ -29,17 +29,19 @@
 {
   switch(UI_USER_INTERFACE_IDIOM()) {
     case UIUserInterfaceIdiomPhone:
+    {
       [controller.navigationController
        pushViewController:[[NYPLBookDetailViewControllerPhone alloc] initWithBook:book]
        animated:YES];
       break;
+    }
     case UIUserInterfaceIdiomPad:
-      {
-        NYPLBookDetailViewPad *const view = [[NYPLBookDetailViewPad alloc] initWithBook:book];
-        view.delegate = self;
-        [view animateDisplayInView:controller.view];
-      }
+    {
+      NYPLBookDetailViewPad *const view = [[NYPLBookDetailViewPad alloc] initWithBook:book];
+      view.delegate = self;
+      [view animateDisplayInView:controller.view];
       break;
+    }
   }
 }
 

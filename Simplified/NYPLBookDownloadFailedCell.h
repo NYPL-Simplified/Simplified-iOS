@@ -1,0 +1,3 @@
+@interface NYPLBookDownloadFailedCell : UICollectionViewCell
+
+@end
