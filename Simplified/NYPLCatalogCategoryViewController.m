@@ -2,6 +2,8 @@
 #import "NYPLBook.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailController.h"
+#import "NYPLBookDownloadFailedCell.h"
+#import "NYPLBookDownloadingCell.h"
 #import "NYPLCatalogCategory.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
@@ -20,7 +22,9 @@
 
 @end
 
-static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell";
+static NSString *const reuseIdentifier = @"Default";
+static NSString *const reuseIdentifierDownloading = @"Downloading";
+static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
 
 @implementation NYPLCatalogCategoryViewController
 
@@ -56,10 +60,14 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
      // detection because any touch spanning a reload would cause the button to fail to fire its
      // "touch up inside" event upon release. This approach is also quite a bit more efficient than
      // constantly reloading.
+     
+     // TODO
+     /*
      for(NYPLBookCell *const cell in [self.collectionView visibleCells]) {
        cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                                 downloadProgressForBookIdentifier:cell.book.identifier];
      }
+     */
    }];
   
   return self;
@@ -87,6 +95,10 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   self.collectionView.delegate = self;
   [self.collectionView registerClass:[NYPLBookCell class]
           forCellWithReuseIdentifier:reuseIdentifier];
+  [self.collectionView registerClass:[NYPLBookDownloadingCell class]
+          forCellWithReuseIdentifier:reuseIdentifierDownloading];
+  [self.collectionView registerClass:[NYPLBookDownloadFailedCell class]
+          forCellWithReuseIdentifier:reuseIdentifierDownloadFailed];
   self.collectionView.backgroundColor = [UIColor whiteColor];
   self.collectionView.hidden = YES;
   [self.view addSubview:self.collectionView];
@@ -169,23 +181,41 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-  NYPLBookCell *const cell = [collectionView
-                              dequeueReusableCellWithReuseIdentifier:reuseIdentifier
-                              forIndexPath:indexPath];
-  
-  assert([cell isKindOfClass:[NYPLBookCell class]]);
-  
-  NYPLBook *const book = self.category.books[indexPath.row];
-  
-  cell.book = book;
-  cell.delegate = self;
-  cell.state = [[NYPLMyBooksRegistry sharedRegistry] stateForIdentifier:book.identifier];
-  cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                           downloadProgressForBookIdentifier:book.identifier];
-  
   [self.category prepareForBookIndex:indexPath.row];
   
-  return cell;
+  NYPLBook *const book = self.category.books[indexPath.row];
+  NYPLMyBooksState const state = [[NYPLMyBooksRegistry sharedRegistry]
+                                  stateForIdentifier:book.identifier];
+  
+  switch(state) {
+    case NYPLMyBooksStateUnregistered:
+      // fallthrough
+    case NYPLMyBooksStateDownloadSuccessful:
+    {
+      NYPLBookCell *const cell = [collectionView
+                                  dequeueReusableCellWithReuseIdentifier:reuseIdentifier
+                                  forIndexPath:indexPath];
+      cell.book = book;
+      cell.delegate = self;
+      cell.downloadButtonHidden = state == NYPLMyBooksStateDownloadSuccessful;
+      
+      return cell;
+    }
+    case NYPLMyBooksStateDownloading:
+    {
+      NYPLBookDownloadingCell *const cell =
+        [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifierDownloading
+                                                  forIndexPath:indexPath];
+      return cell;
+    }
+    case NYPLMyBooksStateDownloadFailed:
+    {
+      NYPLBookDownloadFailedCell *const cell =
+        [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifierDownloadFailed
+                                                  forIndexPath:indexPath];
+      return cell;
+    }
+  }
 }
 
 #pragma mark UICollectionViewDelegate
