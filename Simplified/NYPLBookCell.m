@@ -99,7 +99,7 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
     [self.contentView setNeedsLayout];
   }
   
-  self.author.text = [book.authorStrings componentsJoinedByString:@"; "];
+  self.author.text = book.authors;
   self.cover.image = nil;
   self.coverURL = book.imageURL;
   self.title.text = book.title;

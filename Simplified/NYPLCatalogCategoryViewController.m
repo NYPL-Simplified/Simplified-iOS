@@ -206,6 +206,7 @@ static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
       NYPLBookDownloadingCell *const cell =
         [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifierDownloading
                                                   forIndexPath:indexPath];
+      cell.book = book;
       return cell;
     }
     case NYPLMyBooksStateDownloadFailed:

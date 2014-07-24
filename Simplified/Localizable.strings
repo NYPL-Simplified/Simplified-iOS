@@ -3,6 +3,10 @@
 "OK" = "OK";
 "CheckConnection" = "Please check your connection or try again later.";
 
+// NYPLBookDownloadingCell
+
+"NYPLBookDownloadingCellDownloading" = "Downloading";
+
 // NYPLCatalogCategoryViewController
 
 "CatalogCategoryViewControllerFeedDownloadFailedTitle" = "Could Not Load Category";
