@@ -22,6 +22,7 @@
 - (void)layoutSubviews
 {
   CGFloat const sidePadding = 10;
+  CGFloat const downloadAreaTopPadding = 10;
   
   self.titleLabel.frame = CGRectMake(sidePadding,
                                      5,
@@ -35,7 +36,8 @@
   
   [self.downloadingLabel sizeToFit];
   self.downloadingLabel.frame = CGRectMake(sidePadding,
-                                           CGRectGetMaxY(self.authorsLabel.frame) + 20,
+                                           (CGRectGetMaxY(self.authorsLabel.frame) +
+                                            downloadAreaTopPadding),
                                            CGRectGetWidth(self.downloadingLabel.frame),
                                            CGRectGetHeight(self.downloadingLabel.frame));
   

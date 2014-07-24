@@ -11,14 +11,14 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
       case UIInterfaceOrientationPortrait:
         // fallthrough
       case UIInterfaceOrientationPortraitUpsideDown:
-        return CGSizeMake(384, 120);
+        return CGSizeMake(384, 110);
       case UIInterfaceOrientationLandscapeLeft:
         // fallthrough
       case UIInterfaceOrientationLandscapeRight:
-        return CGSizeMake(341, 120);
+        return CGSizeMake(341, 110);
     }
   } else {
-    return CGSizeMake(320, 120);
+    return CGSizeMake(320, 110);
   }
 }
 
