@@ -83,6 +83,9 @@
   [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
                      forState:UIControlStateNormal];
   self.cancelButton.layer.cornerRadius = 2;
+  [self.cancelButton addTarget:self
+                        action:@selector(didSelectCancel)
+              forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.cancelButton];
   
   self.downloadingLabel = [[UILabel alloc] init];
@@ -127,6 +130,11 @@
   
   self.progressView.progress = downloadProgress;
   self.percentageLabel.text = [NSString stringWithFormat:@"%d%%", (int) (downloadProgress * 100)];
+}
+
+- (void)didSelectCancel
+{
+  [self.delegate didSelectCancelForBookDownloadingCell:self];
 }
 
 @end

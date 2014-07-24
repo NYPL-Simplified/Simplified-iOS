@@ -15,6 +15,8 @@ static NSString *const NYPLMyBooksDownloadCenterDidChange =
 // controller itself in order to obtain the credentials from the user.
 - (void)startDownloadForBook:(NYPLBook *)book;
 
+- (void)cancelDownloadForBookIdentifier:(NSString *)identifier;
+
 // The value returned is in the range [0.0, 1.0].
 - (double)downloadProgressForBookIdentifier:(NSString *)bookIdentifier;
 

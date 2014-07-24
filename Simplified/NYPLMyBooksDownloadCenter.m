@@ -9,6 +9,7 @@
 
 @property (nonatomic) BOOL broadcastScheduled;
 @property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadProgress;
+@property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadTask;
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
 
@@ -42,6 +43,7 @@
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
   self.bookIdentifierToDownloadProgress = [NSMutableDictionary dictionary];
+  self.bookIdentifierToDownloadTask = [NSMutableDictionary dictionary];
   
   self.session = [NSURLSession
                   sessionWithConfiguration:configuration
@@ -68,6 +70,8 @@
       return;
     case NYPLMyBooksStateDownloadFailed:
       break;
+    case NYPLMyBooksStateDownloadNeeded:
+      break;
     case NYPLMyBooksStateDownloadSuccessful:
       @throw NSInvalidArgumentException;
   }
@@ -79,10 +83,22 @@
   NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
   
   self.taskIdentifierToBook[[NSNumber numberWithUnsignedLong:task.taskIdentifier]] = book;
+  self.bookIdentifierToDownloadTask[book.identifier] = task;
   
   [task resume];
   
   [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloading];
+}
+
+- (void)cancelDownloadForBookIdentifier:(NSString *)identifier
+{
+  [(NSURLSessionDownloadTask *)self.bookIdentifierToDownloadTask[identifier]
+   cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
+     [[NYPLMyBooksRegistry sharedRegistry]
+      setState:NYPLMyBooksStateDownloadNeeded forIdentifier:identifier];
+     
+     [self broadcastUpdate];
+   }];
 }
 
 - (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier
@@ -179,7 +195,7 @@ didCompleteWithError:(NSError *)error
   NSNumber *const key = [NSNumber numberWithUnsignedLong:task.taskIdentifier];
   NYPLBook *const book = self.taskIdentifierToBook[key];
   
-  if(error) {
+  if(error && error.code != NSURLErrorCancelled) {
     self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:1.0];
     
     [[NYPLMyBooksRegistry sharedRegistry]

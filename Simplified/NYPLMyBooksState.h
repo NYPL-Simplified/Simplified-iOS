@@ -1,5 +1,6 @@
 typedef NS_ENUM(NSInteger, NYPLMyBooksState) {
   NYPLMyBooksStateUnregistered,
+  NYPLMyBooksStateDownloadNeeded,
   NYPLMyBooksStateDownloading,
   NYPLMyBooksStateDownloadFailed,
   NYPLMyBooksStateDownloadSuccessful
