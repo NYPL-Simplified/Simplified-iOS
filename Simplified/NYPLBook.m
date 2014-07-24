@@ -149,4 +149,9 @@ static NSString *const UpdatedKey = @"updated";
            UpdatedKey: [self.updated RFC3339String]};
 }
 
+- (NSString *)authors
+{
+  return [self.authorStrings componentsJoinedByString:@"; "];
+}
+
 @end

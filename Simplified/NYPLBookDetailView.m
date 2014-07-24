@@ -40,7 +40,7 @@ static CGFloat const mainTextPaddingRight = 10.0;
   self.authors = [[UILabel alloc] init];
   self.authors.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
   self.authors.numberOfLines = 3;
-  self.authors.text = [book.authorStrings componentsJoinedByString:@"; "];
+  self.authors.text = book.authors;
   [self addSubview:self.authors];
   
   self.cover = [[UIImageView alloc] init];
