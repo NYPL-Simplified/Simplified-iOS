@@ -12,8 +12,8 @@
 #import "NYPLCatalogCategoryViewController.h"
 
 @interface NYPLCatalogCategoryViewController ()
-  <NYPLBookCellDelegate, NYPLCatalogCategoryDelegate, UICollectionViewDataSource,
-   UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+  <NYPLBookCellDelegate, NYPLBookDownloadingCellDelegate, NYPLCatalogCategoryDelegate,
+   UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogCategory *category;
@@ -190,6 +190,8 @@ static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
   switch(state) {
     case NYPLMyBooksStateUnregistered:
       // fallthrough
+    case NYPLMyBooksStateDownloadNeeded:
+      // fallthrough
     case NYPLMyBooksStateDownloadSuccessful:
     {
       NYPLBookCell *const cell = [collectionView
@@ -207,6 +209,7 @@ static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
         [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifierDownloading
                                                   forIndexPath:indexPath];
       cell.book = book;
+      cell.delegate = self;
       cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                                downloadProgressForBookIdentifier:book.identifier];
       return cell;
@@ -287,6 +290,14 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
      }];
   }
+}
+
+#pragma mark NYPLBookDownloadingCellDelegate
+
+- (void)didSelectCancelForBookDownloadingCell:(NYPLBookDownloadingCell *)cell
+{
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+   cancelDownloadForBookIdentifier:cell.book.identifier];
 }
 
 #pragma mark -

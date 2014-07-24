@@ -10,6 +10,7 @@
 @interface NYPLBookDownloadingCell : UICollectionViewCell
 
 @property (nonatomic) NYPLBook *book;
+@property (nonatomic, weak) id<NYPLBookDownloadingCellDelegate> delegate;
 @property (nonatomic) double downloadProgress;
 
 @end
