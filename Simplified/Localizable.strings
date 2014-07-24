@@ -1,7 +1,8 @@
-// Shared
+// Generic
 
-"OK" = "OK";
 "CheckConnection" = "Please check your connection or try again later.";
+"Cancel" = "Cancel";
+"OK" = "OK";
 
 // NYPLBookDownloadingCell
 

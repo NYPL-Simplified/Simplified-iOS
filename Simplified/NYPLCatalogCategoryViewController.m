@@ -60,14 +60,14 @@ static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
      // detection because any touch spanning a reload would cause the button to fail to fire its
      // "touch up inside" event upon release. This approach is also quite a bit more efficient than
      // constantly reloading.
-     
-     // TODO
-     /*
-     for(NYPLBookCell *const cell in [self.collectionView visibleCells]) {
-       cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                                downloadProgressForBookIdentifier:cell.book.identifier];
+     for(UICollectionViewCell *const cell in [self.collectionView visibleCells]) {
+       if([cell isKindOfClass:[NYPLBookDownloadingCell class]]) {
+         NYPLBookDownloadingCell *const downloadingCell = (NYPLBookDownloadingCell *)cell;
+         NSString *const bookIdentifier = downloadingCell.book.identifier;
+         downloadingCell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                                             downloadProgressForBookIdentifier:bookIdentifier];
+       }
      }
-     */
    }];
   
   return self;
@@ -207,6 +207,8 @@ static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
         [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifierDownloading
                                                   forIndexPath:indexPath];
       cell.book = book;
+      cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                               downloadProgressForBookIdentifier:book.identifier];
       return cell;
     }
     case NYPLMyBooksStateDownloadFailed:
