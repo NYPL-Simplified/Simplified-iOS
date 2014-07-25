@@ -26,12 +26,12 @@
   
   self.titleLabel.frame = CGRectMake(sidePadding,
                                      5,
-                                     CGRectGetWidth(self.frame) - sidePadding * 2,
+                                     CGRectGetWidth(self.contentView.frame) - sidePadding * 2,
                                      self.titleLabel.preferredHeight);
   
   self.authorsLabel.frame = CGRectMake(sidePadding,
                                        CGRectGetMaxY(self.titleLabel.frame),
-                                       CGRectGetWidth(self.frame) - sidePadding * 2,
+                                       CGRectGetWidth(self.contentView.frame) - sidePadding * 2,
                                        self.authorsLabel.preferredHeight);
   
   [self.downloadingLabel sizeToFit];
@@ -44,7 +44,7 @@
   NSString *const percentageLabelText = self.percentageLabel.text;
   self.percentageLabel.text = @"00%";
   [self.percentageLabel sizeToFit];
-  self.percentageLabel.frame = CGRectMake((CGRectGetWidth(self.frame) - sidePadding -
+  self.percentageLabel.frame = CGRectMake((CGRectGetWidth(self.contentView.frame) - sidePadding -
                                            CGRectGetWidth(self.percentageLabel.frame)),
                                           CGRectGetMinY(self.downloadingLabel.frame),
                                           CGRectGetWidth(self.percentageLabel.frame),
@@ -54,19 +54,25 @@
   self.progressView.center = self.downloadingLabel.center;
   self.progressView.frame = CGRectMake(CGRectGetMaxX(self.downloadingLabel.frame) + sidePadding,
                                        CGRectGetMinY(self.progressView.frame),
-                                       (CGRectGetWidth(self.frame) - sidePadding * 4 -
+                                       (CGRectGetWidth(self.contentView.frame) - sidePadding * 4 -
                                         CGRectGetWidth(self.downloadingLabel.frame) -
                                         CGRectGetWidth(self.percentageLabel.frame)),
                                        CGRectGetHeight(self.progressView.frame));
   
   [self.cancelButton sizeToFit];
   self.cancelButton.frame = CGRectInset(self.cancelButton.frame, -8, 0);
-  self.cancelButton.center = self.center;
+  self.cancelButton.center = self.contentView.center;
   self.cancelButton.frame = CGRectMake(CGRectGetMinX(self.cancelButton.frame),
-                                       (CGRectGetHeight(self.frame) -
+                                       (CGRectGetHeight(self.contentView.frame) -
                                         CGRectGetHeight(self.cancelButton.frame) - 5),
                                        CGRectGetWidth(self.cancelButton.frame),
                                        CGRectGetHeight(self.cancelButton.frame));
+  
+  NSLog(@"%f %f %f %f",
+        self.cancelButton.frame.origin.x,
+        self.cancelButton.frame.origin.y,
+        self.cancelButton.frame.size.width,
+        self.cancelButton.frame.size.height);
 }
 
 #pragma mark -
@@ -78,7 +84,7 @@
   self.authorsLabel = [[UILabel alloc] init];
   self.authorsLabel.font = [UIFont systemFontOfSize:12];
   self.authorsLabel.textColor = [UIColor whiteColor];
-  [self addSubview:self.authorsLabel];
+  [self.contentView addSubview:self.authorsLabel];
   
   self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
   self.cancelButton.backgroundColor = [UIColor whiteColor];
@@ -88,30 +94,30 @@
   [self.cancelButton addTarget:self
                         action:@selector(didSelectCancel)
               forControlEvents:UIControlEventTouchUpInside];
-  [self addSubview:self.cancelButton];
+  [self.contentView addSubview:self.cancelButton];
   
   self.downloadingLabel = [[UILabel alloc] init];
   self.downloadingLabel.font = [UIFont systemFontOfSize:12];
   self.downloadingLabel.text = NSLocalizedString(@"NYPLBookDownloadingCellDownloading", nil);
   self.downloadingLabel.textColor = [UIColor whiteColor];
-  [self addSubview:self.downloadingLabel];
+  [self.contentView addSubview:self.downloadingLabel];
   
   self.percentageLabel = [[UILabel alloc] init];
   self.percentageLabel.font = [UIFont systemFontOfSize:12];
   self.percentageLabel.textColor = [UIColor whiteColor];
   self.percentageLabel.textAlignment = NSTextAlignmentRight;
   self.percentageLabel.text = @"0%";
-  [self addSubview:self.percentageLabel];
+  [self.contentView addSubview:self.percentageLabel];
   
   self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
   self.progressView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5];
   self.progressView.tintColor = [UIColor whiteColor];
-  [self addSubview:self.progressView];
+  [self.contentView addSubview:self.progressView];
   
   self.titleLabel = [[UILabel alloc] init];
   self.titleLabel.font = [UIFont boldSystemFontOfSize:17];
   self.titleLabel.textColor = [UIColor whiteColor];
-  [self addSubview:self.titleLabel];
+  [self.contentView addSubview:self.titleLabel];
 }
 
 - (void)setBook:(NYPLBook *const)book
@@ -124,6 +130,8 @@
   
   self.authorsLabel.text = book.authors;
   self.titleLabel.text = book.title;
+  
+  [self setNeedsLayout];
 }
 
 - (void)setDownloadProgress:(double const)downloadProgress
