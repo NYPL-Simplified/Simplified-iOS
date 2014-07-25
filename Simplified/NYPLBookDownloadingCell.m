@@ -67,12 +67,6 @@
                                         CGRectGetHeight(self.cancelButton.frame) - 5),
                                        CGRectGetWidth(self.cancelButton.frame),
                                        CGRectGetHeight(self.cancelButton.frame));
-  
-  NSLog(@"%f %f %f %f",
-        self.cancelButton.frame.origin.x,
-        self.cancelButton.frame.origin.y,
-        self.cancelButton.frame.size.width,
-        self.cancelButton.frame.size.height);
 }
 
 #pragma mark -
