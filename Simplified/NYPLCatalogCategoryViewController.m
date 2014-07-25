@@ -299,12 +299,13 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 
 - (void)didSelectCancelForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *)cell
 {
-  NSLog(@"%@", cell);
+  [[NYPLMyBooksRegistry sharedRegistry]
+   setState:NYPLMyBooksStateDownloadNeeded forIdentifier:cell.book.identifier];
 }
 
 - (void)didSelectTryAgainForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *)cell
 {
-  NSLog(@"%@", cell);
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:cell.book];
 }
 
 #pragma mark NYPLBookDownloadingCellDelegate
