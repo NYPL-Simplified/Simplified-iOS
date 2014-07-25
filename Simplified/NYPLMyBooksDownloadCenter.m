@@ -10,13 +10,8 @@
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) BOOL broadcastScheduled;
 
-// Entries are kept in memory until the end of the application's run.
 @property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadProgress;
-
-// Entries are removed upon download completion.
 @property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadTask;
-
-// Entries are removed upon download completion.
 @property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
 
 @end
@@ -199,6 +194,8 @@ didCompleteWithError:(NSError *)error
 {
   NSNumber *const key = [NSNumber numberWithUnsignedLong:task.taskIdentifier];
   NYPLBook *const book = self.taskIdentifierToBook[key];
+  
+  [self.bookIdentifierToDownloadProgress removeObjectForKey:book.identifier];
   
   // This is safe to remove because we only keep this around to be able to cancel downloads.
   [self.bookIdentifierToDownloadTask removeObjectForKey:book.identifier];
