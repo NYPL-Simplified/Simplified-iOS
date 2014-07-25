@@ -17,7 +17,9 @@ static NSString *const NYPLMyBooksDownloadCenterDidChange =
 
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier;
 
-// The value returned is in the range [0.0, 1.0].
+// The value returned is in the range [0.0, 1.0]. Once a download for a particular book has begun,
+// its progress will be kept in memory for the remainder of the application run and may be retrieved
+// at any time.
 - (double)downloadProgressForBookIdentifier:(NSString *)bookIdentifier;
 
 @end
