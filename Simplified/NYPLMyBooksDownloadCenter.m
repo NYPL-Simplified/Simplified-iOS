@@ -76,14 +76,23 @@
       @throw NSInvalidArgumentException;
   }
   
-  self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:0.0];
-  
   NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
+  
+  if(!request.URL) {
+    // Originally this code just let the request fail later on, but apparently resuming an
+    // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
+    // segmentation fault.
+    NYPLLOG(@"Aborting request with invalid URL.");
+    [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloadFailed];
+    [self broadcastUpdate];
+    return;
+  }
   
   NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
   
-  self.taskIdentifierToBook[[NSNumber numberWithUnsignedLong:task.taskIdentifier]] = book;
+  self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:0.0];
   self.bookIdentifierToDownloadTask[book.identifier] = task;
+  self.taskIdentifierToBook[[NSNumber numberWithUnsignedLong:task.taskIdentifier]] = book;
   
   [task resume];
   
