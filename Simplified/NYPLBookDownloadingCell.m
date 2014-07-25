@@ -22,7 +22,7 @@
 - (void)layoutSubviews
 {
   CGFloat const sidePadding = 10;
-  CGFloat const downloadAreaTopPadding = 10;
+  CGFloat const downloadAreaTopPadding = 9;
   
   self.titleLabel.frame = CGRectMake(sidePadding,
                                      5,

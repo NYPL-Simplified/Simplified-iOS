@@ -78,7 +78,7 @@
   
   NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
   
-  if(!request.URL) {
+  if(!!request.URL) {
     // Originally this code just let the request fail later on, but apparently resuming an
     // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
     // segmentation fault.
