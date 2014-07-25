@@ -132,9 +132,6 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
   NYPLBook *const book = self.books[indexPath.row];
   
   cell.book = book;
-  cell.state = [[NYPLMyBooksRegistry sharedRegistry] stateForIdentifier:book.identifier];
-  cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                           downloadProgressForBookIdentifier:book.identifier];
   
   return cell;
 }

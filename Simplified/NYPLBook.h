@@ -4,6 +4,7 @@
 @interface NYPLBook : NSObject
 
 @property (nonatomic, readonly) NYPLBookAcquisition *acquisition;
+@property (nonatomic, readonly) NSString *authors;
 @property (nonatomic, readonly) NSArray *authorStrings;
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSURL *imageURL; // nilable
