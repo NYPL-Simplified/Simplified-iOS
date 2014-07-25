@@ -12,8 +12,9 @@
 #import "NYPLCatalogCategoryViewController.h"
 
 @interface NYPLCatalogCategoryViewController ()
-  <NYPLBookCellDelegate, NYPLBookDownloadingCellDelegate, NYPLCatalogCategoryDelegate,
-   UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+  <NYPLBookCellDelegate, NYPLBookDownloadFailedCellDelegate, NYPLBookDownloadingCellDelegate,
+   NYPLCatalogCategoryDelegate, UICollectionViewDataSource, UICollectionViewDelegate,
+   UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogCategory *category;
@@ -219,6 +220,8 @@ static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
       NYPLBookDownloadFailedCell *const cell =
         [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifierDownloadFailed
                                                   forIndexPath:indexPath];
+      cell.book = book;
+      cell.delegate = self;
       return cell;
     }
   }
@@ -290,6 +293,18 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
      }];
   }
+}
+
+#pragma mark NYPLBookDownloadFailedDelegate
+
+- (void)didSelectCancelForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *)cell
+{
+  NSLog(@"%@", cell);
+}
+
+- (void)didSelectTryAgainForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *)cell
+{
+  NSLog(@"%@", cell);
 }
 
 #pragma mark NYPLBookDownloadingCellDelegate

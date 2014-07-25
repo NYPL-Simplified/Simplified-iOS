@@ -4,6 +4,11 @@
 "Cancel" = "Cancel";
 "OK" = "OK";
 
+// NYPLBookDownloadFailedCell
+
+"NYPLBookDownloadFailedCellMessage" = "The download could not be completed.";
+"NYPLBookDownloadFailedCellTryAgain" = "Try Again";
+
 // NYPLBookDownloadingCell
 
 "NYPLBookDownloadingCellDownloading" = "Downloading";
