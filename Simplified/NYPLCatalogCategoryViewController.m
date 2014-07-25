@@ -2,6 +2,8 @@
 #import "NYPLBook.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailController.h"
+#import "NYPLBookDownloadFailedCell.h"
+#import "NYPLBookDownloadingCell.h"
 #import "NYPLCatalogCategory.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
@@ -10,8 +12,9 @@
 #import "NYPLCatalogCategoryViewController.h"
 
 @interface NYPLCatalogCategoryViewController ()
-  <NYPLBookCellDelegate, NYPLCatalogCategoryDelegate, UICollectionViewDataSource,
-   UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+  <NYPLBookCellDelegate, NYPLBookDownloadFailedCellDelegate, NYPLBookDownloadingCellDelegate,
+   NYPLCatalogCategoryDelegate, UICollectionViewDataSource, UICollectionViewDelegate,
+   UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogCategory *category;
@@ -20,7 +23,9 @@
 
 @end
 
-static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell";
+static NSString *const reuseIdentifier = @"Default";
+static NSString *const reuseIdentifierDownloading = @"Downloading";
+static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
 
 @implementation NYPLCatalogCategoryViewController
 
@@ -56,9 +61,13 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
      // detection because any touch spanning a reload would cause the button to fail to fire its
      // "touch up inside" event upon release. This approach is also quite a bit more efficient than
      // constantly reloading.
-     for(NYPLBookCell *const cell in [self.collectionView visibleCells]) {
-       cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                                downloadProgressForBookIdentifier:cell.book.identifier];
+     for(UICollectionViewCell *const cell in [self.collectionView visibleCells]) {
+       if([cell isKindOfClass:[NYPLBookDownloadingCell class]]) {
+         NYPLBookDownloadingCell *const downloadingCell = (NYPLBookDownloadingCell *)cell;
+         NSString *const bookIdentifier = downloadingCell.book.identifier;
+         downloadingCell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                                             downloadProgressForBookIdentifier:bookIdentifier];
+       }
      }
    }];
   
@@ -87,6 +96,10 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
   self.collectionView.delegate = self;
   [self.collectionView registerClass:[NYPLBookCell class]
           forCellWithReuseIdentifier:reuseIdentifier];
+  [self.collectionView registerClass:[NYPLBookDownloadingCell class]
+          forCellWithReuseIdentifier:reuseIdentifierDownloading];
+  [self.collectionView registerClass:[NYPLBookDownloadFailedCell class]
+          forCellWithReuseIdentifier:reuseIdentifierDownloadFailed];
   self.collectionView.backgroundColor = [UIColor whiteColor];
   self.collectionView.hidden = YES;
   [self.view addSubview:self.collectionView];
@@ -169,23 +182,49 @@ static NSString *const reuseIdentifier = @"NYPLCatalogCategoryViewControllerCell
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-  NYPLBookCell *const cell = [collectionView
-                              dequeueReusableCellWithReuseIdentifier:reuseIdentifier
-                              forIndexPath:indexPath];
-  
-  assert([cell isKindOfClass:[NYPLBookCell class]]);
-  
-  NYPLBook *const book = self.category.books[indexPath.row];
-  
-  cell.book = book;
-  cell.delegate = self;
-  cell.state = [[NYPLMyBooksRegistry sharedRegistry] stateForIdentifier:book.identifier];
-  cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                           downloadProgressForBookIdentifier:book.identifier];
-  
   [self.category prepareForBookIndex:indexPath.row];
   
-  return cell;
+  NYPLBook *const book = self.category.books[indexPath.row];
+  NYPLMyBooksState const state = [[NYPLMyBooksRegistry sharedRegistry]
+                                  stateForIdentifier:book.identifier];
+  
+  switch(state) {
+    case NYPLMyBooksStateUnregistered:
+      // fallthrough
+    case NYPLMyBooksStateDownloadNeeded:
+      // fallthrough
+    case NYPLMyBooksStateDownloadSuccessful:
+    {
+      NYPLBookCell *const cell = [collectionView
+                                  dequeueReusableCellWithReuseIdentifier:reuseIdentifier
+                                  forIndexPath:indexPath];
+      cell.book = book;
+      cell.delegate = self;
+      cell.downloadButtonHidden = state == NYPLMyBooksStateDownloadSuccessful;
+      
+      return cell;
+    }
+    case NYPLMyBooksStateDownloading:
+    {
+      NYPLBookDownloadingCell *const cell =
+        [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifierDownloading
+                                                  forIndexPath:indexPath];
+      cell.book = book;
+      cell.delegate = self;
+      cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                               downloadProgressForBookIdentifier:book.identifier];
+      return cell;
+    }
+    case NYPLMyBooksStateDownloadFailed:
+    {
+      NYPLBookDownloadFailedCell *const cell =
+        [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifierDownloadFailed
+                                                  forIndexPath:indexPath];
+      cell.book = book;
+      cell.delegate = self;
+      return cell;
+    }
+  }
 }
 
 #pragma mark UICollectionViewDelegate
@@ -254,6 +293,27 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
      }];
   }
+}
+
+#pragma mark NYPLBookDownloadFailedDelegate
+
+- (void)didSelectCancelForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *)cell
+{
+  [[NYPLMyBooksRegistry sharedRegistry]
+   setState:NYPLMyBooksStateDownloadNeeded forIdentifier:cell.book.identifier];
+}
+
+- (void)didSelectTryAgainForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *)cell
+{
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:cell.book];
+}
+
+#pragma mark NYPLBookDownloadingCellDelegate
+
+- (void)didSelectCancelForBookDownloadingCell:(NYPLBookDownloadingCell *)cell
+{
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+   cancelDownloadForBookIdentifier:cell.book.identifier];
 }
 
 #pragma mark -

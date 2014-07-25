@@ -1,7 +1,17 @@
-// Shared
+// Generic
 
-"OK" = "OK";
 "CheckConnection" = "Please check your connection or try again later.";
+"Cancel" = "Cancel";
+"OK" = "OK";
+
+// NYPLBookDownloadFailedCell
+
+"NYPLBookDownloadFailedCellMessage" = "The download could not be completed.";
+"NYPLBookDownloadFailedCellTryAgain" = "Try Again";
+
+// NYPLBookDownloadingCell
+
+"NYPLBookDownloadingCellDownloading" = "Downloading";
 
 // NYPLCatalogCategoryViewController
 
