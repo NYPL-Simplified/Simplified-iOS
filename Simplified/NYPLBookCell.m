@@ -51,14 +51,16 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   
   [self.author sizeToFit];
   CGRect authorFrame = self.author.frame;
-  authorFrame.origin = CGPointMake(100, CGRectGetMaxY(titleFrame) + 5);
+  authorFrame.origin = CGPointMake(100, CGRectGetMaxY(titleFrame));
   authorFrame.size.width = CGRectGetWidth(self.frame) - 105;
   self.author.frame = authorFrame;
   
   [self.downloadButton sizeToFit];
-  self.downloadButton.frame = CGRectInset(self.downloadButton.frame, -5, 3);
+  self.downloadButton.frame = CGRectInset(self.downloadButton.frame, -8, 0);
   CGRect downloadButtonFrame = self.downloadButton.frame;
-  downloadButtonFrame.origin = CGPointMake(100, CGRectGetMaxY(authorFrame) + 5);
+  downloadButtonFrame.origin = CGPointMake(100,
+                                           (CGRectGetHeight(self.contentView.frame) -
+                                            CGRectGetHeight(downloadButtonFrame) - 5));
   self.downloadButton.frame = downloadButtonFrame;
 }
 

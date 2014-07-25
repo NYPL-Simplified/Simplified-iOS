@@ -7,10 +7,16 @@
 
 @interface NYPLMyBooksDownloadCenter () <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate>
 
-@property (nonatomic) BOOL broadcastScheduled;
-@property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadProgress;
-@property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadTask;
 @property (nonatomic) NSURLSession *session;
+@property (nonatomic) BOOL broadcastScheduled;
+
+// Entries are kept in memory until the end of the application's run.
+@property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadProgress;
+
+// Entries are removed upon download completion.
+@property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadTask;
+
+// Entries are removed upon download completion.
 @property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
 
 @end
@@ -78,7 +84,7 @@
   
   NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
   
-  if(!!request.URL) {
+  if(!request.URL) {
     // Originally this code just let the request fail later on, but apparently resuming an
     // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
     // segmentation fault.
@@ -166,20 +172,10 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 }
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
-      downloadTask:(NSURLSessionDownloadTask *)downloadTask
+      downloadTask:(__attribute__((unused)) NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(__attribute__((unused)) NSURL *)location
 {
-  NSNumber *const key = [NSNumber numberWithUnsignedLong:downloadTask.taskIdentifier];
-  NYPLBook *const book = self.taskIdentifierToBook[key];
-  
   // TODO: Copy file to permanent location here.
-  
-  self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:1.0];
-  
-  [[NYPLMyBooksRegistry sharedRegistry]
-   setState:NYPLMyBooksStateDownloadSuccessful forIdentifier:book.identifier];
-  
-  [self broadcastUpdate];
 }
 
 #pragma mark NSURLSessionTaskDelegate
@@ -204,11 +200,26 @@ didCompleteWithError:(NSError *)error
   NSNumber *const key = [NSNumber numberWithUnsignedLong:task.taskIdentifier];
   NYPLBook *const book = self.taskIdentifierToBook[key];
   
+  // This is safe to remove because we only keep this around to be able to cancel downloads.
+  [self.bookIdentifierToDownloadTask removeObjectForKey:book.identifier];
+  
+  // Even though |URLSession:downloadTask|didFinishDownloadingToURL:| needs this, it's safe to
+  // remove it here because the aforementioned method will be called first.
+  [self.taskIdentifierToBook removeObjectForKey:
+   [NSNumber numberWithUnsignedLong:task.taskIdentifier]];
+  
   if(error && error.code != NSURLErrorCancelled) {
     self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:1.0];
     
     [[NYPLMyBooksRegistry sharedRegistry]
      setState:NYPLMyBooksStateDownloadFailed forIdentifier:book.identifier];
+    
+    [self broadcastUpdate];
+  }
+  
+  if(!error) {
+    [[NYPLMyBooksRegistry sharedRegistry]
+     setState:NYPLMyBooksStateDownloadSuccessful forIdentifier:book.identifier];
     
     [self broadcastUpdate];
   }

@@ -15,6 +15,8 @@ static NSString *const NYPLMyBooksDownloadCenterDidChange =
 // controller itself in order to obtain the credentials from the user.
 - (void)startDownloadForBook:(NYPLBook *)book;
 
+// This should only be called when a download is actually occurring. To simply reset the state of a
+// book whose download has failed, one simply needs to change the state in the registry.
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier;
 
 // The value returned is in the range [0.0, 1.0]. Once a download for a particular book has begun,
