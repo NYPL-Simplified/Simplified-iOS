@@ -201,6 +201,7 @@ static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
       cell.book = book;
       cell.delegate = self;
       cell.downloadButtonHidden = state == NYPLMyBooksStateDownloadSuccessful;
+      cell.unreadIconHidden = state != NYPLMyBooksStateDownloadSuccessful;
       
       return cell;
     }
