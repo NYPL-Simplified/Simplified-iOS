@@ -42,14 +42,14 @@
                                            CGRectGetHeight(self.downloadingLabel.frame));
   
   NSString *const percentageLabelText = self.percentageLabel.text;
-  self.percentageLabel.text = @"00%";
+  self.percentageLabel.text = @"100%";
   [self.percentageLabel sizeToFit];
+  self.percentageLabel.text = percentageLabelText;
   self.percentageLabel.frame = CGRectMake((CGRectGetWidth(self.contentView.frame) - sidePadding -
                                            CGRectGetWidth(self.percentageLabel.frame)),
                                           CGRectGetMinY(self.downloadingLabel.frame),
                                           CGRectGetWidth(self.percentageLabel.frame),
                                           CGRectGetHeight(self.percentageLabel.frame));
-  self.percentageLabel.text = percentageLabelText;
   
   self.progressView.center = self.downloadingLabel.center;
   self.progressView.frame = CGRectMake(CGRectGetMaxX(self.downloadingLabel.frame) + sidePadding,
