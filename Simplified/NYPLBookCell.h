@@ -8,7 +8,9 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 
 @protocol NYPLBookCellDelegate
 
+- (void)didSelectDeleteForBookCell:(NYPLBookCell *)cell;
 - (void)didSelectDownloadForBookCell:(NYPLBookCell *)cell;
+- (void)didSelectReadForBookCell:(NYPLBookCell *)cell;
 
 @end
 

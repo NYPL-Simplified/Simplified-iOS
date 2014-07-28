@@ -1,8 +1,11 @@
 // Generic
 
-"CheckConnection" = "Please check your connection or try again later.";
 "Cancel" = "Cancel";
+"CheckConnection" = "Please check your connection or try again later.";
+"Download" = "Download";
+"Delete" = "Delete";
 "OK" = "OK";
+"Read" = "Read"; // present tense
 
 // NYPLBookDownloadFailedCell
 
