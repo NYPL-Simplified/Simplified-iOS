@@ -5,11 +5,11 @@
 
 @interface NYPLBookDetailView ()
 
-@property (nonatomic) UILabel *authors;
+@property (nonatomic) UILabel *authorsLabel;
 @property (nonatomic) NYPLBook *book;
-@property (nonatomic) UIImageView *cover;
+@property (nonatomic) UIImageView *coverImageView;
 @property (nonatomic) UIButton *downloadButton;
-@property (nonatomic) UILabel *title;
+@property (nonatomic) UILabel *titleLabel;
 
 @end
 
@@ -37,26 +37,26 @@ static CGFloat const mainTextPaddingRight = 10.0;
   
   self.book = book;
   
-  self.authors = [[UILabel alloc] init];
-  self.authors.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-  self.authors.numberOfLines = 3;
-  self.authors.text = book.authors;
-  [self addSubview:self.authors];
+  self.authorsLabel = [[UILabel alloc] init];
+  self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+  self.authorsLabel.numberOfLines = 3;
+  self.authorsLabel.text = book.authors;
+  [self addSubview:self.authorsLabel];
   
-  self.cover = [[UIImageView alloc] init];
-  self.cover.contentMode = UIViewContentModeScaleAspectFit;
-  self.cover.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-  [self addSubview:self.cover];
+  self.coverImageView = [[UIImageView alloc] init];
+  self.coverImageView.contentMode = UIViewContentModeScaleAspectFit;
+  self.coverImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+  [self addSubview:self.coverImageView];
   
-  self.cover.image =
+  self.coverImageView.image =
     [UIImage imageWithData:[[NYPLSession sharedSession] cachedDataForURL:book.imageURL]];
   
-  if(!self.cover.image) {
+  if(!self.coverImageView.image) {
     [[NYPLSession sharedSession]
      withURL:book.imageURL
      completionHandler:^(NSData *const data) {
        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         self.cover.image = [UIImage imageWithData:data];
+         self.coverImageView.image = [UIImage imageWithData:data];
        }];
      }];
   }
@@ -72,11 +72,11 @@ static CGFloat const mainTextPaddingRight = 10.0;
   
   [self addSubview:self.downloadButton];
   
-  self.title = [[UILabel alloc] init];
-  self.title.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-  self.title.numberOfLines = 3;
-  self.title.text = book.title;
-  [self addSubview:self.title];
+  self.titleLabel = [[UILabel alloc] init];
+  self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+  self.titleLabel.numberOfLines = 3;
+  self.titleLabel.text = book.title;
+  [self addSubview:self.titleLabel];
 
   return self;
 }
@@ -90,30 +90,32 @@ static CGFloat const mainTextPaddingRight = 10.0;
 
 - (void)layoutSubviews
 {
-  CGRect const frame = CGRectMake(coverPaddingLeft, coverPaddingTop, coverWidth, coverHeight);
-  self.cover.frame = frame;
-  
   {
-    CGFloat const x = CGRectGetMaxX(self.cover.frame) + mainTextPaddingLeft;
-    CGFloat const y = mainTextPaddingTop;
-    CGFloat const w = CGRectGetWidth(self.bounds) - x - mainTextPaddingRight;
-    CGFloat const h = [self.title sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-    self.title.frame = CGRectMake(x, y, w, h);
+    CGRect const frame = CGRectMake(coverPaddingLeft, coverPaddingTop, coverWidth, coverHeight);
+    self.coverImageView.frame = frame;
   }
   
   {
-    CGFloat const x = CGRectGetMinX(self.title.frame);
-    CGFloat const y = CGRectGetMaxY(self.title.frame);
-    CGFloat const w = CGRectGetWidth(self.title.frame);
-    CGFloat const h = [self.title sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-    self.authors.frame = CGRectMake(x, y, w, h);
+    CGFloat const x = CGRectGetMaxX(self.coverImageView.frame) + mainTextPaddingLeft;
+    CGFloat const y = mainTextPaddingTop;
+    CGFloat const w = CGRectGetWidth(self.bounds) - x - mainTextPaddingRight;
+    CGFloat const h = [self.titleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+    self.titleLabel.frame = CGRectMake(x, y, w, h);
+  }
+  
+  {
+    CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
+    CGFloat const y = CGRectGetMaxY(self.titleLabel.frame);
+    CGFloat const w = CGRectGetWidth(self.titleLabel.frame);
+    CGFloat const h = [self.titleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+    self.authorsLabel.frame = CGRectMake(x, y, w, h);
   }
   
   {
     [self.downloadButton sizeToFit];
     CGRect frame = self.downloadButton.frame;
-    frame.origin.x = CGRectGetMinX(self.authors.frame);
-    frame.origin.y = CGRectGetMaxY(self.authors.frame) + mainTextPaddingTop;
+    frame.origin.x = CGRectGetMinX(self.authorsLabel.frame);
+    frame.origin.y = CGRectGetMaxY(self.authorsLabel.frame) + mainTextPaddingTop;
     self.downloadButton.frame = frame;
   }
 }
