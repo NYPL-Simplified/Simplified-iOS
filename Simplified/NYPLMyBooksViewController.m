@@ -6,10 +6,12 @@
 #import "NYPLMyBooksViewController.h"
 
 @interface NYPLMyBooksViewController ()
-  <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+  <NYPLBookCellDelegate, UICollectionViewDataSource, UICollectionViewDelegate,
+   UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) NSArray *books;
 @property (nonatomic) UICollectionView *collectionView;
+@property (nonatomic) NSMutableArray *observers;
 
 @end
 
@@ -26,32 +28,38 @@ static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
 
   self.title = NSLocalizedString(@"MyBooksViewControllerTitle", nil);
   
+  self.observers = [NSMutableArray array];
+  
+  [self.observers addObject:
+   [[NSNotificationCenter defaultCenter]
+    addObserverForName:NYPLBookRegistryDidChange
+    object:nil
+    queue:[NSOperationQueue mainQueue]
+    usingBlock:^(__attribute__((unused)) NSNotification *note) {
+      [self updateBooks];
+      [self.collectionView reloadData];
+    }]];
+  
+  [self.observers addObject:
+   [[NSNotificationCenter defaultCenter]
+    addObserverForName:NYPLMyBooksDownloadCenterDidChange
+    object:nil
+    queue:[NSOperationQueue mainQueue]
+    usingBlock:^(__attribute__((unused)) NSNotification *note) {
+      [self updateBooks];
+      [self.collectionView reloadData];
+    }]];
+  
   [self updateBooks];
-  
-  [[NSNotificationCenter defaultCenter]
-   addObserverForName:NYPLBookRegistryDidChange
-   object:nil
-   queue:[NSOperationQueue mainQueue]
-   usingBlock:^(__attribute__((unused)) NSNotification *note) {
-     [self updateBooks];
-     [self.collectionView reloadData];
-   }];
-  
-  [[NSNotificationCenter defaultCenter]
-   addObserverForName:NYPLMyBooksDownloadCenterDidChange
-   object:nil
-   queue:[NSOperationQueue mainQueue]
-   usingBlock:^(__attribute__((unused)) NSNotification *note) {
-     [self updateBooks];
-     [self.collectionView reloadData];
-   }];
   
   return self;
 }
 
 - (void)dealloc
 {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  for(id const observer in self.observers) {
+    [[NSNotificationCenter defaultCenter] removeObserver:observer];
+  }
 }
 
 #pragma mark UIViewController
@@ -63,12 +71,13 @@ static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
   self.collectionView = [[UICollectionView alloc]
                          initWithFrame:self.view.bounds
                          collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
+  NYPLBookCellRegisterClassesForCollectionView(self.collectionView);
+  [self.observers addObjectsFromArray:
+   NYPLBookCellRegisterNotificationsForCollectionView(self.collectionView)];
   self.collectionView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                           UIViewAutoresizingFlexibleHeight);
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
-  [self.collectionView registerClass:[NYPLBookCell class]
-          forCellWithReuseIdentifier:reuseIdentifier];
   self.collectionView.backgroundColor = [UIColor whiteColor];
   [self.view addSubview:self.collectionView];
 }
@@ -123,17 +132,9 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-  NYPLBookCell *const cell = [collectionView
-                              dequeueReusableCellWithReuseIdentifier:reuseIdentifier
-                              forIndexPath:indexPath];
-  
-  assert([cell isKindOfClass:[NYPLBookCell class]]);
-  
   NYPLBook *const book = self.books[indexPath.row];
   
-  cell.book = book;
-  
-  return cell;
+  return NYPLBookCellDequeue(collectionView, indexPath, book);
 }
 
 #pragma mark -

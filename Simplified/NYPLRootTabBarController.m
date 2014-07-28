@@ -16,6 +16,21 @@
 
 @implementation NYPLRootTabBarController
 
++ (instancetype)sharedController
+{
+  static dispatch_once_t predicate;
+  static NYPLRootTabBarController *sharedController = nil;
+  
+  dispatch_once(&predicate, ^{
+    sharedController = [[self alloc] init];
+    if(!sharedController) {
+      NYPLLOG(@"Failed to create shared controller.");
+    }
+  });
+  
+  return sharedController;
+}
+
 #pragma mark NSObject
 
 - (instancetype)init

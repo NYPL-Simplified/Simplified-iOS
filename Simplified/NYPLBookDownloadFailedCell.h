@@ -1,3 +1,5 @@
+#import "NYPLBookCell.h"
+
 @class NYPLBook;
 @class NYPLBookDownloadFailedCell;
 
@@ -8,7 +10,7 @@
 
 @end
 
-@interface NYPLBookDownloadFailedCell : UICollectionViewCell
+@interface NYPLBookDownloadFailedCell : NYPLBookCell
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic, weak) id<NYPLBookDownloadFailedCellDelegate> delegate;
