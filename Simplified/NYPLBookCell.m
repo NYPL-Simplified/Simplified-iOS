@@ -40,25 +40,25 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 {
   self.contentView.frame = self.bounds;
   
-  self.cover.frame = CGRectMake(5, 5, 90, CGRectGetHeight(self.frame) - 10);
+  self.cover.frame = CGRectMake(20, 5, 90, CGRectGetHeight(self.frame) - 10);
   self.cover.contentMode = UIViewContentModeScaleAspectFit;
   
   [self.title sizeToFit];
   CGRect titleFrame = self.title.frame;
-  titleFrame.origin = CGPointMake(100, 5);
-  titleFrame.size.width = CGRectGetWidth(self.frame) - 105;
+  titleFrame.origin = CGPointMake(115, 5);
+  titleFrame.size.width = CGRectGetWidth(self.frame) - 120;
   self.title.frame = titleFrame;
   
   [self.author sizeToFit];
   CGRect authorFrame = self.author.frame;
-  authorFrame.origin = CGPointMake(100, CGRectGetMaxY(titleFrame));
-  authorFrame.size.width = CGRectGetWidth(self.frame) - 105;
+  authorFrame.origin = CGPointMake(115, CGRectGetMaxY(titleFrame));
+  authorFrame.size.width = CGRectGetWidth(self.frame) - 120;
   self.author.frame = authorFrame;
   
   [self.downloadButton sizeToFit];
   self.downloadButton.frame = CGRectInset(self.downloadButton.frame, -8, 0);
   CGRect downloadButtonFrame = self.downloadButton.frame;
-  downloadButtonFrame.origin = CGPointMake(100,
+  downloadButtonFrame.origin = CGPointMake(115,
                                            (CGRectGetHeight(self.contentView.frame) -
                                             CGRectGetHeight(downloadButtonFrame) - 5));
   self.downloadButton.frame = downloadButtonFrame;
