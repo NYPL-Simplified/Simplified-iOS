@@ -1,8 +1,7 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
 #import "NYPLAsync.h"
-#import "NYPLBookDetailView.h"
-#import "NYPLBookDetailController.h"
+#import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogCategoryViewController.h"
 #import "NYPLBook.h"
 #import "NYPLCatalogLane.h"
@@ -173,7 +172,7 @@ viewForHeaderInSection:(NSInteger const)section
   NYPLCatalogLane *const lane = self.catalogRoot.lanes[cell.laneIndex];
   NYPLBook *const book = lane.books[bookIndex];
   
-  [[NYPLBookDetailController sharedController] displayBook:book fromViewController:self];
+  [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
 
 #pragma mark -

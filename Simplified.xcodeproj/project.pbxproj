@@ -11,7 +11,7 @@
 		11078357198160A50071AB1E /* NYPLBookDownloadFailedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */; };
 		1107835E19816E3D0071AB1E /* UIView+NYPLViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */; };
 		110AF8961961D94D004887C3 /* NYPLBookDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 110AF8951961D94D004887C3 /* NYPLBookDetailView.m */; };
-		110AF89C1961ED1F004887C3 /* NYPLBookDetailViewControllerPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = 110AF89B1961ED1F004887C3 /* NYPLBookDetailViewControllerPhone.m */; };
+		110AF89C1961ED1F004887C3 /* NYPLBookDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */; };
 		111197281986B43B0014462F /* NYPLBookCellDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 111197271986B43B0014462F /* NYPLBookCellDelegate.m */; };
 		111197341986D7550014462F /* NYPLDismissableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111197331986D7550014462F /* NYPLDismissableViewController.m */; };
 		1114A6A1195884CB007507A2 /* NYPLCatalogCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1114A6A0195884CB007507A2 /* NYPLCatalogCategory.m */; };
@@ -19,8 +19,6 @@
 		11172764197F31280043EFBF /* NYPLAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 11172763197F31280043EFBF /* NYPLAccount.m */; };
 		112C694D197301FE00C48F95 /* NYPLMyBooksRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 112C694C197301FE00C48F95 /* NYPLMyBooksRecord.m */; };
 		112C6953197309C500C48F95 /* NYPLMyBooksState.m in Sources */ = {isa = PBXBuildFile; fileRef = 112C6952197309C500C48F95 /* NYPLMyBooksState.m */; };
-		1133A4851964664C00247362 /* NYPLBookDetailViewPad.m in Sources */ = {isa = PBXBuildFile; fileRef = 1133A4841964664C00247362 /* NYPLBookDetailViewPad.m */; };
-		113562E619758FCC001699A9 /* NYPLBookDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 113562E519758FCC001699A9 /* NYPLBookDetailController.m */; };
 		11396FB9193D289100E16EE8 /* NSDate+NYPLDateAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 11396FB8193D289100E16EE8 /* NSDate+NYPLDateAdditions.m */; };
 		11396FBB193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */; };
 		11396FC9193F674F00E16EE8 /* NYPLOPDSFeedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11396FC8193F674F00E16EE8 /* NYPLOPDSFeedTests.m */; };
@@ -52,7 +50,6 @@
 		1183F353194F795800DC322F /* NYPLBookAcquisition.m in Sources */ = {isa = PBXBuildFile; fileRef = 1183F352194F795800DC322F /* NYPLBookAcquisition.m */; };
 		1183F35B194F847100DC322F /* NYPLAsync.m in Sources */ = {isa = PBXBuildFile; fileRef = 1183F35A194F847100DC322F /* NYPLAsync.m */; };
 		1183F3601952194000DC322F /* NYPLCatalogRootTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1183F35F1952194000DC322F /* NYPLCatalogRootTests.m */; };
-		118992C51974868E0079658E /* NYPLBookDetailViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 118992C41974868E0079658E /* NYPLBookDetailViewDelegate.m */; };
 		118B7ABF195CBF72005CE3E7 /* NYPLSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 118B7ABE195CBF72005CE3E7 /* NYPLSession.m */; };
 		1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1196F75A1970727C00F62670 /* NYPLMyBooksDownloadCenter.m */; };
 		11A16E69195B2BD3004147F4 /* NYPLCatalogCategoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E68195B2BD3004147F4 /* NYPLCatalogCategoryViewController.m */; };
@@ -113,8 +110,8 @@
 		1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+NYPLViewAdditions.m"; sourceTree = "<group>"; };
 		110AF8941961D94D004887C3 /* NYPLBookDetailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailView.h; sourceTree = "<group>"; };
 		110AF8951961D94D004887C3 /* NYPLBookDetailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDetailView.m; sourceTree = "<group>"; };
-		110AF89A1961ED1F004887C3 /* NYPLBookDetailViewControllerPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailViewControllerPhone.h; sourceTree = "<group>"; };
-		110AF89B1961ED1F004887C3 /* NYPLBookDetailViewControllerPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDetailViewControllerPhone.m; sourceTree = "<group>"; };
+		110AF89A1961ED1F004887C3 /* NYPLBookDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailViewController.h; sourceTree = "<group>"; };
+		110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDetailViewController.m; sourceTree = "<group>"; };
 		111197261986B43B0014462F /* NYPLBookCellDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookCellDelegate.h; sourceTree = "<group>"; };
 		111197271986B43B0014462F /* NYPLBookCellDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookCellDelegate.m; sourceTree = "<group>"; };
 		111197321986D7550014462F /* NYPLDismissableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLDismissableViewController.h; sourceTree = "<group>"; };
@@ -130,10 +127,6 @@
 		112C694C197301FE00C48F95 /* NYPLMyBooksRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksRecord.m; sourceTree = "<group>"; };
 		112C6951197309C500C48F95 /* NYPLMyBooksState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksState.h; sourceTree = "<group>"; };
 		112C6952197309C500C48F95 /* NYPLMyBooksState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksState.m; sourceTree = "<group>"; };
-		1133A4831964664C00247362 /* NYPLBookDetailViewPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailViewPad.h; sourceTree = "<group>"; };
-		1133A4841964664C00247362 /* NYPLBookDetailViewPad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDetailViewPad.m; sourceTree = "<group>"; };
-		113562E419758FCC001699A9 /* NYPLBookDetailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailController.h; sourceTree = "<group>"; };
-		113562E519758FCC001699A9 /* NYPLBookDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDetailController.m; sourceTree = "<group>"; };
 		11396FB7193D289100E16EE8 /* NSDate+NYPLDateAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NYPLDateAdditions.h"; sourceTree = "<group>"; };
 		11396FB8193D289100E16EE8 /* NSDate+NYPLDateAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NYPLDateAdditions.m"; sourceTree = "<group>"; };
 		11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLDateAdditionsTests.m; sourceTree = "<group>"; };
@@ -173,8 +166,6 @@
 		1183F359194F847100DC322F /* NYPLAsync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAsync.h; sourceTree = "<group>"; };
 		1183F35A194F847100DC322F /* NYPLAsync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NYPLAsync.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		1183F35F1952194000DC322F /* NYPLCatalogRootTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogRootTests.m; sourceTree = "<group>"; };
-		118992C31974868E0079658E /* NYPLBookDetailViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailViewDelegate.h; sourceTree = "<group>"; };
-		118992C41974868E0079658E /* NYPLBookDetailViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDetailViewDelegate.m; sourceTree = "<group>"; };
 		118B7ABD195CBF72005CE3E7 /* NYPLSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSession.h; sourceTree = "<group>"; };
 		118B7ABE195CBF72005CE3E7 /* NYPLSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSession.m; sourceTree = "<group>"; };
 		1196F7591970727C00F62670 /* NYPLMyBooksDownloadCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksDownloadCenter.h; sourceTree = "<group>"; };
@@ -306,10 +297,8 @@
 		11616E0C196B035B003D60D9 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				113562E419758FCC001699A9 /* NYPLBookDetailController.h */,
-				113562E519758FCC001699A9 /* NYPLBookDetailController.m */,
-				110AF89A1961ED1F004887C3 /* NYPLBookDetailViewControllerPhone.h */,
-				110AF89B1961ED1F004887C3 /* NYPLBookDetailViewControllerPhone.m */,
+				110AF89A1961ED1F004887C3 /* NYPLBookDetailViewController.h */,
+				110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -334,8 +323,6 @@
 				11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */,
 				110AF8941961D94D004887C3 /* NYPLBookDetailView.h */,
 				110AF8951961D94D004887C3 /* NYPLBookDetailView.m */,
-				1133A4831964664C00247362 /* NYPLBookDetailViewPad.h */,
-				1133A4841964664C00247362 /* NYPLBookDetailViewPad.m */,
 				11078355198160A50071AB1E /* NYPLBookDownloadFailedCell.h */,
 				11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */,
 				11B6020319806CD300800DA9 /* NYPLBookDownloadingCell.h */,
@@ -406,8 +393,6 @@
 			children = (
 				111197261986B43B0014462F /* NYPLBookCellDelegate.h */,
 				111197271986B43B0014462F /* NYPLBookCellDelegate.m */,
-				118992C31974868E0079658E /* NYPLBookDetailViewDelegate.h */,
-				118992C41974868E0079658E /* NYPLBookDetailViewDelegate.m */,
 			);
 			name = Delegates;
 			sourceTree = "<group>";
@@ -740,7 +725,6 @@
 				11396FB9193D289100E16EE8 /* NSDate+NYPLDateAdditions.m in Sources */,
 				1183F347194F744D00DC322F /* NYPLBook.m in Sources */,
 				1183F341194F723D00DC322F /* NYPLCatalogLane.m in Sources */,
-				1133A4851964664C00247362 /* NYPLBookDetailViewPad.m in Sources */,
 				11A16E6F195B60DF004147F4 /* NYPLBookNormalCell.m in Sources */,
 				11548C0E1939147D009DBF2E /* NYPLCatalogNavigationController.m in Sources */,
 				111197341986D7550014462F /* NYPLDismissableViewController.m in Sources */,
@@ -759,11 +743,10 @@
 				112C694D197301FE00C48F95 /* NYPLMyBooksRecord.m in Sources */,
 				116A5EB3194767DC00491A21 /* NYPLMyBooksViewController.m in Sources */,
 				11078357198160A50071AB1E /* NYPLBookDownloadFailedCell.m in Sources */,
-				110AF89C1961ED1F004887C3 /* NYPLBookDetailViewControllerPhone.m in Sources */,
+				110AF89C1961ED1F004887C3 /* NYPLBookDetailViewController.m in Sources */,
 				11C5DCFB1976D2F4005A9945 /* NYPLSettingsViewController.m in Sources */,
 				11C5DCF21976D1E0005A9945 /* NYPLHoldsNavigationController.m in Sources */,
 				1114A6A1195884CB007507A2 /* NYPLCatalogCategory.m in Sources */,
-				118992C51974868E0079658E /* NYPLBookDetailViewDelegate.m in Sources */,
 				11C5DCF51976D22F005A9945 /* NYPLHoldsViewController.m in Sources */,
 				A823D821192BABA400B55DE2 /* NYPLAppDelegate.m in Sources */,
 				1183F33E194F71A500DC322F /* NYPLCatalogRoot.m in Sources */,
@@ -773,7 +756,6 @@
 				1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */,
 				112C6953197309C500C48F95 /* NYPLMyBooksState.m in Sources */,
 				AE77EE7AACC975280BAB9A4C /* NYPLOPDSFeed.m in Sources */,
-				113562E619758FCC001699A9 /* NYPLBookDetailController.m in Sources */,
 				AE77EB0CB5B94AEC591E2D91 /* NYPLOPDSLink.m in Sources */,
 				AE77E7E37D89FB3EED630624 /* NYPLOPDSType.m in Sources */,
 			);

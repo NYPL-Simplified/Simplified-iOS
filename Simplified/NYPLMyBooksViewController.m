@@ -1,5 +1,5 @@
 #import "NYPLBookCell.h"
-#import "NYPLBookDetailViewControllerPhone.h"
+#import "NYPLBookDetailViewController.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
 

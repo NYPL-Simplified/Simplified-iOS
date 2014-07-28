@@ -1,7 +1,7 @@
 #import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookNormalCell.h"
-#import "NYPLBookDetailController.h"
+#import "NYPLBookDetailViewController.h"
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLCatalogCategory.h"
@@ -163,7 +163,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
   NYPLBook *const book = self.category.books[indexPath.row];
   
-  [[NYPLBookDetailController sharedController] displayBook:book fromViewController:self];
+  [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
 
 #pragma mark UICollectionViewDelegateFlowLayout
