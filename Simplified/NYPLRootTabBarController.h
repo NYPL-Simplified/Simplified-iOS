@@ -1,6 +1,5 @@
 @interface NYPLRootTabBarController : UITabBarController
 
-// designated initializer
-- (instancetype)init;
++ (instancetype)sharedController;
 
 @end

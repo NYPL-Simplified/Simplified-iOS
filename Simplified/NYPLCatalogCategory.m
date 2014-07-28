@@ -81,13 +81,11 @@ static NSUInteger const preloadThreshold = 100;
   self.title = title;
   
   [[NSNotificationCenter defaultCenter]
-   addObserverForName:NYPLBookRegistryDidChange
-   object:nil
-   queue:[NSOperationQueue mainQueue]
-   usingBlock:^(__attribute__((unused)) NSNotification *note) {
-     [self refreshBooks];
-   }];
-
+   addObserver:self
+   selector:@selector(refreshBooks)
+   name:NYPLBookRegistryDidChange
+   object:nil];
+  
   return self;
 }
 
