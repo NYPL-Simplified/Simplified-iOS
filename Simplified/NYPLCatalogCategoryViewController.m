@@ -279,6 +279,11 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 
 #pragma mark NYPLBookCellDelegate
 
+- (void)didSelectDeleteForBookCell:(__attribute__((unused)) NYPLBookCell *)cell
+{
+  // TODO
+}
+
 - (void)didSelectDownloadForBookCell:(NYPLBookCell *const)cell
 {
   NYPLBook *const book = cell.book;
@@ -294,6 +299,11 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
      }];
   }
+}
+
+- (void)didSelectReadForBookCell:(__attribute__((unused)) NYPLBookCell *)cell
+{
+  // TODO
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate

@@ -27,8 +27,10 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 @property (nonatomic) UILabel *author;
 @property (nonatomic) UIImageView *cover;
 @property (nonatomic) NSURL *coverURL;
+@property (nonatomic) UIButton *deleteButton;
 @property (nonatomic) UIButton *downloadButton;
 @property (nonatomic) UILabel *title;
+@property (nonatomic) UIButton *readButton;
 @property (nonatomic) UIImageView *unreadImageView;
 
 @end
@@ -55,6 +57,14 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   authorFrame.origin = CGPointMake(115, CGRectGetMaxY(titleFrame));
   authorFrame.size.width = CGRectGetWidth(self.frame) - 120;
   self.author.frame = authorFrame;
+  
+  [self.deleteButton sizeToFit];
+  self.deleteButton.frame = CGRectInset(self.deleteButton.frame, -8, 0);
+  CGRect deleteButtonFrame = self.deleteButton.frame;
+  deleteButtonFrame.origin = CGPointMake(115,
+                                         (CGRectGetHeight(self.contentView.frame) -
+                                          CGRectGetHeight(deleteButtonFrame) - 5));
+  self.deleteButton.frame = deleteButtonFrame;
   
   [self.downloadButton sizeToFit];
   self.downloadButton.frame = CGRectInset(self.downloadButton.frame, -8, 0);
@@ -86,9 +96,23 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
     [self.contentView addSubview:self.cover];
   }
   
+  if(!self.deleteButton) {
+    self.deleteButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.deleteButton setTitle:NSLocalizedString(@"Delete", nil)
+                       forState:UIControlStateNormal];
+    [self.deleteButton addTarget:self
+                          action:@selector(didSelectDelete)
+                forControlEvents:UIControlEventTouchUpInside];
+    self.deleteButton.layer.cornerRadius = 2;
+    self.deleteButton.layer.borderWidth = 1;
+    self.deleteButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
+    [self.contentView addSubview:self.deleteButton];
+  }
+  
   if(!self.downloadButton) {
     self.downloadButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.downloadButton setTitle:@"Download" forState:UIControlStateNormal];
+    [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
+                         forState:UIControlStateNormal];
     [self.downloadButton addTarget:self
                             action:@selector(didSelectDownload)
                   forControlEvents:UIControlEventTouchUpInside];
@@ -148,6 +172,11 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   }
   
   [self setNeedsLayout];
+}
+
+- (void)didSelectDelete
+{
+  [self.delegate didSelectDeleteForBookCell:self];
 }
 
 - (void)didSelectDownload
