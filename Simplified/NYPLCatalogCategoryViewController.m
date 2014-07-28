@@ -190,9 +190,25 @@ static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
   
   switch(state) {
     case NYPLMyBooksStateUnregistered:
-      // fallthrough
+    {
+      NYPLBookCell *const cell = [collectionView
+                                  dequeueReusableCellWithReuseIdentifier:reuseIdentifier
+                                  forIndexPath:indexPath];
+      cell.book = book;
+      cell.delegate = self;
+      cell.state = NYPLBookCellStateUnregistered;
+      return cell;
+    }
     case NYPLMyBooksStateDownloadNeeded:
-      // fallthrough
+    {
+      NYPLBookCell *const cell = [collectionView
+                                  dequeueReusableCellWithReuseIdentifier:reuseIdentifier
+                                  forIndexPath:indexPath];
+      cell.book = book;
+      cell.delegate = self;
+      cell.state = NYPLBookCellStateDownloadNeeded;
+      return cell;
+    }
     case NYPLMyBooksStateDownloadSuccessful:
     {
       NYPLBookCell *const cell = [collectionView
@@ -200,9 +216,7 @@ static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
                                   forIndexPath:indexPath];
       cell.book = book;
       cell.delegate = self;
-      cell.downloadButtonHidden = state == NYPLMyBooksStateDownloadSuccessful;
-      cell.unreadIconHidden = state != NYPLMyBooksStateDownloadSuccessful;
-      
+      cell.state = NYPLBookCellStateDownloadSuccessful;
       return cell;
     }
     case NYPLMyBooksStateDownloading:

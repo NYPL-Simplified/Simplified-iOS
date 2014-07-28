@@ -184,24 +184,11 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   [self.delegate didSelectDownloadForBookCell:self];
 }
 
-- (BOOL)downloadButtonHidden
+- (void)setState:(NYPLBookCellState const)state
 {
-  return self.downloadButton.hidden;
-}
-
-- (void)setDownloadButtonHidden:(BOOL const)hidden
-{
-  self.downloadButton.hidden = hidden;
-}
-
-- (BOOL)unreadIconHidden
-{
-  return self.unreadImageView.hidden;
-}
-
-- (void)setUnreadIconHidden:(BOOL const)hidden
-{
-  self.unreadImageView.hidden = hidden;
+  _state = state;
+  
+  [self setNeedsLayout];
 }
 
 @end
