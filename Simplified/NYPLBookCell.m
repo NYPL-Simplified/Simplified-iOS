@@ -27,8 +27,10 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 @property (nonatomic) UILabel *author;
 @property (nonatomic) UIImageView *cover;
 @property (nonatomic) NSURL *coverURL;
+@property (nonatomic) UIButton *deleteButton;
 @property (nonatomic) UIButton *downloadButton;
 @property (nonatomic) UILabel *title;
+@property (nonatomic) UIButton *readButton;
 @property (nonatomic) UIImageView *unreadImageView;
 
 @end
@@ -55,6 +57,21 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   authorFrame.origin = CGPointMake(115, CGRectGetMaxY(titleFrame));
   authorFrame.size.width = CGRectGetWidth(self.frame) - 120;
   self.author.frame = authorFrame;
+  
+  [self.deleteButton sizeToFit];
+  self.deleteButton.frame = CGRectInset(self.deleteButton.frame, -8, 0);
+  CGRect deleteButtonFrame = self.deleteButton.frame;
+  deleteButtonFrame.origin = CGPointMake(115,
+                                         (CGRectGetHeight(self.contentView.frame) -
+                                          CGRectGetHeight(deleteButtonFrame) - 5));
+  self.deleteButton.frame = deleteButtonFrame;
+  
+  [self.readButton sizeToFit];
+  self.readButton.frame = CGRectInset(self.readButton.frame, -8, 0);
+  CGRect readButtonFrame = self.readButton.frame;
+  readButtonFrame.origin = CGPointMake(CGRectGetMaxX(self.deleteButton.frame) + 5,
+                                       CGRectGetMinY(self.deleteButton.frame));
+  self.readButton.frame = readButtonFrame;
   
   [self.downloadButton sizeToFit];
   self.downloadButton.frame = CGRectInset(self.downloadButton.frame, -8, 0);
@@ -86,9 +103,23 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
     [self.contentView addSubview:self.cover];
   }
   
+  if(!self.deleteButton) {
+    self.deleteButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.deleteButton setTitle:NSLocalizedString(@"Delete", nil)
+                       forState:UIControlStateNormal];
+    [self.deleteButton addTarget:self
+                          action:@selector(didSelectDelete)
+                forControlEvents:UIControlEventTouchUpInside];
+    self.deleteButton.layer.cornerRadius = 2;
+    self.deleteButton.layer.borderWidth = 1;
+    self.deleteButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
+    [self.contentView addSubview:self.deleteButton];
+  }
+  
   if(!self.downloadButton) {
     self.downloadButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.downloadButton setTitle:@"Download" forState:UIControlStateNormal];
+    [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
+                         forState:UIControlStateNormal];
     [self.downloadButton addTarget:self
                             action:@selector(didSelectDownload)
                   forControlEvents:UIControlEventTouchUpInside];
@@ -96,6 +127,18 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
     self.downloadButton.layer.borderWidth = 1;
     self.downloadButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
     [self.contentView addSubview:self.downloadButton];
+  }
+  
+  if(!self.readButton) {
+    self.readButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.readButton setTitle:NSLocalizedString(@"Read", nil) forState:UIControlStateNormal];
+    [self.readButton addTarget:self
+                        action:@selector(didSelectRead)
+              forControlEvents:UIControlEventTouchUpInside];
+    self.readButton.layer.cornerRadius = 2;
+    self.readButton.layer.borderWidth = 1;
+    self.readButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
+    [self.contentView addSubview:self.readButton];
   }
   
   if(!self.title) {
@@ -150,29 +193,41 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   [self setNeedsLayout];
 }
 
+- (void)didSelectDelete
+{
+  [self.delegate didSelectDeleteForBookCell:self];
+}
+
 - (void)didSelectDownload
 {
   [self.delegate didSelectDownloadForBookCell:self];
 }
 
-- (BOOL)downloadButtonHidden
+- (void)didSelectRead
 {
-  return self.downloadButton.hidden;
+  [self.delegate didSelectReadForBookCell:self];
 }
 
-- (void)setDownloadButtonHidden:(BOOL const)hidden
+- (void)setState:(NYPLBookCellState const)state
 {
-  self.downloadButton.hidden = hidden;
-}
-
-- (BOOL)unreadIconHidden
-{
-  return self.unreadImageView.hidden;
-}
-
-- (void)setUnreadIconHidden:(BOOL const)hidden
-{
-  self.unreadImageView.hidden = hidden;
+  _state = state;
+  
+  switch(state) {
+    case NYPLBookCellStateUnregistered:
+      // fallthrough
+    case NYPLBookCellStateDownloadNeeded:
+      self.deleteButton.hidden = YES;
+      self.downloadButton.hidden = NO;
+      self.readButton.hidden = YES;
+      self.unreadImageView.hidden = YES;
+      break;
+    case NYPLBookCellStateDownloadSuccessful:
+      self.deleteButton.hidden = NO;
+      self.downloadButton.hidden = YES;
+      self.readButton.hidden = NO;
+      self.unreadImageView.hidden = NO;
+      break;
+  }
 }
 
 @end
