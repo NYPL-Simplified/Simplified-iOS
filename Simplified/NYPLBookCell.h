@@ -17,5 +17,6 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic, weak) id<NYPLBookCellDelegate> delegate;
 @property (nonatomic) BOOL downloadButtonHidden;
+@property (nonatomic) BOOL unreadIconHidden;
 
 @end

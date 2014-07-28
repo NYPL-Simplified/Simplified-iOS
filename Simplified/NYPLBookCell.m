@@ -26,9 +26,10 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 
 @property (nonatomic) UILabel *author;
 @property (nonatomic) UIImageView *cover;
+@property (nonatomic) NSURL *coverURL;
 @property (nonatomic) UIButton *downloadButton;
 @property (nonatomic) UILabel *title;
-@property (nonatomic) NSURL *coverURL;
+@property (nonatomic) UIImageView *unreadImageView;
 
 @end
 
@@ -40,28 +41,32 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 {
   self.contentView.frame = self.bounds;
   
-  self.cover.frame = CGRectMake(5, 5, 90, CGRectGetHeight(self.frame) - 10);
+  self.cover.frame = CGRectMake(20, 5, 90, CGRectGetHeight(self.frame) - 10);
   self.cover.contentMode = UIViewContentModeScaleAspectFit;
   
   [self.title sizeToFit];
   CGRect titleFrame = self.title.frame;
-  titleFrame.origin = CGPointMake(100, 5);
-  titleFrame.size.width = CGRectGetWidth(self.frame) - 105;
+  titleFrame.origin = CGPointMake(115, 5);
+  titleFrame.size.width = CGRectGetWidth(self.frame) - 120;
   self.title.frame = titleFrame;
   
   [self.author sizeToFit];
   CGRect authorFrame = self.author.frame;
-  authorFrame.origin = CGPointMake(100, CGRectGetMaxY(titleFrame));
-  authorFrame.size.width = CGRectGetWidth(self.frame) - 105;
+  authorFrame.origin = CGPointMake(115, CGRectGetMaxY(titleFrame));
+  authorFrame.size.width = CGRectGetWidth(self.frame) - 120;
   self.author.frame = authorFrame;
   
   [self.downloadButton sizeToFit];
   self.downloadButton.frame = CGRectInset(self.downloadButton.frame, -8, 0);
   CGRect downloadButtonFrame = self.downloadButton.frame;
-  downloadButtonFrame.origin = CGPointMake(100,
+  downloadButtonFrame.origin = CGPointMake(115,
                                            (CGRectGetHeight(self.contentView.frame) -
                                             CGRectGetHeight(downloadButtonFrame) - 5));
   self.downloadButton.frame = downloadButtonFrame;
+  
+  CGRect unreadImageViewFrame = self.unreadImageView.frame;
+  unreadImageViewFrame.origin = CGPointMake(10, 10);
+  self.unreadImageView.frame = unreadImageViewFrame;
 }
 
 #pragma mark -
@@ -99,6 +104,14 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
     self.title.numberOfLines = 2;
     [self.contentView addSubview:self.title];
     [self.contentView setNeedsLayout];
+  }
+  
+  if(!self.unreadImageView) {
+    self.unreadImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Unread"]];
+    self.unreadImageView.image = [self.unreadImageView.image
+                                  imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    self.unreadImageView.tintColor = [NYPLConfiguration accentColor];
+    [self.contentView addSubview:self.unreadImageView];
   }
   
   self.author.text = book.authors;
@@ -147,9 +160,19 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   return self.downloadButton.hidden;
 }
 
-- (void)setDownloadButtonHidden:(BOOL)hidden
+- (void)setDownloadButtonHidden:(BOOL const)hidden
 {
   self.downloadButton.hidden = hidden;
+}
+
+- (BOOL)unreadIconHidden
+{
+  return self.unreadImageView.hidden;
+}
+
+- (void)setUnreadIconHidden:(BOOL const)hidden
+{
+  self.unreadImageView.hidden = hidden;
 }
 
 @end
