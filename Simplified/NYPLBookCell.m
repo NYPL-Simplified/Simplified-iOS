@@ -66,6 +66,13 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
                                           CGRectGetHeight(deleteButtonFrame) - 5));
   self.deleteButton.frame = deleteButtonFrame;
   
+  [self.readButton sizeToFit];
+  self.readButton.frame = CGRectInset(self.readButton.frame, -8, 0);
+  CGRect readButtonFrame = self.readButton.frame;
+  readButtonFrame.origin = CGPointMake(CGRectGetMaxX(self.deleteButton.frame) + 5,
+                                       CGRectGetMinY(self.deleteButton.frame));
+  self.readButton.frame = readButtonFrame;
+  
   [self.downloadButton sizeToFit];
   self.downloadButton.frame = CGRectInset(self.downloadButton.frame, -8, 0);
   CGRect downloadButtonFrame = self.downloadButton.frame;
@@ -120,6 +127,18 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
     self.downloadButton.layer.borderWidth = 1;
     self.downloadButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
     [self.contentView addSubview:self.downloadButton];
+  }
+  
+  if(!self.readButton) {
+    self.readButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.readButton setTitle:NSLocalizedString(@"Read", nil) forState:UIControlStateNormal];
+    [self.readButton addTarget:self
+                        action:@selector(didSelectRead)
+              forControlEvents:UIControlEventTouchUpInside];
+    self.readButton.layer.cornerRadius = 2;
+    self.readButton.layer.borderWidth = 1;
+    self.readButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
+    [self.contentView addSubview:self.readButton];
   }
   
   if(!self.title) {
@@ -184,11 +203,31 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   [self.delegate didSelectDownloadForBookCell:self];
 }
 
+- (void)didSelectRead
+{
+  [self.delegate didSelectReadForBookCell:self];
+}
+
 - (void)setState:(NYPLBookCellState const)state
 {
   _state = state;
   
-  [self setNeedsLayout];
+  switch(state) {
+    case NYPLBookCellStateUnregistered:
+      // fallthrough
+    case NYPLBookCellStateDownloadNeeded:
+      self.deleteButton.hidden = YES;
+      self.downloadButton.hidden = NO;
+      self.readButton.hidden = YES;
+      self.unreadImageView.hidden = YES;
+      break;
+    case NYPLBookCellStateDownloadSuccessful:
+      self.deleteButton.hidden = NO;
+      self.downloadButton.hidden = YES;
+      self.readButton.hidden = NO;
+      self.unreadImageView.hidden = NO;
+      break;
+  }
 }
 
 @end
