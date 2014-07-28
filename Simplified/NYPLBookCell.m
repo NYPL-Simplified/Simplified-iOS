@@ -26,9 +26,10 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 
 @property (nonatomic) UILabel *author;
 @property (nonatomic) UIImageView *cover;
+@property (nonatomic) NSURL *coverURL;
 @property (nonatomic) UIButton *downloadButton;
 @property (nonatomic) UILabel *title;
-@property (nonatomic) NSURL *coverURL;
+@property (nonatomic) UIImageView *unreadImageView;
 
 @end
 
@@ -62,6 +63,10 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
                                            (CGRectGetHeight(self.contentView.frame) -
                                             CGRectGetHeight(downloadButtonFrame) - 5));
   self.downloadButton.frame = downloadButtonFrame;
+  
+  CGRect unreadImageViewFrame = self.unreadImageView.frame;
+  unreadImageViewFrame.origin = CGPointMake(10, 10);
+  self.unreadImageView.frame = unreadImageViewFrame;
 }
 
 #pragma mark -
@@ -99,6 +104,14 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
     self.title.numberOfLines = 2;
     [self.contentView addSubview:self.title];
     [self.contentView setNeedsLayout];
+  }
+  
+  if(!self.unreadImageView) {
+    self.unreadImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Unread"]];
+    self.unreadImageView.image = [self.unreadImageView.image
+                                  imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    self.unreadImageView.tintColor = [NYPLConfiguration accentColor];
+    [self.contentView addSubview:self.unreadImageView];
   }
   
   self.author.text = book.authors;
@@ -147,9 +160,19 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   return self.downloadButton.hidden;
 }
 
-- (void)setDownloadButtonHidden:(BOOL)hidden
+- (void)setDownloadButtonHidden:(BOOL const)hidden
 {
   self.downloadButton.hidden = hidden;
+}
+
+- (BOOL)unreadIconHidden
+{
+  return self.unreadImageView.hidden;
+}
+
+- (void)setUnreadIconHidden:(BOOL const)hidden
+{
+  self.unreadImageView.hidden = hidden;
 }
 
 @end
