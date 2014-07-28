@@ -18,6 +18,7 @@
                                initWithTarget:self
                                action:@selector(didReceiveGesture:)];
   
+  self.tapGestureRecognizer.cancelsTouchesInView = NO;
   self.tapGestureRecognizer.numberOfTapsRequired = 1;
   
   [self.view.window addGestureRecognizer:self.tapGestureRecognizer];
