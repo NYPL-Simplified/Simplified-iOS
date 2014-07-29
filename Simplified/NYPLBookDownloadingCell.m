@@ -92,7 +92,7 @@
   
   self.downloadingLabel = [[UILabel alloc] init];
   self.downloadingLabel.font = [UIFont systemFontOfSize:12];
-  self.downloadingLabel.text = NSLocalizedString(@"NYPLBookDownloadingCellDownloading", nil);
+  self.downloadingLabel.text = NSLocalizedString(@"Downloading", nil);
   self.downloadingLabel.textColor = [UIColor whiteColor];
   [self.contentView addSubview:self.downloadingLabel];
   

@@ -6,15 +6,9 @@
 "Delete" = "Delete";
 "OK" = "OK";
 "Read" = "Read"; // present tense
-
-// NYPLBookDownloadFailedCell
-
-"NYPLBookDownloadFailedCellMessage" = "The download could not be completed.";
-"NYPLBookDownloadFailedCellTryAgain" = "Try Again";
-
-// NYPLBookDownloadingCell
-
-"NYPLBookDownloadingCellDownloading" = "Downloading";
+"DownloadFailed" = "The download could not be completed.";
+"TryAgain" = "Try Again";
+"Downloading" = "Downloading";
 
 // NYPLCatalogCategoryViewController
 

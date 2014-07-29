@@ -93,7 +93,7 @@
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont systemFontOfSize:12];
   self.messageLabel.textColor = [UIColor whiteColor];
-  self.messageLabel.text = NSLocalizedString(@"NYPLBookDownloadFailedCellMessage", nil);
+  self.messageLabel.text = NSLocalizedString(@"DownloadFailed", nil);
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
   [self.contentView addSubview:self.messageLabel];
   
