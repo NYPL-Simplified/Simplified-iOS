@@ -43,8 +43,9 @@ static CGFloat const mainTextPaddingRight = 10.0;
   self.book = book;
   
   self.authorsLabel = [[UILabel alloc] init];
+  self.authorsLabel.font = [UIFont systemFontOfSize:12];
   self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-  self.authorsLabel.numberOfLines = 3;
+  self.authorsLabel.numberOfLines = 2;
   self.authorsLabel.text = book.authors;
   [self addSubview:self.authorsLabel];
   
@@ -67,6 +68,7 @@ static CGFloat const mainTextPaddingRight = 10.0;
   }
   
   self.titleLabel = [[UILabel alloc] init];
+  self.titleLabel.font = [UIFont boldSystemFontOfSize:17.0];
   self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
   self.titleLabel.numberOfLines = 3;
   self.titleLabel.text = book.title;
@@ -81,7 +83,7 @@ static CGFloat const mainTextPaddingRight = 10.0;
   
   self.normalView = [[NYPLBookDetailNormalView alloc] initWithWidth:0];
 //  [self addSubview:self.normalView];
-
+  
   return self;
 }
 
