@@ -1,5 +1,6 @@
 #import "NYPLBook.h"
 #import "NYPLBookDetailDownloadFailedView.h"
+#import "NYPLBookDetailDownloadingView.h"
 #import "NYPLBookDetailNormalView.h"
 #import "NYPLSession.h"
 
@@ -11,6 +12,7 @@
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) UIImageView *coverImageView;
 @property (nonatomic) NYPLBookDetailDownloadFailedView *downloadFailedView;
+@property (nonatomic) NYPLBookDetailDownloadingView *downloadingView;
 @property (nonatomic) NYPLBookDetailNormalView *normalView;
 @property (nonatomic) UILabel *titleLabel;
 
@@ -71,7 +73,11 @@ static CGFloat const mainTextPaddingRight = 10.0;
   [self addSubview:self.titleLabel];
   
   self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
-  [self addSubview:self.downloadFailedView];
+//  [self addSubview:self.downloadFailedView];
+  
+  self.downloadingView = [[NYPLBookDetailDownloadingView alloc] initWithWidth:0];
+  self.downloadingView.downloadProgress = 0.667;
+  [self addSubview:self.downloadingView];
   
   self.normalView = [[NYPLBookDetailNormalView alloc] initWithWidth:0];
 //  [self addSubview:self.normalView];
@@ -114,6 +120,8 @@ static CGFloat const mainTextPaddingRight = 10.0;
                                        CGRectGetMaxY(self.coverImageView.frame) + 10.0,
                                        CGRectGetWidth(self.frame),
                                        CGRectGetHeight(self.normalView.frame));
+    
+    self.downloadingView.frame = self.normalView.frame;
     
     self.downloadFailedView.frame = self.normalView.frame;
   }

@@ -128,10 +128,13 @@
   [self setNeedsLayout];
 }
 
+- (double)downloadProgress
+{
+  return self.progressView.progress;
+}
+
 - (void)setDownloadProgress:(double const)downloadProgress
 {
-  _downloadProgress = downloadProgress;
-  
   self.progressView.progress = downloadProgress;
   self.percentageLabel.text = [NSString stringWithFormat:@"%d%%", (int) (downloadProgress * 100)];
 }
