@@ -1,4 +1,5 @@
 #import "NYPLBook.h"
+#import "NYPLBookDetailNormalView.h"
 #import "NYPLSession.h"
 
 #import "NYPLBookDetailView.h"
@@ -8,7 +9,7 @@
 @property (nonatomic) UILabel *authorsLabel;
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) UIImageView *coverImageView;
-@property (nonatomic) UIButton *downloadButton;
+@property (nonatomic) NYPLBookDetailNormalView *normalView;
 @property (nonatomic) UILabel *titleLabel;
 
 @end
@@ -60,23 +61,15 @@ static CGFloat const mainTextPaddingRight = 10.0;
        }];
      }];
   }
-
-  self.downloadButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
-                       forState:UIControlStateNormal];
-  [self.downloadButton addTarget:self
-                          action:@selector(didSelectDownload)
-                forControlEvents:UIControlEventTouchUpInside];
-  [self addSubview:self.downloadButton];
-
-  
-  [self addSubview:self.downloadButton];
   
   self.titleLabel = [[UILabel alloc] init];
   self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
   self.titleLabel.numberOfLines = 3;
   self.titleLabel.text = book.title;
   [self addSubview:self.titleLabel];
+  
+  self.normalView = [[NYPLBookDetailNormalView alloc] initWithWidth:0];
+  [self addSubview:self.normalView];
 
   return self;
 }
@@ -112,11 +105,10 @@ static CGFloat const mainTextPaddingRight = 10.0;
   }
   
   {
-    [self.downloadButton sizeToFit];
-    CGRect frame = self.downloadButton.frame;
-    frame.origin.x = CGRectGetMinX(self.authorsLabel.frame);
-    frame.origin.y = CGRectGetMaxY(self.authorsLabel.frame) + mainTextPaddingTop;
-    self.downloadButton.frame = frame;
+    self.normalView.frame = CGRectMake(0,
+                                       CGRectGetMaxY(self.coverImageView.frame) + 10.0,
+                                       CGRectGetWidth(self.frame),
+                                       CGRectGetHeight(self.normalView.frame));
   }
 }
 

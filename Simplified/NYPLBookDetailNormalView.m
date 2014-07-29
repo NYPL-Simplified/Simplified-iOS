@@ -1,4 +1,5 @@
 #import "NYPLConfiguration.h"
+#import "NYPLLinearView.h"
 
 #import "NYPLBookDetailNormalView.h"
 
@@ -7,6 +8,7 @@
 @property (nonatomic) UIView *backgroundView;
 @property (nonatomic) UIButton *deleteButton;
 @property (nonatomic) UIButton *downloadButton;
+@property (nonatomic) NYPLLinearView *deleteReadLinearView;
 @property (nonatomic) UIButton *readButton;
 
 @end
@@ -24,23 +26,44 @@
   self.backgroundView.backgroundColor = [NYPLConfiguration mainColor];
   [self addSubview:self.backgroundView];
   
-  self.deleteButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [self.deleteButton addTarget:self
-                        action:@selector(didSelectDelete)
-              forControlEvents:UIControlEventTouchUpInside];
-  [self addSubview:self.deleteButton];
-  
   self.downloadButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
+                       forState:UIControlStateNormal];
   [self.downloadButton addTarget:self
                           action:@selector(didSelectDownload)
                 forControlEvents:UIControlEventTouchUpInside];
+  self.downloadButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
+  self.downloadButton.layer.borderWidth = 1;
+  self.downloadButton.layer.cornerRadius = 2;
   [self addSubview:self.downloadButton];
   
+  self.deleteButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [self.deleteButton setTitle:NSLocalizedString(@"Delete", nil)
+                     forState:UIControlStateNormal];
+  [self.deleteButton addTarget:self
+                        action:@selector(didSelectDelete)
+              forControlEvents:UIControlEventTouchUpInside];
+  self.deleteButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
+  self.deleteButton.layer.borderWidth = 1;
+  self.deleteButton.layer.cornerRadius = 2;
+  
   self.readButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [self.readButton setTitle:NSLocalizedString(@"Read", nil)
+                   forState:UIControlStateNormal];
   [self.readButton addTarget:self
                       action:@selector(didSelectRead)
             forControlEvents:UIControlEventTouchUpInside];
-  [self addSubview:self.readButton];
+  self.readButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
+  self.readButton.layer.borderWidth = 1;
+  self.readButton.layer.cornerRadius = 2;
+  
+  self.deleteReadLinearView = [[NYPLLinearView alloc] init];
+  self.deleteReadLinearView.padding = 5.0;
+  [self.deleteReadLinearView addSubview:self.deleteButton];
+  [self.deleteReadLinearView addSubview:self.readButton];
+  [self addSubview:self.deleteReadLinearView];
+  
+  self.state = NYPLBookDetailNormalViewStateUnregistered;
   
   return self;
 }
@@ -48,6 +71,29 @@
 - (void)layoutSubviews
 {
   self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), 30);
+ 
+  [self.downloadButton sizeToFit];
+  self.downloadButton.frame = CGRectInset(self.downloadButton.frame, -8, 0);
+  self.downloadButton.center = self.center;
+  self.downloadButton.frame = CGRectMake(CGRectGetMinX(self.downloadButton.frame),
+                                         (CGRectGetHeight(self.frame) -
+                                          CGRectGetHeight(self.downloadButton.frame)),
+                                         CGRectGetWidth(self.downloadButton.frame),
+                                         CGRectGetHeight(self.downloadButton.frame));
+  
+  [self.deleteButton sizeToFit];
+  self.deleteButton.frame = CGRectInset(self.deleteButton.frame, -8, 0);
+  
+  [self.readButton sizeToFit];
+  self.readButton.frame = CGRectInset(self.readButton.frame, -8, 0);
+  
+  [self.deleteReadLinearView sizeToFit];
+  self.deleteReadLinearView.center = self.center;
+  self.deleteReadLinearView.frame = CGRectMake(CGRectGetMinX(self.deleteReadLinearView.frame),
+                                               (CGRectGetHeight(self.frame) -
+                                                CGRectGetHeight(self.deleteReadLinearView.frame)),
+                                               CGRectGetWidth(self.deleteReadLinearView.frame),
+                                               CGRectGetHeight(self.deleteReadLinearView.frame));
 }
 
 #pragma mark -
@@ -60,14 +106,12 @@
     case NYPLBookDetailNormalViewStateUnregistered:
       // fallthrough
     case NYPLBookDetailNormalViewStateDownloadNeeded:
-      self.deleteButton.hidden = YES;
+      self.deleteReadLinearView.hidden = YES;
       self.downloadButton.hidden = NO;
-      self.readButton.hidden = YES;
       break;
     case NYPLBookDetailNormalViewStateDownloadSuccessful:
-      self.deleteButton.hidden = NO;
+      self.deleteReadLinearView.hidden = NO;
       self.downloadButton.hidden = YES;
-      self.readButton.hidden = NO;
       break;
   }
 }
