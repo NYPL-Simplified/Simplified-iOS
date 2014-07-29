@@ -289,98 +289,51 @@
 		110AF8901961D822004887C3 /* Book */ = {
 			isa = PBXGroup;
 			children = (
-				11616E0C196B035B003D60D9 /* Controllers */,
-				118992C21974867F0079658E /* Delegates */,
-				11616E0D196B0363003D60D9 /* Models */,
-				11616E0E196B036D003D60D9 /* Views */,
-			);
-			name = Book;
-			sourceTree = "<group>";
-		};
-		11616E0C196B035B003D60D9 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				110AF89A1961ED1F004887C3 /* NYPLBookDetailViewController.h */,
-				110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */,
-			);
-			name = Controllers;
-			sourceTree = "<group>";
-		};
-		11616E0D196B0363003D60D9 /* Models */ = {
-			isa = PBXGroup;
-			children = (
 				1183F345194F744D00DC322F /* NYPLBook.h */,
 				1183F346194F744D00DC322F /* NYPLBook.m */,
 				1183F351194F795800DC322F /* NYPLBookAcquisition.h */,
 				1183F352194F795800DC322F /* NYPLBookAcquisition.m */,
-			);
-			name = Models;
-			sourceTree = "<group>";
-		};
-		11616E0E196B036D003D60D9 /* Views */ = {
-			isa = PBXGroup;
-			children = (
 				11580AC61986A77B00949A15 /* NYPLBookCell.h */,
 				11580AC71986A77B00949A15 /* NYPLBookCell.m */,
-				11A16E6D195B60DF004147F4 /* NYPLBookNormalCell.h */,
-				11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */,
-				110AF8941961D94D004887C3 /* NYPLBookDetailView.h */,
-				110AF8951961D94D004887C3 /* NYPLBookDetailView.m */,
+				111197261986B43B0014462F /* NYPLBookCellDelegate.h */,
+				111197271986B43B0014462F /* NYPLBookCellDelegate.m */,
 				111197371987F4070014462F /* NYPLBookDetailNormalView.h */,
 				111197381987F4070014462F /* NYPLBookDetailNormalView.m */,
+				110AF8941961D94D004887C3 /* NYPLBookDetailView.h */,
+				110AF8951961D94D004887C3 /* NYPLBookDetailView.m */,
+				110AF89A1961ED1F004887C3 /* NYPLBookDetailViewController.h */,
+				110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */,
 				11078355198160A50071AB1E /* NYPLBookDownloadFailedCell.h */,
 				11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */,
 				11B6020319806CD300800DA9 /* NYPLBookDownloadingCell.h */,
 				11B6020419806CD300800DA9 /* NYPLBookDownloadingCell.m */,
+				11A16E6D195B60DF004147F4 /* NYPLBookNormalCell.h */,
+				11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */,
 			);
-			name = Views;
+			name = Book;
 			sourceTree = "<group>";
 		};
 		1183F349194F74EF00DC322F /* Catalog */ = {
 			isa = PBXGroup;
 			children = (
-				1183F34A194F74F800DC322F /* Controllers */,
-				1183F34C194F753800DC322F /* Models */,
-				1183F34B194F751B00DC322F /* Views */,
-			);
-			name = Catalog;
-			sourceTree = "<group>";
-		};
-		1183F34A194F74F800DC322F /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				11A16E67195B2BD3004147F4 /* NYPLCatalogCategoryViewController.h */,
-				11A16E68195B2BD3004147F4 /* NYPLCatalogCategoryViewController.m */,
-				11548C0C1939147D009DBF2E /* NYPLCatalogNavigationController.h */,
-				11548C0D1939147D009DBF2E /* NYPLCatalogNavigationController.m */,
-				11548C0F19391614009DBF2E /* NYPLCatalogViewController.h */,
-				11548C1019391614009DBF2E /* NYPLCatalogViewController.m */,
-			);
-			name = Controllers;
-			sourceTree = "<group>";
-		};
-		1183F34B194F751B00DC322F /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				1183F339194B775900DC322F /* NYPLCatalogLaneCell.h */,
-				1183F33A194B775900DC322F /* NYPLCatalogLaneCell.m */,
-			);
-			name = Views;
-			sourceTree = "<group>";
-		};
-		1183F34C194F753800DC322F /* Models */ = {
-			isa = PBXGroup;
-			children = (
 				1114A69F195884CB007507A2 /* NYPLCatalogCategory.h */,
 				1114A6A0195884CB007507A2 /* NYPLCatalogCategory.m */,
+				11A16E67195B2BD3004147F4 /* NYPLCatalogCategoryViewController.h */,
+				11A16E68195B2BD3004147F4 /* NYPLCatalogCategoryViewController.m */,
 				1183F33F194F723D00DC322F /* NYPLCatalogLane.h */,
 				1183F340194F723D00DC322F /* NYPLCatalogLane.m */,
+				1183F339194B775900DC322F /* NYPLCatalogLaneCell.h */,
+				1183F33A194B775900DC322F /* NYPLCatalogLaneCell.m */,
+				11548C0C1939147D009DBF2E /* NYPLCatalogNavigationController.h */,
+				11548C0D1939147D009DBF2E /* NYPLCatalogNavigationController.m */,
 				1183F33C194F71A500DC322F /* NYPLCatalogRoot.h */,
 				1183F33D194F71A500DC322F /* NYPLCatalogRoot.m */,
 				1114A6A2195888A1007507A2 /* NYPLCatalogSubsectionLink.h */,
 				1114A6A3195888A1007507A2 /* NYPLCatalogSubsectionLink.m */,
+				11548C0F19391614009DBF2E /* NYPLCatalogViewController.h */,
+				11548C1019391614009DBF2E /* NYPLCatalogViewController.m */,
 			);
-			name = Models;
+			name = Catalog;
 			sourceTree = "<group>";
 		};
 		1183F34D194F775400DC322F /* OPDS */ = {
@@ -393,22 +346,13 @@
 			name = OPDS;
 			sourceTree = "<group>";
 		};
-		118992C21974867F0079658E /* Delegates */ = {
-			isa = PBXGroup;
-			children = (
-				111197261986B43B0014462F /* NYPLBookCellDelegate.h */,
-				111197271986B43B0014462F /* NYPLBookCellDelegate.m */,
-			);
-			name = Delegates;
-			sourceTree = "<group>";
-		};
 		11C5DCEE1976D19E005A9945 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				11ABD554197D77EF00759635 /* NYPLSettingsCredentialViewController.h */,
-				11ABD555197D77EF00759635 /* NYPLSettingsCredentialViewController.m */,
 				1173CF45197862BF00D1F0C4 /* NYPLSettingsCredentialView.h */,
 				1173CF46197862BF00D1F0C4 /* NYPLSettingsCredentialView.m */,
+				11ABD554197D77EF00759635 /* NYPLSettingsCredentialViewController.h */,
+				11ABD555197D77EF00759635 /* NYPLSettingsCredentialViewController.m */,
 				11C5DCF61976D2AF005A9945 /* NYPLSettingsNavigationController.h */,
 				11C5DCF71976D2AF005A9945 /* NYPLSettingsNavigationController.m */,
 				11C5DCF91976D2F4005A9945 /* NYPLSettingsViewController.h */,
@@ -467,7 +411,6 @@
 				110AF8901961D822004887C3 /* Book */,
 				1183F349194F74EF00DC322F /* Catalog */,
 				11C5DCEF1976D1BA005A9945 /* Holds */,
-				A823D822192BABA400B55DE2 /* Images.xcassets */,
 				110AF8881961D652004887C3 /* My Books */,
 				11172762197F31280043EFBF /* NYPLAccount.h */,
 				11172763197F31280043EFBF /* NYPLAccount.m */,
@@ -498,12 +441,13 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
-				116A5EA3194653BE00491A21 /* Localizable.strings */,
+				A823D822192BABA400B55DE2 /* Images.xcassets */,
 				A823D819192BABA400B55DE2 /* InfoPlist.strings */,
+				116A5EA3194653BE00491A21 /* Localizable.strings */,
 				A823D81C192BABA400B55DE2 /* main.m */,
-				A823D81E192BABA400B55DE2 /* Simplified-Prefix.pch */,
 				11ABD552197D6F5200759635 /* NYPLSettingsCredentialView.xib */,
+				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
+				A823D81E192BABA400B55DE2 /* Simplified-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
