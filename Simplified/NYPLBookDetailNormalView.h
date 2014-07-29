@@ -1,0 +1,3 @@
+@interface NYPLBookDetailNormalView : UIView
+
+@end
