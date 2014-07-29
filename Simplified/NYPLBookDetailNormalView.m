@@ -68,6 +68,8 @@
   return self;
 }
 
+#pragma mark UIView
+
 - (void)layoutSubviews
 {
   self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), 30);
