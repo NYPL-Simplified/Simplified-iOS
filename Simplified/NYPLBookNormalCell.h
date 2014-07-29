@@ -1,13 +1,13 @@
 #import "NYPLBook.h"
 #import "NYPLBookCell.h"
 
+@class NYPLBookNormalCell;
+
 typedef NS_ENUM(NSInteger, NYPLBookNormalCellState) {
   NYPLBookNormalCellStateUnregistered,
   NYPLBookNormalCellStateDownloadNeeded,
   NYPLBookNormalCellStateDownloadSuccessful
 };
-
-@class NYPLBookNormalCell;
 
 @protocol NYPLBookNormalCellDelegate
 
