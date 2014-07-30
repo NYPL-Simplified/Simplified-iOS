@@ -50,8 +50,8 @@
 
 - (void)didSelectCancelForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *)cell
 {
-  [[NYPLMyBooksRegistry sharedRegistry]
-   setState:NYPLMyBooksStateDownloadNeeded forIdentifier:cell.book.identifier];
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+   cancelDownloadForBookIdentifier:cell.book.identifier];
 }
 
 - (void)didSelectTryAgainForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *)cell
