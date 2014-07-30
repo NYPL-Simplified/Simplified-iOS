@@ -75,14 +75,16 @@ static CGFloat const mainTextPaddingRight = 10.0;
   [self addSubview:self.titleLabel];
   
   self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
-//  [self addSubview:self.downloadFailedView];
+  self.downloadFailedView.hidden = YES;
+  [self addSubview:self.downloadFailedView];
   
   self.downloadingView = [[NYPLBookDetailDownloadingView alloc] initWithWidth:0];
-  self.downloadingView.downloadProgress = 0.667;
+  self.downloadingView.hidden = YES;
   [self addSubview:self.downloadingView];
   
   self.normalView = [[NYPLBookDetailNormalView alloc] initWithWidth:0];
-//  [self addSubview:self.normalView];
+  self.normalView.hidden = YES;
+  [self addSubview:self.normalView];
   
   return self;
 }
@@ -127,6 +129,54 @@ static CGFloat const mainTextPaddingRight = 10.0;
     
     self.downloadFailedView.frame = self.normalView.frame;
   }
+}
+
+#pragma mark -
+
+- (void)setState:(NYPLMyBooksState)state
+{
+  _state = state;
+  
+  switch(state) {
+    case NYPLMyBooksStateUnregistered:
+      self.normalView.hidden = NO;
+      self.downloadFailedView.hidden = YES;
+      self.downloadingView.hidden = YES;
+      self.normalView.state = NYPLBookDetailNormalViewStateUnregistered;
+      break;
+    case NYPLMyBooksStateDownloadNeeded:
+      self.normalView.hidden = NO;
+      self.downloadFailedView.hidden = YES;
+      self.downloadingView.hidden = YES;
+      self.normalView.state = NYPLBookDetailNormalViewStateDownloadNeeded;
+      break;
+    case NYPLMyBooksStateDownloading:
+      self.normalView.hidden = YES;
+      self.downloadFailedView.hidden = YES;
+      self.downloadingView.hidden = NO;
+      break;
+    case NYPLMyBooksStateDownloadFailed:
+      self.normalView.hidden = YES;
+      self.downloadFailedView.hidden = NO;
+      self.downloadingView.hidden = YES;
+      break;
+    case NYPLMyBooksStateDownloadSuccessful:
+      self.normalView.hidden = NO;
+      self.downloadFailedView.hidden = YES;
+      self.downloadingView.hidden = YES;
+      self.normalView.state = NYPLBookDetailNormalViewStateDownloadSuccessful;
+      break;
+  }
+}
+
+- (double)downloadProgress
+{
+  return self.downloadingView.downloadProgress;
+}
+
+- (void)setDownloadProgress:(double)downloadProgress
+{
+  self.downloadingView.downloadProgress = downloadProgress;
 }
 
 @end
