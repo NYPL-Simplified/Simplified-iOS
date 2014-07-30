@@ -114,13 +114,27 @@
 
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier
 {
-  [(NSURLSessionDownloadTask *)self.bookIdentifierToDownloadTask[identifier]
-   cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
-     [[NYPLMyBooksRegistry sharedRegistry]
-      setState:NYPLMyBooksStateDownloadNeeded forIdentifier:identifier];
-     
-     [self broadcastUpdate];
-   }];
+  if(self.bookIdentifierToDownloadTask[identifier]) {
+    [(NSURLSessionDownloadTask *)self.bookIdentifierToDownloadTask[identifier]
+     cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
+       [[NYPLMyBooksRegistry sharedRegistry]
+        setState:NYPLMyBooksStateDownloadNeeded forIdentifier:identifier];
+       
+       [self broadcastUpdate];
+     }];
+  } else {
+    // The download was not actually going, so we just need to convert a failed download state.
+    NYPLMyBooksState const state = [[NYPLMyBooksRegistry sharedRegistry]
+                                    stateForIdentifier:identifier];
+    
+    if(state != NYPLMyBooksStateDownloadFailed) {
+      NYPLLOG(@"Ignoring nonsensical cancellation request.");
+      return;
+    }
+    
+    [[NYPLMyBooksRegistry sharedRegistry]
+     setState:NYPLMyBooksStateDownloadNeeded forIdentifier:identifier];
+  }
 }
 
 - (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier

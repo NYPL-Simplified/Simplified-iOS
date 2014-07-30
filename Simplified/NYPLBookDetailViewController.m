@@ -74,8 +74,8 @@
 - (void)didSelectCancelDownloadFailedForBookDetailView:
 (__attribute__((unused)) NYPLBookDetailView *)detailView
 {
-  [[NYPLMyBooksRegistry sharedRegistry] setState:NYPLMyBooksStateDownloadNeeded
-                                   forIdentifier:self.book.identifier];
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+   cancelDownloadForBookIdentifier:self.book.identifier];
 }
   
 - (void)didSelectCancelDownloadingForBookDetailView:
