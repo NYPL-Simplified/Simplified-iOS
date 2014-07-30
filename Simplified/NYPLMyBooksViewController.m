@@ -82,6 +82,32 @@ static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
   [self.view addSubview:self.collectionView];
 }
 
+// FIXME: This code duplicates code in NYPLCatalogCategoryController and sould be factored out.
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
+                                duration:(__attribute__((unused)) NSTimeInterval)duration
+{
+  CGFloat const top = self.collectionView.contentInset.top;
+  
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if(self.interfaceOrientation == UIInterfaceOrientationLandscapeRight ||
+       self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
+      if(orientation == UIInterfaceOrientationPortrait ||
+         orientation == UIInterfaceOrientationPortraitUpsideDown) {
+        CGFloat const y = (self.collectionView.contentOffset.y + top) * 1.5 - top;
+        self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, y);
+      }
+    } else {
+      if(orientation == UIInterfaceOrientationLandscapeRight ||
+         orientation == UIInterfaceOrientationLandscapeLeft) {
+        CGFloat const y = (self.collectionView.contentOffset.y + top) * (2.0 / 3.0) - top;
+        self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, y);
+      }
+    }
+  }
+  
+  [self.collectionView.collectionViewLayout invalidateLayout];
+}
+
 #pragma mark UICollectionViewDelegate
 
 - (void)collectionView:(__attribute__((unused)) UICollectionView *const)collectionView
