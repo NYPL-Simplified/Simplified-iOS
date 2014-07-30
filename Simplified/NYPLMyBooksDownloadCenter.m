@@ -76,7 +76,8 @@
     case NYPLMyBooksStateDownloadNeeded:
       break;
     case NYPLMyBooksStateDownloadSuccessful:
-      @throw NSInvalidArgumentException;
+      NYPLLOG(@"Ignoring nonsensical download request.");
+      return;
   }
   
   if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
