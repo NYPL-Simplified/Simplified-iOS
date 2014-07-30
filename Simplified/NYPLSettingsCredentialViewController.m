@@ -280,7 +280,7 @@ completionHandler:(void (^)())handler
          return;
        }
        
-       // This cast is always valid accord to Apple's documentation for NSHTTPURLResponse.
+       // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
        NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
        
        if(statusCode == 200) {
