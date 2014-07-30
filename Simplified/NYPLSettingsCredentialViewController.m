@@ -68,8 +68,13 @@
   
   self.credentialView.PINField.delegate = self;
   
+  NSURLSessionConfiguration *const configuration =
+    [NSURLSessionConfiguration ephemeralSessionConfiguration];
+  
+  configuration.timeoutIntervalForResource = 5.0;
+  
   self.session = [NSURLSession
-                  sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
+                  sessionWithConfiguration:configuration
                   delegate:self
                   delegateQueue:[NSOperationQueue mainQueue]];
   
@@ -215,11 +220,10 @@ completionHandler:(void (^)())handler
 
 - (void)validateCredentials
 {
-  NSMutableURLRequest *const request = [NSMutableURLRequest requestWithURL:
-                                        [NYPLConfiguration loanURL]];
+  NSMutableURLRequest *const request =
+    [NSMutableURLRequest requestWithURL:[NYPLConfiguration loanURL]];
   
   request.HTTPMethod = @"HEAD";
-  request.timeoutInterval = 10.0;
   
   NSURLSessionDataTask *const task =
     [self.session

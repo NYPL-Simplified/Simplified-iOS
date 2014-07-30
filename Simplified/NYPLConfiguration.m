@@ -4,13 +4,14 @@
 
 + (NSURL *)mainFeedURL
 {
-  return [NSURL URLWithString:@"http://library-simplified.herokuapp.com"];
-  // return [NSURL URLWithString:@"http://10.128.36.26:5000/lanes/eng"];
+  // return [NSURL URLWithString:@"http://library-simplified.herokuapp.com"];
+  return [NSURL URLWithString:@"http://10.128.36.39:5000"];
 }
 
 + (NSURL *)loanURL
 {
-  return [NSURL URLWithString:@"http://library-simplified.herokuapp.com/loans"];
+  // return [NSURL URLWithString:@"/loans" relativeToURL:[self mainFeedURL]];
+  return [NSURL URLWithString:@"http://10.128.36.39:5000/loans"];
 }
 
 + (UIColor *)mainColor
