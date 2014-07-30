@@ -1,4 +1,6 @@
-#import "NYPLBook.h"
+#import "NYPLMyBooksState.h"
+
+@class NYPLBook;
 
 @class NYPLBookDetailView;
 
@@ -12,6 +14,8 @@
 
 @property (nonatomic, readonly) NYPLBook *book;
 @property (nonatomic, weak) id<NYPLBookDetailViewDelegate> detailViewDelegate;
+@property (nonatomic) double downloadProgress;
+@property (nonatomic) NYPLMyBooksState state;
 
 // designated initializer
 // |book| must not be nil.
