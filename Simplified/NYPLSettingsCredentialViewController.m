@@ -7,6 +7,7 @@
 @interface NYPLSettingsCredentialViewController ()
   <NSURLSessionDelegate, NSURLSessionTaskDelegate, UITextFieldDelegate>
 
+@property (nonatomic) BOOL shouldAnswerChallenge;
 @property (nonatomic, readonly) NYPLSettingsCredentialView *credentialView;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) NSURLSession *session;
@@ -112,11 +113,16 @@ didReceiveChallenge:(__attribute__((unused)) NSURLAuthenticationChallenge *)chal
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
-  completionHandler(NSURLSessionAuthChallengeUseCredential,
-                    [NSURLCredential
-                     credentialWithUser:self.credentialView.barcodeField.text
-                     password:self.credentialView.PINField.text
-                     persistence:NSURLCredentialPersistenceNone]);
+  if(self.shouldAnswerChallenge) {
+    self.shouldAnswerChallenge = NO;
+    completionHandler(NSURLSessionAuthChallengeUseCredential,
+                      [NSURLCredential
+                       credentialWithUser:self.credentialView.barcodeField.text
+                       password:self.credentialView.PINField.text
+                       persistence:NSURLCredentialPersistenceNone]);
+  } else {
+    completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+  }
 }
 
 #pragma mark -
@@ -225,6 +231,8 @@ completionHandler:(void (^)())handler
   
   request.HTTPMethod = @"HEAD";
   
+  self.shouldAnswerChallenge = YES;
+  
   NSURLSessionDataTask *const task =
     [self.session
      dataTaskWithRequest:request
@@ -234,16 +242,10 @@ completionHandler:(void (^)())handler
        
        [self setShieldEnabled:NO];
        
-       // This cast is always valid accord to Apple's documentation for NSHTTPURLResponse.
-       NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
-       
-       if(error || (statusCode != 200 && statusCode != 401)) {
-         if(!error) {
-           NYPLLOG(@"Ignoring unexpected HTTP status code.");
-         }
+       if(error.code == NSURLErrorNotConnectedToInternet) {
          [[[UIAlertView alloc]
            initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
-           message:NSLocalizedString(@"CheckConnection", nil)
+           message:NSLocalizedString(@"NotConnected", nil)
            delegate:nil
            cancelButtonTitle:nil
            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
@@ -251,14 +253,9 @@ completionHandler:(void (^)())handler
          return;
        }
        
-       if(statusCode == 200) {
-         [[NYPLAccount sharedAccount] setBarcode:self.credentialView.barcodeField.text
-                                             PIN:self.credentialView.PINField.text];
-         [self dismissViewControllerAnimated:YES completion:^{}];
-         void (^handler)() = self.completionHandler;
-         self.completionHandler = nil;
-         handler();
-       } else if(statusCode == 401) {
+       if(error.code == NSURLErrorCancelled) {
+         // We cancelled the request when asked to answer the server's challenge a second time
+         // because we don't have valid credentials.
          [[[UIAlertView alloc]
            initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
            message:NSLocalizedString(@"NYPLSettingsCredentialViewControllerInvalidCredentials", nil)
@@ -269,10 +266,42 @@ completionHandler:(void (^)())handler
          self.credentialView.PINField.text = @"";
          [self fieldsDidChange];
          [self.credentialView.PINField becomeFirstResponder];
-       } else {
-         // Unreachable.
-         abort();
+         return;
        }
+       
+       if(error.code == NSURLErrorTimedOut) {
+         [[[UIAlertView alloc]
+           initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
+           message:NSLocalizedString(@"TimedOut", nil)
+           delegate:nil
+           cancelButtonTitle:nil
+           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+          show];
+         return;
+       }
+       
+       // This cast is always valid accord to Apple's documentation for NSHTTPURLResponse.
+       NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
+       
+       if(statusCode == 200) {
+         [[NYPLAccount sharedAccount] setBarcode:self.credentialView.barcodeField.text
+                                             PIN:self.credentialView.PINField.text];
+         [self dismissViewControllerAnimated:YES completion:^{}];
+         void (^handler)() = self.completionHandler;
+         self.completionHandler = nil;
+         handler();
+         return;
+       }
+       
+       NYPLLOG(@"Encountered unexpected error after authenticating.");
+       
+       [[[UIAlertView alloc]
+         initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
+         message:NSLocalizedString(@"UnknownRequestError", nil)
+         delegate:nil
+         cancelButtonTitle:nil
+         otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+        show];
      }];
   
   [task resume];
