@@ -7,12 +7,7 @@ static NSString *const NYPLMyBooksDownloadCenterDidChange =
 
 + (NYPLMyBooksDownloadCenter *)sharedDownloadCenter;
 
-// This method should be called iff a barcode and PIN are already set. If they're not, the part of
-// the app that wants to initiate a download is responsible for collecting that information first.
-// If it fails to do so and just starts the download anyway, the user will get a download error and
-// have to resume the download through My Books (which is less than ideal). The rationale for doing
-// it this way is that NYPLMyBooksDownloadCenter is not able to cleanly present a modal view
-// controller itself in order to obtain the credentials from the user.
+// This method will request credentials from the user if necessary.
 - (void)startDownloadForBook:(NYPLBook *)book;
 
 // This should only be called when a download is actually occurring. To simply reset the state of a

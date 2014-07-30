@@ -6,6 +6,7 @@
 
 @interface NYPLBookDetailViewController () <NYPLBookDetailViewDelegate>
 
+@property (nonatomic) NYPLBook *book;
 @property (nonatomic) NSMutableArray *observers;
 
 @end
@@ -20,6 +21,8 @@
   if(!book) {
     @throw NSInvalidArgumentException;
   }
+  
+  self.book = book;
   
   NYPLBookDetailView *const view = [[NYPLBookDetailView alloc] initWithBook:book];
   view.state = [[NYPLMyBooksRegistry sharedRegistry] stateForIdentifier:book.identifier];
@@ -68,9 +71,38 @@
 
 #pragma mark NYPLBookDetailViewDelegate
 
-- (void)didSelectDownloadForDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView
+- (void)didSelectCancelDownloadFailedForBookDetailView:
+(__attribute__((unused)) NYPLBookDetailView *)detailView
+{
+  [[NYPLMyBooksRegistry sharedRegistry] setState:NYPLMyBooksStateDownloadNeeded
+                                   forIdentifier:self.book.identifier];
+}
+  
+- (void)didSelectCancelDownloadingForBookDetailView:
+(__attribute__((unused)) NYPLBookDetailView *)detailView
+{
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+   cancelDownloadForBookIdentifier:self.book.identifier];
+}
+
+- (void)didSelectDeleteForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView
 {
   // TODO
+}
+
+- (void)didSelectDownloadForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView
+{
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:self.book];
+}
+
+- (void)didSelectReadForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView
+{
+  // TODO
+}
+
+- (void)didSelectTryAgainForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView
+{
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:self.book];
 }
 
 #pragma mark -

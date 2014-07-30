@@ -7,6 +7,8 @@
 #import "NYPLBookDetailView.h"
 
 @interface NYPLBookDetailView ()
+  <NYPLBookDetailDownloadFailedViewDelegate, NYPLBookDetailDownloadingViewDelegate,
+   NYPLBookDetailNormalViewDelegate>
 
 @property (nonatomic) UILabel *authorsLabel;
 @property (nonatomic) NYPLBook *book;
@@ -75,23 +77,21 @@ static CGFloat const mainTextPaddingRight = 10.0;
   [self addSubview:self.titleLabel];
   
   self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
+  self.downloadFailedView.delegate = self;
   self.downloadFailedView.hidden = YES;
   [self addSubview:self.downloadFailedView];
   
   self.downloadingView = [[NYPLBookDetailDownloadingView alloc] initWithWidth:0];
+  self.downloadingView.delegate = self;
   self.downloadingView.hidden = YES;
   [self addSubview:self.downloadingView];
   
   self.normalView = [[NYPLBookDetailNormalView alloc] initWithWidth:0];
+  self.normalView.delegate = self;
   self.normalView.hidden = YES;
   [self addSubview:self.normalView];
   
   return self;
-}
-
-- (void)didSelectDownload
-{
-  [self.detailViewDelegate didSelectDownloadForDetailView:self];
 }
 
 #pragma mark UIView
@@ -129,6 +129,48 @@ static CGFloat const mainTextPaddingRight = 10.0;
     
     self.downloadFailedView.frame = self.normalView.frame;
   }
+}
+
+#pragma mark NYPLBookDetailDownloadFailedViewDelegate
+
+- (void)didSelectCancelForBookDetailDownloadFailedView:
+(__attribute__((unused)) NYPLBookDetailDownloadFailedView *)NYPLBookDetailDownloadFailedView
+{
+  [self.detailViewDelegate didSelectCancelDownloadFailedForBookDetailView:self];
+}
+
+- (void)didSelectTryAgainForBookDetailDownloadFailedView:
+(__attribute__((unused)) NYPLBookDetailDownloadFailedView *)NYPLBookDetailDownloadFailedView
+{
+  [self.detailViewDelegate didSelectTryAgainForBookDetailView:self];
+}
+
+#pragma mark NYPLBookDetailDownloadingViewDelegate
+
+- (void)didSelectCancelForBookDetailDownloadingView:
+(__attribute__((unused)) NYPLBookDetailDownloadingView *)bookDetailDownloadingView
+{
+  [self.detailViewDelegate didSelectCancelDownloadingForBookDetailView:self];
+}
+
+#pragma mark NYPLBookDetailNormalViewDelegate
+
+- (void)didSelectDeleteForBookDetailNormalView:
+(__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
+{
+  [self.detailViewDelegate didSelectDeleteForBookDetailView:self];
+}
+
+- (void)didSelectDownloadForBookDetailNormalView:
+(__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
+{
+  [self.detailViewDelegate didSelectDownloadForBookDetailView:self];
+}
+
+- (void)didSelectReadForBookDetailNormalView:
+(__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
+{
+  [self.detailViewDelegate didSelectReadForBookDetailView:self];
 }
 
 #pragma mark -
