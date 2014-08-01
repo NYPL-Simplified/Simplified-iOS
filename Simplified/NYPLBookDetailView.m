@@ -2,6 +2,7 @@
 #import "NYPLBookDetailDownloadFailedView.h"
 #import "NYPLBookDetailDownloadingView.h"
 #import "NYPLBookDetailNormalView.h"
+#import "NYPLConfiguration.h"
 #import "NYPLSession.h"
 
 #import "NYPLBookDetailView.h"
@@ -17,6 +18,7 @@
 @property (nonatomic) NYPLBookDetailDownloadingView *downloadingView;
 @property (nonatomic) NYPLBookDetailNormalView *normalView;
 @property (nonatomic) UILabel *titleLabel;
+@property (nonatomic) UIImageView *unreadImageView;
 
 @end
 
@@ -91,6 +93,12 @@ static CGFloat const mainTextPaddingRight = 10.0;
   self.normalView.hidden = YES;
   [self addSubview:self.normalView];
   
+  self.unreadImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Unread"]];
+  self.unreadImageView.image = [self.unreadImageView.image
+                                imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+  [self.unreadImageView setTintColor:[NYPLConfiguration accentColor]];
+  [self addSubview:self.unreadImageView];
+  
   return self;
 }
 
@@ -128,6 +136,14 @@ static CGFloat const mainTextPaddingRight = 10.0;
     self.downloadingView.frame = self.normalView.frame;
     
     self.downloadFailedView.frame = self.normalView.frame;
+  }
+  
+  {
+    CGRect unreadImageViewFrame = self.unreadImageView.frame;
+    unreadImageViewFrame.origin.x = (CGRectGetMinX(self.coverImageView.frame) -
+                                     CGRectGetWidth(unreadImageViewFrame) - 5);
+    unreadImageViewFrame.origin.y = 10;
+    self.unreadImageView.frame = unreadImageViewFrame;
   }
 }
 
@@ -185,28 +201,33 @@ static CGFloat const mainTextPaddingRight = 10.0;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
       self.normalView.state = NYPLBookDetailNormalViewStateUnregistered;
+      self.unreadImageView.hidden = YES;
       break;
     case NYPLMyBooksStateDownloadNeeded:
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
       self.normalView.state = NYPLBookDetailNormalViewStateDownloadNeeded;
+      self.unreadImageView.hidden = YES;
       break;
     case NYPLMyBooksStateDownloading:
       self.normalView.hidden = YES;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = NO;
+      self.unreadImageView.hidden = YES;
       break;
     case NYPLMyBooksStateDownloadFailed:
       self.normalView.hidden = YES;
       self.downloadFailedView.hidden = NO;
       self.downloadingView.hidden = YES;
+      self.unreadImageView.hidden = YES;
       break;
     case NYPLMyBooksStateDownloadSuccessful:
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
       self.normalView.state = NYPLBookDetailNormalViewStateDownloadSuccessful;
+      self.unreadImageView.hidden = NO;
       break;
   }
 }
