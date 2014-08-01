@@ -12,6 +12,7 @@
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSURL *imageURL; // nilable
 @property (nonatomic) NSURL *imageThumbnailURL; // nilable
+@property (nonatomic) NSString *summary;
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSDate *updated;
 
@@ -22,6 +23,7 @@ static NSString *const AuthorsKey = @"authors";
 static NSString *const IdentifierKey = @"id";
 static NSString *const ImageURLKey = @"image";
 static NSString *const ImageThumbnailURLKey = @"image-thumbnail";
+static NSString *const SummaryKey = @"summary";
 static NSString *const TitleKey = @"title";
 static NSString *const UpdatedKey = @"updated";
 
@@ -73,6 +75,7 @@ static NSString *const UpdatedKey = @"updated";
           identifier:entry.identifier
           imageURL:image
           imageThumbnailURL:imageThumbnail
+          summary:entry.summary
           title:entry.title
           updated:entry.updated];
 }
@@ -82,6 +85,7 @@ static NSString *const UpdatedKey = @"updated";
                          identifier:(NSString *const)identifier
                            imageURL:(NSURL *const)imageURL
                   imageThumbnailURL:(NSURL *const)imageThumbnailURL
+                            summary:(NSString *const)summary
                               title:(NSString *const)title
                             updated:(NSDate *const)updated
 {
@@ -103,6 +107,7 @@ static NSString *const UpdatedKey = @"updated";
   self.identifier = identifier;
   self.imageURL = imageURL;
   self.imageThumbnailURL = imageThumbnailURL;
+  self.summary = summary;
   self.title = title;
   self.updated = updated;
   
@@ -129,6 +134,8 @@ static NSString *const UpdatedKey = @"updated";
   NSString *const imageThumbnail = NYPLNullToNil(dictionary[ImageThumbnailURLKey]);
   self.imageThumbnailURL = imageThumbnail ? [NSURL URLWithString:imageThumbnail] : nil;
   
+  self.summary = NYPLNullToNil(dictionary[SummaryKey]);
+  
   self.title = dictionary[TitleKey];
   if(!self.title) return nil;
   
@@ -145,6 +152,7 @@ static NSString *const UpdatedKey = @"updated";
            IdentifierKey: self.identifier,
            ImageURLKey: NYPLNilToNull([self.imageURL absoluteString]),
            ImageThumbnailURLKey: NYPLNilToNull([self.imageThumbnailURL absoluteString]),
+           SummaryKey: NYPLNilToNull(self.summary),
            TitleKey: self.title,
            UpdatedKey: [self.updated RFC3339String]};
 }

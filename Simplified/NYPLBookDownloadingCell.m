@@ -42,14 +42,14 @@
                                            CGRectGetHeight(self.downloadingLabel.frame));
   
   NSString *const percentageLabelText = self.percentageLabel.text;
-  self.percentageLabel.text = @"00%";
+  self.percentageLabel.text = @"100%";
   [self.percentageLabel sizeToFit];
+  self.percentageLabel.text = percentageLabelText;
   self.percentageLabel.frame = CGRectMake((CGRectGetWidth(self.contentView.frame) - sidePadding -
                                            CGRectGetWidth(self.percentageLabel.frame)),
                                           CGRectGetMinY(self.downloadingLabel.frame),
                                           CGRectGetWidth(self.percentageLabel.frame),
                                           CGRectGetHeight(self.percentageLabel.frame));
-  self.percentageLabel.text = percentageLabelText;
   
   self.progressView.center = self.downloadingLabel.center;
   self.progressView.frame = CGRectMake(CGRectGetMaxX(self.downloadingLabel.frame) + sidePadding,
@@ -92,7 +92,7 @@
   
   self.downloadingLabel = [[UILabel alloc] init];
   self.downloadingLabel.font = [UIFont systemFontOfSize:12];
-  self.downloadingLabel.text = NSLocalizedString(@"NYPLBookDownloadingCellDownloading", nil);
+  self.downloadingLabel.text = NSLocalizedString(@"Downloading", nil);
   self.downloadingLabel.textColor = [UIColor whiteColor];
   [self.contentView addSubview:self.downloadingLabel];
   
@@ -128,10 +128,13 @@
   [self setNeedsLayout];
 }
 
+- (double)downloadProgress
+{
+  return self.progressView.progress;
+}
+
 - (void)setDownloadProgress:(double const)downloadProgress
 {
-  _downloadProgress = downloadProgress;
-  
   self.progressView.progress = downloadProgress;
   self.percentageLabel.text = [NSString stringWithFormat:@"%d%%", (int) (downloadProgress * 100)];
 }

@@ -38,17 +38,7 @@
 {
   NYPLBook *const book = cell.book;
   
-  if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-  } else {
-    [[NYPLSettingsCredentialViewController sharedController]
-     requestCredentialsFromViewController:[NYPLRootTabBarController sharedController]
-     useExistingBarcode:NO
-     message:NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook
-     completionHandler:^{
-       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-     }];
-  }
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
 }
 
 - (void)didSelectReadForBookNormalCell:(__attribute__((unused)) NYPLBookNormalCell *)cell
@@ -60,8 +50,8 @@
 
 - (void)didSelectCancelForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *)cell
 {
-  [[NYPLMyBooksRegistry sharedRegistry]
-   setState:NYPLMyBooksStateDownloadNeeded forIdentifier:cell.book.identifier];
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+   cancelDownloadForBookIdentifier:cell.book.identifier];
 }
 
 - (void)didSelectTryAgainForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *)cell

@@ -2,6 +2,8 @@
 #import "NYPLBook.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLMyBooksState.h"
+#import "NYPLSettingsCredentialViewController.h"
+#import "NYPLRootTabBarController.h"
 
 #import "NYPLMyBooksDownloadCenter.h"
 
@@ -58,11 +60,27 @@
 
 #pragma mark -
 
+- (void)failDownloadForBook:(NYPLBook *const)book
+{
+  [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloadFailed];
+  
+  [[[UIAlertView alloc]
+    initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
+    message:[NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
+             book.title]
+    delegate:nil
+    cancelButtonTitle:nil
+    otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+   show];
+  
+  [self broadcastUpdate];
+}
+
 - (void)startDownloadForBook:(NYPLBook *const)book
 {
   NYPLMyBooksState const state = [[NYPLMyBooksRegistry sharedRegistry]
-                                   stateForIdentifier:book.identifier];
-
+                                  stateForIdentifier:book.identifier];
+  
   switch(state) {
     case NYPLMyBooksStateUnregistered:
       break;
@@ -74,41 +92,64 @@
     case NYPLMyBooksStateDownloadNeeded:
       break;
     case NYPLMyBooksStateDownloadSuccessful:
-      @throw NSInvalidArgumentException;
+      NYPLLOG(@"Ignoring nonsensical download request.");
+      return;
   }
   
-  NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
-  
-  if(!request.URL) {
-    // Originally this code just let the request fail later on, but apparently resuming an
-    // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
-    // segmentation fault.
-    NYPLLOG(@"Aborting request with invalid URL.");
-    [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloadFailed];
-    [self broadcastUpdate];
-    return;
+  if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
+    NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
+    
+    if(!request.URL) {
+      // Originally this code just let the request fail later on, but apparently resuming an
+      // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
+      // segmentation fault.
+      NYPLLOG(@"Aborting request with invalid URL.");
+      [self failDownloadForBook:book];
+      return;
+    }
+    
+    NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
+    
+    self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:0.0];
+    self.bookIdentifierToDownloadTask[book.identifier] = task;
+    self.taskIdentifierToBook[[NSNumber numberWithUnsignedLong:task.taskIdentifier]] = book;
+    
+    [task resume];
+    
+    [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloading];
+  } else {
+    [[NYPLSettingsCredentialViewController sharedController]
+     requestCredentialsUsingExistingBarcode:NO
+     message:NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook
+     completionHandler:^{
+       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+     }];
   }
-  
-  NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
-  
-  self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:0.0];
-  self.bookIdentifierToDownloadTask[book.identifier] = task;
-  self.taskIdentifierToBook[[NSNumber numberWithUnsignedLong:task.taskIdentifier]] = book;
-  
-  [task resume];
-  
-  [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloading];
 }
 
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier
 {
-  [(NSURLSessionDownloadTask *)self.bookIdentifierToDownloadTask[identifier]
-   cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
-     [[NYPLMyBooksRegistry sharedRegistry]
-      setState:NYPLMyBooksStateDownloadNeeded forIdentifier:identifier];
-     
-     [self broadcastUpdate];
-   }];
+  if(self.bookIdentifierToDownloadTask[identifier]) {
+    [(NSURLSessionDownloadTask *)self.bookIdentifierToDownloadTask[identifier]
+     cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
+       [[NYPLMyBooksRegistry sharedRegistry]
+        setState:NYPLMyBooksStateDownloadNeeded forIdentifier:identifier];
+       
+       [self broadcastUpdate];
+     }];
+  } else {
+    // The download was not actually going, so we just need to convert a failed download state.
+    NYPLMyBooksState const state = [[NYPLMyBooksRegistry sharedRegistry]
+                                    stateForIdentifier:identifier];
+    
+    if(state != NYPLMyBooksStateDownloadFailed) {
+      NYPLLOG(@"Ignoring nonsensical cancellation request.");
+      return;
+    }
+    
+    [[NYPLMyBooksRegistry sharedRegistry]
+     setState:NYPLMyBooksStateDownloadNeeded forIdentifier:identifier];
+  }
 }
 
 - (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier
@@ -207,11 +248,8 @@ didCompleteWithError:(NSError *)error
   
   if(error && error.code != NSURLErrorCancelled) {
     self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:1.0];
-    
-    [[NYPLMyBooksRegistry sharedRegistry]
-     setState:NYPLMyBooksStateDownloadFailed forIdentifier:book.identifier];
-    
-    [self broadcastUpdate];
+    [self failDownloadForBook:book];
+    return;
   }
   
   if(!error) {

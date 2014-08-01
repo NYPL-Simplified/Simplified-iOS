@@ -9,6 +9,7 @@
 @property (nonatomic) NSArray *authorStrings;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSArray *links;
+@property (nonatomic) NSString *summary;
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSDate *updated;
 
@@ -56,6 +57,8 @@
     
     self.links = links;
   }
+  
+  self.summary = [element childNamed:@"summary"].value;
   
   if(!((self.title = [element childNamed:@"title"].valueString))) {
     NYPLLOG(@"Missing required 'title' element.");

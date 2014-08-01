@@ -43,7 +43,10 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 {
   self.contentView.frame = self.bounds;
   
-  self.cover.frame = CGRectMake(20, 5, 90, CGRectGetHeight(self.frame) - 10);
+  self.cover.frame = CGRectMake(20,
+                                5,
+                                (CGRectGetHeight(self.frame) - 10) * (10 / 12.0),
+                                CGRectGetHeight(self.frame) - 10);
   self.cover.contentMode = UIViewContentModeScaleAspectFit;
   
   [self.title sizeToFit];
@@ -82,7 +85,9 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   self.downloadButton.frame = downloadButtonFrame;
   
   CGRect unreadImageViewFrame = self.unreadImageView.frame;
-  unreadImageViewFrame.origin = CGPointMake(10, 10);
+  unreadImageViewFrame.origin.x = (CGRectGetMinX(self.cover.frame) -
+                                   CGRectGetWidth(unreadImageViewFrame) - 5);
+  unreadImageViewFrame.origin.y = 5;
   self.unreadImageView.frame = unreadImageViewFrame;
 }
 
