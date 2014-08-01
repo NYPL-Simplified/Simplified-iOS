@@ -1,5 +1,5 @@
 #import "NYPLBookCell.h"
-#import "NYPLBookDetailViewControllerPhone.h"
+#import "NYPLBookDetailViewController.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
 
@@ -110,10 +110,12 @@ static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
 
 #pragma mark UICollectionViewDelegate
 
-- (void)collectionView:(__attribute__((unused)) UICollectionView *const)collectionView
-didSelectItemAtIndexPath:(__attribute__((unused)) NSIndexPath *const)indexPath
+- (void)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
+didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
-  // TODO
+  NYPLBook *const book = self.books[indexPath.row];
+  
+  [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
 
 #pragma mark UICollectionViewDelegateFlowLayout

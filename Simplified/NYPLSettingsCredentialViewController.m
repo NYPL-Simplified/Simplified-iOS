@@ -1,5 +1,6 @@
 #import "NYPLAccount.h"
 #import "NYPLConfiguration.h"
+#import "NYPLRootTabBarController.h"
 #import "NYPLSettingsCredentialView.h"
 
 #import "NYPLSettingsCredentialViewController.h"
@@ -7,6 +8,7 @@
 @interface NYPLSettingsCredentialViewController ()
   <NSURLSessionDelegate, NSURLSessionTaskDelegate, UITextFieldDelegate>
 
+@property (nonatomic) BOOL shouldAnswerChallenge;
 @property (nonatomic, readonly) NYPLSettingsCredentialView *credentialView;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) NSURLSession *session;
@@ -68,8 +70,13 @@
   
   self.credentialView.PINField.delegate = self;
   
+  NSURLSessionConfiguration *const configuration =
+    [NSURLSessionConfiguration ephemeralSessionConfiguration];
+  
+  configuration.timeoutIntervalForResource = 5.0;
+  
   self.session = [NSURLSession
-                  sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
+                  sessionWithConfiguration:configuration
                   delegate:self
                   delegateQueue:[NSOperationQueue mainQueue]];
   
@@ -77,11 +84,6 @@
 }
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
-{
-
-}
-
-- (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
 {
   [self.credentialView.barcodeField becomeFirstResponder];
 }
@@ -107,25 +109,25 @@ didReceiveChallenge:(__attribute__((unused)) NSURLAuthenticationChallenge *)chal
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
-  completionHandler(NSURLSessionAuthChallengeUseCredential,
-                    [NSURLCredential
-                     credentialWithUser:self.credentialView.barcodeField.text
-                     password:self.credentialView.PINField.text
-                     persistence:NSURLCredentialPersistenceNone]);
+  if(self.shouldAnswerChallenge) {
+    self.shouldAnswerChallenge = NO;
+    completionHandler(NSURLSessionAuthChallengeUseCredential,
+                      [NSURLCredential
+                       credentialWithUser:self.credentialView.barcodeField.text
+                       password:self.credentialView.PINField.text
+                       persistence:NSURLCredentialPersistenceNone]);
+  } else {
+    completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+  }
 }
 
 #pragma mark -
 
 - (void)
-requestCredentialsFromViewController:(UIViewController *const)viewController
-useExistingBarcode:(BOOL const)useExistingBarcode
+requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
 message:(NYPLSettingsCredentialViewControllerMessage const)message
 completionHandler:(void (^)())handler
 {
-  if(!(viewController && handler)) {
-    @throw NSInvalidArgumentException;
-  }
-  
   if(self.completionHandler) {
     @throw NSInternalInconsistencyException;
   }
@@ -160,12 +162,15 @@ completionHandler:(void (^)())handler
       break;
   }
   
-  [viewController presentViewController:self animated:YES completion:^{}];
+  [[NYPLRootTabBarController sharedController]
+   safelyPresentViewController:self
+   animated:YES
+   completion:nil];
 }
 
 - (void)didSelectCancel
 {
-  [self dismissViewControllerAnimated:YES completion:^{}];
+  [self dismissViewControllerAnimated:YES completion:nil];
   
   self.completionHandler = nil;
 }
@@ -215,11 +220,12 @@ completionHandler:(void (^)())handler
 
 - (void)validateCredentials
 {
-  NSMutableURLRequest *const request = [NSMutableURLRequest requestWithURL:
-                                        [NYPLConfiguration loanURL]];
+  NSMutableURLRequest *const request =
+    [NSMutableURLRequest requestWithURL:[NYPLConfiguration loanURL]];
   
   request.HTTPMethod = @"HEAD";
-  request.timeoutInterval = 10.0;
+  
+  self.shouldAnswerChallenge = YES;
   
   NSURLSessionDataTask *const task =
     [self.session
@@ -230,16 +236,10 @@ completionHandler:(void (^)())handler
        
        [self setShieldEnabled:NO];
        
-       // This cast is always valid accord to Apple's documentation for NSHTTPURLResponse.
-       NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
-       
-       if(error || (statusCode != 200 && statusCode != 401)) {
-         if(!error) {
-           NYPLLOG(@"Ignoring unexpected HTTP status code.");
-         }
+       if(error.code == NSURLErrorNotConnectedToInternet) {
          [[[UIAlertView alloc]
            initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
-           message:NSLocalizedString(@"CheckConnection", nil)
+           message:NSLocalizedString(@"NotConnected", nil)
            delegate:nil
            cancelButtonTitle:nil
            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
@@ -247,14 +247,9 @@ completionHandler:(void (^)())handler
          return;
        }
        
-       if(statusCode == 200) {
-         [[NYPLAccount sharedAccount] setBarcode:self.credentialView.barcodeField.text
-                                             PIN:self.credentialView.PINField.text];
-         [self dismissViewControllerAnimated:YES completion:^{}];
-         void (^handler)() = self.completionHandler;
-         self.completionHandler = nil;
-         handler();
-       } else if(statusCode == 401) {
+       if(error.code == NSURLErrorCancelled) {
+         // We cancelled the request when asked to answer the server's challenge a second time
+         // because we don't have valid credentials.
          [[[UIAlertView alloc]
            initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
            message:NSLocalizedString(@"NYPLSettingsCredentialViewControllerInvalidCredentials", nil)
@@ -265,10 +260,42 @@ completionHandler:(void (^)())handler
          self.credentialView.PINField.text = @"";
          [self fieldsDidChange];
          [self.credentialView.PINField becomeFirstResponder];
-       } else {
-         // Unreachable.
-         abort();
+         return;
        }
+       
+       if(error.code == NSURLErrorTimedOut) {
+         [[[UIAlertView alloc]
+           initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
+           message:NSLocalizedString(@"TimedOut", nil)
+           delegate:nil
+           cancelButtonTitle:nil
+           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+          show];
+         return;
+       }
+       
+       // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
+       NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
+       
+       if(statusCode == 200) {
+         [[NYPLAccount sharedAccount] setBarcode:self.credentialView.barcodeField.text
+                                             PIN:self.credentialView.PINField.text];
+         [self dismissViewControllerAnimated:YES completion:^{}];
+         void (^handler)() = self.completionHandler;
+         self.completionHandler = nil;
+         handler();
+         return;
+       }
+       
+       NYPLLOG(@"Encountered unexpected error after authenticating.");
+       
+       [[[UIAlertView alloc]
+         initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
+         message:NSLocalizedString(@"UnknownRequestError", nil)
+         delegate:nil
+         cancelButtonTitle:nil
+         otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+        show];
      }];
   
   [task resume];

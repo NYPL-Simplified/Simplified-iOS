@@ -1,15 +1,25 @@
 #import "NYPLBook.h"
+#import "NYPLBookDetailDownloadFailedView.h"
+#import "NYPLBookDetailDownloadingView.h"
+#import "NYPLBookDetailNormalView.h"
+#import "NYPLConfiguration.h"
 #import "NYPLSession.h"
 
 #import "NYPLBookDetailView.h"
 
 @interface NYPLBookDetailView ()
+  <NYPLBookDetailDownloadFailedViewDelegate, NYPLBookDetailDownloadingViewDelegate,
+   NYPLBookDetailNormalViewDelegate>
 
-@property (nonatomic) UILabel *authors;
+@property (nonatomic) UILabel *authorsLabel;
 @property (nonatomic) NYPLBook *book;
-@property (nonatomic) UIImageView *cover;
-@property (nonatomic) UIButton *downloadButton;
-@property (nonatomic) UILabel *title;
+@property (nonatomic) UIImageView *coverImageView;
+@property (nonatomic) NYPLBookDetailDownloadFailedView *downloadFailedView;
+@property (nonatomic) NYPLBookDetailDownloadingView *downloadingView;
+@property (nonatomic) NYPLBookDetailNormalView *normalView;
+@property (nonatomic) UILabel *summaryLabel;
+@property (nonatomic) UILabel *titleLabel;
+@property (nonatomic) UIImageView *unreadImageView;
 
 @end
 
@@ -37,85 +47,224 @@ static CGFloat const mainTextPaddingRight = 10.0;
   
   self.book = book;
   
-  self.authors = [[UILabel alloc] init];
-  self.authors.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-  self.authors.numberOfLines = 3;
-  self.authors.text = book.authors;
-  [self addSubview:self.authors];
+  self.authorsLabel = [[UILabel alloc] init];
+  self.authorsLabel.font = [UIFont systemFontOfSize:12];
+  self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+  self.authorsLabel.numberOfLines = 2;
+  self.authorsLabel.text = book.authors;
+  [self addSubview:self.authorsLabel];
   
-  self.cover = [[UIImageView alloc] init];
-  self.cover.contentMode = UIViewContentModeScaleAspectFit;
-  self.cover.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-  [self addSubview:self.cover];
+  self.coverImageView = [[UIImageView alloc] init];
+  self.coverImageView.contentMode = UIViewContentModeScaleAspectFit;
+  self.coverImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+  [self addSubview:self.coverImageView];
   
-  self.cover.image =
+  self.coverImageView.image =
     [UIImage imageWithData:[[NYPLSession sharedSession] cachedDataForURL:book.imageURL]];
   
-  if(!self.cover.image) {
+  if(!self.coverImageView.image) {
     [[NYPLSession sharedSession]
      withURL:book.imageURL
      completionHandler:^(NSData *const data) {
        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         self.cover.image = [UIImage imageWithData:data];
+         self.coverImageView.image = [UIImage imageWithData:data];
        }];
      }];
   }
-
-  self.downloadButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
-                       forState:UIControlStateNormal];
-  [self.downloadButton addTarget:self
-                          action:@selector(didSelectDownload)
-                forControlEvents:UIControlEventTouchUpInside];
-  [self addSubview:self.downloadButton];
-
   
-  [self addSubview:self.downloadButton];
+  self.titleLabel = [[UILabel alloc] init];
+  self.titleLabel.font = [UIFont boldSystemFontOfSize:17.0];
+  self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+  self.titleLabel.numberOfLines = 3;
+  self.titleLabel.text = book.title;
+  [self addSubview:self.titleLabel];
   
-  self.title = [[UILabel alloc] init];
-  self.title.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-  self.title.numberOfLines = 3;
-  self.title.text = book.title;
-  [self addSubview:self.title];
-
+  self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
+  self.downloadFailedView.delegate = self;
+  self.downloadFailedView.hidden = YES;
+  [self addSubview:self.downloadFailedView];
+  
+  self.downloadingView = [[NYPLBookDetailDownloadingView alloc] initWithWidth:0];
+  self.downloadingView.delegate = self;
+  self.downloadingView.hidden = YES;
+  [self addSubview:self.downloadingView];
+  
+  self.normalView = [[NYPLBookDetailNormalView alloc] initWithWidth:0];
+  self.normalView.delegate = self;
+  self.normalView.hidden = YES;
+  [self addSubview:self.normalView];
+  
+  self.unreadImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Unread"]];
+  self.unreadImageView.image = [self.unreadImageView.image
+                                imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+  [self.unreadImageView setTintColor:[NYPLConfiguration accentColor]];
+  [self addSubview:self.unreadImageView];
+  
+  self.summaryLabel = [[UILabel alloc] init];
+  self.summaryLabel.numberOfLines = 0;
+  self.summaryLabel.text = book.summary;
+  self.summaryLabel.font = [UIFont systemFontOfSize:12];
+  [self addSubview:self.summaryLabel];
+  
   return self;
-}
-
-- (void)didSelectDownload
-{
-  [self.detailViewDelegate didSelectDownloadForDetailView:self];
 }
 
 #pragma mark UIView
 
 - (void)layoutSubviews
 {
-  CGRect const frame = CGRectMake(coverPaddingLeft, coverPaddingTop, coverWidth, coverHeight);
-  self.cover.frame = frame;
+  {
+    CGRect const frame = CGRectMake(coverPaddingLeft, coverPaddingTop, coverWidth, coverHeight);
+    self.coverImageView.frame = frame;
+  }
   
   {
-    CGFloat const x = CGRectGetMaxX(self.cover.frame) + mainTextPaddingLeft;
+    CGFloat const x = CGRectGetMaxX(self.coverImageView.frame) + mainTextPaddingLeft;
     CGFloat const y = mainTextPaddingTop;
     CGFloat const w = CGRectGetWidth(self.bounds) - x - mainTextPaddingRight;
-    CGFloat const h = [self.title sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-    self.title.frame = CGRectMake(x, y, w, h);
+    CGFloat const h = [self.titleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+    self.titleLabel.frame = CGRectMake(x, y, w, h);
   }
   
   {
-    CGFloat const x = CGRectGetMinX(self.title.frame);
-    CGFloat const y = CGRectGetMaxY(self.title.frame);
-    CGFloat const w = CGRectGetWidth(self.title.frame);
-    CGFloat const h = [self.title sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-    self.authors.frame = CGRectMake(x, y, w, h);
+    CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
+    CGFloat const y = CGRectGetMaxY(self.titleLabel.frame);
+    CGFloat const w = CGRectGetWidth(self.titleLabel.frame);
+    CGFloat const h = [self.titleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+    self.authorsLabel.frame = CGRectMake(x, y, w, h);
   }
   
   {
-    [self.downloadButton sizeToFit];
-    CGRect frame = self.downloadButton.frame;
-    frame.origin.x = CGRectGetMinX(self.authors.frame);
-    frame.origin.y = CGRectGetMaxY(self.authors.frame) + mainTextPaddingTop;
-    self.downloadButton.frame = frame;
+    self.normalView.frame = CGRectMake(0,
+                                       CGRectGetMaxY(self.coverImageView.frame) + 10.0,
+                                       CGRectGetWidth(self.frame),
+                                       CGRectGetHeight(self.normalView.frame));
+    
+    self.downloadingView.frame = self.normalView.frame;
+    
+    self.downloadFailedView.frame = self.normalView.frame;
   }
+  
+  {
+    CGRect unreadImageViewFrame = self.unreadImageView.frame;
+    unreadImageViewFrame.origin.x = (CGRectGetMinX(self.coverImageView.frame) -
+                                     CGRectGetWidth(unreadImageViewFrame) - 5);
+    unreadImageViewFrame.origin.y = 10;
+    self.unreadImageView.frame = unreadImageViewFrame;
+  }
+  
+  {
+    // 40 left padding, 35 right to visually compensate for ragged text.
+    CGFloat const leftPadding = 40;
+    CGFloat const rightPadding = 35;
+    
+    CGSize const size = [self.summaryLabel
+                         sizeThatFits:CGSizeMake((CGRectGetWidth(self.frame) - leftPadding -
+                                                  rightPadding),
+                                                 CGFLOAT_MAX)];
+    self.summaryLabel.frame = CGRectMake(leftPadding,
+                                         CGRectGetMaxY(self.normalView.frame) + 10,
+                                         size.width,
+                                         size.height);
+  }
+  
+  self.contentSize = CGSizeMake(CGRectGetWidth(self.frame),
+                                CGRectGetMaxY(self.summaryLabel.frame) + 10);
+}
+
+#pragma mark NYPLBookDetailDownloadFailedViewDelegate
+
+- (void)didSelectCancelForBookDetailDownloadFailedView:
+(__attribute__((unused)) NYPLBookDetailDownloadFailedView *)NYPLBookDetailDownloadFailedView
+{
+  [self.detailViewDelegate didSelectCancelDownloadFailedForBookDetailView:self];
+}
+
+- (void)didSelectTryAgainForBookDetailDownloadFailedView:
+(__attribute__((unused)) NYPLBookDetailDownloadFailedView *)NYPLBookDetailDownloadFailedView
+{
+  [self.detailViewDelegate didSelectTryAgainForBookDetailView:self];
+}
+
+#pragma mark NYPLBookDetailDownloadingViewDelegate
+
+- (void)didSelectCancelForBookDetailDownloadingView:
+(__attribute__((unused)) NYPLBookDetailDownloadingView *)bookDetailDownloadingView
+{
+  [self.detailViewDelegate didSelectCancelDownloadingForBookDetailView:self];
+}
+
+#pragma mark NYPLBookDetailNormalViewDelegate
+
+- (void)didSelectDeleteForBookDetailNormalView:
+(__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
+{
+  [self.detailViewDelegate didSelectDeleteForBookDetailView:self];
+}
+
+- (void)didSelectDownloadForBookDetailNormalView:
+(__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
+{
+  [self.detailViewDelegate didSelectDownloadForBookDetailView:self];
+}
+
+- (void)didSelectReadForBookDetailNormalView:
+(__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
+{
+  [self.detailViewDelegate didSelectReadForBookDetailView:self];
+}
+
+#pragma mark -
+
+- (void)setState:(NYPLMyBooksState)state
+{
+  _state = state;
+  
+  switch(state) {
+    case NYPLMyBooksStateUnregistered:
+      self.normalView.hidden = NO;
+      self.downloadFailedView.hidden = YES;
+      self.downloadingView.hidden = YES;
+      self.normalView.state = NYPLBookDetailNormalViewStateUnregistered;
+      self.unreadImageView.hidden = YES;
+      break;
+    case NYPLMyBooksStateDownloadNeeded:
+      self.normalView.hidden = NO;
+      self.downloadFailedView.hidden = YES;
+      self.downloadingView.hidden = YES;
+      self.normalView.state = NYPLBookDetailNormalViewStateDownloadNeeded;
+      self.unreadImageView.hidden = YES;
+      break;
+    case NYPLMyBooksStateDownloading:
+      self.normalView.hidden = YES;
+      self.downloadFailedView.hidden = YES;
+      self.downloadingView.hidden = NO;
+      self.unreadImageView.hidden = YES;
+      break;
+    case NYPLMyBooksStateDownloadFailed:
+      self.normalView.hidden = YES;
+      self.downloadFailedView.hidden = NO;
+      self.downloadingView.hidden = YES;
+      self.unreadImageView.hidden = YES;
+      break;
+    case NYPLMyBooksStateDownloadSuccessful:
+      self.normalView.hidden = NO;
+      self.downloadFailedView.hidden = YES;
+      self.downloadingView.hidden = YES;
+      self.normalView.state = NYPLBookDetailNormalViewStateDownloadSuccessful;
+      self.unreadImageView.hidden = NO;
+      break;
+  }
+}
+
+- (double)downloadProgress
+{
+  return self.downloadingView.downloadProgress;
+}
+
+- (void)setDownloadProgress:(double)downloadProgress
+{
+  self.downloadingView.downloadProgress = downloadProgress;
 }
 
 @end

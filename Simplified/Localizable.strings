@@ -6,15 +6,15 @@
 "Delete" = "Delete";
 "OK" = "OK";
 "Read" = "Read"; // present tense
-
-// NYPLBookDownloadFailedCell
-
-"NYPLBookDownloadFailedCellMessage" = "The download could not be completed.";
-"NYPLBookDownloadFailedCellTryAgain" = "Try Again";
-
-// NYPLBookDownloadingCell
-
-"NYPLBookDownloadingCellDownloading" = "Downloading";
+"DownloadFailed" = "Download Failed";
+"DownloadCouldNotBeCompleted" = "The download could not be completed.";
+"TryAgain" = "Try Again";
+"Downloading" = "Downloading";
+"NotConnected" = "You are not connected to the internet. Please connect and try again.";
+"TimedOut" = "The server did not respond. Please check your connection or try again later.";
+"UnknownRequestError" =
+  "An unknown error occurred. Please check your connection or try again later.";
+"DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.";
 
 // NYPLCatalogCategoryViewController
 
