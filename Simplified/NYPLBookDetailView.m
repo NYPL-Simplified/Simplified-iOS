@@ -17,6 +17,7 @@
 @property (nonatomic) NYPLBookDetailDownloadFailedView *downloadFailedView;
 @property (nonatomic) NYPLBookDetailDownloadingView *downloadingView;
 @property (nonatomic) NYPLBookDetailNormalView *normalView;
+@property (nonatomic) UILabel *summaryLabel;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIImageView *unreadImageView;
 
@@ -99,6 +100,12 @@ static CGFloat const mainTextPaddingRight = 10.0;
   [self.unreadImageView setTintColor:[NYPLConfiguration accentColor]];
   [self addSubview:self.unreadImageView];
   
+  self.summaryLabel = [[UILabel alloc] init];
+  self.summaryLabel.numberOfLines = 0;
+  self.summaryLabel.text = book.summary;
+  self.summaryLabel.font = [UIFont systemFontOfSize:12];
+  [self addSubview:self.summaryLabel];
+  
   return self;
 }
 
@@ -145,6 +152,24 @@ static CGFloat const mainTextPaddingRight = 10.0;
     unreadImageViewFrame.origin.y = 10;
     self.unreadImageView.frame = unreadImageViewFrame;
   }
+  
+  {
+    // 40 left padding, 35 right to visually compensate for ragged text.
+    CGFloat const leftPadding = 40;
+    CGFloat const rightPadding = 35;
+    
+    CGSize const size = [self.summaryLabel
+                         sizeThatFits:CGSizeMake((CGRectGetWidth(self.frame) - leftPadding -
+                                                  rightPadding),
+                                                 CGFLOAT_MAX)];
+    self.summaryLabel.frame = CGRectMake(leftPadding,
+                                         CGRectGetMaxY(self.normalView.frame) + 10,
+                                         size.width,
+                                         size.height);
+  }
+  
+  self.contentSize = CGSizeMake(CGRectGetWidth(self.frame),
+                                CGRectGetMaxY(self.summaryLabel.frame) + 10);
 }
 
 #pragma mark NYPLBookDetailDownloadFailedViewDelegate
