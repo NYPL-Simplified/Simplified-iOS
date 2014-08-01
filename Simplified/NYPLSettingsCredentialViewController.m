@@ -85,11 +85,6 @@
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
 {
-
-}
-
-- (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
-{
   [self.credentialView.barcodeField becomeFirstResponder];
 }
 
