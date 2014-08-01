@@ -93,7 +93,7 @@
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont systemFontOfSize:12];
   self.messageLabel.textColor = [UIColor whiteColor];
-  self.messageLabel.text = NSLocalizedString(@"DownloadFailed", nil);
+  self.messageLabel.text = NSLocalizedString(@"DownloadCouldNotBeCompleted", nil);
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
   [self.contentView addSubview:self.messageLabel];
   
@@ -105,7 +105,7 @@
   self.tryAgainButton = [UIButton buttonWithType:UIButtonTypeSystem];
   self.tryAgainButton.backgroundColor = [UIColor whiteColor];
   self.tryAgainButton.tintColor = [UIColor grayColor];
-  [self.tryAgainButton setTitle:NSLocalizedString(@"NYPLBookDownloadFailedCellTryAgain", nil)
+  [self.tryAgainButton setTitle:NSLocalizedString(@"TryAgain", nil)
                        forState:UIControlStateNormal];
   self.tryAgainButton.layer.cornerRadius = 2;
   [self.tryAgainButton addTarget:self
