@@ -23,7 +23,7 @@
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont systemFontOfSize:12];
   self.messageLabel.textColor = [UIColor whiteColor];
-  self.messageLabel.text = NSLocalizedString(@"DownloadFailed", nil);
+  self.messageLabel.text = NSLocalizedString(@"DownloadCouldNotBeCompleted", nil);
   [self addSubview:self.messageLabel];
   
   self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
