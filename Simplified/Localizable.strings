@@ -6,7 +6,8 @@
 "Delete" = "Delete";
 "OK" = "OK";
 "Read" = "Read"; // present tense
-"DownloadFailed" = "The download could not be completed.";
+"DownloadFailed" = "Download Failed";
+"DownloadCouldNotBeCompleted" = "The download could not be completed.";
 "TryAgain" = "Try Again";
 "Downloading" = "Downloading";
 "NotConnected" = "You are not connected to the internet. Please connect and try again.";
