@@ -51,4 +51,19 @@
   return self;
 }
 
+#pragma mark -
+
+- (void)safelyPresentViewController:(UIViewController *)viewController
+                           animated:(BOOL)animated
+                         completion:(void (^)(void))completion
+{
+  UIViewController *baseController = self;
+  
+  while(baseController.presentedViewController) {
+    baseController = baseController.presentedViewController;
+  }
+  
+  [baseController presentViewController:viewController animated:animated completion:completion];
+}
+
 @end

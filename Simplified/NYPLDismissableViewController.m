@@ -36,6 +36,8 @@
 
 - (void)didReceiveGesture:(UIGestureRecognizer *const)gestureRecognizer
 {
+  if(self.presentedViewController) return;
+  
   if (![self.view pointInside:[gestureRecognizer locationInView:self.view] withEvent:nil]) {
     [self dismissViewControllerAnimated:YES completion:nil];
   }
