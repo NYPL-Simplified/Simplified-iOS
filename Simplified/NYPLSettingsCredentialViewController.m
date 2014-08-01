@@ -1,5 +1,6 @@
 #import "NYPLAccount.h"
 #import "NYPLConfiguration.h"
+#import "NYPLRootTabBarController.h"
 #import "NYPLSettingsCredentialView.h"
 
 #import "NYPLSettingsCredentialViewController.h"
@@ -128,15 +129,10 @@ didReceiveChallenge:(__attribute__((unused)) NSURLAuthenticationChallenge *)chal
 #pragma mark -
 
 - (void)
-requestCredentialsFromViewController:(UIViewController *const)viewController
-useExistingBarcode:(BOOL const)useExistingBarcode
+requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
 message:(NYPLSettingsCredentialViewControllerMessage const)message
 completionHandler:(void (^)())handler
 {
-  if(!(viewController && handler)) {
-    @throw NSInvalidArgumentException;
-  }
-  
   if(self.completionHandler) {
     @throw NSInternalInconsistencyException;
   }
@@ -171,12 +167,15 @@ completionHandler:(void (^)())handler
       break;
   }
   
-  [viewController presentViewController:self animated:YES completion:^{}];
+  [[NYPLRootTabBarController sharedController]
+   safelyPresentViewController:self
+   animated:YES
+   completion:nil];
 }
 
 - (void)didSelectCancel
 {
-  [self dismissViewControllerAnimated:YES completion:^{}];
+  [self dismissViewControllerAnimated:YES completion:nil];
   
   self.completionHandler = nil;
 }

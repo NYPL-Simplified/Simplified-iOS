@@ -119,8 +119,7 @@
     [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloading];
   } else {
     [[NYPLSettingsCredentialViewController sharedController]
-     requestCredentialsFromViewController:[NYPLRootTabBarController sharedController]
-     useExistingBarcode:NO
+     requestCredentialsUsingExistingBarcode:NO
      message:NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook
      completionHandler:^{
        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
