@@ -5,6 +5,8 @@
 "Download" = "Download";
 "Delete" = "Delete";
 "OK" = "OK";
+"LogIn" = "Log In";
+"LogOut" = "Log Out";
 "Read" = "Read"; // present tense
 "DownloadFailed" = "Download Failed";
 "DownloadCouldNotBeCompleted" = "The download could not be completed.";
@@ -58,3 +60,5 @@
 // NYPLSettingsViewController
 
 "SettingsViewControllerTitle" = "Settings";
+"SettingsViewControllerLogoutMessage" =
+  "Are you sure you want to log out and delete all local content?";
