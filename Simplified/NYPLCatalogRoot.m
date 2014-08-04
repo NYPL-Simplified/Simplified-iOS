@@ -6,11 +6,7 @@
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogSubsectionLink.h"
 #import "NYPLMyBooksRegistry.h"
-#import "NYPLOPDSEntry.h"
-#import "NYPLOPDSFeed.h"
-#import "NYPLOPDSLink.h"
-#import "NYPLOPDSRelation.h"
-#import "NYPLOPDSType.h"
+#import "NYPLOPDS.h"
 #import "NYPLSession.h"
 
 #import "NYPLCatalogRoot.h"
@@ -18,6 +14,7 @@
 @interface NYPLCatalogRoot ()
 
 @property (nonatomic) NSArray *lanes;
+@property (nonatomic) NSURL *openSearchURL;
 
 @end
 
@@ -37,6 +34,15 @@
        NYPLLOG(@"Failed to retrieve main navigation feed.");
        NYPLAsyncDispatch(^{handler(nil);});
        return;
+     }
+     
+     NSURL *openSearchURL = nil;
+     
+     for(NYPLOPDSLink *const link in navigationFeed.links) {
+       if([link.rel isEqualToString:NYPLOPDSRelationSearch] &&
+          NYPLOPDSTypeStringIsOpenSearchDescription(link.type)) {
+         openSearchURL = link.href;
+       }
      }
      
      NSMutableSet *const featuredURLs =
@@ -155,7 +161,9 @@
             title:navigationEntry.title]];
         }
         
-        NYPLCatalogRoot *const root = [[NYPLCatalogRoot alloc] initWithLanes:lanes];
+        NYPLCatalogRoot *const root = [[NYPLCatalogRoot alloc]
+                                       initWithLanes:lanes
+                                       openSearchURL:openSearchURL];
         assert(root);
         
         NYPLAsyncDispatch(^{handler(root);});
@@ -164,6 +172,7 @@
 }
 
 - (instancetype)initWithLanes:(NSArray *const)lanes
+                openSearchURL:(NSURL *const)openSearchURL
 {
   self = [super init];
   if(!self) return nil;
@@ -179,6 +188,7 @@
   }
   
   self.lanes = lanes;
+  self.openSearchURL = openSearchURL;
   
   return self;
 }

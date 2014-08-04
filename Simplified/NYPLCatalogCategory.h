@@ -12,6 +12,7 @@
 @property (nonatomic, readonly) NSArray *books;
 @property (nonatomic, weak) id<NYPLCatalogCategoryDelegate> delegate; // nilable
 @property (nonatomic, readonly) NSURL *nextURL; // nilable
+@property (nonatomic, readonly) NSURL *openSearchURL; // nilable
 @property (nonatomic, readonly) NSString *title;
 
 // In the callback, |root| will be |nil| if an error occurred.
@@ -20,6 +21,7 @@
 // designated initializer
 - (instancetype)initWithBooks:(NSArray *)books
                       nextURL:(NSURL *)nextURL
+                openSearchURL:(NSURL *)openSearchURL
                         title:(NSString *)title;
 
 // This method is used to inform a catalog category that the data of a book at the given index is

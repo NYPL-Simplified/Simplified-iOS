@@ -182,6 +182,7 @@
 		119BEB88198C43A600121439 /* NSString+NYPLStringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+NYPLStringAdditions.m"; sourceTree = "<group>"; };
 		119BEB8A198C462600121439 /* NSData+NYPLDataAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+NYPLDataAdditions.h"; sourceTree = "<group>"; };
 		119BEB8B198C462600121439 /* NSData+NYPLDataAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+NYPLDataAdditions.m"; sourceTree = "<group>"; };
+		119BEB8D19901E1000121439 /* NYPLOPDS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLOPDS.h; sourceTree = "<group>"; };
 		11A16E67195B2BD3004147F4 /* NYPLCatalogCategoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogCategoryViewController.h; sourceTree = "<group>"; };
 		11A16E68195B2BD3004147F4 /* NYPLCatalogCategoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogCategoryViewController.m; sourceTree = "<group>"; };
 		11A16E6D195B60DF004147F4 /* NYPLBookNormalCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookNormalCell.h; sourceTree = "<group>"; };
@@ -498,6 +499,7 @@
 		AE77E8DE5454517F1AE119BF /* OPDS */ = {
 			isa = PBXGroup;
 			children = (
+				119BEB8D19901E1000121439 /* NYPLOPDS.h */,
 				AE77E6379B5F7ACD56AE86EF /* NYPLOPDSEntry.h */,
 				AE77E4AF64208439F78B3D73 /* NYPLOPDSEntry.m */,
 				AE77E304AA30ABF2921B6393 /* NYPLOPDSFeed.h */,

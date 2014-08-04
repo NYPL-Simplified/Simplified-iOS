@@ -1,9 +1,6 @@
 #import "NYPLAsync.h"
 #import "NYPLBook.h"
-#import "NYPLOPDSEntry.h"
-#import "NYPLOPDSFeed.h"
-#import "NYPLOPDSLink.h"
-#import "NYPLOPDSRelation.h"
+#import "NYPLOPDS.h"
 #import "NYPLMyBooksRegistry.h"
 
 #import "NYPLCatalogCategory.h"
@@ -14,6 +11,7 @@
 @property (nonatomic) NSArray *books;
 @property (nonatomic) NSUInteger greatestPreparationIndex;
 @property (nonatomic) NSURL *nextURL;
+@property (nonatomic) NSURL *openSearchURL;
 @property (nonatomic) NSString *title;
 
 @end
@@ -48,17 +46,24 @@ static NSUInteger const preloadThreshold = 100;
      }
      
      NSURL *nextURL = nil;
+     NSURL *openSearchURL = nil;
      
      for(NYPLOPDSLink *const link in acquisitionFeed.links) {
        if([link.rel isEqualToString:NYPLOPDSRelationPaginationNext]) {
          nextURL = link.href;
-         break;
+         continue;
+       }
+       if([link.rel isEqualToString:NYPLOPDSRelationSearch] &&
+          NYPLOPDSTypeStringIsOpenSearchDescription(link.type)) {
+         openSearchURL = link.href;
+         continue;
        }
      }
      
      NYPLCatalogCategory *const category = [[NYPLCatalogCategory alloc]
                                             initWithBooks:books
                                             nextURL:nextURL
+                                            openSearchURL:openSearchURL
                                             title:acquisitionFeed.title];
      
      NYPLAsyncDispatch(^{handler(category);});
@@ -67,6 +72,7 @@ static NSUInteger const preloadThreshold = 100;
 
 - (instancetype)initWithBooks:(NSArray *const)books
                       nextURL:(NSURL *const)nextURL
+                openSearchURL:(NSURL *const)openSearchURL
                         title:(NSString *const)title
 {
   self = [super init];
@@ -78,6 +84,7 @@ static NSUInteger const preloadThreshold = 100;
   
   self.books = books;
   self.nextURL = nextURL;
+  self.openSearchURL = openSearchURL;
   self.title = title;
   
   [[NSNotificationCenter defaultCenter]
