@@ -85,9 +85,10 @@
    cancelDownloadForBookIdentifier:self.book.identifier];
 }
 
-- (void)didSelectDeleteForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView
+- (void)didSelectDeleteForBookDetailView:(NYPLBookDetailView *const)detailView
 {
-  // TODO
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+   removeCompletedDownloadForBookIdentifier:detailView.book.identifier];
 }
 
 - (void)didSelectDownloadForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView

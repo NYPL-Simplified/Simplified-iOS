@@ -29,9 +29,10 @@
 
 #pragma mark NYPLBookNormalCellDelegate
 
-- (void)didSelectDeleteForBookNormalCell:(__attribute__((unused)) NYPLBookNormalCell *)cell
+- (void)didSelectDeleteForBookNormalCell:(NYPLBookNormalCell *const)cell
 {
-  // TODO
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+   removeCompletedDownloadForBookIdentifier:cell.book.identifier];
 }
 
 - (void)didSelectDownloadForBookNormalCell:(NYPLBookNormalCell *const)cell
