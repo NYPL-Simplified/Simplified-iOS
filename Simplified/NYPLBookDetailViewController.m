@@ -40,7 +40,7 @@
   
   [self.observers addObject:
    [[NSNotificationCenter defaultCenter]
-    addObserverForName:NYPLBookRegistryDidChange
+    addObserverForName:NYPLBookRegistryDidChangeNotification
     object:nil
     queue:[NSOperationQueue mainQueue]
     usingBlock:^(__attribute__((unused)) NSNotification *note) {
@@ -49,7 +49,7 @@
   
   [self.observers addObject:
    [[NSNotificationCenter defaultCenter]
-    addObserverForName:NYPLMyBooksDownloadCenterDidChange
+    addObserverForName:NYPLMyBooksDownloadCenterDidChangeNotification
     object:nil
     queue:[NSOperationQueue mainQueue]
     usingBlock:^(__attribute__((unused)) NSNotification *note) {
@@ -85,9 +85,10 @@
    cancelDownloadForBookIdentifier:self.book.identifier];
 }
 
-- (void)didSelectDeleteForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView
+- (void)didSelectDeleteForBookDetailView:(NYPLBookDetailView *const)detailView
 {
-  // TODO
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+   removeCompletedDownloadForBookIdentifier:detailView.book.identifier];
 }
 
 - (void)didSelectDownloadForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView

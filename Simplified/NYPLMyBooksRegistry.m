@@ -66,7 +66,7 @@ static NSString *const RegistryFilename = @"registry.json";
   
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLBookRegistryDidChange
+     postNotificationName:NYPLBookRegistryDidChangeNotification
      object:self];
   }];
 }
@@ -253,6 +253,14 @@ static NSString *const RegistryFilename = @"registry.json";
   }
 }
 
+- (void)reset
+{
+  [self.identifiersToRecords removeAllObjects];
+  [[NSFileManager defaultManager] removeItemAtURL:[self registryDirectory] error:NULL];
+  
+  [self broadcastChange];
+}
+
 - (NSDictionary *)dictionaryRepresentation
 {
   @synchronized(self) {
@@ -274,7 +282,7 @@ static NSString *const RegistryFilename = @"registry.json";
   return self.identifiersToRecords.count;
 }
 
-- (NSArray *)allBooksSortedByBlock:(NSComparisonResult (^)(NYPLBook *a, NYPLBook *b))block
+- (NSArray *)allBooks
 {
   NSMutableArray *const books = [NSMutableArray arrayWithCapacity:self.identifiersToRecords.count];
   
@@ -285,7 +293,7 @@ static NSString *const RegistryFilename = @"registry.json";
      [books addObject:record.book];
    }];
   
-  return [books sortedArrayUsingComparator:block];
+  return books;
 }
 
 @end

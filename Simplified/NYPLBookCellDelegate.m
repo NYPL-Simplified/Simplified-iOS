@@ -10,6 +10,12 @@
 
 #import "NYPLBookCellDelegate.h"
 
+@interface NYPLBookCellDelegate ()
+
+@property (nonatomic) NSString *identifierOfBookToRemove;
+
+@end
+
 @implementation NYPLBookCellDelegate
 
 + (instancetype)sharedDelegate
@@ -29,9 +35,10 @@
 
 #pragma mark NYPLBookNormalCellDelegate
 
-- (void)didSelectDeleteForBookNormalCell:(__attribute__((unused)) NYPLBookNormalCell *)cell
+- (void)didSelectDeleteForBookNormalCell:(NYPLBookNormalCell *const)cell
 {
-  // TODO
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+   removeCompletedDownloadForBookIdentifier:cell.book.identifier];
 }
 
 - (void)didSelectDownloadForBookNormalCell:(NYPLBookNormalCell *const)cell

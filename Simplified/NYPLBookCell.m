@@ -29,7 +29,7 @@ NSArray *NYPLBookCellRegisterNotificationsForCollectionView(UICollectionView *co
 {
   id observer1 =
     [[NSNotificationCenter defaultCenter]
-     addObserverForName:NYPLBookRegistryDidChange
+     addObserverForName:NYPLBookRegistryDidChangeNotification
      object:nil
      queue:[NSOperationQueue mainQueue]
      usingBlock:^(__attribute__((unused)) NSNotification *note) {
@@ -38,7 +38,7 @@ NSArray *NYPLBookCellRegisterNotificationsForCollectionView(UICollectionView *co
   
   id observer2 =
     [[NSNotificationCenter defaultCenter]
-     addObserverForName:NYPLMyBooksDownloadCenterDidChange
+     addObserverForName:NYPLMyBooksDownloadCenterDidChangeNotification
      object:nil
      queue:[NSOperationQueue mainQueue]
      usingBlock:^(__attribute__((unused)) NSNotification *note) {
