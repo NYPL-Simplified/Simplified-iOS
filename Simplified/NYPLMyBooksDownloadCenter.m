@@ -1,3 +1,4 @@
+#import "NSData+NYPLDataAdditions.h"
 #import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLMyBooksRegistry.h"
@@ -59,6 +60,38 @@
 }
 
 #pragma mark -
+
+// Always returns a valid path for opening/moving a file, creating directories if needed.
+- (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
+{
+  NSArray *const paths =
+    NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    
+  assert([paths count] == 1);
+    
+  NSString *const path = paths[0];
+  
+  NSString *const encodedIdentifier = [[identifier dataUsingEncoding:NSUTF8StringEncoding]
+                                       fileSystemSafeBase64EncodedString];
+  
+  NSURL *const directoryURL =
+    [[[NSURL fileURLWithPath:path]
+      URLByAppendingPathComponent:[[NSBundle mainBundle]
+                                   objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
+     URLByAppendingPathComponent:@"epubs"];
+  
+  if(![[NSFileManager defaultManager]
+       createDirectoryAtURL:directoryURL
+       withIntermediateDirectories:YES
+       attributes:nil
+       error:NULL]) {
+    NYPLLOG_F(@"Failed to create directory: %@", [directoryURL absoluteString]);
+    return nil;
+  }
+  
+  return [[directoryURL URLByAppendingPathComponent:encodedIdentifier]
+          URLByAppendingPathExtension:@"epub"];
+}
 
 - (void)failDownloadForBook:(NYPLBook *const)book
 {
@@ -208,10 +241,45 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 }
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
-      downloadTask:(__attribute__((unused)) NSURLSessionDownloadTask *)downloadTask
-didFinishDownloadingToURL:(__attribute__((unused)) NSURL *)location
+      downloadTask:(NSURLSessionDownloadTask *const)downloadTask
+didFinishDownloadingToURL:(NSURL *const)location
 {
-  // TODO: Copy file to permanent location here.
+  NYPLBook *const book = self.taskIdentifierToBook[[NSNumber numberWithUnsignedLong:
+                                                    downloadTask.taskIdentifier]];
+  
+  NSError *error = nil;
+  
+  [[NSFileManager defaultManager]
+   removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
+   error:NULL];
+  
+  BOOL const success = [[NSFileManager defaultManager]
+                        moveItemAtURL:location
+                        toURL:[self fileURLForBookIndentifier:book.identifier]
+                        error:&error];
+  
+  if(success) {
+    [[NYPLMyBooksRegistry sharedRegistry]
+     setState:NYPLMyBooksStateDownloadSuccessful forIdentifier:book.identifier];
+  } else {
+    [[[UIAlertView alloc]
+      initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
+      message:[NSString stringWithFormat:@"%@ (Error %d)",
+               [NSString
+                stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
+                book.title],
+               error.code]
+      delegate:nil
+      cancelButtonTitle:nil
+      otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+     show];
+    
+    [[NYPLMyBooksRegistry sharedRegistry]
+     setState:NYPLMyBooksStateDownloadFailed
+     forIdentifier:book.identifier];
+  }
+  
+  [self broadcastUpdate];
 }
 
 #pragma mark NSURLSessionTaskDelegate
@@ -250,13 +318,6 @@ didCompleteWithError:(NSError *)error
     self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:1.0];
     [self failDownloadForBook:book];
     return;
-  }
-  
-  if(!error) {
-    [[NYPLMyBooksRegistry sharedRegistry]
-     setState:NYPLMyBooksStateDownloadSuccessful forIdentifier:book.identifier];
-    
-    [self broadcastUpdate];
   }
 }
 
