@@ -1,4 +1,4 @@
-#import "NYPLCatalogViewController.h"
+#import "NYPLCatalogRootViewController.h"
 
 #import "NYPLCatalogNavigationController.h"
 
@@ -8,7 +8,7 @@
 
 - (instancetype)init
 {
-  self = [super initWithRootViewController:[[NYPLCatalogViewController alloc] init]];
+  self = [super initWithRootViewController:[[NYPLCatalogRootViewController alloc] init]];
   if(!self) return nil;
   
   self.tabBarItem.image = [UIImage imageNamed:@"Catalog"];

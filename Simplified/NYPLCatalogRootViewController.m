@@ -13,12 +13,12 @@
 #import "NYPLOPDSLink.h"
 #import "NYPLSession.h"
 
-#import "NYPLCatalogViewController.h"
+#import "NYPLCatalogRootViewController.h"
 
 static CGFloat const rowHeight = 115.0;
 static CGFloat const sectionHeaderHeight = 40.0;
 
-@interface NYPLCatalogViewController ()
+@interface NYPLCatalogRootViewController ()
   <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
@@ -30,7 +30,7 @@ static CGFloat const sectionHeaderHeight = 40.0;
 
 @end
 
-@implementation NYPLCatalogViewController
+@implementation NYPLCatalogRootViewController
 
 #pragma mark NSObject
 
