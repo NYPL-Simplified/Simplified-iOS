@@ -15,3 +15,11 @@ BOOL NYPLOPDSTypeStringIsNavigation(NSString *const string)
   return [string rangeOfString:@"navigation"
                        options:NSCaseInsensitiveSearch].location != NSNotFound;
 }
+
+BOOL NYPLOPDSTypeStringIsOpenSearchDescription(NSString *string)
+{
+  if(!string) return NO;
+    
+  return [string rangeOfString:@"application/opensearchdescription+xml"
+                       options:NSCaseInsensitiveSearch].location != NSNotFound;
+}
