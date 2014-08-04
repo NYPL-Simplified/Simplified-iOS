@@ -1,7 +1,7 @@
 #import "NYPLBook.h"
 
-static NSString *const NYPLMyBooksDownloadCenterDidChange =
-  @"NYPLMyBooksDownloadCenterDidChange";
+static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
+  @"NYPLMyBooksDownloadCenterDidChangeNotification";
 
 @interface NYPLMyBooksDownloadCenter : NSObject
 
@@ -15,6 +15,9 @@ static NSString *const NYPLMyBooksDownloadCenterDidChange =
 
 // Removes local content and removes the book from the registry.
 - (void)removeCompletedDownloadForBookIdentifier:(NSString *)identifier;
+
+// Deletes all local content and silently cancels downloads, but does NOT touch the registry.
+- (void)reset;
 
 // The value returned is in the range [0.0, 1.0].
 - (double)downloadProgressForBookIdentifier:(NSString *)bookIdentifier;

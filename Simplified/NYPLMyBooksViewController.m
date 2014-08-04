@@ -32,7 +32,7 @@ static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
   
   [self.observers addObject:
    [[NSNotificationCenter defaultCenter]
-    addObserverForName:NYPLBookRegistryDidChange
+    addObserverForName:NYPLBookRegistryDidChangeNotification
     object:nil
     queue:[NSOperationQueue mainQueue]
     usingBlock:^(__attribute__((unused)) NSNotification *note) {
@@ -42,7 +42,7 @@ static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
   
   [self.observers addObject:
    [[NSNotificationCenter defaultCenter]
-    addObserverForName:NYPLMyBooksDownloadCenterDidChange
+    addObserverForName:NYPLMyBooksDownloadCenterDidChangeNotification
     object:nil
     queue:[NSOperationQueue mainQueue]
     usingBlock:^(__attribute__((unused)) NSNotification *note) {
@@ -169,8 +169,8 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 
 - (void)updateBooks
 {
-  self.books = [[NYPLMyBooksRegistry sharedRegistry]
-                allBooksSortedByBlock:^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
+  self.books = [[[NYPLMyBooksRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
+                ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
                   return [a.title compare:b.title options:NSCaseInsensitiveSearch];
                 }];
 }

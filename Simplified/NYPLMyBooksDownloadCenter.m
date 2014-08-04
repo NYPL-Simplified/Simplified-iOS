@@ -12,7 +12,6 @@
 
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) BOOL broadcastScheduled;
-
 @property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadProgress;
 @property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadTask;
 @property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
@@ -62,6 +61,10 @@
 
 #pragma mark NSURLSessionDownloadDelegate
 
+// All of these delegate methods can be called (in very rare circumstances) after the shared
+// download center has been reset. As such, they must be careful to bail out immediately if that is
+// the case.
+
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
       downloadTask:(__attribute__((unused)) NSURLSessionDownloadTask *)downloadTask
  didResumeAtOffset:(__attribute__((unused)) int64_t)fileOffset
@@ -79,6 +82,11 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
   NSNumber *const key = [NSNumber numberWithUnsignedLong:downloadTask.taskIdentifier];
   NYPLBook *const book = self.taskIdentifierToBook[key];
   
+  if(!book) {
+    // A reset must have occurred.
+    return;
+  }
+  
   if(totalBytesExpectedToWrite > 0) {
     self.bookIdentifierToDownloadProgress[book.identifier] =
       [NSNumber numberWithDouble:(totalBytesWritten / (double) totalBytesExpectedToWrite)];
@@ -93,6 +101,11 @@ didFinishDownloadingToURL:(NSURL *const)location
 {
   NYPLBook *const book = self.taskIdentifierToBook[[NSNumber numberWithUnsignedLong:
                                                     downloadTask.taskIdentifier]];
+  
+  if(!book) {
+    // A reset must have occurred.
+    return;
+  }
   
   NSError *error = nil;
   
@@ -131,17 +144,25 @@ didFinishDownloadingToURL:(NSURL *const)location
 
 #pragma mark NSURLSessionTaskDelegate
 
+// As with the NSURLSessionDownloadDelegate methods, we need to be mindful of resets for the task
+// delegate methods too.
+
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
               task:(__attribute__((unused)) NSURLSessionTask *)task
 didReceiveChallenge:(__attribute__((unused)) NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
-  completionHandler(NSURLSessionAuthChallengeUseCredential,
-                    [NSURLCredential
-                     credentialWithUser:[NYPLAccount sharedAccount].barcode
-                     password:[NYPLAccount sharedAccount].PIN
-                     persistence:NSURLCredentialPersistenceNone]);
+  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+    completionHandler(NSURLSessionAuthChallengeUseCredential,
+                      [NSURLCredential
+                       credentialWithUser:[NYPLAccount sharedAccount].barcode
+                       password:[NYPLAccount sharedAccount].PIN
+                       persistence:NSURLCredentialPersistenceNone]);
+  } else {
+    // The user must have logged out during a download.
+    completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+  }
 }
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
@@ -150,6 +171,11 @@ didCompleteWithError:(NSError *)error
 {
   NSNumber *const key = [NSNumber numberWithUnsignedLong:task.taskIdentifier];
   NYPLBook *const book = self.taskIdentifierToBook[key];
+  
+  if(!book) {
+    // A reset must have occurred.
+    return;
+  }
   
   [self.bookIdentifierToDownloadProgress removeObjectForKey:book.identifier];
   
@@ -189,8 +215,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 #pragma mark -
 
-// Always returns a valid path for opening/moving a file, creating directories if needed.
-- (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
+- (NSURL *)contentDirectoryURL
 {
   NSArray *const paths =
   NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
@@ -199,25 +224,32 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   NSString *const path = paths[0];
   
+  NSURL *const directoryURL =
+    [[[NSURL fileURLWithPath:path]
+      URLByAppendingPathComponent:[[NSBundle mainBundle]
+                                   objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
+     URLByAppendingPathComponent:@"content"];
+  
+  return directoryURL;
+}
+
+// TODO: Rename this method so the side effect is clearer.
+// Always returns a valid path for opening/moving a file, creating directories if needed.
+- (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
+{
   NSString *const encodedIdentifier = [[identifier dataUsingEncoding:NSUTF8StringEncoding]
                                        fileSystemSafeBase64EncodedString];
   
-  NSURL *const directoryURL =
-  [[[NSURL fileURLWithPath:path]
-    URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                 objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-   URLByAppendingPathComponent:@"epubs"];
-  
   if(![[NSFileManager defaultManager]
-       createDirectoryAtURL:directoryURL
+       createDirectoryAtURL:[self contentDirectoryURL]
        withIntermediateDirectories:YES
        attributes:nil
        error:NULL]) {
-    NYPLLOG_F(@"Failed to create directory: %@", [directoryURL absoluteString]);
+    NYPLLOG(@"Failed to create directory.");
     return nil;
   }
   
-  return [[directoryURL URLByAppendingPathComponent:encodedIdentifier]
+  return [[[self contentDirectoryURL] URLByAppendingPathComponent:encodedIdentifier]
           URLByAppendingPathExtension:@"epub"];
 }
 
@@ -333,6 +365,24 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    show];
 }
 
+- (void)reset
+{
+  for(NSURLSessionDownloadTask *const task in [self.bookIdentifierToDownloadTask allValues]) {
+    [task cancelByProducingResumeData:nil];
+  }
+  
+  [self.bookIdentifierToDownloadProgress removeAllObjects];
+  [self.bookIdentifierToDownloadTask removeAllObjects];
+  [self.taskIdentifierToBook removeAllObjects];
+  self.bookIdentifierOfBookToRemove = nil;
+  
+  [[NSFileManager defaultManager]
+   removeItemAtURL:[self contentDirectoryURL]
+   error:NULL];
+  
+  [self broadcastUpdate];
+}
+
 - (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier
 {
   return [self.bookIdentifierToDownloadProgress[bookIdentifier] doubleValue];
@@ -357,7 +407,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   self.broadcastScheduled = NO;
   
   [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLMyBooksDownloadCenterDidChange
+   postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
    object:self];
 }
 

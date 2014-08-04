@@ -4,7 +4,8 @@
 #import "NYPLMyBooksState.h"
 
 // This is broadcast whenever the book registry is modified.
-static NSString *const NYPLBookRegistryDidChange = @"NYPLBookRegistryDidChange";
+static NSString *const NYPLBookRegistryDidChangeNotification
+  = @"NYPLBookRegistryDidChangeNotification";
 
 @interface NYPLMyBooksRegistry : NSObject
 
@@ -43,10 +44,13 @@ static NSString *const NYPLBookRegistryDidChange = @"NYPLBookRegistryDidChange";
 // that is not present will result in an error being logged.
 - (void)removeBookForIdentifier:(NSString *)book;
 
+// Resets the registry to an empty state.
+- (void)reset;
+
 // Returns the number of books currently registered.
 - (NSUInteger)count;
 
-// Returns all registered books sorted via the block provided.
-- (NSArray *)allBooksSortedByBlock:(NSComparisonResult (^)(NYPLBook *a, NYPLBook *b))block;
+// Returns all registered books.
+- (NSArray *)allBooks;
 
 @end
