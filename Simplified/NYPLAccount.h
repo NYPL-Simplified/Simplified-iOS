@@ -1,3 +1,5 @@
+static NSString *const NYPLAccountDidChangeNotification = @"NYPLAccountDidChangeNotification";
+
 @interface NYPLAccount : NSObject
 
 @property (atomic, readonly) NSString *barcode; // nil if not logged in

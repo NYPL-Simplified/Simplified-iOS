@@ -49,12 +49,20 @@ static NSString *const PINKey = @"NYPLAccountPIN";
   
   [[NYPLKeychain sharedKeychain] setObject:barcode forKey:barcodeKey];
   [[NYPLKeychain sharedKeychain] setObject:PIN forKey:PINKey];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLAccountDidChangeNotification
+   object:self];
 }
 
 - (void)removeBarcodeAndPIN
 {
   [[NYPLKeychain sharedKeychain] removeObjectForKey:barcodeKey];
   [[NYPLKeychain sharedKeychain] removeObjectForKey:PINKey];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLAccountDidChangeNotification
+   object:self];
 }
 
 @end
