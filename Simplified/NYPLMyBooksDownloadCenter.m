@@ -16,6 +16,7 @@
 @property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadProgress;
 @property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadTask;
 @property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
+@property (nonatomic) NSString *bookIdentifierOfBookToRemove;
 
 @end
 
@@ -57,171 +58,6 @@
   self.taskIdentifierToBook = [NSMutableDictionary dictionary];
   
   return self;
-}
-
-#pragma mark -
-
-// Always returns a valid path for opening/moving a file, creating directories if needed.
-- (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
-{
-  NSArray *const paths =
-    NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-    
-  assert([paths count] == 1);
-    
-  NSString *const path = paths[0];
-  
-  NSString *const encodedIdentifier = [[identifier dataUsingEncoding:NSUTF8StringEncoding]
-                                       fileSystemSafeBase64EncodedString];
-  
-  NSURL *const directoryURL =
-    [[[NSURL fileURLWithPath:path]
-      URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                   objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-     URLByAppendingPathComponent:@"epubs"];
-  
-  if(![[NSFileManager defaultManager]
-       createDirectoryAtURL:directoryURL
-       withIntermediateDirectories:YES
-       attributes:nil
-       error:NULL]) {
-    NYPLLOG_F(@"Failed to create directory: %@", [directoryURL absoluteString]);
-    return nil;
-  }
-  
-  return [[directoryURL URLByAppendingPathComponent:encodedIdentifier]
-          URLByAppendingPathExtension:@"epub"];
-}
-
-- (void)failDownloadForBook:(NYPLBook *const)book
-{
-  [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloadFailed];
-  
-  [[[UIAlertView alloc]
-    initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
-    message:[NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
-             book.title]
-    delegate:nil
-    cancelButtonTitle:nil
-    otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-   show];
-  
-  [self broadcastUpdate];
-}
-
-- (void)startDownloadForBook:(NYPLBook *const)book
-{
-  NYPLMyBooksState const state = [[NYPLMyBooksRegistry sharedRegistry]
-                                  stateForIdentifier:book.identifier];
-  
-  switch(state) {
-    case NYPLMyBooksStateUnregistered:
-      break;
-    case NYPLMyBooksStateDownloading:
-      // Ignore double button presses, et cetera.
-      return;
-    case NYPLMyBooksStateDownloadFailed:
-      break;
-    case NYPLMyBooksStateDownloadNeeded:
-      break;
-    case NYPLMyBooksStateDownloadSuccessful:
-      NYPLLOG(@"Ignoring nonsensical download request.");
-      return;
-  }
-  
-  if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-    NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
-    
-    if(!request.URL) {
-      // Originally this code just let the request fail later on, but apparently resuming an
-      // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
-      // segmentation fault.
-      NYPLLOG(@"Aborting request with invalid URL.");
-      [self failDownloadForBook:book];
-      return;
-    }
-    
-    NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
-    
-    self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:0.0];
-    self.bookIdentifierToDownloadTask[book.identifier] = task;
-    self.taskIdentifierToBook[[NSNumber numberWithUnsignedLong:task.taskIdentifier]] = book;
-    
-    [task resume];
-    
-    [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloading];
-  } else {
-    [[NYPLSettingsCredentialViewController sharedController]
-     requestCredentialsUsingExistingBarcode:NO
-     message:NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook
-     completionHandler:^{
-       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-     }];
-  }
-}
-
-- (void)cancelDownloadForBookIdentifier:(NSString *)identifier
-{
-  if(self.bookIdentifierToDownloadTask[identifier]) {
-    [(NSURLSessionDownloadTask *)self.bookIdentifierToDownloadTask[identifier]
-     cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
-       [[NYPLMyBooksRegistry sharedRegistry]
-        setState:NYPLMyBooksStateDownloadNeeded forIdentifier:identifier];
-       
-       [self broadcastUpdate];
-     }];
-  } else {
-    // The download was not actually going, so we just need to convert a failed download state.
-    NYPLMyBooksState const state = [[NYPLMyBooksRegistry sharedRegistry]
-                                    stateForIdentifier:identifier];
-    
-    if(state != NYPLMyBooksStateDownloadFailed) {
-      NYPLLOG(@"Ignoring nonsensical cancellation request.");
-      return;
-    }
-    
-    [[NYPLMyBooksRegistry sharedRegistry]
-     setState:NYPLMyBooksStateDownloadNeeded forIdentifier:identifier];
-  }
-}
-
-- (void)removeCompletedDownloadForBookIdentifier:(NSString *const)identifier
-{
-  if(![[NSFileManager defaultManager]
-       removeItemAtURL:[self fileURLForBookIndentifier:identifier]
-       error:NULL]){
-    NYPLLOG(@"Failed to remove download.");
-  }
-  
-  [[NYPLMyBooksRegistry sharedRegistry] removeBookForIdentifier:identifier];
-}
-
-- (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier
-{
-  return [self.bookIdentifierToDownloadProgress[bookIdentifier] doubleValue];
-}
-
-- (void)broadcastUpdate
-{
-  // We avoid issuing redundant notifications to prevent overwhelming UI updates.
-  if(self.broadcastScheduled) return;
-  
-  self.broadcastScheduled = YES;
-  
-  [NSTimer scheduledTimerWithTimeInterval:0.2
-                                   target:self
-                                 selector:@selector(broadcastUpdateNow)
-                                 userInfo:nil
-                                  repeats:NO];
-}
-
-- (void)broadcastUpdateNow
-{
-  self.broadcastScheduled = NO;
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLMyBooksDownloadCenterDidChange
-   object:self];
 }
 
 #pragma mark NSURLSessionDownloadDelegate
@@ -330,6 +166,199 @@ didCompleteWithError:(NSError *)error
     [self failDownloadForBook:book];
     return;
   }
+}
+
+#pragma mark UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView
+didDismissWithButtonIndex:(NSInteger const)buttonIndex
+{
+  if(buttonIndex == alertView.firstOtherButtonIndex) {
+    if(![[NSFileManager defaultManager]
+         removeItemAtURL:[self fileURLForBookIndentifier:self.bookIdentifierOfBookToRemove]
+         error:NULL]){
+      NYPLLOG(@"Failed to remove local content for download.");
+    }
+    
+    [[NYPLMyBooksRegistry sharedRegistry]
+     removeBookForIdentifier:self.bookIdentifierOfBookToRemove];
+  }
+  
+  self.bookIdentifierOfBookToRemove = nil;
+}
+
+#pragma mark -
+
+// Always returns a valid path for opening/moving a file, creating directories if needed.
+- (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
+{
+  NSArray *const paths =
+  NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  
+  assert([paths count] == 1);
+  
+  NSString *const path = paths[0];
+  
+  NSString *const encodedIdentifier = [[identifier dataUsingEncoding:NSUTF8StringEncoding]
+                                       fileSystemSafeBase64EncodedString];
+  
+  NSURL *const directoryURL =
+  [[[NSURL fileURLWithPath:path]
+    URLByAppendingPathComponent:[[NSBundle mainBundle]
+                                 objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
+   URLByAppendingPathComponent:@"epubs"];
+  
+  if(![[NSFileManager defaultManager]
+       createDirectoryAtURL:directoryURL
+       withIntermediateDirectories:YES
+       attributes:nil
+       error:NULL]) {
+    NYPLLOG_F(@"Failed to create directory: %@", [directoryURL absoluteString]);
+    return nil;
+  }
+  
+  return [[directoryURL URLByAppendingPathComponent:encodedIdentifier]
+          URLByAppendingPathExtension:@"epub"];
+}
+
+- (void)failDownloadForBook:(NYPLBook *const)book
+{
+  [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloadFailed];
+  
+  [[[UIAlertView alloc]
+    initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
+    message:[NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
+             book.title]
+    delegate:nil
+    cancelButtonTitle:nil
+    otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+   show];
+  
+  [self broadcastUpdate];
+}
+
+- (void)startDownloadForBook:(NYPLBook *const)book
+{
+  NYPLMyBooksState const state = [[NYPLMyBooksRegistry sharedRegistry]
+                                  stateForIdentifier:book.identifier];
+  
+  switch(state) {
+    case NYPLMyBooksStateUnregistered:
+      break;
+    case NYPLMyBooksStateDownloading:
+      // Ignore double button presses, et cetera.
+      return;
+    case NYPLMyBooksStateDownloadFailed:
+      break;
+    case NYPLMyBooksStateDownloadNeeded:
+      break;
+    case NYPLMyBooksStateDownloadSuccessful:
+      NYPLLOG(@"Ignoring nonsensical download request.");
+      return;
+  }
+  
+  if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
+    NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
+    
+    if(!request.URL) {
+      // Originally this code just let the request fail later on, but apparently resuming an
+      // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
+      // segmentation fault.
+      NYPLLOG(@"Aborting request with invalid URL.");
+      [self failDownloadForBook:book];
+      return;
+    }
+    
+    NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
+    
+    self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:0.0];
+    self.bookIdentifierToDownloadTask[book.identifier] = task;
+    self.taskIdentifierToBook[[NSNumber numberWithUnsignedLong:task.taskIdentifier]] = book;
+    
+    [task resume];
+    
+    [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloading];
+  } else {
+    [[NYPLSettingsCredentialViewController sharedController]
+     requestCredentialsUsingExistingBarcode:NO
+     message:NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook
+     completionHandler:^{
+       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+     }];
+  }
+}
+
+- (void)cancelDownloadForBookIdentifier:(NSString *)identifier
+{
+  if(self.bookIdentifierToDownloadTask[identifier]) {
+    [(NSURLSessionDownloadTask *)self.bookIdentifierToDownloadTask[identifier]
+     cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
+       [[NYPLMyBooksRegistry sharedRegistry]
+        setState:NYPLMyBooksStateDownloadNeeded forIdentifier:identifier];
+       
+       [self broadcastUpdate];
+     }];
+  } else {
+    // The download was not actually going, so we just need to convert a failed download state.
+    NYPLMyBooksState const state = [[NYPLMyBooksRegistry sharedRegistry]
+                                    stateForIdentifier:identifier];
+    
+    if(state != NYPLMyBooksStateDownloadFailed) {
+      NYPLLOG(@"Ignoring nonsensical cancellation request.");
+      return;
+    }
+    
+    [[NYPLMyBooksRegistry sharedRegistry]
+     setState:NYPLMyBooksStateDownloadNeeded forIdentifier:identifier];
+  }
+}
+
+- (void)removeCompletedDownloadForBookIdentifier:(NSString *const)identifier
+{
+  if(self.bookIdentifierOfBookToRemove) {
+    NYPLLOG(@"Ignoring delete while still handling previous delete.");
+    return;
+  }
+  
+  self.bookIdentifierOfBookToRemove = identifier;
+  
+  [[[UIAlertView alloc]
+    initWithTitle:NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
+    message:[NSString stringWithFormat:
+             NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil),
+             [[NYPLMyBooksRegistry sharedRegistry] bookForIdentifier:identifier].title]
+    delegate:self
+    cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+    otherButtonTitles:@"Delete", nil]
+   show];
+}
+
+- (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier
+{
+  return [self.bookIdentifierToDownloadProgress[bookIdentifier] doubleValue];
+}
+
+- (void)broadcastUpdate
+{
+  // We avoid issuing redundant notifications to prevent overwhelming UI updates.
+  if(self.broadcastScheduled) return;
+  
+  self.broadcastScheduled = YES;
+  
+  [NSTimer scheduledTimerWithTimeInterval:0.2
+                                   target:self
+                                 selector:@selector(broadcastUpdateNow)
+                                 userInfo:nil
+                                  repeats:NO];
+}
+
+- (void)broadcastUpdateNow
+{
+  self.broadcastScheduled = NO;
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLMyBooksDownloadCenterDidChange
+   object:self];
 }
 
 @end
