@@ -149,16 +149,20 @@ didFinishDownloadingToURL:(NSURL *const)location
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
               task:(__attribute__((unused)) NSURLSessionTask *)task
-didReceiveChallenge:(__attribute__((unused)) NSURLAuthenticationChallenge *)challenge
+didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
   if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-    completionHandler(NSURLSessionAuthChallengeUseCredential,
-                      [NSURLCredential
-                       credentialWithUser:[NYPLAccount sharedAccount].barcode
-                       password:[NYPLAccount sharedAccount].PIN
-                       persistence:NSURLCredentialPersistenceNone]);
+    if(challenge.previousFailureCount) {
+      completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+    } else {
+      completionHandler(NSURLSessionAuthChallengeUseCredential,
+                        [NSURLCredential
+                         credentialWithUser:[NYPLAccount sharedAccount].barcode
+                         password:[NYPLAccount sharedAccount].PIN
+                         persistence:NSURLCredentialPersistenceNone]);
+    }
   } else {
     // The user must have logged out during a download.
     completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);

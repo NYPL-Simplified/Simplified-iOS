@@ -8,7 +8,6 @@
 @interface NYPLSettingsCredentialViewController ()
   <NSURLSessionDelegate, NSURLSessionTaskDelegate, UITextFieldDelegate>
 
-@property (nonatomic) BOOL shouldAnswerChallenge;
 @property (nonatomic, readonly) NYPLSettingsCredentialView *credentialView;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) NSURLSession *session;
@@ -105,19 +104,18 @@
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
               task:(__attribute__((unused)) NSURLSessionTask *)task
-didReceiveChallenge:(__attribute__((unused)) NSURLAuthenticationChallenge *)challenge
+didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
-  if(self.shouldAnswerChallenge) {
-    self.shouldAnswerChallenge = NO;
+  if(challenge.previousFailureCount) {
+    completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+  } else {
     completionHandler(NSURLSessionAuthChallengeUseCredential,
                       [NSURLCredential
                        credentialWithUser:self.credentialView.barcodeField.text
                        password:self.credentialView.PINField.text
                        persistence:NSURLCredentialPersistenceNone]);
-  } else {
-    completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
   }
 }
 
@@ -224,8 +222,6 @@ completionHandler:(void (^)())handler
     [NSMutableURLRequest requestWithURL:[NYPLConfiguration loanURL]];
   
   request.HTTPMethod = @"HEAD";
-  
-  self.shouldAnswerChallenge = YES;
   
   NSURLSessionDataTask *const task =
     [self.session
