@@ -1,4 +1,6 @@
 #import "NYPLAccount.h"
+#import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLMyBooksRegistry.h"
 #import "NYPLSettingsCredentialViewController.h"
 
 #import "NYPLSettingsViewController.h"
@@ -99,6 +101,8 @@
 didDismissWithButtonIndex:(NSInteger const)buttonIndex
 {
   if(buttonIndex == alertView.firstOtherButtonIndex) {
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
+    [[NYPLMyBooksRegistry sharedRegistry] reset];
     [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
   }
 }

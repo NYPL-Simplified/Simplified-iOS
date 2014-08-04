@@ -83,7 +83,7 @@ static NSUInteger const preloadThreshold = 100;
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(refreshBooks)
-   name:NYPLBookRegistryDidChange
+   name:NYPLBookRegistryDidChangeNotification
    object:nil];
   
   return self;
