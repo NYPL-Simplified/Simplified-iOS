@@ -185,6 +185,17 @@
   }
 }
 
+- (void)removeCompletedDownloadForBookIdentifier:(NSString *const)identifier
+{
+  if(![[NSFileManager defaultManager]
+       removeItemAtURL:[self fileURLForBookIndentifier:identifier]
+       error:NULL]){
+    NYPLLOG(@"Failed to remove download.");
+  }
+  
+  [[NYPLMyBooksRegistry sharedRegistry] removeBookForIdentifier:identifier];
+}
+
 - (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier
 {
   return [self.bookIdentifierToDownloadProgress[bookIdentifier] doubleValue];
