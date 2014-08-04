@@ -29,6 +29,11 @@
 
 "HoldsViewControllerTitle" = "Holds";
 
+// NYPLMyBooksDownloadCenter
+
+"MyBooksDownloadCenterConfirmDeleteTitle" = "Delete Book";
+"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat" = "Are you sure you want to delete %@?";
+
 // NYPLMyBooksViewController
 
 "MyBooksViewControllerTitle" = "My Books";
