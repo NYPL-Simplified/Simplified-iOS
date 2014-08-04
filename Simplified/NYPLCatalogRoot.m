@@ -7,6 +7,7 @@
 #import "NYPLCatalogSubsectionLink.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLOPDS.h"
+#import "NYPLOpenSearchDescription.h"
 #import "NYPLSession.h"
 
 #import "NYPLCatalogRoot.h"
@@ -14,7 +15,7 @@
 @interface NYPLCatalogRoot ()
 
 @property (nonatomic) NSArray *lanes;
-@property (nonatomic) NSURL *openSearchURL;
+@property (nonatomic) NSString *searchTemplate;
 
 @end
 
@@ -161,18 +162,32 @@
             title:navigationEntry.title]];
         }
         
-        NYPLCatalogRoot *const root = [[NYPLCatalogRoot alloc]
+        if(openSearchURL) {
+          [NYPLOpenSearchDescription
+           withURL:openSearchURL
+           completionHandler:^(NYPLOpenSearchDescription *const description) {
+             if(!description) {
+               NYPLLOG(@"Failed to retrieve description.");
+               NYPLAsyncDispatch(^{handler([[NYPLCatalogRoot alloc]
+                                            initWithLanes:lanes
+                                            searchTemplate:nil]);});
+               return;
+             }
+             NYPLAsyncDispatch(^{handler([[NYPLCatalogRoot alloc]
+                                          initWithLanes:lanes
+                                          searchTemplate:description.OPDSURLTemplate]);});
+           }];
+        } else {
+          NYPLAsyncDispatch(^{handler([[NYPLCatalogRoot alloc]
                                        initWithLanes:lanes
-                                       openSearchURL:openSearchURL];
-        assert(root);
-        
-        NYPLAsyncDispatch(^{handler(root);});
+                                       searchTemplate:nil]);});
+        }
       }];
    }];
 }
 
 - (instancetype)initWithLanes:(NSArray *const)lanes
-                openSearchURL:(NSURL *const)openSearchURL
+               searchTemplate:(NSString *const)searchTemplate
 {
   self = [super init];
   if(!self) return nil;
@@ -188,7 +203,7 @@
   }
   
   self.lanes = lanes;
-  self.openSearchURL = openSearchURL;
+  self.searchTemplate = searchTemplate;
   
   return self;
 }
