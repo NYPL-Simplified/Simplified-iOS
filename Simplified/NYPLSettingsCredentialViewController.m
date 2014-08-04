@@ -283,7 +283,9 @@ completionHandler:(void (^)())handler
          [self dismissViewControllerAnimated:YES completion:^{}];
          void (^handler)() = self.completionHandler;
          self.completionHandler = nil;
-         handler();
+         if(handler) {
+           handler();
+         }
          return;
        }
        
