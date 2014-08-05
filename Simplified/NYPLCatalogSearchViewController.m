@@ -15,6 +15,7 @@
 @property (nonatomic) NSString *categoryTitle;
 @property (nonatomic) UICollectionView *collectionView;
 @property (nonatomic) NSMutableArray *observers;
+@property (nonatomic) UISearchBar *searchBar;
 @property (nonatomic) NSString *searchTemplate;
 
 @end
@@ -57,6 +58,24 @@
   self.activityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   [self.view addSubview:self.activityIndicatorView];
+  
+  self.searchBar = [[UISearchBar alloc] init];
+  self.searchBar.placeholder =
+    [NSString stringWithFormat:NSLocalizedString(@"SearchPlaceholderFormat", nil),
+     self.categoryTitle];
+  [self.searchBar sizeToFit];
+  
+  self.navigationItem.titleView = self.searchBar;
+}
+
+- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+{
+  [self.searchBar becomeFirstResponder];
+}
+
+- (void)viewWillDisappear:(__attribute__((unused)) BOOL)animated
+{
+  [self.searchBar resignFirstResponder];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
