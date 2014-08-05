@@ -1,3 +1,4 @@
+#import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 
 #import "NYPLBookDetailDownloadFailedView.h"
@@ -22,7 +23,7 @@
   
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont systemFontOfSize:12];
-  self.messageLabel.textColor = [UIColor whiteColor];
+  self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
   self.messageLabel.text = NSLocalizedString(@"DownloadCouldNotBeCompleted", nil);
   [self addSubview:self.messageLabel];
   
@@ -32,7 +33,7 @@
   [self.cancelButton addTarget:self
                         action:@selector(didSelectCancel)
               forControlEvents:UIControlEventTouchUpInside];
-  self.cancelButton.backgroundColor = [UIColor whiteColor];
+  self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.cancelButton.tintColor = [UIColor grayColor];
   self.cancelButton.layer.cornerRadius = 2;
   
@@ -42,7 +43,7 @@
   [self.tryAgainButton addTarget:self
                           action:@selector(didSelectTryAgain)
                 forControlEvents:UIControlEventTouchUpInside];
-  self.tryAgainButton.backgroundColor = [UIColor whiteColor];
+  self.tryAgainButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tryAgainButton.tintColor = [UIColor grayColor];
   self.tryAgainButton.layer.cornerRadius = 2;
   

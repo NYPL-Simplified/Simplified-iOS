@@ -1,5 +1,6 @@
 #import "NYPLBook.h"
 #import "NYPLBookDownloadFailedCell.h"
+#import "NYPLConfiguration.h"
 #import "UIView+NYPLViewAdditions.h"
 
 @interface NYPLBookDownloadFailedCell ()
@@ -73,14 +74,14 @@
   
   self.authorsLabel = [[UILabel alloc] init];
   self.authorsLabel.font = [UIFont systemFontOfSize:12];
-  self.authorsLabel.textColor = [UIColor whiteColor];
+  self.authorsLabel.textColor = [NYPLConfiguration backgroundColor];
   [self.contentView addSubview:self.authorsLabel];
   
   self.buttonContainerView = [[UIView alloc] init];
   [self.contentView addSubview:self.buttonContainerView];
   
   self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  self.cancelButton.backgroundColor = [UIColor whiteColor];
+  self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.cancelButton.tintColor = [UIColor grayColor];
   [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
                      forState:UIControlStateNormal];
@@ -92,18 +93,18 @@
   
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont systemFontOfSize:12];
-  self.messageLabel.textColor = [UIColor whiteColor];
+  self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
   self.messageLabel.text = NSLocalizedString(@"DownloadCouldNotBeCompleted", nil);
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
   [self.contentView addSubview:self.messageLabel];
   
   self.titleLabel = [[UILabel alloc] init];
   self.titleLabel.font = [UIFont boldSystemFontOfSize:17];
-  self.titleLabel.textColor = [UIColor whiteColor];
+  self.titleLabel.textColor = [NYPLConfiguration backgroundColor];
   [self.contentView addSubview:self.titleLabel];
   
   self.tryAgainButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  self.tryAgainButton.backgroundColor = [UIColor whiteColor];
+  self.tryAgainButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tryAgainButton.tintColor = [UIColor grayColor];
   [self.tryAgainButton setTitle:NSLocalizedString(@"TryAgain", nil)
                        forState:UIControlStateNormal];

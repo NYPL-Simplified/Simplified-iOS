@@ -1,5 +1,6 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
+#import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
 
@@ -66,7 +67,7 @@ static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
 
 - (void)viewDidLoad
 {
-  self.view.backgroundColor = [UIColor whiteColor];
+  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.collectionView = [[UICollectionView alloc]
                          initWithFrame:self.view.bounds
@@ -78,7 +79,7 @@ static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
                                           UIViewAutoresizingFlexibleHeight);
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
-  self.collectionView.backgroundColor = [UIColor whiteColor];
+  self.collectionView.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.view addSubview:self.collectionView];
 }
 

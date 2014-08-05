@@ -5,6 +5,7 @@
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLCatalogCategory.h"
+#import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLSettingsCredentialViewController.h"
@@ -37,7 +38,7 @@
   
   self.title = title;
   
-  self.view.backgroundColor = [UIColor whiteColor];
+  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   return self;
 }
@@ -55,7 +56,7 @@
 
 - (void)viewDidLoad
 {
-  self.view.backgroundColor = [UIColor whiteColor];
+  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.collectionView = [[UICollectionView alloc]
                          initWithFrame:self.view.bounds
@@ -67,7 +68,7 @@
                                           UIViewAutoresizingFlexibleHeight);
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
-  self.collectionView.backgroundColor = [UIColor whiteColor];
+  self.collectionView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.collectionView.hidden = YES;
   [self.view addSubview:self.collectionView];
   

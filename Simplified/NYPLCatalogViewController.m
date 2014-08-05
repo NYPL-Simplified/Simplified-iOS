@@ -50,7 +50,7 @@ static CGFloat const sectionHeaderHeight = 40.0;
 
 - (void)viewDidLoad
 {
-  self.view.backgroundColor = [UIColor whiteColor];
+  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.activityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];

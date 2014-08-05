@@ -1,3 +1,5 @@
+#import "NYPLConfiguration.h"
+
 #import "NYPLHoldsViewController.h"
 
 @implementation NYPLHoldsViewController
@@ -18,7 +20,7 @@
 
 - (void)viewDidLoad
 {
-  self.view.backgroundColor = [UIColor whiteColor];
+  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
 }
 
 @end
