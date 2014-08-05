@@ -1,6 +1,3 @@
-#ifndef Simplified_NYPLOPDSRelation_h
-#define Simplified_NYPLOPDSRelation_h
-
 static NSString *const NYPLOPDSRelationAcquisition =
   @"http://opds-spec.org/acquisition";
 
@@ -25,7 +22,8 @@ static NSString *const NYPLOPDSRelationImageThumbnail =
 static NSString *const NYPLOPDSRelationPaginationNext =
   @"next";
 
+static NSString *const NYPLOPDSRelationSearch =
+  @"search";
+
 static NSString *const NYPLOPDSRelationSubsection =
   @"subsection";
-
-#endif

@@ -1,22 +1,24 @@
 // Generic
 
 "Cancel" = "Cancel";
+"Catalog" = "Catalog";
 "CheckConnection" = "Please check your connection or try again later.";
-"Download" = "Download";
 "Delete" = "Delete";
-"OK" = "OK";
+"Download" = "Download";
+"DownloadCouldNotBeCompleted" = "The download could not be completed.";
+"DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.";
+"DownloadFailed" = "Download Failed";
+"Downloading" = "Downloading";
 "LogIn" = "Log In";
 "LogOut" = "Log Out";
-"Read" = "Read"; // present tense
-"DownloadFailed" = "Download Failed";
-"DownloadCouldNotBeCompleted" = "The download could not be completed.";
-"TryAgain" = "Try Again";
-"Downloading" = "Downloading";
 "NotConnected" = "You are not connected to the internet. Please connect and try again.";
+"OK" = "OK";
+"Read" = "Read"; // present tense
+"SearchPlaceholderFormat" = "Search %@";
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";
+"TryAgain" = "Try Again";
 "UnknownRequestError" =
-  "An unknown error occurred. Please check your connection or try again later.";
-"DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.";
+    "An unknown error occurred. Please check your connection or try again later.";
 
 // NYPLCatalogCategoryViewController
 
@@ -25,7 +27,6 @@
 // NYPLCatalogViewController
 
 "CatalogViewControllerFeedDownloadFailedTitle" = "Could Not Load Catalog";
-"CatalogViewControllerTitle" = "Catalog";
 
 // NYPLHoldsViewController
 

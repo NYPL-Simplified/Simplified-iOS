@@ -6,11 +6,8 @@
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogSubsectionLink.h"
 #import "NYPLMyBooksRegistry.h"
-#import "NYPLOPDSEntry.h"
-#import "NYPLOPDSFeed.h"
-#import "NYPLOPDSLink.h"
-#import "NYPLOPDSRelation.h"
-#import "NYPLOPDSType.h"
+#import "NYPLOPDS.h"
+#import "NYPLOpenSearchDescription.h"
 #import "NYPLSession.h"
 
 #import "NYPLCatalogRoot.h"
@@ -18,6 +15,7 @@
 @interface NYPLCatalogRoot ()
 
 @property (nonatomic) NSArray *lanes;
+@property (nonatomic) NSString *searchTemplate;
 
 @end
 
@@ -37,6 +35,15 @@
        NYPLLOG(@"Failed to retrieve main navigation feed.");
        NYPLAsyncDispatch(^{handler(nil);});
        return;
+     }
+     
+     NSURL *openSearchURL = nil;
+     
+     for(NYPLOPDSLink *const link in navigationFeed.links) {
+       if([link.rel isEqualToString:NYPLOPDSRelationSearch] &&
+          NYPLOPDSTypeStringIsOpenSearchDescription(link.type)) {
+         openSearchURL = link.href;
+       }
      }
      
      NSMutableSet *const featuredURLs =
@@ -155,15 +162,28 @@
             title:navigationEntry.title]];
         }
         
-        NYPLCatalogRoot *const root = [[NYPLCatalogRoot alloc] initWithLanes:lanes];
-        assert(root);
-        
-        NYPLAsyncDispatch(^{handler(root);});
+        if(openSearchURL) {
+          [NYPLOpenSearchDescription
+           withURL:openSearchURL
+           completionHandler:^(NYPLOpenSearchDescription *const description) {
+             if(!description) {
+               NYPLLOG(@"Failed to retrieve OpenSearch description document.");
+             }
+             NYPLAsyncDispatch(^{handler([[NYPLCatalogRoot alloc]
+                                          initWithLanes:lanes
+                                          searchTemplate:description.OPDSURLTemplate]);});
+           }];
+        } else {
+          NYPLAsyncDispatch(^{handler([[NYPLCatalogRoot alloc]
+                                       initWithLanes:lanes
+                                       searchTemplate:nil]);});
+        }
       }];
    }];
 }
 
 - (instancetype)initWithLanes:(NSArray *const)lanes
+               searchTemplate:(NSString *const)searchTemplate
 {
   self = [super init];
   if(!self) return nil;
@@ -179,6 +199,7 @@
   }
   
   self.lanes = lanes;
+  self.searchTemplate = searchTemplate;
   
   return self;
 }
