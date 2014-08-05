@@ -3,6 +3,7 @@
 #import "NYPLAsync.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogCategoryViewController.h"
+#import "NYPLCatalogSearchViewController.h"
 #import "NYPLBook.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
@@ -41,7 +42,7 @@ static CGFloat const sectionHeaderHeight = 40.0;
   
   self.cachedCells = [NSMutableDictionary dictionary];
   self.URLsToImageData = [NSMutableDictionary dictionary];
-  self.title = NSLocalizedString(@"CatalogViewControllerTitle", nil);
+  self.title = NSLocalizedString(@"Catalog", nil);
   
   return self;
 }
@@ -271,7 +272,11 @@ viewForHeaderInSection:(NSInteger const)section
 
 - (void)didSelectSearch
 {
-  // TODO
+  [self.navigationController
+   pushViewController:[[NYPLCatalogSearchViewController alloc]
+                       initWithCategoryTitle:NSLocalizedString(@"Catalog", nil)
+                       searchTemplate:self.catalogRoot.searchTemplate]
+   animated:YES];
 }
 
 @end

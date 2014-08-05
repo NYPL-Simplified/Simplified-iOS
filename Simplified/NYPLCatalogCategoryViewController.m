@@ -5,6 +5,7 @@
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLCatalogCategory.h"
+#import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
@@ -227,7 +228,11 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 
 - (void)didSelectSearch
 {
-  // TODO
+  [self.navigationController
+   pushViewController:[[NYPLCatalogSearchViewController alloc]
+                       initWithCategoryTitle:self.category.title
+                       searchTemplate:self.category.searchTemplate]
+   animated:YES];
 }
 
 @end
