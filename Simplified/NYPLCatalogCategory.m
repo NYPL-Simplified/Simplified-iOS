@@ -1,10 +1,8 @@
 #import "NYPLAsync.h"
 #import "NYPLBook.h"
-#import "NYPLOPDSEntry.h"
-#import "NYPLOPDSFeed.h"
-#import "NYPLOPDSLink.h"
-#import "NYPLOPDSRelation.h"
+#import "NYPLOPDS.h"
 #import "NYPLMyBooksRegistry.h"
+#import "NYPLOpenSearchDescription.h"
 
 #import "NYPLCatalogCategory.h"
 
@@ -14,6 +12,7 @@
 @property (nonatomic) NSArray *books;
 @property (nonatomic) NSUInteger greatestPreparationIndex;
 @property (nonatomic) NSURL *nextURL;
+@property (nonatomic) NSString *searchTemplate;
 @property (nonatomic) NSString *title;
 
 @end
@@ -24,7 +23,9 @@ static NSUInteger const preloadThreshold = 100;
 
 @implementation NYPLCatalogCategory
 
-+ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogCategory *category))handler
++ (void)withURL:(NSURL *)URL
+includingSearchTemplate:(BOOL)includingSearchTemplate
+handler:(void (^)(NYPLCatalogCategory *category))handler
 {
   [NYPLOPDSFeed
    withURL:URL
@@ -48,25 +49,52 @@ static NSUInteger const preloadThreshold = 100;
      }
      
      NSURL *nextURL = nil;
+     NSURL *openSearchURL = nil;
      
      for(NYPLOPDSLink *const link in acquisitionFeed.links) {
        if([link.rel isEqualToString:NYPLOPDSRelationPaginationNext]) {
          nextURL = link.href;
-         break;
+         continue;
+       }
+       if([link.rel isEqualToString:NYPLOPDSRelationSearch] &&
+          NYPLOPDSTypeStringIsOpenSearchDescription(link.type)) {
+         openSearchURL = link.href;
+         continue;
        }
      }
      
-     NYPLCatalogCategory *const category = [[NYPLCatalogCategory alloc]
-                                            initWithBooks:books
-                                            nextURL:nextURL
-                                            title:acquisitionFeed.title];
-     
-     NYPLAsyncDispatch(^{handler(category);});
+     if(openSearchURL && includingSearchTemplate) {
+       [NYPLOpenSearchDescription
+        withURL:openSearchURL
+        completionHandler:^(NYPLOpenSearchDescription *const description) {
+          if(!description) {
+            NYPLLOG(@"Failed to retrieve open search description.");
+          }
+          NYPLAsyncDispatch(^{handler([[NYPLCatalogCategory alloc]
+                                       initWithBooks:books
+                                       nextURL:nextURL
+                                       searchTemplate:description.OPDSURLTemplate
+                                       title:acquisitionFeed.title]);});
+        }];
+      } else {
+        NYPLAsyncDispatch(^{handler([[NYPLCatalogCategory alloc]
+                                     initWithBooks:books
+                                     nextURL:nextURL
+                                     searchTemplate:nil
+                                     title:acquisitionFeed.title]);});
+      }
    }];
+}
+
++ (void)withURL:(NSURL *)URL
+        handler:(void (^)(NYPLCatalogCategory *category))handler
+{
+  [self withURL:URL includingSearchTemplate:YES handler:handler];
 }
 
 - (instancetype)initWithBooks:(NSArray *const)books
                       nextURL:(NSURL *const)nextURL
+               searchTemplate:(NSString *const)searchTemplate
                         title:(NSString *const)title
 {
   self = [super init];
@@ -78,6 +106,7 @@ static NSUInteger const preloadThreshold = 100;
   
   self.books = books;
   self.nextURL = nextURL;
+  self.searchTemplate = searchTemplate;
   self.title = title;
   
   [[NSNotificationCenter defaultCenter]
@@ -113,6 +142,7 @@ static NSUInteger const preloadThreshold = 100;
   
   [NYPLCatalogCategory
    withURL:self.nextURL
+   includingSearchTemplate:NO
    handler:^(NYPLCatalogCategory *const category) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        if(!category) {

@@ -1,43 +1,38 @@
-#import "NYPLAccount.h"
-#import "NYPLBook.h"
-#import "NYPLBookNormalCell.h"
+// TODO: This class duplicates much of the functionality of NYPLCatalogCategoryViewController.
+// After it is complete, the common portions must be factored out.
+
+#import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
-#import "NYPLBookDownloadFailedCell.h"
-#import "NYPLBookDownloadingCell.h"
 #import "NYPLCatalogCategory.h"
-#import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
-#import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLMyBooksRegistry.h"
-#import "NYPLSettingsCredentialViewController.h"
 
-#import "NYPLCatalogCategoryViewController.h"
+#import "NYPLCatalogSearchViewController.h"
 
-@interface NYPLCatalogCategoryViewController ()
-  <NYPLCatalogCategoryDelegate, UICollectionViewDataSource, UICollectionViewDelegate,
-   UICollectionViewDelegateFlowLayout>
+@interface NYPLCatalogSearchViewController ()
+  <NYPLCatalogCategoryDelegate, UICollectionViewDelegate, UICollectionViewDataSource,
+   UISearchBarDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogCategory *category;
+@property (nonatomic) NSString *categoryTitle;
 @property (nonatomic) UICollectionView *collectionView;
 @property (nonatomic) NSMutableArray *observers;
-@property (nonatomic) NSURL *URL;
+@property (nonatomic) UISearchBar *searchBar;
+@property (nonatomic) NSString *searchTemplate;
 
 @end
 
-@implementation NYPLCatalogCategoryViewController
+@implementation NYPLCatalogSearchViewController
 
-- (instancetype)initWithURL:(NSURL *const)URL
-                      title:(NSString *const)title
+- (instancetype)initWithCategoryTitle:(NSString *const)categoryTitle
+                       searchTemplate:(NSString *const)searchTemplate
 {
   self = [super init];
   if(!self) return nil;
-  
+
+  self.categoryTitle = categoryTitle;
   self.observers = [NSMutableArray array];
-  
-  self.URL = URL;
-  
-  self.title = title;
+  self.searchTemplate = searchTemplate;
   
   return self;
 }
@@ -57,14 +52,6 @@
 {
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
-  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-                                            initWithImage:[UIImage imageNamed:@"Search"]
-                                            style:UIBarButtonItemStylePlain
-                                            target:self
-                                            action:@selector(didSelectSearch)];
-  
-  self.navigationItem.rightBarButtonItem.enabled = NO;
-  
   self.collectionView = [[UICollectionView alloc]
                          initWithFrame:self.view.bounds
                          collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
@@ -81,41 +68,18 @@
   
   self.activityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  [self.activityIndicatorView startAnimating];
+  self.activityIndicatorView.hidden = YES;
   [self.view addSubview:self.activityIndicatorView];
-  [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   
-  [NYPLCatalogCategory
-   withURL:self.URL
-   handler:^(NYPLCatalogCategory *const category) {
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       self.activityIndicatorView.hidden = YES;
-       [self.activityIndicatorView stopAnimating];
-       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-       
-       if(!category) {
-         [[[UIAlertView alloc]
-           initWithTitle:
-            NSLocalizedString(@"CatalogCategoryViewControllerFeedDownloadFailedTitle", nil)
-           message:
-            NSLocalizedString(@"CheckConnection", nil)
-           delegate:nil
-           cancelButtonTitle:nil
-           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-          show];
-         return;
-       }
-       
-       self.category = category;
-       self.category.delegate = self;
-       
-       if(self.category.searchTemplate) {
-         self.navigationItem.rightBarButtonItem.enabled = YES;
-       }
-       
-       [self didLoadCategory];
-     }];
-   }];
+  self.searchBar = [[UISearchBar alloc] init];
+  self.searchBar.delegate = self;
+  self.searchBar.placeholder =
+    [NSString stringWithFormat:NSLocalizedString(@"SearchPlaceholderFormat", nil),
+     self.categoryTitle];
+  [self.searchBar sizeToFit];
+  [self.searchBar becomeFirstResponder];
+  
+  self.navigationItem.titleView = self.searchBar;
 }
 
 - (void)viewWillLayoutSubviews
@@ -123,11 +87,13 @@
   self.activityIndicatorView.center = self.view.center;
 }
 
-// The approach taken in this method was settled upon after several other approaches were tried.
-// It's not generic because it assumes two columns in portrait and three in landscape when using an
-// iPad, and it assumes row heights are constant, but it's simple and exact.
+- (void)viewWillDisappear:(__attribute__((unused)) BOOL)animated
+{
+  [self.searchBar resignFirstResponder];
+}
+
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
-                               duration:(__attribute__((unused)) NSTimeInterval)duration
+                                duration:(__attribute__((unused)) NSTimeInterval)duration
 {
   CGFloat const top = self.collectionView.contentInset.top;
   
@@ -147,7 +113,7 @@
       }
     }
   }
-
+  
   [self.collectionView.collectionViewLayout invalidateLayout];
 }
 
@@ -218,21 +184,50 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
   [self.collectionView reloadData];
 }
 
-#pragma mark -
+#pragma mark UISearchBarDelegate
 
-- (void)didLoadCategory
+- (void)searchBarSearchButtonClicked:(__attribute__((unused)) UISearchBar *)searchBar
 {
-  [self.collectionView reloadData];
-  self.collectionView.hidden = NO;
-}
-
-- (void)didSelectSearch
-{
-  [self.navigationController
-   pushViewController:[[NYPLCatalogSearchViewController alloc]
-                       initWithCategoryTitle:self.title
-                       searchTemplate:self.category.searchTemplate]
-   animated:YES];
+  self.collectionView.hidden = YES;
+  self.activityIndicatorView.hidden = NO;
+  [self.activityIndicatorView startAnimating];
+  [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+  [self.searchBar resignFirstResponder];
+  
+  [NYPLCatalogCategory
+   withURL:[NSURL URLWithString:
+            [self.searchTemplate
+             stringByReplacingOccurrencesOfString:@"{searchTerms}"
+             withString:[self.searchBar.text
+                         stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
+   handler:^(NYPLCatalogCategory *const category) {
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       self.collectionView.hidden = NO;
+       self.activityIndicatorView.hidden = YES;
+       [self.activityIndicatorView stopAnimating];
+       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+       
+       // FIXME: This uses the wrong localized string for the title.
+       if(!category) {
+         [[[UIAlertView alloc]
+           initWithTitle:
+            NSLocalizedString(@"CatalogCategoryViewControllerFeedDownloadFailedTitle", nil)
+           message:
+            NSLocalizedString(@"CheckConnection", nil)
+           delegate:nil
+           cancelButtonTitle:nil
+           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+          show];
+         return;
+       }
+       
+       self.category = category;
+       self.category.delegate = self;
+       
+       [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+       [self.collectionView reloadData];
+     }];
+   }];
 }
 
 @end

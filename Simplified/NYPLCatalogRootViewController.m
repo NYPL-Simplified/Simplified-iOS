@@ -3,6 +3,7 @@
 #import "NYPLAsync.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogCategoryViewController.h"
+#import "NYPLCatalogSearchViewController.h"
 #import "NYPLBook.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
@@ -13,12 +14,12 @@
 #import "NYPLOPDSLink.h"
 #import "NYPLSession.h"
 
-#import "NYPLCatalogViewController.h"
+#import "NYPLCatalogRootViewController.h"
 
 static CGFloat const rowHeight = 115.0;
 static CGFloat const sectionHeaderHeight = 40.0;
 
-@interface NYPLCatalogViewController ()
+@interface NYPLCatalogRootViewController ()
   <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
@@ -30,7 +31,7 @@ static CGFloat const sectionHeaderHeight = 40.0;
 
 @end
 
-@implementation NYPLCatalogViewController
+@implementation NYPLCatalogRootViewController
 
 #pragma mark NSObject
 
@@ -41,7 +42,7 @@ static CGFloat const sectionHeaderHeight = 40.0;
   
   self.cachedCells = [NSMutableDictionary dictionary];
   self.URLsToImageData = [NSMutableDictionary dictionary];
-  self.title = NSLocalizedString(@"CatalogViewControllerTitle", nil);
+  self.title = NSLocalizedString(@"Catalog", nil);
   
   return self;
 }
@@ -51,6 +52,14 @@ static CGFloat const sectionHeaderHeight = 40.0;
 - (void)viewDidLoad
 {
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  
+  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                            initWithImage:[UIImage imageNamed:@"Search"]
+                                            style:UIBarButtonItemStylePlain
+                                            target:self
+                                            action:@selector(didSelectSearch)];
+  
+  self.navigationItem.rightBarButtonItem.enabled = NO;
   
   self.activityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -153,7 +162,7 @@ viewForHeaderInSection:(NSInteger const)section
     button.frame = CGRectMake(5, 5, CGRectGetWidth(button.frame), CGRectGetHeight(button.frame));
     button.tag = section;
     [button addTarget:self
-               action:@selector(didSelectButton:)
+               action:@selector(didSelectCategory:)
      forControlEvents:UIControlEventTouchUpInside];
     button.exclusiveTouch = YES;
     [view addSubview:button];
@@ -207,6 +216,10 @@ viewForHeaderInSection:(NSInteger const)section
        self.catalogRoot = root;
        [self.tableView reloadData];
        
+       if(self.catalogRoot.searchTemplate) {
+         self.navigationItem.rightBarButtonItem.enabled = YES;
+       }
+       
        [self downloadImages];
      }];
    }];
@@ -244,11 +257,8 @@ viewForHeaderInSection:(NSInteger const)section
    }];
 }
 
-- (void)didSelectButton:(id)buttonObject
+- (void)didSelectCategory:(UIButton *const)button
 {
-  assert([buttonObject isKindOfClass:[UIButton class]]);
-  UIButton *const button = buttonObject;
-  
   NYPLCatalogLane *const lane = self.catalogRoot.lanes[button.tag];
   
   // TODO: Show the correct controller based on the |lane.subsectionLink.type|.
@@ -258,6 +268,15 @@ viewForHeaderInSection:(NSInteger const)section
      title:lane.title];
   
   [self.navigationController pushViewController:viewController animated:YES];
+}
+
+- (void)didSelectSearch
+{
+  [self.navigationController
+   pushViewController:[[NYPLCatalogSearchViewController alloc]
+                       initWithCategoryTitle:NSLocalizedString(@"Catalog", nil)
+                       searchTemplate:self.catalogRoot.searchTemplate]
+   animated:YES];
 }
 
 @end
