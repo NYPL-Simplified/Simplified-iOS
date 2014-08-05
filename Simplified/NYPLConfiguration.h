@@ -8,6 +8,8 @@
 
 + (UIColor *)accentColor;
 
++ (UIColor *)backgroundColor;
+
 + (NSString *)systemFontName;
 
 + (NSString *)boldSystemFontName;

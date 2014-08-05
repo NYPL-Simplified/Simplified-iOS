@@ -1,4 +1,5 @@
 #import "NYPLAccount.h"
+#import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLSettingsCredentialViewController.h"
@@ -43,7 +44,7 @@
 
 - (void)viewDidLoad
 {
-  self.view.backgroundColor = [UIColor whiteColor];
+  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.barcodeLabel = [[UILabel alloc] init];
   [self.view addSubview:self.barcodeLabel];

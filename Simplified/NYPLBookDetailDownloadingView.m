@@ -26,7 +26,7 @@
   [self.cancelButton addTarget:self
                         action:@selector(didSelectCancel)
               forControlEvents:UIControlEventTouchUpInside];
-  self.cancelButton.backgroundColor = [UIColor whiteColor];
+  self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.cancelButton.tintColor = [NYPLConfiguration mainColor];
   self.cancelButton.layer.cornerRadius = 2;
   [self addSubview:self.cancelButton];
@@ -34,19 +34,19 @@
   self.downloadingLabel = [[UILabel alloc] init];
   self.downloadingLabel.font = [UIFont systemFontOfSize:12];
   self.downloadingLabel.text = NSLocalizedString(@"Downloading", nil);
-  self.downloadingLabel.textColor = [UIColor whiteColor];
+  self.downloadingLabel.textColor = [NYPLConfiguration backgroundColor];
   [self addSubview:self.downloadingLabel];
   
   self.percentageLabel = [[UILabel alloc] init];
   self.percentageLabel.font = [UIFont systemFontOfSize:12];
-  self.percentageLabel.textColor = [UIColor whiteColor];
+  self.percentageLabel.textColor = [NYPLConfiguration backgroundColor];
   self.percentageLabel.textAlignment = NSTextAlignmentRight;
   self.percentageLabel.text = @"0%";
   [self addSubview:self.percentageLabel];
   
   self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
   self.progressView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5];
-  self.progressView.tintColor = [UIColor whiteColor];
+  self.progressView.tintColor = [NYPLConfiguration backgroundColor];
   [self addSubview:self.progressView];
   
   return self;

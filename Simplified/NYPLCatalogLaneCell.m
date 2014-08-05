@@ -1,4 +1,5 @@
 #import "NYPLBook.h"
+#import "NYPLConfiguration.h"
 
 #import "NYPLCatalogLaneCell.h"
 
@@ -20,6 +21,8 @@
   if(!self) return nil;
   
   self.laneIndex = laneIndex;
+  
+  self.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.contentView.autoresizingMask = (UIViewAutoresizingFlexibleWidth
                                        | UIViewAutoresizingFlexibleHeight);

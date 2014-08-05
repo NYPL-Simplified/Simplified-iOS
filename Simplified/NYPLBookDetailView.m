@@ -43,7 +43,7 @@ static CGFloat const mainTextPaddingRight = 10.0;
     @throw NSInvalidArgumentException;
   }
   
-  self.backgroundColor = [UIColor whiteColor];
+  self.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.book = book;
   

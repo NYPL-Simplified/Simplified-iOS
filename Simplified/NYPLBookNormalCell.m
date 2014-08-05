@@ -40,7 +40,7 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 #pragma mark UIView
 
 - (void)layoutSubviews
-{
+{  
   self.contentView.frame = self.bounds;
   
   self.cover.frame = CGRectMake(20,
