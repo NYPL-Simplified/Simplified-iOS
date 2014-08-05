@@ -2,6 +2,7 @@
 #import "NYPLBook.h"
 #import "NYPLOPDS.h"
 #import "NYPLMyBooksRegistry.h"
+#import "NYPLOpenSearchDescription.h"
 
 #import "NYPLCatalogCategory.h"
 
@@ -11,7 +12,7 @@
 @property (nonatomic) NSArray *books;
 @property (nonatomic) NSUInteger greatestPreparationIndex;
 @property (nonatomic) NSURL *nextURL;
-@property (nonatomic) NSURL *openSearchURL;
+@property (nonatomic) NSString *searchTemplate;
 @property (nonatomic) NSString *title;
 
 @end
@@ -60,19 +61,32 @@ static NSUInteger const preloadThreshold = 100;
        }
      }
      
-     NYPLCatalogCategory *const category = [[NYPLCatalogCategory alloc]
-                                            initWithBooks:books
-                                            nextURL:nextURL
-                                            openSearchURL:openSearchURL
-                                            title:acquisitionFeed.title];
-     
-     NYPLAsyncDispatch(^{handler(category);});
+     if(openSearchURL) {
+       [NYPLOpenSearchDescription
+        withURL:openSearchURL
+        completionHandler:^(NYPLOpenSearchDescription *const description) {
+          if(!description) {
+            NYPLLOG(@"Failed to retrieve open search description.");
+          }
+          NYPLAsyncDispatch(^{handler([[NYPLCatalogCategory alloc]
+                                       initWithBooks:books
+                                       nextURL:nextURL
+                                       searchTemplate:description.OPDSURLTemplate
+                                       title:acquisitionFeed.title]);});
+        }];
+      } else {
+        NYPLAsyncDispatch(^{handler([[NYPLCatalogCategory alloc]
+                                     initWithBooks:books
+                                     nextURL:nextURL
+                                     searchTemplate:nil
+                                     title:acquisitionFeed.title]);});
+      }
    }];
 }
 
 - (instancetype)initWithBooks:(NSArray *const)books
                       nextURL:(NSURL *const)nextURL
-                openSearchURL:(NSURL *const)openSearchURL
+               searchTemplate:(NSString *const)searchTemplate
                         title:(NSString *const)title
 {
   self = [super init];
@@ -84,7 +98,7 @@ static NSUInteger const preloadThreshold = 100;
   
   self.books = books;
   self.nextURL = nextURL;
-  self.openSearchURL = openSearchURL;
+  self.searchTemplate = searchTemplate;
   self.title = title;
   
   [[NSNotificationCenter defaultCenter]
