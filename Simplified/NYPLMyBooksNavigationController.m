@@ -11,6 +11,8 @@
   self = [super initWithRootViewController:[[NYPLMyBooksViewController alloc] init]];
   if(!self) return nil;
   
+  self.tabBarItem.image = [UIImage imageNamed:@"MyBooks"];
+  
   return self;
 }
 

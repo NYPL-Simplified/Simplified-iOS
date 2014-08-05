@@ -11,6 +11,8 @@
   self = [super initWithRootViewController:[[NYPLSettingsViewController alloc] init]];
   if(!self) return nil;
   
+  self.tabBarItem.image = [UIImage imageNamed:@"Settings"];
+  
   return self;
 }
 
