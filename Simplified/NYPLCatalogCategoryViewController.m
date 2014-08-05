@@ -56,6 +56,14 @@
 {
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
+  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                            initWithImage:[UIImage imageNamed:@"Search"]
+                                            style:UIBarButtonItemStylePlain
+                                            target:self
+                                            action:@selector(didSelectSearch)];
+  
+  self.navigationItem.rightBarButtonItem.enabled = NO;
+  
   self.collectionView = [[UICollectionView alloc]
                          initWithFrame:self.view.bounds
                          collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
@@ -99,6 +107,11 @@
        
        self.category = category;
        self.category.delegate = self;
+       
+       if(self.category.searchTemplate) {
+         self.navigationItem.rightBarButtonItem.enabled = YES;
+       }
+       
        [self didLoadCategory];
      }];
    }];
@@ -210,6 +223,11 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 {
   [self.collectionView reloadData];
   self.collectionView.hidden = NO;
+}
+
+- (void)didSelectSearch
+{
+  // TODO
 }
 
 @end
