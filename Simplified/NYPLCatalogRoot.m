@@ -168,10 +168,6 @@
            completionHandler:^(NYPLOpenSearchDescription *const description) {
              if(!description) {
                NYPLLOG(@"Failed to retrieve OpenSearch description document.");
-               NYPLAsyncDispatch(^{handler([[NYPLCatalogRoot alloc]
-                                            initWithLanes:lanes
-                                            searchTemplate:nil]);});
-               return;
              }
              NYPLAsyncDispatch(^{handler([[NYPLCatalogRoot alloc]
                                           initWithLanes:lanes
