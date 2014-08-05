@@ -23,7 +23,9 @@ static NSUInteger const preloadThreshold = 100;
 
 @implementation NYPLCatalogCategory
 
-+ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogCategory *category))handler
++ (void)withURL:(NSURL *)URL
+includingSearchTemplate:(BOOL)includingSearchTemplate
+handler:(void (^)(NYPLCatalogCategory *category))handler
 {
   [NYPLOPDSFeed
    withURL:URL
@@ -61,7 +63,7 @@ static NSUInteger const preloadThreshold = 100;
        }
      }
      
-     if(openSearchURL) {
+     if(openSearchURL && includingSearchTemplate) {
        [NYPLOpenSearchDescription
         withURL:openSearchURL
         completionHandler:^(NYPLOpenSearchDescription *const description) {
@@ -82,6 +84,12 @@ static NSUInteger const preloadThreshold = 100;
                                      title:acquisitionFeed.title]);});
       }
    }];
+}
+
++ (void)withURL:(NSURL *)URL
+        handler:(void (^)(NYPLCatalogCategory *category))handler
+{
+  [self withURL:URL includingSearchTemplate:YES handler:handler];
 }
 
 - (instancetype)initWithBooks:(NSArray *const)books
@@ -134,6 +142,7 @@ static NSUInteger const preloadThreshold = 100;
   
   [NYPLCatalogCategory
    withURL:self.nextURL
+   includingSearchTemplate:NO
    handler:^(NYPLCatalogCategory *const category) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        if(!category) {
