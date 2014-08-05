@@ -38,8 +38,6 @@
   
   self.title = title;
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
-  
   return self;
 }
 
