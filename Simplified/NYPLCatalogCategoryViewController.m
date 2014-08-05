@@ -230,7 +230,7 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 {
   [self.navigationController
    pushViewController:[[NYPLCatalogSearchViewController alloc]
-                       initWithCategoryTitle:self.category.title
+                       initWithCategoryTitle:self.title
                        searchTemplate:self.category.searchTemplate]
    animated:YES];
 }

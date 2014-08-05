@@ -14,6 +14,7 @@
 "NotConnected" = "You are not connected to the internet. Please connect and try again.";
 "OK" = "OK";
 "Read" = "Read"; // present tense
+"SearchPlaceholderFormat" = "Search %@";
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";
 "TryAgain" = "Try Again";
 "UnknownRequestError" =
