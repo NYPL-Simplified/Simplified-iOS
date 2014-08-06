@@ -124,11 +124,11 @@ didFinishDownloadingToURL:(NSURL *const)location
   } else {
     [[[UIAlertView alloc]
       initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
-      message:[NSString stringWithFormat:@"%@ (Error %d)",
+      message:[NSString stringWithFormat:@"%@ (Error %ld)",
                [NSString
                 stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
                 book.title],
-               error.code]
+               (long)error.code]
       delegate:nil
       cancelButtonTitle:nil
       otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
