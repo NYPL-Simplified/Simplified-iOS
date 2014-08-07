@@ -1,5 +1,8 @@
 To build this project:
 
 1. Install Cocoapods (if you haven't already).
-2. Run 'pod install' in this directory. 
-3. Open "Simplified.xcworkspace" -- not the project -- and build as normal.
+2. 'cd' into the same directory as this README
+3. 'pod install'
+4. 'git submodule init'
+5. 'git submodule update'
+6. Open "Simplified.xcworkspace" -- not the project -- and build as normal.
