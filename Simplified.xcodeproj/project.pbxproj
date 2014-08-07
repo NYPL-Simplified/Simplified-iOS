@@ -43,6 +43,11 @@
 		1183F35B194F847100DC322F /* NYPLAsync.m in Sources */ = {isa = PBXBuildFile; fileRef = 1183F35A194F847100DC322F /* NYPLAsync.m */; };
 		118A0B1B19915BDF00792DDE /* NYPLCatalogSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0B1A19915BDF00792DDE /* NYPLCatalogSearchViewController.m */; };
 		118B7ABF195CBF72005CE3E7 /* NYPLSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 118B7ABE195CBF72005CE3E7 /* NYPLSession.m */; };
+		119503E31993F90C009FB788 /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503E01993F8F4009FB788 /* libRDServices.a */; };
+		119503E51993F90C009FB788 /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503E41993F90C009FB788 /* libePub3-iOS.a */; };
+		119503E71993F914009FB788 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503E61993F914009FB788 /* libxml2.dylib */; };
+		119503E91993F919009FB788 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503E81993F919009FB788 /* libz.dylib */; };
+		119503EB1993F91E009FB788 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
 		1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1196F75A1970727C00F62670 /* NYPLMyBooksDownloadCenter.m */; };
 		119BEB89198C43A600121439 /* NSString+NYPLStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 119BEB88198C43A600121439 /* NSString+NYPLStringAdditions.m */; };
 		119BEB8C198C462600121439 /* NSData+NYPLDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 119BEB8B198C462600121439 /* NSData+NYPLDataAdditions.m */; };
@@ -93,6 +98,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		119503DF1993F8F4009FB788 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 119503DA1993F8F4009FB788 /* RDServices.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 118A0E281992B3FD00792DDE;
+			remoteInfo = RDServices;
+		};
+		119503E11993F903009FB788 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 119503DA1993F8F4009FB788 /* RDServices.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 118A0E271992B3FD00792DDE;
+			remoteInfo = RDServices;
+		};
 		A823D82D192BABA400B55DE2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A823D805192BABA400B55DE2 /* Project object */;
@@ -180,6 +199,12 @@
 		118A0B1A19915BDF00792DDE /* NYPLCatalogSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogSearchViewController.m; sourceTree = "<group>"; };
 		118B7ABD195CBF72005CE3E7 /* NYPLSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSession.h; sourceTree = "<group>"; };
 		118B7ABE195CBF72005CE3E7 /* NYPLSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSession.m; sourceTree = "<group>"; };
+		119503DA1993F8F4009FB788 /* RDServices.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RDServices.xcodeproj; path = "readium-sdk/Platform/Apple/RDServices.xcodeproj"; sourceTree = "<group>"; };
+		119503E41993F90C009FB788 /* libePub3-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libePub3-iOS.a"; path = "readium-sdk/Platform/Apple/build/Debug-iphoneos/libePub3-iOS.a"; sourceTree = "<group>"; };
+		119503E61993F914009FB788 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		119503E81993F919009FB788 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		119503EA1993F91E009FB788 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		119503EE1993FB90009FB788 /* NYPLReadium.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLReadium.h; sourceTree = "<group>"; };
 		1196F7591970727C00F62670 /* NYPLMyBooksDownloadCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksDownloadCenter.h; sourceTree = "<group>"; };
 		1196F75A1970727C00F62670 /* NYPLMyBooksDownloadCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksDownloadCenter.m; sourceTree = "<group>"; };
 		119BEB87198C43A600121439 /* NSString+NYPLStringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+NYPLStringAdditions.h"; sourceTree = "<group>"; };
@@ -251,6 +276,11 @@
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
 				A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */,
 				AF7D3807BE8647A6BB325C9D /* libPods.a in Frameworks */,
+				119503E51993F90C009FB788 /* libePub3-iOS.a in Frameworks */,
+				119503E31993F90C009FB788 /* libRDServices.a in Frameworks */,
+				119503EB1993F91E009FB788 /* libc++.dylib in Frameworks */,
+				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
+				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,6 +402,14 @@
 			name = OPDS;
 			sourceTree = "<group>";
 		};
+		119503DB1993F8F4009FB788 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				119503E01993F8F4009FB788 /* libRDServices.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		11C5DCEE1976D19E005A9945 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -406,6 +444,7 @@
 				A823D80F192BABA400B55DE2 /* Frameworks */,
 				A823D80E192BABA400B55DE2 /* Products */,
 				06AC6CF44934493BAEB7B266 /* Pods.xcconfig */,
+				119503DA1993F8F4009FB788 /* RDServices.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -421,6 +460,10 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				119503EA1993F91E009FB788 /* libc++.dylib */,
+				119503E81993F919009FB788 /* libz.dylib */,
+				119503E61993F914009FB788 /* libxml2.dylib */,
+				119503E41993F90C009FB788 /* libePub3-iOS.a */,
 				A823D810192BABA400B55DE2 /* Foundation.framework */,
 				A823D812192BABA400B55DE2 /* CoreGraphics.framework */,
 				A823D814192BABA400B55DE2 /* UIKit.framework */,
@@ -457,6 +500,7 @@
 				11068C54196DD37900E8A94B /* NYPLNull.m */,
 				119BEBB719902A8800121439 /* NYPLOpenSearchDescription.h */,
 				119BEBB819902A8800121439 /* NYPLOpenSearchDescription.m */,
+				119503EE1993FB90009FB788 /* NYPLReadium.h */,
 				11548C091939136C009DBF2E /* NYPLRootTabBarController.h */,
 				11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */,
 				118B7ABD195CBF72005CE3E7 /* NYPLSession.h */,
@@ -539,6 +583,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				119503E21993F903009FB788 /* PBXTargetDependency */,
 			);
 			name = Simplified;
 			productName = Simplified;
@@ -591,6 +636,12 @@
 			mainGroup = A823D804192BABA400B55DE2;
 			productRefGroup = A823D80E192BABA400B55DE2 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 119503DB1993F8F4009FB788 /* Products */;
+					ProjectRef = 119503DA1993F8F4009FB788 /* RDServices.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				A823D80C192BABA400B55DE2 /* Simplified */,
@@ -598,6 +649,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		119503E01993F8F4009FB788 /* libRDServices.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRDServices.a;
+			remoteRef = 119503DF1993F8F4009FB788 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		A823D80B192BABA400B55DE2 /* Resources */ = {
@@ -772,6 +833,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		119503E21993F903009FB788 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = RDServices;
+			targetProxy = 119503E11993F903009FB788 /* PBXContainerItemProxy */;
+		};
 		A823D82E192BABA400B55DE2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A823D80C192BABA400B55DE2 /* Simplified */;
@@ -831,6 +897,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -864,6 +934,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -879,7 +953,13 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"\"${PODS_ROOT}/Headers\"",
+					"\"${PODS_ROOT}/Headers/SMXMLDocument\"",
+					"\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**",
+				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
 					"-Werror",
@@ -901,7 +981,13 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"\"${PODS_ROOT}/Headers\"",
+					"\"${PODS_ROOT}/Headers/SMXMLDocument\"",
+					"\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**",
+				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
 					"-Werror",
