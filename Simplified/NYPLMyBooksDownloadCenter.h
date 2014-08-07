@@ -22,4 +22,7 @@ static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
 // The value returned is in the range [0.0, 1.0].
 - (double)downloadProgressForBookIdentifier:(NSString *)bookIdentifier;
 
+// This returns a URL even if the book is not on-disk.
+- (NSURL *)fileURLForBookIndentifier:(NSString *)identifier;
+
 @end
