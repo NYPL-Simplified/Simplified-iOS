@@ -1,0 +1,3 @@
+[submodule "readium-sdk"]
+	path = readium-sdk
+	url = git@github.com:NYPL/readium-sdk.git
