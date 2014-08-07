@@ -43,8 +43,8 @@
 
 // NYPLReaderViewController
 
-"ReaderViewControllerCorruptTitle" = "Could Not Open Book";
-"ReaderViewControllerCorruptMessage" = "This book is corrupt and cannot be read.";
+"ReaderViewControllerCorruptedTitle" = "Could Not Open Book";
+"ReaderViewControllerCorruptedMessage" = "This book is corrupted and cannot be read.";
 
 // NYPLSettingsCredentialView
 
