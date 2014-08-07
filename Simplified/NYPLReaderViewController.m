@@ -1,9 +1,10 @@
+#import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReadium.h"
 
 #import "NYPLReaderViewController.h"
 
-@interface NYPLReaderViewController ()
+@interface NYPLReaderViewController () <UIWebViewDelegate>
 
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) RDContainer *container;
@@ -50,10 +51,24 @@
 
 - (void)viewDidLoad
 {
+  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  
   self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
+  self.webView.delegate = self;
+  self.webView.scalesPageToFit = YES;
+  self.webView.scrollView.bounces = NO;
+  self.webView.hidden = YES;
   [self.view addSubview:self.webView];
+  
+  NSURL *const readerURL = [[NSBundle mainBundle]
+                            URLForResource:@"reader"
+                            withExtension:@"html"];
+  
+  assert(readerURL);
+  
+  [self.webView loadRequest:[NSURLRequest requestWithURL:readerURL]];
 }
 
 @end
