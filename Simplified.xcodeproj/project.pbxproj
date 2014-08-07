@@ -49,6 +49,9 @@
 		119503E91993F919009FB788 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503E81993F919009FB788 /* libz.dylib */; };
 		119503EB1993F91E009FB788 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
 		119503F41994001F009FB788 /* readium-shared-js in Resources */ = {isa = PBXBuildFile; fileRef = 119503F31994001F009FB788 /* readium-shared-js */; };
+		119503FF19940184009FB788 /* reader.css in Resources */ = {isa = PBXBuildFile; fileRef = 119503FC19940184009FB788 /* reader.css */; };
+		1195040019940184009FB788 /* reader.html in Resources */ = {isa = PBXBuildFile; fileRef = 119503FD19940184009FB788 /* reader.html */; };
+		11950401199401CF009FB788 /* host_app_feedback.js in Resources */ = {isa = PBXBuildFile; fileRef = 119503FB19940184009FB788 /* host_app_feedback.js */; };
 		1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1196F75A1970727C00F62670 /* NYPLMyBooksDownloadCenter.m */; };
 		119BEB89198C43A600121439 /* NSString+NYPLStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 119BEB88198C43A600121439 /* NSString+NYPLStringAdditions.m */; };
 		119BEB8C198C462600121439 /* NSData+NYPLDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 119BEB8B198C462600121439 /* NSData+NYPLDataAdditions.m */; };
@@ -207,6 +210,9 @@
 		119503EA1993F91E009FB788 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		119503EE1993FB90009FB788 /* NYPLReadium.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLReadium.h; sourceTree = "<group>"; };
 		119503F31994001F009FB788 /* readium-shared-js */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "readium-shared-js"; sourceTree = SOURCE_ROOT; };
+		119503FB19940184009FB788 /* host_app_feedback.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = host_app_feedback.js; sourceTree = "<group>"; };
+		119503FC19940184009FB788 /* reader.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = reader.css; sourceTree = "<group>"; };
+		119503FD19940184009FB788 /* reader.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = reader.html; sourceTree = "<group>"; };
 		1196F7591970727C00F62670 /* NYPLMyBooksDownloadCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksDownloadCenter.h; sourceTree = "<group>"; };
 		1196F75A1970727C00F62670 /* NYPLMyBooksDownloadCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksDownloadCenter.m; sourceTree = "<group>"; };
 		119BEB87198C43A600121439 /* NSString+NYPLStringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+NYPLStringAdditions.h"; sourceTree = "<group>"; };
@@ -412,6 +418,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		119503FA19940184009FB788 /* readium-resources */ = {
+			isa = PBXGroup;
+			children = (
+				119503FB19940184009FB788 /* host_app_feedback.js */,
+				119503FC19940184009FB788 /* reader.css */,
+				119503FD19940184009FB788 /* reader.html */,
+			);
+			path = "readium-resources";
+			sourceTree = SOURCE_ROOT;
+		};
 		11C5DCEE1976D19E005A9945 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -517,12 +533,13 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				119503F31994001F009FB788 /* readium-shared-js */,
 				A823D822192BABA400B55DE2 /* Images.xcassets */,
 				A823D819192BABA400B55DE2 /* InfoPlist.strings */,
 				116A5EA3194653BE00491A21 /* Localizable.strings */,
 				A823D81C192BABA400B55DE2 /* main.m */,
 				11ABD552197D6F5200759635 /* NYPLSettingsCredentialView.xib */,
+				119503FA19940184009FB788 /* readium-resources */,
+				119503F31994001F009FB788 /* readium-shared-js */,
 				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
 				A823D81E192BABA400B55DE2 /* Simplified-Prefix.pch */,
 			);
@@ -673,6 +690,9 @@
 				116A5EA4194653BE00491A21 /* Localizable.strings in Resources */,
 				A823D823192BABA400B55DE2 /* Images.xcassets in Resources */,
 				119503F41994001F009FB788 /* readium-shared-js in Resources */,
+				11950401199401CF009FB788 /* host_app_feedback.js in Resources */,
+				119503FF19940184009FB788 /* reader.css in Resources */,
+				1195040019940184009FB788 /* reader.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
