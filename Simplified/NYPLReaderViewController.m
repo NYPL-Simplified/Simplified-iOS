@@ -1,4 +1,5 @@
 #import "NYPLConfiguration.h"
+#import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReadium.h"
 
@@ -6,11 +7,37 @@
 
 @interface NYPLReaderViewController () <UIWebViewDelegate>
 
+@property (nonatomic) BOOL bookIsCorrupted;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) RDContainer *container;
+@property (nonatomic) BOOL mediaOverlayIsPlaying;
+@property (nonatomic) NSInteger openPageCount;
+@property (nonatomic) NSInteger pageInCurrentSpineItemCount;
+@property (nonatomic) NSInteger pageInCurrentSpineItemIndex;
+@property (nonatomic) BOOL pageProgressionIsLTR;
+@property (nonatomic) NSString *initialCFI;
+@property (nonatomic) RDNavigationElement *navigationElement;
+@property (nonatomic) RDPackage *package;
+@property (nonatomic) RDPackageResourceServer *server;
+@property (nonatomic) RDSpineItem *spineItem;
+@property (nonatomic) NSInteger spineItemIndex;
 @property (nonatomic) UIWebView *webView;
 
 @end
+
+id argument(NSURL *const URL) {
+  NSString *const s = URL.resourceSpecifier;
+  
+  NSRange const range = [s rangeOfString:@"/"];
+  
+  assert(range.location != NSNotFound);
+  
+  NSData *const data = [[[s substringFromIndex:(range.location + 1)]
+                         stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
+                        dataUsingEncoding:NSUTF8StringEncoding];
+  
+  return NYPLJSONObjectFromData(data);
+}
 
 @implementation NYPLReaderViewController
 
@@ -33,14 +60,19 @@
                         fileURLForBookIndentifier:bookIdentifier]
                        path]];
   } @catch (...) {
+    self.bookIsCorrupted = YES;
     [[[UIAlertView alloc]
-      initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptTitle", nil)
-      message:NSLocalizedString(@"ReaderViewControllerCorruptMessage", nil)
+      initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptedTitle", nil)
+      message:NSLocalizedString(@"ReaderViewControllerCorruptedMessage", nil)
       delegate:nil
       cancelButtonTitle:nil
       otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
      show];
   }
+  
+  self.package = self.container.firstPackage;
+  self.server = [[RDPackageResourceServer alloc] initWithPackage:self.package];
+  self.spineItem = self.package.spineItems[0];
 
   self.hidesBottomBarWhenPushed = YES;
   
@@ -70,5 +102,115 @@
   
   [self.webView loadRequest:[NSURLRequest requestWithURL:readerURL]];
 }
+
+#pragma mark UIWebViewDelegate
+
+- (BOOL)
+webView:(__attribute__((unused)) UIWebView *)webView
+shouldStartLoadWithRequest:(NSURLRequest *const)request
+navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
+{
+  if(self.bookIsCorrupted) {
+    return NO;
+  }
+  
+  if(![request.URL.scheme isEqualToString:@"readium"]) {
+    return YES;
+  }
+  
+  NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
+  assert([components count] >= 1);
+  
+  NSString *const function = components[0];
+  
+  if([function isEqualToString:@"initialize"]) {
+    if(!self.package.spineItems[0]) {
+      self.bookIsCorrupted = YES;
+      [[[UIAlertView alloc]
+        initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptedTitle", nil)
+        message:NSLocalizedString(@"ReaderViewControllerCorruptedMessage", nil)
+        delegate:nil
+        cancelButtonTitle:nil
+        otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+       show];
+      return NO;
+    }
+    
+    self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
+    
+    NSDictionary *openPageRequestDictionary = nil;
+    
+    if(self.initialCFI && self.initialCFI.length > 0) {
+      openPageRequestDictionary = @{@"idref" : self.spineItem.idref,
+                                    @"elementCfi" : self.initialCFI};
+    } else if(self.navigationElement.content && self.navigationElement.content.length > 0) {
+      openPageRequestDictionary = @{@"contentRefUrl" : self.navigationElement.content,
+                                    @"sourceFileHref" : (!self.navigationElement.sourceHref
+                                                         ? @""
+                                                         : self.navigationElement.sourceHref)};
+    } else {
+      openPageRequestDictionary = @{@"idref" : self.spineItem.idref};
+    }
+    
+    NSDictionary *const settingsDictionary = @{@"columnGap": @20,
+                                               @"fontSize": @100,
+                                               @"scroll": @"auto",
+                                               @"syntheticSpread": @"auto"};
+    
+    NSDictionary *const dictionary = @{@"openPageRequest": openPageRequestDictionary,
+                                       @"package": self.package.dictionary,
+                                       @"settings": settingsDictionary};
+    
+    NSData *data = NYPLJSONDataFromObject(dictionary);
+    
+    if(!data) {
+      NYPLLOG(@"Failed to construct 'openBook' call.");
+      return NO;
+    }
+    
+    [self.webView stringByEvaluatingJavaScriptFromString:
+     [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
+      [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
+    
+    self.webView.hidden = NO;
+    
+    return NO;
+  }
+  
+  if([function isEqualToString:@"pagination-changed"]) {
+    NSDictionary *const dictionary = argument(request.URL);
+    
+    // Use left-to-right unless it explicitly asks for right-to-left.
+    self.pageProgressionIsLTR = ![[dictionary objectForKey:@"pageProgressionDirection"]
+                                  isEqualToString:@"rtl"];
+    
+    NSArray *const openPages = [dictionary objectForKey:@"openPages"];
+    
+    self.openPageCount = openPages.count;
+    
+    if(self.openPageCount >= 1) {
+      NSDictionary *const page = openPages[0];
+      self.pageInCurrentSpineItemCount =
+        ((NSNumber *)[page objectForKey:@"spineItemPageCount"]).integerValue;
+      self.pageInCurrentSpineItemIndex =
+        ((NSNumber *)[page objectForKey:@"spineItemPageIndex"]).integerValue;
+      self.spineItemIndex = ((NSNumber *)[page objectForKey:@"spineItemIndex"]).integerValue;
+    }
+    
+    self.webView.hidden = NO;
+    
+    return NO;
+  }
+  
+  if([function isEqualToString:@"media-overlay-status-changed"]) {
+    NSDictionary *const dict = argument(request.URL);
+    self.mediaOverlayIsPlaying = ((NSNumber *)[dict objectForKey:@"isPlaying"]).boolValue;
+    
+    return NO;
+  }
+  
+  return NO;
+}
+  
 
 @end
