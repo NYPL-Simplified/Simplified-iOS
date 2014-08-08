@@ -154,7 +154,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     
     NSDictionary *const settingsDictionary = @{@"columnGap": @20,
                                                @"fontSize": @100,
-                                               @"scroll": @"auto",
+                                               @"scroll": @"scroll-continuous",
                                                @"syntheticSpread": @"auto"};
     
     NSDictionary *const dictionary = @{@"openPageRequest": openPageRequestDictionary,
