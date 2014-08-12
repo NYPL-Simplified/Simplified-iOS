@@ -1,3 +1,4 @@
+#import "NYPLJSON.h"
 #import "NYPLMyBooksRecord.h"
 
 #import "NYPLMyBooksRegistry.h"
@@ -82,14 +83,7 @@ static NSString *const RegistryFilename = @"registry.json";
     
     if(!savedData) return;
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wassign-enum"
-    NSDictionary *const dictionary =
-      [NSJSONSerialization
-       JSONObjectWithData:savedData
-       options:0
-       error:NULL];
-#pragma clang diagnostic pop
+    NSDictionary *const dictionary = NYPLJSONObjectFromData(savedData);
     
     if(!dictionary) {
       NYPLLOG(@"Failed to interpret saved registry data as JSON.");
@@ -144,8 +138,6 @@ static NSString *const RegistryFilename = @"registry.json";
     // This try block is necessary to catch an (entirely undocumented) exception thrown by
     // NSJSONSerialization in the event that the provided stream isn't open for writing.
     @try {
-      // This pragma is required because the NSJSONSerialization method below does not provide a
-      // default NSJSONWritingOptions value.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wassign-enum"
       if(![NSJSONSerialization

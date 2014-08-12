@@ -66,4 +66,21 @@
   [baseController presentViewController:viewController animated:animated completion:completion];
 }
 
+- (void)pushViewController:(UIViewController *const)viewController
+                  animated:(BOOL const)animated
+{
+  if(![self.selectedViewController isKindOfClass:[UINavigationController class]]) {
+    NYPLLOG(@"Selected view controller is not a navigation controller.");
+    return;
+  }
+  
+  if(self.presentedViewController) {
+    [self dismissViewControllerAnimated:YES completion:nil];
+  }
+  
+  [(UINavigationController *)self.selectedViewController
+   pushViewController:viewController
+   animated:animated];
+}
+
 @end

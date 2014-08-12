@@ -41,6 +41,11 @@
 
 "MyBooksViewControllerTitle" = "My Books";
 
+// NYPLReaderViewController
+
+"ReaderViewControllerCorruptedTitle" = "Could Not Open Book";
+"ReaderViewControllerCorruptedMessage" = "This book is corrupted and cannot be read.";
+
 // NYPLSettingsCredentialView
 
 "NYPLSettingsCredentialViewBarcode" = "Barcode";

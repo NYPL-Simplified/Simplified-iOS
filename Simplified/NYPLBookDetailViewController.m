@@ -1,6 +1,8 @@
 #import "NYPLBookDetailView.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
+#import "NYPLReaderViewController.h"
+#import "NYPLRootTabBarController.h"
 
 #import "NYPLBookDetailViewController.h"
 
@@ -98,7 +100,10 @@
 
 - (void)didSelectReadForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView
 {
-  // TODO
+  [[NYPLRootTabBarController sharedController]
+   pushViewController:[[NYPLReaderViewController alloc]
+                       initWithBookIdentifier:self.book.identifier]
+   animated:YES];
 }
 
 - (void)didSelectTryAgainForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView
