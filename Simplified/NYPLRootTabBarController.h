@@ -9,4 +9,9 @@
                            animated:(BOOL)animated
                          completion:(void (^)(void))completion;
 
+// Pushes a view controller onto the navigation controller currently selected by the underlying tab
+// bar controller.
+- (void)pushViewController:(UIViewController *const)viewController
+                  animated:(BOOL const)animated;
+
 @end

@@ -3,6 +3,8 @@
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLBookNormalCell.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLReaderViewController.h"
+#import "NYPLRootTabBarController.h"
 
 #import "NYPLBookCellDelegate.h"
 
@@ -44,27 +46,30 @@
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
 }
 
-- (void)didSelectReadForBookNormalCell:(__attribute__((unused)) NYPLBookNormalCell *)cell
+- (void)didSelectReadForBookNormalCell:(NYPLBookNormalCell *const)cell
 {
-  // TODO
+  [[NYPLRootTabBarController sharedController]
+   pushViewController:[[NYPLReaderViewController alloc]
+                       initWithBookIdentifier:cell.book.identifier]
+   animated:YES];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate
 
-- (void)didSelectCancelForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *)cell
+- (void)didSelectCancelForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *const)cell
 {
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
    cancelDownloadForBookIdentifier:cell.book.identifier];
 }
 
-- (void)didSelectTryAgainForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *)cell
+- (void)didSelectTryAgainForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *const)cell
 {
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:cell.book];
 }
 
 #pragma mark NYPLBookDownloadingCellDelegate
 
-- (void)didSelectCancelForBookDownloadingCell:(NYPLBookDownloadingCell *)cell
+- (void)didSelectCancelForBookDownloadingCell:(NYPLBookDownloadingCell *const)cell
 {
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
    cancelDownloadForBookIdentifier:cell.book.identifier];
