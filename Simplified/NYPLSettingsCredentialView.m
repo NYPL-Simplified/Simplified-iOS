@@ -1,7 +1,3 @@
-@import QuartzCore.QuartzCore;
-
-#import "NYPLConfiguration.h"
-
 #import "NYPLSettingsCredentialView.h"
 
 @implementation NYPLSettingsCredentialView

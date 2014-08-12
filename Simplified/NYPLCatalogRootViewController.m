@@ -1,17 +1,10 @@
-#import <SMXMLDocument/SMXMLDocument.h>
-
-#import "NYPLAsync.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogCategoryViewController.h"
 #import "NYPLCatalogSearchViewController.h"
-#import "NYPLBook.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogRoot.h"
 #import "NYPLConfiguration.h"
-#import "NYPLOPDSEntry.h"
-#import "NYPLOPDSFeed.h"
-#import "NYPLOPDSLink.h"
 #import "NYPLSession.h"
 
 #import "NYPLCatalogRootViewController.h"
