@@ -1,10 +1,8 @@
 #import <SMXMLDocument/SMXMLDocument.h>
 
 #import "NYPLAsync.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLBook.h"
 #import "NYPLCatalogLane.h"
-#import "NYPLCatalogSubsectionLink.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLOPDS.h"
 #import "NYPLOpenSearchDescription.h"

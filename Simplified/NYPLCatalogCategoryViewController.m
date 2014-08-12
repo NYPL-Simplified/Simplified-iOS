@@ -1,15 +1,9 @@
-#import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookNormalCell.h"
 #import "NYPLBookDetailViewController.h"
-#import "NYPLBookDownloadFailedCell.h"
-#import "NYPLBookDownloadingCell.h"
 #import "NYPLCatalogCategory.h"
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
-#import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLMyBooksRegistry.h"
-#import "NYPLSettingsCredentialViewController.h"
 
 #import "NYPLCatalogCategoryViewController.h"
 
