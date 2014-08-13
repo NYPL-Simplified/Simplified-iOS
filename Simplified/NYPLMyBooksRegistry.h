@@ -1,7 +1,9 @@
 // All methods of this class declared below are thread-safe.
 
-#import "NYPLBook.h"
 #import "NYPLMyBooksState.h"
+
+@class NYPLBook;
+@class NYPLBookLocation;
 
 // This is broadcast whenever the book registry is modified.
 static NSString *const NYPLBookRegistryDidChangeNotification
@@ -20,9 +22,11 @@ static NSString *const NYPLBookRegistryDidChangeNotification
 
 // Adds a book to the book registry until it is manually removed. It allows the application to
 // present information about obtained books when offline. Attempting to add a book already present
-// will overwrite the existing book as if |updateBook:| were called. The state provided must not be
-// |NYPLMyBooksStateUnregistered|.
-- (void)addBook:(NYPLBook *)book state:(NYPLMyBooksState)state;
+// will overwrite the existing book as if |updateBook:| were called. The location may be nil. The
+// state provided must not be |NYPLMyBooksStateUnregistered|.
+- (void)addBook:(NYPLBook *)book
+       location:(NYPLBookLocation *)location
+          state:(NYPLMyBooksState)state;
 
 // This method should be called whenever new book information is retreived from a server. Doing so
 // ensures that once the user has seen the new information, they will continue to do so when
@@ -37,8 +41,14 @@ static NSString *const NYPLBookRegistryDidChangeNotification
 // Sets the state for a book previously registered given its identifier.
 - (void)setState:(NYPLMyBooksState)state forIdentifier:(NSString *)identifier;
 
-// Returns the state of a book for a given identifier.
+// Returns the state of a book given its identifier.
 - (NYPLMyBooksState)stateForIdentifier:(NSString *)identifier;
+
+// Sets the location for a book previously registered given its identifier.
+- (void)setLocation:(NYPLBookLocation *)location forIdentifier:(NSString *)identifier;
+
+// Returns the location of a book given its identifier.
+- (NYPLBookLocation *)locationForIdentifier:(NSString *)identifier;
 
 // Given an identifier, this method removes a book from the registry. Attempting to remove a book
 // that is not present will result in an error being logged.
