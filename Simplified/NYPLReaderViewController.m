@@ -1,6 +1,8 @@
+#import "NYPLBookLocation.h"
 #import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLMyBooksRegistry.h"
 #import "NYPLReadium.h"
 
 #import "NYPLReaderViewController.h"
@@ -10,6 +12,7 @@
 @property (nonatomic) BOOL bookIsCorrupted;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) RDContainer *container;
+@property (nonatomic) NYPLBookLocation *initialBookLocation;
 @property (nonatomic) BOOL mediaOverlayIsPlaying;
 @property (nonatomic) NSInteger openPageCount;
 @property (nonatomic) NSInteger pageInCurrentSpineItemCount;
@@ -172,12 +175,23 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
      [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
       [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
     
-    self.webView.hidden = NO;
+    self.initialBookLocation = [[NYPLMyBooksRegistry sharedRegistry]
+                                locationForIdentifier:self.bookIdentifier];
     
     return NO;
   }
   
   if([function isEqualToString:@"pagination-changed"]) {
+    if(self.initialBookLocation) {
+      // Now that we're ready, let's go where we actually want to go.
+      [self.webView stringByEvaluatingJavaScriptFromString:
+       [NSString stringWithFormat:@"ReadiumSDK.reader.openSpineItemElementCfi('%@', '%@')",
+        self.initialBookLocation.idref,
+        self.initialBookLocation.CFI]];
+      self.initialBookLocation = nil;
+      return NO;
+    }
+    
     NSDictionary *const dictionary = argument(request.URL);
     
     // Use left-to-right unless it explicitly asks for right-to-left.
@@ -195,6 +209,22 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.pageInCurrentSpineItemIndex =
         ((NSNumber *)[page objectForKey:@"spineItemPageIndex"]).integerValue;
       self.spineItemIndex = ((NSNumber *)[page objectForKey:@"spineItemIndex"]).integerValue;
+    }
+    
+    NSString *const locationJSON = [self.webView stringByEvaluatingJavaScriptFromString:
+                                    @"ReadiumSDK.reader.bookmarkCurrentPage()"];
+    
+    NSDictionary *const locationDictionary =
+      NYPLJSONObjectFromData([locationJSON dataUsingEncoding:NSUTF8StringEncoding]);
+   
+    NYPLBookLocation *const location = [[NYPLBookLocation alloc]
+                                        initWithCFI:locationDictionary[@"contentCFI"]
+                                        idref:locationDictionary[@"idref"]];
+    
+    if(location) {
+      [[NYPLMyBooksRegistry sharedRegistry]
+       setLocation:location
+       forIdentifier:self.bookIdentifier];
     }
     
     self.webView.hidden = NO;

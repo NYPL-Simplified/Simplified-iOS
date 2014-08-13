@@ -1,20 +1,31 @@
-#import "NYPLBook.h"
 #import "NYPLMyBooksState.h"
+
+@class NYPLBook;
+@class NYPLBookLocation;
 
 @interface NYPLMyBooksRecord : NSObject
 
 @property (nonatomic, readonly) NYPLBook *book;
+@property (nonatomic, readonly) NYPLBookLocation *location; // nilable
 @property (nonatomic, readonly) NYPLMyBooksState state;
 
-+ (instancetype)recordWithDictionary:(NSDictionary *)dictionary;
++ (id)new NS_UNAVAILABLE;
+- (id)init NS_UNAVAILABLE;
 
 // designated initializer
-- (instancetype)initWithBook:(NYPLBook *)book state:(NYPLMyBooksState)state;
+- (instancetype)initWithBook:(NYPLBook *)book
+                    location:(NYPLBookLocation *)location
+                       state:(NYPLMyBooksState)state;
+
+// designated initialzier
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary;
+
+- (NSDictionary *)dictionaryRepresentation;
 
 - (instancetype)recordWithBook:(NYPLBook *)book;
 
-- (instancetype)recordWithState:(NYPLMyBooksState)state;
+- (instancetype)recordWithLocation:(NYPLBookLocation *)location;
 
-- (NSDictionary *)dictionaryRepresentation;
+- (instancetype)recordWithState:(NYPLMyBooksState)state;
 
 @end
