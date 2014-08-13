@@ -6,7 +6,8 @@
 typedef NS_ENUM(NSInteger, NYPLBookNormalCellState) {
   NYPLBookNormalCellStateUnregistered,
   NYPLBookNormalCellStateDownloadNeeded,
-  NYPLBookNormalCellStateDownloadSuccessful
+  NYPLBookNormalCellStateDownloadSuccessful,
+  NYPLBookNormalCellStateUsed
 };
 
 @protocol NYPLBookNormalCellDelegate

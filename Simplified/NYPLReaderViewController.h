@@ -5,7 +5,8 @@
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle NS_UNAVAILABLE;
 
 // designated initializer
-// |bookIdentifier| must not be nil.
+// |bookIdentifier| must not be nil. The book associated with the identifier given will be marked
+// as used in the book registry.
 - (instancetype)initWithBookIdentifier:(NSString *)bookIdentifier;
 
 @end

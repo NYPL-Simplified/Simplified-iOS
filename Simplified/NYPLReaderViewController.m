@@ -79,6 +79,10 @@ id argument(NSURL *const URL) {
 
   self.hidesBottomBarWhenPushed = YES;
   
+  [[NYPLMyBooksRegistry sharedRegistry]
+   setState:NYPLMYBooksStateUsed
+   forIdentifier:bookIdentifier];
+  
   return self;
 }
 

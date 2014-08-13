@@ -232,6 +232,12 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
       self.readButton.hidden = NO;
       self.unreadImageView.hidden = NO;
       break;
+    case NYPLBookNormalCellStateUsed:
+      self.deleteButton.hidden = NO;
+      self.downloadButton.hidden = YES;
+      self.readButton.hidden = NO;
+      self.unreadImageView.hidden = YES;
+      break;
   }
 }
 

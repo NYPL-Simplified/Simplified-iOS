@@ -3,7 +3,8 @@ typedef NS_ENUM(NSInteger, NYPLMyBooksState) {
   NYPLMyBooksStateDownloadNeeded,
   NYPLMyBooksStateDownloading,
   NYPLMyBooksStateDownloadFailed,
-  NYPLMyBooksStateDownloadSuccessful
+  NYPLMyBooksStateDownloadSuccessful,
+  NYPLMYBooksStateUsed
 };
 
 NYPLMyBooksState NYPLMyBooksStateFromString(NSString *string);

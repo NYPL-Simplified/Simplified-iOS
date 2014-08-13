@@ -113,5 +113,15 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
       return cell;
     }
+    case NYPLMYBooksStateUsed:
+    {
+      NYPLBookNormalCell *const cell = [collectionView
+                                        dequeueReusableCellWithReuseIdentifier:reuseIdentifierNormal
+                                        forIndexPath:indexPath];
+      cell.book = book;
+      cell.delegate = [NYPLBookCellDelegate sharedDelegate];
+      cell.state = NYPLBookNormalCellStateUsed;
+      return cell;
+    }
   }
 }
