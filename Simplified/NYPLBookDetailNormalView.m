@@ -115,6 +115,10 @@
       self.deleteReadLinearView.hidden = NO;
       self.downloadButton.hidden = YES;
       break;
+    case NYPLBookDetailNormalViewStateUsed:
+      self.deleteReadLinearView.hidden = NO;
+      self.downloadButton.hidden = YES;
+      break;
   }
 }
 

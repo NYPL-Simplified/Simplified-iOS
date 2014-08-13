@@ -254,6 +254,13 @@ static CGFloat const mainTextPaddingRight = 10.0;
       self.normalView.state = NYPLBookDetailNormalViewStateDownloadSuccessful;
       self.unreadImageView.hidden = NO;
       break;
+    case NYPLMYBooksStateUsed:
+      self.normalView.hidden = NO;
+      self.downloadFailedView.hidden = YES;
+      self.downloadingView.hidden = YES;
+      self.normalView.state = NYPLBookDetailNormalViewStateUsed;
+      self.unreadImageView.hidden = YES;
+      break;
   }
 }
 
