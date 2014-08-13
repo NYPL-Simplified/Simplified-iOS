@@ -3,6 +3,7 @@
 #import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
+#import "NYPLReaderTOCViewController.h"
 #import "NYPLReadium.h"
 
 #import "NYPLReaderViewController.h"
@@ -19,7 +20,6 @@
 @property (nonatomic) NSInteger pageInCurrentSpineItemIndex;
 @property (nonatomic) BOOL pageProgressionIsLTR;
 @property (nonatomic) NSString *initialCFI;
-@property (nonatomic) RDNavigationElement *navigationElement;
 @property (nonatomic) RDPackage *package;
 @property (nonatomic) RDPackageResourceServer *server;
 @property (nonatomic) RDSpineItem *spineItem;
@@ -158,11 +158,6 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     if(self.initialCFI && self.initialCFI.length > 0) {
       openPageRequestDictionary = @{@"idref" : self.spineItem.idref,
                                     @"elementCfi" : self.initialCFI};
-    } else if(self.navigationElement.content && self.navigationElement.content.length > 0) {
-      openPageRequestDictionary = @{@"contentRefUrl" : self.navigationElement.content,
-                                    @"sourceFileHref" : (!self.navigationElement.sourceHref
-                                                         ? @""
-                                                         : self.navigationElement.sourceHref)};
     } else {
       openPageRequestDictionary = @{@"idref" : self.spineItem.idref};
     }
@@ -258,7 +253,10 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 
 - (void)didSelectTOC
 {
-  // TODO
+  NYPLReaderTOCViewController *const viewController =
+    [[NYPLReaderTOCViewController alloc] initWithNavigationElement:self.package.tableOfContents];
+  
+  [self.navigationController pushViewController:viewController animated:YES];
 }
   
 @end
