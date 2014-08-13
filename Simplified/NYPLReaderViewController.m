@@ -92,6 +92,14 @@ id argument(NSURL *const URL) {
 {
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
+  UIBarButtonItem *const TOCButtonItem = [[UIBarButtonItem alloc]
+                                          initWithImage:[UIImage imageNamed:@"TOC"]
+                                          style:UIBarButtonItemStylePlain
+                                          target:self
+                                          action:@selector(didSelectTOC)];
+  
+  self.navigationItem.rightBarButtonItems = @[TOCButtonItem];
+  
   self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
@@ -245,6 +253,12 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   
   return NO;
 }
-  
 
+#pragma mark -
+
+- (void)didSelectTOC
+{
+  // TODO
+}
+  
 @end
