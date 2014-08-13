@@ -1,3 +1,4 @@
+#import "NYPLBook.h"
 #import "NYPLJSON.h"
 #import "NYPLMyBooksRecord.h"
 
@@ -93,7 +94,7 @@ static NSString *const RegistryFilename = @"registry.json";
     [dictionary enumerateKeysAndObjectsUsingBlock:^(id const key,
                                                     id const value,
                                                     __attribute__((unused)) BOOL *stop) {
-      NYPLMyBooksRecord *const record = [NYPLMyBooksRecord recordWithDictionary:value];
+      NYPLMyBooksRecord *const record = [[NYPLMyBooksRecord alloc] initWithDictionary:value];
       
       // If a download was still in progress when we quit, it must now be failed.
       if(record.state == NYPLMyBooksStateDownloading) {
@@ -171,7 +172,9 @@ static NSString *const RegistryFilename = @"registry.json";
   }
 }
 
-- (void)addBook:(NYPLBook *const)book state:(NYPLMyBooksState)state
+- (void)addBook:(NYPLBook *const)book
+       location:(NYPLBookLocation *const)location
+          state:(NYPLMyBooksState)state
 {
   if(!book) {
     @throw NSInvalidArgumentException;
@@ -184,6 +187,7 @@ static NSString *const RegistryFilename = @"registry.json";
   @synchronized(self) {
     self.identifiersToRecords[book.identifier] = [[NYPLMyBooksRecord alloc]
                                                   initWithBook:book
+                                                  location:location
                                                   state:state];
     [self broadcastChange];
   }
@@ -211,7 +215,21 @@ static NSString *const RegistryFilename = @"registry.json";
   }
 }
 
-- (NYPLMyBooksState)stateForIdentifier:(NSString *)identifier
+- (void)setState:(NYPLMyBooksState)state forIdentifier:(NSString *const)identifier
+{
+  @synchronized(self) {
+    NYPLMyBooksRecord *const record = self.identifiersToRecords[identifier];
+    if(!record) {
+      @throw NSInvalidArgumentException;
+    }
+    
+    self.identifiersToRecords[identifier] = [record recordWithState:state];
+    
+    [self broadcastChange];
+  }
+}
+
+- (NYPLMyBooksState)stateForIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
     NYPLMyBooksRecord *const record = self.identifiersToRecords[identifier];
@@ -223,7 +241,7 @@ static NSString *const RegistryFilename = @"registry.json";
   }
 }
 
-- (void)setState:(NYPLMyBooksState)state forIdentifier:(NSString *)identifier
+- (void)setLocation:(NYPLBookLocation *const)location forIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
     NYPLMyBooksRecord *const record = self.identifiersToRecords[identifier];
@@ -231,9 +249,17 @@ static NSString *const RegistryFilename = @"registry.json";
       @throw NSInvalidArgumentException;
     }
     
-    self.identifiersToRecords[identifier] = [record recordWithState:state];
+    self.identifiersToRecords[identifier] = [record recordWithLocation:location];
     
     [self broadcastChange];
+  }
+}
+
+- (NYPLBookLocation *)locationForIdentifier:(NSString *const)identifier
+{
+  @synchronized(self) {
+    NYPLMyBooksRecord *const record = self.identifiersToRecords[identifier];
+    return record.location;
   }
 }
 

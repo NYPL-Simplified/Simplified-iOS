@@ -257,7 +257,10 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)failDownloadForBook:(NYPLBook *const)book
 {
-  [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloadFailed];
+  [[NYPLMyBooksRegistry sharedRegistry]
+   addBook:book
+   location:nil
+   state:NYPLMyBooksStateDownloadFailed];
   
   [[[UIAlertView alloc]
     initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
@@ -311,7 +314,10 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     
     [task resume];
     
-    [[NYPLMyBooksRegistry sharedRegistry] addBook:book state:NYPLMyBooksStateDownloading];
+    [[NYPLMyBooksRegistry sharedRegistry]
+     addBook:book
+     location:nil
+     state:NYPLMyBooksStateDownloading];
   } else {
     [[NYPLSettingsCredentialViewController sharedController]
      requestCredentialsUsingExistingBarcode:NO
