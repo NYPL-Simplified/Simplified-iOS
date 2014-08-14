@@ -1,3 +1,4 @@
+#import "NYPLConfiguration.h"
 #import "NYPLReaderTOCCell.h"
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReadium.h"
@@ -58,6 +59,7 @@ static NSString *const reuseIdentifier = @"NYPLReaderTOCCell";
   self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
   self.tableView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                      UIViewAutoresizingFlexibleWidth);
+  self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
   [self.tableView registerClass:[NYPLReaderTOCCell class]

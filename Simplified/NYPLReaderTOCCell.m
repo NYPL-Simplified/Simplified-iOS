@@ -1,3 +1,4 @@
+#import "NYPLConfiguration.h"
 #import "NYPLReaderTOCCell.h"
 
 @interface NYPLReaderTOCCell ()
@@ -15,6 +16,8 @@
   self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
   if(!self) return nil;
   
+  self.backgroundColor = [NYPLConfiguration backgroundColor];
+  
   self.titleLabel = [[UILabel alloc] init];
   [self.contentView addSubview:self.titleLabel];
 
@@ -26,8 +29,8 @@
 - (void)layoutSubviews
 {
   CGRect frame = self.contentView.bounds;
-  frame.origin.x = self.nestingLevel * 20;
-  frame.size.width -= self.nestingLevel * 20;
+  frame.origin.x = self.nestingLevel * 20 + 10;
+  frame.size.width -= self.nestingLevel * 20 + 20;
   self.titleLabel.frame = frame;
 }
 
