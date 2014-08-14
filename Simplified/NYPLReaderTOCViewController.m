@@ -38,6 +38,8 @@ static NSString *const reuseIdentifier = @"NYPLReaderTOCCell";
   self = [super init];
   if(!self) return nil;
   
+  self.preferredContentSize = CGSizeMake(320, 1024);
+  
   NSMutableArray *const TOCElements = [NSMutableArray array];
   [self generateTOCElementsForNavigationElements:navigationElement.children
                                     nestingLevel:0
