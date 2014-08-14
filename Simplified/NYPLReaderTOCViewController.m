@@ -85,4 +85,15 @@ static NSString *const reuseIdentifier = @"NYPLReaderTOCCell";
   return cell;
 }
 
+#pragma mark UITableViewDelegate
+
+- (void)tableView:(__attribute__((unused)) UITableView *const)tableView
+didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
+{
+  NYPLReaderTOCElement *const TOCelement = self.TOCElements[indexPath.row];
+  
+  [self.delegate TOCViewController:self
+        didSelectNavigationElement:TOCelement.navigationElement];
+}
+
 @end

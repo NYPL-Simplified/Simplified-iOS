@@ -3,6 +3,9 @@
 
 @protocol NYPLReaderTOCViewControllerDelegate
 
+- (void)TOCViewController:(NYPLReaderTOCViewController *)controller
+didSelectNavigationElement:(RDNavigationElement *)navigationElement;
+
 @end
 
 @interface NYPLReaderTOCViewController : UIViewController
