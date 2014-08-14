@@ -8,7 +8,8 @@
 
 #import "NYPLReaderViewController.h"
 
-@interface NYPLReaderViewController () <UIPopoverControllerDelegate, UIWebViewDelegate>
+@interface NYPLReaderViewController ()
+  <NYPLReaderTOCViewControllerDelegate, UIPopoverControllerDelegate, UIWebViewDelegate>
 
 @property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) BOOL bookIsCorrupted;
@@ -260,12 +261,31 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   self.activePopoverController = nil;
 }
 
+#pragma mark NYPLReaderTOCViewControllerDelegate
+
+- (void)TOCViewController:(__attribute__((unused)) NYPLReaderTOCViewController *)controller
+didSelectNavigationElement:(RDNavigationElement *)navigationElement
+{
+  [self.webView stringByEvaluatingJavaScriptFromString:
+   [NSString stringWithFormat:@"ReadiumSDK.reader.openContentUrl('%@', '%@')",
+    navigationElement.content,
+    navigationElement.sourceHref]];
+
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    [self.activePopoverController dismissPopoverAnimated:YES];
+  } else {
+    [self.navigationController popViewControllerAnimated:YES];
+  }
+}
+
 #pragma mark -
 
 - (void)didSelectTOC
 {
   NYPLReaderTOCViewController *const viewController =
     [[NYPLReaderTOCViewController alloc] initWithNavigationElement:self.package.tableOfContents];
+  
+  viewController.delegate = self;
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.activePopoverController =
