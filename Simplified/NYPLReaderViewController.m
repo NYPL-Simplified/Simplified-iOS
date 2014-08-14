@@ -3,12 +3,15 @@
 #import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
+#import "NYPLReaderTOCViewController.h"
 #import "NYPLReadium.h"
 
 #import "NYPLReaderViewController.h"
 
-@interface NYPLReaderViewController () <UIWebViewDelegate>
+@interface NYPLReaderViewController ()
+  <NYPLReaderTOCViewControllerDelegate, UIPopoverControllerDelegate, UIWebViewDelegate>
 
+@property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) BOOL bookIsCorrupted;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) RDContainer *container;
@@ -19,7 +22,6 @@
 @property (nonatomic) NSInteger pageInCurrentSpineItemIndex;
 @property (nonatomic) BOOL pageProgressionIsLTR;
 @property (nonatomic) NSString *initialCFI;
-@property (nonatomic) RDNavigationElement *navigationElement;
 @property (nonatomic) RDPackage *package;
 @property (nonatomic) RDPackageResourceServer *server;
 @property (nonatomic) RDSpineItem *spineItem;
@@ -92,9 +94,18 @@ id argument(NSURL *const URL) {
 {
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
+  UIBarButtonItem *const TOCButtonItem = [[UIBarButtonItem alloc]
+                                          initWithImage:[UIImage imageNamed:@"TOC"]
+                                          style:UIBarButtonItemStylePlain
+                                          target:self
+                                          action:@selector(didSelectTOC)];
+  
+  self.navigationItem.rightBarButtonItems = @[TOCButtonItem];
+  
   self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
+  self.webView.backgroundColor = [UIColor whiteColor];
   self.webView.delegate = self;
   self.webView.scalesPageToFit = YES;
   self.webView.scrollView.bounces = NO;
@@ -150,11 +161,6 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     if(self.initialCFI && self.initialCFI.length > 0) {
       openPageRequestDictionary = @{@"idref" : self.spineItem.idref,
                                     @"elementCfi" : self.initialCFI};
-    } else if(self.navigationElement.content && self.navigationElement.content.length > 0) {
-      openPageRequestDictionary = @{@"contentRefUrl" : self.navigationElement.content,
-                                    @"sourceFileHref" : (!self.navigationElement.sourceHref
-                                                         ? @""
-                                                         : self.navigationElement.sourceHref)};
     } else {
       openPageRequestDictionary = @{@"idref" : self.spineItem.idref};
     }
@@ -245,6 +251,53 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   
   return NO;
 }
-  
 
+#pragma mark UIPopoverControllerDelegate
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+  assert(popoverController == self.activePopoverController);
+  
+  self.activePopoverController = nil;
+}
+
+#pragma mark NYPLReaderTOCViewControllerDelegate
+
+- (void)TOCViewController:(__attribute__((unused)) NYPLReaderTOCViewController *)controller
+didSelectNavigationElement:(RDNavigationElement *)navigationElement
+{
+  [self.webView stringByEvaluatingJavaScriptFromString:
+   [NSString stringWithFormat:@"ReadiumSDK.reader.openContentUrl('%@', '%@')",
+    navigationElement.content,
+    navigationElement.sourceHref]];
+
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    [self.activePopoverController dismissPopoverAnimated:YES];
+  } else {
+    [self.navigationController popViewControllerAnimated:YES];
+  }
+}
+
+#pragma mark -
+
+- (void)didSelectTOC
+{
+  NYPLReaderTOCViewController *const viewController =
+    [[NYPLReaderTOCViewController alloc] initWithNavigationElement:self.package.tableOfContents];
+  
+  viewController.delegate = self;
+  
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.activePopoverController =
+      [[UIPopoverController alloc] initWithContentViewController:viewController];
+    self.activePopoverController.delegate = self;
+    [self.activePopoverController
+     presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
+     permittedArrowDirections:UIPopoverArrowDirectionUp
+     animated:YES];
+  } else {
+    [self.navigationController pushViewController:viewController animated:YES];
+  }
+}
+  
 @end

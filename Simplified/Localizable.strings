@@ -46,6 +46,10 @@
 "ReaderViewControllerCorruptedTitle" = "Could Not Open Book";
 "ReaderViewControllerCorruptedMessage" = "This book is corrupted and cannot be read.";
 
+// ReaderTOCViewController
+
+"ReaderTOCViewControllerTitle" = "Table of Contents";
+
 // NYPLSettingsCredentialView
 
 "NYPLSettingsCredentialViewBarcode" = "Barcode";
