@@ -15,16 +15,13 @@
 @property (nonatomic) BOOL bookIsCorrupted;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) RDContainer *container;
-@property (nonatomic) NYPLBookLocation *initialBookLocation;
 @property (nonatomic) BOOL mediaOverlayIsPlaying;
 @property (nonatomic) NSInteger openPageCount;
 @property (nonatomic) NSInteger pageInCurrentSpineItemCount;
 @property (nonatomic) NSInteger pageInCurrentSpineItemIndex;
 @property (nonatomic) BOOL pageProgressionIsLTR;
-@property (nonatomic) NSString *initialCFI;
 @property (nonatomic) RDPackage *package;
 @property (nonatomic) RDPackageResourceServer *server;
-@property (nonatomic) RDSpineItem *spineItem;
 @property (nonatomic) NSInteger spineItemIndex;
 @property (nonatomic) UIWebView *webView;
 
@@ -77,7 +74,6 @@ id argument(NSURL *const URL) {
   
   self.package = self.container.firstPackage;
   self.server = [[RDPackageResourceServer alloc] initWithPackage:self.package];
-  self.spineItem = self.package.spineItems[0];
 
   self.hidesBottomBarWhenPushed = YES;
   
@@ -156,23 +152,24 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     
     self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
     
-    NSDictionary *openPageRequestDictionary = nil;
-    
-    if(self.initialCFI && self.initialCFI.length > 0) {
-      openPageRequestDictionary = @{@"idref" : self.spineItem.idref,
-                                    @"elementCfi" : self.initialCFI};
-    } else {
-      openPageRequestDictionary = @{@"idref" : self.spineItem.idref};
-    }
-    
     NSDictionary *const settingsDictionary = @{@"columnGap": @20,
                                                @"fontSize": @100,
                                                @"scroll": @"scroll-continuous",
                                                @"syntheticSpread": @"auto"};
+
+    NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
+                                        locationForIdentifier:self.bookIdentifier];
     
-    NSDictionary *const dictionary = @{@"openPageRequest": openPageRequestDictionary,
-                                       @"package": self.package.dictionary,
-                                       @"settings": settingsDictionary};
+    NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
+    dictionary[@"package"] = self.package.dictionary;
+    dictionary[@"settings"] = settingsDictionary;
+    if(location) {
+      if(location.CFI) {
+        dictionary[@"openPageRequest"] = @{@"idref": location.idref, @"elementCfi" : location.CFI};
+      } else {
+        dictionary[@"openPageRequest"] = @{@"idref": location.idref};
+      }
+    }
     
     NSData *data = NYPLJSONDataFromObject(dictionary);
     
@@ -185,23 +182,10 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
      [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
       [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
     
-    self.initialBookLocation = [[NYPLMyBooksRegistry sharedRegistry]
-                                locationForIdentifier:self.bookIdentifier];
-    
     return NO;
   }
   
-  if([function isEqualToString:@"pagination-changed"]) {
-    if(self.initialBookLocation) {
-      // Now that we're ready, let's go where we actually want to go.
-      [self.webView stringByEvaluatingJavaScriptFromString:
-       [NSString stringWithFormat:@"ReadiumSDK.reader.openSpineItemElementCfi('%@', '%@')",
-        self.initialBookLocation.idref,
-        self.initialBookLocation.CFI]];
-      self.initialBookLocation = nil;
-      return NO;
-    }
-    
+  if([function isEqualToString:@"pagination-changed"]) {    
     NSDictionary *const dictionary = argument(request.URL);
     
     // Use left-to-right unless it explicitly asks for right-to-left.
