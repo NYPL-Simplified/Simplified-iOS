@@ -291,7 +291,6 @@ didSelectNavigationElement:(RDNavigationElement *)navigationElement
     self.activePopoverController =
       [[UIPopoverController alloc] initWithContentViewController:viewController];
     self.activePopoverController.delegate = self;
-    
     [self.activePopoverController
      presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
      permittedArrowDirections:UIPopoverArrowDirectionUp
