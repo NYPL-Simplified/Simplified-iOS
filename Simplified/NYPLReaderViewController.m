@@ -8,8 +8,9 @@
 
 #import "NYPLReaderViewController.h"
 
-@interface NYPLReaderViewController () <UIWebViewDelegate>
+@interface NYPLReaderViewController () <UIPopoverControllerDelegate, UIWebViewDelegate>
 
+@property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) BOOL bookIsCorrupted;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) RDContainer *container;
@@ -103,6 +104,7 @@ id argument(NSURL *const URL) {
   self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
+  self.webView.backgroundColor = [UIColor whiteColor];
   self.webView.delegate = self;
   self.webView.scalesPageToFit = YES;
   self.webView.scrollView.bounces = NO;
@@ -249,6 +251,15 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   return NO;
 }
 
+#pragma mark UIPopoverControllerDelegate
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+  assert(popoverController == self.activePopoverController);
+  
+  self.activePopoverController = nil;
+}
+
 #pragma mark -
 
 - (void)didSelectTOC
@@ -256,7 +267,18 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   NYPLReaderTOCViewController *const viewController =
     [[NYPLReaderTOCViewController alloc] initWithNavigationElement:self.package.tableOfContents];
   
-  [self.navigationController pushViewController:viewController animated:YES];
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.activePopoverController =
+      [[UIPopoverController alloc] initWithContentViewController:viewController];
+    self.activePopoverController.delegate = self;
+    
+    [self.activePopoverController
+     presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
+     permittedArrowDirections:UIPopoverArrowDirectionUp
+     animated:YES];
+  } else {
+    [self.navigationController pushViewController:viewController animated:YES];
+  }
 }
   
 @end
