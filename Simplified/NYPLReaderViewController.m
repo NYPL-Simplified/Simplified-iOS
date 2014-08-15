@@ -54,6 +54,9 @@ id argument(NSURL *const URL) {
     @throw NSInvalidArgumentException;
   }
   
+  self.title = [[NYPLMyBooksRegistry sharedRegistry]
+                bookForIdentifier:bookIdentifier].title;
+  
   self.bookIdentifier = bookIdentifier;
   
   @try {
