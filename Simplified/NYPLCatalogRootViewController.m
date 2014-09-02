@@ -10,7 +10,7 @@
 #import "NYPLCatalogRootViewController.h"
 
 static CGFloat const rowHeight = 115.0;
-static CGFloat const sectionHeaderHeight = 40.0;
+static CGFloat const sectionHeaderHeight = 35.0;
 
 @interface NYPLCatalogRootViewController ()
   <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
@@ -149,10 +149,11 @@ viewForHeaderInSection:(NSInteger const)section
   
   {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeSystem];
+    button.titleLabel.font = [UIFont systemFontOfSize:17];
     NSString *const title = ((NYPLCatalogLane *) self.catalogRoot.lanes[section]).title;
     [button setTitle:title forState:UIControlStateNormal];
     [button sizeToFit];
-    button.frame = CGRectMake(5, 5, CGRectGetWidth(button.frame), CGRectGetHeight(button.frame));
+    button.frame = CGRectMake(7, 5, CGRectGetWidth(button.frame), CGRectGetHeight(button.frame));
     button.tag = section;
     [button addTarget:self
                action:@selector(didSelectCategory:)
