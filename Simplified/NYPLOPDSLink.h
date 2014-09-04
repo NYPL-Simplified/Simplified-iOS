@@ -1,4 +1,4 @@
-#import <SMXMLDocument/SMXMLDocument.h>
+@class NYPLXML;
 
 @interface NYPLOPDSLink : NSObject
 
@@ -10,6 +10,6 @@
 @property (nonatomic, readonly) NSString *length;
 
 // designated initializer
-- (instancetype)initWithElement:(SMXMLElement *)element;
+- (instancetype)initWithXML:(NYPLXML *)linkXML;
 
 @end

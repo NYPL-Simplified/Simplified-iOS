@@ -59,6 +59,11 @@
   return children;
 }
 
+- (NYPLXML *)firstChildWithName:(NSString *const)name
+{
+  return [[self childrenWithName:name] firstObject];
+}
+
 #pragma mark NSXMLParserDelegate
 
 - (void)parser:(NSXMLParser *const)parser

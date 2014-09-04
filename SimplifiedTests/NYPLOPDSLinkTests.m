@@ -3,6 +3,7 @@
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
+#import "NYPLXML.h"
 
 @interface NYPLOPDSLinkTests : XCTestCase
 
@@ -22,10 +23,10 @@
                          ofType:@"xml"]];
   assert(data);
   
-  SMXMLDocument *const document = [SMXMLDocument documentWithData:data error:NULL];
-  assert(document);
+  NYPLXML *const feedXML = [NYPLXML XMLWithData:data];
+  assert(feedXML);
   
-  NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
+  NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:feedXML];
   assert(feed);
   
   self.links = ((NYPLOPDSEntry *) feed.entries[0]).links;
@@ -41,7 +42,7 @@
 
 - (void)testHandlesNilInit
 {
-  XCTAssertNil([[NYPLOPDSLink alloc] initWithElement:nil]);
+  XCTAssertNil([[NYPLOPDSLink alloc] initWithXML:nil]);
 }
 
 - (void)testCount

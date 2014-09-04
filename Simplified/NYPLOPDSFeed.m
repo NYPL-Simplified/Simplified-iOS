@@ -3,7 +3,7 @@
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSLink.h"
 #import "NYPLSession.h"
-#import "SMXMLElement+NYPLElementAdditions.h"
+#import "NYPLXML.h"
 
 #import "NYPLOPDSFeed.h"
 
@@ -28,14 +28,14 @@
       return;
     }
     
-    SMXMLDocument *const document = [[SMXMLDocument alloc] initWithData:data error:NULL];
-    if(!document) {
+    NYPLXML *const feedXML = [NYPLXML XMLWithData:data];
+    if(!feedXML) {
       NYPLLOG(@"Failed to parse data as XML.");
       NYPLAsyncDispatch(^{handler(nil);});
       return;
     }
     
-    NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
+    NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:feedXML];
     if(!feed) {
       NYPLLOG(@"Could not interpret XML as OPDS.");
       NYPLAsyncDispatch(^{handler(nil);});
@@ -46,16 +46,16 @@
   }];
 }
 
-- (instancetype)initWithDocument:(SMXMLDocument *const)document
+- (instancetype)initWithXML:(NYPLXML *const)feedXML
 {
   self = [super init];
   if(!self) return nil;
   
-  if(!document) {
+  if(!feedXML) {
     return nil;
   }
   
-  if(!((self.identifier = [document.root childNamed:@"id"].valueString))) {
+  if(!((self.identifier = [feedXML firstChildWithName:@"id"].value))) {
     NYPLLOG(@"Missing required 'id' element.");
     return nil;
   }
@@ -63,8 +63,8 @@
   {
     NSMutableArray *const links = [NSMutableArray array];
     
-    for(SMXMLElement *const linkElement in [document.root childrenNamed:@"link"]) {
-      NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithElement:linkElement];
+    for(NYPLXML *const linkXML in [feedXML childrenWithName:@"link"]) {
+      NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
       if(!link) {
         NYPLLOG(@"Ignoring malformed 'link' element.");
         continue;
@@ -75,13 +75,13 @@
     self.links = links;
   }
   
-  if(!((self.title = [document.root childNamed:@"title"].valueString))) {
+  if(!((self.title = [feedXML firstChildWithName:@"title"].value))) {
     NYPLLOG(@"Missing required 'title' element.");
     return nil;
   }
   
   {
-    NSString *const updatedString = [document.root childNamed:@"updated"].valueString;
+    NSString *const updatedString = [feedXML firstChildWithName:@"updated"].value;
     if(!updatedString) {
       NYPLLOG(@"Missing required 'updated' element.");
       return nil;
@@ -97,8 +97,8 @@
   {
     NSMutableArray *const entries = [NSMutableArray array];
     
-    for(SMXMLElement *const entryElement in [document.root childrenNamed:@"entry"]) {
-      NYPLOPDSEntry *const entry = [[NYPLOPDSEntry alloc] initWithElement:entryElement];
+    for(NYPLXML *const entryXML in [feedXML childrenWithName:@"entry"]) {
+      NYPLOPDSEntry *const entry = [[NYPLOPDSEntry alloc] initWithXML:entryXML];
       if(!entry) {
         NYPLLOG(@"Ingoring malformed 'entry' element.");
         continue;

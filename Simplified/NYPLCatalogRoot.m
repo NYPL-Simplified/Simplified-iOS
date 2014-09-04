@@ -1,5 +1,3 @@
-#import <SMXMLDocument/SMXMLDocument.h>
-
 #import "NYPLAsync.h"
 #import "NYPLBook.h"
 #import "NYPLCatalogLane.h"
@@ -7,6 +5,7 @@
 #import "NYPLOPDS.h"
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLSession.h"
+#import "NYPLXML.h"
 
 #import "NYPLCatalogRoot.h"
 
@@ -116,9 +115,9 @@
           NSData *const featuredData = featuredDataObject;
           assert([featuredData isKindOfClass:[NSData class]]);
           
-          SMXMLDocument *const document = [SMXMLDocument documentWithData:featuredData
-                                                                    error:NULL];
-          if(!document) {
+          NYPLXML *const feedXML = [NYPLXML XMLWithData:featuredData];
+          
+          if(!feedXML) {
             NYPLLOG(@"Creating lane without unparsable featured books.");
             [lanes addObject:
              [[NYPLCatalogLane alloc]
@@ -128,7 +127,7 @@
             continue;
           }
           
-          NYPLOPDSFeed *featuredAcquisitionFeed = [[NYPLOPDSFeed alloc] initWithDocument:document];
+          NYPLOPDSFeed *featuredAcquisitionFeed = [[NYPLOPDSFeed alloc] initWithXML:feedXML];
           
           if(!featuredAcquisitionFeed) {
             NYPLLOG(@"Creating lane without invalid featured books.");
