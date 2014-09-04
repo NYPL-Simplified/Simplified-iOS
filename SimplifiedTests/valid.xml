@@ -1,0 +1,14 @@
+<ex:foo xmlns:ex="http://example.com">
+  <bar>
+    42
+  </bar>
+  <bar a="hello" b="goodbye">100</bar>
+  <baz>
+    one
+    <quux/>
+    two
+    <quux>
+      three
+    </quux>
+  </baz>
+</ex:foo>
