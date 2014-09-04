@@ -20,6 +20,10 @@
 		11119742198827850014462F /* NYPLBookDetailDownloadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11119741198827850014462F /* NYPLBookDetailDownloadingView.m */; };
 		1114A6A1195884CB007507A2 /* NYPLCatalogCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 1114A6A0195884CB007507A2 /* NYPLCatalogCategory.m */; };
 		1114A6A4195888A1007507A2 /* NYPLCatalogSubsectionLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 1114A6A3195888A1007507A2 /* NYPLCatalogSubsectionLink.m */; };
+		111559ED19B8FA590003BE94 /* NYPLXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 111559EC19B8FA590003BE94 /* NYPLXML.m */; };
+		111559EF19B8FA8E0003BE94 /* NYPLXMLTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 111559EE19B8FA8E0003BE94 /* NYPLXMLTests.m */; };
+		111559F219B8FAA10003BE94 /* invalid.xml in Resources */ = {isa = PBXBuildFile; fileRef = 111559F019B8FAA10003BE94 /* invalid.xml */; };
+		111559F319B8FAA10003BE94 /* valid.xml in Resources */ = {isa = PBXBuildFile; fileRef = 111559F119B8FAA10003BE94 /* valid.xml */; };
 		11172764197F31280043EFBF /* NYPLAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 11172763197F31280043EFBF /* NYPLAccount.m */; };
 		112C694D197301FE00C48F95 /* NYPLMyBooksRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 112C694C197301FE00C48F95 /* NYPLMyBooksRecord.m */; };
 		112C6953197309C500C48F95 /* NYPLMyBooksState.m in Sources */ = {isa = PBXBuildFile; fileRef = 112C6952197309C500C48F95 /* NYPLMyBooksState.m */; };
@@ -160,6 +164,11 @@
 		1114A6A2195888A1007507A2 /* NYPLCatalogSubsectionLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogSubsectionLink.h; sourceTree = "<group>"; };
 		1114A6A3195888A1007507A2 /* NYPLCatalogSubsectionLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogSubsectionLink.m; sourceTree = "<group>"; };
 		1114A6AC1958B215007507A2 /* NYPLLOG.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = NYPLLOG.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		111559EB19B8FA530003BE94 /* NYPLXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLXML.h; sourceTree = "<group>"; };
+		111559EC19B8FA590003BE94 /* NYPLXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLXML.m; sourceTree = "<group>"; };
+		111559EE19B8FA8E0003BE94 /* NYPLXMLTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLXMLTests.m; sourceTree = "<group>"; };
+		111559F019B8FAA10003BE94 /* invalid.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalid.xml; sourceTree = "<group>"; };
+		111559F119B8FAA10003BE94 /* valid.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = valid.xml; sourceTree = "<group>"; };
 		11172762197F31280043EFBF /* NYPLAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAccount.h; sourceTree = "<group>"; };
 		11172763197F31280043EFBF /* NYPLAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAccount.m; sourceTree = "<group>"; };
 		112C694B197301FE00C48F95 /* NYPLMyBooksRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksRecord.h; sourceTree = "<group>"; };
@@ -560,6 +569,8 @@
 				11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */,
 				118B7ABD195CBF72005CE3E7 /* NYPLSession.h */,
 				118B7ABE195CBF72005CE3E7 /* NYPLSession.m */,
+				111559EB19B8FA530003BE94 /* NYPLXML.h */,
+				111559EC19B8FA590003BE94 /* NYPLXML.m */,
 				AE77E8DE5454517F1AE119BF /* OPDS */,
 				119504051994061E009FB788 /* Reader */,
 				11C5DCEE1976D19E005A9945 /* Settings */,
@@ -587,11 +598,12 @@
 		A823D82F192BABA400B55DE2 /* SimplifiedTests */ = {
 			isa = PBXGroup;
 			children = (
-				1183F34D194F775400DC322F /* OPDS */,
-				11616E12196B2FB8003D60D9 /* NYPLMyBooksRegistryTests.m */,
 				1183F35F1952194000DC322F /* NYPLCatalogRootTests.m */,
 				11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */,
 				11C5DD171977335E005A9945 /* NYPLKeychainTests.m */,
+				11616E12196B2FB8003D60D9 /* NYPLMyBooksRegistryTests.m */,
+				111559EE19B8FA8E0003BE94 /* NYPLXMLTests.m */,
+				1183F34D194F775400DC322F /* OPDS */,
 				A823D830192BABA400B55DE2 /* Supporting Files */,
 			);
 			path = SimplifiedTests;
@@ -600,9 +612,11 @@
 		A823D830192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A823D831192BABA400B55DE2 /* SimplifiedTests-Info.plist */,
+				111559F019B8FAA10003BE94 /* invalid.xml */,
 				11F54C1D194109120086FCAF /* main.xml */,
 				11F54C2419410BE40086FCAF /* single_entry.xml */,
-				A823D831192BABA400B55DE2 /* SimplifiedTests-Info.plist */,
+				111559F119B8FAA10003BE94 /* valid.xml */,
 				A823D832192BABA400B55DE2 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
@@ -738,7 +752,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				111559F319B8FAA10003BE94 /* valid.xml in Resources */,
 				A823D834192BABA400B55DE2 /* InfoPlist.strings in Resources */,
+				111559F219B8FAA10003BE94 /* invalid.xml in Resources */,
 				11F54C1F194109550086FCAF /* main.xml in Resources */,
 				11F54C2519410BE40086FCAF /* single_entry.xml in Resources */,
 			);
@@ -822,6 +838,7 @@
 				11369D48199527C200BB11F8 /* NYPLJSON.m in Sources */,
 				116A5EB91947B57500491A21 /* NYPLConfiguration.m in Sources */,
 				116A5EAF194767B200491A21 /* NYPLMyBooksNavigationController.m in Sources */,
+				111559ED19B8FA590003BE94 /* NYPLXML.m in Sources */,
 				11580AC81986A77B00949A15 /* NYPLBookCell.m in Sources */,
 				1183F35B194F847100DC322F /* NYPLAsync.m in Sources */,
 				119BEBB919902A8800121439 /* NYPLOpenSearchDescription.m in Sources */,
@@ -886,6 +903,7 @@
 				119BEBB21990217B00121439 /* NSDate+NYPLDateAdditions.m in Sources */,
 				119BEBB31990217B00121439 /* NSString+NYPLStringAdditions.m in Sources */,
 				119BEBB41990217B00121439 /* SMXMLElement+NYPLElementAdditions.m in Sources */,
+				111559EF19B8FA8E0003BE94 /* NYPLXMLTests.m in Sources */,
 				119BEBB51990217B00121439 /* UIFont+NYPLSystemFontOverride.m in Sources */,
 				119BEBB61990217B00121439 /* UIView+NYPLViewAdditions.m in Sources */,
 				119BEBAA1990207E00121439 /* NYPLOPDSFeedTests.m in Sources */,
