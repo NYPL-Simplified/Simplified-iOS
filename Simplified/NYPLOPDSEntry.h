@@ -1,4 +1,4 @@
-#import <SMXMLDocument/SMXMLDocument.h>
+@class NYPLXML;
 
 @interface NYPLOPDSEntry : NSObject
 
@@ -10,6 +10,6 @@
 @property (nonatomic, readonly) NSDate *updated;
 
 // designated initializer
-- (instancetype)initWithElement:(SMXMLElement *)element;
+- (instancetype)initWithXML:(NYPLXML *)entryXML;
 
 @end

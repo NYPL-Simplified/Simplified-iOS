@@ -1,6 +1,6 @@
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLOPDSLink.h"
-#import "SMXMLElement+NYPLElementAdditions.h"
+#import "NYPLXML.h"
 
 #import "NYPLOPDSEntry.h"
 
@@ -17,7 +17,7 @@
 
 @implementation NYPLOPDSEntry
 
-- (instancetype)initWithElement:(SMXMLElement *const)element
+- (instancetype)initWithXML:(NYPLXML *const)entryXML
 {
   self = [super init];
   if(!self) return nil;
@@ -25,20 +25,20 @@
   {
     NSMutableArray *const authorStrings = [NSMutableArray array];
     
-    for(SMXMLElement *const authorElement in [element childrenNamed:@"author"]) {
-      SMXMLElement *const nameElement = [authorElement childNamed:@"name"];
-      if(!nameElement) {
+    for(NYPLXML *const authorXML in [entryXML childrenWithName:@"author"]) {
+      NYPLXML *const nameXML = [authorXML firstChildWithName:@"name"];
+      if(!nameXML) {
         NYPLLOG(@"'author' element missing required 'name' element.");
         NYPLLOG(@"Ignoring malformed 'author' element.");
         continue;
       }
-      [authorStrings addObject:nameElement.valueString];
+      [authorStrings addObject:nameXML.value];
     }
 
     self.authorStrings = authorStrings;
   }
   
-  if(!((self.identifier = [element childNamed:@"id"].valueString))) {
+  if(!((self.identifier = [entryXML firstChildWithName:@"id"].value))) {
     NYPLLOG(@"Missing required 'id' element.");
     return nil;
   }
@@ -46,8 +46,8 @@
   {
     NSMutableArray *const links = [NSMutableArray array];
     
-    for(SMXMLElement *const linkElement in [element childrenNamed:@"link"]) {
-      NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithElement:linkElement];
+    for(NYPLXML *const linkXML in [entryXML childrenWithName:@"link"]) {
+      NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
       if(!link) {
         NYPLLOG(@"Ignoring malformed 'link' element.");
         continue;
@@ -58,15 +58,15 @@
     self.links = links;
   }
   
-  self.summary = [element childNamed:@"summary"].value;
+  self.summary = [entryXML firstChildWithName:@"summary"].value;
   
-  if(!((self.title = [element childNamed:@"title"].valueString))) {
+  if(!((self.title = [entryXML firstChildWithName:@"title"].value))) {
     NYPLLOG(@"Missing required 'title' element.");
     return nil;
   }
   
   {
-    NSString *const updatedString = [element childNamed:@"updated"].valueString;
+    NSString *const updatedString = [entryXML firstChildWithName:@"updated"].value;
     if(!updatedString) {
       NYPLLOG(@"Missing required 'updated' element.");
       return nil;

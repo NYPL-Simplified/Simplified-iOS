@@ -1,4 +1,4 @@
-@class SMXMLDocument;
+@class NYPLXML;
 
 @interface NYPLOpenSearchDescription : NSObject
 
@@ -7,6 +7,6 @@
 + (void)withURL:(NSURL *)URL
 completionHandler:(void (^)(NYPLOpenSearchDescription *description))handler;
 
-- (instancetype)initWithDocument:(SMXMLDocument *)document;
+- (instancetype)initWithXML:(NYPLXML *)OSDXML;
 
 @end
