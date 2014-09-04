@@ -1,10 +1,9 @@
 @import XCTest;
 
-#import <SMXMLDocument/SMXMLDocument.h>
-
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
+#import "NYPLXML.h"
 
 @interface NYPLOPDSEntryTests : XCTestCase
 
@@ -24,10 +23,10 @@
                          ofType:@"xml"]];
   assert(data);
   
-  SMXMLDocument *const document = [SMXMLDocument documentWithData:data error:NULL];
-  assert(document);
+  NYPLXML *const feedXML = [NYPLXML XMLWithData:data];
+  assert(feedXML);
   
-  NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
+  NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:feedXML];
   assert(feed);
   
   self.entry = feed.entries[0];
@@ -43,7 +42,7 @@
 
 - (void)testHandlesNilInit
 {
-  XCTAssertNil([[NYPLOPDSEntry alloc] initWithElement:nil]);
+  XCTAssertNil([[NYPLOPDSEntry alloc] initWithXML:nil]);
 }
 
 - (void)testAuthorStrings
