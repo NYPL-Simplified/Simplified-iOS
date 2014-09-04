@@ -1,4 +1,4 @@
-#import <SMXMLDocument/SMXMLDocument.h>
+@class NYPLXML;
 
 @interface NYPLOPDSFeed : NSObject
 
@@ -11,6 +11,6 @@
 + (void)withURL:(NSURL *)URL completionHandler:(void (^)(NYPLOPDSFeed *feed))handler;
 
 // designated initializer
-- (instancetype)initWithDocument:(SMXMLDocument *)document;
+- (instancetype)initWithXML:(NYPLXML *)feedXML;
 
 @end

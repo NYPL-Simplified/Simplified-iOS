@@ -1,7 +1,6 @@
-#import <SMXMLDocument/SMXMLDocument.h>
-
 #import "NYPLAsync.h"
 #import "NYPLSession.h"
+#import "NYPLXML.h"
 
 #import "NYPLOpenSearchDescription.h"
 
@@ -25,15 +24,15 @@ completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
        return;
      }
      
-     SMXMLDocument *const document = [SMXMLDocument documentWithData:data error:NULL];
-     if(!document) {
+     NYPLXML *const XML = [NYPLXML XMLWithData:data];
+     if(!XML) {
        NYPLLOG(@"Failed to parse data as XML.");
        NYPLAsyncDispatch(^{handler(nil);});
        return;
      }
      
      NYPLOpenSearchDescription *const description =
-       [[NYPLOpenSearchDescription alloc] initWithDocument:document];
+       [[NYPLOpenSearchDescription alloc] initWithXML:XML];
      
      if(!description) {
        NYPLLOG(@"Failed to interpret XML as OpenSearch description document.");
@@ -45,15 +44,15 @@ completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
    }];
 }
 
-- (instancetype)initWithDocument:(SMXMLDocument *const)document
+- (instancetype)initWithXML:(NYPLXML *const)OSDXML
 {
   self = [super init];
   if(!self) return nil;
   
-  for(SMXMLElement *const element in [document.root childrenNamed:@"Url"]) {
-    NSString *const type = [element attributeNamed:@"type"];
+  for(NYPLXML *const UrlXML in [OSDXML childrenWithName:@"Url"]) {
+    NSString *const type = UrlXML.attributes[@"type"];
     if(type && [type rangeOfString:@"opds-catalog"].location != NSNotFound) {
-      self.OPDSURLTemplate = [element attributeNamed:@"template"];
+      self.OPDSURLTemplate = UrlXML.attributes[@"template"];
       break;
     }
   }

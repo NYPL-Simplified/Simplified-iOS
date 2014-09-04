@@ -17,4 +17,6 @@ suitable for handling markup (e.g. XHTML). */
 
 - (NSArray *)childrenWithName:(NSString *)name;
 
+- (NYPLXML *)firstChildWithName:(NSString *)name;
+
 @end

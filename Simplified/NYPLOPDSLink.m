@@ -1,3 +1,5 @@
+#import "NYPLXML.h"
+
 #import "NYPLOPDSLink.h"
 
 @interface NYPLOPDSLink ()
@@ -13,13 +15,13 @@
 
 @implementation NYPLOPDSLink
 
-- (instancetype)initWithElement:(SMXMLElement *const)element
+- (instancetype)initWithXML:(NYPLXML *const)linkXML
 {
   self = [super init];
   if(!self) return nil;
   
   {
-    NSString *const hrefString = [element attributeNamed:@"href"];
+    NSString *const hrefString = linkXML.attributes[@"href"];
     if(!hrefString) {
       NYPLLOG(@"Missing required 'href' attribute.");
       return nil;
@@ -33,11 +35,11 @@
     }
   }
   
-  self.rel = [element attributeNamed:@"rel"];
-  self.type = [element attributeNamed:@"type"];
-  self.hreflang = [element attributeNamed:@"hreflang"];
-  self.title = [element attributeNamed:@"title"];
-  self.length = [element attributeNamed:@"length"];
+  self.rel = linkXML.attributes[@"rel"];
+  self.type = linkXML.attributes[@"type"];
+  self.hreflang = linkXML.attributes[@"hreflang"];
+  self.title = linkXML.attributes[@"title"];
+  self.length = linkXML.attributes[@"length"];
   
   return self;
 }

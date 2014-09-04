@@ -1,9 +1,8 @@
 @import XCTest;
 
-#import <SMXMLDocument/SMXMLDocument.h>
-
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLOPDSFeed.h"
+#import "NYPLXML.h"
 
 @interface NYPLOPDSFeedTests : XCTestCase
 
@@ -22,10 +21,10 @@
      [[NSBundle bundleForClass:[self class]] pathForResource:@"main" ofType:@"xml"]];
   assert(data);
   
-  SMXMLDocument *const document = [SMXMLDocument documentWithData:data error:NULL];
-  assert(document);
+  NYPLXML *const feedXML = [NYPLXML XMLWithData:data];
+  assert(feedXML);
   
-  self.feed = [[NYPLOPDSFeed alloc] initWithDocument:document];
+  self.feed = [[NYPLOPDSFeed alloc] initWithXML:feedXML];
   assert(self.feed);
 }
 
@@ -38,7 +37,7 @@
 
 - (void)testHandlesNilInit
 {
-  XCTAssertNil([[NYPLOPDSFeed alloc] initWithDocument:nil]);
+  XCTAssertNil([[NYPLOPDSFeed alloc] initWithXML:nil]);
 }
 
 - (void)testEntriesPresent
