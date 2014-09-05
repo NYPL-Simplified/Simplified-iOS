@@ -46,6 +46,9 @@ static CGFloat const sectionHeaderHeight = 35.0;
 {
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
+  self.navigationItem.titleView =
+    [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Catalog"]];
+  
   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                             initWithImage:[UIImage imageNamed:@"Search"]
                                             style:UIBarButtonItemStylePlain
