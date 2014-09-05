@@ -48,16 +48,17 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
                                 (CGRectGetHeight(self.frame) - 10) * (10 / 12.0),
                                 CGRectGetHeight(self.frame) - 10);
   self.cover.contentMode = UIViewContentModeScaleAspectFit;
-  
-  [self.title sizeToFit];
-  CGRect titleFrame = self.title.frame;
-  titleFrame.origin = CGPointMake(115, 5);
-  titleFrame.size.width = CGRectGetWidth(self.frame) - 120;
-  self.title.frame = titleFrame;
+
+  CGFloat const titleWidth = CGRectGetWidth(self.frame) - 120;
+  self.title.frame = CGRectMake(115,
+                                5,
+                                titleWidth,
+                                [self.title sizeThatFits:
+                                 CGSizeMake(titleWidth, CGFLOAT_MAX)].height);
   
   [self.author sizeToFit];
   CGRect authorFrame = self.author.frame;
-  authorFrame.origin = CGPointMake(115, CGRectGetMaxY(titleFrame));
+  authorFrame.origin = CGPointMake(115, CGRectGetMaxY(self.title.frame));
   authorFrame.size.width = CGRectGetWidth(self.frame) - 120;
   self.author.frame = authorFrame;
   
