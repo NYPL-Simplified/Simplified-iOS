@@ -9,6 +9,7 @@
 @property (nonatomic) UIButton *deleteButton;
 @property (nonatomic) UIButton *downloadButton;
 @property (nonatomic) NYPLLinearView *deleteReadLinearView;
+@property (nonatomic) UILabel *messageLabel;
 @property (nonatomic) UIButton *readButton;
 
 @end
@@ -47,6 +48,11 @@
   self.deleteButton.layer.borderWidth = 1;
   self.deleteButton.layer.cornerRadius = 2;
   
+  self.messageLabel = [[UILabel alloc] init];
+  self.messageLabel.font = [UIFont systemFontOfSize:12];
+  self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
+  [self addSubview:self.messageLabel];
+  
   self.readButton = [UIButton buttonWithType:UIButtonTypeSystem];
   [self.readButton setTitle:NSLocalizedString(@"Read", nil)
                    forState:UIControlStateNormal];
@@ -73,6 +79,9 @@
 - (void)layoutSubviews
 {
   self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), 30);
+  
+  [self.messageLabel sizeToFit];
+  self.messageLabel.center = self.backgroundView.center;
  
   [self.downloadButton sizeToFit];
   self.downloadButton.frame = CGRectInset(self.downloadButton.frame, -8, 0);
