@@ -12,6 +12,8 @@
 
 static NSString *const RegistryFilename = @"registry.json";
 
+static NSString *const RecordsKey = @"records";
+
 @implementation NYPLMyBooksRegistry
 
 + (NYPLMyBooksRegistry *)sharedRegistry
@@ -91,18 +93,17 @@ static NSString *const RegistryFilename = @"registry.json";
       return;
     }
     
-    [dictionary enumerateKeysAndObjectsUsingBlock:^(id const key,
-                                                    id const value,
-                                                    __attribute__((unused)) BOOL *stop) {
-      NYPLMyBooksRecord *const record = [[NYPLMyBooksRecord alloc] initWithDictionary:value];
-      
+    for(NSDictionary *const recordDictionary in dictionary[RecordsKey]) {
+      NYPLMyBooksRecord *const record = [[NYPLMyBooksRecord alloc]
+                                         initWithDictionary:recordDictionary];
       // If a download was still in progress when we quit, it must now be failed.
       if(record.state == NYPLMyBooksStateDownloading) {
-        self.identifiersToRecords[key] = [record recordWithState:NYPLMyBooksStateDownloadFailed];
+        self.identifiersToRecords[record.book.identifier] =
+        [record recordWithState:NYPLMyBooksStateDownloadFailed];
       } else {
-        self.identifiersToRecords[key] = record;
+        self.identifiersToRecords[record.book.identifier] = record;
       }
-    }];
+    }
     
     [self broadcastChange];
   }
@@ -133,7 +134,7 @@ static NSString *const RegistryFilename = @"registry.json";
                              URLByAppendingPathComponent:RegistryFilename]
                             URLByAppendingPathExtension:@"temp"]
        append:NO];
-    
+      
     [stream open];
     
     // This try block is necessary to catch an (entirely undocumented) exception thrown by
@@ -168,7 +169,7 @@ static NSString *const RegistryFilename = @"registry.json";
          error:NULL]) {
       NYPLLOG(@"Failed to rename temporary registry file.");
       return;
-    }    
+    }
   }
 }
 
@@ -281,18 +282,14 @@ static NSString *const RegistryFilename = @"registry.json";
 
 - (NSDictionary *)dictionaryRepresentation
 {
-  @synchronized(self) {
-    NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
-    
-    [self.identifiersToRecords
-     enumerateKeysAndObjectsUsingBlock:^(NSString *const identifier,
-                                         NYPLMyBooksRecord *const record,
-                                         __attribute__((unused)) BOOL *stop) {
-      dictionary[identifier] = [record dictionaryRepresentation];
-    }];
-    
-    return dictionary;
+  NSMutableArray *const records =
+    [NSMutableArray arrayWithCapacity:self.identifiersToRecords.count];
+  
+  for(NYPLMyBooksRecord *const record in [self.identifiersToRecords allValues]) {
+    [records addObject:[record dictionaryRepresentation]];
   }
+  
+  return @{RecordsKey: records};
 }
 
 - (NSUInteger)count
