@@ -206,7 +206,6 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
   self.noResultsLabel.hidden = YES;
   self.activityIndicatorView.hidden = NO;
   [self.activityIndicatorView startAnimating];
-  [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   [self.searchBar resignFirstResponder];
   
   [NYPLCatalogCategory
@@ -220,7 +219,6 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
        self.collectionView.hidden = NO;
        self.activityIndicatorView.hidden = YES;
        [self.activityIndicatorView stopAnimating];
-       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
        
        // FIXME: This uses the wrong localized string for the title.
        if(!category) {
