@@ -26,19 +26,19 @@
   
   self.titleLabel.frame = CGRectMake(sidePadding,
                                      5,
-                                     CGRectGetWidth(self.contentView.frame) - sidePadding * 2,
+                                     CGRectGetWidth([self contentFrame]) - sidePadding * 2,
                                      self.titleLabel.preferredHeight);
   
   self.authorsLabel.frame = CGRectMake(sidePadding,
                                        CGRectGetMaxY(self.titleLabel.frame),
-                                       CGRectGetWidth(self.contentView.frame) - sidePadding * 2,
+                                       CGRectGetWidth([self contentFrame]) - sidePadding * 2,
                                        self.authorsLabel.preferredHeight);
   
   [self.messageLabel sizeToFit];
   self.messageLabel.frame = CGRectMake(sidePadding,
                                        (CGRectGetMaxY(self.authorsLabel.frame) +
                                         messageTopPadding),
-                                       CGRectGetWidth(self.contentView.frame) - sidePadding * 2,
+                                       CGRectGetWidth([self contentFrame]) - sidePadding * 2,
                                        CGRectGetHeight(self.messageLabel.frame));
   
   self.cancelButton.frame = CGRectMake(8, 0, 0, 0);
@@ -57,9 +57,9 @@
      CGRectGetWidth(self.tryAgainButton.frame) +
      buttonPadding);
   
-  self.buttonContainerView.frame = CGRectMake((CGRectGetWidth(self.contentView.frame) / 2 -
+  self.buttonContainerView.frame = CGRectMake((CGRectGetWidth([self contentFrame]) / 2 -
                                                buttonContainerViewWidth / 2),
-                                              (CGRectGetHeight(self.contentView.frame) -
+                                              (CGRectGetHeight([self contentFrame]) -
                                                CGRectGetHeight(self.cancelButton.frame) -
                                                buttonPadding),
                                               buttonContainerViewWidth,
