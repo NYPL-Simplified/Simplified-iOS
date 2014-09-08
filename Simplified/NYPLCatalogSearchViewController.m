@@ -16,6 +16,7 @@
 @property (nonatomic) NYPLCatalogCategory *category;
 @property (nonatomic) NSString *categoryTitle;
 @property (nonatomic) UICollectionView *collectionView;
+@property (nonatomic) UILabel *noResultsLabel;
 @property (nonatomic) NSMutableArray *observers;
 @property (nonatomic) UISearchBar *searchBar;
 @property (nonatomic) NSString *searchTemplate;
@@ -79,12 +80,25 @@
   [self.searchBar sizeToFit];
   [self.searchBar becomeFirstResponder];
   
+  self.noResultsLabel = [[UILabel alloc] init];
+  self.noResultsLabel.text = NSLocalizedString(@"NoResultsFound", nil);
+  self.noResultsLabel.font = [UIFont systemFontOfSize:17];
+  [self.noResultsLabel sizeToFit];
+  self.noResultsLabel.hidden = YES;
+  [self.view addSubview:self.noResultsLabel];
+  
   self.navigationItem.titleView = self.searchBar;
 }
 
 - (void)viewWillLayoutSubviews
 {
   self.activityIndicatorView.center = self.view.center;
+  
+  self.noResultsLabel.center = self.view.center;
+  self.noResultsLabel.frame = CGRectMake(CGRectGetMinX(self.noResultsLabel.frame),
+                                         CGRectGetHeight(self.view.frame) * 0.333,
+                                         CGRectGetWidth(self.noResultsLabel.frame),
+                                         CGRectGetHeight(self.noResultsLabel.frame));
 }
 
 - (void)viewWillDisappear:(__attribute__((unused)) BOOL)animated
@@ -189,6 +203,7 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
 - (void)searchBarSearchButtonClicked:(__attribute__((unused)) UISearchBar *)searchBar
 {
   self.collectionView.hidden = YES;
+  self.noResultsLabel.hidden = YES;
   self.activityIndicatorView.hidden = NO;
   [self.activityIndicatorView startAnimating];
   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -226,6 +241,12 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
        
        [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
        [self.collectionView reloadData];
+       
+       if(self.category.books.count > 0) {
+         self.collectionView.hidden = NO;
+       } else {
+         self.noResultsLabel.hidden = NO;
+       }
      }];
    }];
 }
