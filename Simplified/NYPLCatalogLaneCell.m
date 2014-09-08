@@ -42,6 +42,9 @@
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.tag = bookIndex;
     NSData *const imageData = URLsToImageData[book.imageURL];
+    if(!imageData) {
+      NYPLLOG_F(@"Did not receive cover for '%@'.", book.title);
+    }
     UIImage *const image =
       imageData ? [UIImage imageWithData:imageData] : [UIImage imageNamed:@"NoCover"];
     [button setImage:image forState:UIControlStateNormal];
