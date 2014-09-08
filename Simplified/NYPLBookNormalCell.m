@@ -4,25 +4,6 @@
 
 #import "NYPLBookNormalCell.h"
 
-CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
-                                              UIInterfaceOrientation orientation)
-{
-  if(idiom == UIUserInterfaceIdiomPad) {
-    switch(orientation) {
-      case UIInterfaceOrientationPortrait:
-        // fallthrough
-      case UIInterfaceOrientationPortraitUpsideDown:
-        return CGSizeMake(384, 110);
-      case UIInterfaceOrientationLandscapeLeft:
-        // fallthrough
-      case UIInterfaceOrientationLandscapeRight:
-        return CGSizeMake(341, 110);
-    }
-  } else {
-    return CGSizeMake(320, 110);
-  }
-}
-
 @interface NYPLBookNormalCell ()
 
 @property (nonatomic) UILabel *authors;
@@ -42,17 +23,15 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 
 - (void)layoutSubviews
 {  
-  self.contentView.frame = self.bounds;
-  
   self.cover.frame = CGRectMake(20,
                                 5,
-                                (CGRectGetHeight(self.frame) - 10) * (10 / 12.0),
-                                CGRectGetHeight(self.frame) - 10);
+                                (CGRectGetHeight([self contentFrame]) - 10) * (10 / 12.0),
+                                CGRectGetHeight([self contentFrame]) - 10);
   self.cover.contentMode = UIViewContentModeScaleAspectFit;
 
   // The extra five height pixels account for a bug in |sizeThatFits:| that does not properly take
   // into account |lineHeightMultiple|.
-  CGFloat const titleWidth = CGRectGetWidth(self.frame) - 120;
+  CGFloat const titleWidth = CGRectGetWidth([self contentFrame]) - 120;
   self.title.frame = CGRectMake(115,
                                 5,
                                 titleWidth,
@@ -62,14 +41,14 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   [self.authors sizeToFit];
   CGRect authorFrame = self.authors.frame;
   authorFrame.origin = CGPointMake(115, CGRectGetMaxY(self.title.frame));
-  authorFrame.size.width = CGRectGetWidth(self.frame) - 120;
+  authorFrame.size.width = CGRectGetWidth([self contentFrame]) - 120;
   self.authors.frame = authorFrame;
   
   [self.deleteButton sizeToFit];
   self.deleteButton.frame = CGRectInset(self.deleteButton.frame, -8, 0);
   CGRect deleteButtonFrame = self.deleteButton.frame;
   deleteButtonFrame.origin = CGPointMake(115,
-                                         (CGRectGetHeight(self.contentView.frame) -
+                                         (CGRectGetHeight([self contentFrame]) -
                                           CGRectGetHeight(deleteButtonFrame) - 5));
   self.deleteButton.frame = deleteButtonFrame;
   
@@ -84,7 +63,7 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   self.downloadButton.frame = CGRectInset(self.downloadButton.frame, -8, 0);
   CGRect downloadButtonFrame = self.downloadButton.frame;
   downloadButtonFrame.origin = CGPointMake(115,
-                                           (CGRectGetHeight(self.contentView.frame) -
+                                           (CGRectGetHeight([self contentFrame]) -
                                             CGRectGetHeight(downloadButtonFrame) - 5));
   self.downloadButton.frame = downloadButtonFrame;
   

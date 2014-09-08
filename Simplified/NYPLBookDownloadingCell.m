@@ -26,12 +26,12 @@
   
   self.titleLabel.frame = CGRectMake(sidePadding,
                                      5,
-                                     CGRectGetWidth(self.contentView.frame) - sidePadding * 2,
+                                     CGRectGetWidth([self contentFrame]) - sidePadding * 2,
                                      self.titleLabel.preferredHeight);
   
   self.authorsLabel.frame = CGRectMake(sidePadding,
                                        CGRectGetMaxY(self.titleLabel.frame),
-                                       CGRectGetWidth(self.contentView.frame) - sidePadding * 2,
+                                       CGRectGetWidth([self contentFrame]) - sidePadding * 2,
                                        self.authorsLabel.preferredHeight);
   
   [self.downloadingLabel sizeToFit];
@@ -45,7 +45,7 @@
   self.percentageLabel.text = @"100%";
   [self.percentageLabel sizeToFit];
   self.percentageLabel.text = percentageLabelText;
-  self.percentageLabel.frame = CGRectMake((CGRectGetWidth(self.contentView.frame) - sidePadding -
+  self.percentageLabel.frame = CGRectMake((CGRectGetWidth([self contentFrame]) - sidePadding -
                                            CGRectGetWidth(self.percentageLabel.frame)),
                                           CGRectGetMinY(self.downloadingLabel.frame),
                                           CGRectGetWidth(self.percentageLabel.frame),
@@ -54,7 +54,7 @@
   self.progressView.center = self.downloadingLabel.center;
   self.progressView.frame = CGRectMake(CGRectGetMaxX(self.downloadingLabel.frame) + sidePadding,
                                        CGRectGetMinY(self.progressView.frame),
-                                       (CGRectGetWidth(self.contentView.frame) - sidePadding * 4 -
+                                       (CGRectGetWidth([self contentFrame]) - sidePadding * 4 -
                                         CGRectGetWidth(self.downloadingLabel.frame) -
                                         CGRectGetWidth(self.percentageLabel.frame)),
                                        CGRectGetHeight(self.progressView.frame));
@@ -63,7 +63,7 @@
   self.cancelButton.frame = CGRectInset(self.cancelButton.frame, -8, 0);
   self.cancelButton.center = self.contentView.center;
   self.cancelButton.frame = CGRectMake(CGRectGetMinX(self.cancelButton.frame),
-                                       (CGRectGetHeight(self.contentView.frame) -
+                                       (CGRectGetHeight([self contentFrame]) -
                                         CGRectGetHeight(self.cancelButton.frame) - 5),
                                        CGRectGetWidth(self.cancelButton.frame),
                                        CGRectGetHeight(self.cancelButton.frame));

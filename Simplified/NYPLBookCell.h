@@ -5,23 +5,16 @@
 #import "NYPLMyBooksState.h"
 
 @class NYPLBook;
+@class NYPLBookCell;
 
 @protocol NYPLBookNormalCellDelegate;
 @protocol NYPLBookDownloadFailedCellDelegate;
 @protocol NYPLBookDownloadingCellDelegate;
 
-@protocol NYPLBookCellDelegate
- <NYPLBookNormalCellDelegate, NYPLBookDownloadFailedCellDelegate, NYPLBookDownloadingCellDelegate>
-
-@end
-
-@interface NYPLBookCell : UICollectionViewCell
-
-@end
-
 // This is exposed to help classes implement collection view layout delegates.
-CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
-                                              UIInterfaceOrientation orientation);
+CGSize NYPLBookCellSize(UIUserInterfaceIdiom idiom,
+                        UIInterfaceOrientation orientation,
+                        NSIndexPath *indexPath);
 
 // This should be called once after creating the collection view.
 void NYPLBookCellRegisterClassesForCollectionView(UICollectionView *collectionView);
@@ -33,3 +26,16 @@ NSArray *NYPLBookCellRegisterNotificationsForCollectionView(UICollectionView *co
 NYPLBookCell *NYPLBookCellDequeue(UICollectionView *collectionView,
                                   NSIndexPath *indexPath,
                                   NYPLBook *book);
+
+@protocol NYPLBookCellDelegate
+ <NYPLBookNormalCellDelegate, NYPLBookDownloadFailedCellDelegate, NYPLBookDownloadingCellDelegate>
+
+@end
+
+@interface NYPLBookCell : UICollectionViewCell
+
+// Returns the frame of the content view frame minus the border, if present. Use this for laying
+// out subviews rather than |contentView.frame|.
+- (CGRect)contentFrame;
+
+@end
