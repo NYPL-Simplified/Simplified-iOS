@@ -77,7 +77,6 @@
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   [self.activityIndicatorView startAnimating];
   [self.view addSubview:self.activityIndicatorView];
-  [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   
   [NYPLCatalogCategory
    withURL:self.URL
@@ -85,7 +84,6 @@
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.activityIndicatorView.hidden = YES;
        [self.activityIndicatorView stopAnimating];
-       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
        
        if(!category) {
          [[[UIAlertView alloc]
