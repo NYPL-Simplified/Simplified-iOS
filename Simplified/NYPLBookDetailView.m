@@ -1,3 +1,4 @@
+#import "NYPLAttributedString.h"
 #import "NYPLBook.h"
 #import "NYPLBookDetailDownloadFailedView.h"
 #import "NYPLBookDetailDownloadingView.h"
@@ -48,10 +49,10 @@ static CGFloat const mainTextPaddingRight = 10.0;
   self.book = book;
   
   self.authorsLabel = [[UILabel alloc] init];
-  self.authorsLabel.font = [UIFont systemFontOfSize:12];
   self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
   self.authorsLabel.numberOfLines = 2;
-  self.authorsLabel.text = book.authors;
+  self.authorsLabel.font = [UIFont systemFontOfSize:12];
+  self.authorsLabel.attributedText = NYPLAttributedStringForAuthorsFromString(book.authors);
   [self addSubview:self.authorsLabel];
   
   self.coverImageView = [[UIImageView alloc] init];
@@ -73,10 +74,10 @@ static CGFloat const mainTextPaddingRight = 10.0;
   }
   
   self.titleLabel = [[UILabel alloc] init];
-  self.titleLabel.font = [UIFont boldSystemFontOfSize:17.0];
   self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-  self.titleLabel.numberOfLines = 3;
-  self.titleLabel.text = book.title;
+  self.titleLabel.numberOfLines = 4;
+  self.titleLabel.font = [UIFont boldSystemFontOfSize:17];
+  self.titleLabel.attributedText = NYPLAttributedStringForTitleFromString(book.title);
   [self addSubview:self.titleLabel];
   
   self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
@@ -123,14 +124,16 @@ static CGFloat const mainTextPaddingRight = 10.0;
     CGFloat const y = mainTextPaddingTop;
     CGFloat const w = CGRectGetWidth(self.bounds) - x - mainTextPaddingRight;
     CGFloat const h = [self.titleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-    self.titleLabel.frame = CGRectMake(x, y, w, h);
+    // The extra five height pixels account for a bug in |sizeThatFits:| that does not properly take
+    // into account |lineHeightMultiple|.
+    self.titleLabel.frame = CGRectMake(x, y, w, h + 5);
   }
   
   {
     CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
     CGFloat const y = CGRectGetMaxY(self.titleLabel.frame);
     CGFloat const w = CGRectGetWidth(self.titleLabel.frame);
-    CGFloat const h = [self.titleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+    CGFloat const h = [self.authorsLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
     self.authorsLabel.frame = CGRectMake(x, y, w, h);
   }
   

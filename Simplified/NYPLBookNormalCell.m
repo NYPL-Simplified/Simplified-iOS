@@ -1,3 +1,4 @@
+#import "NYPLAttributedString.h"
 #import "NYPLConfiguration.h"
 #import "NYPLSession.h"
 
@@ -24,7 +25,7 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 
 @interface NYPLBookNormalCell ()
 
-@property (nonatomic) UILabel *author;
+@property (nonatomic) UILabel *authors;
 @property (nonatomic) UIImageView *cover;
 @property (nonatomic) NSURL *coverURL;
 @property (nonatomic) UIButton *deleteButton;
@@ -49,18 +50,20 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
                                 CGRectGetHeight(self.frame) - 10);
   self.cover.contentMode = UIViewContentModeScaleAspectFit;
 
+  // The extra five height pixels account for a bug in |sizeThatFits:| that does not properly take
+  // into account |lineHeightMultiple|.
   CGFloat const titleWidth = CGRectGetWidth(self.frame) - 120;
   self.title.frame = CGRectMake(115,
                                 5,
                                 titleWidth,
                                 [self.title sizeThatFits:
-                                 CGSizeMake(titleWidth, CGFLOAT_MAX)].height);
+                                 CGSizeMake(titleWidth, CGFLOAT_MAX)].height + 5);
   
-  [self.author sizeToFit];
-  CGRect authorFrame = self.author.frame;
+  [self.authors sizeToFit];
+  CGRect authorFrame = self.authors.frame;
   authorFrame.origin = CGPointMake(115, CGRectGetMaxY(self.title.frame));
   authorFrame.size.width = CGRectGetWidth(self.frame) - 120;
-  self.author.frame = authorFrame;
+  self.authors.frame = authorFrame;
   
   [self.deleteButton sizeToFit];
   self.deleteButton.frame = CGRectInset(self.deleteButton.frame, -8, 0);
@@ -98,10 +101,10 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
 {
   _book = book;
   
-  if(!self.author) {
-    self.author = [[UILabel alloc] init];
-    self.author.font = [UIFont systemFontOfSize:12];
-    [self.contentView addSubview:self.author];
+  if(!self.authors) {
+    self.authors = [[UILabel alloc] init];
+    self.authors.font = [UIFont systemFontOfSize:12];
+    [self.contentView addSubview:self.authors];
   }
   
   if(!self.cover) {
@@ -149,8 +152,8 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
   
   if(!self.title) {
     self.title = [[UILabel alloc] init];
-    self.title.font = [UIFont boldSystemFontOfSize:17];
     self.title.numberOfLines = 2;
+    self.title.font = [UIFont boldSystemFontOfSize:17];
     [self.contentView addSubview:self.title];
     [self.contentView setNeedsLayout];
   }
@@ -163,10 +166,10 @@ CGSize NYPLBookCellSizeForIdiomAndOrientation(UIUserInterfaceIdiom idiom,
     [self.contentView addSubview:self.unreadImageView];
   }
   
-  self.author.text = book.authors;
+  self.authors.attributedText = NYPLAttributedStringForAuthorsFromString(book.authors);
   self.cover.image = nil;
   self.coverURL = book.imageURL;
-  self.title.text = book.title;
+  self.title.attributedText = NYPLAttributedStringForTitleFromString(book.title);
   
   // TODO: The approach below will keep showing old covers across launches even if they've been
   // updated on the server. Consider if there's a better way to do this.
