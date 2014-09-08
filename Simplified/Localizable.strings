@@ -11,6 +11,7 @@
 "Downloading" = "Downloading";
 "LogIn" = "Log In";
 "LogOut" = "Log Out";
+"NoResultsFound" = "No results found.";
 "NotConnected" = "You are not connected to the internet. Please connect and try again.";
 "OK" = "OK";
 "Read" = "Read"; // present tense
