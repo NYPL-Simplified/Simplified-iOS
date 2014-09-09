@@ -1,16 +1,17 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
+#import "NYPLRoundedButton.h"
 
 #import "NYPLBookDetailNormalView.h"
 
 @interface NYPLBookDetailNormalView ()
 
 @property (nonatomic) UIView *backgroundView;
-@property (nonatomic) UIButton *deleteButton;
-@property (nonatomic) UIButton *downloadButton;
+@property (nonatomic) NYPLRoundedButton *deleteButton;
+@property (nonatomic) NYPLRoundedButton *downloadButton;
 @property (nonatomic) NYPLLinearView *deleteReadLinearView;
 @property (nonatomic) UILabel *messageLabel;
-@property (nonatomic) UIButton *readButton;
+@property (nonatomic) NYPLRoundedButton *readButton;
 
 @end
 
@@ -27,41 +28,32 @@
   self.backgroundView.backgroundColor = [NYPLConfiguration mainColor];
   [self addSubview:self.backgroundView];
   
-  self.downloadButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  self.downloadButton = [NYPLRoundedButton button];
   [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
                        forState:UIControlStateNormal];
   [self.downloadButton addTarget:self
                           action:@selector(didSelectDownload)
                 forControlEvents:UIControlEventTouchUpInside];
-  self.downloadButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
-  self.downloadButton.layer.borderWidth = 1;
-  self.downloadButton.layer.cornerRadius = 2;
   [self addSubview:self.downloadButton];
   
-  self.deleteButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  self.deleteButton = [NYPLRoundedButton button];
   [self.deleteButton setTitle:NSLocalizedString(@"Delete", nil)
                      forState:UIControlStateNormal];
   [self.deleteButton addTarget:self
                         action:@selector(didSelectDelete)
               forControlEvents:UIControlEventTouchUpInside];
-  self.deleteButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
-  self.deleteButton.layer.borderWidth = 1;
-  self.deleteButton.layer.cornerRadius = 2;
   
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont systemFontOfSize:12];
   self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
   [self addSubview:self.messageLabel];
   
-  self.readButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  self.readButton = [NYPLRoundedButton button];
   [self.readButton setTitle:NSLocalizedString(@"Read", nil)
                    forState:UIControlStateNormal];
   [self.readButton addTarget:self
                       action:@selector(didSelectRead)
             forControlEvents:UIControlEventTouchUpInside];
-  self.readButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
-  self.readButton.layer.borderWidth = 1;
-  self.readButton.layer.cornerRadius = 2;
   
   self.deleteReadLinearView = [[NYPLLinearView alloc] init];
   self.deleteReadLinearView.padding = 5.0;
@@ -84,7 +76,6 @@
   self.messageLabel.center = self.backgroundView.center;
  
   [self.downloadButton sizeToFit];
-  self.downloadButton.frame = CGRectInset(self.downloadButton.frame, -8, 0);
   self.downloadButton.center = self.center;
   self.downloadButton.frame = CGRectMake(CGRectGetMinX(self.downloadButton.frame),
                                          (CGRectGetHeight(self.frame) -
@@ -93,10 +84,8 @@
                                          CGRectGetHeight(self.downloadButton.frame));
   
   [self.deleteButton sizeToFit];
-  self.deleteButton.frame = CGRectInset(self.deleteButton.frame, -8, 0);
   
   [self.readButton sizeToFit];
-  self.readButton.frame = CGRectInset(self.readButton.frame, -8, 0);
   
   [self.deleteReadLinearView sizeToFit];
   self.deleteReadLinearView.center = self.center;

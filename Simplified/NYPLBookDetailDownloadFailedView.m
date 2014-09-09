@@ -1,14 +1,15 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
+#import "NYPLRoundedButton.h"
 
 #import "NYPLBookDetailDownloadFailedView.h"
 
 @interface NYPLBookDetailDownloadFailedView ()
 
-@property (nonatomic) UIButton *cancelButton;
+@property (nonatomic) NYPLRoundedButton *cancelButton;
 @property (nonatomic) NYPLLinearView *cancelTryAgainLinearView;
 @property (nonatomic) UILabel *messageLabel;
-@property (nonatomic) UIButton *tryAgainButton;
+@property (nonatomic) NYPLRoundedButton *tryAgainButton;
 
 @end
 
@@ -27,7 +28,7 @@
   self.messageLabel.text = NSLocalizedString(@"DownloadCouldNotBeCompleted", nil);
   [self addSubview:self.messageLabel];
   
-  self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  self.cancelButton = [NYPLRoundedButton button];
   [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
                      forState:UIControlStateNormal];
   [self.cancelButton addTarget:self
@@ -35,9 +36,9 @@
               forControlEvents:UIControlEventTouchUpInside];
   self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.cancelButton.tintColor = [UIColor grayColor];
-  self.cancelButton.layer.cornerRadius = 2;
+  self.cancelButton.layer.borderWidth = 0;
   
-  self.tryAgainButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  self.tryAgainButton = [NYPLRoundedButton button];
   [self.tryAgainButton setTitle:NSLocalizedString(@"TryAgain", nil)
                        forState:UIControlStateNormal];
   [self.tryAgainButton addTarget:self
@@ -45,7 +46,7 @@
                 forControlEvents:UIControlEventTouchUpInside];
   self.tryAgainButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tryAgainButton.tintColor = [UIColor grayColor];
-  self.tryAgainButton.layer.cornerRadius = 2;
+  self.tryAgainButton.layer.borderWidth = 0;
   
   self.cancelTryAgainLinearView = [[NYPLLinearView alloc] init];
   self.cancelTryAgainLinearView.padding = 5.0;
@@ -71,10 +72,8 @@
                                        CGRectGetHeight(self.messageLabel.frame));
   
   [self.cancelButton sizeToFit];
-  self.cancelButton.frame = CGRectInset(self.cancelButton.frame, -8, 0);
   
   [self.tryAgainButton sizeToFit];
-  self.tryAgainButton.frame = CGRectInset(self.tryAgainButton.frame, -8, 0);
   
   [self.cancelTryAgainLinearView sizeToFit];
   self.cancelTryAgainLinearView.center = self.center;

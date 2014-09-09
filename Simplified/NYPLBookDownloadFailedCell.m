@@ -1,16 +1,17 @@
 #import "NYPLBook.h"
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLConfiguration.h"
+#import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
 
 @interface NYPLBookDownloadFailedCell ()
 
 @property (nonatomic) UILabel *authorsLabel;
 @property (nonatomic) UIView *buttonContainerView;
-@property (nonatomic) UIButton *cancelButton;
+@property (nonatomic) NYPLRoundedButton *cancelButton;
 @property (nonatomic) UILabel *messageLabel;
 @property (nonatomic) UILabel *titleLabel;
-@property (nonatomic) UIButton *tryAgainButton;
+@property (nonatomic) NYPLRoundedButton *tryAgainButton;
 
 @end
 
@@ -41,16 +42,13 @@
                                        CGRectGetWidth([self contentFrame]) - sidePadding * 2,
                                        CGRectGetHeight(self.messageLabel.frame));
   
-  self.cancelButton.frame = CGRectMake(8, 0, 0, 0);
   [self.cancelButton sizeToFit];
-  self.cancelButton.frame = CGRectInset(self.cancelButton.frame, -8, 0);
-  
-  self.tryAgainButton.frame = CGRectMake(CGRectGetWidth(self.cancelButton.frame) + buttonPadding + 8,
+
+  self.tryAgainButton.frame = CGRectMake(CGRectGetWidth(self.cancelButton.frame) + buttonPadding,
                                          0,
                                          0,
                                          0);
   [self.tryAgainButton sizeToFit];
-  self.tryAgainButton.frame = CGRectInset(self.tryAgainButton.frame, -8, 0);
   
   CGFloat const buttonContainerViewWidth =
     (CGRectGetWidth(self.cancelButton.frame) +
@@ -80,12 +78,12 @@
   self.buttonContainerView = [[UIView alloc] init];
   [self.contentView addSubview:self.buttonContainerView];
   
-  self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  self.cancelButton = [NYPLRoundedButton button];
   self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.cancelButton.tintColor = [UIColor grayColor];
+  self.cancelButton.layer.borderWidth = 0;
   [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
                      forState:UIControlStateNormal];
-  self.cancelButton.layer.cornerRadius = 2;
   [self.cancelButton addTarget:self
                         action:@selector(didSelectCancel)
               forControlEvents:UIControlEventTouchUpInside];
@@ -103,12 +101,12 @@
   self.titleLabel.textColor = [NYPLConfiguration backgroundColor];
   [self.contentView addSubview:self.titleLabel];
   
-  self.tryAgainButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  self.tryAgainButton = [NYPLRoundedButton button];
   self.tryAgainButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tryAgainButton.tintColor = [UIColor grayColor];
+  self.tryAgainButton.layer.borderWidth = 0;
   [self.tryAgainButton setTitle:NSLocalizedString(@"TryAgain", nil)
                        forState:UIControlStateNormal];
-  self.tryAgainButton.layer.cornerRadius = 2;
   [self.tryAgainButton addTarget:self
                           action:@selector(didSelectTryAgain)
                 forControlEvents:UIControlEventTouchUpInside];
