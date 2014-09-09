@@ -1,5 +1,6 @@
 #import "NYPLAttributedString.h"
 #import "NYPLConfiguration.h"
+#import "NYPLRoundedButton.h"
 #import "NYPLSession.h"
 
 #import "NYPLBookNormalCell.h"
@@ -9,10 +10,10 @@
 @property (nonatomic) UILabel *authors;
 @property (nonatomic) UIImageView *cover;
 @property (nonatomic) NSURL *coverURL;
-@property (nonatomic) UIButton *deleteButton;
-@property (nonatomic) UIButton *downloadButton;
+@property (nonatomic) NYPLRoundedButton *deleteButton;
+@property (nonatomic) NYPLRoundedButton *downloadButton;
 @property (nonatomic) UILabel *title;
-@property (nonatomic) UIButton *readButton;
+@property (nonatomic) NYPLRoundedButton *readButton;
 @property (nonatomic) UIImageView *unreadImageView;
 
 @end
@@ -45,7 +46,6 @@
   self.authors.frame = authorFrame;
   
   [self.deleteButton sizeToFit];
-  self.deleteButton.frame = CGRectInset(self.deleteButton.frame, -8, 0);
   CGRect deleteButtonFrame = self.deleteButton.frame;
   deleteButtonFrame.origin = CGPointMake(115,
                                          (CGRectGetHeight([self contentFrame]) -
@@ -53,14 +53,12 @@
   self.deleteButton.frame = deleteButtonFrame;
   
   [self.readButton sizeToFit];
-  self.readButton.frame = CGRectInset(self.readButton.frame, -8, 0);
   CGRect readButtonFrame = self.readButton.frame;
   readButtonFrame.origin = CGPointMake(CGRectGetMaxX(self.deleteButton.frame) + 5,
                                        CGRectGetMinY(self.deleteButton.frame));
   self.readButton.frame = readButtonFrame;
   
   [self.downloadButton sizeToFit];
-  self.downloadButton.frame = CGRectInset(self.downloadButton.frame, -8, 0);
   CGRect downloadButtonFrame = self.downloadButton.frame;
   downloadButtonFrame.origin = CGPointMake(115,
                                            (CGRectGetHeight([self contentFrame]) -
@@ -92,40 +90,31 @@
   }
   
   if(!self.deleteButton) {
-    self.deleteButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.deleteButton = [NYPLRoundedButton button];
     [self.deleteButton setTitle:NSLocalizedString(@"Delete", nil)
                        forState:UIControlStateNormal];
     [self.deleteButton addTarget:self
                           action:@selector(didSelectDelete)
                 forControlEvents:UIControlEventTouchUpInside];
-    self.deleteButton.layer.cornerRadius = 2;
-    self.deleteButton.layer.borderWidth = 1;
-    self.deleteButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
     [self.contentView addSubview:self.deleteButton];
   }
   
   if(!self.downloadButton) {
-    self.downloadButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.downloadButton = [NYPLRoundedButton button];
     [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
                          forState:UIControlStateNormal];
     [self.downloadButton addTarget:self
                             action:@selector(didSelectDownload)
                   forControlEvents:UIControlEventTouchUpInside];
-    self.downloadButton.layer.cornerRadius = 2;
-    self.downloadButton.layer.borderWidth = 1;
-    self.downloadButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
     [self.contentView addSubview:self.downloadButton];
   }
   
   if(!self.readButton) {
-    self.readButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    self.readButton = [NYPLRoundedButton button];
     [self.readButton setTitle:NSLocalizedString(@"Read", nil) forState:UIControlStateNormal];
     [self.readButton addTarget:self
                         action:@selector(didSelectRead)
               forControlEvents:UIControlEventTouchUpInside];
-    self.readButton.layer.cornerRadius = 2;
-    self.readButton.layer.borderWidth = 1;
-    self.readButton.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
     [self.contentView addSubview:self.readButton];
   }
   

@@ -1,5 +1,6 @@
 #import "NYPLBook.h"
 #import "NYPLConfiguration.h"
+#import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLBookDownloadingCell.h"
@@ -7,7 +8,7 @@
 @interface NYPLBookDownloadingCell ()
 
 @property (nonatomic) UILabel *authorsLabel;
-@property (nonatomic) UIButton *cancelButton;
+@property (nonatomic) NYPLRoundedButton *cancelButton;
 @property (nonatomic) UILabel *downloadingLabel;
 @property (nonatomic) UILabel *percentageLabel;
 @property (nonatomic) UIProgressView *progressView;
@@ -60,7 +61,6 @@
                                        CGRectGetHeight(self.progressView.frame));
   
   [self.cancelButton sizeToFit];
-  self.cancelButton.frame = CGRectInset(self.cancelButton.frame, -8, 0);
   self.cancelButton.center = self.contentView.center;
   self.cancelButton.frame = CGRectMake(CGRectGetMinX(self.cancelButton.frame),
                                        (CGRectGetHeight([self contentFrame]) -
@@ -80,11 +80,11 @@
   self.authorsLabel.textColor = [NYPLConfiguration backgroundColor];
   [self.contentView addSubview:self.authorsLabel];
   
-  self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  self.cancelButton = [NYPLRoundedButton button];
   self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.cancelButton.layer.borderWidth = 0;
   [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
                      forState:UIControlStateNormal];
-  self.cancelButton.layer.cornerRadius = 2;
   [self.cancelButton addTarget:self
                         action:@selector(didSelectCancel)
               forControlEvents:UIControlEventTouchUpInside];

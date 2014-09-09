@@ -1,10 +1,11 @@
 #import "NYPLConfiguration.h"
+#import "NYPLRoundedButton.h"
 
 #import "NYPLBookDetailDownloadingView.h"
 
 @interface NYPLBookDetailDownloadingView ()
 
-@property (nonatomic) UIButton *cancelButton;
+@property (nonatomic) NYPLRoundedButton *cancelButton;
 @property (nonatomic) UILabel *downloadingLabel;
 @property (nonatomic) UILabel *percentageLabel;
 @property (nonatomic) UIProgressView *progressView;
@@ -20,7 +21,7 @@
   
   self.backgroundColor = [NYPLConfiguration mainColor];
   
-  self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  self.cancelButton = [NYPLRoundedButton button];
   [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
                      forState:UIControlStateNormal];
   [self.cancelButton addTarget:self
@@ -28,7 +29,7 @@
               forControlEvents:UIControlEventTouchUpInside];
   self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.cancelButton.tintColor = [NYPLConfiguration mainColor];
-  self.cancelButton.layer.cornerRadius = 2;
+  self.cancelButton.layer.borderWidth = 0;
   [self addSubview:self.cancelButton];
   
   self.downloadingLabel = [[UILabel alloc] init];
@@ -84,7 +85,6 @@
                                        CGRectGetHeight(self.progressView.frame));
   
   [self.cancelButton sizeToFit];
-  self.cancelButton.frame = CGRectInset(self.cancelButton.frame, -8, 0);
   self.cancelButton.center = self.center;
   self.cancelButton.frame = CGRectMake(CGRectGetMinX(self.cancelButton.frame),
                                        (CGRectGetHeight(self.frame) -
