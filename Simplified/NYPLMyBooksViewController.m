@@ -17,8 +17,6 @@
 
 @end
 
-static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
-
 @implementation NYPLMyBooksViewController
 
 #pragma mark NSObject
