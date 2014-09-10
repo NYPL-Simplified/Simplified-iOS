@@ -1,3 +1,4 @@
+#import "NYPLBook.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLConfiguration.h"

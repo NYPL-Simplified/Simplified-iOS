@@ -1,5 +1,5 @@
-#import "NYPLBookAcquisition.h"
-#import "NYPLOPDSEntry.h"
+@class NYPLBookAcquisition;
+@class NYPLOPDSEntry;
 
 @interface NYPLBook : NSObject
 
@@ -12,6 +12,9 @@
 @property (nonatomic, readonly) NSString *summary; // nilable
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSDate *updated;
+
++ (id)new NS_UNAVAILABLE;
+- (id)init NS_UNAVAILABLE;
 
 + (instancetype)bookWithEntry:(NYPLOPDSEntry *)entry;
 

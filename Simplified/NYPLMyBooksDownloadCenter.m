@@ -1,6 +1,7 @@
 #import "NSData+NYPLDataAdditions.h"
 #import "NYPLAccount.h"
 #import "NYPLBook.h"
+#import "NYPLBookAcquisition.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLSettingsCredentialViewController.h"
 

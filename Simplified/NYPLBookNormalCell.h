@@ -1,6 +1,6 @@
-#import "NYPLBook.h"
 #import "NYPLBookCell.h"
 
+@class NYPLBook;
 @class NYPLBookNormalCell;
 
 typedef NS_ENUM(NSInteger, NYPLBookNormalCellState) {

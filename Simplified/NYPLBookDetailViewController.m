@@ -1,3 +1,4 @@
+#import "NYPLBook.h"
 #import "NYPLBookDetailView.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"

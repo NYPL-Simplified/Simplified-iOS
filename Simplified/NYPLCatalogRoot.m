@@ -1,6 +1,7 @@
 #import "NYPLAsync.h"
 #import "NYPLBook.h"
 #import "NYPLCatalogLane.h"
+#import "NYPLCatalogSubsectionLink.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLOPDS.h"
 #import "NYPLOpenSearchDescription.h"
