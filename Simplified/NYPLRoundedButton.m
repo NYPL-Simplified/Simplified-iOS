@@ -9,6 +9,7 @@
   // The cast lets us call the constructor even though it's marked NS_UNAVAILABLE.
   NYPLRoundedButton *const button = [(id)self buttonWithType:UIButtonTypeSystem];
   
+  button.titleLabel.font = [UIFont systemFontOfSize:12];
   button.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
   button.layer.borderWidth = 1;
   button.layer.cornerRadius = 3;
