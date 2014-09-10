@@ -148,15 +148,15 @@ completionHandler:(void (^)())handler
   switch(message) {
     case NYPLSettingsCredentialViewControllerMessageLogIn:
       self.credentialView.messageLabel.text =
-        NSLocalizedString(@"NYPLSettingsCredentialViewControllerMessageLogIn", nil);
+        NSLocalizedString(@"SettingsCredentialViewControllerMessageLogIn", nil);
       break;
     case NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook:
       self.credentialView.messageLabel.text =
-        NSLocalizedString(@"NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook", nil);
+        NSLocalizedString(@"SettingsCredentialViewControllerMessageLogInToDownloadBook", nil);
       break;
     case NYPLSettingsCredentialViewControllerMessageInvalidPin:
       self.credentialView.messageLabel.text =
-        NSLocalizedString(@"NYPLSettingsCredentialViewControllerMessageInvalidPIN", nil);
+        NSLocalizedString(@"SettingsCredentialViewControllerMessageInvalidPIN", nil);
       break;
   }
   
@@ -234,7 +234,7 @@ completionHandler:(void (^)())handler
        
        if(error.code == NSURLErrorNotConnectedToInternet) {
          [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
+           initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
            message:NSLocalizedString(@"NotConnected", nil)
            delegate:nil
            cancelButtonTitle:nil
@@ -247,8 +247,8 @@ completionHandler:(void (^)())handler
          // We cancelled the request when asked to answer the server's challenge a second time
          // because we don't have valid credentials.
          [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
-           message:NSLocalizedString(@"NYPLSettingsCredentialViewControllerInvalidCredentials", nil)
+           initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
+           message:NSLocalizedString(@"SettingsCredentialViewControllerInvalidCredentials", nil)
            delegate:nil
            cancelButtonTitle:nil
            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
@@ -261,7 +261,7 @@ completionHandler:(void (^)())handler
        
        if(error.code == NSURLErrorTimedOut) {
          [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
+           initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
            message:NSLocalizedString(@"TimedOut", nil)
            delegate:nil
            cancelButtonTitle:nil
@@ -288,7 +288,7 @@ completionHandler:(void (^)())handler
        NYPLLOG(@"Encountered unexpected error after authenticating.");
        
        [[[UIAlertView alloc]
-         initWithTitle:NSLocalizedString(@"NYPLSettingsCredentialViewControllerLoginFailed", nil)
+         initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
          message:NSLocalizedString(@"UnknownRequestError", nil)
          delegate:nil
          cancelButtonTitle:nil
