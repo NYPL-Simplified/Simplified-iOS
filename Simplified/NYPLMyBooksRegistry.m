@@ -22,7 +22,8 @@ static NSString *const RecordsKey = @"records";
   static NYPLMyBooksRegistry *sharedRegistry = nil;
   
   dispatch_once(&predicate, ^{
-    sharedRegistry = [[NYPLMyBooksRegistry alloc] init];
+    // Cast allows access to unavailable |init| method.
+    sharedRegistry = [[self alloc] init];
     if(!sharedRegistry) {
       NYPLLOG(@"Failed to create shared registry.");
     }

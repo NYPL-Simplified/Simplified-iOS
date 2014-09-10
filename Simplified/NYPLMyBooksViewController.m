@@ -1,3 +1,4 @@
+#import "NYPLBook.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLConfiguration.h"
@@ -15,8 +16,6 @@
 @property (nonatomic) NSMutableArray *observers;
 
 @end
-
-static NSString *const reuseIdentifier = @"NYPLMyBooksViewControllerCell";
 
 @implementation NYPLMyBooksViewController
 

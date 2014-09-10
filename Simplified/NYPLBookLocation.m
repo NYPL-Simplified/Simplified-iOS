@@ -45,7 +45,7 @@ static NSString *const idrefKey = @"idref";
 
 - (NSDictionary *)dictionaryRepresentation
 {
-  return @{CFIKey: NYPLNilToNull(self.CFI),
+  return @{CFIKey: NYPLNullFromNil(self.CFI),
            idrefKey: self.idref};
 }
 

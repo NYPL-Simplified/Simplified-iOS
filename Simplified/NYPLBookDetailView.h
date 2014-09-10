@@ -22,6 +22,11 @@
 @property (nonatomic) double downloadProgress;
 @property (nonatomic) NYPLMyBooksState state;
 
++ (id)new NS_UNAVAILABLE;
+- (id)init NS_UNAVAILABLE;
+- (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
+- (id)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
+
 // designated initializer
 // |book| must not be nil.
 - (instancetype)initWithBook:(NYPLBook *)book;

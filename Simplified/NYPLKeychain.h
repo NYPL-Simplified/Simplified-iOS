@@ -2,6 +2,9 @@
 
 @interface NYPLKeychain : NSObject
 
++ (id)new NS_UNAVAILABLE;
+- (id)init NS_UNAVAILABLE;
+
 + (instancetype)sharedKeychain;
 
 - (id)objectForKey:(NSString *)key;
