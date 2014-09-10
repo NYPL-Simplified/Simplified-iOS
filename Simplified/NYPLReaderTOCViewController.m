@@ -13,7 +13,7 @@
 
 @end
 
-static NSString *const reuseIdentifier = @"NYPLReaderTOCCell";
+static NSString *const reuseIdentifier = @"ReaderTOCCell";
 
 @implementation NYPLReaderTOCViewController
 
