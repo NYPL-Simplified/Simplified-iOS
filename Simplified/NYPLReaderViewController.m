@@ -1,3 +1,4 @@
+#import "NYPLBook.h"
 #import "NYPLBookLocation.h"
 #import "NYPLConfiguration.h"
 #import "NYPLJSON.h"

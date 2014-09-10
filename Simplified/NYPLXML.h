@@ -13,6 +13,9 @@ suitable for handling markup (e.g. XHTML). */
 @property (nonatomic, readonly) NSString *qualifiedName;
 @property (nonatomic, readonly) NSString *value;
 
++ (id)new NS_UNAVAILABLE;
+- (id)init NS_UNAVAILABLE;
+
 + (instancetype)XMLWithData:(NSData *)data;
 
 - (NSArray *)childrenWithName:(NSString *)name;

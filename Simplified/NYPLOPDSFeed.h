@@ -8,6 +8,9 @@
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSDate *updated;
 
++ (id)new NS_UNAVAILABLE;
+- (id)init NS_UNAVAILABLE;
+
 + (void)withURL:(NSURL *)URL completionHandler:(void (^)(NYPLOPDSFeed *feed))handler;
 
 // designated initializer

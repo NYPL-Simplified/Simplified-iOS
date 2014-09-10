@@ -1,4 +1,5 @@
 #import "NYPLAttributedString.h"
+#import "NYPLBook.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
 #import "NYPLSession.h"

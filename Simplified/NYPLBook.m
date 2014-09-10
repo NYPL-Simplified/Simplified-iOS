@@ -1,7 +1,7 @@
 #import "NSDate+NYPLDateAdditions.h"
+#import "NYPLBookAcquisition.h"
 #import "NYPLNull.h"
-#import "NYPLOPDSLink.h"
-#import "NYPLOPDSRelation.h"
+#import "NYPLOPDS.h"
 
 #import "NYPLBook.h"
 
