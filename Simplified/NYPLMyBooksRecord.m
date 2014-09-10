@@ -55,7 +55,7 @@ static NSString *const StateKey = @"state";
 - (NSDictionary *)dictionaryRepresentation
 {
   return @{BookKey: [self.book dictionaryRepresentation],
-           LocationKey: NYPLNilToNull([self.location dictionaryRepresentation]),
+           LocationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
            StateKey: NYPLMyBooksStateToString(self.state)};
 }
 

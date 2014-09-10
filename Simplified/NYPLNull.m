@@ -1,6 +1,6 @@
 #import "NYPLNull.h"
 
-id NYPLNilToNull(id object)
+id NYPLNullFromNil(id object)
 {
   return object ? object : [NSNull null];
 }

@@ -49,10 +49,10 @@ static NSString *const SampleKey = @"sample";
 
 - (NSDictionary *)dictionaryRepresentation
 {
-  return @{BorrowKey: NYPLNilToNull([self.borrow absoluteString]),
-           GenericKey: NYPLNilToNull([self.generic absoluteString]),
-           OpenAccessKey: NYPLNilToNull([self.openAccess absoluteString]),
-           SampleKey: NYPLNilToNull([self.sample absoluteString])};
+  return @{BorrowKey: NYPLNullFromNil([self.borrow absoluteString]),
+           GenericKey: NYPLNullFromNil([self.generic absoluteString]),
+           OpenAccessKey: NYPLNullFromNil([self.openAccess absoluteString]),
+           SampleKey: NYPLNullFromNil([self.sample absoluteString])};
 }
 
 @end
