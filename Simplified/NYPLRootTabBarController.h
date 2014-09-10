@@ -1,5 +1,10 @@
 @interface NYPLRootTabBarController : UITabBarController
 
++ (id)new NS_UNAVAILABLE;
+- (id)init NS_UNAVAILABLE;
+- (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
+
 + (instancetype)sharedController;
 
 // This method will present a view controller from the receiver, or from the controller currently

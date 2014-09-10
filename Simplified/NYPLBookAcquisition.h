@@ -5,6 +5,9 @@
 @property (nonatomic, readonly) NSURL *openAccess; // nilable
 @property (nonatomic, readonly) NSURL *sample; // nilable
 
++ (id)new NS_UNAVAILABLE;
+- (id)init NS_UNAVAILABLE;
+
 // designated initializer
 - (instancetype)initWithBorrow:(NSURL *)borrow
                        generic:(NSURL *)generic

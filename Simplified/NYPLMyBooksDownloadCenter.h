@@ -1,9 +1,12 @@
-#import "NYPLBook.h"
+@class NYPLBook;
 
 static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
   @"NYPLMyBooksDownloadCenterDidChangeNotification";
 
 @interface NYPLMyBooksDownloadCenter : NSObject
+
++ (id)new NS_UNAVAILABLE;
+- (id)init NS_UNAVAILABLE;
 
 + (NYPLMyBooksDownloadCenter *)sharedDownloadCenter;
 

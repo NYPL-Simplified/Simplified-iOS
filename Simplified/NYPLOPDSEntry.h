@@ -9,6 +9,9 @@
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSDate *updated;
 
++ (id)new NS_UNAVAILABLE;
+- (id)init NS_UNAVAILABLE;
+
 // designated initializer
 - (instancetype)initWithXML:(NYPLXML *)entryXML;
 

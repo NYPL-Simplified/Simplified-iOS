@@ -1,7 +1,7 @@
 #import "NSDate+NYPLDateAdditions.h"
+#import "NYPLBookAcquisition.h"
 #import "NYPLNull.h"
-#import "NYPLOPDSLink.h"
-#import "NYPLOPDSRelation.h"
+#import "NYPLOPDS.h"
 
 #import "NYPLBook.h"
 
@@ -150,9 +150,9 @@ static NSString *const UpdatedKey = @"updated";
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
            AuthorsKey: self.authorStrings,
            IdentifierKey: self.identifier,
-           ImageURLKey: NYPLNilToNull([self.imageURL absoluteString]),
-           ImageThumbnailURLKey: NYPLNilToNull([self.imageThumbnailURL absoluteString]),
-           SummaryKey: NYPLNilToNull(self.summary),
+           ImageURLKey: NYPLNullFromNil([self.imageURL absoluteString]),
+           ImageThumbnailURLKey: NYPLNullFromNil([self.imageThumbnailURL absoluteString]),
+           SummaryKey: NYPLNullFromNil(self.summary),
            TitleKey: self.title,
            UpdatedKey: [self.updated RFC3339String]};
 }
