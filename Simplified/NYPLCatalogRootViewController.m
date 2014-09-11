@@ -235,7 +235,7 @@ viewForHeaderInSection:(NSInteger const)section
   NYPLCatalogLane *const lane = self.catalogRoot.lanes[self.indexOfNextLaneRequiringImageDownload];
   
   [[NYPLSession sharedSession]
-   withURLs:lane.imageURLs
+   withURLs:lane.imageThumbnailURLs
    handler:^(NSDictionary *const URLToDataOrNull) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        [URLToDataOrNull enumerateKeysAndObjectsUsingBlock:^(id const key,
