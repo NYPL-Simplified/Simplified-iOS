@@ -42,7 +42,7 @@
                                       __attribute__((unused)) BOOL *stop) {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.tag = bookIndex;
-    NSData *const imageData = URLsToImageData[book.imageURL];
+    NSData *const imageData = URLsToImageData[book.imageThumbnailURL];
     if(!imageData) {
       NYPLLOG_F(@"Did not receive cover for '%@'.", book.title);
     }

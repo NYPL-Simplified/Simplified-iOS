@@ -61,11 +61,11 @@ static CGFloat const mainTextPaddingRight = 10.0;
   [self addSubview:self.coverImageView];
   
   self.coverImageView.image =
-    [UIImage imageWithData:[[NYPLSession sharedSession] cachedDataForURL:book.imageURL]];
+    [UIImage imageWithData:[[NYPLSession sharedSession] cachedDataForURL:book.imageThumbnailURL]];
   
   if(!self.coverImageView.image) {
     [[NYPLSession sharedSession]
-     withURL:book.imageURL
+     withURL:book.imageThumbnailURL
      completionHandler:^(NSData *const data) {
        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
          self.coverImageView.image = [UIImage imageWithData:data];
