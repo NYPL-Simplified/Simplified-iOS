@@ -22,6 +22,6 @@
 // designated initializer
 - (instancetype)initWithLaneIndex:(NSUInteger)laneIndex
                             books:(NSArray *)books
-                   URLsToImageData:(NSDictionary *)URLsToImageData;
+                  URLsToImageData:(NSDictionary *)URLsToImageData;
 
 @end
