@@ -32,6 +32,7 @@
                                       | UIViewAutoresizingFlexibleHeight);
   self.scrollView.showsHorizontalScrollIndicator = NO;
   self.scrollView.alwaysBounceHorizontal = YES;
+  self.scrollView.scrollsToTop = NO;
   [self.contentView addSubview:self.scrollView];
   
   NSMutableArray *const buttons = [NSMutableArray arrayWithCapacity:books.count];
