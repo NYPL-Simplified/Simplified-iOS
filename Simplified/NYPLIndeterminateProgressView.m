@@ -21,7 +21,6 @@
   self.speedMultiplier = 1.0;
   
   self.clipsToBounds = YES;
-  self.layer.borderWidth = 1;
   self.layer.transform = CATransform3DMakeScale(1, -1, 1);
   
   return self;
@@ -68,7 +67,6 @@
   CGFloat const stripeWidth = CGRectGetHeight(self.frame);
   
   self.layer.borderColor = self.color.CGColor;
-  self.layer.cornerRadius = CGRectGetHeight(self.frame) / 2.0;
   
   self.stripeShape = [CAShapeLayer layer];
   self.stripeShape.fillColor = self.color.CGColor;
