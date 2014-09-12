@@ -552,6 +552,8 @@
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
 				111197321986D7550014462F /* NYPLDismissableViewController.h */,
 				111197331986D7550014462F /* NYPLDismissableViewController.m */,
+				113DB8A519C24E54004E1154 /* NYPLIndeterminateProgressView.h */,
+				113DB8A619C24E54004E1154 /* NYPLIndeterminateProgressView.m */,
 				11369D46199527C200BB11F8 /* NYPLJSON.h */,
 				11369D47199527C200BB11F8 /* NYPLJSON.m */,
 				11C5DD14197727A6005A9945 /* NYPLKeychain.h */,
@@ -576,8 +578,6 @@
 				119504051994061E009FB788 /* Reader */,
 				11C5DCEE1976D19E005A9945 /* Settings */,
 				A823D817192BABA400B55DE2 /* Supporting Files */,
-				113DB8A519C24E54004E1154 /* NYPLIndeterminateProgressView.h */,
-				113DB8A619C24E54004E1154 /* NYPLIndeterminateProgressView.m */,
 			);
 			path = Simplified;
 			sourceTree = "<group>";
