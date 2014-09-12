@@ -6,6 +6,7 @@
 #import "NYPLCatalogRoot.h"
 #import "NYPLCatalogSubsectionLink.h"
 #import "NYPLConfiguration.h"
+#import "NYPLIndeterminateProgressView.h"
 #import "NYPLSession.h"
 
 #import "NYPLCatalogRootViewController.h"
@@ -19,6 +20,7 @@ static CGFloat const sectionHeaderHeight = 35.0;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogRoot *catalogRoot;
 @property (nonatomic) NSMutableDictionary *cachedCells;
+@property (nonatomic) NSMutableDictionary *loadingCells;
 @property (nonatomic) NSMutableDictionary *URLsToImageData;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) UITableView *tableView;
@@ -114,8 +116,32 @@ static CGFloat const sectionHeaderHeight = 35.0;
     self.cachedCells[indexPath] = cell;
     return cell;
   } else {
-    // TODO: Add loading cell.
-    return [[UITableViewCell alloc] init];
+    // We save these cells and manually reuse them based on the index path so that animations are
+    // not interrupted when the table reloads.
+    
+    if(!self.loadingCells) {
+      self.loadingCells = [NSMutableDictionary dictionary];
+    }
+    
+    UITableViewCell *const cachedCell = self.loadingCells[indexPath];
+    if(cachedCell) {
+      return cachedCell;
+    }
+    
+    UITableViewCell *const cell = [[UITableViewCell alloc] init];
+    NYPLIndeterminateProgressView *const progressView = [[NYPLIndeterminateProgressView alloc]
+                                                         initWithFrame:cell.bounds];
+    progressView.center = cell.center;
+    progressView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                     UIViewAutoresizingFlexibleHeight);
+    progressView.color = [UIColor colorWithWhite:0.95 alpha:1.0];
+    progressView.speedMultiplier = 2.0;
+    [progressView startAnimating];
+    [cell addSubview:progressView];
+    
+    self.loadingCells[indexPath] = cell;
+    
+    return cell;
   }
 }
 
@@ -226,6 +252,7 @@ viewForHeaderInSection:(NSInteger const)section
 - (void)downloadImages
 {
   if(self.indexOfNextLaneRequiringImageDownload >= self.catalogRoot.lanes.count) {
+    self.loadingCells = nil;
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     return;
   }
