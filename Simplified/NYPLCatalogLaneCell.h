@@ -2,8 +2,7 @@
 
 @protocol NYPLCatalogLaneCellDelegate
 
-- (void)catalogLaneCell:(NYPLCatalogLaneCell *)cell
- didSelectBookIndex:(NSUInteger)bookIndex;
+- (void)catalogLaneCell:(NYPLCatalogLaneCell *)cell didSelectBookIndex:(NSUInteger)bookIndex;
 
 @end
 
