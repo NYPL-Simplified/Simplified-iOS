@@ -77,7 +77,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 }
 
 - (void)temporaryThumbnailImagesForBooks:(NSSet *)books
-                                 handler:(void (^)(NSDictionary *dictionary))handler
+handler:(void (^)(NSDictionary *bookIdentifersToImagesAndNulls))handler
 {
   if(!books) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{

@@ -17,7 +17,7 @@
 // NYPLBook objects, the handler will be called with nil. Otherwise, the dictionary passed to the
 // handler maps book identifiers to images (or nulls in case of error).
 - (void)temporaryThumbnailImagesForBooks:(NSSet *)books
-                                 handler:(void (^)(NSDictionary *dictionary))handler;
+handler:(void (^)(NSDictionary *bookIdentifersToImagesAndNulls))handler;
 
 // Immediately returns the cached thumbnail if available, else nil.
 - (UIImage *)cachedTemporaryThumbnailImageForBook:(NYPLBook *)book;
