@@ -130,4 +130,15 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   }
 }
 
+- (UIImage *)cachedTemporaryThumbnailImageForBook:(NYPLBook *const)book
+{
+  if(!book.imageThumbnailURL) {
+    return nil;
+  }
+  
+  return [UIImage imageWithData:
+          [self.session.configuration.URLCache
+           cachedResponseForRequest:[NSURLRequest requestWithURL:book.imageThumbnailURL]].data];
+}
+
 @end
