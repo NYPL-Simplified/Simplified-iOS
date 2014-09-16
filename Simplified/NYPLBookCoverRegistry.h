@@ -19,4 +19,7 @@
 - (void)temporaryThumbnailImagesForBooks:(NSSet *)books
                                  handler:(void (^)(NSDictionary *dictionary))handler;
 
+// Immediately returns the cached thumbnail if available, else nil.
+- (UIImage *)cachedTemporaryThumbnailImageForBook:(NYPLBook *)book;
+
 @end
