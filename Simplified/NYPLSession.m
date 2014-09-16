@@ -92,7 +92,7 @@ static NYPLSession *sharedSession = nil;
   for(NSURL *const URL in URLs) {
     [self withURL:URL completionHandler:^(NSData *const data) {
       [lock lock];
-      URLsToDataOrNull[URL] = (data ? data : [NSNull null]);
+      URLsToDataOrNull[URL] = data ? data : [NSNull null];
       --remaining;
       if(!remaining) {
         NYPLAsyncDispatch(^{handler(URLsToDataOrNull);});
