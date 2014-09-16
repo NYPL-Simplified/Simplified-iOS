@@ -1,10 +1,10 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
+#import "NYPLBookCoverRegistry.h"
 #import "NYPLBookDetailDownloadFailedView.h"
 #import "NYPLBookDetailDownloadingView.h"
 #import "NYPLBookDetailNormalView.h"
 #import "NYPLConfiguration.h"
-#import "NYPLSession.h"
 
 #import "NYPLBookDetailView.h"
 
@@ -60,18 +60,11 @@ static CGFloat const mainTextPaddingRight = 10.0;
   self.coverImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
   [self addSubview:self.coverImageView];
   
-  self.coverImageView.image =
-    [UIImage imageWithData:[[NYPLSession sharedSession] cachedDataForURL:book.imageThumbnailURL]];
-  
-  if(!self.coverImageView.image) {
-    [[NYPLSession sharedSession]
-     withURL:book.imageThumbnailURL
-     completionHandler:^(NSData *const data) {
-       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         self.coverImageView.image = [UIImage imageWithData:data];
-       }];
-     }];
-  }
+  [[NYPLBookCoverRegistry sharedRegistry]
+   temporaryThumbnailImageForBook:book
+   handler:^(UIImage *const image) {
+     self.coverImageView.image = image;
+   }];
   
   self.titleLabel = [[UILabel alloc] init];
   self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
