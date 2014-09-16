@@ -263,10 +263,11 @@ viewForHeaderInSection:(NSInteger const)section
   
   [[NYPLBookCoverRegistry sharedRegistry]
    temporaryThumbnailImagesForBooks:[NSSet setWithArray:lane.books]
-   handler:^(NSDictionary *const dictionary) {
-     [dictionary enumerateKeysAndObjectsUsingBlock:^(NSString *const bookIdentifier,
-                                                     id const imageOrNull,
-                                                     __attribute__((unused)) BOOL *stop) {
+   handler:^(NSDictionary *const bookIdentifiersToImagesAndNulls) {
+     [bookIdentifiersToImagesAndNulls
+      enumerateKeysAndObjectsUsingBlock:^(NSString *const bookIdentifier,
+                                          id const imageOrNull,
+                                          __attribute__((unused)) BOOL *stop) {
        if([imageOrNull isKindOfClass:[UIImage class]]) {
          self.bookIdentifiersToImages[bookIdentifier] = imageOrNull;
        }

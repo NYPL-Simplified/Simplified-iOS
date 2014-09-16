@@ -7,7 +7,7 @@
 
 - (void)withURL:(NSURL *)URL completionHandler:(void (^)(NSData *data))handler;
 
-- (void)withURLs:(NSSet *)URLs handler:(void (^)(NSDictionary *URLToDataOrNull))handler;
+- (void)withURLs:(NSSet *)URLs handler:(void (^)(NSDictionary *URLsToDataOrNull))handler;
 
 - (NSData *)cachedDataForURL:(NSURL *)URL;
 
