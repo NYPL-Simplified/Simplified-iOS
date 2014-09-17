@@ -24,7 +24,7 @@
 
 // Pinned images will remain on-disk until they are manually unpinned. Only pinned images are
 // guaranteed to be available when offline.
-- (void)pinThumbnailImageForBookIdentifier:(NSString *)bookIdentifier;
+- (void)pinThumbnailImageForBook:(NYPLBook *)book;
 
 - (void)removePinnedThumbnailImageForBookIdentfier:(NSString *)bookIdentifier;
 

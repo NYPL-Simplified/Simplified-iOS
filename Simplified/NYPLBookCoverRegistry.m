@@ -74,7 +74,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 - (NSURL *)pinnedThumbnailImageDirectoryURL
 {
   NSArray *const paths =
-  NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
   
   assert([paths count] == 1);
   
@@ -86,22 +86,24 @@ static NSUInteger const memoryCacheInMegabytes = 2;
                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
      URLByAppendingPathComponent:@"pinned-thumbnail-images"];
   
-  if(![[NSFileManager defaultManager]
-       createDirectoryAtURL:URL
-       withIntermediateDirectories:YES
-       attributes:nil
-       error:NULL]) {
-    NYPLLOG(@"Failed to create directory.");
-    return nil;
+  @synchronized(self) {
+    if(![[NSFileManager defaultManager]
+         createDirectoryAtURL:URL
+         withIntermediateDirectories:YES
+         attributes:nil
+         error:NULL]) {
+      NYPLLOG(@"Failed to create directory.");
+      return nil;
+    }
   }
   
   return URL;
 }
 
-- (NSURL *)URLForPinnedThumbnailImageOfBook:(NYPLBook *const)book
+- (NSURL *)URLForPinnedThumbnailImageOfBookIdentifier:(NSString *const)bookIdentifier
 {
   return [[self pinnedThumbnailImageDirectoryURL] URLByAppendingPathComponent:
-          [book.identifier fileSystemSafeBase64EncodedStringUsingEncoding:NSUTF8StringEncoding]];
+          [bookIdentifier fileSystemSafeBase64EncodedStringUsingEncoding:NSUTF8StringEncoding]];
 }
 
 - (void)thumbnailImageForBook:(NYPLBook *)book handler:(void (^)(UIImage *image))handler
@@ -190,20 +192,56 @@ static NSUInteger const memoryCacheInMegabytes = 2;
            cachedResponseForRequest:[NSURLRequest requestWithURL:book.imageThumbnailURL]].data];
 }
 
-- (void)pinThumbnailImageForBookIdentifier:(__attribute__((unused)) NSString *)bookIdentifier
+- (void)pinThumbnailImageForBook:(NYPLBook *const)book
 {
+  @synchronized(self) {
+    [[NSFileManager defaultManager]
+     createFileAtPath:[[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier] path]
+     contents:[NSData data]
+     attributes:nil];
+    
+    [self.pinnedBookIdentifiers addObject:book];
+  }
   
+  [self.session
+   dataTaskWithRequest:[NSURLRequest requestWithURL:book.imageThumbnailURL]
+   completionHandler:^(NSData *const data,
+                       __attribute__((unused)) NSURLResponse *response,
+                       __attribute__((unused)) NSError *error) {
+     if(!data) {
+       NYPLLOG_F(@"Failed to pin thumbnail image for '%@'.", book.title);
+       return;
+     }
+     
+     @synchronized(self) {
+       [[NSFileManager defaultManager]
+        createFileAtPath:[[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier] path]
+        contents:data
+        attributes:nil];
+     }
+   }];
 }
 
-- (void)removePinnedThumbnailImageForBookIdentfier:
-  (__attribute__((unused)) NSString *)bookIdentifier
+- (void)removePinnedThumbnailImageForBookIdentfier:(NSString *const)bookIdentifier
 {
-  
+  @synchronized(self) {
+    [[NSFileManager defaultManager]
+     removeItemAtURL:[self URLForPinnedThumbnailImageOfBookIdentifier:bookIdentifier]
+     error:NULL];
+    
+    [self.pinnedBookIdentifiers removeObject:bookIdentifier];
+  }
 }
 
 - (void)removeAllPinnedThumbnailImages
 {
-  
+  @synchronized(self) {
+    [[NSFileManager defaultManager]
+     removeItemAtURL:[self pinnedThumbnailImageDirectoryURL]
+     error:NULL];
+    
+    [self.pinnedBookIdentifiers removeAllObjects];
+  }
 }
 
 @end
