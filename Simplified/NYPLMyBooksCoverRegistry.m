@@ -170,7 +170,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   
   if(!books.count) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      handler(^{});
+      handler(@{});
     }];
     return;
   }
