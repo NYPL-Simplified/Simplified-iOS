@@ -52,19 +52,19 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   
   self.session = [NSURLSession sessionWithConfiguration:configuration];
   
-  __attribute__((unused)) NSArray *const filenames =
+  NSArray *const URLs =
     [[NSFileManager defaultManager]
      contentsOfDirectoryAtURL:[self pinnedThumbnailImageDirectoryURL]
-     includingPropertiesForKeys:@[NSURLNameKey]
+     includingPropertiesForKeys:@[]
      options:NSDirectoryEnumerationSkipsHiddenFiles
      error:NULL];
   
-  // TODO
-  /*
-  for(NSString *const filename in filenames) {
-    NSString *const bookIdentifier = [NSString ]
-  }
-  */
+  self.pinnedBookIdentifiers = [NSMutableSet setWithCapacity:[URLs count]];
+  
+  for(NSURL *const URL in URLs) {
+    [self.pinnedBookIdentifiers addObject:
+     [[URL lastPathComponent] fileSystemSafeBase64DecodedStringUsingEncoding:NSUTF8StringEncoding]];
+   }
   
   return self;
 }
