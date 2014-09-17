@@ -262,7 +262,7 @@ viewForHeaderInSection:(NSInteger const)section
   NYPLCatalogLane *const lane = self.catalogRoot.lanes[self.indexOfNextLaneRequiringImageDownload];
   
   [[NYPLBookCoverRegistry sharedRegistry]
-   temporaryThumbnailImagesForBooks:[NSSet setWithArray:lane.books]
+   thumbnailImagesForBooks:[NSSet setWithArray:lane.books]
    handler:^(NSDictionary *const bookIdentifiersToImagesAndNulls) {
      [bookIdentifiersToImagesAndNulls
       enumerateKeysAndObjectsUsingBlock:^(NSString *const bookIdentifier,

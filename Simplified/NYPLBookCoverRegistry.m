@@ -1,3 +1,4 @@
+#import "NSString+NYPLStringAdditions.h"
 #import "NYPLBook.h"
 #import "NYPLNull.h"
 
@@ -5,6 +6,7 @@
 
 @interface NYPLBookCoverRegistry ()
 
+@property (nonatomic) NSMutableSet *pinnedBookIdentifiers;
 @property (nonatomic) NSURLSession *session;
 
 @end
@@ -50,12 +52,59 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   
   self.session = [NSURLSession sessionWithConfiguration:configuration];
   
+  __attribute__((unused)) NSArray *const filenames =
+    [[NSFileManager defaultManager]
+     contentsOfDirectoryAtURL:[self pinnedThumbnailImageDirectoryURL]
+     includingPropertiesForKeys:@[NSURLNameKey]
+     options:NSDirectoryEnumerationSkipsHiddenFiles
+     error:NULL];
+  
+  // TODO
+  /*
+  for(NSString *const filename in filenames) {
+    NSString *const bookIdentifier = [NSString ]
+  }
+  */
+  
   return self;
 }
 
 #pragma mark -
 
-- (void)temporaryThumbnailImageForBook:(NYPLBook *)book handler:(void (^)(UIImage *image))handler
+- (NSURL *)pinnedThumbnailImageDirectoryURL
+{
+  NSArray *const paths =
+  NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  
+  assert([paths count] == 1);
+  
+  NSString *const path = paths[0];
+  
+  NSURL *const URL =
+    [[[NSURL fileURLWithPath:path]
+      URLByAppendingPathComponent:[[NSBundle mainBundle]
+                                   objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
+     URLByAppendingPathComponent:@"pinned-thumbnail-images"];
+  
+  if(![[NSFileManager defaultManager]
+       createDirectoryAtURL:URL
+       withIntermediateDirectories:YES
+       attributes:nil
+       error:NULL]) {
+    NYPLLOG(@"Failed to create directory.");
+    return nil;
+  }
+  
+  return URL;
+}
+
+- (NSURL *)URLForPinnedThumbnailImageOfBook:(NYPLBook *const)book
+{
+  return [[self pinnedThumbnailImageDirectoryURL] URLByAppendingPathComponent:
+          [book.identifier fileSystemSafeBase64EncodedStringUsingEncoding:NSUTF8StringEncoding]];
+}
+
+- (void)thumbnailImageForBook:(NYPLBook *)book handler:(void (^)(UIImage *image))handler
 {
   if(!book.imageThumbnailURL) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -76,8 +125,8 @@ static NSUInteger const memoryCacheInMegabytes = 2;
    resume];
 }
 
-- (void)temporaryThumbnailImagesForBooks:(NSSet *)books
-handler:(void (^)(NSDictionary *bookIdentifersToImagesAndNulls))handler
+- (void)thumbnailImagesForBooks:(NSSet *)books
+                        handler:(void (^)(NSDictionary *bookIdentifersToImagesAndNulls))handler
 {
   if(!books) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -130,7 +179,7 @@ handler:(void (^)(NSDictionary *bookIdentifersToImagesAndNulls))handler
   }
 }
 
-- (UIImage *)cachedTemporaryThumbnailImageForBook:(NYPLBook *const)book
+- (UIImage *)cachedThumbnailImageForBook:(NYPLBook *const)book
 {
   if(!book.imageThumbnailURL) {
     return nil;
@@ -139,6 +188,22 @@ handler:(void (^)(NSDictionary *bookIdentifersToImagesAndNulls))handler
   return [UIImage imageWithData:
           [self.session.configuration.URLCache
            cachedResponseForRequest:[NSURLRequest requestWithURL:book.imageThumbnailURL]].data];
+}
+
+- (void)pinThumbnailImageForBookIdentifier:(__attribute__((unused)) NSString *)bookIdentifier
+{
+  
+}
+
+- (void)removePinnedThumbnailImageForBookIdentfier:
+  (__attribute__((unused)) NSString *)bookIdentifier
+{
+  
+}
+
+- (void)removeAllPinnedThumbnailImages
+{
+  
 }
 
 @end
