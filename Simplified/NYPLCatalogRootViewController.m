@@ -1,4 +1,4 @@
-#import "NYPLBookCoverRegistry.h"
+#import "NYPLMyBooksCoverRegistry.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogCategoryViewController.h"
 #import "NYPLCatalogSearchViewController.h"
@@ -261,7 +261,7 @@ viewForHeaderInSection:(NSInteger const)section
   
   NYPLCatalogLane *const lane = self.catalogRoot.lanes[self.indexOfNextLaneRequiringImageDownload];
   
-  [[NYPLBookCoverRegistry sharedRegistry]
+  [[NYPLMyBooksCoverRegistry sharedRegistry]
    thumbnailImagesForBooks:[NSSet setWithArray:lane.books]
    handler:^(NSDictionary *const bookIdentifiersToImagesAndNulls) {
      [bookIdentifiersToImagesAndNulls
