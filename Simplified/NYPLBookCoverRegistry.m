@@ -226,6 +226,8 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 - (void)pinThumbnailImageForBook:(NYPLBook *const)book
 {
   @synchronized(self) {
+    // We create an empty file to mark that the thumbnail is pinned even if we do not manage to
+    // finish fetching the image this application run.
     [[NSFileManager defaultManager]
      createFileAtPath:[[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier] path]
      contents:[NSData data]
