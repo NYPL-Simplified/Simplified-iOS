@@ -4,8 +4,13 @@
 
 - (NSString *)fileSystemSafeBase64DecodedStringUsingEncoding:(NSStringEncoding)encoding
 {
-  NSString *const s = [[self stringByReplacingOccurrencesOfString:@"-" withString:@"+"]
-                       stringByReplacingOccurrencesOfString:@"_" withString:@"/"];
+  NSMutableString *const s = [[[self stringByReplacingOccurrencesOfString:@"-" withString:@"+"]
+                               stringByReplacingOccurrencesOfString:@"_" withString:@"/"]
+                              mutableCopy];
+  
+  while([s length] % 4) {
+    [s appendString:@"="];
+  }
   
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wassign-enum"
