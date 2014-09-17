@@ -61,7 +61,7 @@ static CGFloat const mainTextPaddingRight = 10.0;
   [self addSubview:self.coverImageView];
   
   [[NYPLBookCoverRegistry sharedRegistry]
-   temporaryThumbnailImageForBook:book
+   thumbnailImageForBook:book
    handler:^(UIImage *const image) {
      self.coverImageView.image = image;
    }];
