@@ -2,6 +2,7 @@
 #import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
+#import "NYPLBookCoverRegistry.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLSettingsCredentialViewController.h"
 
@@ -296,6 +297,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
   
   if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
+    [[NYPLBookCoverRegistry sharedRegistry]
+     pinThumbnailImageForBook:book];
+    
     NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
     
     if(!request.URL) {
