@@ -108,23 +108,54 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 
 - (void)thumbnailImageForBook:(NYPLBook *)book handler:(void (^)(UIImage *image))handler
 {
-  if(!book.imageThumbnailURL) {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      handler(nil);
-    }];
-    return;
-  }
-  
-  [[self.session
-    dataTaskWithRequest:[NSURLRequest requestWithURL:book.imageThumbnailURL]
-    completionHandler:^(NSData *const data,
-                        __attribute__((unused)) NSURLResponse *response,
-                        __attribute__((unused)) NSError *error) {
+  if([self.pinnedBookIdentifiers containsObject:book.identifier]) {
+    @synchronized(self) {
+      UIImage *const image = [UIImage imageWithContentsOfFile:
+                              [[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier]
+                               path]];
+      if(image) {
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+          handler(image);
+        }];
+        return;
+      }
+    }
+    // If the image didn't load, that just means it was an empty file used to mark that we still
+    // need to download the pinned image.
+    [[self.session
+      dataTaskWithRequest:[NSURLRequest requestWithURL:book.imageThumbnailURL]
+      completionHandler:^(NSData *const data,
+                          __attribute__((unused)) NSURLResponse *response,
+                          __attribute__((unused)) NSError *error) {
+        @synchronized(self) {
+          [[NSFileManager defaultManager]
+           createFileAtPath:[[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier] path]
+           contents:data
+           attributes:nil];
+        }
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+          handler([UIImage imageWithData:data]);
+        }];
+      }]
+     resume];
+  } else {
+    if(!book.imageThumbnailURL) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        handler([UIImage imageWithData:data]);
+        handler(nil);
       }];
-    }]
-   resume];
+      return;
+    }
+    [[self.session
+      dataTaskWithRequest:[NSURLRequest requestWithURL:book.imageThumbnailURL]
+      completionHandler:^(NSData *const data,
+                          __attribute__((unused)) NSURLResponse *response,
+                          __attribute__((unused)) NSError *error) {
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+          handler([UIImage imageWithData:data]);
+        }];
+      }]
+     resume];
+  }
 }
 
 - (void)thumbnailImagesForBooks:(NSSet *)books
@@ -203,23 +234,24 @@ static NSUInteger const memoryCacheInMegabytes = 2;
     [self.pinnedBookIdentifiers addObject:book];
   }
   
-  [self.session
-   dataTaskWithRequest:[NSURLRequest requestWithURL:book.imageThumbnailURL]
-   completionHandler:^(NSData *const data,
-                       __attribute__((unused)) NSURLResponse *response,
-                       __attribute__((unused)) NSError *error) {
-     if(!data) {
-       NYPLLOG_F(@"Failed to pin thumbnail image for '%@'.", book.title);
-       return;
-     }
-     
-     @synchronized(self) {
-       [[NSFileManager defaultManager]
-        createFileAtPath:[[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier] path]
-        contents:data
-        attributes:nil];
-     }
-   }];
+  [[self.session
+    dataTaskWithRequest:[NSURLRequest requestWithURL:book.imageThumbnailURL]
+    completionHandler:^(NSData *const data,
+                        __attribute__((unused)) NSURLResponse *response,
+                        __attribute__((unused)) NSError *error) {
+      if(!data) {
+        NYPLLOG_F(@"Failed to pin thumbnail image for '%@'.", book.title);
+        return;
+      }
+      
+      @synchronized(self) {
+        [[NSFileManager defaultManager]
+         createFileAtPath:[[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier] path]
+         contents:data
+         attributes:nil];
+      }
+    }]
+   resume];
 }
 
 - (void)removePinnedThumbnailImageForBookIdentfier:(NSString *const)bookIdentifier
