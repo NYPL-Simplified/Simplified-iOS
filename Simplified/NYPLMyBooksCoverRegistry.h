@@ -1,11 +1,11 @@
 @class NYPLBook;
 
-@interface NYPLBookCoverRegistry : NSObject
+@interface NYPLMyBooksCoverRegistry : NSObject
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
-+ (NYPLBookCoverRegistry *)sharedRegistry;
++ (NYPLMyBooksCoverRegistry *)sharedRegistry;
 
 // All handlers are called on the main thread.
 

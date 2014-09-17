@@ -2,9 +2,9 @@
 #import "NYPLBook.h"
 #import "NYPLNull.h"
 
-#import "NYPLBookCoverRegistry.h"
+#import "NYPLMyBooksCoverRegistry.h"
 
-@interface NYPLBookCoverRegistry ()
+@interface NYPLMyBooksCoverRegistry ()
 
 @property (nonatomic) NSMutableSet *pinnedBookIdentifiers;
 @property (nonatomic) NSURLSession *session;
@@ -14,12 +14,12 @@
 static NSUInteger const diskCacheInMegabytes = 16;
 static NSUInteger const memoryCacheInMegabytes = 2;
 
-@implementation NYPLBookCoverRegistry
+@implementation NYPLMyBooksCoverRegistry
 
-+ (NYPLBookCoverRegistry *)sharedRegistry
++ (NYPLMyBooksCoverRegistry *)sharedRegistry
 {
   static dispatch_once_t predicate;
-  static NYPLBookCoverRegistry *sharedRegistry = nil;
+  static NYPLMyBooksCoverRegistry *sharedRegistry = nil;
   
   dispatch_once(&predicate, ^{
     sharedRegistry = [[self alloc] init];
