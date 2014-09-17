@@ -190,7 +190,16 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   
   for(NYPLBook *const book in books) {
     if(!book.imageThumbnailURL) {
+      NYPLLOG_F(@"Missing thumbnail image URL for '%@'.", book.title);
+      [lock lock];
       dictionary[book.identifier] = [NSNull null];
+      --remaining;
+      if(!remaining) {
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+          handler(dictionary);
+        }];
+      }
+      [lock unlock];
       continue;
     }
     [[self.session
