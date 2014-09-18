@@ -82,7 +82,7 @@
   [self.view addSubview:self.collectionView];
 }
 
-// FIXME: This code duplicates code in NYPLCatalogCategoryController and sould be factored out.
+// FIXME: This code duplicates code in NYPLCatalogCategoryController and should be factored out.
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
                                 duration:(__attribute__((unused)) NSTimeInterval)duration
 {
