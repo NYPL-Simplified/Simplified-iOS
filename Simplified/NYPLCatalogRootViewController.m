@@ -1,3 +1,4 @@
+#import "NYPLMyBooksCoverRegistry.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogCategoryViewController.h"
 #import "NYPLCatalogSearchViewController.h"
@@ -7,7 +8,6 @@
 #import "NYPLCatalogSubsectionLink.h"
 #import "NYPLConfiguration.h"
 #import "NYPLIndeterminateProgressView.h"
-#import "NYPLSession.h"
 
 #import "NYPLCatalogRootViewController.h"
 
@@ -18,10 +18,10 @@ static CGFloat const sectionHeaderHeight = 35.0;
   <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic) NSMutableDictionary *bookIdentifiersToImages;
 @property (nonatomic) NYPLCatalogRoot *catalogRoot;
 @property (nonatomic) NSMutableDictionary *cachedCells;
 @property (nonatomic) NSMutableDictionary *loadingCells;
-@property (nonatomic) NSMutableDictionary *URLsToImageData;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) UITableView *tableView;
 
@@ -36,8 +36,8 @@ static CGFloat const sectionHeaderHeight = 35.0;
   self = [super init];
   if(!self) return nil;
   
+  self.bookIdentifiersToImages = [NSMutableDictionary dictionary];
   self.cachedCells = [NSMutableDictionary dictionary];
-  self.URLsToImageData = [NSMutableDictionary dictionary];
   self.title = NSLocalizedString(@"Catalog", nil);
   
   return self;
@@ -111,7 +111,7 @@ static CGFloat const sectionHeaderHeight = 35.0;
       [[NYPLCatalogLaneCell alloc]
        initWithLaneIndex:indexPath.section
        books:((NYPLCatalogLane *) self.catalogRoot.lanes[indexPath.section]).books
-       URLsToImageData:self.URLsToImageData];
+       bookIdentifiersToImages:self.bookIdentifiersToImages];
     cell.delegate = self;
     self.cachedCells[indexPath] = cell;
     return cell;
@@ -261,24 +261,21 @@ viewForHeaderInSection:(NSInteger const)section
   
   NYPLCatalogLane *const lane = self.catalogRoot.lanes[self.indexOfNextLaneRequiringImageDownload];
   
-  [[NYPLSession sharedSession]
-   withURLs:lane.imageThumbnailURLs
-   handler:^(NSDictionary *const URLToDataOrNull) {
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       [URLToDataOrNull enumerateKeysAndObjectsUsingBlock:^(id const key,
-                                                            id const value,
-                                                            __attribute__((unused)) BOOL *stop) {
-         if(![value isKindOfClass:[NSNull class]]) {
-           assert([key isKindOfClass:[NSURL class]]);
-           assert([value isKindOfClass:[NSData class]]);
-           [self.URLsToImageData setValue:value forKey:key];
-         }
-       }];
-       
-       [self.tableView reloadData];
-       ++self.indexOfNextLaneRequiringImageDownload;
-       [self downloadImages];
+  [[NYPLMyBooksCoverRegistry sharedRegistry]
+   thumbnailImagesForBooks:[NSSet setWithArray:lane.books]
+   handler:^(NSDictionary *const bookIdentifiersToImagesAndNulls) {
+     [bookIdentifiersToImagesAndNulls
+      enumerateKeysAndObjectsUsingBlock:^(NSString *const bookIdentifier,
+                                          id const imageOrNull,
+                                          __attribute__((unused)) BOOL *stop) {
+       if([imageOrNull isKindOfClass:[UIImage class]]) {
+         self.bookIdentifiersToImages[bookIdentifier] = imageOrNull;
+       }
      }];
+     
+     [self.tableView reloadData];
+     ++self.indexOfNextLaneRequiringImageDownload;
+     [self downloadImages];
    }];
 }
 
