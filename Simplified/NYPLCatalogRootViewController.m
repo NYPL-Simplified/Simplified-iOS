@@ -12,7 +12,7 @@
 #import "NYPLCatalogRootViewController.h"
 
 static CGFloat const rowHeight = 115.0;
-static CGFloat const sectionHeaderHeight = 35.0;
+static CGFloat const sectionHeaderHeight = 50.0;
 
 @interface NYPLCatalogRootViewController ()
   <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
@@ -129,15 +129,19 @@ static CGFloat const sectionHeaderHeight = 35.0;
     }
     
     UITableViewCell *const cell = [[UITableViewCell alloc] init];
+    CGRect const progressViewFrame = CGRectMake(5,
+                                                0,
+                                                CGRectGetWidth(cell.contentView.bounds) - 10,
+                                                CGRectGetHeight(cell.contentView.bounds));
     NYPLIndeterminateProgressView *const progressView = [[NYPLIndeterminateProgressView alloc]
-                                                         initWithFrame:cell.bounds];
-    progressView.center = cell.center;
+                                                         initWithFrame:progressViewFrame];
     progressView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);
     progressView.color = [UIColor colorWithWhite:0.95 alpha:1.0];
+    progressView.layer.borderWidth = 2;
     progressView.speedMultiplier = 2.0;
     [progressView startAnimating];
-    [cell addSubview:progressView];
+    [cell.contentView addSubview:progressView];
     
     self.loadingCells[indexPath] = cell;
     
@@ -179,7 +183,7 @@ viewForHeaderInSection:(NSInteger const)section
   
   {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeSystem];
-    button.titleLabel.font = [UIFont systemFontOfSize:17];
+    button.titleLabel.font = [UIFont systemFontOfSize:21];
     NSString *const title = ((NYPLCatalogLane *) self.catalogRoot.lanes[section]).title;
     [button setTitle:title forState:UIControlStateNormal];
     [button sizeToFit];
