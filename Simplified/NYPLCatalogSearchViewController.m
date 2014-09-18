@@ -60,6 +60,7 @@
   NYPLBookCellRegisterClassesForCollectionView(self.collectionView);
   [self.observers addObjectsFromArray:
    NYPLBookCellRegisterNotificationsForCollectionView(self.collectionView)];
+  self.collectionView.alwaysBounceVertical = YES;
   self.collectionView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                           UIViewAutoresizingFlexibleHeight);
   self.collectionView.dataSource = self;
