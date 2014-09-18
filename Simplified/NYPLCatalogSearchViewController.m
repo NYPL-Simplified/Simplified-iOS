@@ -1,6 +1,7 @@
 // TODO: This class duplicates much of the functionality of NYPLCatalogCategoryViewController.
 // After it is complete, the common portions must be factored out.
 
+#import "NSString+NYPLStringAdditions.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogCategory.h"
@@ -211,8 +212,7 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
    withURL:[NSURL URLWithString:
             [self.searchTemplate
              stringByReplacingOccurrencesOfString:@"{searchTerms}"
-             withString:[self.searchBar.text
-                         stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]]
+             withString:[self.searchBar.text stringByURLEncoding]]]
    handler:^(NYPLCatalogCategory *const category) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.collectionView.hidden = NO;

@@ -4,4 +4,6 @@
 
 - (NSString *)fileSystemSafeBase64EncodedStringUsingEncoding:(NSStringEncoding)encoding;
 
+- (NSString *)stringByURLEncoding;
+
 @end
