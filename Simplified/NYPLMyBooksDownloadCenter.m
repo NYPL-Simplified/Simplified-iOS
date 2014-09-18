@@ -1,7 +1,8 @@
-#import "NSData+NYPLDataAdditions.h"
+#import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
+#import "NYPLMyBooksCoverRegistry.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLSettingsCredentialViewController.h"
 
@@ -209,6 +210,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       NYPLLOG(@"Failed to remove local content for download.");
     }
     
+    [[NYPLMyBooksCoverRegistry sharedRegistry]
+     removePinnedThumbnailImageForBookIdentfier:self.bookIdentifierOfBookToRemove];
+    
     [[NYPLMyBooksRegistry sharedRegistry]
      removeBookForIdentifier:self.bookIdentifierOfBookToRemove];
   }
@@ -232,25 +236,23 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       URLByAppendingPathComponent:[[NSBundle mainBundle]
                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
      URLByAppendingPathComponent:@"content"];
-  
-  return directoryURL;
-}
 
-// TODO: Rename this method so the side effect is clearer.
-// Always returns a valid path for opening/moving a file, creating directories if needed.
-- (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
-{
-  NSString *const encodedIdentifier = [[identifier dataUsingEncoding:NSUTF8StringEncoding]
-                                       fileSystemSafeBase64EncodedString];
-  
   if(![[NSFileManager defaultManager]
-       createDirectoryAtURL:[self contentDirectoryURL]
+       createDirectoryAtURL:directoryURL
        withIntermediateDirectories:YES
        attributes:nil
        error:NULL]) {
     NYPLLOG(@"Failed to create directory.");
     return nil;
   }
+  
+  return directoryURL;
+}
+
+- (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
+{
+  NSString *const encodedIdentifier =
+    [identifier fileSystemSafeBase64EncodedStringUsingEncoding:NSUTF8StringEncoding];
   
   return [[[self contentDirectoryURL] URLByAppendingPathComponent:encodedIdentifier]
           URLByAppendingPathExtension:@"epub"];
@@ -298,6 +300,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
   
   if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
+    [[NYPLMyBooksCoverRegistry sharedRegistry]
+     pinThumbnailImageForBook:book];
+    
     NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
     
     if(!request.URL) {

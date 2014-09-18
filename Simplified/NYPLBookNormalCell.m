@@ -1,8 +1,8 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
+#import "NYPLMyBooksCoverRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
-#import "NYPLSession.h"
 
 #import "NYPLBookNormalCell.h"
 
@@ -10,7 +10,6 @@
 
 @property (nonatomic) UILabel *authors;
 @property (nonatomic) UIImageView *cover;
-@property (nonatomic) NSURL *coverURL;
 @property (nonatomic) NYPLRoundedButton *deleteButton;
 @property (nonatomic) NYPLRoundedButton *downloadButton;
 @property (nonatomic) UILabel *title;
@@ -137,34 +136,23 @@
   
   self.authors.attributedText = NYPLAttributedStringForAuthorsFromString(book.authors);
   self.cover.image = nil;
-  self.coverURL = book.imageThumbnailURL;
   self.title.attributedText = NYPLAttributedStringForTitleFromString(book.title);
-  
-  // TODO: The approach below will keep showing old covers across launches even if they've been
-  // updated on the server. Consider if there's a better way to do this.
   
   // This avoids hitting the server constantly when scrolling within a category and ensures images
   // will still be there when the user scrolls back up. It also avoids creating tasks and refetching
   // images when the collection view reloads its data in response to an additional page being
   // fetched (which otherwise would cause a flickering effect and pointless bandwidth usage).
-  self.cover.image = [UIImage imageWithData:
-                      [[NYPLSession sharedSession] cachedDataForURL:book.imageThumbnailURL]];
+  self.cover.image = [[NYPLMyBooksCoverRegistry sharedRegistry] cachedThumbnailImageForBook:book];
   
   if(!self.cover.image) {
-    [[NYPLSession sharedSession]
-     withURL:book.imageThumbnailURL
-     completionHandler:^(NSData *const data) {
-       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         // TODO: This check prevents old operations from overwriting cover images in the case of
-         // cells being reused before those operations completed. It avoids visual bugs, but said
-         // operations should be killed to avoid unnecesssary bandwidth usage. Once that is in
-         // place, this check and |self.coverURL| may no longer be needed.
-         if([book.imageThumbnailURL isEqual:self.coverURL]) {
-           self.cover.image = [UIImage imageWithData:data];
-           // Drop the now-useless URL reference.
-           self.coverURL = nil;
-         }
-       }];
+    [[NYPLMyBooksCoverRegistry sharedRegistry]
+     thumbnailImageForBook:book
+     handler:^(UIImage *const image) {
+       // This check prevents old operations from overwriting cover images in the case of cells
+       // being reused before those operations completed.
+       if([book.identifier isEqualToString:self.book.identifier]) {
+         self.cover.image = image;
+       }
      }];
   }
   

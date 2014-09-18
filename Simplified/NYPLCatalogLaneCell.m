@@ -15,7 +15,7 @@
 
 - (instancetype)initWithLaneIndex:(NSUInteger const)laneIndex
                             books:(NSArray *const)books
-                   URLsToImageData:(NSDictionary *const)URLsToImageData
+          bookIdentifiersToImages:(NSDictionary *const)bookIdentifiersToImages
 {
   self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
   if(!self) return nil;
@@ -42,13 +42,12 @@
                                       __attribute__((unused)) BOOL *stop) {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.tag = bookIndex;
-    NSData *const imageData = URLsToImageData[book.imageThumbnailURL];
-    if(!imageData) {
+    UIImage *const image = bookIdentifiersToImages[book.identifier];
+    if(!image) {
       NYPLLOG_F(@"Did not receive cover for '%@'.", book.title);
     }
-    UIImage *const image =
-      imageData ? [UIImage imageWithData:imageData] : [UIImage imageNamed:@"NoCover"];
-    [button setImage:image forState:UIControlStateNormal];
+    [button setImage:(image ? image : [UIImage imageNamed:@"NoCover"])
+            forState:UIControlStateNormal];
     [button addTarget:self
                action:@selector(didSelectBookButton:)
      forControlEvents:UIControlEventTouchUpInside];
