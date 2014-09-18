@@ -1,3 +1,4 @@
+#import "NSString+NYPLStringAdditions.h"
 #import "NYPLBook.h"
 #import "NYPLBookLocation.h"
 #import "NYPLConfiguration.h"
@@ -35,8 +36,7 @@ id argument(NSURL *const URL) {
   
   assert(range.location != NSNotFound);
   
-  NSData *const data = [[[s substringFromIndex:(range.location + 1)]
-                         stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
+  NSData *const data = [[[s substringFromIndex:(range.location + 1)] stringByURLEncoding]
                         dataUsingEncoding:NSUTF8StringEncoding];
   
   return NYPLJSONObjectFromData(data);

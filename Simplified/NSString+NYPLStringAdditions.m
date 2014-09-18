@@ -32,4 +32,15 @@
 #pragma clang diagnostic pop
 }
 
+- (NSString *)stringByURLEncoding
+{
+  CFStringRef const s = CFURLCreateStringByAddingPercentEscapes(NULL,
+                                                                (__bridge CFStringRef)self,
+                                                                NULL,
+                                                                CFSTR(";/?:@&=$+{}<>,"),
+                                                                kCFStringEncodingUTF8);
+  
+  return CFBridgingRelease(s);
+}
+
 @end
