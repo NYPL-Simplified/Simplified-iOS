@@ -18,6 +18,8 @@ CGSize NYPLBookCellSize(UIUserInterfaceIdiom idiom,
 {
   if(idiom == UIUserInterfaceIdiomPad) {
     switch(orientation) {
+      case UIInterfaceOrientationUnknown:
+        // TODO
       case UIInterfaceOrientationPortrait:
         // fallthrough
       case UIInterfaceOrientationPortraitUpsideDown:

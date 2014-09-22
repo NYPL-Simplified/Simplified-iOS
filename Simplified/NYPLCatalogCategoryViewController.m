@@ -49,6 +49,8 @@
 
 - (void)viewDidLoad
 {
+  [super viewDidLoad];
+  
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]

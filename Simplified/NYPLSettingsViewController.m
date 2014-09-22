@@ -45,6 +45,8 @@
 
 - (void)viewDidLoad
 {
+  [super viewDidLoad];
+  
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.barcodeLabel = [[UILabel alloc] init];
