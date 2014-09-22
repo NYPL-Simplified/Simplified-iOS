@@ -52,6 +52,8 @@
 
 - (void)viewDidLoad
 {
+  [super viewDidLoad];
+  
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.collectionView = [[UICollectionView alloc]
@@ -103,8 +105,10 @@
                                          CGRectGetHeight(self.noResultsLabel.frame));
 }
 
-- (void)viewWillDisappear:(__attribute__((unused)) BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
+  [super viewWillDisappear:animated];
+  
   [self.searchBar resignFirstResponder];
 }
 
