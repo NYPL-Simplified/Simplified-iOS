@@ -43,36 +43,6 @@ void NYPLBookCellRegisterClassesForCollectionView(UICollectionView *const collec
      forCellWithReuseIdentifier:reuseIdentifierNormal];
 }
 
-NSArray *NYPLBookCellRegisterNotificationsForCollectionView(UICollectionView *const collectionView)
-{
-  id observer1 =
-    [[NSNotificationCenter defaultCenter]
-     addObserverForName:NYPLBookRegistryDidChangeNotification
-     object:nil
-     queue:[NSOperationQueue mainQueue]
-     usingBlock:^(__attribute__((unused)) NSNotification *note) {
-       [collectionView reloadData];
-     }];
-  
-  id observer2 =
-    [[NSNotificationCenter defaultCenter]
-     addObserverForName:NYPLMyBooksDownloadCenterDidChangeNotification
-     object:nil
-     queue:[NSOperationQueue mainQueue]
-     usingBlock:^(__attribute__((unused)) NSNotification *note) {
-       for(UICollectionViewCell *const cell in [collectionView visibleCells]) {
-         if([cell isKindOfClass:[NYPLBookDownloadingCell class]]) {
-           NYPLBookDownloadingCell *const downloadingCell = (NYPLBookDownloadingCell *)cell;
-           NSString *const bookIdentifier = downloadingCell.book.identifier;
-           downloadingCell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                                               downloadProgressForBookIdentifier:bookIdentifier];
-         }
-       }
-     }];
-  
-  return @[observer1, observer2];
-}
-
 NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                   NSIndexPath *const indexPath,
                                   NYPLBook *const book)

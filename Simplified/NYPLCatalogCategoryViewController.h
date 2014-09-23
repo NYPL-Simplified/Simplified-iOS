@@ -1,4 +1,6 @@
-@interface NYPLCatalogCategoryViewController : UIViewController
+#import "NYPLBookCellCollectionViewController.h"
+
+@interface NYPLCatalogCategoryViewController : NYPLBookCellCollectionViewController
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
