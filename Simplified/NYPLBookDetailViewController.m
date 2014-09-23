@@ -119,14 +119,6 @@
     [viewController.navigationController pushViewController:self animated:YES];
   } else {
     [viewController presentViewController:self animated:YES completion:nil];
-    self.view.frame = CGRectMake(0, 0, 360, 400);
-    self.view.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
-                                  UIViewAutoresizingFlexibleRightMargin |
-                                  UIViewAutoresizingFlexibleTopMargin |
-                                  UIViewAutoresizingFlexibleBottomMargin);
-    self.view.center = CGPointMake(CGRectGetMidX(self.view.superview.bounds),
-                                   CGRectGetMidY(self.view.superview.bounds));
-    self.view.superview.backgroundColor = [UIColor clearColor];
   }
 }
 
