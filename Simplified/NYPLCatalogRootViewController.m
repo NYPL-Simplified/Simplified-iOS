@@ -47,6 +47,8 @@ static CGFloat const sectionHeaderHeight = 50.0;
 
 - (void)viewDidLoad
 {
+  [super viewDidLoad];
+  
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.navigationItem.titleView =
@@ -93,6 +95,8 @@ static CGFloat const sectionHeaderHeight = 50.0;
 
 - (void)didReceiveMemoryWarning
 {
+  [super didReceiveMemoryWarning];
+  
   [self.cachedCells removeAllObjects];
 }
 

@@ -92,6 +92,8 @@ id argument(NSURL *const URL) {
 
 - (void)viewDidLoad
 {
+  [super viewDidLoad];
+  
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   UIBarButtonItem *const TOCButtonItem = [[UIBarButtonItem alloc]

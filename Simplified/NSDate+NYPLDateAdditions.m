@@ -33,7 +33,8 @@
 
 - (NSDateComponents *)UTCComponents
 {
-  NSCalendar *const calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSISO8601Calendar];
+  NSCalendar *const calendar = [[NSCalendar alloc]
+                                initWithCalendarIdentifier:NSCalendarIdentifierISO8601];
   calendar.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
   
 #pragma clang diagnostic push
