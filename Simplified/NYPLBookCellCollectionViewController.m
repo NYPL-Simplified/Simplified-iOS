@@ -108,6 +108,16 @@
   shieldView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                  UIViewAutoresizingFlexibleWidth);
   [self.view addSubview:shieldView];
+  UIActivityIndicatorView *const activityIndicatorView =
+    [[UIActivityIndicatorView alloc]
+     initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  activityIndicatorView.center = shieldView.center;
+  activityIndicatorView.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin |
+                                            UIViewAutoresizingFlexibleRightMargin |
+                                            UIViewAutoresizingFlexibleBottomMargin |
+                                            UIViewAutoresizingFlexibleLeftMargin);
+  [activityIndicatorView startAnimating];
+  [shieldView addSubview:activityIndicatorView];
   
   [coordinator
    animateAlongsideTransition:nil
