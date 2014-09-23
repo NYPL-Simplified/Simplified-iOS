@@ -201,7 +201,7 @@ minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
                   layout:(__attribute__((unused)) UICollectionViewLayout *)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *const)indexPath
 {
-  return NYPLBookCellSize(UI_USER_INTERFACE_IDIOM(), self.interfaceOrientation, indexPath);
+  return NYPLBookCellSize(indexPath, CGRectGetWidth(self.view.bounds));
 }
 
 #pragma mark NYPLCatalogCategoryDelegate

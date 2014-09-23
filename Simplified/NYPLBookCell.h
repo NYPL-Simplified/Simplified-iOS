@@ -12,9 +12,7 @@
 @protocol NYPLBookDownloadingCellDelegate;
 
 // This is exposed to help classes implement collection view layout delegates.
-CGSize NYPLBookCellSize(UIUserInterfaceIdiom idiom,
-                        UIInterfaceOrientation orientation,
-                        NSIndexPath *indexPath);
+CGSize NYPLBookCellSize(NSIndexPath *indexPath, CGFloat screenWidth);
 
 // This should be called once after creating the collection view.
 void NYPLBookCellRegisterClassesForCollectionView(UICollectionView *collectionView);
