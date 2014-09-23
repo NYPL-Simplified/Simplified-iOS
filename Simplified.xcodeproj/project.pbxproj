@@ -979,10 +979,10 @@
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
-					"-Werror",
 					"-Wall",
 					"-Wextra",
 					"-Weverything",
@@ -1002,10 +1002,10 @@
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
-					"-Werror",
 					"-Wall",
 					"-Wextra",
 					"-Weverything",
