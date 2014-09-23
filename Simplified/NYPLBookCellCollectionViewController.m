@@ -103,11 +103,11 @@
   // We place a view over the collection view to avoid changing properties (e.g. |hidden|) that may
   // inadvertantly alter the intended behavior of subclasses. Attempting to save the property and
   // then reset it to its previous state in the completion block would give rise to race conditions.
-  UIView *const shieldView = [[UIView alloc] initWithFrame:self.collectionView.bounds];
+  UIView *const shieldView = [[UIView alloc] initWithFrame:self.collectionView.frame];
   shieldView.backgroundColor = [NYPLConfiguration backgroundColor];
   shieldView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                  UIViewAutoresizingFlexibleWidth);
-  [self.collectionView addSubview:shieldView];
+  [self.view addSubview:shieldView];
   
   [coordinator
    animateAlongsideTransition:nil
