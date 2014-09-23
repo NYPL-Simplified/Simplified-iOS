@@ -12,15 +12,13 @@
 @protocol NYPLBookDownloadingCellDelegate;
 
 // This is exposed to help classes implement collection view layout delegates.
-CGSize NYPLBookCellSize(UIUserInterfaceIdiom idiom,
-                        UIInterfaceOrientation orientation,
-                        NSIndexPath *indexPath);
+NSInteger NYPLBookCellColumnCountForCollectionViewWidth(CGFloat screenWidth);
+
+// This is exposed to help classes implement collection view layout delegates.
+CGSize NYPLBookCellSize(NSIndexPath *indexPath, CGFloat screenWidth);
 
 // This should be called once after creating the collection view.
 void NYPLBookCellRegisterClassesForCollectionView(UICollectionView *collectionView);
-
-// The caller is responsible for unregistering all observers in the returned array.
-NSArray *NYPLBookCellRegisterNotificationsForCollectionView(UICollectionView *collectionView);
 
 // Returns an appropriate subclass of NYPLBookCell.
 NYPLBookCell *NYPLBookCellDequeue(UICollectionView *collectionView,

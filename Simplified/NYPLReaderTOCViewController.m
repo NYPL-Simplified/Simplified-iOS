@@ -56,6 +56,8 @@ static NSString *const reuseIdentifier = @"ReaderTOCCell";
 
 - (void)viewDidLoad
 {
+  [super viewDidLoad];
+  
   self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
   self.tableView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                      UIViewAutoresizingFlexibleWidth);

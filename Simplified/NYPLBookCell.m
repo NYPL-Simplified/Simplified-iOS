@@ -12,23 +12,24 @@ static NSString *const reuseIdentifierDownloading = @"Downloading";
 static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
 static NSString *const reuseIdentifierNormal = @"Normal";
 
-CGSize NYPLBookCellSize(UIUserInterfaceIdiom idiom,
-                        UIInterfaceOrientation orientation,
-                        NSIndexPath *indexPath)
+NSInteger NYPLBookCellColumnCountForCollectionViewWidth(CGFloat const collectionViewWidth)
 {
-  if(idiom == UIUserInterfaceIdiomPad) {
-    switch(orientation) {
-      case UIInterfaceOrientationPortrait:
-        // fallthrough
-      case UIInterfaceOrientationPortraitUpsideDown:
-        return CGSizeMake(384, 110);
-      case UIInterfaceOrientationLandscapeLeft:
-        // fallthrough
-      case UIInterfaceOrientationLandscapeRight:
-        return CGSizeMake(341 + (indexPath.row % 3 == 1), 110);
-    }
+  return collectionViewWidth / 320;
+}
+
+CGSize NYPLBookCellSize(NSIndexPath *const indexPath, CGFloat const collectionViewWidth)
+{
+  static CGFloat const height = 110;
+  
+  NSInteger const cellsPerRow = collectionViewWidth / 320;
+  CGFloat const averageCellWidth = collectionViewWidth / (CGFloat)cellsPerRow;
+  CGFloat const baseCellWidth = floor(averageCellWidth);
+  
+  if(indexPath.row % cellsPerRow == 0) {
+    // Add the extra points to the first cell in each row.
+    return CGSizeMake(collectionViewWidth - ((cellsPerRow - 1) * baseCellWidth), height);
   } else {
-    return CGSizeMake(320, 110);
+    return CGSizeMake(baseCellWidth, height);
   }
 }
 
@@ -40,36 +41,6 @@ void NYPLBookCellRegisterClassesForCollectionView(UICollectionView *const collec
      forCellWithReuseIdentifier:reuseIdentifierDownloading];
   [collectionView registerClass:[NYPLBookNormalCell class]
      forCellWithReuseIdentifier:reuseIdentifierNormal];
-}
-
-NSArray *NYPLBookCellRegisterNotificationsForCollectionView(UICollectionView *const collectionView)
-{
-  id observer1 =
-    [[NSNotificationCenter defaultCenter]
-     addObserverForName:NYPLBookRegistryDidChangeNotification
-     object:nil
-     queue:[NSOperationQueue mainQueue]
-     usingBlock:^(__attribute__((unused)) NSNotification *note) {
-       [collectionView reloadData];
-     }];
-  
-  id observer2 =
-    [[NSNotificationCenter defaultCenter]
-     addObserverForName:NYPLMyBooksDownloadCenterDidChangeNotification
-     object:nil
-     queue:[NSOperationQueue mainQueue]
-     usingBlock:^(__attribute__((unused)) NSNotification *note) {
-       for(UICollectionViewCell *const cell in [collectionView visibleCells]) {
-         if([cell isKindOfClass:[NYPLBookDownloadingCell class]]) {
-           NYPLBookDownloadingCell *const downloadingCell = (NYPLBookDownloadingCell *)cell;
-           NSString *const bookIdentifier = downloadingCell.book.identifier;
-           downloadingCell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                                               downloadProgressForBookIdentifier:bookIdentifier];
-         }
-       }
-     }];
-  
-  return @[observer1, observer2];
 }
 
 NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
@@ -160,6 +131,10 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
   if(!self) return nil;
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    // This is no longer set by default as of iOS 8.0.
+    self.contentView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
+                                         UIViewAutoresizingFlexibleWidth);
+    
     {
       CGRect const frame = CGRectMake(CGRectGetMaxX(self.contentView.frame) - 1,
                                       0,

@@ -1,6 +1,6 @@
 #import "NYPLDismissableViewController.h"
 
-@interface NYPLDismissableViewController ()
+@interface NYPLDismissableViewController () <UIGestureRecognizerDelegate>
 
 @property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
 
@@ -17,8 +17,8 @@
   self.tapGestureRecognizer = [[UITapGestureRecognizer alloc]
                                initWithTarget:self
                                action:@selector(didReceiveGesture:)];
-  
   self.tapGestureRecognizer.cancelsTouchesInView = NO;
+  self.tapGestureRecognizer.delegate = self;
   self.tapGestureRecognizer.numberOfTapsRequired = 1;
   
   [self.view.window addGestureRecognizer:self.tapGestureRecognizer];
@@ -33,6 +33,13 @@
 }
 
 #pragma mark -
+
+-(BOOL)gestureRecognizer:(__attribute__((unused)) UIGestureRecognizer *)gestureRecognizer
+shouldRecognizeSimultaneouslyWithGestureRecognizer:(__attribute__((unused))
+                                                    UIGestureRecognizer*)otherGestureRecognizer
+{
+  return YES;
+}
 
 - (void)didReceiveGesture:(UIGestureRecognizer *const)gestureRecognizer
 {
