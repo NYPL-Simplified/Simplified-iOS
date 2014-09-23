@@ -69,6 +69,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
   self.tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);
+  self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
   self.tableView.sectionHeaderHeight = sectionHeaderHeight;
@@ -184,6 +185,7 @@ viewForHeaderInSection:(NSInteger const)section
   CGRect const frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), sectionHeaderHeight);
   UIView *const view = [[UIView alloc] initWithFrame:frame];
   view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  view.backgroundColor = [[NYPLConfiguration backgroundColor] colorWithAlphaComponent:0.9];
   
   {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -199,8 +201,6 @@ viewForHeaderInSection:(NSInteger const)section
     button.exclusiveTouch = YES;
     [view addSubview:button];
   }
-  
-  view.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
   
   return view;
 }
