@@ -1,4 +1,6 @@
-@interface NYPLCatalogSearchViewController : UIViewController
+#import "NYPLBookCellCollectionViewController.h"
+
+@interface NYPLCatalogSearchViewController : NYPLBookCellCollectionViewController
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;

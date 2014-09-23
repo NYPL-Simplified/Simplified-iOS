@@ -16,9 +16,7 @@
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogCategory *category;
 @property (nonatomic) NSString *categoryTitle;
-@property (nonatomic) UICollectionView *collectionView;
 @property (nonatomic) UILabel *noResultsLabel;
-@property (nonatomic) NSMutableArray *observers;
 @property (nonatomic) UISearchBar *searchBar;
 @property (nonatomic) NSString *searchTemplate;
 
@@ -33,19 +31,9 @@
   if(!self) return nil;
 
   self.categoryTitle = categoryTitle;
-  self.observers = [NSMutableArray array];
   self.searchTemplate = searchTemplate;
   
   return self;
-}
-
-#pragma mark NSObject
-
-- (void)dealloc
-{
-  for(id const observer in self.observers) {
-    [[NSNotificationCenter defaultCenter] removeObserver:observer];
-  }
 }
 
 #pragma mark UIViewController
@@ -54,22 +42,8 @@
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
-  
-  self.collectionView = [[UICollectionView alloc]
-                         initWithFrame:self.view.bounds
-                         collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
-  NYPLBookCellRegisterClassesForCollectionView(self.collectionView);
-  [self.observers addObjectsFromArray:
-   NYPLBookCellRegisterNotificationsForCollectionView(self.collectionView)];
-  self.collectionView.alwaysBounceVertical = YES;
-  self.collectionView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                          UIViewAutoresizingFlexibleHeight);
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
-  self.collectionView.backgroundColor = [NYPLConfiguration backgroundColor];
-  self.collectionView.hidden = YES;
-  [self.view addSubview:self.collectionView];
   
   self.activityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -112,31 +86,6 @@
   [self.searchBar resignFirstResponder];
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
-                                duration:(__attribute__((unused)) NSTimeInterval)duration
-{
-  CGFloat const top = self.collectionView.contentInset.top;
-  
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    if(self.interfaceOrientation == UIInterfaceOrientationLandscapeRight ||
-       self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
-      if(orientation == UIInterfaceOrientationPortrait ||
-         orientation == UIInterfaceOrientationPortraitUpsideDown) {
-        CGFloat const y = (self.collectionView.contentOffset.y + top) * 1.5 - top;
-        self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, y);
-      }
-    } else {
-      if(orientation == UIInterfaceOrientationLandscapeRight ||
-         orientation == UIInterfaceOrientationLandscapeLeft) {
-        CGFloat const y = (self.collectionView.contentOffset.y + top) * (2.0 / 3.0) - top;
-        self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, y);
-      }
-    }
-  }
-  
-  [self.collectionView.collectionViewLayout invalidateLayout];
-}
-
 #pragma mark UICollectionViewDataSource
 
 - (NSInteger)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
@@ -163,36 +112,6 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   NYPLBook *const book = self.category.books[indexPath.row];
   
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
-}
-
-#pragma mark UICollectionViewDelegateFlowLayout
-
-- (UIEdgeInsets)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
-                        layout:(__attribute__((unused)) UICollectionViewLayout*)collectionViewLayout
-        insetForSectionAtIndex:(__attribute__((unused)) NSInteger)section
-{
-  return UIEdgeInsetsZero;
-}
-
-- (CGFloat)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
-                   layout:(__attribute__((unused)) UICollectionViewLayout *)collectionViewLayout
-minimumInteritemSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
-{
-  return 0.0;
-}
-
-- (CGFloat)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
-                   layout:(__attribute__((unused)) UICollectionViewLayout *)collectionViewLayout
-minimumLineSpacingForSectionAtIndex:(__attribute__((unused)) NSInteger)section
-{
-  return 0.0;
-}
-
-- (CGSize)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
-                  layout:(__attribute__((unused)) UICollectionViewLayout *)collectionViewLayout
-  sizeForItemAtIndexPath:(NSIndexPath *const)indexPath
-{
-  return NYPLBookCellSize(indexPath, CGRectGetWidth(self.view.bounds));
 }
 
 #pragma mark NYPLCatalogCategoryDelegate
