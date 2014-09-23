@@ -12,25 +12,19 @@ static NSString *const reuseIdentifierDownloading = @"Downloading";
 static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
 static NSString *const reuseIdentifierNormal = @"Normal";
 
-CGSize NYPLBookCellSize(UIUserInterfaceIdiom idiom,
-                        UIInterfaceOrientation orientation,
-                        NSIndexPath *indexPath)
+CGSize NYPLBookCellSize(NSIndexPath *const indexPath, CGFloat const screenWidth)
 {
-  if(idiom == UIUserInterfaceIdiomPad) {
-    switch(orientation) {
-      case UIInterfaceOrientationUnknown:
-        // TODO
-      case UIInterfaceOrientationPortrait:
-        // fallthrough
-      case UIInterfaceOrientationPortraitUpsideDown:
-        return CGSizeMake(384, 110);
-      case UIInterfaceOrientationLandscapeLeft:
-        // fallthrough
-      case UIInterfaceOrientationLandscapeRight:
-        return CGSizeMake(341 + (indexPath.row % 3 == 1), 110);
-    }
+  static CGFloat const height = 110;
+  
+  NSInteger const cellsPerRow = screenWidth / 320;
+  CGFloat const averageCellWidth = screenWidth / (CGFloat)cellsPerRow;
+  CGFloat const baseCellWidth = floor(averageCellWidth);
+  
+  if(indexPath.row % cellsPerRow == 0) {
+    // Add the extra points to the first cell in each row.
+    return CGSizeMake(screenWidth - ((cellsPerRow - 1) * baseCellWidth), height);
   } else {
-    return CGSizeMake(320, 110);
+    return CGSizeMake(baseCellWidth, height);
   }
 }
 
@@ -162,6 +156,10 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
   if(!self) return nil;
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    // This is no longer set by default as of iOS 8.0.
+    self.contentView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
+                                         UIViewAutoresizingFlexibleWidth);
+    
     {
       CGRect const frame = CGRectMake(CGRectGetMaxX(self.contentView.frame) - 1,
                                       0,
