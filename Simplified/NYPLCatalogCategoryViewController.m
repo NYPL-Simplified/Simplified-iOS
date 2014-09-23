@@ -132,7 +132,6 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 - (void)didLoadCategory
 {
   [self.collectionView reloadData];
-  self.collectionView.hidden = NO;
 }
 
 - (void)didSelectSearch

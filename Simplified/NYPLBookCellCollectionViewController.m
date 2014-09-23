@@ -100,14 +100,21 @@
   
   CGFloat const y = (self.collectionView.contentOffset.y + top) * columnRatio - top;
   
-  self.collectionView.hidden = YES;
+  // We place a view over the collection view to avoid changing properties (e.g. |hidden|) that may
+  // inadvertantly alter the intended behavior of subclasses. Attempting to save the property and
+  // then reset it to its previous state in the completion block would give rise to race conditions.
+  UIView *const shieldView = [[UIView alloc] initWithFrame:self.collectionView.bounds];
+  shieldView.backgroundColor = [NYPLConfiguration backgroundColor];
+  shieldView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
+                                 UIViewAutoresizingFlexibleWidth);
+  [self.collectionView addSubview:shieldView];
   
   [coordinator
    animateAlongsideTransition:nil
    completion:^(__attribute__((unused)) id<UIViewControllerTransitionCoordinatorContext> context) {
      self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, y);
      [self.collectionView.collectionViewLayout invalidateLayout];
-     self.collectionView.hidden = NO;
+     [shieldView removeFromSuperview];
    }];
 }
 
