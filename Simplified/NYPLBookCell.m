@@ -12,17 +12,22 @@ static NSString *const reuseIdentifierDownloading = @"Downloading";
 static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
 static NSString *const reuseIdentifierNormal = @"Normal";
 
-CGSize NYPLBookCellSize(NSIndexPath *const indexPath, CGFloat const screenWidth)
+NSInteger NYPLBookCellColumnCountForCollectionViewWidth(CGFloat const collectionViewWidth)
+{
+  return collectionViewWidth / 320;
+}
+
+CGSize NYPLBookCellSize(NSIndexPath *const indexPath, CGFloat const collectionViewWidth)
 {
   static CGFloat const height = 110;
   
-  NSInteger const cellsPerRow = screenWidth / 320;
-  CGFloat const averageCellWidth = screenWidth / (CGFloat)cellsPerRow;
+  NSInteger const cellsPerRow = collectionViewWidth / 320;
+  CGFloat const averageCellWidth = collectionViewWidth / (CGFloat)cellsPerRow;
   CGFloat const baseCellWidth = floor(averageCellWidth);
   
   if(indexPath.row % cellsPerRow == 0) {
     // Add the extra points to the first cell in each row.
-    return CGSizeMake(screenWidth - ((cellsPerRow - 1) * baseCellWidth), height);
+    return CGSizeMake(collectionViewWidth - ((cellsPerRow - 1) * baseCellWidth), height);
   } else {
     return CGSizeMake(baseCellWidth, height);
   }

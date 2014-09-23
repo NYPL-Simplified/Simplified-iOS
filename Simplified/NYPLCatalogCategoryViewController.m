@@ -118,32 +118,38 @@
   self.activityIndicatorView.center = self.view.center;
 }
 
-// The approach taken in this method was settled upon after several other approaches were tried.
-// It's not generic because it assumes two columns in portrait and three in landscape when using an
-// iPad, and it assumes row heights are constant, but it's simple and exact.
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)orientation
-                               duration:(__attribute__((unused)) NSTimeInterval)duration
+- (void)viewWillTransitionToSize:(CGSize)size
+       withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-  CGFloat const top = self.collectionView.contentInset.top;
-  
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    if(self.interfaceOrientation == UIInterfaceOrientationLandscapeRight ||
-       self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
-      if(orientation == UIInterfaceOrientationPortrait ||
-         orientation == UIInterfaceOrientationPortraitUpsideDown) {
-        CGFloat const y = (self.collectionView.contentOffset.y + top) * 1.5 - top;
-        self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, y);
-      }
-    } else {
-      if(orientation == UIInterfaceOrientationLandscapeRight ||
-         orientation == UIInterfaceOrientationLandscapeLeft) {
-        CGFloat const y = (self.collectionView.contentOffset.y + top) * (2.0 / 3.0) - top;
-        self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, y);
-      }
-    }
+  if(UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+    return;
   }
 
-  [self.collectionView.collectionViewLayout invalidateLayout];
+  NSInteger const currentColumns =
+    NYPLBookCellColumnCountForCollectionViewWidth(CGRectGetWidth(self.collectionView.bounds));
+  
+  NSInteger const newColumns =
+    NYPLBookCellColumnCountForCollectionViewWidth(size.width);
+  
+  if(currentColumns == newColumns) {
+    return;
+  }
+  
+  CGFloat columnRatio = currentColumns / (CGFloat)newColumns;
+  
+  CGFloat top = self.collectionView.contentInset.top;
+  
+  CGFloat const y = (self.collectionView.contentOffset.y + top) * columnRatio - top;
+
+  self.collectionView.hidden = YES;
+  
+  [coordinator
+   animateAlongsideTransition:nil
+   completion:^(__attribute__((unused)) id<UIViewControllerTransitionCoordinatorContext> context) {
+     self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, y);
+     [self.collectionView.collectionViewLayout invalidateLayout];
+     self.collectionView.hidden = NO;
+  }];
 }
 
 #pragma mark UICollectionViewDataSource
