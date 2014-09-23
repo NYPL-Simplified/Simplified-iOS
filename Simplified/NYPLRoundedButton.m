@@ -1,5 +1,3 @@
-#import "NYPLConfiguration.h"
-
 #import "NYPLRoundedButton.h"
 
 @implementation NYPLRoundedButton
@@ -11,7 +9,7 @@
   
   button.titleLabel.font = [UIFont systemFontOfSize:12];
   button.titleEdgeInsets = UIEdgeInsetsMake(2.0, 0, 0, 0);
-  button.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
+  button.layer.borderColor = button.tintColor.CGColor;
   button.layer.borderWidth = 1;
   button.layer.cornerRadius = 3;
 
@@ -25,6 +23,13 @@
   CGSize s = [super sizeThatFits:size];
   s.width += 16;
   return s;
+}
+
+- (void)tintColorDidChange
+{
+  [super tintColorDidChange];
+  
+  self.layer.borderColor = self.tintColor.CGColor;
 }
 
 @end
