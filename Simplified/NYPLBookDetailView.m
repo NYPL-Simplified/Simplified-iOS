@@ -112,11 +112,9 @@ static CGFloat const mainTextPaddingRight = 10.0;
   } else {
     self.subtitleLabel.numberOfLines = 2;
   }
+  self.subtitleLabel.text = book.subtitle;
   self.subtitleLabel.font = [UIFont systemFontOfSize:10];
   [self addSubview:self.subtitleLabel];
-  
-  // FIXME: Testing!
-  self.subtitleLabel.text = @"This is a Rather Long Subtitle that Just Goes and Goes";
   
   self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
   self.downloadFailedView.delegate = self;

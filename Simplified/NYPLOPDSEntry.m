@@ -6,6 +6,7 @@
 
 @interface NYPLOPDSEntry ()
 
+@property (nonatomic) NSString *alternativeHeadline;
 @property (nonatomic) NSArray *authorStrings;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSArray *links;
@@ -22,6 +23,8 @@
   self = [super init];
   if(!self) return nil;
 
+  self.alternativeHeadline = [entryXML firstChildWithName:@"alternativeHeadline"].value;
+  
   {
     NSMutableArray *const authorStrings = [NSMutableArray array];
     
