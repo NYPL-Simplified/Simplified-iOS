@@ -17,7 +17,9 @@
 @property (nonatomic) UIImageView *coverImageView;
 @property (nonatomic) NYPLBookDetailDownloadFailedView *downloadFailedView;
 @property (nonatomic) NYPLBookDetailDownloadingView *downloadingView;
+@property (nonatomic) UILabel *metadataLabel;
 @property (nonatomic) NYPLBookDetailNormalView *normalView;
+@property (nonatomic) UILabel *subtitleLabel;
 @property (nonatomic) UILabel *summaryLabel;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIImageView *unreadImageView;
@@ -50,7 +52,11 @@ static CGFloat const mainTextPaddingRight = 10.0;
   
   self.authorsLabel = [[UILabel alloc] init];
   self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-  self.authorsLabel.numberOfLines = 2;
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.authorsLabel.numberOfLines = 1;
+  } else {
+    self.authorsLabel.numberOfLines = 2;
+  }
   self.authorsLabel.font = [UIFont systemFontOfSize:12];
   self.authorsLabel.attributedText = NYPLAttributedStringForAuthorsFromString(book.authors);
   [self addSubview:self.authorsLabel];
@@ -66,12 +72,51 @@ static CGFloat const mainTextPaddingRight = 10.0;
      self.coverImageView.image = image;
    }];
   
+  self.metadataLabel = [[UILabel alloc] init];
+  self.metadataLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  self.metadataLabel.numberOfLines = 3;
+  self.metadataLabel.font = [UIFont systemFontOfSize:12];
+  self.metadataLabel.textColor = [UIColor lightGrayColor];
+  [self addSubview:self.metadataLabel];
+  
+  // FIXME: Testing!
+  {
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+      self.metadataLabel.text =
+        @"Published: May 20, 1998\n"
+        @"Publusher: Perseus Publishing\n"
+        @"Categories: Geology, Kids";
+    } else {
+      self.metadataLabel.text =
+        @"Published: May 20, 1998 "
+        @"Publusher: Perseus Publishing "
+        @"Categories: Geology, Kids";
+    }
+  }
+  
   self.titleLabel = [[UILabel alloc] init];
   self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-  self.titleLabel.numberOfLines = 4;
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.titleLabel.numberOfLines = 2;
+  } else {
+    self.titleLabel.numberOfLines = 3;
+  }
   self.titleLabel.font = [UIFont boldSystemFontOfSize:17];
   self.titleLabel.attributedText = NYPLAttributedStringForTitleFromString(book.title);
   [self addSubview:self.titleLabel];
+  
+  self.subtitleLabel = [[UILabel alloc] init];
+  self.subtitleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.subtitleLabel.numberOfLines = 1;
+  } else {
+    self.subtitleLabel.numberOfLines = 2;
+  }
+  self.subtitleLabel.font = [UIFont systemFontOfSize:10];
+  [self addSubview:self.subtitleLabel];
+  
+  // FIXME: Testing!
+  self.subtitleLabel.text = @"This is a Rather Long Subtitle that Just Goes and Goes";
   
   self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
   self.downloadFailedView.delegate = self;
@@ -126,9 +171,19 @@ static CGFloat const mainTextPaddingRight = 10.0;
     CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
     CGFloat const y = CGRectGetMaxY(self.titleLabel.frame);
     CGFloat const w = CGRectGetWidth(self.titleLabel.frame);
+    CGFloat const h = [self.subtitleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+    self.subtitleLabel.frame = CGRectMake(x, y, w, h);
+  }
+  
+  {
+    static CGFloat const uniformLineHeightMagic = 5;
+    CGFloat const x = CGRectGetMinX(self.subtitleLabel.frame);
+    CGFloat const y = CGRectGetMaxY(self.subtitleLabel.frame) + uniformLineHeightMagic;
+    CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
     CGFloat const h = [self.authorsLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
     self.authorsLabel.frame = CGRectMake(x, y, w, h);
   }
+  
   
   {
     self.normalView.frame = CGRectMake(0,
