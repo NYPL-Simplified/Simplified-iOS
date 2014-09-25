@@ -74,7 +74,12 @@
   
   [self.messageLabel sizeToFit];
   self.messageLabel.center = self.backgroundView.center;
- 
+  // FIXME: This is a temporary hack to avoid subpixel alignment issues.
+  self.messageLabel.frame = CGRectMake(ceil(CGRectGetMinX(self.messageLabel.frame)),
+                                       ceil(CGRectGetMinY(self.messageLabel.frame)),
+                                       CGRectGetWidth(self.messageLabel.frame),
+                                       CGRectGetHeight(self.messageLabel.frame));
+  
   [self.downloadButton sizeToFit];
   self.downloadButton.center = self.center;
   self.downloadButton.frame = CGRectMake(CGRectGetMinX(self.downloadButton.frame),
