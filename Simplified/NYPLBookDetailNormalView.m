@@ -102,6 +102,10 @@
 {
   _state = state;
   
+  // TODO: This should be set to a localized string based on the license and state of the book once
+  // the server starts making that information available.
+  self.messageLabel.text = @"This public domain book is yours to keep.";
+  
   switch(state) {
     case NYPLBookDetailNormalViewStateUnregistered:
       // fallthrough
