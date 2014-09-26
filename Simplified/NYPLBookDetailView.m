@@ -82,7 +82,7 @@ static CGFloat const mainTextPaddingRight = 10.0;
   self.titleLabel = [[UILabel alloc] init];
   self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    self.titleLabel.numberOfLines = 2;
+    self.titleLabel.numberOfLines = 1;
   } else {
     self.titleLabel.numberOfLines = 3;
   }
