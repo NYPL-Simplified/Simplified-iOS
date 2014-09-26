@@ -131,8 +131,10 @@ static CGFloat const mainTextPaddingRight = 10.0;
   self.summaryWebView.opaque = NO;
   [self.summaryWebView
    loadHTMLString:[NSString stringWithFormat:
+                   @"<!DOCTYPE html>"
                    @"<html>"
                    @" <head>"
+                   @" <title>Summary</title>"
                    @"  <style>body {font-family: \"%@\"; background-color: transparent;}</style>"
                    @" </head>"
                    @" <body>"
