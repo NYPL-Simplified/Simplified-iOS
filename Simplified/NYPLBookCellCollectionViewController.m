@@ -4,6 +4,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLBookCellCollectionViewController.h"
 
@@ -112,6 +113,7 @@
     [[UIActivityIndicatorView alloc]
      initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   activityIndicatorView.center = shieldView.center;
+  [activityIndicatorView integralizeFrame];
   activityIndicatorView.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin |
                                             UIViewAutoresizingFlexibleRightMargin |
                                             UIViewAutoresizingFlexibleBottomMargin |

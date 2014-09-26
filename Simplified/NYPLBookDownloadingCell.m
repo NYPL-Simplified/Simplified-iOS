@@ -59,6 +59,7 @@
                                         CGRectGetWidth(self.downloadingLabel.frame) -
                                         CGRectGetWidth(self.percentageLabel.frame)),
                                        CGRectGetHeight(self.progressView.frame));
+  [self.progressView integralizeFrame];
   
   [self.cancelButton sizeToFit];
   self.cancelButton.center = self.contentView.center;
@@ -67,6 +68,7 @@
                                         CGRectGetHeight(self.cancelButton.frame) - 5),
                                        CGRectGetWidth(self.cancelButton.frame),
                                        CGRectGetHeight(self.cancelButton.frame));
+  [self.cancelButton integralizeFrame];
 }
 
 #pragma mark -

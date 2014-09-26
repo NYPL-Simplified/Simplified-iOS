@@ -8,6 +8,7 @@
 #import "NYPLCatalogSubsectionLink.h"
 #import "NYPLConfiguration.h"
 #import "NYPLIndeterminateProgressView.h"
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLCatalogRootViewController.h"
 
@@ -84,6 +85,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
 - (void)viewWillLayoutSubviews
 {
   self.activityIndicatorView.center = self.view.center;
+  [self.activityIndicatorView integralizeFrame];
   
   UIEdgeInsets const insets = UIEdgeInsetsMake(self.topLayoutGuide.length,
                                                0,

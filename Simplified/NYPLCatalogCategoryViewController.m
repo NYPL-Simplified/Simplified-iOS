@@ -4,6 +4,7 @@
 #import "NYPLCatalogCategory.h"
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLCatalogCategoryViewController.h"
 
@@ -89,6 +90,7 @@
 - (void)viewWillLayoutSubviews
 {
   self.activityIndicatorView.center = self.view.center;
+  [self.activityIndicatorView integralizeFrame];
 }
 
 #pragma mark UICollectionViewDataSource

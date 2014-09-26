@@ -1,6 +1,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLRoundedButton.h"
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLBookDetailNormalView.h"
 
@@ -74,11 +75,7 @@
   
   [self.messageLabel sizeToFit];
   self.messageLabel.center = self.backgroundView.center;
-  // FIXME: This is a temporary hack to avoid subpixel alignment issues.
-  self.messageLabel.frame = CGRectMake(ceil(CGRectGetMinX(self.messageLabel.frame)),
-                                       ceil(CGRectGetMinY(self.messageLabel.frame)),
-                                       CGRectGetWidth(self.messageLabel.frame),
-                                       CGRectGetHeight(self.messageLabel.frame));
+  [self.messageLabel integralizeFrame];
   
   [self.downloadButton sizeToFit];
   self.downloadButton.center = self.center;
@@ -87,6 +84,7 @@
                                           CGRectGetHeight(self.downloadButton.frame)),
                                          CGRectGetWidth(self.downloadButton.frame),
                                          CGRectGetHeight(self.downloadButton.frame));
+  [self.downloadButton integralizeFrame];
   
   [self.deleteButton sizeToFit];
   
@@ -99,6 +97,7 @@
                                                 CGRectGetHeight(self.deleteReadLinearView.frame)),
                                                CGRectGetWidth(self.deleteReadLinearView.frame),
                                                CGRectGetHeight(self.deleteReadLinearView.frame));
+  [self.deleteReadLinearView integralizeFrame];
 }
 
 #pragma mark -

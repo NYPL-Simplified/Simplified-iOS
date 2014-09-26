@@ -6,6 +6,7 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogCategory.h"
 #import "NYPLConfiguration.h"
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLCatalogSearchViewController.h"
 
@@ -71,12 +72,14 @@
 - (void)viewWillLayoutSubviews
 {
   self.activityIndicatorView.center = self.view.center;
+  [self.activityIndicatorView integralizeFrame];
   
   self.noResultsLabel.center = self.view.center;
   self.noResultsLabel.frame = CGRectMake(CGRectGetMinX(self.noResultsLabel.frame),
                                          CGRectGetHeight(self.view.frame) * 0.333,
                                          CGRectGetWidth(self.noResultsLabel.frame),
                                          CGRectGetHeight(self.noResultsLabel.frame));
+  [self.noResultsLabel integralizeFrame];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
