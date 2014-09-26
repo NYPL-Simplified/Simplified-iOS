@@ -10,15 +10,21 @@
 
 @interface NYPLBookDetailView ()
   <NYPLBookDetailDownloadFailedViewDelegate, NYPLBookDetailDownloadingViewDelegate,
-   NYPLBookDetailNormalViewDelegate>
+   NYPLBookDetailNormalViewDelegate, UIWebViewDelegate>
 
 @property (nonatomic) UILabel *authorsLabel;
+@property (nonatomic) BOOL beganInitialRequest;
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) UIImageView *coverImageView;
 @property (nonatomic) NYPLBookDetailDownloadFailedView *downloadFailedView;
 @property (nonatomic) NYPLBookDetailDownloadingView *downloadingView;
 @property (nonatomic) NYPLBookDetailNormalView *normalView;
-@property (nonatomic) UILabel *summaryLabel;
+@property (nonatomic) UILabel *padCategoriesLabel;
+@property (nonatomic) UILabel *padPublishedLabel;
+@property (nonatomic) UILabel *padPublisherLabel;
+@property (nonatomic) UILabel *phoneMetadataLabel;
+@property (nonatomic) UILabel *subtitleLabel;
+@property (nonatomic) UIWebView *summaryWebView;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIImageView *unreadImageView;
 
@@ -31,6 +37,8 @@ static CGFloat const coverPaddingTop = 10.0;
 static CGFloat const mainTextPaddingTop = 10.0;
 static CGFloat const mainTextPaddingLeft = 10.0;
 static CGFloat const mainTextPaddingRight = 10.0;
+
+static NSString *detailTemplate = nil;
 
 @implementation NYPLBookDetailView
 
@@ -50,9 +58,17 @@ static CGFloat const mainTextPaddingRight = 10.0;
   
   self.authorsLabel = [[UILabel alloc] init];
   self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-  self.authorsLabel.numberOfLines = 2;
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.authorsLabel.numberOfLines = 1;
+  } else {
+    self.authorsLabel.numberOfLines = 2;
+  }
   self.authorsLabel.font = [UIFont systemFontOfSize:12];
-  self.authorsLabel.attributedText = NYPLAttributedStringForAuthorsFromString(book.authors);
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.authorsLabel.text = book.authors;
+  } else {
+    self.authorsLabel.attributedText = NYPLAttributedStringForAuthorsFromString(book.authors);
+  }
   [self addSubview:self.authorsLabel];
   
   self.coverImageView = [[UIImageView alloc] init];
@@ -68,10 +84,25 @@ static CGFloat const mainTextPaddingRight = 10.0;
   
   self.titleLabel = [[UILabel alloc] init];
   self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-  self.titleLabel.numberOfLines = 4;
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.titleLabel.numberOfLines = 1;
+  } else {
+    self.titleLabel.numberOfLines = 3;
+  }
   self.titleLabel.font = [UIFont boldSystemFontOfSize:17];
   self.titleLabel.attributedText = NYPLAttributedStringForTitleFromString(book.title);
   [self addSubview:self.titleLabel];
+  
+  self.subtitleLabel = [[UILabel alloc] init];
+  self.subtitleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.subtitleLabel.numberOfLines = 1;
+  } else {
+    self.subtitleLabel.numberOfLines = 2;
+  }
+  self.subtitleLabel.text = book.subtitle;
+  self.subtitleLabel.font = [UIFont systemFontOfSize:12];
+  [self addSubview:self.subtitleLabel];
   
   self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
   self.downloadFailedView.delegate = self;
@@ -94,13 +125,71 @@ static CGFloat const mainTextPaddingRight = 10.0;
   [self.unreadImageView setTintColor:[NYPLConfiguration accentColor]];
   [self addSubview:self.unreadImageView];
   
-  self.summaryLabel = [[UILabel alloc] init];
-  self.summaryLabel.numberOfLines = 0;
-  self.summaryLabel.text = book.summary;
-  self.summaryLabel.font = [UIFont systemFontOfSize:12];
-  [self addSubview:self.summaryLabel];
+  self.summaryWebView = [[UIWebView alloc] init];
+  self.summaryWebView.scrollView.alwaysBounceVertical = NO;
+  self.summaryWebView.backgroundColor = [UIColor clearColor];
+  self.summaryWebView.suppressesIncrementalRendering = YES;
+  self.summaryWebView.delegate = self;
+  self.summaryWebView.opaque = NO;
+  
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
+  [self.summaryWebView
+   loadHTMLString:[NSString stringWithFormat:detailTemplate,
+                   [NYPLConfiguration systemFontName],
+                   book.summary ? book.summary : @""]
+   baseURL:nil];
+#pragma clang diagnostic pop
+  
+  [self addSubview:self.summaryWebView];
+  
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    // Metadata on the iPad is shown via separate lines to the right of the cover. As such, we to
+    // use a series of labels in order to get the desired truncation.
+    self.padCategoriesLabel = [[UILabel alloc] init];
+    self.padCategoriesLabel.font = [UIFont systemFontOfSize:12];
+    self.padCategoriesLabel.textColor = [UIColor lightGrayColor];
+    self.padCategoriesLabel.text = @"Categories: FIXME, TODO";
+    [self addSubview:self.padCategoriesLabel];
+    self.padPublishedLabel = [[UILabel alloc] init];
+    self.padPublishedLabel.font = [UIFont systemFontOfSize:12];
+    self.padPublishedLabel.textColor = [UIColor lightGrayColor];
+    self.padPublishedLabel.text = @"Published: January 1st, 1970";
+    [self addSubview:self.padPublishedLabel];
+    self.padPublisherLabel = [[UILabel alloc] init];
+    self.padPublisherLabel.font = [UIFont systemFontOfSize:12];
+    self.padPublisherLabel.textColor = [UIColor lightGrayColor];
+    self.padPublisherLabel.text = @"Publisher: Imaginary Metadata";
+    [self addSubview:self.padPublisherLabel];
+  } else {
+    // Metadata on the iPhone is shown as a single block of wrapped text.
+    self.phoneMetadataLabel = [[UILabel alloc] init];
+    self.phoneMetadataLabel.numberOfLines = 0;
+    self.phoneMetadataLabel.textAlignment = NSTextAlignmentCenter;
+    self.phoneMetadataLabel.font = [UIFont systemFontOfSize:10];
+    self.phoneMetadataLabel.textColor = [UIColor lightGrayColor];
+    self.phoneMetadataLabel.text =
+      @"Published: January 1st, 1970 "
+      @"Publisher: Imaginary Metadata "
+      @"Categories: FIXME, TODO";
+    [self addSubview:self.phoneMetadataLabel];
+  }
   
   return self;
+}
+
+#pragma mark NSObject
+
++ (void)initialize
+{
+  detailTemplate = [NSString
+                    stringWithContentsOfURL:[[NSBundle mainBundle]
+                                             URLForResource:@"DetailSummaryTemplate"
+                                             withExtension:@"html"]
+                    encoding:NSUTF8StringEncoding
+                    error:NULL];
+  
+  assert(detailTemplate);
 }
 
 #pragma mark UIView
@@ -126,15 +215,60 @@ static CGFloat const mainTextPaddingRight = 10.0;
     CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
     CGFloat const y = CGRectGetMaxY(self.titleLabel.frame);
     CGFloat const w = CGRectGetWidth(self.titleLabel.frame);
+    CGFloat const h = [self.subtitleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+    self.subtitleLabel.frame = CGRectMake(x, y, w, h);
+  }
+  
+  {
+    CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
+    CGFloat const y = CGRectGetMaxY(self.subtitleLabel.frame);
+    CGFloat const w = CGRectGetWidth(self.titleLabel.frame);
     CGFloat const h = [self.authorsLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
     self.authorsLabel.frame = CGRectMake(x, y, w, h);
   }
   
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    {
+      CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
+      CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
+      CGFloat const h = [self.padCategoriesLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+      CGFloat const y = CGRectGetMaxY(self.coverImageView.frame) - h;
+      self.padCategoriesLabel.frame = CGRectMake(x, y, w, h);
+    }
+    {
+      CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
+      CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
+      CGFloat const h = [self.padPublisherLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+      CGFloat const y = CGRectGetMinY(self.padCategoriesLabel.frame) - h;
+      self.padPublisherLabel.frame = CGRectMake(x, y, w, h);
+    }
+    {
+      CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
+      CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
+      CGFloat const h = [self.padPublishedLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+      CGFloat const y = CGRectGetMinY(self.padPublisherLabel.frame) - h;
+      self.padPublishedLabel.frame = CGRectMake(x, y, w, h);
+    }
+  } else {
+    CGFloat const x = 10;
+    CGFloat const y = CGRectGetMaxY(self.coverImageView.frame) + 10;
+    CGFloat const w = CGRectGetWidth(self.frame) - 20;
+    CGFloat const h = [self.phoneMetadataLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+    self.phoneMetadataLabel.frame = CGRectMake(x, y, w, h);
+  }
+  
   {
-    self.normalView.frame = CGRectMake(0,
-                                       CGRectGetMaxY(self.coverImageView.frame) + 10.0,
-                                       CGRectGetWidth(self.frame),
-                                       CGRectGetHeight(self.normalView.frame));
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+      self.normalView.frame = CGRectMake(0,
+                                         CGRectGetMaxY(self.coverImageView.frame) + 10.0,
+                                         CGRectGetWidth(self.frame),
+                                         CGRectGetHeight(self.normalView.frame));
+    } else {
+      self.normalView.frame = CGRectMake(0,
+                                         CGRectGetMaxY(self.phoneMetadataLabel.frame) + 10.0,
+                                         CGRectGetWidth(self.frame),
+                                         CGRectGetHeight(self.normalView.frame));
+    }
     
     self.downloadingView.frame = self.normalView.frame;
     
@@ -154,18 +288,23 @@ static CGFloat const mainTextPaddingRight = 10.0;
     CGFloat const leftPadding = 40;
     CGFloat const rightPadding = 35;
     
-    CGSize const size = [self.summaryLabel
-                         sizeThatFits:CGSizeMake((CGRectGetWidth(self.frame) - leftPadding -
-                                                  rightPadding),
+    self.summaryWebView.frame = CGRectMake(0,
+                                           0,
+                                           CGRectGetWidth(self.frame) - leftPadding - rightPadding,
+                                           5);
+    
+    CGSize const size = [self.summaryWebView
+                         sizeThatFits:CGSizeMake(CGRectGetWidth(self.summaryWebView.frame),
                                                  CGFLOAT_MAX)];
-    self.summaryLabel.frame = CGRectMake(leftPadding,
-                                         CGRectGetMaxY(self.normalView.frame) + 10,
-                                         size.width,
-                                         size.height);
+    
+    self.summaryWebView.frame = CGRectMake(leftPadding,
+                                           CGRectGetMaxY(self.normalView.frame) + 10,
+                                           size.width,
+                                           size.height);
   }
   
   self.contentSize = CGSizeMake(CGRectGetWidth(self.frame),
-                                CGRectGetMaxY(self.summaryLabel.frame) + 10);
+                                CGRectGetMaxY(self.summaryWebView.frame) + 10);
 }
 
 #pragma mark NYPLBookDetailDownloadFailedViewDelegate
@@ -208,6 +347,25 @@ static CGFloat const mainTextPaddingRight = 10.0;
 (__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
 {
   [self.detailViewDelegate didSelectReadForBookDetailView:self];
+}
+
+#pragma mark UIWebViewDelegate
+
+- (void)webViewDidFinishLoad:(__attribute__((unused)) UIWebView *)webView
+{
+  [self setNeedsLayout];
+}
+
+- (BOOL)webView:(__attribute__((unused)) UIWebView *)webView
+shouldStartLoadWithRequest:(__attribute__((unused)) NSURLRequest *)request
+navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
+{
+  // Deny any secondary requests generated by rendering the HTML (e.g. from 'img' tags).
+  if(self.beganInitialRequest) return NO;
+  
+  self.beganInitialRequest = YES;
+  
+  return YES;
 }
 
 #pragma mark -

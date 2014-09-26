@@ -2,6 +2,7 @@
 
 @interface NYPLOPDSEntry : NSObject
 
+@property (nonatomic, readonly) NSString *alternativeHeadline; // nilable
 @property (nonatomic, readonly) NSArray *authorStrings;
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSArray *links;

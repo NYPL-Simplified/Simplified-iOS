@@ -9,6 +9,7 @@
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSURL *imageURL; // nilable
 @property (nonatomic, readonly) NSURL *imageThumbnailURL; // nilable
+@property (nonatomic, readonly) NSString *subtitle; // nilable
 @property (nonatomic, readonly) NSString *summary; // nilable
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSDate *updated;
@@ -24,6 +25,7 @@
                          identifier:(NSString *)identifier
                            imageURL:(NSURL *)imageURL
                   imageThumbnailURL:(NSURL *)imageThumbnailURL
+                           subtitle:(NSString *)subtitle
                             summary:(NSString *)summary
                               title:(NSString *)title
                             updated:(NSDate *)updated;

@@ -74,7 +74,12 @@
   
   [self.messageLabel sizeToFit];
   self.messageLabel.center = self.backgroundView.center;
- 
+  // FIXME: This is a temporary hack to avoid subpixel alignment issues.
+  self.messageLabel.frame = CGRectMake(ceil(CGRectGetMinX(self.messageLabel.frame)),
+                                       ceil(CGRectGetMinY(self.messageLabel.frame)),
+                                       CGRectGetWidth(self.messageLabel.frame),
+                                       CGRectGetHeight(self.messageLabel.frame));
+  
   [self.downloadButton sizeToFit];
   self.downloadButton.center = self.center;
   self.downloadButton.frame = CGRectMake(CGRectGetMinX(self.downloadButton.frame),
@@ -101,6 +106,10 @@
 - (void)setState:(NYPLBookDetailNormalViewState const)state
 {
   _state = state;
+  
+  // TODO: This should be set to a localized string based on the license and state of the book once
+  // the server starts making that information available.
+  self.messageLabel.text = @"This public domain book is yours to keep.";
   
   switch(state) {
     case NYPLBookDetailNormalViewStateUnregistered:
