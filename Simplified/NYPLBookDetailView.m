@@ -137,7 +137,7 @@ static NSString *detailTemplate = nil;
   [self.summaryWebView
    loadHTMLString:[NSString stringWithFormat:detailTemplate,
                    [NYPLConfiguration systemFontName],
-                   book.summary]
+                   book.summary ? book.summary : @""]
    baseURL:nil];
 #pragma clang diagnostic pop
   
