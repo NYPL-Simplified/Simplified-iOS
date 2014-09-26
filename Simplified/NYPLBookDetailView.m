@@ -38,6 +38,8 @@ static CGFloat const mainTextPaddingTop = 10.0;
 static CGFloat const mainTextPaddingLeft = 10.0;
 static CGFloat const mainTextPaddingRight = 10.0;
 
+static NSString *detailTemplate = nil;
+
 @implementation NYPLBookDetailView
 
 // designated initializer
@@ -129,21 +131,16 @@ static CGFloat const mainTextPaddingRight = 10.0;
   self.summaryWebView.suppressesIncrementalRendering = YES;
   self.summaryWebView.delegate = self;
   self.summaryWebView.opaque = NO;
+  
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
   [self.summaryWebView
-   loadHTMLString:[NSString stringWithFormat:
-                   @"<!DOCTYPE html>"
-                   @"<html>"
-                   @" <head>"
-                   @" <title>Summary</title>"
-                   @"  <style>body {font-family: \"%@\"; background-color: transparent;}</style>"
-                   @" </head>"
-                   @" <body>"
-                   @"  %@"
-                   @" </body>"
-                   @"</html>",
+   loadHTMLString:[NSString stringWithFormat:detailTemplate,
                    [NYPLConfiguration systemFontName],
                    book.summary]
    baseURL:nil];
+#pragma clang diagnostic pop
+  
   [self addSubview:self.summaryWebView];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -179,6 +176,20 @@ static CGFloat const mainTextPaddingRight = 10.0;
   }
   
   return self;
+}
+
+#pragma mark NSObject
+
++ (void)initialize
+{
+  detailTemplate = [NSString
+                    stringWithContentsOfURL:[[NSBundle mainBundle]
+                                             URLForResource:@"DetailSummaryTemplate"
+                                             withExtension:@"html"]
+                    encoding:NSUTF8StringEncoding
+                    error:NULL];
+  
+  assert(detailTemplate);
 }
 
 #pragma mark UIView
