@@ -1,6 +1,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLRoundedButton.h"
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLBookDetailDownloadFailedView.h"
 
@@ -70,6 +71,7 @@
                                        messageTopPadding,
                                        CGRectGetWidth(self.messageLabel.frame),
                                        CGRectGetHeight(self.messageLabel.frame));
+  [self.messageLabel integralizeFrame];
   
   [self.cancelButton sizeToFit];
   
@@ -83,6 +85,7 @@
                 CGRectGetHeight(self.cancelTryAgainLinearView.frame) - buttonPadding),
                CGRectGetWidth(self.cancelTryAgainLinearView.frame),
                CGRectGetHeight(self.cancelTryAgainLinearView.frame));
+  [self.cancelTryAgainLinearView integralizeFrame];
 }
 
 #pragma mark -

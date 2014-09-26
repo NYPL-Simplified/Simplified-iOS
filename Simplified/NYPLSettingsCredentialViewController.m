@@ -2,6 +2,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLSettingsCredentialView.h"
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLSettingsCredentialViewController.h"
 
@@ -200,6 +201,7 @@ completionHandler:(void (^)())handler
                                               UIViewAutoresizingFlexibleBottomMargin);
     [self.shieldView addSubview:activityIndicatorView];
     activityIndicatorView.center = self.shieldView.center;
+    [activityIndicatorView integralizeFrame];
     [activityIndicatorView startAnimating];
     [self.view addSubview:self.shieldView];
   } else {
