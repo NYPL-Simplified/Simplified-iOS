@@ -6,6 +6,7 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogCategory.h"
 #import "NYPLConfiguration.h"
+#import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLCatalogSearchViewController.h"
@@ -18,6 +19,7 @@
 @property (nonatomic) NYPLCatalogCategory *category;
 @property (nonatomic) NSString *categoryTitle;
 @property (nonatomic) UILabel *noResultsLabel;
+@property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) UISearchBar *searchBar;
 @property (nonatomic) NSString *searchTemplate;
 
@@ -66,6 +68,15 @@
   self.noResultsLabel.hidden = YES;
   [self.view addSubview:self.noResultsLabel];
   
+    __weak NYPLCatalogSearchViewController *weakSelf = self;
+  self.reloadView = [[NYPLReloadView alloc] init];
+  self.reloadView.handler = ^{
+    weakSelf.reloadView.hidden = YES;
+    [weakSelf searchBarSearchButtonClicked:weakSelf.searchBar];
+  };
+  self.reloadView.hidden = YES;
+  [self.view addSubview:self.reloadView];
+  
   self.navigationItem.titleView = self.searchBar;
 }
 
@@ -80,6 +91,9 @@
                                          CGRectGetWidth(self.noResultsLabel.frame),
                                          CGRectGetHeight(self.noResultsLabel.frame));
   [self.noResultsLabel integralizeFrame];
+  
+  [self.reloadView centerInSuperview];
+  [self.reloadView integralizeFrame];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -142,23 +156,15 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
              withString:[self.searchBar.text stringByURLEncoding]]]
    handler:^(NYPLCatalogCategory *const category) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       self.collectionView.hidden = NO;
        self.activityIndicatorView.hidden = YES;
        [self.activityIndicatorView stopAnimating];
        
-       // FIXME: This uses the wrong localized string for the title.
        if(!category) {
-         [[[UIAlertView alloc]
-           initWithTitle:
-            NSLocalizedString(@"CatalogCategoryViewControllerFeedDownloadFailedTitle", nil)
-           message:
-            NSLocalizedString(@"CheckConnection", nil)
-           delegate:nil
-           cancelButtonTitle:nil
-           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-          show];
+         self.reloadView.hidden = NO;
          return;
        }
+       
+       self.collectionView.hidden = NO;
        
        self.category = category;
        self.category.delegate = self;

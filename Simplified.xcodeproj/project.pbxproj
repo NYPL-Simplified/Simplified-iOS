@@ -83,6 +83,7 @@
 		11A16E6F195B60DF004147F4 /* NYPLBookNormalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */; };
 		11ABD553197D6F5200759635 /* NYPLSettingsCredentialView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11ABD552197D6F5200759635 /* NYPLSettingsCredentialView.xib */; };
 		11ABD556197D77EF00759635 /* NYPLSettingsCredentialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ABD555197D77EF00759635 /* NYPLSettingsCredentialViewController.m */; };
+		11B20E6E19D9F6DD00877A23 /* NYPLReloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */; };
 		11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11B6020419806CD300800DA9 /* NYPLBookDownloadingCell.m */; };
 		11BFDB33199C01F700378691 /* NYPLReaderTOCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11BFDB32199C01F700378691 /* NYPLReaderTOCViewController.m */; };
 		11BFDB36199C08E900378691 /* NYPLReaderTOCElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 11BFDB35199C08E900378691 /* NYPLReaderTOCElement.m */; };
@@ -258,6 +259,8 @@
 		11ABD552197D6F5200759635 /* NYPLSettingsCredentialView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NYPLSettingsCredentialView.xib; sourceTree = "<group>"; };
 		11ABD554197D77EF00759635 /* NYPLSettingsCredentialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsCredentialViewController.h; sourceTree = "<group>"; };
 		11ABD555197D77EF00759635 /* NYPLSettingsCredentialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsCredentialViewController.m; sourceTree = "<group>"; };
+		11B20E6C19D9F6DD00877A23 /* NYPLReloadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReloadView.h; sourceTree = "<group>"; };
+		11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReloadView.m; sourceTree = "<group>"; };
 		11B6020319806CD300800DA9 /* NYPLBookDownloadingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDownloadingCell.h; sourceTree = "<group>"; };
 		11B6020419806CD300800DA9 /* NYPLBookDownloadingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDownloadingCell.m; sourceTree = "<group>"; };
 		11BFDB31199C01F700378691 /* NYPLReaderTOCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReaderTOCViewController.h; sourceTree = "<group>"; };
@@ -574,6 +577,8 @@
 				119BEBB719902A8800121439 /* NYPLOpenSearchDescription.h */,
 				119BEBB819902A8800121439 /* NYPLOpenSearchDescription.m */,
 				119503EE1993FB90009FB788 /* NYPLReadium.h */,
+				11B20E6C19D9F6DD00877A23 /* NYPLReloadView.h */,
+				11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */,
 				11548C091939136C009DBF2E /* NYPLRootTabBarController.h */,
 				11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */,
 				114C8CD819BF55F900719B72 /* NYPLRoundedButton.h */,
@@ -789,6 +794,7 @@
 				111559ED19B8FA590003BE94 /* NYPLXML.m in Sources */,
 				11580AC81986A77B00949A15 /* NYPLBookCell.m in Sources */,
 				1183F35B194F847100DC322F /* NYPLAsync.m in Sources */,
+				11B20E6E19D9F6DD00877A23 /* NYPLReloadView.m in Sources */,
 				119BEBB919902A8800121439 /* NYPLOpenSearchDescription.m in Sources */,
 				11BFDB36199C08E900378691 /* NYPLReaderTOCElement.m in Sources */,
 				11BFDB33199C01F700378691 /* NYPLReaderTOCViewController.m in Sources */,

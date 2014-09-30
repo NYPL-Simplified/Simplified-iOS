@@ -4,6 +4,7 @@
 #import "NYPLCatalogCategory.h"
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
+#import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLCatalogCategoryViewController.h"
@@ -14,6 +15,7 @@
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogCategory *category;
+@property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) NSURL *URL;
 
 @end
@@ -52,45 +54,28 @@
   
   self.activityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  [self.activityIndicatorView startAnimating];
+  self.activityIndicatorView.hidden = YES;
   [self.view addSubview:self.activityIndicatorView];
   
-  [NYPLCatalogCategory
-   withURL:self.URL
-   handler:^(NYPLCatalogCategory *const category) {
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       self.activityIndicatorView.hidden = YES;
-       [self.activityIndicatorView stopAnimating];
-       
-       if(!category) {
-         [[[UIAlertView alloc]
-           initWithTitle:
-            NSLocalizedString(@"CatalogCategoryViewControllerFeedDownloadFailedTitle", nil)
-           message:
-            NSLocalizedString(@"CheckConnection", nil)
-           delegate:nil
-           cancelButtonTitle:nil
-           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-          show];
-         return;
-       }
-       
-       self.category = category;
-       self.category.delegate = self;
-       
-       if(self.category.searchTemplate) {
-         self.navigationItem.rightBarButtonItem.enabled = YES;
-       }
-       
-       [self didLoadCategory];
-     }];
-   }];
+  __weak NYPLCatalogCategoryViewController *weakSelf = self;
+  self.reloadView = [[NYPLReloadView alloc] init];
+  self.reloadView.handler = ^{
+    weakSelf.reloadView.hidden = YES;
+    [weakSelf downloadFeed];
+  };
+  self.reloadView.hidden = YES;
+  [self.view addSubview:self.reloadView];
+  
+  [self downloadFeed];
 }
 
 - (void)viewWillLayoutSubviews
 {
   self.activityIndicatorView.center = self.view.center;
   [self.activityIndicatorView integralizeFrame];
+  
+  [self.reloadView centerInSuperview];
+  [self.reloadView integralizeFrame];
 }
 
 #pragma mark UICollectionViewDataSource
@@ -130,6 +115,38 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 }
 
 #pragma mark -
+
+- (void)downloadFeed
+{
+  self.activityIndicatorView.hidden = NO;
+  [self.activityIndicatorView startAnimating];
+  self.collectionView.hidden = YES;
+  
+  [NYPLCatalogCategory
+   withURL:self.URL
+   handler:^(NYPLCatalogCategory *const category) {
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       self.activityIndicatorView.hidden = YES;
+       [self.activityIndicatorView stopAnimating];
+       
+       if(!category) {
+         self.reloadView.hidden = NO;
+         return;
+       }
+       
+       self.collectionView.hidden = NO;
+       
+       self.category = category;
+       self.category.delegate = self;
+       
+       if(self.category.searchTemplate) {
+         self.navigationItem.rightBarButtonItem.enabled = YES;
+       }
+       
+       [self didLoadCategory];
+     }];
+   }];
+}
 
 - (void)didLoadCategory
 {
