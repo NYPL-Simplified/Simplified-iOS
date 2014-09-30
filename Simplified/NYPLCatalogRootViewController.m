@@ -8,6 +8,7 @@
 #import "NYPLCatalogSubsectionLink.h"
 #import "NYPLConfiguration.h"
 #import "NYPLIndeterminateProgressView.h"
+#import "NYPLReloadLargeView.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLCatalogRootViewController.h"
@@ -24,6 +25,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
 @property (nonatomic) NSMutableDictionary *cachedCells;
 @property (nonatomic) NSMutableDictionary *loadingCells;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
+@property (nonatomic) NYPLReloadLargeView *reloadLargeView;
 @property (nonatomic) UITableView *tableView;
 
 @end
@@ -79,12 +81,21 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.tableView.hidden = YES;
   [self.view addSubview:self.tableView];
   
+  __weak NYPLCatalogRootViewController *weakSelf = self;
+  self.reloadLargeView = [[NYPLReloadLargeView alloc] init];
+  self.reloadLargeView.handler = ^{
+    weakSelf.reloadLargeView.hidden = YES;
+    [weakSelf downloadFeed];
+  };
+  self.reloadLargeView.hidden = YES;
+  [self.view addSubview:self.reloadLargeView];
+  
   [self downloadFeed];
 }
 
 - (void)viewWillLayoutSubviews
 {
-  self.activityIndicatorView.center = self.view.center;
+  [self.activityIndicatorView centerInSuperview];
   [self.activityIndicatorView integralizeFrame];
   
   UIEdgeInsets const insets = UIEdgeInsetsMake(self.topLayoutGuide.length,
@@ -94,6 +105,10 @@ static CGFloat const sectionHeaderHeight = 50.0;
   
   self.tableView.contentInset = insets;
   self.tableView.scrollIndicatorInsets = insets;
+  
+  [self.reloadLargeView sizeToFit];
+  [self.reloadLargeView centerInSuperview];
+  [self.reloadLargeView integralizeFrame];
 }
 
 - (void)didReceiveMemoryWarning
@@ -236,13 +251,7 @@ viewForHeaderInSection:(NSInteger const)section
        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
        
        if(!root) {
-         [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"CatalogViewControllerFeedDownloadFailedTitle", nil)
-           message:NSLocalizedString(@"CheckConnection", nil)
-           delegate:nil
-           cancelButtonTitle:nil
-           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-          show];
+         self.reloadLargeView.hidden = NO;
          return;
        }
        
