@@ -6,7 +6,7 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogCategory.h"
 #import "NYPLConfiguration.h"
-#import "NYPLReloadLargeView.h"
+#import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLCatalogSearchViewController.h"
@@ -19,7 +19,7 @@
 @property (nonatomic) NYPLCatalogCategory *category;
 @property (nonatomic) NSString *categoryTitle;
 @property (nonatomic) UILabel *noResultsLabel;
-@property (nonatomic) NYPLReloadLargeView *reloadLargeView;
+@property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) UISearchBar *searchBar;
 @property (nonatomic) NSString *searchTemplate;
 
@@ -69,13 +69,13 @@
   [self.view addSubview:self.noResultsLabel];
   
     __weak NYPLCatalogSearchViewController *weakSelf = self;
-  self.reloadLargeView = [[NYPLReloadLargeView alloc] init];
-  self.reloadLargeView.handler = ^{
-    weakSelf.reloadLargeView.hidden = YES;
+  self.reloadView = [[NYPLReloadView alloc] init];
+  self.reloadView.handler = ^{
+    weakSelf.reloadView.hidden = YES;
     [weakSelf searchBarSearchButtonClicked:weakSelf.searchBar];
   };
-  self.reloadLargeView.hidden = YES;
-  [self.view addSubview:self.reloadLargeView];
+  self.reloadView.hidden = YES;
+  [self.view addSubview:self.reloadView];
   
   self.navigationItem.titleView = self.searchBar;
 }
@@ -92,9 +92,9 @@
                                          CGRectGetHeight(self.noResultsLabel.frame));
   [self.noResultsLabel integralizeFrame];
   
-  [self.reloadLargeView sizeToFit];
-  [self.reloadLargeView centerInSuperview];
-  [self.reloadLargeView integralizeFrame];
+  [self.reloadView sizeToFit];
+  [self.reloadView centerInSuperview];
+  [self.reloadView integralizeFrame];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -161,7 +161,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
        [self.activityIndicatorView stopAnimating];
        
        if(!category) {
-         self.reloadLargeView.hidden = NO;
+         self.reloadView.hidden = NO;
          return;
        }
        

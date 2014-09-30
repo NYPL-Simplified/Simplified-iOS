@@ -1,4 +1,4 @@
-@interface NYPLReloadLargeView : UIView
+@interface NYPLReloadView : UIView
 
 // As always, beware of creating reference cycles when setting handlers that refer to |self|.
 @property (nonatomic, strong) void (^handler)();

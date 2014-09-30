@@ -1,9 +1,9 @@
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
 
-#import "NYPLReloadLargeView.h"
+#import "NYPLReloadView.h"
 
-@interface NYPLReloadLargeView ()
+@interface NYPLReloadView ()
 
 @property (nonatomic) UILabel *messageLabel;
 @property (nonatomic) NYPLRoundedButton *reloadButton;
@@ -13,7 +13,7 @@
 
 static CGFloat const width = 250;
 
-@implementation NYPLReloadLargeView
+@implementation NYPLReloadView
 
 #pragma mark NSObject
 
