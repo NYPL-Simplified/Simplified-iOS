@@ -8,7 +8,7 @@
 #import "NYPLCatalogSubsectionLink.h"
 #import "NYPLConfiguration.h"
 #import "NYPLIndeterminateProgressView.h"
-#import "NYPLReloadLargeView.h"
+#import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLCatalogRootViewController.h"
@@ -25,7 +25,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
 @property (nonatomic) NSMutableDictionary *cachedCells;
 @property (nonatomic) NSMutableDictionary *loadingCells;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
-@property (nonatomic) NYPLReloadLargeView *reloadLargeView;
+@property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) UITableView *tableView;
 
 @end
@@ -82,13 +82,13 @@ static CGFloat const sectionHeaderHeight = 50.0;
   [self.view addSubview:self.tableView];
   
   __weak NYPLCatalogRootViewController *weakSelf = self;
-  self.reloadLargeView = [[NYPLReloadLargeView alloc] init];
-  self.reloadLargeView.handler = ^{
-    weakSelf.reloadLargeView.hidden = YES;
+  self.reloadView = [[NYPLReloadView alloc] init];
+  self.reloadView.handler = ^{
+    weakSelf.reloadView.hidden = YES;
     [weakSelf downloadFeed];
   };
-  self.reloadLargeView.hidden = YES;
-  [self.view addSubview:self.reloadLargeView];
+  self.reloadView.hidden = YES;
+  [self.view addSubview:self.reloadView];
   
   [self downloadFeed];
 }
@@ -106,9 +106,9 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.tableView.contentInset = insets;
   self.tableView.scrollIndicatorInsets = insets;
   
-  [self.reloadLargeView sizeToFit];
-  [self.reloadLargeView centerInSuperview];
-  [self.reloadLargeView integralizeFrame];
+  [self.reloadView sizeToFit];
+  [self.reloadView centerInSuperview];
+  [self.reloadView integralizeFrame];
 }
 
 - (void)didReceiveMemoryWarning
@@ -251,7 +251,7 @@ viewForHeaderInSection:(NSInteger const)section
        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
        
        if(!root) {
-         self.reloadLargeView.hidden = NO;
+         self.reloadView.hidden = NO;
          return;
        }
        
