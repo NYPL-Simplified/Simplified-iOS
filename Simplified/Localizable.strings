@@ -2,7 +2,8 @@
 
 "Cancel" = "Cancel";
 "Catalog" = "Catalog";
-"CheckConnection" = "Please check your connection or try again later.";
+"CheckConnection" = "Please check your connection and try again.";
+"ConnectionFailed" = "Connection Failed";
 "Delete" = "Delete";
 "Download" = "Download";
 "DownloadCouldNotBeCompleted" = "The download could not be completed.";
@@ -24,10 +25,6 @@
 // NYPLCatalogCategoryViewController
 
 "CatalogCategoryViewControllerFeedDownloadFailedTitle" = "Could Not Load Category";
-
-// NYPLCatalogViewController
-
-"CatalogViewControllerFeedDownloadFailedTitle" = "Could Not Load Catalog";
 
 // NYPLHoldsViewController
 

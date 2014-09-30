@@ -12,6 +12,12 @@
   return [self sizeThatFits:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)].width;
 }
 
+- (void)centerInSuperview
+{
+  self.center = CGPointMake(CGRectGetWidth(self.superview.bounds) * 0.5,
+                            CGRectGetHeight(self.superview.bounds) * 0.5);
+}
+
 - (void)integralizeFrame
 {
   self.frame = CGRectIntegral(self.frame);
