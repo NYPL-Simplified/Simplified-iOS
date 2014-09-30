@@ -106,7 +106,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.tableView.contentInset = insets;
   self.tableView.scrollIndicatorInsets = insets;
   
-  [self.reloadView sizeToFit];
   [self.reloadView centerInSuperview];
   [self.reloadView integralizeFrame];
 }

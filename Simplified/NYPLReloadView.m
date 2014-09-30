@@ -19,7 +19,7 @@ static CGFloat const width = 250;
 
 - (instancetype)init
 {
-  self = [super initWithFrame:CGRectMake(0, 0, width, CGFLOAT_MAX)];
+  self = [super initWithFrame:CGRectMake(0, 0, width, 0)];
   if(!self) return nil;
   
   self.titleLabel = [[UILabel alloc] init];
@@ -43,6 +43,10 @@ static CGFloat const width = 250;
                         action:@selector(didSelectReload)
               forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.reloadButton];
+  
+  [self layoutIfNeeded];
+  
+  self.frame = CGRectMake(0, 0, width, CGRectGetMaxY(self.reloadButton.frame));
   
   return self;
 }
@@ -80,13 +84,6 @@ static CGFloat const width = 250;
     frame.origin.y = CGRectGetMaxY(self.messageLabel.frame) + padding;
     self.reloadButton.frame = frame;
   }
-}
-
-- (CGSize)sizeThatFits:(__attribute__((unused)) CGSize)size
-{
-  [self layoutIfNeeded];
-  
-  return CGSizeMake(width, CGRectGetMaxY(self.reloadButton.frame));
 }
 
 #pragma mark -

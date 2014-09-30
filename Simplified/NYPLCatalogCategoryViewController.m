@@ -74,7 +74,6 @@
   self.activityIndicatorView.center = self.view.center;
   [self.activityIndicatorView integralizeFrame];
   
-  [self.reloadView sizeToFit];
   [self.reloadView centerInSuperview];
   [self.reloadView integralizeFrame];
 }
