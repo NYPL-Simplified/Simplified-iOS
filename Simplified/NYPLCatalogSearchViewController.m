@@ -92,7 +92,6 @@
                                          CGRectGetHeight(self.noResultsLabel.frame));
   [self.noResultsLabel integralizeFrame];
   
-  [self.reloadView sizeToFit];
   [self.reloadView centerInSuperview];
   [self.reloadView integralizeFrame];
 }
