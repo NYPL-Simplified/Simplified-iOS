@@ -33,15 +33,16 @@
 
 - (void)reset
 {
+  self.groupIndexesToFacetNames = [NSMutableArray array];
+ 
   [self.scrollView removeFromSuperview];
   
-  self.linearView = [[NYPLLinearView alloc] init];
-  
   self.scrollView = [[UIScrollView alloc] init];
-  [self.scrollView addSubview:self.linearView];
   [self addSubview:self.scrollView];
   
-  self.groupIndexesToFacetNames = [NSMutableArray array];
+  self.linearView = [[NYPLLinearView alloc] init];
+  self.linearView.padding = 2.0;
+  [self.scrollView addSubview:self.linearView];
 }
 
 - (void)reloadData
@@ -94,6 +95,21 @@
   }
   
   [self setNeedsLayout];
+}
+
+#pragma mark UIView
+
+- (void)layoutSubviews
+{
+  for(UIView *const view in self.linearView.subviews) {
+    [view sizeToFit];
+  }
+  
+  [self.linearView sizeToFit];
+  
+  self.scrollView.frame = self.bounds;
+  self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.linearView.frame),
+                                           CGRectGetHeight(self.frame));
 }
 
 @end
