@@ -94,7 +94,9 @@
     [self.linearView addSubview:button];
   }
   
-  [self setNeedsLayout];
+  if(self.superview) {
+    [self setNeedsLayout];
+  }
 }
 
 #pragma mark UIView
