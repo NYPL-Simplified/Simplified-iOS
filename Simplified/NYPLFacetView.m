@@ -41,7 +41,7 @@
   [self addSubview:self.scrollView];
   
   self.linearView = [[NYPLLinearView alloc] init];
-  self.linearView.padding = 2.0;
+  self.linearView.padding = 8.0;
   [self.scrollView addSubview:self.linearView];
 }
 
@@ -74,13 +74,13 @@
     }
 
     UILabel *const groupLabel = [[UILabel alloc] init];
-    groupLabel.font = [UIFont systemFontOfSize:12];
+    groupLabel.font = [UIFont systemFontOfSize:17];
     groupLabel.text = [[self.dataSource facetView:self nameForFacetGroupAtIndex:groupIndex]
                        stringByAppendingString:@":"];
     [self.linearView addSubview:groupLabel];
 
     NYPLRoundedButton *const button = [NYPLRoundedButton button];
-    button.titleLabel.font = [UIFont systemFontOfSize:12];
+    button.titleLabel.font = [UIFont systemFontOfSize:17];
     if([self.dataSource facetView:self isActiveFacetForFacetGroupAtIndex:groupIndex]) {
       NSUInteger const facetIndex = [self.dataSource
                                      facetView:self
