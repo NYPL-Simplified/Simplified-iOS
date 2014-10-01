@@ -56,32 +56,6 @@
   NSUInteger const groupCount = [self.dataSource numberOfFacetGroupsInFacetView:self];
   
   for(NSUInteger groupIndex = 0; groupIndex < groupCount; ++groupIndex) {
-    
-    UILabel *const groupLabel = [[UILabel alloc] init];
-    groupLabel.font = [UIFont systemFontOfSize:12];
-    groupLabel.text = [[self.dataSource facetView:self nameForFacetGroupAtIndex:groupIndex]
-                       stringByAppendingString:@":"];
-    [self.linearView addSubview:groupLabel];
-    
-    NYPLRoundedButton *const button = [NYPLRoundedButton button];
-    button.titleLabel.font = [UIFont systemFontOfSize:12];
-    [self.linearView addSubview:button];
-    
-    if([self.dataSource facetView:self isActiveFacetForFacetGroupAtIndex:groupIndex]) {
-      NSUInteger const facetIndex = [self.dataSource
-                                     facetView:self
-                                     activeFacetIndexForFacetGroupAtIndex:groupIndex];
-      NSUInteger const indexes[2] = {groupIndex, facetIndex};
-      NSIndexPath *const indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];
-      NSString *const facetName = [self.dataSource
-                                   facetView:self
-                                   nameForFacetAtIndexPath:indexPath];
-      [button setTitle:facetName forState:UIControlStateNormal];
-    } else {
-      [button setTitle:NSLocalizedString(@"FacetViewNotActive", nil)
-              forState:UIControlStateNormal];
-    }
-    
     NSUInteger const facetCount = [self.dataSource
                                    facetView:self
                                    numberOfFacetsInFacetGroupAtIndex:groupIndex];
@@ -90,18 +64,36 @@
     [self.groupIndexesToFacetNames addObject:facetNames];
     
     for(NSUInteger facetIndex = 0; facetIndex < facetCount; ++facetIndex) {
-      
       NSUInteger const indexes[2] = {groupIndex, facetIndex};
-      
       NSIndexPath *const indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];
-      
       NSString *const facetName = [self.dataSource
                                    facetView:self
                                    nameForFacetAtIndexPath:indexPath];
-      
       [facetNames addObject:facetName];
     }
+
+    UILabel *const groupLabel = [[UILabel alloc] init];
+    groupLabel.font = [UIFont systemFontOfSize:12];
+    groupLabel.text = [[self.dataSource facetView:self nameForFacetGroupAtIndex:groupIndex]
+                       stringByAppendingString:@":"];
+    [self.linearView addSubview:groupLabel];
+
+    NYPLRoundedButton *const button = [NYPLRoundedButton button];
+    button.titleLabel.font = [UIFont systemFontOfSize:12];
+    if([self.dataSource facetView:self isActiveFacetForFacetGroupAtIndex:groupIndex]) {
+      NSUInteger const facetIndex = [self.dataSource
+                                     facetView:self
+                                     activeFacetIndexForFacetGroupAtIndex:groupIndex];
+      [button setTitle:self.groupIndexesToFacetNames[groupIndex][facetIndex]
+              forState:UIControlStateNormal];
+    } else {
+      [button setTitle:NSLocalizedString(@"FacetViewNotActive", nil)
+              forState:UIControlStateNormal];
+    }
+    [self.linearView addSubview:button];
   }
+  
+  [self setNeedsLayout];
 }
 
 @end
