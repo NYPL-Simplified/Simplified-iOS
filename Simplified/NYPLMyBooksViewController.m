@@ -2,16 +2,18 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLConfiguration.h"
+#import "NYPLFacetView.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
 
 #import "NYPLMyBooksViewController.h"
 
 @interface NYPLMyBooksViewController ()
-  <NYPLBookCellDelegate, UICollectionViewDataSource, UICollectionViewDelegate,
-   UICollectionViewDelegateFlowLayout>
+  <NYPLBookCellDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate, UICollectionViewDataSource,
+   UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) NSArray *books;
+@property (nonatomic) NYPLFacetView *facetView;
 
 @end
 
@@ -36,6 +38,25 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+  
+  CGFloat const navBarBottom = CGRectGetMaxY(self.navigationController.navigationBar.frame);
+  
+  UIView *const facetBackgroundView = [[UIView alloc]
+                                       initWithFrame:CGRectMake(0,
+                                                                navBarBottom,
+                                                                CGRectGetWidth(self.view.frame),
+                                                                40)];
+  facetBackgroundView.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.2];
+  facetBackgroundView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                          UIViewAutoresizingFlexibleBottomMargin);
+  [self.view addSubview:facetBackgroundView];
+  
+  self.facetView = [[NYPLFacetView alloc] initWithFrame:facetBackgroundView.bounds];
+  self.facetView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                     UIViewAutoresizingFlexibleHeight);
+  self.facetView.dataSource = self;
+  self.facetView.delegate = self;
+  [facetBackgroundView addSubview:self.facetView];
   
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
@@ -77,6 +98,75 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
                 ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
                   return [a.title compare:b.title options:NSCaseInsensitiveSearch];
                 }];
+}
+
+#pragma mark NYPLFacetViewDataSource
+
+- (NSUInteger)numberOfFacetGroupsInFacetView:(__attribute__((unused)) NYPLFacetView *)facetView
+{
+  return 2;
+}
+
+- (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+numberOfFacetsInFacetGroupAtIndex:(__attribute__((unused)) NSUInteger)index
+{
+  return 2;
+}
+
+- (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+nameForFacetGroupAtIndex:(NSUInteger)index
+{
+  switch(index) {
+    case 0:
+      return @"Sort by";
+    case 1:
+      return @"Show";
+  }
+  
+  @throw NSInternalInconsistencyException;
+}
+
+- (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+nameForFacetAtIndexPath:(NSIndexPath *)indexPath
+{
+  switch([indexPath indexAtPosition:0]) {
+    case 0:
+      switch([indexPath indexAtPosition:1]) {
+        case 0:
+          return @"Author";
+        case 1:
+          return @"Title";
+      }
+    case 1:
+      switch([indexPath indexAtPosition:1]) {
+        case 0:
+          return @"All";
+        case 1:
+          return @"Available";
+      }
+  }
+  
+  @throw NSInternalInconsistencyException;
+}
+
+- (BOOL)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+isActiveFacetForFacetGroupAtIndex:(__attribute__((unused)) NSUInteger)index
+{
+  return YES;
+}
+
+- (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+activeFacetIndexForFacetGroupAtIndex:(__attribute__((unused)) NSUInteger)index
+{
+  return 0;
+}
+
+#pragma mark NYPLFacetViewDelegate
+
+- (void)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+didSelectFacetAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
+{
+  
 }
 
 @end
