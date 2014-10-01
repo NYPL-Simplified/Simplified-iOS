@@ -11,6 +11,11 @@ numberOfFacetsInFacetGroupAtIndex:(NSUInteger)index;
 
 - (NSString *)facetView:(NYPLFacetView *)facetView nameForFacetAtIndexPath:(NSIndexPath *)indexPath;
 
+- (BOOL)facetView:(NYPLFacetView *)facetView isActiveFacetForFacetGroupAtIndex:(NSUInteger)index;
+
+- (NSUInteger)facetView:(NYPLFacetView *)facetView
+activeFacetIndexForFacetGroupAtIndex:(NSUInteger)index;
+
 @end
 
 @protocol NYPLFacetViewDelegate

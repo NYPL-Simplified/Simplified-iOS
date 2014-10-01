@@ -26,6 +26,10 @@
 
 "CatalogCategoryViewControllerFeedDownloadFailedTitle" = "Could Not Load Category";
 
+// NYPLFacetView
+
+"FacetViewNotActive" = "<>";
+
 // NYPLHoldsViewController
 
 "HoldsViewControllerTitle" = "Holds";
