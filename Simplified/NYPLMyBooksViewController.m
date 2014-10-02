@@ -53,16 +53,24 @@
                                                                 navBarBottom,
                                                                 CGRectGetWidth(self.view.frame),
                                                                 46)];
-  facetBackgroundView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                          UIViewAutoresizingFlexibleBottomMargin);
+  facetBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
   [self.view addSubview:facetBackgroundView];
   
-  self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top + 46,
+  UIView *const borderBottomView = [[UIView alloc]
+                                    initWithFrame:CGRectMake(0,
+                                                             CGRectGetMaxY(facetBackgroundView.frame),
+                                                             CGRectGetWidth(self.view.frame),
+                                                             0.5)];
+  borderBottomView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  borderBottomView.backgroundColor = [UIColor lightGrayColor];
+  [self.view addSubview:borderBottomView];
+  
+  self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top + 52,
                                                       self.collectionView.contentInset.left,
                                                       self.collectionView.contentInset.bottom,
                                                       self.collectionView.contentInset.right);
                                                       
-  self.facetView = [[NYPLFacetView alloc] init];
+  self.facetView = [[NYPLFacetView alloc] initWithFrame:facetBackgroundView.bounds];
   self.facetView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);
   self.facetView.dataSource = self;
@@ -73,11 +81,9 @@
   self.collectionView.delegate = self;
 }
 
-- (void)viewDidLayoutSubviews
+- (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
 {
-  [self.facetView sizeToFit];
-  [self.facetView centerInSuperview];
-  [self.facetView integralizeFrame];
+  [self.facetView flashScrollIndicators];
 }
 
 #pragma mark UICollectionViewDelegate
@@ -122,49 +128,25 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSUInteger)numberOfFacetGroupsInFacetView:(__attribute__((unused)) NYPLFacetView *)facetView
 {
-  return 2;
+  return 5;
 }
 
 - (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 numberOfFacetsInFacetGroupAtIndex:(__attribute__((unused)) NSUInteger)index
 {
-  return 2;
+  return 3;
 }
 
 - (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 nameForFacetGroupAtIndex:(NSUInteger)index
 {
-  switch(index) {
-    case 0:
-      return @"Sort by";
-    case 1:
-      return @"Show";
-  }
-  
-  @throw NSInternalInconsistencyException;
+  return [NSString stringWithFormat:@"Group %lu", (unsigned long)index];
 }
 
 - (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 nameForFacetAtIndexPath:(NSIndexPath *)indexPath
 {
-  switch([indexPath indexAtPosition:0]) {
-    case 0:
-      switch([indexPath indexAtPosition:1]) {
-        case 0:
-          return @"Author";
-        case 1:
-          return @"Title";
-      }
-    case 1:
-      switch([indexPath indexAtPosition:1]) {
-        case 0:
-          return @"All";
-        case 1:
-          return @"Available";
-      }
-  }
-  
-  @throw NSInternalInconsistencyException;
+  return [NSString stringWithFormat:@"Facet %lu", (unsigned long)[indexPath indexAtPosition:1]];
 }
 
 - (BOOL)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
