@@ -5,6 +5,7 @@
 #import "NYPLFacetView.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLMyBooksViewController.h"
 
@@ -51,7 +52,7 @@
                                           UIViewAutoresizingFlexibleBottomMargin);
   [self.view addSubview:facetBackgroundView];
   
-  self.facetView = [[NYPLFacetView alloc] initWithFrame:facetBackgroundView.bounds];
+  self.facetView = [[NYPLFacetView alloc] init];
   self.facetView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);
   self.facetView.dataSource = self;
@@ -60,6 +61,13 @@
   
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
+}
+
+- (void)viewDidLayoutSubviews
+{
+  [self.facetView sizeToFit];
+  [self.facetView centerInSuperview];
+  [self.facetView integralizeFrame];
 }
 
 #pragma mark UICollectionViewDelegate

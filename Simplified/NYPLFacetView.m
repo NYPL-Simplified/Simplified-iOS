@@ -115,4 +115,18 @@
                                            CGRectGetHeight(self.frame));
 }
 
+- (CGSize)sizeThatFits:(CGSize)size
+{
+  [self layoutIfNeeded];
+  
+  CGFloat const w = CGRectGetWidth(self.linearView.frame);
+  CGFloat const h = CGRectGetHeight(self.linearView.frame);
+  
+  if(CGSizeEqualToSize(size, CGSizeZero)) {
+    return CGSizeMake(w, h);
+  }
+  
+  return CGSizeMake(w > size.width ? size.width : w, h > size.height ? size.height : h);
+}
+
 @end

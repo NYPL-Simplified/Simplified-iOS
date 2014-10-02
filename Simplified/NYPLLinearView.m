@@ -13,48 +13,6 @@
 
 - (void)layoutSubviews
 {
-  [self layoutSubviewsNow];
-}
-
-- (void)sizeToFit
-{
-  [self layoutSubviewsNow];
-  
-  self.frame = CGRectMake(CGRectGetMinX(self.frame),
-                          CGRectGetMinY(self.frame),
-                          self.minimumRequiredWidth,
-                          self.minimumRequiredHeight);
-}
-
-- (CGSize)sizeThatFits:(CGSize)size
-{
-  [self layoutSubviewsNow];
-  
-  CGFloat const w = self.minimumRequiredWidth;
-  CGFloat const h = self.minimumRequiredHeight;
-  
-  return CGSizeMake(w > size.width ? size.width : w, h > size.height ? size.height : h);
-}
-
-#pragma mark -
-
-- (void)setContentVerticalAlignment:
-(NYPLLinearViewContentVerticalAlignment const)contentVerticalAlignment
-{
-  _contentVerticalAlignment = contentVerticalAlignment;
-  
-  [self setNeedsLayout];
-}
-
-- (void)setPadding:(CGFloat const)padding
-{
-  _padding = padding;
-  
-  [self setNeedsLayout];
-}
-
-- (void)layoutSubviewsNow
-{
   CGFloat x = 0.0;
   
   for(UIView *const view in self.subviews) {
@@ -77,6 +35,37 @@
     self.minimumRequiredHeight = h > self.minimumRequiredHeight ? h : self.minimumRequiredHeight;
     x += w + self.padding;
   }
+}
+
+- (CGSize)sizeThatFits:(CGSize)size
+{
+  [self layoutIfNeeded];
+  
+  CGFloat const w = self.minimumRequiredWidth;
+  CGFloat const h = self.minimumRequiredHeight;
+  
+  if(CGSizeEqualToSize(size, CGSizeZero)) {
+    return CGSizeMake(w, h);
+  }
+  
+  return CGSizeMake(w > size.width ? size.width : w, h > size.height ? size.height : h);
+}
+
+#pragma mark -
+
+- (void)setContentVerticalAlignment:
+(NYPLLinearViewContentVerticalAlignment const)contentVerticalAlignment
+{
+  _contentVerticalAlignment = contentVerticalAlignment;
+  
+  [self setNeedsLayout];
+}
+
+- (void)setPadding:(CGFloat const)padding
+{
+  _padding = padding;
+  
+  [self setNeedsLayout];
 }
 
 @end
