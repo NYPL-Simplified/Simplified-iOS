@@ -8,7 +8,6 @@
   NYPLRoundedButton *const button = [(id)self buttonWithType:UIButtonTypeSystem];
   
   button.titleLabel.font = [UIFont systemFontOfSize:12];
-  button.titleEdgeInsets = UIEdgeInsetsMake(2.0, 0, 0, 0);
   button.layer.borderColor = button.tintColor.CGColor;
   button.layer.borderWidth = 1;
   button.layer.cornerRadius = 3;
