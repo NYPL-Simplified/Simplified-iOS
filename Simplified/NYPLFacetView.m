@@ -40,6 +40,7 @@
   
   self.scrollView = [[UIScrollView alloc] init];
   self.scrollView.alwaysBounceHorizontal = YES;
+  self.scrollView.showsHorizontalScrollIndicator = NO;
   [self addSubview:self.scrollView];
   
   self.linearView = [[NYPLLinearView alloc] init];

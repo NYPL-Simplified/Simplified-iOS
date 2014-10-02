@@ -14,6 +14,7 @@
    UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) NSArray *books;
+@property (nonatomic) UIView *facetBackgroundView;
 @property (nonatomic) NYPLFacetView *facetView;
 
 @end
@@ -42,48 +43,48 @@
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
-  CGFloat const navBarBottom = CGRectGetMaxY(self.navigationController.navigationBar.frame);
+  {
+    // FIXME: This height is magic.
+    CGRect const frame = CGRectMake(0,
+                                    CGRectGetMaxY(self.navigationController.navigationBar.frame),
+                                    CGRectGetWidth(self.view.frame),
+                                    40);
   
-  // FIXME: Height of 46 is magic.
+    // This is not really the correct way to use a UIToolbar, but it seems to be the simplest way to
+    // get a blur effect that matches that of the navigation bar.
+    self.facetBackgroundView = [[UIToolbar alloc] initWithFrame:frame];
+    self.facetBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    [self.view addSubview:self.facetBackgroundView];
+  }
   
-  // This is not really the correct way to use a UIToolbar, but it seems to be the simplest way to
-  // get a blur effect that matches that of the navigation bar.
-  UIView *const facetBackgroundView = [[UIToolbar alloc]
-                                       initWithFrame:CGRectMake(0,
-                                                                navBarBottom,
-                                                                CGRectGetWidth(self.view.frame),
-                                                                46)];
-  facetBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-  [self.view addSubview:facetBackgroundView];
+  {
+    // FIXME: The 0.5 here assumes a retina display. We should check the scale via UIScreen.
+    CGRect const frame = CGRectMake(0,
+                                    CGRectGetMaxY(self.facetBackgroundView.frame),
+                                    CGRectGetWidth(self.facetBackgroundView.frame),
+                                    0.5);
+    
+    UIView *borderView = [[UIView alloc] initWithFrame:frame];
+    borderView.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.9];
+    borderView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                   UIViewAutoresizingFlexibleTopMargin);
+    [self.view addSubview:borderView];
+  }
   
-  UIView *const borderBottomView = [[UIView alloc]
-                                    initWithFrame:CGRectMake(0,
-                                                             CGRectGetMaxY(facetBackgroundView.frame),
-                                                             CGRectGetWidth(self.view.frame),
-                                                             0.5)];
-  borderBottomView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-  borderBottomView.backgroundColor = [UIColor lightGrayColor];
-  [self.view addSubview:borderBottomView];
-  
-  self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top + 52,
-                                                      self.collectionView.contentInset.left,
-                                                      self.collectionView.contentInset.bottom,
-                                                      self.collectionView.contentInset.right);
-                                                      
-  self.facetView = [[NYPLFacetView alloc] initWithFrame:facetBackgroundView.bounds];
+  self.facetView = [[NYPLFacetView alloc] initWithFrame:self.facetBackgroundView.bounds];
   self.facetView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);
   self.facetView.dataSource = self;
   self.facetView.delegate = self;
-  [facetBackgroundView addSubview:self.facetView];
-  
+  [self.facetBackgroundView addSubview:self.facetView];
+
+  self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top + 40,
+                                                      self.collectionView.contentInset.left,
+                                                      self.collectionView.contentInset.bottom,
+                                                      self.collectionView.contentInset.right);
+  self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
-}
-
-- (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
-{
-  [self.facetView flashScrollIndicators];
 }
 
 #pragma mark UICollectionViewDelegate
