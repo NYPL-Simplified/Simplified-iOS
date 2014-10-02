@@ -40,18 +40,28 @@
 {
   [super viewDidLoad];
   
+  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  
   CGFloat const navBarBottom = CGRectGetMaxY(self.navigationController.navigationBar.frame);
   
-  UIView *const facetBackgroundView = [[UIView alloc]
+  // FIXME: Height of 46 is magic.
+  
+  // This is not really the correct way to use a UIToolbar, but it seems to be the simplest way to
+  // get a blur effect that matches that of the navigation bar.
+  UIView *const facetBackgroundView = [[UIToolbar alloc]
                                        initWithFrame:CGRectMake(0,
                                                                 navBarBottom,
                                                                 CGRectGetWidth(self.view.frame),
-                                                                40)];
-  facetBackgroundView.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.2];
+                                                                46)];
   facetBackgroundView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                           UIViewAutoresizingFlexibleBottomMargin);
   [self.view addSubview:facetBackgroundView];
   
+  self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top + 46,
+                                                      self.collectionView.contentInset.left,
+                                                      self.collectionView.contentInset.bottom,
+                                                      self.collectionView.contentInset.right);
+                                                      
   self.facetView = [[NYPLFacetView alloc] init];
   self.facetView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);

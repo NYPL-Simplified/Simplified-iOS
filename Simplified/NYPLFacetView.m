@@ -42,7 +42,7 @@
   
   self.linearView = [[NYPLLinearView alloc] init];
   self.linearView.contentVerticalAlignment = NYPLLinearViewContentVerticalAlignmentMiddle;
-  self.linearView.padding = 8.0;
+  self.linearView.padding = 5.0;
   [self.scrollView addSubview:self.linearView];
 }
 
@@ -75,13 +75,13 @@
     }
 
     UILabel *const groupLabel = [[UILabel alloc] init];
-    groupLabel.font = [UIFont systemFontOfSize:17];
+    groupLabel.font = [UIFont systemFontOfSize:12];
     groupLabel.text = [[self.dataSource facetView:self nameForFacetGroupAtIndex:groupIndex]
                        stringByAppendingString:@":"];
     [self.linearView addSubview:groupLabel];
 
     NYPLRoundedButton *const button = [NYPLRoundedButton button];
-    button.titleLabel.font = [UIFont systemFontOfSize:17];
+    button.titleLabel.font = [UIFont systemFontOfSize:12];
     if([self.dataSource facetView:self isActiveFacetForFacetGroupAtIndex:groupIndex]) {
       NSUInteger const facetIndex = [self.dataSource
                                      facetView:self
@@ -93,6 +93,13 @@
               forState:UIControlStateNormal];
     }
     [self.linearView addSubview:button];
+    
+    if(groupIndex + 1 < groupCount) {
+      // Add additional padding between groups.
+      // FIXME: Width is arbitrary for a demo.
+      UIView *const paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 1)];
+      [self.linearView addSubview:paddingView];
+    }
   }
   
   if(self.superview) {
