@@ -41,6 +41,7 @@
   [self addSubview:self.scrollView];
   
   self.linearView = [[NYPLLinearView alloc] init];
+  self.linearView.contentVerticalAlignment = NYPLLinearViewContentVerticalAlignmentMiddle;
   self.linearView.padding = 8.0;
   [self.scrollView addSubview:self.linearView];
 }
