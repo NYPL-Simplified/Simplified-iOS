@@ -1,5 +1,6 @@
 #import "NYPLLinearView.h"
 #import "NYPLRoundedButton.h"
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLFacetView.h"
 
@@ -38,11 +39,12 @@
   [self.scrollView removeFromSuperview];
   
   self.scrollView = [[UIScrollView alloc] init];
+  self.scrollView.alwaysBounceHorizontal = YES;
   [self addSubview:self.scrollView];
   
   self.linearView = [[NYPLLinearView alloc] init];
   self.linearView.contentVerticalAlignment = NYPLLinearViewContentVerticalAlignmentMiddle;
-  self.linearView.padding = 5.0;
+  self.linearView.padding = 3.0;
   [self.scrollView addSubview:self.linearView];
 }
 
@@ -58,6 +60,9 @@
   NSUInteger const groupCount = [self.dataSource numberOfFacetGroupsInFacetView:self];
   
   for(NSUInteger groupIndex = 0; groupIndex < groupCount; ++groupIndex) {
+    UIView *const paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, 1)];
+    [self.linearView addSubview:paddingView];
+    
     NSUInteger const facetCount = [self.dataSource
                                    facetView:self
                                    numberOfFacetsInFacetGroupAtIndex:groupIndex];
@@ -93,13 +98,11 @@
               forState:UIControlStateNormal];
     }
     [self.linearView addSubview:button];
-    
-    if(groupIndex + 1 < groupCount) {
-      // Add additional padding between groups.
-      // FIXME: Width is arbitrary for a demo.
-      UIView *const paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 1)];
-      [self.linearView addSubview:paddingView];
-    }
+  }
+  
+  if(groupCount > 0) {
+    UIView *const paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, 1)];
+    [self.linearView addSubview:paddingView];
   }
   
   if(self.superview) {
@@ -117,9 +120,14 @@
   
   [self.linearView sizeToFit];
   
+  self.linearView.frame = CGRectMake(0,
+                                     0,
+                                     self.linearView.preferredWidth,
+                                     CGRectGetHeight(self.frame));
+  
   self.scrollView.frame = self.bounds;
   self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.linearView.frame),
-                                           CGRectGetHeight(self.frame));
+                                           CGRectGetHeight(self.linearView.frame));
 }
 
 - (CGSize)sizeThatFits:(CGSize)size
