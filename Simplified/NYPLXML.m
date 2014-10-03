@@ -7,7 +7,7 @@
 @property (nonatomic) NSMutableString *mutableValue;
 @property (nonatomic) NSString *name;
 @property (nonatomic) NSString *namespaceURI;
-@property (nonatomic) NYPLXML *parent;
+@property (nonatomic, weak) NYPLXML *parent;
 @property (nonatomic) NSString *qualifiedName;
 
 @end

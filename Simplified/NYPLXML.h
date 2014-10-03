@@ -9,7 +9,7 @@ suitable for handling markup (e.g. XHTML). */
 @property (nonatomic, readonly) NSArray *children;
 @property (nonatomic, readonly) NSString *name;
 @property (nonatomic, readonly) NSString *namespaceURI;
-@property (nonatomic, readonly) NYPLXML *parent; // nilable
+@property (nonatomic, weak, readonly) NYPLXML *parent; // nilable
 @property (nonatomic, readonly) NSString *qualifiedName;
 @property (nonatomic, readonly) NSString *value;
 
