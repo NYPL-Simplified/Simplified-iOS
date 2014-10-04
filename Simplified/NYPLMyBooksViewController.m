@@ -142,10 +142,29 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
   [super willReloadCollectionViewData];
   
-  self.books = [[[NYPLMyBooksRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
-                ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
-                  return [a.title compare:b.title options:NSCaseInsensitiveSearch];
-                }];
+  switch(self.activeFacetShow) {
+    case FacetShowAll:
+      switch(self.activeFacetSort) {
+        case FacetSortAuthor:
+          self.books = [[[NYPLMyBooksRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
+                        ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
+                          return [a.authors compare:b.authors options:NSCaseInsensitiveSearch];
+                        }];
+          return;
+        case FacetSortTitle:
+          self.books = [[[NYPLMyBooksRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
+                        ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
+                          return [a.title compare:b.title options:NSCaseInsensitiveSearch];
+                        }];
+          return;
+      }
+      break;
+    case FacetShowOnLoan:
+      self.books = @[];
+      return;
+  }
+  
+  @throw NSInternalInconsistencyException;
 }
 
 #pragma mark NYPLFacetViewDataSource
@@ -223,29 +242,31 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
       switch([indexPath indexAtPosition:1]) {
         case FacetShowAll:
           self.activeFacetShow = FacetShowAll;
-          [self.facetView reloadData];
-          return;
+          goto OK;
         case FacetShowOnLoan:
           self.activeFacetShow = FacetShowOnLoan;
-          [self.facetView reloadData];
-          return;
+          goto OK;
       }
       break;
     case GroupSortBy:
       switch([indexPath indexAtPosition:1]) {
         case FacetSortAuthor:
           self.activeFacetSort = FacetSortAuthor;
-          [self.facetView reloadData];
-          return;
+          goto OK;
         case FacetSortTitle:
           self.activeFacetSort = FacetSortTitle;
-          [self.facetView reloadData];
-          return;
+          goto OK;
       }
       break;
   }
   
   @throw NSInternalInconsistencyException;
+  
+OK:
+  
+  [self.facetView reloadData];
+  [self willReloadCollectionViewData];
+  [self.collectionView reloadData];
 }
 
 @end
