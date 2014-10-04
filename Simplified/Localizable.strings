@@ -42,6 +42,12 @@
 // NYPLMyBooksViewController
 
 "MyBooksViewControllerTitle" = "My Books";
+"MyBooksViewControllerFacetAll" = "All";
+"MyBooksViewControllerFacetAuthor" = "Author";
+"MyBooksViewControllerFacetOnLoan" = "OnLoan";
+"MyBooksViewControllerFacetTitle" = "Title";
+"MyBooksViewControllerGroupShow" = "Show";
+"MyBooksViewControllerGroupSortBy" = "Sort By";
 
 // NYPLReaderViewController
 

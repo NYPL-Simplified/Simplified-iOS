@@ -129,25 +129,31 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSUInteger)numberOfFacetGroupsInFacetView:(__attribute__((unused)) NYPLFacetView *)facetView
 {
-  return 5;
+  return 2;
 }
 
 - (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 numberOfFacetsInFacetGroupAtIndex:(__attribute__((unused)) NSUInteger)index
 {
-  return 3;
+  return 2;
 }
 
 - (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 nameForFacetGroupAtIndex:(NSUInteger)index
 {
-  return [NSString stringWithFormat:@"Group %lu", (unsigned long)index];
+  return @[NSLocalizedString(@"MyBooksViewControllerGroupSortBy", nil),
+           NSLocalizedString(@"MyBooksViewControllerGroupShow", nil)
+           ][index];
 }
 
 - (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 nameForFacetAtIndexPath:(NSIndexPath *)indexPath
 {
-  return [NSString stringWithFormat:@"Facet %lu", (unsigned long)[indexPath indexAtPosition:1]];
+  return @[@[NSLocalizedString(@"MyBooksViewControllerFacetAuthor", nil),
+             NSLocalizedString(@"MyBooksViewControllerFacetTitle", nil)],
+           @[NSLocalizedString(@"MyBooksViewControllerFacetAll", nil),
+             NSLocalizedString(@"MyBooksViewControllerFacetOnLoan", nil)]
+           ][[indexPath indexAtPosition:0]][[indexPath indexAtPosition:1]];
 }
 
 - (BOOL)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
