@@ -9,10 +9,30 @@
 
 #import "NYPLMyBooksViewController.h"
 
+// order-dependent
+typedef NS_ENUM(NSInteger, Group) {
+  GroupSortBy,
+  GroupShow
+};
+
+// order-dependent
+typedef NS_ENUM(NSInteger, FacetShow) {
+  FacetShowAll,
+  FacetShowOnLoan
+};
+
+// order-dependent
+typedef NS_ENUM(NSInteger, FacetSort) {
+  FacetSortAuthor,
+  FacetSortTitle
+};
+
 @interface NYPLMyBooksViewController ()
   <NYPLBookCellDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate, UICollectionViewDataSource,
    UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
+@property (nonatomic) FacetShow activeFacetShow;
+@property (nonatomic) FacetSort activeFacetSort;
 @property (nonatomic) NSArray *books;
 @property (nonatomic) UIView *facetBackgroundView;
 @property (nonatomic) NYPLFacetView *facetView;
@@ -40,6 +60,9 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+  
+  self.activeFacetShow = FacetShowAll;
+  self.activeFacetSort = FacetSortAuthor;
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
@@ -139,7 +162,7 @@ numberOfFacetsInFacetGroupAtIndex:(__attribute__((unused)) NSUInteger)index
 }
 
 - (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-nameForFacetGroupAtIndex:(NSUInteger)index
+nameForFacetGroupAtIndex:(NSUInteger const)index
 {
   return @[NSLocalizedString(@"MyBooksViewControllerGroupSortBy", nil),
            NSLocalizedString(@"MyBooksViewControllerGroupShow", nil)
@@ -147,13 +170,28 @@ nameForFacetGroupAtIndex:(NSUInteger)index
 }
 
 - (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-nameForFacetAtIndexPath:(NSIndexPath *)indexPath
+nameForFacetAtIndexPath:(NSIndexPath *const)indexPath
 {
-  return @[@[NSLocalizedString(@"MyBooksViewControllerFacetAuthor", nil),
-             NSLocalizedString(@"MyBooksViewControllerFacetTitle", nil)],
-           @[NSLocalizedString(@"MyBooksViewControllerFacetAll", nil),
-             NSLocalizedString(@"MyBooksViewControllerFacetOnLoan", nil)]
-           ][[indexPath indexAtPosition:0]][[indexPath indexAtPosition:1]];
+  switch([indexPath indexAtPosition:0]) {
+    case GroupShow:
+      switch([indexPath indexAtPosition:1]) {
+        case FacetShowAll:
+          return NSLocalizedString(@"MyBooksViewControllerFacetAll", nil);
+        case FacetShowOnLoan:
+          return NSLocalizedString(@"MyBooksViewControllerFacetOnLoan", nil);
+      }
+      break;
+    case GroupSortBy:
+      switch([indexPath indexAtPosition:1]) {
+        case FacetSortAuthor:
+          return NSLocalizedString(@"MyBooksViewControllerFacetAuthor", nil);
+        case FacetSortTitle:
+          return NSLocalizedString(@"MyBooksViewControllerFacetTitle", nil);
+      }
+      break;
+  }
+  
+  @throw NSInternalInconsistencyException;
 }
 
 - (BOOL)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
@@ -163,17 +201,51 @@ isActiveFacetForFacetGroupAtIndex:(__attribute__((unused)) NSUInteger)index
 }
 
 - (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-activeFacetIndexForFacetGroupAtIndex:(__attribute__((unused)) NSUInteger)index
+activeFacetIndexForFacetGroupAtIndex:(NSUInteger const)index
 {
-  return 0;
+  switch(index) {
+    case GroupShow:
+      return self.activeFacetShow;
+    case GroupSortBy:
+      return self.activeFacetSort;
+  }
+  
+  @throw NSInternalInconsistencyException;
 }
 
 #pragma mark NYPLFacetViewDelegate
 
 - (void)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-didSelectFacetAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
+didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 {
+  switch([indexPath indexAtPosition:0]) {
+    case GroupShow:
+      switch([indexPath indexAtPosition:1]) {
+        case FacetShowAll:
+          self.activeFacetShow = FacetShowAll;
+          [self.facetView reloadData];
+          return;
+        case FacetShowOnLoan:
+          self.activeFacetShow = FacetShowOnLoan;
+          [self.facetView reloadData];
+          return;
+      }
+      break;
+    case GroupSortBy:
+      switch([indexPath indexAtPosition:1]) {
+        case FacetSortAuthor:
+          self.activeFacetSort = FacetSortAuthor;
+          [self.facetView reloadData];
+          return;
+        case FacetSortTitle:
+          self.activeFacetSort = FacetSortTitle;
+          [self.facetView reloadData];
+          return;
+      }
+      break;
+  }
   
+  @throw NSInternalInconsistencyException;
 }
 
 @end
