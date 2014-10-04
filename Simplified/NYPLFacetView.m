@@ -124,6 +124,9 @@
      message:nil
      preferredStyle:UIAlertControllerStyleActionSheet];
   
+  alertController.popoverPresentationController.sourceRect = sender.bounds;
+  alertController.popoverPresentationController.sourceView = sender;
+  
   __weak NYPLFacetView *const weakSelf = self;
   
   NSUInteger const activeFacetIndex = [self.dataSource
