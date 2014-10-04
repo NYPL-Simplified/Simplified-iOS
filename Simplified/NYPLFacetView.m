@@ -1,4 +1,5 @@
 #import "NYPLLinearView.h"
+#import "NYPLRootTabBarController.h"
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
 
@@ -87,6 +88,7 @@
     [self.linearView addSubview:groupLabel];
 
     NYPLRoundedButton *const button = [NYPLRoundedButton button];
+    button.tag = groupIndex;
     button.titleLabel.font = [UIFont systemFontOfSize:12];
     if([self.dataSource facetView:self isActiveFacetForFacetGroupAtIndex:groupIndex]) {
       NSUInteger const facetIndex = [self.dataSource
@@ -98,6 +100,9 @@
       [button setTitle:NSLocalizedString(@"FacetViewNotActive", nil)
               forState:UIControlStateNormal];
     }
+    [button addTarget:self
+               action:@selector(didSelectGroup:)
+     forControlEvents:UIControlEventTouchUpInside];
     [self.linearView addSubview:button];
   }
   
@@ -109,6 +114,48 @@
   if(self.superview) {
     [self setNeedsLayout];
   }
+}
+
+- (void)didSelectGroup:(UIButton *)sender
+{
+  UIAlertController *const alertController =
+    [UIAlertController
+     alertControllerWithTitle:nil
+     message:nil
+     preferredStyle:UIAlertControllerStyleActionSheet];
+  
+  __weak NYPLFacetView *const weakSelf = self;
+  
+  NSUInteger const activeFacetIndex = [self.dataSource
+                                       facetView:self
+                                       activeFacetIndexForFacetGroupAtIndex:sender.tag];
+  
+  NSUInteger facetIndex = 0;
+  for(NSString *const facet in self.groupIndexesToFacetNames[sender.tag]) {
+    NSUInteger indexes[2] = {sender.tag, facetIndex};
+    NSIndexPath *const indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];
+    if(facetIndex == activeFacetIndex) {
+      [alertController addAction:[UIAlertAction
+                                  actionWithTitle:facet
+                                  style:UIAlertActionStyleCancel
+                                  handler:nil]];
+    } else {
+      [alertController addAction:[UIAlertAction
+                                  actionWithTitle:facet
+                                  style:UIAlertActionStyleDefault
+                                  handler:^(__attribute__((unused)) UIAlertAction *action) {
+                                    [weakSelf.delegate
+                                     facetView:weakSelf
+                                     didSelectFacetAtIndexPath:indexPath];
+                                  }]];
+    }
+    ++facetIndex;
+  }
+  
+  [[NYPLRootTabBarController sharedController]
+   safelyPresentViewController:alertController
+   animated:YES
+   completion:nil];
 }
 
 #pragma mark UIView

@@ -44,7 +44,7 @@
 "MyBooksViewControllerTitle" = "My Books";
 "MyBooksViewControllerFacetAll" = "All";
 "MyBooksViewControllerFacetAuthor" = "Author";
-"MyBooksViewControllerFacetOnLoan" = "OnLoan";
+"MyBooksViewControllerFacetOnLoan" = "On Loan";
 "MyBooksViewControllerFacetTitle" = "Title";
 "MyBooksViewControllerGroupShow" = "Show";
 "MyBooksViewControllerGroupSortBy" = "Sort By";
