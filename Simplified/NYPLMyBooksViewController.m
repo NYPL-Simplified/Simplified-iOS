@@ -88,8 +88,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
     
     UIView *borderView = [[UIView alloc] initWithFrame:frame];
     borderView.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.9];
-    borderView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                   UIViewAutoresizingFlexibleTopMargin);
+    borderView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:borderView];
   }
   
