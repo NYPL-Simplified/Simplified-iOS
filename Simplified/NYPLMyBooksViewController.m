@@ -81,11 +81,10 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   }
   
   {
-    // FIXME: The 0.5 here assumes a retina display. We should check the scale via UIScreen.
     CGRect const frame = CGRectMake(0,
                                     CGRectGetMaxY(self.facetBackgroundView.frame),
                                     CGRectGetWidth(self.facetBackgroundView.frame),
-                                    0.5);
+                                    1.0 / [UIScreen mainScreen].scale);
     
     UIView *borderView = [[UIView alloc] initWithFrame:frame];
     borderView.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.9];
