@@ -22,6 +22,10 @@
 "UnknownRequestError" =
     "An unknown error occurred. Please check your connection or try again later.";
 
+// NYPLBookDetailViewControllerTitle
+
+"BookDetailViewControllerTitle" = "Details";
+
 // NYPLCatalogCategoryViewController
 
 "CatalogCategoryViewControllerFeedDownloadFailedTitle" = "Could Not Load Category";
