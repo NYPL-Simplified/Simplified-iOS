@@ -71,7 +71,6 @@
 		119BEBAB1990207E00121439 /* NYPLOPDSEntryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */; };
 		119BEBAC1990207E00121439 /* NYPLOPDSLinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */; };
 		119BEBAD1990207E00121439 /* NYPLMyBooksRegistryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11616E12196B2FB8003D60D9 /* NYPLMyBooksRegistryTests.m */; };
-		119BEBAE1990207E00121439 /* NYPLCatalogRootTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1183F35F1952194000DC322F /* NYPLCatalogRootTests.m */; };
 		119BEBAF1990207E00121439 /* NYPLDateAdditionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */; };
 		119BEBB01990207E00121439 /* NYPLKeychainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DD171977335E005A9945 /* NYPLKeychainTests.m */; };
 		119BEBB21990217B00121439 /* NSDate+NYPLDateAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 11396FB8193D289100E16EE8 /* NSDate+NYPLDateAdditions.m */; };
@@ -229,7 +228,6 @@
 		1183F352194F795800DC322F /* NYPLBookAcquisition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookAcquisition.m; sourceTree = "<group>"; };
 		1183F359194F847100DC322F /* NYPLAsync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAsync.h; sourceTree = "<group>"; };
 		1183F35A194F847100DC322F /* NYPLAsync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NYPLAsync.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		1183F35F1952194000DC322F /* NYPLCatalogRootTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogRootTests.m; sourceTree = "<group>"; };
 		118A0B1919915BDF00792DDE /* NYPLCatalogSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogSearchViewController.h; sourceTree = "<group>"; };
 		118A0B1A19915BDF00792DDE /* NYPLCatalogSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogSearchViewController.m; sourceTree = "<group>"; };
 		118B7ABD195CBF72005CE3E7 /* NYPLSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSession.h; sourceTree = "<group>"; };
@@ -621,7 +619,6 @@
 			isa = PBXGroup;
 			children = (
 				1157E92D19CA0009003BFDBF /* NSString+NYPLStringAdditionsTests.m */,
-				1183F35F1952194000DC322F /* NYPLCatalogRootTests.m */,
 				11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */,
 				11C5DD171977335E005A9945 /* NYPLKeychainTests.m */,
 				11616E12196B2FB8003D60D9 /* NYPLMyBooksRegistryTests.m */,
@@ -870,7 +867,6 @@
 				119BEBAB1990207E00121439 /* NYPLOPDSEntryTests.m in Sources */,
 				119BEBAC1990207E00121439 /* NYPLOPDSLinkTests.m in Sources */,
 				119BEBAD1990207E00121439 /* NYPLMyBooksRegistryTests.m in Sources */,
-				119BEBAE1990207E00121439 /* NYPLCatalogRootTests.m in Sources */,
 				119BEBAF1990207E00121439 /* NYPLDateAdditionsTests.m in Sources */,
 				119BEBB01990207E00121439 /* NYPLKeychainTests.m in Sources */,
 				1157E92E19CA0009003BFDBF /* NSString+NYPLStringAdditionsTests.m in Sources */,
