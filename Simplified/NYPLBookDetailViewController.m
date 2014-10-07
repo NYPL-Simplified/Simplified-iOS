@@ -37,7 +37,7 @@
     self.modalPresentationStyle = UIModalPresentationFormSheet;
   }
   
-  self.title = book.title;
+  self.title = NSLocalizedString(@"BookDetailViewControllerTitle", nil);
   
   self.observers = [NSMutableArray array];
   
