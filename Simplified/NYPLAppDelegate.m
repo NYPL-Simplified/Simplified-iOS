@@ -11,6 +11,8 @@
 - (BOOL)application:(__attribute__((unused)) UIApplication *)application
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
+  // This is normally not called directly, but we put all programmatic appearance setup in
+  // NYPLConfiguration's class initializer.
   [NYPLConfiguration initialize];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
