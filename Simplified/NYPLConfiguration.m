@@ -2,6 +2,12 @@
 
 @implementation NYPLConfiguration
 
++ (void)initialize
+{
+  [[UINavigationBar appearance]
+   setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}];
+}
+
 + (NSURL *)mainFeedURL
 {
   return [NSURL URLWithString:@"http://library-simplified.herokuapp.com"];

@@ -121,7 +121,7 @@
   if(!self.title) {
     self.title = [[UILabel alloc] init];
     self.title.numberOfLines = 2;
-    self.title.font = [UIFont boldSystemFontOfSize:17];
+    self.title.font = [UIFont systemFontOfSize:17];
     [self.contentView addSubview:self.title];
     [self.contentView setNeedsLayout];
   }
