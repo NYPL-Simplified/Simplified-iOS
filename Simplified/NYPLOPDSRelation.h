@@ -10,8 +10,11 @@ static NSString *const NYPLOPDSRelationAcquisitionBorrow =
 static NSString *const NYPLOPDSRelationAcquisitionSample =
   @"http://opds-spec.org/acquisition/sample";
 
+static NSString *const NYPLOPDSRelationFacet =
+  @"http://opds-spec.org/facet";
+
 static NSString *const NYPLOPDSRelationFeatured =
-@"http://opds-spec.org/featured";
+  @"http://opds-spec.org/featured";
 
 static NSString *const NYPLOPDSRelationImage =
   @"http://opds-spec.org/image";
