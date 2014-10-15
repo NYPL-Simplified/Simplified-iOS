@@ -127,17 +127,34 @@
   alertController.popoverPresentationController.sourceRect = sender.bounds;
   alertController.popoverPresentationController.sourceView = sender;
   
+  BOOL const isActive = [self.dataSource
+                         facetView:self
+                         isActiveFacetForFacetGroupAtIndex:sender.tag];
+  
+  // If no facet is active, we need to add a cancel button otherwise the user will have no way to
+  // abort selecting a facet on the iPhone.
+  if(!isActive) {
+    [alertController addAction:[UIAlertAction
+                                actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                style:UIAlertActionStyleCancel
+                                handler:nil]];
+  }
+  
+  // |0| is a dummy value when |!isActive|.
+  NSUInteger const activeFacetIndex = (isActive
+                                       ? [self.dataSource
+                                          facetView:self
+                                          activeFacetIndexForFacetGroupAtIndex:sender.tag]
+                                       : 0);
+  
   __weak NYPLFacetView *const weakSelf = self;
   
-  NSUInteger const activeFacetIndex = [self.dataSource
-                                       facetView:self
-                                       activeFacetIndexForFacetGroupAtIndex:sender.tag];
-  
   NSUInteger facetIndex = 0;
+  
   for(NSString *const facet in self.groupIndexesToFacetNames[sender.tag]) {
     NSUInteger indexes[2] = {sender.tag, facetIndex};
     NSIndexPath *const indexPath = [[NSIndexPath alloc] initWithIndexes:indexes length:2];
-    if(facetIndex == activeFacetIndex) {
+    if(isActive && facetIndex == activeFacetIndex) {
       [alertController addAction:[UIAlertAction
                                   actionWithTitle:facet
                                   style:UIAlertActionStyleCancel

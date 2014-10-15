@@ -2,19 +2,24 @@
 #import "NYPLBookNormalCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogCategory.h"
+#import "NYPLCatalogFacet.h"
+#import "NYPLCatalogFacetGroup.h"
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
+#import "NYPLFacetBarView.h"
+#import "NYPLFacetView.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLCatalogCategoryViewController.h"
 
 @interface NYPLCatalogCategoryViewController ()
-  <NYPLCatalogCategoryDelegate, UICollectionViewDataSource, UICollectionViewDelegate,
-   UICollectionViewDelegateFlowLayout>
+  <NYPLCatalogCategoryDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate,
+   UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogCategory *category;
+@property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) NSURL *URL;
 
@@ -41,6 +46,20 @@
 {
   [super viewDidLoad];
   
+  self.facetBarView =
+    [[NYPLFacetBarView alloc]
+     initWithOrigin:CGPointMake(0, CGRectGetMaxY(self.navigationController.navigationBar.frame))
+     width:CGRectGetWidth(self.view.frame)];
+  self.facetBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  self.facetBarView.facetView.dataSource = self;
+  self.facetBarView.facetView.delegate = self;
+  [self.view addSubview:self.facetBarView];
+  
+  // FIXME: Magic constant.
+  self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top + 40,
+                                                      self.collectionView.contentInset.left,
+                                                      self.collectionView.contentInset.bottom,
+                                                      self.collectionView.contentInset.right);
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
   
@@ -114,6 +133,76 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [self.collectionView reloadData];
 }
 
+#pragma mark NYPLFacetViewDataSource
+
+- (NSUInteger)numberOfFacetGroupsInFacetView:(__attribute__((unused)) NYPLFacetView *)facetView
+{
+  return self.category.facetGroups.count;
+}
+
+- (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+numberOfFacetsInFacetGroupAtIndex:(NSUInteger const)index
+{
+  return ((NYPLCatalogFacetGroup *) self.category.facetGroups[index]).facets.count;
+}
+
+- (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+nameForFacetGroupAtIndex:(NSUInteger const)index
+{
+  return ((NYPLCatalogFacetGroup *) self.category.facetGroups[index]).name;
+}
+
+- (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+nameForFacetAtIndexPath:(NSIndexPath *const)indexPath
+{
+  NYPLCatalogFacetGroup *const group = self.category.facetGroups[[indexPath indexAtPosition:0]];
+  
+  NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
+  
+  return facet.title;
+}
+
+- (BOOL)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+isActiveFacetForFacetGroupAtIndex:(NSUInteger const)index
+{
+  NYPLCatalogFacetGroup *const group = self.category.facetGroups[index];
+  
+  for(NYPLCatalogFacet *const facet in group.facets) {
+    if(facet.active) return YES;
+  }
+  
+  return NO;
+}
+
+- (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+activeFacetIndexForFacetGroupAtIndex:(NSUInteger)index
+{
+  NYPLCatalogFacetGroup *const group = self.category.facetGroups[index];
+  
+  NSUInteger i = 0;
+  
+  for(NYPLCatalogFacet *const facet in group.facets) {
+    if(facet.active) return i;
+    ++i;
+  }
+  
+  @throw NSInternalInconsistencyException;
+}
+
+#pragma mark NYPLFacetViewDelegate
+
+- (void)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
+{
+  NYPLCatalogFacetGroup *const group = self.category.facetGroups[[indexPath indexAtPosition:0]];
+  
+  NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
+  
+  self.URL = facet.href;
+  
+  [self downloadFeed];
+}
+
 #pragma mark -
 
 - (void)downloadFeed
@@ -121,6 +210,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   self.activityIndicatorView.hidden = NO;
   [self.activityIndicatorView startAnimating];
   self.collectionView.hidden = YES;
+  self.facetBarView.hidden = YES;
   
   [NYPLCatalogCategory
    withURL:self.URL
@@ -135,6 +225,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
        }
        
        self.collectionView.hidden = NO;
+       self.facetBarView.hidden = NO;
        
        self.category = category;
        self.category.delegate = self;
@@ -143,14 +234,14 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
          self.navigationItem.rightBarButtonItem.enabled = YES;
        }
        
-       [self didLoadCategory];
+       [self.collectionView reloadData];
+       
+       // Scroll to top incase we're reloading the category after selecting a facet.
+       [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+       
+       [self.facetBarView.facetView reloadData];
      }];
    }];
-}
-
-- (void)didLoadCategory
-{
-  [self.collectionView reloadData];
 }
 
 - (void)didSelectSearch

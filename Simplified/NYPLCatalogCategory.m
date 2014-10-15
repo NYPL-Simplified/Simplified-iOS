@@ -1,5 +1,7 @@
 #import "NYPLAsync.h"
 #import "NYPLBook.h"
+#import "NYPLCatalogFacet.h"
+#import "NYPLCatalogFacetGroup.h"
 #import "NYPLOPDS.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLOpenSearchDescription.h"
@@ -10,6 +12,7 @@
 
 @property (nonatomic) BOOL currentlyFetchingNextURL;
 @property (nonatomic) NSArray *books;
+@property (nonatomic) NSArray *facetGroups;
 @property (nonatomic) NSUInteger greatestPreparationIndex;
 @property (nonatomic) NSURL *nextURL;
 @property (nonatomic) NSString *searchTemplate;
@@ -48,10 +51,37 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
        [books addObject:book];
      }
      
+     NSMutableArray *const facetGroupNames = [NSMutableArray array];
+     NSMutableDictionary *const facetGroupNamesToMutableFacetArrays =
+       [NSMutableDictionary dictionary];
      NSURL *nextURL = nil;
      NSURL *openSearchURL = nil;
      
      for(NYPLOPDSLink *const link in acquisitionFeed.links) {
+       if([link.rel isEqualToString:NYPLOPDSRelationFacet]) {
+         NSString *groupName = nil;
+         for(NSString *const key in link.attributes) {
+           if(NYPLOPDSAttributeKeyStringIsFacetGroup(key)) {
+             groupName = link.attributes[key];
+             break;
+           }
+         }
+         if(!groupName) {
+           NYPLLOG(@"Ignoring facet without group due to UI limitations.");
+           continue;
+         }
+         NYPLCatalogFacet *const facet = [NYPLCatalogFacet catalogFacetWithLink:link];
+         if(!facet) {
+           NYPLLOG(@"Ignoring invalid facet link.");
+           continue;
+         }
+         if(![facetGroupNames containsObject:groupName]) {
+           [facetGroupNames addObject:groupName];
+           facetGroupNamesToMutableFacetArrays[groupName] = [NSMutableArray arrayWithCapacity:2];
+         }
+         [facetGroupNamesToMutableFacetArrays[groupName] addObject:facet];
+         continue;
+       }
        if([link.rel isEqualToString:NYPLOPDSRelationPaginationNext]) {
          nextURL = link.href;
          continue;
@@ -63,6 +93,14 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
        }
      }
      
+     // Care is taken to preserve facet and facet group order from the original feed.
+     NSMutableArray *const facetGroups = [NSMutableArray arrayWithCapacity:facetGroupNames.count];
+     for(NSString *const facetGroupName in facetGroupNames) {
+       [facetGroups addObject:[[NYPLCatalogFacetGroup alloc]
+                               initWithFacets:facetGroupNamesToMutableFacetArrays[facetGroupName]
+                               name:facetGroupName]];
+     }
+     
      if(openSearchURL && includingSearchTemplate) {
        [NYPLOpenSearchDescription
         withURL:openSearchURL
@@ -72,6 +110,7 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
           }
           NYPLAsyncDispatch(^{handler([[NYPLCatalogCategory alloc]
                                        initWithBooks:books
+                                       facetGroups:facetGroups
                                        nextURL:nextURL
                                        searchTemplate:description.OPDSURLTemplate
                                        title:acquisitionFeed.title]);});
@@ -79,6 +118,7 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
       } else {
         NYPLAsyncDispatch(^{handler([[NYPLCatalogCategory alloc]
                                      initWithBooks:books
+                                     facetGroups:facetGroups
                                      nextURL:nextURL
                                      searchTemplate:nil
                                      title:acquisitionFeed.title]);});
@@ -93,6 +133,7 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
 }
 
 - (instancetype)initWithBooks:(NSArray *const)books
+                  facetGroups:(NSArray *const)facetGroups
                       nextURL:(NSURL *const)nextURL
                searchTemplate:(NSString *const)searchTemplate
                         title:(NSString *const)title
@@ -100,11 +141,24 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
   self = [super init];
   if(!self) return nil;
   
-  if(!(books && title)) {
+  if(!(books && facetGroups && title)) {
     @throw NSInvalidArgumentException;
   }
   
+  for(id const object in books) {
+    if(![object isKindOfClass:[NYPLBook class]]) {
+      @throw NSInvalidArgumentException;
+    }
+  }
+  
+  for(id const object in facetGroups) {
+    if(![object isKindOfClass:[NYPLCatalogFacetGroup class]]) {
+      @throw NSInvalidArgumentException;
+    }
+  }
+  
   self.books = books;
+  self.facetGroups = facetGroups;
   self.nextURL = nextURL;
   self.searchTemplate = searchTemplate;
   self.title = title;
