@@ -1,5 +1,6 @@
 #import "NYPLAsync.h"
 #import "NYPLBook.h"
+#import "NYPLCatalogFacet.h"
 #import "NYPLOPDS.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLOpenSearchDescription.h"
@@ -10,6 +11,7 @@
 
 @property (nonatomic) BOOL currentlyFetchingNextURL;
 @property (nonatomic) NSArray *books;
+@property (nonatomic) NSArray *facets;
 @property (nonatomic) NSUInteger greatestPreparationIndex;
 @property (nonatomic) NSURL *nextURL;
 @property (nonatomic) NSString *searchTemplate;
@@ -48,10 +50,20 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
        [books addObject:book];
      }
      
+     NSMutableArray *facets = [NSMutableArray array];
      NSURL *nextURL = nil;
      NSURL *openSearchURL = nil;
      
      for(NYPLOPDSLink *const link in acquisitionFeed.links) {
+       if([link.rel isEqualToString:NYPLOPDSRelationFacet]) {
+         NYPLCatalogFacet *const facet = [NYPLCatalogFacet catalogFacetWithLink:link];
+         if(!facet) {
+           NYPLLOG(@"Ignoring invalid facet link.");
+           continue;
+         }
+         [facets addObject:facet];
+         continue;
+       }
        if([link.rel isEqualToString:NYPLOPDSRelationPaginationNext]) {
          nextURL = link.href;
          continue;
@@ -72,6 +84,7 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
           }
           NYPLAsyncDispatch(^{handler([[NYPLCatalogCategory alloc]
                                        initWithBooks:books
+                                       facets:facets
                                        nextURL:nextURL
                                        searchTemplate:description.OPDSURLTemplate
                                        title:acquisitionFeed.title]);});
@@ -79,6 +92,7 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
       } else {
         NYPLAsyncDispatch(^{handler([[NYPLCatalogCategory alloc]
                                      initWithBooks:books
+                                     facets:facets
                                      nextURL:nextURL
                                      searchTemplate:nil
                                      title:acquisitionFeed.title]);});
@@ -93,6 +107,7 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
 }
 
 - (instancetype)initWithBooks:(NSArray *const)books
+                       facets:(NSArray *const)facets
                       nextURL:(NSURL *const)nextURL
                searchTemplate:(NSString *const)searchTemplate
                         title:(NSString *const)title
@@ -100,11 +115,12 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
   self = [super init];
   if(!self) return nil;
   
-  if(!(books && title)) {
+  if(!(books && facets && title)) {
     @throw NSInvalidArgumentException;
   }
   
   self.books = books;
+  self.facets = facets;
   self.nextURL = nextURL;
   self.searchTemplate = searchTemplate;
   self.title = title;

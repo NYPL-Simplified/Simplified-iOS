@@ -32,7 +32,6 @@ static NYPLOPDSLink *scienceFictionXML = nil;
     NSString *const XMLString = (@"<link rel=\"http://opds-spec.org/facet\""
                                  @" href=\"http://example.com/sci-fi\""
                                  @" title=\"Science-Fiction\""
-                                 @" opds:facetGroup=\"Categories\""
                                  @" opds:activeFacet=\"true\"/>");
     
     NYPLXML *const XML = [NYPLXML XMLWithData:[XMLString dataUsingEncoding:NSUTF8StringEncoding]];
@@ -51,6 +50,8 @@ static NYPLOPDSLink *scienceFictionXML = nil;
   
   XCTAssert(!facet.active);
   
+  XCTAssertEqualObjects(facet.group, @"Categories");
+  
   XCTAssertEqualObjects(facet.href, [[NSURL alloc] initWithScheme:@"http"
                                                              host:@"example.com"
                                                              path:@"/biography"]);
@@ -65,6 +66,8 @@ static NYPLOPDSLink *scienceFictionXML = nil;
   XCTAssert(facet);
   
   XCTAssert(facet.active);
+  
+  XCTAssertNil(facet.group);
   
   XCTAssertEqualObjects(facet.href, [[NSURL alloc] initWithScheme:@"http"
                                                              host:@"example.com"
