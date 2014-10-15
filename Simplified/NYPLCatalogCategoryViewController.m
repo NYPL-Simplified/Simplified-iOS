@@ -19,7 +19,7 @@
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogCategory *category;
-@property (nonatomic) NYPLFacetView *facetView;
+@property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) NSURL *URL;
 
@@ -46,16 +46,14 @@
 {
   [super viewDidLoad];
   
-  NYPLFacetBarView *const facetBarView =
+  self.facetBarView =
     [[NYPLFacetBarView alloc]
      initWithOrigin:CGPointMake(0, CGRectGetMaxY(self.navigationController.navigationBar.frame))
      width:CGRectGetWidth(self.view.frame)];
-    facetBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-  facetBarView.facetView.dataSource = self;
-  facetBarView.facetView.delegate = self;
-  [self.view addSubview:facetBarView];
-  
-  self.facetView = facetBarView.facetView;
+  self.facetBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  self.facetBarView.facetView.dataSource = self;
+  self.facetBarView.facetView.delegate = self;
+  [self.view addSubview:self.facetBarView];
   
   // FIXME: Magic constant.
   self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top + 40,
@@ -194,9 +192,15 @@ activeFacetIndexForFacetGroupAtIndex:(NSUInteger)index
 #pragma mark NYPLFacetViewDelegate
 
 - (void)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-didSelectFacetAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
+didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 {
+  NYPLCatalogFacetGroup *const group = self.category.facetGroups[[indexPath indexAtPosition:0]];
   
+  NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
+  
+  self.URL = facet.href;
+  
+  [self downloadFeed];
 }
 
 #pragma mark -
@@ -206,6 +210,7 @@ didSelectFacetAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
   self.activityIndicatorView.hidden = NO;
   [self.activityIndicatorView startAnimating];
   self.collectionView.hidden = YES;
+  self.facetBarView.hidden = YES;
   
   [NYPLCatalogCategory
    withURL:self.URL
@@ -220,6 +225,7 @@ didSelectFacetAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
        }
        
        self.collectionView.hidden = NO;
+       self.facetBarView.hidden = NO;
        
        self.category = category;
        self.category.delegate = self;
@@ -229,7 +235,11 @@ didSelectFacetAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
        }
        
        [self.collectionView reloadData];
-       [self.facetView reloadData];
+       
+       // Scroll to top incase we're reloading the category after selecting a facet.
+       [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+       
+       [self.facetBarView.facetView reloadData];
      }];
    }];
 }
