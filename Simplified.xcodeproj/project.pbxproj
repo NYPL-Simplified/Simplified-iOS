@@ -35,6 +35,7 @@
 		1139DA6519C7755D00A07810 /* NYPLMyBooksCoverRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 1139DA6419C7755D00A07810 /* NYPLMyBooksCoverRegistry.m */; };
 		113DB8A719C24E54004E1154 /* NYPLIndeterminateProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 113DB8A619C24E54004E1154 /* NYPLIndeterminateProgressView.m */; };
 		1142E4E819EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1142E4E719EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m */; };
+		1142E4EB19EED86A00D9B3D9 /* NYPLFacetBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1142E4EA19EED86A00D9B3D9 /* NYPLFacetBarView.m */; };
 		114C8CD719BE2FD300719B72 /* NYPLAttributedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */; };
 		114C8CDA19BF55F900719B72 /* NYPLRoundedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 114C8CD919BF55F900719B72 /* NYPLRoundedButton.m */; };
 		11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */; };
@@ -195,6 +196,8 @@
 		113DB8A519C24E54004E1154 /* NYPLIndeterminateProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLIndeterminateProgressView.h; sourceTree = "<group>"; };
 		113DB8A619C24E54004E1154 /* NYPLIndeterminateProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLIndeterminateProgressView.m; sourceTree = "<group>"; };
 		1142E4E719EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogFacetTests.m; sourceTree = "<group>"; };
+		1142E4E919EED86A00D9B3D9 /* NYPLFacetBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLFacetBarView.h; sourceTree = "<group>"; };
+		1142E4EA19EED86A00D9B3D9 /* NYPLFacetBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLFacetBarView.m; sourceTree = "<group>"; };
 		114C8CD519BE2FD300719B72 /* NYPLAttributedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAttributedString.h; sourceTree = "<group>"; };
 		114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAttributedString.m; sourceTree = "<group>"; };
 		114C8CD819BF55F900719B72 /* NYPLRoundedButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRoundedButton.h; sourceTree = "<group>"; };
@@ -574,6 +577,8 @@
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
 				111197321986D7550014462F /* NYPLDismissableViewController.h */,
 				111197331986D7550014462F /* NYPLDismissableViewController.m */,
+				1142E4E919EED86A00D9B3D9 /* NYPLFacetBarView.h */,
+				1142E4EA19EED86A00D9B3D9 /* NYPLFacetBarView.m */,
 				11F3771D19DB62B000487769 /* NYPLFacetView.h */,
 				11F3771E19DB62B000487769 /* NYPLFacetView.m */,
 				113DB8A519C24E54004E1154 /* NYPLIndeterminateProgressView.h */,
@@ -830,6 +835,7 @@
 				11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */,
 				1183F353194F795800DC322F /* NYPLBookAcquisition.m in Sources */,
 				11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */,
+				1142E4EB19EED86A00D9B3D9 /* NYPLFacetBarView.m in Sources */,
 				1195040B1994075B009FB788 /* NYPLReaderViewController.m in Sources */,
 				1183F33B194B775900DC322F /* NYPLCatalogLaneCell.m in Sources */,
 				118B7ABF195CBF72005CE3E7 /* NYPLSession.m in Sources */,

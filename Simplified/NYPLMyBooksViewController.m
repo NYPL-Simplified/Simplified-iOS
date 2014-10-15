@@ -2,6 +2,7 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLConfiguration.h"
+#import "NYPLFacetBarView.h"
 #import "NYPLFacetView.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
@@ -34,8 +35,6 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 @property (nonatomic) FacetShow activeFacetShow;
 @property (nonatomic) FacetSort activeFacetSort;
 @property (nonatomic) NSArray *books;
-@property (nonatomic) UIView *facetBackgroundView;
-@property (nonatomic) NYPLFacetView *facetView;
 
 @end
 
@@ -66,38 +65,14 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
-  {
-    // FIXME: This height is magic.
-    CGRect const frame = CGRectMake(0,
-                                    CGRectGetMaxY(self.navigationController.navigationBar.frame),
-                                    CGRectGetWidth(self.view.frame),
-                                    40);
-  
-    // This is not really the correct way to use a UIToolbar, but it seems to be the simplest way to
-    // get a blur effect that matches that of the navigation bar.
-    self.facetBackgroundView = [[UIToolbar alloc] initWithFrame:frame];
-    self.facetBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    [self.view addSubview:self.facetBackgroundView];
-  }
-  
-  {
-    CGRect const frame = CGRectMake(0,
-                                    CGRectGetMaxY(self.facetBackgroundView.frame),
-                                    CGRectGetWidth(self.facetBackgroundView.frame),
-                                    1.0 / [UIScreen mainScreen].scale);
-    
-    UIView *borderView = [[UIView alloc] initWithFrame:frame];
-    borderView.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.9];
-    borderView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    [self.view addSubview:borderView];
-  }
-  
-  self.facetView = [[NYPLFacetView alloc] initWithFrame:self.facetBackgroundView.bounds];
-  self.facetView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                     UIViewAutoresizingFlexibleHeight);
-  self.facetView.dataSource = self;
-  self.facetView.delegate = self;
-  [self.facetBackgroundView addSubview:self.facetView];
+  NYPLFacetBarView *const facetBarView =
+    [[NYPLFacetBarView alloc]
+     initWithOrigin:CGPointMake(0, CGRectGetMaxY(self.navigationController.navigationBar.frame))
+     width:CGRectGetWidth(self.view.frame)];
+  facetBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  facetBarView.facetView.dataSource = self;
+  facetBarView.facetView.delegate = self;
+  [self.view addSubview:facetBarView];
 
   self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top + 40,
                                                       self.collectionView.contentInset.left,
@@ -232,7 +207,7 @@ activeFacetIndexForFacetGroupAtIndex:(NSUInteger const)index
 
 #pragma mark NYPLFacetViewDelegate
 
-- (void)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+- (void)facetView:(NYPLFacetView *const)facetView
 didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch([indexPath indexAtPosition:0]) {
@@ -262,7 +237,7 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
   
 OK:
   
-  [self.facetView reloadData];
+  [facetView reloadData];
   [self willReloadCollectionViewData];
   [self.collectionView reloadData];
 }
