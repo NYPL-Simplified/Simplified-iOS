@@ -1,6 +1,6 @@
-#import "NYPLKeychain.h"
+@import XCTest;
 
-#import <XCTest/XCTest.h>
+#import "NYPLKeychain.h"
 
 @interface NYPLKeychainTests : XCTestCase
 

@@ -1,6 +1,6 @@
-#import "NSString+NYPLStringAdditions.h"
+@import XCTest;
 
-#import <XCTest/XCTest.h>
+#import "NSString+NYPLStringAdditions.h"
 
 @interface NSString_NYPLStringAdditionsTests : XCTestCase
 
