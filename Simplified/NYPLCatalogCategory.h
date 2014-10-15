@@ -11,7 +11,7 @@
 
 @property (nonatomic, readonly) NSArray *books;
 @property (nonatomic, weak) id<NYPLCatalogCategoryDelegate> delegate; // nilable
-@property (nonatomic, readonly) NSArray *facets;
+@property (nonatomic, readonly) NSArray *facetGroups;
 @property (nonatomic, readonly) NSURL *nextURL; // nilable
 @property (nonatomic, readonly) NSString *searchTemplate; // nilable
 @property (nonatomic, readonly) NSString *title;
@@ -24,7 +24,7 @@
 
 // designated initializer
 - (instancetype)initWithBooks:(NSArray *)books
-                       facets:(NSArray *)facets
+                  facetGroups:(NSArray *)facetGroups
                       nextURL:(NSURL *)nextURL
                searchTemplate:(NSString *)searchTemplate
                         title:(NSString *)title;
