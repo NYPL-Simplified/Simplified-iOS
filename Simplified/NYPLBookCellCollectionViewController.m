@@ -54,8 +54,10 @@
   [self.view addSubview:self.collectionView];
 }
 
-- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
+  [super viewWillAppear:animated];
+  
   // Notifications are installed so the view will update while visible.
   [[NSNotificationCenter defaultCenter]
    addObserverForName:NYPLBookRegistryDidChangeNotification
@@ -85,8 +87,10 @@
   [self.collectionView reloadData];
 }
 
-- (void)viewWillDisappear:(__attribute__((unused)) BOOL)animated
+- (void)viewWillDisappear:(BOOL)animated
 {
+  [super viewWillDisappear:animated];
+  
   // Updates are not necessary when the view is not being shown.
   for(id const observer in self.observers) {
     [[NSNotificationCenter defaultCenter] removeObserver:observer];
