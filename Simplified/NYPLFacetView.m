@@ -131,6 +131,15 @@
                          facetView:self
                          isActiveFacetForFacetGroupAtIndex:sender.tag];
   
+  // If no facet is active, we need to add a cancel button otherwise the user will have no way to
+  // abort selecting a facet on the iPhone.
+  if(!isActive) {
+    [alertController addAction:[UIAlertAction
+                                actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                style:UIAlertActionStyleCancel
+                                handler:nil]];
+  }
+  
   // |0| is a dummy value when |!isActive|.
   NSUInteger const activeFacetIndex = (isActive
                                        ? [self.dataSource
