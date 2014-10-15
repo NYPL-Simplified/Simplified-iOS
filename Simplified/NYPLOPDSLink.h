@@ -2,6 +2,7 @@
 
 @interface NYPLOPDSLink : NSObject
 
+@property (nonatomic, readonly) NSDictionary *attributes;
 @property (nonatomic, readonly) NSURL *href;
 @property (nonatomic, readonly) NSString *rel;
 @property (nonatomic, readonly) NSString *type;

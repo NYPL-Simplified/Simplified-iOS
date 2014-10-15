@@ -4,6 +4,7 @@
 
 @interface NYPLOPDSLink ()
 
+@property (nonatomic) NSDictionary *attributes;
 @property (nonatomic) NSURL *href;
 @property (nonatomic) NSString *rel;
 @property (nonatomic) NSString *type;
@@ -35,6 +36,7 @@
     }
   }
   
+  self.attributes = linkXML.attributes;
   self.rel = linkXML.attributes[@"rel"];
   self.type = linkXML.attributes[@"type"];
   self.hreflang = linkXML.attributes[@"hreflang"];
