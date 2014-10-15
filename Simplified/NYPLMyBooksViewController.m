@@ -74,6 +74,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   facetBarView.facetView.delegate = self;
   [self.view addSubview:facetBarView];
 
+  // FIXME: Magic constant.
   self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top + 40,
                                                       self.collectionView.contentInset.left,
                                                       self.collectionView.contentInset.bottom,
