@@ -5,6 +5,7 @@
 @interface NYPLCatalogFacet ()
 
 @property (nonatomic) BOOL active;
+@property (nonatomic) NSString *group;
 @property (nonatomic) NSURL *href;
 @property (nonatomic) NSString *title;
 
@@ -34,24 +35,24 @@
     }
   }
 
-  return [[self alloc] initWithActive:active href:link.href title:link.title];
+  return [[self alloc] initWithActive:active group:group href:link.href title:link.title];
 }
 
 - (instancetype)initWithActive:(BOOL const)active
+                         group:(NSString *const)group
                           href:(NSURL *const)href
                          title:(NSString *const)title
 {
   self = [super init];
   if(!self) return nil;
-  
-  self.active = active;
-  
+
   if(!href) {
     @throw NSInvalidArgumentException;
   }
   
+  self.active = active;
+  self.group  = group;
   self.href = href;
-  
   self.title = title;
   
   return self;
