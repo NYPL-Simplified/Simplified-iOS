@@ -4,6 +4,7 @@
 #import "NYPLCatalogCategory.h"
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
+#import "NYPLFacetBarView.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 
@@ -41,6 +42,21 @@
 {
   [super viewDidLoad];
   
+  NYPLFacetBarView *const facetBarView =
+    [[NYPLFacetBarView alloc]
+     initWithOrigin:CGPointMake(0, CGRectGetMaxY(self.navigationController.navigationBar.frame))
+     width:CGRectGetWidth(self.view.frame)];
+    facetBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  // FIXME
+  // facetBarView.facetView.dataSource = self;
+  // facetBarView.facetView.delegate = self;
+  [self.view addSubview:facetBarView];
+  
+  // FIXME: Magic constant.
+  self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top + 40,
+                                                      self.collectionView.contentInset.left,
+                                                      self.collectionView.contentInset.bottom,
+                                                      self.collectionView.contentInset.right);
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
   
