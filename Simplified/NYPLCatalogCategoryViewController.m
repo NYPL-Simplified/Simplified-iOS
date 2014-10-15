@@ -2,20 +2,24 @@
 #import "NYPLBookNormalCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogCategory.h"
+#import "NYPLCatalogFacet.h"
+#import "NYPLCatalogFacetGroup.h"
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLFacetBarView.h"
+#import "NYPLFacetView.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLCatalogCategoryViewController.h"
 
 @interface NYPLCatalogCategoryViewController ()
-  <NYPLCatalogCategoryDelegate, UICollectionViewDataSource, UICollectionViewDelegate,
-   UICollectionViewDelegateFlowLayout>
+  <NYPLCatalogCategoryDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate,
+   UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogCategory *category;
+@property (nonatomic) NYPLFacetView *facetView;
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) NSURL *URL;
 
@@ -47,10 +51,11 @@
      initWithOrigin:CGPointMake(0, CGRectGetMaxY(self.navigationController.navigationBar.frame))
      width:CGRectGetWidth(self.view.frame)];
     facetBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-  // FIXME
-  // facetBarView.facetView.dataSource = self;
-  // facetBarView.facetView.delegate = self;
+  facetBarView.facetView.dataSource = self;
+  facetBarView.facetView.delegate = self;
   [self.view addSubview:facetBarView];
+  
+  self.facetView = facetBarView.facetView;
   
   // FIXME: Magic constant.
   self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top + 40,
@@ -130,6 +135,70 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [self.collectionView reloadData];
 }
 
+#pragma mark NYPLFacetViewDataSource
+
+- (NSUInteger)numberOfFacetGroupsInFacetView:(__attribute__((unused)) NYPLFacetView *)facetView
+{
+  return self.category.facetGroups.count;
+}
+
+- (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+numberOfFacetsInFacetGroupAtIndex:(NSUInteger const)index
+{
+  return ((NYPLCatalogFacetGroup *) self.category.facetGroups[index]).facets.count;
+}
+
+- (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+nameForFacetGroupAtIndex:(NSUInteger const)index
+{
+  return ((NYPLCatalogFacetGroup *) self.category.facetGroups[index]).name;
+}
+
+- (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+nameForFacetAtIndexPath:(NSIndexPath *const)indexPath
+{
+  NYPLCatalogFacetGroup *const group = self.category.facetGroups[[indexPath indexAtPosition:0]];
+  
+  NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
+  
+  return facet.title;
+}
+
+- (BOOL)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+isActiveFacetForFacetGroupAtIndex:(NSUInteger const)index
+{
+  NYPLCatalogFacetGroup *const group = self.category.facetGroups[index];
+  
+  for(NYPLCatalogFacet *const facet in group.facets) {
+    if(facet.active) return YES;
+  }
+  
+  return NO;
+}
+
+- (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+activeFacetIndexForFacetGroupAtIndex:(NSUInteger)index
+{
+  NYPLCatalogFacetGroup *const group = self.category.facetGroups[index];
+  
+  NSUInteger i = 0;
+  
+  for(NYPLCatalogFacet *const facet in group.facets) {
+    if(facet.active) return i;
+    ++i;
+  }
+  
+  @throw NSInternalInconsistencyException;
+}
+
+#pragma mark NYPLFacetViewDelegate
+
+- (void)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
+didSelectFacetAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
+{
+  
+}
+
 #pragma mark -
 
 - (void)downloadFeed
@@ -159,14 +228,10 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
          self.navigationItem.rightBarButtonItem.enabled = YES;
        }
        
-       [self didLoadCategory];
+       [self.collectionView reloadData];
+       [self.facetView reloadData];
      }];
    }];
-}
-
-- (void)didLoadCategory
-{
-  [self.collectionView reloadData];
 }
 
 - (void)didSelectSearch
