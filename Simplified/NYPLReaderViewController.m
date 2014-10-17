@@ -11,7 +11,8 @@
 #import "NYPLReaderViewController.h"
 
 @interface NYPLReaderViewController ()
-  <NYPLReaderTOCViewControllerDelegate, UIPopoverControllerDelegate, UIWebViewDelegate>
+  <NYPLReaderTOCViewControllerDelegate, UIPopoverControllerDelegate, UIScrollViewDelegate,
+   UIWebViewDelegate>
 
 @property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) BOOL bookIsCorrupted;
@@ -112,6 +113,7 @@ id argument(NSURL *const URL) {
   self.webView.scalesPageToFit = YES;
   self.webView.scrollView.bounces = NO;
   self.webView.hidden = YES;
+  self.webView.scrollView.delegate = self;
   [self.view addSubview:self.webView];
   
   NSURL *const readerURL = [[NSBundle mainBundle]
@@ -130,6 +132,8 @@ webView:(__attribute__((unused)) UIWebView *)webView
 shouldStartLoadWithRequest:(NSURLRequest *const)request
 navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 {
+  NSLog(@"%@", request.URL);
+  
   if(self.bookIsCorrupted) {
     return NO;
   }
@@ -160,7 +164,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     
     NSDictionary *const settingsDictionary = @{@"columnGap": @20,
                                                @"fontSize": @100,
-                                               @"scroll": @"scroll-continuous",
+                                               @"scroll": @"fixed",
                                                @"syntheticSpread": @"auto"};
 
     NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
@@ -249,6 +253,13 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   assert(popoverController == self.activePopoverController);
   
   self.activePopoverController = nil;
+}
+
+#pragma mark UIScrollViewDelegate
+
+- (UIView *)viewForZoomingInScrollView:(__attribute__((unused)) UIScrollView *)scrollView
+{
+  return nil;
 }
 
 #pragma mark NYPLReaderTOCViewControllerDelegate
