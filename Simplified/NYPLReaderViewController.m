@@ -18,6 +18,7 @@
 @property (nonatomic) BOOL bookIsCorrupted;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) RDContainer *container;
+@property (nonatomic) BOOL loadedSimplifiedJS;
 @property (nonatomic) BOOL mediaOverlayIsPlaying;
 @property (nonatomic) NSInteger openPageCount;
 @property (nonatomic) NSInteger pageInCurrentSpineItemCount;
@@ -195,7 +196,18 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     return NO;
   }
   
-  if([function isEqualToString:@"pagination-changed"]) {    
+  if([function isEqualToString:@"pagination-changed"]) {
+    // The iframe is ready, so we can now do our injection.
+    if(!self.loadedSimplifiedJS) {
+      [self.webView stringByEvaluatingJavaScriptFromString:
+       [NSString stringWithContentsOfURL:[[NSBundle mainBundle]
+                                           URLForResource:@"Simplified"
+                                          withExtension:@"js"]
+                                encoding:NSUTF8StringEncoding
+                                   error:NULL]];
+      self.loadedSimplifiedJS = YES;
+    }
+    
     NSDictionary *const dictionary = argument(request.URL);
     
     // Use left-to-right unless it explicitly asks for right-to-left.
