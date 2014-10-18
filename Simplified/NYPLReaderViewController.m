@@ -18,7 +18,7 @@
 @property (nonatomic) BOOL bookIsCorrupted;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) RDContainer *container;
-@property (nonatomic) BOOL loadedSimplifiedJS;
+@property (nonatomic) BOOL didLoadSimplifiedJS;
 @property (nonatomic) BOOL mediaOverlayIsPlaying;
 @property (nonatomic) NSInteger openPageCount;
 @property (nonatomic) NSInteger pageInCurrentSpineItemCount;
@@ -139,7 +139,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     return NO;
   }
   
-  if(![request.URL.scheme isEqualToString:@"readium"]) {
+  if(!([request.URL.scheme isEqualToString:@"readium"] ||
+       [request.URL.scheme isEqualToString:@"simplified"])) {
     return YES;
   }
   
@@ -147,6 +148,18 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   assert([components count] >= 1);
   
   NSString *const function = components[0];
+  
+  // FIXME: Factor out simplified and readium handling into separate methods.
+  if([request.URL.scheme isEqualToString:@"simplified"]) {
+    if([function isEqualToString:@"tap-back"]) {
+      [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageLeft()"];
+    } else if([function isEqualToString:@"tap-forward"]) {
+      [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
+    } else {
+      NYPLLOG(@"Ignoring unknown simplified function.");
+    }
+    return NO;
+  }
   
   if([function isEqualToString:@"initialize"]) {
     if(!self.package.spineItems[0]) {
@@ -197,15 +210,14 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   }
   
   if([function isEqualToString:@"pagination-changed"]) {
-    // The iframe is ready, so we can now do our injection.
-    if(!self.loadedSimplifiedJS) {
+    if(!self.didLoadSimplifiedJS) {
       [self.webView stringByEvaluatingJavaScriptFromString:
        [NSString stringWithContentsOfURL:[[NSBundle mainBundle]
-                                           URLForResource:@"Simplified"
+                                          URLForResource:@"Simplified"
                                           withExtension:@"js"]
                                 encoding:NSUTF8StringEncoding
                                    error:NULL]];
-      self.loadedSimplifiedJS = YES;
+      self.didLoadSimplifiedJS = YES;
     }
     
     NSDictionary *const dictionary = argument(request.URL);
