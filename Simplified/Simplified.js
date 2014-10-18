@@ -8,6 +8,8 @@
     } else if(position >= 0.85) {
       window.location = "simplified:tap-forward"
     }
+    event.stopPropagation();
+    event.preventDefault();
   }
 
   // handles border between inner content and edge of screen
