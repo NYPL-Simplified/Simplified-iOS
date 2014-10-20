@@ -1,21 +1,27 @@
-(function() {
+function Simplified() {
   
-  function handleTouchEnd(event) {
+  var handleTouchEnd = function(event) {
     var touch = event.changedTouches[0];
-    var position = touch.clientX / document.documentElement.clientWidth;
-    if(position <= 0.15) {
-      window.location = "simplified:tap-back"
-    } else if(position >= 0.85) {
-      window.location = "simplified:tap-forward"
+    var position = touch.screenX / screen.width;
+    if(position <= 0.2) {
+      window.location = "simplified:tap-back";
+    } else if(position >= 0.8) {
+      window.location = "simplified:tap-forward";
     }
     event.stopPropagation();
     event.preventDefault();
-  }
-
-  // handles border between inner content and edge of screen
+  };
+  
+  // Handles border between inner content and edge of screen.
   document.addEventListener("touchend", handleTouchEnd, false);
   
-  // handles inner content
-  window.frames["epubContentIframe"].document.addEventListener("touchend", handleTouchEnd, false);
+  // Handles inner content. Should be called each time the page changes as the iframe may have
+  // changed.
+  this.pageDidChange = function() {
+    window.frames["epubContentIframe"].removeEventListener("touchend", handleTouchEnd);
+    window.frames["epubContentIframe"].addEventListener("touchend", handleTouchEnd, false);
+  };
+  
+}
 
-})();
+simplified = new Simplified();

@@ -18,7 +18,6 @@
 @property (nonatomic) BOOL bookIsCorrupted;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) RDContainer *container;
-@property (nonatomic) BOOL didLoadSimplifiedJS;
 @property (nonatomic) BOOL mediaOverlayIsPlaying;
 @property (nonatomic) NSInteger openPageCount;
 @property (nonatomic) NSInteger pageInCurrentSpineItemCount;
@@ -162,6 +161,13 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   }
   
   if([function isEqualToString:@"initialize"]) {
+    [self.webView stringByEvaluatingJavaScriptFromString:
+     [NSString stringWithContentsOfURL:[[NSBundle mainBundle]
+                                        URLForResource:@"Simplified"
+                                        withExtension:@"js"]
+                              encoding:NSUTF8StringEncoding
+                                 error:NULL]];
+    
     if(!self.package.spineItems[0]) {
       self.bookIsCorrupted = YES;
       [[[UIAlertView alloc]
@@ -210,15 +216,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   }
   
   if([function isEqualToString:@"pagination-changed"]) {
-    if(!self.didLoadSimplifiedJS) {
-      [self.webView stringByEvaluatingJavaScriptFromString:
-       [NSString stringWithContentsOfURL:[[NSBundle mainBundle]
-                                          URLForResource:@"Simplified"
-                                          withExtension:@"js"]
-                                encoding:NSUTF8StringEncoding
-                                   error:NULL]];
-      self.didLoadSimplifiedJS = YES;
-    }
+    [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.pageDidChange();"];
     
     NSDictionary *const dictionary = argument(request.URL);
     
