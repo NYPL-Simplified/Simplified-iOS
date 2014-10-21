@@ -12,10 +12,14 @@ function Simplified() {
   var handleTouchEnd = function(event) {
     var touch = event.changedTouches[0];
     
+    var maxScreenX = window.orientation === 0 || window.orientation == 180
+                   ? screen.width
+                   : screen.height;
+    
     // Tap to turn.
     if(Math.abs(touch.screenX - startX) <= 5 &&
        Math.abs(touch.screenY - startY) <= 5) {
-      var position = touch.screenX / screen.width;
+      var position = touch.screenX / maxScreenX;
       if(position <= 0.2) {
         window.location = "simplified:gesture-left";
       } else if(position >= 0.8) {
@@ -28,7 +32,7 @@ function Simplified() {
       return;
     }
     
-    var relativeDistanceX = (touch.screenX - startX) / screen.width;
+    var relativeDistanceX = (touch.screenX - startX) / maxScreenX;
     var slope = (touch.screenY - startY) / (touch.screenX - startX);
     
     // Swipe to turn.
