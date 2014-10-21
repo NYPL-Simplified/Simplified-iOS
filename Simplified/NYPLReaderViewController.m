@@ -26,6 +26,7 @@
 @property (nonatomic) BOOL pageProgressionIsLTR;
 @property (nonatomic) RDPackage *package;
 @property (nonatomic) RDPackageResourceServer *server;
+@property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
 @property (nonatomic) NSInteger spineItemIndex;
 @property (nonatomic) UIWebView *webView;
 
@@ -98,7 +99,7 @@ id argument(NSURL *const URL) {
   
   self.automaticallyAdjustsScrollViewInsets = NO;
 
-  self.interfaceHidden = YES;
+  self.shouldHideInterfaceOnNextAppearance = YES;
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
@@ -133,6 +134,14 @@ id argument(NSURL *const URL) {
 - (BOOL)prefersStatusBarHidden
 {
   return self.interfaceHidden;
+}
+
+- (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
+{
+  if(self.shouldHideInterfaceOnNextAppearance) {
+    self.shouldHideInterfaceOnNextAppearance = NO;
+    self.interfaceHidden = YES;
+  }
 }
 
 #pragma mark UIWebViewDelegate
@@ -303,14 +312,14 @@ didSelectNavigationElement:(RDNavigationElement *)navigationElement
    [NSString stringWithFormat:@"ReadiumSDK.reader.openContentUrl('%@', '%@')",
     navigationElement.content,
     navigationElement.sourceHref]];
-
+  
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     [self.activePopoverController dismissPopoverAnimated:YES];
+    self.interfaceHidden = YES;
   } else {
+    self.shouldHideInterfaceOnNextAppearance = YES;
     [self.navigationController popViewControllerAnimated:YES];
   }
-  
-  self.interfaceHidden = YES;
 }
 
 #pragma mark -
@@ -338,8 +347,8 @@ didSelectNavigationElement:(RDNavigationElement *)navigationElement
 - (void)setInterfaceHidden:(BOOL)interfaceHidden
 {
   _interfaceHidden = interfaceHidden;
-  
-  self.navigationController.navigationBarHidden = _interfaceHidden;
+
+  self.navigationController.navigationBarHidden = self.interfaceHidden;
   
   [self setNeedsStatusBarAppearanceUpdate];
 }
