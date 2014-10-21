@@ -309,6 +309,8 @@ didSelectNavigationElement:(RDNavigationElement *)navigationElement
   } else {
     [self.navigationController popViewControllerAnimated:YES];
   }
+  
+  self.interfaceHidden = YES;
 }
 
 #pragma mark -
