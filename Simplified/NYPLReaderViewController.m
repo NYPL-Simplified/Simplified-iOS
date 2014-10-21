@@ -136,6 +136,11 @@ id argument(NSURL *const URL) {
   return self.interfaceHidden;
 }
 
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation
+{
+  return UIStatusBarAnimationNone;
+}
+
 - (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
 {
   if(self.shouldHideInterfaceOnNextAppearance) {
