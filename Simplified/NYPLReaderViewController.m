@@ -11,12 +11,14 @@
 #import "NYPLReaderViewController.h"
 
 @interface NYPLReaderViewController ()
-  <NYPLReaderTOCViewControllerDelegate, UIPopoverControllerDelegate, UIWebViewDelegate>
+  <NYPLReaderTOCViewControllerDelegate, UIPopoverControllerDelegate, UIScrollViewDelegate,
+   UIWebViewDelegate>
 
 @property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) BOOL bookIsCorrupted;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) RDContainer *container;
+@property (nonatomic) BOOL interfaceHidden;
 @property (nonatomic) BOOL mediaOverlayIsPlaying;
 @property (nonatomic) NSInteger openPageCount;
 @property (nonatomic) NSInteger pageInCurrentSpineItemCount;
@@ -24,6 +26,7 @@
 @property (nonatomic) BOOL pageProgressionIsLTR;
 @property (nonatomic) RDPackage *package;
 @property (nonatomic) RDPackageResourceServer *server;
+@property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
 @property (nonatomic) NSInteger spineItemIndex;
 @property (nonatomic) UIWebView *webView;
 
@@ -94,6 +97,10 @@ id argument(NSURL *const URL) {
 {
   [super viewDidLoad];
   
+  self.automaticallyAdjustsScrollViewInsets = NO;
+
+  self.shouldHideInterfaceOnNextAppearance = YES;
+  
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   UIBarButtonItem *const TOCButtonItem = [[UIBarButtonItem alloc]
@@ -112,6 +119,7 @@ id argument(NSURL *const URL) {
   self.webView.scalesPageToFit = YES;
   self.webView.scrollView.bounces = NO;
   self.webView.hidden = YES;
+  self.webView.scrollView.delegate = self;
   [self.view addSubview:self.webView];
   
   NSURL *const readerURL = [[NSBundle mainBundle]
@@ -121,6 +129,19 @@ id argument(NSURL *const URL) {
   assert(readerURL);
   
   [self.webView loadRequest:[NSURLRequest requestWithURL:readerURL]];
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+  return self.interfaceHidden;
+}
+
+- (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
+{
+  if(self.shouldHideInterfaceOnNextAppearance) {
+    self.shouldHideInterfaceOnNextAppearance = NO;
+    self.interfaceHidden = YES;
+  }
 }
 
 #pragma mark UIWebViewDelegate
@@ -134,7 +155,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     return NO;
   }
   
-  if(![request.URL.scheme isEqualToString:@"readium"]) {
+  if(!([request.URL.scheme isEqualToString:@"readium"] ||
+       [request.URL.scheme isEqualToString:@"simplified"])) {
     return YES;
   }
   
@@ -143,7 +165,28 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   
   NSString *const function = components[0];
   
+  // FIXME: Factor out simplified and readium handling into separate methods.
+  if([request.URL.scheme isEqualToString:@"simplified"]) {
+    if([function isEqualToString:@"gesture-left"]) {
+      [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageLeft()"];
+    } else if([function isEqualToString:@"gesture-right"]) {
+      [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
+    } else if([function isEqualToString:@"gesture-center"]) {
+      self.interfaceHidden = !self.interfaceHidden;
+    } else {
+      NYPLLOG(@"Ignoring unknown simplified function.");
+    }
+    return NO;
+  }
+  
   if([function isEqualToString:@"initialize"]) {
+    [self.webView stringByEvaluatingJavaScriptFromString:
+     [NSString stringWithContentsOfURL:[[NSBundle mainBundle]
+                                        URLForResource:@"Simplified"
+                                        withExtension:@"js"]
+                              encoding:NSUTF8StringEncoding
+                                 error:NULL]];
+    
     if(!self.package.spineItems[0]) {
       self.bookIsCorrupted = YES;
       [[[UIAlertView alloc]
@@ -160,7 +203,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     
     NSDictionary *const settingsDictionary = @{@"columnGap": @20,
                                                @"fontSize": @100,
-                                               @"scroll": @"scroll-continuous",
+                                               @"scroll": @"fixed",
                                                @"syntheticSpread": @"auto"};
 
     NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
@@ -191,7 +234,9 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     return NO;
   }
   
-  if([function isEqualToString:@"pagination-changed"]) {    
+  if([function isEqualToString:@"pagination-changed"]) {
+    [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.pageDidChange();"];
+    
     NSDictionary *const dictionary = argument(request.URL);
     
     // Use left-to-right unless it explicitly asks for right-to-left.
@@ -251,6 +296,13 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   self.activePopoverController = nil;
 }
 
+#pragma mark UIScrollViewDelegate
+
+- (UIView *)viewForZoomingInScrollView:(__attribute__((unused)) UIScrollView *)scrollView
+{
+  return nil;
+}
+
 #pragma mark NYPLReaderTOCViewControllerDelegate
 
 - (void)TOCViewController:(__attribute__((unused)) NYPLReaderTOCViewController *)controller
@@ -260,10 +312,12 @@ didSelectNavigationElement:(RDNavigationElement *)navigationElement
    [NSString stringWithFormat:@"ReadiumSDK.reader.openContentUrl('%@', '%@')",
     navigationElement.content,
     navigationElement.sourceHref]];
-
+  
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     [self.activePopoverController dismissPopoverAnimated:YES];
+    self.interfaceHidden = YES;
   } else {
+    self.shouldHideInterfaceOnNextAppearance = YES;
     [self.navigationController popViewControllerAnimated:YES];
   }
 }
@@ -288,6 +342,15 @@ didSelectNavigationElement:(RDNavigationElement *)navigationElement
   } else {
     [self.navigationController pushViewController:viewController animated:YES];
   }
+}
+
+- (void)setInterfaceHidden:(BOOL)interfaceHidden
+{
+  _interfaceHidden = interfaceHidden;
+
+  self.navigationController.navigationBarHidden = self.interfaceHidden;
+  
+  [self setNeedsStatusBarAppearanceUpdate];
 }
   
 @end
