@@ -17,9 +17,11 @@ function Simplified() {
        Math.abs(touch.screenY - startY) <= 5) {
       var position = touch.screenX / screen.width;
       if(position <= 0.2) {
-        window.location = "simplified:tap-back";
+        window.location = "simplified:gesture-left";
       } else if(position >= 0.8) {
-        window.location = "simplified:tap-forward";
+        window.location = "simplified:gesture-right";
+      } else {
+        window.location = "simplified:gesture-center";
       }
       event.stopPropagation();
       event.preventDefault();
@@ -32,9 +34,9 @@ function Simplified() {
     // Swipe to turn.
     if(Math.abs(slope) <= 0.5 && Math.abs(relativeDistanceX) >= 0.1) {
       if(relativeDistanceX > 0) {
-        window.location = "simplified:tap-back";
+        window.location = "simplified:gesture-left";
       } else {
-        window.location = "simplified:tap-forward";
+        window.location = "simplified:gesture-right";
       }
       event.stopPropagation();
       event.preventDefault();
