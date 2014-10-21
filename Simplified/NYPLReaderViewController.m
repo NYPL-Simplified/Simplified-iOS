@@ -18,6 +18,7 @@
 @property (nonatomic) BOOL bookIsCorrupted;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) RDContainer *container;
+@property (nonatomic) BOOL interfaceHidden;
 @property (nonatomic) BOOL mediaOverlayIsPlaying;
 @property (nonatomic) NSInteger openPageCount;
 @property (nonatomic) NSInteger pageInCurrentSpineItemCount;
@@ -95,6 +96,10 @@ id argument(NSURL *const URL) {
 {
   [super viewDidLoad];
   
+  self.automaticallyAdjustsScrollViewInsets = NO;
+
+  self.interfaceHidden = YES;
+  
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   UIBarButtonItem *const TOCButtonItem = [[UIBarButtonItem alloc]
@@ -125,6 +130,11 @@ id argument(NSURL *const URL) {
   [self.webView loadRequest:[NSURLRequest requestWithURL:readerURL]];
 }
 
+- (BOOL)prefersStatusBarHidden
+{
+  return self.interfaceHidden;
+}
+
 #pragma mark UIWebViewDelegate
 
 - (BOOL)
@@ -132,8 +142,6 @@ webView:(__attribute__((unused)) UIWebView *)webView
 shouldStartLoadWithRequest:(NSURLRequest *const)request
 navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 {
-  NSLog(@"%@", request.URL);
-  
   if(self.bookIsCorrupted) {
     return NO;
   }
@@ -150,10 +158,12 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   
   // FIXME: Factor out simplified and readium handling into separate methods.
   if([request.URL.scheme isEqualToString:@"simplified"]) {
-    if([function isEqualToString:@"tap-back"]) {
+    if([function isEqualToString:@"gesture-left"]) {
       [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageLeft()"];
-    } else if([function isEqualToString:@"tap-forward"]) {
+    } else if([function isEqualToString:@"gesture-right"]) {
       [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
+    } else if([function isEqualToString:@"gesture-center"]) {
+      self.interfaceHidden = !self.interfaceHidden;
     } else {
       NYPLLOG(@"Ignoring unknown simplified function.");
     }
@@ -321,6 +331,15 @@ didSelectNavigationElement:(RDNavigationElement *)navigationElement
   } else {
     [self.navigationController pushViewController:viewController animated:YES];
   }
+}
+
+- (void)setInterfaceHidden:(BOOL)interfaceHidden
+{
+  _interfaceHidden = interfaceHidden;
+  
+  self.navigationController.navigationBarHidden = _interfaceHidden;
+  
+  [self setNeedsStatusBarAppearanceUpdate];
 }
   
 @end
