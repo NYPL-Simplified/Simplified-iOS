@@ -88,15 +88,15 @@
 		11BFDB33199C01F700378691 /* NYPLReaderTOCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11BFDB32199C01F700378691 /* NYPLReaderTOCViewController.m */; };
 		11BFDB36199C08E900378691 /* NYPLReaderTOCElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 11BFDB35199C08E900378691 /* NYPLReaderTOCElement.m */; };
 		11BFDB39199C117B00378691 /* NYPLReaderTOCCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11BFDB38199C117B00378691 /* NYPLReaderTOCCell.m */; };
-		11C113CA19F83DAB005B3F63 /* Simplified.css in Resources */ = {isa = PBXBuildFile; fileRef = 11C113C819F83DAB005B3F63 /* Simplified.css */; };
 		11C113D019F842B9005B3F63 /* reader.html in Resources */ = {isa = PBXBuildFile; fileRef = 11C113CF19F842B9005B3F63 /* reader.html */; };
 		11C113D219F842BE005B3F63 /* host_app_feedback.js in Resources */ = {isa = PBXBuildFile; fileRef = 11C113D119F842BE005B3F63 /* host_app_feedback.js */; };
+		11C113D619F84613005B3F63 /* simplified.css in Resources */ = {isa = PBXBuildFile; fileRef = 11C113D419F84613005B3F63 /* simplified.css */; };
+		11C113D719F84613005B3F63 /* simplified.js in Resources */ = {isa = PBXBuildFile; fileRef = 11C113D519F84613005B3F63 /* simplified.js */; };
 		11C5DCF21976D1E0005A9945 /* NYPLHoldsNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DCF11976D1E0005A9945 /* NYPLHoldsNavigationController.m */; };
 		11C5DCF51976D22F005A9945 /* NYPLHoldsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DCF41976D22F005A9945 /* NYPLHoldsViewController.m */; };
 		11C5DCF81976D2AF005A9945 /* NYPLSettingsNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DCF71976D2AF005A9945 /* NYPLSettingsNavigationController.m */; };
 		11C5DCFB1976D2F4005A9945 /* NYPLSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DCFA1976D2F4005A9945 /* NYPLSettingsViewController.m */; };
 		11C5DD16197727A6005A9945 /* NYPLKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DD15197727A6005A9945 /* NYPLKeychain.m */; };
-		11D662D219F2DBB300677979 /* Simplified.js in Resources */ = {isa = PBXBuildFile; fileRef = 11D662D019F2DBB300677979 /* Simplified.js */; };
 		11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = 11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */; };
 		11F3771F19DB62B000487769 /* NYPLFacetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3771E19DB62B000487769 /* NYPLFacetView.m */; };
 		11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3773219E0876F00487769 /* NYPLCatalogFacet.m */; };
@@ -278,9 +278,10 @@
 		11BFDB35199C08E900378691 /* NYPLReaderTOCElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderTOCElement.m; sourceTree = "<group>"; };
 		11BFDB37199C117B00378691 /* NYPLReaderTOCCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReaderTOCCell.h; sourceTree = "<group>"; };
 		11BFDB38199C117B00378691 /* NYPLReaderTOCCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderTOCCell.m; sourceTree = "<group>"; };
-		11C113C819F83DAB005B3F63 /* Simplified.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = Simplified.css; sourceTree = "<group>"; };
 		11C113CF19F842B9005B3F63 /* reader.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = reader.html; sourceTree = "<group>"; };
 		11C113D119F842BE005B3F63 /* host_app_feedback.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = host_app_feedback.js; sourceTree = "<group>"; };
+		11C113D419F84613005B3F63 /* simplified.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = simplified.css; sourceTree = "<group>"; };
+		11C113D519F84613005B3F63 /* simplified.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = simplified.js; sourceTree = "<group>"; };
 		11C5DCF01976D1E0005A9945 /* NYPLHoldsNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLHoldsNavigationController.h; sourceTree = "<group>"; };
 		11C5DCF11976D1E0005A9945 /* NYPLHoldsNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLHoldsNavigationController.m; sourceTree = "<group>"; };
 		11C5DCF31976D22F005A9945 /* NYPLHoldsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLHoldsViewController.h; sourceTree = "<group>"; };
@@ -292,7 +293,6 @@
 		11C5DD14197727A6005A9945 /* NYPLKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLKeychain.h; sourceTree = "<group>"; };
 		11C5DD15197727A6005A9945 /* NYPLKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLKeychain.m; sourceTree = "<group>"; };
 		11C5DD171977335E005A9945 /* NYPLKeychainTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLKeychainTests.m; sourceTree = "<group>"; };
-		11D662D019F2DBB300677979 /* Simplified.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Simplified.js; sourceTree = "<group>"; };
 		11E0208B197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+NYPLSystemFontOverride.h"; sourceTree = "<group>"; };
 		11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+NYPLSystemFontOverride.m"; sourceTree = "<group>"; };
 		11F3771D19DB62B000487769 /* NYPLFacetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLFacetView.h; sourceTree = "<group>"; };
@@ -495,8 +495,8 @@
 			children = (
 				11C113D119F842BE005B3F63 /* host_app_feedback.js */,
 				11C113CF19F842B9005B3F63 /* reader.html */,
-				11C113C819F83DAB005B3F63 /* Simplified.css */,
-				11D662D019F2DBB300677979 /* Simplified.js */,
+				11C113D419F84613005B3F63 /* simplified.css */,
+				11C113D519F84613005B3F63 /* simplified.js */,
 			);
 			name = Reader;
 			sourceTree = "<group>";
@@ -779,16 +779,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11C113D719F84613005B3F63 /* simplified.js in Resources */,
 				A823D81B192BABA400B55DE2 /* InfoPlist.strings in Resources */,
 				11C113D019F842B9005B3F63 /* reader.html in Resources */,
 				110F853E19D5FA7300052DF7 /* DetailSummaryTemplate.html in Resources */,
 				11ABD553197D6F5200759635 /* NYPLSettingsCredentialView.xib in Resources */,
 				116A5EA4194653BE00491A21 /* Localizable.strings in Resources */,
 				A823D823192BABA400B55DE2 /* Images.xcassets in Resources */,
-				11C113CA19F83DAB005B3F63 /* Simplified.css in Resources */,
 				11C113D219F842BE005B3F63 /* host_app_feedback.js in Resources */,
+				11C113D619F84613005B3F63 /* simplified.css in Resources */,
 				119503F41994001F009FB788 /* readium-shared-js in Resources */,
-				11D662D219F2DBB300677979 /* Simplified.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

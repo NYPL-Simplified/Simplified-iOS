@@ -188,7 +188,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   if([function isEqualToString:@"initialize"]) {
     [self.webView stringByEvaluatingJavaScriptFromString:
      [NSString stringWithContentsOfURL:[[NSBundle mainBundle]
-                                        URLForResource:@"Simplified"
+                                        URLForResource:@"simplified"
                                         withExtension:@"js"]
                               encoding:NSUTF8StringEncoding
                                  error:NULL]];
