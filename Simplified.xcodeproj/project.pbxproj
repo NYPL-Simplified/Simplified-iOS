@@ -65,7 +65,6 @@
 		119503E91993F919009FB788 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503E81993F919009FB788 /* libz.dylib */; };
 		119503EB1993F91E009FB788 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
 		119503F41994001F009FB788 /* readium-shared-js in Resources */ = {isa = PBXBuildFile; fileRef = 119503F31994001F009FB788 /* readium-shared-js */; };
-		119503FF19940184009FB788 /* reader.css in Resources */ = {isa = PBXBuildFile; fileRef = 119503FC19940184009FB788 /* reader.css */; };
 		1195040019940184009FB788 /* reader.html in Resources */ = {isa = PBXBuildFile; fileRef = 119503FD19940184009FB788 /* reader.html */; };
 		11950401199401CF009FB788 /* host_app_feedback.js in Resources */ = {isa = PBXBuildFile; fileRef = 119503FB19940184009FB788 /* host_app_feedback.js */; };
 		1195040B1994075B009FB788 /* NYPLReaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1195040A1994075B009FB788 /* NYPLReaderViewController.m */; };
@@ -253,7 +252,6 @@
 		119503EE1993FB90009FB788 /* NYPLReadium.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLReadium.h; sourceTree = "<group>"; };
 		119503F31994001F009FB788 /* readium-shared-js */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "readium-shared-js"; sourceTree = SOURCE_ROOT; };
 		119503FB19940184009FB788 /* host_app_feedback.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = host_app_feedback.js; sourceTree = "<group>"; };
-		119503FC19940184009FB788 /* reader.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = reader.css; sourceTree = "<group>"; };
 		119503FD19940184009FB788 /* reader.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = reader.html; sourceTree = "<group>"; };
 		119504091994075B009FB788 /* NYPLReaderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReaderViewController.h; sourceTree = "<group>"; };
 		1195040A1994075B009FB788 /* NYPLReaderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderViewController.m; sourceTree = "<group>"; };
@@ -479,7 +477,6 @@
 			isa = PBXGroup;
 			children = (
 				119503FB19940184009FB788 /* host_app_feedback.js */,
-				119503FC19940184009FB788 /* reader.css */,
 				119503FD19940184009FB788 /* reader.html */,
 			);
 			path = "readium-resources";
@@ -786,7 +783,6 @@
 				A823D823192BABA400B55DE2 /* Images.xcassets in Resources */,
 				119503F41994001F009FB788 /* readium-shared-js in Resources */,
 				11950401199401CF009FB788 /* host_app_feedback.js in Resources */,
-				119503FF19940184009FB788 /* reader.css in Resources */,
 				11D662D219F2DBB300677979 /* Simplified.js in Resources */,
 				1195040019940184009FB788 /* reader.html in Resources */,
 			);
