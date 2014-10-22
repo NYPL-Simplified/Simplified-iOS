@@ -185,14 +185,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     return NO;
   }
   
-  if([function isEqualToString:@"initialize"]) {
-    [self.webView stringByEvaluatingJavaScriptFromString:
-     [NSString stringWithContentsOfURL:[[NSBundle mainBundle]
-                                        URLForResource:@"simplified"
-                                        withExtension:@"js"]
-                              encoding:NSUTF8StringEncoding
-                                 error:NULL]];
-    
+  if([function isEqualToString:@"initialize"]) {    
     if(!self.package.spineItems[0]) {
       self.bookIsCorrupted = YES;
       [[[UIAlertView alloc]
