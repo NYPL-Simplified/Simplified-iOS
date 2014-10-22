@@ -353,6 +353,8 @@ didSelectNavigationElement:(RDNavigationElement *)navigationElement
 {
   _interfaceHidden = interfaceHidden;
 
+  self.navigationController.interactivePopGestureRecognizer.enabled = !interfaceHidden;
+  
   self.navigationController.navigationBarHidden = self.interfaceHidden;
   
   [self setNeedsStatusBarAppearanceUpdate];
