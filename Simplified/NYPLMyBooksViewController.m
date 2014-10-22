@@ -61,18 +61,18 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 {
   [super viewDidLoad];
   
+  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  
   self.activeFacetShow = FacetShowAll;
   self.activeFacetSort = FacetSortAuthor;
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.collectionView.dataSource = self;
+  self.collectionView.delegate = self;
   
   self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:0];
   self.facetBarView.facetView.dataSource = self;
   self.facetBarView.facetView.delegate = self;
   [self.view addSubview:self.facetBarView];
-
-  self.collectionView.dataSource = self;
-  self.collectionView.delegate = self;
 }
 
 - (void)viewWillLayoutSubviews
