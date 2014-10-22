@@ -207,9 +207,9 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
     
     NSDictionary *const settingsDictionary = @{@"columnGap": @20,
-                                               @"fontSize": @100,
+                                               @"fontSize": @200,
                                                @"scroll": @"fixed",
-                                               @"syntheticSpread": @"auto"};
+                                               @"syntheticSpread": @"single"};
 
     NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
                                         locationForIdentifier:self.bookIdentifier];
