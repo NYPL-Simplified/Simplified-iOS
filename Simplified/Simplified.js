@@ -5,12 +5,21 @@ function Simplified() {
   
   var handleTouchStart = function(event) {
     var touch = event.changedTouches[0];
+    
+    if(touch.target.nodeName === "a") {
+      return;
+    }
+    
     startX = touch.screenX;
     startY = touch.screenY;
   };
   
   var handleTouchEnd = function(event) {
     var touch = event.changedTouches[0];
+    
+    if(touch.target.nodeName === "a") {
+      return;
+    }
     
     var maxScreenX = window.orientation === 0 || window.orientation == 180
                    ? screen.width
