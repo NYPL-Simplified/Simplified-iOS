@@ -46,20 +46,11 @@
 {
   [super viewDidLoad];
   
-  self.facetBarView =
-    [[NYPLFacetBarView alloc]
-     initWithOrigin:CGPointMake(0, CGRectGetMaxY(self.navigationController.navigationBar.frame))
-     width:CGRectGetWidth(self.view.frame)];
-  self.facetBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:0];
   self.facetBarView.facetView.dataSource = self;
   self.facetBarView.facetView.delegate = self;
   [self.view addSubview:self.facetBarView];
   
-  // FIXME: Magic constant.
-  self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top + 40,
-                                                      self.collectionView.contentInset.left,
-                                                      self.collectionView.contentInset.bottom,
-                                                      self.collectionView.contentInset.right);
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
   
@@ -90,6 +81,17 @@
 
 - (void)viewWillLayoutSubviews
 {
+  self.facetBarView.frame = CGRectMake(0,
+                                       CGRectGetMaxY(self.navigationController.navigationBar.frame),
+                                       CGRectGetWidth(self.view.frame),
+                                       CGRectGetHeight(self.facetBarView.frame));
+  
+  self.collectionView.contentInset = UIEdgeInsetsMake(CGRectGetMaxY(self.facetBarView.frame),
+                                                      self.collectionView.contentInset.left,
+                                                      self.collectionView.contentInset.bottom,
+                                                      self.collectionView.contentInset.right);
+  self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
+  
   self.activityIndicatorView.center = self.view.center;
   [self.activityIndicatorView integralizeFrame];
   
