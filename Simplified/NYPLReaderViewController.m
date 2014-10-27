@@ -200,10 +200,16 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     
     self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
     
+    NSNumber *const fontSize = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @100 : @200;
+    
+    NSString *const syntheticSpread = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+                                       ? @"double"
+                                       : @"single");
+    
     NSDictionary *const settingsDictionary = @{@"columnGap": @20,
-                                               @"fontSize": @200,
+                                               @"fontSize": fontSize,
                                                @"scroll": @"fixed",
-                                               @"syntheticSpread": @"single"};
+                                               @"syntheticSpread": syntheticSpread};
 
     NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
                                         locationForIdentifier:self.bookIdentifier];
