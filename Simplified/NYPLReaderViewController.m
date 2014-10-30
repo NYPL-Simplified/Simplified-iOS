@@ -117,7 +117,6 @@ id argument(NSURL *const URL) {
                                    UIViewAutoresizingFlexibleWidth);
   self.webView.backgroundColor = [UIColor whiteColor];
   self.webView.delegate = self;
-  self.webView.scalesPageToFit = YES;
   self.webView.scrollView.bounces = NO;
   self.webView.hidden = YES;
   self.webView.scrollView.delegate = self;
@@ -200,14 +199,12 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     
     self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
     
-    NSNumber *const fontSize = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? @100 : @200;
-    
     NSString *const syntheticSpread = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
                                        ? @"double"
                                        : @"single");
     
     NSDictionary *const settingsDictionary = @{@"columnGap": @20,
-                                               @"fontSize": fontSize,
+                                               @"fontSize": @100,
                                                @"scroll": @"fixed",
                                                @"syntheticSpread": syntheticSpread};
 
