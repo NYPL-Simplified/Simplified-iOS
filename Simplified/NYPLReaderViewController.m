@@ -117,7 +117,6 @@ id argument(NSURL *const URL) {
                                    UIViewAutoresizingFlexibleWidth);
   self.webView.backgroundColor = [UIColor whiteColor];
   self.webView.delegate = self;
-  self.webView.scalesPageToFit = YES;
   self.webView.scrollView.bounces = NO;
   self.webView.hidden = YES;
   self.webView.scrollView.delegate = self;
@@ -185,14 +184,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     return NO;
   }
   
-  if([function isEqualToString:@"initialize"]) {
-    [self.webView stringByEvaluatingJavaScriptFromString:
-     [NSString stringWithContentsOfURL:[[NSBundle mainBundle]
-                                        URLForResource:@"Simplified"
-                                        withExtension:@"js"]
-                              encoding:NSUTF8StringEncoding
-                                 error:NULL]];
-    
+  if([function isEqualToString:@"initialize"]) {    
     if(!self.package.spineItems[0]) {
       self.bookIsCorrupted = YES;
       [[[UIAlertView alloc]
@@ -207,10 +199,14 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     
     self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
     
+    NSString *const syntheticSpread = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+                                       ? @"double"
+                                       : @"single");
+    
     NSDictionary *const settingsDictionary = @{@"columnGap": @20,
-                                               @"fontSize": @200,
+                                               @"fontSize": @100,
                                                @"scroll": @"fixed",
-                                               @"syntheticSpread": @"single"};
+                                               @"syntheticSpread": syntheticSpread};
 
     NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
                                         locationForIdentifier:self.bookIdentifier];
