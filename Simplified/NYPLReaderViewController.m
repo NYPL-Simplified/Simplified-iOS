@@ -11,8 +11,8 @@
 #import "NYPLReaderViewController.h"
 
 @interface NYPLReaderViewController ()
-  <NYPLReaderTOCViewControllerDelegate, UIPopoverControllerDelegate, UIScrollViewDelegate,
-   UIWebViewDelegate>
+  <NYPLReaderTOCViewControllerDelegate, RDContainerDelegate, RDPackageResourceServerDelegate,
+   UIPopoverControllerDelegate, UIScrollViewDelegate, UIWebViewDelegate>
 
 @property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) BOOL bookIsCorrupted;
@@ -64,11 +64,14 @@ id argument(NSURL *const URL) {
   
   self.bookIdentifier = bookIdentifier;
   
+  __weak NYPLReaderViewController *weakSelf = self;
+  
   @try {
-    self.container = [[RDContainer alloc] initWithPath:
-                      [[[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+    self.container = [[RDContainer alloc]
+                      initWithDelegate:weakSelf
+                      path:[[[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                         fileURLForBookIndentifier:bookIdentifier]
-                       path]];
+                            path]];
   } @catch (...) {
     self.bookIsCorrupted = YES;
     [[[UIAlertView alloc]
@@ -81,7 +84,11 @@ id argument(NSURL *const URL) {
   }
   
   self.package = self.container.firstPackage;
-  self.server = [[RDPackageResourceServer alloc] initWithPackage:self.package];
+  self.server = [[RDPackageResourceServer alloc]
+                 initWithDelegate:weakSelf
+                 package:self.package
+                 specialPayloadAnnotationsCSS:nil
+                 specialPayloadMathJaxJS:nil];
 
   self.hidesBottomBarWhenPushed = YES;
   
@@ -322,6 +329,25 @@ didSelectNavigationElement:(RDNavigationElement *)navigationElement
     self.shouldHideInterfaceOnNextAppearance = YES;
     [self.navigationController popViewControllerAnimated:YES];
   }
+}
+
+#pragma mark RDContainerDelegate
+
+- (void)rdcontainer:(__attribute__((unused)) RDContainer *)container
+     handleSdkError:(NSString *const)message
+{
+  NYPLLOG_F(@"Readium: %@", message);
+}
+
+#pragma mark RDPackageResourceServerDelegate
+
+- (void)
+rdpackageResourceServer:(__attribute__((unused)) RDPackageResourceServer *)packageResourceServer
+executeJavaScript:(NSString *const)javaScript
+{
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
+  }];
 }
 
 #pragma mark -
