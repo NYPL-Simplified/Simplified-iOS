@@ -64,11 +64,9 @@ id argument(NSURL *const URL) {
   
   self.bookIdentifier = bookIdentifier;
   
-  __weak NYPLReaderViewController *weakSelf = self;
-  
   @try {
     self.container = [[RDContainer alloc]
-                      initWithDelegate:weakSelf
+                      initWithDelegate:self
                       path:[[[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                         fileURLForBookIndentifier:bookIdentifier]
                             path]];
@@ -85,7 +83,7 @@ id argument(NSURL *const URL) {
   
   self.package = self.container.firstPackage;
   self.server = [[RDPackageResourceServer alloc]
-                 initWithDelegate:weakSelf
+                 initWithDelegate:self
                  package:self.package
                  specialPayloadAnnotationsCSS:nil
                  specialPayloadMathJaxJS:nil];
