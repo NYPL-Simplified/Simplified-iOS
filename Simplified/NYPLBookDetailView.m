@@ -131,6 +131,7 @@ static NSString *detailTemplate = nil;
   self.summaryWebView.suppressesIncrementalRendering = YES;
   self.summaryWebView.delegate = self;
   self.summaryWebView.opaque = NO;
+  self.summaryWebView.userInteractionEnabled = NO;
   
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wformat-nonliteral"
