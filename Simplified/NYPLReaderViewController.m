@@ -165,18 +165,9 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     return NO;
   }
   
-  if(!([request.URL.scheme isEqualToString:@"readium"] ||
-       [request.URL.scheme isEqualToString:@"simplified"])) {
-    return YES;
-  }
-  
-  NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
-  assert([components count] >= 1);
-  
-  NSString *const function = components[0];
-  
-  // FIXME: Factor out simplified and readium handling into separate methods.
   if([request.URL.scheme isEqualToString:@"simplified"]) {
+    NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
+    NSString *const function = components[0];
     if([function isEqualToString:@"gesture-left"]) {
       [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageLeft()"];
     } else if([function isEqualToString:@"gesture-right"]) {
@@ -189,109 +180,25 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     return NO;
   }
   
-  if([function isEqualToString:@"initialize"]) {    
-    if(!self.package.spineItems[0]) {
-      self.bookIsCorrupted = YES;
-      [[[UIAlertView alloc]
-        initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptedTitle", nil)
-        message:NSLocalizedString(@"ReaderViewControllerCorruptedMessage", nil)
-        delegate:nil
-        cancelButtonTitle:nil
-        otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-       show];
-      return NO;
+  if([request.URL.scheme isEqualToString:@"readium"]) {
+    NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
+    NSString *const function = components[0];
+    if([function isEqualToString:@"initialize"]) {
+      [self readiumInitialize];
+    } else if([function isEqualToString:@"pagination-changed"]) {
+      [self readiumPaginationChangedWithDictionary:argument(request.URL)];
+    } else if([function isEqualToString:@"media-overlay-status-changed"]) {
+      NSDictionary *const dict = argument(request.URL);
+      self.mediaOverlayIsPlaying = ((NSNumber *)[dict objectForKey:@"isPlaying"]).boolValue;
+    } else if([function isEqualToString:@"settings-applied"]) {
+      // Do nothing.
+    } else {
+      NYPLLOG(@"Ignoring unknown readium function.");
     }
-    
-    self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
-    
-    NSString *const syntheticSpread = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
-                                       ? @"double"
-                                       : @"single");
-    
-    NSDictionary *const settingsDictionary = @{@"columnGap": @20,
-                                               @"fontSize": @100,
-                                               @"scroll": @"fixed",
-                                               @"syntheticSpread": syntheticSpread};
-
-    NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
-                                        locationForIdentifier:self.bookIdentifier];
-    
-    NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
-    dictionary[@"package"] = self.package.dictionary;
-    dictionary[@"settings"] = settingsDictionary;
-    if(location) {
-      if(location.CFI) {
-        dictionary[@"openPageRequest"] = @{@"idref": location.idref, @"elementCfi" : location.CFI};
-      } else {
-        dictionary[@"openPageRequest"] = @{@"idref": location.idref};
-      }
-    }
-    
-    NSData *data = NYPLJSONDataFromObject(dictionary);
-    
-    if(!data) {
-      NYPLLOG(@"Failed to construct 'openBook' call.");
-      return NO;
-    }
-    
-    [self.webView stringByEvaluatingJavaScriptFromString:
-     [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
-      [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
-    
     return NO;
   }
   
-  if([function isEqualToString:@"pagination-changed"]) {
-    [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.pageDidChange();"];
-    
-    NSDictionary *const dictionary = argument(request.URL);
-    
-    // Use left-to-right unless it explicitly asks for right-to-left.
-    self.pageProgressionIsLTR = ![[dictionary objectForKey:@"pageProgressionDirection"]
-                                  isEqualToString:@"rtl"];
-    
-    NSArray *const openPages = [dictionary objectForKey:@"openPages"];
-    
-    self.openPageCount = openPages.count;
-    
-    if(self.openPageCount >= 1) {
-      NSDictionary *const page = openPages[0];
-      self.pageInCurrentSpineItemCount =
-        ((NSNumber *)[page objectForKey:@"spineItemPageCount"]).integerValue;
-      self.pageInCurrentSpineItemIndex =
-        ((NSNumber *)[page objectForKey:@"spineItemPageIndex"]).integerValue;
-      self.spineItemIndex = ((NSNumber *)[page objectForKey:@"spineItemIndex"]).integerValue;
-    }
-    
-    NSString *const locationJSON = [self.webView stringByEvaluatingJavaScriptFromString:
-                                    @"ReadiumSDK.reader.bookmarkCurrentPage()"];
-    
-    NSDictionary *const locationDictionary =
-      NYPLJSONObjectFromData([locationJSON dataUsingEncoding:NSUTF8StringEncoding]);
-   
-    NYPLBookLocation *const location = [[NYPLBookLocation alloc]
-                                        initWithCFI:locationDictionary[@"contentCFI"]
-                                        idref:locationDictionary[@"idref"]];
-    
-    if(location) {
-      [[NYPLMyBooksRegistry sharedRegistry]
-       setLocation:location
-       forIdentifier:self.bookIdentifier];
-    }
-    
-    self.webView.hidden = NO;
-    
-    return NO;
-  }
-  
-  if([function isEqualToString:@"media-overlay-status-changed"]) {
-    NSDictionary *const dict = argument(request.URL);
-    self.mediaOverlayIsPlaying = ((NSNumber *)[dict objectForKey:@"isPlaying"]).boolValue;
-    
-    return NO;
-  }
-  
-  return NO;
+  return YES;
 }
 
 #pragma mark UIPopoverControllerDelegate
@@ -350,6 +257,17 @@ executeJavaScript:(NSString *const)javaScript
 
 #pragma mark -
 
+- (void)setInterfaceHidden:(BOOL)interfaceHidden
+{
+  _interfaceHidden = interfaceHidden;
+  
+  self.navigationController.interactivePopGestureRecognizer.enabled = !interfaceHidden;
+  
+  self.navigationController.navigationBarHidden = self.interfaceHidden;
+  
+  [self setNeedsStatusBarAppearanceUpdate];
+}
+
 - (void)didSelectTOC
 {
   NYPLReaderTOCViewController *const viewController =
@@ -370,15 +288,95 @@ executeJavaScript:(NSString *const)javaScript
   }
 }
 
-- (void)setInterfaceHidden:(BOOL)interfaceHidden
+- (void)readiumInitialize
 {
-  _interfaceHidden = interfaceHidden;
-
-  self.navigationController.interactivePopGestureRecognizer.enabled = !interfaceHidden;
+  if(!self.package.spineItems[0]) {
+    self.bookIsCorrupted = YES;
+    [[[UIAlertView alloc]
+      initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptedTitle", nil)
+      message:NSLocalizedString(@"ReaderViewControllerCorruptedMessage", nil)
+      delegate:nil
+      cancelButtonTitle:nil
+      otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+     show];
+    return;
+  }
   
-  self.navigationController.navigationBarHidden = self.interfaceHidden;
+  self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
   
-  [self setNeedsStatusBarAppearanceUpdate];
+  NSString *const syntheticSpread = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+                                     ? @"double"
+                                     : @"single");
+  
+  NSDictionary *const settingsDictionary = @{@"columnGap": @20,
+                                             @"fontSize": @100,
+                                             @"scroll": @"fixed",
+                                             @"syntheticSpread": syntheticSpread};
+  
+  NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
+                                      locationForIdentifier:self.bookIdentifier];
+  
+  NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
+  dictionary[@"package"] = self.package.dictionary;
+  dictionary[@"settings"] = settingsDictionary;
+  if(location) {
+    if(location.CFI) {
+      dictionary[@"openPageRequest"] = @{@"idref": location.idref, @"elementCfi" : location.CFI};
+    } else {
+      dictionary[@"openPageRequest"] = @{@"idref": location.idref};
+    }
+  }
+  
+  NSData *data = NYPLJSONDataFromObject(dictionary);
+  
+  if(!data) {
+    NYPLLOG(@"Failed to construct 'openBook' call.");
+    return;
+  }
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:
+   [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
+    [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
 }
+
+- (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
+{
+  [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.pageDidChange();"];
   
+  // Use left-to-right unless it explicitly asks for right-to-left.
+  self.pageProgressionIsLTR = ![[dictionary objectForKey:@"pageProgressionDirection"]
+                                isEqualToString:@"rtl"];
+  
+  NSArray *const openPages = [dictionary objectForKey:@"openPages"];
+  
+  self.openPageCount = openPages.count;
+  
+  if(self.openPageCount >= 1) {
+    NSDictionary *const page = openPages[0];
+    self.pageInCurrentSpineItemCount =
+    ((NSNumber *)[page objectForKey:@"spineItemPageCount"]).integerValue;
+    self.pageInCurrentSpineItemIndex =
+    ((NSNumber *)[page objectForKey:@"spineItemPageIndex"]).integerValue;
+    self.spineItemIndex = ((NSNumber *)[page objectForKey:@"spineItemIndex"]).integerValue;
+  }
+  
+  NSString *const locationJSON = [self.webView stringByEvaluatingJavaScriptFromString:
+                                  @"ReadiumSDK.reader.bookmarkCurrentPage()"];
+  
+  NSDictionary *const locationDictionary =
+  NYPLJSONObjectFromData([locationJSON dataUsingEncoding:NSUTF8StringEncoding]);
+  
+  NYPLBookLocation *const location = [[NYPLBookLocation alloc]
+                                      initWithCFI:locationDictionary[@"contentCFI"]
+                                      idref:locationDictionary[@"idref"]];
+  
+  if(location) {
+    [[NYPLMyBooksRegistry sharedRegistry]
+     setLocation:location
+     forIdentifier:self.bookIdentifier];
+  }
+  
+  self.webView.hidden = NO;
+}
+
 @end
