@@ -71,8 +71,11 @@
               } else {
                 featuredURL = link.href;
               }
-            }
-            if([link.rel isEqualToString:NYPLOPDSRelationSubsection]) {
+            } else {
+              // TODO: We assume the last acquisition or navigation feed is the main feed for the
+              // lane. Is there a relation we should be using to do a better job of this? We
+              // previously used 'subsection', but it's unclear to me if that is appropriate for
+              // acquisition feeds.
               if(NYPLOPDSTypeStringIsAcquisition(link.type)) {
                 subsectionLink = [[NYPLCatalogSubsectionLink alloc]
                                   initWithType:NYPLCatalogSubsectionLinkTypeAcquisition
@@ -81,8 +84,6 @@
                 subsectionLink = [[NYPLCatalogSubsectionLink alloc]
                                   initWithType:NYPLCatalogSubsectionLinkTypeNavigation
                                   URL:link.href];
-              } else {
-                NYPLLOG(@"Ignoring subsection without known type.");
               }
             }
           }
