@@ -1,7 +1,7 @@
 #import "NYPLBook.h"
 #import "NYPLBookNormalCell.h"
 #import "NYPLBookDetailViewController.h"
-#import "NYPLCatalogCategory.h"
+#import "NYPLCatalogAcquisitionFeed.h"
 #import "NYPLCatalogFacet.h"
 #import "NYPLCatalogFacetGroup.h"
 #import "NYPLCatalogSearchViewController.h"
@@ -11,21 +11,21 @@
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 
-#import "NYPLCatalogCategoryViewController.h"
+#import "NYPLCatalogAcquisitionFeedViewController.h"
 
-@interface NYPLCatalogCategoryViewController ()
-  <NYPLCatalogCategoryDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate,
+@interface NYPLCatalogAcquisitionFeedViewController ()
+  <NYPLCatalogAcquisitionFeedDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate,
    UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
-@property (nonatomic) NYPLCatalogCategory *category;
+@property (nonatomic) NYPLCatalogAcquisitionFeed *category;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) NSURL *URL;
 
 @end
 
-@implementation NYPLCatalogCategoryViewController
+@implementation NYPLCatalogAcquisitionFeedViewController
 
 - (instancetype)initWithURL:(NSURL *const)URL
                       title:(NSString *const)title
@@ -67,7 +67,7 @@
   self.activityIndicatorView.hidden = YES;
   [self.view addSubview:self.activityIndicatorView];
   
-  __weak NYPLCatalogCategoryViewController *weakSelf = self;
+  __weak NYPLCatalogAcquisitionFeedViewController *weakSelf = self;
   self.reloadView = [[NYPLReloadView alloc] init];
   self.reloadView.handler = ^{
     weakSelf.reloadView.hidden = YES;
@@ -127,10 +127,11 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
 
-#pragma mark NYPLCatalogCategoryDelegate
+#pragma mark NYPLCatalogAcquisitionFeedDelegate
 
-- (void)catalogCategory:(__attribute__((unused)) NYPLCatalogCategory *)catalogCategory
-         didUpdateBooks:(__attribute__((unused)) NSArray *)books
+- (void)catalogAcquisitionFeed:(__attribute__((unused))
+                                NYPLCatalogAcquisitionFeed *)catalogAcquisitionFeed
+                didUpdateBooks:(__attribute__((unused)) NSArray *)books
 {
   [self.collectionView reloadData];
 }
@@ -214,9 +215,9 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
   self.collectionView.hidden = YES;
   self.facetBarView.hidden = YES;
   
-  [NYPLCatalogCategory
+  [NYPLCatalogAcquisitionFeed
    withURL:self.URL
-   handler:^(NYPLCatalogCategory *const category) {
+   handler:^(NYPLCatalogAcquisitionFeed *const category) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.activityIndicatorView.hidden = YES;
        [self.activityIndicatorView stopAnimating];

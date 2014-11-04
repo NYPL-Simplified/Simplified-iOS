@@ -1,10 +1,11 @@
-// TODO: This class duplicates much of the functionality of NYPLCatalogCategoryViewController.
-// After it is complete, the common portions must be factored out.
+// TODO: This class duplicates much of the functionality of
+// NYPLCatalogAcquisitionFeedViewController. After it is complete, the common portions must be
+// factored out.
 
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
-#import "NYPLCatalogCategory.h"
+#import "NYPLCatalogAcquisitionFeed.h"
 #import "NYPLConfiguration.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -12,11 +13,11 @@
 #import "NYPLCatalogSearchViewController.h"
 
 @interface NYPLCatalogSearchViewController ()
-  <NYPLCatalogCategoryDelegate, UICollectionViewDelegate, UICollectionViewDataSource,
+  <NYPLCatalogAcquisitionFeedDelegate, UICollectionViewDelegate, UICollectionViewDataSource,
    UISearchBarDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
-@property (nonatomic) NYPLCatalogCategory *category;
+@property (nonatomic) NYPLCatalogAcquisitionFeed *category;
 @property (nonatomic) NSString *categoryTitle;
 @property (nonatomic) UILabel *noResultsLabel;
 @property (nonatomic) NYPLReloadView *reloadView;
@@ -131,10 +132,11 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
 
-#pragma mark NYPLCatalogCategoryDelegate
+#pragma mark NYPLCatalogAcquisitionFeedDelegate
 
-- (void)catalogCategory:(__attribute__((unused)) NYPLCatalogCategory *)catalogCategory
-         didUpdateBooks:(__attribute__((unused)) NSArray *)books
+- (void)catalogAcquisitionFeed:(__attribute__((unused))
+                                NYPLCatalogAcquisitionFeed *)catalogAcquisitionFeed
+                didUpdateBooks:(__attribute__((unused)) NSArray *)books
 {
   [self.collectionView reloadData];
 }
@@ -149,12 +151,12 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [self.activityIndicatorView startAnimating];
   [self.searchBar resignFirstResponder];
   
-  [NYPLCatalogCategory
+  [NYPLCatalogAcquisitionFeed
    withURL:[NSURL URLWithString:
             [self.searchTemplate
              stringByReplacingOccurrencesOfString:@"{searchTerms}"
              withString:[self.searchBar.text stringByURLEncoding]]]
-   handler:^(NYPLCatalogCategory *const category) {
+   handler:^(NYPLCatalogAcquisitionFeed *const category) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.activityIndicatorView.hidden = YES;
        [self.activityIndicatorView stopAnimating];

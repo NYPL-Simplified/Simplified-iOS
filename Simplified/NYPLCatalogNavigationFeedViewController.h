@@ -1,6 +1,4 @@
-#import "NYPLBookCellCollectionViewController.h"
-
-@interface NYPLCatalogCategoryViewController : NYPLBookCellCollectionViewController
+@interface NYPLCatalogNavigationFeedViewController : UIViewController
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
@@ -8,7 +6,6 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
 // designated initializer
-- (instancetype)initWithURL:(NSURL *const)URL
-                      title:(NSString *const)title;
+- (instancetype)initWithURL:(NSURL *)URL title:(NSString *)title;
 
 @end
