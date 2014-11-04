@@ -310,7 +310,11 @@ viewForHeaderInSection:(NSInteger const)section
        animated:YES];
       break;
     case NYPLCatalogSubsectionLinkTypeNavigation:
-      NYPLLOG(@"Ignoring request to open unsupported nested navigation feed.");
+      [self.navigationController
+       pushViewController:[[NYPLCatalogNavigationFeedViewController alloc]
+                           initWithURL:lane.subsectionLink.URL
+                           title:lane.title]
+       animated:YES];
       break;
   }
 }
