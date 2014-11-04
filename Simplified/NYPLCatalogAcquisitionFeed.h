@@ -19,8 +19,8 @@
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
-// In the callback, |root| will be |nil| if an error occurred.
-+ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler;
+// In the callback, |acquisitionFeed| will be |nil| if an error occurred.
++ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogAcquisitionFeed *acquisitionFeed))handler;
 
 // designated initializer
 - (instancetype)initWithBooks:(NSArray *)books

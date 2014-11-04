@@ -6,8 +6,8 @@
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
-// In the callback, |root| will be |nil| if an error occurred.
-+ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogNavigationFeed *root))handler;
+// In the callback, |navigationFeed| will be |nil| if an error occurred.
++ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogNavigationFeed *navigationFeed))handler;
 
 // designated initializer
 - (instancetype)initWithLanes:(NSArray *)lanes

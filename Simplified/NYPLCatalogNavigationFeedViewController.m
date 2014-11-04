@@ -243,19 +243,19 @@ viewForHeaderInSection:(NSInteger const)section
   
   [NYPLCatalogNavigationFeed
    withURL:[NYPLConfiguration mainFeedURL]
-   handler:^(NYPLCatalogNavigationFeed *const root) {
+   handler:^(NYPLCatalogNavigationFeed *const navigationFeed) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.activityIndicatorView.hidden = YES;
        [self.activityIndicatorView stopAnimating];
        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
        
-       if(!root) {
+       if(!navigationFeed) {
          self.reloadView.hidden = NO;
          return;
        }
        
        self.tableView.hidden = NO;
-       self.catalogNavigationFeed = root;
+       self.catalogNavigationFeed = navigationFeed;
        [self.tableView reloadData];
        
        if(self.catalogNavigationFeed.searchTemplate) {
