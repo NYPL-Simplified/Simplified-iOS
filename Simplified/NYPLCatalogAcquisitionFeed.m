@@ -6,9 +6,9 @@
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLOpenSearchDescription.h"
 
-#import "NYPLCatalogCategory.h"
+#import "NYPLCatalogAcquisitionFeed.h"
 
-@interface NYPLCatalogCategory ()
+@interface NYPLCatalogAcquisitionFeed ()
 
 @property (nonatomic) BOOL currentlyFetchingNextURL;
 @property (nonatomic) NSArray *books;
@@ -24,11 +24,11 @@
 // attempt to fetch more books will be made.
 static NSUInteger const preloadThreshold = 100;
 
-@implementation NYPLCatalogCategory
+@implementation NYPLCatalogAcquisitionFeed
 
 + (void)withURL:(NSURL *)URL
 includingSearchTemplate:(BOOL)includingSearchTemplate
-handler:(void (^)(NYPLCatalogCategory *category))handler
+handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
 {
   [NYPLOPDSFeed
    withURL:URL
@@ -108,7 +108,7 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
           if(!description) {
             NYPLLOG(@"Failed to retrieve open search description.");
           }
-          NYPLAsyncDispatch(^{handler([[NYPLCatalogCategory alloc]
+          NYPLAsyncDispatch(^{handler([[NYPLCatalogAcquisitionFeed alloc]
                                        initWithBooks:books
                                        facetGroups:facetGroups
                                        nextURL:nextURL
@@ -116,7 +116,7 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
                                        title:acquisitionFeed.title]);});
         }];
       } else {
-        NYPLAsyncDispatch(^{handler([[NYPLCatalogCategory alloc]
+        NYPLAsyncDispatch(^{handler([[NYPLCatalogAcquisitionFeed alloc]
                                      initWithBooks:books
                                      facetGroups:facetGroups
                                      nextURL:nextURL
@@ -127,7 +127,7 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
 }
 
 + (void)withURL:(NSURL *)URL
-        handler:(void (^)(NYPLCatalogCategory *category))handler
+        handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
 {
   [self withURL:URL includingSearchTemplate:YES handler:handler];
 }
@@ -194,10 +194,10 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
   
   self.currentlyFetchingNextURL = YES;
   
-  [NYPLCatalogCategory
+  [NYPLCatalogAcquisitionFeed
    withURL:self.nextURL
    includingSearchTemplate:NO
-   handler:^(NYPLCatalogCategory *const category) {
+   handler:^(NYPLCatalogAcquisitionFeed *const category) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        if(!category) {
          NYPLLOG(@"Failed to fetch next page.");
@@ -213,7 +213,7 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
        
        [self prepareForBookIndex:self.greatestPreparationIndex];
        
-       [self.delegate catalogCategory:self didUpdateBooks:self.books];
+       [self.delegate catalogAcquisitionFeed:self didUpdateBooks:self.books];
      }];
    }];
 }
@@ -234,7 +234,7 @@ handler:(void (^)(NYPLCatalogCategory *category))handler
   
   self.books = refreshedBooks;
   
-  [self.delegate catalogCategory:self didUpdateBooks:self.books];
+  [self.delegate catalogAcquisitionFeed:self didUpdateBooks:self.books];
 }
 
 #pragma mark NSObject
