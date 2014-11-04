@@ -27,6 +27,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) UITableView *tableView;
+@property (nonatomic) NSURL *URL;
 
 @end
 
@@ -34,14 +35,15 @@ static CGFloat const sectionHeaderHeight = 50.0;
 
 #pragma mark NSObject
 
-- (instancetype)init
+- (instancetype)initWithURL:(NSURL *const)URL title:(NSString *const)title
 {
   self = [super init];
   if(!self) return nil;
   
   self.bookIdentifiersToImages = [NSMutableDictionary dictionary];
   self.cachedCells = [NSMutableDictionary dictionary];
-  self.title = NSLocalizedString(@"Catalog", nil);
+  self.title = title;
+  self.URL = URL;
   
   return self;
 }
@@ -53,10 +55,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
   [super viewDidLoad];
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
-  
-  self.navigationItem.titleView =
-    [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Catalog"]];
-  
+
   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                             initWithImage:[UIImage imageNamed:@"Search"]
                                             style:UIBarButtonItemStylePlain
@@ -242,7 +241,7 @@ viewForHeaderInSection:(NSInteger const)section
   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   
   [NYPLCatalogNavigationFeed
-   withURL:[NYPLConfiguration mainFeedURL]
+   withURL:self.URL
    handler:^(NYPLCatalogNavigationFeed *const navigationFeed) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.activityIndicatorView.hidden = YES;
