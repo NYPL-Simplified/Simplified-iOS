@@ -1,4 +1,5 @@
-#import "NYPLCatalogRootViewController.h"
+#import "NYPLCatalogNavigationFeedViewController.h"
+#import "NYPLConfiguration.h"
 
 #import "NYPLCatalogNavigationController.h"
 
@@ -8,10 +9,20 @@
 
 - (instancetype)init
 {
-  self = [super initWithRootViewController:[[NYPLCatalogRootViewController alloc] init]];
+  NYPLCatalogNavigationFeedViewController *const viewController =
+    [[NYPLCatalogNavigationFeedViewController alloc]
+     initWithURL:[NYPLConfiguration mainFeedURL]
+     title:NSLocalizedString(@"Catalog", nil)];
+  
+  self = [super initWithRootViewController:viewController];
   if(!self) return nil;
   
   self.tabBarItem.image = [UIImage imageNamed:@"Catalog"];
+  
+  // The top-level view controller uses the same image used for the tab bar in place of the usual
+  // title text.
+  viewController.navigationItem.titleView =
+    [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Catalog"]];
   
   return self;
 }

@@ -1,47 +1,49 @@
 #import "NYPLMyBooksCoverRegistry.h"
 #import "NYPLBookDetailViewController.h"
-#import "NYPLCatalogCategoryViewController.h"
+#import "NYPLCatalogAcquisitionFeedViewController.h"
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
-#import "NYPLCatalogRoot.h"
+#import "NYPLCatalogNavigationFeed.h"
 #import "NYPLCatalogSubsectionLink.h"
 #import "NYPLConfiguration.h"
 #import "NYPLIndeterminateProgressView.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 
-#import "NYPLCatalogRootViewController.h"
+#import "NYPLCatalogNavigationFeedViewController.h"
 
 static CGFloat const rowHeight = 115.0;
 static CGFloat const sectionHeaderHeight = 50.0;
 
-@interface NYPLCatalogRootViewController ()
+@interface NYPLCatalogNavigationFeedViewController ()
   <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NSMutableDictionary *bookIdentifiersToImages;
-@property (nonatomic) NYPLCatalogRoot *catalogRoot;
+@property (nonatomic) NYPLCatalogNavigationFeed *catalogNavigationFeed;
 @property (nonatomic) NSMutableDictionary *cachedCells;
 @property (nonatomic) NSMutableDictionary *loadingCells;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) UITableView *tableView;
+@property (nonatomic) NSURL *URL;
 
 @end
 
-@implementation NYPLCatalogRootViewController
+@implementation NYPLCatalogNavigationFeedViewController
 
 #pragma mark NSObject
 
-- (instancetype)init
+- (instancetype)initWithURL:(NSURL *const)URL title:(NSString *const)title
 {
   self = [super init];
   if(!self) return nil;
   
   self.bookIdentifiersToImages = [NSMutableDictionary dictionary];
   self.cachedCells = [NSMutableDictionary dictionary];
-  self.title = NSLocalizedString(@"Catalog", nil);
+  self.title = title;
+  self.URL = URL;
   
   return self;
 }
@@ -53,10 +55,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
   [super viewDidLoad];
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
-  
-  self.navigationItem.titleView =
-    [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Catalog"]];
-  
+
   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                             initWithImage:[UIImage imageNamed:@"Search"]
                                             style:UIBarButtonItemStylePlain
@@ -81,7 +80,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.tableView.hidden = YES;
   [self.view addSubview:self.tableView];
   
-  __weak NYPLCatalogRootViewController *weakSelf = self;
+  __weak NYPLCatalogNavigationFeedViewController *weakSelf = self;
   self.reloadView = [[NYPLReloadView alloc] init];
   self.reloadView.handler = ^{
     weakSelf.reloadView.hidden = YES;
@@ -131,7 +130,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
     NYPLCatalogLaneCell *const cell =
       [[NYPLCatalogLaneCell alloc]
        initWithLaneIndex:indexPath.section
-       books:((NYPLCatalogLane *) self.catalogRoot.lanes[indexPath.section]).books
+       books:((NYPLCatalogLane *) self.catalogNavigationFeed.lanes[indexPath.section]).books
        bookIdentifiersToImages:self.bookIdentifiersToImages];
     cell.delegate = self;
     self.cachedCells[indexPath] = cell;
@@ -178,7 +177,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return self.catalogRoot.lanes.count;
+  return self.catalogNavigationFeed.lanes.count;
 }
 
 #pragma mark UITableViewDelegate
@@ -206,7 +205,7 @@ viewForHeaderInSection:(NSInteger const)section
   {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.titleLabel.font = [UIFont systemFontOfSize:21];
-    NSString *const title = ((NYPLCatalogLane *) self.catalogRoot.lanes[section]).title;
+    NSString *const title = ((NYPLCatalogLane *) self.catalogNavigationFeed.lanes[section]).title;
     [button setTitle:title forState:UIControlStateNormal];
     [button sizeToFit];
     button.frame = CGRectMake(7, 5, CGRectGetWidth(button.frame), CGRectGetHeight(button.frame));
@@ -226,7 +225,7 @@ viewForHeaderInSection:(NSInteger const)section
 - (void)catalogLaneCell:(NYPLCatalogLaneCell *const)cell
      didSelectBookIndex:(NSUInteger const)bookIndex
 {
-  NYPLCatalogLane *const lane = self.catalogRoot.lanes[cell.laneIndex];
+  NYPLCatalogLane *const lane = self.catalogNavigationFeed.lanes[cell.laneIndex];
   NYPLBook *const book = lane.books[bookIndex];
   
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
@@ -241,24 +240,24 @@ viewForHeaderInSection:(NSInteger const)section
   [self.activityIndicatorView startAnimating];
   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   
-  [NYPLCatalogRoot
-   withURL:[NYPLConfiguration mainFeedURL]
-   handler:^(NYPLCatalogRoot *const root) {
+  [NYPLCatalogNavigationFeed
+   withURL:self.URL
+   handler:^(NYPLCatalogNavigationFeed *const navigationFeed) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.activityIndicatorView.hidden = YES;
        [self.activityIndicatorView stopAnimating];
        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
        
-       if(!root) {
+       if(!navigationFeed) {
          self.reloadView.hidden = NO;
          return;
        }
        
        self.tableView.hidden = NO;
-       self.catalogRoot = root;
+       self.catalogNavigationFeed = navigationFeed;
        [self.tableView reloadData];
        
-       if(self.catalogRoot.searchTemplate) {
+       if(self.catalogNavigationFeed.searchTemplate) {
          self.navigationItem.rightBarButtonItem.enabled = YES;
        }
        
@@ -269,7 +268,7 @@ viewForHeaderInSection:(NSInteger const)section
 
 - (void)downloadImages
 {
-  if(self.indexOfNextLaneRequiringImageDownload >= self.catalogRoot.lanes.count) {
+  if(self.indexOfNextLaneRequiringImageDownload >= self.catalogNavigationFeed.lanes.count) {
     self.loadingCells = nil;
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     return;
@@ -277,7 +276,8 @@ viewForHeaderInSection:(NSInteger const)section
   
   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   
-  NYPLCatalogLane *const lane = self.catalogRoot.lanes[self.indexOfNextLaneRequiringImageDownload];
+  NYPLCatalogLane *const lane =
+    self.catalogNavigationFeed.lanes[self.indexOfNextLaneRequiringImageDownload];
   
   [[NYPLMyBooksCoverRegistry sharedRegistry]
    thumbnailImagesForBooks:[NSSet setWithArray:lane.books]
@@ -299,15 +299,24 @@ viewForHeaderInSection:(NSInteger const)section
 
 - (void)didSelectCategory:(UIButton *const)button
 {
-  NYPLCatalogLane *const lane = self.catalogRoot.lanes[button.tag];
+  NYPLCatalogLane *const lane = self.catalogNavigationFeed.lanes[button.tag];
   
-  // TODO: Show the correct controller based on the |lane.subsectionLink.type|.
-  NYPLCatalogCategoryViewController *const viewController =
-    [[NYPLCatalogCategoryViewController alloc]
-     initWithURL:lane.subsectionLink.URL
-     title:lane.title];
-  
-  [self.navigationController pushViewController:viewController animated:YES];
+  switch(lane.subsectionLink.type) {
+    case NYPLCatalogSubsectionLinkTypeAcquisition:
+      [self.navigationController
+       pushViewController:[[NYPLCatalogAcquisitionFeedViewController alloc]
+                           initWithURL:lane.subsectionLink.URL
+                           title:lane.title]
+       animated:YES];
+      break;
+    case NYPLCatalogSubsectionLinkTypeNavigation:
+      [self.navigationController
+       pushViewController:[[NYPLCatalogNavigationFeedViewController alloc]
+                           initWithURL:lane.subsectionLink.URL
+                           title:lane.title]
+       animated:YES];
+      break;
+  }
 }
 
 - (void)didSelectSearch
@@ -315,7 +324,7 @@ viewForHeaderInSection:(NSInteger const)section
   [self.navigationController
    pushViewController:[[NYPLCatalogSearchViewController alloc]
                        initWithCategoryTitle:NSLocalizedString(@"Catalog", nil)
-                       searchTemplate:self.catalogRoot.searchTemplate]
+                       searchTemplate:self.catalogNavigationFeed.searchTemplate]
    animated:YES];
 }
 

@@ -8,19 +8,19 @@
 #import "NYPLSession.h"
 #import "NYPLXML.h"
 
-#import "NYPLCatalogRoot.h"
+#import "NYPLCatalogNavigationFeed.h"
 
-@interface NYPLCatalogRoot ()
+@interface NYPLCatalogNavigationFeed ()
 
 @property (nonatomic) NSArray *lanes;
 @property (nonatomic) NSString *searchTemplate;
 
 @end
 
-@implementation NYPLCatalogRoot
+@implementation NYPLCatalogNavigationFeed
 
 + (void)withURL:(NSURL *const)URL
-        handler:(void (^)(NYPLCatalogRoot *root))handler
+        handler:(void (^)(NYPLCatalogNavigationFeed *root))handler
 {
   if(!(URL && handler)) {
     @throw NSInvalidArgumentException;
@@ -71,8 +71,11 @@
               } else {
                 featuredURL = link.href;
               }
-            }
-            if([link.rel isEqualToString:NYPLOPDSRelationSubsection]) {
+            } else {
+              // TODO: We assume the last acquisition or navigation feed is the main feed for the
+              // lane. Is there a relation we should be using to do a better job of this? We
+              // previously used 'subsection', but it's unclear to me if that is appropriate for
+              // acquisition feeds.
               if(NYPLOPDSTypeStringIsAcquisition(link.type)) {
                 subsectionLink = [[NYPLCatalogSubsectionLink alloc]
                                   initWithType:NYPLCatalogSubsectionLinkTypeAcquisition
@@ -81,8 +84,6 @@
                 subsectionLink = [[NYPLCatalogSubsectionLink alloc]
                                   initWithType:NYPLCatalogSubsectionLinkTypeNavigation
                                   URL:link.href];
-              } else {
-                NYPLLOG(@"Ignoring subsection without known type.");
               }
             }
           }
@@ -167,12 +168,12 @@
              if(!description) {
                NYPLLOG(@"Failed to retrieve OpenSearch description document.");
              }
-             NYPLAsyncDispatch(^{handler([[NYPLCatalogRoot alloc]
+             NYPLAsyncDispatch(^{handler([[NYPLCatalogNavigationFeed alloc]
                                           initWithLanes:lanes
                                           searchTemplate:description.OPDSURLTemplate]);});
            }];
         } else {
-          NYPLAsyncDispatch(^{handler([[NYPLCatalogRoot alloc]
+          NYPLAsyncDispatch(^{handler([[NYPLCatalogNavigationFeed alloc]
                                        initWithLanes:lanes
                                        searchTemplate:nil]);});
         }
