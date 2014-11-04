@@ -8,7 +8,6 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
 // designated initializer
-- (instancetype)initWithURL:(NSURL *const)URL
-                      title:(NSString *const)title;
+- (instancetype)initWithURL:(NSURL *const)URL title:(NSString *const)title;
 
 @end
