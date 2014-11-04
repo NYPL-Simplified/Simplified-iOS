@@ -301,13 +301,18 @@ viewForHeaderInSection:(NSInteger const)section
 {
   NYPLCatalogLane *const lane = self.catalogRoot.lanes[button.tag];
   
-  // TODO: Show the correct controller based on the |lane.subsectionLink.type|.
-  NYPLCatalogCategoryViewController *const viewController =
-    [[NYPLCatalogCategoryViewController alloc]
-     initWithURL:lane.subsectionLink.URL
-     title:lane.title];
-  
-  [self.navigationController pushViewController:viewController animated:YES];
+  switch(lane.subsectionLink.type) {
+    case NYPLCatalogSubsectionLinkTypeAcquisition:
+      [self.navigationController
+       pushViewController:[[NYPLCatalogCategoryViewController alloc]
+                           initWithURL:lane.subsectionLink.URL
+                           title:lane.title]
+       animated:YES];
+      break;
+    case NYPLCatalogSubsectionLinkTypeNavigation:
+      NYPLLOG(@"Ignoring request to open unsupported nested navigation feed.");
+      break;
+  }
 }
 
 - (void)didSelectSearch
