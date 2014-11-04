@@ -8,19 +8,19 @@
 #import "NYPLSession.h"
 #import "NYPLXML.h"
 
-#import "NYPLCatalogRoot.h"
+#import "NYPLCatalogNavigationFeed.h"
 
-@interface NYPLCatalogRoot ()
+@interface NYPLCatalogNavigationFeed ()
 
 @property (nonatomic) NSArray *lanes;
 @property (nonatomic) NSString *searchTemplate;
 
 @end
 
-@implementation NYPLCatalogRoot
+@implementation NYPLCatalogNavigationFeed
 
 + (void)withURL:(NSURL *const)URL
-        handler:(void (^)(NYPLCatalogRoot *root))handler
+        handler:(void (^)(NYPLCatalogNavigationFeed *root))handler
 {
   if(!(URL && handler)) {
     @throw NSInvalidArgumentException;
@@ -167,12 +167,12 @@
              if(!description) {
                NYPLLOG(@"Failed to retrieve OpenSearch description document.");
              }
-             NYPLAsyncDispatch(^{handler([[NYPLCatalogRoot alloc]
+             NYPLAsyncDispatch(^{handler([[NYPLCatalogNavigationFeed alloc]
                                           initWithLanes:lanes
                                           searchTemplate:description.OPDSURLTemplate]);});
            }];
         } else {
-          NYPLAsyncDispatch(^{handler([[NYPLCatalogRoot alloc]
+          NYPLAsyncDispatch(^{handler([[NYPLCatalogNavigationFeed alloc]
                                        initWithLanes:lanes
                                        searchTemplate:nil]);});
         }

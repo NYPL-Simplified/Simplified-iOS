@@ -1,16 +1,16 @@
-@class NYPLCatalogCategory;
+@class NYPLCatalogAcquisitionFeed;
 
-@protocol NYPLCatalogCategoryDelegate
+@protocol NYPLCatalogAcquisitionFeedDelegate
 
-- (void)catalogCategory:(NYPLCatalogCategory *)catalogCategory
-         didUpdateBooks:(NSArray *)books;
+- (void)catalogAcquisitionFeed:(NYPLCatalogAcquisitionFeed *)catalogAcquisitionFeed
+                didUpdateBooks:(NSArray *)books;
 
 @end
 
-@interface NYPLCatalogCategory : NSObject
+@interface NYPLCatalogAcquisitionFeed : NSObject
 
 @property (nonatomic, readonly) NSArray *books;
-@property (nonatomic, weak) id<NYPLCatalogCategoryDelegate> delegate; // nilable
+@property (nonatomic, weak) id<NYPLCatalogAcquisitionFeedDelegate> delegate; // nilable
 @property (nonatomic, readonly) NSArray *facetGroups;
 @property (nonatomic, readonly) NSURL *nextURL; // nilable
 @property (nonatomic, readonly) NSString *searchTemplate; // nilable
@@ -20,7 +20,7 @@
 - (id)init NS_UNAVAILABLE;
 
 // In the callback, |root| will be |nil| if an error occurred.
-+ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogCategory *category))handler;
++ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler;
 
 // designated initializer
 - (instancetype)initWithBooks:(NSArray *)books

@@ -1,4 +1,4 @@
-@interface NYPLCatalogRoot : NSObject
+@interface NYPLCatalogNavigationFeed : NSObject
 
 @property (nonatomic, readonly) NSArray *lanes;
 @property (nonatomic, readonly) NSString *searchTemplate; // nilable
@@ -7,7 +7,7 @@
 - (id)init NS_UNAVAILABLE;
 
 // In the callback, |root| will be |nil| if an error occurred.
-+ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogRoot *root))handler;
++ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogNavigationFeed *root))handler;
 
 // designated initializer
 - (instancetype)initWithLanes:(NSArray *)lanes
