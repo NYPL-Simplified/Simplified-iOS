@@ -1,9 +1,12 @@
 function Simplified() {
   
+  var singleTouchGesture = false;
   var startX = 0;
   var startY = 0;
   
   var handleTouchStart = function(event) {
+    singleTouchGesture = event.touches.length == 1;
+    
     var touch = event.changedTouches[0];
     
     if(touch.target.nodeName === "a") {
@@ -15,6 +18,8 @@ function Simplified() {
   };
   
   var handleTouchEnd = function(event) {
+    if(!singleTouchGesture) return;
+    
     var touch = event.changedTouches[0];
     
     if(touch.target.nodeName === "a") {
