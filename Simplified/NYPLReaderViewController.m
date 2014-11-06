@@ -15,7 +15,7 @@
    UIPopoverControllerDelegate, UIScrollViewDelegate, UIWebViewDelegate>
 
 @property (nonatomic) UIPopoverController *activePopoverController;
-@property (nonatomic) BOOL bookIsCorrupted;
+@property (nonatomic) BOOL bookIsCorrupt;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) RDContainer *container;
 @property (nonatomic) BOOL interfaceHidden;
@@ -71,10 +71,10 @@ id argument(NSURL *const URL) {
                         fileURLForBookIndentifier:bookIdentifier]
                             path]];
   } @catch (...) {
-    self.bookIsCorrupted = YES;
+    self.bookIsCorrupt = YES;
     [[[UIAlertView alloc]
-      initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptedTitle", nil)
-      message:NSLocalizedString(@"ReaderViewControllerCorruptedMessage", nil)
+      initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptTitle", nil)
+      message:NSLocalizedString(@"ReaderViewControllerCorruptMessage", nil)
       delegate:nil
       cancelButtonTitle:nil
       otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
@@ -115,7 +115,14 @@ id argument(NSURL *const URL) {
                                           target:self
                                           action:@selector(didSelectTOC)];
   
+  // |setBookIsCorrupt:| may have been called before we added these, so we need to set their
+  // enabled status appropriately here too.
   self.navigationItem.rightBarButtonItems = @[TOCButtonItem];
+  if(self.bookIsCorrupt) {
+    for(UIBarButtonItem *const item in self.navigationItem.rightBarButtonItems) {
+      item.enabled = NO;
+    }
+  }
   
   self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
@@ -161,7 +168,7 @@ webView:(__attribute__((unused)) UIWebView *)webView
 shouldStartLoadWithRequest:(NSURLRequest *const)request
 navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 {
-  if(self.bookIsCorrupted) {
+  if(self.bookIsCorrupt) {
     return NO;
   }
   
@@ -257,8 +264,27 @@ executeJavaScript:(NSString *const)javaScript
 
 #pragma mark -
 
+- (void)setBookIsCorrupt:(BOOL const)bookIsCorrupt
+{
+  _bookIsCorrupt = bookIsCorrupt;
+  
+  for(UIBarButtonItem *const item in self.navigationItem.rightBarButtonItems) {
+    item.enabled = !bookIsCorrupt;
+  }
+  
+  // Show the interface so the user can get back out.
+  if(bookIsCorrupt) {
+    self.interfaceHidden = NO;
+  }
+}
+
 - (void)setInterfaceHidden:(BOOL)interfaceHidden
 {
+  if(self.bookIsCorrupt && interfaceHidden) {
+    // Hiding the UI would prevent the user from escaping from a corrupt book.
+    return;
+  }
+  
   _interfaceHidden = interfaceHidden;
   
   self.navigationController.interactivePopGestureRecognizer.enabled = !interfaceHidden;
@@ -291,10 +317,10 @@ executeJavaScript:(NSString *const)javaScript
 - (void)readiumInitialize
 {
   if(!self.package.spineItems[0]) {
-    self.bookIsCorrupted = YES;
+    self.bookIsCorrupt = YES;
     [[[UIAlertView alloc]
-      initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptedTitle", nil)
-      message:NSLocalizedString(@"ReaderViewControllerCorruptedMessage", nil)
+      initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptTitle", nil)
+      message:NSLocalizedString(@"ReaderViewControllerCorruptMessage", nil)
       delegate:nil
       cancelButtonTitle:nil
       otherButtonTitles:NSLocalizedString(@"OK", nil), nil]

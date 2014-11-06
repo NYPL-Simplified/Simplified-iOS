@@ -55,8 +55,8 @@
 
 // NYPLReaderViewController
 
-"ReaderViewControllerCorruptedTitle" = "Could Not Open Book";
-"ReaderViewControllerCorruptedMessage" = "This book is corrupted and cannot be read.";
+"ReaderViewControllerCorruptTitle" = "Could Not Display Book";
+"ReaderViewControllerCorruptMessage" = "This book is corrupt and cannot be read.";
 
 // ReaderTOCViewController
 
