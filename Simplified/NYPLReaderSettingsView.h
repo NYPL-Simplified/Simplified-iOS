@@ -12,6 +12,12 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsViewFontSize) {
 };
 
 // Do not reorder.
+typedef NS_ENUM(NSInteger, NYPLReaderSettingsViewFontType) {
+  NYPLReaderSettingsViewFontTypeSans,
+  NYPLReaderSettingsViewFontTypeSerif
+};
+
+// Do not reorder.
 typedef NS_ENUM(NSInteger, NYPLReaderSettingsViewColorScheme) {
   NYPLReaderSettingsViewColorSchemeBlackOnWhite,
   NYPLReaderSettingsViewColorSchemeBlackOnSepia,
@@ -29,6 +35,9 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsViewColorScheme) {
 - (void)readerSettingsView:(NYPLReaderSettingsView *)readerSettingsView
          didSelectFontSize:(NYPLReaderSettingsViewFontSize)fontSize;
 
+- (void)readerSettingsView:(NYPLReaderSettingsView *)readerSettingsView
+         didSelectFontType:(NYPLReaderSettingsViewFontType)fontType;
+
 @end
 
 @interface NYPLReaderSettingsView : UIView
@@ -40,6 +49,7 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsViewColorScheme) {
 @property (nonatomic) NYPLReaderSettingsViewColorScheme colorScheme;
 @property (nonatomic, weak) id<NYPLReaderSettingsViewDelegate> delegate;
 @property (nonatomic) NYPLReaderSettingsViewFontSize fontSize;
+@property (nonatomic) NYPLReaderSettingsViewFontType fontType;
 
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
