@@ -21,6 +21,8 @@
      self.brightness = ((UIScreen *) notification.object).brightness;
    }];
   
+  self.brightness = [UIScreen mainScreen].brightness;
+  
   return self;
 }
 
@@ -41,13 +43,6 @@
   }
   
   return CGSizeMake(w > size.width ? size.width : w, h > size.height ? size.height : h);
-}
-
-#pragma mark -
-
-- (void)screenBrightnessDidChange:(UIScreen *)screen
-{
-  self.brightness = screen.brightness;
 }
 
 @end

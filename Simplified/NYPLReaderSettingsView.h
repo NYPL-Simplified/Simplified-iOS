@@ -1,8 +1,5 @@
 @class NYPLReaderSettingsView;
 
-// Should always have range [0, 1].
-typedef CGFloat NYPLReaderSettingsViewBrightness;
-
 // Do not reorder.
 typedef NS_ENUM(NSInteger, NYPLReaderSettingsViewFontSize) {
   NYPLReaderSettingsViewFontSizeSmallest,
@@ -24,7 +21,7 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsViewColorScheme) {
 @protocol NYPLReaderSettingsViewDelegate
 
 - (void)readerSettingsView:(NYPLReaderSettingsView *)readerSettingsView
-       didSelectBrightness:(NYPLReaderSettingsViewBrightness)brightness;
+       didSelectBrightness:(CGFloat)brightness;
 
 - (void)readerSettingsView:(NYPLReaderSettingsView *)readerSettingsView
       didSelectColorScheme:(NYPLReaderSettingsViewColorScheme)colorScheme;
@@ -39,7 +36,7 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsViewColorScheme) {
 // This class observes brightness change notifications from UIScreen and reflects them visually. It
 // does not, however, change the screen's brightness itself. Objects that use this view should
 // implement its delegate and forward brightness changes to a UIScreen instance as appropriate.
-@property (nonatomic) NYPLReaderSettingsViewBrightness brightness;
+@property (nonatomic) CGFloat brightness;
 @property (nonatomic) NYPLReaderSettingsViewColorScheme colorScheme;
 @property (nonatomic, weak) id<NYPLReaderSettingsViewDelegate> delegate;
 @property (nonatomic) NYPLReaderSettingsViewFontSize fontSize;
