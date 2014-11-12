@@ -325,6 +325,7 @@ executeJavaScript:(NSString *const)javaScript
     assert(!self.activePopoverController);
     self.activePopoverController =
       [[UIPopoverController alloc] initWithContentViewController:viewController];
+    self.activePopoverController.delegate = self;
     [self.activePopoverController
      presentPopoverFromBarButtonItem:self.settingsBarButtonItem
      permittedArrowDirections:UIPopoverArrowDirectionUp
