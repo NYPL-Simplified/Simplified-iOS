@@ -306,9 +306,23 @@ executeJavaScript:(NSString *const)javaScript
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-         didSelectFontType:(__attribute__((unused)) NYPLReaderSettingsViewFontType)fontType
+         didSelectFontType:(NYPLReaderSettingsViewFontType)fontType
 {
-  // TODO
+  NSString *fontFamily = nil;
+  
+  switch(fontType) {
+    case NYPLReaderSettingsViewFontTypeSans:
+      fontFamily = @"HelveticaNeue";
+      break;
+    case NYPLReaderSettingsViewFontTypeSerif:
+      fontFamily = @"Georgia";
+      break;
+  }
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:
+   [NSString stringWithFormat:
+    @"window.frames[\"epubContentIframe\"].document.body.style.fontFamily = \"%@\"",
+    fontFamily]];
 }
 
 #pragma mark -
