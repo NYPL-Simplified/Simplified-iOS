@@ -37,9 +37,9 @@
   [self.serifButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [self.serifButton setTitle:@"Aa" forState:UIControlStateNormal];
   self.serifButton.titleLabel.font = [UIFont fontWithName:@"Georgia" size:24];
-  [self.sansButton addTarget:self
-                      action:@selector(didSelectSerif)
-            forControlEvents:UIControlEventTouchUpInside];
+  [self.serifButton addTarget:self
+                       action:@selector(didSelectSerif)
+             forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.serifButton];
   
   [[NSNotificationCenter defaultCenter]

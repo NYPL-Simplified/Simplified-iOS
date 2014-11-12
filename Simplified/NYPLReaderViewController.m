@@ -13,8 +13,9 @@
 #import "NYPLReaderViewController.h"
 
 @interface NYPLReaderViewController ()
-  <NYPLReaderTOCViewControllerDelegate, RDContainerDelegate, RDPackageResourceServerDelegate,
-   UIPopoverControllerDelegate, UIScrollViewDelegate, UIWebViewDelegate>
+  <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, RDContainerDelegate,
+   RDPackageResourceServerDelegate, UIPopoverControllerDelegate, UIScrollViewDelegate,
+   UIWebViewDelegate>
 
 @property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) BOOL bookIsCorrupt;
@@ -284,6 +285,32 @@ executeJavaScript:(NSString *const)javaScript
   }];
 }
 
+#pragma mark NYPLReaderSettingsViewDelegate
+
+- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
+       didSelectBrightness:(__attribute__((unused)) CGFloat)brightness
+{
+  // TODO
+}
+
+- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
+      didSelectColorScheme:(__attribute__((unused)) NYPLReaderSettingsViewColorScheme)colorScheme
+{
+  // TODO
+}
+
+- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
+         didSelectFontSize:(__attribute__((unused)) NYPLReaderSettingsViewFontSize)fontSize
+{
+  // TODO
+}
+
+- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
+         didSelectFontType:(__attribute__((unused)) NYPLReaderSettingsViewFontType)fontType
+{
+  // TODO
+}
+
 #pragma mark -
 
 - (void)setBookIsCorrupt:(BOOL const)bookIsCorrupt
@@ -319,8 +346,10 @@ executeJavaScript:(NSString *const)javaScript
 - (void)didSelectSettings
 {
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    NYPLReaderSettingsView *const readerSettingsView = [[NYPLReaderSettingsView alloc] init];
+    readerSettingsView.delegate = self;
     UIViewController *const viewController = [[UIViewController alloc] init];
-    viewController.view = [[NYPLReaderSettingsView alloc] init];
+    viewController.view = readerSettingsView;
     viewController.preferredContentSize = viewController.view.bounds.size;
     assert(!self.activePopoverController);
     self.activePopoverController =
