@@ -96,6 +96,7 @@
 		11C5DCF81976D2AF005A9945 /* NYPLSettingsNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DCF71976D2AF005A9945 /* NYPLSettingsNavigationController.m */; };
 		11C5DCFB1976D2F4005A9945 /* NYPLSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DCFA1976D2F4005A9945 /* NYPLSettingsViewController.m */; };
 		11C5DD16197727A6005A9945 /* NYPLKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DD15197727A6005A9945 /* NYPLKeychain.m */; };
+		11DC19281A12F92500721DBA /* NYPLReaderSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DC19271A12F92500721DBA /* NYPLReaderSettingsView.m */; };
 		11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = 11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */; };
 		11F3771F19DB62B000487769 /* NYPLFacetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3771E19DB62B000487769 /* NYPLFacetView.m */; };
 		11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3773219E0876F00487769 /* NYPLCatalogFacet.m */; };
@@ -291,6 +292,8 @@
 		11C5DD14197727A6005A9945 /* NYPLKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLKeychain.h; sourceTree = "<group>"; };
 		11C5DD15197727A6005A9945 /* NYPLKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLKeychain.m; sourceTree = "<group>"; };
 		11C5DD171977335E005A9945 /* NYPLKeychainTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLKeychainTests.m; sourceTree = "<group>"; };
+		11DC19261A12F92500721DBA /* NYPLReaderSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReaderSettingsView.h; sourceTree = "<group>"; };
+		11DC19271A12F92500721DBA /* NYPLReaderSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderSettingsView.m; sourceTree = "<group>"; };
 		11E0208B197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+NYPLSystemFontOverride.h"; sourceTree = "<group>"; };
 		11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+NYPLSystemFontOverride.m"; sourceTree = "<group>"; };
 		11F3771D19DB62B000487769 /* NYPLFacetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLFacetView.h; sourceTree = "<group>"; };
@@ -476,6 +479,8 @@
 		119504051994061E009FB788 /* Reader */ = {
 			isa = PBXGroup;
 			children = (
+				11DC19261A12F92500721DBA /* NYPLReaderSettingsView.h */,
+				11DC19271A12F92500721DBA /* NYPLReaderSettingsView.m */,
 				11BFDB37199C117B00378691 /* NYPLReaderTOCCell.h */,
 				11BFDB38199C117B00378691 /* NYPLReaderTOCCell.m */,
 				11BFDB34199C08E900378691 /* NYPLReaderTOCElement.h */,
@@ -868,6 +873,7 @@
 				118A0B1B19915BDF00792DDE /* NYPLCatalogSearchViewController.m in Sources */,
 				11C5DD16197727A6005A9945 /* NYPLKeychain.m in Sources */,
 				AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */,
+				11DC19281A12F92500721DBA /* NYPLReaderSettingsView.m in Sources */,
 				113DB8A719C24E54004E1154 /* NYPLIndeterminateProgressView.m in Sources */,
 				119BEB89198C43A600121439 /* NSString+NYPLStringAdditions.m in Sources */,
 				1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */,
