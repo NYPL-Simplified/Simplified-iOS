@@ -7,6 +7,7 @@
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLReaderTOCViewController.h"
 #import "NYPLReadium.h"
+#import "NYPLRoundedButton.h"
 
 #import "NYPLReaderViewController.h"
 
@@ -26,6 +27,7 @@
 @property (nonatomic) BOOL pageProgressionIsLTR;
 @property (nonatomic) RDPackage *package;
 @property (nonatomic) RDPackageResourceServer *server;
+@property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
 @property (nonatomic) NSInteger spineItemIndex;
 @property (nonatomic) UIWebView *webView;
@@ -109,15 +111,29 @@ id argument(NSURL *const URL) {
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
-  UIBarButtonItem *const TOCButtonItem = [[UIBarButtonItem alloc]
-                                          initWithImage:[UIImage imageNamed:@"TOC"]
-                                          style:UIBarButtonItemStylePlain
-                                          target:self
-                                          action:@selector(didSelectTOC)];
+  NYPLRoundedButton *const settingsButton = [NYPLRoundedButton button];
+  [settingsButton setTitle:@"Aa" forState:UIControlStateNormal];
+  [settingsButton sizeToFit];
+  // We set a larger font after sizing because we want large text in a standard-size button.
+  settingsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+  [settingsButton addTarget:self
+                     action:@selector(didSelectSettings)
+           forControlEvents:UIControlEventTouchUpInside];
+  
+  self.settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
+  
+  NYPLRoundedButton *const TOCButton = [NYPLRoundedButton button];
+  TOCButton.bounds = settingsButton.bounds;
+  [TOCButton setImage:[UIImage imageNamed:@"TOC"] forState:UIControlStateNormal];
+  [TOCButton addTarget:self
+                action:@selector(didSelectTOC)
+      forControlEvents:UIControlEventTouchUpInside];
+  
+  UIBarButtonItem *const TOCBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:TOCButton];
   
   // |setBookIsCorrupt:| may have been called before we added these, so we need to set their
   // enabled status appropriately here too.
-  self.navigationItem.rightBarButtonItems = @[TOCButtonItem];
+  self.navigationItem.rightBarButtonItems = @[TOCBarButtonItem, self.settingsBarButtonItem];
   if(self.bookIsCorrupt) {
     for(UIBarButtonItem *const item in self.navigationItem.rightBarButtonItems) {
       item.enabled = NO;
@@ -151,6 +167,11 @@ id argument(NSURL *const URL) {
 - (UIStatusBarAnimation)preferredStatusBarUpdateAnimation
 {
   return UIStatusBarAnimationNone;
+}
+
+- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+{
+  self.navigationItem.titleView = [[UIView alloc] init];
 }
 
 - (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
@@ -292,6 +313,11 @@ executeJavaScript:(NSString *const)javaScript
   self.navigationController.navigationBarHidden = self.interfaceHidden;
   
   [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (void)didSelectSettings
+{
+  // TODO
 }
 
 - (void)didSelectTOC
