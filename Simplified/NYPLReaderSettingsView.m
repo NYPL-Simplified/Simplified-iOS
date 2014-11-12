@@ -13,7 +13,20 @@
   
   [self sizeToFit];
   
+  [[NSNotificationCenter defaultCenter]
+   addObserverForName:UIScreenBrightnessDidChangeNotification
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(NSNotification *const notification) {
+     self.brightness = ((UIScreen *) notification.object).brightness;
+   }];
+  
   return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark UIView
@@ -28,6 +41,13 @@
   }
   
   return CGSizeMake(w > size.width ? size.width : w, h > size.height ? size.height : h);
+}
+
+#pragma mark -
+
+- (void)screenBrightnessDidChange:(UIScreen *)screen
+{
+  self.brightness = screen.brightness;
 }
 
 @end
