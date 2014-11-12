@@ -5,6 +5,7 @@
 #import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
+#import "NYPLReaderSettingsView.h"
 #import "NYPLReaderTOCViewController.h"
 #import "NYPLReadium.h"
 #import "NYPLRoundedButton.h"
@@ -317,7 +318,18 @@ executeJavaScript:(NSString *const)javaScript
 
 - (void)didSelectSettings
 {
-  // TODO
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    UIViewController *const viewController = [[UIViewController alloc] init];
+    viewController.view = [[NYPLReaderSettingsView alloc] init];
+    viewController.preferredContentSize = viewController.view.bounds.size;
+    assert(!self.activePopoverController);
+    self.activePopoverController =
+      [[UIPopoverController alloc] initWithContentViewController:viewController];
+    [self.activePopoverController
+     presentPopoverFromBarButtonItem:self.settingsBarButtonItem
+     permittedArrowDirections:UIPopoverArrowDirectionUp
+     animated:YES];
+  }
 }
 
 - (void)didSelectTOC
