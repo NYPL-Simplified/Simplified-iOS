@@ -13,6 +13,10 @@
 
 + (UIColor *)backgroundColor;
 
++ (UIColor *)backgroundDarkColor;
+
++ (UIColor *)backgroundSepiaColor;
+
 + (NSString *)systemFontName;
 
 + (NSString *)boldSystemFontName;
