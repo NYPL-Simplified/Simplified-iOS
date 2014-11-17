@@ -33,6 +33,16 @@
   return [UIColor colorWithWhite:250/255.0 alpha:1.0];
 }
 
++ (UIColor *)backgroundDarkColor
+{
+  return [UIColor colorWithWhite:5/255.0 alpha:1.0];
+}
+
++ (UIColor *)backgroundSepiaColor
+{
+  return [UIColor colorWithRed:255/255.0 green:245/255.0 blue:210/255.0 alpha:1.0];
+}
+
 + (NSString *)systemFontName
 {
   return @"AvenirNext-Medium";
