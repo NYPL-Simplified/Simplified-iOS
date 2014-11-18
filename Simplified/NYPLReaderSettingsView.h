@@ -45,7 +45,6 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsViewColorScheme) {
 // This class observes brightness change notifications from UIScreen and reflects them visually. It
 // does not, however, change the screen's brightness itself. Objects that use this view should
 // implement its delegate and forward brightness changes to a UIScreen instance as appropriate.
-@property (nonatomic) CGFloat brightness;
 @property (nonatomic) NYPLReaderSettingsViewColorScheme colorScheme;
 @property (nonatomic, weak) id<NYPLReaderSettingsViewDelegate> delegate;
 @property (nonatomic) NYPLReaderSettingsViewFontSize fontSize;

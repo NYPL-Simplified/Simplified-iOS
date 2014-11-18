@@ -288,9 +288,9 @@ executeJavaScript:(NSString *const)javaScript
 #pragma mark NYPLReaderSettingsViewDelegate
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-       didSelectBrightness:(__attribute__((unused)) CGFloat)brightness
+       didSelectBrightness:(CGFloat const)brightness
 {
-  // TODO
+  [UIScreen mainScreen].brightness = brightness;
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
