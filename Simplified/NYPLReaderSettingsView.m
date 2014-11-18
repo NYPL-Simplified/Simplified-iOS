@@ -113,6 +113,9 @@
   [self.brightnessView addSubview:self.brightnessHighImageView];
   
   self.brightnessSlider = [[UISlider alloc] init];
+  [self.brightnessSlider addTarget:self
+                            action:@selector(didChangeBrightness)
+                  forControlEvents:UIControlEventValueChanged];
   [self.brightnessView addSubview:self.brightnessSlider];
 
   [[NSNotificationCenter defaultCenter]
@@ -120,10 +123,10 @@
                   object:nil
                    queue:[NSOperationQueue mainQueue]
               usingBlock:^(NSNotification *const notification) {
-                self.brightness = ((UIScreen *) notification.object).brightness;
+                self.brightnessSlider.value = ((UIScreen *) notification.object).brightness;
               }];
 
-  self.brightness = [UIScreen mainScreen].brightness;
+  self.brightnessSlider.value = [UIScreen mainScreen].brightness;
 
   return self;
 }
@@ -257,6 +260,11 @@
   self.fontType = NYPLReaderSettingsViewFontTypeSerif;
 
   [self.delegate readerSettingsView:self didSelectFontType:self.fontType];
+}
+
+- (void)didChangeBrightness
+{
+  [self.delegate readerSettingsView:self didSelectBrightness:self.brightnessSlider.value];
 }
 
 @end
