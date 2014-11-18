@@ -57,7 +57,7 @@
   [self.whiteOnBlackButton setTitle:@"ABCabc" forState:UIControlStateNormal];
   self.whiteOnBlackButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.whiteOnBlackButton addTarget:self
-                              action:@selector(didSelectSerif)
+                              action:@selector(didSelectWhiteOnBlack)
                     forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.whiteOnBlackButton];
 
@@ -67,7 +67,7 @@
   [self.blackOnSepiaButton setTitle:@"ABCabc" forState:UIControlStateNormal];
   self.blackOnSepiaButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.blackOnSepiaButton addTarget:self
-                              action:@selector(didSelectSerif)
+                              action:@selector(didSelectBlackOnSepia)
                     forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.blackOnSepiaButton];
 
@@ -77,7 +77,7 @@
   [self.blackOnWhiteButton setTitle:@"ABCabc" forState:UIControlStateNormal];
   self.blackOnWhiteButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.blackOnWhiteButton addTarget:self
-                              action:@selector(didSelectSerif)
+                              action:@selector(didSelectBlackOnWhite)
                     forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.blackOnWhiteButton];
 
@@ -265,6 +265,24 @@
 - (void)didChangeBrightness
 {
   [self.delegate readerSettingsView:self didSelectBrightness:self.brightnessSlider.value];
+}
+
+- (void)didSelectWhiteOnBlack
+{
+  [self.delegate readerSettingsView:self
+               didSelectColorScheme:NYPLReaderSettingsViewColorSchemeWhiteOnBlack];
+}
+
+- (void)didSelectBlackOnWhite
+{
+  [self.delegate readerSettingsView:self
+               didSelectColorScheme:NYPLReaderSettingsViewColorSchemeBlackOnWhite];
+}
+
+- (void)didSelectBlackOnSepia
+{
+  [self.delegate readerSettingsView:self
+               didSelectColorScheme:NYPLReaderSettingsViewColorSchemeBlackOnSepia];
 }
 
 @end

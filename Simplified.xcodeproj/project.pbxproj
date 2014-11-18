@@ -79,6 +79,8 @@
 		119BEBB51990217B00121439 /* UIFont+NYPLSystemFontOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = 11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */; };
 		119BEBB61990217B00121439 /* UIView+NYPLViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */; };
 		119BEBB919902A8800121439 /* NYPLOpenSearchDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 119BEBB819902A8800121439 /* NYPLOpenSearchDescription.m */; };
+		11A14DF41A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A14DF31A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m */; };
+		11A14DF61A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A14DF51A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m */; };
 		11A16E69195B2BD3004147F4 /* NYPLCatalogAcquisitionFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E68195B2BD3004147F4 /* NYPLCatalogAcquisitionFeedViewController.m */; };
 		11A16E6F195B60DF004147F4 /* NYPLBookNormalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */; };
 		11ABD553197D6F5200759635 /* NYPLSettingsCredentialView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11ABD552197D6F5200759635 /* NYPLSettingsCredentialView.xib */; };
@@ -261,6 +263,9 @@
 		119BEB8D19901E1000121439 /* NYPLOPDS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLOPDS.h; sourceTree = "<group>"; };
 		119BEBB719902A8800121439 /* NYPLOpenSearchDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOpenSearchDescription.h; sourceTree = "<group>"; };
 		119BEBB819902A8800121439 /* NYPLOpenSearchDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOpenSearchDescription.m; sourceTree = "<group>"; };
+		11A14DF21A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+NYPLColorAdditions.h"; sourceTree = "<group>"; };
+		11A14DF31A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+NYPLColorAdditions.m"; sourceTree = "<group>"; };
+		11A14DF51A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+NYPLColorAdditionsTests.m"; sourceTree = "<group>"; };
 		11A16E67195B2BD3004147F4 /* NYPLCatalogAcquisitionFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogAcquisitionFeedViewController.h; sourceTree = "<group>"; };
 		11A16E68195B2BD3004147F4 /* NYPLCatalogAcquisitionFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogAcquisitionFeedViewController.m; sourceTree = "<group>"; };
 		11A16E6D195B60DF004147F4 /* NYPLBookNormalCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookNormalCell.h; sourceTree = "<group>"; };
@@ -392,6 +397,8 @@
 				11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */,
 				1107835C19816E3D0071AB1E /* UIView+NYPLViewAdditions.h */,
 				1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */,
+				11A14DF21A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.h */,
+				11A14DF31A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -651,6 +658,7 @@
 				111559EE19B8FA8E0003BE94 /* NYPLXMLTests.m */,
 				1183F34D194F775400DC322F /* OPDS */,
 				A823D830192BABA400B55DE2 /* Supporting Files */,
+				11A14DF51A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m */,
 			);
 			path = SimplifiedTests;
 			sourceTree = "<group>";
@@ -844,6 +852,7 @@
 				11ABD556197D77EF00759635 /* NYPLSettingsCredentialViewController.m in Sources */,
 				11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */,
 				1183F353194F795800DC322F /* NYPLBookAcquisition.m in Sources */,
+				11A14DF41A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m in Sources */,
 				11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */,
 				1142E4EB19EED86A00D9B3D9 /* NYPLFacetBarView.m in Sources */,
 				1195040B1994075B009FB788 /* NYPLReaderViewController.m in Sources */,
@@ -903,6 +912,7 @@
 				119BEBAD1990207E00121439 /* NYPLMyBooksRegistryTests.m in Sources */,
 				119BEBAF1990207E00121439 /* NYPLDateAdditionsTests.m in Sources */,
 				119BEBB01990207E00121439 /* NYPLKeychainTests.m in Sources */,
+				11A14DF61A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m in Sources */,
 				1157E92E19CA0009003BFDBF /* NSString+NYPLStringAdditionsTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

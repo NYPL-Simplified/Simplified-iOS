@@ -9,6 +9,7 @@
 #import "NYPLReaderTOCViewController.h"
 #import "NYPLReadium.h"
 #import "NYPLRoundedButton.h"
+#import "UIColor+NYPLColorAdditions.h"
 
 #import "NYPLReaderViewController.h"
 
@@ -294,9 +295,34 @@ executeJavaScript:(NSString *const)javaScript
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-      didSelectColorScheme:(__attribute__((unused)) NYPLReaderSettingsViewColorScheme)colorScheme
+      didSelectColorScheme:(NYPLReaderSettingsViewColorScheme const)colorScheme
 {
-  // TODO
+  NSString *backgroundColor = nil;
+  NSString *foregroundColor = nil;
+  
+  switch(colorScheme) {
+    case NYPLReaderSettingsViewColorSchemeWhiteOnBlack:
+      backgroundColor = [[NYPLConfiguration backgroundDarkColor] javascriptHexString];
+      foregroundColor = [[UIColor whiteColor] javascriptHexString];
+      break;
+    case NYPLReaderSettingsViewColorSchemeBlackOnWhite:
+      backgroundColor = [[NYPLConfiguration backgroundColor] javascriptHexString];
+      foregroundColor = [[UIColor blackColor] javascriptHexString];
+      break;
+    case NYPLReaderSettingsViewColorSchemeBlackOnSepia:
+      backgroundColor = [[NYPLConfiguration backgroundSepiaColor] javascriptHexString];
+      foregroundColor = [[UIColor blackColor] javascriptHexString];
+      break;
+  }
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:
+   [NSString stringWithFormat:
+    @"document.body.style.backgroundColor ="
+    @"window.frames[\"epubContentIframe\"].document.body.style.backgroundColor = \"%@\";"
+    @"document.body.style.color ="
+    @"window.frames[\"epubContentIframe\"].document.body.style.color = \"%@\";",
+    backgroundColor,
+    foregroundColor]];
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
