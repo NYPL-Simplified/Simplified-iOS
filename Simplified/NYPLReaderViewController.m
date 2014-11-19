@@ -437,15 +437,15 @@ executeJavaScript:(NSString *const)javaScript
   }
   
   self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
-  
-  NSString *const syntheticSpread = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
-                                     ? @"double"
-                                     : @"single");
+
+  // TODO: This is completely arbitrary and will probably need to be changed as Readium changes.
+  NSNumber *const fontSize = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+                              ? @120
+                              : @80);
   
   NSDictionary *const settingsDictionary = @{@"columnGap": @20,
-                                             @"fontSize": @100,
-                                             @"scroll": @"fixed",
-                                             @"syntheticSpread": syntheticSpread};
+                                             @"fontSize": fontSize,
+                                             @"syntheticSpread": @NO};
   
   NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
                                       locationForIdentifier:self.bookIdentifier];
