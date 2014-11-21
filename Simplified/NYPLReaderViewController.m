@@ -302,18 +302,20 @@ executeJavaScript:(NSString *const)javaScript
   
   switch(colorScheme) {
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-      backgroundColor = [[NYPLConfiguration backgroundDarkColor] javascriptHexString];
+      self.webView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
       foregroundColor = [[UIColor whiteColor] javascriptHexString];
       break;
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
-      backgroundColor = [[NYPLConfiguration backgroundColor] javascriptHexString];
+      self.webView.backgroundColor = [NYPLConfiguration backgroundColor];
       foregroundColor = [[UIColor blackColor] javascriptHexString];
       break;
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
-      backgroundColor = [[NYPLConfiguration backgroundSepiaColor] javascriptHexString];
+      self.webView.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
       foregroundColor = [[UIColor blackColor] javascriptHexString];
       break;
   }
+  
+  backgroundColor = [self.webView.backgroundColor javascriptHexString];
   
   [self.webView stringByEvaluatingJavaScriptFromString:
    [NSString stringWithFormat:
