@@ -147,7 +147,7 @@ static NSString *const FontSizeKey = @"fontSize";
 
 @implementation NYPLReaderSettings
 
-+ (NYPLReaderSettings *)sharedReaderSettings
++ (NYPLReaderSettings *)sharedSettings
 {
   static dispatch_once_t predicate;
   static NYPLReaderSettings *sharedReaderSettings = nil;

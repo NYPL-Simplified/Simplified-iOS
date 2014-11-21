@@ -29,7 +29,7 @@ BOOL NYPLReaderSettingsIncreasedFontSize(NYPLReaderSettingsFontSize input,
 
 @interface NYPLReaderSettings : NSObject
 
-+ (NYPLReaderSettings *)sharedReaderSettings;
++ (NYPLReaderSettings *)sharedSettings;
 
 @property (nonatomic) NYPLReaderSettingsColorScheme colorScheme;
 @property (nonatomic) NYPLReaderSettingsFontSize fontSize;
