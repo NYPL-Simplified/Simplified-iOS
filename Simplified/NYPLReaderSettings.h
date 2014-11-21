@@ -22,6 +22,14 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontType) {
   NYPLReaderSettingsFontTypeSerif
 };
 
+// Returns |YES| if output was set properly, else |NO| due to already being at the smallest size.
+BOOL NYPLReaderSettingsDecreasedFontSize(NYPLReaderSettingsFontSize input,
+                                         NYPLReaderSettingsFontSize *output);
+
+// Returns |YES| if output was set properly, else |NO| due to already being at the largest size.
+BOOL NYPLReaderSettingsIncreasedFontSize(NYPLReaderSettingsFontSize input,
+                                         NYPLReaderSettingsFontSize *output);
+
 @interface NYPLReaderSettings : NSObject
 
 + (NYPLReaderSettings *)sharedReaderSettings;
