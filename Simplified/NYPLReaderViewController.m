@@ -184,6 +184,12 @@ id argument(NSURL *const URL) {
   }
 }
 
+- (void)willMoveToParentViewController:(__attribute__((unused)) UIViewController *)parent
+{
+  self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+  self.navigationController.navigationBar.barTintColor = nil;
+}
+
 #pragma mark UIWebViewDelegate
 
 - (BOOL)
@@ -296,25 +302,26 @@ executeJavaScript:(NSString *const)javaScript
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
       didSelectColorScheme:(NYPLReaderSettingsColorScheme const)colorScheme
 {
-  NSString *backgroundColor = nil;
-  NSString *foregroundColor = nil;
+  UIColor *backgroundColor = nil;
+  UIColor *foregroundColor = nil;
   
   switch(colorScheme) {
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-      self.webView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
-      foregroundColor = [[UIColor whiteColor] javascriptHexString];
+      backgroundColor = [NYPLConfiguration backgroundDarkColor];
+      foregroundColor = [UIColor whiteColor];
+      self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
       break;
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
-      self.webView.backgroundColor = [NYPLConfiguration backgroundColor];
-      foregroundColor = [[UIColor blackColor] javascriptHexString];
+      backgroundColor = [NYPLConfiguration backgroundColor];
+      foregroundColor = [UIColor blackColor];
+      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
       break;
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
-      self.webView.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
-      foregroundColor = [[UIColor blackColor] javascriptHexString];
+      backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+      foregroundColor =[UIColor blackColor];
+      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
       break;
   }
-  
-  backgroundColor = [self.webView.backgroundColor javascriptHexString];
   
   [self.webView stringByEvaluatingJavaScriptFromString:
    [NSString stringWithFormat:
@@ -322,8 +329,12 @@ executeJavaScript:(NSString *const)javaScript
     @"window.frames[\"epubContentIframe\"].document.body.style.backgroundColor = \"%@\";"
     @"document.body.style.color ="
     @"window.frames[\"epubContentIframe\"].document.body.style.color = \"%@\";",
-    backgroundColor,
-    foregroundColor]];
+    [backgroundColor javascriptHexString],
+    [foregroundColor javascriptHexString]]];
+  
+  self.webView.backgroundColor = backgroundColor;
+   
+  self.navigationController.navigationBar.barTintColor = self.webView.backgroundColor;
   
   [NYPLReaderSettings sharedSettings].colorScheme = colorScheme;
 }

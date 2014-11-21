@@ -84,6 +84,7 @@
   self.decreaseButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.decreaseButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.decreaseButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  [self.decreaseButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
   [self.decreaseButton setTitle:@"A" forState:UIControlStateNormal];
   self.decreaseButton.titleLabel.font = [UIFont systemFontOfSize:14];
   [self.decreaseButton addTarget:self
@@ -94,6 +95,7 @@
   self.increaseButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.increaseButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.increaseButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  [self.increaseButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
   [self.increaseButton setTitle:@"A" forState:UIControlStateNormal];
   self.increaseButton.titleLabel.font = [UIFont systemFontOfSize:24];
   [self.increaseButton addTarget:self
