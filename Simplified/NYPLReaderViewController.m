@@ -437,7 +437,6 @@ executeJavaScript:(NSString *const)javaScript
     UIViewController *const viewController = [[UIViewController alloc] init];
     viewController.view = readerSettingsView;
     viewController.preferredContentSize = viewController.view.bounds.size;
-    assert(!self.activePopoverController);
     self.activePopoverController =
       [[UIPopoverController alloc] initWithContentViewController:viewController];
     self.activePopoverController.delegate = self;
