@@ -184,7 +184,12 @@ static NSString *const FontSizeKey = @"fontSize";
   @synchronized(self) {
     NSData *const savedData = [NSData dataWithContentsOfURL:[self settingsURL]];
     
-    if(!savedData) return;
+    if(!savedData) {
+      self.colorScheme = NYPLReaderSettingsColorSchemeBlackOnWhite;
+      self.fontFace = NYPLReaderSettingsFontFaceSerif;
+      self.fontSize = NYPLReaderSettingsFontSizeNormal;
+      return;
+    }
     
     NSDictionary *const dictionary = NYPLJSONObjectFromData(savedData);
     
