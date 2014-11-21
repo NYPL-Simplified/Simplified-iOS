@@ -326,9 +326,46 @@ executeJavaScript:(NSString *const)javaScript
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-         didSelectFontSize:(__attribute__((unused)) NYPLReaderSettingsViewFontSize)fontSize
+         didSelectFontSize:(NYPLReaderSettingsViewFontSize const)fontSize
 {
-  // TODO
+  // TODO: These scaling factors are completely arbitrary and will probably need to change when
+  // Readium changes.
+  CGFloat const scalingFactor = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 1.2 : 0.8;
+  
+  CGFloat baseSize;
+  switch(fontSize) {
+    case NYPLReaderSettingsViewFontSizeSmallest:
+      baseSize = 70;
+      break;
+    case NYPLReaderSettingsViewFontSizeSmaller:
+      baseSize = 80;
+      break;
+    case NYPLReaderSettingsViewFontSizeSmall:
+      baseSize = 90;
+      break;
+    case NYPLReaderSettingsViewFontSizeNormal:
+      baseSize = 100;
+      break;
+    case NYPLReaderSettingsViewFontSizeLarge:
+      baseSize = 110;
+      break;
+    case NYPLReaderSettingsViewFontSizeLarger:
+      baseSize = 120;
+      break;
+    case NYPLReaderSettingsViewFontSizeLargest:
+      baseSize = 130;
+      break;
+  }
+  
+  NSDictionary *const settingsDictionary = @{@"columnGap": @20,
+                                             @"fontSize": @(baseSize * scalingFactor),
+                                             @"syntheticSpread": @NO};
+  
+  NSData *const settingsData = NYPLJSONDataFromObject(settingsDictionary);
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:
+   [NSString stringWithFormat:@"ReadiumSDK.reader.updateSettings(%@);",
+    [[NSString alloc] initWithData:settingsData encoding:NSUTF8StringEncoding]]];
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
