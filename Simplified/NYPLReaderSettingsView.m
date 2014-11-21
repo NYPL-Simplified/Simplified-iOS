@@ -4,16 +4,16 @@
 
 @interface NYPLReaderSettingsView ()
 
-@property (nonatomic) UIButton *biggerButton;
 @property (nonatomic) UIButton *blackOnSepiaButton;
 @property (nonatomic) UIButton *blackOnWhiteButton;
 @property (nonatomic) UIImageView *brightnessHighImageView;
 @property (nonatomic) UIImageView *brightnessLowImageView;
 @property (nonatomic) UISlider *brightnessSlider;
 @property (nonatomic) UIView *brightnessView;
+@property (nonatomic) UIButton *decreaseButton;
+@property (nonatomic) UIButton *increaseButton;
 @property (nonatomic) UIButton *sansButton;
 @property (nonatomic) UIButton *serifButton;
-@property (nonatomic) UIButton *smallerButton;
 @property (nonatomic) UIButton *whiteOnBlackButton;
 
 @end
@@ -81,25 +81,25 @@
                     forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.blackOnWhiteButton];
 
-  self.smallerButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  self.smallerButton.backgroundColor = [NYPLConfiguration backgroundColor];
-  [self.smallerButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.smallerButton setTitle:@"A" forState:UIControlStateNormal];
-  self.smallerButton.titleLabel.font = [UIFont systemFontOfSize:14];
-  [self.smallerButton addTarget:self
-                         action:@selector(didSelectSerif)
-               forControlEvents:UIControlEventTouchUpInside];
-  [self addSubview:self.smallerButton];
+  self.decreaseButton = [UIButton buttonWithType:UIButtonTypeCustom];
+  self.decreaseButton.backgroundColor = [NYPLConfiguration backgroundColor];
+  [self.decreaseButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  [self.decreaseButton setTitle:@"A" forState:UIControlStateNormal];
+  self.decreaseButton.titleLabel.font = [UIFont systemFontOfSize:14];
+  [self.decreaseButton addTarget:self
+                          action:@selector(didSelectDecrease)
+                forControlEvents:UIControlEventTouchUpInside];
+  [self addSubview:self.decreaseButton];
 
-  self.biggerButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  self.biggerButton.backgroundColor = [NYPLConfiguration backgroundColor];
-  [self.biggerButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.biggerButton setTitle:@"A" forState:UIControlStateNormal];
-  self.biggerButton.titleLabel.font = [UIFont systemFontOfSize:24];
-  [self.biggerButton addTarget:self
-                        action:@selector(didSelectSerif)
-              forControlEvents:UIControlEventTouchUpInside];
-  [self addSubview:self.biggerButton];
+  self.increaseButton = [UIButton buttonWithType:UIButtonTypeCustom];
+  self.increaseButton.backgroundColor = [NYPLConfiguration backgroundColor];
+  [self.increaseButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  [self.increaseButton setTitle:@"A" forState:UIControlStateNormal];
+  self.increaseButton.titleLabel.font = [UIFont systemFontOfSize:24];
+  [self.increaseButton addTarget:self
+                          action:@selector(didSelectIncrease)
+                forControlEvents:UIControlEventTouchUpInside];
+  [self addSubview:self.increaseButton];
 
   self.brightnessView = [[UIView alloc] init];
   [self addSubview:self.brightnessView];
@@ -169,18 +169,18 @@
                                               CGRectGetMaxX(self.blackOnSepiaButton.frame)),
                                              CGRectGetHeight(self.frame) / 4.0);
   
-  self.smallerButton.frame = CGRectMake(padding,
-                                        CGRectGetMaxY(self.whiteOnBlackButton.frame),
-                                        innerWidth / 2.0,
-                                        CGRectGetHeight(self.frame) / 4.0);
+  self.decreaseButton.frame = CGRectMake(padding,
+                                         CGRectGetMaxY(self.whiteOnBlackButton.frame),
+                                         innerWidth / 2.0,
+                                         CGRectGetHeight(self.frame) / 4.0);
   
-  self.biggerButton.frame = CGRectMake(CGRectGetMaxX(self.smallerButton.frame),
-                                       CGRectGetMaxY(self.whiteOnBlackButton.frame),
-                                       innerWidth / 2.0,
-                                       CGRectGetHeight(self.frame) / 4.0);
+  self.increaseButton.frame = CGRectMake(CGRectGetMaxX(self.decreaseButton.frame),
+                                         CGRectGetMaxY(self.whiteOnBlackButton.frame),
+                                         innerWidth / 2.0,
+                                         CGRectGetHeight(self.frame) / 4.0);
   
   self.brightnessView.frame = CGRectMake(padding,
-                                         CGRectGetMaxY(self.smallerButton.frame),
+                                         CGRectGetMaxY(self.decreaseButton.frame),
                                          innerWidth,
                                          CGRectGetHeight(self.frame) / 4.0);
   
@@ -248,6 +248,34 @@
 
 #pragma mark -
 
+- (void)setFontSize:(NYPLReaderSettingsViewFontSize const)fontSize
+{
+  _fontSize = fontSize;
+  
+  switch(fontSize) {
+    case NYPLReaderSettingsViewFontSizeSmallest:
+      self.decreaseButton.enabled = NO;
+      self.increaseButton.enabled = YES;
+      break;
+    case NYPLReaderSettingsViewFontSizeLargest:
+      self.decreaseButton.enabled = YES;
+      self.increaseButton.enabled = NO;
+      break;
+    case NYPLReaderSettingsViewFontSizeSmaller:
+      // fallthrough
+    case NYPLReaderSettingsViewFontSizeSmall:
+      // fallthrough
+    case NYPLReaderSettingsViewFontSizeNormal:
+      // fallthrough
+    case NYPLReaderSettingsViewFontSizeLarge:
+      // fallthrough
+    case NYPLReaderSettingsViewFontSizeLarger:
+      self.decreaseButton.enabled = YES;
+      self.increaseButton.enabled = YES;
+      break;
+  }
+}
+
 - (void)didSelectSans
 {
   self.fontType = NYPLReaderSettingsViewFontTypeSans;
@@ -269,20 +297,81 @@
 
 - (void)didSelectWhiteOnBlack
 {
-  [self.delegate readerSettingsView:self
-               didSelectColorScheme:NYPLReaderSettingsViewColorSchemeWhiteOnBlack];
+  self.colorScheme = NYPLReaderSettingsViewColorSchemeWhiteOnBlack;
+  
+  [self.delegate readerSettingsView:self didSelectColorScheme:self.colorScheme];
 }
 
 - (void)didSelectBlackOnWhite
 {
-  [self.delegate readerSettingsView:self
-               didSelectColorScheme:NYPLReaderSettingsViewColorSchemeBlackOnWhite];
+  self.colorScheme = NYPLReaderSettingsViewColorSchemeBlackOnWhite;
+  
+  [self.delegate readerSettingsView:self didSelectColorScheme:self.colorScheme];
 }
 
 - (void)didSelectBlackOnSepia
 {
-  [self.delegate readerSettingsView:self
-               didSelectColorScheme:NYPLReaderSettingsViewColorSchemeBlackOnSepia];
+  self.colorScheme = NYPLReaderSettingsViewColorSchemeBlackOnSepia;
+  
+  [self.delegate readerSettingsView:self didSelectColorScheme:self.colorScheme];
+}
+
+- (void)didSelectDecrease
+{
+  switch(self.fontSize) {
+    case NYPLReaderSettingsViewFontSizeSmallest:
+      NYPLLOG(@"Ignorning attempt to set font size below the minimum.");
+      break;
+    case NYPLReaderSettingsViewFontSizeSmaller:
+      self.fontSize = NYPLReaderSettingsViewFontSizeSmallest;
+      break;
+    case NYPLReaderSettingsViewFontSizeSmall:
+      self.fontSize = NYPLReaderSettingsViewFontSizeSmaller;
+      break;
+    case NYPLReaderSettingsViewFontSizeNormal:
+      self.fontSize = NYPLReaderSettingsViewFontSizeSmall;
+      break;
+    case NYPLReaderSettingsViewFontSizeLarge:
+      self.fontSize = NYPLReaderSettingsViewFontSizeNormal;
+      break;
+    case NYPLReaderSettingsViewFontSizeLarger:
+      self.fontSize = NYPLReaderSettingsViewFontSizeLarge;
+      break;
+    case NYPLReaderSettingsViewFontSizeLargest:
+      self.fontSize = NYPLReaderSettingsViewFontSizeLarger;
+      break;
+  }
+  
+  [self.delegate readerSettingsView:self didSelectFontSize:self.fontSize];
+}
+
+- (void)didSelectIncrease
+{
+  switch(self.fontSize) {
+    case NYPLReaderSettingsViewFontSizeSmallest:
+      self.fontSize = NYPLReaderSettingsViewFontSizeSmaller;
+      break;
+    case NYPLReaderSettingsViewFontSizeSmaller:
+      self.fontSize = NYPLReaderSettingsViewFontSizeSmall;
+      break;
+    case NYPLReaderSettingsViewFontSizeSmall:
+      self.fontSize = NYPLReaderSettingsViewFontSizeNormal;
+      break;
+    case NYPLReaderSettingsViewFontSizeNormal:
+      self.fontSize = NYPLReaderSettingsViewFontSizeLarge;
+      break;
+    case NYPLReaderSettingsViewFontSizeLarge:
+      self.fontSize = NYPLReaderSettingsViewFontSizeLarger;
+      break;
+    case NYPLReaderSettingsViewFontSizeLarger:
+      self.fontSize = NYPLReaderSettingsViewFontSizeLargest;
+      break;
+    case NYPLReaderSettingsViewFontSizeLargest:
+      NYPLLOG(@"Ignorning attempt to set font size above the maximum.");
+      break;
+  }
+  
+  [self.delegate readerSettingsView:self didSelectFontSize:self.fontSize];
 }
 
 @end
