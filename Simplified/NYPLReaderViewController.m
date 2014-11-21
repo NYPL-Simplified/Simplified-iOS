@@ -146,7 +146,6 @@ id argument(NSURL *const URL) {
   self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
-  self.webView.backgroundColor = [UIColor whiteColor];
   self.webView.delegate = self;
   self.webView.scrollView.bounces = NO;
   self.webView.hidden = YES;
