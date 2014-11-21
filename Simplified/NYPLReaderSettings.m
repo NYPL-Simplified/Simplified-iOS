@@ -82,26 +82,26 @@ NYPLReaderSettingsColorScheme colorSchemeFromString(NSString *const string)
   return [colorSchemeNumber integerValue];
 }
 
-NSString *fontFaceToString(NYPLReaderSettingsFontType const fontFace)
+NSString *fontFaceToString(NYPLReaderSettingsFontFace const fontFace)
 {
   switch(fontFace) {
-    case NYPLReaderSettingsFontTypeSans:
+    case NYPLReaderSettingsFontFaceSans:
       return @"sans";
-    case NYPLReaderSettingsFontTypeSerif:
+    case NYPLReaderSettingsFontFaceSerif:
       return @"serif";
   }
 }
 
-NYPLReaderSettingsFontType fontFaceFromString(NSString *const string)
+NYPLReaderSettingsFontFace fontFaceFromString(NSString *const string)
 {
-  NSNumber *const fontTypeNumber = @{@"sans": @(NYPLReaderSettingsFontTypeSans),
-                                     @"serif": @(NYPLReaderSettingsFontTypeSerif)}[string];
+  NSNumber *const fontFaceNumber = @{@"sans": @(NYPLReaderSettingsFontFaceSans),
+                                     @"serif": @(NYPLReaderSettingsFontFaceSerif)}[string];
   
-  if(!fontTypeNumber) {
+  if(!fontFaceNumber) {
     @throw NSInvalidArgumentException;
   }
   
-  return [fontTypeNumber integerValue];
+  return [fontFaceNumber integerValue];
 }
 
 NSString *fontSizeToString(NYPLReaderSettingsFontSize const fontSize)
@@ -194,7 +194,7 @@ static NSString *const FontSizeKey = @"fontSize";
     }
     
     self.colorScheme = colorSchemeFromString(dictionary[ColorSchemeKey]);
-    self.fontType = fontFaceFromString(dictionary[FontFaceKey]);
+    self.fontFace = fontFaceFromString(dictionary[FontFaceKey]);
     self.fontSize = fontSizeFromString(dictionary[FontSizeKey]);
   }
 }
@@ -202,7 +202,7 @@ static NSString *const FontSizeKey = @"fontSize";
 - (NSDictionary *)dictionaryRepresentation
 {
   return @{ColorSchemeKey: colorSchemeToString(self.colorScheme),
-           FontFaceKey: fontFaceToString(self.fontType),
+           FontFaceKey: fontFaceToString(self.fontFace),
            FontSizeKey: fontSizeToString(self.fontSize)};
 }
 
