@@ -1,11 +1,9 @@
-// Do not reorder.
 typedef NS_ENUM(NSInteger, NYPLReaderSettingsColorScheme) {
   NYPLReaderSettingsColorSchemeBlackOnWhite,
   NYPLReaderSettingsColorSchemeBlackOnSepia,
   NYPLReaderSettingsColorSchemeWhiteOnBlack
 };
 
-// Do not reorder.
 typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontSize) {
   NYPLReaderSettingsFontSizeSmallest,
   NYPLReaderSettingsFontSizeSmaller,
@@ -16,7 +14,6 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontSize) {
   NYPLReaderSettingsFontSizeLargest
 };
 
-// Do not reorder.
 typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontType) {
   NYPLReaderSettingsFontTypeSans,
   NYPLReaderSettingsFontTypeSerif
@@ -37,5 +34,7 @@ BOOL NYPLReaderSettingsIncreasedFontSize(NYPLReaderSettingsFontSize input,
 @property (nonatomic) NYPLReaderSettingsColorScheme colorScheme;
 @property (nonatomic) NYPLReaderSettingsFontSize fontSize;
 @property (nonatomic) NYPLReaderSettingsFontType fontType;
+
+- (void)save;
 
 @end
