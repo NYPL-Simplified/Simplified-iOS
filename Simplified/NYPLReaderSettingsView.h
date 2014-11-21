@@ -14,7 +14,7 @@
          didSelectFontSize:(NYPLReaderSettingsFontSize)fontSize;
 
 - (void)readerSettingsView:(NYPLReaderSettingsView *)readerSettingsView
-         didSelectFontType:(NYPLReaderSettingsFontType)fontType;
+         didSelectFontFace:(NYPLReaderSettingsFontFace)fontFace;
 
 @end
 
@@ -26,7 +26,7 @@
 @property (nonatomic) NYPLReaderSettingsColorScheme colorScheme;
 @property (nonatomic, weak) id<NYPLReaderSettingsViewDelegate> delegate;
 @property (nonatomic) NYPLReaderSettingsFontSize fontSize;
-@property (nonatomic) NYPLReaderSettingsFontType fontType;
+@property (nonatomic) NYPLReaderSettingsFontFace fontFace;
 
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithFrame:(CGRect)frame NS_UNAVAILABLE;

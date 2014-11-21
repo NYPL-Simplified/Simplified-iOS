@@ -278,16 +278,16 @@
 
 - (void)didSelectSans
 {
-  self.fontType = NYPLReaderSettingsFontTypeSans;
+  self.fontFace = NYPLReaderSettingsFontFaceSans;
 
-  [self.delegate readerSettingsView:self didSelectFontType:self.fontType];
+  [self.delegate readerSettingsView:self didSelectFontFace:self.fontFace];
 }
 
 - (void)didSelectSerif
 {
-  self.fontType = NYPLReaderSettingsFontTypeSerif;
+  self.fontFace = NYPLReaderSettingsFontFaceSerif;
 
-  [self.delegate readerSettingsView:self didSelectFontType:self.fontType];
+  [self.delegate readerSettingsView:self didSelectFontFace:self.fontFace];
 }
 
 - (void)didChangeBrightness

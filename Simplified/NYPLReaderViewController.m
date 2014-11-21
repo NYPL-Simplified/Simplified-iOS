@@ -375,15 +375,15 @@ executeJavaScript:(NSString *const)javaScript
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-         didSelectFontType:(NYPLReaderSettingsFontType)fontType
+         didSelectFontFace:(NYPLReaderSettingsFontFace)fontFace
 {
   NSString *fontFamily = nil;
   
-  switch(fontType) {
-    case NYPLReaderSettingsFontTypeSans:
+  switch(fontFace) {
+    case NYPLReaderSettingsFontFaceSans:
       fontFamily = @"HelveticaNeue";
       break;
-    case NYPLReaderSettingsFontTypeSerif:
+    case NYPLReaderSettingsFontFaceSerif:
       fontFamily = @"Georgia";
       break;
   }
@@ -393,7 +393,7 @@ executeJavaScript:(NSString *const)javaScript
     @"window.frames[\"epubContentIframe\"].document.body.style.fontFamily = \"%@\"",
     fontFamily]];
   
-  [NYPLReaderSettings sharedSettings].fontType = fontType;
+  [NYPLReaderSettings sharedSettings].fontFace = fontFace;
 }
 
 #pragma mark -
@@ -435,7 +435,7 @@ executeJavaScript:(NSString *const)javaScript
     readerSettingsView.delegate = self;
     readerSettingsView.colorScheme = [NYPLReaderSettings sharedSettings].colorScheme;
     readerSettingsView.fontSize = [NYPLReaderSettings sharedSettings].fontSize;
-    readerSettingsView.fontType = [NYPLReaderSettings sharedSettings].fontType;
+    readerSettingsView.fontFace = [NYPLReaderSettings sharedSettings].fontFace;
     UIViewController *const viewController = [[UIViewController alloc] init];
     viewController.view = readerSettingsView;
     viewController.preferredContentSize = viewController.view.bounds.size;
@@ -531,7 +531,7 @@ executeJavaScript:(NSString *const)javaScript
     [self readerSettingsView:nil
            didSelectFontSize:[NYPLReaderSettings sharedSettings].fontSize];
     [self readerSettingsView:nil
-           didSelectFontType:[NYPLReaderSettings sharedSettings].fontType];
+           didSelectFontFace:[NYPLReaderSettings sharedSettings].fontFace];
   }
   
   // Use left-to-right unless it explicitly asks for right-to-left.
