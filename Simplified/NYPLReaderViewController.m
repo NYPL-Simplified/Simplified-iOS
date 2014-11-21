@@ -323,6 +323,8 @@ executeJavaScript:(NSString *const)javaScript
     @"window.frames[\"epubContentIframe\"].document.body.style.color = \"%@\";",
     backgroundColor,
     foregroundColor]];
+  
+  [NYPLReaderSettings sharedSettings].colorScheme = colorScheme;
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
@@ -366,6 +368,8 @@ executeJavaScript:(NSString *const)javaScript
   [self.webView stringByEvaluatingJavaScriptFromString:
    [NSString stringWithFormat:@"ReadiumSDK.reader.updateSettings(%@);",
     [[NSString alloc] initWithData:settingsData encoding:NSUTF8StringEncoding]]];
+  
+  [NYPLReaderSettings sharedSettings].fontSize = fontSize;
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
@@ -386,6 +390,8 @@ executeJavaScript:(NSString *const)javaScript
    [NSString stringWithFormat:
     @"window.frames[\"epubContentIframe\"].document.body.style.fontFamily = \"%@\"",
     fontFamily]];
+  
+  [NYPLReaderSettings sharedSettings].fontType = fontType;
 }
 
 #pragma mark -
@@ -425,6 +431,9 @@ executeJavaScript:(NSString *const)javaScript
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     NYPLReaderSettingsView *const readerSettingsView = [[NYPLReaderSettingsView alloc] init];
     readerSettingsView.delegate = self;
+    readerSettingsView.colorScheme = [NYPLReaderSettings sharedSettings].colorScheme;
+    readerSettingsView.fontSize = [NYPLReaderSettings sharedSettings].fontSize;
+    readerSettingsView.fontType = [NYPLReaderSettings sharedSettings].fontType;
     UIViewController *const viewController = [[UIViewController alloc] init];
     viewController.view = readerSettingsView;
     viewController.preferredContentSize = viewController.view.bounds.size;
@@ -513,6 +522,16 @@ executeJavaScript:(NSString *const)javaScript
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
 {
   [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.pageDidChange();"];
+  
+  // FIXME: This is a terrible hack!
+  {
+    [self readerSettingsView:nil
+        didSelectColorScheme:[NYPLReaderSettings sharedSettings].colorScheme];
+    [self readerSettingsView:nil
+           didSelectFontSize:[NYPLReaderSettings sharedSettings].fontSize];
+    [self readerSettingsView:nil
+           didSelectFontType:[NYPLReaderSettings sharedSettings].fontType];
+  }
   
   // Use left-to-right unless it explicitly asks for right-to-left.
   self.pageProgressionIsLTR = ![[dictionary objectForKey:@"pageProgressionDirection"]
