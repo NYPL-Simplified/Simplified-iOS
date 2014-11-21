@@ -295,21 +295,21 @@ executeJavaScript:(NSString *const)javaScript
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-      didSelectColorScheme:(NYPLReaderSettingsViewColorScheme const)colorScheme
+      didSelectColorScheme:(NYPLReaderSettingsColorScheme const)colorScheme
 {
   NSString *backgroundColor = nil;
   NSString *foregroundColor = nil;
   
   switch(colorScheme) {
-    case NYPLReaderSettingsViewColorSchemeWhiteOnBlack:
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
       backgroundColor = [[NYPLConfiguration backgroundDarkColor] javascriptHexString];
       foregroundColor = [[UIColor whiteColor] javascriptHexString];
       break;
-    case NYPLReaderSettingsViewColorSchemeBlackOnWhite:
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
       backgroundColor = [[NYPLConfiguration backgroundColor] javascriptHexString];
       foregroundColor = [[UIColor blackColor] javascriptHexString];
       break;
-    case NYPLReaderSettingsViewColorSchemeBlackOnSepia:
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
       backgroundColor = [[NYPLConfiguration backgroundSepiaColor] javascriptHexString];
       foregroundColor = [[UIColor blackColor] javascriptHexString];
       break;
@@ -326,7 +326,7 @@ executeJavaScript:(NSString *const)javaScript
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-         didSelectFontSize:(NYPLReaderSettingsViewFontSize const)fontSize
+         didSelectFontSize:(NYPLReaderSettingsFontSize const)fontSize
 {
   // TODO: These scaling factors are completely arbitrary and will probably need to change when
   // Readium changes.
@@ -334,25 +334,25 @@ executeJavaScript:(NSString *const)javaScript
   
   CGFloat baseSize;
   switch(fontSize) {
-    case NYPLReaderSettingsViewFontSizeSmallest:
+    case NYPLReaderSettingsFontSizeSmallest:
       baseSize = 70;
       break;
-    case NYPLReaderSettingsViewFontSizeSmaller:
+    case NYPLReaderSettingsFontSizeSmaller:
       baseSize = 80;
       break;
-    case NYPLReaderSettingsViewFontSizeSmall:
+    case NYPLReaderSettingsFontSizeSmall:
       baseSize = 90;
       break;
-    case NYPLReaderSettingsViewFontSizeNormal:
+    case NYPLReaderSettingsFontSizeNormal:
       baseSize = 100;
       break;
-    case NYPLReaderSettingsViewFontSizeLarge:
+    case NYPLReaderSettingsFontSizeLarge:
       baseSize = 110;
       break;
-    case NYPLReaderSettingsViewFontSizeLarger:
+    case NYPLReaderSettingsFontSizeLarger:
       baseSize = 120;
       break;
-    case NYPLReaderSettingsViewFontSizeLargest:
+    case NYPLReaderSettingsFontSizeLargest:
       baseSize = 130;
       break;
   }
@@ -369,15 +369,15 @@ executeJavaScript:(NSString *const)javaScript
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-         didSelectFontType:(NYPLReaderSettingsViewFontType)fontType
+         didSelectFontType:(NYPLReaderSettingsFontType)fontType
 {
   NSString *fontFamily = nil;
   
   switch(fontType) {
-    case NYPLReaderSettingsViewFontTypeSans:
+    case NYPLReaderSettingsFontTypeSans:
       fontFamily = @"HelveticaNeue";
       break;
-    case NYPLReaderSettingsViewFontTypeSerif:
+    case NYPLReaderSettingsFontTypeSerif:
       fontFamily = @"Georgia";
       break;
   }

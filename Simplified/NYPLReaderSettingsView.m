@@ -248,28 +248,28 @@
 
 #pragma mark -
 
-- (void)setFontSize:(NYPLReaderSettingsViewFontSize const)fontSize
+- (void)setFontSize:(NYPLReaderSettingsFontSize const)fontSize
 {
   _fontSize = fontSize;
   
   switch(fontSize) {
-    case NYPLReaderSettingsViewFontSizeSmallest:
+    case NYPLReaderSettingsFontSizeSmallest:
       self.decreaseButton.enabled = NO;
       self.increaseButton.enabled = YES;
       break;
-    case NYPLReaderSettingsViewFontSizeLargest:
+    case NYPLReaderSettingsFontSizeLargest:
       self.decreaseButton.enabled = YES;
       self.increaseButton.enabled = NO;
       break;
-    case NYPLReaderSettingsViewFontSizeSmaller:
+    case NYPLReaderSettingsFontSizeSmaller:
       // fallthrough
-    case NYPLReaderSettingsViewFontSizeSmall:
+    case NYPLReaderSettingsFontSizeSmall:
       // fallthrough
-    case NYPLReaderSettingsViewFontSizeNormal:
+    case NYPLReaderSettingsFontSizeNormal:
       // fallthrough
-    case NYPLReaderSettingsViewFontSizeLarge:
+    case NYPLReaderSettingsFontSizeLarge:
       // fallthrough
-    case NYPLReaderSettingsViewFontSizeLarger:
+    case NYPLReaderSettingsFontSizeLarger:
       self.decreaseButton.enabled = YES;
       self.increaseButton.enabled = YES;
       break;
@@ -278,14 +278,14 @@
 
 - (void)didSelectSans
 {
-  self.fontType = NYPLReaderSettingsViewFontTypeSans;
+  self.fontType = NYPLReaderSettingsFontTypeSans;
 
   [self.delegate readerSettingsView:self didSelectFontType:self.fontType];
 }
 
 - (void)didSelectSerif
 {
-  self.fontType = NYPLReaderSettingsViewFontTypeSerif;
+  self.fontType = NYPLReaderSettingsFontTypeSerif;
 
   [self.delegate readerSettingsView:self didSelectFontType:self.fontType];
 }
@@ -297,79 +297,49 @@
 
 - (void)didSelectWhiteOnBlack
 {
-  self.colorScheme = NYPLReaderSettingsViewColorSchemeWhiteOnBlack;
+  self.colorScheme = NYPLReaderSettingsColorSchemeWhiteOnBlack;
   
   [self.delegate readerSettingsView:self didSelectColorScheme:self.colorScheme];
 }
 
 - (void)didSelectBlackOnWhite
 {
-  self.colorScheme = NYPLReaderSettingsViewColorSchemeBlackOnWhite;
+  self.colorScheme = NYPLReaderSettingsColorSchemeBlackOnWhite;
   
   [self.delegate readerSettingsView:self didSelectColorScheme:self.colorScheme];
 }
 
 - (void)didSelectBlackOnSepia
 {
-  self.colorScheme = NYPLReaderSettingsViewColorSchemeBlackOnSepia;
+  self.colorScheme = NYPLReaderSettingsColorSchemeBlackOnSepia;
   
   [self.delegate readerSettingsView:self didSelectColorScheme:self.colorScheme];
 }
 
 - (void)didSelectDecrease
 {
-  switch(self.fontSize) {
-    case NYPLReaderSettingsViewFontSizeSmallest:
-      NYPLLOG(@"Ignorning attempt to set font size below the minimum.");
-      break;
-    case NYPLReaderSettingsViewFontSizeSmaller:
-      self.fontSize = NYPLReaderSettingsViewFontSizeSmallest;
-      break;
-    case NYPLReaderSettingsViewFontSizeSmall:
-      self.fontSize = NYPLReaderSettingsViewFontSizeSmaller;
-      break;
-    case NYPLReaderSettingsViewFontSizeNormal:
-      self.fontSize = NYPLReaderSettingsViewFontSizeSmall;
-      break;
-    case NYPLReaderSettingsViewFontSizeLarge:
-      self.fontSize = NYPLReaderSettingsViewFontSizeNormal;
-      break;
-    case NYPLReaderSettingsViewFontSizeLarger:
-      self.fontSize = NYPLReaderSettingsViewFontSizeLarge;
-      break;
-    case NYPLReaderSettingsViewFontSizeLargest:
-      self.fontSize = NYPLReaderSettingsViewFontSizeLarger;
-      break;
+  NYPLReaderSettingsFontSize newFontSize;
+  
+  if(!NYPLReaderSettingsDecreasedFontSize(self.fontSize, &newFontSize)) {
+    NYPLLOG(@"Ignorning attempt to set font size below the minimum.");
+    return;
   }
+  
+  self.fontSize = newFontSize;
   
   [self.delegate readerSettingsView:self didSelectFontSize:self.fontSize];
 }
 
 - (void)didSelectIncrease
 {
-  switch(self.fontSize) {
-    case NYPLReaderSettingsViewFontSizeSmallest:
-      self.fontSize = NYPLReaderSettingsViewFontSizeSmaller;
-      break;
-    case NYPLReaderSettingsViewFontSizeSmaller:
-      self.fontSize = NYPLReaderSettingsViewFontSizeSmall;
-      break;
-    case NYPLReaderSettingsViewFontSizeSmall:
-      self.fontSize = NYPLReaderSettingsViewFontSizeNormal;
-      break;
-    case NYPLReaderSettingsViewFontSizeNormal:
-      self.fontSize = NYPLReaderSettingsViewFontSizeLarge;
-      break;
-    case NYPLReaderSettingsViewFontSizeLarge:
-      self.fontSize = NYPLReaderSettingsViewFontSizeLarger;
-      break;
-    case NYPLReaderSettingsViewFontSizeLarger:
-      self.fontSize = NYPLReaderSettingsViewFontSizeLargest;
-      break;
-    case NYPLReaderSettingsViewFontSizeLargest:
-      NYPLLOG(@"Ignorning attempt to set font size above the maximum.");
-      break;
+  NYPLReaderSettingsFontSize newFontSize;
+  
+  if(!NYPLReaderSettingsIncreasedFontSize(self.fontSize, &newFontSize)) {
+    NYPLLOG(@"Ignorning attempt to set font size above the maximum.");
+    return;
   }
+  
+  self.fontSize = newFontSize;
   
   [self.delegate readerSettingsView:self didSelectFontSize:self.fontSize];
 }
