@@ -449,6 +449,7 @@ executeJavaScript:(NSString *const)javaScript
     UIViewController *const viewController = [[UIViewController alloc] init];
     viewController.view = readerSettingsView;
     viewController.preferredContentSize = viewController.view.bounds.size;
+    [self.activePopoverController dismissPopoverAnimated:NO];
     self.activePopoverController =
       [[UIPopoverController alloc] initWithContentViewController:viewController];
     self.activePopoverController.delegate = self;
@@ -467,6 +468,7 @@ executeJavaScript:(NSString *const)javaScript
   viewController.delegate = self;
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    [self.activePopoverController dismissPopoverAnimated:NO];
     self.activePopoverController =
       [[UIPopoverController alloc] initWithContentViewController:viewController];
     self.activePopoverController.delegate = self;
