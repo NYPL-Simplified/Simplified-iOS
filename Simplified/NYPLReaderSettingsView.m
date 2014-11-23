@@ -107,11 +107,15 @@
   [self addSubview:self.brightnessView];
   
   self.brightnessLowImageView = [[UIImageView alloc]
-                                 initWithImage:[UIImage imageNamed:@"BrightnessLow"]];
+                                 initWithImage:[[UIImage imageNamed:@"BrightnessLow"]
+                                                imageWithRenderingMode:
+                                                UIImageRenderingModeAlwaysTemplate]];
   [self.brightnessView addSubview:self.brightnessLowImageView];
   
   self.brightnessHighImageView = [[UIImageView alloc]
-                                  initWithImage:[UIImage imageNamed:@"BrightnessHigh"]];
+                                  initWithImage:[[UIImage imageNamed:@"BrightnessHigh"]
+                                                 imageWithRenderingMode:
+                                                 UIImageRenderingModeAlwaysTemplate]];
   [self.brightnessView addSubview:self.brightnessHighImageView];
   
   self.brightnessSlider = [[UISlider alloc] init];
@@ -276,6 +280,46 @@
       self.increaseButton.enabled = YES;
       break;
   }
+}
+
+- (void)setColorScheme:(NYPLReaderSettingsColorScheme const)colorScheme
+{
+  _colorScheme = colorScheme;
+  
+  UIColor *backgroundColor;
+  UIColor *foregroundColor;
+  
+  switch(colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+      backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+      foregroundColor = [UIColor blackColor];
+      break;
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      backgroundColor = [NYPLConfiguration backgroundColor];
+      foregroundColor = [UIColor blackColor];
+      break;
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+      backgroundColor = [NYPLConfiguration backgroundDarkColor];
+      foregroundColor = [UIColor whiteColor];
+      break;
+  }
+  
+  self.backgroundColor = backgroundColor;
+  
+  [self.brightnessHighImageView setTintColor:foregroundColor];
+  [self.brightnessLowImageView setTintColor:foregroundColor];
+  
+  self.decreaseButton.backgroundColor = backgroundColor;
+  [self.decreaseButton setTitleColor:foregroundColor forState:UIControlStateNormal];
+  
+  self.increaseButton.backgroundColor = backgroundColor;
+  [self.increaseButton setTitleColor:foregroundColor forState:UIControlStateNormal];
+  
+  self.sansButton.backgroundColor = backgroundColor;
+  [self.sansButton setTitleColor:foregroundColor forState:UIControlStateNormal];
+  
+  self.serifButton.backgroundColor = backgroundColor;
+  [self.serifButton setTitleColor:foregroundColor forState:UIControlStateNormal];
 }
 
 - (void)didSelectSans

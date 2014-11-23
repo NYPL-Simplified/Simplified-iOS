@@ -1,4 +1,5 @@
 #import "NYPLConfiguration.h"
+#import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCCell.h"
 
 @interface NYPLReaderTOCCell ()
@@ -16,10 +17,11 @@
   self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
   if(!self) return nil;
   
-  self.backgroundColor = [NYPLConfiguration backgroundColor];
-  
   self.titleLabel = [[UILabel alloc] init];
   [self.contentView addSubview:self.titleLabel];
+  
+  self.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
+  self.titleLabel.textColor = [NYPLReaderSettings sharedSettings].foregroundColor;
 
   return self;
 }

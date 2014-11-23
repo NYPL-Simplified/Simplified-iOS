@@ -1,3 +1,4 @@
+#import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
 
 #import "NYPLReaderSettings.h"
@@ -251,6 +252,30 @@ static NSString *const FontSizeKey = @"fontSize";
       NYPLLOG(@"Failed to rename temporary settings file.");
       return;
     }
+  }
+}
+
+- (UIColor *)backgroundColor
+{
+  switch(self.colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+      return [NYPLConfiguration backgroundSepiaColor];
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      return [NYPLConfiguration backgroundColor];
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+      return [NYPLConfiguration backgroundDarkColor];
+  }
+}
+
+- (UIColor *)foregroundColor
+{
+  switch(self.colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+      return [UIColor blackColor];
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      return [UIColor blackColor];
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+      return [UIColor whiteColor];
   }
 }
 
