@@ -333,8 +333,12 @@ executeJavaScript:(NSString *const)javaScript
     [foregroundColor javascriptHexString]]];
   
   self.webView.backgroundColor = backgroundColor;
-   
+  
+  self.navigationController.navigationBar.translucent = NO;
   self.navigationController.navigationBar.barTintColor = self.webView.backgroundColor;
+  self.navigationController.navigationBar.translucent = YES;
+  
+  self.activePopoverController.backgroundColor = backgroundColor;
   
   [NYPLReaderSettings sharedSettings].colorScheme = colorScheme;
 }
@@ -452,6 +456,8 @@ executeJavaScript:(NSString *const)javaScript
     [self.activePopoverController dismissPopoverAnimated:NO];
     self.activePopoverController =
       [[UIPopoverController alloc] initWithContentViewController:viewController];
+    self.activePopoverController.backgroundColor =
+      [NYPLReaderSettings sharedSettings].backgroundColor;
     self.activePopoverController.delegate = self;
     [self.activePopoverController
      presentPopoverFromBarButtonItem:self.settingsBarButtonItem
@@ -472,6 +478,8 @@ executeJavaScript:(NSString *const)javaScript
     self.activePopoverController =
       [[UIPopoverController alloc] initWithContentViewController:viewController];
     self.activePopoverController.delegate = self;
+    self.activePopoverController.backgroundColor =
+      [NYPLReaderSettings sharedSettings].backgroundColor;
     [self.activePopoverController
      presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
      permittedArrowDirections:UIPopoverArrowDirectionUp

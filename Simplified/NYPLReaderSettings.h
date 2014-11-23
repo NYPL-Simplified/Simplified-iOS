@@ -37,4 +37,8 @@ BOOL NYPLReaderSettingsIncreasedFontSize(NYPLReaderSettingsFontSize input,
 
 - (void)save;
 
+- (UIColor *)backgroundColor;
+
+- (UIColor *)foregroundColor;
+
 @end
