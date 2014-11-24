@@ -40,7 +40,7 @@
 
 + (UIColor *)backgroundSepiaColor
 {
-  return [UIColor colorWithRed:255/255.0 green:245/255.0 blue:210/255.0 alpha:1.0];
+  return [UIColor colorWithRed:242/255.0 green:228/255.0 blue:203/255.0 alpha:1.0];
 }
 
 + (NSString *)systemFontName
