@@ -211,6 +211,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
     } else if([function isEqualToString:@"gesture-center"]) {
       self.interfaceHidden = !self.interfaceHidden;
+      [self.readerSettingsViewPhone removeFromSuperview];
+      self.readerSettingsViewPhone = nil;
     } else {
       NYPLLOG(@"Ignoring unknown simplified function.");
     }
