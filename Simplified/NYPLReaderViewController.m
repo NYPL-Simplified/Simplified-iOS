@@ -29,6 +29,7 @@
 @property (nonatomic) NSInteger pageInCurrentSpineItemIndex;
 @property (nonatomic) BOOL pageProgressionIsLTR;
 @property (nonatomic) RDPackage *package;
+@property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
 @property (nonatomic) RDPackageResourceServer *server;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
@@ -444,12 +445,19 @@ executeJavaScript:(NSString *const)javaScript
 
 - (void)didSelectSettings
 {
+  if(self.readerSettingsViewPhone) {
+    [self.readerSettingsViewPhone removeFromSuperview];
+    self.readerSettingsViewPhone = nil;
+    return;
+  }
+  
+  NYPLReaderSettingsView *const readerSettingsView = [[NYPLReaderSettingsView alloc] init];
+  readerSettingsView.delegate = self;
+  readerSettingsView.colorScheme = [NYPLReaderSettings sharedSettings].colorScheme;
+  readerSettingsView.fontSize = [NYPLReaderSettings sharedSettings].fontSize;
+  readerSettingsView.fontFace = [NYPLReaderSettings sharedSettings].fontFace;
+  
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    NYPLReaderSettingsView *const readerSettingsView = [[NYPLReaderSettingsView alloc] init];
-    readerSettingsView.delegate = self;
-    readerSettingsView.colorScheme = [NYPLReaderSettings sharedSettings].colorScheme;
-    readerSettingsView.fontSize = [NYPLReaderSettings sharedSettings].fontSize;
-    readerSettingsView.fontFace = [NYPLReaderSettings sharedSettings].fontFace;
     UIViewController *const viewController = [[UIViewController alloc] init];
     viewController.view = readerSettingsView;
     viewController.preferredContentSize = viewController.view.bounds.size;
@@ -463,6 +471,13 @@ executeJavaScript:(NSString *const)javaScript
      presentPopoverFromBarButtonItem:self.settingsBarButtonItem
      permittedArrowDirections:UIPopoverArrowDirectionUp
      animated:YES];
+  } else {
+    readerSettingsView.frame = CGRectOffset(readerSettingsView.frame,
+                                            0,
+                                            (CGRectGetHeight(self.view.frame) -
+                                             CGRectGetHeight(readerSettingsView.frame)));
+    [self.view addSubview:readerSettingsView];
+    self.readerSettingsViewPhone = readerSettingsView;
   }
 }
 
