@@ -74,7 +74,7 @@ id argument(NSURL *const URL) {
     self.container = [[RDContainer alloc]
                       initWithDelegate:self
                       path:[[[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                        fileURLForBookIndentifier:bookIdentifier]
+                             fileURLForBookIndentifier:bookIdentifier]
                             path]];
   } @catch (...) {
     self.bookIsCorrupt = YES;
