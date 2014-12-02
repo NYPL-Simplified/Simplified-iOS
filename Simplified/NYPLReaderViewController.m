@@ -326,14 +326,25 @@ executeJavaScript:(NSString *const)javaScript
       break;
   }
   
-  [self.webView stringByEvaluatingJavaScriptFromString:
+  NSArray *const styles = @[@{@"selector": @"body",
+                              @"declarations": @{@"color":
+                                                   [foregroundColor javascriptHexString],
+                                                 @"backgroundColor":
+                                                   [backgroundColor javascriptHexString]}}];
+  
+  NSString *const stylesString = [[NSString alloc]
+                                  initWithData:NYPLJSONDataFromObject(styles)
+                                  encoding:NSUTF8StringEncoding];
+  
+  
+  NSString *const javaScript =
    [NSString stringWithFormat:
-    @"document.body.style.backgroundColor ="
-    @"window.frames[\"epubContentIframe\"].document.body.style.backgroundColor = \"%@\";"
-    @"document.body.style.color ="
-    @"window.frames[\"epubContentIframe\"].document.body.style.color = \"%@\";",
-    [backgroundColor javascriptHexString],
-    [foregroundColor javascriptHexString]]];
+    @"ReadiumSDK.reader.setBookStyles(%@);"
+    @"document.body.style.backgroundColor = \"%@\";",
+    stylesString,
+    [backgroundColor javascriptHexString]];
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
   
   self.webView.backgroundColor = backgroundColor;
   
