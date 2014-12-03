@@ -77,6 +77,17 @@ id argument(NSURL *const URL) {
   
   self.navigationController.navigationBar.barTintColor = self.webView.backgroundColor;
   
+  switch([NYPLReaderSettings sharedSettings].colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+      // fallthrough
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+      break;
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+      self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+      break;
+  }
+  
   self.activePopoverController.backgroundColor =
     [NYPLReaderSettings sharedSettings].backgroundColor;
 }
