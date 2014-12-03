@@ -55,6 +55,41 @@ id argument(NSURL *const URL) {
 
 @implementation NYPLReaderViewController
 
+- (void)applyCurrentSettingsAndStyles
+{
+  NSArray *const styles = [[NYPLReaderSettings sharedSettings] readiumStylesRepresentation];
+  
+  NSString *const stylesString = [[NSString alloc]
+                                  initWithData:NYPLJSONDataFromObject(styles)
+                                  encoding:NSUTF8StringEncoding];
+  
+  
+  NSString *const javaScript =
+  [NSString stringWithFormat:
+   @"ReadiumSDK.reader.setBookStyles(%@);"
+   @"document.body.style.backgroundColor = \"%@\";",
+   stylesString,
+   [[NYPLReaderSettings sharedSettings].backgroundColor javascriptHexString]];
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
+  
+  self.webView.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
+  
+  self.navigationController.navigationBar.barTintColor = self.webView.backgroundColor;
+  
+  self.activePopoverController.backgroundColor =
+    [NYPLReaderSettings sharedSettings].backgroundColor;
+  
+  NSDictionary *const settingsDictionary = [[NYPLReaderSettings sharedSettings]
+                                            readiumSettingsRepresentation];
+  
+  NSData *const settingsData = NYPLJSONDataFromObject(settingsDictionary);
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:
+   [NSString stringWithFormat:@"ReadiumSDK.reader.updateSettings(%@);",
+    [[NSString alloc] initWithData:settingsData encoding:NSUTF8StringEncoding]]];
+}
+
 #pragma mark NSObject
 
 - (instancetype)initWithBookIdentifier:(NSString *const)bookIdentifier
@@ -304,99 +339,17 @@ executeJavaScript:(NSString *const)javaScript
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
       didSelectColorScheme:(NYPLReaderSettingsColorScheme const)colorScheme
 {
-  UIColor *backgroundColor = nil;
-  UIColor *foregroundColor = nil;
-  
-  switch(colorScheme) {
-    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-      backgroundColor = [NYPLConfiguration backgroundDarkColor];
-      foregroundColor = [UIColor whiteColor];
-      self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-      break;
-    case NYPLReaderSettingsColorSchemeBlackOnWhite:
-      backgroundColor = [NYPLConfiguration backgroundColor];
-      foregroundColor = [UIColor blackColor];
-      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-      break;
-    case NYPLReaderSettingsColorSchemeBlackOnSepia:
-      backgroundColor = [NYPLConfiguration backgroundSepiaColor];
-      foregroundColor =[UIColor blackColor];
-      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-      break;
-  }
-  
-  NSArray *const styles = @[@{@"selector": @"body",
-                              @"declarations": @{@"color":
-                                                   [foregroundColor javascriptHexString],
-                                                 @"backgroundColor":
-                                                   [backgroundColor javascriptHexString]}}];
-  
-  NSString *const stylesString = [[NSString alloc]
-                                  initWithData:NYPLJSONDataFromObject(styles)
-                                  encoding:NSUTF8StringEncoding];
-  
-  
-  NSString *const javaScript =
-   [NSString stringWithFormat:
-    @"ReadiumSDK.reader.setBookStyles(%@);"
-    @"document.body.style.backgroundColor = \"%@\";",
-    stylesString,
-    [backgroundColor javascriptHexString]];
-  
-  [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
-  
-  self.webView.backgroundColor = backgroundColor;
-  
-  self.navigationController.navigationBar.barTintColor = self.webView.backgroundColor;
-  
-  self.activePopoverController.backgroundColor = backgroundColor;
-  
   [NYPLReaderSettings sharedSettings].colorScheme = colorScheme;
+  
+  [self applyCurrentSettingsAndStyles];
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
          didSelectFontSize:(NYPLReaderSettingsFontSize const)fontSize
 {
-  // TODO: These scaling factors are completely arbitrary and will probably need to change when
-  // Readium changes.
-  CGFloat const scalingFactor = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 1.3 : 0.9;
-  
-  CGFloat baseSize;
-  switch(fontSize) {
-    case NYPLReaderSettingsFontSizeSmallest:
-      baseSize = 70;
-      break;
-    case NYPLReaderSettingsFontSizeSmaller:
-      baseSize = 80;
-      break;
-    case NYPLReaderSettingsFontSizeSmall:
-      baseSize = 90;
-      break;
-    case NYPLReaderSettingsFontSizeNormal:
-      baseSize = 100;
-      break;
-    case NYPLReaderSettingsFontSizeLarge:
-      baseSize = 115;
-      break;
-    case NYPLReaderSettingsFontSizeLarger:
-      baseSize = 130;
-      break;
-    case NYPLReaderSettingsFontSizeLargest:
-      baseSize = 145;
-      break;
-  }
-  
-  NSDictionary *const settingsDictionary = @{@"columnGap": @20,
-                                             @"fontSize": @(baseSize * scalingFactor),
-                                             @"syntheticSpread": @NO};
-  
-  NSData *const settingsData = NYPLJSONDataFromObject(settingsDictionary);
-  
-  [self.webView stringByEvaluatingJavaScriptFromString:
-   [NSString stringWithFormat:@"ReadiumSDK.reader.updateSettings(%@);",
-    [[NSString alloc] initWithData:settingsData encoding:NSUTF8StringEncoding]]];
-  
   [NYPLReaderSettings sharedSettings].fontSize = fontSize;
+  
+  [self applyCurrentSettingsAndStyles];
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
@@ -535,21 +488,12 @@ executeJavaScript:(NSString *const)javaScript
   
   self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
 
-  // TODO: This is completely arbitrary and will probably need to be changed as Readium changes.
-  NSNumber *const fontSize = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
-                              ? @120
-                              : @80);
-  
-  NSDictionary *const settingsDictionary = @{@"columnGap": @20,
-                                             @"fontSize": fontSize,
-                                             @"syntheticSpread": @NO};
-  
   NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
                                       locationForIdentifier:self.bookIdentifier];
   
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
   dictionary[@"package"] = self.package.dictionary;
-  dictionary[@"settings"] = settingsDictionary;
+  dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
   if(location) {
     if(location.CFI) {
       dictionary[@"openPageRequest"] = @{@"idref": location.idref, @"elementCfi" : location.CFI};
