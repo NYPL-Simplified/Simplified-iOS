@@ -25,10 +25,11 @@
 @property (nonatomic) BOOL interfaceHidden;
 @property (nonatomic) BOOL mediaOverlayIsPlaying;
 @property (nonatomic) NSInteger openPageCount;
+@property (nonatomic) RDPackage *package;
 @property (nonatomic) NSInteger pageInCurrentSpineItemCount;
 @property (nonatomic) NSInteger pageInCurrentSpineItemIndex;
 @property (nonatomic) BOOL pageProgressionIsLTR;
-@property (nonatomic) RDPackage *package;
+@property (nonatomic) BOOL paginationHasChanged;
 @property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
 @property (nonatomic) RDPackageResourceServer *server;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
@@ -211,8 +212,6 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
     } else if([function isEqualToString:@"gesture-center"]) {
       self.interfaceHidden = !self.interfaceHidden;
-      [self.readerSettingsViewPhone removeFromSuperview];
-      self.readerSettingsViewPhone = nil;
     } else {
       NYPLLOG(@"Ignoring unknown simplified function.");
     }
@@ -348,9 +347,7 @@ executeJavaScript:(NSString *const)javaScript
   
   self.webView.backgroundColor = backgroundColor;
   
-  self.navigationController.navigationBar.translucent = NO;
   self.navigationController.navigationBar.barTintColor = self.webView.backgroundColor;
-  self.navigationController.navigationBar.translucent = YES;
   
   self.activePopoverController.backgroundColor = backgroundColor;
   
@@ -362,7 +359,7 @@ executeJavaScript:(NSString *const)javaScript
 {
   // TODO: These scaling factors are completely arbitrary and will probably need to change when
   // Readium changes.
-  CGFloat const scalingFactor = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 1.2 : 0.8;
+  CGFloat const scalingFactor = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 1.3 : 0.9;
   
   CGFloat baseSize;
   switch(fontSize) {
@@ -379,13 +376,13 @@ executeJavaScript:(NSString *const)javaScript
       baseSize = 100;
       break;
     case NYPLReaderSettingsFontSizeLarge:
-      baseSize = 110;
+      baseSize = 115;
       break;
     case NYPLReaderSettingsFontSizeLarger:
-      baseSize = 120;
+      baseSize = 130;
       break;
     case NYPLReaderSettingsFontSizeLargest:
-      baseSize = 130;
+      baseSize = 145;
       break;
   }
   
@@ -452,6 +449,11 @@ executeJavaScript:(NSString *const)javaScript
   self.navigationController.interactivePopGestureRecognizer.enabled = !interfaceHidden;
   
   self.navigationController.navigationBarHidden = self.interfaceHidden;
+  
+  if(self.interfaceHidden) {
+    [self.readerSettingsViewPhone removeFromSuperview];
+    self.readerSettingsViewPhone = nil;
+  }
   
   [self setNeedsStatusBarAppearanceUpdate];
 }
@@ -570,10 +572,8 @@ executeJavaScript:(NSString *const)javaScript
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
 {
-  [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.pageDidChange();"];
-  
-  // FIXME: This is a terrible hack!
-  {
+  if(!self.paginationHasChanged) {
+    self.paginationHasChanged = YES;
     [self readerSettingsView:nil
         didSelectColorScheme:[NYPLReaderSettings sharedSettings].colorScheme];
     [self readerSettingsView:nil
@@ -581,6 +581,8 @@ executeJavaScript:(NSString *const)javaScript
     [self readerSettingsView:nil
            didSelectFontFace:[NYPLReaderSettings sharedSettings].fontFace];
   }
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.pageDidChange();"];
   
   // Use left-to-right unless it explicitly asks for right-to-left.
   self.pageProgressionIsLTR = ![[dictionary objectForKey:@"pageProgressionDirection"]
