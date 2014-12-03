@@ -55,7 +55,7 @@ id argument(NSURL *const URL) {
 
 @implementation NYPLReaderViewController
 
-- (void)applyCurrentSettingsAndStyles
+- (void)applyCurrentStyles
 {
   NSArray *const styles = [[NYPLReaderSettings sharedSettings] readiumStylesRepresentation];
   
@@ -79,15 +79,6 @@ id argument(NSURL *const URL) {
   
   self.activePopoverController.backgroundColor =
     [NYPLReaderSettings sharedSettings].backgroundColor;
-  
-  NSDictionary *const settingsDictionary = [[NYPLReaderSettings sharedSettings]
-                                            readiumSettingsRepresentation];
-  
-  NSData *const settingsData = NYPLJSONDataFromObject(settingsDictionary);
-  
-  [self.webView stringByEvaluatingJavaScriptFromString:
-   [NSString stringWithFormat:@"ReadiumSDK.reader.updateSettings(%@);",
-    [[NSString alloc] initWithData:settingsData encoding:NSUTF8StringEncoding]]];
 }
 
 #pragma mark NSObject
@@ -341,7 +332,7 @@ executeJavaScript:(NSString *const)javaScript
 {
   [NYPLReaderSettings sharedSettings].colorScheme = colorScheme;
   
-  [self applyCurrentSettingsAndStyles];
+  [self applyCurrentStyles];
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
@@ -349,7 +340,7 @@ executeJavaScript:(NSString *const)javaScript
 {
   [NYPLReaderSettings sharedSettings].fontSize = fontSize;
   
-  [self applyCurrentSettingsAndStyles];
+  [self applyCurrentStyles];
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
