@@ -31,14 +31,16 @@ BOOL NYPLReaderSettingsIncreasedFontSize(NYPLReaderSettingsFontSize input,
 
 + (NYPLReaderSettings *)sharedSettings;
 
+@property (nonatomic, readonly) UIColor *backgroundColor;
 @property (nonatomic) NYPLReaderSettingsColorScheme colorScheme;
 @property (nonatomic) NYPLReaderSettingsFontSize fontSize;
 @property (nonatomic) NYPLReaderSettingsFontFace fontFace;
+@property (nonatomic, readonly) UIColor *foregroundColor;
 
 - (void)save;
 
-- (UIColor *)backgroundColor;
+- (NSArray *)readiumStylesRepresentation;
 
-- (UIColor *)foregroundColor;
+- (NSDictionary *)readiumSettingsRepresentation;
 
 @end

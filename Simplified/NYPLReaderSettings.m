@@ -1,5 +1,6 @@
 #import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
+#import "UIColor+NYPLColorAdditions.h"
 
 #import "NYPLReaderSettings.h"
 
@@ -277,6 +278,91 @@ static NSString *const FontSizeKey = @"fontSize";
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
       return [UIColor whiteColor];
   }
+}
+
+- (NSArray *)readiumStylesRepresentation
+{
+  NSString *fontFace;
+  NSString *fontSize;
+  NSString *lineHeight;
+  
+  switch(self.fontFace) {
+    case NYPLReaderSettingsFontFaceSans:
+      fontFace = @"HelveticaNeue";
+      lineHeight = @"1.6";
+      break;
+    case NYPLReaderSettingsFontFaceSerif:
+      fontFace = @"Georgia";
+      lineHeight = @"1.6";
+      break;
+  }
+  
+  switch(self.fontSize) {
+    case NYPLReaderSettingsFontSizeSmallest:
+      fontSize = @"8pt";
+      break;
+    case NYPLReaderSettingsFontSizeSmaller:
+      fontSize = @"9pt";
+      break;
+    case NYPLReaderSettingsFontSizeSmall:
+      fontSize = @"10pt";
+      break;
+    case NYPLReaderSettingsFontSizeNormal:
+      fontSize = @"12pt";
+      break;
+    case NYPLReaderSettingsFontSizeLarge:
+      fontSize = @"14pt";
+      break;
+    case NYPLReaderSettingsFontSizeLarger:
+      fontSize = @"18pt";
+      break;
+    case NYPLReaderSettingsFontSizeLargest:
+      fontSize = @"24pt";
+      break;
+  }
+  
+  return @[@{@"selector": @"body",
+             @"declarations": @{@"color": [self.foregroundColor javascriptHexString],
+                                @"backgroundColor": [self.backgroundColor javascriptHexString],
+                                @"font-face": fontFace,
+                                @"font-size": fontSize,
+                                @"line-height": lineHeight}}];
+}
+
+- (NSDictionary *)readiumSettingsRepresentation
+{
+  // TODO: These scaling factors are completely arbitrary and will probably need to change when
+  // Readium changes.
+//  CGFloat const scalingFactor = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 1.3 : 0.9;
+  
+  CGFloat baseSize;
+  switch(self.fontSize) {
+    case NYPLReaderSettingsFontSizeSmallest:
+      baseSize = 70;
+      break;
+    case NYPLReaderSettingsFontSizeSmaller:
+      baseSize = 80;
+      break;
+    case NYPLReaderSettingsFontSizeSmall:
+      baseSize = 90;
+      break;
+    case NYPLReaderSettingsFontSizeNormal:
+      baseSize = 100;
+      break;
+    case NYPLReaderSettingsFontSizeLarge:
+      baseSize = 115;
+      break;
+    case NYPLReaderSettingsFontSizeLarger:
+      baseSize = 130;
+      break;
+    case NYPLReaderSettingsFontSizeLargest:
+      baseSize = 145;
+      break;
+  }
+  
+  return @{@"columnGap": @20,
+           @"fontSize": @(100),
+           @"syntheticSpread": @NO};
 }
 
 @end
