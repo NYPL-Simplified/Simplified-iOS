@@ -12,6 +12,7 @@
 @property (nonatomic) UIView *brightnessView;
 @property (nonatomic) UIButton *decreaseButton;
 @property (nonatomic) UIButton *increaseButton;
+@property (nonatomic) NSMutableArray *lineViews;
 @property (nonatomic) UIButton *sansButton;
 @property (nonatomic) UIButton *serifButton;
 @property (nonatomic) UIButton *whiteOnBlackButton;
@@ -224,6 +225,8 @@
                                             CGRectGetHeight(self.brightnessSlider.frame) / 2),
                                            brightnessSliderWidth,
                                            CGRectGetHeight(self.brightnessSlider.frame));
+  
+  [self updateLineViews];
 }
 
 - (void)drawRect:(__attribute__((unused)) CGRect)rect
@@ -418,6 +421,99 @@
   self.fontSize = newFontSize;
   
   [self.delegate readerSettingsView:self didSelectFontSize:self.fontSize];
+}
+
+- (void)updateLineViews
+{
+  for(UIView *const lineView in self.lineViews) {
+    [lineView removeFromSuperview];
+  }
+  
+  [self.lineViews removeAllObjects];
+  
+  CGFloat const thin = 1.0 / [UIScreen mainScreen].scale;
+  
+  {
+    UIView *const line = [[UIView alloc]
+                           initWithFrame:CGRectMake(CGRectGetMinX(self.serifButton.frame),
+                                                    CGRectGetMinY(self.serifButton.frame),
+                                                    thin,
+                                                    CGRectGetHeight(self.serifButton.frame))];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
+
+  {
+    UIView *const line = [[UIView alloc]
+                           initWithFrame:CGRectMake(CGRectGetMinX(self.whiteOnBlackButton.frame),
+                                                    CGRectGetMinY(self.whiteOnBlackButton.frame),
+                                                    (CGRectGetMaxX(self.blackOnWhiteButton.frame) -
+                                                     CGRectGetMinX(self.whiteOnBlackButton.frame)),
+                                                    thin)];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
+  
+  {
+    UIView *const line = [[UIView alloc]
+                          initWithFrame:CGRectMake(CGRectGetMinX(self.decreaseButton.frame),
+                                                   CGRectGetMinY(self.decreaseButton.frame),
+                                                   (CGRectGetMaxX(self.increaseButton.frame)
+                                                    - CGRectGetMinX(self.decreaseButton.frame)),
+                                                   thin)];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
+  
+  {
+    UIView *const line = [[UIView alloc]
+                          initWithFrame:CGRectMake(CGRectGetMinX(self.brightnessView.frame),
+                                                   CGRectGetMinY(self.brightnessView.frame),
+                                                   CGRectGetWidth(self.brightnessView.frame),
+                                                   thin)];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
+  
+  {
+    UIView *const line = [[UIView alloc]
+                          initWithFrame:CGRectMake(CGRectGetMinX(self.serifButton.frame),
+                                                   CGRectGetMinY(self.serifButton.frame),
+                                                   thin,
+                                                   CGRectGetHeight(self.serifButton.frame))];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
+  
+  {
+    UIView *const line = [[UIView alloc]
+                          initWithFrame:CGRectMake(CGRectGetMinX(self.blackOnSepiaButton.frame),
+                                                   CGRectGetMinY(self.blackOnSepiaButton.frame),
+                                                   thin,
+                                                   CGRectGetHeight(self.blackOnSepiaButton.frame))];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
+
+  {
+    UIView *const line = [[UIView alloc]
+                          initWithFrame:CGRectMake(CGRectGetMinX(self.blackOnWhiteButton.frame),
+                                                   CGRectGetMinY(self.blackOnWhiteButton.frame),
+                                                   thin,
+                                                   CGRectGetHeight(self.blackOnWhiteButton.frame))];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
+  
+  {
+    UIView *const line = [[UIView alloc]
+                          initWithFrame:CGRectMake(CGRectGetMinX(self.increaseButton.frame),
+                                                   CGRectGetMinY(self.increaseButton.frame),
+                                                   thin,
+                                                   CGRectGetHeight(self.increaseButton.frame))];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
 }
 
 @end
