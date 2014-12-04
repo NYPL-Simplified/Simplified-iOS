@@ -5,14 +5,18 @@
 #import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
+#import "NYPLReaderSettingsView.h"
 #import "NYPLReaderTOCViewController.h"
 #import "NYPLReadium.h"
+#import "NYPLRoundedButton.h"
+#import "UIColor+NYPLColorAdditions.h"
 
 #import "NYPLReaderViewController.h"
 
 @interface NYPLReaderViewController ()
-  <NYPLReaderTOCViewControllerDelegate, RDContainerDelegate, RDPackageResourceServerDelegate,
-   UIPopoverControllerDelegate, UIScrollViewDelegate, UIWebViewDelegate>
+  <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, RDContainerDelegate,
+   RDPackageResourceServerDelegate, UIPopoverControllerDelegate, UIScrollViewDelegate,
+   UIWebViewDelegate>
 
 @property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) BOOL bookIsCorrupt;
@@ -21,11 +25,14 @@
 @property (nonatomic) BOOL interfaceHidden;
 @property (nonatomic) BOOL mediaOverlayIsPlaying;
 @property (nonatomic) NSInteger openPageCount;
+@property (nonatomic) RDPackage *package;
 @property (nonatomic) NSInteger pageInCurrentSpineItemCount;
 @property (nonatomic) NSInteger pageInCurrentSpineItemIndex;
 @property (nonatomic) BOOL pageProgressionIsLTR;
-@property (nonatomic) RDPackage *package;
+@property (nonatomic) BOOL paginationHasChanged;
+@property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
 @property (nonatomic) RDPackageResourceServer *server;
+@property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
 @property (nonatomic) NSInteger spineItemIndex;
 @property (nonatomic) UIWebView *webView;
@@ -48,6 +55,54 @@ id argument(NSURL *const URL) {
 
 @implementation NYPLReaderViewController
 
+- (void)applyCurrentStyles
+{
+  NSArray *const styles = [[NYPLReaderSettings sharedSettings] readiumStylesRepresentation];
+  
+  NSString *const stylesString = [[NSString alloc]
+                                  initWithData:NYPLJSONDataFromObject(styles)
+                                  encoding:NSUTF8StringEncoding];
+  
+  
+  NSString *const javaScript =
+  [NSString stringWithFormat:
+   @"ReadiumSDK.reader.setBookStyles(%@);"
+   @"document.body.style.backgroundColor = \"%@\";",
+   stylesString,
+   [[NYPLReaderSettings sharedSettings].backgroundColor javascriptHexString]];
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
+  
+  self.webView.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
+  
+  self.navigationController.navigationBar.barTintColor = self.webView.backgroundColor;
+  
+  switch([NYPLReaderSettings sharedSettings].colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+      // fallthrough
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+      break;
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+      self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+      break;
+  }
+  
+  self.activePopoverController.backgroundColor =
+    [NYPLReaderSettings sharedSettings].backgroundColor;
+}
+
+- (void)applyCurrentSettings
+{
+  [self.webView stringByEvaluatingJavaScriptFromString:
+   [NSString stringWithFormat:
+    @"ReadiumSDK.reader.updateSettings(%@)",
+    [[NSString alloc]
+     initWithData:NYPLJSONDataFromObject([[NYPLReaderSettings sharedSettings]
+                                          readiumSettingsRepresentation])
+     encoding:NSUTF8StringEncoding]]];
+}
+
 #pragma mark NSObject
 
 - (instancetype)initWithBookIdentifier:(NSString *const)bookIdentifier
@@ -68,7 +123,7 @@ id argument(NSURL *const URL) {
     self.container = [[RDContainer alloc]
                       initWithDelegate:self
                       path:[[[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                        fileURLForBookIndentifier:bookIdentifier]
+                             fileURLForBookIndentifier:bookIdentifier]
                             path]];
   } @catch (...) {
     self.bookIsCorrupt = YES;
@@ -109,15 +164,29 @@ id argument(NSURL *const URL) {
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
-  UIBarButtonItem *const TOCButtonItem = [[UIBarButtonItem alloc]
-                                          initWithImage:[UIImage imageNamed:@"TOC"]
-                                          style:UIBarButtonItemStylePlain
-                                          target:self
-                                          action:@selector(didSelectTOC)];
+  NYPLRoundedButton *const settingsButton = [NYPLRoundedButton button];
+  [settingsButton setTitle:@"Aa" forState:UIControlStateNormal];
+  [settingsButton sizeToFit];
+  // We set a larger font after sizing because we want large text in a standard-size button.
+  settingsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+  [settingsButton addTarget:self
+                     action:@selector(didSelectSettings)
+           forControlEvents:UIControlEventTouchUpInside];
+  
+  self.settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
+  
+  NYPLRoundedButton *const TOCButton = [NYPLRoundedButton button];
+  TOCButton.bounds = settingsButton.bounds;
+  [TOCButton setImage:[UIImage imageNamed:@"TOC"] forState:UIControlStateNormal];
+  [TOCButton addTarget:self
+                action:@selector(didSelectTOC)
+      forControlEvents:UIControlEventTouchUpInside];
+  
+  UIBarButtonItem *const TOCBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:TOCButton];
   
   // |setBookIsCorrupt:| may have been called before we added these, so we need to set their
   // enabled status appropriately here too.
-  self.navigationItem.rightBarButtonItems = @[TOCButtonItem];
+  self.navigationItem.rightBarButtonItems = @[TOCBarButtonItem, self.settingsBarButtonItem];
   if(self.bookIsCorrupt) {
     for(UIBarButtonItem *const item in self.navigationItem.rightBarButtonItems) {
       item.enabled = NO;
@@ -127,7 +196,6 @@ id argument(NSURL *const URL) {
   self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
-  self.webView.backgroundColor = [UIColor whiteColor];
   self.webView.delegate = self;
   self.webView.scrollView.bounces = NO;
   self.webView.hidden = YES;
@@ -153,12 +221,23 @@ id argument(NSURL *const URL) {
   return UIStatusBarAnimationNone;
 }
 
+- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+{
+  self.navigationItem.titleView = [[UIView alloc] init];
+}
+
 - (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
 {
   if(self.shouldHideInterfaceOnNextAppearance) {
     self.shouldHideInterfaceOnNextAppearance = NO;
     self.interfaceHidden = YES;
   }
+}
+
+- (void)willMoveToParentViewController:(__attribute__((unused)) UIViewController *)parent
+{
+  self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+  self.navigationController.navigationBar.barTintColor = nil;
 }
 
 #pragma mark UIWebViewDelegate
@@ -262,6 +341,52 @@ executeJavaScript:(NSString *const)javaScript
   }];
 }
 
+#pragma mark NYPLReaderSettingsViewDelegate
+
+- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
+       didSelectBrightness:(CGFloat const)brightness
+{
+  [UIScreen mainScreen].brightness = brightness;
+}
+
+- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
+      didSelectColorScheme:(NYPLReaderSettingsColorScheme const)colorScheme
+{
+  [NYPLReaderSettings sharedSettings].colorScheme = colorScheme;
+  
+  [self applyCurrentStyles];
+}
+
+- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
+         didSelectFontSize:(NYPLReaderSettingsFontSize const)fontSize
+{
+  [NYPLReaderSettings sharedSettings].fontSize = fontSize;
+  
+  [self applyCurrentSettings];
+}
+
+- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
+         didSelectFontFace:(NYPLReaderSettingsFontFace)fontFace
+{
+  NSString *fontFamily = nil;
+  
+  switch(fontFace) {
+    case NYPLReaderSettingsFontFaceSans:
+      fontFamily = @"HelveticaNeue";
+      break;
+    case NYPLReaderSettingsFontFaceSerif:
+      fontFamily = @"Georgia";
+      break;
+  }
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:
+   [NSString stringWithFormat:
+    @"window.frames[\"epubContentIframe\"].document.body.style.fontFamily = \"%@\"",
+    fontFamily]];
+  
+  [NYPLReaderSettings sharedSettings].fontFace = fontFace;
+}
+
 #pragma mark -
 
 - (void)setBookIsCorrupt:(BOOL const)bookIsCorrupt
@@ -291,7 +416,50 @@ executeJavaScript:(NSString *const)javaScript
   
   self.navigationController.navigationBarHidden = self.interfaceHidden;
   
+  if(self.interfaceHidden) {
+    [self.readerSettingsViewPhone removeFromSuperview];
+    self.readerSettingsViewPhone = nil;
+  }
+  
   [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (void)didSelectSettings
+{
+  if(self.readerSettingsViewPhone) {
+    [self.readerSettingsViewPhone removeFromSuperview];
+    self.readerSettingsViewPhone = nil;
+    return;
+  }
+  
+  NYPLReaderSettingsView *const readerSettingsView = [[NYPLReaderSettingsView alloc] init];
+  readerSettingsView.delegate = self;
+  readerSettingsView.colorScheme = [NYPLReaderSettings sharedSettings].colorScheme;
+  readerSettingsView.fontSize = [NYPLReaderSettings sharedSettings].fontSize;
+  readerSettingsView.fontFace = [NYPLReaderSettings sharedSettings].fontFace;
+  
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    UIViewController *const viewController = [[UIViewController alloc] init];
+    viewController.view = readerSettingsView;
+    viewController.preferredContentSize = viewController.view.bounds.size;
+    [self.activePopoverController dismissPopoverAnimated:NO];
+    self.activePopoverController =
+      [[UIPopoverController alloc] initWithContentViewController:viewController];
+    self.activePopoverController.backgroundColor =
+      [NYPLReaderSettings sharedSettings].backgroundColor;
+    self.activePopoverController.delegate = self;
+    [self.activePopoverController
+     presentPopoverFromBarButtonItem:self.settingsBarButtonItem
+     permittedArrowDirections:UIPopoverArrowDirectionUp
+     animated:YES];
+  } else {
+    readerSettingsView.frame = CGRectOffset(readerSettingsView.frame,
+                                            0,
+                                            (CGRectGetHeight(self.view.frame) -
+                                             CGRectGetHeight(readerSettingsView.frame)));
+    [self.view addSubview:readerSettingsView];
+    self.readerSettingsViewPhone = readerSettingsView;
+  }
 }
 
 - (void)didSelectTOC
@@ -302,9 +470,12 @@ executeJavaScript:(NSString *const)javaScript
   viewController.delegate = self;
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    [self.activePopoverController dismissPopoverAnimated:NO];
     self.activePopoverController =
       [[UIPopoverController alloc] initWithContentViewController:viewController];
     self.activePopoverController.delegate = self;
+    self.activePopoverController.backgroundColor =
+      [NYPLReaderSettings sharedSettings].backgroundColor;
     [self.activePopoverController
      presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
      permittedArrowDirections:UIPopoverArrowDirectionUp
@@ -329,22 +500,13 @@ executeJavaScript:(NSString *const)javaScript
   }
   
   self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
-  
-  NSString *const syntheticSpread = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
-                                     ? @"double"
-                                     : @"single");
-  
-  NSDictionary *const settingsDictionary = @{@"columnGap": @20,
-                                             @"fontSize": @100,
-                                             @"scroll": @"fixed",
-                                             @"syntheticSpread": syntheticSpread};
-  
+
   NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
                                       locationForIdentifier:self.bookIdentifier];
   
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
   dictionary[@"package"] = self.package.dictionary;
-  dictionary[@"settings"] = settingsDictionary;
+  dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
   if(location) {
     if(location.CFI) {
       dictionary[@"openPageRequest"] = @{@"idref": location.idref, @"elementCfi" : location.CFI};
@@ -367,6 +529,17 @@ executeJavaScript:(NSString *const)javaScript
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
 {
+  // If the book is finished opening, set all sylistic preferences.
+  if(!self.paginationHasChanged) {
+    self.paginationHasChanged = YES;
+    [self readerSettingsView:nil
+        didSelectColorScheme:[NYPLReaderSettings sharedSettings].colorScheme];
+    [self readerSettingsView:nil
+           didSelectFontSize:[NYPLReaderSettings sharedSettings].fontSize];
+    [self readerSettingsView:nil
+           didSelectFontFace:[NYPLReaderSettings sharedSettings].fontFace];
+  }
+  
   [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.pageDidChange();"];
   
   // Use left-to-right unless it explicitly asks for right-to-left.
