@@ -149,6 +149,8 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   self.noResultsLabel.hidden = YES;
   self.activityIndicatorView.hidden = NO;
   [self.activityIndicatorView startAnimating];
+  self.searchBar.userInteractionEnabled = NO;
+  self.searchBar.alpha = 0.5;
   [self.searchBar resignFirstResponder];
   
   [NYPLCatalogAcquisitionFeed
@@ -160,6 +162,8 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.activityIndicatorView.hidden = YES;
        [self.activityIndicatorView stopAnimating];
+       self.searchBar.userInteractionEnabled = YES;
+       self.searchBar.alpha = 1.0;
        
        if(!category) {
          self.reloadView.hidden = NO;
