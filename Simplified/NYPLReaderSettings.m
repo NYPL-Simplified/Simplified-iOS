@@ -283,7 +283,6 @@ static NSString *const FontSizeKey = @"fontSize";
 - (NSArray *)readiumStylesRepresentation
 {
   NSString *fontFace;
-  NSString *fontSize;
   NSString *lineHeight;
   
   switch(self.fontFace) {
@@ -297,43 +296,16 @@ static NSString *const FontSizeKey = @"fontSize";
       break;
   }
   
-  switch(self.fontSize) {
-    case NYPLReaderSettingsFontSizeSmallest:
-      fontSize = @"8pt";
-      break;
-    case NYPLReaderSettingsFontSizeSmaller:
-      fontSize = @"9pt";
-      break;
-    case NYPLReaderSettingsFontSizeSmall:
-      fontSize = @"10pt";
-      break;
-    case NYPLReaderSettingsFontSizeNormal:
-      fontSize = @"12pt";
-      break;
-    case NYPLReaderSettingsFontSizeLarge:
-      fontSize = @"14pt";
-      break;
-    case NYPLReaderSettingsFontSizeLarger:
-      fontSize = @"18pt";
-      break;
-    case NYPLReaderSettingsFontSizeLargest:
-      fontSize = @"24pt";
-      break;
-  }
-  
   return @[@{@"selector": @"body",
              @"declarations": @{@"color": [self.foregroundColor javascriptHexString],
                                 @"backgroundColor": [self.backgroundColor javascriptHexString],
                                 @"font-face": fontFace,
-                                @"font-size": fontSize,
                                 @"line-height": lineHeight}}];
 }
 
 - (NSDictionary *)readiumSettingsRepresentation
 {
-  // TODO: These scaling factors are completely arbitrary and will probably need to change when
-  // Readium changes.
-//  CGFloat const scalingFactor = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 1.3 : 0.9;
+  CGFloat const scalingFactor = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 1.3 : 0.9;
   
   CGFloat baseSize;
   switch(self.fontSize) {
@@ -361,7 +333,7 @@ static NSString *const FontSizeKey = @"fontSize";
   }
   
   return @{@"columnGap": @20,
-           @"fontSize": @(100),
+           @"fontSize": @(baseSize * scalingFactor),
            @"syntheticSpread": @NO};
 }
 
