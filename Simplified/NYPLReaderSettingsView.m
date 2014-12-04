@@ -34,6 +34,7 @@
   self.sansButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.sansButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.sansButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  [self.sansButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
   [self.sansButton setTitle:@"Aa" forState:UIControlStateNormal];
   self.sansButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:24];
   [self.sansButton addTarget:self
@@ -44,6 +45,7 @@
   self.serifButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.serifButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.serifButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  [self.serifButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
   [self.serifButton setTitle:@"Aa" forState:UIControlStateNormal];
   self.serifButton.titleLabel.font = [UIFont fontWithName:@"Georgia" size:24];
   [self.serifButton addTarget:self
@@ -54,6 +56,7 @@
   self.whiteOnBlackButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.whiteOnBlackButton.backgroundColor = [NYPLConfiguration backgroundDarkColor];
   [self.whiteOnBlackButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+  [self.whiteOnBlackButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
   [self.whiteOnBlackButton setTitle:@"ABCabc" forState:UIControlStateNormal];
   self.whiteOnBlackButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.whiteOnBlackButton addTarget:self
@@ -64,6 +67,7 @@
   self.blackOnSepiaButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.blackOnSepiaButton.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
   [self.blackOnSepiaButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  [self.blackOnSepiaButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
   [self.blackOnSepiaButton setTitle:@"ABCabc" forState:UIControlStateNormal];
   self.blackOnSepiaButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.blackOnSepiaButton addTarget:self
@@ -74,6 +78,7 @@
   self.blackOnWhiteButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.blackOnWhiteButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.blackOnWhiteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  [self.blackOnWhiteButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
   [self.blackOnWhiteButton setTitle:@"ABCabc" forState:UIControlStateNormal];
   self.blackOnWhiteButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.blackOnWhiteButton addTarget:self
@@ -254,6 +259,22 @@
 
 #pragma mark -
 
+- (void)setFontFace:(NYPLReaderSettingsFontFace)fontFace
+{
+  _fontFace = fontFace;
+  
+  switch(fontFace) {
+    case NYPLReaderSettingsFontFaceSans:
+      self.sansButton.enabled = NO;
+      self.serifButton.enabled = YES;
+      break;
+    case NYPLReaderSettingsFontFaceSerif:
+      self.sansButton.enabled = YES;
+      self.serifButton.enabled = NO;
+      break;
+  }
+}
+
 - (void)setFontSize:(NYPLReaderSettingsFontSize const)fontSize
 {
   _fontSize = fontSize;
@@ -291,14 +312,23 @@
   
   switch(colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
+      self.blackOnSepiaButton.enabled = NO;
+      self.blackOnWhiteButton.enabled = YES;
+      self.whiteOnBlackButton.enabled = YES;
       backgroundColor = [NYPLConfiguration backgroundSepiaColor];
       foregroundColor = [UIColor blackColor];
       break;
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      self.blackOnSepiaButton.enabled = YES;
+      self.blackOnWhiteButton.enabled = NO;
+      self.whiteOnBlackButton.enabled = YES;
       backgroundColor = [NYPLConfiguration backgroundColor];
       foregroundColor = [UIColor blackColor];
       break;
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+      self.blackOnSepiaButton.enabled = YES;
+      self.blackOnWhiteButton.enabled = YES;
+      self.whiteOnBlackButton.enabled = NO;
       backgroundColor = [NYPLConfiguration backgroundDarkColor];
       foregroundColor = [UIColor whiteColor];
       break;
