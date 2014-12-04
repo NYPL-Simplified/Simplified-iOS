@@ -92,6 +92,17 @@ id argument(NSURL *const URL) {
     [NYPLReaderSettings sharedSettings].backgroundColor;
 }
 
+- (void)applyCurrentSettings
+{
+  [self.webView stringByEvaluatingJavaScriptFromString:
+   [NSString stringWithFormat:
+    @"ReadiumSDK.reader.updateSettings(%@)",
+    [[NSString alloc]
+     initWithData:NYPLJSONDataFromObject([[NYPLReaderSettings sharedSettings]
+                                          readiumSettingsRepresentation])
+     encoding:NSUTF8StringEncoding]]];
+}
+
 #pragma mark NSObject
 
 - (instancetype)initWithBookIdentifier:(NSString *const)bookIdentifier
@@ -351,7 +362,7 @@ executeJavaScript:(NSString *const)javaScript
 {
   [NYPLReaderSettings sharedSettings].fontSize = fontSize;
   
-  [self applyCurrentStyles];
+  [self applyCurrentSettings];
 }
 
 - (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
@@ -518,6 +529,7 @@ executeJavaScript:(NSString *const)javaScript
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
 {
+  // If the book is finished opening, set all sylistic preferences.
   if(!self.paginationHasChanged) {
     self.paginationHasChanged = YES;
     [self readerSettingsView:nil
