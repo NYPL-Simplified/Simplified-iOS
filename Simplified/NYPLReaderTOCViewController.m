@@ -1,4 +1,5 @@
 #import "NYPLConfiguration.h"
+#import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCCell.h"
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReadium.h"
@@ -67,6 +68,23 @@ static NSString *const reuseIdentifier = @"ReaderTOCCell";
   [self.tableView registerClass:[NYPLReaderTOCCell class]
          forCellReuseIdentifier:reuseIdentifier];
   [self.view addSubview:self.tableView];
+}
+
+- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+{
+  switch([NYPLReaderSettings sharedSettings].colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+      self.tableView.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+      break;
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
+      break;
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+      self.tableView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
+      break;
+  }
+  
+  [self.tableView reloadData];
 }
 
 #pragma mark UITableViewDataSource
