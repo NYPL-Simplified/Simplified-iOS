@@ -300,7 +300,8 @@ static NSString *const FontSizeKey = @"fontSize";
              @"declarations": @{@"color": [self.foregroundColor javascriptHexString],
                                 @"backgroundColor": [self.backgroundColor javascriptHexString],
                                 @"font-face": fontFace,
-                                @"line-height": lineHeight}}];
+                                @"line-height": lineHeight,
+                                @"-webkit-hyphens": @"auto"}}];
 }
 
 - (NSDictionary *)readiumSettingsRepresentation
