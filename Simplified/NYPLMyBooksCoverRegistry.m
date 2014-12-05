@@ -108,18 +108,22 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 
 - (void)thumbnailImageForBook:(NYPLBook *)book handler:(void (^)(UIImage *image))handler
 {
-  if([self.pinnedBookIdentifiers containsObject:book.identifier]) {
-    @synchronized(self) {
-      UIImage *const image = [UIImage imageWithContentsOfFile:
-                              [[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier]
-                               path]];
-      if(image) {
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-          handler(image);
-        }];
-        return;
-      }
+  BOOL isPinned;
+  @synchronized(self) {
+    isPinned = [self.pinnedBookIdentifiers containsObject:book.identifier];
+  }
+  
+  if(isPinned) {
+    UIImage *const image = [UIImage imageWithContentsOfFile:
+                            [[self URLForPinnedThumbnailImageOfBookIdentifier:book.identifier]
+                             path]];
+    if(image) {
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        handler(image);
+      }];
+      return;
     }
+    
     // If the image didn't load, that just means it was an empty file used to mark that we still
     // need to download the pinned image.
     [[self.session
