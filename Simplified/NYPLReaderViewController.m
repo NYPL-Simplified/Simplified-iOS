@@ -563,7 +563,7 @@ executeJavaScript:(NSString *const)javaScript
                                   @"ReadiumSDK.reader.bookmarkCurrentPage()"];
   
   NSDictionary *const locationDictionary =
-  NYPLJSONObjectFromData([locationJSON dataUsingEncoding:NSUTF8StringEncoding]);
+    NYPLJSONObjectFromData([locationJSON dataUsingEncoding:NSUTF8StringEncoding]);
   
   NYPLBookLocation *const location = [[NYPLBookLocation alloc]
                                       initWithCFI:locationDictionary[@"contentCFI"]
