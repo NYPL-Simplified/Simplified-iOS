@@ -123,6 +123,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1112A81E1A322C53002B8CC1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CCAC4FAE195B3DD700D775F5;
+			remoteInfo = TenPrintCover;
+		};
+		1112A8201A322C53002B8CC1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CCAC4FD2195B3DD700D775F5;
+			remoteInfo = TenPrintCoverTests;
+		};
 		119503DF1993F8F4009FB788 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 119503DA1993F8F4009FB788 /* RDServices.xcodeproj */;
@@ -172,6 +186,7 @@
 		1111973E1988226F0014462F /* NYPLBookDetailDownloadFailedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDetailDownloadFailedView.m; sourceTree = "<group>"; };
 		11119740198827850014462F /* NYPLBookDetailDownloadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailDownloadingView.h; sourceTree = "<group>"; };
 		11119741198827850014462F /* NYPLBookDetailDownloadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDetailDownloadingView.m; sourceTree = "<group>"; };
+		1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TenPrintCover.xcodeproj; path = "tenprintcover-ios/TenPrintCover.xcodeproj"; sourceTree = "<group>"; };
 		1114A69F195884CB007507A2 /* NYPLCatalogAcquisitionFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogAcquisitionFeed.h; sourceTree = "<group>"; };
 		1114A6A0195884CB007507A2 /* NYPLCatalogAcquisitionFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogAcquisitionFeed.m; sourceTree = "<group>"; };
 		1114A6A2195888A1007507A2 /* NYPLCatalogSubsectionLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogSubsectionLink.h; sourceTree = "<group>"; };
@@ -439,6 +454,15 @@
 			name = Book;
 			sourceTree = "<group>";
 		};
+		1112A81A1A322C53002B8CC1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1112A81F1A322C53002B8CC1 /* TenPrintCover.app */,
+				1112A8211A322C53002B8CC1 /* TenPrintCoverTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		1183F349194F74EF00DC322F /* Catalog */ = {
 			isa = PBXGroup;
 			children = (
@@ -548,6 +572,7 @@
 				A823D82F192BABA400B55DE2 /* SimplifiedTests */,
 				A823D80F192BABA400B55DE2 /* Frameworks */,
 				A823D80E192BABA400B55DE2 /* Products */,
+				1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */,
 				119503DA1993F8F4009FB788 /* RDServices.xcodeproj */,
 			);
 			sourceTree = "<group>";
@@ -770,6 +795,10 @@
 					ProductGroup = 119503DB1993F8F4009FB788 /* Products */;
 					ProjectRef = 119503DA1993F8F4009FB788 /* RDServices.xcodeproj */;
 				},
+				{
+					ProductGroup = 1112A81A1A322C53002B8CC1 /* Products */;
+					ProjectRef = 1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -780,6 +809,20 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		1112A81F1A322C53002B8CC1 /* TenPrintCover.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = TenPrintCover.app;
+			remoteRef = 1112A81E1A322C53002B8CC1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1112A8211A322C53002B8CC1 /* TenPrintCoverTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = TenPrintCoverTests.xctest;
+			remoteRef = 1112A8201A322C53002B8CC1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		119503E01993F8F4009FB788 /* libRDServices.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
