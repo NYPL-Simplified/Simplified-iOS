@@ -38,6 +38,7 @@
 		113DB8A719C24E54004E1154 /* NYPLIndeterminateProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 113DB8A619C24E54004E1154 /* NYPLIndeterminateProgressView.m */; };
 		1142E4E819EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1142E4E719EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m */; };
 		1142E4EB19EED86A00D9B3D9 /* NYPLFacetBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1142E4EA19EED86A00D9B3D9 /* NYPLFacetBarView.m */; };
+		114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 114B7F151A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m */; };
 		114C8CD719BE2FD300719B72 /* NYPLAttributedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */; };
 		114C8CDA19BF55F900719B72 /* NYPLRoundedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 114C8CD919BF55F900719B72 /* NYPLRoundedButton.m */; };
 		11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */; };
@@ -214,6 +215,8 @@
 		1142E4E719EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogFacetTests.m; sourceTree = "<group>"; };
 		1142E4E919EED86A00D9B3D9 /* NYPLFacetBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLFacetBarView.h; sourceTree = "<group>"; };
 		1142E4EA19EED86A00D9B3D9 /* NYPLFacetBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLFacetBarView.m; sourceTree = "<group>"; };
+		114B7F141A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.h"; sourceTree = "<group>"; };
+		114B7F151A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m"; sourceTree = "<group>"; };
 		114C8CD519BE2FD300719B72 /* NYPLAttributedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAttributedString.h; sourceTree = "<group>"; };
 		114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAttributedString.m; sourceTree = "<group>"; };
 		114C8CD819BF55F900719B72 /* NYPLRoundedButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRoundedButton.h; sourceTree = "<group>"; };
@@ -406,12 +409,14 @@
 				11396FB8193D289100E16EE8 /* NSDate+NYPLDateAdditions.m */,
 				119BEB87198C43A600121439 /* NSString+NYPLStringAdditions.h */,
 				119BEB88198C43A600121439 /* NSString+NYPLStringAdditions.m */,
+				114B7F141A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.h */,
+				114B7F151A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m */,
+				11A14DF21A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.h */,
+				11A14DF31A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m */,
 				11E0208B197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.h */,
 				11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */,
 				1107835C19816E3D0071AB1E /* UIView+NYPLViewAdditions.h */,
 				1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */,
-				11A14DF21A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.h */,
-				11A14DF31A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -889,6 +894,7 @@
 				1183F353194F795800DC322F /* NYPLBookAcquisition.m in Sources */,
 				11A14DF41A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m in Sources */,
 				11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */,
+				114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m in Sources */,
 				1142E4EB19EED86A00D9B3D9 /* NYPLFacetBarView.m in Sources */,
 				1195040B1994075B009FB788 /* NYPLReaderViewController.m in Sources */,
 				1183F33B194B775900DC322F /* NYPLCatalogLaneCell.m in Sources */,

@@ -1,6 +1,7 @@
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLBook.h"
 #import "NYPLNull.h"
+#import "NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.h"
 
 #import "NYPLMyBooksCoverRegistry.h"
 
@@ -145,7 +146,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   } else {
     if(!book.imageThumbnailURL) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        handler(nil);
+        handler([NYPLTenPrintCoverView imageForBook:book]);
       }];
       return;
     }
@@ -155,7 +156,12 @@ static NSUInteger const memoryCacheInMegabytes = 2;
                           __attribute__((unused)) NSURLResponse *response,
                           __attribute__((unused)) NSError *error) {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-          handler([UIImage imageWithData:data]);
+          UIImage *const image = [UIImage imageWithData:data];
+          if(image) {
+            handler(image);
+          } else {
+            handler([NYPLTenPrintCoverView imageForBook:book]);
+          }
         }];
       }]
      resume];
@@ -196,7 +202,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
     if(!book.imageThumbnailURL) {
       NYPLLOG_F(@"Missing thumbnail image URL for '%@'.", book.title);
       [lock lock];
-      dictionary[book.identifier] = [NSNull null];
+      dictionary[book.identifier] = [NYPLTenPrintCoverView imageForBook:book];
       --remaining;
       if(!remaining) {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -216,6 +222,23 @@ static NSUInteger const memoryCacheInMegabytes = 2;
         --remaining;
         if(!remaining) {
           [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            // All NSNull objects need to be converted to generated covers. We do this here rather
+            // than earlier because it needs to happen on the main thread. The first step is to
+            // get a map from book identifers to books given our initial set.
+            NSMutableDictionary *const identifiersToBooks =
+              [NSMutableDictionary dictionaryWithCapacity:[books count]];
+            for(NYPLBook *const book in books) {
+              identifiersToBooks[book.identifier] = book;
+            }
+            // Now, we can fix up |dictionary| by replacing all nulls with generated covers.
+            [dictionary enumerateKeysAndObjectsUsingBlock:^(NSString *const identifier,
+                                                            id const imageOrNull,
+                                                            __attribute__((unused)) BOOL *stop) {
+              if([imageOrNull isKindOfClass:[NSNull class]]) {
+                dictionary[identifier] =
+                  [NYPLTenPrintCoverView imageForBook:identifiersToBooks[identifier]];
+              }
+            }];
             handler(dictionary);
           }];
         }
@@ -254,6 +277,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
     completionHandler:^(NSData *const data,
                         __attribute__((unused)) NSURLResponse *response,
                         __attribute__((unused)) NSError *error) {
+      // FIXME: We should check if the image data is valid.
       if(!data) {
         NYPLLOG_F(@"Failed to pin thumbnail image for '%@'.", book.title);
         return;
