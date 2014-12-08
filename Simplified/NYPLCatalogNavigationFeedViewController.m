@@ -22,8 +22,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NSMutableDictionary *bookIdentifiersToImages;
 @property (nonatomic) NYPLCatalogNavigationFeed *catalogNavigationFeed;
-@property (nonatomic) NSMutableDictionary *cachedCells;
-@property (nonatomic) NSMutableDictionary *loadingCells;
+@property (nonatomic) NSMutableDictionary *cachedLaneCells;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) UITableView *tableView;
@@ -41,7 +40,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
   if(!self) return nil;
   
   self.bookIdentifiersToImages = [NSMutableDictionary dictionary];
-  self.cachedCells = [NSMutableDictionary dictionary];
+  self.cachedLaneCells = [NSMutableDictionary dictionary];
   self.title = title;
   self.URL = URL;
   
@@ -113,7 +112,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
 {
   [super didReceiveMemoryWarning];
   
-  [self.cachedCells removeAllObjects];
+  [self.cachedLaneCells removeAllObjects];
 }
 
 #pragma mark UITableViewDataSource
@@ -121,7 +120,9 @@ static CGFloat const sectionHeaderHeight = 50.0;
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  UITableViewCell *const cachedCell = self.cachedCells[indexPath];
+  // Caching cells helps with performance and lets us retain horizontal scroll positions. Cells are
+  // only stored in |self.cachedLaneCells| if they are final.
+  UITableViewCell *const cachedCell = self.cachedLaneCells[indexPath];
   if(cachedCell) {
     return cachedCell;
   }
@@ -133,21 +134,9 @@ static CGFloat const sectionHeaderHeight = 50.0;
        books:((NYPLCatalogLane *) self.catalogNavigationFeed.lanes[indexPath.section]).books
        bookIdentifiersToImages:self.bookIdentifiersToImages];
     cell.delegate = self;
-    self.cachedCells[indexPath] = cell;
+    self.cachedLaneCells[indexPath] = cell;
     return cell;
   } else {
-    // We save these cells and manually reuse them based on the index path so that animations are
-    // not interrupted when the table reloads.
-    
-    if(!self.loadingCells) {
-      self.loadingCells = [NSMutableDictionary dictionary];
-    }
-    
-    UITableViewCell *const cachedCell = self.loadingCells[indexPath];
-    if(cachedCell) {
-      return cachedCell;
-    }
-    
     UITableViewCell *const cell = [[UITableViewCell alloc] init];
     CGRect const progressViewFrame = CGRectMake(5,
                                                 0,
@@ -162,9 +151,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
     progressView.speedMultiplier = 2.0;
     [progressView startAnimating];
     [cell.contentView addSubview:progressView];
-    
-    self.loadingCells[indexPath] = cell;
-    
     return cell;
   }
 }
@@ -269,7 +255,6 @@ viewForHeaderInSection:(NSInteger const)section
 - (void)downloadImages
 {
   if(self.indexOfNextLaneRequiringImageDownload >= self.catalogNavigationFeed.lanes.count) {
-    self.loadingCells = nil;
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     return;
   }
@@ -291,8 +276,14 @@ viewForHeaderInSection:(NSInteger const)section
        }
      }];
      
-     [self.tableView reloadData];
+     // We update this before reloading so that the delegate accurately knows which lanes already
+     // have had their covers downloaded.
      ++self.indexOfNextLaneRequiringImageDownload;
+     
+     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:
+                                     (self.indexOfNextLaneRequiringImageDownload - 1)]
+                   withRowAnimation:UITableViewRowAnimationNone];
+
      [self downloadImages];
    }];
 }
