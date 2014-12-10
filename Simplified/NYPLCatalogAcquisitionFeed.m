@@ -215,7 +215,7 @@ handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
        
        [self prepareForBookIndex:self.greatestPreparationIndex];
        
-       NSRange const range = {location, acquisitionFeed.books.count};
+       NSRange const range = {.location = location, .length = acquisitionFeed.books.count};
        
        [self.delegate catalogAcquisitionFeed:self
                                  didAddBooks:acquisitionFeed.books
