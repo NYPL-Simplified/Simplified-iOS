@@ -1,8 +1,8 @@
-#import "NYPLDismissableViewController.h"
+#import "NYPLDismissibleViewController.h"
 
 @class NYPLBook;
 
-@interface NYPLBookDetailViewController : NYPLDismissableViewController
+@interface NYPLBookDetailViewController : NYPLDismissibleViewController
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
