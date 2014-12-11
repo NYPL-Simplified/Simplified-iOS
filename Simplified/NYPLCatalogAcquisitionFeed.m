@@ -194,26 +194,32 @@ handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
   
   self.currentlyFetchingNextURL = YES;
   
+  NSUInteger const location = self.books.count;
+  
   [NYPLCatalogAcquisitionFeed
    withURL:self.nextURL
    includingSearchTemplate:NO
-   handler:^(NYPLCatalogAcquisitionFeed *const category) {
+   handler:^(NYPLCatalogAcquisitionFeed *const acquisitionFeed) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       if(!category) {
+       if(!acquisitionFeed) {
          NYPLLOG(@"Failed to fetch next page.");
          self.currentlyFetchingNextURL = NO;
          return;
        }
        
        NSMutableArray *const books = [self.books mutableCopy];
-       [books addObjectsFromArray:category.books];
+       [books addObjectsFromArray:acquisitionFeed.books];
        self.books = books;
-       self.nextURL = category.nextURL;
+       self.nextURL = acquisitionFeed.nextURL;
        self.currentlyFetchingNextURL = NO;
        
        [self prepareForBookIndex:self.greatestPreparationIndex];
        
-       [self.delegate catalogAcquisitionFeed:self didUpdateBooks:self.books];
+       NSRange const range = {.location = location, .length = acquisitionFeed.books.count};
+       
+       [self.delegate catalogAcquisitionFeed:self
+                                 didAddBooks:acquisitionFeed.books
+                                       range:range];
      }];
    }];
 }

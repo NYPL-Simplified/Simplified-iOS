@@ -20,6 +20,7 @@
 		1111973C19880E8D0014462F /* NYPLLinearView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1111973B19880E8D0014462F /* NYPLLinearView.m */; };
 		1111973F1988226F0014462F /* NYPLBookDetailDownloadFailedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1111973E1988226F0014462F /* NYPLBookDetailDownloadFailedView.m */; };
 		11119742198827850014462F /* NYPLBookDetailDownloadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11119741198827850014462F /* NYPLBookDetailDownloadingView.m */; };
+		1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1112A81F1A322C53002B8CC1 /* libTenPrintCover.a */; };
 		1114A6A1195884CB007507A2 /* NYPLCatalogAcquisitionFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 1114A6A0195884CB007507A2 /* NYPLCatalogAcquisitionFeed.m */; };
 		1114A6A4195888A1007507A2 /* NYPLCatalogSubsectionLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 1114A6A3195888A1007507A2 /* NYPLCatalogSubsectionLink.m */; };
 		111559ED19B8FA590003BE94 /* NYPLXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 111559EC19B8FA590003BE94 /* NYPLXML.m */; };
@@ -37,6 +38,7 @@
 		113DB8A719C24E54004E1154 /* NYPLIndeterminateProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 113DB8A619C24E54004E1154 /* NYPLIndeterminateProgressView.m */; };
 		1142E4E819EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1142E4E719EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m */; };
 		1142E4EB19EED86A00D9B3D9 /* NYPLFacetBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1142E4EA19EED86A00D9B3D9 /* NYPLFacetBarView.m */; };
+		114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 114B7F151A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m */; };
 		114C8CD719BE2FD300719B72 /* NYPLAttributedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */; };
 		114C8CDA19BF55F900719B72 /* NYPLRoundedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 114C8CD919BF55F900719B72 /* NYPLRoundedButton.m */; };
 		11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */; };
@@ -123,6 +125,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1112A81E1A322C53002B8CC1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CCAC4FAE195B3DD700D775F5;
+			remoteInfo = TenPrintCover;
+		};
 		119503DF1993F8F4009FB788 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 119503DA1993F8F4009FB788 /* RDServices.xcodeproj */;
@@ -172,6 +181,7 @@
 		1111973E1988226F0014462F /* NYPLBookDetailDownloadFailedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDetailDownloadFailedView.m; sourceTree = "<group>"; };
 		11119740198827850014462F /* NYPLBookDetailDownloadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailDownloadingView.h; sourceTree = "<group>"; };
 		11119741198827850014462F /* NYPLBookDetailDownloadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDetailDownloadingView.m; sourceTree = "<group>"; };
+		1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = TenPrintCover.xcodeproj; path = "tenprintcover-ios/TenPrintCover.xcodeproj"; sourceTree = "<group>"; };
 		1114A69F195884CB007507A2 /* NYPLCatalogAcquisitionFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogAcquisitionFeed.h; sourceTree = "<group>"; };
 		1114A6A0195884CB007507A2 /* NYPLCatalogAcquisitionFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogAcquisitionFeed.m; sourceTree = "<group>"; };
 		1114A6A2195888A1007507A2 /* NYPLCatalogSubsectionLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogSubsectionLink.h; sourceTree = "<group>"; };
@@ -205,6 +215,8 @@
 		1142E4E719EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogFacetTests.m; sourceTree = "<group>"; };
 		1142E4E919EED86A00D9B3D9 /* NYPLFacetBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLFacetBarView.h; sourceTree = "<group>"; };
 		1142E4EA19EED86A00D9B3D9 /* NYPLFacetBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLFacetBarView.m; sourceTree = "<group>"; };
+		114B7F141A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.h"; sourceTree = "<group>"; };
+		114B7F151A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m"; sourceTree = "<group>"; };
 		114C8CD519BE2FD300719B72 /* NYPLAttributedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAttributedString.h; sourceTree = "<group>"; };
 		114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAttributedString.m; sourceTree = "<group>"; };
 		114C8CD819BF55F900719B72 /* NYPLRoundedButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRoundedButton.h; sourceTree = "<group>"; };
@@ -347,6 +359,7 @@
 				A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */,
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
 				A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */,
+				1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */,
 				119503E51993F90C009FB788 /* libePub3-iOS.a in Frameworks */,
 				119503E31993F90C009FB788 /* libRDServices.a in Frameworks */,
 				119503EB1993F91E009FB788 /* libc++.dylib in Frameworks */,
@@ -396,12 +409,14 @@
 				11396FB8193D289100E16EE8 /* NSDate+NYPLDateAdditions.m */,
 				119BEB87198C43A600121439 /* NSString+NYPLStringAdditions.h */,
 				119BEB88198C43A600121439 /* NSString+NYPLStringAdditions.m */,
+				114B7F141A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.h */,
+				114B7F151A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m */,
+				11A14DF21A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.h */,
+				11A14DF31A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m */,
 				11E0208B197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.h */,
 				11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */,
 				1107835C19816E3D0071AB1E /* UIView+NYPLViewAdditions.h */,
 				1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */,
-				11A14DF21A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.h */,
-				11A14DF31A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -437,6 +452,14 @@
 				11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */,
 			);
 			name = Book;
+			sourceTree = "<group>";
+		};
+		1112A81A1A322C53002B8CC1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1112A81F1A322C53002B8CC1 /* libTenPrintCover.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		1183F349194F74EF00DC322F /* Catalog */ = {
@@ -548,6 +571,7 @@
 				A823D82F192BABA400B55DE2 /* SimplifiedTests */,
 				A823D80F192BABA400B55DE2 /* Frameworks */,
 				A823D80E192BABA400B55DE2 /* Products */,
+				1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */,
 				119503DA1993F8F4009FB788 /* RDServices.xcodeproj */,
 			);
 			sourceTree = "<group>";
@@ -770,6 +794,10 @@
 					ProductGroup = 119503DB1993F8F4009FB788 /* Products */;
 					ProjectRef = 119503DA1993F8F4009FB788 /* RDServices.xcodeproj */;
 				},
+				{
+					ProductGroup = 1112A81A1A322C53002B8CC1 /* Products */;
+					ProjectRef = 1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -780,6 +808,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		1112A81F1A322C53002B8CC1 /* libTenPrintCover.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libTenPrintCover.a;
+			remoteRef = 1112A81E1A322C53002B8CC1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		119503E01993F8F4009FB788 /* libRDServices.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -859,6 +894,7 @@
 				1183F353194F795800DC322F /* NYPLBookAcquisition.m in Sources */,
 				11A14DF41A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m in Sources */,
 				11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */,
+				114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m in Sources */,
 				1142E4EB19EED86A00D9B3D9 /* NYPLFacetBarView.m in Sources */,
 				1195040B1994075B009FB788 /* NYPLReaderViewController.m in Sources */,
 				1183F33B194B775900DC322F /* NYPLCatalogLaneCell.m in Sources */,
@@ -1045,7 +1081,10 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**",
+					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
+				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -1070,7 +1109,10 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**",
+					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
+				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";

@@ -266,16 +266,9 @@ viewForHeaderInSection:(NSInteger const)section
   
   [[NYPLMyBooksCoverRegistry sharedRegistry]
    thumbnailImagesForBooks:[NSSet setWithArray:lane.books]
-   handler:^(NSDictionary *const bookIdentifiersToImagesAndNulls) {
-     [bookIdentifiersToImagesAndNulls
-      enumerateKeysAndObjectsUsingBlock:^(NSString *const bookIdentifier,
-                                          id const imageOrNull,
-                                          __attribute__((unused)) BOOL *stop) {
-       if([imageOrNull isKindOfClass:[UIImage class]]) {
-         self.bookIdentifiersToImages[bookIdentifier] = imageOrNull;
-       }
-     }];
-     
+   handler:^(NSDictionary *const bookIdentifiersToImages) {
+     [self.bookIdentifiersToImages addEntriesFromDictionary:bookIdentifiersToImages];
+
      // We update this before reloading so that the delegate accurately knows which lanes already
      // have had their covers downloaded.
      ++self.indexOfNextLaneRequiringImageDownload;
