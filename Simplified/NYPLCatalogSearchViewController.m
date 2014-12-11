@@ -141,6 +141,21 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [self.collectionView reloadData];
 }
 
+- (void)catalogAcquisitionFeed:(__attribute__((unused))
+                                NYPLCatalogAcquisitionFeed *)catalogAcquisitionFeed
+                   didAddBooks:(__attribute__((unused)) NSArray *)books
+                         range:(NSRange const)range
+{
+  NSMutableArray *const indexPaths = [NSMutableArray arrayWithCapacity:range.length];
+  
+  for(NSUInteger i = 0; i < range.length; ++i) {
+    NSUInteger indexes[2] = {0, i + range.location};
+    [indexPaths addObject:[NSIndexPath indexPathWithIndexes:indexes length:2]];
+  }
+  
+  [self.collectionView insertItemsAtIndexPaths:indexPaths];
+}
+
 #pragma mark UISearchBarDelegate
 
 - (void)searchBarSearchButtonClicked:(__attribute__((unused)) UISearchBar *)searchBar

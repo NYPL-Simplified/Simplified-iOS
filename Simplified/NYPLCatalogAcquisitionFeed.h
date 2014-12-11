@@ -2,8 +2,14 @@
 
 @protocol NYPLCatalogAcquisitionFeedDelegate
 
+// Called only when existing books have been updated.
 - (void)catalogAcquisitionFeed:(NYPLCatalogAcquisitionFeed *)catalogAcquisitionFeed
                 didUpdateBooks:(NSArray *)books;
+
+// Called only when new books have been added.
+- (void)catalogAcquisitionFeed:(NYPLCatalogAcquisitionFeed *)catalogAcquisitionFeed
+                   didAddBooks:(NSArray *)books
+                         range:(NSRange)range;
 
 @end
 
