@@ -50,8 +50,6 @@ static NYPLOPDSLink *scienceFictionXML = nil;
   
   XCTAssert(!facet.active);
   
-  XCTAssertEqualObjects(facet.group, @"Categories");
-  
   XCTAssertEqualObjects(facet.href, [[NSURL alloc] initWithScheme:@"http"
                                                              host:@"example.com"
                                                              path:@"/biography"]);
@@ -66,8 +64,6 @@ static NYPLOPDSLink *scienceFictionXML = nil;
   XCTAssert(facet);
   
   XCTAssert(facet.active);
-  
-  XCTAssertNil(facet.group);
   
   XCTAssertEqualObjects(facet.href, [[NSURL alloc] initWithScheme:@"http"
                                                              host:@"example.com"
