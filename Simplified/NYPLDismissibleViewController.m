@@ -1,12 +1,12 @@
-#import "NYPLDismissableViewController.h"
+#import "NYPLDismissibleViewController.h"
 
-@interface NYPLDismissableViewController () <UIGestureRecognizerDelegate>
+@interface NYPLDismissibleViewController () <UIGestureRecognizerDelegate>
 
 @property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
 
 @end
 
-@implementation NYPLDismissableViewController
+@implementation NYPLDismissibleViewController
 
 #pragma mark UIViewController
 

@@ -4,6 +4,6 @@
 //
 // Subclasses must call super for |viewDidAppear:| and |viewWillDisappear:|.
 
-@interface NYPLDismissableViewController : UIViewController
+@interface NYPLDismissibleViewController : UIViewController
 
 @end
