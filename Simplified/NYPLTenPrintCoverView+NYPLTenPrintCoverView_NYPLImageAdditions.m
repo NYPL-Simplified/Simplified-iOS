@@ -2,7 +2,19 @@
 
 #import "NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.h"
 
+// FIXME: This is a hack to work around an issue in TenPrintCoverView in which the height of the
+// author line does not scale with the size of the cover itself. We set |authorHeight| to a value in
+// |initialize| so that the author text is restricted to a single line given the size of covers used
+// in the app. This needs to be fixed properly in TenPrintCoverView eventually, especially since
+// this hack shouldn't even work to begin with. (It only works because |authorHeight| is not
+// correctly declared as a static variable in TenPrintCoverView.)
+extern int authorHeight;
+
 @implementation NYPLTenPrintCoverView (NYPLTenPrintCoverView_NYPLImageAdditions)
+
++ (void)initialize {
+  authorHeight = 15;
+}
 
 + (UIImage *)imageForBook:(NYPLBook *const)book
 {
