@@ -221,17 +221,21 @@ id argument(NSURL *const URL) {
   return UIStatusBarAnimationNone;
 }
 
-- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+- (void)viewWillAppear:(BOOL const)animated
 {
   self.navigationItem.titleView = [[UIView alloc] init];
+
+  [super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
+- (void)viewDidAppear:(BOOL const)animated
 {
   if(self.shouldHideInterfaceOnNextAppearance) {
     self.shouldHideInterfaceOnNextAppearance = NO;
     self.interfaceHidden = YES;
   }
+
+  [super viewWillAppear:animated];
 }
 
 - (void)willMoveToParentViewController:(__attribute__((unused)) UIViewController *)parent
