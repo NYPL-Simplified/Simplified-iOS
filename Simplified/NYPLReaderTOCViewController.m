@@ -70,7 +70,7 @@ static NSString *const reuseIdentifier = @"ReaderTOCCell";
   [self.view addSubview:self.tableView];
 }
 
-- (void)viewWillAppear:(BOOL const)animated
+- (void)viewWillAppear:(BOOL)animated
 {
   switch([NYPLReaderSettings sharedSettings].colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:

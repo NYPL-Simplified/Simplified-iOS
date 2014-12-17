@@ -31,7 +31,7 @@ static NSString *const NYPLBookRegistryDidChangeNotification
        location:(NYPLBookLocation *)location
           state:(NYPLMyBooksState)state;
 
-// This method should be called whenever new book information is retreived from a server. Doing so
+// This method should be called whenever new book information is retrieved from a server. Doing so
 // ensures that once the user has seen the new information, they will continue to do so when
 // accessing the application off-line or when viewing books outside of the catalog. Attempts to
 // update a book not already stored in the registry will simply be ignored, so it's reasonable to
