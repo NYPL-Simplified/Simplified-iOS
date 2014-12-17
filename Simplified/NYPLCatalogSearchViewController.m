@@ -6,7 +6,6 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogAcquisitionFeed.h"
-#import "NYPLConfiguration.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 

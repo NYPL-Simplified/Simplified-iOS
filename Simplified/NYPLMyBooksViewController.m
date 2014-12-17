@@ -4,9 +4,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLFacetBarView.h"
 #import "NYPLFacetView.h"
-#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
-#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLMyBooksViewController.h"
 
