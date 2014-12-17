@@ -36,17 +36,4 @@
   return self;
 }
 
-- (NSSet *)imageThumbnailURLs
-{
-  NSMutableSet *const set = [NSMutableSet set];
-  
-  for(NYPLBook *const book in self.books) {
-    if(book.imageThumbnailURL) {
-      [set addObject:book.imageThumbnailURL];
-    }
-  }
-  
-  return set;
-}
-
 @end

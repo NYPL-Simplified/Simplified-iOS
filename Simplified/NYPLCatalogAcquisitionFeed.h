@@ -18,7 +18,6 @@
 @property (nonatomic, readonly) NSArray *books;
 @property (nonatomic, weak) id<NYPLCatalogAcquisitionFeedDelegate> delegate; // nilable
 @property (nonatomic, readonly) NSArray *facetGroups;
-@property (nonatomic, readonly) NSURL *nextURL; // nilable
 @property (nonatomic, readonly) NSString *searchTemplate; // nilable
 @property (nonatomic, readonly) NSString *title;
 
