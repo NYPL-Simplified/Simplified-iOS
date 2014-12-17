@@ -1,4 +1,3 @@
-#import "NSString+NYPLStringAdditions.h"
 #import "NYPLBook.h"
 #import "NYPLBookLocation.h"
 #import "NYPLConfiguration.h"
