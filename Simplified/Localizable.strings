@@ -26,10 +26,6 @@
 
 "BookDetailViewControllerTitle" = "Details";
 
-// NYPLCatalogCategoryViewController
-
-"CatalogCategoryViewControllerFeedDownloadFailedTitle" = "Could Not Load Category";
-
 // NYPLFacetView
 
 "FacetViewNotActive" = "<>";
