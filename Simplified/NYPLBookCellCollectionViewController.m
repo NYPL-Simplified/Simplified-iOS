@@ -8,7 +8,7 @@
 
 #import "NYPLBookCellCollectionViewController.h"
 
-@interface NYPLBookCellCollectionViewController ()
+@interface NYPLBookCellCollectionViewController () <UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) NSMutableArray *observers;
 

@@ -8,7 +8,8 @@
 
 #import "NYPLMyBooksDownloadCenter.h"
 
-@interface NYPLMyBooksDownloadCenter () <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate>
+@interface NYPLMyBooksDownloadCenter ()
+  <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, UIAlertViewDelegate>
 
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) BOOL broadcastScheduled;
