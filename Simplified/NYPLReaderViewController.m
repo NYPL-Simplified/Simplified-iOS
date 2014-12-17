@@ -220,14 +220,14 @@ id argument(NSURL *const URL) {
   return UIStatusBarAnimationNone;
 }
 
-- (void)viewWillAppear:(BOOL const)animated
+- (void)viewWillAppear:(BOOL)animated
 {
   self.navigationItem.titleView = [[UIView alloc] init];
 
   [super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(BOOL const)animated
+- (void)viewDidAppear:(BOOL)animated
 {
   if(self.shouldHideInterfaceOnNextAppearance) {
     self.shouldHideInterfaceOnNextAppearance = NO;
@@ -532,7 +532,7 @@ executeJavaScript:(NSString *const)javaScript
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
 {
-  // If the book is finished opening, set all sylistic preferences.
+  // If the book is finished opening, set all stylistic preferences.
   if(!self.paginationHasChanged) {
     self.paginationHasChanged = YES;
     [self readerSettingsView:nil

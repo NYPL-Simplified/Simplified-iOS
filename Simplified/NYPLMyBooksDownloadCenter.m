@@ -210,7 +210,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     }
     
     [[NYPLMyBooksCoverRegistry sharedRegistry]
-     removePinnedThumbnailImageForBookIdentfier:self.bookIdentifierOfBookToRemove];
+     removePinnedThumbnailImageForBookIdentifier:self.bookIdentifierOfBookToRemove];
     
     [[NYPLMyBooksRegistry sharedRegistry]
      removeBookForIdentifier:self.bookIdentifierOfBookToRemove];
