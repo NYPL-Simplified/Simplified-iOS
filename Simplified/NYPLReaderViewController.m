@@ -234,7 +234,7 @@ id argument(NSURL *const URL) {
     self.interfaceHidden = YES;
   }
 
-  [super viewWillAppear:animated];
+  [super viewDidAppear:animated];
 }
 
 - (void)willMoveToParentViewController:(__attribute__((unused)) UIViewController *)parent
