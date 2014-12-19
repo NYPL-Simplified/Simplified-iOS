@@ -38,7 +38,8 @@
 
 @end
 
-id argument(NSURL *const URL) {
+id argument(NSURL *const URL)
+{
   NSString *const s = URL.resourceSpecifier;
   
   NSRange const range = [s rangeOfString:@"/"];
