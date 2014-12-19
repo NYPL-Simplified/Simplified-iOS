@@ -169,7 +169,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 }
 
 - (void)thumbnailImagesForBooks:(NSSet *)books
-                        handler:(void (^)(NSDictionary *bookIdentifersToImagesAndNulls))handler
+                        handler:(void (^)(NSDictionary *bookIdentifiersToImagesAndNulls))handler
 {
   if(!books) {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -224,7 +224,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
           [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             // All NSNull objects need to be converted to generated covers. We do this here rather
             // than earlier because it needs to happen on the main thread. The first step is to
-            // get a map from book identifers to books given our initial set.
+            // get a map from book identifiers to books given our initial set.
             NSMutableDictionary *const identifiersToBooks =
               [NSMutableDictionary dictionaryWithCapacity:[books count]];
             for(NYPLBook *const book in books) {
@@ -293,7 +293,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
    resume];
 }
 
-- (void)removePinnedThumbnailImageForBookIdentfier:(NSString *const)bookIdentifier
+- (void)removePinnedThumbnailImageForBookIdentifier:(NSString *const)bookIdentifier
 {
   @synchronized(self) {
     [[NSFileManager defaultManager]

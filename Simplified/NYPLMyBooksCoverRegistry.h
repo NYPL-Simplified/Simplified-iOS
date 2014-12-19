@@ -16,7 +16,7 @@
 // NYPLBook objects, the handler will be called with nil. Otherwise, the dictionary passed to the
 // handler maps book identifiers to images.
 - (void)thumbnailImagesForBooks:(NSSet *)books
-                        handler:(void (^)(NSDictionary *bookIdentifersToImages))handler;
+                        handler:(void (^)(NSDictionary *bookIdentifiersToImages))handler;
 
 // Immediately returns the cached thumbnail if available, else nil. Generated images are not
 // returned.
@@ -26,7 +26,7 @@
 // guaranteed to be available when offline.
 - (void)pinThumbnailImageForBook:(NYPLBook *)book;
 
-- (void)removePinnedThumbnailImageForBookIdentfier:(NSString *)bookIdentifier;
+- (void)removePinnedThumbnailImageForBookIdentifier:(NSString *)bookIdentifier;
 
 - (void)removeAllPinnedThumbnailImages;
 

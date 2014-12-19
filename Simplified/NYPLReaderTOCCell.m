@@ -1,4 +1,4 @@
-#import "NYPLConfiguration.h"
+
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCCell.h"
 

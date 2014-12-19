@@ -17,7 +17,7 @@
                     location:(NYPLBookLocation *)location
                        state:(NYPLMyBooksState)state;
 
-// designated initialzier
+// designated initializer
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 
 - (NSDictionary *)dictionaryRepresentation;

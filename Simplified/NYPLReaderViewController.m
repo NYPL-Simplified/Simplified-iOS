@@ -1,4 +1,3 @@
-#import "NSString+NYPLStringAdditions.h"
 #import "NYPLBook.h"
 #import "NYPLBookLocation.h"
 #import "NYPLConfiguration.h"
@@ -221,17 +220,21 @@ id argument(NSURL *const URL) {
   return UIStatusBarAnimationNone;
 }
 
-- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
   self.navigationItem.titleView = [[UIView alloc] init];
+
+  [super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(__attribute__((unused)) BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
   if(self.shouldHideInterfaceOnNextAppearance) {
     self.shouldHideInterfaceOnNextAppearance = NO;
     self.interfaceHidden = YES;
   }
+
+  [super viewDidAppear:animated];
 }
 
 - (void)willMoveToParentViewController:(__attribute__((unused)) UIViewController *)parent
@@ -275,7 +278,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       [self readiumPaginationChangedWithDictionary:argument(request.URL)];
     } else if([function isEqualToString:@"media-overlay-status-changed"]) {
       NSDictionary *const dict = argument(request.URL);
-      self.mediaOverlayIsPlaying = ((NSNumber *)[dict objectForKey:@"isPlaying"]).boolValue;
+      self.mediaOverlayIsPlaying = ((NSNumber *) dict[@"isPlaying"]).boolValue;
     } else if([function isEqualToString:@"settings-applied"]) {
       // Do nothing.
     } else {
@@ -529,7 +532,7 @@ executeJavaScript:(NSString *const)javaScript
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
 {
-  // If the book is finished opening, set all sylistic preferences.
+  // If the book is finished opening, set all stylistic preferences.
   if(!self.paginationHasChanged) {
     self.paginationHasChanged = YES;
     [self readerSettingsView:nil
@@ -543,20 +546,20 @@ executeJavaScript:(NSString *const)javaScript
   [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.pageDidChange();"];
   
   // Use left-to-right unless it explicitly asks for right-to-left.
-  self.pageProgressionIsLTR = ![[dictionary objectForKey:@"pageProgressionDirection"]
+  self.pageProgressionIsLTR = ![dictionary[@"pageProgressionDirection"]
                                 isEqualToString:@"rtl"];
   
-  NSArray *const openPages = [dictionary objectForKey:@"openPages"];
+  NSArray *const openPages = dictionary[@"openPages"];
   
   self.openPageCount = openPages.count;
   
   if(self.openPageCount >= 1) {
     NSDictionary *const page = openPages[0];
     self.pageInCurrentSpineItemCount =
-    ((NSNumber *)[page objectForKey:@"spineItemPageCount"]).integerValue;
+    ((NSNumber *) page[@"spineItemPageCount"]).integerValue;
     self.pageInCurrentSpineItemIndex =
-    ((NSNumber *)[page objectForKey:@"spineItemPageIndex"]).integerValue;
-    self.spineItemIndex = ((NSNumber *)[page objectForKey:@"spineItemIndex"]).integerValue;
+    ((NSNumber *) page[@"spineItemPageIndex"]).integerValue;
+    self.spineItemIndex = ((NSNumber *) page[@"spineItemIndex"]).integerValue;
   }
   
   NSString *const locationJSON = [self.webView stringByEvaluatingJavaScriptFromString:

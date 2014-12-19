@@ -14,6 +14,4 @@
                subsectionLink:(NYPLCatalogSubsectionLink *)subsectionLink
                         title:(NSString *)title;
 
-- (NSSet *)imageThumbnailURLs;
-
 @end
