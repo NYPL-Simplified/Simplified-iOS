@@ -148,6 +148,13 @@
 			remoteGlobalIDString = 118A0E271992B3FD00792DDE;
 			remoteInfo = RDServices;
 		};
+		11D521D91A44A6E100636240 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 11D5217D1A44952A00636240 /* rmservices_iphone.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC07E0554694100DB518D;
+			remoteInfo = rmservices_iphone;
+		};
 		A823D82D192BABA400B55DE2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A823D805192BABA400B55DE2 /* Project object */;
@@ -571,6 +578,14 @@
 			name = Holds;
 			sourceTree = "<group>";
 		};
+		11D521D51A44A6E000636240 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				11D521DA1A44A6E100636240 /* librmservices_iphone.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		A823D804192BABA400B55DE2 = {
 			isa = PBXGroup;
 			children = (
@@ -805,6 +820,10 @@
 					ProjectRef = 119503DA1993F8F4009FB788 /* RDServices.xcodeproj */;
 				},
 				{
+					ProductGroup = 11D521D51A44A6E000636240 /* Products */;
+					ProjectRef = 11D5217D1A44952A00636240 /* rmservices_iphone.xcodeproj */;
+				},
+				{
 					ProductGroup = 1112A81A1A322C53002B8CC1 /* Products */;
 					ProjectRef = 1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */;
 				},
@@ -830,6 +849,13 @@
 			fileType = archive.ar;
 			path = libRDServices.a;
 			remoteRef = 119503DF1993F8F4009FB788 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		11D521DA1A44A6E100636240 /* librmservices_iphone.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = librmservices_iphone.a;
+			remoteRef = 11D521D91A44A6E100636240 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
