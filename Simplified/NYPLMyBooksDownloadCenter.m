@@ -8,7 +8,8 @@
 
 #import "NYPLMyBooksDownloadCenter.h"
 
-@interface NYPLMyBooksDownloadCenter () <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate>
+@interface NYPLMyBooksDownloadCenter ()
+  <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, UIAlertViewDelegate>
 
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) BOOL broadcastScheduled;
@@ -79,7 +80,7 @@ expectedTotalBytes:(__attribute__((unused)) int64_t)expectedTotalBytes
  totalBytesWritten:(int64_t)totalBytesWritten
 totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 {
-  NSNumber *const key = [NSNumber numberWithUnsignedLong:downloadTask.taskIdentifier];
+  NSNumber *const key = @(downloadTask.taskIdentifier);
   NYPLBook *const book = self.taskIdentifierToBook[key];
   
   if(!book) {
@@ -89,7 +90,7 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
   
   if(totalBytesExpectedToWrite > 0) {
     self.bookIdentifierToDownloadProgress[book.identifier] =
-      [NSNumber numberWithDouble:(totalBytesWritten / (double) totalBytesExpectedToWrite)];
+        @(totalBytesWritten / (double) totalBytesExpectedToWrite);
     
     [self broadcastUpdate];
   }
@@ -99,8 +100,7 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
       downloadTask:(NSURLSessionDownloadTask *const)downloadTask
 didFinishDownloadingToURL:(NSURL *const)location
 {
-  NYPLBook *const book = self.taskIdentifierToBook[[NSNumber numberWithUnsignedLong:
-                                                    downloadTask.taskIdentifier]];
+  NYPLBook *const book = self.taskIdentifierToBook[@(downloadTask.taskIdentifier)];
   
   if(!book) {
     // A reset must have occurred.
@@ -173,7 +173,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
 {
-  NSNumber *const key = [NSNumber numberWithUnsignedLong:task.taskIdentifier];
+  NSNumber *const key = @(task.taskIdentifier);
   NYPLBook *const book = self.taskIdentifierToBook[key];
   
   if(!book) {
@@ -189,10 +189,10 @@ didCompleteWithError:(NSError *)error
   // Even though |URLSession:downloadTask|didFinishDownloadingToURL:| needs this, it's safe to
   // remove it here because the aforementioned method will be called first.
   [self.taskIdentifierToBook removeObjectForKey:
-   [NSNumber numberWithUnsignedLong:task.taskIdentifier]];
+      @(task.taskIdentifier)];
   
   if(error && error.code != NSURLErrorCancelled) {
-    self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:1.0];
+    self.bookIdentifierToDownloadProgress[book.identifier] = @1.0;
     [self failDownloadForBook:book];
     return;
   }
@@ -211,7 +211,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     }
     
     [[NYPLMyBooksCoverRegistry sharedRegistry]
-     removePinnedThumbnailImageForBookIdentfier:self.bookIdentifierOfBookToRemove];
+     removePinnedThumbnailImageForBookIdentifier:self.bookIdentifierOfBookToRemove];
     
     [[NYPLMyBooksRegistry sharedRegistry]
      removeBookForIdentifier:self.bookIdentifierOfBookToRemove];
@@ -316,9 +316,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     
     NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
     
-    self.bookIdentifierToDownloadProgress[book.identifier] = [NSNumber numberWithDouble:0.0];
+    self.bookIdentifierToDownloadProgress[book.identifier] = @0.0;
     self.bookIdentifierToDownloadTask[book.identifier] = task;
-    self.taskIdentifierToBook[[NSNumber numberWithUnsignedLong:task.taskIdentifier]] = book;
+    self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
     
     [task resume];
     

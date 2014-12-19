@@ -5,7 +5,6 @@
 #import "NYPLCatalogFacet.h"
 #import "NYPLCatalogFacetGroup.h"
 #import "NYPLCatalogSearchViewController.h"
-#import "NYPLConfiguration.h"
 #import "NYPLFacetBarView.h"
 #import "NYPLFacetView.h"
 #import "NYPLReloadView.h"

@@ -7,7 +7,7 @@
 
 #import "NYPLSettingsViewController.h"
 
-@interface NYPLSettingsViewController () <UITextFieldDelegate>
+@interface NYPLSettingsViewController () <UIAlertViewDelegate, UITextFieldDelegate>
 
 @property (nonatomic) UILabel *barcodeLabel;
 @property (nonatomic) UIButton *logInButton;

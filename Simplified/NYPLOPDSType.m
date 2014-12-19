@@ -2,24 +2,21 @@
 
 BOOL NYPLOPDSTypeStringIsAcquisition(NSString *const string)
 {
-  if(!string) return NO;
-  
-  return [string rangeOfString:@"acquisition"
+  return string != nil && [string rangeOfString:@"acquisition"
                        options:NSCaseInsensitiveSearch].location != NSNotFound;
+
 }
 
 BOOL NYPLOPDSTypeStringIsNavigation(NSString *const string)
 {
-  if(!string) return NO;
-  
-  return [string rangeOfString:@"navigation"
+  return string != nil && [string rangeOfString:@"navigation"
                        options:NSCaseInsensitiveSearch].location != NSNotFound;
+
 }
 
 BOOL NYPLOPDSTypeStringIsOpenSearchDescription(NSString *string)
 {
-  if(!string) return NO;
-    
-  return [string rangeOfString:@"application/opensearchdescription+xml"
+  return string != nil && [string rangeOfString:@"application/opensearchdescription+xml"
                        options:NSCaseInsensitiveSearch].location != NSNotFound;
+
 }

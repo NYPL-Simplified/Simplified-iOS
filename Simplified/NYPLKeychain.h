@@ -1,4 +1,4 @@
-// This class is capable of working with values serializble by NSKeyedArchiver.
+// This class is capable of working with values serializable by NSKeyedArchiver.
 
 @interface NYPLKeychain : NSObject
 

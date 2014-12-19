@@ -8,12 +8,6 @@
 
 #import "NYPLBookCellDelegate.h"
 
-@interface NYPLBookCellDelegate ()
-
-@property (nonatomic) NSString *identifierOfBookToRemove;
-
-@end
-
 @implementation NYPLBookCellDelegate
 
 + (instancetype)sharedDelegate
