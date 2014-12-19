@@ -2,4 +2,7 @@ To build this project:
 
 1. 'git submodule init'
 2. 'git submodule update'
-3. Open "Simplified.xcodeproj" and build as normal.
+3. Add an 'NYPL_SIMPLIFIED_RMSERVICES_10' source tree to Xcode that points to
+   "<your RMSDK 10 root>/samples/rmservices".
+4. Build RMSDK 10 if you haven't already.
+5. Open "Simplified.xcodeproj" and build as normal.
