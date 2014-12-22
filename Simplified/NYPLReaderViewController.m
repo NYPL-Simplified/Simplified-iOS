@@ -103,8 +103,6 @@ id argument(NSURL *const URL)
      encoding:NSUTF8StringEncoding]]];
 }
 
-#pragma mark NSObject
-
 - (instancetype)initWithBookIdentifier:(NSString *const)bookIdentifier
 {
   self = [super init];
