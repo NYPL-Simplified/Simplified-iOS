@@ -112,16 +112,16 @@ id argument(NSURL *const URL)
     @throw NSInvalidArgumentException;
   }
   
-  self.title = [[NYPLMyBooksRegistry sharedRegistry]
-                bookForIdentifier:bookIdentifier].title;
-  
   self.bookIdentifier = bookIdentifier;
+  
+  self.title = [[NYPLMyBooksRegistry sharedRegistry]
+                bookForIdentifier:self.bookIdentifier].title;
   
   @try {
     self.container = [[RDContainer alloc]
                       initWithDelegate:self
                       path:[[[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                             fileURLForBookIndentifier:bookIdentifier]
+                             fileURLForBookIndentifier:self.bookIdentifier]
                             path]];
   } @catch (...) {
     self.bookIsCorrupt = YES;
@@ -145,7 +145,7 @@ id argument(NSURL *const URL)
   
   [[NYPLMyBooksRegistry sharedRegistry]
    setState:NYPLMYBooksStateUsed
-   forIdentifier:bookIdentifier];
+   forIdentifier:self.bookIdentifier];
   
   return self;
 }
