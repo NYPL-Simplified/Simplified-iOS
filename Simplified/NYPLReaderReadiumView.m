@@ -7,7 +7,7 @@
 
 #import "NYPLReaderReadiumView.h"
 
-@interface NYPLReaderReadiumView () <NYPLReaderView, RDContainerDelegate>
+@interface NYPLReaderReadiumView () <RDContainerDelegate>
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) BOOL bookIsCorrupt;
