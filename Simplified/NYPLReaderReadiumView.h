@@ -2,7 +2,7 @@
 
 @protocol NYPLReaderViewDelegate;
 
-@interface NYPLReaderReadiumView : NSObject
+@interface NYPLReaderReadiumView : NSObject <NYPLReaderView>
 
 @property (nonatomic, weak) id<NYPLReaderViewDelegate> delegate;
 
