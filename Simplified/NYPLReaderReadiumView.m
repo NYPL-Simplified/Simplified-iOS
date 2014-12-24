@@ -73,6 +73,13 @@ static id argument(NSURL *const URL)
     }];
   }
   
+  self.package = self.container.firstPackage;
+  self.server = [[RDPackageResourceServer alloc]
+                 initWithDelegate:self
+                 package:self.package
+                 specialPayloadAnnotationsCSS:nil
+                 specialPayloadMathJaxJS:nil];
+
   self.webView = [[UIWebView alloc] initWithFrame:self.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
@@ -82,12 +89,13 @@ static id argument(NSURL *const URL)
   self.webView.scrollView.delegate = self;
   [self addSubview:self.webView];
   
-  self.package = self.container.firstPackage;
-  self.server = [[RDPackageResourceServer alloc]
-                 initWithDelegate:self
-                 package:self.package
-                 specialPayloadAnnotationsCSS:nil
-                 specialPayloadMathJaxJS:nil];
+  NSURL *const readerURL = [[NSBundle mainBundle]
+                            URLForResource:@"reader"
+                            withExtension:@"html"];
+  
+  assert(readerURL);
+  
+  [self.webView loadRequest:[NSURLRequest requestWithURL:readerURL]];
   
   [self addObservers];
   
