@@ -1,26 +1,53 @@
 #import "NYPLBook.h"
+#import "NYPLBookLocation.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
+#import "NYPLJSON.h"
+#import "NYPLReaderSettings.h"
 #import "NYPLReaderView.h"
 #import "NYPLReaderViewDelegate.h"
 #import "NYPLReadium.h"
 
 #import "NYPLReaderReadiumView.h"
 
-@interface NYPLReaderReadiumView () <RDContainerDelegate>
+@interface NYPLReaderReadiumView ()
+  <RDContainerDelegate, RDPackageResourceServerDelegate, UIScrollViewDelegate, UIWebViewDelegate>
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) BOOL bookIsCorrupt;
 @property (nonatomic) RDContainer *container;
+@property (nonatomic) BOOL loaded;
+@property (nonatomic) BOOL mediaOverlayIsPlaying;
+@property (nonatomic) NSInteger openPageCount;
+@property (nonatomic) RDPackage *package;
+@property (nonatomic) BOOL pageProgressionIsLTR;
+@property (nonatomic) RDPackageResourceServer *server;
+@property (nonatomic) UIWebView *webView;
 
 @end
 
+id argument(NSURL *const URL)
+{
+  NSString *const s = URL.resourceSpecifier;
+  
+  NSRange const range = [s rangeOfString:@"/"];
+  
+  assert(range.location != NSNotFound);
+  
+  NSData *const data = [[[s substringFromIndex:(range.location + 1)]
+                         stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
+                        dataUsingEncoding:NSUTF8StringEncoding];
+  
+  return NYPLJSONObjectFromData(data);
+}
+
 @implementation NYPLReaderReadiumView
 
-- (instancetype)initWithBook:(NYPLBook *const)book
-                    delegate:(id<NYPLReaderViewDelegate> const)delegate
+- (instancetype)initWithFrame:(CGRect const)frame
+                         book:(NYPLBook *const)book
+                     delegate:(id<NYPLReaderViewDelegate> const)delegate
 {
-  self = [super init];
+  self = [super initWithFrame:frame];
   if(!self) return nil;
   
   if(!book) {
@@ -45,15 +72,172 @@
     }];
   }
   
+  self.webView = [[UIWebView alloc] initWithFrame:self.bounds];
+  self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
+                                   UIViewAutoresizingFlexibleWidth);
+  self.webView.delegate = self;
+  self.webView.scrollView.bounces = NO;
+  self.webView.hidden = YES;
+  self.webView.scrollView.delegate = self;
+  [self addSubview:self.webView];
+  
+  self.package = self.container.firstPackage;
+  self.server = [[RDPackageResourceServer alloc]
+                 initWithDelegate:self
+                 package:self.package
+                 specialPayloadAnnotationsCSS:nil
+                 specialPayloadMathJaxJS:nil];
+  
   return self;
 }
 
 #pragma mark RDContainerDelegate
 
-- (void)rdcontainer:(__attribute__((unused)) RDContainer *const)container
-     handleSdkError:(__attribute__((unused)) NSString *const)message
+- (void)rdcontainer:(__attribute__((unused)) RDContainer *)container
+     handleSdkError:(NSString *const)message
 {
-  // TODO
+  NYPLLOG_F(@"Readium: %@", message);
+}
+
+#pragma mark RDPackageResourceServerDelegate
+
+- (void)
+rdpackageResourceServer:(__attribute__((unused)) RDPackageResourceServer *)packageResourceServer
+executeJavaScript:(NSString *const)javaScript
+{
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
+  }];
+}
+
+#pragma mark UIScrollViewDelegate
+
+#pragma mark UIWebViewDelegate
+
+- (BOOL)
+webView:(__attribute__((unused)) UIWebView *)webView
+shouldStartLoadWithRequest:(NSURLRequest *const)request
+navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
+{
+  if(self.bookIsCorrupt) {
+    return NO;
+  }
+  
+  if([request.URL.scheme isEqualToString:@"simplified"]) {
+    NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
+    NSString *const function = components[0];
+    if([function isEqualToString:@"gesture-left"]) {
+      [self.delegate readerView:self didReceiveGesture:NYPLReaderViewGestureLeft];
+    } else if([function isEqualToString:@"gesture-right"]) {
+      [self.delegate readerView:self didReceiveGesture:NYPLReaderViewGestureRight];
+    } else if([function isEqualToString:@"gesture-center"]) {
+      [self.delegate readerView:self didReceiveGesture:NYPLReaderViewGestureCenter];
+    } else {
+      NYPLLOG(@"Ignoring unknown simplified function.");
+    }
+    return NO;
+  }
+  
+  if([request.URL.scheme isEqualToString:@"readium"]) {
+    NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
+    NSString *const function = components[0];
+    if([function isEqualToString:@"initialize"]) {
+      [self readiumInitialize];
+    } else if([function isEqualToString:@"pagination-changed"]) {
+      [self readiumPaginationChangedWithDictionary:argument(request.URL)];
+    } else if([function isEqualToString:@"media-overlay-status-changed"]) {
+      NSDictionary *const dict = argument(request.URL);
+      self.mediaOverlayIsPlaying = ((NSNumber *) dict[@"isPlaying"]).boolValue;
+    } else if([function isEqualToString:@"settings-applied"]) {
+      // Do nothing.
+    } else {
+      NYPLLOG(@"Ignoring unknown readium function.");
+    }
+    return NO;
+  }
+  
+  return YES;
+}
+
+#pragma mark -
+
+- (void)readiumInitialize
+{
+  if(!self.package.spineItems[0]) {
+    self.bookIsCorrupt = YES;
+    [[[UIAlertView alloc]
+      initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptTitle", nil)
+      message:NSLocalizedString(@"ReaderViewControllerCorruptMessage", nil)
+      delegate:nil
+      cancelButtonTitle:nil
+      otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+     show];
+    return;
+  }
+  
+  self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
+  
+  NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
+                                      locationForIdentifier:self.book.identifier];
+  
+  NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
+  dictionary[@"package"] = self.package.dictionary;
+  dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
+  if(location) {
+    if(location.CFI) {
+      dictionary[@"openPageRequest"] = @{@"idref": location.idref, @"elementCfi" : location.CFI};
+    } else {
+      dictionary[@"openPageRequest"] = @{@"idref": location.idref};
+    }
+  }
+  
+  NSData *data = NYPLJSONDataFromObject(dictionary);
+  
+  if(!data) {
+    NYPLLOG(@"Failed to construct 'openBook' call.");
+    return;
+  }
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:
+   [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
+    [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
+}
+
+- (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
+{
+  // If the book is finished opening, set all stylistic preferences.
+  if(!self.loaded) {
+    self.loaded = YES;
+    [self.delegate readerViewDidFinishLoading:self];
+  }
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.pageDidChange();"];
+  
+  // Use left-to-right unless it explicitly asks for right-to-left.
+  self.pageProgressionIsLTR = ![dictionary[@"pageProgressionDirection"]
+                                isEqualToString:@"rtl"];
+  
+  NSArray *const openPages = dictionary[@"openPages"];
+  
+  self.openPageCount = openPages.count;
+  
+  NSString *const locationJSON = [self.webView stringByEvaluatingJavaScriptFromString:
+                                  @"ReadiumSDK.reader.bookmarkCurrentPage()"];
+  
+  NSDictionary *const locationDictionary =
+  NYPLJSONObjectFromData([locationJSON dataUsingEncoding:NSUTF8StringEncoding]);
+  
+  NYPLBookLocation *const location = [[NYPLBookLocation alloc]
+                                      initWithCFI:locationDictionary[@"contentCFI"]
+                                      idref:locationDictionary[@"idref"]];
+  
+  if(location) {
+    [[NYPLMyBooksRegistry sharedRegistry]
+     setLocation:location
+     forIdentifier:self.book.identifier];
+  }
+  
+  self.webView.hidden = NO;
 }
 
 @end

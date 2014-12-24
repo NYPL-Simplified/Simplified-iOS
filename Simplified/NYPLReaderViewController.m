@@ -25,15 +25,12 @@
 @property (nonatomic) BOOL mediaOverlayIsPlaying;
 @property (nonatomic) NSInteger openPageCount;
 @property (nonatomic) RDPackage *package;
-@property (nonatomic) NSInteger pageInCurrentSpineItemCount;
-@property (nonatomic) NSInteger pageInCurrentSpineItemIndex;
 @property (nonatomic) BOOL pageProgressionIsLTR;
 @property (nonatomic) BOOL paginationHasChanged;
 @property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
 @property (nonatomic) RDPackageResourceServer *server;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
-@property (nonatomic) NSInteger spineItemIndex;
 @property (nonatomic) UIWebView *webView;
 
 @end
@@ -551,15 +548,6 @@ executeJavaScript:(NSString *const)javaScript
   NSArray *const openPages = dictionary[@"openPages"];
   
   self.openPageCount = openPages.count;
-  
-  if(self.openPageCount >= 1) {
-    NSDictionary *const page = openPages[0];
-    self.pageInCurrentSpineItemCount =
-    ((NSNumber *) page[@"spineItemPageCount"]).integerValue;
-    self.pageInCurrentSpineItemIndex =
-    ((NSNumber *) page[@"spineItemPageIndex"]).integerValue;
-    self.spineItemIndex = ((NSNumber *) page[@"spineItemIndex"]).integerValue;
-  }
   
   NSString *const locationJSON = [self.webView stringByEvaluatingJavaScriptFromString:
                                   @"ReadiumSDK.reader.bookmarkCurrentPage()"];
