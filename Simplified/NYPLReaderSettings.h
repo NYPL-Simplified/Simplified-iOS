@@ -19,6 +19,10 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontSize) {
   NYPLReaderSettingsFontSizeLargest
 };
 
+static NSString *const NYPLReaderSettingsColorSchemeDidChangeNotification;
+static NSString *const NYPLReaderSettingsFontFaceDidChangeNotification;
+static NSString *const NYPLReaderSettingsFontSizeDidChangeNotification;
+
 // Returns |YES| if output was set properly, else |NO| due to already being at the smallest size.
 BOOL NYPLReaderSettingsDecreasedFontSize(NYPLReaderSettingsFontSize input,
                                          NYPLReaderSettingsFontSize *output);
@@ -33,8 +37,8 @@ BOOL NYPLReaderSettingsIncreasedFontSize(NYPLReaderSettingsFontSize input,
 
 @property (nonatomic, readonly) UIColor *backgroundColor;
 @property (nonatomic) NYPLReaderSettingsColorScheme colorScheme;
-@property (nonatomic) NYPLReaderSettingsFontSize fontSize;
 @property (nonatomic) NYPLReaderSettingsFontFace fontFace;
+@property (nonatomic) NYPLReaderSettingsFontSize fontSize;
 @property (nonatomic, readonly) UIColor *foregroundColor;
 
 - (void)save;
