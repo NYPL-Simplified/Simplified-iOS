@@ -35,7 +35,7 @@
 
 @end
 
-id argument(NSURL *const URL)
+static id argument(NSURL *const URL)
 {
   NSString *const s = URL.resourceSpecifier;
   
