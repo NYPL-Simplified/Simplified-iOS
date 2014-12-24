@@ -233,13 +233,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 {
   if(!self.package.spineItems[0]) {
     self.bookIsCorrupt = YES;
-    [[[UIAlertView alloc]
-      initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptTitle", nil)
-      message:NSLocalizedString(@"ReaderViewControllerCorruptMessage", nil)
-      delegate:nil
-      cancelButtonTitle:nil
-      otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-     show];
+    [self.delegate readerView:self didEncounterCorruptionForBook:self.book];
     return;
   }
   

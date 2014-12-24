@@ -1,3 +1,5 @@
+#import "NYPLReaderView.h"
+
 @class NYPLBook;
 
 @protocol NYPLReaderViewDelegate;
