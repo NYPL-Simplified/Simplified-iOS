@@ -175,6 +175,11 @@ executeJavaScript:(NSString *const)javaScript
 
 #pragma mark UIScrollViewDelegate
 
+- (UIView *)viewForZoomingInScrollView:(__attribute__((unused)) UIScrollView *)scrollView
+{
+  return nil;
+}
+
 #pragma mark UIWebViewDelegate
 
 - (BOOL)
