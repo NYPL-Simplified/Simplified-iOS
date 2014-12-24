@@ -260,6 +260,8 @@ static NSString *const FontSizeKey = @"fontSize";
 {
   _colorScheme = colorScheme;
   
+  NSLog(@"setColorScheme on %@", [NSThread currentThread]);
+  
   __weak NYPLReaderSettings const *weakSelf = self;
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [[NSNotificationCenter defaultCenter]
@@ -271,6 +273,8 @@ static NSString *const FontSizeKey = @"fontSize";
 - (void)setFontFace:(NYPLReaderSettingsFontFace const)fontFace
 {
   _fontFace = fontFace;
+  
+  NSLog(@"setFontFace on %@", [NSThread currentThread]);
   
   __weak NYPLReaderSettings const *weakSelf = self;
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -284,7 +288,9 @@ static NSString *const FontSizeKey = @"fontSize";
 {
   _fontSize = fontSize;
 
-    __weak NYPLReaderSettings const *weakSelf = self;
+  NSLog(@"setFontSize on %@", [NSThread currentThread]);
+  
+  __weak NYPLReaderSettings const *weakSelf = self;
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NYPLReaderSettingsFontSizeDidChangeNotification
