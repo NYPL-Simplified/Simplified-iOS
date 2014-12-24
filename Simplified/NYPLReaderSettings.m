@@ -260,27 +260,36 @@ static NSString *const FontSizeKey = @"fontSize";
 {
   _colorScheme = colorScheme;
   
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLReaderSettingsColorSchemeDidChangeNotification
-   object:self];
+  __weak NYPLReaderSettings const *weakSelf = self;
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLReaderSettingsColorSchemeDidChangeNotification
+     object:weakSelf];
+  }];
 }
 
 - (void)setFontFace:(NYPLReaderSettingsFontFace const)fontFace
 {
   _fontFace = fontFace;
   
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLReaderSettingsFontFaceDidChangeNotification
-   object:self];
+  __weak NYPLReaderSettings const *weakSelf = self;
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLReaderSettingsFontFaceDidChangeNotification
+     object:weakSelf];
+  }];
 }
 
 - (void)setFontSize:(NYPLReaderSettingsFontSize const)fontSize
 {
   _fontSize = fontSize;
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLReaderSettingsFontSizeDidChangeNotification
-   object:self];
+
+    __weak NYPLReaderSettings const *weakSelf = self;
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLReaderSettingsFontSizeDidChangeNotification
+     object:weakSelf];
+  }];
 }
 
 - (UIColor *)backgroundColor
