@@ -134,7 +134,6 @@ static id argument(NSURL *const URL)
                                   initWithData:NYPLJSONDataFromObject(styles)
                                   encoding:NSUTF8StringEncoding];
   
-  
   NSString *const javaScript =
     [NSString stringWithFormat:
      @"ReadiumSDK.reader.setBookStyles(%@);"
