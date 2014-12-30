@@ -206,11 +206,11 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
     NSString *const function = components[0];
     if([function isEqualToString:@"gesture-left"]) {
-      [self.delegate readerView:self didReceiveGesture:NYPLReaderViewGestureLeft];
+      [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageLeft()"];
     } else if([function isEqualToString:@"gesture-right"]) {
-      [self.delegate readerView:self didReceiveGesture:NYPLReaderViewGestureRight];
+      [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
     } else if([function isEqualToString:@"gesture-center"]) {
-      [self.delegate readerView:self didReceiveGesture:NYPLReaderViewGestureCenter];
+      [self.delegate readerView:self didReceiveGesture:NYPLReaderViewGestureToggleUserInterface];
     } else {
       NYPLLOG(@"Ignoring unknown simplified function.");
     }

@@ -1,7 +1,5 @@
 typedef NS_ENUM(NSInteger, NYPLReaderViewGesture) {
-  NYPLReaderViewGestureLeft,
-  NYPLReaderViewGestureCenter,
-  NYPLReaderViewGestureRight
+  NYPLReaderViewGestureToggleUserInterface
 };
 
 @protocol NYPLReaderView
