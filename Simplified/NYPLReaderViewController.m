@@ -170,6 +170,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 {
   self.navigationItem.titleView = [[UIView alloc] init];
 
+  [self applyCurrentSettings];
+  
   [super viewWillAppear:animated];
 }
 
