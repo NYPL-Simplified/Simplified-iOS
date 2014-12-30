@@ -102,7 +102,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)readerViewDidFinishLoading:(__attribute__((unused)) id<NYPLReaderView>)readerView
 {
-  // TODO
+  // Do nothing.
 }
 
 #pragma mark UIViewController
