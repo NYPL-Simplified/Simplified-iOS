@@ -23,7 +23,7 @@
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) BOOL interfaceHidden;
 @property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
-@property (nonatomic) id<NYPLReaderView> readerView;
+@property (nonatomic) UIView<NYPLReaderView> *readerView;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
 
@@ -156,8 +156,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
                            bookForIdentifier:self.bookIdentifier]
                      delegate:self];
   
-  // TODO: FIXME
-  [self.view addSubview:(UIView *)self.readerView];
+  [self.view addSubview:self.readerView];
 }
 
 - (BOOL)prefersStatusBarHidden
