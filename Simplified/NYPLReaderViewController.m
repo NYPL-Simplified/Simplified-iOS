@@ -20,7 +20,6 @@
    UIPopoverControllerDelegate>
 
 @property (nonatomic) UIPopoverController *activePopoverController;
-@property (nonatomic) BOOL bookIsCorrupt;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) BOOL interfaceHidden;
 @property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
@@ -79,7 +78,12 @@
 - (void)readerView:(__attribute__((unused)) id<NYPLReaderView>)readerView
 didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 {
-  self.bookIsCorrupt = YES;
+  for(UIBarButtonItem *const item in self.navigationItem.rightBarButtonItems) {
+    item.enabled = NO;
+  }
+  
+  // Show the interface so the user can get back out.
+  self.interfaceHidden = NO;
   
   [[[UIAlertView alloc]
     initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptTitle", nil)
@@ -137,10 +141,10 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   UIBarButtonItem *const TOCBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:TOCButton];
   
-  // |setBookIsCorrupt:| may have been called before we added these, so we need to set their
-  // enabled status appropriately here too.
+  // Corruption may have occurred before we added these, so we need to set their enabled status
+  // here (in addition to |readerView:didEncounterCorruptionForBook:|).
   self.navigationItem.rightBarButtonItems = @[TOCBarButtonItem, self.settingsBarButtonItem];
-  if(self.bookIsCorrupt) {
+  if(self.readerView.bookIsCorrupt) {
     for(UIBarButtonItem *const item in self.navigationItem.rightBarButtonItems) {
       item.enabled = NO;
     }
@@ -264,23 +268,9 @@ didSelectNavigationElement:(__attribute__((unused)) RDNavigationElement *)naviga
 
 #pragma mark -
 
-- (void)setBookIsCorrupt:(BOOL const)bookIsCorrupt
-{
-  _bookIsCorrupt = bookIsCorrupt;
-  
-  for(UIBarButtonItem *const item in self.navigationItem.rightBarButtonItems) {
-    item.enabled = !bookIsCorrupt;
-  }
-  
-  // Show the interface so the user can get back out.
-  if(bookIsCorrupt) {
-    self.interfaceHidden = NO;
-  }
-}
-
 - (void)setInterfaceHidden:(BOOL)interfaceHidden
 {
-  if(self.bookIsCorrupt && interfaceHidden) {
+  if(self.readerView.bookIsCorrupt && interfaceHidden) {
     // Hiding the UI would prevent the user from escaping from a corrupt book.
     return;
   }
