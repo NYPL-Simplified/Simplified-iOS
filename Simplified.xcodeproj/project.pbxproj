@@ -214,7 +214,6 @@
 		112C6952197309C500C48F95 /* NYPLMyBooksState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksState.m; sourceTree = "<group>"; };
 		113137E51A48DAB90082954E /* NYPLReaderReadiumView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReaderReadiumView.h; sourceTree = "<group>"; };
 		113137E61A48DAB90082954E /* NYPLReaderReadiumView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderReadiumView.m; sourceTree = "<group>"; };
-		113137EB1A48DD930082954E /* NYPLReaderViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLReaderViewDelegate.h; sourceTree = "<group>"; };
 		11369D46199527C200BB11F8 /* NYPLJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLJSON.h; sourceTree = "<group>"; };
 		11369D47199527C200BB11F8 /* NYPLJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLJSON.m; sourceTree = "<group>"; };
 		11396FB7193D289100E16EE8 /* NSDate+NYPLDateAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NYPLDateAdditions.h"; sourceTree = "<group>"; };
@@ -546,7 +545,6 @@
 				115081381A48E1220007AEA5 /* NYPLReaderView.h */,
 				119504091994075B009FB788 /* NYPLReaderViewController.h */,
 				1195040A1994075B009FB788 /* NYPLReaderViewController.m */,
-				113137EB1A48DD930082954E /* NYPLReaderViewDelegate.h */,
 			);
 			name = Reader;
 			sourceTree = "<group>";

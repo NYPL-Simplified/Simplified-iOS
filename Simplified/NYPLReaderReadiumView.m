@@ -5,7 +5,6 @@
 #import "NYPLJSON.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderView.h"
-#import "NYPLReaderViewDelegate.h"
 #import "NYPLReadium.h"
 #import "UIColor+NYPLColorAdditions.h"
 

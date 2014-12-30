@@ -8,7 +8,6 @@
 #import "NYPLReaderTOCViewController.h"
 #import "NYPLReaderReadiumView.h"
 #import "NYPLReaderView.h"
-#import "NYPLReaderViewDelegate.h"
 #import "NYPLReadium.h"
 #import "NYPLRoundedButton.h"
 #import "UIColor+NYPLColorAdditions.h"

@@ -8,3 +8,11 @@ typedef NS_ENUM(NSInteger, NYPLReaderViewGesture) {
 @property (nonatomic, readonly) BOOL loaded;
 
 @end
+
+@protocol NYPLReaderViewDelegate
+
+- (void)readerView:(id<NYPLReaderView>)readerView didEncounterCorruptionForBook:(NYPLBook *)book;
+- (void)readerView:(id<NYPLReaderView>)readerView didReceiveGesture:(NYPLReaderViewGesture)gesture;
+- (void)readerViewDidFinishLoading:(id<NYPLReaderView>)readerView;
+
+@end
