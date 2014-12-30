@@ -91,9 +91,13 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 }
 
 - (void)readerView:(__attribute__((unused)) id<NYPLReaderView>)readerView
- didReceiveGesture:(__attribute__((unused)) NYPLReaderViewGesture)gesture
+ didReceiveGesture:(NYPLReaderViewGesture const)gesture
 {
-  // TODO
+  switch(gesture) {
+    case NYPLReaderViewGestureToggleUserInterface:
+      self.interfaceHidden = !self.interfaceHidden;
+      break;
+  }
 }
 
 - (void)readerViewDidFinishLoading:(__attribute__((unused)) id<NYPLReaderView>)readerView
