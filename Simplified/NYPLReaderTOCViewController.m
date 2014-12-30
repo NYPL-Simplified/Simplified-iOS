@@ -22,8 +22,6 @@ static NSString *const reuseIdentifier = @"ReaderTOCCell";
                                     nestingLevel:(NSUInteger const)nestingLevel
                                      TOCElements:(NSMutableArray *const)TOCElements
 {
-  if(!navigationElements.count) return;
-  
   for(RDNavigationElement *const navigationElement in navigationElements) {
     NYPLReaderTOCElement *const TOCElement = [[NYPLReaderTOCElement alloc]
                                               initWithNavigationElement:navigationElement
