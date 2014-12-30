@@ -127,8 +127,6 @@ static id argument(NSURL *const URL)
 
 - (void)applyCurrentFlowDependentSettings
 {
-  NSLog(@"applyCurrentFlowDependentSettings on %@", [NSThread currentThread]);
-  
   [self.webView stringByEvaluatingJavaScriptFromString:
    [NSString stringWithFormat:
     @"ReadiumSDK.reader.updateSettings(%@)",
@@ -140,8 +138,6 @@ static id argument(NSURL *const URL)
 
 - (void)applyCurrentFlowIndependentSettings
 {
-  NSLog(@"applyCurrentFlowIndependentSettings on %@", [NSThread currentThread]);
-  
   NSArray *const styles = [[NYPLReaderSettings sharedSettings] readiumStylesRepresentation];
   
   NSString *const stylesString = [[NSString alloc]
