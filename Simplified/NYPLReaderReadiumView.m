@@ -99,6 +99,8 @@ static id argument(NSURL *const URL)
   
   [self addObservers];
   
+  self.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
+  
   return self;
 }
 
@@ -280,6 +282,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 {
   // If the book is finished opening, set all stylistic preferences.
   if(!self.loaded) {
+    [self applyCurrentFlowDependentSettings];
+    [self applyCurrentFlowIndependentSettings];
     self.loaded = YES;
     [self.delegate readerViewDidFinishLoading:self];
   }
