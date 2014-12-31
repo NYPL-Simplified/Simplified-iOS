@@ -256,6 +256,42 @@ static NSString *const FontSizeKey = @"fontSize";
   }
 }
 
+- (void)setColorScheme:(NYPLReaderSettingsColorScheme const)colorScheme
+{
+  _colorScheme = colorScheme;
+
+  __weak NYPLReaderSettings const *weakSelf = self;
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLReaderSettingsColorSchemeDidChangeNotification
+     object:weakSelf];
+  }];
+}
+
+- (void)setFontFace:(NYPLReaderSettingsFontFace const)fontFace
+{
+  _fontFace = fontFace;
+  
+  __weak NYPLReaderSettings const *weakSelf = self;
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLReaderSettingsFontFaceDidChangeNotification
+     object:weakSelf];
+  }];
+}
+
+- (void)setFontSize:(NYPLReaderSettingsFontSize const)fontSize
+{
+  _fontSize = fontSize;
+  
+  __weak NYPLReaderSettings const *weakSelf = self;
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLReaderSettingsFontSizeDidChangeNotification
+     object:weakSelf];
+  }];
+}
+
 - (UIColor *)backgroundColor
 {
   switch(self.colorScheme) {
