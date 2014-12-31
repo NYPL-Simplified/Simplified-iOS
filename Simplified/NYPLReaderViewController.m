@@ -212,7 +212,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 #pragma mark NYPLReaderTOCViewControllerDelegate
 
 - (void)TOCViewController:(__attribute__((unused)) NYPLReaderTOCViewController *)controller
-didSelectNavigationElement:(__attribute__((unused)) RDNavigationElement *)navigationElement
+didSelectOpaqueLocation:(__attribute__((unused)) NYPLReaderOpaqueLocation *const)opaqueLocation
 {
   // TODO
   

@@ -1,10 +1,11 @@
+@class NYPLReaderOpaqueLocation;
 @class NYPLReaderTOCViewController;
 @class RDNavigationElement;
 
 @protocol NYPLReaderTOCViewControllerDelegate
 
 - (void)TOCViewController:(NYPLReaderTOCViewController *)controller
-didSelectNavigationElement:(RDNavigationElement *)navigationElement;
+didSelectOpaqueLocation:(NYPLReaderOpaqueLocation *)opaqueLocation;
 
 @end
 
