@@ -16,10 +16,8 @@ extern int authorHeight;
   authorHeight = 15;
 }
 
-+ (UIImage *)imageForBook:(__attribute__((unused)) NYPLBook *const)book
++ (UIImage *)imageForBook:(NYPLBook *const)book
 {
-  // FIXME
-  /*
   CGFloat const width = 80;
   CGFloat const height = 120;
   
@@ -33,14 +31,11 @@ extern int authorHeight;
      withScale:0.4];
   
   UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), YES, 0.0);
-  [coverView drawViewHierarchyInRect:coverView.bounds afterScreenUpdates:YES];
+  [coverView.layer renderInContext:UIGraphicsGetCurrentContext()];
   UIImage *const image = UIGraphicsGetImageFromCurrentImageContext();
   UIGraphicsEndImageContext();
   
   return image;
-  */
-  
-  return [UIImage imageNamed:@"NoCover"];
 }
 
 @end
