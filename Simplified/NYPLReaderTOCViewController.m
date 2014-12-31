@@ -18,24 +18,7 @@ static NSString *const reuseIdentifier = @"ReaderTOCCell";
 
 @implementation NYPLReaderTOCViewController
 
-- (void)generateTOCElementsForNavigationElements:(NSArray *const)navigationElements
-                                    nestingLevel:(NSUInteger const)nestingLevel
-                                     TOCElements:(NSMutableArray *const)TOCElements
-{
-  if(!navigationElements.count) return;
-  
-  for(RDNavigationElement *const navigationElement in navigationElements) {
-    NYPLReaderTOCElement *const TOCElement = [[NYPLReaderTOCElement alloc]
-                                              initWithNavigationElement:navigationElement
-                                              nestingLevel:nestingLevel];
-    [TOCElements addObject:TOCElement];
-    [self generateTOCElementsForNavigationElements:navigationElement.children
-                                      nestingLevel:(nestingLevel + 1)
-                                       TOCElements:TOCElements];
-  }
-}
-
-- (instancetype)initWithNavigationElement:(RDNavigationElement *const)navigationElement
+- (instancetype)initWithTOCElements:(NSArray *const)TOCElements
 {
   self = [super init];
   if(!self) return nil;
@@ -44,10 +27,6 @@ static NSString *const reuseIdentifier = @"ReaderTOCCell";
   
   self.preferredContentSize = CGSizeMake(320, 1024);
   
-  NSMutableArray *const TOCElements = [NSMutableArray array];
-  [self generateTOCElementsForNavigationElements:navigationElement.children
-                                    nestingLevel:0
-                                     TOCElements:TOCElements];
   self.TOCElements = TOCElements;
   
   return self;
@@ -106,7 +85,7 @@ static NSString *const reuseIdentifier = @"ReaderTOCCell";
   NYPLReaderTOCElement *const TOCElement = self.TOCElements[indexPath.row];
   
   cell.nestingLevel = TOCElement.nestingLevel;
-  cell.title = TOCElement.navigationElement.title;
+  cell.title = TOCElement.title;
   
   return cell;
 }
@@ -119,7 +98,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   NYPLReaderTOCElement *const TOCelement = self.TOCElements[indexPath.row];
   
   [self.delegate TOCViewController:self
-        didSelectNavigationElement:TOCelement.navigationElement];
+           didSelectOpaqueLocation:TOCelement.opaqueLocation];
 }
 
 @end

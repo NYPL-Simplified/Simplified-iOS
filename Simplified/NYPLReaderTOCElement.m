@@ -2,25 +2,28 @@
 
 @interface NYPLReaderTOCElement ()
 
-@property (nonatomic) RDNavigationElement *navigationElement;
 @property (nonatomic) NSUInteger nestingLevel;
+@property (nonatomic) NYPLReaderOpaqueLocation *opaqueLocation;
+@property (nonatomic) NSString *title;
 
 @end
 
 @implementation NYPLReaderTOCElement
 
-- (instancetype)initWithNavigationElement:(RDNavigationElement *)navigationElement
-                             nestingLevel:(NSUInteger)nestingLevel
+- (instancetype)initWithOpaqueLocation:(NYPLReaderOpaqueLocation *const)opaqueLocation
+                                 title:(NSString *const)title
+                          nestingLevel:(NSUInteger const)nestingLevel
 {
   self = [super init];
   if(!self) return nil;
   
-  if(!navigationElement) {
+  if(!opaqueLocation) {
     @throw NSInvalidArgumentException;
   }
   
-  self.navigationElement = navigationElement;
   self.nestingLevel = nestingLevel;
+  self.opaqueLocation = opaqueLocation;
+  self.title = title;
   
   return self;
 }
