@@ -6,6 +6,7 @@ typedef NS_ENUM(NSInteger, NYPLReaderViewGesture) {
 
 @property (nonatomic, readonly) BOOL bookIsCorrupt;
 @property (nonatomic, readonly) BOOL loaded;
+@property (nonatomic, readonly) NSArray *TOCElements;
 
 @end
 

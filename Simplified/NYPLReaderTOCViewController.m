@@ -33,7 +33,7 @@ static NSString *const reuseIdentifier = @"ReaderTOCCell";
   }
 }
 
-- (instancetype)initWithNavigationElement:(RDNavigationElement *const)navigationElement
+- (instancetype)initWithTOCElements:(NSArray *const)TOCElements
 {
   self = [super init];
   if(!self) return nil;
@@ -42,10 +42,6 @@ static NSString *const reuseIdentifier = @"ReaderTOCCell";
   
   self.preferredContentSize = CGSizeMake(320, 1024);
   
-  NSMutableArray *const TOCElements = [NSMutableArray array];
-  [self generateTOCElementsForNavigationElements:navigationElement.children
-                                    nestingLevel:0
-                                     TOCElements:TOCElements];
   self.TOCElements = TOCElements;
   
   return self;

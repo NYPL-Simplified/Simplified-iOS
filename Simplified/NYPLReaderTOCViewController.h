@@ -17,6 +17,6 @@ didSelectNavigationElement:(RDNavigationElement *)navigationElement;
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle NS_UNAVAILABLE;
 
-- (instancetype)initWithNavigationElement:(RDNavigationElement *)navigationElement;
+- (instancetype)initWithTOCElements:(NSArray *)TOCElements;
 
 @end

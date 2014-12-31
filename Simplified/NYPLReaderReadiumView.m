@@ -4,6 +4,7 @@
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLJSON.h"
 #import "NYPLReaderSettings.h"
+#import "NYPLReaderTOCElement.h"
 #import "NYPLReaderView.h"
 #import "NYPLReadium.h"
 #import "UIColor+NYPLColorAdditions.h"
@@ -11,7 +12,8 @@
 #import "NYPLReaderReadiumView.h"
 
 @interface NYPLReaderReadiumView ()
-  <RDContainerDelegate, RDPackageResourceServerDelegate, UIScrollViewDelegate, UIWebViewDelegate>
+  <NYPLReaderView, RDContainerDelegate, RDPackageResourceServerDelegate, UIScrollViewDelegate,
+   UIWebViewDelegate>
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) BOOL bookIsCorrupt;
@@ -22,6 +24,7 @@
 @property (nonatomic) RDPackage *package;
 @property (nonatomic) BOOL pageProgressionIsLTR;
 @property (nonatomic) RDPackageResourceServer *server;
+@property (nonatomic) NSArray *TOCElements;
 @property (nonatomic) UIWebView *webView;
 
 @end
@@ -39,6 +42,19 @@ static id argument(NSURL *const URL)
                         dataUsingEncoding:NSUTF8StringEncoding];
   
   return NYPLJSONObjectFromData(data);
+}
+
+void generateTOCElements(NSArray *const navigationElements,
+                         NSUInteger const nestingLevel,
+                         NSMutableArray *const TOCElements)
+{
+  for(RDNavigationElement *const navigationElement in navigationElements) {
+    NYPLReaderTOCElement *const TOCElement = [[NYPLReaderTOCElement alloc]
+                                              initWithNavigationElement:navigationElement
+                                              nestingLevel:nestingLevel];
+    [TOCElements addObject:TOCElement];
+    generateTOCElements(navigationElement.children, nestingLevel + 1, TOCElements);
+  }
 }
 
 @implementation NYPLReaderReadiumView
@@ -310,6 +326,20 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   }
   
   self.webView.hidden = NO;
+}
+
+#pragma mark NYPLReaderView
+
+- (NSArray *)TOCElements
+{
+  if(_TOCElements) return _TOCElements;
+  
+  NSMutableArray *const TOCElements = [NSMutableArray array];
+  generateTOCElements(self.package.tableOfContents.children, 0, TOCElements);
+  
+  _TOCElements = TOCElements;
+  
+  return _TOCElements;
 }
 
 @end
