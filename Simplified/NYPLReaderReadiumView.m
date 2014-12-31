@@ -50,7 +50,9 @@ void generateTOCElements(NSArray *const navigationElements,
 {
   for(RDNavigationElement *const navigationElement in navigationElements) {
     NYPLReaderTOCElement *const TOCElement = [[NYPLReaderTOCElement alloc]
-                                              initWithNavigationElement:navigationElement
+                                              initWithOpaqueLocation:((NYPLReaderOpaqueLocation *)
+                                                                      navigationElement)
+                                              title:navigationElement.title
                                               nestingLevel:nestingLevel];
     [TOCElements addObject:TOCElement];
     generateTOCElements(navigationElement.children, nestingLevel + 1, TOCElements);
