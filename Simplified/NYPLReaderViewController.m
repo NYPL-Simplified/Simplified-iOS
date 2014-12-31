@@ -212,15 +212,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 #pragma mark NYPLReaderTOCViewControllerDelegate
 
 - (void)TOCViewController:(__attribute__((unused)) NYPLReaderTOCViewController *)controller
-didSelectOpaqueLocation:(__attribute__((unused)) NYPLReaderOpaqueLocation *const)opaqueLocation
+didSelectOpaqueLocation:(NYPLReaderOpaqueLocation *const)opaqueLocation
 {
-  // TODO
-  
-  /*
-  [self.webView stringByEvaluatingJavaScriptFromString:
-   [NSString stringWithFormat:@"ReadiumSDK.reader.openContentUrl('%@', '%@')",
-    navigationElement.content,
-    navigationElement.sourceHref]];
+  [self.readerView openOpaqueLocation:opaqueLocation];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     [self.activePopoverController dismissPopoverAnimated:YES];
@@ -229,7 +223,6 @@ didSelectOpaqueLocation:(__attribute__((unused)) NYPLReaderOpaqueLocation *const
     self.shouldHideInterfaceOnNextAppearance = YES;
     [self.navigationController popViewControllerAnimated:YES];
   }
-  */
 }
 
 #pragma mark NYPLReaderSettingsViewDelegate

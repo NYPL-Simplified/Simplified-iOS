@@ -344,4 +344,18 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   return _TOCElements;
 }
 
+- (void)openOpaqueLocation:(NYPLReaderOpaqueLocation *const)opaqueLocation
+{
+  if(![(id)opaqueLocation isKindOfClass:[RDNavigationElement class]]) {
+    @throw NSInvalidArgumentException;
+  }
+  
+  RDNavigationElement *const navigationElement = (RDNavigationElement *)opaqueLocation;
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:
+   [NSString stringWithFormat:@"ReadiumSDK.reader.openContentUrl('%@', '%@')",
+    navigationElement.content,
+    navigationElement.sourceHref]];
+}
+
 @end
