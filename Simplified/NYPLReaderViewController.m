@@ -327,11 +327,8 @@ didSelectNavigationElement:(__attribute__((unused)) RDNavigationElement *)naviga
 
 - (void)didSelectTOC
 {
-  // TODO
-  
-  /*
   NYPLReaderTOCViewController *const viewController =
-    [[NYPLReaderTOCViewController alloc] initWithNavigationElement:self.package.tableOfContents];
+    [[NYPLReaderTOCViewController alloc] initWithTOCElements:self.readerView.TOCElements];
   
   viewController.delegate = self;
   
@@ -349,7 +346,6 @@ didSelectNavigationElement:(__attribute__((unused)) RDNavigationElement *)naviga
   } else {
     [self.navigationController pushViewController:viewController animated:YES];
   }
-  */
 }
 
 @end
