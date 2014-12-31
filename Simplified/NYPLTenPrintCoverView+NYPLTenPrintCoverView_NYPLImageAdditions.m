@@ -16,8 +16,10 @@ extern int authorHeight;
   authorHeight = 15;
 }
 
-+ (UIImage *)imageForBook:(NYPLBook *const)book
++ (UIImage *)imageForBook:(__attribute__((unused)) NYPLBook *const)book
 {
+  // FIXME
+  /*
   CGFloat const width = 80;
   CGFloat const height = 120;
   
@@ -36,6 +38,9 @@ extern int authorHeight;
   UIGraphicsEndImageContext();
   
   return image;
+  */
+  
+  return [UIImage imageNamed:@"NoCover"];
 }
 
 @end
