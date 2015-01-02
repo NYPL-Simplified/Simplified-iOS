@@ -139,7 +139,12 @@ static NSUInteger const memoryCacheInMegabytes = 2;
            attributes:nil];
         }
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-          handler([UIImage imageWithData:data]);
+          UIImage *const image = [UIImage imageWithData:data];
+          if(image) {
+            handler(image);
+          } else {
+            handler([NYPLTenPrintCoverView imageForBook:book]);
+          }
         }];
       }]
      resume];
