@@ -3,14 +3,14 @@
 @interface NYPLReaderTOCElement ()
 
 @property (nonatomic) NSUInteger nestingLevel;
-@property (nonatomic) NYPLReaderOpaqueLocation *opaqueLocation;
+@property (nonatomic) NYPLReaderRendererOpaqueLocation *opaqueLocation;
 @property (nonatomic) NSString *title;
 
 @end
 
 @implementation NYPLReaderTOCElement
 
-- (instancetype)initWithOpaqueLocation:(NYPLReaderOpaqueLocation *const)opaqueLocation
+- (instancetype)initWithOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
                                  title:(NSString *const)title
                           nestingLevel:(NSUInteger const)nestingLevel
 {

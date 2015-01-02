@@ -3,16 +3,16 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLJSON.h"
+#import "NYPLReaderRenderer.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCElement.h"
-#import "NYPLReaderView.h"
 #import "NYPLReadium.h"
 #import "UIColor+NYPLColorAdditions.h"
 
 #import "NYPLReaderReadiumView.h"
 
 @interface NYPLReaderReadiumView ()
-  <NYPLReaderView, RDContainerDelegate, RDPackageResourceServerDelegate, UIScrollViewDelegate,
+  <NYPLReaderRenderer, RDContainerDelegate, RDPackageResourceServerDelegate, UIScrollViewDelegate,
    UIWebViewDelegate>
 
 @property (nonatomic) NYPLBook *book;
@@ -49,11 +49,11 @@ void generateTOCElements(NSArray *const navigationElements,
                          NSMutableArray *const TOCElements)
 {
   for(RDNavigationElement *const navigationElement in navigationElements) {
-    NYPLReaderTOCElement *const TOCElement = [[NYPLReaderTOCElement alloc]
-                                              initWithOpaqueLocation:((NYPLReaderOpaqueLocation *)
-                                                                      navigationElement)
-                                              title:navigationElement.title
-                                              nestingLevel:nestingLevel];
+    NYPLReaderTOCElement *const TOCElement =
+      [[NYPLReaderTOCElement alloc]
+       initWithOpaqueLocation:((NYPLReaderRendererOpaqueLocation *) navigationElement)
+       title:navigationElement.title
+       nestingLevel:nestingLevel];
     [TOCElements addObject:TOCElement];
     generateTOCElements(navigationElement.children, nestingLevel + 1, TOCElements);
   }
@@ -63,7 +63,7 @@ void generateTOCElements(NSArray *const navigationElements,
 
 - (instancetype)initWithFrame:(CGRect const)frame
                          book:(NYPLBook *const)book
-                     delegate:(id<NYPLReaderViewDelegate> const)delegate
+                     delegate:(id<NYPLReaderRendererDelegate> const)delegate
 {
   self = [super initWithFrame:frame];
   if(!self) return nil;
@@ -86,7 +86,7 @@ void generateTOCElements(NSArray *const navigationElements,
   } @catch (...) {
     self.bookIsCorrupt = YES;
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      [self.delegate readerView:self didEncounterCorruptionForBook:book];
+      [self.delegate renderer:self didEncounterCorruptionForBook:book];
     }];
   }
   
@@ -225,7 +225,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     } else if([function isEqualToString:@"gesture-right"]) {
       [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
     } else if([function isEqualToString:@"gesture-center"]) {
-      [self.delegate readerView:self didReceiveGesture:NYPLReaderViewGestureToggleUserInterface];
+      [self.delegate renderer:self didReceiveGesture:NYPLReaderRendererGestureToggleUserInterface];
     } else {
       NYPLLOG(@"Ignoring unknown simplified function.");
     }
@@ -259,7 +259,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 {
   if(!self.package.spineItems[0]) {
     self.bookIsCorrupt = YES;
-    [self.delegate readerView:self didEncounterCorruptionForBook:self.book];
+    [self.delegate renderer:self didEncounterCorruptionForBook:self.book];
     return;
   }
   
@@ -298,7 +298,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     [self applyCurrentFlowDependentSettings];
     [self applyCurrentFlowIndependentSettings];
     self.loaded = YES;
-    [self.delegate readerViewDidFinishLoading:self];
+    [self.delegate rendererDidFinishLoading:self];
   }
   
   [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.pageDidChange();"];
@@ -344,7 +344,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   return _TOCElements;
 }
 
-- (void)openOpaqueLocation:(NYPLReaderOpaqueLocation *const)opaqueLocation
+- (void)openOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
 {
   if(![(id)opaqueLocation isKindOfClass:[RDNavigationElement class]]) {
     @throw NSInvalidArgumentException;

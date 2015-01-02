@@ -7,7 +7,7 @@
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReaderTOCViewController.h"
 #import "NYPLReaderReadiumView.h"
-#import "NYPLReaderView.h"
+#import "NYPLReaderRenderer.h"
 #import "NYPLReadium.h"
 #import "NYPLRoundedButton.h"
 #import "UIColor+NYPLColorAdditions.h"
@@ -15,14 +15,14 @@
 #import "NYPLReaderViewController.h"
 
 @interface NYPLReaderViewController ()
-  <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderViewDelegate,
+  <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate,
    UIPopoverControllerDelegate>
 
 @property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) BOOL interfaceHidden;
 @property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
-@property (nonatomic) UIView<NYPLReaderView> *readerView;
+@property (nonatomic) UIView<NYPLReaderRenderer> *rendererView;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
 
@@ -72,9 +72,9 @@
   return self;
 }
 
-#pragma mark NYPLReaderViewDelegate
+#pragma mark NYPLReaderRendererDelegate
 
-- (void)readerView:(__attribute__((unused)) id<NYPLReaderView>)readerView
+- (void)renderer:(__attribute__((unused)) id<NYPLReaderRenderer>)renderer
 didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 {
   for(UIBarButtonItem *const item in self.navigationItem.rightBarButtonItems) {
@@ -93,17 +93,17 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
    show];
 }
 
-- (void)readerView:(__attribute__((unused)) id<NYPLReaderView>)readerView
- didReceiveGesture:(NYPLReaderViewGesture const)gesture
+- (void)renderer:(__attribute__((unused)) id<NYPLReaderRenderer>)renderer
+ didReceiveGesture:(NYPLReaderRendererGesture const)gesture
 {
   switch(gesture) {
-    case NYPLReaderViewGestureToggleUserInterface:
+    case NYPLReaderRendererGestureToggleUserInterface:
       self.interfaceHidden = !self.interfaceHidden;
       break;
   }
 }
 
-- (void)readerViewDidFinishLoading:(__attribute__((unused)) id<NYPLReaderView>)readerView
+- (void)rendererDidFinishLoading:(__attribute__((unused)) id<NYPLReaderRenderer>)renderer
 {
   // Do nothing.
 }
@@ -143,19 +143,19 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   // Corruption may have occurred before we added these, so we need to set their enabled status
   // here (in addition to |readerView:didEncounterCorruptionForBook:|).
   self.navigationItem.rightBarButtonItems = @[TOCBarButtonItem, self.settingsBarButtonItem];
-  if(self.readerView.bookIsCorrupt) {
+  if(self.rendererView.bookIsCorrupt) {
     for(UIBarButtonItem *const item in self.navigationItem.rightBarButtonItems) {
       item.enabled = NO;
     }
   }
   
-  self.readerView = [[NYPLReaderReadiumView alloc]
-                     initWithFrame:self.view.bounds
-                     book:[[NYPLMyBooksRegistry sharedRegistry]
-                           bookForIdentifier:self.bookIdentifier]
-                     delegate:self];
+  self.rendererView = [[NYPLReaderReadiumView alloc]
+                       initWithFrame:self.view.bounds
+                       book:[[NYPLMyBooksRegistry sharedRegistry]
+                             bookForIdentifier:self.bookIdentifier]
+                       delegate:self];
   
-  [self.view addSubview:self.readerView];
+  [self.view addSubview:self.rendererView];
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -212,9 +212,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 #pragma mark NYPLReaderTOCViewControllerDelegate
 
 - (void)TOCViewController:(__attribute__((unused)) NYPLReaderTOCViewController *)controller
-didSelectOpaqueLocation:(NYPLReaderOpaqueLocation *const)opaqueLocation
+didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
 {
-  [self.readerView openOpaqueLocation:opaqueLocation];
+  [self.rendererView openOpaqueLocation:opaqueLocation];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     [self.activePopoverController dismissPopoverAnimated:YES];
@@ -261,7 +261,7 @@ didSelectOpaqueLocation:(NYPLReaderOpaqueLocation *const)opaqueLocation
 
 - (void)setInterfaceHidden:(BOOL)interfaceHidden
 {
-  if(self.readerView.bookIsCorrupt && interfaceHidden) {
+  if(self.rendererView.bookIsCorrupt && interfaceHidden) {
     // Hiding the UI would prevent the user from escaping from a corrupt book.
     return;
   }
@@ -321,7 +321,7 @@ didSelectOpaqueLocation:(NYPLReaderOpaqueLocation *const)opaqueLocation
 - (void)didSelectTOC
 {
   NYPLReaderTOCViewController *const viewController =
-    [[NYPLReaderTOCViewController alloc] initWithTOCElements:self.readerView.TOCElements];
+    [[NYPLReaderTOCViewController alloc] initWithTOCElements:self.rendererView.TOCElements];
   
   viewController.delegate = self;
   
