@@ -233,7 +233,7 @@
 		114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAttributedString.m; sourceTree = "<group>"; };
 		114C8CD819BF55F900719B72 /* NYPLRoundedButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRoundedButton.h; sourceTree = "<group>"; };
 		114C8CD919BF55F900719B72 /* NYPLRoundedButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLRoundedButton.m; sourceTree = "<group>"; };
-		115081381A48E1220007AEA5 /* NYPLReaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLReaderView.h; sourceTree = "<group>"; };
+		115081381A48E1220007AEA5 /* NYPLReaderRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLReaderRenderer.h; sourceTree = "<group>"; };
 		11548C091939136C009DBF2E /* NYPLRootTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRootTabBarController.h; sourceTree = "<group>"; };
 		11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLRootTabBarController.m; sourceTree = "<group>"; };
 		11548C0C1939147D009DBF2E /* NYPLCatalogNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogNavigationController.h; sourceTree = "<group>"; };
@@ -532,6 +532,7 @@
 			children = (
 				113137E51A48DAB90082954E /* NYPLReaderReadiumView.h */,
 				113137E61A48DAB90082954E /* NYPLReaderReadiumView.m */,
+				115081381A48E1220007AEA5 /* NYPLReaderRenderer.h */,
 				1188F3DF1A1ECC4B006B2F36 /* NYPLReaderSettings.h */,
 				1188F3E01A1ECC4B006B2F36 /* NYPLReaderSettings.m */,
 				11DC19261A12F92500721DBA /* NYPLReaderSettingsView.h */,
@@ -542,7 +543,6 @@
 				11BFDB35199C08E900378691 /* NYPLReaderTOCElement.m */,
 				11BFDB31199C01F700378691 /* NYPLReaderTOCViewController.h */,
 				11BFDB32199C01F700378691 /* NYPLReaderTOCViewController.m */,
-				115081381A48E1220007AEA5 /* NYPLReaderView.h */,
 				119504091994075B009FB788 /* NYPLReaderViewController.h */,
 				1195040A1994075B009FB788 /* NYPLReaderViewController.m */,
 			);

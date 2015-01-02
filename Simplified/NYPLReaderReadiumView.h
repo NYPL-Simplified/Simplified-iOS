@@ -1,12 +1,10 @@
-#import "NYPLReaderView.h"
+#import "NYPLReaderRenderer.h"
 
 @class NYPLBook;
 
-@protocol NYPLReaderViewDelegate;
+@interface NYPLReaderReadiumView : UIView <NYPLReaderRenderer>
 
-@interface NYPLReaderReadiumView : UIView <NYPLReaderView>
-
-@property (nonatomic, weak) id<NYPLReaderViewDelegate> delegate;
+@property (nonatomic, weak) id<NYPLReaderRendererDelegate> delegate;
 
 - (id)init NS_UNAVAILABLE;
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
@@ -14,6 +12,6 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
                          book:(NYPLBook *)book
-                     delegate:(id<NYPLReaderViewDelegate>)delegate;
+                     delegate:(id<NYPLReaderRendererDelegate>)delegate;
 
 @end
