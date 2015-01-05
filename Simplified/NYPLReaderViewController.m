@@ -8,6 +8,7 @@
 #import "NYPLReaderTOCViewController.h"
 #import "NYPLReaderReadiumView.h"
 #import "NYPLReaderRenderer.h"
+#import "NYPLReaderRMSDKView.h"
 #import "NYPLReadium.h"
 #import "NYPLRoundedButton.h"
 #import "UIColor+NYPLColorAdditions.h"
@@ -149,7 +150,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
     }
   }
   
-  self.rendererView = [[NYPLReaderReadiumView alloc]
+  // FIXME
+  self.rendererView = [[NYPLReaderRMSDKView alloc]
                        initWithFrame:self.view.bounds
                        book:[[NYPLMyBooksRegistry sharedRegistry]
                              bookForIdentifier:self.bookIdentifier]
