@@ -1,3 +1,5 @@
+#import "NYPLRMSDK.h"
+
 #import "NYPLReaderRMSDKView.h"
 
 @interface NYPLReaderRMSDKView ()
@@ -7,7 +9,14 @@
 
 @end
 
+static RMServices *services = nil;
+
 @implementation NYPLReaderRMSDKView
+
++ (void)initialize
+{
+  services = [[RMServices alloc] initWithProduct:@"Simplified" version:@"0.0"];
+}
 
 - (instancetype)initWithFrame:(CGRect const)frame
                          book:(__attribute__((unused)) NYPLBook *const)book

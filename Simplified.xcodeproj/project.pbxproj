@@ -30,6 +30,7 @@
 		111559F319B8FAA10003BE94 /* valid.xml in Resources */ = {isa = PBXBuildFile; fileRef = 111559F119B8FAA10003BE94 /* valid.xml */; };
 		11172764197F31280043EFBF /* NYPLAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 11172763197F31280043EFBF /* NYPLAccount.m */; };
 		1120749319D20BF9008203A4 /* NYPLBookCellCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1120749219D20BF9008203A4 /* NYPLBookCellCollectionViewController.m */; };
+		112492581A5B5B690054D6E2 /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 112492571A5B5B690054D6E2 /* libstdc++.6.dylib */; };
 		112C684F19EF003300106973 /* NYPLCatalogFacetGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 112C684E19EF003300106973 /* NYPLCatalogFacetGroup.m */; };
 		112C694D197301FE00C48F95 /* NYPLMyBooksRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 112C694C197301FE00C48F95 /* NYPLMyBooksRecord.m */; };
 		112C6953197309C500C48F95 /* NYPLMyBooksState.m in Sources */ = {isa = PBXBuildFile; fileRef = 112C6952197309C500C48F95 /* NYPLMyBooksState.m */; };
@@ -104,7 +105,6 @@
 		11C5DCFB1976D2F4005A9945 /* NYPLSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DCFA1976D2F4005A9945 /* NYPLSettingsViewController.m */; };
 		11C5DD16197727A6005A9945 /* NYPLKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DD15197727A6005A9945 /* NYPLKeychain.m */; };
 		11D5219A1A44980D00636240 /* librmservices_iphone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D521991A44980D00636240 /* librmservices_iphone.a */; };
-		11D5219C1A449ABA00636240 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 11D5219B1A449ABA00636240 /* libstdc++.dylib */; };
 		11DC19281A12F92500721DBA /* NYPLReaderSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11DC19271A12F92500721DBA /* NYPLReaderSettingsView.m */; };
 		11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = 11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */; };
 		11F3771F19DB62B000487769 /* NYPLFacetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3771E19DB62B000487769 /* NYPLFacetView.m */; };
@@ -209,6 +209,8 @@
 		11172763197F31280043EFBF /* NYPLAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAccount.m; sourceTree = "<group>"; };
 		1120749119D20BF9008203A4 /* NYPLBookCellCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookCellCollectionViewController.h; sourceTree = "<group>"; };
 		1120749219D20BF9008203A4 /* NYPLBookCellCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookCellCollectionViewController.m; sourceTree = "<group>"; };
+		112492531A5B418E0054D6E2 /* NYPLRMSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLRMSDK.h; sourceTree = "<group>"; };
+		112492571A5B5B690054D6E2 /* libstdc++.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.dylib"; path = "usr/lib/libstdc++.6.dylib"; sourceTree = SDKROOT; };
 		112C684D19EF003300106973 /* NYPLCatalogFacetGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogFacetGroup.h; sourceTree = "<group>"; };
 		112C684E19EF003300106973 /* NYPLCatalogFacetGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogFacetGroup.m; sourceTree = "<group>"; };
 		112C694B197301FE00C48F95 /* NYPLMyBooksRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksRecord.h; sourceTree = "<group>"; };
@@ -375,7 +377,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				11D5219C1A449ABA00636240 /* libstdc++.dylib in Frameworks */,
+				112492581A5B5B690054D6E2 /* libstdc++.6.dylib in Frameworks */,
 				11D5219A1A44980D00636240 /* librmservices_iphone.a in Frameworks */,
 				A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */,
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
@@ -623,6 +625,7 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				112492571A5B5B690054D6E2 /* libstdc++.6.dylib */,
 				11D5219B1A449ABA00636240 /* libstdc++.dylib */,
 				11D521991A44980D00636240 /* librmservices_iphone.a */,
 				119503EA1993F91E009FB788 /* libc++.dylib */,
@@ -680,6 +683,7 @@
 				119503EE1993FB90009FB788 /* NYPLReadium.h */,
 				11B20E6C19D9F6DD00877A23 /* NYPLReloadView.h */,
 				11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */,
+				112492531A5B418E0054D6E2 /* NYPLRMSDK.h */,
 				11548C091939136C009DBF2E /* NYPLRootTabBarController.h */,
 				11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */,
 				114C8CD819BF55F900719B72 /* NYPLRoundedButton.h */,
@@ -1134,6 +1138,7 @@
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**",
 					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
+					"\"$(NYPL_SIMPLIFIED_RMSERVICES_10)/src\"",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
@@ -1165,6 +1170,7 @@
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**",
 					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
+					"\"$(NYPL_SIMPLIFIED_RMSERVICES_10)/src\"",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
