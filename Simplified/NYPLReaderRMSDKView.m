@@ -1,13 +1,13 @@
-#import "NYPLRMSDKView.h"
+#import "NYPLReaderRMSDKView.h"
 
-@interface NYPLRMSDKView ()
+@interface NYPLReaderRMSDKView ()
 
 @property (nonatomic) BOOL bookIsCorrupt;
 @property (nonatomic) BOOL loaded;
 
 @end
 
-@implementation NYPLRMSDKView
+@implementation NYPLReaderRMSDKView
 
 - (instancetype)initWithFrame:(CGRect const)frame
                          book:(__attribute__((unused)) NYPLBook *const)book

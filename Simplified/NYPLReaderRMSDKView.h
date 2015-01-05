@@ -2,7 +2,7 @@
 
 @class NYPLBook;
 
-@interface NYPLRMSDKView : UIView <NYPLReaderRenderer>
+@interface NYPLReaderRMSDKView : UIView <NYPLReaderRenderer>
 
 @property (nonatomic, weak) id<NYPLReaderRendererDelegate> delegate;
 
