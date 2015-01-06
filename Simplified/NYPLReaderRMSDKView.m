@@ -1,10 +1,14 @@
+#import "NYPLBook.h"
+#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLRMSDK.h"
 
 #import "NYPLReaderRMSDKView.h"
 
-@interface NYPLReaderRMSDKView ()
+@interface NYPLReaderRMSDKView () <RMDocumentHostDelegate>
 
+@property (nonatomic) NYPLBook *book;
 @property (nonatomic) BOOL bookIsCorrupt;
+@property (nonatomic) RMDocumentHost *documentHost;
 @property (nonatomic) BOOL loaded;
 
 @end
@@ -19,15 +23,35 @@ static RMServices *services = nil;
 }
 
 - (instancetype)initWithFrame:(CGRect const)frame
-                         book:(__attribute__((unused)) NYPLBook *const)book
+                         book:(NYPLBook *const)book
                      delegate:(id<NYPLReaderRendererDelegate> const)delegate
 {
   self = [super initWithFrame:frame];
   if(!self) return nil;
   
+  if(!book) {
+    NYPLLOG(@"Failed to initialize due to nil book.");
+    return nil;
+  }
+  
+  self.book = book;
+  
   self.delegate = delegate;
   
-  // TODO: Intialize with |book|.
+  @try {
+    self.documentHost = [[RMDocumentHost alloc]
+                         initWithUrl:[[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                                      fileURLForBookIndentifier:self.book.identifier]
+                         mimeType:@"application/epub+zip"
+                         width:CGRectGetWidth([UIScreen mainScreen].nativeBounds)
+                         height:CGRectGetHeight([UIScreen mainScreen].nativeBounds)
+                         delegate:self];
+  } @catch (...) {
+    self.bookIsCorrupt = YES;
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+      [self.delegate renderer:self didEncounterCorruptionForBook:book];
+    }];
+  }
   
   return self;
 }
