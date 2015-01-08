@@ -2,8 +2,8 @@ To build this project:
 
 1. 'git submodule init'
 2. 'git submodule update'
-3. Add an 'NYPL_SIMPLIFIED_RMSERVICES_10' source tree to Xcode that points to
-   "<your RMSDK 10 root>/samples/rmservices".
+3. Add an 'NYPL_SIMPLIFIED_RMSDK_10' source tree to Xcode that points to your
+   RMSDK 10 root directory.
 4. Build RMSDK 10 if you haven't already.
 5. Ensure "Parallelize Build" is disabled in your Xcode build scheme. This is
    necessary for RMSDK-related projects to build properly.

@@ -9,13 +9,14 @@
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) BOOL bookIsCorrupt;
 @property (nonatomic) RMDocumentHost *documentHost;
-@property (nonatomic) BOOL loaded;
 
 @end
 
 static RMServices *services = nil;
 
 @implementation NYPLReaderRMSDKView
+
+#pragma mark NSObject
 
 + (void)initialize
 {
@@ -45,7 +46,8 @@ static RMServices *services = nil;
                          mimeType:@"application/epub+zip"
                          width:CGRectGetWidth([UIScreen mainScreen].nativeBounds)
                          height:CGRectGetHeight([UIScreen mainScreen].nativeBounds)
-                         delegate:self];
+                         delegate:self
+                         load:YES];
   } @catch (...) {
     self.bookIsCorrupt = YES;
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -53,10 +55,52 @@ static RMServices *services = nil;
     }];
   }
   
+  self.contentMode = UIViewContentModeRedraw;
+  
   return self;
 }
 
+#pragma mark UIView
+
+- (void)drawRect:(__attribute__((unused)) CGRect)rect
+{
+  NSUInteger const channels = 4;
+  NSUInteger const width = CGRectGetWidth(self.frame) * [UIScreen mainScreen].scale;
+  NSUInteger const height = CGRectGetHeight(self.frame) * [UIScreen mainScreen].scale;
+  
+  NSMutableData *const renderBuffer =
+    [NSMutableData dataWithLength:(channels * width * height)];
+  
+  [self.documentHost setWidth:width height:height];
+  [self.documentHost render:renderBuffer];
+  
+  CGDataProviderRef const provider = CGDataProviderCreateWithCFData((CFDataRef)renderBuffer);
+  CGColorSpaceRef const colorSpace = CGColorSpaceCreateDeviceRGB();
+  CGImageRef imageRef = CGImageCreate(width,
+                                      height,
+                                      8,
+                                      8 * channels,
+                                      width * channels,
+                                      colorSpace,
+                                      (CGBitmapInfo)kCGImageAlphaLast, // FIXME
+                                      provider,
+                                      NULL,
+                                      false,
+                                      kCGRenderingIntentDefault);
+  UIImage *const image = [UIImage imageWithCGImage:imageRef];
+  CGDataProviderRelease(provider);
+  CGColorSpaceRelease(colorSpace);
+  CGImageRelease(imageRef);
+  
+  [image drawInRect:self.bounds];
+}
+
 #pragma mark NYPLReaderRenderer
+
+- (BOOL)loaded
+{
+  return self.documentHost.loaded;
+}
 
 - (void)openOpaqueLocation:(__attribute__((unused))
                             NYPLReaderRendererOpaqueLocation *const)opaqueLocation
