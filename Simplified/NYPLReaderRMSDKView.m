@@ -82,7 +82,7 @@ static RMServices *services = nil;
                                       8 * channels,
                                       width * channels,
                                       colorSpace,
-                                      (CGBitmapInfo)kCGImageAlphaLast, // FIXME
+                                      kCGBitmapByteOrderDefault & kCGImageAlphaLast,
                                       provider,
                                       NULL,
                                       false,
