@@ -41,7 +41,6 @@
 		113DB8A719C24E54004E1154 /* NYPLIndeterminateProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 113DB8A619C24E54004E1154 /* NYPLIndeterminateProgressView.m */; };
 		1142E4E819EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1142E4E719EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m */; };
 		1142E4EB19EED86A00D9B3D9 /* NYPLFacetBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1142E4EA19EED86A00D9B3D9 /* NYPLFacetBarView.m */; };
-		1146EE401A5DD071009F7576 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1146EE3F1A5DD071009F7576 /* CoreText.framework */; };
 		114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 114B7F151A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m */; };
 		114C8CD719BE2FD300719B72 /* NYPLAttributedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */; };
 		114C8CDA19BF55F900719B72 /* NYPLRoundedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 114C8CD919BF55F900719B72 /* NYPLRoundedButton.m */; };
@@ -130,6 +129,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		110FFAF01A6034CC0083D840 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 110FFAB91A5EF6C50083D840 /* rmservices_iphone.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC07E0554694100DB518D;
+			remoteInfo = rmservices_iphone;
+		};
 		1112A81E1A322C53002B8CC1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */;
@@ -372,7 +378,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1146EE401A5DD071009F7576 /* CoreText.framework in Frameworks */,
 				112492581A5B5B690054D6E2 /* libstdc++.6.dylib in Frameworks */,
 				11D5219A1A44980D00636240 /* librmservices_iphone.a in Frameworks */,
 				A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */,
@@ -471,6 +476,14 @@
 				11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */,
 			);
 			name = Book;
+			sourceTree = "<group>";
+		};
+		110FFAEC1A6034CC0083D840 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				110FFAF11A6034CC0083D840 /* librmservices_iphone.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		1112A81A1A322C53002B8CC1 /* Products */ = {
@@ -826,6 +839,10 @@
 					ProjectRef = 119503DA1993F8F4009FB788 /* RDServices.xcodeproj */;
 				},
 				{
+					ProductGroup = 110FFAEC1A6034CC0083D840 /* Products */;
+					ProjectRef = 110FFAB91A5EF6C50083D840 /* rmservices_iphone.xcodeproj */;
+				},
+				{
 					ProductGroup = 1112A81A1A322C53002B8CC1 /* Products */;
 					ProjectRef = 1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */;
 				},
@@ -839,6 +856,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		110FFAF11A6034CC0083D840 /* librmservices_iphone.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = librmservices_iphone.a;
+			remoteRef = 110FFAF01A6034CC0083D840 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		1112A81F1A322C53002B8CC1 /* libTenPrintCover.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
