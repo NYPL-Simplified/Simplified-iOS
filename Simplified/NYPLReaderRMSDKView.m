@@ -9,6 +9,7 @@
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) BOOL bookIsCorrupt;
 @property (nonatomic) RMDocumentHost *documentHost;
+@property (nonatomic) CGPoint touchBeganLocation;
 
 @end
 
@@ -55,6 +56,7 @@ static RMServices *services = nil;
     }];
   }
   
+  self.multipleTouchEnabled = NO;
   self.contentMode = UIViewContentModeRedraw;
   
   return self;
@@ -93,6 +95,34 @@ static RMServices *services = nil;
   CGImageRelease(imageRef);
   
   [image drawInRect:self.bounds];
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(__attribute__((unused)) UIEvent *)event
+{
+  assert(touches.count == 1);
+  
+  self.touchBeganLocation = [[touches anyObject] locationInView:self];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(__attribute__((unused)) UIEvent *)event
+{
+  // This method uses logic equivalent to the logic in "simplified.js".
+  
+  assert(touches.count == 1);
+  
+  CGPoint const start = self.touchBeganLocation;
+  CGPoint const end = [[touches anyObject] locationInView:self];
+  
+  if(fabs(end.x - start.x) <= 5.0 && fabs(end.y - start.y) <= 5.0) {
+    CGFloat const position = end.x / CGRectGetWidth(self.frame);
+    if(position <= 0.2) {
+      [self.documentHost previousScreen];
+      [self setNeedsDisplay];
+    } else if(position >= 0.8) {
+      [self.documentHost nextScreen];
+      [self setNeedsDisplay];
+    }
+  }
 }
 
 #pragma mark NYPLReaderRenderer
