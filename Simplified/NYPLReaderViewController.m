@@ -155,6 +155,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
                              bookForIdentifier:self.bookIdentifier]
                        delegate:self];
   
+  self.rendererView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                        UIViewAutoresizingFlexibleHeight);
+  
   [self.view addSubview:self.rendererView];
 }
 
