@@ -121,6 +121,8 @@ static RMServices *services = nil;
     } else if(position >= 0.8) {
       [self.documentHost nextScreen];
       [self setNeedsDisplay];
+    } else {
+      [self.delegate renderer:self didReceiveGesture:NYPLReaderRendererGestureToggleUserInterface];
     }
   }
 }
