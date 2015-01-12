@@ -330,7 +330,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   self.webView.hidden = NO;
 }
 
-#pragma mark NYPLReaderView
+#pragma mark NYPLReaderRenderer
 
 - (NSArray *)TOCElements
 {
