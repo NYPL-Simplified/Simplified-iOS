@@ -124,6 +124,17 @@ static RMServices *services = nil;
     } else {
       [self.delegate renderer:self didReceiveGesture:NYPLReaderRendererGestureToggleUserInterface];
     }
+  } else {
+    CGFloat const relativeDistanceX = (end.x - start.x) / CGRectGetWidth(self.frame);
+    CGFloat const slope = (end.y - start.y) / (end.x - start.x);
+    if(fabs(slope) <= 0.5 && fabs(relativeDistanceX) >= 0.1) {
+      if(relativeDistanceX > 0) {
+        [self.documentHost previousScreen];
+      } else {
+        [self.documentHost nextScreen];
+      }
+      [self setNeedsDisplay];
+    }
   }
 }
 
