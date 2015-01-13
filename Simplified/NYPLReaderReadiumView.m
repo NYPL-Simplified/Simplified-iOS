@@ -44,9 +44,9 @@ static id argument(NSURL *const URL)
   return NYPLJSONObjectFromData(data);
 }
 
-void generateTOCElements(NSArray *const navigationElements,
-                         NSUInteger const nestingLevel,
-                         NSMutableArray *const TOCElements)
+static void generateTOCElements(NSArray *const navigationElements,
+                                NSUInteger const nestingLevel,
+                                NSMutableArray *const TOCElements)
 {
   for(RDNavigationElement *const navigationElement in navigationElements) {
     NYPLReaderTOCElement *const TOCElement =

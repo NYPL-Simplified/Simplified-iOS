@@ -7,5 +7,6 @@
 
 #import "RMDocumentHost.h"
 #import "RMServices.h"
+#import "RMTOCItem.h"
 
 #pragma clang diagnostic pop
