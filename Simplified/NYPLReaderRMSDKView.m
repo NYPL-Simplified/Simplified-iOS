@@ -1,5 +1,6 @@
 #import "NYPLBook.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLReaderTOCElement.h"
 #import "NYPLRMSDK.h"
 
 #import "NYPLReaderRMSDKView.h"
@@ -14,6 +15,22 @@
 @end
 
 static RMServices *services = nil;
+
+static void generateTOCElements(NSArray *const TOCItems,
+                                NSUInteger const nestingLevel,
+                                NSMutableArray *const TOCElements)
+{
+  for(RMTOCItem *const TOCItem in TOCItems) {
+    NYPLReaderTOCElement *const TOCElement =
+      [[NYPLReaderTOCElement alloc]
+       initWithOpaqueLocation:((NYPLReaderRendererOpaqueLocation *)
+                               TOCItem.location)
+       title:TOCItem.title
+       nestingLevel:nestingLevel];
+    [TOCElements addObject:TOCElement];
+    generateTOCElements(TOCItem.children, nestingLevel + 1, TOCElements);
+  }
+}
 
 @implementation NYPLReaderRMSDKView
 
@@ -145,20 +162,31 @@ static RMServices *services = nil;
   return self.documentHost.loaded;
 }
 
-- (void)openOpaqueLocation:(__attribute__((unused))
-                            NYPLReaderRendererOpaqueLocation *const)opaqueLocation
+- (void)openOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
 {
-  // TODO: Check if |[opaqueLocation isKindOfClass:[SomeClass class]]|, else throw
-  // |NSInvalidArgumentException|.
+  if(!opaqueLocation) {
+    NYPLLOG(@"Ignoring nil location.");
+    return;
+  }
   
-  // TODO: Open location.
+  if(![(id)opaqueLocation isKindOfClass:[RMLocation class]]) {
+    @throw NSInvalidArgumentException;
+  }
+  
+  [self.documentHost gotoLocation:(RMLocation *)opaqueLocation];
+  
+  [self setNeedsDisplay];
 }
 
 - (NSArray *)TOCElements
 {
-  // TODO
+  NSArray *const TOCItems = self.documentHost.tableOfContents.children;
   
-  return nil;
+  NSMutableArray *const TOCElements = [NSMutableArray arrayWithCapacity:TOCItems.count];
+  
+  generateTOCElements(TOCItems, 0, TOCElements);
+  
+  return TOCElements;
 }
 
 @end
