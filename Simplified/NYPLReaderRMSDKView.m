@@ -23,8 +23,7 @@ static void generateTOCElements(NSArray *const TOCItems,
   for(RMTOCItem *const TOCItem in TOCItems) {
     NYPLReaderTOCElement *const TOCElement =
       [[NYPLReaderTOCElement alloc]
-       initWithOpaqueLocation:((NYPLReaderRendererOpaqueLocation *)
-                               TOCItem.location)
+       initWithOpaqueLocation:((NYPLReaderRendererOpaqueLocation *) TOCItem.location)
        title:TOCItem.title
        nestingLevel:nestingLevel];
     [TOCElements addObject:TOCElement];
