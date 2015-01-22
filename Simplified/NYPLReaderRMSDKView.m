@@ -1,5 +1,7 @@
 #import "NYPLBook.h"
+#import "NYPLBookLocation.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLMyBooksRegistry.h"
 #import "NYPLReaderTOCElement.h"
 #import "NYPLRMSDK.h"
 
@@ -13,6 +15,8 @@
 @property (nonatomic) CGPoint touchBeganLocation;
 
 @end
+
+static NSString *const renderer = @"rmsdk-10";
 
 static RMServices *services = nil;
 
@@ -70,6 +74,12 @@ static void generateTOCElements(NSArray *const TOCItems,
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
       [self.delegate renderer:self didEncounterCorruptionForBook:book];
     }];
+  }
+  
+  NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
+                                      locationForIdentifier:self.book.identifier];
+  if([location.renderer isEqualToString:renderer]) {
+    [self.documentHost gotoBookmark:location.locationString];
   }
   
   self.multipleTouchEnabled = NO;
@@ -133,9 +143,11 @@ static void generateTOCElements(NSArray *const TOCItems,
     CGFloat const position = end.x / CGRectGetWidth(self.frame);
     if(position <= 0.2) {
       [self.documentHost previousScreen];
+      [self reportLocation];
       [self setNeedsDisplay];
     } else if(position >= 0.8) {
       [self.documentHost nextScreen];
+      [self reportLocation];
       [self setNeedsDisplay];
     } else {
       [self.delegate renderer:self didReceiveGesture:NYPLReaderRendererGestureToggleUserInterface];
@@ -149,6 +161,7 @@ static void generateTOCElements(NSArray *const TOCItems,
       } else {
         [self.documentHost nextScreen];
       }
+      [self reportLocation];
       [self setNeedsDisplay];
     }
   }
@@ -174,6 +187,8 @@ static void generateTOCElements(NSArray *const TOCItems,
   
   [self.documentHost gotoLocation:(RMLocation *)opaqueLocation];
   
+  [self reportLocation];
+  
   [self setNeedsDisplay];
 }
 
@@ -186,6 +201,19 @@ static void generateTOCElements(NSArray *const TOCItems,
   generateTOCElements(TOCItems, 0, TOCElements);
   
   return TOCElements;
+}
+
+#pragma mark -
+
+- (void)reportLocation
+{
+  NYPLBookLocation *const location = [[NYPLBookLocation alloc]
+                                      initWithLocationString:[self.documentHost bookmarkHere]
+                                      renderer:renderer];
+  
+  [[NYPLMyBooksRegistry sharedRegistry]
+   setLocation:location
+   forIdentifier:self.book.identifier];
 }
 
 @end
