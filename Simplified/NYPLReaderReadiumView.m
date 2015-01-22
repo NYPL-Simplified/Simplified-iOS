@@ -29,6 +29,8 @@
 
 @end
 
+static NSString *const renderer = @"readium";
+
 static id argument(NSURL *const URL)
 {
   NSString *const s = URL.resourceSpecifier;
@@ -264,19 +266,17 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   }
   
   self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
-  
-  NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
-                                      locationForIdentifier:self.book.identifier];
+
   
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
   dictionary[@"package"] = self.package.dictionary;
   dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
-  if(location) {
-    if(location.CFI) {
-      dictionary[@"openPageRequest"] = @{@"idref": location.idref, @"elementCfi" : location.CFI};
-    } else {
-      dictionary[@"openPageRequest"] = @{@"idref": location.idref};
-    }
+  
+  NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
+                                      locationForIdentifier:self.book.identifier];
+  if([location.renderer isEqualToString:renderer]) {
+    dictionary[@"openPageRequest"] =
+      NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
   }
   
   NSData *data = NYPLJSONDataFromObject(dictionary);
@@ -314,12 +314,9 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   NSString *const locationJSON = [self.webView stringByEvaluatingJavaScriptFromString:
                                   @"ReadiumSDK.reader.bookmarkCurrentPage()"];
   
-  NSDictionary *const locationDictionary =
-  NYPLJSONObjectFromData([locationJSON dataUsingEncoding:NSUTF8StringEncoding]);
-  
   NYPLBookLocation *const location = [[NYPLBookLocation alloc]
-                                      initWithCFI:locationDictionary[@"contentCFI"]
-                                      idref:locationDictionary[@"idref"]];
+                                      initWithLocationString:locationJSON
+                                      renderer:renderer];
   
   if(location) {
     [[NYPLMyBooksRegistry sharedRegistry]
