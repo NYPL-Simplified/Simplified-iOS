@@ -2,6 +2,7 @@
 #import "NYPLBookLocation.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
+#import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCElement.h"
 #import "NYPLRMSDK.h"
 
@@ -36,6 +37,37 @@ static void generateTOCElements(NSArray *const TOCItems,
 }
 
 @implementation NYPLReaderRMSDKView
+
+- (void)addObservers
+{
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(applyCurrentFlowIndependentSettings)
+   name:NYPLReaderSettingsColorSchemeDidChangeNotification
+   object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(applyCurrentFlowIndependentSettings)
+   name:NYPLReaderSettingsFontFaceDidChangeNotification
+   object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(applyCurrentFlowDependentSettings)
+   name:NYPLReaderSettingsFontSizeDidChangeNotification
+   object:nil];
+}
+
+- (void)applyCurrentFlowDependentSettings
+{
+  // TODO
+}
+
+- (void)applyCurrentFlowIndependentSettings
+{
+  // TODO
+}
 
 #pragma mark NSObject
 
@@ -85,7 +117,14 @@ static void generateTOCElements(NSArray *const TOCItems,
   self.multipleTouchEnabled = NO;
   self.contentMode = UIViewContentModeRedraw;
   
+  [self addObservers];
+  
   return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark UIView
