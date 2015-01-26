@@ -10,11 +10,14 @@
 @interface NYPLSettingsViewController () <UIAlertViewDelegate, UITextFieldDelegate>
 
 @property (nonatomic) UILabel *barcodeLabel;
+@property (nonatomic) UITextField *developmentOPDSURLTextField;
 @property (nonatomic) UIButton *logInButton;
 @property (nonatomic) UIButton *logOutButton;
 @property (nonatomic) UILabel *PINLabel;
 
 @end
+
+static NSString *const developmentOPDSURLKey = @"developmentOPDSURL";
 
 @implementation NYPLSettingsViewController
 
@@ -69,14 +72,40 @@
   [self.logOutButton setTitle:NSLocalizedString(@"LogOut", nil) forState:UIControlStateNormal];
   [self.view addSubview:self.logOutButton];
   
+  self.developmentOPDSURLTextField = [[UITextField alloc] initWithFrame:CGRectZero];
+  self.developmentOPDSURLTextField.delegate = self;
+  self.developmentOPDSURLTextField.borderStyle = UITextBorderStyleRoundedRect;
+  self.developmentOPDSURLTextField.placeholder = @"Enter a custom OPDS URL…";
+  self.developmentOPDSURLTextField.keyboardType = UIKeyboardTypeURL;
+  self.developmentOPDSURLTextField.returnKeyType = UIReturnKeyDone;
+  self.developmentOPDSURLTextField.spellCheckingType = UITextSpellCheckingTypeNo;
+  self.developmentOPDSURLTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+  self.developmentOPDSURLTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+  self.developmentOPDSURLTextField.text = [[NSUserDefaults standardUserDefaults]
+                                           valueForKey:@"developmentOPDSURL"];
+  [self.view addSubview:self.developmentOPDSURLTextField];
+  
+  
   [self updateAppearance];
+}
+
+- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+{
+  self.developmentOPDSURLTextField.text = [[NYPLConfiguration developmentFeedURL] absoluteString];
 }
 
 - (void)viewWillLayoutSubviews
 {
+  [self.developmentOPDSURLTextField sizeToFit];
+  self.developmentOPDSURLTextField.frame =
+    CGRectMake(5,
+               69,
+               CGRectGetWidth(self.view.frame) - 10,
+               CGRectGetHeight(self.developmentOPDSURLTextField.frame));
+  
   [self.barcodeLabel sizeToFit];
   self.barcodeLabel.frame = CGRectMake(5,
-                                       69,
+                                       CGRectGetMaxY(self.developmentOPDSURLTextField.frame) + 5,
                                        CGRectGetWidth(self.barcodeLabel.frame),
                                        CGRectGetHeight(self.barcodeLabel.frame));
   
@@ -94,7 +123,7 @@
   
   [self.logInButton sizeToFit];
   self.logInButton.frame = CGRectMake(5,
-                                      69,
+                                      CGRectGetMaxY(self.developmentOPDSURLTextField.frame) + 5,
                                       CGRectGetWidth(self.logInButton.frame),
                                       CGRectGetHeight(self.logInButton.frame));
 }
@@ -110,6 +139,33 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     [[NYPLMyBooksRegistry sharedRegistry] reset];
     [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
   }
+}
+
+#pragma mark UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *const)textField
+{
+  [self.developmentOPDSURLTextField resignFirstResponder];
+  
+  NSString *const feed = [textField.text stringByTrimmingCharactersInSet:
+                          [NSCharacterSet whitespaceCharacterSet]];
+  
+  if(feed.length) {
+    [NYPLConfiguration setDevelopmentFeedURL:[NSURL URLWithString:textField.text]];
+  } else {
+    [NYPLConfiguration setDevelopmentFeedURL:nil];
+  }
+  
+  [[[UIAlertView alloc]
+    initWithTitle:@"Restart Required"
+    message:(@"In order for this development-only feature to have an effect, you must "
+             @"force quit and restart this application.")
+    delegate:nil
+    cancelButtonTitle:nil
+    otherButtonTitles:@"OK", nil]
+   show];
+  
+  return YES;
 }
 
 #pragma mark -
