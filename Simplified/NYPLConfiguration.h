@@ -5,6 +5,12 @@
 
 + (NSURL *)mainFeedURL;
 
+// If set, this will override the default value for |mainFeedURL|. Set it to nil to resume using the
+// default URL.
++ (NSURL *)developmentFeedURL;
+
++ (void)setDevelopmentFeedURL:(NSURL *)URL;
+
 + (NSURL *)loanURL;
 
 + (UIColor *)mainColor;
