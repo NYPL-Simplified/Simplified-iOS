@@ -138,7 +138,7 @@ static void generateTOCElements(NSArray *const TOCItems,
   NSMutableData *const renderBuffer =
     [NSMutableData dataWithLength:(channels * width * height)];
   
-  [self.documentHost setWidth:width height:height];
+  [self.documentHost setWidth:(int)width height:(int)height];
   [self.documentHost render:renderBuffer];
   
   CGDataProviderRef const provider = CGDataProviderCreateWithCFData((CFDataRef)renderBuffer);
