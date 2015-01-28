@@ -57,7 +57,14 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 
 - (void)setCustomMainFeedURL:(NSURL *const)customMainFeedURL
 {
+  if(!customMainFeedURL && !self.customMainFeedURL) return;
+  if([customMainFeedURL isEqual:self.customMainFeedURL]) return;
+  
   [[NSUserDefaults standardUserDefaults] setURL:customMainFeedURL forKey:customMainFeedURLKey];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLSettingsDidChangeNotification
+   object:self];
 }
 
 - (NYPLSettingsRenderingEngine)renderingEngine
@@ -68,8 +75,14 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 
 - (void)setRenderingEngine:(NYPLSettingsRenderingEngine const)renderingEngine
 {
+  if(renderingEngine == self.renderingEngine) return;
+  
   [[NSUserDefaults standardUserDefaults] setObject:StringFromRenderingEngine(renderingEngine)
                                             forKey:renderingEngineKey];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLSettingsDidChangeNotification
+   object:self];
 }
 
 @end

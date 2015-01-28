@@ -4,6 +4,7 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLRoundedButton.h"
+#import "NYPLSettings.h"
 #import "NYPLSettingsCredentialViewController.h"
 
 #import "NYPLSettingsViewController.h"
@@ -18,44 +19,6 @@
 @property (nonatomic) UIButton *renderingEngineButton;
 
 @end
-
-static NSString *const OPDSURLKey = @"OPDSURL";
-static NSString *const renderingEngineKey = @"renderingEngineKey";
-
-typedef NS_ENUM(NSInteger, RenderingEngine) {
-  RenderingEngineAutomatic,
-  RenderingEngineReadium,
-  RenderingEngineRMSDK10
-};
-
-static RenderingEngine RenderingEngineFromString(NSString *const string)
-{
-  if(!string || [string isEqualToString:@"Automatic"]) {
-    return RenderingEngineAutomatic;
-  }
-  
-  if([string isEqualToString:@"Readium"]) {
-    return RenderingEngineReadium;
-  }
-
-  if([string isEqualToString:@"RMSDK 10"]) {
-    return RenderingEngineRMSDK10;
-  }
-  
-  @throw NSInvalidArgumentException;
-}
-
-static NSString *StringFromRenderingEngine(RenderingEngine const renderingEngine)
-{
-  switch(renderingEngine) {
-    case RenderingEngineAutomatic:
-      return @"Automatic";
-    case RenderingEngineReadium:
-      return @"Readium";
-    case RenderingEngineRMSDK10:
-      return @"RMSDK 10";
-  }
-}
 
 @implementation NYPLSettingsViewController
 
@@ -72,6 +35,12 @@ static NSString *StringFromRenderingEngine(RenderingEngine const renderingEngine
    addObserver:self
    selector:@selector(updateAppearance)
    name:NYPLAccountDidChangeNotification
+   object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(updateAppearance)
+   name:NYPLSettingsDidChangeNotification
    object:nil];
   
   return self;
@@ -247,12 +216,21 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   self.developmentOPDSURLTextField.text = [[NYPLConfiguration developmentFeedURL] absoluteString];
   
-  RenderingEngine const engine =
-    RenderingEngineFromString([[NSUserDefaults standardUserDefaults]
-                               stringForKey:renderingEngineKey]);
+  NSString *renderingEngineString;
+  switch([NYPLSettings sharedSettings].renderingEngine) {
+    case NYPLSettingsRenderingEngineAutomatic:
+      renderingEngineString = @"Automatic";
+      break;
+    case NYPLSettingsRenderingEngineReadium:
+      renderingEngineString = @"Readium";
+      break;
+    case NYPLSettingsRenderingEngineRMSDK10:
+      renderingEngineString = @"RMSDK 10";
+      break;
+  }
   
-  [self.renderingEngineButton setTitle:[@"Rendering: " stringByAppendingString:
-                                        StringFromRenderingEngine(engine)]
+  [self.renderingEngineButton setTitle:[@"Rendering Engine: "
+                                        stringByAppendingString:renderingEngineString]
                               forState:UIControlStateNormal];
   
   [self.view setNeedsLayout];
@@ -279,9 +257,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)didSelectRenderingEngine
 {
-  RenderingEngine const renderingEngine =
-    RenderingEngineFromString([[NSUserDefaults standardUserDefaults]
-                                stringForKey:renderingEngineKey]);
+  NYPLSettingsRenderingEngine const renderingEngine = [NYPLSettings sharedSettings].renderingEngine;
   
   UIAlertController *const alertController = [UIAlertController
                                               alertControllerWithTitle:nil
@@ -290,29 +266,32 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   [alertController addAction:[UIAlertAction
                               actionWithTitle:@"Automatic"
-                              style:(renderingEngine == RenderingEngineAutomatic
+                              style:(renderingEngine == NYPLSettingsRenderingEngineAutomatic
                                      ? UIAlertActionStyleCancel
                                      : UIAlertActionStyleDefault)
                               handler:^(__attribute__((unused)) UIAlertAction *action) {
-                                
+                                [NYPLSettings sharedSettings].renderingEngine =
+                                  NYPLSettingsRenderingEngineAutomatic;
                               }]];
   
   [alertController addAction:[UIAlertAction
                               actionWithTitle:@"Readium"
-                              style:(renderingEngine == RenderingEngineReadium
+                              style:(renderingEngine == NYPLSettingsRenderingEngineReadium
                                      ? UIAlertActionStyleCancel
                                      : UIAlertActionStyleDefault)
                               handler:^(__attribute__((unused)) UIAlertAction *action) {
-                                
+                                [NYPLSettings sharedSettings].renderingEngine =
+                                  NYPLSettingsRenderingEngineReadium;
                               }]];
   
   [alertController addAction:[UIAlertAction
                               actionWithTitle:@"RMSDK 10"
-                              style:(renderingEngine == RenderingEngineRMSDK10
+                              style:(renderingEngine == NYPLSettingsRenderingEngineRMSDK10
                                      ? UIAlertActionStyleCancel
                                      : UIAlertActionStyleDefault)
                               handler:^(__attribute__((unused)) UIAlertAction *action) {
-                                
+                                [NYPLSettings sharedSettings].renderingEngine =
+                                  NYPLSettingsRenderingEngineRMSDK10;
                               }]];
   
   alertController.popoverPresentationController.sourceRect = self.renderingEngineButton.bounds;
