@@ -8,8 +8,10 @@
 #import "NYPLReaderTOCViewController.h"
 #import "NYPLReaderReadiumView.h"
 #import "NYPLReaderRenderer.h"
+#import "NYPLReaderRMSDKView.h"
 #import "NYPLReadium.h"
 #import "NYPLRoundedButton.h"
+#import "NYPLSettings.h"
 #import "UIColor+NYPLColorAdditions.h"
 
 #import "NYPLReaderViewController.h"
@@ -149,11 +151,21 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
     }
   }
   
-  self.rendererView = [[NYPLReaderReadiumView alloc]
-                       initWithFrame:self.view.bounds
-                       book:[[NYPLMyBooksRegistry sharedRegistry]
-                             bookForIdentifier:self.bookIdentifier]
-                       delegate:self];
+  NYPLSettingsRenderingEngine const renderingEngine = [NYPLSettings sharedSettings].renderingEngine;
+  if(renderingEngine == NYPLSettingsRenderingEngineAutomatic
+     || renderingEngine == NYPLSettingsRenderingEngineReadium) {
+    self.rendererView = [[NYPLReaderReadiumView alloc]
+                         initWithFrame:self.view.bounds
+                         book:[[NYPLMyBooksRegistry sharedRegistry]
+                               bookForIdentifier:self.bookIdentifier]
+                         delegate:self];
+  } else {
+    self.rendererView = [[NYPLReaderRMSDKView alloc]
+                         initWithFrame:self.view.bounds
+                         book:[[NYPLMyBooksRegistry sharedRegistry]
+                               bookForIdentifier:self.bookIdentifier]
+                         delegate:self];
+  }
   
   self.rendererView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                         UIViewAutoresizingFlexibleHeight);
