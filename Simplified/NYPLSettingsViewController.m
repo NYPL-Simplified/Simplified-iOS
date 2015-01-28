@@ -82,7 +82,7 @@
   self.developmentOPDSURLTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.developmentOPDSURLTextField.delegate = self;
   self.developmentOPDSURLTextField.borderStyle = UITextBorderStyleRoundedRect;
-  self.developmentOPDSURLTextField.placeholder = @"Enter a custom OPDS URL…";
+  self.developmentOPDSURLTextField.placeholder = @"Enter a custom HTTP OPDS URL…";
   self.developmentOPDSURLTextField.keyboardType = UIKeyboardTypeURL;
   self.developmentOPDSURLTextField.returnKeyType = UIReturnKeyDone;
   self.developmentOPDSURLTextField.spellCheckingType = UITextSpellCheckingTypeNo;
