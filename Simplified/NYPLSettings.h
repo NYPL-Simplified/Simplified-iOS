@@ -11,6 +11,7 @@ typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
 // Set to nil (the default) if no custom feed should be used.
 @property (atomic) NSURL *customMainFeedURL;
 
+// Leaving this set to |NYPLSettingsRenderingEngineAutomatic| (the default) is *highly* recommended.
 @property (atomic) NYPLSettingsRenderingEngine renderingEngine;
 
 + (id)new NS_UNAVAILABLE;
