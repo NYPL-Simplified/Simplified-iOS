@@ -178,9 +178,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
                           [NSCharacterSet whitespaceCharacterSet]];
   
   if(feed.length) {
-    [NYPLConfiguration setDevelopmentFeedURL:[NSURL URLWithString:textField.text]];
+    [NYPLSettings sharedSettings].customMainFeedURL = [NSURL URLWithString:feed];
   } else {
-    [NYPLConfiguration setDevelopmentFeedURL:nil];
+    [NYPLSettings sharedSettings].customMainFeedURL = nil;
   }
   
   [[[UIAlertView alloc]
@@ -214,7 +214,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     self.logOutButton.hidden = YES;
   }
   
-  self.developmentOPDSURLTextField.text = [[NYPLConfiguration developmentFeedURL] absoluteString];
+  self.developmentOPDSURLTextField.text =
+    [NYPLSettings sharedSettings].customMainFeedURL.absoluteString;
   
   NSString *renderingEngineString;
   switch([NYPLSettings sharedSettings].renderingEngine) {
