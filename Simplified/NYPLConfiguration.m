@@ -1,6 +1,6 @@
-#import "NYPLConfiguration.h"
+#import "NYPLSettings.h"
 
-static NSString *const developmentFeedKey = @"NYPLConfigurationDevelopmentFeed";
+#import "NYPLConfiguration.h"
 
 @implementation NYPLConfiguration
 
@@ -12,21 +12,11 @@ static NSString *const developmentFeedKey = @"NYPLConfigurationDevelopmentFeed";
 
 + (NSURL *)mainFeedURL
 {
-  NSURL *const developmentURL = [self developmentFeedURL];
+  NSURL *const customURL = [NYPLSettings sharedSettings].customMainFeedURL;
   
-  if(developmentURL) return developmentURL;
+  if(customURL) return customURL;
   
   return [NSURL URLWithString:@"http://library-simplified.herokuapp.com"];
-}
-
-+ (NSURL *)developmentFeedURL
-{
-  return [[NSUserDefaults standardUserDefaults] URLForKey:developmentFeedKey];
-}
-
-+ (void)setDevelopmentFeedURL:(NSURL *const)URL
-{
-  [[NSUserDefaults standardUserDefaults] setURL:URL forKey:developmentFeedKey];
 }
 
 + (NSURL *)loanURL

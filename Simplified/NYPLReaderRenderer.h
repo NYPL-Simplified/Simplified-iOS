@@ -1,3 +1,5 @@
+@class NYPLBook;
+
 // No such actual class exists. This merely to provides a little safety around reader-specific
 // TOC-related location information. Any object that wants to do something with an opaque location
 // must verify that it is of the correct class and then cast it appropriately.

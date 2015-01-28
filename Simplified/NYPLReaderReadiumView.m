@@ -29,6 +29,8 @@
 
 @end
 
+static NSString *const renderer = @"readium";
+
 static id argument(NSURL *const URL)
 {
   NSString *const s = URL.resourceSpecifier;
@@ -44,9 +46,9 @@ static id argument(NSURL *const URL)
   return NYPLJSONObjectFromData(data);
 }
 
-void generateTOCElements(NSArray *const navigationElements,
-                         NSUInteger const nestingLevel,
-                         NSMutableArray *const TOCElements)
+static void generateTOCElements(NSArray *const navigationElements,
+                                NSUInteger const nestingLevel,
+                                NSMutableArray *const TOCElements)
 {
   for(RDNavigationElement *const navigationElement in navigationElements) {
     NYPLReaderTOCElement *const TOCElement =
@@ -264,19 +266,21 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   }
   
   self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
-  
-  NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
-                                      locationForIdentifier:self.book.identifier];
+
   
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
   dictionary[@"package"] = self.package.dictionary;
   dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
-  if(location) {
-    if(location.CFI) {
-      dictionary[@"openPageRequest"] = @{@"idref": location.idref, @"elementCfi" : location.CFI};
-    } else {
-      dictionary[@"openPageRequest"] = @{@"idref": location.idref};
-    }
+  
+  NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
+                                      locationForIdentifier:self.book.identifier];
+  if([location.renderer isEqualToString:renderer]) {
+    // Readium stores a "contentCFI" but needs an "elementCfi" when handling a page request, so we
+    // have to create a new dictionary.
+    NSDictionary *const locationDictionary =
+    NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
+    dictionary[@"openPageRequest"] = @{@"idref": locationDictionary[@"idref"],
+                                       @"elementCfi": locationDictionary[@"contentCFI"]};
   }
   
   NSData *data = NYPLJSONDataFromObject(dictionary);
@@ -314,12 +318,9 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   NSString *const locationJSON = [self.webView stringByEvaluatingJavaScriptFromString:
                                   @"ReadiumSDK.reader.bookmarkCurrentPage()"];
   
-  NSDictionary *const locationDictionary =
-  NYPLJSONObjectFromData([locationJSON dataUsingEncoding:NSUTF8StringEncoding]);
-  
   NYPLBookLocation *const location = [[NYPLBookLocation alloc]
-                                      initWithCFI:locationDictionary[@"contentCFI"]
-                                      idref:locationDictionary[@"idref"]];
+                                      initWithLocationString:locationJSON
+                                      renderer:renderer];
   
   if(location) {
     [[NYPLMyBooksRegistry sharedRegistry]
@@ -330,7 +331,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   self.webView.hidden = NO;
 }
 
-#pragma mark NYPLReaderView
+#pragma mark NYPLReaderRenderer
 
 - (NSArray *)TOCElements
 {

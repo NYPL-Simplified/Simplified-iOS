@@ -3,6 +3,8 @@
 #import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
+#import "NYPLRoundedButton.h"
+#import "NYPLSettings.h"
 #import "NYPLSettingsCredentialViewController.h"
 
 #import "NYPLSettingsViewController.h"
@@ -14,10 +16,9 @@
 @property (nonatomic) UIButton *logInButton;
 @property (nonatomic) UIButton *logOutButton;
 @property (nonatomic) UILabel *PINLabel;
+@property (nonatomic) UIButton *renderingEngineButton;
 
 @end
-
-static NSString *const developmentOPDSURLKey = @"developmentOPDSURL";
 
 @implementation NYPLSettingsViewController
 
@@ -34,6 +35,12 @@ static NSString *const developmentOPDSURLKey = @"developmentOPDSURL";
    addObserver:self
    selector:@selector(updateAppearance)
    name:NYPLAccountDidChangeNotification
+   object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(updateAppearance)
+   name:NYPLSettingsDidChangeNotification
    object:nil];
   
   return self;
@@ -58,14 +65,14 @@ static NSString *const developmentOPDSURLKey = @"developmentOPDSURL";
   self.PINLabel = [[UILabel alloc] init];
   [self.view addSubview:self.PINLabel];
   
-  self.logInButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  self.logInButton = [NYPLRoundedButton button];
   [self.logInButton addTarget:self
                         action:@selector(didSelectLogIn)
               forControlEvents:UIControlEventTouchUpInside];
   [self.logInButton setTitle:NSLocalizedString(@"LogIn", nil) forState:UIControlStateNormal];
   [self.view addSubview:self.logInButton];
   
-  self.logOutButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  self.logOutButton = [NYPLRoundedButton button];
   [self.logOutButton addTarget:self
                         action:@selector(didSelectLogOut)
               forControlEvents:UIControlEventTouchUpInside];
@@ -75,57 +82,77 @@ static NSString *const developmentOPDSURLKey = @"developmentOPDSURL";
   self.developmentOPDSURLTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.developmentOPDSURLTextField.delegate = self;
   self.developmentOPDSURLTextField.borderStyle = UITextBorderStyleRoundedRect;
-  self.developmentOPDSURLTextField.placeholder = @"Enter a custom OPDS URL…";
+  self.developmentOPDSURLTextField.placeholder = @"Enter a custom HTTP OPDS URL…";
   self.developmentOPDSURLTextField.keyboardType = UIKeyboardTypeURL;
   self.developmentOPDSURLTextField.returnKeyType = UIReturnKeyDone;
   self.developmentOPDSURLTextField.spellCheckingType = UITextSpellCheckingTypeNo;
   self.developmentOPDSURLTextField.autocorrectionType = UITextAutocorrectionTypeNo;
   self.developmentOPDSURLTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-  self.developmentOPDSURLTextField.text = [[NSUserDefaults standardUserDefaults]
-                                           valueForKey:@"developmentOPDSURL"];
   [self.view addSubview:self.developmentOPDSURLTextField];
   
-  
-  [self updateAppearance];
+  self.renderingEngineButton = [NYPLRoundedButton button];
+  [self.renderingEngineButton addTarget:self
+                                 action:@selector(didSelectRenderingEngine)
+                       forControlEvents:UIControlEventTouchUpInside];
+  [self.view addSubview:self.renderingEngineButton];
 }
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
 {
-  self.developmentOPDSURLTextField.text = [[NYPLConfiguration developmentFeedURL] absoluteString];
+  [self updateAppearance];
 }
 
 - (void)viewWillLayoutSubviews
 {
-  [self.developmentOPDSURLTextField sizeToFit];
-  self.developmentOPDSURLTextField.frame =
+  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+    [self.barcodeLabel sizeToFit];
+    self.barcodeLabel.frame =
+      CGRectMake(5,
+                 CGRectGetMaxY(self.navigationController.navigationBar.frame) + 5,
+                 CGRectGetWidth(self.barcodeLabel.frame),
+                 CGRectGetHeight(self.barcodeLabel.frame));
+    
+    [self.PINLabel sizeToFit];
+    self.PINLabel.frame = CGRectMake(5,
+                                     CGRectGetMaxY(self.barcodeLabel.frame) + 5,
+                                     CGRectGetWidth(self.PINLabel.frame),
+                                     CGRectGetHeight(self.PINLabel.frame));
+    
+    [self.logOutButton sizeToFit];
+    self.logOutButton.frame = CGRectMake(5,
+                                         CGRectGetMaxY(self.PINLabel.frame) + 5,
+                                         CGRectGetWidth(self.logOutButton.frame),
+                                         CGRectGetHeight(self.logOutButton.frame));
+    
+    [self.developmentOPDSURLTextField sizeToFit];
+    self.developmentOPDSURLTextField.frame =
+      CGRectMake(5,
+                 CGRectGetMaxY(self.logOutButton.frame) + 5,
+                 CGRectGetWidth(self.view.frame) - 10,
+                 CGRectGetHeight(self.developmentOPDSURLTextField.frame));
+  } else {
+    [self.logInButton sizeToFit];
+    self.logInButton.frame =
+      CGRectMake(5,
+                 CGRectGetMaxY(self.navigationController.navigationBar.frame) + 5,
+                 CGRectGetWidth(self.logInButton.frame),
+                 CGRectGetHeight(self.logInButton.frame));
+    
+    [self.developmentOPDSURLTextField sizeToFit];
+      self.developmentOPDSURLTextField.frame =
+      CGRectMake(5,
+                 CGRectGetMaxY(self.logInButton.frame) + 5,
+                 CGRectGetWidth(self.view.frame) - 10,
+                 CGRectGetHeight(self.developmentOPDSURLTextField.frame));
+  }
+  
+  [self.renderingEngineButton sizeToFit];
+  
+  self.renderingEngineButton.frame =
     CGRectMake(5,
-               69,
-               CGRectGetWidth(self.view.frame) - 10,
-               CGRectGetHeight(self.developmentOPDSURLTextField.frame));
-  
-  [self.barcodeLabel sizeToFit];
-  self.barcodeLabel.frame = CGRectMake(5,
-                                       CGRectGetMaxY(self.developmentOPDSURLTextField.frame) + 5,
-                                       CGRectGetWidth(self.barcodeLabel.frame),
-                                       CGRectGetHeight(self.barcodeLabel.frame));
-  
-  [self.PINLabel sizeToFit];
-  self.PINLabel.frame = CGRectMake(5,
-                                   CGRectGetMaxY(self.barcodeLabel.frame) + 5,
-                                   CGRectGetWidth(self.PINLabel.frame),
-                                   CGRectGetHeight(self.PINLabel.frame));
-  
-  [self.logOutButton sizeToFit];
-  self.logOutButton.frame = CGRectMake(5,
-                                       CGRectGetMaxY(self.PINLabel.frame) + 5,
-                                       CGRectGetWidth(self.logOutButton.frame),
-                                       CGRectGetHeight(self.logOutButton.frame));
-  
-  [self.logInButton sizeToFit];
-  self.logInButton.frame = CGRectMake(5,
-                                      CGRectGetMaxY(self.developmentOPDSURLTextField.frame) + 5,
-                                      CGRectGetWidth(self.logInButton.frame),
-                                      CGRectGetHeight(self.logInButton.frame));
+               CGRectGetMaxY(self.developmentOPDSURLTextField.frame) + 5,
+               CGRectGetWidth(self.renderingEngineButton.frame),
+               CGRectGetHeight(self.renderingEngineButton.frame));
 }
 
 #pragma mark UIAlertViewDelegate
@@ -151,9 +178,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
                           [NSCharacterSet whitespaceCharacterSet]];
   
   if(feed.length) {
-    [NYPLConfiguration setDevelopmentFeedURL:[NSURL URLWithString:textField.text]];
+    [NYPLSettings sharedSettings].customMainFeedURL = [NSURL URLWithString:feed];
   } else {
-    [NYPLConfiguration setDevelopmentFeedURL:nil];
+    [NYPLSettings sharedSettings].customMainFeedURL = nil;
   }
   
   [[[UIAlertView alloc]
@@ -174,9 +201,10 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 {
   if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
     self.barcodeLabel.hidden = NO;
-    self.barcodeLabel.text = [NYPLAccount sharedAccount].barcode;
+    self.barcodeLabel.text = [@"Barcode: " stringByAppendingString:
+                              [NYPLAccount sharedAccount].barcode];
     self.PINLabel.hidden = NO;
-    self.PINLabel.text = [NYPLAccount sharedAccount].PIN;
+    self.PINLabel.text = [@"PIN: " stringByAppendingString:[NYPLAccount sharedAccount].PIN];
     self.logInButton.hidden = YES;
     self.logOutButton.hidden = NO;
   } else {
@@ -185,6 +213,26 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     self.logInButton.hidden = NO;
     self.logOutButton.hidden = YES;
   }
+  
+  self.developmentOPDSURLTextField.text =
+    [NYPLSettings sharedSettings].customMainFeedURL.absoluteString;
+  
+  NSString *renderingEngineString;
+  switch([NYPLSettings sharedSettings].renderingEngine) {
+    case NYPLSettingsRenderingEngineAutomatic:
+      renderingEngineString = @"Automatic";
+      break;
+    case NYPLSettingsRenderingEngineReadium:
+      renderingEngineString = @"Readium";
+      break;
+    case NYPLSettingsRenderingEngineRMSDK10:
+      renderingEngineString = @"RMSDK 10";
+      break;
+  }
+  
+  [self.renderingEngineButton setTitle:[@"Rendering Engine: "
+                                        stringByAppendingString:renderingEngineString]
+                              forState:UIControlStateNormal];
   
   [self.view setNeedsLayout];
 }
@@ -206,6 +254,51 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
     otherButtonTitles:NSLocalizedString(@"LogOut", nil), nil]
    show];
+}
+
+- (void)didSelectRenderingEngine
+{
+  NYPLSettingsRenderingEngine const renderingEngine = [NYPLSettings sharedSettings].renderingEngine;
+  
+  UIAlertController *const alertController = [UIAlertController
+                                              alertControllerWithTitle:nil
+                                              message:nil
+                                              preferredStyle:UIAlertControllerStyleActionSheet];
+  
+  [alertController addAction:[UIAlertAction
+                              actionWithTitle:@"Automatic"
+                              style:(renderingEngine == NYPLSettingsRenderingEngineAutomatic
+                                     ? UIAlertActionStyleCancel
+                                     : UIAlertActionStyleDefault)
+                              handler:^(__attribute__((unused)) UIAlertAction *action) {
+                                [NYPLSettings sharedSettings].renderingEngine =
+                                  NYPLSettingsRenderingEngineAutomatic;
+                              }]];
+  
+  [alertController addAction:[UIAlertAction
+                              actionWithTitle:@"Readium"
+                              style:(renderingEngine == NYPLSettingsRenderingEngineReadium
+                                     ? UIAlertActionStyleCancel
+                                     : UIAlertActionStyleDefault)
+                              handler:^(__attribute__((unused)) UIAlertAction *action) {
+                                [NYPLSettings sharedSettings].renderingEngine =
+                                  NYPLSettingsRenderingEngineReadium;
+                              }]];
+  
+  [alertController addAction:[UIAlertAction
+                              actionWithTitle:@"RMSDK 10"
+                              style:(renderingEngine == NYPLSettingsRenderingEngineRMSDK10
+                                     ? UIAlertActionStyleCancel
+                                     : UIAlertActionStyleDefault)
+                              handler:^(__attribute__((unused)) UIAlertAction *action) {
+                                [NYPLSettings sharedSettings].renderingEngine =
+                                  NYPLSettingsRenderingEngineRMSDK10;
+                              }]];
+  
+  alertController.popoverPresentationController.sourceRect = self.renderingEngineButton.bounds;
+  alertController.popoverPresentationController.sourceView = self.renderingEngineButton;
+  
+  [self presentViewController:alertController animated:YES completion:nil];
 }
 
 @end
