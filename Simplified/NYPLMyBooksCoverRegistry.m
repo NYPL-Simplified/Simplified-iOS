@@ -282,8 +282,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
     completionHandler:^(NSData *const data,
                         __attribute__((unused)) NSURLResponse *response,
                         __attribute__((unused)) NSError *error) {
-      // FIXME: We should check if the image data is valid.
-      if(!data) {
+      if(!data || ![UIImage imageWithData:data]) {
         NYPLLOG_F(@"Failed to pin thumbnail image for '%@'.", book.title);
         return;
       }
