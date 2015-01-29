@@ -30,9 +30,10 @@ function Simplified() {
                    ? screen.width
                    : screen.height;
     
+    var relativeDistanceX = (touch.screenX - startX) / maxScreenX;
+
     // Tap to turn.
-    if(Math.abs(touch.screenX - startX) <= 5 &&
-       Math.abs(touch.screenY - startY) <= 5) {
+    if(Math.abs(relativeDistanceX) < 0.1) {
       var position = touch.screenX / maxScreenX;
       if(position <= 0.2) {
         window.location = "simplified:gesture-left";
@@ -44,21 +45,19 @@ function Simplified() {
       event.stopPropagation();
       event.preventDefault();
       return;
-    }
-    
-    var relativeDistanceX = (touch.screenX - startX) / maxScreenX;
-    var slope = (touch.screenY - startY) / (touch.screenX - startX);
-    
-    // Swipe to turn.
-    if(Math.abs(slope) <= 0.5 && Math.abs(relativeDistanceX) >= 0.1) {
-      if(relativeDistanceX > 0) {
-        window.location = "simplified:gesture-left";
-      } else {
-        window.location = "simplified:gesture-right";
+    } else {
+      var slope = (touch.screenY - startY) / (touch.screenX - startX);
+      // Swipe to turn.
+      if(Math.abs(slope) <= 0.5) {
+        if(relativeDistanceX > 0) {
+          window.location = "simplified:gesture-left";
+        } else {
+          window.location = "simplified:gesture-right";
+        }
+        event.stopPropagation();
+        event.preventDefault();
+        return;
       }
-      event.stopPropagation();
-      event.preventDefault();
-      return;
     }
   };
   
