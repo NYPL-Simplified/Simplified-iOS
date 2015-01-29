@@ -90,9 +90,9 @@
 		11A14DF61A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A14DF51A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m */; };
 		11A16E69195B2BD3004147F4 /* NYPLCatalogAcquisitionFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E68195B2BD3004147F4 /* NYPLCatalogAcquisitionFeedViewController.m */; };
 		11A16E6F195B60DF004147F4 /* NYPLBookNormalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */; };
-		11ABD2281A6474DB002C9042 /* librmservices_iphone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 110FFAF11A6034CC0083D840 /* librmservices_iphone.a */; };
 		11ABD553197D6F5200759635 /* NYPLSettingsCredentialView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11ABD552197D6F5200759635 /* NYPLSettingsCredentialView.xib */; };
 		11ABD556197D77EF00759635 /* NYPLSettingsCredentialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ABD555197D77EF00759635 /* NYPLSettingsCredentialViewController.m */; };
+		11AFF0011A7A936E00A6062F /* librmservices_iphone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 110FFAF11A6034CC0083D840 /* librmservices_iphone.a */; };
 		11B20E6E19D9F6DD00877A23 /* NYPLReloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */; };
 		11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11B6020419806CD300800DA9 /* NYPLBookDownloadingCell.m */; };
 		11BFDB33199C01F700378691 /* NYPLReaderTOCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11BFDB32199C01F700378691 /* NYPLReaderTOCViewController.m */; };
@@ -157,6 +157,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 118A0E271992B3FD00792DDE;
 			remoteInfo = RDServices;
+		};
+		11AFF0321A7A988800A6062F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 110FFAB91A5EF6C50083D840 /* rmservices_iphone.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC07D0554694100DB518D;
+			remoteInfo = rmservices_iphone;
 		};
 		A823D82D192BABA400B55DE2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -381,17 +388,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				11ABD2281A6474DB002C9042 /* librmservices_iphone.a in Frameworks */,
 				112492581A5B5B690054D6E2 /* libstdc++.6.dylib in Frameworks */,
 				A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */,
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
 				A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */,
 				1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */,
 				119503E51993F90C009FB788 /* libePub3-iOS.a in Frameworks */,
-				119503E31993F90C009FB788 /* libRDServices.a in Frameworks */,
 				119503EB1993F91E009FB788 /* libc++.dylib in Frameworks */,
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
+				119503E31993F90C009FB788 /* libRDServices.a in Frameworks */,
+				11AFF0011A7A936E00A6062F /* librmservices_iphone.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -787,6 +794,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				11AFF0331A7A988800A6062F /* PBXTargetDependency */,
 				119503E21993F903009FB788 /* PBXTargetDependency */,
 			);
 			name = Simplified;
@@ -822,6 +830,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "NYPL Labs";
 				TargetAttributes = {
+					A823D80C192BABA400B55DE2 = {
+						DevelopmentTeam = 7262U6ST2R;
+					};
 					A823D827192BABA400B55DE2 = {
 						TestTargetID = A823D80C192BABA400B55DE2;
 					};
@@ -1046,6 +1057,11 @@
 			name = RDServices;
 			targetProxy = 119503E11993F903009FB788 /* PBXContainerItemProxy */;
 		};
+		11AFF0331A7A988800A6062F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = rmservices_iphone;
+			targetProxy = 11AFF0321A7A988800A6062F /* PBXContainerItemProxy */;
+		};
 		A823D82E192BABA400B55DE2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A823D80C192BABA400B55DE2 /* Simplified */;
@@ -1173,6 +1189,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = armv7;
 				WARNING_CFLAGS = (
 					"-Werror",
 					"-Wall",
@@ -1205,6 +1222,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = armv7;
 				WARNING_CFLAGS = (
 					"-Werror",
 					"-Wall",
