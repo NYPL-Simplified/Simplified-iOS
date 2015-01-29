@@ -179,7 +179,9 @@ static void generateTOCElements(NSArray *const TOCItems,
   CGPoint const start = self.touchBeganLocation;
   CGPoint const end = [[touches anyObject] locationInView:self];
   
-  if(fabs(end.x - start.x) <= 5.0 && fabs(end.y - start.y) <= 5.0) {
+  CGFloat const relativeDistanceX = (end.x - start.x) / CGRectGetWidth(self.frame);
+  
+  if(fabs(relativeDistanceX) < 0.1) {
     CGFloat const position = end.x / CGRectGetWidth(self.frame);
     if(position <= 0.2) {
       [self.documentHost previousScreen];
@@ -193,9 +195,8 @@ static void generateTOCElements(NSArray *const TOCItems,
       [self.delegate renderer:self didReceiveGesture:NYPLReaderRendererGestureToggleUserInterface];
     }
   } else {
-    CGFloat const relativeDistanceX = (end.x - start.x) / CGRectGetWidth(self.frame);
     CGFloat const slope = (end.y - start.y) / (end.x - start.x);
-    if(fabs(slope) <= 0.5 && fabs(relativeDistanceX) >= 0.1) {
+    if(fabs(slope) <= 0.5) {
       if(relativeDistanceX > 0) {
         [self.documentHost previousScreen];
       } else {
