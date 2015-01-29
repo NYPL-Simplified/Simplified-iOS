@@ -101,6 +101,7 @@ static void generateTOCElements(NSArray *const TOCItems,
                          height:CGRectGetHeight([UIScreen mainScreen].nativeBounds)
                          delegate:self
                          load:YES];
+    self.documentHost.defaultFontSize = 20;
   } @catch (...) {
     self.bookIsCorrupt = YES;
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
