@@ -77,6 +77,13 @@
 
 // NYPLSettingsViewController
 
-"SettingsViewControllerTitle" = "Settings";
 "SettingsViewControllerLogoutMessage" =
   "Are you sure you want to log out and delete all local content?";
+
+// SettingsPrimaryViewController
+
+"SettingsPrimaryViewControllerTitle" = "Settings";
+
+// SettingsSplitViewController
+
+"SettingsSplitViewControllerTitle" = "Settings";
