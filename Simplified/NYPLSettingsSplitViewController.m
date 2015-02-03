@@ -23,6 +23,8 @@
   
   self.title = NSLocalizedString(@"SettingsSplitViewControllerTitle", nil);
   
+  self.tabBarItem.image = [UIImage imageNamed:@"Settings"];
+  
   self.primaryNavigationController = [[NYPLSettingsPrimaryNavigationController alloc] init];
   self.secondaryNavigationController = [[NYPLSettingsSecondaryNavigationController alloc] init];
   
