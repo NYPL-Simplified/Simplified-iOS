@@ -26,4 +26,21 @@
   return self;
 }
 
+#pragma mark NYPLSettingsPrimaryTableViewControllerDelegate
+
+- (void)settingsPrimaryTableViewController:(__attribute__((unused))
+                                            NYPLSettingsPrimaryTableViewController *)
+                                           settingsPrimaryTableViewController
+                             didSelectItem:(NYPLSettingsPrimaryTableViewControllerItem const)item
+{
+  switch(item) {
+    case NYPLSettingsPrimaryTableViewControllerItemCreditsAndAcknowledgements:
+      // TODO
+      break;
+    case NYPLSettingsPrimaryTableViewControllerItemFeedback:
+      // TODO
+      break;
+  }
+}
+
 @end

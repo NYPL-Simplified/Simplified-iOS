@@ -82,6 +82,8 @@
 
 // SettingsPrimaryTableViewController
 
+"SettingsPrimaryTableViewControllerCreditsAndAcknowledgements" = "Credits & Acknowledgements";
+"SettingsPrimaryTableViewControllerFeedback" = "Feedback";
 "SettingsPrimaryTableViewControllerTitle" = "Settings";
 
 // SettingsSplitViewController
