@@ -32,6 +32,7 @@
 		111E757A1A80165C00718AD7 /* NYPLSettingsSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111E75791A80165C00718AD7 /* NYPLSettingsSplitViewController.m */; };
 		111E757D1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111E757C1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m */; };
 		111E75801A814AF000718AD7 /* NYPLSettingsSecondaryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111E757F1A814AF000718AD7 /* NYPLSettingsSecondaryNavigationController.m */; };
+		111E75831A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111E75821A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m */; };
 		1120749319D20BF9008203A4 /* NYPLBookCellCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1120749219D20BF9008203A4 /* NYPLBookCellCollectionViewController.m */; };
 		112492581A5B5B690054D6E2 /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 112492571A5B5B690054D6E2 /* libstdc++.6.dylib */; };
 		112C684F19EF003300106973 /* NYPLCatalogFacetGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 112C684E19EF003300106973 /* NYPLCatalogFacetGroup.m */; };
@@ -225,6 +226,8 @@
 		111E757C1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsPrimaryNavigationController.m; sourceTree = "<group>"; };
 		111E757E1A814AF000718AD7 /* NYPLSettingsSecondaryNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsSecondaryNavigationController.h; sourceTree = "<group>"; };
 		111E757F1A814AF000718AD7 /* NYPLSettingsSecondaryNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsSecondaryNavigationController.m; sourceTree = "<group>"; };
+		111E75811A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsPrimaryTableViewController.h; sourceTree = "<group>"; };
+		111E75821A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsPrimaryTableViewController.m; sourceTree = "<group>"; };
 		1120749119D20BF9008203A4 /* NYPLBookCellCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookCellCollectionViewController.h; sourceTree = "<group>"; };
 		1120749219D20BF9008203A4 /* NYPLBookCellCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookCellCollectionViewController.m; sourceTree = "<group>"; };
 		112492531A5B418E0054D6E2 /* NYPLRMSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLRMSDK.h; sourceTree = "<group>"; };
@@ -613,6 +616,8 @@
 				111E757C1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m */,
 				111E757E1A814AF000718AD7 /* NYPLSettingsSecondaryNavigationController.h */,
 				111E757F1A814AF000718AD7 /* NYPLSettingsSecondaryNavigationController.m */,
+				111E75811A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.h */,
+				111E75821A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -992,6 +997,7 @@
 				111197341986D7550014462F /* NYPLDismissibleViewController.m in Sources */,
 				A823D81D192BABA400B55DE2 /* main.m in Sources */,
 				1107835E19816E3D0071AB1E /* UIView+NYPLViewAdditions.m in Sources */,
+				111E75831A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m in Sources */,
 				11ABD556197D77EF00759635 /* NYPLSettingsCredentialViewController.m in Sources */,
 				11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */,
 				1183F353194F795800DC322F /* NYPLBookAcquisition.m in Sources */,

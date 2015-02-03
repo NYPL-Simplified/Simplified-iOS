@@ -1,4 +1,13 @@
+#import "NYPLSettingsPrimaryTableViewController.h"
+
 #import "NYPLSettingsPrimaryNavigationController.h"
+
+@interface NYPLSettingsPrimaryNavigationController ()
+  <NYPLSettingsPrimaryTableViewControllerDelegate>
+
+@property (nonatomic) NYPLSettingsPrimaryTableViewController *tableViewController;
+
+@end
 
 @implementation NYPLSettingsPrimaryNavigationController
 
@@ -6,10 +15,13 @@
 
 - (instancetype)init
 {
-  self = [super initWithRootViewController:[[UIViewController alloc] init]];
+  NYPLSettingsPrimaryTableViewController *const tableViewController =
+    [[NYPLSettingsPrimaryTableViewController alloc] init];
+  
+  self = [super initWithRootViewController:tableViewController];
   if(!self) return nil;
   
-  ((UIViewController *)self.viewControllers[0]).view.backgroundColor = [UIColor redColor];
+  self.tableViewController = tableViewController;
   
   return self;
 }

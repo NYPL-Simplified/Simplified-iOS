@@ -80,9 +80,9 @@
 "SettingsViewControllerLogoutMessage" =
   "Are you sure you want to log out and delete all local content?";
 
-// SettingsPrimaryViewController
+// SettingsPrimaryTableViewController
 
-"SettingsPrimaryViewControllerTitle" = "Settings";
+"SettingsPrimaryTableViewControllerTitle" = "Settings";
 
 // SettingsSplitViewController
 
