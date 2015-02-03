@@ -1,4 +1,15 @@
+@class NYPLSettingsPrimaryTableViewController;
+
+typedef NS_ENUM(NSInteger, NYPLSettingsPrimaryTableViewControllerItem) {
+  NYPLSettingsPrimaryTableViewControllerItemFeedback,
+  NYPLSettingsPrimaryTableViewControllerItemCreditsAndAcknowledgements
+};
+
 @protocol NYPLSettingsPrimaryTableViewControllerDelegate
+
+- (void)settingsPrimaryTableViewController:(NYPLSettingsPrimaryTableViewController *)
+                                           settingsPrimaryTableViewController
+                             didSelectItem:(NYPLSettingsPrimaryTableViewControllerItem)item;
 
 @end
 
