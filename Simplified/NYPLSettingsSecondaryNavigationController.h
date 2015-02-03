@@ -1,3 +1,0 @@
-@interface NYPLSettingsSecondaryNavigationController : UINavigationController
-
-@end

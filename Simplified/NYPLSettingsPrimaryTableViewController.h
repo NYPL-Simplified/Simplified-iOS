@@ -1,9 +1,12 @@
 @class NYPLSettingsPrimaryTableViewController;
 
 typedef NS_ENUM(NSInteger, NYPLSettingsPrimaryTableViewControllerItem) {
-  NYPLSettingsPrimaryTableViewControllerItemFeedback,
-  NYPLSettingsPrimaryTableViewControllerItemCreditsAndAcknowledgements
+  NYPLSettingsPrimaryTableViewControllerItemCredits,
+  NYPLSettingsPrimaryTableViewControllerItemFeedback
 };
+
+NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
+  const NYPLSettingsPrimaryTableViewControllerItem settingsItem);
 
 @protocol NYPLSettingsPrimaryTableViewControllerDelegate
 

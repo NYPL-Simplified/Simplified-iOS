@@ -9,7 +9,7 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
         case 0:
           return NYPLSettingsPrimaryTableViewControllerItemFeedback;
         case 1:
-          return NYPLSettingsPrimaryTableViewControllerItemCreditsAndAcknowledgements;
+          return NYPLSettingsPrimaryTableViewControllerItemCredits;
         default:
           @throw NSInvalidArgumentException;
       }
@@ -18,14 +18,13 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
   }
 }
 
-__attribute__((unused))
-static NSIndexPath *IndexPathFromSettingsItem(
+NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   const NYPLSettingsPrimaryTableViewControllerItem settingsItem)
 {
   switch(settingsItem) {
     case NYPLSettingsPrimaryTableViewControllerItemFeedback:
       return [NSIndexPath indexPathForRow:0 inSection:0];
-    case NYPLSettingsPrimaryTableViewControllerItemCreditsAndAcknowledgements:
+    case NYPLSettingsPrimaryTableViewControllerItemCredits:
       return [NSIndexPath indexPathForRow:1 inSection:0];
   }
 }
@@ -41,11 +40,11 @@ static NSString *const reuseIdentifier = @"reuseIdentifier";
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"SettingsPrimaryTableViewControllerTitle", nil);
-  
-  assert(self.tableView);
+  self.title = NSLocalizedString(@"Settings", nil);
   
   [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:reuseIdentifier];
+  
+  self.clearsSelectionOnViewWillAppear = NO;
   
   return self;
 }
@@ -71,12 +70,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 
   switch(SettingsItemFromIndexPath(indexPath)) {
-    case NYPLSettingsPrimaryTableViewControllerItemCreditsAndAcknowledgements:
+    case NYPLSettingsPrimaryTableViewControllerItemCredits:
       cell.textLabel.text =
-        NSLocalizedString(@"SettingsPrimaryTableViewControllerCreditsAndAcknowledgements", nil);
+        NSLocalizedString(@"CreditsAndAcknowledgements", nil);
       break;
     case NYPLSettingsPrimaryTableViewControllerItemFeedback:
-      cell.textLabel.text = NSLocalizedString(@"SettingsPrimaryTableViewControllerFeedback", nil);
+      cell.textLabel.text = NSLocalizedString(@"Feedback", nil);
       break;
   }
   
