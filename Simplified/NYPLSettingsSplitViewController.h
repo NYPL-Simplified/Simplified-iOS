@@ -1,0 +1,3 @@
+@interface NYPLSettingsSplitViewController : UISplitViewController
+
+@end

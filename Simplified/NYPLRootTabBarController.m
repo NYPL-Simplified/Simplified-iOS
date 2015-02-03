@@ -1,7 +1,7 @@
 #import "NYPLCatalogNavigationController.h"
 #import "NYPLMyBooksNavigationController.h"
 #import "NYPLHoldsNavigationController.h"
-#import "NYPLSettingsNavigationController.h"
+#import "NYPLSettingsSplitViewController.h"
 
 #import "NYPLRootTabBarController.h"
 
@@ -10,7 +10,7 @@
 @property (nonatomic) NYPLCatalogNavigationController *catalogNavigationController;
 @property (nonatomic) NYPLMyBooksNavigationController *myBooksNavigationController;
 @property (nonatomic) NYPLHoldsNavigationController *holdsNavigationController;
-@property (nonatomic) NYPLSettingsNavigationController *settingsNavigationController;
+@property (nonatomic) NYPLSettingsSplitViewController *settingsSplitViewController;
 
 @end
 
@@ -41,12 +41,12 @@
   self.catalogNavigationController = [[NYPLCatalogNavigationController alloc] init];
   self.myBooksNavigationController = [[NYPLMyBooksNavigationController alloc] init];
   self.holdsNavigationController = [[NYPLHoldsNavigationController alloc] init];
-  self.settingsNavigationController = [[NYPLSettingsNavigationController alloc] init];
+  self.settingsSplitViewController = [[NYPLSettingsSplitViewController alloc] init];
   
   self.viewControllers = @[self.catalogNavigationController,
                            self.myBooksNavigationController,
                            self.holdsNavigationController,
-                           self.settingsNavigationController];
+                           self.settingsSplitViewController];
   
   return self;
 }
