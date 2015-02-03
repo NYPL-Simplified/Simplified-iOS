@@ -4,12 +4,14 @@
 "Catalog" = "Catalog";
 "CheckConnection" = "Please check your connection and try again.";
 "ConnectionFailed" = "Connection Failed";
+"CreditsAndAcknowledgements" = "Credits & Acknowledgements";
 "Delete" = "Delete";
 "Download" = "Download";
 "DownloadCouldNotBeCompleted" = "The download could not be completed.";
 "DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.";
 "DownloadFailed" = "Download Failed";
 "Downloading" = "Downloading";
+"Feedback" = "Feedback";
 "LogIn" = "Log In";
 "LogOut" = "Log Out";
 "NoResultsFound" = "No results found.";
@@ -17,6 +19,7 @@
 "OK" = "OK";
 "Read" = "Read"; // present tense
 "SearchPlaceholderFormat" = "Search %@";
+"Settings" = "Settings";
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";
 "TryAgain" = "Try Again";
 "UnknownRequestError" =
@@ -79,13 +82,3 @@
 
 "SettingsViewControllerLogoutMessage" =
   "Are you sure you want to log out and delete all local content?";
-
-// SettingsPrimaryTableViewController
-
-"SettingsPrimaryTableViewControllerCreditsAndAcknowledgements" = "Credits & Acknowledgements";
-"SettingsPrimaryTableViewControllerFeedback" = "Feedback";
-"SettingsPrimaryTableViewControllerTitle" = "Settings";
-
-// SettingsSplitViewController
-
-"SettingsSplitViewControllerTitle" = "Settings";
