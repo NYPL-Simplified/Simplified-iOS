@@ -1,3 +1,5 @@
+#import "NYPLConfiguration.h"
+
 #import "NYPLSettingsFeedbackViewController.h"
 
 @implementation NYPLSettingsFeedbackViewController
@@ -14,7 +16,7 @@
 
 - (void)viewDidLoad
 {
-  self.view.backgroundColor = [UIColor redColor];
+  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
 }
 
 @end
