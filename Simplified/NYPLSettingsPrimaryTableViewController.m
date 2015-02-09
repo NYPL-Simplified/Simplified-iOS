@@ -1,3 +1,5 @@
+#import "NYPLAccount.h"
+
 #import "NYPLSettingsPrimaryTableViewController.h"
 
 static NYPLSettingsPrimaryTableViewControllerItem
@@ -38,8 +40,6 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   }
 }
 
-static NSString *const reuseIdentifier = @"reuseIdentifier";
-
 @implementation NYPLSettingsPrimaryTableViewController
 
 #pragma mark NSObject
@@ -50,8 +50,6 @@ static NSString *const reuseIdentifier = @"reuseIdentifier";
   if(!self) return nil;
   
   self.title = NSLocalizedString(@"Settings", nil);
-  
-  [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:reuseIdentifier];
   
   self.clearsSelectionOnViewWillAppear = NO;
   
@@ -72,26 +70,41 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  UITableViewCell *const cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
-  if(!cell) {
-    // We have a class registered, so this should never be reached.
-    @throw NSInternalInconsistencyException;
-  }
-
   switch(SettingsItemFromIndexPath(indexPath)) {
-    case NYPLSettingsPrimaryTableViewControllerItemAccount:
-      cell.textLabel.text = NSLocalizedString(@"Account", nil);
-      break;
-    case NYPLSettingsPrimaryTableViewControllerItemCredits:
-      cell.textLabel.text =
-        NSLocalizedString(@"CreditsAndAcknowledgements", nil);
-      break;
-    case NYPLSettingsPrimaryTableViewControllerItemFeedback:
+    case NYPLSettingsPrimaryTableViewControllerItemAccount: {
+      NSString *const barcode = [NYPLAccount sharedAccount].barcode;
+      if(barcode) {
+        UITableViewCell *const cell = [[UITableViewCell alloc]
+                                       initWithStyle:UITableViewCellStyleSubtitle
+                                       reuseIdentifier:nil];
+        cell.textLabel.text = NSLocalizedString(@"Account", nil);
+        cell.detailTextLabel.text = [NYPLAccount sharedAccount].barcode;
+        cell.detailTextLabel.textColor = [UIColor lightGrayColor];
+        return cell;
+      } else {
+        UITableViewCell *const cell = [[UITableViewCell alloc]
+                                       initWithStyle:UITableViewCellStyleDefault
+                                       reuseIdentifier:nil];
+        cell.textLabel.text = NSLocalizedString(@"Account", nil);
+      }
+    }
+    case NYPLSettingsPrimaryTableViewControllerItemCredits: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      cell.textLabel.text = NSLocalizedString(@"CreditsAndAcknowledgements", nil);
+      cell.detailTextLabel.text = nil;
+      return cell;
+    }
+    case NYPLSettingsPrimaryTableViewControllerItemFeedback: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
       cell.textLabel.text = NSLocalizedString(@"Feedback", nil);
-      break;
+      cell.detailTextLabel.text = nil;
+      return cell;
+    }
   }
-  
-  return cell;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView

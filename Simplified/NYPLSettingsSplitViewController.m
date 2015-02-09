@@ -1,3 +1,4 @@
+#import "NYPLSettingsAccountViewController.h"
 #import "NYPLSettingsCreditsViewController.h"
 #import "NYPLSettingsFeedbackViewController.h"
 #import "NYPLSettingsPrimaryNavigationController.h"
@@ -33,7 +34,7 @@
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.viewControllers = @[self.primaryNavigationController,
                              [[UINavigationController alloc] initWithRootViewController:
-                              [[UIViewController alloc] init]]];
+                              [[NYPLSettingsAccountViewController alloc] init]]];
     [self.primaryNavigationController.primaryTableViewController.tableView
      selectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
                             NYPLSettingsPrimaryTableViewControllerItemAccount)
@@ -67,8 +68,7 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
   UIViewController *viewController;
   switch(item) {
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
-      // TODO
-      viewController = [[UIViewController alloc] init];
+      viewController = [[NYPLSettingsAccountViewController alloc] init];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemCredits:
       viewController = [[NYPLSettingsCreditsViewController alloc] init];
