@@ -33,10 +33,10 @@
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.viewControllers = @[self.primaryNavigationController,
                              [[UINavigationController alloc] initWithRootViewController:
-                              [[NYPLSettingsFeedbackViewController alloc] init]]];
+                              [[UIViewController alloc] init]]];
     [self.primaryNavigationController.primaryTableViewController.tableView
      selectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
-                            NYPLSettingsPrimaryTableViewControllerItemFeedback)
+                            NYPLSettingsPrimaryTableViewControllerItemAccount)
      animated:NO
      scrollPosition:UITableViewScrollPositionMiddle];
   } else {
@@ -66,6 +66,10 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
 {
   UIViewController *viewController;
   switch(item) {
+    case NYPLSettingsPrimaryTableViewControllerItemAccount:
+      // TODO
+      viewController = [[UIViewController alloc] init];
+      break;
     case NYPLSettingsPrimaryTableViewControllerItemCredits:
       viewController = [[NYPLSettingsCreditsViewController alloc] init];
       break;

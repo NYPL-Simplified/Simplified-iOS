@@ -7,6 +7,13 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
     case 0:
       switch(indexPath.row) {
         case 0:
+          return NYPLSettingsPrimaryTableViewControllerItemAccount;
+        default:
+          @throw NSInvalidArgumentException;
+      }
+    case 1:
+      switch(indexPath.row) {
+        case 0:
           return NYPLSettingsPrimaryTableViewControllerItemFeedback;
         case 1:
           return NYPLSettingsPrimaryTableViewControllerItemCredits;
@@ -22,10 +29,12 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   const NYPLSettingsPrimaryTableViewControllerItem settingsItem)
 {
   switch(settingsItem) {
-    case NYPLSettingsPrimaryTableViewControllerItemFeedback:
+    case NYPLSettingsPrimaryTableViewControllerItemAccount:
       return [NSIndexPath indexPathForRow:0 inSection:0];
+    case NYPLSettingsPrimaryTableViewControllerItemFeedback:
+      return [NSIndexPath indexPathForRow:0 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemCredits:
-      return [NSIndexPath indexPathForRow:1 inSection:0];
+      return [NSIndexPath indexPathForRow:1 inSection:1];
   }
 }
 
@@ -70,6 +79,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 
   switch(SettingsItemFromIndexPath(indexPath)) {
+    case NYPLSettingsPrimaryTableViewControllerItemAccount:
+      cell.textLabel.text = NSLocalizedString(@"Account", nil);
+      break;
     case NYPLSettingsPrimaryTableViewControllerItemCredits:
       cell.textLabel.text =
         NSLocalizedString(@"CreditsAndAcknowledgements", nil);
@@ -84,7 +96,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return 1;
+  return 2;
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -92,6 +104,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(section) {
     case 0:
+      return 1;
+    case 1:
       return 2;
     default:
       @throw NSInternalInconsistencyException;
