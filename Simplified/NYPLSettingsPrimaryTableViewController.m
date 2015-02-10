@@ -80,12 +80,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         cell.textLabel.text = NSLocalizedString(@"Account", nil);
         cell.detailTextLabel.text = [NYPLAccount sharedAccount].barcode;
         cell.detailTextLabel.textColor = [UIColor lightGrayColor];
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+          cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
         return cell;
       } else {
         UITableViewCell *const cell = [[UITableViewCell alloc]
                                        initWithStyle:UITableViewCellStyleDefault
                                        reuseIdentifier:nil];
         cell.textLabel.text = NSLocalizedString(@"Account", nil);
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+          cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
+        return cell;
       }
     }
     case NYPLSettingsPrimaryTableViewControllerItemCredits: {
@@ -94,6 +101,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.textLabel.text = NSLocalizedString(@"CreditsAndAcknowledgements", nil);
       cell.detailTextLabel.text = nil;
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      }
       return cell;
     }
     case NYPLSettingsPrimaryTableViewControllerItemFeedback: {
@@ -102,6 +112,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.textLabel.text = NSLocalizedString(@"Feedback", nil);
       cell.detailTextLabel.text = nil;
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      }
       return cell;
     }
   }
