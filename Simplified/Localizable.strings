@@ -1,6 +1,5 @@
 // Generic
 
-"Account" = "Account";
 "Barcode" = "Barcode";
 "Cancel" = "Cancel";
 "Catalog" = "Catalog";
@@ -14,6 +13,7 @@
 "DownloadFailed" = "Download Failed";
 "Downloading" = "Downloading";
 "Feedback" = "Feedback";
+"Library Card" = "Library Card";
 "LogIn" = "Log In";
 "LogOut" = "Log Out";
 "NoResultsFound" = "No results found.";
