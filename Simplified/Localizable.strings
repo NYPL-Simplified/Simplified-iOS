@@ -1,6 +1,7 @@
 // Generic
 
 "Account" = "Account";
+"Barcode" = "Barcode";
 "Cancel" = "Cancel";
 "Catalog" = "Catalog";
 "CheckConnection" = "Please check your connection and try again.";
@@ -18,6 +19,7 @@
 "NoResultsFound" = "No results found.";
 "NotConnected" = "You are not connected to the internet. Please connect and try again.";
 "OK" = "OK";
+"PIN" = "PIN";
 "Read" = "Read"; // present tense
 "SearchPlaceholderFormat" = "Search %@";
 "Settings" = "Settings";
