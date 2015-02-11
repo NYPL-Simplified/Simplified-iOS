@@ -1,4 +1,7 @@
 #import "NYPLAccount.h"
+#import "NYPLMyBooksCoverRegistry.h"
+#import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLMyBooksRegistry.h"
 #import "NYPLConfiguration.h"
 
 #import "NYPLSettingsAccountViewController.h"
@@ -50,8 +53,6 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   
   self.title = NSLocalizedString(@"Library Card", nil);
   
-  self.tableView.allowsSelection = NO;
-  
   return self;
 }
 
@@ -68,6 +69,30 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   [self.tableView reloadData];
 }
 
+#pragma mark UITableViewDelegate
+
+- (void)tableView:(__attribute__((unused)) UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
+{
+  switch(CellKindFromIndexPath(indexPath)) {
+    case CellKindBarcode:
+      return;
+    case CellKindPIN:
+      return;
+    case CellKindLoginLogout:
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+      if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+        [[[UIAlertView alloc]
+          initWithTitle:NSLocalizedString(@"LogOut", nil)
+          message:NSLocalizedString(@"SettingsViewControllerLogoutMessage", nil)
+          delegate:self
+          cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+          otherButtonTitles:NSLocalizedString(@"LogOut", nil), nil]
+         show];
+      }
+  }
+}
+
 #pragma mark UITableViewDataSource
 
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -82,6 +107,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleValue1
                                      reuseIdentifier:nil];
+      cell.selectionStyle = UITableViewCellSelectionStyleNone;
       cell.textLabel.text = NSLocalizedString(@"Barcode", nil);
       if(loggedIn) {
         cell.detailTextLabel.textAlignment = NSTextAlignmentLeft;
@@ -93,6 +119,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleValue1
                                      reuseIdentifier:nil];
+      cell.selectionStyle = UITableViewCellSelectionStyleNone;
       cell.textLabel.text = NSLocalizedString(@"PIN", nil);
       if(loggedIn) {
         cell.detailTextLabel.textAlignment = NSTextAlignmentLeft;
@@ -142,6 +169,22 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
     default:
       @throw NSInternalInconsistencyException;
   }
+}
+
+#pragma mark UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *const)alertView
+didDismissWithButtonIndex:(NSInteger const)buttonIndex
+{
+  // TODO: This should be done in a centralized manner somewhere else.
+  if(buttonIndex == alertView.firstOtherButtonIndex) {
+    [[NYPLMyBooksCoverRegistry sharedRegistry] removeAllPinnedThumbnailImages];
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
+    [[NYPLMyBooksRegistry sharedRegistry] reset];
+    [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
+  }
+  
+  [self.tableView reloadData];
 }
 
 #pragma mark -
