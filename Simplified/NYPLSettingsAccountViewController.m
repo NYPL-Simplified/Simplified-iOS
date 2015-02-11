@@ -48,7 +48,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"Account", nil);
+  self.title = NSLocalizedString(@"Library Card", nil);
   
   self.tableView.allowsSelection = NO;
   

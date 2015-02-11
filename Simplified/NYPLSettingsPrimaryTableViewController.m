@@ -72,28 +72,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(SettingsItemFromIndexPath(indexPath)) {
     case NYPLSettingsPrimaryTableViewControllerItemAccount: {
-      NSString *const barcode = [NYPLAccount sharedAccount].barcode;
-      if(barcode) {
-        UITableViewCell *const cell = [[UITableViewCell alloc]
-                                       initWithStyle:UITableViewCellStyleSubtitle
-                                       reuseIdentifier:nil];
-        cell.textLabel.text = NSLocalizedString(@"Account", nil);
-        cell.detailTextLabel.text = [NYPLAccount sharedAccount].barcode;
-        cell.detailTextLabel.textColor = [UIColor lightGrayColor];
-        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-          cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        }
-        return cell;
-      } else {
-        UITableViewCell *const cell = [[UITableViewCell alloc]
-                                       initWithStyle:UITableViewCellStyleDefault
-                                       reuseIdentifier:nil];
-        cell.textLabel.text = NSLocalizedString(@"Account", nil);
-        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-          cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        }
-        return cell;
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      cell.textLabel.text = NSLocalizedString(@"Library Card", nil);
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       }
+      return cell;
     }
     case NYPLSettingsPrimaryTableViewControllerItemCredits: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
