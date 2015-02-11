@@ -84,7 +84,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
         [[[UIAlertView alloc]
           initWithTitle:NSLocalizedString(@"LogOut", nil)
-          message:NSLocalizedString(@"SettingsViewControllerLogoutMessage", nil)
+          message:NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
           delegate:self
           cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
           otherButtonTitles:NSLocalizedString(@"LogOut", nil), nil]

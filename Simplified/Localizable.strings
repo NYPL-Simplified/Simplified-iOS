@@ -64,6 +64,11 @@
 
 "ReaderTOCViewControllerTitle" = "Table of Contents";
 
+// NYPLSettingsAccountViewController
+
+"SettingsAccountViewControllerLogoutMessage" =
+  "Are you sure you want to log out and delete all local content?";
+
 // NYPLSettingsCredentialView
 
 "SettingsCredentialViewBarcode" = "Barcode";
@@ -80,8 +85,3 @@
   "You need a library card to download this book.";
 "SettingsCredentialViewControllerMessageInvalidPIN" =
   "Your PIN has changed. Enter your new PIN.";
-
-// NYPLSettingsViewController
-
-"SettingsViewControllerLogoutMessage" =
-  "Are you sure you want to log out and delete all local content?";
