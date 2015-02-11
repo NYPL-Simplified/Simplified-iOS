@@ -3,6 +3,7 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLConfiguration.h"
+#import "NYPLSettingsCredentialViewController.h"
 
 #import "NYPLSettingsAccountViewController.h"
 
@@ -89,6 +90,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
           otherButtonTitles:NSLocalizedString(@"LogOut", nil), nil]
          show];
+      } else {
+        __weak NYPLSettingsAccountViewController *const weakSelf = self;
+        [[NYPLSettingsCredentialViewController sharedController]
+         requestCredentialsUsingExistingBarcode:NO
+         message:NYPLSettingsCredentialViewControllerMessageLogIn
+         completionHandler:^{
+           [weakSelf.tableView reloadData];
+         }];
       }
   }
 }
