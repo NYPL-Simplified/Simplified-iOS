@@ -172,7 +172,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(section) {
     case 0:
-      return 2;
+      // FIXME: This cannot stand! The barcode and PIN fields should be editable when not logged
+      // in, not simply hidden.
+      if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+        return 2;
+      } else {
+        return 0;
+      }
     case 1:
       return 1;
     default:
