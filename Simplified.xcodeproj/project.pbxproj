@@ -10,7 +10,6 @@
 		11068C55196DD37900E8A94B /* NYPLNull.m in Sources */ = {isa = PBXBuildFile; fileRef = 11068C54196DD37900E8A94B /* NYPLNull.m */; };
 		11078357198160A50071AB1E /* NYPLBookDownloadFailedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */; };
 		1107835E19816E3D0071AB1E /* UIView+NYPLViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */; };
-		110833871A5B2E8A003FBE18 /* NYPLReaderRMSDKView.m in Sources */ = {isa = PBXBuildFile; fileRef = 110833861A5B2E8A003FBE18 /* NYPLReaderRMSDKView.m */; };
 		110AD83D19E497D6005724C3 /* NYPLOPDSAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 110AD83B19E497D6005724C3 /* NYPLOPDSAttribute.m */; };
 		110AF8961961D94D004887C3 /* NYPLBookDetailView.m in Sources */ = {isa = PBXBuildFile; fileRef = 110AF8951961D94D004887C3 /* NYPLBookDetailView.m */; };
 		110AF89C1961ED1F004887C3 /* NYPLBookDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */; };
@@ -100,7 +99,6 @@
 		11A16E6F195B60DF004147F4 /* NYPLBookNormalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */; };
 		11ABD553197D6F5200759635 /* NYPLSettingsCredentialView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11ABD552197D6F5200759635 /* NYPLSettingsCredentialView.xib */; };
 		11ABD556197D77EF00759635 /* NYPLSettingsCredentialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11ABD555197D77EF00759635 /* NYPLSettingsCredentialViewController.m */; };
-		11AFF0011A7A936E00A6062F /* librmservices_iphone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 110FFAF11A6034CC0083D840 /* librmservices_iphone.a */; };
 		11B20E6E19D9F6DD00877A23 /* NYPLReloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */; };
 		11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11B6020419806CD300800DA9 /* NYPLBookDownloadingCell.m */; };
 		11BFDB33199C01F700378691 /* NYPLReaderTOCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11BFDB32199C01F700378691 /* NYPLReaderTOCViewController.m */; };
@@ -165,13 +163,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 118A0E271992B3FD00792DDE;
 			remoteInfo = RDServices;
-		};
-		11AFF0321A7A988800A6062F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 110FFAB91A5EF6C50083D840 /* rmservices_iphone.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC07D0554694100DB518D;
-			remoteInfo = rmservices_iphone;
 		};
 		A823D82D192BABA400B55DE2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -420,7 +411,6 @@
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
 				119503E31993F90C009FB788 /* libRDServices.a in Frameworks */,
-				11AFF0011A7A936E00A6062F /* librmservices_iphone.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -830,7 +820,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				11AFF0331A7A988800A6062F /* PBXTargetDependency */,
 				119503E21993F903009FB788 /* PBXTargetDependency */,
 			);
 			name = Simplified;
@@ -1019,7 +1008,6 @@
 				11ABD556197D77EF00759635 /* NYPLSettingsCredentialViewController.m in Sources */,
 				11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */,
 				1183F353194F795800DC322F /* NYPLBookAcquisition.m in Sources */,
-				110833871A5B2E8A003FBE18 /* NYPLReaderRMSDKView.m in Sources */,
 				11A14DF41A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m in Sources */,
 				11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */,
 				114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.m in Sources */,
@@ -1100,11 +1088,6 @@
 			isa = PBXTargetDependency;
 			name = RDServices;
 			targetProxy = 119503E11993F903009FB788 /* PBXContainerItemProxy */;
-		};
-		11AFF0331A7A988800A6062F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = rmservices_iphone;
-			targetProxy = 11AFF0321A7A988800A6062F /* PBXContainerItemProxy */;
 		};
 		A823D82E192BABA400B55DE2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1223,7 +1206,6 @@
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**",
 					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
-					"\"$(NYPL_SIMPLIFIED_RMSDK_10)/samples/rmservices/src\"",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1256,7 +1238,6 @@
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**",
 					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
-					"\"$(NYPL_SIMPLIFIED_RMSDK_10)/samples/rmservices/src\"",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
