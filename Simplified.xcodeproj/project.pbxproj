@@ -1226,7 +1226,7 @@
 					"\"$(NYPL_SIMPLIFIED_RMSDK_10)/samples/rmservices/src\"",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/johnnowak/Documents/Code/RMSDK-10_0_2014-08-25/samples/rmservices/build/xc3/build/Release-iphoneos",
@@ -1259,7 +1259,7 @@
 					"\"$(NYPL_SIMPLIFIED_RMSDK_10)/samples/rmservices/src\"",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/johnnowak/Documents/Code/RMSDK-10_0_2014-08-25/samples/rmservices/build/xc3/build/Release-iphoneos",
