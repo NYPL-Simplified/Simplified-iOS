@@ -1,4 +1,4 @@
-#import "NYPLSettingsViewController.h"
+#import "NYPLSettingsViewControllerOld.h"
 
 #import "NYPLSettingsNavigationController.h"
 
@@ -8,7 +8,7 @@
 
 - (instancetype)init
 {
-  self = [super initWithRootViewController:[[NYPLSettingsViewController alloc] init]];
+  self = [super initWithRootViewController:[[NYPLSettingsViewControllerOld alloc] init]];
   if(!self) return nil;
   
   self.tabBarItem.image = [UIImage imageNamed:@"Settings"];

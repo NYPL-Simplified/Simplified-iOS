@@ -1,22 +1,28 @@
 // Generic
 
+"Barcode" = "Barcode";
 "Cancel" = "Cancel";
 "Catalog" = "Catalog";
 "CheckConnection" = "Please check your connection and try again.";
 "ConnectionFailed" = "Connection Failed";
+"CreditsAndAcknowledgements" = "Credits & Acknowledgements";
 "Delete" = "Delete";
 "Download" = "Download";
 "DownloadCouldNotBeCompleted" = "The download could not be completed.";
 "DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.";
 "DownloadFailed" = "Download Failed";
 "Downloading" = "Downloading";
+"Feedback" = "Feedback";
+"Library Card" = "Library Card";
 "LogIn" = "Log In";
 "LogOut" = "Log Out";
 "NoResultsFound" = "No results found.";
 "NotConnected" = "You are not connected to the internet. Please connect and try again.";
 "OK" = "OK";
+"PIN" = "PIN";
 "Read" = "Read"; // present tense
 "SearchPlaceholderFormat" = "Search %@";
+"Settings" = "Settings";
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";
 "TryAgain" = "Try Again";
 "UnknownRequestError" =
@@ -58,6 +64,11 @@
 
 "ReaderTOCViewControllerTitle" = "Table of Contents";
 
+// NYPLSettingsAccountViewController
+
+"SettingsAccountViewControllerLogoutMessage" =
+  "Are you sure you want to log out and delete all local content?";
+
 // NYPLSettingsCredentialView
 
 "SettingsCredentialViewBarcode" = "Barcode";
@@ -74,9 +85,3 @@
   "You need a library card to download this book.";
 "SettingsCredentialViewControllerMessageInvalidPIN" =
   "Your PIN has changed. Enter your new PIN.";
-
-// NYPLSettingsViewController
-
-"SettingsViewControllerTitle" = "Settings";
-"SettingsViewControllerLogoutMessage" =
-  "Are you sure you want to log out and delete all local content?";

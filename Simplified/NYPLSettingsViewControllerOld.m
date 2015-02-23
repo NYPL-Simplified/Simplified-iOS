@@ -7,9 +7,9 @@
 #import "NYPLSettings.h"
 #import "NYPLSettingsCredentialViewController.h"
 
-#import "NYPLSettingsViewController.h"
+#import "NYPLSettingsViewControllerOld.h"
 
-@interface NYPLSettingsViewController () <UIAlertViewDelegate, UITextFieldDelegate>
+@interface NYPLSettingsViewControllerOld () <UIAlertViewDelegate, UITextFieldDelegate>
 
 @property (nonatomic) UILabel *barcodeLabel;
 @property (nonatomic) UITextField *developmentOPDSURLTextField;
@@ -20,7 +20,7 @@
 
 @end
 
-@implementation NYPLSettingsViewController
+@implementation NYPLSettingsViewControllerOld
 
 #pragma mark NSObject
 

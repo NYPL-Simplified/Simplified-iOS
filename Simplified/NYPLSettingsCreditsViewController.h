@@ -1,0 +1,3 @@
+@interface NYPLSettingsCreditsViewController : UIViewController
+
+@end
