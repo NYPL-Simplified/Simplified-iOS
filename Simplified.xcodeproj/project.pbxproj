@@ -1208,13 +1208,9 @@
 					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/johnnowak/Documents/Code/RMSDK-10_0_2014-08-25/samples/rmservices/build/xc3/build/Release-iphoneos",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = armv7;
 				WARNING_CFLAGS = (
 					"-Werror",
 					"-Wall",
@@ -1239,13 +1235,9 @@
 					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/johnnowak/Documents/Code/RMSDK-10_0_2014-08-25/samples/rmservices/build/xc3/build/Release-iphoneos",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = armv7;
 				WARNING_CFLAGS = (
 					"-Werror",
 					"-Wall",
