@@ -1,8 +1,9 @@
+#import "NYPLAccount.h"
 #import "NYPLAsync.h"
 
 #import "NYPLSession.h"
 
-@interface NYPLSession ()
+@interface NYPLSession () <NSURLSessionDelegate, NSURLSessionTaskDelegate>
 
 @property (nonatomic) NSURLSession *session;
 
@@ -48,9 +49,30 @@ static NYPLSession *sharedSession = nil;
   configuration.URLCache.diskCapacity = 1024 * 1024 * diskCacheInMegabytes;
   configuration.URLCache.memoryCapacity = 1024 * 1024 * memoryCacheInMegabytes;
   
-  self.session = [NSURLSession sessionWithConfiguration:configuration];
+  self.session = [NSURLSession sessionWithConfiguration:configuration
+                                               delegate:self
+                                          delegateQueue:[NSOperationQueue mainQueue]];
   
   return self;
+}
+
+#pragma mark NSURLSessionTaskDelegate
+
+- (void)URLSession:(__attribute__((unused)) NSURLSession *)session
+              task:(__attribute__((unused)) NSURLSessionTask *)task
+didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
+                             NSURLCredential *credential))completionHandler
+{
+  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN] && challenge.previousFailureCount == 0) {
+    completionHandler(NSURLSessionAuthChallengeUseCredential,
+                      [NSURLCredential
+                       credentialWithUser:[NYPLAccount sharedAccount].barcode
+                       password:[NYPLAccount sharedAccount].PIN
+                       persistence:NSURLCredentialPersistenceNone]);
+  } else {
+    completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+  }
 }
 
 #pragma mark -
