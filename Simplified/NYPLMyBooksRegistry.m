@@ -1,6 +1,8 @@
 #import "NYPLBook.h"
+#import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
 #import "NYPLMyBooksRecord.h"
+#import "NYPLOPDS.h"
 
 #import "NYPLMyBooksRegistry.h"
 
@@ -172,6 +174,39 @@ static NSString *const RecordsKey = @"records";
       return;
     }
   }
+}
+
+- (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
+{
+  [NYPLOPDSFeed
+   withURL:[NYPLConfiguration loanURL]
+   completionHandler:^(NYPLOPDSFeed *const feed) {
+     if(!feed) {
+       NYPLLOG(@"Failed to obtain sync data.");
+       [[NSOperationQueue mainQueue]
+        addOperationWithBlock:^{
+          handler(NO);
+        }];
+       return;
+     }
+     @synchronized(self) {
+       for(NYPLOPDSEntry *const entry in feed.entries) {
+         NYPLBook *const book = [NYPLBook bookWithEntry:entry];
+         if(!book) {
+           NYPLLOG_F(@"Failed to create book for entry '%@'.", entry.identifier);
+           continue;
+         }
+         NYPLBook *const existingBook = [self bookForIdentifier:book.identifier];
+         if(!existingBook) {
+           [self addBook:book location:nil state:NYPLMyBooksStateDownloadNeeded];
+         }
+       }
+     }
+     [[NSOperationQueue mainQueue]
+      addOperationWithBlock:^{
+        handler(YES);
+      }];
+   }];
 }
 
 - (void)addBook:(NYPLBook *const)book
