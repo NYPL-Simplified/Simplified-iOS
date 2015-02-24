@@ -23,6 +23,9 @@ static NSString *const NYPLBookRegistryDidChangeNotification
 // Saves the registry. This should be called before the application is terminated.
 - (void)save;
 
+// Syncs the latest content from the server.
+- (void)syncWithCompletionHandler:(void (^)(BOOL success))handler;
+
 // Adds a book to the book registry until it is manually removed. It allows the application to
 // present information about obtained books when offline. Attempting to add a book already present
 // will overwrite the existing book as if |updateBook:| were called. The location may be nil. The

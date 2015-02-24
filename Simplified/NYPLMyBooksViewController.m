@@ -71,6 +71,12 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.facetBarView.facetView.dataSource = self;
   self.facetBarView.facetView.delegate = self;
   [self.view addSubview:self.facetBarView];
+  
+  UIBarButtonItem *const syncButton = [[UIBarButtonItem alloc]
+                                       initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                                       target:self
+                                       action:@selector(didSelectSync)];
+  self.navigationItem.rightBarButtonItem = syncButton;
 }
 
 - (void)viewWillLayoutSubviews
@@ -244,6 +250,31 @@ OK:
   [facetView reloadData];
   [self willReloadCollectionViewData];
   [self.collectionView reloadData];
+}
+
+#pragma mark -
+
+- (void)didSelectSync
+{
+  [[NYPLMyBooksRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+    if(success) {
+      [[[UIAlertView alloc]
+        initWithTitle:@"Sync Completed"
+        message:@"Your books were synced successfully!"
+        delegate:nil
+        cancelButtonTitle:nil
+        otherButtonTitles:@"OK", nil]
+       show];
+    } else {
+      [[[UIAlertView alloc]
+        initWithTitle:@"Sync Failed"
+        message:@"Please check your connection or try again later."
+        delegate:nil
+        cancelButtonTitle:nil
+        otherButtonTitles:@"OK", nil]
+       show];
+    }
+  }];
 }
 
 @end
