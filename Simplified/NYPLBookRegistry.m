@@ -1,12 +1,12 @@
 #import "NYPLBook.h"
 #import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
-#import "NYPLMyBooksRecord.h"
+#import "NYPLBookRegistryRecord.h"
 #import "NYPLOPDS.h"
 
-#import "NYPLMyBooksRegistry.h"
+#import "NYPLBookRegistry.h"
 
-@interface NYPLMyBooksRegistry ()
+@interface NYPLBookRegistry ()
 
 @property (nonatomic) NSMutableDictionary *identifiersToRecords;
 
@@ -16,12 +16,12 @@ static NSString *const RegistryFilename = @"registry.json";
 
 static NSString *const RecordsKey = @"records";
 
-@implementation NYPLMyBooksRegistry
+@implementation NYPLBookRegistry
 
-+ (NYPLMyBooksRegistry *)sharedRegistry
++ (NYPLBookRegistry *)sharedRegistry
 {
   static dispatch_once_t predicate;
-  static NYPLMyBooksRegistry *sharedRegistry = nil;
+  static NYPLBookRegistry *sharedRegistry = nil;
   
   dispatch_once(&predicate, ^{
     // Cast allows access to unavailable |init| method.
@@ -97,7 +97,7 @@ static NSString *const RecordsKey = @"records";
     }
     
     for(NSDictionary *const recordDictionary in dictionary[RecordsKey]) {
-      NYPLMyBooksRecord *const record = [[NYPLMyBooksRecord alloc]
+      NYPLBookRegistryRecord *const record = [[NYPLBookRegistryRecord alloc]
                                          initWithDictionary:recordDictionary];
       // If a download was still in progress when we quit, it must now be failed.
       if(record.state == NYPLMyBooksStateDownloading) {
@@ -222,7 +222,7 @@ static NSString *const RecordsKey = @"records";
   }
   
   @synchronized(self) {
-    self.identifiersToRecords[book.identifier] = [[NYPLMyBooksRecord alloc]
+    self.identifiersToRecords[book.identifier] = [[NYPLBookRegistryRecord alloc]
                                                   initWithBook:book
                                                   location:location
                                                   state:state];
@@ -237,7 +237,7 @@ static NSString *const RecordsKey = @"records";
   }
   
   @synchronized(self) {
-    NYPLMyBooksRecord *const record = self.identifiersToRecords[book.identifier];
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[book.identifier];
     if(record) {
       self.identifiersToRecords[book.identifier] = [record recordWithBook:book];
       [self broadcastChange];
@@ -248,14 +248,14 @@ static NSString *const RecordsKey = @"records";
 - (NYPLBook *)bookForIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
-    return ((NYPLMyBooksRecord *) self.identifiersToRecords[identifier]).book;
+    return ((NYPLBookRegistryRecord *) self.identifiersToRecords[identifier]).book;
   }
 }
 
 - (void)setState:(NYPLMyBooksState)state forIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
-    NYPLMyBooksRecord *const record = self.identifiersToRecords[identifier];
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     if(!record) {
       @throw NSInvalidArgumentException;
     }
@@ -269,7 +269,7 @@ static NSString *const RecordsKey = @"records";
 - (NYPLMyBooksState)stateForIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
-    NYPLMyBooksRecord *const record = self.identifiersToRecords[identifier];
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     if(record) {
       return record.state;
     } else {
@@ -281,7 +281,7 @@ static NSString *const RecordsKey = @"records";
 - (void)setLocation:(NYPLBookLocation *const)location forIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
-    NYPLMyBooksRecord *const record = self.identifiersToRecords[identifier];
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     if(!record) {
       @throw NSInvalidArgumentException;
     }
@@ -295,7 +295,7 @@ static NSString *const RecordsKey = @"records";
 - (NYPLBookLocation *)locationForIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
-    NYPLMyBooksRecord *const record = self.identifiersToRecords[identifier];
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     return record.location;
   }
 }
@@ -321,7 +321,7 @@ static NSString *const RecordsKey = @"records";
   NSMutableArray *const records =
     [NSMutableArray arrayWithCapacity:self.identifiersToRecords.count];
   
-  for(NYPLMyBooksRecord *const record in [self.identifiersToRecords allValues]) {
+  for(NYPLBookRegistryRecord *const record in [self.identifiersToRecords allValues]) {
     [records addObject:[record dictionaryRepresentation]];
   }
   
@@ -339,7 +339,7 @@ static NSString *const RecordsKey = @"records";
   
   [self.identifiersToRecords
    enumerateKeysAndObjectsUsingBlock:^(__attribute__((unused)) NSString *identifier,
-                                       NYPLMyBooksRecord *const record,
+                                       NYPLBookRegistryRecord *const record,
                                        __attribute__((unused)) BOOL *stop) {
      [books addObject:record.book];
    }];

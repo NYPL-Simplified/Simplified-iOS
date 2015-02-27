@@ -9,12 +9,12 @@
 static NSString *const NYPLBookRegistryDidChangeNotification
   = @"NYPLBookRegistryDidChangeNotification";
 
-@interface NYPLMyBooksRegistry : NSObject
+@interface NYPLBookRegistry : NSObject
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
-+ (NYPLMyBooksRegistry *)sharedRegistry;
++ (NYPLBookRegistry *)sharedRegistry;
 
 // Returns the URL of the directory used by the registry for storing content and metadata. The
 // directory is not guaranteed to exist at the time this method is called.

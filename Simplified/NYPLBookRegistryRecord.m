@@ -1,9 +1,9 @@
 #import "NYPLBook.h"
 #import "NYPLBookLocation.h"
-#import "NYPLMyBooksRecord.h"
+#import "NYPLBookRegistryRecord.h"
 #import "NYPLNull.h"
 
-@interface NYPLMyBooksRecord ()
+@interface NYPLBookRegistryRecord ()
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) NYPLBookLocation *location;
@@ -15,7 +15,7 @@ static NSString *const BookKey = @"metadata";
 static NSString *const LocationKey = @"location";
 static NSString *const StateKey = @"state";
 
-@implementation NYPLMyBooksRecord
+@implementation NYPLBookRegistryRecord
 
 - (instancetype)initWithBook:(NYPLBook *const)book
                     location:(NYPLBookLocation *const)location

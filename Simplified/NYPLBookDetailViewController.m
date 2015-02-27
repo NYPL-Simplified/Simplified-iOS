@@ -1,7 +1,7 @@
 #import "NYPLBook.h"
 #import "NYPLBookDetailView.h"
 #import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLMyBooksRegistry.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLReaderViewController.h"
 #import "NYPLRootTabBarController.h"
 
@@ -28,7 +28,7 @@
   self.book = book;
   
   NYPLBookDetailView *const view = [[NYPLBookDetailView alloc] initWithBook:book];
-  view.state = [[NYPLMyBooksRegistry sharedRegistry] stateForIdentifier:book.identifier];
+  view.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
   view.detailViewDelegate = self;
   
   self.view = view;
@@ -47,7 +47,7 @@
     object:nil
     queue:[NSOperationQueue mainQueue]
     usingBlock:^(__attribute__((unused)) NSNotification *note) {
-      view.state = [[NYPLMyBooksRegistry sharedRegistry] stateForIdentifier:book.identifier];
+      view.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
     }]];
   
   [self.observers addObject:

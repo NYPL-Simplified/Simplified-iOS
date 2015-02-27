@@ -4,7 +4,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLFacetBarView.h"
 #import "NYPLFacetView.h"
-#import "NYPLMyBooksRegistry.h"
+#import "NYPLBookRegistry.h"
 
 #import "NYPLMyBooksViewController.h"
 
@@ -129,13 +129,13 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     case FacetShowAll:
       switch(self.activeFacetSort) {
         case FacetSortAuthor:
-          self.books = [[[NYPLMyBooksRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
+          self.books = [[[NYPLBookRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
                         ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
                           return [a.authors compare:b.authors options:NSCaseInsensitiveSearch];
                         }];
           return;
         case FacetSortTitle:
-          self.books = [[[NYPLMyBooksRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
+          self.books = [[[NYPLBookRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
                         ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
                           return [a.title compare:b.title options:NSCaseInsensitiveSearch];
                         }];
@@ -256,7 +256,7 @@ OK:
 
 - (void)didSelectSync
 {
-  [[NYPLMyBooksRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+  [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
     if(success) {
       [[[UIAlertView alloc]
         initWithTitle:@"Sync Completed"

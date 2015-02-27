@@ -2,7 +2,7 @@
 #import "NYPLBook.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogSubsectionLink.h"
-#import "NYPLMyBooksRegistry.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLOPDS.h"
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLSession.h"
@@ -150,7 +150,7 @@
               NYPLLOG(@"Failed to create book from entry.");
               continue;
             }
-            [[NYPLMyBooksRegistry sharedRegistry] updateBook:book];
+            [[NYPLBookRegistry sharedRegistry] updateBook:book];
             [books addObject:book];
           }
           
