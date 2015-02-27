@@ -1,17 +1,10 @@
 #import "NYPLBook.h"
-#import "NYPLBookLocation.h"
 #import "NYPLConfiguration.h"
-#import "NYPLJSON.h"
-#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReaderTOCViewController.h"
 #import "NYPLReaderReadiumView.h"
-#import "NYPLReaderRenderer.h"
-#import "NYPLReadium.h"
 #import "NYPLRoundedButton.h"
-#import "NYPLSettings.h"
-#import "UIColor+NYPLColorAdditions.h"
 
 #import "NYPLReaderViewController.h"
 

@@ -4,7 +4,6 @@
 #import "NYPLMyBooksRegistry.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCElement.h"
-#import "NYPLRMSDK.h"
 
 #import "NYPLReaderRMSDKView.h"
 
