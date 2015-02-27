@@ -1,6 +1,6 @@
 @import XCTest;
 
-#import "NYPLMyBooksRegistry.h"
+#import "NYPLBookRegistry.h"
 
 @interface NYPLMyBooksRegistryTests : XCTestCase
 
@@ -20,7 +20,7 @@
 
 - (void)testRegistryDirectory
 {
-  XCTAssert([[NYPLMyBooksRegistry sharedRegistry] registryDirectory]);
+  XCTAssert([[NYPLBookRegistry sharedRegistry] registryDirectory]);
 }
 
 @end

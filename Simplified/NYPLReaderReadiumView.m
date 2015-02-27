@@ -1,7 +1,7 @@
 #import "NYPLBook.h"
 #import "NYPLBookLocation.h"
 #import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLMyBooksRegistry.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLJSON.h"
 #import "NYPLReaderRenderer.h"
 #import "NYPLReaderSettings.h"
@@ -272,7 +272,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   dictionary[@"package"] = self.package.dictionary;
   dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
   
-  NYPLBookLocation *const location = [[NYPLMyBooksRegistry sharedRegistry]
+  NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry]
                                       locationForIdentifier:self.book.identifier];
   if([location.renderer isEqualToString:renderer]) {
     // Readium stores a "contentCFI" but needs an "elementCfi" when handling a page request, so we
@@ -323,7 +323,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
                                       renderer:renderer];
   
   if(location) {
-    [[NYPLMyBooksRegistry sharedRegistry]
+    [[NYPLBookRegistry sharedRegistry]
      setLocation:location
      forIdentifier:self.book.identifier];
   }

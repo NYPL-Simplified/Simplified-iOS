@@ -4,7 +4,7 @@
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLBookNormalCell.h"
 #import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLMyBooksRegistry.h"
+#import "NYPLBookRegistry.h"
 
 #import "NYPLBookCell.h"
 
@@ -47,7 +47,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                   NSIndexPath *const indexPath,
                                   NYPLBook *const book)
 {
-  NYPLMyBooksState const state = [[NYPLMyBooksRegistry sharedRegistry]
+  NYPLMyBooksState const state = [[NYPLBookRegistry sharedRegistry]
                                   stateForIdentifier:book.identifier];
   
   switch(state) {

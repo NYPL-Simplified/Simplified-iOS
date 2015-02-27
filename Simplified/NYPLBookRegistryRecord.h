@@ -1,9 +1,11 @@
+// This class is intended for internal use by NYPLBookRegistry.
+
 #import "NYPLMyBooksState.h"
 
 @class NYPLBook;
 @class NYPLBookLocation;
 
-@interface NYPLMyBooksRecord : NSObject
+@interface NYPLBookRegistryRecord : NSObject
 
 @property (nonatomic, readonly) NYPLBook *book;
 @property (nonatomic, readonly) NYPLBookLocation *location; // nilable

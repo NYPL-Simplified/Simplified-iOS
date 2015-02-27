@@ -3,7 +3,7 @@
 #import "NYPLCatalogFacet.h"
 #import "NYPLCatalogFacetGroup.h"
 #import "NYPLOPDS.h"
-#import "NYPLMyBooksRegistry.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLOpenSearchDescription.h"
 
 #import "NYPLCatalogAcquisitionFeed.h"
@@ -47,7 +47,7 @@ handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
          NYPLLOG(@"Failed to create book from entry.");
          continue;
        }
-       [[NYPLMyBooksRegistry sharedRegistry] updateBook:book];
+       [[NYPLBookRegistry sharedRegistry] updateBook:book];
        [books addObject:book];
      }
      
@@ -229,7 +229,7 @@ handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
   NSMutableArray *const refreshedBooks = [NSMutableArray arrayWithCapacity:self.books.count];
   
   for(NYPLBook *const book in self.books) {
-    NYPLBook *const refreshedBook = [[NYPLMyBooksRegistry sharedRegistry]
+    NYPLBook *const refreshedBook = [[NYPLBookRegistry sharedRegistry]
                                      bookForIdentifier:book.identifier];
     if(refreshedBook) {
       [refreshedBooks addObject:refreshedBook];
