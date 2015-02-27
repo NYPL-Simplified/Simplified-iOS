@@ -1,5 +1,3 @@
-#import "NYPLNull.h"
-
 #import "NYPLBookLocation.h"
 
 @interface NYPLBookLocation ()
