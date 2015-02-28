@@ -1,8 +1,8 @@
 #import "NYPLAccount.h"
-#import "NYPLMyBooksCoverRegistry.h"
-#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
+#import "NYPLMyBooksCoverRegistry.h"
+#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLSettingsCredentialViewController.h"
 
 #import "NYPLSettingsAccountViewController.h"

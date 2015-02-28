@@ -1,9 +1,9 @@
 #import "NYPLAsync.h"
 #import "NYPLBook.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLCatalogFacet.h"
 #import "NYPLCatalogFacetGroup.h"
 #import "NYPLOPDS.h"
-#import "NYPLBookRegistry.h"
 #import "NYPLOpenSearchDescription.h"
 
 #import "NYPLCatalogAcquisitionFeed.h"

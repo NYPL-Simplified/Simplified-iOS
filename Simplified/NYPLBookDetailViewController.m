@@ -1,7 +1,7 @@
 #import "NYPLBook.h"
 #import "NYPLBookDetailView.h"
-#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReaderViewController.h"
 #import "NYPLRootTabBarController.h"
 

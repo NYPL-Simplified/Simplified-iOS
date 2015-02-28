@@ -1,9 +1,9 @@
 #import "NYPLBook.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDownloadingCell.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLBookRegistry.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLBookCellCollectionViewController.h"

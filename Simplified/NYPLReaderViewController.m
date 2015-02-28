@@ -1,9 +1,9 @@
 #import "NYPLBook.h"
-#import "NYPLConfiguration.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLConfiguration.h"
+#import "NYPLReaderReadiumView.h"
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReaderTOCViewController.h"
-#import "NYPLReaderReadiumView.h"
 #import "NYPLRoundedButton.h"
 
 #import "NYPLReaderViewController.h"
