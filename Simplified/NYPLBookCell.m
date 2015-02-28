@@ -6,8 +6,6 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLMyBooksDownloadCenter.h"
 
-#import "NYPLBookCell.h"
-
 static NSString *const reuseIdentifierDownloading = @"Downloading";
 static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
 static NSString *const reuseIdentifierNormal = @"Normal";

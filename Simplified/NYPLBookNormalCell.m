@@ -1,7 +1,7 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
-#import "NYPLMyBooksCoverRegistry.h"
 #import "NYPLConfiguration.h"
+#import "NYPLMyBooksCoverRegistry.h"
 #import "NYPLRoundedButton.h"
 
 #import "NYPLBookNormalCell.h"

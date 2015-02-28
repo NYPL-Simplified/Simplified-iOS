@@ -1,6 +1,6 @@
 #import "NYPLBook.h"
-#import "NYPLBookNormalCell.h"
 #import "NYPLBookDetailViewController.h"
+#import "NYPLBookNormalCell.h"
 #import "NYPLCatalogAcquisitionFeed.h"
 #import "NYPLCatalogFacet.h"
 #import "NYPLCatalogFacetGroup.h"

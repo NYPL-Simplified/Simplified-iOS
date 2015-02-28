@@ -1,5 +1,5 @@
-
 #import "NYPLReaderSettings.h"
+
 #import "NYPLReaderTOCCell.h"
 
 @interface NYPLReaderTOCCell ()

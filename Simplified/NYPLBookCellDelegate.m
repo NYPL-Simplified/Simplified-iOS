@@ -2,9 +2,9 @@
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLBookNormalCell.h"
+#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReaderViewController.h"
 #import "NYPLRootTabBarController.h"
-#import "NYPLMyBooksDownloadCenter.h"
 
 #import "NYPLBookCellDelegate.h"
 

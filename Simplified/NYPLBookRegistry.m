@@ -1,7 +1,7 @@
 #import "NYPLBook.h"
+#import "NYPLBookRegistryRecord.h"
 #import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
-#import "NYPLBookRegistryRecord.h"
 #import "NYPLOPDS.h"
 
 #import "NYPLBookRegistry.h"
