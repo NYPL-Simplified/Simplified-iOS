@@ -34,6 +34,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 @property (nonatomic) FacetSort activeFacetSort;
 @property (nonatomic) NSArray *books;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
+@property (nonatomic) UIBarButtonItem *syncButton;
 
 @end
 
@@ -50,7 +51,18 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   
   [self willReloadCollectionViewData];
   
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(bookRegistryDidChange)
+   name:NYPLBookRegistryDidChangeNotification
+   object:nil];
+  
   return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark UIViewController
@@ -72,11 +84,12 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.facetBarView.facetView.delegate = self;
   [self.view addSubview:self.facetBarView];
   
-  UIBarButtonItem *const syncButton = [[UIBarButtonItem alloc]
-                                       initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                       target:self
-                                       action:@selector(didSelectSync)];
-  self.navigationItem.rightBarButtonItem = syncButton;
+  self.syncButton = [[UIBarButtonItem alloc]
+                     initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                     target:self
+                     action:@selector(didSelectSync)];
+  self.syncButton.enabled = ![NYPLBookRegistry sharedRegistry].syncing;
+  self.navigationItem.rightBarButtonItem = self.syncButton;
 }
 
 - (void)viewWillLayoutSubviews
@@ -275,6 +288,11 @@ OK:
        show];
     }
   }];
+}
+
+- (void)bookRegistryDidChange
+{
+  self.syncButton.enabled = ![NYPLBookRegistry sharedRegistry].syncing;
 }
 
 @end
