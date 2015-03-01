@@ -1,4 +1,5 @@
 #import "NYPLAccount.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLSettingsCredentialView.h"
@@ -286,6 +287,7 @@ completionHandler:(void (^)())handler
          if(handler) {
            handler();
          }
+         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
          return;
        }
        
