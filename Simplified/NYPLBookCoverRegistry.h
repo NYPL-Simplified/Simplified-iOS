@@ -1,11 +1,8 @@
+// This class is intended for internal use by NYPLBookRegistry only.
+
 @class NYPLBook;
 
 @interface NYPLBookCoverRegistry : NSObject
-
-+ (id)new NS_UNAVAILABLE;
-- (id)init NS_UNAVAILABLE;
-
-+ (NYPLBookCoverRegistry *)sharedRegistry;
 
 // All handlers are called on the main thread.
 

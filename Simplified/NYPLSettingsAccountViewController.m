@@ -191,9 +191,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (void)alertView:(UIAlertView *const)alertView
 didDismissWithButtonIndex:(NSInteger const)buttonIndex
 {
-  // TODO: This should be done in a centralized manner somewhere else.
   if(buttonIndex == alertView.firstOtherButtonIndex) {
-    [[NYPLBookCoverRegistry sharedRegistry] removeAllPinnedThumbnailImages];
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
     [[NYPLBookRegistry sharedRegistry] reset];
     [[NYPLAccount sharedAccount] removeBarcodeAndPIN];

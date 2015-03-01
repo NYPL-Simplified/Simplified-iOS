@@ -210,9 +210,6 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       NYPLLOG(@"Failed to remove local content for download.");
     }
     
-    [[NYPLBookCoverRegistry sharedRegistry]
-     removePinnedThumbnailImageForBookIdentifier:self.bookIdentifierOfBookToRemove];
-    
     [[NYPLBookRegistry sharedRegistry]
      removeBookForIdentifier:self.bookIdentifierOfBookToRemove];
   }
@@ -300,9 +297,6 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
   
   if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-    [[NYPLBookCoverRegistry sharedRegistry]
-     pinThumbnailImageForBook:book];
-    
     NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
     
     if(!request.URL) {
