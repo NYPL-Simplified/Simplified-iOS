@@ -358,9 +358,11 @@ static NSString *const RecordsKey = @"records";
 
 - (void)reset
 {
-  [self.coverRegistry removeAllPinnedThumbnailImages];
-  [self.identifiersToRecords removeAllObjects];
-  [[NSFileManager defaultManager] removeItemAtURL:[self registryDirectory] error:NULL];
+  @synchronized(self) {
+    [self.coverRegistry removeAllPinnedThumbnailImages];
+    [self.identifiersToRecords removeAllObjects];
+    [[NSFileManager defaultManager] removeItemAtURL:[self registryDirectory] error:NULL];
+  }
   
   [self broadcastChange];
 }
