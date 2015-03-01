@@ -1,11 +1,10 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
+#import "NYPLBookCoverRegistry.h"
 #import "NYPLBookDetailDownloadFailedView.h"
 #import "NYPLBookDetailDownloadingView.h"
 #import "NYPLBookDetailNormalView.h"
 #import "NYPLConfiguration.h"
-#import "NYPLMyBooksCoverRegistry.h"
-
 #import "NYPLBookDetailView.h"
 
 @interface NYPLBookDetailView ()
@@ -76,7 +75,7 @@ static NSString *detailTemplate = nil;
   self.coverImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
   [self addSubview:self.coverImageView];
   
-  [[NYPLMyBooksCoverRegistry sharedRegistry]
+  [[NYPLBookCoverRegistry sharedRegistry]
    thumbnailImageForBook:book
    handler:^(UIImage *const image) {
      self.coverImageView.image = image;

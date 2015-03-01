@@ -1,7 +1,7 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
+#import "NYPLBookCoverRegistry.h"
 #import "NYPLConfiguration.h"
-#import "NYPLMyBooksCoverRegistry.h"
 #import "NYPLRoundedButton.h"
 
 #import "NYPLBookNormalCell.h"
@@ -142,10 +142,10 @@
   // will still be there when the user scrolls back up. It also avoids creating tasks and refetching
   // images when the collection view reloads its data in response to an additional page being
   // fetched (which otherwise would cause a flickering effect and pointless bandwidth usage).
-  self.cover.image = [[NYPLMyBooksCoverRegistry sharedRegistry] cachedThumbnailImageForBook:book];
+  self.cover.image = [[NYPLBookCoverRegistry sharedRegistry] cachedThumbnailImageForBook:book];
   
   if(!self.cover.image) {
-    [[NYPLMyBooksCoverRegistry sharedRegistry]
+    [[NYPLBookCoverRegistry sharedRegistry]
      thumbnailImageForBook:book
      handler:^(UIImage *const image) {
        // This check prevents old operations from overwriting cover images in the case of cells
