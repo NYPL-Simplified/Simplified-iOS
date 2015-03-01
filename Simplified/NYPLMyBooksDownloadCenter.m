@@ -349,7 +349,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   } else {
     // The download was not actually going, so we just need to convert a failed download state.
     NYPLBookState const state = [[NYPLBookRegistry sharedRegistry]
-                                    stateForIdentifier:identifier];
+                                 stateForIdentifier:identifier];
     
     if(state != NYPLBookStateDownloadFailed) {
       NYPLLOG(@"Ignoring nonsensical cancellation request.");
