@@ -52,6 +52,8 @@ static NSString *const RecordsKey = @"records";
   self.identifiersToRecords = [NSMutableDictionary dictionary];
   self.shouldBroadcast = YES;
   
+  [self performSelector:@selector(syncWithCompletionHandler:) withObject:nil afterDelay:3.0];
+  
   return self;
 }
 
@@ -216,7 +218,7 @@ static NSString *const RecordsKey = @"records";
        [self broadcastChange];
        [[NSOperationQueue mainQueue]
         addOperationWithBlock:^{
-          handler(NO);
+          if(handler) handler(NO);
         }];
        return;
      }
@@ -245,7 +247,7 @@ static NSString *const RecordsKey = @"records";
      [self broadcastChange];
      [[NSOperationQueue mainQueue]
       addOperationWithBlock:^{
-        handler(YES);
+        if(handler) handler(YES);
       }];
    }];
 }
