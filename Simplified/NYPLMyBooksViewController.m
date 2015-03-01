@@ -286,6 +286,8 @@ OK:
 
 - (void)didSelectSync
 {
+  // FIXME: This text must be localized.
+  
   [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
     if(success) {
       [[[UIAlertView alloc]
