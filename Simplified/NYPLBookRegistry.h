@@ -33,7 +33,8 @@ static NSString *const NYPLBookRegistryDidChangeNotification =
 - (void)save;
 
 // Syncs the latest content from the server. Attempts to sync while a sync is already in progress
-// will simply be ignored.
+// will simply be ignored. Resetting the registry while a sync is in progress will cause the handler
+// not to be called.
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler;
 
 // Adds a book to the book registry until it is manually removed. It allows the application to

@@ -13,6 +13,7 @@
 @property (nonatomic) NSMutableDictionary *identifiersToRecords;
 @property (atomic) BOOL shouldBroadcast;
 @property (atomic) BOOL syncing;
+@property (atomic) BOOL syncShouldCommit;
 
 @end
 
@@ -201,6 +202,7 @@ static NSString *const RecordsKey = @"records";
       return;
     } else {
       self.syncing = YES;
+      self.syncShouldCommit = YES;
       [self broadcastChange];
     }
   }
@@ -210,31 +212,41 @@ static NSString *const RecordsKey = @"records";
    completionHandler:^(NYPLOPDSFeed *const feed) {
      if(!feed) {
        NYPLLOG(@"Failed to obtain sync data.");
-       [[NSOperationQueue mainQueue]
-        addOperationWithBlock:^{
-          handler(NO);
-        }];
-     } else {
-       [self performSynchronizedWithoutBroadcasting:^{
-         for(NYPLOPDSEntry *const entry in feed.entries) {
-           NYPLBook *const book = [NYPLBook bookWithEntry:entry];
-           if(!book) {
-             NYPLLOG_F(@"Failed to create book for entry '%@'.", entry.identifier);
-             continue;
-           }
-           NYPLBook *const existingBook = [self bookForIdentifier:book.identifier];
-           if(!existingBook) {
-             [self addBook:book location:nil state:NYPLBookStateDownloadNeeded];
-           }
-         }
-       }];
        self.syncing = NO;
        [self broadcastChange];
        [[NSOperationQueue mainQueue]
         addOperationWithBlock:^{
-          handler(YES);
+          handler(NO);
         }];
+       return;
      }
+     
+     if(!self.syncShouldCommit) {
+       // A reset must have occurred.
+       self.syncing = NO;
+       [self broadcastChange];
+       return;
+     }
+     
+     [self performSynchronizedWithoutBroadcasting:^{
+       for(NYPLOPDSEntry *const entry in feed.entries) {
+         NYPLBook *const book = [NYPLBook bookWithEntry:entry];
+         if(!book) {
+           NYPLLOG_F(@"Failed to create book for entry '%@'.", entry.identifier);
+           continue;
+         }
+         NYPLBook *const existingBook = [self bookForIdentifier:book.identifier];
+         if(!existingBook) {
+           [self addBook:book location:nil state:NYPLBookStateDownloadNeeded];
+         }
+       }
+     }];
+     self.syncing = NO;
+     [self broadcastChange];
+     [[NSOperationQueue mainQueue]
+      addOperationWithBlock:^{
+        handler(YES);
+      }];
    }];
 }
 
@@ -359,6 +371,7 @@ static NSString *const RecordsKey = @"records";
 - (void)reset
 {
   @synchronized(self) {
+    self.syncShouldCommit = NO;
     [self.coverRegistry removeAllPinnedThumbnailImages];
     [self.identifiersToRecords removeAllObjects];
     [[NSFileManager defaultManager] removeItemAtURL:[self registryDirectory] error:NULL];
