@@ -59,28 +59,31 @@
   [super viewWillAppear:animated];
   
   // Notifications are installed so the view will update while visible.
-  [[NSNotificationCenter defaultCenter]
-   addObserverForName:NYPLBookRegistryDidChangeNotification
-   object:nil
-   queue:[NSOperationQueue mainQueue]
-   usingBlock:^(__attribute__((unused)) NSNotification *note) {
-     [self willReloadCollectionViewData];
-     [self.collectionView reloadData];
-   }];
-  [[NSNotificationCenter defaultCenter]
-   addObserverForName:NYPLMyBooksDownloadCenterDidChangeNotification
-   object:nil
-   queue:[NSOperationQueue mainQueue]
-   usingBlock:^(__attribute__((unused)) NSNotification *note) {
-     for(UICollectionViewCell *const cell in [self.collectionView visibleCells]) {
-       if([cell isKindOfClass:[NYPLBookDownloadingCell class]]) {
-         NYPLBookDownloadingCell *const downloadingCell = (NYPLBookDownloadingCell *)cell;
-         NSString *const bookIdentifier = downloadingCell.book.identifier;
-         downloadingCell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                                             downloadProgressForBookIdentifier:bookIdentifier];
-       }
-     }
-   }];
+  [self.observers addObject:
+   [[NSNotificationCenter defaultCenter]
+    addObserverForName:NYPLBookRegistryDidChangeNotification
+    object:nil
+    queue:[NSOperationQueue mainQueue]
+    usingBlock:^(__attribute__((unused)) NSNotification *note) {
+      [self willReloadCollectionViewData];
+      [self.collectionView reloadData];
+    }]];
+  
+  [self.observers addObject:
+   [[NSNotificationCenter defaultCenter]
+    addObserverForName:NYPLMyBooksDownloadCenterDidChangeNotification
+    object:nil
+    queue:[NSOperationQueue mainQueue]
+    usingBlock:^(__attribute__((unused)) NSNotification *note) {
+      for(UICollectionViewCell *const cell in [self.collectionView visibleCells]) {
+        if([cell isKindOfClass:[NYPLBookDownloadingCell class]]) {
+          NYPLBookDownloadingCell *const downloadingCell = (NYPLBookDownloadingCell *)cell;
+          NSString *const bookIdentifier = downloadingCell.book.identifier;
+          downloadingCell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                                              downloadProgressForBookIdentifier:bookIdentifier];
+        }
+      }
+    }]];
   
   // We must reload data because prior notifications may have been missed.
   [self willReloadCollectionViewData];
@@ -95,6 +98,8 @@
   for(id const observer in self.observers) {
     [[NSNotificationCenter defaultCenter] removeObserver:observer];
   }
+  
+  [self.observers removeAllObjects];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size

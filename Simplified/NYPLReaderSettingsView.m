@@ -13,6 +13,7 @@
 @property (nonatomic) UIButton *decreaseButton;
 @property (nonatomic) UIButton *increaseButton;
 @property (nonatomic) NSMutableArray *lineViews;
+@property (nonatomic) NSMutableArray *observers;
 @property (nonatomic) UIButton *sansButton;
 @property (nonatomic) UIButton *serifButton;
 @property (nonatomic) UIButton *whiteOnBlackButton;
@@ -28,6 +29,8 @@
   self = [super init];
   if (!self) return nil;
 
+  self.observers = [NSMutableArray array];
+  
   self.backgroundColor = [NYPLConfiguration backgroundColor];
 
   [self sizeToFit];
@@ -130,13 +133,14 @@
                   forControlEvents:UIControlEventValueChanged];
   [self.brightnessView addSubview:self.brightnessSlider];
 
-  [[NSNotificationCenter defaultCenter]
-      addObserverForName:UIScreenBrightnessDidChangeNotification
-                  object:nil
-                   queue:[NSOperationQueue mainQueue]
-              usingBlock:^(NSNotification *const notification) {
-                self.brightnessSlider.value = ((UIScreen *) notification.object).brightness;
-              }];
+  [self.observers addObject:
+   [[NSNotificationCenter defaultCenter]
+    addObserverForName:UIScreenBrightnessDidChangeNotification
+    object:nil
+    queue:[NSOperationQueue mainQueue]
+    usingBlock:^(NSNotification *const notification) {
+      self.brightnessSlider.value = ((UIScreen *) notification.object).brightness;
+    }]];
 
   self.brightnessSlider.value = [UIScreen mainScreen].brightness;
 
@@ -145,7 +149,9 @@
 
 - (void)dealloc
 {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  for(id observer in self.observers) {
+    [[NSNotificationCenter defaultCenter] removeObserver:observer];
+  }
 }
 
 #pragma mark UIView
