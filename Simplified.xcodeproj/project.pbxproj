@@ -456,40 +456,8 @@
 		110AF8901961D822004887C3 /* Book */ = {
 			isa = PBXGroup;
 			children = (
-				1183F345194F744D00DC322F /* NYPLBook.h */,
-				1183F346194F744D00DC322F /* NYPLBook.m */,
-				1183F351194F795800DC322F /* NYPLBookAcquisition.h */,
-				1183F352194F795800DC322F /* NYPLBookAcquisition.m */,
-				11580AC61986A77B00949A15 /* NYPLBookCell.h */,
-				11580AC71986A77B00949A15 /* NYPLBookCell.m */,
-				111197261986B43B0014462F /* NYPLBookCellDelegate.h */,
-				111197271986B43B0014462F /* NYPLBookCellDelegate.m */,
-				1139DA6319C7755D00A07810 /* NYPLBookCoverRegistry.h */,
-				1139DA6419C7755D00A07810 /* NYPLBookCoverRegistry.m */,
-				1111973D1988226F0014462F /* NYPLBookDetailDownloadFailedView.h */,
-				1111973E1988226F0014462F /* NYPLBookDetailDownloadFailedView.m */,
-				11119740198827850014462F /* NYPLBookDetailDownloadingView.h */,
-				11119741198827850014462F /* NYPLBookDetailDownloadingView.m */,
-				111197371987F4070014462F /* NYPLBookDetailNormalView.h */,
-				111197381987F4070014462F /* NYPLBookDetailNormalView.m */,
-				110AF8941961D94D004887C3 /* NYPLBookDetailView.h */,
-				110AF8951961D94D004887C3 /* NYPLBookDetailView.m */,
-				110AF89A1961ED1F004887C3 /* NYPLBookDetailViewController.h */,
-				110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */,
-				11078355198160A50071AB1E /* NYPLBookDownloadFailedCell.h */,
-				11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */,
-				11B6020319806CD300800DA9 /* NYPLBookDownloadingCell.h */,
-				11B6020419806CD300800DA9 /* NYPLBookDownloadingCell.m */,
-				1164F104199AC236009BF8BF /* NYPLBookLocation.h */,
-				1164F105199AC236009BF8BF /* NYPLBookLocation.m */,
-				11A16E6D195B60DF004147F4 /* NYPLBookNormalCell.h */,
-				11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */,
-				11616E0F196B0531003D60D9 /* NYPLBookRegistry.h */,
-				11616E10196B0531003D60D9 /* NYPLBookRegistry.m */,
-				112C694B197301FE00C48F95 /* NYPLBookRegistryRecord.h */,
-				112C694C197301FE00C48F95 /* NYPLBookRegistryRecord.m */,
-				112C6951197309C500C48F95 /* NYPLBookState.h */,
-				112C6952197309C500C48F95 /* NYPLBookState.m */,
+				112C59FF1AA2A1B600D5A06B /* Models */,
+				112C5A001AA2A1DA00D5A06B /* UI */,
 			);
 			name = Book;
 			sourceTree = "<group>";
@@ -508,6 +476,54 @@
 				1112A81F1A322C53002B8CC1 /* libTenPrintCover.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		112C59FF1AA2A1B600D5A06B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1183F345194F744D00DC322F /* NYPLBook.h */,
+				1183F346194F744D00DC322F /* NYPLBook.m */,
+				1183F351194F795800DC322F /* NYPLBookAcquisition.h */,
+				1183F352194F795800DC322F /* NYPLBookAcquisition.m */,
+				1139DA6319C7755D00A07810 /* NYPLBookCoverRegistry.h */,
+				1139DA6419C7755D00A07810 /* NYPLBookCoverRegistry.m */,
+				1164F104199AC236009BF8BF /* NYPLBookLocation.h */,
+				1164F105199AC236009BF8BF /* NYPLBookLocation.m */,
+				11616E0F196B0531003D60D9 /* NYPLBookRegistry.h */,
+				11616E10196B0531003D60D9 /* NYPLBookRegistry.m */,
+				112C694B197301FE00C48F95 /* NYPLBookRegistryRecord.h */,
+				112C694C197301FE00C48F95 /* NYPLBookRegistryRecord.m */,
+				112C6951197309C500C48F95 /* NYPLBookState.h */,
+				112C6952197309C500C48F95 /* NYPLBookState.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		112C5A001AA2A1DA00D5A06B /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				11580AC61986A77B00949A15 /* NYPLBookCell.h */,
+				11580AC71986A77B00949A15 /* NYPLBookCell.m */,
+				111197261986B43B0014462F /* NYPLBookCellDelegate.h */,
+				111197271986B43B0014462F /* NYPLBookCellDelegate.m */,
+				1111973D1988226F0014462F /* NYPLBookDetailDownloadFailedView.h */,
+				1111973E1988226F0014462F /* NYPLBookDetailDownloadFailedView.m */,
+				11119740198827850014462F /* NYPLBookDetailDownloadingView.h */,
+				11119741198827850014462F /* NYPLBookDetailDownloadingView.m */,
+				111197371987F4070014462F /* NYPLBookDetailNormalView.h */,
+				111197381987F4070014462F /* NYPLBookDetailNormalView.m */,
+				110AF8941961D94D004887C3 /* NYPLBookDetailView.h */,
+				110AF8951961D94D004887C3 /* NYPLBookDetailView.m */,
+				110AF89A1961ED1F004887C3 /* NYPLBookDetailViewController.h */,
+				110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */,
+				11078355198160A50071AB1E /* NYPLBookDownloadFailedCell.h */,
+				11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */,
+				11B6020319806CD300800DA9 /* NYPLBookDownloadingCell.h */,
+				11B6020419806CD300800DA9 /* NYPLBookDownloadingCell.m */,
+				11A16E6D195B60DF004147F4 /* NYPLBookNormalCell.h */,
+				11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */,
+			);
+			name = UI;
 			sourceTree = "<group>";
 		};
 		1183F349194F74EF00DC322F /* Catalog */ = {
