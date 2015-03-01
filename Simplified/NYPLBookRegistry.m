@@ -49,6 +49,7 @@ static NSString *const RecordsKey = @"records";
   
   self.coverRegistry = [[NYPLBookCoverRegistry alloc] init];
   self.identifiersToRecords = [NSMutableDictionary dictionary];
+  self.shouldBroadcast = YES;
   
   return self;
 }
