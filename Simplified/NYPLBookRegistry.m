@@ -98,7 +98,7 @@ static NSString *const RecordsKey = @"records";
     
     for(NSDictionary *const recordDictionary in dictionary[RecordsKey]) {
       NYPLBookRegistryRecord *const record = [[NYPLBookRegistryRecord alloc]
-                                         initWithDictionary:recordDictionary];
+                                              initWithDictionary:recordDictionary];
       // If a download was still in progress when we quit, it must now be failed.
       if(record.state == NYPLBookStateDownloading) {
         self.identifiersToRecords[record.book.identifier] =
