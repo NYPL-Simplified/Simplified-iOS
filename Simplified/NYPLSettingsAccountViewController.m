@@ -1,7 +1,7 @@
 #import "NYPLAccount.h"
+#import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
-#import "NYPLMyBooksCoverRegistry.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLSettingsCredentialViewController.h"
 
@@ -193,7 +193,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 {
   // TODO: This should be done in a centralized manner somewhere else.
   if(buttonIndex == alertView.firstOtherButtonIndex) {
-    [[NYPLMyBooksCoverRegistry sharedRegistry] removeAllPinnedThumbnailImages];
+    [[NYPLBookCoverRegistry sharedRegistry] removeAllPinnedThumbnailImages];
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
     [[NYPLBookRegistry sharedRegistry] reset];
     [[NYPLAccount sharedAccount] removeBarcodeAndPIN];

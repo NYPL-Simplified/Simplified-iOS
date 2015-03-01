@@ -2,8 +2,8 @@
 #import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
+#import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLMyBooksCoverRegistry.h"
 #import "NYPLSettingsCredentialViewController.h"
 
 #import "NYPLMyBooksDownloadCenter.h"
@@ -210,7 +210,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       NYPLLOG(@"Failed to remove local content for download.");
     }
     
-    [[NYPLMyBooksCoverRegistry sharedRegistry]
+    [[NYPLBookCoverRegistry sharedRegistry]
      removePinnedThumbnailImageForBookIdentifier:self.bookIdentifierOfBookToRemove];
     
     [[NYPLBookRegistry sharedRegistry]
@@ -300,7 +300,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
   
   if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-    [[NYPLMyBooksCoverRegistry sharedRegistry]
+    [[NYPLBookCoverRegistry sharedRegistry]
      pinThumbnailImageForBook:book];
     
     NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
