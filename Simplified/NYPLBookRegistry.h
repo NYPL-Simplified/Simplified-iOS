@@ -1,4 +1,4 @@
-// All methods of this class declared below are thread-safe.
+// This class encapsulates all access to book metadata and covers. All methods are thread-safe.
 
 #import "NYPLBookState.h"
 
@@ -6,8 +6,8 @@
 @class NYPLBookLocation;
 
 // This is broadcast whenever the book registry is modified.
-static NSString *const NYPLBookRegistryDidChangeNotification
-  = @"NYPLBookRegistryDidChangeNotification";
+static NSString *const NYPLBookRegistryDidChangeNotification =
+  @"NYPLBookRegistryDidChangeNotification";
 
 @interface NYPLBookRegistry : NSObject
 
@@ -59,6 +59,22 @@ static NSString *const NYPLBookRegistryDidChangeNotification
 // Given an identifier, this method removes a book from the registry. Attempting to remove a book
 // that is not present will result in an error being logged.
 - (void)removeBookForIdentifier:(NSString *)book;
+
+// Returns the thumbnail for a book via a handler called on the main thread. The book does not have
+// to be registered in order to retrieve a cover.
+- (void)thumbnailImageForBook:(NYPLBook *)book
+                      handler:(void (^)(UIImage *image))handler;
+
+// The set passed in should contain NYPLBook objects. If |books| is nil or does not strictly contain
+// NYPLBook objects, the handler will be called with nil. Otherwise, the dictionary passed to the
+// handler maps book identifiers to images. The handler is always called on the main thread. The
+// books do not have to be registered in order to retrieve covers.
+- (void)thumbnailImagesForBooks:(NSSet *)books
+                        handler:(void (^)(NSDictionary *bookIdentifiersToImages))handler;
+
+// Immediately returns the cached thumbnail if available, else nil. Generated images are not
+// returned. The book does not have to be registered in order to retrieve a cover.
+- (UIImage *)cachedThumbnailImageForBook:(NYPLBook *)book;
 
 // Resets the registry to an empty state.
 - (void)reset;

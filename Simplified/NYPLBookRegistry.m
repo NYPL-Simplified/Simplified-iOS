@@ -1,4 +1,5 @@
 #import "NYPLBook.h"
+#import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistryRecord.h"
 #import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
@@ -8,6 +9,7 @@
 
 @interface NYPLBookRegistry ()
 
+@property (nonatomic) NYPLBookCoverRegistry *coverRegistry;
 @property (nonatomic) NSMutableDictionary *identifiersToRecords;
 
 @end
@@ -43,6 +45,7 @@ static NSString *const RecordsKey = @"records";
   self = [super init];
   if(!self) return nil;
   
+  self.coverRegistry = [[NYPLBookCoverRegistry alloc] init];
   self.identifiersToRecords = [NSMutableDictionary dictionary];
   
   return self;
@@ -222,6 +225,7 @@ static NSString *const RecordsKey = @"records";
   }
   
   @synchronized(self) {
+    [self.coverRegistry pinThumbnailImageForBook:book];
     self.identifiersToRecords[book.identifier] = [[NYPLBookRegistryRecord alloc]
                                                   initWithBook:book
                                                   location:location
@@ -303,13 +307,32 @@ static NSString *const RecordsKey = @"records";
 - (void)removeBookForIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
+    [self.coverRegistry removePinnedThumbnailImageForBookIdentifier:identifier];
     [self.identifiersToRecords removeObjectForKey:identifier];
     [self broadcastChange];
   }
 }
 
+- (void)thumbnailImageForBook:(NYPLBook *const)book
+                      handler:(void (^)(UIImage *image))handler
+{
+  [self.coverRegistry thumbnailImageForBook:book handler:handler];
+}
+
+- (void)thumbnailImagesForBooks:(NSSet *const)books
+                        handler:(void (^)(NSDictionary *bookIdentifiersToImages))handler
+{
+  [self.coverRegistry thumbnailImagesForBooks:books handler:handler];
+}
+
+- (UIImage *)cachedThumbnailImageForBook:(NYPLBook *const)book
+{
+  return [self.coverRegistry cachedThumbnailImageForBook:book];
+}
+
 - (void)reset
 {
+  [self.coverRegistry removeAllPinnedThumbnailImages];
   [self.identifiersToRecords removeAllObjects];
   [[NSFileManager defaultManager] removeItemAtURL:[self registryDirectory] error:NULL];
   
