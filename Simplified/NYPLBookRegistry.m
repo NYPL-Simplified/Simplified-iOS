@@ -100,9 +100,9 @@ static NSString *const RecordsKey = @"records";
       NYPLBookRegistryRecord *const record = [[NYPLBookRegistryRecord alloc]
                                          initWithDictionary:recordDictionary];
       // If a download was still in progress when we quit, it must now be failed.
-      if(record.state == NYPLMyBooksStateDownloading) {
+      if(record.state == NYPLBookStateDownloading) {
         self.identifiersToRecords[record.book.identifier] =
-        [record recordWithState:NYPLMyBooksStateDownloadFailed];
+        [record recordWithState:NYPLBookStateDownloadFailed];
       } else {
         self.identifiersToRecords[record.book.identifier] = record;
       }
@@ -198,7 +198,7 @@ static NSString *const RecordsKey = @"records";
          }
          NYPLBook *const existingBook = [self bookForIdentifier:book.identifier];
          if(!existingBook) {
-           [self addBook:book location:nil state:NYPLMyBooksStateDownloadNeeded];
+           [self addBook:book location:nil state:NYPLBookStateDownloadNeeded];
          }
        }
      }
@@ -211,13 +211,13 @@ static NSString *const RecordsKey = @"records";
 
 - (void)addBook:(NYPLBook *const)book
        location:(NYPLBookLocation *const)location
-          state:(NYPLMyBooksState)state
+          state:(NYPLBookState)state
 {
   if(!book) {
     @throw NSInvalidArgumentException;
   }
   
-  if(state == NYPLMyBooksStateUnregistered) {
+  if(state == NYPLBookStateUnregistered) {
     @throw NSInvalidArgumentException;
   }
   
@@ -252,7 +252,7 @@ static NSString *const RecordsKey = @"records";
   }
 }
 
-- (void)setState:(NYPLMyBooksState)state forIdentifier:(NSString *const)identifier
+- (void)setState:(NYPLBookState)state forIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
@@ -266,14 +266,14 @@ static NSString *const RecordsKey = @"records";
   }
 }
 
-- (NYPLMyBooksState)stateForIdentifier:(NSString *const)identifier
+- (NYPLBookState)stateForIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     if(record) {
       return record.state;
     } else {
-      return NYPLMyBooksStateUnregistered;
+      return NYPLBookStateUnregistered;
     }
   }
 }

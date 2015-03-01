@@ -7,7 +7,7 @@
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) NYPLBookLocation *location;
-@property (nonatomic) NYPLMyBooksState state;
+@property (nonatomic) NYPLBookState state;
 
 @end
 
@@ -19,7 +19,7 @@ static NSString *const StateKey = @"state";
 
 - (instancetype)initWithBook:(NYPLBook *const)book
                     location:(NYPLBookLocation *const)location
-                       state:(NYPLMyBooksState const)state
+                       state:(NYPLBookState const)state
 {
   self = [super init];
   if(!self) return nil;
@@ -47,7 +47,7 @@ static NSString *const StateKey = @"state";
                    initWithDictionary:NYPLNullToNil(dictionary[LocationKey])];
   if(self.location && ![self.location isKindOfClass:[NYPLBookLocation class]]) return nil;
   
-  self.state = NYPLMyBooksStateFromString(dictionary[StateKey]);
+  self.state = NYPLBookStateFromString(dictionary[StateKey]);
   
   return self;
 }
@@ -56,7 +56,7 @@ static NSString *const StateKey = @"state";
 {
   return @{BookKey: [self.book dictionaryRepresentation],
            LocationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
-           StateKey: NYPLMyBooksStateToString(self.state)};
+           StateKey: NYPLBookStateToString(self.state)};
 }
 
 - (instancetype)recordWithBook:(NYPLBook *const)book
@@ -69,7 +69,7 @@ static NSString *const StateKey = @"state";
   return [[[self class] alloc] initWithBook:self.book location:location state:self.state];
 }
 
-- (instancetype)recordWithState:(NYPLMyBooksState const)state
+- (instancetype)recordWithState:(NYPLBookState const)state
 {
   return [[[self class] alloc] initWithBook:self.book location:self.location state:state];
 }

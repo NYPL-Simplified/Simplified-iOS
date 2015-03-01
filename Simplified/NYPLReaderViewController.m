@@ -60,7 +60,7 @@
   self.hidesBottomBarWhenPushed = YES;
   
   [[NYPLBookRegistry sharedRegistry]
-   setState:NYPLMYBooksStateUsed
+   setState:NYPLBookStateUsed
    forIdentifier:self.bookIdentifier];
   
   return self;

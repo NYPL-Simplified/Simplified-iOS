@@ -120,7 +120,7 @@ didFinishDownloadingToURL:(NSURL *const)location
   
   if(success) {
     [[NYPLBookRegistry sharedRegistry]
-     setState:NYPLMyBooksStateDownloadSuccessful forIdentifier:book.identifier];
+     setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
   } else {
     [[[UIAlertView alloc]
       initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
@@ -135,7 +135,7 @@ didFinishDownloadingToURL:(NSURL *const)location
      show];
     
     [[NYPLBookRegistry sharedRegistry]
-     setState:NYPLMyBooksStateDownloadFailed
+     setState:NYPLBookStateDownloadFailed
      forIdentifier:book.identifier];
   }
   
@@ -263,7 +263,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [[NYPLBookRegistry sharedRegistry]
    addBook:book
    location:nil
-   state:NYPLMyBooksStateDownloadFailed];
+   state:NYPLBookStateDownloadFailed];
   
   [[[UIAlertView alloc]
     initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
@@ -279,22 +279,22 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)startDownloadForBook:(NYPLBook *const)book
 {
-  NYPLMyBooksState const state = [[NYPLBookRegistry sharedRegistry]
+  NYPLBookState const state = [[NYPLBookRegistry sharedRegistry]
                                   stateForIdentifier:book.identifier];
   
   switch(state) {
-    case NYPLMyBooksStateUnregistered:
+    case NYPLBookStateUnregistered:
       break;
-    case NYPLMyBooksStateDownloading:
+    case NYPLBookStateDownloading:
       // Ignore double button presses, et cetera.
       return;
-    case NYPLMyBooksStateDownloadFailed:
+    case NYPLBookStateDownloadFailed:
       break;
-    case NYPLMyBooksStateDownloadNeeded:
+    case NYPLBookStateDownloadNeeded:
       break;
-    case NYPLMyBooksStateDownloadSuccessful:
+    case NYPLBookStateDownloadSuccessful:
       // fallthrough
-    case NYPLMYBooksStateUsed:
+    case NYPLBookStateUsed:
       NYPLLOG(@"Ignoring nonsensical download request.");
       return;
   }
@@ -325,7 +325,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     [[NYPLBookRegistry sharedRegistry]
      addBook:book
      location:nil
-     state:NYPLMyBooksStateDownloading];
+     state:NYPLBookStateDownloading];
   } else {
     [[NYPLSettingsCredentialViewController sharedController]
      requestCredentialsUsingExistingBarcode:NO
@@ -342,22 +342,22 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     [(NSURLSessionDownloadTask *)self.bookIdentifierToDownloadTask[identifier]
      cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
        [[NYPLBookRegistry sharedRegistry]
-        setState:NYPLMyBooksStateDownloadNeeded forIdentifier:identifier];
+        setState:NYPLBookStateDownloadNeeded forIdentifier:identifier];
        
        [self broadcastUpdate];
      }];
   } else {
     // The download was not actually going, so we just need to convert a failed download state.
-    NYPLMyBooksState const state = [[NYPLBookRegistry sharedRegistry]
+    NYPLBookState const state = [[NYPLBookRegistry sharedRegistry]
                                     stateForIdentifier:identifier];
     
-    if(state != NYPLMyBooksStateDownloadFailed) {
+    if(state != NYPLBookStateDownloadFailed) {
       NYPLLOG(@"Ignoring nonsensical cancellation request.");
       return;
     }
     
     [[NYPLBookRegistry sharedRegistry]
-     setState:NYPLMyBooksStateDownloadNeeded forIdentifier:identifier];
+     setState:NYPLBookStateDownloadNeeded forIdentifier:identifier];
   }
 }
 

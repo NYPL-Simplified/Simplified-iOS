@@ -370,45 +370,45 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 
 #pragma mark -
 
-- (void)setState:(NYPLMyBooksState)state
+- (void)setState:(NYPLBookState)state
 {
   _state = state;
   
   switch(state) {
-    case NYPLMyBooksStateUnregistered:
+    case NYPLBookStateUnregistered:
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
       self.normalView.state = NYPLBookDetailNormalViewStateUnregistered;
       self.unreadImageView.hidden = YES;
       break;
-    case NYPLMyBooksStateDownloadNeeded:
+    case NYPLBookStateDownloadNeeded:
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
       self.normalView.state = NYPLBookDetailNormalViewStateDownloadNeeded;
       self.unreadImageView.hidden = YES;
       break;
-    case NYPLMyBooksStateDownloading:
+    case NYPLBookStateDownloading:
       self.normalView.hidden = YES;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = NO;
       self.unreadImageView.hidden = YES;
       break;
-    case NYPLMyBooksStateDownloadFailed:
+    case NYPLBookStateDownloadFailed:
       self.normalView.hidden = YES;
       self.downloadFailedView.hidden = NO;
       self.downloadingView.hidden = YES;
       self.unreadImageView.hidden = YES;
       break;
-    case NYPLMyBooksStateDownloadSuccessful:
+    case NYPLBookStateDownloadSuccessful:
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
       self.normalView.state = NYPLBookDetailNormalViewStateDownloadSuccessful;
       self.unreadImageView.hidden = NO;
       break;
-    case NYPLMYBooksStateUsed:
+    case NYPLBookStateUsed:
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
