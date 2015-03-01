@@ -11,6 +11,7 @@
 
 @property (nonatomic) NYPLBookCoverRegistry *coverRegistry;
 @property (nonatomic) NSMutableDictionary *identifiersToRecords;
+@property (atomic) BOOL shouldBroadcast;
 @property (atomic) BOOL syncing;
 
 @end
@@ -69,12 +70,24 @@ static NSString *const RecordsKey = @"records";
           URLByAppendingPathComponent:@"registry"];
 }
 
+- (void)performSynchronizedWithoutBroadcasting:(void (^)())block
+{
+  @synchronized(self) {
+    self.shouldBroadcast = NO;
+    block();
+    self.shouldBroadcast = YES;
+  }
+}
+
 - (void)broadcastChange
 {
+  if(!self.shouldBroadcast) {
+    return;
+  }
+  
   // We send the notification out on the next run through the run loop to avoid deadlocks that could
   // occur due to calling synchronized methods on this object in response to a broadcast that
   // originated from within a synchronized block.
-  
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NYPLBookRegistryDidChangeNotification
@@ -200,7 +213,7 @@ static NSString *const RecordsKey = @"records";
           handler(NO);
         }];
      } else {
-       @synchronized(self) {
+       [self performSynchronizedWithoutBroadcasting:^{
          for(NYPLOPDSEntry *const entry in feed.entries) {
            NYPLBook *const book = [NYPLBook bookWithEntry:entry];
            if(!book) {
@@ -212,14 +225,14 @@ static NSString *const RecordsKey = @"records";
              [self addBook:book location:nil state:NYPLBookStateDownloadNeeded];
            }
          }
-       }
+       }];
+       self.syncing = NO;
+       [self broadcastChange];
        [[NSOperationQueue mainQueue]
         addOperationWithBlock:^{
           handler(YES);
         }];
      }
-     
-     self.syncing = NO;
    }];
 }
 
