@@ -200,6 +200,7 @@ static NSString *const RecordsKey = @"records";
       return;
     } else {
       self.syncing = YES;
+      [self broadcastChange];
     }
   }
   
