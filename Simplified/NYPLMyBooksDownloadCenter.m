@@ -280,7 +280,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 - (void)startDownloadForBook:(NYPLBook *const)book
 {
   NYPLBookState const state = [[NYPLBookRegistry sharedRegistry]
-                                  stateForIdentifier:book.identifier];
+                               stateForIdentifier:book.identifier];
   
   switch(state) {
     case NYPLBookStateUnregistered:
