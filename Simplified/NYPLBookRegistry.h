@@ -11,6 +11,12 @@ static NSString *const NYPLBookRegistryDidChangeNotification =
 
 @interface NYPLBookRegistry : NSObject
 
+// Returns all registered books.
+@property (atomic, readonly) NSArray *allBooks;
+
+// Returns the number of books currently registered.
+@property (atomic, readonly) NSUInteger count;
+
 // Returns YES if the registry is currently syncing, else NO;
 @property (atomic, readonly) BOOL syncing;
 
@@ -82,11 +88,5 @@ static NSString *const NYPLBookRegistryDidChangeNotification =
 
 // Resets the registry to an empty state.
 - (void)reset;
-
-// Returns the number of books currently registered.
-- (NSUInteger)count;
-
-// Returns all registered books.
-- (NSArray *)allBooks;
 
 @end

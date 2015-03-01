@@ -377,21 +377,26 @@ static NSString *const RecordsKey = @"records";
 
 - (NSUInteger)count
 {
-  return self.identifiersToRecords.count;
+  @synchronized(self) {
+    return self.identifiersToRecords.count;
+  }
 }
 
 - (NSArray *)allBooks
 {
-  NSMutableArray *const books = [NSMutableArray arrayWithCapacity:self.identifiersToRecords.count];
-  
-  [self.identifiersToRecords
-   enumerateKeysAndObjectsUsingBlock:^(__attribute__((unused)) NSString *identifier,
-                                       NYPLBookRegistryRecord *const record,
-                                       __attribute__((unused)) BOOL *stop) {
-     [books addObject:record.book];
-   }];
-  
-  return books;
+  @synchronized(self) {
+    NSMutableArray *const books =
+      [NSMutableArray arrayWithCapacity:self.identifiersToRecords.count];
+    
+    [self.identifiersToRecords
+     enumerateKeysAndObjectsUsingBlock:^(__attribute__((unused)) NSString *identifier,
+                                         NYPLBookRegistryRecord *const record,
+                                         __attribute__((unused)) BOOL *stop) {
+       [books addObject:record.book];
+     }];
+    
+    return books;
+  }
 }
 
 @end
