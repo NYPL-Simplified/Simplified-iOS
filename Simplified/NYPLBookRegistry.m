@@ -11,6 +11,7 @@
 
 @property (nonatomic) NYPLBookCoverRegistry *coverRegistry;
 @property (nonatomic) NSMutableDictionary *identifiersToRecords;
+@property (atomic) BOOL syncing;
 
 @end
 
@@ -181,6 +182,14 @@ static NSString *const RecordsKey = @"records";
 
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
 {
+  @synchronized(self) {
+    if(self.syncing) {
+      return;
+    } else {
+      self.syncing = YES;
+    }
+  }
+  
   [NYPLOPDSFeed
    withURL:[NYPLConfiguration loanURL]
    completionHandler:^(NYPLOPDSFeed *const feed) {
@@ -190,25 +199,27 @@ static NSString *const RecordsKey = @"records";
         addOperationWithBlock:^{
           handler(NO);
         }];
-       return;
-     }
-     @synchronized(self) {
-       for(NYPLOPDSEntry *const entry in feed.entries) {
-         NYPLBook *const book = [NYPLBook bookWithEntry:entry];
-         if(!book) {
-           NYPLLOG_F(@"Failed to create book for entry '%@'.", entry.identifier);
-           continue;
-         }
-         NYPLBook *const existingBook = [self bookForIdentifier:book.identifier];
-         if(!existingBook) {
-           [self addBook:book location:nil state:NYPLBookStateDownloadNeeded];
+     } else {
+       @synchronized(self) {
+         for(NYPLOPDSEntry *const entry in feed.entries) {
+           NYPLBook *const book = [NYPLBook bookWithEntry:entry];
+           if(!book) {
+             NYPLLOG_F(@"Failed to create book for entry '%@'.", entry.identifier);
+             continue;
+           }
+           NYPLBook *const existingBook = [self bookForIdentifier:book.identifier];
+           if(!existingBook) {
+             [self addBook:book location:nil state:NYPLBookStateDownloadNeeded];
+           }
          }
        }
+       [[NSOperationQueue mainQueue]
+        addOperationWithBlock:^{
+          handler(YES);
+        }];
      }
-     [[NSOperationQueue mainQueue]
-      addOperationWithBlock:^{
-        handler(YES);
-      }];
+     
+     self.syncing = NO;
    }];
 }
 
