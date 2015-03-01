@@ -35,6 +35,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 @property (nonatomic) NSArray *books;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) UIBarButtonItem *syncButton;
+@property (nonatomic) UIBarButtonItem *syncInProgressButton;
 
 @end
 
@@ -88,8 +89,24 @@ typedef NS_ENUM(NSInteger, FacetSort) {
                      initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                      target:self
                      action:@selector(didSelectSync)];
-  self.syncButton.enabled = ![NYPLBookRegistry sharedRegistry].syncing;
   self.navigationItem.rightBarButtonItem = self.syncButton;
+  
+  UIActivityIndicatorView *const activityIndicatorView =
+    [[UIActivityIndicatorView alloc]
+     initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  [activityIndicatorView sizeToFit];
+  activityIndicatorView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                            UIViewAutoresizingFlexibleHeight);
+  [activityIndicatorView startAnimating];
+  self.syncInProgressButton = [[UIBarButtonItem alloc]
+                               initWithCustomView:activityIndicatorView];
+  self.syncInProgressButton.enabled = NO;
+  
+  if([NYPLBookRegistry sharedRegistry].syncing) {
+    self.navigationItem.rightBarButtonItem = self.syncInProgressButton;
+  } else {
+    self.navigationItem.rightBarButtonItem = self.syncButton;
+  }
 }
 
 - (void)viewWillLayoutSubviews
@@ -292,7 +309,11 @@ OK:
 
 - (void)bookRegistryDidChange
 {
-  self.syncButton.enabled = ![NYPLBookRegistry sharedRegistry].syncing;
+  if([NYPLBookRegistry sharedRegistry].syncing) {
+    self.navigationItem.rightBarButtonItem = self.syncInProgressButton;
+  } else {
+    self.navigationItem.rightBarButtonItem = self.syncButton;
+  }
 }
 
 @end
