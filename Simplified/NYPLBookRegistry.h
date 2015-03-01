@@ -11,6 +11,9 @@ static NSString *const NYPLBookRegistryDidChangeNotification =
 
 @interface NYPLBookRegistry : NSObject
 
+// Returns YES if the registry is currently syncing, else NO;
+@property (atomic, readonly) BOOL syncing;
+
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
@@ -23,7 +26,8 @@ static NSString *const NYPLBookRegistryDidChangeNotification =
 // Saves the registry. This should be called before the application is terminated.
 - (void)save;
 
-// Syncs the latest content from the server.
+// Syncs the latest content from the server. Attempts to sync while a sync is already in progress
+// will simply be ignored.
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler;
 
 // Adds a book to the book registry until it is manually removed. It allows the application to
