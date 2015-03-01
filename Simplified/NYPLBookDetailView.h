@@ -1,4 +1,4 @@
-#import "NYPLMyBooksState.h"
+#import "NYPLBookState.h"
 
 @class NYPLBook;
 
@@ -20,7 +20,7 @@
 @property (nonatomic, readonly) NYPLBook *book;
 @property (nonatomic, weak) id<NYPLBookDetailViewDelegate> detailViewDelegate;
 @property (nonatomic) double downloadProgress;
-@property (nonatomic) NYPLMyBooksState state;
+@property (nonatomic) NYPLBookState state;
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
