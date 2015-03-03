@@ -1,10 +1,12 @@
+#import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLFacetBarView.h"
 #import "NYPLFacetView.h"
-#import "NYPLMyBooksRegistry.h"
+#import "NYPLSettingsCredentialViewController.h"
 
 #import "NYPLMyBooksViewController.h"
 
@@ -34,6 +36,8 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 @property (nonatomic) FacetSort activeFacetSort;
 @property (nonatomic) NSArray *books;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
+@property (nonatomic) UIBarButtonItem *syncButton;
+@property (nonatomic) UIBarButtonItem *syncInProgressButton;
 
 @end
 
@@ -50,7 +54,18 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   
   [self willReloadCollectionViewData];
   
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(bookRegistryDidChange)
+   name:NYPLBookRegistryDidChangeNotification
+   object:nil];
+  
   return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark UIViewController
@@ -71,6 +86,29 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.facetBarView.facetView.dataSource = self;
   self.facetBarView.facetView.delegate = self;
   [self.view addSubview:self.facetBarView];
+  
+  self.syncButton = [[UIBarButtonItem alloc]
+                     initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                     target:self
+                     action:@selector(didSelectSync)];
+  self.navigationItem.rightBarButtonItem = self.syncButton;
+  
+  UIActivityIndicatorView *const activityIndicatorView =
+    [[UIActivityIndicatorView alloc]
+     initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  [activityIndicatorView sizeToFit];
+  activityIndicatorView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                            UIViewAutoresizingFlexibleHeight);
+  [activityIndicatorView startAnimating];
+  self.syncInProgressButton = [[UIBarButtonItem alloc]
+                               initWithCustomView:activityIndicatorView];
+  self.syncInProgressButton.enabled = NO;
+  
+  if([NYPLBookRegistry sharedRegistry].syncing) {
+    self.navigationItem.rightBarButtonItem = self.syncInProgressButton;
+  } else {
+    self.navigationItem.rightBarButtonItem = self.syncButton;
+  }
 }
 
 - (void)viewWillLayoutSubviews
@@ -123,13 +161,13 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     case FacetShowAll:
       switch(self.activeFacetSort) {
         case FacetSortAuthor:
-          self.books = [[[NYPLMyBooksRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
+          self.books = [[[NYPLBookRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
                         ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
                           return [a.authors compare:b.authors options:NSCaseInsensitiveSearch];
                         }];
           return;
         case FacetSortTitle:
-          self.books = [[[NYPLMyBooksRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
+          self.books = [[[NYPLBookRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
                         ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
                           return [a.title compare:b.title options:NSCaseInsensitiveSearch];
                         }];
@@ -244,6 +282,52 @@ OK:
   [facetView reloadData];
   [self willReloadCollectionViewData];
   [self.collectionView reloadData];
+}
+
+#pragma mark -
+
+- (void)didSelectSync
+{
+  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+      if(success) {
+        [[[UIAlertView alloc]
+          initWithTitle:NSLocalizedString(@"SyncComplete", nil)
+          message:NSLocalizedString(@"YourBooksWereSyncedSuccessfully", nil)
+          delegate:nil
+          cancelButtonTitle:nil
+          otherButtonTitles:@"OK", nil]
+         show];
+      } else {
+        [[[UIAlertView alloc]
+          initWithTitle:NSLocalizedString(@"SyncFailed", nil)
+          message:NSLocalizedString(@"CheckConnection", nil)
+          delegate:nil
+          cancelButtonTitle:nil
+          otherButtonTitles:@"OK", nil]
+         show];
+      }
+    }];
+  } else {
+    // We can't sync if we're not logged in, so let's log in.
+    [[NYPLSettingsCredentialViewController sharedController]
+     requestCredentialsUsingExistingBarcode:NO
+     message:NYPLSettingsCredentialViewControllerMessageLogIn
+     completionHandler:^{
+       // We don't need to do anything here because sync happens upon log in anyway.
+       // TODO: An alert will not be shown here even though the user explicitly requested a sync.
+       // This is probably okay, but we should fix it eventually.
+     }];
+  }
+}
+
+- (void)bookRegistryDidChange
+{
+  if([NYPLBookRegistry sharedRegistry].syncing) {
+    self.navigationItem.rightBarButtonItem = self.syncInProgressButton;
+  } else {
+    self.navigationItem.rightBarButtonItem = self.syncButton;
+  }
 }
 
 @end

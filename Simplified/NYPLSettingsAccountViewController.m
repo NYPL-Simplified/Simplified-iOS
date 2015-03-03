@@ -1,8 +1,8 @@
 #import "NYPLAccount.h"
-#import "NYPLMyBooksCoverRegistry.h"
-#import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLMyBooksRegistry.h"
+#import "NYPLBookCoverRegistry.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
+#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLSettingsCredentialViewController.h"
 
 #import "NYPLSettingsAccountViewController.h"
@@ -191,11 +191,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (void)alertView:(UIAlertView *const)alertView
 didDismissWithButtonIndex:(NSInteger const)buttonIndex
 {
-  // TODO: This should be done in a centralized manner somewhere else.
   if(buttonIndex == alertView.firstOtherButtonIndex) {
-    [[NYPLMyBooksCoverRegistry sharedRegistry] removeAllPinnedThumbnailImages];
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
-    [[NYPLMyBooksRegistry sharedRegistry] reset];
+    [[NYPLBookRegistry sharedRegistry] reset];
     [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
   }
   

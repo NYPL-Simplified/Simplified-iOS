@@ -23,10 +23,13 @@
 "Read" = "Read"; // present tense
 "SearchPlaceholderFormat" = "Search %@";
 "Settings" = "Settings";
+"SyncComplete" = "Sync Complete";
+"SyncFailed" = "Sync Failed";
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";
 "TryAgain" = "Try Again";
 "UnknownRequestError" =
     "An unknown error occurred. Please check your connection or try again later.";
+"YourBooksWereSyncedSuccessfully" = "Your books were synced successfully!";
 
 // NYPLBookDetailViewControllerTitle
 
