@@ -284,9 +284,7 @@ completionHandler:(void (^)())handler
          [self dismissViewControllerAnimated:YES completion:^{}];
          void (^handler)() = self.completionHandler;
          self.completionHandler = nil;
-         if(handler) {
-           handler();
-         }
+         if(handler) handler();
          [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
          return;
        }

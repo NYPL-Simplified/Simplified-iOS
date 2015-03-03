@@ -90,7 +90,7 @@ static CGFloat const width = 250;
 
 - (void)didSelectReload
 {
-  self.handler();
+  if(self.handler) self.handler();
 }
 
 @end

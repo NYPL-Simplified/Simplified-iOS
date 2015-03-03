@@ -15,6 +15,10 @@
 + (void)withURL:(NSURL *const)URL
 completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
 {
+  if(!handler) {
+    @throw NSInvalidArgumentException;
+  }
+  
   [[NYPLSession sharedSession]
    withURL:URL
    completionHandler:^(NSData *const data) {
