@@ -1,3 +1,4 @@
+#import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
@@ -5,6 +6,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLFacetBarView.h"
 #import "NYPLFacetView.h"
+#import "NYPLSettingsCredentialViewController.h"
 
 #import "NYPLMyBooksViewController.h"
 
@@ -286,25 +288,37 @@ OK:
 
 - (void)didSelectSync
 {
-  [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
-    if(success) {
-      [[[UIAlertView alloc]
-        initWithTitle:NSLocalizedString(@"SyncComplete", nil)
-        message:NSLocalizedString(@"YourBooksWereSyncedSuccessfully", nil)
-        delegate:nil
-        cancelButtonTitle:nil
-        otherButtonTitles:@"OK", nil]
-       show];
-    } else {
-      [[[UIAlertView alloc]
-        initWithTitle:NSLocalizedString(@"SyncFailed", nil)
-        message:NSLocalizedString(@"CheckConnection", nil)
-        delegate:nil
-        cancelButtonTitle:nil
-        otherButtonTitles:@"OK", nil]
-       show];
-    }
-  }];
+  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+      if(success) {
+        [[[UIAlertView alloc]
+          initWithTitle:NSLocalizedString(@"SyncComplete", nil)
+          message:NSLocalizedString(@"YourBooksWereSyncedSuccessfully", nil)
+          delegate:nil
+          cancelButtonTitle:nil
+          otherButtonTitles:@"OK", nil]
+         show];
+      } else {
+        [[[UIAlertView alloc]
+          initWithTitle:NSLocalizedString(@"SyncFailed", nil)
+          message:NSLocalizedString(@"CheckConnection", nil)
+          delegate:nil
+          cancelButtonTitle:nil
+          otherButtonTitles:@"OK", nil]
+         show];
+      }
+    }];
+  } else {
+    // We can't sync if we're not logged in, so let's log in.
+    [[NYPLSettingsCredentialViewController sharedController]
+     requestCredentialsUsingExistingBarcode:NO
+     message:NYPLSettingsCredentialViewControllerMessageLogIn
+     completionHandler:^{
+       // We don't need to do anything here because sync happens upon log in anyway.
+       // TODO: An alert will not be shown here even though the user explicitly requested a sync.
+       // This is probably okay, but we should fix it eventually.
+     }];
+  }
 }
 
 - (void)bookRegistryDidChange
