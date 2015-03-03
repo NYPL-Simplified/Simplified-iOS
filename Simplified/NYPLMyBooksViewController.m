@@ -286,21 +286,19 @@ OK:
 
 - (void)didSelectSync
 {
-  // FIXME: This text must be localized.
-  
   [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
     if(success) {
       [[[UIAlertView alloc]
-        initWithTitle:@"Sync Completed"
-        message:@"Your books were synced successfully!"
+        initWithTitle:NSLocalizedString(@"SyncComplete", nil)
+        message:NSLocalizedString(@"YourBooksWereSyncedSuccessfully", nil)
         delegate:nil
         cancelButtonTitle:nil
         otherButtonTitles:@"OK", nil]
        show];
     } else {
       [[[UIAlertView alloc]
-        initWithTitle:@"Sync Failed"
-        message:@"Please check your connection or try again later."
+        initWithTitle:NSLocalizedString(@"SyncFailed", nil)
+        message:NSLocalizedString(@"CheckConnection", nil)
         delegate:nil
         cancelButtonTitle:nil
         otherButtonTitles:@"OK", nil]
