@@ -79,6 +79,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
 - (void)withURL:(NSURL *const)URL completionHandler:(void (^)(NSData *data))handler
 {
+  if(!handler) {
+    @throw NSInvalidArgumentException;
+  }
+  
   [[self.session
     dataTaskWithURL:URL
     completionHandler:^(NSData *const data,
@@ -96,6 +100,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
 - (void)withURLs:(NSSet *const)URLs handler:(void (^)(NSDictionary *URLsToDataOrNull))handler
 {
+  if(!URLs || !handler) {
+    @throw NSInvalidArgumentException;
+  }
+  
   if(!URLs.count) {
     NYPLAsyncDispatch(^{handler(@{});});
     return;

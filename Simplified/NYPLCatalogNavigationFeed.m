@@ -22,7 +22,7 @@
 + (void)withURL:(NSURL *const)URL
         handler:(void (^)(NYPLCatalogNavigationFeed *root))handler
 {
-  if(!(URL && handler)) {
+  if(!handler) {
     @throw NSInvalidArgumentException;
   }
   

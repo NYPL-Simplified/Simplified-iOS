@@ -21,6 +21,10 @@
 
 + (void)withURL:(NSURL *)URL completionHandler:(void (^)(NYPLOPDSFeed *feed))handler
 {
+  if(!handler) {
+    @throw NSInvalidArgumentException;
+  }
+  
   [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data) {
     if(!data) {
       NYPLLOG(@"Failed to retrieve data.");

@@ -109,6 +109,10 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 
 - (void)thumbnailImageForBook:(NYPLBook *)book handler:(void (^)(UIImage *image))handler
 {
+  if(!(book && handler)) {
+    @throw NSInvalidArgumentException;
+  }
+  
   BOOL isPinned;
   @synchronized(self) {
     isPinned = [self.pinnedBookIdentifiers containsObject:book.identifier];
@@ -176,11 +180,8 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 - (void)thumbnailImagesForBooks:(NSSet *)books
                         handler:(void (^)(NSDictionary *bookIdentifiersToImagesAndNulls))handler
 {
-  if(!books) {
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      handler(nil);
-    }];
-    return;
+  if(!(books && handler)) {
+    @throw NSInvalidArgumentException;
   }
   
   if(!books.count) {
@@ -192,10 +193,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   
   for(id const object in books) {
     if(![object isKindOfClass:[NYPLBook class]]) {
-      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        handler(nil);
-      }];
-      return;
+      @throw NSInvalidArgumentException;
     }
   }
   

@@ -30,6 +30,10 @@ static NSUInteger const preloadThreshold = 100;
 includingSearchTemplate:(BOOL)includingSearchTemplate
 handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
 {
+  if(!handler) {
+    @throw NSInvalidArgumentException;
+  }
+  
   [NYPLOPDSFeed
    withURL:URL
    completionHandler:^(NYPLOPDSFeed *const acquisitionFeed) {
