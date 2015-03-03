@@ -1,17 +1,10 @@
 #import "NYPLBook.h"
-#import "NYPLBookLocation.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
-#import "NYPLJSON.h"
-#import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLMyBooksRegistry.h"
+#import "NYPLReaderReadiumView.h"
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReaderTOCViewController.h"
-#import "NYPLReaderReadiumView.h"
-#import "NYPLReaderRenderer.h"
-#import "NYPLReadium.h"
 #import "NYPLRoundedButton.h"
-#import "NYPLSettings.h"
-#import "UIColor+NYPLColorAdditions.h"
 
 #import "NYPLReaderViewController.h"
 
@@ -62,12 +55,12 @@
   
   self.bookIdentifier = bookIdentifier;
   
-  self.title = [[NYPLMyBooksRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
+  self.title = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
   
   self.hidesBottomBarWhenPushed = YES;
   
-  [[NYPLMyBooksRegistry sharedRegistry]
-   setState:NYPLMYBooksStateUsed
+  [[NYPLBookRegistry sharedRegistry]
+   setState:NYPLBookStateUsed
    forIdentifier:self.bookIdentifier];
   
   return self;
@@ -152,7 +145,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   self.rendererView = [[NYPLReaderReadiumView alloc]
                        initWithFrame:self.view.bounds
-                       book:[[NYPLMyBooksRegistry sharedRegistry]
+                       book:[[NYPLBookRegistry sharedRegistry]
                              bookForIdentifier:self.bookIdentifier]
                        delegate:self];
   

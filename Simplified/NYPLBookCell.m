@@ -3,10 +3,8 @@
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLBookNormalCell.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLMyBooksRegistry.h"
-
-#import "NYPLBookCell.h"
 
 static NSString *const reuseIdentifierDownloading = @"Downloading";
 static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
@@ -47,11 +45,11 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                   NSIndexPath *const indexPath,
                                   NYPLBook *const book)
 {
-  NYPLMyBooksState const state = [[NYPLMyBooksRegistry sharedRegistry]
-                                  stateForIdentifier:book.identifier];
+  NYPLBookState const state = [[NYPLBookRegistry sharedRegistry]
+                               stateForIdentifier:book.identifier];
   
   switch(state) {
-    case NYPLMyBooksStateUnregistered:
+    case NYPLBookStateUnregistered:
     {
       NYPLBookNormalCell *const cell = [collectionView
                                         dequeueReusableCellWithReuseIdentifier:reuseIdentifierNormal
@@ -61,7 +59,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.state = NYPLBookNormalCellStateUnregistered;
       return cell;
     }
-    case NYPLMyBooksStateDownloadNeeded:
+    case NYPLBookStateDownloadNeeded:
     {
       NYPLBookNormalCell *const cell = [collectionView
                                         dequeueReusableCellWithReuseIdentifier:reuseIdentifierNormal
@@ -71,7 +69,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.state = NYPLBookNormalCellStateDownloadNeeded;
       return cell;
     }
-    case NYPLMyBooksStateDownloadSuccessful:
+    case NYPLBookStateDownloadSuccessful:
     {
       NYPLBookNormalCell *const cell = [collectionView
                                         dequeueReusableCellWithReuseIdentifier:reuseIdentifierNormal
@@ -81,7 +79,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.state = NYPLBookNormalCellStateDownloadSuccessful;
       return cell;
     }
-    case NYPLMyBooksStateDownloading:
+    case NYPLBookStateDownloading:
     {
       NYPLBookDownloadingCell *const cell =
       [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifierDownloading
@@ -92,7 +90,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                downloadProgressForBookIdentifier:book.identifier];
       return cell;
     }
-    case NYPLMyBooksStateDownloadFailed:
+    case NYPLBookStateDownloadFailed:
     {
       NYPLBookDownloadFailedCell *const cell =
         [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifierDownloadFailed
@@ -101,7 +99,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
       return cell;
     }
-    case NYPLMYBooksStateUsed:
+    case NYPLBookStateUsed:
     {
       NYPLBookNormalCell *const cell = [collectionView
                                         dequeueReusableCellWithReuseIdentifier:reuseIdentifierNormal
