@@ -63,6 +63,8 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 
 - (void)viewDidLoad
 {
+  [super viewDidLoad];
+  
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.barcodeTextField = [[UITextField alloc] initWithFrame:CGRectZero];
@@ -78,8 +80,10 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
 }
 
-- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
+  [super viewWillAppear:animated];
+  
   self.hiddenPIN = YES;
   self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
   self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
