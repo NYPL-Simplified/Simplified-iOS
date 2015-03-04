@@ -118,6 +118,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       cell.textLabel.text = NSLocalizedString(@"Barcode", nil);
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.detailTextLabel.font = [UIFont systemFontOfSize:17];
       if(loggedIn) {
         cell.detailTextLabel.textAlignment = NSTextAlignmentLeft;
         cell.detailTextLabel.text = barcode;
@@ -130,6 +132,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       cell.textLabel.text = NSLocalizedString(@"PIN", nil);
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.detailTextLabel.font = [UIFont systemFontOfSize:17];
       if(loggedIn) {
         cell.detailTextLabel.textAlignment = NSTextAlignmentLeft;
         if(self.hiddenPIN) {
@@ -151,6 +155,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleValue1
                                      reuseIdentifier:nil];
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
       cell.textLabel.textColor = [NYPLConfiguration mainColor];
       if(loggedIn) {
         cell.textLabel.text = NSLocalizedString(@"LogOut", nil);
