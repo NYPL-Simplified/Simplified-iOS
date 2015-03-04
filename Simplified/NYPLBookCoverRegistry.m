@@ -1,7 +1,7 @@
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLBook.h"
 #import "NYPLNull.h"
-#import "NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.h"
+#import "NYPLTenPrintCoverView+NYPLImageAdditions.h"
 
 #import "NYPLBookCoverRegistry.h"
 
