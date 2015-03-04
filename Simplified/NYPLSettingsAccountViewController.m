@@ -39,7 +39,9 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 
 @interface NYPLSettingsAccountViewController ()
 
+@property (nonatomic) UITextField *barcodeTextField;
 @property (nonatomic) BOOL hiddenPIN;
+@property (nonatomic) UITextField *PINTextField;
 
 @end
 
@@ -62,11 +64,25 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 - (void)viewDidLoad
 {
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  
+  self.barcodeTextField = [[UITextField alloc] initWithFrame:CGRectZero];
+  self.barcodeTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                            UIViewAutoresizingFlexibleHeight);
+  self.barcodeTextField.font = [UIFont systemFontOfSize:17];
+  self.barcodeTextField.placeholder = NSLocalizedString(@"Barcode", nil);
+  
+  self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
+  self.PINTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                        UIViewAutoresizingFlexibleHeight);
+  self.PINTextField.font = [UIFont systemFontOfSize:17];
+  self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
 }
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
 {
   self.hiddenPIN = YES;
+  self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
+  self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
   [self.tableView reloadData];
 }
 
@@ -107,47 +123,37 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  NSString *const barcode = [NYPLAccount sharedAccount].barcode;
-  NSString *const PIN = [NYPLAccount sharedAccount].PIN;
+  // This is the amount of horizontal padding Apple uses around the titles in cells by default.
+  CGFloat const padding = 16;
+  
   BOOL const loggedIn = [[NYPLAccount sharedAccount] hasBarcodeAndPIN];
   
   switch(CellKindFromIndexPath(indexPath)) {
     case CellKindBarcode: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleValue1
+                                     initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
-      cell.textLabel.text = NSLocalizedString(@"Barcode", nil);
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.detailTextLabel.font = [UIFont systemFontOfSize:17];
-      if(loggedIn) {
-        cell.detailTextLabel.textAlignment = NSTextAlignmentLeft;
-        cell.detailTextLabel.text = barcode;
+      {
+        CGRect frame = cell.contentView.bounds;
+        frame.origin.x += padding;
+        frame.size.width -= padding * 2;
+        self.barcodeTextField.frame = frame;
+        [cell.contentView addSubview:self.barcodeTextField];
       }
       return cell;
     }
     case CellKindPIN: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleValue1
+                                     initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
-      cell.textLabel.text = NSLocalizedString(@"PIN", nil);
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.detailTextLabel.font = [UIFont systemFontOfSize:17];
-      if(loggedIn) {
-        cell.detailTextLabel.textAlignment = NSTextAlignmentLeft;
-        if(self.hiddenPIN) {
-          UIButton *const button = [UIButton buttonWithType:UIButtonTypeSystem];
-          button.titleLabel.font = [UIFont systemFontOfSize:17];
-          [button setTitle:@"Reveal" forState:UIControlStateNormal];
-          [button sizeToFit];
-          [button addTarget:self
-                     action:@selector(didSelectReveal)
-           forControlEvents:UIControlEventTouchUpInside];
-          cell.accessoryView = button;
-        } else {
-          cell.detailTextLabel.text = PIN;
-        }
+      {
+        CGRect frame = cell.contentView.bounds;
+        frame.origin.x += padding;
+        frame.size.width -= padding * 2;
+        self.PINTextField.frame = frame;
+        [cell.contentView addSubview:self.PINTextField];
       }
       return cell;
     }
@@ -177,13 +183,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(section) {
     case 0:
-      // FIXME: This cannot stand! The barcode and PIN fields should be editable when not logged
-      // in, not simply hidden.
-      if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-        return 2;
-      } else {
-        return 0;
-      }
+      return 2;
     case 1:
       return 1;
     default:
