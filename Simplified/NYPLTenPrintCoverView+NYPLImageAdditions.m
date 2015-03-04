@@ -1,6 +1,6 @@
 #import "NYPLBook.h"
 
-#import "NYPLTenPrintCoverView+NYPLTenPrintCoverView_NYPLImageAdditions.h"
+#import "NYPLTenPrintCoverView+NYPLImageAdditions.h"
 
 // FIXME: This is a hack to work around an issue in TenPrintCoverView in which the height of the
 // author line does not scale with the size of the cover itself. We set |authorHeight| to a value in
