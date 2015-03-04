@@ -73,7 +73,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"Library Card", nil);\
+      cell.textLabel.text = NSLocalizedString(@"Library Card", nil);
       cell.textLabel.font = [UIFont systemFontOfSize:17];
       if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
