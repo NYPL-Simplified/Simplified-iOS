@@ -83,12 +83,14 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
                                             UIViewAutoresizingFlexibleHeight);
   self.barcodeTextField.font = [UIFont systemFontOfSize:17];
   self.barcodeTextField.placeholder = NSLocalizedString(@"Barcode", nil);
+  self.barcodeTextField.keyboardType = UIKeyboardTypeNumberPad;
   
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.PINTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                         UIViewAutoresizingFlexibleHeight);
   self.PINTextField.font = [UIFont systemFontOfSize:17];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
+  self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -109,8 +111,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(CellKindFromIndexPath(indexPath)) {
     case CellKindBarcode:
+      [self.barcodeTextField becomeFirstResponder];
       return;
     case CellKindPIN:
+      [self.PINTextField becomeFirstResponder];
       return;
     case CellKindLoginLogout:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
