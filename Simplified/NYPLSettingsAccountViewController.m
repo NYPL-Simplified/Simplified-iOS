@@ -56,7 +56,18 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   
   self.title = NSLocalizedString(@"Library Card", nil);
   
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(accountDidChange)
+   name:NYPLAccountDidChangeNotification
+   object:nil];
+  
   return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark UIViewController
@@ -85,8 +96,9 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   [super viewWillAppear:animated];
   
   self.hiddenPIN = YES;
-  self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
-  self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
+  
+  [self accountDidChange];
+  
   [self.tableView reloadData];
 }
 
@@ -215,6 +227,25 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 {
   self.hiddenPIN = NO;
   [self.tableView reloadData];
+}
+
+- (void)accountDidChange
+{
+  if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
+    self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
+    self.barcodeTextField.enabled = NO;
+    self.barcodeTextField.textColor = [UIColor grayColor];
+    self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
+    self.PINTextField.enabled = NO;
+    self.PINTextField.textColor = [UIColor grayColor];
+  } else {
+    self.barcodeTextField.text = nil;
+    self.barcodeTextField.enabled = YES;
+    self.barcodeTextField.textColor = [UIColor blackColor];
+    self.PINTextField.text = nil;
+    self.PINTextField.enabled = YES;
+    self.PINTextField.textColor = [UIColor blackColor];
+  }
 }
 
 @end
