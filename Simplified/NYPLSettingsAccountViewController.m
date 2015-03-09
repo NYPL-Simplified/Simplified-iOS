@@ -41,6 +41,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 
 @property (nonatomic) UITextField *barcodeTextField;
 @property (nonatomic) BOOL hiddenPIN;
+@property (nonatomic) UITableViewCell *loginLogoutCell;
 @property (nonatomic) UITextField *PINTextField;
 
 @end
@@ -84,6 +85,10 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self.barcodeTextField.font = [UIFont systemFontOfSize:17];
   self.barcodeTextField.placeholder = NSLocalizedString(@"Barcode", nil);
   self.barcodeTextField.keyboardType = UIKeyboardTypeNumberPad;
+  [self.barcodeTextField
+   addTarget:self
+   action:@selector(textFieldsDidChange)
+   forControlEvents:UIControlEventEditingChanged];
   
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.PINTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
@@ -91,6 +96,10 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self.PINTextField.font = [UIFont systemFontOfSize:17];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
   self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
+  [self.PINTextField
+   addTarget:self
+   action:@selector(textFieldsDidChange)
+   forControlEvents:UIControlEventEditingChanged];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -146,8 +155,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   // This is the amount of horizontal padding Apple uses around the titles in cells by default.
   CGFloat const padding = 16;
   
-  BOOL const loggedIn = [[NYPLAccount sharedAccount] hasBarcodeAndPIN];
-  
   switch(CellKindFromIndexPath(indexPath)) {
     case CellKindBarcode: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
@@ -178,17 +185,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return cell;
     }
     case CellKindLoginLogout: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleValue1
-                                     reuseIdentifier:nil];
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.textColor = [NYPLConfiguration mainColor];
-      if(loggedIn) {
-        cell.textLabel.text = NSLocalizedString(@"LogOut", nil);
-      } else {
-        cell.textLabel.text = NSLocalizedString(@"LogIn", nil);
+      if(!self.loginLogoutCell) {
+        self.loginLogoutCell = [[UITableViewCell alloc]
+                                initWithStyle:UITableViewCellStyleDefault
+                                reuseIdentifier:nil];
+        self.loginLogoutCell.textLabel.font = [UIFont systemFontOfSize:17];
       }
-      return cell;
+      [self updateLoginLogoutCellAppearance];
+      return self.loginLogoutCell;
     }
   }
 }
@@ -250,6 +254,35 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     self.PINTextField.enabled = YES;
     self.PINTextField.textColor = [UIColor blackColor];
   }
+  
+  [self updateLoginLogoutCellAppearance];
+}
+
+- (void)updateLoginLogoutCellAppearance
+{
+  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+    self.loginLogoutCell.textLabel.text = NSLocalizedString(@"LogOut", nil);
+    self.loginLogoutCell.textLabel.textColor = [NYPLConfiguration mainColor];
+  } else {
+    self.loginLogoutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
+    BOOL const canLogIn =
+      ([self.barcodeTextField.text
+        stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
+       [self.PINTextField.text
+        stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length);
+    if(canLogIn) {
+      self.loginLogoutCell.userInteractionEnabled = YES;
+      self.loginLogoutCell.textLabel.textColor = [NYPLConfiguration mainColor];
+    } else {
+      self.loginLogoutCell.userInteractionEnabled = NO;
+      self.loginLogoutCell.textLabel.textColor = [UIColor lightGrayColor];
+    }
+  }
+}
+
+- (void)textFieldsDidChange
+{
+  [self updateLoginLogoutCellAppearance];
 }
 
 @end
