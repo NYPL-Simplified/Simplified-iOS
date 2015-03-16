@@ -4,6 +4,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLSettingsCredentialViewController.h"
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLSettingsAccountViewController.h"
 
@@ -37,12 +38,15 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   }
 }
 
-@interface NYPLSettingsAccountViewController ()
+@interface NYPLSettingsAccountViewController () <NSURLSessionDelegate>
 
 @property (nonatomic) UITextField *barcodeTextField;
+@property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) BOOL hiddenPIN;
 @property (nonatomic) UITableViewCell *loginLogoutCell;
 @property (nonatomic) UITextField *PINTextField;
+@property (nonatomic) NSURLSession *session;
+@property (nonatomic) UIView *shieldView;
 
 @end
 
@@ -62,6 +66,16 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
    selector:@selector(accountDidChange)
    name:NYPLAccountDidChangeNotification
    object:nil];
+  
+  NSURLSessionConfiguration *const configuration =
+    [NSURLSessionConfiguration ephemeralSessionConfiguration];
+  
+  configuration.timeoutIntervalForResource = 5.0;
+  
+  self.session = [NSURLSession
+                  sessionWithConfiguration:configuration
+                  delegate:self
+                  delegateQueue:[NSOperationQueue mainQueue]];
   
   return self;
 }
@@ -136,13 +150,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           otherButtonTitles:NSLocalizedString(@"LogOut", nil), nil]
          show];
       } else {
-        __weak NYPLSettingsAccountViewController *const weakSelf = self;
-        [[NYPLSettingsCredentialViewController sharedController]
-         requestCredentialsUsingExistingBarcode:NO
-         message:NYPLSettingsCredentialViewControllerMessageLogIn
-         completionHandler:^{
-           [weakSelf.tableView reloadData];
-         }];
+        [self logIn];
       }
   }
 }
@@ -229,6 +237,25 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [self.tableView reloadData];
 }
 
+#pragma mark NSURLSessionDelegate
+
+- (void)URLSession:(__attribute__((unused)) NSURLSession *)session
+              task:(__attribute__((unused)) NSURLSessionTask *)task
+didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
+                             NSURLCredential *credential))completionHandler
+{
+  if(challenge.previousFailureCount) {
+    completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+  } else {
+    completionHandler(NSURLSessionAuthChallengeUseCredential,
+                      [NSURLCredential
+                       credentialWithUser:self.barcodeTextField.text
+                       password:self.PINTextField.text
+                       persistence:NSURLCredentialPersistenceNone]);
+  }
+}
+
 #pragma mark -
 
 - (void)didSelectReveal
@@ -277,6 +304,125 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       self.loginLogoutCell.userInteractionEnabled = NO;
       self.loginLogoutCell.textLabel.textColor = [UIColor lightGrayColor];
     }
+  }
+}
+
+- (void)logIn
+{
+  assert(self.barcodeTextField.text.length > 0);
+  assert(self.PINTextField.text.length > 0);
+  
+  [self setShieldEnabled:YES];
+  
+  [self validateCredentials];
+}
+
+- (void)validateCredentials
+{
+  NSMutableURLRequest *const request =
+  [NSMutableURLRequest requestWithURL:[NYPLConfiguration loanURL]];
+  
+  request.HTTPMethod = @"HEAD";
+  
+  NSURLSessionDataTask *const task =
+  [self.session
+   dataTaskWithRequest:request
+   completionHandler:^(__attribute__((unused)) NSData *data,
+                       NSURLResponse *const response,
+                       NSError *const error) {
+     
+     [self setShieldEnabled:NO];
+     
+     if(error.code == NSURLErrorNotConnectedToInternet) {
+       [[[UIAlertView alloc]
+         initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
+         message:NSLocalizedString(@"NotConnected", nil)
+         delegate:nil
+         cancelButtonTitle:nil
+         otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+        show];
+       return;
+     }
+     
+     if(error.code == NSURLErrorCancelled) {
+       // We cancelled the request when asked to answer the server's challenge a second time
+       // because we don't have valid credentials.
+       [[[UIAlertView alloc]
+         initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
+         message:NSLocalizedString(@"SettingsCredentialViewControllerInvalidCredentials", nil)
+         delegate:nil
+         cancelButtonTitle:nil
+         otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+        show];
+       self.PINTextField.text = @"";
+       [self textFieldsDidChange];
+       [self.PINTextField becomeFirstResponder];
+       return;
+     }
+     
+     if(error.code == NSURLErrorTimedOut) {
+       [[[UIAlertView alloc]
+         initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
+         message:NSLocalizedString(@"TimedOut", nil)
+         delegate:nil
+         cancelButtonTitle:nil
+         otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+        show];
+       return;
+     }
+     
+     // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
+     NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
+     
+     if(statusCode == 200) {
+       [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
+                                           PIN:self.PINTextField.text];
+       [self dismissViewControllerAnimated:YES completion:^{}];
+       void (^handler)() = self.completionHandler;
+       self.completionHandler = nil;
+       if(handler) handler();
+       [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+       return;
+     }
+     
+     NYPLLOG(@"Encountered unexpected error after authenticating.");
+     
+     [[[UIAlertView alloc]
+       initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
+       message:NSLocalizedString(@"UnknownRequestError", nil)
+       delegate:nil
+       cancelButtonTitle:nil
+       otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+      show];
+   }];
+  
+  [task resume];
+}
+
+- (void)setShieldEnabled:(BOOL)enabled
+{
+  if(enabled && !self.shieldView) {
+    [self.barcodeTextField resignFirstResponder];
+    [self.PINTextField resignFirstResponder];
+    self.shieldView = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.shieldView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                        UIViewAutoresizingFlexibleHeight);
+    self.shieldView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    UIActivityIndicatorView *const activityIndicatorView =
+    [[UIActivityIndicatorView alloc]
+     initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityIndicatorView.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
+                                              UIViewAutoresizingFlexibleRightMargin |
+                                              UIViewAutoresizingFlexibleTopMargin |
+                                              UIViewAutoresizingFlexibleBottomMargin);
+    [self.shieldView addSubview:activityIndicatorView];
+    activityIndicatorView.center = self.shieldView.center;
+    [activityIndicatorView integralizeFrame];
+    [activityIndicatorView startAnimating];
+    [self.view addSubview:self.shieldView];
+  } else {
+    [self.shieldView removeFromSuperview];
+    self.shieldView = nil;
   }
 }
 

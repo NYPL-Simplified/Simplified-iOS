@@ -16,12 +16,12 @@
   
   if(customURL) return customURL;
   
-  return [NSURL URLWithString:@"http://library-simplified.herokuapp.com"];
+  return [NSURL URLWithString:@"http://circulation.alpha.librarysimplified.org"];
 }
 
 + (NSURL *)loanURL
 {
-  return [NSURL URLWithString:@"http://library-simplified.herokuapp.com/loans"];
+  return [NSURL URLWithString:@"http://circulation.alpha.librarysimplified.org/loans"];
 }
 
 + (UIColor *)mainColor
