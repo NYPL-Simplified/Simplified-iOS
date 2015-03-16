@@ -320,81 +320,81 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 - (void)validateCredentials
 {
   NSMutableURLRequest *const request =
-  [NSMutableURLRequest requestWithURL:[NYPLConfiguration loanURL]];
+    [NSMutableURLRequest requestWithURL:[NYPLConfiguration loanURL]];
   
   request.HTTPMethod = @"HEAD";
   
   NSURLSessionDataTask *const task =
-  [self.session
-   dataTaskWithRequest:request
-   completionHandler:^(__attribute__((unused)) NSData *data,
-                       NSURLResponse *const response,
-                       NSError *const error) {
+    [self.session
+     dataTaskWithRequest:request
+     completionHandler:^(__attribute__((unused)) NSData *data,
+                         NSURLResponse *const response,
+                         NSError *const error) {
      
-     [self setShieldEnabled:NO];
-     
-     if(error.code == NSURLErrorNotConnectedToInternet) {
+       [self setShieldEnabled:NO];
+       
+       if(error.code == NSURLErrorNotConnectedToInternet) {
+         [[[UIAlertView alloc]
+           initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
+           message:NSLocalizedString(@"NotConnected", nil)
+           delegate:nil
+           cancelButtonTitle:nil
+           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+          show];
+         return;
+       }
+       
+       if(error.code == NSURLErrorCancelled) {
+         // We cancelled the request when asked to answer the server's challenge a second time
+         // because we don't have valid credentials.
+         [[[UIAlertView alloc]
+           initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
+           message:NSLocalizedString(@"SettingsCredentialViewControllerInvalidCredentials", nil)
+           delegate:nil
+           cancelButtonTitle:nil
+           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+          show];
+         self.PINTextField.text = @"";
+         [self textFieldsDidChange];
+         [self.PINTextField becomeFirstResponder];
+         return;
+       }
+       
+       if(error.code == NSURLErrorTimedOut) {
+         [[[UIAlertView alloc]
+           initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
+           message:NSLocalizedString(@"TimedOut", nil)
+           delegate:nil
+           cancelButtonTitle:nil
+           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+          show];
+         return;
+       }
+       
+       // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
+       NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
+       
+       if(statusCode == 200) {
+         [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
+                                             PIN:self.PINTextField.text];
+         [self dismissViewControllerAnimated:YES completion:^{}];
+         void (^handler)() = self.completionHandler;
+         self.completionHandler = nil;
+         if(handler) handler();
+         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+         return;
+       }
+       
+       NYPLLOG(@"Encountered unexpected error after authenticating.");
+       
        [[[UIAlertView alloc]
          initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
-         message:NSLocalizedString(@"NotConnected", nil)
+         message:NSLocalizedString(@"UnknownRequestError", nil)
          delegate:nil
          cancelButtonTitle:nil
          otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
         show];
-       return;
-     }
-     
-     if(error.code == NSURLErrorCancelled) {
-       // We cancelled the request when asked to answer the server's challenge a second time
-       // because we don't have valid credentials.
-       [[[UIAlertView alloc]
-         initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
-         message:NSLocalizedString(@"SettingsCredentialViewControllerInvalidCredentials", nil)
-         delegate:nil
-         cancelButtonTitle:nil
-         otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-        show];
-       self.PINTextField.text = @"";
-       [self textFieldsDidChange];
-       [self.PINTextField becomeFirstResponder];
-       return;
-     }
-     
-     if(error.code == NSURLErrorTimedOut) {
-       [[[UIAlertView alloc]
-         initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
-         message:NSLocalizedString(@"TimedOut", nil)
-         delegate:nil
-         cancelButtonTitle:nil
-         otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-        show];
-       return;
-     }
-     
-     // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
-     NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
-     
-     if(statusCode == 200) {
-       [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
-                                           PIN:self.PINTextField.text];
-       [self dismissViewControllerAnimated:YES completion:^{}];
-       void (^handler)() = self.completionHandler;
-       self.completionHandler = nil;
-       if(handler) handler();
-       [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
-       return;
-     }
-     
-     NYPLLOG(@"Encountered unexpected error after authenticating.");
-     
-     [[[UIAlertView alloc]
-       initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
-       message:NSLocalizedString(@"UnknownRequestError", nil)
-       delegate:nil
-       cancelButtonTitle:nil
-       otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-      show];
-   }];
+     }];
   
   [task resume];
 }
