@@ -59,7 +59,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"Library Card", nil);
+  self.title = NSLocalizedString(@"LibraryCard", nil);
   
   [[NSNotificationCenter defaultCenter]
    addObserver:self
@@ -313,6 +313,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   assert(self.PINTextField.text.length > 0);
   
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+  self.title = NSLocalizedString(@"Verifying", nil);
   
   [self validateCredentials];
 }
@@ -332,6 +333,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                          NSError *const error) {
      
        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+       self.title = NSLocalizedString(@"LibraryCard", nil);
        
        if(error.code == NSURLErrorNotConnectedToInternet) {
          [[[UIAlertView alloc]
