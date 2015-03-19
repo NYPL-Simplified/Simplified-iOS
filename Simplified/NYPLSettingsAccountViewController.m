@@ -312,7 +312,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   assert(self.barcodeTextField.text.length > 0);
   assert(self.PINTextField.text.length > 0);
   
-  [self setShieldEnabled:YES];
+  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   
   [self validateCredentials];
 }
@@ -331,7 +331,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                          NSURLResponse *const response,
                          NSError *const error) {
      
-       [self setShieldEnabled:NO];
+       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
        
        if(error.code == NSURLErrorNotConnectedToInternet) {
          [[[UIAlertView alloc]
@@ -397,33 +397,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
      }];
   
   [task resume];
-}
-
-- (void)setShieldEnabled:(BOOL)enabled
-{
-  if(enabled && !self.shieldView) {
-    [self.barcodeTextField resignFirstResponder];
-    [self.PINTextField resignFirstResponder];
-    self.shieldView = [[UIView alloc] initWithFrame:self.view.bounds];
-    self.shieldView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                        UIViewAutoresizingFlexibleHeight);
-    self.shieldView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-    UIActivityIndicatorView *const activityIndicatorView =
-    [[UIActivityIndicatorView alloc]
-     initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicatorView.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin |
-                                              UIViewAutoresizingFlexibleRightMargin |
-                                              UIViewAutoresizingFlexibleTopMargin |
-                                              UIViewAutoresizingFlexibleBottomMargin);
-    [self.shieldView addSubview:activityIndicatorView];
-    activityIndicatorView.center = self.shieldView.center;
-    [activityIndicatorView integralizeFrame];
-    [activityIndicatorView startAnimating];
-    [self.view addSubview:self.shieldView];
-  } else {
-    [self.shieldView removeFromSuperview];
-    self.shieldView = nil;
-  }
 }
 
 - (void)textFieldsDidChange
