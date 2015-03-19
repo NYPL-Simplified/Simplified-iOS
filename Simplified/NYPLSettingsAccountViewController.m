@@ -149,8 +149,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindLogInSignOut:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-        // The cancel and other buttons are deliberately reversed so that the dangerous action is
-        // on the left and not emphasized. This conforms with Apple's HIG.
         UIAlertController *const alertController =
           (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
            ? [UIAlertController
