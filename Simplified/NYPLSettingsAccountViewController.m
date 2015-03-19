@@ -2,6 +2,7 @@
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
+#import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLSettingsCredentialViewController.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -314,8 +315,34 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   
   [self.barcodeTextField resignFirstResponder];
   [self.PINTextField resignFirstResponder];
+
+  {
+    UIActivityIndicatorView *const activityIndicatorView =
+      [[UIActivityIndicatorView alloc]
+       initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    
+    [activityIndicatorView startAnimating];
+    
+    UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    titleLabel.text = NSLocalizedString(@"Verifying", nil);
+    titleLabel.font = [UIFont systemFontOfSize:17];
+    [titleLabel sizeToFit];
+    
+    // This view is used to keep the title label centered as in Apple's Settings application.
+    UIView *const rightPaddingView = [[UIView alloc] initWithFrame:activityIndicatorView.bounds];
+    
+    NYPLLinearView *const linearView = [[NYPLLinearView alloc] init];
+    linearView.contentVerticalAlignment = NYPLLinearViewContentVerticalAlignmentMiddle;
+    linearView.padding = 5.0;
+    [linearView addSubview:activityIndicatorView];
+    [linearView addSubview:titleLabel];
+    [linearView addSubview:rightPaddingView];
+    [linearView sizeToFit];
+    
+    self.navigationItem.titleView = linearView;
+  }
+  
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-  self.title = NSLocalizedString(@"Verifying", nil);
   
   [self validateCredentials];
 }
@@ -334,8 +361,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                          NSURLResponse *const response,
                          NSError *const error) {
      
+       self.navigationItem.titleView = nil;
        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-       self.title = NSLocalizedString(@"LibraryCard", nil);
        
        if(error.code == NSURLErrorNotConnectedToInternet) {
          [[[UIAlertView alloc]
