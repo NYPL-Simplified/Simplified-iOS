@@ -70,7 +70,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   
   [[NSNotificationCenter defaultCenter]
    addObserver:self
-   selector:@selector(keyboardDidShow)
+   selector:@selector(keyboardDidShow:)
    name:UIKeyboardWillShowNotification
    object:nil];
   
@@ -444,15 +444,25 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   [self updateLoginLogoutCellAppearance];
 }
 
-- (void)keyboardDidShow
+- (void)keyboardDidShow:(NSNotification *const)notification
 {
+  // This nudges the scroll view up slightly so that the log in button is clearly visible even on
+  // older 3:2 iPhone displays. I wish there were a more general way to do this, but this does at
+  // least work very well.
+  
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-    // This nudges the scroll view up slightly so that the fields and log in button are all clearly
-    // visible even on older devices. We use an explicit animation block because the
-    // |setContentOffset:animated:| method appears not to work at present.
-    [UIView animateWithDuration:0.25 animations:^{
-      [self.tableView setContentOffset:CGPointMake(0, -self.tableView.contentInset.top + 20)];
-    }];
+    CGSize const keyboardSize =
+      [[notification userInfo][UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    CGRect visibleRect = self.view.frame;
+    visibleRect.size.height -= keyboardSize.height + self.tableView.contentInset.top;
+    if(!CGRectContainsPoint(visibleRect,
+                            CGPointMake(0, CGRectGetMaxY(self.logInSignOutCell.frame)))) {
+      // We use an explicit animation block here because |setContentOffset:animated:| does not seem
+      // to work at all.
+      [UIView animateWithDuration:0.25 animations:^{
+        [self.tableView setContentOffset:CGPointMake(0, -self.tableView.contentInset.top + 20)];
+      }];
+    }
   }
 }
 
