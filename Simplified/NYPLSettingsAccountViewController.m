@@ -152,11 +152,16 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         // The cancel and other buttons are deliberately reversed so that the dangerous action is
         // on the left and not emphasized. This conforms with Apple's HIG.
         UIAlertController *const alertController =
-          [UIAlertController
-           alertControllerWithTitle:
-            NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
-           message:nil
-           preferredStyle:UIAlertControllerStyleActionSheet];
+          (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+           ? [UIAlertController
+              alertControllerWithTitle:NSLocalizedString(@"SignOut", nil)
+              message:NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
+              preferredStyle:UIAlertControllerStyleAlert]
+           : [UIAlertController
+              alertControllerWithTitle:
+                NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
+              message:nil
+              preferredStyle:UIAlertControllerStyleActionSheet]);
         [alertController addAction:[UIAlertAction
                                     actionWithTitle:NSLocalizedString(@"SignOut", nil)
                                     style:UIAlertActionStyleDestructive
