@@ -312,6 +312,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   assert(self.barcodeTextField.text.length > 0);
   assert(self.PINTextField.text.length > 0);
   
+  [self.barcodeTextField resignFirstResponder];
+  [self.PINTextField resignFirstResponder];
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   self.title = NSLocalizedString(@"Verifying", nil);
   
