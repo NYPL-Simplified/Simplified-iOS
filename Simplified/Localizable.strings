@@ -15,7 +15,6 @@
 "Feedback" = "Feedback";
 "LibraryCard" = "Library Card";
 "LogIn" = "Log In";
-"LogOut" = "Log Out";
 "NoResultsFound" = "No results found.";
 "NotConnected" = "You are not connected to the internet. Please connect and try again.";
 "OK" = "OK";
@@ -23,6 +22,7 @@
 "Read" = "Read"; // present tense
 "SearchPlaceholderFormat" = "Search %@";
 "Settings" = "Settings";
+"SignOut" = "Sign Out";
 "SyncComplete" = "Sync Complete";
 "SyncFailed" = "Sync Failed";
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";
@@ -70,7 +70,7 @@
 // NYPLSettingsAccountViewController
 
 "SettingsAccountViewControllerLogoutMessage" =
-  "Are you sure you want to log out and delete all local content?";
+  "If you sign out of your account, all content accessible via My Books will be removed from this device.";
 
 // NYPLSettingsCredentialView
 

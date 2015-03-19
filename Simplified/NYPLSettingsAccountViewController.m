@@ -12,7 +12,7 @@
 typedef NS_ENUM(NSInteger, CellKind) {
   CellKindBarcode,
   CellKindPIN,
-  CellKindLoginLogout
+  CellKindLogInSignOut
 };
 
 static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
@@ -30,7 +30,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
     case 1:
       switch(indexPath.row) {
         case 0:
-          return CellKindLoginLogout;
+          return CellKindLogInSignOut;
         default:
           @throw NSInvalidArgumentException;
       }
@@ -44,7 +44,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @property (nonatomic) UITextField *barcodeTextField;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) BOOL hiddenPIN;
-@property (nonatomic) UITableViewCell *loginLogoutCell;
+@property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITextField *PINTextField;
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIView *shieldView;
@@ -66,6 +66,12 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
    addObserver:self
    selector:@selector(accountDidChange)
    name:NYPLAccountDidChangeNotification
+   object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(keyboardDidShow)
+   name:UIKeyboardWillShowNotification
    object:nil];
   
   NSURLSessionConfiguration *const configuration =
@@ -140,16 +146,31 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindPIN:
       [self.PINTextField becomeFirstResponder];
       return;
-    case CellKindLoginLogout:
+    case CellKindLogInSignOut:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-        [[[UIAlertView alloc]
-          initWithTitle:NSLocalizedString(@"LogOut", nil)
-          message:NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
-          delegate:self
-          cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-          otherButtonTitles:NSLocalizedString(@"LogOut", nil), nil]
-         show];
+        // The cancel and other buttons are deliberately reversed so that the dangerous action is
+        // on the left and not emphasized. This conforms with Apple's HIG.
+        UIAlertController *const alertController =
+          [UIAlertController
+           alertControllerWithTitle:
+            NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
+           message:nil
+           preferredStyle:UIAlertControllerStyleActionSheet];
+        [alertController addAction:[UIAlertAction
+                                    actionWithTitle:NSLocalizedString(@"SignOut", nil)
+                                    style:UIAlertActionStyleDestructive
+                                    handler:^(__attribute__((unused)) UIAlertAction *action) {
+                                      [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
+                                      [[NYPLBookRegistry sharedRegistry] reset];
+                                      [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
+                                      [self.tableView reloadData];
+                                    }]];
+        [alertController addAction:[UIAlertAction
+                                    actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                    style:UIAlertActionStyleCancel
+                                    handler:nil]];
+        [self presentViewController:alertController animated:YES completion:nil];
       } else {
         [self logIn];
       }
@@ -193,15 +214,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       return cell;
     }
-    case CellKindLoginLogout: {
-      if(!self.loginLogoutCell) {
-        self.loginLogoutCell = [[UITableViewCell alloc]
+    case CellKindLogInSignOut: {
+      if(!self.logInSignOutCell) {
+        self.logInSignOutCell = [[UITableViewCell alloc]
                                 initWithStyle:UITableViewCellStyleDefault
                                 reuseIdentifier:nil];
-        self.loginLogoutCell.textLabel.font = [UIFont systemFontOfSize:17];
+        self.logInSignOutCell.textLabel.font = [UIFont systemFontOfSize:17];
       }
       [self updateLoginLogoutCellAppearance];
-      return self.loginLogoutCell;
+      return self.logInSignOutCell;
     }
   }
 }
@@ -222,20 +243,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     default:
       @throw NSInternalInconsistencyException;
   }
-}
-
-#pragma mark UIAlertViewDelegate
-
-- (void)alertView:(UIAlertView *const)alertView
-didDismissWithButtonIndex:(NSInteger const)buttonIndex
-{
-  if(buttonIndex == alertView.firstOtherButtonIndex) {
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
-    [[NYPLBookRegistry sharedRegistry] reset];
-    [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
-  }
-  
-  [self.tableView reloadData];
 }
 
 #pragma mark NSURLSessionDelegate
@@ -289,21 +296,23 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 - (void)updateLoginLogoutCellAppearance
 {
   if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-    self.loginLogoutCell.textLabel.text = NSLocalizedString(@"LogOut", nil);
-    self.loginLogoutCell.textLabel.textColor = [NYPLConfiguration mainColor];
+    self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
+    self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
+    self.logInSignOutCell.textLabel.textColor = [UIColor redColor];
   } else {
-    self.loginLogoutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
+    self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
+    self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentNatural;
     BOOL const canLogIn =
       ([self.barcodeTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
        [self.PINTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length);
     if(canLogIn) {
-      self.loginLogoutCell.userInteractionEnabled = YES;
-      self.loginLogoutCell.textLabel.textColor = [NYPLConfiguration mainColor];
+      self.logInSignOutCell.userInteractionEnabled = YES;
+      self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     } else {
-      self.loginLogoutCell.userInteractionEnabled = NO;
-      self.loginLogoutCell.textLabel.textColor = [UIColor lightGrayColor];
+      self.logInSignOutCell.userInteractionEnabled = NO;
+      self.logInSignOutCell.textLabel.textColor = [UIColor lightGrayColor];
     }
   }
 }
@@ -433,6 +442,18 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 - (void)textFieldsDidChange
 {
   [self updateLoginLogoutCellAppearance];
+}
+
+- (void)keyboardDidShow
+{
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    // This nudges the scroll view up slightly so that the fields and log in button are all clearly
+    // visible even on older devices. We use an explicit animation block because the
+    // |setContentOffset:animated:| method appears not to work at present.
+    [UIView animateWithDuration:0.25 animations:^{
+      [self.tableView setContentOffset:CGPointMake(0, -self.tableView.contentInset.top + 20)];
+    }];
+  }
 }
 
 @end
