@@ -26,6 +26,8 @@
 
 - (void)viewDidLoad
 {
+  [super viewDidLoad];
+  
   self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight
                                    | UIViewAutoresizingFlexibleWidth);
