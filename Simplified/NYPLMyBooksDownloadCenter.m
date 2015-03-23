@@ -1,10 +1,10 @@
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
+#import "NYPLSettingsAccountViewController.h"
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLSettingsCredentialViewController.h"
 
 #import "NYPLMyBooksDownloadCenter.h"
 
@@ -321,9 +321,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
      location:nil
      state:NYPLBookStateDownloading];
   } else {
-    [[NYPLSettingsCredentialViewController sharedController]
+    [[[NYPLSettingsAccountViewController alloc] init]
      requestCredentialsUsingExistingBarcode:NO
-     message:NYPLSettingsCredentialViewControllerMessageLogInToDownloadBook
      completionHandler:^{
        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
      }];

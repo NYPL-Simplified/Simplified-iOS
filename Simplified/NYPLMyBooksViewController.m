@@ -6,7 +6,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLFacetBarView.h"
 #import "NYPLFacetView.h"
-#import "NYPLSettingsCredentialViewController.h"
+#import "NYPLSettingsAccountViewController.h"
 
 #import "NYPLMyBooksViewController.h"
 
@@ -310,14 +310,9 @@ OK:
     }];
   } else {
     // We can't sync if we're not logged in, so let's log in.
-    [[NYPLSettingsCredentialViewController sharedController]
+    [[[NYPLSettingsAccountViewController alloc] init]
      requestCredentialsUsingExistingBarcode:NO
-     message:NYPLSettingsCredentialViewControllerMessageLogIn
-     completionHandler:^{
-       // We don't need to do anything here because sync happens upon log in anyway.
-       // TODO: An alert will not be shown here even though the user explicitly requested a sync.
-       // This is probably okay, but we should fix it eventually.
-     }];
+     completionHandler:nil];
   }
 }
 
