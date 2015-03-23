@@ -1,3 +1,5 @@
+#import "NYPLConfiguration.h"
+
 #import "NYPLSettingsPrimaryTableViewController.h"
 
 static NYPLSettingsPrimaryTableViewControllerItem
@@ -52,6 +54,15 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   self.clearsSelectionOnViewWillAppear = NO;
   
   return self;
+}
+
+#pragma mark UIViewController
+
+- (void)viewDidLoad
+{
+  [super viewDidLoad];
+  
+  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
 }
 
 #pragma mark UITableViewDelegate
