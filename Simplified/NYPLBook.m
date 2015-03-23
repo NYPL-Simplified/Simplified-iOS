@@ -9,9 +9,12 @@
 
 @property (nonatomic) NYPLBookAcquisition *acquisition;
 @property (nonatomic) NSArray *authorStrings;
+@property (nonatomic) NSArray *categoryStrings;
 @property (nonatomic) NSString *identifier;
-@property (nonatomic) NSURL *imageURL; // nilable
-@property (nonatomic) NSURL *imageThumbnailURL; // nilable
+@property (nonatomic) NSURL *imageURL;
+@property (nonatomic) NSURL *imageThumbnailURL;
+@property (nonatomic) NSDate *published;
+@property (nonatomic) NSString *publisher;
 @property (nonatomic) NSString *subtitle;
 @property (nonatomic) NSString *summary;
 @property (nonatomic) NSString *title;
@@ -21,9 +24,12 @@
 
 static NSString *const AcquisitionKey = @"acquisition";
 static NSString *const AuthorsKey = @"authors";
+static NSString *const CategoriesKey = @"categories";
 static NSString *const IdentifierKey = @"id";
 static NSString *const ImageURLKey = @"image";
 static NSString *const ImageThumbnailURLKey = @"image-thumbnail";
+static NSString *const PublishedKey = @"published";
+static NSString *const PublisherKey = @"publisher";
 static NSString *const SubtitleKey = @"subtitle";
 static NSString *const SummaryKey = @"summary";
 static NSString *const TitleKey = @"title";
@@ -74,9 +80,12 @@ static NSString *const UpdatedKey = @"updated";
                                openAccess:openAccess
                                sample:sample]
           authorStrings:entry.authorStrings
+          categoryStrings:entry.categoryStrings
           identifier:entry.identifier
           imageURL:image
           imageThumbnailURL:imageThumbnail
+          published:entry.published
+          publisher:entry.publisher
           subtitle:entry.alternativeHeadline
           summary:entry.summary
           title:entry.title
@@ -85,9 +94,12 @@ static NSString *const UpdatedKey = @"updated";
 
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *const)acquisition
                       authorStrings:(NSArray *const)authorStrings
+                    categoryStrings:(NSArray *const)categoryStrings
                          identifier:(NSString *const)identifier
                            imageURL:(NSURL *const)imageURL
                   imageThumbnailURL:(NSURL *const)imageThumbnailURL
+                          published:(NSDate *const)published
+                          publisher:(NSString *const)publisher
                            subtitle:(NSString *const)subtitle
                             summary:(NSString *const)summary
                               title:(NSString *const)title
@@ -108,9 +120,12 @@ static NSString *const UpdatedKey = @"updated";
   
   self.acquisition = acquisition;
   self.authorStrings = authorStrings;
+  self.categoryStrings = categoryStrings;
   self.identifier = identifier;
   self.imageURL = imageURL;
   self.imageThumbnailURL = imageThumbnailURL;
+  self.published = published;
+  self.publisher = publisher;
   self.subtitle = subtitle;
   self.summary = summary;
   self.title = title;
@@ -130,6 +145,9 @@ static NSString *const UpdatedKey = @"updated";
   self.authorStrings = dictionary[AuthorsKey];
   if(!self.authorStrings) return nil;
   
+  self.categoryStrings = dictionary[CategoriesKey];
+  if(!self.categoryStrings) return nil;
+  
   self.identifier = dictionary[IdentifierKey];
   if(!self.identifier) return nil;
   
@@ -138,6 +156,10 @@ static NSString *const UpdatedKey = @"updated";
   
   NSString *const imageThumbnail = NYPLNullToNil(dictionary[ImageThumbnailURLKey]);
   self.imageThumbnailURL = imageThumbnail ? [NSURL URLWithString:imageThumbnail] : nil;
+  
+  self.published = NYPLNullToNil([NSDate dateWithRFC3339String:dictionary[PublishedKey]]);
+  
+  self.publisher = NYPLNullToNil(dictionary[PublisherKey]);
   
   self.subtitle = NYPLNullToNil(dictionary[SubtitleKey]);
   
@@ -156,9 +178,12 @@ static NSString *const UpdatedKey = @"updated";
 {
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
            AuthorsKey: self.authorStrings,
+           CategoriesKey: self.categoryStrings,
            IdentifierKey: self.identifier,
            ImageURLKey: NYPLNullFromNil([self.imageURL absoluteString]),
            ImageThumbnailURLKey: NYPLNullFromNil([self.imageThumbnailURL absoluteString]),
+           PublishedKey: NYPLNullFromNil([self.published RFC3339String]),
+           PublisherKey: NYPLNullFromNil(self.publisher),
            SubtitleKey: NYPLNullFromNil(self.subtitle),
            SummaryKey: NYPLNullFromNil(self.summary),
            TitleKey: self.title,
@@ -168,6 +193,11 @@ static NSString *const UpdatedKey = @"updated";
 - (NSString *)authors
 {
   return [self.authorStrings componentsJoinedByString:@"; "];
+}
+
+- (NSString *)categories
+{
+  return [self.categoryStrings componentsJoinedByString:@"; "];
 }
 
 @end
