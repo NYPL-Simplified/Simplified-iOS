@@ -69,22 +69,13 @@
 
 // NYPLSettingsAccountViewController
 
+"SettingsAccountViewControllerInvalidCredentials" =
+  "Your barcode and pin combination was not valid. Please try again.";
+"SettingsAccountViewControllerLoginFailed" = "Login Failed";
 "SettingsAccountViewControllerLogoutMessage" =
   "If you sign out of your account, all content accessible via My Books will be removed from this device.";
-
-// NYPLSettingsCredentialView
-
-"SettingsCredentialViewBarcode" = "Barcode";
-"SettingsCredentialViewPIN" = "PIN";
-"SettingsCredentialViewScanBarcode" = "Scan Barcode";
-
-// NYPLSettingsCredentialViewController
-
-"SettingsCredentialViewControllerInvalidCredentials" =
-  "Your barcode and pin combination was not valid. Please try again.";
-"SettingsCredentialViewControllerLoginFailed" = "Login Failed";
-"SettingsCredentialViewControllerMessageLogIn" = "Use your library card to log in.";
-"SettingsCredentialViewControllerMessageLogInToDownloadBook" =
+"SettingsAccountViewControllerMessageLogIn" = "Use your library card to log in.";
+"SettingsAccountViewControllerMessageLogInToDownloadBook" =
   "You need a library card to download this book.";
-"SettingsCredentialViewControllerMessageInvalidPIN" =
+"SettingsAccountViewControllerMessageInvalidPIN" =
   "Your PIN has changed. Enter your new PIN.";

@@ -4,7 +4,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLSettingsCredentialViewController.h"
+#import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLSettingsAccountViewController.h"
@@ -302,6 +302,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [UIColor redColor];
+    self.logInSignOutCell.userInteractionEnabled = YES;
   } else {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentNatural;
@@ -378,7 +379,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
        
        if(error.code == NSURLErrorNotConnectedToInternet) {
          [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
+           initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
            message:NSLocalizedString(@"NotConnected", nil)
            delegate:nil
            cancelButtonTitle:nil
@@ -391,8 +392,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
          // We cancelled the request when asked to answer the server's challenge a second time
          // because we don't have valid credentials.
          [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
-           message:NSLocalizedString(@"SettingsCredentialViewControllerInvalidCredentials", nil)
+           initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
+           message:NSLocalizedString(@"SettingsAccountViewControllerInvalidCredentials", nil)
            delegate:nil
            cancelButtonTitle:nil
            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
@@ -405,7 +406,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
        
        if(error.code == NSURLErrorTimedOut) {
          [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
+           initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
            message:NSLocalizedString(@"TimedOut", nil)
            delegate:nil
            cancelButtonTitle:nil
@@ -431,7 +432,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
        NYPLLOG(@"Encountered unexpected error after authenticating.");
        
        [[[UIAlertView alloc]
-         initWithTitle:NSLocalizedString(@"SettingsCredentialViewControllerLoginFailed", nil)
+         initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
          message:NSLocalizedString(@"UnknownRequestError", nil)
          delegate:nil
          cancelButtonTitle:nil
@@ -467,6 +468,53 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
       }];
     }
   }
+}
+
+- (void)
+requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
+completionHandler:(void (^)())handler
+{
+  if(self.completionHandler) {
+    @throw NSInternalInconsistencyException;
+  }
+  
+  self.completionHandler = handler;
+  
+  if(useExistingBarcode) {
+    NSString *const barcode = [NYPLAccount sharedAccount].barcode;
+    if(!barcode) {
+      @throw NSInvalidArgumentException;
+    }
+    self.barcodeTextField.text = barcode;
+  } else {
+    self.barcodeTextField.text = @"";
+  }
+  
+  self.PINTextField.text = @"";
+  
+  UIBarButtonItem *const cancelBarButtonItem =
+    [[UIBarButtonItem alloc]
+     initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+     target:self
+     action:@selector(didSelectCancel)];
+  
+  self.navigationItem.leftBarButtonItem = cancelBarButtonItem;
+  
+  UIViewController *const viewController = [[UINavigationController alloc]
+                                            initWithRootViewController:self];
+  viewController.modalPresentationStyle = UIModalPresentationFormSheet;
+  
+  [[NYPLRootTabBarController sharedController]
+   safelyPresentViewController:viewController 
+   animated:YES
+   completion:nil];
+}
+
+- (void)didSelectCancel
+{
+  [self.navigationController.presentingViewController
+   dismissViewControllerAnimated:YES
+   completion:nil];
 }
 
 @end
