@@ -321,7 +321,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
      location:nil
      state:NYPLBookStateDownloading];
   } else {
-    [[[NYPLSettingsAccountViewController alloc] init]
+    [NYPLSettingsAccountViewController
      requestCredentialsUsingExistingBarcode:NO
      completionHandler:^{
        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
