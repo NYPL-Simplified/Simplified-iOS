@@ -470,38 +470,39 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   }
 }
 
-- (void)
++ (void)
 requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
 completionHandler:(void (^)())handler
 {
-  if(self.completionHandler) {
-    @throw NSInternalInconsistencyException;
-  }
+  NYPLSettingsAccountViewController *const accountViewController = [[self alloc] init];
   
-  self.completionHandler = handler;
+  accountViewController.completionHandler = handler;
+  
+  // Tell |accountViewController| to create its text fields so we can set their properties.
+  [accountViewController view];
   
   if(useExistingBarcode) {
     NSString *const barcode = [NYPLAccount sharedAccount].barcode;
     if(!barcode) {
       @throw NSInvalidArgumentException;
     }
-    self.barcodeTextField.text = barcode;
+    accountViewController.barcodeTextField.text = barcode;
   } else {
-    self.barcodeTextField.text = @"";
+    accountViewController.barcodeTextField.text = @"";
   }
   
-  self.PINTextField.text = @"";
+  accountViewController.PINTextField.text = @"";
   
   UIBarButtonItem *const cancelBarButtonItem =
     [[UIBarButtonItem alloc]
      initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-     target:self
+     target:accountViewController
      action:@selector(didSelectCancel)];
   
-  self.navigationItem.leftBarButtonItem = cancelBarButtonItem;
+  accountViewController.navigationItem.leftBarButtonItem = cancelBarButtonItem;
   
   UIViewController *const viewController = [[UINavigationController alloc]
-                                            initWithRootViewController:self];
+                                            initWithRootViewController:accountViewController];
   viewController.modalPresentationStyle = UIModalPresentationFormSheet;
   
   [[NYPLRootTabBarController sharedController]
