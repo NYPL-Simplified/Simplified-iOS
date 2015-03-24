@@ -37,7 +37,7 @@
   CFTypeRef resultRef = NULL;
   SecItemCopyMatching((__bridge CFDictionaryRef) dictionary, &resultRef);
   
-  NSData *result = (__bridge_transfer NSData *) resultRef;
+  NSData *const result = (__bridge_transfer NSData *) resultRef;
   if(!result) return nil;
   
   return [NSKeyedUnarchiver unarchiveObjectWithData:result];
