@@ -143,23 +143,50 @@ static NSString *detailTemplate = nil;
   
   [self addSubview:self.summaryWebView];
   
+  NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
+  dateFormatter.timeStyle = NSDateFormatterNoStyle;
+  dateFormatter.dateStyle = NSDateFormatterLongStyle;
+  
+  NSString *const publishedString =
+    self.book.published
+    ? [NSString stringWithFormat:@"%@: %@",
+       NSLocalizedString(@"Published", nil),
+       [dateFormatter stringFromDate:self.book.published]]
+    : nil;
+  
+  NSString *const publisherString =
+    self.book.publisher
+    ? [NSString stringWithFormat:@"%@: %@",
+       NSLocalizedString(@"Publisher", nil),
+       self.book.publisher]
+    : nil;
+  
+  NSString *const categoriesString =
+    self.book.categoryStrings.count
+    ? [NSString stringWithFormat:@"%@: %@",
+       (self.book.categoryStrings.count == 1
+        ? NSLocalizedString(@"Category", nil)
+        : NSLocalizedString(@"Categories", nil)),
+       self.book.categories]
+    : nil;
+  
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     // Metadata on the iPad is shown via separate lines to the right of the cover. As such, we to
     // use a series of labels in order to get the desired truncation.
     self.padCategoriesLabel = [[UILabel alloc] init];
     self.padCategoriesLabel.font = [UIFont systemFontOfSize:12];
     self.padCategoriesLabel.textColor = [UIColor lightGrayColor];
-    self.padCategoriesLabel.text = @"Categories: FIXME, TODO";
+    self.padCategoriesLabel.text = categoriesString;
     [self addSubview:self.padCategoriesLabel];
     self.padPublishedLabel = [[UILabel alloc] init];
     self.padPublishedLabel.font = [UIFont systemFontOfSize:12];
     self.padPublishedLabel.textColor = [UIColor lightGrayColor];
-    self.padPublishedLabel.text = @"Published: January 1st, 1970";
+    self.padPublishedLabel.text = publishedString;
     [self addSubview:self.padPublishedLabel];
     self.padPublisherLabel = [[UILabel alloc] init];
     self.padPublisherLabel.font = [UIFont systemFontOfSize:12];
     self.padPublisherLabel.textColor = [UIColor lightGrayColor];
-    self.padPublisherLabel.text = @"Publisher: Imaginary Metadata";
+    self.padPublisherLabel.text = publisherString;
     [self addSubview:self.padPublisherLabel];
   } else {
     // Metadata on the iPhone is shown as a single block of wrapped text.
@@ -168,10 +195,19 @@ static NSString *detailTemplate = nil;
     self.phoneMetadataLabel.textAlignment = NSTextAlignmentCenter;
     self.phoneMetadataLabel.font = [UIFont systemFontOfSize:10];
     self.phoneMetadataLabel.textColor = [UIColor lightGrayColor];
-    self.phoneMetadataLabel.text =
-      @"Published: January 1st, 1970 "
-      @"Publisher: Imaginary Metadata "
-      @"Categories: FIXME, TODO";
+    NSMutableString *const string = [NSMutableString string];
+    if(self.book.published) {
+      [string appendString:publishedString];
+    }
+    if(self.book.publisher) {
+      if(string.length) [string appendString:@"  "];
+      [string appendString:publisherString];
+    }
+    if(self.book.categoryStrings.count) {
+      if(string.length) [string appendString:@"  "];
+      [string appendString:categoriesString];
+    }
+    self.phoneMetadataLabel.text = string;
     [self addSubview:self.phoneMetadataLabel];
   }
   
