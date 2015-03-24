@@ -203,7 +203,6 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   
   for(NYPLBook *const book in books) {
     if(!book.imageThumbnailURL) {
-      NYPLLOG_F(@"Missing thumbnail image URL for '%@'.", book.title);
       [lock lock];
       dictionary[book.identifier] = [NYPLTenPrintCoverView imageForBook:book];
       --remaining;
@@ -281,7 +280,6 @@ static NSUInteger const memoryCacheInMegabytes = 2;
                         __attribute__((unused)) NSURLResponse *response,
                         __attribute__((unused)) NSError *error) {
       if(!data || ![UIImage imageWithData:data]) {
-        NYPLLOG_F(@"Failed to pin thumbnail image for '%@'.", book.title);
         return;
       }
       
