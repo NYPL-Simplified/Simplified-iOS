@@ -3,6 +3,8 @@
 "Barcode" = "Barcode";
 "Cancel" = "Cancel";
 "Catalog" = "Catalog";
+"Categories" = "Categories";
+"Category" = "Category";
 "CheckConnection" = "Please check your connection and try again.";
 "ConnectionFailed" = "Connection Failed";
 "CreditsAndAcknowledgements" = "Credits & Acknowledgements";
@@ -19,6 +21,8 @@
 "NotConnected" = "You are not connected to the internet. Please connect and try again.";
 "OK" = "OK";
 "PIN" = "PIN";
+"Published" = "Published";
+"Publisher" = "Publisher";
 "Read" = "Read"; // present tense
 "SearchPlaceholderFormat" = "Search %@";
 "Settings" = "Settings";
