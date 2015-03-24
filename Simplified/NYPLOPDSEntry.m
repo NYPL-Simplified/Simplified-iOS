@@ -8,8 +8,11 @@
 
 @property (nonatomic) NSString *alternativeHeadline;
 @property (nonatomic) NSArray *authorStrings;
+@property (nonatomic) NSArray *categoryStrings;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSArray *links;
+@property (nonatomic) NSDate *published;
+@property (nonatomic) NSString *publisher;
 @property (nonatomic) NSString *summary;
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSDate *updated;
@@ -41,6 +44,19 @@
     self.authorStrings = authorStrings;
   }
   
+  {
+    NSMutableArray *const categoryStrings = [NSMutableArray array];
+    
+    for(NYPLXML *const categoryXML in [entryXML childrenWithName:@"category"]) {
+      NSString *const term = categoryXML.attributes[@"term"];
+      if(term) {
+        [categoryStrings addObject:term];
+      }
+    }
+    
+    self.categoryStrings = categoryStrings;
+  }
+  
   if(!((self.identifier = [entryXML firstChildWithName:@"id"].value))) {
     NYPLLOG(@"Missing required 'id' element.");
     return nil;
@@ -60,6 +76,16 @@
     
     self.links = links;
   }
+  
+  {
+    NSString *const dateString = [entryXML firstChildWithName:@"published"].value;
+    
+    if(dateString) {
+      self.published = [NSDate dateWithRFC3339String:dateString];
+    }
+  }
+  
+  self.publisher = [entryXML firstChildWithName:@"publisher"].value;
   
   self.summary = [entryXML firstChildWithName:@"summary"].value;
   
