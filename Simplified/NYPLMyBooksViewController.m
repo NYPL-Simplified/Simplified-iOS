@@ -29,7 +29,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 };
 
 @interface NYPLMyBooksViewController ()
-  <NYPLBookCellDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate, UICollectionViewDataSource,
+  <NYPLFacetViewDataSource, NYPLFacetViewDelegate, UICollectionViewDataSource,
    UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) FacetShow activeFacetShow;

@@ -7,10 +7,6 @@
 @class NYPLBook;
 @class NYPLBookCell;
 
-@protocol NYPLBookNormalCellDelegate;
-@protocol NYPLBookDownloadFailedCellDelegate;
-@protocol NYPLBookDownloadingCellDelegate;
-
 // This is exposed to help classes implement collection view layout delegates.
 NSInteger NYPLBookCellColumnCountForCollectionViewWidth(CGFloat screenWidth);
 
@@ -24,11 +20,6 @@ void NYPLBookCellRegisterClassesForCollectionView(UICollectionView *collectionVi
 NYPLBookCell *NYPLBookCellDequeue(UICollectionView *collectionView,
                                   NSIndexPath *indexPath,
                                   NYPLBook *book);
-
-@protocol NYPLBookCellDelegate
- <NYPLBookNormalCellDelegate, NYPLBookDownloadFailedCellDelegate, NYPLBookDownloadingCellDelegate>
-
-@end
 
 @interface NYPLBookCell : UICollectionViewCell
 
