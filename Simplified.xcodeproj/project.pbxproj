@@ -131,13 +131,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		110FFAF01A6034CC0083D840 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 110FFAB91A5EF6C50083D840 /* rmservices_iphone.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC07E0554694100DB518D;
-			remoteInfo = rmservices_iphone;
-		};
 		1112A81E1A322C53002B8CC1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */;
@@ -175,8 +168,6 @@
 		11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDownloadFailedCell.m; sourceTree = "<group>"; };
 		1107835C19816E3D0071AB1E /* UIView+NYPLViewAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+NYPLViewAdditions.h"; sourceTree = "<group>"; };
 		1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+NYPLViewAdditions.m"; sourceTree = "<group>"; };
-		110833851A5B2E8A003FBE18 /* NYPLReaderRMSDKView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReaderRMSDKView.h; sourceTree = "<group>"; };
-		110833861A5B2E8A003FBE18 /* NYPLReaderRMSDKView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderRMSDKView.m; sourceTree = "<group>"; };
 		110AD83A19E4960C005724C3 /* NYPLOPDSAttribute.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSAttribute.h; sourceTree = "<group>"; };
 		110AD83B19E497D6005724C3 /* NYPLOPDSAttribute.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSAttribute.m; sourceTree = "<group>"; };
 		110AF8941961D94D004887C3 /* NYPLBookDetailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailView.h; sourceTree = "<group>"; };
@@ -184,7 +175,6 @@
 		110AF89A1961ED1F004887C3 /* NYPLBookDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailViewController.h; sourceTree = "<group>"; };
 		110AF89B1961ED1F004887C3 /* NYPLBookDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDetailViewController.m; sourceTree = "<group>"; };
 		110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = DetailSummaryTemplate.html; sourceTree = "<group>"; };
-		110FFAB91A5EF6C50083D840 /* rmservices_iphone.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = rmservices_iphone.xcodeproj; path = "../../Code/RMSDK-10_0_2014-08-25/samples/rmservices/build/xc3/rmservices_iphone.xcodeproj"; sourceTree = NYPL_SIMPLIFIED_RMSDK_10; };
 		111197261986B43B0014462F /* NYPLBookCellDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookCellDelegate.h; sourceTree = "<group>"; };
 		111197271986B43B0014462F /* NYPLBookCellDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookCellDelegate.m; sourceTree = "<group>"; };
 		111197321986D7550014462F /* NYPLDismissibleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLDismissibleViewController.h; sourceTree = "<group>"; };
@@ -224,7 +214,6 @@
 		111E758C1A840DC500718AD7 /* credits.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = credits.css; sourceTree = "<group>"; };
 		1120749119D20BF9008203A4 /* NYPLBookCellCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookCellCollectionViewController.h; sourceTree = "<group>"; };
 		1120749219D20BF9008203A4 /* NYPLBookCellCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookCellCollectionViewController.m; sourceTree = "<group>"; };
-		112492531A5B418E0054D6E2 /* NYPLRMSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLRMSDK.h; sourceTree = "<group>"; };
 		112492571A5B5B690054D6E2 /* libstdc++.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.dylib"; path = "usr/lib/libstdc++.6.dylib"; sourceTree = SDKROOT; };
 		112C684D19EF003300106973 /* NYPLCatalogFacetGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogFacetGroup.h; sourceTree = "<group>"; };
 		112C684E19EF003300106973 /* NYPLCatalogFacetGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogFacetGroup.m; sourceTree = "<group>"; };
@@ -454,14 +443,6 @@
 			name = Book;
 			sourceTree = "<group>";
 		};
-		110FFAEC1A6034CC0083D840 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				110FFAF11A6034CC0083D840 /* librmservices_iphone.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		1112A81A1A322C53002B8CC1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -583,8 +564,6 @@
 				11BFDB32199C01F700378691 /* NYPLReaderTOCViewController.m */,
 				119504091994075B009FB788 /* NYPLReaderViewController.h */,
 				1195040A1994075B009FB788 /* NYPLReaderViewController.m */,
-				110833851A5B2E8A003FBE18 /* NYPLReaderRMSDKView.h */,
-				110833861A5B2E8A003FBE18 /* NYPLReaderRMSDKView.m */,
 			);
 			name = Reader;
 			sourceTree = "<group>";
@@ -640,7 +619,6 @@
 				A823D80E192BABA400B55DE2 /* Products */,
 				1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */,
 				119503DA1993F8F4009FB788 /* RDServices.xcodeproj */,
-				110FFAB91A5EF6C50083D840 /* rmservices_iphone.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -715,7 +693,6 @@
 				119503EE1993FB90009FB788 /* NYPLReadium.h */,
 				11B20E6C19D9F6DD00877A23 /* NYPLReloadView.h */,
 				11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */,
-				112492531A5B418E0054D6E2 /* NYPLRMSDK.h */,
 				11548C091939136C009DBF2E /* NYPLRootTabBarController.h */,
 				11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */,
 				114C8CD819BF55F900719B72 /* NYPLRoundedButton.h */,
@@ -808,7 +785,6 @@
 				A823D809192BABA400B55DE2 /* Sources */,
 				A823D80A192BABA400B55DE2 /* Frameworks */,
 				A823D80B192BABA400B55DE2 /* Resources */,
-				110FFAB81A5EF0F30083D840 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -873,10 +849,6 @@
 					ProjectRef = 119503DA1993F8F4009FB788 /* RDServices.xcodeproj */;
 				},
 				{
-					ProductGroup = 110FFAEC1A6034CC0083D840 /* Products */;
-					ProjectRef = 110FFAB91A5EF6C50083D840 /* rmservices_iphone.xcodeproj */;
-				},
-				{
 					ProductGroup = 1112A81A1A322C53002B8CC1 /* Products */;
 					ProjectRef = 1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */;
 				},
@@ -890,13 +862,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		110FFAF11A6034CC0083D840 /* librmservices_iphone.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = librmservices_iphone.a;
-			remoteRef = 110FFAF01A6034CC0083D840 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		1112A81F1A322C53002B8CC1 /* libTenPrintCover.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -944,22 +909,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		110FFAB81A5EF0F30083D840 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"/${PRODUCT_NAME}.app/\n\nrm -rf RMSDKResources\nmkdir RMSDKResources\ncd RMSDKResources\ncp \"${NYPL_SIMPLIFIED_RMSDK_10}\"/resources/userStyleSheets/empty/userStyle.css .\n\nrm -rf hyphenDicts\nmkdir hyphenDicts\ncp \"${NYPL_SIMPLIFIED_RMSDK_10}\"/thirdparty/hyphendicts/*.dic hyphenDicts/\n\nrm -rf fonts\nmkdir fonts\ncp \"${NYPL_SIMPLIFIED_RMSDK_10}\"/fonts/fonts/Courier/*.otf fonts/\ncp \"${NYPL_SIMPLIFIED_RMSDK_10}\"/fonts/fonts/Minion/*.otf fonts/\ncp \"${NYPL_SIMPLIFIED_RMSDK_10}\"/fonts/fonts/Myriad/*.otf fonts/\ncp \"${NYPL_SIMPLIFIED_RMSDK_10}\"/fonts/fonts/Symbol/*.otf fonts/\ncp \"${NYPL_SIMPLIFIED_RMSDK_10}\"/fonts/fonts/AdobeHeitiStd/*.otf fonts/\ncp \"${NYPL_SIMPLIFIED_RMSDK_10}\"/fonts/fonts/AdobeMingStd/*.otf fonts/\ncp \"${NYPL_SIMPLIFIED_RMSDK_10}\"/fonts/fonts/AdobeMyungjoStd/*.otf fonts/\ncp \"${NYPL_SIMPLIFIED_RMSDK_10}\"/fonts/fonts/RyoGothicPlusN/*.otf fonts/";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A823D809192BABA400B55DE2 /* Sources */ = {

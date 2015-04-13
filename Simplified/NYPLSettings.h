@@ -2,8 +2,7 @@ static NSString *const NYPLSettingsDidChangeNotification = @"NYPLSettingsDidChan
 
 typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
   NYPLSettingsRenderingEngineAutomatic,
-  NYPLSettingsRenderingEngineReadium,
-  NYPLSettingsRenderingEngineRMSDK10
+  NYPLSettingsRenderingEngineReadium
 };
 
 @interface NYPLSettings : NSObject

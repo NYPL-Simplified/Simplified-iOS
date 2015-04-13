@@ -14,10 +14,6 @@ static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const str
     return NYPLSettingsRenderingEngineReadium;
   }
   
-  if([string isEqualToString:@"rmsdk10"]) {
-    return NYPLSettingsRenderingEngineRMSDK10;
-  }
-  
   @throw NSInvalidArgumentException;
 }
 
@@ -28,8 +24,6 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
       return @"automatic";
     case NYPLSettingsRenderingEngineReadium:
       return @"readium";
-    case NYPLSettingsRenderingEngineRMSDK10:
-      return @"rmsdk10";
   }
 }
 
