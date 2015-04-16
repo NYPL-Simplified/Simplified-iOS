@@ -1147,6 +1147,7 @@
 					"-Weverything",
 					"-Wno-objc-missing-property-synthesis",
 					"-Wno-c11-extensions",
+					"-Wno-documentation",
 				);
 				WRAPPER_EXTENSION = app;
 			};
@@ -1177,6 +1178,7 @@
 					"-Weverything",
 					"-Wno-objc-missing-property-synthesis",
 					"-Wno-c11-extensions",
+					"-Wno-documentation",
 				);
 				WRAPPER_EXTENSION = app;
 			};
