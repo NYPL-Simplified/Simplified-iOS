@@ -184,16 +184,20 @@ static void generateTOCElements(NSArray *const navigationElements,
 
 #pragma mark RDContainerDelegate
 
-- (void)rdcontainer:(__attribute__((unused)) RDContainer *)container
-     handleSdkError:(NSString *const)message
+- (BOOL)container:(__attribute__((unused)) RDContainer *)container
+   handleSdkError:(NSString * const)message
+isSevereEpubError:(const BOOL)isSevereEpubError
 {
-  NYPLLOG_F(@"Readium: %@", message);
+  NYPLLOG_F(@"(Readium) %@ %@", isSevereEpubError ? @"(SEVERE)" : @"", message);
+
+  // Ignore the error and continue.
+  return YES;
 }
 
 #pragma mark RDPackageResourceServerDelegate
 
 - (void)
-rdpackageResourceServer:(__attribute__((unused)) RDPackageResourceServer *)packageResourceServer
+packageResourceServer:(__attribute__((unused)) RDPackageResourceServer *)packageResourceServer
 executeJavaScript:(NSString *const)javaScript
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
