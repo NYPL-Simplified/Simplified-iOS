@@ -77,7 +77,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
-  configuration.timeoutIntervalForResource = 5.0;
+  configuration.timeoutIntervalForResource = 10.0;
   
   self.session = [NSURLSession
                   sessionWithConfiguration:configuration
