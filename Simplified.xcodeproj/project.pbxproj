@@ -72,8 +72,6 @@
 		1188F3E11A1ECC4B006B2F36 /* NYPLReaderSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1188F3E01A1ECC4B006B2F36 /* NYPLReaderSettings.m */; };
 		118A0B1B19915BDF00792DDE /* NYPLCatalogSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0B1A19915BDF00792DDE /* NYPLCatalogSearchViewController.m */; };
 		118B7ABF195CBF72005CE3E7 /* NYPLSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 118B7ABE195CBF72005CE3E7 /* NYPLSession.m */; };
-		119503E31993F90C009FB788 /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503E01993F8F4009FB788 /* libRDServices.a */; };
-		119503E51993F90C009FB788 /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503E41993F90C009FB788 /* libePub3-iOS.a */; };
 		119503E71993F914009FB788 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503E61993F914009FB788 /* libxml2.dylib */; };
 		119503E91993F919009FB788 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503E81993F919009FB788 /* libz.dylib */; };
 		119503EB1993F91E009FB788 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
@@ -113,6 +111,8 @@
 		11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3773219E0876F00487769 /* NYPLCatalogFacet.m */; };
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
+		A49C25581AE05D0A00D63B89 /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */; };
+		A49C25591AE05D0D00D63B89 /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
 		A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D810192BABA400B55DE2 /* Foundation.framework */; };
 		A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
 		A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D814192BABA400B55DE2 /* UIKit.framework */; };
@@ -138,18 +138,11 @@
 			remoteGlobalIDString = CCAC4FAE195B3DD700D775F5;
 			remoteInfo = TenPrintCover;
 		};
-		119503DF1993F8F4009FB788 /* PBXContainerItemProxy */ = {
+		A49C25451AE05A2600D63B89 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 119503DA1993F8F4009FB788 /* RDServices.xcodeproj */;
+			containerPortal = A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 118A0E281992B3FD00792DDE;
-			remoteInfo = RDServices;
-		};
-		119503E11993F903009FB788 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 119503DA1993F8F4009FB788 /* RDServices.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 118A0E271992B3FD00792DDE;
 			remoteInfo = RDServices;
 		};
 		A823D82D192BABA400B55DE2 /* PBXContainerItemProxy */ = {
@@ -287,7 +280,6 @@
 		118A0B1A19915BDF00792DDE /* NYPLCatalogSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogSearchViewController.m; sourceTree = "<group>"; };
 		118B7ABD195CBF72005CE3E7 /* NYPLSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSession.h; sourceTree = "<group>"; };
 		118B7ABE195CBF72005CE3E7 /* NYPLSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSession.m; sourceTree = "<group>"; };
-		119503DA1993F8F4009FB788 /* RDServices.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RDServices.xcodeproj; path = "readium-sdk/Platform/Apple/RDServices.xcodeproj"; sourceTree = "<group>"; };
 		119503E41993F90C009FB788 /* libePub3-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libePub3-iOS.a"; path = "readium-sdk/Platform/Apple/build/Debug-iphoneos/libePub3-iOS.a"; sourceTree = "<group>"; };
 		119503E61993F914009FB788 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		119503E81993F919009FB788 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -345,6 +337,8 @@
 		11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryTests.m; sourceTree = "<group>"; };
 		11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLinkTests.m; sourceTree = "<group>"; };
 		5705D893E0FE4395A50F089E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RDServices.xcodeproj; sourceTree = "<group>"; };
+		A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libePub3-iOS.a"; path = "readium-sdk/Platform/Apple/build/Debug-iphoneos/libePub3-iOS.a"; sourceTree = "<group>"; };
 		A823D80D192BABA400B55DE2 /* Simplified.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simplified.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D810192BABA400B55DE2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A823D812192BABA400B55DE2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -381,11 +375,11 @@
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
 				A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */,
 				1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */,
-				119503E51993F90C009FB788 /* libePub3-iOS.a in Frameworks */,
 				119503EB1993F91E009FB788 /* libc++.dylib in Frameworks */,
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
-				119503E31993F90C009FB788 /* libRDServices.a in Frameworks */,
+				A49C25581AE05D0A00D63B89 /* libePub3-iOS.a in Frameworks */,
+				A49C25591AE05D0D00D63B89 /* libRDServices.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -538,14 +532,6 @@
 			name = OPDS;
 			sourceTree = "<group>";
 		};
-		119503DB1993F8F4009FB788 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				119503E01993F8F4009FB788 /* libRDServices.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		119504051994061E009FB788 /* Reader */ = {
 			isa = PBXGroup;
 			children = (
@@ -610,6 +596,14 @@
 			name = Holds;
 			sourceTree = "<group>";
 		};
+		A49C25411AE05A2600D63B89 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A49C25461AE05A2600D63B89 /* libRDServices.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		A823D804192BABA400B55DE2 = {
 			isa = PBXGroup;
 			children = (
@@ -617,8 +611,8 @@
 				A823D82F192BABA400B55DE2 /* SimplifiedTests */,
 				A823D80F192BABA400B55DE2 /* Frameworks */,
 				A823D80E192BABA400B55DE2 /* Products */,
+				A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */,
 				1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */,
-				119503DA1993F8F4009FB788 /* RDServices.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -634,6 +628,7 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */,
 				1146EE3F1A5DD071009F7576 /* CoreText.framework */,
 				112492571A5B5B690054D6E2 /* libstdc++.6.dylib */,
 				11D5219B1A449ABA00636240 /* libstdc++.dylib */,
@@ -789,7 +784,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				119503E21993F903009FB788 /* PBXTargetDependency */,
 			);
 			name = Simplified;
 			productName = Simplified;
@@ -845,8 +839,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 119503DB1993F8F4009FB788 /* Products */;
-					ProjectRef = 119503DA1993F8F4009FB788 /* RDServices.xcodeproj */;
+					ProductGroup = A49C25411AE05A2600D63B89 /* Products */;
+					ProjectRef = A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */;
 				},
 				{
 					ProductGroup = 1112A81A1A322C53002B8CC1 /* Products */;
@@ -869,11 +863,11 @@
 			remoteRef = 1112A81E1A322C53002B8CC1 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		119503E01993F8F4009FB788 /* libRDServices.a */ = {
+		A49C25461AE05A2600D63B89 /* libRDServices.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRDServices.a;
-			remoteRef = 119503DF1993F8F4009FB788 /* PBXContainerItemProxy */;
+			remoteRef = A49C25451AE05A2600D63B89 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1021,11 +1015,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		119503E21993F903009FB788 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = RDServices;
-			targetProxy = 119503E11993F903009FB788 /* PBXContainerItemProxy */;
-		};
 		A823D82E192BABA400B55DE2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A823D80C192BABA400B55DE2 /* Simplified */;
@@ -1145,7 +1134,10 @@
 					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
@@ -1172,7 +1164,10 @@
 					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
