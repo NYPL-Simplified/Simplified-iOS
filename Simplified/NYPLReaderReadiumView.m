@@ -282,7 +282,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     // Readium stores a "contentCFI" but needs an "elementCfi" when handling a page request, so we
     // have to create a new dictionary.
     NSDictionary *const locationDictionary =
-    NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
+      NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
     dictionary[@"openPageRequest"] = @{@"idref": locationDictionary[@"idref"],
                                        @"elementCfi": locationDictionary[@"contentCFI"]};
   }
