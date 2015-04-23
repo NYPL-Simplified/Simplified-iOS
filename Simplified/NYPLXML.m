@@ -20,7 +20,13 @@
 
   NYPLXML *const document = [[self alloc] init];
   
-  NSXMLParser *const parser = [[NSXMLParser alloc] initWithData:data];
+  // TODO: This seemingly pointless copy appears to work around a bug with NSXMLParser that causes a
+  // crash in 64-bit simulators. Calling |copy| does *not* solve the problem: It must be a mutable
+  // copy for reasons completely unknown. Attempts to find a more pleasing workaround have been
+  // unsuccessful thus far, but something should eventually be figured out.
+  NSMutableData *const mutableData = [data mutableCopy];
+  
+  NSXMLParser *const parser = [[NSXMLParser alloc] initWithData:mutableData];
   parser.delegate = document;
   parser.shouldProcessNamespaces = YES;
   [parser parse];
