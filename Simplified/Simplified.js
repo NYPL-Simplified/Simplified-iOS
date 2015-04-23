@@ -9,7 +9,7 @@ function Simplified() {
     
     var touch = event.changedTouches[0];
     
-    if(touch.target.nodeName === "a") {
+    if(touch.target.nodeName.toUpperCase() === "A") {
       return;
     }
     
@@ -22,7 +22,7 @@ function Simplified() {
     
     var touch = event.changedTouches[0];
     
-    if(touch.target.nodeName === "a") {
+    if(touch.target.nodeName.toUpperCase() === "A") {
       return;
     }
     
