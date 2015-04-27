@@ -111,8 +111,9 @@
 		11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3773219E0876F00487769 /* NYPLCatalogFacet.m */; };
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
-		A489280C1B03C4430078B409 /* NYPLBasicAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = A489280B1B03C4430078B409 /* NYPLBasicAuth.m */; };
-		A48928191B03C81C0078B409 /* NYPLBasicAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = A48928181B03C81C0078B409 /* NYPLBasicAuth.m */; };
+		A4206FCA1AEE9F24009A1D73 /* NYPLTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = A4206FC91AEE9F24009A1D73 /* NYPLTest.mm */; };
+		A4206FDE1AEEC985009A1D73 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */; };
+		A48928211B03C8A80078B409 /* NYPLBasicAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = A48928201B03C8A80078B409 /* NYPLBasicAuth.m */; };
 		A49C25581AE05D0A00D63B89 /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */; };
 		A49C25591AE05D0D00D63B89 /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
 		A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D810192BABA400B55DE2 /* Foundation.framework */; };
@@ -340,10 +341,11 @@
 		11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLinkTests.m; sourceTree = "<group>"; };
 		5705D893E0FE4395A50F089E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4206FBB1AEE991E009A1D73 /* AdeptHost.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AdeptHost.xcconfig; sourceTree = "<group>"; };
-		A489280A1B03C4430078B409 /* NYPLBasicAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBasicAuth.h; sourceTree = "<group>"; };
-		A489280B1B03C4430078B409 /* NYPLBasicAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBasicAuth.m; sourceTree = "<group>"; };
-		A48928171B03C81C0078B409 /* NYPLBasicAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBasicAuth.h; sourceTree = "<group>"; };
-		A48928181B03C81C0078B409 /* NYPLBasicAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBasicAuth.m; sourceTree = "<group>"; };
+		A4206FC81AEE9F24009A1D73 /* NYPLTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLTest.h; sourceTree = "<group>"; };
+		A4206FC91AEE9F24009A1D73 /* NYPLTest.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NYPLTest.mm; sourceTree = "<group>"; };
+		A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReaderClientCert.sig; sourceTree = "<group>"; };
+		A489281F1B03C8A80078B409 /* NYPLBasicAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBasicAuth.h; sourceTree = "<group>"; };
+		A48928201B03C8A80078B409 /* NYPLBasicAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBasicAuth.m; sourceTree = "<group>"; };
 		A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RDServices.xcodeproj; sourceTree = "<group>"; };
 		A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libePub3-iOS.a"; path = "readium-sdk/Platform/Apple/build/Debug-iphoneos/libePub3-iOS.a"; sourceTree = "<group>"; };
 		A823D80D192BABA400B55DE2 /* Simplified.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simplified.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -672,9 +674,8 @@
 				1183F35A194F847100DC322F /* NYPLAsync.m */,
 				114C8CD519BE2FD300719B72 /* NYPLAttributedString.h */,
 				114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */,
-				A48928171B03C81C0078B409 /* NYPLBasicAuth.h */,
-				A489280A1B03C4430078B409 /* NYPLBasicAuth.h */,
-				A489280B1B03C4430078B409 /* NYPLBasicAuth.m */,
+				A489281F1B03C8A80078B409 /* NYPLBasicAuth.h */,
+				A48928201B03C8A80078B409 /* NYPLBasicAuth.m */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
 				111197321986D7550014462F /* NYPLDismissibleViewController.h */,
@@ -705,13 +706,14 @@
 				114C8CD919BF55F900719B72 /* NYPLRoundedButton.m */,
 				118B7ABD195CBF72005CE3E7 /* NYPLSession.h */,
 				118B7ABE195CBF72005CE3E7 /* NYPLSession.m */,
+				A4206FC81AEE9F24009A1D73 /* NYPLTest.h */,
+				A4206FC91AEE9F24009A1D73 /* NYPLTest.mm */,
 				111559EB19B8FA530003BE94 /* NYPLXML.h */,
 				111559EC19B8FA590003BE94 /* NYPLXML.m */,
 				AE77E8DE5454517F1AE119BF /* OPDS */,
 				119504051994061E009FB788 /* Reader */,
 				11C5DCEE1976D19E005A9945 /* Settings */,
 				A823D817192BABA400B55DE2 /* Supporting Files */,
-				A489280B1B03C4430078B409 /* NYPLBasicAuth.m */,
 			);
 			path = Simplified;
 			sourceTree = "<group>";
@@ -719,6 +721,7 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */,
 				111E758C1A840DC500718AD7 /* credits.css */,
 				111E758A1A840A1600718AD7 /* credits.html */,
 				110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */,
@@ -894,6 +897,7 @@
 				11C113D019F842B9005B3F63 /* reader.html in Resources */,
 				110F853E19D5FA7300052DF7 /* DetailSummaryTemplate.html in Resources */,
 				111E758B1A840A1600718AD7 /* credits.html in Resources */,
+				A4206FDE1AEEC985009A1D73 /* ReaderClientCert.sig in Resources */,
 				116A5EA4194653BE00491A21 /* Localizable.strings in Resources */,
 				A823D823192BABA400B55DE2 /* Images.xcassets in Resources */,
 				111E758D1A840DC500718AD7 /* credits.css in Resources */,
@@ -938,7 +942,6 @@
 				11BFDB33199C01F700378691 /* NYPLReaderTOCViewController.m in Sources */,
 				110AF8961961D94D004887C3 /* NYPLBookDetailView.m in Sources */,
 				1139DA6519C7755D00A07810 /* NYPLBookCoverRegistry.m in Sources */,
-				A489280C1B03C4430078B409 /* NYPLBasicAuth.m in Sources */,
 				11119742198827850014462F /* NYPLBookDetailDownloadingView.m in Sources */,
 				11068C55196DD37900E8A94B /* NYPLNull.m in Sources */,
 				1111973C19880E8D0014462F /* NYPLLinearView.m in Sources */,
@@ -968,8 +971,8 @@
 				111197281986B43B0014462F /* NYPLBookCellDelegate.m in Sources */,
 				111197391987F4070014462F /* NYPLBookDetailNormalView.m in Sources */,
 				111E757D1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m in Sources */,
-				A48928191B03C81C0078B409 /* NYPLBasicAuth.m in Sources */,
 				11548C1119391614009DBF2E /* NYPLCatalogNavigationFeedViewController.m in Sources */,
+				A48928211B03C8A80078B409 /* NYPLBasicAuth.m in Sources */,
 				11A16E69195B2BD3004147F4 /* NYPLCatalogAcquisitionFeedViewController.m in Sources */,
 				111E757A1A80165C00718AD7 /* NYPLSettingsSplitViewController.m in Sources */,
 				112C694D197301FE00C48F95 /* NYPLBookRegistryRecord.m in Sources */,
@@ -995,6 +998,7 @@
 				119BEB89198C43A600121439 /* NSString+NYPLStringAdditions.m in Sources */,
 				1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */,
 				112C6953197309C500C48F95 /* NYPLBookState.m in Sources */,
+				A4206FCA1AEE9F24009A1D73 /* NYPLTest.mm in Sources */,
 				11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */,
 				1158812E1A894F4E008672C3 /* NYPLSettingsAccountViewController.m in Sources */,
 				1111973F1988226F0014462F /* NYPLBookDetailDownloadFailedView.m in Sources */,
@@ -1075,7 +1079,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1120,7 +1124,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -1148,6 +1152,8 @@
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**",
 					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
+					"\"$(SRCROOT)/readium-sdk/Platform/Apple/include\"",
+					"$(ADEPT_CONNECTOR_LAUNCHER_INCLUDES)",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
@@ -1181,6 +1187,8 @@
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**",
 					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
+					"\"$(SRCROOT)/readium-sdk/Platform/Apple/include\"",
+					"$(ADEPT_CONNECTOR_LAUNCHER_INCLUDES)",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				LIBRARY_SEARCH_PATHS = (

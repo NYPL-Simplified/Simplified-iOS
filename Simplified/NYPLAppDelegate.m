@@ -3,6 +3,8 @@
 #import "NYPLReaderSettings.h"
 #import "NYPLRootTabBarController.h"
 
+#import "NYPLTest.h"
+
 #import "NYPLAppDelegate.h"
 
 @implementation NYPLAppDelegate
@@ -21,6 +23,8 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.window.rootViewController = [NYPLRootTabBarController sharedController];
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
   [self.window makeKeyAndVisible];
+  
+  [self performSelector:@selector(test) withObject:nil afterDelay:5.0];
 
   return YES;
 }
@@ -29,6 +33,11 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 {
   [[NYPLBookRegistry sharedRegistry] save];
   [[NYPLReaderSettings sharedSettings] save];
+}
+
+- (void)test
+{
+  [[NYPLTest sharedTest] test];
 }
 
 @end
