@@ -1,0 +1,8 @@
+ADEPT_CONNECTOR_LAUNCHER_LIBRARY_SEARCH_PATHS = $(NYPL_ADOBE_ADEPT)/lib/ios/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) $(NYPL_ADOBE_ADEPT)/thirdparty/openssl/public/ios/lib $(NYPL_ADOBE_ADEPT)/thirdparty/curl/public/ios/lib
+
+ADEPT_CONNECTOR_LAUNCHER_INCLUDES = $(NYPL_ADOBE_ADEPT)/dp/public $(NYPL_ADOBE_ADEPT)/drm/adept/public $(NYPL_ADOBE_ADEPT)/xml/uft/public $(NYPL_ADOBE_ADEPT)/xml/mdom/public $(NYPL_ADOBE_ADEPT)/xml/xpath/public
+
+
+ADEPT_CONNECTOR_LIB_FLAGS = -lhobbes-iOS -lcts-iOS -lt3-iOS -ldatacollector-iOS -lpng-iOS -lfonts-iOS -lhyphen-iOS -ladept-iOS -lcrypt-openssl-iOS -ldp-iOS -lexpat-iOS -lxml-iOS -lzlib-iOS -lssl -lcrypto -lcurl
+
+CURL_INCLUDES = /Users/licorice/Documents/Code/Adobe/RMSDK_11.0.3_Prerelease/curl/include-64
