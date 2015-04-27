@@ -721,7 +721,6 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */,
 				111E758C1A840DC500718AD7 /* credits.css */,
 				111E758A1A840A1600718AD7 /* credits.html */,
 				110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */,
@@ -730,6 +729,7 @@
 				116A5EA3194653BE00491A21 /* Localizable.strings */,
 				A823D81C192BABA400B55DE2 /* main.m */,
 				11C113D319F842E2005B3F63 /* Reader */,
+				A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */,
 				119503F31994001F009FB788 /* readium-shared-js */,
 				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
 				A823D81E192BABA400B55DE2 /* Simplified-Prefix.pch */,
