@@ -157,7 +157,8 @@ static NSString *const UpdatedKey = @"updated";
   NSString *const imageThumbnail = NYPLNullToNil(dictionary[ImageThumbnailURLKey]);
   self.imageThumbnailURL = imageThumbnail ? [NSURL URLWithString:imageThumbnail] : nil;
   
-  self.published = NYPLNullToNil([NSDate dateWithRFC3339String:dictionary[PublishedKey]]);
+  NSString *const dateString = NYPLNullToNil(dictionary[PublishedKey]);
+  self.published = dateString ? [NSDate dateWithRFC3339String:dateString] : nil;
   
   self.publisher = NYPLNullToNil(dictionary[PublisherKey]);
   
