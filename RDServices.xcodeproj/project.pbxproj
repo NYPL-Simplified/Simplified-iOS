@@ -44,6 +44,7 @@
 		118A0ED91992B4D900792DDE /* RDPackageResourceServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E631992B46200792DDE /* RDPackageResourceServer.m */; };
 		118A0EDA1992B4D900792DDE /* RDSmilData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E661992B46200792DDE /* RDSmilData.mm */; };
 		118A0EDB1992B4D900792DDE /* RDSpineItem.mm in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E681992B46200792DDE /* RDSpineItem.mm */; };
+		A4E9140A1AF12F5800C2DA5B /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C254F1AE05B7700D63B89 /* libePub3-iOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = AB61CE4A1694845700299BB1;
 			remoteInfo = UnitTests;
+		};
+		A4E914051AF12F5100C2DA5B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 110C82C01992D41C00B1E278 /* ePub3.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = ABA4BADF16ADF5A600161B77;
+			remoteInfo = "ePub3-iOS";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -172,6 +180,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4E9140A1AF12F5800C2DA5B /* libePub3-iOS.a in Frameworks */,
 				118A0E2C1992B3FD00792DDE /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -404,6 +413,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				A4E914061AF12F5100C2DA5B /* PBXTargetDependency */,
 			);
 			name = RDServices;
 			productName = RDServices;
@@ -511,6 +521,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A4E914061AF12F5100C2DA5B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "ePub3-iOS";
+			targetProxy = A4E914051AF12F5100C2DA5B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		118A0E491992B3FD00792DDE /* Debug */ = {
