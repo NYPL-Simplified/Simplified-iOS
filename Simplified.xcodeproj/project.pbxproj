@@ -113,9 +113,10 @@
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
 		A4206FCA1AEE9F24009A1D73 /* NYPLTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = A4206FC91AEE9F24009A1D73 /* NYPLTest.mm */; };
 		A4206FDE1AEEC985009A1D73 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */; };
-		A48928211B03C8A80078B409 /* NYPLBasicAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = A48928201B03C8A80078B409 /* NYPLBasicAuth.m */; };
+		A46D1CB81AF2C2E000F5321E /* NYPLAdeptConnector.mm in Sources */ = {isa = PBXBuildFile; fileRef = A46D1CB71AF2C2E000F5321E /* NYPLAdeptConnector.mm */; };
 		A49C25581AE05D0A00D63B89 /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */; };
 		A49C25591AE05D0D00D63B89 /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
+		A4E254FA1B0E610900193FE4 /* NYPLBasicAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */; };
 		A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D810192BABA400B55DE2 /* Foundation.framework */; };
 		A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
 		A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D814192BABA400B55DE2 /* UIKit.framework */; };
@@ -344,10 +345,12 @@
 		A4206FC81AEE9F24009A1D73 /* NYPLTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLTest.h; sourceTree = "<group>"; };
 		A4206FC91AEE9F24009A1D73 /* NYPLTest.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NYPLTest.mm; sourceTree = "<group>"; };
 		A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReaderClientCert.sig; sourceTree = "<group>"; };
-		A489281F1B03C8A80078B409 /* NYPLBasicAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBasicAuth.h; sourceTree = "<group>"; };
-		A48928201B03C8A80078B409 /* NYPLBasicAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBasicAuth.m; sourceTree = "<group>"; };
+		A46D1CB61AF2C2E000F5321E /* NYPLAdeptConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAdeptConnector.h; sourceTree = "<group>"; };
+		A46D1CB71AF2C2E000F5321E /* NYPLAdeptConnector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NYPLAdeptConnector.mm; sourceTree = "<group>"; };
 		A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RDServices.xcodeproj; sourceTree = "<group>"; };
 		A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libePub3-iOS.a"; path = "readium-sdk/Platform/Apple/build/Debug-iphoneos/libePub3-iOS.a"; sourceTree = "<group>"; };
+		A4E254F81B0E610900193FE4 /* NYPLBasicAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBasicAuth.h; sourceTree = "<group>"; };
+		A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBasicAuth.m; sourceTree = "<group>"; };
 		A823D80D192BABA400B55DE2 /* Simplified.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simplified.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D810192BABA400B55DE2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A823D812192BABA400B55DE2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -668,14 +671,16 @@
 				110AF8881961D652004887C3 /* My Books */,
 				11172762197F31280043EFBF /* NYPLAccount.h */,
 				11172763197F31280043EFBF /* NYPLAccount.m */,
+				A46D1CB61AF2C2E000F5321E /* NYPLAdeptConnector.h */,
+				A46D1CB71AF2C2E000F5321E /* NYPLAdeptConnector.mm */,
 				A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */,
 				A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */,
 				1183F359194F847100DC322F /* NYPLAsync.h */,
 				1183F35A194F847100DC322F /* NYPLAsync.m */,
 				114C8CD519BE2FD300719B72 /* NYPLAttributedString.h */,
 				114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */,
-				A489281F1B03C8A80078B409 /* NYPLBasicAuth.h */,
-				A48928201B03C8A80078B409 /* NYPLBasicAuth.m */,
+				A4E254F81B0E610900193FE4 /* NYPLBasicAuth.h */,
+				A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
 				111197321986D7550014462F /* NYPLDismissibleViewController.h */,
@@ -949,6 +954,7 @@
 				1183F347194F744D00DC322F /* NYPLBook.m in Sources */,
 				1183F341194F723D00DC322F /* NYPLCatalogLane.m in Sources */,
 				11A16E6F195B60DF004147F4 /* NYPLBookNormalCell.m in Sources */,
+				A46D1CB81AF2C2E000F5321E /* NYPLAdeptConnector.mm in Sources */,
 				11548C0E1939147D009DBF2E /* NYPLCatalogNavigationController.m in Sources */,
 				111E75891A818C1F00718AD7 /* NYPLSettingsCreditsViewController.m in Sources */,
 				111197341986D7550014462F /* NYPLDismissibleViewController.m in Sources */,
@@ -972,7 +978,6 @@
 				111197391987F4070014462F /* NYPLBookDetailNormalView.m in Sources */,
 				111E757D1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m in Sources */,
 				11548C1119391614009DBF2E /* NYPLCatalogNavigationFeedViewController.m in Sources */,
-				A48928211B03C8A80078B409 /* NYPLBasicAuth.m in Sources */,
 				11A16E69195B2BD3004147F4 /* NYPLCatalogAcquisitionFeedViewController.m in Sources */,
 				111E757A1A80165C00718AD7 /* NYPLSettingsSplitViewController.m in Sources */,
 				112C694D197301FE00C48F95 /* NYPLBookRegistryRecord.m in Sources */,
@@ -990,6 +995,7 @@
 				112C684F19EF003300106973 /* NYPLCatalogFacetGroup.m in Sources */,
 				11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */,
 				118A0B1B19915BDF00792DDE /* NYPLCatalogSearchViewController.m in Sources */,
+				A4E254FA1B0E610900193FE4 /* NYPLBasicAuth.m in Sources */,
 				1188F3E11A1ECC4B006B2F36 /* NYPLReaderSettings.m in Sources */,
 				11C5DD16197727A6005A9945 /* NYPLKeychain.m in Sources */,
 				AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */,
@@ -1172,6 +1178,8 @@
 					"-Wno-objc-missing-property-synthesis",
 					"-Wno-c11-extensions",
 					"-Wno-documentation",
+					"-Wno-c++98-compat-pedantic",
+					"-Wno-c++98-compat",
 				);
 				WRAPPER_EXTENSION = app;
 			};
@@ -1207,6 +1215,8 @@
 					"-Wno-objc-missing-property-synthesis",
 					"-Wno-c11-extensions",
 					"-Wno-documentation",
+					"-Wno-c++98-compat-pedantic",
+					"-Wno-c++98-compat",
 				);
 				WRAPPER_EXTENSION = app;
 			};
