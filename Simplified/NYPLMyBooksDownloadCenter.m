@@ -285,7 +285,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
   
   if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-    NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
+    NSURLRequest *const request = [NSURLRequest requestWithURL:[book.acquisition preferredURL]];
     
     if(!request.URL) {
       // Originally this code just let the request fail later on, but apparently resuming an
