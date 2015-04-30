@@ -180,7 +180,6 @@ didCompleteWithError:(NSError *)error
       @(task.taskIdentifier)];
   
   if(error && error.code != NSURLErrorCancelled) {
-    self.bookIdentifierToDownloadProgress[book.identifier] = @1.0;
     [self failDownloadForBook:book];
     return;
   }
