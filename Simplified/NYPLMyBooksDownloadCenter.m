@@ -108,36 +108,41 @@ didFinishDownloadingToURL:(NSURL *const)location
     return;
   }
   
-  NSError *error = nil;
-  
-  [[NSFileManager defaultManager]
-   removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
-   error:NULL];
-  
-  BOOL const success = [[NSFileManager defaultManager]
-                        moveItemAtURL:location
-                        toURL:[self fileURLForBookIndentifier:book.identifier]
-                        error:&error];
-  
-  if(success) {
-    [[NYPLBookRegistry sharedRegistry]
-     setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+  if([downloadTask.response.MIMEType isEqualToString:@"application/vnd.adobe.adept+xml"]) {
+    // TODO: Handle DRM-protected content.
+    abort();
   } else {
-    [[[UIAlertView alloc]
-      initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
-      message:[NSString stringWithFormat:@"%@ (Error %ld)",
-               [NSString
-                stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
-                book.title],
-               (long)error.code]
-      delegate:nil
-      cancelButtonTitle:nil
-      otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-     show];
+    NSError *error = nil;
     
-    [[NYPLBookRegistry sharedRegistry]
-     setState:NYPLBookStateDownloadFailed
-     forIdentifier:book.identifier];
+    [[NSFileManager defaultManager]
+     removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
+     error:NULL];
+    
+    BOOL const success = [[NSFileManager defaultManager]
+                          moveItemAtURL:location
+                          toURL:[self fileURLForBookIndentifier:book.identifier]
+                          error:&error];
+    
+    if(success) {
+      [[NYPLBookRegistry sharedRegistry]
+       setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+    } else {
+      [[[UIAlertView alloc]
+        initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
+        message:[NSString stringWithFormat:@"%@ (Error %ld)",
+                 [NSString
+                  stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
+                  book.title],
+                 (long)error.code]
+        delegate:nil
+        cancelButtonTitle:nil
+        otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+       show];
+      
+      [[NYPLBookRegistry sharedRegistry]
+       setState:NYPLBookStateDownloadFailed
+       forIdentifier:book.identifier];
+    }
   }
   
   [self broadcastUpdate];
