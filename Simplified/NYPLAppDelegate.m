@@ -5,6 +5,8 @@
 
 #import "NYPLAppDelegate.h"
 
+#import "NYPLAdeptConnector.h"
+
 @implementation NYPLAppDelegate
 
 #pragma mark UIApplicationDelegate
@@ -21,6 +23,9 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.window.rootViewController = [NYPLRootTabBarController sharedController];
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
   [self.window makeKeyAndVisible];
+  
+  __attribute__((unused)) BOOL const authorized =
+    [[NYPLAdeptConnector sharedAdeptConnector] isDeviceAuthorized];
 
   return YES;
 }
