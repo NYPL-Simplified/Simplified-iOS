@@ -7,7 +7,7 @@
 
 @interface NYPLAdeptConnector : NSObject
 
-@property (atomic, readonly) BOOL isDeviceAuthorized;
+@property (atomic, readonly) BOOL deviceAuthorized;
 
 + (NYPLAdeptConnector *)sharedAdeptConnector;
 
