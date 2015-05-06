@@ -87,6 +87,7 @@ public:
 @interface NYPLAdeptConnector ()
 
 @property (nonatomic) BOOL authorizing;
+@property (nonatomic) dpdev::Device *device;
 @property (nonatomic) LauncherResProvider *launcherResProvider;
 @property (nonatomic) dpdrm::DRMProcessor *processor;
 @property (nonatomic) DRMProcessorClient *processorClient;
@@ -143,9 +144,9 @@ public:
   self.processorClient = new DRMProcessorClient();
   
   dpdev::DeviceProvider *const deviceProvider = dpdev::DeviceProvider::getProvider(0);
-  dpdev::Device *const device = deviceProvider->getDevice(0);
+  self.device = deviceProvider->getDevice(0);
   self.processor =
-    dpdrm::DRMProvider::getProvider()->createDRMProcessor(self.processorClient, device);
+    dpdrm::DRMProvider::getProvider()->createDRMProcessor(self.processorClient, self.device);
   
   return self;
 }
@@ -174,6 +175,8 @@ public:
       NYPLLOG(@"Ignoring duplicate authorization attempt.");
       return;
     }
+    
+    [self deauthorize];
 
     self.authorizing = YES;
   }
@@ -207,6 +210,13 @@ public:
   };
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block);
+}
+
+- (void)deauthorize
+{
+  @synchronized(self) {
+    self.device->setActivationRecord(dp::Data());
+  }
 }
 
 @end
