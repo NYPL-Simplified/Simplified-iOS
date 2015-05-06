@@ -181,8 +181,6 @@ public:
     self.authorizing = YES;
   }
   
-  __weak id const weakSelf = self;
-  
   void (^block)() = ^{
     dp::String const dpVendorID ([vendorID UTF8String]);
     dp::String const dpUsername ([username UTF8String]);
@@ -192,19 +190,19 @@ public:
                                      | dpdrm::DW_GET_CREDENTIAL_LIST
                                      | dpdrm::DW_ACTIVATE);
     
-    self.processor->reset();
-    unsigned int const workflows1 =
-    self.processor->initSignInWorkflow(workflows0, dpVendorID, dpUsername, dpPassword);
-    self.processor->startWorkflows(workflows1);
+    @synchronized(self) {
+      self.processor->reset();
+      unsigned int const workflows1 =
+        self.processor->initSignInWorkflow(workflows0, dpVendorID, dpUsername, dpPassword);
+      self.processor->startWorkflows(workflows1);
     
-    // TODO: Report this to a delegate.
-    if(self.deviceAuthorized) {
-      NSLog(@"SUCCESSFUL");
-    } else {
-      NSLog(@"FAILED");
-    }
-    
-    @synchronized(weakSelf) {
+      // TODO: Report this to a delegate.
+      if(self.deviceAuthorized) {
+        NSLog(@"SUCCESSFUL");
+      } else {
+        NSLog(@"FAILED");
+      }
+      
       self.authorizing = NO;
     }
   };
@@ -217,6 +215,25 @@ public:
   @synchronized(self) {
     self.device->setActivationRecord(dp::Data());
   }
+}
+
+- (void)fulfillWithACSMData:(NSData *const)ACSMData
+{
+  void (^block)() = ^{
+    @synchronized(self) {
+      self.processor->reset();
+      self.processor->initWorkflows(dpdrm::DW_FULFILL
+                                    | dpdrm::DW_DOWNLOAD
+                                    | dpdrm::DW_NOTIFY,
+                                    dp::Data(static_cast<unsigned char const *>(ACSMData.bytes),
+                                             ACSMData.length));
+      self.processor->startWorkflows(dpdrm::DW_FULFILL | dpdrm::DW_DOWNLOAD | dpdrm::DW_NOTIFY);
+      
+      // TODO: Report fulfillment status and output location (if applicable).
+    }
+  };
+  
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block);
 }
 
 @end

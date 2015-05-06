@@ -17,4 +17,6 @@
 
 - (void)deauthorize;
 
+- (void)fulfillWithACSMData:(NSData *)ACSMData;
+
 @end
