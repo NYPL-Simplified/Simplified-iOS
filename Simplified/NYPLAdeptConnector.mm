@@ -158,7 +158,7 @@ public:
 
 #pragma mark -
 
-- (BOOL)isDeviceAuthorized
+- (BOOL)deviceAuthorized
 {
   @synchronized(self) {
     return !!self.processor->getActivations().length();
@@ -195,7 +195,7 @@ public:
     self.processor->startWorkflows(workflows1);
     
     // TODO: Report this to a delegate.
-    if([self isDeviceAuthorized]) {
+    if(self.deviceAuthorized) {
       NSLog(@"SUCCESSFUL");
     } else {
       NSLog(@"FAILED");
