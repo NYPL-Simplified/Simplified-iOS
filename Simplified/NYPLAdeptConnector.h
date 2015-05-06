@@ -11,4 +11,8 @@
 
 + (NYPLAdeptConnector *)sharedAdeptConnector;
 
+- (void)authorizeWithVendorID:(NSString *)vendorID
+                     username:(NSString *)username
+                     password:(NSString *)password;
+
 @end

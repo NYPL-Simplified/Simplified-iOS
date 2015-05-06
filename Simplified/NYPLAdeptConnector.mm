@@ -86,6 +86,7 @@ public:
 
 @interface NYPLAdeptConnector ()
 
+@property (nonatomic) BOOL authorizing;
 @property (nonatomic) LauncherResProvider *launcherResProvider;
 @property (nonatomic) dpdrm::DRMProcessor *processor;
 @property (nonatomic) DRMProcessorClient *processorClient;
@@ -159,7 +160,53 @@ public:
 
 - (BOOL)isDeviceAuthorized
 {
-  return !!self.processor->getActivations().length();
+  @synchronized(self) {
+    return !!self.processor->getActivations().length();
+  }
+}
+
+- (void)authorizeWithVendorID:(NSString *const)vendorID
+                     username:(NSString *const)username
+                     password:(NSString *const)password
+{
+  @synchronized(self) {
+    if(self.authorizing) {
+      NYPLLOG(@"Ignoring duplicate authorization attempt.");
+      return;
+    }
+
+    self.authorizing = YES;
+  }
+  
+  __weak id const weakSelf = self;
+  
+  void (^block)() = ^{
+    dp::String const dpVendorID ([vendorID UTF8String]);
+    dp::String const dpUsername ([username UTF8String]);
+    dp::String const dpPassword ([password UTF8String]);
+    
+    unsigned int const workflows0 = (dpdrm::DW_AUTH_SIGN_IN
+                                     | dpdrm::DW_GET_CREDENTIAL_LIST
+                                     | dpdrm::DW_ACTIVATE);
+    
+    self.processor->reset();
+    unsigned int const workflows1 =
+    self.processor->initSignInWorkflow(workflows0, dpVendorID, dpUsername, dpPassword);
+    self.processor->startWorkflows(workflows1);
+    
+    // TODO: Report this to a delegate.
+    if([self isDeviceAuthorized]) {
+      NSLog(@"SUCCESSFUL");
+    } else {
+      NSLog(@"FAILED");
+    }
+    
+    @synchronized(weakSelf) {
+      self.authorizing = NO;
+    }
+  };
+  
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block);
 }
 
 @end
