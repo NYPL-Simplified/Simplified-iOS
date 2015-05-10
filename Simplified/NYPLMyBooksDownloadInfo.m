@@ -19,7 +19,7 @@
   
   self.downloadProgress = downloadProgress;
   
-  if(!self.downloadTask) @throw NSInvalidArgumentException;
+  if(!downloadTask) @throw NSInvalidArgumentException;
   self.downloadTask = downloadTask;
 
   self.rightsManagement = rightsManagement;
@@ -29,10 +29,18 @@
 
 - (instancetype)withDownloadProgress:(CGFloat const)downloadProgress
 {
-  NYPLMyBooksDownloadInfo *const updatedInfo = [self copy];
-  updatedInfo.downloadProgress = downloadProgress;
-  
-  return updatedInfo;
+  return [[[self class] alloc]
+          initWithDownloadProgress:downloadProgress
+          downloadTask:self.downloadTask
+          rightsManagement:self.rightsManagement];
+}
+
+- (instancetype)withRightsManagement:(NYPLMyBooksDownloadRightsManagement const)rightsManagement
+{
+  return [[[self class] alloc]
+          initWithDownloadProgress:self.downloadProgress
+          downloadTask:self.downloadTask
+          rightsManagement:rightsManagement];
 }
 
 @end
