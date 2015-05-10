@@ -145,8 +145,17 @@ didFinishDownloadingToURL:(NSURL *const)location
                         error:&error];
   
   if(success) {
-    [[NYPLBookRegistry sharedRegistry]
-     setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+    switch([self downloadInfoForBookIdentifier:book.identifier].rightsManagement) {
+      case NYPLMyBooksDownloadRightsManagementUnknown:
+        @throw NSInternalInconsistencyException;
+      case NYPLMyBooksDownloadRightsManagementAdobe:
+        // TODO
+        abort();
+      case NYPLMyBooksDownloadRightsManagementNone:
+        [[NYPLBookRegistry sharedRegistry]
+         setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+        break;
+    }
   } else {
     [[[UIAlertView alloc]
       initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
