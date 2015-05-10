@@ -112,6 +112,7 @@
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
 		A4206FDE1AEEC985009A1D73 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */; };
+		A4276F481B00046300CA7194 /* NYPLMyBooksDownloadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */; };
 		A46D1CB81AF2C2E000F5321E /* NYPLAdeptConnector.mm in Sources */ = {isa = PBXBuildFile; fileRef = A46D1CB71AF2C2E000F5321E /* NYPLAdeptConnector.mm */; };
 		A49C25581AE05D0A00D63B89 /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */; };
 		A49C25591AE05D0D00D63B89 /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
@@ -342,6 +343,8 @@
 		5705D893E0FE4395A50F089E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4206FBB1AEE991E009A1D73 /* AdeptHost.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AdeptHost.xcconfig; sourceTree = "<group>"; };
 		A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReaderClientCert.sig; sourceTree = "<group>"; };
+		A4276F461B00046300CA7194 /* NYPLMyBooksDownloadInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksDownloadInfo.h; sourceTree = "<group>"; };
+		A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksDownloadInfo.m; sourceTree = "<group>"; };
 		A46D1CB61AF2C2E000F5321E /* NYPLAdeptConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAdeptConnector.h; sourceTree = "<group>"; };
 		A46D1CB71AF2C2E000F5321E /* NYPLAdeptConnector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NYPLAdeptConnector.mm; sourceTree = "<group>"; };
 		A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RDServices.xcodeproj; sourceTree = "<group>"; };
@@ -410,6 +413,8 @@
 			children = (
 				1196F7591970727C00F62670 /* NYPLMyBooksDownloadCenter.h */,
 				1196F75A1970727C00F62670 /* NYPLMyBooksDownloadCenter.m */,
+				A4276F461B00046300CA7194 /* NYPLMyBooksDownloadInfo.h */,
+				A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */,
 				116A5EAD194767B200491A21 /* NYPLMyBooksNavigationController.h */,
 				116A5EAE194767B200491A21 /* NYPLMyBooksNavigationController.m */,
 				116A5EB1194767DC00491A21 /* NYPLMyBooksViewController.h */,
@@ -967,6 +972,7 @@
 				113137E71A48DAB90082954E /* NYPLReaderReadiumView.m in Sources */,
 				118B7ABF195CBF72005CE3E7 /* NYPLSession.m in Sources */,
 				111E75861A818C0B00718AD7 /* NYPLSettingsFeedbackViewController.m in Sources */,
+				A4276F481B00046300CA7194 /* NYPLMyBooksDownloadInfo.m in Sources */,
 				1164F106199AC236009BF8BF /* NYPLBookLocation.m in Sources */,
 				11F3771F19DB62B000487769 /* NYPLFacetView.m in Sources */,
 				111197281986B43B0014462F /* NYPLBookCellDelegate.m in Sources */,
