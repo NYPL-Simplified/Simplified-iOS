@@ -144,36 +144,24 @@ didFinishDownloadingToURL:(NSURL *const)location
                         toURL:[self fileURLForBookIndentifier:book.identifier]
                         error:&error];
   
-  if(success) {
-    switch([self downloadInfoForBookIdentifier:book.identifier].rightsManagement) {
-      case NYPLMyBooksDownloadRightsManagementUnknown:
-        @throw NSInternalInconsistencyException;
-      case NYPLMyBooksDownloadRightsManagementAdobe:
-        // TODO
-        abort();
-      case NYPLMyBooksDownloadRightsManagementNone:
-        [[NYPLBookRegistry sharedRegistry]
-         setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
-        break;
-    }
-  } else {
-    [[[UIAlertView alloc]
-      initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
-      message:[NSString stringWithFormat:@"%@ (Error %ld)",
-               [NSString
-                stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
-                book.title],
-               (long)error.code]
-      delegate:nil
-      cancelButtonTitle:nil
-      otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-     show];
-    
-    [[NYPLBookRegistry sharedRegistry]
-     setState:NYPLBookStateDownloadFailed
-     forIdentifier:book.identifier];
+  if(!success) {
+    NYPLLOG(@"Failed to move temporary file after download completion.");
+    [self failDownloadForBook:book];
+    return;
   }
   
+  switch([self downloadInfoForBookIdentifier:book.identifier].rightsManagement) {
+    case NYPLMyBooksDownloadRightsManagementUnknown:
+      @throw NSInternalInconsistencyException;
+    case NYPLMyBooksDownloadRightsManagementAdobe:
+      // TODO
+      abort();
+    case NYPLMyBooksDownloadRightsManagementNone:
+      [[NYPLBookRegistry sharedRegistry]
+        setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+      break;
+  }
+
   [self broadcastUpdate];
 }
 
