@@ -75,10 +75,10 @@ expectedTotalBytes:(__attribute__((unused)) int64_t)expectedTotalBytes
 }
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
-      downloadTask:(NSURLSessionDownloadTask *)downloadTask
-      didWriteData:(__attribute__((unused)) int64_t)bytesWritten
- totalBytesWritten:(int64_t)totalBytesWritten
-totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
+      downloadTask:(NSURLSessionDownloadTask *const)downloadTask
+      didWriteData:(int64_t const)bytesWritten
+ totalBytesWritten:(int64_t const)totalBytesWritten
+totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
 {
   NSNumber *const key = @(downloadTask.taskIdentifier);
   NYPLBook *const book = self.taskIdentifierToBook[key];
@@ -86,6 +86,26 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
   if(!book) {
     // A reset must have occurred.
     return;
+  }
+  
+  // We update the rights management status based on the MIME type given to us by the server. We do
+  // this only once at the point when we first start receiving data.
+  if(bytesWritten == totalBytesWritten) {
+    if([downloadTask.response.MIMEType isEqualToString:@"application/vnd.adobe.adept+xml"]) {
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[self downloadInfoForBookIdentifier:book.identifier]
+       withRightsManagement:NYPLMyBooksDownloadRightsManagementAdobe];
+    } else if([downloadTask.response.MIMEType isEqualToString:@"application/epub+zip"]) {
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[self downloadInfoForBookIdentifier:book.identifier]
+       withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
+    } else {
+      NYPLLOG_F(@"Presuming no DRM for unrecognized MIME type \"%@\".",
+                downloadTask.response.MIMEType);
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[self downloadInfoForBookIdentifier:book.identifier]
+       withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
+    }
   }
   
   // If the book is protected by Adobe DRM, the download will be very tiny and a later fulfillment
@@ -111,22 +131,6 @@ didFinishDownloadingToURL:(NSURL *const)location
   if(!book) {
     // A reset must have occurred.
     return;
-  }
-  
-  if([downloadTask.response.MIMEType isEqualToString:@"application/vnd.adobe.adept+xml"]) {
-    self.bookIdentifierToDownloadInfo[book.identifier] =
-      [[self downloadInfoForBookIdentifier:book.identifier]
-       withRightsManagement:NYPLMyBooksDownloadRightsManagementAdobe];
-  } else if([downloadTask.response.MIMEType isEqualToString:@"application/epub+zip"]) {
-    self.bookIdentifierToDownloadInfo[book.identifier] =
-      [[self downloadInfoForBookIdentifier:book.identifier]
-       withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
-  } else {
-    NYPLLOG_F(@"Presuming no DRM for unrecognized MIME type \"%@\".",
-              downloadTask.response.MIMEType);
-    self.bookIdentifierToDownloadInfo[book.identifier] =
-      [[self downloadInfoForBookIdentifier:book.identifier]
-       withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
   }
   
   NSError *error = nil;
