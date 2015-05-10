@@ -6,18 +6,18 @@
 #import "NYPLBookAcquisition.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLMyBooksDownloadInfo.h"
 
 #import "NYPLMyBooksDownloadCenter.h"
 
 @interface NYPLMyBooksDownloadCenter ()
   <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, UIAlertViewDelegate>
 
-@property (nonatomic) NSURLSession *session;
-@property (nonatomic) BOOL broadcastScheduled;
-@property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadProgress;
-@property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadTask;
-@property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
 @property (nonatomic) NSString *bookIdentifierOfBookToRemove;
+@property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadInfo;
+@property (nonatomic) BOOL broadcastScheduled;
+@property (nonatomic) NSURLSession *session;
+@property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
 
 @end
 
@@ -48,8 +48,7 @@
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
-  self.bookIdentifierToDownloadProgress = [NSMutableDictionary dictionary];
-  self.bookIdentifierToDownloadTask = [NSMutableDictionary dictionary];
+  self.bookIdentifierToDownloadInfo = [NSMutableDictionary dictionary];
   
   self.session = [NSURLSession
                   sessionWithConfiguration:configuration
@@ -90,8 +89,9 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
   }
   
   if(totalBytesExpectedToWrite > 0) {
-    self.bookIdentifierToDownloadProgress[book.identifier] =
-        @(totalBytesWritten / (double) totalBytesExpectedToWrite);
+    self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[self downloadInfoForBookIdentifier:book.identifier]
+       withDownloadProgress:(totalBytesWritten / (double) totalBytesExpectedToWrite)];
     
     [self broadcastUpdate];
   }
@@ -174,10 +174,7 @@ didCompleteWithError:(NSError *)error
     return;
   }
   
-  [self.bookIdentifierToDownloadProgress removeObjectForKey:book.identifier];
-  
-  // This is safe to remove because we only keep this around to be able to cancel downloads.
-  [self.bookIdentifierToDownloadTask removeObjectForKey:book.identifier];
+  [self.bookIdentifierToDownloadInfo removeObjectForKey:book.identifier];
   
   // Even though |URLSession:downloadTask|didFinishDownloadingToURL:| needs this, it's safe to
   // remove it here because the aforementioned method will be called first.
@@ -210,6 +207,11 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 }
 
 #pragma mark -
+
+- (NYPLMyBooksDownloadInfo *)downloadInfoForBookIdentifier:(NSString *const)bookIdentifier
+{
+  return self.bookIdentifierToDownloadInfo[bookIdentifier];
+}
 
 - (NSURL *)contentDirectoryURL
 {
@@ -302,8 +304,12 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     
     NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
     
-    self.bookIdentifierToDownloadProgress[book.identifier] = @0.0;
-    self.bookIdentifierToDownloadTask[book.identifier] = task;
+    self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[NYPLMyBooksDownloadInfo alloc]
+       initWithDownloadProgress:0.0
+       downloadTask:task
+       rightsManagement:NYPLMyBooksDownloadRightsManagementUnknown];
+    
     self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
     
     [task resume];
@@ -330,8 +336,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier
 {
-  if(self.bookIdentifierToDownloadTask[identifier]) {
-    [(NSURLSessionDownloadTask *)self.bookIdentifierToDownloadTask[identifier]
+  if(self.bookIdentifierToDownloadInfo[identifier]) {
+    [[self downloadInfoForBookIdentifier:identifier].downloadTask
      cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
        [[NYPLBookRegistry sharedRegistry]
         setState:NYPLBookStateDownloadNeeded forIdentifier:identifier];
@@ -375,12 +381,11 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)reset
 {
-  for(NSURLSessionDownloadTask *const task in [self.bookIdentifierToDownloadTask allValues]) {
-    [task cancelByProducingResumeData:nil];
+  for(NYPLMyBooksDownloadInfo *const info in [self.bookIdentifierToDownloadInfo allValues]) {
+    [info.downloadTask cancelByProducingResumeData:nil];
   }
   
-  [self.bookIdentifierToDownloadProgress removeAllObjects];
-  [self.bookIdentifierToDownloadTask removeAllObjects];
+  [self.bookIdentifierToDownloadInfo removeAllObjects];
   [self.taskIdentifierToBook removeAllObjects];
   self.bookIdentifierOfBookToRemove = nil;
   
@@ -393,7 +398,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier
 {
-  return [self.bookIdentifierToDownloadProgress[bookIdentifier] doubleValue];
+  return [self downloadInfoForBookIdentifier:bookIdentifier].downloadProgress;
 }
 
 - (void)broadcastUpdate
