@@ -88,12 +88,17 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
     return;
   }
   
-  if(totalBytesExpectedToWrite > 0) {
-    self.bookIdentifierToDownloadInfo[book.identifier] =
+  // If the book is protected by Adobe DRM, the download will be very tiny and a later fulfillment
+  // step will be required to get the actual content. As such, we only report progress for books not
+  // protected by Adobe DRM at this stage.
+  if([self downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementAdobe) {
+    if(totalBytesExpectedToWrite > 0) {
+      self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withDownloadProgress:(totalBytesWritten / (double) totalBytesExpectedToWrite)];
-    
-    [self broadcastUpdate];
+      
+      [self broadcastUpdate];
+    }
   }
 }
 
