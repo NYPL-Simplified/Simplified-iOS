@@ -21,12 +21,29 @@
 
 #import "NYPLAdeptConnector.h"
 
+class DRMProcessorClient;
+
+@interface NYPLAdeptConnector ()
+
+@property (nonatomic) BOOL authorizing;
+@property (nonatomic) NSString *currentTag;
+@property (atomic) id<NYPLAdeptConnectorDelegate> delegate;
+@property (nonatomic) dpdev::Device *device;
+@property (nonatomic) LauncherResProvider *launcherResProvider;
+@property (nonatomic) dpdrm::DRMProcessor *processor;
+@property (nonatomic) DRMProcessorClient *processorClient;
+
+@end
+
 class DRMProcessorClient : public dpdrm::DRMProcessorClient
 {
+private:
+  __weak NYPLAdeptConnector *adeptConnector;
+  
 public:
-  DRMProcessorClient()
+  DRMProcessorClient(NYPLAdeptConnector *const adeptConnector)
   {
-
+    this->adeptConnector = adeptConnector;
   }
   
   virtual void workflowsDone(unsigned int const workflows,
@@ -59,6 +76,11 @@ public:
           workflow,
           [NSString stringWithUTF8String:title.utf8()],
           progress);
+    
+    [this->adeptConnector.delegate
+     adeptConnector:this->adeptConnector
+     didUpdateProgress:progress
+     tag:this->adeptConnector.currentTag];
   }
   
   virtual void reportWorkflowError(unsigned int const workflow,
@@ -81,18 +103,13 @@ public:
     NSLog(@"XXX: Download completed: %@, %@",
           [NSString stringWithUTF8String:fulfillmentItem->getDownloadMethod().utf8()],
           [NSString stringWithUTF8String:url.utf8()]);
+    
+    [this->adeptConnector.delegate
+     adeptConnector:this->adeptConnector
+     didFinishDownloadingToURL:[NSURL URLWithString:[NSString stringWithUTF8String:url.utf8()]]
+     tag:this->adeptConnector.currentTag];
   }
 };
-
-@interface NYPLAdeptConnector ()
-
-@property (nonatomic) BOOL authorizing;
-@property (nonatomic) dpdev::Device *device;
-@property (nonatomic) LauncherResProvider *launcherResProvider;
-@property (nonatomic) dpdrm::DRMProcessor *processor;
-@property (nonatomic) DRMProcessorClient *processorClient;
-
-@end
 
 @implementation NYPLAdeptConnector
 
@@ -141,7 +158,7 @@ public:
   self = [super init];
   if(!self) return nil;
   
-  self.processorClient = new DRMProcessorClient();
+  self.processorClient = new DRMProcessorClient(self);
   
   dpdev::DeviceProvider *const deviceProvider = dpdev::DeviceProvider::getProvider(0);
   self.device = deviceProvider->getDevice(0);
@@ -217,8 +234,11 @@ public:
   }
 }
 
-- (void)fulfillWithACSMData:(NSData *const)ACSMData
+- (void)fulfillWithACSMData:(NSData *const)ACSMData tag:(NSString *)tag
 {
+  // TODO: Set this properly as part of a queue.
+  self.currentTag = tag;
+  
   void (^block)() = ^{
     @synchronized(self) {
       self.processor->reset();
@@ -228,8 +248,6 @@ public:
                                     dp::Data(static_cast<unsigned char const *>(ACSMData.bytes),
                                              ACSMData.length));
       self.processor->startWorkflows(dpdrm::DW_FULFILL | dpdrm::DW_DOWNLOAD | dpdrm::DW_NOTIFY);
-      
-      // TODO: Report fulfillment status and output location (if applicable).
     }
   };
   
@@ -239,3 +257,4 @@ public:
 @end
 
 #pragma clang diagnostic pop
+

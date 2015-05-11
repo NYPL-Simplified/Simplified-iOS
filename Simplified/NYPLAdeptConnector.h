@@ -5,8 +5,23 @@
 
 #pragma clang diagnostic pop
 
+@class NYPLAdeptConnector;
+
+@protocol NYPLAdeptConnectorDelegate
+
+- (void)adeptConnector:(NYPLAdeptConnector *)adeptConnector
+didFinishDownloadingToURL:(NSURL *)URL
+                   tag:(NSString *)tag;
+
+- (void)adeptConnector:(NYPLAdeptConnector *)adeptConnector
+     didUpdateProgress:(double)progress
+                   tag:(NSString *)tag;
+
+@end
+
 @interface NYPLAdeptConnector : NSObject
 
+@property (atomic, readonly) id<NYPLAdeptConnectorDelegate> delegate;
 @property (atomic, readonly) BOOL deviceAuthorized;
 
 + (NYPLAdeptConnector *)sharedAdeptConnector;
@@ -17,6 +32,6 @@
 
 - (void)deauthorize;
 
-- (void)fulfillWithACSMData:(NSData *)ACSMData;
+- (void)fulfillWithACSMData:(NSData *)ACSMData tag:(NSString *)tag;
 
 @end
