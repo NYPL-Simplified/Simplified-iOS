@@ -1,5 +1,6 @@
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
+#import "NYPLAdeptConnector.h"
 #import "NYPLSettingsAccountViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBook.h"
@@ -137,8 +138,11 @@ didFinishDownloadingToURL:(NSURL *const)location
     case NYPLMyBooksDownloadRightsManagementUnknown:
       @throw NSInternalInconsistencyException;
     case NYPLMyBooksDownloadRightsManagementAdobe:
-      // TODO
-      abort();
+      // FIXME: Temporary test code!
+      [[NYPLAdeptConnector sharedAdeptConnector]
+       fulfillWithACSMData:[NSData dataWithContentsOfURL:location]
+       tag:book.identifier];
+      break;
     case NYPLMyBooksDownloadRightsManagementNone: {
       [[NSFileManager defaultManager]
        removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
