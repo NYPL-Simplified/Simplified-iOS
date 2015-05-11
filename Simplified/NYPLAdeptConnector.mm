@@ -27,7 +27,6 @@ class DRMProcessorClient;
 
 @property (nonatomic) BOOL authorizing;
 @property (nonatomic) NSString *currentTag;
-@property (atomic) id<NYPLAdeptConnectorDelegate> delegate;
 @property (nonatomic) dpdev::Device *device;
 @property (nonatomic) LauncherResProvider *launcherResProvider;
 @property (nonatomic) dpdrm::DRMProcessor *processor;
