@@ -12,7 +12,8 @@
 #import "NYPLMyBooksDownloadCenter.h"
 
 @interface NYPLMyBooksDownloadCenter ()
-  <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, UIAlertViewDelegate>
+  <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, NYPLAdeptConnectorDelegate,
+   UIAlertViewDelegate>
 
 @property (nonatomic) NSString *bookIdentifierOfBookToRemove;
 @property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadInfo;
@@ -45,6 +46,8 @@
 {
   self = [super init];
   if(!self) return nil;
+  
+  [NYPLAdeptConnector sharedAdeptConnector].delegate = self;
   
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
@@ -115,8 +118,8 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
   if([self downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementAdobe) {
     if(totalBytesExpectedToWrite > 0) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
-      [[self downloadInfoForBookIdentifier:book.identifier]
-       withDownloadProgress:(totalBytesWritten / (double) totalBytesExpectedToWrite)];
+        [[self downloadInfoForBookIdentifier:book.identifier]
+         withDownloadProgress:(totalBytesWritten / (double) totalBytesExpectedToWrite)];
       
       [self broadcastUpdate];
     }
@@ -192,13 +195,17 @@ didCompleteWithError:(NSError *)error
     // A reset must have occurred.
     return;
   }
-  
+
+  // FIXME: This is commented out because we can't remove this stuff if a book will need to be
+  // fulfilled. Perhaps this logic should just be put a different place.
+  /*
   [self.bookIdentifierToDownloadInfo removeObjectForKey:book.identifier];
   
   // Even though |URLSession:downloadTask|didFinishDownloadingToURL:| needs this, it's safe to
   // remove it here because the aforementioned method will be called first.
   [self.taskIdentifierToBook removeObjectForKey:
       @(task.taskIdentifier)];
+  */
   
   if(error && error.code != NSURLErrorCancelled) {
     [self failDownloadForBook:book];
@@ -223,6 +230,51 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
   
   self.bookIdentifierOfBookToRemove = nil;
+}
+
+#pragma mark NYPLAdeptConnectorDelegate
+
+- (void)adeptConnector:(__attribute__((unused)) NYPLAdeptConnector *)adeptConnector
+     didUpdateProgress:(double const)progress
+                   tag:(NSString *const)tag
+{
+  self.bookIdentifierToDownloadInfo[tag] =
+    [[self downloadInfoForBookIdentifier:tag] withDownloadProgress:progress];
+  
+  [self broadcastUpdate];
+}
+
+- (void)adeptConnector:(__attribute__((unused)) NYPLAdeptConnector *)adeptConnector
+didFinishDownloadingToURL:(NSURL *const)URL
+                   tag:(NSString *const)tag
+{
+  // FIXME: CODE DUPLICATION!
+  
+  NYPLBook *const book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:tag];
+  
+  [[NSFileManager defaultManager]
+   removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
+   error:NULL];
+  
+  NSError *error = nil;
+  
+  // This needs to be a copy else the Adept connector will explode when it tries to delete the
+  // temporary file.
+  BOOL const success = [[NSFileManager defaultManager]
+                        copyItemAtURL:URL
+                        toURL:[self fileURLForBookIndentifier:book.identifier]
+                        error:&error];
+  
+  if(!success) {
+    NYPLLOG(@"Failed to move temporary file after download completion.");
+    [self failDownloadForBook:book];
+    return;
+  }
+  
+  [[NYPLBookRegistry sharedRegistry]
+   setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+  
+  [self broadcastUpdate];
 }
 
 #pragma mark -

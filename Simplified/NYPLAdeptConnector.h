@@ -21,7 +21,7 @@ didFinishDownloadingToURL:(NSURL *)URL
 
 @interface NYPLAdeptConnector : NSObject
 
-@property (atomic, readonly) id<NYPLAdeptConnectorDelegate> delegate;
+@property (atomic, weak) id<NYPLAdeptConnectorDelegate> delegate;
 @property (atomic, readonly) BOOL deviceAuthorized;
 
 + (NYPLAdeptConnector *)sharedAdeptConnector;
