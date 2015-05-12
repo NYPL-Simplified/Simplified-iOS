@@ -12,7 +12,6 @@
 #pragma clang diagnostic ignored "-Wundef"
 #pragma clang diagnostic ignored "-Wunused-parameter"
 #include <ePub3/curlnetprovider.h>
-#include <ePub3/DRMWrapper.h>
 #include <ePub3/connectorHelperFns.h>
 #include <ePub3/launcherResProvider.h>
 #pragma clang diagnostic pop
