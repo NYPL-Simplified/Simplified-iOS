@@ -22,3 +22,30 @@ void NYPLBasicAuthHandler(NSURLAuthenticationChallenge *const challenge,
     completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
   }
 }
+
+void NYPLBasicAuthCustomHandler(NSURLAuthenticationChallenge *challenge,
+                                void (^completionHandler)
+                                (NSURLSessionAuthChallengeDisposition disposition,
+                                 NSURLCredential *credential),
+                                NSString *const username,
+                                NSString *const password)
+{
+  if(!(username && password)) {
+    @throw NSInvalidArgumentException;
+  }
+  
+  if([challenge.protectionSpace.authenticationMethod
+      isEqualToString:NSURLAuthenticationMethodHTTPBasic]) {
+    if(challenge.previousFailureCount == 0) {
+      completionHandler(NSURLSessionAuthChallengeUseCredential,
+                        [NSURLCredential
+                         credentialWithUser:username
+                         password:password
+                         persistence:NSURLCredentialPersistenceNone]);
+    } else {
+      completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+    }
+  } else {
+    completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
+  }
+}
