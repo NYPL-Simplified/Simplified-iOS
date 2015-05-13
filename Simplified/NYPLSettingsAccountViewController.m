@@ -1,4 +1,5 @@
 #import "NYPLAccount.h"
+#import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
@@ -256,15 +257,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
-  if(challenge.previousFailureCount) {
-    completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
-  } else {
-    completionHandler(NSURLSessionAuthChallengeUseCredential,
-                      [NSURLCredential
-                       credentialWithUser:self.barcodeTextField.text
-                       password:self.PINTextField.text
-                       persistence:NSURLCredentialPersistenceNone]);
-  }
+  NYPLBasicAuthHandler(challenge, completionHandler);
 }
 
 #pragma mark -

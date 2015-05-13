@@ -1,5 +1,6 @@
 #import "NYPLAccount.h"
 #import "NYPLAsync.h"
+#import "NYPLBasicAuth.h"
 
 #import "NYPLSession.h"
 
@@ -64,15 +65,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
-  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN] && challenge.previousFailureCount == 0) {
-    completionHandler(NSURLSessionAuthChallengeUseCredential,
-                      [NSURLCredential
-                       credentialWithUser:[NYPLAccount sharedAccount].barcode
-                       password:[NYPLAccount sharedAccount].PIN
-                       persistence:NSURLCredentialPersistenceNone]);
-  } else {
-    completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
-  }
+  NYPLBasicAuthHandler(challenge, completionHandler);
 }
 
 #pragma mark -
