@@ -1,6 +1,7 @@
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
 #import "NYPLSettingsAccountViewController.h"
+#import "NYPLBasicAuth.h"
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
 #import "NYPLBookCoverRegistry.h"
@@ -153,20 +154,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
-  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-    if(challenge.previousFailureCount) {
-      completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
-    } else {
-      completionHandler(NSURLSessionAuthChallengeUseCredential,
-                        [NSURLCredential
-                         credentialWithUser:[NYPLAccount sharedAccount].barcode
-                         password:[NYPLAccount sharedAccount].PIN
-                         persistence:NSURLCredentialPersistenceNone]);
-    }
-  } else {
-    // The user must have logged out during a download.
-    completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
-  }
+  NYPLBasicAuthHandler(challenge, completionHandler);
 }
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
