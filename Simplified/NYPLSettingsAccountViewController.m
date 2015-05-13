@@ -257,7 +257,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
-  NYPLBasicAuthHandler(challenge, completionHandler);
+  NYPLBasicAuthCustomHandler(challenge,
+                             completionHandler,
+                             self.barcodeTextField.text,
+                             self.PINTextField.text);
 }
 
 #pragma mark -
