@@ -321,10 +321,7 @@ didFinishDownloadingToURL:(NSURL *const)URL
 
 - (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
 {
-  NSString *const encodedIdentifier =
-    [identifier fileSystemSafeBase64EncodedStringUsingEncoding:NSUTF8StringEncoding];
-  
-  return [[[self contentDirectoryURL] URLByAppendingPathComponent:encodedIdentifier]
+  return [[[self contentDirectoryURL] URLByAppendingPathComponent:[identifier SHA256]]
           URLByAppendingPathExtension:@"epub"];
 }
 
