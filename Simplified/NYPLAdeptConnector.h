@@ -11,6 +11,7 @@
 
 - (void)adeptConnector:(NYPLAdeptConnector *)adeptConnector
 didFinishDownloadingToURL:(NSURL *)URL
+            rightsData:(NSData *)rightsData
                    tag:(NSString *)tag;
 
 - (void)adeptConnector:(NYPLAdeptConnector *)adeptConnector

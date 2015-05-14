@@ -102,9 +102,15 @@ public:
           [NSString stringWithUTF8String:fulfillmentItem->getDownloadMethod().utf8()],
           [NSString stringWithUTF8String:url.utf8()]);
     
+    dp::Data const dpRightsData = fulfillmentItem->getRights()->serialize();
+    NSData *const rightsData = [NSData dataWithBytes:dpRightsData.data()
+                                              length:dpRightsData.length()];
+    
+    
     [this->adeptConnector.delegate
      adeptConnector:this->adeptConnector
      didFinishDownloadingToURL:[NSURL URLWithString:[NSString stringWithUTF8String:url.utf8()]]
+     rightsData:rightsData
      tag:this->adeptConnector.currentTag];
   }
 };
