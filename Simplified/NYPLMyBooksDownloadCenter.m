@@ -246,6 +246,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)adeptConnector:(__attribute__((unused)) NYPLAdeptConnector *)adeptConnector
 didFinishDownloadingToURL:(NSURL *const)URL
+            rightsData:(NSData *const)rightsData
                    tag:(NSString *const)tag
 {
   // FIXME: CODE DUPLICATION!
@@ -269,6 +270,13 @@ didFinishDownloadingToURL:(NSURL *const)URL
     NYPLLOG(@"Failed to move temporary file after download completion.");
     [self failDownloadForBook:book];
     return;
+  }
+  
+  // FIXME: We only know to put it here beacuse of what part of the connector example code assumes.
+  if(![rightsData writeToFile:[[[self fileURLForBookIndentifier:book.identifier] path]
+                               stringByAppendingString:@"_rights.xml"]
+                   atomically:YES]) {
+    NYPLLOG(@"Failed to store rights data.");
   }
   
   [[NYPLBookRegistry sharedRegistry]
