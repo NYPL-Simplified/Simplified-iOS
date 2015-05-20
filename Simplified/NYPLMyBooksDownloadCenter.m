@@ -392,11 +392,13 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   self.broadcastScheduled = YES;
   
-  [NSTimer scheduledTimerWithTimeInterval:0.2
-                                   target:self
-                                 selector:@selector(broadcastUpdateNow)
-                                 userInfo:nil
-                                  repeats:NO];
+  // This needs to be queued on the main run loop. If we queue it elsewhere, it may end up never
+  // firing due to a run loop becoming inactive.
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [self performSelector:@selector(broadcastUpdateNow)
+               withObject:nil
+               afterDelay:0.2];
+  }];
 }
 
 - (void)broadcastUpdateNow
