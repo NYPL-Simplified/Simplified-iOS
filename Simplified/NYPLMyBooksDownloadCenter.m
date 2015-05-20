@@ -309,7 +309,12 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
      location:nil
      state:NYPLBookStateDownloading];
     
-    [self broadcastUpdate];
+    // It is important to issue this immediately because a previous download may have left the
+    // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
+    // the user. As such, calling |broadcastUpdate| is not appropriate due to the delay.
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
+     object:self];
   } else {
     [NYPLSettingsAccountViewController
      requestCredentialsUsingExistingBarcode:NO
