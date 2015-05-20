@@ -273,23 +273,25 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
 - (void)accountDidChange
 {
-  if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-    self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
-    self.barcodeTextField.enabled = NO;
-    self.barcodeTextField.textColor = [UIColor grayColor];
-    self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
-    self.PINTextField.enabled = NO;
-    self.PINTextField.textColor = [UIColor grayColor];
-  } else {
-    self.barcodeTextField.text = nil;
-    self.barcodeTextField.enabled = YES;
-    self.barcodeTextField.textColor = [UIColor blackColor];
-    self.PINTextField.text = nil;
-    self.PINTextField.enabled = YES;
-    self.PINTextField.textColor = [UIColor blackColor];
-  }
-  
-  [self updateLoginLogoutCellAppearance];
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
+      self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
+      self.barcodeTextField.enabled = NO;
+      self.barcodeTextField.textColor = [UIColor grayColor];
+      self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
+      self.PINTextField.enabled = NO;
+      self.PINTextField.textColor = [UIColor grayColor];
+    } else {
+      self.barcodeTextField.text = nil;
+      self.barcodeTextField.enabled = YES;
+      self.barcodeTextField.textColor = [UIColor blackColor];
+      self.PINTextField.text = nil;
+      self.PINTextField.enabled = YES;
+      self.PINTextField.textColor = [UIColor blackColor];
+    }
+    
+    [self updateLoginLogoutCellAppearance];
+  }];
 }
 
 - (void)updateLoginLogoutCellAppearance
@@ -450,20 +452,22 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   // older 3:2 iPhone displays. I wish there were a more general way to do this, but this does at
   // least work very well.
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-    CGSize const keyboardSize =
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+      CGSize const keyboardSize =
       [[notification userInfo][UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    CGRect visibleRect = self.view.frame;
-    visibleRect.size.height -= keyboardSize.height + self.tableView.contentInset.top;
-    if(!CGRectContainsPoint(visibleRect,
-                            CGPointMake(0, CGRectGetMaxY(self.logInSignOutCell.frame)))) {
-      // We use an explicit animation block here because |setContentOffset:animated:| does not seem
-      // to work at all.
-      [UIView animateWithDuration:0.25 animations:^{
-        [self.tableView setContentOffset:CGPointMake(0, -self.tableView.contentInset.top + 20)];
-      }];
+      CGRect visibleRect = self.view.frame;
+      visibleRect.size.height -= keyboardSize.height + self.tableView.contentInset.top;
+      if(!CGRectContainsPoint(visibleRect,
+                              CGPointMake(0, CGRectGetMaxY(self.logInSignOutCell.frame)))) {
+        // We use an explicit animation block here because |setContentOffset:animated:| does not seem
+        // to work at all.
+        [UIView animateWithDuration:0.25 animations:^{
+          [self.tableView setContentOffset:CGPointMake(0, -self.tableView.contentInset.top + 20)];
+        }];
+      }
     }
-  }
+  }];
 }
 
 + (void)
