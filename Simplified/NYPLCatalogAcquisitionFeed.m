@@ -230,21 +230,23 @@ handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
 
 - (void)refreshBooks
 {
-  NSMutableArray *const refreshedBooks = [NSMutableArray arrayWithCapacity:self.books.count];
-  
-  for(NYPLBook *const book in self.books) {
-    NYPLBook *const refreshedBook = [[NYPLBookRegistry sharedRegistry]
-                                     bookForIdentifier:book.identifier];
-    if(refreshedBook) {
-      [refreshedBooks addObject:refreshedBook];
-    } else {
-      [refreshedBooks addObject:book];
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    NSMutableArray *const refreshedBooks = [NSMutableArray arrayWithCapacity:self.books.count];
+    
+    for(NYPLBook *const book in self.books) {
+      NYPLBook *const refreshedBook = [[NYPLBookRegistry sharedRegistry]
+                                       bookForIdentifier:book.identifier];
+      if(refreshedBook) {
+        [refreshedBooks addObject:refreshedBook];
+      } else {
+        [refreshedBooks addObject:book];
+      }
     }
-  }
-  
-  self.books = refreshedBooks;
-  
-  [self.delegate catalogAcquisitionFeed:self didUpdateBooks:self.books];
+    
+    self.books = refreshedBooks;
+    
+    [self.delegate catalogAcquisitionFeed:self didUpdateBooks:self.books];
+  }];
 }
 
 #pragma mark NSObject

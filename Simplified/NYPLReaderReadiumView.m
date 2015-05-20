@@ -146,33 +146,37 @@ static void generateTOCElements(NSArray *const navigationElements,
 
 - (void)applyCurrentFlowDependentSettings
 {
-  [self.webView stringByEvaluatingJavaScriptFromString:
-   [NSString stringWithFormat:
-    @"ReadiumSDK.reader.updateSettings(%@)",
-    [[NSString alloc]
-     initWithData:NYPLJSONDataFromObject([[NYPLReaderSettings sharedSettings]
-                                          readiumSettingsRepresentation])
-     encoding:NSUTF8StringEncoding]]];
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [self.webView stringByEvaluatingJavaScriptFromString:
+     [NSString stringWithFormat:
+      @"ReadiumSDK.reader.updateSettings(%@)",
+      [[NSString alloc]
+       initWithData:NYPLJSONDataFromObject([[NYPLReaderSettings sharedSettings]
+                                            readiumSettingsRepresentation])
+       encoding:NSUTF8StringEncoding]]];
+  }];
 }
 
 - (void)applyCurrentFlowIndependentSettings
 {
-  NSArray *const styles = [[NYPLReaderSettings sharedSettings] readiumStylesRepresentation];
-  
-  NSString *const stylesString = [[NSString alloc]
-                                  initWithData:NYPLJSONDataFromObject(styles)
-                                  encoding:NSUTF8StringEncoding];
-  
-  NSString *const javaScript =
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    NSArray *const styles = [[NYPLReaderSettings sharedSettings] readiumStylesRepresentation];
+    
+    NSString *const stylesString = [[NSString alloc]
+                                    initWithData:NYPLJSONDataFromObject(styles)
+                                    encoding:NSUTF8StringEncoding];
+    
+    NSString *const javaScript =
     [NSString stringWithFormat:
      @"ReadiumSDK.reader.setBookStyles(%@);"
      @"document.body.style.backgroundColor = \"%@\";",
      stylesString,
      [[NYPLReaderSettings sharedSettings].backgroundColor javascriptHexString]];
-  
-  [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
-  
-  self.webView.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
+    
+    [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
+    
+    self.webView.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
+  }];
 }
 
 #pragma mark NSObject

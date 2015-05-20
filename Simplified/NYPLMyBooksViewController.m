@@ -322,11 +322,13 @@ OK:
 
 - (void)bookRegistryDidChange
 {
-  if([NYPLBookRegistry sharedRegistry].syncing) {
-    self.navigationItem.rightBarButtonItem = self.syncInProgressButton;
-  } else {
-    self.navigationItem.rightBarButtonItem = self.syncButton;
-  }
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    if([NYPLBookRegistry sharedRegistry].syncing) {
+      self.navigationItem.rightBarButtonItem = self.syncInProgressButton;
+    } else {
+      self.navigationItem.rightBarButtonItem = self.syncButton;
+    }
+  }];
 }
 
 @end
