@@ -308,6 +308,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
      addBook:book
      location:nil
      state:NYPLBookStateDownloading];
+    
+    [self broadcastUpdate];
   } else {
     [NYPLSettingsAccountViewController
      requestCredentialsUsingExistingBarcode:NO
