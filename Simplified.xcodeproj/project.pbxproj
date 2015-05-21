@@ -474,6 +474,8 @@
 			children = (
 				11580AC61986A77B00949A15 /* NYPLBookCell.h */,
 				11580AC71986A77B00949A15 /* NYPLBookCell.m */,
+				1120749119D20BF9008203A4 /* NYPLBookCellCollectionViewController.h */,
+				1120749219D20BF9008203A4 /* NYPLBookCellCollectionViewController.m */,
 				111197261986B43B0014462F /* NYPLBookCellDelegate.h */,
 				111197271986B43B0014462F /* NYPLBookCellDelegate.m */,
 				1111973D1988226F0014462F /* NYPLBookDetailDownloadFailedView.h */,
@@ -667,8 +669,6 @@
 				114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */,
 				A489280A1B03C4430078B409 /* NYPLBasicAuth.h */,
 				A489280B1B03C4430078B409 /* NYPLBasicAuth.m */,
-				1120749119D20BF9008203A4 /* NYPLBookCellCollectionViewController.h */,
-				1120749219D20BF9008203A4 /* NYPLBookCellCollectionViewController.m */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
 				111197321986D7550014462F /* NYPLDismissibleViewController.h */,
