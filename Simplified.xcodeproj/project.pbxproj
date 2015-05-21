@@ -118,6 +118,8 @@
 		A49C25591AE05D0D00D63B89 /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
 		A4E254FA1B0E610900193FE4 /* NYPLBasicAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */; };
 		A4E255061B0E616300193FE4 /* NYPLAdeptConnectorOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E255051B0E616300193FE4 /* NYPLAdeptConnectorOperation.m */; };
+		A4E255111B0E648C00193FE4 /* NYPLQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E255101B0E648C00193FE4 /* NYPLQueue.m */; };
+		A4E255151B0E704100193FE4 /* NYPLQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E255141B0E704100193FE4 /* NYPLQueueTests.m */; };
 		A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D810192BABA400B55DE2 /* Foundation.framework */; };
 		A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
 		A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D814192BABA400B55DE2 /* UIKit.framework */; };
@@ -354,6 +356,9 @@
 		A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBasicAuth.m; sourceTree = "<group>"; };
 		A4E255041B0E616300193FE4 /* NYPLAdeptConnectorOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAdeptConnectorOperation.h; sourceTree = "<group>"; };
 		A4E255051B0E616300193FE4 /* NYPLAdeptConnectorOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAdeptConnectorOperation.m; sourceTree = "<group>"; };
+		A4E2550F1B0E648C00193FE4 /* NYPLQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLQueue.h; sourceTree = "<group>"; };
+		A4E255101B0E648C00193FE4 /* NYPLQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLQueue.m; sourceTree = "<group>"; };
+		A4E255141B0E704100193FE4 /* NYPLQueueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLQueueTests.m; sourceTree = "<group>"; };
 		A823D80D192BABA400B55DE2 /* Simplified.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simplified.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D810192BABA400B55DE2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A823D812192BABA400B55DE2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -709,6 +714,8 @@
 				11068C54196DD37900E8A94B /* NYPLNull.m */,
 				119BEBB719902A8800121439 /* NYPLOpenSearchDescription.h */,
 				119BEBB819902A8800121439 /* NYPLOpenSearchDescription.m */,
+				A4E2550F1B0E648C00193FE4 /* NYPLQueue.h */,
+				A4E255101B0E648C00193FE4 /* NYPLQueue.m */,
 				119503EE1993FB90009FB788 /* NYPLReadium.h */,
 				11B20E6C19D9F6DD00877A23 /* NYPLReloadView.h */,
 				11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */,
@@ -755,6 +762,7 @@
 				11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */,
 				11C5DD171977335E005A9945 /* NYPLKeychainTests.m */,
 				11616E12196B2FB8003D60D9 /* NYPLMyBooksRegistryTests.m */,
+				A4E255141B0E704100193FE4 /* NYPLQueueTests.m */,
 				111559EE19B8FA8E0003BE94 /* NYPLXMLTests.m */,
 				1183F34D194F775400DC322F /* OPDS */,
 				A823D830192BABA400B55DE2 /* Supporting Files */,
@@ -989,6 +997,7 @@
 				111E757A1A80165C00718AD7 /* NYPLSettingsSplitViewController.m in Sources */,
 				112C694D197301FE00C48F95 /* NYPLBookRegistryRecord.m in Sources */,
 				116A5EB3194767DC00491A21 /* NYPLMyBooksViewController.m in Sources */,
+				A4E255111B0E648C00193FE4 /* NYPLQueue.m in Sources */,
 				11078357198160A50071AB1E /* NYPLBookDownloadFailedCell.m in Sources */,
 				110AF89C1961ED1F004887C3 /* NYPLBookDetailViewController.m in Sources */,
 				1164A9F71A797238002BD3AE /* NYPLSettings.m in Sources */,
@@ -1032,6 +1041,7 @@
 				1142E4E819EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m in Sources */,
 				119BEBB61990217B00121439 /* UIView+NYPLViewAdditions.m in Sources */,
 				119BEBAA1990207E00121439 /* NYPLOPDSFeedTests.m in Sources */,
+				A4E255151B0E704100193FE4 /* NYPLQueueTests.m in Sources */,
 				119BEBAB1990207E00121439 /* NYPLOPDSEntryTests.m in Sources */,
 				119BEBAC1990207E00121439 /* NYPLOPDSLinkTests.m in Sources */,
 				119BEBAD1990207E00121439 /* NYPLMyBooksRegistryTests.m in Sources */,
