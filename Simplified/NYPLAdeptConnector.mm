@@ -240,6 +240,11 @@ public:
 
 - (void)fulfillWithACSMData:(NSData *const)ACSMData tag:(NSString *)tag
 {
+  if(!self.deviceAuthorized) {
+    NYPLLOG(@"Ignoring fulfillment request without prior authorization.");
+    return;
+  }
+  
   // TODO: Set this properly as part of a queue.
   self.currentTag = tag;
   
