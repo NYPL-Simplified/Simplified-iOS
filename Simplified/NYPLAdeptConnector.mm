@@ -16,7 +16,11 @@
 #include <ePub3/launcherResProvider.h>
 #pragma clang diagnostic pop
 
+#import <Foundation/Foundation.h>
+
+#import "NYPLAdeptConnectorOperation.h"
 #import "NYPLLOG.h"
+#import "NYPLQueue.h"
 
 #import "NYPLAdeptConnector.h"
 
@@ -25,6 +29,8 @@ class DRMProcessorClient;
 @interface NYPLAdeptConnector ()
 
 @property (nonatomic) BOOL authorizing;
+@property (nonatomic) BOOL blockRunning;
+@property (nonatomic) NYPLQueue *blockQueue;
 @property (nonatomic) NSString *currentTag;
 @property (nonatomic) dpdev::Device *device;
 @property (nonatomic) LauncherResProvider *launcherResProvider;
@@ -162,6 +168,8 @@ public:
   self = [super init];
   if(!self) return nil;
   
+  self.blockQueue = [NYPLQueue queue];
+  
   self.processorClient = new DRMProcessorClient(self);
   
   dpdev::DeviceProvider *const deviceProvider = dpdev::DeviceProvider::getProvider(0);
@@ -179,6 +187,29 @@ public:
 }
 
 #pragma mark -
+
+- (void)beginProcessingBlocksIfNeeded
+{
+  @synchronized(self) {
+    if(!self.blockRunning && self.blockQueue.count > 0) {
+      void (^const block)() = static_cast<void (^)()>([self.blockQueue dequeue]);
+      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        @synchronized(self) {
+          block();
+          [self beginProcessingBlocksIfNeeded];
+        }
+      });
+    }
+  }
+}
+
+- (void)queueBlock:(void (^const)())block
+{
+  @synchronized(self) {
+    [self.blockQueue enqueue:block];
+    [self beginProcessingBlocksIfNeeded];
+  }
+}
 
 - (BOOL)deviceAuthorized
 {
@@ -240,9 +271,13 @@ public:
 
 - (void)fulfillWithACSMData:(NSData *const)ACSMData tag:(NSString *)tag
 {
-  if(!self.deviceAuthorized) {
-    NYPLLOG(@"Ignoring fulfillment request without prior authorization.");
-    return;
+  @synchronized(self) {
+    if(!self.deviceAuthorized) {
+      NYPLLOG(@"Ignoring fulfillment request without prior authorization.");
+      return;
+    }
+    
+    
   }
   
   // TODO: Set this properly as part of a queue.
