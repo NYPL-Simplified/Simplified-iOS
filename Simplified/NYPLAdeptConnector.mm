@@ -197,10 +197,14 @@ public:
 {
   @synchronized(self) {
     if(!self.blockRunning && self.blockQueue.count > 0) {
+      self.blockRunning = YES;
       void (^const block)() = static_cast<void (^)()>([self.blockQueue dequeue]);
       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         block();
-        [self beginProcessingBlocksIfNeeded];
+        @synchronized(self) {
+          self.blockRunning = NO;
+          [self beginProcessingBlocksIfNeeded];
+        }
       });
     }
   }
