@@ -28,7 +28,6 @@ class DRMProcessorClient;
 
 @interface NYPLAdeptConnector ()
 
-@property (nonatomic) BOOL blockRunning;
 @property (nonatomic) NYPLQueue *blockQueue;
 @property (nonatomic) NSString *currentTag;
 @property (nonatomic) dpdev::Device *device;
@@ -196,14 +195,17 @@ public:
 - (void)beginProcessingBlocksIfNeeded
 {
   @synchronized(self) {
-    if(!self.blockRunning && self.blockQueue.count > 0) {
-      self.blockRunning = YES;
+    if(!self.workflowsInProgress && self.blockQueue.count > 0) {
+      self.workflowsInProgress = YES;
       void (^const block)() = static_cast<void (^)()>([self.blockQueue dequeue]);
       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         block();
         @synchronized(self) {
-          self.blockRunning = NO;
-          [self beginProcessingBlocksIfNeeded];
+          if(self.blockQueue.count > 0) {
+            [self beginProcessingBlocksIfNeeded];
+          } else {
+            self.workflowsInProgress = NO;
+          }
         }
       });
     }
