@@ -28,7 +28,6 @@ class DRMProcessorClient;
 
 @interface NYPLAdeptConnector ()
 
-@property (nonatomic) BOOL authorizing;
 @property (nonatomic) BOOL blockRunning;
 @property (nonatomic) NYPLQueue *blockQueue;
 @property (nonatomic) NSString *currentTag;
@@ -36,6 +35,7 @@ class DRMProcessorClient;
 @property (nonatomic) LauncherResProvider *launcherResProvider;
 @property (nonatomic) dpdrm::DRMProcessor *processor;
 @property (nonatomic) DRMProcessorClient *processorClient;
+@property (nonatomic) BOOL workflowsInProgress;
 
 @end
 
@@ -81,6 +81,8 @@ public:
           [NSString stringWithUTF8String:title.utf8()],
           progress);
     
+    // FIXME: This should only report progress for download workflows.
+    // FIXME: This should fire on the main thread.
     [this->adeptConnector.delegate
      adeptConnector:this->adeptConnector
      didUpdateProgress:progress
@@ -90,6 +92,7 @@ public:
   virtual void reportWorkflowError(unsigned int const workflow,
                                    const dp::String &errorCode)
   {
+    // FIXME: This should ignore "expected" errors that happen when using the DRM connector.
     NSLog(@"XXX: Workflow error: %d, %@",
           workflow,
           [NSString stringWithUTF8String:errorCode.utf8()]);
@@ -113,6 +116,7 @@ public:
                                               length:dpRightsData.length()];
     
     
+    // FIXME: This should fire on the main thread.
     [this->adeptConnector.delegate
      adeptConnector:this->adeptConnector
      didFinishDownloadingToURL:[NSURL URLWithString:[NSString stringWithUTF8String:url.utf8()]]
@@ -153,6 +157,7 @@ public:
   
   dp::platformInit(dp::PI_DEFAULT);
   
+  // FIXME: This should be set properly for Simplified.
   dp::setVersionInfo("product", "SDKLauncher");
   dp::setVersionInfo("clientVersion", "SDKLauncher 1.0");
   dp::setVersionInfo("hobbes", "11.0.1");
@@ -194,10 +199,8 @@ public:
     if(!self.blockRunning && self.blockQueue.count > 0) {
       void (^const block)() = static_cast<void (^)()>([self.blockQueue dequeue]);
       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        @synchronized(self) {
-          block();
-          [self beginProcessingBlocksIfNeeded];
-        }
+        block();
+        [self beginProcessingBlocksIfNeeded];
       });
     }
   }
@@ -223,14 +226,17 @@ public:
                      password:(NSString *const)password
 {
   @synchronized(self) {
-    if(self.authorizing) {
-      NYPLLOG(@"Ignoring duplicate authorization attempt.");
+    if(self.deviceAuthorized) {
+      NYPLLOG(@"Ignoring attempt to authorize while already authorized.");
       return;
     }
     
-    [self deauthorize];
+    if(self.workflowsInProgress) {
+      NYPLLOG(@"Ignoring attempt to authorize while workflows are in progress.");
+      return;
+    }
 
-    self.authorizing = YES;
+    self.workflowsInProgress = YES;
   }
   
   void (^block)() = ^{
@@ -255,7 +261,7 @@ public:
         NSLog(@"FAILED");
       }
       
-      self.authorizing = NO;
+      self.workflowsInProgress = NO;
     }
   };
   
@@ -265,6 +271,11 @@ public:
 - (void)deauthorize
 {
   @synchronized(self) {
+    if(self.workflowsInProgress) {
+      NYPLLOG(@"Ignoring attempt to deauthorize while workflows are in progress.");
+      return;
+    }
+    
     self.device->setActivationRecord(dp::Data());
   }
 }
@@ -276,26 +287,18 @@ public:
       NYPLLOG(@"Ignoring fulfillment request without prior authorization.");
       return;
     }
-    
-    
   }
   
-  // TODO: Set this properly as part of a queue.
-  self.currentTag = tag;
-  
-  void (^block)() = ^{
-    @synchronized(self) {
-      self.processor->reset();
-      self.processor->initWorkflows(dpdrm::DW_FULFILL
-                                    | dpdrm::DW_DOWNLOAD
-                                    | dpdrm::DW_NOTIFY,
-                                    dp::Data(static_cast<unsigned char const *>(ACSMData.bytes),
-                                             ACSMData.length));
-      self.processor->startWorkflows(dpdrm::DW_FULFILL | dpdrm::DW_DOWNLOAD | dpdrm::DW_NOTIFY);
-    }
-  };
-  
-  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block);
+  [self queueBlock:^{
+    self.currentTag = tag;
+    self.processor->reset();
+    self.processor->initWorkflows(dpdrm::DW_FULFILL
+                                  | dpdrm::DW_DOWNLOAD
+                                  | dpdrm::DW_NOTIFY,
+                                  dp::Data(static_cast<unsigned char const *>(ACSMData.bytes),
+                                           ACSMData.length));
+    self.processor->startWorkflows(dpdrm::DW_FULFILL | dpdrm::DW_DOWNLOAD | dpdrm::DW_NOTIFY);
+  }];
 }
 
 @end
