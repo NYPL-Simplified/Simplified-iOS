@@ -73,6 +73,10 @@
 
 // NYPLSettingsAccountViewController
 
+"SettingsAccountViewControllerCannotLogOutTitle" =
+  "Logout Failed";
+"SettingsAccountViewControllerCannotLogOutMessage" =
+  "Please wait for certain download-related actions to finish before logging out.";
 "SettingsAccountViewControllerInvalidCredentials" =
   "Your barcode and pin combination was not valid. Please try again.";
 "SettingsAccountViewControllerLoginFailed" = "Login Failed";

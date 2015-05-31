@@ -1,4 +1,5 @@
 #import "NYPLAccount.h"
+#import "NYPLAdeptConnector.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
@@ -165,10 +166,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                     actionWithTitle:NSLocalizedString(@"SignOut", nil)
                                     style:UIAlertActionStyleDestructive
                                     handler:^(__attribute__((unused)) UIAlertAction *action) {
-                                      [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
-                                      [[NYPLBookRegistry sharedRegistry] reset];
-                                      [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
-                                      [self.tableView reloadData];
+                                      [self logOut];
                                     }]];
         [alertController addAction:[UIAlertAction
                                     actionWithTitle:NSLocalizedString(@"Cancel", nil)
@@ -356,6 +354,25 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   
   [self validateCredentials];
+}
+
+- (void)logOut
+{
+  if([NYPLAdeptConnector sharedAdeptConnector].workflowsInProgress) {
+    [[[UIAlertView alloc]
+      initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerCannotLogOutTitle", nil)
+      message:NSLocalizedString(@"SettingsAccountViewControllerCannotLogOutMessage", nil)
+      delegate:nil
+      cancelButtonTitle:nil
+      otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+     show];
+  } else {
+    [[NYPLAdeptConnector sharedAdeptConnector] deauthorize];
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
+    [[NYPLBookRegistry sharedRegistry] reset];
+    [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
+    [self.tableView reloadData];
+  }
 }
 
 - (void)validateCredentials
