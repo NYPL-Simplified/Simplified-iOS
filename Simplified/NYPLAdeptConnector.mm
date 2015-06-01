@@ -18,7 +18,6 @@
 
 #import <Foundation/Foundation.h>
 
-#import "NYPLAdeptConnectorOperation.h"
 #import "NYPLLOG.h"
 #import "NYPLQueue.h"
 
@@ -260,14 +259,13 @@ public:
         self.processor->initSignInWorkflow(workflows0, dpVendorID, dpUsername, dpPassword);
       self.processor->startWorkflows(workflows1);
     
-      // TODO: Report this to a delegate.
-      if(self.deviceAuthorized) {
-        NSLog(@"SUCCESSFUL");
-      } else {
-        NSLog(@"FAILED");
-      }
-      
       self.workflowsInProgress = NO;
+      
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:NYPLAdeptConnectorAuthorizationAttemptDidFinishNotification
+         object:self];
+      }];
     }
   };
   

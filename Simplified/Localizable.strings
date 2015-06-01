@@ -9,6 +9,7 @@
 "ConnectionFailed" = "Connection Failed";
 "CreditsAndAcknowledgements" = "Credits & Acknowledgements";
 "Delete" = "Delete";
+"DeviceAuthorizationError" = "An error occurred while authorizing this device.";
 "Download" = "Download";
 "DownloadCouldNotBeCompleted" = "The download could not be completed.";
 "DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.";
