@@ -76,6 +76,12 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
    name:UIKeyboardWillShowNotification
    object:nil];
   
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(authorizatonAttemptDidFinish)
+   name:NYPLAdeptConnectorAuthorizationAttemptDidFinishNotification
+   object:nil];
+  
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
@@ -388,7 +394,20 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
      completionHandler:^(__attribute__((unused)) NSData *data,
                          NSURLResponse *const response,
                          NSError *const error) {
-     
+       
+       // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
+       NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
+       
+       // Success.
+       if(statusCode == 200) {
+         // FIXME: Use real credentials!
+         [[NYPLAdeptConnector sharedAdeptConnector]
+          authorizeWithVendorID:@"AdobeID"
+          username:@"johnnowak@nypl.org"
+          password:@"oaFytiVQDlHU82WN"];
+         return;
+       }
+       
        self.navigationItem.titleView = nil;
        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
        
@@ -427,20 +446,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
            cancelButtonTitle:nil
            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
           show];
-         return;
-       }
-       
-       // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
-       NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
-       
-       if(statusCode == 200) {
-         [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
-                                             PIN:self.PINTextField.text];
-         [self dismissViewControllerAnimated:YES completion:^{}];
-         void (^handler)() = self.completionHandler;
-         self.completionHandler = nil;
-         if(handler) handler();
-         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
          return;
        }
        
@@ -533,6 +538,32 @@ completionHandler:(void (^)())handler
   [self.navigationController.presentingViewController
    dismissViewControllerAnimated:YES
    completion:nil];
+}
+
+- (void)authorizatonAttemptDidFinish
+{
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    self.navigationItem.titleView = nil;
+    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+    
+    if([NYPLAdeptConnector sharedAdeptConnector].deviceAuthorized) {
+      [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
+                                          PIN:self.PINTextField.text];
+      [self dismissViewControllerAnimated:YES completion:^{}];
+      void (^handler)() = self.completionHandler;
+      self.completionHandler = nil;
+      if(handler) handler();
+      [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+    } else {
+      [[[UIAlertView alloc]
+        initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
+        message:NSLocalizedString(@"DeviceAuthorizationError", nil)
+        delegate:nil
+        cancelButtonTitle:nil
+        otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+       show];
+    }
+  }];
 }
 
 @end
