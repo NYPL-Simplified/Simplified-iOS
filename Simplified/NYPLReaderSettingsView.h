@@ -28,7 +28,11 @@
 @property (nonatomic) NYPLReaderSettingsFontSize fontSize;
 @property (nonatomic) NYPLReaderSettingsFontFace fontFace;
 
++ (id)new NS_UNAVAILABLE;
+- (id)init NS_UNAVAILABLE;
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
+
+- (instancetype)initWithWidth:(CGFloat)width;
 
 @end
