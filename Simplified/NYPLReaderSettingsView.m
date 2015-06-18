@@ -38,7 +38,7 @@
   self.sansButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.sansButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.sansButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.sansButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+  [self.sansButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateDisabled];
   [self.sansButton setTitle:@"Aa" forState:UIControlStateNormal];
   self.sansButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:24];
   [self.sansButton addTarget:self
@@ -49,7 +49,7 @@
   self.serifButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.serifButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.serifButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.serifButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+  [self.serifButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateDisabled];
   [self.serifButton setTitle:@"Aa" forState:UIControlStateNormal];
   self.serifButton.titleLabel.font = [UIFont fontWithName:@"Georgia" size:24];
   [self.serifButton addTarget:self
@@ -60,7 +60,8 @@
   self.whiteOnBlackButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.whiteOnBlackButton.backgroundColor = [NYPLConfiguration backgroundDarkColor];
   [self.whiteOnBlackButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-  [self.whiteOnBlackButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+  [self.whiteOnBlackButton setTitleColor:[NYPLConfiguration mainColor]
+                                forState:UIControlStateDisabled];
   [self.whiteOnBlackButton setTitle:@"ABCabc" forState:UIControlStateNormal];
   self.whiteOnBlackButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.whiteOnBlackButton addTarget:self
@@ -71,7 +72,8 @@
   self.blackOnSepiaButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.blackOnSepiaButton.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
   [self.blackOnSepiaButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.blackOnSepiaButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+  [self.blackOnSepiaButton setTitleColor:[NYPLConfiguration mainColor]
+                                forState:UIControlStateDisabled];
   [self.blackOnSepiaButton setTitle:@"ABCabc" forState:UIControlStateNormal];
   self.blackOnSepiaButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.blackOnSepiaButton addTarget:self
@@ -82,7 +84,8 @@
   self.blackOnWhiteButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.blackOnWhiteButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.blackOnWhiteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.blackOnWhiteButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+  [self.blackOnWhiteButton setTitleColor:[NYPLConfiguration mainColor]
+                                forState:UIControlStateDisabled];
   [self.blackOnWhiteButton setTitle:@"ABCabc" forState:UIControlStateNormal];
   self.blackOnWhiteButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.blackOnWhiteButton addTarget:self
