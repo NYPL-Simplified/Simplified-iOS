@@ -238,25 +238,6 @@
   [self updateLineViews];
 }
 
-- (void)drawRect:(__attribute__((unused)) CGRect)rect
-{
-  [self layoutIfNeeded];
-
-  CGContextRef const c = UIGraphicsGetCurrentContext();
-  CGFloat const gray[4] = {0.5, 0.5, 0.5, 1.0};
-  CGContextSetStrokeColor(c, gray);
-
-  CGContextBeginPath(c);
-  CGContextMoveToPoint(c,
-                       CGRectGetMinX(self.whiteOnBlackButton.frame),
-                       CGRectGetMinY(self.whiteOnBlackButton.frame));
-  CGContextAddLineToPoint(c,
-                          CGRectGetMaxX(self.blackOnWhiteButton.frame),
-                          CGRectGetMinY(self.blackOnWhiteButton.frame));
-  CGContextStrokePath(c);
-  
-}
-
 - (CGSize)sizeThatFits:(CGSize)size
 {
   CGFloat const w = 320;
