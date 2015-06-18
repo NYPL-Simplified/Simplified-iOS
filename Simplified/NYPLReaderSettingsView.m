@@ -24,10 +24,13 @@
 
 #pragma mark NSObject
 
-- (instancetype)init
+- (instancetype)initWithWidth:(CGFloat const)width
 {
   self = [super init];
   if (!self) return nil;
+  
+  CGSize const size = [self sizeThatFits:CGSizeMake(width, CGFLOAT_MAX)];
+  self.frame = CGRectMake(0, 0, size.width, size.height);
 
   self.observers = [NSMutableArray array];
   
