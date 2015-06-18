@@ -240,14 +240,20 @@
 
 - (CGSize)sizeThatFits:(CGSize)size
 {
-  CGFloat const w = 320;
-  CGFloat const h = 200;
+  CGFloat const defaultWidth = 320;
+  CGFloat const defaultHeight = 200;
 
-  if (CGSizeEqualToSize(size, CGSizeZero)) {
-    return CGSizeMake(w, h);
+  if(CGSizeEqualToSize(size, CGSizeZero)) {
+    return CGSizeMake(defaultWidth, defaultHeight);
   }
+  
+  CGFloat const aspectRatio = defaultWidth / defaultHeight;
 
-  return CGSizeMake(w > size.width ? size.width : w, h > size.height ? size.height : h);
+  if(size.width / size.height > aspectRatio) {
+    return CGSizeMake(size.height * aspectRatio, size.height);
+  } else {
+    return CGSizeMake(size.width, size.width / aspectRatio);
+  }
 }
 
 #pragma mark -
