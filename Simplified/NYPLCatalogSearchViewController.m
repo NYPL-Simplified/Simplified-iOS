@@ -72,6 +72,8 @@
   self.reloadView = [[NYPLReloadView alloc] init];
   self.reloadView.handler = ^{
     weakSelf.reloadView.hidden = YES;
+    // |weakSelf.searchBar| will always contain the last search because the reload view is hidden as
+    // soon as editing begins (and thus cannot be clicked if the search bar text has changed).
     [weakSelf searchBarSearchButtonClicked:weakSelf.searchBar];
   };
   self.reloadView.hidden = YES;
@@ -161,6 +163,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
   self.collectionView.hidden = YES;
   self.noResultsLabel.hidden = YES;
+  self.reloadView.hidden = YES;
   self.activityIndicatorView.hidden = NO;
   [self.activityIndicatorView startAnimating];
   self.searchBar.userInteractionEnabled = NO;
@@ -201,4 +204,11 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
    }];
 }
 
+- (BOOL)searchBarShouldBeginEditing:(__attribute__((unused)) UISearchBar *)searchBar
+{
+  self.reloadView.hidden = YES;
+  
+  return YES;
+}
+                                     
 @end
