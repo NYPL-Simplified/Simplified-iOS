@@ -76,12 +76,6 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
    name:UIKeyboardWillShowNotification
    object:nil];
   
-  [[NSNotificationCenter defaultCenter]
-   addObserver:self
-   selector:@selector(authorizatonAttemptDidFinish)
-   name:NYPLAdeptConnectorAuthorizationAttemptDidFinishNotification
-   object:nil];
-  
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
@@ -404,7 +398,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
          [[NYPLAdeptConnector sharedAdeptConnector]
           authorizeWithVendorID:@"AdobeID"
           username:@"johnnowak@nypl.org"
-          password:@"oaFytiVQDlHU82WN"];
+          password:@"oaFytiVQDlHU82WN"
+          completionHandler:^{
+            [self authorizationAttemptDidFinish];
+          }];
          return;
        }
        
@@ -540,7 +537,7 @@ completionHandler:(void (^)())handler
    completion:nil];
 }
 
-- (void)authorizatonAttemptDidFinish
+- (void)authorizationAttemptDidFinish
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     self.navigationItem.titleView = nil;

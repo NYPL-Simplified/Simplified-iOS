@@ -229,17 +229,15 @@ public:
 - (void)authorizeWithVendorID:(NSString *const)vendorID
                      username:(NSString *const)username
                      password:(NSString *const)password
+            completionHandler:(void (^)())handler
 {
   @synchronized(self) {
-    if(self.deviceAuthorized) {
-      NYPLLOG(@"Ignoring attempt to authorize while already authorized.");
-      return;
-    }
-    
     if(self.workflowsInProgress) {
       NYPLLOG(@"Ignoring attempt to authorize while workflows are in progress.");
       return;
     }
+    
+    [self deauthorize];
 
     self.workflowsInProgress = YES;
   }
@@ -262,9 +260,7 @@ public:
       self.workflowsInProgress = NO;
       
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:NYPLAdeptConnectorAuthorizationAttemptDidFinishNotification
-         object:self];
+        handler();
       }];
     }
   };
