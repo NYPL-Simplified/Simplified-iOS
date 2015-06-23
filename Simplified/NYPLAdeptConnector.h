@@ -7,9 +7,6 @@
 
 @class NYPLAdeptConnector;
 
-static NSString *const NYPLAdeptConnectorAuthorizationAttemptDidFinishNotification =
-  @"NYPLAdeptConnectorAuthorizationAttemptDidFinishNotification";
-
 @protocol NYPLAdeptConnectorDelegate
 
 - (void)adeptConnector:(NYPLAdeptConnector *)adeptConnector
@@ -31,11 +28,13 @@ didFinishDownloadingToURL:(NSURL *)URL
 
 + (NYPLAdeptConnector *)sharedAdeptConnector;
 
-// This can only be called if no workflows are in progress and the device is not authorized. The
-// authorization attempt is handled asynchronously and a notification is issued upon completion.
+// This can only be called if no workflows are in progress. It will deauthorize the device if it is
+// presently authorized before attempting a new authorization. The completion handler is guaranteed
+// to execute on the main thread.
 - (void)authorizeWithVendorID:(NSString *)vendorID
                      username:(NSString *)username
-                     password:(NSString *)password;
+                     password:(NSString *)password
+            completionHandler:(void (^)())handler;
 
 // This can only be called if no workflows are in progress. The device is deauthorized when this
 // method returns.

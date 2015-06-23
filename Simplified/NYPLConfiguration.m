@@ -16,12 +16,12 @@
   
   if(customURL) return customURL;
   
-  return [NSURL URLWithString:@"http://circulation.alpha.librarysimplified.org"];
+  return [NSURL URLWithString:@"http://qa.circulation.librarysimplified.org"];
 }
 
 + (NSURL *)loanURL
 {
-  return [NSURL URLWithString:@"http://circulation.alpha.librarysimplified.org/loans"];
+  return [NSURL URLWithString:@"http://qa.circulation.librarysimplified.org/loans"];
 }
 
 + (UIColor *)mainColor
