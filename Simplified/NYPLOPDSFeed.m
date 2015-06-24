@@ -159,6 +159,10 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   
   NYPLOPDSFeedType const provisionalType = TypeImpliedByEntry(self.entries.firstObject);
   
+  if(provisionalType == NYPLOPDSFeedTypeInvalid) {
+    return (_type == NYPLOPDSFeedTypeInvalid);
+  }
+  
   for(unsigned int i = 1; i < self.entries.count; ++i) {
     if(TypeImpliedByEntry(self.entries[i]) != provisionalType) {
       return (_type = NYPLOPDSFeedTypeInvalid);
