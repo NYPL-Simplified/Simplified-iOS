@@ -20,5 +20,6 @@
     <link href="http://covers.openlibrary.org/b/id/244619-S.jpg" rel="http://opds-spec.org/image/thumbnail" />
     <link href="http://covers.openlibrary.org/b/id/244619-L.jpg" rel="http://opds-spec.org/image" />
     <link href="http://localhost/lanes/Nonfiction" rel="collection" title="Nonfiction" />
+    <link rel="http://opds-spec.org/group" href="http://localhost/group" title="Example" />
   </entry>
 </feed>

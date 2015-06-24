@@ -1,5 +1,6 @@
 #import "NYPLOPDSAttribute.h"
 #import "NYPLOPDSEntry.h"
+#import "NYPLOPDSEntryGroupAttributes.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLOPDSLink.h"
 #import "NYPLOPDSRelation.h"
