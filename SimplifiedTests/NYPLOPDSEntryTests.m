@@ -2,6 +2,7 @@
 
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLOPDSEntry.h"
+#import "NYPLOPDSEntryGroupAttributes.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLXML.h"
 
@@ -50,6 +51,14 @@
   XCTAssertEqual(self.entry.authorStrings.count, 2U);
   XCTAssertEqualObjects(self.entry.authorStrings[0], @"James, Henry");
   XCTAssertEqualObjects(self.entry.authorStrings[1], @"Author, Fictional");
+}
+
+- (void)testGroupAttributes
+{
+  NYPLOPDSEntryGroupAttributes *const attributes = self.entry.groupAttributes;
+  XCTAssert(attributes);
+  XCTAssertEqualObjects(attributes.href, [NSURL URLWithString:@"http://localhost/group"]);
+  XCTAssertEqualObjects(attributes.title, @"Example");
 }
 
 - (void)testIdentifier
