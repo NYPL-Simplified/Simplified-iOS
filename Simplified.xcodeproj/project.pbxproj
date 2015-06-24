@@ -507,6 +507,7 @@
 		1183F349194F74EF00DC322F /* Catalog */ = {
 			isa = PBXGroup;
 			children = (
+				A42E0DEC1B3B5A220095EBAE /* Obsolete */,
 				1114A69F195884CB007507A2 /* NYPLCatalogAcquisitionFeed.h */,
 				1114A6A0195884CB007507A2 /* NYPLCatalogAcquisitionFeed.m */,
 				11A16E67195B2BD3004147F4 /* NYPLCatalogAcquisitionFeedViewController.h */,
@@ -521,10 +522,6 @@
 				1183F33A194B775900DC322F /* NYPLCatalogLaneCell.m */,
 				11548C0C1939147D009DBF2E /* NYPLCatalogNavigationController.h */,
 				11548C0D1939147D009DBF2E /* NYPLCatalogNavigationController.m */,
-				1183F33C194F71A500DC322F /* NYPLCatalogNavigationFeed.h */,
-				1183F33D194F71A500DC322F /* NYPLCatalogNavigationFeed.m */,
-				11548C0F19391614009DBF2E /* NYPLCatalogNavigationFeedViewController.h */,
-				11548C1019391614009DBF2E /* NYPLCatalogNavigationFeedViewController.m */,
 				118A0B1919915BDF00792DDE /* NYPLCatalogSearchViewController.h */,
 				118A0B1A19915BDF00792DDE /* NYPLCatalogSearchViewController.m */,
 				1114A6A2195888A1007507A2 /* NYPLCatalogSubsectionLink.h */,
@@ -605,6 +602,17 @@
 				11C5DCF41976D22F005A9945 /* NYPLHoldsViewController.m */,
 			);
 			name = Holds;
+			sourceTree = "<group>";
+		};
+		A42E0DEC1B3B5A220095EBAE /* Obsolete */ = {
+			isa = PBXGroup;
+			children = (
+				1183F33C194F71A500DC322F /* NYPLCatalogNavigationFeed.h */,
+				1183F33D194F71A500DC322F /* NYPLCatalogNavigationFeed.m */,
+				11548C0F19391614009DBF2E /* NYPLCatalogNavigationFeedViewController.h */,
+				11548C1019391614009DBF2E /* NYPLCatalogNavigationFeedViewController.m */,
+			);
+			name = Obsolete;
 			sourceTree = "<group>";
 		};
 		A49C25411AE05A2600D63B89 /* Products */ = {
