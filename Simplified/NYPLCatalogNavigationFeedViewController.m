@@ -1,6 +1,6 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLCatalogAcquisitionFeedViewController.h"
+#import "NYPLCatalogUngroupedFeedViewController.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogNavigationFeed.h"
@@ -288,7 +288,7 @@ viewForHeaderInSection:(NSInteger const)section
   switch(lane.subsectionLink.type) {
     case NYPLCatalogSubsectionLinkTypeAcquisition:
       [self.navigationController
-       pushViewController:[[NYPLCatalogAcquisitionFeedViewController alloc]
+       pushViewController:[[NYPLCatalogUngroupedFeedViewController alloc]
                            initWithURL:lane.subsectionLink.URL
                            title:lane.title]
        animated:YES];

@@ -10,9 +10,9 @@
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 
-#import "NYPLCatalogAcquisitionFeedViewController.h"
+#import "NYPLCatalogUngroupedFeedViewController.h"
 
-@interface NYPLCatalogAcquisitionFeedViewController ()
+@interface NYPLCatalogUngroupedFeedViewController ()
   <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate,
    UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
@@ -24,7 +24,7 @@
 
 @end
 
-@implementation NYPLCatalogAcquisitionFeedViewController
+@implementation NYPLCatalogUngroupedFeedViewController
 
 - (instancetype)initWithURL:(NSURL *const)URL
                       title:(NSString *const)title
@@ -66,7 +66,7 @@
   self.activityIndicatorView.hidden = YES;
   [self.view addSubview:self.activityIndicatorView];
   
-  __weak NYPLCatalogAcquisitionFeedViewController *weakSelf = self;
+  __weak NYPLCatalogUngroupedFeedViewController *weakSelf = self;
   self.reloadView = [[NYPLReloadView alloc] init];
   self.reloadView.handler = ^{
     weakSelf.reloadView.hidden = YES;
