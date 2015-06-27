@@ -6,9 +6,9 @@
 #import "NYPLOPDS.h"
 #import "NYPLOpenSearchDescription.h"
 
-#import "NYPLCatalogAcquisitionFeed.h"
+#import "NYPLCatalogUngroupedFeed.h"
 
-@interface NYPLCatalogAcquisitionFeed ()
+@interface NYPLCatalogUngroupedFeed ()
 
 @property (nonatomic) BOOL currentlyFetchingNextURL;
 @property (nonatomic) NSArray *books;
@@ -24,11 +24,11 @@
 // attempt to fetch more books will be made.
 static NSUInteger const preloadThreshold = 100;
 
-@implementation NYPLCatalogAcquisitionFeed
+@implementation NYPLCatalogUngroupedFeed
 
 + (void)withURL:(NSURL *)URL
 includingSearchTemplate:(BOOL)includingSearchTemplate
-handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
+handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
 {
   if(!handler) {
     @throw NSInvalidArgumentException;
@@ -36,16 +36,16 @@ handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
   
   [NYPLOPDSFeed
    withURL:URL
-   completionHandler:^(NYPLOPDSFeed *const acquisitionFeed) {
-     if(!acquisitionFeed) {
+   completionHandler:^(NYPLOPDSFeed *const ungroupedFeed) {
+     if(!ungroupedFeed) {
        NYPLLOG(@"Failed to retrieve acquisition feed.");
        NYPLAsyncDispatch(^{handler(nil);});
        return;
      }
      
-     NSMutableArray *const books = [NSMutableArray arrayWithCapacity:acquisitionFeed.entries.count];
+     NSMutableArray *const books = [NSMutableArray arrayWithCapacity:ungroupedFeed.entries.count];
      
-     for(NYPLOPDSEntry *const entry in acquisitionFeed.entries) {
+     for(NYPLOPDSEntry *const entry in ungroupedFeed.entries) {
        NYPLBook *const book = [NYPLBook bookWithEntry:entry];
        if(!book) {
          NYPLLOG(@"Failed to create book from entry.");
@@ -61,7 +61,7 @@ handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
      NSURL *nextURL = nil;
      NSURL *openSearchURL = nil;
      
-     for(NYPLOPDSLink *const link in acquisitionFeed.links) {
+     for(NYPLOPDSLink *const link in ungroupedFeed.links) {
        if([link.rel isEqualToString:NYPLOPDSRelationFacet]) {
          NSString *groupName = nil;
          for(NSString *const key in link.attributes) {
@@ -112,26 +112,26 @@ handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
           if(!description) {
             NYPLLOG(@"Failed to retrieve open search description.");
           }
-          NYPLAsyncDispatch(^{handler([[NYPLCatalogAcquisitionFeed alloc]
+          NYPLAsyncDispatch(^{handler([[NYPLCatalogUngroupedFeed alloc]
                                        initWithBooks:books
                                        facetGroups:facetGroups
                                        nextURL:nextURL
                                        searchTemplate:description.OPDSURLTemplate
-                                       title:acquisitionFeed.title]);});
+                                       title:ungroupedFeed.title]);});
         }];
       } else {
-        NYPLAsyncDispatch(^{handler([[NYPLCatalogAcquisitionFeed alloc]
+        NYPLAsyncDispatch(^{handler([[NYPLCatalogUngroupedFeed alloc]
                                      initWithBooks:books
                                      facetGroups:facetGroups
                                      nextURL:nextURL
                                      searchTemplate:nil
-                                     title:acquisitionFeed.title]);});
+                                     title:ungroupedFeed.title]);});
       }
    }];
 }
 
 + (void)withURL:(NSURL *)URL
-        handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
+        handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
 {
   [self withURL:URL includingSearchTemplate:YES handler:handler];
 }
@@ -200,30 +200,30 @@ handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
   
   NSUInteger const location = self.books.count;
   
-  [NYPLCatalogAcquisitionFeed
+  [NYPLCatalogUngroupedFeed
    withURL:self.nextURL
    includingSearchTemplate:NO
-   handler:^(NYPLCatalogAcquisitionFeed *const acquisitionFeed) {
+   handler:^(NYPLCatalogUngroupedFeed *const ungroupedFeed) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       if(!acquisitionFeed) {
+       if(!ungroupedFeed) {
          NYPLLOG(@"Failed to fetch next page.");
          self.currentlyFetchingNextURL = NO;
          return;
        }
        
        NSMutableArray *const books = [self.books mutableCopy];
-       [books addObjectsFromArray:acquisitionFeed.books];
+       [books addObjectsFromArray:ungroupedFeed.books];
        self.books = books;
-       self.nextURL = acquisitionFeed.nextURL;
+       self.nextURL = ungroupedFeed.nextURL;
        self.currentlyFetchingNextURL = NO;
        
        [self prepareForBookIndex:self.greatestPreparationIndex];
        
-       NSRange const range = {.location = location, .length = acquisitionFeed.books.count};
+       NSRange const range = {.location = location, .length = ungroupedFeed.books.count};
        
-       [self.delegate catalogAcquisitionFeed:self
-                                 didAddBooks:acquisitionFeed.books
-                                       range:range];
+       [self.delegate catalogUngroupedFeed:self
+                               didAddBooks:ungroupedFeed.books
+                                     range:range];
      }];
    }];
 }
@@ -245,7 +245,7 @@ handler:(void (^)(NYPLCatalogAcquisitionFeed *category))handler
     
     self.books = refreshedBooks;
     
-    [self.delegate catalogAcquisitionFeed:self didUpdateBooks:self.books];
+    [self.delegate catalogUngroupedFeed:self didUpdateBooks:self.books];
   }];
 }
 

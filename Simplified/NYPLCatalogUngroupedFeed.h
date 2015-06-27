@@ -1,22 +1,22 @@
-@class NYPLCatalogAcquisitionFeed;
+@class NYPLCatalogUngroupedFeed;
 
-@protocol NYPLCatalogAcquisitionFeedDelegate
+@protocol NYPLCatalogUngroupedFeedDelegate
 
 // Called only when existing books have been updated.
-- (void)catalogAcquisitionFeed:(NYPLCatalogAcquisitionFeed *)catalogAcquisitionFeed
-                didUpdateBooks:(NSArray *)books;
+- (void)catalogUngroupedFeed:(NYPLCatalogUngroupedFeed *)catalogUngroupedFeed
+              didUpdateBooks:(NSArray *)books;
 
 // Called only when new books have been added.
-- (void)catalogAcquisitionFeed:(NYPLCatalogAcquisitionFeed *)catalogAcquisitionFeed
-                   didAddBooks:(NSArray *)books
-                         range:(NSRange)range;
+- (void)catalogUngroupedFeed:(NYPLCatalogUngroupedFeed *)catalogUngroupedFeed
+                 didAddBooks:(NSArray *)books
+                       range:(NSRange)range;
 
 @end
 
-@interface NYPLCatalogAcquisitionFeed : NSObject
+@interface NYPLCatalogUngroupedFeed : NSObject
 
 @property (nonatomic, readonly) NSArray *books;
-@property (nonatomic, weak) id<NYPLCatalogAcquisitionFeedDelegate> delegate; // nilable
+@property (nonatomic, weak) id<NYPLCatalogUngroupedFeedDelegate> delegate; // nilable
 @property (nonatomic, readonly) NSArray *facetGroups;
 @property (nonatomic, readonly) NSString *searchTemplate; // nilable
 @property (nonatomic, readonly) NSString *title;
@@ -24,8 +24,8 @@
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
-// In the callback, |acquisitionFeed| will be |nil| if an error occurred.
-+ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogAcquisitionFeed *acquisitionFeed))handler;
+// In the callback, |ungroupedFeed| will be |nil| if an error occurred.
++ (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogUngroupedFeed *ungroupedFeed))handler;
 
 // designated initializer
 - (instancetype)initWithBooks:(NSArray *)books
