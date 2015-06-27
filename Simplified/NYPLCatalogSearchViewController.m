@@ -1,6 +1,5 @@
-// TODO: This class duplicates much of the functionality of
-// NYPLCatalogAcquisitionFeedViewController. After it is complete, the common portions must be
-// factored out.
+// TODO: This class duplicates much of the functionality of NYPLCatalogUngroupedFeedViewController.
+// After it is complete, the common portions must be factored out.
 
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLBookCell.h"

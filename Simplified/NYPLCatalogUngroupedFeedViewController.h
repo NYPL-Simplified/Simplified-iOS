@@ -1,6 +1,6 @@
 #import "NYPLBookCellCollectionViewController.h"
 
-@interface NYPLCatalogAcquisitionFeedViewController : NYPLBookCellCollectionViewController
+@interface NYPLCatalogUngroupedFeedViewController : NYPLBookCellCollectionViewController
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
