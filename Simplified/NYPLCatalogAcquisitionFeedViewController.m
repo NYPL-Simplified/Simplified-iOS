@@ -1,7 +1,7 @@
 #import "NYPLBook.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookNormalCell.h"
-#import "NYPLCatalogAcquisitionFeed.h"
+#import "NYPLCatalogUngroupedFeed.h"
 #import "NYPLCatalogFacet.h"
 #import "NYPLCatalogFacetGroup.h"
 #import "NYPLCatalogSearchViewController.h"
@@ -13,11 +13,11 @@
 #import "NYPLCatalogAcquisitionFeedViewController.h"
 
 @interface NYPLCatalogAcquisitionFeedViewController ()
-  <NYPLCatalogAcquisitionFeedDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate,
+  <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate,
    UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
-@property (nonatomic) NYPLCatalogAcquisitionFeed *category;
+@property (nonatomic) NYPLCatalogUngroupedFeed *category;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) NSURL *URL;
@@ -126,19 +126,19 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
 
-#pragma mark NYPLCatalogAcquisitionFeedDelegate
+#pragma mark NYPLCatalogUngroupedFeedDelegate
 
-- (void)catalogAcquisitionFeed:(__attribute__((unused))
-                                NYPLCatalogAcquisitionFeed *)catalogAcquisitionFeed
-                didUpdateBooks:(__attribute__((unused)) NSArray *)books
+- (void)catalogUngroupedFeed:(__attribute__((unused))
+                              NYPLCatalogUngroupedFeed *)catalogUngroupedFeed
+              didUpdateBooks:(__attribute__((unused)) NSArray *)books
 {
   [self.collectionView reloadData];
 }
 
-- (void)catalogAcquisitionFeed:(__attribute__((unused))
-                                NYPLCatalogAcquisitionFeed *)catalogAcquisitionFeed
-                   didAddBooks:(__attribute__((unused)) NSArray *)books
-                         range:(NSRange const)range
+- (void)catalogUngroupedFeed:(__attribute__((unused))
+                              NYPLCatalogUngroupedFeed *)catalogUngroupedFeed
+                 didAddBooks:(__attribute__((unused)) NSArray *)books
+                       range:(NSRange const)range
 {
   NSMutableArray *const indexPaths = [NSMutableArray arrayWithCapacity:range.length];
   
@@ -229,9 +229,9 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
   self.collectionView.hidden = YES;
   self.facetBarView.hidden = YES;
   
-  [NYPLCatalogAcquisitionFeed
+  [NYPLCatalogUngroupedFeed
    withURL:self.URL
-   handler:^(NYPLCatalogAcquisitionFeed *const category) {
+   handler:^(NYPLCatalogUngroupedFeed *const category) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        self.activityIndicatorView.hidden = YES;
        [self.activityIndicatorView stopAnimating];
