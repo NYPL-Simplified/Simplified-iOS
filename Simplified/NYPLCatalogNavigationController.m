@@ -1,4 +1,4 @@
-#import "NYPLCatalogNavigationFeedViewController.h"
+#import "NYPLCatalogFeedViewController.h"
 #import "NYPLConfiguration.h"
 
 #import "NYPLCatalogNavigationController.h"
@@ -9,10 +9,9 @@
 
 - (instancetype)init
 {
-  NYPLCatalogNavigationFeedViewController *const viewController =
-    [[NYPLCatalogNavigationFeedViewController alloc]
-     initWithURL:[NYPLConfiguration mainFeedURL]
-     title:NSLocalizedString(@"Catalog", nil)];
+  NYPLCatalogFeedViewController *const viewController =
+    [[NYPLCatalogFeedViewController alloc]
+     initWithURL:[NYPLConfiguration mainFeedURL]];
   
   self = [super initWithRootViewController:viewController];
   if(!self) return nil;
@@ -23,6 +22,8 @@
   // title text.
   viewController.navigationItem.titleView =
     [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Catalog"]];
+  
+  [viewController load];
   
   return self;
 }
