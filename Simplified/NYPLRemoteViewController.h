@@ -10,8 +10,6 @@
 // are all set before the handler returns. (Changes to the items already /within/ the left and right
 // sets of items will be correctly displayed, however.)
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface NYPLRemoteViewController : UIViewController
 
 + (id)new NS_UNAVAILABLE;
@@ -19,13 +17,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
-// |handler| is strongly retained.
+// Neither |URL| nor |handler| may be nil. |handler| is strongly retained. |data| will never be nil
+// as the handler is only called if the data was downloaded successfully. The handler may return nil
+// to indicate that there is something wrong with the data.
 - (instancetype)initWithURL:(NSURL *)URL
-          completionHandler:(UIViewController *__nullable (^)(NSData *data))handler;
+          completionHandler:(UIViewController *(^)(NSData *data))handler;
 
 // This may be called more than once to reload the data accessible at the previously provided URL.
 - (void)load;
 
 @end
-
-NS_ASSUME_NONNULL_END
