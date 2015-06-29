@@ -13,6 +13,8 @@
     [[NYPLCatalogFeedViewController alloc]
      initWithURL:[NYPLConfiguration mainFeedURL]];
   
+  viewController.title = NSLocalizedString(@"Catalog", nil);
+  
   self = [super initWithRootViewController:viewController];
   if(!self) return nil;
   
