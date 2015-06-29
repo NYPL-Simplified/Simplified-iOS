@@ -1,13 +1,11 @@
 #import "NYPLConfiguration.h"
 #import "NYPLRemoteViewController.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface NYPLRemoteViewController () <NSURLConnectionDataDelegate>
 
 @property (nonatomic) NSURLConnection *connection;
 @property (nonatomic) NSMutableData *data;
-@property (nonatomic, strong) UIViewController *__nullable (^handler)(NSData *data);
+@property (nonatomic, strong) UIViewController *(^handler)(NSData *data);
 @property (nonatomic) NSURL *URL;
 
 @end
@@ -15,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation NYPLRemoteViewController
 
 - (instancetype)initWithURL:(NSURL *const)URL
-          completionHandler:(UIViewController *__nullable (^ const)(NSData *data))handler
+          completionHandler:(UIViewController *(^ const)(NSData *data))handler
 {
   self = [super init];
   if(!self) return nil;
@@ -68,7 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
   // TODO
   NSLog(@"XXX: Done loading!");
   
-  UIViewController *__nonnull const viewController = self.handler(self.data);
+  UIViewController *const viewController = self.handler(self.data);
   
   if(viewController) {
     [self addChildViewController:viewController];
@@ -83,7 +81,8 @@ NS_ASSUME_NONNULL_BEGIN
     NSLog(@"XXX: Failed to get view controller!");
   }
   
-  self.data = [NSMutableData data];
+  self.connection = nil;
+  self.data = nil;
 }
 
 #pragma mark NSURLConnectionDelegate
@@ -94,9 +93,8 @@ NS_ASSUME_NONNULL_BEGIN
   // TODO
   NSLog(@"XXX: An error occurred!");
   
-  self.data = [NSMutableData data];
+  self.connection = nil;
+  self.data = nil;
 }
 
 @end
-
-NS_ASSUME_NONNULL_END
