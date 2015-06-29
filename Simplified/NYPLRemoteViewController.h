@@ -4,6 +4,11 @@
 // downloading, it will display a progress indicator. Once the data has been retreived, the handler
 // function provided will be called. That handler then returns a new view controller that is
 // presented by the instance of |NYPLRemoteViewController|.
+//
+// The current left and right bar buttons of the presented view controller, as well as the current
+// title, will be displayed. Changes to said properties later on will not be shown, so be sure they
+// are all set before the handler returns. (Changes to the items already /within/ the left and right
+// sets of items will be correctly displayed, however.)
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // |handler| is strongly retained.
 - (instancetype)initWithURL:(NSURL *)URL
-          completionHandler:(UIViewController *(^)(NSData *data))handler;
+          completionHandler:(UIViewController *__nullable (^)(NSData *data))handler;
 
 // This may be called more than once to reload the data accessible at the previously provided URL.
 - (void)load;

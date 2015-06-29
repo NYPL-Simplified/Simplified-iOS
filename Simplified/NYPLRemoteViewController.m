@@ -6,7 +6,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) NSURLConnection *connection;
 @property (nonatomic) NSMutableData *data;
-@property (nonatomic, strong) UIViewController *(^handler)(NSData *);
+@property (nonatomic, strong) UIViewController *__nullable (^handler)(NSData *data);
 @property (nonatomic) NSURL *URL;
 
 @end
@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation NYPLRemoteViewController
 
 - (instancetype)initWithURL:(NSURL *const)URL
-          completionHandler:(UIViewController *(^ const)(NSData *data))handler
+          completionHandler:(UIViewController *__nullable (^ const)(NSData *data))handler
 {
   self = [super init];
   if(!self) return nil;
@@ -61,7 +61,20 @@ NS_ASSUME_NONNULL_BEGIN
   // TODO
   NSLog(@"XXX: Done loading!");
   
-  [self presentViewController:self.handler(self.data) animated:NO completion:nil];
+  UIViewController *__nonnull const viewController = self.handler(self.data);
+  
+  if(viewController) {
+    [self addChildViewController:viewController];
+    viewController.view.frame = self.view.bounds;
+    [self.view addSubview:viewController.view];
+    self.navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems;
+    self.navigationItem.leftBarButtonItems = viewController.navigationItem.leftBarButtonItems;
+    self.navigationItem.title = viewController.navigationItem.title;
+    [viewController didMoveToParentViewController:self];
+  } else {
+    // TODO
+    NSLog(@"XXX: Failed to get view controller!");
+  }
   
   self.data = [NSMutableData data];
 }
