@@ -1,11 +1,15 @@
 #import "NYPLConfiguration.h"
+#import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
+#import "UIView+NYPLViewAdditions.h"
 
 @interface NYPLRemoteViewController () <NSURLConnectionDataDelegate>
 
+@property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NSURLConnection *connection;
 @property (nonatomic) NSMutableData *data;
 @property (nonatomic, strong) UIViewController *(^handler)(NSData *data);
+@property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) NSURL *URL;
 
 @end
@@ -40,6 +44,8 @@
   self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
   self.data = [NSMutableData data];
   
+  [self.activityIndicatorView startAnimating];
+  
   [self.connection start];
 }
 
@@ -48,6 +54,33 @@
 - (void)viewDidLoad
 {
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  
+  self.activityIndicatorView = [[UIActivityIndicatorView alloc]
+                                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  [self.view addSubview:self.activityIndicatorView];
+  
+  // We always nil out the connection when not in use so this is reliable.
+  if(self.connection) {
+    [self.activityIndicatorView startAnimating];
+  }
+  
+  __weak NYPLRemoteViewController *weakSelf = self;
+  self.reloadView = [[NYPLReloadView alloc] init];
+  self.reloadView.handler = ^{
+    weakSelf.reloadView.hidden = YES;
+    [weakSelf load];
+  };
+  self.reloadView.hidden = YES;
+  [self.view addSubview:self.reloadView];
+}
+
+- (void)viewWillLayoutSubviews
+{
+  [self.activityIndicatorView centerInSuperview];
+  [self.activityIndicatorView integralizeFrame];
+  
+  [self.reloadView centerInSuperview];
+  [self.reloadView integralizeFrame];
 }
 
 #pragma mark NSURLConnectionDataDelegate
@@ -66,6 +99,8 @@
   // TODO
   NSLog(@"XXX: Done loading!");
   
+  [self.activityIndicatorView stopAnimating];
+  
   UIViewController *const viewController = self.handler(self.data);
   
   if(viewController) {
@@ -79,6 +114,7 @@
   } else {
     // TODO
     NSLog(@"XXX: Failed to get view controller!");
+    self.reloadView.hidden = NO;
   }
   
   self.connection = nil;
@@ -92,6 +128,10 @@
 {
   // TODO
   NSLog(@"XXX: An error occurred!");
+  
+  [self.activityIndicatorView stopAnimating];
+  
+  self.reloadView.hidden = NO;
   
   self.connection = nil;
   self.data = nil;
