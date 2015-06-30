@@ -19,6 +19,8 @@
   self = [super init];
   if(!self) return nil;
   
+  // FIXME: |subsectionLink| will no longer always be present and should be allowed to be nil. The
+  // name of this variable/property should be changed as well.
   if(!(books && subsectionLink && title)) {
     @throw NSInvalidArgumentException;
   }
