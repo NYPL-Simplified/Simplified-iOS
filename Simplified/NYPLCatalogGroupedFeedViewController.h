@@ -1,3 +1,5 @@
+@class NYPLCatalogGroupedFeed;
+
 @interface NYPLCatalogGroupedFeedViewController : UIViewController
 
 + (id)new NS_UNAVAILABLE;
@@ -7,5 +9,7 @@
 
 // designated initializer
 - (instancetype)initWithURL:(NSURL *)URL title:(NSString *)title;
+
+- (instancetype)initWithGroupedFeed:(NYPLCatalogGroupedFeed *)feed;
 
 @end

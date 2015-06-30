@@ -16,7 +16,7 @@
   
   if(customURL) return customURL;
   
-  return [NSURL URLWithString:@"http://qa.circulation.librarysimplified.org"];
+  return [NSURL URLWithString:@"http://qa.circulation.librarysimplified.org/groups"];
 }
 
 + (NSURL *)loanURL

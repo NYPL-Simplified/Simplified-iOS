@@ -1,4 +1,5 @@
-#import "NYPLCatalogNavigationFeedViewController.h"
+#import "NYPLCatalogGroupedFeed.h"
+#import "NYPLCatalogGroupedFeedViewController.h"
 #import "NYPLOPDS.h"
 #import "NYPLXML.h"
 
@@ -15,24 +16,38 @@ NS_ASSUME_NONNULL_BEGIN
             NYPLXML *const XML = [NYPLXML XMLWithData:data];
             NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:XML];
             switch(feed.type) {
-              case NYPLOPDSFeedTypeAcquisitionGrouped:
-                NSLog(@"XXX: Unsupported groups feed!");
+              case NYPLOPDSFeedTypeAcquisitionGrouped: {
+                return [[NYPLCatalogGroupedFeedViewController alloc]
+                        initWithGroupedFeed:[[NYPLCatalogGroupedFeed alloc]
+                                             initWithOPDSFeed:feed]];
+              }
               case NYPLOPDSFeedTypeAcquisitionUngrouped:
                 NSLog(@"XXX: Unsupported ungrouped feed!");
+                return nil;
               case NYPLOPDSFeedTypeEmpty:
                 NSLog(@"XXX: Unsupported empty feed!");
+                return nil;
               case NYPLOPDSFeedTypeInvalid:
+                NYPLLOG(@"Cannot initialize due to invalid feed.");
                 return nil;
               case NYPLOPDSFeedTypeNavigation:
-                NSLog(@"XXX: Using old navigation feed hack.");
-                return [[NYPLCatalogNavigationFeedViewController alloc]
-                        initWithURL:URL title:@"Catalog"];
+                NYPLLOG(@"Cannot initialize due to lack of support for navigation feeds.");
+                return nil;
             }
           }];
   
   if(!self) return nil;
   
   return self;
+}
+
+#pragma mark UIViewController
+
+- (void)viewDidLoad
+{
+  [super viewDidLoad];
+  
+  [self load];
 }
 
 @end
