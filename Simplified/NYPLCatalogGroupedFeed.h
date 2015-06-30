@@ -1,0 +1,3 @@
+@interface NYPLCatalogGroupedFeed : NSObject
+
+@end
