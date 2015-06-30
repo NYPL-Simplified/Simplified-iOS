@@ -119,6 +119,7 @@
 		A49C25581AE05D0A00D63B89 /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */; };
 		A49C25591AE05D0D00D63B89 /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
 		A4BA1D0E1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BA1D0D1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m */; };
+		A4BA1D131B43046B006F83DF /* NYPLCatalogGroupedFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BA1D121B43046B006F83DF /* NYPLCatalogGroupedFeed.m */; };
 		A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D810192BABA400B55DE2 /* Foundation.framework */; };
 		A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
 		A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D814192BABA400B55DE2 /* UIKit.framework */; };
@@ -357,6 +358,8 @@
 		A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libePub3-iOS.a"; path = "readium-sdk/Platform/Apple/build/Debug-iphoneos/libePub3-iOS.a"; sourceTree = "<group>"; };
 		A4BA1D0C1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogGroupedFeedViewController.h; sourceTree = "<group>"; };
 		A4BA1D0D1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogGroupedFeedViewController.m; sourceTree = "<group>"; };
+		A4BA1D111B43046B006F83DF /* NYPLCatalogGroupedFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogGroupedFeed.h; sourceTree = "<group>"; };
+		A4BA1D121B43046B006F83DF /* NYPLCatalogGroupedFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogGroupedFeed.m; sourceTree = "<group>"; };
 		A823D80D192BABA400B55DE2 /* Simplified.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simplified.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D810192BABA400B55DE2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A823D812192BABA400B55DE2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -523,6 +526,8 @@
 				112C684E19EF003300106973 /* NYPLCatalogFacetGroup.m */,
 				A42E0DF21B40F4E00095EBAE /* NYPLCatalogFeedViewController.h */,
 				A42E0DF31B40F4E00095EBAE /* NYPLCatalogFeedViewController.m */,
+				A4BA1D111B43046B006F83DF /* NYPLCatalogGroupedFeed.h */,
+				A4BA1D121B43046B006F83DF /* NYPLCatalogGroupedFeed.m */,
 				A4BA1D0C1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.h */,
 				A4BA1D0D1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m */,
 				1183F33F194F723D00DC322F /* NYPLCatalogLane.h */,
@@ -1024,6 +1029,7 @@
 				119BEB89198C43A600121439 /* NSString+NYPLStringAdditions.m in Sources */,
 				A499BF261B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m in Sources */,
 				1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */,
+				A4BA1D131B43046B006F83DF /* NYPLCatalogGroupedFeed.m in Sources */,
 				112C6953197309C500C48F95 /* NYPLBookState.m in Sources */,
 				11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */,
 				1158812E1A894F4E008672C3 /* NYPLSettingsAccountViewController.m in Sources */,
