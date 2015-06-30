@@ -25,8 +25,6 @@
   viewController.navigationItem.titleView =
     [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Catalog"]];
   
-  [viewController load];
-  
   return self;
 }
 

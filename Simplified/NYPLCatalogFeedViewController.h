@@ -7,6 +7,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithURL:(NSURL *)URL
 completionHandler:(UIViewController *__nullable (^)(NSData *))handler NS_UNAVAILABLE;
 
+// FIXME: This should take a title as well.
 - (instancetype)initWithURL:(NSURL *)URL;
 
 @end

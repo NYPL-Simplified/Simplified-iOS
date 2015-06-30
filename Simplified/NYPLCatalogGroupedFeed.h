@@ -4,6 +4,7 @@
 
 @property (nonatomic, readonly) NSArray *lanes;
 @property (nonatomic, readonly) NSString *searchTemplate; // nilable
+@property (nonatomic, readonly) NSString *title;
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;

@@ -2,7 +2,6 @@
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogLane.h"
-#import "NYPLCatalogSubsectionLink.h"
 #import "NYPLNull.h"
 #import "NYPLOPDS.h"
 #import "NYPLOpenSearchDescription.h"
@@ -15,6 +14,7 @@
 
 @property (nonatomic) NSArray *lanes;
 @property (nonatomic) NSString *searchTemplate;
+@property (nonatomic) NSString *title;
 
 @end
 
@@ -77,18 +77,21 @@
   for(NSString *const groupTitle in groupTitles) {
     [lanes addObject:[[NYPLCatalogLane alloc]
                       initWithBooks:groupTitleToMutableBookArray[groupTitle]
-                      subsectionLink:NYPLNullToNil(groupTitleToURLOrNull[groupTitle])
+                      subsectionURL:NYPLNullToNil(groupTitleToURLOrNull[groupTitle])
                       title:groupTitle]];
   }
   
   // FIXME: |searchTemplate:| is passed nil because this method needs to return immediately and
   // getting the template requires network access. What we should do instead is just store the
   // URL of the open search document and let the view controller fetch it later.
-  return [self initWithLanes:lanes searchTemplate:nil];
+  return [self initWithLanes:lanes
+              searchTemplate:nil
+                       title:feed.title];
 }
 
 - (instancetype)initWithLanes:(NSArray *const)lanes
                searchTemplate:(NSString *const)searchTemplate
+                        title:(NSString *const)title
 {
   self = [super init];
   if(!self) return nil;
@@ -105,6 +108,7 @@
   
   self.lanes = lanes;
   self.searchTemplate = searchTemplate;
+  self.title = title;
   
   return self;
 }
