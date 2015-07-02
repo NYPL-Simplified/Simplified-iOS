@@ -89,7 +89,7 @@
 }
 
 - (void)connectionDidFinishLoading:(__attribute__((unused)) NSURLConnection *)connection
-{ 
+{
   [self.activityIndicatorView stopAnimating];
   
   UIViewController *const viewController = self.handler(self.data);

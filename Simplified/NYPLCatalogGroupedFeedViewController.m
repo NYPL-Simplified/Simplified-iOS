@@ -111,16 +111,37 @@ static CGFloat const sectionHeaderHeight = 50.0;
   [self.activityIndicatorView centerInSuperview];
   [self.activityIndicatorView integralizeFrame];
   
-  UIEdgeInsets const insets = UIEdgeInsetsMake(self.topLayoutGuide.length,
-                                               0,
-                                               self.bottomLayoutGuide.length,
-                                               0);
-  
-  self.tableView.contentInset = insets;
-  self.tableView.scrollIndicatorInsets = insets;
+  // This code exists only so that the insets are set properly if this view controller were somehow
+  // not loaded into a container. Given that it always is though, this will never be executed.
+  if(!self.parentViewController) {
+    UIEdgeInsets const insets = UIEdgeInsetsMake(self.topLayoutGuide.length,
+                                                 0,
+                                                 self.bottomLayoutGuide.length,
+                                                 0);
+    
+    self.tableView.contentInset = insets;
+    self.tableView.scrollIndicatorInsets = insets;
+  }
   
   [self.reloadView centerInSuperview];
   [self.reloadView integralizeFrame];
+}
+
+// Implementing this allows the insets to be set properly when loaded into a
+// NYPLCatalogViewController view controller container.
+- (void)didMoveToParentViewController:(UIViewController *)parent
+{
+  [super didMoveToParentViewController:parent];
+  
+  if(parent) {
+    CGFloat top = parent.topLayoutGuide.length;
+    CGFloat bottom = parent.bottomLayoutGuide.length;
+    
+    UIEdgeInsets insets = UIEdgeInsetsMake(top, 0, bottom, 0);
+    self.tableView.contentInset = insets;
+    self.tableView.scrollIndicatorInsets = insets;
+    [self.tableView setContentOffset:CGPointMake(0, -top) animated:NO];
+  }
 }
 
 - (void)didReceiveMemoryWarning
