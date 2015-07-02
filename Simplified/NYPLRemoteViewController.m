@@ -30,9 +30,6 @@
 
 - (void)load
 {
-  // TODO
-  NSLog(@"XXX: Loading!");
-  
   [self.presentedViewController removeFromParentViewController];
   
   [self.connection cancel];
@@ -88,17 +85,11 @@
 - (void)connection:(__attribute__((unused)) NSURLConnection *)connection
     didReceiveData:(NSData *const)data
 {
-  // TODO
-  NSLog(@"XXX: Received data!");
-  
   [self.data appendData:data];
 }
 
 - (void)connectionDidFinishLoading:(__attribute__((unused)) NSURLConnection *)connection
-{
-  // TODO
-  NSLog(@"XXX: Done loading!");
-  
+{ 
   [self.activityIndicatorView stopAnimating];
   
   UIViewController *const viewController = self.handler(self.data);
