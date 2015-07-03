@@ -13,7 +13,7 @@
 @interface NYPLCatalogGroupedFeed ()
 
 @property (nonatomic) NSArray *lanes;
-@property (nonatomic) NSString *searchTemplate;
+@property (nonatomic) NSURL *openSearchURL;
 @property (nonatomic) NSString *title;
 
 @end
@@ -81,16 +81,13 @@
                       title:groupTitle]];
   }
   
-  // FIXME: |searchTemplate:| is passed nil because this method needs to return immediately and
-  // getting the template requires network access. What we should do instead is just store the
-  // URL of the open search document and let the view controller fetch it later.
   return [self initWithLanes:lanes
-              searchTemplate:nil
+               openSearchURL:openSearchURL
                        title:feed.title];
 }
 
 - (instancetype)initWithLanes:(NSArray *const)lanes
-               searchTemplate:(NSString *const)searchTemplate
+                openSearchURL:(NSURL *const)openSearchURL
                         title:(NSString *const)title
 {
   self = [super init];
@@ -107,7 +104,7 @@
   }
   
   self.lanes = lanes;
-  self.searchTemplate = searchTemplate;
+  self.openSearchURL = openSearchURL;
   self.title = title;
   
   return self;
