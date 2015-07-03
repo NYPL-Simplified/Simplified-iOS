@@ -7,7 +7,6 @@
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLIndeterminateProgressView.h"
-#import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLCatalogGroupedFeedViewController.h"
@@ -23,7 +22,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
 @property (nonatomic) NSMutableDictionary *cachedLaneCells;
 @property (nonatomic) NYPLCatalogGroupedFeed *feed;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
-@property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) NSURL *URL;
 
@@ -91,18 +89,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.tableView.allowsSelection = NO;
   [self.view addSubview:self.tableView];
   
-  // TODO
-  /*
-  __weak NYPLCatalogGroupedFeedViewController *weakSelf = self;
-  self.reloadView = [[NYPLReloadView alloc] init];
-  self.reloadView.handler = ^{
-    weakSelf.reloadView.hidden = YES;
-    [weakSelf downloadFeed];
-  };
-  self.reloadView.hidden = YES;
-  [self.view addSubview:self.reloadView];
-  */
-  
   [self downloadImages];
 }
 
@@ -122,9 +108,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
     self.tableView.contentInset = insets;
     self.tableView.scrollIndicatorInsets = insets;
   }
-  
-  [self.reloadView centerInSuperview];
-  [self.reloadView integralizeFrame];
 }
 
 // Implementing this allows the insets to be set properly when loaded into a
