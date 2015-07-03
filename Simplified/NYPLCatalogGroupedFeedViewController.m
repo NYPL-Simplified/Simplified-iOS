@@ -7,6 +7,9 @@
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLIndeterminateProgressView.h"
+#import "NYPLOpenSearchDescription.h"
+#import "NYPLSession.h"
+#import "NYPLXML.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLCatalogGroupedFeedViewController.h"
@@ -22,6 +25,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
 @property (nonatomic) NSMutableDictionary *cachedLaneCells;
 @property (nonatomic) NYPLCatalogGroupedFeed *feed;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
+@property (nonatomic) NSString *searchTemplate;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) NSURL *URL;
 
@@ -52,6 +56,10 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.bookIdentifiersToImages = [NSMutableDictionary dictionary];
   self.cachedLaneCells = [NSMutableDictionary dictionary];
   self.feed = feed;
+  
+  if(feed.openSearchURL) {
+    [self fetchOpenSearchDescription];
+  }
   
   return self;
 }
@@ -280,14 +288,36 @@ viewForHeaderInSection:(NSInteger const)section
 
 - (void)didSelectSearch
 {
-  // TODO
-  /*
   [self.navigationController
    pushViewController:[[NYPLCatalogSearchViewController alloc]
-                       initWithCategoryTitle:NSLocalizedString(@"Catalog", nil)
-                       searchTemplate:self.feed.searchTemplate]
+                       initWithCategoryTitle:self.feed.title
+                       searchTemplate:self.searchTemplate]
    animated:YES];
-  */
+}
+
+- (void)fetchOpenSearchDescription
+{
+  [[NYPLSession sharedSession]
+   withURL:self.feed.openSearchURL
+   completionHandler:^(NSData *const data) {
+     if(!data) {
+       NYPLLOG(@"Failed to obtain OpenSearch description data.");
+       return;
+     }
+     NYPLXML *const XML = [NYPLXML XMLWithData:data];
+     if(!XML) {
+       NYPLLOG(@"Failed to parse OpenSearch description data as XML.");
+       return;
+     }
+     NYPLOpenSearchDescription *const description = [[NYPLOpenSearchDescription alloc]
+                                                     initWithXML:XML];
+     if(!description) {
+       NYPLLOG(@"Failed to interpret XML as an OpenSearch description.");
+       return;
+     }
+     self.searchTemplate = description.OPDSURLTemplate;
+     self.navigationItem.rightBarButtonItem.enabled = YES;
+   }];
 }
 
 @end
