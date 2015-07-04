@@ -24,6 +24,10 @@
   self = [super init];
   if(!self) return nil;
   
+  if(!handler) {
+    @throw NSInvalidArgumentException;
+  }
+  
   self.handler = handler;
   self.URL = URL;
   
