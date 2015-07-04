@@ -116,46 +116,6 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   return self;
 }
 
-- (instancetype)initWithBooks:(NSArray *const)books
-                  facetGroups:(NSArray *const)facetGroups
-                      nextURL:(NSURL *const)nextURL
-               searchTemplate:(NSString *const)searchTemplate
-                        title:(NSString *const)title
-{
-  self = [super init];
-  if(!self) return nil;
-  
-  if(!(books && facetGroups && title)) {
-    @throw NSInvalidArgumentException;
-  }
-  
-  for(id const object in books) {
-    if(![object isKindOfClass:[NYPLBook class]]) {
-      @throw NSInvalidArgumentException;
-    }
-  }
-  
-  for(id const object in facetGroups) {
-    if(![object isKindOfClass:[NYPLCatalogFacetGroup class]]) {
-      @throw NSInvalidArgumentException;
-    }
-  }
-  
-  self.books = books;
-  self.facetGroups = facetGroups;
-  self.nextURL = nextURL;
-  self.searchTemplate = searchTemplate;
-  self.title = title;
-  
-  [[NSNotificationCenter defaultCenter]
-   addObserver:self
-   selector:@selector(refreshBooks)
-   name:NYPLBookRegistryDidChangeNotification
-   object:nil];
-  
-  return self;
-}
-
 - (void)prepareForBookIndex:(NSUInteger)bookIndex
 {
   if(bookIndex >= self.books.count) {
