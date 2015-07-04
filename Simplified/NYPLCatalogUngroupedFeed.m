@@ -52,6 +52,9 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
 
 - (instancetype)initWithOPDSFeed:(NYPLOPDSFeed *const)feed
 {
+  self = [super init];
+  if(!self) return nil;
+  
   if(feed.type != NYPLOPDSFeedTypeAcquisitionUngrouped) {
     @throw NSInvalidArgumentException;
   }
