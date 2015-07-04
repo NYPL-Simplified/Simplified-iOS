@@ -25,7 +25,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
 @property (nonatomic) NSMutableDictionary *cachedLaneCells;
 @property (nonatomic) NYPLCatalogGroupedFeed *feed;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
-@property (nonatomic) NSString *searchTemplate;
+@property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) NSURL *URL;
 
@@ -275,8 +275,7 @@ viewForHeaderInSection:(NSInteger const)section
 {
   [self.navigationController
    pushViewController:[[NYPLCatalogSearchViewController alloc]
-                       initWithCategoryTitle:self.feed.title
-                       searchTemplate:self.searchTemplate]
+                       initWithOpenSearchDescription:self.searchDescription]
    animated:YES];
 }
 
@@ -294,13 +293,11 @@ viewForHeaderInSection:(NSInteger const)section
        NYPLLOG(@"Failed to parse OpenSearch description data as XML.");
        return;
      }
-     NYPLOpenSearchDescription *const description = [[NYPLOpenSearchDescription alloc]
-                                                     initWithXML:XML];
-     if(!description) {
+     self.searchDescription = [[NYPLOpenSearchDescription alloc] initWithXML:XML];
+     if(!self.searchDescription) {
        NYPLLOG(@"Failed to interpret XML as an OpenSearch description.");
        return;
      }
-     self.searchTemplate = description.OPDSURLTemplate;
      self.navigationItem.rightBarButtonItem.enabled = YES;
    }];
 }
