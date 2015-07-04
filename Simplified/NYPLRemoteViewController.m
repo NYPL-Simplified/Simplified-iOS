@@ -42,7 +42,6 @@
     [childViewController.view removeFromSuperview];
     [childViewController removeFromParentViewController];
     [childViewController didMoveToParentViewController:nil];
-    NSAssert(self.childViewControllers.count == 0, @"No child view controllers remain.");
   }
   
   [self.connection cancel];
