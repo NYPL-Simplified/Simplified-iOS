@@ -15,7 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithURL:(NSURL *const)URL
 {
   self = [super initWithURL:URL
-          completionHandler:^UIViewController *__nonnull (NSData *const data) {
+          completionHandler:^UIViewController *__nonnull
+          (NYPLRemoteViewController *const remoteViewController,
+           NSData *const data) {
             NYPLXML *const XML = [NYPLXML XMLWithData:data];
             NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:XML];
             switch(feed.type) {
@@ -27,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
                 return [[NYPLCatalogUngroupedFeedViewController alloc]
                         initWithUngroupedFeed:[[NYPLCatalogUngroupedFeed alloc]
                                                initWithOPDSFeed:feed]
-                        remoteViewController:self];
+                        remoteViewController:remoteViewController];
               case NYPLOPDSFeedTypeInvalid:
                 NYPLLOG(@"Cannot initialize due to invalid feed.");
                 return nil;

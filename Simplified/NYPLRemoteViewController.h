@@ -24,7 +24,8 @@
 // as the handler is only called if the data was downloaded successfully. The handler may return nil
 // to indicate that there is something wrong with the data.
 - (instancetype)initWithURL:(NSURL *)URL
-          completionHandler:(UIViewController *(^)(NSData *data))handler;
+          completionHandler:(UIViewController *(^)(NYPLRemoteViewController *remoteViewController,
+                                                   NSData *data))handler;
 
 // This may be called more than once to reload the data accessible at the previously provided URL.
 - (void)load;

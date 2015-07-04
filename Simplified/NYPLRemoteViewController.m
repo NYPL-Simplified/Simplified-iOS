@@ -8,7 +8,8 @@
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NSURLConnection *connection;
 @property (nonatomic) NSMutableData *data;
-@property (nonatomic, strong) UIViewController *(^handler)(NSData *data);
+@property (nonatomic, strong)
+  UIViewController *(^handler)(NYPLRemoteViewController *remoteViewController, NSData *data);
 @property (nonatomic) NYPLReloadView *reloadView;
 
 @end
@@ -16,7 +17,9 @@
 @implementation NYPLRemoteViewController
 
 - (instancetype)initWithURL:(NSURL *const)URL
-          completionHandler:(UIViewController *(^ const)(NSData *data))handler
+          completionHandler:(UIViewController *(^ const)
+                             (NYPLRemoteViewController *remoteViewController,
+                              NSData *data))handler
 {
   self = [super init];
   if(!self) return nil;
@@ -100,7 +103,7 @@
 {
   [self.activityIndicatorView stopAnimating];
   
-  UIViewController *const viewController = self.handler(self.data);
+  UIViewController *const viewController = self.handler(self, self.data);
   
   if(viewController) {
     [viewController willMoveToParentViewController:self];
