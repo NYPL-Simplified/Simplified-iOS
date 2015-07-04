@@ -70,8 +70,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
 {
   [super viewDidLoad];
   
-  self.title = self.feed.title;
-  
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
