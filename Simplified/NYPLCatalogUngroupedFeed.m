@@ -35,9 +35,15 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   [NYPLOPDSFeed
    withURL:URL
    completionHandler:^(NYPLOPDSFeed *const ungroupedFeed) {
+     if(!ungroupedFeed) {
+       handler(nil);
+       return;
+     }
+     
      if(ungroupedFeed.type != NYPLOPDSFeedTypeAcquisitionUngrouped) {
        NYPLLOG(@"Ignoring feed of invalid type.");
        handler(nil);
+       return;
      }
      
      handler([[self alloc] initWithOPDSFeed:ungroupedFeed]);
