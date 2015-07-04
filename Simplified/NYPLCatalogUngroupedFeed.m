@@ -188,11 +188,4 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   }];
 }
 
-#pragma mark NSObject
-
-- (void)dealloc
-{
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 @end
