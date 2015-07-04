@@ -20,9 +20,9 @@
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
-// Neither |URL| nor |handler| may be nil. |handler| is strongly retained. |data| will never be nil
-// as the handler is only called if the data was downloaded successfully. The handler may return nil
-// to indicate that there is something wrong with the data.
+// |handler| may not be nil. |handler| is strongly retained. |data| will never be nil as the handler
+// is only called if the data was downloaded successfully. The handler may return nil to indicate
+// that there is something wrong with the data.
 - (instancetype)initWithURL:(NSURL *)URL
           completionHandler:(UIViewController *(^)(NYPLRemoteViewController *remoteViewController,
                                                    NSData *data))handler;
