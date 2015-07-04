@@ -202,13 +202,13 @@ activeFacetIndexForFacetGroupAtIndex:(NSUInteger)index
 #pragma mark NYPLFacetViewDelegate
 
 - (void)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-didSelectFacetAtIndexPath:(__attribute__((unused)) NSIndexPath *const)indexPath
+didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 {
-  // NYPLCatalogFacetGroup *const group = self.feed.facetGroups[[indexPath indexAtPosition:0]];
+  NYPLCatalogFacetGroup *const group = self.feed.facetGroups[[indexPath indexAtPosition:0]];
   
-  // NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
+  NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
   
-  // TODO: Set the URL and reload the feed here!
+  self.remoteViewController.URL = facet.href;
   
   [self.remoteViewController load];
 }

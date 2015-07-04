@@ -10,7 +10,6 @@
 @property (nonatomic) NSMutableData *data;
 @property (nonatomic, strong) UIViewController *(^handler)(NSData *data);
 @property (nonatomic) NYPLReloadView *reloadView;
-@property (nonatomic) NSURL *URL;
 
 @end
 
