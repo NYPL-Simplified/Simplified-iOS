@@ -9,6 +9,7 @@
 #import "NYPLFacetView.h"
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLReloadView.h"
+#import "NYPLRemoteViewController.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLCatalogUngroupedFeedViewController.h"
@@ -19,19 +20,22 @@
 
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) NYPLCatalogUngroupedFeed *feed;
+@property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 
 @end
 
 @implementation NYPLCatalogUngroupedFeedViewController
 
-- (instancetype)initWithUngroupedFeed:(NYPLCatalogUngroupedFeed *)feed
+- (instancetype)initWithUngroupedFeed:(NYPLCatalogUngroupedFeed *const)feed
+                 remoteViewController:(NYPLRemoteViewController *const)remoteViewController
 {
   self = [super init];
   if(!self) return nil;
   
   self.feed = feed;
   self.feed.delegate = self;
+  self.remoteViewController = remoteViewController;
   
   return self;
 }
@@ -205,6 +209,8 @@ didSelectFacetAtIndexPath:(__attribute__((unused)) NSIndexPath *const)indexPath
   // NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
   
   // TODO: Set the URL and reload the feed here!
+  
+  [self.remoteViewController load];
 }
 
 #pragma mark -

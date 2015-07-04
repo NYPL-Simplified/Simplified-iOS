@@ -26,7 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
               case NYPLOPDSFeedTypeAcquisitionUngrouped:
                 return [[NYPLCatalogUngroupedFeedViewController alloc]
                         initWithUngroupedFeed:[[NYPLCatalogUngroupedFeed alloc]
-                                               initWithOPDSFeed:feed]];
+                                               initWithOPDSFeed:feed]
+                        remoteViewController:self];
               case NYPLOPDSFeedTypeInvalid:
                 NYPLLOG(@"Cannot initialize due to invalid feed.");
                 return nil;
