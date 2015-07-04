@@ -35,19 +35,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
 
 #pragma mark NSObject
 
-- (instancetype)initWithURL:(NSURL *const)URL title:(NSString *const)title
-{
-  self = [super init];
-  if(!self) return nil;
-  
-  self.bookIdentifiersToImages = [NSMutableDictionary dictionary];
-  self.cachedLaneCells = [NSMutableDictionary dictionary];
-  self.title = title;
-  self.URL = URL;
-  
-  return self;
-}
-
 - (instancetype)initWithGroupedFeed:(NYPLCatalogGroupedFeed *)feed
 {
   self = [super init];
