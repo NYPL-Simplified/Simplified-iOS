@@ -74,6 +74,23 @@
   self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
 }
 
+// Implementing this allows the insets to be set properly when loaded into a
+// NYPLCatalogViewController view controller container.
+- (void)didMoveToParentViewController:(UIViewController *)parent
+{
+  [super didMoveToParentViewController:parent];
+  
+  if(parent) {
+    CGFloat top = parent.topLayoutGuide.length;
+    CGFloat bottom = parent.bottomLayoutGuide.length;
+    
+    UIEdgeInsets insets = UIEdgeInsetsMake(CGRectGetMaxY(self.facetBarView.frame), 0, bottom, 0);
+    self.collectionView.contentInset = insets;
+    self.collectionView.scrollIndicatorInsets = insets;
+    [self.collectionView setContentOffset:CGPointMake(0, -top) animated:NO];
+  }
+}
+
 #pragma mark UICollectionViewDataSource
 
 - (NSInteger)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
