@@ -38,7 +38,6 @@
 {
   if(self.childViewControllers.count > 0) {
     UIViewController *const childViewController = self.childViewControllers[0];
-    [childViewController willMoveToParentViewController:nil];
     [childViewController.view removeFromSuperview];
     [childViewController removeFromParentViewController];
     [childViewController didMoveToParentViewController:nil];
@@ -109,7 +108,6 @@
   UIViewController *const viewController = self.handler(self, self.data);
   
   if(viewController) {
-    [viewController willMoveToParentViewController:self];
     [self addChildViewController:viewController];
     viewController.view.frame = self.view.bounds;
     [self.view addSubview:viewController.view];
