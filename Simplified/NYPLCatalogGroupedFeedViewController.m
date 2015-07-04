@@ -89,18 +89,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
 {
   [self.activityIndicatorView centerInSuperview];
   [self.activityIndicatorView integralizeFrame];
-  
-  // This code exists only so that the insets are set properly if this view controller were somehow
-  // not loaded into a container. Given that it always is though, this will never be executed.
-  if(!self.parentViewController) {
-    UIEdgeInsets const insets = UIEdgeInsetsMake(self.topLayoutGuide.length,
-                                                 0,
-                                                 self.bottomLayoutGuide.length,
-                                                 0);
-    
-    self.tableView.contentInset = insets;
-    self.tableView.scrollIndicatorInsets = insets;
-  }
 }
 
 // Implementing this allows the insets to be set properly when loaded into a
