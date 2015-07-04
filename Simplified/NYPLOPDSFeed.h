@@ -2,7 +2,6 @@
 
 typedef NS_ENUM(NSInteger, NYPLOPDSFeedType) {
   NYPLOPDSFeedTypeInvalid,
-  NYPLOPDSFeedTypeEmpty,
   NYPLOPDSFeedTypeAcquisitionGrouped,
   NYPLOPDSFeedTypeAcquisitionUngrouped,
   NYPLOPDSFeedTypeNavigation

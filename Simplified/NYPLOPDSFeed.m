@@ -154,7 +154,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   self.typeIsCached = YES;
   
   if(self.entries.count == 0) {
-    return (_type = NYPLOPDSFeedTypeEmpty);
+    return (_type = NYPLOPDSFeedTypeAcquisitionUngrouped);
   }
   
   NYPLOPDSFeedType const provisionalType = TypeImpliedByEntry(self.entries.firstObject);
