@@ -13,7 +13,7 @@
 - (instancetype)initWithURL:(NSURL *const)URL
 {
   self = [super initWithURL:URL
-          completionHandler:^UIViewController *__nonnull
+          completionHandler:^UIViewController *
           (NYPLRemoteViewController *const remoteViewController,
            NSData *const data) {
             NYPLXML *const XML = [NYPLXML XMLWithData:data];
