@@ -60,34 +60,25 @@
   [self.facetBarView.facetView reloadData];
 }
 
-- (void)viewWillLayoutSubviews
-{
-  self.facetBarView.frame = CGRectMake(0,
-                                       CGRectGetMaxY(self.navigationController.navigationBar.frame),
-                                       CGRectGetWidth(self.view.frame),
-                                       CGRectGetHeight(self.facetBarView.frame));
-  
-  self.collectionView.contentInset = UIEdgeInsetsMake(CGRectGetMaxY(self.facetBarView.frame),
-                                                      self.collectionView.contentInset.left,
-                                                      self.collectionView.contentInset.bottom,
-                                                      self.collectionView.contentInset.right);
-  self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
-}
-
-// Implementing this allows the insets to be set properly when loaded into a
-// NYPLCatalogViewController view controller container.
 - (void)didMoveToParentViewController:(UIViewController *)parent
 {
   [super didMoveToParentViewController:parent];
   
   if(parent) {
-    CGFloat top = parent.topLayoutGuide.length;
-    CGFloat bottom = parent.bottomLayoutGuide.length;
+    self.facetBarView.frame =
+      CGRectMake(0,
+                 CGRectGetMaxY(self.navigationController.navigationBar.frame),
+                 CGRectGetWidth(self.view.frame),
+                 CGRectGetHeight(self.facetBarView.frame));
     
-    UIEdgeInsets insets = UIEdgeInsetsMake(CGRectGetMaxY(self.facetBarView.frame), 0, bottom, 0);
+    UIEdgeInsets const insets = UIEdgeInsetsMake(CGRectGetMaxY(self.facetBarView.frame),
+                                                 0,
+                                                 parent.bottomLayoutGuide.length,
+                                                 0);
     self.collectionView.contentInset = insets;
     self.collectionView.scrollIndicatorInsets = insets;
-    [self.collectionView setContentOffset:CGPointMake(0, -top) animated:NO];
+    [self.collectionView setContentOffset:CGPointMake(0, -CGRectGetMaxY(self.facetBarView.frame))
+                                 animated:NO];
   }
 }
 
