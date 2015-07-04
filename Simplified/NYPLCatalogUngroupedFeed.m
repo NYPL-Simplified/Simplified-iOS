@@ -16,8 +16,6 @@
 @property (nonatomic) NSUInteger greatestPreparationIndex;
 @property (nonatomic) NSURL *nextURL;
 @property (nonatomic) NSURL *openSearchURL;
-@property (nonatomic) NSString *searchTemplate;
-@property (nonatomic) NSString *title;
 
 @end
 
@@ -64,10 +62,11 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
     [books addObject:book];
   }
   
+  self.books = books;
+  
   NSMutableArray *const facetGroupNames = [NSMutableArray array];
   NSMutableDictionary *const facetGroupNamesToMutableFacetArrays =
     [NSMutableDictionary dictionary];
-  NSURL *nextURL = nil;
   
   for(NYPLOPDSLink *const link in feed.links) {
     if([link.rel isEqualToString:NYPLOPDSRelationFacet]) {
@@ -95,7 +94,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationPaginationNext]) {
-      nextURL = link.href;
+      self.nextURL = link.href;
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationSearch] &&
@@ -112,6 +111,8 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
                             initWithFacets:facetGroupNamesToMutableFacetArrays[facetGroupName]
                             name:facetGroupName]];
   }
+  
+  self.facetGroups = facetGroups;
 
   return self;
 }
