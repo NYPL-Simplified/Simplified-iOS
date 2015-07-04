@@ -111,8 +111,6 @@
     }
     [viewController didMoveToParentViewController:self];
   } else {
-    // TODO
-    NSLog(@"XXX: Failed to get view controller!");
     self.reloadView.hidden = NO;
   }
   
@@ -125,9 +123,6 @@
 - (void)connection:(__attribute__((unused)) NSURLConnection *)connection
   didFailWithError:(__attribute__((unused)) NSError *)error
 {
-  // TODO
-  NSLog(@"XXX: An error occurred!");
-  
   [self.activityIndicatorView stopAnimating];
   
   self.reloadView.hidden = NO;
