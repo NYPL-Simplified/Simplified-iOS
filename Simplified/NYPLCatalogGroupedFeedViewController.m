@@ -26,7 +26,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic) NSURL *URL; // FIXME: Remove this!
 
 @end
 
