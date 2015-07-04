@@ -91,8 +91,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
   [self.activityIndicatorView integralizeFrame];
 }
 
-// Implementing this allows the insets to be set properly when loaded into a
-// NYPLCatalogViewController view controller container.
 - (void)didMoveToParentViewController:(UIViewController *)parent
 {
   [super didMoveToParentViewController:parent];
