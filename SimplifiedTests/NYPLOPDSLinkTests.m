@@ -47,7 +47,7 @@
 
 - (void)testCount
 {
-  XCTAssertEqual(self.links.count, 5U);
+  XCTAssertEqual(self.links.count, 6U);
 }
 
 - (void)testLink0

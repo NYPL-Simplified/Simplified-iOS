@@ -1,3 +1,5 @@
+@class NYPLOpenSearchDescription;
+
 #import "NYPLBookCellCollectionViewController.h"
 
 @interface NYPLCatalogSearchViewController : NYPLBookCellCollectionViewController
@@ -8,7 +10,6 @@
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle NS_UNAVAILABLE;
 
 // designated initializer
-- (instancetype)initWithCategoryTitle:(NSString *)categoryTitle
-                       searchTemplate:(NSString *)searchTemplate;
+- (instancetype)initWithOpenSearchDescription:(NYPLOpenSearchDescription *)searchDescription;
 
 @end

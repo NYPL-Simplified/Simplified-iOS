@@ -3,7 +3,7 @@
 @interface NYPLCatalogLane : NSObject
 
 @property (nonatomic, readonly) NSArray *books;
-@property (nonatomic, readonly) NYPLCatalogSubsectionLink *subsectionLink;
+@property (nonatomic, readonly) NSURL *subsectionURL;
 @property (nonatomic, readonly) NSString *title;
 
 + (id)new NS_UNAVAILABLE;
@@ -11,7 +11,7 @@
 
 // designated initializer
 - (instancetype)initWithBooks:(NSArray *)books
-               subsectionLink:(NYPLCatalogSubsectionLink *)subsectionLink
+                subsectionURL:(NSURL *)subsectionURL
                         title:(NSString *)title;
 
 @end

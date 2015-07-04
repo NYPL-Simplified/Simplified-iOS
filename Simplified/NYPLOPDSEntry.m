@@ -1,5 +1,7 @@
 #import "NSDate+NYPLDateAdditions.h"
+#import "NYPLOPDSEntryGroupAttributes.h"
 #import "NYPLOPDSLink.h"
+#import "NYPLOPDSRelation.h"
 #import "NYPLXML.h"
 
 #import "NYPLOPDSEntry.h"
@@ -109,6 +111,24 @@
   }
   
   return self;
+}
+
+- (NYPLOPDSEntryGroupAttributes *)groupAttributes
+{
+  for(NYPLOPDSLink *const link in self.links) {
+    if([link.rel isEqualToString:NYPLOPDSRelationGroup]) {
+      NSString *const title = link.attributes[@"title"];
+      if(!title) {
+        NYPLLOG(@"Ignoring group link without required 'title' attribute.");
+        continue;
+      }
+      return [[NYPLOPDSEntryGroupAttributes alloc]
+              initWithHref:[NSURL URLWithString:link.attributes[@"href"]]
+              title:title];
+    }
+  }
+  
+  return nil;
 }
 
 @end
