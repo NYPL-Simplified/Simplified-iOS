@@ -113,6 +113,12 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   }
   
   self.facetGroups = facetGroups;
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(refreshBooks)
+   name:NYPLBookRegistryDidChangeNotification
+   object:nil];
 
   return self;
 }
@@ -187,6 +193,13 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
     
     [self.delegate catalogUngroupedFeed:self didUpdateBooks:self.books];
   }];
+}
+
+#pragma mark NSObject
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
