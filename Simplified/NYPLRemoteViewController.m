@@ -30,7 +30,13 @@
 
 - (void)load
 {
-  [self.presentedViewController removeFromParentViewController];
+  if(self.childViewControllers.count > 0) {
+    UIViewController *const childViewController = self.childViewControllers[0];
+    [childViewController.view removeFromSuperview];
+    [childViewController removeFromParentViewController];
+    [childViewController didMoveToParentViewController:nil];
+    NSAssert(self.childViewControllers.count == 0, @"No child view controllers remain.");
+  }
   
   [self.connection cancel];
   

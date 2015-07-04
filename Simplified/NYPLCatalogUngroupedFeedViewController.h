@@ -1,4 +1,5 @@
 @class NYPLCatalogUngroupedFeed;
+@class NYPLRemoteViewController;
 
 #import "NYPLBookCellCollectionViewController.h"
 
@@ -9,6 +10,8 @@
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
-- (instancetype)initWithUngroupedFeed:(NYPLCatalogUngroupedFeed *)feed;
+// |remoteViewController| is weakly referenced.
+- (instancetype)initWithUngroupedFeed:(NYPLCatalogUngroupedFeed *)feed
+                 remoteViewController:(NYPLRemoteViewController *)remoteViewController;
 
 @end
