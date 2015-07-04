@@ -30,13 +30,6 @@
   
   self.feed = feed;
   self.feed.delegate = self;
-  
-  [self.collectionView reloadData];
-  
-  // Scroll to top incase we're reloading the category after selecting a facet.
-  [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
-  
-  [self.facetBarView.facetView reloadData];
 
   return self;
 }
@@ -62,6 +55,9 @@
                                             action:@selector(didSelectSearch)];
   
   self.navigationItem.rightBarButtonItem.enabled = !!self.feed.openSearchURL;
+  
+  [self.collectionView reloadData];
+  [self.facetBarView.facetView reloadData];
 }
 
 - (void)viewWillLayoutSubviews
