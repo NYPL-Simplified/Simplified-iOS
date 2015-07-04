@@ -43,10 +43,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.cachedLaneCells = [NSMutableDictionary dictionary];
   self.feed = feed;
   
-  if(feed.openSearchURL) {
-    [self fetchOpenSearchDescription];
-  }
-  
   return self;
 }
 
@@ -75,6 +71,10 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   self.tableView.allowsSelection = NO;
   [self.view addSubview:self.tableView];
+  
+  if(self.feed.openSearchURL) {
+    [self fetchOpenSearchDescription];
+  }
   
   [self downloadImages];
 }
