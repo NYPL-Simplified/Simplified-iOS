@@ -263,11 +263,12 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)didSelectSearch
 {
+  // TODO
+  /*
   [self.navigationController
-   pushViewController:[[NYPLCatalogSearchViewController alloc]
-                       initWithCategoryTitle:self.title
-                       searchTemplate:self.category.searchTemplate]
+   pushViewController:[[NYPLCatalogSearchViewController alloc] ...]
    animated:YES];
+  */
 }
 
 @end

@@ -5,6 +5,7 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogUngroupedFeed.h"
+#import "NYPLOpenSearchDescription.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 
@@ -16,24 +17,21 @@
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NYPLCatalogUngroupedFeed *category;
-@property (nonatomic) NSString *categoryTitle;
 @property (nonatomic) UILabel *noResultsLabel;
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) UISearchBar *searchBar;
-@property (nonatomic) NSString *searchTemplate;
+@property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 
 @end
 
 @implementation NYPLCatalogSearchViewController
 
-- (instancetype)initWithCategoryTitle:(NSString *const)categoryTitle
-                       searchTemplate:(NSString *const)searchTemplate
+- (instancetype)initWithOpenSearchDescription:(NYPLOpenSearchDescription *)searchDescription
 {
   self = [super init];
   if(!self) return nil;
 
-  self.categoryTitle = categoryTitle;
-  self.searchTemplate = searchTemplate;
+  self.searchDescription = searchDescription;
   
   return self;
 }
@@ -54,9 +52,7 @@
   
   self.searchBar = [[UISearchBar alloc] init];
   self.searchBar.delegate = self;
-  self.searchBar.placeholder =
-    [NSString stringWithFormat:NSLocalizedString(@"SearchPlaceholderFormat", nil),
-     self.categoryTitle];
+  self.searchBar.placeholder = self.searchDescription.humanReadableDescription;
   [self.searchBar sizeToFit];
   [self.searchBar becomeFirstResponder];
   
@@ -171,7 +167,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   
   [NYPLCatalogUngroupedFeed
    withURL:[NSURL URLWithString:
-            [self.searchTemplate
+            [self.searchDescription.OPDSURLTemplate
              stringByReplacingOccurrencesOfString:@"{searchTerms}"
              withString:[self.searchBar.text stringByURLEncoding]]]
    handler:^(NYPLCatalogUngroupedFeed *const category) {
