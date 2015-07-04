@@ -1,3 +1,5 @@
+@class NYPLCatalogUngroupedFeed;
+
 #import "NYPLBookCellCollectionViewController.h"
 
 @interface NYPLCatalogUngroupedFeedViewController : NYPLBookCellCollectionViewController
@@ -7,7 +9,6 @@
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
-// designated initializer
-- (instancetype)initWithURL:(NSURL *const)URL title:(NSString *const)title;
+- (instancetype)initWithUngroupedFeed:(NYPLCatalogUngroupedFeed *)feed;
 
 @end

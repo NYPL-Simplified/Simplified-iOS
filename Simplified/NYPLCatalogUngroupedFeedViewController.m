@@ -16,26 +16,28 @@
   <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate,
    UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
-@property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
-@property (nonatomic) NYPLCatalogUngroupedFeed *category;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
-@property (nonatomic) NYPLReloadView *reloadView;
-@property (nonatomic) NSURL *URL;
+@property (nonatomic) NYPLCatalogUngroupedFeed *feed;
 
 @end
 
 @implementation NYPLCatalogUngroupedFeedViewController
 
-- (instancetype)initWithURL:(NSURL *const)URL
-                      title:(NSString *const)title
+- (instancetype)initWithUngroupedFeed:(NYPLCatalogUngroupedFeed *)feed
 {
   self = [super init];
   if(!self) return nil;
   
-  self.URL = URL;
+  self.feed = feed;
+  self.feed.delegate = self;
   
-  self.title = title;
+  [self.collectionView reloadData];
   
+  // Scroll to top incase we're reloading the category after selecting a facet.
+  [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+  
+  [self.facetBarView.facetView reloadData];
+
   return self;
 }
 
@@ -59,23 +61,7 @@
                                             target:self
                                             action:@selector(didSelectSearch)];
   
-  self.navigationItem.rightBarButtonItem.enabled = NO;
-  
-  self.activityIndicatorView = [[UIActivityIndicatorView alloc]
-                                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  self.activityIndicatorView.hidden = YES;
-  [self.view addSubview:self.activityIndicatorView];
-  
-  __weak NYPLCatalogUngroupedFeedViewController *weakSelf = self;
-  self.reloadView = [[NYPLReloadView alloc] init];
-  self.reloadView.handler = ^{
-    weakSelf.reloadView.hidden = YES;
-    [weakSelf downloadFeed];
-  };
-  self.reloadView.hidden = YES;
-  [self.view addSubview:self.reloadView];
-  
-  [self downloadFeed];
+  self.navigationItem.rightBarButtonItem.enabled = !!self.feed.openSearchURL;
 }
 
 - (void)viewWillLayoutSubviews
@@ -90,12 +76,6 @@
                                                       self.collectionView.contentInset.bottom,
                                                       self.collectionView.contentInset.right);
   self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
-  
-  self.activityIndicatorView.center = self.view.center;
-  [self.activityIndicatorView integralizeFrame];
-  
-  [self.reloadView centerInSuperview];
-  [self.reloadView integralizeFrame];
 }
 
 #pragma mark UICollectionViewDataSource
@@ -103,15 +83,15 @@
 - (NSInteger)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
      numberOfItemsInSection:(__attribute__((unused)) NSInteger)section
 {
-  return self.category.books.count;
+  return self.feed.books.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-  [self.category prepareForBookIndex:indexPath.row];
+  [self.feed prepareForBookIndex:indexPath.row];
   
-  NYPLBook *const book = self.category.books[indexPath.row];
+  NYPLBook *const book = self.feed.books[indexPath.row];
   
   return NYPLBookCellDequeue(collectionView, indexPath, book);
 }
@@ -121,7 +101,7 @@
 - (void)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
-  NYPLBook *const book = self.category.books[indexPath.row];
+  NYPLBook *const book = self.feed.books[indexPath.row];
   
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
@@ -154,25 +134,25 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSUInteger)numberOfFacetGroupsInFacetView:(__attribute__((unused)) NYPLFacetView *)facetView
 {
-  return self.category.facetGroups.count;
+  return self.feed.facetGroups.count;
 }
 
 - (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 numberOfFacetsInFacetGroupAtIndex:(NSUInteger const)index
 {
-  return ((NYPLCatalogFacetGroup *) self.category.facetGroups[index]).facets.count;
+  return ((NYPLCatalogFacetGroup *) self.feed.facetGroups[index]).facets.count;
 }
 
 - (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 nameForFacetGroupAtIndex:(NSUInteger const)index
 {
-  return ((NYPLCatalogFacetGroup *) self.category.facetGroups[index]).name;
+  return ((NYPLCatalogFacetGroup *) self.feed.facetGroups[index]).name;
 }
 
 - (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 nameForFacetAtIndexPath:(NSIndexPath *const)indexPath
 {
-  NYPLCatalogFacetGroup *const group = self.category.facetGroups[[indexPath indexAtPosition:0]];
+  NYPLCatalogFacetGroup *const group = self.feed.facetGroups[[indexPath indexAtPosition:0]];
   
   NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
   
@@ -182,7 +162,7 @@ nameForFacetAtIndexPath:(NSIndexPath *const)indexPath
 - (BOOL)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 isActiveFacetForFacetGroupAtIndex:(NSUInteger const)index
 {
-  NYPLCatalogFacetGroup *const group = self.category.facetGroups[index];
+  NYPLCatalogFacetGroup *const group = self.feed.facetGroups[index];
   
   for(NYPLCatalogFacet *const facet in group.facets) {
     if(facet.active) return YES;
@@ -194,7 +174,7 @@ isActiveFacetForFacetGroupAtIndex:(NSUInteger const)index
 - (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 activeFacetIndexForFacetGroupAtIndex:(NSUInteger)index
 {
-  NYPLCatalogFacetGroup *const group = self.category.facetGroups[index];
+  NYPLCatalogFacetGroup *const group = self.feed.facetGroups[index];
   
   NSUInteger i = 0;
   
@@ -209,57 +189,16 @@ activeFacetIndexForFacetGroupAtIndex:(NSUInteger)index
 #pragma mark NYPLFacetViewDelegate
 
 - (void)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
+didSelectFacetAtIndexPath:(__attribute__((unused)) NSIndexPath *const)indexPath
 {
-  NYPLCatalogFacetGroup *const group = self.category.facetGroups[[indexPath indexAtPosition:0]];
+  // NYPLCatalogFacetGroup *const group = self.feed.facetGroups[[indexPath indexAtPosition:0]];
   
-  NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
+  // NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
   
-  self.URL = facet.href;
-  
-  [self downloadFeed];
+  // TODO: Set the URL and reload the feed here!
 }
 
 #pragma mark -
-
-- (void)downloadFeed
-{
-  self.activityIndicatorView.hidden = NO;
-  [self.activityIndicatorView startAnimating];
-  self.collectionView.hidden = YES;
-  self.facetBarView.hidden = YES;
-  
-  [NYPLCatalogUngroupedFeed
-   withURL:self.URL
-   handler:^(NYPLCatalogUngroupedFeed *const category) {
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       self.activityIndicatorView.hidden = YES;
-       [self.activityIndicatorView stopAnimating];
-       
-       if(!category) {
-         self.reloadView.hidden = NO;
-         return;
-       }
-       
-       self.collectionView.hidden = NO;
-       self.facetBarView.hidden = NO;
-       
-       self.category = category;
-       self.category.delegate = self;
-       
-       if(self.category.searchTemplate) {
-         self.navigationItem.rightBarButtonItem.enabled = YES;
-       }
-       
-       [self.collectionView reloadData];
-       
-       // Scroll to top incase we're reloading the category after selecting a facet.
-       [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
-       
-       [self.facetBarView.facetView reloadData];
-     }];
-   }];
-}
 
 - (void)didSelectSearch
 {

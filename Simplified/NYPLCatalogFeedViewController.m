@@ -1,5 +1,8 @@
 #import "NYPLCatalogGroupedFeed.h"
 #import "NYPLCatalogGroupedFeedViewController.h"
+#import "NYPLCatalogUngroupedFeed.h"
+#import "NYPLCatalogUngroupedFeedViewController.h"
+#import "NYPLConfiguration.h"
 #import "NYPLOPDS.h"
 #import "NYPLXML.h"
 
@@ -16,17 +19,14 @@ NS_ASSUME_NONNULL_BEGIN
             NYPLXML *const XML = [NYPLXML XMLWithData:data];
             NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:XML];
             switch(feed.type) {
-              case NYPLOPDSFeedTypeAcquisitionGrouped: {
+              case NYPLOPDSFeedTypeAcquisitionGrouped:
                 return [[NYPLCatalogGroupedFeedViewController alloc]
                         initWithGroupedFeed:[[NYPLCatalogGroupedFeed alloc]
                                              initWithOPDSFeed:feed]];
-              }
               case NYPLOPDSFeedTypeAcquisitionUngrouped:
-                NSLog(@"XXX: Unsupported ungrouped feed!");
-                return nil;
-              case NYPLOPDSFeedTypeEmpty:
-                NSLog(@"XXX: Unsupported empty feed!");
-                return nil;
+                return [[NYPLCatalogUngroupedFeedViewController alloc]
+                        initWithUngroupedFeed:[[NYPLCatalogUngroupedFeed alloc]
+                                               initWithOPDSFeed:feed]];
               case NYPLOPDSFeedTypeInvalid:
                 NYPLLOG(@"Cannot initialize due to invalid feed.");
                 return nil;
