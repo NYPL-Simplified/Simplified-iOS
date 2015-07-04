@@ -1,16 +1,12 @@
 #import "NYPLRemoteViewController.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface NYPLCatalogFeedViewController : NYPLRemoteViewController
 
 - (instancetype)initWithURL:(NSURL *)URL
-completionHandler:(UIViewController *__nullable (^)(NYPLRemoteViewController *,
-                                                    NSData *))handler NS_UNAVAILABLE;
+completionHandler:(UIViewController *(^)(NYPLRemoteViewController *remoteViewController,
+                                         NSData *data))handler NS_UNAVAILABLE;
 
 // FIXME: This should take a title as well.
 - (instancetype)initWithURL:(NSURL *)URL;
 
 @end
-
-NS_ASSUME_NONNULL_END
