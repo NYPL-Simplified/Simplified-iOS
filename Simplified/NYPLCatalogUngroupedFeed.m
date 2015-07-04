@@ -15,6 +15,7 @@
 @property (nonatomic) NSArray *facetGroups;
 @property (nonatomic) NSUInteger greatestPreparationIndex;
 @property (nonatomic) NSURL *nextURL;
+@property (nonatomic) NSURL *openSearchURL;
 @property (nonatomic) NSString *searchTemplate;
 @property (nonatomic) NSString *title;
 
@@ -134,6 +135,76 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
         handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
 {
   [self withURL:URL includingSearchTemplate:YES handler:handler];
+}
+
+- (instancetype)initWithOPDSFeed:(NYPLOPDSFeed *const)feed
+{
+  if(feed.type != NYPLOPDSFeedTypeAcquisitionUngrouped) {
+    @throw NSInvalidArgumentException;
+  }
+  
+  NSMutableArray *const books = [NSMutableArray arrayWithCapacity:feed.entries.count];
+  
+  for(NYPLOPDSEntry *const entry in feed.entries) {
+    NYPLBook *const book = [NYPLBook bookWithEntry:entry];
+    if(!book) {
+      NYPLLOG(@"Failed to create book from entry.");
+      continue;
+    }
+    [[NYPLBookRegistry sharedRegistry] updateBook:book];
+    [books addObject:book];
+  }
+  
+  NSMutableArray *const facetGroupNames = [NSMutableArray array];
+  NSMutableDictionary *const facetGroupNamesToMutableFacetArrays =
+    [NSMutableDictionary dictionary];
+  NSURL *nextURL = nil;
+  
+  for(NYPLOPDSLink *const link in feed.links) {
+    if([link.rel isEqualToString:NYPLOPDSRelationFacet]) {
+      NSString *groupName = nil;
+      for(NSString *const key in link.attributes) {
+        if(NYPLOPDSAttributeKeyStringIsFacetGroup(key)) {
+          groupName = link.attributes[key];
+          break;
+        }
+      }
+      if(!groupName) {
+        NYPLLOG(@"Ignoring facet without group due to UI limitations.");
+        continue;
+      }
+      NYPLCatalogFacet *const facet = [NYPLCatalogFacet catalogFacetWithLink:link];
+      if(!facet) {
+        NYPLLOG(@"Ignoring invalid facet link.");
+        continue;
+      }
+      if(![facetGroupNames containsObject:groupName]) {
+        [facetGroupNames addObject:groupName];
+        facetGroupNamesToMutableFacetArrays[groupName] = [NSMutableArray arrayWithCapacity:2];
+      }
+      [facetGroupNamesToMutableFacetArrays[groupName] addObject:facet];
+      continue;
+    }
+    if([link.rel isEqualToString:NYPLOPDSRelationPaginationNext]) {
+      nextURL = link.href;
+      continue;
+    }
+    if([link.rel isEqualToString:NYPLOPDSRelationSearch] &&
+       NYPLOPDSTypeStringIsOpenSearchDescription(link.type)) {
+      self.openSearchURL = link.href;
+      continue;
+    }
+  }
+  
+  // Care is taken to preserve facet and facet group order from the original feed.
+  NSMutableArray *const facetGroups = [NSMutableArray arrayWithCapacity:facetGroupNames.count];
+  for(NSString *const facetGroupName in facetGroupNames) {
+    [facetGroups addObject:[[NYPLCatalogFacetGroup alloc]
+                            initWithFacets:facetGroupNamesToMutableFacetArrays[facetGroupName]
+                            name:facetGroupName]];
+  }
+
+  return self;
 }
 
 - (instancetype)initWithBooks:(NSArray *const)books

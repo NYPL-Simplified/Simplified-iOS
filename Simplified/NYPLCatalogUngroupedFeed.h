@@ -1,4 +1,5 @@
 @class NYPLCatalogUngroupedFeed;
+@class NYPLOPDSFeed;
 
 @protocol NYPLCatalogUngroupedFeedDelegate
 
@@ -18,6 +19,7 @@
 @property (nonatomic, readonly) NSArray *books;
 @property (nonatomic, weak) id<NYPLCatalogUngroupedFeedDelegate> delegate; // nilable
 @property (nonatomic, readonly) NSArray *facetGroups;
+@property (nonatomic, readonly) NSURL *openSearchURL; // nilable
 @property (nonatomic, readonly) NSString *searchTemplate; // nilable
 @property (nonatomic, readonly) NSString *title;
 
@@ -26,6 +28,9 @@
 
 // In the callback, |ungroupedFeed| will be |nil| if an error occurred.
 + (void)withURL:(NSURL *)URL handler:(void (^)(NYPLCatalogUngroupedFeed *ungroupedFeed))handler;
+
+// |feed.type| must be NYPLOPDSFeedTypeAcquisitionUngrouped.
+- (instancetype)initWithOPDSFeed:(NYPLOPDSFeed *)feed;
 
 // designated initializer
 - (instancetype)initWithBooks:(NSArray *)books
