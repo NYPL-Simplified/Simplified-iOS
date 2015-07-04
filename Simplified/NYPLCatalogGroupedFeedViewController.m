@@ -20,7 +20,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
 @interface NYPLCatalogGroupedFeedViewController ()
 <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NSMutableDictionary *bookIdentifiersToImages;
 @property (nonatomic) NSMutableDictionary *cachedLaneCells;
 @property (nonatomic) NYPLCatalogGroupedFeed *feed;
@@ -64,12 +63,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
                                             style:UIBarButtonItemStylePlain
                                             target:self
                                             action:@selector(didSelectSearch)];
-  
   self.navigationItem.rightBarButtonItem.enabled = NO;
-  
-  self.activityIndicatorView = [[UIActivityIndicatorView alloc]
-                                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  [self.view addSubview:self.activityIndicatorView];
   
   self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
   self.tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
@@ -83,12 +77,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
   [self.view addSubview:self.tableView];
   
   [self downloadImages];
-}
-
-- (void)viewWillLayoutSubviews
-{
-  [self.activityIndicatorView centerInSuperview];
-  [self.activityIndicatorView integralizeFrame];
 }
 
 - (void)didMoveToParentViewController:(UIViewController *)parent
