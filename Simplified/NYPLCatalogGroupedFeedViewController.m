@@ -255,24 +255,13 @@ viewForHeaderInSection:(NSInteger const)section
 
 - (void)fetchOpenSearchDescription
 {
-  [[NYPLSession sharedSession]
+  [NYPLOpenSearchDescription
    withURL:self.feed.openSearchURL
-   completionHandler:^(NSData *const data) {
-     if(!data) {
-       NYPLLOG(@"Failed to obtain OpenSearch description data.");
-       return;
-     }
-     NYPLXML *const XML = [NYPLXML XMLWithData:data];
-     if(!XML) {
-       NYPLLOG(@"Failed to parse OpenSearch description data as XML.");
-       return;
-     }
-     self.searchDescription = [[NYPLOpenSearchDescription alloc] initWithXML:XML];
-     if(!self.searchDescription) {
-       NYPLLOG(@"Failed to interpret XML as an OpenSearch description.");
-       return;
-     }
-     self.navigationItem.rightBarButtonItem.enabled = YES;
+   completionHandler:^(NYPLOpenSearchDescription *const description) {
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       self.searchDescription = description;
+       self.navigationItem.rightBarButtonItem.enabled = YES;
+     }];
    }];
 }
 
