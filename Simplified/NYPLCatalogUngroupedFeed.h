@@ -32,13 +32,6 @@
 // |feed.type| must be NYPLOPDSFeedTypeAcquisitionUngrouped.
 - (instancetype)initWithOPDSFeed:(NYPLOPDSFeed *)feed;
 
-// designated initializer
-- (instancetype)initWithBooks:(NSArray *)books
-                  facetGroups:(NSArray *)facetGroups
-                      nextURL:(NSURL *)nextURL
-               searchTemplate:(NSString *)searchTemplate
-                        title:(NSString *)title;
-
 // This method is used to inform a catalog category that the data of a book at the given index is
 // being used elsewhere. This knowledge allows preemptive retrieval of the next URL (if present) so
 // that later books will be available upon request. It is important to have a delegate receive
