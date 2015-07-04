@@ -7,6 +7,7 @@
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLFacetBarView.h"
 #import "NYPLFacetView.h"
+#import "NYPLOpenSearchDescription.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 
@@ -18,6 +19,7 @@
 
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) NYPLCatalogUngroupedFeed *feed;
+@property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 
 @end
 
@@ -30,7 +32,7 @@
   
   self.feed = feed;
   self.feed.delegate = self;
-
+  
   return self;
 }
 
@@ -53,8 +55,11 @@
                                             style:UIBarButtonItemStylePlain
                                             target:self
                                             action:@selector(didSelectSearch)];
+  self.navigationItem.rightBarButtonItem.enabled = NO;
   
-  self.navigationItem.rightBarButtonItem.enabled = !!self.feed.openSearchURL;
+  if(self.feed.openSearchURL) {
+    [self fetchOpenSearchDescription];
+  }
   
   [self.collectionView reloadData];
   [self.facetBarView.facetView reloadData];
@@ -206,12 +211,22 @@ didSelectFacetAtIndexPath:(__attribute__((unused)) NSIndexPath *const)indexPath
 
 - (void)didSelectSearch
 {
-  // TODO
-  /*
   [self.navigationController
-   pushViewController:[[NYPLCatalogSearchViewController alloc] ...]
+   pushViewController:[[NYPLCatalogSearchViewController alloc]
+                       initWithOpenSearchDescription:self.searchDescription]
    animated:YES];
-  */
+}
+
+- (void)fetchOpenSearchDescription
+{
+  [NYPLOpenSearchDescription
+   withURL:self.feed.openSearchURL
+   completionHandler:^(NYPLOpenSearchDescription *const description) {
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       self.searchDescription = description;
+       self.navigationItem.rightBarButtonItem.enabled = YES;
+     }];
+   }];
 }
 
 @end
