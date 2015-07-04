@@ -98,9 +98,15 @@
     [self addChildViewController:viewController];
     viewController.view.frame = self.view.bounds;
     [self.view addSubview:viewController.view];
-    self.navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems;
-    self.navigationItem.leftBarButtonItems = viewController.navigationItem.leftBarButtonItems;
-    self.navigationItem.title = viewController.navigationItem.title;
+    if(viewController.navigationItem.rightBarButtonItems) {
+      self.navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems;
+    }
+    if(viewController.navigationItem.leftBarButtonItems) {
+      self.navigationItem.leftBarButtonItems = viewController.navigationItem.leftBarButtonItems;
+    }
+    if(viewController.navigationItem.title) {
+      self.navigationItem.title = viewController.navigationItem.title;
+    }
     [viewController didMoveToParentViewController:self];
   } else {
     // TODO
