@@ -12,6 +12,9 @@
 
 @interface NYPLRemoteViewController : UIViewController
 
+// After changing this, you must call |load| to see the effect.
+@property (atomic) NSURL *URL;
+
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
