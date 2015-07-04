@@ -18,7 +18,7 @@ static CGFloat const rowHeight = 115.0;
 static CGFloat const sectionHeaderHeight = 50.0;
 
 @interface NYPLCatalogGroupedFeedViewController ()
-<NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
+  <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) NSMutableDictionary *bookIdentifiersToImages;
 @property (nonatomic) NSMutableDictionary *cachedLaneCells;
