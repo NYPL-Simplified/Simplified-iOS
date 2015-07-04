@@ -2,6 +2,7 @@
 #import "NYPLAsync.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSLink.h"
+#import "NYPLOPDSRelation.h"
 #import "NYPLSession.h"
 #import "NYPLXML.h"
 
@@ -13,9 +14,37 @@
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSArray *links;
 @property (nonatomic) NSString *title;
+@property (nonatomic) NYPLOPDSFeedType type;
+@property (nonatomic) BOOL typeIsCached;
 @property (nonatomic) NSDate *updated;
 
 @end
+
+static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
+{
+  BOOL entryIsCatalogEntry = NO;
+  BOOL entryIsGrouped = NO;
+  
+  for(NYPLOPDSLink *const link in entry.links) {
+    // This is how you can detect a catalog entry of an acquisition feed according to section 8 of
+    // OPDS Catalog 1.1.
+    if([link.rel hasPrefix:@"http://opds-spec.org/acquisition"]) {
+      entryIsCatalogEntry = YES;
+    } else if([link.rel isEqualToString:NYPLOPDSRelationGroup]) {
+      entryIsGrouped = YES;
+    }
+  }
+  
+  if(entryIsGrouped && !entryIsCatalogEntry) {
+    return NYPLOPDSFeedTypeInvalid;
+  }
+  
+  return (entryIsCatalogEntry
+          ? (entryIsGrouped
+             ? NYPLOPDSFeedTypeAcquisitionGrouped
+             : NYPLOPDSFeedTypeAcquisitionUngrouped)
+          : NYPLOPDSFeedTypeNavigation);
+}
 
 @implementation NYPLOPDSFeed
 
@@ -114,6 +143,33 @@
   }
   
   return self;
+}
+
+- (NYPLOPDSFeedType)type
+{
+  if(self.typeIsCached) {
+    return _type;
+  }
+  
+  self.typeIsCached = YES;
+  
+  if(self.entries.count == 0) {
+    return (_type = NYPLOPDSFeedTypeAcquisitionUngrouped);
+  }
+  
+  NYPLOPDSFeedType const provisionalType = TypeImpliedByEntry(self.entries.firstObject);
+  
+  if(provisionalType == NYPLOPDSFeedTypeInvalid) {
+    return (_type == NYPLOPDSFeedTypeInvalid);
+  }
+  
+  for(unsigned int i = 1; i < self.entries.count; ++i) {
+    if(TypeImpliedByEntry(self.entries[i]) != provisionalType) {
+      return (_type = NYPLOPDSFeedTypeInvalid);
+    }
+  }
+       
+  return (_type = provisionalType);
 }
 
 @end

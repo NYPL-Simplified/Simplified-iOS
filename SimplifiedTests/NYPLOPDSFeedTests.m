@@ -45,6 +45,11 @@
   XCTAssert(self.feed.entries);
 }
 
+- (void)testTypeAcquisitionUngrouped
+{
+  XCTAssertEqual(self.feed.type, NYPLOPDSFeedTypeAcquisitionUngrouped);
+}
+
 - (void)testIdentifier
 {
   XCTAssertEqualObjects(self.feed.identifier, @"http://localhost/main");

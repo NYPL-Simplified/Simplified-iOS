@@ -6,6 +6,7 @@
 
 @interface NYPLOpenSearchDescription ()
 
+@property (nonatomic) NSString *humanReadableDescription;
 @property (nonatomic) NSString *OPDSURLTemplate;
 
 @end
@@ -53,12 +54,24 @@ completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
   self = [super init];
   if(!self) return nil;
   
+  self.humanReadableDescription = [OSDXML firstChildWithName:@"Description"].value;
+  
+  if(!self.humanReadableDescription) {
+    NYPLLOG(@"Missing required description element.");
+    return nil;
+  }
+  
   for(NYPLXML *const UrlXML in [OSDXML childrenWithName:@"Url"]) {
     NSString *const type = UrlXML.attributes[@"type"];
     if(type && [type rangeOfString:@"opds-catalog"].location != NSNotFound) {
       self.OPDSURLTemplate = UrlXML.attributes[@"template"];
       break;
     }
+  }
+  
+  if(!self.OPDSURLTemplate) {
+    NYPLLOG(@"Missing expected OPDS URL.");
+    return nil;
   }
   
   return self;
