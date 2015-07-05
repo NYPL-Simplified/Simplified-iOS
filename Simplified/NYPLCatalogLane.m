@@ -5,7 +5,7 @@
 @interface NYPLCatalogLane ()
 
 @property (nonatomic) NSArray *books;
-@property (nonatomic) NYPLCatalogSubsectionLink *subsectionLink;
+@property (nonatomic) NSURL *subsectionURL;
 @property (nonatomic) NSString *title;
 
 @end
@@ -13,13 +13,15 @@
 @implementation NYPLCatalogLane
 
 - (instancetype)initWithBooks:(NSArray *const)books
-               subsectionLink:(NYPLCatalogSubsectionLink *const)subsectionLink
+                subsectionURL:(NSURL *const)subsectionURL
                         title:(NSString *const)title
 {
   self = [super init];
   if(!self) return nil;
   
-  if(!(books && subsectionLink && title)) {
+  // FIXME: |subsectionURL| will no longer always be present and should be allowed to be nil. The
+  // name of this variable/property should be changed as well.
+  if(!(books && subsectionURL && title)) {
     @throw NSInvalidArgumentException;
   }
   
@@ -30,7 +32,7 @@
   }
   
   self.books = books;
-  self.subsectionLink = subsectionLink;
+  self.subsectionURL = subsectionURL;
   self.title = title;
   
   return self;

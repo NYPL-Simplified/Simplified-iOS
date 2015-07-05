@@ -285,7 +285,13 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
     return;
   }
   
-  NYPLReaderSettingsView *const readerSettingsView = [[NYPLReaderSettingsView alloc] init];
+  CGFloat const width =
+    (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+     ? 320
+     : CGRectGetWidth(self.view.frame));
+  
+  NYPLReaderSettingsView *const readerSettingsView =
+    [[NYPLReaderSettingsView alloc] initWithWidth:width];
   readerSettingsView.delegate = self;
   readerSettingsView.colorScheme = [NYPLReaderSettings sharedSettings].colorScheme;
   readerSettingsView.fontSize = [NYPLReaderSettings sharedSettings].fontSize;

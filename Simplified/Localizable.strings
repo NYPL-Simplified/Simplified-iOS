@@ -25,7 +25,6 @@
 "Published" = "Published";
 "Publisher" = "Publisher";
 "Read" = "Read"; // present tense
-"SearchPlaceholderFormat" = "Search %@";
 "Settings" = "Settings";
 "SignOut" = "Sign Out";
 "SyncComplete" = "Sync Complete";

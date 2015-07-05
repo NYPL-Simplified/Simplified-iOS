@@ -16,7 +16,7 @@
   
   if(customURL) return customURL;
   
-  return [NSURL URLWithString:@"http://qa.circulation.librarysimplified.org"];
+  return [NSURL URLWithString:@"http://qa.circulation.librarysimplified.org/groups"];
 }
 
 + (NSURL *)loanURL
@@ -26,7 +26,7 @@
 
 + (UIColor *)mainColor
 {
-  return [UIColor colorWithRed:240/255.0 green:115/255.0 blue:31/255.0 alpha:1.0];
+  return [UIColor colorWithRed:220/255.0 green:34/255.0 blue:29/255.0 alpha:1.0];
 }
 
 + (UIColor *)accentColor

@@ -1,48 +1,46 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLCatalogAcquisitionFeedViewController.h"
+#import "NYPLCatalogFeedViewController.h"
+#import "NYPLCatalogGroupedFeed.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
-#import "NYPLCatalogNavigationFeed.h"
 #import "NYPLCatalogSearchViewController.h"
-#import "NYPLCatalogSubsectionLink.h"
 #import "NYPLConfiguration.h"
 #import "NYPLIndeterminateProgressView.h"
-#import "NYPLReloadView.h"
+#import "NYPLOpenSearchDescription.h"
+#import "NYPLSession.h"
+#import "NYPLXML.h"
 #import "UIView+NYPLViewAdditions.h"
 
-#import "NYPLCatalogNavigationFeedViewController.h"
+#import "NYPLCatalogGroupedFeedViewController.h"
 
 static CGFloat const rowHeight = 115.0;
 static CGFloat const sectionHeaderHeight = 50.0;
 
-@interface NYPLCatalogNavigationFeedViewController ()
+@interface NYPLCatalogGroupedFeedViewController ()
   <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NSMutableDictionary *bookIdentifiersToImages;
-@property (nonatomic) NYPLCatalogNavigationFeed *catalogNavigationFeed;
 @property (nonatomic) NSMutableDictionary *cachedLaneCells;
+@property (nonatomic) NYPLCatalogGroupedFeed *feed;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
-@property (nonatomic) NYPLReloadView *reloadView;
+@property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic) NSURL *URL;
 
 @end
 
-@implementation NYPLCatalogNavigationFeedViewController
+@implementation NYPLCatalogGroupedFeedViewController
 
 #pragma mark NSObject
 
-- (instancetype)initWithURL:(NSURL *const)URL title:(NSString *const)title
+- (instancetype)initWithGroupedFeed:(NYPLCatalogGroupedFeed *)feed
 {
   self = [super init];
   if(!self) return nil;
   
   self.bookIdentifiersToImages = [NSMutableDictionary dictionary];
   self.cachedLaneCells = [NSMutableDictionary dictionary];
-  self.title = title;
-  self.URL = URL;
+  self.feed = feed;
   
   return self;
 }
@@ -54,18 +52,13 @@ static CGFloat const sectionHeaderHeight = 50.0;
   [super viewDidLoad];
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
-
+  
   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                             initWithImage:[UIImage imageNamed:@"Search"]
                                             style:UIBarButtonItemStylePlain
                                             target:self
                                             action:@selector(didSelectSearch)];
-  
   self.navigationItem.rightBarButtonItem.enabled = NO;
-  
-  self.activityIndicatorView = [[UIActivityIndicatorView alloc]
-                                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  [self.view addSubview:self.activityIndicatorView];
   
   self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
   self.tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
@@ -76,36 +69,28 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.tableView.sectionHeaderHeight = sectionHeaderHeight;
   self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   self.tableView.allowsSelection = NO;
-  self.tableView.hidden = YES;
   [self.view addSubview:self.tableView];
   
-  __weak NYPLCatalogNavigationFeedViewController *weakSelf = self;
-  self.reloadView = [[NYPLReloadView alloc] init];
-  self.reloadView.handler = ^{
-    weakSelf.reloadView.hidden = YES;
-    [weakSelf downloadFeed];
-  };
-  self.reloadView.hidden = YES;
-  [self.view addSubview:self.reloadView];
+  if(self.feed.openSearchURL) {
+    [self fetchOpenSearchDescription];
+  }
   
-  [self downloadFeed];
+  [self downloadImages];
 }
 
-- (void)viewWillLayoutSubviews
+- (void)didMoveToParentViewController:(UIViewController *)parent
 {
-  [self.activityIndicatorView centerInSuperview];
-  [self.activityIndicatorView integralizeFrame];
+  [super didMoveToParentViewController:parent];
   
-  UIEdgeInsets const insets = UIEdgeInsetsMake(self.topLayoutGuide.length,
-                                               0,
-                                               self.bottomLayoutGuide.length,
-                                               0);
-  
-  self.tableView.contentInset = insets;
-  self.tableView.scrollIndicatorInsets = insets;
-  
-  [self.reloadView centerInSuperview];
-  [self.reloadView integralizeFrame];
+  if(parent) {
+    CGFloat top = parent.topLayoutGuide.length;
+    CGFloat bottom = parent.bottomLayoutGuide.length;
+    
+    UIEdgeInsets insets = UIEdgeInsetsMake(top, 0, bottom, 0);
+    self.tableView.contentInset = insets;
+    self.tableView.scrollIndicatorInsets = insets;
+    [self.tableView setContentOffset:CGPointMake(0, -top) animated:NO];
+  }
 }
 
 - (void)didReceiveMemoryWarning
@@ -129,10 +114,10 @@ static CGFloat const sectionHeaderHeight = 50.0;
   
   if(indexPath.section < (NSInteger) self.indexOfNextLaneRequiringImageDownload) {
     NYPLCatalogLaneCell *const cell =
-      [[NYPLCatalogLaneCell alloc]
-       initWithLaneIndex:indexPath.section
-       books:((NYPLCatalogLane *) self.catalogNavigationFeed.lanes[indexPath.section]).books
-       bookIdentifiersToImages:self.bookIdentifiersToImages];
+    [[NYPLCatalogLaneCell alloc]
+     initWithLaneIndex:indexPath.section
+     books:((NYPLCatalogLane *) self.feed.lanes[indexPath.section]).books
+     bookIdentifiersToImages:self.bookIdentifiersToImages];
     cell.delegate = self;
     self.cachedLaneCells[indexPath] = cell;
     return cell;
@@ -163,7 +148,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return self.catalogNavigationFeed.lanes.count;
+  return self.feed.lanes.count;
 }
 
 #pragma mark UITableViewDelegate
@@ -191,7 +176,7 @@ viewForHeaderInSection:(NSInteger const)section
   {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.titleLabel.font = [UIFont systemFontOfSize:21];
-    NSString *const title = ((NYPLCatalogLane *) self.catalogNavigationFeed.lanes[section]).title;
+    NSString *const title = ((NYPLCatalogLane *) self.feed.lanes[section]).title;
     [button setTitle:title forState:UIControlStateNormal];
     [button sizeToFit];
     button.frame = CGRectMake(7, 5, CGRectGetWidth(button.frame), CGRectGetHeight(button.frame));
@@ -211,7 +196,7 @@ viewForHeaderInSection:(NSInteger const)section
 - (void)catalogLaneCell:(NYPLCatalogLaneCell *const)cell
      didSelectBookIndex:(NSUInteger const)bookIndex
 {
-  NYPLCatalogLane *const lane = self.catalogNavigationFeed.lanes[cell.laneIndex];
+  NYPLCatalogLane *const lane = self.feed.lanes[cell.laneIndex];
   NYPLBook *const book = lane.books[bookIndex];
   
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
@@ -219,56 +204,22 @@ viewForHeaderInSection:(NSInteger const)section
 
 #pragma mark -
 
-- (void)downloadFeed
-{
-  self.tableView.hidden = YES;
-  self.activityIndicatorView.hidden = NO;
-  [self.activityIndicatorView startAnimating];
-  [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-  
-  [NYPLCatalogNavigationFeed
-   withURL:self.URL
-   handler:^(NYPLCatalogNavigationFeed *const navigationFeed) {
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       self.activityIndicatorView.hidden = YES;
-       [self.activityIndicatorView stopAnimating];
-       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-       
-       if(!navigationFeed) {
-         self.reloadView.hidden = NO;
-         return;
-       }
-       
-       self.tableView.hidden = NO;
-       self.catalogNavigationFeed = navigationFeed;
-       [self.tableView reloadData];
-       
-       if(self.catalogNavigationFeed.searchTemplate) {
-         self.navigationItem.rightBarButtonItem.enabled = YES;
-       }
-       
-       [self downloadImages];
-     }];
-   }];
-}
-
 - (void)downloadImages
 {
-  if(self.indexOfNextLaneRequiringImageDownload >= self.catalogNavigationFeed.lanes.count) {
+  if(self.indexOfNextLaneRequiringImageDownload >= self.feed.lanes.count) {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     return;
   }
   
   [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   
-  NYPLCatalogLane *const lane =
-    self.catalogNavigationFeed.lanes[self.indexOfNextLaneRequiringImageDownload];
+  NYPLCatalogLane *const lane = self.feed.lanes[self.indexOfNextLaneRequiringImageDownload];
   
   [[NYPLBookRegistry sharedRegistry]
    thumbnailImagesForBooks:[NSSet setWithArray:lane.books]
    handler:^(NSDictionary *const bookIdentifiersToImages) {
      [self.bookIdentifiersToImages addEntriesFromDictionary:bookIdentifiersToImages];
-
+     
      // We update this before reloading so that the delegate accurately knows which lanes already
      // have had their covers downloaded.
      ++self.indexOfNextLaneRequiringImageDownload;
@@ -276,40 +227,41 @@ viewForHeaderInSection:(NSInteger const)section
      [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:
                                      (self.indexOfNextLaneRequiringImageDownload - 1)]
                    withRowAnimation:UITableViewRowAnimationNone];
-
+     
      [self downloadImages];
    }];
 }
 
 - (void)didSelectCategory:(UIButton *const)button
 {
-  NYPLCatalogLane *const lane = self.catalogNavigationFeed.lanes[button.tag];
+  NYPLCatalogLane *const lane = self.feed.lanes[button.tag];
   
-  switch(lane.subsectionLink.type) {
-    case NYPLCatalogSubsectionLinkTypeAcquisition:
-      [self.navigationController
-       pushViewController:[[NYPLCatalogAcquisitionFeedViewController alloc]
-                           initWithURL:lane.subsectionLink.URL
-                           title:lane.title]
-       animated:YES];
-      break;
-    case NYPLCatalogSubsectionLinkTypeNavigation:
-      [self.navigationController
-       pushViewController:[[NYPLCatalogNavigationFeedViewController alloc]
-                           initWithURL:lane.subsectionLink.URL
-                           title:lane.title]
-       animated:YES];
-      break;
-  }
+  UIViewController *const viewController = [[NYPLCatalogFeedViewController alloc]
+                                            initWithURL:lane.subsectionURL];
+  
+  viewController.title = lane.title;
+
+  [self.navigationController pushViewController:viewController animated:YES];
 }
 
 - (void)didSelectSearch
 {
   [self.navigationController
    pushViewController:[[NYPLCatalogSearchViewController alloc]
-                       initWithCategoryTitle:NSLocalizedString(@"Catalog", nil)
-                       searchTemplate:self.catalogNavigationFeed.searchTemplate]
+                       initWithOpenSearchDescription:self.searchDescription]
    animated:YES];
+}
+
+- (void)fetchOpenSearchDescription
+{
+  [NYPLOpenSearchDescription
+   withURL:self.feed.openSearchURL
+   completionHandler:^(NYPLOpenSearchDescription *const description) {
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       self.searchDescription = description;
+       self.navigationItem.rightBarButtonItem.enabled = YES;
+     }];
+   }];
 }
 
 @end

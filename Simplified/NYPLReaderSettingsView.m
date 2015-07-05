@@ -24,10 +24,13 @@
 
 #pragma mark NSObject
 
-- (instancetype)init
+- (instancetype)initWithWidth:(CGFloat const)width
 {
   self = [super init];
   if (!self) return nil;
+  
+  CGSize const size = [self sizeThatFits:CGSizeMake(width, CGFLOAT_MAX)];
+  self.frame = CGRectMake(0, 0, size.width, size.height);
 
   self.observers = [NSMutableArray array];
   
@@ -38,7 +41,7 @@
   self.sansButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.sansButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.sansButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.sansButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+  [self.sansButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateDisabled];
   [self.sansButton setTitle:@"Aa" forState:UIControlStateNormal];
   self.sansButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:24];
   [self.sansButton addTarget:self
@@ -49,7 +52,7 @@
   self.serifButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.serifButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.serifButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.serifButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+  [self.serifButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateDisabled];
   [self.serifButton setTitle:@"Aa" forState:UIControlStateNormal];
   self.serifButton.titleLabel.font = [UIFont fontWithName:@"Georgia" size:24];
   [self.serifButton addTarget:self
@@ -60,7 +63,8 @@
   self.whiteOnBlackButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.whiteOnBlackButton.backgroundColor = [NYPLConfiguration backgroundDarkColor];
   [self.whiteOnBlackButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-  [self.whiteOnBlackButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+  [self.whiteOnBlackButton setTitleColor:[NYPLConfiguration mainColor]
+                                forState:UIControlStateDisabled];
   [self.whiteOnBlackButton setTitle:@"ABCabc" forState:UIControlStateNormal];
   self.whiteOnBlackButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.whiteOnBlackButton addTarget:self
@@ -71,7 +75,8 @@
   self.blackOnSepiaButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.blackOnSepiaButton.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
   [self.blackOnSepiaButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.blackOnSepiaButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+  [self.blackOnSepiaButton setTitleColor:[NYPLConfiguration mainColor]
+                                forState:UIControlStateDisabled];
   [self.blackOnSepiaButton setTitle:@"ABCabc" forState:UIControlStateNormal];
   self.blackOnSepiaButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.blackOnSepiaButton addTarget:self
@@ -82,7 +87,8 @@
   self.blackOnWhiteButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.blackOnWhiteButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.blackOnWhiteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.blackOnWhiteButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+  [self.blackOnWhiteButton setTitleColor:[NYPLConfiguration mainColor]
+                                forState:UIControlStateDisabled];
   [self.blackOnWhiteButton setTitle:@"ABCabc" forState:UIControlStateNormal];
   self.blackOnWhiteButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.blackOnWhiteButton addTarget:self
@@ -235,35 +241,22 @@
   [self updateLineViews];
 }
 
-- (void)drawRect:(__attribute__((unused)) CGRect)rect
-{
-  [self layoutIfNeeded];
-
-  CGContextRef const c = UIGraphicsGetCurrentContext();
-  CGFloat const gray[4] = {0.5, 0.5, 0.5, 1.0};
-  CGContextSetStrokeColor(c, gray);
-
-  CGContextBeginPath(c);
-  CGContextMoveToPoint(c,
-                       CGRectGetMinX(self.whiteOnBlackButton.frame),
-                       CGRectGetMinY(self.whiteOnBlackButton.frame));
-  CGContextAddLineToPoint(c,
-                          CGRectGetMaxX(self.blackOnWhiteButton.frame),
-                          CGRectGetMinY(self.blackOnWhiteButton.frame));
-  CGContextStrokePath(c);
-  
-}
-
 - (CGSize)sizeThatFits:(CGSize)size
 {
-  CGFloat const w = 320;
-  CGFloat const h = 200;
+  CGFloat const defaultWidth = 320;
+  CGFloat const defaultHeight = 200;
 
-  if (CGSizeEqualToSize(size, CGSizeZero)) {
-    return CGSizeMake(w, h);
+  if(CGSizeEqualToSize(size, CGSizeZero)) {
+    return CGSizeMake(defaultWidth, defaultHeight);
   }
+  
+  CGFloat const aspectRatio = defaultWidth / defaultHeight;
 
-  return CGSizeMake(w > size.width ? size.width : w, h > size.height ? size.height : h);
+  if(size.width / size.height > aspectRatio) {
+    return CGSizeMake(size.height * aspectRatio, size.height);
+  } else {
+    return CGSizeMake(size.width, size.width / aspectRatio);
+  }
 }
 
 #pragma mark -

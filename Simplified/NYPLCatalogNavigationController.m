@@ -1,4 +1,4 @@
-#import "NYPLCatalogNavigationFeedViewController.h"
+#import "NYPLCatalogFeedViewController.h"
 #import "NYPLConfiguration.h"
 
 #import "NYPLCatalogNavigationController.h"
@@ -9,10 +9,11 @@
 
 - (instancetype)init
 {
-  NYPLCatalogNavigationFeedViewController *const viewController =
-    [[NYPLCatalogNavigationFeedViewController alloc]
-     initWithURL:[NYPLConfiguration mainFeedURL]
-     title:NSLocalizedString(@"Catalog", nil)];
+  NYPLCatalogFeedViewController *const viewController =
+    [[NYPLCatalogFeedViewController alloc]
+     initWithURL:[NYPLConfiguration mainFeedURL]];
+  
+  viewController.title = NSLocalizedString(@"Catalog", nil);
   
   self = [super initWithRootViewController:viewController];
   if(!self) return nil;
