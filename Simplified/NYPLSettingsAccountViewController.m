@@ -528,6 +528,12 @@ completionHandler:(void (^)())handler
    safelyPresentViewController:viewController 
    animated:YES
    completion:nil];
+  
+  if(useExistingBarcode) {
+    [accountViewController.PINTextField becomeFirstResponder];
+  } else {
+    [accountViewController.barcodeTextField becomeFirstResponder];
+  }
 }
 
 - (void)didSelectCancel
