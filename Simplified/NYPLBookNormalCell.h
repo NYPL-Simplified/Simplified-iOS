@@ -4,7 +4,8 @@
 @class NYPLBookNormalCell;
 
 typedef NS_ENUM(NSInteger, NYPLBookNormalCellState) {
-  NYPLBookNormalCellStateUnregistered,
+  NYPLBookNormalCellStateCanBorrow,
+  NYPLBookNormalCellStateCanKeep,
   NYPLBookNormalCellStateDownloadNeeded,
   NYPLBookNormalCellStateDownloadSuccessful,
   NYPLBookNormalCellStateUsed
