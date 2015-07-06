@@ -2,7 +2,8 @@
 @class NYPLBookDetailNormalView;
 
 typedef NS_ENUM(NSInteger, NYPLBookDetailNormalViewState) {
-  NYPLBookDetailNormalViewStateUnregistered,
+  NYPLBookDetailNormalViewStateCanBorrow,
+  NYPLBookDetailNormalViewStateCanKeep,
   NYPLBookDetailNormalViewStateDownloadNeeded,
   NYPLBookDetailNormalViewStateDownloadSuccessful,
   NYPLBookDetailNormalViewStateUsed
