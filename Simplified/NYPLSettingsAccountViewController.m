@@ -153,10 +153,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   switch(CellKindFromIndexPath(indexPath)) {
     case CellKindBarcode:
       [self.barcodeTextField becomeFirstResponder];
-      return;
+      break;
     case CellKindPIN:
       [self.PINTextField becomeFirstResponder];
-      return;
+      break;
     case CellKindLogInSignOut:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
@@ -188,6 +188,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       } else {
         [self logIn];
       }
+      break;
     case CellKindRegistration:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       [[NYPLRootTabBarController sharedController]
