@@ -26,6 +26,7 @@
 "Read" = "Read"; // present tense
 "Settings" = "Settings";
 "SignOut" = "Sign Out";
+"SignUp" = "Sign Up";
 "SyncComplete" = "Sync Complete";
 "SyncFailed" = "Sync Failed";
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";
