@@ -67,6 +67,18 @@
    @"document.body.ontouchend = function(e) {e.preventDefault();};"];
 }
 
+- (BOOL)webView:(__attribute__((unused)) UIWebView *)webView
+shouldStartLoadWithRequest:(NSURLRequest *const)request
+ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
+{
+  if([request.URL.scheme isEqualToString:@"simplified"]) {
+    NYPLLOG(@"Ignoring unsupported action.");
+    return NO;
+  }
+  
+  return YES;
+}
+
 #pragma mark UIScrollViewDelegate
 
 - (UIView *)viewForZoomingInScrollView:(__attribute__((unused)) UIScrollView *)scrollView
