@@ -5,6 +5,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
 
@@ -188,7 +189,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self logIn];
       }
     case CellKindRegistration:
-      // TODO
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+      [[NYPLRootTabBarController sharedController]
+       safelyPresentViewController:[[NYPLSettingsRegistrationViewController alloc] init]
+       animated:YES
+       completion:nil];
       break;
   }
 }
@@ -245,7 +250,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"SettingsAccountViewControllerRegistration", nil);
+      cell.textLabel.text = NSLocalizedString(@"SignUp", nil);
       cell.textLabel.textColor = [NYPLConfiguration mainColor];
       return cell;
     }
