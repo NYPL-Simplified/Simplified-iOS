@@ -1,5 +1,6 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
+#import "NYPLBookAcquisition.h"
 #import "NYPLBookDetailDownloadFailedView.h"
 #import "NYPLBookDetailDownloadingView.h"
 #import "NYPLBookDetailNormalView.h"
@@ -415,7 +416,11 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
-      self.normalView.state = NYPLBookDetailNormalViewStateUnregistered;
+      if(self.book.acquisition.openAccess) {
+        self.normalView.state = NYPLBookDetailNormalViewStateCanKeep;
+      } else {
+        self.normalView.state = NYPLBookDetailNormalViewStateCanBorrow;
+      }
       self.unreadImageView.hidden = YES;
       break;
     case NYPLBookStateDownloadNeeded:
