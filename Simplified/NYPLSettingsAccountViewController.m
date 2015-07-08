@@ -6,6 +6,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
 
@@ -14,7 +15,14 @@
 typedef NS_ENUM(NSInteger, CellKind) {
   CellKindBarcode,
   CellKindPIN,
-  CellKindLogInSignOut
+  CellKindLogInSignOut,
+  CellKindRegistration
+};
+
+typedef NS_ENUM(NSInteger, Section) {
+  SectionBarcodePin = 0,
+  SectionLoginLogout = 1,
+  SectionRegistration = 2
 };
 
 static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
@@ -36,6 +44,8 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
         default:
           @throw NSInvalidArgumentException;
       }
+    case 2:
+      return CellKindRegistration;
     default:
       @throw NSInvalidArgumentException;
   }
@@ -144,10 +154,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   switch(CellKindFromIndexPath(indexPath)) {
     case CellKindBarcode:
       [self.barcodeTextField becomeFirstResponder];
-      return;
+      break;
     case CellKindPIN:
       [self.PINTextField becomeFirstResponder];
-      return;
+      break;
     case CellKindLogInSignOut:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
@@ -176,6 +186,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       } else {
         [self logIn];
       }
+      break;
+    case CellKindRegistration:
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+      [[NYPLRootTabBarController sharedController]
+       safelyPresentViewController:[[NYPLSettingsRegistrationViewController alloc] init]
+       animated:YES
+       completion:nil];
+      break;
   }
 }
 
@@ -226,21 +244,38 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self updateLoginLogoutCellAppearance];
       return self.logInSignOutCell;
     }
+    case CellKindRegistration: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.text = NSLocalizedString(@"SignUp", nil);
+      cell.textLabel.textColor = [NYPLConfiguration mainColor];
+      return cell;
+    }
   }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return 2;
+  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+    // No registration is possible.
+    return 2;
+  } else {
+    // Registration is possible.
+    return 3;
+  }
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
  numberOfRowsInSection:(NSInteger const)section
 {
   switch(section) {
-    case 0:
+    case SectionBarcodePin:
       return 2;
-    case 1:
+    case SectionLoginLogout:
+      return 1;
+    case SectionRegistration:
       return 1;
     default:
       @throw NSInternalInconsistencyException;
@@ -287,6 +322,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
       self.PINTextField.enabled = YES;
       self.PINTextField.textColor = [UIColor blackColor];
     }
+    
+    [self.tableView reloadData];
     
     [self updateLoginLogoutCellAppearance];
   }];
