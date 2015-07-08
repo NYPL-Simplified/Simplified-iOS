@@ -101,8 +101,6 @@
   
   if(!self.downloadButton) {
     self.downloadButton = [NYPLRoundedButton button];
-    [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
-                         forState:UIControlStateNormal];
     [self.downloadButton addTarget:self
                             action:@selector(didSelectDownload)
                   forControlEvents:UIControlEventTouchUpInside];
@@ -179,8 +177,24 @@
   _state = state;
   
   switch(state) {
-    case NYPLBookNormalCellStateUnregistered:
-      // fallthrough
+    case NYPLBookNormalCellStateCanBorrow:
+      self.deleteButton.hidden = YES;
+      self.downloadButton.hidden = NO;
+      self.readButton.hidden = YES;
+      self.unreadImageView.hidden = YES;
+      [self.downloadButton setTitle:NSLocalizedString(@"CheckOut", nil)
+                           forState:UIControlStateNormal];
+      [self setNeedsLayout];
+      break;
+    case NYPLBookNormalCellStateCanKeep:
+      self.deleteButton.hidden = YES;
+      self.downloadButton.hidden = NO;
+      self.readButton.hidden = YES;
+      self.unreadImageView.hidden = YES;
+      [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
+                           forState:UIControlStateNormal];
+      [self setNeedsLayout];
+      break;
     case NYPLBookNormalCellStateDownloadNeeded:
       self.deleteButton.hidden = YES;
       self.downloadButton.hidden = NO;

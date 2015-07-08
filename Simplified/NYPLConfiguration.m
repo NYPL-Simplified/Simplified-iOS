@@ -24,6 +24,11 @@
   return [NSURL URLWithString:@"http://qa.circulation.librarysimplified.org/loans"];
 }
 
++ (NSURL *)registrationURL
+{
+  return [NSURL URLWithString:@"https://simplifiedcard.herokuapp.com"];
+}
+
 + (UIColor *)mainColor
 {
   return [UIColor colorWithRed:220/255.0 green:34/255.0 blue:29/255.0 alpha:1.0];

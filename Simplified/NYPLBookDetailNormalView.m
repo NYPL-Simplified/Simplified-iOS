@@ -30,8 +30,6 @@
   [self addSubview:self.backgroundView];
   
   self.downloadButton = [NYPLRoundedButton button];
-  [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
-                       forState:UIControlStateNormal];
   [self.downloadButton addTarget:self
                           action:@selector(didSelectDownload)
                 forControlEvents:UIControlEventTouchUpInside];
@@ -61,8 +59,6 @@
   [self.deleteReadLinearView addSubview:self.deleteButton];
   [self.deleteReadLinearView addSubview:self.readButton];
   [self addSubview:self.deleteReadLinearView];
-  
-  self.state = NYPLBookDetailNormalViewStateUnregistered;
   
   return self;
 }
@@ -106,26 +102,45 @@
 {
   _state = state;
   
-  // TODO: This should be set to a localized string based on the license and state of the book once
-  // the server starts making that information available.
-  self.messageLabel.text = @"This public domain book is yours to keep.";
+  // TODO: These strings must be localized!
   
   switch(state) {
-    case NYPLBookDetailNormalViewStateUnregistered:
-      // fallthrough
+    case NYPLBookDetailNormalViewStateCanBorrow:
+      self.messageLabel.text = @"This book is available to borrow.";
+      self.deleteReadLinearView.hidden = YES;
+      self.downloadButton.hidden = NO;
+      [self.downloadButton setTitle:NSLocalizedString(@"CheckOut", nil)
+                           forState:UIControlStateNormal];
+      [self.downloadButton sizeToFit];
+      break;
+    case NYPLBookDetailNormalViewStateCanKeep:
+      self.messageLabel.text = @"This open-access book is available to keep.";
+      self.deleteReadLinearView.hidden = YES;
+      self.downloadButton.hidden = NO;
+      [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
+                           forState:UIControlStateNormal];
+      [self.downloadButton sizeToFit];
+      break;
     case NYPLBookDetailNormalViewStateDownloadNeeded:
+      self.messageLabel.text = @"Your book has not yet been downloaded.";
       self.deleteReadLinearView.hidden = YES;
       self.downloadButton.hidden = NO;
       break;
     case NYPLBookDetailNormalViewStateDownloadSuccessful:
+      self.messageLabel.text = @"Your book is ready to read!";
       self.deleteReadLinearView.hidden = NO;
       self.downloadButton.hidden = YES;
       break;
     case NYPLBookDetailNormalViewStateUsed:
+      self.messageLabel.text = @"";
       self.deleteReadLinearView.hidden = NO;
       self.downloadButton.hidden = YES;
       break;
   }
+  
+  [self.messageLabel sizeToFit];
+  self.messageLabel.center = self.backgroundView.center;
+  [self.messageLabel integralizeFrame];
 }
 
 - (void)didSelectDelete

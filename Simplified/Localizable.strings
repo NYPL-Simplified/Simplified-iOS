@@ -6,6 +6,7 @@
 "Categories" = "Categories";
 "Category" = "Category";
 "CheckConnection" = "Please check your connection and try again.";
+"CheckOut" = "Check Out";
 "ConnectionFailed" = "Connection Failed";
 "CreditsAndAcknowledgements" = "Credits & Acknowledgements";
 "Delete" = "Delete";
@@ -27,6 +28,7 @@
 "Read" = "Read"; // present tense
 "Settings" = "Settings";
 "SignOut" = "Sign Out";
+"SignUp" = "Sign Up";
 "SyncComplete" = "Sync Complete";
 "SyncFailed" = "Sync Failed";
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";

@@ -11,6 +11,8 @@
 
 + (NSURL *)loanURL;
 
++ (NSURL *)registrationURL;
+
 + (UIColor *)mainColor;
 
 + (UIColor *)accentColor;

@@ -1,4 +1,5 @@
 #import "NYPLBook.h"
+#import "NYPLBookAcquisition.h"
 #import "NYPLBookCellDelegate.h"
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
@@ -56,7 +57,11 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                         forIndexPath:indexPath];
       cell.book = book;
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
-      cell.state = NYPLBookNormalCellStateUnregistered;
+      if(book.acquisition.openAccess) {
+        cell.state = NYPLBookNormalCellStateCanKeep;
+      } else {
+        cell.state = NYPLBookNormalCellStateCanBorrow;
+      }
       return cell;
     }
     case NYPLBookStateDownloadNeeded:
