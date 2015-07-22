@@ -173,6 +173,7 @@
 		118A0EA91992B46200792DDE /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		118A0EEE1992BA5800792DDE /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		118A0EF01992BA6000792DDE /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		A4DEC1501B5FFD040052C5AF /* RDServices.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = RDServices.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,6 +192,7 @@
 		118A0E1F1992B3FD00792DDE = {
 			isa = PBXGroup;
 			children = (
+				A4DEC1501B5FFD040052C5AF /* RDServices.xcconfig */,
 				118A0E2D1992B3FD00792DDE /* RDServices */,
 				118A0E2A1992B3FD00792DDE /* Frameworks */,
 				118A0E291992B3FD00792DDE /* Products */,
@@ -565,6 +567,8 @@
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",
 					"\"$(SRCROOT)/readium-sdk/Platform/Apple/include\"/**",
+					"\"$(NYPLADEPT_ADOBE_SDK)/DRM_Connector_Prerelease/dp/public\"",
+					"\"$(NYPLADEPT_ADOBE_SDK)/DRM_Connector_Prerelease/xml/uft/public\"",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
@@ -600,6 +604,8 @@
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",
 					"\"$(SRCROOT)/readium-sdk/Platform/Apple/include\"/**",
+					"\"$(NYPLADEPT_ADOBE_SDK)/DRM_Connector_Prerelease/dp/public\"",
+					"\"$(NYPLADEPT_ADOBE_SDK)/DRM_Connector_Prerelease/xml/uft/public\"",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				SDKROOT = iphoneos;
@@ -611,6 +617,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DSTROOT = /tmp/RDServices.dst;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -621,6 +628,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DSTROOT = /tmp/RDServices.dst;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
