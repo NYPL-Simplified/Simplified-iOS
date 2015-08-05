@@ -433,9 +433,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
        if(statusCode == 200) {
          // FIXME: Use real credentials!
          [[NYPLAdeptConnector sharedAdeptConnector]
-          authorizeWithVendorID:@"AdobeID"
-          username:@"johnnowak@nypl.org"
-          password:@"oaFytiVQDlHU82WN"
+          authorizeWithVendorID:@"NYPL"
+          username:self.barcodeTextField.text
+          password:self.PINTextField.text
           completionHandler:^{
             [self authorizationAttemptDidFinish];
           }];
