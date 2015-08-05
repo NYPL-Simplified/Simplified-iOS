@@ -2,6 +2,9 @@
 
 #import "NYPLConfiguration.h"
 
+static NSString *const NYPLCirculationBaseURLProduction = @"http://qa.circulation.librarysimplified.org";
+static NSString *const NYPLCirculationBaseURLTesting = @"http://circulation.alpha.librarysimplified.org";
+
 @implementation NYPLConfiguration
 
 + (void)initialize
@@ -10,18 +13,23 @@
    setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}];
 }
 
++ (NSURL *)circulationURL
+{
+    return [NSURL URLWithString:NYPLCirculationBaseURLTesting];
+}
+
 + (NSURL *)mainFeedURL
 {
-  NSURL *const customURL = [NYPLSettings sharedSettings].customMainFeedURL;
-  
-  if(customURL) return customURL;
-  
-  return [NSURL URLWithString:@"http://qa.circulation.librarysimplified.org/groups"];
+    NSURL *const customURL = [NYPLSettings sharedSettings].customMainFeedURL;
+
+    if(customURL) return customURL;
+
+    return [[self circulationURL] URLByAppendingPathComponent:@"groups"];
 }
 
 + (NSURL *)loanURL
 {
-  return [NSURL URLWithString:@"http://qa.circulation.librarysimplified.org/loans"];
+    return [[self circulationURL] URLByAppendingPathComponent:@"loans"];
 }
 
 + (NSURL *)registrationURL

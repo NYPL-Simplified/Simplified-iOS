@@ -866,9 +866,6 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "NYPL Labs";
 				TargetAttributes = {
-					A823D80C192BABA400B55DE2 = {
-						DevelopmentTeam = 7262U6ST2R;
-					};
 					A823D827192BABA400B55DE2 = {
 						TestTargetID = A823D80C192BABA400B55DE2;
 					};

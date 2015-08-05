@@ -2,3 +2,5 @@
 *.xccheckout
 xcuserdata
 Pods
+DerivedData
+.idea
