@@ -51,4 +51,8 @@
   [self load];
 }
 
+- (void) reloadCatalogue {
+  [self load];
+}
+
 @end
