@@ -432,7 +432,8 @@
   
   CGFloat const thin = 1.0 / [UIScreen mainScreen].scale;
   
-  {
+  if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone
+      ) {
     UIView *const line = [[UIView alloc]
                           initWithFrame:CGRectMake(CGRectGetMinX(self.sansButton.frame),
                                                    CGRectGetMinY(self.sansButton.frame),
