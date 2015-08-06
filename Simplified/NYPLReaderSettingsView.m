@@ -434,6 +434,17 @@
   
   {
     UIView *const line = [[UIView alloc]
+                          initWithFrame:CGRectMake(CGRectGetMinX(self.sansButton.frame),
+                                                   CGRectGetMinY(self.sansButton.frame),
+                                                   (CGRectGetMaxX(self.serifButton.frame) -
+                                                   CGRectGetMinX(self.sansButton.frame)),
+                                                   thin)];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
+  
+  {
+    UIView *const line = [[UIView alloc]
                            initWithFrame:CGRectMake(CGRectGetMinX(self.serifButton.frame),
                                                     CGRectGetMinY(self.serifButton.frame),
                                                     thin,
