@@ -19,10 +19,9 @@
 @property (nonatomic) NYPLBookDetailDownloadFailedView *downloadFailedView;
 @property (nonatomic) NYPLBookDetailDownloadingView *downloadingView;
 @property (nonatomic) NYPLBookDetailNormalView *normalView;
-@property (nonatomic) UILabel *padCategoriesLabel;
-@property (nonatomic) UILabel *padPublishedLabel;
-@property (nonatomic) UILabel *padPublisherLabel;
-@property (nonatomic) UILabel *phoneMetadataLabel;
+@property (nonatomic) UILabel *categoriesLabel;
+@property (nonatomic) UILabel *publishedLabel;
+@property (nonatomic) UILabel *publisherLabel;
 @property (nonatomic) UILabel *subtitleLabel;
 @property (nonatomic) UIWebView *summaryWebView;
 @property (nonatomic) UILabel *titleLabel;
@@ -87,7 +86,7 @@ static NSString *detailTemplate = nil;
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.titleLabel.numberOfLines = 1;
   } else {
-    self.titleLabel.numberOfLines = 3;
+    self.titleLabel.numberOfLines = 2;
   }
   self.titleLabel.font = [UIFont boldSystemFontOfSize:17];
   self.titleLabel.attributedText = NYPLAttributedStringForTitleFromString(book.title);
@@ -171,46 +170,23 @@ static NSString *detailTemplate = nil;
        self.book.categories]
     : nil;
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    // Metadata on the iPad is shown via separate lines to the right of the cover. As such, we to
-    // use a series of labels in order to get the desired truncation.
-    self.padCategoriesLabel = [[UILabel alloc] init];
-    self.padCategoriesLabel.font = [UIFont systemFontOfSize:12];
-    self.padCategoriesLabel.textColor = [UIColor lightGrayColor];
-    self.padCategoriesLabel.text = categoriesString;
-    [self addSubview:self.padCategoriesLabel];
-    self.padPublishedLabel = [[UILabel alloc] init];
-    self.padPublishedLabel.font = [UIFont systemFontOfSize:12];
-    self.padPublishedLabel.textColor = [UIColor lightGrayColor];
-    self.padPublishedLabel.text = publishedString;
-    [self addSubview:self.padPublishedLabel];
-    self.padPublisherLabel = [[UILabel alloc] init];
-    self.padPublisherLabel.font = [UIFont systemFontOfSize:12];
-    self.padPublisherLabel.textColor = [UIColor lightGrayColor];
-    self.padPublisherLabel.text = publisherString;
-    [self addSubview:self.padPublisherLabel];
-  } else {
-    // Metadata on the iPhone is shown as a single block of wrapped text.
-    self.phoneMetadataLabel = [[UILabel alloc] init];
-    self.phoneMetadataLabel.numberOfLines = 0;
-    self.phoneMetadataLabel.textAlignment = NSTextAlignmentCenter;
-    self.phoneMetadataLabel.font = [UIFont systemFontOfSize:10];
-    self.phoneMetadataLabel.textColor = [UIColor lightGrayColor];
-    NSMutableString *const string = [NSMutableString string];
-    if(self.book.published) {
-      [string appendString:publishedString];
-    }
-    if(self.book.publisher) {
-      if(string.length) [string appendString:@"  "];
-      [string appendString:publisherString];
-    }
-    if(self.book.categoryStrings.count) {
-      if(string.length) [string appendString:@"  "];
-      [string appendString:categoriesString];
-    }
-    self.phoneMetadataLabel.text = string;
-    [self addSubview:self.phoneMetadataLabel];
-  }
+  // Metadata is shown via separate lines to the right of the cover. As such, we to
+  // use a series of labels in order to get the desired truncation.
+  self.categoriesLabel = [[UILabel alloc] init];
+  self.categoriesLabel.font = [UIFont systemFontOfSize:12];
+  self.categoriesLabel.textColor = [UIColor lightGrayColor];
+  self.categoriesLabel.text = categoriesString;
+  [self addSubview:self.categoriesLabel];
+  self.publishedLabel = [[UILabel alloc] init];
+  self.publishedLabel.font = [UIFont systemFontOfSize:12];
+  self.publishedLabel.textColor = [UIColor lightGrayColor];
+  self.publishedLabel.text = publishedString;
+  [self addSubview:self.publishedLabel];
+  self.publisherLabel = [[UILabel alloc] init];
+  self.publisherLabel.font = [UIFont systemFontOfSize:12];
+  self.publisherLabel.textColor = [UIColor lightGrayColor];
+  self.publisherLabel.text = publisherString;
+  [self addSubview:self.publisherLabel];
   
   return self;
 }
@@ -264,48 +240,33 @@ static NSString *detailTemplate = nil;
     self.authorsLabel.frame = CGRectMake(x, y, w, h);
   }
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    {
-      CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
-      CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
-      CGFloat const h = [self.padCategoriesLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-      CGFloat const y = CGRectGetMaxY(self.coverImageView.frame) - h;
-      self.padCategoriesLabel.frame = CGRectMake(x, y, w, h);
-    }
-    {
-      CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
-      CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
-      CGFloat const h = [self.padPublisherLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-      CGFloat const y = CGRectGetMinY(self.padCategoriesLabel.frame) - h;
-      self.padPublisherLabel.frame = CGRectMake(x, y, w, h);
-    }
-    {
-      CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
-      CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
-      CGFloat const h = [self.padPublishedLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-      CGFloat const y = CGRectGetMinY(self.padPublisherLabel.frame) - h;
-      self.padPublishedLabel.frame = CGRectMake(x, y, w, h);
-    }
-  } else {
-    CGFloat const x = 10;
-    CGFloat const y = CGRectGetMaxY(self.coverImageView.frame) + 10;
-    CGFloat const w = CGRectGetWidth(self.frame) - 20;
-    CGFloat const h = [self.phoneMetadataLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-    self.phoneMetadataLabel.frame = CGRectMake(x, y, w, h);
+  {
+    CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
+    CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
+    CGFloat const h = [self.categoriesLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+    CGFloat const y = CGRectGetMaxY(self.coverImageView.frame) - h;
+    self.categoriesLabel.frame = CGRectMake(x, y, w, h);
+  }
+  {
+    CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
+    CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
+    CGFloat const h = [self.publisherLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+    CGFloat const y = CGRectGetMinY(self.categoriesLabel.frame) - h;
+    self.publisherLabel.frame = CGRectMake(x, y, w, h);
+  }
+  {
+    CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
+    CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
+    CGFloat const h = [self.publishedLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
+    CGFloat const y = CGRectGetMinY(self.publisherLabel.frame) - h;
+    self.publishedLabel.frame = CGRectMake(x, y, w, h);
   }
   
   {
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-      self.normalView.frame = CGRectMake(0,
-                                         CGRectGetMaxY(self.coverImageView.frame) + 10.0,
-                                         CGRectGetWidth(self.frame),
-                                         CGRectGetHeight(self.normalView.frame));
-    } else {
-      self.normalView.frame = CGRectMake(0,
-                                         CGRectGetMaxY(self.phoneMetadataLabel.frame) + 10.0,
-                                         CGRectGetWidth(self.frame),
-                                         CGRectGetHeight(self.normalView.frame));
-    }
+    self.normalView.frame = CGRectMake(0,
+                                       CGRectGetMaxY(self.coverImageView.frame) + 10.0,
+                                       CGRectGetWidth(self.frame),
+                                       CGRectGetHeight(self.normalView.frame));
     
     self.downloadingView.frame = self.normalView.frame;
     
