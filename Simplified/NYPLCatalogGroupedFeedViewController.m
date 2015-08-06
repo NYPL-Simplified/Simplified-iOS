@@ -188,6 +188,23 @@ viewForHeaderInSection:(NSInteger const)section
     [view addSubview:button];
   }
   
+  {
+    UIButton *const button = [UIButton buttonWithType:UIButtonTypeSystem];
+    button.titleLabel.font = [UIFont systemFontOfSize:13];
+    NSString *const title = @"More";
+    [button setTitle:title forState:UIControlStateNormal];
+    [button sizeToFit];
+    button.frame = CGRectMake(CGRectGetWidth(view.frame) - CGRectGetWidth(button.frame) - 10,
+                              13,
+                              CGRectGetWidth(button.frame),
+                              CGRectGetHeight(button.frame));
+    button.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+    [button addTarget:self
+               action:@selector(didSelectCategory:)
+     forControlEvents:UIControlEventTouchUpInside];
+    button.exclusiveTouch = YES;
+    [view addSubview:button];
+  }
   return view;
 }
 
