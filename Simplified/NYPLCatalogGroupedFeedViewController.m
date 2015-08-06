@@ -198,6 +198,7 @@ viewForHeaderInSection:(NSInteger const)section
                               13,
                               CGRectGetWidth(button.frame),
                               CGRectGetHeight(button.frame));
+    button.tag = section;
     button.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
     [button addTarget:self
                action:@selector(didSelectCategory:)
