@@ -19,8 +19,7 @@
   self = [super init];
   if(!self) return nil;
   
-  // FIXME: |subsectionURL| will no longer always be present and should be allowed to be nil. The
-  // name of this variable/property should be changed as well.
+  // FIXME: |subsectionURL| will no longer always be present and should be allowed to be nil.
   if(!(books && subsectionURL && title)) {
     @throw NSInvalidArgumentException;
   }
