@@ -191,7 +191,7 @@ viewForHeaderInSection:(NSInteger const)section
   {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.titleLabel.font = [UIFont systemFontOfSize:13];
-    NSString *const title = @"More";
+    NSString *const title = NSLocalizedString(@"More", nil);
     [button setTitle:title forState:UIControlStateNormal];
     [button sizeToFit];
     button.frame = CGRectMake(CGRectGetWidth(view.frame) - CGRectGetWidth(button.frame) - 10,
