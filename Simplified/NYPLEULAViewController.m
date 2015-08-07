@@ -61,7 +61,7 @@
   
   UIButton *const acceptButton = [UIButton buttonWithType:UIButtonTypeSystem];
   acceptButton.titleLabel.font = [UIFont systemFontOfSize:21];
-  NSString *const acceptTitle = NSLocalizedString(@"AcceptEULAButton", nil);
+  NSString *const acceptTitle = NSLocalizedString(@"AcceptEULA", nil);
   acceptButton.translatesAutoresizingMaskIntoConstraints = NO;
   [acceptButton setTitle:acceptTitle forState:UIControlStateNormal];
   [acceptButton sizeToFit];
@@ -79,7 +79,7 @@
   
   UIButton *const rejectButton = [UIButton buttonWithType:UIButtonTypeSystem];
   rejectButton.titleLabel.font = [UIFont systemFontOfSize:21];
-  NSString *const rejectTitle = NSLocalizedString(@"RejectEULAButton", nil);
+  NSString *const rejectTitle = NSLocalizedString(@"RejectEULA", nil);
   rejectButton.translatesAutoresizingMaskIntoConstraints = NO;
   [rejectButton setTitle:rejectTitle forState:UIControlStateNormal];
   [rejectButton sizeToFit];
