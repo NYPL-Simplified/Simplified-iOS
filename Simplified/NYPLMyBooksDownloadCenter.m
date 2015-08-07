@@ -122,6 +122,7 @@ didFinishDownloadingToURL:(NSURL *const)location
   if(success) {
     [[NYPLBookRegistry sharedRegistry]
      setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+    [[NYPLBookRegistry sharedRegistry] save];
   } else {
     [[[UIAlertView alloc]
       initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
