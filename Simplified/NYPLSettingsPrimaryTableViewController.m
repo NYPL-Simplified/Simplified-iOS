@@ -19,6 +19,8 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
           return NYPLSettingsPrimaryTableViewControllerItemFeedback;
         case 1:
           return NYPLSettingsPrimaryTableViewControllerItemCredits;
+        case 2:
+          return NYPLSettingsPrimaryTableViewControllerItemEULA;
         default:
           @throw NSInvalidArgumentException;
       }
@@ -37,6 +39,8 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
       return [NSIndexPath indexPathForRow:0 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemCredits:
       return [NSIndexPath indexPathForRow:1 inSection:1];
+    case NYPLSettingsPrimaryTableViewControllerItemEULA:
+      return [NSIndexPath indexPathForRow:2 inSection:1];
   }
 }
 
@@ -113,6 +117,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       return cell;
     }
+    case NYPLSettingsPrimaryTableViewControllerItemEULA: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      cell.textLabel.text = NSLocalizedString(@"EULA", nil);
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      }
+      return cell;
+    }
   }
 }
 
@@ -128,7 +143,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case 0:
       return 1;
     case 1:
-      return 2;
+      return 3;
     default:
       @throw NSInternalInconsistencyException;
   }

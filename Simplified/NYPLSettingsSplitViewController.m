@@ -3,6 +3,7 @@
 #import "NYPLSettingsFeedbackViewController.h"
 #import "NYPLSettingsPrimaryNavigationController.h"
 #import "NYPLSettingsPrimaryTableViewController.h"
+#import "NYPLSettingsEULAViewController.h"
 
 #import "NYPLSettingsSplitViewController.h"
 
@@ -75,6 +76,9 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
       break;
     case NYPLSettingsPrimaryTableViewControllerItemFeedback:
       viewController = [[NYPLSettingsFeedbackViewController alloc] init];
+      break;
+    case NYPLSettingsPrimaryTableViewControllerItemEULA:
+      viewController = [[NYPLSettingsEULAViewController alloc] init];
       break;
   }
   
