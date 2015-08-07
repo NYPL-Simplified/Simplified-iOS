@@ -108,6 +108,10 @@
 		11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3773219E0876F00487769 /* NYPLCatalogFacet.m */; };
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
+		8418C0471B75176B00FAB724 /* eula.css in Resources */ = {isa = PBXBuildFile; fileRef = 8418C0451B75176B00FAB724 /* eula.css */; };
+		8418C0481B75176B00FAB724 /* eula.html in Resources */ = {isa = PBXBuildFile; fileRef = 8418C0461B75176B00FAB724 /* eula.html */; };
+		841B553E1B73FB2700FAC1AF /* NYPLEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B553D1B73FB2700FAC1AF /* NYPLEULAViewController.m */; };
+		841B55431B740F2700FAC1AF /* NYPLSettingsEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */; };
 		A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */; };
 		A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF31B40F4E00095EBAE /* NYPLCatalogFeedViewController.m */; };
 		A46226271B39D4980063F549 /* NYPLOPDSGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = A46226251B39D4980063F549 /* NYPLOPDSGroup.m */; };
@@ -336,6 +340,12 @@
 		11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryTests.m; sourceTree = "<group>"; };
 		11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLinkTests.m; sourceTree = "<group>"; };
 		5705D893E0FE4395A50F089E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8418C0451B75176B00FAB724 /* eula.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = eula.css; sourceTree = "<group>"; };
+		8418C0461B75176B00FAB724 /* eula.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = eula.html; sourceTree = "<group>"; };
+		841B553C1B73FB2700FAC1AF /* NYPLEULAViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLEULAViewController.h; sourceTree = "<group>"; };
+		841B553D1B73FB2700FAC1AF /* NYPLEULAViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLEULAViewController.m; sourceTree = "<group>"; };
+		841B55411B740F2700FAC1AF /* NYPLSettingsEULAViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsEULAViewController.h; sourceTree = "<group>"; };
+		841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsEULAViewController.m; sourceTree = "<group>"; };
 		A42E0DEF1B3F5A490095EBAE /* NYPLRemoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRemoteViewController.h; sourceTree = "<group>"; };
 		A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLRemoteViewController.m; sourceTree = "<group>"; };
 		A42E0DF21B40F4E00095EBAE /* NYPLCatalogFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogFeedViewController.h; sourceTree = "<group>"; };
@@ -590,6 +600,8 @@
 				1158812D1A894F4E008672C3 /* NYPLSettingsAccountViewController.m */,
 				111E75871A818C1F00718AD7 /* NYPLSettingsCreditsViewController.h */,
 				111E75881A818C1F00718AD7 /* NYPLSettingsCreditsViewController.m */,
+				841B55411B740F2700FAC1AF /* NYPLSettingsEULAViewController.h */,
+				841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */,
 				111E75841A818C0B00718AD7 /* NYPLSettingsFeedbackViewController.h */,
 				111E75851A818C0B00718AD7 /* NYPLSettingsFeedbackViewController.m */,
 				111E757B1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.h */,
@@ -687,6 +699,8 @@
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
 				111197321986D7550014462F /* NYPLDismissibleViewController.h */,
 				111197331986D7550014462F /* NYPLDismissibleViewController.m */,
+				841B553C1B73FB2700FAC1AF /* NYPLEULAViewController.h */,
+				841B553D1B73FB2700FAC1AF /* NYPLEULAViewController.m */,
 				1142E4E919EED86A00D9B3D9 /* NYPLFacetBarView.h */,
 				1142E4EA19EED86A00D9B3D9 /* NYPLFacetBarView.m */,
 				11F3771D19DB62B000487769 /* NYPLFacetView.h */,
@@ -728,6 +742,8 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8418C0451B75176B00FAB724 /* eula.css */,
+				8418C0461B75176B00FAB724 /* eula.html */,
 				111E758C1A840DC500718AD7 /* credits.css */,
 				111E758A1A840A1600718AD7 /* credits.html */,
 				110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */,
@@ -902,6 +918,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8418C0471B75176B00FAB724 /* eula.css in Resources */,
 				11C113D719F84613005B3F63 /* simplified.js in Resources */,
 				A823D81B192BABA400B55DE2 /* InfoPlist.strings in Resources */,
 				11C113D019F842B9005B3F63 /* reader.html in Resources */,
@@ -912,6 +929,7 @@
 				111E758D1A840DC500718AD7 /* credits.css in Resources */,
 				11C113D219F842BE005B3F63 /* host_app_feedback.js in Resources */,
 				119503F41994001F009FB788 /* readium-shared-js in Resources */,
+				8418C0481B75176B00FAB724 /* eula.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -978,6 +996,7 @@
 				113137E71A48DAB90082954E /* NYPLReaderReadiumView.m in Sources */,
 				118B7ABF195CBF72005CE3E7 /* NYPLSession.m in Sources */,
 				111E75861A818C0B00718AD7 /* NYPLSettingsFeedbackViewController.m in Sources */,
+				841B55431B740F2700FAC1AF /* NYPLSettingsEULAViewController.m in Sources */,
 				1164F106199AC236009BF8BF /* NYPLBookLocation.m in Sources */,
 				11F3771F19DB62B000487769 /* NYPLFacetView.m in Sources */,
 				111197281986B43B0014462F /* NYPLBookCellDelegate.m in Sources */,
@@ -1001,6 +1020,7 @@
 				11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */,
 				118A0B1B19915BDF00792DDE /* NYPLCatalogSearchViewController.m in Sources */,
 				1188F3E11A1ECC4B006B2F36 /* NYPLReaderSettings.m in Sources */,
+				841B553E1B73FB2700FAC1AF /* NYPLEULAViewController.m in Sources */,
 				11C5DD16197727A6005A9945 /* NYPLKeychain.m in Sources */,
 				AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */,
 				11DC19281A12F92500721DBA /* NYPLReaderSettingsView.m in Sources */,
