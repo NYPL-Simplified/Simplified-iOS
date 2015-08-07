@@ -2,6 +2,7 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLEULAViewController.h"
 
 #import "NYPLAppDelegate.h"
 
@@ -18,10 +19,15 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.tintColor = [NYPLConfiguration mainColor];
-  self.window.rootViewController = [NYPLRootTabBarController sharedController];
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
   [self.window makeKeyAndVisible];
-
+  
+  UIViewController *eulaViewController = [[NYPLEULAViewController alloc] initWithCompletionHandler:^(void) {
+    self.window.rootViewController = [NYPLRootTabBarController sharedController];
+  }];
+  
+  self.window.rootViewController = eulaViewController;
+  
   return YES;
 }
 
