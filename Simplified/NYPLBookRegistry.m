@@ -52,7 +52,13 @@ static NSString *const RecordsKey = @"records";
   self.identifiersToRecords = [NSMutableDictionary dictionary];
   self.shouldBroadcast = YES;
   
-  [self performSelector:@selector(syncWithCompletionHandler:) withObject:nil afterDelay:3.0];
+  void (^handlerBlock)(BOOL success)= ^(BOOL success){
+    if(success) {
+      [[NYPLBookRegistry sharedRegistry] save];
+    } else {
+    }};
+  
+  [self performSelector:@selector(syncWithCompletionHandler:) withObject:handlerBlock afterDelay:3.0];
   
   return self;
 }
