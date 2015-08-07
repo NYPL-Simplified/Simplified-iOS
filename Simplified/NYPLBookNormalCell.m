@@ -200,6 +200,8 @@
       self.downloadButton.hidden = NO;
       self.readButton.hidden = YES;
       self.unreadImageView.hidden = YES;
+      [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
+                           forState:UIControlStateNormal];
       break;
     case NYPLBookNormalCellStateDownloadSuccessful:
       self.deleteButton.hidden = NO;

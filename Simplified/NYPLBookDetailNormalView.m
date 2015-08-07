@@ -125,6 +125,8 @@
       self.messageLabel.text = @"Your book has not yet been downloaded.";
       self.deleteReadLinearView.hidden = YES;
       self.downloadButton.hidden = NO;
+      [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
+                           forState:UIControlStateNormal];
       break;
     case NYPLBookDetailNormalViewStateDownloadSuccessful:
       self.messageLabel.text = @"Your book is ready to read!";
