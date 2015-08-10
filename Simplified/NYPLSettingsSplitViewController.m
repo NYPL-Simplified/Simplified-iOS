@@ -4,6 +4,7 @@
 #import "NYPLSettingsPrimaryNavigationController.h"
 #import "NYPLSettingsPrimaryTableViewController.h"
 #import "NYPLSettingsEULAViewController.h"
+#import "NYPLSettingsPrivacyPolicyViewController.h"
 
 #import "NYPLSettingsSplitViewController.h"
 
@@ -79,6 +80,9 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
       break;
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
       viewController = [[NYPLSettingsEULAViewController alloc] init];
+      break;
+    case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
+      viewController = [[NYPLSettingsPrivacyPolicyViewController alloc] init];
       break;
   }
   

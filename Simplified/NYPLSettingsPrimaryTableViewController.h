@@ -4,7 +4,8 @@ typedef NS_ENUM(NSInteger, NYPLSettingsPrimaryTableViewControllerItem) {
   NYPLSettingsPrimaryTableViewControllerItemAccount,
   NYPLSettingsPrimaryTableViewControllerItemCredits,
   NYPLSettingsPrimaryTableViewControllerItemFeedback,
-  NYPLSettingsPrimaryTableViewControllerItemEULA
+  NYPLSettingsPrimaryTableViewControllerItemEULA,
+  NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy
 };
 
 NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
