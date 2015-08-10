@@ -33,3 +33,9 @@ static NSString *const NYPLOPDSRelationSearch =
 
 static NSString *const NYPLOPDSRelationSubsection =
   @"subsection";
+
+static NSString *const NYPLOPDSEULALink =
+  @"terms-of-service";
+
+static NSString *const NYPLOPDSPrivacyPolicyLink =
+  @"privacy-policy";
