@@ -1,4 +1,4 @@
-@interface NYPLEULAViewController : UIViewController
+@interface NYPLEULAViewController : UIViewController <UIWebViewDelegate>
 
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;

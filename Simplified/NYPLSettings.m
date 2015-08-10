@@ -4,6 +4,8 @@ static NSString *const customMainFeedURLKey = @"NYPLSettingsCustomMainFeedURL";
 
 static NSString *const renderingEngineKey = @"NYPLSettingsRenderingEngine";
 
+static NSString *const userAcceptedEULAKey = @"NYPLSettingsUserAcceptedEULA";
+
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
 {
   if(!string || [string isEqualToString:@"automatic"]) {
@@ -47,6 +49,16 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 - (NSURL *)customMainFeedURL
 {
   return [[NSUserDefaults standardUserDefaults] URLForKey:customMainFeedURLKey];
+}
+
+- (BOOL)userAcceptedEULA
+{
+  return [[NSUserDefaults standardUserDefaults] boolForKey:userAcceptedEULAKey];
+}
+
+- (void) setUserAcceptedEULA:(BOOL)userAcceptedEULA {
+  [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:userAcceptedEULAKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)setCustomMainFeedURL:(NSURL *const)customMainFeedURL
