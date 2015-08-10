@@ -85,3 +85,9 @@
   "You need a library card to download this book.";
 "SettingsAccountViewControllerMessageInvalidPIN" =
   "Your PIN has changed. Enter your new PIN.";
+
+// NYPLEULAViewController
+"Accept" = "Accept";
+"Reject" = "Reject";
+"EULA" = "EULA";
+"EULAHaveToAgree" = "You have to agree to the EULA in order to use this application";
