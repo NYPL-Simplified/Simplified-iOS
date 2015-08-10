@@ -1,3 +1,3 @@
-@interface NYPLSettingsEULAViewController : UIViewController
+@interface NYPLSettingsEULAViewController : UIViewController <UIWebViewDelegate>
 
 @end
