@@ -116,7 +116,7 @@ static NSString * const offlineEULAPathComponent = @"eula.html";
 - (void) rejectedEULA {
   [[NYPLSettings sharedSettings] setUserAcceptedEULA:NO];
   
-  UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"EULA", nil)
+  UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"NOTICE", nil)
                                                                            message:NSLocalizedString(@"EULAHaveToAgree", nil)
                                                                     preferredStyle:UIAlertControllerStyleAlert];
   

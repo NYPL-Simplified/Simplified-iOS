@@ -90,4 +90,5 @@
 "Accept" = "Accept";
 "Reject" = "Reject";
 "EULA" = "EULA";
-"EULAHaveToAgree" = "You have to agree to the EULA in order to use this application";
+"EULAHaveToAgree" = "You must accept the End User License Agreement to use this application.";
+"NOTICE" = "NOTICE";
