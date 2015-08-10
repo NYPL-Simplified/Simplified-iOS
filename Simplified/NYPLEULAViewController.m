@@ -6,6 +6,7 @@
 @interface NYPLEULAViewController ()
 @property (nonatomic, strong) void(^handler)(void);
 @property (nonatomic) UIWebView *webView;
+@property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @end
 
 static NSString * const onlineEULAPath = @"http://www.librarysimplified.org/EULA.html";
@@ -105,6 +106,15 @@ static NSString * const offlineEULAPathComponent = @"eula.html";
   NSLayoutConstraint *horizontalRejectSpaceConstraint = [NSLayoutConstraint constraintWithItem:rejectButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeTrailing multiplier:1.f constant:-10];
   [self.view addConstraint:bottomRejectSpaceConstraint];
   [self.view addConstraint:horizontalRejectSpaceConstraint];
+  
+  self.activityIndicatorView =
+  [[UIActivityIndicatorView alloc]
+   initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  self.activityIndicatorView.center = self.view.center;
+  self.activityIndicatorView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                            UIViewAutoresizingFlexibleHeight);
+  [self.activityIndicatorView startAnimating];
+  [self.view addSubview:self.activityIndicatorView];
 }
 
 - (void) acceptedEULA {
@@ -152,6 +162,10 @@ static NSString * const offlineEULAPathComponent = @"eula.html";
 #pragma mark NSURLConnectionDelegate
 - (void)webView:(__attribute__((unused)) UIWebView *)webView didFailLoadWithError:(__attribute__((unused)) NSError *)error {
   [self loadWebViewFromBundle];
+}
+
+-(void)webViewDidFinishLoad:(__attribute__((unused)) UIWebView *)webView {
+  [self.activityIndicatorView stopAnimating];
 }
 
 -(BOOL)webView:(__attribute__((unused)) UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType {
