@@ -1,12 +1,12 @@
 // Generic
 "Acknowledgements" = "Acknowledgements";
 "Barcode" = "Barcode";
+"Borrow" = "Borrow";
 "Cancel" = "Cancel";
 "Catalog" = "Catalog";
 "Categories" = "Categories";
 "Category" = "Category";
 "CheckConnection" = "Please check your connection and try again.";
-"CheckOut" = "Check Out";
 "ConnectionFailed" = "Connection Failed";
 "Delete" = "Delete";
 "Download" = "Download";

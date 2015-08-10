@@ -109,7 +109,7 @@
       self.messageLabel.text = @"This book is available to borrow.";
       self.deleteReadLinearView.hidden = YES;
       self.downloadButton.hidden = NO;
-      [self.downloadButton setTitle:NSLocalizedString(@"CheckOut", nil)
+      [self.downloadButton setTitle:NSLocalizedString(@"Borrow", nil)
                            forState:UIControlStateNormal];
       [self.downloadButton sizeToFit];
       break;
