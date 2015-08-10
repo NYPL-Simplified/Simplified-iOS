@@ -7,6 +7,7 @@
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLSession.h"
 #import "NYPLXML.h"
+#import "NYPLSettings.h"
 
 #import "NYPLCatalogGroupedFeed.h"
 
@@ -32,10 +33,19 @@
     if([link.rel isEqualToString:NYPLOPDSRelationSearch] &&
        NYPLOPDSTypeStringIsOpenSearchDescription(link.type)) {
       openSearchURL = link.href;
-      break;
+      continue;
+    }
+    else if ([link.rel isEqualToString:NYPLOPDSEULALink]) {
+      NSURL *href = link.href;
+      [[NYPLSettings sharedSettings] setEulaURL:href];
+      continue;
+    }
+    else if ([link.rel isEqualToString:NYPLOPDSPrivacyPolicyLink]) {
+      NSURL *href = link.href;
+      [[NYPLSettings sharedSettings] setPrivacyPolicyURL:href];
+      continue;
     }
   }
-  
   
   // This holds group titles in order, without duplicates.
   NSMutableArray *const groupTitles = [NSMutableArray array];
