@@ -85,9 +85,12 @@
 "SettingsAccountViewControllerMessageInvalidPIN" =
   "Your PIN has changed. Enter your new PIN.";
 
-// NYPLEULAViewController
+// NYPLEULAViewController && NYPLSettingsEULAViewController
 "Accept" = "Accept";
 "Reject" = "Reject";
 "EULA" = "EULA";
 "EULAHaveToAgree" = "You must accept the End User License Agreement to use this application.";
 "NOTICE" = "NOTICE";
+
+// NYPLSettingsPrivacyPolicyViewController
+"PrivacyPolicy" = "Privacy Policy";
