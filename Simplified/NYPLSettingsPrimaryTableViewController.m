@@ -21,6 +21,8 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
           return NYPLSettingsPrimaryTableViewControllerItemCredits;
         case 2:
           return NYPLSettingsPrimaryTableViewControllerItemEULA;
+        case 3:
+          return NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy;
         default:
           @throw NSInvalidArgumentException;
       }
@@ -41,6 +43,8 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
       return [NSIndexPath indexPathForRow:1 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
       return [NSIndexPath indexPathForRow:2 inSection:1];
+    case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
+      return [NSIndexPath indexPathForRow:3 inSection:1];
   }
 }
 
@@ -128,6 +132,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       return cell;
     }
+    case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      cell.textLabel.text = NSLocalizedString(@"PrivacyPolicy", nil);
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      }
+      return cell;
+    }
   }
 }
 
@@ -143,7 +158,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case 0:
       return 1;
     case 1:
-      return 3;
+      return 4;
     default:
       @throw NSInternalInconsistencyException;
   }
