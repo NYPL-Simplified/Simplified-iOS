@@ -1,5 +1,5 @@
 // Generic
-
+"Acknowledgements" = "Acknowledgements";
 "Barcode" = "Barcode";
 "Cancel" = "Cancel";
 "Catalog" = "Catalog";
@@ -8,7 +8,6 @@
 "CheckConnection" = "Please check your connection and try again.";
 "CheckOut" = "Check Out";
 "ConnectionFailed" = "Connection Failed";
-"CreditsAndAcknowledgements" = "Credits & Acknowledgements";
 "Delete" = "Delete";
 "Download" = "Download";
 "DownloadCouldNotBeCompleted" = "The download could not be completed.";
