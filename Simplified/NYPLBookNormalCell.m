@@ -182,7 +182,7 @@
       self.downloadButton.hidden = NO;
       self.readButton.hidden = YES;
       self.unreadImageView.hidden = YES;
-      [self.downloadButton setTitle:NSLocalizedString(@"CheckOut", nil)
+      [self.downloadButton setTitle:NSLocalizedString(@"Borrow", nil)
                            forState:UIControlStateNormal];
       [self setNeedsLayout];
       break;
