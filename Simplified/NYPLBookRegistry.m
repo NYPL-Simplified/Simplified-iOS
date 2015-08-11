@@ -52,7 +52,13 @@ static NSString *const RecordsKey = @"records";
   self.identifiersToRecords = [NSMutableDictionary dictionary];
   self.shouldBroadcast = YES;
   
-  [self performSelector:@selector(syncWithCompletionHandler:) withObject:nil afterDelay:3.0];
+  void (^handlerBlock)(BOOL success)= ^(BOOL success){
+    if(success) {
+      [[NYPLBookRegistry sharedRegistry] save];
+    } else {
+    }};
+  
+  [self performSelector:@selector(syncWithCompletionHandler:) withObject:handlerBlock afterDelay:3.0];
   
   return self;
 }
@@ -231,16 +237,23 @@ static NSString *const RecordsKey = @"records";
      }
      
      [self performSynchronizedWithoutBroadcasting:^{
+       NSMutableSet *identifiersToRemove = [NSMutableSet setWithArray:self.identifiersToRecords.allKeys];
        for(NYPLOPDSEntry *const entry in feed.entries) {
          NYPLBook *const book = [NYPLBook bookWithEntry:entry];
          if(!book) {
            NYPLLOG_F(@"Failed to create book for entry '%@'.", entry.identifier);
            continue;
          }
+         [identifiersToRemove removeObject:book.identifier];
          NYPLBook *const existingBook = [self bookForIdentifier:book.identifier];
-         if(!existingBook) {
+         if(existingBook) {
+           [self updateBook:book];
+         } else {
            [self addBook:book location:nil state:NYPLBookStateDownloadNeeded];
          }
+       }
+       for (NSString *identifier in identifiersToRemove) {
+         [self removeBookForIdentifier:identifier];
        }
      }];
      self.syncing = NO;

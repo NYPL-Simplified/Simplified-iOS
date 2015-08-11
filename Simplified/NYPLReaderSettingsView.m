@@ -432,6 +432,18 @@
   
   CGFloat const thin = 1.0 / [UIScreen mainScreen].scale;
   
+  if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone
+      ) {
+    UIView *const line = [[UIView alloc]
+                          initWithFrame:CGRectMake(CGRectGetMinX(self.sansButton.frame),
+                                                   CGRectGetMinY(self.sansButton.frame),
+                                                   (CGRectGetMaxX(self.serifButton.frame) -
+                                                   CGRectGetMinX(self.sansButton.frame)),
+                                                   thin)];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
+  
   {
     UIView *const line = [[UIView alloc]
                            initWithFrame:CGRectMake(CGRectGetMinX(self.serifButton.frame),
