@@ -6,6 +6,7 @@
 #import "NYPLBookAcquisition.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLOPDSFeed.h"
 
 #import "NYPLMyBooksDownloadCenter.h"
 
@@ -122,6 +123,7 @@ didFinishDownloadingToURL:(NSURL *const)location
   if(success) {
     [[NYPLBookRegistry sharedRegistry]
      setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+    [[NYPLBookRegistry sharedRegistry] save];
   } else {
     [[[UIAlertView alloc]
       initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
@@ -285,36 +287,56 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
   
   if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-    NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.openAccess];
-    
-    if(!request.URL) {
-      // Originally this code just let the request fail later on, but apparently resuming an
-      // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
-      // segmentation fault.
-      NYPLLOG(@"Aborting request with invalid URL.");
-      [self failDownloadForBook:book];
-      return;
+    if (state == NYPLBookStateUnregistered) {
+      // Check out the book
+      [NYPLOPDSFeed withURL:book.acquisition.borrow completionHandler:^(NYPLOPDSFeed *feed) {
+        if (!feed || feed.entries.count < 1) {
+          NYPLLOG(@"Failed to check out book.");
+          return;
+        }
+        
+        NYPLBook *book = [NYPLBook bookWithEntry:feed.entries[0]];
+        
+        [[NYPLBookRegistry sharedRegistry]
+         addBook:book
+         location:nil
+         state:NYPLBookStateDownloadNeeded];
+        
+        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+      }];
+    } else {
+      // Actually download the book
+      NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.generic];
+      
+      if(!request.URL) {
+        // Originally this code just let the request fail later on, but apparently resuming an
+        // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
+        // segmentation fault.
+        NYPLLOG(@"Aborting request with invalid URL.");
+        [self failDownloadForBook:book];
+        return;
+      }
+      
+      NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
+      
+      self.bookIdentifierToDownloadProgress[book.identifier] = @0.0;
+      self.bookIdentifierToDownloadTask[book.identifier] = task;
+      self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
+      
+      [task resume];
+      
+      [[NYPLBookRegistry sharedRegistry]
+       addBook:book
+       location:nil
+       state:NYPLBookStateDownloading];
+      
+      // It is important to issue this immediately because a previous download may have left the
+      // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
+      // the user. As such, calling |broadcastUpdate| is not appropriate due to the delay.
+      [[NSNotificationCenter defaultCenter]
+       postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
+       object:self];
     }
-    
-    NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
-    
-    self.bookIdentifierToDownloadProgress[book.identifier] = @0.0;
-    self.bookIdentifierToDownloadTask[book.identifier] = task;
-    self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
-    
-    [task resume];
-    
-    [[NYPLBookRegistry sharedRegistry]
-     addBook:book
-     location:nil
-     state:NYPLBookStateDownloading];
-    
-    // It is important to issue this immediately because a previous download may have left the
-    // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
-    // the user. As such, calling |broadcastUpdate| is not appropriate due to the delay.
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
-     object:self];
   } else {
     [NYPLSettingsAccountViewController
      requestCredentialsUsingExistingBarcode:NO

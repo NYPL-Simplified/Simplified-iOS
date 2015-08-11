@@ -109,7 +109,7 @@
       self.messageLabel.text = @"This book is available to borrow.";
       self.deleteReadLinearView.hidden = YES;
       self.downloadButton.hidden = NO;
-      [self.downloadButton setTitle:NSLocalizedString(@"CheckOut", nil)
+      [self.downloadButton setTitle:NSLocalizedString(@"Borrow", nil)
                            forState:UIControlStateNormal];
       [self.downloadButton sizeToFit];
       break;
@@ -125,6 +125,8 @@
       self.messageLabel.text = @"Your book has not yet been downloaded.";
       self.deleteReadLinearView.hidden = YES;
       self.downloadButton.hidden = NO;
+      [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
+                           forState:UIControlStateNormal];
       break;
     case NYPLBookDetailNormalViewStateDownloadSuccessful:
       self.messageLabel.text = @"Your book is ready to read!";

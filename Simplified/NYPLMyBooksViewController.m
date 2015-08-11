@@ -298,6 +298,8 @@ OK:
           cancelButtonTitle:nil
           otherButtonTitles:@"OK", nil]
          show];
+        
+        [[NYPLBookRegistry sharedRegistry] save];
       } else {
         [[[UIAlertView alloc]
           initWithTitle:NSLocalizedString(@"SyncFailed", nil)

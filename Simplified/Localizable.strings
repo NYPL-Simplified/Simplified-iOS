@@ -1,14 +1,13 @@
 // Generic
-
+"Acknowledgements" = "Acknowledgements";
 "Barcode" = "Barcode";
+"Borrow" = "Borrow";
 "Cancel" = "Cancel";
 "Catalog" = "Catalog";
 "Categories" = "Categories";
 "Category" = "Category";
 "CheckConnection" = "Please check your connection and try again.";
-"CheckOut" = "Check Out";
 "ConnectionFailed" = "Connection Failed";
-"CreditsAndAcknowledgements" = "Credits & Acknowledgements";
 "Delete" = "Delete";
 "Download" = "Download";
 "DownloadCouldNotBeCompleted" = "The download could not be completed.";
@@ -18,6 +17,7 @@
 "Feedback" = "Feedback";
 "LibraryCard" = "Library Card";
 "LogIn" = "Log In";
+"More..." = "More...";
 "NoResultsFound" = "No results found.";
 "NotConnected" = "You are not connected to the internet. Please connect and try again.";
 "OK" = "OK";
@@ -84,3 +84,13 @@
   "You need a library card to download this book.";
 "SettingsAccountViewControllerMessageInvalidPIN" =
   "Your PIN has changed. Enter your new PIN.";
+
+// NYPLEULAViewController && NYPLSettingsEULAViewController
+"Accept" = "Accept";
+"Reject" = "Reject";
+"EULA" = "EULA";
+"EULAHaveToAgree" = "You must accept the End User License Agreement to use this application.";
+"NOTICE" = "NOTICE";
+
+// NYPLSettingsPrivacyPolicyViewController
+"PrivacyPolicy" = "Privacy Policy";

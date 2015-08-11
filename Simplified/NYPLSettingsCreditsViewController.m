@@ -17,7 +17,7 @@
   self = [super init];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"CreditsAndAcknowledgements", nil);
+  self.title = NSLocalizedString(@"Acknowledgements", nil);
   
   return self;
 }

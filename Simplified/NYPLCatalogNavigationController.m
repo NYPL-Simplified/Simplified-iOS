@@ -25,7 +25,21 @@
   viewController.navigationItem.titleView =
     [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Catalog"]];
   
+  viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
+                                                     initWithImage:[UIImage imageNamed:@"Reload"]
+                                                     style:UIBarButtonItemStylePlain
+                                                     target:self
+                                                     action:@selector(reloadSelected)];
+  viewController.navigationItem.leftBarButtonItem.enabled = YES;  
+  
   return self;
+}
+
+- (void) reloadSelected {
+  if ([[self.visibleViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] && [self.visibleViewController respondsToSelector:@selector(load)]) {
+    NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
+    [viewController load];
+  }
 }
 
 @end
