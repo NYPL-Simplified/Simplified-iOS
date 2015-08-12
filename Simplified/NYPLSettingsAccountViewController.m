@@ -8,6 +8,7 @@
 #import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
+@import CoreLocation;
 
 #import "NYPLSettingsAccountViewController.h"
 
@@ -191,10 +192,56 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindRegistration:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      [[NYPLRootTabBarController sharedController]
-       safelyPresentViewController:[[NYPLSettingsRegistrationViewController alloc] init]
-       animated:YES
-       completion:nil];
+      [self verifyLocationServicesWithHandler:^(void) {
+        [[NYPLRootTabBarController sharedController]
+         safelyPresentViewController:[[NYPLSettingsRegistrationViewController alloc] init]
+         animated:YES
+         completion:nil];
+      }];
+      break;
+  }
+}
+
+- (void) verifyLocationServicesWithHandler:(void(^)(void))handler {
+  CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
+  
+  switch (status) {
+    case kCLAuthorizationStatusAuthorizedAlways:
+      if (handler) handler();
+      break;
+    case kCLAuthorizationStatusAuthorizedWhenInUse:
+      if (handler) handler();
+      break;
+    case kCLAuthorizationStatusDenied:
+    {
+      UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Location", nil)
+                                                                               message:NSLocalizedString(@"LocationRequiredMessage", nil)
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+      
+      UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Settings", nil)
+                                                           style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction *action) {
+                                                           if (action)[UIApplication.sharedApplication openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                                         }];
+
+      UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                           style:UIAlertActionStyleDestructive
+                                                         handler:nil];
+      
+      [alertController addAction:settingsAction];
+      [alertController addAction:cancelAction];
+      
+      [self presentViewController:alertController
+                         animated:NO
+                       completion:nil];
+      
+      break;
+    }
+    case kCLAuthorizationStatusRestricted:
+      if (handler) handler();
+      break;
+    case kCLAuthorizationStatusNotDetermined:
+      if (handler) handler();
       break;
   }
 }
