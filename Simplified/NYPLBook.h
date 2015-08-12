@@ -1,13 +1,16 @@
 @class NYPLBookAcquisition;
 @class NYPLOPDSEntry;
+@class NYPLOPDSEvent;
 
 @interface NYPLBook : NSObject
 
 @property (nonatomic, readonly) NYPLBookAcquisition *acquisition;
 @property (nonatomic, readonly) NSString *authors;
 @property (nonatomic, readonly) NSArray *authorStrings;
+@property (nonatomic, readonly) NSInteger availableLicenses;
 @property (nonatomic, readonly) NSString *categories;
 @property (nonatomic, readonly) NSArray *categoryStrings;
+@property (nonatomic, readonly) NYPLOPDSEvent *event;
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSURL *imageURL; // nilable
 @property (nonatomic, readonly) NSURL *imageThumbnailURL; // nilable
@@ -26,7 +29,9 @@
 // designated initializer
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
                       authorStrings:(NSArray *)authorStrings
+                  availableLicenses:(NSInteger)availableLicenses
                     categoryStrings:(NSArray *)categoryStrings
+                              event:(NYPLOPDSEvent *)event
                          identifier:(NSString *)identifier
                            imageURL:(NSURL *)imageURL
                   imageThumbnailURL:(NSURL *)imageThumbnailURL

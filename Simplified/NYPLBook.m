@@ -2,6 +2,7 @@
 #import "NYPLBookAcquisition.h"
 #import "NYPLNull.h"
 #import "NYPLOPDS.h"
+#import "NYPLOPDSEvent.h"
 
 #import "NYPLBook.h"
 
@@ -9,7 +10,9 @@
 
 @property (nonatomic) NYPLBookAcquisition *acquisition;
 @property (nonatomic) NSArray *authorStrings;
+@property (nonatomic) NSInteger availableLicenses;
 @property (nonatomic) NSArray *categoryStrings;
+@property (nonatomic) NYPLOPDSEvent *event;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSURL *imageURL;
 @property (nonatomic) NSURL *imageThumbnailURL;
@@ -24,7 +27,9 @@
 
 static NSString *const AcquisitionKey = @"acquisition";
 static NSString *const AuthorsKey = @"authors";
+static NSString *const AvailableLicensesKey = @"available-licenses";
 static NSString *const CategoriesKey = @"categories";
+static NSString *const EventKey = @"event";
 static NSString *const IdentifierKey = @"id";
 static NSString *const ImageURLKey = @"image";
 static NSString *const ImageThumbnailURLKey = @"image-thumbnail";
@@ -80,7 +85,9 @@ static NSString *const UpdatedKey = @"updated";
                                openAccess:openAccess
                                sample:sample]
           authorStrings:entry.authorStrings
+          availableLicenses:entry.availableLicenses
           categoryStrings:entry.categoryStrings
+          event:entry.event
           identifier:entry.identifier
           imageURL:image
           imageThumbnailURL:imageThumbnail
@@ -94,7 +101,9 @@ static NSString *const UpdatedKey = @"updated";
 
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *const)acquisition
                       authorStrings:(NSArray *const)authorStrings
+                  availableLicenses:(NSInteger)availableLicenses
                     categoryStrings:(NSArray *const)categoryStrings
+                              event:(NYPLOPDSEvent *const)event
                          identifier:(NSString *const)identifier
                            imageURL:(NSURL *const)imageURL
                   imageThumbnailURL:(NSURL *const)imageThumbnailURL
@@ -120,7 +129,9 @@ static NSString *const UpdatedKey = @"updated";
   
   self.acquisition = acquisition;
   self.authorStrings = authorStrings;
+  self.availableLicenses = availableLicenses;
   self.categoryStrings = categoryStrings;
+  self.event = event;
   self.identifier = identifier;
   self.imageURL = imageURL;
   self.imageThumbnailURL = imageThumbnailURL;
@@ -147,6 +158,8 @@ static NSString *const UpdatedKey = @"updated";
   
   self.categoryStrings = dictionary[CategoriesKey];
   if(!self.categoryStrings) return nil;
+  
+  self.event = [[NYPLOPDSEvent alloc] initWithDictionary:NYPLNullToNil(dictionary[EventKey])];
   
   self.identifier = dictionary[IdentifierKey];
   if(!self.identifier) return nil;
@@ -179,7 +192,9 @@ static NSString *const UpdatedKey = @"updated";
 {
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
            AuthorsKey: self.authorStrings,
+           AvailableLicensesKey: @(self.availableLicenses),
            CategoriesKey: self.categoryStrings,
+           EventKey: NYPLNullFromNil([self.event dictionaryRepresentation]),
            IdentifierKey: self.identifier,
            ImageURLKey: NYPLNullFromNil([self.imageURL absoluteString]),
            ImageThumbnailURLKey: NYPLNullFromNil([self.imageThumbnailURL absoluteString]),

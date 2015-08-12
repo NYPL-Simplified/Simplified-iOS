@@ -5,6 +5,7 @@ static NSString *const DownloadFailed = @"download-failed";
 static NSString *const DownloadNeeded = @"download-needed";
 static NSString *const DownloadSuccessful = @"download-successful";
 static NSString *const Unregistered = @"unregistered";
+static NSString *const Holding = @"holding";
 static NSString *const Used = @"used";
 
 NYPLBookState NYPLBookStateFromString(NSString *const string)
@@ -14,6 +15,7 @@ NYPLBookState NYPLBookStateFromString(NSString *const string)
   if([string isEqualToString:DownloadNeeded]) return NYPLBookStateDownloadNeeded;
   if([string isEqualToString:DownloadSuccessful]) return NYPLBookStateDownloadSuccessful;
   if([string isEqualToString:Unregistered]) return NYPLBookStateUnregistered;
+  if([string isEqualToString:Holding]) return NYPLBookStateHolding;
   if([string isEqualToString:Used]) return NYPLBookStateUsed;
   
   @throw NSInvalidArgumentException;
@@ -32,6 +34,8 @@ NSString *NYPLBookStateToString(NYPLBookState state)
       return DownloadSuccessful;
     case NYPLBookStateUnregistered:
       return Unregistered;
+    case NYPLBookStateHolding:
+      return Holding;
     case NYPLBookStateUsed:
       return Used;
   }

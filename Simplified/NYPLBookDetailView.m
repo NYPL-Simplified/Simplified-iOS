@@ -410,6 +410,14 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.state = NYPLBookDetailNormalViewStateDownloadSuccessful;
       self.unreadImageView.hidden = NO;
       break;
+    case NYPLBookStateHolding:
+      self.normalView.hidden = NO;
+      self.downloadFailedView.hidden = YES;
+      self.downloadingView.hidden = YES;
+      // TODO: Change this to something for Holding - BA
+      self.normalView.state = NYPLBookDetailNormalViewStateDownloadNeeded;
+      self.unreadImageView.hidden = YES;
+      break;
     case NYPLBookStateUsed:
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;

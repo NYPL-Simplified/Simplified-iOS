@@ -1,5 +1,6 @@
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLOPDSEntryGroupAttributes.h"
+#import "NYPLOPDSEvent.h"
 #import "NYPLOPDSLink.h"
 #import "NYPLOPDSRelation.h"
 #import "NYPLXML.h"
@@ -10,7 +11,9 @@
 
 @property (nonatomic) NSString *alternativeHeadline;
 @property (nonatomic) NSArray *authorStrings;
+@property (nonatomic) NSInteger availableLicenses;
 @property (nonatomic) NSArray *categoryStrings;
+@property (nonatomic) NYPLOPDSEvent *event;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSArray *links;
 @property (nonatomic) NSDate *published;
@@ -46,6 +49,8 @@
     self.authorStrings = authorStrings;
   }
   
+  self.availableLicenses = [entryXML firstChildWithName:@"available_licenses"].value.integerValue;
+  
   {
     NSMutableArray *const categoryStrings = [NSMutableArray array];
     
@@ -57,6 +62,32 @@
     }
     
     self.categoryStrings = categoryStrings;
+  }
+  
+  {
+    NYPLXML *const eventXML = [entryXML firstChildWithName:@"Event"];
+    if (eventXML) {
+      NSString *const name = [eventXML firstChildWithName:@"name"].value;
+      if (!name) {
+        NYPLLOG(@"Entry has 'event' element with missing required 'name' element.");
+        return nil;
+      }
+      NSString *const startDateString = [eventXML firstChildWithName:@"startDate"].value;
+      NSDate *const startDate = [NSDate dateWithRFC3339String:startDateString];
+      NSString *const endDateString = [eventXML firstChildWithName:@"endDate"].value;
+      NSDate *const endDate = [NSDate dateWithRFC3339String:endDateString];
+      NSString *const positionString = [eventXML firstChildWithName:@"position"].value;
+      NSInteger position = positionString.integerValue;
+      if ([name isEqualToString:@"hold"] && !positionString) {
+        NYPLLOG(@"Missing required 'position' element within 'hold' event.");
+        return nil;
+      }
+      
+      self.event = [[NYPLOPDSEvent alloc] initWithName:name
+                                             startDate:startDate
+                                               endDate:endDate
+                                              position:position];
+    }
   }
   
   if(!((self.identifier = [entryXML firstChildWithName:@"id"].value))) {
@@ -81,7 +112,6 @@
   
   {
     NSString *const dateString = [entryXML firstChildWithName:@"published"].value;
-    
     if(dateString) {
       self.published = [NSDate dateWithRFC3339String:dateString];
     }
