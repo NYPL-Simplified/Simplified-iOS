@@ -1,66 +1,73 @@
+#import "NSDate+NYPLDateAdditions.h"
+#import "NYPLNull.h"
+
 #import "NYPLOPDSEvent.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NYPLOPDSEventHold ()
+static NSString *const NameKey = @"name";
+static NSString *const PositionKey = @"position";
+static NSString *const StartDateKey = @"startDate";
+static NSString *const EndDateKey = @"endDate";
 
+@interface NYPLOPDSEvent ()
+
+@property (nonatomic) NSString *__nonnull name;
+@property (nonatomic) NSInteger position;
 @property (nonatomic) NSDate *__nullable startDate;
 @property (nonatomic) NSDate *__nullable endDate;
 
 @end
 
-@implementation NYPLOPDSEventHold
+@implementation NYPLOPDSEvent
 
-- (instancetype)initWithStartDate:(nullable NSDate *const)startDate
-                          endDate:(nullable NSDate *const)endDate
+- (instancetype)initWithName:(NSString * __nonnull)name
+                   startDate:(nullable NSDate *)startDate
+                     endDate:(nullable NSDate *)endDate
+                    position:(NSInteger)position
 {
   self = [super init];
   if(!self) return nil;
   
+  self.name = name;
+  self.position = position;
   self.startDate = startDate;
   self.endDate = endDate;
   
   return self;
 }
 
-#pragma mark NYPLOPDSEvent
-
-- (void)matchHold:(void (^)(NYPLOPDSEventHold *const))holdCase
-        matchLoan:(__attribute__((unused)) void (^)(NYPLOPDSEventLoan *const))loanCase
-{
-  holdCase(self);
-}
-
-@end
-
-@interface NYPLOPDSEventLoan ()
-
-@property (nonatomic) NSDate *__nullable startDate;
-@property (nonatomic) NSDate *__nullable endDate;
-
-@end
-
-@implementation NYPLOPDSEventLoan
-
-- (instancetype)initWithStartDate:(nullable NSDate *const)startDate
-                          endDate:(nullable NSDate *const)endDate
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary
 {
   self = [super init];
-  if(!self) return nil;
-  
-  self.startDate = startDate;
-  self.endDate = endDate;
+  if (!self || !dictionary) return nil;
+  self.name = dictionary[NameKey];
+  self.position = [dictionary[PositionKey] integerValue];
+  self.startDate = [NSDate dateWithRFC3339String:dictionary[StartDateKey]];
+  self.endDate = [NSDate dateWithRFC3339String:dictionary[EndDateKey]];
   
   return self;
 }
 
-#pragma mark NYPLOPDSEvent
-
-- (void)matchHold:(__attribute__((unused)) void (^)(NYPLOPDSEventHold *const))holdCase
-        matchLoan:(void (^)(NYPLOPDSEventLoan *const))loanCase
+- (NSDictionary *)dictionaryRepresentation
 {
-  loanCase(self);
+  return @{NameKey: self.name,
+           PositionKey: @(self.position),
+           StartDateKey: NYPLNullFromNil([self.startDate RFC3339String]),
+           EndDateKey: NYPLNullFromNil([self.endDate RFC3339String])
+           };
 }
+
+- (void)matchHold:(void (^)(NYPLOPDSEvent *const))holdCase
+        matchLoan:(void (^)(NYPLOPDSEvent *const))loanCase
+{
+  if ([self.name isEqualToString:@"hold"]) {
+    holdCase(self);
+  } else {
+    loanCase(self);
+  }
+}
+
 
 @end
 

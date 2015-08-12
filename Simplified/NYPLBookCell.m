@@ -104,6 +104,17 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
       return cell;
     }
+    // TODO: Make this work for holds properly
+    case NYPLBookStateHolding:
+    {
+      NYPLBookNormalCell *const cell = [collectionView
+                                        dequeueReusableCellWithReuseIdentifier:reuseIdentifierNormal
+                                        forIndexPath:indexPath];
+      cell.book = book;
+      cell.delegate = [NYPLBookCellDelegate sharedDelegate];
+      cell.state = NYPLBookNormalCellStateDownloadNeeded;
+      return cell;
+    }
     case NYPLBookStateUsed:
     {
       NYPLBookNormalCell *const cell = [collectionView

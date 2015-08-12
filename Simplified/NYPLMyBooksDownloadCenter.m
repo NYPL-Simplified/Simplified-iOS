@@ -279,6 +279,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       break;
     case NYPLBookStateDownloadNeeded:
       break;
+    case NYPLBookStateHolding:
+      break;
     case NYPLBookStateDownloadSuccessful:
       // fallthrough
     case NYPLBookStateUsed:
@@ -287,7 +289,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
   
   if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-    if (state == NYPLBookStateUnregistered) {
+    if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
       [NYPLOPDSFeed withURL:book.acquisition.borrow completionHandler:^(NYPLOPDSFeed *feed) {
         if (!feed || feed.entries.count < 1) {
