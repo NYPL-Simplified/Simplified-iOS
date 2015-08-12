@@ -10,6 +10,7 @@ typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
 // Set to nil (the default) if no custom feed should be used.
 @property (atomic) NSURL *customMainFeedURL;
 @property (atomic) BOOL userAcceptedEULA;
+@property (atomic) BOOL preloadContentCompleted;
 @property (atomic) NSURL *eulaURL;
 @property (atomic) NSURL *privacyPolicyURL;
 
@@ -20,5 +21,7 @@ typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
 - (id)init NS_UNAVAILABLE;
 
 + (NYPLSettings *)sharedSettings;
+- (NSArray *) preloadedBookIdentifiers;
+- (NSArray *) booksToPreload;
 
 @end

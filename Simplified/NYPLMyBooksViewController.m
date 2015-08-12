@@ -7,6 +7,9 @@
 #import "NYPLFacetBarView.h"
 #import "NYPLFacetView.h"
 #import "NYPLSettingsAccountViewController.h"
+#import "NYPLSettings.h"
+#import "NSDate+NYPLDateAdditions.h"
+#import "NYPLMyBooksDownloadCenter.h"
 
 #import "NYPLMyBooksViewController.h"
 
@@ -52,7 +55,14 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 
   self.title = NSLocalizedString(@"MyBooksViewControllerTitle", nil);
   
-  [self willReloadCollectionViewData];
+  if ( [[NYPLSettings sharedSettings] preloadContentCompleted]) {
+      [self willReloadCollectionViewData];
+  }
+  else {
+    [self preloadContentWithHandler:^(void) {
+      [self willReloadCollectionViewData];
+    }];
+  }
   
   [[NSNotificationCenter defaultCenter]
    addObserver:self
@@ -331,6 +341,18 @@ OK:
       self.navigationItem.rightBarButtonItem = self.syncButton;
     }
   }];
+}
+
+
+- (void) preloadContentWithHandler:(void(^)(void))handler
+{
+  NSArray *booksToPreload = [[NYPLSettings sharedSettings] booksToPreload];
+  for (NYPLBook *book in booksToPreload) {
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForPreloadedBook:book];
+  }
+  [[NYPLSettings sharedSettings] setPreloadContentCompleted:YES];
+  
+  if (handler) handler();
 }
 
 @end
