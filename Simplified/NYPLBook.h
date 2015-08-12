@@ -40,6 +40,9 @@
 // designated initializer
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 
+// designated initializer for Preloaded Content
+- (instancetype)initPreloadedWithDictionary:(NSDictionary *)dictionary;
+
 - (NSDictionary *)dictionaryRepresentation;
 
 @end

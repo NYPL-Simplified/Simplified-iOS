@@ -4,6 +4,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
 #import "NYPLOPDS.h"
+#import "NYPLSettings.h"
 
 #import "NYPLBookRegistry.h"
 
@@ -253,7 +254,9 @@ static NSString *const RecordsKey = @"records";
          }
        }
        for (NSString *identifier in identifiersToRemove) {
-         [self removeBookForIdentifier:identifier];
+         if (![[[NYPLSettings sharedSettings] preloadedBookIdentifiers] containsObject:identifier]) {
+           [self removeBookForIdentifier:identifier];
+         }
        }
      }];
      self.syncing = NO;

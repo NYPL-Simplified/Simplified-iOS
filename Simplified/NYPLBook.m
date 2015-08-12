@@ -175,6 +175,46 @@ static NSString *const UpdatedKey = @"updated";
   return self;
 }
 
+- (instancetype)initPreloadedWithDictionary:(NSDictionary *)dictionary {
+  self = [super init];
+  if(!self) return nil;
+  
+  self.acquisition = [[NYPLBookAcquisition alloc] initWithDictionary:dictionary[AcquisitionKey]];
+  if(!self.acquisition) return nil;
+  
+  self.authorStrings = dictionary[AuthorsKey];
+  if(!self.authorStrings) return nil;
+  
+  self.categoryStrings = dictionary[CategoriesKey];
+  if(!self.categoryStrings) return nil;
+  
+  self.identifier = dictionary[IdentifierKey];
+  if(!self.identifier) return nil;
+  
+  NSString *const image = NYPLNullToNil(dictionary[ImageURLKey]);
+  self.imageURL = image ? [NSURL fileURLWithPath:image] : nil;
+  
+  NSString *const imageThumbnail = NYPLNullToNil(dictionary[ImageThumbnailURLKey]);
+  self.imageThumbnailURL = imageThumbnail ? [NSURL fileURLWithPath:imageThumbnail] : nil;
+  
+  NSString *const dateString = NYPLNullToNil(dictionary[PublishedKey]);
+  self.published = dateString ? [NSDate dateWithRFC3339String:dateString] : nil;
+  
+  self.publisher = NYPLNullToNil(dictionary[PublisherKey]);
+  
+  self.subtitle = NYPLNullToNil(dictionary[SubtitleKey]);
+  
+  self.summary = NYPLNullToNil(dictionary[SummaryKey]);
+  
+  self.title = dictionary[TitleKey];
+  if(!self.title) return nil;
+  
+  self.updated = [NSDate dateWithRFC3339String:dictionary[UpdatedKey]];
+  if(!self.updated) return nil;
+  
+  return self;
+}
+
 - (NSDictionary *)dictionaryRepresentation
 {
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
