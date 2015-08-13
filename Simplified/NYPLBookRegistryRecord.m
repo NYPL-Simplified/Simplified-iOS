@@ -2,6 +2,7 @@
 #import "NYPLBookLocation.h"
 #import "NYPLBookRegistryRecord.h"
 #import "NYPLNull.h"
+#import "NYPLOPDSEvent.h"
 
 @interface NYPLBookRegistryRecord ()
 
@@ -19,7 +20,7 @@ static NSString *const StateKey = @"state";
 
 - (instancetype)initWithBook:(NYPLBook *const)book
                     location:(NYPLBookLocation *const)location
-                       state:(NYPLBookState const)state
+                       state:(NYPLBookState)state
 {
   self = [super init];
   if(!self) return nil;
@@ -31,6 +32,19 @@ static NSString *const StateKey = @"state";
   self.book = book;
   self.location = location;
   self.state = state;
+  
+  // If there's an event indicating that the book is loaned or on hold,
+  // then make sure the state being set is valid for that loan/hold.
+  [book.event matchHold:^() {
+    self.state = NYPLBookStateHolding;
+  } matchLoan:^() {
+    if (!((NYPLBookStateDownloadFailed |
+          NYPLBookStateDownloading |
+          NYPLBookStateDownloadNeeded |
+          NYPLBookStateDownloadSuccessful) & self.state)) {
+      self.state = NYPLBookStateDownloadNeeded;
+    }
+  }];
   
   return self;
 }

@@ -43,8 +43,8 @@ static NSString *const EndDateKey = @"endDate";
   if (!self || !dictionary) return nil;
   self.name = dictionary[NameKey];
   self.position = [dictionary[PositionKey] integerValue];
-  self.startDate = [NSDate dateWithRFC3339String:dictionary[StartDateKey]];
-  self.endDate = [NSDate dateWithRFC3339String:dictionary[EndDateKey]];
+  self.startDate = [NSDate dateWithRFC3339String:NYPLNullToNil(dictionary[StartDateKey])];
+  self.endDate = [NSDate dateWithRFC3339String:NYPLNullToNil(dictionary[EndDateKey])];
   
   return self;
 }
@@ -58,13 +58,13 @@ static NSString *const EndDateKey = @"endDate";
            };
 }
 
-- (void)matchHold:(void (^)(NYPLOPDSEvent *const))holdCase
-        matchLoan:(void (^)(NYPLOPDSEvent *const))loanCase
+- (void)matchHold:(void (^)())holdCase
+        matchLoan:(void (^)())loanCase
 {
   if ([self.name isEqualToString:@"hold"]) {
-    holdCase(self);
+    holdCase();
   } else {
-    loanCase(self);
+    loanCase();
   }
 }
 

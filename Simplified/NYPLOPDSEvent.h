@@ -4,8 +4,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NYPLOPDSEvent : NSObject
 
-- (void)matchHold:(void (^)(NYPLOPDSEvent *))holdCase
-        matchLoan:(void (^)(NYPLOPDSEvent *))loanCase;
+- (void)matchHold:(void (^)())holdCase
+        matchLoan:(void (^)())loanCase;
 
 @property (nonatomic, readonly) NSString *__nonnull name;
 @property (nonatomic, readonly) NSInteger position;

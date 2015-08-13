@@ -14,6 +14,12 @@ static NSString *const NYPLBookRegistryDidChangeNotification =
 // Returns all registered books.
 @property (atomic, readonly) NSArray *allBooks;
 
+// Returns all books that are on hold
+@property (atomic, readonly) NSArray *heldBooks;
+
+// Returns all books not on hold (borrowed, preloaded, or kept)
+@property (atomic, readonly) NSArray *myBooks;
+
 // Returns the number of books currently registered.
 @property (atomic, readonly) NSUInteger count;
 
@@ -36,6 +42,10 @@ static NSString *const NYPLBookRegistryDidChangeNotification =
 // will simply be ignored. Resetting the registry while a sync is in progress will cause the handler
 // not to be called.
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler;
+
+// Calls syncWithCompletionHandler: with a handler that presents standard success/failure alerts on
+// completion.
+- (void)syncWithStandardAlertsOnCompletion;
 
 // Adds a book to the book registry until it is manually removed. It allows the application to
 // present information about obtained books when offline. Attempting to add a book already present
