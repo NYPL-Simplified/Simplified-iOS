@@ -265,6 +265,31 @@ static NSString *const RecordsKey = @"records";
    }];
 }
 
+- (void)syncWithStandardAlertsOnCompletion
+{
+  [self syncWithCompletionHandler:^(BOOL success) {
+    if(success) {
+      [[[UIAlertView alloc]
+        initWithTitle:NSLocalizedString(@"SyncComplete", nil)
+        message:NSLocalizedString(@"YourBooksWereSyncedSuccessfully", nil)
+        delegate:nil
+        cancelButtonTitle:nil
+        otherButtonTitles:@"OK", nil]
+       show];
+      
+      [[NYPLBookRegistry sharedRegistry] save];
+    } else {
+      [[[UIAlertView alloc]
+        initWithTitle:NSLocalizedString(@"SyncFailed", nil)
+        message:NSLocalizedString(@"CheckConnection", nil)
+        delegate:nil
+        cancelButtonTitle:nil
+        otherButtonTitles:@"OK", nil]
+       show];
+    }
+  }];
+}
+
 - (void)addBook:(NYPLBook *const)book
        location:(NYPLBookLocation *const)location
           state:(NYPLBookState)state
@@ -416,15 +441,32 @@ static NSString *const RecordsKey = @"records";
 
 - (NSArray *)allBooks
 {
+  return [self booksMatchingStateMask:~0];
+}
+
+- (NSArray *)heldBooks
+{
+  return [self booksMatchingStateMask:NYPLBookStateHolding];
+}
+
+- (NSArray *)myBooks
+{
+  return [self booksMatchingStateMask:~NYPLBookStateHolding];
+}
+
+- (NSArray *)booksMatchingStateMask:(NSUInteger)mask
+{
   @synchronized(self) {
     NSMutableArray *const books =
-      [NSMutableArray arrayWithCapacity:self.identifiersToRecords.count];
+    [NSMutableArray arrayWithCapacity:self.identifiersToRecords.count];
     
     [self.identifiersToRecords
      enumerateKeysAndObjectsUsingBlock:^(__attribute__((unused)) NSString *identifier,
                                          NYPLBookRegistryRecord *const record,
                                          __attribute__((unused)) BOOL *stop) {
-       [books addObject:record.book];
+       if (record.state & mask) {
+         [books addObject:record.book];
+       }
      }];
     
     return books;

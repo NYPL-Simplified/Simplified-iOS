@@ -161,13 +161,13 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     case FacetShowAll:
       switch(self.activeFacetSort) {
         case FacetSortAuthor:
-          self.books = [[[NYPLBookRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
+          self.books = [[[NYPLBookRegistry sharedRegistry] myBooks] sortedArrayUsingComparator:
                         ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
                           return [a.authors compare:b.authors options:NSCaseInsensitiveSearch];
                         }];
           return;
         case FacetSortTitle:
-          self.books = [[[NYPLBookRegistry sharedRegistry] allBooks] sortedArrayUsingComparator:
+          self.books = [[[NYPLBookRegistry sharedRegistry] myBooks] sortedArrayUsingComparator:
                         ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
                           return [a.title compare:b.title options:NSCaseInsensitiveSearch];
                         }];
@@ -289,27 +289,7 @@ OK:
 - (void)didSelectSync
 {
   if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
-      if(success) {
-        [[[UIAlertView alloc]
-          initWithTitle:NSLocalizedString(@"SyncComplete", nil)
-          message:NSLocalizedString(@"YourBooksWereSyncedSuccessfully", nil)
-          delegate:nil
-          cancelButtonTitle:nil
-          otherButtonTitles:@"OK", nil]
-         show];
-        
-        [[NYPLBookRegistry sharedRegistry] save];
-      } else {
-        [[[UIAlertView alloc]
-          initWithTitle:NSLocalizedString(@"SyncFailed", nil)
-          message:NSLocalizedString(@"CheckConnection", nil)
-          delegate:nil
-          cancelButtonTitle:nil
-          otherButtonTitles:@"OK", nil]
-         show];
-      }
-    }];
+    [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
   } else {
     // We can't sync if we're not logged in, so let's log in. We don't need a completion handler
     // here because logging in will trigger a sync anyway. The only downside of letting the sync
