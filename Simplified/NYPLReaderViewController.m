@@ -5,6 +5,7 @@
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReaderTOCViewController.h"
 #import "NYPLRoundedButton.h"
+#import "UIFont+NYPLSystemFontOverride.h"
 
 #import "NYPLReaderViewController.h"
 
@@ -19,7 +20,11 @@
 @property (nonatomic) UIView<NYPLReaderRenderer> *rendererView;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
-
+@property (nonatomic) UIView *bottomView;
+@property (nonatomic) UIImageView *bottomViewImageView;
+@property (nonatomic) UIView *bottomViewImageViewTopBorder;
+@property (nonatomic) UIProgressView *bottomViewProgressView;
+@property (nonatomic) UILabel *bottomViewProgressLabel;
 @end
 
 @implementation NYPLReaderViewController
@@ -31,12 +36,18 @@
   
   switch([NYPLReaderSettings sharedSettings].colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
-      // fallthrough
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
+      break;
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundColor];
+      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
       break;
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
       self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
+      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor darkGrayColor];
       break;
   }
   
@@ -109,7 +120,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [super viewDidLoad];
   
   self.automaticallyAdjustsScrollViewInsets = NO;
-
+  
   self.shouldHideInterfaceOnNextAppearance = YES;
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
@@ -153,7 +164,79 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
                                         UIViewAutoresizingFlexibleHeight);
   
   [self.view addSubview:self.rendererView];
+  [self prepareBottomView];
 }
+
+- (void) prepareBottomView {
+  self.bottomView = [[UIView alloc] init];
+  self.bottomView.translatesAutoresizingMaskIntoConstraints = NO;
+  self.bottomView.frame = CGRectMake(0, self.view.frame.size.height - 44, self.view.frame.size.width, 44);
+  
+  [self.view addSubview:self.bottomView];
+  NSLayoutConstraint *constraintBV1 = [NSLayoutConstraint constraintWithItem:self.bottomView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeLeading multiplier:1.f constant:0];
+  NSLayoutConstraint *constraintBV2 = [NSLayoutConstraint constraintWithItem:self.bottomView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeTrailing multiplier:1.f constant:0];
+  NSLayoutConstraint *constraintBV3 = [NSLayoutConstraint constraintWithItem:self.bottomView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeBottom multiplier:1.f constant:-self.bottomView.frame.size.height];
+  [self.view addConstraint:constraintBV1];
+  [self.view addConstraint:constraintBV2];
+  [self.view addConstraint:constraintBV3];
+  
+  self.bottomViewImageView = [[UIImageView alloc] init];
+  self.bottomViewImageView.translatesAutoresizingMaskIntoConstraints = NO;
+  self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.bottomViewImageView.frame = self.bottomView.frame;
+  
+  CGSize mainViewSize = self.bottomViewImageView.bounds.size;
+  CGFloat borderWidth = 0.5;
+  UIColor *borderColor = [UIColor lightGrayColor];
+  self.bottomViewImageViewTopBorder = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, mainViewSize.width, borderWidth)];
+  self.bottomViewImageViewTopBorder.opaque = YES;
+  self.bottomViewImageViewTopBorder.backgroundColor = borderColor;
+  self.bottomViewImageViewTopBorder.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+  [self.bottomViewImageView addSubview:self.bottomViewImageViewTopBorder];
+  
+  [self.bottomView addSubview:self.bottomViewImageView];
+  NSLayoutConstraint *constraintAFL1 = [NSLayoutConstraint constraintWithItem:self.bottomViewImageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem: self.bottomView attribute:NSLayoutAttributeLeading multiplier:1.f constant:0];
+  NSLayoutConstraint *constraintAFL2 = [NSLayoutConstraint constraintWithItem:self.bottomViewImageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem: self.bottomView attribute:NSLayoutAttributeTop multiplier:1.f constant:0];
+  NSLayoutConstraint *constraintAFL3 = [NSLayoutConstraint constraintWithItem:self.bottomViewImageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem: self.bottomView attribute:NSLayoutAttributeHeight multiplier:1.f constant:self.bottomView.frame.size.height];
+  NSLayoutConstraint *constraintAFL4 = [NSLayoutConstraint constraintWithItem:self.bottomViewImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem: self.bottomView attribute:NSLayoutAttributeWidth multiplier:1.f constant:self.bottomView.frame.size.width];
+  [self.bottomView addConstraint:constraintAFL1];
+  [self.bottomView addConstraint:constraintAFL2];
+  [self.bottomView addConstraint:constraintAFL3];
+  [self.bottomView addConstraint:constraintAFL4];
+  
+  self.bottomViewProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+  self.bottomViewProgressView.translatesAutoresizingMaskIntoConstraints = NO;
+  self.bottomViewProgressView.frame = CGRectMake(0, 0, 0, 0);
+  [self.bottomView addSubview:self.bottomViewProgressView];
+  
+  NSLayoutConstraint *constraintPV1 = [NSLayoutConstraint constraintWithItem:self.bottomViewProgressView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem: self.bottomView attribute:NSLayoutAttributeLeading multiplier:1.f constant:10];
+  NSLayoutConstraint *constraintPV2 = [NSLayoutConstraint constraintWithItem:self.bottomViewProgressView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem: self.bottomView attribute:NSLayoutAttributeTop multiplier:1.f constant:self.bottomView.frame.size.height / 3];
+  NSLayoutConstraint *constraintPV3 = [NSLayoutConstraint constraintWithItem:self.bottomViewProgressView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem: self.bottomView attribute:NSLayoutAttributeTrailing multiplier:1.f constant:-10];
+  
+  [self.bottomView addConstraint:constraintPV1];
+  [self.bottomView addConstraint:constraintPV2];
+  [self.bottomView addConstraint:constraintPV3];
+  
+  self.bottomViewProgressLabel = [[UILabel alloc] init];
+  self.bottomViewProgressLabel.translatesAutoresizingMaskIntoConstraints = NO;
+  self.bottomViewProgressLabel.backgroundColor = [UIColor clearColor];
+  self.bottomViewProgressLabel.textColor = [NYPLConfiguration mainColor];
+  [self.bottomViewProgressLabel setFont:[UIFont systemFontOfSize:13]];
+  
+  [self.bottomView addSubview:self.bottomViewProgressLabel];
+  NSLayoutConstraint *constraintPL2 = [NSLayoutConstraint constraintWithItem:self.bottomViewProgressLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem: self.bottomViewProgressView attribute:NSLayoutAttributeTop multiplier:1.f constant:4];
+  NSLayoutConstraint *constraintPL3 = [NSLayoutConstraint constraintWithItem:self.bottomViewProgressLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem: self.bottomViewProgressView attribute:NSLayoutAttributeCenterX multiplier:1.f constant:0];
+  
+  [self.bottomView addConstraint:constraintPL2];
+  [self.bottomView addConstraint:constraintPL3];
+}
+
+-(void)didUpdateProgressWithinSpineTo:(NSNumber *)withinSpine withinBookTo:(NSNumber *)withinBook withSpineID: (NSNumber *) spineID {
+  [self.bottomViewProgressView setProgress:withinBook.floatValue / 100 animated:YES];
+  self.bottomViewProgressLabel.text = [NSString stringWithFormat:@"Book %@%% (%@%% left in chapter %@)", withinBook.stringValue, withinSpine.stringValue, spineID.stringValue];
+  [self.bottomViewProgressLabel sizeToFit];
+}
+
 
 - (BOOL)prefersStatusBarHidden
 {
@@ -268,6 +351,8 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   self.navigationController.interactivePopGestureRecognizer.enabled = !interfaceHidden;
   
   self.navigationController.navigationBarHidden = self.interfaceHidden;
+  
+  self.bottomView.hidden = self.interfaceHidden;
   
   if(self.interfaceHidden) {
     [self.readerSettingsViewPhone removeFromSuperview];
