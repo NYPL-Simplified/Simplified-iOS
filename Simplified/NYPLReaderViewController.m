@@ -231,12 +231,14 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.bottomView addConstraint:constraintPL3];
 }
 
--(void)didUpdateProgressWithinSpineTo:(NSNumber *)withinSpine withinBookTo:(NSNumber *)withinBook withSpineID: (NSNumber *) spineID {
-  [self.bottomViewProgressView setProgress:withinBook.floatValue / 100 animated:YES];
-  self.bottomViewProgressLabel.text = [NSString stringWithFormat:@"Book %@%% (%@%% left in chapter %@)", withinBook.stringValue, withinSpine.stringValue, spineID.stringValue];
+-(void)didUpdateProgressSpineItemPercentage:(NSNumber *)spineItemPercentage bookPercentage:(NSNumber *)bookPercentage withSpineItemID:(NSNumber *)spineItemID withSpineItemTitle:(NSString *)spineItemTitle {
+  
+  if (spineItemTitle) {};
+  
+  [self.bottomViewProgressView setProgress:bookPercentage.floatValue / 100 animated:YES];
+  self.bottomViewProgressLabel.text = [NSString stringWithFormat:@"Book %@%% (%@%% left in chapter %@)", bookPercentage.stringValue, spineItemPercentage.stringValue, spineItemID.stringValue];
   [self.bottomViewProgressLabel sizeToFit];
 }
-
 
 - (BOOL)prefersStatusBarHidden
 {
