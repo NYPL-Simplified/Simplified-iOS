@@ -28,7 +28,7 @@
 @property (nonatomic) UIWebView *webView;
 
 @property (nonatomic) NSDictionary *bookMapDictionary;
-@property (nonatomic) NSNumber *progressWithinSpine;
+@property (nonatomic) NSNumber *spineItemPercentageRemaining;
 @property (nonatomic) NSNumber *progressWithinBook;
 
 @end
@@ -339,7 +339,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   NSNumber *spineItemIndexPlus1 = [NSNumber numberWithInt:(spineItemIndex.intValue + 1)];
   
   [self calculateProgressionWithDictionary:dictionary withHandler:^(void) {
-    [self.delegate didUpdateProgressWithinSpineTo:self.progressWithinSpine withinBookTo:self.progressWithinBook withSpineID:spineItemIndexPlus1];
+    [self.delegate didUpdateProgressSpineItemPercentage:self.spineItemPercentageRemaining bookPercentage:self.progressWithinBook withSpineItemID:spineItemIndexPlus1 withSpineItemTitle:@"Spine Title"];
   }];
   
   if(location) {
@@ -392,6 +392,9 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   NSDecimalNumber *spineItemPageIndexDec = [NSDecimalNumber decimalNumberWithDecimal:spineItemPageIndex.decimalValue];
   
   NSDecimalNumber *progressWithinSpineDec = [[spineItemPageIndexDec decimalNumberByDividingBy:spineItemPageCountDec] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"100"] withBehavior:numberHandler ];
+  
+  NSDecimalNumber *decimal100 = [NSDecimalNumber decimalNumberWithString:@"100"];
+  NSDecimalNumber *spineItemPercentageRemaining = [decimal100 decimalNumberBySubtracting:progressWithinSpineDec];
   NSDecimalNumber *progressWithinSpineUnmodifiedDec = [spineItemPageIndexDec decimalNumberByDividingBy:spineItemPageCountDec];
   
   NSDictionary *spineItemDetails = [self.bookMapDictionary objectForKey:spineItemIdref];
@@ -410,7 +413,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   
   NSDecimalNumber *totalProgressSoFarPercentageDec = [[totalProgressSoFarDec decimalNumberByDividingBy:totalLengthDec] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"100"] withBehavior:numberHandler ];
   
-  self.progressWithinSpine = progressWithinSpineDec;
+  self.spineItemPercentageRemaining = spineItemPercentageRemaining;
   self.progressWithinBook = totalProgressSoFarPercentageDec;
   
   if (handler) handler();
