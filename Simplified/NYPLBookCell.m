@@ -60,7 +60,11 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       if(book.acquisition.openAccess) {
         cell.state = NYPLBookNormalCellStateCanKeep;
       } else {
-        cell.state = NYPLBookNormalCellStateCanBorrow;
+        if (book.availableLicenses > 0) {
+          cell.state = NYPLBookNormalCellStateCanBorrow;
+        } else {
+          cell.state = NYPLBookNormalCellStateCanHold;
+        }
       }
       return cell;
     }
@@ -104,7 +108,6 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
       return cell;
     }
-    // TODO: Make this work for holds properly
     case NYPLBookStateHolding:
     {
       NYPLBookNormalCell *const cell = [collectionView
@@ -112,7 +115,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                         forIndexPath:indexPath];
       cell.book = book;
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
-      cell.state = NYPLBookNormalCellStateDownloadNeeded;
+      cell.state = NYPLBookNormalCellStateHolding;
       return cell;
     }
     case NYPLBookStateUsed:

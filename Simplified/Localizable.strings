@@ -3,6 +3,7 @@
 "Barcode" = "Barcode";
 "Borrow" = "Borrow";
 "Cancel" = "Cancel";
+"CancelHold" = "Cancel hold";
 "Catalog" = "Catalog";
 "Categories" = "Categories";
 "Category" = "Category";
@@ -15,6 +16,7 @@
 "DownloadFailed" = "Download Failed";
 "Downloading" = "Downloading";
 "Feedback" = "Feedback";
+"Hold" = "Hold";
 "LibraryCard" = "Library Card";
 "LogIn" = "Log In";
 "More..." = "More...";
@@ -25,6 +27,7 @@
 "Published" = "Published";
 "Publisher" = "Publisher";
 "Read" = "Read"; // present tense
+"ReturnNow" = "Return now";
 "Settings" = "Settings";
 "SignOut" = "Sign Out";
 "SignUp" = "Sign Up";

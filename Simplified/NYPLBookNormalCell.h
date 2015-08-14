@@ -6,6 +6,8 @@
 typedef NS_ENUM(NSInteger, NYPLBookNormalCellState) {
   NYPLBookNormalCellStateCanBorrow,
   NYPLBookNormalCellStateCanKeep,
+  NYPLBookNormalCellStateCanHold,
+  NYPLBookNormalCellStateHolding,
   NYPLBookNormalCellStateDownloadNeeded,
   NYPLBookNormalCellStateDownloadSuccessful,
   NYPLBookNormalCellStateUsed

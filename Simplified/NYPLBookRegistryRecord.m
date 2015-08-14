@@ -39,9 +39,10 @@ static NSString *const StateKey = @"state";
     self.state = NYPLBookStateHolding;
   } matchLoan:^() {
     if (!((NYPLBookStateDownloadFailed |
-          NYPLBookStateDownloading |
-          NYPLBookStateDownloadNeeded |
-          NYPLBookStateDownloadSuccessful) & self.state)) {
+           NYPLBookStateDownloading |
+           NYPLBookStateDownloadNeeded |
+           NYPLBookStateDownloadSuccessful |
+           NYPLBookStateUsed) & self.state)) {
       self.state = NYPLBookStateDownloadNeeded;
     }
   }];

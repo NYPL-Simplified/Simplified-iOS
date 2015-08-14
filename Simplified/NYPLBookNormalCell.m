@@ -12,9 +12,10 @@
 @property (nonatomic) UIImageView *cover;
 @property (nonatomic) NYPLRoundedButton *deleteButton;
 @property (nonatomic) NYPLRoundedButton *downloadButton;
-@property (nonatomic) UILabel *title;
 @property (nonatomic) NYPLRoundedButton *readButton;
+@property (nonatomic) UILabel *title;
 @property (nonatomic) UIImageView *unreadImageView;
+@property (nonatomic) NSArray *visibleButtons;
 
 @end
 
@@ -45,25 +46,21 @@
   authorFrame.size.width = CGRectGetWidth([self contentFrame]) - 120;
   self.authors.frame = authorFrame;
   
-  [self.deleteButton sizeToFit];
-  CGRect deleteButtonFrame = self.deleteButton.frame;
-  deleteButtonFrame.origin = CGPointMake(115,
-                                         (CGRectGetHeight([self contentFrame]) -
-                                          CGRectGetHeight(deleteButtonFrame) - 5));
-  self.deleteButton.frame = deleteButtonFrame;
-  
-  [self.readButton sizeToFit];
-  CGRect readButtonFrame = self.readButton.frame;
-  readButtonFrame.origin = CGPointMake(CGRectGetMaxX(self.deleteButton.frame) + 5,
-                                       CGRectGetMinY(self.deleteButton.frame));
-  self.readButton.frame = readButtonFrame;
-  
-  [self.downloadButton sizeToFit];
-  CGRect downloadButtonFrame = self.downloadButton.frame;
-  downloadButtonFrame.origin = CGPointMake(115,
-                                           (CGRectGetHeight([self contentFrame]) -
-                                            CGRectGetHeight(downloadButtonFrame) - 5));
-  self.downloadButton.frame = downloadButtonFrame;
+  NYPLRoundedButton *lastButton = nil;
+  for (NYPLRoundedButton *button in self.visibleButtons) {
+    [button sizeToFit];
+    CGRect frame = button.frame;
+    if (!lastButton) {
+      lastButton = button;
+      frame.origin = CGPointMake(115,
+                                 (CGRectGetHeight([self contentFrame]) -
+                                  CGRectGetHeight(frame) - 5));
+    } else {
+      frame.origin = CGPointMake(CGRectGetMaxX(lastButton.frame) + 5,
+                                 CGRectGetMinY(lastButton.frame));
+    }
+    button.frame = frame;
+  }
   
   CGRect unreadImageViewFrame = self.unreadImageView.frame;
   unreadImageViewFrame.origin.x = (CGRectGetMinX(self.cover.frame) -
@@ -91,8 +88,6 @@
   
   if(!self.deleteButton) {
     self.deleteButton = [NYPLRoundedButton button];
-    [self.deleteButton setTitle:NSLocalizedString(@"Delete", nil)
-                       forState:UIControlStateNormal];
     [self.deleteButton addTarget:self
                           action:@selector(didSelectDelete)
                 forControlEvents:UIControlEventTouchUpInside];
@@ -109,7 +104,6 @@
   
   if(!self.readButton) {
     self.readButton = [NYPLRoundedButton button];
-    [self.readButton setTitle:NSLocalizedString(@"Read", nil) forState:UIControlStateNormal];
     [self.readButton addTarget:self
                         action:@selector(didSelectRead)
               forControlEvents:UIControlEventTouchUpInside];
@@ -176,46 +170,54 @@
 {
   _state = state;
   
+  NSArray *visibleButtonInfo = nil;
+  static NSString *const ButtonKey = @"button";
+  static NSString *const TitleKey = @"title";
+  
+  self.unreadImageView.hidden = YES;
   switch(state) {
     case NYPLBookNormalCellStateCanBorrow:
-      self.deleteButton.hidden = YES;
-      self.downloadButton.hidden = NO;
-      self.readButton.hidden = YES;
-      self.unreadImageView.hidden = YES;
-      [self.downloadButton setTitle:NSLocalizedString(@"Borrow", nil)
-                           forState:UIControlStateNormal];
-      [self setNeedsLayout];
+      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Borrow"}];
       break;
     case NYPLBookNormalCellStateCanKeep:
-      self.deleteButton.hidden = YES;
-      self.downloadButton.hidden = NO;
-      self.readButton.hidden = YES;
-      self.unreadImageView.hidden = YES;
-      [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
-                           forState:UIControlStateNormal];
-      [self setNeedsLayout];
+      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Download"}];
+      break;
+    case NYPLBookNormalCellStateCanHold:
+      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Hold"}];
+      break;
+    case NYPLBookNormalCellStateHolding:
+      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Borrow"},
+                            @{ButtonKey: self.deleteButton,   TitleKey: @"CancelHold"}];
       break;
     case NYPLBookNormalCellStateDownloadNeeded:
-      self.deleteButton.hidden = YES;
-      self.downloadButton.hidden = NO;
-      self.readButton.hidden = YES;
-      self.unreadImageView.hidden = YES;
-      [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
-                           forState:UIControlStateNormal];
+      visibleButtonInfo = @[@{ButtonKey: self.deleteButton,   TitleKey: @"ReturnNow"},
+                            @{ButtonKey: self.downloadButton, TitleKey: @"Download"}];
       break;
     case NYPLBookNormalCellStateDownloadSuccessful:
-      self.deleteButton.hidden = NO;
-      self.downloadButton.hidden = YES;
-      self.readButton.hidden = NO;
+      visibleButtonInfo = @[@{ButtonKey: self.readButton,     TitleKey: @"Read"},
+                            @{ButtonKey: self.deleteButton,   TitleKey: @"Delete"}];
       self.unreadImageView.hidden = NO;
       break;
     case NYPLBookNormalCellStateUsed:
-      self.deleteButton.hidden = NO;
-      self.downloadButton.hidden = YES;
-      self.readButton.hidden = NO;
-      self.unreadImageView.hidden = YES;
+      visibleButtonInfo = @[@{ButtonKey: self.readButton,     TitleKey: @"Read"},
+                            @{ButtonKey: self.deleteButton,   TitleKey: @"Delete"}];
       break;
   }
+  
+  NSMutableArray *visibleButtons = [NSMutableArray array];
+  for (NSDictionary *buttonInfo in visibleButtonInfo) {
+    NYPLRoundedButton *button = buttonInfo[ButtonKey];
+    button.hidden = NO;
+    [button setTitle:NSLocalizedString(buttonInfo[TitleKey], nil) forState:UIControlStateNormal];
+    [visibleButtons addObject:button];
+  }
+  for (NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton]) {
+    if (![visibleButtons containsObject:button]) {
+      button.hidden = YES;
+    }
+  }
+  self.visibleButtons = visibleButtons;
+  [self setNeedsLayout];
 }
 
 @end
