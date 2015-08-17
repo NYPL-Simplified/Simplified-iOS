@@ -3,7 +3,10 @@
 
 typedef NS_ENUM(NSInteger, NYPLBookDetailNormalViewState) {
   NYPLBookDetailNormalViewStateCanBorrow,
+  NYPLBookDetailNormalViewStateCanHold,
   NYPLBookDetailNormalViewStateCanKeep,
+  NYPLBookDetailNormalViewStateHolding,
+  NYPLBookDetailNormalViewStateHoldingFOQ, // Front Of Queue
   NYPLBookDetailNormalViewStateDownloadNeeded,
   NYPLBookDetailNormalViewStateDownloadSuccessful,
   NYPLBookDetailNormalViewStateUsed
@@ -21,6 +24,7 @@ typedef NS_ENUM(NSInteger, NYPLBookDetailNormalViewState) {
 
 @property (nonatomic, weak) id<NYPLBookDetailNormalViewDelegate> delegate;
 @property (nonatomic) NYPLBookDetailNormalViewState state;
+@property (nonatomic) NSDate *date; // nilable - hold or borrow expiry, or estimated time until you can borrow
 
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;

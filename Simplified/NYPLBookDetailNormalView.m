@@ -113,6 +113,14 @@
                            forState:UIControlStateNormal];
       [self.downloadButton sizeToFit];
       break;
+    case NYPLBookDetailNormalViewStateCanHold:
+      self.messageLabel.text = @"All licenses of this book are currently checked out.";
+      self.deleteReadLinearView.hidden = YES;
+      self.downloadButton.hidden = NO;
+      [self.downloadButton setTitle:NSLocalizedString(@"Hold", nil)
+                           forState:UIControlStateNormal];
+      [self.downloadButton sizeToFit];
+      break;
     case NYPLBookDetailNormalViewStateCanKeep:
       self.messageLabel.text = @"This open-access book is available to keep.";
       self.deleteReadLinearView.hidden = YES;
@@ -132,6 +140,27 @@
       self.messageLabel.text = @"Your book is ready to read!";
       self.deleteReadLinearView.hidden = NO;
       self.downloadButton.hidden = YES;
+      break;
+    case NYPLBookDetailNormalViewStateHolding:
+      self.messageLabel.text = @"Available for checkout in approximately X time.";
+      self.downloadButton.hidden = YES;
+      self.readButton.hidden = YES;
+      self.deleteReadLinearView.hidden = NO;
+      self.deleteButton.hidden = NO;
+      [self.deleteButton setTitle:NSLocalizedString(@"CancelHold", nil)
+                         forState:UIControlStateNormal];
+      break;
+    case NYPLBookDetailNormalViewStateHoldingFOQ:
+      self.messageLabel.text = @"This hold will be automatically cancelled in X time.";
+      self.deleteReadLinearView.hidden = YES;
+      self.downloadButton.hidden = NO;
+      // TODO: Make cancel hold button fit here (it currently overlaps)
+      //[self.deleteButton setTitle:NSLocalizedString(@"CancelHold", nil)
+      //                   forState:UIControlStateNormal];
+      //[self.downloadButton sizeToFit];
+      [self.downloadButton setTitle:NSLocalizedString(@"Borrow", nil)
+                           forState:UIControlStateNormal];
+      [self.downloadButton sizeToFit];
       break;
     case NYPLBookDetailNormalViewStateUsed:
       self.messageLabel.text = @"";
