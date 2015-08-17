@@ -30,6 +30,7 @@
 @property (nonatomic) NSDictionary *bookMapDictionary;
 @property (nonatomic) NSNumber *spineItemPercentageRemaining;
 @property (nonatomic) NSNumber *progressWithinBook;
+@property (nonatomic) NSDictionary *spineItemDetails;
 
 @end
 
@@ -334,12 +335,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
                                       initWithLocationString:locationJSON
                                       renderer:renderer];
   
-  NSDictionary *openPagesDict = [openPages firstObject];
-  NSNumber *spineItemIndex = [openPagesDict objectForKey:@"spineItemIndex"];
-  NSNumber *spineItemIndexPlus1 = [NSNumber numberWithInt:(spineItemIndex.intValue + 1)];
-  
   [self calculateProgressionWithDictionary:dictionary withHandler:^(void) {
-    [self.delegate didUpdateProgressSpineItemPercentage:self.spineItemPercentageRemaining bookPercentage:self.progressWithinBook withSpineItemID:spineItemIndexPlus1 withSpineItemTitle:@"Spine Title"];
+    [self.delegate didUpdateProgressSpineItemPercentage:self.spineItemPercentageRemaining bookPercentage:self.progressWithinBook withCurrentSpineItemDetails:self.spineItemDetails];
   }];
   
   if(location) {
@@ -365,6 +362,15 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       [spineItemDict setObject:spineItem.baseHref forKey:@"spineItemBaseHref"];
       [spineItemDict setObject:spineItem.idref forKey:@"spineItemIdref"];
       [spineItemDict setObject:totalLength forKey:@"totalLengthSoFar"];
+      
+      NSString *title = [self tocTitleForSpineItem:spineItem];
+      if (title && [[title class] isSubclassOfClass:[NSString class]]) {
+        [spineItemDict setObject:title forKey:@"tocElementTitle"];
+      }
+      else {
+        [spineItemDict setObject:NSLocalizedString(@"chapter", nil) forKey:@"tocElementTitle"];
+      }
+      
       [bookDicts setObject:spineItemDict forKey:spineItem.idref];
       
       NSDecimalNumber *dataLength = [[NSDecimalNumber alloc] initWithUnsignedInteger:data.length];
@@ -375,6 +381,15 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   [bookDicts setObject:totalLength forKey:@"totalLength"];
   
   self.bookMapDictionary = bookDicts;
+}
+
+- (NSString *) tocTitleForSpineItem: (RDSpineItem *) spineItem {
+  for (RDNavigationElement *tocElement in self.package.tableOfContents.children) {
+    if ([tocElement.content containsString:spineItem.baseHref]) {
+      return tocElement.title;
+    }
+  }
+  return nil;
 }
 
 -(void) calculateProgressionWithDictionary:(NSDictionary *const)dictionary withHandler:(void(^)(void))handler {
@@ -415,6 +430,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   
   self.spineItemPercentageRemaining = spineItemPercentageRemaining;
   self.progressWithinBook = totalProgressSoFarPercentageDec;
+  self.spineItemDetails = spineItemDetails;
   
   if (handler) handler();
 }

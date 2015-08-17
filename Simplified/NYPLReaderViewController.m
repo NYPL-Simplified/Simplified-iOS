@@ -6,6 +6,7 @@
 #import "NYPLReaderTOCViewController.h"
 #import "NYPLRoundedButton.h"
 #import "UIFont+NYPLSystemFontOverride.h"
+#import "NYPLReaderTOCElement.h"
 
 #import "NYPLReaderViewController.h"
 
@@ -224,20 +225,26 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.bottomViewProgressLabel setFont:[UIFont systemFontOfSize:13]];
   
   [self.bottomView addSubview:self.bottomViewProgressLabel];
-  NSLayoutConstraint *constraintPL2 = [NSLayoutConstraint constraintWithItem:self.bottomViewProgressLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem: self.bottomViewProgressView attribute:NSLayoutAttributeTop multiplier:1.f constant:4];
-  NSLayoutConstraint *constraintPL3 = [NSLayoutConstraint constraintWithItem:self.bottomViewProgressLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem: self.bottomViewProgressView attribute:NSLayoutAttributeCenterX multiplier:1.f constant:0];
+  NSLayoutConstraint *constraintPL1 = [NSLayoutConstraint constraintWithItem:self.bottomViewProgressLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem: self.bottomViewProgressView attribute:NSLayoutAttributeTop multiplier:1.f constant:4];
+  NSLayoutConstraint *constraintPL2 = [NSLayoutConstraint constraintWithItem:self.bottomViewProgressLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem: self.bottomViewProgressView attribute:NSLayoutAttributeCenterX multiplier:1.f constant:0];
+  NSLayoutConstraint *constraintPL3 = [NSLayoutConstraint constraintWithItem:self.bottomViewProgressLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationGreaterThanOrEqual toItem: self.bottomViewProgressView attribute:NSLayoutAttributeLeading multiplier:1.f constant:10];
+  NSLayoutConstraint *constraintPL4 = [NSLayoutConstraint constraintWithItem:self.bottomViewProgressLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationLessThanOrEqual toItem: self.bottomViewProgressView attribute:NSLayoutAttributeTrailing multiplier:1.f constant:-10];
   
+  [self.bottomView addConstraint:constraintPL1];
   [self.bottomView addConstraint:constraintPL2];
   [self.bottomView addConstraint:constraintPL3];
+  [self.bottomView addConstraint:constraintPL4];
 }
 
--(void)didUpdateProgressSpineItemPercentage:(NSNumber *)spineItemPercentage bookPercentage:(NSNumber *)bookPercentage withSpineItemID:(NSNumber *)spineItemID withSpineItemTitle:(NSString *)spineItemTitle {
+-(void)didUpdateProgressSpineItemPercentage:(NSNumber *)spineItemPercentage bookPercentage:(NSNumber *)bookPercentage withCurrentSpineItemDetails: (NSDictionary *) currentSpineItemDetails{
+  [self.bottomViewProgressView setProgress:bookPercentage.floatValue / 100 animated:YES];  
+  NSString *title = [currentSpineItemDetails objectForKey:@"tocElementTitle"];
   
-  if (spineItemTitle) {};
+  NSString *bookLocalized = NSLocalizedString(@"Book", nil);
+  NSString *leftInLozalized = NSLocalizedString(@"leftin", nil);
   
-  [self.bottomViewProgressView setProgress:bookPercentage.floatValue / 100 animated:YES];
-  self.bottomViewProgressLabel.text = [NSString stringWithFormat:@"Book %@%% (%@%% left in chapter %@)", bookPercentage.stringValue, spineItemPercentage.stringValue, spineItemID.stringValue];
-  [self.bottomViewProgressLabel sizeToFit];
+  self.bottomViewProgressLabel.text = [NSString stringWithFormat:@"%@ %@%% (%@%% %@ %@)", bookLocalized, bookPercentage.stringValue, spineItemPercentage.stringValue, leftInLozalized, title];
+  [self.bottomViewProgressLabel needsUpdateConstraints];
 }
 
 - (BOOL)prefersStatusBarHidden

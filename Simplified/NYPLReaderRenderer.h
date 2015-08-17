@@ -31,5 +31,5 @@ didReceiveGesture:(NYPLReaderRendererGesture)gesture;
 
 - (void)rendererDidFinishLoading:(id<NYPLReaderRenderer>)renderer;
 
--(void) didUpdateProgressSpineItemPercentage: (NSNumber *)spineItemPercentage bookPercentage: (NSNumber *) bookPercentage withSpineItemID: (NSNumber *) spineItemID withSpineItemTitle: (NSString *) spineItemTitle;
+-(void) didUpdateProgressSpineItemPercentage: (NSNumber *)spineItemPercentage bookPercentage: (NSNumber *) bookPercentage withCurrentSpineItemDetails: (NSDictionary *) currentSpineItemDetails;
 @end
