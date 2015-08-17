@@ -355,10 +355,36 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   
   for (RDSpineItem *spineItem in self.package.spineItems) {
     if ([spineItem.mediaType isEqualToString:@"application/xhtml+xml"]) {
-      NSURL *file =[NSURL URLWithString:[self.server.package.rootURL stringByAppendingPathComponent:spineItem.baseHref]];
-      NSData *data = [NSData dataWithContentsOfURL:file];
+      NSURL *url =[NSURL URLWithString:[self.server.package.rootURL stringByAppendingPathComponent:spineItem.baseHref]];
+      
+      NSDecimalNumber *expectedLengthDec;
+      NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+      request.HTTPMethod = @"HEAD";
+      NSHTTPURLResponse *response;
+      NSError *headError;
+      int responseStatusCode = 0;
+      [NSURLConnection sendSynchronousRequest: request returningResponse: &response error: &headError];
+      if ([response respondsToSelector:@selector(allHeaderFields)]) {
+        
+        responseStatusCode = (int)[response statusCode];
+        if (!headError && responseStatusCode == 200 ) {
+          NSNumber *length = [NSNumber numberWithLongLong:[response expectedContentLength]];
+          expectedLengthDec = [NSDecimalNumber decimalNumberWithDecimal:length.decimalValue];
+        }
+      }
+    
+      if (headError || responseStatusCode != 200) {
+        NSError *dataError;
+        NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&dataError];
+        
+        if (data || !dataError) {
+          NSNumber *length = [NSNumber numberWithUnsignedInteger:data.length];
+          expectedLengthDec = [NSDecimalNumber decimalNumberWithDecimal:length.decimalValue];
+        }
+      }
+      
       NSMutableDictionary *spineItemDict = [[NSMutableDictionary alloc] init];
-      [spineItemDict setObject:[NSNumber numberWithUnsignedInteger:data.length] forKey:@"spineItemBytesLength"];
+      [spineItemDict setObject:expectedLengthDec forKey:@"spineItemBytesLength"];
       [spineItemDict setObject:spineItem.baseHref forKey:@"spineItemBaseHref"];
       [spineItemDict setObject:spineItem.idref forKey:@"spineItemIdref"];
       [spineItemDict setObject:totalLength forKey:@"totalLengthSoFar"];
@@ -372,9 +398,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       }
       
       [bookDicts setObject:spineItemDict forKey:spineItem.idref];
-      
-      NSDecimalNumber *dataLength = [[NSDecimalNumber alloc] initWithUnsignedInteger:data.length];
-      totalLength = [totalLength decimalNumberByAdding:dataLength];
+      totalLength = [totalLength decimalNumberByAdding: expectedLengthDec];
     }
   }
   
