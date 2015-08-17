@@ -95,7 +95,7 @@
 // NYPLEULAViewController && NYPLSettingsEULAViewController
 "Accept" = "Accept";
 "Reject" = "Reject";
-"EULA" = "EULA";
+"EULA" = "User Agreement";
 "EULAHaveToAgree" = "You must accept the End User License Agreement to use this application.";
 "NOTICE" = "NOTICE";
 
