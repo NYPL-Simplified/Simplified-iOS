@@ -6,6 +6,7 @@
 #import "NYPLBookDetailNormalView.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
+#import "NYPLOPDSEvent.h"
 #import "NYPLBookDetailView.h"
 
 @interface NYPLBookDetailView ()
@@ -380,7 +381,11 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       if(self.book.acquisition.openAccess) {
         self.normalView.state = NYPLBookDetailNormalViewStateCanKeep;
       } else {
-        self.normalView.state = NYPLBookDetailNormalViewStateCanBorrow;
+        if (self.book.availableLicenses > 0) {
+          self.normalView.state = NYPLBookDetailNormalViewStateCanBorrow;
+        } else {
+          self.normalView.state = NYPLBookDetailNormalViewStateCanHold;
+        }
       }
       self.unreadImageView.hidden = YES;
       break;
@@ -414,8 +419,10 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
-      // TODO: Change this to something for Holding - BA
-      self.normalView.state = NYPLBookDetailNormalViewStateDownloadNeeded;
+      self.normalView.state = NYPLBookDetailNormalViewStateHolding;
+      if (self.book.event.position == 0) {
+        self.normalView.state = NYPLBookDetailNormalViewStateHoldingFOQ;
+      }
       self.unreadImageView.hidden = YES;
       break;
     case NYPLBookStateUsed:
