@@ -5,6 +5,7 @@
 #import "NYPLJSON.h"
 #import "NYPLOPDS.h"
 #import "NYPLSettings.h"
+#import "NYPLMyBooksDownloadCenter.h"
 
 #import "NYPLBookRegistry.h"
 
@@ -255,6 +256,10 @@ static NSString *const RecordsKey = @"records";
        }
        for (NSString *identifier in identifiersToRemove) {
          if (![[[NYPLSettings sharedSettings] preloadedBookIdentifiers] containsObject:identifier]) {
+           NYPLBookRegistryRecord *record = [self.identifiersToRecords objectForKey:identifier];
+           if (record.state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed)) {
+             [[NYPLMyBooksDownloadCenter sharedDownloadCenter] deleteLocalContentForBookIdentifier:identifier];
+           }
            [self removeBookForIdentifier:identifier];
          }
        }
