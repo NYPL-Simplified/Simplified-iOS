@@ -89,3 +89,4 @@
   "You need a library card to download this book.";
 "SettingsAccountViewControllerMessageInvalidPIN" =
   "Your PIN has changed. Enter your new PIN.";
+"SettingsAccountViewControllerMessageTooManyActivations" = "Too many devices have been authorized with this library card.";
