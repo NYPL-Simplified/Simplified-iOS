@@ -14,7 +14,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
                 </imageView>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <color key="backgroundColor" red="0.80000000000000004" green="0.10196078431372549" blue="0.086274509803921567" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="aU7-0U-gPl" secondAttribute="bottom" id="1So-eg-7PU"/>
                 <constraint firstAttribute="trailing" secondItem="aU7-0U-gPl" secondAttribute="trailing" id="3g4-8n-hij"/>
