@@ -348,6 +348,59 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
 }
 
+- (void)startDownloadForPreloadedBook:(NYPLBook *)book {
+  NYPLBookState const state = [[NYPLBookRegistry sharedRegistry]
+                               stateForIdentifier:book.identifier];
+  
+  switch(state) {
+    case NYPLBookStateUnregistered:
+      break;
+    case NYPLBookStateDownloading:
+      // Ignore double button presses, et cetera.
+      return;
+    case NYPLBookStateDownloadFailed:
+      break;
+    case NYPLBookStateDownloadNeeded:
+      break;
+    case NYPLBookStateDownloadSuccessful:
+      // fallthrough
+    case NYPLBookStateUsed:
+      NYPLLOG(@"Ignoring nonsensical download request.");
+      return;
+  }
+  
+  // Actually download the book
+  NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.generic];
+  
+  if(!request.URL) {
+    // Originally this code just let the request fail later on, but apparently resuming an
+    // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
+    // segmentation fault.
+    NYPLLOG(@"Aborting request with invalid URL.");
+    return;
+  }
+  
+  NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
+  
+  self.bookIdentifierToDownloadProgress[book.identifier] = @0.0;
+  self.bookIdentifierToDownloadTask[book.identifier] = task;
+  self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
+  
+  [task resume];
+  
+  [[NYPLBookRegistry sharedRegistry]
+   addBook:book
+   location:nil
+   state:NYPLBookStateDownloading];
+  
+  // It is important to issue this immediately because a previous download may have left the
+  // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
+  // the user. As such, calling |broadcastUpdate| is not appropriate due to the delay.
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
+   object:self];
+}
+
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier
 {
   if(self.bookIdentifierToDownloadTask[identifier]) {

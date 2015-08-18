@@ -12,6 +12,7 @@ static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
 
 // This method will request credentials from the user if necessary.
 - (void)startDownloadForBook:(NYPLBook *)book;
+- (void)startDownloadForPreloadedBook:(NYPLBook *)book;
 
 // This works for both failed downloads (to reset their state) and for downloads in progress.
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier;

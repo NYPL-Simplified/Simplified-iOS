@@ -31,4 +31,5 @@ didReceiveGesture:(NYPLReaderRendererGesture)gesture;
 
 - (void)rendererDidFinishLoading:(id<NYPLReaderRenderer>)renderer;
 
+-(void) didUpdateProgressWithinSpineTo: (NSNumber *)withinSpine withinBookTo: (NSNumber *) withinBook withSpineID: (NSNumber *) spineID;
 @end
