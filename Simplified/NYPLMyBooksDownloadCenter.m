@@ -194,20 +194,23 @@ didCompleteWithError:(NSError *)error
 didDismissWithButtonIndex:(NSInteger const)buttonIndex
 {
   if(buttonIndex == alertView.firstOtherButtonIndex) {
-    if(![[NSFileManager defaultManager]
-         removeItemAtURL:[self fileURLForBookIndentifier:self.bookIdentifierOfBookToRemove]
-         error:NULL]){
-      NYPLLOG(@"Failed to remove local content for download.");
-    }
-    
-    [[NYPLBookRegistry sharedRegistry]
-     removeBookForIdentifier:self.bookIdentifierOfBookToRemove];
+    [self deleteLocalContentForBookIdentifier:self.bookIdentifierOfBookToRemove];
+    [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:self.bookIdentifierOfBookToRemove];
   }
   
   self.bookIdentifierOfBookToRemove = nil;
 }
 
 #pragma mark -
+
+- (void)deleteLocalContentForBookIdentifier:(NSString *)identifier
+{
+  if(![[NSFileManager defaultManager]
+       removeItemAtURL:[self fileURLForBookIndentifier:identifier]
+       error:NULL]){
+    NYPLLOG(@"Failed to remove local content for download.");
+  }
+}
 
 - (NSURL *)contentDirectoryURL
 {
