@@ -27,6 +27,10 @@
 @property (nonatomic) NSArray *TOCElements;
 @property (nonatomic) UIWebView *webView;
 
+@property (nonatomic) NSDictionary *bookMapDictionary;
+@property (nonatomic) NSNumber *progressWithinSpine;
+@property (nonatomic) NSNumber *progressWithinBook;
+
 @end
 
 static NSString *const renderer = @"readium";
@@ -98,7 +102,7 @@ static void generateTOCElements(NSArray *const navigationElements,
                  package:self.package
                  specialPayloadAnnotationsCSS:nil
                  specialPayloadMathJaxJS:nil];
-
+  
   self.webView = [[UIWebView alloc] initWithFrame:self.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
@@ -274,7 +278,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   }
   
   self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
-
+  [self calculateBookLength];
   
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
   dictionary[@"package"] = self.package.dictionary;
@@ -286,7 +290,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     // Readium stores a "contentCFI" but needs an "elementCfi" when handling a page request, so we
     // have to create a new dictionary.
     NSDictionary *const locationDictionary =
-      NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
+    NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
     dictionary[@"openPageRequest"] = @{@"idref": locationDictionary[@"idref"],
                                        @"elementCfi": locationDictionary[@"contentCFI"]};
   }
@@ -330,6 +334,14 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
                                       initWithLocationString:locationJSON
                                       renderer:renderer];
   
+  NSDictionary *openPagesDict = [openPages firstObject];
+  NSNumber *spineItemIndex = [openPagesDict objectForKey:@"spineItemIndex"];
+  NSNumber *spineItemIndexPlus1 = [NSNumber numberWithInt:(spineItemIndex.intValue + 1)];
+  
+  [self calculateProgressionWithDictionary:dictionary withHandler:^(void) {
+    [self.delegate didUpdateProgressWithinSpineTo:self.progressWithinSpine withinBookTo:self.progressWithinBook withSpineID:spineItemIndexPlus1];
+  }];
+  
   if(location) {
     [[NYPLBookRegistry sharedRegistry]
      setLocation:location
@@ -337,6 +349,71 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   }
   
   self.webView.hidden = NO;
+}
+
+- (void) calculateBookLength {
+  NSDecimalNumber *totalLength = [[NSDecimalNumber alloc] initWithInt:0];
+  
+  NSMutableDictionary *bookDicts = [[NSMutableDictionary alloc] init];
+  
+  for (RDSpineItem *spineItem in self.package.spineItems) {
+    if ([spineItem.mediaType isEqualToString:@"application/xhtml+xml"]) {
+      NSURL *file =[NSURL URLWithString:[self.server.package.rootURL stringByAppendingPathComponent:spineItem.baseHref]];
+      NSData *data = [NSData dataWithContentsOfURL:file];
+      NSMutableDictionary *spineItemDict = [[NSMutableDictionary alloc] init];
+      [spineItemDict setObject:[NSNumber numberWithUnsignedInteger:data.length] forKey:@"spineItemBytesLength"];
+      [spineItemDict setObject:spineItem.baseHref forKey:@"spineItemBaseHref"];
+      [spineItemDict setObject:spineItem.idref forKey:@"spineItemIdref"];
+      [spineItemDict setObject:totalLength forKey:@"totalLengthSoFar"];
+      [bookDicts setObject:spineItemDict forKey:spineItem.idref];
+      
+      NSDecimalNumber *dataLength = [[NSDecimalNumber alloc] initWithUnsignedInteger:data.length];
+      totalLength = [totalLength decimalNumberByAdding:dataLength];
+    }
+  }
+  
+  [bookDicts setObject:totalLength forKey:@"totalLength"];
+  
+  self.bookMapDictionary = bookDicts;
+}
+
+-(void) calculateProgressionWithDictionary:(NSDictionary *const)dictionary withHandler:(void(^)(void))handler {
+  NSArray *openPagesArray = [dictionary objectForKey:@"openPages"];
+  NSDictionary *openPagesDict = [openPagesArray firstObject];
+  
+  NSDecimalNumberHandler *numberHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundUp scale:0 raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:NO];
+  
+  NSString *spineItemIdref = [openPagesDict objectForKey:@"idref"];
+  
+  NSNumber *spineItemPageCount = [openPagesDict objectForKey:@"spineItemPageCount"];
+  NSDecimalNumber *spineItemPageCountDec = [NSDecimalNumber decimalNumberWithDecimal:spineItemPageCount.decimalValue];
+  
+  NSNumber *spineItemPageIndex = [openPagesDict objectForKey:@"spineItemPageIndex"];
+  NSDecimalNumber *spineItemPageIndexDec = [NSDecimalNumber decimalNumberWithDecimal:spineItemPageIndex.decimalValue];
+  
+  NSDecimalNumber *progressWithinSpineDec = [[spineItemPageIndexDec decimalNumberByDividingBy:spineItemPageCountDec] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"100"] withBehavior:numberHandler ];
+  NSDecimalNumber *progressWithinSpineUnmodifiedDec = [spineItemPageIndexDec decimalNumberByDividingBy:spineItemPageCountDec];
+  
+  NSDictionary *spineItemDetails = [self.bookMapDictionary objectForKey:spineItemIdref];
+  
+  NSNumber *spineItemLength = [spineItemDetails objectForKey:@"spineItemBytesLength"];
+  NSDecimalNumber *spineItemLengthDec = [NSDecimalNumber decimalNumberWithDecimal:spineItemLength.decimalValue];
+  
+  NSNumber *totalLengthSoFar = [spineItemDetails objectForKey:@"totalLengthSoFar"];
+  NSDecimalNumber *totalLengthSoFarDec = [NSDecimalNumber decimalNumberWithDecimal:totalLengthSoFar.decimalValue];
+  
+  NSNumber *totalLength = [self.bookMapDictionary objectForKey:@"totalLength"];
+  NSDecimalNumber *totalLengthDec = [NSDecimalNumber decimalNumberWithDecimal:totalLength.decimalValue];
+  
+  NSDecimalNumber *partialLengthProgressedInSpineDec = [spineItemLengthDec decimalNumberByMultiplyingBy:progressWithinSpineUnmodifiedDec withBehavior:numberHandler];
+  NSDecimalNumber *totalProgressSoFarDec = [partialLengthProgressedInSpineDec decimalNumberByAdding:totalLengthSoFarDec withBehavior:numberHandler];
+  
+  NSDecimalNumber *totalProgressSoFarPercentageDec = [[totalProgressSoFarDec decimalNumberByDividingBy:totalLengthDec] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"100"] withBehavior:numberHandler ];
+  
+  self.progressWithinSpine = progressWithinSpineDec;
+  self.progressWithinBook = totalProgressSoFarPercentageDec;
+  
+  if (handler) handler();
 }
 
 #pragma mark NYPLReaderRenderer
@@ -366,5 +443,6 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     navigationElement.content,
     navigationElement.sourceHref]];
 }
+
 
 @end

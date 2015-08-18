@@ -112,6 +112,8 @@
 		841B553E1B73FB2700FAC1AF /* NYPLEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B553D1B73FB2700FAC1AF /* NYPLEULAViewController.m */; };
 		841B55431B740F2700FAC1AF /* NYPLSettingsEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */; };
 		84357B7F1B79357A00D4040F /* NYPLSettingsPrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84357B7D1B79357A00D4040F /* NYPLSettingsPrivacyPolicyViewController.m */; };
+		84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */; };
+		84FCD2741B7BAC0A00BFEDD9 /* PreloadedContent in Resources */ = {isa = PBXBuildFile; fileRef = 84FCD2731B7BAC0A00BFEDD9 /* PreloadedContent */; };
 		A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */; };
 		A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF31B40F4E00095EBAE /* NYPLCatalogFeedViewController.m */; };
 		A42E25521B4D8365008CE669 /* NYPLOPDSEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E25511B4D8365008CE669 /* NYPLOPDSEvent.m */; };
@@ -348,6 +350,8 @@
 		841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsEULAViewController.m; sourceTree = "<group>"; };
 		84357B7D1B79357A00D4040F /* NYPLSettingsPrivacyPolicyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsPrivacyPolicyViewController.m; sourceTree = "<group>"; };
 		84357B7E1B79357A00D4040F /* NYPLSettingsPrivacyPolicyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsPrivacyPolicyViewController.h; sourceTree = "<group>"; };
+		84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		84FCD2731B7BAC0A00BFEDD9 /* PreloadedContent */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PreloadedContent; sourceTree = "<group>"; };
 		A42E0DEF1B3F5A490095EBAE /* NYPLRemoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRemoteViewController.h; sourceTree = "<group>"; };
 		A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLRemoteViewController.m; sourceTree = "<group>"; };
 		A42E0DF21B40F4E00095EBAE /* NYPLCatalogFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogFeedViewController.h; sourceTree = "<group>"; };
@@ -399,6 +403,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */,
 				112492581A5B5B690054D6E2 /* libstdc++.6.dylib in Frameworks */,
 				A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */,
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
@@ -665,6 +670,7 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */,
 				A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */,
 				1146EE3F1A5DD071009F7576 /* CoreText.framework */,
 				112492571A5B5B690054D6E2 /* libstdc++.6.dylib */,
@@ -686,6 +692,7 @@
 		A823D816192BABA400B55DE2 /* Simplified */ = {
 			isa = PBXGroup;
 			children = (
+				84FCD2731B7BAC0A00BFEDD9 /* PreloadedContent */,
 				110AF8891961D66C004887C3 /* Additions */,
 				110AF8901961D822004887C3 /* Book */,
 				1183F349194F74EF00DC322F /* Catalog */,
@@ -936,6 +943,7 @@
 				11C113D219F842BE005B3F63 /* host_app_feedback.js in Resources */,
 				119503F41994001F009FB788 /* readium-shared-js in Resources */,
 				8418C0481B75176B00FAB724 /* eula.html in Resources */,
+				84FCD2741B7BAC0A00BFEDD9 /* PreloadedContent in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1196,6 +1204,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
 				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
@@ -1227,6 +1236,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
 				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
