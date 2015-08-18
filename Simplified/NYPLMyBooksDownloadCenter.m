@@ -362,6 +362,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       break;
     case NYPLBookStateDownloadNeeded:
       break;
+    case NYPLBookStateHolding:
+      // fallthrough
     case NYPLBookStateDownloadSuccessful:
       // fallthrough
     case NYPLBookStateUsed:
