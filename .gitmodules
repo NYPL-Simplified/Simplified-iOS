@@ -7,3 +7,6 @@
 [submodule "tenprintcover-ios"]
 	path = tenprintcover-ios
 	url = git@github.com:NYPL/tenprintcover-ios.git
+[submodule "adept-ios"]
+	path = adept-ios
+	url = git@github.com:NYPL/ADEPT-iOS.git

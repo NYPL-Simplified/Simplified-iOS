@@ -108,6 +108,7 @@
 		11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3773219E0876F00487769 /* NYPLCatalogFacet.m */; };
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
+		5A569A5A1B836251003B5B61 /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
 		A4206FDE1AEEC985009A1D73 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */; };
 		A4276F481B00046300CA7194 /* NYPLMyBooksDownloadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */; };
 		A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */; };
@@ -147,6 +148,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = CCAC4FAE195B3DD700D775F5;
 			remoteInfo = TenPrintCover;
+		};
+		5A569A2B1B8351C6003B5B61 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A4FD2F3A1B601DDA0013DF4F;
+			remoteInfo = ADEPT;
 		};
 		A49C25451AE05A2600D63B89 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -341,6 +349,7 @@
 		11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryTests.m; sourceTree = "<group>"; };
 		11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLinkTests.m; sourceTree = "<group>"; };
 		5705D893E0FE4395A50F089E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
 		A4206FBB1AEE991E009A1D73 /* AdeptHost.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AdeptHost.xcconfig; sourceTree = "<group>"; };
 		A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReaderClientCert.sig; sourceTree = "<group>"; };
 		A4276F461B00046300CA7194 /* NYPLMyBooksDownloadInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksDownloadInfo.h; sourceTree = "<group>"; };
@@ -399,6 +408,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A569A5A1B836251003B5B61 /* libADEPT.a in Frameworks */,
 				112492581A5B5B690054D6E2 /* libstdc++.6.dylib in Frameworks */,
 				A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */,
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
@@ -631,6 +641,14 @@
 			name = Holds;
 			sourceTree = "<group>";
 		};
+		5A569A271B8351C6003B5B61 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5A569A2C1B8351C6003B5B61 /* libADEPT.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		A49C25411AE05A2600D63B89 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -649,6 +667,7 @@
 				A823D80E192BABA400B55DE2 /* Products */,
 				A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */,
 				1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */,
+				5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -884,6 +903,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 5A569A271B8351C6003B5B61 /* Products */;
+					ProjectRef = 5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */;
+				},
+				{
 					ProductGroup = A49C25411AE05A2600D63B89 /* Products */;
 					ProjectRef = A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */;
 				},
@@ -906,6 +929,13 @@
 			fileType = archive.ar;
 			path = libTenPrintCover.a;
 			remoteRef = 1112A81E1A322C53002B8CC1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		5A569A2C1B8351C6003B5B61 /* libADEPT.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libADEPT.a;
+			remoteRef = 5A569A2B1B8351C6003B5B61 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		A49C25461AE05A2600D63B89 /* libRDServices.a */ = {
@@ -1101,7 +1131,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A4206FBB1AEE991E009A1D73 /* AdeptHost.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -1138,6 +1168,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "./adept-ios";
 			};
 			name = Debug;
 		};
@@ -1145,7 +1176,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A4206FBB1AEE991E009A1D73 /* AdeptHost.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -1175,6 +1206,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "./adept-ios";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1198,7 +1230,6 @@
 					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
 					"$(ADEPT_CONNECTOR_LAUNCHER_LIBRARY_SEARCH_PATHS)",
 				);
-				OTHER_LDFLAGS = "$(ADEPT_CONNECTOR_LIB_FLAGS)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
@@ -1235,7 +1266,6 @@
 					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
 					"$(ADEPT_CONNECTOR_LAUNCHER_LIBRARY_SEARCH_PATHS)",
 				);
-				OTHER_LDFLAGS = "$(ADEPT_CONNECTOR_LIB_FLAGS)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
