@@ -60,7 +60,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       if(book.acquisition.openAccess) {
         cell.state = NYPLBookNormalCellStateCanKeep;
       } else {
-        if (book.availableLicenses > 0) {
+        if (book.availableCopies > 0) {
           cell.state = NYPLBookNormalCellStateCanBorrow;
         } else {
           cell.state = NYPLBookNormalCellStateCanHold;
@@ -115,7 +115,11 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                         forIndexPath:indexPath];
       cell.book = book;
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
-      cell.state = NYPLBookNormalCellStateHolding;
+      if(book.availabilityStatus == NYPLBookAvailabilityStatusReserved) {
+        cell.state = NYPLBookNormalCellStateHoldingFOQ;
+      } else {
+        cell.state = NYPLBookNormalCellStateHolding;
+      }
       return cell;
     }
     case NYPLBookStateUsed:

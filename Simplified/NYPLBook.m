@@ -10,9 +10,10 @@
 
 @property (nonatomic) NYPLBookAcquisition *acquisition;
 @property (nonatomic) NSArray *authorStrings;
-@property (nonatomic) NSInteger availableLicenses;
+@property (nonatomic) NYPLBookAvailabilityStatus availabilityStatus;
+@property (nonatomic) NSInteger availableCopies;
+@property (nonatomic) NSDate *availableUntil;
 @property (nonatomic) NSArray *categoryStrings;
-@property (nonatomic) NYPLOPDSEvent *event;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSURL *imageURL;
 @property (nonatomic) NSURL *imageThumbnailURL;
@@ -27,9 +28,10 @@
 
 static NSString *const AcquisitionKey = @"acquisition";
 static NSString *const AuthorsKey = @"authors";
-static NSString *const AvailableLicensesKey = @"available-licenses";
+static NSString *const AvailabilityStatusKey = @"availability-status";
+static NSString *const AvailableCopiesKey = @"available-copies";
+static NSString *const AvailableUntilKey = @"available-until";
 static NSString *const CategoriesKey = @"categories";
-static NSString *const EventKey = @"event";
 static NSString *const IdentifierKey = @"id";
 static NSString *const ImageURLKey = @"image";
 static NSString *const ImageThumbnailURLKey = @"image-thumbnail";
@@ -51,7 +53,26 @@ static NSString *const UpdatedKey = @"updated";
   
   NSURL *borrow, *generic, *openAccess, *sample, *image, *imageThumbnail = nil;
   
+  NYPLBookAvailabilityStatus availabilityStatus = NYPLBookAvailabilityStatusUnknown;
+  NSInteger availableCopies = 0;
+  NSDate *availableUntil = nil;
   for(NYPLOPDSLink *const link in entry.links) {
+    if(link.availabilityStatus) {
+      if([link.availabilityStatus isEqualToString:@"available"]) {
+        availabilityStatus = NYPLBookAvailabilityStatusAvailable;
+      } else if([link.availabilityStatus isEqualToString:@"unavailable"]) {
+        availabilityStatus = NYPLBookAvailabilityStatusUnavailable;
+      } else if([link.availabilityStatus isEqualToString:@"reserved"]) {
+        availabilityStatus = NYPLBookAvailabilityStatusReserved;
+      }
+    }
+    if(link.availableCopies > availableCopies) {
+      availableCopies = link.availableCopies;
+    }
+    if(link.availableUntil) {
+      availableUntil = link.availableUntil;
+    }
+    
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisition]) {
       generic = link.href;
       continue;
@@ -85,9 +106,10 @@ static NSString *const UpdatedKey = @"updated";
                                openAccess:openAccess
                                sample:sample]
           authorStrings:entry.authorStrings
-          availableLicenses:entry.availableLicenses
+          availabilityStatus: availabilityStatus
+          availableCopies:availableCopies
+          availableUntil:availableUntil
           categoryStrings:entry.categoryStrings
-          event:entry.event
           identifier:entry.identifier
           imageURL:image
           imageThumbnailURL:imageThumbnail
@@ -99,20 +121,21 @@ static NSString *const UpdatedKey = @"updated";
           updated:entry.updated];
 }
 
-- (instancetype)initWithAcquisition:(NYPLBookAcquisition *const)acquisition
-                      authorStrings:(NSArray *const)authorStrings
-                  availableLicenses:(NSInteger)availableLicenses
-                    categoryStrings:(NSArray *const)categoryStrings
-                              event:(NYPLOPDSEvent *const)event
-                         identifier:(NSString *const)identifier
-                           imageURL:(NSURL *const)imageURL
-                  imageThumbnailURL:(NSURL *const)imageThumbnailURL
-                          published:(NSDate *const)published
-                          publisher:(NSString *const)publisher
-                           subtitle:(NSString *const)subtitle
-                            summary:(NSString *const)summary
-                              title:(NSString *const)title
-                            updated:(NSDate *const)updated
+- (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
+                      authorStrings:(NSArray *)authorStrings
+                 availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
+                    availableCopies:(NSInteger)availableCopies
+                     availableUntil:(NSDate *)availableUntil
+                    categoryStrings:(NSArray *)categoryStrings
+                         identifier:(NSString *)identifier
+                           imageURL:(NSURL *)imageURL
+                  imageThumbnailURL:(NSURL *)imageThumbnailURL
+                          published:(NSDate *)published
+                          publisher:(NSString *)publisher
+                           subtitle:(NSString *)subtitle
+                            summary:(NSString *)summary
+                              title:(NSString *)title
+                            updated:(NSDate *)updated
 {
   self = [super init];
   if(!self) return nil;
@@ -129,9 +152,10 @@ static NSString *const UpdatedKey = @"updated";
   
   self.acquisition = acquisition;
   self.authorStrings = authorStrings;
-  self.availableLicenses = availableLicenses;
+  self.availabilityStatus = availabilityStatus;
+  self.availableCopies = availableCopies;
+  self.availableUntil = availableUntil;
   self.categoryStrings = categoryStrings;
-  self.event = event;
   self.identifier = identifier;
   self.imageURL = imageURL;
   self.imageThumbnailURL = imageThumbnailURL;
@@ -156,10 +180,14 @@ static NSString *const UpdatedKey = @"updated";
   self.authorStrings = dictionary[AuthorsKey];
   if(!self.authorStrings) return nil;
   
+  self.availabilityStatus = [dictionary[AvailabilityStatusKey] integerValue];
+  
+  self.availableCopies = [dictionary[AvailableCopiesKey] integerValue];
+  
+  self.availableUntil = NYPLNullToNil(dictionary[AvailableUntilKey]);
+  
   self.categoryStrings = dictionary[CategoriesKey];
   if(!self.categoryStrings) return nil;
-  
-  self.event = [[NYPLOPDSEvent alloc] initWithDictionary:NYPLNullToNil(dictionary[EventKey])];
   
   self.identifier = dictionary[IdentifierKey];
   if(!self.identifier) return nil;
@@ -188,53 +216,14 @@ static NSString *const UpdatedKey = @"updated";
   return self;
 }
 
-- (instancetype)initPreloadedWithDictionary:(NSDictionary *)dictionary {
-  self = [super init];
-  if(!self) return nil;
-  
-  self.acquisition = [[NYPLBookAcquisition alloc] initWithDictionary:dictionary[AcquisitionKey]];
-  if(!self.acquisition) return nil;
-  
-  self.authorStrings = dictionary[AuthorsKey];
-  if(!self.authorStrings) return nil;
-  
-  self.categoryStrings = dictionary[CategoriesKey];
-  if(!self.categoryStrings) return nil;
-  
-  self.identifier = dictionary[IdentifierKey];
-  if(!self.identifier) return nil;
-  
-  NSString *const image = NYPLNullToNil(dictionary[ImageURLKey]);
-  self.imageURL = image ? [NSURL fileURLWithPath:image] : nil;
-  
-  NSString *const imageThumbnail = NYPLNullToNil(dictionary[ImageThumbnailURLKey]);
-  self.imageThumbnailURL = imageThumbnail ? [NSURL fileURLWithPath:imageThumbnail] : nil;
-  
-  NSString *const dateString = NYPLNullToNil(dictionary[PublishedKey]);
-  self.published = dateString ? [NSDate dateWithRFC3339String:dateString] : nil;
-  
-  self.publisher = NYPLNullToNil(dictionary[PublisherKey]);
-  
-  self.subtitle = NYPLNullToNil(dictionary[SubtitleKey]);
-  
-  self.summary = NYPLNullToNil(dictionary[SummaryKey]);
-  
-  self.title = dictionary[TitleKey];
-  if(!self.title) return nil;
-  
-  self.updated = [NSDate dateWithRFC3339String:dictionary[UpdatedKey]];
-  if(!self.updated) return nil;
-  
-  return self;
-}
-
 - (NSDictionary *)dictionaryRepresentation
 {
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
            AuthorsKey: self.authorStrings,
-           AvailableLicensesKey: @(self.availableLicenses),
+           AvailabilityStatusKey: @(self.availabilityStatus),
+           AvailableCopiesKey: @(self.availableCopies),
+           AvailableUntilKey: NYPLNullFromNil([self.availableUntil RFC3339String]),
            CategoriesKey: self.categoryStrings,
-           EventKey: NYPLNullFromNil([self.event dictionaryRepresentation]),
            IdentifierKey: self.identifier,
            ImageURLKey: NYPLNullFromNil([self.imageURL absoluteString]),
            ImageThumbnailURLKey: NYPLNullFromNil([self.imageThumbnailURL absoluteString]),

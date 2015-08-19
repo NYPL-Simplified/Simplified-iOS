@@ -9,6 +9,10 @@
 @property (nonatomic, readonly) NSString *hreflang; // nilable
 @property (nonatomic, readonly) NSString *title; // nilable
 @property (nonatomic, readonly) NSString *length; // nilable
+@property (nonatomic, readonly) NSString *availabilityStatus; // nilable
+@property (nonatomic, readonly) NSInteger availableCopies;
+@property (nonatomic, readonly) NSDate *availableSince; // nilable
+@property (nonatomic, readonly) NSDate *availableUntil; // nilable
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;

@@ -6,9 +6,7 @@
 
 @property (nonatomic, readonly) NSString *alternativeHeadline; // nilable
 @property (nonatomic, readonly) NSArray *authorStrings;
-@property (nonatomic, readonly) NSInteger availableLicenses;
 @property (nonatomic, readonly) NSArray *categoryStrings;
-@property (nonatomic, readonly) NYPLOPDSEvent *event;
 @property (nonatomic, readonly) NYPLOPDSEntryGroupAttributes *groupAttributes; // nilable
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSArray *links;

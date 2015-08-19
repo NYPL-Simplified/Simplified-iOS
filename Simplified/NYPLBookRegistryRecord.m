@@ -33,11 +33,11 @@ static NSString *const StateKey = @"state";
   self.location = location;
   self.state = state;
   
-  // If there's an event indicating that the book is loaned or on hold,
-  // then make sure the state being set is valid for that loan/hold.
-  [book.event matchHold:^() {
+  // If the book availability indicates that the book is held, make sure the state
+  // reflects that. Otherwise, make sure it's not in the Holding state.
+  if(book.availabilityStatus & (NYPLBookAvailabilityStatusUnavailable | NYPLBookAvailabilityStatusReserved)) {
     self.state = NYPLBookStateHolding;
-  } matchLoan:^() {
+  } else {
     if (!((NYPLBookStateDownloadFailed |
            NYPLBookStateDownloading |
            NYPLBookStateDownloadNeeded |
@@ -45,7 +45,7 @@ static NSString *const StateKey = @"state";
            NYPLBookStateUsed) & self.state)) {
       self.state = NYPLBookStateDownloadNeeded;
     }
-  }];
+  }
   
   return self;
 }

@@ -2,15 +2,23 @@
 @class NYPLOPDSEntry;
 @class NYPLOPDSEvent;
 
+typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
+  NYPLBookAvailabilityStatusUnknown      = 1 << 0,
+  NYPLBookAvailabilityStatusAvailable    = 1 << 1,
+  NYPLBookAvailabilityStatusUnavailable  = 1 << 2,
+  NYPLBookAvailabilityStatusReserved     = 1 << 3,
+};
+
 @interface NYPLBook : NSObject
 
 @property (nonatomic, readonly) NYPLBookAcquisition *acquisition;
 @property (nonatomic, readonly) NSString *authors;
 @property (nonatomic, readonly) NSArray *authorStrings;
-@property (nonatomic, readonly) NSInteger availableLicenses;
+@property (nonatomic, readonly) NYPLBookAvailabilityStatus availabilityStatus;
+@property (nonatomic, readonly) NSInteger availableCopies;
+@property (nonatomic, readonly) NSDate *availableUntil;
 @property (nonatomic, readonly) NSString *categories;
 @property (nonatomic, readonly) NSArray *categoryStrings;
-@property (nonatomic, readonly) NYPLOPDSEvent *event;
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSURL *imageURL; // nilable
 @property (nonatomic, readonly) NSURL *imageThumbnailURL; // nilable
@@ -29,9 +37,10 @@
 // designated initializer
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
                       authorStrings:(NSArray *)authorStrings
-                  availableLicenses:(NSInteger)availableLicenses
+                 availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
+                    availableCopies:(NSInteger)availableCopies
+                     availableUntil:(NSDate *)availableUntil
                     categoryStrings:(NSArray *)categoryStrings
-                              event:(NYPLOPDSEvent *)event
                          identifier:(NSString *)identifier
                            imageURL:(NSURL *)imageURL
                   imageThumbnailURL:(NSURL *)imageThumbnailURL
@@ -44,9 +53,6 @@
 
 // designated initializer
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
-
-// designated initializer for Preloaded Content
-- (instancetype)initPreloadedWithDictionary:(NSDictionary *)dictionary;
 
 - (NSDictionary *)dictionaryRepresentation;
 

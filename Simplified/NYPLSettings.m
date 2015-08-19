@@ -1,4 +1,5 @@
 #import "NYPLSettings.h"
+#import "NYPLBookAcquisition.h"
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
@@ -80,15 +81,18 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] boolForKey:preloadContentCompletedKey];
 }
 
-- (NSArray *) preloadedBookURLs {
+- (NSArray *)preloadedBookURLs
+{
   return [[NSBundle mainBundle] pathsForResourcesOfType:@"epub" inDirectory:@"PreloadedContent"];
 }
 
-- (NSString *) preloadedBookIDFromBundlePath: (NSString *) bookBundlePath {
+- (NSString *)preloadedBookIDFromBundlePath: (NSString *) bookBundlePath
+{
   return [NSString stringWithFormat:@"Preloaded-%@", bookBundlePath.lastPathComponent];
 }
 
-- (NSArray *) preloadedBookIdentifiers {
+- (NSArray *)preloadedBookIdentifiers
+{
   NSArray *bundlePathsToPreload = [[NYPLSettings sharedSettings] preloadedBookURLs];
   NSMutableArray *booksToPreloadIdentifiers = [[NSMutableArray alloc] init];
   
@@ -100,15 +104,14 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return booksToPreloadIdentifiers;
 }
 
-- (NSArray *) booksToPreload {
+- (NSArray *)booksToPreload
+{
   NSArray *bundlePathsToPreload = [[NYPLSettings sharedSettings] preloadedBookURLs];
   NSMutableArray *booksToPreload = [[NSMutableArray alloc] init];
   
   for (NSString *bookBundlePath in bundlePathsToPreload) {
     
     NSURL *bookBundleURL = [NSURL fileURLWithPath:bookBundlePath];
-    NSDictionary *acqDict = [[NSDictionary alloc] initWithObjectsAndKeys: @"", @"borrow",bookBundleURL.absoluteString, @"generic", @"", @"open-access", @"", @"sample", nil];
-    NSArray *categoryArray = @[@"Preloaded"];
     NSString *bookID = [self preloadedBookIDFromBundlePath:bookBundlePath];
     NSString *imagePath = [bookBundlePath stringByAppendingPathExtension:@"jpg"];
     
@@ -125,11 +128,25 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
       bookAuthor = @"Preloaded Content";
     }
     
-    NSArray *authorArray = @[bookAuthor];
-    NSDate *today = [NSDate date];
-    NSDictionary *bookDict = [[NSDictionary alloc] initWithObjectsAndKeys:acqDict, @"acquisition", authorArray, @"authors", categoryArray, @"categories", bookID , @"id", imagePath, @"image", imagePath, @"image-thumbnail", bookTitle, @"title", [today RFC3339String] , @"updated", nil];
+    NYPLBook *book = [[NYPLBook alloc] initWithAcquisition:[[NYPLBookAcquisition alloc] initWithBorrow:nil
+                                                                                               generic:bookBundleURL
+                                                                                            openAccess:nil
+                                                                                                sample:nil]
+                                             authorStrings:@[bookAuthor]
+                                        availabilityStatus:NYPLBookAvailabilityStatusAvailable
+                                           availableCopies:0
+                                            availableUntil:nil
+                                           categoryStrings:@[@"Preloaded"]
+                                                identifier:bookID
+                                                  imageURL:[NSURL fileURLWithPath:imagePath]
+                                         imageThumbnailURL:[NSURL fileURLWithPath:imagePath]
+                                                 published:nil
+                                                 publisher:nil
+                                                  subtitle:nil
+                                                   summary:nil
+                                                     title:bookTitle
+                                                   updated:[NSDate date]];
     
-    NYPLBook *book = [[NYPLBook alloc] initPreloadedWithDictionary:bookDict];
     if (book) {
       [booksToPreload addObject:book];
     }
@@ -138,7 +155,8 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return booksToPreload;
 }
 
-- (NSArray *) booksToPreloadCurrentlyMissing {
+- (NSArray *)booksToPreloadCurrentlyMissing
+{
   
   NSArray *booksToCheck = [self booksToPreload];
   
@@ -158,8 +176,8 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return booksToRestore;
 }
 
-- (NSArray *) booksToRestorePreloadedContentForIdentifiers: (NSArray *) identifiers {
-  
+- (NSArray *)booksToRestorePreloadedContentForIdentifiers:(NSArray *)identifiers
+{
   NSArray *booksToCheck = [self booksToPreload];
   
   if (!identifiers || ![[identifiers class] isSubclassOfClass:[NSArray class]] || !booksToCheck || booksToCheck.count == 0 ) {
@@ -176,7 +194,8 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return booksToRestore;
 }
 
-- (void) setUserAcceptedEULA:(BOOL)userAcceptedEULA {
+- (void)setUserAcceptedEULA:(BOOL)userAcceptedEULA
+{
   [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:userAcceptedEULAKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
@@ -220,7 +239,8 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
    object:self];
 }
 
-- (void) setPreloadContentCompleted:(BOOL)preloadContentCompleted {
+- (void)setPreloadContentCompleted:(BOOL)preloadContentCompleted
+{
   [[NSUserDefaults standardUserDefaults] setBool:preloadContentCompleted forKey:preloadContentCompletedKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
