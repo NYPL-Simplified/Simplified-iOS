@@ -381,7 +381,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       if(self.book.acquisition.openAccess) {
         self.normalView.state = NYPLBookDetailNormalViewStateCanKeep;
       } else {
-        if (self.book.availableLicenses > 0) {
+        if (self.book.availableCopies > 0) {
           self.normalView.state = NYPLBookDetailNormalViewStateCanBorrow;
         } else {
           self.normalView.state = NYPLBookDetailNormalViewStateCanHold;
@@ -419,9 +419,10 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
-      self.normalView.state = NYPLBookDetailNormalViewStateHolding;
-      if (self.book.event.position == 0) {
+      if (self.book.availabilityStatus == NYPLBookAvailabilityStatusReserved) {
         self.normalView.state = NYPLBookDetailNormalViewStateHoldingFOQ;
+      } else {
+        self.normalView.state = NYPLBookDetailNormalViewStateHolding;
       }
       self.unreadImageView.hidden = YES;
       break;

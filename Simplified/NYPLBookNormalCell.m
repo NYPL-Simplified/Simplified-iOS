@@ -186,6 +186,9 @@
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Hold"}];
       break;
     case NYPLBookNormalCellStateHolding:
+      visibleButtonInfo = @[@{ButtonKey: self.deleteButton,   TitleKey: @"CancelHold"}];
+      break;
+    case NYPLBookNormalCellStateHoldingFOQ:
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Borrow"},
                             @{ButtonKey: self.deleteButton,   TitleKey: @"CancelHold"}];
       break;
