@@ -17,7 +17,7 @@ static NSString *const NYPLOPDSRelationFeatured =
   @"http://opds-spec.org/featured";
 
 static NSString *const NYPLOPDSRelationGroup =
-  @"http://opds-spec.org/group";
+  @"collection";
 
 static NSString *const NYPLOPDSRelationImage =
   @"http://opds-spec.org/image";
