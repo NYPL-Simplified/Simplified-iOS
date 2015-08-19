@@ -67,7 +67,9 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
       NYPLLOG(@"Failed to create book from entry.");
       continue;
     }
-    [[NYPLBookRegistry sharedRegistry] updateBook:book];
+    // Doing this here is probably a bad idea, since it can result in
+    // overriding correct state information in the registry.
+    //[[NYPLBookRegistry sharedRegistry] updateBook:book];
     [books addObject:book];
   }
   
