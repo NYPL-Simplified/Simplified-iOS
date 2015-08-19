@@ -5,8 +5,6 @@
 
 #import "NYPLAppDelegate.h"
 
-#import "NYPLAdeptConnector.h"
-
 @implementation NYPLAppDelegate
 
 #pragma mark UIApplicationDelegate

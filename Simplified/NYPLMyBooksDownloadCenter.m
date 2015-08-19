@@ -1,18 +1,17 @@
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
-#import "NYPLAdeptConnector.h"
 #import "NYPLSettingsAccountViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLMyBooksDownloadInfo.h"
-
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLMyBooksDownloadInfo.h"
+#import <ADEPT/ADEPT.h>
 
 @interface NYPLMyBooksDownloadCenter ()
-  <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, NYPLAdeptConnectorDelegate,
+  <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, NYPLADEPTDelegate,
    UIAlertViewDelegate>
 
 @property (nonatomic) NSString *bookIdentifierOfBookToRemove;
@@ -47,7 +46,7 @@
   self = [super init];
   if(!self) return nil;
   
-  [NYPLAdeptConnector sharedAdeptConnector].delegate = self;
+  [NYPLADEPT sharedInstance].delegate = self;
   
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
@@ -142,7 +141,7 @@ didFinishDownloadingToURL:(NSURL *const)location
       @throw NSInternalInconsistencyException;
     case NYPLMyBooksDownloadRightsManagementAdobe:
       // FIXME: Temporary test code!
-      [[NYPLAdeptConnector sharedAdeptConnector]
+      [[NYPLADEPT sharedInstance]
        fulfillWithACSMData:[NSData dataWithContentsOfURL:location]
        tag:book.identifier];
       break;
@@ -232,11 +231,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   self.bookIdentifierOfBookToRemove = nil;
 }
 
-#pragma mark NYPLAdeptConnectorDelegate
+#pragma mark NYPLADEPTDelegate
 
-- (void)adeptConnector:(__attribute__((unused)) NYPLAdeptConnector *)adeptConnector
-     didUpdateProgress:(double const)progress
-                   tag:(NSString *const)tag
+- (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didUpdateProgress:(double)progress tag:(NSString *)tag
 {
   self.bookIdentifierToDownloadInfo[tag] =
     [[self downloadInfoForBookIdentifier:tag] withDownloadProgress:progress];
@@ -244,10 +241,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [self broadcastUpdate];
 }
 
-- (void)adeptConnector:(__attribute__((unused)) NYPLAdeptConnector *)adeptConnector
-didFinishDownloadingToURL:(NSURL *const)URL
-            rightsData:(NSData *const)rightsData
-                   tag:(NSString *const)tag
+- (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didFinishDownloadingToURL:(NSURL *)URL rightsData:(NSData *)rightsData tag:(NSString *)tag
 {
   // FIXME: CODE DUPLICATION!
   

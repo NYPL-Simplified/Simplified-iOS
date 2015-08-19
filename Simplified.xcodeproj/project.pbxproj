@@ -114,7 +114,6 @@
 		A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */; };
 		A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF31B40F4E00095EBAE /* NYPLCatalogFeedViewController.m */; };
 		A46226271B39D4980063F549 /* NYPLOPDSGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = A46226251B39D4980063F549 /* NYPLOPDSGroup.m */; };
-		A46D1CB81AF2C2E000F5321E /* NYPLAdeptConnector.mm in Sources */ = {isa = PBXBuildFile; fileRef = A46D1CB71AF2C2E000F5321E /* NYPLAdeptConnector.mm */; };
 		A499BF261B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = A499BF251B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m */; };
 		A49C25581AE05D0A00D63B89 /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */; };
 		A49C25591AE05D0D00D63B89 /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
@@ -122,7 +121,6 @@
 		A4BA1D0E1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BA1D0D1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m */; };
 		A4BA1D131B43046B006F83DF /* NYPLCatalogGroupedFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BA1D121B43046B006F83DF /* NYPLCatalogGroupedFeed.m */; };
 		A4E254FA1B0E610900193FE4 /* NYPLBasicAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */; };
-		A4E255111B0E648C00193FE4 /* NYPLQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E255101B0E648C00193FE4 /* NYPLQueue.m */; };
 		A4E255151B0E704100193FE4 /* NYPLQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E255141B0E704100193FE4 /* NYPLQueueTests.m */; };
 		A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D810192BABA400B55DE2 /* Foundation.framework */; };
 		A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
@@ -350,7 +348,6 @@
 		11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLinkTests.m; sourceTree = "<group>"; };
 		5705D893E0FE4395A50F089E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
-		A4206FBB1AEE991E009A1D73 /* AdeptHost.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AdeptHost.xcconfig; sourceTree = "<group>"; };
 		A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReaderClientCert.sig; sourceTree = "<group>"; };
 		A4276F461B00046300CA7194 /* NYPLMyBooksDownloadInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksDownloadInfo.h; sourceTree = "<group>"; };
 		A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksDownloadInfo.m; sourceTree = "<group>"; };
@@ -360,8 +357,6 @@
 		A42E0DF31B40F4E00095EBAE /* NYPLCatalogFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogFeedViewController.m; sourceTree = "<group>"; };
 		A46226251B39D4980063F549 /* NYPLOPDSGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSGroup.m; sourceTree = "<group>"; };
 		A46226261B39D4980063F549 /* NYPLOPDSGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSGroup.h; sourceTree = "<group>"; };
-		A46D1CB61AF2C2E000F5321E /* NYPLAdeptConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAdeptConnector.h; sourceTree = "<group>"; };
-		A46D1CB71AF2C2E000F5321E /* NYPLAdeptConnector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NYPLAdeptConnector.mm; sourceTree = "<group>"; };
 		A499BF241B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSEntryGroupAttributes.h; sourceTree = "<group>"; };
 		A499BF251B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryGroupAttributes.m; sourceTree = "<group>"; };
 		A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RDServices.xcodeproj; sourceTree = "<group>"; };
@@ -374,8 +369,6 @@
 		A4BA1D121B43046B006F83DF /* NYPLCatalogGroupedFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogGroupedFeed.m; sourceTree = "<group>"; };
 		A4E254F81B0E610900193FE4 /* NYPLBasicAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBasicAuth.h; sourceTree = "<group>"; };
 		A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBasicAuth.m; sourceTree = "<group>"; };
-		A4E2550F1B0E648C00193FE4 /* NYPLQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLQueue.h; sourceTree = "<group>"; };
-		A4E255101B0E648C00193FE4 /* NYPLQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLQueue.m; sourceTree = "<group>"; };
 		A4E255141B0E704100193FE4 /* NYPLQueueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLQueueTests.m; sourceTree = "<group>"; };
 		A823D80D192BABA400B55DE2 /* Simplified.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simplified.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D810192BABA400B55DE2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -660,7 +653,6 @@
 		A823D804192BABA400B55DE2 = {
 			isa = PBXGroup;
 			children = (
-				A4206FBB1AEE991E009A1D73 /* AdeptHost.xcconfig */,
 				A823D816192BABA400B55DE2 /* Simplified */,
 				A823D82F192BABA400B55DE2 /* SimplifiedTests */,
 				A823D80F192BABA400B55DE2 /* Frameworks */,
@@ -711,8 +703,6 @@
 				110AF8881961D652004887C3 /* My Books */,
 				11172762197F31280043EFBF /* NYPLAccount.h */,
 				11172763197F31280043EFBF /* NYPLAccount.m */,
-				A46D1CB61AF2C2E000F5321E /* NYPLAdeptConnector.h */,
-				A46D1CB71AF2C2E000F5321E /* NYPLAdeptConnector.mm */,
 				A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */,
 				A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */,
 				1183F359194F847100DC322F /* NYPLAsync.h */,
@@ -742,8 +732,6 @@
 				11068C54196DD37900E8A94B /* NYPLNull.m */,
 				119BEBB719902A8800121439 /* NYPLOpenSearchDescription.h */,
 				119BEBB819902A8800121439 /* NYPLOpenSearchDescription.m */,
-				A4E2550F1B0E648C00193FE4 /* NYPLQueue.h */,
-				A4E255101B0E648C00193FE4 /* NYPLQueue.m */,
 				119503EE1993FB90009FB788 /* NYPLReadium.h */,
 				11B20E6C19D9F6DD00877A23 /* NYPLReloadView.h */,
 				11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */,
@@ -1009,7 +997,6 @@
 				1183F347194F744D00DC322F /* NYPLBook.m in Sources */,
 				1183F341194F723D00DC322F /* NYPLCatalogLane.m in Sources */,
 				11A16E6F195B60DF004147F4 /* NYPLBookNormalCell.m in Sources */,
-				A46D1CB81AF2C2E000F5321E /* NYPLAdeptConnector.mm in Sources */,
 				11548C0E1939147D009DBF2E /* NYPLCatalogNavigationController.m in Sources */,
 				111E75891A818C1F00718AD7 /* NYPLSettingsCreditsViewController.m in Sources */,
 				A46226271B39D4980063F549 /* NYPLOPDSGroup.m in Sources */,
@@ -1039,7 +1026,6 @@
 				111E757A1A80165C00718AD7 /* NYPLSettingsSplitViewController.m in Sources */,
 				112C694D197301FE00C48F95 /* NYPLBookRegistryRecord.m in Sources */,
 				116A5EB3194767DC00491A21 /* NYPLMyBooksViewController.m in Sources */,
-				A4E255111B0E648C00193FE4 /* NYPLQueue.m in Sources */,
 				11078357198160A50071AB1E /* NYPLBookDownloadFailedCell.m in Sources */,
 				110AF89C1961ED1F004887C3 /* NYPLBookDetailViewController.m in Sources */,
 				1164A9F71A797238002BD3AE /* NYPLSettings.m in Sources */,
@@ -1129,7 +1115,6 @@
 /* Begin XCBuildConfiguration section */
 		A823D837192BABA400B55DE2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A4206FBB1AEE991E009A1D73 /* AdeptHost.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1160,10 +1145,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1174,7 +1156,6 @@
 		};
 		A823D838192BABA400B55DE2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A4206FBB1AEE991E009A1D73 /* AdeptHost.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1199,10 +1180,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1222,14 +1200,9 @@
 					"\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**",
 					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
 					"\"$(SRCROOT)/readium-sdk/Platform/Apple/include\"",
-					"$(ADEPT_CONNECTOR_LAUNCHER_INCLUDES)",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
-					"$(ADEPT_CONNECTOR_LAUNCHER_LIBRARY_SEARCH_PATHS)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
@@ -1258,14 +1231,9 @@
 					"\"$(SRCROOT)/readium-sdk/Platform/Apple/RDServices\"/**",
 					"\"$(SRCROOT)/tenprintcover-ios/TenPrintCover\"",
 					"\"$(SRCROOT)/readium-sdk/Platform/Apple/include\"",
-					"$(ADEPT_CONNECTOR_LAUNCHER_INCLUDES)",
 				);
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
-					"$(ADEPT_CONNECTOR_LAUNCHER_LIBRARY_SEARCH_PATHS)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (

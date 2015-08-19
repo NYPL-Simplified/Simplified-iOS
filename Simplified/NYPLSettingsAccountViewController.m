@@ -1,16 +1,15 @@
 #import "NYPLAccount.h"
-#import "NYPLAdeptConnector.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLSettingsAccountViewController.h"
 #import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
-
-#import "NYPLSettingsAccountViewController.h"
+#import <ADEPT/ADEPT.h>
 
 typedef NS_ENUM(NSInteger, CellKind) {
   CellKindBarcode,
@@ -395,7 +394,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
 - (void)logOut
 {
-  if([NYPLAdeptConnector sharedAdeptConnector].workflowsInProgress) {
+  if([NYPLADEPT sharedInstance].workflowsInProgress) {
     [[[UIAlertView alloc]
       initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerCannotLogOutTitle", nil)
       message:NSLocalizedString(@"SettingsAccountViewControllerCannotLogOutMessage", nil)
@@ -404,7 +403,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
       otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
      show];
   } else {
-    [[NYPLAdeptConnector sharedAdeptConnector] deauthorize];
+    [[NYPLADEPT sharedInstance] deauthorize];
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
     [[NYPLBookRegistry sharedRegistry] reset];
     [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
@@ -432,7 +431,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
        // Success.
        if(statusCode == 200) {
          // FIXME: Use real credentials!
-         [[NYPLAdeptConnector sharedAdeptConnector]
+         [[NYPLADEPT sharedInstance]
           authorizeWithVendorID:@"NYPL"
           username:self.barcodeTextField.text
           password:self.PINTextField.text
@@ -586,7 +585,7 @@ completionHandler:(void (^)())handler
     self.navigationItem.titleView = nil;
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
-    if([NYPLAdeptConnector sharedAdeptConnector].deviceAuthorized) {
+    if([NYPLADEPT sharedInstance].deviceAuthorized) {
       [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
                                           PIN:self.PINTextField.text];
       [self dismissViewControllerAnimated:YES completion:^{}];
