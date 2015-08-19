@@ -2,7 +2,6 @@
 #import "NYPLBookLocation.h"
 #import "NYPLBookRegistryRecord.h"
 #import "NYPLNull.h"
-#import "NYPLOPDSEvent.h"
 
 @interface NYPLBookRegistryRecord ()
 

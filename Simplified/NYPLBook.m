@@ -2,7 +2,6 @@
 #import "NYPLBookAcquisition.h"
 #import "NYPLNull.h"
 #import "NYPLOPDS.h"
-#import "NYPLOPDSEvent.h"
 
 #import "NYPLBook.h"
 
