@@ -23,6 +23,8 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
           return NYPLSettingsPrimaryTableViewControllerItemEULA;
         case 3:
           return NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy;
+        case 4:
+          return NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent;
         default:
           @throw NSInvalidArgumentException;
       }
@@ -45,6 +47,8 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
       return [NSIndexPath indexPathForRow:2 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
       return [NSIndexPath indexPathForRow:3 inSection:1];
+      case NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent:
+      return [NSIndexPath indexPathForRow:4 inSection:1];
   }
 }
 
@@ -143,6 +147,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       return cell;
     }
+    case NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      cell.textLabel.text = NSLocalizedString(@"RestorePreloadedContent", nil);
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      }
+      return cell;
+    }
   }
 }
 
@@ -158,7 +173,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case 0:
       return 1;
     case 1:
-      return 4;
+      return 5;
     default:
       @throw NSInternalInconsistencyException;
   }

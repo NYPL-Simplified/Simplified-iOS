@@ -70,6 +70,11 @@
 
 "ReaderViewControllerCorruptTitle" = "Could Not Display Book";
 "ReaderViewControllerCorruptMessage" = "This book is corrupt and cannot be read.";
+"Book" = "Book";
+"leftin" = "left in";
+
+// NYPLReaderReadiumView
+"chapter" = "chapter";
 
 // ReaderTOCViewController
 
@@ -93,9 +98,13 @@
 // NYPLEULAViewController && NYPLSettingsEULAViewController
 "Accept" = "Accept";
 "Reject" = "Reject";
-"EULA" = "EULA";
+"EULA" = "User Agreement";
 "EULAHaveToAgree" = "You must accept the End User License Agreement to use this application.";
 "NOTICE" = "NOTICE";
 
 // NYPLSettingsPrivacyPolicyViewController
 "PrivacyPolicy" = "Privacy Policy";
+"RestorePreloadedContent" = "Restore Preloaded Content";
+"PreloadedContent" = "Preloaded Content";
+"PreloadedContentRestoredMessage" = "Preloaded content restored";
+"PreloadedContentNothingRestoredMessage" = "All preloaded content available";

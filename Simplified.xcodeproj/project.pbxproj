@@ -112,6 +112,7 @@
 		841B553E1B73FB2700FAC1AF /* NYPLEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B553D1B73FB2700FAC1AF /* NYPLEULAViewController.m */; };
 		841B55431B740F2700FAC1AF /* NYPLSettingsEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */; };
 		84357B7F1B79357A00D4040F /* NYPLSettingsPrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84357B7D1B79357A00D4040F /* NYPLSettingsPrivacyPolicyViewController.m */; };
+		848FD95B1B83875D009D9BC4 /* NYPL_Launch_Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 848FD95A1B83875D009D9BC4 /* NYPL_Launch_Screen.xib */; };
 		84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */; };
 		84FCD2741B7BAC0A00BFEDD9 /* PreloadedContent in Resources */ = {isa = PBXBuildFile; fileRef = 84FCD2731B7BAC0A00BFEDD9 /* PreloadedContent */; };
 		A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */; };
@@ -350,6 +351,7 @@
 		841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsEULAViewController.m; sourceTree = "<group>"; };
 		84357B7D1B79357A00D4040F /* NYPLSettingsPrivacyPolicyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsPrivacyPolicyViewController.m; sourceTree = "<group>"; };
 		84357B7E1B79357A00D4040F /* NYPLSettingsPrivacyPolicyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsPrivacyPolicyViewController.h; sourceTree = "<group>"; };
+		848FD95A1B83875D009D9BC4 /* NYPL_Launch_Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NYPL_Launch_Screen.xib; path = Simplified/NYPL_Launch_Screen.xib; sourceTree = "<group>"; };
 		84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		84FCD2731B7BAC0A00BFEDD9 /* PreloadedContent */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PreloadedContent; sourceTree = "<group>"; };
 		A42E0DEF1B3F5A490095EBAE /* NYPLRemoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRemoteViewController.h; sourceTree = "<group>"; };
@@ -649,6 +651,7 @@
 		A823D804192BABA400B55DE2 = {
 			isa = PBXGroup;
 			children = (
+				848FD95A1B83875D009D9BC4 /* NYPL_Launch_Screen.xib */,
 				A823D816192BABA400B55DE2 /* Simplified */,
 				A823D82F192BABA400B55DE2 /* SimplifiedTests */,
 				A823D80F192BABA400B55DE2 /* Frameworks */,
@@ -933,6 +936,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				11C113D719F84613005B3F63 /* simplified.js in Resources */,
+				848FD95B1B83875D009D9BC4 /* NYPL_Launch_Screen.xib in Resources */,
 				A823D81B192BABA400B55DE2 /* InfoPlist.strings in Resources */,
 				11C113D019F842B9005B3F63 /* reader.html in Resources */,
 				110F853E19D5FA7300052DF7 /* DetailSummaryTemplate.html in Resources */,
@@ -1192,7 +1196,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1224,7 +1227,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				HEADER_SEARCH_PATHS = (

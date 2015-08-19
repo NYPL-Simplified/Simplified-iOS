@@ -323,7 +323,7 @@ static NSString *const FontSizeKey = @"fontSize";
   
   switch(self.fontFace) {
     case NYPLReaderSettingsFontFaceSans:
-      fontFace = @"HelveticaNeue";
+      fontFace = @"Helvetica";
       lineHeight = @"1.6";
       break;
     case NYPLReaderSettingsFontFaceSerif:
@@ -332,10 +332,9 @@ static NSString *const FontSizeKey = @"fontSize";
       break;
   }
   
-  return @[@{@"selector": @"body",
+  return @[@{@"selector": @"*",
              @"declarations": @{@"color": [self.foregroundColor javascriptHexString],
-                                @"backgroundColor": [self.backgroundColor javascriptHexString],
-                                @"font-face": fontFace,
+                                @"font-family": fontFace,
                                 @"line-height": lineHeight,
                                 @"-webkit-hyphens": @"auto"}}];
 }
