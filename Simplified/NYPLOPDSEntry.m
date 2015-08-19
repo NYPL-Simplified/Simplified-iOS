@@ -1,6 +1,5 @@
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLOPDSEntryGroupAttributes.h"
-#import "NYPLOPDSEvent.h"
 #import "NYPLOPDSLink.h"
 #import "NYPLOPDSRelation.h"
 #import "NYPLXML.h"

@@ -6,7 +6,6 @@
 #import "NYPLBookDetailNormalView.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
-#import "NYPLOPDSEvent.h"
 #import "NYPLBookDetailView.h"
 
 @interface NYPLBookDetailView ()
