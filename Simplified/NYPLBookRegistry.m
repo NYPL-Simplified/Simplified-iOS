@@ -1,3 +1,4 @@
+#import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistryRecord.h"
@@ -208,7 +209,7 @@ static NSString *const RecordsKey = @"records";
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
 {
   @synchronized(self) {
-    if(self.syncing) {
+    if(self.syncing || ![[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
       return;
     } else {
       self.syncing = YES;
