@@ -113,6 +113,9 @@
 		841B55431B740F2700FAC1AF /* NYPLSettingsEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */; };
 		84357B7F1B79357A00D4040F /* NYPLSettingsPrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84357B7D1B79357A00D4040F /* NYPLSettingsPrivacyPolicyViewController.m */; };
 		848FD95B1B83875D009D9BC4 /* NYPL_Launch_Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 848FD95A1B83875D009D9BC4 /* NYPL_Launch_Screen.xib */; };
+		84B7A3461B84E8FE00584FB2 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3431B84E8FE00584FB2 /* OFL.txt */; };
+		84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3441B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf */; };
+		84B7A3481B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3451B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf */; };
 		84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */; };
 		84FCD2741B7BAC0A00BFEDD9 /* PreloadedContent in Resources */ = {isa = PBXBuildFile; fileRef = 84FCD2731B7BAC0A00BFEDD9 /* PreloadedContent */; };
 		A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */; };
@@ -351,6 +354,9 @@
 		84357B7D1B79357A00D4040F /* NYPLSettingsPrivacyPolicyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsPrivacyPolicyViewController.m; sourceTree = "<group>"; };
 		84357B7E1B79357A00D4040F /* NYPLSettingsPrivacyPolicyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsPrivacyPolicyViewController.h; sourceTree = "<group>"; };
 		848FD95A1B83875D009D9BC4 /* NYPL_Launch_Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NYPL_Launch_Screen.xib; path = Simplified/NYPL_Launch_Screen.xib; sourceTree = "<group>"; };
+		84B7A3431B84E8FE00584FB2 /* OFL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
+		84B7A3441B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenDyslexic3-Bold.ttf"; sourceTree = "<group>"; };
+		84B7A3451B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenDyslexic3-Regular.ttf"; sourceTree = "<group>"; };
 		84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		84FCD2731B7BAC0A00BFEDD9 /* PreloadedContent */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PreloadedContent; sourceTree = "<group>"; };
 		A42E0DEF1B3F5A490095EBAE /* NYPLRemoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRemoteViewController.h; sourceTree = "<group>"; };
@@ -637,6 +643,24 @@
 			name = Holds;
 			sourceTree = "<group>";
 		};
+		84B7A3411B84E8FE00584FB2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				84B7A3421B84E8FE00584FB2 /* OpenDyslexicFont */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		84B7A3421B84E8FE00584FB2 /* OpenDyslexicFont */ = {
+			isa = PBXGroup;
+			children = (
+				84B7A3431B84E8FE00584FB2 /* OFL.txt */,
+				84B7A3441B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf */,
+				84B7A3451B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf */,
+			);
+			path = OpenDyslexicFont;
+			sourceTree = "<group>";
+		};
 		A49C25411AE05A2600D63B89 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -692,6 +716,7 @@
 		A823D816192BABA400B55DE2 /* Simplified */ = {
 			isa = PBXGroup;
 			children = (
+				84B7A3411B84E8FE00584FB2 /* Resources */,
 				84FCD2731B7BAC0A00BFEDD9 /* PreloadedContent */,
 				110AF8891961D66C004887C3 /* Additions */,
 				110AF8901961D822004887C3 /* Book */,
@@ -930,6 +955,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84B7A3461B84E8FE00584FB2 /* OFL.txt in Resources */,
 				11C113D719F84613005B3F63 /* simplified.js in Resources */,
 				848FD95B1B83875D009D9BC4 /* NYPL_Launch_Screen.xib in Resources */,
 				A823D81B192BABA400B55DE2 /* InfoPlist.strings in Resources */,
@@ -939,9 +965,11 @@
 				116A5EA4194653BE00491A21 /* Localizable.strings in Resources */,
 				A823D823192BABA400B55DE2 /* Images.xcassets in Resources */,
 				111E758D1A840DC500718AD7 /* credits.css in Resources */,
+				84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */,
 				11C113D219F842BE005B3F63 /* host_app_feedback.js in Resources */,
 				119503F41994001F009FB788 /* readium-shared-js in Resources */,
 				8418C0481B75176B00FAB724 /* eula.html in Resources */,
+				84B7A3481B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf in Resources */,
 				84FCD2741B7BAC0A00BFEDD9 /* PreloadedContent in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

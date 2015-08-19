@@ -16,6 +16,7 @@
 @property (nonatomic) NSMutableArray *observers;
 @property (nonatomic) UIButton *sansButton;
 @property (nonatomic) UIButton *serifButton;
+@property (nonatomic) UIButton *openDyslexicButton;
 @property (nonatomic) UIButton *whiteOnBlackButton;
 
 @end
@@ -43,7 +44,7 @@
   [self.sansButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [self.sansButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateDisabled];
   [self.sansButton setTitle:@"Aa" forState:UIControlStateNormal];
-  self.sansButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:24];
+  self.sansButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:24];
   [self.sansButton addTarget:self
                       action:@selector(didSelectSans)
             forControlEvents:UIControlEventTouchUpInside];
@@ -59,6 +60,18 @@
                        action:@selector(didSelectSerif)
              forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.serifButton];
+  
+  self.openDyslexicButton = [UIButton buttonWithType:UIButtonTypeCustom];
+  self.openDyslexicButton.backgroundColor = [NYPLConfiguration backgroundColor];
+  [self.openDyslexicButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  [self.openDyslexicButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateDisabled];
+  [self.openDyslexicButton setTitle:@"Aa" forState:UIControlStateNormal];
+  self.openDyslexicButton.titleLabel.font = [UIFont fontWithName:@"OpenDyslexic3" size:20];
+  [self.openDyslexicButton setTitleEdgeInsets:UIEdgeInsetsMake(-4.0f, 0.0f, 0.0f, 0.0f)];
+  [self.openDyslexicButton addTarget:self
+                       action:@selector(didSelectOpenDyslexic)
+             forControlEvents:UIControlEventTouchUpInside];
+  [self addSubview:self.openDyslexicButton];
 
   self.whiteOnBlackButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.whiteOnBlackButton.backgroundColor = [NYPLConfiguration backgroundDarkColor];
@@ -169,12 +182,17 @@
 
   self.sansButton.frame = CGRectMake(padding,
                                      0,
-                                     innerWidth / 2.0,
+                                     innerWidth / 3.0,
                                      CGRectGetHeight(self.frame) / 4.0);
   
-  self.serifButton.frame = CGRectMake(CGRectGetWidth(self.frame) / 2.0,
+  self.serifButton.frame = CGRectMake(CGRectGetMaxX(self.sansButton.frame),
                                       0,
-                                      innerWidth / 2.0,
+                                      innerWidth / 3.0,
+                                      CGRectGetHeight(self.frame) / 4.0);
+
+  self.openDyslexicButton.frame = CGRectMake(CGRectGetMaxX(self.serifButton.frame),
+                                      0,
+                                      innerWidth / 3.0,
                                       CGRectGetHeight(self.frame) / 4.0);
   
   self.whiteOnBlackButton.frame = CGRectMake(padding,
@@ -269,10 +287,17 @@
     case NYPLReaderSettingsFontFaceSans:
       self.sansButton.enabled = NO;
       self.serifButton.enabled = YES;
+      self.openDyslexicButton.enabled = YES;
       break;
     case NYPLReaderSettingsFontFaceSerif:
       self.sansButton.enabled = YES;
       self.serifButton.enabled = NO;
+      self.openDyslexicButton.enabled = YES;
+      break;
+    case NYPLReaderSettingsFontFaceOpenDyslexic:
+      self.sansButton.enabled = YES;
+      self.serifButton.enabled = YES;
+      self.openDyslexicButton.enabled = NO;
       break;
   }
 }
@@ -368,6 +393,13 @@
   [self.delegate readerSettingsView:self didSelectFontFace:self.fontFace];
 }
 
+- (void)didSelectOpenDyslexic
+{
+  self.fontFace = NYPLReaderSettingsFontFaceOpenDyslexic;
+  
+  [self.delegate readerSettingsView:self didSelectFontFace:self.fontFace];
+}
+
 - (void)didChangeBrightness
 {
   [self.delegate readerSettingsView:self didSelectBrightness:self.brightnessSlider.value];
@@ -453,6 +485,16 @@
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }
+  
+  {
+    UIView *const line = [[UIView alloc]
+                          initWithFrame:CGRectMake(CGRectGetMinX(self.openDyslexicButton.frame),
+                                                   CGRectGetMinY(self.openDyslexicButton.frame),
+                                                   thin,
+                                                   CGRectGetHeight(self.openDyslexicButton.frame))];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
 
   {
     UIView *const line = [[UIView alloc]
@@ -492,6 +534,16 @@
                                                    CGRectGetMinY(self.serifButton.frame),
                                                    thin,
                                                    CGRectGetHeight(self.serifButton.frame))];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
+
+  {
+    UIView *const line = [[UIView alloc]
+                          initWithFrame:CGRectMake(CGRectGetMinX(self.openDyslexicButton.frame),
+                                                   CGRectGetMinY(self.openDyslexicButton.frame),
+                                                   CGRectGetWidth(self.openDyslexicButton.frame),
+                                                   thin)];
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }
