@@ -395,13 +395,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 - (void)logOut
 {
   if([NYPLADEPT sharedInstance].workflowsInProgress) {
-    [[[UIAlertView alloc]
-      initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerCannotLogOutTitle", nil)
-      message:NSLocalizedString(@"SettingsAccountViewControllerCannotLogOutMessage", nil)
-      delegate:nil
-      cancelButtonTitle:nil
-      otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-     show];
+    [self showAlertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle" message:@"SettingsAccountViewControllerCannotLogOutMessage"];
   } else {
     [[NYPLADEPT sharedInstance] deauthorize];
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
@@ -430,13 +424,12 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
        
        // Success.
        if(statusCode == 200) {
-         // FIXME: Use real credentials!
          [[NYPLADEPT sharedInstance]
           authorizeWithVendorID:@"NYPL"
           username:self.barcodeTextField.text
           password:self.PINTextField.text
-          completionHandler:^{
-            [self authorizationAttemptDidFinish];
+          completion:^(BOOL success, NSError *error) {
+            [self authorizationAttemptDidFinish:success error:error];
           }];
          return;
        }
@@ -444,56 +437,70 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
        self.navigationItem.titleView = nil;
        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
        
-       if(error.code == NSURLErrorNotConnectedToInternet) {
-         [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
-           message:NSLocalizedString(@"NotConnected", nil)
-           delegate:nil
-           cancelButtonTitle:nil
-           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-          show];
-         return;
-       }
-       
-       if(error.code == NSURLErrorCancelled) {
+       if (error.code == NSURLErrorCancelled) {
          // We cancelled the request when asked to answer the server's challenge a second time
          // because we don't have valid credentials.
-         [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
-           message:NSLocalizedString(@"SettingsAccountViewControllerInvalidCredentials", nil)
-           delegate:nil
-           cancelButtonTitle:nil
-           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-          show];
          self.PINTextField.text = @"";
          [self textFieldsDidChange];
          [self.PINTextField becomeFirstResponder];
-         return;
        }
        
-       if(error.code == NSURLErrorTimedOut) {
-         [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
-           message:NSLocalizedString(@"TimedOut", nil)
-           delegate:nil
-           cancelButtonTitle:nil
-           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-          show];
-         return;
-       }
-       
-       NYPLLOG(@"Encountered unexpected error after authenticating.");
-       
-       [[[UIAlertView alloc]
-         initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
-         message:NSLocalizedString(@"UnknownRequestError", nil)
-         delegate:nil
-         cancelButtonTitle:nil
-         otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-        show];
+       [self showAlertWithError:error];
      }];
   
   [task resume];
+}
+
+- (void)showAlertWithError:(NSError *)error
+{
+  NSString *title;
+  NSString *message;
+  
+  if ([error.domain isEqual:NSURLErrorDomain]) {
+    title = @"SettingsAccountViewControllerLoginFailed";
+    
+    if (error.code == NSURLErrorNotConnectedToInternet) {
+      message = @"NotConnected";
+    } else if (error.code == NSURLErrorCancelled) {
+      message = @"SettingsAccountViewControllerInvalidCredentials";
+    } else if (error.code == NSURLErrorTimedOut) {
+      message = @"TimedOut";
+    } else {
+      message = @"UnknownRequestError";
+    }
+    
+  } else if ([error.domain isEqual:NYPLADEPTErrorDomain]) {
+    title = @"SettingsAccountViewControllerLoginFailed";
+    
+    if (error.code == NYPLADEPTErrorAuthenticationFailed) {
+      message = @"SettingsAccountViewControllerInvalidCredentials";
+    } else if (error.code == NYPLADEPTErrorTooManyActivations) {
+      message = @"SettingsAccountViewControllerMessageTooManyActivations";
+    } else {
+      message = @"DeviceAuthorizationError";
+    }
+  }
+  
+  if (title.length > 0 || message.length > 0) {
+    [self showAlertWithTitle:title message:message];
+  }
+}
+
+- (void)showAlertWithTitle:(NSString *)title message:(NSString *)message
+{
+  if ([title length] > 0)
+    title = NSLocalizedString(title, nil);
+  
+  if ([message length] > 0)
+    message = NSLocalizedString(message, nil);
+  
+  [[[UIAlertView alloc]
+   initWithTitle:title
+   message:message
+   delegate:nil
+   cancelButtonTitle:nil
+   otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+  show];
 }
 
 - (void)textFieldsDidChange
@@ -579,13 +586,13 @@ completionHandler:(void (^)())handler
    completion:nil];
 }
 
-- (void)authorizationAttemptDidFinish
+- (void)authorizationAttemptDidFinish:(BOOL)success error:(NSError *)error
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     self.navigationItem.titleView = nil;
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
-    if([NYPLADEPT sharedInstance].deviceAuthorized) {
+    if(success) {
       [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
                                           PIN:self.PINTextField.text];
       [self dismissViewControllerAnimated:YES completion:^{}];
@@ -594,13 +601,7 @@ completionHandler:(void (^)())handler
       if(handler) handler();
       [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
     } else {
-      [[[UIAlertView alloc]
-        initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
-        message:NSLocalizedString(@"DeviceAuthorizationError", nil)
-        delegate:nil
-        cancelButtonTitle:nil
-        otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-       show];
+      [self showAlertWithError:error];
     }
   }];
 }
