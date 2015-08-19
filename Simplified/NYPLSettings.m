@@ -1,6 +1,7 @@
 #import "NYPLSettings.h"
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLBook.h"
+#import "NYPLBookRegistry.h"
 
 static NSString *const customMainFeedURLKey = @"NYPLSettingsCustomMainFeedURL";
 
@@ -135,6 +136,44 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   }
   
   return booksToPreload;
+}
+
+- (NSArray *) booksToPreloadCurrentlyMissing {
+  
+  NSArray *booksToCheck = [self booksToPreload];
+  
+  if (!booksToCheck || booksToCheck.count == 0 ) {
+    return nil;
+  }
+  
+  NSMutableArray *booksToRestore = [[NSMutableArray alloc] init];
+  for (NYPLBook *book in booksToCheck) {
+    
+    NYPLBook *bookCheck = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
+    if ( ![bookCheck.identifier isEqualToString:book.identifier] ) {
+      [booksToRestore addObject:book];
+    }
+  }
+  
+  return booksToRestore;
+}
+
+- (NSArray *) booksToRestorePreloadedContentForIdentifiers: (NSArray *) identifiers {
+  
+  NSArray *booksToCheck = [self booksToPreload];
+  
+  if (!identifiers || ![[identifiers class] isSubclassOfClass:[NSArray class]] || !booksToCheck || booksToCheck.count == 0 ) {
+    return nil;
+  }
+  
+  NSMutableArray *booksToRestore = [[NSMutableArray alloc] init];
+  for (NYPLBook *book in booksToCheck) {
+    if ( [identifiers containsObject:book.identifier] ) {
+      [booksToRestore addObject:book];
+    }
+  }
+  
+  return booksToRestore;
 }
 
 - (void) setUserAcceptedEULA:(BOOL)userAcceptedEULA {

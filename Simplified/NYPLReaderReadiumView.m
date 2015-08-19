@@ -28,8 +28,9 @@
 @property (nonatomic) UIWebView *webView;
 
 @property (nonatomic) NSDictionary *bookMapDictionary;
-@property (nonatomic) NSNumber *progressWithinSpine;
+@property (nonatomic) NSNumber *spineItemPercentageRemaining;
 @property (nonatomic) NSNumber *progressWithinBook;
+@property (nonatomic) NSDictionary *spineItemDetails;
 
 @end
 
@@ -334,12 +335,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
                                       initWithLocationString:locationJSON
                                       renderer:renderer];
   
-  NSDictionary *openPagesDict = [openPages firstObject];
-  NSNumber *spineItemIndex = [openPagesDict objectForKey:@"spineItemIndex"];
-  NSNumber *spineItemIndexPlus1 = [NSNumber numberWithInt:(spineItemIndex.intValue + 1)];
-  
   [self calculateProgressionWithDictionary:dictionary withHandler:^(void) {
-    [self.delegate didUpdateProgressWithinSpineTo:self.progressWithinSpine withinBookTo:self.progressWithinBook withSpineID:spineItemIndexPlus1];
+    [self.delegate didUpdateProgressSpineItemPercentage:self.spineItemPercentageRemaining bookPercentage:self.progressWithinBook withCurrentSpineItemDetails:self.spineItemDetails];
   }];
   
   if(location) {
@@ -358,23 +355,65 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   
   for (RDSpineItem *spineItem in self.package.spineItems) {
     if ([spineItem.mediaType isEqualToString:@"application/xhtml+xml"]) {
-      NSURL *file =[NSURL URLWithString:[self.server.package.rootURL stringByAppendingPathComponent:spineItem.baseHref]];
-      NSData *data = [NSData dataWithContentsOfURL:file];
+      NSURL *url =[NSURL URLWithString:[self.server.package.rootURL stringByAppendingPathComponent:spineItem.baseHref]];
+      
+      NSDecimalNumber *expectedLengthDec;
+      NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+      request.HTTPMethod = @"HEAD";
+      NSHTTPURLResponse *response;
+      NSError *headError;
+      int responseStatusCode = 0;
+      [NSURLConnection sendSynchronousRequest: request returningResponse: &response error: &headError];
+      if ([response respondsToSelector:@selector(allHeaderFields)]) {
+        
+        responseStatusCode = (int)[response statusCode];
+        if (!headError && responseStatusCode == 200 ) {
+          NSNumber *length = [NSNumber numberWithLongLong:[response expectedContentLength]];
+          expectedLengthDec = [NSDecimalNumber decimalNumberWithDecimal:length.decimalValue];
+        }
+      }
+    
+      if (headError || responseStatusCode != 200) {
+        NSError *dataError;
+        NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&dataError];
+        
+        if (data || !dataError) {
+          NSNumber *length = [NSNumber numberWithUnsignedInteger:data.length];
+          expectedLengthDec = [NSDecimalNumber decimalNumberWithDecimal:length.decimalValue];
+        }
+      }
+      
       NSMutableDictionary *spineItemDict = [[NSMutableDictionary alloc] init];
-      [spineItemDict setObject:[NSNumber numberWithUnsignedInteger:data.length] forKey:@"spineItemBytesLength"];
+      [spineItemDict setObject:expectedLengthDec forKey:@"spineItemBytesLength"];
       [spineItemDict setObject:spineItem.baseHref forKey:@"spineItemBaseHref"];
       [spineItemDict setObject:spineItem.idref forKey:@"spineItemIdref"];
       [spineItemDict setObject:totalLength forKey:@"totalLengthSoFar"];
-      [bookDicts setObject:spineItemDict forKey:spineItem.idref];
       
-      NSDecimalNumber *dataLength = [[NSDecimalNumber alloc] initWithUnsignedInteger:data.length];
-      totalLength = [totalLength decimalNumberByAdding:dataLength];
+      NSString *title = [self tocTitleForSpineItem:spineItem];
+      if (title && [[title class] isSubclassOfClass:[NSString class]]) {
+        [spineItemDict setObject:title forKey:@"tocElementTitle"];
+      }
+      else {
+        [spineItemDict setObject:NSLocalizedString(@"chapter", nil) forKey:@"tocElementTitle"];
+      }
+      
+      [bookDicts setObject:spineItemDict forKey:spineItem.idref];
+      totalLength = [totalLength decimalNumberByAdding: expectedLengthDec];
     }
   }
   
   [bookDicts setObject:totalLength forKey:@"totalLength"];
   
   self.bookMapDictionary = bookDicts;
+}
+
+- (NSString *) tocTitleForSpineItem: (RDSpineItem *) spineItem {
+  for (RDNavigationElement *tocElement in self.package.tableOfContents.children) {
+    if ([tocElement.content containsString:spineItem.baseHref]) {
+      return tocElement.title;
+    }
+  }
+  return nil;
 }
 
 -(void) calculateProgressionWithDictionary:(NSDictionary *const)dictionary withHandler:(void(^)(void))handler {
@@ -392,6 +431,9 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   NSDecimalNumber *spineItemPageIndexDec = [NSDecimalNumber decimalNumberWithDecimal:spineItemPageIndex.decimalValue];
   
   NSDecimalNumber *progressWithinSpineDec = [[spineItemPageIndexDec decimalNumberByDividingBy:spineItemPageCountDec] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"100"] withBehavior:numberHandler ];
+  
+  NSDecimalNumber *decimal100 = [NSDecimalNumber decimalNumberWithString:@"100"];
+  NSDecimalNumber *spineItemPercentageRemaining = [decimal100 decimalNumberBySubtracting:progressWithinSpineDec];
   NSDecimalNumber *progressWithinSpineUnmodifiedDec = [spineItemPageIndexDec decimalNumberByDividingBy:spineItemPageCountDec];
   
   NSDictionary *spineItemDetails = [self.bookMapDictionary objectForKey:spineItemIdref];
@@ -410,8 +452,9 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   
   NSDecimalNumber *totalProgressSoFarPercentageDec = [[totalProgressSoFarDec decimalNumberByDividingBy:totalLengthDec] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"100"] withBehavior:numberHandler ];
   
-  self.progressWithinSpine = progressWithinSpineDec;
+  self.spineItemPercentageRemaining = spineItemPercentageRemaining;
   self.progressWithinBook = totalProgressSoFarPercentageDec;
+  self.spineItemDetails = spineItemDetails;
   
   if (handler) handler();
 }

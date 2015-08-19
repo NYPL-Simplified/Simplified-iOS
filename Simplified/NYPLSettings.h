@@ -23,5 +23,6 @@ typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
 + (NYPLSettings *)sharedSettings;
 - (NSArray *) preloadedBookIdentifiers;
 - (NSArray *) booksToPreload;
-
+- (NSArray *) booksToPreloadCurrentlyMissing;
+- (NSArray *) booksToRestorePreloadedContentForIdentifiers: (NSArray *) identifiers;
 @end
