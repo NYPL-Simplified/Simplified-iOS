@@ -107,3 +107,7 @@
 // NYPLSettingsPrivacyPolicyViewController
 "PrivacyPolicy" = "Privacy Policy";
 "SettingsAccountViewControllerMessageTooManyActivations" = "Too many devices have been authorized with this library card.";
+"RestorePreloadedContent" = "Restore Preloaded Content";
+"PreloadedContent" = "Preloaded Content";
+"PreloadedContentRestoredMessage" = "Preloaded content restored";
+"PreloadedContentNothingRestoredMessage" = "All preloaded content available";
