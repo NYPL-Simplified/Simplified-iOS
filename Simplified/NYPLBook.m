@@ -183,7 +183,8 @@ static NSString *const UpdatedKey = @"updated";
   
   self.availableCopies = [dictionary[AvailableCopiesKey] integerValue];
   
-  self.availableUntil = NYPLNullToNil(dictionary[AvailableUntilKey]);
+  NSString *const availableUntilString = NYPLNullToNil(dictionary[AvailableUntilKey]);
+  self.availableUntil = NYPLNullToNil(availableUntilString ? [NSDate dateWithRFC3339String:availableUntilString] : nil);
   
   self.categoryStrings = dictionary[CategoriesKey];
   if(!self.categoryStrings) return nil;

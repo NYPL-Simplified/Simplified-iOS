@@ -5,6 +5,8 @@
 
 - (NSString *)RFC3339String;
 
+- (NSString *)shortTimeUntilString;
+
 - (NSDateComponents *)UTCComponents;
 
 @end

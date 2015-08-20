@@ -31,6 +31,21 @@
   return [dateFormatter stringFromDate:self];
 }
 
+- (NSString *)shortTimeUntilString
+{
+  NSTimeInterval seconds = [self timeIntervalSinceDate:[NSDate date]];
+  seconds = seconds > 0 ? seconds : 0;
+  NSInteger minutes = seconds / 60;
+  NSInteger hours = minutes / 60;
+  NSInteger days = ceil((float)hours / 24.f);
+  NSInteger weeks = days / 7;
+  if (weeks > 0) {
+    return [@(weeks).stringValue stringByAppendingString:@"w"];
+  } else {
+    return [@(days).stringValue stringByAppendingString:@"d"];
+  }
+}
+
 - (NSDateComponents *)UTCComponents
 {
   NSCalendar *const calendar = [[NSCalendar alloc]

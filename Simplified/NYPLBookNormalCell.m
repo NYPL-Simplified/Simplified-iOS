@@ -173,6 +173,7 @@
   NSArray *visibleButtonInfo = nil;
   static NSString *const ButtonKey = @"button";
   static NSString *const TitleKey = @"title";
+  static NSString *const AddIndicatorKey = @"addIndicator";
   
   self.unreadImageView.hidden = YES;
   switch(state) {
@@ -186,24 +187,22 @@
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Hold"}];
       break;
     case NYPLBookNormalCellStateHolding:
-      visibleButtonInfo = @[@{ButtonKey: self.deleteButton,   TitleKey: @"CancelHold"}];
+      visibleButtonInfo = @[@{ButtonKey: self.deleteButton,   TitleKey: @"CancelHold", AddIndicatorKey: @(YES)}];
       break;
     case NYPLBookNormalCellStateHoldingFOQ:
-      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Borrow"},
+      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Borrow", AddIndicatorKey: @(YES)},
                             @{ButtonKey: self.deleteButton,   TitleKey: @"CancelHold"}];
       break;
     case NYPLBookNormalCellStateDownloadNeeded:
-      visibleButtonInfo = @[@{ButtonKey: self.deleteButton,   TitleKey: @"ReturnNow"},
+      visibleButtonInfo = @[@{ButtonKey: self.deleteButton,   TitleKey: @"ReturnNow", AddIndicatorKey: @(YES)},
                             @{ButtonKey: self.downloadButton, TitleKey: @"Download"}];
       break;
     case NYPLBookNormalCellStateDownloadSuccessful:
-      visibleButtonInfo = @[@{ButtonKey: self.readButton,     TitleKey: @"Read"},
-                            @{ButtonKey: self.deleteButton,   TitleKey: @"Delete"}];
       self.unreadImageView.hidden = NO;
-      break;
+      // Fallthrough
     case NYPLBookNormalCellStateUsed:
       visibleButtonInfo = @[@{ButtonKey: self.readButton,     TitleKey: @"Read"},
-                            @{ButtonKey: self.deleteButton,   TitleKey: @"Delete"}];
+                            @{ButtonKey: self.deleteButton,   TitleKey: @"ReturnNow", AddIndicatorKey: @(YES)}];
       break;
   }
   
@@ -212,6 +211,19 @@
     NYPLRoundedButton *button = buttonInfo[ButtonKey];
     button.hidden = NO;
     [button setTitle:NSLocalizedString(buttonInfo[TitleKey], nil) forState:UIControlStateNormal];
+    if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
+      if (self.book.availableUntil && [self.book.availableUntil timeIntervalSinceNow] > 0) {
+        button.type = NYPLRoundedButtonTypeClock;
+        button.endDate = self.book.availableUntil;
+      } else {
+        button.type = NYPLRoundedButtonTypeNormal;
+        // We could handle queue support here if we wanted it.
+        // button.type = NYPLRoundedButtonTypeQueue;
+        // button.queuePosition = self.book.holdPosition;
+      }
+    } else {
+      button.type = NYPLRoundedButtonTypeNormal;
+    }
     [visibleButtons addObject:button];
   }
   for (NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton]) {
