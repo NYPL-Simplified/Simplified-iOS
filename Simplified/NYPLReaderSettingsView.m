@@ -182,17 +182,17 @@
 
   self.sansButton.frame = CGRectMake(padding,
                                      0,
-                                     innerWidth / 3.0,
+                                     round(innerWidth / 3.0),
                                      CGRectGetHeight(self.frame) / 4.0);
   
   self.serifButton.frame = CGRectMake(CGRectGetMaxX(self.sansButton.frame),
                                       0,
-                                      innerWidth / 3.0,
+                                      round(innerWidth / 3.0),
                                       CGRectGetHeight(self.frame) / 4.0);
 
   self.openDyslexicButton.frame = CGRectMake(CGRectGetMaxX(self.serifButton.frame),
                                       0,
-                                      innerWidth / 3.0,
+                                      round(innerWidth / 3.0),
                                       CGRectGetHeight(self.frame) / 4.0);
   
   self.whiteOnBlackButton.frame = CGRectMake(padding,
