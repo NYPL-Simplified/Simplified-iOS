@@ -535,6 +535,7 @@
 /* Begin XCBuildConfiguration section */
 		118A0E491992B3FD00792DDE /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A4DEC1501B5FFD040052C5AF /* RDServices.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -578,6 +579,7 @@
 		};
 		118A0E4A1992B3FD00792DDE /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A4DEC1501B5FFD040052C5AF /* RDServices.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -615,6 +617,7 @@
 		};
 		118A0E4C1992B3FD00792DDE /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A4DEC1501B5FFD040052C5AF /* RDServices.xcconfig */;
 			buildSettings = {
 				DSTROOT = /tmp/RDServices.dst;
 				HEADER_SEARCH_PATHS = "$(inherited)";
@@ -626,6 +629,7 @@
 		};
 		118A0E4D1992B3FD00792DDE /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A4DEC1501B5FFD040052C5AF /* RDServices.xcconfig */;
 			buildSettings = {
 				DSTROOT = /tmp/RDServices.dst;
 				HEADER_SEARCH_PATHS = "$(inherited)";
