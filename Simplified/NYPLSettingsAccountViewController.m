@@ -5,12 +5,15 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLSettingsAccountViewController.h"
 #import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
 @import CoreLocation;
 
-#import "NYPLSettingsAccountViewController.h"
+#if defined(FEATURE_DRM_CONNECTOR)
+#import <ADEPT/ADEPT.h>
+#endif
 
 typedef NS_ENUM(NSInteger, CellKind) {
   CellKindBarcode,
@@ -176,10 +179,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                     actionWithTitle:NSLocalizedString(@"SignOut", nil)
                                     style:UIAlertActionStyleDestructive
                                     handler:^(__attribute__((unused)) UIAlertAction *action) {
-                                      [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
-                                      [[NYPLBookRegistry sharedRegistry] reset];
-                                      [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
-                                      [self.tableView reloadData];
+                                      [self logOut];
                                     }]];
         [alertController addAction:[UIAlertAction
                                     actionWithTitle:NSLocalizedString(@"Cancel", nil)
@@ -442,6 +442,23 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   [self validateCredentials];
 }
 
+- (void)logOut
+{
+#if defined(FEATURE_DRM_CONNECTOR)
+  if([NYPLADEPT sharedInstance].workflowsInProgress) {
+    [self showAlertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle" message:@"SettingsAccountViewControllerCannotLogOutMessage"];
+    return;
+  }
+  
+  [[NYPLADEPT sharedInstance] deauthorize];
+#endif
+  
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
+  [[NYPLBookRegistry sharedRegistry] reset];
+  [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
+  [self.tableView reloadData];
+}
+
 - (void)validateCredentials
 {
   NSMutableURLRequest *const request =
@@ -455,74 +472,97 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
      completionHandler:^(__attribute__((unused)) NSData *data,
                          NSURLResponse *const response,
                          NSError *const error) {
-     
+       
+       // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
+       NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
+       
+       // Success.
+       if(statusCode == 200) {
+#if defined(FEATURE_DRM_CONNECTOR)
+         [[NYPLADEPT sharedInstance]
+          authorizeWithVendorID:@"NYPL"
+          username:self.barcodeTextField.text
+          password:self.PINTextField.text
+          completion:^(BOOL success, NSError *error) {
+            [self authorizationAttemptDidFinish:success error:error];
+          }];
+#else
+         [self authorizationAttemptDidFinish:YES error:nil];
+#endif
+         return;
+       }
+       
        self.navigationItem.titleView = nil;
        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
        
-       if(error.code == NSURLErrorNotConnectedToInternet) {
-         [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
-           message:NSLocalizedString(@"NotConnected", nil)
-           delegate:nil
-           cancelButtonTitle:nil
-           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-          show];
-         return;
-       }
-       
-       if(error.code == NSURLErrorCancelled) {
+       if (error.code == NSURLErrorCancelled) {
          // We cancelled the request when asked to answer the server's challenge a second time
          // because we don't have valid credentials.
-         [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
-           message:NSLocalizedString(@"SettingsAccountViewControllerInvalidCredentials", nil)
-           delegate:nil
-           cancelButtonTitle:nil
-           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-          show];
          self.PINTextField.text = @"";
          [self textFieldsDidChange];
          [self.PINTextField becomeFirstResponder];
-         return;
        }
        
-       if(error.code == NSURLErrorTimedOut) {
-         [[[UIAlertView alloc]
-           initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
-           message:NSLocalizedString(@"TimedOut", nil)
-           delegate:nil
-           cancelButtonTitle:nil
-           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-          show];
-         return;
-       }
-       
-       // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
-       NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
-       
-       if(statusCode == 200) {
-         [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
-                                             PIN:self.PINTextField.text];
-         [self dismissViewControllerAnimated:YES completion:^{}];
-         void (^handler)() = self.completionHandler;
-         self.completionHandler = nil;
-         if(handler) handler();
-         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
-         return;
-       }
-       
-       NYPLLOG(@"Encountered unexpected error after authenticating.");
-       
-       [[[UIAlertView alloc]
-         initWithTitle:NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil)
-         message:NSLocalizedString(@"UnknownRequestError", nil)
-         delegate:nil
-         cancelButtonTitle:nil
-         otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-        show];
+       [self showAlertWithError:error];
      }];
   
   [task resume];
+}
+
+- (void)showAlertWithError:(NSError *)error
+{
+  NSString *title;
+  NSString *message;
+  
+  if ([error.domain isEqual:NSURLErrorDomain]) {
+    title = @"SettingsAccountViewControllerLoginFailed";
+    
+    if (error.code == NSURLErrorNotConnectedToInternet) {
+      message = @"NotConnected";
+    } else if (error.code == NSURLErrorCancelled) {
+      message = @"SettingsAccountViewControllerInvalidCredentials";
+    } else if (error.code == NSURLErrorTimedOut) {
+      message = @"TimedOut";
+    } else {
+      message = @"UnknownRequestError";
+    }
+    
+  }
+  
+#if defined(FEATURE_DRM_CONNECTOR)
+  else if ([error.domain isEqual:NYPLADEPTErrorDomain]) {
+    title = @"SettingsAccountViewControllerLoginFailed";
+    
+    if (error.code == NYPLADEPTErrorAuthenticationFailed) {
+      message = @"SettingsAccountViewControllerInvalidCredentials";
+    } else if (error.code == NYPLADEPTErrorTooManyActivations) {
+      message = @"SettingsAccountViewControllerMessageTooManyActivations";
+    } else {
+      message = @"DeviceAuthorizationError";
+    }
+  }
+#endif
+  
+  if (title.length > 0 || message.length > 0) {
+    [self showAlertWithTitle:title message:message];
+  }
+}
+
+- (void)showAlertWithTitle:(NSString *)title message:(NSString *)message
+{
+  if ([title length] > 0)
+    title = NSLocalizedString(title, nil);
+  
+  if ([message length] > 0)
+    message = NSLocalizedString(message, nil);
+  
+  [[[UIAlertView alloc]
+   initWithTitle:title
+   message:message
+   delegate:nil
+   cancelButtonTitle:nil
+   otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+  show];
 }
 
 - (void)textFieldsDidChange
@@ -606,6 +646,26 @@ completionHandler:(void (^)())handler
   [self.navigationController.presentingViewController
    dismissViewControllerAnimated:YES
    completion:nil];
+}
+
+- (void)authorizationAttemptDidFinish:(BOOL)success error:(NSError *)error
+{
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    self.navigationItem.titleView = nil;
+    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+    
+    if(success) {
+      [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
+                                          PIN:self.PINTextField.text];
+      [self dismissViewControllerAnimated:YES completion:^{}];
+      void (^handler)() = self.completionHandler;
+      self.completionHandler = nil;
+      if(handler) handler();
+      [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+    } else {
+      [self showAlertWithError:error];
+    }
+  }];
 }
 
 @end

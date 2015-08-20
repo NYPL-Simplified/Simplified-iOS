@@ -9,16 +9,24 @@
 #import "NYPLOPDSFeed.h"
 
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLMyBooksDownloadInfo.h"
+
+#if defined(FEATURE_DRM_CONNECTOR)
+#import <ADEPT/ADEPT.h>
+@interface NYPLMyBooksDownloadCenter () <NYPLADEPTDelegate>
+@end
+#endif
 
 @interface NYPLMyBooksDownloadCenter ()
   <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, UIAlertViewDelegate>
 
-@property (nonatomic) NSURLSession *session;
-@property (nonatomic) BOOL broadcastScheduled;
+@property (nonatomic) NSString *bookIdentifierOfBookToRemove;
+@property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadInfo;
 @property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadProgress;
 @property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadTask;
+@property (nonatomic) BOOL broadcastScheduled;
+@property (nonatomic) NSURLSession *session;
 @property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
-@property (nonatomic) NSString *bookIdentifierOfBookToRemove;
 
 @end
 
@@ -46,9 +54,14 @@
   self = [super init];
   if(!self) return nil;
   
+#if defined(FEATURE_DRM_CONNECTOR)
+  [NYPLADEPT sharedInstance].delegate = self;
+#endif
+  
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
+  self.bookIdentifierToDownloadInfo = [NSMutableDictionary dictionary];
   self.bookIdentifierToDownloadProgress = [NSMutableDictionary dictionary];
   self.bookIdentifierToDownloadTask = [NSMutableDictionary dictionary];
   
@@ -77,10 +90,10 @@ expectedTotalBytes:(__attribute__((unused)) int64_t)expectedTotalBytes
 }
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
-      downloadTask:(NSURLSessionDownloadTask *)downloadTask
-      didWriteData:(__attribute__((unused)) int64_t)bytesWritten
- totalBytesWritten:(int64_t)totalBytesWritten
-totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
+      downloadTask:(NSURLSessionDownloadTask *const)downloadTask
+      didWriteData:(int64_t const)bytesWritten
+ totalBytesWritten:(int64_t const)totalBytesWritten
+totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
 {
   NSNumber *const key = @(downloadTask.taskIdentifier);
   NYPLBook *const book = self.taskIdentifierToBook[key];
@@ -90,11 +103,38 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
     return;
   }
   
-  if(totalBytesExpectedToWrite > 0) {
-    self.bookIdentifierToDownloadProgress[book.identifier] =
-        @(totalBytesWritten / (double) totalBytesExpectedToWrite);
-    
-    [self broadcastUpdate];
+  // We update the rights management status based on the MIME type given to us by the server. We do
+  // this only once at the point when we first start receiving data.
+  if(bytesWritten == totalBytesWritten) {
+    if([downloadTask.response.MIMEType isEqualToString:@"application/vnd.adobe.adept+xml"]) {
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[self downloadInfoForBookIdentifier:book.identifier]
+       withRightsManagement:NYPLMyBooksDownloadRightsManagementAdobe];
+    } else if([downloadTask.response.MIMEType isEqualToString:@"application/epub+zip"]) {
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[self downloadInfoForBookIdentifier:book.identifier]
+       withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
+    } else {
+      NYPLLOG_F(@"Presuming no DRM for unrecognized MIME type \"%@\".",
+                downloadTask.response.MIMEType);
+      NYPLMyBooksDownloadInfo *info = [[self downloadInfoForBookIdentifier:book.identifier] withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
+      if (info) {
+        self.bookIdentifierToDownloadInfo[book.identifier] = info;
+      }
+    }
+  }
+  
+  // If the book is protected by Adobe DRM, the download will be very tiny and a later fulfillment
+  // step will be required to get the actual content. As such, we only report progress for books not
+  // protected by Adobe DRM at this stage.
+  if([self downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementAdobe) {
+    if(totalBytesExpectedToWrite > 0) {
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+        [[self downloadInfoForBookIdentifier:book.identifier]
+         withDownloadProgress:(totalBytesWritten / (double) totalBytesExpectedToWrite)];
+      
+      [self broadcastUpdate];
+    }
   }
 }
 
@@ -109,39 +149,58 @@ didFinishDownloadingToURL:(NSURL *const)location
     return;
   }
   
-  NSError *error = nil;
-  
-  [[NSFileManager defaultManager]
-   removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
-   error:NULL];
-  
-  BOOL const success = [[NSFileManager defaultManager]
-                        moveItemAtURL:location
-                        toURL:[self fileURLForBookIndentifier:book.identifier]
-                        error:&error];
-  
-  if(success) {
-    [[NYPLBookRegistry sharedRegistry]
-     setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
-    [[NYPLBookRegistry sharedRegistry] save];
-  } else {
-    [[[UIAlertView alloc]
-      initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
-      message:[NSString stringWithFormat:@"%@ (Error %ld)",
-               [NSString
-                stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
-                book.title],
-               (long)error.code]
-      delegate:nil
-      cancelButtonTitle:nil
-      otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-     show];
-    
-    [[NYPLBookRegistry sharedRegistry]
-     setState:NYPLBookStateDownloadFailed
-     forIdentifier:book.identifier];
+  switch([self downloadInfoForBookIdentifier:book.identifier].rightsManagement) {
+    case NYPLMyBooksDownloadRightsManagementUnknown:
+      @throw NSInternalInconsistencyException;
+    case NYPLMyBooksDownloadRightsManagementAdobe:
+      // FIXME: Temporary test code!
+#if defined(FEATURE_DRM_CONNECTOR)
+      [[NYPLADEPT sharedInstance]
+       fulfillWithACSMData:[NSData dataWithContentsOfURL:location]
+       tag:book.identifier];
+#endif
+      break;
+    case NYPLMyBooksDownloadRightsManagementNone: {
+      NSError *error = nil;
+      
+      [[NSFileManager defaultManager]
+       removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
+       error:NULL];
+      
+      BOOL const success = [[NSFileManager defaultManager]
+                            moveItemAtURL:location
+                            toURL:[self fileURLForBookIndentifier:book.identifier]
+                            error:&error];
+      
+      if(success) {
+        [[NYPLBookRegistry sharedRegistry]
+         setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+        [[NYPLBookRegistry sharedRegistry] save];
+      } else {
+        [[[UIAlertView alloc]
+          initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
+          message:[NSString stringWithFormat:@"%@ (Error %ld)",
+                   [NSString
+                    stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
+                    book.title],
+                   (long)error.code]
+          delegate:nil
+          cancelButtonTitle:nil
+          otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+         show];
+        
+        [[NYPLBookRegistry sharedRegistry]
+         setState:NYPLBookStateDownloadFailed
+         forIdentifier:book.identifier];
+      }
+      
+      [[NSFileManager defaultManager]
+       removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
+       error:NULL];
+      break;
+    }
   }
-  
+
   [self broadcastUpdate];
 }
 
@@ -170,19 +229,19 @@ didCompleteWithError:(NSError *)error
     // A reset must have occurred.
     return;
   }
-  
-  [self.bookIdentifierToDownloadProgress removeObjectForKey:book.identifier];
-  
-  // This is safe to remove because we only keep this around to be able to cancel downloads.
-  [self.bookIdentifierToDownloadTask removeObjectForKey:book.identifier];
+
+  // FIXME: This is commented out because we can't remove this stuff if a book will need to be
+  // fulfilled. Perhaps this logic should just be put a different place.
+  /*
+  [self.bookIdentifierToDownloadInfo removeObjectForKey:book.identifier];
   
   // Even though |URLSession:downloadTask|didFinishDownloadingToURL:| needs this, it's safe to
   // remove it here because the aforementioned method will be called first.
   [self.taskIdentifierToBook removeObjectForKey:
       @(task.taskIdentifier)];
+  */
   
   if(error && error.code != NSURLErrorCancelled) {
-    self.bookIdentifierToDownloadProgress[book.identifier] = @1.0;
     [self failDownloadForBook:book];
     return;
   }
@@ -208,6 +267,11 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 }
 
 #pragma mark -
+
+- (NYPLMyBooksDownloadInfo *)downloadInfoForBookIdentifier:(NSString *const)bookIdentifier
+{
+  return self.bookIdentifierToDownloadInfo[bookIdentifier];
+}
 
 - (NSURL *)contentDirectoryURL
 {
@@ -238,10 +302,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
 {
-  NSString *const encodedIdentifier =
-    [identifier fileSystemSafeBase64EncodedStringUsingEncoding:NSUTF8StringEncoding];
-  
-  return [[[self contentDirectoryURL] URLByAppendingPathComponent:encodedIdentifier]
+  return [[[self contentDirectoryURL] URLByAppendingPathComponent:[identifier SHA256]]
           URLByAppendingPathExtension:@"epub"];
 }
 
@@ -337,6 +398,42 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
        postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
        object:self];
     }
+
+    NSURLRequest *const request = [NSURLRequest requestWithURL:[book.acquisition preferredURL]];
+    
+    if(!request.URL) {
+      // Originally this code just let the request fail later on, but apparently resuming an
+      // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
+      // segmentation fault.
+      NYPLLOG(@"Aborting request with invalid URL.");
+      [self failDownloadForBook:book];
+      return;
+    }
+    
+    NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
+    
+    self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[NYPLMyBooksDownloadInfo alloc]
+       initWithDownloadProgress:0.0
+       downloadTask:task
+       rightsManagement:NYPLMyBooksDownloadRightsManagementUnknown];
+    
+    self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
+    
+    [task resume];
+    
+    [[NYPLBookRegistry sharedRegistry]
+     addBook:book
+     location:nil
+     state:NYPLBookStateDownloading];
+    
+    // It is important to issue this immediately because a previous download may have left the
+    // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
+    // the user. As such, calling |broadcastUpdate| is not appropriate due to the delay.
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
+     object:self];
+
   } else {
     [NYPLSettingsAccountViewController
      requestCredentialsUsingExistingBarcode:NO
@@ -401,8 +498,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier
 {
-  if(self.bookIdentifierToDownloadTask[identifier]) {
-    [(NSURLSessionDownloadTask *)self.bookIdentifierToDownloadTask[identifier]
+  if(self.bookIdentifierToDownloadInfo[identifier]) {
+    [[self downloadInfoForBookIdentifier:identifier].downloadTask
      cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
        [[NYPLBookRegistry sharedRegistry]
         setState:NYPLBookStateDownloadNeeded forIdentifier:identifier];
@@ -446,12 +543,11 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)reset
 {
-  for(NSURLSessionDownloadTask *const task in [self.bookIdentifierToDownloadTask allValues]) {
-    [task cancelByProducingResumeData:nil];
+  for(NYPLMyBooksDownloadInfo *const info in [self.bookIdentifierToDownloadInfo allValues]) {
+    [info.downloadTask cancelByProducingResumeData:nil];
   }
   
-  [self.bookIdentifierToDownloadProgress removeAllObjects];
-  [self.bookIdentifierToDownloadTask removeAllObjects];
+  [self.bookIdentifierToDownloadInfo removeAllObjects];
   [self.taskIdentifierToBook removeAllObjects];
   self.bookIdentifierOfBookToRemove = nil;
   
@@ -464,7 +560,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (double)downloadProgressForBookIdentifier:(NSString *const)bookIdentifier
 {
-  return [self.bookIdentifierToDownloadProgress[bookIdentifier] doubleValue];
+  return [self downloadInfoForBookIdentifier:bookIdentifier].downloadProgress;
 }
 
 - (void)broadcastUpdate
@@ -491,5 +587,58 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
    object:self];
 }
+  
+  
+#if defined(FEATURE_DRM_CONNECTOR)
+  
+#pragma mark NYPLADEPTDelegate
+  
+- (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didUpdateProgress:(double)progress tag:(NSString *)tag
+{
+  self.bookIdentifierToDownloadInfo[tag] =
+  [[self downloadInfoForBookIdentifier:tag] withDownloadProgress:progress];
+
+  [self broadcastUpdate];
+}
+
+- (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didFinishDownloadingToURL:(NSURL *)URL fulfillmentID:(__attribute((unused)) NSString *)fulfillmentID isReturnable:(__attribute((unused)) BOOL)isReturnable rightsData:(NSData *)rightsData tag:(NSString *)tag
+{
+  // FIXME: CODE DUPLICATION!
+
+  NYPLBook *const book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:tag];
+
+  [[NSFileManager defaultManager]
+   removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
+   error:NULL];
+
+  NSError *error = nil;
+
+  // This needs to be a copy else the Adept connector will explode when it tries to delete the
+  // temporary file.
+  BOOL const success = [[NSFileManager defaultManager]
+                        copyItemAtURL:URL
+                        toURL:[self fileURLForBookIndentifier:book.identifier]
+                        error:&error];
+
+  if(!success) {
+    NYPLLOG(@"Failed to move temporary file after download completion.");
+    [self failDownloadForBook:book];
+    return;
+  }
+
+  // FIXME: We only know to put it here beacuse of what part of the connector example code assumes.
+  if(![rightsData writeToFile:[[[self fileURLForBookIndentifier:book.identifier] path]
+                               stringByAppendingString:@"_rights.xml"]
+                   atomically:YES]) {
+    NYPLLOG(@"Failed to store rights data.");
+  }
+
+  [[NYPLBookRegistry sharedRegistry]
+   setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+
+  [self broadcastUpdate];
+}
+  
+#endif
 
 @end

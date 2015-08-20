@@ -1,0 +1,6 @@
+
+ADOBE_RMSDK = $(SRCROOT)/adobe-rmsdk
+
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) FEATURE_DRM_CONNECTOR=1
+
+HEADER_SEARCH_PATHS = $(inherited) $(SDKROOT)/usr/include/libxml2 "$(SRCROOT)/readium-sdk/Platform/Apple/include" "$(ADOBE_RMSDK)/dp/public" "$(ADOBE_RMSDK)/xml/uft/public"
