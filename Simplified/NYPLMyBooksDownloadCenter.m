@@ -241,7 +241,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [self broadcastUpdate];
 }
 
-- (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didFinishDownloadingToURL:(NSURL *)URL rightsData:(NSData *)rightsData tag:(NSString *)tag
+- (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didFinishDownloadingToURL:(NSURL *)URL fulfillmentID:(__attribute((unused)) NSString *)fulfillmentID isReturnable:(__attribute((unused)) BOOL)isReturnable rightsData:(NSData *)rightsData tag:(NSString *)tag
 {
   // FIXME: CODE DUPLICATION!
   
