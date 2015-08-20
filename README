@@ -3,3 +3,11 @@ To build this project:
 1. 'git submodule init'
 2. 'git submodule update'
 3. Open "Simplified.xcodeproj" and build as normal.
+
+
+To build this project with Adobe RMSDK support:
+
+1. Copy the RMSDK root folder to $(SRCROOT)/adobe-rmsdk
+2. Add the configuration file Simplified+RMSDK.xcconfig to the target Simplified.
+3. Add the configuration file RDServices+RMSDK.xcconfig to the target RDServices.
+4. Add the configuration file ePub3+RMSDK.xcconfig to the targets ePub3 and ePub3-iOS.

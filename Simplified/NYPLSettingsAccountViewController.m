@@ -9,7 +9,10 @@
 #import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
+
+#if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
+#endif
 
 typedef NS_ENUM(NSInteger, CellKind) {
   CellKindBarcode,
@@ -394,15 +397,19 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
 - (void)logOut
 {
+#if defined(FEATURE_DRM_CONNECTOR)
   if([NYPLADEPT sharedInstance].workflowsInProgress) {
     [self showAlertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle" message:@"SettingsAccountViewControllerCannotLogOutMessage"];
-  } else {
-    [[NYPLADEPT sharedInstance] deauthorize];
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
-    [[NYPLBookRegistry sharedRegistry] reset];
-    [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
-    [self.tableView reloadData];
+    return;
   }
+  
+  [[NYPLADEPT sharedInstance] deauthorize];
+#endif
+  
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
+  [[NYPLBookRegistry sharedRegistry] reset];
+  [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
+  [self.tableView reloadData];
 }
 
 - (void)validateCredentials
@@ -424,6 +431,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
        
        // Success.
        if(statusCode == 200) {
+#if defined(FEATURE_DRM_CONNECTOR)
          [[NYPLADEPT sharedInstance]
           authorizeWithVendorID:@"NYPL"
           username:self.barcodeTextField.text
@@ -431,6 +439,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
           completion:^(BOOL success, NSError *error) {
             [self authorizationAttemptDidFinish:success error:error];
           }];
+#else
+         [self authorizationAttemptDidFinish:YES error:nil];
+#endif
          return;
        }
        
@@ -469,7 +480,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
       message = @"UnknownRequestError";
     }
     
-  } else if ([error.domain isEqual:NYPLADEPTErrorDomain]) {
+  }
+  
+#if defined(FEATURE_DRM_CONNECTOR)
+  else if ([error.domain isEqual:NYPLADEPTErrorDomain]) {
     title = @"SettingsAccountViewControllerLoginFailed";
     
     if (error.code == NYPLADEPTErrorAuthenticationFailed) {
@@ -480,6 +494,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
       message = @"DeviceAuthorizationError";
     }
   }
+#endif
   
   if (title.length > 0 || message.length > 0) {
     [self showAlertWithTitle:title message:message];
