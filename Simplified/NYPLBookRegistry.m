@@ -1,3 +1,4 @@
+#import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistryRecord.h"
@@ -5,6 +6,7 @@
 #import "NYPLJSON.h"
 #import "NYPLOPDS.h"
 #import "NYPLSettings.h"
+#import "NYPLMyBooksDownloadCenter.h"
 
 #import "NYPLBookRegistry.h"
 
@@ -207,7 +209,7 @@ static NSString *const RecordsKey = @"records";
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
 {
   @synchronized(self) {
-    if(self.syncing) {
+    if(self.syncing || ![[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
       return;
     } else {
       self.syncing = YES;
@@ -389,13 +391,30 @@ static NSString *const RecordsKey = @"records";
 - (void)reset
 {
   @synchronized(self) {
+    NSDictionary *booksToRestorePreloadCheck = [self.identifiersToRecords copy];
     self.syncShouldCommit = NO;
     [self.coverRegistry removeAllPinnedThumbnailImages];
     [self.identifiersToRecords removeAllObjects];
     [[NSFileManager defaultManager] removeItemAtURL:[self registryDirectory] error:NULL];
-  }
+    [self performSelector:@selector(checkCurrentlyPreloadedContentWithIdentifiers:) withObject:booksToRestorePreloadCheck afterDelay: 2 + (booksToRestorePreloadCheck.count * 0.1)];
+    }
   
   [self broadcastChange];
+}
+
+- (void) checkCurrentlyPreloadedContentWithIdentifiers: (NSDictionary *) identifiers {
+  NSMutableArray *restorePreloadedIdentifiers = [[NSMutableArray alloc] init];
+  for (NSString* identifier in identifiers) {
+    if ( [identifier containsString:@"Preloaded-"] ) {
+      [restorePreloadedIdentifiers addObject:identifier];
+    }
+  }
+  
+  NSArray *booksToRestorePreload = [[NYPLSettings sharedSettings] booksToRestorePreloadedContentForIdentifiers:restorePreloadedIdentifiers];
+  for (NYPLBook *book in booksToRestorePreload) {
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForPreloadedBook:book];
+  }
+  [[NYPLSettings sharedSettings] setPreloadContentCompleted:YES];
 }
 
 - (NSDictionary *)dictionaryRepresentation
