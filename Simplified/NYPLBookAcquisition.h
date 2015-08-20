@@ -19,4 +19,7 @@
 
 - (NSDictionary *)dictionaryRepresentation;
 
+// This may return nil if no means of acquisition is available.
+- (NSURL *)preferredURL;
+
 @end

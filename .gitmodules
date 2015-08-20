@@ -1,9 +1,12 @@
 [submodule "readium-sdk"]
 	path = readium-sdk
-	url = git@github.com:readium/readium-sdk.git
+	url = git@github.com:NYPL/readium-sdk.git
 [submodule "readium-shared-js"]
 	path = readium-shared-js
 	url = git@github.com:readium/readium-shared-js.git
 [submodule "tenprintcover-ios"]
 	path = tenprintcover-ios
 	url = git@github.com:NYPL/tenprintcover-ios.git
+[submodule "adept-ios"]
+	path = adept-ios
+	url = git@github.com:NYPL/ADEPT-iOS.git
