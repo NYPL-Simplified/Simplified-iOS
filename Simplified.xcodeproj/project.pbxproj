@@ -108,7 +108,6 @@
 		11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3773219E0876F00487769 /* NYPLCatalogFacet.m */; };
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
-		5A569A5A1B836251003B5B61 /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
 		A4206FDE1AEEC985009A1D73 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */; };
 		A4276F481B00046300CA7194 /* NYPLMyBooksDownloadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */; };
 		A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */; };
@@ -394,6 +393,8 @@
 		AE77ECC029F3DABDB46A64EB /* NYPLOPDSLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLink.m; sourceTree = "<group>"; };
 		AE77EDCF05BE5D54CF8E0E70 /* NYPLOPDSType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSType.h; sourceTree = "<group>"; };
 		AE77EFD5622206475B6715A9 /* NYPLOPDSType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSType.m; sourceTree = "<group>"; };
+		CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Simplified+RMSDK.xcconfig"; sourceTree = "<group>"; };
+		CAE35BC11B86308D00BF9BC5 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -401,7 +402,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5A569A5A1B836251003B5B61 /* libADEPT.a in Frameworks */,
 				112492581A5B5B690054D6E2 /* libstdc++.6.dylib in Frameworks */,
 				A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */,
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
@@ -653,6 +653,8 @@
 		A823D804192BABA400B55DE2 = {
 			isa = PBXGroup;
 			children = (
+				CAE35BC11B86308D00BF9BC5 /* README */,
+				CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */,
 				A823D816192BABA400B55DE2 /* Simplified */,
 				A823D82F192BABA400B55DE2 /* SimplifiedTests */,
 				A823D80F192BABA400B55DE2 /* Frameworks */,

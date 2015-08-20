@@ -8,10 +8,15 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksDownloadInfo.h"
+
+#if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
+@interface NYPLMyBooksDownloadCenter () <NYPLADEPTDelegate>
+@end
+#endif
 
 @interface NYPLMyBooksDownloadCenter ()
-  <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, NYPLADEPTDelegate,
+  <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate,
    UIAlertViewDelegate>
 
 @property (nonatomic) NSString *bookIdentifierOfBookToRemove;
@@ -46,7 +51,9 @@
   self = [super init];
   if(!self) return nil;
   
+#if defined(FEATURE_DRM_CONNECTOR)
   [NYPLADEPT sharedInstance].delegate = self;
+#endif
   
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
@@ -141,9 +148,11 @@ didFinishDownloadingToURL:(NSURL *const)location
       @throw NSInternalInconsistencyException;
     case NYPLMyBooksDownloadRightsManagementAdobe:
       // FIXME: Temporary test code!
+#if defined(FEATURE_DRM_CONNECTOR)
       [[NYPLADEPT sharedInstance]
        fulfillWithACSMData:[NSData dataWithContentsOfURL:location]
        tag:book.identifier];
+#endif
       break;
     case NYPLMyBooksDownloadRightsManagementNone: {
       [[NSFileManager defaultManager]
@@ -231,6 +240,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   self.bookIdentifierOfBookToRemove = nil;
 }
 
+#if defined(FEATURE_DRM_CONNECTOR)
+
 #pragma mark NYPLADEPTDelegate
 
 - (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didUpdateProgress:(double)progress tag:(NSString *)tag
@@ -278,6 +289,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   [self broadcastUpdate];
 }
+
+#endif
 
 #pragma mark -
 
