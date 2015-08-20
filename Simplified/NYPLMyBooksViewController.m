@@ -346,13 +346,16 @@ OK:
 
 - (void) preloadContentWithHandler:(void(^)(void))handler
 {
-  NSArray *booksToPreload = [[NYPLSettings sharedSettings] booksToPreload];
-  for (NYPLBook *book in booksToPreload) {
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForPreloadedBook:book];
+  @synchronized (self) {
+    NSArray *booksToPreload = [[NYPLSettings sharedSettings] booksToPreload];
+    for (NYPLBook *book in booksToPreload) {
+      NSLog(@"preloadContentWithHandler book: %@", book.identifier);
+      [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForPreloadedBook:book];
+    }
+    [[NYPLSettings sharedSettings] setPreloadContentCompleted:YES];
+    
+    if (handler) handler();
   }
-  [[NYPLSettings sharedSettings] setPreloadContentCompleted:YES];
-  
-  if (handler) handler();
 }
 
 @end

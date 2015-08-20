@@ -464,29 +464,30 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       return;
   }
   
-  // Actually download the book
+  // copying the preloaded content book from the application's bundle to it's destination
   NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.generic];
-  
-  if(!request.URL) {
-    // Originally this code just let the request fail later on, but apparently resuming an
-    // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
-    // segmentation fault.
-    NYPLLOG(@"Aborting request with invalid URL.");
-    return;
-  }
-  
-  NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
-  
-  self.bookIdentifierToDownloadProgress[book.identifier] = @0.0;
-  self.bookIdentifierToDownloadTask[book.identifier] = task;
-  self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
-  
-  [task resume];
-  
+  NSLog(@"request: %@", request);
   [[NYPLBookRegistry sharedRegistry]
    addBook:book
    location:nil
    state:NYPLBookStateDownloading];
+  
+  NSError *error = nil;
+  [[NSFileManager defaultManager] removeItemAtURL:[self fileURLForBookIndentifier:book.identifier] error:nil];
+  
+  BOOL const success = [[NSFileManager defaultManager]
+                        copyItemAtURL:request.URL
+                        toURL:[self fileURLForBookIndentifier:book.identifier]
+                        error:&error];
+  
+  if(!success || error) {
+    NYPLLOG(@"Failed to the preloaded content book from the application's bundle to it's destination.");
+  }
+  else {
+    [[NYPLBookRegistry sharedRegistry]
+     setState:NYPLBookStateDownloadSuccessful
+     forIdentifier:book.identifier];
+  }
   
   // It is important to issue this immediately because a previous download may have left the
   // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
@@ -494,6 +495,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
    object:self];
+  
+  [[NYPLBookRegistry sharedRegistry] save];
 }
 
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier
