@@ -138,14 +138,14 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     if(!title) {
       title = [[UILabel alloc] init];
       title.textColor = [UIColor whiteColor];
-      title.font = [UIFont systemFontOfSize:9];
+      title.font = [UIFont systemFontOfSize:12];
       [view addSubview:title];
     }
     if([self bookArrayForSection:indexPath.section] == self.reservedBooks) {
       view.layer.backgroundColor = [NYPLConfiguration backgroundColor].CGColor;
       title.text = NSLocalizedString(@"AvailableForCheckoutHeader", nil);
     } else {
-      view.layer.backgroundColor = [UIColor colorWithWhite:222.0/255.0 alpha:1.0].CGColor;
+      view.layer.backgroundColor = [UIColor colorWithRed:172.0/255.0 green:177.0/255.0 blue:182.0/255 alpha:1.0].CGColor;
       title.text = NSLocalizedString(@"WaitingForAvailabilityHeader", nil);
     }
     [title sizeToFit];
@@ -153,7 +153,8 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     frame.origin = CGPointMake(10, view.center.y - frame.size.height / 2);
     title.frame = frame;
   } else {
-    view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"FooterView" forIndexPath:indexPath];
+    // This should never happen, but avoid crashing if it does.
+    view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
     view.frame = CGRectZero;
   }
   return view;
