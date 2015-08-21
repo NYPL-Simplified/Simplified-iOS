@@ -1,4 +1,5 @@
 #import "NYPLAccount.h"
+#import "NYPLBook.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookRegistry.h"
@@ -10,7 +11,8 @@
 @interface NYPLHoldsViewController ()
 <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
-@property (nonatomic) NSArray *books;
+@property (nonatomic) NSArray *reservedBooks;
+@property (nonatomic) NSArray *heldBooks;
 @property (nonatomic) UIBarButtonItem *syncButton;
 @property (nonatomic) UIBarButtonItem *syncInProgressButton;
 
@@ -38,6 +40,15 @@
   return self;
 }
 
+- (NSArray *)bookArrayForSection:(NSInteger)section
+{
+  if (self.reservedBooks.count > 0) {
+    return section == 0 ? self.reservedBooks : self.heldBooks;
+  } else {
+    return self.heldBooks;
+  }
+}
+
 #pragma mark UIViewController
 
 - (void)viewDidLoad
@@ -48,6 +59,10 @@
   
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
+  [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView"];
+  // We know that super sets it to a flow layout.
+  UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
+  layout.headerReferenceSize = CGSizeMake(0, 20);
   
   self.syncButton = [[UIBarButtonItem alloc]
                      initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
@@ -75,10 +90,22 @@
 
 #pragma mark UICollectionViewDelegate
 
+- (NSInteger)numberOfSectionsInCollectionView:(__attribute__((unused)) UICollectionView *)collectionView
+{
+  NSInteger sections = 0;
+  if (self.reservedBooks.count > 0) {
+    sections++;
+  }
+  if(self.heldBooks.count > 0) {
+    sections++;
+  }
+  return sections;
+}
+
 - (void)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
-  NYPLBook *const book = self.books[indexPath.row];
+  NYPLBook *const book = [self bookArrayForSection:indexPath.section][indexPath.row];
   
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
@@ -86,17 +113,50 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 #pragma mark UICollectionViewDataSource
 
 - (NSInteger)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
-     numberOfItemsInSection:(__attribute__((unused)) NSInteger)section
+     numberOfItemsInSection:(NSInteger)section
 {
-  return self.books.count;
+  return [self bookArrayForSection:section].count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-  NYPLBook *const book = self.books[indexPath.row];
+  NYPLBook *const book = [self bookArrayForSection:indexPath.section][indexPath.row];
   
   return NYPLBookCellDequeue(collectionView, indexPath, book);
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind
+                                 atIndexPath:(NSIndexPath *)indexPath
+{
+  UICollectionReusableView *view = nil;
+  if(kind == UICollectionElementKindSectionHeader) {
+    view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
+    view.frame = CGRectMake(0, 0, collectionView.frame.size.width, 20);
+    UILabel *title = view.subviews.count > 0 ? view.subviews[0] : nil;
+    if(!title) {
+      title = [[UILabel alloc] init];
+      title.textColor = [UIColor whiteColor];
+      title.font = [UIFont systemFontOfSize:9];
+      [view addSubview:title];
+    }
+    if([self bookArrayForSection:indexPath.section] == self.reservedBooks) {
+      view.layer.backgroundColor = [NYPLConfiguration backgroundColor].CGColor;
+      title.text = NSLocalizedString(@"AvailableForCheckoutHeader", nil);
+    } else {
+      view.layer.backgroundColor = [UIColor colorWithWhite:222.0/255.0 alpha:1.0].CGColor;
+      title.text = NSLocalizedString(@"WaitingForAvailabilityHeader", nil);
+    }
+    [title sizeToFit];
+    CGRect frame = title.frame;
+    frame.origin = CGPointMake(10, view.center.y - frame.size.height / 2);
+    title.frame = frame;
+  } else {
+    view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"FooterView" forIndexPath:indexPath];
+    view.frame = CGRectZero;
+  }
+  return view;
 }
 
 #pragma mark NYPLBookCellCollectionViewController
@@ -105,7 +165,18 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
   [super willReloadCollectionViewData];
   
-  self.books = [[NYPLBookRegistry sharedRegistry] heldBooks];
+  NSArray *books = [[NYPLBookRegistry sharedRegistry] heldBooks];
+  NSMutableArray *reserved = [NSMutableArray array];
+  NSMutableArray *held = [NSMutableArray array];
+  for(NYPLBook *book in books) {
+    if (book.availabilityStatus == NYPLBookAvailabilityStatusReserved) {
+      [reserved addObject:book];
+    } else {
+      [held addObject:book];
+    }
+  }
+  self.heldBooks = held;
+  self.reservedBooks = reserved;
 }
 
 #pragma mark -
