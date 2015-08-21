@@ -33,16 +33,41 @@
 
 - (NSString *)shortTimeUntilString
 {
+  return [self timeUntilStringWithNames:@{@"year": @"y",
+                                          @"month": @"m",
+                                          @"week": @"w",
+                                          @"day": @"d"
+                                          } appendPlural:@""];
+}
+
+- (NSString *)longTimeUntilString
+{
+  return [self timeUntilStringWithNames:@{@"year": @" year",
+                                          @"month": @" month",
+                                          @"week": @" week",
+                                          @"day": @" day"
+                                          } appendPlural:@"s"];
+}
+
+- (NSString *)timeUntilStringWithNames:(NSDictionary *)names appendPlural:(NSString *)appendPlural
+{
   NSTimeInterval seconds = [self timeIntervalSinceDate:[NSDate date]];
   seconds = seconds > 0 ? seconds : 0;
   NSInteger minutes = seconds / 60;
   NSInteger hours = minutes / 60;
   NSInteger days = ceil((float)hours / 24.f);
   NSInteger weeks = days / 7;
-  if (weeks > 0) {
-    return [@(weeks).stringValue stringByAppendingString:@"w"];
+  NSInteger months = days / 30;
+  NSInteger years = days / 365;
+  
+  if(years > 0) {
+    return [NSString stringWithFormat:@"%ld%@%@", years, names[@"year"], years > 1 ? appendPlural : @""];
+  } else if(months > 0) {
+    return [NSString stringWithFormat:@"%ld%@%@", months, names[@"month"], months > 1 ? appendPlural : @""];
+  } else if(weeks > 0) {
+    return [NSString stringWithFormat:@"%ld%@%@", weeks, names[@"week"], weeks > 1 ? appendPlural : @""];
   } else {
-    return [@(days).stringValue stringByAppendingString:@"d"];
+    return [NSString stringWithFormat:@"%ld%@%@", days, names[@"day"], days > 1 ? appendPlural : @""];
   }
 }
 

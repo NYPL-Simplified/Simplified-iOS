@@ -27,7 +27,7 @@
 
 #pragma mark NYPLBookNormalCellDelegate
 
-- (void)didSelectDeleteForBookNormalCell:(NYPLBookNormalCell *const)cell
+- (void)didSelectReturnForBookNormalCell:(NYPLBookNormalCell *const)cell
 {
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
    removeCompletedDownloadForBookIdentifier:cell.book.identifier];

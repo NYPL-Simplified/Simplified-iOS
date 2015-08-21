@@ -447,7 +447,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
              [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier].title]
     delegate:self
     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-    otherButtonTitles:@"Delete", nil]
+    otherButtonTitles:NSLocalizedString(@"Delete", nil), nil]
    show];
 }
 

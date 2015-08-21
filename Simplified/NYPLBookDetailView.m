@@ -329,10 +329,10 @@ static NSString *detailTemplate = nil;
 
 #pragma mark NYPLBookDetailNormalViewDelegate
 
-- (void)didSelectDeleteForBookDetailNormalView:
+- (void)didSelectReturnForBookDetailNormalView:
 (__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
 {
-  [self.detailViewDelegate didSelectDeleteForBookDetailView:self];
+  [self.detailViewDelegate didSelectReturnForBookDetailView:self];
 }
 
 - (void)didSelectDownloadForBookDetailNormalView:
@@ -418,6 +418,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
+      self.normalView.date = self.book.availableUntil;
       if (self.book.availabilityStatus == NYPLBookAvailabilityStatusReserved) {
         self.normalView.state = NYPLBookDetailNormalViewStateHoldingFOQ;
       } else {

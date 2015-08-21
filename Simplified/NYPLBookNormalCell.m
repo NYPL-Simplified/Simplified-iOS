@@ -89,7 +89,7 @@
   if(!self.deleteButton) {
     self.deleteButton = [NYPLRoundedButton button];
     [self.deleteButton addTarget:self
-                          action:@selector(didSelectDelete)
+                          action:@selector(didSelectReturn)
                 forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.deleteButton];
   }
@@ -151,9 +151,9 @@
   [self setNeedsLayout];
 }
 
-- (void)didSelectDelete
+- (void)didSelectReturn
 {
-  [self.delegate didSelectDeleteForBookNormalCell:self];
+  [self.delegate didSelectReturnForBookNormalCell:self];
 }
 
 - (void)didSelectDownload
