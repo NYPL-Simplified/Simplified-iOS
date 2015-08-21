@@ -1,3 +1,4 @@
+#import "NSDate+NYPLDateAdditions.h"
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLRoundedButton.h"
@@ -39,7 +40,7 @@
   [self.deleteButton setTitle:NSLocalizedString(@"Delete", nil)
                      forState:UIControlStateNormal];
   [self.deleteButton addTarget:self
-                        action:@selector(didSelectDelete)
+                        action:@selector(didSelectReturn)
               forControlEvents:UIControlEventTouchUpInside];
   
   self.messageLabel = [[UILabel alloc] init];
@@ -106,7 +107,7 @@
   
   switch(state) {
     case NYPLBookDetailNormalViewStateCanBorrow:
-      self.messageLabel.text = @"This book is available to borrow.";
+      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerAvailableToBorrowTitle", nil);
       self.deleteReadLinearView.hidden = YES;
       self.downloadButton.hidden = NO;
       [self.downloadButton setTitle:NSLocalizedString(@"Borrow", nil)
@@ -114,7 +115,7 @@
       [self.downloadButton sizeToFit];
       break;
     case NYPLBookDetailNormalViewStateCanHold:
-      self.messageLabel.text = @"All licenses of this book are currently checked out.";
+      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerCanHoldTitle", nil);
       self.deleteReadLinearView.hidden = YES;
       self.downloadButton.hidden = NO;
       [self.downloadButton setTitle:NSLocalizedString(@"Hold", nil)
@@ -122,7 +123,7 @@
       [self.downloadButton sizeToFit];
       break;
     case NYPLBookDetailNormalViewStateCanKeep:
-      self.messageLabel.text = @"This open-access book is available to keep.";
+      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerCanKeepTitle", nil);
       self.deleteReadLinearView.hidden = YES;
       self.downloadButton.hidden = NO;
       [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
@@ -130,19 +131,20 @@
       [self.downloadButton sizeToFit];
       break;
     case NYPLBookDetailNormalViewStateDownloadNeeded:
-      self.messageLabel.text = @"Your book has not yet been downloaded.";
+      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerDownloadNeededTitle", nil);
       self.deleteReadLinearView.hidden = YES;
       self.downloadButton.hidden = NO;
       [self.downloadButton setTitle:NSLocalizedString(@"Download", nil)
                            forState:UIControlStateNormal];
       break;
     case NYPLBookDetailNormalViewStateDownloadSuccessful:
-      self.messageLabel.text = @"Your book is ready to read!";
+      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
       self.deleteReadLinearView.hidden = NO;
       self.downloadButton.hidden = YES;
       break;
     case NYPLBookDetailNormalViewStateHolding:
-      self.messageLabel.text = @"Available for checkout in approximately X time.";
+      self.messageLabel.text = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerHoldingTitleFormat", nil),
+                                [self.date longTimeUntilString]];
       self.downloadButton.hidden = YES;
       self.readButton.hidden = YES;
       self.deleteReadLinearView.hidden = NO;
@@ -151,7 +153,8 @@
                          forState:UIControlStateNormal];
       break;
     case NYPLBookDetailNormalViewStateHoldingFOQ:
-      self.messageLabel.text = @"This hold will be automatically cancelled in X time.";
+      self.messageLabel.text = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerReservedTitleFormat", nil),
+                                [self.date longTimeUntilString]];
       self.deleteReadLinearView.hidden = YES;
       self.downloadButton.hidden = NO;
       // TODO: Make cancel hold button fit here (it currently overlaps)
@@ -163,7 +166,7 @@
       [self.downloadButton sizeToFit];
       break;
     case NYPLBookDetailNormalViewStateUsed:
-      self.messageLabel.text = @"";
+      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
       self.deleteReadLinearView.hidden = NO;
       self.downloadButton.hidden = YES;
       break;
@@ -174,9 +177,9 @@
   [self.messageLabel integralizeFrame];
 }
 
-- (void)didSelectDelete
+- (void)didSelectReturn
 {
-  [self.delegate didSelectDeleteForBookDetailNormalView:self];
+  [self.delegate didSelectReturnForBookDetailNormalView:self];
 }
 
 - (void)didSelectDownload

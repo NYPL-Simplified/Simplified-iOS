@@ -16,7 +16,7 @@ typedef NS_ENUM(NSInteger, NYPLBookNormalCellState) {
 
 @protocol NYPLBookNormalCellDelegate
 
-- (void)didSelectDeleteForBookNormalCell:(NYPLBookNormalCell *)cell;
+- (void)didSelectReturnForBookNormalCell:(NYPLBookNormalCell *)cell;
 - (void)didSelectDownloadForBookNormalCell:(NYPLBookNormalCell *)cell;
 - (void)didSelectReadForBookNormalCell:(NYPLBookNormalCell *)cell;
 

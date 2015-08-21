@@ -88,7 +88,7 @@
    cancelDownloadForBookIdentifier:self.book.identifier];
 }
 
-- (void)didSelectDeleteForBookDetailView:(NYPLBookDetailView *const)detailView
+- (void)didSelectReturnForBookDetailView:(NYPLBookDetailView *const)detailView
 {
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
    removeCompletedDownloadForBookIdentifier:detailView.book.identifier];

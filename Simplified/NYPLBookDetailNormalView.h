@@ -14,7 +14,7 @@ typedef NS_ENUM(NSInteger, NYPLBookDetailNormalViewState) {
 
 @protocol NYPLBookDetailNormalViewDelegate
 
-- (void)didSelectDeleteForBookDetailNormalView:(NYPLBookDetailNormalView *)bookDetailNormalView;
+- (void)didSelectReturnForBookDetailNormalView:(NYPLBookDetailNormalView *)bookDetailNormalView;
 - (void)didSelectDownloadForBookDetailNormalView:(NYPLBookDetailNormalView *)bookDetailNormalView;
 - (void)didSelectReadForBookDetailNormalView:(NYPLBookDetailNormalView *)bookDetailNormalView;
 

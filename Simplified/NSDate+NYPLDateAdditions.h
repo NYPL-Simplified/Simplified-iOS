@@ -7,6 +7,8 @@
 
 - (NSString *)shortTimeUntilString;
 
+- (NSString *)longTimeUntilString;
+
 - (NSDateComponents *)UTCComponents;
 
 @end

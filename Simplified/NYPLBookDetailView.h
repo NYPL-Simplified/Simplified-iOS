@@ -8,7 +8,7 @@
 
 - (void)didSelectCancelDownloadFailedForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectCancelDownloadingForBookDetailView:(NYPLBookDetailView *)detailView;
-- (void)didSelectDeleteForBookDetailView:(NYPLBookDetailView *)detailView;
+- (void)didSelectReturnForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectDownloadForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectReadForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectTryAgainForBookDetailView:(NYPLBookDetailView *)detailView;

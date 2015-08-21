@@ -42,6 +42,13 @@
 // NYPLBookDetailViewControllerTitle
 
 "BookDetailViewControllerTitle" = "Details";
+"BookDetailViewControllerDownloadNeededTitle" = "Your book has not yet been downloaded.";
+"BookDetailViewControllerDownloadSuccessfulTitle" = "Your book is ready to read!";
+"BookDetailViewControllerAvailableToBorrowTitle" = "This book is available to borrow.";
+"BookDetailViewControllerCanHoldTitle" = "All licenses of this book are currently checked out";
+"BookDetailViewControllerCanKeepTitle" = "This open-access book is available to keep.";
+"BookDetailViewControllerHoldingTitleFormat" = "Available for checkout in approximately %@.";
+"BookDetailViewControllerReservedTitleFormat" = "This hold will be automatically cancelled in %@.";
 
 // NYPLFacetView
 
