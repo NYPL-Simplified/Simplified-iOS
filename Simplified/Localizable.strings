@@ -10,6 +10,7 @@
 "CheckConnection" = "Please check your connection and try again.";
 "ConnectionFailed" = "Connection Failed";
 "Delete" = "Delete";
+"DeviceAuthorizationError" = "An error occurred while authorizing this device.";
 "Download" = "Download";
 "DownloadCouldNotBeCompleted" = "The download could not be completed.";
 "DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.";
@@ -91,6 +92,10 @@
 
 // NYPLSettingsAccountViewController
 
+"SettingsAccountViewControllerCannotLogOutTitle" =
+  "Logout Failed";
+"SettingsAccountViewControllerCannotLogOutMessage" =
+  "Please wait for certain download-related actions to finish before logging out.";
 "SettingsAccountViewControllerInvalidCredentials" =
   "Your barcode and pin combination was not valid. Please try again.";
 "SettingsAccountViewControllerLoginFailed" = "Login Failed";
@@ -113,6 +118,7 @@
 
 // NYPLSettingsPrivacyPolicyViewController
 "PrivacyPolicy" = "Privacy Policy";
+"SettingsAccountViewControllerMessageTooManyActivations" = "Too many devices have been authorized with this library card.";
 "RestorePreloadedContent" = "Restore Preloaded Content";
 "PreloadedContent" = "Preloaded Content";
 "PreloadedContentRestoredMessage" = "Preloaded content restored";

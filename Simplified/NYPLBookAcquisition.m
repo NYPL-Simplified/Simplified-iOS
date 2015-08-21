@@ -55,4 +55,18 @@ static NSString *const SampleKey = @"sample";
            SampleKey: NYPLNullFromNil([self.sample absoluteString])};
 }
 
+- (NSURL *)preferredURL
+{
+  // TODO: This currently does not take into account the 'type' attribute of the links in the
+  // original OPDS feed. As such, it may end up preferring a link to a type of content that the
+  // app cannot handle.
+  
+  if(self.openAccess) return self.openAccess;
+  if(self.borrow) return self.borrow;
+  if(self.generic) return self.generic;
+  if(self.sample) return self.sample;
+  
+  return nil;
+}
+
 @end

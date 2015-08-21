@@ -1,3 +1,5 @@
+#ifndef __cplusplus
+
 @import Darwin.Availability;
 
 #ifndef __IPHONE_3_0
@@ -8,4 +10,6 @@
   @import UIKit;
   @import Foundation;
   #import "NYPLLOG.h"
+#endif
+
 #endif
