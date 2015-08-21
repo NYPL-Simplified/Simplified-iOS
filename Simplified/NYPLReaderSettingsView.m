@@ -16,6 +16,7 @@
 @property (nonatomic) NSMutableArray *observers;
 @property (nonatomic) UIButton *sansButton;
 @property (nonatomic) UIButton *serifButton;
+@property (nonatomic) UIButton *openDyslexicButton;
 @property (nonatomic) UIButton *whiteOnBlackButton;
 
 @end
@@ -38,34 +39,73 @@
 
   [self sizeToFit];
 
+  NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
+  NSDictionary *noUnderlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone)};
+  
   self.sansButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.sansButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.sansButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.sansButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateDisabled];
-  [self.sansButton setTitle:@"Aa" forState:UIControlStateNormal];
-  self.sansButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:24];
+  
+  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+                                                                      attributes:noUnderlineAttribute] forState:UIControlStateNormal];
+  
+  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+                                                                      attributes:underlineAttribute] forState:UIControlStateDisabled];
+  
+  self.sansButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:24];
   [self.sansButton addTarget:self
                       action:@selector(didSelectSans)
             forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.sansButton];
 
+  
   self.serifButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.serifButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.serifButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.serifButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateDisabled];
-  [self.serifButton setTitle:@"Aa" forState:UIControlStateNormal];
+  
+  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+                                                                      attributes:noUnderlineAttribute] forState:UIControlStateNormal];
+  
+  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+                                                                      attributes:underlineAttribute] forState:UIControlStateDisabled];
+
+  
   self.serifButton.titleLabel.font = [UIFont fontWithName:@"Georgia" size:24];
   [self.serifButton addTarget:self
                        action:@selector(didSelectSerif)
              forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.serifButton];
+  
+  
+  self.openDyslexicButton = [UIButton buttonWithType:UIButtonTypeCustom];
+  self.openDyslexicButton.backgroundColor = [NYPLConfiguration backgroundColor];
+  [self.openDyslexicButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+  
+  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+                                                                       attributes:noUnderlineAttribute] forState:UIControlStateNormal];
+  
+  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+                                                                       attributes:underlineAttribute] forState:UIControlStateDisabled];
+
+  self.openDyslexicButton.titleLabel.font = [UIFont fontWithName:@"OpenDyslexic3" size:20];
+  [self.openDyslexicButton setTitleEdgeInsets:UIEdgeInsetsMake(-4.0f, 0.0f, 0.0f, 0.0f)];
+  [self.openDyslexicButton addTarget:self
+                       action:@selector(didSelectOpenDyslexic)
+             forControlEvents:UIControlEventTouchUpInside];
+  [self addSubview:self.openDyslexicButton];
 
   self.whiteOnBlackButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.whiteOnBlackButton.backgroundColor = [NYPLConfiguration backgroundDarkColor];
-  [self.whiteOnBlackButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-  [self.whiteOnBlackButton setTitleColor:[NYPLConfiguration mainColor]
-                                forState:UIControlStateDisabled];
-  [self.whiteOnBlackButton setTitle:@"ABCabc" forState:UIControlStateNormal];
+  
+  NSDictionary *whiteColourWithoutUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone), NSForegroundColorAttributeName : [UIColor whiteColor] };
+  NSDictionary *whiteColourWithUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSForegroundColorAttributeName : [UIColor whiteColor] };
+  
+  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+                                                                              attributes:whiteColourWithoutUnderline] forState:UIControlStateNormal];
+  
+  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+                                                                              attributes:whiteColourWithUnderline] forState:UIControlStateDisabled];
+  
   self.whiteOnBlackButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.whiteOnBlackButton addTarget:self
                               action:@selector(didSelectWhiteOnBlack)
@@ -77,7 +117,12 @@
   [self.blackOnSepiaButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [self.blackOnSepiaButton setTitleColor:[NYPLConfiguration mainColor]
                                 forState:UIControlStateDisabled];
-  [self.blackOnSepiaButton setTitle:@"ABCabc" forState:UIControlStateNormal];
+  
+  [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+                                                                              attributes:noUnderlineAttribute] forState:UIControlStateNormal];
+  
+  [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+                                                                              attributes:underlineAttribute] forState:UIControlStateDisabled];
   self.blackOnSepiaButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.blackOnSepiaButton addTarget:self
                               action:@selector(didSelectBlackOnSepia)
@@ -89,7 +134,12 @@
   [self.blackOnWhiteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [self.blackOnWhiteButton setTitleColor:[NYPLConfiguration mainColor]
                                 forState:UIControlStateDisabled];
-  [self.blackOnWhiteButton setTitle:@"ABCabc" forState:UIControlStateNormal];
+  
+  [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+                                                                              attributes:noUnderlineAttribute] forState:UIControlStateNormal];
+  
+  [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+                                                                              attributes:underlineAttribute] forState:UIControlStateDisabled];
   self.blackOnWhiteButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.blackOnWhiteButton addTarget:self
                               action:@selector(didSelectBlackOnWhite)
@@ -169,12 +219,17 @@
 
   self.sansButton.frame = CGRectMake(padding,
                                      0,
-                                     innerWidth / 2.0,
+                                     round(innerWidth / 3.0),
                                      CGRectGetHeight(self.frame) / 4.0);
   
-  self.serifButton.frame = CGRectMake(CGRectGetWidth(self.frame) / 2.0,
+  self.serifButton.frame = CGRectMake(CGRectGetMaxX(self.sansButton.frame),
                                       0,
-                                      innerWidth / 2.0,
+                                      round(innerWidth / 3.0),
+                                      CGRectGetHeight(self.frame) / 4.0);
+
+  self.openDyslexicButton.frame = CGRectMake(CGRectGetMaxX(self.serifButton.frame),
+                                      0,
+                                      round(innerWidth / 3.0),
                                       CGRectGetHeight(self.frame) / 4.0);
   
   self.whiteOnBlackButton.frame = CGRectMake(padding,
@@ -269,10 +324,17 @@
     case NYPLReaderSettingsFontFaceSans:
       self.sansButton.enabled = NO;
       self.serifButton.enabled = YES;
+      self.openDyslexicButton.enabled = YES;
       break;
     case NYPLReaderSettingsFontFaceSerif:
       self.sansButton.enabled = YES;
       self.serifButton.enabled = NO;
+      self.openDyslexicButton.enabled = YES;
+      break;
+    case NYPLReaderSettingsFontFaceOpenDyslexic:
+      self.sansButton.enabled = YES;
+      self.serifButton.enabled = YES;
+      self.openDyslexicButton.enabled = NO;
       break;
   }
 }
@@ -347,11 +409,56 @@
   self.increaseButton.backgroundColor = backgroundColor;
   [self.increaseButton setTitleColor:foregroundColor forState:UIControlStateNormal];
   
+  
+  NSDictionary *fontColourWithUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSForegroundColorAttributeName : foregroundColor };
+  NSDictionary *fontColourWithoutUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone), NSForegroundColorAttributeName : foregroundColor };
+  
+  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+                                                                      attributes:fontColourWithoutUnderline] forState:UIControlStateNormal];
+  
+  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+                                                                      attributes:fontColourWithUnderline] forState:UIControlStateDisabled];
+  
   self.sansButton.backgroundColor = backgroundColor;
-  [self.sansButton setTitleColor:foregroundColor forState:UIControlStateNormal];
   
   self.serifButton.backgroundColor = backgroundColor;
-  [self.serifButton setTitleColor:foregroundColor forState:UIControlStateNormal];
+  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+                                                                       attributes:fontColourWithoutUnderline] forState:UIControlStateNormal];
+  
+  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+                                                                       attributes:fontColourWithUnderline] forState:UIControlStateDisabled];
+  
+  
+  self.openDyslexicButton.backgroundColor = backgroundColor;
+  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+                                                                              attributes:fontColourWithoutUnderline] forState:UIControlStateNormal];
+  
+  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+                                                                              attributes:fontColourWithUnderline] forState:UIControlStateDisabled];
+  
+  
+  NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
+  NSDictionary *noUnderlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone)};
+  NSDictionary *whiteColourWithUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSForegroundColorAttributeName : [UIColor whiteColor] };
+  NSDictionary *whiteColourWithoutUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone), NSForegroundColorAttributeName : [UIColor whiteColor] };
+  
+  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+                                                                              attributes:whiteColourWithoutUnderline] forState:UIControlStateNormal];
+  
+  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+                                                                              attributes:whiteColourWithUnderline] forState:UIControlStateDisabled];
+  
+  [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+                                                                              attributes:noUnderlineAttribute] forState:UIControlStateNormal];
+  
+  [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+                                                                              attributes:underlineAttribute] forState:UIControlStateDisabled];
+  
+  [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+                                                                              attributes:noUnderlineAttribute] forState:UIControlStateNormal];
+  
+  [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+                                                                              attributes:underlineAttribute] forState:UIControlStateDisabled];
 }
 
 - (void)didSelectSans
@@ -365,6 +472,13 @@
 {
   self.fontFace = NYPLReaderSettingsFontFaceSerif;
 
+  [self.delegate readerSettingsView:self didSelectFontFace:self.fontFace];
+}
+
+- (void)didSelectOpenDyslexic
+{
+  self.fontFace = NYPLReaderSettingsFontFaceOpenDyslexic;
+  
   [self.delegate readerSettingsView:self didSelectFontFace:self.fontFace];
 }
 
@@ -437,19 +551,19 @@
     UIView *const line = [[UIView alloc]
                           initWithFrame:CGRectMake(CGRectGetMinX(self.sansButton.frame),
                                                    CGRectGetMinY(self.sansButton.frame),
-                                                   (CGRectGetMaxX(self.serifButton.frame) -
+                                                   (CGRectGetMaxX(self.openDyslexicButton.frame) -
                                                    CGRectGetMinX(self.sansButton.frame)),
                                                    thin)];
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }
-  
+    
   {
     UIView *const line = [[UIView alloc]
-                           initWithFrame:CGRectMake(CGRectGetMinX(self.serifButton.frame),
-                                                    CGRectGetMinY(self.serifButton.frame),
-                                                    thin,
-                                                    CGRectGetHeight(self.serifButton.frame))];
+                          initWithFrame:CGRectMake(CGRectGetMinX(self.openDyslexicButton.frame),
+                                                   CGRectGetMinY(self.openDyslexicButton.frame),
+                                                   thin,
+                                                   CGRectGetHeight(self.openDyslexicButton.frame))];
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }

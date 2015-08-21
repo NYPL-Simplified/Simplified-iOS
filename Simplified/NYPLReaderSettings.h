@@ -6,7 +6,8 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsColorScheme) {
 
 typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontFace) {
   NYPLReaderSettingsFontFaceSans,
-  NYPLReaderSettingsFontFaceSerif
+  NYPLReaderSettingsFontFaceSerif,
+  NYPLReaderSettingsFontFaceOpenDyslexic
 };
 
 typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontSize) {

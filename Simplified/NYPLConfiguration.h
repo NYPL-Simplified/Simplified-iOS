@@ -6,6 +6,8 @@
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
++ (NSURL *)circulationURL;
+
 // This can be overriden by setting |customMainFeedURL| in NYPLSettings.
 + (NSURL *)mainFeedURL;
 

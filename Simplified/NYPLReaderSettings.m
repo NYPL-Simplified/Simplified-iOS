@@ -91,6 +91,8 @@ NSString *fontFaceToString(NYPLReaderSettingsFontFace const fontFace)
       return @"sans";
     case NYPLReaderSettingsFontFaceSerif:
       return @"serif";
+    case NYPLReaderSettingsFontFaceOpenDyslexic:
+      return @"OpenDyslexic3";
   }
 }
 
@@ -328,6 +330,10 @@ static NSString *const FontSizeKey = @"fontSize";
       break;
     case NYPLReaderSettingsFontFaceSerif:
       fontFace = @"Georgia";
+      lineHeight = @"1.6";
+      break;
+    case NYPLReaderSettingsFontFaceOpenDyslexic:
+      fontFace = @"OpenDyslexic3";
       lineHeight = @"1.6";
       break;
   }

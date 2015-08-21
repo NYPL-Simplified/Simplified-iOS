@@ -24,10 +24,9 @@
   // title text.
   viewController.navigationItem.titleView =
     [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Catalog"]];
-  
+
   viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
-                                                     initWithImage:[UIImage imageNamed:@"Reload"]
-                                                     style:UIBarButtonItemStylePlain
+                                                     initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                                                      target:self
                                                      action:@selector(reloadSelected)];
   viewController.navigationItem.leftBarButtonItem.enabled = YES;  
