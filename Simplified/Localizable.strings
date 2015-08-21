@@ -50,6 +50,8 @@
 // NYPLHoldsViewController
 
 "HoldsViewControllerTitle" = "Holds";
+"AvailableForCheckoutHeader" = "AVAILABLE FOR CHECKOUT";
+"WaitingForAvailabilityHeader" = "WAITING FOR AVAILABILITY";
 
 // NYPLMyBooksDownloadCenter
 
