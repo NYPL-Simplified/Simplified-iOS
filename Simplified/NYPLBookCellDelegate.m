@@ -29,8 +29,7 @@
 
 - (void)didSelectReturnForBookNormalCell:(NYPLBookNormalCell *const)cell
 {
-  [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-   removeCompletedDownloadForBookIdentifier:cell.book.identifier];
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] returnBookWithIdentifier:cell.book.identifier];
 }
 
 - (void)didSelectDownloadForBookNormalCell:(NYPLBookNormalCell *const)cell

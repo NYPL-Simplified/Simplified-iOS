@@ -7,6 +7,9 @@ static NSString *const NYPLOPDSRelationAcquisitionOpenAccess =
 static NSString *const NYPLOPDSRelationAcquisitionBorrow =
   @"http://opds-spec.org/acquisition/borrow";
 
+static NSString *const NYPLOPDSRelationAcquisitionRevoke =
+  @"http://librarysimplified.org/terms/rel/revoke";
+
 static NSString *const NYPLOPDSRelationAcquisitionSample =
   @"http://opds-spec.org/acquisition/sample";
 

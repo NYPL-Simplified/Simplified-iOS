@@ -7,6 +7,7 @@
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLOPDSFeed.h"
+#import "NYPLSession.h"
 
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksDownloadInfo.h"
@@ -271,6 +272,29 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
 }
 
+- (void)returnBookWithIdentifier:(NSString *)identifier
+{
+  // TODO: Make this handle "kept" and borrowed books as well
+  NYPLBook *book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
+  NSString *bookTitle = book.title;
+  if(book.availabilityStatus & (NYPLBookAvailabilityStatusReserved | NYPLBookAvailabilityStatusUnavailable)) {
+    [[NYPLSession sharedSession] withURL:book.acquisition.revoke completionHandler:^(__unused NSData *data, NSURLResponse *response) {
+      NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+      if (httpResponse.statusCode == 200) {
+        [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
+      } else {
+        [[[UIAlertView alloc]
+          initWithTitle:NSLocalizedString(@"ReturnFailed", nil)
+          message:[NSString stringWithFormat:NSLocalizedString(@"ReturnCouldNotBeCompletedFormat", nil), bookTitle]
+          delegate:nil
+          cancelButtonTitle:nil
+          otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+         show];
+      }
+    }];
+  }
+}
+
 - (NYPLMyBooksDownloadInfo *)downloadInfoForBookIdentifier:(NSString *const)bookIdentifier
 {
   return self.bookIdentifierToDownloadInfo[bookIdentifier];
@@ -385,8 +409,12 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       
       NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
       
-      self.bookIdentifierToDownloadProgress[book.identifier] = @0.0;
-      self.bookIdentifierToDownloadTask[book.identifier] = task;
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+      [[NYPLMyBooksDownloadInfo alloc]
+       initWithDownloadProgress:0.0
+       downloadTask:task
+       rightsManagement:NYPLMyBooksDownloadRightsManagementUnknown];
+      
       self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
       
       [task resume];
@@ -403,41 +431,6 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
        postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
        object:self];
     }
-
-    NSURLRequest *const request = [NSURLRequest requestWithURL:[book.acquisition preferredURL]];
-    
-    if(!request.URL) {
-      // Originally this code just let the request fail later on, but apparently resuming an
-      // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
-      // segmentation fault.
-      NYPLLOG(@"Aborting request with invalid URL.");
-      [self failDownloadForBook:book];
-      return;
-    }
-    
-    NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
-    
-    self.bookIdentifierToDownloadInfo[book.identifier] =
-      [[NYPLMyBooksDownloadInfo alloc]
-       initWithDownloadProgress:0.0
-       downloadTask:task
-       rightsManagement:NYPLMyBooksDownloadRightsManagementUnknown];
-    
-    self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
-    
-    [task resume];
-    
-    [[NYPLBookRegistry sharedRegistry]
-     addBook:book
-     location:nil
-     state:NYPLBookStateDownloading];
-    
-    // It is important to issue this immediately because a previous download may have left the
-    // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
-    // the user. As such, calling |broadcastUpdate| is not appropriate due to the delay.
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
-     object:self];
 
   } else {
     [NYPLSettingsAccountViewController

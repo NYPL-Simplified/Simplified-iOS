@@ -90,8 +90,7 @@
 
 - (void)didSelectReturnForBookDetailView:(NYPLBookDetailView *const)detailView
 {
-  [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-   removeCompletedDownloadForBookIdentifier:detailView.book.identifier];
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] returnBookWithIdentifier:detailView.book.identifier];
 }
 
 - (void)didSelectDownloadForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView

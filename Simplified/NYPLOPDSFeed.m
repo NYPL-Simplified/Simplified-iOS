@@ -54,7 +54,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     @throw NSInvalidArgumentException;
   }
   
-  [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data) {
+  [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data, __unused NSURLResponse *response) {
     if(!data) {
       NYPLLOG(@"Failed to retrieve data.");
       NYPLAsyncDispatch(^{handler(nil);});

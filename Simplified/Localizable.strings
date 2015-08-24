@@ -28,6 +28,8 @@
 "Published" = "Published";
 "Publisher" = "Publisher";
 "Read" = "Read"; // present tense
+"ReturnCouldNotBeCompletedFormat" = "The return of %@ could not be completed.";
+"ReturnFailed" = "Return Failed";
 "ReturnNow" = "Return now";
 "Settings" = "Settings";
 "SignOut" = "Sign Out";

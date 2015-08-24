@@ -23,6 +23,9 @@ static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
 // Deletes the downloaded book, but doesn't touch the registry.
 - (void)deleteLocalContentForBookIdentifier:(NSString *)identifier;
 
+// Returns a borrowed book, cancels a held book, or "returns" a kept book.
+- (void)returnBookWithIdentifier:(NSString *)identifier;
+
 // Deletes all local content and silently cancels downloads, but does NOT touch the registry.
 - (void)reset;
 
