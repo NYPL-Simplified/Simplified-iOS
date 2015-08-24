@@ -120,7 +120,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
                                             UIViewAutoresizingFlexibleHeight);
   self.barcodeTextField.font = [UIFont systemFontOfSize:17];
   self.barcodeTextField.placeholder = NSLocalizedString(@"Barcode", nil);
-  self.barcodeTextField.keyboardType = UIKeyboardTypeNumberPad;
+  self.barcodeTextField.keyboardType = UIKeyboardTypeDefault;
   [self.barcodeTextField
    addTarget:self
    action:@selector(textFieldsDidChange)
@@ -131,7 +131,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
                                         UIViewAutoresizingFlexibleHeight);
   self.PINTextField.font = [UIFont systemFontOfSize:17];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
-  self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
+  self.PINTextField.keyboardType = UIKeyboardTypeDefault;
   [self.PINTextField
    addTarget:self
    action:@selector(textFieldsDidChange)
