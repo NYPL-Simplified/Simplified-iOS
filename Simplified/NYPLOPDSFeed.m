@@ -88,6 +88,13 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     return nil;
   }
   
+  // Sometimes we get back JUST an entry, and in that case we just want to construct a feed with
+  // nothing set other than the entry.
+  if ([feedXML.name isEqual:@"entry"]) {
+    self.entries = @[[[NYPLOPDSEntry alloc] initWithXML:feedXML]];
+    return self;
+  }
+  
   if(!((self.identifier = [feedXML firstChildWithName:@"id"].value))) {
     NYPLLOG(@"Missing required 'id' element.");
     return nil;
