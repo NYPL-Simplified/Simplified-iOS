@@ -1,3 +1,3 @@
-@interface NYPLSettingsCreditsViewController : UIViewController
+@interface NYPLSettingsCreditsViewController : UIViewController <UIWebViewDelegate>
 
 @end
