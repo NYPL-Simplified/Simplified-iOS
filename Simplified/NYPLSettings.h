@@ -13,6 +13,7 @@ typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
 @property (atomic) BOOL preloadContentCompleted;
 @property (atomic) NSURL *eulaURL;
 @property (atomic) NSURL *privacyPolicyURL;
+@property (atomic) NSURL *acknowledgmentsURL;
 
 // Leaving this set to |NYPLSettingsRenderingEngineAutomatic| (the default) is *highly* recommended.
 @property (atomic) NYPLSettingsRenderingEngine renderingEngine;

@@ -14,6 +14,8 @@ static NSString *const eulaURLKey = @"NYPLSettingsEULAURL";
 
 static NSString *const privacyPolicyURLKey = @"NYPLSettingsPrivacyPolicyURL";
 
+static NSString *const acknowledgmentsURLKey = @"NYPLSettingsAcknowledgmentsURL";
+
 static NSString *const preloadContentCompletedKey = @"NYPLSettingsPreloadContentCompleted";
 
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
@@ -74,6 +76,11 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 - (NSURL *)privacyPolicyURL
 {
   return [[NSUserDefaults standardUserDefaults] URLForKey:privacyPolicyURLKey];
+}
+
+- (NSURL *) acknowledgmentsURL
+{
+  return [[NSUserDefaults standardUserDefaults] URLForKey:acknowledgmentsURLKey];
 }
 
 - (BOOL)preloadContentCompleted
@@ -233,6 +240,19 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   if([privacyPolicyURL isEqual:self.privacyPolicyURL]) return;
   
   [[NSUserDefaults standardUserDefaults] setURL:privacyPolicyURL forKey:privacyPolicyURLKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLSettingsDidChangeNotification
+   object:self];
+}
+
+- (void)setAcknowledgmentsURL:(NSURL *)acknowledgmentsURL
+{
+  if(!acknowledgmentsURL) return;
+  if([acknowledgmentsURL isEqual:self.acknowledgmentsURL]) return;
+  
+  [[NSUserDefaults standardUserDefaults] setURL:acknowledgmentsURL forKey:acknowledgmentsURLKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
   
   [[NSNotificationCenter defaultCenter]
