@@ -153,14 +153,15 @@ didFinishDownloadingToURL:(NSURL *const)location
   switch([self downloadInfoForBookIdentifier:book.identifier].rightsManagement) {
     case NYPLMyBooksDownloadRightsManagementUnknown:
       @throw NSInternalInconsistencyException;
+          
     case NYPLMyBooksDownloadRightsManagementAdobe:
-      // FIXME: Temporary test code!
 #if defined(FEATURE_DRM_CONNECTOR)
       [[NYPLADEPT sharedInstance]
        fulfillWithACSMData:[NSData dataWithContentsOfURL:location]
        tag:book.identifier];
 #endif
       break;
+          
     case NYPLMyBooksDownloadRightsManagementNone: {
       NSError *error = nil;
       
@@ -265,13 +266,13 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)deleteLocalContentForBookIdentifier:(NSString *)identifier
 {
-  if(![[NSFileManager defaultManager]
+    if(![[NSFileManager defaultManager]
        removeItemAtURL:[self fileURLForBookIndentifier:identifier]
-       error:NULL]){
-    NYPLLOG(@"Failed to remove local content for download.");
+         error:NULL]){
+      NYPLLOG(@"Failed to remove local content for download.");
+    }
   }
-}
-
+  
 - (void)returnBookWithIdentifier:(NSString *)identifier
 {
   // TODO: Make this handle "kept" and borrowed books as well
@@ -290,7 +291,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
           cancelButtonTitle:nil
           otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
          show];
-      }
+}
     }];
   }
 }
@@ -410,10 +411,10 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
       
       self.bookIdentifierToDownloadInfo[book.identifier] =
-      [[NYPLMyBooksDownloadInfo alloc]
-       initWithDownloadProgress:0.0
-       downloadTask:task
-       rightsManagement:NYPLMyBooksDownloadRightsManagementUnknown];
+        [[NYPLMyBooksDownloadInfo alloc]
+         initWithDownloadProgress:0.0
+         downloadTask:task
+         rightsManagement:NYPLMyBooksDownloadRightsManagementUnknown];
       
       self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
       
