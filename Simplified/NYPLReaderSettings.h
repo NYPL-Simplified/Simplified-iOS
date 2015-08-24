@@ -20,6 +20,11 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontSize) {
   NYPLReaderSettingsFontSizeLargest
 };
 
+typedef NS_ENUM(NSInteger, NYPLReaderSettingsMediaOverlaysEnableClick) {
+  NYPLReaderSettingsMediaOverlaysEnableClickTrue,
+  NYPLReaderSettingsMediaOverlaysEnableClickFalse
+};
+
 static NSString *const NYPLReaderSettingsColorSchemeDidChangeNotification =
   @"NYPLReaderSettingsColorSchemeDidChange";
 
@@ -28,6 +33,12 @@ static NSString *const NYPLReaderSettingsFontFaceDidChangeNotification =
 
 static NSString *const NYPLReaderSettingsFontSizeDidChangeNotification =
   @"NYPLReaderSettingsFontSizeDidChange";
+
+static NSString *const NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification =
+@"NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification";
+
+static NSString *const NYPLReaderSettingsMediaOverlayPlaybackToggleDidChangeNotification =
+@"NYPLReaderSettingsMediaOverlayPlaybackToggleDidChangeNotification";
 
 // Returns |YES| if output was set properly, else |NO| due to already being at the smallest size.
 BOOL NYPLReaderSettingsDecreasedFontSize(NYPLReaderSettingsFontSize input,
@@ -45,7 +56,11 @@ BOOL NYPLReaderSettingsIncreasedFontSize(NYPLReaderSettingsFontSize input,
 @property (nonatomic) NYPLReaderSettingsColorScheme colorScheme;
 @property (nonatomic) NYPLReaderSettingsFontFace fontFace;
 @property (nonatomic) NYPLReaderSettingsFontSize fontSize;
+@property (nonatomic) NYPLReaderSettingsMediaOverlaysEnableClick mediaOverlaysEnableClick;
 @property (nonatomic, readonly) UIColor *foregroundColor;
+@property (nonatomic) id currentReaderReadiumView;
+
+- (void) toggleMediaOverlayPlayback;
 
 - (void)save;
 

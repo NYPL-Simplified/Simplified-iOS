@@ -14,4 +14,7 @@
                          book:(NYPLBook *)book
                      delegate:(id<NYPLReaderRendererDelegate>)delegate;
 
+- (BOOL) bookHasMediaOverlays;
+- (BOOL) bookHasMediaOverlaysBeingPlayed;
+- (void) applyMediaOverlayPlaybackToggle;
 @end
