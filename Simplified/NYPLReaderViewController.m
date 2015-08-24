@@ -7,6 +7,7 @@
 #import "NYPLRoundedButton.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "NYPLReaderTOCElement.h"
+#import "NYPLReaderSettings.h"
 
 #import "NYPLReaderViewController.h"
 
@@ -166,6 +167,12 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   [self.view addSubview:self.rendererView];
   [self prepareBottomView];
+}
+
+-(void)didMoveToParentViewController:(UIViewController *)parent {
+  if (!parent && [[NYPLReaderSettings sharedSettings].currentReaderReadiumView bookHasMediaOverlaysBeingPlayed]) {
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView applyMediaOverlayPlaybackToggle];
+  }
 }
 
 - (void) prepareBottomView {
@@ -344,6 +351,16 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   [NYPLReaderSettings sharedSettings].fontFace = fontFace;
   
   [self applyCurrentSettings];
+}
+
+-(void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
+      didSelectMediaOverlaysEnableClick:(NYPLReaderSettingsMediaOverlaysEnableClick) mediaOverlaysEnableClick {
+  [NYPLReaderSettings sharedSettings].mediaOverlaysEnableClick = mediaOverlaysEnableClick;
+  [self applyCurrentSettings];
+}
+
+-(void)readerSettingsViewDidSelectMediaOverlayToggle:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView {
+  [[NYPLReaderSettings sharedSettings] toggleMediaOverlayPlayback];
 }
 
 #pragma mark -

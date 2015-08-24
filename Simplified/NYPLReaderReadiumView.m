@@ -8,6 +8,7 @@
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReadium.h"
 #import "UIColor+NYPLColorAdditions.h"
+#import "NYPLLog.h"
 
 #import "NYPLReaderReadiumView.h"
 
@@ -125,6 +126,8 @@ static void generateTOCElements(NSArray *const navigationElements,
   
   self.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
   
+  [NYPLReaderSettings sharedSettings].currentReaderReadiumView = self;
+  
   return self;
 }
 
@@ -147,18 +150,31 @@ static void generateTOCElements(NSArray *const navigationElements,
    selector:@selector(applyCurrentFlowDependentSettings)
    name:NYPLReaderSettingsFontSizeDidChangeNotification
    object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(applyCurrentFlowDependentSettings)
+   name:NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification
+   object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(applyMediaOverlayPlaybackToggle)
+   name:NYPLReaderSettingsMediaOverlayPlaybackToggleDidChangeNotification
+   object:nil];
 }
 
 - (void)applyCurrentFlowDependentSettings
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    [self.webView stringByEvaluatingJavaScriptFromString:
-     [NSString stringWithFormat:
-      @"ReadiumSDK.reader.updateSettings(%@)",
-      [[NSString alloc]
-       initWithData:NYPLJSONDataFromObject([[NYPLReaderSettings sharedSettings]
-                                            readiumSettingsRepresentation])
-       encoding:NSUTF8StringEncoding]]];
+    
+    NSString *const javaScript = [NSString stringWithFormat:
+                                  @"ReadiumSDK.reader.updateSettings(%@)",
+                                  [[NSString alloc]
+                                   initWithData:NYPLJSONDataFromObject([[NYPLReaderSettings sharedSettings]
+                                                                        readiumSettingsRepresentation])
+                                   encoding:NSUTF8StringEncoding]];
+    [self.webView stringByEvaluatingJavaScriptFromString: javaScript];
   }];
 }
 
@@ -181,6 +197,26 @@ static void generateTOCElements(NSArray *const navigationElements,
     [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
     
     self.webView.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
+  }];
+}
+
+- (void) applyMediaOverlayPlaybackToggle {
+  
+  NSString *isPlaying = [self.webView stringByEvaluatingJavaScriptFromString:
+                  @"ReadiumSDK.reader.isPlayingMediaOverlay()"];
+  
+  NSString *isAvailable = [self.webView stringByEvaluatingJavaScriptFromString:
+                    @"ReadiumSDK.reader.isMediaOverlayAvailable()"];
+  
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    NSString *javaScript;
+    if (isPlaying.length == 0 && [isAvailable containsString:@"true"]) {
+      javaScript = [NSString stringWithFormat: @"ReadiumSDK.reader.playMediaOverlay()"];
+    }
+    else {
+      javaScript = [NSString stringWithFormat: @"ReadiumSDK.reader.pauseMediaOverlay()"];
+    }
+    [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
   }];
 }
 
@@ -257,7 +293,9 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     } else if([function isEqualToString:@"media-overlay-status-changed"]) {
       NSDictionary *const dict = argument(request.URL);
       self.mediaOverlayIsPlaying = ((NSNumber *) dict[@"isPlaying"]).boolValue;
+      [self mediaOverlayStatusChangedWithDictionary:argument(request.URL)];
     } else if([function isEqualToString:@"settings-applied"]) {
+      NSLog(@"");
       // Do nothing.
     } else {
       NYPLLOG(@"Ignoring unknown readium function.");
@@ -269,6 +307,10 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 }
 
 #pragma mark -
+- (void) mediaOverlayStatusChangedWithDictionary: (NSDictionary *) dictionary {  
+  if (dictionary) {
+  }
+}
 
 - (void)readiumInitialize
 {
@@ -487,5 +529,31 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     navigationElement.sourceHref]];
 }
 
+- (BOOL) bookHasMediaOverlays {
+  NSString *isAvailable = [self.webView stringByEvaluatingJavaScriptFromString:
+                           @"ReadiumSDK.reader.isMediaOverlayAvailable()"];
+  if ( [isAvailable containsString:@"true"]) {
+    return YES;
+  }
+  else {
+    return NO;
+  }
+}
+
+- (BOOL) bookHasMediaOverlaysBeingPlayed {
+  
+  if (![self bookHasMediaOverlays]) {
+    return NO;
+  }
+  
+  NSString *isPlaying = [self.webView stringByEvaluatingJavaScriptFromString:
+                         @"ReadiumSDK.reader.isPlayingMediaOverlay()"];
+  if ( isPlaying.length == 0) {
+    return NO;
+  }
+  else {
+    return YES;
+  }
+}
 
 @end

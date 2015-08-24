@@ -1,6 +1,7 @@
 #import "NYPLConfiguration.h"
 
 #import "NYPLReaderSettingsView.h"
+#import "NYPLReaderReadiumView.h"
 
 @interface NYPLReaderSettingsView ()
 
@@ -18,6 +19,8 @@
 @property (nonatomic) UIButton *serifButton;
 @property (nonatomic) UIButton *openDyslexicButton;
 @property (nonatomic) UIButton *whiteOnBlackButton;
+@property (nonatomic) UIButton *mediaOverlayButton;
+@property (nonatomic) BOOL mediaOverlayToggle;
 
 @end
 
@@ -171,6 +174,38 @@
   self.brightnessView = [[UIView alloc] init];
   [self addSubview:self.brightnessView];
   
+  self.mediaOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
+  self.mediaOverlayButton.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.mediaOverlayToggle = NO;
+  
+  [self.mediaOverlayButton setImage:  [[UIImage imageNamed:@"IconButtonVolumeOff"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+  
+  [self.mediaOverlayButton addTarget:self
+                              action:@selector(didSelectMediaOverlayToggle)
+                    forControlEvents:UIControlEventTouchUpInside];
+  [self.brightnessView addSubview:self.mediaOverlayButton];
+  
+  if ([NYPLReaderSettings sharedSettings].currentReaderReadiumView) {
+    
+    if ([[NYPLReaderSettings sharedSettings].currentReaderReadiumView bookHasMediaOverlays]) {
+      self.mediaOverlayButton.userInteractionEnabled = YES;
+      self.mediaOverlayButton.alpha = 1.0;
+      
+      if ([[NYPLReaderSettings sharedSettings].currentReaderReadiumView bookHasMediaOverlaysBeingPlayed]) {
+        self.mediaOverlayToggle = YES;
+        [self.mediaOverlayButton setImage:  [[UIImage imageNamed:@"IconButtonVolumeOn"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+      }
+      else {
+        self.mediaOverlayToggle = NO;
+        [self.mediaOverlayButton setImage:  [[UIImage imageNamed:@"IconButtonVolumeOff"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+      }
+    }
+    else {
+      self.mediaOverlayButton.userInteractionEnabled = NO;
+      self.mediaOverlayButton.alpha = 0.3;
+    }
+  }
+  
   self.brightnessLowImageView = [[UIImageView alloc]
                                  initWithImage:[[UIImage imageNamed:@"BrightnessLow"]
                                                 imageWithRenderingMode:
@@ -216,9 +251,9 @@
 {
   CGFloat const padding = 20;
   CGFloat const innerWidth = CGRectGetWidth(self.frame) - padding * 2;
-
+  
   self.sansButton.frame = CGRectMake(padding,
-                                     0,
+                                        0,
                                      round(innerWidth / 3.0),
                                      CGRectGetHeight(self.frame) / 4.0);
   
@@ -263,15 +298,20 @@
                                          innerWidth,
                                          CGRectGetHeight(self.frame) / 4.0);
   
+  self.mediaOverlayButton.frame =  CGRectMake( (self.brightnessView.frame.size.width / 4 ) - 36 - (padding * 1.25),
+                                              10,
+                                              36,
+                                              32);
+  
   self.brightnessLowImageView.frame =
-    CGRectMake(padding,
+    CGRectMake(CGRectGetMaxX(self.mediaOverlayButton.frame) + (padding / 2),
                (CGRectGetHeight(self.brightnessView.frame) / 2 -
                 CGRectGetHeight(self.brightnessLowImageView.frame) / 2),
                CGRectGetWidth(self.brightnessLowImageView.frame),
                CGRectGetHeight(self.brightnessLowImageView.frame));
   
   self.brightnessHighImageView.frame =
-    CGRectMake((CGRectGetWidth(self.brightnessView.frame) - padding -
+    CGRectMake((CGRectGetWidth(self.brightnessView.frame) - 0  -
                 CGRectGetWidth(self.brightnessHighImageView.frame)),
                (CGRectGetHeight(self.brightnessView.frame) / 2 -
                 CGRectGetHeight(self.brightnessHighImageView.frame) / 2),
@@ -282,12 +322,11 @@
   CGFloat const sliderPadding = 5;
   CGFloat const brightnessSliderWidth =
     ((CGRectGetMinX(self.brightnessHighImageView.frame) -
-      CGRectGetWidth(self.brightnessView.frame) / 2)
+      CGRectGetWidth(self.brightnessView.frame) / 1.65)
      * 2
      - sliderPadding * 2);
   
-  self.brightnessSlider.frame = CGRectMake((CGRectGetWidth(self.brightnessView.frame) / 2 -
-                                            brightnessSliderWidth / 2),
+  self.brightnessSlider.frame = CGRectMake(CGRectGetMaxX(self.brightnessLowImageView.frame) + (padding / 2),
                                            (CGRectGetHeight(self.brightnessView.frame) / 2 -
                                             CGRectGetHeight(self.brightnessSlider.frame) / 2),
                                            brightnessSliderWidth,
@@ -400,6 +439,9 @@
   
   self.backgroundColor = backgroundColor;
   
+  self.mediaOverlayButton.backgroundColor = backgroundColor;
+  self.mediaOverlayButton.tintColor = foregroundColor;
+  
   [self.brightnessHighImageView setTintColor:foregroundColor];
   [self.brightnessLowImageView setTintColor:foregroundColor];
   
@@ -480,6 +522,20 @@
   self.fontFace = NYPLReaderSettingsFontFaceOpenDyslexic;
   
   [self.delegate readerSettingsView:self didSelectFontFace:self.fontFace];
+}
+
+- (void)didSelectMediaOverlayToggle
+{
+  [self.delegate readerSettingsViewDidSelectMediaOverlayToggle:self];
+  
+  if (self.mediaOverlayToggle) {
+    self.mediaOverlayToggle = NO;
+    [self.mediaOverlayButton setImage:  [[UIImage imageNamed:@"IconButtonVolumeOff"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+  }
+  else {
+    self.mediaOverlayToggle = YES;
+    [self.mediaOverlayButton setImage:  [[UIImage imageNamed:@"IconButtonVolumeOn"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+  }
 }
 
 - (void)didChangeBrightness
@@ -636,6 +692,16 @@
                                                    CGRectGetMinY(self.increaseButton.frame),
                                                    thin,
                                                    CGRectGetHeight(self.increaseButton.frame))];
+    [line setBackgroundColor:[UIColor lightGrayColor]];
+    [self addSubview:line];
+  }
+  
+  {
+    UIView *const line = [[UIView alloc]
+                          initWithFrame:CGRectMake(self.brightnessView.frame.size.width / 4,
+                                                   CGRectGetMinY(self.brightnessView.frame),
+                                                   thin,
+                                                   CGRectGetHeight(self.brightnessView.frame))];
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }

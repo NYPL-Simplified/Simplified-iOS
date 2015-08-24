@@ -128,6 +128,26 @@ NSString *fontSizeToString(NYPLReaderSettingsFontSize const fontSize)
   }
 }
 
+BOOL mediaOverlaysEnableClickToBOOL(NSString * mediaClickOverlayAlwaysEnable)
+{
+  if ([mediaClickOverlayAlwaysEnable isEqualToString:@"true"]) {
+    return YES;
+  }
+  else {
+    return NO;
+  }
+}
+
+NSString * mediaOverlaysEnableClickToString(BOOL mediaClickOverlayAlwaysEnable)
+{
+  if (mediaClickOverlayAlwaysEnable) {
+    return @"true";
+  }
+  else {
+    return @"false";
+  }
+}
+
 NYPLReaderSettingsFontSize fontSizeFromString(NSString *const string)
 {
   NSNumber *const fontSizeNumber = @{@"smallest": @(NYPLReaderSettingsFontSizeSmallest),
@@ -148,6 +168,7 @@ NYPLReaderSettingsFontSize fontSizeFromString(NSString *const string)
 static NSString *const ColorSchemeKey = @"colorScheme";
 static NSString *const FontFaceKey = @"fontFace";
 static NSString *const FontSizeKey = @"fontSize";
+static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
 
 @implementation NYPLReaderSettings
 
@@ -187,11 +208,18 @@ static NSString *const FontSizeKey = @"fontSize";
 {
   @synchronized(self) {
     NSData *const savedData = [NSData dataWithContentsOfURL:[self settingsURL]];
-    
     if(!savedData) {
       self.colorScheme = NYPLReaderSettingsColorSchemeBlackOnWhite;
       self.fontFace = NYPLReaderSettingsFontFaceSerif;
       self.fontSize = NYPLReaderSettingsFontSizeNormal;
+      
+      if(UIAccessibilityIsVoiceOverRunning())
+      {
+         self.mediaOverlaysEnableClick = YES;
+      }
+      else {
+         self.mediaOverlaysEnableClick = NO;
+      }
       return;
     }
     
@@ -205,14 +233,18 @@ static NSString *const FontSizeKey = @"fontSize";
     self.colorScheme = colorSchemeFromString(dictionary[ColorSchemeKey]);
     self.fontFace = fontFaceFromString(dictionary[FontFaceKey]);
     self.fontSize = fontSizeFromString(dictionary[FontSizeKey]);
+    self.mediaOverlaysEnableClick = mediaOverlaysEnableClickToBOOL(dictionary[MediaOverlaysEnableClick]);
   }
 }
 
 - (NSDictionary *)dictionaryRepresentation
 {
-  return @{ColorSchemeKey: colorSchemeToString(self.colorScheme),
-           FontFaceKey: fontFaceToString(self.fontFace),
-           FontSizeKey: fontSizeToString(self.fontSize)};
+  NSDictionary *settings = @{ColorSchemeKey: colorSchemeToString(self.colorScheme),
+                             FontFaceKey: fontFaceToString(self.fontFace),
+                             FontSizeKey: fontSizeToString(self.fontSize),
+                             MediaOverlaysEnableClick: mediaOverlaysEnableClickToString(self.mediaOverlaysEnableClick)};
+  
+  return settings;
 }
 
 - (void)save
@@ -290,6 +322,29 @@ static NSString *const FontSizeKey = @"fontSize";
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NYPLReaderSettingsFontSizeDidChangeNotification
+     object:weakSelf];
+  }];
+}
+
+-(void)setMediaOverlaysEnableClick:(NYPLReaderSettingsMediaOverlaysEnableClick)mediaOverlaysEnableClick {
+    _mediaOverlaysEnableClick = mediaOverlaysEnableClick;
+    __weak NYPLReaderSettings const *weakSelf = self;
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+      [[NSNotificationCenter defaultCenter]
+       postNotificationName:NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification
+       object:weakSelf];
+    }];
+}
+
+-(void)setCurrentReaderReadiumView:(id)currentReaderReadiumView {
+  _currentReaderReadiumView = currentReaderReadiumView;
+}
+
+- (void) toggleMediaOverlayPlayback {
+  __weak NYPLReaderSettings const *weakSelf = self;
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLReaderSettingsMediaOverlayPlaybackToggleDidChangeNotification
      object:weakSelf];
   }];
 }
@@ -373,10 +428,11 @@ static NSString *const FontSizeKey = @"fontSize";
       baseSize = 145;
       break;
   }
-  
+
   return @{@"columnGap": @20,
            @"fontSize": @(baseSize * scalingFactor),
-           @"syntheticSpread": @NO};
+           @"syntheticSpread": @NO,
+           @"mediaOverlaysEnableClick": self.mediaOverlaysEnableClick ? @YES: @NO};
 }
 
 @end
