@@ -329,7 +329,6 @@ OK:
   @synchronized (self) {
     NSArray *booksToPreload = [[NYPLSettings sharedSettings] booksToPreload];
     for (NYPLBook *book in booksToPreload) {
-      NSLog(@"preloadContentWithHandler book: %@", book.identifier);
       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForPreloadedBook:book];
     }
     [[NYPLSettings sharedSettings] setPreloadContentCompleted:YES];
