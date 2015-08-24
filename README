@@ -1,13 +1,32 @@
+
 To build this project:
 
-1. 'git submodule init'
-2. 'git submodule update'
-3. Open "Simplified.xcodeproj" and build as normal.
+1. 'git clone https://github.com/NYPL/Simplified-iOS.git && cd Simplified-iOS && git submodule update --init --recursive'
+2. Open "Simplified.xcodeproj" and build as normal.
 
 
-To build this project with Adobe RMSDK support:
 
-1. Copy the RMSDK root folder to $(SRCROOT)/adobe-rmsdk
+= Simplified with Adobe DRM support =
+
+
+== Building the RMSDK ==
+
+1. Copy the RMSDK root folder (DRM_Connector_Prerelease) to Simplified-iOS/adobe-rmsdk
+2. In RMSDK_User_Manual(obj).pdf:
+    a. Follow instructions to build OpenSSL (12.1)
+    b. Follow instructions to build libcurl (12.3)
+3. Build libdp:
+    a. 'cd adobe-rmsdk/build/sdk'
+    b. 'ant book2pngios.objonly'
+        This will build libdp for Release-iphoneos. To build for other
+        configurations (iphonesimulator, Debug), edit build.xml. In '<target name="book2pngios.objonly">',
+        change values of all '<arg value="Release"/>' and '<arg value="iphoneos"/>'.'
+
+
+== Building Simplified ==
+
 2. Add the configuration file Simplified+RMSDK.xcconfig to the target Simplified.
 3. Add the configuration file RDServices+RMSDK.xcconfig to the target RDServices.
 4. Add the configuration file ePub3+RMSDK.xcconfig to the targets ePub3 and ePub3-iOS.
+5. Add libADEPT.a to the "Link Binary With Libraries" section of the target Simplified.
+6. Build.
