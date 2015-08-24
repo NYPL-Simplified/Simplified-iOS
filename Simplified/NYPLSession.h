@@ -5,7 +5,7 @@
 
 + (NYPLSession *)sharedSession;
 
-- (void)withURL:(NSURL *)URL completionHandler:(void (^)(NSData *data))handler;
+- (void)withURL:(NSURL *)URL completionHandler:(void (^)(NSData *data, NSURLResponse *response))handler;
 
 - (void)withURLs:(NSSet *)URLs handler:(void (^)(NSDictionary *URLsToDataOrNull))handler;
 

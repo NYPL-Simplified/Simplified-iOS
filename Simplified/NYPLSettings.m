@@ -131,6 +131,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
     NYPLBook *book = [[NYPLBook alloc] initWithAcquisition:[[NYPLBookAcquisition alloc] initWithBorrow:nil
                                                                                                generic:bookBundleURL
                                                                                             openAccess:nil
+                                                                                                revoke:nil
                                                                                                 sample:nil]
                                              authorStrings:@[bookAuthor]
                                         availabilityStatus:NYPLBookAvailabilityStatusAvailable

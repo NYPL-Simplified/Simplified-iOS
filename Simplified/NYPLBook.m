@@ -50,7 +50,7 @@ static NSString *const UpdatedKey = @"updated";
     return nil;
   }
   
-  NSURL *borrow, *generic, *openAccess, *sample, *image, *imageThumbnail = nil;
+  NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail = nil;
   
   NYPLBookAvailabilityStatus availabilityStatus = NYPLBookAvailabilityStatusUnknown;
   NSInteger availableCopies = 0;
@@ -84,6 +84,10 @@ static NSString *const UpdatedKey = @"updated";
       openAccess = link.href;
       continue;
     }
+    if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionRevoke]) {
+      revoke = link.href;
+      continue;
+    }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionSample]) {
       sample = link.href;
       continue;
@@ -103,6 +107,7 @@ static NSString *const UpdatedKey = @"updated";
                                initWithBorrow:borrow
                                generic:generic
                                openAccess:openAccess
+                               revoke:revoke
                                sample:sample]
           authorStrings:entry.authorStrings
           availabilityStatus: availabilityStatus

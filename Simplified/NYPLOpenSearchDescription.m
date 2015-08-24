@@ -22,7 +22,7 @@ completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
   
   [[NYPLSession sharedSession]
    withURL:URL
-   completionHandler:^(NSData *const data) {
+   completionHandler:^(NSData *const data, __unused NSURLResponse *response) {
      if(!data) {
        NYPLLOG(@"Failed to retrieve data.");
        NYPLAsyncDispatch(^{handler(nil);});
