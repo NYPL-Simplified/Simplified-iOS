@@ -467,7 +467,6 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   // copying the preloaded content book from the application's bundle to it's destination
   NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.generic];
-  NSLog(@"request: %@", request);
   [[NYPLBookRegistry sharedRegistry]
    addBook:book
    location:nil
