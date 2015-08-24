@@ -152,14 +152,15 @@ didFinishDownloadingToURL:(NSURL *const)location
   switch([self downloadInfoForBookIdentifier:book.identifier].rightsManagement) {
     case NYPLMyBooksDownloadRightsManagementUnknown:
       @throw NSInternalInconsistencyException;
+          
     case NYPLMyBooksDownloadRightsManagementAdobe:
-      // FIXME: Temporary test code!
 #if defined(FEATURE_DRM_CONNECTOR)
       [[NYPLADEPT sharedInstance]
        fulfillWithACSMData:[NSData dataWithContentsOfURL:location]
        tag:book.identifier];
 #endif
       break;
+          
     case NYPLMyBooksDownloadRightsManagementNone: {
       NSError *error = nil;
       
@@ -367,7 +368,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       }];
     } else {
       // Actually download the book
-      NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.generic];
+      NSURLRequest *const request = [NSURLRequest requestWithURL:[book.acquisition preferredURL]];
       
       if(!request.URL) {
         // Originally this code just let the request fail later on, but apparently resuming an
@@ -380,6 +381,11 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       
       NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
       
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+        [[NYPLMyBooksDownloadInfo alloc]
+         initWithDownloadProgress:0.0
+         downloadTask:task
+         rightsManagement:NYPLMyBooksDownloadRightsManagementUnknown];
       self.bookIdentifierToDownloadProgress[book.identifier] = @0.0;
       self.bookIdentifierToDownloadTask[book.identifier] = task;
       self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
@@ -398,41 +404,6 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
        postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
        object:self];
     }
-
-    NSURLRequest *const request = [NSURLRequest requestWithURL:[book.acquisition preferredURL]];
-    
-    if(!request.URL) {
-      // Originally this code just let the request fail later on, but apparently resuming an
-      // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
-      // segmentation fault.
-      NYPLLOG(@"Aborting request with invalid URL.");
-      [self failDownloadForBook:book];
-      return;
-    }
-    
-    NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
-    
-    self.bookIdentifierToDownloadInfo[book.identifier] =
-      [[NYPLMyBooksDownloadInfo alloc]
-       initWithDownloadProgress:0.0
-       downloadTask:task
-       rightsManagement:NYPLMyBooksDownloadRightsManagementUnknown];
-    
-    self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
-    
-    [task resume];
-    
-    [[NYPLBookRegistry sharedRegistry]
-     addBook:book
-     location:nil
-     state:NYPLBookStateDownloading];
-    
-    // It is important to issue this immediately because a previous download may have left the
-    // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
-    // the user. As such, calling |broadcastUpdate| is not appropriate due to the delay.
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
-     object:self];
 
   } else {
     [NYPLSettingsAccountViewController

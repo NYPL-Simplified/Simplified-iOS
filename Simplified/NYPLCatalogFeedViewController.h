@@ -6,7 +6,6 @@
 completionHandler:(UIViewController *(^)(NYPLRemoteViewController *remoteViewController,
                                          NSData *data))handler NS_UNAVAILABLE;
 
-// FIXME: This should take a title as well.
 - (instancetype)initWithURL:(NSURL *)URL;
 - (void) reloadCatalogue;
 
