@@ -35,7 +35,7 @@ static NSString *const StateKey = @"state";
   // If the book availability indicates that the book is held, make sure the state
   // reflects that. Otherwise, make sure it's not in the Holding state.
   // If the status of the book is unknown, don't override it in either direction.
-  if(book.availabilityStatus & (NYPLBookAvailabilityStatusUnavailable | NYPLBookAvailabilityStatusReserved)) {
+  if(book.availabilityStatus & (NYPLBookAvailabilityStatusReserved | NYPLBookAvailabilityStatusReady)) {
     self.state = NYPLBookStateHolding;
   } else {
     if (!((NYPLBookStateDownloadFailed |

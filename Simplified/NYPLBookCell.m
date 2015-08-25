@@ -115,7 +115,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                         forIndexPath:indexPath];
       cell.book = book;
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
-      if(book.availabilityStatus == NYPLBookAvailabilityStatusReserved) {
+      if(book.availabilityStatus == NYPLBookAvailabilityStatusReady) {
         cell.state = NYPLBookNormalCellStateHoldingFOQ;
       } else {
         cell.state = NYPLBookNormalCellStateHolding;

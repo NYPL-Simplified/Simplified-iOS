@@ -257,26 +257,32 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)deleteLocalContentForBookIdentifier:(NSString *)identifier
 {
-    if(![[NSFileManager defaultManager]
-       removeItemAtURL:[self fileURLForBookIndentifier:identifier]
-         error:NULL]){
-      NYPLLOG(@"Failed to remove local content for download.");
-    }
+  if(![[NSFileManager defaultManager]
+     removeItemAtURL:[self fileURLForBookIndentifier:identifier]
+       error:NULL]){
+    NYPLLOG(@"Failed to remove local content for download.");
   }
+}
   
 - (void)returnBookWithIdentifier:(NSString *)identifier
 {
-  // TODO: Make this handle "kept" and borrowed books as well
+  // TODO: Make this handle borrowed books as well
   NYPLBook *book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
   NSString *bookTitle = book.title;
-  if(book.availabilityStatus & (NYPLBookAvailabilityStatusReserved | NYPLBookAvailabilityStatusUnavailable)) {
+  NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
+  BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
+  BOOL openAccess = (downloaded && !book.availableUntil) || book.acquisition.openAccess;
+  if(book.availabilityStatus & (NYPLBookAvailabilityStatusReserved | NYPLBookAvailabilityStatusUnavailable) || openAccess) {
     [[NYPLSession sharedSession] withURL:book.acquisition.revoke completionHandler:^(__unused NSData *data, NSURLResponse *response) {
       NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
       if (httpResponse.statusCode == 200) {
         [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
+        if(downloaded) {
+          [self deleteLocalContentForBookIdentifier:identifier];
+        }
       } else {
         [[NYPLAlertView alertWithTitle:@"ReturnFailed" message:@"ReturnCouldNotBeCompletedFormat", bookTitle] show];
-}
+      }
     }];
   }
 }
@@ -371,7 +377,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
          location:nil
          state:NYPLBookStateDownloadNeeded];
         
-        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+        if(book.availabilityStatus & (NYPLBookAvailabilityStatusAvailable | NYPLBookAvailabilityStatusReady)) {
+          [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+        }
       }];
     } else {
       // Actually download the book
@@ -595,21 +603,21 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 - (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didFinishDownload:(BOOL)success toURL:(NSURL *)URL fulfillmentID:(__attribute((unused)) NSString *)fulfillmentID isReturnable:(__attribute((unused)) BOOL)isReturnable rightsData:(NSData *)rightsData tag:(NSString *)tag error:(__attribute__((unused)) NSError *)error
 {
   NYPLBook *const book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:tag];
-  
-  if (success) {
-    [[NSFileManager defaultManager]
-     removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
-     error:NULL];
 
-    // This needs to be a copy else the Adept connector will explode when it tries to delete the
-    // temporary file.
+  if (success) {
+  [[NSFileManager defaultManager]
+   removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
+   error:NULL];
+
+  // This needs to be a copy else the Adept connector will explode when it tries to delete the
+  // temporary file.
     success = [[NSFileManager defaultManager]
-                copyItemAtURL:URL
-                toURL:[self fileURLForBookIndentifier:book.identifier]
+                        copyItemAtURL:URL
+                        toURL:[self fileURLForBookIndentifier:book.identifier]
                 error:NULL];
   }
 
-  if (!success) {
+  if(!success) {
     [self failDownloadForBook:book];
     return;
   }
@@ -628,10 +636,10 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
   [[NYPLBookRegistry sharedRegistry]
    setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
-  
+
   [self broadcastUpdate];
 }
-
+  
 - (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didCancelDownloadWithTag:(NSString *)tag
 {
    [[NYPLBookRegistry sharedRegistry]
