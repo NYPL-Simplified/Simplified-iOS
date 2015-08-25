@@ -103,8 +103,6 @@
 {
   _state = state;
   
-  // TODO: These strings must be localized!
-  
   switch(state) {
     case NYPLBookDetailNormalViewStateCanBorrow:
       self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerAvailableToBorrowTitle", nil);
