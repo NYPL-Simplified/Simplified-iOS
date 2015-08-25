@@ -594,8 +594,6 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didFinishDownload:(BOOL)success toURL:(NSURL *)URL fulfillmentID:(__attribute((unused)) NSString *)fulfillmentID isReturnable:(__attribute((unused)) BOOL)isReturnable rightsData:(NSData *)rightsData tag:(NSString *)tag error:(__attribute__((unused)) NSError *)error
 {
-  // FIXME: CODE DUPLICATION!
-
   NYPLBook *const book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:tag];
   
   if (success) {
@@ -616,7 +614,12 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     return;
   }
 
-  // FIXME: We only know to put it here beacuse of what part of the connector example code assumes.
+  //
+  // The rights data are stored in {book_filename}_rights.xml,
+  // alongside with the book because Readium+DRM expect this when
+  // opening the EPUB 3.
+  // See Container::Open(const string& path) in container.cpp.
+  //
   if(![rightsData writeToFile:[[[self fileURLForBookIndentifier:book.identifier] path]
                                stringByAppendingString:@"_rights.xml"]
                    atomically:YES]) {
