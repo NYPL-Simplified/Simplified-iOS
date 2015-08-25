@@ -53,12 +53,12 @@
 {
   NSTimeInterval seconds = [self timeIntervalSinceDate:[NSDate date]];
   seconds = seconds > 0 ? seconds : 0;
-  NSInteger minutes = seconds / 60;
-  NSInteger hours = minutes / 60;
-  NSInteger days = ceil((float)hours / 24.f);
-  NSInteger weeks = days / 7;
-  NSInteger months = days / 30;
-  NSInteger years = days / 365;
+  long minutes = seconds / 60;
+  long hours = minutes / 60;
+  long days = ceil((float)hours / 24.f);
+  long weeks = days / 7;
+  long months = days / 30;
+  long years = days / 365;
   
   if(years > 0) {
     return [NSString stringWithFormat:@"%ld%@%@", years, names[@"year"], years > 1 ? appendPlural : @""];

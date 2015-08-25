@@ -1,5 +1,6 @@
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
+#import "NYPLAlertView.h"
 #import "NYPLSettingsAccountViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBook.h"
@@ -179,17 +180,7 @@ didFinishDownloadingToURL:(NSURL *const)location
          setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
         [[NYPLBookRegistry sharedRegistry] save];
       } else {
-        [[[UIAlertView alloc]
-          initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
-          message:[NSString stringWithFormat:@"%@ (Error %ld)",
-                   [NSString
-                    stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
-                    book.title],
-                   (long)error.code]
-          delegate:nil
-          cancelButtonTitle:nil
-          otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-         show];
+        [[NYPLAlertView alertWithTitle:@"DownloadFailed" message:@"DownloadCouldNotBeCompletedFormat", book.title] show];
         
         [[NYPLBookRegistry sharedRegistry]
          setState:NYPLBookStateDownloadFailed
@@ -284,13 +275,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       if (httpResponse.statusCode == 200) {
         [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
       } else {
-        [[[UIAlertView alloc]
-          initWithTitle:NSLocalizedString(@"ReturnFailed", nil)
-          message:[NSString stringWithFormat:NSLocalizedString(@"ReturnCouldNotBeCompletedFormat", nil), bookTitle]
-          delegate:nil
-          cancelButtonTitle:nil
-          otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-         show];
+        [[NYPLAlertView alertWithTitle:@"ReturnFailed" message:@"ReturnCouldNotBeCompletedFormat", bookTitle] show];
 }
     }];
   }
@@ -341,14 +326,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    location:nil
    state:NYPLBookStateDownloadFailed];
   
-  [[[UIAlertView alloc]
-    initWithTitle:NSLocalizedString(@"DownloadFailed", nil)
-    message:[NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil),
-             book.title]
-    delegate:nil
-    cancelButtonTitle:nil
-    otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-   show];
+  [[NYPLAlertView alertWithTitle:@"DownloadFailed" message:@"DownloadCouldNotBeCompletedFormat", book.title] show];
   
   [self broadcastUpdate];
 }
@@ -533,11 +511,11 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   self.bookIdentifierOfBookToRemove = identifier;
   
+  NSString *title = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier].title;
   [[[UIAlertView alloc]
     initWithTitle:NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
     message:[NSString stringWithFormat:
-             NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil),
-             [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier].title]
+             NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil), title]
     delegate:self
     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
     otherButtonTitles:NSLocalizedString(@"Delete", nil), nil]
@@ -604,27 +582,26 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [self broadcastUpdate];
 }
 
-- (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didFinishDownloadingToURL:(NSURL *)URL fulfillmentID:(__attribute((unused)) NSString *)fulfillmentID isReturnable:(__attribute((unused)) BOOL)isReturnable rightsData:(NSData *)rightsData tag:(NSString *)tag
+- (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didFinishDownload:(BOOL)success toURL:(NSURL *)URL fulfillmentID:(__attribute((unused)) NSString *)fulfillmentID isReturnable:(__attribute((unused)) BOOL)isReturnable rightsData:(NSData *)rightsData tag:(NSString *)tag error:(__attribute__((unused)) NSError *)error
 {
   // FIXME: CODE DUPLICATION!
 
   NYPLBook *const book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:tag];
+  
+  if (success) {
+    [[NSFileManager defaultManager]
+     removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
+     error:NULL];
 
-  [[NSFileManager defaultManager]
-   removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
-   error:NULL];
+    // This needs to be a copy else the Adept connector will explode when it tries to delete the
+    // temporary file.
+    success = [[NSFileManager defaultManager]
+                copyItemAtURL:URL
+                toURL:[self fileURLForBookIndentifier:book.identifier]
+                error:NULL];
+  }
 
-  NSError *error = nil;
-
-  // This needs to be a copy else the Adept connector will explode when it tries to delete the
-  // temporary file.
-  BOOL const success = [[NSFileManager defaultManager]
-                        copyItemAtURL:URL
-                        toURL:[self fileURLForBookIndentifier:book.identifier]
-                        error:&error];
-
-  if(!success) {
-    NYPLLOG(@"Failed to move temporary file after download completion.");
+  if (!success) {
     [self failDownloadForBook:book];
     return;
   }
@@ -638,7 +615,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
   [[NYPLBookRegistry sharedRegistry]
    setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
-
+  
   [self broadcastUpdate];
 }
   
