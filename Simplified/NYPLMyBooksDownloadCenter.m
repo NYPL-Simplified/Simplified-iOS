@@ -479,8 +479,18 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier
 {
-  if(self.bookIdentifierToDownloadInfo[identifier]) {
-    [[self downloadInfoForBookIdentifier:identifier].downloadTask
+  
+  NYPLMyBooksDownloadInfo *info = [self downloadInfoForBookIdentifier:identifier];
+  
+  if (info) {
+    #if defined(FEATURE_DRM_CONNECTOR)
+      if (info.rightsManagement == NYPLMyBooksDownloadRightsManagementAdobe) {
+          [[NYPLADEPT sharedInstance] cancelFulfillmentWithTag:identifier];
+        return;
+      }
+    #endif
+    
+    [info.downloadTask
      cancelByProducingResumeData:^(__attribute__((unused)) NSData *resumeData) {
        [[NYPLBookRegistry sharedRegistry]
         setState:NYPLBookStateDownloadNeeded forIdentifier:identifier];
@@ -617,6 +627,14 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
   
   [self broadcastUpdate];
+}
+
+- (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didCancelDownloadWithTag:(NSString *)tag
+{
+   [[NYPLBookRegistry sharedRegistry]
+    setState:NYPLBookStateDownloadNeeded forIdentifier:tag];
+   
+   [self broadcastUpdate];
 }
   
 #endif
