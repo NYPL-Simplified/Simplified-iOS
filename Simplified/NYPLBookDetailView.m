@@ -419,7 +419,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
       self.normalView.date = self.book.availableUntil;
-      if (self.book.availabilityStatus == NYPLBookAvailabilityStatusReserved) {
+      if (self.book.availabilityStatus == NYPLBookAvailabilityStatusReady) {
         self.normalView.state = NYPLBookDetailNormalViewStateHoldingFOQ;
       } else {
         self.normalView.state = NYPLBookDetailNormalViewStateHolding;

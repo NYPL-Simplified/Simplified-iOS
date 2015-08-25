@@ -61,6 +61,8 @@ static NSString *const UpdatedKey = @"updated";
         availabilityStatus = NYPLBookAvailabilityStatusAvailable;
       } else if([link.availabilityStatus isEqualToString:@"unavailable"]) {
         availabilityStatus = NYPLBookAvailabilityStatusUnavailable;
+      } else if([link.availabilityStatus isEqualToString:@"ready"]) {
+        availabilityStatus = NYPLBookAvailabilityStatusReady;
       } else if([link.availabilityStatus isEqualToString:@"reserved"]) {
         availabilityStatus = NYPLBookAvailabilityStatusReserved;
       }
@@ -99,6 +101,14 @@ static NSString *const UpdatedKey = @"updated";
     if([link.rel isEqualToString:NYPLOPDSRelationImageThumbnail]) {
       imageThumbnail = link.href;
       continue;
+    }
+  }
+  
+  if(availabilityStatus == NYPLBookAvailabilityStatusUnknown) {
+    if(openAccess || availableCopies > 0) {
+      availabilityStatus = NYPLBookAvailabilityStatusAvailable;
+    } else {
+      availabilityStatus = NYPLBookAvailabilityStatusUnavailable;
     }
   }
   
