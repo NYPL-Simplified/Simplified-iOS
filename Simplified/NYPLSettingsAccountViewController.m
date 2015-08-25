@@ -1,4 +1,5 @@
 #import "NYPLAccount.h"
+#import "NYPLAlertView.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
@@ -446,7 +447,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 {
 #if defined(FEATURE_DRM_CONNECTOR)
   if([NYPLADEPT sharedInstance].workflowsInProgress) {
-    [self showAlertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle" message:@"SettingsAccountViewControllerCannotLogOutMessage"];
+    [[NYPLAlertView alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle" message:@"SettingsAccountViewControllerCannotLogOutMessage"] show];
     return;
   }
   
@@ -503,66 +504,15 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
          [self.PINTextField becomeFirstResponder];
        }
        
-       [self showAlertWithError:error];
+       [self showLoginAlertWithError:error];
      }];
   
   [task resume];
 }
 
-- (void)showAlertWithError:(NSError *)error
+- (void)showLoginAlertWithError:(NSError *)error
 {
-  NSString *title;
-  NSString *message;
-  
-  if ([error.domain isEqual:NSURLErrorDomain]) {
-    title = @"SettingsAccountViewControllerLoginFailed";
-    
-    if (error.code == NSURLErrorNotConnectedToInternet) {
-      message = @"NotConnected";
-    } else if (error.code == NSURLErrorCancelled) {
-      message = @"SettingsAccountViewControllerInvalidCredentials";
-    } else if (error.code == NSURLErrorTimedOut) {
-      message = @"TimedOut";
-    } else {
-      message = @"UnknownRequestError";
-    }
-    
-  }
-  
-#if defined(FEATURE_DRM_CONNECTOR)
-  else if ([error.domain isEqual:NYPLADEPTErrorDomain]) {
-    title = @"SettingsAccountViewControllerLoginFailed";
-    
-    if (error.code == NYPLADEPTErrorAuthenticationFailed) {
-      message = @"SettingsAccountViewControllerInvalidCredentials";
-    } else if (error.code == NYPLADEPTErrorTooManyActivations) {
-      message = @"SettingsAccountViewControllerMessageTooManyActivations";
-    } else {
-      message = @"DeviceAuthorizationError";
-    }
-  }
-#endif
-  
-  if (title.length > 0 || message.length > 0) {
-    [self showAlertWithTitle:title message:message];
-  }
-}
-
-- (void)showAlertWithTitle:(NSString *)title message:(NSString *)message
-{
-  if ([title length] > 0)
-    title = NSLocalizedString(title, nil);
-  
-  if ([message length] > 0)
-    message = NSLocalizedString(message, nil);
-  
-  [[[UIAlertView alloc]
-   initWithTitle:title
-   message:message
-   delegate:nil
-   cancelButtonTitle:nil
-   otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-  show];
+  [[NYPLAlertView alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error] show];
 }
 
 - (void)textFieldsDidChange
@@ -663,7 +613,7 @@ completionHandler:(void (^)())handler
       if(handler) handler();
       [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
     } else {
-      [self showAlertWithError:error];
+      [self showLoginAlertWithError:error];
     }
   }];
 }
