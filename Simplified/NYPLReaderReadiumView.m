@@ -321,7 +321,10 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   }
   
   self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
-  [self calculateBookLength];
+  
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
+    [self calculateBookLength];
+  });
   
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
   dictionary[@"package"] = self.package.dictionary;
@@ -459,6 +462,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 }
 
 -(void) calculateProgressionWithDictionary:(NSDictionary *const)dictionary withHandler:(void(^)(void))handler {
+  if (!self.bookMapDictionary) return;
+  
   NSArray *openPagesArray = [dictionary objectForKey:@"openPages"];
   NSDictionary *openPagesDict = [openPagesArray firstObject];
   
