@@ -187,9 +187,6 @@ didFinishDownloadingToURL:(NSURL *const)location
          forIdentifier:book.identifier];
       }
       
-      [[NSFileManager defaultManager]
-       removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
-       error:NULL];
       break;
     }
   }
