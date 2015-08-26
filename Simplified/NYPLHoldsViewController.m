@@ -178,9 +178,15 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   }
   self.heldBooks = held;
   self.reservedBooks = reserved;
+  [self updateBadge];
 }
 
 #pragma mark -
+
+- (void)updateBadge
+{
+  self.navigationController.tabBarItem.badgeValue = self.reservedBooks.count > 0 ? [@(self.reservedBooks.count) stringValue] : nil;
+}
 
 - (void)didSelectSync
 {
