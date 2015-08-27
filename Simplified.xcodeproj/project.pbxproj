@@ -1277,7 +1277,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
-					"-Werror",
 					"-Wall",
 					"-Wextra",
 					"-Weverything",
@@ -1307,7 +1306,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
-					"-Werror",
 					"-Wall",
 					"-Wextra",
 					"-Weverything",
