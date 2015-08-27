@@ -263,24 +263,29 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
 - (void)returnBookWithIdentifier:(NSString *)identifier
 {
-  // TODO: Make this handle borrowed books as well
+  // TODO: Return using the ADEPT library as well, where applicable
   NYPLBook *book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
   NSString *bookTitle = book.title;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
-  BOOL openAccess = (downloaded && !book.availableUntil) || book.acquisition.openAccess;
-  if(book.availabilityStatus & (NYPLBookAvailabilityStatusReserved | NYPLBookAvailabilityStatusUnavailable) || openAccess) {
+  
+  if(book.acquisition.revoke) {
     [[NYPLSession sharedSession] withURL:book.acquisition.revoke completionHandler:^(__unused NSData *data, NSURLResponse *response) {
       NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-      if (httpResponse.statusCode == 200) {
-        [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
+      if(httpResponse.statusCode == 200) {
         if(downloaded) {
           [self deleteLocalContentForBookIdentifier:identifier];
         }
+        [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
       } else {
         [[NYPLAlertView alertWithTitle:@"ReturnFailed" message:@"ReturnCouldNotBeCompletedFormat", bookTitle] show];
       }
     }];
+  } else {
+    if(downloaded) {
+      [self deleteLocalContentForBookIdentifier:identifier];
+    }
+    [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
   }
 }
 
