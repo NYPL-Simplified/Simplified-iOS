@@ -298,13 +298,22 @@
                                          innerWidth,
                                          CGRectGetHeight(self.frame) / 4.0);
   
-  self.mediaOverlayButton.frame =  CGRectMake( (self.brightnessView.frame.size.width / 4 ) - 36 - (padding * 1.25),
-                                              10,
-                                              36,
-                                              32);
+  
+  CGRect mediaOverlayButtonLineToItsRight = CGRectMake(self.brightnessView.frame.size.width / 4,
+                                                   CGRectGetMinY(self.brightnessView.frame),
+                                                   1,
+                                                   CGRectGetHeight(self.brightnessView.frame));
+  
+  float spaceWidth = mediaOverlayButtonLineToItsRight.origin.x - self.brightnessView.frame.origin.x;
+  
+  CGSize mediaOverlayButtonSize = CGSizeMake(36, 32);
+  self.mediaOverlayButton.frame =  CGRectMake( (spaceWidth / 2) - mediaOverlayButtonSize.width / 2,
+                                              (self.brightnessView.frame.size.height / 2) - (mediaOverlayButtonSize.height / 2),
+                                              mediaOverlayButtonSize.width,
+                                              mediaOverlayButtonSize.height);
   
   self.brightnessLowImageView.frame =
-    CGRectMake(CGRectGetMaxX(self.mediaOverlayButton.frame) + (padding / 2),
+    CGRectMake(mediaOverlayButtonLineToItsRight.origin.x,
                (CGRectGetHeight(self.brightnessView.frame) / 2 -
                 CGRectGetHeight(self.brightnessLowImageView.frame) / 2),
                CGRectGetWidth(self.brightnessLowImageView.frame),
