@@ -10,6 +10,7 @@
 @property (nonatomic, readonly) NYPLBook *book;
 @property (nonatomic, readonly) NYPLBookLocation *location; // nilable
 @property (nonatomic, readonly) NYPLBookState state;
+@property (nonatomic, readonly) NSString *fulfillmentId; // nilable
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
@@ -17,7 +18,8 @@
 // designated initializer
 - (instancetype)initWithBook:(NYPLBook *)book
                     location:(NYPLBookLocation *)location
-                       state:(NYPLBookState)state;
+                       state:(NYPLBookState)state
+               fulfillmentId:(NSString *)fulfillmentId;
 
 // designated initializer
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
@@ -29,5 +31,7 @@
 - (instancetype)recordWithLocation:(NYPLBookLocation *)location;
 
 - (instancetype)recordWithState:(NYPLBookState)state;
+
+- (instancetype)recordWithFulfillmentId:(NSString *)fulfillmentId;
 
 @end

@@ -263,11 +263,21 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
 - (void)returnBookWithIdentifier:(NSString *)identifier
 {
-  // TODO: Return using the ADEPT library as well, where applicable
   NYPLBook *book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
   NSString *bookTitle = book.title;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
+  
+#if defined(FEATURE_DRM_CONNECTOR)
+  NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
+  if(fulfillmentId) {
+    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId completion:^(BOOL success, __unused NSError *error) {
+      if(!success) {
+        NYPLLOG(@"Failed to return loan.");
+      }
+    }];
+  }
+#endif
   
   if(book.acquisition.revoke) {
     [[NYPLSession sharedSession] withURL:book.acquisition.revoke completionHandler:^(__unused NSData *data, NSURLResponse *response) {
@@ -332,7 +342,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [[NYPLBookRegistry sharedRegistry]
    addBook:book
    location:nil
-   state:NYPLBookStateDownloadFailed];
+   state:NYPLBookStateDownloadFailed
+   fulfillmentId:nil];
   
   [[NYPLAlertView alertWithTitle:@"DownloadFailed" message:@"DownloadCouldNotBeCompletedFormat", book.title] show];
   
@@ -377,7 +388,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
         [[NYPLBookRegistry sharedRegistry]
          addBook:book
          location:nil
-         state:NYPLBookStateDownloadNeeded];
+         state:NYPLBookStateDownloadNeeded
+         fulfillmentId:nil];
         
         if(book.availabilityStatus & (NYPLBookAvailabilityStatusAvailable | NYPLBookAvailabilityStatusReady)) {
           [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
@@ -411,7 +423,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       [[NYPLBookRegistry sharedRegistry]
        addBook:book
        location:nil
-       state:NYPLBookStateDownloading];
+       state:NYPLBookStateDownloading
+       fulfillmentId:nil];
       
       // It is important to issue this immediately because a previous download may have left the
       // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
@@ -458,7 +471,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [[NYPLBookRegistry sharedRegistry]
    addBook:book
    location:nil
-   state:NYPLBookStateDownloading];
+   state:NYPLBookStateDownloading
+   fulfillmentId:nil];
   
   NSError *error = nil;
   [[NSFileManager defaultManager] removeItemAtURL:[self fileURLForBookIndentifier:book.identifier] error:nil];
@@ -602,21 +616,21 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [self broadcastUpdate];
 }
 
-- (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didFinishDownload:(BOOL)success toURL:(NSURL *)URL fulfillmentID:(__attribute((unused)) NSString *)fulfillmentID isReturnable:(__attribute((unused)) BOOL)isReturnable rightsData:(NSData *)rightsData tag:(NSString *)tag error:(__attribute__((unused)) NSError *)error
+- (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didFinishDownload:(BOOL)success toURL:(NSURL *)URL fulfillmentID:(NSString *)fulfillmentID isReturnable:(BOOL)isReturnable rightsData:(NSData *)rightsData tag:(NSString *)tag error:(__attribute__((unused)) NSError *)error
 {
   NYPLBook *const book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:tag];
 
-  if (success) {
-  [[NSFileManager defaultManager]
-   removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
-   error:NULL];
+  if(success) {
+    [[NSFileManager defaultManager]
+     removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
+     error:NULL];
 
-  // This needs to be a copy else the Adept connector will explode when it tries to delete the
-  // temporary file.
+    // This needs to be a copy else the Adept connector will explode when it tries to delete the
+    // temporary file.
     success = [[NSFileManager defaultManager]
-                        copyItemAtURL:URL
-                        toURL:[self fileURLForBookIndentifier:book.identifier]
-                error:NULL];
+               copyItemAtURL:URL
+               toURL:[self fileURLForBookIndentifier:book.identifier]
+               error:NULL];
   }
 
   if(!success) {
@@ -638,6 +652,11 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
   [[NYPLBookRegistry sharedRegistry]
    setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+  
+  if(isReturnable && fulfillmentID) {
+    [[NYPLBookRegistry sharedRegistry]
+     setFulfillmentId:fulfillmentID forIdentifier:book.identifier];
+  }
 
   [self broadcastUpdate];
 }

@@ -53,7 +53,8 @@ static NSString *const NYPLBookRegistryDidChangeNotification =
 // state provided must not be |NYPLBookStateUnregistered|.
 - (void)addBook:(NYPLBook *)book
        location:(NYPLBookLocation *)location
-          state:(NYPLBookState)state;
+          state:(NYPLBookState)state
+  fulfillmentId:(NSString *)fulfillmentId;
 
 // This method should be called whenever new book information is retrieved from a server. Doing so
 // ensures that once the user has seen the new information, they will continue to do so when
@@ -76,6 +77,12 @@ static NSString *const NYPLBookRegistryDidChangeNotification =
 
 // Returns the location of a book given its identifier.
 - (NYPLBookLocation *)locationForIdentifier:(NSString *)identifier;
+
+// Sets the fulfillmentId for a book previously registered given its identifier.
+- (void)setFulfillmentId:(NSString *)fulfillmentId forIdentifier:(NSString *)identifier;
+
+// Returns the fulfillmentId of a book given its identifier.
+- (NSString *)fulfillmentIdForIdentifier:(NSString *)identifier;
 
 // Given an identifier, this method removes a book from the registry. Attempting to remove a book
 // that is not present will result in an error being logged.
