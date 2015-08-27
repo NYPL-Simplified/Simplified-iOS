@@ -239,6 +239,13 @@ isSevereEpubError:(const BOOL)isSevereEpubError
   return YES;
 }
 
+- (void)containerRegisterFilters:(__attribute__((unused)) RDContainer *)container
+{
+#if defined(FEATURE_DRM_CONNECTOR)
+  // TODO: register AdeptFilter
+#endif
+}
+
 #pragma mark RDPackageResourceServerDelegate
 
 - (void)
@@ -314,7 +321,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 
 - (void)readiumInitialize
 {
-  if(!self.package.spineItems[0]) {
+  if(![self.package.spineItems firstObject]) {
     self.bookIsCorrupt = YES;
     [self.delegate renderer:self didEncounterCorruptionForBook:self.book];
     return;
