@@ -142,7 +142,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
       [view addSubview:title];
     }
     if([self bookArrayForSection:indexPath.section] == self.reservedBooks) {
-      view.layer.backgroundColor = [NYPLConfiguration backgroundColor].CGColor;
+      view.layer.backgroundColor = [NYPLConfiguration mainColor].CGColor;
       title.text = NSLocalizedString(@"AvailableForCheckoutHeader", nil);
     } else {
       view.layer.backgroundColor = [UIColor colorWithRed:172.0/255.0 green:177.0/255.0 blue:182.0/255 alpha:1.0].CGColor;
@@ -170,7 +170,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   NSMutableArray *reserved = [NSMutableArray array];
   NSMutableArray *held = [NSMutableArray array];
   for(NYPLBook *book in books) {
-    if (book.availabilityStatus == NYPLBookAvailabilityStatusReserved) {
+    if (book.availabilityStatus == NYPLBookAvailabilityStatusReady) {
       [reserved addObject:book];
     } else {
       [held addObject:book];
@@ -178,9 +178,15 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   }
   self.heldBooks = held;
   self.reservedBooks = reserved;
+  [self updateBadge];
 }
 
 #pragma mark -
+
+- (void)updateBadge
+{
+  self.navigationController.tabBarItem.badgeValue = self.reservedBooks.count > 0 ? [@(self.reservedBooks.count) stringValue] : nil;
+}
 
 - (void)didSelectSync
 {
