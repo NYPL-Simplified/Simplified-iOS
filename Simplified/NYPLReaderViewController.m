@@ -27,6 +27,10 @@
 @property (nonatomic) UIView *bottomViewImageViewTopBorder;
 @property (nonatomic) UIProgressView *bottomViewProgressView;
 @property (nonatomic) UILabel *bottomViewProgressLabel;
+
+@property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
+@property (nonatomic) BOOL didReceiveGestureFromReadium;
+@property (nonatomic) BOOL requestedGestureCheck;
 @end
 
 @implementation NYPLReaderViewController
@@ -76,7 +80,44 @@
    setState:NYPLBookStateUsed
    forIdentifier:self.bookIdentifier];
   
+  self.tapGestureRecognizer = [[UITapGestureRecognizer alloc]
+                               initWithTarget:self
+                               action:@selector(didReceiveGesture:)];
+  self.tapGestureRecognizer.cancelsTouchesInView = NO;
+  self.tapGestureRecognizer.delegate = self;
+  self.tapGestureRecognizer.numberOfTapsRequired = 1;
+  
+  [self.view addGestureRecognizer:self.tapGestureRecognizer];
+  
   return self;
+}
+
+- (void)didReceiveGesture:(__attribute__((unused)) UIGestureRecognizer *const)gestureRecognizer
+{
+}
+
+-(BOOL)gestureRecognizer:(__attribute__((unused)) UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(__attribute__((unused))UITouch *)touch {
+  
+  self.didReceiveGestureFromReadium = NO;
+
+  if (!self.requestedGestureCheck) {
+    [self performSelector:@selector(fireTimeAgent) withObject:nil afterDelay:5];
+    self.requestedGestureCheck = YES;
+  }
+  return NO;
+}
+
+-(void)rendererDidRegisterGesture:(__attribute__((unused)) id<NYPLReaderRenderer>)renderer {
+  self.didReceiveGestureFromReadium = YES;
+}
+
+-(void) fireTimeAgent {
+  if (!self.didReceiveGestureFromReadium) {
+    self.interfaceHidden = NO;
+  }
+  
+  self.requestedGestureCheck = NO;
+  self.didReceiveGestureFromReadium = NO;
 }
 
 #pragma mark NYPLReaderRendererDelegate
@@ -103,10 +144,12 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 - (void)renderer:(__attribute__((unused)) id<NYPLReaderRenderer>)renderer
  didReceiveGesture:(NYPLReaderRendererGesture const)gesture
 {
+  self.didReceiveGestureFromReadium = YES;
   switch(gesture) {
     case NYPLReaderRendererGestureToggleUserInterface:
+
       self.interfaceHidden = !self.interfaceHidden;
-      break;
+      break;  
   }
 }
 
@@ -119,6 +162,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)viewDidLoad
 {
+  
   [super viewDidLoad];
   
   self.automaticallyAdjustsScrollViewInsets = NO;
