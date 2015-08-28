@@ -54,6 +54,7 @@
     button.exclusiveTouch = YES;
     [buttons addObject:button];
     [self.scrollView addSubview:button];
+    button.accessibilityLabel = book.title;
   }];
   
   self.buttons = buttons;
