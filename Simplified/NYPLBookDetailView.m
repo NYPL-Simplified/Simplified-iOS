@@ -8,6 +8,7 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLBookDetailView.h"
+#import "NYPLConfiguration.h"
 
 @interface NYPLBookDetailView ()
   <NYPLBookDetailDownloadFailedViewDelegate, NYPLBookDetailDownloadingViewDelegate, UIWebViewDelegate>
@@ -26,6 +27,7 @@
 @property (nonatomic) UIWebView *summaryWebView;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIImageView *unreadImageView;
+@property (nonatomic) UIButton *cancelButton;
 
 @end
 
@@ -51,10 +53,22 @@ static NSString *detailTemplate = nil;
     @throw NSInvalidArgumentException;
   }
   
+  self.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"BookDetailView.label", nil),self.book.title];
+  self.accessibilityHint = NSLocalizedString(@"BookDetailView.hint", nil);
+  
   self.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.book = book;
   
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && UIAccessibilityIsVoiceOverRunning()) {
+    self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+    [self.cancelButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
+    [self.cancelButton addTarget:self action:@selector(cancelButtonPressed) forControlEvents:UIControlEventTouchDown];
+    [self addSubview:self.cancelButton];
+    self.cancelButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"CancelForBook", nil),self.book.title];
+  }
+
   self.authorsLabel = [[UILabel alloc] init];
   self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -304,6 +318,9 @@ static NSString *detailTemplate = nil;
   
   self.contentSize = CGSizeMake(CGRectGetWidth(self.frame),
                                 CGRectGetMaxY(self.summaryWebView.frame) + 10);
+  
+  self.cancelButton.frame = CGRectMake(-2, self.coverImageView.frame.origin.y, 0, 0);
+  [self.cancelButton sizeToFit];
 }
 
 #pragma mark NYPLBookDetailDownloadFailedViewDelegate
@@ -425,5 +442,15 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 {
   self.downloadingView.downloadProgress = downloadProgress;
 }
+
+- (void) cancelButtonPressed {
+  [self.detailViewDelegate didSelectCancelButton:self];
+}
+
+-(BOOL)accessibilityPerformEscape {
+  [self.detailViewDelegate didSelectCancelButton:self];
+  return YES;
+}
+
 
 @end
