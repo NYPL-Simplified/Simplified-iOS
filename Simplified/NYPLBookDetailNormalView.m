@@ -100,6 +100,12 @@
   [self.messageLabel integralizeFrame];
 }
 
+- (void)setDelegate:(id<NYPLBookButtonsDelegate>)delegate
+{
+  _delegate = delegate;
+  self.buttonsView.delegate = delegate;
+}
+
 - (void)setBook:(NYPLBook *)book
 {
   _book = book;
