@@ -237,7 +237,13 @@ static NSString *detailTemplate = nil;
     // The extra five height pixels account for a bug in |sizeThatFits:| that does not properly take
     // into account |lineHeightMultiple|.
     self.titleLabel.frame = CGRectMake(x, y, w, h + 5);
-    self.closeButton.frame = CGRectMake(CGRectGetMaxX(self.titleLabel.frame), self.titleLabel.frame.origin.y, self.closeButton.frame.size.width, self.titleLabel.frame.size.height);
+    
+    float closeButtonPadding = 10.0f;
+    
+    self.closeButton.frame = CGRectMake(CGRectGetMaxX(self.frame) - CGRectGetWidth(self.closeButton.frame) - closeButtonPadding, closeButtonPadding, self.closeButton.frame.size.width, self.closeButton.frame.size.height);
+    
+    self.closeButton.contentVerticalAlignment = UIControlContentVerticalAlignmentTop;
+    self.closeButton.contentEdgeInsets = UIEdgeInsetsMake(-2, 0, 0, 0);
   }
   
   {
