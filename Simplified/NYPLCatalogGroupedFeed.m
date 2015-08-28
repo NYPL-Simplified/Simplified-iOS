@@ -72,8 +72,8 @@
       continue;
     }
     
-    // We sync the latest metadata with the registry just in case it has changed.
-    [[NYPLBookRegistry sharedRegistry] updateBook:book];
+    // We would want to sync metadata here, but it makes us lose loan/hold/etc. information.
+    //[[NYPLBookRegistry sharedRegistry] updateBook:book];
     
     NSMutableArray *const bookArray = groupTitleToMutableBookArray[groupTitle];
     if(bookArray) {
