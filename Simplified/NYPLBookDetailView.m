@@ -27,7 +27,7 @@
 @property (nonatomic) UIWebView *summaryWebView;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIImageView *unreadImageView;
-@property (nonatomic) UIButton *cancelButton;
+@property (nonatomic) UIButton *closeButton;
 
 @end
 
@@ -60,13 +60,12 @@ static NSString *detailTemplate = nil;
   
   self.book = book;
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && UIAccessibilityIsVoiceOverRunning()) {
-    self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
-    [self.cancelButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
-    [self.cancelButton addTarget:self action:@selector(cancelButtonPressed) forControlEvents:UIControlEventTouchDown];
-    [self addSubview:self.cancelButton];
-    self.cancelButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"CancelForBook", nil),self.book.title];
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.closeButton setTitle:@"Close" forState:UIControlStateNormal];
+    [self.closeButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
+    [self.closeButton addTarget:self action:@selector(closeButtonPressed) forControlEvents:UIControlEventTouchDown];
+    [self addSubview:self.closeButton];
   }
 
   self.authorsLabel = [[UILabel alloc] init];
@@ -230,13 +229,15 @@ static NSString *detailTemplate = nil;
   }
   
   {
+    [self.closeButton sizeToFit];
     CGFloat const x = CGRectGetMaxX(self.coverImageView.frame) + mainTextPaddingLeft;
     CGFloat const y = mainTextPaddingTop;
-    CGFloat const w = CGRectGetWidth(self.bounds) - x - mainTextPaddingRight;
+    CGFloat const w = CGRectGetWidth(self.bounds) - x - mainTextPaddingRight - self.closeButton.frame.size.width;
     CGFloat const h = [self.titleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
     // The extra five height pixels account for a bug in |sizeThatFits:| that does not properly take
     // into account |lineHeightMultiple|.
     self.titleLabel.frame = CGRectMake(x, y, w, h + 5);
+    self.closeButton.frame = CGRectMake(CGRectGetMaxX(self.titleLabel.frame), self.titleLabel.frame.origin.y, self.closeButton.frame.size.width, self.titleLabel.frame.size.height);
   }
   
   {
@@ -318,9 +319,6 @@ static NSString *detailTemplate = nil;
   
   self.contentSize = CGSizeMake(CGRectGetWidth(self.frame),
                                 CGRectGetMaxY(self.summaryWebView.frame) + 10);
-  
-  self.cancelButton.frame = CGRectMake(-2, self.coverImageView.frame.origin.y, 0, 0);
-  [self.cancelButton sizeToFit];
 }
 
 #pragma mark NYPLBookDetailDownloadFailedViewDelegate
@@ -442,13 +440,12 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 {
   self.downloadingView.downloadProgress = downloadProgress;
 }
-
-- (void) cancelButtonPressed {
-  [self.detailViewDelegate didSelectCancelButton:self];
+- (void) closeButtonPressed {
+  [self.detailViewDelegate didSelectCloseButton:self];
 }
 
 -(BOOL)accessibilityPerformEscape {
-  [self.detailViewDelegate didSelectCancelButton:self];
+  [self.detailViewDelegate didSelectCloseButton:self];
   return YES;
 }
 

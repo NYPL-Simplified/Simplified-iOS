@@ -125,6 +125,3 @@
 "PreloadedContent" = "Preloaded Content";
 "PreloadedContentRestoredMessage" = "Preloaded content restored";
 "PreloadedContentNothingRestoredMessage" = "All preloaded content available";
-
-// Accessibility
-"CancelForBook" = "Cancel %@ detail view";

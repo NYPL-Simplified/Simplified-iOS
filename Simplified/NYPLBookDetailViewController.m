@@ -73,7 +73,7 @@
 }
 
 #pragma mark NYPLBookDetailViewDelegate
--(void)didSelectCancelButton:(__attribute__((unused)) NYPLBookDetailView *)detailView {
+-(void)didSelectCloseButton:(__attribute__((unused)) NYPLBookDetailView *)detailView {
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
