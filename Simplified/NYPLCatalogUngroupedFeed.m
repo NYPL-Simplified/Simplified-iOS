@@ -62,14 +62,17 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   NSMutableArray *const books = [NSMutableArray arrayWithCapacity:feed.entries.count];
   
   for(NYPLOPDSEntry *const entry in feed.entries) {
-    NYPLBook *const book = [NYPLBook bookWithEntry:entry];
+    NYPLBook *book = [NYPLBook bookWithEntry:entry];
     if(!book) {
       NYPLLOG(@"Failed to create book from entry.");
       continue;
     }
-    // Doing this here is probably a bad idea, since it can result in
-    // overriding correct state information in the registry.
-    //[[NYPLBookRegistry sharedRegistry] updateBook:book];
+    
+    [[NYPLBookRegistry sharedRegistry] updateBookMetadata:book];
+    NYPLBook *updatedBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
+    if(updatedBook) {
+      book = updatedBook;
+    }
     [books addObject:book];
   }
   

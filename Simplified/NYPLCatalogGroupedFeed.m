@@ -66,14 +66,17 @@
     
     NSString *const groupTitle = entry.groupAttributes.title;
     
-    NYPLBook *const book = [NYPLBook bookWithEntry:entry];
+    NYPLBook *book = [NYPLBook bookWithEntry:entry];
     if(!book) {
       NYPLLOG(@"Failed to create book from entry.");
       continue;
     }
     
-    // We would want to sync metadata here, but it makes us lose loan/hold/etc. information.
-    //[[NYPLBookRegistry sharedRegistry] updateBook:book];
+    [[NYPLBookRegistry sharedRegistry] updateBookMetadata:book];
+    NYPLBook *updatedBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
+    if(updatedBook) {
+      book = updatedBook;
+    }
     
     NSMutableArray *const bookArray = groupTitleToMutableBookArray[groupTitle];
     if(bookArray) {
