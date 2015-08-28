@@ -1,30 +1,11 @@
+#import "NYPLBookButtonsView.h"
 @class NYPLBook;
-@class NYPLBookDetailNormalView;
-
-typedef NS_ENUM(NSInteger, NYPLBookDetailNormalViewState) {
-  NYPLBookDetailNormalViewStateCanBorrow,
-  NYPLBookDetailNormalViewStateCanHold,
-  NYPLBookDetailNormalViewStateCanKeep,
-  NYPLBookDetailNormalViewStateHolding,
-  NYPLBookDetailNormalViewStateHoldingFOQ, // Front Of Queue
-  NYPLBookDetailNormalViewStateDownloadNeeded,
-  NYPLBookDetailNormalViewStateDownloadSuccessful,
-  NYPLBookDetailNormalViewStateUsed
-};
-
-@protocol NYPLBookDetailNormalViewDelegate
-
-- (void)didSelectReturnForBookDetailNormalView:(NYPLBookDetailNormalView *)bookDetailNormalView;
-- (void)didSelectDownloadForBookDetailNormalView:(NYPLBookDetailNormalView *)bookDetailNormalView;
-- (void)didSelectReadForBookDetailNormalView:(NYPLBookDetailNormalView *)bookDetailNormalView;
-
-@end
 
 @interface NYPLBookDetailNormalView : UIView
 
-@property (nonatomic, weak) id<NYPLBookDetailNormalViewDelegate> delegate;
-@property (nonatomic) NYPLBookDetailNormalViewState state;
-@property (nonatomic) NSDate *date; // nilable - hold or borrow expiry, or estimated time until you can borrow
+@property (nonatomic, weak) id<NYPLBookButtonsDelegate> delegate;
+@property (nonatomic) NYPLBookButtonsState state;
+@property (nonatomic, weak) NYPLBook *book;
 
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;

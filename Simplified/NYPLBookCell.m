@@ -58,12 +58,12 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.book = book;
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
       if(book.acquisition.openAccess) {
-        cell.state = NYPLBookNormalCellStateCanKeep;
+        cell.state = NYPLBookButtonsStateCanKeep;
       } else {
         if (book.availableCopies > 0) {
-          cell.state = NYPLBookNormalCellStateCanBorrow;
+          cell.state = NYPLBookButtonsStateCanBorrow;
         } else {
-          cell.state = NYPLBookNormalCellStateCanHold;
+          cell.state = NYPLBookButtonsStateCanHold;
         }
       }
       return cell;
@@ -75,7 +75,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                         forIndexPath:indexPath];
       cell.book = book;
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
-      cell.state = NYPLBookNormalCellStateDownloadNeeded;
+      cell.state = NYPLBookButtonsStateDownloadNeeded;
       return cell;
     }
     case NYPLBookStateDownloadSuccessful:
@@ -85,7 +85,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                         forIndexPath:indexPath];
       cell.book = book;
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
-      cell.state = NYPLBookNormalCellStateDownloadSuccessful;
+      cell.state = NYPLBookButtonsStateDownloadSuccessful;
       return cell;
     }
     case NYPLBookStateDownloading:
@@ -116,9 +116,9 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.book = book;
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
       if(book.availabilityStatus == NYPLBookAvailabilityStatusReady) {
-        cell.state = NYPLBookNormalCellStateHoldingFOQ;
+        cell.state = NYPLBookButtonsStateHoldingFOQ;
       } else {
-        cell.state = NYPLBookNormalCellStateHolding;
+        cell.state = NYPLBookButtonsStateHolding;
       }
       return cell;
     }
@@ -129,7 +129,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                         forIndexPath:indexPath];
       cell.book = book;
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
-      cell.state = NYPLBookNormalCellStateUsed;
+      cell.state = NYPLBookButtonsStateUsed;
       return cell;
     }
   }
