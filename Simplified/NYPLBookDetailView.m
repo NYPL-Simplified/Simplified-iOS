@@ -229,21 +229,16 @@ static NSString *detailTemplate = nil;
   }
   
   {
+    float closeButtonRigthPadding = 7.0f;
     [self.closeButton sizeToFit];
     CGFloat const x = CGRectGetMaxX(self.coverImageView.frame) + mainTextPaddingLeft;
     CGFloat const y = mainTextPaddingTop;
-    CGFloat const w = CGRectGetWidth(self.bounds) - x - mainTextPaddingRight - self.closeButton.frame.size.width;
+    CGFloat const w = CGRectGetWidth(self.bounds) - x - mainTextPaddingRight - self.closeButton.frame.size.width - closeButtonRigthPadding;
     CGFloat const h = [self.titleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
     // The extra five height pixels account for a bug in |sizeThatFits:| that does not properly take
     // into account |lineHeightMultiple|.
     self.titleLabel.frame = CGRectMake(x, y, w, h + 5);
-    
-    float closeButtonPadding = 10.0f;
-    
-    self.closeButton.frame = CGRectMake(CGRectGetMaxX(self.frame) - CGRectGetWidth(self.closeButton.frame) - closeButtonPadding, closeButtonPadding, self.closeButton.frame.size.width, self.closeButton.frame.size.height);
-    
-    self.closeButton.contentVerticalAlignment = UIControlContentVerticalAlignmentTop;
-    self.closeButton.contentEdgeInsets = UIEdgeInsetsMake(-2, 0, 0, 0);
+    self.closeButton.frame = CGRectMake(CGRectGetMaxX(self.titleLabel.frame), self.titleLabel.frame.origin.y - 1, self.closeButton.frame.size.width, self.titleLabel.frame.size.height);
   }
   
   {
