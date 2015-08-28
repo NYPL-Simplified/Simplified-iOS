@@ -3,6 +3,7 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
+#import "NYPLBookCellDelegate.h"
 
 #import "NYPLBookNormalCell.h"
 
@@ -10,12 +11,9 @@
 
 @property (nonatomic) UILabel *authors;
 @property (nonatomic) UIImageView *cover;
-@property (nonatomic) NYPLRoundedButton *deleteButton;
-@property (nonatomic) NYPLRoundedButton *downloadButton;
-@property (nonatomic) NYPLRoundedButton *readButton;
+@property (nonatomic) NYPLBookButtonsView *buttonsView;
 @property (nonatomic) UILabel *title;
 @property (nonatomic) UIImageView *unreadImageView;
-@property (nonatomic) NSArray *visibleButtons;
 
 @end
 
@@ -46,21 +44,12 @@
   authorFrame.size.width = CGRectGetWidth([self contentFrame]) - 120;
   self.authors.frame = authorFrame;
   
-  NYPLRoundedButton *lastButton = nil;
-  for (NYPLRoundedButton *button in self.visibleButtons) {
-    [button sizeToFit];
-    CGRect frame = button.frame;
-    if (!lastButton) {
-      lastButton = button;
-      frame.origin = CGPointMake(115,
-                                 (CGRectGetHeight([self contentFrame]) -
-                                  CGRectGetHeight(frame) - 5));
-    } else {
-      frame.origin = CGPointMake(CGRectGetMaxX(lastButton.frame) + 5,
-                                 CGRectGetMinY(lastButton.frame));
-    }
-    button.frame = frame;
-  }
+  [self.buttonsView sizeToFit];
+  CGRect frame = self.buttonsView.frame;
+  frame.origin = CGPointMake(115,
+                             (CGRectGetHeight([self contentFrame]) -
+                              CGRectGetHeight(frame) - 5));
+  self.buttonsView.frame = frame;
   
   CGRect unreadImageViewFrame = self.unreadImageView.frame;
   unreadImageViewFrame.origin.x = (CGRectGetMinX(self.cover.frame) -
@@ -86,29 +75,12 @@
     [self.contentView addSubview:self.cover];
   }
   
-  if(!self.deleteButton) {
-    self.deleteButton = [NYPLRoundedButton button];
-    [self.deleteButton addTarget:self
-                          action:@selector(didSelectReturn)
-                forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:self.deleteButton];
+  if(!self.buttonsView) {
+    self.buttonsView = [[NYPLBookButtonsView alloc] init];
+    self.buttonsView.delegate = self.delegate;
+    [self.contentView addSubview:self.buttonsView];
   }
-  
-  if(!self.downloadButton) {
-    self.downloadButton = [NYPLRoundedButton button];
-    [self.downloadButton addTarget:self
-                            action:@selector(didSelectDownload)
-                  forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:self.downloadButton];
-  }
-  
-  if(!self.readButton) {
-    self.readButton = [NYPLRoundedButton button];
-    [self.readButton addTarget:self
-                        action:@selector(didSelectRead)
-              forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:self.readButton];
-  }
+  self.buttonsView.book = book;
   
   if(!self.title) {
     self.title = [[UILabel alloc] init];
@@ -151,87 +123,17 @@
   [self setNeedsLayout];
 }
 
-- (void)didSelectReturn
+- (void)setDelegate:(id<NYPLBookButtonsDelegate>)delegate
 {
-  [self.delegate didSelectReturnForBookNormalCell:self];
+  _delegate = delegate;
+  self.buttonsView.delegate = delegate;
 }
 
-- (void)didSelectDownload
-{
-  [self.delegate didSelectDownloadForBookNormalCell:self];
-}
-
-- (void)didSelectRead
-{
-  [self.delegate didSelectReadForBookNormalCell:self];
-}
-
-- (void)setState:(NYPLBookNormalCellState const)state
+- (void)setState:(NYPLBookButtonsState const)state
 {
   _state = state;
-  
-  NSArray *visibleButtonInfo = nil;
-  static NSString *const ButtonKey = @"button";
-  static NSString *const TitleKey = @"title";
-  static NSString *const AddIndicatorKey = @"addIndicator";
-  
-  self.unreadImageView.hidden = YES;
-  switch(state) {
-    case NYPLBookNormalCellStateCanBorrow:
-      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Borrow"}];
-      break;
-    case NYPLBookNormalCellStateCanKeep:
-      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Download"}];
-      break;
-    case NYPLBookNormalCellStateCanHold:
-      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Hold"}];
-      break;
-    case NYPLBookNormalCellStateHolding:
-      visibleButtonInfo = @[@{ButtonKey: self.deleteButton,   TitleKey: @"CancelHold", AddIndicatorKey: @(YES)}];
-      break;
-    case NYPLBookNormalCellStateHoldingFOQ:
-      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Borrow", AddIndicatorKey: @(YES)},
-                            @{ButtonKey: self.deleteButton,   TitleKey: @"CancelHold"}];
-      break;
-    case NYPLBookNormalCellStateDownloadNeeded:
-      visibleButtonInfo = @[@{ButtonKey: self.deleteButton,   TitleKey: @"ReturnNow", AddIndicatorKey: @(YES)},
-                            @{ButtonKey: self.downloadButton, TitleKey: @"Download"}];
-      break;
-    case NYPLBookNormalCellStateDownloadSuccessful:
-      self.unreadImageView.hidden = NO;
-      // Fallthrough
-    case NYPLBookNormalCellStateUsed:
-      visibleButtonInfo = @[@{ButtonKey: self.readButton,     TitleKey: @"Read"},
-                            @{ButtonKey: self.deleteButton,   TitleKey: @"ReturnNow", AddIndicatorKey: @(YES)}];
-      break;
-  }
-  
-  NSMutableArray *visibleButtons = [NSMutableArray array];
-  for (NSDictionary *buttonInfo in visibleButtonInfo) {
-    NYPLRoundedButton *button = buttonInfo[ButtonKey];
-    button.hidden = NO;
-    [button setTitle:NSLocalizedString(buttonInfo[TitleKey], nil) forState:UIControlStateNormal];
-    if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
-      if (self.book.availableUntil && [self.book.availableUntil timeIntervalSinceNow] > 0) {
-        button.type = NYPLRoundedButtonTypeClock;
-        button.endDate = self.book.availableUntil;
-      } else {
-        button.type = NYPLRoundedButtonTypeNormal;
-        // We could handle queue support here if we wanted it.
-        // button.type = NYPLRoundedButtonTypeQueue;
-        // button.queuePosition = self.book.holdPosition;
-      }
-    } else {
-      button.type = NYPLRoundedButtonTypeNormal;
-    }
-    [visibleButtons addObject:button];
-  }
-  for (NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton]) {
-    if (![visibleButtons containsObject:button]) {
-      button.hidden = YES;
-    }
-  }
-  self.visibleButtons = visibleButtons;
+  self.buttonsView.state = state;
+  self.unreadImageView.hidden = (state != NYPLBookButtonsStateDownloadSuccessful);
   [self setNeedsLayout];
 }
 

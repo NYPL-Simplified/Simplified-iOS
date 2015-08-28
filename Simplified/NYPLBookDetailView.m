@@ -1,6 +1,7 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
+#import "NYPLBookCellDelegate.h"
 #import "NYPLBookDetailDownloadFailedView.h"
 #import "NYPLBookDetailDownloadingView.h"
 #import "NYPLBookDetailNormalView.h"
@@ -9,8 +10,7 @@
 #import "NYPLBookDetailView.h"
 
 @interface NYPLBookDetailView ()
-  <NYPLBookDetailDownloadFailedViewDelegate, NYPLBookDetailDownloadingViewDelegate,
-   NYPLBookDetailNormalViewDelegate, UIWebViewDelegate>
+  <NYPLBookDetailDownloadFailedViewDelegate, NYPLBookDetailDownloadingViewDelegate, UIWebViewDelegate>
 
 @property (nonatomic) UILabel *authorsLabel;
 @property (nonatomic) BOOL beganInitialRequest;
@@ -114,7 +114,8 @@ static NSString *detailTemplate = nil;
   [self addSubview:self.downloadingView];
   
   self.normalView = [[NYPLBookDetailNormalView alloc] initWithWidth:0];
-  self.normalView.delegate = self;
+  self.normalView.delegate = [NYPLBookCellDelegate sharedDelegate];
+  self.normalView.book = self.book;
   self.normalView.hidden = YES;
   [self addSubview:self.normalView];
   
@@ -327,26 +328,6 @@ static NSString *detailTemplate = nil;
   [self.detailViewDelegate didSelectCancelDownloadingForBookDetailView:self];
 }
 
-#pragma mark NYPLBookDetailNormalViewDelegate
-
-- (void)didSelectReturnForBookDetailNormalView:
-(__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
-{
-  [self.detailViewDelegate didSelectReturnForBookDetailView:self];
-}
-
-- (void)didSelectDownloadForBookDetailNormalView:
-(__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
-{
-  [self.detailViewDelegate didSelectDownloadForBookDetailView:self];
-}
-
-- (void)didSelectReadForBookDetailNormalView:
-(__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
-{
-  [self.detailViewDelegate didSelectReadForBookDetailView:self];
-}
-
 #pragma mark UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(__attribute__((unused)) UIWebView *)webView
@@ -378,12 +359,12 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
       if(self.book.acquisition.openAccess) {
-        self.normalView.state = NYPLBookDetailNormalViewStateCanKeep;
+        self.normalView.state = NYPLBookButtonsStateCanKeep;
       } else {
         if (self.book.availableCopies > 0) {
-          self.normalView.state = NYPLBookDetailNormalViewStateCanBorrow;
+          self.normalView.state = NYPLBookButtonsStateCanBorrow;
         } else {
-          self.normalView.state = NYPLBookDetailNormalViewStateCanHold;
+          self.normalView.state = NYPLBookButtonsStateCanHold;
         }
       }
       self.unreadImageView.hidden = YES;
@@ -392,7 +373,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
-      self.normalView.state = NYPLBookDetailNormalViewStateDownloadNeeded;
+      self.normalView.state = NYPLBookButtonsStateDownloadNeeded;
       self.unreadImageView.hidden = YES;
       break;
     case NYPLBookStateDownloading:
@@ -411,18 +392,17 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
-      self.normalView.state = NYPLBookDetailNormalViewStateDownloadSuccessful;
+      self.normalView.state = NYPLBookButtonsStateDownloadSuccessful;
       self.unreadImageView.hidden = NO;
       break;
     case NYPLBookStateHolding:
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
-      self.normalView.date = self.book.availableUntil;
       if (self.book.availabilityStatus == NYPLBookAvailabilityStatusReady) {
-        self.normalView.state = NYPLBookDetailNormalViewStateHoldingFOQ;
+        self.normalView.state = NYPLBookButtonsStateHoldingFOQ;
       } else {
-        self.normalView.state = NYPLBookDetailNormalViewStateHolding;
+        self.normalView.state = NYPLBookButtonsStateHolding;
       }
       self.unreadImageView.hidden = YES;
       break;
@@ -430,7 +410,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
-      self.normalView.state = NYPLBookDetailNormalViewStateUsed;
+      self.normalView.state = NYPLBookButtonsStateUsed;
       self.unreadImageView.hidden = YES;
       break;
   }
