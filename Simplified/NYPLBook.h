@@ -35,6 +35,10 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 
 + (instancetype)bookWithEntry:(NYPLOPDSEntry *)entry;
 
+// Return a new book with the acquisition and availability info from this book,
+// and metadata from the specified book
+- (instancetype)bookWithMetadataFromBook:(NYPLBook *)book;
+
 // designated initializer
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
                       authorStrings:(NSArray *)authorStrings

@@ -63,6 +63,11 @@ static NSString *const NYPLBookRegistryDidChangeNotification =
 // call this method whenever new information is obtained regardless of a given book's state.
 - (void)updateBook:(NYPLBook *)book;
 
+// This method should be called whenever new book information is retrieved from a server, but may
+// not include user-specific information. We want to update the metadata, but not overwrite the
+// existing availability information and acquisition URLs.
+- (void)updateBookMetadata:(NYPLBook *)book;
+
 // Returns the book for a given identifier if it is registered, else nil.
 - (NYPLBook *)bookForIdentifier:(NSString *)identifier;
 

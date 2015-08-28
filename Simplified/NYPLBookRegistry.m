@@ -338,6 +338,22 @@ static NSString *const RecordsKey = @"records";
   }
 }
 
+- (void)updateBookMetadata:(NYPLBook *)book
+{
+  if(!book) {
+    @throw NSInvalidArgumentException;
+  }
+  
+  @synchronized(self) {
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[book.identifier];
+    if(record) {
+      book = [record.book bookWithMetadataFromBook:book];
+      self.identifiersToRecords[book.identifier] = [record recordWithBook:book];
+      [self broadcastChange];
+    }
+  }
+}
+
 - (NYPLBook *)bookForIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
