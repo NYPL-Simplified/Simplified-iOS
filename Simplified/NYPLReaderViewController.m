@@ -341,6 +341,11 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 {
   assert(popoverController == self.activePopoverController);
   
+  if(UIAccessibilityIsVoiceOverRunning())
+  {
+    self.interfaceHidden = YES;
+  }
+  
   self.activePopoverController = nil;
 }
 
