@@ -13,6 +13,7 @@
 @property (nonatomic) NSArray *categoryStrings;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSArray *links;
+@property (nonatomic) NSString *providerName;
 @property (nonatomic) NSDate *published;
 @property (nonatomic) NSString *publisher;
 @property (nonatomic) NSString *summary;
@@ -81,6 +82,8 @@
     
     self.links = links;
   }
+  
+  self.providerName = [entryXML firstChildWithName:@"distribution"].attributes[@"bibframe:ProviderName"];
   
   {
     NSString *const dateString = [entryXML firstChildWithName:@"published"].value;
