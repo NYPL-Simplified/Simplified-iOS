@@ -199,6 +199,8 @@ viewForHeaderInSection:(NSInteger const)section
                               CGRectGetWidth(button.frame),
                               CGRectGetHeight(button.frame));
     button.tag = section;
+    NYPLCatalogLane *const lane = self.feed.lanes[button.tag];
+    button.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"MoreBooks", nil), lane.title];
     button.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
     [button addTarget:self
                action:@selector(didSelectCategory:)

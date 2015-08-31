@@ -1,16 +1,17 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
+#import "NYPLBookCellDelegate.h"
 #import "NYPLBookDetailDownloadFailedView.h"
 #import "NYPLBookDetailDownloadingView.h"
 #import "NYPLBookDetailNormalView.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLBookDetailView.h"
+#import "NYPLConfiguration.h"
 
 @interface NYPLBookDetailView ()
-  <NYPLBookDetailDownloadFailedViewDelegate, NYPLBookDetailDownloadingViewDelegate,
-   NYPLBookDetailNormalViewDelegate, UIWebViewDelegate>
+  <NYPLBookDetailDownloadFailedViewDelegate, NYPLBookDetailDownloadingViewDelegate, UIWebViewDelegate>
 
 @property (nonatomic) UILabel *authorsLabel;
 @property (nonatomic) BOOL beganInitialRequest;
@@ -26,6 +27,7 @@
 @property (nonatomic) UIWebView *summaryWebView;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIImageView *unreadImageView;
+@property (nonatomic) UIButton *closeButton;
 
 @end
 
@@ -51,10 +53,21 @@ static NSString *detailTemplate = nil;
     @throw NSInvalidArgumentException;
   }
   
+  self.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"BookDetailView.label", nil),self.book.title];
+  self.accessibilityHint = NSLocalizedString(@"BookDetailView.hint", nil);
+  
   self.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.book = book;
   
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.closeButton setTitle:@"Close" forState:UIControlStateNormal];
+    [self.closeButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
+    [self.closeButton addTarget:self action:@selector(closeButtonPressed) forControlEvents:UIControlEventTouchDown];
+    [self addSubview:self.closeButton];
+  }
+
   self.authorsLabel = [[UILabel alloc] init];
   self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -114,7 +127,8 @@ static NSString *detailTemplate = nil;
   [self addSubview:self.downloadingView];
   
   self.normalView = [[NYPLBookDetailNormalView alloc] initWithWidth:0];
-  self.normalView.delegate = self;
+  self.normalView.delegate = [NYPLBookCellDelegate sharedDelegate];
+  self.normalView.book = self.book;
   self.normalView.hidden = YES;
   [self addSubview:self.normalView];
   
@@ -215,13 +229,16 @@ static NSString *detailTemplate = nil;
   }
   
   {
+    float closeButtonRigthPadding = 7.0f;
+    [self.closeButton sizeToFit];
     CGFloat const x = CGRectGetMaxX(self.coverImageView.frame) + mainTextPaddingLeft;
     CGFloat const y = mainTextPaddingTop;
-    CGFloat const w = CGRectGetWidth(self.bounds) - x - mainTextPaddingRight;
+    CGFloat const w = CGRectGetWidth(self.bounds) - x - mainTextPaddingRight - self.closeButton.frame.size.width - closeButtonRigthPadding;
     CGFloat const h = [self.titleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
     // The extra five height pixels account for a bug in |sizeThatFits:| that does not properly take
     // into account |lineHeightMultiple|.
     self.titleLabel.frame = CGRectMake(x, y, w, h + 5);
+    self.closeButton.frame = CGRectMake(CGRectGetMaxX(self.titleLabel.frame), self.titleLabel.frame.origin.y - 1, self.closeButton.frame.size.width, self.titleLabel.frame.size.height);
   }
   
   {
@@ -327,26 +344,6 @@ static NSString *detailTemplate = nil;
   [self.detailViewDelegate didSelectCancelDownloadingForBookDetailView:self];
 }
 
-#pragma mark NYPLBookDetailNormalViewDelegate
-
-- (void)didSelectReturnForBookDetailNormalView:
-(__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
-{
-  [self.detailViewDelegate didSelectReturnForBookDetailView:self];
-}
-
-- (void)didSelectDownloadForBookDetailNormalView:
-(__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
-{
-  [self.detailViewDelegate didSelectDownloadForBookDetailView:self];
-}
-
-- (void)didSelectReadForBookDetailNormalView:
-(__attribute__((unused)) NYPLBookDetailNormalView *)bookDetailNormalView
-{
-  [self.detailViewDelegate didSelectReadForBookDetailView:self];
-}
-
 #pragma mark UIWebViewDelegate
 
 - (void)webViewDidFinishLoad:(__attribute__((unused)) UIWebView *)webView
@@ -378,12 +375,12 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
       if(self.book.acquisition.openAccess) {
-        self.normalView.state = NYPLBookDetailNormalViewStateCanKeep;
+        self.normalView.state = NYPLBookButtonsStateCanKeep;
       } else {
         if (self.book.availableCopies > 0) {
-          self.normalView.state = NYPLBookDetailNormalViewStateCanBorrow;
+          self.normalView.state = NYPLBookButtonsStateCanBorrow;
         } else {
-          self.normalView.state = NYPLBookDetailNormalViewStateCanHold;
+          self.normalView.state = NYPLBookButtonsStateCanHold;
         }
       }
       self.unreadImageView.hidden = YES;
@@ -392,7 +389,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
-      self.normalView.state = NYPLBookDetailNormalViewStateDownloadNeeded;
+      self.normalView.state = NYPLBookButtonsStateDownloadNeeded;
       self.unreadImageView.hidden = YES;
       break;
     case NYPLBookStateDownloading:
@@ -411,18 +408,17 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
-      self.normalView.state = NYPLBookDetailNormalViewStateDownloadSuccessful;
+      self.normalView.state = NYPLBookButtonsStateDownloadSuccessful;
       self.unreadImageView.hidden = NO;
       break;
     case NYPLBookStateHolding:
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
-      self.normalView.date = self.book.availableUntil;
       if (self.book.availabilityStatus == NYPLBookAvailabilityStatusReady) {
-        self.normalView.state = NYPLBookDetailNormalViewStateHoldingFOQ;
+        self.normalView.state = NYPLBookButtonsStateHoldingFOQ;
       } else {
-        self.normalView.state = NYPLBookDetailNormalViewStateHolding;
+        self.normalView.state = NYPLBookButtonsStateHolding;
       }
       self.unreadImageView.hidden = YES;
       break;
@@ -430,7 +426,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
-      self.normalView.state = NYPLBookDetailNormalViewStateUsed;
+      self.normalView.state = NYPLBookButtonsStateUsed;
       self.unreadImageView.hidden = YES;
       break;
   }
@@ -445,5 +441,14 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 {
   self.downloadingView.downloadProgress = downloadProgress;
 }
+- (void) closeButtonPressed {
+  [self.detailViewDelegate didSelectCloseButton:self];
+}
+
+-(BOOL)accessibilityPerformEscape {
+  [self.detailViewDelegate didSelectCloseButton:self];
+  return YES;
+}
+
 
 @end

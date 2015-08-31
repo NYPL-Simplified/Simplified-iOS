@@ -252,7 +252,7 @@ static NSString *const RecordsKey = @"records";
          if(existingBook) {
            [self updateBook:book];
          } else {
-           [self addBook:book location:nil state:NYPLBookStateDownloadNeeded];
+           [self addBook:book location:nil state:NYPLBookStateDownloadNeeded fulfillmentId:nil];
          }
        }
        for (NSString *identifier in identifiersToRemove) {
@@ -302,6 +302,7 @@ static NSString *const RecordsKey = @"records";
 - (void)addBook:(NYPLBook *const)book
        location:(NYPLBookLocation *const)location
           state:(NYPLBookState)state
+  fulfillmentId:(NSString *)fulfillmentId
 {
   if(!book) {
     @throw NSInvalidArgumentException;
@@ -316,7 +317,8 @@ static NSString *const RecordsKey = @"records";
     self.identifiersToRecords[book.identifier] = [[NYPLBookRegistryRecord alloc]
                                                   initWithBook:book
                                                   location:location
-                                                  state:state];
+                                                  state:state
+                                                  fulfillmentId:fulfillmentId];
     [self broadcastChange];
   }
 }
@@ -330,6 +332,22 @@ static NSString *const RecordsKey = @"records";
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[book.identifier];
     if(record) {
+      self.identifiersToRecords[book.identifier] = [record recordWithBook:book];
+      [self broadcastChange];
+    }
+  }
+}
+
+- (void)updateBookMetadata:(NYPLBook *)book
+{
+  if(!book) {
+    @throw NSInvalidArgumentException;
+  }
+  
+  @synchronized(self) {
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[book.identifier];
+    if(record) {
+      book = [record.book bookWithMetadataFromBook:book];
       self.identifiersToRecords[book.identifier] = [record recordWithBook:book];
       [self broadcastChange];
     }
@@ -388,6 +406,29 @@ static NSString *const RecordsKey = @"records";
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     return record.location;
+  }
+}
+
+- (void)setFulfillmentId:(NSString *)fulfillmentId forIdentifier:(NSString *)identifier
+{
+  @synchronized(self) {
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+    if(!record) {
+      @throw NSInvalidArgumentException;
+    }
+    
+    self.identifiersToRecords[identifier] = [record recordWithFulfillmentId:fulfillmentId];
+    
+    // This shouldn't be required, since nothing needs to display differently if the fulfillmentId changes
+    // [self broadcastChange];
+  }
+}
+
+- (NSString *)fulfillmentIdForIdentifier:(NSString *)identifier
+{
+  @synchronized(self) {
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+    return record.fulfillmentId;
   }
 }
 

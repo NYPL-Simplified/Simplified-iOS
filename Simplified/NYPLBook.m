@@ -135,6 +135,26 @@ static NSString *const UpdatedKey = @"updated";
           updated:entry.updated];
 }
 
+- (instancetype)bookWithMetadataFromBook:(NYPLBook *)book
+{
+  return [[NYPLBook alloc]
+          initWithAcquisition:self.acquisition
+          authorStrings:book.authorStrings
+          availabilityStatus:self.availabilityStatus
+          availableCopies:self.availableCopies
+          availableUntil:self.availableUntil
+          categoryStrings:book.categoryStrings
+          identifier:self.identifier
+          imageURL:book.imageURL
+          imageThumbnailURL:book.imageThumbnailURL
+          published:book.published
+          publisher:book.publisher
+          subtitle:book.subtitle
+          summary:book.summary
+          title:book.title
+          updated:book.updated];
+}
+
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
                       authorStrings:(NSArray *)authorStrings
                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
