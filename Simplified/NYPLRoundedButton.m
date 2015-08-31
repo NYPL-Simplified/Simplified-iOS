@@ -58,7 +58,8 @@
     self.iconView.hidden = YES;
     self.label.hidden = YES;
   } else {
-    NSString *imageName = self.type == NYPLRoundedButtonTypeClock ? @"Clock" : @"Clock"; // TODO: get queue icon
+    // If we ever actually use a queue, that icon should be specified here
+    NSString *imageName = self.type == NYPLRoundedButtonTypeClock ? @"Clock" : @"Clock";
     self.iconView.image = [[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.iconView.hidden = NO;
     self.label.hidden = NO;
