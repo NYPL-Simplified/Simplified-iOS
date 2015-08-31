@@ -214,9 +214,19 @@ static void generateTOCElements(NSArray *const navigationElements,
     NSString *javaScript;
     if (isPlaying.length == 0 && [isAvailable containsString:@"true"]) {
       javaScript = [NSString stringWithFormat: @"ReadiumSDK.reader.playMediaOverlay()"];
+      
+      if(UIAccessibilityIsVoiceOverRunning())
+      {
+        self.webView.accessibilityElementsHidden = YES;
+      }
     }
     else {
       javaScript = [NSString stringWithFormat: @"ReadiumSDK.reader.pauseMediaOverlay()"];
+      
+      if(UIAccessibilityIsVoiceOverRunning())
+      {
+        self.webView.accessibilityElementsHidden = NO;
+      }
     }
     [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
   }];
