@@ -85,9 +85,23 @@
 "ReaderViewControllerCorruptMessage" = "This book is corrupt and cannot be read.";
 "Book" = "Book";
 "leftin" = "left in";
+"ReaderSettings" = "Reader settings";
+"TOC" = "Table of contents";
 
 // NYPLReaderReadiumView
 "chapter" = "chapter";
+
+// NYPLReaderSettingsView
+"SansFont" = "Sans font";
+"SerifFont" = "Serif font";
+"OpenDyslexicFont" = "Open dyslexic font";
+"WhiteOnBlackText" = "White on black text";
+"BlackOnSepiaText" = "Black on sepia text";
+"BlackOnWhiteText" = "Black on white text";
+"DecreaseFontSize" = "Decrease font size";
+"IncreaseFontSize" = "Increase font size";
+"MediaOverlayPlaybackToggle" = "Media overlay playback toggle";
+"BrightnessSlider" = "Brightness slider";
 
 // ReaderTOCViewController
 
