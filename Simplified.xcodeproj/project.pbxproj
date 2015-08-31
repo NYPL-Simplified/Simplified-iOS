@@ -109,10 +109,8 @@
 		5A5B90171B946D00002C53E9 /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
 		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
-		5A7048971B94A67B0046FFF0 /* libAdobe Content Filter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */; };
 		5AB1F72D1B8CA4AC005BAE0E /* NYPLAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AB1F72C1B8CA4AC005BAE0E /* NYPLAlertView.m */; };
 		5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
-		5AEA9E071B947422009F71DB /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
 		8418C0481B75176B00FAB724 /* eula.html in Resources */ = {isa = PBXBuildFile; fileRef = 8418C0461B75176B00FAB724 /* eula.html */; };
 		841B553E1B73FB2700FAC1AF /* NYPLEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B553D1B73FB2700FAC1AF /* NYPLEULAViewController.m */; };
 		841B55431B740F2700FAC1AF /* NYPLSettingsEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */; };
@@ -447,8 +445,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5A7048971B94A67B0046FFF0 /* libAdobe Content Filter.a in Frameworks */,
-				5AEA9E071B947422009F71DB /* libADEPT.a in Frameworks */,
 				5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */,
 				5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */,
 				5A5B90171B946D00002C53E9 /* libRDServices.a in Frameworks */,
