@@ -3,22 +3,23 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLReaderContainerDelegate.h"
 #import "NYPLReaderRenderer.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReadium.h"
 #import "UIColor+NYPLColorAdditions.h"
 #import "NYPLLog.h"
-
 #import "NYPLReaderReadiumView.h"
 
 @interface NYPLReaderReadiumView ()
-  <NYPLReaderRenderer, RDContainerDelegate, RDPackageResourceServerDelegate, UIScrollViewDelegate,
+  <NYPLReaderRenderer, RDPackageResourceServerDelegate, UIScrollViewDelegate,
    UIWebViewDelegate>
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) BOOL bookIsCorrupt;
 @property (nonatomic) RDContainer *container;
+@property (nonatomic) NYPLReaderContainerDelegate *containerDelegate;
 @property (nonatomic) BOOL loaded;
 @property (nonatomic) BOOL mediaOverlayIsPlaying;
 @property (nonatomic) NSInteger openPageCount;
@@ -82,12 +83,13 @@ static void generateTOCElements(NSArray *const navigationElements,
   }
   
   self.book = book;
+  self.containerDelegate = [[NYPLReaderContainerDelegate alloc] init];
   
   self.delegate = delegate;
   
   @try {
     self.container = [[RDContainer alloc]
-                      initWithDelegate:self
+                      initWithDelegate:self.containerDelegate
                       path:[[[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                              fileURLForBookIndentifier:book.identifier]
                             path]];
@@ -227,25 +229,6 @@ static void generateTOCElements(NSArray *const navigationElements,
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark RDContainerDelegate
-
-- (BOOL)container:(__attribute__((unused)) RDContainer *)container
-   handleSdkError:(NSString * const)message
-isSevereEpubError:(const BOOL)isSevereEpubError
-{
-  NYPLLOG_F(@"(Readium) %@ %@", isSevereEpubError ? @"(SEVERE)" : @"", message);
-
-  // Ignore the error and continue.
-  return YES;
-}
-
-- (void)containerRegisterFilters:(__attribute__((unused)) RDContainer *)container
-{
-#if defined(FEATURE_DRM_CONNECTOR)
-  // TODO: register AdeptFilter
-#endif
-}
-
 #pragma mark RDPackageResourceServerDelegate
 
 - (void)
@@ -348,8 +331,13 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     // have to create a new dictionary.
     NSDictionary *const locationDictionary =
     NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
+	  
+    NSString *contentCFI = locationDictionary[@"contentCFI"];
+    if (!contentCFI) {
+      contentCFI = @"";
+    }
     dictionary[@"openPageRequest"] = @{@"idref": locationDictionary[@"idref"],
-                                       @"elementCfi": locationDictionary[@"contentCFI"]};
+                                       @"elementCfi": contentCFI};
   }
   
   NSData *data = NYPLJSONDataFromObject(dictionary);

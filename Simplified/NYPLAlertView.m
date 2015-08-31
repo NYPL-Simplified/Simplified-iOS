@@ -1,6 +1,9 @@
 
 #import "NYPLAlertView.h"
+
+#if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
+#endif
 
 @implementation NYPLAlertView
 

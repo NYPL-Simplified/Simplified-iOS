@@ -1,5 +1,5 @@
 
-To build this project:
+= Getting Started =
 
 1. 'git clone https://github.com/NYPL/Simplified-iOS.git && cd Simplified-iOS && git submodule update --init --recursive'
 2. Open "Simplified.xcodeproj" and build as normal.
@@ -26,7 +26,5 @@ To build this project:
 == Building Simplified ==
 
 2. Add the configuration file Simplified+RMSDK.xcconfig to the target Simplified.
-3. Add the configuration file RDServices+RMSDK.xcconfig to the target RDServices.
-4. Add the configuration file ePub3+RMSDK.xcconfig to the targets ePub3 and ePub3-iOS.
-5. Add libADEPT.a to the "Link Binary With Libraries" section of the target Simplified.
+5. Add 'libADEPT.a' and 'libADEPT Decryption for Readium' to the "Link Binary With Libraries" section of the target Simplified.
 6. Build.
