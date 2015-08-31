@@ -173,8 +173,6 @@
 		118A0EA91992B46200792DDE /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		118A0EEE1992BA5800792DDE /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		118A0EF01992BA6000792DDE /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		A4DEC1501B5FFD040052C5AF /* RDServices.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = RDServices.xcconfig; sourceTree = "<group>"; };
-		CAE35BBE1B862C7C00BF9BC5 /* RDServices+RMSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "RDServices+RMSDK.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,8 +191,6 @@
 		118A0E1F1992B3FD00792DDE = {
 			isa = PBXGroup;
 			children = (
-				A4DEC1501B5FFD040052C5AF /* RDServices.xcconfig */,
-				CAE35BBE1B862C7C00BF9BC5 /* RDServices+RMSDK.xcconfig */,
 				118A0E2D1992B3FD00792DDE /* RDServices */,
 				118A0E2A1992B3FD00792DDE /* Frameworks */,
 				118A0E291992B3FD00792DDE /* Products */,
@@ -537,7 +533,6 @@
 /* Begin XCBuildConfiguration section */
 		118A0E491992B3FD00792DDE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A4DEC1501B5FFD040052C5AF /* RDServices.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -581,7 +576,6 @@
 		};
 		118A0E4A1992B3FD00792DDE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A4DEC1501B5FFD040052C5AF /* RDServices.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -619,7 +613,6 @@
 		};
 		118A0E4C1992B3FD00792DDE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A4DEC1501B5FFD040052C5AF /* RDServices.xcconfig */;
 			buildSettings = {
 				DSTROOT = /tmp/RDServices.dst;
 				HEADER_SEARCH_PATHS = "$(inherited)";
@@ -631,7 +624,6 @@
 		};
 		118A0E4D1992B3FD00792DDE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A4DEC1501B5FFD040052C5AF /* RDServices.xcconfig */;
 			buildSettings = {
 				DSTROOT = /tmp/RDServices.dst;
 				HEADER_SEARCH_PATHS = "$(inherited)";

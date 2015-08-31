@@ -1,0 +1,7 @@
+
+HEADER_SEARCH_PATHS = $(inherited) "$(SDKROOT)/usr/include/libxml2" "$(SRCROOT)/readium-sdk/Platform/Apple/RDServices" "$(SRCROOT)/readium-sdk/Platform/Apple/include" "$(SRCROOT)/tenprintcover-ios/TenPrintCover"
+
+WARNING_CFLAGS = -Wall -Wextra -Weverything -Wno-objc-missing-property-synthesis -Wno-c11-extensions -Wno-documentation -Wno-c++98-compat-pedantic -Wno-c++98-compat
+
+CLANG_CXX_LANGUAGE_STANDARD = gnu++0x
+CLANG_CXX_LIBRARY = libc++
