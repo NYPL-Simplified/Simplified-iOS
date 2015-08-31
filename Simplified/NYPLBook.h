@@ -20,6 +20,7 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 @property (nonatomic, readonly) NSDate *availableUntil;
 @property (nonatomic, readonly) NSString *categories;
 @property (nonatomic, readonly) NSArray *categoryStrings;
+@property (nonatomic, readonly) NSString *distributor; // nilable
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSURL *imageURL; // nilable
 @property (nonatomic, readonly) NSURL *imageThumbnailURL; // nilable
@@ -46,6 +47,7 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
                     availableCopies:(NSInteger)availableCopies
                      availableUntil:(NSDate *)availableUntil
                     categoryStrings:(NSArray *)categoryStrings
+                        distributor:(NSString *)distributor
                          identifier:(NSString *)identifier
                            imageURL:(NSURL *)imageURL
                   imageThumbnailURL:(NSURL *)imageThumbnailURL

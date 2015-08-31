@@ -10,6 +10,7 @@
 @property (nonatomic, readonly) NYPLOPDSEntryGroupAttributes *groupAttributes; // nilable
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSArray *links;
+@property (nonatomic, readonly) NSString *providerName; // nilable
 @property (nonatomic, readonly) NSDate *published; // nilable
 @property (nonatomic, readonly) NSString *publisher; // nilable
 @property (nonatomic, readonly) NSString *summary; // nilable
