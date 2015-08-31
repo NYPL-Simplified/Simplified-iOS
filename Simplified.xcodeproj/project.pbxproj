@@ -150,6 +150,7 @@
 		AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77E4AF64208439F78B3D73 /* NYPLOPDSEntry.m */; };
 		AE77EB0CB5B94AEC591E2D91 /* NYPLOPDSLink.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77ECC029F3DABDB46A64EB /* NYPLOPDSLink.m */; };
 		AE77EE7AACC975280BAB9A4C /* NYPLOPDSFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77E94D56B65997B861C0C0 /* NYPLOPDSFeed.m */; };
+		B5ED41DA1B8F6E2E009FC164 /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -435,6 +436,8 @@
 		AE77ECC029F3DABDB46A64EB /* NYPLOPDSLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLink.m; sourceTree = "<group>"; };
 		AE77EDCF05BE5D54CF8E0E70 /* NYPLOPDSType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSType.h; sourceTree = "<group>"; };
 		AE77EFD5622206475B6715A9 /* NYPLOPDSType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSType.m; sourceTree = "<group>"; };
+		B5ED41D81B8F6E2E009FC164 /* NYPLBookButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookButtonsView.h; sourceTree = "<group>"; };
+		B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookButtonsView.m; sourceTree = "<group>"; };
 		CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Simplified+RMSDK.xcconfig"; sourceTree = "<group>"; };
 		CAE35BC11B86308D00BF9BC5 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -548,6 +551,8 @@
 		112C5A001AA2A1DA00D5A06B /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				B5ED41D81B8F6E2E009FC164 /* NYPLBookButtonsView.h */,
+				B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */,
 				11580AC61986A77B00949A15 /* NYPLBookCell.h */,
 				11580AC71986A77B00949A15 /* NYPLBookCell.m */,
 				1120749119D20BF9008203A4 /* NYPLBookCellCollectionViewController.h */,
@@ -1110,6 +1115,7 @@
 				11548C0E1939147D009DBF2E /* NYPLCatalogNavigationController.m in Sources */,
 				111E75891A818C1F00718AD7 /* NYPLSettingsCreditsViewController.m in Sources */,
 				A46226271B39D4980063F549 /* NYPLOPDSGroup.m in Sources */,
+				B5ED41DA1B8F6E2E009FC164 /* NYPLBookButtonsView.m in Sources */,
 				111197341986D7550014462F /* NYPLDismissibleViewController.m in Sources */,
 				A823D81D192BABA400B55DE2 /* main.m in Sources */,
 				1107835E19816E3D0071AB1E /* UIView+NYPLViewAdditions.m in Sources */,

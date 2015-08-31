@@ -27,23 +27,21 @@
 
 #pragma mark NYPLBookNormalCellDelegate
 
-- (void)didSelectReturnForBookNormalCell:(NYPLBookNormalCell *const)cell
+- (void)didSelectReturnForBook:(NYPLBook *)book
 {
-  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] returnBookWithIdentifier:cell.book.identifier];
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] returnBookWithIdentifier:book.identifier];
 }
 
-- (void)didSelectDownloadForBookNormalCell:(NYPLBookNormalCell *const)cell
+- (void)didSelectDownloadForBook:(NYPLBook *)book
 {
-  NYPLBook *const book = cell.book;
-  
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
 }
 
-- (void)didSelectReadForBookNormalCell:(NYPLBookNormalCell *const)cell
+- (void)didSelectReadForBook:(NYPLBook *)book
 {
   [[NYPLRootTabBarController sharedController]
    pushViewController:[[NYPLReaderViewController alloc]
-                       initWithBookIdentifier:cell.book.identifier]
+                       initWithBookIdentifier:book.identifier]
    animated:YES];
 }
 

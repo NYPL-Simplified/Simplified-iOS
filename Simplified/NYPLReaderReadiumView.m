@@ -270,6 +270,10 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     } else {
       NYPLLOG(@"Ignoring unknown simplified function.");
     }
+    
+    if ([function containsString:@"gesture"]) {
+      [self.delegate rendererDidRegisterGesture:self];
+    }
     return NO;
   }
   

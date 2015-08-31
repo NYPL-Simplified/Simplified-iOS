@@ -12,6 +12,7 @@
 - (void)didSelectDownloadForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectReadForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectTryAgainForBookDetailView:(NYPLBookDetailView *)detailView;
+- (void)didSelectCloseButton:(NYPLBookDetailView *)detailView;
 
 @end
 
