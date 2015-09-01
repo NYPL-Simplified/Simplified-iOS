@@ -172,6 +172,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   NYPLRoundedButton *const settingsButton = [NYPLRoundedButton button];
+  settingsButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"ReaderSettings", nil)];
   [settingsButton setTitle:@"Aa" forState:UIControlStateNormal];
   [settingsButton sizeToFit];
   // We set a larger font after sizing because we want large text in a standard-size button.
@@ -183,6 +184,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
   
   NYPLRoundedButton *const TOCButton = [NYPLRoundedButton button];
+  TOCButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"TOC", nil)];
   TOCButton.bounds = settingsButton.bounds;
   [TOCButton setImage:[UIImage imageNamed:@"TOC"] forState:UIControlStateNormal];
   [TOCButton addTarget:self
@@ -338,6 +340,11 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
 {
   assert(popoverController == self.activePopoverController);
+  
+  if(UIAccessibilityIsVoiceOverRunning())
+  {
+    self.interfaceHidden = YES;
+  }
   
   self.activePopoverController = nil;
 }

@@ -559,7 +559,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 - (void)reset
 {
   for(NYPLMyBooksDownloadInfo *const info in [self.bookIdentifierToDownloadInfo allValues]) {
-    [info.downloadTask cancelByProducingResumeData:nil];
+    [info.downloadTask cancelByProducingResumeData:^(__unused NSData *resumeData) {}];
   }
   
   [self.bookIdentifierToDownloadInfo removeAllObjects];

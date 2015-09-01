@@ -13,6 +13,7 @@
 @property (nonatomic) NSInteger availableCopies;
 @property (nonatomic) NSDate *availableUntil;
 @property (nonatomic) NSArray *categoryStrings;
+@property (nonatomic) NSString *distributor;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSURL *imageURL;
 @property (nonatomic) NSURL *imageThumbnailURL;
@@ -31,6 +32,7 @@ static NSString *const AvailabilityStatusKey = @"availability-status";
 static NSString *const AvailableCopiesKey = @"available-copies";
 static NSString *const AvailableUntilKey = @"available-until";
 static NSString *const CategoriesKey = @"categories";
+static NSString *const DistributorKey = @"distributor";
 static NSString *const IdentifierKey = @"id";
 static NSString *const ImageURLKey = @"image";
 static NSString *const ImageThumbnailURLKey = @"image-thumbnail";
@@ -124,6 +126,7 @@ static NSString *const UpdatedKey = @"updated";
           availableCopies:availableCopies
           availableUntil:availableUntil
           categoryStrings:entry.categoryStrings
+          distributor:entry.providerName
           identifier:entry.identifier
           imageURL:image
           imageThumbnailURL:imageThumbnail
@@ -144,6 +147,7 @@ static NSString *const UpdatedKey = @"updated";
           availableCopies:self.availableCopies
           availableUntil:self.availableUntil
           categoryStrings:book.categoryStrings
+          distributor:book.distributor
           identifier:self.identifier
           imageURL:book.imageURL
           imageThumbnailURL:book.imageThumbnailURL
@@ -161,6 +165,7 @@ static NSString *const UpdatedKey = @"updated";
                     availableCopies:(NSInteger)availableCopies
                      availableUntil:(NSDate *)availableUntil
                     categoryStrings:(NSArray *)categoryStrings
+                        distributor:(NSString *)distributor
                          identifier:(NSString *)identifier
                            imageURL:(NSURL *)imageURL
                   imageThumbnailURL:(NSURL *)imageThumbnailURL
@@ -190,6 +195,7 @@ static NSString *const UpdatedKey = @"updated";
   self.availableCopies = availableCopies;
   self.availableUntil = availableUntil;
   self.categoryStrings = categoryStrings;
+  self.distributor = distributor;
   self.identifier = identifier;
   self.imageURL = imageURL;
   self.imageThumbnailURL = imageThumbnailURL;
@@ -223,6 +229,8 @@ static NSString *const UpdatedKey = @"updated";
   
   self.categoryStrings = dictionary[CategoriesKey];
   if(!self.categoryStrings) return nil;
+  
+  self.distributor = NYPLNullToNil(dictionary[DistributorKey]);
   
   self.identifier = dictionary[IdentifierKey];
   if(!self.identifier) return nil;
@@ -259,6 +267,7 @@ static NSString *const UpdatedKey = @"updated";
            AvailableCopiesKey: @(self.availableCopies),
            AvailableUntilKey: NYPLNullFromNil([self.availableUntil RFC3339String]),
            CategoriesKey: self.categoryStrings,
+           DistributorKey: NYPLNullFromNil(self.distributor),
            IdentifierKey: self.identifier,
            ImageURLKey: NYPLNullFromNil([self.imageURL absoluteString]),
            ImageThumbnailURLKey: NYPLNullFromNil([self.imageThumbnailURL absoluteString]),
