@@ -71,31 +71,13 @@ static NSString * const offlineEULAPathComponent = @"eula.html";
   [self.view addSubview:self.webView];
   [self loadWebView];
   
-  UIButton *const acceptButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  acceptButton.titleLabel.font = [UIFont systemFontOfSize:21];
-  NSString *const acceptTitle = NSLocalizedString(@"Accept", nil);
-  acceptButton.translatesAutoresizingMaskIntoConstraints = NO;
-  [acceptButton setTitle:acceptTitle forState:UIControlStateNormal];
-  [acceptButton sizeToFit];
-  acceptButton.frame = CGRectMake(self.view.frame.origin.x + 10, self.webView.frame.origin.y + self.webView.frame.size.height, CGRectGetWidth(acceptButton.frame), CGRectGetHeight(acceptButton.frame));
-  [acceptButton addTarget:self
-                   action:@selector(acceptedEULA)
-         forControlEvents:UIControlEventTouchUpInside];
-  acceptButton.exclusiveTouch = YES;
-  [self.view addSubview:acceptButton];
-  NSLayoutConstraint *bottomAcceptSpaceConstraint = [NSLayoutConstraint constraintWithItem:acceptButton attribute:NSLayoutAttributeBottomMargin relatedBy:NSLayoutRelationEqual toItem: self.webView attribute:NSLayoutAttributeBottomMargin multiplier:1.f constant:acceptButton.frame.size.height];
-  
-  NSLayoutConstraint *horizontalAcceptSpaceConstraint = [NSLayoutConstraint constraintWithItem:acceptButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeLeading multiplier:1.f constant:10];
-  [self.view addConstraint:bottomAcceptSpaceConstraint];
-  [self.view addConstraint:horizontalAcceptSpaceConstraint];
-  
   UIButton *const rejectButton = [UIButton buttonWithType:UIButtonTypeSystem];
   rejectButton.titleLabel.font = [UIFont systemFontOfSize:21];
   NSString *const rejectTitle = NSLocalizedString(@"Reject", nil);
   rejectButton.translatesAutoresizingMaskIntoConstraints = NO;
   [rejectButton setTitle:rejectTitle forState:UIControlStateNormal];
   [rejectButton sizeToFit];
-  rejectButton.frame = CGRectMake( (self.view.frame.origin.x + self.view.frame.size.width) - CGRectGetWidth(rejectButton.frame) - 10 , acceptButton.frame.origin.y, CGRectGetWidth(rejectButton.frame), CGRectGetHeight(rejectButton.frame));
+  rejectButton.frame = CGRectMake(self.view.frame.origin.x + 10, self.webView.frame.origin.y + self.webView.frame.size.height, CGRectGetWidth(rejectButton.frame), CGRectGetHeight(rejectButton.frame));
   [rejectButton addTarget:self
                    action:@selector(rejectedEULA)
          forControlEvents:UIControlEventTouchUpInside];
@@ -103,9 +85,27 @@ static NSString * const offlineEULAPathComponent = @"eula.html";
   [self.view addSubview:rejectButton];
   NSLayoutConstraint *bottomRejectSpaceConstraint = [NSLayoutConstraint constraintWithItem:rejectButton attribute:NSLayoutAttributeBottomMargin relatedBy:NSLayoutRelationEqual toItem: self.webView attribute:NSLayoutAttributeBottomMargin multiplier:1.f constant:rejectButton.frame.size.height];
   
-  NSLayoutConstraint *horizontalRejectSpaceConstraint = [NSLayoutConstraint constraintWithItem:rejectButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeTrailing multiplier:1.f constant:-10];
+  NSLayoutConstraint *horizontalRejectSpaceConstraint = [NSLayoutConstraint constraintWithItem:rejectButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeLeading multiplier:1.f constant:10];
   [self.view addConstraint:bottomRejectSpaceConstraint];
   [self.view addConstraint:horizontalRejectSpaceConstraint];
+  
+  UIButton *const acceptButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  acceptButton.titleLabel.font = [UIFont systemFontOfSize:21];
+  NSString *const acceptTitle = NSLocalizedString(@"Accept", nil);
+  acceptButton.translatesAutoresizingMaskIntoConstraints = NO;
+  [acceptButton setTitle:acceptTitle forState:UIControlStateNormal];
+  [acceptButton sizeToFit];
+  acceptButton.frame = CGRectMake( (self.view.frame.origin.x + self.view.frame.size.width) - CGRectGetWidth(acceptButton.frame) - 10 , rejectButton.frame.origin.y, CGRectGetWidth(acceptButton.frame), CGRectGetHeight(acceptButton.frame));
+  [acceptButton addTarget:self
+                   action:@selector(acceptedEULA)
+         forControlEvents:UIControlEventTouchUpInside];
+  acceptButton.exclusiveTouch = YES;
+  [self.view addSubview:acceptButton];
+  NSLayoutConstraint *bottomAcceptSpaceConstraint = [NSLayoutConstraint constraintWithItem:acceptButton attribute:NSLayoutAttributeBottomMargin relatedBy:NSLayoutRelationEqual toItem: self.webView attribute:NSLayoutAttributeBottomMargin multiplier:1.f constant:acceptButton.frame.size.height];
+  
+  NSLayoutConstraint *horizontalAcceptSpaceConstraint = [NSLayoutConstraint constraintWithItem:acceptButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeTrailing multiplier:1.f constant:-10];
+  [self.view addConstraint:bottomAcceptSpaceConstraint];
+  [self.view addConstraint:horizontalAcceptSpaceConstraint];
   
   self.activityIndicatorView =
   [[UIActivityIndicatorView alloc]
