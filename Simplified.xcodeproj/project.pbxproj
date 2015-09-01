@@ -110,6 +110,9 @@
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
 		5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
 		5A6929101B95ACD100FB4C10 /* sdk.css in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290F1B95ACD100FB4C10 /* sdk.css */; };
+		5A69291E1B95C8AD00FB4C10 /* readium-shared-js_all.js.map in Sources */ = {isa = PBXBuildFile; fileRef = 5A69291D1B95C8AD00FB4C10 /* readium-shared-js_all.js.map */; };
+		5A6929241B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A6929231B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js */; };
+		5A6929251B95C93B00FB4C10 /* readium-shared-js_all.js.map in Resources */ = {isa = PBXBuildFile; fileRef = 5A69291D1B95C8AD00FB4C10 /* readium-shared-js_all.js.map */; };
 		5AB1F72D1B8CA4AC005BAE0E /* NYPLAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AB1F72C1B8CA4AC005BAE0E /* NYPLAlertView.m */; };
 		5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
 		8418C0481B75176B00FAB724 /* eula.html in Resources */ = {isa = PBXBuildFile; fileRef = 8418C0461B75176B00FAB724 /* eula.html */; };
@@ -374,6 +377,8 @@
 		5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NYPLReaderContainerDelegate.mm; sourceTree = "<group>"; };
 		5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-shared-js_all.js"; path = "readium-shared-js/build-output/_single-bundle/readium-shared-js_all.js"; sourceTree = SOURCE_ROOT; };
 		5A69290F1B95ACD100FB4C10 /* sdk.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = sdk.css; path = "readium-shared-js/build-output/css/sdk.css"; sourceTree = SOURCE_ROOT; };
+		5A69291D1B95C8AD00FB4C10 /* readium-shared-js_all.js.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = "readium-shared-js_all.js.map"; path = "readium-shared-js/build-output/_single-bundle/readium-shared-js_all.js.map"; sourceTree = SOURCE_ROOT; };
+		5A6929231B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-shared-js_all.js.bundles.js"; path = "readium-shared-js/build-output/_single-bundle/readium-shared-js_all.js.bundles.js"; sourceTree = SOURCE_ROOT; };
 		5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Adobe Content Filter.xcodeproj"; path = "adobe-content-filter/build/iOS/Adobe Content Filter.xcodeproj"; sourceTree = "<group>"; };
 		5AB1F72B1B8CA4AC005BAE0E /* NYPLAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAlertView.h; sourceTree = "<group>"; };
 		5AB1F72C1B8CA4AC005BAE0E /* NYPLAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAlertView.m; sourceTree = "<group>"; };
@@ -647,6 +652,8 @@
 				11C113CF19F842B9005B3F63 /* reader.html */,
 				11C113D519F84613005B3F63 /* simplified.js */,
 				5A69290F1B95ACD100FB4C10 /* sdk.css */,
+				5A6929231B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js */,
+				5A69291D1B95C8AD00FB4C10 /* readium-shared-js_all.js.map */,
 				5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */,
 			);
 			name = Reader;
@@ -1061,8 +1068,10 @@
 				111E758D1A840DC500718AD7 /* credits.css in Resources */,
 				5A6929101B95ACD100FB4C10 /* sdk.css in Resources */,
 				84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */,
+				5A6929251B95C93B00FB4C10 /* readium-shared-js_all.js.map in Resources */,
 				11C113D219F842BE005B3F63 /* host_app_feedback.js in Resources */,
 				8418C0481B75176B00FAB724 /* eula.html in Resources */,
+				5A6929241B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js in Resources */,
 				84B7A3481B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf in Resources */,
 				84FCD2741B7BAC0A00BFEDD9 /* PreloadedContent in Resources */,
 			);
@@ -1107,6 +1116,7 @@
 				1139DA6519C7755D00A07810 /* NYPLBookCoverRegistry.m in Sources */,
 				11119742198827850014462F /* NYPLBookDetailDownloadingView.m in Sources */,
 				11068C55196DD37900E8A94B /* NYPLNull.m in Sources */,
+				5A69291E1B95C8AD00FB4C10 /* readium-shared-js_all.js.map in Sources */,
 				1111973C19880E8D0014462F /* NYPLLinearView.m in Sources */,
 				11396FB9193D289100E16EE8 /* NSDate+NYPLDateAdditions.m in Sources */,
 				1183F347194F744D00DC322F /* NYPLBook.m in Sources */,
