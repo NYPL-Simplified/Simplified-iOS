@@ -53,6 +53,7 @@ BOOL NYPLReaderSettingsIncreasedFontSize(NYPLReaderSettingsFontSize input,
 + (NYPLReaderSettings *)sharedSettings;
 
 @property (nonatomic, readonly) UIColor *backgroundColor;
+@property (nonatomic, readonly) UIColor *backgroundMediaOverlayHighlightColor;
 @property (nonatomic) NYPLReaderSettingsColorScheme colorScheme;
 @property (nonatomic) NYPLReaderSettingsFontFace fontFace;
 @property (nonatomic) NYPLReaderSettingsFontSize fontSize;

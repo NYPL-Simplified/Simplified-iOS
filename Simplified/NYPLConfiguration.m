@@ -62,6 +62,18 @@ static NSString *const NYPLCirculationBaseURLTesting = @"http://circulation.alph
   return [UIColor colorWithRed:242/255.0 green:228/255.0 blue:203/255.0 alpha:1.0];
 }
 
++(UIColor *)backgroundMediaOverlayHighlightColor {
+  return [UIColor yellowColor];
+}
+
++(UIColor *)backgroundMediaOverlayHighlightDarkColor {
+  return [UIColor orangeColor];
+}
+
++(UIColor *)backgroundMediaOverlayHighlightSepiaColor {
+  return [UIColor yellowColor];
+}
+
 + (NSString *)systemFontName
 {
   return @"AvenirNext-Medium";

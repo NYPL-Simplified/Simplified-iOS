@@ -29,4 +29,11 @@
 
 + (NSString *)boldSystemFontName;
 
++ (UIColor *)backgroundMediaOverlayHighlightColor;
+
++ (UIColor *)backgroundMediaOverlayHighlightDarkColor;
+
++ (UIColor *)backgroundMediaOverlayHighlightSepiaColor;
+
+
 @end
