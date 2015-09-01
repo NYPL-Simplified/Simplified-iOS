@@ -76,6 +76,8 @@
   
   self.hidesBottomBarWhenPushed = YES;
   
+  [[NYPLBookRegistry sharedRegistry] delaySyncCommit];
+  
   [[NYPLBookRegistry sharedRegistry]
    setState:NYPLBookStateUsed
    forIdentifier:self.bookIdentifier];
@@ -90,6 +92,11 @@
   [self.view addGestureRecognizer:self.tapGestureRecognizer];
   
   return self;
+}
+
+- (void)dealloc
+{
+  [[NYPLBookRegistry sharedRegistry] stopDelaySyncCommit];
 }
 
 - (void)didReceiveGesture:(__attribute__((unused)) UIGestureRecognizer *const)gestureRecognizer

@@ -17,6 +17,8 @@
 @property (atomic) BOOL shouldBroadcast;
 @property (atomic) BOOL syncing;
 @property (atomic) BOOL syncShouldCommit;
+@property (nonatomic) BOOL delaySync;
+@property (nonatomic, copy) void (^delayedSyncBlock)();
 
 @end
 
@@ -239,38 +241,46 @@ static NSString *const RecordsKey = @"records";
        return;
      }
      
-     [self performSynchronizedWithoutBroadcasting:^{
-       NSMutableSet *identifiersToRemove = [NSMutableSet setWithArray:self.identifiersToRecords.allKeys];
-       for(NYPLOPDSEntry *const entry in feed.entries) {
-         NYPLBook *const book = [NYPLBook bookWithEntry:entry];
-         if(!book) {
-           NYPLLOG_F(@"Failed to create book for entry '%@'.", entry.identifier);
-           continue;
-         }
-         [identifiersToRemove removeObject:book.identifier];
-         NYPLBook *const existingBook = [self bookForIdentifier:book.identifier];
-         if(existingBook) {
-           [self updateBook:book];
-         } else {
-           [self addBook:book location:nil state:NYPLBookStateDownloadNeeded fulfillmentId:nil];
-         }
-       }
-       for (NSString *identifier in identifiersToRemove) {
-         if (![[[NYPLSettings sharedSettings] preloadedBookIdentifiers] containsObject:identifier]) {
-           NYPLBookRegistryRecord *record = [self.identifiersToRecords objectForKey:identifier];
-           if (record.state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed)) {
-             [[NYPLMyBooksDownloadCenter sharedDownloadCenter] deleteLocalContentForBookIdentifier:identifier];
+     void (^commitBlock)() = ^void() {
+       [self performSynchronizedWithoutBroadcasting:^{
+         NSMutableSet *identifiersToRemove = [NSMutableSet setWithArray:self.identifiersToRecords.allKeys];
+         for(NYPLOPDSEntry *const entry in feed.entries) {
+           NYPLBook *const book = [NYPLBook bookWithEntry:entry];
+           if(!book) {
+             NYPLLOG_F(@"Failed to create book for entry '%@'.", entry.identifier);
+             continue;
            }
-           [self removeBookForIdentifier:identifier];
+           [identifiersToRemove removeObject:book.identifier];
+           NYPLBook *const existingBook = [self bookForIdentifier:book.identifier];
+           if(existingBook) {
+             [self updateBook:book];
+           } else {
+             [self addBook:book location:nil state:NYPLBookStateDownloadNeeded fulfillmentId:nil];
+           }
          }
-       }
-     }];
-     self.syncing = NO;
-     [self broadcastChange];
-     [[NSOperationQueue mainQueue]
-      addOperationWithBlock:^{
-        if(handler) handler(YES);
-      }];
+         for (NSString *identifier in identifiersToRemove) {
+           if (![[[NYPLSettings sharedSettings] preloadedBookIdentifiers] containsObject:identifier]) {
+             NYPLBookRegistryRecord *record = [self.identifiersToRecords objectForKey:identifier];
+             if (record.state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed)) {
+               [[NYPLMyBooksDownloadCenter sharedDownloadCenter] deleteLocalContentForBookIdentifier:identifier];
+             }
+             [self removeBookForIdentifier:identifier];
+           }
+         }
+       }];
+       self.syncing = NO;
+       [self broadcastChange];
+       [[NSOperationQueue mainQueue]
+        addOperationWithBlock:^{
+          if(handler) handler(YES);
+        }];
+     };
+     
+     if(self.delaySync) {
+       self.delayedSyncBlock = commitBlock;
+     } else {
+       commitBlock();
+     }
    }];
 }
 
@@ -539,6 +549,20 @@ static NSString *const RecordsKey = @"records";
      }];
     
     return books;
+  }
+}
+
+- (void)delaySyncCommit
+{
+  self.delaySync = YES;
+}
+
+- (void)stopDelaySyncCommit
+{
+  self.delaySync = NO;
+  if(self.delayedSyncBlock) {
+    self.delayedSyncBlock();
+    self.delayedSyncBlock = nil;
   }
 }
 
