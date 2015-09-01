@@ -145,6 +145,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
                                            availableCopies:0
                                             availableUntil:nil
                                            categoryStrings:@[@"Preloaded"]
+                                               distributor:@"Preloaded"
                                                 identifier:bookID
                                                   imageURL:[NSURL fileURLWithPath:imagePath]
                                          imageThumbnailURL:[NSURL fileURLWithPath:imagePath]
