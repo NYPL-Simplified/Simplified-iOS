@@ -11,6 +11,8 @@
 #import "UIColor+NYPLColorAdditions.h"
 #import "NYPLLog.h"
 #import "NYPLReaderReadiumView.h"
+#import "UIColor+NYPLColorAdditions.h"
+#import "NYPLConfiguration.h"
 
 @interface NYPLReaderReadiumView ()
   <NYPLReaderRenderer, RDPackageResourceServerDelegate, UIScrollViewDelegate,
@@ -195,8 +197,23 @@ static void generateTOCElements(NSArray *const navigationElements,
      @"document.body.style.backgroundColor = \"%@\";",
      stylesString,
      [[NYPLReaderSettings sharedSettings].backgroundColor javascriptHexString]];
-    
     [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
+    
+    
+    NSString *javascriptToChangeHighlightColour = [NSString stringWithFormat:@" \
+                                                   window.nsRdHighlightColor = '%@'; \
+                                                   var reader = ReadiumSDK.reader; \
+                                                   var stylesheetText = function(color){return \".-epub-media-overlay-active {background-color: \" + color + \" !important;}\"}; \
+                                                   \
+                                                   _.each(reader.getLoadedSpineItems(), function(spineItem){ \
+                                                   var el = reader.getElement(spineItem, '#ns-rd-custom-styles'); \
+                                                   if (el) { \
+                                                   el[0].textContent = stylesheetText(window.nsRdHighlightColor); \
+                                                   } \
+                                                   }); \
+                                                   ",  [NYPLReaderSettings sharedSettings].backgroundMediaOverlayHighlightColor.javascriptHexString];
+    
+    [self.webView stringByEvaluatingJavaScriptFromString:javascriptToChangeHighlightColour];
     
     self.webView.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
   }];
@@ -360,6 +377,29 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   [self.webView stringByEvaluatingJavaScriptFromString:
    [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
     [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
+  
+  // this is so we can control the background colour of the media overlay highlighted text
+  NSString * javascript = [NSString stringWithFormat:@" \
+  window.nsRdHighlightColor = '%@'; \
+  var reader = ReadiumSDK.reader; \
+  var stylesheetText = function(color){return \".-epub-media-overlay-active {background-color: \" + color + \" !important;}\"}; \
+  \
+  \
+  var eventCb = function($iframe, spineItem) { \
+  var contentDoc = $iframe[0].contentDocument; \
+  var $head = $('head', contentDoc); \
+  var styleEl = contentDoc.createElement('style'); \
+  styleEl.id = 'ns-rd-custom-styles'; \
+  styleEl.type = 'text/css'; \
+  styleEl.textContent = stylesheetText(window.nsRdHighlightColor); \
+  $head.append(styleEl); \
+  }; \
+  \
+  reader.off(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \
+  reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \
+  ", [NYPLConfiguration backgroundMediaOverlayHighlightColor].javascriptHexString] ;
+  
+  [self.webView stringByEvaluatingJavaScriptFromString: javascript];
 }
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary

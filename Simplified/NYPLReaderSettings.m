@@ -361,6 +361,18 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
   }
 }
 
+- (UIColor *)backgroundMediaOverlayHighlightColor
+{
+  switch(self.colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+      return [NYPLConfiguration backgroundMediaOverlayHighlightSepiaColor];
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      return [NYPLConfiguration backgroundMediaOverlayHighlightColor];
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+      return [NYPLConfiguration backgroundMediaOverlayHighlightDarkColor];
+  }
+}
+
 - (UIColor *)foregroundColor
 {
   switch(self.colorScheme) {
