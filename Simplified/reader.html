@@ -9,11 +9,9 @@
     <script src="host_app_feedback.js" type="text/javascript"></script>
     <script src="simplified.js" type="text/javascript"></script>
     <script type="text/javascript">
-      $(document).ready(function () {
-        "use strict";
-        ReadiumSDK.reader = new ReadiumSDK.Views.ReaderView({el:"#viewport"});
-        ReadiumSDK.trigger(ReadiumSDK.Events.READER_INITIALIZED);
-      });
+        if (!window["ReadiumSDK"]) {
+            window.ReadiumSDK = {};
+        }
     </script>
     <link rel="stylesheet" type="text/css" href="sdk.css" />
   </head>
