@@ -16,14 +16,12 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
     case 1:
       switch(indexPath.row) {
         case 0:
-          return NYPLSettingsPrimaryTableViewControllerItemFeedback;
-        case 1:
           return NYPLSettingsPrimaryTableViewControllerItemCredits;
-        case 2:
+        case 1:
           return NYPLSettingsPrimaryTableViewControllerItemEULA;
-        case 3:
+        case 2:
           return NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy;
-        case 4:
+        case 3:
           return NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent;
         default:
           @throw NSInvalidArgumentException;
@@ -39,8 +37,6 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   switch(settingsItem) {
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
       return [NSIndexPath indexPathForRow:0 inSection:0];
-    case NYPLSettingsPrimaryTableViewControllerItemFeedback:
-      return [NSIndexPath indexPathForRow:0 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemCredits:
       return [NSIndexPath indexPathForRow:1 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
@@ -114,17 +110,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       return cell;
     }
-    case NYPLSettingsPrimaryTableViewControllerItemFeedback: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"Feedback", nil);
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      }
-      return cell;
-    }
     case NYPLSettingsPrimaryTableViewControllerItemEULA: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
@@ -173,7 +158,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case 0:
       return 1;
     case 1:
-      return 5;
+      return 4;
     default:
       @throw NSInternalInconsistencyException;
   }

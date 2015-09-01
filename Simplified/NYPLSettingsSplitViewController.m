@@ -78,9 +78,6 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
     case NYPLSettingsPrimaryTableViewControllerItemCredits:
       viewController = [[NYPLSettingsCreditsViewController alloc] init];
       break;
-    case NYPLSettingsPrimaryTableViewControllerItemFeedback:
-      viewController = [[NYPLSettingsFeedbackViewController alloc] init];
-      break;
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
       viewController = [[NYPLSettingsEULAViewController alloc] init];
       break;
