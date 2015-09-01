@@ -6,9 +6,11 @@
 //  Copyright (c) 2015 NYPL Labs. All rights reserved.
 //
 
+#import "NYPLBook.h"
+#import "NYPLBookAcquisition.h"
 #import "NYPLBookButtonsView.h"
 #import "NYPLRoundedButton.h"
-#import "NYPLBook.h"
+#import "NYPLSettings.h"
 
 @interface NYPLBookButtonsView ()
 
@@ -43,7 +45,7 @@
   return self;
 }
 
-- (void)updateButtons
+- (void)updateButtonFrames
 {
   NYPLRoundedButton *lastButton = nil;
   for (NYPLRoundedButton *button in self.visibleButtons) {
@@ -68,16 +70,14 @@
   self.frame = frame;
 }
 
-- (void)setState:(NYPLBookButtonsState const)state
+- (void)updateButtons
 {
-  _state = state;
-  
   NSArray *visibleButtonInfo = nil;
   static NSString *const ButtonKey = @"button";
   static NSString *const TitleKey = @"title";
   static NSString *const AddIndicatorKey = @"addIndicator";
   
-  switch(state) {
+  switch(self.state) {
     case NYPLBookButtonsStateCanBorrow:
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Borrow"}];
       break;
@@ -95,20 +95,30 @@
                             @{ButtonKey: self.deleteButton,   TitleKey: @"CancelHold"}];
       break;
     case NYPLBookButtonsStateDownloadNeeded:
+    {
+      NSString *title = self.book.availableUntil ? @"ReturnNow" : @"Delete";
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Download"},
-                            @{ButtonKey: self.deleteButton,   TitleKey: @"ReturnNow", AddIndicatorKey: @(YES)}];
+                            @{ButtonKey: self.deleteButton,   TitleKey: title, AddIndicatorKey: @(YES)}];
       break;
+    }
     case NYPLBookButtonsStateDownloadSuccessful:
       // Fallthrough
     case NYPLBookButtonsStateUsed:
+    {
+      NSString *title = self.book.availableUntil ? @"ReturnNow" : @"Delete";
       visibleButtonInfo = @[@{ButtonKey: self.readButton,     TitleKey: @"Read"},
-                            @{ButtonKey: self.deleteButton,   TitleKey: @"ReturnNow", AddIndicatorKey: @(YES)}];
+                            @{ButtonKey: self.deleteButton,   TitleKey: title, AddIndicatorKey: @(YES)}];
       break;
+    }
   }
   
   NSMutableArray *visibleButtons = [NSMutableArray array];
+  BOOL preloaded = [[[NYPLSettings sharedSettings] preloadedBookIdentifiers] containsObject:self.book.identifier];
   for (NSDictionary *buttonInfo in visibleButtonInfo) {
     NYPLRoundedButton *button = buttonInfo[ButtonKey];
+    if(button == self.deleteButton && !self.book.acquisition.revoke && !preloaded) {
+      continue;
+    }
     button.hidden = NO;
     [button setTitle:NSLocalizedString(buttonInfo[TitleKey], nil) forState:UIControlStateNormal];
     if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
@@ -132,6 +142,18 @@
     }
   }
   self.visibleButtons = visibleButtons;
+  [self updateButtonFrames];
+}
+
+- (void)setBook:(NYPLBook *)book
+{
+  _book = book;
+  [self updateButtons];
+}
+
+- (void)setState:(NYPLBookButtonsState const)state
+{
+  _state = state;
   [self updateButtons];
 }
 
