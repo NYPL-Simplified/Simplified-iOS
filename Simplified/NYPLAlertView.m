@@ -13,13 +13,13 @@
   
   if ([error.domain isEqual:NSURLErrorDomain]) {
     if (error.code == NSURLErrorNotConnectedToInternet) {
-      message = NSLocalizedString(@"NotConnected", nil);
+      message = @"NotConnected";
     } else if (error.code == NSURLErrorCancelled) {
-      message = NSLocalizedString(@"SettingsAccountViewControllerInvalidCredentials", nil);
+      message = @"SettingsAccountViewControllerInvalidCredentials";
     } else if (error.code == NSURLErrorTimedOut) {
-      message = NSLocalizedString(@"TimedOut", nil);
+      message = @"TimedOut";
     } else {
-      message = NSLocalizedString(@"UnknownRequestError", nil);
+      message = @"UnknownRequestError";
     }
     
   }
@@ -27,11 +27,11 @@
 #if defined(FEATURE_DRM_CONNECTOR)
   else if ([error.domain isEqual:NYPLADEPTErrorDomain]) {
     if (error.code == NYPLADEPTErrorAuthenticationFailed) {
-      message = NSLocalizedString(@"SettingsAccountViewControllerInvalidCredentials", nil);
+      message = @"SettingsAccountViewControllerInvalidCredentials";
     } else if (error.code == NYPLADEPTErrorTooManyActivations) {
-      message = NSLocalizedString(@"SettingsAccountViewControllerMessageTooManyActivations", nil);
+      message = @"SettingsAccountViewControllerMessageTooManyActivations";
     } else {
-      message = NSLocalizedString(@"UnknownRequestError", nil);
+      message = @"UnknownRequestError";
     }
   }
 #endif
