@@ -52,17 +52,14 @@ static NSString *detailTemplate = nil;
   if(!book) {
     @throw NSInvalidArgumentException;
   }
-  
-  self.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"BookDetailView.label", nil),self.book.title];
-  self.accessibilityHint = NSLocalizedString(@"BookDetailView.hint", nil);
-  
+
   self.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.book = book;
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.closeButton setTitle:@"Close" forState:UIControlStateNormal];
+    [self.closeButton setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
     [self.closeButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
     [self.closeButton addTarget:self action:@selector(closeButtonPressed) forControlEvents:UIControlEventTouchDown];
     [self addSubview:self.closeButton];
