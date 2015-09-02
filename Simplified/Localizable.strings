@@ -8,6 +8,7 @@
 "Categories" = "Categories";
 "Category" = "Category";
 "CheckConnection" = "Please check your connection and try again.";
+"Close" = "Close";
 "ConnectionFailed" = "Connection Failed";
 "Delete" = "Delete";
 "DeviceAuthorizationError" = "An error occurred while authorizing this device.";

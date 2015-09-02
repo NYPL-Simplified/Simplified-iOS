@@ -303,7 +303,7 @@ static NSString *const RecordsKey = @"records";
         message:NSLocalizedString(@"CheckConnection", nil)
         delegate:nil
         cancelButtonTitle:nil
-        otherButtonTitles:@"OK", nil]
+        otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
        show];
     }
   }];
