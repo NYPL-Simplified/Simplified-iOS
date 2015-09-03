@@ -348,6 +348,27 @@ static NSString *const RecordsKey = @"records";
   }
 }
 
+- (void)updateAndRemoveBook:(NYPLBook *)book
+{
+  if(!book) {
+    @throw NSInvalidArgumentException;
+  }
+  
+  @synchronized(self) {
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[book.identifier];
+    if(record) {
+      self.identifiersToRecords[book.identifier] = [[record recordWithBook:book] recordWithState:NYPLBookStateUnregistered];
+      [self broadcastChange];
+      // Queue this up so it happens after the broadcast is done.
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [self performSynchronizedWithoutBroadcasting:^{
+          [self removeBookForIdentifier:book.identifier];
+        }];
+      }];
+    }
+  }
+}
+
 - (void)updateBookMetadata:(NYPLBook *)book
 {
   if(!book) {
@@ -530,7 +551,7 @@ static NSString *const RecordsKey = @"records";
 
 - (NSArray *)myBooks
 {
-  return [self booksMatchingStateMask:~NYPLBookStateHolding];
+  return [self booksMatchingStateMask:~(NYPLBookStateHolding | NYPLBookStateUnregistered)];
 }
 
 - (NSArray *)booksMatchingStateMask:(NSUInteger)mask

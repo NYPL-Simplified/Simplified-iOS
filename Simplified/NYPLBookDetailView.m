@@ -15,7 +15,6 @@
 
 @property (nonatomic) UILabel *authorsLabel;
 @property (nonatomic) BOOL beganInitialRequest;
-@property (nonatomic) NYPLBook *book;
 @property (nonatomic) UIImageView *coverImageView;
 @property (nonatomic) NYPLBookDetailDownloadFailedView *downloadFailedView;
 @property (nonatomic) NYPLBookDetailDownloadingView *downloadingView;
@@ -427,6 +426,12 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.unreadImageView.hidden = YES;
       break;
   }
+}
+
+- (void)setBook:(NYPLBook *)book
+{
+  _book = book;
+  self.normalView.book = book;
 }
 
 - (double)downloadProgress

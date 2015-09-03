@@ -46,7 +46,9 @@ static NSString *const FulfillmentIdKey = @"fulfillmentId";
            NYPLBookStateDownloading |
            NYPLBookStateDownloadNeeded |
            NYPLBookStateDownloadSuccessful |
-           NYPLBookStateUsed) & self.state) && book.availabilityStatus != NYPLBookAvailabilityStatusUnknown) {
+           NYPLBookStateUsed) & self.state) &&
+        book.availabilityStatus != NYPLBookAvailabilityStatusUnknown &&
+        self.state != NYPLBookStateUnregistered) {
       self.state = NYPLBookStateDownloadNeeded;
     }
   }

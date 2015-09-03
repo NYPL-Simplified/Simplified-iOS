@@ -8,6 +8,7 @@
 
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
+#import "NYPLBookRegistry.h"
 #import "NYPLBookButtonsView.h"
 #import "NYPLRoundedButton.h"
 #import "NYPLSettings.h"
@@ -77,6 +78,9 @@
   static NSString *const TitleKey = @"title";
   static NSString *const AddIndicatorKey = @"addIndicator";
   
+  BOOL preloaded = [[[NYPLSettings sharedSettings] preloadedBookIdentifiers] containsObject:self.book.identifier];
+  NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:self.book.identifier];
+  
   switch(self.state) {
     case NYPLBookButtonsStateCanBorrow:
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Borrow"}];
@@ -96,7 +100,7 @@
       break;
     case NYPLBookButtonsStateDownloadNeeded:
     {
-      NSString *title = self.book.availableUntil ? @"ReturnNow" : @"Delete";
+      NSString *title = (self.book.acquisition.openAccess || preloaded) ? @"Delete": @"ReturnNow";
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Download"},
                             @{ButtonKey: self.deleteButton,   TitleKey: title, AddIndicatorKey: @(YES)}];
       break;
@@ -105,7 +109,7 @@
       // Fallthrough
     case NYPLBookButtonsStateUsed:
     {
-      NSString *title = self.book.availableUntil ? @"ReturnNow" : @"Delete";
+      NSString *title = (self.book.acquisition.openAccess || preloaded) ? @"Delete" : @"ReturnNow";
       visibleButtonInfo = @[@{ButtonKey: self.readButton,     TitleKey: @"Read"},
                             @{ButtonKey: self.deleteButton,   TitleKey: title, AddIndicatorKey: @(YES)}];
       break;
@@ -113,11 +117,13 @@
   }
   
   NSMutableArray *visibleButtons = [NSMutableArray array];
-  BOOL preloaded = [[[NYPLSettings sharedSettings] preloadedBookIdentifiers] containsObject:self.book.identifier];
+  
   for (NSDictionary *buttonInfo in visibleButtonInfo) {
     NYPLRoundedButton *button = buttonInfo[ButtonKey];
-    if(button == self.deleteButton && !self.book.acquisition.revoke && !preloaded) {
-      continue;
+    if(button == self.deleteButton && !preloaded && !fulfillmentId) {
+      if(!(self.book.acquisition.revoke && self.book.acquisition.openAccess)) {
+        continue;
+      }
     }
     button.hidden = NO;
     [button setTitle:NSLocalizedString(buttonInfo[TitleKey], nil) forState:UIControlStateNormal];
