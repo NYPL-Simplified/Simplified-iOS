@@ -101,8 +101,8 @@
     case NYPLBookButtonsStateDownloadNeeded:
     {
       NSString *title = (self.book.acquisition.openAccess || preloaded) ? @"Delete": @"ReturnNow";
-      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Download"},
-                            @{ButtonKey: self.deleteButton,   TitleKey: title, AddIndicatorKey: @(YES)}];
+      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Download", AddIndicatorKey: @(YES)},
+                            @{ButtonKey: self.deleteButton,   TitleKey: title}];
       break;
     }
     case NYPLBookButtonsStateDownloadSuccessful:
@@ -110,18 +110,26 @@
     case NYPLBookButtonsStateUsed:
     {
       NSString *title = (self.book.acquisition.openAccess || preloaded) ? @"Delete" : @"ReturnNow";
-      visibleButtonInfo = @[@{ButtonKey: self.readButton,     TitleKey: @"Read"},
-                            @{ButtonKey: self.deleteButton,   TitleKey: title, AddIndicatorKey: @(YES)}];
+      visibleButtonInfo = @[@{ButtonKey: self.readButton,     TitleKey: @"Read", AddIndicatorKey: @(YES)},
+                            @{ButtonKey: self.deleteButton,   TitleKey: title}];
       break;
     }
   }
   
   NSMutableArray *visibleButtons = [NSMutableArray array];
   
+  BOOL fulfillmentIdRequired = NO;
+  #if defined(FEATURE_DRM_CONNECTOR)
+  
+  // It's required unless the book is being held and has a revoke link
+  fulfillmentIdRequired = !(self.state == NYPLBookButtonsStateHolding && self.book.acquisition.revoke);
+  
+  #endif
+  
   for (NSDictionary *buttonInfo in visibleButtonInfo) {
     NYPLRoundedButton *button = buttonInfo[ButtonKey];
-    if(button == self.deleteButton && !preloaded && !fulfillmentId) {
-      if(!(self.book.acquisition.revoke || self.book.acquisition.openAccess)) {
+    if(button == self.deleteButton && !preloaded && (!fulfillmentId && fulfillmentIdRequired)) {
+      if(!self.book.acquisition.openAccess) {
         continue;
       }
     }
