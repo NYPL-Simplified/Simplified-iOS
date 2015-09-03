@@ -1,4 +1,5 @@
 #import "NYPLAccount.h"
+#import "NYPLBookAcquisition.h"
 #import "NYPLBook.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
@@ -167,26 +168,33 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
   [super willReloadCollectionViewData];
   
+  NSArray *books = [[NYPLBookRegistry sharedRegistry] myBooks];
+  
   switch(self.activeFacetShow) {
     case FacetShowAll:
-      switch(self.activeFacetSort) {
-        case FacetSortAuthor:
-          self.books = [[[NYPLBookRegistry sharedRegistry] myBooks] sortedArrayUsingComparator:
-                        ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
-                          return [a.authors compare:b.authors options:NSCaseInsensitiveSearch];
-                        }];
-          return;
-        case FacetSortTitle:
-          self.books = [[[NYPLBookRegistry sharedRegistry] myBooks] sortedArrayUsingComparator:
-                        ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
-                          return [a.title compare:b.title options:NSCaseInsensitiveSearch];
-                        }];
-          return;
-      }
       break;
     case FacetShowOnLoan:
-      self.books = @[];
+      books = [books filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NYPLBook *book, __unused NSDictionary *bindings) {
+        return book.acquisition.revoke != nil;
+      }]];
+      break;
+  }
+  
+  switch(self.activeFacetSort) {
+    case FacetSortAuthor: {
+      self.books = [books sortedArrayUsingComparator:
+                    ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
+                      return [a.authors compare:b.authors options:NSCaseInsensitiveSearch];
+                    }];
       return;
+    }
+    case FacetSortTitle: {
+      self.books = [books sortedArrayUsingComparator:
+                    ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
+                      return [a.title compare:b.title options:NSCaseInsensitiveSearch];
+                    }];
+      return;
+    }
   }
   
   @throw NSInternalInconsistencyException;
