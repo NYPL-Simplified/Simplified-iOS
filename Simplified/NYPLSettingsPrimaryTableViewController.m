@@ -1,4 +1,5 @@
 #import "NYPLConfiguration.h"
+#import "NYPLSettings.h"
 
 #import "NYPLSettingsPrimaryTableViewController.h"
 
@@ -23,6 +24,8 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
           return NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy;
         case 3:
           return NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent;
+        case 4:
+          return NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL;
         default:
           @throw NSInvalidArgumentException;
       }
@@ -43,10 +46,16 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
       return [NSIndexPath indexPathForRow:2 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
       return [NSIndexPath indexPathForRow:3 inSection:1];
-      case NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent:
+    case NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent:
       return [NSIndexPath indexPathForRow:4 inSection:1];
+    case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
+      return [NSIndexPath indexPathForRow:5 inSection:1];
   }
 }
+
+@interface NYPLSettingsPrimaryTableViewController () <UITextFieldDelegate>
+
+@end
 
 @implementation NYPLSettingsPrimaryTableViewController
 
@@ -143,6 +152,23 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       return cell;
     }
+    case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      UITextField *field = [[UITextField alloc] initWithFrame:CGRectMake(20, 0, cell.frame.size.width-20, cell.frame.size.height)];
+      field.delegate = self;
+      field.text = [NYPLSettings sharedSettings].customMainFeedURL.absoluteString;
+      field.borderStyle = UITextBorderStyleRoundedRect;
+      field.placeholder = @"Enter a custom HTTP OPDS URL";
+      field.keyboardType = UIKeyboardTypeURL;
+      field.returnKeyType = UIReturnKeyDone;
+      field.spellCheckingType = UITextSpellCheckingTypeNo;
+      field.autocorrectionType = UITextAutocorrectionTypeNo;
+      field.autocapitalizationType = UITextAutocapitalizationTypeNone;
+      [cell.contentView addSubview:field];
+      return cell;
+    }
   }
 }
 
@@ -158,10 +184,28 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case 0:
       return 1;
     case 1:
-      return 4;
+      return 5;
     default:
       @throw NSInternalInconsistencyException;
   }
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *const)textField
+{
+  [textField resignFirstResponder];
+  
+  NSString *const feed = [textField.text stringByTrimmingCharactersInSet:
+                          [NSCharacterSet whitespaceCharacterSet]];
+  
+  if(feed.length) {
+    [NYPLSettings sharedSettings].customMainFeedURL = [NSURL URLWithString:feed];
+  } else {
+    [NYPLSettings sharedSettings].customMainFeedURL = nil;
+  }
+  
+  return YES;
 }
 
 @end

@@ -37,6 +37,7 @@
 - (void) reloadSelected {
   if ([[self.visibleViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] && [self.visibleViewController respondsToSelector:@selector(load)]) {
     NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
+    viewController.URL = [NYPLConfiguration mainFeedURL]; // It may have changed
     [viewController load];
   }
 }
