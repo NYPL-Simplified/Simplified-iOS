@@ -18,7 +18,7 @@
 
 @interface NYPLBookDetailView : UIScrollView
 
-@property (nonatomic, readonly) NYPLBook *book;
+@property (nonatomic) NYPLBook *book;
 @property (nonatomic, weak) id<NYPLBookDetailViewDelegate> detailViewDelegate;
 @property (nonatomic) double downloadProgress;
 @property (nonatomic) NYPLBookState state;

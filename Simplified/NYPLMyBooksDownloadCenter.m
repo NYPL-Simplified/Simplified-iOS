@@ -280,13 +280,13 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 #endif
   
   if(book.acquisition.revoke) {
-    [[NYPLSession sharedSession] withURL:book.acquisition.revoke completionHandler:^(__unused NSData *data, NSURLResponse *response) {
-      NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-      if(httpResponse.statusCode == 200) {
+    [NYPLOPDSFeed withURL:book.acquisition.revoke completionHandler:^(NYPLOPDSFeed *feed) {
+      if(feed && feed.entries.count == 1) {
         if(downloaded) {
           [self deleteLocalContentForBookIdentifier:identifier];
         }
-        [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
+        NYPLBook *returnedBook = [NYPLBook bookWithEntry:feed.entries[0]];
+        [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
       } else {
         [[NYPLAlertView alertWithTitle:@"ReturnFailed" message:@"ReturnCouldNotBeCompletedFormat", bookTitle] show];
       }
@@ -649,14 +649,14 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
                    atomically:YES]) {
     NYPLLOG(@"Failed to store rights data.");
   }
-
-  [[NYPLBookRegistry sharedRegistry]
-   setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
   
   if(isReturnable && fulfillmentID) {
     [[NYPLBookRegistry sharedRegistry]
      setFulfillmentId:fulfillmentID forIdentifier:book.identifier];
   }
+
+  [[NYPLBookRegistry sharedRegistry]
+   setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
 
   [self broadcastUpdate];
 }

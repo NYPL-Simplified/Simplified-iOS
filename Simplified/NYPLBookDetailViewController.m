@@ -47,6 +47,11 @@
     object:nil
     queue:[NSOperationQueue mainQueue]
     usingBlock:^(__attribute__((unused)) NSNotification *note) {
+      NYPLBook *newBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
+      if(newBook) {
+        self.book = newBook;
+        view.book = newBook;
+      }
       view.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
     }]];
   

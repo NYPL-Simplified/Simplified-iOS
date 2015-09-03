@@ -63,6 +63,11 @@ static NSString *const NYPLBookRegistryDidChangeNotification =
 // call this method whenever new information is obtained regardless of a given book's state.
 - (void)updateBook:(NYPLBook *)book;
 
+// This will update the book like updateBook does, but will also set its state to unregistered, then
+// broadcast the change, then remove the book from the registry. This gives any views using the book
+// a chance to update their copy with the new one, without having to keep it in the registry after.
+- (void)updateAndRemoveBook:(NYPLBook *)book;
+
 // This method should be called whenever new book information is retrieved from a server, but may
 // not include user-specific information. We want to update the metadata, but not overwrite the
 // existing availability information and acquisition URLs.
