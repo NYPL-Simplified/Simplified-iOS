@@ -121,7 +121,7 @@
   for (NSDictionary *buttonInfo in visibleButtonInfo) {
     NYPLRoundedButton *button = buttonInfo[ButtonKey];
     if(button == self.deleteButton && !preloaded && !fulfillmentId) {
-      if(!(self.book.acquisition.revoke && self.book.acquisition.openAccess)) {
+      if(!(self.book.acquisition.revoke || self.book.acquisition.openAccess)) {
         continue;
       }
     }

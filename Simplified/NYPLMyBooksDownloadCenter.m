@@ -352,11 +352,22 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)startDownloadForBook:(NYPLBook *const)book
 {
-  NYPLBookState const state = [[NYPLBookRegistry sharedRegistry]
+  NYPLBookState state = [[NYPLBookRegistry sharedRegistry]
                                stateForIdentifier:book.identifier];
+  
+  BOOL loginRequired = YES;
   
   switch(state) {
     case NYPLBookStateUnregistered:
+      if(!book.acquisition.borrow && book.acquisition.openAccess) {
+        [[NYPLBookRegistry sharedRegistry]
+         addBook:book
+         location:nil
+         state:NYPLBookStateDownloadNeeded
+         fulfillmentId:nil];
+        state = NYPLBookStateDownloadNeeded;
+        loginRequired = NO;
+      }
       break;
     case NYPLBookStateDownloading:
       // Ignore double button presses, et cetera.
@@ -374,7 +385,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       return;
   }
   
-  if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
+  if([NYPLAccount sharedAccount].hasBarcodeAndPIN || !loginRequired) {
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
       [NYPLOPDSFeed withURL:book.acquisition.borrow completionHandler:^(NYPLOPDSFeed *feed) {
@@ -397,7 +408,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       }];
     } else {
       // Actually download the book
-      NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.generic];
+      NSURL *URL = book.acquisition.generic ? book.acquisition.generic : book.acquisition.openAccess;
+      NSURLRequest *const request = [NSURLRequest requestWithURL:URL];
       
       if(!request.URL) {
         // Originally this code just let the request fail later on, but apparently resuming an
