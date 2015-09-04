@@ -140,7 +140,9 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     [indexPaths addObject:[NSIndexPath indexPathWithIndexes:indexes length:2]];
   }
   
-  [self.collectionView insertItemsAtIndexPaths:indexPaths];
+  // Just reloadData instead of inserting items, to avoid a weird crash (issue #144).
+//  [self.collectionView insertItemsAtIndexPaths:indexPaths];
+  [self.collectionView reloadData];
 }
 
 #pragma mark NYPLFacetViewDataSource
