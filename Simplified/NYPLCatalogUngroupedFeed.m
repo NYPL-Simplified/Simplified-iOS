@@ -11,7 +11,7 @@
 @interface NYPLCatalogUngroupedFeed ()
 
 @property (nonatomic) BOOL currentlyFetchingNextURL;
-@property (nonatomic) NSArray *books;
+@property (nonatomic) NSMutableArray *books;
 @property (nonatomic) NSArray *facetGroups;
 @property (nonatomic) NSUInteger greatestPreparationIndex;
 @property (nonatomic) NSURL *nextURL;
@@ -59,7 +59,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
     @throw NSInvalidArgumentException;
   }
   
-  NSMutableArray *const books = [NSMutableArray arrayWithCapacity:feed.entries.count];
+  self.books = [NSMutableArray arrayWithCapacity:feed.entries.count];
   
   for(NYPLOPDSEntry *const entry in feed.entries) {
     NYPLBook *book = [NYPLBook bookWithEntry:entry];
@@ -73,10 +73,8 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
     if(updatedBook) {
       book = updatedBook;
     }
-    [books addObject:book];
+    [self.books addObject:book];
   }
-  
-  self.books = books;
   
   NSMutableArray *const facetGroupNames = [NSMutableArray array];
   NSMutableDictionary *const facetGroupNamesToMutableFacetArrays =
@@ -171,9 +169,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
          return;
        }
        
-       NSMutableArray *const books = [self.books mutableCopy];
-       [books addObjectsFromArray:ungroupedFeed.books];
-       self.books = books;
+       [self.books addObjectsFromArray:ungroupedFeed.books];
        self.nextURL = ungroupedFeed.nextURL;
        self.currentlyFetchingNextURL = NO;
        

@@ -16,7 +16,7 @@
 
 @interface NYPLCatalogUngroupedFeed : NSObject
 
-@property (nonatomic, readonly) NSArray *books;
+@property (nonatomic, readonly) NSMutableArray *books;
 @property (nonatomic, weak) id<NYPLCatalogUngroupedFeedDelegate> delegate; // nilable
 @property (nonatomic, readonly) NSArray *facetGroups;
 @property (nonatomic, readonly) NSURL *openSearchURL; // nilable
