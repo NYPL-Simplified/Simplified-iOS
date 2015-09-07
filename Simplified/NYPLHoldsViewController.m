@@ -3,7 +3,9 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
+#import "NYPLOpenSearchDescription.h"
 #import "NYPLSettingsAccountViewController.h"
 
 #import "NYPLHoldsViewController.h"
@@ -15,6 +17,7 @@
 @property (nonatomic) NSArray *heldBooks;
 @property (nonatomic) UIBarButtonItem *syncButton;
 @property (nonatomic) UIBarButtonItem *syncInProgressButton;
+@property (nonatomic) UIBarButtonItem *searchButton;
 
 @end
 
@@ -68,7 +71,14 @@
                      initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                      target:self
                      action:@selector(didSelectSync)];
-  self.navigationItem.rightBarButtonItem = self.syncButton;
+  self.navigationItem.leftBarButtonItem = self.syncButton;
+  
+  self.searchButton = [[UIBarButtonItem alloc]
+                       initWithImage:[UIImage imageNamed:@"Search"]
+                       style:UIBarButtonItemStylePlain
+                       target:self
+                       action:@selector(didSelectSearch)];
+  self.navigationItem.rightBarButtonItem = self.searchButton;
   
   UIActivityIndicatorView *const activityIndicatorView =
   [[UIActivityIndicatorView alloc]
@@ -82,9 +92,9 @@
   self.syncInProgressButton.enabled = NO;
   
   if([NYPLBookRegistry sharedRegistry].syncing) {
-    self.navigationItem.rightBarButtonItem = self.syncInProgressButton;
+    self.navigationItem.leftBarButtonItem = self.syncInProgressButton;
   } else {
-    self.navigationItem.rightBarButtonItem = self.syncButton;
+    self.navigationItem.leftBarButtonItem = self.syncButton;
   }
 }
 
@@ -208,11 +218,20 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if([NYPLBookRegistry sharedRegistry].syncing) {
-      self.navigationItem.rightBarButtonItem = self.syncInProgressButton;
+      self.navigationItem.leftBarButtonItem = self.syncInProgressButton;
     } else {
-      self.navigationItem.rightBarButtonItem = self.syncButton;
+      self.navigationItem.leftBarButtonItem = self.syncButton;
     }
   }];
+}
+
+- (void)didSelectSearch
+{
+  NSString *title = NSLocalizedString(@"HoldsViewControllerSearchTitle", nil);
+  NYPLOpenSearchDescription *searchDescription = [[NYPLOpenSearchDescription alloc] initWithTitle:title books:[[NYPLBookRegistry sharedRegistry] heldBooks]];
+  [self.navigationController
+   pushViewController:[[NYPLCatalogSearchViewController alloc] initWithOpenSearchDescription:searchDescription]
+   animated:YES];
 }
 
 @end

@@ -8,6 +8,7 @@
 
 @property (nonatomic) NSString *humanReadableDescription;
 @property (nonatomic) NSString *OPDSURLTemplate;
+@property (nonatomic) NSArray *books;
 
 @end
 
@@ -74,6 +75,15 @@ completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
     return nil;
   }
   
+  return self;
+}
+
+- (instancetype)initWithTitle:(NSString *)title books:(NSArray *)books
+{
+  self = [super init];
+  if(!self) return nil;
+  self.books = books;
+  self.humanReadableDescription = title;
   return self;
 }
 

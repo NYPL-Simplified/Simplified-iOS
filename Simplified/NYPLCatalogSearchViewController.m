@@ -2,6 +2,7 @@
 // After it is complete, the common portions must be factored out.
 
 #import "NSString+NYPLStringAdditions.h"
+#import "NYPLBook.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogUngroupedFeed.h"
@@ -21,6 +22,7 @@
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) UISearchBar *searchBar;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
+@property (nonatomic) NSArray *books;
 
 @end
 
@@ -34,6 +36,11 @@
   self.searchDescription = searchDescription;
   
   return self;
+}
+
+- (NSArray *)books
+{
+  return _books ? _books : self.category.books;
 }
 
 #pragma mark UIViewController
@@ -105,7 +112,7 @@
 - (NSInteger)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
      numberOfItemsInSection:(__attribute__((unused)) NSInteger)section
 {
-  return self.category.books.count;
+  return self.books.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
@@ -113,7 +120,7 @@
 {
   [self.category prepareForBookIndex:indexPath.row];
   
-  NYPLBook *const book = self.category.books[indexPath.row];
+  NYPLBook *const book = self.books[indexPath.row];
   
   return NYPLBookCellDequeue(collectionView, indexPath, book);
 }
@@ -123,7 +130,7 @@
 - (void)collectionView:(__attribute__((unused)) UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
-  NYPLBook *const book = self.category.books[indexPath.row];
+  NYPLBook *const book = self.books[indexPath.row];
   
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
@@ -165,38 +172,53 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   self.searchBar.alpha = 0.5;
   [self.searchBar resignFirstResponder];
   
-  [NYPLCatalogUngroupedFeed
-   withURL:[NSURL URLWithString:
-            [self.searchDescription.OPDSURLTemplate
-             stringByReplacingOccurrencesOfString:@"{searchTerms}"
-             withString:[self.searchBar.text stringByURLEncoding]]]
-   handler:^(NYPLCatalogUngroupedFeed *const category) {
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       self.activityIndicatorView.hidden = YES;
-       [self.activityIndicatorView stopAnimating];
-       self.searchBar.userInteractionEnabled = YES;
-       self.searchBar.alpha = 1.0;
-       
-       if(!category) {
-         self.reloadView.hidden = NO;
-         return;
-       }
-       
-       self.collectionView.hidden = NO;
-       
-       self.category = category;
-       self.category.delegate = self;
-       
-       [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
-       [self.collectionView reloadData];
-       
-       if(self.category.books.count > 0) {
-         self.collectionView.hidden = NO;
-       } else {
-         self.noResultsLabel.hidden = NO;
-       }
+  if(self.searchDescription.books) {
+    self.books = [self.searchDescription.books filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NYPLBook *book, __unused NSDictionary *bindings) {
+      BOOL titleMatch = [book.title.lowercaseString containsString:self.searchBar.text.lowercaseString];
+      BOOL authorMatch = [book.authors.lowercaseString containsString:self.searchBar.text.lowercaseString];
+      return titleMatch || authorMatch;
+    }]];
+    [self updateUIAfterSearchSuccess:YES];
+  } else {
+    [NYPLCatalogUngroupedFeed
+     withURL:[NSURL URLWithString:
+              [self.searchDescription.OPDSURLTemplate
+               stringByReplacingOccurrencesOfString:@"{searchTerms}"
+               withString:[self.searchBar.text stringByURLEncoding]]]
+     handler:^(NYPLCatalogUngroupedFeed *const category) {
+       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+         if(category) {
+           self.category = category;
+           self.category.delegate = self;
+         }
+         
+         [self updateUIAfterSearchSuccess:(category != nil)];
+       }];
      }];
-   }];
+  }
+}
+
+- (void)updateUIAfterSearchSuccess:(BOOL)success
+{
+  self.activityIndicatorView.hidden = YES;
+  [self.activityIndicatorView stopAnimating];
+  self.searchBar.userInteractionEnabled = YES;
+  self.searchBar.alpha = 1.0;
+  
+  if(success) {
+    self.collectionView.hidden = NO;
+    
+    [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+    [self.collectionView reloadData];
+    
+    if(self.books.count > 0) {
+      self.collectionView.hidden = NO;
+    } else {
+      self.noResultsLabel.hidden = NO;
+    }
+  } else {
+    self.reloadView.hidden = NO;
+  }
 }
 
 - (BOOL)searchBarShouldBeginEditing:(__attribute__((unused)) UISearchBar *)searchBar

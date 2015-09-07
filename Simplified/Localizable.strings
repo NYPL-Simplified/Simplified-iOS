@@ -62,6 +62,7 @@
 // NYPLHoldsViewController
 
 "HoldsViewControllerTitle" = "Holds";
+"HoldsViewControllerSearchTitle" = "Search Holds";
 "AvailableForCheckoutHeader" = "AVAILABLE FOR CHECKOUT";
 "WaitingForAvailabilityHeader" = "WAITING FOR AVAILABILITY";
 
@@ -73,6 +74,7 @@
 // NYPLMyBooksViewController
 
 "MyBooksViewControllerTitle" = "My Books";
+"MyBooksViewControllerSearchTitle" = "Search My Books";
 "MyBooksViewControllerFacetAll" = "All";
 "MyBooksViewControllerFacetAuthor" = "Author";
 "MyBooksViewControllerFacetOnLoan" = "On Loan";
