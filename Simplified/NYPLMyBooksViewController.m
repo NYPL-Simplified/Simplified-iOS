@@ -4,9 +4,11 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLFacetBarView.h"
 #import "NYPLFacetView.h"
+#import "NYPLOpenSearchDescription.h"
 #import "NYPLSettingsAccountViewController.h"
 #import "NYPLSettings.h"
 #import "NSDate+NYPLDateAdditions.h"
@@ -42,6 +44,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) UIBarButtonItem *syncButton;
 @property (nonatomic) UIBarButtonItem *syncInProgressButton;
+@property (nonatomic) UIBarButtonItem *searchButton;
 
 @end
 
@@ -102,7 +105,14 @@ typedef NS_ENUM(NSInteger, FacetSort) {
                      initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                      target:self
                      action:@selector(didSelectSync)];
-  self.navigationItem.rightBarButtonItem = self.syncButton;
+  self.navigationItem.leftBarButtonItem = self.syncButton;
+  
+  self.searchButton = [[UIBarButtonItem alloc]
+                       initWithImage:[UIImage imageNamed:@"Search"]
+                       style:UIBarButtonItemStylePlain
+                       target:self
+                       action:@selector(didSelectSearch)];
+  self.navigationItem.rightBarButtonItem = self.searchButton;
   
   UIActivityIndicatorView *const activityIndicatorView =
     [[UIActivityIndicatorView alloc]
@@ -116,9 +126,9 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.syncInProgressButton.enabled = NO;
   
   if([NYPLBookRegistry sharedRegistry].syncing) {
-    self.navigationItem.rightBarButtonItem = self.syncInProgressButton;
+    self.navigationItem.leftBarButtonItem = self.syncInProgressButton;
   } else {
-    self.navigationItem.rightBarButtonItem = self.syncButton;
+    self.navigationItem.leftBarButtonItem = self.syncButton;
   }
 }
 
@@ -324,15 +334,14 @@ OK:
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if([NYPLBookRegistry sharedRegistry].syncing) {
-      self.navigationItem.rightBarButtonItem = self.syncInProgressButton;
+      self.navigationItem.leftBarButtonItem = self.syncInProgressButton;
     } else {
-      self.navigationItem.rightBarButtonItem = self.syncButton;
+      self.navigationItem.leftBarButtonItem = self.syncButton;
     }
   }];
 }
 
-
-- (void) preloadContentWithHandler:(void(^)(void))handler
+- (void)preloadContentWithHandler:(void(^)(void))handler
 {
   @synchronized (self) {
     NSArray *booksToPreload = [[NYPLSettings sharedSettings] booksToPreload];
@@ -343,6 +352,15 @@ OK:
     
     if (handler) handler();
   }
+}
+
+- (void)didSelectSearch
+{
+  NSString *title = NSLocalizedString(@"MyBooksViewControllerSearchTitle", nil);
+  NYPLOpenSearchDescription *searchDescription = [[NYPLOpenSearchDescription alloc] initWithTitle:title books:self.books];
+  [self.navigationController
+   pushViewController:[[NYPLCatalogSearchViewController alloc] initWithOpenSearchDescription:searchDescription]
+   animated:YES];
 }
 
 @end
