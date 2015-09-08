@@ -143,7 +143,9 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   UICollectionReusableView *view = nil;
   if(kind == UICollectionElementKindSectionHeader) {
     view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
-    view.frame = CGRectMake(0, 0, collectionView.frame.size.width, 20);
+    CGRect viewFrame = view.frame;
+    viewFrame.size = CGSizeMake(collectionView.frame.size.width, 20);
+    view.frame = viewFrame;
     UILabel *title = view.subviews.count > 0 ? view.subviews[0] : nil;
     if(!title) {
       title = [[UILabel alloc] init];
@@ -160,7 +162,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     }
     [title sizeToFit];
     CGRect frame = title.frame;
-    frame.origin = CGPointMake(10, view.center.y - frame.size.height / 2);
+    frame.origin = CGPointMake(10, view.frame.size.height / 2 - frame.size.height / 2);
     title.frame = frame;
   } else {
     // This should never happen, but avoid crashing if it does.
