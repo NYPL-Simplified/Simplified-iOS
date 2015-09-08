@@ -442,8 +442,9 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   self.webView.hidden = NO;
 }
 
-- (void) calculateBookLength {
-  NSDecimalNumber *totalLength = [[NSDecimalNumber alloc] initWithInt:0];
+- (void)calculateBookLength
+{
+  NSDecimalNumber *totalLength = [NSDecimalNumber zero];
   
   NSMutableDictionary *bookDicts = [[NSMutableDictionary alloc] init];
   
@@ -451,7 +452,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     if ([spineItem.mediaType isEqualToString:@"application/xhtml+xml"]) {
       NSURL *url =[NSURL URLWithString:[self.server.package.rootURL stringByAppendingPathComponent:spineItem.baseHref]];
       
-      NSDecimalNumber *expectedLengthDec;
+      NSDecimalNumber *expectedLengthDec = [NSDecimalNumber zero];
       NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
       request.HTTPMethod = @"HEAD";
       NSHTTPURLResponse *response;
@@ -510,7 +511,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   return nil;
 }
 
--(void) calculateProgressionWithDictionary:(NSDictionary *const)dictionary withHandler:(void(^)(void))handler {
+- (void)calculateProgressionWithDictionary:(NSDictionary *const)dictionary withHandler:(void(^)(void))handler {
   if (!self.bookMapDictionary) return;
   
   NSArray *openPagesArray = [dictionary objectForKey:@"openPages"];
@@ -526,7 +527,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   NSNumber *spineItemPageIndex = [openPagesDict objectForKey:@"spineItemPageIndex"];
   NSDecimalNumber *spineItemPageIndexDec = [NSDecimalNumber decimalNumberWithDecimal:spineItemPageIndex.decimalValue];
   
-  NSDecimalNumber *progressWithinSpineDec = [[spineItemPageIndexDec decimalNumberByDividingBy:spineItemPageCountDec] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"100"] withBehavior:numberHandler ];
+  NSDecimalNumber *progressWithinSpineDec = [[spineItemPageIndexDec decimalNumberByDividingBy:spineItemPageCountDec] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"100"] withBehavior:numberHandler];
   
   NSDecimalNumber *decimal100 = [NSDecimalNumber decimalNumberWithString:@"100"];
   NSDecimalNumber *spineItemPercentageRemaining = [decimal100 decimalNumberBySubtracting:progressWithinSpineDec];
@@ -546,7 +547,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   NSDecimalNumber *partialLengthProgressedInSpineDec = [spineItemLengthDec decimalNumberByMultiplyingBy:progressWithinSpineUnmodifiedDec withBehavior:numberHandler];
   NSDecimalNumber *totalProgressSoFarDec = [partialLengthProgressedInSpineDec decimalNumberByAdding:totalLengthSoFarDec withBehavior:numberHandler];
   
-  NSDecimalNumber *totalProgressSoFarPercentageDec = [[totalProgressSoFarDec decimalNumberByDividingBy:totalLengthDec] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"100"] withBehavior:numberHandler ];
+  NSDecimalNumber *totalProgressSoFarPercentageDec = totalLength.floatValue > 0 ? [[totalProgressSoFarDec decimalNumberByDividingBy:totalLengthDec] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"100"] withBehavior:numberHandler] : [NSDecimalNumber zero];
   
   self.spineItemPercentageRemaining = spineItemPercentageRemaining;
   self.progressWithinBook = totalProgressSoFarPercentageDec;

@@ -156,13 +156,25 @@ didFinishDownloadingToURL:(NSURL *const)location
       @throw NSInternalInconsistencyException;
           
     case NYPLMyBooksDownloadRightsManagementAdobe:
+    {
 #if defined(FEATURE_DRM_CONNECTOR)
-      [[NYPLADEPT sharedInstance]
-       fulfillWithACSMData:[NSData dataWithContentsOfURL:location]
-       tag:book.identifier];
+      NSData *ACSMData = [NSData dataWithContentsOfURL:location];
+      NSString *PDFString = @">application/pdf</dc:format>";
+      if([[[NSString alloc] initWithData:ACSMData encoding:NSUTF8StringEncoding] containsString:PDFString]) {
+        [[NYPLAlertView alertWithTitle:@"PDFNotSupported" message:@"PDFNotSupportedDescriptionFormat", book.title] show];
+        
+        [[NYPLBookRegistry sharedRegistry]
+         setState:NYPLBookStateDownloadFailed
+         forIdentifier:book.identifier];
+      } else {
+        [[NYPLADEPT sharedInstance]
+         fulfillWithACSMData:ACSMData
+         tag:book.identifier];
+      }
 #endif
       break;
-          
+    }
+      
     case NYPLMyBooksDownloadRightsManagementNone: {
       NSError *error = nil;
       
