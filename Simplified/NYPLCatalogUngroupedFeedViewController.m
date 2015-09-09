@@ -14,6 +14,8 @@
 
 #import "NYPLCatalogUngroupedFeedViewController.h"
 
+static const CGFloat kActivityIndicatorPadding = 20.0;
+
 @interface NYPLCatalogUngroupedFeedViewController ()
   <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate,
    UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
@@ -22,6 +24,7 @@
 @property (nonatomic) NYPLCatalogUngroupedFeed *feed;
 @property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
+@property (nonatomic) UIActivityIndicatorView *activityIndicator;
 
 @end
 
@@ -38,6 +41,28 @@
   self.remoteViewController = remoteViewController;
   
   return self;
+}
+
+- (UIEdgeInsets)scrollIndicatorInsets
+{
+  return UIEdgeInsetsMake(CGRectGetMaxY(self.facetBarView.frame),
+                          0,
+                          self.parentViewController.bottomLayoutGuide.length,
+                          0);
+}
+
+- (void)updateActivityIndicator
+{
+  UIEdgeInsets insets = [self scrollIndicatorInsets];
+  if(self.feed.currentlyFetchingNextURL) {
+    insets.bottom += kActivityIndicatorPadding + self.activityIndicator.frame.size.height;
+    CGRect frame = self.activityIndicator.frame;
+    frame.origin = CGPointMake(CGRectGetMidX(self.collectionView.frame) - frame.size.width/2,
+                               self.collectionView.contentSize.height + kActivityIndicatorPadding/2);
+    self.activityIndicator.frame = frame;
+  }
+  self.activityIndicator.hidden = !self.feed.currentlyFetchingNextURL;
+  self.collectionView.contentInset = insets;
 }
 
 #pragma mark UIViewController
@@ -67,6 +92,11 @@
   
   [self.collectionView reloadData];
   [self.facetBarView.facetView reloadData];
+  
+  self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  self.activityIndicator.hidden = YES;
+  [self.activityIndicator startAnimating];
+  [self.collectionView addSubview:self.activityIndicator];
 }
 
 - (void)didMoveToParentViewController:(UIViewController *)parent
@@ -80,12 +110,8 @@
                  CGRectGetWidth(self.view.frame),
                  CGRectGetHeight(self.facetBarView.frame));
     
-    UIEdgeInsets const insets = UIEdgeInsetsMake(CGRectGetMaxY(self.facetBarView.frame),
-                                                 0,
-                                                 parent.bottomLayoutGuide.length,
-                                                 0);
-    self.collectionView.contentInset = insets;
-    self.collectionView.scrollIndicatorInsets = insets;
+    [self updateActivityIndicator];
+    self.collectionView.scrollIndicatorInsets = [self scrollIndicatorInsets];
     [self.collectionView setContentOffset:CGPointMake(0, -CGRectGetMaxY(self.facetBarView.frame))
                                  animated:NO];
   }
@@ -103,6 +129,7 @@
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
   [self.feed prepareForBookIndex:indexPath.row];
+  [self updateActivityIndicator];
   
   NYPLBook *const book = self.feed.books[indexPath.row];
   
