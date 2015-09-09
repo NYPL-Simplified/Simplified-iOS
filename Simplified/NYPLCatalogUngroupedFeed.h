@@ -22,6 +22,7 @@
 @property (nonatomic, readonly) NSURL *openSearchURL; // nilable
 @property (nonatomic, readonly) NSString *searchTemplate; // nilable
 @property (nonatomic, readonly) NSString *title;
+@property (nonatomic, readonly) BOOL currentlyFetchingNextURL;
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
