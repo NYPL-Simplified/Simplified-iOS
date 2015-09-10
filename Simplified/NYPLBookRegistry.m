@@ -19,6 +19,7 @@
 @property (atomic) BOOL syncShouldCommit;
 @property (nonatomic) BOOL delaySync;
 @property (nonatomic, copy) void (^delayedSyncBlock)();
+@property (nonatomic) NSMutableSet *processingIdentifiers;
 
 @end
 
@@ -55,6 +56,7 @@ static NSString *const RecordsKey = @"records";
   
   self.coverRegistry = [[NYPLBookCoverRegistry alloc] init];
   self.identifiersToRecords = [NSMutableDictionary dictionary];
+  self.processingIdentifiers = [NSMutableSet set];
   self.shouldBroadcast = YES;
   
   void (^handlerBlock)(BOOL success)= ^(BOOL success){
@@ -107,6 +109,17 @@ static NSString *const RecordsKey = @"records";
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NYPLBookRegistryDidChangeNotification
      object:self];
+  }];
+}
+
+- (void)broadcastProcessingChangeForIdentifier:(NSString *)identifier value:(BOOL)value
+{
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLBookProcessingDidChangeNotification
+     object:self
+     userInfo:@{@"identifier": identifier,
+                @"value": @(value)}];
   }];
 }
 
@@ -460,6 +473,25 @@ static NSString *const RecordsKey = @"records";
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     return record.fulfillmentId;
+  }
+}
+
+- (void)setProcessing:(BOOL)processing forIdentifier:(NSString *)identifier
+{
+  @synchronized(self) {
+    if(processing) {
+      [self.processingIdentifiers addObject:identifier];
+    } else {
+      [self.processingIdentifiers removeObject:identifier];
+    }
+    [self broadcastProcessingChangeForIdentifier:identifier value:processing];
+  }
+}
+
+- (BOOL)processingForIdentifier:(NSString *)identifier
+{
+  @synchronized(self) {
+    return [self.processingIdentifiers containsObject:identifier];
   }
 }
 

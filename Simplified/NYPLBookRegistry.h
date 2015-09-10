@@ -9,6 +9,9 @@
 static NSString *const NYPLBookRegistryDidChangeNotification =
   @"NYPLBookRegistryDidChangeNotification";
 
+static NSString *const NYPLBookProcessingDidChangeNotification =
+@"NYPLBookProcessingDidChangeNotification";
+
 @interface NYPLBookRegistry : NSObject
 
 // Returns all registered books.
@@ -90,6 +93,12 @@ static NSString *const NYPLBookRegistryDidChangeNotification =
 
 // Sets the fulfillmentId for a book previously registered given its identifier.
 - (void)setFulfillmentId:(NSString *)fulfillmentId forIdentifier:(NSString *)identifier;
+
+// Returns whether a book is processing something, given its identifier.
+- (BOOL)processingForIdentifier:(NSString *)identifier;
+
+// Sets the processing flag for a book previously registered given its identifier.
+- (void)setProcessing:(BOOL)processing forIdentifier:(NSString *)identifier;
 
 // Returns the fulfillmentId of a book given its identifier.
 - (NSString *)fulfillmentIdForIdentifier:(NSString *)identifier;

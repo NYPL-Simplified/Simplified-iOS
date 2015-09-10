@@ -15,10 +15,12 @@
 
 @interface NYPLBookButtonsView ()
 
+@property (nonatomic) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic) NYPLRoundedButton *deleteButton;
 @property (nonatomic) NYPLRoundedButton *downloadButton;
 @property (nonatomic) NYPLRoundedButton *readButton;
 @property (nonatomic) NSArray *visibleButtons;
+@property (nonatomic) id observer;
 
 @end
 
@@ -43,7 +45,26 @@
   [self.readButton addTarget:self action:@selector(didSelectRead) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.readButton];
   
+  self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  self.activityIndicator.hidesWhenStopped = YES;
+  [self addSubview:self.activityIndicator];
+  
+  self.observer = [[NSNotificationCenter defaultCenter]
+   addObserverForName:NYPLBookProcessingDidChangeNotification
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(NSNotification *note) {
+     if([note.userInfo[@"identifier"] isEqualToString:self.book.identifier]) {
+       [self updateProcessingState];
+     }
+   }];
+  
   return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self.observer];
 }
 
 - (void)updateButtonFrames
@@ -53,14 +74,16 @@
     [button sizeToFit];
     CGRect frame = button.frame;
     if (!lastButton) {
-      lastButton = button;
       frame.origin = CGPointZero;
     } else {
       frame.origin = CGPointMake(CGRectGetMaxX(lastButton.frame) + 5,
                                  CGRectGetMinY(lastButton.frame));
     }
+    lastButton = button;
     button.frame = frame;
   }
+  self.activityIndicator.center = CGPointMake(CGRectGetMaxX(lastButton.frame) + 5 + self.activityIndicator.frame.size.width / 2,
+                                              lastButton.center.y);
 }
 
 - (void)sizeToFit
@@ -69,6 +92,19 @@
   CGRect frame = self.frame;
   frame.size = CGSizeMake(CGRectGetMaxX(lastButton.frame), CGRectGetMaxY(lastButton.frame));
   self.frame = frame;
+}
+
+- (void)updateProcessingState
+{
+  BOOL state = [[NYPLBookRegistry sharedRegistry] processingForIdentifier:self.book.identifier];
+  if(state) {
+    [self.activityIndicator startAnimating];
+  } else {
+    [self.activityIndicator stopAnimating];
+  }
+  for(NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton]) {
+    button.enabled = !state;
+  }
 }
 
 - (void)updateButtons
@@ -163,6 +199,7 @@
 {
   _book = book;
   [self updateButtons];
+  [self updateProcessingState];
 }
 
 - (void)setState:(NYPLBookButtonsState const)state

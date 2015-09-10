@@ -292,7 +292,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 #endif
   
   if(book.acquisition.revoke) {
+    [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
     [NYPLOPDSFeed withURL:book.acquisition.revoke completionHandler:^(NYPLOPDSFeed *feed) {
+      [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
       if(feed && feed.entries.count == 1) {
         if(downloaded) {
           [self deleteLocalContentForBookIdentifier:identifier];
@@ -365,7 +367,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 - (void)startDownloadForBook:(NYPLBook *const)book
 {
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry]
-                               stateForIdentifier:book.identifier];
+                         stateForIdentifier:book.identifier];
   
   BOOL loginRequired = YES;
   
@@ -400,7 +402,10 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   if([NYPLAccount sharedAccount].hasBarcodeAndPIN || !loginRequired) {
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
+      
+      [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
       [NYPLOPDSFeed withURL:book.acquisition.borrow completionHandler:^(NYPLOPDSFeed *feed) {
+        [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
         if (!feed || feed.entries.count < 1) {
           NYPLLOG(@"Failed to check out book.");
           return;
