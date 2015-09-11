@@ -53,7 +53,7 @@
 
 - (void)updateViews
 {
-  if (self.type == NYPLRoundedButtonTypeNormal) {
+  if(self.type == NYPLRoundedButtonTypeNormal) {
     self.contentEdgeInsets = UIEdgeInsetsZero;
     self.iconView.hidden = YES;
     self.label.hidden = YES;
@@ -63,7 +63,7 @@
     self.iconView.image = [[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.iconView.hidden = NO;
     self.label.hidden = NO;
-    if (self.type == NYPLRoundedButtonTypeClock) {
+    if(self.type == NYPLRoundedButtonTypeClock) {
       self.label.text = [self.endDate shortTimeUntilString];
     } else {
       self.label.text = [@(self.queuePosition) stringValue];
@@ -79,7 +79,29 @@
   }
 }
 
+- (void)updateColors
+{
+  UIColor *color = self.enabled ? self.tintColor : [UIColor grayColor];
+  self.layer.borderColor = color.CGColor;
+  self.label.textColor = color;
+  self.iconView.tintColor = color;
+}
+
+- (void)setEnabled:(BOOL)enabled
+{
+  [super setEnabled:enabled];
+  [self updateColors];
+}
+
 #pragma mark UIView
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+  if(!self.enabled && [self pointInside:[self convertPoint:point toView:self] withEvent:event]) {
+    return self;
+  }
+  return [super hitTest:point withEvent:event];
+}
 
 - (CGSize)sizeThatFits:(CGSize const)size
 {
@@ -91,9 +113,7 @@
 - (void)tintColorDidChange
 {
   [super tintColorDidChange];
-  
-  self.layer.borderColor = self.tintColor.CGColor;
-  self.label.textColor = self.tintColor;
+  [self updateColors];
 }
 
 @end
