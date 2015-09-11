@@ -133,6 +133,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self.PINTextField.font = [UIFont systemFontOfSize:17];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
   self.PINTextField.keyboardType = UIKeyboardTypeDefault;
+  self.PINTextField.secureTextEntry = YES;
   [self.PINTextField
    addTarget:self
    action:@selector(textFieldsDidChange)
