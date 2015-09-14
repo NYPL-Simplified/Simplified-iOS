@@ -276,6 +276,7 @@ static NSString *detailTemplate = nil;
   }
   
   {
+    [self.normalView sizeToFit];
     self.normalView.frame = CGRectMake(0,
                                        CGRectGetMaxY(self.coverImageView.frame) + 10.0,
                                        CGRectGetWidth(self.frame),
