@@ -18,6 +18,7 @@
 "DownloadFailed" = "Download Failed";
 "Downloading" = "Downloading";
 "Feedback" = "Feedback";
+"Hide" = "Hide"
 "Hold" = "Hold";
 "LibraryCard" = "Library Card";
 "LogIn" = "Log In";
@@ -36,6 +37,7 @@
 "ReturnFailed" = "Return Failed";
 "ReturnNow" = "Return now";
 "Settings" = "Settings";
+"Show" = "Show"
 "SignOut" = "Sign Out";
 "SignUp" = "Sign Up";
 "SyncComplete" = "Sync Complete";

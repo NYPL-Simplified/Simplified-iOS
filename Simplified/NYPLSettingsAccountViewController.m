@@ -55,7 +55,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   }
 }
 
-@interface NYPLSettingsAccountViewController () <NSURLSessionDelegate>
+@interface NYPLSettingsAccountViewController () <NSURLSessionDelegate, UITextFieldDelegate>
 
 @property (nonatomic) UITextField *barcodeTextField;
 @property (nonatomic, copy) void (^completionHandler)();
@@ -63,7 +63,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITextField *PINTextField;
 @property (nonatomic) NSURLSession *session;
-@property (nonatomic) UIView *shieldView;
+@property (nonatomic) UIButton *PINShowHideButton;
 
 @end
 
@@ -134,10 +134,18 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
   self.PINTextField.keyboardType = UIKeyboardTypeDefault;
   self.PINTextField.secureTextEntry = YES;
+  self.PINTextField.delegate = self;
   [self.PINTextField
    addTarget:self
    action:@selector(textFieldsDidChange)
    forControlEvents:UIControlEventEditingChanged];
+  
+  self.PINShowHideButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [self.PINShowHideButton setTitle:NSLocalizedString(@"Show", nil) forState:UIControlStateNormal];
+  [self.PINShowHideButton sizeToFit];
+  [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected) forControlEvents:UIControlEventTouchUpInside];
+  self.PINTextField.rightView = self.PINShowHideButton;
+  self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -204,7 +212,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-- (void) verifyLocationServicesWithHandler:(void(^)(void))handler {
+- (void)verifyLocationServicesWithHandler:(void(^)(void))handler
+{
   CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
   
   switch (status) {
@@ -333,6 +342,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
+- (BOOL)textFieldShouldBeginEditing:(__unused UITextField *)textField
+{
+  return ![[NYPLAccount sharedAccount] hasBarcodeAndPIN];
+}
+
 #pragma mark NSURLSessionDelegate
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
@@ -355,6 +369,14 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   [self.tableView reloadData];
 }
 
+- (void)PINShowHideSelected
+{
+  self.PINTextField.secureTextEntry = !self.PINTextField.secureTextEntry;
+  NSString *title = self.PINTextField.secureTextEntry ? @"Show" : @"Hide";
+  [self.PINShowHideButton setTitle:NSLocalizedString(title, nil) forState:UIControlStateNormal];
+  [self.tableView reloadData];
+}
+
 - (void)accountDidChange
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -363,14 +385,12 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
       self.barcodeTextField.enabled = NO;
       self.barcodeTextField.textColor = [UIColor grayColor];
       self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
-      self.PINTextField.enabled = NO;
       self.PINTextField.textColor = [UIColor grayColor];
     } else {
       self.barcodeTextField.text = nil;
       self.barcodeTextField.enabled = YES;
       self.barcodeTextField.textColor = [UIColor blackColor];
       self.PINTextField.text = nil;
-      self.PINTextField.enabled = YES;
       self.PINTextField.textColor = [UIColor blackColor];
     }
     
