@@ -34,7 +34,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   
   [NYPLOPDSFeed
    withURL:URL
-   completionHandler:^(NYPLOPDSFeed *const ungroupedFeed) {
+   completionHandler:^(NYPLOPDSFeed *const ungroupedFeed, __unused NSDictionary *error) {
      if(!ungroupedFeed) {
        handler(nil);
        return;

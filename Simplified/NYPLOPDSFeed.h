@@ -19,7 +19,7 @@ typedef NS_ENUM(NSInteger, NYPLOPDSFeedType) {
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
-+ (void)withURL:(NSURL *)URL completionHandler:(void (^)(NYPLOPDSFeed *feed))handler;
++ (void)withURL:(NSURL *)URL completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler;
 
 // designated initializer
 - (instancetype)initWithXML:(NYPLXML *)feedXML;

@@ -235,7 +235,7 @@ static NSString *const RecordsKey = @"records";
   
   [NYPLOPDSFeed
    withURL:[NYPLConfiguration loanURL]
-   completionHandler:^(NYPLOPDSFeed *const feed) {
+   completionHandler:^(NYPLOPDSFeed *const feed, __unused NSDictionary *error) {
      if(!feed) {
        NYPLLOG(@"Failed to obtain sync data.");
        self.syncing = NO;
