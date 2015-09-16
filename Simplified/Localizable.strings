@@ -2,6 +2,8 @@
 "Acknowledgements" = "Acknowledgements";
 "Barcode" = "Barcode";
 "Borrow" = "Borrow";
+"BorrowFailed" = "Borrowing failed";
+"BorrowCouldNotBeCompletedFormat" = "Borrowing %@ could not be completed.";
 "Cancel" = "Cancel";
 "CancelHold" = "Cancel hold";
 "Catalog" = "Catalog";

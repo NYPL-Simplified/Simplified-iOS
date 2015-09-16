@@ -293,7 +293,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   if(book.acquisition.revoke) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-    [NYPLOPDSFeed withURL:book.acquisition.revoke completionHandler:^(NYPLOPDSFeed *feed) {
+    [NYPLOPDSFeed withURL:book.acquisition.revoke completionHandler:^(NYPLOPDSFeed *feed, __unused NSDictionary *error) {
       [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
       if(feed && feed.entries.count == 1) {
         if(downloaded) {
@@ -359,7 +359,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    state:NYPLBookStateDownloadFailed
    fulfillmentId:nil];
   
-  [[NYPLAlertView alertWithTitle:@"DownloadFailed" message:@"DownloadCouldNotBeCompletedFormat", book.title] show];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [[NYPLAlertView alertWithTitle:@"DownloadFailed" message:@"DownloadCouldNotBeCompletedFormat", book.title] show];
+  });
   
   [self broadcastUpdate];
 }
@@ -404,9 +406,13 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       // Check out the book
       
       [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-      [NYPLOPDSFeed withURL:book.acquisition.borrow completionHandler:^(NYPLOPDSFeed *feed) {
+      [NYPLOPDSFeed withURL:book.acquisition.borrow completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
         [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
-        if (!feed || feed.entries.count < 1) {
+        // TODO: Actually use the error
+        if(error || !feed || feed.entries.count < 1) {
+          dispatch_async(dispatch_get_main_queue(), ^{
+            [[NYPLAlertView alertWithTitle:@"BorrowFailed" message:@"BorrowCouldNotBeCompletedFormat", book.title] show];
+          });
           NYPLLOG(@"Failed to check out book.");
           return;
         }

@@ -48,7 +48,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
 
 @implementation NYPLOPDSFeed
 
-+ (void)withURL:(NSURL *)URL completionHandler:(void (^)(NYPLOPDSFeed *feed))handler
++ (void)withURL:(NSURL *)URL completionHandler:(void (^)(NYPLOPDSFeed *feed, NSDictionary *error))handler
 {
   if(!handler) {
     @throw NSInvalidArgumentException;
@@ -57,25 +57,26 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data, __unused NSURLResponse *response) {
     if(!data) {
       NYPLLOG(@"Failed to retrieve data.");
-      NYPLAsyncDispatch(^{handler(nil);});
+      NYPLAsyncDispatch(^{handler(nil, nil);});
       return;
     }
     
     NYPLXML *const feedXML = [NYPLXML XMLWithData:data];
     if(!feedXML) {
       NYPLLOG(@"Failed to parse data as XML.");
-      NYPLAsyncDispatch(^{handler(nil);});
+      NSDictionary *error = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
+      NYPLAsyncDispatch(^{handler(nil, error);});
       return;
     }
     
     NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:feedXML];
     if(!feed) {
       NYPLLOG(@"Could not interpret XML as OPDS.");
-      NYPLAsyncDispatch(^{handler(nil);});
+      NYPLAsyncDispatch(^{handler(nil, nil);});
       return;
     }
     
-    NYPLAsyncDispatch(^{handler(feed);});
+    NYPLAsyncDispatch(^{handler(feed, nil);});
   }];
 }
 
