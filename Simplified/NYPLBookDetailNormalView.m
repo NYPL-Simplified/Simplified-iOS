@@ -11,7 +11,6 @@
 
 @property (nonatomic) UIView *backgroundView;
 @property (nonatomic) UILabel *messageLabel;
-@property (nonatomic) UILabel *distributorLabel;
 @property (nonatomic) NYPLBookButtonsView *buttonsView;
 
 @end
@@ -22,7 +21,7 @@
 
 - (instancetype)initWithWidth:(CGFloat)width
 {
-  self = [super initWithFrame:CGRectMake(0, 0, width, 100)];
+  self = [super initWithFrame:CGRectMake(0, 0, width, 70)];
   if(!self) return nil;
   
   self.backgroundView = [[UIView alloc] init];
@@ -36,13 +35,6 @@
   self.messageLabel.font = [UIFont systemFontOfSize:12];
   self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
   [self addSubview:self.messageLabel];
-  
-  self.distributorLabel = [[UILabel alloc] init];
-  self.distributorLabel.font = [UIFont systemFontOfSize:12];
-  self.distributorLabel.textColor = [UIColor grayColor];
-  self.distributorLabel.textAlignment = NSTextAlignmentCenter;
-  self.distributorLabel.numberOfLines = 1;
-  [self addSubview:self.distributorLabel];
   
   return self;
 }
@@ -66,16 +58,6 @@
   [self.messageLabel sizeToFit];
   self.messageLabel.center = self.backgroundView.center;
   [self.messageLabel integralizeFrame];
-  
-  [self.distributorLabel sizeToFit];
-  self.distributorLabel.frame = CGRectMake(CGRectGetMidX(self.frame) - CGRectGetWidth(self.distributorLabel.frame)/2,
-                                           nextY,
-                                           CGRectGetWidth(self.distributorLabel.frame),
-                                           CGRectGetHeight(self.distributorLabel.frame));
-  [self.distributorLabel integralizeFrame];
-  if (self.distributorLabel.text) {
-    nextY = CGRectGetMaxY(self.distributorLabel.frame) + padding;;
-  }
   
   [self.buttonsView sizeToFit];
   self.buttonsView.center = self.center;
@@ -137,7 +119,6 @@
 {
   _book = book;
   self.buttonsView.book = book;
-  self.distributorLabel.text = book.distributor ? [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerDistributedByFormat", nil), book.distributor] : nil;
 }
 
 @end

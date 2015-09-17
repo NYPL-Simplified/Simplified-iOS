@@ -1,4 +1,5 @@
 #import "NYPLConfiguration.h"
+#import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
 
@@ -7,7 +8,8 @@
 @interface NYPLBookDetailDownloadingView ()
 
 @property (nonatomic) NYPLRoundedButton *cancelButton;
-@property (nonatomic) UILabel *downloadingLabel;
+@property (nonatomic) UIView *backgroundView;
+@property (nonatomic) UILabel *progressLabel;
 @property (nonatomic) UILabel *percentageLabel;
 @property (nonatomic) UIProgressView *progressView;
 
@@ -20,7 +22,9 @@
   self = [super initWithFrame:CGRectMake(0, 0, width, 70)];
   if(!self) return nil;
   
-  self.backgroundColor = [NYPLConfiguration mainColor];
+  self.backgroundView = [[UIView alloc] init];
+  self.backgroundView.backgroundColor = [NYPLConfiguration mainColor];
+  [self addSubview:self.backgroundView];
   
   self.cancelButton = [NYPLRoundedButton button];
   [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
@@ -30,14 +34,13 @@
               forControlEvents:UIControlEventTouchUpInside];
   self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.cancelButton.tintColor = [NYPLConfiguration mainColor];
-  self.cancelButton.layer.borderWidth = 0;
   [self addSubview:self.cancelButton];
   
-  self.downloadingLabel = [[UILabel alloc] init];
-  self.downloadingLabel.font = [UIFont systemFontOfSize:12];
-  self.downloadingLabel.text = NSLocalizedString(@"Downloading", nil);
-  self.downloadingLabel.textColor = [NYPLConfiguration backgroundColor];
-  [self addSubview:self.downloadingLabel];
+  self.progressLabel = [[UILabel alloc] init];
+  self.progressLabel.font = [UIFont systemFontOfSize:12];
+  self.progressLabel.text = NSLocalizedString(@"Requesting", nil);
+  self.progressLabel.textColor = [NYPLConfiguration backgroundColor];
+  [self addSubview:self.progressLabel];
   
   self.percentageLabel = [[UILabel alloc] init];
   self.percentageLabel.font = [UIFont systemFontOfSize:12];
@@ -59,13 +62,15 @@
 - (void)layoutSubviews
 {
   CGFloat const sidePadding = 10;
-  CGFloat const downloadAreaTopPadding = 9;
   
-  [self.downloadingLabel sizeToFit];
-  self.downloadingLabel.frame = CGRectMake(sidePadding,
-                                           downloadAreaTopPadding,
-                                           CGRectGetWidth(self.downloadingLabel.frame),
-                                           CGRectGetHeight(self.downloadingLabel.frame));
+  self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), 30);
+  
+  [self.progressLabel sizeToFit];
+  self.progressLabel.center = self.backgroundView.center;
+  self.progressLabel.frame = CGRectMake(sidePadding,
+                                        CGRectGetMinY(self.progressLabel.frame),
+                                        CGRectGetWidth(self.progressLabel.frame),
+                                        CGRectGetHeight(self.progressLabel.frame));
   
   NSString *const percentageLabelText = self.percentageLabel.text;
   self.percentageLabel.text = @"100%";
@@ -73,15 +78,15 @@
   self.percentageLabel.text = percentageLabelText;
   self.percentageLabel.frame = CGRectMake((CGRectGetWidth(self.frame) - sidePadding -
                                            CGRectGetWidth(self.percentageLabel.frame)),
-                                          CGRectGetMinY(self.downloadingLabel.frame),
+                                          CGRectGetMinY(self.progressLabel.frame),
                                           CGRectGetWidth(self.percentageLabel.frame),
                                           CGRectGetHeight(self.percentageLabel.frame));
   
-  self.progressView.center = self.downloadingLabel.center;
-  self.progressView.frame = CGRectMake(CGRectGetMaxX(self.downloadingLabel.frame) + sidePadding,
+  self.progressView.center = self.progressLabel.center;
+  self.progressView.frame = CGRectMake(CGRectGetMaxX(self.progressLabel.frame) + sidePadding,
                                        CGRectGetMinY(self.progressView.frame),
                                        (CGRectGetWidth(self.frame) - sidePadding * 4 -
-                                        CGRectGetWidth(self.downloadingLabel.frame) -
+                                        CGRectGetWidth(self.progressLabel.frame) -
                                         CGRectGetWidth(self.percentageLabel.frame)),
                                        CGRectGetHeight(self.progressView.frame));
   [self.progressView integralizeFrame];
@@ -90,7 +95,7 @@
   self.cancelButton.center = self.center;
   self.cancelButton.frame = CGRectMake(CGRectGetMinX(self.cancelButton.frame),
                                        (CGRectGetHeight(self.frame) -
-                                        CGRectGetHeight(self.cancelButton.frame) - 5),
+                                        CGRectGetHeight(self.cancelButton.frame)),
                                        CGRectGetWidth(self.cancelButton.frame),
                                        CGRectGetHeight(self.cancelButton.frame));
   [self.cancelButton integralizeFrame];
@@ -108,6 +113,14 @@
   self.progressView.progress = downloadProgress;
   
   self.percentageLabel.text = [NSString stringWithFormat:@"%d%%", (int) (downloadProgress * 100)];
+}
+
+- (void)setDownloadStarted:(BOOL)downloadStarted
+{
+  _downloadStarted = downloadStarted;
+  NSString *status = downloadStarted ? @"Downloading" : @"Requesting";
+  self.progressLabel.text = NSLocalizedString(status, nil);
+  [self setNeedsLayout];
 }
 
 - (void)didSelectCancel

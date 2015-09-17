@@ -161,7 +161,9 @@ didFinishDownloadingToURL:(NSURL *const)location
       NSData *ACSMData = [NSData dataWithContentsOfURL:location];
       NSString *PDFString = @">application/pdf</dc:format>";
       if([[[NSString alloc] initWithData:ACSMData encoding:NSUTF8StringEncoding] containsString:PDFString]) {
-        [[NYPLAlertView alertWithTitle:@"PDFNotSupported" message:@"PDFNotSupportedDescriptionFormat", book.title] show];
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [[NYPLAlertView alertWithTitle:@"PDFNotSupported" message:@"PDFNotSupportedDescriptionFormat", book.title] show];
+        });
         
         [[NYPLBookRegistry sharedRegistry]
          setState:NYPLBookStateDownloadFailed
@@ -192,7 +194,9 @@ didFinishDownloadingToURL:(NSURL *const)location
          setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
         [[NYPLBookRegistry sharedRegistry] save];
       } else {
-        [[NYPLAlertView alertWithTitle:@"DownloadFailed" message:@"DownloadCouldNotBeCompletedFormat", book.title] show];
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [[NYPLAlertView alertWithTitle:@"DownloadFailed" message:@"DownloadCouldNotBeCompletedFormat", book.title] show];
+        });
         
         [[NYPLBookRegistry sharedRegistry]
          setState:NYPLBookStateDownloadFailed

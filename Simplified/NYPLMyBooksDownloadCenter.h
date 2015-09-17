@@ -1,4 +1,5 @@
 @class NYPLBook;
+@class NYPLMyBooksDownloadInfo;
 
 static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
   @"NYPLMyBooksDownloadCenterDidChangeNotification";
@@ -31,6 +32,9 @@ static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
 
 // The value returned is in the range [0.0, 1.0].
 - (double)downloadProgressForBookIdentifier:(NSString *)bookIdentifier;
+
+// Useful to get the DRM type, to see whether the download has gotten to the stage where that's known
+- (NYPLMyBooksDownloadInfo *)downloadInfoForBookIdentifier:(NSString *)bookIdentifier;
 
 // This returns a URL even if the book is not on-disk.
 - (NSURL *)fileURLForBookIndentifier:(NSString *)identifier;

@@ -20,6 +20,7 @@
 @property (nonatomic) NYPLBookDetailDownloadingView *downloadingView;
 @property (nonatomic) NYPLBookDetailNormalView *normalView;
 @property (nonatomic) UILabel *categoriesLabel;
+@property (nonatomic) UILabel *distributorLabel;
 @property (nonatomic) UILabel *publishedLabel;
 @property (nonatomic) UILabel *publisherLabel;
 @property (nonatomic) UILabel *subtitleLabel;
@@ -134,6 +135,12 @@ static NSString *detailTemplate = nil;
   [self.unreadImageView setTintColor:[NYPLConfiguration accentColor]];
   [self addSubview:self.unreadImageView];
   
+  self.distributorLabel = [[UILabel alloc] init];
+  self.distributorLabel.font = [UIFont systemFontOfSize:12];
+  self.distributorLabel.textColor = [UIColor grayColor];
+  self.distributorLabel.numberOfLines = 1;
+  [self addSubview:self.distributorLabel];
+  
   self.summaryWebView = [[UIWebView alloc] init];
   self.summaryWebView.scrollView.alwaysBounceVertical = NO;
   self.summaryWebView.backgroundColor = [UIColor clearColor];
@@ -179,6 +186,9 @@ static NSString *detailTemplate = nil;
         : NSLocalizedString(@"Categories", nil)),
        self.book.categories]
     : nil;
+  
+  
+  self.distributorLabel.text = book.distributor ? [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerDistributedByFormat", nil), book.distributor] : nil;
   
   // Metadata is shown via separate lines to the right of the cover. As such, we to
   // use a series of labels in order to get the desired truncation.
@@ -276,7 +286,6 @@ static NSString *detailTemplate = nil;
   }
   
   {
-    [self.normalView sizeToFit];
     self.normalView.frame = CGRectMake(0,
                                        CGRectGetMaxY(self.coverImageView.frame) + 10.0,
                                        CGRectGetWidth(self.frame),
@@ -285,6 +294,15 @@ static NSString *detailTemplate = nil;
     self.downloadingView.frame = self.normalView.frame;
     
     self.downloadFailedView.frame = self.normalView.frame;
+  }
+  
+  {
+    [self.distributorLabel sizeToFit];
+    CGFloat const x = CGRectGetWidth(self.frame) / 2 - CGRectGetWidth(self.distributorLabel.frame) / 2;
+    CGFloat const w = CGRectGetWidth(self.distributorLabel.frame);
+    CGFloat const h = CGRectGetHeight(self.distributorLabel.frame);
+    CGFloat const y = CGRectGetMaxY(self.normalView.frame) + 10.0;
+    self.distributorLabel.frame = CGRectMake(x, y, w, h);
   }
   
   {
@@ -310,7 +328,7 @@ static NSString *detailTemplate = nil;
                                                  CGFLOAT_MAX)];
     
     self.summaryWebView.frame = CGRectMake(leftPadding,
-                                           CGRectGetMaxY(self.normalView.frame) + 10,
+                                           CGRectGetMaxY(self.distributorLabel.frame) + 10,
                                            size.width,
                                            size.height);
   }
@@ -444,7 +462,19 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 {
   self.downloadingView.downloadProgress = downloadProgress;
 }
-- (void) closeButtonPressed {
+
+- (BOOL)downloadStarted
+{
+  return self.downloadingView.downloadStarted;
+}
+
+- (void)setDownloadStarted:(BOOL)downloadStarted
+{
+  self.downloadingView.downloadStarted = downloadStarted;
+}
+
+- (void)closeButtonPressed
+{
   [self.detailViewDelegate didSelectCloseButton:self];
 }
 

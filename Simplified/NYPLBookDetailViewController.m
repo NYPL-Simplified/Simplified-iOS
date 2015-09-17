@@ -1,5 +1,6 @@
 #import "NYPLBook.h"
 #import "NYPLBookDetailView.h"
+#import "NYPLMyBooksDownloadInfo.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReaderViewController.h"
@@ -63,6 +64,8 @@
     usingBlock:^(__attribute__((unused)) NSNotification *note) {
       view.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                                downloadProgressForBookIdentifier:book.identifier];
+      view.downloadStarted = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                              downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementUnknown;
     }]];
   
   return self;

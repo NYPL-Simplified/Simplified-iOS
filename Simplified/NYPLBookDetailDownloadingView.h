@@ -11,6 +11,7 @@
 
 @property (nonatomic, weak) id<NYPLBookDetailDownloadingViewDelegate> delegate;
 @property (nonatomic) double downloadProgress;
+@property (nonatomic) BOOL downloadStarted;
 
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
