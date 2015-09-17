@@ -21,6 +21,7 @@
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic, weak) id<NYPLBookDetailViewDelegate> detailViewDelegate;
 @property (nonatomic) double downloadProgress;
+@property (nonatomic) BOOL downloadStarted;
 @property (nonatomic) NYPLBookState state;
 
 + (id)new NS_UNAVAILABLE;

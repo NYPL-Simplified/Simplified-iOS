@@ -38,6 +38,7 @@
 "ReturnCouldNotBeCompletedFormat" = "The return of %@ could not be completed.";
 "ReturnFailed" = "Return Failed";
 "ReturnNow" = "Return now";
+"Requesting" = "Requesting";
 "Settings" = "Settings";
 "Show" = "Show";
 "SignOut" = "Sign Out";
