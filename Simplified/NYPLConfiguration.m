@@ -2,7 +2,7 @@
 
 #import "NYPLConfiguration.h"
 
-static NSString *const NYPLCirculationBaseURLProduction = @"http://qa.circulation.librarysimplified.org";
+static NSString *const NYPLCirculationBaseURLProduction = @"https://circulation.librarysimplified.org";
 static NSString *const NYPLCirculationBaseURLTesting = @"http://circulation.alpha.librarysimplified.org";
 
 @implementation NYPLConfiguration
@@ -24,7 +24,7 @@ static NSString *const NYPLCirculationBaseURLTesting = @"http://circulation.alph
 
     if(customURL) return customURL;
 
-    return [[self circulationURL] URLByAppendingPathComponent:@"groups"];
+    return [self circulationURL];
 }
 
 + (NSURL *)loanURL
