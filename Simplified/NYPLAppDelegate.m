@@ -1,3 +1,5 @@
+#import "HSHelpStack.h"
+#import "HSZenDeskGear.h"
 #import "NYPLConfiguration.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLReaderSettings.h"
@@ -16,6 +18,15 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   // This is normally not called directly, but we put all programmatic appearance setup in
   // NYPLConfiguration's class initializer.
   [NYPLConfiguration initialize];
+  
+  [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
+  HSZenDeskGear *zenDeskGear  = [[HSZenDeskGear alloc]
+                                 initWithInstanceUrl : @"https://nypl.zendesk.com"
+                                 staffEmailAddress   : @"johannesneuer@nypl.org"
+                                 apiToken            : @"P6aFczYFc4al6o2riRBogWLi5D0M0QCdrON6isJi"];
+  
+  HSHelpStack *helpStack = [HSHelpStack instance];
+  helpStack.gear = zenDeskGear;
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.tintColor = [NYPLConfiguration mainColor];

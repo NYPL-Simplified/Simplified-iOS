@@ -25,6 +25,8 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
         case 3:
           return NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent;
         case 4:
+          return NYPLSettingsPrimaryTableViewControllerItemHelpStack;
+        case 5:
           return NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL;
         default:
           @throw NSInvalidArgumentException;
@@ -41,12 +43,14 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
       return [NSIndexPath indexPathForRow:0 inSection:0];
     case NYPLSettingsPrimaryTableViewControllerItemCredits:
-      return [NSIndexPath indexPathForRow:1 inSection:1];
+      return [NSIndexPath indexPathForRow:0 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
-      return [NSIndexPath indexPathForRow:2 inSection:1];
+      return [NSIndexPath indexPathForRow:1 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
-      return [NSIndexPath indexPathForRow:3 inSection:1];
+      return [NSIndexPath indexPathForRow:2 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent:
+      return [NSIndexPath indexPathForRow:3 inSection:1];
+    case NYPLSettingsPrimaryTableViewControllerItemHelpStack:
       return [NSIndexPath indexPathForRow:4 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
       return [NSIndexPath indexPathForRow:5 inSection:1];
@@ -152,6 +156,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       return cell;
     }
+    case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      cell.textLabel.text = NSLocalizedString(@"Help", nil);
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      }
+      return cell;
+    }
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
@@ -184,7 +199,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case 0:
       return 1;
     case 1:
-      return 5;
+      return 6;
     default:
       @throw NSInternalInconsistencyException;
   }

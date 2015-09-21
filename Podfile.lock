@@ -1,0 +1,51 @@
+PODS:
+  - AFNetworking (2.6.0):
+    - AFNetworking/NSURLConnection (= 2.6.0)
+    - AFNetworking/NSURLSession (= 2.6.0)
+    - AFNetworking/Reachability (= 2.6.0)
+    - AFNetworking/Security (= 2.6.0)
+    - AFNetworking/Serialization (= 2.6.0)
+    - AFNetworking/UIKit (= 2.6.0)
+  - AFNetworking/NSURLConnection (2.6.0):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.6.0):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.6.0)
+  - AFNetworking/Security (2.6.0)
+  - AFNetworking/Serialization (2.6.0)
+  - AFNetworking/UIKit (2.6.0):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
+  - HelpStack (1.1.1):
+    - AFNetworking (~> 2.0)
+    - HelpStack/Core (= 1.1.1)
+    - HelpStack/Stacks (= 1.1.1)
+    - HelpStack/UI (= 1.1.1)
+    - HelpStack/Util (= 1.1.1)
+  - HelpStack/Core (1.1.1):
+    - AFNetworking (~> 2.0)
+    - HelpStack/Util
+  - HelpStack/Stacks (1.1.1):
+    - AFNetworking (~> 2.0)
+    - HelpStack/Core
+    - HelpStack/Util
+  - HelpStack/UI (1.1.1):
+    - AFNetworking (~> 2.0)
+    - HelpStack/Core
+    - HelpStack/Stacks
+    - HelpStack/Util
+  - HelpStack/Util (1.1.1):
+    - AFNetworking (~> 2.0)
+
+DEPENDENCIES:
+  - HelpStack
+
+SPEC CHECKSUMS:
+  AFNetworking: 79f7eb1a0fcfa7beb409332b2ca49afe9ce53b05
+  HelpStack: bfde78311b5d0fb3b849778df5939776359d5d8a
+
+COCOAPODS: 0.38.2

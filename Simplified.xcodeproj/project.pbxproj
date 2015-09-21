@@ -115,6 +115,7 @@
 		5A6929251B95C93B00FB4C10 /* readium-shared-js_all.js.map in Resources */ = {isa = PBXBuildFile; fileRef = 5A69291D1B95C8AD00FB4C10 /* readium-shared-js_all.js.map */; };
 		5AB1F72D1B8CA4AC005BAE0E /* NYPLAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5AB1F72C1B8CA4AC005BAE0E /* NYPLAlertView.m */; };
 		5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
+		7756B6BEB8D3305C15AC8FB0 /* libPods-Simplified.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 694D9403D36F6CBDAF13FAFE /* libPods-Simplified.a */; };
 		8418C0481B75176B00FAB724 /* eula.html in Resources */ = {isa = PBXBuildFile; fileRef = 8418C0461B75176B00FAB724 /* eula.html */; };
 		841B553E1B73FB2700FAC1AF /* NYPLEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B553D1B73FB2700FAC1AF /* NYPLEULAViewController.m */; };
 		841B55431B740F2700FAC1AF /* NYPLSettingsEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */; };
@@ -152,6 +153,9 @@
 		AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77E4AF64208439F78B3D73 /* NYPLOPDSEntry.m */; };
 		AE77EB0CB5B94AEC591E2D91 /* NYPLOPDSLink.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77ECC029F3DABDB46A64EB /* NYPLOPDSLink.m */; };
 		AE77EE7AACC975280BAB9A4C /* NYPLOPDSFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77E94D56B65997B861C0C0 /* NYPLOPDSFeed.m */; };
+		B54F99911BACB0CE0033F303 /* libAFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B54F998F1BACB0CD0033F303 /* libAFNetworking.a */; };
+		B54F99921BACB0CE0033F303 /* libHelpStack.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B54F99901BACB0CE0033F303 /* libHelpStack.a */; };
+		B594C7561BB06F40000028F5 /* HelpStackTheme.plist in Resources */ = {isa = PBXBuildFile; fileRef = B594C7551BB06F40000028F5 /* HelpStackTheme.plist */; };
 		B5ED41DA1B8F6E2E009FC164 /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */; };
 /* End PBXBuildFile section */
 
@@ -382,6 +386,7 @@
 		5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Adobe Content Filter.xcodeproj"; path = "adobe-content-filter/build/iOS/Adobe Content Filter.xcodeproj"; sourceTree = "<group>"; };
 		5AB1F72B1B8CA4AC005BAE0E /* NYPLAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAlertView.h; sourceTree = "<group>"; };
 		5AB1F72C1B8CA4AC005BAE0E /* NYPLAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAlertView.m; sourceTree = "<group>"; };
+		694D9403D36F6CBDAF13FAFE /* libPods-Simplified.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Simplified.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8418C0461B75176B00FAB724 /* eula.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = eula.html; sourceTree = "<group>"; };
 		841B553C1B73FB2700FAC1AF /* NYPLEULAViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLEULAViewController.h; sourceTree = "<group>"; };
 		841B553D1B73FB2700FAC1AF /* NYPLEULAViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLEULAViewController.m; sourceTree = "<group>"; };
@@ -441,6 +446,11 @@
 		AE77ECC029F3DABDB46A64EB /* NYPLOPDSLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLink.m; sourceTree = "<group>"; };
 		AE77EDCF05BE5D54CF8E0E70 /* NYPLOPDSType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSType.h; sourceTree = "<group>"; };
 		AE77EFD5622206475B6715A9 /* NYPLOPDSType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSType.m; sourceTree = "<group>"; };
+		B54F998D1BAC976C0033F303 /* Simplified.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Simplified.debug.xcconfig; sourceTree = "<group>"; };
+		B54F998E1BAC97AB0033F303 /* Simplified.release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Simplified.release.xcconfig; sourceTree = "<group>"; };
+		B54F998F1BACB0CD0033F303 /* libAFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAFNetworking.a; path = "Pods/../build/Debug-iphoneos/libAFNetworking.a"; sourceTree = "<group>"; };
+		B54F99901BACB0CE0033F303 /* libHelpStack.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libHelpStack.a; path = "Pods/../build/Debug-iphoneos/libHelpStack.a"; sourceTree = "<group>"; };
+		B594C7551BB06F40000028F5 /* HelpStackTheme.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = HelpStackTheme.plist; sourceTree = "<group>"; };
 		B5ED41D81B8F6E2E009FC164 /* NYPLBookButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookButtonsView.h; sourceTree = "<group>"; };
 		B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookButtonsView.m; sourceTree = "<group>"; };
 		CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Simplified+RMSDK.xcconfig"; sourceTree = "<group>"; };
@@ -463,6 +473,9 @@
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
 				A49C25581AE05D0A00D63B89 /* libePub3-iOS.a in Frameworks */,
+				7756B6BEB8D3305C15AC8FB0 /* libPods-Simplified.a in Frameworks */,
+				B54F99911BACB0CE0033F303 /* libAFNetworking.a in Frameworks */,
+				B54F99921BACB0CE0033F303 /* libHelpStack.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -745,6 +758,8 @@
 				848FD95A1B83875D009D9BC4 /* NYPL_Launch_Screen.xib */,
 				CAE35BC11B86308D00BF9BC5 /* README */,
 				5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */,
+				B54F998D1BAC976C0033F303 /* Simplified.debug.xcconfig */,
+				B54F998E1BAC97AB0033F303 /* Simplified.release.xcconfig */,
 				CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */,
 				A823D816192BABA400B55DE2 /* Simplified */,
 				A823D82F192BABA400B55DE2 /* SimplifiedTests */,
@@ -754,6 +769,7 @@
 				1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */,
 				5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */,
 				5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */,
+				E58B2D937ACCFE792FCF5DB0 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -769,6 +785,8 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B54F998F1BACB0CD0033F303 /* libAFNetworking.a */,
+				B54F99901BACB0CE0033F303 /* libHelpStack.a */,
 				5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */,
 				5A5B90111B946763002C53E9 /* libc++.1.dylib */,
 				84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */,
@@ -786,6 +804,7 @@
 				A823D814192BABA400B55DE2 /* UIKit.framework */,
 				A823D829192BABA400B55DE2 /* XCTest.framework */,
 				5705D893E0FE4395A50F089E /* libPods.a */,
+				694D9403D36F6CBDAF13FAFE /* libPods-Simplified.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -871,6 +890,7 @@
 				A4206FDD1AEEC985009A1D73 /* ReaderClientCert.sig */,
 				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
 				A823D81E192BABA400B55DE2 /* Simplified-Prefix.pch */,
+				B594C7551BB06F40000028F5 /* HelpStackTheme.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -928,6 +948,13 @@
 			name = OPDS;
 			sourceTree = "<group>";
 		};
+		E58B2D937ACCFE792FCF5DB0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -935,9 +962,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A823D839192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "Simplified" */;
 			buildPhases = (
+				14FCCAF9F581DFE0B70E7FBD /* Check Pods Manifest.lock */,
 				A823D809192BABA400B55DE2 /* Sources */,
 				A823D80A192BABA400B55DE2 /* Frameworks */,
 				A823D80B192BABA400B55DE2 /* Resources */,
+				E251CEDC3E72643F6C589E6E /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1061,6 +1090,7 @@
 				A823D81B192BABA400B55DE2 /* InfoPlist.strings in Resources */,
 				11C113D019F842B9005B3F63 /* reader.html in Resources */,
 				110F853E19D5FA7300052DF7 /* DetailSummaryTemplate.html in Resources */,
+				B594C7561BB06F40000028F5 /* HelpStackTheme.plist in Resources */,
 				111E758B1A840A1600718AD7 /* credits.html in Resources */,
 				A4206FDE1AEEC985009A1D73 /* ReaderClientCert.sig in Resources */,
 				116A5EA4194653BE00491A21 /* Localizable.strings in Resources */,
@@ -1090,6 +1120,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		14FCCAF9F581DFE0B70E7FBD /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		E251CEDC3E72643F6C589E6E /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Simplified/Pods-Simplified-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A823D809192BABA400B55DE2 /* Sources */ = {
@@ -1245,7 +1308,7 @@
 /* Begin XCBuildConfiguration section */
 		A823D837192BABA400B55DE2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */;
+			baseConfigurationReference = B54F998D1BAC976C0033F303 /* Simplified.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -1284,7 +1347,7 @@
 		};
 		A823D838192BABA400B55DE2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */;
+			baseConfigurationReference = B54F998D1BAC976C0033F303 /* Simplified.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -1323,6 +1386,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -1337,6 +1404,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
