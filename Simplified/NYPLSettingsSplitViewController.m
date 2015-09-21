@@ -1,3 +1,4 @@
+#import "HSHelpStack.h"
 #import "NYPLSettingsAccountViewController.h"
 #import "NYPLSettingsCreditsViewController.h"
 #import "NYPLSettingsFeedbackViewController.h"
@@ -86,6 +87,11 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
       break;
       case NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent:
       [self restorePreloadedContent];
+      break;
+    case NYPLSettingsPrimaryTableViewControllerItemHelpStack:
+      [[HSHelpStack instance] showHelp:self];
+      break;
+    case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
       break;
   }
   
