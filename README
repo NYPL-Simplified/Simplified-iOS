@@ -2,7 +2,9 @@
 = Getting Started =
 
 1. 'git clone https://github.com/NYPL/Simplified-iOS.git && cd Simplified-iOS && git submodule update --init --recursive'
-2. Open "Simplified.xcodeproj" and build as normal.
+2. 'sudo gem install cocoapods'
+3. 'pod install'
+4. Open "Simplified.xcworkspace" and build as normal.
 
 
 
