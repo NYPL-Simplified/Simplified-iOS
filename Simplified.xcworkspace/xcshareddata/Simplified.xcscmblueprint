@@ -1,0 +1,58 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "306FC097E980A949FBFF7EC996125BA9F20AEF86",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "306FC097E980A949FBFF7EC996125BA9F20AEF86" : 0,
+    "AD4E54206183D886987A2A3031947817F2F202B6" : 0,
+    "CA647A59556D3849BD27CCFE9423C80ECF6C0F48" : 0,
+    "E375BEBE2A272874C7869C33EC6726F091440FD9" : 0,
+    "06CFE79786291A98E71F9F1158D5AAE92B0D88ED" : 0,
+    "7EA574B7954BB140EB4FDBD252E584FCDFCE648C" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "036E9A00-0067-4C2A-8851-97BC92687AA1",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "306FC097E980A949FBFF7EC996125BA9F20AEF86" : "Simplified-iOS\/",
+    "AD4E54206183D886987A2A3031947817F2F202B6" : "Simplified-iOS\/readium-shared-js\/",
+    "CA647A59556D3849BD27CCFE9423C80ECF6C0F48" : "Simplified-iOS\/adobe-content-filter\/",
+    "E375BEBE2A272874C7869C33EC6726F091440FD9" : "Simplified-iOS\/tenprintcover-ios\/",
+    "06CFE79786291A98E71F9F1158D5AAE92B0D88ED" : "Simplified-iOS\/adept-ios\/",
+    "7EA574B7954BB140EB4FDBD252E584FCDFCE648C" : "Simplified-iOS\/readium-sdk\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Simplified",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Simplified.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:NYPL\/DRM-iOS-Adobe.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "06CFE79786291A98E71F9F1158D5AAE92B0D88ED"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/NYPL\/Simplified-iOS.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "306FC097E980A949FBFF7EC996125BA9F20AEF86"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:NYPL\/readium-sdk.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7EA574B7954BB140EB4FDBD252E584FCDFCE648C"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:readium\/readium-shared-js.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "AD4E54206183D886987A2A3031947817F2F202B6"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:NYPL\/Adobe-Content-Filter.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CA647A59556D3849BD27CCFE9423C80ECF6C0F48"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:NYPL\/tenprintcover-ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E375BEBE2A272874C7869C33EC6726F091440FD9"
+    }
+  ]
+}
