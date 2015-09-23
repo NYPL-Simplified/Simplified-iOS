@@ -1005,6 +1005,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "NYPL Labs";
 				TargetAttributes = {
+					A823D80C192BABA400B55DE2 = {
+						DevelopmentTeam = 7262U6ST2R;
+					};
 					A823D827192BABA400B55DE2 = {
 						TestTargetID = A823D80C192BABA400B55DE2;
 					};
@@ -1383,6 +1386,8 @@
 			baseConfigurationReference = 5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
@@ -1391,6 +1396,7 @@
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1401,6 +1407,8 @@
 			baseConfigurationReference = 5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
@@ -1409,6 +1417,7 @@
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
