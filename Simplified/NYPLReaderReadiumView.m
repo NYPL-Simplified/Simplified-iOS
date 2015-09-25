@@ -12,6 +12,7 @@
 #import "NYPLLog.h"
 #import "NYPLReaderReadiumView.h"
 #import "UIColor+NYPLColorAdditions.h"
+#import "NSURL+NYPLURLAdditions.h"
 #import "NYPLConfiguration.h"
 
 @interface NYPLReaderReadiumView ()
@@ -304,7 +305,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     return NO;
   }
   
-  if([request.URL.scheme isEqualToString:@"readium"]) {
+  else if([request.URL.scheme isEqualToString:@"readium"]) {
     NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
     NSString *const function = components[0];
     if([function isEqualToString:@"initialize"]) {
@@ -324,7 +325,13 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     return NO;
   }
   
-  return YES;
+  else {
+    if (request.URL.isNYPLExternal) {
+      [[UIApplication sharedApplication] openURL:(NSURL *__nonnull)request.URL];
+      return NO;
+    }
+    return YES;
+  }
 }
 
 #pragma mark -
