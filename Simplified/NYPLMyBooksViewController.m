@@ -34,6 +34,32 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   FacetSortTitle
 };
 
+@interface NYPLMyBooksContainerView : UIView
+@property (nonatomic) NSArray *accessibleElements;
+@end
+
+@implementation NYPLMyBooksContainerView
+
+#pragma mark Accessibility
+
+- (BOOL) isAccessibilityElement {
+  return NO;
+}
+
+- (NSInteger) accessibilityElementCount {
+  return self.accessibleElements.count;
+}
+
+- (id) accessibilityElementAtIndex:(NSInteger)index {
+  return self.accessibleElements[index];
+}
+
+- (NSInteger) indexOfAccessibilityElement:(id)element {
+  return [self.accessibleElements indexOfObject:element];
+}
+
+@end
+
 @interface NYPLMyBooksViewController ()
   <NYPLFacetViewDataSource, NYPLFacetViewDelegate, UICollectionViewDataSource,
    UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
@@ -45,6 +71,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 @property (nonatomic) UIBarButtonItem *syncButton;
 @property (nonatomic) UIBarButtonItem *syncInProgressButton;
 @property (nonatomic) UIBarButtonItem *searchButton;
+@property (nonatomic) NYPLMyBooksContainerView *containerView;
 
 @end
 
@@ -130,6 +157,16 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   } else {
     self.navigationItem.leftBarButtonItem = self.syncButton;
   }
+  
+  UIView *tmpView = self.view;
+  self.containerView = [[NYPLMyBooksContainerView alloc] initWithFrame:self.view.frame];
+  for (UIView *v in self.view.subviews) {
+    [v removeFromSuperview];
+    [self.containerView addSubview:v];
+  }
+  [tmpView removeFromSuperview];
+  self.view = self.containerView;
+  self.containerView.accessibleElements = @[self.facetBarView, self.collectionView];
 }
 
 - (void)viewWillLayoutSubviews
