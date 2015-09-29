@@ -250,18 +250,26 @@ static void generateTOCElements(NSArray *const navigationElements,
   }];
 }
 
+- (void) openPageLeft {
+  [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageLeft()"];
+}
+
+- (void) openPageRight {
+  [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
+}
+
 #pragma mark Accessibility
 
 - (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction
 {
   if (direction == UIAccessibilityScrollDirectionLeft) {
-    NSString *javascript = @"window.location = \"simplified:gesture-right\"";
-    [self.webView stringByEvaluatingJavaScriptFromString:javascript];
+    [self openPageRight];
+    return YES;
   } else if (direction == UIAccessibilityScrollDirectionRight) {
-    NSString *javascript = @"window.location = \"simplified:gesture-left\"";
-    [self.webView stringByEvaluatingJavaScriptFromString:javascript];
+    [self openPageLeft];
+    return YES;
   }
-  return YES;
+  return NO;
 }
 
 #pragma mark NSObject
@@ -303,19 +311,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   if([request.URL.scheme isEqualToString:@"simplified"]) {
     NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
     NSString *const function = components[0];
-    if([function isEqualToString:@"gesture-left"]) {
-      [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageLeft()"];
-    } else if([function isEqualToString:@"gesture-right"]) {
-      [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
-    } else if([function isEqualToString:@"gesture-center"]) {
-      [self.delegate renderer:self didReceiveGesture:NYPLReaderRendererGestureToggleUserInterface];
-    } else {
-      NYPLLOG(@"Ignoring unknown simplified function.");
-    }
-    
-    if ([function containsString:@"gesture"]) {
-      [self.delegate rendererDidRegisterGesture:self];
-    }
+    NYPLLOG(@"Ignoring unknown simplified function.");
     return NO;
   }
   

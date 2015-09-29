@@ -17,4 +17,6 @@
 - (BOOL) bookHasMediaOverlays;
 - (BOOL) bookHasMediaOverlaysBeingPlayed;
 - (void) applyMediaOverlayPlaybackToggle;
+- (void) openPageLeft;
+- (void) openPageRight;
 @end
