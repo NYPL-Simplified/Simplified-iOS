@@ -169,6 +169,11 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.containerView.accessibleElements = @[self.facetBarView, self.collectionView];
 }
 
+- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+{
+  [self.navigationController setNavigationBarHidden:NO];
+}
+
 - (void)viewWillLayoutSubviews
 {
   self.facetBarView.frame = CGRectMake(0,

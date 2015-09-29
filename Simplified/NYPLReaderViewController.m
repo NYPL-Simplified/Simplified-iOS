@@ -120,7 +120,7 @@
   [[NYPLBookRegistry sharedRegistry] stopDelaySyncCommit];
 }
 
-- (void)didReceiveGesture:(__attribute__((unused)) UIGestureRecognizer *const)gestureRecognizer {
+- (void)didReceiveGesture:(UIGestureRecognizer *const)gestureRecognizer {
   CGPoint p = [gestureRecognizer locationInView:self.view];
   if (p.x < EDGE_OF_SCREEN_POINT_WIDTH) {
     [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
@@ -345,7 +345,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 {
   if(self.shouldHideInterfaceOnNextAppearance) {
     self.shouldHideInterfaceOnNextAppearance = NO;
-    self.interfaceHidden = !UIAccessibilityIsVoiceOverRunning();
+    self.interfaceHidden = UIAccessibilityIsVoiceOverRunning();
     self.tapGestureRecognizer.enabled = !UIAccessibilityIsVoiceOverRunning();
   }
 
@@ -363,8 +363,33 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 - (void) voiceOverStatusChanged
 {
   if (UIAccessibilityIsVoiceOverRunning())
-    self.interfaceHidden = NO;
+    self.interfaceHidden = YES;
   self.tapGestureRecognizer.enabled = !UIAccessibilityIsVoiceOverRunning();
+}
+
+#pragma mark Accessibility
+
+- (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction
+{
+  if (direction == UIAccessibilityScrollDirectionLeft) {
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
+    return YES;
+  } else if (direction == UIAccessibilityScrollDirectionRight) {
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+    return YES;
+  }
+  return NO;
+}
+
+- (BOOL)accessibilityPerformMagicTap
+{
+  return YES;
+}
+
+- (BOOL)accessibilityPerformEscape
+{
+  [self.navigationController popViewControllerAnimated:YES];
+  return YES;
 }
 
 #pragma mark UIPopoverControllerDelegate
