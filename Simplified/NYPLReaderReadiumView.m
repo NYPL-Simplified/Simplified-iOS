@@ -250,6 +250,20 @@ static void generateTOCElements(NSArray *const navigationElements,
   }];
 }
 
+#pragma mark Accessibility
+
+- (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction
+{
+  if (direction == UIAccessibilityScrollDirectionLeft) {
+    NSString *javascript = @"window.location = \"simplified:gesture-right\"";
+    [self.webView stringByEvaluatingJavaScriptFromString:javascript];
+  } else if (direction == UIAccessibilityScrollDirectionRight) {
+    NSString *javascript = @"window.location = \"simplified:gesture-left\"";
+    [self.webView stringByEvaluatingJavaScriptFromString:javascript];
+  }
+  return YES;
+}
+
 #pragma mark NSObject
 
 - (void)dealloc
