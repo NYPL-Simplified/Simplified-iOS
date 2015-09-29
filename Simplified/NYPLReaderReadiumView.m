@@ -258,20 +258,6 @@ static void generateTOCElements(NSArray *const navigationElements,
   [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
 }
 
-#pragma mark Accessibility
-
-- (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction
-{
-  if (direction == UIAccessibilityScrollDirectionLeft) {
-    [self openPageRight];
-    return YES;
-  } else if (direction == UIAccessibilityScrollDirectionRight) {
-    [self openPageLeft];
-    return YES;
-  }
-  return NO;
-}
-
 #pragma mark NSObject
 
 - (void)dealloc
