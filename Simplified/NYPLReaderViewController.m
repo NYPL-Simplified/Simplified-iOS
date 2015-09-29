@@ -11,7 +11,7 @@
 
 #import "NYPLReaderViewController.h"
 
-#define EDGE_OF_SCREEN_POINT_WIDTH    100.0
+#define EDGE_OF_SCREEN_POINT_FRACTION    0.1
 
 @interface NYPLReaderViewController ()
   <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate,
@@ -122,9 +122,10 @@
 
 - (void)didReceiveGesture:(UIGestureRecognizer *const)gestureRecognizer {
   CGPoint p = [gestureRecognizer locationInView:self.view];
-  if (p.x < EDGE_OF_SCREEN_POINT_WIDTH) {
+  CGFloat edgeOfScreenWidth = CGRectGetWidth(self.view.bounds) * EDGE_OF_SCREEN_POINT_FRACTION;
+  if (p.x < edgeOfScreenWidth) {
     [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
-  } else if (p.x > (CGRectGetWidth(self.view.bounds) - EDGE_OF_SCREEN_POINT_WIDTH)) {
+  } else if (p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth)) {
     [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
   } else {
     self.interfaceHidden = !self.interfaceHidden;
