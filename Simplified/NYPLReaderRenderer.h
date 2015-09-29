@@ -26,11 +26,6 @@ typedef NS_ENUM(NSInteger, NYPLReaderRendererGesture) {
 - (void)renderer:(id<NYPLReaderRenderer>)renderer
 didEncounterCorruptionForBook:(NYPLBook *)book;
 
-- (void)renderer:(id<NYPLReaderRenderer>)renderer
-didReceiveGesture:(NYPLReaderRendererGesture)gesture;
-
-- (void)rendererDidRegisterGesture:(id<NYPLReaderRenderer>)renderer;
-
 - (void)rendererDidFinishLoading:(id<NYPLReaderRenderer>)renderer;
 
 -(void) didUpdateProgressSpineItemPercentage: (NSNumber *)spineItemPercentage bookPercentage: (NSNumber *) bookPercentage withCurrentSpineItemDetails: (NSDictionary *) currentSpineItemDetails;
