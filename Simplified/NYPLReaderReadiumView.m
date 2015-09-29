@@ -395,6 +395,10 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     return;
   }
   
+//  var childs = $iframe.contentWindow.document.documentElement.getElementsByTagName('*');
+//  console.log(childs);
+
+  
   [self.webView stringByEvaluatingJavaScriptFromString:
    [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
     [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
@@ -414,6 +418,13 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   styleEl.type = 'text/css'; \
   styleEl.textContent = stylesheetText(window.nsRdHighlightColor); \
   $head.append(styleEl); \
+  var childs = $iframe[0].contentWindow.document.documentElement.getElementsByTagName('*'); \
+  for (var i=0; i<childs.length; ++i) { var child = childs[i]; child.setAttribute(\"tabindex\", 0); } \
+  for (var i=0; i<childs.length; ++i) { var child = childs[i]; child.onfocus = function(ev) { \
+    console.log(\"before: \" + reader.bookmarkCurrentPage()); \
+    reader.insureElementVisibility(spineItem, ev.currentTarget);}; \
+    console.log(\"after: \" + reader.bookmarkCurrentPage()); \
+  } \
   }; \
   \
   reader.off(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \
