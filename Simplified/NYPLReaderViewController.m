@@ -90,12 +90,14 @@
   self.tapGestureRecognizer.numberOfTapsRequired = 1;
   
   [self.view addGestureRecognizer:self.tapGestureRecognizer];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged) name:UIAccessibilityVoiceOverStatusChanged object:nil];
   
   return self;
 }
 
 - (void)dealloc
 {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
   [[NYPLBookRegistry sharedRegistry] stopDelaySyncCommit];
 }
 
@@ -330,7 +332,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 {
   if(self.shouldHideInterfaceOnNextAppearance) {
     self.shouldHideInterfaceOnNextAppearance = NO;
-    self.interfaceHidden = YES;
+    self.interfaceHidden = !UIAccessibilityIsVoiceOverRunning();
+    self.tapGestureRecognizer.enabled = !UIAccessibilityIsVoiceOverRunning();
   }
 
   [super viewDidAppear:animated];
@@ -340,6 +343,15 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 {
   self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
   self.navigationController.navigationBar.barTintColor = nil;
+}
+
+#pragma mark Accessibility
+
+- (void) voiceOverStatusChanged
+{
+  if (UIAccessibilityIsVoiceOverRunning())
+    self.interfaceHidden = NO;
+  self.tapGestureRecognizer.enabled = !UIAccessibilityIsVoiceOverRunning();
 }
 
 #pragma mark UIPopoverControllerDelegate
@@ -372,7 +384,8 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     [self.activePopoverController dismissPopoverAnimated:YES];
-    self.interfaceHidden = YES;
+    if (!UIAccessibilityIsVoiceOverRunning())
+      self.interfaceHidden = YES;
   } else {
     self.shouldHideInterfaceOnNextAppearance = YES;
     [self.navigationController popViewControllerAnimated:YES];
