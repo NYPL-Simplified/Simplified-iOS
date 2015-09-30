@@ -29,6 +29,7 @@
 @property (nonatomic) UIView *bottomViewImageViewTopBorder;
 @property (nonatomic) UIProgressView *bottomViewProgressView;
 @property (nonatomic) UILabel *bottomViewProgressLabel;
+@property (nonatomic) UIButton *largeTransparentAccessibilityButton;
 
 @property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
 @property (nonatomic) UISwipeGestureRecognizer *leftSwipeGestureRecognizer, *rightSwipeGestureRecognizer;
@@ -235,6 +236,18 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
                                         UIViewAutoresizingFlexibleHeight);
   
   [self.view addSubview:self.rendererView];
+  
+  // Add the giant transparent button to handle the "return to reading" action in VoiceOver
+  self.largeTransparentAccessibilityButton = [UIButton buttonWithType:UIButtonTypeCustom];
+  [self.largeTransparentAccessibilityButton addTarget:self action:@selector(returnToReaderFocus) forControlEvents:UIControlEventTouchUpInside];
+  self.largeTransparentAccessibilityButton.alpha = 0;
+  self.largeTransparentAccessibilityButton.frame = CGRectMake(0, self.navigationController.navigationBar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - self.navigationController.navigationBar.frame.size.height - self.bottomView.frame.size.height);
+  [self.view addSubview:self.largeTransparentAccessibilityButton];
+  self.largeTransparentAccessibilityButton.userInteractionEnabled = NO;
+  self.largeTransparentAccessibilityButton.accessibilityLabel = NSLocalizedString(@"Return to Reader", @"Return to Reader");
+  self.largeTransparentAccessibilityButton.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                                               UIViewAutoresizingFlexibleHeight);
+  
   [self prepareBottomView];
 }
 
@@ -366,6 +379,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   if (UIAccessibilityIsVoiceOverRunning())
     self.interfaceHidden = YES;
   self.tapGestureRecognizer.enabled = !UIAccessibilityIsVoiceOverRunning();
+  self.largeTransparentAccessibilityButton.userInteractionEnabled = (UIAccessibilityIsVoiceOverRunning() && !self.interfaceHidden);
 }
 
 #pragma mark Accessibility
@@ -384,12 +398,19 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (BOOL)accessibilityPerformMagicTap
 {
+  self.interfaceHidden = !self.interfaceHidden;
   return YES;
 }
 
 - (BOOL)accessibilityPerformEscape
 {
   [self.navigationController popViewControllerAnimated:YES];
+  return YES;
+}
+
+- (BOOL)accessibilityActivate
+{
+  NSLog(@"ACTIVATE!!");
   return YES;
 }
 
@@ -495,7 +516,20 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
     self.readerSettingsViewPhone = nil;
   }
   
+  // Accessibility
+  self.rendererView.accessibilityElementsHidden = !interfaceHidden;
+  id firstElement = interfaceHidden ? self.navigationItem : nil;
+  UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, firstElement);
+  self.largeTransparentAccessibilityButton.userInteractionEnabled = UIAccessibilityIsVoiceOverRunning() && !interfaceHidden;
+  self.largeTransparentAccessibilityButton.alpha = interfaceHidden ? 0.0 : 1.0;
+  self.largeTransparentAccessibilityButton.isAccessibilityElement = !interfaceHidden;
+  
   [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (BOOL)returnToReaderFocus {
+  self.interfaceHidden = YES;
+  return YES;
 }
 
 - (void)didSelectSettings
