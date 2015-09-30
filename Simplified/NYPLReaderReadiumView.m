@@ -251,11 +251,21 @@ static void generateTOCElements(NSArray *const navigationElements,
 }
 
 - (void) openPageLeft {
+  NSString *currentPageString = [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.bookmarkCurrentPage()"];
   [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageLeft()"];
+  NSString *newPageString = [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.bookmarkCurrentPage()"];
+  
+  if (![currentPageString isEqualToString:newPageString] && UIAccessibilityIsVoiceOverRunning())
+    UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, NSLocalizedString(@"Previous Page", @"Previous Page"));
 }
 
 - (void) openPageRight {
+  NSString *currentPageString = [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.bookmarkCurrentPage()"];
   [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
+  NSString *newPageString = [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.bookmarkCurrentPage()"];
+  
+  if (![currentPageString isEqualToString:newPageString] && UIAccessibilityIsVoiceOverRunning())
+    UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, NSLocalizedString(@"Next Page", @"Next Page"));
 }
 
 #pragma mark NSObject
