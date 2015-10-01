@@ -413,9 +413,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   var childs = $iframe[0].contentWindow.document.documentElement.getElementsByTagName('*'); \
   for (var i=0; i<childs.length; ++i) { var child = childs[i]; child.setAttribute(\"tabindex\", 0); } \
   for (var i=0; i<childs.length; ++i) { var child = childs[i]; child.onfocus = function(ev) { \
-    console.log(\"before: \" + reader.bookmarkCurrentPage()); \
     reader.insureElementVisibility(spineItem, ev.currentTarget);}; \
-    console.log(\"after: \" + reader.bookmarkCurrentPage()); \
   } \
   }; \
   \
@@ -436,8 +434,6 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     [self.delegate rendererDidFinishLoading:self];
   }
   
-  [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.pageDidChange();"];
-  
   // Use left-to-right unless it explicitly asks for right-to-left.
   self.pageProgressionIsLTR = ![dictionary[@"pageProgressionDirection"]
                                 isEqualToString:@"rtl"];
@@ -448,6 +444,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   
   NSString *const locationJSON = [self.webView stringByEvaluatingJavaScriptFromString:
                                   @"ReadiumSDK.reader.bookmarkCurrentPage()"];
+  
+  [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"simplified.pageDidChange(%@);", locationJSON]];
   
   NYPLBookLocation *const location = [[NYPLBookLocation alloc]
                                       initWithLocationString:locationJSON
