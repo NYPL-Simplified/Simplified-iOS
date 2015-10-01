@@ -386,13 +386,17 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction
 {
-  if (direction == UIAccessibilityScrollDirectionLeft) {
-    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
-    return YES;
-  } else if (direction == UIAccessibilityScrollDirectionRight) {
-    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+  if (direction == UIAccessibilityScrollDirectionLeft || direction == UIAccessibilityScrollDirectionRight) {
+    if (direction == UIAccessibilityScrollDirectionLeft) {
+      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
+//      UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Next Page", @"Next Page"));
+    } else if (direction == UIAccessibilityScrollDirectionRight) {
+      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+//      UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Previous Page", @"Previous Page"));
+    }
     return YES;
   }
+  
   return NO;
 }
 
