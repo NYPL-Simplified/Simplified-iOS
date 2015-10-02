@@ -68,9 +68,14 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   
   // Finally (we hope) launch the book modal view
   NYPLBookDetailViewController *modalBookController = [[NYPLBookDetailViewController alloc] initWithBook:book];
-  [self.window.rootViewController presentViewController:modalBookController animated:YES completion:^{
-    NSLog(@"Guess we're done");
-  }];
+  NYPLRootTabBarController *tbc = (NYPLRootTabBarController *) self.window.rootViewController;
+  
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if ([tbc.selectedViewController isKindOfClass:[UINavigationController class]])
+      [tbc.selectedViewController pushViewController:modalBookController animated:YES];
+  } else {
+    [tbc.selectedViewController presentViewController:modalBookController animated:YES completion:nil];
+  }
   
   return YES;
 }
