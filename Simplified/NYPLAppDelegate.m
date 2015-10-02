@@ -6,6 +6,13 @@
 #import "NYPLRootTabBarController.h"
 #import "NYPLEULAViewController.h"
 
+// TODO: Remove these imports and move handling the "open a book url" code to a more appropriate handler
+#import "NYPLXML.h"
+#import "NYPLOPDSEntry.h"
+#import "NYPLBook.h"
+#import "NYPLBookDetailViewController.h"
+#import "NSURL+NYPLURLAdditions.h"
+
 #import "NYPLAppDelegate.h"
 
 @implementation NYPLAppDelegate
@@ -38,6 +45,32 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   }];
   
   self.window.rootViewController = eulaViewController;
+  
+  return YES;
+}
+
+- (BOOL)application:(__attribute__((unused)) UIApplication *)application handleOpenURL:(NSURL *)url
+{
+  // The url has the simplifiedapp scheme; we want to give it the http scheme
+  NSURL *entryURL = [url URLBySwappingForScheme:@"http"];
+  
+  // Get XML from the url, which should be a permalink to a feed URL
+  NSData *data = [NSData dataWithContentsOfURL:entryURL];
+  
+  // Turn the raw data into a real XML
+  NYPLXML *xml = [NYPLXML XMLWithData:data];
+  
+  // Throw that xml at a NYPLOPDSEntry
+  NYPLOPDSEntry *entry = [[NYPLOPDSEntry alloc] initWithXML:xml];
+  
+  // Create a book from the entry
+  NYPLBook *book = [NYPLBook bookWithEntry:entry];
+  
+  // Finally (we hope) launch the book modal view
+  NYPLBookDetailViewController *modalBookController = [[NYPLBookDetailViewController alloc] initWithBook:book];
+  [self.window.rootViewController presentViewController:modalBookController animated:YES completion:^{
+    NSLog(@"Guess we're done");
+  }];
   
   return YES;
 }
