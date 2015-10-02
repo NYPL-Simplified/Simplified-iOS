@@ -10,4 +10,6 @@
 
 @property (nonatomic, readonly, assign) BOOL isNYPLExternal;
 
+- (NSURL *)URLBySwappingForScheme:(NSString *)scheme;
+
 @end

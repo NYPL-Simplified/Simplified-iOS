@@ -24,4 +24,11 @@
   return YES;
 }
 
+- (NSURL *)URLBySwappingForScheme:(NSString *)scheme
+{
+  NSURLComponents *components = [NSURLComponents componentsWithURL:self resolvingAgainstBaseURL:NO];
+  components.scheme = scheme;
+  return [components URL];
+}
+
 @end
