@@ -203,8 +203,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindRegistration:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       [self verifyLocationServicesWithHandler:^(void) {
+        UIStoryboard *registerCardStoryboard = [UIStoryboard storyboardWithName:@"LibraryCard" bundle:nil];
+        UIViewController *rootViewController = [registerCardStoryboard instantiateInitialViewController];
+        rootViewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         [[NYPLRootTabBarController sharedController]
-         safelyPresentViewController:[[NYPLSettingsRegistrationViewController alloc] init]
+         safelyPresentViewController:rootViewController
          animated:YES
          completion:nil];
       }];
