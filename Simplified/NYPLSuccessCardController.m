@@ -1,18 +1,18 @@
 //
-//  ThirdCardController.m
+//  NYPLSuccessCardController.m
 //  Simplified
 //
-//  Created by Sam Tarakajian on 10/5/15.
+//  Created by Sam Tarakajian on 10/7/15.
 //  Copyright © 2015 NYPL Labs. All rights reserved.
 //
 
-#import "ThirdCardController.h"
+#import "NYPLSuccessCardController.h"
 
-@interface ThirdCardController ()
+@interface NYPLSuccessCardController ()
 
 @end
 
-@implementation ThirdCardController
+@implementation NYPLSuccessCardController
 
 - (void)viewDidLoad {
     [super viewDidLoad];

@@ -1,18 +1,18 @@
 //
-//  SecondCardController.m
+//  NYPLAddressCardController.m
 //  Simplified
 //
-//  Created by Sam Tarakajian on 10/5/15.
+//  Created by Sam Tarakajian on 10/7/15.
 //  Copyright © 2015 NYPL Labs. All rights reserved.
 //
 
-#import "SecondCardController.h"
+#import "NYPLAddressCardController.h"
 
-@interface SecondCardController ()
+@interface NYPLAddressCardController ()
 
 @end
 
-@implementation SecondCardController
+@implementation NYPLAddressCardController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
