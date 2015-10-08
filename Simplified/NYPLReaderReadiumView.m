@@ -410,12 +410,6 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   styleEl.type = 'text/css'; \
   styleEl.textContent = stylesheetText(window.nsRdHighlightColor); \
   $head.append(styleEl); \
-  var childs = $iframe[0].contentWindow.document.documentElement.getElementsByTagName('*'); \
-  for (var i=0; i<childs.length; ++i) { var child = childs[i]; child.setAttribute(\"tabindex\", 0); } \
-  for (var i=0; i<childs.length; ++i) { var child = childs[i]; child.onfocus = function(ev) { \
-    reader.insureElementVisibility(spineItem, ev.currentTarget);}; \
-  } \
-  }; \
   \
   reader.off(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \
   reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \

@@ -14,12 +14,25 @@ function Simplified() {
     
     var iframe = window.frames["epubContentIframe"];
     var childs = iframe.document.documentElement.getElementsByTagName('*');
-    console.log("CFI: " + cfi);
-    this.lastCFI = cfi;
     
-    var spineItem = ReadiumSDK.reader.getLoadedSpineItems()[0];
-    var elt = ReadiumSDK.reader.getElementByCfi(spineItem, cfi.contentCFI)[0];
-    elt.focus();
+    var firstElt = null;
+    for (var i=0; i<childs.length; ++i) {
+      var child = childs[i];
+      var visible = ReadiumSDK.reader.getElementVisibility(child);
+      child.setAttribute("aria-hidden", visible ? "false"   : "true");
+      child.setAttribute("tabindex", 0); // Make sure the elements are focusable=
+      
+      if (firstElt == null && visible && child.tagName == "p")
+        firstElt = child;
+    }
+    
+    console.log("Element tag:" + firstElt.tagName);
+    console.log(firstElt.innerHTML.slice(0, 20));
+    
+    // Select the element at the top of the page
+    if (firstElt)
+      firstElt.focus();
+    
 //    console.log("Element: " + elt);
 //    this.lastElt = elt;
 //    var r = elt.getBoundingClientRect();
