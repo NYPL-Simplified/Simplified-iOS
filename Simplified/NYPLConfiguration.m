@@ -1,6 +1,8 @@
 #import "NYPLSettings.h"
 
 #import "NYPLConfiguration.h"
+#import "UILabel+NYPLAppearanceAdditions.h"
+#import "UIButton+NYPLAppearanceAdditions.h"
 
 static NSString *const NYPLCirculationBaseURLProduction = @"https://circulation.librarysimplified.org";
 static NSString *const NYPLCirculationBaseURLTesting = @"http://circulation.alpha.librarysimplified.org";
@@ -11,6 +13,8 @@ static NSString *const NYPLCirculationBaseURLTesting = @"http://circulation.alph
 {
   [[UINavigationBar appearance]
    setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}];
+  [[UILabel appearance] setFontName:[NYPLConfiguration systemFontName]];
+  [[UIButton appearance] setTitleFontName:[NYPLConfiguration systemFontName]];
 }
 
 + (NSURL *)circulationURL

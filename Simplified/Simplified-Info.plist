@@ -29,8 +29,10 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSLocationUsageDescription</key>
+	<string>This service is available to New York State residents only. In order to determine your location, please allow access</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>This service is available to New York State residents only. In order to determine your location, please allow access</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>OpenDyslexic3-Regular.ttf</string>

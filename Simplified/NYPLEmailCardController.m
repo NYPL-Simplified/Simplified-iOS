@@ -1,18 +1,18 @@
 //
-//  FirstCardController.m
+//  NYPLEmailCardController.m
 //  Simplified
 //
-//  Created by Sam Tarakajian on 10/5/15.
+//  Created by Sam Tarakajian on 10/7/15.
 //  Copyright © 2015 NYPL Labs. All rights reserved.
 //
 
-#import "FirstCardController.h"
+#import "NYPLEmailCardController.h"
 
-@interface FirstCardController ()
+@interface NYPLEmailCardController ()
 
 @end
 
-@implementation FirstCardController
+@implementation NYPLEmailCardController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
