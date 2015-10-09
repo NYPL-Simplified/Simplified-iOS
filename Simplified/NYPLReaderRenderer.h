@@ -28,5 +28,5 @@ didEncounterCorruptionForBook:(NYPLBook *)book;
 
 - (void)rendererDidFinishLoading:(id<NYPLReaderRenderer>)renderer;
 
--(void) didUpdateProgressSpineItemPercentage: (NSNumber *)spineItemPercentage bookPercentage: (NSNumber *) bookPercentage withCurrentSpineItemDetails: (NSDictionary *) currentSpineItemDetails;
+-(void) didUpdateProgressSpineItemPercentage: (NSNumber *)spineItemPercentage bookPercentage: (NSNumber *) bookPercentage pageIndex:(NSNumber *)pageIndex pageCount:(NSNumber *)pageCount withCurrentSpineItemDetails: (NSDictionary *) currentSpineItemDetails;
 @end

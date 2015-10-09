@@ -34,6 +34,8 @@
 
 @property (nonatomic) NSDictionary *bookMapDictionary;
 @property (nonatomic) NSNumber *spineItemPercentageRemaining;
+@property (nonatomic) NSNumber *spineItemPageIndex;
+@property (nonatomic) NSNumber *spineItemPageCount;
 @property (nonatomic) NSNumber *progressWithinBook;
 @property (nonatomic) NSDictionary *spineItemDetails;
 
@@ -125,6 +127,7 @@ static void generateTOCElements(NSArray *const navigationElements,
   
   assert(readerURL);
   
+  self.webView.isAccessibilityElement = YES;
   [self.webView loadRequest:[NSURLRequest requestWithURL:readerURL]];
   
   [self addObservers];
@@ -180,6 +183,7 @@ static void generateTOCElements(NSArray *const navigationElements,
                                                                         readiumSettingsRepresentation])
                                    encoding:NSUTF8StringEncoding]];
     [self.webView stringByEvaluatingJavaScriptFromString: javaScript];
+    [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.settingsDidChange();"];
   }];
 }
 
@@ -217,6 +221,7 @@ static void generateTOCElements(NSArray *const navigationElements,
     [self.webView stringByEvaluatingJavaScriptFromString:javascriptToChangeHighlightColour];
     
     self.webView.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
+    [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.settingsDidChange();"];
   }];
 }
 
@@ -251,21 +256,11 @@ static void generateTOCElements(NSArray *const navigationElements,
 }
 
 - (void) openPageLeft {
-  NSString *currentPageString = [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.bookmarkCurrentPage()"];
   [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageLeft()"];
-  NSString *newPageString = [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.bookmarkCurrentPage()"];
-  
-  if (![currentPageString isEqualToString:newPageString] && UIAccessibilityIsVoiceOverRunning())
-    UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, NSLocalizedString(@"Previous Page", @"Previous Page"));
 }
 
 - (void) openPageRight {
-  NSString *currentPageString = [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.bookmarkCurrentPage()"];
   [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
-  NSString *newPageString = [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.bookmarkCurrentPage()"];
-  
-  if (![currentPageString isEqualToString:newPageString] && UIAccessibilityIsVoiceOverRunning())
-    UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, NSLocalizedString(@"Next Page", @"Next Page"));
 }
 
 #pragma mark NSObject
@@ -352,6 +347,13 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     self.bookIsCorrupt = YES;
     [self.delegate renderer:self didEncounterCorruptionForBook:self.book];
     return;
+  } else {
+    [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.shouldUpdateVisibilityOnUpdate = false;"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      self.webView.isAccessibilityElement = NO;
+      [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.beginVisibilityUpdates();"];
+      UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+    });
   }
   
   self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
@@ -439,6 +441,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   
   NSString *const locationJSON = [self.webView stringByEvaluatingJavaScriptFromString:
                                   @"ReadiumSDK.reader.bookmarkCurrentPage()"];
+  NSLog(@"%@", locationJSON);
   
   [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"simplified.pageDidChange(%@);", locationJSON]];
   
@@ -447,7 +450,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
                                       renderer:renderer];
   
   [self calculateProgressionWithDictionary:dictionary withHandler:^(void) {
-    [self.delegate didUpdateProgressSpineItemPercentage:self.spineItemPercentageRemaining bookPercentage:self.progressWithinBook withCurrentSpineItemDetails:self.spineItemDetails];
+    NSLog(@"Page %ld of %ld", self.spineItemPageIndex.integerValue+1, self.spineItemPageCount.integerValue);
+    [self.delegate didUpdateProgressSpineItemPercentage:self.spineItemPercentageRemaining bookPercentage:self.progressWithinBook pageIndex:self.spineItemPageIndex pageCount:self.spineItemPageCount withCurrentSpineItemDetails:self.spineItemDetails];
   }];
   
   if(location) {
@@ -569,6 +573,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   NSDecimalNumber *totalProgressSoFarPercentageDec = totalLength.floatValue > 0 ? [[totalProgressSoFarDec decimalNumberByDividingBy:totalLengthDec] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"100"] withBehavior:numberHandler] : [NSDecimalNumber zero];
   
   self.spineItemPercentageRemaining = spineItemPercentageRemaining;
+  self.spineItemPageIndex = spineItemPageIndex;
+  self.spineItemPageCount = spineItemPageCount;
   self.progressWithinBook = totalProgressSoFarPercentageDec;
   self.spineItemDetails = spineItemDetails;
   
