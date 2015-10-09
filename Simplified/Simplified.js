@@ -20,18 +20,13 @@ function Simplified() {
       var child = childs[i];
       var visible = ReadiumSDK.reader.getElementVisibility(child);
       child.setAttribute("aria-hidden", visible ? "false"   : "true");
-      child.setAttribute("tabindex", 0); // Make sure the elements are focusable=
+      child.setAttribute("tabindex", i); // Make sure the elements are focusable
       
-      if (firstElt == null && visible && child.tagName == "p")
-        firstElt = child;
+      var isBlock = window.getComputedStyle(child, "").display == "block";
+      if (!isBlock) {
+        child.setAttribute("role", "presentation");
+      }
     }
-    
-    console.log("Element tag:" + firstElt.tagName);
-    console.log(firstElt.innerHTML.slice(0, 20));
-    
-    // Select the element at the top of the page
-    if (firstElt)
-      firstElt.focus();
     
 //    console.log("Element: " + elt);
 //    this.lastElt = elt;
