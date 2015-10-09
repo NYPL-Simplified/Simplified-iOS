@@ -410,6 +410,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   styleEl.type = 'text/css'; \
   styleEl.textContent = stylesheetText(window.nsRdHighlightColor); \
   $head.append(styleEl); \
+  }; \
   \
   reader.off(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \
   reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \
@@ -456,6 +457,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   }
   
   self.webView.hidden = NO;
+  
+  UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.webView);
 }
 
 - (void)calculateBookLength
