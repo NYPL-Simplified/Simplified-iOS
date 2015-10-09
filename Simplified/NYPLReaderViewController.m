@@ -325,7 +325,12 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.bottomView addConstraint:constraintPL4];
 }
 
--(void)didUpdateProgressSpineItemPercentage:(NSNumber *)spineItemPercentage bookPercentage:(NSNumber *)bookPercentage withCurrentSpineItemDetails: (NSDictionary *) currentSpineItemDetails{
+-(void) didUpdateProgressSpineItemPercentage: (NSNumber *)spineItemPercentage bookPercentage: (NSNumber *) bookPercentage pageIndex:(NSNumber *)pageIndex pageCount:(NSNumber *)pageCount withCurrentSpineItemDetails: (NSDictionary *) currentSpineItemDetails {
+  
+  if (UIAccessibilityIsVoiceOverRunning()) {
+    UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, [NSString stringWithFormat:NSLocalizedString(@"Page %d of %d", nil), pageIndex.integerValue+1, pageCount.integerValue]);
+  }
+  
   [self.bottomViewProgressView setProgress:bookPercentage.floatValue / 100 animated:YES];  
   NSString *title = [currentSpineItemDetails objectForKey:@"tocElementTitle"];
   
@@ -362,6 +367,10 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
     self.interfaceHidden = UIAccessibilityIsVoiceOverRunning();
     self.tapGestureRecognizer.enabled = !UIAccessibilityIsVoiceOverRunning();
   }
+  
+  if (UIAccessibilityIsVoiceOverRunning()) {
+    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Magic Tap for Tools and Table of Contents", nil));
+  }
 
   [super viewDidAppear:animated];
 }
@@ -389,10 +398,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   if (direction == UIAccessibilityScrollDirectionLeft || direction == UIAccessibilityScrollDirectionRight) {
     if (direction == UIAccessibilityScrollDirectionLeft) {
       [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
-//      UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Next Page", @"Next Page"));
     } else if (direction == UIAccessibilityScrollDirectionRight) {
       [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
-//      UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Previous Page", @"Previous Page"));
     }
     return YES;
   }
@@ -409,12 +416,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 - (BOOL)accessibilityPerformEscape
 {
   [self.navigationController popViewControllerAnimated:YES];
-  return YES;
-}
-
-- (BOOL)accessibilityActivate
-{
-  NSLog(@"ACTIVATE!!");
   return YES;
 }
 
@@ -522,7 +523,7 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   
   // Accessibility
   self.rendererView.accessibilityElementsHidden = !interfaceHidden;
-  id firstElement = interfaceHidden ? self.navigationItem : nil;
+  id firstElement = interfaceHidden ? nil : self.navigationController.navigationBar;
   UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, firstElement);
   self.largeTransparentAccessibilityButton.userInteractionEnabled = UIAccessibilityIsVoiceOverRunning() && !interfaceHidden;
   self.largeTransparentAccessibilityButton.alpha = interfaceHidden ? 0.0 : 1.0;
