@@ -112,6 +112,7 @@
   NSArray *visibleButtonInfo = nil;
   static NSString *const ButtonKey = @"button";
   static NSString *const TitleKey = @"title";
+  static NSString *const HintKey = @"accessibilityHint";
   static NSString *const AddIndicatorKey = @"addIndicator";
   
   BOOL preloaded = [[[NYPLSettings sharedSettings] preloadedBookIdentifiers] containsObject:self.book.identifier];
@@ -119,35 +120,61 @@
   
   switch(self.state) {
     case NYPLBookButtonsStateCanBorrow:
-      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Borrow"}];
+      visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
+                              TitleKey: NSLocalizedString(@"Borrow", nil),
+                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Borrows %@", nil), self.book.title]}];
       break;
     case NYPLBookButtonsStateCanKeep:
-      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Download"}];
+      visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
+                              TitleKey: NSLocalizedString(@"Download", nil),
+                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Downloads %@", nil), self.book.title]}];
       break;
     case NYPLBookButtonsStateCanHold:
-      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Hold"}];
+      visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
+                              TitleKey: NSLocalizedString(@"Hold", nil),
+                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Holds %@", nil), self.book.title]}];
       break;
     case NYPLBookButtonsStateHolding:
-      visibleButtonInfo = @[@{ButtonKey: self.deleteButton,   TitleKey: @"CancelHold", AddIndicatorKey: @(YES)}];
+      visibleButtonInfo = @[@{ButtonKey: self.deleteButton,
+                              TitleKey: NSLocalizedString(@"CancelHold", nil),
+                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels hold for %@", nil), self.book.title],
+                              AddIndicatorKey: @(YES)}];
       break;
     case NYPLBookButtonsStateHoldingFOQ:
-      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Borrow", AddIndicatorKey: @(YES)},
-                            @{ButtonKey: self.deleteButton,   TitleKey: @"CancelHold"}];
+      visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
+                              TitleKey: NSLocalizedString(@"Borrow", nil),
+                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Borrows %@", nil), self.book.title],
+                              AddIndicatorKey: @(YES)},
+                            @{ButtonKey: self.deleteButton,
+                              TitleKey: NSLocalizedString(@"CancelHold", nil),
+                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels hold for %@", nil), self.book.title]}];
       break;
     case NYPLBookButtonsStateDownloadNeeded:
     {
-      NSString *title = (self.book.acquisition.openAccess || preloaded) ? @"Delete": @"ReturnNow";
-      visibleButtonInfo = @[@{ButtonKey: self.downloadButton, TitleKey: @"Download", AddIndicatorKey: @(YES)},
-                            @{ButtonKey: self.deleteButton,   TitleKey: title}];
+      NSString *title = (self.book.acquisition.openAccess || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);
+      NSString *hint = (self.book.acquisition.openAccess || preloaded) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+      visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
+                              TitleKey: NSLocalizedString(@"Download", nil),
+                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Downloads %@", nil), self.book.title],
+                              AddIndicatorKey: @(YES)},
+                            @{ButtonKey: self.deleteButton,
+                              TitleKey: title,
+                              HintKey: hint}];
       break;
     }
     case NYPLBookButtonsStateDownloadSuccessful:
       // Fallthrough
     case NYPLBookButtonsStateUsed:
     {
-      NSString *title = (self.book.acquisition.openAccess || preloaded) ? @"Delete" : @"ReturnNow";
-      visibleButtonInfo = @[@{ButtonKey: self.readButton,     TitleKey: @"Read", AddIndicatorKey: @(YES)},
-                            @{ButtonKey: self.deleteButton,   TitleKey: title}];
+      NSString *title = (self.book.acquisition.openAccess || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);\
+      NSString *hint = (self.book.acquisition.openAccess || preloaded) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+      visibleButtonInfo = @[@{ButtonKey: self.readButton,
+                              TitleKey: NSLocalizedString(@"Read", nil),
+                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens %@ for reading", nil), self.book.title],
+                              AddIndicatorKey: @(YES)},
+                            @{ButtonKey: self.deleteButton,
+                              TitleKey: title,
+                              HintKey: hint}];
       break;
     }
   }
@@ -170,7 +197,7 @@
       }
     }
     button.hidden = NO;
-    [button setTitle:NSLocalizedString(buttonInfo[TitleKey], nil) forState:UIControlStateNormal];
+    [button setTitle:buttonInfo[TitleKey] forState:UIControlStateNormal];
     if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
       if (self.book.availableUntil && [self.book.availableUntil timeIntervalSinceNow] > 0) {
         button.type = NYPLRoundedButtonTypeClock;
