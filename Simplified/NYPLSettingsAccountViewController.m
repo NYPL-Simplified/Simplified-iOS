@@ -204,7 +204,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       [self verifyLocationServicesWithHandler:^(void) {
         UIStoryboard *registerCardStoryboard = [UIStoryboard storyboardWithName:@"LibraryCard" bundle:nil];
-        UIViewController *rootViewController = [registerCardStoryboard instantiateInitialViewController];
+        UINavigationController *rootViewController = [registerCardStoryboard instantiateInitialViewController];
         rootViewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         [[NYPLRootTabBarController sharedController]
          safelyPresentViewController:rootViewController
