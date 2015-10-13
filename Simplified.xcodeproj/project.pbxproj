@@ -1402,7 +1402,7 @@
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a1e02cec-6458-47bc-b628-b36ac92d9328";
+				PROVISIONING_PROFILE = "ba4714ad-0d10-4588-99ac-cecf8217f75c";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1423,7 +1423,7 @@
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a1e02cec-6458-47bc-b628-b36ac92d9328";
+				PROVISIONING_PROFILE = "ba4714ad-0d10-4588-99ac-cecf8217f75c";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
