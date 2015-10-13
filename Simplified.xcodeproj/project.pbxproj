@@ -24,6 +24,7 @@
 		0813875D1BC579C4003DEA6A /* NYPLEmailCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813875C1BC579C4003DEA6A /* NYPLEmailCardController.m */; settings = {ASSET_TAGS = (); }; };
 		081387601BC57B43003DEA6A /* NYPLSendingCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813875F1BC57B43003DEA6A /* NYPLSendingCardController.m */; settings = {ASSET_TAGS = (); }; };
 		081387631BC57B59003DEA6A /* NYPLSuccessCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387621BC57B59003DEA6A /* NYPLSuccessCardController.m */; settings = {ASSET_TAGS = (); }; };
+		081387921BCD4C6C003DEA6A /* NYPLAnimatingButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387911BCD4C6C003DEA6A /* NYPLAnimatingButton.m */; settings = {ASSET_TAGS = (); }; };
 		085640CE1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */; settings = {ASSET_TAGS = (); }; };
 		11068C55196DD37900E8A94B /* NYPLNull.m in Sources */ = {isa = PBXBuildFile; fileRef = 11068C54196DD37900E8A94B /* NYPLNull.m */; };
 		11078357198160A50071AB1E /* NYPLBookDownloadFailedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */; };
@@ -249,6 +250,8 @@
 		0813875F1BC57B43003DEA6A /* NYPLSendingCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSendingCardController.m; sourceTree = "<group>"; };
 		081387611BC57B59003DEA6A /* NYPLSuccessCardController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSuccessCardController.h; sourceTree = "<group>"; };
 		081387621BC57B59003DEA6A /* NYPLSuccessCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSuccessCardController.m; sourceTree = "<group>"; };
+		081387901BCD4C6C003DEA6A /* NYPLAnimatingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAnimatingButton.h; sourceTree = "<group>"; };
+		081387911BCD4C6C003DEA6A /* NYPLAnimatingButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAnimatingButton.m; sourceTree = "<group>"; };
 		085640CC1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+NYPLURLAdditions.h"; sourceTree = "<group>"; };
 		085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+NYPLURLAdditions.m"; sourceTree = "<group>"; };
 		11068C53196DD37900E8A94B /* NYPLNull.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLNull.h; sourceTree = "<group>"; };
@@ -574,6 +577,8 @@
 				081387351BC42727003DEA6A /* NYPLCardApplicationModel.m */,
 				081387441BC5589D003DEA6A /* NYPLValidatingTextField.h */,
 				081387451BC5589D003DEA6A /* NYPLValidatingTextField.m */,
+				081387901BCD4C6C003DEA6A /* NYPLAnimatingButton.h */,
+				081387911BCD4C6C003DEA6A /* NYPLAnimatingButton.m */,
 			);
 			name = "Library Card";
 			sourceTree = "<group>";
@@ -1356,6 +1361,7 @@
 				113DB8A719C24E54004E1154 /* NYPLIndeterminateProgressView.m in Sources */,
 				119BEB89198C43A600121439 /* NSString+NYPLStringAdditions.m in Sources */,
 				A499BF261B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m in Sources */,
+				081387921BCD4C6C003DEA6A /* NYPLAnimatingButton.m in Sources */,
 				1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */,
 				A4BA1D131B43046B006F83DF /* NYPLCatalogGroupedFeed.m in Sources */,
 				112C6953197309C500C48F95 /* NYPLBookState.m in Sources */,

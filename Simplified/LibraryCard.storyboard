@@ -69,7 +69,7 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TQP-9G-lkC">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TQP-9G-lkC" customClass="NYPLAnimatingButton">
                                 <rect key="frame" x="265" y="416" width="72" height="36"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
                                 <state key="normal" title="Continue"/>
@@ -640,6 +640,6 @@
         <image name="NYMap" width="380" height="275"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="GGf-q3-Hzp"/>
+        <segue reference="b1A-IK-NZ8"/>
     </inferredMetricsTieBreakers>
 </document>

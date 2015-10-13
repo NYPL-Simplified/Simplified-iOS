@@ -8,12 +8,13 @@
 
 #import "NYPLDateCardController.h"
 #import "NYPLCardApplicationModel.h"
+#import "NYPLAnimatingButton.h"
 
 #define AGE_OF_CONSENT  14
 
 @interface NYPLDateCardController ()
 @property (nonatomic, strong) IBOutlet UIDatePicker *datePicker;
-@property (nonatomic, strong) IBOutlet UIButton *continueButton;
+@property (nonatomic, strong) IBOutlet NYPLAnimatingButton *continueButton;
 
 - (IBAction)datePicked:(id)sender;
 @end
@@ -40,7 +41,9 @@
 
 - (IBAction)datePicked:(__attribute__((unused)) id)sender
 {
-  self.continueButton.enabled = YES;
+  if (!self.continueButton.enabled) {
+    [self.continueButton setEnabled:YES animated:YES];
+  }
   self.currentApplication.dob = self.datePicker.date;
 }
 
