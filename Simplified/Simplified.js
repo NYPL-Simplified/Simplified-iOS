@@ -8,6 +8,7 @@ function Simplified() {
   this.shouldUpdateVisibilityOnUpdate = false;
   
   function updateVisibility() {
+    
     var iframe = window.frames["epubContentIframe"];
     var childs = iframe.document.documentElement.getElementsByTagName('*');
     
