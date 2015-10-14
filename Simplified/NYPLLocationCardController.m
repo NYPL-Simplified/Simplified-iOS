@@ -8,19 +8,29 @@
 
 #import "NYPLLocationCardController.h"
 #import "CJAMacros.h"
+#import "NYPLAnimatingButton.h"
 @import CoreLocation;
 
 static NSString *s_checkmarkImageName = @"Check";
+
+typedef enum {
+  NYPLLocationStateUnknown,
+  NYPLLocationStateInsideNY,
+  NYPLLocationStateOutsideNY,
+  NYPLLocationStateCouldNotDetermine
+} NYPLLocationState;
 
 @interface NYPLLocationCardController () <CLLocationManagerDelegate> {
   CGPathRef *_paths;
   size_t _pathCount;
 }
-@property (nonatomic, assign) BOOL shouldRequestLocation;
+@property (nonatomic, assign) NYPLLocationState state;
+@property (nonatomic, assign) BOOL isDeterminingLocation;
 @property (nonatomic, assign) BOOL requestingContinuousUpdates;
 @property (nonatomic) CLLocationManager *locationManager;
 @property (nonatomic, strong) IBOutlet UILabel *successLabel;
 @property (nonatomic, strong) IBOutlet UIImageView *imageView;
+
 @end
 
 @implementation NYPLLocationCardController
@@ -58,8 +68,7 @@ static NSString *s_checkmarkImageName = @"Check";
   NSData *data = [NSData dataWithContentsOfURL:url];
   NSDictionary *geoJSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
   [self loadNYStatePolygonFromJSON:geoJSON];
-  self.shouldRequestLocation = YES;
-  self.successLabel.alpha = 0;
+  self.state = NYPLLocationStateUnknown; // Is this correct? Maybe we should load it from the state of the thingy?
 }
 
 - (void) dealloc
@@ -75,26 +84,57 @@ static NSString *s_checkmarkImageName = @"Check";
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+  [super viewWillAppear:animated];
+  self.continueButton.enabled = NO;
+  
+  if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied ||
+      [CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
+    self.state = NYPLLocationStateCouldNotDetermine;
+  }
+  
+  else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
+    self.state = NYPLLocationStateUnknown;
+  }
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
+    
+  // Get the user's location
+  if (nil == self.locationManager) {
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+  }
   
-  if (self.shouldRequestLocation) {
-    self.shouldRequestLocation = NO;
+  if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(NSFoundationVersionNumber_iOS_8_0)) {
+    [self.locationManager requestWhenInUseAuthorization];
+  } else {
+    self.requestingContinuousUpdates = YES;
+    [self.locationManager startUpdatingLocation];
+  }
+}
+
+- (void)setIsDeterminingLocation:(BOOL)isDeterminingLocation
+{
+  if (self.isDeterminingLocation != isDeterminingLocation) {
+    _isDeterminingLocation = isDeterminingLocation;
     
-    // Get the user's location
-    if (nil == self.locationManager) {
-      self.locationManager = [[CLLocationManager alloc] init];
-      
-      self.locationManager.delegate = self;
-      self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
-    }
-    
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(NSFoundationVersionNumber_iOS_8_0)) {
-      [self.locationManager requestLocation];
+    if (isDeterminingLocation) {
+      if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(NSFoundationVersionNumber_iOS_8_0)) {
+        [self.locationManager requestLocation];
+      } else {
+        self.requestingContinuousUpdates = YES;
+        [self.locationManager startUpdatingLocation];
+      }
     } else {
-      self.requestingContinuousUpdates = YES;
-      [self.locationManager startUpdatingLocation];
+      if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(NSFoundationVersionNumber_iOS_8_0)) {
+        self.requestingContinuousUpdates = NO;
+        [self.locationManager stopUpdatingLocation];
+      }
     }
   }
 }
@@ -121,27 +161,64 @@ static NSString *s_checkmarkImageName = @"Check";
 
 - (void)locationInsideNY
 {
-  __weak NYPLCardApplicationViewController *weakSelf = self;
-  [UIView transitionWithView:self.imageView
-                    duration:0.5 options:UIViewAnimationOptionTransitionFlipFromRight
-                  animations:^{
-                    self.imageView.image = [UIImage imageNamed:s_checkmarkImageName];
-                  } completion:^(BOOL finished) {
-                    if (finished) {
-                      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [weakSelf performSegueWithIdentifier:@"photo" sender:nil];
-                      });
-                    }
-                  }];
-  [UIView animateWithDuration:0.5 delay:0.0 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-    self.successLabel.alpha = 1.0;
-    self.continueButton.alpha = 1.0;
-  } completion:nil];
+  self.state = NYPLLocationStateInsideNY;
 }
 
 - (IBAction)continueToPhoto:(__attribute__((unused)) id)sender
 {
   [self performSegueWithIdentifier:@"photo" sender:nil];
+}
+
+-(IBAction)checkLocation:(__attribute__((unused)) id)sender
+{
+  if (!self.isDeterminingLocation)
+    self.isDeterminingLocation = YES;
+}
+
+- (void)setState:(NYPLLocationState)state
+{
+  _state = state;
+  if (state == NYPLLocationStateUnknown) {
+    self.checkButton.alpha = 1.0;
+    self.successLabel.text = @"";
+    self.continueButton.enabled = NO;
+    
+  } else if (state == NYPLLocationStateOutsideNY) {
+    self.checkButton.alpha = 1.0;
+    self.successLabel.text = NSLocalizedString(@"You're outside New York State. You can still apply for a card, but you won't be able to borrow books until it arrives.", nil);
+    [self.continueButton setEnabled:YES animated:YES];
+    
+  } else if (state == NYPLLocationStateInsideNY) {
+    [UIView transitionWithView:self.successLabel
+                      duration:0.5
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^{
+                      self.successLabel.text = NSLocalizedString(@"Hello New York! You're good to go", nil);
+                    } completion:nil];
+    [UIView transitionWithView:self.checkButton
+                      duration:0.5
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^() {
+                      self.checkButton.alpha = 0.0;
+                    } completion:nil];
+    [UIView transitionWithView:self.imageView
+                      duration:0.5 options:UIViewAnimationOptionTransitionFlipFromRight
+                    animations:^{
+                      self.imageView.image = [UIImage imageNamed:s_checkmarkImageName];
+                    } completion:^(BOOL finished) {
+                      if (finished) {
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.75 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                          [self.continueButton setEnabled:YES animated:YES];
+                        });
+                      }
+                    }];
+    
+  } else if (state == NYPLLocationStateCouldNotDetermine) {
+    self.checkButton.alpha = 1.0;
+    self.successLabel.text = NSLocalizedString(@"Could not determine your location. You can still apply for a card, but you won't be able to borrow books until it arrives.", nil);
+    [self.continueButton setEnabled:YES animated:YES];
+    
+  }
 }
 
 #pragma mark - Navigation
@@ -158,13 +235,15 @@ static NSString *s_checkmarkImageName = @"Check";
 
 - (void) locationManager:(__attribute__((unused)) CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
-  if (status == kCLAuthorizationStatusRestricted || status == kCLAuthorizationStatusDenied)
-    [self couldNotDetermineLocation];
+  if (status == kCLAuthorizationStatusRestricted || status == kCLAuthorizationStatusDenied) {
+    [self setState:NYPLLocationStateCouldNotDetermine];
+  }
 }
 
 - (void) locationManager:(__attribute__((unused)) CLLocationManager *)manager didFailWithError:(__attribute__((unused)) NSError *)error
 {
-  [self couldNotDetermineLocation];
+  if (error.code != 0)
+    [self couldNotDetermineLocation];
 }
 
 - (void) locationManager:(__attribute__((unused)) CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
