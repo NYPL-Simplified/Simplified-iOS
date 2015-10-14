@@ -85,9 +85,10 @@
   }
 }
 
-- (void)validateWithBlock:(BOOL (^)(void))validator
+- (void) validate
 {
-  _valid = validator();
+  if (self.validator)
+    _valid = self.validator();
   [self animateForValidity];
 }
 

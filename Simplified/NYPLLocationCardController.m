@@ -9,6 +9,7 @@
 #import "NYPLLocationCardController.h"
 #import "CJAMacros.h"
 #import "NYPLAnimatingButton.h"
+#import "NYPLCardApplicationModel.h"
 @import CoreLocation;
 
 static NSString *s_checkmarkImageName = @"Check";
@@ -68,7 +69,6 @@ typedef enum {
   NSData *data = [NSData dataWithContentsOfURL:url];
   NSDictionary *geoJSON = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
   [self loadNYStatePolygonFromJSON:geoJSON];
-  self.state = NYPLLocationStateUnknown; // Is this correct? Maybe we should load it from the state of the thingy?
 }
 
 - (void) dealloc
@@ -89,13 +89,15 @@ typedef enum {
   [super viewWillAppear:animated];
   self.continueButton.enabled = NO;
   
-  if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied ||
-      [CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
-    self.state = NYPLLocationStateCouldNotDetermine;
-  }
-  
-  else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
-    self.state = NYPLLocationStateUnknown;
+  if (!currentApplication.isInNYState) {
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied ||
+        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
+      self.state = NYPLLocationStateCouldNotDetermine;
+    }
+    
+    else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
+      self.state = NYPLLocationStateUnknown;
+    }
   }
 }
 
@@ -178,6 +180,7 @@ typedef enum {
 - (void)setState:(NYPLLocationState)state
 {
   _state = state;
+  self.currentApplication.isInNYState = (state == NYPLLocationStateInsideNY);
   if (state == NYPLLocationStateUnknown) {
     self.checkButton.alpha = 1.0;
     self.successLabel.text = @"";

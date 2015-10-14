@@ -7,31 +7,105 @@
 //
 
 #import "NYPLAddressCardController.h"
+#import "NYPLAnimatingButton.h"
+#import "NYPLValidatingTextField.h"
+#import "NYPLCardApplicationModel.h"
 
-@interface NYPLAddressCardController ()
-
+@interface NYPLAddressCardController () <UITextFieldDelegate>
+@property (nonatomic, assign) BOOL segueOnKeyboardHide;
+@property (nonatomic, weak) NYPLValidatingTextField *currentTextField;
 @end
 
 @implementation NYPLAddressCardController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
+  [super viewDidLoad];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+  
+  self.addressTextField.validator = ^BOOL() {
+    return [[self.addressTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] > 5;
+  };
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void) dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (IBAction)continueButtonPressed:(id)sender
+{
+  [self.addressTextField validate];
+  
+  if (self.addressTextField.valid) {
+    if (self.addressTextField.isFirstResponder) {
+      [self.addressTextField resignFirstResponder];
+      self.segueOnKeyboardHide = YES;
+    } else {
+      [self performSegueWithIdentifier:@"email" sender:sender];
+    }
+  }
 }
-*/
+
+#pragma mark Keyboard Notifications
+
+-(void)keyboardWillShow:(NSNotification* )notification
+{
+  CGFloat keyboardHeight = ((CGRect) [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue]).size.height;
+  CGRect frame = self.view.frame;
+  frame.origin.y = -keyboardHeight;
+  double duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+  [UIView animateWithDuration:duration animations:^{
+    self.view.frame = frame;
+  }];
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification
+{
+  CGRect frame = self.view.frame;
+  frame.origin.y = 0;
+  double duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+  [UIView animateWithDuration:duration animations:^{
+    self.view.frame = frame;
+  } completion:^(BOOL finished) {
+    if (finished && self.segueOnKeyboardHide) {
+      self.segueOnKeyboardHide = NO;
+      [self performSegueWithIdentifier:@"email" sender:nil];
+    }
+  }];
+}
+
+#pragma mark UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(__attribute__((unused)) UITextField *)textField {
+  if (textField == self.addressTextField) {
+    [self.addressTextField resignFirstResponder];
+    [self continueButtonPressed:self.continueButton];
+  }
+  
+  return NO;
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+  self.currentTextField = (NYPLValidatingTextField *) textField;
+  self.currentTextField.valid = YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+  if (textField == self.addressTextField)
+    self.currentApplication.address = [self.addressTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  [textField resignFirstResponder];
+  self.currentTextField = nil;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(__attribute__((unused)) NSRange)range replacementString:(__attribute__((unused)) NSString *)string
+{
+  [(NYPLValidatingTextField *) textField setValid:YES];
+  return YES;
+}
+
 
 @end
