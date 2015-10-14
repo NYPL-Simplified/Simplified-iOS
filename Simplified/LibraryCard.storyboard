@@ -63,14 +63,14 @@
                                     <action selector="datePicked:" destination="sJU-ak-RH1" eventType="valueChanged" id="wpL-2u-YFm"/>
                                 </connections>
                             </datePicker>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="What is your date of birth?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AzC-qj-vq0">
-                                <rect key="frame" x="198" y="160" width="206" height="24"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="What is your date of birth?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AzC-qj-vq0">
+                                <rect key="frame" x="197" y="160" width="206" height="24"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TQP-9G-lkC" customClass="NYPLAnimatingButton">
-                                <rect key="frame" x="265" y="416" width="72" height="36"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TQP-9G-lkC" customClass="NYPLAnimatingButton">
+                                <rect key="frame" x="264" y="504" width="72" height="36"/>
                                 <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
                                 <state key="normal" title="Continue"/>
                                 <connections>
@@ -86,6 +86,7 @@
                             <constraint firstItem="MQk-IP-A4B" firstAttribute="top" secondItem="Xbm-VT-UIC" secondAttribute="bottom" constant="8" id="K18-Aa-0WF"/>
                             <constraint firstItem="aly-4p-Vv4" firstAttribute="trailing" secondItem="2G1-Nn-pkY" secondAttribute="trailingMargin" id="MZ1-UA-YEF"/>
                             <constraint firstItem="TQP-9G-lkC" firstAttribute="centerX" secondItem="2G1-Nn-pkY" secondAttribute="centerX" id="NIr-eK-81Q"/>
+                            <constraint firstItem="Jjq-tE-3ZY" firstAttribute="top" secondItem="TQP-9G-lkC" secondAttribute="bottom" constant="60" id="TFk-nV-It8"/>
                             <constraint firstItem="AzC-qj-vq0" firstAttribute="centerX" secondItem="2G1-Nn-pkY" secondAttribute="centerX" id="YJe-YU-j0m"/>
                             <constraint firstItem="kZ9-1U-glM" firstAttribute="leading" secondItem="2G1-Nn-pkY" secondAttribute="leadingMargin" constant="-20" id="dBx-Lt-aih"/>
                             <constraint firstItem="TQP-9G-lkC" firstAttribute="top" secondItem="kZ9-1U-glM" secondAttribute="bottom" constant="8" id="gd1-ff-xCq"/>
@@ -93,6 +94,11 @@
                             <constraint firstItem="aly-4p-Vv4" firstAttribute="leading" secondItem="2G1-Nn-pkY" secondAttribute="leadingMargin" constant="-9" id="xDL-oT-hyh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="kZ9-1U-glM" secondAttribute="trailing" constant="-20" id="zYF-r6-73d"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="gd1-ff-xCq"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="rWb-KS-KxQ"/>
                     <nil key="simulatedStatusBarMetrics"/>
@@ -120,7 +126,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nxz-f7-KPw">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nxz-f7-KPw">
                                 <rect key="frame" x="20" y="81" width="560" height="41"/>
                                 <string key="text">This service is available to New York state residents only. Please allow location services in order for us to determine your location.</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -145,40 +151,57 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x8a-gW-y7Q">
-                                <rect key="frame" x="266" y="475" width="69" height="33"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x8a-gW-y7Q" customClass="NYPLAnimatingButton">
+                                <rect key="frame" x="266" y="507" width="69" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Continue"/>
                                 <connections>
                                     <action selector="continueToPhoto:" destination="H0S-uX-4Bm" eventType="touchUpInside" id="Opp-XA-vFy"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="571-sB-mLs" customClass="NYPLAnimatingButton">
+                                <rect key="frame" x="227" y="475" width="147" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <state key="normal" title="Check My Location"/>
+                                <connections>
+                                    <action selector="checkLocation:" destination="H0S-uX-4Bm" eventType="touchUpInside" id="A3Q-rC-092"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="571-sB-mLs" firstAttribute="centerX" secondItem="SaV-N6-7VB" secondAttribute="centerX" id="1Fd-hj-Dtc"/>
                             <constraint firstItem="Nxz-f7-KPw" firstAttribute="centerX" secondItem="SaV-N6-7VB" secondAttribute="centerX" id="1V5-f8-7Lh"/>
                             <constraint firstItem="7bg-Dv-X0K" firstAttribute="centerX" secondItem="SaV-N6-7VB" secondAttribute="centerX" id="35r-k9-gGA"/>
                             <constraint firstItem="J4A-5g-O2L" firstAttribute="top" secondItem="jUK-MP-oFN" secondAttribute="bottom" constant="8" id="Aar-W5-b3M"/>
                             <constraint firstItem="7bg-Dv-X0K" firstAttribute="centerY" secondItem="SaV-N6-7VB" secondAttribute="centerY" id="B27-ZZ-zaP"/>
                             <constraint firstItem="iut-mE-Hw4" firstAttribute="centerX" secondItem="SaV-N6-7VB" secondAttribute="centerX" id="EPQ-9T-WBO"/>
                             <constraint firstItem="x8a-gW-y7Q" firstAttribute="top" secondItem="iut-mE-Hw4" secondAttribute="bottom" constant="8" id="ILe-HA-7BH"/>
+                            <constraint firstItem="iut-mE-Hw4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="SaV-N6-7VB" secondAttribute="leadingMargin" id="NIG-OG-V7E"/>
                             <constraint firstItem="Nxz-f7-KPw" firstAttribute="leading" secondItem="SaV-N6-7VB" secondAttribute="leadingMargin" id="Oaj-Tc-kU3"/>
                             <constraint firstItem="Nxz-f7-KPw" firstAttribute="trailing" secondItem="SaV-N6-7VB" secondAttribute="trailingMargin" id="PJh-6r-eyg"/>
                             <constraint firstItem="iut-mE-Hw4" firstAttribute="top" secondItem="7bg-Dv-X0K" secondAttribute="bottom" constant="8" id="V5r-3t-2tS"/>
+                            <constraint firstItem="dss-z4-Eka" firstAttribute="top" secondItem="x8a-gW-y7Q" secondAttribute="bottom" constant="60" id="VL8-uP-TUh"/>
                             <constraint firstItem="x8a-gW-y7Q" firstAttribute="centerX" secondItem="SaV-N6-7VB" secondAttribute="centerX" id="WdJ-l4-GCB"/>
+                            <constraint firstItem="571-sB-mLs" firstAttribute="bottom" secondItem="x8a-gW-y7Q" secondAttribute="top" id="bJZ-lq-QUB"/>
                             <constraint firstItem="Nxz-f7-KPw" firstAttribute="top" secondItem="J4A-5g-O2L" secondAttribute="bottom" constant="8" id="fRj-Df-0G1"/>
+                            <constraint firstItem="571-sB-mLs" firstAttribute="top" secondItem="iut-mE-Hw4" secondAttribute="bottom" constant="8" id="ffx-vs-4cn"/>
                             <constraint firstItem="J4A-5g-O2L" firstAttribute="centerX" secondItem="SaV-N6-7VB" secondAttribute="centerX" id="lkw-t1-w2T"/>
+                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="iut-mE-Hw4" secondAttribute="trailing" id="pId-54-c0b"/>
                             <constraint firstItem="Nxz-f7-KPw" firstAttribute="centerY" secondItem="SaV-N6-7VB" secondAttribute="centerY" id="xGo-OK-FM7"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="1V5-f8-7Lh"/>
                                 <exclude reference="xGo-OK-FM7"/>
+                                <exclude reference="ffx-vs-4cn"/>
+                                <exclude reference="ILe-HA-7BH"/>
                             </mask>
                         </variation>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
+                        <outlet property="checkButton" destination="571-sB-mLs" id="GA4-oq-KDu"/>
                         <outlet property="continueButton" destination="x8a-gW-y7Q" id="Sf6-Uv-wpM"/>
                         <outlet property="imageView" destination="7bg-Dv-X0K" id="Lfh-j2-IzP"/>
                         <outlet property="successLabel" destination="iut-mE-Hw4" id="pJU-0s-04Z"/>
@@ -640,6 +663,6 @@
         <image name="NYMap" width="380" height="275"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="b1A-IK-NZ8"/>
+        <segue reference="GGf-q3-Hzp"/>
     </inferredMetricsTieBreakers>
 </document>

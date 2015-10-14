@@ -9,7 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "NYPLCardApplicationViewController.h"
 
+@class NYPLAnimatingButton;
+
 @interface NYPLLocationCardController : NYPLCardApplicationViewController
-@property (nonatomic, strong) IBOutlet UIButton *continueButton;
+@property (nonatomic, strong) IBOutlet NYPLAnimatingButton *continueButton;
+@property (nonatomic, strong) IBOutlet NYPLAnimatingButton *checkButton;
+
+-(IBAction)checkLocation:(id)sender;
 -(IBAction)continueToPhoto:(id)sender;
 @end
