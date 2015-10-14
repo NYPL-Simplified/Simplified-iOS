@@ -10,6 +10,7 @@
 
 @interface NYPLValidatingTextField : UITextField
 @property (nonatomic, assign) BOOL valid;
+@property (nonatomic, copy) BOOL (^validator)();
 
-- (void) validateWithBlock:(BOOL (^)(void))validator;
+- (void) validate;
 @end

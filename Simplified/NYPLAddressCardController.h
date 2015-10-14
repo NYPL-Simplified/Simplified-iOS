@@ -7,7 +7,11 @@
 //
 
 #import "NYPLCardApplicationViewController.h"
+@class NYPLAnimatingButton;
+@class NYPLValidatingTextField;
 
 @interface NYPLAddressCardController : NYPLCardApplicationViewController
+@property (nonatomic, strong) IBOutlet NYPLAnimatingButton *continueButton;
+@property (nonatomic, strong) IBOutlet NYPLValidatingTextField *addressTextField;
 - (IBAction)continueButtonPressed:(id)sender;
 @end

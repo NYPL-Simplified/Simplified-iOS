@@ -8,10 +8,11 @@
 
 #import "NYPLCardApplicationViewController.h"
 @class NYPLValidatingTextField;
+@class NYPLAnimatingButton;
 
 @interface NYPLNameCardController : NYPLCardApplicationViewController <UITextFieldDelegate>
 @property (nonatomic, strong) IBOutlet NYPLValidatingTextField *firstNameField, *lastNameField;
-@property (nonatomic, strong) IBOutlet UIButton *continueButton;
+@property (nonatomic, strong) IBOutlet NYPLAnimatingButton *continueButton;
 @property (nonatomic, strong) IBOutlet UIImageView *imageView;
 
 - (IBAction)continueButtonPressed:(id)sender;

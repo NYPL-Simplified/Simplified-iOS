@@ -21,5 +21,10 @@ typedef NS_ENUM(NSUInteger, NYPLCardApplicationError) {
 @property (nonatomic, assign) NYPLCardApplicationError error;
 @property (nonatomic, strong) NSDate *dob;
 @property (nonatomic, strong) UIImage *photo;
+@property (nonatomic, strong) NSString *awsPhotoName;
 @property (nonatomic, assign) BOOL isInNYState;
+@property (nonatomic, strong) NSString *firstName;
+@property (nonatomic, strong) NSString *lastName;
+@property (nonatomic, strong) NSString *address;
+@property (nonatomic, strong) NSString *email;
 @end

@@ -8,11 +8,14 @@
 
 #import "NYPLNameCardController.h"
 #import "NYPLValidatingTextField.h"
+#import "NYPLAnimatingButton.h"
+#import "NYPLCardApplicationModel.h"
 
-@interface NYPLNameCardController ()
+@interface NYPLNameCardController () <UIGestureRecognizerDelegate>
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 @property (nonatomic, weak) NYPLValidatingTextField *currentTextField;
 @property (nonatomic, assign) CGFloat keyboardHeight;
+@property (nonatomic, assign) BOOL segueOnKeyboardHide;
 @end
 
 @implementation NYPLNameCardController
@@ -22,10 +25,26 @@
   [super viewDidLoad];
   self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognized)];
   self.tapGestureRecognizer.numberOfTapsRequired = 1;
+  self.tapGestureRecognizer.delegate = self;
   [self.view addGestureRecognizer:self.tapGestureRecognizer];
   
+  self.firstNameField.validator = ^BOOL() {
+    return [[self.firstNameField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] > 0;
+  };
+  self.lastNameField.validator = ^BOOL() {
+    return [[self.lastNameField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] > 0;
+  };
+  
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide) name:UIKeyboardWillHideNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{
+  [super viewWillAppear:animated];
+  [self.firstNameField setText:self.currentApplication.firstName];
+  [self.lastNameField setText:self.currentApplication.lastName];
+  self.imageView.image = self.currentApplication.photo;
 }
 
 - (void) dealloc
@@ -33,26 +52,32 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)continueButtonPressed:(__attribute__((unused)) id)sender
+- (IBAction)continueButtonPressed:(id)sender
 {
-  NSUInteger firstNameLen = [[self.firstNameField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length];
-  NSUInteger lastNameLen = [[self.lastNameField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length];
-  
-  [self.firstNameField validateWithBlock:^BOOL{
-    return firstNameLen != 0;
-  }];
-  [self.lastNameField validateWithBlock:^BOOL{
-    return lastNameLen != 0;
-  }];
+  [self.firstNameField validate];
+  [self.lastNameField validate];
   
   if (self.lastNameField.valid && self.firstNameField.valid) {
-//    [self performSegueWithIdentifier:@"address" sender:nil];
+    if (self.firstNameField.isFirstResponder || self.lastNameField.isFirstResponder) {
+      [self.firstNameField resignFirstResponder];
+      [self.lastNameField resignFirstResponder];
+      self.segueOnKeyboardHide = YES;
+    } else {
+      [self performSegueWithIdentifier:@"address" sender:sender];
+    }
   }
 }
 
 - (void)tapGestureRecognized
 {
   [self.currentTextField resignFirstResponder];
+}
+
+- (BOOL)gestureRecognizer:(__attribute__((unused)) UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+  if (touch.view == self.continueButton)
+    return NO;
+  return YES;
 }
 
 #pragma mark Keyboard Notifications
@@ -62,17 +87,24 @@
   CGFloat keyboardHeight = ((CGRect) [[notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue]).size.height;
   CGRect frame = self.view.frame;
   frame.origin.y = -keyboardHeight;
-  [UIView animateWithDuration:0.25 animations:^{
+  double duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+  [UIView animateWithDuration:duration animations:^{
     self.view.frame = frame;
   }];
 }
 
-- (void)keyboardWillHide
+- (void)keyboardWillHide:(NSNotification *)notification
 {
   CGRect frame = self.view.frame;
   frame.origin.y = 0;
-  [UIView animateWithDuration:0.25 animations:^{
+  double duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+  [UIView animateWithDuration:duration animations:^{
     self.view.frame = frame;
+  } completion:^(BOOL finished) {
+    if (finished && self.segueOnKeyboardHide) {
+      self.segueOnKeyboardHide = NO;
+      [self performSegueWithIdentifier:@"address" sender:nil];
+    }
   }];
 }
 
@@ -97,6 +129,10 @@
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
+  if (textField == self.firstNameField)
+    self.currentApplication.firstName = [self.firstNameField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  if (textField == self.lastNameField)
+    self.currentApplication.lastName = [self.lastNameField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
   [textField resignFirstResponder];
   self.currentTextField = nil;
 }
