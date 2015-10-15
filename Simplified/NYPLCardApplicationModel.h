@@ -27,4 +27,8 @@ typedef NS_ENUM(NSUInteger, NYPLCardApplicationError) {
 @property (nonatomic, strong) NSString *lastName;
 @property (nonatomic, strong) NSString *address;
 @property (nonatomic, strong) NSString *email;
+@property (nonatomic, assign, readonly) BOOL applicationSent, photoSent;
+
+- (void)uploadPhoto;
+- (void)uploadApplication;
 @end

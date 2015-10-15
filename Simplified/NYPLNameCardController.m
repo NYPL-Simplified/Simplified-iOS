@@ -34,9 +34,6 @@
   self.lastNameField.validator = ^BOOL() {
     return [[self.lastNameField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] > 0;
   };
-  
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -45,10 +42,15 @@
   [self.firstNameField setText:self.currentApplication.firstName];
   [self.lastNameField setText:self.currentApplication.lastName];
   self.imageView.image = self.currentApplication.photo;
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+  
+  self.title = NSLocalizedString(@"Name", nil);
 }
 
-- (void) dealloc
+- (void) viewWillDisappear:(BOOL)animated
 {
+  [super viewWillDisappear:animated];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
