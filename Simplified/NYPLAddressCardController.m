@@ -11,7 +11,8 @@
 #import "NYPLValidatingTextField.h"
 #import "NYPLCardApplicationModel.h"
 
-@interface NYPLAddressCardController () <UITextFieldDelegate>
+@interface NYPLAddressCardController () <UIGestureRecognizerDelegate, UITextFieldDelegate>
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
 @property (nonatomic, assign) BOOL segueOnKeyboardHide;
 @property (nonatomic, weak) NYPLValidatingTextField *currentTextField;
 @end
@@ -21,16 +22,28 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-  
   self.addressTextField.validator = ^BOOL() {
     return [[self.addressTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] > 5;
   };
+  
+  self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognized)];
+  self.tapGestureRecognizer.numberOfTapsRequired = 1;
+  self.tapGestureRecognizer.delegate = self;
+  [self.view addGestureRecognizer:self.tapGestureRecognizer];
 }
 
-- (void) dealloc
+- (void) viewWillAppear:(BOOL)animated
 {
+  [super viewWillAppear:animated];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+  
+  self.title = NSLocalizedString(@"Address", nil);
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+  [super viewWillDisappear:animated];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -46,6 +59,20 @@
       [self performSegueWithIdentifier:@"email" sender:sender];
     }
   }
+}
+
+#pragma mark Gestures
+
+- (BOOL)gestureRecognizer:(__attribute__((unused)) UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+  if (touch.view == self.continueButton)
+    return NO;
+  return YES;
+}
+
+- (void)tapGestureRecognized
+{
+  [self.currentTextField resignFirstResponder];
 }
 
 #pragma mark Keyboard Notifications

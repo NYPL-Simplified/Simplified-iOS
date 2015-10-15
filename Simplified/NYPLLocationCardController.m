@@ -99,6 +99,8 @@ typedef enum {
       self.state = NYPLLocationStateUnknown;
     }
   }
+  
+  self.title = NSLocalizedString(@"Location", nil);
 }
 
 - (void)viewDidAppear:(BOOL)animated
