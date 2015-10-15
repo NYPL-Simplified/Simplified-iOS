@@ -126,7 +126,7 @@ NSString *md5HexDigest(NSString *input) {
   // Dictionary that holds post parameters. You can set your post parameters that your server accepts or programmed to accept.
   NSMutableDictionary* _params = [[NSMutableDictionary alloc] init];
   NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-  [formatter setDateFormat:@"YYYY-MM-DD"];
+  [formatter setDateFormat:@"yyyy-MM-dd"];
   [_params setObject:[NSString stringWithFormat:@"%@, %@", self.lastName, self.firstName] forKey:@"name"];
   [_params setObject:self.address forKey:@"address"];
   [_params setObject:[formatter stringFromDate:self.dob] forKey:@"birthdate"];

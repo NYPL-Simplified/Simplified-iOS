@@ -180,12 +180,6 @@
                                     <constraint firstAttribute="height" constant="200" id="IqK-Hf-EOH"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello New York! You're good to go" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iut-mE-Hw4">
-                                <rect key="frame" x="170" y="408" width="261" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x8a-gW-y7Q" customClass="NYPLAnimatingButton">
                                 <rect key="frame" x="266" y="507" width="69" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -195,7 +189,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="571-sB-mLs" customClass="NYPLAnimatingButton">
-                                <rect key="frame" x="227" y="474" width="147" height="33"/>
+                                <rect key="frame" x="227" y="457" width="147" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Check My Location"/>
                                 <connections>
@@ -210,34 +204,27 @@
                             <constraint firstItem="7bg-Dv-X0K" firstAttribute="centerX" secondItem="SaV-N6-7VB" secondAttribute="centerX" id="35r-k9-gGA"/>
                             <constraint firstItem="7bg-Dv-X0K" firstAttribute="top" secondItem="Nxz-f7-KPw" secondAttribute="bottom" constant="8" id="5hA-26-mZi"/>
                             <constraint firstItem="7bg-Dv-X0K" firstAttribute="centerY" secondItem="SaV-N6-7VB" secondAttribute="centerY" id="B27-ZZ-zaP"/>
-                            <constraint firstItem="iut-mE-Hw4" firstAttribute="centerX" secondItem="SaV-N6-7VB" secondAttribute="centerX" id="EPQ-9T-WBO"/>
-                            <constraint firstItem="x8a-gW-y7Q" firstAttribute="top" secondItem="iut-mE-Hw4" secondAttribute="bottom" constant="8" id="ILe-HA-7BH"/>
-                            <constraint firstItem="iut-mE-Hw4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="SaV-N6-7VB" secondAttribute="leadingMargin" id="NIG-OG-V7E"/>
                             <constraint firstItem="Nxz-f7-KPw" firstAttribute="leading" secondItem="SaV-N6-7VB" secondAttribute="leadingMargin" id="Oaj-Tc-kU3"/>
                             <constraint firstItem="Nxz-f7-KPw" firstAttribute="trailing" secondItem="SaV-N6-7VB" secondAttribute="trailingMargin" id="PJh-6r-eyg"/>
-                            <constraint firstItem="iut-mE-Hw4" firstAttribute="top" secondItem="7bg-Dv-X0K" secondAttribute="bottom" constant="8" id="V5r-3t-2tS"/>
                             <constraint firstItem="dss-z4-Eka" firstAttribute="top" secondItem="x8a-gW-y7Q" secondAttribute="bottom" constant="60" id="VL8-uP-TUh"/>
                             <constraint firstItem="x8a-gW-y7Q" firstAttribute="centerX" secondItem="SaV-N6-7VB" secondAttribute="centerX" id="WdJ-l4-GCB"/>
-                            <constraint firstItem="571-sB-mLs" firstAttribute="bottom" secondItem="x8a-gW-y7Q" secondAttribute="top" id="bJZ-lq-QUB"/>
-                            <constraint firstItem="571-sB-mLs" firstAttribute="top" secondItem="iut-mE-Hw4" secondAttribute="bottom" constant="8" id="ffx-vs-4cn"/>
-                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="iut-mE-Hw4" secondAttribute="trailing" id="pId-54-c0b"/>
+                            <constraint firstItem="571-sB-mLs" firstAttribute="bottom" secondItem="x8a-gW-y7Q" secondAttribute="bottom" constant="-50" id="bJZ-lq-QUB"/>
                             <constraint firstItem="Nxz-f7-KPw" firstAttribute="centerY" secondItem="SaV-N6-7VB" secondAttribute="centerY" id="xGo-OK-FM7"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="1V5-f8-7Lh"/>
                                 <exclude reference="xGo-OK-FM7"/>
-                                <exclude reference="ffx-vs-4cn"/>
-                                <exclude reference="ILe-HA-7BH"/>
                             </mask>
                         </variation>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
                         <outlet property="checkButton" destination="571-sB-mLs" id="GA4-oq-KDu"/>
+                        <outlet property="checkButtonBottomConstraint" destination="bJZ-lq-QUB" id="GIr-lJ-2YF"/>
                         <outlet property="continueButton" destination="x8a-gW-y7Q" id="Sf6-Uv-wpM"/>
                         <outlet property="imageView" destination="7bg-Dv-X0K" id="Lfh-j2-IzP"/>
-                        <outlet property="successLabel" destination="iut-mE-Hw4" id="pJU-0s-04Z"/>
+                        <outlet property="statusLabel" destination="Nxz-f7-KPw" id="thS-r4-vs4"/>
                         <outlet property="view" destination="SaV-N6-7VB" id="w6x-19-KBT"/>
                         <segue destination="foz-8t-Ko0" kind="presentation" identifier="error" modalPresentationStyle="currentContext" modalTransitionStyle="crossDissolve" id="GGf-q3-Hzp"/>
                         <segue destination="ZPc-rX-bdu" kind="show" identifier="photo" id="kEz-I0-i4N"/>

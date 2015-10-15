@@ -29,8 +29,9 @@ typedef enum {
 @property (nonatomic, assign) BOOL isDeterminingLocation;
 @property (nonatomic, assign) BOOL requestingContinuousUpdates;
 @property (nonatomic) CLLocationManager *locationManager;
-@property (nonatomic, strong) IBOutlet UILabel *successLabel;
+@property (nonatomic, strong) IBOutlet UILabel *statusLabel;
 @property (nonatomic, strong) IBOutlet UIImageView *imageView;
+@property (nonatomic, strong) IBOutlet NSLayoutConstraint *checkButtonBottomConstraint;
 
 @end
 
@@ -79,25 +80,30 @@ typedef enum {
   _pathCount = 0;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)configureInitialAppearance
+{
+  self.checkButton.alpha = 1.0;
+  self.statusLabel.text = NSLocalizedString(@"This service is available to New York state residents only.", nil);
+  self.continueButton.enabled = NO;
+  self.continueButton.alpha = 0.0;
+  self.checkButtonBottomConstraint.constant = 0.0;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
-  self.continueButton.enabled = NO;
+  self.isDeterminingLocation = NO;
   
   if (!currentApplication.isInNYState) {
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied ||
         [CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
       self.state = NYPLLocationStateCouldNotDetermine;
-    }
-    
-    else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
+    } else {
       self.state = NYPLLocationStateUnknown;
+      [self configureInitialAppearance];
     }
+  } else {
+    self.state = NYPLLocationStateInsideNY;
   }
   
   self.title = NSLocalizedString(@"Location", nil);
@@ -143,16 +149,6 @@ typedef enum {
   }
 }
 
-- (void)couldNotDetermineLocation
-{
-  __weak NYPLCardApplicationViewController *weakSelf = self;
-  self.viewDidAppearCallback = ^() {
-    weakSelf.viewDidAppearCallback = nil;
-    [weakSelf performSegueWithIdentifier:@"photo" sender:nil];
-  };
-  [self performSegueWithIdentifier:@"error" sender:nil];
-}
-
 - (void)locationOutsideNY
 {
   __weak NYPLCardApplicationViewController *weakSelf = self;
@@ -175,54 +171,86 @@ typedef enum {
 
 -(IBAction)checkLocation:(__attribute__((unused)) id)sender
 {
-  if (!self.isDeterminingLocation)
-    self.isDeterminingLocation = YES;
+  if (!self.isDeterminingLocation) {
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
+      if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(NSFoundationVersionNumber_iOS_8_0)) {
+        [self.locationManager requestWhenInUseAuthorization];
+      } else {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Location Services Disabled", nil)
+                                                                                 message:NSLocalizedString(@"To check location automatically, please enable Location Services in Settings", nil)
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+        [self presentViewController:alertController animated:YES completion:nil];
+      }
+    } else {
+      self.isDeterminingLocation = YES;
+    }
+  }
 }
 
 - (void)setState:(NYPLLocationState)state
 {
-  _state = state;
-  self.currentApplication.isInNYState = (state == NYPLLocationStateInsideNY);
-  if (state == NYPLLocationStateUnknown) {
-    self.checkButton.alpha = 1.0;
-    self.successLabel.text = @"";
-    self.continueButton.enabled = NO;
-    
-  } else if (state == NYPLLocationStateOutsideNY) {
-    self.checkButton.alpha = 1.0;
-    self.successLabel.text = NSLocalizedString(@"You're outside New York State. You can still apply for a card, but you won't be able to borrow books until it arrives.", nil);
-    [self.continueButton setEnabled:YES animated:YES];
-    
-  } else if (state == NYPLLocationStateInsideNY) {
-    [UIView transitionWithView:self.successLabel
-                      duration:0.5
-                       options:UIViewAnimationOptionTransitionCrossDissolve
-                    animations:^{
-                      self.successLabel.text = NSLocalizedString(@"Hello New York! You're good to go", nil);
-                    } completion:nil];
-    [UIView transitionWithView:self.checkButton
-                      duration:0.5
-                       options:UIViewAnimationOptionTransitionCrossDissolve
-                    animations:^() {
-                      self.checkButton.alpha = 0.0;
-                    } completion:nil];
-    [UIView transitionWithView:self.imageView
-                      duration:0.5 options:UIViewAnimationOptionTransitionFlipFromRight
-                    animations:^{
-                      self.imageView.image = [UIImage imageNamed:s_checkmarkImageName];
-                    } completion:^(BOOL finished) {
-                      if (finished) {
-                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.75 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                          [self.continueButton setEnabled:YES animated:YES];
-                        });
-                      }
-                    }];
-    
-  } else if (state == NYPLLocationStateCouldNotDetermine) {
-    self.checkButton.alpha = 1.0;
-    self.successLabel.text = NSLocalizedString(@"Could not determine your location. You can still apply for a card, but you won't be able to borrow books until it arrives.", nil);
-    [self.continueButton setEnabled:YES animated:YES];
-    
+  CGFloat duration = 0.5;
+  
+  if (_state != state) {
+    _state = state;
+    self.currentApplication.isInNYState = (state == NYPLLocationStateInsideNY);
+    if (state == NYPLLocationStateUnknown) {
+      [self configureInitialAppearance];
+      
+    } else if (state == NYPLLocationStateOutsideNY) {
+      self.checkButtonBottomConstraint.constant = -(self.continueButton.frame.size.height + 8.0);
+      [UIView animateWithDuration:duration
+                       animations:^{
+                         self.continueButton.alpha = 1.0;
+                         self.checkButton.alpha = 1.0;
+                         self.statusLabel.text = NSLocalizedString(@"You're outside New York State. You can still apply for a card, but you won't be able to borrow books until it arrives.", nil);
+                         [self.view setNeedsLayout];
+                       } completion:^(BOOL finished) {
+                         if (finished) {
+                           [self.continueButton setEnabled:YES animated:YES];
+                         }
+                       }];
+      
+    } else if (state == NYPLLocationStateInsideNY) {
+      [UIView transitionWithView:self.statusLabel
+                        duration:duration
+                         options:UIViewAnimationOptionTransitionCrossDissolve
+                      animations:^{
+                        self.statusLabel.text = NSLocalizedString(@"Hello New York! You're good to go", nil);
+                      } completion:nil];
+      [UIView animateWithDuration:duration
+                       animations:^{
+                         self.checkButton.alpha = 0.0;
+                         self.continueButton.alpha = 1.0;
+                       }];
+      [UIView transitionWithView:self.imageView
+                        duration:duration
+                         options:UIViewAnimationOptionTransitionFlipFromRight
+                      animations:^{
+                        self.imageView.image = [UIImage imageNamed:s_checkmarkImageName];
+                      } completion:^(BOOL finished) {
+                        if (finished) {
+                          dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((duration/2.0) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                            [self.continueButton setEnabled:YES animated:YES];
+                          });
+                        }
+                      }];
+      
+    } else if (state == NYPLLocationStateCouldNotDetermine) {
+      self.checkButtonBottomConstraint.constant = -(self.continueButton.frame.size.height + 8.0);
+      [UIView animateWithDuration:duration
+                       animations:^{
+                         self.continueButton.alpha = 1.0;
+                         self.checkButton.alpha = 1.0;
+                         self.statusLabel.text = NSLocalizedString(@"Could not determine your location. You can still apply for a card, but you won't be able to borrow books until it arrives.", nil);
+                         [self.view setNeedsLayout];
+                       } completion:^(BOOL finished) {
+                         if (finished) {
+                           [self.continueButton setEnabled:YES animated:YES];
+                         }
+                       }];
+      
+    }
   }
 }
 
@@ -248,32 +276,31 @@ typedef enum {
 - (void) locationManager:(__attribute__((unused)) CLLocationManager *)manager didFailWithError:(__attribute__((unused)) NSError *)error
 {
   if (error.code != 0)
-    [self couldNotDetermineLocation];
+    self.state = NYPLLocationStateCouldNotDetermine;
 }
 
 - (void) locationManager:(__attribute__((unused)) CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
 {
-  if (self.requestingContinuousUpdates) {
-    self.requestingContinuousUpdates = NO;
-    [self.locationManager stopUpdatingLocation];
-  }
-  
-  // Should only be one location--check if it's in NYState
-  CLLocation *location = locations.firstObject;
-  CGPoint mapPointAsCGP = CGPointMake(location.coordinate.longitude, location.coordinate.latitude);
-  BOOL isInNYState = NO;
-  for (uint i=0; i<_pathCount; i++) {
-    CGPathRef path = _paths[i];
-    if (CGPathContainsPoint(path, NULL, mapPointAsCGP, FALSE)) {
-      isInNYState = YES;
-      break;
+  if (self.isDeterminingLocation) {
+    self.isDeterminingLocation = NO;
+    
+    // Should only be one location--check if it's in NYState
+    CLLocation *location = locations.firstObject;
+    CGPoint mapPointAsCGP = CGPointMake(location.coordinate.longitude, location.coordinate.latitude);
+    BOOL isInNYState = NO;
+    for (uint i=0; i<_pathCount; i++) {
+      CGPathRef path = _paths[i];
+      if (CGPathContainsPoint(path, NULL, mapPointAsCGP, FALSE)) {
+        isInNYState = YES;
+        break;
+      }
     }
+    
+    if (isInNYState)
+      [self locationInsideNY];
+    else
+      [self locationOutsideNY];
   }
-  
-  if (isInNYState)
-    [self locationInsideNY];
-  else
-    [self locationOutsideNY];
 }
 
 @end
