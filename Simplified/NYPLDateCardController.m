@@ -57,13 +57,10 @@
   if (yearAge >= AGE_OF_CONSENT) {
     [self performSegueWithIdentifier:@"location" sender:self];
   } else {
-    self.currentApplication.error = NYPLCardApplicationErrorTooYoung;
-    __weak NYPLCardApplicationViewController *weakSelf = self;
-    self.viewDidAppearCallback = ^() {
-      weakSelf.viewDidAppearCallback = nil;
-      [weakSelf dismissViewControllerAnimated:YES completion:nil];
-    };
-    [self performSegueWithIdentifier:@"error" sender:self];
+    UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Age Requirement", nil)
+                                                                                 message:NSLocalizedString(@"To apply for a library card, please visit an NYPL branch with a parent or guardian", nil)
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+    [self presentViewController:alertViewController animated:YES completion:nil];
   }
 }
 

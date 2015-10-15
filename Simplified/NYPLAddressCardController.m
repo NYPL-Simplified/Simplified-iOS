@@ -13,6 +13,7 @@
 
 @interface NYPLAddressCardController () <UIGestureRecognizerDelegate, UITextFieldDelegate>
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
+@property (nonatomic, strong) IBOutlet UIImageView *imageView;
 @property (nonatomic, assign) BOOL segueOnKeyboardHide;
 @property (nonatomic, weak) NYPLValidatingTextField *currentTextField;
 @end
@@ -39,6 +40,7 @@
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
   
   self.title = NSLocalizedString(@"Address", nil);
+  self.imageView.image = self.currentApplication.photo;
 }
 
 - (void) viewWillDisappear:(BOOL)animated
