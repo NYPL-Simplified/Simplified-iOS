@@ -116,8 +116,8 @@
   if (textField == self.firstNameField)
     [self.lastNameField becomeFirstResponder];
   else if (textField == self.lastNameField) {
+    self.segueOnKeyboardHide = YES;
     [self.lastNameField resignFirstResponder];
-    [self continueButtonPressed:self.continueButton];
   }
   
   return NO;

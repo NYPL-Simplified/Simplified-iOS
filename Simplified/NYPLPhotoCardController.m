@@ -11,21 +11,31 @@
 #import "NYPLAnimatingButton.h"
 
 @interface NYPLPhotoCardController () <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
+@property (nonatomic, strong) IBOutlet NSLayoutConstraint *selectButtonHeightConstraint, *takeButtonHeightConstraint;
 @end
 
 @implementation NYPLPhotoCardController
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidLoad
 {
-  [super viewWillAppear:animated];
   if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
     self.takePhotoButton.enabled = NO;
   if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary] &&
       ![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum])
     self.selectPhotoButton.enabled = NO;
+  if (self.currentApplication.photo)
+    self.imageView.image = self.currentApplication.photo;
   self.continueButton.enabled = (self.currentApplication.photo != nil);
+  self.continueButton.alpha = (self.currentApplication.photo != nil) ? 1.0 : 0.0;
+  self.selectButtonHeightConstraint.constant = (self.currentApplication.photo != nil) ? -(self.continueButton.frame.size.height + 8.0) : 0;
+  self.takeButtonHeightConstraint.constant = (self.currentApplication.photo != nil) ? -(self.continueButton.frame.size.height + 8.0) : 0;
   
-  self.title = NSLocalizedString(@"Upload Identification", nil);
+  self.title = NSLocalizedString(@"Photo ID", nil);
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+  [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -34,13 +44,11 @@
   
   // If somehow you're on an iDevice with no photo capability whatsoever...
   if (self.selectPhotoButton.enabled == NO && self.takePhotoButton.enabled == NO) {
-    self.currentApplication.error = NYPLCardApplicationErrorNoCamera;
     
-    __weak NYPLPhotoCardController *weakSelf = self;
-    self.viewDidAppearCallback = ^() {
-      [weakSelf dismissViewControllerAnimated:YES completion:nil];
-    };
-    [self performSegueWithIdentifier:@"error" sender:nil];
+    UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"No Camera", nil)
+                                                                                 message:NSLocalizedString(@"There is no way to access photos on your device. Please visit an NYPL branch to apply for a library card", nil)
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+    [self presentViewController:alertViewController animated:YES completion:nil];
   }
 }
 
@@ -74,22 +82,33 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
   UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
-  self.currentApplication.photo = chosenImage;
-  [picker dismissViewControllerAnimated:YES completion:^{
+  if (chosenImage)
+    self.currentApplication.photo = chosenImage;
+  void (^completion)(void) = self.currentApplication.photo == nil ? nil : ^() {
+    [self.view layoutIfNeeded];
+    self.selectButtonHeightConstraint.constant = -(self.continueButton.frame.size.height + 8.0);
+    self.takeButtonHeightConstraint.constant = -(self.continueButton.frame.size.height + 8.0);
+    [UIView animateWithDuration:0.5
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                       self.continueButton.alpha = 1.0;
+                     } completion:nil];
+    [UIView animateWithDuration:0.5
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseOut
+                     animations:^{
+                       [self.view layoutIfNeeded];
+                     } completion:nil];
     [UIView transitionWithView:self.imageView
                       duration:0.5
                        options:UIViewAnimationOptionTransitionCrossDissolve
                     animations:^{
-                      self.imageView.image = chosenImage;
-                    } completion:^(BOOL finished) {
-                      if (finished) {
-                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                          [self.continueButton setEnabled:YES animated:YES];
-                        });
-                      }
-                    }];
-  }];
-
+                      self.imageView.image = self.currentApplication.photo;
+                    } completion:nil];
+    [self.continueButton setEnabled:YES animated:YES];
+  };
+  [picker dismissViewControllerAnimated:YES completion:completion];
   [self.currentApplication uploadPhoto];
 }
 

@@ -7,7 +7,9 @@
 //
 
 #import "NYPLCardApplicationViewController.h"
+@class NYPLAnimatingButton;
 
 @interface NYPLSendingCardController : NYPLCardApplicationViewController
-
+@property (nonatomic, strong) IBOutlet NYPLAnimatingButton *returnToCatalogButton;
+- (IBAction)returnToCatalog:(id)sender;
 @end

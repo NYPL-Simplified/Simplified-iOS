@@ -8,17 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSUInteger, NYPLCardApplicationError) {
-  NYPLCardApplicationNoError              = 0,
-  NYPLCardApplicationErrorTooYoung,
-  NYPLCardApplicationErrorNoLocation,
-  NYPLCardApplicationErrorNotInNY,
-  NYPLCardApplicationErrorNoCamera
+typedef NS_ENUM(NSUInteger, NYPLAssetUploadState) {
+  NYPLAssetUploadStateUnknown              = 0,
+  NYPLAssetUploadStateUploading,
+  NYPLAssetUploadStateError,
+  NYPLAssetUploadStateComplete
 };
 
 @interface NYPLCardApplicationModel : NSObject <NSCoding>
-@property (nonatomic, readonly) NSURL *apiURL;
-@property (nonatomic, assign) NYPLCardApplicationError error;
+@property (nonatomic, readonly) NSURL *apiURL;\
 @property (nonatomic, strong) NSDate *dob;
 @property (nonatomic, strong) UIImage *photo;
 @property (nonatomic, strong) NSString *awsPhotoName;
@@ -27,7 +25,7 @@ typedef NS_ENUM(NSUInteger, NYPLCardApplicationError) {
 @property (nonatomic, strong) NSString *lastName;
 @property (nonatomic, strong) NSString *address;
 @property (nonatomic, strong) NSString *email;
-@property (nonatomic, assign, readonly) BOOL applicationSent, photoSent;
+@property (nonatomic, assign, readonly) NYPLAssetUploadState applicationUploadState, photoUploadState;
 
 - (void)uploadPhoto;
 - (void)uploadApplication;

@@ -25,12 +25,17 @@ NSString *md5HexDigest(NSString *input) {
   return ret;
 }
 
+@interface NYPLCardApplicationModel ()
+@property (nonatomic, assign) NYPLAssetUploadState applicationUploadState, photoUploadState;
+@end
+
 @implementation NYPLCardApplicationModel
 - (id) initWithCoder:(NSCoder *)aDecoder
 {
   self = [super init];
   if (self) {
-    self.error = NYPLCardApplicationNoError;
+    self.applicationUploadState = NYPLAssetUploadStateUnknown;
+    self.photoUploadState = NYPLAssetUploadStateUnknown;
     self.dob = (NSDate *) [aDecoder decodeObjectForKey:kNYPLCardApplicationDOB];
     self.isInNYState = [aDecoder decodeBoolForKey:kNYPLCardApplicaitonInNYState];
   }
@@ -48,9 +53,20 @@ NSString *md5HexDigest(NSString *input) {
   return [NSURL URLWithString:@"https://simplifiedcard.herokuapp.com/"];
 }
 
+- (void)setPhoto:(UIImage *)photo
+{
+  BOOL needsUpload = NO;
+  if (self.photo != photo)
+    needsUpload = (photo != nil);
+  _photo = photo;
+  if (needsUpload)
+    self.photoUploadState = NYPLAssetUploadStateUnknown;
+}
+
 - (void)uploadPhoto {
   // from: http://stackoverflow.com/a/8567771/160933
   
+  self.photoUploadState = NYPLAssetUploadStateUploading;
   NSString *timeString = [NSString stringWithFormat:@"%f", [NSDate timeIntervalSinceReferenceDate]];
   NSString *uniqueName = [NSString stringWithFormat:@"ios-%@.jpg", md5HexDigest(timeString)];
   self.awsPhotoName = uniqueName;
@@ -113,12 +129,14 @@ NSString *md5HexDigest(NSString *input) {
   [request setURL:requestURL];
   
   NSURLSession *session = [NSURLSession sharedSession];
-  NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-    NSLog(@"Uploaded!");
+  NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(__attribute__((unused))NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    if (error || [(NSHTTPURLResponse *)response statusCode] != 200) {
+      self.photoUploadState = NYPLAssetUploadStateError;
+    } else {
+      self.photoUploadState = NYPLAssetUploadStateComplete;
+    }
   }];
   [task resume];
-  
-  _photoSent = YES;
 }
 
 - (void)uploadApplication
@@ -176,12 +194,14 @@ NSString *md5HexDigest(NSString *input) {
   [request setURL:requestURL];
   
   NSURLSession *session = [NSURLSession sharedSession];
-  NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-    NSLog(@"Patron created!");
+  NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(__attribute__((unused))NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    if (error || [(NSHTTPURLResponse *)response statusCode] != 200) {
+      self.applicationUploadState = NYPLAssetUploadStateError;
+    } else {
+      self.applicationUploadState = NYPLAssetUploadStateComplete;
+    }
   }];
   [task resume];
-  
-  _applicationSent = YES;
 }
 
 @end

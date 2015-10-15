@@ -151,12 +151,7 @@ typedef enum {
 
 - (void)locationOutsideNY
 {
-  __weak NYPLCardApplicationViewController *weakSelf = self;
-  self.viewDidAppearCallback = ^() {
-    weakSelf.viewDidAppearCallback = nil;
-    [weakSelf performSegueWithIdentifier:@"photo" sender:nil];
-  };
-  [self performSegueWithIdentifier:@"error" sender:nil];
+  self.state = NYPLLocationStateOutsideNY;
 }
 
 - (void)locationInsideNY
