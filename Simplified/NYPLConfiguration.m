@@ -38,7 +38,11 @@ static NSString *const NYPLCirculationBaseURLTesting = @"http://circulation.alph
 
 + (NSURL *)registrationURL
 {
+#ifdef DEBUG
   return [NSURL URLWithString:@"https://simplifiedcard.herokuapp.com"];
+#else
+  return [NSURL URLWithString:@"http://qa.patrons.librarysimplified.org"];
+#endif
 }
 
 + (UIColor *)mainColor
