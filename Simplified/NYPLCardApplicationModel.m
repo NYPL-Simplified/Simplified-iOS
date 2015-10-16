@@ -7,6 +7,7 @@
 //
 
 #import "NYPLCardApplicationModel.h"
+#import "NYPLAccount.h"
 #import <CommonCrypto/CommonDigest.h>
 
 #define kNYPLCardApplicationModel     @"CardApplicationModel"
@@ -26,6 +27,8 @@ NSString *md5HexDigest(NSString *input) {
 }
 
 @interface NYPLCardApplicationModel ()
+@property (nonatomic, strong) NSString *barcode, *patron_id;
+@property (nonatomic, assign) NSInteger pin, ptype, transaction_id;
 @property (nonatomic, assign) NYPLAssetUploadState applicationUploadState, photoUploadState;
 @end
 
@@ -74,7 +77,6 @@ NSString *md5HexDigest(NSString *input) {
   // Dictionary that holds post parameters. You can set your post parameters that your server accepts or programmed to accept.
   NSMutableDictionary* _params = [[NSMutableDictionary alloc] init];
   [_params setObject:uniqueName forKey:@"name"];
-  NSLog(@"Unique name: %@", uniqueName);
   
   // the boundary string : a random string, that will not repeat in post data, to separate post data fields.
   NSString *BoundaryConstant = @"----------V2ymHFg03ehbqgZCaKO6jy";
@@ -194,10 +196,38 @@ NSString *md5HexDigest(NSString *input) {
   [request setURL:requestURL];
   
   NSURLSession *session = [NSURLSession sharedSession];
-  NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(__attribute__((unused))NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+  NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
     if (error || [(NSHTTPURLResponse *)response statusCode] != 200) {
       self.applicationUploadState = NYPLAssetUploadStateError;
     } else {
+      
+      // Handle the response
+      NSDictionary *responseHeaders = [(NSHTTPURLResponse *)response allHeaderFields];
+      NSString *contentTypes = [responseHeaders objectForKey:@"Content-Type"];
+      BOOL isJson = NO;
+      if (contentTypes)
+        isJson = [contentTypes rangeOfString:@"application/json"].location != NSNotFound;
+      if (isJson) {
+        NSError *jsonReadingError = nil;
+        NSDictionary *responseBody = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonReadingError];
+        if (jsonReadingError) {
+          // Again, this would be pretty serious. Probably we should set an error string or something...
+          self.applicationUploadState = NYPLAssetUploadStateError;
+        } else {
+          self.barcode = [responseBody objectForKey:@"barcode"];
+          self.patron_id = [responseBody objectForKey:@"patron_id"];
+          self.pin = [[responseBody objectForKey:@"pin"] integerValue];
+          self.ptype = [[responseBody objectForKey:@"ptype"] integerValue];
+          self.transaction_id = [[responseBody objectForKey:@"id"] integerValue];
+          
+          NYPLAccount *account = [NYPLAccount sharedAccount];
+          [account setBarcode:self.barcode PIN:[NSString stringWithFormat:@"%ld", (long)self.pin]];
+        }
+      } else {
+        // This would actually be a pretty serious error, so it maybe should be handled in a slightly different way
+        self.applicationUploadState = NYPLAssetUploadStateError;
+      }
+      
       self.applicationUploadState = NYPLAssetUploadStateComplete;
     }
   }];

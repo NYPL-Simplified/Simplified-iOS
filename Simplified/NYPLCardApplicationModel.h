@@ -25,6 +25,8 @@ typedef NS_ENUM(NSUInteger, NYPLAssetUploadState) {
 @property (nonatomic, strong) NSString *lastName;
 @property (nonatomic, strong) NSString *address;
 @property (nonatomic, strong) NSString *email;
+@property (nonatomic, strong, readonly) NSString *barcode, *patron_id;
+@property (nonatomic, assign, readonly) NSInteger pin, ptype, transaction_id;
 @property (nonatomic, assign, readonly) NYPLAssetUploadState applicationUploadState, photoUploadState;
 
 - (void)uploadPhoto;
