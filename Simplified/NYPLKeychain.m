@@ -4,15 +4,16 @@
 
 + (instancetype)sharedKeychain
 {
-  static dispatch_once_t predicate;
   static NYPLKeychain *sharedKeychain = nil;
   
-  dispatch_once(&predicate, ^{
+  // According to http://stackoverflow.com/questions/22082996/testing-the-keychain-osstatus-error-34018
+  //  instantiating the keychain via GCD can cause errors later when trying to add to the keychain
+  if (sharedKeychain == nil) {
     sharedKeychain = [[self alloc] init];
     if(!sharedKeychain) {
       NYPLLOG(@"Failed to created shared keychain.");
     }
-  });
+  }
   
   return sharedKeychain;
 }
@@ -57,8 +58,12 @@
     SecItemUpdate((__bridge CFDictionaryRef) dictionary,
                   (__bridge CFDictionaryRef) updateDictionary);
   } else {
+    OSStatus status;
     dictionary[(__bridge __strong id) kSecValueData] = valueData;
-    SecItemAdd((__bridge CFDictionaryRef) dictionary, NULL);
+    status = SecItemAdd((__bridge CFDictionaryRef) dictionary, NULL);
+    if (status != noErr) {
+      NSLog(@"FUCK NO BUT SERIOUSLY FUCK");
+    }
   }
 }
 
