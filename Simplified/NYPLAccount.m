@@ -9,15 +9,14 @@ static NSString *const PINKey = @"NYPLAccountPIN";
 
 + (instancetype)sharedAccount
 {
-  static dispatch_once_t predicate;
   static NYPLAccount *sharedAccount = nil;
   
-  dispatch_once(&predicate, ^{
+  if (sharedAccount == nil) {
     sharedAccount = [[self alloc] init];
     if(!sharedAccount) {
       NYPLLOG(@"Failed to create shared account.");
     }
-  });
+  }
   
   return sharedAccount;
 }
