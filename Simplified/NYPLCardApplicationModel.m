@@ -8,6 +8,7 @@
 
 #import "NYPLCardApplicationModel.h"
 #import "NYPLAccount.h"
+#import "NYPLKeychain.h"
 #import <CommonCrypto/CommonDigest.h>
 
 #define kNYPLCardApplicationModel     @"CardApplicationModel"
@@ -27,16 +28,38 @@ NSString *md5HexDigest(NSString *input) {
 }
 
 @interface NYPLCardApplicationModel ()
+@property (nonatomic, assign) NYPLAccount *sharedAccount;
+@property (nonatomic, assign) NYPLKeychain *sharedKeychain;
 @property (nonatomic, strong) NSString *barcode, *patron_id;
 @property (nonatomic, assign) NSInteger pin, ptype, transaction_id;
 @property (nonatomic, assign) NYPLAssetUploadState applicationUploadState, photoUploadState;
 @end
 
 @implementation NYPLCardApplicationModel
+
+// According to http://stackoverflow.com/questions/20344255/secitemadd-and-secitemcopymatching-returns-error-code-34018-errsecmissingentit/22305193#22305193
+//  sometimes the keychain will throw error -34018 if you try to use it too soon after initializing it. Creating them as soon as
+//  we initialize the card application guarantees that they will be ready when we need them
+- (void)sharedInit
+{
+  self.sharedAccount = [NYPLAccount sharedAccount];
+  self.sharedKeychain = [NYPLKeychain sharedKeychain];
+}
+
+- (id) init
+{
+  self = [super init];
+  if (self) {
+    [self sharedInit];
+  }
+  return self;
+}
+
 - (id) initWithCoder:(NSCoder *)aDecoder
 {
   self = [super init];
   if (self) {
+    [self sharedInit];
     self.applicationUploadState = NYPLAssetUploadStateUnknown;
     self.photoUploadState = NYPLAssetUploadStateUnknown;
     self.dob = (NSDate *) [aDecoder decodeObjectForKey:kNYPLCardApplicationDOB];
@@ -64,6 +87,11 @@ NSString *md5HexDigest(NSString *input) {
   _photo = photo;
   if (needsUpload)
     self.photoUploadState = NYPLAssetUploadStateUnknown;
+}
+
+- (void)updateAccount
+{
+  [self.sharedAccount setBarcode:self.barcode PIN:[NSString stringWithFormat:@"%ld", (long)self.pin]];
 }
 
 - (void)uploadPhoto {
@@ -220,8 +248,7 @@ NSString *md5HexDigest(NSString *input) {
           self.ptype = [[responseBody objectForKey:@"ptype"] integerValue];
           self.transaction_id = [[responseBody objectForKey:@"id"] integerValue];
           
-          NYPLAccount *account = [NYPLAccount sharedAccount];
-          [account setBarcode:self.barcode PIN:[NSString stringWithFormat:@"%ld", (long)self.pin]];
+          [self performSelectorOnMainThread:@selector(updateAccount) withObject:nil waitUntilDone:NO];
         }
       } else {
         // This would actually be a pretty serious error, so it maybe should be handled in a slightly different way

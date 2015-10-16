@@ -116,8 +116,12 @@
   if (textField == self.firstNameField)
     [self.lastNameField becomeFirstResponder];
   else if (textField == self.lastNameField) {
-    self.segueOnKeyboardHide = YES;
-    [self.lastNameField resignFirstResponder];
+    [self.firstNameField validate];
+    [self.lastNameField validate];
+    if (self.firstNameField.valid && self.lastNameField.valid) {
+      self.segueOnKeyboardHide = YES;
+      [self.lastNameField resignFirstResponder];
+    }
   }
   
   return NO;
