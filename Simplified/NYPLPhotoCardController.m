@@ -11,7 +11,7 @@
 #import "NYPLAnimatingButton.h"
 
 @interface NYPLPhotoCardController () <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
-@property (nonatomic, strong) IBOutlet NSLayoutConstraint *selectButtonHeightConstraint, *takeButtonHeightConstraint;
+@property (nonatomic, strong) IBOutlet NSLayoutConstraint *selectButtonHeightConstraint;
 @end
 
 @implementation NYPLPhotoCardController
@@ -28,7 +28,6 @@
   self.continueButton.enabled = (self.currentApplication.photo != nil);
   self.continueButton.alpha = (self.currentApplication.photo != nil) ? 1.0 : 0.0;
   self.selectButtonHeightConstraint.constant = (self.currentApplication.photo != nil) ? -(self.continueButton.frame.size.height + 8.0) : 0;
-  self.takeButtonHeightConstraint.constant = (self.currentApplication.photo != nil) ? -(self.continueButton.frame.size.height + 8.0) : 0;
   
   self.title = NSLocalizedString(@"Photo ID", nil);
 }
@@ -87,7 +86,6 @@
   void (^completion)(void) = self.currentApplication.photo == nil ? nil : ^() {
     [self.view layoutIfNeeded];
     self.selectButtonHeightConstraint.constant = -(self.continueButton.frame.size.height + 8.0);
-    self.takeButtonHeightConstraint.constant = -(self.continueButton.frame.size.height + 8.0);
     [UIView animateWithDuration:0.5
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseIn

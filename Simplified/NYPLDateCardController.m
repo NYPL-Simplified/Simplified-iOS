@@ -60,6 +60,9 @@
     UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Age Requirement", nil)
                                                                                  message:NSLocalizedString(@"To apply for a library card, please visit an NYPL branch with a parent or guardian", nil)
                                                                           preferredStyle:UIAlertControllerStyleAlert];
+    [alertViewController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Okay", nil)
+                                                            style:UIAlertActionStyleCancel
+                                                          handler:nil]];
     [self presentViewController:alertViewController animated:YES completion:nil];
   }
 }

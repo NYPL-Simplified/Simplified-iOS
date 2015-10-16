@@ -16,6 +16,7 @@ static void *s_photoUploadContext = &s_photoUploadContext;
 @interface NYPLSendingCardController ()
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) IBOutlet UILabel *statusLabel, *successLabel, *allSetLabel;
+@property (nonatomic, strong) IBOutlet UIImageView *successCard, *successCheck;
 @end
 
 @implementation NYPLSendingCardController
@@ -28,6 +29,8 @@ static void *s_photoUploadContext = &s_photoUploadContext;
   [self.activityIndicator startAnimating];
   
   self.successLabel.alpha = 0.0;
+  self.successCard.alpha = 0.0;
+  self.successCheck.alpha = 0.0;
   self.allSetLabel.alpha = 0.0;
   self.returnToCatalogButton.alpha = 0.0;
   self.returnToCatalogButton.enabled = NO;
@@ -39,18 +42,25 @@ static void *s_photoUploadContext = &s_photoUploadContext;
   [self.currentApplication addObserver:self forKeyPath:@"applicationUploadState" options:0 context:s_applicationUploadContext];
   [self.currentApplication addObserver:self forKeyPath:@"photoUploadState" options:0 context:s_photoUploadContext];
   
-  if (!(self.currentApplication.applicationUploadState == NYPLAssetUploadStateComplete)) {
+  if (self.currentApplication.applicationUploadState == NYPLAssetUploadStateUnknown) {
     if (self.currentApplication.photoUploadState == NYPLAssetUploadStateComplete) {
       [self.currentApplication uploadApplication];
     } else if (self.currentApplication.photoUploadState == NYPLAssetUploadStateError) {
       [self showUploadErrorAlert];
     }
     
-    [self.currentApplication uploadApplication];
-    
-  } else {
+    // Otherwise just wait until the photo is done uploading
+  }
+  
+  else if (self.currentApplication.applicationUploadState == NYPLAssetUploadStateError) {
+    [self showUploadErrorAlert];
+  }
+  
+  else if(self.currentApplication.applicationUploadState == NYPLAssetUploadStateComplete) {
     [self showSuccess];
   }
+  
+  // Otherwise just wait
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -82,6 +92,8 @@ static void *s_photoUploadContext = &s_photoUploadContext;
     [UIView animateWithDuration:0.3
                      animations:^{
                        self.successLabel.alpha = 1.0;
+                       self.successCard.alpha = 1.0;
+                       self.successCheck.alpha = 1.0;
                        self.allSetLabel.alpha = 1.0;
                        self.returnToCatalogButton.alpha = 1.0;
                        self.statusLabel.alpha = 0.0;

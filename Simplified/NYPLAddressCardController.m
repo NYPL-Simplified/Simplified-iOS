@@ -109,8 +109,11 @@
 
 - (BOOL)textFieldShouldReturn:(__attribute__((unused)) UITextField *)textField {
   if (textField == self.addressTextField) {
-    [self.addressTextField resignFirstResponder];
-    [self continueButtonPressed:self.continueButton];
+    [self.addressTextField validate];
+    if (self.addressTextField.valid) {
+      self.segueOnKeyboardHide = YES;
+      [self.addressTextField resignFirstResponder];
+    }
   }
   
   return NO;

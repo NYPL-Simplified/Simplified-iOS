@@ -115,8 +115,11 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
   if (textField == self.emailTextField) {
-    [self.emailTextField resignFirstResponder];
-    [self continueButtonPressed:self.continueButton];
+    [self.emailTextField validate];
+    if (self.emailTextField.valid) {
+      self.segueOnKeyboardHide = YES;
+      [self.emailTextField resignFirstResponder];
+    }
   }
   
   return NO;
