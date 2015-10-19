@@ -5,6 +5,7 @@
 #import "NYPLReaderSettings.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLEULAViewController.h"
+#import "NYPLSettings.h"
 
 // TODO: Remove these imports and move handling the "open a book url" code to a more appropriate handler
 #import "NYPLXML.h"
@@ -40,11 +41,20 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
   [self.window makeKeyAndVisible];
   
-  UIViewController *eulaViewController = [[NYPLEULAViewController alloc] initWithCompletionHandler:^(void) {
+  if ([[NYPLSettings sharedSettings] userAcceptedEULA]) {
     self.window.rootViewController = [NYPLRootTabBarController sharedController];
-  }];
-  
-  self.window.rootViewController = eulaViewController;
+    
+  } else {
+    NYPLRootTabBarController *mainViewController = [NYPLRootTabBarController sharedController];
+    UIViewController *eulaViewController = [[NYPLEULAViewController alloc] initWithCompletionHandler:^(void) {
+      [UIView transitionWithView:self.window
+                        duration:0.5
+                         options:UIViewAnimationOptionTransitionCurlUp
+                      animations:^() {self.window.rootViewController = mainViewController; }
+                      completion:nil];
+    }];
+    self.window.rootViewController = eulaViewController;
+  }
   
   return YES;
 }
