@@ -10,6 +10,7 @@
 #import "CJAMacros.h"
 #import "NYPLAnimatingButton.h"
 #import "NYPLCardApplicationModel.h"
+#import "NYPLSettings.h"
 @import CoreLocation;
 
 static NSString *s_checkmarkImageName = @"Check";
@@ -105,8 +106,6 @@ typedef enum {
   } else {
     self.state = NYPLLocationStateInsideNY;
   }
-  
-  self.title = NSLocalizedString(@"Location", nil);
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -248,16 +247,6 @@ typedef enum {
     }
   }
 }
-
-#pragma mark - Navigation
-
-/*
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 #pragma mark Location
 

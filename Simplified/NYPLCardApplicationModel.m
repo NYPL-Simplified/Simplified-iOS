@@ -9,11 +9,21 @@
 #import "NYPLCardApplicationModel.h"
 #import "NYPLAccount.h"
 #import "NYPLKeychain.h"
+#import "NYPLSettings.h"
 #import <CommonCrypto/CommonDigest.h>
 
-#define kNYPLCardApplicationModel     @"CardApplicationModel"
-#define kNYPLCardApplicationDOB       @"DateOfBirth"
-#define kNYPLCardApplicaitonInNYState @"IsInNYState"
+static NSString *const kNYPLCardApplicationModel =                @"NYPLCardApplicationModel";
+static NSString *const kNYPLCardApplicationDOB =                  @"NYPLCardApplicationDOB";
+static NSString *const kNYPLCardApplicationIsInNYState =          @"NYPLCardApplicationIsInNYState";
+static NSString *const kNYPLCardApplicationFirstName =            @"NYPLCardApplicationFirstName";
+static NSString *const kNYPLCardApplicationLastName =             @"NYPLCardApplicationLastName";
+static NSString *const kNYPLCardApplicationAddress =              @"NYPLCardApplicationAddress";
+static NSString *const kNYPLCardApplicationEmail =                @"NYPLCardApplicationEmail";
+static NSString *const kNYPLCardApplicationAWSPhotoName =         @"NYPLCardApplicationAWSPhotoName";
+static NSString *const kNYPLCardApplicationPhotoUploaded =        @"NYPLCardApplicationPhotoUploaded";
+static NSString *const kNYPLCardApplicationApplicationUploaded =  @"NYPLCardApplicationApplicationUploaded";
+
+static NYPLCardApplicationModel *s_currentApplication = nil;
 
 NSString *md5HexDigest(NSString *input) {
   const char* str = [input UTF8String];
@@ -33,9 +43,23 @@ NSString *md5HexDigest(NSString *input) {
 @property (nonatomic, strong) NSString *barcode, *patron_id;
 @property (nonatomic, assign) NSInteger pin, ptype, transaction_id;
 @property (nonatomic, assign) NYPLAssetUploadState applicationUploadState, photoUploadState;
+@property (nonatomic, assign) NSURLSessionDataTask *applicationUploadTask;
 @end
 
 @implementation NYPLCardApplicationModel
+
++ (NYPLCardApplicationModel *) currentCardApplication
+{
+  if (s_currentApplication == nil)
+    s_currentApplication = [[NYPLSettings sharedSettings] currentCardApplication];
+  return s_currentApplication;
+}
+
++ (NYPLCardApplicationModel *) beginCardApplication
+{
+  s_currentApplication = [[NYPLCardApplicationModel alloc] init];
+  return s_currentApplication;
+}
 
 // According to http://stackoverflow.com/questions/20344255/secitemadd-and-secitemcopymatching-returns-error-code-34018-errsecmissingentit/22305193#22305193
 //  sometimes the keychain will throw error -34018 if you try to use it too soon after initializing it. Creating them as soon as
@@ -60,18 +84,56 @@ NSString *md5HexDigest(NSString *input) {
   self = [super init];
   if (self) {
     [self sharedInit];
-    self.applicationUploadState = NYPLAssetUploadStateUnknown;
-    self.photoUploadState = NYPLAssetUploadStateUnknown;
+    
     self.dob = (NSDate *) [aDecoder decodeObjectForKey:kNYPLCardApplicationDOB];
-    self.isInNYState = [aDecoder decodeBoolForKey:kNYPLCardApplicaitonInNYState];
+    _photo = [self restoreLocalPhoto];
+    self.awsPhotoName = [aDecoder decodeObjectForKey:kNYPLCardApplicationAWSPhotoName];
+    self.isInNYState = [aDecoder decodeBoolForKey:kNYPLCardApplicationIsInNYState];
+    self.firstName = [aDecoder decodeObjectForKey:kNYPLCardApplicationFirstName];
+    self.lastName = [aDecoder decodeObjectForKey:kNYPLCardApplicationLastName];
+    self.address = [aDecoder decodeObjectForKey:kNYPLCardApplicationAddress];
+    self.email = [aDecoder decodeObjectForKey:kNYPLCardApplicationEmail];
+    self.applicationUploadState = [aDecoder decodeIntegerForKey:kNYPLCardApplicationApplicationUploaded];
+    self.photoUploadState = [aDecoder decodeIntegerForKey:kNYPLCardApplicationPhotoUploaded];
+    
+    if (self.photoUploadState != NYPLAssetUploadStateComplete)
+      [self uploadPhoto];
   }
   return self;
 }
 
 - (void) encodeWithCoder:(NSCoder *)aCoder
 {
+  if (self.photo)
+    [self savePhotoLocally];
+  
   [aCoder encodeObject:self.dob forKey:kNYPLCardApplicationDOB];
-  [aCoder encodeBool:self.isInNYState forKey:kNYPLCardApplicaitonInNYState];
+  [aCoder encodeObject:self.awsPhotoName forKey:kNYPLCardApplicationAWSPhotoName];
+  [aCoder encodeBool:self.isInNYState forKey:kNYPLCardApplicationIsInNYState];
+  [aCoder encodeObject:self.firstName forKey:kNYPLCardApplicationFirstName];
+  [aCoder encodeObject: self.lastName forKey:kNYPLCardApplicationLastName];
+  [aCoder encodeObject:self.address forKey:kNYPLCardApplicationAddress];
+  [aCoder encodeObject:self.email forKey:kNYPLCardApplicationEmail];
+  [aCoder encodeInteger:self.applicationUploadState forKey:kNYPLCardApplicationApplicationUploaded];
+  [aCoder encodeInteger:self.photoUploadState forKey:kNYPLCardApplicationPhotoUploaded];
+}
+
+- (void) savePhotoLocally
+{
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents folder
+  
+  NSData *binaryImageData = UIImagePNGRepresentation(self.photo);
+  [binaryImageData writeToFile:[documentsDirectory stringByAppendingPathComponent:@"app-photo.png"] atomically:YES];
+}
+
+- (UIImage *) restoreLocalPhoto
+{
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  NSString *documentsDirectory = [paths objectAtIndex:0]; // Get documents folder
+  
+  UIImage *image = [UIImage imageWithContentsOfFile:[documentsDirectory stringByAppendingPathComponent:@"app-photo.png"]];
+  return image;
 }
 
 - (NSURL *) apiURL
@@ -224,7 +286,7 @@ NSString *md5HexDigest(NSString *input) {
   [request setURL:requestURL];
   
   NSURLSession *session = [NSURLSession sharedSession];
-  NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+  self.applicationUploadTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
     if (error || [(NSHTTPURLResponse *)response statusCode] != 200) {
       self.applicationUploadState = NYPLAssetUploadStateError;
     } else {
@@ -256,9 +318,18 @@ NSString *md5HexDigest(NSString *input) {
       }
       
       self.applicationUploadState = NYPLAssetUploadStateComplete;
+      
+      s_currentApplication = nil;
+      [[NYPLSettings sharedSettings] setCurrentCardApplication:nil];
     }
   }];
-  [task resume];
+  [self.applicationUploadTask resume];
+}
+
+- (void)cancelApplicationUpload
+{
+  [self.applicationUploadTask cancel];
+  self.applicationUploadState = NYPLAssetUploadStateUnknown;
 }
 
 @end

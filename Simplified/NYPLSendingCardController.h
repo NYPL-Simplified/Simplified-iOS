@@ -10,6 +10,11 @@
 @class NYPLAnimatingButton;
 
 @interface NYPLSendingCardController : NYPLCardApplicationViewController
-@property (nonatomic, strong) IBOutlet NYPLAnimatingButton *returnToCatalogButton;
+@property (nonatomic, strong) IBOutlet NYPLAnimatingButton *returnToCatalogButton, *submitApplicationButton;
+@property (nonatomic, strong) IBOutlet UILabel *nameLabel, *addressLabel, *dobLabel, *emailLabel;
+@property (nonatomic, strong) IBOutlet UIImageView *imageView;
+@property (nonatomic, strong) IBOutlet UIView *successView, *verifyView;
+
+- (IBAction)submitApplication:(id)sender;
 - (IBAction)returnToCatalog:(id)sender;
 @end

@@ -1500,8 +1500,8 @@
 			baseConfigurationReference = 5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: The New York Library Astor, Lenox, and Tilden Foundations (7262U6ST2R)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
@@ -1510,7 +1510,7 @@
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ba4714ad-0d10-4588-99ac-cecf8217f75c";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -1530,8 +1530,8 @@
 			baseConfigurationReference = 5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: The New York Library Astor, Lenox, and Tilden Foundations (7262U6ST2R)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
@@ -1540,7 +1540,7 @@
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ba4714ad-0d10-4588-99ac-cecf8217f75c";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
 					"-Wall",
