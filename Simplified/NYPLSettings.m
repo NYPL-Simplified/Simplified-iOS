@@ -3,6 +3,7 @@
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLCardApplicationModel.h"
 
 static NSString *const customMainFeedURLKey = @"NYPLSettingsCustomMainFeedURL";
 
@@ -17,6 +18,8 @@ static NSString *const privacyPolicyURLKey = @"NYPLSettingsPrivacyPolicyURL";
 static NSString *const acknowledgmentsURLKey = @"NYPLSettingsAcknowledgmentsURL";
 
 static NSString *const preloadContentCompletedKey = @"NYPLSettingsPreloadContentCompleted";
+
+static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCurrentCardApplicationSerialized";
 
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
 {
@@ -81,6 +84,15 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 - (NSURL *) acknowledgmentsURL
 {
   return [[NSUserDefaults standardUserDefaults] URLForKey:acknowledgmentsURLKey];
+}
+
+- (NYPLCardApplicationModel *)currentCardApplication
+{
+  NSData *currentCardApplicationSerialization = [[NSUserDefaults standardUserDefaults] objectForKey:currentCardApplicationSerializationKey];
+  if (!currentCardApplicationSerialization)
+    return nil;
+  
+  return [NSKeyedUnarchiver unarchiveObjectWithData:currentCardApplicationSerialization];
 }
 
 - (BOOL)preloadContentCompleted
@@ -254,6 +266,23 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   if([acknowledgmentsURL isEqual:self.acknowledgmentsURL]) return;
   
   [[NSUserDefaults standardUserDefaults] setURL:acknowledgmentsURL forKey:acknowledgmentsURLKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLSettingsDidChangeNotification
+   object:self];
+}
+
+- (void)setCurrentCardApplication:(NYPLCardApplicationModel *)currentCardApplication
+{
+  if (!currentCardApplication) {
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:currentCardApplicationSerializationKey];
+    return;
+  }
+  
+  NSData *cardAppData = [NSKeyedArchiver archivedDataWithRootObject:currentCardApplication];
+  
+  [[NSUserDefaults standardUserDefaults] setObject:cardAppData forKey:currentCardApplicationSerializationKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
   
   [[NSNotificationCenter defaultCenter]

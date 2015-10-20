@@ -5,6 +5,8 @@ typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
   NYPLSettingsRenderingEngineReadium
 };
 
+@class NYPLCardApplicationModel;
+
 @interface NYPLSettings : NSObject
 
 // Set to nil (the default) if no custom feed should be used.
@@ -14,6 +16,7 @@ typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
 @property (atomic) NSURL *eulaURL;
 @property (atomic) NSURL *privacyPolicyURL;
 @property (atomic) NSURL *acknowledgmentsURL;
+@property (atomic) NYPLCardApplicationModel *currentCardApplication;
 
 // Leaving this set to |NYPLSettingsRenderingEngineAutomatic| (the default) is *highly* recommended.
 @property (atomic) NYPLSettingsRenderingEngine renderingEngine;

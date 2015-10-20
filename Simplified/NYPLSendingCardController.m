@@ -14,8 +14,9 @@ static void *s_applicationUploadContext = &s_applicationUploadContext;
 static void *s_photoUploadContext = &s_photoUploadContext;
 
 @interface NYPLSendingCardController ()
+@property (nonatomic, strong) UIAlertController *submittingController;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
-@property (nonatomic, strong) IBOutlet UILabel *statusLabel, *successLabel, *allSetLabel;
+@property (nonatomic, strong) IBOutlet UILabel *successLabel, *allSetLabel;
 @property (nonatomic, strong) IBOutlet UIImageView *successCard, *successCheck;
 @end
 
@@ -24,16 +25,11 @@ static void *s_photoUploadContext = &s_photoUploadContext;
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  self.title = NSLocalizedString(@"Sending", nil);
   self.activityIndicator.hidesWhenStopped = YES;
   [self.activityIndicator startAnimating];
   
-  self.successLabel.alpha = 0.0;
-  self.successCard.alpha = 0.0;
-  self.successCheck.alpha = 0.0;
-  self.allSetLabel.alpha = 0.0;
-  self.returnToCatalogButton.alpha = 0.0;
-  self.returnToCatalogButton.enabled = NO;
+  self.verifyView.hidden = NO;
+  self.successView.hidden = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -42,25 +38,11 @@ static void *s_photoUploadContext = &s_photoUploadContext;
   [self.currentApplication addObserver:self forKeyPath:@"applicationUploadState" options:0 context:s_applicationUploadContext];
   [self.currentApplication addObserver:self forKeyPath:@"photoUploadState" options:0 context:s_photoUploadContext];
   
-  if (self.currentApplication.applicationUploadState == NYPLAssetUploadStateUnknown) {
-    if (self.currentApplication.photoUploadState == NYPLAssetUploadStateComplete) {
-      [self.currentApplication uploadApplication];
-    } else if (self.currentApplication.photoUploadState == NYPLAssetUploadStateError) {
-      [self showUploadErrorAlert];
-    }
-    
-    // Otherwise just wait until the photo is done uploading
-  }
-  
-  else if (self.currentApplication.applicationUploadState == NYPLAssetUploadStateError) {
-    [self showUploadErrorAlert];
-  }
-  
-  else if(self.currentApplication.applicationUploadState == NYPLAssetUploadStateComplete) {
-    [self showSuccess];
-  }
-  
-  // Otherwise just wait
+  self.nameLabel.text = [NSString stringWithFormat:@"%@ %@", self.currentApplication.firstName, self.currentApplication.lastName];
+  self.dobLabel.text = [NSDateFormatter localizedStringFromDate:self.currentApplication.dob dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterNoStyle];
+  self.addressLabel.text = self.currentApplication.address;
+  self.emailLabel.text = self.currentApplication.email;
+  self.imageView.image = self.currentApplication.photo;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -73,33 +55,37 @@ static void *s_photoUploadContext = &s_photoUploadContext;
 
 - (void)showUploadErrorAlert
 {
-  UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Upload Failed", nil)
-                                                                           message:NSLocalizedString(@"There was an error uploading your library card application. Please try again later", nil)
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-  [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Okay", nil)
-                                                     style:UIAlertActionStyleDefault
-                                                   handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
-                                                     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
-                                                   }]];
-  [self presentViewController:alertController animated:YES completion:nil];
+  [self.submittingController dismissViewControllerAnimated:YES completion:^{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Upload Failed", nil)
+                                                                             message:NSLocalizedString(@"There was an error uploading your library card application. Please try again later", nil)
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Okay", nil)
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
+                                                        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+                                                      }]];
+    [self presentViewController:alertController animated:YES completion:nil];
+  }];
+  self.submittingController = nil;
 }
 
 - (void)showSuccess
 {
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [self.activityIndicator stopAnimating];
-    
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                       self.successLabel.alpha = 1.0;
-                       self.successCard.alpha = 1.0;
-                       self.successCheck.alpha = 1.0;
-                       self.allSetLabel.alpha = 1.0;
-                       self.returnToCatalogButton.alpha = 1.0;
-                       self.statusLabel.alpha = 0.0;
-                     }];
-    [self.returnToCatalogButton setEnabled:YES animated:YES];
-  });
+  [self.submittingController dismissViewControllerAnimated:YES completion:^{
+    [UIView transitionWithView:self.view
+                      duration:0.3
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^{
+                      self.verifyView.hidden = YES;
+                      self.successView.hidden = NO;
+                    } completion:^(BOOL finished) {
+                      if (finished) {
+                        [self.returnToCatalogButton setEnabled:YES animated:YES];
+                        self.navigationItem.backBarButtonItem = nil;
+                      }
+                    }];
+  }];
+  self.submittingController = nil;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
@@ -121,6 +107,35 @@ static void *s_photoUploadContext = &s_photoUploadContext;
   } else {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
+}
+
+- (IBAction)submitApplication:(__attribute__((unused)) id)sender
+{
+  self.submittingController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Submitting", nil)
+                                                                  message:NSLocalizedString(@"Submitting your application", nil)
+                                                           preferredStyle:UIAlertControllerStyleAlert];
+  [self.submittingController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:^(__attribute__((unused)) UIAlertAction * _Nonnull action) {
+                                                           [self.currentApplication cancelApplicationUpload];
+                                                         }]];
+  
+  [self presentViewController:self.submittingController animated:YES completion:^{
+    
+    if (self.currentApplication.applicationUploadState != NYPLAssetUploadStateComplete) {
+      if (self.currentApplication.photoUploadState == NYPLAssetUploadStateComplete) {
+        [self.currentApplication uploadApplication];
+      } else if (self.currentApplication.photoUploadState == NYPLAssetUploadStateError) {
+        [self showUploadErrorAlert];
+      }
+      
+      // If none of these, don't worry: we'll send the application once the photo is done uploading
+    }
+    
+    else {
+      [self showSuccess];
+    }
+  }];
 }
 
 - (IBAction)returnToCatalog:(__attribute__((unused))id)sender

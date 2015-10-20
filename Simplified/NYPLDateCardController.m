@@ -9,6 +9,7 @@
 #import "NYPLDateCardController.h"
 #import "NYPLCardApplicationModel.h"
 #import "NYPLAnimatingButton.h"
+#import "NYPLSettings.h"
 
 #define AGE_OF_CONSENT  14
 
@@ -20,24 +21,19 @@
 @end
 
 @implementation NYPLDateCardController
-@synthesize currentApplication;
 
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  if (!self.currentApplication) {
-    self.currentApplication = [[NYPLCardApplicationModel alloc] init];
-  }
-  
-  self.continueButton.enabled = NO;
-  self.datePicker.date = [NSDate date];
   self.datePicker.maximumDate = [NSDate date];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-  [super viewWillAppear:animated];
-  self.title = NSLocalizedString(@"Birthdate", nil);
+  
+  if (self.currentApplication.dob) {
+    self.continueButton.enabled = YES;
+    self.datePicker.date = self.currentApplication.dob;
+  } else {
+    self.continueButton.enabled = NO;
+    self.datePicker.date = [NSDate date];
+  }
 }
 
 - (IBAction)datePicked:(__attribute__((unused)) id)sender
@@ -66,13 +62,5 @@
     [self presentViewController:alertViewController animated:YES completion:nil];
   }
 }
-
-#pragma mark - Navigation
-
-/*
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(__attribute__((unused)) id)sender {
-}
-*/
 
 @end

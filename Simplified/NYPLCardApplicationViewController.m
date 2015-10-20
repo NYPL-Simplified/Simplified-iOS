@@ -8,18 +8,24 @@
 
 #import "NYPLCardApplicationViewController.h"
 #import "NYPLCardApplicationModel.h"
+#import "NYPLSettings.h"
 
 @implementation NYPLCardApplicationViewController
 
-- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (id) initWithCoder:(NSCoder *)aDecoder
 {
-  [super prepareForSegue:segue sender:sender];
-  ((NYPLCardApplicationViewController *) (segue.destinationViewController)).currentApplication = self.currentApplication;
+  self = [super initWithCoder:aDecoder];
+  if (self) {
+    self.navigationItem.title = self.title;
+  }
+  return self;
 }
 
-- (void) viewWillAppear:(BOOL)animated
+- (void) viewDidLoad
 {
-  [super viewWillAppear:animated];
+  [super viewDidLoad];
+  if (!self.currentApplication)
+    self.currentApplication = [NYPLCardApplicationModel currentCardApplication];
   
   if (self.navigationController.viewControllers[0] == self) {
     self.navigationItem.hidesBackButton = NO;
@@ -39,6 +45,12 @@
 - (void)dismiss
 {
   [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void) performSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+  [[NYPLSettings sharedSettings] setCurrentCardApplication:self.currentApplication];
+  [super performSegueWithIdentifier:identifier sender:sender];
 }
 
 @end

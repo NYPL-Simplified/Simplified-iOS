@@ -16,7 +16,8 @@ typedef NS_ENUM(NSUInteger, NYPLAssetUploadState) {
 };
 
 @interface NYPLCardApplicationModel : NSObject <NSCoding>
-@property (nonatomic, readonly) NSURL *apiURL;\
+@property (nonatomic, readonly) NSURL *apiURL;
+
 @property (nonatomic, strong) NSDate *dob;
 @property (nonatomic, strong) UIImage *photo;
 @property (nonatomic, strong) NSString *awsPhotoName;
@@ -25,10 +26,12 @@ typedef NS_ENUM(NSUInteger, NYPLAssetUploadState) {
 @property (nonatomic, strong) NSString *lastName;
 @property (nonatomic, strong) NSString *address;
 @property (nonatomic, strong) NSString *email;
-@property (nonatomic, strong, readonly) NSString *barcode, *patron_id;
-@property (nonatomic, assign, readonly) NSInteger pin, ptype, transaction_id;
 @property (nonatomic, assign, readonly) NYPLAssetUploadState applicationUploadState, photoUploadState;
+
++ (NYPLCardApplicationModel *) currentCardApplication;
++ (NYPLCardApplicationModel *) beginCardApplication;
 
 - (void)uploadPhoto;
 - (void)uploadApplication;
+- (void)cancelApplicationUpload;
 @end

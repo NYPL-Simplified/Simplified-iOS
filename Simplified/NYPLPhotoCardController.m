@@ -9,6 +9,7 @@
 #import "NYPLPhotoCardController.h"
 #import "NYPLCardApplicationModel.h"
 #import "NYPLAnimatingButton.h"
+#import "NYPLSettings.h"
 
 @interface NYPLPhotoCardController () <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
 @property (nonatomic, strong) IBOutlet NSLayoutConstraint *selectButtonHeightConstraint;
@@ -18,6 +19,8 @@
 
 - (void)viewDidLoad
 {
+  [super viewDidLoad];
+  
   if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
     self.takePhotoButton.enabled = NO;
   if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary] &&
@@ -28,13 +31,6 @@
   self.continueButton.enabled = (self.currentApplication.photo != nil);
   self.continueButton.alpha = (self.currentApplication.photo != nil) ? 1.0 : 0.0;
   self.selectButtonHeightConstraint.constant = (self.currentApplication.photo != nil) ? -(self.continueButton.frame.size.height + 8.0) : 0;
-  
-  self.title = NSLocalizedString(@"Photo ID", nil);
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-  [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated
