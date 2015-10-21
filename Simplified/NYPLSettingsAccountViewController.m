@@ -469,19 +469,31 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
 - (void)logOut
 {
+  void (^handler)(UIAlertAction  * _Nonnull action) = ^(__attribute__((unused)) UIAlertAction *action) {
 #if defined(FEATURE_DRM_CONNECTOR)
-  if([NYPLADEPT sharedInstance].workflowsInProgress) {
-    [[NYPLAlertView alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle" message:@"SettingsAccountViewControllerCannotLogOutMessage"] show];
-    return;
-  }
-  
-  [[NYPLADEPT sharedInstance] deauthorize];
+    if([NYPLADEPT sharedInstance].workflowsInProgress) {
+      [[NYPLAlertView alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle" message:@"SettingsAccountViewControllerCannotLogOutMessage"] show];
+      return;
+    }
+    
+    [[NYPLADEPT sharedInstance] deauthorize];
 #endif
+    
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
+    [[NYPLBookRegistry sharedRegistry] reset];
+    [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
+    [self.tableView reloadData];
+  };
   
-  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
-  [[NYPLBookRegistry sharedRegistry] reset];
-  [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
-  [self.tableView reloadData];
+  NSString *localizedFormatString = NSLocalizedString(@"Don't forget your Barcode and PIN! You will need them to log back in.\nBarcode: %@, PIN: %@", nil);
+  NSString *messageString = [NSString stringWithFormat:localizedFormatString, [[NYPLAccount sharedAccount] barcode], [[NYPLAccount sharedAccount] PIN]];
+  UIAlertController *pinAndBarcodeReminder = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Barcode and PIN", nil)
+                                                                                 message:messageString
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+  [pinAndBarcodeReminder addAction:[UIAlertAction actionWithTitle:@"Okay"
+                                                            style:UIAlertActionStyleDestructive
+                                                          handler:handler]];
+  [self presentViewController:pinAndBarcodeReminder animated:YES completion:nil];
 }
 
 - (void)validateCredentials
