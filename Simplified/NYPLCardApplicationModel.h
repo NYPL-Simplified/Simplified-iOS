@@ -30,6 +30,7 @@ typedef NS_ENUM(NSUInteger, NYPLAssetUploadState) {
 
 + (NYPLCardApplicationModel *) currentCardApplication;
 + (NYPLCardApplicationModel *) beginCardApplication;
++ (void) clearCurrentApplication;
 
 - (void)uploadPhoto;
 - (void)uploadApplication;

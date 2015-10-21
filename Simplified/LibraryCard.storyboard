@@ -663,10 +663,10 @@
             </objects>
             <point key="canvasLocation" x="4622" y="-491"/>
         </scene>
-        <!--Sending-->
+        <!--Verify-->
         <scene sceneID="1tD-Mj-aB4">
             <objects>
-                <viewController storyboardIdentifier="sending" title="Sending" id="1pJ-5y-0Ov" customClass="NYPLSendingCardController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="sending" title="Verify" id="1pJ-5y-0Ov" customClass="NYPLVerifyCardController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="E3R-MX-vTH"/>
                         <viewControllerLayoutGuide type="bottom" id="CgH-Yb-348"/>
@@ -675,7 +675,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yUC-Sx-q6i" userLabel="VerifyContainer">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yUC-Sx-q6i" userLabel="VerifyContainer">
                                 <rect key="frame" x="20" y="44" width="560" height="556"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="9Xn-w5-Rjg">
@@ -788,25 +788,98 @@
                                     </mask>
                                 </variation>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uzc-C0-7Bq" userLabel="SuccessContainer">
-                                <rect key="frame" x="20" y="44" width="560" height="556"/>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="yUC-Sx-q6i" firstAttribute="top" secondItem="E3R-MX-vTH" secondAttribute="bottom" id="47n-3f-GUX"/>
+                            <constraint firstItem="yUC-Sx-q6i" firstAttribute="leading" secondItem="1kt-Gb-OeK" secondAttribute="leadingMargin" id="IcV-0o-VEl"/>
+                            <constraint firstItem="CgH-Yb-348" firstAttribute="top" secondItem="yUC-Sx-q6i" secondAttribute="bottom" id="gS6-Xc-E11"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="yUC-Sx-q6i" secondAttribute="trailing" id="ryn-Fb-RLr"/>
+                        </constraints>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="600" height="600"/>
+                    <connections>
+                        <outlet property="addressLabel" destination="QyA-hI-mt1" id="Ykc-FZ-wiM"/>
+                        <outlet property="dobLabel" destination="P58-b0-AIl" id="0H1-Cn-wRF"/>
+                        <outlet property="emailLabel" destination="FYH-Vd-vbY" id="4FF-M8-eRg"/>
+                        <outlet property="imageView" destination="9Xn-w5-Rjg" id="xeb-xI-rKm"/>
+                        <outlet property="nameLabel" destination="TCX-tQ-nJ5" id="tgJ-gq-bUI"/>
+                        <outlet property="submitApplicationButton" destination="Qg2-A8-aLG" id="q1n-pt-yen"/>
+                        <outlet property="verifyView" destination="yUC-Sx-q6i" id="xWh-H4-xqT"/>
+                        <outlet property="view" destination="1kt-Gb-OeK" id="Bt8-Cc-Rr5"/>
+                        <segue destination="TiG-dT-dlt" kind="presentation" identifier="submit" id="w0K-ux-gXT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SPk-Zj-N3L" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5323" y="-491"/>
+        </scene>
+        <!--Submitting View Controller-->
+        <scene sceneID="mu2-58-hJR">
+            <objects>
+                <viewController storyboardIdentifier="submitting" id="TiG-dT-dlt" customClass="NYPLSubmittingViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="qRF-ZD-lLv"/>
+                        <viewControllerLayoutGuide type="bottom" id="mdP-nZ-0PS"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="fwX-On-DBq">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vcz-me-T05" userLabel="CancelContainer">
+                                <rect key="frame" x="20" y="0.0" width="560" height="600"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Submitting Application" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qIp-yz-Dky">
+                                        <rect key="frame" x="60" y="261" width="440" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" priority="750" constant="440" id="RTh-Q0-M8o"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="xZk-hn-ZlK">
+                                        <rect key="frame" x="270" y="290" width="20" height="20"/>
+                                    </activityIndicatorView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bml-zg-XMb" customClass="NYPLAnimatingButton">
+                                        <rect key="frame" x="256" y="510" width="48" height="30"/>
+                                        <state key="normal" title="Cancel"/>
+                                        <connections>
+                                            <action selector="cancel:" destination="TiG-dT-dlt" eventType="touchUpInside" id="GTi-ZO-eqc"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="xZk-hn-ZlK" firstAttribute="top" secondItem="qIp-yz-Dky" secondAttribute="bottom" constant="8" id="S4b-5Z-cBI"/>
+                                    <constraint firstItem="xZk-hn-ZlK" firstAttribute="centerX" secondItem="Vcz-me-T05" secondAttribute="centerX" id="VL8-YG-cXL"/>
+                                    <constraint firstItem="qIp-yz-Dky" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Vcz-me-T05" secondAttribute="leading" constant="8" id="YLk-yG-SP4"/>
+                                    <constraint firstItem="qIp-yz-Dky" firstAttribute="centerX" secondItem="Vcz-me-T05" secondAttribute="centerX" id="eQr-Lz-nyl"/>
+                                    <constraint firstItem="bml-zg-XMb" firstAttribute="centerX" secondItem="Vcz-me-T05" secondAttribute="centerX" id="gCa-jV-wpJ"/>
+                                    <constraint firstItem="xZk-hn-ZlK" firstAttribute="centerY" secondItem="Vcz-me-T05" secondAttribute="centerY" id="lko-Hi-6kc"/>
+                                    <constraint firstAttribute="bottom" secondItem="bml-zg-XMb" secondAttribute="bottom" constant="60" id="yy4-G6-rIV"/>
+                                </constraints>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uzc-C0-7Bq" userLabel="SuccessContainer">
+                                <rect key="frame" x="20" y="0.0" width="560" height="600"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hU3-Fk-yvY" customClass="NYPLAnimatingButton">
-                                        <rect key="frame" x="212" y="463" width="135" height="33"/>
+                                        <rect key="frame" x="212" y="507" width="135" height="33"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <state key="normal" title="Return to Catalog"/>
                                         <connections>
-                                            <action selector="returnToCatalog:" destination="1pJ-5y-0Ov" eventType="touchUpInside" id="KZd-BN-Rae"/>
+                                            <action selector="returnToCatalog:" destination="TiG-dT-dlt" eventType="touchUpInside" id="X5e-CC-cyS"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="All set! You can now borrow eBooks." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jwC-oL-hch">
-                                        <rect key="frame" x="141" y="148" width="277" height="21"/>
+                                        <rect key="frame" x="141" y="170" width="277" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your information is being validated. Until then, your temporary card will be valid for 30 days" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a5J-LF-Ugp">
-                                        <rect key="frame" x="7" y="308" width="545" height="41"/>
+                                        <rect key="frame" x="7" y="330" width="545" height="41"/>
                                         <constraints>
                                             <constraint firstAttribute="width" priority="750" constant="440" id="dVb-iZ-BI4"/>
                                         </constraints>
@@ -815,13 +888,13 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Check" translatesAutoresizingMaskIntoConstraints="NO" id="Km7-dC-mRv">
-                                        <rect key="frame" x="324" y="182" width="113" height="113"/>
+                                        <rect key="frame" x="324" y="204" width="113" height="113"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="Km7-dC-mRv" secondAttribute="height" multiplier="1:1" id="rht-0Y-BEW"/>
                                         </constraints>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Card" translatesAutoresizingMaskIntoConstraints="NO" id="TYW-RL-geb">
-                                        <rect key="frame" x="141" y="182" width="178" height="113"/>
+                                        <rect key="frame" x="141" y="204" width="178" height="113"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="113" id="rlr-Dz-dmc"/>
                                         </constraints>
@@ -857,46 +930,31 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="yUC-Sx-q6i" firstAttribute="top" secondItem="E3R-MX-vTH" secondAttribute="bottom" id="47n-3f-GUX"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="uzc-C0-7Bq" secondAttribute="trailing" id="Bv9-QU-vkJ"/>
-                            <constraint firstItem="CgH-Yb-348" firstAttribute="top" secondItem="uzc-C0-7Bq" secondAttribute="bottom" id="HmH-8f-XKL"/>
-                            <constraint firstItem="yUC-Sx-q6i" firstAttribute="leading" secondItem="1kt-Gb-OeK" secondAttribute="leadingMargin" id="IcV-0o-VEl"/>
-                            <constraint firstItem="CgH-Yb-348" firstAttribute="top" secondItem="uzc-C0-7Bq" secondAttribute="bottom" id="acD-Vd-9H4"/>
-                            <constraint firstItem="CgH-Yb-348" firstAttribute="top" secondItem="yUC-Sx-q6i" secondAttribute="bottom" id="gS6-Xc-E11"/>
-                            <constraint firstItem="uzc-C0-7Bq" firstAttribute="top" secondItem="E3R-MX-vTH" secondAttribute="bottom" id="mlR-mc-qVw"/>
-                            <constraint firstItem="uzc-C0-7Bq" firstAttribute="top" secondItem="E3R-MX-vTH" secondAttribute="bottom" id="nsm-3n-yGy"/>
-                            <constraint firstItem="uzc-C0-7Bq" firstAttribute="leading" secondItem="1kt-Gb-OeK" secondAttribute="leadingMargin" id="oNI-fC-aac"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="yUC-Sx-q6i" secondAttribute="trailing" id="ryn-Fb-RLr"/>
+                            <constraint firstItem="mdP-nZ-0PS" firstAttribute="top" secondItem="uzc-C0-7Bq" secondAttribute="bottom" id="07c-VE-T6X"/>
+                            <constraint firstItem="mdP-nZ-0PS" firstAttribute="top" secondItem="Vcz-me-T05" secondAttribute="bottom" id="U8w-pe-2Tk"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="uzc-C0-7Bq" secondAttribute="leading" id="UzO-tQ-1rW"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Vcz-me-T05" secondAttribute="trailing" id="VMD-HQ-QUV"/>
+                            <constraint firstItem="uzc-C0-7Bq" firstAttribute="top" secondItem="qRF-ZD-lLv" secondAttribute="bottom" id="coS-E9-DLK"/>
+                            <constraint firstItem="Vcz-me-T05" firstAttribute="top" secondItem="qRF-ZD-lLv" secondAttribute="bottom" id="fdW-5C-EG1"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="uzc-C0-7Bq" secondAttribute="trailing" id="nDC-1m-ek7"/>
+                            <constraint firstItem="Vcz-me-T05" firstAttribute="leading" secondItem="fwX-On-DBq" secondAttribute="leadingMargin" id="svJ-LI-9Aw"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="mlR-mc-qVw"/>
-                                <exclude reference="HmH-8f-XKL"/>
-                            </mask>
-                        </variation>
                     </view>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="600" height="600"/>
                     <connections>
-                        <outlet property="addressLabel" destination="QyA-hI-mt1" id="Ykc-FZ-wiM"/>
-                        <outlet property="allSetLabel" destination="jwC-oL-hch" id="w0Z-bW-EgF"/>
-                        <outlet property="dobLabel" destination="P58-b0-AIl" id="0H1-Cn-wRF"/>
-                        <outlet property="emailLabel" destination="FYH-Vd-vbY" id="4FF-M8-eRg"/>
-                        <outlet property="imageView" destination="9Xn-w5-Rjg" id="xeb-xI-rKm"/>
-                        <outlet property="nameLabel" destination="TCX-tQ-nJ5" id="tgJ-gq-bUI"/>
-                        <outlet property="returnToCatalogButton" destination="hU3-Fk-yvY" id="xJO-K7-pP8"/>
-                        <outlet property="submitApplicationButton" destination="Qg2-A8-aLG" id="q1n-pt-yen"/>
-                        <outlet property="successCard" destination="TYW-RL-geb" id="4V2-da-0yg"/>
-                        <outlet property="successCheck" destination="Km7-dC-mRv" id="Bkt-M7-cFn"/>
-                        <outlet property="successLabel" destination="a5J-LF-Ugp" id="Vyu-XS-7Kg"/>
-                        <outlet property="successView" destination="uzc-C0-7Bq" id="kcE-y1-Z2M"/>
-                        <outlet property="verifyView" destination="yUC-Sx-q6i" id="xWh-H4-xqT"/>
-                        <outlet property="view" destination="1kt-Gb-OeK" id="Bt8-Cc-Rr5"/>
+                        <outlet property="allSetLabel" destination="jwC-oL-hch" id="bTC-dX-7s8"/>
+                        <outlet property="cancelButton" destination="bml-zg-XMb" id="sUc-OR-Set"/>
+                        <outlet property="returnToCatalogButton" destination="hU3-Fk-yvY" id="FTr-DS-ct6"/>
+                        <outlet property="sendingContainer" destination="Vcz-me-T05" id="X2L-J4-ynA"/>
+                        <outlet property="successCard" destination="TYW-RL-geb" id="cBf-mf-zfU"/>
+                        <outlet property="successCheck" destination="Km7-dC-mRv" id="6PU-z5-cyQ"/>
+                        <outlet property="successContainer" destination="uzc-C0-7Bq" id="hcU-ug-3og"/>
+                        <outlet property="successLabel" destination="a5J-LF-Ugp" id="hdZ-OK-3Oi"/>
+                        <outlet property="view" destination="fwX-On-DBq" id="y0D-xs-LPb"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="SPk-Zj-N3L" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="i73-Z9-bWN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5323" y="-491"/>
+            <point key="canvasLocation" x="5323" y="212"/>
         </scene>
     </scenes>
     <resources>

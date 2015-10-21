@@ -21,10 +21,11 @@
 		081387571BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387561BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m */; settings = {ASSET_TAGS = (); }; };
 		0813875A1BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387591BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m */; settings = {ASSET_TAGS = (); }; };
 		0813875D1BC579C4003DEA6A /* NYPLEmailCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813875C1BC579C4003DEA6A /* NYPLEmailCardController.m */; settings = {ASSET_TAGS = (); }; };
-		081387601BC57B43003DEA6A /* NYPLSendingCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813875F1BC57B43003DEA6A /* NYPLSendingCardController.m */; settings = {ASSET_TAGS = (); }; };
+		081387601BC57B43003DEA6A /* NYPLVerifyCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813875F1BC57B43003DEA6A /* NYPLVerifyCardController.m */; settings = {ASSET_TAGS = (); }; };
 		081387921BCD4C6C003DEA6A /* NYPLAnimatingButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387911BCD4C6C003DEA6A /* NYPLAnimatingButton.m */; settings = {ASSET_TAGS = (); }; };
 		08373B431BCFE58D00AC1AFA /* NYPLIntroCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08373B421BCFE58D00AC1AFA /* NYPLIntroCardController.m */; settings = {ASSET_TAGS = (); }; };
 		085640CE1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */; settings = {ASSET_TAGS = (); }; };
+		08C375461BD7CFF6005B233D /* NYPLSubmittingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08C375451BD7CFF6005B233D /* NYPLSubmittingViewController.m */; settings = {ASSET_TAGS = (); }; };
 		11068C55196DD37900E8A94B /* NYPLNull.m in Sources */ = {isa = PBXBuildFile; fileRef = 11068C54196DD37900E8A94B /* NYPLNull.m */; };
 		11078357198160A50071AB1E /* NYPLBookDownloadFailedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */; };
 		1107835E19816E3D0071AB1E /* UIView+NYPLViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */; };
@@ -243,14 +244,16 @@
 		081387591BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+NYPLAppearanceAdditions.m"; sourceTree = "<group>"; };
 		0813875B1BC579C4003DEA6A /* NYPLEmailCardController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLEmailCardController.h; sourceTree = "<group>"; };
 		0813875C1BC579C4003DEA6A /* NYPLEmailCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLEmailCardController.m; sourceTree = "<group>"; };
-		0813875E1BC57B43003DEA6A /* NYPLSendingCardController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSendingCardController.h; sourceTree = "<group>"; };
-		0813875F1BC57B43003DEA6A /* NYPLSendingCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSendingCardController.m; sourceTree = "<group>"; };
+		0813875E1BC57B43003DEA6A /* NYPLVerifyCardController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLVerifyCardController.h; sourceTree = "<group>"; };
+		0813875F1BC57B43003DEA6A /* NYPLVerifyCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLVerifyCardController.m; sourceTree = "<group>"; };
 		081387901BCD4C6C003DEA6A /* NYPLAnimatingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAnimatingButton.h; sourceTree = "<group>"; };
 		081387911BCD4C6C003DEA6A /* NYPLAnimatingButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAnimatingButton.m; sourceTree = "<group>"; };
 		08373B411BCFE58D00AC1AFA /* NYPLIntroCardController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLIntroCardController.h; sourceTree = "<group>"; };
 		08373B421BCFE58D00AC1AFA /* NYPLIntroCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLIntroCardController.m; sourceTree = "<group>"; };
 		085640CC1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+NYPLURLAdditions.h"; sourceTree = "<group>"; };
 		085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+NYPLURLAdditions.m"; sourceTree = "<group>"; };
+		08C375441BD7CFF6005B233D /* NYPLSubmittingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSubmittingViewController.h; sourceTree = "<group>"; };
+		08C375451BD7CFF6005B233D /* NYPLSubmittingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSubmittingViewController.m; sourceTree = "<group>"; };
 		11068C53196DD37900E8A94B /* NYPLNull.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLNull.h; sourceTree = "<group>"; };
 		11068C54196DD37900E8A94B /* NYPLNull.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLNull.m; sourceTree = "<group>"; };
 		11078355198160A50071AB1E /* NYPLBookDownloadFailedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDownloadFailedCell.h; sourceTree = "<group>"; };
@@ -566,8 +569,10 @@
 				081387531BC57297003DEA6A /* NYPLAddressCardController.m */,
 				0813875B1BC579C4003DEA6A /* NYPLEmailCardController.h */,
 				0813875C1BC579C4003DEA6A /* NYPLEmailCardController.m */,
-				0813875E1BC57B43003DEA6A /* NYPLSendingCardController.h */,
-				0813875F1BC57B43003DEA6A /* NYPLSendingCardController.m */,
+				0813875E1BC57B43003DEA6A /* NYPLVerifyCardController.h */,
+				0813875F1BC57B43003DEA6A /* NYPLVerifyCardController.m */,
+				08C375441BD7CFF6005B233D /* NYPLSubmittingViewController.h */,
+				08C375451BD7CFF6005B233D /* NYPLSubmittingViewController.m */,
 				081387341BC42727003DEA6A /* NYPLCardApplicationModel.h */,
 				081387351BC42727003DEA6A /* NYPLCardApplicationModel.m */,
 				081387441BC5589D003DEA6A /* NYPLValidatingTextField.h */,
@@ -1306,7 +1311,7 @@
 				1183F353194F795800DC322F /* NYPLBookAcquisition.m in Sources */,
 				11A14DF41A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m in Sources */,
 				A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */,
-				081387601BC57B43003DEA6A /* NYPLSendingCardController.m in Sources */,
+				081387601BC57B43003DEA6A /* NYPLVerifyCardController.m in Sources */,
 				11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */,
 				114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLImageAdditions.m in Sources */,
 				1142E4EB19EED86A00D9B3D9 /* NYPLFacetBarView.m in Sources */,
@@ -1318,6 +1323,7 @@
 				841B55431B740F2700FAC1AF /* NYPLSettingsEULAViewController.m in Sources */,
 				A4276F481B00046300CA7194 /* NYPLMyBooksDownloadInfo.m in Sources */,
 				1164F106199AC236009BF8BF /* NYPLBookLocation.m in Sources */,
+				08C375461BD7CFF6005B233D /* NYPLSubmittingViewController.m in Sources */,
 				11F3771F19DB62B000487769 /* NYPLFacetView.m in Sources */,
 				5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */,
 				111197281986B43B0014462F /* NYPLBookCellDelegate.m in Sources */,

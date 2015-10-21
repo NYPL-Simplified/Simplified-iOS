@@ -1,5 +1,5 @@
 //
-//  NYPLSendingCardController.h
+//  NYPLVerifyCardController.h
 //  Simplified
 //
 //  Created by Sam Tarakajian on 10/7/15.
@@ -9,12 +9,11 @@
 #import "NYPLCardApplicationViewController.h"
 @class NYPLAnimatingButton;
 
-@interface NYPLSendingCardController : NYPLCardApplicationViewController
-@property (nonatomic, strong) IBOutlet NYPLAnimatingButton *returnToCatalogButton, *submitApplicationButton;
+@interface NYPLVerifyCardController : NYPLCardApplicationViewController
+@property (nonatomic, strong) IBOutlet NYPLAnimatingButton *submitApplicationButton;
 @property (nonatomic, strong) IBOutlet UILabel *nameLabel, *addressLabel, *dobLabel, *emailLabel;
 @property (nonatomic, strong) IBOutlet UIImageView *imageView;
-@property (nonatomic, strong) IBOutlet UIView *successView, *verifyView;
+@property (nonatomic, strong) IBOutlet UIView *verifyView;
 
 - (IBAction)submitApplication:(id)sender;
-- (IBAction)returnToCatalog:(id)sender;
 @end

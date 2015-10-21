@@ -68,12 +68,14 @@
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Start Over", nil)
                                                         style:UIAlertActionStyleDestructive
                                                       handler:^(__attribute__((unused)) UIAlertAction * _Nonnull action) {
+                                                        [NYPLCardApplicationModel clearCurrentApplication];
                                                         self.currentApplication = [NYPLCardApplicationModel beginCardApplication];
                                                         [self performSegueWithIdentifier:@"birthdate" sender:self];
                                                       }]];
     [self presentViewController:alertController animated:YES completion:nil];
   } else {
-    self.currentApplication = [NYPLCardApplicationModel beginCardApplication];
+    if (self.currentApplication == nil)
+      self.currentApplication = [NYPLCardApplicationModel beginCardApplication];
     [self performSegueWithIdentifier:@"birthdate" sender:self];
   }
 }

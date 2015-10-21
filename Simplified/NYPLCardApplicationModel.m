@@ -57,8 +57,16 @@ NSString *md5HexDigest(NSString *input) {
 
 + (NYPLCardApplicationModel *) beginCardApplication
 {
+  NSAssert(s_currentApplication == nil, @"NYPLCardApplicationModel: Tried to begin a new application with one already in progress");
+  
   s_currentApplication = [[NYPLCardApplicationModel alloc] init];
   return s_currentApplication;
+}
+
++ (void) clearCurrentApplication
+{
+  s_currentApplication = nil;
+  [[NYPLSettings sharedSettings] setCurrentCardApplication:nil];
 }
 
 // According to http://stackoverflow.com/questions/20344255/secitemadd-and-secitemcopymatching-returns-error-code-34018-errsecmissingentit/22305193#22305193
@@ -318,9 +326,6 @@ NSString *md5HexDigest(NSString *input) {
       }
       
       self.applicationUploadState = NYPLAssetUploadStateComplete;
-      
-      s_currentApplication = nil;
-      [[NYPLSettings sharedSettings] setCurrentCardApplication:nil];
     }
   }];
   [self.applicationUploadTask resume];
