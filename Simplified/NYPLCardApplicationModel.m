@@ -10,6 +10,7 @@
 #import "NYPLAccount.h"
 #import "NYPLKeychain.h"
 #import "NYPLSettings.h"
+#import "NYPLConfiguration.h"
 #import <CommonCrypto/CommonDigest.h>
 
 static NSString *const kNYPLCardApplicationModel =                @"NYPLCardApplicationModel";
@@ -146,7 +147,7 @@ NSString *md5HexDigest(NSString *input) {
 
 - (NSURL *) apiURL
 {
-  return [NSURL URLWithString:@"https://simplifiedcard.herokuapp.com/"];
+  return [NYPLConfiguration registrationURL];
 }
 
 - (void)setPhoto:(UIImage *)photo

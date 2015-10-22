@@ -679,56 +679,56 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yUC-Sx-q6i" userLabel="VerifyContainer">
                                 <rect key="frame" x="20" y="44" width="560" height="556"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="9Xn-w5-Rjg">
-                                        <rect key="frame" x="148" y="20" width="264" height="264"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="700" verticalCompressionResistancePriority="700" image="Placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="9Xn-w5-Rjg">
+                                        <rect key="frame" x="158" y="20" width="244" height="244"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="9Xn-w5-Rjg" secondAttribute="height" multiplier="1:1" id="xtL-6f-gBp"/>
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nv3-WE-66p" userLabel="NameLabel">
-                                        <rect key="frame" x="178" y="292" width="50" height="21"/>
+                                        <rect key="frame" x="188" y="272" width="50" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TCX-tQ-nJ5" userLabel="Name">
-                                        <rect key="frame" x="236" y="292" width="44" height="21"/>
+                                        <rect key="frame" x="246" y="272" width="44" height="21"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Birth Date:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C6i-ll-AIG" userLabel="DOBLabel">
-                                        <rect key="frame" x="146" y="321" width="82" height="21"/>
+                                        <rect key="frame" x="156" y="301" width="82" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P58-b0-AIl" userLabel="DOB">
-                                        <rect key="frame" x="236" y="321" width="44" height="21"/>
+                                        <rect key="frame" x="246" y="301" width="44" height="21"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Address:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qO9-6C-fTJ" userLabel="AddressLabel">
-                                        <rect key="frame" x="160" y="350" width="68" height="21"/>
+                                        <rect key="frame" x="170" y="330" width="68" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QyA-hI-mt1" userLabel="Address">
-                                        <rect key="frame" x="236" y="350" width="44" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Label label labn risetn wiwenft wfetn  wifetn iwfntiwf enwf" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QyA-hI-mt1" userLabel="Address">
+                                        <rect key="frame" x="246" y="330" width="294" height="41"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UCU-jW-pxq" userLabel="EmailLabel">
-                                        <rect key="frame" x="182" y="379" width="46" height="21"/>
+                                        <rect key="frame" x="192" y="379" width="46" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FYH-Vd-vbY" userLabel="Email">
-                                        <rect key="frame" x="236" y="379" width="44" height="21"/>
+                                        <rect key="frame" x="246" y="379" width="44" height="21"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
@@ -761,15 +761,19 @@
                                     <constraint firstItem="Rs8-vJ-qf0" firstAttribute="top" secondItem="FYH-Vd-vbY" secondAttribute="bottom" constant="16" id="8lx-vS-0JF"/>
                                     <constraint firstItem="QyA-hI-mt1" firstAttribute="leading" secondItem="qO9-6C-fTJ" secondAttribute="trailing" constant="8" id="8xb-oy-bII"/>
                                     <constraint firstAttribute="bottom" secondItem="Qg2-A8-aLG" secondAttribute="bottom" constant="60" id="AFV-49-1P1"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="QyA-hI-mt1" secondAttribute="trailing" constant="20" id="Bba-ML-cj8"/>
+                                    <constraint firstItem="QyA-hI-mt1" firstAttribute="top" secondItem="P58-b0-AIl" secondAttribute="bottom" constant="8" id="Bq2-qF-myy"/>
                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Rs8-vJ-qf0" secondAttribute="trailing" id="CLp-e4-Nm2"/>
                                     <constraint firstItem="9Xn-w5-Rjg" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="yUC-Sx-q6i" secondAttribute="leading" constant="20" id="CLr-4l-EZu"/>
                                     <constraint firstItem="QyA-hI-mt1" firstAttribute="baseline" secondItem="qO9-6C-fTJ" secondAttribute="baseline" id="Eck-Pa-bzT"/>
+                                    <constraint firstItem="UCU-jW-pxq" firstAttribute="baseline" secondItem="FYH-Vd-vbY" secondAttribute="baseline" id="F4N-aM-b0Z"/>
                                     <constraint firstItem="P58-b0-AIl" firstAttribute="leading" secondItem="C6i-ll-AIG" secondAttribute="trailing" constant="8" id="LnB-18-8YT"/>
                                     <constraint firstItem="C6i-ll-AIG" firstAttribute="trailing" secondItem="nv3-WE-66p" secondAttribute="trailing" id="MES-R7-7Ph"/>
                                     <constraint firstItem="Qg2-A8-aLG" firstAttribute="top" secondItem="Rs8-vJ-qf0" secondAttribute="bottom" constant="12" id="Q9p-F3-OYw"/>
                                     <constraint firstItem="UCU-jW-pxq" firstAttribute="trailing" secondItem="nv3-WE-66p" secondAttribute="trailing" id="QAB-Wu-6Nt"/>
                                     <constraint firstAttribute="trailing" secondItem="9Xn-w5-Rjg" secondAttribute="trailing" constant="140" id="QKN-Us-e22"/>
                                     <constraint firstItem="qO9-6C-fTJ" firstAttribute="top" secondItem="C6i-ll-AIG" secondAttribute="bottom" constant="8" id="QdV-2S-91W"/>
+                                    <constraint firstItem="FYH-Vd-vbY" firstAttribute="top" secondItem="QyA-hI-mt1" secondAttribute="bottom" constant="8" id="UUz-Qz-SAS"/>
                                     <constraint firstItem="9Xn-w5-Rjg" firstAttribute="centerX" secondItem="yUC-Sx-q6i" secondAttribute="centerX" id="ZTg-8h-dgD"/>
                                     <constraint firstItem="C6i-ll-AIG" firstAttribute="top" secondItem="nv3-WE-66p" secondAttribute="bottom" constant="8" id="aRh-z4-VEI"/>
                                     <constraint firstItem="Qg2-A8-aLG" firstAttribute="centerX" secondItem="yUC-Sx-q6i" secondAttribute="centerX" id="cqb-rS-j7p"/>
@@ -785,7 +789,10 @@
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="QKN-Us-e22"/>
+                                        <exclude reference="l9D-cO-4lY"/>
+                                        <exclude reference="Eck-Pa-bzT"/>
                                         <exclude reference="8lx-vS-0JF"/>
+                                        <exclude reference="j4W-0C-QIg"/>
                                     </mask>
                                 </variation>
                             </view>
