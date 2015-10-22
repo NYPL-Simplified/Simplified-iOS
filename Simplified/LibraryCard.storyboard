@@ -45,16 +45,16 @@
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Card" translatesAutoresizingMaskIntoConstraints="NO" id="wM5-TK-SmC">
-                                <rect key="frame" x="211" y="244" width="178" height="113"/>
+                                <rect key="frame" x="50" y="138" width="501" height="325"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Get a Free eBook lending Library Card" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hq9-oS-kPP">
-                                <rect key="frame" x="155" y="215" width="291" height="21"/>
+                                <rect key="frame" x="155" y="109" width="291" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Apply In-App with some basic information" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JMT-XG-tyf">
-                                <rect key="frame" x="140" y="365" width="320" height="21"/>
+                                <rect key="frame" x="140" y="471" width="320" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -67,6 +67,7 @@
                             <constraint firstItem="JMT-XG-tyf" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="BjQ-1e-2XQ" secondAttribute="leadingMargin" id="K9V-Ho-oeW"/>
                             <constraint firstItem="wM5-TK-SmC" firstAttribute="centerX" secondItem="BjQ-1e-2XQ" secondAttribute="centerX" id="O0S-ov-mz2"/>
                             <constraint firstItem="Hq9-oS-kPP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="BjQ-1e-2XQ" secondAttribute="leadingMargin" id="U7e-ot-Ypf"/>
+                            <constraint firstItem="wM5-TK-SmC" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="BjQ-1e-2XQ" secondAttribute="leadingMargin" constant="30" id="c1R-yd-bES"/>
                             <constraint firstItem="JMT-XG-tyf" firstAttribute="centerX" secondItem="BjQ-1e-2XQ" secondAttribute="centerX" id="d0x-bI-Dzh"/>
                             <constraint firstItem="wM5-TK-SmC" firstAttribute="top" secondItem="Hq9-oS-kPP" secondAttribute="bottom" constant="8" id="hqx-EN-TiD"/>
                             <constraint firstItem="JMT-XG-tyf" firstAttribute="top" secondItem="wM5-TK-SmC" secondAttribute="bottom" constant="8" id="jah-zD-aj3"/>
@@ -894,7 +895,7 @@
                                         </constraints>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Card" translatesAutoresizingMaskIntoConstraints="NO" id="TYW-RL-geb">
-                                        <rect key="frame" x="141" y="204" width="178" height="113"/>
+                                        <rect key="frame" x="-28" y="204" width="516" height="113"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="113" id="rlr-Dz-dmc"/>
                                         </constraints>
@@ -958,7 +959,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Card" width="178" height="113"/>
+        <image name="Card" width="515" height="325"/>
         <image name="Check" width="600" height="600"/>
         <image name="NYMap" width="380" height="275"/>
         <image name="Placeholder" width="280" height="225"/>
