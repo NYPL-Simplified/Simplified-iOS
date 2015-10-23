@@ -62,7 +62,7 @@
   
   if(years > 0) {
     return [NSString stringWithFormat:@"%ld%@%@", years, names[@"year"], years > 1 ? appendPlural : @""];
-  } else if(months > 0) {
+  } else if(months > 1) {
     return [NSString stringWithFormat:@"%ld%@%@", months, names[@"month"], months > 1 ? appendPlural : @""];
   } else if(weeks > 0) {
     return [NSString stringWithFormat:@"%ld%@%@", weeks, names[@"week"], weeks > 1 ? appendPlural : @""];
