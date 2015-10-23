@@ -5,7 +5,7 @@
 #import "UIButton+NYPLAppearanceAdditions.h"
 
 static NSString *const NYPLCirculationBaseURLProduction = @"https://circulation.librarysimplified.org";
-static NSString *const NYPLCirculationBaseURLTesting = @"http://circulation.alpha.librarysimplified.org";
+static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.librarysimplified.org/";
 
 @implementation NYPLConfiguration
 
@@ -19,7 +19,8 @@ static NSString *const NYPLCirculationBaseURLTesting = @"http://circulation.alph
 
 + (NSURL *)circulationURL
 {
-    return [NSURL URLWithString:NYPLCirculationBaseURLTesting];
+//  return [NSURL URLWithString:NYPLCirculationBaseURLTesting];
+  return [NSURL URLWithString:NYPLCirculationBaseURLProduction];
 }
 
 + (NSURL *)mainFeedURL
@@ -38,11 +39,8 @@ static NSString *const NYPLCirculationBaseURLTesting = @"http://circulation.alph
 
 + (NSURL *)registrationURL
 {
-#ifdef DEBUG
-  return [NSURL URLWithString:@"https://simplifiedcard.herokuapp.com"];
-#else
-  return [NSURL URLWithString:@"http://qa.patrons.librarysimplified.org"];
-#endif
+//  return [NSURL URLWithString:@"https://simplifiedcard.herokuapp.com"];
+  return [NSURL URLWithString:@"https://patrons.librarysimplified.org/"];
 }
 
 + (UIColor *)mainColor
