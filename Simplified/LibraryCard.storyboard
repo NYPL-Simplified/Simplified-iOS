@@ -789,8 +789,8 @@
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="QKN-Us-e22"/>
-                                        <exclude reference="l9D-cO-4lY"/>
                                         <exclude reference="Eck-Pa-bzT"/>
+                                        <exclude reference="l9D-cO-4lY"/>
                                         <exclude reference="8lx-vS-0JF"/>
                                         <exclude reference="j4W-0C-QIg"/>
                                     </mask>
