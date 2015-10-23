@@ -10,6 +10,7 @@
 #import "NYPLCardApplicationModel.h"
 #import "NYPLAnimatingButton.h"
 #import "NYPLSubmittingViewController.h"
+#import "NYPLRegistrationStoryboard.h"
 
 @interface NYPLVerifyCardController () <NYPLSubmittingViewControllerDelegate>
 @property (nonatomic, strong) NYPLCardApplicationViewController *submittingController;
@@ -44,8 +45,11 @@
 
 - (void)submittingViewControllerDidReturnToCatalog:(NYPLSubmittingViewController *)vc
 {
+  NYPLRegistrationStoryboard *storyboard = (NYPLRegistrationStoryboard *) self.storyboard;
   [vc dismissViewControllerAnimated:NO completion:^{
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController dismissViewControllerAnimated:YES completion:^() {
+      [storyboard.delegate storyboard:storyboard willDismissWithNewAuthorization:YES];
+    }];
   }];
 }
 

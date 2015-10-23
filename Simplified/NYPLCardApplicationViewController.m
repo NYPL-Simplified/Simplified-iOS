@@ -9,6 +9,7 @@
 #import "NYPLCardApplicationViewController.h"
 #import "NYPLCardApplicationModel.h"
 #import "NYPLSettings.h"
+#import "NYPLRegistrationStoryboard.h"
 
 @implementation NYPLCardApplicationViewController
 
@@ -44,7 +45,10 @@
 
 - (void)dismiss
 {
-  [self dismissViewControllerAnimated:YES completion:nil];
+  NYPLRegistrationStoryboard *storyboard = (NYPLRegistrationStoryboard *) self.storyboard;
+  [self dismissViewControllerAnimated:YES completion: ^() {
+    [storyboard.delegate storyboard:storyboard willDismissWithNewAuthorization:NO];
+  }];
 }
 
 - (void) performSegueWithIdentifier:(NSString *)identifier sender:(id)sender

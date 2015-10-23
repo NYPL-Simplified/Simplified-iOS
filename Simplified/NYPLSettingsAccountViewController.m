@@ -10,6 +10,7 @@
 #import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "NYPLRegistrationStoryboard.h"
 @import CoreLocation;
 
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -55,7 +56,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   }
 }
 
-@interface NYPLSettingsAccountViewController () <NSURLSessionDelegate, UITextFieldDelegate>
+@interface NYPLSettingsAccountViewController () <NSURLSessionDelegate, UITextFieldDelegate, NYPLRegistrationStoryboardDelegate>
 
 @property (nonatomic) UITextField *barcodeTextField;
 @property (nonatomic, copy) void (^completionHandler)();
@@ -203,7 +204,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindRegistration:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       [self verifyLocationServicesWithHandler:^(void) {
-        UIStoryboard *registerCardStoryboard = [UIStoryboard storyboardWithName:@"LibraryCard" bundle:nil];
+        NYPLRegistrationStoryboard *registerCardStoryboard = (NYPLRegistrationStoryboard *) [NYPLRegistrationStoryboard storyboardWithName:@"LibraryCard" bundle:nil];
+        registerCardStoryboard.delegate = self;
         UINavigationController *rootViewController = [registerCardStoryboard instantiateInitialViewController];
         rootViewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         [[NYPLRootTabBarController sharedController]
@@ -362,6 +364,16 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                              completionHandler,
                              self.barcodeTextField.text,
                              self.PINTextField.text);
+}
+
+#pragma mark NYPLRegistrationStoryboard delegate
+
+- (void)storyboard:(__attribute__((unused)) NYPLRegistrationStoryboard *)storyboard willDismissWithNewAuthorization:(BOOL)hasNewAuthorization
+{
+  if (hasNewAuthorization) {
+    if (![[NYPLADEPT sharedInstance] deviceAuthorized] && [[NYPLAccount sharedAccount] hasBarcodeAndPIN])
+      [self logIn];
+  }
 }
 
 #pragma mark -
