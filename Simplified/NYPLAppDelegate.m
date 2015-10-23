@@ -6,6 +6,7 @@
 #import "NYPLRootTabBarController.h"
 #import "NYPLEULAViewController.h"
 #import "NYPLSettings.h"
+#import "Heap.h"
 
 // TODO: Remove these imports and move handling the "open a book url" code to a more appropriate handler
 #import "NYPLXML.h"
