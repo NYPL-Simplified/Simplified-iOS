@@ -6,6 +6,8 @@
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
++ (BOOL) heapEnabled;
+
 + (NSURL *)circulationURL;
 
 // This can be overriden by setting |customMainFeedURL| in NYPLSettings.
@@ -34,6 +36,5 @@
 + (UIColor *)backgroundMediaOverlayHighlightDarkColor;
 
 + (UIColor *)backgroundMediaOverlayHighlightSepiaColor;
-
 
 @end
