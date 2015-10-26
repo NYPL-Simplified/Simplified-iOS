@@ -371,8 +371,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 - (void)storyboard:(__attribute__((unused)) NYPLRegistrationStoryboard *)storyboard willDismissWithNewAuthorization:(BOOL)hasNewAuthorization
 {
   if (hasNewAuthorization) {
+#ifdef FEATURE_DRM_CONNECTOR
     if (![[NYPLADEPT sharedInstance] deviceAuthorized] && [[NYPLAccount sharedAccount] hasBarcodeAndPIN])
       [self logIn];
+#endif
   }
 }
 
