@@ -17,6 +17,11 @@ static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.l
   [[UIButton appearance] setTitleFontName:[NYPLConfiguration systemFontName]];
 }
 
++ (BOOL) heapEnabled
+{
+  return YES;
+}
+
 + (NSURL *)circulationURL
 {
   //  return [NSURL URLWithString:NYPLCirculationBaseURLTesting];
