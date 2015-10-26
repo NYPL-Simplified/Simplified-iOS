@@ -42,6 +42,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
     [Heap setAppId:@"1848989408"]; // This is the development environment app ID
 #ifdef DEBUG
     [Heap enableVisualizer];
+    [Heap startDebug];
 #endif
   }
   

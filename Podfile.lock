@@ -20,7 +20,6 @@ PODS:
   - AFNetworking/UIKit (2.6.0):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - Heap (2.2.0)
   - HelpStack (1.1.1):
     - AFNetworking (~> 2.0)
     - HelpStack/Core (= 1.1.1)
@@ -44,14 +43,12 @@ PODS:
   - pop (1.0.8)
 
 DEPENDENCIES:
-  - Heap
   - HelpStack
   - pop (~> 1.0)
 
 SPEC CHECKSUMS:
   AFNetworking: 79f7eb1a0fcfa7beb409332b2ca49afe9ce53b05
-  Heap: 1f2735d88b2f39b2ddabd4cbeb7aa491aa737902
   HelpStack: bfde78311b5d0fb3b849778df5939776359d5d8a
   pop: bb773ae2c791ca2629de13b347e7a8b450fa6a57
 
-COCOAPODS: 0.38.2
+COCOAPODS: 0.39.0
