@@ -15,25 +15,32 @@
   self = [super initWithURL:URL
           completionHandler:^UIViewController *
           (NYPLRemoteViewController *const remoteViewController,
-           NSData *const data) {
-            NYPLXML *const XML = [NYPLXML XMLWithData:data];
-            NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:XML];
-            switch(feed.type) {
-              case NYPLOPDSFeedTypeAcquisitionGrouped:
-                return [[NYPLCatalogGroupedFeedViewController alloc]
-                        initWithGroupedFeed:[[NYPLCatalogGroupedFeed alloc]
-                                             initWithOPDSFeed:feed]];
-              case NYPLOPDSFeedTypeAcquisitionUngrouped:
-                return [[NYPLCatalogUngroupedFeedViewController alloc]
-                        initWithUngroupedFeed:[[NYPLCatalogUngroupedFeed alloc]
-                                               initWithOPDSFeed:feed]
-                        remoteViewController:remoteViewController];
-              case NYPLOPDSFeedTypeInvalid:
-                NYPLLOG(@"Cannot initialize due to invalid feed.");
-                return nil;
-              case NYPLOPDSFeedTypeNavigation:
-                NYPLLOG(@"Cannot initialize due to lack of support for navigation feeds.");
-                return nil;
+           NSData *const data,
+           NSURLResponse *const response) {
+            if ([response.MIMEType isEqualToString:@"application/atom+xml"]) {
+              NYPLXML *const XML = [NYPLXML XMLWithData:data];
+              NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:XML];
+              switch(feed.type) {
+                case NYPLOPDSFeedTypeAcquisitionGrouped:
+                  return [[NYPLCatalogGroupedFeedViewController alloc]
+                          initWithGroupedFeed:[[NYPLCatalogGroupedFeed alloc]
+                                               initWithOPDSFeed:feed]];
+                case NYPLOPDSFeedTypeAcquisitionUngrouped:
+                  return [[NYPLCatalogUngroupedFeedViewController alloc]
+                          initWithUngroupedFeed:[[NYPLCatalogUngroupedFeed alloc]
+                                                 initWithOPDSFeed:feed]
+                          remoteViewController:remoteViewController];
+                case NYPLOPDSFeedTypeInvalid:
+                  NYPLLOG(@"Cannot initialize due to invalid feed.");
+                  return nil;
+                case NYPLOPDSFeedTypeNavigation:
+                  NYPLLOG(@"Cannot initialize due to lack of support for navigation feeds.");
+                  return nil;
+              }
+            }
+            else {
+              NYPLLOG(@"Did not revceive XML atom feed, cannot initialize");
+              return nil;
             }
           }];
   
