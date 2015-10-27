@@ -6,6 +6,7 @@
 #import "NYPLRootTabBarController.h"
 #import "NYPLEULAViewController.h"
 #import "NYPLSettings.h"
+#import "Heap.h"
 
 // TODO: Remove these imports and move handling the "open a book url" code to a more appropriate handler
 #import "NYPLXML.h"
@@ -35,6 +36,14 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   
   HSHelpStack *helpStack = [HSHelpStack instance];
   helpStack.gear = zenDeskGear;
+  
+  if ([NYPLConfiguration heapEnabled]) {
+    [Heap setAppId:[NYPLConfiguration heapID]];
+#ifdef DEBUG
+    [Heap enableVisualizer];
+    [Heap startDebug];
+#endif
+  }
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.tintColor = [NYPLConfiguration mainColor];

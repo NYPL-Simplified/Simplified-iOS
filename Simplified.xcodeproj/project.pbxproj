@@ -25,6 +25,15 @@
 		081387921BCD4C6C003DEA6A /* NYPLAnimatingButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387911BCD4C6C003DEA6A /* NYPLAnimatingButton.m */; settings = {ASSET_TAGS = (); }; };
 		08373B431BCFE58D00AC1AFA /* NYPLIntroCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08373B421BCFE58D00AC1AFA /* NYPLIntroCardController.m */; settings = {ASSET_TAGS = (); }; };
 		085640CE1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */; settings = {ASSET_TAGS = (); }; };
+		08801EF81BDE8D77005E1F32 /* libHeap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 08801EF61BDE8D0D005E1F32 /* libHeap.a */; };
+		08A352201BDE8E410040BF1D /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A3521F1BDE8E410040BF1D /* CFNetwork.framework */; };
+		08A352221BDE8E560040BF1D /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352211BDE8E560040BF1D /* libicucore.tbd */; };
+		08A352241BDE8E640040BF1D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352231BDE8E640040BF1D /* Security.framework */; };
+		08A352261BDE8E700040BF1D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352251BDE8E700040BF1D /* SystemConfiguration.framework */; };
+		08A352271BDE91B80040BF1D /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
+		08A352291BDE91B80040BF1D /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352281BDE91B80040BF1D /* libePub3-iOS.a */; };
+		08A3522A1BDE94170040BF1D /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
+		08A3522B1BDE94170040BF1D /* libAdobe Content Filter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */; };
 		08C375461BD7CFF6005B233D /* NYPLSubmittingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08C375451BD7CFF6005B233D /* NYPLSubmittingViewController.m */; settings = {ASSET_TAGS = (); }; };
 		08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
 		08C469C21BDAAEB1009D8AFD /* libAdobe Content Filter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */; };
@@ -127,7 +136,6 @@
 		11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3773219E0876F00487769 /* NYPLCatalogFacet.m */; };
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
-		5A5B90171B946D00002C53E9 /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
 		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
 		5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
@@ -154,7 +162,6 @@
 		A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF31B40F4E00095EBAE /* NYPLCatalogFeedViewController.m */; };
 		A46226271B39D4980063F549 /* NYPLOPDSGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = A46226251B39D4980063F549 /* NYPLOPDSGroup.m */; };
 		A499BF261B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = A499BF251B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m */; };
-		A49C25581AE05D0A00D63B89 /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */; };
 		A4AED41A1B4A267C00E27498 /* NYPLSettingsRegistrationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4AED4191B4A267C00E27498 /* NYPLSettingsRegistrationViewController.m */; };
 		A4BA1D0E1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BA1D0D1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m */; };
 		A4BA1D131B43046B006F83DF /* NYPLCatalogGroupedFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BA1D121B43046B006F83DF /* NYPLCatalogGroupedFeed.m */; };
@@ -255,6 +262,14 @@
 		08373B421BCFE58D00AC1AFA /* NYPLIntroCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLIntroCardController.m; sourceTree = "<group>"; };
 		085640CC1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+NYPLURLAdditions.h"; sourceTree = "<group>"; };
 		085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+NYPLURLAdditions.m"; sourceTree = "<group>"; };
+		08801EF21BDE8A4D005E1F32 /* libHeap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libHeap.a; path = Pods/Heap/libHeap.a; sourceTree = "<group>"; };
+		08801EF51BDE8D0D005E1F32 /* Heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Heap.h; sourceTree = "<group>"; };
+		08801EF61BDE8D0D005E1F32 /* libHeap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libHeap.a; sourceTree = "<group>"; };
+		08A3521F1BDE8E410040BF1D /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		08A352211BDE8E560040BF1D /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
+		08A352231BDE8E640040BF1D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		08A352251BDE8E700040BF1D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		08A352281BDE91B80040BF1D /* libePub3-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libePub3-iOS.a"; path = "readium-sdk/Platform/Apple/build/Debug-iphoneos/libePub3-iOS.a"; sourceTree = "<group>"; };
 		08C375441BD7CFF6005B233D /* NYPLSubmittingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSubmittingViewController.h; sourceTree = "<group>"; };
 		08C375451BD7CFF6005B233D /* NYPLSubmittingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSubmittingViewController.m; sourceTree = "<group>"; };
 		08C469CC1BDAB484009D8AFD /* NYPLRegistrationStoryboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRegistrationStoryboard.h; sourceTree = "<group>"; };
@@ -525,10 +540,18 @@
 			files = (
 				08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */,
 				08C469C21BDAAEB1009D8AFD /* libAdobe Content Filter.a in Frameworks */,
+				08A3522A1BDE94170040BF1D /* libADEPT.a in Frameworks */,
+				08A3522B1BDE94170040BF1D /* libAdobe Content Filter.a in Frameworks */,
+				08A352291BDE91B80040BF1D /* libePub3-iOS.a in Frameworks */,
+				08A352271BDE91B80040BF1D /* libRDServices.a in Frameworks */,
+				08A352221BDE8E560040BF1D /* libicucore.tbd in Frameworks */,
+				08801EF81BDE8D77005E1F32 /* libHeap.a in Frameworks */,
 				081387511BC56B7A003DEA6A /* libpop.a in Frameworks */,
 				5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */,
 				5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */,
-				5A5B90171B946D00002C53E9 /* libRDServices.a in Frameworks */,
+				08A352261BDE8E700040BF1D /* SystemConfiguration.framework in Frameworks */,
+				08A352241BDE8E640040BF1D /* Security.framework in Frameworks */,
+				08A352201BDE8E410040BF1D /* CFNetwork.framework in Frameworks */,
 				84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */,
 				A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */,
 				A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */,
@@ -536,7 +559,6 @@
 				1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */,
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
-				A49C25581AE05D0A00D63B89 /* libePub3-iOS.a in Frameworks */,
 				7756B6BEB8D3305C15AC8FB0 /* libPods-Simplified.a in Frameworks */,
 				B54F99911BACB0CE0033F303 /* libAFNetworking.a in Frameworks */,
 				B54F99921BACB0CE0033F303 /* libHelpStack.a in Frameworks */,
@@ -590,6 +612,15 @@
 				08C469CD1BDAB484009D8AFD /* NYPLRegistrationStoryboard.m */,
 			);
 			name = "Library Card";
+			sourceTree = "<group>";
+		};
+		08801EF41BDE8D0D005E1F32 /* heap-ios-latest */ = {
+			isa = PBXGroup;
+			children = (
+				08801EF51BDE8D0D005E1F32 /* Heap.h */,
+				08801EF61BDE8D0D005E1F32 /* libHeap.a */,
+			);
+			path = "heap-ios-latest";
 			sourceTree = "<group>";
 		};
 		110AF8881961D652004887C3 /* My Books */ = {
@@ -893,6 +924,13 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				08A352281BDE91B80040BF1D /* libePub3-iOS.a */,
+				08A352251BDE8E700040BF1D /* SystemConfiguration.framework */,
+				08A352231BDE8E640040BF1D /* Security.framework */,
+				08A352211BDE8E560040BF1D /* libicucore.tbd */,
+				08A3521F1BDE8E410040BF1D /* CFNetwork.framework */,
+				08801EF41BDE8D0D005E1F32 /* heap-ios-latest */,
+				08801EF21BDE8A4D005E1F32 /* libHeap.a */,
 				081387501BC56B7A003DEA6A /* libpop.a */,
 				081387211BC3139A003DEA6A /* libGeoJSONSerialization.a */,
 				B54F998F1BACB0CD0033F303 /* libAFNetworking.a */,
@@ -1078,6 +1116,7 @@
 				A823D80A192BABA400B55DE2 /* Frameworks */,
 				A823D80B192BABA400B55DE2 /* Resources */,
 				E251CEDC3E72643F6C589E6E /* Copy Pods Resources */,
+				078BF124C90301D83ADE241E /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1238,6 +1277,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		078BF124C90301D83ADE241E /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Simplified/Pods-Simplified-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		14FCCAF9F581DFE0B70E7FBD /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1472,7 +1526,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1480,7 +1537,7 @@
 		};
 		A823D838192BABA400B55DE2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B54F998D1BAC976C0033F303 /* Simplified.debug.xcconfig */;
+			baseConfigurationReference = B54F998E1BAC97AB0033F303 /* Simplified.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -1504,7 +1561,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1515,6 +1575,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1523,9 +1584,13 @@
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Heap",
+					"$(PROJECT_DIR)/heap-ios-latest",
+					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
 				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1546,17 +1611,24 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
+					"$(inherited)",
+					"$(PROJECT_DIR)/Pods/Heap",
+					"$(PROJECT_DIR)/heap-ios-latest",
+					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
 				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
