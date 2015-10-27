@@ -8,6 +8,8 @@
 
 + (BOOL) heapEnabled;
 
++ (NSString *)heapID;
+
 + (NSURL *)circulationURL;
 
 // This can be overriden by setting |customMainFeedURL| in NYPLSettings.
