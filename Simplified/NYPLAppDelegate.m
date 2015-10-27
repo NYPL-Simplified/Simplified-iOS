@@ -38,8 +38,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   helpStack.gear = zenDeskGear;
   
   if ([NYPLConfiguration heapEnabled]) {
-//    [Heap setAppId:@"3245728259"]; // This is the production environment app ID
-    [Heap setAppId:@"1848989408"]; // This is the development environment app ID
+    [Heap setAppId:[NYPLConfiguration heapID]];
 #ifdef DEBUG
     [Heap enableVisualizer];
     [Heap startDebug];
