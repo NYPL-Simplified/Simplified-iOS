@@ -6,6 +6,7 @@
 
 static NSString *const NYPLCirculationBaseURLProduction = @"https://circulation.librarysimplified.org";
 static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.librarysimplified.org/";
+static NSString *const NYPLCirtulationBaseURLE_Feed = @"http://169.254.102.238/CANNOT_GENERATE_FEED_PROBLEM";
 
 @implementation NYPLConfiguration
 
@@ -20,7 +21,8 @@ static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.l
 + (NSURL *)circulationURL
 {
 //  return [NSURL URLWithString:NYPLCirculationBaseURLTesting];
-  return [NSURL URLWithString:NYPLCirculationBaseURLProduction];
+//  return [NSURL URLWithString:NYPLCirculationBaseURLProduction];
+  return [NSURL URLWithString:NYPLCirtulationBaseURLE_Feed];
 }
 
 + (NSURL *)mainFeedURL
