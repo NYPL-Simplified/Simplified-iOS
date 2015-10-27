@@ -7,6 +7,9 @@
 static NSString *const NYPLCirculationBaseURLProduction = @"https://circulation.librarysimplified.org";
 static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.librarysimplified.org/";
 
+static NSString *const heapIDProduction = @"3245728259";
+static NSString *const heapIDDevelopment = @"1848989408";
+
 @implementation NYPLConfiguration
 
 + (void)initialize
@@ -17,9 +20,20 @@ static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.l
   [[UIButton appearance] setTitleFontName:[NYPLConfiguration systemFontName]];
 }
 
++ (BOOL) heapEnabled
+{
+  return YES;
+}
+
++ (NSString *)heapID
+{
+//  return heapIDProduction;
+  return heapIDDevelopment;
+}
+
 + (NSURL *)circulationURL
 {
-//  return [NSURL URLWithString:NYPLCirculationBaseURLTesting];
+  //  return [NSURL URLWithString:NYPLCirculationBaseURLTesting];
   return [NSURL URLWithString:NYPLCirculationBaseURLProduction];
 }
 
