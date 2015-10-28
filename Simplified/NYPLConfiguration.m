@@ -21,8 +21,8 @@ static NSString *const NYPLCirtulationBaseURLE_Feed = @"http://169.254.102.238/C
 + (NSURL *)circulationURL
 {
 //  return [NSURL URLWithString:NYPLCirculationBaseURLTesting];
-//  return [NSURL URLWithString:NYPLCirculationBaseURLProduction];
-  return [NSURL URLWithString:NYPLCirtulationBaseURLE_Feed];
+  return [NSURL URLWithString:NYPLCirculationBaseURLProduction];
+//  return [NSURL URLWithString:NYPLCirtulationBaseURLE_Feed];
 }
 
 + (NSURL *)mainFeedURL

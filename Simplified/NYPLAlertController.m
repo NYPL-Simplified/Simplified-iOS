@@ -7,13 +7,15 @@
 //
 
 #import "NYPLAlertController.h"
+#import "NYPLProblemDocument.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
 #endif
 
 @interface NYPLAlertController ()
-
+@property (nonatomic, strong) NYPLProblemDocument *problemDocument;
+@property (nonatomic, strong) NSString *localMessage;
 @end
 
 @implementation NYPLAlertController
@@ -73,30 +75,27 @@
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
                                                         style:UIAlertActionStyleDefault
                                                       handler:nil]];
+    alertController.localMessage = message;
     return alertController;
   }
   
   return nil;
 }
 
-+ (instancetype)alertWithProblemDocumentData:(NSData *)data
+- (void)setProblemDocument:(NYPLProblemDocument *)document displayDocumentMessage:(BOOL)doDisplayDocumentMessage
 {
-  NSError *jsonError = nil;
-  NSDictionary *problemDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-  NSString *title = NSLocalizedString(@"Error", nil);
-  NSString *message = NSLocalizedString(@"An error has occurred", nil);
-  
-  NSURL *typeURL = problemDict[@"type"] ? [NSURL URLWithString:problemDict[@"type"]] : nil;
-  NSString *typeDomain = typeURL.host;
-  BOOL isSimplifiedError = [typeDomain isEqualToString:@"librarysimplified.org"];
-  NSString *lastPath = typeURL.lastPathComponent;
-  
-  if (isSimplifiedError && [typeURL.resourceSpecifier isEqualToString:@"//librarysimplified.org/terms/problem/cannot-generate-feed"]) {
-    title = NSLocalizedString(@"Library Server Error", nil);
-    message = NSLocalizedString(@"The library server encountered an error, please try again later", nil);
+  self.problemDocument = document;
+  if (doDisplayDocumentMessage && document) {
+    self.message = [NSString stringWithFormat:@"%@ %@", self.localMessage, self.problemDocument.message];
+  } else {
+    self.message = self.localMessage;
   }
-  
-  return [NYPLAlertController alertWithTitle:title message:message];
+}
+
+- (void)presentFromViewControllerOrNil:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion
+{
+  viewController = viewController ? viewController : [[[UIApplication sharedApplication] keyWindow] rootViewController];
+  [viewController presentViewController:self animated:animated completion:completion];
 }
 
 @end
