@@ -3,6 +3,7 @@
 #import "NYPLRemoteViewController.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLAlertController.h"
+#import "NYPLProblemDocument.h"
 
 @interface NYPLRemoteViewController () <NSURLConnectionDataDelegate>
 
@@ -115,7 +116,10 @@
   
   if ([(NSHTTPURLResponse *)self.response statusCode] != 200 &&
       [self.response.MIMEType isEqualToString:@"application/problem+json"]) {
-    NYPLAlertController *alert = [NYPLAlertController alertWithProblemDocumentData:self.data];
+    NYPLProblemDocument *problem = [NYPLProblemDocument problemDocumentWithData:self.data];
+    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:problem.title message:problem.message];
+    NSDictionary *problemDocJSON = [NSJSONSerialization JSONObjectWithData:self.data options:0 error:NULL];
+    [alert setProblemDocument:[[NYPLProblemDocument alloc] initWithDictionary:problemDocJSON] displayDocumentMessage:YES];
     [self presentViewController:alert animated:YES completion:nil];
   }
   
