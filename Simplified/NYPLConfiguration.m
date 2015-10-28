@@ -23,6 +23,7 @@ static NSString *const heapIDDevelopment = @"1848989408";
 + (BOOL) heapEnabled
 {
   return YES;
+//  return NO;
 }
 
 + (NSString *)heapID
