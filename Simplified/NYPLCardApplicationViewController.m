@@ -18,6 +18,7 @@
   self = [super initWithCoder:aDecoder];
   if (self) {
     self.navigationItem.title = self.title;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismiss)];
   }
   return self;
 }
@@ -27,12 +28,6 @@
   [super viewDidLoad];
   if (!self.currentApplication)
     self.currentApplication = [NYPLCardApplicationModel currentCardApplication];
-  
-  if (self.navigationController.viewControllers[0] == self) {
-    self.navigationItem.hidesBackButton = NO;
-    UIBarButtonItem *_backButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismiss)];
-    self.navigationItem.leftBarButtonItem = _backButton;
-  }
 }
 
 - (void) viewDidAppear:(BOOL)animated

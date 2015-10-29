@@ -219,7 +219,7 @@ typedef enum {
                        }];
       [UIView transitionWithView:self.imageView
                         duration:duration
-                         options:UIViewAnimationOptionTransitionFlipFromRight
+                         options:UIViewAnimationOptionTransitionCrossDissolve
                       animations:^{
                         self.imageView.image = [UIImage imageNamed:s_checkmarkImageName];
                       } completion:^(BOOL finished) {
