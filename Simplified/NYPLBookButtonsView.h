@@ -19,6 +19,7 @@ typedef NS_ENUM(NSInteger, NYPLBookButtonsState) {
 - (void)didSelectReturnForBook:(NYPLBook *)book;
 - (void)didSelectDownloadForBook:(NYPLBook *)book;
 - (void)didSelectReadForBook:(NYPLBook *)book;
+- (void)didSelectReportForBook:(NYPLBook *)book sender:(id)sender;
 
 @end
 

@@ -7,24 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		08136F7E1BC2AB06002A4486 /* LibraryCard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08136F7D1BC2AB06002A4486 /* LibraryCard.storyboard */; settings = {ASSET_TAGS = (); }; };
-		0813870E1BC2E8A9003DEA6A /* NYPLDateCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813870D1BC2E8A9003DEA6A /* NYPLDateCardController.m */; settings = {ASSET_TAGS = (); }; };
-		081387111BC2F07B003DEA6A /* NYPLLocationCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387101BC2F07B003DEA6A /* NYPLLocationCardController.m */; settings = {ASSET_TAGS = (); }; };
-		0813871C1BC30E96003DEA6A /* nystate.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 0813871B1BC30E96003DEA6A /* nystate.geojson */; settings = {ASSET_TAGS = (); }; };
-		081387361BC42727003DEA6A /* NYPLCardApplicationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387351BC42727003DEA6A /* NYPLCardApplicationModel.m */; settings = {ASSET_TAGS = (); }; };
-		0813873A1BC4328D003DEA6A /* NYPLCardApplicationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387391BC4328D003DEA6A /* NYPLCardApplicationViewController.m */; settings = {ASSET_TAGS = (); }; };
-		081387401BC455CF003DEA6A /* NYPLPhotoCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813873F1BC455CF003DEA6A /* NYPLPhotoCardController.m */; settings = {ASSET_TAGS = (); }; };
-		081387431BC465C9003DEA6A /* NYPLNameCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387421BC465C9003DEA6A /* NYPLNameCardController.m */; settings = {ASSET_TAGS = (); }; };
-		081387461BC5589D003DEA6A /* NYPLValidatingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387451BC5589D003DEA6A /* NYPLValidatingTextField.m */; settings = {ASSET_TAGS = (); }; };
+		08136F7E1BC2AB06002A4486 /* LibraryCard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08136F7D1BC2AB06002A4486 /* LibraryCard.storyboard */; };
+		0813870E1BC2E8A9003DEA6A /* NYPLDateCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813870D1BC2E8A9003DEA6A /* NYPLDateCardController.m */; };
+		081387111BC2F07B003DEA6A /* NYPLLocationCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387101BC2F07B003DEA6A /* NYPLLocationCardController.m */; };
+		0813871C1BC30E96003DEA6A /* nystate.geojson in Resources */ = {isa = PBXBuildFile; fileRef = 0813871B1BC30E96003DEA6A /* nystate.geojson */; };
+		081387361BC42727003DEA6A /* NYPLCardApplicationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387351BC42727003DEA6A /* NYPLCardApplicationModel.m */; };
+		0813873A1BC4328D003DEA6A /* NYPLCardApplicationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387391BC4328D003DEA6A /* NYPLCardApplicationViewController.m */; };
+		081387401BC455CF003DEA6A /* NYPLPhotoCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813873F1BC455CF003DEA6A /* NYPLPhotoCardController.m */; };
+		081387431BC465C9003DEA6A /* NYPLNameCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387421BC465C9003DEA6A /* NYPLNameCardController.m */; };
+		081387461BC5589D003DEA6A /* NYPLValidatingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387451BC5589D003DEA6A /* NYPLValidatingTextField.m */; };
 		081387511BC56B7A003DEA6A /* libpop.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 081387501BC56B7A003DEA6A /* libpop.a */; };
-		081387541BC57297003DEA6A /* NYPLAddressCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387531BC57297003DEA6A /* NYPLAddressCardController.m */; settings = {ASSET_TAGS = (); }; };
-		081387571BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387561BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m */; settings = {ASSET_TAGS = (); }; };
-		0813875A1BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387591BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m */; settings = {ASSET_TAGS = (); }; };
-		0813875D1BC579C4003DEA6A /* NYPLEmailCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813875C1BC579C4003DEA6A /* NYPLEmailCardController.m */; settings = {ASSET_TAGS = (); }; };
-		081387601BC57B43003DEA6A /* NYPLVerifyCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813875F1BC57B43003DEA6A /* NYPLVerifyCardController.m */; settings = {ASSET_TAGS = (); }; };
-		081387921BCD4C6C003DEA6A /* NYPLAnimatingButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387911BCD4C6C003DEA6A /* NYPLAnimatingButton.m */; settings = {ASSET_TAGS = (); }; };
-		08373B431BCFE58D00AC1AFA /* NYPLIntroCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08373B421BCFE58D00AC1AFA /* NYPLIntroCardController.m */; settings = {ASSET_TAGS = (); }; };
-		085640CE1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */; settings = {ASSET_TAGS = (); }; };
+		081387541BC57297003DEA6A /* NYPLAddressCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387531BC57297003DEA6A /* NYPLAddressCardController.m */; };
+		081387571BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387561BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m */; };
+		0813875A1BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387591BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m */; };
+		0813875D1BC579C4003DEA6A /* NYPLEmailCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813875C1BC579C4003DEA6A /* NYPLEmailCardController.m */; };
+		081387601BC57B43003DEA6A /* NYPLVerifyCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813875F1BC57B43003DEA6A /* NYPLVerifyCardController.m */; };
+		081387921BCD4C6C003DEA6A /* NYPLAnimatingButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387911BCD4C6C003DEA6A /* NYPLAnimatingButton.m */; };
+		08373B431BCFE58D00AC1AFA /* NYPLIntroCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08373B421BCFE58D00AC1AFA /* NYPLIntroCardController.m */; };
+		085640CE1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */; };
+		085D31D71BE29E38007F7672 /* NYPLProblemReportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 085D31D61BE29E38007F7672 /* NYPLProblemReportViewController.m */; };
+		085D31D91BE29ED4007F7672 /* NYPLProblemReportViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 085D31D81BE29ED4007F7672 /* NYPLProblemReportViewController.xib */; };
 		08801EF81BDE8D77005E1F32 /* libHeap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 08801EF61BDE8D0D005E1F32 /* libHeap.a */; };
 		08A352201BDE8E410040BF1D /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A3521F1BDE8E410040BF1D /* CFNetwork.framework */; };
 		08A352221BDE8E560040BF1D /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352211BDE8E560040BF1D /* libicucore.tbd */; };
@@ -34,10 +36,10 @@
 		08A352291BDE91B80040BF1D /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352281BDE91B80040BF1D /* libePub3-iOS.a */; };
 		08A3522A1BDE94170040BF1D /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
 		08A3522B1BDE94170040BF1D /* libAdobe Content Filter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */; };
-		08C375461BD7CFF6005B233D /* NYPLSubmittingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08C375451BD7CFF6005B233D /* NYPLSubmittingViewController.m */; settings = {ASSET_TAGS = (); }; };
+		08C375461BD7CFF6005B233D /* NYPLSubmittingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08C375451BD7CFF6005B233D /* NYPLSubmittingViewController.m */; };
 		08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
 		08C469C21BDAAEB1009D8AFD /* libAdobe Content Filter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */; };
-		08C469CE1BDAB484009D8AFD /* NYPLRegistrationStoryboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 08C469CD1BDAB484009D8AFD /* NYPLRegistrationStoryboard.m */; settings = {ASSET_TAGS = (); }; };
+		08C469CE1BDAB484009D8AFD /* NYPLRegistrationStoryboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 08C469CD1BDAB484009D8AFD /* NYPLRegistrationStoryboard.m */; };
 		11068C55196DD37900E8A94B /* NYPLNull.m in Sources */ = {isa = PBXBuildFile; fileRef = 11068C54196DD37900E8A94B /* NYPLNull.m */; };
 		11078357198160A50071AB1E /* NYPLBookDownloadFailedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */; };
 		1107835E19816E3D0071AB1E /* UIView+NYPLViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */; };
@@ -262,6 +264,9 @@
 		08373B421BCFE58D00AC1AFA /* NYPLIntroCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLIntroCardController.m; sourceTree = "<group>"; };
 		085640CC1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+NYPLURLAdditions.h"; sourceTree = "<group>"; };
 		085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+NYPLURLAdditions.m"; sourceTree = "<group>"; };
+		085D31D51BE29E38007F7672 /* NYPLProblemReportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLProblemReportViewController.h; sourceTree = "<group>"; };
+		085D31D61BE29E38007F7672 /* NYPLProblemReportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLProblemReportViewController.m; sourceTree = "<group>"; };
+		085D31D81BE29ED4007F7672 /* NYPLProblemReportViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NYPLProblemReportViewController.xib; sourceTree = "<group>"; };
 		08801EF21BDE8A4D005E1F32 /* libHeap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libHeap.a; path = Pods/Heap/libHeap.a; sourceTree = "<group>"; };
 		08801EF51BDE8D0D005E1F32 /* Heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Heap.h; sourceTree = "<group>"; };
 		08801EF61BDE8D0D005E1F32 /* libHeap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libHeap.a; sourceTree = "<group>"; };
@@ -729,6 +734,9 @@
 				11B6020419806CD300800DA9 /* NYPLBookDownloadingCell.m */,
 				11A16E6D195B60DF004147F4 /* NYPLBookNormalCell.h */,
 				11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */,
+				085D31D51BE29E38007F7672 /* NYPLProblemReportViewController.h */,
+				085D31D61BE29E38007F7672 /* NYPLProblemReportViewController.m */,
+				085D31D81BE29ED4007F7672 /* NYPLProblemReportViewController.xib */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -1238,6 +1246,7 @@
 				84B7A3461B84E8FE00584FB2 /* OFL.txt in Resources */,
 				11C113D719F84613005B3F63 /* simplified.js in Resources */,
 				848FD95B1B83875D009D9BC4 /* NYPL_Launch_Screen.xib in Resources */,
+				085D31D91BE29ED4007F7672 /* NYPLProblemReportViewController.xib in Resources */,
 				5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */,
 				08136F7E1BC2AB06002A4486 /* LibraryCard.storyboard in Resources */,
 				A823D81B192BABA400B55DE2 /* InfoPlist.strings in Resources */,
@@ -1390,6 +1399,7 @@
 				110AF89C1961ED1F004887C3 /* NYPLBookDetailViewController.m in Sources */,
 				1164A9F71A797238002BD3AE /* NYPLSettings.m in Sources */,
 				11BFDB39199C117B00378691 /* NYPLReaderTOCCell.m in Sources */,
+				085D31D71BE29E38007F7672 /* NYPLProblemReportViewController.m in Sources */,
 				11C5DCF21976D1E0005A9945 /* NYPLHoldsNavigationController.m in Sources */,
 				081387111BC2F07B003DEA6A /* NYPLLocationCardController.m in Sources */,
 				A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */,
