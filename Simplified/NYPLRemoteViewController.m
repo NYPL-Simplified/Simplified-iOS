@@ -117,9 +117,8 @@
   if ([(NSHTTPURLResponse *)self.response statusCode] != 200 &&
       [self.response.MIMEType isEqualToString:@"application/problem+json"]) {
     NYPLProblemDocument *problem = [NYPLProblemDocument problemDocumentWithData:self.data];
-    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:problem.title message:problem.message];
-    NSDictionary *problemDocJSON = [NSJSONSerialization JSONObjectWithData:self.data options:0 error:NULL];
-    [alert setProblemDocument:[[NYPLProblemDocument alloc] initWithDictionary:problemDocJSON] displayDocumentMessage:YES];
+    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:problem.title message:problem.detail];
+    [alert setProblemDocument:problem displayDocumentMessage:NO];
     [self presentViewController:alert animated:YES completion:nil];
   }
   
