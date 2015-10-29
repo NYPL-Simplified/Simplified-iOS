@@ -8,6 +8,7 @@
 
 #import "NYPLAlertController.h"
 #import "NYPLProblemDocument.h"
+#import "NYPLRootTabBarController.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -86,7 +87,7 @@
 {
   self.problemDocument = document;
   if (doDisplayDocumentMessage && document) {
-    self.message = [NSString stringWithFormat:@"%@ %@", self.localMessage, self.problemDocument.message];
+    self.message = [NSString stringWithFormat:@"%@ %@", self.localMessage, self.problemDocument.detail];
   } else {
     self.message = self.localMessage;
   }
@@ -94,7 +95,7 @@
 
 - (void)presentFromViewControllerOrNil:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion
 {
-  viewController = viewController ? viewController : [[[UIApplication sharedApplication] keyWindow] rootViewController];
+  viewController = viewController ? viewController : [NYPLRootTabBarController sharedController];
   [viewController presentViewController:self animated:animated completion:completion];
 }
 
