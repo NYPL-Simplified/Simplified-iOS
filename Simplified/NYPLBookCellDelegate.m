@@ -5,6 +5,7 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReaderViewController.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLProblemReportViewController.h"
 
 #import "NYPLBookCellDelegate.h"
 
@@ -43,6 +44,15 @@
    pushViewController:[[NYPLReaderViewController alloc]
                        initWithBookIdentifier:book.identifier]
    animated:YES];
+}
+
+- (void)didSelectReportForBook:(__unused NYPLBook *)book sender:(id)sender
+{
+  NYPLProblemReportViewController *problemVC = [[NYPLProblemReportViewController alloc] initWithNibName:@"NYPLProblemReportViewController" bundle:nil];
+  problemVC.modalPresentationStyle = UIModalPresentationPopover;
+  problemVC.popoverPresentationController.sourceView = sender;
+  problemVC.popoverPresentationController.sourceRect = ((UIView *)sender).bounds;
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:problemVC animated:YES completion:nil];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate

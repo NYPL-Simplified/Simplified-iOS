@@ -12,6 +12,7 @@
 @property (nonatomic) UIView *backgroundView;
 @property (nonatomic) UILabel *messageLabel;
 @property (nonatomic) NYPLBookButtonsView *buttonsView;
+@property (nonatomic) UIButton *reportAProblemButton;
 
 @end
 
@@ -31,6 +32,12 @@
   self.buttonsView = [[NYPLBookButtonsView alloc] init];
   [self addSubview:self.buttonsView];
   
+  self.reportAProblemButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [self.reportAProblemButton setTitle:NSLocalizedString(@"Report a Problem", nil) forState:UIControlStateNormal];
+  [self.reportAProblemButton.titleLabel setFont:[UIFont systemFontOfSize:12.0]];
+  [self.reportAProblemButton addTarget:self action:@selector(reportAProblem:) forControlEvents:UIControlEventTouchUpInside];
+  [self addSubview:self.reportAProblemButton];
+  
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont systemFontOfSize:12];
   self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
@@ -44,6 +51,11 @@
   CGRect frame = self.frame;
   frame.size.height = CGRectGetMaxY(self.buttonsView.frame);
   self.frame = frame;
+}
+
+- (void)reportAProblem:(id)sender
+{
+  [self.delegate didSelectReportForBook:self.book sender:sender];
 }
 
 #pragma mark UIView
@@ -66,6 +78,10 @@
                                       CGRectGetWidth(self.buttonsView.frame),
                                       CGRectGetHeight(self.buttonsView.frame));
   [self.buttonsView integralizeFrame];
+  
+  [self.reportAProblemButton sizeToFit];
+  self.reportAProblemButton.center = CGPointMake(self.bounds.size.width - self.reportAProblemButton.bounds.size.width/2.0 - 17.0, self.buttonsView.center.y);
+  [self.reportAProblemButton integralizeFrame];
 }
 
 #pragma mark -

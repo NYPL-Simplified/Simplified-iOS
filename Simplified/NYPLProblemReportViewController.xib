@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9059" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NYPLProblemReportViewController">
+            <connections>
+                <outlet property="problemDescriptionTable" destination="HAz-eK-tee" id="06q-se-Eyd"/>
+                <outlet property="view" destination="iN0-l3-epB" id="oCd-RM-0A5"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" placeholderIntrinsicWidth="600" placeholderIntrinsicHeight="600" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="HAz-eK-tee">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="A6q-g6-RnP"/>
+                        <outlet property="delegate" destination="-1" id="Cwf-V5-7gk"/>
+                    </connections>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="HAz-eK-tee" secondAttribute="bottom" id="99x-ak-5da"/>
+                <constraint firstItem="HAz-eK-tee" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="CU0-GL-xH1"/>
+                <constraint firstItem="HAz-eK-tee" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Flh-5V-VcZ"/>
+                <constraint firstAttribute="trailing" secondItem="HAz-eK-tee" secondAttribute="trailing" id="fAM-L0-3Lt"/>
+            </constraints>
+        </view>
+    </objects>
+</document>
