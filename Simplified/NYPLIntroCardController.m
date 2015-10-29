@@ -25,10 +25,11 @@
 - (IBAction)continuePressed:(__attribute__((unused)) id)sender
 {
   if (self.shouldShowContinuePrompt) {
+    BOOL isIPad = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad;
     self.shouldShowContinuePrompt = NO;
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Continue?", nil)
                                                                              message:NSLocalizedString(@"It looks like you've got a card application already in progress", nil)
-                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
+                                                                      preferredStyle: isIPad ? UIAlertControllerStyleAlert : UIAlertControllerStyleActionSheet];
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Continue", nil)
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(__attribute__((unused)) UIAlertAction * _Nonnull action) {
