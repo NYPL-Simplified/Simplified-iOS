@@ -15,7 +15,7 @@
 
 @interface NYPLReaderViewController ()
   <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate,
-   UIPopoverControllerDelegate, UIGestureRecognizerDelegate, UIPageViewControllerDataSource>
+   UIPopoverControllerDelegate, UIGestureRecognizerDelegate, UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) NSString *bookIdentifier;
@@ -93,6 +93,8 @@
   self.tapGestureRecognizer.cancelsTouchesInView = NO;
   self.tapGestureRecognizer.delegate = self;
   self.tapGestureRecognizer.numberOfTapsRequired = 1;
+  self.tapGestureRecognizer.enabled = NO;
+  
   [self.view addGestureRecognizer:self.tapGestureRecognizer];
   
   self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
@@ -241,6 +243,27 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.rendererView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                         UIViewAutoresizingFlexibleHeight);
   
+  // ----------- page view
+  self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
+  
+  self.pageViewController.dataSource = self;
+  self.pageViewController.delegate = self;
+  [[self.pageViewController view] setFrame:[[self view] bounds]];
+  
+  self.evenPageViewController = [[UIViewController alloc] init];
+  self.oddPageViewController = [[UIViewController alloc] init];
+  [self.evenPageViewController.view addSubview:self.rendererView];
+  
+  NSArray *viewControllers = [NSArray arrayWithObject:self.evenPageViewController];
+  
+  [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
+  
+  [self addChildViewController:self.pageViewController];
+  [[self view] addSubview:[self.pageViewController view]];
+  [self.pageViewController didMoveToParentViewController:self];
+  // ----------- page view
+  
+//  [self.view addSubview:self.rendererView];
   [self.view addSubview:self.rendererView];
   
   // Add the giant transparent button to handle the "return to reading" action in VoiceOver
@@ -446,7 +469,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   return nil;
 }
 
-#pragma mark UIPageViewController
+#pragma mark UIPageViewControllerDataSource
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
 {
@@ -460,6 +483,14 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   if (viewController == self.evenPageViewController)
     return self.oddPageViewController;
   return self.evenPageViewController;
+}
+
+#pragma mark UIPageViewControllerDelegate
+
+- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed
+{
+  [self.rendererView removeFromSuperview];
+  [[pageViewController.viewControllers.firstObject view] addSubview:self.rendererView];
 }
 
 #pragma mark NYPLReaderTOCViewControllerDelegate
