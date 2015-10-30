@@ -483,5 +483,10 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   return YES;
 }
 
+- (void)runProblemReportedAnimation
+{
+  [self.normalView runProblemReportedAnimation];
+}
+
 
 @end

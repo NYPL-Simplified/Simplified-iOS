@@ -9,6 +9,7 @@
 @property (nonatomic) NSURL *openAccess;
 @property (nonatomic) NSURL *revoke;
 @property (nonatomic) NSURL *sample;
+@property (nonatomic) NSURL *report;
 
 @end
 
@@ -17,6 +18,7 @@ static NSString *const GenericKey = @"generic";
 static NSString *const OpenAccessKey = @"open-access";
 static NSString *const RevokeKey = @"revoke";
 static NSString *const SampleKey = @"sample";
+static NSString *const ReportKey = @"report";
 
 @implementation NYPLBookAcquisition
 
@@ -25,6 +27,7 @@ static NSString *const SampleKey = @"sample";
                     openAccess:(NSURL *const)openAccess
                         revoke:(NSURL *const)revoke
                         sample:(NSURL *const)sample
+                        report:(NSURL *const)report
 {
   self = [super init];
   if(!self) return nil;
@@ -34,6 +37,7 @@ static NSString *const SampleKey = @"sample";
   self.openAccess = openAccess;
   self.revoke = revoke;
   self.sample = sample;
+  self.report = report;
   
   return self;
 }
@@ -48,6 +52,7 @@ static NSString *const SampleKey = @"sample";
   self.openAccess = [NSURL URLWithString:NYPLNullToNil(dictionary[OpenAccessKey])];
   self.revoke = [NSURL URLWithString:NYPLNullToNil(dictionary[RevokeKey])];
   self.sample = [NSURL URLWithString:NYPLNullToNil(dictionary[SampleKey])];
+  self.report = [NSURL URLWithString:NYPLNullToNil(dictionary[ReportKey])];
   
   return self;
 }
@@ -58,7 +63,8 @@ static NSString *const SampleKey = @"sample";
            GenericKey: NYPLNullFromNil([self.generic absoluteString]),
            OpenAccessKey: NYPLNullFromNil([self.openAccess absoluteString]),
            RevokeKey: NYPLNullFromNil([self.revoke absoluteString]),
-           SampleKey: NYPLNullFromNil([self.sample absoluteString])};
+           SampleKey: NYPLNullFromNil([self.sample absoluteString]),
+           ReportKey: NYPLNullFromNil([self.report absoluteString])};
 }
 
 @end

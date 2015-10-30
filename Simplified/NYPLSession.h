@@ -5,6 +5,8 @@
 
 + (NYPLSession *)sharedSession;
 
+- (void)uploadWithRequest:(NSURLRequest *)request completionHandler:(void (^)(NSData *data, NSURLResponse *response, NSError *error))handler;
+
 - (void)withURL:(NSURL *)URL completionHandler:(void (^)(NSData *data, NSURLResponse *response))handler;
 
 - (void)withURLs:(NSSet *)URLs handler:(void (^)(NSDictionary *URLsToDataOrNull))handler;

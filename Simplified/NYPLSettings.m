@@ -151,7 +151,8 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
                                                                                                generic:bookBundleURL
                                                                                             openAccess:nil
                                                                                                 revoke:nil
-                                                                                                sample:nil]
+                                                                                                sample:nil
+                                                                                                report:nil]
                                              authorStrings:@[bookAuthor]
                                         availabilityStatus:NYPLBookAvailabilityStatusAvailable
                                            availableCopies:0
