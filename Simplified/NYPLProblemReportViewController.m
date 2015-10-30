@@ -13,7 +13,9 @@ static NSArray *s_problems = nil;
 
 @interface NYPLProblemReportViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) IBOutlet UITableView *problemDescriptionTable;
-@property (nonatomic, strong) NYPLAnimatingButton *submitProblemButton;
+@property (nonatomic, strong) NYPLAnimatingButton *submitProblemButton, *cancelButton;
+@property (nonatomic, strong) UIView *footerView;
+@property (nonatomic, strong) IBOutlet NSLayoutConstraint *problemTableTopConstraint;
 @end
 
 @implementation NYPLProblemReportViewController
@@ -71,25 +73,44 @@ static NSArray *s_problems = nil;
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  self.problemDescriptionTable.scrollEnabled = NO;
+  
   self.submitProblemButton = [NYPLAnimatingButton buttonWithType:UIButtonTypeSystem];
   [self.submitProblemButton setTitle:NSLocalizedString(@"Submit", nil) forState:UIControlStateNormal];
   [self.submitProblemButton addTarget:self action:@selector(submitProblem) forControlEvents:UIControlEventTouchUpInside];
+  [self.submitProblemButton sizeToFit];
   self.submitProblemButton.enabled = NO;
+  
+  self.cancelButton = [NYPLAnimatingButton buttonWithType:UIButtonTypeSystem];
+  [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil) forState:UIControlStateNormal];
+  [self.cancelButton addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
+  [self.cancelButton sizeToFit];
+  
+  [self.problemDescriptionTable setBackgroundColor:[UIColor whiteColor]];
+}
+
+- (void)viewWillAppear:(__unused BOOL)animated
+{
+  if (self.modalPresentationStyle != UIModalPresentationPopover) {
+    self.problemTableTopConstraint.constant = 20;
+  }
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-  [super viewWillAppear:animated];
-  CGFloat maxWidth = 0.0;
-  CGFloat height = 0;
-  for (uint i=0; i<[self.problemDescriptionTable numberOfRowsInSection:0]; ++i) {
-    UILabel *l = [[self.problemDescriptionTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] textLabel];
-    maxWidth = MAX(maxWidth, l.bounds.size.width);
-    height += [self.problemDescriptionTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]].bounds.size.height;
+  [super viewDidAppear:animated];
+  BOOL isIPad = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad;
+  
+  if (isIPad) {
+    CGFloat maxWidth = 0.0;
+    CGFloat height = 0;
+    for (uint i=0; i<[self.problemDescriptionTable numberOfRowsInSection:0]; ++i) {
+      UILabel *l = [[self.problemDescriptionTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] textLabel];
+      maxWidth = MAX(maxWidth, l.bounds.size.width);
+      height += [self.problemDescriptionTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]].bounds.size.height;
+    }
+    height += 45.0;
+    self.preferredContentSize = CGSizeMake(maxWidth+16.0, height+8);
   }
-  height += 45.0;
-  self.preferredContentSize = CGSizeMake(maxWidth+16.0, height+8);
 }
 
 - (void)submitProblem
@@ -97,6 +118,11 @@ static NSArray *s_problems = nil;
   NSIndexPath *ip = [self.problemDescriptionTable indexPathForSelectedRow];
   if (ip)
     [self.delegate problemReportViewController:self didSelectProblemWithType:s_problems[ip.row][@"type"]];
+}
+
+- (void)cancel
+{
+  [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark UITableViewDataSource
@@ -121,9 +147,22 @@ static NSArray *s_problems = nil;
   return cell;
 }
 
-- (UIView *)tableView:(__unused UITableView *)tableView viewForFooterInSection:(__unused NSInteger)section
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(__unused NSInteger)section
 {
-  return self.submitProblemButton;
+  if (!self.footerView) {
+    self.footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 45.0)];
+    [self.footerView setBackgroundColor:[UIColor whiteColor]];
+    [self.footerView addSubview:self.submitProblemButton];
+    
+    if (self.modalPresentationStyle == UIModalPresentationPopover) {
+      self.submitProblemButton.center = CGPointMake(self.footerView.bounds.size.width/2.0, self.footerView.bounds.size.height/2.0);
+    } else {
+      [self.footerView addSubview:self.cancelButton];
+      self.cancelButton.center = CGPointMake(self.footerView.bounds.size.width*2.0/6.0, self.footerView.bounds.size.height/2.0);
+      self.submitProblemButton.center = CGPointMake(self.footerView.bounds.size.width*4.0/6.0, self.footerView.bounds.size.height/2.0);
+    }
+  }
+  return self.footerView;
 }
 
 #pragma mark UITableViewDelegate

@@ -32,6 +32,7 @@
 // designated initializer
 // |book| must not be nil.
 - (instancetype)initWithBook:(NYPLBook *)book;
+- (void)runProblemReportedAnimation;
 
 @end
 

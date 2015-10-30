@@ -45,3 +45,6 @@ static NSString *const NYPLOPDSPrivacyPolicyLink =
 
 static NSString *const NYPLOPDSAcknowledgmentsLink =
 @"copyright";
+
+static NSString *const NYPLOPDSRelationAcquisitionIssues =
+  @"issues";

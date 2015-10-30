@@ -26,6 +26,8 @@
 
 @end
 
+NSString *const NYPLBookProblemReportedNotification = @"NYPLBookProblemReportedNotification";
+
 static NSString *const AcquisitionKey = @"acquisition";
 static NSString *const AuthorsKey = @"authors";
 static NSString *const AvailabilityStatusKey = @"availability-status";
@@ -52,7 +54,7 @@ static NSString *const UpdatedKey = @"updated";
     return nil;
   }
   
-  NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail = nil;
+  NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail, *report = nil;
   
   NYPLBookAvailabilityStatus availabilityStatus = NYPLBookAvailabilityStatusUnknown;
   NSInteger availableCopies = 0;
@@ -104,6 +106,10 @@ static NSString *const UpdatedKey = @"updated";
       imageThumbnail = link.href;
       continue;
     }
+    if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionIssues]) {
+      report = link.href;
+      continue;
+    }
   }
   
   if(availabilityStatus == NYPLBookAvailabilityStatusUnknown) {
@@ -120,7 +126,8 @@ static NSString *const UpdatedKey = @"updated";
                                generic:generic
                                openAccess:openAccess
                                revoke:revoke
-                               sample:sample]
+                               sample:sample
+                               report:report]
           authorStrings:entry.authorStrings
           availabilityStatus: availabilityStatus
           availableCopies:availableCopies

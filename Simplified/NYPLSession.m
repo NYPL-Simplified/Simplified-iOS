@@ -70,6 +70,13 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
 #pragma mark -
 
+- (void)uploadWithRequest:(NSURLRequest *)request completionHandler:(void (^)(NSData *data, NSURLResponse *response, NSError *error))handler
+{
+  [[self.session uploadTaskWithRequest:request
+                              fromData:request.HTTPBody
+                     completionHandler:handler] resume];
+}
+
 - (void)withURL:(NSURL *const)URL completionHandler:(void (^)(NSData *data, NSURLResponse *response))handler
 {
   if(!handler) {

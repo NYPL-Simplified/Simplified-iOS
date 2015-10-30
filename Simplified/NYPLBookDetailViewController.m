@@ -68,6 +68,15 @@
                               downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementUnknown;
     }]];
   
+  [self.observers addObject:
+   [[NSNotificationCenter defaultCenter]
+    addObserverForName:NYPLBookProblemReportedNotification
+    object:nil
+    queue:[NSOperationQueue mainQueue]
+    usingBlock:^(__unused NSNotification *note) {
+      [view runProblemReportedAnimation];
+    }]];
+  
   return self;
 }
 

@@ -8,6 +8,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NYPLProblemReportViewController">
             <connections>
                 <outlet property="problemDescriptionTable" destination="HAz-eK-tee" id="06q-se-Eyd"/>
+                <outlet property="problemTableTopConstraint" destination="bYn-0C-UJu" id="lU4-GL-LfG"/>
                 <outlet property="view" destination="iN0-l3-epB" id="oCd-RM-0A5"/>
             </connections>
         </placeholder>
@@ -30,8 +31,14 @@
                 <constraint firstAttribute="bottom" secondItem="HAz-eK-tee" secondAttribute="bottom" id="99x-ak-5da"/>
                 <constraint firstItem="HAz-eK-tee" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="CU0-GL-xH1"/>
                 <constraint firstItem="HAz-eK-tee" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Flh-5V-VcZ"/>
+                <constraint firstItem="HAz-eK-tee" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="bYn-0C-UJu"/>
                 <constraint firstAttribute="trailing" secondItem="HAz-eK-tee" secondAttribute="trailing" id="fAM-L0-3Lt"/>
             </constraints>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="Flh-5V-VcZ"/>
+                </mask>
+            </variation>
         </view>
     </objects>
 </document>
