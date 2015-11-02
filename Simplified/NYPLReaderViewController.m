@@ -11,6 +11,8 @@
 
 #import "NYPLReaderViewController.h"
 
+#define EDGE_OF_SCREEN_POINT_FRACTION    0.1
+
 @interface NYPLReaderViewController ()
   <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate,
    UIPopoverControllerDelegate, UIGestureRecognizerDelegate>
@@ -27,10 +29,10 @@
 @property (nonatomic) UIView *bottomViewImageViewTopBorder;
 @property (nonatomic) UIProgressView *bottomViewProgressView;
 @property (nonatomic) UILabel *bottomViewProgressLabel;
+@property (nonatomic) UIButton *largeTransparentAccessibilityButton;
 
 @property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
-@property (nonatomic) BOOL didReceiveGestureFromReadium;
-@property (nonatomic) BOOL requestedGestureCheck;
+@property (nonatomic) UISwipeGestureRecognizer *leftSwipeGestureRecognizer, *rightSwipeGestureRecognizer;
 @end
 
 @implementation NYPLReaderViewController
@@ -88,43 +90,70 @@
   self.tapGestureRecognizer.cancelsTouchesInView = NO;
   self.tapGestureRecognizer.delegate = self;
   self.tapGestureRecognizer.numberOfTapsRequired = 1;
-  
   [self.view addGestureRecognizer:self.tapGestureRecognizer];
+  
+  self.leftSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc]
+                                     initWithTarget:self
+                                     action:@selector(didReceiveSwipeGesture:)];
+  self.leftSwipeGestureRecognizer.cancelsTouchesInView = NO;
+  self.leftSwipeGestureRecognizer.delegate = self;
+  self.leftSwipeGestureRecognizer.numberOfTouchesRequired = 1;
+  self.leftSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+  [self.view addGestureRecognizer:self.leftSwipeGestureRecognizer];
+  
+  self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc]
+                                     initWithTarget:self
+                                     action:@selector(didReceiveSwipeGesture:)];
+  self.rightSwipeGestureRecognizer.cancelsTouchesInView = NO;
+  self.rightSwipeGestureRecognizer.delegate = self;
+  self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
+  self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+  [self.view addGestureRecognizer:self.rightSwipeGestureRecognizer];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged) name:UIAccessibilityVoiceOverStatusChanged object:nil];
   
   return self;
 }
 
 - (void)dealloc
 {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
   [[NYPLBookRegistry sharedRegistry] stopDelaySyncCommit];
 }
 
-- (void)didReceiveGesture:(__attribute__((unused)) UIGestureRecognizer *const)gestureRecognizer
-{
+- (void)didReceiveGesture:(UIGestureRecognizer *const)gestureRecognizer {
+  CGPoint p = [gestureRecognizer locationInView:self.view];
+  CGFloat edgeOfScreenWidth = CGRectGetWidth(self.view.bounds) * EDGE_OF_SCREEN_POINT_FRACTION;
+  if (p.x < edgeOfScreenWidth) {
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+  } else if (p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth)) {
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+  } else {
+    self.interfaceHidden = !self.interfaceHidden;
+  }
 }
 
--(BOOL)gestureRecognizer:(__attribute__((unused)) UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(__attribute__((unused))UITouch *)touch {
-  
-  self.didReceiveGestureFromReadium = NO;
+- (void)didReceiveSwipeGesture:(UISwipeGestureRecognizer *const)gestureRecognizer {
+  if (gestureRecognizer.direction == UISwipeGestureRecognizerDirectionLeft)
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
+  else if (gestureRecognizer.direction == UISwipeGestureRecognizerDirectionRight)
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+}
 
-  if (!self.requestedGestureCheck) {
-    [self performSelector:@selector(fireTimeAgent) withObject:nil afterDelay:5];
-    self.requestedGestureCheck = YES;
+- (BOOL)gestureRecognizer:(__attribute__((unused)) UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(__attribute__((unused)) UIGestureRecognizer *)otherGestureRecognizer {
+  return YES;
+}
+
+- (BOOL)gestureRecognizer:(__attribute__((unused)) UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(__attribute__((unused))UITouch *)touch {
+  return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+  if (gestureRecognizer == self.tapGestureRecognizer) {
+    if (otherGestureRecognizer == self.leftSwipeGestureRecognizer || otherGestureRecognizer == self.rightSwipeGestureRecognizer)
+      return YES;
   }
   return NO;
-}
-
--(void)rendererDidRegisterGesture:(__attribute__((unused)) id<NYPLReaderRenderer>)renderer {
-  self.didReceiveGestureFromReadium = YES;
-}
-
--(void) fireTimeAgent {
-  if (!self.didReceiveGestureFromReadium) {
-    self.interfaceHidden = NO;
-  }
-  
-  self.requestedGestureCheck = NO;
-  self.didReceiveGestureFromReadium = NO;
 }
 
 #pragma mark NYPLReaderRendererDelegate
@@ -146,18 +175,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
     cancelButtonTitle:nil
     otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
    show];
-}
-
-- (void)renderer:(__attribute__((unused)) id<NYPLReaderRenderer>)renderer
- didReceiveGesture:(NYPLReaderRendererGesture const)gesture
-{
-  self.didReceiveGestureFromReadium = YES;
-  switch(gesture) {
-    case NYPLReaderRendererGestureToggleUserInterface:
-
-      self.interfaceHidden = !self.interfaceHidden;
-      break;  
-  }
 }
 
 - (void)rendererDidFinishLoading:(__attribute__((unused)) id<NYPLReaderRenderer>)renderer
@@ -219,6 +236,18 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
                                         UIViewAutoresizingFlexibleHeight);
   
   [self.view addSubview:self.rendererView];
+  
+  // Add the giant transparent button to handle the "return to reading" action in VoiceOver
+  self.largeTransparentAccessibilityButton = [UIButton buttonWithType:UIButtonTypeCustom];
+  [self.largeTransparentAccessibilityButton addTarget:self action:@selector(returnToReaderFocus) forControlEvents:UIControlEventTouchUpInside];
+  self.largeTransparentAccessibilityButton.alpha = 0;
+  self.largeTransparentAccessibilityButton.frame = CGRectMake(0, self.navigationController.navigationBar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - self.navigationController.navigationBar.frame.size.height - self.bottomView.frame.size.height);
+  [self.view addSubview:self.largeTransparentAccessibilityButton];
+  self.largeTransparentAccessibilityButton.userInteractionEnabled = NO;
+  self.largeTransparentAccessibilityButton.accessibilityLabel = NSLocalizedString(@"Return to Reader", @"Return to Reader");
+  self.largeTransparentAccessibilityButton.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
+                                                               UIViewAutoresizingFlexibleHeight);
+  
   [self prepareBottomView];
 }
 
@@ -296,7 +325,12 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.bottomView addConstraint:constraintPL4];
 }
 
--(void)didUpdateProgressSpineItemPercentage:(NSNumber *)spineItemPercentage bookPercentage:(NSNumber *)bookPercentage withCurrentSpineItemDetails: (NSDictionary *) currentSpineItemDetails{
+-(void) didUpdateProgressSpineItemPercentage: (NSNumber *)spineItemPercentage bookPercentage: (NSNumber *) bookPercentage pageIndex:(NSNumber *)pageIndex pageCount:(NSNumber *)pageCount withCurrentSpineItemDetails: (NSDictionary *) currentSpineItemDetails {
+  
+  if (UIAccessibilityIsVoiceOverRunning()) {
+    UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, [NSString stringWithFormat:NSLocalizedString(@"Page %d of %d", nil), pageIndex.integerValue+1, pageCount.integerValue]);
+  }
+  
   [self.bottomViewProgressView setProgress:bookPercentage.floatValue / 100 animated:YES];  
   NSString *title = [currentSpineItemDetails objectForKey:@"tocElementTitle"];
   
@@ -330,7 +364,12 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 {
   if(self.shouldHideInterfaceOnNextAppearance) {
     self.shouldHideInterfaceOnNextAppearance = NO;
-    self.interfaceHidden = YES;
+    self.interfaceHidden = UIAccessibilityIsVoiceOverRunning();
+    self.tapGestureRecognizer.enabled = !UIAccessibilityIsVoiceOverRunning();
+  }
+  
+  if (UIAccessibilityIsVoiceOverRunning()) {
+    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Magic Tap for Tools and Table of Contents", nil));
   }
 
   [super viewDidAppear:animated];
@@ -340,6 +379,44 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 {
   self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
   self.navigationController.navigationBar.barTintColor = nil;
+}
+
+#pragma mark Accessibility
+
+- (void) voiceOverStatusChanged
+{
+  if (UIAccessibilityIsVoiceOverRunning())
+    self.interfaceHidden = YES;
+  self.tapGestureRecognizer.enabled = !UIAccessibilityIsVoiceOverRunning();
+  self.largeTransparentAccessibilityButton.userInteractionEnabled = (UIAccessibilityIsVoiceOverRunning() && !self.interfaceHidden);
+}
+
+#pragma mark Accessibility
+
+- (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction
+{
+  if (direction == UIAccessibilityScrollDirectionLeft || direction == UIAccessibilityScrollDirectionRight) {
+    if (direction == UIAccessibilityScrollDirectionLeft) {
+      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
+    } else if (direction == UIAccessibilityScrollDirectionRight) {
+      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+    }
+    return YES;
+  }
+  
+  return NO;
+}
+
+- (BOOL)accessibilityPerformMagicTap
+{
+  self.interfaceHidden = !self.interfaceHidden;
+  return YES;
+}
+
+- (BOOL)accessibilityPerformEscape
+{
+  [self.navigationController popViewControllerAnimated:YES];
+  return YES;
 }
 
 #pragma mark UIPopoverControllerDelegate
@@ -372,7 +449,8 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     [self.activePopoverController dismissPopoverAnimated:YES];
-    self.interfaceHidden = YES;
+    if (!UIAccessibilityIsVoiceOverRunning())
+      self.interfaceHidden = YES;
   } else {
     self.shouldHideInterfaceOnNextAppearance = YES;
     [self.navigationController popViewControllerAnimated:YES];
@@ -443,7 +521,20 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
     self.readerSettingsViewPhone = nil;
   }
   
+  // Accessibility
+  self.rendererView.accessibilityElementsHidden = !interfaceHidden;
+  id firstElement = interfaceHidden ? nil : self.navigationController.navigationBar;
+  UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, firstElement);
+  self.largeTransparentAccessibilityButton.userInteractionEnabled = UIAccessibilityIsVoiceOverRunning() && !interfaceHidden;
+  self.largeTransparentAccessibilityButton.alpha = interfaceHidden ? 0.0 : 1.0;
+  self.largeTransparentAccessibilityButton.isAccessibilityElement = !interfaceHidden;
+  
   [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (BOOL)returnToReaderFocus {
+  self.interfaceHidden = YES;
+  return YES;
 }
 
 - (void)didSelectSettings
