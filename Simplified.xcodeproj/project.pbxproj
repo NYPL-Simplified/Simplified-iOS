@@ -25,6 +25,7 @@
 		081387921BCD4C6C003DEA6A /* NYPLAnimatingButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387911BCD4C6C003DEA6A /* NYPLAnimatingButton.m */; };
 		08373B431BCFE58D00AC1AFA /* NYPLIntroCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08373B421BCFE58D00AC1AFA /* NYPLIntroCardController.m */; };
 		085640CE1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */; };
+		085D31C41BE2987E007F7672 /* NYPLProblemDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 085D31C31BE2987E007F7672 /* NYPLProblemDocument.m */; };
 		085D31D71BE29E38007F7672 /* NYPLProblemReportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 085D31D61BE29E38007F7672 /* NYPLProblemReportViewController.m */; };
 		085D31D91BE29ED4007F7672 /* NYPLProblemReportViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 085D31D81BE29ED4007F7672 /* NYPLProblemReportViewController.xib */; };
 		085D31DF1BE3CD3C007F7672 /* NSURLRequest+NYPLURLRequestAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 085D31DE1BE3CD3C007F7672 /* NSURLRequest+NYPLURLRequestAdditions.m */; };
@@ -37,7 +38,6 @@
 		08A352291BDE91B80040BF1D /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352281BDE91B80040BF1D /* libePub3-iOS.a */; };
 		08A3522A1BDE94170040BF1D /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
 		08A3522B1BDE94170040BF1D /* libAdobe Content Filter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */; };
-		085D31C41BE2987E007F7672 /* NYPLProblemDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 085D31C31BE2987E007F7672 /* NYPLProblemDocument.m */; };
 		08A352731BDFF5380040BF1D /* NYPLAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A352721BDFF5380040BF1D /* NYPLAlertController.m */; };
 		08C375461BD7CFF6005B233D /* NYPLSubmittingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08C375451BD7CFF6005B233D /* NYPLSubmittingViewController.m */; };
 		08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
@@ -265,6 +265,8 @@
 		08373B421BCFE58D00AC1AFA /* NYPLIntroCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLIntroCardController.m; sourceTree = "<group>"; };
 		085640CC1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+NYPLURLAdditions.h"; sourceTree = "<group>"; };
 		085640CD1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+NYPLURLAdditions.m"; sourceTree = "<group>"; };
+		085D31C21BE2987E007F7672 /* NYPLProblemDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLProblemDocument.h; sourceTree = "<group>"; };
+		085D31C31BE2987E007F7672 /* NYPLProblemDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLProblemDocument.m; sourceTree = "<group>"; };
 		085D31D51BE29E38007F7672 /* NYPLProblemReportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLProblemReportViewController.h; sourceTree = "<group>"; };
 		085D31D61BE29E38007F7672 /* NYPLProblemReportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLProblemReportViewController.m; sourceTree = "<group>"; };
 		085D31D81BE29ED4007F7672 /* NYPLProblemReportViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NYPLProblemReportViewController.xib; sourceTree = "<group>"; };
@@ -280,8 +282,6 @@
 		08A352231BDE8E640040BF1D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		08A352251BDE8E700040BF1D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		08A352281BDE91B80040BF1D /* libePub3-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libePub3-iOS.a"; path = "readium-sdk/Platform/Apple/build/Debug-iphoneos/libePub3-iOS.a"; sourceTree = "<group>"; };
-		085D31C21BE2987E007F7672 /* NYPLProblemDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLProblemDocument.h; sourceTree = "<group>"; };
-		085D31C31BE2987E007F7672 /* NYPLProblemDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLProblemDocument.m; sourceTree = "<group>"; };
 		08A352711BDFF5380040BF1D /* NYPLAlertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAlertController.h; sourceTree = "<group>"; };
 		08A352721BDFF5380040BF1D /* NYPLAlertController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAlertController.m; sourceTree = "<group>"; };
 		08C375441BD7CFF6005B233D /* NYPLSubmittingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSubmittingViewController.h; sourceTree = "<group>"; };
@@ -1307,7 +1307,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"Checking configuration to determine which Adobe Cert to copy: CONFIGURATION=$CONFIGURATION\"\nif [ \"$CONFIGURATION\" == \"Debug\" ]; then\necho \"Copying ${SRCROOT}/${PRODUCT_NAME}/ReaderClientCertDevelopment.sig to ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\"\ncp -R ${SRCROOT}/${PRODUCT_NAME}/ReaderClientCertDevelopment.sig ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/ReaderClientCert.sig\necho \"ReaderClientCertDevelopment directory has been copied.\"\nelse\necho \"Copying ${SRCROOT}/${PRODUCT_NAME}/ReaderClientCertProduction.sig to ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\"\ncp -R ${SRCROOT}/${PRODUCT_NAME}/ReaderClientCertProduction.sig ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/ReaderClientCert.sig\necho \"ReaderClientCertDevelopment directory has been copied.\"\nfi";
+			shellScript = "echo \"Checking configuration to determine which Adobe Cert to copy: CONFIGURATION=$CONFIGURATION\"\nif [ \"$CONFIGURATION\" == \"Debug\" ]; then\necho \"Copying ${SRCROOT}/${PROJECT_NAME}/ReaderClientCertDevelopment.sig to ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\"\ncp -R ${SRCROOT}/${PROJECT_NAME}/ReaderClientCertDevelopment.sig ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/ReaderClientCert.sig\necho \"ReaderClientCertDevelopment directory has been copied.\"\nelse\necho \"Copying ${SRCROOT}/${PROJECT_NAME}/ReaderClientCertProduction.sig to ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\"\ncp -R ${SRCROOT}/${PROJECT_NAME}/ReaderClientCertProduction.sig ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/ReaderClientCert.sig\necho \"ReaderClientCertDevelopment directory has been copied.\"\nfi";
 		};
 		14FCCAF9F581DFE0B70E7FBD /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
