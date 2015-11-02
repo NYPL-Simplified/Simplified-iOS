@@ -2,6 +2,8 @@
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "NYPLAlertController.h"
+#import "NYPLProblemDocument.h"
 
 @interface NYPLRemoteViewController () <NSURLConnectionDataDelegate>
 
@@ -9,8 +11,9 @@
 @property (nonatomic) NSURLConnection *connection;
 @property (nonatomic) NSMutableData *data;
 @property (nonatomic, strong)
-  UIViewController *(^handler)(NYPLRemoteViewController *remoteViewController, NSData *data);
+  UIViewController *(^handler)(NYPLRemoteViewController *remoteViewController, NSData *data, NSURLResponse *response);
 @property (nonatomic) NYPLReloadView *reloadView;
+@property (nonatomic, strong) NSURLResponse *response;
 
 @end
 
@@ -19,7 +22,8 @@
 - (instancetype)initWithURL:(NSURL *const)URL
           completionHandler:(UIViewController *(^ const)
                              (NYPLRemoteViewController *remoteViewController,
-                              NSData *data))handler
+                              NSData *data,
+                              NSURLResponse *response))handler
 {
   self = [super init];
   if(!self) return nil;
@@ -101,11 +105,24 @@
   [self.data appendData:data];
 }
 
+- (void)connection:(__attribute__((unused)) NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+  self.response = response;
+}
+
 - (void)connectionDidFinishLoading:(__attribute__((unused)) NSURLConnection *)connection
 {
   [self.activityIndicatorView stopAnimating];
   
-  UIViewController *const viewController = self.handler(self, self.data);
+  if ([(NSHTTPURLResponse *)self.response statusCode] != 200 &&
+      [self.response.MIMEType isEqualToString:@"application/problem+json"]) {
+    NYPLProblemDocument *problem = [NYPLProblemDocument problemDocumentWithData:self.data];
+    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:problem.title message:problem.detail];
+    [alert setProblemDocument:problem displayDocumentMessage:NO];
+    [self presentViewController:alert animated:YES completion:nil];
+  }
+  
+  UIViewController *const viewController = self.handler(self, self.data, self.response);
   
   if(viewController) {
     [self addChildViewController:viewController];
@@ -125,6 +142,7 @@
     self.reloadView.hidden = NO;
   }
   
+  self.response = nil;
   self.connection = nil;
   self.data = nil;
 }
@@ -140,6 +158,7 @@
   
   self.connection = nil;
   self.data = nil;
+  self.response = nil;
 }
 
 @end

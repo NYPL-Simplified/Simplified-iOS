@@ -1,5 +1,5 @@
 #import "NYPLAccount.h"
-#import "NYPLAlertView.h"
+#import "NYPLAlertController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
@@ -486,7 +486,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   void (^handler)(UIAlertAction  * _Nonnull action) = ^(__attribute__((unused)) UIAlertAction *action) {
 #if defined(FEATURE_DRM_CONNECTOR)
     if([NYPLADEPT sharedInstance].workflowsInProgress) {
-      [[NYPLAlertView alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle" message:@"SettingsAccountViewControllerCannotLogOutMessage"] show];
+      [self presentViewController:[NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle" message:@"SettingsAccountViewControllerCannotLogOutMessage"]
+                         animated:YES completion:nil];
       return;
     }
     
@@ -562,7 +563,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
 - (void)showLoginAlertWithError:(NSError *)error
 {
-  [[NYPLAlertView alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error] show];
+  [self presentViewController:[NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
+                     animated:YES completion:nil];
 }
 
 - (void)textFieldsDidChange
