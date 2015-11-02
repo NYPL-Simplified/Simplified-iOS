@@ -15,12 +15,15 @@
 
 @interface NYPLReaderViewController ()
   <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate,
-   UIPopoverControllerDelegate, UIGestureRecognizerDelegate>
+   UIPopoverControllerDelegate, UIGestureRecognizerDelegate, UIPageViewControllerDataSource>
 
 @property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) BOOL interfaceHidden;
 @property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
+@property (nonatomic) UIPageViewController *pageViewController;
+@property (nonatomic) UIViewController *evenPageViewController;
+@property (nonatomic) UIViewController *oddPageViewController;
 @property (nonatomic) UIView<NYPLReaderRenderer> *rendererView;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
@@ -91,6 +94,9 @@
   self.tapGestureRecognizer.delegate = self;
   self.tapGestureRecognizer.numberOfTapsRequired = 1;
   [self.view addGestureRecognizer:self.tapGestureRecognizer];
+  
+  self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
+  self.pageViewController.dataSource = self;
   
   self.leftSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc]
                                      initWithTarget:self
@@ -438,6 +444,22 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 - (UIView *)viewForZoomingInScrollView:(__attribute__((unused)) UIScrollView *)scrollView
 {
   return nil;
+}
+
+#pragma mark UIPageViewController
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
+{
+  if (viewController == self.evenPageViewController)
+    return self.oddPageViewController;
+  return self.evenPageViewController;
+}
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
+{
+  if (viewController == self.evenPageViewController)
+    return self.oddPageViewController;
+  return self.evenPageViewController;
 }
 
 #pragma mark NYPLReaderTOCViewControllerDelegate
