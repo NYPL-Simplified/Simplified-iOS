@@ -1,13 +1,14 @@
 function Simplified() {
   
-  // Handling gestures in here with custom touch UI code is just... seriously? Why would that be a good idea?
-  
   document.documentElement.style.webkitTouchCallout = "none";
   document.documentElement.style.webkitUserSelect = "none";
   
   this.shouldUpdateVisibilityOnUpdate = false;
   
   function updateVisibility() {
+    
+    console.log("Skipping aria-hidden updates");
+    return;
     
     var iframe = window.frames["epubContentIframe"];
     var childs = iframe.document.documentElement.getElementsByTagName('*');

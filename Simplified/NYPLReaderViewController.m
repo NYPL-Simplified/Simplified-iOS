@@ -127,7 +127,7 @@
   if (p.x < edgeOfScreenWidth) {
     [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
   } else if (p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth)) {
-    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
   } else {
     self.interfaceHidden = !self.interfaceHidden;
   }
