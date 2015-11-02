@@ -311,7 +311,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       } else {
         NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"ReturnFailed" message:@"ReturnCouldNotBeCompletedFormat", bookTitle];
         if (error)
-          [alert setProblemDocument:[[NYPLProblemDocument alloc] initWithDictionary:error] displayDocumentMessage:YES];
+          [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
         [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
       }
     }];
@@ -424,7 +424,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
           dispatch_async(dispatch_get_main_queue(), ^{
             NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"BorrowFailed"  message:@"BorrowCouldNotBeCompletedFormat", book.title];
             if (error)
-              [alert setProblemDocument:[[NYPLProblemDocument alloc] initWithDictionary:error] displayDocumentMessage:YES];
+              [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
             [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
           });
           NYPLLOG(@"Failed to check out book.");
