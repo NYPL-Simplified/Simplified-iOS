@@ -42,4 +42,13 @@
   }
 }
 
+- (void) viewDidAppear:(BOOL)animated
+{
+  [super viewDidAppear:animated];
+  
+  if (UIAccessibilityIsVoiceOverRunning()) {
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+  }
+}
+
 @end

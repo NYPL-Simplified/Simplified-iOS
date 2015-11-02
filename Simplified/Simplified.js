@@ -1,85 +1,63 @@
 function Simplified() {
   
-  var singleTouchGesture = false;
-  var startX = 0;
-  var startY = 0;
+  // Handling gestures in here with custom touch UI code is just... seriously? Why would that be a good idea?
   
-  var handleTouchStart = function(event) {
-    singleTouchGesture = event.touches.length == 1;
-    
-    var touch = event.changedTouches[0];
-    
-    if(touch.target.nodeName.toUpperCase() === "A") {
-      return;
-    }
-    
-    startX = touch.screenX;
-    startY = touch.screenY;
-  };
-  
-  var handleTouchEnd = function(event) {
-    if(!singleTouchGesture) return;
-    
-    var touch = event.changedTouches[0];
-    
-    if(touch.target.nodeName.toUpperCase() === "A") {
-      return;
-    }
-    
-    var maxScreenX = window.orientation === 0 || window.orientation == 180
-                   ? screen.width
-                   : screen.height;
-    
-    var relativeDistanceX = (touch.screenX - startX) / maxScreenX;
-
-    // Tap to turn.
-    if(Math.abs(relativeDistanceX) < 0.1) {
-      var position = touch.screenX / maxScreenX;
-      if(position <= 0.2) {
-        window.location = "simplified:gesture-left";
-      } else if(position >= 0.8) {
-        window.location = "simplified:gesture-right";
-      } else {
-        window.location = "simplified:gesture-center";
-      }
-      event.stopPropagation();
-      event.preventDefault();
-      return;
-    } else {
-      var slope = (touch.screenY - startY) / (touch.screenX - startX);
-      // Swipe to turn.
-      if(Math.abs(slope) <= 0.5) {
-        if(relativeDistanceX > 0) {
-          window.location = "simplified:gesture-left";
-        } else {
-          window.location = "simplified:gesture-right";
-        }
-        event.stopPropagation();
-        event.preventDefault();
-        return;
-      }
-    }
-  };
-  
-  // Handles gestures between inner content and edge of screen.
-  document.addEventListener("touchstart", handleTouchStart, false);
-  document.addEventListener("touchend", handleTouchEnd, false);
   document.documentElement.style.webkitTouchCallout = "none";
   document.documentElement.style.webkitUserSelect = "none";
   
+  this.shouldUpdateVisibilityOnUpdate = false;
+  
+  function updateVisibility() {
+    
+    var iframe = window.frames["epubContentIframe"];
+    var childs = iframe.document.documentElement.getElementsByTagName('*');
+    
+    var firstElt = null;
+    for (var i=0; i<childs.length; ++i) {
+      var child = childs[i];
+      var visible = ReadiumSDK.reader.getElementVisibility(child);
+      child.setAttribute("aria-hidden", visible ? "false"   : "true");
+      child.setAttribute("tabindex", 0); // Make sure the elements are focusable
+      
+      if (visible) {
+        console.log("Vibisle element: " + child.tagName + " " + child.innerHTML.slice(0, 20));
+        if (firstElt == null && child.tagName == "p")
+          firstElt = child;
+      }
+      
+      var isBlock = window.getComputedStyle(child, "").display == "block";
+      if (!isBlock) {
+        child.setAttribute("role", "presentation");
+      }
+    }
+    
+    return firstElt;
+  }
+  
+  this.beginVisibilityUpdates = function() {
+    this.shouldUpdateVisibilityOnUpdate = true;
+    var firstElt = updateVisibility();
+//    if (firstElt)
+//      firstElt.focus();
+  }
+  
+  this.settingsDidChange = function() {
+    if (this.shouldUpdateVisibilityOnUpdate) {
+      updateVisibility();
+    }
+  };
+  
   // This should be called by the host whenever the page changes. This is because a change in the
   // page can mean a change in the iframe and thus requires resetting properties.
-  this.pageDidChange = function() {
+  this.pageDidChange = function(cfi) {
     // Disable selection.
     window.frames["epubContentIframe"].document.documentElement.style.webkitTouchCallout = "none";
     window.frames["epubContentIframe"].document.documentElement.style.webkitUserSelect = "none";
-    // Handles gestures for the inner content.
-    window.frames["epubContentIframe"].removeEventListener("touchstart", handleTouchStart);
-    window.frames["epubContentIframe"].addEventListener("touchstart", handleTouchStart, false);
-    window.frames["epubContentIframe"].removeEventListener("touchend", handleTouchEnd);
-    window.frames["epubContentIframe"].addEventListener("touchend", handleTouchEnd, false);
+    
+    if (this.shouldUpdateVisibilityOnUpdate) {
+      updateVisibility();
+    }
   };
-  
 }
 
 simplified = new Simplified();

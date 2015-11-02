@@ -62,4 +62,9 @@
   [self load];
 }
 
+- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+{
+  [self.navigationController setNavigationBarHidden:NO];
+}
+
 @end
