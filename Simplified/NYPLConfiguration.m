@@ -34,8 +34,8 @@ static NSString *const heapIDDevelopment = @"1848989408";
 
 + (NSURL *)circulationURL
 {
-    return [NSURL URLWithString:NYPLCirculationBaseURLTesting];
-//  return [NSURL URLWithString:NYPLCirculationBaseURLProduction];
+//    return [NSURL URLWithString:NYPLCirculationBaseURLTesting];
+  return [NSURL URLWithString:NYPLCirculationBaseURLProduction];
 }
 
 + (NSURL *)mainFeedURL
