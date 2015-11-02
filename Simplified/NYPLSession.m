@@ -77,7 +77,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                      completionHandler:handler] resume];
 }
 
-- (void)withURL:(NSURL *const)URL completionHandler:(void (^)(NSData *data, NSURLResponse *response))handler
+- (void)withURL:(NSURL *const)URL completionHandler:(void (^)(NSData *data, NSURLResponse *response, NSError *error))handler
 {
   if(!handler) {
     @throw NSInvalidArgumentException;
@@ -89,11 +89,11 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                         NSURLResponse *response,
                         NSError *const error) {
       if(error) {
-        handler(nil, response);
+        handler(nil, response, error);
         return;
       }
       
-      handler(data, response);
+      handler(data, response, nil);
     }]
    resume];
 }
@@ -120,7 +120,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   __block NSUInteger remaining = URLs.count;
   
   for(NSURL *const URL in URLs) {
-    [self withURL:URL completionHandler:^(NSData *const data, __unused NSURLResponse *response) {
+    [self withURL:URL completionHandler:^(NSData *const data, __unused NSURLResponse *response, __unused NSError *error) {
       [lock lock];
       URLsToDataOrNull[URL] = data ? data : [NSNull null];
       --remaining;
