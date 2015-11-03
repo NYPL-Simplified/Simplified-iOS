@@ -11,16 +11,20 @@
 
 #import "NYPLReaderViewController.h"
 
-#define EDGE_OF_SCREEN_POINT_FRACTION    0.1
+#define EDGE_OF_SCREEN_POINT_FRACTION    0.2
 
 @interface NYPLReaderViewController ()
   <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate,
-   UIPopoverControllerDelegate, UIGestureRecognizerDelegate>
+   UIPopoverControllerDelegate, UIGestureRecognizerDelegate, UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) BOOL interfaceHidden;
 @property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
+@property (nonatomic) UIPageViewController *pageViewController;
+@property (nonatomic) NSArray<UIViewController *> *dummyViewControllers;
+@property (nonatomic) UIImageView *renderedImageView;
+@property (nonatomic) BOOL previousPageTurnWasRight;
 @property (nonatomic) UIView<NYPLReaderRenderer> *rendererView;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
@@ -39,6 +43,9 @@
 
 - (void)applyCurrentSettings
 {
+  if ([self.renderedImageView superview])
+    [self.renderedImageView removeFromSuperview];
+  
   self.navigationController.navigationBar.barTintColor =
     [NYPLReaderSettings sharedSettings].backgroundColor;
   
@@ -90,7 +97,11 @@
   self.tapGestureRecognizer.cancelsTouchesInView = NO;
   self.tapGestureRecognizer.delegate = self;
   self.tapGestureRecognizer.numberOfTapsRequired = 1;
+  
   [self.view addGestureRecognizer:self.tapGestureRecognizer];
+  
+  self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
+  self.pageViewController.dataSource = self;
   
   self.doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc]
                                initWithTarget:self
@@ -107,6 +118,7 @@
   self.leftSwipeGestureRecognizer.delegate = self;
   self.leftSwipeGestureRecognizer.numberOfTouchesRequired = 1;
   self.leftSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+  self.leftSwipeGestureRecognizer.enabled = NO;
   [self.view addGestureRecognizer:self.leftSwipeGestureRecognizer];
   
   self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc]
@@ -116,6 +128,7 @@
   self.rightSwipeGestureRecognizer.delegate = self;
   self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
   self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+  self.rightSwipeGestureRecognizer.enabled = NO;
   [self.view addGestureRecognizer:self.rightSwipeGestureRecognizer];
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged) name:UIAccessibilityVoiceOverStatusChanged object:nil];
@@ -132,6 +145,8 @@
 - (void)didReceiveGesture:(UIGestureRecognizer *const)gestureRecognizer {
   CGPoint p = [gestureRecognizer locationInView:self.view];
   CGFloat edgeOfScreenWidth = CGRectGetWidth(self.view.bounds) * EDGE_OF_SCREEN_POINT_FRACTION;
+  if ([self.renderedImageView superview])
+    [self.renderedImageView removeFromSuperview];
   if (p.x < edgeOfScreenWidth) {
     [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
   } else if (p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth)) {
@@ -157,6 +172,10 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
   CGPoint p = [touch locationInView:self.view];
+  if (!self.interfaceHidden && CGRectContainsPoint(self.bottomView.frame, p))
+    return NO;
+  if (!self.interfaceHidden && self.readerSettingsViewPhone && CGRectContainsPoint(self.readerSettingsViewPhone.frame, p))
+    return NO;
   CGFloat edgeOfScreenWidth = CGRectGetWidth(self.view.bounds) * EDGE_OF_SCREEN_POINT_FRACTION;
   if (gestureRecognizer == self.tapGestureRecognizer) {
     return (p.x < edgeOfScreenWidth || p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth));
@@ -253,7 +272,29 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.rendererView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                         UIViewAutoresizingFlexibleHeight);
   
-  [self.view addSubview:self.rendererView];
+  // ----------- page view
+  self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
+  
+  self.pageViewController.dataSource = self;
+  self.pageViewController.delegate = self;
+  [[self.pageViewController view] setFrame:[[self view] bounds]];
+  
+  self.dummyViewControllers = @[[[UIViewController alloc] init], [[UIViewController alloc] init], [[UIViewController alloc] init]];
+  for (UIViewController *v in self.dummyViewControllers)
+    [v.view setBackgroundColor:[UIColor whiteColor]];
+  [self.dummyViewControllers.firstObject.view addSubview:self.rendererView];
+  self.renderedImageView = [[UIImageView alloc] init];
+  
+  NSArray *viewControllers = [NSArray arrayWithObject:self.dummyViewControllers.firstObject];
+  
+  [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
+  
+  [self addChildViewController:self.pageViewController];
+  [[self view] addSubview:[self.pageViewController view]];
+  [self.pageViewController didMoveToParentViewController:self];
+  // ----------- page view
+  
+//  [self.view addSubview:self.rendererView];
   
   // Add the giant transparent button to handle the "return to reading" action in VoiceOver
   self.largeTransparentAccessibilityButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -456,6 +497,66 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 - (UIView *)viewForZoomingInScrollView:(__attribute__((unused)) UIScrollView *)scrollView
 {
   return nil;
+}
+
+#pragma mark UIPageViewControllerDataSource
+
+- (UIViewController *)pageViewController:(__unused UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
+{
+  NSInteger i = [self.dummyViewControllers indexOfObject:viewController];
+  i = (i+2)%3;
+  return [self.dummyViewControllers objectAtIndex:i];
+}
+
+- (UIViewController *)pageViewController:(__unused UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
+{
+  NSInteger i = [self.dummyViewControllers indexOfObject:viewController];
+  i = (i+1)%3;
+  return [self.dummyViewControllers objectAtIndex:i];
+}
+
+#pragma mark UIPageViewControllerDelegate
+
+- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers
+{
+  UIViewController *pvc = pageViewController.viewControllers.firstObject;
+  UIViewController *nvc = pendingViewControllers.firstObject;
+  NSInteger pi = [self.dummyViewControllers indexOfObject:pvc];
+  NSInteger ni = [self.dummyViewControllers indexOfObject:nvc];
+  BOOL turnRight = ((pi+1)%3)==ni;
+  self.previousPageTurnWasRight = turnRight;
+  if ([self.renderedImageView superview])
+    [self.renderedImageView removeFromSuperview];
+  
+  UIGraphicsBeginImageContextWithOptions(self.rendererView.bounds.size, YES, 0.0f);
+  [self.rendererView drawViewHierarchyInRect:self.rendererView.bounds afterScreenUpdates:NO];
+  UIImage *snapshotImage = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsEndImageContext();
+  
+  [self.rendererView removeFromSuperview];
+  if (turnRight)
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
+  else
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+  [[pendingViewControllers.firstObject view] addSubview:self.rendererView];
+  
+  self.renderedImageView.image = snapshotImage;
+  self.renderedImageView.frame = CGRectMake(0, 0, snapshotImage.size.width, snapshotImage.size.height);
+  [pvc.view addSubview:self.renderedImageView];
+}
+
+- (void)pageViewController:(__unused UIPageViewController *)pageViewController didFinishAnimating:(__unused BOOL)finished previousViewControllers:(__unused NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed
+{
+  if (completed) {
+    [self.renderedImageView removeFromSuperview];
+  } else {
+    if (self.previousPageTurnWasRight)
+      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+    else
+      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView removeFromSuperview];
+    [pageViewController.viewControllers.firstObject.view insertSubview:[NYPLReaderSettings sharedSettings].currentReaderReadiumView belowSubview:self.renderedImageView];
+  }
 }
 
 #pragma mark NYPLReaderTOCViewControllerDelegate
