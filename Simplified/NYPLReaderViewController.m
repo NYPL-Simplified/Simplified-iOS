@@ -11,7 +11,7 @@
 
 #import "NYPLReaderViewController.h"
 
-#define EDGE_OF_SCREEN_POINT_FRACTION    0.1
+#define EDGE_OF_SCREEN_POINT_FRACTION    0.2
 
 @interface NYPLReaderViewController ()
   <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate,
@@ -22,8 +22,7 @@
 @property (nonatomic) BOOL interfaceHidden;
 @property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
 @property (nonatomic) UIPageViewController *pageViewController;
-@property (nonatomic) UIViewController *evenPageViewController;
-@property (nonatomic) UIViewController *oddPageViewController;
+@property (nonatomic) NSArray<UIViewController *> *dummyViewControllers;
 @property (nonatomic) UIView<NYPLReaderRenderer> *rendererView;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
@@ -93,7 +92,6 @@
   self.tapGestureRecognizer.cancelsTouchesInView = NO;
   self.tapGestureRecognizer.delegate = self;
   self.tapGestureRecognizer.numberOfTapsRequired = 1;
-  self.tapGestureRecognizer.enabled = NO;
   
   [self.view addGestureRecognizer:self.tapGestureRecognizer];
   
@@ -107,6 +105,7 @@
   self.leftSwipeGestureRecognizer.delegate = self;
   self.leftSwipeGestureRecognizer.numberOfTouchesRequired = 1;
   self.leftSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+  self.leftSwipeGestureRecognizer.enabled = NO;
   [self.view addGestureRecognizer:self.leftSwipeGestureRecognizer];
   
   self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc]
@@ -116,6 +115,7 @@
   self.rightSwipeGestureRecognizer.delegate = self;
   self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
   self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+  self.rightSwipeGestureRecognizer.enabled = NO;
   [self.view addGestureRecognizer:self.rightSwipeGestureRecognizer];
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged) name:UIAccessibilityVoiceOverStatusChanged object:nil];
@@ -250,11 +250,12 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.pageViewController.delegate = self;
   [[self.pageViewController view] setFrame:[[self view] bounds]];
   
-  self.evenPageViewController = [[UIViewController alloc] init];
-  self.oddPageViewController = [[UIViewController alloc] init];
-  [self.evenPageViewController.view addSubview:self.rendererView];
+  self.dummyViewControllers = @[[[UIViewController alloc] init], [[UIViewController alloc] init], [[UIViewController alloc] init]];
+  for (UIViewController *v in self.dummyViewControllers)
+    [v.view setBackgroundColor:[UIColor whiteColor]];
+  [self.dummyViewControllers.firstObject.view addSubview:self.rendererView];
   
-  NSArray *viewControllers = [NSArray arrayWithObject:self.evenPageViewController];
+  NSArray *viewControllers = [NSArray arrayWithObject:self.dummyViewControllers.firstObject];
   
   [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
   
@@ -264,7 +265,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   // ----------- page view
   
 //  [self.view addSubview:self.rendererView];
-  [self.view addSubview:self.rendererView];
   
   // Add the giant transparent button to handle the "return to reading" action in VoiceOver
   self.largeTransparentAccessibilityButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -473,24 +473,41 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
 {
-  if (viewController == self.evenPageViewController)
-    return self.oddPageViewController;
-  return self.evenPageViewController;
+  NSInteger i = [self.dummyViewControllers indexOfObject:viewController];
+  i = (i+2)%3;
+  return [self.dummyViewControllers objectAtIndex:i];
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
-  if (viewController == self.evenPageViewController)
-    return self.oddPageViewController;
-  return self.evenPageViewController;
+  NSInteger i = [self.dummyViewControllers indexOfObject:viewController];
+  i = (i+1)%3;
+  return [self.dummyViewControllers objectAtIndex:i];
 }
 
 #pragma mark UIPageViewControllerDelegate
 
+- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers
+{
+//  UIViewController *c = pendingViewControllers.firstObject;
+}
+
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed
 {
-  [self.rendererView removeFromSuperview];
-  [[pageViewController.viewControllers.firstObject view] addSubview:self.rendererView];
+  UIViewController *nvc = pageViewController.viewControllers.firstObject;
+  UIViewController *pvc = previousViewControllers.firstObject;
+  NSInteger pi = [self.dummyViewControllers indexOfObject:pvc];
+  NSInteger ni = [self.dummyViewControllers indexOfObject:nvc];
+  BOOL turnRight = ((pi+1)%3)==ni;
+  
+  if (completed) {
+    [self.rendererView removeFromSuperview];
+    if (turnRight)
+      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
+    else
+      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+    [[pageViewController.viewControllers.firstObject view] addSubview:self.rendererView];
+  }
 }
 
 #pragma mark NYPLReaderTOCViewControllerDelegate
