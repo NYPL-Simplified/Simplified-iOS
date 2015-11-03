@@ -8,6 +8,12 @@
 #import "NYPLSettings.h"
 #import "Heap.h"
 
+#if defined(FEATURE_DRM_CONNECTOR)
+#import <ADEPT/ADEPT.h>
+#import "NYPLAccount.h"
+#import "NYPLSettingsAccountViewController.h"
+#endif
+
 // TODO: Remove these imports and move handling the "open a book url" code to a more appropriate handler
 #import "NYPLXML.h"
 #import "NYPLOPDSEntry.h"
@@ -104,5 +110,17 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   [[NYPLBookRegistry sharedRegistry] save];
   [[NYPLReaderSettings sharedSettings] save];
 }
+
+#if defined(FEATURE_DRM_CONNECTOR)
+- (void)applicationDidBecomeActive:(__unused UIApplication *)application
+{
+  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
+    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+      [NYPLSettingsAccountViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:nil];
+    }
+  }
+
+}
+#endif
 
 @end
