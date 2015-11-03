@@ -23,6 +23,8 @@
 @property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
 @property (nonatomic) UIPageViewController *pageViewController;
 @property (nonatomic) NSArray<UIViewController *> *dummyViewControllers;
+@property (nonatomic) UIImageView *renderedImageView;
+@property (nonatomic) BOOL previousPageTurnWasRight;
 @property (nonatomic) UIView<NYPLReaderRenderer> *rendererView;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
@@ -41,6 +43,9 @@
 
 - (void)applyCurrentSettings
 {
+  if ([self.renderedImageView superview])
+    [self.renderedImageView removeFromSuperview];
+  
   self.navigationController.navigationBar.barTintColor =
     [NYPLReaderSettings sharedSettings].backgroundColor;
   
@@ -254,6 +259,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   for (UIViewController *v in self.dummyViewControllers)
     [v.view setBackgroundColor:[UIColor whiteColor]];
   [self.dummyViewControllers.firstObject.view addSubview:self.rendererView];
+  self.renderedImageView = [[UIImageView alloc] init];
   
   NSArray *viewControllers = [NSArray arrayWithObject:self.dummyViewControllers.firstObject];
   
@@ -471,14 +477,14 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 #pragma mark UIPageViewControllerDataSource
 
-- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
+- (UIViewController *)pageViewController:(__unused UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
 {
   NSInteger i = [self.dummyViewControllers indexOfObject:viewController];
   i = (i+2)%3;
   return [self.dummyViewControllers objectAtIndex:i];
 }
 
-- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
+- (UIViewController *)pageViewController:(__unused UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
   NSInteger i = [self.dummyViewControllers indexOfObject:viewController];
   i = (i+1)%3;
@@ -489,24 +495,43 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers
 {
-//  UIViewController *c = pendingViewControllers.firstObject;
-}
-
-- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed
-{
-  UIViewController *nvc = pageViewController.viewControllers.firstObject;
-  UIViewController *pvc = previousViewControllers.firstObject;
+  UIViewController *pvc = pageViewController.viewControllers.firstObject;
+  UIViewController *nvc = pendingViewControllers.firstObject;
   NSInteger pi = [self.dummyViewControllers indexOfObject:pvc];
   NSInteger ni = [self.dummyViewControllers indexOfObject:nvc];
   BOOL turnRight = ((pi+1)%3)==ni;
+  self.previousPageTurnWasRight = turnRight;
+  if ([self.renderedImageView superview])
+    [self.renderedImageView removeFromSuperview];
   
+  UIGraphicsBeginImageContextWithOptions(self.rendererView.bounds.size, YES, 0.0f);
+  [self.rendererView drawViewHierarchyInRect:self.rendererView.bounds afterScreenUpdates:NO];
+  UIImage *snapshotImage = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsEndImageContext();
+  
+  [self.rendererView removeFromSuperview];
+  if (turnRight)
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
+  else
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+  [[pendingViewControllers.firstObject view] addSubview:self.rendererView];
+  
+  self.renderedImageView.image = snapshotImage;
+  self.renderedImageView.frame = CGRectMake(0, 0, snapshotImage.size.width, snapshotImage.size.height);
+  [pvc.view addSubview:self.renderedImageView];
+}
+
+- (void)pageViewController:(__unused UIPageViewController *)pageViewController didFinishAnimating:(__unused BOOL)finished previousViewControllers:(__unused NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed
+{
   if (completed) {
-    [self.rendererView removeFromSuperview];
-    if (turnRight)
-      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
-    else
+    [self.renderedImageView removeFromSuperview];
+  } else {
+    if (self.previousPageTurnWasRight)
       [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
-    [[pageViewController.viewControllers.firstObject view] addSubview:self.rendererView];
+    else
+      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
+    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView removeFromSuperview];
+    [pageViewController.viewControllers.firstObject.view insertSubview:[NYPLReaderSettings sharedSettings].currentReaderReadiumView belowSubview:self.renderedImageView];
   }
 }
 
