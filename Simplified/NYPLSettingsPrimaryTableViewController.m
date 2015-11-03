@@ -58,7 +58,7 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
 }
 
 @interface NYPLSettingsPrimaryTableViewController () <UITextFieldDelegate>
-
+@property (nonatomic, strong) UILabel *infoLabel;
 @end
 
 @implementation NYPLSettingsPrimaryTableViewController
@@ -93,6 +93,33 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   [self.delegate settingsPrimaryTableViewController:self
                                       didSelectItem:SettingsItemFromIndexPath(indexPath)];
+}
+
+- (CGFloat)tableView:(__unused UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+  NSInteger sectionCount = [self numberOfSectionsInTableView:self.tableView];
+  if (section == (sectionCount-1))
+    return 45.0;
+  return 0;
+}
+
+- (UIView *)tableView:(__unused UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+  NSInteger sectionCount = [self numberOfSectionsInTableView:self.tableView];
+  if (section == (sectionCount-1)) {
+    if (self.infoLabel == nil) {
+      self.infoLabel = [[UILabel alloc] init];
+      [self.infoLabel setFont:[UIFont systemFontOfSize:12]];
+      NSString *productName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"];
+      NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+      NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+      self.infoLabel.text = [NSString stringWithFormat:@"%@ version %@ (%@)", productName, version, build];
+      self.infoLabel.textAlignment = NSTextAlignmentCenter;
+      [self.infoLabel sizeToFit];
+    }
+    return self.infoLabel;
+  }
+  return nil;
 }
 
 #pragma mark UITableViewDataSource
