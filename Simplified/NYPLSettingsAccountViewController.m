@@ -598,6 +598,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
 + (void)
 requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
+authorizeImmediately:(BOOL)authorizeImmediately
 completionHandler:(void (^)())handler
 {
   NYPLSettingsAccountViewController *const accountViewController = [[self alloc] init];
@@ -636,11 +637,27 @@ completionHandler:(void (^)())handler
    animated:YES
    completion:nil];
   
-  if(useExistingBarcode) {
-    [accountViewController.PINTextField becomeFirstResponder];
+  if (authorizeImmediately && [NYPLAccount sharedAccount].hasBarcodeAndPIN) {
+    accountViewController.PINTextField.text = [NYPLAccount sharedAccount].PIN;
+    [accountViewController logIn];
   } else {
-    [accountViewController.barcodeTextField becomeFirstResponder];
+    if(useExistingBarcode) {
+      [accountViewController.PINTextField becomeFirstResponder];
+    } else {
+      [accountViewController.barcodeTextField becomeFirstResponder];
+    }
   }
+}
+
++ (void)requestCredentialsUsingExistingBarcode:(BOOL)useExistingBarcode
+                             completionHandler:(void (^)())handler
+{
+  [self requestCredentialsUsingExistingBarcode:useExistingBarcode authorizeImmediately:NO completionHandler:handler];
+}
+
++ (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)())handler
+{
+  [self requestCredentialsUsingExistingBarcode:YES authorizeImmediately:YES completionHandler:handler];
 }
 
 - (void)didSelectCancel
