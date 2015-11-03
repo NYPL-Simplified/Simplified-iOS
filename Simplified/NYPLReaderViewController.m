@@ -31,7 +31,7 @@
 @property (nonatomic) UILabel *bottomViewProgressLabel;
 @property (nonatomic) UIButton *largeTransparentAccessibilityButton;
 
-@property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer;
+@property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer, *doubleTapGestureRecognizer;
 @property (nonatomic) UISwipeGestureRecognizer *leftSwipeGestureRecognizer, *rightSwipeGestureRecognizer;
 @end
 
@@ -92,6 +92,14 @@
   self.tapGestureRecognizer.numberOfTapsRequired = 1;
   [self.view addGestureRecognizer:self.tapGestureRecognizer];
   
+  self.doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc]
+                               initWithTarget:self
+                               action:@selector(didReceiveDoubleTap:)];
+  self.doubleTapGestureRecognizer.cancelsTouchesInView = NO;
+  self.doubleTapGestureRecognizer.delegate = self;
+  self.doubleTapGestureRecognizer.numberOfTapsRequired = 2;
+  [self.view addGestureRecognizer:self.doubleTapGestureRecognizer];
+  
   self.leftSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc]
                                      initWithTarget:self
                                      action:@selector(didReceiveSwipeGesture:)];
@@ -128,9 +136,12 @@
     [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
   } else if (p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth)) {
     [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
-  } else {
-    self.interfaceHidden = !self.interfaceHidden;
   }
+}
+
+- (void)didReceiveDoubleTap:(__unused UIGestureRecognizer *const)gestureRecognizer
+{
+      self.interfaceHidden = !self.interfaceHidden;
 }
 
 - (void)didReceiveSwipeGesture:(UISwipeGestureRecognizer *const)gestureRecognizer {
@@ -140,11 +151,18 @@
     [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
 }
 
-- (BOOL)gestureRecognizer:(__attribute__((unused)) UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(__attribute__((unused)) UIGestureRecognizer *)otherGestureRecognizer {
+- (BOOL)gestureRecognizer:(__unused UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(__unused UIGestureRecognizer *)otherGestureRecognizer {
   return YES;
 }
 
-- (BOOL)gestureRecognizer:(__attribute__((unused)) UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(__attribute__((unused))UITouch *)touch {
+- (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+  CGPoint p = [touch locationInView:self.view];
+  CGFloat edgeOfScreenWidth = CGRectGetWidth(self.view.bounds) * EDGE_OF_SCREEN_POINT_FRACTION;
+  if (gestureRecognizer == self.tapGestureRecognizer) {
+    return (p.x < edgeOfScreenWidth || p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth));
+  } else if (gestureRecognizer == self.doubleTapGestureRecognizer) {
+    return !(p.x < edgeOfScreenWidth || p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth));
+  }
   return YES;
 }
 
@@ -364,7 +382,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 {
   if(self.shouldHideInterfaceOnNextAppearance) {
     self.shouldHideInterfaceOnNextAppearance = NO;
-    self.interfaceHidden = UIAccessibilityIsVoiceOverRunning();
+    self.interfaceHidden = YES;
     self.tapGestureRecognizer.enabled = !UIAccessibilityIsVoiceOverRunning();
   }
   
