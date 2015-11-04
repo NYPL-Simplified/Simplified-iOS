@@ -28,6 +28,7 @@
 @property (nonatomic) NSInteger openPageCount;
 @property (nonatomic) RDPackage *package;
 @property (nonatomic) BOOL pageProgressionIsLTR;
+@property (nonatomic) BOOL isPageTurning;
 @property (nonatomic) RDPackageResourceServer *server;
 @property (nonatomic) NSArray *TOCElements;
 @property (nonatomic) UIWebView *webView;
@@ -256,10 +257,12 @@ static void generateTOCElements(NSArray *const navigationElements,
 }
 
 - (void) openPageLeft {
+  self.isPageTurning = YES;
   [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageLeft()"];
 }
 
 - (void) openPageRight {
+  self.isPageTurning = YES;
   [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
 }
 
@@ -441,7 +444,12 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   
   NSString *const locationJSON = [self.webView stringByEvaluatingJavaScriptFromString:
                                   @"ReadiumSDK.reader.bookmarkCurrentPage()"];
-  NSLog(@"%@", locationJSON);
+  
+  BOOL completed = NO;
+  if (openPages.count>0 && [locationJSON rangeOfString:openPages[0][@"idref"]].location != NSNotFound) {
+    completed = YES;
+    self.isPageTurning = NO;
+  }
   
   [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"simplified.pageDidChange(%@);", locationJSON]];
   
@@ -450,8 +458,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
                                       renderer:renderer];
   
   [self calculateProgressionWithDictionary:dictionary withHandler:^(void) {
-    NSLog(@"Page %ld of %ld", self.spineItemPageIndex.integerValue+1, self.spineItemPageCount.integerValue);
-    [self.delegate didUpdateProgressSpineItemPercentage:self.spineItemPercentageRemaining bookPercentage:self.progressWithinBook pageIndex:self.spineItemPageIndex pageCount:self.spineItemPageCount withCurrentSpineItemDetails:self.spineItemDetails];
+//    NSLog(@"Page %ld of %ld", self.spineItemPageIndex.integerValue+1, self.spineItemPageCount.integerValue);
+    [self.delegate didUpdateProgressSpineItemPercentage:self.spineItemPercentageRemaining bookPercentage:self.progressWithinBook pageIndex:self.spineItemPageIndex pageCount:self.spineItemPageCount withCurrentSpineItemDetails:self.spineItemDetails completed:completed];
   }];
   
   if(location) {

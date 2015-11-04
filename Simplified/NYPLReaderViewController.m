@@ -34,6 +34,7 @@
 @property (nonatomic) UIProgressView *bottomViewProgressView;
 @property (nonatomic) UILabel *bottomViewProgressLabel;
 @property (nonatomic) UIButton *largeTransparentAccessibilityButton;
+@property (nonatomic) NSMutableArray *pendingPageTurns;
 
 @property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer, *doubleTapGestureRecognizer;
 @property (nonatomic) UISwipeGestureRecognizer *leftSwipeGestureRecognizer, *rightSwipeGestureRecognizer;
@@ -131,6 +132,7 @@
   self.rightSwipeGestureRecognizer.enabled = NO;
   [self.view addGestureRecognizer:self.rightSwipeGestureRecognizer];
   
+  self.pendingPageTurns = [NSMutableArray array];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged) name:UIAccessibilityVoiceOverStatusChanged object:nil];
   
   return self;
@@ -148,22 +150,22 @@
   if ([self.renderedImageView superview])
     [self.renderedImageView removeFromSuperview];
   if (p.x < edgeOfScreenWidth) {
-    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+    [self turnPageIsRight:NO];
   } else if (p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth)) {
-    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
+    [self turnPageIsRight:YES];
   }
 }
 
 - (void)didReceiveDoubleTap:(__unused UIGestureRecognizer *const)gestureRecognizer
 {
-      self.interfaceHidden = !self.interfaceHidden;
+  self.interfaceHidden = !self.interfaceHidden;
 }
 
 - (void)didReceiveSwipeGesture:(UISwipeGestureRecognizer *const)gestureRecognizer {
   if (gestureRecognizer.direction == UISwipeGestureRecognizerDirectionLeft)
-    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
+    [self turnPageIsRight:YES];
   else if (gestureRecognizer.direction == UISwipeGestureRecognizerDirectionRight)
-    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+    [self turnPageIsRight:NO];
 }
 
 - (BOOL)gestureRecognizer:(__unused UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(__unused UIGestureRecognizer *)otherGestureRecognizer {
@@ -384,10 +386,21 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.bottomView addConstraint:constraintPL4];
 }
 
--(void) didUpdateProgressSpineItemPercentage: (NSNumber *)spineItemPercentage bookPercentage: (NSNumber *) bookPercentage pageIndex:(NSNumber *)pageIndex pageCount:(NSNumber *)pageCount withCurrentSpineItemDetails: (NSDictionary *) currentSpineItemDetails {
+-(void) didUpdateProgressSpineItemPercentage: (NSNumber *)spineItemPercentage bookPercentage: (NSNumber *) bookPercentage pageIndex:(NSNumber *)pageIndex pageCount:(NSNumber *)pageCount withCurrentSpineItemDetails: (NSDictionary *) currentSpineItemDetails completed:(BOOL)completed {
   
   if (UIAccessibilityIsVoiceOverRunning()) {
     UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, [NSString stringWithFormat:NSLocalizedString(@"Page %d of %d", nil), pageIndex.integerValue+1, pageCount.integerValue]);
+  }
+  
+  if (completed) {
+    if (self.pendingPageTurns.count > 0) {
+      NSNumber *n = [self.pendingPageTurns lastObject];
+      [self.pendingPageTurns removeLastObject];
+      if (n.boolValue)
+        [self turnPageIsRight:YES];
+      else
+        [self turnPageIsRight:NO];
+    }
   }
   
   [self.bottomViewProgressView setProgress:bookPercentage.floatValue / 100 animated:YES];  
@@ -456,9 +469,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 {
   if (direction == UIAccessibilityScrollDirectionLeft || direction == UIAccessibilityScrollDirectionRight) {
     if (direction == UIAccessibilityScrollDirectionLeft) {
-      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
+      [self turnPageIsRight:YES];
     } else if (direction == UIAccessibilityScrollDirectionRight) {
-      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+      [self turnPageIsRight:NO];
     }
     return YES;
   }
@@ -523,7 +536,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   UIViewController *nvc = pendingViewControllers.firstObject;
   NSInteger pi = [self.dummyViewControllers indexOfObject:pvc];
   NSInteger ni = [self.dummyViewControllers indexOfObject:nvc];
-  NSLog(@"Next: %ld P: %ld", ni, pi);
   BOOL turnRight = ((pi+1)%3)==ni;
   self.previousPageTurnWasRight = turnRight;
   
@@ -536,10 +548,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
     [self.renderedImageView removeFromSuperview];
   
   [self.rendererView removeFromSuperview];
-  if (turnRight)
-    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
-  else
-    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
+  [self turnPageIsRight:turnRight];
   [[pendingViewControllers.firstObject view] addSubview:self.rendererView];
   
   self.renderedImageView.image = snapshotImage;
@@ -552,10 +561,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   if (completed) {
     [self.renderedImageView removeFromSuperview];
   } else {
-    if (self.previousPageTurnWasRight)
-      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageLeft];
-    else
-      [[NYPLReaderSettings sharedSettings].currentReaderReadiumView openPageRight];
+    [self turnPageIsRight:!self.previousPageTurnWasRight];
     [[NYPLReaderSettings sharedSettings].currentReaderReadiumView removeFromSuperview];
     [pageViewController.viewControllers.firstObject.view insertSubview:[NYPLReaderSettings sharedSettings].currentReaderReadiumView belowSubview:self.renderedImageView];
   }
@@ -722,6 +728,19 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
      animated:YES];
   } else {
     [self.navigationController pushViewController:viewController animated:YES];
+  }
+}
+
+- (void)turnPageIsRight:(BOOL)isRight
+{
+  NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
+  if (rv.isPageTurning) {
+    [self.pendingPageTurns addObject:[NSNumber numberWithBool:isRight]];
+  } else {
+    if (isRight)
+      [rv openPageRight];
+    else
+      [rv openPageLeft];
   }
 }
 

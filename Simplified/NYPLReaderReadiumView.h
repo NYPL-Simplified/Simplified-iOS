@@ -5,6 +5,7 @@
 @interface NYPLReaderReadiumView : UIView <NYPLReaderRenderer>
 
 @property (nonatomic, weak) id<NYPLReaderRendererDelegate> delegate;
+@property (nonatomic, readonly) BOOL isPageTurning;
 
 - (id)init NS_UNAVAILABLE;
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
