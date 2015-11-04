@@ -523,15 +523,17 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   UIViewController *nvc = pendingViewControllers.firstObject;
   NSInteger pi = [self.dummyViewControllers indexOfObject:pvc];
   NSInteger ni = [self.dummyViewControllers indexOfObject:nvc];
+  NSLog(@"Next: %ld P: %ld", ni, pi);
   BOOL turnRight = ((pi+1)%3)==ni;
   self.previousPageTurnWasRight = turnRight;
-  if ([self.renderedImageView superview])
-    [self.renderedImageView removeFromSuperview];
   
   UIGraphicsBeginImageContextWithOptions(self.rendererView.bounds.size, YES, 0.0f);
-  [self.rendererView drawViewHierarchyInRect:self.rendererView.bounds afterScreenUpdates:NO];
+  [pvc.view drawViewHierarchyInRect:self.rendererView.bounds afterScreenUpdates:NO];
   UIImage *snapshotImage = UIGraphicsGetImageFromCurrentImageContext();
   UIGraphicsEndImageContext();
+  
+  if ([self.renderedImageView superview])
+    [self.renderedImageView removeFromSuperview];
   
   [self.rendererView removeFromSuperview];
   if (turnRight)
