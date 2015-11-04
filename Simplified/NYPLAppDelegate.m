@@ -47,7 +47,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
     [Heap setAppId:[NYPLConfiguration heapID]];
 #ifdef DEBUG
     [Heap enableVisualizer];
-    [Heap startDebug];
+//    [Heap startDebug];
 #endif
   }
   
