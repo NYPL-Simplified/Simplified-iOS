@@ -158,19 +158,20 @@ typedef NS_ENUM(NSInteger, FacetSort) {
     self.navigationItem.leftBarButtonItem = self.syncButton;
   }
   
-  UIView *tmpView = self.view;
-  self.containerView = [[NYPLMyBooksContainerView alloc] initWithFrame:self.view.frame];
-  for (UIView *v in self.view.subviews) {
-    [v removeFromSuperview];
-    [self.containerView addSubview:v];
-  }
-  [tmpView removeFromSuperview];
-  self.view = self.containerView;
-  self.containerView.accessibleElements = @[self.facetBarView, self.collectionView];
+//  UIView *tmpView = self.view;
+//  self.containerView = [[NYPLMyBooksContainerView alloc] initWithFrame:self.view.frame];
+//  for (UIView *v in self.view.subviews) {
+//    [v removeFromSuperview];
+//    [self.containerView addSubview:v];
+//  }
+//  [tmpView removeFromSuperview];
+//  self.view = self.containerView;
+//  self.containerView.accessibleElements = @[self.facetBarView, self.collectionView];
 }
 
-- (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
+  [super viewWillAppear:animated];
   [self.navigationController setNavigationBarHidden:NO];
 }
 
