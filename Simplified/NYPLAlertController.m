@@ -95,8 +95,11 @@
 
 - (void)presentFromViewControllerOrNil:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion
 {
-  viewController = viewController ? viewController : [NYPLRootTabBarController sharedController];
-  [viewController presentViewController:self animated:animated completion:completion];
+  if (viewController == nil) {
+    [[NYPLRootTabBarController sharedController] safelyPresentViewController:self animated:animated completion:completion];
+  } else {
+    [viewController presentViewController:self animated:animated completion:completion];
+  }
 }
 
 @end
