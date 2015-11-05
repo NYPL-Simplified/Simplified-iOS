@@ -111,6 +111,12 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   [[NYPLReaderSettings sharedSettings] save];
 }
 
+- (void)applicationWillTerminate:(__unused UIApplication *)application
+{
+  [[NYPLBookRegistry sharedRegistry] save];
+  [[NYPLReaderSettings sharedSettings] save];
+}
+
 #if defined(FEATURE_DRM_CONNECTOR)
 - (void)applicationDidBecomeActive:(__unused UIApplication *)application
 {
