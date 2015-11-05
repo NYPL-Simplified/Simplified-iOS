@@ -706,6 +706,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
   [[NYPLBookRegistry sharedRegistry]
    setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+  
+  [[NYPLBookRegistry sharedRegistry] save];
 
   [self broadcastUpdate];
 }
