@@ -22,7 +22,8 @@
     b. 'ant book2pngios.objonly'
         This will build libdp for Release-iphoneos. To build for other
         configurations (iphonesimulator, Debug), edit build.xml. In '<target name="book2pngios.objonly">',
-        change values of all '<arg value="Release"/>' and '<arg value="iphoneos"/>'.'
+        change values of all '<arg value="Release"/>' and '<arg value="iphoneos"/>'.' For the simulator, 
+        change <arg value="ARCHS=arm64 armv7 armv7s"/> to <arg value="ARCHS=i386 x86_64"/>
 
 
 == Building Simplified ==
