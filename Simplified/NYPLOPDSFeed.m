@@ -54,10 +54,17 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     @throw NSInvalidArgumentException;
   }
   
-  [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data, __unused NSURLResponse *response, __unused NSError *error) {
+  [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data, NSURLResponse *response, __unused NSError *error) {
     if(!data) {
       NYPLLOG(@"Failed to retrieve data.");
       NYPLAsyncDispatch(^{handler(nil, nil);});
+      return;
+    }
+    
+    if ([(NSHTTPURLResponse *)response statusCode] != 200 &&
+        [response.MIMEType isEqualToString:@"application/problem+json"]) {
+      NSDictionary *error = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
+      NYPLAsyncDispatch(^{handler(nil, error);});
       return;
     }
     

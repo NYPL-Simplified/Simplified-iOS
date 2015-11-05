@@ -87,7 +87,7 @@
 {
   self.problemDocument = document;
   if (doDisplayDocumentMessage && document) {
-    self.message = [NSString stringWithFormat:@"%@ %@", self.localMessage, self.problemDocument.detail];
+    self.message = [NSString stringWithFormat:@"%@\n%@", self.localMessage, self.problemDocument.title];
   } else {
     self.message = self.localMessage;
   }
