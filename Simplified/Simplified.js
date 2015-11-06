@@ -7,9 +7,6 @@ function Simplified() {
   
   function updateVisibility() {
     
-    console.log("Skipping aria-hidden updates");
-    return;
-    
     var iframe = window.frames["epubContentIframe"];
     var childs = iframe.document.documentElement.getElementsByTagName('*');
     
@@ -18,7 +15,7 @@ function Simplified() {
       var child = childs[i];
       var visible = ReadiumSDK.reader.getElementVisibility(child);
       child.setAttribute("aria-hidden", visible ? "false"   : "true");
-      child.setAttribute("tabindex", 0); // Make sure the elements are focusable
+      child.setAttribute("tabindex", visible ? i : -1); // Make sure the elements are focusable
       
       if (visible) {
         console.log("Vibisle element: " + child.tagName + " " + child.innerHTML.slice(0, 20));
@@ -38,8 +35,8 @@ function Simplified() {
   this.beginVisibilityUpdates = function() {
     this.shouldUpdateVisibilityOnUpdate = true;
     var firstElt = updateVisibility();
-//    if (firstElt)
-//      firstElt.focus();
+    if (firstElt)
+      firstElt.focus();
   }
   
   this.settingsDidChange = function() {
