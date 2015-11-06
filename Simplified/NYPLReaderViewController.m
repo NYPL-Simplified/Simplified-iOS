@@ -513,6 +513,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (BOOL)accessibilityPerformEscape
 {
+  if (self.activePopoverController.isPopoverVisible) {
+    [self.activePopoverController dismissPopoverAnimated:YES];
+  }
   [self.navigationController popViewControllerAnimated:YES];
   return YES;
 }
