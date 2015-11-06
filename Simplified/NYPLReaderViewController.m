@@ -19,7 +19,7 @@
 
 @property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) NSString *bookIdentifier;
-@property (nonatomic) BOOL interfaceHidden;
+@property (nonatomic) BOOL interfaceHidden, isAccessibilityConfigurationActive;
 @property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
 @property (nonatomic) UIPageViewController *pageViewController;
 @property (nonatomic) NSArray<UIViewController *> *dummyViewControllers;
@@ -100,9 +100,6 @@
   self.tapGestureRecognizer.numberOfTapsRequired = 1;
   
   [self.view addGestureRecognizer:self.tapGestureRecognizer];
-  
-  self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
-  self.pageViewController.dataSource = self;
   
   self.doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc]
                                initWithTarget:self
@@ -296,8 +293,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.pageViewController didMoveToParentViewController:self];
   // ----------- page view
   
-//  [self.view addSubview:self.rendererView];
-  
   // Add the giant transparent button to handle the "return to reading" action in VoiceOver
   self.largeTransparentAccessibilityButton = [UIButton buttonWithType:UIButtonTypeCustom];
   [self.largeTransparentAccessibilityButton addTarget:self action:@selector(returnToReaderFocus) forControlEvents:UIControlEventTouchUpInside];
@@ -440,6 +435,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
     self.tapGestureRecognizer.enabled = !UIAccessibilityIsVoiceOverRunning();
   }
   
+  self.isAccessibilityConfigurationActive = UIAccessibilityIsVoiceOverRunning();
   if (UIAccessibilityIsVoiceOverRunning()) {
     UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Magic Tap for Tools and Table of Contents", nil));
   }
@@ -455,15 +451,45 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 #pragma mark Accessibility
 
+- (void)setIsAccessibilityConfigurationActive:(BOOL)isAccessibilityConfigurationActive
+{
+  if (_isAccessibilityConfigurationActive != isAccessibilityConfigurationActive) {
+    _isAccessibilityConfigurationActive = isAccessibilityConfigurationActive;
+    self.largeTransparentAccessibilityButton.userInteractionEnabled = (_isAccessibilityConfigurationActive && !self.interfaceHidden);
+    self.tapGestureRecognizer.enabled = !_isAccessibilityConfigurationActive;
+    
+    if (_isAccessibilityConfigurationActive) {
+      
+      if ([self.rendererView superview])
+        [self.rendererView removeFromSuperview];
+      [self.view insertSubview:self.rendererView belowSubview:self.largeTransparentAccessibilityButton];
+      
+      [self.pageViewController willMoveToParentViewController:nil];
+      [self.pageViewController.view removeFromSuperview];
+      [self.pageViewController removeFromParentViewController];
+      [self.pageViewController didMoveToParentViewController:nil];
+      
+    } else {
+      
+      if ([self.rendererView superview])
+        [self.rendererView removeFromSuperview];
+      
+      [self.pageViewController willMoveToParentViewController:self];
+      [self addChildViewController:self.pageViewController];
+      [self.view insertSubview:self.pageViewController.view belowSubview:self.largeTransparentAccessibilityButton];
+      [self.pageViewController didMoveToParentViewController:self];
+      [self.pageViewController.viewControllers[0].view addSubview:self.rendererView];
+      
+    }
+  }
+}
+
 - (void) voiceOverStatusChanged
 {
   if (UIAccessibilityIsVoiceOverRunning())
     self.interfaceHidden = YES;
-  self.tapGestureRecognizer.enabled = !UIAccessibilityIsVoiceOverRunning();
-  self.largeTransparentAccessibilityButton.userInteractionEnabled = (UIAccessibilityIsVoiceOverRunning() && !self.interfaceHidden);
+  self.isAccessibilityConfigurationActive = UIAccessibilityIsVoiceOverRunning();
 }
-
-#pragma mark Accessibility
 
 - (BOOL)accessibilityScroll:(UIAccessibilityScrollDirection)direction
 {
@@ -532,6 +558,10 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers
 {
+  // Don't bother with any of this offscreen rendering nonsense if VO is active
+  if (UIAccessibilityIsVoiceOverRunning())
+    return;
+  
   UIViewController *pvc = pageViewController.viewControllers.firstObject;
   UIViewController *nvc = pendingViewControllers.firstObject;
   NSInteger pi = [self.dummyViewControllers indexOfObject:pvc];
@@ -559,7 +589,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 - (void)pageViewController:(__unused UIPageViewController *)pageViewController didFinishAnimating:(__unused BOOL)finished previousViewControllers:(__unused NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed
 {
   if (completed) {
-    [self.renderedImageView removeFromSuperview];
+    if ([self.renderedImageView superview])
+      [self.renderedImageView removeFromSuperview];
   } else {
     [self turnPageIsRight:!self.previousPageTurnWasRight];
     [[NYPLReaderSettings sharedSettings].currentReaderReadiumView removeFromSuperview];
