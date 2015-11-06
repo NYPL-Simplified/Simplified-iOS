@@ -152,62 +152,76 @@ didFinishDownloadingToURL:(NSURL *const)location
     return;
   }
   
-  switch([self downloadInfoForBookIdentifier:book.identifier].rightsManagement) {
-    case NYPLMyBooksDownloadRightsManagementUnknown:
-      @throw NSInternalInconsistencyException;
-          
-    case NYPLMyBooksDownloadRightsManagementAdobe:
-    {
+  BOOL success = YES;
+  NYPLProblemDocument *problemDocument = nil;
+  if ([downloadTask.response.MIMEType isEqualToString:@"application/problem+json"]) {
+    problemDocument = [NYPLProblemDocument problemDocumentWithData:[NSData dataWithContentsOfURL:location]];
+    [[NSFileManager defaultManager] removeItemAtURL:location error:NULL];
+    success = NO;
+  }
+  
+  if (success) {
+    switch([self downloadInfoForBookIdentifier:book.identifier].rightsManagement) {
+      case NYPLMyBooksDownloadRightsManagementUnknown:
+        @throw NSInternalInconsistencyException;
+            
+      case NYPLMyBooksDownloadRightsManagementAdobe:
+      {
 #if defined(FEATURE_DRM_CONNECTOR)
-      NSData *ACSMData = [NSData dataWithContentsOfURL:location];
-      NSString *PDFString = @">application/pdf</dc:format>";
-      if([[[NSString alloc] initWithData:ACSMData encoding:NSUTF8StringEncoding] containsString:PDFString]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-          NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"PDFNotSupported" message:@"PDFNotSupportedDescriptionFormat", book.title];
-          [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
-        });
-        
-        [[NYPLBookRegistry sharedRegistry]
-         setState:NYPLBookStateDownloadFailed
-         forIdentifier:book.identifier];
-      } else {
-        [[NYPLADEPT sharedInstance]
-         fulfillWithACSMData:ACSMData
-         tag:book.identifier];
-      }
+        NSData *ACSMData = [NSData dataWithContentsOfURL:location];
+        NSString *PDFString = @">application/pdf</dc:format>";
+        if([[[NSString alloc] initWithData:ACSMData encoding:NSUTF8StringEncoding] containsString:PDFString]) {
+          dispatch_async(dispatch_get_main_queue(), ^{
+            NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"PDFNotSupported" message:@"PDFNotSupportedDescriptionFormat", book.title];
+            [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+          });
+          
+          [[NYPLBookRegistry sharedRegistry]
+           setState:NYPLBookStateDownloadFailed
+           forIdentifier:book.identifier];
+        } else {
+          [[NYPLADEPT sharedInstance]
+           fulfillWithACSMData:ACSMData
+           tag:book.identifier];
+        }
 #endif
-      break;
-    }
-      
-    case NYPLMyBooksDownloadRightsManagementNone: {
-      NSError *error = nil;
-      
-      [[NSFileManager defaultManager]
-       removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
-       error:NULL];
-      
-      BOOL const success = [[NSFileManager defaultManager]
-                            moveItemAtURL:location
-                            toURL:[self fileURLForBookIndentifier:book.identifier]
-                            error:&error];
-      
-      if(success) {
-        [[NYPLBookRegistry sharedRegistry]
-         setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
-        [[NYPLBookRegistry sharedRegistry] save];
-      } else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-          NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"DownloadFailed" message:@"DownloadCouldNotBeCompletedFormat", book.title];
-          [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
-        });
-        
-        [[NYPLBookRegistry sharedRegistry]
-         setState:NYPLBookStateDownloadFailed
-         forIdentifier:book.identifier];
+        break;
       }
-      
-      break;
+        
+      case NYPLMyBooksDownloadRightsManagementNone: {
+        NSError *error = nil;
+        
+        [[NSFileManager defaultManager]
+         removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
+         error:NULL];
+        
+        success = [[NSFileManager defaultManager]
+                   moveItemAtURL:location
+                   toURL:[self fileURLForBookIndentifier:book.identifier]
+                   error:&error];
+        
+        if(success) {
+          [[NYPLBookRegistry sharedRegistry]
+           setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+          [[NYPLBookRegistry sharedRegistry] save];
+        }
+        
+        break;
+      }
     }
+  }
+  
+  if (!success) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"DownloadFailed" message:@"DownloadCouldNotBeCompletedFormat", book.title];
+        if (problemDocument)
+          [alert setProblemDocument:problemDocument displayDocumentMessage:YES];
+        [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+      });
+      
+      [[NYPLBookRegistry sharedRegistry]
+       setState:NYPLBookStateDownloadFailed
+       forIdentifier:book.identifier];
   }
 
   [self broadcastUpdate];
