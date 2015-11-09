@@ -24,7 +24,7 @@
   dispatch_once(&predicate, ^{
     sharedController = [[self alloc] init];
     if(!sharedController) {
-      NYPLLOG(@"Failed to create shared controller.");
+      NYPLLOG(@"error", @"Failed to create shared controller.");
     }
   });
   
@@ -70,7 +70,7 @@
                   animated:(BOOL const)animated
 {
   if(![self.selectedViewController isKindOfClass:[UINavigationController class]]) {
-    NYPLLOG(@"Selected view controller is not a navigation controller.");
+    NYPLLOG(@"error", @"Selected view controller is not a navigation controller.");
     return;
   }
   

@@ -24,7 +24,7 @@ static NYPLSession *sharedSession = nil;
   dispatch_once(&predicate, ^{
     sharedSession = [[self alloc] init];
     if(!sharedSession) {
-      NYPLLOG(@"Failed to create shared session.");
+      NYPLLOG(@"error", @"Failed to create shared session.");
     }
   });
   

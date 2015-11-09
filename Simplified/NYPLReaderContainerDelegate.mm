@@ -14,7 +14,8 @@
    handleSdkError:(NSString * const)message
 isSevereEpubError:(const BOOL)isSevereEpubError
 {
-  NYPLLOG_F(@"(Readium) %@ %@", isSevereEpubError ? @"(SEVERE)" : @"", message);
+  NSString *level = isSevereEpubError ? @"error" : @"warning";
+  NYPLLOG_F(level, @"(Readium) %@ %@", isSevereEpubError ? @"(SEVERE)" : @"", message);
 
   // Ignore the error and continue.
   return YES;

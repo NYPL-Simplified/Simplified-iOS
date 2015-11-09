@@ -54,7 +54,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   dispatch_once(&predicate, ^{
     sharedSettings = [[self alloc] init];
     if(!sharedSettings) {
-      NYPLLOG(@"Failed to create shared settings.");
+      NYPLLOG(@"error", @"Failed to create shared settings.");
     }
   });
   

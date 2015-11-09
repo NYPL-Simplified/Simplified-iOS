@@ -1,4 +1,12 @@
 #import "NYPLSettings.h"
+#import "Heap.h"
+#import "Bugsnag.h"
+#import "HSHelpStack.h"
+#import "HSZenDeskGear.h"
+
+#if defined(FEATURE_DRM_CONNECTOR)
+#import <ADEPT/ADEPT.h>
+#endif
 
 #import "NYPLConfiguration.h"
 #import "UILabel+NYPLAppearanceAdditions.h"
@@ -19,6 +27,40 @@ static NSString *const heapIDDevelopment = @"1848989408";
    setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}];
   [[UILabel appearance] setFontName:[NYPLConfiguration systemFontName]];
   [[UIButton appearance] setTitleFontName:[NYPLConfiguration systemFontName]];
+  
+  [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
+  HSZenDeskGear *zenDeskGear  = [[HSZenDeskGear alloc]
+                                 initWithInstanceUrl : @"https://nypl.zendesk.com"
+                                 staffEmailAddress   : @"johannesneuer@nypl.org"
+                                 apiToken            : @"P6aFczYFc4al6o2riRBogWLi5D0M0QCdrON6isJi"];
+  
+  HSHelpStack *helpStack = [HSHelpStack instance];
+  helpStack.gear = zenDeskGear;
+  
+  if ([NYPLConfiguration heapEnabled]) {
+    [Heap setAppId:[NYPLConfiguration heapID]];
+#ifdef DEBUG
+    [Heap enableVisualizer];
+    //    [Heap startDebug];
+#endif
+  }
+  
+  if ([NYPLConfiguration bugsnagEnabled]) {
+    [Bugsnag startBugsnagWithApiKey:[NYPLConfiguration bugsnagID]];
+    [Bugsnag notify:[NSException exceptionWithName:@"ExceptionName" reason:@"Test Error" userInfo:nil]];
+    s_logCallbackBlock = ^(NSString *loglevel, NSString *exceptionName, NSDictionary *data, NSString *message) {
+      if (!exceptionName)
+        exceptionName = @"NYPLGenericException";
+      if (!loglevel)
+        loglevel = @"warning";
+      [Bugsnag notify:[NSException exceptionWithName:exceptionName reason:message userInfo:nil] withData:data atSeverity:loglevel];
+    };
+    [[NYPLADEPT sharedInstance] setLogCallback:^(NSString *logLevel,NSString *exceptionName, NSDictionary *data, NSString *message) {
+      if (!exceptionName)
+        exceptionName = @"NYPLADEPTException";
+      [Bugsnag notify:[NSException exceptionWithName:exceptionName reason:message userInfo:nil] withData:data atSeverity:logLevel];
+    }];
+  }
 }
 
 + (BOOL) heapEnabled
@@ -27,10 +69,21 @@ static NSString *const heapIDDevelopment = @"1848989408";
 //  return NO;
 }
 
++ (BOOL) bugsnagEnabled
+{
+  return YES;
+  //  return NO;
+}
+
 + (NSString *)heapID
 {
 //  return heapIDProduction;
   return heapIDDevelopment;
+}
+
++ (NSString *) bugsnagID
+{
+  return @"725ae02b6ec60cad7d11beffdbd99d23";
 }
 
 + (NSURL *)circulationURL

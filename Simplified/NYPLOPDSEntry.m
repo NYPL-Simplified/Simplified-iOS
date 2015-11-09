@@ -37,8 +37,8 @@
     for(NYPLXML *const authorXML in [entryXML childrenWithName:@"author"]) {
       NYPLXML *const nameXML = [authorXML firstChildWithName:@"name"];
       if(!nameXML) {
-        NYPLLOG(@"'author' element missing required 'name' element.");
-        NYPLLOG(@"Ignoring malformed 'author' element.");
+        NYPLLOG(@"info", @"'author' element missing required 'name' element.");
+        NYPLLOG(@"warning", @"Ignoring malformed 'author' element.");
         continue;
       }
       [authorStrings addObject:nameXML.value];
@@ -64,7 +64,7 @@
   }
   
   if(!((self.identifier = [entryXML firstChildWithName:@"id"].value))) {
-    NYPLLOG(@"Missing required 'id' element.");
+    NYPLLOG(@"info", @"Missing required 'id' element.");
     return nil;
   }
   
@@ -74,7 +74,7 @@
     for(NYPLXML *const linkXML in [entryXML childrenWithName:@"link"]) {
       NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
       if(!link) {
-        NYPLLOG(@"Ignoring malformed 'link' element.");
+        NYPLLOG(@"warning", @"Ignoring malformed 'link' element.");
         continue;
       }
       [links addObject:link];
@@ -97,20 +97,20 @@
   self.summary = [entryXML firstChildWithName:@"summary"].value;
   
   if(!((self.title = [entryXML firstChildWithName:@"title"].value))) {
-    NYPLLOG(@"Missing required 'title' element.");
+    NYPLLOG(@"info", @"Missing required 'title' element.");
     return nil;
   }
   
   {
     NSString *const updatedString = [entryXML firstChildWithName:@"updated"].value;
     if(!updatedString) {
-      NYPLLOG(@"Missing required 'updated' element.");
+      NYPLLOG(@"info", @"Missing required 'updated' element.");
       return nil;
     }
     
     self.updated = [NSDate dateWithRFC3339String:updatedString];
     if(!self.updated) {
-      NYPLLOG(@"Element 'updated' does not contain an RFC 3339 date.");
+      NYPLLOG(@"info", @"Element 'updated' does not contain an RFC 3339 date.");
       return nil;
     }
   }
@@ -124,7 +124,7 @@
     if([link.rel isEqualToString:NYPLOPDSRelationGroup]) {
       NSString *const title = link.attributes[@"title"];
       if(!title) {
-        NYPLLOG(@"Ignoring group link without required 'title' attribute.");
+        NYPLLOG(@"warning", @"Ignoring group link without required 'title' attribute.");
         continue;
       }
       return [[NYPLOPDSEntryGroupAttributes alloc]

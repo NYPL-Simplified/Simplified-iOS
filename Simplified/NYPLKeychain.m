@@ -11,7 +11,7 @@
   if (sharedKeychain == nil) {
     sharedKeychain = [[self alloc] init];
     if(!sharedKeychain) {
-      NYPLLOG(@"Failed to created shared keychain.");
+      NYPLLOG(@"error", @"Failed to created shared keychain.");
     }
   }
   
@@ -62,7 +62,7 @@
     dictionary[(__bridge __strong id) kSecValueData] = valueData;
     status = SecItemAdd((__bridge CFDictionaryRef) dictionary, NULL);
     if (status != noErr) {
-      NSLog(@"Failed to write secure values to the keychain. This is a known issue (don't panic) if (1) you are running with a debugger attached and (2) you tried to take a photo at some point. If both of these are true, you can probably ignore this error. Probably.");
+      NYPLLOG(@"error", @"Failed to write secure values to keychain. This is a known issue when running from the debugger");
     }
   }
 }

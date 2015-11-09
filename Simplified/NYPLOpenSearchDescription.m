@@ -25,14 +25,16 @@ completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
    withURL:URL
    completionHandler:^(NSData *const data, __unused NSURLResponse *response, __unused NSError *error) {
      if(!data) {
-       NYPLLOG(@"Failed to retrieve data.");
+       NYPLLOG(@"warning", nil, nil, @"Failed to retrieve data.");
        NYPLAsyncDispatch(^{handler(nil);});
        return;
      }
      
      NYPLXML *const XML = [NYPLXML XMLWithData:data];
+     NSString *datcat = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] substringToIndex:100];
+     NSDictionary *errData = @{@"data": [NSString stringWithFormat:@"%@...", datcat]};
      if(!XML) {
-       NYPLLOG(@"Failed to parse data as XML.");
+       NYPLLOG(@"error", nil, errData, @"Failed to parse data as XML.");
        NYPLAsyncDispatch(^{handler(nil);});
        return;
      }
@@ -41,7 +43,7 @@ completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
        [[NYPLOpenSearchDescription alloc] initWithXML:XML];
      
      if(!description) {
-       NYPLLOG(@"Failed to interpret XML as OpenSearch description document.");
+       NYPLLOG(@"error", nil, errData, @"Failed to interpret XML as OpenSearch description document.");
        NYPLAsyncDispatch(^{handler(nil);});
        return;
      }
@@ -58,7 +60,7 @@ completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
   self.humanReadableDescription = [OSDXML firstChildWithName:@"Description"].value;
   
   if(!self.humanReadableDescription) {
-    NYPLLOG(@"Missing required description element.");
+    NYPLLOG(@"warning", nil, nil, @"Missing required description element.");
     return nil;
   }
   
@@ -71,7 +73,7 @@ completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
   }
   
   if(!self.OPDSURLTemplate) {
-    NYPLLOG(@"Missing expected OPDS URL.");
+    NYPLLOG(@"warning", nil, nil, @"Missing expected OPDS URL.");
     return nil;
   }
   
