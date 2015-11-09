@@ -8,7 +8,11 @@
 
 + (BOOL) heapEnabled;
 
++ (BOOL) bugsnagEnabled;
+
 + (NSString *)heapID;
+
++ (NSString *)bugsnagID;
 
 + (NSURL *)circulationURL;
 

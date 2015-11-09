@@ -38,7 +38,7 @@ static NSString *const RecordsKey = @"records";
     // Cast allows access to unavailable |init| method.
     sharedRegistry = [[self alloc] init];
     if(!sharedRegistry) {
-      NYPLLOG(@"Failed to create shared registry.");
+      NYPLLOG(@"error", nil, nil, @"Failed to create shared registry.");
     }
     
     [sharedRegistry load];
@@ -137,7 +137,7 @@ static NSString *const RecordsKey = @"records";
     NSDictionary *const dictionary = NYPLJSONObjectFromData(savedData);
     
     if(!dictionary) {
-      NYPLLOG(@"Failed to interpret saved registry data as JSON.");
+      NYPLLOG(@"error", nil, @{@"data":[[NSString alloc] initWithData:savedData encoding:NSUTF8StringEncoding]}, @"Failed to interpret saved registry data as JSON.");
       return;
     }
     
@@ -165,14 +165,15 @@ static NSString *const RecordsKey = @"records";
          withIntermediateDirectories:YES
          attributes:nil
          error:NULL]) {
-      NYPLLOG(@"Failed to create registry directory.");
+      NYPLLOG(@"error", nil, nil, @"Failed to create registry directory.");
       return;
     }
     
+    NSError *error = nil;
     if(![[self registryDirectory] setResourceValue:@YES
                                             forKey:NSURLIsExcludedFromBackupKey
-                                             error:NULL]) {
-      NYPLLOG(@"Failed to exclude registry directory from backup.");
+                                             error:&error]) {
+      NYPLLOG(@"error", nil, @{@"error":[error localizedDescription]}, @"Failed to exclude registry directory from backup.");
       return;
     }
     
@@ -196,11 +197,11 @@ static NSString *const RecordsKey = @"records";
            options:0
            error:NULL]) {
 #pragma clang diagnostic pop
-        NYPLLOG(@"Failed to write book registry.");
+        NYPLLOG(@"error", nil, nil, @"Failed to write book registry.");
         return;
       }
     } @catch(NSException *const exception) {
-      NYPLLOG_F(@"Exception: %@: %@", [exception name], [exception reason]);
+      NYPLLOG(@"error", [exception name], nil, [exception reason]);
       return;
     } @finally {
       [stream close];
@@ -214,8 +215,8 @@ static NSString *const RecordsKey = @"records";
          backupItemName:nil
          options:NSFileManagerItemReplacementUsingNewMetadataOnly
          resultingItemURL:NULL
-         error:NULL]) {
-      NYPLLOG(@"Failed to rename temporary registry file.");
+         error:&error]) {
+      NYPLLOG(@"error", nil, @{@"error":[error localizedDescription]}, @"Failed to rename temporary registry file.");
       return;
     }
   }
@@ -235,9 +236,9 @@ static NSString *const RecordsKey = @"records";
   
   [NYPLOPDSFeed
    withURL:[NYPLConfiguration loanURL]
-   completionHandler:^(NYPLOPDSFeed *const feed, __unused NSDictionary *error) {
+   completionHandler:^(NYPLOPDSFeed *const feed, NSDictionary *error) {
      if(!feed) {
-       NYPLLOG(@"Failed to obtain sync data.");
+       NYPLLOG(@"error", nil, error, @"Failed to obtain sync data.");
        self.syncing = NO;
        [self broadcastChange];
        [[NSOperationQueue mainQueue]
@@ -260,7 +261,7 @@ static NSString *const RecordsKey = @"records";
          for(NYPLOPDSEntry *const entry in feed.entries) {
            NYPLBook *const book = [NYPLBook bookWithEntry:entry];
            if(!book) {
-             NYPLLOG_F(@"Failed to create book for entry '%@'.", entry.identifier);
+             NYPLLOG_F(@"warning", nil, @{@"entry":entry.identifier}, @"Failed to create book for entry '%@'.", entry.identifier);
              continue;
            }
            [identifiersToRemove removeObject:book.identifier];

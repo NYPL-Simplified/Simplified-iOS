@@ -1,13 +1,9 @@
-#import "HSHelpStack.h"
-#import "HSZenDeskGear.h"
 #import "NYPLConfiguration.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLEULAViewController.h"
 #import "NYPLSettings.h"
-#import "Heap.h"
-#import "Bugsnag.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -34,26 +30,6 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   // This is normally not called directly, but we put all programmatic appearance setup in
   // NYPLConfiguration's class initializer.
   [NYPLConfiguration initialize];
-  
-  [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
-  HSZenDeskGear *zenDeskGear  = [[HSZenDeskGear alloc]
-                                 initWithInstanceUrl : @"https://nypl.zendesk.com"
-                                 staffEmailAddress   : @"johannesneuer@nypl.org"
-                                 apiToken            : @"P6aFczYFc4al6o2riRBogWLi5D0M0QCdrON6isJi"];
-  
-  HSHelpStack *helpStack = [HSHelpStack instance];
-  helpStack.gear = zenDeskGear;
-  
-  if ([NYPLConfiguration heapEnabled]) {
-    [Heap setAppId:[NYPLConfiguration heapID]];
-#ifdef DEBUG
-    [Heap enableVisualizer];
-//    [Heap startDebug];
-#endif
-  }
-  
-  [Bugsnag startBugsnagWithApiKey:@"725ae02b6ec60cad7d11beffdbd99d23"];
-  [Bugsnag notify:[NSException exceptionWithName:@"ExceptionName" reason:@"Test Error" userInfo:nil]];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.tintColor = [NYPLConfiguration mainColor];

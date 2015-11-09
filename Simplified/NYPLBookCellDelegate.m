@@ -21,7 +21,7 @@
   dispatch_once(&predicate, ^{
     sharedDelegate = [[self alloc] init];
     if(!sharedDelegate) {
-      NYPLLOG(@"Failed to create shared delegate.");
+      NYPLLOG(@"error", @"Failed to create shared delegate.");
     }
   });
   

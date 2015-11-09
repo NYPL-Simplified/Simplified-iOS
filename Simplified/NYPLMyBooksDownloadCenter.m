@@ -43,7 +43,7 @@
   dispatch_once(&predicate, ^{
     sharedDownloadCenter = [[self alloc] init];
     if(!sharedDownloadCenter) {
-      NYPLLOG(@"Failed to create shared download center.");
+      NYPLLOG(@"error", @"Failed to create shared download center.");
     }
   });
   
@@ -89,7 +89,7 @@
  didResumeAtOffset:(__attribute__((unused)) int64_t)fileOffset
 expectedTotalBytes:(__attribute__((unused)) int64_t)expectedTotalBytes
 {
-  NYPLLOG(@"Ignoring unexpected resumption.");
+  NYPLLOG(@"warning", @"Ignoring unexpected resumption.");
 }
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
@@ -118,7 +118,7 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
     } else {
-      NYPLLOG_F(@"Presuming no DRM for unrecognized MIME type \"%@\".",
+      NYPLLOG_F(@"warning", @"Presuming no DRM for unrecognized MIME type \"%@\".",
                 downloadTask.response.MIMEType);
       NYPLMyBooksDownloadInfo *info = [[self downloadInfoForBookIdentifier:book.identifier] withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
       if (info) {
@@ -290,7 +290,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   if(![[NSFileManager defaultManager]
      removeItemAtURL:[self fileURLForBookIndentifier:identifier]
        error:NULL]){
-    NYPLLOG(@"Failed to remove local content for download.");
+    NYPLLOG(@"error", @"Failed to remove local content for download.");
   }
 }
   
@@ -306,7 +306,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   if(fulfillmentId) {
     [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId completion:^(BOOL success, __unused NSError *error) {
       if(!success) {
-        NYPLLOG(@"Failed to return loan.");
+        NYPLLOG(@"error", @"Failed to return loan.");
       }
     }];
   }
@@ -362,7 +362,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
        withIntermediateDirectories:YES
        attributes:nil
        error:NULL]) {
-    NYPLLOG(@"Failed to create directory.");
+    NYPLLOG(@"error", @"Failed to create directory.");
     return nil;
   }
   
@@ -422,7 +422,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     case NYPLBookStateDownloadSuccessful:
       // fallthrough
     case NYPLBookStateUsed:
-      NYPLLOG(@"Ignoring nonsensical download request.");
+      NYPLLOG(@"warning", @"Ignoring nonsensical download request.");
       return;
   }
   
@@ -441,7 +441,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
               [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
             [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
           });
-          NYPLLOG(@"Failed to check out book.");
+          NYPLLOG(@"error", @"Failed to check out book.");
           return;
         }
         
@@ -466,7 +466,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
         // Originally this code just let the request fail later on, but apparently resuming an
         // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
         // segmentation fault.
-        NYPLLOG(@"Aborting request with invalid URL.");
+        NYPLLOG(@"warning", @"Aborting request with invalid URL.");
         [self failDownloadForBook:book];
         return;
       }
@@ -525,7 +525,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     case NYPLBookStateDownloadSuccessful:
       // fallthrough
     case NYPLBookStateUsed:
-      NYPLLOG(@"Ignoring nonsensical download request.");
+      NYPLLOG(@"warning", @"Ignoring nonsensical download request.");
       return;
   }
   
@@ -546,7 +546,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
                         error:&error];
   
   if(!success || error) {
-    NYPLLOG(@"Failed to the preloaded content book from the application's bundle to it's destination.");
+    NYPLLOG(@"error", @"Failed to the preloaded content book from the application's bundle to its destination.");
   }
   else {
     [[NYPLBookRegistry sharedRegistry]
@@ -590,7 +590,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
                                  stateForIdentifier:identifier];
     
     if(state != NYPLBookStateDownloadFailed) {
-      NYPLLOG(@"Ignoring nonsensical cancellation request.");
+      NYPLLOG(@"warning", @"Ignoring nonsensical cancellation request.");
       return;
     }
     
@@ -602,7 +602,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 - (void)removeCompletedDownloadForBookIdentifier:(NSString *const)identifier
 {
   if(self.bookIdentifierOfBookToRemove) {
-    NYPLLOG(@"Ignoring delete while still handling previous delete.");
+    NYPLLOG(@"warning", @"Ignoring delete while still handling previous delete.");
     return;
   }
   
@@ -710,7 +710,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   if(![rightsData writeToFile:[[[self fileURLForBookIndentifier:book.identifier] path]
                                stringByAppendingString:@"_rights.xml"]
                    atomically:YES]) {
-    NYPLLOG(@"Failed to store rights data.");
+    NYPLLOG(@"error", @"Failed to store rights data.");
   }
   
   if(isReturnable && fulfillmentID) {
