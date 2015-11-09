@@ -7,6 +7,7 @@
 #import "NYPLEULAViewController.h"
 #import "NYPLSettings.h"
 #import "Heap.h"
+#import "Bugsnag.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -50,6 +51,9 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 //    [Heap startDebug];
 #endif
   }
+  
+  [Bugsnag startBugsnagWithApiKey:@"725ae02b6ec60cad7d11beffdbd99d23"];
+  [Bugsnag notify:[NSException exceptionWithName:@"ExceptionName" reason:@"Test Error" userInfo:nil]];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.tintColor = [NYPLConfiguration mainColor];
