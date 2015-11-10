@@ -32,15 +32,15 @@
                                                  initWithOPDSFeed:feed]
                           remoteViewController:remoteViewController];
                 case NYPLOPDSFeedTypeInvalid:
-                  NYPLLOG(@"warning", nil, @{@"feed":feedcat}, @"Cannot initialize due to invalid feed.");
+                  NYPLLOG(@"warning", kNYPLInvalidFeedException, @{@"feed":feedcat}, @"Cannot initialize due to invalid feed.");
                   return nil;
                 case NYPLOPDSFeedTypeNavigation:
-                  NYPLLOG(@"warning", nil, @{@"feed":feedcat}, @"Cannot initialize due to lack of support for navigation feeds.");
+                  NYPLLOG(@"warning", kNYPLInvalidFeedException, @{@"feed":feedcat}, @"Cannot initialize due to lack of support for navigation feeds.");
                   return nil;
               }
             }
             else {
-              NYPLLOG(@"warning", nil, nil, @"Did not revceive XML atom feed, cannot initialize");
+              NYPLLOG(@"warning", kNYPLInvalidFeedException, nil, @"Did not revceive XML atom feed, cannot initialize");
               return nil;
             }
           }];

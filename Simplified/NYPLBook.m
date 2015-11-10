@@ -50,7 +50,7 @@ static NSString *const UpdatedKey = @"updated";
 + (instancetype)bookWithEntry:(NYPLOPDSEntry *const)entry
 {
   if(!entry) {
-    NYPLLOG(@"warning", nil, nil, @"Failed to create book from nil entry.");
+    NYPLLOG(@"warning", kNYPLInvalidArgumentException, nil, @"Failed to create book from nil entry.");
     return nil;
   }
   

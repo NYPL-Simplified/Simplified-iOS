@@ -57,7 +57,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
     NSDictionary *infoDict = error ? @{@"error":[error localizedDescription]} : nil;
     if(!data) {
-      NYPLLOG(@"warning", nil, infoDict, @"Failed to retrieve data.");
+      NYPLLOG(@"warning", kNYPLInvalidFeedException, infoDict, @"Failed to retrieve data.");
       NYPLAsyncDispatch(^{handler(nil, nil);});
       return;
     }
@@ -71,7 +71,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     
     NYPLXML *const feedXML = [NYPLXML XMLWithData:data];
     if(!feedXML) {
-      NYPLLOG(@"warning", nil, infoDict, @"Failed to parse data as XML.");
+      NYPLLOG(@"warning", kNYPLInvalidFeedException, infoDict, @"Failed to parse data as XML.");
       NSDictionary *error = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
       NYPLAsyncDispatch(^{handler(nil, error);});
       return;
@@ -79,7 +79,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     
     NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:feedXML];
     if(!feed) {
-      NYPLLOG(@"warning", nil, infoDict, @"Could not interpret XML as OPDS.");
+      NYPLLOG(@"warning", kNYPLInvalidFeedException, infoDict, @"Could not interpret XML as OPDS.");
       NYPLAsyncDispatch(^{handler(nil, nil);});
       return;
     }
@@ -105,7 +105,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   }
   
   if(!((self.identifier = [feedXML firstChildWithName:@"id"].value))) {
-    NYPLLOG(@"warning", nil, @{@"identifier":self.identifier}, @"Missing required 'id' element.");
+    NYPLLOG(@"warning", kNYPLInvalidFeedException, @{@"identifier":self.identifier}, @"Missing required 'id' element.");
     return nil;
   }
   
@@ -115,7 +115,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     for(NYPLXML *const linkXML in [feedXML childrenWithName:@"link"]) {
       NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
       if(!link) {
-        NYPLLOG(@"warning", nil, @{@"identifier":self.identifier}, @"Ignoring malformed 'link' element.");
+        NYPLLOG(@"warning", kNYPLInvalidFeedException, @{@"identifier":self.identifier}, @"Ignoring malformed 'link' element.");
         continue;
       }
       [links addObject:link];
@@ -125,20 +125,20 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   }
   
   if(!((self.title = [feedXML firstChildWithName:@"title"].value))) {
-    NYPLLOG(@"warning", nil, @{@"identifier":self.identifier}, @"Missing required 'title' element.");
+    NYPLLOG(@"warning", kNYPLInvalidFeedException, @{@"identifier":self.identifier}, @"Missing required 'title' element.");
     return nil;
   }
   
   {
     NSString *const updatedString = [feedXML firstChildWithName:@"updated"].value;
     if(!updatedString) {
-      NYPLLOG(@"warning", nil, @{@"identifier":self.identifier}, @"Missing required 'updated' element.");
+      NYPLLOG(@"warning", kNYPLInvalidFeedException, @{@"identifier":self.identifier}, @"Missing required 'updated' element.");
       return nil;
     }
     
     self.updated = [NSDate dateWithRFC3339String:updatedString];
     if(!self.updated) {
-      NYPLLOG(@"warning", nil, @{@"identifier":self.identifier}, @"Element 'updated' does not contain an RFC 3339 date.");
+      NYPLLOG(@"warning", kNYPLInvalidFeedException, @{@"identifier":self.identifier}, @"Element 'updated' does not contain an RFC 3339 date.");
       return nil;
     }
   }
@@ -149,7 +149,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     for(NYPLXML *const entryXML in [feedXML childrenWithName:@"entry"]) {
       NYPLOPDSEntry *const entry = [[NYPLOPDSEntry alloc] initWithXML:entryXML];
       if(!entry) {
-        NYPLLOG(@"warning", nil, @{@"identifier":self.identifier}, @"Ingoring malformed 'entry' element.");
+        NYPLLOG(@"warning", kNYPLInvalidEntryException, @{@"identifier":self.identifier}, @"Ingoring malformed 'entry' element.");
         continue;
       }
       [entries addObject:entry];

@@ -3,6 +3,12 @@
 
 #include <stdarg.h>
 
+#define kNYPLInitializationException      @"NYPLInitializationException"
+#define kNYPLInvalidArgumentException     @"NYPLInvalidArgumentException"
+#define kNYPLInvalidFeedException         @"NYPLInvalidFeedException"
+#define kNYPLInvalidEntryException        @"NYPLInvalidEntryException"
+#define kNYPLInvalidLinkException         @"NYPLInvalidLinkException"
+
 typedef void (^NYPLLOG_LogCallbackBlock)(NSString * _Nullable logLevel,  NSString * _Nullable exceptionNameOrNil, NSDictionary * _Nullable withDataOrNil, NSString * _Nullable message);
 static _Nullable NYPLLOG_LogCallbackBlock s_logCallbackBlock = nil;
 

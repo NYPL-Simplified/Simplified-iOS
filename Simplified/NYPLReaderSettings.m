@@ -180,7 +180,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
   dispatch_once(&predicate, ^{
     sharedReaderSettings = [[self alloc] init];
     if(!sharedReaderSettings) {
-      NYPLLOG(@"error", nil, nil, @"Failed to create shared reader settings.");
+      NYPLLOG(@"error", kNYPLInitializationException, nil, @"Failed to create shared reader settings.");
     }
     
     [sharedReaderSettings load];
@@ -226,7 +226,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
     NSDictionary *const dictionary = NYPLJSONObjectFromData(savedData);
     
     if(!dictionary) {
-      NYPLLOG(@"error", nil, @{@"json":[[NSString alloc] initWithData:savedData encoding:NSUTF8StringEncoding]}, @"Failed to interpret saved registry data as JSON.");
+      NYPLLOG(@"error", kNYPLInvalidArgumentException, @{@"json":[[NSString alloc] initWithData:savedData encoding:NSUTF8StringEncoding]}, @"Failed to interpret saved registry data as JSON.");
       return;
     }
     
