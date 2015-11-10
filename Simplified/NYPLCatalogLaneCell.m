@@ -79,7 +79,7 @@
     if(width > 10.0) {
       width *= height / button.imageView.image.size.height;
     } else {
-      NYPLLOG(@"warning", nil, nil, @"Failing to correctly display cover with unusable width.");
+      NYPLLOG(@"warning", kNYPLInvalidArgumentException, nil, @"Failing to correctly display cover with unusable width.");
       width = height * 0.75;
     }
     CGRect const frame = CGRectMake(x, 0.0, width, height);

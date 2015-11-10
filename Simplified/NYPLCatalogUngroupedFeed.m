@@ -41,7 +41,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
      }
      
      if(ungroupedFeed.type != NYPLOPDSFeedTypeAcquisitionUngrouped) {
-       NYPLLOG(@"warning", nil, @{@"identifier":ungroupedFeed.identifier}, @"Ignoring feed of invalid type.");
+       NYPLLOG(@"warning", kNYPLInvalidFeedException, @{@"identifier":ungroupedFeed.identifier}, @"Ignoring feed of invalid type.");
        handler(nil);
        return;
      }
@@ -64,7 +64,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   for(NYPLOPDSEntry *const entry in feed.entries) {
     NYPLBook *book = [NYPLBook bookWithEntry:entry];
     if(!book) {
-      NYPLLOG(@"warning", nil, @{@"identifier":entry.identifier}, @"Failed to create book from entry.");
+      NYPLLOG(@"warning", kNYPLInvalidEntryException, @{@"identifier":entry.identifier}, @"Failed to create book from entry.");
       continue;
     }
     
@@ -90,12 +90,12 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
         }
       }
       if(!groupName) {
-        NYPLLOG(@"warning", nil, nil, @"Ignoring facet without group due to UI limitations.");
+        NYPLLOG(@"warning", kNYPLInvalidArgumentException, nil, @"Ignoring facet without group due to UI limitations.");
         continue;
       }
       NYPLCatalogFacet *const facet = [NYPLCatalogFacet catalogFacetWithLink:link];
       if(!facet) {
-        NYPLLOG(@"warning", nil, @{@"link":[link.href absoluteString]}, @"Ignoring invalid facet link.");
+        NYPLLOG(@"warning", kNYPLInvalidFeedException, @{@"link":[link.href absoluteString]}, @"Ignoring invalid facet link.");
         continue;
       }
       if(![facetGroupNames containsObject:groupName]) {

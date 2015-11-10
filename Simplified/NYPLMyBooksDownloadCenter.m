@@ -43,7 +43,7 @@
   dispatch_once(&predicate, ^{
     sharedDownloadCenter = [[self alloc] init];
     if(!sharedDownloadCenter) {
-      NYPLLOG(@"error", nil, nil, @"Failed to create shared download center.");
+      NYPLLOG(@"error", kNYPLInitializationException, nil, @"Failed to create shared download center.");
     }
   });
   
@@ -424,7 +424,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     case NYPLBookStateDownloadSuccessful:
       // fallthrough
     case NYPLBookStateUsed:
-      NYPLLOG(@"warning", nil, nil, @"Ignoring nonsensical download request.");
+      NYPLLOG(@"warning", kNYPLInvalidArgumentException, @{@"identifier":book.identifier}, @"Ignoring nonsensical download request.");
       return;
   }
   

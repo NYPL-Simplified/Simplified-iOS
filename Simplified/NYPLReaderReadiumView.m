@@ -84,7 +84,7 @@ static void generateTOCElements(NSArray *const navigationElements,
   if(!self) return nil;
   
   if(!book) {
-    NYPLLOG(@"error", nil, nil, @"Failed to initialize due to nil book.");
+    NYPLLOG(@"error", kNYPLInvalidArgumentException, nil, @"Failed to initialize due to nil book.");
     return nil;
   }
   
@@ -388,7 +388,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   NSData *data = NYPLJSONDataFromObject(dictionary);
   
   if(!data) {
-    NYPLLOG(@"error", nil, dictionary, @"Failed to construct 'openBook' call.");
+    NYPLLOG(@"error", kNYPLInvalidArgumentException, dictionary, @"Failed to construct 'openBook' call.");
     return;
   }
   

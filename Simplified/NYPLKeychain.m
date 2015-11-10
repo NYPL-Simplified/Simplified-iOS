@@ -11,7 +11,7 @@
   if (sharedKeychain == nil) {
     sharedKeychain = [[self alloc] init];
     if(!sharedKeychain) {
-      NYPLLOG(@"error", nil, nil, @"Failed to created shared keychain.");
+      NYPLLOG(@"error", kNYPLInitializationException, nil, @"Failed to create shared keychain.");
     }
   }
   

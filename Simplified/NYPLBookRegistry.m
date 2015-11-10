@@ -38,7 +38,7 @@ static NSString *const RecordsKey = @"records";
     // Cast allows access to unavailable |init| method.
     sharedRegistry = [[self alloc] init];
     if(!sharedRegistry) {
-      NYPLLOG(@"error", nil, nil, @"Failed to create shared registry.");
+      NYPLLOG(@"error", kNYPLInitializationException, nil, @"Failed to create shared registry.");
     }
     
     [sharedRegistry load];
@@ -137,7 +137,7 @@ static NSString *const RecordsKey = @"records";
     NSDictionary *const dictionary = NYPLJSONObjectFromData(savedData);
     
     if(!dictionary) {
-      NYPLLOG(@"error", nil, @{@"data":[[NSString alloc] initWithData:savedData encoding:NSUTF8StringEncoding]}, @"Failed to interpret saved registry data as JSON.");
+      NYPLLOG(@"error", kNYPLInvalidArgumentException, @{@"data":[[NSString alloc] initWithData:savedData encoding:NSUTF8StringEncoding]}, @"Failed to interpret saved registry data as JSON.");
       return;
     }
     
@@ -160,16 +160,16 @@ static NSString *const RecordsKey = @"records";
 - (void)save
 {
   @synchronized(self) {
+    NSError *error = nil;
     if(![[NSFileManager defaultManager]
          createDirectoryAtURL:[self registryDirectory]
          withIntermediateDirectories:YES
          attributes:nil
-         error:NULL]) {
-      NYPLLOG(@"error", nil, nil, @"Failed to create registry directory.");
+         error:&error]) {
+      NYPLLOG(@"error", nil, @{@"error":[error localizedDescription]}, @"Failed to create registry directory.");
       return;
     }
     
-    NSError *error = nil;
     if(![[self registryDirectory] setResourceValue:@YES
                                             forKey:NSURLIsExcludedFromBackupKey
                                              error:&error]) {
@@ -195,9 +195,9 @@ static NSString *const RecordsKey = @"records";
            writeJSONObject:[self dictionaryRepresentation]
            toStream:stream
            options:0
-           error:NULL]) {
+           error:&error]) {
 #pragma clang diagnostic pop
-        NYPLLOG(@"error", nil, nil, @"Failed to write book registry.");
+        NYPLLOG(@"error", nil, @{@"error":[error localizedDescription]}, @"Failed to write book registry.");
         return;
       }
     } @catch(NSException *const exception) {

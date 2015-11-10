@@ -34,7 +34,7 @@ completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
      NSString *datcat = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] substringToIndex:100];
      NSDictionary *errData = @{@"data": [NSString stringWithFormat:@"%@...", datcat]};
      if(!XML) {
-       NYPLLOG(@"error", nil, errData, @"Failed to parse data as XML.");
+       NYPLLOG(@"error", kNYPLInvalidArgumentException, errData, @"Failed to parse data as XML.");
        NYPLAsyncDispatch(^{handler(nil);});
        return;
      }
