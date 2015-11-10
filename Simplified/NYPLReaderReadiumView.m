@@ -84,7 +84,7 @@ static void generateTOCElements(NSArray *const navigationElements,
   if(!self) return nil;
   
   if(!book) {
-    NYPLLOG(@"error", @"Failed to initialize due to nil book.");
+    NYPLLOG(@"error", nil, nil, @"Failed to initialize due to nil book.");
     return nil;
   }
   
@@ -305,7 +305,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   if([request.URL.scheme isEqualToString:@"simplified"]) {
     NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
     NSString *const function = components[0];
-    NYPLLOG(@"warning", @"Ignoring unknown simplified function.");
+    NYPLLOG(@"warning", nil, @{@"function":function}, @"Ignoring unknown simplified function.");
     return NO;
   }
   
@@ -324,7 +324,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       NSLog(@"");
       // Do nothing.
     } else {
-      NYPLLOG(@"warning", @"Ignoring unknown readium function.");
+      NYPLLOG(@"warning", nil, @{@"function":function}, @"Ignoring unknown readium function.");
     }
     return NO;
   }
@@ -388,7 +388,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   NSData *data = NYPLJSONDataFromObject(dictionary);
   
   if(!data) {
-    NYPLLOG(@"error", @"Failed to construct 'openBook' call.");
+    NYPLLOG(@"error", nil, dictionary, @"Failed to construct 'openBook' call.");
     return;
   }
   

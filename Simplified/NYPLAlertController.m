@@ -99,6 +99,7 @@
     [[NYPLRootTabBarController sharedController] safelyPresentViewController:self animated:animated completion:completion];
   } else {
     [viewController presentViewController:self animated:animated completion:completion];
+    NYPLLOG(@"warning", @"NYPLProblemDocumentException", @{@"title":self.title?self.title:[NSNull null]}, self.message);
   }
 }
 

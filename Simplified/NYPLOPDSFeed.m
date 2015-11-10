@@ -54,9 +54,10 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     @throw NSInvalidArgumentException;
   }
   
-  [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data, NSURLResponse *response, __unused NSError *error) {
+  [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    NSDictionary *infoDict = error ? @{@"error":[error localizedDescription]} : nil;
     if(!data) {
-      NYPLLOG(@"warning", @"Failed to retrieve data.");
+      NYPLLOG(@"warning", nil, infoDict, @"Failed to retrieve data.");
       NYPLAsyncDispatch(^{handler(nil, nil);});
       return;
     }
@@ -70,7 +71,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     
     NYPLXML *const feedXML = [NYPLXML XMLWithData:data];
     if(!feedXML) {
-      NYPLLOG(@"warning", @"Failed to parse data as XML.");
+      NYPLLOG(@"warning", nil, infoDict, @"Failed to parse data as XML.");
       NSDictionary *error = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
       NYPLAsyncDispatch(^{handler(nil, error);});
       return;
@@ -78,7 +79,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     
     NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:feedXML];
     if(!feed) {
-      NYPLLOG(@"warning", @"Could not interpret XML as OPDS.");
+      NYPLLOG(@"warning", nil, infoDict, @"Could not interpret XML as OPDS.");
       NYPLAsyncDispatch(^{handler(nil, nil);});
       return;
     }
@@ -104,7 +105,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   }
   
   if(!((self.identifier = [feedXML firstChildWithName:@"id"].value))) {
-    NYPLLOG(@"info", @"Missing required 'id' element.");
+    NYPLLOG(@"warning", nil, @{@"identifier":self.identifier}, @"Missing required 'id' element.");
     return nil;
   }
   
@@ -114,7 +115,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     for(NYPLXML *const linkXML in [feedXML childrenWithName:@"link"]) {
       NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
       if(!link) {
-        NYPLLOG(@"warning", @"Ignoring malformed 'link' element.");
+        NYPLLOG(@"warning", nil, @{@"identifier":self.identifier}, @"Ignoring malformed 'link' element.");
         continue;
       }
       [links addObject:link];
@@ -124,20 +125,20 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   }
   
   if(!((self.title = [feedXML firstChildWithName:@"title"].value))) {
-    NYPLLOG(@"info", @"Missing required 'title' element.");
+    NYPLLOG(@"warning", nil, @{@"identifier":self.identifier}, @"Missing required 'title' element.");
     return nil;
   }
   
   {
     NSString *const updatedString = [feedXML firstChildWithName:@"updated"].value;
     if(!updatedString) {
-      NYPLLOG(@"info", @"Missing required 'updated' element.");
+      NYPLLOG(@"warning", nil, @{@"identifier":self.identifier}, @"Missing required 'updated' element.");
       return nil;
     }
     
     self.updated = [NSDate dateWithRFC3339String:updatedString];
     if(!self.updated) {
-      NYPLLOG(@"warning", @"Element 'updated' does not contain an RFC 3339 date.");
+      NYPLLOG(@"warning", nil, @{@"identifier":self.identifier}, @"Element 'updated' does not contain an RFC 3339 date.");
       return nil;
     }
   }
@@ -148,7 +149,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     for(NYPLXML *const entryXML in [feedXML childrenWithName:@"entry"]) {
       NYPLOPDSEntry *const entry = [[NYPLOPDSEntry alloc] initWithXML:entryXML];
       if(!entry) {
-        NYPLLOG(@"warning", @"Ingoring malformed 'entry' element.");
+        NYPLLOG(@"warning", nil, @{@"identifier":self.identifier}, @"Ingoring malformed 'entry' element.");
         continue;
       }
       [entries addObject:entry];

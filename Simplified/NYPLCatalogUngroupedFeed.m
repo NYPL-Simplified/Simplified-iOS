@@ -41,7 +41,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
      }
      
      if(ungroupedFeed.type != NYPLOPDSFeedTypeAcquisitionUngrouped) {
-       NYPLLOG(@"warning", @"Ignoring feed of invalid type.");
+       NYPLLOG(@"warning", nil, @{@"identifier":ungroupedFeed.identifier}, @"Ignoring feed of invalid type.");
        handler(nil);
        return;
      }
@@ -64,7 +64,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   for(NYPLOPDSEntry *const entry in feed.entries) {
     NYPLBook *book = [NYPLBook bookWithEntry:entry];
     if(!book) {
-      NYPLLOG(@"warning", @"Failed to create book from entry.");
+      NYPLLOG(@"warning", nil, @{@"identifier":entry.identifier}, @"Failed to create book from entry.");
       continue;
     }
     
@@ -90,12 +90,12 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
         }
       }
       if(!groupName) {
-        NYPLLOG(@"warning", @"Ignoring facet without group due to UI limitations.");
+        NYPLLOG(@"warning", nil, nil, @"Ignoring facet without group due to UI limitations.");
         continue;
       }
       NYPLCatalogFacet *const facet = [NYPLCatalogFacet catalogFacetWithLink:link];
       if(!facet) {
-        NYPLLOG(@"warning", @"Ignoring invalid facet link.");
+        NYPLLOG(@"warning", nil, @{@"link":[link.href absoluteString]}, @"Ignoring invalid facet link.");
         continue;
       }
       if(![facetGroupNames containsObject:groupName]) {
@@ -164,7 +164,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
    handler:^(NYPLCatalogUngroupedFeed *const ungroupedFeed) {
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        if(!ungroupedFeed) {
-         NYPLLOG(@"error", @"Failed to fetch next page.");
+         NYPLLOG(@"error", nil, nil, @"Failed to fetch next page.");
          self.currentlyFetchingNextURL = NO;
          return;
        }

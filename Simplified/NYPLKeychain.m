@@ -11,7 +11,7 @@
   if (sharedKeychain == nil) {
     sharedKeychain = [[self alloc] init];
     if(!sharedKeychain) {
-      NYPLLOG(@"error", @"Failed to created shared keychain.");
+      NYPLLOG(@"error", nil, nil, @"Failed to created shared keychain.");
     }
   }
   
@@ -62,7 +62,7 @@
     dictionary[(__bridge __strong id) kSecValueData] = valueData;
     status = SecItemAdd((__bridge CFDictionaryRef) dictionary, NULL);
     if (status != noErr) {
-      NYPLLOG(@"error", @"Failed to write secure values to keychain. This is a known issue when running from the debugger");
+      NYPLLOG(@"error", nil, nil, @"Failed to write secure values to keychain. This is a known issue when running from the debugger");
     }
   }
 }

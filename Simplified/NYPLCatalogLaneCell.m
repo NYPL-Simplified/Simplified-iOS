@@ -44,7 +44,8 @@
     button.tag = bookIndex;
     UIImage *const image = bookIdentifiersToImages[book.identifier];
     if(!image) {
-      NYPLLOG_F(@"info", @"Did not receive cover for '%@'.", book.title);
+      NSDictionary *infodict = @{@"title":book.title, @"identifier":book.identifier};
+      NYPLLOG_F(@"info", nil, infodict, @"Did not receive cover for '%@'.", book.title);
     }
     [button setImage:(image ? image : [UIImage imageNamed:@"NoCover"])
             forState:UIControlStateNormal];
@@ -78,7 +79,7 @@
     if(width > 10.0) {
       width *= height / button.imageView.image.size.height;
     } else {
-      NYPLLOG(@"warning", @"Failing to correctly display cover with unusable width.");
+      NYPLLOG(@"warning", nil, nil, @"Failing to correctly display cover with unusable width.");
       width = height * 0.75;
     }
     CGRect const frame = CGRectMake(x, 0.0, width, height);

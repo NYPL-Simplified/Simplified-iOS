@@ -15,7 +15,7 @@
 + (NYPLCatalogFacet *)catalogFacetWithLink:(NYPLOPDSLink *const)link
 {
   if(![link.rel isEqualToString:NYPLOPDSRelationFacet]) {
-    NYPLLOG(@"error", @"Failing to construct facet with incorrect relation.");
+    NYPLLOG(@"error", nil, @{@"link":link.rel}, @"Failing to construct facet with incorrect relation.");
     return nil;
   }
   

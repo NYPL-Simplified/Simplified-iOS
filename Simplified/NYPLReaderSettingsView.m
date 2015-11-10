@@ -589,7 +589,7 @@
   NYPLReaderSettingsFontSize newFontSize;
   
   if(!NYPLReaderSettingsDecreasedFontSize(self.fontSize, &newFontSize)) {
-    NYPLLOG(@"warning", @"Ignorning attempt to set font size below the minimum.");
+    NYPLLOG(@"warning", nil, nil, @"Ignorning attempt to set font size below the minimum.");
     return;
   }
   
@@ -603,7 +603,7 @@
   NYPLReaderSettingsFontSize newFontSize;
   
   if(!NYPLReaderSettingsIncreasedFontSize(self.fontSize, &newFontSize)) {
-    NYPLLOG(@"warning", @"Ignorning attempt to set font size above the maximum.");
+    NYPLLOG(@"warning", nil, nil, @"Ignorning attempt to set font size above the maximum.");
     return;
   }
   

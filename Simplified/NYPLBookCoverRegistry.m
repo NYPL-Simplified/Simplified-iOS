@@ -25,7 +25,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   dispatch_once(&predicate, ^{
     sharedRegistry = [[self alloc] init];
     if(!sharedRegistry) {
-      NYPLLOG(@"error", @"Failed to create shared registry.");
+      NYPLLOG(@"error", nil, nil, @"Failed to create shared registry.");
     }
   });
   
@@ -74,12 +74,13 @@ static NSUInteger const memoryCacheInMegabytes = 2;
      URLByAppendingPathComponent:@"pinned-thumbnail-images"];
   
   @synchronized(self) {
+    NSError *error = nil;
     if(![[NSFileManager defaultManager]
          createDirectoryAtURL:URL
          withIntermediateDirectories:YES
          attributes:nil
-         error:NULL]) {
-      NYPLLOG(@"error", @"Failed to create directory.");
+         error:&error]) {
+      NYPLLOG(@"error", nil, @{@"error":[error localizedDescription]}, @"Failed to create directory.");
       return nil;
     }
   }

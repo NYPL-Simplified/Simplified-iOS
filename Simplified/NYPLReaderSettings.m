@@ -180,7 +180,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
   dispatch_once(&predicate, ^{
     sharedReaderSettings = [[self alloc] init];
     if(!sharedReaderSettings) {
-      NYPLLOG(@"error", @"Failed to create shared reader settings.");
+      NYPLLOG(@"error", nil, nil, @"Failed to create shared reader settings.");
     }
     
     [sharedReaderSettings load];
@@ -226,7 +226,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
     NSDictionary *const dictionary = NYPLJSONObjectFromData(savedData);
     
     if(!dictionary) {
-      NYPLLOG(@"error", @"Failed to interpret saved registry data as JSON.");
+      NYPLLOG(@"error", nil, @{@"json":[[NSString alloc] initWithData:savedData encoding:NSUTF8StringEncoding]}, @"Failed to interpret saved registry data as JSON.");
       return;
     }
     
@@ -267,24 +267,25 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
            options:0
            error:NULL]) {
 #pragma clang diagnostic pop
-        NYPLLOG(@"errr", @"Failed to write settings data.");
+        NYPLLOG(@"erorr", nil, nil, @"Failed to write settings data.");
         return;
       }
     } @catch(NSException *const exception) {
-      NYPLLOG_F(@"error", @"Exception: %@: %@", [exception name], [exception reason]);
+      NYPLLOG_F(@"error", [exception name], nil, @"Exception: %@: %@", [exception name], [exception reason]);
       return;
     } @finally {
       [stream close];
     }
     
+    NSError *error = nil;
     if(![[NSFileManager defaultManager]
          replaceItemAtURL:[self settingsURL]
          withItemAtURL:[[self settingsURL] URLByAppendingPathExtension:@"temp"]
          backupItemName:nil
          options:NSFileManagerItemReplacementUsingNewMetadataOnly
          resultingItemURL:NULL
-         error:NULL]) {
-      NYPLLOG(@"error", @"Failed to rename temporary settings file.");
+         error:&error]) {
+      NYPLLOG(@"error", nil, @{@"error":[error localizedDescription]}, @"Failed to rename temporary settings file.");
       return;
     }
   }
