@@ -53,7 +53,7 @@
 - (void)reloadData
 {
   if(!(self.dataSource && self.delegate)) {
-    NYPLLOG(@"warning", @"Ignoring attempt to reload data without a data source and delegate.");
+    NYPLLOG(@"warning", nil, nil, @"Ignoring attempt to reload data without a data source and delegate.");
     return;
   }
   
