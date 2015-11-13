@@ -107,6 +107,11 @@ static NSString *const heapIDDevelopment = @"1848989408";
   return NO;
 }
 
++ (BOOL)preloadedContentEnabled
+{
+  return YES;
+}
+
 + (NSURL *)loanURL
 {
     return [[self circulationURL] URLByAppendingPathComponent:@"loans"];

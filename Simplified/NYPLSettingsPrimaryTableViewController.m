@@ -231,9 +231,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  if ([NYPLConfiguration customFeedEnabled])
-    return 5;
-  return 4;
+  NSInteger sections = 5;
+  if (![NYPLConfiguration customFeedEnabled])
+    sections--;
+  if (![NYPLConfiguration preloadedContentEnabled]) {
+    sections--;
+    if ([NYPLConfiguration customFeedEnabled])
+      [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"The custom feed cannot be enabled while preloaded content is disabled" userInfo:nil] raise];
+  }
+  return sections;
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
