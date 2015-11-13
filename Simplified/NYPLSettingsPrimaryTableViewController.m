@@ -15,6 +15,13 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
           @throw NSInvalidArgumentException;
       }
     case 1:
+      switch (indexPath.row) {
+        case 0:
+          return NYPLSettingsPrimaryTableViewControllerItemHelpStack;
+        default:
+          @throw NSInvalidArgumentException;
+      }
+    case 2:
       switch(indexPath.row) {
         case 0:
           return NYPLSettingsPrimaryTableViewControllerItemCredits;
@@ -22,11 +29,19 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
           return NYPLSettingsPrimaryTableViewControllerItemEULA;
         case 2:
           return NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy;
-        case 3:
+        default:
+          @throw NSInvalidArgumentException;
+      }
+    case 3:
+      switch (indexPath.row) {
+        case 0:
           return NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent;
-        case 4:
-          return NYPLSettingsPrimaryTableViewControllerItemHelpStack;
-        case 5:
+        default:
+          @throw NSInvalidArgumentException;
+      }
+    case 4:
+      switch (indexPath.row) {
+        case 0:
           return NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL;
         default:
           @throw NSInvalidArgumentException;
@@ -43,17 +58,17 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
       return [NSIndexPath indexPathForRow:0 inSection:0];
     case NYPLSettingsPrimaryTableViewControllerItemCredits:
-      return [NSIndexPath indexPathForRow:0 inSection:1];
+      return [NSIndexPath indexPathForRow:0 inSection:2];
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
-      return [NSIndexPath indexPathForRow:1 inSection:1];
+      return [NSIndexPath indexPathForRow:1 inSection:2];
     case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
-      return [NSIndexPath indexPathForRow:2 inSection:1];
+      return [NSIndexPath indexPathForRow:2 inSection:2];
     case NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent:
-      return [NSIndexPath indexPathForRow:3 inSection:1];
+      return [NSIndexPath indexPathForRow:0 inSection:3];
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack:
-      return [NSIndexPath indexPathForRow:4 inSection:1];
+      return [NSIndexPath indexPathForRow:0 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
-      return [NSIndexPath indexPathForRow:5 inSection:1];
+      return [NSIndexPath indexPathForRow:0 inSection:4];
   }
 }
 
@@ -70,7 +85,7 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"Settings", nil);
+  self.title = NSLocalizedString(@"More", nil);
   
   self.clearsSelectionOnViewWillAppear = NO;
   
@@ -216,17 +231,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return 2;
+  if ([NYPLConfiguration customFeedEnabled])
+    return 5;
+  return 4;
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
  numberOfRowsInSection:(NSInteger const)section
 {
   switch(section) {
-    case 0:
+    case 2:
+      return 3;
+    case 0: case 1: case 3: case 4:
       return 1;
-    case 1:
-      return 6;
     default:
       @throw NSInternalInconsistencyException;
   }
