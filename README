@@ -1,5 +1,5 @@
 
-= Getting Started =
+# Getting Started
 
 1. 'git clone https://github.com/NYPL/Simplified-iOS.git && cd Simplified-iOS && git submodule update --init --recursive'
 2. 'sudo gem install cocoapods'
@@ -26,7 +26,7 @@
         change <arg value="ARCHS=arm64 armv7 armv7s"/> to <arg value="ARCHS=i386 x86_64"/>
 
 
-== Building Simplified ==
+# Building Simplified ==
 
 2. Add the configuration file Simplified+RMSDK.xcconfig to the target Simplified.
 5. Add 'libADEPT.a' and 'libADEPT Decryption for Readium' to the "Link Binary With Libraries" section of the target Simplified.
