@@ -30,9 +30,8 @@
   
   self.delegate = self;
   
-  self.title = NSLocalizedString(@"Settings", nil);
-  
-  self.tabBarItem.image = [UIImage imageNamed:@"Settings"];
+  self.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMore tag:0];
+  self.title = NSLocalizedString(@"More", nil);
   
   self.primaryNavigationController = [[NYPLSettingsPrimaryNavigationController alloc] init];
   self.primaryNavigationController.primaryTableViewController.delegate = self;

@@ -102,6 +102,11 @@ static NSString *const heapIDDevelopment = @"1848989408";
     return [self circulationURL];
 }
 
++ (BOOL)customFeedEnabled
+{
+  return NO;
+}
+
 + (NSURL *)loanURL
 {
     return [[self circulationURL] URLByAppendingPathComponent:@"loans"];
