@@ -21,6 +21,8 @@
 
 + (BOOL)customFeedEnabled;
 
++ (BOOL)preloadedContentEnabled;
+
 + (NSURL *)loanURL;
 
 + (NSURL *)registrationURL;
