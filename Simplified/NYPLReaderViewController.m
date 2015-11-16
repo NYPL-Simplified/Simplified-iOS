@@ -181,8 +181,9 @@
     return NO;
   CGFloat edgeOfScreenWidth = CGRectGetWidth(self.view.bounds) * EDGE_OF_SCREEN_POINT_FRACTION;
   if (gestureRecognizer == self.tapGestureRecognizer) {
-    return YES;
-    return (p.x < edgeOfScreenWidth || p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth));
+    if (p.x < edgeOfScreenWidth || p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth))
+      return YES;
+    return ![[NYPLReaderSettings sharedSettings].currentReaderReadiumView touchIntersectsLink:touch];
   } else if (gestureRecognizer == self.doubleTapGestureRecognizer) {
     return !(p.x < edgeOfScreenWidth || p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth));
   }

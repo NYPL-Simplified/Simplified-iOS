@@ -8,3 +8,4 @@ This project does not currently adhere to Semantic Versioning. But it should.
  
 ### Fixed
 - SIM-25 Double-tapping on the "Sign Up" should no longer start a second library card application
+- SIM-32 Single-tap brings up the reader options menu, now.
