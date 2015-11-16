@@ -36,6 +36,8 @@
 @property (nonatomic) UIButton *largeTransparentAccessibilityButton;
 @property (nonatomic) NSMutableArray *pendingPageTurns;
 
+@property (nonatomic, getter = isStatusBarHidden) BOOL statusBarHidden;
+
 @property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer, *doubleTapGestureRecognizer;
 @property (nonatomic) UISwipeGestureRecognizer *leftSwipeGestureRecognizer, *rightSwipeGestureRecognizer;
 @end
@@ -94,7 +96,7 @@
   
   self.tapGestureRecognizer = [[UITapGestureRecognizer alloc]
                                initWithTarget:self
-                               action:@selector(didReceiveGesture:)];
+                               action:@selector(didReceiveSingleTap:)];
   self.tapGestureRecognizer.cancelsTouchesInView = NO;
   self.tapGestureRecognizer.delegate = self;
   self.tapGestureRecognizer.numberOfTapsRequired = 1;
@@ -141,7 +143,7 @@
   [[NYPLBookRegistry sharedRegistry] stopDelaySyncCommit];
 }
 
-- (void)didReceiveGesture:(UIGestureRecognizer *const)gestureRecognizer {
+- (void)didReceiveSingleTap:(UIGestureRecognizer *const)gestureRecognizer {
   CGPoint p = [gestureRecognizer locationInView:self.view];
   CGFloat edgeOfScreenWidth = CGRectGetWidth(self.view.bounds) * EDGE_OF_SCREEN_POINT_FRACTION;
   if ([self.renderedImageView superview])
@@ -150,12 +152,14 @@
     [self turnPageIsRight:NO];
   } else if (p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth)) {
     [self turnPageIsRight:YES];
+  } else {
+    [self setInterfaceHidden:!self.interfaceHidden animated:YES];
   }
 }
 
 - (void)didReceiveDoubleTap:(__unused UIGestureRecognizer *const)gestureRecognizer
 {
-  self.interfaceHidden = !self.interfaceHidden;
+  // No-op, for now, until we implement something like highlight
 }
 
 - (void)didReceiveSwipeGesture:(UISwipeGestureRecognizer *const)gestureRecognizer {
@@ -177,6 +181,7 @@
     return NO;
   CGFloat edgeOfScreenWidth = CGRectGetWidth(self.view.bounds) * EDGE_OF_SCREEN_POINT_FRACTION;
   if (gestureRecognizer == self.tapGestureRecognizer) {
+    return YES;
     return (p.x < edgeOfScreenWidth || p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth));
   } else if (gestureRecognizer == self.doubleTapGestureRecognizer) {
     return !(p.x < edgeOfScreenWidth || p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth));
@@ -187,6 +192,8 @@
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
   if (gestureRecognizer == self.tapGestureRecognizer) {
     if (otherGestureRecognizer == self.leftSwipeGestureRecognizer || otherGestureRecognizer == self.rightSwipeGestureRecognizer)
+      return YES;
+    if (self.pageViewController.parentViewController == self && [self.pageViewController.gestureRecognizers containsObject:otherGestureRecognizer])
       return YES;
   }
   return NO;
@@ -228,6 +235,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.automaticallyAdjustsScrollViewInsets = NO;
   
   self.shouldHideInterfaceOnNextAppearance = YES;
+  
+  [UINavigationBar setAnimationDuration:0.25];
+  self.navigationController.navigationBar.translucent = YES;
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
@@ -410,12 +420,12 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (BOOL)prefersStatusBarHidden
 {
-  return self.interfaceHidden;
+  return self.isStatusBarHidden;
 }
 
 - (UIStatusBarAnimation)preferredStatusBarUpdateAnimation
 {
-  return UIStatusBarAnimationNone;
+  return UIStatusBarAnimationSlide;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -446,6 +456,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 - (void)willMoveToParentViewController:(__attribute__((unused)) UIViewController *)parent
 {
   self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+  self.navigationController.navigationBar.translucent = YES;
   self.navigationController.navigationBar.barTintColor = nil;
 }
 
@@ -662,7 +673,7 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
 
 #pragma mark -
 
-- (void)setInterfaceHidden:(BOOL)interfaceHidden
+- (void)setInterfaceHidden:(BOOL)interfaceHidden animated:(BOOL)animated
 {
   if(self.rendererView.bookIsCorrupt && interfaceHidden) {
     // Hiding the UI would prevent the user from escaping from a corrupt book.
@@ -673,9 +684,27 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   
   self.navigationController.interactivePopGestureRecognizer.enabled = !interfaceHidden;
   
-  self.navigationController.navigationBarHidden = self.interfaceHidden;
+  if (interfaceHidden) {
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
+    self.statusBarHidden = YES;
+    [UIView animateWithDuration:0.25 animations:^{
+      [self setNeedsStatusBarAppearanceUpdate];
+    }];
+  } else {
+    self.statusBarHidden = NO;
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
+  }
   
-  self.bottomView.hidden = self.interfaceHidden;
+  if (animated) {
+    [UIView transitionWithView:self.bottomView
+                      duration:0.25
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^{
+                      self.bottomView.hidden = interfaceHidden;
+                    } completion:nil];
+  } else {
+    self.bottomView.hidden = self.interfaceHidden;
+  }
   
   if(self.interfaceHidden) {
     [self.readerSettingsViewPhone removeFromSuperview];
@@ -691,6 +720,11 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   self.largeTransparentAccessibilityButton.isAccessibilityElement = !interfaceHidden;
   
   [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (void)setInterfaceHidden:(BOOL)interfaceHidden
+{
+  [self setInterfaceHidden:interfaceHidden animated:NO];
 }
 
 - (BOOL)returnToReaderFocus {
