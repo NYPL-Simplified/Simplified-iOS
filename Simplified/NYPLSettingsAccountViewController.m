@@ -217,16 +217,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindRegistration:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      [self verifyLocationServicesWithHandler:^(void) {
-        NYPLRegistrationStoryboard *registerCardStoryboard = (NYPLRegistrationStoryboard *) [NYPLRegistrationStoryboard storyboardWithName:@"LibraryCard" bundle:nil];
-        registerCardStoryboard.delegate = self;
-        UINavigationController *rootViewController = [registerCardStoryboard instantiateInitialViewController];
-        rootViewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-        [[NYPLRootTabBarController sharedController]
-         safelyPresentViewController:rootViewController
-         animated:YES
-         completion:nil];
-      }];
+      NYPLRegistrationStoryboard *registerCardStoryboard = (NYPLRegistrationStoryboard *) [NYPLRegistrationStoryboard storyboardWithName:@"LibraryCard" bundle:nil];
+      registerCardStoryboard.delegate = self;
+      UINavigationController *rootViewController = [registerCardStoryboard instantiateInitialViewController];
+      rootViewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+      [[NYPLRootTabBarController sharedController]
+       safelyPresentViewController:rootViewController
+       animated:YES
+       completion:nil];
       break;
   }
 }
