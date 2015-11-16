@@ -266,6 +266,29 @@ static void generateTOCElements(NSArray *const navigationElements,
   [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
 }
 
+- (BOOL) touchIntersectsLink:(UITouch *)touch
+{
+  // Adapted from http://stackoverflow.com/questions/7216356/iphone-tapgesture-on-uiwebview-conflicts-with-the-link-clicking
+  
+  BOOL retVal = NO;
+  
+  //Check if a link was clicked
+  NSString *js = @"simplified.getSemicolonSeparatedLinkRects()";
+  NSString *result = [self.webView stringByEvaluatingJavaScriptFromString:js];
+  
+  NSArray *linkArray = [result componentsSeparatedByString:@";"];
+  CGPoint touchPoint = [touch locationInView:self.webView];
+  for ( NSString *linkRectStr in linkArray ) {
+    CGRect rect = CGRectFromString(linkRectStr);
+    if ( CGRectContainsPoint( rect, touchPoint ) ) {
+      retVal = YES;
+      break;
+    }
+  }
+  
+  return retVal;
+}
+
 #pragma mark NSObject
 
 - (void)dealloc

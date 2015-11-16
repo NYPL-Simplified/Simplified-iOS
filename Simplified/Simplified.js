@@ -5,6 +5,19 @@ function Simplified() {
   
   this.shouldUpdateVisibilityOnUpdate = false;
   
+  this.getSemicolonSeparatedLinkRects = function() {
+    var offsetRect = document.getElementById('epubContentIframe').getBoundingClientRect();
+    var a = window.frames['epubContentIframe'].document.getElementsByTagName('a');
+    var retVal = new Array();
+    for (var idx= 0; idx < a.length; ++idx) {
+      var r = a[idx].getBoundingClientRect();
+      r.left += offsetRect.left;
+      r.top += offsetRect.top;
+      retVal[idx] = '{{'+r.left+','+r.top+'},{'+r.width+','+r.height+'}}';
+    }
+    return retVal.join(';');
+  }
+  
   function updateVisibility() {
     
     var iframe = window.frames["epubContentIframe"];
