@@ -3,7 +3,7 @@
 	url = git@github.com:NYPL/readium-sdk.git
 [submodule "readium-shared-js"]
 	path = readium-shared-js
-	url = git@github.com:readium/readium-shared-js.git
+	url = git@github.com:NYPL/readium-shared-js.git
 [submodule "tenprintcover-ios"]
 	path = tenprintcover-ios
 	url = git@github.com:NYPL/tenprintcover-ios.git
