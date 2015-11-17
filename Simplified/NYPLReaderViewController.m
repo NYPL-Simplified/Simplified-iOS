@@ -34,12 +34,10 @@
 @property (nonatomic) UIProgressView *bottomViewProgressView;
 @property (nonatomic) UILabel *bottomViewProgressLabel;
 @property (nonatomic) UIButton *largeTransparentAccessibilityButton;
-@property (nonatomic) NSMutableArray *pendingPageTurns;
 
 @property (nonatomic, getter = isStatusBarHidden) BOOL statusBarHidden;
 
 @property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer, *doubleTapGestureRecognizer;
-@property (nonatomic) UISwipeGestureRecognizer *leftSwipeGestureRecognizer, *rightSwipeGestureRecognizer;
 @end
 
 @implementation NYPLReaderViewController
@@ -111,27 +109,6 @@
   self.doubleTapGestureRecognizer.numberOfTapsRequired = 2;
   [self.view addGestureRecognizer:self.doubleTapGestureRecognizer];
   
-  self.leftSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc]
-                                     initWithTarget:self
-                                     action:@selector(didReceiveSwipeGesture:)];
-  self.leftSwipeGestureRecognizer.cancelsTouchesInView = NO;
-  self.leftSwipeGestureRecognizer.delegate = self;
-  self.leftSwipeGestureRecognizer.numberOfTouchesRequired = 1;
-  self.leftSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
-  self.leftSwipeGestureRecognizer.enabled = NO;
-  [self.view addGestureRecognizer:self.leftSwipeGestureRecognizer];
-  
-  self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc]
-                                     initWithTarget:self
-                                     action:@selector(didReceiveSwipeGesture:)];
-  self.rightSwipeGestureRecognizer.cancelsTouchesInView = NO;
-  self.rightSwipeGestureRecognizer.delegate = self;
-  self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
-  self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
-  self.rightSwipeGestureRecognizer.enabled = NO;
-  [self.view addGestureRecognizer:self.rightSwipeGestureRecognizer];
-  
-  self.pendingPageTurns = [NSMutableArray array];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged) name:UIAccessibilityVoiceOverStatusChanged object:nil];
   
   return self;
@@ -148,9 +125,15 @@
   CGFloat edgeOfScreenWidth = CGRectGetWidth(self.view.bounds) * EDGE_OF_SCREEN_POINT_FRACTION;
   if ([self.renderedImageView superview])
     [self.renderedImageView removeFromSuperview];
+  
+  NYPLReaderReadiumView *rv = [NYPLReaderSettings sharedSettings].currentReaderReadiumView;
   if (p.x < edgeOfScreenWidth) {
+    if (rv.isPageTurning || !rv.canGoLeft)
+      return;
     [self turnPageIsRight:NO];
   } else if (p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth)) {
+    if (rv.isPageTurning || !rv.canGoRight)
+      return;
     [self turnPageIsRight:YES];
   } else {
     [self setInterfaceHidden:!self.interfaceHidden animated:YES];
@@ -160,13 +143,6 @@
 - (void)didReceiveDoubleTap:(__unused UIGestureRecognizer *const)gestureRecognizer
 {
   // No-op, for now, until we implement something like highlight
-}
-
-- (void)didReceiveSwipeGesture:(UISwipeGestureRecognizer *const)gestureRecognizer {
-  if (gestureRecognizer.direction == UISwipeGestureRecognizerDirectionLeft)
-    [self turnPageIsRight:YES];
-  else if (gestureRecognizer.direction == UISwipeGestureRecognizerDirectionRight)
-    [self turnPageIsRight:NO];
 }
 
 - (BOOL)gestureRecognizer:(__unused UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(__unused UIGestureRecognizer *)otherGestureRecognizer {
@@ -190,13 +166,7 @@
   return YES;
 }
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-  if (gestureRecognizer == self.tapGestureRecognizer) {
-    if (otherGestureRecognizer == self.leftSwipeGestureRecognizer || otherGestureRecognizer == self.rightSwipeGestureRecognizer)
-      return YES;
-    if (self.pageViewController.parentViewController == self && [self.pageViewController.gestureRecognizers containsObject:otherGestureRecognizer])
-      return YES;
-  }
+- (BOOL)gestureRecognizer:(__unused UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(__unused UIGestureRecognizer *)otherGestureRecognizer {
   return NO;
 }
 
@@ -288,6 +258,10 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.pageViewController.dataSource = self;
   self.pageViewController.delegate = self;
   [[self.pageViewController view] setFrame:[[self view] bounds]];
+  for (UIGestureRecognizer *gr in self.pageViewController.gestureRecognizers) {
+    if ([gr isKindOfClass:[UITapGestureRecognizer class]])
+      gr.enabled = NO;
+  }
   
   self.dummyViewControllers = @[[[UIViewController alloc] init], [[UIViewController alloc] init], [[UIViewController alloc] init]];
   for (UIViewController *v in self.dummyViewControllers)
@@ -399,14 +373,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   }
   
   if (completed) {
-    if (self.pendingPageTurns.count > 0) {
-      NSNumber *n = [self.pendingPageTurns lastObject];
-      [self.pendingPageTurns removeLastObject];
-      if (n.boolValue)
-        [self turnPageIsRight:YES];
-      else
-        [self turnPageIsRight:NO];
-    }
+    if (self.renderedImageView.superview == self.rendererView.superview)
+      [self.renderedImageView removeFromSuperview];
   }
   
   [self.bottomViewProgressView setProgress:bookPercentage.floatValue / 100 animated:YES];  
@@ -557,6 +525,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (UIViewController *)pageViewController:(__unused UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
 {
+  NYPLReaderReadiumView *rv = [NYPLReaderSettings sharedSettings].currentReaderReadiumView;
+  if (rv.isPageTurning || ![rv canGoLeft])
+    return nil;
   NSInteger i = [self.dummyViewControllers indexOfObject:viewController];
   i = (i+2)%3;
   return [self.dummyViewControllers objectAtIndex:i];
@@ -564,6 +535,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (UIViewController *)pageViewController:(__unused UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
+  NYPLReaderReadiumView *rv = [NYPLReaderSettings sharedSettings].currentReaderReadiumView;
+  if (rv.isPageTurning || ![rv canGoRight])
+    return nil;
   NSInteger i = [self.dummyViewControllers indexOfObject:viewController];
   i = (i+1)%3;
   return [self.dummyViewControllers objectAtIndex:i];
@@ -804,7 +778,7 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
 {
   NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
   if (rv.isPageTurning) {
-    [self.pendingPageTurns addObject:[NSNumber numberWithBool:isRight]];
+    return;
   } else {
     if (isRight)
       [rv openPageRight];

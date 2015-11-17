@@ -28,7 +28,7 @@
 @property (nonatomic) NSInteger openPageCount;
 @property (nonatomic) RDPackage *package;
 @property (nonatomic) BOOL pageProgressionIsLTR;
-@property (nonatomic) BOOL isPageTurning;
+@property (nonatomic) BOOL isPageTurning, canGoLeft, canGoRight;
 @property (nonatomic) RDPackageResourceServer *server;
 @property (nonatomic) NSArray *TOCElements;
 @property (nonatomic) UIWebView *webView;
@@ -257,11 +257,15 @@ static void generateTOCElements(NSArray *const navigationElements,
 }
 
 - (void) openPageLeft {
+  if (!self.canGoLeft)
+    return;
   self.isPageTurning = YES;
   [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageLeft()"];
 }
 
 - (void) openPageRight {
+  if (!self.canGoRight)
+    return;
   self.isPageTurning = YES;
   [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
 }
@@ -460,6 +464,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   // Use left-to-right unless it explicitly asks for right-to-left.
   self.pageProgressionIsLTR = ![dictionary[@"pageProgressionDirection"]
                                 isEqualToString:@"rtl"];
+  self.canGoLeft = [dictionary[@"canGoLeft_"] boolValue];
+  self.canGoRight = [dictionary[@"canGoRight_"] boolValue];
   
   NSArray *const openPages = dictionary[@"openPages"];
   
