@@ -6,6 +6,7 @@
 
 @property (nonatomic, weak) id<NYPLReaderRendererDelegate> delegate;
 @property (nonatomic, readonly) BOOL isPageTurning;
+@property (nonatomic, readonly) BOOL canGoRight, canGoLeft;
 
 - (id)init NS_UNAVAILABLE;
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
@@ -21,4 +22,5 @@
 - (void) openPageLeft;
 - (void) openPageRight;
 - (BOOL) touchIntersectsLink:(UITouch *)touch;
+
 @end
