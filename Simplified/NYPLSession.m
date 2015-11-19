@@ -83,19 +83,26 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
     @throw NSInvalidArgumentException;
   }
   
+  NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:URL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
+  
+  NSString *lpe = [URL lastPathComponent];
+  if ([lpe isEqualToString:@"borrow"])
+    [req setHTTPMethod:@"PUT"];
+  else
+    [req setHTTPMethod:@"GET"];
+  
   [[self.session
-    dataTaskWithURL:URL
+    dataTaskWithRequest:req
     completionHandler:^(NSData *const data,
                         NSURLResponse *response,
                         NSError *const error) {
-      if(error) {
-        handler(nil, response, error);
-        return;
-      }
-      
-      handler(data, response, nil);
-    }]
-   resume];
+    if(error) {
+      handler(nil, response, error);
+      return;
+    }
+    
+    handler(data, response, nil);
+  }] resume];
 }
 
 - (void)withURLs:(NSSet *const)URLs handler:(void (^)(NSDictionary *URLsToDataOrNull))handler

@@ -148,11 +148,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
     }
     
     NYPLBook *book = [[NYPLBook alloc] initWithAcquisition:[[NYPLBookAcquisition alloc] initWithBorrow:nil
-                                                                                               generic:bookBundleURL
+                                                                                               generic:@{@"application/epub+zip":bookBundleURL}
                                                                                             openAccess:nil
                                                                                                 revoke:nil
                                                                                                 sample:nil
                                                                                                 report:nil]
+                                  acquisitionBorrowFormats:@[@"application/epub+zip"]
                                              authorStrings:@[bookAuthor]
                                         availabilityStatus:NYPLBookAvailabilityStatusAvailable
                                            availableCopies:0

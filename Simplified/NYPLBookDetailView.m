@@ -389,7 +389,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
-      if(self.book.acquisition.openAccess) {
+      if(self.book.acquisition.openAccess.allKeys.count) {
         self.normalView.state = NYPLBookButtonsStateCanKeep;
       } else {
         if (self.book.availableCopies > 0) {

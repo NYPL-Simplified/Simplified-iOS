@@ -402,7 +402,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   switch(state) {
     case NYPLBookStateUnregistered:
-      if(!book.acquisition.borrow && book.acquisition.openAccess) {
+      if(!book.acquisition.borrow && book.acquisition.openAccess.allKeys.count) {
         [[NYPLBookRegistry sharedRegistry]
          addBook:book
          location:nil
@@ -460,7 +460,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       }];
     } else {
       // Actually download the book
-      NSURL *URL = book.acquisition.generic ? book.acquisition.generic : book.acquisition.openAccess;
+      NSString *desiredFormat = @"application/epub+zip";
+      NSURL *URL = book.acquisition.generic[desiredFormat] ? book.acquisition.generic[desiredFormat] : book.acquisition.openAccess[desiredFormat];
       NSURLRequest *const request = [NSURLRequest requestWithURL:URL];
       
       if(!request.URL) {
@@ -531,7 +532,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
   
   // copying the preloaded content book from the application's bundle to it's destination
-  NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.generic];
+  NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.generic[@"application/epub+zip"]];
   [[NYPLBookRegistry sharedRegistry]
    addBook:book
    location:nil

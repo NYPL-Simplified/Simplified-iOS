@@ -2,12 +2,14 @@
 #import "NYPLBookAcquisition.h"
 #import "NYPLNull.h"
 #import "NYPLOPDS.h"
+#import "NYPLConfiguration.h"
 
 #import "NYPLBook.h"
 
 @interface NYPLBook ()
 
 @property (nonatomic) NYPLBookAcquisition *acquisition;
+@property (nonatomic) NSArray *acquisitionBorrowFormats;
 @property (nonatomic) NSArray *authorStrings;
 @property (nonatomic) NYPLBookAvailabilityStatus availabilityStatus;
 @property (nonatomic) NSInteger availableCopies;
@@ -29,6 +31,7 @@
 NSString *const NYPLBookProblemReportedNotification = @"NYPLBookProblemReportedNotification";
 
 static NSString *const AcquisitionKey = @"acquisition";
+static NSString *const AcquisitionBorrowFormatsKey = @"acquisition-borrow-formats";
 static NSString *const AuthorsKey = @"authors";
 static NSString *const AvailabilityStatusKey = @"availability-status";
 static NSString *const AvailableCopiesKey = @"available-copies";
@@ -54,11 +57,15 @@ static NSString *const UpdatedKey = @"updated";
     return nil;
   }
   
-  NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail, *report = nil;
+  NSURL *borrow, *revoke, *sample, *image, *imageThumbnail, *report = nil;
+  NSMutableDictionary *generic = [NSMutableDictionary dictionary];
+  NSMutableDictionary *openAccess = [NSMutableDictionary dictionary];
+  
   
   NYPLBookAvailabilityStatus availabilityStatus = NYPLBookAvailabilityStatusUnknown;
   NSInteger availableCopies = 0;
   NSDate *availableUntil = nil;
+  NSArray *borrowFormats = @[];
   for(NYPLOPDSLink *const link in entry.links) {
     if(link.availabilityStatus) {
       if([link.availabilityStatus isEqualToString:@"available"]) {
@@ -79,15 +86,16 @@ static NSString *const UpdatedKey = @"updated";
     }
     
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisition]) {
-      generic = link.href;
+      [generic setObject:link.href forKey:link.acquisitionFormats[0]];
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionBorrow]) {
       borrow = link.href;
+      borrowFormats = link.acquisitionFormats;
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionOpenAccess]) {
-      openAccess = link.href;
+      [openAccess setObject:link.href forKey:link.acquisitionFormats[0]];
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionRevoke]) {
@@ -128,6 +136,7 @@ static NSString *const UpdatedKey = @"updated";
                                revoke:revoke
                                sample:sample
                                report:report]
+          acquisitionBorrowFormats:borrowFormats
           authorStrings:entry.authorStrings
           availabilityStatus: availabilityStatus
           availableCopies:availableCopies
@@ -149,6 +158,7 @@ static NSString *const UpdatedKey = @"updated";
 {
   return [[NYPLBook alloc]
           initWithAcquisition:self.acquisition
+          acquisitionBorrowFormats:book.acquisitionBorrowFormats
           authorStrings:book.authorStrings
           availabilityStatus:self.availabilityStatus
           availableCopies:self.availableCopies
@@ -167,6 +177,7 @@ static NSString *const UpdatedKey = @"updated";
 }
 
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
+           acquisitionBorrowFormats:(NSArray *)acquisitionBorrowFormats
                       authorStrings:(NSArray *)authorStrings
                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
                     availableCopies:(NSInteger)availableCopies
@@ -197,6 +208,7 @@ static NSString *const UpdatedKey = @"updated";
   }
   
   self.acquisition = acquisition;
+  self.acquisitionBorrowFormats = acquisitionBorrowFormats;
   self.authorStrings = authorStrings;
   self.availabilityStatus = availabilityStatus;
   self.availableCopies = availableCopies;
@@ -269,6 +281,7 @@ static NSString *const UpdatedKey = @"updated";
 - (NSDictionary *)dictionaryRepresentation
 {
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
+           AcquisitionBorrowFormatsKey: self.acquisitionBorrowFormats,
            AuthorsKey: self.authorStrings,
            AvailabilityStatusKey: @(self.availabilityStatus),
            AvailableCopiesKey: @(self.availableCopies),

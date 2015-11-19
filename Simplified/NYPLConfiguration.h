@@ -23,6 +23,8 @@
 
 + (BOOL)preloadedContentEnabled;
 
++ (BOOL)canDisplayPublicationWithFormat:(NSString *)format;
+
 + (NSURL *)loanURL;
 
 + (NSURL *)registrationURL;
