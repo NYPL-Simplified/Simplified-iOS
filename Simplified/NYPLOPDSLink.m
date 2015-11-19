@@ -63,25 +63,21 @@
     self.availableCopies = [copiesXML.attributes[@"available"] integerValue];
   }
   
-  NSArray *acquisitionsXML = [[linkXML childrenWithName:@"indirectAcquisition"] arrayByAddingObjectsFromArray:[linkXML childrenWithName:@"directAcquisition"]];
-  for (NYPLXML *acquisitionXML in acquisitionsXML)
-    [self addAcquisitionFormatsWithXML:acquisitionXML];
+  [self addAcquisitionFormatsWithXML:linkXML];
   
   return self;
 }
 
 - (void)addAcquisitionFormatsWithXML:(NYPLXML *)acquisitionXML
 {
-  NSArray *children = [[acquisitionXML childrenWithName:@"indirectAcquisition"] arrayByAddingObjectsFromArray:[acquisitionXML childrenWithName:@"directAcquisition"]];
+  NSArray *children = [acquisitionXML childrenWithName:@"indirectAcquisition"];
   if (children.count > 0) {
     for (NYPLXML *child in children)
       [self addAcquisitionFormatsWithXML:child];
   } else {
     NSDictionary *attributes = acquisitionXML.attributes;
     NSString *acquisitionFormat = attributes[@"type"];
-    if (!acquisitionFormat)
-      NYPLLOG(@"warning", kNYPLInvalidLinkException, @{@"title":self.title}, @"acquisition node is myssing required 'type' attribute");
-    else
+    if (acquisitionFormat)
       [self.mutableAcquisitionFormats addObject:acquisitionFormat];
   }
 }

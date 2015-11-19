@@ -6,11 +6,14 @@ This project does not currently adhere to Semantic Versioning. But it should.
 - Borrow requests now use the HTTP method PUT instead of GET
 - NYPLBookAcquisition now stores a dictionary of fulfillment links (generic and open access) instead of just a single URL, to allow for multiple formats
 - NYPLConfiguration adds a method that other classes may call to determine which file formats Simplified is capable of reading
+- BugSnag API key changed to 76cb0080ae8cc30d903663e10b138381
+- HelpStack now points at Desk.com instead of ZenDesk
 
 ### Fixed
 - SIM-37 Borrow requests should be working correctly now
 - SIM-37 Acquisitions that can only be fulfilled as PDF should be ignored
 - SIM-37 Client shooudl always follow the fulfillment link to an epub, rather than some other format that the client cannot recognize
+- SIM-36 New BugSnag API key
 
 ## 0.9.0 (17) 17-11-2015
 ### Changed
