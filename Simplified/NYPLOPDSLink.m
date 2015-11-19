@@ -16,6 +16,7 @@
 @property (nonatomic) NSInteger availableCopies;
 @property (nonatomic) NSDate *availableSince;
 @property (nonatomic) NSDate *availableUntil;
+@property (nonatomic) NSMutableArray *mutableAcquisitionFormats;
 
 @end
 
@@ -47,6 +48,7 @@
   self.hreflang = linkXML.attributes[@"hreflang"];
   self.title = linkXML.attributes[@"title"];
   self.length = linkXML.attributes[@"length"];
+  self.mutableAcquisitionFormats = [NSMutableArray array];
   
   NYPLXML *availabilityXML = [linkXML firstChildWithName:@"availability"];
   if (availabilityXML) {
@@ -61,7 +63,32 @@
     self.availableCopies = [copiesXML.attributes[@"available"] integerValue];
   }
   
+  NSArray *acquisitionsXML = [[linkXML childrenWithName:@"indirectAcquisition"] arrayByAddingObjectsFromArray:[linkXML childrenWithName:@"directAcquisition"]];
+  for (NYPLXML *acquisitionXML in acquisitionsXML)
+    [self addAcquisitionFormatsWithXML:acquisitionXML];
+  
   return self;
+}
+
+- (void)addAcquisitionFormatsWithXML:(NYPLXML *)acquisitionXML
+{
+  NSArray *children = [[acquisitionXML childrenWithName:@"indirectAcquisition"] arrayByAddingObjectsFromArray:[acquisitionXML childrenWithName:@"directAcquisition"]];
+  if (children.count > 0) {
+    for (NYPLXML *child in children)
+      [self addAcquisitionFormatsWithXML:child];
+  } else {
+    NSDictionary *attributes = acquisitionXML.attributes;
+    NSString *acquisitionFormat = attributes[@"type"];
+    if (!acquisitionFormat)
+      NYPLLOG(@"warning", kNYPLInvalidLinkException, @{@"title":self.title}, @"acquisition node is myssing required 'type' attribute");
+    else
+      [self.mutableAcquisitionFormats addObject:acquisitionFormat];
+  }
+}
+
+- (NSArray *)acquisitionFormats
+{
+  return [[NSArray alloc] initWithArray:self.mutableAcquisitionFormats];
 }
 
 @end

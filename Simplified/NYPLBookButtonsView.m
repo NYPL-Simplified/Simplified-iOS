@@ -151,8 +151,8 @@
       break;
     case NYPLBookButtonsStateDownloadNeeded:
     {
-      NSString *title = (self.book.acquisition.openAccess || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);
-      NSString *hint = (self.book.acquisition.openAccess || preloaded) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+      NSString *title = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);
+      NSString *hint = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
                               TitleKey: NSLocalizedString(@"Download", nil),
                               HintKey: [NSString stringWithFormat:NSLocalizedString(@"Downloads %@", nil), self.book.title],
@@ -166,8 +166,8 @@
       // Fallthrough
     case NYPLBookButtonsStateUsed:
     {
-      NSString *title = (self.book.acquisition.openAccess || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);\
-      NSString *hint = (self.book.acquisition.openAccess || preloaded) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+      NSString *title = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);\
+      NSString *hint = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
       visibleButtonInfo = @[@{ButtonKey: self.readButton,
                               TitleKey: NSLocalizedString(@"Read", nil),
                               HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens %@ for reading", nil), self.book.title],
@@ -192,7 +192,7 @@
   for (NSDictionary *buttonInfo in visibleButtonInfo) {
     NYPLRoundedButton *button = buttonInfo[ButtonKey];
     if(button == self.deleteButton && !preloaded && (!fulfillmentId && fulfillmentIdRequired)) {
-      if(!self.book.acquisition.openAccess) {
+      if(!self.book.acquisition.openAccess.allKeys.count) {
         continue;
       }
     }

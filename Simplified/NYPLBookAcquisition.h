@@ -1,8 +1,8 @@
 @interface NYPLBookAcquisition : NSObject
 
 @property (nonatomic, readonly) NSURL *borrow; // nilable
-@property (nonatomic, readonly) NSURL *generic; // nilable
-@property (nonatomic, readonly) NSURL *openAccess; // nilable
+@property (nonatomic, readonly) NSDictionary *generic; // nilable
+@property (nonatomic, readonly) NSDictionary *openAccess; // nilable
 @property (nonatomic, readonly) NSURL *revoke; // nilable
 @property (nonatomic, readonly) NSURL *sample; // nilable
 @property (nonatomic, readonly) NSURL *report; // nilable
@@ -12,8 +12,8 @@
 
 // designated initializer
 - (instancetype)initWithBorrow:(NSURL *)borrow
-                       generic:(NSURL *)generic
-                    openAccess:(NSURL *)openAccess
+                       generic:(NSDictionary *)generic
+                    openAccess:(NSDictionary *)openAccess
                         revoke:(NSURL *)revoke
                         sample:(NSURL *)sample
                         report:(NSURL *)report;

@@ -13,6 +13,7 @@
 @property (nonatomic, readonly) NSInteger availableCopies;
 @property (nonatomic, readonly) NSDate *availableSince; // nilable
 @property (nonatomic, readonly) NSDate *availableUntil; // nilable
+@property (nonatomic, readonly) NSArray *acquisitionFormats;
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;

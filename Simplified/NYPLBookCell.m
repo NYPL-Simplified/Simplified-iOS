@@ -57,7 +57,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                         forIndexPath:indexPath];
       cell.book = book;
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
-      if(book.acquisition.openAccess) {
+      if(book.acquisition.openAccess.allKeys.count) {
         cell.state = NYPLBookButtonsStateCanKeep;
       } else {
         if (book.availableCopies > 0) {
