@@ -38,9 +38,6 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   
   if ([[NYPLSettings sharedSettings] userAcceptedEULA]) {
     self.window.rootViewController = [NYPLRootTabBarController sharedController];
-    
-    [self application:[UIApplication sharedApplication] handleOpenURL:[NSURL URLWithString:@"https://circulation.librarysimplified.org/works/Overdrive/606142d0-02b0-441f-bdf3-21fd09bf57b4"]];
-    
   } else {
     NYPLRootTabBarController *mainViewController = [NYPLRootTabBarController sharedController];
     UIViewController *eulaViewController = [[NYPLEULAViewController alloc] initWithCompletionHandler:^(void) {
