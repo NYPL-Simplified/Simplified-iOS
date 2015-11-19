@@ -83,7 +83,7 @@ static NSString *const heapIDDevelopment = @"1848989408";
 
 + (NSString *) bugsnagID
 {
-  return @"725ae02b6ec60cad7d11beffdbd99d23";
+  return @"76cb0080ae8cc30d903663e10b138381";
 }
 
 + (NSURL *)circulationURL
