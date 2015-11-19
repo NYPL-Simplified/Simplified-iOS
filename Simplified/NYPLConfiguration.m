@@ -30,8 +30,8 @@ static NSString *const heapIDDevelopment = @"1848989408";
   
   [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
   HSZenDeskGear *zenDeskGear  = [[HSZenDeskGear alloc]
-                                 initWithInstanceUrl : @"https://nypl.zendesk.com"
-                                 staffEmailAddress   : @"johannesneuer@nypl.org"
+                                 initWithInstanceUrl : @"https://nypl.desk.com"
+                                 staffEmailAddress   : @"jamesenglish@nypl.org"
                                  apiToken            : @"P6aFczYFc4al6o2riRBogWLi5D0M0QCdrON6isJi"];
   
   HSHelpStack *helpStack = [HSHelpStack instance];
