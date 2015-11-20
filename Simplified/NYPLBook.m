@@ -281,7 +281,7 @@ static NSString *const UpdatedKey = @"updated";
 - (NSDictionary *)dictionaryRepresentation
 {
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
-           AcquisitionBorrowFormatsKey: self.acquisitionBorrowFormats,
+           AcquisitionBorrowFormatsKey: NYPLNullFromNil(self.acquisitionBorrowFormats),
            AuthorsKey: self.authorStrings,
            AvailabilityStatusKey: @(self.availabilityStatus),
            AvailableCopiesKey: @(self.availableCopies),
