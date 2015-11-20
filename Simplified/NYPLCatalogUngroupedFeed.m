@@ -72,6 +72,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
       return [NYPLConfiguration canDisplayPublicationWithFormat:obj];
     }] count] == 0) {
       NYPLLOG(@"info", nil, @{@"identifier":entry.identifier}, @"Ignoring entry with no acceptible acquisition format");
+      continue;
     }
     
     [[NYPLBookRegistry sharedRegistry] updateBookMetadata:book];
