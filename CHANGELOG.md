@@ -1,7 +1,7 @@
 # Simplified-iOS Changelog
 This project does not currently adhere to Semantic Versioning. But it should.
 
-## [Uncommitted]
+## 0.9.0 (18) 20-11-2015
 ### Changed
 - Borrow requests now use the HTTP method PUT instead of GET
 - NYPLBookAcquisition now stores a dictionary of fulfillment links (generic and open access) instead of just a single URL, to allow for multiple formats
