@@ -86,7 +86,7 @@ static NSString *const UpdatedKey = @"updated";
     }
     
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisition]) {
-      [generic setObject:link.href forKey:link.acquisitionFormats[0]];
+      [generic setObject:link.href forKey:(link.acquisitionFormats.count ? link.acquisitionFormats[0] : @"application/epub+zip")];
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionBorrow]) {
@@ -95,7 +95,7 @@ static NSString *const UpdatedKey = @"updated";
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionOpenAccess]) {
-      [openAccess setObject:link.href forKey:link.acquisitionFormats[0]];
+      [openAccess setObject:link.href forKey:(link.acquisitionFormats.count ? link.acquisitionFormats[0] : @"application/epub+zip")];
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionRevoke]) {
