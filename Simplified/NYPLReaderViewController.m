@@ -372,11 +372,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
     UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, [NSString stringWithFormat:NSLocalizedString(@"Page %d of %d", nil), pageIndex.integerValue+1, pageCount.integerValue]);
   }
   
-  if (completed) {
-    if (self.renderedImageView.superview == self.rendererView.superview)
-      [self.renderedImageView removeFromSuperview];
-  }
-  
   [self.bottomViewProgressView setProgress:bookPercentage.floatValue / 100 animated:YES];  
   NSString *title = [currentSpineItemDetails objectForKey:@"tocElementTitle"];
   
@@ -784,6 +779,13 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
       [rv openPageRight];
     else
       [rv openPageLeft];
+  }
+}
+
+- (void)touchesBegan:(__unused NSSet<UITouch *> *)touches withEvent:(__unused UIEvent *)event
+{
+  if (self.renderedImageView.superview != nil && (self.renderedImageView.superview == self.rendererView.superview)) {
+    [self.renderedImageView removeFromSuperview];
   }
 }
 
