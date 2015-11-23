@@ -58,7 +58,6 @@
   [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
                                                                       attributes:underlineAttribute] forState:UIControlStateDisabled];
   
-  self.sansButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:24];
   [self.sansButton addTarget:self
                       action:@selector(didSelectSans)
             forControlEvents:UIControlEventTouchUpInside];
@@ -77,7 +76,6 @@
                                                                       attributes:underlineAttribute] forState:UIControlStateDisabled];
 
   
-  self.serifButton.titleLabel.font = [UIFont fontWithName:@"Georgia" size:24];
   [self.serifButton addTarget:self
                        action:@selector(didSelectSerif)
              forControlEvents:UIControlEventTouchUpInside];
@@ -95,7 +93,6 @@
   [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
                                                                        attributes:underlineAttribute] forState:UIControlStateDisabled];
 
-  self.openDyslexicButton.titleLabel.font = [UIFont fontWithName:@"OpenDyslexic3" size:20];
   [self.openDyslexicButton setTitleEdgeInsets:UIEdgeInsetsMake(-4.0f, 0.0f, 0.0f, 0.0f)];
   [self.openDyslexicButton addTarget:self
                        action:@selector(didSelectOpenDyslexic)
@@ -247,6 +244,13 @@
   self.brightnessSlider.value = [UIScreen mainScreen].brightness;
 
   return self;
+}
+
+- (void)initializeFonts
+{
+  self.serifButton.titleLabel.font = [UIFont fontWithName:@"Georgia" size:24];
+  self.sansButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:24];
+  self.openDyslexicButton.titleLabel.font = [UIFont fontWithName:@"OpenDyslexic3" size:20];
 }
 
 - (void)dealloc

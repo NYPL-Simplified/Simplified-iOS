@@ -2,7 +2,7 @@
 #import "Heap.h"
 #import "Bugsnag.h"
 #import "HSHelpStack.h"
-#import "HSZenDeskGear.h"
+#import "HSDeskGear.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -29,13 +29,13 @@ static NSString *const heapIDDevelopment = @"1848989408";
   [[UIButton appearance] setTitleFontName:[NYPLConfiguration systemFontName]];
   
   [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
-  HSZenDeskGear *zenDeskGear  = [[HSZenDeskGear alloc]
-                                 initWithInstanceUrl : @"https://nypl.desk.com"
-                                 staffEmailAddress   : @"jamesenglish@nypl.org"
-                                 apiToken            : @"P6aFczYFc4al6o2riRBogWLi5D0M0QCdrON6isJi"];
-  
+  HSDeskGear *deskGear = [[HSDeskGear alloc]
+                          initWithInstanceBaseUrl:@"https://nypl.desk.com/"
+                          toHelpEmail:@"jamesenglish@nypl.org"
+                          staffLoginEmail:@"jamesenglish@nypl.org"
+                          AndStaffLoginPassword:@"Marin1010!"];
   HSHelpStack *helpStack = [HSHelpStack instance];
-  helpStack.gear = zenDeskGear;
+  helpStack.gear = deskGear;
   
   if ([NYPLConfiguration heapEnabled]) {
     [Heap setAppId:[NYPLConfiguration heapID]];

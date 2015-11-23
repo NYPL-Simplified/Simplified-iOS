@@ -1,6 +1,11 @@
 # Simplified-iOS Changelog
 This project does not currently adhere to Semantic Versioning. But it should.
 
+## 0.9.0 (19) 23-11-2015
+### Fixed
+- Serif, Sans-Serif and OpenDyslexic fonts now display correctly again (UIAppearance settings were overriding them)
+- FAQ and support documentation from Desk.com should load correctly now
+
 ## 0.9.0 (18) 20-11-2015
 ### Changed
 - Borrow requests now use the HTTP method PUT instead of GET
