@@ -1,11 +1,11 @@
 // Generic
 "Acknowledgements" = "Acknowledgements";
 "Barcode" = "Barcode";
-"Borrow" = "Borrow";
+"Borrow" = "Get";
 "BorrowFailed" = "Borrowing failed";
 "BorrowCouldNotBeCompletedFormat" = "Borrowing %@ could not be completed.";
 "Cancel" = "Cancel";
-"CancelHold" = "Cancel hold";
+"CancelHold" = "Cancel reservation";
 "Catalog" = "Catalog";
 "Categories" = "Categories";
 "Category" = "Category";
@@ -21,7 +21,7 @@
 "Downloading" = "Downloading";
 "Feedback" = "Feedback";
 "Hide" = "Hide";
-"Hold" = "Hold";
+"Hold" = "Reserve";
 "LibraryCard" = "Library Card";
 "LogIn" = "Log In";
 "More..." = "More...";
@@ -60,7 +60,7 @@
 "BookDetailViewControllerCanHoldTitle" = "All licenses of this book are currently checked out";
 "BookDetailViewControllerCanKeepTitle" = "This open-access book is available to keep.";
 "BookDetailViewControllerHoldingTitleFormat" = "Available for checkout in approximately %@.";
-"BookDetailViewControllerReservedTitleFormat" = "This hold will be automatically cancelled in %@.";
+"BookDetailViewControllerReservedTitleFormat" = "This reservation will be automatically cancelled in %@.";
 "BookDetailViewControllerDistributedByFormat" = "Distributed by: %@";
 
 // NYPLFacetView
@@ -69,8 +69,8 @@
 
 // NYPLHoldsViewController
 
-"HoldsViewControllerTitle" = "Holds";
-"HoldsViewControllerSearchTitle" = "Search Holds";
+"HoldsViewControllerTitle" = "Reservations";
+"HoldsViewControllerSearchTitle" = "Search Reservations";
 "AvailableForCheckoutHeader" = "AVAILABLE FOR CHECKOUT";
 "WaitingForAvailabilityHeader" = "WAITING FOR AVAILABILITY";
 

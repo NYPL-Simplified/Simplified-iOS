@@ -5,6 +5,7 @@ This project does not currently adhere to Semantic Versioning. But it should.
 ### Fixed
 - Serif, Sans-Serif and OpenDyslexic fonts now display correctly again (UIAppearance settings were overriding them)
 - FAQ and support documentation from Desk.com should load correctly now
+- Changed hold -> reserve and borrow -> get
 
 ## 0.9.0 (18) 20-11-2015
 ### Changed
