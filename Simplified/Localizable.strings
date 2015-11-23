@@ -5,7 +5,7 @@
 "BorrowFailed" = "Borrowing failed";
 "BorrowCouldNotBeCompletedFormat" = "Borrowing %@ could not be completed.";
 "Cancel" = "Cancel";
-"CancelHold" = "Cancel reservation";
+"CancelHold" = "Cancel";
 "Catalog" = "Catalog";
 "Categories" = "Categories";
 "Category" = "Category";
