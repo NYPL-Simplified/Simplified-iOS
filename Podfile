@@ -7,6 +7,7 @@ target 'Simplified' do
 	pod 'HelpStack'
 	pod 'pop', '~> 1.0'
 	pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git"
+	pod 'CHRTextFieldFormatter'
 end
 
 target 'SimplifiedTests' do

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		080ADCB91C04BF1000C0575F /* NYPLBarcodeTextMask.m in Sources */ = {isa = PBXBuildFile; fileRef = 080ADCB81C04BF1000C0575F /* NYPLBarcodeTextMask.m */; };
+		080ADCBF1C04C26100C0575F /* libCHRTextFieldFormatter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 080ADCBE1C04C26100C0575F /* libCHRTextFieldFormatter.a */; };
 		08136F7E1BC2AB06002A4486 /* LibraryCard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08136F7D1BC2AB06002A4486 /* LibraryCard.storyboard */; };
 		0813870E1BC2E8A9003DEA6A /* NYPLDateCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813870D1BC2E8A9003DEA6A /* NYPLDateCardController.m */; };
 		081387111BC2F07B003DEA6A /* NYPLLocationCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387101BC2F07B003DEA6A /* NYPLLocationCardController.m */; };
@@ -231,6 +233,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		080ADCB71C04BF1000C0575F /* NYPLBarcodeTextMask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBarcodeTextMask.h; sourceTree = "<group>"; };
+		080ADCB81C04BF1000C0575F /* NYPLBarcodeTextMask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBarcodeTextMask.m; sourceTree = "<group>"; };
+		080ADCBE1C04C26100C0575F /* libCHRTextFieldFormatter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libCHRTextFieldFormatter.a; path = "Pods/../build/Debug-iphoneos/libCHRTextFieldFormatter.a"; sourceTree = "<group>"; };
 		08136F7D1BC2AB06002A4486 /* LibraryCard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LibraryCard.storyboard; sourceTree = "<group>"; };
 		0813870C1BC2E8A9003DEA6A /* NYPLDateCardController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLDateCardController.h; sourceTree = "<group>"; };
 		0813870D1BC2E8A9003DEA6A /* NYPLDateCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLDateCardController.m; sourceTree = "<group>"; };
@@ -551,6 +556,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				080ADCBF1C04C26100C0575F /* libCHRTextFieldFormatter.a in Frameworks */,
 				08B3CF861BF0F8FA00E6485E /* libBugsnag.a in Frameworks */,
 				08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */,
 				08C469C21BDAAEB1009D8AFD /* libAdobe Content Filter.a in Frameworks */,
@@ -836,6 +842,8 @@
 				1164A9F61A797238002BD3AE /* NYPLSettings.m */,
 				1158812C1A894F4E008672C3 /* NYPLSettingsAccountViewController.h */,
 				1158812D1A894F4E008672C3 /* NYPLSettingsAccountViewController.m */,
+				080ADCB71C04BF1000C0575F /* NYPLBarcodeTextMask.h */,
+				080ADCB81C04BF1000C0575F /* NYPLBarcodeTextMask.m */,
 				111E75871A818C1F00718AD7 /* NYPLSettingsCreditsViewController.h */,
 				111E75881A818C1F00718AD7 /* NYPLSettingsCreditsViewController.m */,
 				841B55411B740F2700FAC1AF /* NYPLSettingsEULAViewController.h */,
@@ -943,6 +951,7 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				080ADCBE1C04C26100C0575F /* libCHRTextFieldFormatter.a */,
 				08B3CF851BF0F8FA00E6485E /* libBugsnag.a */,
 				08A352281BDE91B80040BF1D /* libePub3-iOS.a */,
 				08A352251BDE8E700040BF1D /* SystemConfiguration.framework */,
@@ -1397,6 +1406,7 @@
 				0813870E1BC2E8A9003DEA6A /* NYPLDateCardController.m in Sources */,
 				1183F347194F744D00DC322F /* NYPLBook.m in Sources */,
 				1183F341194F723D00DC322F /* NYPLCatalogLane.m in Sources */,
+				080ADCB91C04BF1000C0575F /* NYPLBarcodeTextMask.m in Sources */,
 				11A16E6F195B60DF004147F4 /* NYPLBookNormalCell.m in Sources */,
 				11548C0E1939147D009DBF2E /* NYPLCatalogNavigationController.m in Sources */,
 				0813873A1BC4328D003DEA6A /* NYPLCardApplicationViewController.m in Sources */,

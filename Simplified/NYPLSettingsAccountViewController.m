@@ -17,6 +17,12 @@
 #import <ADEPT/ADEPT.h>
 #endif
 
+#define DO_MASK_BARCODE     1
+#if DO_MASK_BARCODE
+#import "CHRTextFieldFormatter.h"
+#import "NYPLBarcodeTextMask.h"
+#endif
+
 typedef NS_ENUM(NSInteger, CellKind) {
   CellKindBarcode,
   CellKindPIN,
@@ -56,9 +62,41 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   }
 }
 
+@protocol NYPLTextMasker
+- (NSString *)maskedStringFromString:(NSString *)string;
+- (NSString *)unmaskedStringFromString:(NSString *)string;
+@end
+
+@interface NYPLMaskedTextField : UITextField
+@property (nonatomic, strong) NSString *unmaskedText;
+@property (nonatomic, strong) id<NYPLTextMasker> premasker;
+@end
+
+@implementation NYPLMaskedTextField
+@dynamic unmaskedText;
+- (NSString *)unmaskedText
+{
+  if (self.premasker)
+    return [self.premasker unmaskedStringFromString:[super text]];
+  return [super text];
+}
+
+- (void)setUnmaskedText:(NSString *)text
+{
+  if (self.premasker)
+    [super setText:[self.premasker maskedStringFromString:text]];
+  else
+    [super setText:text];
+}
+@end
+
 @interface NYPLSettingsAccountViewController () <NSURLSessionDelegate, UITextFieldDelegate, NYPLRegistrationStoryboardDelegate>
 
-@property (nonatomic) UITextField *barcodeTextField;
+#if DO_MASK_BARCODE
+@property (nonatomic) CHRTextFieldFormatter *barcodeFieldFormatter;
+#endif
+
+@property (nonatomic) NYPLMaskedTextField *barcodeTextField;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) BOOL hiddenPIN;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
@@ -117,23 +155,28 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
-  self.barcodeTextField = [[UITextField alloc] initWithFrame:CGRectZero];
+  self.barcodeTextField = [[NYPLMaskedTextField alloc] initWithFrame:CGRectZero];
   self.barcodeTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                             UIViewAutoresizingFlexibleHeight);
   self.barcodeTextField.font = [UIFont systemFontOfSize:17];
   self.barcodeTextField.placeholder = NSLocalizedString(@"Barcode", nil);
-  self.barcodeTextField.keyboardType = UIKeyboardTypeDefault;
+  self.barcodeTextField.keyboardType = UIKeyboardTypeNumberPad;
   [self.barcodeTextField
    addTarget:self
    action:@selector(textFieldsDidChange)
    forControlEvents:UIControlEventEditingChanged];
+  
+#if DO_MASK_BARCODE
+  self.barcodeFieldFormatter = [[CHRTextFieldFormatter alloc] initWithTextField:self.barcodeTextField mask:[NYPLBarcodeTextMask new]];
+  self.barcodeTextField.premasker = (id<NYPLTextMasker>) self.barcodeFieldFormatter;
+#endif
   
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.PINTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                         UIViewAutoresizingFlexibleHeight);
   self.PINTextField.font = [UIFont systemFontOfSize:17];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
-  self.PINTextField.keyboardType = UIKeyboardTypeDefault;
+  self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
   self.PINTextField.secureTextEntry = YES;
   self.PINTextField.delegate = self;
   [self.PINTextField
@@ -166,7 +209,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   [super viewDidAppear:animated];
   if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
     if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-      self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
+      self.barcodeTextField.unmaskedText = [NYPLAccount sharedAccount].barcode;
       self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
       [self logIn];
     }
@@ -364,6 +407,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   return ![[NYPLAccount sharedAccount] hasBarcodeAndPIN];
 }
 
+#if DO_MASK_BARCODE
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+  if (textField == self.barcodeTextField) {
+    return [self.barcodeFieldFormatter textField:textField shouldChangeCharactersInRange:range replacementString:string];
+  } else {
+    return YES;
+  }
+}
+#endif
+
 #pragma mark NSURLSessionDelegate
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
@@ -374,7 +428,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 {
   NYPLBasicAuthCustomHandler(challenge,
                              completionHandler,
-                             self.barcodeTextField.text,
+                             self.barcodeTextField.unmaskedText,
                              self.PINTextField.text);
 }
 
@@ -410,13 +464,13 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-      self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
+      self.barcodeTextField.unmaskedText = [NYPLAccount sharedAccount].barcode;
       self.barcodeTextField.enabled = NO;
       self.barcodeTextField.textColor = [UIColor grayColor];
       self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
       self.PINTextField.textColor = [UIColor grayColor];
     } else {
-      self.barcodeTextField.text = nil;
+      self.barcodeTextField.unmaskedText = nil;
       self.barcodeTextField.enabled = YES;
       self.barcodeTextField.textColor = [UIColor blackColor];
       self.PINTextField.text = nil;
@@ -440,7 +494,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentNatural;
     BOOL const canLogIn =
-      ([self.barcodeTextField.text
+      ([self.barcodeTextField.unmaskedText
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
        [self.PINTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length);
@@ -456,7 +510,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
 - (void)logIn
 {
-  assert(self.barcodeTextField.text.length > 0);
+  assert(self.barcodeTextField.unmaskedText.length > 0);
   assert(self.PINTextField.text.length > 0);
   
   [self.barcodeTextField resignFirstResponder];
@@ -545,7 +599,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 #if defined(FEATURE_DRM_CONNECTOR)
          [[NYPLADEPT sharedInstance]
           authorizeWithVendorID:@"NYPL"
-          username:self.barcodeTextField.text
+          username:self.barcodeTextField.unmaskedText
           password:self.PINTextField.text
           completion:^(BOOL success, NSError *error) {
             [self authorizationAttemptDidFinish:success error:error];
@@ -625,9 +679,9 @@ completionHandler:(void (^)())handler
     if(!barcode) {
       @throw NSInvalidArgumentException;
     }
-    accountViewController.barcodeTextField.text = barcode;
+    accountViewController.barcodeTextField.unmaskedText = barcode;
   } else {
-    accountViewController.barcodeTextField.text = @"";
+    accountViewController.barcodeTextField.unmaskedText = @"";
   }
   
   accountViewController.PINTextField.text = @"";
@@ -686,7 +740,7 @@ completionHandler:(void (^)())handler
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
-      [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
+      [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.unmaskedText
                                           PIN:self.PINTextField.text];
       [self dismissViewControllerAnimated:YES completion:^{}];
       void (^handler)() = self.completionHandler;

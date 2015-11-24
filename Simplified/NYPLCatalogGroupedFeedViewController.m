@@ -1,5 +1,6 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLBook.h"
 #import "NYPLCatalogFeedViewController.h"
 #import "NYPLCatalogGroupedFeed.h"
 #import "NYPLCatalogLane.h"
@@ -217,8 +218,10 @@ viewForHeaderInSection:(NSInteger const)section
      didSelectBookIndex:(NSUInteger const)bookIndex
 {
   NYPLCatalogLane *const lane = self.feed.lanes[cell.laneIndex];
-  NYPLBook *const book = lane.books[bookIndex];
+  NYPLBook *const feedBook = lane.books[bookIndex];
   
+  NYPLBook *const localBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:feedBook.identifier];
+  NYPLBook *const book = (localBook != nil) ? localBook : feedBook;
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
 

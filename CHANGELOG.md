@@ -1,6 +1,17 @@
 # Simplified-iOS Changelog
 This project does not currently adhere to Semantic Versioning. But it should.
 
+## 0.9.0 (20) 24-11-2015
+### Fixed
+- Book detail view no longer gives a hold time of (null) when viewed from the catalog
+
+### Changed
+- Barcode and pin text fields are now numbers only
+- Links with the CHRTextFieldFormatter podfile
+
+### Added
+- Barcode now formats with spaces
+
 ## 0.9.0 (19) 23-11-2015
 ### Fixed
 - Serif, Sans-Serif and OpenDyslexic fonts now display correctly again (UIAppearance settings were overriding them)

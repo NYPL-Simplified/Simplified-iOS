@@ -23,6 +23,7 @@ PODS:
   - Bugsnag (4.0.9):
     - Bugsnag/no-arc (= 4.0.9)
   - Bugsnag/no-arc (4.0.9)
+  - CHRTextFieldFormatter (1.0)
   - HelpStack (1.1.1):
     - AFNetworking (~> 2.0)
     - HelpStack/Core (= 1.1.1)
@@ -47,6 +48,7 @@ PODS:
 
 DEPENDENCIES:
   - Bugsnag (from `https://github.com/bugsnag/bugsnag-cocoa.git`)
+  - CHRTextFieldFormatter
   - HelpStack
   - pop (~> 1.0)
 
@@ -62,6 +64,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AFNetworking: 79f7eb1a0fcfa7beb409332b2ca49afe9ce53b05
   Bugsnag: a4bdbf356f318cef00d12eb1601f16d8d0c71ba4
+  CHRTextFieldFormatter: 0800d02c64340355a9f913771ec3697183ca30de
   HelpStack: bfde78311b5d0fb3b849778df5939776359d5d8a
   pop: bb773ae2c791ca2629de13b347e7a8b450fa6a57
 
