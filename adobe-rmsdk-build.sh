@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ADOBE_RMSDK="`pwd`/adobe-rmsdk"
 CONFIGURATIONS=(Debug Release)
 SDKS=(iphoneos iphonesimulator)
