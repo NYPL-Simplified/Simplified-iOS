@@ -80,6 +80,7 @@
 
 "MyBooksDownloadCenterConfirmDeleteTitle" = "Delete Book";
 "MyBooksDownloadCenterConfirmDeleteTitleMessageFormat" = "Are you sure you want to delete %@?";
+"MyBooksGoToCatalog" = "Visit the Catalog to\nadd books to My Books.";
 
 "MyBooksDownloadCenterConfirmReturnTitle" = "Return Book";
 "MyBooksDownloadCenterConfirmReturnTitleMessageFormat" = "Are you sure you want to return %@?";
