@@ -742,7 +742,6 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
                                             (CGRectGetHeight(self.view.frame) -
                                              CGRectGetHeight(readerSettingsView.frame)));
     [self.view addSubview:readerSettingsView];
-    [readerSettingsView initializeFonts];
     self.readerSettingsViewPhone = readerSettingsView;
   }
 }

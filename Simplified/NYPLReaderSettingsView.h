@@ -38,6 +38,5 @@
 - (id)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
 
 - (instancetype)initWithWidth:(CGFloat)width;
-- (void)initializeFonts; // Needed to work with UIAppearance, which otherwise will override the specific fonts use in the view
 
 @end
