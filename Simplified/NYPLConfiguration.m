@@ -23,11 +23,6 @@ static NSString *const heapIDDevelopment = @"1848989408";
 
 + (void)initialize
 {
-  [[UINavigationBar appearance]
-   setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}];
-  [[UILabel appearance] setFontName:[NYPLConfiguration systemFontName]];
-  [[UIButton appearance] setTitleFontName:[NYPLConfiguration systemFontName]];
-  
   [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
   HSDeskGear *deskGear = [[HSDeskGear alloc]
                           initWithInstanceBaseUrl:@"https://nypl.desk.com/"
@@ -171,11 +166,13 @@ static NSString *const heapIDDevelopment = @"1848989408";
   return [UIColor yellowColor];
 }
 
+// Set for the whole app via UIView+NYPLFontAdditions.
 + (NSString *)systemFontName
 {
   return @"AvenirNext-Medium";
 }
 
+// Set for the whole app via UIView+NYPLFontAdditions.
 + (NSString *)boldSystemFontName
 {
   return @"AvenirNext-Bold";

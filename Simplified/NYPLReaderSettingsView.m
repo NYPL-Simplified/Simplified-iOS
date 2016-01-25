@@ -51,7 +51,7 @@
   self.sansButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"SansFont", nil)];
   self.sansButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.sansButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  
+  self.sansButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:24];
   [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
                                                                       attributes:noUnderlineAttribute] forState:UIControlStateNormal];
   
@@ -68,7 +68,7 @@
   self.serifButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"SerifFont", nil)];
   self.serifButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.serifButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  
+  self.serifButton.titleLabel.font = [UIFont fontWithName:@"Georgia" size:24];
   [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
                                                                       attributes:noUnderlineAttribute] forState:UIControlStateNormal];
   
@@ -86,7 +86,7 @@
   self.openDyslexicButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"OpenDyslexicFont", nil)];
   self.openDyslexicButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.openDyslexicButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  
+  self.openDyslexicButton.titleLabel.font = [UIFont fontWithName:@"OpenDyslexic3" size:20];
   [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
                                                                        attributes:noUnderlineAttribute] forState:UIControlStateNormal];
   
@@ -244,13 +244,6 @@
   self.brightnessSlider.value = [UIScreen mainScreen].brightness;
 
   return self;
-}
-
-- (void)initializeFonts
-{
-  self.serifButton.titleLabel.font = [UIFont fontWithName:@"Georgia" size:24];
-  self.sansButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:24];
-  self.openDyslexicButton.titleLabel.font = [UIFont fontWithName:@"OpenDyslexic3" size:20];
 }
 
 - (void)dealloc
