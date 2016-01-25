@@ -42,7 +42,6 @@ static NSString *const heapIDDevelopment = @"1848989408";
   
   if ([NYPLConfiguration bugsnagEnabled]) {
     [Bugsnag startBugsnagWithApiKey:[NYPLConfiguration bugsnagID]];
-    [Bugsnag notify:[NSException exceptionWithName:@"ExceptionName" reason:@"Test Error" userInfo:nil]];
     s_logCallbackBlock = ^(NSString *loglevel, NSString *exceptionName, NSDictionary *data, NSString *message) {
       if (!exceptionName)
         exceptionName = @"NYPLGenericException";
