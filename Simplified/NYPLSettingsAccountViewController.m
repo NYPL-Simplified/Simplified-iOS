@@ -516,31 +516,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   [self.barcodeTextField resignFirstResponder];
   [self.PINTextField resignFirstResponder];
 
-  {
-    UIActivityIndicatorView *const activityIndicatorView =
-      [[UIActivityIndicatorView alloc]
-       initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    
-    [activityIndicatorView startAnimating];
-    
-    UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    titleLabel.text = NSLocalizedString(@"Verifying", nil);
-    titleLabel.font = [UIFont systemFontOfSize:17];
-    [titleLabel sizeToFit];
-    
-    // This view is used to keep the title label centered as in Apple's Settings application.
-    UIView *const rightPaddingView = [[UIView alloc] initWithFrame:activityIndicatorView.bounds];
-    
-    NYPLLinearView *const linearView = [[NYPLLinearView alloc] init];
-    linearView.contentVerticalAlignment = NYPLLinearViewContentVerticalAlignmentMiddle;
-    linearView.padding = 5.0;
-    [linearView addSubview:activityIndicatorView];
-    [linearView addSubview:titleLabel];
-    [linearView addSubview:rightPaddingView];
-    [linearView sizeToFit];
-    
-    self.navigationItem.titleView = linearView;
-  }
+  [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
   
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   
@@ -549,6 +525,13 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
 - (void)logOut
 {
+  void (^afterDeauthorization)() = ^() {
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
+    [[NYPLBookRegistry sharedRegistry] reset];
+    [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
+    [self.tableView reloadData];
+  };
+
   void (^handler)(UIAlertAction  * _Nonnull action) = ^(__attribute__((unused)) UIAlertAction *action) {
 #if defined(FEATURE_DRM_CONNECTOR)
     if([NYPLADEPT sharedInstance].workflowsInProgress) {
@@ -557,13 +540,25 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
       return;
     }
     
-    [[NYPLADEPT sharedInstance] deauthorize];
-#endif
+    [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
-    [[NYPLBookRegistry sharedRegistry] reset];
-    [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
-    [self.tableView reloadData];
+    [[NYPLADEPT sharedInstance]
+     deauthorizeWithUsername:[[NYPLAccount sharedAccount] barcode]
+     password:[[NYPLAccount sharedAccount] PIN]
+     completion:^(BOOL success, NSError *error) {
+       self.navigationItem.titleView = nil;
+       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+       if (success) {
+         afterDeauthorization();
+       } else {
+         [self presentViewController:[NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLogoutFailed" error:error]
+                            animated:YES completion:nil];
+       }
+     }];
+#else
+    afterDeauthorization();
+#endif
   };
   
   NSString *localizedFormatString = NSLocalizedString(@"Don't forget your Barcode and PIN! You will need them to log back in.\nBarcode: %@, PIN: %@", nil);
@@ -575,6 +570,33 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                                                             style:UIAlertActionStyleDestructive
                                                           handler:handler]];
   [self presentViewController:pinAndBarcodeReminder animated:YES completion:nil];
+}
+
+- (void)setActivityTitleWithText:(NSString *)text
+{
+  UIActivityIndicatorView *const activityIndicatorView =
+  [[UIActivityIndicatorView alloc]
+   initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  
+  [activityIndicatorView startAnimating];
+  
+  UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+  titleLabel.text = text;
+  titleLabel.font = [UIFont systemFontOfSize:17];
+  [titleLabel sizeToFit];
+  
+  // This view is used to keep the title label centered as in Apple's Settings application.
+  UIView *const rightPaddingView = [[UIView alloc] initWithFrame:activityIndicatorView.bounds];
+  
+  NYPLLinearView *const linearView = [[NYPLLinearView alloc] init];
+  linearView.contentVerticalAlignment = NYPLLinearViewContentVerticalAlignmentMiddle;
+  linearView.padding = 5.0;
+  [linearView addSubview:activityIndicatorView];
+  [linearView addSubview:titleLabel];
+  [linearView addSubview:rightPaddingView];
+  [linearView sizeToFit];
+  
+  self.navigationItem.titleView = linearView;
 }
 
 - (void)validateCredentials
