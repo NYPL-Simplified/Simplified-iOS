@@ -62,8 +62,9 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
       return;
     }
     
-    if ([(NSHTTPURLResponse *)response statusCode] != 200 &&
-        [response.MIMEType isEqualToString:@"application/problem+json"]) {
+    if ([(NSHTTPURLResponse *)response statusCode] != 200
+        && ([response.MIMEType isEqualToString:@"application/problem+json"]
+            || [response.MIMEType isEqualToString:@"application/api-problem+json"])) {
       NSDictionary *error = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
       NYPLAsyncDispatch(^{handler(nil, error);});
       return;

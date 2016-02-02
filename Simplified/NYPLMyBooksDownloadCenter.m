@@ -152,9 +152,10 @@ didFinishDownloadingToURL:(NSURL *const)location
     return;
   }
   
-  BOOL success = YES;
+  BOOL success = YES; 
   NYPLProblemDocument *problemDocument = nil;
-  if ([downloadTask.response.MIMEType isEqualToString:@"application/problem+json"]) {
+  if ([downloadTask.response.MIMEType isEqualToString:@"application/problem+json"]
+       || [downloadTask.response.MIMEType isEqualToString:@"application/api-problem+json"]) {
     problemDocument = [NYPLProblemDocument problemDocumentWithData:[NSData dataWithContentsOfURL:location]];
     [[NSFileManager defaultManager] removeItemAtURL:location error:NULL];
     success = NO;
