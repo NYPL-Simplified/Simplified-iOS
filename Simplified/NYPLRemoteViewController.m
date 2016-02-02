@@ -114,8 +114,9 @@
 {
   [self.activityIndicatorView stopAnimating];
   
-  if ([(NSHTTPURLResponse *)self.response statusCode] != 200 &&
-      [self.response.MIMEType isEqualToString:@"application/problem+json"]) {
+  if ([(NSHTTPURLResponse *)self.response statusCode] != 200
+      && ([self.response.MIMEType isEqualToString:@"application/problem+json"]
+          || [self.response.MIMEType isEqualToString:@"application/api-problem+json"])) {
     NYPLProblemDocument *problem = [NYPLProblemDocument problemDocumentWithData:self.data];
     NYPLAlertController *alert = [NYPLAlertController alertWithTitle:problem.title message:problem.detail];
     [alert setProblemDocument:problem displayDocumentMessage:NO];
