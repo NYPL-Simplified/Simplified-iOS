@@ -59,14 +59,12 @@ static NSString *const heapIDDevelopment = @"1848989408";
 
 + (BOOL) heapEnabled
 {
-  return YES;
-//  return NO;
+  return !TARGET_OS_SIMULATOR;
 }
 
 + (BOOL) bugsnagEnabled
 {
-  return YES;
-  //  return NO;
+  return !TARGET_OS_SIMULATOR;
 }
 
 + (NSString *)heapID
