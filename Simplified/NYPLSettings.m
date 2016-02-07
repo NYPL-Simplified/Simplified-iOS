@@ -4,6 +4,7 @@
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCardApplicationModel.h"
+#import "NYPLConfiguration.h"
 
 static NSString *const customMainFeedURLKey = @"NYPLSettingsCustomMainFeedURL";
 
@@ -139,12 +140,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
     NSString *bookAuthor;
     
     if (fileNameComponents.count == 2) {
-      bookTitle = [[fileNameComponents firstObject] stringByAppendingString:@" (Preloaded)"];
+      bookTitle = [fileNameComponents firstObject];
       bookAuthor = [fileNameComponents lastObject];
     }
     else {
       bookTitle = [[bookBundlePath lastPathComponent] stringByDeletingPathExtension];
-      bookAuthor = @"Preloaded Content";
+      bookAuthor = @"";
     }
     
     NYPLBook *book = [[NYPLBook alloc] initWithAcquisition:[[NYPLBookAcquisition alloc] initWithBorrow:nil
@@ -158,8 +159,8 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
                                         availabilityStatus:NYPLBookAvailabilityStatusAvailable
                                            availableCopies:0
                                             availableUntil:nil
-                                           categoryStrings:@[@"Preloaded"]
-                                               distributor:@"Preloaded"
+                                           categoryStrings:@[]
+                                               distributor:[NYPLConfiguration preloadedContentDistributor]
                                                 identifier:bookID
                                                   imageURL:[NSURL fileURLWithPath:imagePath]
                                          imageThumbnailURL:[NSURL fileURLWithPath:imagePath]
