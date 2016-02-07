@@ -145,6 +145,7 @@
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
 		2D4379FE1C46FDB600AE1AD5 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = 085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */; };
+		2DA4F2311C68082E008853D7 /* preloaded-content in Resources */ = {isa = PBXBuildFile; fileRef = 2DA4F2301C68082E008853D7 /* preloaded-content */; };
 		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
 		5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
@@ -163,7 +164,6 @@
 		84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3441B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf */; };
 		84B7A3481B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3451B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf */; };
 		84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */; };
-		84FCD2741B7BAC0A00BFEDD9 /* PreloadedContent in Resources */ = {isa = PBXBuildFile; fileRef = 84FCD2731B7BAC0A00BFEDD9 /* PreloadedContent */; };
 		A4276F481B00046300CA7194 /* NYPLMyBooksDownloadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */; };
 		A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */; };
 		A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF31B40F4E00095EBAE /* NYPLCatalogFeedViewController.m */; };
@@ -469,6 +469,7 @@
 		11F54C2419410BE40086FCAF /* single_entry.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = single_entry.xml; sourceTree = "<group>"; };
 		11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryTests.m; sourceTree = "<group>"; };
 		11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLinkTests.m; sourceTree = "<group>"; };
+		2DA4F2301C68082E008853D7 /* preloaded-content */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "preloaded-content"; sourceTree = SOURCE_ROOT; };
 		5705D893E0FE4395A50F089E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
 		5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Simplified.xcconfig; sourceTree = "<group>"; };
@@ -494,7 +495,6 @@
 		84B7A3441B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenDyslexic3-Bold.ttf"; sourceTree = "<group>"; };
 		84B7A3451B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenDyslexic3-Regular.ttf"; sourceTree = "<group>"; };
 		84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		84FCD2731B7BAC0A00BFEDD9 /* PreloadedContent */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PreloadedContent; sourceTree = "<group>"; };
 		A4276F461B00046300CA7194 /* NYPLMyBooksDownloadInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksDownloadInfo.h; sourceTree = "<group>"; };
 		A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksDownloadInfo.m; sourceTree = "<group>"; };
 		A42E0DEF1B3F5A490095EBAE /* NYPLRemoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLRemoteViewController.h; sourceTree = "<group>"; };
@@ -990,7 +990,6 @@
 			isa = PBXGroup;
 			children = (
 				84B7A3411B84E8FE00584FB2 /* Resources */,
-				84FCD2731B7BAC0A00BFEDD9 /* PreloadedContent */,
 				110AF8891961D66C004887C3 /* Additions */,
 				110AF8901961D822004887C3 /* Book */,
 				1183F349194F74EF00DC322F /* Catalog */,
@@ -1058,6 +1057,7 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				2DA4F2301C68082E008853D7 /* preloaded-content */,
 				8418C0461B75176B00FAB724 /* eula.html */,
 				111E758C1A840DC500718AD7 /* credits.css */,
 				111E758A1A840A1600718AD7 /* credits.html */,
@@ -1285,12 +1285,12 @@
 				111E758D1A840DC500718AD7 /* credits.css in Resources */,
 				5A6929101B95ACD100FB4C10 /* sdk.css in Resources */,
 				84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */,
+				2DA4F2311C68082E008853D7 /* preloaded-content in Resources */,
 				5A6929251B95C93B00FB4C10 /* readium-shared-js_all.js.map in Resources */,
 				11C113D219F842BE005B3F63 /* host_app_feedback.js in Resources */,
 				8418C0481B75176B00FAB724 /* eula.html in Resources */,
 				5A6929241B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js in Resources */,
 				84B7A3481B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf in Resources */,
-				84FCD2741B7BAC0A00BFEDD9 /* PreloadedContent in Resources */,
 				0813871C1BC30E96003DEA6A /* nystate.geojson in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

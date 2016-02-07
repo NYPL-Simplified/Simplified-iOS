@@ -103,7 +103,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 
 - (NSArray *)preloadedBookURLs
 {
-  return [[NSBundle mainBundle] pathsForResourcesOfType:@"epub" inDirectory:@"PreloadedContent"];
+  return [[NSBundle mainBundle] pathsForResourcesOfType:@"epub" inDirectory:@"preloaded-content"];
 }
 
 - (NSString *)preloadedBookIDFromBundlePath: (NSString *) bookBundlePath
