@@ -146,6 +146,7 @@
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
 		2D4379FE1C46FDB600AE1AD5 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = 085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */; };
 		2DA4F2311C68082E008853D7 /* preloaded-content in Resources */ = {isa = PBXBuildFile; fileRef = 2DA4F2301C68082E008853D7 /* preloaded-content */; };
+		2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */; };
 		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
 		5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
@@ -470,6 +471,7 @@
 		11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryTests.m; sourceTree = "<group>"; };
 		11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLinkTests.m; sourceTree = "<group>"; };
 		2DA4F2301C68082E008853D7 /* preloaded-content */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "preloaded-content"; sourceTree = SOURCE_ROOT; };
+		2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		5705D893E0FE4395A50F089E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
 		5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Simplified.xcconfig; sourceTree = "<group>"; };
@@ -569,6 +571,7 @@
 				081387511BC56B7A003DEA6A /* libpop.a in Frameworks */,
 				5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */,
 				5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */,
+				2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */,
 				08A352261BDE8E700040BF1D /* SystemConfiguration.framework in Frameworks */,
 				08A352241BDE8E640040BF1D /* Security.framework in Frameworks */,
 				08A352201BDE8E410040BF1D /* CFNetwork.framework in Frameworks */,
@@ -951,6 +954,7 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */,
 				080ADCBE1C04C26100C0575F /* libCHRTextFieldFormatter.a */,
 				08B3CF851BF0F8FA00E6485E /* libBugsnag.a */,
 				08A352281BDE91B80040BF1D /* libePub3-iOS.a */,

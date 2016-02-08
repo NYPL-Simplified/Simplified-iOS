@@ -1,3 +1,5 @@
+@import LocalAuthentication;
+
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
 #import "NYPLBasicAuth.h"
@@ -116,7 +118,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   if(!self) return nil;
   
   self.title = NSLocalizedString(@"LibraryCard", nil);
-  
+
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(accountDidChange)
@@ -127,6 +129,12 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
    addObserver:self
    selector:@selector(keyboardDidShow:)
    name:UIKeyboardWillShowNotification
+   object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(willResignActive)
+   name:UIApplicationWillResignActiveNotification
    object:nil];
   
   NSURLSessionConfiguration *const configuration =
@@ -184,12 +192,15 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
    action:@selector(textFieldsDidChange)
    forControlEvents:UIControlEventEditingChanged];
   
-  self.PINShowHideButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [self.PINShowHideButton setTitle:NSLocalizedString(@"Show", nil) forState:UIControlStateNormal];
-  [self.PINShowHideButton sizeToFit];
-  [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected) forControlEvents:UIControlEventTouchUpInside];
-  self.PINTextField.rightView = self.PINShowHideButton;
-  self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
+  LAContext *const context = [[LAContext alloc] init];
+  if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
+    self.PINShowHideButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.PINShowHideButton setTitle:NSLocalizedString(@"Show", nil) forState:UIControlStateNormal];
+    [self.PINShowHideButton sizeToFit];
+    [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected) forControlEvents:UIControlEventTouchUpInside];
+    self.PINTextField.rightView = self.PINShowHideButton;
+    self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
+  }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -454,9 +465,33 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
 - (void)PINShowHideSelected
 {
+  if(self.PINTextField.text.length > 0 && self.PINTextField.secureTextEntry) {
+    LAContext *const context = [[LAContext alloc] init];
+    if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
+      [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication
+              localizedReason:NSLocalizedString(@"SettingsAccountViewControllerAuthenticationReason", nil)
+                        reply:^(__unused BOOL success,
+                                __unused NSError *_Nullable error) {
+                          if(success) {
+                            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                              [self togglePINShowHideState];
+                            }];
+                          }
+                        }];
+    } else {
+      [self togglePINShowHideState];
+    }
+  } else {
+    [self togglePINShowHideState];
+  }
+}
+
+- (void)togglePINShowHideState
+{
   self.PINTextField.secureTextEntry = !self.PINTextField.secureTextEntry;
   NSString *title = self.PINTextField.secureTextEntry ? @"Show" : @"Hide";
   [self.PINShowHideButton setTitle:NSLocalizedString(title, nil) forState:UIControlStateNormal];
+  [self.PINShowHideButton sizeToFit];
   [self.tableView reloadData];
 }
 
@@ -751,6 +786,13 @@ completionHandler:(void (^)())handler
       [self showLoginAlertWithError:error];
     }
   }];
+}
+
+- (void)willResignActive
+{
+  if(!self.PINTextField.secureTextEntry) {
+    [self togglePINShowHideState];
+  }
 }
 
 @end

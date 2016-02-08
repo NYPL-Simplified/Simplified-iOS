@@ -120,6 +120,7 @@
 
 // NYPLSettingsAccountViewController
 
+"SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";
 "SettingsAccountViewControllerCannotLogOutTitle" =
   "Logout Failed";
 "SettingsAccountViewControllerCannotLogOutMessage" =
