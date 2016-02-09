@@ -136,6 +136,12 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
    selector:@selector(willResignActive)
    name:UIApplicationWillResignActiveNotification
    object:nil];
+
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(willEnterForeground)
+   name:UIApplicationWillEnterForegroundNotification
+   object:nil];
   
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
@@ -191,16 +197,14 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
    addTarget:self
    action:@selector(textFieldsDidChange)
    forControlEvents:UIControlEventEditingChanged];
-  
-  LAContext *const context = [[LAContext alloc] init];
-  if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
-    self.PINShowHideButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.PINShowHideButton setTitle:NSLocalizedString(@"Show", nil) forState:UIControlStateNormal];
-    [self.PINShowHideButton sizeToFit];
-    [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected) forControlEvents:UIControlEventTouchUpInside];
-    self.PINTextField.rightView = self.PINShowHideButton;
-    self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
-  }
+
+  self.PINShowHideButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [self.PINShowHideButton setTitle:NSLocalizedString(@"Show", nil) forState:UIControlStateNormal];
+  [self.PINShowHideButton sizeToFit];
+  [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected)
+                   forControlEvents:UIControlEventTouchUpInside];
+  self.PINTextField.rightView = self.PINShowHideButton;
+  self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -212,6 +216,8 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   [self accountDidChange];
   
   [self.tableView reloadData];
+  
+  [self updateShowHidePINState];
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -793,6 +799,27 @@ completionHandler:(void (^)())handler
   if(!self.PINTextField.secureTextEntry) {
     [self togglePINShowHideState];
   }
+}
+
+- (void)updateShowHidePINState
+{
+  self.PINTextField.rightView.hidden = YES;
+  
+  // LAPolicyDeviceOwnerAuthentication is only on iOS >= 9.0
+  if([NSProcessInfo processInfo].operatingSystemVersion.majorVersion >= 9) {
+    LAContext *const context = [[LAContext alloc] init];
+    if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
+      self.PINTextField.rightView.hidden = NO;
+    }
+  }
+}
+
+- (void)willEnterForeground
+{
+  // We update the state again in case the user enabled or disabled an authentication mechanism.
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [self updateShowHidePINState];
+  }];
 }
 
 @end
