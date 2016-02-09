@@ -1,3 +1,5 @@
+@import LocalAuthentication;
+
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
 #import "NYPLBasicAuth.h"
@@ -116,7 +118,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   if(!self) return nil;
   
   self.title = NSLocalizedString(@"LibraryCard", nil);
-  
+
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(accountDidChange)
@@ -127,6 +129,18 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
    addObserver:self
    selector:@selector(keyboardDidShow:)
    name:UIKeyboardWillShowNotification
+   object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(willResignActive)
+   name:UIApplicationWillResignActiveNotification
+   object:nil];
+
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(willEnterForeground)
+   name:UIApplicationWillEnterForegroundNotification
    object:nil];
   
   NSURLSessionConfiguration *const configuration =
@@ -183,11 +197,12 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
    addTarget:self
    action:@selector(textFieldsDidChange)
    forControlEvents:UIControlEventEditingChanged];
-  
+
   self.PINShowHideButton = [UIButton buttonWithType:UIButtonTypeSystem];
   [self.PINShowHideButton setTitle:NSLocalizedString(@"Show", nil) forState:UIControlStateNormal];
   [self.PINShowHideButton sizeToFit];
-  [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected) forControlEvents:UIControlEventTouchUpInside];
+  [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected)
+                   forControlEvents:UIControlEventTouchUpInside];
   self.PINTextField.rightView = self.PINShowHideButton;
   self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
 }
@@ -201,6 +216,8 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   [self accountDidChange];
   
   [self.tableView reloadData];
+  
+  [self updateShowHidePINState];
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -454,9 +471,33 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
 - (void)PINShowHideSelected
 {
+  if(self.PINTextField.text.length > 0 && self.PINTextField.secureTextEntry) {
+    LAContext *const context = [[LAContext alloc] init];
+    if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
+      [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication
+              localizedReason:NSLocalizedString(@"SettingsAccountViewControllerAuthenticationReason", nil)
+                        reply:^(__unused BOOL success,
+                                __unused NSError *_Nullable error) {
+                          if(success) {
+                            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                              [self togglePINShowHideState];
+                            }];
+                          }
+                        }];
+    } else {
+      [self togglePINShowHideState];
+    }
+  } else {
+    [self togglePINShowHideState];
+  }
+}
+
+- (void)togglePINShowHideState
+{
   self.PINTextField.secureTextEntry = !self.PINTextField.secureTextEntry;
   NSString *title = self.PINTextField.secureTextEntry ? @"Show" : @"Hide";
   [self.PINShowHideButton setTitle:NSLocalizedString(title, nil) forState:UIControlStateNormal];
+  [self.PINShowHideButton sizeToFit];
   [self.tableView reloadData];
 }
 
@@ -750,6 +791,34 @@ completionHandler:(void (^)())handler
     } else {
       [self showLoginAlertWithError:error];
     }
+  }];
+}
+
+- (void)willResignActive
+{
+  if(!self.PINTextField.secureTextEntry) {
+    [self togglePINShowHideState];
+  }
+}
+
+- (void)updateShowHidePINState
+{
+  self.PINTextField.rightView.hidden = YES;
+  
+  // LAPolicyDeviceOwnerAuthentication is only on iOS >= 9.0
+  if([NSProcessInfo processInfo].operatingSystemVersion.majorVersion >= 9) {
+    LAContext *const context = [[LAContext alloc] init];
+    if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
+      self.PINTextField.rightView.hidden = NO;
+    }
+  }
+}
+
+- (void)willEnterForeground
+{
+  // We update the state again in case the user enabled or disabled an authentication mechanism.
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [self updateShowHidePINState];
   }];
 }
 
