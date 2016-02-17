@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A823D80C192BABA400B55DE2"
-               BuildableName = "Simplified.app"
-               BlueprintName = "Simplified"
+               BuildableName = "SimplyE.app"
+               BlueprintName = "SimplyE"
                ReferencedContainer = "container:Simplified.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,8 +33,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A823D827192BABA400B55DE2"
-               BuildableName = "SimplifiedTests.xctest"
-               BlueprintName = "SimplifiedTests"
+               BuildableName = "SimplyETests.xctest"
+               BlueprintName = "SimplyETests"
                ReferencedContainer = "container:Simplified.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -43,8 +43,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A823D80C192BABA400B55DE2"
-            BuildableName = "Simplified.app"
-            BlueprintName = "Simplified"
+            BuildableName = "SimplyE.app"
+            BlueprintName = "SimplyE"
             ReferencedContainer = "container:Simplified.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -66,8 +66,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A823D80C192BABA400B55DE2"
-            BuildableName = "Simplified.app"
-            BlueprintName = "Simplified"
+            BuildableName = "SimplyE.app"
+            BlueprintName = "SimplyE"
             ReferencedContainer = "container:Simplified.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -89,8 +89,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A823D80C192BABA400B55DE2"
-            BuildableName = "Simplified.app"
-            BlueprintName = "Simplified"
+            BuildableName = "SimplyE.app"
+            BlueprintName = "SimplyE"
             ReferencedContainer = "container:Simplified.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

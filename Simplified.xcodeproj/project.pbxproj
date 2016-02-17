@@ -518,7 +518,7 @@
 		A4E254F81B0E610900193FE4 /* NYPLBasicAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBasicAuth.h; sourceTree = "<group>"; };
 		A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBasicAuth.m; sourceTree = "<group>"; };
 		A4E255141B0E704100193FE4 /* NYPLQueueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLQueueTests.m; sourceTree = "<group>"; };
-		A823D80D192BABA400B55DE2 /* Simplified.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simplified.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A823D80D192BABA400B55DE2 /* SimplyE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimplyE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D810192BABA400B55DE2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A823D812192BABA400B55DE2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		A823D814192BABA400B55DE2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -529,7 +529,7 @@
 		A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLAppDelegate.h; sourceTree = "<group>"; };
 		A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLAppDelegate.m; sourceTree = "<group>"; };
 		A823D822192BABA400B55DE2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		A823D828192BABA400B55DE2 /* SimplifiedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimplifiedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A823D828192BABA400B55DE2 /* SimplyETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimplyETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D829192BABA400B55DE2 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		A823D831192BABA400B55DE2 /* SimplifiedTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SimplifiedTests-Info.plist"; sourceTree = "<group>"; };
 		A823D833192BABA400B55DE2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -945,8 +945,8 @@
 		A823D80E192BABA400B55DE2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A823D80D192BABA400B55DE2 /* Simplified.app */,
-				A823D828192BABA400B55DE2 /* SimplifiedTests.xctest */,
+				A823D80D192BABA400B55DE2 /* SimplyE.app */,
+				A823D828192BABA400B55DE2 /* SimplyETests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1142,9 +1142,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A823D80C192BABA400B55DE2 /* Simplified */ = {
+		A823D80C192BABA400B55DE2 /* SimplyE */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A823D839192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "Simplified" */;
+			buildConfigurationList = A823D839192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "SimplyE" */;
 			buildPhases = (
 				14FCCAF9F581DFE0B70E7FBD /* Check Pods Manifest.lock */,
 				A823D809192BABA400B55DE2 /* Sources */,
@@ -1158,14 +1158,14 @@
 			);
 			dependencies = (
 			);
-			name = Simplified;
+			name = SimplyE;
 			productName = Simplified;
-			productReference = A823D80D192BABA400B55DE2 /* Simplified.app */;
+			productReference = A823D80D192BABA400B55DE2 /* SimplyE.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A823D827192BABA400B55DE2 /* SimplifiedTests */ = {
+		A823D827192BABA400B55DE2 /* SimplyETests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A823D83C192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "SimplifiedTests" */;
+			buildConfigurationList = A823D83C192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "SimplyETests" */;
 			buildPhases = (
 				A823D824192BABA400B55DE2 /* Sources */,
 				A823D825192BABA400B55DE2 /* Frameworks */,
@@ -1176,9 +1176,9 @@
 			dependencies = (
 				A823D82E192BABA400B55DE2 /* PBXTargetDependency */,
 			);
-			name = SimplifiedTests;
+			name = SimplyETests;
 			productName = SimplifiedTests;
-			productReference = A823D828192BABA400B55DE2 /* SimplifiedTests.xctest */;
+			productReference = A823D828192BABA400B55DE2 /* SimplyETests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -1230,8 +1230,8 @@
 			);
 			projectRoot = "";
 			targets = (
-				A823D80C192BABA400B55DE2 /* Simplified */,
-				A823D827192BABA400B55DE2 /* SimplifiedTests */,
+				A823D80C192BABA400B55DE2 /* SimplyE */,
+				A823D827192BABA400B55DE2 /* SimplyETests */,
 			);
 		};
 /* End PBXProject section */
@@ -1524,7 +1524,7 @@
 /* Begin PBXTargetDependency section */
 		A823D82E192BABA400B55DE2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A823D80C192BABA400B55DE2 /* Simplified */;
+			target = A823D80C192BABA400B55DE2 /* SimplyE */;
 			targetProxy = A823D82D192BABA400B55DE2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1763,7 +1763,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A823D839192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "Simplified" */ = {
+		A823D839192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "SimplyE" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A823D83A192BABA400B55DE2 /* Debug */,
@@ -1772,7 +1772,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A823D83C192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "SimplifiedTests" */ = {
+		A823D83C192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "SimplyETests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A823D83D192BABA400B55DE2 /* Debug */,
