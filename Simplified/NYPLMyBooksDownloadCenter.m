@@ -14,16 +14,11 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksDownloadInfo.h"
 
-static NSString *const NYPLProblemNoActiveLoan =
-@"http://librarysimplified.org/terms/problem/no-active-loan";
-
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
 @interface NYPLMyBooksDownloadCenter () <NYPLADEPTDelegate>
 @end
 #endif
-
-
 
 @interface NYPLMyBooksDownloadCenter ()
   <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, UIAlertViewDelegate>
@@ -218,21 +213,25 @@ didFinishDownloadingToURL:(NSURL *const)location
   }
   
   if (!success) {
-      dispatch_async(dispatch_get_main_queue(), ^{
-        NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"DownloadFailed" message:@"DownloadCouldNotBeCompletedFormat", book.title];
-        if (problemDocument)
-            [alert setProblemDocument:problemDocument displayDocumentMessage:YES];
-            [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
-
-            if ([problemDocument.type isEqualToString:NYPLProblemNoActiveLoan])
-            {
-                [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:book.identifier];
-            }
-      });
+    dispatch_async(dispatch_get_main_queue(), ^{
+      NYPLAlertController *alert = [NYPLAlertController
+                                    alertWithTitle:@"DownloadFailed"
+                                    message:@"DownloadCouldNotBeCompletedFormat", book.title];
+      if (problemDocument) {
+        [alert setProblemDocument:problemDocument displayDocumentMessage:YES];
+        
+        if ([problemDocument.type isEqualToString:NYPLProblemDocumentTypeNoActiveLoan])
+        {
+          [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:book.identifier];
+        }
+      }
       
-      [[NYPLBookRegistry sharedRegistry]
-       setState:NYPLBookStateDownloadFailed
-       forIdentifier:book.identifier];
+      [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+    });
+    
+    [[NYPLBookRegistry sharedRegistry]
+     setState:NYPLBookStateDownloadFailed
+     forIdentifier:book.identifier];
   }
 
   [self broadcastUpdate];
@@ -325,34 +324,34 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 #endif
   
   if(book.acquisition.revoke) {
-      [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-      [NYPLOPDSFeed withURL:book.acquisition.revoke completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
-          [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
-          
-          if(feed && feed.entries.count == 1)  {
-              if(downloaded) {
-                  [self deleteLocalContentForBookIdentifier:identifier];
-              }
-              NYPLBook *returnedBook = [NYPLBook bookWithEntry:feed.entries[0]];
-              [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
-          } else {
-              
-              if ([error[@"type"]  isEqualToString: NYPLProblemNoActiveLoan])
-              {
-                  if(downloaded) {
-                      [self deleteLocalContentForBookIdentifier:identifier];
-                  }
-                  [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
-              }
-              else
-              {
-                  NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"ReturnFailed" message:@"ReturnCouldNotBeCompletedFormat", bookTitle];
-                  if (error)
-                      [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
-                  [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
-              }
+    [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
+    [NYPLOPDSFeed withURL:book.acquisition.revoke completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
+      [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
+      
+      if(feed && feed.entries.count == 1)  {
+        if(downloaded) {
+          [self deleteLocalContentForBookIdentifier:identifier];
+        }
+        NYPLBook *returnedBook = [NYPLBook bookWithEntry:feed.entries[0]];
+        [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
+      } else {
+        
+        if([error[@"type"] isEqualToString:NYPLProblemDocumentTypeNoActiveLoan])
+        {
+          if(downloaded) {
+            [self deleteLocalContentForBookIdentifier:identifier];
           }
-      }];
+          [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
+        }
+        else
+        {
+          NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"ReturnFailed" message:@"ReturnCouldNotBeCompletedFormat", bookTitle];
+          if (error)
+            [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
+          [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+        }
+      }
+    }];
   } else {
     if(downloaded) {
       [self deleteLocalContentForBookIdentifier:identifier];
