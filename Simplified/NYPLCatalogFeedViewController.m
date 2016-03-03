@@ -20,7 +20,6 @@
             if ([response.MIMEType isEqualToString:@"application/atom+xml"]) {
               NYPLXML *const XML = [NYPLXML XMLWithData:data];
               NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:XML];
-              NSString *feedcat = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] substringToIndex:100];
               switch(feed.type) {
                 case NYPLOPDSFeedTypeAcquisitionGrouped:
                   return [[NYPLCatalogGroupedFeedViewController alloc]
@@ -32,15 +31,15 @@
                                                  initWithOPDSFeed:feed]
                           remoteViewController:remoteViewController];
                 case NYPLOPDSFeedTypeInvalid:
-                  NYPLLOG(@"warning", kNYPLInvalidFeedException, @{@"feed":feedcat}, @"Cannot initialize due to invalid feed.");
+                  NYPLLOG(@"warning", kNYPLInvalidFeedException, nil, @"Cannot initialize due to invalid feed.");
                   return nil;
                 case NYPLOPDSFeedTypeNavigation:
-                  NYPLLOG(@"warning", kNYPLInvalidFeedException, @{@"feed":feedcat}, @"Cannot initialize due to lack of support for navigation feeds.");
+                  NYPLLOG(@"warning", kNYPLInvalidFeedException, nil, @"Cannot initialize due to lack of support for navigation feeds.");
                   return nil;
               }
             }
             else {
-              NYPLLOG(@"warning", kNYPLInvalidFeedException, nil, @"Did not revceive XML atom feed, cannot initialize");
+              NYPLLOG(@"warning", kNYPLInvalidFeedException, nil, @"Did not recieve XML atom feed, cannot initialize");
               return nil;
             }
           }];
