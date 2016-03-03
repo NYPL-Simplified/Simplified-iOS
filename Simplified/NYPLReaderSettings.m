@@ -78,7 +78,7 @@ NYPLReaderSettingsColorScheme colorSchemeFromString(NSString *const string)
       @"whiteOnBlack": @(NYPLReaderSettingsColorSchemeWhiteOnBlack)}[string];
   
   if(!colorSchemeNumber) {
-    @throw NSInvalidArgumentException;
+    @throw NSInternalInconsistencyException;
   }
   
   return [colorSchemeNumber integerValue];
@@ -98,11 +98,13 @@ NSString *fontFaceToString(NYPLReaderSettingsFontFace const fontFace)
 
 NYPLReaderSettingsFontFace fontFaceFromString(NSString *const string)
 {
-  NSNumber *const fontFaceNumber = @{@"sans": @(NYPLReaderSettingsFontFaceSans),
-                                     @"serif": @(NYPLReaderSettingsFontFaceSerif)}[string];
+  NSNumber *const fontFaceNumber =
+    @{@"sans": @(NYPLReaderSettingsFontFaceSans),
+      @"serif": @(NYPLReaderSettingsFontFaceSerif),
+      @"OpenDyslexic3": @(NYPLReaderSettingsFontFaceOpenDyslexic)}[string];
   
   if(!fontFaceNumber) {
-    @throw NSInvalidArgumentException;
+    @throw NSInternalInconsistencyException;
   }
   
   return [fontFaceNumber integerValue];
@@ -159,7 +161,7 @@ NYPLReaderSettingsFontSize fontSizeFromString(NSString *const string)
                                      @"largest": @(NYPLReaderSettingsFontSizeLargest)}[string];
   
   if(!fontSizeNumber) {
-    @throw NSInvalidArgumentException;
+    @throw NSInternalInconsistencyException;
   }
   
   return [fontSizeNumber integerValue];
