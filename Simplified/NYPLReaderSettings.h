@@ -1,28 +1,31 @@
+// FIXME: These values should be persisted as strings, not numbers derived
+// from an enum.
+
 typedef NS_ENUM(NSInteger, NYPLReaderSettingsColorScheme) {
-  NYPLReaderSettingsColorSchemeBlackOnWhite,
-  NYPLReaderSettingsColorSchemeBlackOnSepia,
-  NYPLReaderSettingsColorSchemeWhiteOnBlack
+  NYPLReaderSettingsColorSchemeBlackOnWhite = 0,
+  NYPLReaderSettingsColorSchemeBlackOnSepia = 1,
+  NYPLReaderSettingsColorSchemeWhiteOnBlack = 2
 };
 
 typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontFace) {
-  NYPLReaderSettingsFontFaceSans,
-  NYPLReaderSettingsFontFaceSerif,
-  NYPLReaderSettingsFontFaceOpenDyslexic
+  NYPLReaderSettingsFontFaceSans = 0,
+  NYPLReaderSettingsFontFaceSerif = 1,
+  NYPLReaderSettingsFontFaceOpenDyslexic = 2
 };
 
 typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontSize) {
-  NYPLReaderSettingsFontSizeSmallest,
-  NYPLReaderSettingsFontSizeSmaller,
-  NYPLReaderSettingsFontSizeSmall,
-  NYPLReaderSettingsFontSizeNormal,
-  NYPLReaderSettingsFontSizeLarge,
-  NYPLReaderSettingsFontSizeLarger,
-  NYPLReaderSettingsFontSizeLargest
+  NYPLReaderSettingsFontSizeSmallest = 0,
+  NYPLReaderSettingsFontSizeSmaller = 1,
+  NYPLReaderSettingsFontSizeSmall = 2,
+  NYPLReaderSettingsFontSizeNormal = 3,
+  NYPLReaderSettingsFontSizeLarge = 4,
+  NYPLReaderSettingsFontSizeLarger = 5,
+  NYPLReaderSettingsFontSizeLargest = 6
 };
 
 typedef NS_ENUM(NSInteger, NYPLReaderSettingsMediaOverlaysEnableClick) {
-  NYPLReaderSettingsMediaOverlaysEnableClickTrue,
-  NYPLReaderSettingsMediaOverlaysEnableClickFalse
+  NYPLReaderSettingsMediaOverlaysEnableClickTrue = 0,
+  NYPLReaderSettingsMediaOverlaysEnableClickFalse = 1
 };
 
 static NSString *const NYPLReaderSettingsColorSchemeDidChangeNotification =
