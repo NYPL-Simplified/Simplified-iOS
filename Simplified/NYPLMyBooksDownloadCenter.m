@@ -470,6 +470,18 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
         
         NYPLBook *book = [NYPLBook bookWithEntry:feed.entries[0]];
         
+        if(!book) {
+          [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            NYPLAlertController *const alert =
+              [NYPLAlertController
+               alertWithTitle:@"BorrowFailed"
+               message:@"BorrowCouldNotBeCompletedFormat", book.title];
+            [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+          }];
+           
+          return;
+        }
+        
         [[NYPLBookRegistry sharedRegistry]
          addBook:book
          location:nil
