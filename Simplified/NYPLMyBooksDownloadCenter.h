@@ -36,7 +36,7 @@ static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
 // Useful to get the DRM type, to see whether the download has gotten to the stage where that's known
 - (NYPLMyBooksDownloadInfo *)downloadInfoForBookIdentifier:(NSString *)bookIdentifier;
 
-// This returns a URL even if the book is not on-disk.
+// This returns a URL even if the book is not on-disk. Returns nil if |identifier| is nil.
 - (NSURL *)fileURLForBookIndentifier:(NSString *)identifier;
 
 @end
