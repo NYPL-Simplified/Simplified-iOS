@@ -19,7 +19,15 @@
            NSURLResponse *const response) {
             if ([response.MIMEType isEqualToString:@"application/atom+xml"]) {
               NYPLXML *const XML = [NYPLXML XMLWithData:data];
+              if(!XML) {
+                NYPLLOG(@"warning", kNYPLInvalidFeedException, nil, @"Cannot initialize due to invalid XML.");
+                return nil;
+              }
               NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:XML];
+              if(!feed) {
+                NYPLLOG(@"warning", kNYPLInvalidFeedException, nil, @"Cannot initialize due to XML not representing an OPDS feed.");
+                return nil;
+              }
               switch(feed.type) {
                 case NYPLOPDSFeedTypeAcquisitionGrouped:
                   return [[NYPLCatalogGroupedFeedViewController alloc]
