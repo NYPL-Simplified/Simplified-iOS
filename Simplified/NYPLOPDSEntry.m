@@ -37,8 +37,7 @@
     for(NYPLXML *const authorXML in [entryXML childrenWithName:@"author"]) {
       NYPLXML *const nameXML = [authorXML firstChildWithName:@"name"];
       if(!nameXML) {
-        NSDictionary *infoDict =@{@"author":authorXML.name, @"identifier":self.identifier};
-        NYPLLOG(@"warning", kNYPLInvalidEntryException,  infoDict, @"'author' element missing required 'name' element. Ignoring malformed 'author' element.");
+        NYPLLOG(@"warning", kNYPLInvalidEntryException, nil, @"'author' element missing required 'name' element. Ignoring malformed 'author' element.");
         continue;
       }
       [authorStrings addObject:nameXML.value];
@@ -64,7 +63,7 @@
   }
   
   if(!((self.identifier = [entryXML firstChildWithName:@"id"].value))) {
-    NYPLLOG(@"warning", kNYPLInvalidEntryException, @{@"identifier":self.identifier}, @"Missing required 'id' element.");
+    NYPLLOG(@"warning", kNYPLInvalidEntryException, nil, @"Missing required 'id' element.");
     return nil;
   }
   
