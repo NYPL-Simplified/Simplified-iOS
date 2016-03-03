@@ -395,6 +395,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
 {
+  if(!identifier) return nil;
+  
   return [[[self contentDirectoryURL] URLByAppendingPathComponent:[identifier SHA256]]
           URLByAppendingPathExtension:@"epub"];
 }
