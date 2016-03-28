@@ -1,3 +1,5 @@
+@import WebKit;
+
 #import "NYPLBook.h"
 #import "NYPLBookLocation.h"
 #import "NYPLBookRegistry.h"
@@ -17,7 +19,7 @@
 
 @interface NYPLReaderReadiumView ()
   <NYPLReaderRenderer, RDPackageResourceServerDelegate, UIScrollViewDelegate,
-   UIWebViewDelegate>
+   WKNavigationDelegate, WKUIDelegate>
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) BOOL bookIsCorrupt;
@@ -31,7 +33,7 @@
 @property (nonatomic) BOOL isPageTurning, canGoLeft, canGoRight;
 @property (nonatomic) RDPackageResourceServer *server;
 @property (nonatomic) NSArray *TOCElements;
-@property (nonatomic) UIWebView *webView;
+@property (nonatomic) WKWebView *webView;
 
 @property (nonatomic) NSDictionary *bookMapDictionary;
 @property (nonatomic) NSNumber *spineItemPercentageRemaining;
@@ -39,6 +41,10 @@
 @property (nonatomic) NSNumber *spineItemPageCount;
 @property (nonatomic) NSNumber *progressWithinBook;
 @property (nonatomic) NSDictionary *spineItemDetails;
+
+@property (nonatomic) BOOL javaScriptIsRunning;
+@property (nonatomic) NSMutableArray *javaScriptHandlerQueue;
+@property (nonatomic) NSMutableArray *javaScriptStringQueue;
 
 @end
 
@@ -113,10 +119,11 @@ static void generateTOCElements(NSArray *const navigationElements,
                  specialPayloadAnnotationsCSS:nil
                  specialPayloadMathJaxJS:nil];
   
-  self.webView = [[UIWebView alloc] initWithFrame:self.bounds];
+  self.webView = [[WKWebView alloc] initWithFrame:self.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
-  self.webView.delegate = self;
+  self.webView.navigationDelegate = self;
+  self.webView.UIDelegate = self;
   self.webView.scrollView.bounces = NO;
   self.webView.hidden = YES;
   self.webView.scrollView.delegate = self;
@@ -136,6 +143,10 @@ static void generateTOCElements(NSArray *const navigationElements,
   self.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
   
   [NYPLReaderSettings sharedSettings].currentReaderReadiumView = self;
+  
+  self.javaScriptIsRunning = NO;
+  self.javaScriptHandlerQueue = [NSMutableArray array];
+  self.javaScriptStringQueue = [NSMutableArray array];
   
   return self;
 }
@@ -183,8 +194,8 @@ static void generateTOCElements(NSArray *const navigationElements,
                                    initWithData:NYPLJSONDataFromObject([[NYPLReaderSettings sharedSettings]
                                                                         readiumSettingsRepresentation])
                                    encoding:NSUTF8StringEncoding]];
-    [self.webView stringByEvaluatingJavaScriptFromString: javaScript];
-    [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.settingsDidChange();"];
+    [self sequentiallyEvaluateJavaScript:javaScript];
+    [self sequentiallyEvaluateJavaScript:@"simplified.settingsDidChange();"];
   }];
 }
 
@@ -203,7 +214,7 @@ static void generateTOCElements(NSArray *const navigationElements,
      @"document.body.style.backgroundColor = \"%@\";",
      stylesString,
      [[NYPLReaderSettings sharedSettings].backgroundColor javascriptHexString]];
-    [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
+    [self sequentiallyEvaluateJavaScript:javaScript];
     
     
     NSString *javascriptToChangeHighlightColour = [NSString stringWithFormat:@" \
@@ -219,75 +230,95 @@ static void generateTOCElements(NSArray *const navigationElements,
                                                    }); \
                                                    ",  [NYPLReaderSettings sharedSettings].backgroundMediaOverlayHighlightColor.javascriptHexString];
     
-    [self.webView stringByEvaluatingJavaScriptFromString:javascriptToChangeHighlightColour];
+    [self sequentiallyEvaluateJavaScript:javascriptToChangeHighlightColour];
     
     self.webView.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
-    [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.settingsDidChange();"];
+    [self sequentiallyEvaluateJavaScript:@"simplified.settingsDidChange();"];
   }];
 }
 
-- (void) applyMediaOverlayPlaybackToggle {
+- (void) applyMediaOverlayPlaybackToggle
+{
+  __weak NYPLReaderReadiumView *const weakSelf = self;
   
-  NSString *isPlaying = [self.webView stringByEvaluatingJavaScriptFromString:
-                  @"ReadiumSDK.reader.isPlayingMediaOverlay()"];
-  
-  NSString *isAvailable = [self.webView stringByEvaluatingJavaScriptFromString:
-                    @"ReadiumSDK.reader.isMediaOverlayAvailable()"];
-  
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    NSString *javaScript;
-    if (isPlaying.length == 0 && [isAvailable containsString:@"true"]) {
-      javaScript = [NSString stringWithFormat: @"ReadiumSDK.reader.playMediaOverlay()"];
-      
-      if(UIAccessibilityIsVoiceOverRunning())
-      {
-        self.webView.accessibilityElementsHidden = YES;
-      }
-    }
-    else {
-      javaScript = [NSString stringWithFormat: @"ReadiumSDK.reader.pauseMediaOverlay()"];
-      
-      if(UIAccessibilityIsVoiceOverRunning())
-      {
-        self.webView.accessibilityElementsHidden = NO;
-      }
-    }
-    [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
-  }];
+  [self
+   sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.isPlayingMediaOverlay()"
+   withCompletionHandler:^(id _Nullable result, __unused NSError *_Nullable error) {
+     BOOL const isPlaying = [result boolValue];
+     [weakSelf
+      sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.isMediaOverlayAvailable()"
+      withCompletionHandler:^(id _Nullable result, __unused NSError *_Nullable error) {
+        BOOL const isAvailable = [result boolValue];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+          NSString *javaScript;
+          if (!isPlaying && isAvailable) {
+            javaScript = [NSString stringWithFormat: @"ReadiumSDK.reader.playMediaOverlay()"];
+            
+            if(UIAccessibilityIsVoiceOverRunning())
+            {
+              weakSelf.webView.accessibilityElementsHidden = YES;
+            }
+          }
+          else {
+            javaScript = [NSString stringWithFormat: @"ReadiumSDK.reader.pauseMediaOverlay()"];
+            
+            if(UIAccessibilityIsVoiceOverRunning())
+            {
+              weakSelf.webView.accessibilityElementsHidden = NO;
+            }
+          }
+          [weakSelf sequentiallyEvaluateJavaScript:javaScript];
+        }];
+      }];
+   }];
 }
 
 - (void) openPageLeft {
   if (!self.canGoLeft)
     return;
   self.isPageTurning = YES;
-  [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageLeft()"];
+  [self sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.openPageLeft()"];
 }
 
 - (void) openPageRight {
   if (!self.canGoRight)
     return;
   self.isPageTurning = YES;
-  [self.webView stringByEvaluatingJavaScriptFromString:@"ReadiumSDK.reader.openPageRight()"];
+  [self sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.openPageRight()"];
 }
 
 - (BOOL) touchIntersectsLink:(UITouch *)touch
 {
   // Adapted from http://stackoverflow.com/questions/7216356/iphone-tapgesture-on-uiwebview-conflicts-with-the-link-clicking
   
-  BOOL retVal = NO;
+  __block BOOL retVal = NO;
   
   //Check if a link was clicked
   NSString *js = @"simplified.getSemicolonSeparatedLinkRects()";
-  NSString *result = [self.webView stringByEvaluatingJavaScriptFromString:js];
   
-  NSArray *linkArray = [result componentsSeparatedByString:@";"];
-  CGPoint touchPoint = [touch locationInView:self.webView];
-  for ( NSString *linkRectStr in linkArray ) {
-    CGRect rect = CGRectFromString(linkRectStr);
-    if ( CGRectContainsPoint( rect, touchPoint ) ) {
-      retVal = YES;
-      break;
-    }
+  dispatch_semaphore_t sephamore = dispatch_semaphore_create(0);
+  
+  __weak NYPLReaderReadiumView *const weakSelf = self;
+  
+  [self
+   sequentiallyEvaluateJavaScript:js
+   withCompletionHandler:^(id _Nullable result, __unused NSError * _Nullable error) {
+     NSArray *linkArray = [result componentsSeparatedByString:@";"];
+     CGPoint touchPoint = [touch locationInView:weakSelf.webView];
+     for ( NSString *linkRectStr in linkArray ) {
+       CGRect rect = CGRectFromString(linkRectStr);
+       if ( CGRectContainsPoint( rect, touchPoint ) ) {
+         retVal = YES;
+         break;
+       }
+     }
+     dispatch_semaphore_signal(sephamore);
+   }];
+  
+  while(dispatch_semaphore_wait(sephamore, DISPATCH_TIME_NOW)) {
+    [[NSRunLoop currentRunLoop]
+     runMode:NSDefaultRunLoopMode
+     beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
   }
   
   return retVal;
@@ -306,9 +337,7 @@ static void generateTOCElements(NSArray *const navigationElements,
 packageResourceServer:(__attribute__((unused)) RDPackageResourceServer *)packageResourceServer
 executeJavaScript:(NSString *const)javaScript
 {
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    [self.webView stringByEvaluatingJavaScriptFromString:javaScript];
-  }];
+  [self sequentiallyEvaluateJavaScript:javaScript];
 }
 
 #pragma mark UIScrollViewDelegate
@@ -378,10 +407,10 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     [self.delegate renderer:self didEncounterCorruptionForBook:self.book];
     return;
   } else {
-    [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.shouldUpdateVisibilityOnUpdate = false;"];
+    [self sequentiallyEvaluateJavaScript:@"simplified.shouldUpdateVisibilityOnUpdate = false;"];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
       self.webView.isAccessibilityElement = NO;
-      [self.webView stringByEvaluatingJavaScriptFromString:@"simplified.beginVisibilityUpdates();"];
+      [self sequentiallyEvaluateJavaScript:@"simplified.beginVisibilityUpdates();"];
       UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     });
   }
@@ -423,7 +452,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 //  console.log(childs);
 
   
-  [self.webView stringByEvaluatingJavaScriptFromString:
+  [self sequentiallyEvaluateJavaScript:
    [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
     [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
   
@@ -448,7 +477,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \
   ", [NYPLConfiguration backgroundMediaOverlayHighlightColor].javascriptHexString] ;
   
-  [self.webView stringByEvaluatingJavaScriptFromString: javascript];
+  [self sequentiallyEvaluateJavaScript:javascript];
 }
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
@@ -470,36 +499,40 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   NSArray *const openPages = dictionary[@"openPages"];
   
   self.openPageCount = openPages.count;
+
+  __weak NYPLReaderReadiumView *const weakSelf = self;
   
-  NSString *const locationJSON = [self.webView stringByEvaluatingJavaScriptFromString:
-                                  @"ReadiumSDK.reader.bookmarkCurrentPage()"];
-  
-  BOOL completed = NO;
-  if (openPages.count>0 && [locationJSON rangeOfString:openPages[0][@"idref"]].location != NSNotFound) {
-    completed = YES;
-    self.isPageTurning = NO;
-  }
-  
-  [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"simplified.pageDidChange(%@);", locationJSON]];
-  
-  NYPLBookLocation *const location = [[NYPLBookLocation alloc]
-                                      initWithLocationString:locationJSON
-                                      renderer:renderer];
-  
-  [self calculateProgressionWithDictionary:dictionary withHandler:^(void) {
-//    NSLog(@"Page %ld of %ld", self.spineItemPageIndex.integerValue+1, self.spineItemPageCount.integerValue);
-    [self.delegate didUpdateProgressSpineItemPercentage:self.spineItemPercentageRemaining bookPercentage:self.progressWithinBook pageIndex:self.spineItemPageIndex pageCount:self.spineItemPageCount withCurrentSpineItemDetails:self.spineItemDetails completed:completed];
-  }];
-  
-  if(location) {
-    [[NYPLBookRegistry sharedRegistry]
-     setLocation:location
-     forIdentifier:self.book.identifier];
-  }
-  
-  self.webView.hidden = NO;
-  
-  UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.webView);
+  [self
+   sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
+   withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
+     NSString *const locationJSON = result;
+     BOOL completed = NO;
+     if (openPages.count>0 && [locationJSON rangeOfString:openPages[0][@"idref"]].location != NSNotFound) {
+       completed = YES;
+       weakSelf.isPageTurning = NO;
+     }
+     
+     [weakSelf sequentiallyEvaluateJavaScript:[NSString stringWithFormat:@"simplified.pageDidChange(%@);", locationJSON]];
+     
+     NYPLBookLocation *const location = [[NYPLBookLocation alloc]
+                                         initWithLocationString:locationJSON
+                                         renderer:renderer];
+     
+     [weakSelf calculateProgressionWithDictionary:dictionary withHandler:^(void) {
+       //    NSLog(@"Page %ld of %ld", self.spineItemPageIndex.integerValue+1, self.spineItemPageCount.integerValue);
+       [weakSelf.delegate didUpdateProgressSpineItemPercentage:weakSelf.spineItemPercentageRemaining bookPercentage:weakSelf.progressWithinBook pageIndex:weakSelf.spineItemPageIndex pageCount:weakSelf.spineItemPageCount withCurrentSpineItemDetails:weakSelf.spineItemDetails completed:completed];
+     }];
+     
+     if(location) {
+       [[NYPLBookRegistry sharedRegistry]
+        setLocation:location
+        forIdentifier:weakSelf.book.identifier];
+     }
+     
+     weakSelf.webView.hidden = NO;
+     
+     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.webView);
+   }];
 }
 
 - (void)calculateBookLength
@@ -640,13 +673,14 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   
   RDNavigationElement *const navigationElement = (RDNavigationElement *)opaqueLocation;
   
-  [self.webView stringByEvaluatingJavaScriptFromString:
+  [self sequentiallyEvaluateJavaScript:
    [NSString stringWithFormat:@"ReadiumSDK.reader.openContentUrl('%@', '%@')",
     navigationElement.content,
     navigationElement.sourceHref]];
 }
 
 - (BOOL) bookHasMediaOverlays {
+  /*
   NSString *isAvailable = [self.webView stringByEvaluatingJavaScriptFromString:
                            @"ReadiumSDK.reader.isMediaOverlayAvailable()"];
   if ( [isAvailable containsString:@"true"]) {
@@ -655,10 +689,12 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   else {
     return NO;
   }
+  */
+  return NO;
 }
 
 - (BOOL) bookHasMediaOverlaysBeingPlayed {
-  
+  /*
   if (![self bookHasMediaOverlays]) {
     return NO;
   }
@@ -671,6 +707,60 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   else {
     return YES;
   }
+  */
+  return NO;
+}
+
+- (void)sequentiallyEvaluateJavaScript:(NSString *const)javaScript
+                 withCompletionHandler:(void (^_Nullable)(id _Nullable result,
+                                                          NSError *_Nullable error))handler
+{
+  // We run this as a new operation to let the caller get back to
+  // whatever it's doing ASAP.
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    @synchronized(self) {
+      if(self.javaScriptIsRunning) {
+        // Some JavaScript is already running so we add this to the
+        // queue and finish.
+        [self.javaScriptStringQueue addObject:javaScript];
+        if(handler) {
+          [self.javaScriptHandlerQueue addObject:handler];
+        } else {
+          [self.javaScriptHandlerQueue addObject:[NSNull null]];
+        }
+      } else {
+        self.javaScriptIsRunning = YES;
+        [self.webView
+         evaluateJavaScript:javaScript
+         completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+           @synchronized(self) {
+             self.javaScriptIsRunning = NO;
+             if(handler) {
+               [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                 handler(result, error);
+               }];
+             }
+             if(self.javaScriptStringQueue.count > 0) {
+               NSString *const nextJavaScript = [self.javaScriptStringQueue firstObject];
+               [self.javaScriptStringQueue removeObjectAtIndex:0];
+               id const nextHandler = [self.javaScriptHandlerQueue firstObject];
+               [self.javaScriptHandlerQueue removeObjectAtIndex:0];
+               if([nextHandler isKindOfClass:[NSNull class]]) {
+                 [self sequentiallyEvaluateJavaScript:nextJavaScript withCompletionHandler:nil];
+               } else {
+                 [self sequentiallyEvaluateJavaScript:nextJavaScript withCompletionHandler:nextHandler];
+               }
+             }
+           }
+         }];
+      }
+    }
+  }];
+}
+
+- (void)sequentiallyEvaluateJavaScript:(nonnull NSString *const)javaScript
+{
+  [self sequentiallyEvaluateJavaScript:javaScript withCompletionHandler:nil];
 }
 
 @end
