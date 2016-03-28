@@ -391,33 +391,28 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
 - (NSArray *)readiumStylesRepresentation
 {
   NSString *fontFace;
-  NSString *lineHeight;
   
   switch(self.fontFace) {
     case NYPLReaderSettingsFontFaceSans:
       fontFace = @"Helvetica";
-      lineHeight = @"1.6";
       break;
     case NYPLReaderSettingsFontFaceSerif:
       fontFace = @"Georgia";
-      lineHeight = @"1.6";
       break;
     case NYPLReaderSettingsFontFaceOpenDyslexic:
       fontFace = @"OpenDyslexic3";
-      lineHeight = @"1.6";
       break;
   }
   
   return @[@{@"selector": @"*",
              @"declarations": @{@"color": [self.foregroundColor javascriptHexString],
                                 @"font-family": fontFace,
-                                @"line-height": lineHeight,
                                 @"-webkit-hyphens": @"auto"}}];
 }
 
 - (NSDictionary *)readiumSettingsRepresentation
 {
-  CGFloat const scalingFactor = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 4.0 : 3.0;
+  CGFloat const scalingFactor = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 5.0 : 4.0;
   
   CGFloat baseSize;
   switch(self.fontSize) {
@@ -446,7 +441,8 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
 
   return @{@"columnGap": @20,
            @"fontSize": @(baseSize * scalingFactor),
-           @"syntheticSpread": @NO,
+           @"syntheticSpread": @"single",
+           @"scroll": @NO,
            @"mediaOverlaysEnableClick": self.mediaOverlaysEnableClick ? @YES: @NO};
 }
 
