@@ -123,7 +123,7 @@ static void generateTOCElements(NSArray *const navigationElements,
                                    UIViewAutoresizingFlexibleWidth);
   self.webView.navigationDelegate = self;
   self.webView.scrollView.bounces = NO;
-  self.webView.hidden = YES;
+  self.webView.alpha = 0.0;
   [self addSubview:self.webView];
   
   self.webView.isAccessibilityElement = YES;
@@ -273,6 +273,7 @@ static void generateTOCElements(NSArray *const navigationElements,
   if (!self.canGoLeft)
     return;
   self.isPageTurning = YES;
+  self.webView.alpha = 0.0;
   [self sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.openPageLeft()"];
 }
 
@@ -280,6 +281,7 @@ static void generateTOCElements(NSArray *const navigationElements,
   if (!self.canGoRight)
     return;
   self.isPageTurning = YES;
+  self.webView.alpha = 0.0;
   [self sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.openPageRight()"];
 }
 
@@ -524,7 +526,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
         forIdentifier:weakSelf.book.identifier];
      }
      
-     weakSelf.webView.hidden = NO;
+     [UIView beginAnimations:@"animations" context:NULL];
+     [UIView setAnimationDuration:0.25];
+     weakSelf.webView.alpha = 1.0;
+     [UIView commitAnimations];
      
      UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.webView);
    }];
