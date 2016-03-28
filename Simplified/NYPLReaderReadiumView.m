@@ -449,6 +449,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 //  var childs = $iframe.contentWindow.document.documentElement.getElementsByTagName('*');
 //  console.log(childs);
 
+  [self applyCurrentFlowDependentSettings];
+  [self applyCurrentFlowIndependentSettings];
+  self.loaded = YES;
+  [self.delegate rendererDidFinishLoading:self];
   
   [self sequentiallyEvaluateJavaScript:
    [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
@@ -480,14 +484,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
 {
-  // If the book is finished opening, set all stylistic preferences.
-  if(!self.loaded) {
-    [self applyCurrentFlowDependentSettings];
-    [self applyCurrentFlowIndependentSettings];
-    self.loaded = YES;
-    [self.delegate rendererDidFinishLoading:self];
-  }
-  
   // Use left-to-right unless it explicitly asks for right-to-left.
   self.pageProgressionIsLTR = ![dictionary[@"pageProgressionDirection"]
                                 isEqualToString:@"rtl"];
@@ -511,31 +507,33 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   self.isPageTurning = NO;
   
-  // FIXME: THIS NEEDS TO RUN ON A CLOCK
-  [self
-   sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
-   withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
-     NSString *const locationJSON = result;
-     BOOL completed = NO;
-     if (openPages.count>0 && [locationJSON rangeOfString:openPages[0][@"idref"]].location != NSNotFound) {
-       completed = YES;
-     }
-     
-     NYPLBookLocation *const location = [[NYPLBookLocation alloc]
-                                         initWithLocationString:locationJSON
-                                         renderer:renderer];
-     
-     [weakSelf calculateProgressionWithDictionary:dictionary withHandler:^(void) {
-       //    NSLog(@"Page %ld of %ld", self.spineItemPageIndex.integerValue+1, self.spineItemPageCount.integerValue);
-       [weakSelf.delegate didUpdateProgressSpineItemPercentage:weakSelf.spineItemPercentageRemaining bookPercentage:weakSelf.progressWithinBook pageIndex:weakSelf.spineItemPageIndex pageCount:weakSelf.spineItemPageCount withCurrentSpineItemDetails:weakSelf.spineItemDetails completed:completed];
+  // Readium needs a moment...
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    [self
+     sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
+     withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
+       NSString *const locationJSON = result;
+       BOOL completed = NO;
+       if (openPages.count>0 && [locationJSON rangeOfString:openPages[0][@"idref"]].location != NSNotFound) {
+         completed = YES;
+       }
+       
+       NYPLBookLocation *const location = [[NYPLBookLocation alloc]
+                                           initWithLocationString:locationJSON
+                                           renderer:renderer];
+       
+       [weakSelf calculateProgressionWithDictionary:dictionary withHandler:^(void) {
+         //    NSLog(@"Page %ld of %ld", self.spineItemPageIndex.integerValue+1, self.spineItemPageCount.integerValue);
+         [weakSelf.delegate didUpdateProgressSpineItemPercentage:weakSelf.spineItemPercentageRemaining bookPercentage:weakSelf.progressWithinBook pageIndex:weakSelf.spineItemPageIndex pageCount:weakSelf.spineItemPageCount withCurrentSpineItemDetails:weakSelf.spineItemDetails completed:completed];
+       }];
+       
+       if(location) {
+         [[NYPLBookRegistry sharedRegistry]
+          setLocation:location
+          forIdentifier:weakSelf.book.identifier];
+       }
      }];
-     
-     if(location) {
-       [[NYPLBookRegistry sharedRegistry]
-        setLocation:location
-        forIdentifier:weakSelf.book.identifier];
-     }
-   }];
+  });
 }
 
 - (void)calculateBookLength
