@@ -253,7 +253,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
                                         UIViewAutoresizingFlexibleHeight);
   
   // ----------- page view
-  self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
+  self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
   
   self.pageViewController.dataSource = self;
   self.pageViewController.delegate = self;

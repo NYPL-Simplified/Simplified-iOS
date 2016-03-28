@@ -417,7 +417,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
 
 - (NSDictionary *)readiumSettingsRepresentation
 {
-  CGFloat const scalingFactor = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 3.0 : 2.5;
+  CGFloat const scalingFactor = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 4.0 : 3.0;
   
   CGFloat baseSize;
   switch(self.fontSize) {
