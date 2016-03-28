@@ -18,8 +18,7 @@
 #import "NYPLConfiguration.h"
 
 @interface NYPLReaderReadiumView ()
-  <NYPLReaderRenderer, RDPackageResourceServerDelegate, UIScrollViewDelegate,
-   WKNavigationDelegate, WKUIDelegate>
+  <NYPLReaderRenderer, RDPackageResourceServerDelegate, WKNavigationDelegate>
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) BOOL bookIsCorrupt;
@@ -123,20 +122,17 @@ static void generateTOCElements(NSArray *const navigationElements,
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
   self.webView.navigationDelegate = self;
-  self.webView.UIDelegate = self;
   self.webView.scrollView.bounces = NO;
   self.webView.hidden = YES;
-  self.webView.scrollView.delegate = self;
   [self addSubview:self.webView];
   
-  NSURL *const readerURL = [[NSBundle mainBundle]
-                            URLForResource:@"reader"
-                            withExtension:@"html"];
-  
-  assert(readerURL);
-  
   self.webView.isAccessibilityElement = YES;
-  [self.webView loadRequest:[NSURLRequest requestWithURL:readerURL]];
+  [self.webView loadRequest:
+   [NSURLRequest requestWithURL:
+    [NSURL URLWithString:
+     [NSString stringWithFormat:
+      @"http://127.0.0.1:%d/simplified-readium/reader.html",
+      self.server.port]]]];
   
   [self addObservers];
   
@@ -340,29 +336,25 @@ executeJavaScript:(NSString *const)javaScript
   [self sequentiallyEvaluateJavaScript:javaScript];
 }
 
-#pragma mark UIScrollViewDelegate
+#pragma mark WKNavigationDelegate
 
-- (UIView *)viewForZoomingInScrollView:(__attribute__((unused)) UIScrollView *)scrollView
-{
-  return nil;
-}
-
-#pragma mark UIWebViewDelegate
-
-- (BOOL)
-webView:(__attribute__((unused)) UIWebView *)webView
-shouldStartLoadWithRequest:(NSURLRequest *const)request
-navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
+- (void)webView:(__unused WKWebView *)webView
+decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction
+decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
   if(self.bookIsCorrupt) {
-    return NO;
+    decisionHandler(WKNavigationActionPolicyCancel);
+    return;
   }
+  
+  NSURLRequest *const request = navigationAction.request;
   
   if([request.URL.scheme isEqualToString:@"simplified"]) {
     NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
     NSString *const function = components[0];
     NYPLLOG(@"warning", nil, @{@"function":function}, @"Ignoring unknown simplified function.");
-    return NO;
+    decisionHandler(WKNavigationActionPolicyCancel);
+    return;
   }
   
   else if([request.URL.scheme isEqualToString:@"readium"]) {
@@ -382,15 +374,18 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
     } else {
       NYPLLOG(@"warning", nil, @{@"function":function}, @"Ignoring unknown readium function.");
     }
-    return NO;
+    decisionHandler(WKNavigationActionPolicyCancel);
+    return;
   }
   
   else {
     if (request.URL.isNYPLExternal) {
       [[UIApplication sharedApplication] openURL:(NSURL *__nonnull)request.URL];
-      return NO;
+      decisionHandler(WKNavigationActionPolicyCancel);
+      return;
     }
-    return YES;
+    decisionHandler(WKNavigationActionPolicyAllow);
+    return;
   }
 }
 
