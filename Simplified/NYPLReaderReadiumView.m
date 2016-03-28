@@ -499,6 +499,18 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
   __weak NYPLReaderReadiumView *const weakSelf = self;
   
+  [UIView beginAnimations:@"animations" context:NULL];
+  [UIView setAnimationDuration:0.25];
+  weakSelf.webView.alpha = 1.0;
+  [UIView commitAnimations];
+  
+  UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.webView);
+  
+  [self sequentiallyEvaluateJavaScript:@"simplified.pageDidChange();"];
+  
+  self.isPageTurning = NO;
+  
+  // FIXME: THIS NEEDS TO RUN ON A CLOCK
   [self
    sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
    withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
@@ -506,10 +518,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
      BOOL completed = NO;
      if (openPages.count>0 && [locationJSON rangeOfString:openPages[0][@"idref"]].location != NSNotFound) {
        completed = YES;
-       weakSelf.isPageTurning = NO;
      }
-     
-     [weakSelf sequentiallyEvaluateJavaScript:[NSString stringWithFormat:@"simplified.pageDidChange(%@);", locationJSON]];
      
      NYPLBookLocation *const location = [[NYPLBookLocation alloc]
                                          initWithLocationString:locationJSON
@@ -525,13 +534,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
         setLocation:location
         forIdentifier:weakSelf.book.identifier];
      }
-     
-     [UIView beginAnimations:@"animations" context:NULL];
-     [UIView setAnimationDuration:0.25];
-     weakSelf.webView.alpha = 1.0;
-     [UIView commitAnimations];
-     
-     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.webView);
    }];
 }
 
