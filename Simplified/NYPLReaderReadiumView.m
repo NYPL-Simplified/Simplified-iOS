@@ -228,6 +228,7 @@ static void generateTOCElements(NSArray *const navigationElements,
     
     [self sequentiallyEvaluateJavaScript:javascriptToChangeHighlightColour];
     
+    self.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
     self.webView.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
     [self sequentiallyEvaluateJavaScript:@"simplified.settingsDidChange();"];
   }];
