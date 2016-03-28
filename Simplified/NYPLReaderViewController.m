@@ -253,7 +253,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
                                         UIViewAutoresizingFlexibleHeight);
   
   // ----------- page view
-  self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
+  self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
   
   self.pageViewController.dataSource = self;
   self.pageViewController.delegate = self;
@@ -542,6 +542,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers
 {
+  self.view.userInteractionEnabled = NO;
+  
   // Don't bother with any of this offscreen rendering nonsense if VO is active
   if (UIAccessibilityIsVoiceOverRunning())
     return;
@@ -572,6 +574,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)pageViewController:(__unused UIPageViewController *)pageViewController didFinishAnimating:(__unused BOOL)finished previousViewControllers:(__unused NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed
 {
+  self.view.userInteractionEnabled = YES;
+  
   if (completed) {
     if ([self.renderedImageView superview])
       [self.renderedImageView removeFromSuperview];
