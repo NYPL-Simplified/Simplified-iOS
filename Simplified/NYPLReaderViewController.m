@@ -375,10 +375,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.bottomViewProgressView setProgress:bookPercentage.floatValue / 100 animated:YES];  
   NSString *title = [currentSpineItemDetails objectForKey:@"tocElementTitle"];
   
-  NSString *bookLocalized = NSLocalizedString(@"Book", nil);
-  NSString *leftInLozalized = NSLocalizedString(@"leftin", nil);
+//  NSString *bookLocalized = NSLocalizedString(@"Book", nil);
   
-  self.bottomViewProgressLabel.text = [NSString stringWithFormat:@"%@ %@%% (%@%% %@ %@)", bookLocalized, bookPercentage.stringValue, spineItemPercentage.stringValue, leftInLozalized, title];
+  self.bottomViewProgressLabel.text = [NSString stringWithFormat:@"Page %ld of %ld (%@)", pageIndex.integerValue + 1, pageCount.integerValue, title];
   [self.bottomViewProgressLabel needsUpdateConstraints];
 }
 
