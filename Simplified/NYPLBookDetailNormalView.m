@@ -37,7 +37,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   [self addSubview:self.backgroundView];
   
   self.buttonsView = [[NYPLBookButtonsView alloc] init];
-  self.buttonsView.showReturnButton = YES;
+  self.buttonsView.showReturnButtonIfApplicable = YES;
   [self addSubview:self.buttonsView];
   
   self.reportAProblemButton = [UIButton buttonWithType:UIButtonTypeCustom];
