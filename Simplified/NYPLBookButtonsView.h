@@ -28,6 +28,7 @@ typedef NS_ENUM(NSInteger, NYPLBookButtonsState) {
 @property (nonatomic, weak) NYPLBook *book;
 @property (nonatomic) NYPLBookButtonsState state;
 @property (nonatomic, weak) id<NYPLBookButtonsDelegate> delegate;
-@property (nonatomic) BOOL showReturnButton;
+/// return button flag, default value is NO. for example show return buttons if applicable in book detail view, but do not show return buttons in list views 
+@property (nonatomic) BOOL showReturnButtonIfApplicable;
 
 @end
