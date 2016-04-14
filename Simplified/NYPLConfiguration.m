@@ -49,13 +49,11 @@ static NSString *const heapIDDevelopment = @"1848989408";
         loglevel = @"warning";
       [Bugsnag notify:[NSException exceptionWithName:exceptionName reason:message userInfo:nil] withData:data atSeverity:loglevel];
     };
-#if defined(FEATURE_DRM_CONNECTOR)
     [[NYPLADEPT sharedInstance] setLogCallback:^(NSString *logLevel,NSString *exceptionName, NSDictionary *data, NSString *message) {
       if (!exceptionName)
         exceptionName = @"NYPLADEPTException";
       [Bugsnag notify:[NSException exceptionWithName:exceptionName reason:message userInfo:nil] withData:data atSeverity:logLevel];
     }];
-#endif
   }
 }
 
