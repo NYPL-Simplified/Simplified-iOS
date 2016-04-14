@@ -239,7 +239,22 @@
 
 - (void)didSelectReturn
 {
-  [self.delegate didSelectReturnForBook:self.book];
+    BOOL preloaded = [[[NYPLSettings sharedSettings] preloadedBookIdentifiers] containsObject:self.book.identifier];
+
+    NSString *title = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil) : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil);
+    NSString *message = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil) : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitleMessageFormat", nil);
+
+    
+    [[[UIAlertView alloc]
+      initWithTitle:title
+      message:[NSString stringWithFormat:
+               message, self.book.title]
+      delegate:self
+      cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+      otherButtonTitles:(self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil), nil]
+     show];
+
+    
 }
 
 - (void)didSelectRead
@@ -250,6 +265,15 @@
 - (void)didSelectDownload
 {
   [self.delegate didSelectDownloadForBook:self.book];
+}
+
+
+- (void)alertView:(UIAlertView *)alertView
+didDismissWithButtonIndex:(NSInteger const)buttonIndex
+{
+    if(buttonIndex == alertView.firstOtherButtonIndex) {
+        [self.delegate didSelectReturnForBook:self.book];
+    }
 }
 
 @end

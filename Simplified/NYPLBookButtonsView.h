@@ -23,7 +23,7 @@ typedef NS_ENUM(NSInteger, NYPLBookButtonsState) {
 
 @end
 
-@interface NYPLBookButtonsView : UIView
+@interface NYPLBookButtonsView : UIView <UIAlertViewDelegate>
 
 @property (nonatomic, weak) NYPLBook *book;
 @property (nonatomic) NYPLBookButtonsState state;
