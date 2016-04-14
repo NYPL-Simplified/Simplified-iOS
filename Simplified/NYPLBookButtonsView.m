@@ -183,7 +183,7 @@
   
   BOOL fulfillmentIdRequired = NO;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier];
-  BOOL hasRevokeAndIs3m = ([self.book.distributor isEqualToString:@"3M"] && self.book.acquisition.revoke && state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed));
+  BOOL hasRevokeLink = (self.book.acquisition.revoke && state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed));
 
   #if defined(FEATURE_DRM_CONNECTOR)
   
@@ -194,7 +194,7 @@
   
   for (NSDictionary *buttonInfo in visibleButtonInfo) {
     NYPLRoundedButton *button = buttonInfo[ButtonKey];
-    if(button == self.deleteButton && !preloaded && ((!fulfillmentId && fulfillmentIdRequired) && !hasRevokeAndIs3m)) {
+    if(button == self.deleteButton && !preloaded && ((!fulfillmentId && fulfillmentIdRequired) && !hasRevokeLink)) {
       if(!self.book.acquisition.openAccess.allKeys.count) {
         continue;
       }
