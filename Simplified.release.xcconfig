@@ -1,2 +1,2 @@
-#include "Pods/Target Support Files/Pods-Simplified/Pods-Simplified.release.xcconfig"
+#include "Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE.release.xcconfig"
 #include "Simplified.xcconfig"
