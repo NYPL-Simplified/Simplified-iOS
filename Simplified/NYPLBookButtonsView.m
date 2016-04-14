@@ -12,6 +12,7 @@
 #import "NYPLBookButtonsView.h"
 #import "NYPLRoundedButton.h"
 #import "NYPLSettings.h"
+#import "NYPLRootTabBarController.h"
 
 @interface NYPLBookButtonsView ()
 
@@ -239,22 +240,27 @@
 
 - (void)didSelectReturn
 {
-    BOOL preloaded = [[[NYPLSettings sharedSettings] preloadedBookIdentifiers] containsObject:self.book.identifier];
-
-    NSString *title = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil) : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil);
-    NSString *message = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil) : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitleMessageFormat", nil);
-
-    
-    [[[UIAlertView alloc]
-      initWithTitle:title
-      message:[NSString stringWithFormat:
-               message, self.book.title]
-      delegate:self
-      cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-      otherButtonTitles:(self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil), nil]
-     show];
-
-    
+  BOOL preloaded = [[[NYPLSettings sharedSettings] preloadedBookIdentifiers] containsObject:self.book.identifier];
+  
+  NSString *title = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil) : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil);
+  NSString *message = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil) : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitleMessageFormat", nil);
+  
+  UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
+                                                                           message:[NSString stringWithFormat:
+                                                                                    message, self.book.title]
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+  
+  [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+  
+  [alertController addAction:[UIAlertAction actionWithTitle:(self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
+                                                      [self.delegate didSelectReturnForBook:self.book];
+                                                    }]];
+  
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)didSelectRead
@@ -265,15 +271,6 @@
 - (void)didSelectDownload
 {
   [self.delegate didSelectDownloadForBook:self.book];
-}
-
-
-- (void)alertView:(UIAlertView *)alertView
-didDismissWithButtonIndex:(NSInteger const)buttonIndex
-{
-    if(buttonIndex == alertView.firstOtherButtonIndex) {
-        [self.delegate didSelectReturnForBook:self.book];
-    }
 }
 
 @end
