@@ -202,6 +202,9 @@
   NSMutableArray *visibleButtons = [NSMutableArray array];
   
   BOOL fulfillmentIdRequired = NO;
+  NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier];
+  BOOL hasRevokeLink = (self.book.acquisition.revoke && state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed));
+
   #if defined(FEATURE_DRM_CONNECTOR)
   
   // It's required unless the book is being held and has a revoke link
@@ -211,7 +214,7 @@
   
   for (NSDictionary *buttonInfo in visibleButtonInfo) {
     NYPLRoundedButton *button = buttonInfo[ButtonKey];
-    if(button == self.deleteButton && !preloaded && (!fulfillmentId && fulfillmentIdRequired)) {
+    if(button == self.deleteButton && !preloaded && ((!fulfillmentId && fulfillmentIdRequired) && !hasRevokeLink)) {
       if(!self.book.acquisition.openAccess.allKeys.count) {
         continue;
       }
