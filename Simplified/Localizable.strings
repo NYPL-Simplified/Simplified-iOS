@@ -81,6 +81,9 @@
 "MyBooksDownloadCenterConfirmDeleteTitle" = "Delete Book";
 "MyBooksDownloadCenterConfirmDeleteTitleMessageFormat" = "Are you sure you want to delete %@?";
 
+"MyBooksDownloadCenterConfirmReturnTitle" = "Return Book";
+"MyBooksDownloadCenterConfirmReturnTitleMessageFormat" = "Are you sure you want to return %@?";
+
 // NYPLMyBooksViewController
 
 "MyBooksViewControllerTitle" = "My Books";
