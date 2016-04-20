@@ -151,30 +151,50 @@
       break;
     case NYPLBookButtonsStateDownloadNeeded:
     {
-      NSString *title = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);
-      NSString *hint = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
                               TitleKey: NSLocalizedString(@"Download", nil),
                               HintKey: [NSString stringWithFormat:NSLocalizedString(@"Downloads %@", nil), self.book.title],
-                              AddIndicatorKey: @(YES)},
-                            @{ButtonKey: self.deleteButton,
-                              TitleKey: title,
-                              HintKey: hint}];
+                              AddIndicatorKey: @(YES)}];
+        
+      if (self.showReturnButtonIfApplicable)
+      {
+        NSString *title = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);
+        NSString *hint = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+
+        visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
+                                TitleKey: NSLocalizedString(@"Download", nil),
+                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Downloads %@", nil), self.book.title],
+                                AddIndicatorKey: @(YES)},
+                              @{ButtonKey: self.deleteButton,
+                                TitleKey: title,
+                                HintKey: hint}];
+
+      }
       break;
     }
     case NYPLBookButtonsStateDownloadSuccessful:
       // Fallthrough
     case NYPLBookButtonsStateUsed:
     {
-      NSString *title = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);\
-      NSString *hint = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
       visibleButtonInfo = @[@{ButtonKey: self.readButton,
                               TitleKey: NSLocalizedString(@"Read", nil),
                               HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens %@ for reading", nil), self.book.title],
-                              AddIndicatorKey: @(YES)},
-                            @{ButtonKey: self.deleteButton,
-                              TitleKey: title,
-                              HintKey: hint}];
+                              AddIndicatorKey: @(YES)}];
+        
+      if (self.showReturnButtonIfApplicable)
+      {
+        NSString *title = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);\
+        NSString *hint = (self.book.acquisition.openAccess.allKeys.count || preloaded) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+
+        visibleButtonInfo = @[@{ButtonKey: self.readButton,
+                                TitleKey: NSLocalizedString(@"Read", nil),
+                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens %@ for reading", nil), self.book.title],
+                                AddIndicatorKey: @(YES)},
+                              @{ButtonKey: self.deleteButton,
+                                TitleKey: title,
+                                HintKey: hint}];
+
+      }
       break;
     }
   }
