@@ -144,6 +144,7 @@
 		11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3773219E0876F00487769 /* NYPLCatalogFacet.m */; };
 		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
+		255CBCD4D12FD597CEE1A36D /* libPods-SimplyE.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 803BF424AC84B344A2B8AB19 /* libPods-SimplyE.a */; };
 		2D4379FE1C46FDB600AE1AD5 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = 085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */; };
 		2DA4F2311C68082E008853D7 /* preloaded-content in Resources */ = {isa = PBXBuildFile; fileRef = 2DA4F2301C68082E008853D7 /* preloaded-content */; };
 		2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */; };
@@ -155,7 +156,6 @@
 		5A6929241B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A6929231B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js */; };
 		5A6929251B95C93B00FB4C10 /* readium-shared-js_all.js.map in Resources */ = {isa = PBXBuildFile; fileRef = 5A69291D1B95C8AD00FB4C10 /* readium-shared-js_all.js.map */; };
 		5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
-		7756B6BEB8D3305C15AC8FB0 /* libPods-Simplified.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 694D9403D36F6CBDAF13FAFE /* libPods-Simplified.a */; };
 		8418C0481B75176B00FAB724 /* eula.html in Resources */ = {isa = PBXBuildFile; fileRef = 8418C0461B75176B00FAB724 /* eula.html */; };
 		841B553E1B73FB2700FAC1AF /* NYPLEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B553D1B73FB2700FAC1AF /* NYPLEULAViewController.m */; };
 		841B55431B740F2700FAC1AF /* NYPLSettingsEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */; };
@@ -485,6 +485,7 @@
 		5A6929231B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-shared-js_all.js.bundles.js"; path = "readium-shared-js/build-output/_single-bundle/readium-shared-js_all.js.bundles.js"; sourceTree = SOURCE_ROOT; };
 		5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Adobe Content Filter.xcodeproj"; path = "adobe-content-filter/build/iOS/Adobe Content Filter.xcodeproj"; sourceTree = "<group>"; };
 		694D9403D36F6CBDAF13FAFE /* libPods-Simplified.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Simplified.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		803BF424AC84B344A2B8AB19 /* libPods-SimplyE.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SimplyE.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8418C0461B75176B00FAB724 /* eula.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = eula.html; sourceTree = "<group>"; };
 		841B553C1B73FB2700FAC1AF /* NYPLEULAViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLEULAViewController.h; sourceTree = "<group>"; };
 		841B553D1B73FB2700FAC1AF /* NYPLEULAViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLEULAViewController.m; sourceTree = "<group>"; };
@@ -582,9 +583,9 @@
 				1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */,
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
-				7756B6BEB8D3305C15AC8FB0 /* libPods-Simplified.a in Frameworks */,
 				B54F99911BACB0CE0033F303 /* libAFNetworking.a in Frameworks */,
 				B54F99921BACB0CE0033F303 /* libHelpStack.a in Frameworks */,
+				255CBCD4D12FD597CEE1A36D /* libPods-SimplyE.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -986,6 +987,7 @@
 				A823D829192BABA400B55DE2 /* XCTest.framework */,
 				5705D893E0FE4395A50F089E /* libPods.a */,
 				694D9403D36F6CBDAF13FAFE /* libPods-Simplified.a */,
+				803BF424AC84B344A2B8AB19 /* libPods-SimplyE.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1341,7 +1343,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Simplified/Pods-Simplified-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E251CEDC3E72643F6C589E6E /* Copy Pods Resources */ = {
@@ -1356,7 +1358,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Simplified/Pods-Simplified-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FE8719C55955B22F68EDF819 /* Upload Bugsnag dSYM */ = {
