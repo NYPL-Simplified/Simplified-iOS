@@ -512,6 +512,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     [self
      sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
      withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
+       if(!result) {
+         NYPLLOG(@"warning", nil, nil, @"Readium failed to generate a CFI. This is a bug in Readium.");
+         return;
+       }
        NSString *const locationJSON = result;
        BOOL completed = NO;
        if (openPages.count>0 && [locationJSON rangeOfString:openPages[0][@"idref"]].location != NSNotFound) {
@@ -523,7 +527,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                            renderer:renderer];
        
        [weakSelf calculateProgressionWithDictionary:dictionary withHandler:^(void) {
-         //    NSLog(@"Page %ld of %ld", self.spineItemPageIndex.integerValue+1, self.spineItemPageCount.integerValue);
          [weakSelf.delegate didUpdateProgressSpineItemPercentage:weakSelf.spineItemPercentageRemaining bookPercentage:weakSelf.progressWithinBook pageIndex:weakSelf.spineItemPageIndex pageCount:weakSelf.spineItemPageCount withCurrentSpineItemDetails:weakSelf.spineItemDetails completed:completed];
        }];
        
