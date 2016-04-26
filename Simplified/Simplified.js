@@ -58,6 +58,10 @@ function Simplified() {
     }
   };
   
+  // Because WKWebKit cannot access application fonts, it is necessary to
+  // load them via a @font-face declaration. This declaration must be placed
+  // dynamically on the iframe managed by Readium: Adding it to the container
+  // HTML would not allow the iframe contents to use the font.
   this.loadOpenDyslexicFonts = function() {
     if(document.getElementById("openDyslexic") == null) {
       var iframe = window.frames["epubContentIframe"];
@@ -66,13 +70,13 @@ function Simplified() {
       style.id = "openDyslexic";
       style.appendChild(document.createTextNode(
         "@font-face { \
-        font-family: 'OpenDyslexic3'; \
-        src: url('/simplified-readium/OpenDyslexic3-Regular.ttf') format('truetype'); \
+          font-family: 'OpenDyslexic3'; \
+          src: url('/simplified-readium/OpenDyslexic3-Regular.ttf'); \
         } \
         @font-face { \
-        font-family: 'OpenDyslexic3'; \
-        src: url('/simplified-readium/OpenDyslexic3-Bold.ttf') format('truetype'); \
-        font-style: bold; \
+          font-family: 'OpenDyslexic3'; \
+          src: url('/simplified-readium/OpenDyslexic3-Bold.ttf'); \
+          font-style: bold; \
         }"));
       head.appendChild(style);
     }
