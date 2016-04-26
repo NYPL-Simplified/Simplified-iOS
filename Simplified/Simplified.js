@@ -58,12 +58,34 @@ function Simplified() {
     }
   };
   
+  this.loadOpenDyslexicFonts = function() {
+    if(document.getElementById("openDyslexic") == null) {
+      var iframe = window.frames["epubContentIframe"];
+      var head = iframe.document.head;
+      var style = document.createElement("style");
+      style.id = "openDyslexic";
+      style.appendChild(document.createTextNode(
+        "@font-face { \
+        font-family: 'OpenDyslexic3'; \
+        src: url('/simplified-readium/OpenDyslexic3-Regular.ttf') format('truetype'); \
+        } \
+        @font-face { \
+        font-family: 'OpenDyslexic3'; \
+        src: url('/simplified-readium/OpenDyslexic3-Bold.ttf') format('truetype'); \
+        font-style: bold; \
+        }"));
+      head.appendChild(style);
+    }
+  }
+  
   // This should be called by the host whenever the page changes. This is because a change in the
   // page can mean a change in the iframe and thus requires resetting properties.
   this.pageDidChange = function() {
     // Disable selection.
     window.frames["epubContentIframe"].document.documentElement.style.webkitTouchCallout = "none";
     window.frames["epubContentIframe"].document.documentElement.style.webkitUserSelect = "none";
+    
+    this.loadOpenDyslexicFonts();
     
     if (this.shouldUpdateVisibilityOnUpdate) {
       updateVisibility();
