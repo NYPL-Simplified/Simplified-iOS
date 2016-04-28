@@ -236,6 +236,9 @@ static NSString *const UpdatedKey = @"updated";
   self.acquisition = [[NYPLBookAcquisition alloc] initWithDictionary:dictionary[AcquisitionKey]];
   if(!self.acquisition) return nil;
   
+  self.acquisitionBorrowFormats = dictionary[AcquisitionBorrowFormatsKey];
+  if(!self.acquisitionBorrowFormats) return nil;
+  
   self.authorStrings = dictionary[AuthorsKey];
   if(!self.authorStrings) return nil;
   
