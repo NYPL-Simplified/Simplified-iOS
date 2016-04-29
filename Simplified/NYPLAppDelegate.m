@@ -70,6 +70,10 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   
   // Create a book from the entry
   NYPLBook *book = [NYPLBook bookWithEntry:entry];
+  if(!book) {
+    NYPLLOG(@"info", kNYPLInvalidEntryException, nil, @"Failed to create book from entry.");
+    return NO;
+  }
   
   // Finally (we hope) launch the book modal view
   NYPLBookDetailViewController *modalBookController = [[NYPLBookDetailViewController alloc] initWithBook:book];

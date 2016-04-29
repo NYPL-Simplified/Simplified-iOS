@@ -7,6 +7,7 @@
 #import "NYPLBookAcquisition.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLSession.h"
 #import "NYPLProblemDocument.h"
@@ -329,11 +330,16 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
       
       if(feed && feed.entries.count == 1)  {
+        NYPLOPDSEntry *const entry = feed.entries[0];
         if(downloaded) {
           [self deleteLocalContentForBookIdentifier:identifier];
         }
-        NYPLBook *returnedBook = [NYPLBook bookWithEntry:feed.entries[0]];
-        [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
+        NYPLBook *returnedBook = [NYPLBook bookWithEntry:entry];
+        if(returnedBook) {
+          [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
+        } else {
+          NYPLLOG(@"warning", kNYPLInvalidEntryException, @{@"identifier":entry.identifier}, @"Failed to create book from entry.");
+        }
       } else {
         
         if([error[@"type"] isEqualToString:NYPLProblemDocumentTypeNoActiveLoan])

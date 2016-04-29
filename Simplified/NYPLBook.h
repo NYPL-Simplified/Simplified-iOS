@@ -39,6 +39,7 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
+// Returns nil if the entry is not valid or does not contain a supported format.
 + (instancetype)bookWithEntry:(NYPLOPDSEntry *)entry;
 
 // Return a new book with the acquisition and availability info from this book,
