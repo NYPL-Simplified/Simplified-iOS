@@ -247,23 +247,6 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
                     }];
     }
   }
-  
-  // Filter out all of the books the app cannot handle.
-  self.books =
-    [books filteredArrayUsingPredicate:
-     [NSPredicate predicateWithBlock:^BOOL(id _Nonnull evaluatedObject,
-                                           __unused NSDictionary<NSString *, id> *_Nullable bindings)
-      {
-        NYPLBook *const book = evaluatedObject;
-        return NSNotFound != [book.acquisitionBorrowFormats
-                              indexOfObjectPassingTest:^BOOL(id _Nonnull obj,
-                                                             __unused NSUInteger idx,
-                                                             __unused BOOL * _Nonnull stop)
-                              {
-                                NSString *const borrowFormat = obj;
-                                return [NYPLConfiguration canDisplayPublicationWithFormat:borrowFormat];
-                              }];
-      }]];
 }
 
 #pragma mark NYPLFacetViewDataSource
