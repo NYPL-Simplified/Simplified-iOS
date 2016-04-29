@@ -111,6 +111,8 @@ static NSString *const heapIDDevelopment = @"1848989408";
   return YES;
 }
 
+// FIME: This method should not be in NYPLConfiguration and the use of 'format' for
+// something that is not a format string is rather confusing.
 + (BOOL)canDisplayPublicationWithFormat:(NSString *)format
 {
   static NSSet const * acceptedFormats;
