@@ -69,7 +69,7 @@
     
     NYPLBook *book = [NYPLBook bookWithEntry:entry];
     if(!book) {
-      NYPLLOG(@"warning", kNYPLInvalidEntryException, @{@"identifier":entry.identifier}, @"Failed to create book from entry.");
+      NYPLLOG(@"info", kNYPLInvalidEntryException, @{@"identifier":entry.identifier}, @"Failed to create book from entry.");
       continue;
     }
     
