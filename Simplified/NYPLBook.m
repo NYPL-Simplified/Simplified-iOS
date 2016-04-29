@@ -197,8 +197,14 @@ static NSString *const UpdatedKey = @"updated";
   self = [super init];
   if(!self) return nil;
   
-  if(!(acquisition && authorStrings && identifier && title && updated)) {
+  if(!(acquisition && acquisitionBorrowFormats && authorStrings && identifier && title && updated)) {
     @throw NSInvalidArgumentException;
+  }
+  
+  for(id object in acquisitionBorrowFormats) {
+    if(![object isKindOfClass:[NSString class]]) {
+      @throw NSInvalidArgumentException;
+    }
   }
   
   for(id object in authorStrings) {
@@ -236,8 +242,9 @@ static NSString *const UpdatedKey = @"updated";
   self.acquisition = [[NYPLBookAcquisition alloc] initWithDictionary:dictionary[AcquisitionKey]];
   if(!self.acquisition) return nil;
   
-  self.acquisitionBorrowFormats = dictionary[AcquisitionBorrowFormatsKey];
-  if(!self.acquisitionBorrowFormats) return nil;
+  // Accomodate previous versions that did not have this field.
+  self.acquisitionBorrowFormats = NYPLNullToNil(dictionary[AcquisitionBorrowFormatsKey]);
+  if(!self.acquisitionBorrowFormats) self.acquisitionBorrowFormats = @[];
   
   self.authorStrings = dictionary[AuthorsKey];
   if(!self.authorStrings) return nil;
@@ -284,7 +291,7 @@ static NSString *const UpdatedKey = @"updated";
 - (NSDictionary *)dictionaryRepresentation
 {
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
-           AcquisitionBorrowFormatsKey: NYPLNullFromNil(self.acquisitionBorrowFormats),
+           AcquisitionBorrowFormatsKey: self.acquisitionBorrowFormats,
            AuthorsKey: self.authorStrings,
            AvailabilityStatusKey: @(self.availabilityStatus),
            AvailableCopiesKey: @(self.availableCopies),
