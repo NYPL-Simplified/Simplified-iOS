@@ -111,19 +111,6 @@ static NSString *const heapIDDevelopment = @"1848989408";
   return YES;
 }
 
-// FIME: This method should not be in NYPLConfiguration and the use of 'format' for
-// something that is not a format string is rather confusing.
-+ (BOOL)canDisplayPublicationWithFormat:(NSString *)format
-{
-  static NSSet const * acceptedFormats;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-     acceptedFormats = [NSSet setWithObjects:@"application/epub+zip", nil];
-  });
-  
-  return [acceptedFormats containsObject:format];
-}
-
 + (NSURL *)loanURL
 {
     return [[self circulationURL] URLByAppendingPathComponent:@"loans"];

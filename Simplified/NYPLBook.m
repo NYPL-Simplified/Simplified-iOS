@@ -9,7 +9,6 @@
 @interface NYPLBook ()
 
 @property (nonatomic) NYPLBookAcquisition *acquisition;
-@property (nonatomic) NSArray *acquisitionBorrowFormats;
 @property (nonatomic) NSArray *authorStrings;
 @property (nonatomic) NYPLBookAvailabilityStatus availabilityStatus;
 @property (nonatomic) NSInteger availableCopies;
@@ -31,7 +30,6 @@
 NSString *const NYPLBookProblemReportedNotification = @"NYPLBookProblemReportedNotification";
 
 static NSString *const AcquisitionKey = @"acquisition";
-static NSString *const AcquisitionBorrowFormatsKey = @"acquisition-borrow-formats";
 static NSString *const AuthorsKey = @"authors";
 static NSString *const AvailabilityStatusKey = @"availability-status";
 static NSString *const AvailableCopiesKey = @"available-copies";
@@ -57,10 +55,7 @@ static NSString *const UpdatedKey = @"updated";
     return nil;
   }
   
-  NSURL *borrow, *revoke, *sample, *image, *imageThumbnail, *report = nil;
-  NSMutableDictionary *generic = [NSMutableDictionary dictionary];
-  NSMutableDictionary *openAccess = [NSMutableDictionary dictionary];
-  
+  NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail, *report = nil;
   
   NYPLBookAvailabilityStatus availabilityStatus = NYPLBookAvailabilityStatusUnknown;
   NSInteger availableCopies = 0;
@@ -86,7 +81,7 @@ static NSString *const UpdatedKey = @"updated";
     }
     
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisition]) {
-      [generic setObject:link.href forKey:(link.acquisitionFormats.count ? link.acquisitionFormats[0] : @"application/epub+zip")];
+      generic = link.href;
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionBorrow]) {
@@ -95,7 +90,7 @@ static NSString *const UpdatedKey = @"updated";
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionOpenAccess]) {
-      [openAccess setObject:link.href forKey:(link.acquisitionFormats.count ? link.acquisitionFormats[0] : @"application/epub+zip")];
+      openAccess = link.href;
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionRevoke]) {
@@ -136,7 +131,6 @@ static NSString *const UpdatedKey = @"updated";
                                revoke:revoke
                                sample:sample
                                report:report]
-          acquisitionBorrowFormats:borrowFormats
           authorStrings:entry.authorStrings
           availabilityStatus: availabilityStatus
           availableCopies:availableCopies
@@ -158,7 +152,6 @@ static NSString *const UpdatedKey = @"updated";
 {
   return [[NYPLBook alloc]
           initWithAcquisition:self.acquisition
-          acquisitionBorrowFormats:book.acquisitionBorrowFormats
           authorStrings:book.authorStrings
           availabilityStatus:self.availabilityStatus
           availableCopies:self.availableCopies
@@ -177,7 +170,6 @@ static NSString *const UpdatedKey = @"updated";
 }
 
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
-           acquisitionBorrowFormats:(NSArray *)acquisitionBorrowFormats
                       authorStrings:(NSArray *)authorStrings
                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
                     availableCopies:(NSInteger)availableCopies
@@ -197,14 +189,8 @@ static NSString *const UpdatedKey = @"updated";
   self = [super init];
   if(!self) return nil;
   
-  if(!(acquisition && acquisitionBorrowFormats && authorStrings && identifier && title && updated)) {
+  if(!(acquisition && authorStrings && identifier && title && updated)) {
     @throw NSInvalidArgumentException;
-  }
-  
-  for(id object in acquisitionBorrowFormats) {
-    if(![object isKindOfClass:[NSString class]]) {
-      @throw NSInvalidArgumentException;
-    }
   }
   
   for(id object in authorStrings) {
@@ -214,7 +200,6 @@ static NSString *const UpdatedKey = @"updated";
   }
   
   self.acquisition = acquisition;
-  self.acquisitionBorrowFormats = acquisitionBorrowFormats;
   self.authorStrings = authorStrings;
   self.availabilityStatus = availabilityStatus;
   self.availableCopies = availableCopies;
@@ -241,10 +226,6 @@ static NSString *const UpdatedKey = @"updated";
   
   self.acquisition = [[NYPLBookAcquisition alloc] initWithDictionary:dictionary[AcquisitionKey]];
   if(!self.acquisition) return nil;
-  
-  // Accomodate previous versions that did not have this field.
-  self.acquisitionBorrowFormats = NYPLNullToNil(dictionary[AcquisitionBorrowFormatsKey]);
-  if(!self.acquisitionBorrowFormats) self.acquisitionBorrowFormats = @[];
   
   self.authorStrings = dictionary[AuthorsKey];
   if(!self.authorStrings) return nil;
@@ -291,7 +272,6 @@ static NSString *const UpdatedKey = @"updated";
 - (NSDictionary *)dictionaryRepresentation
 {
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
-           AcquisitionBorrowFormatsKey: self.acquisitionBorrowFormats,
            AuthorsKey: self.authorStrings,
            AvailabilityStatusKey: @(self.availabilityStatus),
            AvailableCopiesKey: @(self.availableCopies),
