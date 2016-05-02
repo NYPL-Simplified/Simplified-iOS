@@ -99,6 +99,7 @@
 
 "ReaderViewControllerCorruptTitle" = "Could Not Display Book";
 "ReaderViewControllerCorruptMessage" = "This book is corrupt and cannot be read.";
+"ReaderViewControllerCurrentChapter" = "Current Chapter";
 "Book" = "Book";
 "leftin" = "left in";
 "ReaderSettings" = "Reader settings";
