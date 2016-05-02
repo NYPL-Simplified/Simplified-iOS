@@ -13,20 +13,25 @@ typedef NS_ENUM(NSInteger, NYPLReaderRendererGesture) {
 
 @property (nonatomic, readonly) BOOL bookIsCorrupt;
 @property (nonatomic, readonly) BOOL loaded;
-@property (nonatomic, readonly) NSArray *TOCElements;
+@property (nonatomic, readonly, nonnull) NSArray *TOCElements;
 
 // This must be called with a reader-appropriate underlying value. Readers implementing this should
 // throw |NSInvalidArgumentException| in the event it is not.
-- (void)openOpaqueLocation:(NYPLReaderRendererOpaqueLocation *)opaqueLocation;
+- (void)openOpaqueLocation:(nonnull NYPLReaderRendererOpaqueLocation *)opaqueLocation;
 
 @end
 
 @protocol NYPLReaderRendererDelegate
 
-- (void)renderer:(id<NYPLReaderRenderer>)renderer
-didEncounterCorruptionForBook:(NYPLBook *)book;
+- (void)renderer:(nonnull id<NYPLReaderRenderer>)renderer
+didEncounterCorruptionForBook:(nonnull NYPLBook *)book;
 
-- (void)rendererDidFinishLoading:(id<NYPLReaderRenderer>)renderer;
+- (void)rendererDidFinishLoading:(nonnull id<NYPLReaderRenderer>)renderer;
 
--(void) didUpdateProgressSpineItemPercentage: (NSNumber *)spineItemPercentage bookPercentage: (NSNumber *) bookPercentage pageIndex:(NSNumber *)pageIndex pageCount:(NSNumber *)pageCount withCurrentSpineItemDetails: (NSDictionary *) currentSpineItemDetails completed:(BOOL)completed;
+- (void)renderer:(nonnull id<NYPLReaderRenderer>)renderer
+didUpdateProgressWithinBook:(float)progressWithinBook
+       pageIndex:(NSUInteger)pageIndex
+       pageCount:(NSUInteger)pageCount
+  spineItemTitle:(nullable NSString *)spineItemTitle;
+
 @end
