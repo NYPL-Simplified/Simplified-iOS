@@ -44,6 +44,7 @@
 		118A0ED91992B4D900792DDE /* RDPackageResourceServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E631992B46200792DDE /* RDPackageResourceServer.m */; };
 		118A0EDA1992B4D900792DDE /* RDSmilData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E661992B46200792DDE /* RDSmilData.mm */; };
 		118A0EDB1992B4D900792DDE /* RDSpineItem.mm in Sources */ = {isa = PBXBuildFile; fileRef = 118A0E681992B46200792DDE /* RDSpineItem.mm */; };
+		2D5FE4121CD808DC009E1911 /* NSDate+RDDateAsString.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D5FE4111CD808DC009E1911 /* NSDate+RDDateAsString.m */; };
 		A4E9140A1AF12F5800C2DA5B /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C254F1AE05B7700D63B89 /* libePub3-iOS.a */; };
 /* End PBXBuildFile section */
 
@@ -173,6 +174,8 @@
 		118A0EA91992B46200792DDE /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		118A0EEE1992BA5800792DDE /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		118A0EF01992BA6000792DDE /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		2D5FE4101CD808DC009E1911 /* NSDate+RDDateAsString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+RDDateAsString.h"; sourceTree = "<group>"; };
+		2D5FE4111CD808DC009E1911 /* NSDate+RDDateAsString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+RDDateAsString.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -231,6 +234,8 @@
 		118A0E511992B46200792DDE /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				2D5FE4101CD808DC009E1911 /* NSDate+RDDateAsString.h */,
+				2D5FE4111CD808DC009E1911 /* NSDate+RDDateAsString.m */,
 				118A0E521992B46200792DDE /* RDContainer.h */,
 				118A0E531992B46200792DDE /* RDContainer.mm */,
 				118A0E541992B46200792DDE /* RDMediaOverlaysSmilModel.h */,
@@ -488,6 +493,7 @@
 				110C82A11992C6E300B1E278 /* HTTPConnection.m in Sources */,
 				110C82A21992C6E300B1E278 /* HTTPMessage.m in Sources */,
 				110C82A31992C6E300B1E278 /* HTTPServer.m in Sources */,
+				2D5FE4121CD808DC009E1911 /* NSDate+RDDateAsString.m in Sources */,
 				110C82A41992C6E300B1E278 /* MultipartFormDataParser.m in Sources */,
 				110C82A51992C6E300B1E278 /* MultipartMessageHeader.m in Sources */,
 				110C82A61992C6E300B1E278 /* MultipartMessageHeaderField.m in Sources */,
