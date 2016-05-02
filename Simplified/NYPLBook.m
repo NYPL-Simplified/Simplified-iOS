@@ -61,7 +61,13 @@ static NSString *const UpdatedKey = @"updated";
   NSInteger availableCopies = 0;
   NSDate *availableUntil = nil;
   NSArray *borrowFormats = @[];
+  BOOL isEPUBAvailable = NO;
   for(NYPLOPDSLink *const link in entry.links) {
+    for(NSString *const acqusitionFormat in link.acquisitionFormats) {
+      if([acqusitionFormat containsString:@"application/epub+zip"]) {
+        isEPUBAvailable = YES;
+      }
+    }
     if(link.availabilityStatus) {
       if([link.availabilityStatus isEqualToString:@"available"]) {
         availabilityStatus = NYPLBookAvailabilityStatusAvailable;
@@ -113,6 +119,14 @@ static NSString *const UpdatedKey = @"updated";
       report = link.href;
       continue;
     }
+  }
+  
+  // FIXME: This is not really the right place to do this and it doesn't handle
+  // indirect acquisitions properly. NYPLOPDS* classes need to be reworked before
+  // this can be handled in the correct way. The download center also needs to be
+  // audited to ensure it always gets an EPUB if one is available.
+  if(!isEPUBAvailable) {
+    return nil;
   }
   
   if(availabilityStatus == NYPLBookAvailabilityStatusUnknown) {
