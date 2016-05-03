@@ -366,21 +366,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.bottomView addConstraint:constraintPL4];
 }
 
--(void) didUpdateProgressSpineItemPercentage: (NSNumber *)spineItemPercentage bookPercentage: (NSNumber *) bookPercentage pageIndex:(NSNumber *)pageIndex pageCount:(NSNumber *)pageCount withCurrentSpineItemDetails: (NSDictionary *) currentSpineItemDetails completed:(BOOL)completed {
-  
-  if (UIAccessibilityIsVoiceOverRunning()) {
-    UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification, [NSString stringWithFormat:NSLocalizedString(@"Page %d of %d", nil), pageIndex.integerValue+1, pageCount.integerValue]);
-  }
-  
-  [self.bottomViewProgressView setProgress:bookPercentage.floatValue / 100 animated:YES];  
-  NSString *title = [currentSpineItemDetails objectForKey:@"tocElementTitle"];
-  
-//  NSString *bookLocalized = NSLocalizedString(@"Book", nil);
-  
-  self.bottomViewProgressLabel.text = [NSString stringWithFormat:@"Page %ld of %ld (%@)", pageIndex.integerValue + 1, pageCount.integerValue, title];
-  [self.bottomViewProgressLabel needsUpdateConstraints];
-}
-
 - (BOOL)prefersStatusBarHidden
 {
   return self.isStatusBarHidden;
@@ -492,6 +477,33 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   }
   [self.navigationController popViewControllerAnimated:YES];
   return YES;
+}
+
+#pragma mark NYPLReaderReadiumDelegate
+
+- (void)
+renderer:(__unused id<NYPLReaderRenderer>)renderer
+didUpdateProgressWithinBook:(float)progressWithinBook
+pageIndex:(NSUInteger const)pageIndex
+pageCount:(NSUInteger const)pageCount
+spineItemTitle:(NSString *const)title
+{
+  if (UIAccessibilityIsVoiceOverRunning()) {
+    UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification,
+                                    [NSString stringWithFormat:NSLocalizedString(@"Page %d of %d", nil),
+                                     pageIndex + 1,
+                                     pageCount]);
+  }
+  
+  [self.bottomViewProgressView setProgress:progressWithinBook animated:NO];
+  
+  self.bottomViewProgressLabel.text =
+    [NSString stringWithFormat:@"Page %ld of %ld (%@)",
+     pageIndex + 1,
+     pageCount,
+     title ? title : NSLocalizedString(@"ReaderViewControllerCurrentChapter", nil)];
+  
+  [self.bottomViewProgressLabel needsUpdateConstraints];
 }
 
 #pragma mark UIPopoverControllerDelegate

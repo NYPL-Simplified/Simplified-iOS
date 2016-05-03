@@ -35,10 +35,9 @@
 @property (nonatomic) WKWebView *webView;
 
 @property (nonatomic) NSDictionary *bookMapDictionary;
-@property (nonatomic) NSNumber *spineItemPercentageRemaining;
-@property (nonatomic) NSNumber *spineItemPageIndex;
-@property (nonatomic) NSNumber *spineItemPageCount;
-@property (nonatomic) NSNumber *progressWithinBook;
+@property (nonatomic) NSUInteger spineItemPageIndex;
+@property (nonatomic) NSUInteger spineItemPageCount;
+@property (nonatomic) float progressWithinBook; // [0, 1]
 @property (nonatomic) NSDictionary *spineItemDetails;
 
 @property (nonatomic) BOOL javaScriptIsRunning;
@@ -526,8 +525,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                            initWithLocationString:locationJSON
                                            renderer:renderer];
        
-       [weakSelf calculateProgressionWithDictionary:dictionary withHandler:^(void) {
-         [weakSelf.delegate didUpdateProgressSpineItemPercentage:weakSelf.spineItemPercentageRemaining bookPercentage:weakSelf.progressWithinBook pageIndex:weakSelf.spineItemPageIndex pageCount:weakSelf.spineItemPageCount withCurrentSpineItemDetails:weakSelf.spineItemDetails completed:completed];
+       [weakSelf calculateProgressionWithDictionary:dictionary withHandler:^{
+         [weakSelf.delegate
+          renderer:weakSelf
+          didUpdateProgressWithinBook:weakSelf.progressWithinBook
+          pageIndex:weakSelf.spineItemPageIndex
+          pageCount:weakSelf.spineItemPageCount
+          spineItemTitle:weakSelf.spineItemDetails[@"tocElementTitle"]];
        }];
        
        if(location) {
@@ -608,49 +612,37 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   return nil;
 }
 
-- (void)calculateProgressionWithDictionary:(NSDictionary *const)dictionary withHandler:(void(^)(void))handler {
+- (void)calculateProgressionWithDictionary:(NSDictionary *const)dictionary
+                               withHandler:(void(^ const)())handler
+{
   if (!self.bookMapDictionary) return;
   
-  NSArray *openPagesArray = [dictionary objectForKey:@"openPages"];
-  NSDictionary *openPagesDict = [openPagesArray firstObject];
+  NSArray *const openPages = dictionary[@"openPages"];
+  if(openPages.count != 1) {
+    NYPLLOG(@"warning", nil, nil, @"Did not receive expected information on open pages.");
+    return;
+  }
   
-  NSDecimalNumberHandler *numberHandler = [NSDecimalNumberHandler decimalNumberHandlerWithRoundingMode:NSRoundUp scale:0 raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:NO];
+  NSDictionary *const openPage = [openPages firstObject];
   
-  NSString *spineItemIdref = [openPagesDict objectForKey:@"idref"];
+  NSString *const idref = openPage[@"idref"];
+  if(!idref) {
+    NYPLLOG(@"warning", nil, nil, @"Did not receive idref.");
+    return;
+  }
   
-  NSNumber *spineItemPageCount = [openPagesDict objectForKey:@"spineItemPageCount"];
-  NSDecimalNumber *spineItemPageCountDec = [NSDecimalNumber decimalNumberWithDecimal:spineItemPageCount.decimalValue];
+  NSUInteger const spineItemCount = [dictionary[@"spineItemCount"] unsignedIntegerValue];
+  if(!spineItemCount) {
+    NYPLLOG(@"warning", nil, nil, @"Did not receive spine item count.");
+    return;
+  }
   
-  NSNumber *spineItemPageIndex = [openPagesDict objectForKey:@"spineItemPageIndex"];
-  NSDecimalNumber *spineItemPageIndexDec = [NSDecimalNumber decimalNumberWithDecimal:spineItemPageIndex.decimalValue];
+  NSUInteger const spineItemIndex = [openPage[@"spineItemIndex"] unsignedIntegerValue];
   
-  NSDecimalNumber *progressWithinSpineDec = [[spineItemPageIndexDec decimalNumberByDividingBy:spineItemPageCountDec] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"100"] withBehavior:numberHandler];
-  
-  NSDecimalNumber *decimal100 = [NSDecimalNumber decimalNumberWithString:@"100"];
-  NSDecimalNumber *spineItemPercentageRemaining = [decimal100 decimalNumberBySubtracting:progressWithinSpineDec];
-  NSDecimalNumber *progressWithinSpineUnmodifiedDec = [spineItemPageIndexDec decimalNumberByDividingBy:spineItemPageCountDec];
-  
-  NSDictionary *spineItemDetails = [self.bookMapDictionary objectForKey:spineItemIdref];
-  
-  NSNumber *spineItemLength = [spineItemDetails objectForKey:@"spineItemBytesLength"];
-  NSDecimalNumber *spineItemLengthDec = [NSDecimalNumber decimalNumberWithDecimal:spineItemLength.decimalValue];
-  
-  NSNumber *totalLengthSoFar = [spineItemDetails objectForKey:@"totalLengthSoFar"];
-  NSDecimalNumber *totalLengthSoFarDec = [NSDecimalNumber decimalNumberWithDecimal:totalLengthSoFar.decimalValue];
-  
-  NSNumber *totalLength = [self.bookMapDictionary objectForKey:@"totalLength"];
-  NSDecimalNumber *totalLengthDec = [NSDecimalNumber decimalNumberWithDecimal:totalLength.decimalValue];
-  
-  NSDecimalNumber *partialLengthProgressedInSpineDec = [spineItemLengthDec decimalNumberByMultiplyingBy:progressWithinSpineUnmodifiedDec withBehavior:numberHandler];
-  NSDecimalNumber *totalProgressSoFarDec = [partialLengthProgressedInSpineDec decimalNumberByAdding:totalLengthSoFarDec withBehavior:numberHandler];
-  
-  NSDecimalNumber *totalProgressSoFarPercentageDec = totalLength.floatValue > 0 ? [[totalProgressSoFarDec decimalNumberByDividingBy:totalLengthDec] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"100"] withBehavior:numberHandler] : [NSDecimalNumber zero];
-  
-  self.spineItemPercentageRemaining = spineItemPercentageRemaining;
-  self.spineItemPageIndex = spineItemPageIndex;
-  self.spineItemPageCount = spineItemPageCount;
-  self.progressWithinBook = totalProgressSoFarPercentageDec;
-  self.spineItemDetails = spineItemDetails;
+  self.progressWithinBook = spineItemIndex / (float)spineItemCount;
+  self.spineItemPageCount = [openPage[@"spineItemPageCount"] unsignedIntegerValue];
+  self.spineItemPageIndex = [openPage[@"spineItemPageIndex"] unsignedIntegerValue];
+  self.spineItemDetails = self.bookMapDictionary[idref];
   
   if (handler) handler();
 }
