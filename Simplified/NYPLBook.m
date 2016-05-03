@@ -50,6 +50,21 @@ static NSString *const UpdatedKey = @"updated";
 
 @implementation NYPLBook
 
++ (NSArray<NSString *> *)categoryStringsFromCategories:(NSArray<NYPLOPDSCategory *> *const)categories
+{
+  NSMutableArray<NSString *> *const categoryStrings = [NSMutableArray array];
+  
+  for(NYPLOPDSCategory *const category in categories) {
+    if(!category.scheme
+       || [category.scheme isEqual:[NSURL URLWithString:@"http://librarysimplified.org/terms/genres/Simplified/"]])
+    {
+      [categoryStrings addObject:(category.label ? category.label : category.term)];
+    }
+  }
+  
+  return [categoryStrings copy];
+}
+
 + (instancetype)bookWithEntry:(NYPLOPDSEntry *const)entry
 {
   if(!entry) {
@@ -141,7 +156,7 @@ static NSString *const UpdatedKey = @"updated";
           availabilityStatus: availabilityStatus
           availableCopies:availableCopies
           availableUntil:availableUntil
-          categoryStrings:entry.categoryStrings
+          categoryStrings:[[self class] categoryStringsFromCategories:entry.categories]
           distributor:entry.providerName
           identifier:entry.identifier
           imageURL:image
