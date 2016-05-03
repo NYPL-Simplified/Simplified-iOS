@@ -1,4 +1,5 @@
 #import "NSDate+NYPLDateAdditions.h"
+#import "NYPLOPDSCategory.h"
 #import "NYPLOPDSEntryGroupAttributes.h"
 #import "NYPLOPDSLink.h"
 #import "NYPLOPDSRelation.h"
@@ -10,7 +11,7 @@
 
 @property (nonatomic) NSString *alternativeHeadline;
 @property (nonatomic) NSArray *authorStrings;
-@property (nonatomic) NSArray *categoryStrings;
+@property (nonatomic) NSArray<NYPLOPDSCategory *> *categories;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSArray *links;
 @property (nonatomic) NSString *providerName;
@@ -47,19 +48,23 @@
   }
   
   {
-    NSMutableArray *const categoryStrings = [NSMutableArray array];
+    NSMutableArray<NYPLOPDSCategory *> const *categories = [NSMutableArray array];
     
     for(NYPLXML *const categoryXML in [entryXML childrenWithName:@"category"]) {
-      NSString *const label = categoryXML.attributes[@"label"];
       NSString *const term = categoryXML.attributes[@"term"];
-      if(label) {
-        [categoryStrings addObject:label];
-      } else if (term && ![NSURL URLWithString:term]) {
-        [categoryStrings addObject:term];
+      if(!term) {
+        NYPLLOG(@"warning", kNYPLInvalidEntryException, nil, @"Category missing required 'term'.");
+        continue;
       }
+      NSString *const schemeString = categoryXML.attributes[@"scheme"];
+      NSURL *const scheme = schemeString ? [NSURL URLWithString:schemeString] : nil;
+      [categories addObject:[NYPLOPDSCategory
+                             categoryWithTerm:term
+                             label:categoryXML.attributes[@"label"]
+                             scheme:scheme]];
     }
     
-    self.categoryStrings = categoryStrings;
+    self.categories = [categories copy];
   }
   
   if(!((self.identifier = [entryXML firstChildWithName:@"id"].value))) {

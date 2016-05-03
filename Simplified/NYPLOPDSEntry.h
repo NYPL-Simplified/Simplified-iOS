@@ -1,12 +1,13 @@
-@class NYPLXML;
+@class NYPLOPDSCategory;
 @class NYPLOPDSEntryGroupAttributes;
 @class NYPLOPDSEvent;
+@class NYPLXML;
 
 @interface NYPLOPDSEntry : NSObject
 
 @property (nonatomic, readonly) NSString *alternativeHeadline; // nilable
 @property (nonatomic, readonly) NSArray *authorStrings;
-@property (nonatomic, readonly) NSArray *categoryStrings;
+@property (nonatomic, readonly) NSArray<NYPLOPDSCategory *> *categories;
 @property (nonatomic, readonly) NYPLOPDSEntryGroupAttributes *groupAttributes; // nilable
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSArray *links;
