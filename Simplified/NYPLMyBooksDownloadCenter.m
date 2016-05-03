@@ -7,6 +7,7 @@
 #import "NYPLBookAcquisition.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLOPDSEntry.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLSession.h"
 #import "NYPLProblemDocument.h"
@@ -329,11 +330,16 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
       
       if(feed && feed.entries.count == 1)  {
+        NYPLOPDSEntry *const entry = feed.entries[0];
         if(downloaded) {
           [self deleteLocalContentForBookIdentifier:identifier];
         }
-        NYPLBook *returnedBook = [NYPLBook bookWithEntry:feed.entries[0]];
-        [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
+        NYPLBook *returnedBook = [NYPLBook bookWithEntry:entry];
+        if(returnedBook) {
+          [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
+        } else {
+          NYPLLOG(@"warning", kNYPLInvalidEntryException, @{@"identifier":entry.identifier}, @"Failed to create book from entry.");
+        }
       } else {
         
         if([error[@"type"] isEqualToString:NYPLProblemDocumentTypeNoActiveLoan])
@@ -426,7 +432,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   switch(state) {
     case NYPLBookStateUnregistered:
-      if(!book.acquisition.borrow && book.acquisition.openAccess.allKeys.count) {
+      if(!book.acquisition.borrow && book.acquisition.openAccess) {
         [[NYPLBookRegistry sharedRegistry]
          addBook:book
          location:nil
@@ -495,9 +501,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
         }
       }];
     } else {
-      // Actually download the book
-      NSString *desiredFormat = @"application/epub+zip";
-      NSURL *URL = book.acquisition.generic[desiredFormat] ? book.acquisition.generic[desiredFormat] : book.acquisition.openAccess[desiredFormat];
+      // Actually download the book.
+      NSURL *URL = book.acquisition.generic ? book.acquisition.generic : book.acquisition.openAccess;
       NSURLRequest *const request = [NSURLRequest requestWithURL:URL];
       
       if(!request.URL) {
@@ -568,7 +573,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
   
   // copying the preloaded content book from the application's bundle to it's destination
-  NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.generic[@"application/epub+zip"]];
+  NSURLRequest *const request = [NSURLRequest requestWithURL:book.acquisition.generic];
   [[NYPLBookRegistry sharedRegistry]
    addBook:book
    location:nil

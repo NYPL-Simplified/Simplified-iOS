@@ -9,7 +9,6 @@
 @interface NYPLBook ()
 
 @property (nonatomic) NYPLBookAcquisition *acquisition;
-@property (nonatomic) NSArray *acquisitionBorrowFormats;
 @property (nonatomic) NSArray *authorStrings;
 @property (nonatomic) NYPLBookAvailabilityStatus availabilityStatus;
 @property (nonatomic) NSInteger availableCopies;
@@ -31,7 +30,6 @@
 NSString *const NYPLBookProblemReportedNotification = @"NYPLBookProblemReportedNotification";
 
 static NSString *const AcquisitionKey = @"acquisition";
-static NSString *const AcquisitionBorrowFormatsKey = @"acquisition-borrow-formats";
 static NSString *const AuthorsKey = @"authors";
 static NSString *const AvailabilityStatusKey = @"availability-status";
 static NSString *const AvailableCopiesKey = @"available-copies";
@@ -72,16 +70,19 @@ static NSString *const UpdatedKey = @"updated";
     return nil;
   }
   
-  NSURL *borrow, *revoke, *sample, *image, *imageThumbnail, *report = nil;
-  NSMutableDictionary *generic = [NSMutableDictionary dictionary];
-  NSMutableDictionary *openAccess = [NSMutableDictionary dictionary];
-  
+  NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail, *report = nil;
   
   NYPLBookAvailabilityStatus availabilityStatus = NYPLBookAvailabilityStatusUnknown;
   NSInteger availableCopies = 0;
   NSDate *availableUntil = nil;
   NSArray *borrowFormats = @[];
+  BOOL isEPUBAvailable = NO;
   for(NYPLOPDSLink *const link in entry.links) {
+    for(NSString *const acqusitionFormat in link.acquisitionFormats) {
+      if([acqusitionFormat containsString:@"application/epub+zip"]) {
+        isEPUBAvailable = YES;
+      }
+    }
     if(link.availabilityStatus) {
       if([link.availabilityStatus isEqualToString:@"available"]) {
         availabilityStatus = NYPLBookAvailabilityStatusAvailable;
@@ -101,7 +102,7 @@ static NSString *const UpdatedKey = @"updated";
     }
     
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisition]) {
-      [generic setObject:link.href forKey:(link.acquisitionFormats.count ? link.acquisitionFormats[0] : @"application/epub+zip")];
+      generic = link.href;
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionBorrow]) {
@@ -110,7 +111,7 @@ static NSString *const UpdatedKey = @"updated";
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionOpenAccess]) {
-      [openAccess setObject:link.href forKey:(link.acquisitionFormats.count ? link.acquisitionFormats[0] : @"application/epub+zip")];
+      openAccess = link.href;
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionRevoke]) {
@@ -135,6 +136,14 @@ static NSString *const UpdatedKey = @"updated";
     }
   }
   
+  // FIXME: This is not really the right place to do this and it doesn't handle
+  // indirect acquisitions properly. NYPLOPDS* classes need to be reworked before
+  // this can be handled in the correct way. The download center also needs to be
+  // audited to ensure it always gets an EPUB if one is available.
+  if(!isEPUBAvailable) {
+    return nil;
+  }
+  
   if(availabilityStatus == NYPLBookAvailabilityStatusUnknown) {
     if(openAccess || availableCopies > 0) {
       availabilityStatus = NYPLBookAvailabilityStatusAvailable;
@@ -151,7 +160,6 @@ static NSString *const UpdatedKey = @"updated";
                                revoke:revoke
                                sample:sample
                                report:report]
-          acquisitionBorrowFormats:borrowFormats
           authorStrings:entry.authorStrings
           availabilityStatus: availabilityStatus
           availableCopies:availableCopies
@@ -173,7 +181,6 @@ static NSString *const UpdatedKey = @"updated";
 {
   return [[NYPLBook alloc]
           initWithAcquisition:self.acquisition
-          acquisitionBorrowFormats:book.acquisitionBorrowFormats
           authorStrings:book.authorStrings
           availabilityStatus:self.availabilityStatus
           availableCopies:self.availableCopies
@@ -192,7 +199,6 @@ static NSString *const UpdatedKey = @"updated";
 }
 
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
-           acquisitionBorrowFormats:(NSArray *)acquisitionBorrowFormats
                       authorStrings:(NSArray *)authorStrings
                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
                     availableCopies:(NSInteger)availableCopies
@@ -223,7 +229,6 @@ static NSString *const UpdatedKey = @"updated";
   }
   
   self.acquisition = acquisition;
-  self.acquisitionBorrowFormats = acquisitionBorrowFormats;
   self.authorStrings = authorStrings;
   self.availabilityStatus = availabilityStatus;
   self.availableCopies = availableCopies;
@@ -296,7 +301,6 @@ static NSString *const UpdatedKey = @"updated";
 - (NSDictionary *)dictionaryRepresentation
 {
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
-           AcquisitionBorrowFormatsKey: NYPLNullFromNil(self.acquisitionBorrowFormats),
            AuthorsKey: self.authorStrings,
            AvailabilityStatusKey: @(self.availabilityStatus),
            AvailableCopiesKey: @(self.availableCopies),

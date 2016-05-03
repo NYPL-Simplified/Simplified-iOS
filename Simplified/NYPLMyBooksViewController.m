@@ -239,18 +239,14 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
                     ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
                       return [a.authors compare:b.authors options:NSCaseInsensitiveSearch];
                     }];
-      return;
     }
     case FacetSortTitle: {
       self.books = [books sortedArrayUsingComparator:
                     ^NSComparisonResult(NYPLBook *const a, NYPLBook *const b) {
                       return [a.title compare:b.title options:NSCaseInsensitiveSearch];
                     }];
-      return;
     }
   }
-  
-  @throw NSInternalInconsistencyException;
 }
 
 #pragma mark NYPLFacetViewDataSource

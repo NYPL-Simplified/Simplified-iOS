@@ -65,13 +65,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   for(NYPLOPDSEntry *const entry in feed.entries) {
     NYPLBook *book = [NYPLBook bookWithEntry:entry];
     if(!book) {
-      NYPLLOG(@"warning", kNYPLInvalidEntryException, @{@"identifier":entry.identifier}, @"Failed to create book from entry.");
-      continue;
-    }
-    if ([[book.acquisitionBorrowFormats indexesOfObjectsPassingTest:^BOOL(id  _Nonnull obj, __unused NSUInteger idx, __unused BOOL * _Nonnull stop) {
-      return [NYPLConfiguration canDisplayPublicationWithFormat:obj];
-    }] count] == 0) {
-      NYPLLOG(@"info", nil, @{@"identifier":entry.identifier}, @"Ignoring entry with no acceptible acquisition format");
+      NYPLLOG(@"info", kNYPLInvalidEntryException, @{@"identifier":entry.identifier}, @"Failed to create book from entry.");
       continue;
     }
     
