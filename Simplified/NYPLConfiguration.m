@@ -111,17 +111,6 @@ static NSString *const heapIDDevelopment = @"1848989408";
   return YES;
 }
 
-+ (BOOL)canDisplayPublicationWithFormat:(NSString *)format
-{
-  static NSSet const * acceptedFormats;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-     acceptedFormats = [NSSet setWithObjects:@"application/epub+zip", nil];
-  });
-  
-  return [acceptedFormats containsObject:format];
-}
-
 + (NSURL *)loanURL
 {
     return [[self circulationURL] URLByAppendingPathComponent:@"loans"];

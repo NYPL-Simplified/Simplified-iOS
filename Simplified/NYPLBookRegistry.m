@@ -261,7 +261,7 @@ static NSString *const RecordsKey = @"records";
          for(NYPLOPDSEntry *const entry in feed.entries) {
            NYPLBook *const book = [NYPLBook bookWithEntry:entry];
            if(!book) {
-             NYPLLOG_F(@"warning", nil, @{@"entry":entry.identifier}, @"Failed to create book for entry '%@'.", entry.identifier);
+             NYPLLOG_F(@"info", nil, @{@"entry":entry.identifier}, @"Failed to create book for entry '%@'.", entry.identifier);
              continue;
            }
            [identifiersToRemove removeObject:book.identifier];

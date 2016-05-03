@@ -18,7 +18,6 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 @interface NYPLBook : NSObject
 
 @property (nonatomic, readonly) NYPLBookAcquisition *acquisition;
-@property (nonatomic, readonly) NSArray *acquisitionBorrowFormats;
 @property (nonatomic, readonly) NSString *authors;
 @property (nonatomic, readonly) NSArray *authorStrings;
 @property (nonatomic, readonly) NYPLBookAvailabilityStatus availabilityStatus;
@@ -40,6 +39,7 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
+// Returns nil if the entry is not valid or does not contain a supported format.
 + (instancetype)bookWithEntry:(NYPLOPDSEntry *)entry;
 
 // Return a new book with the acquisition and availability info from this book,
@@ -48,7 +48,6 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 
 // designated initializer
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
-           acquisitionBorrowFormats:(NSArray *)acquisitionBorrowFormats
                       authorStrings:(NSArray *)authorStrings
                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
                     availableCopies:(NSInteger)availableCopies
