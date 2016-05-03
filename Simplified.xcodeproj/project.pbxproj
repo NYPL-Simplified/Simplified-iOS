@@ -148,6 +148,7 @@
 		2D4379FE1C46FDB600AE1AD5 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = 085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */; };
 		2DA4F2311C68082E008853D7 /* preloaded-content in Resources */ = {isa = PBXBuildFile; fileRef = 2DA4F2301C68082E008853D7 /* preloaded-content */; };
 		2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */; };
+		2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */; };
 		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
 		5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
@@ -472,6 +473,8 @@
 		11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLinkTests.m; sourceTree = "<group>"; };
 		2DA4F2301C68082E008853D7 /* preloaded-content */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "preloaded-content"; sourceTree = SOURCE_ROOT; };
 		2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
+		2DFAC8EB1CD8DDD1003D9EC0 /* NYPLOPDSCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSCategory.h; sourceTree = "<group>"; };
+		2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSCategory.m; sourceTree = "<group>"; };
 		5705D893E0FE4395A50F089E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
 		5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Simplified.xcconfig; sourceTree = "<group>"; };
@@ -1117,6 +1120,8 @@
 				119BEB8D19901E1000121439 /* NYPLOPDS.h */,
 				110AD83A19E4960C005724C3 /* NYPLOPDSAttribute.h */,
 				110AD83B19E497D6005724C3 /* NYPLOPDSAttribute.m */,
+				2DFAC8EB1CD8DDD1003D9EC0 /* NYPLOPDSCategory.h */,
+				2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */,
 				AE77E6379B5F7ACD56AE86EF /* NYPLOPDSEntry.h */,
 				AE77E4AF64208439F78B3D73 /* NYPLOPDSEntry.m */,
 				A499BF241B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.h */,
@@ -1407,6 +1412,7 @@
 				0813875A1BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m in Sources */,
 				1139DA6519C7755D00A07810 /* NYPLBookCoverRegistry.m in Sources */,
 				11119742198827850014462F /* NYPLBookDetailDownloadingView.m in Sources */,
+				2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */,
 				11068C55196DD37900E8A94B /* NYPLNull.m in Sources */,
 				5A69291E1B95C8AD00FB4C10 /* readium-shared-js_all.js.map in Sources */,
 				1111973C19880E8D0014462F /* NYPLLinearView.m in Sources */,
