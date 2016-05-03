@@ -1,4 +1,5 @@
 #import "NYPLOPDSAttribute.h"
+#import "NYPLOPDSCategory.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLOPDSEntryGroupAttributes.h"
 #import "NYPLOPDSFeed.h"
