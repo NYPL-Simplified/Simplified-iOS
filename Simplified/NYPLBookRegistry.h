@@ -10,7 +10,7 @@ static NSString *const NYPLBookRegistryDidChangeNotification =
   @"NYPLBookRegistryDidChangeNotification";
 
 static NSString *const NYPLBookProcessingDidChangeNotification =
-@"NYPLBookProcessingDidChangeNotification";
+  @"NYPLBookProcessingDidChangeNotification";
 
 @interface NYPLBookRegistry : NSObject
 
