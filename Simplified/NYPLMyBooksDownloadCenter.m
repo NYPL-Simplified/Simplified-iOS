@@ -289,8 +289,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   if(buttonIndex == alertView.firstOtherButtonIndex) {
     [self deleteLocalContentForBookIdentifier:self.bookIdentifierOfBookToRemove];
     [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:self.bookIdentifierOfBookToRemove];
-    }
-    
+  }
+  
   self.bookIdentifierOfBookToRemove = nil;
 }
 
