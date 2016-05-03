@@ -21,7 +21,6 @@
 "Downloading" = "Downloading";
 "Feedback" = "Feedback";
 "Hide" = "Hide";
-"Hold" = "Reserve";
 "LibraryCard" = "Library Card";
 "LogIn" = "Log In";
 "More..." = "More...";
@@ -35,6 +34,7 @@
 "Published" = "Published";
 "Publisher" = "Publisher";
 "Read" = "Read"; // present tense
+"Reserve" = "Reserve";
 "ReturnCouldNotBeCompletedFormat" = "The return of %@ could not be completed.";
 "ReturnFailed" = "Return Failed";
 "ReturnNow" = "Return now";
