@@ -307,7 +307,7 @@ static NSString *const RecordsKey = @"records";
         message:NSLocalizedString(@"YourBooksWereSyncedSuccessfully", nil)
         delegate:nil
         cancelButtonTitle:nil
-        otherButtonTitles:@"OK", nil]
+        otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
        show];
       
       [[NYPLBookRegistry sharedRegistry] save];
