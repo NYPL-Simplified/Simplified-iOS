@@ -132,7 +132,7 @@
       break;
     case NYPLBookButtonsStateCanHold:
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
-                              TitleKey: NSLocalizedString(@"Hold", nil),
+                              TitleKey: NSLocalizedString(@"Reserve", nil),
                               HintKey: [NSString stringWithFormat:NSLocalizedString(@"Holds %@", nil), self.book.title]}];
       break;
     case NYPLBookButtonsStateHolding:
