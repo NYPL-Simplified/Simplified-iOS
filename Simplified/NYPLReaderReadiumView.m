@@ -88,8 +88,7 @@ static void generateTOCElements(NSArray *const navigationElements,
 static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
 {
   // This seems to be the only reliable way of finding the correct view.
-  if([[[view class] description] isEqualToString:@"UIView"]
-     && CGRectIsEmpty(view.frame))
+  if([view isMemberOfClass:[UIView class]] && CGRectIsEmpty(view.frame))
   {
     [view removeFromSuperview];
   } else {
