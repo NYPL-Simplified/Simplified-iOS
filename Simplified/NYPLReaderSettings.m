@@ -442,6 +442,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
   return @{@"columnGap": @20,
            @"fontSize": @(baseSize * scalingFactor),
            @"syntheticSpread": @"single",
+           @"columnMaxWidth": @9999999,
            @"scroll": @NO,
            @"mediaOverlaysEnableClick": self.mediaOverlaysEnableClick ? @YES: @NO};
 }
