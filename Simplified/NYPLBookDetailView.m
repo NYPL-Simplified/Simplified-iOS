@@ -262,7 +262,12 @@ static NSString *detailTemplate = nil;
     CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
     CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
     CGFloat const h = [self.categoriesLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-    CGFloat const y = CGRectGetMaxY(self.coverImageView.frame) - h;
+    // FIXME: This detail view is getting way too crowded with metadata information,
+    // and the awkward layout here is a symptom of that. We should rethink the whole
+    // design of the top portion of detail views at some point.
+    //
+    // '3' is a magic value that provides mostly consistent baseline spacing.
+    CGFloat const y = CGRectGetMaxY(self.coverImageView.frame) - h + 3;
     self.categoriesLabel.frame = CGRectMake(x, y, w, h);
   }
   {
