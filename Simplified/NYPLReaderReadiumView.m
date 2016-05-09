@@ -5,6 +5,7 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLNull.h"
 #import "NYPLReaderContainerDelegate.h"
 #import "NYPLReaderRenderer.h"
 #import "NYPLReaderSettings.h"
@@ -741,11 +742,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                [self.javaScriptStringQueue removeObjectAtIndex:0];
                id const nextHandler = [self.javaScriptHandlerQueue firstObject];
                [self.javaScriptHandlerQueue removeObjectAtIndex:0];
-               if([nextHandler isKindOfClass:[NSNull class]]) {
-                 [self sequentiallyEvaluateJavaScript:nextJavaScript withCompletionHandler:nil];
-               } else {
-                 [self sequentiallyEvaluateJavaScript:nextJavaScript withCompletionHandler:nextHandler];
-               }
+               [self sequentiallyEvaluateJavaScript:nextJavaScript
+                              withCompletionHandler:NYPLNullToNil(nextHandler)];
              }
            }
          }];
