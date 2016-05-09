@@ -67,11 +67,6 @@ static NSString *detailTemplate = nil;
 
   self.authorsLabel = [[UILabel alloc] init];
   self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    self.authorsLabel.numberOfLines = 1;
-  } else {
-    self.authorsLabel.numberOfLines = 2;
-  }
   self.authorsLabel.font = [UIFont systemFontOfSize:12];
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.authorsLabel.text = book.authors;
