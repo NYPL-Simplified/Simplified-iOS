@@ -573,44 +573,32 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
     [self.tableView reloadData];
   };
 
-  void (^handler)(UIAlertAction  * _Nonnull action) = ^(__attribute__((unused)) UIAlertAction *action) {
 #if defined(FEATURE_DRM_CONNECTOR)
-    if([NYPLADEPT sharedInstance].workflowsInProgress) {
-      [self presentViewController:[NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle" message:@"SettingsAccountViewControllerCannotLogOutMessage"]
-                         animated:YES completion:nil];
-      return;
-    }
-    
-    [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
-    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-    
-    [[NYPLADEPT sharedInstance]
-     deauthorizeWithUsername:[[NYPLAccount sharedAccount] barcode]
-     password:[[NYPLAccount sharedAccount] PIN]
-     completion:^(BOOL success, NSError *error) {
-       self.navigationItem.titleView = nil;
-       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-       if (success) {
-         afterDeauthorization();
-       } else {
-         [self presentViewController:[NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLogoutFailed" error:error]
-                            animated:YES completion:nil];
-       }
-     }];
-#else
-    afterDeauthorization();
-#endif
-  };
+  if([NYPLADEPT sharedInstance].workflowsInProgress) {
+    [self presentViewController:[NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle" message:@"SettingsAccountViewControllerCannotLogOutMessage"]
+                       animated:YES completion:nil];
+    return;
+  }
   
-  NSString *localizedFormatString = NSLocalizedString(@"Don't forget your Barcode and PIN! You will need them to log back in.\nBarcode: %@, PIN: %@", nil);
-  NSString *messageString = [NSString stringWithFormat:localizedFormatString, [[NYPLAccount sharedAccount] barcode], [[NYPLAccount sharedAccount] PIN]];
-  UIAlertController *pinAndBarcodeReminder = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Barcode and PIN", nil)
-                                                                                 message:messageString
-                                                                          preferredStyle:UIAlertControllerStyleAlert];
-  [pinAndBarcodeReminder addAction:[UIAlertAction actionWithTitle:@"Okay"
-                                                            style:UIAlertActionStyleDestructive
-                                                          handler:handler]];
-  [self presentViewController:pinAndBarcodeReminder animated:YES completion:nil];
+  [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
+  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+  
+  [[NYPLADEPT sharedInstance]
+   deauthorizeWithUsername:[[NYPLAccount sharedAccount] barcode]
+   password:[[NYPLAccount sharedAccount] PIN]
+   completion:^(BOOL success, NSError *error) {
+     self.navigationItem.titleView = nil;
+     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+     if (success) {
+       afterDeauthorization();
+     } else {
+       [self presentViewController:[NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLogoutFailed" error:error]
+                          animated:YES completion:nil];
+     }
+   }];
+#else
+  afterDeauthorization();
+#endif
 }
 
 - (void)setActivityTitleWithText:(NSString *)text
