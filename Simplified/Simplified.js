@@ -85,10 +85,6 @@ function Simplified() {
   // This should be called by the host whenever the page changes. This is because a change in the
   // page can mean a change in the iframe and thus requires resetting properties.
   this.pageDidChange = function() {
-    // Disable selection.
-    window.frames["epubContentIframe"].document.documentElement.style.webkitTouchCallout = "none";
-    window.frames["epubContentIframe"].document.documentElement.style.webkitUserSelect = "none";
-    
     this.loadOpenDyslexicFonts();
     
     if (this.shouldUpdateVisibilityOnUpdate) {
