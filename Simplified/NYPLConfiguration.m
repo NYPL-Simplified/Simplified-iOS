@@ -96,19 +96,9 @@ static NSString *const heapIDDevelopment = @"1848989408";
     return [self circulationURL];
 }
 
-+ (NSString *)preloadedContentDistributor
-{
-  return @"NYPL";
-}
-
 + (BOOL)customFeedEnabled
 {
   return NO;
-}
-
-+ (BOOL)preloadedContentEnabled
-{
-  return YES;
 }
 
 + (NSURL *)loanURL

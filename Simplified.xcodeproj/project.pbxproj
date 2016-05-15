@@ -146,7 +146,6 @@
 		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
 		255CBCD4D12FD597CEE1A36D /* libPods-SimplyE.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 803BF424AC84B344A2B8AB19 /* libPods-SimplyE.a */; };
 		2D4379FE1C46FDB600AE1AD5 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = 085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */; };
-		2DA4F2311C68082E008853D7 /* preloaded-content in Resources */ = {isa = PBXBuildFile; fileRef = 2DA4F2301C68082E008853D7 /* preloaded-content */; };
 		2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */; };
 		2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */; };
 		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
@@ -471,7 +470,6 @@
 		11F54C2419410BE40086FCAF /* single_entry.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = single_entry.xml; sourceTree = "<group>"; };
 		11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryTests.m; sourceTree = "<group>"; };
 		11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLinkTests.m; sourceTree = "<group>"; };
-		2DA4F2301C68082E008853D7 /* preloaded-content */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "preloaded-content"; sourceTree = SOURCE_ROOT; };
 		2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		2DFAC8EB1CD8DDD1003D9EC0 /* NYPLOPDSCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSCategory.h; sourceTree = "<group>"; };
 		2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSCategory.m; sourceTree = "<group>"; };
@@ -928,21 +926,21 @@
 		A823D804192BABA400B55DE2 = {
 			isa = PBXGroup;
 			children = (
-				848FD95A1B83875D009D9BC4 /* NYPL_Launch_Screen.xib */,
 				CAE35BC11B86308D00BF9BC5 /* README */,
-				5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */,
 				B54F998D1BAC976C0033F303 /* Simplified.debug.xcconfig */,
 				B54F998E1BAC97AB0033F303 /* Simplified.release.xcconfig */,
+				5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */,
 				CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */,
-				A823D816192BABA400B55DE2 /* Simplified */,
-				A823D82F192BABA400B55DE2 /* SimplifiedTests */,
-				A823D80F192BABA400B55DE2 /* Frameworks */,
-				A823D80E192BABA400B55DE2 /* Products */,
-				A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */,
-				1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */,
 				5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */,
 				5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */,
+				A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */,
+				1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */,
+				848FD95A1B83875D009D9BC4 /* NYPL_Launch_Screen.xib */,
+				A823D80F192BABA400B55DE2 /* Frameworks */,
 				E58B2D937ACCFE792FCF5DB0 /* Pods */,
+				A823D80E192BABA400B55DE2 /* Products */,
+				A823D816192BABA400B55DE2 /* Simplified */,
+				A823D82F192BABA400B55DE2 /* SimplifiedTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -998,13 +996,12 @@
 		A823D816192BABA400B55DE2 /* Simplified */ = {
 			isa = PBXGroup;
 			children = (
-				84B7A3411B84E8FE00584FB2 /* Resources */,
 				110AF8891961D66C004887C3 /* Additions */,
 				110AF8901961D822004887C3 /* Book */,
 				1183F349194F74EF00DC322F /* Catalog */,
 				11C5DCEF1976D1BA005A9945 /* Holds */,
-				110AF8881961D652004887C3 /* My Books */,
 				08136F781BC2AAD8002A4486 /* Library Card */,
+				110AF8881961D652004887C3 /* My Books */,
 				11172762197F31280043EFBF /* NYPLAccount.h */,
 				11172763197F31280043EFBF /* NYPLAccount.m */,
 				08A352711BDFF5380040BF1D /* NYPLAlertController.h */,
@@ -1057,6 +1054,7 @@
 				111559EC19B8FA590003BE94 /* NYPLXML.m */,
 				AE77E8DE5454517F1AE119BF /* OPDS */,
 				119504051994061E009FB788 /* Reader */,
+				84B7A3411B84E8FE00584FB2 /* Resources */,
 				11C5DCEE1976D19E005A9945 /* Settings */,
 				A823D817192BABA400B55DE2 /* Supporting Files */,
 			);
@@ -1066,7 +1064,6 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				2DA4F2301C68082E008853D7 /* preloaded-content */,
 				8418C0461B75176B00FAB724 /* eula.html */,
 				111E758C1A840DC500718AD7 /* credits.css */,
 				111E758A1A840A1600718AD7 /* credits.html */,
@@ -1296,7 +1293,6 @@
 				111E758D1A840DC500718AD7 /* credits.css in Resources */,
 				5A6929101B95ACD100FB4C10 /* sdk.css in Resources */,
 				84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */,
-				2DA4F2311C68082E008853D7 /* preloaded-content in Resources */,
 				5A6929251B95C93B00FB4C10 /* readium-shared-js_all.js.map in Resources */,
 				11C113D219F842BE005B3F63 /* host_app_feedback.js in Resources */,
 				8418C0481B75176B00FAB724 /* eula.html in Resources */,

@@ -86,14 +86,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 
   self.title = NSLocalizedString(@"MyBooksViewControllerTitle", nil);
   
-  if ( [[NYPLSettings sharedSettings] preloadContentCompleted]) {
-      [self willReloadCollectionViewData];
-  }
-  else {
-    [self preloadContentWithHandler:^(void) {
-      [self willReloadCollectionViewData];
-    }];
-  }
+  [self willReloadCollectionViewData];
   
   [[NSNotificationCenter defaultCenter]
    addObserver:self
@@ -378,22 +371,6 @@ OK:
       self.navigationItem.leftBarButtonItem = self.syncButton;
     }
   }];
-}
-
-- (void)preloadContentWithHandler:(void(^)(void))handler
-{
-  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    @synchronized (self) {
-      NSArray *booksToPreload = [[NYPLSettings sharedSettings] booksToPreload];
-      for (NYPLBook *book in booksToPreload) {
-        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForPreloadedBook:book];
-      }
-      dispatch_async(dispatch_get_main_queue(), ^{
-        [[NYPLSettings sharedSettings] setPreloadContentCompleted:YES];
-        if (handler) handler();
-      });
-    }
-  });
 }
 
 - (void)didSelectSearch

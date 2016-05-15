@@ -20,7 +20,7 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 // Returns all books that are on hold
 @property (atomic, readonly) NSArray *heldBooks;
 
-// Returns all books not on hold (borrowed, preloaded, or kept)
+// Returns all books not on hold (borrowed or kept)
 @property (atomic, readonly) NSArray *myBooks;
 
 // Returns the number of books currently registered.
