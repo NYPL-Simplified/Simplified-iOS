@@ -35,13 +35,6 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
     case 3:
       switch (indexPath.row) {
         case 0:
-          return NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent;
-        default:
-          @throw NSInvalidArgumentException;
-      }
-    case 4:
-      switch (indexPath.row) {
-        case 0:
           return NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL;
         default:
           @throw NSInvalidArgumentException;
@@ -63,12 +56,10 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
       return [NSIndexPath indexPathForRow:1 inSection:2];
     case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
       return [NSIndexPath indexPathForRow:2 inSection:2];
-    case NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent:
-      return [NSIndexPath indexPathForRow:0 inSection:3];
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack:
       return [NSIndexPath indexPathForRow:0 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
-      return [NSIndexPath indexPathForRow:0 inSection:4];
+      return [NSIndexPath indexPathForRow:0 inSection:3];
   }
 }
 
@@ -187,17 +178,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       return cell;
     }
-    case NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"RestorePreloadedContent", nil);
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      }
-      return cell;
-    }
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
@@ -231,15 +211,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  NSInteger sections = 5;
-  if (![NYPLConfiguration customFeedEnabled])
-    sections--;
-  if (![NYPLConfiguration preloadedContentEnabled]) {
-    sections--;
-    if ([NYPLConfiguration customFeedEnabled])
-      [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"The custom feed cannot be enabled while preloaded content is disabled" userInfo:nil] raise];
-  }
-  return sections;
+  return 3 + !![NYPLConfiguration customFeedEnabled];
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -248,7 +220,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   switch(section) {
     case 2:
       return 3;
-    case 0: case 1: case 3: case 4:
+    case 0: case 1: case 3:
       return 1;
     default:
       @throw NSInternalInconsistencyException;
