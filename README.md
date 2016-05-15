@@ -17,7 +17,32 @@
 5. Add "libADEPT.a" and other related libraries to the "Link Binary With Libraries" section of the target "Simplified".
 6. Build.
 
-## License
+# Contributing
+
+This codebase follows [Google's Objective-C Style Guide](https://google.github.io/styleguide/objcguide.xml)
+including the use of two-space indentation. Both Objective-C and Swift may be
+used for new code.
+
+The primary services/singletons within the program are as follows:
+
+* `NYPLAccount`
+* `NYPLBookCoverRegistry` (used directly only by `NYPLBookRegistry`)
+* `NYPLBookRegistry`
+* `NYPLConfiguration`
+* `NYPLKeychain`
+* `NYPLMyBooksDownloadCenter`
+
+All of the above contain appropriate documentation in the header files.
+
+The rest of the program follows Apple's usual pattern of passive views,
+relatively passive models, and one-off controllers for integrating everything.
+Immutability is preferred wherever possible.
+
+Questions and suggestions should be submitted as GitHub issues and tagged with
+the appropriate labels. More in-depth discussion occurs via Slack: Email
+`jamesenglish@nypl.org` for access.
+
+# License
 
 ```
 Copyright © 2015 The New York Public Library, Astor, Lenox, and Tilden Foundations
