@@ -341,20 +341,20 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
           NYPLLOG(@"warning", kNYPLInvalidEntryException, @{@"identifier":entry.identifier}, @"Failed to create book from entry.");
         }
       } else {
-        
-        if([error[@"type"] isEqualToString:NYPLProblemDocumentTypeNoActiveLoan])
-        {
+        if([error[@"type"] isEqualToString:NYPLProblemDocumentTypeNoActiveLoan]) {
           if(downloaded) {
             [self deleteLocalContentForBookIdentifier:identifier];
           }
           [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
-        }
-        else
-        {
-          NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"ReturnFailed" message:@"ReturnCouldNotBeCompletedFormat", bookTitle];
-          if (error)
-            [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
-          [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+        } else if(error) {
+          [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            NYPLAlertController *const alert = [NYPLAlertController
+                                                alertWithTitle:@"ReturnFailed"
+                                                message:@"ReturnCouldNotBeCompletedFormat", bookTitle];
+            [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error]
+               displayDocumentMessage:YES];
+            [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+          }];
         }
       }
     }];
