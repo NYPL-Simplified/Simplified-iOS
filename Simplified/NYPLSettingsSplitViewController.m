@@ -84,9 +84,6 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
     case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
       viewController = [[NYPLSettingsPrivacyPolicyViewController alloc] init];
       break;
-      case NYPLSettingsPrimaryTableViewControllerItemRestorePreloadedContent:
-      [self restorePreloadedContent];
-      break;
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack:
       [[HSHelpStack instance] showHelp:self];
       break;
@@ -103,38 +100,6 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
      deselectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(item)
      animated:YES];
     [self showDetailViewController:viewController sender:self];
-  }
-}
-
--(void) restorePreloadedContent {
-  @synchronized (self) {
-    NSArray *booksToRestorePreload = [[NYPLSettings sharedSettings] booksToPreloadCurrentlyMissing];
-    for (NYPLBook *book in booksToRestorePreload) {
-      [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForPreloadedBook:book];
-    }
-    [[NYPLSettings sharedSettings] setPreloadContentCompleted:YES];
-    
-    NSString *alertMessage;
-    if (booksToRestorePreload.count > 0) {
-      alertMessage = NSLocalizedString(@"PreloadedContentRestoredMessage", nil);
-    }
-    else {
-      alertMessage = NSLocalizedString(@"PreloadedContentNothingRestoredMessage", nil);
-    }
-    
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"PreloadedContent", nil)
-                                                                             message:alertMessage
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                       style:UIAlertActionStyleDefault
-                                                     handler:nil];
-    [alertController addAction:okAction];
-    
-    [self presentViewController:alertController
-                       animated:NO
-                     completion:nil];
-
   }
 }
 

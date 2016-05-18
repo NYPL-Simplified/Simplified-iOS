@@ -13,6 +13,3 @@
 [submodule "adobe-content-filter"]
 	path = adobe-content-filter
 	url = git@github.com:NYPL/Adobe-Content-Filter.git
-[submodule "preloaded-content"]
-	path = preloaded-content
-	url = git@github.com:NYPL-Simplified/preloaded-content.git

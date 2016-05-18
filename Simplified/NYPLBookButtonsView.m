@@ -116,7 +116,6 @@
   static NSString *const HintKey = @"accessibilityHint";
   static NSString *const AddIndicatorKey = @"addIndicator";
   
-  BOOL preloaded = [[[NYPLSettings sharedSettings] preloadedBookIdentifiers] containsObject:self.book.identifier];
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:self.book.identifier];
   
   switch(self.state) {
@@ -159,8 +158,8 @@
         
       if (self.showReturnButtonIfApplicable)
       {
-        NSString *title = (self.book.acquisition.openAccess || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);
-        NSString *hint = (self.book.acquisition.openAccess || preloaded) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+        NSString *title = self.book.acquisition.openAccess ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);
+        NSString *hint = self.book.acquisition.openAccess ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
 
         visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
                                 TitleKey: NSLocalizedString(@"Download", nil),
@@ -184,8 +183,8 @@
         
       if (self.showReturnButtonIfApplicable)
       {
-        NSString *title = (self.book.acquisition.openAccess || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);\
-        NSString *hint = (self.book.acquisition.openAccess || preloaded) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+        NSString *title = self.book.acquisition.openAccess ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil);\
+        NSString *hint = self.book.acquisition.openAccess ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
 
         visibleButtonInfo = @[@{ButtonKey: self.readButton,
                                 TitleKey: NSLocalizedString(@"Read", nil),
@@ -215,7 +214,7 @@
   
   for (NSDictionary *buttonInfo in visibleButtonInfo) {
     NYPLRoundedButton *button = buttonInfo[ButtonKey];
-    if(button == self.deleteButton && !preloaded && ((!fulfillmentId && fulfillmentIdRequired) && !hasRevokeLink)) {
+    if(button == self.deleteButton && (!fulfillmentId && fulfillmentIdRequired) && !hasRevokeLink) {
       if(!self.book.acquisition.openAccess) {
         continue;
       }
@@ -263,10 +262,8 @@
 
 - (void)didSelectReturn
 {
-  BOOL preloaded = [[[NYPLSettings sharedSettings] preloadedBookIdentifiers] containsObject:self.book.identifier];
-  
-  NSString *title = (self.book.acquisition.openAccess || preloaded) ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil) : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil);
-  NSString *message = (self.book.acquisition.openAccess || preloaded) ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil) : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitleMessageFormat", nil);
+  NSString *title = self.book.acquisition.openAccess ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil) : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil);
+  NSString *message = self.book.acquisition.openAccess ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil) : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitleMessageFormat", nil);
   
   UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
                                                                            message:[NSString stringWithFormat:
@@ -277,7 +274,7 @@
                                                       style:UIAlertActionStyleCancel
                                                     handler:nil]];
   
-  [alertController addAction:[UIAlertAction actionWithTitle:(self.book.acquisition.openAccess || preloaded) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil)
+  [alertController addAction:[UIAlertAction actionWithTitle:(self.book.acquisition.openAccess ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil))
                                                       style:UIAlertActionStyleDefault
                                                     handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
                                                       [self.delegate didSelectReturnForBook:self.book];
