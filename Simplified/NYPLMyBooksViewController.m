@@ -13,6 +13,7 @@
 #import "NYPLSettings.h"
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLMyBooksViewController.h"
 
@@ -68,6 +69,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 @property (nonatomic) FacetSort activeFacetSort;
 @property (nonatomic) NSArray *books;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
+@property (nonatomic) UILabel *instructionsLabel;
 @property (nonatomic) UIBarButtonItem *syncButton;
 @property (nonatomic) UIBarButtonItem *syncInProgressButton;
 @property (nonatomic) UIBarButtonItem *searchButton;
@@ -121,6 +123,12 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.facetBarView.facetView.delegate = self;
   [self.view addSubview:self.facetBarView];
   
+  self.instructionsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+  self.instructionsLabel.hidden = YES;
+  self.instructionsLabel.text = NSLocalizedString(@"MyBooksGoToCatalog", nil);
+  self.instructionsLabel.numberOfLines = 0;
+  [self.view addSubview:self.instructionsLabel];
+  
   self.syncButton = [[UIBarButtonItem alloc]
                      initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                      target:self
@@ -150,16 +158,6 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   } else {
     self.navigationItem.leftBarButtonItem = self.syncButton;
   }
-  
-//  UIView *tmpView = self.view;
-//  self.containerView = [[NYPLMyBooksContainerView alloc] initWithFrame:self.view.frame];
-//  for (UIView *v in self.view.subviews) {
-//    [v removeFromSuperview];
-//    [self.containerView addSubview:v];
-//  }
-//  [tmpView removeFromSuperview];
-//  self.view = self.containerView;
-//  self.containerView.accessibleElements = @[self.facetBarView, self.collectionView];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -180,6 +178,13 @@ typedef NS_ENUM(NSInteger, FacetSort) {
                                                       self.collectionView.contentInset.bottom,
                                                       self.collectionView.contentInset.right);
   self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
+  
+  CGSize const instructionsLabelSize = [self.instructionsLabel sizeThatFits:CGSizeMake(300.0, CGFLOAT_MAX)];
+  self.instructionsLabel.frame = CGRectMake(0, 0, instructionsLabelSize.width, instructionsLabelSize.height);
+  self.instructionsLabel.textAlignment = NSTextAlignmentCenter;
+  self.instructionsLabel.textColor = [UIColor colorWithWhite:0.6667 alpha:1.0];
+  [self.instructionsLabel centerInSuperview];
+  [self.instructionsLabel integralizeFrame];
 }
 
 #pragma mark UICollectionViewDelegate
@@ -215,6 +220,8 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [super willReloadCollectionViewData];
   
   NSArray *books = [[NYPLBookRegistry sharedRegistry] myBooks];
+  
+  self.instructionsLabel.hidden = !!books.count;
   
   switch(self.activeFacetShow) {
     case FacetShowAll:
