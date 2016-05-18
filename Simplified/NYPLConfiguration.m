@@ -106,6 +106,11 @@ static NSString *const heapIDDevelopment = @"1848989408";
     return [[self circulationURL] URLByAppendingPathComponent:@"loans"];
 }
 
++ (BOOL)cardCreationEnabled
+{
+  return NO;
+}
+
 + (NSURL *)registrationURL
 {
 //  return [NSURL URLWithString:@"https://simplifiedcard.herokuapp.com"];

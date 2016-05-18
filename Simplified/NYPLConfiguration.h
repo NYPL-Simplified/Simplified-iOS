@@ -14,6 +14,8 @@
 
 + (NSString *)bugsnagID;
 
++ (BOOL)cardCreationEnabled;
+
 + (NSURL *)circulationURL;
 
 // This can be overriden by setting |customMainFeedURL| in NYPLSettings.
