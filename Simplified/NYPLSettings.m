@@ -18,8 +18,6 @@ static NSString *const privacyPolicyURLKey = @"NYPLSettingsPrivacyPolicyURL";
 
 static NSString *const acknowledgmentsURLKey = @"NYPLSettingsAcknowledgmentsURL";
 
-static NSString *const preloadContentCompletedKey = @"NYPLSettingsPreloadContentCompleted";
-
 static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCurrentCardApplicationSerialized";
 
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
@@ -96,127 +94,6 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [NSKeyedUnarchiver unarchiveObjectWithData:currentCardApplicationSerialization];
 }
 
-- (BOOL)preloadContentCompleted
-{
-  return [[NSUserDefaults standardUserDefaults] boolForKey:preloadContentCompletedKey];
-}
-
-- (NSArray *)preloadedBookURLs
-{
-  return [[NSBundle mainBundle] pathsForResourcesOfType:@"epub" inDirectory:@"preloaded-content"];
-}
-
-- (NSString *)preloadedBookIDFromBundlePath: (NSString *) bookBundlePath
-{
-  return [NSString stringWithFormat:@"Preloaded-%@", bookBundlePath.lastPathComponent];
-}
-
-- (NSArray *)preloadedBookIdentifiers
-{
-  NSArray *bundlePathsToPreload = [[NYPLSettings sharedSettings] preloadedBookURLs];
-  NSMutableArray *booksToPreloadIdentifiers = [[NSMutableArray alloc] init];
-  
-  for (NSString *bookBundlePath in bundlePathsToPreload) {
-    NSString *bookID = [self preloadedBookIDFromBundlePath:bookBundlePath];
-    [booksToPreloadIdentifiers addObject:bookID];
-  }
-  
-  return booksToPreloadIdentifiers;
-}
-
-- (NSArray *)booksToPreload
-{
-  NSArray *bundlePathsToPreload = [[NYPLSettings sharedSettings] preloadedBookURLs];
-  NSMutableArray *booksToPreload = [[NSMutableArray alloc] init];
-  
-  for (NSString *bookBundlePath in bundlePathsToPreload) {
-    
-    NSURL *bookBundleURL = [NSURL fileURLWithPath:bookBundlePath];
-    NSString *bookID = [self preloadedBookIDFromBundlePath:bookBundlePath];
-    NSString *imagePath = [bookBundlePath stringByAppendingPathExtension:@"jpg"];
-    
-    NSArray *fileNameComponents = [[[bookBundlePath lastPathComponent] stringByDeletingPathExtension] componentsSeparatedByString:@"_-_"];
-    NSString *bookTitle;
-    NSString *bookAuthor;
-    
-    if (fileNameComponents.count == 2) {
-      bookTitle = [fileNameComponents firstObject];
-      bookAuthor = [fileNameComponents lastObject];
-    }
-    else {
-      bookTitle = [[bookBundlePath lastPathComponent] stringByDeletingPathExtension];
-      bookAuthor = @"";
-    }
-    
-    NYPLBook *book = [[NYPLBook alloc] initWithAcquisition:[[NYPLBookAcquisition alloc] initWithBorrow:nil
-                                                                                               generic:bookBundleURL
-                                                                                            openAccess:nil
-                                                                                                revoke:nil
-                                                                                                sample:nil
-                                                                                                report:nil]
-                                             authorStrings:@[bookAuthor]
-                                        availabilityStatus:NYPLBookAvailabilityStatusAvailable
-                                           availableCopies:0
-                                            availableUntil:nil
-                                           categoryStrings:@[]
-                                               distributor:[NYPLConfiguration preloadedContentDistributor]
-                                                identifier:bookID
-                                                  imageURL:[NSURL fileURLWithPath:imagePath]
-                                         imageThumbnailURL:[NSURL fileURLWithPath:imagePath]
-                                                 published:nil
-                                                 publisher:nil
-                                                  subtitle:nil
-                                                   summary:nil
-                                                     title:bookTitle
-                                                   updated:[NSDate date]];
-    
-    if (book) {
-      [booksToPreload addObject:book];
-    }
-  }
-  
-  return booksToPreload;
-}
-
-- (NSArray *)booksToPreloadCurrentlyMissing
-{
-  
-  NSArray *booksToCheck = [self booksToPreload];
-  
-  if (!booksToCheck || booksToCheck.count == 0 ) {
-    return nil;
-  }
-  
-  NSMutableArray *booksToRestore = [[NSMutableArray alloc] init];
-  for (NYPLBook *book in booksToCheck) {
-    
-    NYPLBook *bookCheck = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
-    if ( ![bookCheck.identifier isEqualToString:book.identifier] ) {
-      [booksToRestore addObject:book];
-    }
-  }
-  
-  return booksToRestore;
-}
-
-- (NSArray *)booksToRestorePreloadedContentForIdentifiers:(NSArray *)identifiers
-{
-  NSArray *booksToCheck = [self booksToPreload];
-  
-  if (!identifiers || ![[identifiers class] isSubclassOfClass:[NSArray class]] || !booksToCheck || booksToCheck.count == 0 ) {
-    return nil;
-  }
-  
-  NSMutableArray *booksToRestore = [[NSMutableArray alloc] init];
-  for (NYPLBook *book in booksToCheck) {
-    if ( [identifiers containsObject:book.identifier] ) {
-      [booksToRestore addObject:book];
-    }
-  }
-  
-  return booksToRestore;
-}
-
 - (void)setUserAcceptedEULA:(BOOL)userAcceptedEULA
 {
   [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:userAcceptedEULAKey];
@@ -290,12 +167,6 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLSettingsDidChangeNotification
    object:self];
-}
-
-- (void)setPreloadContentCompleted:(BOOL)preloadContentCompleted
-{
-  [[NSUserDefaults standardUserDefaults] setBool:preloadContentCompleted forKey:preloadContentCompletedKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (NYPLSettingsRenderingEngine)renderingEngine

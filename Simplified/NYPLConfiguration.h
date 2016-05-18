@@ -19,12 +19,7 @@
 // This can be overriden by setting |customMainFeedURL| in NYPLSettings.
 + (NSURL *)mainFeedURL;
 
-// This appears in detail views for preloaded books.
-+ (NSString *)preloadedContentDistributor;
-
 + (BOOL)customFeedEnabled;
-
-+ (BOOL)preloadedContentEnabled;
 
 + (NSURL *)loanURL;
 
