@@ -346,13 +346,15 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
             [self deleteLocalContentForBookIdentifier:identifier];
           }
           [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
-        } else if(error) {
+        } else {
           [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             NYPLAlertController *const alert = [NYPLAlertController
                                                 alertWithTitle:@"ReturnFailed"
                                                 message:@"ReturnCouldNotBeCompletedFormat", bookTitle];
-            [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error]
-               displayDocumentMessage:YES];
+            if(error) {
+              [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error]
+                 displayDocumentMessage:YES];
+            }
             [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
           }];
         }
