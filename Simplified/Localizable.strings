@@ -103,7 +103,6 @@
 "ReaderViewControllerCurrentChapter" = "Current Chapter";
 "Book" = "Book";
 "leftin" = "left in";
-"ReaderSettings" = "Reader settings";
 "TOC" = "Table of contents";
 
 // NYPLReaderReadiumView
@@ -120,6 +119,9 @@
 "IncreaseFontSize" = "Increase font size";
 "MediaOverlayPlaybackToggle" = "Media overlay playback toggle";
 "BrightnessSlider" = "Brightness slider";
+
+// NYPLReaderSettingsViewController
+"ReaderViewControllerToggleReaderSettings" = "Toggle reader settings";
 
 // ReaderTOCViewController
 
