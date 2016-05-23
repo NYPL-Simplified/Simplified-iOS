@@ -577,6 +577,7 @@ spineItemTitle:(NSString *const)title
   [self.rendererView removeFromSuperview];
   [self turnPageIsRight:turnRight];
   [[pendingViewControllers.firstObject view] addSubview:self.rendererView];
+  self.rendererView.frame = pendingViewControllers.firstObject.view.bounds;
   
   self.renderedImageView.image = snapshotImage;
   self.renderedImageView.frame = CGRectMake(0, 0, snapshotImage.size.width, snapshotImage.size.height);
