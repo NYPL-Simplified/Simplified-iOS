@@ -1,3 +1,5 @@
+@import WebKit;
+
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
@@ -578,6 +580,9 @@ spineItemTitle:(NSString *const)title
   [self turnPageIsRight:turnRight];
   [[pendingViewControllers.firstObject view] addSubview:self.rendererView];
   self.rendererView.frame = pendingViewControllers.firstObject.view.bounds;
+  
+  // Hack to work around an issue that would occasionally occur after an orientation change.
+  ((WKWebView *) self.rendererView.subviews[0]).scrollView.contentSize = self.rendererView.bounds.size;
   
   self.renderedImageView.image = snapshotImage;
   self.renderedImageView.frame = CGRectMake(0, 0, snapshotImage.size.width, snapshotImage.size.height);
