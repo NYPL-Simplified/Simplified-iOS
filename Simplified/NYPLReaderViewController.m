@@ -213,7 +213,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   NYPLRoundedButton *const settingsButton = [NYPLRoundedButton button];
-  settingsButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"ReaderSettings", nil)];
+  settingsButton.accessibilityLabel = NSLocalizedString(@"ReaderViewControllerToggleReaderSettings", nil);
   [settingsButton setTitle:@"Aa" forState:UIControlStateNormal];
   [settingsButton sizeToFit];
   // We set a larger font after sizing because we want large text in a standard-size button.
@@ -221,7 +221,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [settingsButton addTarget:self
                      action:@selector(didSelectSettings)
            forControlEvents:UIControlEventTouchUpInside];
-  
   self.settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
   
   NYPLRoundedButton *const TOCButton = [NYPLRoundedButton button];
@@ -759,6 +758,8 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
     [self.view addSubview:readerSettingsView];
     self.readerSettingsViewPhone = readerSettingsView;
   }
+  
+  UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.readerSettingsViewPhone);
 }
 
 - (void)didSelectTOC
