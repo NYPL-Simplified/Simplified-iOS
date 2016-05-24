@@ -328,7 +328,7 @@
                CGRectGetHeight(self.brightnessLowImageView.frame));
   
   self.brightnessHighImageView.frame =
-    CGRectMake((CGRectGetWidth(self.brightnessView.frame) - 0  -
+    CGRectMake((CGRectGetWidth(self.brightnessView.frame) -
                 CGRectGetWidth(self.brightnessHighImageView.frame)),
                (CGRectGetHeight(self.brightnessView.frame) / 2 -
                 CGRectGetHeight(self.brightnessHighImageView.frame) / 2),
@@ -336,14 +336,13 @@
                CGRectGetHeight(self.brightnessHighImageView.frame));
   
   [self.brightnessSlider sizeToFit];
-  CGFloat const sliderPadding = 5;
+  CGFloat const sliderPadding = padding / 2.0;
   CGFloat const brightnessSliderWidth =
-    ((CGRectGetMinX(self.brightnessHighImageView.frame) -
-      CGRectGetWidth(self.brightnessView.frame) / 1.65)
-     * 2
+    (CGRectGetMinX(self.brightnessHighImageView.frame)
+     - CGRectGetMaxX(self.brightnessLowImageView.frame)
      - sliderPadding * 2);
   
-  self.brightnessSlider.frame = CGRectMake(CGRectGetMaxX(self.brightnessLowImageView.frame) + (padding / 2),
+  self.brightnessSlider.frame = CGRectMake(CGRectGetMaxX(self.brightnessLowImageView.frame) + sliderPadding,
                                            (CGRectGetHeight(self.brightnessView.frame) / 2 -
                                             CGRectGetHeight(self.brightnessSlider.frame) / 2),
                                            brightnessSliderWidth,
