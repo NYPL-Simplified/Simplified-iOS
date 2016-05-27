@@ -172,7 +172,7 @@ static NSArray *s_problems = nil;
   UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
   cell.accessoryType = UITableViewCellAccessoryCheckmark;
   if (!self.submitProblemButton.enabled)
-    [self.submitProblemButton setEnabled:YES animated:YES];
+    [self.submitProblemButton setEnabled:YES];
 }
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(nonnull NSIndexPath *)indexPath

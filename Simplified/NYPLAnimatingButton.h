@@ -10,6 +10,6 @@
 
 @interface NYPLAnimatingButton : UIButton
 
-- (void) setEnabled:(BOOL)enabled animated:(BOOL)animated;
+- (void) setEnabled:(BOOL)enabled;
 
 @end

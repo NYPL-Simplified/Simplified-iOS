@@ -100,7 +100,7 @@
                     animations:^{
                       self.imageView.image = self.currentApplication.photo;
                     } completion:nil];
-    [self.continueButton setEnabled:YES animated:YES];
+    [self.continueButton setEnabled:YES];
   };
   [picker dismissViewControllerAnimated:YES completion:completion];
   [self.currentApplication uploadPhoto];

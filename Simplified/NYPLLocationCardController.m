@@ -178,7 +178,7 @@ typedef enum {
                          [self.view setNeedsLayout];
                        } completion:^(BOOL finished) {
                          if (finished) {
-                           [self.continueButton setEnabled:YES animated:YES];
+                           [self.continueButton setEnabled:YES];
                          }
                        }];
       
@@ -202,7 +202,7 @@ typedef enum {
                       } completion:^(BOOL finished) {
                         if (finished) {
                           dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((duration/2.0) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                            [self.continueButton setEnabled:YES animated:YES];
+                            [self.continueButton setEnabled:YES];
                           });
                         }
                       }];
@@ -217,7 +217,7 @@ typedef enum {
                          [self.view setNeedsLayout];
                        } completion:^(BOOL finished) {
                          if (finished) {
-                           [self.continueButton setEnabled:YES animated:YES];
+                           [self.continueButton setEnabled:YES];
                          }
                        }];
       

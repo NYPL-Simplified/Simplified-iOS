@@ -39,7 +39,7 @@
 - (IBAction)datePicked:(__attribute__((unused)) id)sender
 {
   if (!self.continueButton.enabled) {
-    [self.continueButton setEnabled:YES animated:YES];
+    [self.continueButton setEnabled:YES];
   }
   self.currentApplication.dob = self.datePicker.date;
 }
