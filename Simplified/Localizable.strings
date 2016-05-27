@@ -5,7 +5,6 @@
 "BorrowFailed" = "Borrowing failed";
 "BorrowCouldNotBeCompletedFormat" = "Borrowing %@ could not be completed.";
 "Cancel" = "Cancel";
-"CancelHold" = "Cancel";
 "Catalog" = "Catalog";
 "Categories" = "Categories";
 "Category" = "Category";
@@ -34,6 +33,7 @@
 "Published" = "Published";
 "Publisher" = "Publisher";
 "Read" = "Read"; // present tense
+"Remove" = "Remove";
 "Reserve" = "Reserve";
 "ReturnCouldNotBeCompletedFormat" = "The return of %@ could not be completed.";
 "ReturnFailed" = "Return Failed";
@@ -52,6 +52,13 @@
     "An unknown error occurred. Please check your connection or try again later.";
 "Verifying" = "Verifying";
 "YourBooksWereSyncedSuccessfully" = "Your books were synced successfully!";
+
+// NYPLBookButtonsView
+
+"BookButtonsViewRemoveHoldTitle" = "Remove Reservation";
+"BookButtonsViewRemoveHoldMessage" = "Are you sure you want to remove \"%@\" from your reservations? You will no longer be in line for this book.";
+"BookButtonsViewRemoveHoldConfirm" = "Remove";
+
 
 // NYPLBookDetailViewControllerTitle
 
@@ -78,12 +85,12 @@
 
 // NYPLMyBooksDownloadCenter
 
-"MyBooksDownloadCenterConfirmDeleteTitle" = "Delete Book";
-"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat" = "Are you sure you want to delete %@?";
+"MyBooksDownloadCenterConfirmDeleteTitle" = "Delete";
+"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat" = "Are you sure you want to delete \"%@\"?";
 "MyBooksGoToCatalog" = "Visit the Catalog to\nadd books to My Books.";
 
-"MyBooksDownloadCenterConfirmReturnTitle" = "Return Book";
-"MyBooksDownloadCenterConfirmReturnTitleMessageFormat" = "Are you sure you want to return %@?";
+"MyBooksDownloadCenterConfirmReturnTitle" = "Return";
+"MyBooksDownloadCenterConfirmReturnTitleMessageFormat" = "Are you sure you want to return \"%@\"?";
 
 // NYPLMyBooksViewController
 

@@ -136,7 +136,7 @@
       break;
     case NYPLBookButtonsStateHolding:
       visibleButtonInfo = @[@{ButtonKey: self.deleteButton,
-                              TitleKey: NSLocalizedString(@"CancelHold", nil),
+                              TitleKey: NSLocalizedString(@"Remove", nil),
                               HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels hold for %@", nil), self.book.title],
                               AddIndicatorKey: @(YES)}];
       break;
@@ -146,7 +146,7 @@
                               HintKey: [NSString stringWithFormat:NSLocalizedString(@"Borrows %@", nil), self.book.title],
                               AddIndicatorKey: @(YES)},
                             @{ButtonKey: self.deleteButton,
-                              TitleKey: NSLocalizedString(@"CancelHold", nil),
+                              TitleKey: NSLocalizedString(@"Remove", nil),
                               HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels hold for %@", nil), self.book.title]}];
       break;
     case NYPLBookButtonsStateDownloadNeeded:
@@ -262,8 +262,35 @@
 
 - (void)didSelectReturn
 {
-  NSString *title = self.book.acquisition.openAccess ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil) : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil);
-  NSString *message = self.book.acquisition.openAccess ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil) : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitleMessageFormat", nil);
+  NSString *title = nil;
+  NSString *message = nil;
+  NSString *confirmButtonTitle = nil;
+  
+  switch([[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier]) {
+    case NYPLBookStateUsed:
+    case NYPLBookStateDownloading:
+    case NYPLBookStateUnregistered:
+    case NYPLBookStateDownloadFailed:
+    case NYPLBookStateDownloadNeeded:
+    case NYPLBookStateDownloadSuccessful:
+      title = (self.book.acquisition.openAccess
+               ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
+               : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil));
+      message = (self.book.acquisition.openAccess
+                 ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil)
+                 : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitleMessageFormat", nil));
+      confirmButtonTitle = (self.book.acquisition.openAccess
+                            ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
+                            : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil));
+      break;
+    case NYPLBookStateHolding:
+      title = NSLocalizedString(@"BookButtonsViewRemoveHoldTitle", nil);
+      message = [NSString stringWithFormat:
+                 NSLocalizedString(@"BookButtonsViewRemoveHoldMessage", nil),
+                 self.book.title];
+      confirmButtonTitle = NSLocalizedString(@"BookButtonsViewRemoveHoldConfirm", nil);
+      break;
+  }
   
   UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
                                                                            message:[NSString stringWithFormat:
@@ -274,7 +301,7 @@
                                                       style:UIAlertActionStyleCancel
                                                     handler:nil]];
   
-  [alertController addAction:[UIAlertAction actionWithTitle:(self.book.acquisition.openAccess ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"ReturnNow", nil))
+  [alertController addAction:[UIAlertAction actionWithTitle:confirmButtonTitle
                                                       style:UIAlertActionStyleDefault
                                                     handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
                                                       [self.delegate didSelectReturnForBook:self.book];
