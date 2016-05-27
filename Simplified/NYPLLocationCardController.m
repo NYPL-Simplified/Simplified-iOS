@@ -7,7 +7,6 @@
 //
 
 #import "NYPLLocationCardController.h"
-#import "CJAMacros.h"
 #import "NYPLAnimatingButton.h"
 #import "NYPLCardApplicationModel.h"
 #import "NYPLSettings.h"
@@ -119,12 +118,7 @@ typedef enum {
     self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
   }
   
-  if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(NSFoundationVersionNumber_iOS_8_0)) {
-    [self.locationManager requestWhenInUseAuthorization];
-  } else {
-    self.requestingContinuousUpdates = YES;
-    [self.locationManager startUpdatingLocation];
-  }
+  [self.locationManager requestWhenInUseAuthorization];
 }
 
 - (void)setIsDeterminingLocation:(BOOL)isDeterminingLocation
@@ -133,17 +127,7 @@ typedef enum {
     _isDeterminingLocation = isDeterminingLocation;
     
     if (isDeterminingLocation) {
-      if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(NSFoundationVersionNumber_iOS_8_0)) {
-        [self.locationManager requestLocation];
-      } else {
-        self.requestingContinuousUpdates = YES;
-        [self.locationManager startUpdatingLocation];
-      }
-    } else {
-      if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(NSFoundationVersionNumber_iOS_8_0)) {
-        self.requestingContinuousUpdates = NO;
-        [self.locationManager stopUpdatingLocation];
-      }
+      [self.locationManager requestLocation];
     }
   }
 }
@@ -167,14 +151,7 @@ typedef enum {
 {
   if (!self.isDeterminingLocation) {
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
-      if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(NSFoundationVersionNumber_iOS_8_0)) {
-        [self.locationManager requestWhenInUseAuthorization];
-      } else {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Location Services Disabled", nil)
-                                                                                 message:NSLocalizedString(@"To check location automatically, please enable Location Services in Settings", nil)
-                                                                          preferredStyle:UIAlertControllerStyleAlert];
-        [self presentViewController:alertController animated:YES completion:nil];
-      }
+      [self.locationManager requestWhenInUseAuthorization];
     } else {
       self.isDeterminingLocation = YES;
     }
