@@ -18,7 +18,6 @@
 		081387401BC455CF003DEA6A /* NYPLPhotoCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813873F1BC455CF003DEA6A /* NYPLPhotoCardController.m */; };
 		081387431BC465C9003DEA6A /* NYPLNameCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387421BC465C9003DEA6A /* NYPLNameCardController.m */; };
 		081387461BC5589D003DEA6A /* NYPLValidatingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387451BC5589D003DEA6A /* NYPLValidatingTextField.m */; };
-		081387511BC56B7A003DEA6A /* libpop.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 081387501BC56B7A003DEA6A /* libpop.a */; };
 		081387541BC57297003DEA6A /* NYPLAddressCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387531BC57297003DEA6A /* NYPLAddressCardController.m */; };
 		081387571BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387561BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m */; };
 		0813875A1BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387591BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m */; };
@@ -577,7 +576,6 @@
 				08A352271BDE91B80040BF1D /* libRDServices.a in Frameworks */,
 				08A352221BDE8E560040BF1D /* libicucore.tbd in Frameworks */,
 				08801EF81BDE8D77005E1F32 /* libHeap.a in Frameworks */,
-				081387511BC56B7A003DEA6A /* libpop.a in Frameworks */,
 				5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */,
 				5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */,
 				2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */,
