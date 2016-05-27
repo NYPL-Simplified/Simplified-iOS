@@ -1,4 +1,5 @@
 #import "HSHelpStack.h"
+#import "NYPLSettingsAboutViewController.h"
 #import "NYPLSettingsAccountViewController.h"
 #import "NYPLSettingsCreditsViewController.h"
 #import "NYPLSettingsFeedbackViewController.h"
@@ -72,6 +73,9 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
 {
   UIViewController *viewController;
   switch(item) {
+    case NYPLSettingsPrimaryTableViewControllerItemAbout:
+      viewController = [[NYPLSettingsAboutViewController alloc] init];
+      break;
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
       viewController = [[NYPLSettingsAccountViewController alloc] init];
       break;

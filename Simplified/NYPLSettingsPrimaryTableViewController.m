@@ -24,10 +24,12 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
     case 2:
       switch(indexPath.row) {
         case 0:
-          return NYPLSettingsPrimaryTableViewControllerItemCredits;
+          return NYPLSettingsPrimaryTableViewControllerItemAbout;
         case 1:
-          return NYPLSettingsPrimaryTableViewControllerItemEULA;
+          return NYPLSettingsPrimaryTableViewControllerItemCredits;
         case 2:
+          return NYPLSettingsPrimaryTableViewControllerItemEULA;
+        case 3:
           return NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy;
         default:
           @throw NSInvalidArgumentException;
@@ -48,14 +50,16 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   const NYPLSettingsPrimaryTableViewControllerItem settingsItem)
 {
   switch(settingsItem) {
+    case NYPLSettingsPrimaryTableViewControllerItemAbout:
+      return [NSIndexPath indexPathForRow:0 inSection:2];
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
       return [NSIndexPath indexPathForRow:0 inSection:0];
     case NYPLSettingsPrimaryTableViewControllerItemCredits:
-      return [NSIndexPath indexPathForRow:0 inSection:2];
-    case NYPLSettingsPrimaryTableViewControllerItemEULA:
       return [NSIndexPath indexPathForRow:1 inSection:2];
-    case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
+    case NYPLSettingsPrimaryTableViewControllerItemEULA:
       return [NSIndexPath indexPathForRow:2 inSection:2];
+    case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
+      return [NSIndexPath indexPathForRow:3 inSection:2];
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack:
       return [NSIndexPath indexPathForRow:0 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
@@ -134,6 +138,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(SettingsItemFromIndexPath(indexPath)) {
+    case NYPLSettingsPrimaryTableViewControllerItemAbout: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      cell.textLabel.text = NSLocalizedString(@"About", nil);
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      }
+      return cell;
+    }
     case NYPLSettingsPrimaryTableViewControllerItemAccount: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
@@ -219,7 +234,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(section) {
     case 2:
-      return 3;
+      return 4;
     case 0: case 1: case 3:
       return 1;
     default:
