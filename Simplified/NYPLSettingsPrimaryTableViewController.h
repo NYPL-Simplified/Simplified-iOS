@@ -1,6 +1,7 @@
 @class NYPLSettingsPrimaryTableViewController;
 
 typedef NS_ENUM(NSInteger, NYPLSettingsPrimaryTableViewControllerItem) {
+  NYPLSettingsPrimaryTableViewControllerItemAbout,
   NYPLSettingsPrimaryTableViewControllerItemAccount,
   NYPLSettingsPrimaryTableViewControllerItemCredits,
   NYPLSettingsPrimaryTableViewControllerItemEULA,
