@@ -7,7 +7,6 @@
 //
 
 #import "NYPLValidatingTextField.h"
-#import "pop/POP.h"
 
 @implementation NYPLValidatingTextField
 
@@ -47,41 +46,10 @@
   return self;
 }
 
-- (void) animateForValidity
-{
-  if (self.valid) {
-    POPBasicAnimation *borderWidthAnimation = [POPBasicAnimation easeOutAnimation];
-    borderWidthAnimation.property = [POPAnimatableProperty propertyWithName:@"borderWidth"];
-    borderWidthAnimation.toValue = @(0.0);
-    
-    POPBasicAnimation *borderColorAnimation = [POPBasicAnimation easeOutAnimation];
-    borderColorAnimation.property = [POPAnimatableProperty propertyWithName:@"borderColor"];
-    borderColorAnimation.toValue = (__bridge id)([UIColor colorWithRed:1.0 green:0 blue:0 alpha:0].CGColor);
-    
-    [self.layer pop_addAnimation:borderWidthAnimation forKey:nil];
-    [self.layer pop_addAnimation:borderColorAnimation forKey:nil];
-    
-  } else {
-    
-    POPSpringAnimation *borderWidthAnimation = [POPSpringAnimation animationWithPropertyNamed:@"borderWidth"];
-    borderWidthAnimation.fromValue = @(8.0);
-    borderWidthAnimation.toValue = @(2.0);
-    
-    POPBasicAnimation *borderColorAnimation = [POPBasicAnimation easeInEaseOutAnimation];
-    borderColorAnimation.property = [POPAnimatableProperty propertyWithName:@"borderColor"];
-    borderColorAnimation.fromValue = (__bridge id)([UIColor colorWithRed:1.0 green:0 blue:0 alpha:0].CGColor);
-    borderColorAnimation.toValue = (__bridge id)([UIColor redColor].CGColor);
-    
-    [self.layer pop_addAnimation:borderWidthAnimation forKey:nil];
-    [self.layer pop_addAnimation:borderColorAnimation forKey:nil];
-  }
-}
-
 - (void)setValid:(BOOL)valid
 {
   if (_valid != valid) {
     _valid = valid;
-    [self animateForValidity];
   }
 }
 
@@ -89,7 +57,6 @@
 {
   if (self.validator)
     _valid = self.validator();
-  [self animateForValidity];
 }
 
 @end

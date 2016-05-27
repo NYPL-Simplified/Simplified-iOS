@@ -34,7 +34,7 @@ static void *s_photoUploadContext = &s_photoUploadContext;
     [NYPLCardApplicationModel clearCurrentApplication];
     self.sendingContainer.hidden = YES;
     self.successContainer.hidden = NO;
-    [self.returnToCatalogButton setEnabled:YES animated:YES];
+    [self.returnToCatalogButton setEnabled:YES];
   } else {
     if (self.currentApplication.photoUploadState == NYPLAssetUploadStateError) {
       [self showUploadErrorAlert];
@@ -95,7 +95,7 @@ static void *s_photoUploadContext = &s_photoUploadContext;
                     self.successContainer.hidden = NO;
                   } completion:^(BOOL finished) {
                     if (finished) {
-                      [self.returnToCatalogButton setEnabled:YES animated:YES];
+                      [self.returnToCatalogButton setEnabled:YES];
                     }
                   }];
 }

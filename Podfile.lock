@@ -44,13 +44,11 @@ PODS:
     - HelpStack/Util
   - HelpStack/Util (1.1.1):
     - AFNetworking (~> 2.0)
-  - pop (1.0.8)
 
 DEPENDENCIES:
   - Bugsnag (from `https://github.com/bugsnag/bugsnag-cocoa.git`)
   - CHRTextFieldFormatter
   - HelpStack
-  - pop (~> 1.0)
 
 EXTERNAL SOURCES:
   Bugsnag:
@@ -66,6 +64,7 @@ SPEC CHECKSUMS:
   Bugsnag: a4bdbf356f318cef00d12eb1601f16d8d0c71ba4
   CHRTextFieldFormatter: 0800d02c64340355a9f913771ec3697183ca30de
   HelpStack: bfde78311b5d0fb3b849778df5939776359d5d8a
-  pop: bb773ae2c791ca2629de13b347e7a8b450fa6a57
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: 72a1b8d32166cc3fa8ae76f30bac57b39733f13f
+
+COCOAPODS: 1.0.0
