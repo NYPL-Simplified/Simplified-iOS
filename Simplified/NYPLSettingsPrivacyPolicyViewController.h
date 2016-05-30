@@ -1,3 +1,5 @@
-@interface NYPLSettingsPrivacyPolicyViewController : UIViewController <UIWebViewDelegate>
+@import UIKit;
+
+@interface NYPLSettingsPrivacyPolicyViewController : UIViewController
 
 @end
