@@ -30,6 +30,7 @@
 "PDFNotSupported" = "Adobe PDF Not Supported";
 "PDFNotSupportedDescriptionFormat" = "%@ is an Adobe PDF, which is not supported.";
 "PIN" = "PIN";
+"PrivacyPolicy" = "Privacy Policy";
 "Published" = "Published";
 "Publisher" = "Publisher";
 "Read" = "Read"; // present tense
