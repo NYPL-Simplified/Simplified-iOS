@@ -59,6 +59,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
                                             style:UIBarButtonItemStylePlain
                                             target:self
                                             action:@selector(didSelectSearch)];
+  self.navigationItem.rightBarButtonItem.accessibilityLabel = NSLocalizedString(@"Search", nil);
   self.navigationItem.rightBarButtonItem.enabled = NO;
   
   self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];

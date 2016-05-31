@@ -78,6 +78,7 @@
                        style:UIBarButtonItemStylePlain
                        target:self
                        action:@selector(didSelectSearch)];
+  self.searchButton.accessibilityLabel = NSLocalizedString(@"Search", nil);
   self.navigationItem.rightBarButtonItem = self.searchButton;
   
   UIActivityIndicatorView *const activityIndicatorView =
