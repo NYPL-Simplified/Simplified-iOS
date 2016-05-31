@@ -36,7 +36,8 @@
   return [self timeUntilStringWithNames:@{@"year": @"y",
                                           @"month": @"m",
                                           @"week": @"w",
-                                          @"day": @"d"
+                                          @"day": @"d",
+                                          @"hour": @"h",
                                           } appendPlural:@""];
 }
 
