@@ -36,9 +36,9 @@
 "Read" = "Read"; // present tense
 "Remove" = "Remove";
 "Reserve" = "Reserve";
+"Return" = "Return";
 "ReturnCouldNotBeCompletedFormat" = "The return of %@ could not be completed.";
 "ReturnFailed" = "Return Failed";
-"ReturnNow" = "Return now";
 "Requesting" = "Requesting";
 "Settings" = "Settings";
 "Show" = "Show";
