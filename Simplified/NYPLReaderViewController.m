@@ -310,10 +310,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   self.activityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  self.activityIndicatorView.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin
-                                                 | UIViewAutoresizingFlexibleLeftMargin
-                                                 | UIViewAutoresizingFlexibleBottomMargin
-                                                 | UIViewAutoresizingFlexibleRightMargin);
   [self.view addSubview:self.activityIndicatorView];
   [self.view bringSubviewToFront:self.activityIndicatorView];
   
