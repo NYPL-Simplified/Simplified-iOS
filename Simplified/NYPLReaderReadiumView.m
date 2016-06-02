@@ -45,9 +45,17 @@
 @property (nonatomic) NSMutableArray *javaScriptHandlerQueue;
 @property (nonatomic) NSMutableArray *javaScriptStringQueue;
 
+@property (nonatomic) BOOL performingLongLoad;
+@property (nonatomic) double secondsSinceComplete;
+
 @end
 
 static NSString *const renderer = @"readium";
+
+// The web view will be checked this often to see if it is done loading. This check
+// is what allows the |rendererDidBeginLongLoad:| and |rendererDidEndLongLoad:|
+// methods to work.
+static float readyStateCheckIntervalInSeconds = 0.1;
 
 static id argument(NSURL *const URL)
 {
@@ -388,6 +396,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     NSString *const function = components[0];
     if([function isEqualToString:@"initialize"]) {
       [self readiumInitialize];
+      [self pollReadyState];
     } else if([function isEqualToString:@"pagination-changed"]) {
       [self readiumPaginationChangedWithDictionary:argument(request.URL)];
     } else if([function isEqualToString:@"media-overlay-status-changed"]) {
@@ -669,6 +678,36 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   self.spineItemDetails = self.bookMapDictionary[idref];
   
   if (handler) handler();
+}
+
+// This method will call itself repeatedly every |readyStateCheckIntervalInSeconds|.
+- (void)pollReadyState
+{
+  if(self.secondsSinceComplete > 1.0 && !self.performingLongLoad) {
+    self.performingLongLoad = YES;
+    [self.delegate rendererDidBeginLongLoad:self];
+  }
+  
+  self.secondsSinceComplete += readyStateCheckIntervalInSeconds;
+  
+  [self.webView
+   evaluateJavaScript:@"window.frames[\"epubContentIframe\"].document.readyState"
+   completionHandler:^(id _Nullable result, __unused NSError *_Nullable error) {
+     if([result isEqualToString:@"complete"]) {
+       self.secondsSinceComplete = 0.0;
+       if(self.performingLongLoad) {
+         self.performingLongLoad = NO;
+         [self.delegate renderDidEndLongLoad:self];
+       }
+     }
+   }];
+  
+  dispatch_time_t const dispatchTime =
+    dispatch_time(DISPATCH_TIME_NOW, (int64_t)(readyStateCheckIntervalInSeconds * NSEC_PER_SEC));
+  
+  dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
+    [self pollReadyState];
+  });
 }
 
 #pragma mark NYPLReaderRenderer
