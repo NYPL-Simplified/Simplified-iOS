@@ -204,6 +204,18 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   // Do nothing.
 }
 
+- (void)rendererDidBeginLongLoad:(__unused id<NYPLReaderRenderer>)render
+{
+  self.activityIndicatorView.hidden = NO;
+  [self.activityIndicatorView startAnimating];
+}
+
+- (void)renderDidEndLongLoad:(__unused id<NYPLReaderRenderer>)render
+{
+  [self.activityIndicatorView stopAnimating];
+  self.activityIndicatorView.hidden = YES;
+}
+
 #pragma mark UIViewController
 
 - (void)viewDidLoad
@@ -303,8 +315,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
                                                  | UIViewAutoresizingFlexibleBottomMargin
                                                  | UIViewAutoresizingFlexibleRightMargin);
   [self.view addSubview:self.activityIndicatorView];
-  
-  [self.activityIndicatorView startAnimating];
   [self.view bringSubviewToFront:self.activityIndicatorView];
   
   [self prepareBottomView];
