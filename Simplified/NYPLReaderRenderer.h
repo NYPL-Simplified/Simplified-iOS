@@ -34,4 +34,8 @@ didUpdateProgressWithinBook:(float)progressWithinBook
        pageCount:(NSUInteger)pageCount
   spineItemTitle:(nullable NSString *)spineItemTitle;
 
+- (void)rendererDidBeginLongLoad:(nonnull id<NYPLReaderRenderer>)render;
+
+- (void)renderDidEndLongLoad:(nonnull id<NYPLReaderRenderer>)render;
+
 @end
