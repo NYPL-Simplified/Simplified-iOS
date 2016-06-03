@@ -7,13 +7,12 @@
 //
 
 #import "NYPLProblemReportViewController.h"
-#import "NYPLAnimatingButton.h"
 
 static NSArray *s_problems = nil;
 
 @interface NYPLProblemReportViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) IBOutlet UITableView *problemDescriptionTable;
-@property (nonatomic, strong) NYPLAnimatingButton *submitProblemButton, *cancelButton;
+@property (nonatomic, strong) UIButton *submitProblemButton, *cancelButton;
 @property (nonatomic, strong) UIView *footerView;
 @property (nonatomic, strong) IBOutlet NSLayoutConstraint *problemTableTopConstraint;
 @end
@@ -74,13 +73,13 @@ static NSArray *s_problems = nil;
 {
   [super viewDidLoad];
   
-  self.submitProblemButton = [NYPLAnimatingButton buttonWithType:UIButtonTypeSystem];
+  self.submitProblemButton = [UIButton buttonWithType:UIButtonTypeSystem];
   [self.submitProblemButton setTitle:NSLocalizedString(@"Submit", nil) forState:UIControlStateNormal];
   [self.submitProblemButton addTarget:self action:@selector(submitProblem) forControlEvents:UIControlEventTouchUpInside];
   [self.submitProblemButton sizeToFit];
   self.submitProblemButton.enabled = NO;
   
-  self.cancelButton = [NYPLAnimatingButton buttonWithType:UIButtonTypeSystem];
+  self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
   [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil) forState:UIControlStateNormal];
   [self.cancelButton addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
   [self.cancelButton sizeToFit];

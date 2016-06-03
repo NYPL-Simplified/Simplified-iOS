@@ -18,9 +18,9 @@
 }
 */
 
-- (void) setEnabled:(BOOL)enabled
+- (void) setEnabled:(__unused BOOL)enabled
 {
-  [self setEnabled:enabled];
+  
 }
 
 @end
