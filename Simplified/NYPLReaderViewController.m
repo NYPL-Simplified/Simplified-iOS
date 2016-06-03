@@ -10,6 +10,7 @@
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReaderSettings.h"
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLReaderViewController.h"
 
@@ -36,6 +37,7 @@
 @property (nonatomic) UIProgressView *bottomViewProgressView;
 @property (nonatomic) UILabel *bottomViewProgressLabel;
 @property (nonatomic) UIButton *largeTransparentAccessibilityButton;
+@property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 
 @property (nonatomic, getter = isStatusBarHidden) BOOL statusBarHidden;
 
@@ -54,15 +56,19 @@
   
   switch([NYPLReaderSettings sharedSettings].colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
+      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
       self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
       self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
       break;
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
       self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
       self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundColor];
       self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
       break;
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
       self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
       self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
       self.bottomViewImageViewTopBorder.backgroundColor = [UIColor darkGrayColor];
@@ -198,6 +204,18 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   // Do nothing.
 }
 
+- (void)rendererDidBeginLongLoad:(__unused id<NYPLReaderRenderer>)render
+{
+  self.activityIndicatorView.hidden = NO;
+  [self.activityIndicatorView startAnimating];
+}
+
+- (void)renderDidEndLongLoad:(__unused id<NYPLReaderRenderer>)render
+{
+  [self.activityIndicatorView stopAnimating];
+  self.activityIndicatorView.hidden = YES;
+}
+
 #pragma mark UIViewController
 
 - (void)viewDidLoad
@@ -289,6 +307,11 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.largeTransparentAccessibilityButton.accessibilityLabel = NSLocalizedString(@"Return to Reader", @"Return to Reader");
   self.largeTransparentAccessibilityButton.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                                                UIViewAutoresizingFlexibleHeight);
+  
+  self.activityIndicatorView = [[UIActivityIndicatorView alloc]
+                                initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  [self.view addSubview:self.activityIndicatorView];
+  [self.view bringSubviewToFront:self.activityIndicatorView];
   
   [self prepareBottomView];
 }
@@ -407,6 +430,12 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
   self.navigationController.navigationBar.translucent = YES;
   self.navigationController.navigationBar.barTintColor = nil;
+}
+
+- (void)viewWillLayoutSubviews
+{
+  [self.activityIndicatorView centerInSuperview];
+  [self.activityIndicatorView integralizeFrame];
 }
 
 #pragma mark Accessibility
