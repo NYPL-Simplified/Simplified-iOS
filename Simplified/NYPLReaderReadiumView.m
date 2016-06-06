@@ -683,7 +683,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 // This method will call itself repeatedly every |readyStateCheckIntervalInSeconds|.
 - (void)pollReadyState
 {
-  if(self.secondsSinceComplete > 0.4 && !self.performingLongLoad) {
+  if(self.secondsSinceComplete > 0.2 && !self.performingLongLoad) {
     self.performingLongLoad = YES;
     [self.delegate rendererDidBeginLongLoad:self];
   }
