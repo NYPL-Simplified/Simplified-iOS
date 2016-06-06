@@ -429,13 +429,13 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
       baseSize = 100;
       break;
     case NYPLReaderSettingsFontSizeLarge:
-      baseSize = 115;
+      baseSize = 120;
       break;
     case NYPLReaderSettingsFontSizeLarger:
-      baseSize = 130;
+      baseSize = 150;
       break;
     case NYPLReaderSettingsFontSizeLargest:
-      baseSize = 145;
+      baseSize = 200;
       break;
   }
 
