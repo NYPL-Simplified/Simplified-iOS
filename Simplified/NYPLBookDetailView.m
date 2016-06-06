@@ -233,7 +233,7 @@ static NSString *detailTemplate = nil;
     CGFloat const h = [self.titleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
     // The extra five height pixels account for a bug in |sizeThatFits:| that does not properly take
     // into account |lineHeightMultiple|.
-    self.titleLabel.frame = CGRectMake(x, y, w, h + 5);
+    self.titleLabel.frame = CGRectMake(x, y, w, h + 3);
     self.closeButton.frame = CGRectMake(CGRectGetMaxX(self.titleLabel.frame), self.titleLabel.frame.origin.y - 1, self.closeButton.frame.size.width, self.titleLabel.frame.size.height);
   }
   
