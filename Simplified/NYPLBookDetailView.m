@@ -99,11 +99,6 @@ static NSString *detailTemplate = nil;
   
   self.subtitleLabel = [[UILabel alloc] init];
   self.subtitleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    self.subtitleLabel.numberOfLines = 1;
-  } else {
-    self.subtitleLabel.numberOfLines = 2;
-  }
   self.subtitleLabel.text = book.subtitle;
   self.subtitleLabel.font = [UIFont systemFontOfSize:12];
   [self addSubview:self.subtitleLabel];
