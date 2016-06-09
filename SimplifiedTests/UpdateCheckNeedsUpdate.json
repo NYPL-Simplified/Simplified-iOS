@@ -1,0 +1,10 @@
+{
+  "Android": {
+    "minimum-version": "1.0.0",
+    "update-url": "http://www.example.com/android"
+  },
+  "iOS": {
+    "minimum-version": "9999.0.0",
+    "update-url": "http://www.example.com/iOS"
+  }
+}
