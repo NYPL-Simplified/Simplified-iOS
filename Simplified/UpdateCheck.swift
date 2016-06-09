@@ -1,6 +1,6 @@
-import UIKit
+import Foundation
 
-class UpdateCheck: NSObject {
+final class UpdateCheck {
   
   /// A structure for representing a SemVer 2.0 version.
   struct Version: Comparable {
@@ -58,20 +58,19 @@ class UpdateCheck: NSObject {
     let task = session.dataTaskWithURL(minimumVersionURL) {(data, response, error) in
       if minimumVersionURL.scheme == "http" || minimumVersionURL.scheme == "https" {
         guard response != nil else {
+          Log.debug(#file, "No response when requesting minimum version document.")
           handler(.Unknown)
           return
         }
         let HTTPResponse = response as! NSHTTPURLResponse
         switch HTTPResponse.statusCode {
         case 200:
-          guard HTTPResponse.MIMEType == "application/json" else {
-            Log.info(#file, "Ignoring response with non-JSON MIME type \(HTTPResponse.MIMEType).")
-            handler(.Unknown)
-            return
-          }
+          break
         case 404:
           // A 404 indicates that there is no minimum version required, thus all is well.
-          break
+          Log.debug(#file, "Received 404 when requesting minimum version document.")
+          handler(.Unknown)
+          return
         default:
           Log.info(#file, "Ignoring response with unexpected status code \(HTTPResponse.statusCode).")
           handler(.Unknown)

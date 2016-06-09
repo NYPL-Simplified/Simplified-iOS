@@ -27,6 +27,8 @@
 
 + (NSURL *)registrationURL;
 
++ (NSURL *)minimumVersionURL;
+
 + (UIColor *)mainColor;
 
 + (UIColor *)accentColor;
