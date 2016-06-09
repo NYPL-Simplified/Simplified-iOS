@@ -55,6 +55,13 @@
 "Verifying" = "Verifying";
 "YourBooksWereSyncedSuccessfully" = "Your books were synced successfully!";
 
+// NYPLAppDelegate
+
+"AppDelegateUpdateRequiredTitle" = "Update Required";
+"AppDelegateUpdateRequiredMessageFormat" = "A critical update is required for applications older than version %@. Essential parts of the application will not function correctly until an update is performed.";
+"AppDelegateUpdateNow" = "Update Now";
+"AppDelegateUpdateRemindMeLater" = "Remind Me Later";
+
 // NYPLBookButtonsView
 
 "BookButtonsViewRemoveHoldTitle" = "Remove Reservation";

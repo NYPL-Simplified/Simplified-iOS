@@ -1,3 +1,5 @@
+#import "SimplyE-Swift.h"
+
 #import "NYPLConfiguration.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLReaderSettings.h"
@@ -38,6 +40,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   
   if ([[NYPLSettings sharedSettings] userAcceptedEULA]) {
     self.window.rootViewController = [NYPLRootTabBarController sharedController];
+    [self beginCheckingForUpdates];
   } else {
     NYPLRootTabBarController *mainViewController = [NYPLRootTabBarController sharedController];
     UIViewController *eulaViewController = [[NYPLEULAViewController alloc] initWithCompletionHandler:^(void) {
@@ -46,9 +49,9 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
                          options:UIViewAnimationOptionTransitionCurlUp
                       animations:^() {self.window.rootViewController = mainViewController; }
                       completion:nil];
+      [self beginCheckingForUpdates];
     }];
     self.window.rootViewController = eulaViewController;
-    
   }
   
   return YES;
@@ -112,5 +115,41 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 
 }
 #endif
+
+- (void)beginCheckingForUpdates
+{
+  [UpdateCheckShim
+   performUpdateCheckWithURL:[NYPLConfiguration minimumVersionURL]
+   handler:^(NSString *_Nonnull version, NSURL *_Nonnull updateURL) {
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       UIAlertController *const alertController =
+         [UIAlertController
+          alertControllerWithTitle:NSLocalizedString(@"AppDelegateUpdateRequiredTitle", nil)
+          message:[NSString stringWithFormat:NSLocalizedString(@"AppDelegateUpdateRequiredMessageFormat", nil), version]
+          preferredStyle:UIAlertControllerStyleAlert];
+       [alertController addAction:
+        [UIAlertAction
+         actionWithTitle:NSLocalizedString(@"AppDelegateUpdateNow", nil)
+         style:UIAlertActionStyleDefault
+         handler:^(__unused UIAlertAction *_Nonnull action) {
+           [[UIApplication sharedApplication] openURL:updateURL];
+         }]];
+       [alertController addAction:
+        [UIAlertAction
+         actionWithTitle:NSLocalizedString(@"AppDelegateUpdateRemindMeLater", nil)
+         style:UIAlertActionStyleCancel
+         handler:nil]];
+       [self.window.rootViewController
+        presentViewController:alertController
+        animated:YES
+        completion:^{
+          // Try again in 24 hours or on next launch, whichever is sooner.
+          [self performSelector:@selector(beginCheckingForUpdates)
+                     withObject:nil
+                     afterDelay:(60 * 60 * 24)];
+        }];
+     }];
+   }];
+}
 
 @end
