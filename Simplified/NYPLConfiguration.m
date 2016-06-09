@@ -117,6 +117,11 @@ static NSString *const heapIDDevelopment = @"1848989408";
   return [NSURL URLWithString:@"https://patrons.librarysimplified.org/"];
 }
 
++ (NSURL *)minimumVersionURL
+{
+  return [NSURL URLWithString:@"http://www.librarysimplified.org/simplye-client/minimum-version"];
+}
+
 + (UIColor *)mainColor
 {
   return [UIColor colorWithRed:220/255.0 green:34/255.0 blue:29/255.0 alpha:1.0];

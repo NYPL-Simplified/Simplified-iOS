@@ -61,9 +61,6 @@
 		1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1112A81F1A322C53002B8CC1 /* libTenPrintCover.a */; };
 		1114A6A1195884CB007507A2 /* NYPLCatalogUngroupedFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 1114A6A0195884CB007507A2 /* NYPLCatalogUngroupedFeed.m */; };
 		111559ED19B8FA590003BE94 /* NYPLXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 111559EC19B8FA590003BE94 /* NYPLXML.m */; };
-		111559EF19B8FA8E0003BE94 /* NYPLXMLTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 111559EE19B8FA8E0003BE94 /* NYPLXMLTests.m */; };
-		111559F219B8FAA10003BE94 /* invalid.xml in Resources */ = {isa = PBXBuildFile; fileRef = 111559F019B8FAA10003BE94 /* invalid.xml */; };
-		111559F319B8FAA10003BE94 /* valid.xml in Resources */ = {isa = PBXBuildFile; fileRef = 111559F119B8FAA10003BE94 /* valid.xml */; };
 		11172764197F31280043EFBF /* NYPLAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 11172763197F31280043EFBF /* NYPLAccount.m */; };
 		111E757A1A80165C00718AD7 /* NYPLSettingsSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111E75791A80165C00718AD7 /* NYPLSettingsSplitViewController.m */; };
 		111E757D1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111E757C1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m */; };
@@ -81,14 +78,12 @@
 		11396FB9193D289100E16EE8 /* NSDate+NYPLDateAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 11396FB8193D289100E16EE8 /* NSDate+NYPLDateAdditions.m */; };
 		1139DA6519C7755D00A07810 /* NYPLBookCoverRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 1139DA6419C7755D00A07810 /* NYPLBookCoverRegistry.m */; };
 		113DB8A719C24E54004E1154 /* NYPLIndeterminateProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 113DB8A619C24E54004E1154 /* NYPLIndeterminateProgressView.m */; };
-		1142E4E819EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1142E4E719EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m */; };
 		1142E4EB19EED86A00D9B3D9 /* NYPLFacetBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1142E4EA19EED86A00D9B3D9 /* NYPLFacetBarView.m */; };
 		114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 114B7F151A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLImageAdditions.m */; };
 		114C8CD719BE2FD300719B72 /* NYPLAttributedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */; };
 		114C8CDA19BF55F900719B72 /* NYPLRoundedButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 114C8CD919BF55F900719B72 /* NYPLRoundedButton.m */; };
 		11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11548C0A1939136C009DBF2E /* NYPLRootTabBarController.m */; };
 		11548C0E1939147D009DBF2E /* NYPLCatalogNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11548C0D1939147D009DBF2E /* NYPLCatalogNavigationController.m */; };
-		1157E92E19CA0009003BFDBF /* NSString+NYPLStringAdditionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1157E92D19CA0009003BFDBF /* NSString+NYPLStringAdditionsTests.m */; };
 		11580AC81986A77B00949A15 /* NYPLBookCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11580AC71986A77B00949A15 /* NYPLBookCell.m */; };
 		1158812E1A894F4E008672C3 /* NYPLSettingsAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1158812D1A894F4E008672C3 /* NYPLSettingsAccountViewController.m */; };
 		11616E11196B0531003D60D9 /* NYPLBookRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 11616E10196B0531003D60D9 /* NYPLBookRegistry.m */; };
@@ -111,19 +106,8 @@
 		1195040B1994075B009FB788 /* NYPLReaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1195040A1994075B009FB788 /* NYPLReaderViewController.m */; };
 		1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1196F75A1970727C00F62670 /* NYPLMyBooksDownloadCenter.m */; };
 		119BEB89198C43A600121439 /* NSString+NYPLStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 119BEB88198C43A600121439 /* NSString+NYPLStringAdditions.m */; };
-		119BEBAA1990207E00121439 /* NYPLOPDSFeedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11396FC8193F674F00E16EE8 /* NYPLOPDSFeedTests.m */; };
-		119BEBAB1990207E00121439 /* NYPLOPDSEntryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */; };
-		119BEBAC1990207E00121439 /* NYPLOPDSLinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */; };
-		119BEBAD1990207E00121439 /* NYPLMyBooksRegistryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11616E12196B2FB8003D60D9 /* NYPLMyBooksRegistryTests.m */; };
-		119BEBAF1990207E00121439 /* NYPLDateAdditionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */; };
-		119BEBB01990207E00121439 /* NYPLKeychainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11C5DD171977335E005A9945 /* NYPLKeychainTests.m */; };
-		119BEBB21990217B00121439 /* NSDate+NYPLDateAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 11396FB8193D289100E16EE8 /* NSDate+NYPLDateAdditions.m */; };
-		119BEBB31990217B00121439 /* NSString+NYPLStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 119BEB88198C43A600121439 /* NSString+NYPLStringAdditions.m */; };
-		119BEBB51990217B00121439 /* UIFont+NYPLSystemFontOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = 11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */; };
-		119BEBB61990217B00121439 /* UIView+NYPLViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */; };
 		119BEBB919902A8800121439 /* NYPLOpenSearchDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 119BEBB819902A8800121439 /* NYPLOpenSearchDescription.m */; };
 		11A14DF41A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A14DF31A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m */; };
-		11A14DF61A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A14DF51A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m */; };
 		11A16E69195B2BD3004147F4 /* NYPLCatalogUngroupedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E68195B2BD3004147F4 /* NYPLCatalogUngroupedFeedViewController.m */; };
 		11A16E6F195B60DF004147F4 /* NYPLBookNormalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11A16E6E195B60DF004147F4 /* NYPLBookNormalCell.m */; };
 		11B20E6E19D9F6DD00877A23 /* NYPLReloadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */; };
@@ -141,11 +125,17 @@
 		11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = 11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */; };
 		11F3771F19DB62B000487769 /* NYPLFacetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3771E19DB62B000487769 /* NYPLFacetView.m */; };
 		11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3773219E0876F00487769 /* NYPLCatalogFacet.m */; };
-		11F54C1F194109550086FCAF /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
-		11F54C2519410BE40086FCAF /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
+		2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */; };
+		2D2B477E1D08F82C007F7764 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D382BD61D08BA99002C423D /* Log.swift */; };
+		2D2B47841D08F8E2007F7764 /* UpdateCheckUpToDate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */; };
+		2D2B478E1D08FDF5007F7764 /* UpdateCheckNeedsUpdate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D2B478A1D08FC78007F7764 /* UpdateCheckNeedsUpdate.json */; };
+		2D2B478F1D08FDF5007F7764 /* UpdateCheckUnknown.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D2B47891D08FC78007F7764 /* UpdateCheckUnknown.json */; };
+		2D382BD71D08BA99002C423D /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D382BD61D08BA99002C423D /* Log.swift */; };
 		2D4379FE1C46FDB600AE1AD5 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = 085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */; };
 		2D6292501CF901F6002A67E9 /* NYPLSettingsAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D62924F1CF901F6002A67E9 /* NYPLSettingsAboutViewController.m */; };
 		2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */; };
+		2DC8D9DC1D09F797007DD125 /* UpdateCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */; };
+		2DC8D9DE1D09F9B4007DD125 /* UpdateCheckShim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */; };
 		2DCF86051CF904E0000BCE77 /* about.html in Resources */ = {isa = PBXBuildFile; fileRef = 2DCF86041CF904E0000BCE77 /* about.html */; };
 		2DCF860B1CFC0DC6000BCE77 /* privacy-policy.html in Resources */ = {isa = PBXBuildFile; fileRef = 2DCF860A1CFC0DC6000BCE77 /* privacy-policy.html */; };
 		2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */; };
@@ -166,7 +156,6 @@
 		84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3441B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf */; };
 		84B7A3481B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3451B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf */; };
 		84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */; };
-		961AB222F15DDD361CF7CC27 /* libPods-SimplyETests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEEC686A5C71AFACFAC2A884 /* libPods-SimplyETests.a */; };
 		A4276F481B00046300CA7194 /* NYPLMyBooksDownloadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */; };
 		A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */; };
 		A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF31B40F4E00095EBAE /* NYPLCatalogFeedViewController.m */; };
@@ -176,7 +165,6 @@
 		A4BA1D0E1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BA1D0D1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m */; };
 		A4BA1D131B43046B006F83DF /* NYPLCatalogGroupedFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BA1D121B43046B006F83DF /* NYPLCatalogGroupedFeed.m */; };
 		A4E254FA1B0E610900193FE4 /* NYPLBasicAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */; };
-		A4E255151B0E704100193FE4 /* NYPLQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E255141B0E704100193FE4 /* NYPLQueueTests.m */; };
 		A823D811192BABA400B55DE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D810192BABA400B55DE2 /* Foundation.framework */; };
 		A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D812192BABA400B55DE2 /* CoreGraphics.framework */; };
 		A823D815192BABA400B55DE2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D814192BABA400B55DE2 /* UIKit.framework */; };
@@ -184,10 +172,6 @@
 		A823D81D192BABA400B55DE2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A823D81C192BABA400B55DE2 /* main.m */; };
 		A823D821192BABA400B55DE2 /* NYPLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */; };
 		A823D823192BABA400B55DE2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A823D822192BABA400B55DE2 /* Images.xcassets */; };
-		A823D82A192BABA400B55DE2 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D829192BABA400B55DE2 /* XCTest.framework */; };
-		A823D82B192BABA400B55DE2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D810192BABA400B55DE2 /* Foundation.framework */; };
-		A823D82C192BABA400B55DE2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A823D814192BABA400B55DE2 /* UIKit.framework */; };
-		A823D834192BABA400B55DE2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A823D832192BABA400B55DE2 /* InfoPlist.strings */; };
 		AE77E7E37D89FB3EED630624 /* NYPLOPDSType.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77EFD5622206475B6715A9 /* NYPLOPDSType.m */; };
 		AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77E4AF64208439F78B3D73 /* NYPLOPDSEntry.m */; };
 		AE77EB0CB5B94AEC591E2D91 /* NYPLOPDSLink.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77ECC029F3DABDB46A64EB /* NYPLOPDSLink.m */; };
@@ -196,6 +180,7 @@
 		B54F99921BACB0CE0033F303 /* libHelpStack.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B54F99901BACB0CE0033F303 /* libHelpStack.a */; };
 		B594C7561BB06F40000028F5 /* HelpStackTheme.plist in Resources */ = {isa = PBXBuildFile; fileRef = B594C7551BB06F40000028F5 /* HelpStackTheme.plist */; };
 		B5ED41DA1B8F6E2E009FC164 /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */; };
+		E15AF04E809009612AA10D16 /* libPods-SimplyETests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEEC686A5C71AFACFAC2A884 /* libPods-SimplyETests.a */; };
 		F1F151465E2588C592EFCD16 /* libPods-SimplyE.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B541D8CE147A05879F16FA7E /* libPods-SimplyE.a */; };
 /* End PBXBuildFile section */
 
@@ -206,6 +191,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = CCAC4FAE195B3DD700D775F5;
 			remoteInfo = TenPrintCover;
+		};
+		2D2B47771D08F808007F7764 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A823D805192BABA400B55DE2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A823D80C192BABA400B55DE2;
+			remoteInfo = SimplyE;
 		};
 		5A569A2B1B8351C6003B5B61 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -227,13 +219,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 118A0E281992B3FD00792DDE;
 			remoteInfo = RDServices;
-		};
-		A823D82D192BABA400B55DE2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A823D805192BABA400B55DE2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A823D80C192BABA400B55DE2;
-			remoteInfo = Simplified;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -473,9 +458,20 @@
 		11F54C2419410BE40086FCAF /* single_entry.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = single_entry.xml; sourceTree = "<group>"; };
 		11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryTests.m; sourceTree = "<group>"; };
 		11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLinkTests.m; sourceTree = "<group>"; };
+		2D2B47621D08F1ED007F7764 /* SimplyETests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyETests-Bridging-Header.h"; sourceTree = "<group>"; };
+		2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheckTests.swift; sourceTree = "<group>"; };
+		2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = UpdateCheckUpToDate.json; sourceTree = "<group>"; };
+		2D2B47721D08F807007F7764 /* SimplyETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimplyETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D2B47761D08F808007F7764 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../SimplyETests/Info.plist; sourceTree = "<group>"; };
+		2D2B47891D08FC78007F7764 /* UpdateCheckUnknown.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = UpdateCheckUnknown.json; sourceTree = "<group>"; };
+		2D2B478A1D08FC78007F7764 /* UpdateCheckNeedsUpdate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = UpdateCheckNeedsUpdate.json; sourceTree = "<group>"; };
+		2D382BCF1D08B1F5002C423D /* SimplyE-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyE-Bridging-Header.h"; sourceTree = "<group>"; };
+		2D382BD61D08BA99002C423D /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		2D62924E1CF901F6002A67E9 /* NYPLSettingsAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsAboutViewController.h; sourceTree = "<group>"; };
 		2D62924F1CF901F6002A67E9 /* NYPLSettingsAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAboutViewController.m; sourceTree = "<group>"; };
 		2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
+		2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheck.swift; sourceTree = "<group>"; };
+		2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheckShim.swift; sourceTree = "<group>"; };
 		2DCF86041CF904E0000BCE77 /* about.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = about.html; sourceTree = "<group>"; };
 		2DCF860A1CFC0DC6000BCE77 /* privacy-policy.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "privacy-policy.html"; sourceTree = "<group>"; };
 		2DFAC8EB1CD8DDD1003D9EC0 /* NYPLOPDSCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSCategory.h; sourceTree = "<group>"; };
@@ -525,7 +521,6 @@
 		A4BA1D121B43046B006F83DF /* NYPLCatalogGroupedFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogGroupedFeed.m; sourceTree = "<group>"; };
 		A4E254F81B0E610900193FE4 /* NYPLBasicAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBasicAuth.h; sourceTree = "<group>"; };
 		A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBasicAuth.m; sourceTree = "<group>"; };
-		A4E255141B0E704100193FE4 /* NYPLQueueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLQueueTests.m; sourceTree = "<group>"; };
 		A823D80D192BABA400B55DE2 /* SimplyE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimplyE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D810192BABA400B55DE2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A823D812192BABA400B55DE2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -537,9 +532,7 @@
 		A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLAppDelegate.h; sourceTree = "<group>"; };
 		A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLAppDelegate.m; sourceTree = "<group>"; };
 		A823D822192BABA400B55DE2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		A823D828192BABA400B55DE2 /* SimplyETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimplyETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A823D829192BABA400B55DE2 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		A823D831192BABA400B55DE2 /* SimplifiedTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SimplifiedTests-Info.plist"; sourceTree = "<group>"; };
 		A823D833192BABA400B55DE2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AE77E0F3FB181D0C1529C865 /* NYPLOPDSLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSLink.h; sourceTree = "<group>"; };
 		AE77E304AA30ABF2921B6393 /* NYPLOPDSFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSFeed.h; sourceTree = "<group>"; };
@@ -564,6 +557,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2D2B476F1D08F807007F7764 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E15AF04E809009612AA10D16 /* libPods-SimplyETests.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A823D80A192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -594,17 +595,6 @@
 				B54F99911BACB0CE0033F303 /* libAFNetworking.a in Frameworks */,
 				B54F99921BACB0CE0033F303 /* libHelpStack.a in Frameworks */,
 				F1F151465E2588C592EFCD16 /* libPods-SimplyE.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A823D825192BABA400B55DE2 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A823D82A192BABA400B55DE2 /* XCTest.framework in Frameworks */,
-				A823D82C192BABA400B55DE2 /* UIKit.framework in Frameworks */,
-				A823D82B192BABA400B55DE2 /* Foundation.framework in Frameworks */,
-				961AB222F15DDD361CF7CC27 /* libPods-SimplyETests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -967,7 +957,7 @@
 			isa = PBXGroup;
 			children = (
 				A823D80D192BABA400B55DE2 /* SimplyE.app */,
-				A823D828192BABA400B55DE2 /* SimplyETests.xctest */,
+				2D2B47721D08F807007F7764 /* SimplyETests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1019,6 +1009,7 @@
 				1183F349194F74EF00DC322F /* Catalog */,
 				11C5DCEF1976D1BA005A9945 /* Holds */,
 				08136F781BC2AAD8002A4486 /* Library Card */,
+				2D382BD61D08BA99002C423D /* Log.swift */,
 				110AF8881961D652004887C3 /* My Books */,
 				11172762197F31280043EFBF /* NYPLAccount.h */,
 				11172763197F31280043EFBF /* NYPLAccount.m */,
@@ -1074,7 +1065,10 @@
 				119504051994061E009FB788 /* Reader */,
 				84B7A3411B84E8FE00584FB2 /* Resources */,
 				11C5DCEE1976D19E005A9945 /* Settings */,
+				2D382BCF1D08B1F5002C423D /* SimplyE-Bridging-Header.h */,
 				A823D817192BABA400B55DE2 /* Supporting Files */,
+				2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */,
+				2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */,
 			);
 			path = Simplified;
 			sourceTree = "<group>";
@@ -1109,11 +1103,12 @@
 				11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */,
 				11C5DD171977335E005A9945 /* NYPLKeychainTests.m */,
 				11616E12196B2FB8003D60D9 /* NYPLMyBooksRegistryTests.m */,
-				A4E255141B0E704100193FE4 /* NYPLQueueTests.m */,
 				111559EE19B8FA8E0003BE94 /* NYPLXMLTests.m */,
 				1183F34D194F775400DC322F /* OPDS */,
+				2D2B47621D08F1ED007F7764 /* SimplyETests-Bridging-Header.h */,
 				A823D830192BABA400B55DE2 /* Supporting Files */,
 				11A14DF51A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m */,
+				2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */,
 			);
 			path = SimplifiedTests;
 			sourceTree = "<group>";
@@ -1121,12 +1116,15 @@
 		A823D830192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A823D831192BABA400B55DE2 /* SimplifiedTests-Info.plist */,
+				2D2B47761D08F808007F7764 /* Info.plist */,
+				A823D832192BABA400B55DE2 /* InfoPlist.strings */,
 				111559F019B8FAA10003BE94 /* invalid.xml */,
 				11F54C1D194109120086FCAF /* main.xml */,
 				11F54C2419410BE40086FCAF /* single_entry.xml */,
+				2D2B478A1D08FC78007F7764 /* UpdateCheckNeedsUpdate.json */,
+				2D2B47891D08FC78007F7764 /* UpdateCheckUnknown.json */,
+				2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */,
 				111559F119B8FAA10003BE94 /* valid.xml */,
-				A823D832192BABA400B55DE2 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1159,6 +1157,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2D2B47711D08F807007F7764 /* SimplyETests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2D2B47791D08F808007F7764 /* Build configuration list for PBXNativeTarget "SimplyETests" */;
+			buildPhases = (
+				6A7EBB20A2BB10AD7F6FF9F1 /* 📦 Check Pods Manifest.lock */,
+				2D2B476E1D08F807007F7764 /* Sources */,
+				2D2B476F1D08F807007F7764 /* Frameworks */,
+				2D2B47701D08F807007F7764 /* Resources */,
+				B487400EDB77097CB06492D7 /* 📦 Embed Pods Frameworks */,
+				EF59547DD7650F380BEFECAF /* 📦 Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2D2B47781D08F808007F7764 /* PBXTargetDependency */,
+			);
+			name = SimplyETests;
+			productName = SimplyETests;
+			productReference = 2D2B47721D08F807007F7764 /* SimplyETests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		A823D80C192BABA400B55DE2 /* SimplyE */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A823D839192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "SimplyE" */;
@@ -1180,27 +1199,6 @@
 			productReference = A823D80D192BABA400B55DE2 /* SimplyE.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A823D827192BABA400B55DE2 /* SimplyETests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A823D83C192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "SimplyETests" */;
-			buildPhases = (
-				6E9034376644D0BF67321701 /* 📦 Check Pods Manifest.lock */,
-				A823D824192BABA400B55DE2 /* Sources */,
-				A823D825192BABA400B55DE2 /* Frameworks */,
-				A823D826192BABA400B55DE2 /* Resources */,
-				9E5A60709398953BAD46F6DD /* 📦 Embed Pods Frameworks */,
-				4A321FF1D2799A3D49F0F4DA /* 📦 Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				A823D82E192BABA400B55DE2 /* PBXTargetDependency */,
-			);
-			name = SimplyETests;
-			productName = SimplifiedTests;
-			productReference = A823D828192BABA400B55DE2 /* SimplyETests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1208,14 +1206,16 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = NYPL;
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "NYPL Labs";
 				TargetAttributes = {
+					2D2B47711D08F807007F7764 = {
+						CreatedOnToolsVersion = 7.3.1;
+						TestTargetID = A823D80C192BABA400B55DE2;
+					};
 					A823D80C192BABA400B55DE2 = {
 						DevelopmentTeam = 7262U6ST2R;
-					};
-					A823D827192BABA400B55DE2 = {
-						TestTargetID = A823D80C192BABA400B55DE2;
 					};
 				};
 			};
@@ -1251,7 +1251,7 @@
 			projectRoot = "";
 			targets = (
 				A823D80C192BABA400B55DE2 /* SimplyE */,
-				A823D827192BABA400B55DE2 /* SimplyETests */,
+				2D2B47711D08F807007F7764 /* SimplyETests */,
 			);
 		};
 /* End PBXProject section */
@@ -1288,6 +1288,16 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
+		2D2B47701D08F807007F7764 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2D2B478E1D08FDF5007F7764 /* UpdateCheckNeedsUpdate.json in Resources */,
+				2D2B478F1D08FDF5007F7764 /* UpdateCheckUnknown.json in Resources */,
+				2D2B47841D08F8E2007F7764 /* UpdateCheckUpToDate.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A823D80B192BABA400B55DE2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1320,18 +1330,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A823D826192BABA400B55DE2 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				111559F319B8FAA10003BE94 /* valid.xml in Resources */,
-				A823D834192BABA400B55DE2 /* InfoPlist.strings in Resources */,
-				111559F219B8FAA10003BE94 /* invalid.xml in Resources */,
-				11F54C1F194109550086FCAF /* main.xml in Resources */,
-				11F54C2519410BE40086FCAF /* single_entry.xml in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -1350,22 +1348,7 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		4A321FF1D2799A3D49F0F4DA /* 📦 Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "📦 Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6E9034376644D0BF67321701 /* 📦 Check Pods Manifest.lock */ = {
+		6A7EBB20A2BB10AD7F6FF9F1 /* 📦 Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1410,7 +1393,7 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9E5A60709398953BAD46F6DD /* 📦 Embed Pods Frameworks */ = {
+		B487400EDB77097CB06492D7 /* 📦 Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1423,6 +1406,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EF59547DD7650F380BEFECAF /* 📦 Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FE8719C55955B22F68EDF819 /* Upload Bugsnag dSYM */ = {
@@ -1443,12 +1441,22 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2D2B476E1D08F807007F7764 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */,
+				2D2B477E1D08F82C007F7764 /* Log.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A823D809192BABA400B55DE2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				11172764197F31280043EFBF /* NYPLAccount.m in Sources */,
 				114C8CD719BE2FD300719B72 /* NYPLAttributedString.m in Sources */,
+				2D382BD71D08BA99002C423D /* Log.swift in Sources */,
 				11616E11196B0531003D60D9 /* NYPLBookRegistry.m in Sources */,
 				081387571BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m in Sources */,
 				11369D48199527C200BB11F8 /* NYPLJSON.m in Sources */,
@@ -1466,6 +1474,7 @@
 				11BFDB36199C08E900378691 /* NYPLReaderTOCElement.m in Sources */,
 				08C469CE1BDAB484009D8AFD /* NYPLRegistrationStoryboard.m in Sources */,
 				081387361BC42727003DEA6A /* NYPLCardApplicationModel.m in Sources */,
+				2DC8D9DC1D09F797007DD125 /* UpdateCheck.swift in Sources */,
 				11BFDB33199C01F700378691 /* NYPLReaderTOCViewController.m in Sources */,
 				110AF8961961D94D004887C3 /* NYPLBookDetailView.m in Sources */,
 				0813875A1BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m in Sources */,
@@ -1519,6 +1528,7 @@
 				0813875D1BC579C4003DEA6A /* NYPLEmailCardController.m in Sources */,
 				11A16E69195B2BD3004147F4 /* NYPLCatalogUngroupedFeedViewController.m in Sources */,
 				111E757A1A80165C00718AD7 /* NYPLSettingsSplitViewController.m in Sources */,
+				2DC8D9DE1D09F9B4007DD125 /* UpdateCheckShim.swift in Sources */,
 				112C694D197301FE00C48F95 /* NYPLBookRegistryRecord.m in Sources */,
 				08373B431BCFE58D00AC1AFA /* NYPLIntroCardController.m in Sources */,
 				116A5EB3194767DC00491A21 /* NYPLMyBooksViewController.m in Sources */,
@@ -1565,35 +1575,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A823D824192BABA400B55DE2 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				119BEBB21990217B00121439 /* NSDate+NYPLDateAdditions.m in Sources */,
-				119BEBB31990217B00121439 /* NSString+NYPLStringAdditions.m in Sources */,
-				111559EF19B8FA8E0003BE94 /* NYPLXMLTests.m in Sources */,
-				119BEBB51990217B00121439 /* UIFont+NYPLSystemFontOverride.m in Sources */,
-				1142E4E819EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m in Sources */,
-				119BEBB61990217B00121439 /* UIView+NYPLViewAdditions.m in Sources */,
-				119BEBAA1990207E00121439 /* NYPLOPDSFeedTests.m in Sources */,
-				A4E255151B0E704100193FE4 /* NYPLQueueTests.m in Sources */,
-				119BEBAB1990207E00121439 /* NYPLOPDSEntryTests.m in Sources */,
-				119BEBAC1990207E00121439 /* NYPLOPDSLinkTests.m in Sources */,
-				119BEBAD1990207E00121439 /* NYPLMyBooksRegistryTests.m in Sources */,
-				119BEBAF1990207E00121439 /* NYPLDateAdditionsTests.m in Sources */,
-				119BEBB01990207E00121439 /* NYPLKeychainTests.m in Sources */,
-				11A14DF61A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m in Sources */,
-				1157E92E19CA0009003BFDBF /* NSString+NYPLStringAdditionsTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		A823D82E192BABA400B55DE2 /* PBXTargetDependency */ = {
+		2D2B47781D08F808007F7764 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A823D80C192BABA400B55DE2 /* SimplyE */;
-			targetProxy = A823D82D192BABA400B55DE2 /* PBXContainerItemProxy */;
+			targetProxy = 2D2B47771D08F808007F7764 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1617,6 +1605,57 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		2D2B477A1D08F808007F7764 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 579E9BC126424F2B79C0FE7E /* Pods-SimplyETests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = SimplyETests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.SimplyETests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimplyE.app/SimplyE";
+			};
+			name = Debug;
+		};
+		2D2B477B1D08F808007F7764 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 56A7B7786F9B146602623617 /* Pods-SimplyETests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = SimplyETests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.SimplyETests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimplyE.app/SimplyE";
+			};
+			name = Release;
+		};
 		A823D837192BABA400B55DE2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B54F998D1BAC976C0033F303 /* Simplified.debug.xcconfig */;
@@ -1634,6 +1673,8 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1654,6 +1695,7 @@
 					"-all_load",
 					"-ObjC",
 				);
+				PRODUCT_NAME = SimplyE;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1676,6 +1718,8 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				DEFINES_MODULE = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1689,6 +1733,7 @@
 					"-all_load",
 					"-ObjC",
 				);
+				PRODUCT_NAME = SimplyE;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1701,12 +1746,14 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 					"$(inherited)",
@@ -1718,6 +1765,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -1738,12 +1787,14 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: The New York Library Astor, Lenox, and Tilden Foundations (7262U6ST2R)";
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
 					"$(inherited)",
@@ -1755,6 +1806,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -1769,61 +1821,18 @@
 			};
 			name = Release;
 		};
-		A823D83D192BABA400B55DE2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 579E9BC126424F2B79C0FE7E /* Pods-SimplyETests.debug.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Simplified.app/Simplified";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "SimplifiedTests/SimplifiedTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WARNING_CFLAGS = (
-					"-Werror",
-					"-Wall",
-					"-Wextra",
-				);
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		A823D83E192BABA400B55DE2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 56A7B7786F9B146602623617 /* Pods-SimplyETests.release.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Simplified.app/Simplified";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
-				INFOPLIST_FILE = "SimplifiedTests/SimplifiedTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WARNING_CFLAGS = (
-					"-Werror",
-					"-Wall",
-					"-Wextra",
-				);
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2D2B47791D08F808007F7764 /* Build configuration list for PBXNativeTarget "SimplyETests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2D2B477A1D08F808007F7764 /* Debug */,
+				2D2B477B1D08F808007F7764 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A823D808192BABA400B55DE2 /* Build configuration list for PBXProject "Simplified" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1838,15 +1847,6 @@
 			buildConfigurations = (
 				A823D83A192BABA400B55DE2 /* Debug */,
 				A823D83B192BABA400B55DE2 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A823D83C192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "SimplyETests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A823D83D192BABA400B55DE2 /* Debug */,
-				A823D83E192BABA400B55DE2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -1,0 +1,6 @@
+{
+  "Android": {
+    "minimum-version": "1.0.0",
+    "update-url": "http://www.example.com/android"
+  }
+}
