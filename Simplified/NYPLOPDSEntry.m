@@ -81,7 +81,17 @@
         NYPLLOG(@"warning", kNYPLInvalidEntryException, @{@"identifier":self.identifier}, @"Ignoring malformed 'link' element.");
         continue;
       }
-      [links addObject:link];
+      // FIXME: Total hack to avoid downloading PDF links.
+      if([link.rel isEqualToString:NYPLOPDSRelationAcquisition]) {
+        if([linkXML childrenWithName:@"indirectAcquisition"].count == 1
+           && [((NYPLXML *)[linkXML childrenWithName:@"indirectAcquisition"][0]).attributes[@"type"]
+               isEqualToString:@"application/epub+zip"])
+        {
+          [links addObject:link];
+        }
+      } else {
+        [links addObject:link];
+      }
     }
     
     self.links = links;
