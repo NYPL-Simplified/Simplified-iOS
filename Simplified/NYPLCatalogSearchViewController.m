@@ -144,19 +144,13 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [self.collectionView reloadData];
 }
 
-- (void)catalogUngroupedFeed:(__attribute__((unused))
-                              NYPLCatalogUngroupedFeed *)catalogUngroupedFeed
-                 didAddBooks:(__attribute__((unused)) NSArray *)books
-                       range:(NSRange const)range
+- (void)catalogUngroupedFeed:(__unused NYPLCatalogUngroupedFeed *)catalogUngroupedFeed
+                 didAddBooks:(__unused NSArray *)books
+                       range:(__unused NSRange const)range
 {
-  NSMutableArray *const indexPaths = [NSMutableArray arrayWithCapacity:range.length];
-  
-  for(NSUInteger i = 0; i < range.length; ++i) {
-    NSUInteger indexes[2] = {0, i + range.location};
-    [indexPaths addObject:[NSIndexPath indexPathWithIndexes:indexes length:2]];
-  }
-  
-  [self.collectionView insertItemsAtIndexPaths:indexPaths];
+  // FIXME: This is not ideal but we were having double-free issues with
+  // `insertItemsAtIndexPaths:`. See issue #144 for more information.
+  [self.collectionView reloadData];
 }
 
 #pragma mark UISearchBarDelegate
