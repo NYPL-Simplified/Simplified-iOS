@@ -231,7 +231,6 @@
 		0813870D1BC2E8A9003DEA6A /* NYPLDateCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLDateCardController.m; sourceTree = "<group>"; };
 		0813870F1BC2F07B003DEA6A /* NYPLLocationCardController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLLocationCardController.h; sourceTree = "<group>"; };
 		081387101BC2F07B003DEA6A /* NYPLLocationCardController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLLocationCardController.m; sourceTree = "<group>"; };
-		081387151BC30A82003DEA6A /* CJAMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJAMacros.h; sourceTree = "<group>"; };
 		0813871B1BC30E96003DEA6A /* nystate.geojson */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = nystate.geojson; sourceTree = "<group>"; };
 		081387211BC3139A003DEA6A /* libGeoJSONSerialization.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGeoJSONSerialization.a; path = "Pods/../build/Debug-iphoneos/libGeoJSONSerialization.a"; sourceTree = "<group>"; };
 		081387341BC42727003DEA6A /* NYPLCardApplicationModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCardApplicationModel.h; sourceTree = "<group>"; };
@@ -684,7 +683,6 @@
 				081387561BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m */,
 				081387581BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.h */,
 				081387591BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m */,
-				081387151BC30A82003DEA6A /* CJAMacros.h */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
