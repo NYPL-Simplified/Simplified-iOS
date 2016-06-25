@@ -74,7 +74,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   // Create a book from the entry
   NYPLBook *book = [NYPLBook bookWithEntry:entry];
   if(!book) {
-    NYPLLOG(@"info", kNYPLInvalidEntryException, nil, @"Failed to create book from entry.");
+    NYPLLOG(@"Failed to create book from entry.");
     return NO;
   }
   

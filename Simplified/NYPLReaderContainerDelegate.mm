@@ -12,10 +12,9 @@
 
 - (BOOL)container:(__attribute__((unused)) RDContainer *)container
    handleSdkError:(NSString * const)message
-isSevereEpubError:(const BOOL)isSevereEpubError
+isSevereEpubError:(__unused const BOOL)isSevereEpubError
 {
-  NSString *level = isSevereEpubError ? @"error" : @"warning";
-  NYPLLOG_F(level, @"ReaderReadiumSdkException", nil, @"(Readium) %@ %@", isSevereEpubError ? @"(SEVERE)" : @"", message);
+  NYPLLOG(message);
 
   // Ignore the error and continue.
   return YES;

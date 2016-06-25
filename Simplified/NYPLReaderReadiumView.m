@@ -117,7 +117,7 @@ static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
   if(!self) return nil;
   
   if(!book) {
-    NYPLLOG(@"error", kNYPLInvalidArgumentException, nil, @"Failed to initialize due to nil book.");
+    NYPLLOG(@"Failed to initialize due to nil book.");
     return nil;
   }
   
@@ -386,7 +386,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   if([request.URL.scheme isEqualToString:@"simplified"]) {
     NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
     NSString *const function = components[0];
-    NYPLLOG(@"warning", nil, @{@"function":function}, @"Ignoring unknown simplified function.");
+    NYPLLOG(@"Ignoring unknown simplified function.");
     decisionHandler(WKNavigationActionPolicyCancel);
     return;
   }
@@ -407,7 +407,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
       NSLog(@"");
       // Do nothing.
     } else {
-      NYPLLOG(@"warning", nil, @{@"function":function}, @"Ignoring unknown readium function.");
+      NYPLLOG(@"Ignoring unknown readium function.");
     }
     decisionHandler(WKNavigationActionPolicyCancel);
     return;
@@ -474,7 +474,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NSData *data = NYPLJSONDataFromObject(dictionary);
   
   if(!data) {
-    NYPLLOG(@"error", kNYPLInvalidArgumentException, dictionary, @"Failed to construct 'openBook' call.");
+    NYPLLOG(@"Failed to construct 'openBook' call.");
     return;
   }
   
@@ -545,7 +545,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
      sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
      withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
        if(!result) {
-         NYPLLOG(@"warning", nil, nil, @"Readium failed to generate a CFI. This is a bug in Readium.");
+         NYPLLOG(@"Readium failed to generate a CFI. This is a bug in Readium.");
          return;
        }
        NSString *const locationJSON = result;
@@ -652,7 +652,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   NSArray *const openPages = dictionary[@"openPages"];
   if(openPages.count != 1) {
-    NYPLLOG(@"warning", nil, nil, @"Did not receive expected information on open pages.");
+    NYPLLOG(@"Did not receive expected information on open pages.");
     return;
   }
   
@@ -660,13 +660,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   NSString *const idref = openPage[@"idref"];
   if(!idref) {
-    NYPLLOG(@"warning", nil, nil, @"Did not receive idref.");
+    NYPLLOG(@"Did not receive idref.");
     return;
   }
   
   NSUInteger const spineItemCount = [dictionary[@"spineItemCount"] unsignedIntegerValue];
   if(!spineItemCount) {
-    NYPLLOG(@"warning", nil, nil, @"Did not receive spine item count.");
+    NYPLLOG(@"Did not receive spine item count.");
     return;
   }
   

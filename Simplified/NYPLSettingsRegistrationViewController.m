@@ -72,7 +72,7 @@ shouldStartLoadWithRequest:(NSURLRequest *const)request
  navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 {
   if([request.URL.scheme isEqualToString:@"simplified"]) {
-    NYPLLOG(@"warning", nil, nil, @"Ignoring unsupported action.");
+    NYPLLOG(@"Ignoring unsupported action.");
     return NO;
   }
   

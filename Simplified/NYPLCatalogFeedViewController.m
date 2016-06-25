@@ -20,12 +20,12 @@
             if ([response.MIMEType isEqualToString:@"application/atom+xml"]) {
               NYPLXML *const XML = [NYPLXML XMLWithData:data];
               if(!XML) {
-                NYPLLOG(@"warning", kNYPLInvalidFeedException, nil, @"Cannot initialize due to invalid XML.");
+                NYPLLOG(@"Cannot initialize due to invalid XML.");
                 return nil;
               }
               NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:XML];
               if(!feed) {
-                NYPLLOG(@"warning", kNYPLInvalidFeedException, nil, @"Cannot initialize due to XML not representing an OPDS feed.");
+                NYPLLOG(@"Cannot initialize due to XML not representing an OPDS feed.");
                 return nil;
               }
               switch(feed.type) {
@@ -39,15 +39,15 @@
                                                  initWithOPDSFeed:feed]
                           remoteViewController:remoteViewController];
                 case NYPLOPDSFeedTypeInvalid:
-                  NYPLLOG(@"warning", kNYPLInvalidFeedException, nil, @"Cannot initialize due to invalid feed.");
+                  NYPLLOG(@"Cannot initialize due to invalid feed.");
                   return nil;
                 case NYPLOPDSFeedTypeNavigation:
-                  NYPLLOG(@"warning", kNYPLInvalidFeedException, nil, @"Cannot initialize due to lack of support for navigation feeds.");
+                  NYPLLOG(@"Cannot initialize due to lack of support for navigation feeds.");
                   return nil;
               }
             }
             else {
-              NYPLLOG(@"warning", kNYPLInvalidFeedException, nil, @"Did not recieve XML atom feed, cannot initialize");
+              NYPLLOG(@"Did not recieve XML atom feed, cannot initialize");
               return nil;
             }
           }];

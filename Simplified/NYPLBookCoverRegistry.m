@@ -25,7 +25,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   dispatch_once(&predicate, ^{
     sharedRegistry = [[self alloc] init];
     if(!sharedRegistry) {
-      NYPLLOG(@"error", kNYPLInitializationException, nil, @"Failed to create shared registry.");
+      NYPLLOG(@"Failed to create shared registry.");
     }
   });
   
@@ -80,7 +80,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
          withIntermediateDirectories:YES
          attributes:nil
          error:&error]) {
-      NYPLLOG(@"error", nil, @{@"error":[error localizedDescription]}, @"Failed to create directory.");
+      NYPLLOG(@"Failed to create directory.");
       return nil;
     }
   }
