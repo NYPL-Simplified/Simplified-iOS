@@ -14,7 +14,7 @@ static NSString *const PINKey = @"NYPLAccountPIN";
   if (sharedAccount == nil) {
     sharedAccount = [[self alloc] init];
     if(!sharedAccount) {
-      NYPLLOG(@"error", kNYPLInitializationException, nil, @"Failed to create shared account.");
+      NYPLLOG(@"Failed to create shared account.");
     }
   }
   

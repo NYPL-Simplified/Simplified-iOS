@@ -40,23 +40,18 @@ static NSString *const heapIDDevelopment = @"1848989408";
 #endif
   }
   
-  if ([NYPLConfiguration bugsnagEnabled]) {
+  if([NYPLConfiguration bugsnagEnabled]) {
     [Bugsnag startBugsnagWithApiKey:[NYPLConfiguration bugsnagID]];
-    s_logCallbackBlock = ^(NSString *loglevel, NSString *exceptionName, NSDictionary *data, NSString *message) {
-      if (!exceptionName)
-        exceptionName = @"NYPLGenericException";
-      if (!loglevel)
-        loglevel = @"warning";
-      [Bugsnag notify:[NSException exceptionWithName:exceptionName reason:message userInfo:nil] withData:data atSeverity:loglevel];
-    };
-#if defined(FEATURE_DRM_CONNECTOR)
-    [[NYPLADEPT sharedInstance] setLogCallback:^(NSString *logLevel,NSString *exceptionName, NSDictionary *data, NSString *message) {
-      if (!exceptionName)
-        exceptionName = @"NYPLADEPTException";
-      [Bugsnag notify:[NSException exceptionWithName:exceptionName reason:message userInfo:nil] withData:data atSeverity:logLevel];
-    }];
-#endif
   }
+  
+#if defined(FEATURE_DRM_CONNECTOR)
+  [[NYPLADEPT sharedInstance] setLogCallback:^(__unused NSString *logLevel,
+                                               NSString *const exceptionName,
+                                               __unused NSDictionary *data,
+                                               NSString *const message) {
+    NSLog(@"ADEPT: %@: %@", exceptionName, message);
+  }];
+#endif
 }
 
 + (BOOL) heapEnabled

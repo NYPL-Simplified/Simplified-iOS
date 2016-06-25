@@ -61,7 +61,7 @@
   
   for(NYPLOPDSEntry *const entry in feed.entries) {
     if(!entry.groupAttributes) {
-      NYPLLOG(@"warning", kNYPLInvalidEntryException, @{@"identifier":entry.identifier}, @"Ignoring entry with missing group.");
+      NYPLLOG(@"Ignoring entry with missing group.");
       continue;
     }
     
@@ -69,7 +69,7 @@
     
     NYPLBook *book = [NYPLBook bookWithEntry:entry];
     if(!book) {
-      NYPLLOG(@"info", kNYPLInvalidEntryException, @{@"identifier":entry.identifier}, @"Failed to create book from entry.");
+      NYPLLOG(@"Failed to create book from entry.");
       continue;
     }
     
