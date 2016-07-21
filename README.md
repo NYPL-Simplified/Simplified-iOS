@@ -1,21 +1,30 @@
-# Building Without DRM
-
-1. `git clone https://github.com/NYPL/Simplified-iOS.git`
-2. `cd Simplified-iOS`
-3. `git submodule update --init --recursive`
-4. [Install Cocoapods](https://guides.cocoapods.org/using/getting-started.html#getting-started) if you haven't already.
-5. `pod install`
-6. `open Simplified.xcworkspace` and build as normal.
-
 # Building With Adobe DRM
 
-1. Complete the steps in "Building without DRM".
-1. Symlink the "DRM_Connector_Prerelease" directory to "Simplified-iOS/adobe-rmsdk".
-2. In "RMSDK_User_Manual(obj).pdf", follow the instructions to build OpenSSL (section 12.1) and cURL (section 12.3).
-3. `sh adobe-rmsdk-build.sh`
-4. Add the configuration file "Simplified+RMSDK.xcconfig" to the target "Simplified".
-5. Add "libADEPT.a" and other related libraries to the "Link Binary With Libraries" section of the target "Simplified".
-6. Build.
+01. `git clone https://github.com/NYPL/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
+02. `cd Simplified-iOS`
+03. `git submodule update --init --recursive`
+04. Install [Cocoapods](https://cocoapods.org) if you haven't already.
+05. `pod install`
+06. Symlink the "DRM_Connector_Prerelease" directory to "adobe-rmsdk" within the "Simplified-iOS" directory. (You will need to have obtained the Adobe DRM Connector prerelease from Adobe.)
+07. Follow the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf" to build OpenSSL (section 12.1) and cURL (section 12.3).
+08. `sh adobe-rmsdk-build.sh`
+09. `open Simplified.xcworkspace`
+10. Build.
+
+# Building Without DRM
+
+**Note:** This configuration is not currently supported. In the interim, you _should_ be able to get it to build via the following steps:
+
+01. `git clone https://github.com/NYPL/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
+02. `cd Simplified-iOS`
+03. `git submodule update --init --recursive`
+04. Install [Cocoapods](https://cocoapods.org) if you haven't already.
+05. `pod install`
+06. `rm -rf adept-ios adobe-content-filter`
+07. `open Simplified.xcworkspace`
+08. Remove "Simplified+RMSDK.xcconfig" from the project.
+09. Delete "libAdept.a" and "libAdobe Content Filter.a" from "Link Binary with Libraries" for the "SimplyE" target.
+10. Build.
 
 # Contributing
 
@@ -44,7 +53,6 @@ the appropriate labels. More in-depth discussion occurs via Slack: Email
 
 # License
 
-```
 Copyright © 2015 The New York Public Library, Astor, Lenox, and Tilden Foundations
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,4 +66,3 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-```
