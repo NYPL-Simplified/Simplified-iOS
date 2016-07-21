@@ -92,6 +92,13 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
                                          withExtension:@"html"]
                         title:NSLocalizedString(@"PrivacyPolicy", nil)];
       break;
+    case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses:
+      viewController = [[BundledHTMLViewController alloc]
+                        initWithFileURL:[[NSBundle mainBundle]
+                                         URLForResource:@"software-licenses"
+                                         withExtension:@"html"]
+                        title:NSLocalizedString(@"SoftwareLicenses", nil)];
+      break;
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack:
       [[HSHelpStack instance] showHelp:self];
       break;

@@ -24,10 +24,11 @@ final class BundledHTMLViewController: UIViewController {
   }
   
   override func viewDidLoad() {
-    self.view.backgroundColor = NYPLConfiguration.backgroundColor()
     self.webView.frame = self.view.bounds
     self.webView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+    self.webView.backgroundColor = UIColor.whiteColor()
     self.webView.delegate = self.webViewDelegate
+    self.webView.dataDetectorTypes = .None;
     self.view.addSubview(self.webView)
   }
   

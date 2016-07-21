@@ -31,6 +31,8 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
           return NYPLSettingsPrimaryTableViewControllerItemEULA;
         case 3:
           return NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy;
+        case 4:
+          return NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses;
         default:
           @throw NSInvalidArgumentException;
       }
@@ -64,6 +66,8 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
       return [NSIndexPath indexPathForRow:0 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
       return [NSIndexPath indexPathForRow:0 inSection:3];
+    case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses:
+      return [NSIndexPath indexPathForRow:4 inSection:2];
   }
 }
 
@@ -193,6 +197,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       return cell;
     }
+    case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      cell.textLabel.text = NSLocalizedString(@"SoftwareLicenses", nil);
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      }
+      return cell;
+    }
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
@@ -234,7 +249,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(section) {
     case 2:
-      return 4;
+      return 5;
     case 0: case 1: case 3:
       return 1;
     default:
