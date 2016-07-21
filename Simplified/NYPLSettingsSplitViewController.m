@@ -6,10 +6,10 @@
 #import "NYPLSettingsPrimaryNavigationController.h"
 #import "NYPLSettingsPrimaryTableViewController.h"
 #import "NYPLSettingsEULAViewController.h"
-#import "NYPLSettingsPrivacyPolicyViewController.h"
 #import "NYPLSettings.h"
 #import "NYPLBook.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "SimplyE-Swift.h"
 
 #import "NYPLSettingsSplitViewController.h"
 
@@ -86,7 +86,11 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
       viewController = [[NYPLSettingsEULAViewController alloc] init];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
-      viewController = [[NYPLSettingsPrivacyPolicyViewController alloc] init];
+      viewController = [[BundledHTMLViewController alloc]
+                        initWithFileURL:[[NSBundle mainBundle]
+                                         URLForResource:@"privacy-policy"
+                                         withExtension:@"html"]
+                        title:NSLocalizedString(@"PrivacyPolicy", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack:
       [[HSHelpStack instance] showHelp:self];
