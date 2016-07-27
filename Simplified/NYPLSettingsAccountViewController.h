@@ -10,7 +10,8 @@
 
 // This method is here almost entirely so we can handle a bug that seems to occur
 // when the user updates, where the barcode and pin are entered but accoring to
-// ADEPT the device is not authorized. To be used, the account must hace a barcode and pin
+// ADEPT the device is not authorized. To be used, the account must have a barcode
+// and pin.
 + (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)())handler;
 
 @end

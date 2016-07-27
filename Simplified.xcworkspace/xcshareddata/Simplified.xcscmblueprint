@@ -1,24 +1,24 @@
 {
-  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "306FC097E980A949FBFF7EC996125BA9F20AEF86",
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "8423724DF8D0292657A3E4E4F2DCCBFB961ED39E",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
     "AD4E54206183D886987A2A3031947817F2F202B6" : 0,
-    "306FC097E980A949FBFF7EC996125BA9F20AEF86" : 0,
     "E375BEBE2A272874C7869C33EC6726F091440FD9" : 0,
     "CA647A59556D3849BD27CCFE9423C80ECF6C0F48" : 0,
     "FD8A948335A628DCE5C35F1A302BBE858DD773F0" : 0,
+    "8423724DF8D0292657A3E4E4F2DCCBFB961ED39E" : 0,
     "06CFE79786291A98E71F9F1158D5AAE92B0D88ED" : 0,
     "7EA574B7954BB140EB4FDBD252E584FCDFCE648C" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "036E9A00-0067-4C2A-8851-97BC92687AA1",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
     "AD4E54206183D886987A2A3031947817F2F202B6" : "Simplified-iOS\/readium-shared-js\/",
-    "306FC097E980A949FBFF7EC996125BA9F20AEF86" : "Simplified-iOS\/",
     "E375BEBE2A272874C7869C33EC6726F091440FD9" : "Simplified-iOS\/tenprintcover-ios\/",
     "CA647A59556D3849BD27CCFE9423C80ECF6C0F48" : "Simplified-iOS\/adobe-content-filter\/",
     "FD8A948335A628DCE5C35F1A302BBE858DD773F0" : "Simplified-iOS\/preloaded-content\/",
+    "8423724DF8D0292657A3E4E4F2DCCBFB961ED39E" : "Simplified-iOS\/",
     "06CFE79786291A98E71F9F1158D5AAE92B0D88ED" : "Simplified-iOS\/adept-ios\/",
     "7EA574B7954BB140EB4FDBD252E584FCDFCE648C" : "Simplified-iOS\/readium-sdk\/"
   },
@@ -32,14 +32,14 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "06CFE79786291A98E71F9F1158D5AAE92B0D88ED"
     },
     {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/NYPL\/Simplified-iOS.git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "306FC097E980A949FBFF7EC996125BA9F20AEF86"
-    },
-    {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:NYPL\/readium-sdk.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7EA574B7954BB140EB4FDBD252E584FCDFCE648C"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/NYPL\/Simplified-iOS.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "8423724DF8D0292657A3E4E4F2DCCBFB961ED39E"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:readium\/readium-shared-js.git",
