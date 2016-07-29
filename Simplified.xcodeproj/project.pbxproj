@@ -134,6 +134,7 @@
 		2D4379FE1C46FDB600AE1AD5 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = 085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */; };
 		2D6292501CF901F6002A67E9 /* NYPLSettingsAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D62924F1CF901F6002A67E9 /* NYPLSettingsAboutViewController.m */; };
 		2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */; };
+		2DB436381D4C049200F8E69D /* NYPLReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DB436371D4C049200F8E69D /* NYPLReachability.m */; };
 		2DC8D9DC1D09F797007DD125 /* UpdateCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */; };
 		2DC8D9DE1D09F9B4007DD125 /* UpdateCheckShim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */; };
 		2DCF86051CF904E0000BCE77 /* about.html in Resources */ = {isa = PBXBuildFile; fileRef = 2DCF86041CF904E0000BCE77 /* about.html */; };
@@ -469,6 +470,8 @@
 		2D62924E1CF901F6002A67E9 /* NYPLSettingsAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsAboutViewController.h; sourceTree = "<group>"; };
 		2D62924F1CF901F6002A67E9 /* NYPLSettingsAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAboutViewController.m; sourceTree = "<group>"; };
 		2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
+		2DB436361D4C049200F8E69D /* NYPLReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReachability.h; sourceTree = "<group>"; };
+		2DB436371D4C049200F8E69D /* NYPLReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReachability.m; sourceTree = "<group>"; };
 		2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheck.swift; sourceTree = "<group>"; };
 		2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheckShim.swift; sourceTree = "<group>"; };
 		2DCF86041CF904E0000BCE77 /* about.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = about.html; sourceTree = "<group>"; };
@@ -1046,6 +1049,8 @@
 				119BEBB819902A8800121439 /* NYPLOpenSearchDescription.m */,
 				085D31C21BE2987E007F7672 /* NYPLProblemDocument.h */,
 				085D31C31BE2987E007F7672 /* NYPLProblemDocument.m */,
+				2DB436361D4C049200F8E69D /* NYPLReachability.h */,
+				2DB436371D4C049200F8E69D /* NYPLReachability.m */,
 				119503EE1993FB90009FB788 /* NYPLReadium.h */,
 				11B20E6C19D9F6DD00877A23 /* NYPLReloadView.h */,
 				11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */,
@@ -1506,6 +1511,7 @@
 				11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */,
 				114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLImageAdditions.m in Sources */,
 				1142E4EB19EED86A00D9B3D9 /* NYPLFacetBarView.m in Sources */,
+				2DB436381D4C049200F8E69D /* NYPLReachability.m in Sources */,
 				1195040B1994075B009FB788 /* NYPLReaderViewController.m in Sources */,
 				1183F33B194B775900DC322F /* NYPLCatalogLaneCell.m in Sources */,
 				113137E71A48DAB90082954E /* NYPLReaderReadiumView.m in Sources */,
