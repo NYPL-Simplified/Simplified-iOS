@@ -19,6 +19,8 @@ static NSString *const NYPLCirtulationBaseURLE_Feed = @"http://169.254.102.238/C
 static NSString *const heapIDProduction = @"3245728259";
 static NSString *const heapIDDevelopment = @"1848989408";
 
+static BOOL customFeedEnabled = NO;
+
 @implementation NYPLConfiguration
 
 + (void)initialize
@@ -93,7 +95,12 @@ static NSString *const heapIDDevelopment = @"1848989408";
 
 + (BOOL)customFeedEnabled
 {
-  return NO;
+  return customFeedEnabled;
+}
+
++ (void)customFeedEnabled:(BOOL)enabled
+{
+  customFeedEnabled = enabled;
 }
 
 + (NSURL *)loanURL

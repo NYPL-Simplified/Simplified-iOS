@@ -23,6 +23,8 @@
 
 + (BOOL)customFeedEnabled;
 
++ (void)customFeedEnabled:(BOOL)enabled;
+
 + (NSURL *)loanURL;
 
 + (NSURL *)registrationURL;

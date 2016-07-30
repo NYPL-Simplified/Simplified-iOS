@@ -94,6 +94,19 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   [super viewDidLoad];
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+
+  UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(revealCustomFeedUrl)];
+  tap.numberOfTapsRequired = 7;
+  
+  [[self.navigationController.navigationBar.subviews objectAtIndex:1] setUserInteractionEnabled:YES];
+  [[self.navigationController.navigationBar.subviews objectAtIndex:1] addGestureRecognizer:tap];
+}
+
+- (void)revealCustomFeedUrl
+{
+  [NYPLConfiguration customFeedEnabled:YES];
+  
+  [self.tableView reloadData];
 }
 
 #pragma mark UITableViewDelegate
@@ -226,7 +239,50 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
+  if ([NYPLSettings sharedSettings].customMainFeedURL.absoluteString != nil)
+  {
+    [NYPLConfiguration customFeedEnabled:true];
+  }
   return 3 + !![NYPLConfiguration customFeedEnabled];
+}
+
+-(BOOL)tableView:(__attribute__((unused)) UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  if (SettingsItemFromIndexPath(indexPath) == NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL) {
+    return true;
+  }
+  return false;
+}
+
+- (void)exitApp
+{
+  UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Restart", nil)
+                                                                               message:NSLocalizedString(@"You need to restart the app to change modes. Select Exit and then restart the App from the home screen.", nil)
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+  [alertViewController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Not Now", nil)
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil]];
+  [alertViewController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Exit App", nil)
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:^(__attribute__((unused)) UIAlertAction * action) {
+                                                          exit(0);
+                                                        }]];
+  [self presentViewController:alertViewController animated:YES completion:nil];
+}
+
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  
+  if (SettingsItemFromIndexPath(indexPath) == NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL && editingStyle == UITableViewCellEditingStyleDelete) {
+    
+    [NYPLConfiguration customFeedEnabled:false];
+    [NYPLSettings sharedSettings].customMainFeedURL = nil;
+    
+    [tableView reloadData];
+    
+    [self exitApp];
+    
+  }
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -258,6 +314,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
   
   return YES;
+}
+-(void)textFieldDidEndEditing:(__attribute__((unused)) UITextField *)textField
+{
+  [self exitApp];
 }
 
 @end
