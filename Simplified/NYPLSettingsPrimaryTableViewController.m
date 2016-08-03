@@ -68,7 +68,10 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
 }
 
 @interface NYPLSettingsPrimaryTableViewController () <UITextFieldDelegate>
+
 @property (nonatomic, strong) UILabel *infoLabel;
+@property (nonatomic) BOOL shouldShowEmptyCustomODPSURLField;
+
 @end
 
 @implementation NYPLSettingsPrimaryTableViewController
@@ -94,6 +97,12 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   [super viewDidLoad];
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+
+  UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(revealCustomFeedUrl)];
+  tap.numberOfTapsRequired = 7;
+  
+  [[self.navigationController.navigationBar.subviews objectAtIndex:1] setUserInteractionEnabled:YES];
+  [[self.navigationController.navigationBar.subviews objectAtIndex:1] addGestureRecognizer:tap];
 }
 
 #pragma mark UITableViewDelegate
@@ -208,13 +217,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      UITextField *field = [[UITextField alloc] initWithFrame:CGRectMake(20, 0, cell.frame.size.width-20, cell.frame.size.height)];
+      UITextField *field = [[UITextField alloc] initWithFrame:CGRectMake(15, 0, cell.frame.size.width-30, cell.frame.size.height)];
+      field.autoresizingMask = UIViewAutoresizingFlexibleWidth;
       field.delegate = self;
       field.text = [NYPLSettings sharedSettings].customMainFeedURL.absoluteString;
-      field.borderStyle = UITextBorderStyleRoundedRect;
-      field.placeholder = @"Enter a custom HTTP OPDS URL";
+      field.placeholder = @"Custom HTTP(S) OPDS URL";
       field.keyboardType = UIKeyboardTypeURL;
       field.returnKeyType = UIReturnKeyDone;
+      field.clearButtonMode = UITextFieldViewModeWhileEditing;
       field.spellCheckingType = UITextSpellCheckingTypeNo;
       field.autocorrectionType = UITextAutocorrectionTypeNo;
       field.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -226,7 +236,29 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return 3 + !![NYPLConfiguration customFeedEnabled];
+  return 3 + (self.shouldShowEmptyCustomODPSURLField || !![NYPLSettings sharedSettings].customMainFeedURL);
+}
+
+-(BOOL)tableView:(__attribute__((unused)) UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  if (SettingsItemFromIndexPath(indexPath) == NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL) {
+    return true;
+  }
+  return false;
+}
+
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  
+  if (SettingsItemFromIndexPath(indexPath) == NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL && editingStyle == UITableViewCellEditingStyleDelete) {
+    
+    [NYPLSettings sharedSettings].customMainFeedURL = nil;
+    
+    [tableView reloadData];
+    
+    [self exitApp];
+    
+  }
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -248,6 +280,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   [textField resignFirstResponder];
   
+  return YES;
+}
+-(void)textFieldDidEndEditing:(__attribute__((unused)) UITextField *)textField
+{
   NSString *const feed = [textField.text stringByTrimmingCharactersInSet:
                           [NSCharacterSet whitespaceCharacterSet]];
   
@@ -257,7 +293,33 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     [NYPLSettings sharedSettings].customMainFeedURL = nil;
   }
   
-  return YES;
+  [self exitApp];
+}
+
+#pragma mark -
+
+- (void)revealCustomFeedUrl
+{
+  // Insert a URL to force the field to show.
+  self.shouldShowEmptyCustomODPSURLField = @YES;
+  
+  [self.tableView reloadData];
+}
+
+- (void)exitApp
+{
+  UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Restart Required", nil)
+                                                                               message:NSLocalizedString(@"You need to restart the app to use a new OPDS feed. Select Exit and then restart the app from the home screen.", nil)
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+  [alertViewController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Not Now", nil)
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil]];
+  [alertViewController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Exit", nil)
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:^(__attribute__((unused)) UIAlertAction * action) {
+                                                          exit(0);
+                                                        }]];
+  [self presentViewController:alertViewController animated:YES completion:nil];
 }
 
 @end
