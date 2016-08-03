@@ -1,6 +1,8 @@
 // This class does NOT provide configuration for the following files:
 // credits.css
 
+@import UIKit;
+
 @interface NYPLConfiguration : NSObject
 
 + (id)new NS_UNAVAILABLE;

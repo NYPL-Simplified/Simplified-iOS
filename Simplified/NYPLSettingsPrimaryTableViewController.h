@@ -7,7 +7,8 @@ typedef NS_ENUM(NSInteger, NYPLSettingsPrimaryTableViewControllerItem) {
   NYPLSettingsPrimaryTableViewControllerItemEULA,
   NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy,
   NYPLSettingsPrimaryTableViewControllerItemHelpStack,
-  NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL
+  NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL,
+  NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses
 };
 
 NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
