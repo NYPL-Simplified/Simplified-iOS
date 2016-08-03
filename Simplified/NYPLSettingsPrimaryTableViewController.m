@@ -305,6 +305,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   [textField resignFirstResponder];
   
+  return YES;
+}
+-(void)textFieldDidEndEditing:(__attribute__((unused)) UITextField *)textField
+{
   NSString *const feed = [textField.text stringByTrimmingCharactersInSet:
                           [NSCharacterSet whitespaceCharacterSet]];
   
@@ -314,10 +318,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     [NYPLSettings sharedSettings].customMainFeedURL = nil;
   }
   
-  return YES;
-}
--(void)textFieldDidEndEditing:(__attribute__((unused)) UITextField *)textField
-{
   [self exitApp];
 }
 
