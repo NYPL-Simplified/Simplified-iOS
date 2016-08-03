@@ -221,12 +221,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      UITextField *field = [[UITextField alloc] initWithFrame:CGRectMake(15, 0, cell.frame.size.width-15, cell.frame.size.height)];
+      UITextField *field = [[UITextField alloc] initWithFrame:CGRectMake(15, 0, cell.frame.size.width-30, cell.frame.size.height)];
+      field.autoresizingMask = UIViewAutoresizingFlexibleWidth;
       field.delegate = self;
       field.text = [NYPLSettings sharedSettings].customMainFeedURL.absoluteString;
       field.placeholder = @"Custom HTTP(S) OPDS URL";
       field.keyboardType = UIKeyboardTypeURL;
       field.returnKeyType = UIReturnKeyDone;
+      field.clearButtonMode = UITextFieldViewModeWhileEditing;
       field.spellCheckingType = UITextSpellCheckingTypeNo;
       field.autocorrectionType = UITextAutocorrectionTypeNo;
       field.autocapitalizationType = UITextAutocapitalizationTypeNone;
