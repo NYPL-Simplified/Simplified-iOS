@@ -221,11 +221,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      UITextField *field = [[UITextField alloc] initWithFrame:CGRectMake(20, 0, cell.frame.size.width-20, cell.frame.size.height)];
+      UITextField *field = [[UITextField alloc] initWithFrame:CGRectMake(15, 0, cell.frame.size.width-15, cell.frame.size.height)];
       field.delegate = self;
       field.text = [NYPLSettings sharedSettings].customMainFeedURL.absoluteString;
-      field.borderStyle = UITextBorderStyleRoundedRect;
-      field.placeholder = @"Enter a custom HTTP OPDS URL";
+      field.placeholder = @"Custom HTTP(S) OPDS URL";
       field.keyboardType = UIKeyboardTypeURL;
       field.returnKeyType = UIReturnKeyDone;
       field.spellCheckingType = UITextSpellCheckingTypeNo;
