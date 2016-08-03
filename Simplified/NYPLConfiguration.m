@@ -86,21 +86,11 @@ static BOOL customFeedEnabled = NO;
 
 + (NSURL *)mainFeedURL
 {
-    NSURL *const customURL = [NYPLSettings sharedSettings].customMainFeedURL;
+  NSURL *const customURL = [NYPLSettings sharedSettings].customMainFeedURL;
 
-    if(customURL) return customURL;
-
-    return [self circulationURL];
-}
-
-+ (BOOL)customFeedEnabled
-{
-  return customFeedEnabled;
-}
-
-+ (void)customFeedEnabled:(BOOL)enabled
-{
-  customFeedEnabled = enabled;
+  if(customURL) return customURL;
+  
+  return [self circulationURL];
 }
 
 + (NSURL *)loanURL

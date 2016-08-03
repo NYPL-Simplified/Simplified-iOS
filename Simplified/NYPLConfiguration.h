@@ -21,10 +21,6 @@
 // This can be overriden by setting |customMainFeedURL| in NYPLSettings.
 + (NSURL *)mainFeedURL;
 
-+ (BOOL)customFeedEnabled;
-
-+ (void)customFeedEnabled:(BOOL)enabled;
-
 + (NSURL *)loanURL;
 
 + (NSURL *)registrationURL;

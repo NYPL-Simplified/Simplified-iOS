@@ -68,7 +68,10 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
 }
 
 @interface NYPLSettingsPrimaryTableViewController () <UITextFieldDelegate>
+
 @property (nonatomic, strong) UILabel *infoLabel;
+@property (nonatomic) BOOL shouldShowEmptyCustomODPSURLField;
+
 @end
 
 @implementation NYPLSettingsPrimaryTableViewController
@@ -104,7 +107,8 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
 
 - (void)revealCustomFeedUrl
 {
-  [NYPLConfiguration customFeedEnabled:YES];
+  // Insert a URL to force the field to show.
+  self.shouldShowEmptyCustomODPSURLField = YES;
   
   [self.tableView reloadData];
 }
@@ -240,11 +244,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  if ([NYPLSettings sharedSettings].customMainFeedURL.absoluteString != nil)
-  {
-    [NYPLConfiguration customFeedEnabled:true];
-  }
-  return 3 + !![NYPLConfiguration customFeedEnabled];
+  return 3 + (self.shouldShowEmptyCustomODPSURLField || !![NYPLSettings sharedSettings].customMainFeedURL);
 }
 
 -(BOOL)tableView:(__attribute__((unused)) UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -276,7 +276,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   
   if (SettingsItemFromIndexPath(indexPath) == NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL && editingStyle == UITableViewCellEditingStyleDelete) {
     
-    [NYPLConfiguration customFeedEnabled:false];
     [NYPLSettings sharedSettings].customMainFeedURL = nil;
     
     [tableView reloadData];
