@@ -8,6 +8,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLReachability.h"
 #import "NYPLSettingsAccountViewController.h"
 #import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
@@ -572,28 +573,50 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
     [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
     [self.tableView reloadData];
   };
-
+  
 #if defined(FEATURE_DRM_CONNECTOR)
   if([NYPLADEPT sharedInstance].workflowsInProgress) {
-    [self presentViewController:[NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle" message:@"SettingsAccountViewControllerCannotLogOutMessage"]
-                       animated:YES completion:nil];
+    [self presentViewController:[NYPLAlertController
+                                 alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
+                                 message:@"SettingsAccountViewControllerCannotLogOutMessage"]
+                       animated:YES
+                     completion:nil];
     return;
   }
   
   [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   
-  [[NYPLADEPT sharedInstance]
-   deauthorizeWithUsername:[[NYPLAccount sharedAccount] barcode]
-   password:[[NYPLAccount sharedAccount] PIN]
-   completion:^(BOOL success, NSError *error) {
-     self.navigationItem.titleView = nil;
-     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-     if (success) {
-       afterDeauthorization();
+  [[NYPLReachability sharedReachability]
+   reachabilityForURL:[NYPLConfiguration circulationURL]
+   timeoutInternal:5.0
+   handler:^(BOOL reachable) {
+     if(reachable) {
+       [[NYPLADEPT sharedInstance]
+        deauthorizeWithUsername:[[NYPLAccount sharedAccount] barcode]
+        password:[[NYPLAccount sharedAccount] PIN]
+        completion:^(BOOL success, __unused NSError *error) {
+          if(!success) {
+            // Even though we failed, all we do is log the error. The reason is
+            // that we want the user to be able to log out anyway because the
+            // failure is probably due to bad credentials and we do not want the
+            // user to have to change their barcode or PIN just to log out. This
+            // is only a temporary measure and we'll switch to deauthorizing with
+            // a token that will remain invalid indefinitely in the near future.
+            NYPLLOG(@"Failed to deauthorize successfully.");
+          }
+          self.navigationItem.titleView = nil;
+          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+          afterDeauthorization();
+        }];
      } else {
-       [self presentViewController:[NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLogoutFailed" error:error]
-                          animated:YES completion:nil];
+       self.navigationItem.titleView = nil;
+       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+       [self presentViewController:[NYPLAlertController
+                                    alertWithTitle:@"SettingsAccountViewControllerLogoutFailed"
+                                    message:@"TimedOut"]
+                          animated:YES
+                        completion:nil];
      }
    }];
 #else
