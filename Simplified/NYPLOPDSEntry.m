@@ -88,6 +88,8 @@
                isEqualToString:@"application/epub+zip"])
         {
           [links addObject:link];
+        } else if ([linkXML.attributes[@"type"] isEqualToString:@"application/epub+zip"]) {
+          [links addObject:link];
         }
       } else {
         [links addObject:link];
