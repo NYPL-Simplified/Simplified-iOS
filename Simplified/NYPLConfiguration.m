@@ -18,8 +18,6 @@ static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.l
 static NSString *const heapIDProduction = @"3245728259";
 static NSString *const heapIDDevelopment = @"1848989408";
 
-static BOOL customFeedEnabled = NO;
-
 @implementation NYPLConfiguration
 
 + (void)initialize
