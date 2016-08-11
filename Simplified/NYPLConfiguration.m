@@ -14,7 +14,6 @@
 
 static NSString *const NYPLCirculationBaseURLProduction = @"https://circulation.librarysimplified.org";
 static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.librarysimplified.org/";
-static NSString *const NYPLCirtulationBaseURLE_Feed = @"http://169.254.102.238/CANNOT_GENERATE_FEED_PROBLEM";
 
 static NSString *const heapIDProduction = @"3245728259";
 static NSString *const heapIDDevelopment = @"1848989408";
@@ -79,9 +78,7 @@ static BOOL customFeedEnabled = NO;
 
 + (NSURL *)circulationURL
 {
-//    return [NSURL URLWithString:NYPLCirculationBaseURLTesting];
   return [NSURL URLWithString:NYPLCirculationBaseURLProduction];
-//  return [NSURL URLWithString:NYPLCirtulationBaseURLE_Feed];
 }
 
 + (NSURL *)mainFeedURL
