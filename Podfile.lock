@@ -1,48 +1,48 @@
 PODS:
-  - AFNetworking (2.6.0):
-    - AFNetworking/NSURLConnection (= 2.6.0)
-    - AFNetworking/NSURLSession (= 2.6.0)
-    - AFNetworking/Reachability (= 2.6.0)
-    - AFNetworking/Security (= 2.6.0)
-    - AFNetworking/Serialization (= 2.6.0)
-    - AFNetworking/UIKit (= 2.6.0)
-  - AFNetworking/NSURLConnection (2.6.0):
+  - AFNetworking (2.6.3):
+    - AFNetworking/NSURLConnection (= 2.6.3)
+    - AFNetworking/NSURLSession (= 2.6.3)
+    - AFNetworking/Reachability (= 2.6.3)
+    - AFNetworking/Security (= 2.6.3)
+    - AFNetworking/Serialization (= 2.6.3)
+    - AFNetworking/UIKit (= 2.6.3)
+  - AFNetworking/NSURLConnection (2.6.3):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.6.0):
+  - AFNetworking/NSURLSession (2.6.3):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.6.0)
-  - AFNetworking/Security (2.6.0)
-  - AFNetworking/Serialization (2.6.0)
-  - AFNetworking/UIKit (2.6.0):
+  - AFNetworking/Reachability (2.6.3)
+  - AFNetworking/Security (2.6.3)
+  - AFNetworking/Serialization (2.6.3)
+  - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - Bugsnag (4.0.9):
     - Bugsnag/no-arc (= 4.0.9)
   - Bugsnag/no-arc (4.0.9)
-  - CHRTextFieldFormatter (1.0)
-  - HelpStack (1.1.1):
+  - CHRTextFieldFormatter (1.0.1)
+  - HelpStack (1.1.2):
     - AFNetworking (~> 2.0)
-    - HelpStack/Core (= 1.1.1)
-    - HelpStack/Stacks (= 1.1.1)
-    - HelpStack/UI (= 1.1.1)
-    - HelpStack/Util (= 1.1.1)
-  - HelpStack/Core (1.1.1):
+    - HelpStack/Core (= 1.1.2)
+    - HelpStack/Stacks (= 1.1.2)
+    - HelpStack/UI (= 1.1.2)
+    - HelpStack/Util (= 1.1.2)
+  - HelpStack/Core (1.1.2):
     - AFNetworking (~> 2.0)
     - HelpStack/Util
-  - HelpStack/Stacks (1.1.1):
+  - HelpStack/Stacks (1.1.2):
     - AFNetworking (~> 2.0)
     - HelpStack/Core
     - HelpStack/Util
-  - HelpStack/UI (1.1.1):
+  - HelpStack/UI (1.1.2):
     - AFNetworking (~> 2.0)
     - HelpStack/Core
     - HelpStack/Stacks
     - HelpStack/Util
-  - HelpStack/Util (1.1.1):
+  - HelpStack/Util (1.1.2):
     - AFNetworking (~> 2.0)
   - NYPLCardCreator (0.1.0):
     - PureLayout (~> 3.0)
@@ -65,14 +65,14 @@ CHECKOUT OPTIONS:
     :commit: 1dbca215d9c7630ba9b3fb0e8362ca8cf089caaf
     :git: https://github.com/bugsnag/bugsnag-cocoa.git
   NYPLCardCreator:
-    :commit: 064e2767445984dbca90d463a10281be0f73a143
+    :commit: 94a0756b23ec978efc1c4f1189a339615b6489d0
     :git: https://github.com/NYPL-Simplified/CardCreator-iOS.git
 
 SPEC CHECKSUMS:
-  AFNetworking: 79f7eb1a0fcfa7beb409332b2ca49afe9ce53b05
+  AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   Bugsnag: a4bdbf356f318cef00d12eb1601f16d8d0c71ba4
-  CHRTextFieldFormatter: 0800d02c64340355a9f913771ec3697183ca30de
-  HelpStack: bfde78311b5d0fb3b849778df5939776359d5d8a
+  CHRTextFieldFormatter: 13b6449dbd421d97b6e179e50d817165f9feebec
+  HelpStack: a9067738597ef81835d84ac8bb75ee346e34f000
   NYPLCardCreator: 460354288acc75f31e4058ccae7353ddc7daa6b6
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
 

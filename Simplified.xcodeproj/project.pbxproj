@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		080ADCB91C04BF1000C0575F /* NYPLBarcodeTextMask.m in Sources */ = {isa = PBXBuildFile; fileRef = 080ADCB81C04BF1000C0575F /* NYPLBarcodeTextMask.m */; };
-		080ADCBF1C04C26100C0575F /* libCHRTextFieldFormatter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 080ADCBE1C04C26100C0575F /* libCHRTextFieldFormatter.a */; };
 		08136F7E1BC2AB06002A4486 /* LibraryCard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08136F7D1BC2AB06002A4486 /* LibraryCard.storyboard */; };
 		0813870E1BC2E8A9003DEA6A /* NYPLDateCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813870D1BC2E8A9003DEA6A /* NYPLDateCardController.m */; };
 		081387111BC2F07B003DEA6A /* NYPLLocationCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387101BC2F07B003DEA6A /* NYPLLocationCardController.m */; };
@@ -40,7 +39,6 @@
 		08A3522A1BDE94170040BF1D /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
 		08A3522B1BDE94170040BF1D /* libAdobe Content Filter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */; };
 		08A352731BDFF5380040BF1D /* NYPLAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A352721BDFF5380040BF1D /* NYPLAlertController.m */; };
-		08B3CF861BF0F8FA00E6485E /* libBugsnag.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B3CF851BF0F8FA00E6485E /* libBugsnag.a */; };
 		08C375461BD7CFF6005B233D /* NYPLSubmittingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08C375451BD7CFF6005B233D /* NYPLSubmittingViewController.m */; };
 		08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
 		08C469C21BDAAEB1009D8AFD /* libAdobe Content Filter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */; };
@@ -135,6 +133,9 @@
 		2D62568B1D412BCB0080A81F /* BundledHTMLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62568A1D412BCB0080A81F /* BundledHTMLViewController.swift */; };
 		2D6256911D41582A0080A81F /* software-licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 2D6256901D41582A0080A81F /* software-licenses.html */; };
 		2D6292501CF901F6002A67E9 /* NYPLSettingsAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D62924F1CF901F6002A67E9 /* NYPLSettingsAboutViewController.m */; };
+		2D6F7CA51D910C0D000B906A /* CHRTextFieldFormatter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6F7CA41D910C0D000B906A /* CHRTextFieldFormatter.framework */; };
+		2D6F7CA71D910C12000B906A /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6F7CA61D910C12000B906A /* Bugsnag.framework */; };
+		2D6F7CA91D910C3C000B906A /* HelpStack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6F7CA81D910C3C000B906A /* HelpStack.framework */; };
 		2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */; };
 		2DB436381D4C049200F8E69D /* NYPLReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DB436371D4C049200F8E69D /* NYPLReachability.m */; };
 		2DC8D9DC1D09F797007DD125 /* UpdateCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */; };
@@ -178,8 +179,6 @@
 		AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77E4AF64208439F78B3D73 /* NYPLOPDSEntry.m */; };
 		AE77EB0CB5B94AEC591E2D91 /* NYPLOPDSLink.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77ECC029F3DABDB46A64EB /* NYPLOPDSLink.m */; };
 		AE77EE7AACC975280BAB9A4C /* NYPLOPDSFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77E94D56B65997B861C0C0 /* NYPLOPDSFeed.m */; };
-		B54F99911BACB0CE0033F303 /* libAFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B54F998F1BACB0CD0033F303 /* libAFNetworking.a */; };
-		B54F99921BACB0CE0033F303 /* libHelpStack.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B54F99901BACB0CE0033F303 /* libHelpStack.a */; };
 		B594C7561BB06F40000028F5 /* HelpStackTheme.plist in Resources */ = {isa = PBXBuildFile; fileRef = B594C7551BB06F40000028F5 /* HelpStackTheme.plist */; };
 		B5ED41DA1B8F6E2E009FC164 /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */; };
 		E15AF04E809009612AA10D16 /* libPods-SimplyETests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEEC686A5C71AFACFAC2A884 /* libPods-SimplyETests.a */; };
@@ -472,6 +471,9 @@
 		2D6256901D41582A0080A81F /* software-licenses.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "software-licenses.html"; sourceTree = "<group>"; };
 		2D62924E1CF901F6002A67E9 /* NYPLSettingsAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsAboutViewController.h; sourceTree = "<group>"; };
 		2D62924F1CF901F6002A67E9 /* NYPLSettingsAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAboutViewController.m; sourceTree = "<group>"; };
+		2D6F7CA41D910C0D000B906A /* CHRTextFieldFormatter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHRTextFieldFormatter.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Simplified-bozbabgxnjsiwdfvcgffxbzqjxsq/Build/Products/Debug-iphonesimulator/CHRTextFieldFormatter/CHRTextFieldFormatter.framework"; sourceTree = "<group>"; };
+		2D6F7CA61D910C12000B906A /* Bugsnag.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bugsnag.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Simplified-bozbabgxnjsiwdfvcgffxbzqjxsq/Build/Products/Debug-iphonesimulator/Bugsnag/Bugsnag.framework"; sourceTree = "<group>"; };
+		2D6F7CA81D910C3C000B906A /* HelpStack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HelpStack.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Simplified-bozbabgxnjsiwdfvcgffxbzqjxsq/Build/Products/Debug-iphonesimulator/HelpStack/HelpStack.framework"; sourceTree = "<group>"; };
 		2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		2DB436361D4C049200F8E69D /* NYPLReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReachability.h; sourceTree = "<group>"; };
 		2DB436371D4C049200F8E69D /* NYPLReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReachability.m; sourceTree = "<group>"; };
@@ -572,8 +574,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				080ADCBF1C04C26100C0575F /* libCHRTextFieldFormatter.a in Frameworks */,
-				08B3CF861BF0F8FA00E6485E /* libBugsnag.a in Frameworks */,
+				2D6F7CA91D910C3C000B906A /* HelpStack.framework in Frameworks */,
+				2D6F7CA71D910C12000B906A /* Bugsnag.framework in Frameworks */,
+				2D6F7CA51D910C0D000B906A /* CHRTextFieldFormatter.framework in Frameworks */,
 				08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */,
 				08C469C21BDAAEB1009D8AFD /* libAdobe Content Filter.a in Frameworks */,
 				08A3522A1BDE94170040BF1D /* libADEPT.a in Frameworks */,
@@ -595,8 +598,6 @@
 				1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */,
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
-				B54F99911BACB0CE0033F303 /* libAFNetworking.a in Frameworks */,
-				B54F99921BACB0CE0033F303 /* libHelpStack.a in Frameworks */,
 				EC89BB22576495E8A359D77E /* Pods_SimplyE.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -965,6 +966,9 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2D6F7CA81D910C3C000B906A /* HelpStack.framework */,
+				2D6F7CA61D910C12000B906A /* Bugsnag.framework */,
+				2D6F7CA41D910C0D000B906A /* CHRTextFieldFormatter.framework */,
 				2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */,
 				080ADCBE1C04C26100C0575F /* libCHRTextFieldFormatter.a */,
 				08B3CF851BF0F8FA00E6485E /* libBugsnag.a */,

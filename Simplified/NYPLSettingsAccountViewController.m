@@ -1,4 +1,7 @@
 @import LocalAuthentication;
+@import NYPLCardCreator;
+
+#import "SimplyE-Swift.h"
 
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
@@ -276,18 +279,32 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self logIn];
       }
       break;
-    case CellKindRegistration:
+    case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      NYPLRegistrationStoryboard *registerCardStoryboard = (NYPLRegistrationStoryboard *) [NYPLRegistrationStoryboard storyboardWithName:@"LibraryCard" bundle:nil];
-      registerCardStoryboard.delegate = self;
-      UINavigationController *rootViewController = [registerCardStoryboard instantiateInitialViewController];
-      rootViewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-      [[NYPLRootTabBarController sharedController]
-       safelyPresentViewController:rootViewController
-       animated:YES
-       completion:nil];
+      __weak NYPLSettingsAccountViewController *weakSelf = self;
+      Configuration *const configuration = [[Configuration alloc] init];
+      configuration.completionHandler = ^(__unused NSString *const barcode, __unused NSString *const PIN) {
+        [weakSelf dismissViewControllerAnimated:YES completion:nil];
+      };
+      IntroductionViewController *const introductionViewController =
+        [[IntroductionViewController alloc] initWithConfiguration:configuration];
+      UINavigationController *const navigationController =
+        [[UINavigationController alloc] initWithRootViewController:introductionViewController];
+      navigationController.navigationBar.topItem.leftBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                         style:UIBarButtonItemStylePlain
+                                        target:self
+                                        action:@selector(didSelectCancelForSignUp)];
+      navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+      [self presentViewController:navigationController animated:YES completion:nil];
       break;
+    }
   }
+}
+
+- (void)didSelectCancelForSignUp
+{
+  [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)verifyLocationServicesWithHandler:(void(^)(void))handler
