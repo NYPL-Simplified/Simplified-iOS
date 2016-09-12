@@ -95,7 +95,7 @@ static NSString *const heapIDDevelopment = @"1848989408";
 
 + (BOOL)cardCreationEnabled
 {
-  return NO;
+  return YES;
 }
 
 + (NSURL *)registrationURL
