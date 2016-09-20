@@ -23,7 +23,6 @@ PODS:
   - Bugsnag (4.0.9):
     - Bugsnag/no-arc (= 4.0.9)
   - Bugsnag/no-arc (4.0.9)
-  - CHRTextFieldFormatter (1.0.1)
   - HelpStack (1.1.2):
     - AFNetworking (~> 2.0)
     - HelpStack/Core (= 1.1.2)
@@ -50,7 +49,6 @@ PODS:
 
 DEPENDENCIES:
   - Bugsnag (from `https://github.com/bugsnag/bugsnag-cocoa.git`)
-  - CHRTextFieldFormatter
   - HelpStack
   - NYPLCardCreator (from `https://github.com/NYPL-Simplified/CardCreator-iOS.git`)
 
@@ -71,11 +69,10 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
   Bugsnag: a4bdbf356f318cef00d12eb1601f16d8d0c71ba4
-  CHRTextFieldFormatter: 13b6449dbd421d97b6e179e50d817165f9feebec
   HelpStack: a9067738597ef81835d84ac8bb75ee346e34f000
   NYPLCardCreator: 460354288acc75f31e4058ccae7353ddc7daa6b6
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
 
-PODFILE CHECKSUM: fb04421547de24a1abe42d2107fbeb7ea4d400c0
+PODFILE CHECKSUM: 89053d667ee03450544e9c43bc65ec1c01ab1d37
 
 COCOAPODS: 1.0.1

@@ -22,12 +22,6 @@
 #import <ADEPT/ADEPT.h>
 #endif
 
-#define DO_MASK_BARCODE     1
-#if DO_MASK_BARCODE
-#import "CHRTextFieldFormatter.h"
-#import "NYPLBarcodeTextMask.h"
-#endif
-
 typedef NS_ENUM(NSInteger, CellKind) {
   CellKindBarcode,
   CellKindPIN,
@@ -96,10 +90,6 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @end
 
 @interface NYPLSettingsAccountViewController () <NSURLSessionDelegate, UITextFieldDelegate>
-
-#if DO_MASK_BARCODE
-@property (nonatomic) CHRTextFieldFormatter *barcodeFieldFormatter;
-#endif
 
 @property (nonatomic) NYPLMaskedTextField *barcodeTextField;
 @property (nonatomic, copy) void (^completionHandler)();
@@ -177,16 +167,11 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
                                             UIViewAutoresizingFlexibleHeight);
   self.barcodeTextField.font = [UIFont systemFontOfSize:17];
   self.barcodeTextField.placeholder = NSLocalizedString(@"Barcode", nil);
-  self.barcodeTextField.keyboardType = UIKeyboardTypeNumberPad;
+  self.barcodeTextField.keyboardType = UIKeyboardTypeASCIICapable;
   [self.barcodeTextField
    addTarget:self
    action:@selector(textFieldsDidChange)
    forControlEvents:UIControlEventEditingChanged];
-  
-#if DO_MASK_BARCODE
-  self.barcodeFieldFormatter = [[CHRTextFieldFormatter alloc] initWithTextField:self.barcodeTextField mask:[NYPLBarcodeTextMask new]];
-  self.barcodeTextField.premasker = (id<NYPLTextMasker>) self.barcodeFieldFormatter;
-#endif
   
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.PINTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
@@ -440,17 +425,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   return ![[NYPLAccount sharedAccount] hasBarcodeAndPIN];
 }
-
-#if DO_MASK_BARCODE
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-  if (textField == self.barcodeTextField) {
-    return [self.barcodeFieldFormatter textField:textField shouldChangeCharactersInRange:range replacementString:string];
-  } else {
-    return YES;
-  }
-}
-#endif
 
 #pragma mark NSURLSessionDelegate
 
