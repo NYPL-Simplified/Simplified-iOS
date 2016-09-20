@@ -44,27 +44,38 @@ PODS:
     - HelpStack/Util
   - HelpStack/Util (1.1.1):
     - AFNetworking (~> 2.0)
+  - NYPLCardCreator (0.1.0):
+    - PureLayout (~> 3.0)
+  - PureLayout (3.0.2)
 
 DEPENDENCIES:
   - Bugsnag (from `https://github.com/bugsnag/bugsnag-cocoa.git`)
   - CHRTextFieldFormatter
   - HelpStack
+  - NYPLCardCreator (from `https://github.com/NYPL-Simplified/CardCreator-iOS.git`)
 
 EXTERNAL SOURCES:
   Bugsnag:
     :git: https://github.com/bugsnag/bugsnag-cocoa.git
+  NYPLCardCreator:
+    :git: https://github.com/NYPL-Simplified/CardCreator-iOS.git
 
 CHECKOUT OPTIONS:
   Bugsnag:
     :commit: 1dbca215d9c7630ba9b3fb0e8362ca8cf089caaf
     :git: https://github.com/bugsnag/bugsnag-cocoa.git
+  NYPLCardCreator:
+    :commit: 064e2767445984dbca90d463a10281be0f73a143
+    :git: https://github.com/NYPL-Simplified/CardCreator-iOS.git
 
 SPEC CHECKSUMS:
   AFNetworking: 79f7eb1a0fcfa7beb409332b2ca49afe9ce53b05
   Bugsnag: a4bdbf356f318cef00d12eb1601f16d8d0c71ba4
   CHRTextFieldFormatter: 0800d02c64340355a9f913771ec3697183ca30de
   HelpStack: bfde78311b5d0fb3b849778df5939776359d5d8a
+  NYPLCardCreator: 460354288acc75f31e4058ccae7353ddc7daa6b6
+  PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
 
-PODFILE CHECKSUM: 72a1b8d32166cc3fa8ae76f30bac57b39733f13f
+PODFILE CHECKSUM: fb04421547de24a1abe42d2107fbeb7ea4d400c0
 
-COCOAPODS: 1.0.0
+COCOAPODS: 1.0.1
