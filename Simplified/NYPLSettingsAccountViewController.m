@@ -16,7 +16,6 @@
 #import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
-#import "NYPLRegistrationStoryboard.h"
 @import CoreLocation;
 
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -96,7 +95,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 }
 @end
 
-@interface NYPLSettingsAccountViewController () <NSURLSessionDelegate, UITextFieldDelegate, NYPLRegistrationStoryboardDelegate>
+@interface NYPLSettingsAccountViewController () <NSURLSessionDelegate, UITextFieldDelegate>
 
 #if DO_MASK_BARCODE
 @property (nonatomic) CHRTextFieldFormatter *barcodeFieldFormatter;
@@ -465,18 +464,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                              completionHandler,
                              self.barcodeTextField.unmaskedText,
                              self.PINTextField.text);
-}
-
-#pragma mark NYPLRegistrationStoryboard delegate
-
-- (void)storyboard:(__attribute__((unused)) NYPLRegistrationStoryboard *)storyboard willDismissWithNewAuthorization:(BOOL)hasNewAuthorization
-{
-  if (hasNewAuthorization) {
-#ifdef FEATURE_DRM_CONNECTOR
-    if (![[NYPLADEPT sharedInstance] deviceAuthorized] && [[NYPLAccount sharedAccount] hasBarcodeAndPIN])
-      [self logIn];
-#endif
-  }
 }
 
 #pragma mark -
