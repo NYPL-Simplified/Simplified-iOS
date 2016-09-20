@@ -163,6 +163,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.barcodeTextField = [[NYPLMaskedTextField alloc] initWithFrame:CGRectZero];
+  self.barcodeTextField.delegate = self;
   self.barcodeTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                             UIViewAutoresizingFlexibleHeight);
   self.barcodeTextField.font = [UIFont systemFontOfSize:17];
@@ -439,6 +440,42 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                              self.barcodeTextField.unmaskedText,
                              self.PINTextField.text);
 }
+
+#pragma mark UITextFieldDelegate
+
+- (BOOL)textField:(UITextField *)textField
+shouldChangeCharactersInRange:(NSRange)range
+replacementString:(NSString *)string
+{
+  if(![string canBeConvertedToEncoding:NSASCIIStringEncoding]) {
+    return NO;
+  }
+  
+  if(textField == self.barcodeTextField) {
+    // Barcodes are numeric and usernames are alphanumeric.
+    if([string stringByTrimmingCharactersInSet:[NSCharacterSet alphanumericCharacterSet]].length > 0) {
+      return NO;
+    }
+    
+    // Usernames cannot be longer than 25 characters.
+    if([textField.text stringByReplacingCharactersInRange:range withString:string].length > 25) {
+      return NO;
+    }
+  }
+  
+  if(textField == self.PINTextField) {
+    if([string stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]].length > 0) {
+      return NO;
+    }
+    
+    if([textField.text stringByReplacingCharactersInRange:range withString:string].length > 4) {
+      return NO;
+    }
+  }
+
+  return YES;
+}
+
 
 #pragma mark -
 
