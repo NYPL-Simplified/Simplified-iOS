@@ -63,7 +63,7 @@ CHECKOUT OPTIONS:
     :commit: 1dbca215d9c7630ba9b3fb0e8362ca8cf089caaf
     :git: https://github.com/bugsnag/bugsnag-cocoa.git
   NYPLCardCreator:
-    :commit: 94a0756b23ec978efc1c4f1189a339615b6489d0
+    :commit: b0ccf502a30d6bb90fed18659f7eda29190df928
     :git: https://github.com/NYPL-Simplified/CardCreator-iOS.git
 
 SPEC CHECKSUMS:

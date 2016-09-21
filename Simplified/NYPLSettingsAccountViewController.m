@@ -268,8 +268,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       __weak NYPLSettingsAccountViewController *weakSelf = self;
       Configuration *const configuration = [[Configuration alloc] init];
-      configuration.completionHandler = ^(__unused NSString *const barcode, __unused NSString *const PIN) {
+      configuration.completionHandler = ^(__unused NSString *const username, __unused NSString *const PIN) {
         [weakSelf dismissViewControllerAnimated:YES completion:nil];
+        self.barcodeTextField.text = username;
+        self.PINTextField.text = PIN;
+        [self logIn];
       };
       IntroductionViewController *const introductionViewController =
         [[IntroductionViewController alloc] initWithConfiguration:configuration];
