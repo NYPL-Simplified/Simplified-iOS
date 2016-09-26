@@ -610,13 +610,15 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
           afterDeauthorization();
         }];
      } else {
-       self.navigationItem.titleView = nil;
-       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-       [self presentViewController:[NYPLAlertController
-                                    alertWithTitle:@"SettingsAccountViewControllerLogoutFailed"
-                                    message:@"TimedOut"]
-                          animated:YES
-                        completion:nil];
+       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+         self.navigationItem.titleView = nil;
+         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+         [self presentViewController:[NYPLAlertController
+                                      alertWithTitle:@"SettingsAccountViewControllerLogoutFailed"
+                                      message:@"TimedOut"]
+                            animated:YES
+                          completion:nil];
+       }];
      }
    }];
 #else
