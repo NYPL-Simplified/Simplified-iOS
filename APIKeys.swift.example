@@ -1,0 +1,8 @@
+import Foundation
+
+// All properties must be set to non-nil values.
+@objc class APIKeys: NSObject {
+  static let cardCreatorEndpointURL: NSURL = nil
+  static let cardCreatorUsername: String = nil
+  static let cardCreatorPassword: String = nil
+}

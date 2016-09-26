@@ -20,9 +20,8 @@ PODS:
   - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - Bugsnag (4.0.9):
-    - Bugsnag/no-arc (= 4.0.9)
-  - Bugsnag/no-arc (4.0.9)
+  - Bugsnag (5.6.0):
+    - KSCrash/RecordingAdvanced (~> 1.8.5)
   - HelpStack (1.1.2):
     - AFNetworking (~> 2.0)
     - HelpStack/Core (= 1.1.2)
@@ -43,6 +42,9 @@ PODS:
     - HelpStack/Util
   - HelpStack/Util (1.1.2):
     - AFNetworking (~> 2.0)
+  - KSCrash/Recording (1.8.5)
+  - KSCrash/RecordingAdvanced (1.8.5):
+    - KSCrash/Recording
   - NYPLCardCreator (0.1.0):
     - PureLayout (~> 3.0)
   - PureLayout (3.0.2)
@@ -60,16 +62,17 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Bugsnag:
-    :commit: 1dbca215d9c7630ba9b3fb0e8362ca8cf089caaf
+    :commit: eef7f67a75eedfe243d0d1f941c069e284c6f598
     :git: https://github.com/bugsnag/bugsnag-cocoa.git
   NYPLCardCreator:
-    :commit: b0ccf502a30d6bb90fed18659f7eda29190df928
+    :commit: f7805d4437ad96ce1c6af900c9ad5339b4082aa3
     :git: https://github.com/NYPL-Simplified/CardCreator-iOS.git
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
-  Bugsnag: a4bdbf356f318cef00d12eb1601f16d8d0c71ba4
+  Bugsnag: 12c248c9bdf4b9e55ea5a84de138fcb7595985d2
   HelpStack: a9067738597ef81835d84ac8bb75ee346e34f000
+  KSCrash: af236dd97dbabd1110f8ac262ce7584162d4345a
   NYPLCardCreator: 460354288acc75f31e4058ccae7353ddc7daa6b6
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
 

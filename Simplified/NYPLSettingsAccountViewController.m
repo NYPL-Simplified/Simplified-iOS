@@ -267,17 +267,20 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       __weak NYPLSettingsAccountViewController *weakSelf = self;
-      Configuration *const configuration = [[Configuration alloc] init];
-      configuration.completionHandler = ^(__unused NSString *const username, __unused NSString *const PIN) {
-        [weakSelf dismissViewControllerAnimated:YES completion:nil];
-        self.barcodeTextField.text = username;
-        self.PINTextField.text = PIN;
-        [self logIn];
-      };
-      IntroductionViewController *const introductionViewController =
-        [[IntroductionViewController alloc] initWithConfiguration:configuration];
+      CardCreatorConfiguration *const configuration =
+        [[CardCreatorConfiguration alloc]
+         initWithEndpointURL:[APIKeys cardCreatorEndpointURL]
+         endpointUsername:[APIKeys cardCreatorUsername]
+         endpointPassword:[APIKeys cardCreatorPassword]
+         requestTimeoutInterval:20.0
+         completionHandler:^(__unused NSString *const username, __unused NSString *const PIN) {
+           [weakSelf dismissViewControllerAnimated:YES completion:nil];
+           self.barcodeTextField.text = username;
+           self.PINTextField.text = PIN;
+           [self logIn];
+         }];
       UINavigationController *const navigationController =
-        [[UINavigationController alloc] initWithRootViewController:introductionViewController];
+        [CardCreator initialNavigationControllerWithConfiguration:configuration];
       navigationController.navigationBar.topItem.leftBarButtonItem =
         [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                          style:UIBarButtonItemStylePlain
