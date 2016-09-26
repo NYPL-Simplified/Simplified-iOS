@@ -1,6 +1,6 @@
 // Generic
 "Acknowledgements" = "Acknowledgements";
-"Barcode" = "Barcode";
+"BarcodeOrUsername" = "Barcode or Username";
 "Borrow" = "Get";
 "BorrowFailed" = "Borrowing failed";
 "BorrowCouldNotBeCompletedFormat" = "Borrowing %@ could not be completed.";

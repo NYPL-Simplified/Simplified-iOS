@@ -139,7 +139,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self.barcodeTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                             UIViewAutoresizingFlexibleHeight);
   self.barcodeTextField.font = [UIFont systemFontOfSize:17];
-  self.barcodeTextField.placeholder = NSLocalizedString(@"Barcode", nil);
+  self.barcodeTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
   self.barcodeTextField.keyboardType = UIKeyboardTypeASCIICapable;
   self.barcodeTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
   [self.barcodeTextField
