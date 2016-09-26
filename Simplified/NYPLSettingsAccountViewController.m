@@ -142,6 +142,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self.barcodeTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
   self.barcodeTextField.keyboardType = UIKeyboardTypeASCIICapable;
   self.barcodeTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+  self.barcodeTextField.autocorrectionType = UITextAutocorrectionTypeNo;
   [self.barcodeTextField
    addTarget:self
    action:@selector(textFieldsDidChange)
