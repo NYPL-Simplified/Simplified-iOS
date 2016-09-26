@@ -679,6 +679,9 @@ replacementString:(NSString *)string
   NSMutableURLRequest *const request =
     [NSMutableURLRequest requestWithURL:[NYPLConfiguration loanURL]];
   
+  // Necessary to support longer login times when using usernames.
+  request.timeoutInterval = 20.0;
+  
   request.HTTPMethod = @"HEAD";
   
   NSURLSessionDataTask *const task =
