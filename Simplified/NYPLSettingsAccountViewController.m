@@ -277,6 +277,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
            [weakSelf dismissViewControllerAnimated:YES completion:nil];
            self.barcodeTextField.text = username;
            self.PINTextField.text = PIN;
+           [self updateLoginLogoutCellAppearance];
            [self logIn];
          }];
       UINavigationController *const navigationController =
