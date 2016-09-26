@@ -63,6 +63,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 
 @interface NYPLSettingsAccountViewController () <NSURLSessionDelegate, UITextFieldDelegate>
 
+@property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) UITextField *barcodeTextField;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) BOOL hiddenPIN;
@@ -174,13 +175,14 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 {
   [super viewWillAppear:animated];
   
-  self.hiddenPIN = YES;
-  
-  [self accountDidChange];
-  
-  [self.tableView reloadData];
-  
-  [self updateShowHidePINState];
+  // The new credentials are not yet saved when logging in after signup. As such,
+  // reloading the table would lose the values in the barcode and PIN fields.
+  if(!self.isLoggingInAfterSignUp) {
+    self.hiddenPIN = YES;
+    [self accountDidChange];
+    [self.tableView reloadData];
+    [self updateShowHidePINState];
+  }
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -240,19 +242,20 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      __weak NYPLSettingsAccountViewController *weakSelf = self;
+      __weak NYPLSettingsAccountViewController *const weakSelf = self;
       CardCreatorConfiguration *const configuration =
         [[CardCreatorConfiguration alloc]
          initWithEndpointURL:[APIKeys cardCreatorEndpointURL]
          endpointUsername:[APIKeys cardCreatorUsername]
          endpointPassword:[APIKeys cardCreatorPassword]
          requestTimeoutInterval:20.0
-         completionHandler:^(__unused NSString *const username, __unused NSString *const PIN) {
+         completionHandler:^(NSString *const username, NSString *const PIN) {
            [weakSelf dismissViewControllerAnimated:YES completion:nil];
-           self.barcodeTextField.text = username;
-           self.PINTextField.text = PIN;
-           [self updateLoginLogoutCellAppearance];
-           [self logIn];
+           weakSelf.barcodeTextField.text = username;
+           weakSelf.PINTextField.text = PIN;
+           [weakSelf updateLoginLogoutCellAppearance];
+           self.isLoggingInAfterSignUp = YES;
+           [weakSelf logIn];
          }];
       UINavigationController *const navigationController =
         [CardCreator initialNavigationControllerWithConfiguration:configuration];
@@ -665,6 +668,7 @@ replacementString:(NSString *)string
      completionHandler:^(__attribute__((unused)) NSData *data,
                          NSURLResponse *const response,
                          NSError *const error) {
+       self.isLoggingInAfterSignUp = NO;
        
        // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
        NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
