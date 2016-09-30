@@ -7,19 +7,12 @@ void NYPLBasicAuthHandler(NSURLAuthenticationChallenge *const challenge,
                           (NSURLSessionAuthChallengeDisposition disposition,
                            NSURLCredential *credential))
 {
-  if([challenge.protectionSpace.authenticationMethod
-      isEqualToString:NSURLAuthenticationMethodHTTPBasic]) {
-    if([[NYPLAccount sharedAccount] hasBarcodeAndPIN] && challenge.previousFailureCount == 0) {
-      completionHandler(NSURLSessionAuthChallengeUseCredential,
-                        [NSURLCredential
-                         credentialWithUser:[NYPLAccount sharedAccount].barcode
-                         password:[NYPLAccount sharedAccount].PIN
-                         persistence:NSURLCredentialPersistenceNone]);
-    } else {
-      completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
-    }
+  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+    NSString *const barcode = [NYPLAccount sharedAccount].barcode;
+    NSString *const PIN = [NYPLAccount sharedAccount].PIN;
+    NYPLBasicAuthCustomHandler(challenge, completionHandler, barcode, PIN);
   } else {
-    completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
+    completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
   }
 }
 
@@ -32,6 +25,11 @@ void NYPLBasicAuthCustomHandler(NSURLAuthenticationChallenge *challenge,
 {
   if(!(username && password)) {
     @throw NSInvalidArgumentException;
+  }
+  
+  if(![challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodHTTPBasic]) {
+    completionHandler(NSURLSessionAuthChallengeRejectProtectionSpace, nil);
+    return;
   }
   
   if([challenge.protectionSpace.authenticationMethod
