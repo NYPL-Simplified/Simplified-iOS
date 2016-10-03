@@ -51,7 +51,7 @@
   
   NSURLRequest *const request = [NSURLRequest requestWithURL:self.URL
                                                  cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                             timeoutInterval:5.0];
+                                             timeoutInterval:10.0];
   
   self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
   self.data = [NSMutableData data];
