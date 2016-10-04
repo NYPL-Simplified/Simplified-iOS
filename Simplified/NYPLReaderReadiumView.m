@@ -209,6 +209,18 @@ static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
    selector:@selector(applyMediaOverlayPlaybackToggle)
    name:NYPLReaderSettingsMediaOverlayPlaybackToggleDidChangeNotification
    object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(willResignActive)
+   name:UIApplicationWillResignActiveNotification
+   object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(willEnterForeground)
+   name:UIApplicationWillEnterForegroundNotification
+   object:nil];
 }
 
 - (void)applyCurrentFlowDependentSettings
@@ -299,6 +311,16 @@ static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
         }];
       }];
    }];
+}
+
+- (void)willResignActive
+{
+  [self.server stopHTTPServer];
+}
+
+- (void)willEnterForeground
+{
+  [self.server startHTTPServer];
 }
 
 - (void) openPageLeft {
