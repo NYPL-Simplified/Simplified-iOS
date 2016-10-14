@@ -21,7 +21,7 @@ isSevereEpubError:(__unused const BOOL)isSevereEpubError
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
-- (void)containerRegisterFilters:(__attribute__((unused)) RDContainer *)container
+- (void)containerRegisterContentFilters:(__attribute__((unused)) RDContainer *)container
 {
   ePub3::AdeptFilter::Register();
 }
