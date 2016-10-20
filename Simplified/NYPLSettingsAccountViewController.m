@@ -252,6 +252,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
          completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
            if (userInitiated) {
              [weakSelf dismissViewControllerAnimated:YES completion:nil];
+             [weakSelf dismissViewControllerAnimated:YES completion:nil];
            } else {
              weakSelf.barcodeTextField.text = username;
              weakSelf.PINTextField.text = PIN;
