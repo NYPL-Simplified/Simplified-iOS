@@ -249,14 +249,18 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
          endpointUsername:[APIKeys cardCreatorUsername]
          endpointPassword:[APIKeys cardCreatorPassword]
          requestTimeoutInterval:20.0
-         completionHandler:^(NSString *const username, NSString *const PIN) {
-           [weakSelf dismissViewControllerAnimated:YES completion:nil];
-           weakSelf.barcodeTextField.text = username;
-           weakSelf.PINTextField.text = PIN;
-           [weakSelf updateLoginLogoutCellAppearance];
-           self.isLoggingInAfterSignUp = YES;
-           [weakSelf logIn];
+         completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
+           if (userInitiated) {
+             [weakSelf dismissViewControllerAnimated:YES completion:nil];
+           } else {
+             weakSelf.barcodeTextField.text = username;
+             weakSelf.PINTextField.text = PIN;
+             [weakSelf updateLoginLogoutCellAppearance];
+             self.isLoggingInAfterSignUp = YES;
+             [weakSelf logIn];
+           }
          }];
+      
       UINavigationController *const navigationController =
         [CardCreator initialNavigationControllerWithConfiguration:configuration];
       navigationController.navigationBar.topItem.leftBarButtonItem =
@@ -668,6 +672,10 @@ replacementString:(NSString *)string
      completionHandler:^(__attribute__((unused)) NSData *data,
                          NSURLResponse *const response,
                          NSError *const error) {
+       
+       if (self.isLoggingInAfterSignUp) {
+         [(UINavigationController *)[self topViewController] visibleViewController].navigationItem.rightBarButtonItem.enabled = YES;
+       }
        self.isLoggingInAfterSignUp = NO;
        
        // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
@@ -701,6 +709,8 @@ replacementString:(NSString *)string
        }
        
        [self showLoginAlertWithError:error];
+       self.barcodeTextField.text = nil;
+       self.PINTextField.text = nil;
      }];
   
   [task resume];
@@ -708,8 +718,16 @@ replacementString:(NSString *)string
 
 - (void)showLoginAlertWithError:(NSError *)error
 {
-  [self presentViewController:[NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
+  [[self topViewController] presentViewController:[NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
                      animated:YES completion:nil];
+}
+
+- (UIViewController *)topViewController {
+  UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+  while (topController.presentedViewController) {
+    topController = topController.presentedViewController;
+  }
+  return topController;
 }
 
 - (void)textFieldsDidChange
@@ -821,7 +839,6 @@ completionHandler:(void (^)())handler
     if(success) {
       [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
                                           PIN:self.PINTextField.text];
-      [self dismissViewControllerAnimated:YES completion:^{}];
       void (^handler)() = self.completionHandler;
       self.completionHandler = nil;
       if(handler) handler();
