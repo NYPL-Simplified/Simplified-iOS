@@ -95,7 +95,8 @@ static NSString *const heapIDDevelopment = @"1848989408";
 
 + (BOOL)cardCreationEnabled
 {
-  return YES;
+  //Card Creator functionality is currently disabled until a later date.
+  return NO;
 }
 
 + (NSURL *)registrationURL
