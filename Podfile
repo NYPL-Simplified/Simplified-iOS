@@ -7,6 +7,10 @@ target 'SimplyE' do
 	pod 'HelpStack'
 	pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git"
 	pod 'CHRTextFieldFormatter'
+
+use_frameworks!
+  pod 'Alamofire'
+
 end
 
 target 'SimplyETests' do
