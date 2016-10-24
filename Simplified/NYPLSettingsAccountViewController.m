@@ -74,6 +74,8 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 
 @end
 
+NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsAccountsSignInFinishedNotification";
+
 @implementation NYPLSettingsAccountViewController
 
 #pragma mark NSObject
@@ -251,6 +253,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
          requestTimeoutInterval:20.0
          completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
            if (userInitiated) {
+             // If SettingsAccount has been presented modally, dismiss both
+             // the CardCreator and the modal window.
              [weakSelf dismissViewControllerAnimated:YES completion:nil];
              [weakSelf dismissViewControllerAnimated:YES completion:nil];
            } else {
@@ -675,7 +679,8 @@ replacementString:(NSString *)string
                          NSError *const error) {
        
        if (self.isLoggingInAfterSignUp) {
-         [(UINavigationController *)[self topViewController] visibleViewController].navigationItem.rightBarButtonItem.enabled = YES;
+         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSettingsAccountsSignInFinishedNotification
+                                                             object:self];
        }
        self.isLoggingInAfterSignUp = NO;
        
@@ -719,16 +724,12 @@ replacementString:(NSString *)string
 
 - (void)showLoginAlertWithError:(NSError *)error
 {
-  [[self topViewController] presentViewController:[NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
-                     animated:YES completion:nil];
-}
-
-- (UIViewController *)topViewController {
-  UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
-  while (topController.presentedViewController) {
-    topController = topController.presentedViewController;
-  }
-  return topController;
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:
+   [NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
+                                                                  animated:YES
+                                                                completion:nil];
+  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSettingsAccountsSignInFinishedNotification
+                                                      object:self];
 }
 
 - (void)textFieldsDidChange
