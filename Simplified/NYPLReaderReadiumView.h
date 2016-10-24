@@ -23,4 +23,5 @@
 - (void) openPageRight;
 - (BOOL) touchIntersectsLink:(UITouch *)touch;
 
+- (void) syncLastReadingPosition;
 @end
