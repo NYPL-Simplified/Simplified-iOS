@@ -41,8 +41,6 @@ class NYPLAnnotations: NSObject {
           ]
         ]
       ]
-//      print(cfi)
-//      print(parameters)
 
       Alamofire.request(.POST, "https://circulation.librarysimplified.org/annotations/", parameters:parameters, encoding: .JSON, headers:NYPLAnnotations.headers).response(completionHandler: { (request, response, data, error) in
         
@@ -112,7 +110,6 @@ class NYPLAnnotations: NSObject {
   }
   
   class func sync(book:NYPLBook, completionHandler: (responseObject: String?, error: NSError?) -> ()) {
-    //it passes your closure to makeAuthenticateUserCall
     syncLastRead(book, completionHandler: completionHandler)
   }
   
