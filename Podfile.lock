@@ -20,8 +20,10 @@ PODS:
   - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - Bugsnag (5.6.0):
-    - KSCrash/RecordingAdvanced (~> 1.8.5)
+  - Alamofire (3.5.1)
+  - Bugsnag (5.6.3):
+    - KSCrash/RecordingAdvanced (= 1.8.13)
+  - CHRTextFieldFormatter (1.0.1)
   - HelpStack (1.1.2):
     - AFNetworking (~> 2.0)
     - HelpStack/Core (= 1.1.2)
@@ -42,15 +44,17 @@ PODS:
     - HelpStack/Util
   - HelpStack/Util (1.1.2):
     - AFNetworking (~> 2.0)
-  - KSCrash/Recording (1.8.5)
-  - KSCrash/RecordingAdvanced (1.8.5):
+  - KSCrash/Recording (1.8.13)
+  - KSCrash/RecordingAdvanced (1.8.13):
     - KSCrash/Recording
   - NYPLCardCreator (0.1.0):
     - PureLayout (~> 3.0)
   - PureLayout (3.0.2)
 
 DEPENDENCIES:
+  - Alamofire
   - Bugsnag (from `https://github.com/bugsnag/bugsnag-cocoa.git`)
+  - CHRTextFieldFormatter
   - HelpStack
   - NYPLCardCreator (from `https://github.com/NYPL-Simplified/CardCreator-iOS.git`)
 
@@ -62,20 +66,22 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Bugsnag:
-    :commit: eef7f67a75eedfe243d0d1f941c069e284c6f598
+    :commit: 0f4b6ca821c997d04914bd3afe7cbcae7ae6d288
     :git: https://github.com/bugsnag/bugsnag-cocoa.git
   NYPLCardCreator:
-    :commit: f7805d4437ad96ce1c6af900c9ad5339b4082aa3
+    :commit: 1eabfd4071a2f3dbb1e4b3a3f049ffa2527a21cc
     :git: https://github.com/NYPL-Simplified/CardCreator-iOS.git
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
-  Bugsnag: 12c248c9bdf4b9e55ea5a84de138fcb7595985d2
+  Alamofire: 0dfba1184a543e2aa160f4e39cac4e8aba48d223
+  Bugsnag: cfddb45a8c56cf93169d29837797ac2786e35321
+  CHRTextFieldFormatter: 13b6449dbd421d97b6e179e50d817165f9feebec
   HelpStack: a9067738597ef81835d84ac8bb75ee346e34f000
-  KSCrash: af236dd97dbabd1110f8ac262ce7584162d4345a
+  KSCrash: 4c3a83f133b60f4bd57e05235ebf8d46e36d378d
   NYPLCardCreator: 460354288acc75f31e4058ccae7353ddc7daa6b6
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
 
-PODFILE CHECKSUM: 89053d667ee03450544e9c43bc65ec1c01ab1d37
+PODFILE CHECKSUM: 81e8cfdd05b0ccd2fcf2255bbbcf0e0cc8501237
 
 COCOAPODS: 1.0.1
