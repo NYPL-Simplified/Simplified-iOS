@@ -778,6 +778,7 @@
 		11C5DCEE1976D19E005A9945 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				2D62568A1D412BCB0080A81F /* BundledHTMLViewController.swift */,
 				1164A9F51A797238002BD3AE /* NYPLSettings.h */,
 				1164A9F61A797238002BD3AE /* NYPLSettings.m */,
 				2D62924E1CF901F6002A67E9 /* NYPLSettingsAboutViewController.h */,
@@ -936,7 +937,6 @@
 				110AF8891961D66C004887C3 /* Additions */,
 				0345BFEE1DBF031B00398B6F /* CardCreator */,
 				110AF8901961D822004887C3 /* Book */,
-				2D62568A1D412BCB0080A81F /* BundledHTMLViewController.swift */,
 				1183F349194F74EF00DC322F /* Catalog */,
 				11C5DCEF1976D1BA005A9945 /* Holds */,
 				2D382BD61D08BA99002C423D /* Log.swift */,
