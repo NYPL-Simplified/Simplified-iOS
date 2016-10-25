@@ -3,3 +3,7 @@
 //
 
 #import "NYPLConfiguration.h"
+#import "NYPLOPDSEntry.h"
+#import "NYPLOPDSLink.h"
+#import "NYPLBook.h"
+#import "NYPLAccount.h"

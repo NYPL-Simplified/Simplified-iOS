@@ -44,7 +44,10 @@ static NSString *const NYPLOPDSPrivacyPolicyLink =
   @"privacy-policy";
 
 static NSString *const NYPLOPDSAcknowledgmentsLink =
-@"copyright";
+  @"copyright";
 
 static NSString *const NYPLOPDSRelationAcquisitionIssues =
   @"issues";
+
+static NSString *const NYPLOPDSRelationAnnotations =
+  @"http://www.w3.org/ns/oa#annotationService";

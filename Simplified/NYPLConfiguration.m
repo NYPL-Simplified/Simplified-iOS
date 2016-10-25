@@ -1,5 +1,4 @@
 #import "NYPLSettings.h"
-#import "Heap.h"
 #import "Bugsnag.h"
 #import "HSHelpStack.h"
 #import "HSDeskGear.h"
@@ -31,13 +30,6 @@ static NSString *const heapIDDevelopment = @"1848989408";
   HSHelpStack *helpStack = [HSHelpStack instance];
   helpStack.gear = deskGear;
   
-  if ([NYPLConfiguration heapEnabled]) {
-    [Heap setAppId:[NYPLConfiguration heapID]];
-#ifdef DEBUG
-    [Heap enableVisualizer];
-    //    [Heap startDebug];
-#endif
-  }
   
   if([NYPLConfiguration bugsnagEnabled]) {
     [Bugsnag startBugsnagWithApiKey:[NYPLConfiguration bugsnagID]];

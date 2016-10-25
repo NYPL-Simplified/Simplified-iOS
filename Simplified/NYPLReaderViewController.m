@@ -13,6 +13,7 @@
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLReaderViewController.h"
+#import "SimplyE-Swift.h"
 
 #define EDGE_OF_SCREEN_POINT_FRACTION    0.2
 
@@ -314,6 +315,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.view bringSubviewToFront:self.activityIndicatorView];
   
   [self prepareBottomView];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncLastRead) name:UIApplicationWillEnterForegroundNotification object:nil];
+  
 }
 
 -(void)didMoveToParentViewController:(UIViewController *)parent {
@@ -407,6 +411,11 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self applyCurrentSettings];
   
   [super viewWillAppear:animated];
+}
+
+- (void)syncLastRead
+{
+  [[NYPLReaderSettings sharedSettings].currentReaderReadiumView syncLastReadingPosition];
 }
 
 - (void)viewDidAppear:(BOOL)animated

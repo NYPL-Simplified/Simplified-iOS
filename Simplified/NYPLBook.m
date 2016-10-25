@@ -24,6 +24,7 @@
 @property (nonatomic) NSString *summary;
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSDate *updated;
+@property (nonatomic) NSURL *annotationsURL;
 
 @end
 
@@ -45,6 +46,7 @@ static NSString *const SubtitleKey = @"subtitle";
 static NSString *const SummaryKey = @"summary";
 static NSString *const TitleKey = @"title";
 static NSString *const UpdatedKey = @"updated";
+static NSString *const AnnotationsURLKey = @"annotations";
 
 @implementation NYPLBook
 
@@ -70,7 +72,7 @@ static NSString *const UpdatedKey = @"updated";
     return nil;
   }
   
-  NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail, *report = nil;
+  NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail, *annotations, *report = nil;
   
   NYPLBookAvailabilityStatus availabilityStatus = NYPLBookAvailabilityStatusUnknown;
   NSInteger availableCopies = 0;
@@ -134,6 +136,10 @@ static NSString *const UpdatedKey = @"updated";
       report = link.href;
       continue;
     }
+    if([link.rel isEqualToString:NYPLOPDSRelationAnnotations]) {
+      annotations = link.href;
+      continue;
+    }
   }
   
   // FIXME: This is not really the right place to do this and it doesn't handle
@@ -174,7 +180,8 @@ static NSString *const UpdatedKey = @"updated";
           subtitle:entry.alternativeHeadline
           summary:entry.summary
           title:entry.title
-          updated:entry.updated];
+          updated:entry.updated
+          annotationsURL:entry.annotations.href];
 }
 
 - (instancetype)bookWithMetadataFromBook:(NYPLBook *)book
@@ -195,7 +202,8 @@ static NSString *const UpdatedKey = @"updated";
           subtitle:book.subtitle
           summary:book.summary
           title:book.title
-          updated:book.updated];
+          updated:book.updated
+          annotationsURL:book.annotationsURL];
 }
 
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
@@ -214,6 +222,7 @@ static NSString *const UpdatedKey = @"updated";
                             summary:(NSString *)summary
                               title:(NSString *)title
                             updated:(NSDate *)updated
+                     annotationsURL:(NSURL *)annotationsURL
 {
   self = [super init];
   if(!self) return nil;
@@ -244,6 +253,7 @@ static NSString *const UpdatedKey = @"updated";
   self.summary = summary;
   self.title = title;
   self.updated = updated;
+  self.annotationsURL = annotationsURL;
   
   return self;
 }
@@ -295,6 +305,9 @@ static NSString *const UpdatedKey = @"updated";
   self.updated = [NSDate dateWithRFC3339String:dictionary[UpdatedKey]];
   if(!self.updated) return nil;
   
+  NSString *const annotations = NYPLNullToNil(dictionary[AnnotationsURLKey]);
+  self.annotationsURL = annotations ? [NSURL URLWithString:annotations] : nil;
+  
   return self;
 }
 
@@ -315,7 +328,8 @@ static NSString *const UpdatedKey = @"updated";
            SubtitleKey: NYPLNullFromNil(self.subtitle),
            SummaryKey: NYPLNullFromNil(self.summary),
            TitleKey: self.title,
-           UpdatedKey: [self.updated RFC3339String]};
+           UpdatedKey: [self.updated RFC3339String],
+           AnnotationsURLKey: NYPLNullFromNil([self.annotationsURL absoluteString])};
 }
 
 - (NSString *)authors

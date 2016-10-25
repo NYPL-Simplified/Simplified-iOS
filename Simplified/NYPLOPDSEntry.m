@@ -14,6 +14,7 @@
 @property (nonatomic) NSArray<NYPLOPDSCategory *> *categories;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSArray *links;
+@property (nonatomic) NYPLOPDSLink *annotations;
 @property (nonatomic) NSString *providerName;
 @property (nonatomic) NSDate *published;
 @property (nonatomic) NSString *publisher;
@@ -91,6 +92,8 @@
         } else if ([linkXML.attributes[@"type"] isEqualToString:@"application/epub+zip"]) {
           [links addObject:link];
         }
+      } else if ([link.rel isEqualToString:@"http://www.w3.org/ns/oa#annotationService"]){
+        self.annotations = link;
       } else {
         [links addObject:link];
       }
