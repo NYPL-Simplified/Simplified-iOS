@@ -3,7 +3,6 @@
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLCardApplicationModel.h"
 #import "NYPLConfiguration.h"
 
 static NSString *const customMainFeedURLKey = @"NYPLSettingsCustomMainFeedURL";
