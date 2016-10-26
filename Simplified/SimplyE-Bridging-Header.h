@@ -7,3 +7,4 @@
 #import "NYPLOPDSLink.h"
 #import "NYPLBook.h"
 #import "NYPLAccount.h"
+#import "NYPLSession.h"

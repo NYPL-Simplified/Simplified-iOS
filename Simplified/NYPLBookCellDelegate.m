@@ -10,6 +10,7 @@
 #import "NSURLRequest+NYPLURLRequestAdditions.h"
 
 #import "NYPLBookCellDelegate.h"
+#import "SimplyE-Swift.h"
 
 @implementation NYPLBookCellDelegate
 
@@ -42,6 +43,7 @@
 
 - (void)didSelectReadForBook:(NYPLBook *)book
 {
+  [NYPLCirculationAnalytics postEvent:@"open_book" withBook:book];
   [[NYPLRootTabBarController sharedController]
    pushViewController:[[NYPLReaderViewController alloc]
                        initWithBookIdentifier:book.identifier]
