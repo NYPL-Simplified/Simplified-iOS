@@ -6,7 +6,8 @@ final class NYPLCirculationAnalytics : NSObject {
   
   class func postEvent(event: String, withBook book: NYPLBook) -> Void {
     
-    guard let requestURL = NSURL(string: book.analyticsURL.absoluteString.stringByAppendingString("/\(event)")) else { return }
+
+    let requestURL = book.analyticsURL.URLByAppendingPathComponent(event)
     
     Alamofire.request(.GET, requestURL, headers: self.headers).response {
        (request, response, data, error)  in
