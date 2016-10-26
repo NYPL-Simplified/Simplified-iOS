@@ -66,11 +66,6 @@ static NSString *const heapIDDevelopment = @"1848989408";
   return @"76cb0080ae8cc30d903663e10b138381";
 }
 
-+ (NSString *)analyticsURLString
-{
-  return [[[self circulationURL] URLByAppendingPathComponent:@"analytics"] absoluteString];
-}
-
 + (NSURL *)circulationURL
 {
   return [NSURL URLWithString:NYPLCirculationBaseURLProduction];

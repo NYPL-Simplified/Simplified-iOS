@@ -13,6 +13,8 @@
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSArray *links;
 @property (nonatomic, readonly) NYPLOPDSLink *annotations;
+@property (nonatomic, readonly) NYPLOPDSLink *alternate;
+@property (nonatomic, readonly) NSURL *analytics;
 @property (nonatomic, readonly) NSString *providerName; // nilable
 @property (nonatomic, readonly) NSDate *published; // nilable
 @property (nonatomic, readonly) NSString *publisher; // nilable

@@ -1,19 +1,20 @@
 import Alamofire
 import Foundation
 
-/* This class encapsulates analytic events sent to the server. */
+// This class encapsulates analytic events sent to the server. 
 final class NYPLCirculationAnalytics : NSObject {
   
   class func postEvent(event: String, withBook book: NYPLBook) -> Void {
-    guard let pathID = book.identifier.componentsSeparatedByString("/id").last else { return }
-    let requestURLString = NYPLConfiguration.analyticsURLString().stringByAppendingString("/\(book.distributor)")
-      .stringByAppendingString(pathID).stringByAppendingString("/\(event)")
-    let requestURL = NSURL(string: requestURLString)
     
-    Alamofire.request(.GET, requestURL!, parameters: nil, encoding: .JSON, headers: self.headers).response { (_, response, _, error) in
+    guard let requestURL = NSURL(string: book.analyticsURL.absoluteString.stringByAppendingString("/\(event)")) else { return }
+    
+    Alamofire.request(.GET, requestURL, headers: self.headers).response {
+       (request, response, data, error)  in
+      
       if (error != nil) || (response?.statusCode != 200) {
         // Error posting event
       }
+      
     }
   }
   
