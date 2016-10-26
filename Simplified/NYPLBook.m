@@ -50,7 +50,7 @@ static NSString *const TitleKey = @"title";
 static NSString *const UpdatedKey = @"updated";
 static NSString *const AnnotationsURLKey = @"annotations";
 static NSString *const AnalyticsURLKey = @"analytics";
-static NSString *const AlternateURLKey = @"altenate";
+static NSString *const AlternateURLKey = @"alternate";
 
 @implementation NYPLBook
 
@@ -186,8 +186,8 @@ static NSString *const AlternateURLKey = @"altenate";
           title:entry.title
           updated:entry.updated
           annotationsURL:entry.annotations.href
-          analyticsURL:entry.alternate.href
-          alternateURL:entry.analytics];
+          analyticsURL:entry.analytics
+          alternateURL:entry.alternate.href];
 }
 
 - (instancetype)bookWithMetadataFromBook:(NYPLBook *)book
