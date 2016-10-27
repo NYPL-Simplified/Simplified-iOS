@@ -25,6 +25,8 @@
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSDate *updated;
 @property (nonatomic) NSURL *annotationsURL;
+@property (nonatomic) NSURL *analyticsURL;
+@property (nonatomic) NSURL *alternateURL;
 
 @end
 
@@ -47,6 +49,8 @@ static NSString *const SummaryKey = @"summary";
 static NSString *const TitleKey = @"title";
 static NSString *const UpdatedKey = @"updated";
 static NSString *const AnnotationsURLKey = @"annotations";
+static NSString *const AnalyticsURLKey = @"analytics";
+static NSString *const AlternateURLKey = @"alternate";
 
 @implementation NYPLBook
 
@@ -181,7 +185,9 @@ static NSString *const AnnotationsURLKey = @"annotations";
           summary:entry.summary
           title:entry.title
           updated:entry.updated
-          annotationsURL:entry.annotations.href];
+          annotationsURL:entry.annotations.href
+          analyticsURL:entry.analytics
+          alternateURL:entry.alternate.href];
 }
 
 - (instancetype)bookWithMetadataFromBook:(NYPLBook *)book
@@ -203,7 +209,9 @@ static NSString *const AnnotationsURLKey = @"annotations";
           summary:book.summary
           title:book.title
           updated:book.updated
-          annotationsURL:book.annotationsURL];
+          annotationsURL:book.annotationsURL
+          analyticsURL:book.analyticsURL
+          alternateURL:book.alternateURL];
 }
 
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
@@ -223,6 +231,8 @@ static NSString *const AnnotationsURLKey = @"annotations";
                               title:(NSString *)title
                             updated:(NSDate *)updated
                      annotationsURL:(NSURL *)annotationsURL
+                       analyticsURL:(NSURL *)analyticsURL
+                       alternateURL:(NSURL *)alternateURL
 {
   self = [super init];
   if(!self) return nil;
@@ -254,6 +264,8 @@ static NSString *const AnnotationsURLKey = @"annotations";
   self.title = title;
   self.updated = updated;
   self.annotationsURL = annotationsURL;
+  self.analyticsURL = analyticsURL;
+  self.alternateURL = alternateURL;
   
   return self;
 }
@@ -308,6 +320,13 @@ static NSString *const AnnotationsURLKey = @"annotations";
   NSString *const annotations = NYPLNullToNil(dictionary[AnnotationsURLKey]);
   self.annotationsURL = annotations ? [NSURL URLWithString:annotations] : nil;
   
+  NSString *const alternate = NYPLNullToNil(dictionary[AlternateURLKey]);
+  self.alternateURL = alternate ? [NSURL URLWithString:alternate] : nil;
+
+  NSString *const analytics = NYPLNullToNil(dictionary[AnalyticsURLKey]);
+  self.analyticsURL = analytics ? [NSURL URLWithString:analytics] : nil;
+  
+  
   return self;
 }
 
@@ -329,7 +348,10 @@ static NSString *const AnnotationsURLKey = @"annotations";
            SummaryKey: NYPLNullFromNil(self.summary),
            TitleKey: self.title,
            UpdatedKey: [self.updated RFC3339String],
-           AnnotationsURLKey: NYPLNullFromNil([self.annotationsURL absoluteString])};
+           AnnotationsURLKey: NYPLNullFromNil([self.annotationsURL absoluteString]),
+           AnalyticsURLKey: NYPLNullFromNil([self.analyticsURL absoluteString]),
+           AlternateURLKey: NYPLNullFromNil([self.alternateURL absoluteString])
+          };
 }
 
 - (NSString *)authors
