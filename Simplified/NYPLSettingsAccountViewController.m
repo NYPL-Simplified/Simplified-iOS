@@ -682,7 +682,6 @@ replacementString:(NSString *)string
          [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSettingsAccountsSignInFinishedNotification
                                                              object:self];
        }
-       self.isLoggingInAfterSignUp = NO;
        
        // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
        NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
@@ -700,6 +699,7 @@ replacementString:(NSString *)string
 #else
          [self authorizationAttemptDidFinish:YES error:nil];
 #endif
+         self.isLoggingInAfterSignUp = NO;
          return;
        }
        
@@ -841,6 +841,9 @@ completionHandler:(void (^)())handler
     if(success) {
       [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
                                           PIN:self.PINTextField.text];
+      if (!self.isLoggingInAfterSignUp) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+      }
       void (^handler)() = self.completionHandler;
       self.completionHandler = nil;
       if(handler) handler();
