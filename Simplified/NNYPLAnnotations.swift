@@ -42,7 +42,7 @@ class NYPLAnnotations: NSObject {
         ]
       ]
 
-      Alamofire.request(.POST, "https://circulation.librarysimplified.org/annotations/", parameters:parameters, encoding: .JSON, headers:NYPLAnnotations.headers).response(completionHandler: { (request, response, data, error) in
+      Alamofire.request(.POST, NYPLConfiguration.circulationURL().URLByAppendingPathComponent("annotations"), parameters:parameters, encoding: .JSON, headers:NYPLAnnotations.headers).response(completionHandler: { (request, response, data, error) in
         
           if response?.statusCode == 200
           {
