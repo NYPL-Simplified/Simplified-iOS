@@ -1,8 +1,8 @@
 #import "HSHelpStack.h"
 #import "NYPLSettingsAboutViewController.h"
 #import "NYPLSettingsAccountViewController.h"
-#import "NYPLSettingsCreditsViewController.h"
 #import "NYPLSettingsFeedbackViewController.h"
+#import "NYPLSettingsLicensesTableViewController.h"
 #import "NYPLSettingsPrimaryNavigationController.h"
 #import "NYPLSettingsPrimaryTableViewController.h"
 #import "NYPLSettingsEULAViewController.h"
@@ -73,14 +73,14 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
 {
   UIViewController *viewController;
   switch(item) {
-    case NYPLSettingsPrimaryTableViewControllerItemAbout:
-      viewController = [[NYPLSettingsAboutViewController alloc] init];
+    case NYPLSettingsPrimaryTableViewControllerItemLicenses:
+      viewController = [[NYPLSettingsLicensesTableViewController alloc] init];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
       viewController = [[NYPLSettingsAccountViewController alloc] init];
       break;
-    case NYPLSettingsPrimaryTableViewControllerItemCredits:
-      viewController = [[NYPLSettingsCreditsViewController alloc] init];
+    case NYPLSettingsPrimaryTableViewControllerItemAbout:
+      viewController = [[NYPLSettingsAboutViewController alloc] init];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
       viewController = [[NYPLSettingsEULAViewController alloc] init];
@@ -105,7 +105,7 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
       break;
   }
-  
+
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     [self showDetailViewController:[[UINavigationController alloc]
                                     initWithRootViewController:viewController]

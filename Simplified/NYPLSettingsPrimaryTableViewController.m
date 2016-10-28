@@ -1,5 +1,6 @@
 #import "NYPLConfiguration.h"
 #import "NYPLSettings.h"
+#import "NYPLSettingsLicensesTableViewController.h"
 
 #import "NYPLSettingsPrimaryTableViewController.h"
 
@@ -26,13 +27,7 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
         case 0:
           return NYPLSettingsPrimaryTableViewControllerItemAbout;
         case 1:
-          return NYPLSettingsPrimaryTableViewControllerItemCredits;
-        case 2:
-          return NYPLSettingsPrimaryTableViewControllerItemEULA;
-        case 3:
-          return NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy;
-        case 4:
-          return NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses;
+          return NYPLSettingsPrimaryTableViewControllerItemLicenses;
         default:
           @throw NSInvalidArgumentException;
       }
@@ -52,22 +47,18 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   const NYPLSettingsPrimaryTableViewControllerItem settingsItem)
 {
   switch(settingsItem) {
-    case NYPLSettingsPrimaryTableViewControllerItemAbout:
-      return [NSIndexPath indexPathForRow:0 inSection:2];
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
       return [NSIndexPath indexPathForRow:0 inSection:0];
-    case NYPLSettingsPrimaryTableViewControllerItemCredits:
-      return [NSIndexPath indexPathForRow:1 inSection:2];
-    case NYPLSettingsPrimaryTableViewControllerItemEULA:
-      return [NSIndexPath indexPathForRow:2 inSection:2];
-    case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
-      return [NSIndexPath indexPathForRow:3 inSection:2];
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack:
       return [NSIndexPath indexPathForRow:0 inSection:1];
+    case NYPLSettingsPrimaryTableViewControllerItemAbout:
+      return [NSIndexPath indexPathForRow:0 inSection:2];
+    case NYPLSettingsPrimaryTableViewControllerItemLicenses:
+      return [NSIndexPath indexPathForRow:1 inSection:2];
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
       return [NSIndexPath indexPathForRow:0 inSection:3];
-    case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses:
-      return [NSIndexPath indexPathForRow:4 inSection:2];
+    default:
+      @throw NSInvalidArgumentException;
   }
 }
 
@@ -114,8 +105,8 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
 - (void)tableView:(__attribute__((unused)) UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  [self.delegate settingsPrimaryTableViewController:self
-                                      didSelectItem:SettingsItemFromIndexPath(indexPath)];
+  NYPLSettingsPrimaryTableViewControllerItem item = SettingsItemFromIndexPath(indexPath);
+  [self.delegate settingsPrimaryTableViewController:self didSelectItem:item];
 }
 
 - (CGFloat)tableView:(__unused UITableView *)tableView heightForFooterInSection:(NSInteger)section
@@ -151,66 +142,30 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(SettingsItemFromIndexPath(indexPath)) {
-    case NYPLSettingsPrimaryTableViewControllerItemAbout: {
+    case NYPLSettingsPrimaryTableViewControllerItemLicenses: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"About", nil);
+      cell.textLabel.text = NSLocalizedString(@"Licenses", nil);
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      }
       return cell;
     }
     case NYPLSettingsPrimaryTableViewControllerItemAccount: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"Library Card", nil);
+      cell.textLabel.text = NSLocalizedString(@"Accounts", nil);
       cell.textLabel.font = [UIFont systemFontOfSize:17];
       if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       }
       return cell;
     }
-    case NYPLSettingsPrimaryTableViewControllerItemCredits: {
+    case NYPLSettingsPrimaryTableViewControllerItemAbout: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"Acknowledgements", nil);
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      }
-      return cell;
-    }
-    case NYPLSettingsPrimaryTableViewControllerItemEULA: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"EULA", nil);
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      }
-      return cell;
-    }
-    case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"PrivacyPolicy", nil);
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      }
-      return cell;
-    }
-    case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"SoftwareLicenses", nil);
+      cell.textLabel.text = NSLocalizedString(@"About", nil);
       cell.textLabel.font = [UIFont systemFontOfSize:17];
       if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -246,6 +201,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [cell.contentView addSubview:field];
       return cell;
     }
+    default:
+      return nil;
   }
 }
 
@@ -281,7 +238,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(section) {
     case 2:
-      return 5;
+      return 2;
     case 0: case 1: case 3:
       return 1;
     default:
