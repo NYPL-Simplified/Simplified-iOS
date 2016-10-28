@@ -1,4 +1,5 @@
 // Generic
+"Accounts" = "Accounts";
 "Acknowledgements" = "Acknowledgements";
 "BarcodeOrUsername" = "Barcode or Username";
 "Borrow" = "Get";
@@ -11,6 +12,7 @@
 "CheckConnection" = "Please check your connection and try again.";
 "Close" = "Close";
 "ConnectionFailed" = "Connection Failed";
+"ContentLicenses" = "Content Licenses";
 "Delete" = "Delete";
 "DeviceAuthorizationError" = "An error occurred while authorizing this device.";
 "Download" = "Download";
@@ -21,6 +23,7 @@
 "Feedback" = "Feedback";
 "Hide" = "Hide";
 "LibraryCard" = "Library Card";
+"Licenses" = "Licenses";
 "LogIn" = "Log In";
 "More..." = "More…";
 "MoreBooks" = "More %@ books";
