@@ -19,6 +19,9 @@
 		081387431BC465C9003DEA6A /* NYPLNameCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387421BC465C9003DEA6A /* NYPLNameCardController.m */; };
 		081387461BC5589D003DEA6A /* NYPLValidatingTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387451BC5589D003DEA6A /* NYPLValidatingTextField.m */; };
 		081387541BC57297003DEA6A /* NYPLAddressCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387531BC57297003DEA6A /* NYPLAddressCardController.m */; };
+		032A31051DC02E8E0001E4AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 032A31071DC02E8E0001E4AF /* Localizable.strings */; };
+		0345BFE81DBF027200398B6F /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0345BFD61DBF002E00398B6F /* APIKeys.swift */; };
+		03DE7BE91DBF0DE400E89064 /* UpdateCheckShim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */; };
 		081387571BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387561BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m */; };
 		0813875A1BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387591BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m */; };
 		0813875D1BC579C4003DEA6A /* NYPLEmailCardController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0813875C1BC579C4003DEA6A /* NYPLEmailCardController.m */; };
