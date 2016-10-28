@@ -92,7 +92,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   return YES;
 }
 
-- (void)applicationDidEnterBackground:(__attribute__((unused)) UIApplication *)application
+- (void)applicationWillResignActive:(__attribute__((unused)) UIApplication *)application
 {
   [[NYPLBookRegistry sharedRegistry] save];
   [[NYPLReaderSettings sharedSettings] save];
