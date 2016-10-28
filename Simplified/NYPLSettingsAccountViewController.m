@@ -538,11 +538,11 @@ replacementString:(NSString *)string
   if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
-    self.logInSignOutCell.textLabel.textColor = [UIColor redColor];
+    self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     self.logInSignOutCell.userInteractionEnabled = YES;
   } else {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
-    self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentNatural;
+    self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     BOOL const canLogIn =
       ([self.barcodeTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
@@ -682,7 +682,6 @@ replacementString:(NSString *)string
          [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSettingsAccountsSignInFinishedNotification
                                                              object:self];
        }
-       self.isLoggingInAfterSignUp = NO;
        
        // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
        NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
@@ -700,6 +699,7 @@ replacementString:(NSString *)string
 #else
          [self authorizationAttemptDidFinish:YES error:nil];
 #endif
+         self.isLoggingInAfterSignUp = NO;
          return;
        }
        
@@ -841,6 +841,9 @@ completionHandler:(void (^)())handler
     if(success) {
       [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
                                           PIN:self.PINTextField.text];
+      if (!self.isLoggingInAfterSignUp) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+      }
       void (^handler)() = self.completionHandler;
       self.completionHandler = nil;
       if(handler) handler();
