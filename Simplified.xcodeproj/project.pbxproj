@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		032A31051DC02E8E0001E4AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 032A31071DC02E8E0001E4AF /* Localizable.strings */; };
-		0345BFD71DBF002E00398B6F /* APIKeys.swift in Resources */ = {isa = PBXBuildFile; fileRef = 0345BFD61DBF002E00398B6F /* APIKeys.swift */; };
 		0345BFE81DBF027200398B6F /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0345BFD61DBF002E00398B6F /* APIKeys.swift */; };
 		03DE7BE91DBF0DE400E89064 /* UpdateCheckShim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */; };
 		081387571BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387561BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m */; };
@@ -1252,7 +1251,6 @@
 				2D6256911D41582A0080A81F /* software-licenses.html in Resources */,
 				A823D81B192BABA400B55DE2 /* InfoPlist.strings in Resources */,
 				11C113D019F842B9005B3F63 /* reader.html in Resources */,
-				0345BFD71DBF002E00398B6F /* APIKeys.swift in Resources */,
 				110F853E19D5FA7300052DF7 /* DetailSummaryTemplate.html in Resources */,
 				B594C7561BB06F40000028F5 /* HelpStackTheme.plist in Resources */,
 				111E758B1A840A1600718AD7 /* credits.html in Resources */,
