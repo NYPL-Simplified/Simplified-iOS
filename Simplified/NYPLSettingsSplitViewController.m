@@ -31,8 +31,8 @@
   
   self.delegate = self;
   
-  self.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMore tag:0];
-  self.title = NSLocalizedString(@"More", nil);
+  self.title = NSLocalizedString(@"Settings", nil);
+  //GODO image for tab item
   
   self.primaryNavigationController = [[NYPLSettingsPrimaryNavigationController alloc] init];
   self.primaryNavigationController.primaryTableViewController.delegate = self;

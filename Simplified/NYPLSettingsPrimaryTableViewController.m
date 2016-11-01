@@ -78,7 +78,7 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"More", nil);
+  self.title = NSLocalizedString(@"Settings", nil);
   
   self.clearsSelectionOnViewWillAppear = NO;
   
@@ -148,6 +148,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.textLabel.text = NSLocalizedString(@"Licenses", nil);
       cell.textLabel.font = [UIFont systemFontOfSize:17];
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      }
       return cell;
     }
     case NYPLSettingsPrimaryTableViewControllerItemAccount: {
