@@ -1,29 +1,34 @@
 #import "NYPLConfiguration.h"
 #import "NYPLSettings.h"
 
-#import "NYPLSettingsEULAViewController.h"
+#import "NYPLSettingsPrivacyPolicyViewController.h"
 
-@interface NYPLSettingsEULAViewController ()
+@interface NYPLSettingsPrivacyPolicyViewController ()
+
 @property (nonatomic) NSURL *localURL;
 @property (nonatomic) UIWebView *webView;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
+
 @end
 
-static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.org/EULA.html";
+static NSString * const fallbackPrivacyURLString = @"www.librarysimplified.org/privacypolicy.html";
 
-@implementation NYPLSettingsEULAViewController
+@implementation NYPLSettingsPrivacyPolicyViewController
+
+#pragma mark NSObject
 
 - (instancetype)init
 {
   self = [super init];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"EULA", nil);
+  self.title = NSLocalizedString(@"PrivacyPolicy", nil);
   
   return self;
 }
 
+#pragma mark UIViewController
 - (void)viewDidLoad
 {
   [super viewDidLoad];
@@ -36,12 +41,13 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
   self.webView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.webView.delegate = self;
   
-  self.localURL = [[NSBundle mainBundle] URLForResource:@"eula" withExtension:@"html"];
-
-  NSURL *url = [[NYPLSettings sharedSettings] eulaURL];
+  self.localURL = [[NSBundle mainBundle] URLForResource:@"privacy-policy" withExtension:@"html"];
+  
+  NSURL *url = [[NYPLSettings sharedSettings] privacyPolicyURL];
   if (!url) {
-    url = [NSURL URLWithString:fallbackEULAURLString];
+    url = [NSURL URLWithString:fallbackPrivacyURLString];
   }
+  
   
   NSURLRequest *const request = [NSURLRequest requestWithURL:url
                                                  cachePolicy:NSURLRequestUseProtocolCachePolicy
@@ -80,21 +86,22 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
                                                        handler:nil];
   
   UIAlertAction *reloadAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Reload", nil)
-                                                       style:UIAlertActionStyleDefault
-                                                     handler:^(UIAlertAction *reloadAction) {
-                                                       if (reloadAction) {
-                                                         NSURL *url = [[NYPLSettings sharedSettings] eulaURL];
-                                                         if (!url) {
-                                                           url = [NSURL URLWithString:fallbackEULAURLString];
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction *reloadAction) {
+                                                         if (reloadAction) {
+                                                           NSURL *url = [[NYPLSettings sharedSettings] privacyPolicyURL];
+                                                           if (!url) {
+                                                             url = [NSURL URLWithString:fallbackPrivacyURLString];
+                                                           }
+                                                           
+                                                           NSURLRequest *const request = [NSURLRequest requestWithURL:url
+                                                                                                          cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                                                                      timeoutInterval:15.0];
+                                                           
+                                                           [self.webView loadRequest:
+                                                            request];
                                                          }
-                                                         NSURLRequest *const request = [NSURLRequest requestWithURL:url
-                                                                                                        cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                                                                                    timeoutInterval:15.0];
-                                                         
-                                                         [self.webView loadRequest:
-                                                          request];
-                                                       }
-                                                     }];
+                                                       }];
   
   [alertController addAction:reloadAction];
   [alertController addAction:cancelAction];
@@ -108,10 +115,10 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
 }
 
 -(BOOL)webView:(__attribute__((unused)) UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType {
-  if ([[[request URL] absoluteString] isEqualToString:[[[NYPLSettings sharedSettings] eulaURL] absoluteString]]) {
+  if ([[[request URL] absoluteString] isEqualToString:[[[NYPLSettings sharedSettings] acknowledgmentsURL] absoluteString]]) {
     return YES;
   }
-  else if ([[[request URL] absoluteString] isEqualToString:fallbackEULAURLString]) {
+  else if ([[[request URL] absoluteString] isEqualToString:fallbackPrivacyURLString]) {
     return YES;
   }
   else if ([[request URL] isEqual:self.localURL]) {
@@ -120,4 +127,5 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
   
   return NO;
 }
+
 @end
