@@ -538,11 +538,11 @@ replacementString:(NSString *)string
   if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
-    self.logInSignOutCell.textLabel.textColor = [UIColor redColor];
+    self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     self.logInSignOutCell.userInteractionEnabled = YES;
   } else {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
-    self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentNatural;
+    self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     BOOL const canLogIn =
       ([self.barcodeTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
@@ -613,13 +613,13 @@ replacementString:(NSString *)string
             // a token that will remain invalid indefinitely in the near future.
             NYPLLOG(@"Failed to deauthorize successfully.");
           }
-          self.navigationItem.titleView = nil;
+          [self removeActivityTitle];
           [[UIApplication sharedApplication] endIgnoringInteractionEvents];
           afterDeauthorization();
         }];
      } else {
        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         self.navigationItem.titleView = nil;
+         [self removeActivityTitle];
          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
          [self presentViewController:[NYPLAlertController
                                       alertWithTitle:@"SettingsAccountViewControllerLogoutFailed"
@@ -651,6 +651,7 @@ replacementString:(NSString *)string
   UIView *const rightPaddingView = [[UIView alloc] initWithFrame:activityIndicatorView.bounds];
   
   NYPLLinearView *const linearView = [[NYPLLinearView alloc] init];
+  linearView.tag = 1;
   linearView.contentVerticalAlignment = NYPLLinearViewContentVerticalAlignmentMiddle;
   linearView.padding = 5.0;
   [linearView addSubview:activityIndicatorView];
@@ -658,7 +659,14 @@ replacementString:(NSString *)string
   [linearView addSubview:rightPaddingView];
   [linearView sizeToFit];
   
-  self.navigationItem.titleView = linearView;
+  self.logInSignOutCell.textLabel.text = nil;
+  [self.logInSignOutCell.contentView addSubview:linearView];
+  linearView.center = self.logInSignOutCell.contentView.center;
+}
+
+- (void)removeActivityTitle {
+  UIView *view = [self.logInSignOutCell.contentView viewWithTag:1];
+  [view removeFromSuperview];
 }
 
 - (void)validateCredentials
@@ -703,7 +711,7 @@ replacementString:(NSString *)string
          return;
        }
        
-       self.navigationItem.titleView = nil;
+       [self removeActivityTitle];
        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
        
        if (error.code == NSURLErrorCancelled) {
@@ -714,9 +722,9 @@ replacementString:(NSString *)string
          [self.PINTextField becomeFirstResponder];
        }
        
-       [self showLoginAlertWithError:error];
        self.barcodeTextField.text = nil;
        self.PINTextField.text = nil;
+       [self showLoginAlertWithError:error];
      }];
   
   [task resume];
@@ -730,6 +738,7 @@ replacementString:(NSString *)string
                                                                 completion:nil];
   [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSettingsAccountsSignInFinishedNotification
                                                       object:self];
+  [self updateLoginLogoutCellAppearance];
 }
 
 - (void)textFieldsDidChange
@@ -835,7 +844,7 @@ completionHandler:(void (^)())handler
 - (void)authorizationAttemptDidFinish:(BOOL)success error:(NSError *)error
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    self.navigationItem.titleView = nil;
+    [self removeActivityTitle];
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {

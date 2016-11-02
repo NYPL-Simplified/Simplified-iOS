@@ -167,6 +167,7 @@
 		E15AF04E809009612AA10D16 /* libPods-SimplyETests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEEC686A5C71AFACFAC2A884 /* libPods-SimplyETests.a */; };
 		E66AE3301DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */; };
 		E677F8B31DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E677F8B21DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m */; };
+		E6CA8E421DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CA8E411DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m */; };
 		EC89BB22576495E8A359D77E /* Pods_SimplyE.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */; };
 /* End PBXBuildFile section */
 
@@ -515,6 +516,8 @@
 		E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLCirculationAnalytics.swift; sourceTree = "<group>"; };
 		E677F8B11DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsLicensesTableViewController.h; sourceTree = "<group>"; };
 		E677F8B21DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsLicensesTableViewController.m; sourceTree = "<group>"; };
+		E6CA8E401DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsPrivacyPolicyViewController.h; sourceTree = "<group>"; };
+		E6CA8E411DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsPrivacyPolicyViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -795,6 +798,8 @@
 				111E757C1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m */,
 				111E75811A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.h */,
 				111E75821A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m */,
+				E6CA8E401DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.h */,
+				E6CA8E411DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m */,
 				A4AED4181B4A267C00E27498 /* NYPLSettingsRegistrationViewController.h */,
 				A4AED4191B4A267C00E27498 /* NYPLSettingsRegistrationViewController.m */,
 				111E75781A80165C00718AD7 /* NYPLSettingsSplitViewController.h */,
@@ -1457,6 +1462,7 @@
 				11A16E69195B2BD3004147F4 /* NYPLCatalogUngroupedFeedViewController.m in Sources */,
 				111E757A1A80165C00718AD7 /* NYPLSettingsSplitViewController.m in Sources */,
 				112C694D197301FE00C48F95 /* NYPLBookRegistryRecord.m in Sources */,
+				E6CA8E421DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m in Sources */,
 				116A5EB3194767DC00491A21 /* NYPLMyBooksViewController.m in Sources */,
 				11078357198160A50071AB1E /* NYPLBookDownloadFailedCell.m in Sources */,
 				110AF89C1961ED1F004887C3 /* NYPLBookDetailViewController.m in Sources */,
