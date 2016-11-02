@@ -107,17 +107,4 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
   [self.activityIndicatorView stopAnimating];
 }
 
--(BOOL)webView:(__attribute__((unused)) UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType {
-  if ([[[request URL] absoluteString] isEqualToString:[[[NYPLSettings sharedSettings] eulaURL] absoluteString]]) {
-    return YES;
-  }
-  else if ([[[request URL] absoluteString] isEqualToString:fallbackEULAURLString]) {
-    return YES;
-  }
-  else if ([[request URL] isEqual:self.localURL]) {
-    return YES;
-  }
-  
-  return NO;
-}
 @end

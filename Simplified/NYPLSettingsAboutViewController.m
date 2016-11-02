@@ -114,18 +114,4 @@ static NSString * const fallbackAboutNoticeURLString = @"www.librarysimplified.o
   [self.activityIndicatorView stopAnimating];
 }
 
--(BOOL)webView:(__attribute__((unused)) UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType {
-  if ([[[request URL] absoluteString] isEqualToString:[[[NYPLSettings sharedSettings] acknowledgmentsURL] absoluteString]]) {
-    return YES;
-  }
-  else if ([[[request URL] absoluteString] isEqualToString:fallbackAboutNoticeURLString]) {
-    return YES;
-  }
-  else if ([[request URL] isEqual:self.localURL]) {
-    return YES;
-  }
-  
-  return NO;
-}
-
 @end

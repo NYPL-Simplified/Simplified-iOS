@@ -114,18 +114,4 @@ static NSString * const fallbackPrivacyURLString = @"www.librarysimplified.org/p
   [self.activityIndicatorView stopAnimating];
 }
 
--(BOOL)webView:(__attribute__((unused)) UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType {
-  if ([[[request URL] absoluteString] isEqualToString:[[[NYPLSettings sharedSettings] acknowledgmentsURL] absoluteString]]) {
-    return YES;
-  }
-  else if ([[[request URL] absoluteString] isEqualToString:fallbackPrivacyURLString]) {
-    return YES;
-  }
-  else if ([[request URL] isEqual:self.localURL]) {
-    return YES;
-  }
-  
-  return NO;
-}
-
 @end
