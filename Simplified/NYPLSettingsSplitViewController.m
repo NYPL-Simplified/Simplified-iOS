@@ -33,7 +33,7 @@
   self.delegate = self;
   
   self.title = NSLocalizedString(@"Settings", nil);
-  //GODO image for tab item
+  self.tabBarItem.image = [UIImage imageNamed:@"Settings"];
   
   self.primaryNavigationController = [[NYPLSettingsPrimaryNavigationController alloc] init];
   self.primaryNavigationController.primaryTableViewController.delegate = self;

@@ -55,7 +55,7 @@
 
 #pragma mark - UITabBarControllerDelegate
 
-- (void)tabBarController:(UITabBarController *)tabBarController
+- (void)tabBarController:(UITabBarController *)__unused tabBarController
  didSelectViewController:(UIViewController *)viewController
 {
   if ([viewController isEqual:self.settingsSplitViewController]) {
