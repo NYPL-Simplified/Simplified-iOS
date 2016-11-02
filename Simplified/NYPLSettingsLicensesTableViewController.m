@@ -1,6 +1,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLSettingsLicensesTableViewController.h"
+#import "NYPLSettingsPrivacyPolicyViewController.h"
 #import "SimplyE-Swift.h"
 
 static NYPLSettingsLicensesTableViewControllerItem
@@ -66,18 +67,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   NYPLSettingsLicensesTableViewControllerItem item = SettingsItemFromIndexPath(indexPath);
   
-  //GODO Still need html file for "Content License"
   UIViewController *viewController;
   switch(item) {
     case NYPLSettingsLicensesTableViewControllerItemEULA:
       viewController = [[NYPLSettingsEULAViewController alloc] init];
       break;
     case NYPLSettingsLicensesTableViewControllerItemPrivacyPolicy:
-      viewController = [[BundledHTMLViewController alloc]
-                        initWithFileURL:[[NSBundle mainBundle]
-                                         URLForResource:@"privacy-policy"
-                                         withExtension:@"html"]
-                        title:NSLocalizedString(@"PrivacyPolicy", nil)];
+      viewController = [[NYPLSettingsPrivacyPolicyViewController alloc] init];
       break;
     case NYPLSettingsLicensesTableViewControllerItemSoftwareLicenses:
       viewController = [[BundledHTMLViewController alloc]

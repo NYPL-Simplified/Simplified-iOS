@@ -166,6 +166,7 @@
 		E66AE3301DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */; };
 		E677F8B31DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E677F8B21DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m */; };
 		E6CA8E421DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CA8E411DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m */; };
+		E6CA8E571DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CA8E561DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m */; };
 		E6CA8E5B1DCA773400FE93B4 /* content-license.html in Resources */ = {isa = PBXBuildFile; fileRef = E6CA8E5A1DCA773400FE93B4 /* content-license.html */; };
 		EC89BB22576495E8A359D77E /* Pods_SimplyE.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */; };
 /* End PBXBuildFile section */
@@ -515,6 +516,8 @@
 		E677F8B21DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsLicensesTableViewController.m; sourceTree = "<group>"; };
 		E6CA8E401DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsPrivacyPolicyViewController.h; sourceTree = "<group>"; };
 		E6CA8E411DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsPrivacyPolicyViewController.m; sourceTree = "<group>"; };
+		E6CA8E551DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsContentLicenseViewController.h; sourceTree = "<group>"; };
+		E6CA8E561DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsContentLicenseViewController.m; sourceTree = "<group>"; };
 		E6CA8E5A1DCA773400FE93B4 /* content-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "content-license.html"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -786,6 +789,8 @@
 				111E75881A818C1F00718AD7 /* NYPLSettingsAboutViewController.m */,
 				1158812C1A894F4E008672C3 /* NYPLSettingsAccountViewController.h */,
 				1158812D1A894F4E008672C3 /* NYPLSettingsAccountViewController.m */,
+				E6CA8E551DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.h */,
+				E6CA8E561DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m */,
 				841B55411B740F2700FAC1AF /* NYPLSettingsEULAViewController.h */,
 				841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */,
 				111E75841A818C0B00718AD7 /* NYPLSettingsFeedbackViewController.h */,
@@ -1445,6 +1450,7 @@
 				113137E71A48DAB90082954E /* NYPLReaderReadiumView.m in Sources */,
 				08A352731BDFF5380040BF1D /* NYPLAlertController.m in Sources */,
 				118B7ABF195CBF72005CE3E7 /* NYPLSession.m in Sources */,
+				E6CA8E571DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m in Sources */,
 				111E75861A818C0B00718AD7 /* NYPLSettingsFeedbackViewController.m in Sources */,
 				841B55431B740F2700FAC1AF /* NYPLSettingsEULAViewController.m in Sources */,
 				A4276F481B00046300CA7194 /* NYPLMyBooksDownloadInfo.m in Sources */,

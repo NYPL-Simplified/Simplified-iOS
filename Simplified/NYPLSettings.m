@@ -17,6 +17,8 @@ static NSString *const privacyPolicyURLKey = @"NYPLSettingsPrivacyPolicyURL";
 
 static NSString *const acknowledgmentsURLKey = @"NYPLSettingsAcknowledgmentsURL";
 
+static NSString *const contentLicenseURLKey = @"NYPLSettingsContentLicenseURL";
+
 static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCurrentCardApplicationSerialized";
 
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
@@ -84,6 +86,11 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] URLForKey:acknowledgmentsURLKey];
 }
 
+- (NSURL *) contentLicenseURL
+{
+  return [[NSUserDefaults standardUserDefaults] URLForKey:contentLicenseURLKey];
+}
+
 - (NYPLCardApplicationModel *)currentCardApplication
 {
   NSData *currentCardApplicationSerialization = [[NSUserDefaults standardUserDefaults] objectForKey:currentCardApplicationSerializationKey];
@@ -144,6 +151,19 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   if([acknowledgmentsURL isEqual:self.acknowledgmentsURL]) return;
   
   [[NSUserDefaults standardUserDefaults] setURL:acknowledgmentsURL forKey:acknowledgmentsURLKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLSettingsDidChangeNotification
+   object:self];
+}
+
+- (void)setContentLicenseURL:(NSURL *const)contentLicenseURL
+{
+  if(!contentLicenseURL) return;
+  if([contentLicenseURL isEqual:self.contentLicenseURL]) return;
+  
+  [[NSUserDefaults standardUserDefaults] setURL:contentLicenseURL forKey:contentLicenseURLKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
   
   [[NSNotificationCenter defaultCenter]
