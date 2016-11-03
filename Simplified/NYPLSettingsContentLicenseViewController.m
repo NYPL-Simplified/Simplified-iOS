@@ -5,7 +5,6 @@
 
 @interface NYPLSettingsContentLicenseViewController ()
 
-@property (nonatomic) NSURL *localURL;
 @property (nonatomic) UIWebView *webView;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
@@ -13,7 +12,7 @@
 @end
 
 //godo double check this
-static NSString * const fallbackContentLicenseURLString = @"www.librarysimplified.org/contentlicense.html";
+static NSString * const fallbackContentLicenseURLString = @"http://www.librarysimplified.org/contentlicense.html";
 
 @implementation NYPLSettingsContentLicenseViewController
 
@@ -41,8 +40,6 @@ static NSString * const fallbackContentLicenseURLString = @"www.librarysimplifie
                                    | UIViewAutoresizingFlexibleWidth);
   self.webView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.webView.delegate = self;
-  
-  self.localURL = [[NSBundle mainBundle] URLForResource:@"content-license" withExtension:@"html"];
   
   NSURL *url = [[NYPLSettings sharedSettings] contentLicenseURL];
   if (!url) {
@@ -73,8 +70,9 @@ static NSString * const fallbackContentLicenseURLString = @"www.librarysimplifie
   [self.activityIndicatorView stopAnimating];
   
   // Failed to load remote URL
-  if ([[[webView request] URL] isEqual:self.localURL] == NO) {
-    [self.webView loadRequest:[NSURLRequest requestWithURL:self.localURL]];
+  NSURL *localURL = [[NSBundle mainBundle] URLForResource:@"content-license" withExtension:@"html"];
+  if ([[[webView request] URL] isEqual:localURL] == NO) {
+    [self.webView loadRequest:[NSURLRequest requestWithURL:localURL]];
     return;
   }
   

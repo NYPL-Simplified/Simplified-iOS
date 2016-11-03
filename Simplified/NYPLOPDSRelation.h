@@ -46,7 +46,6 @@ static NSString *const NYPLOPDSPrivacyPolicyLink =
 static NSString *const NYPLOPDSAcknowledgmentsLink =
   @"copyright";
 
-//GODO TBD
 static NSString *const NYPLOPDSContentLicenseLink =
   @"content-license";
 

@@ -5,14 +5,13 @@
 
 @interface NYPLSettingsPrivacyPolicyViewController ()
 
-@property (nonatomic) NSURL *localURL;
 @property (nonatomic) UIWebView *webView;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 
 @end
 
-static NSString * const fallbackPrivacyURLString = @"www.librarysimplified.org/privacypolicy.html";
+static NSString * const fallbackPrivacyURLString = @"http://www.librarysimplified.org/privacypolicy.html";
 
 @implementation NYPLSettingsPrivacyPolicyViewController
 
@@ -40,8 +39,6 @@ static NSString * const fallbackPrivacyURLString = @"www.librarysimplified.org/p
                                    | UIViewAutoresizingFlexibleWidth);
   self.webView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.webView.delegate = self;
-  
-  self.localURL = [[NSBundle mainBundle] URLForResource:@"privacy-policy" withExtension:@"html"];
   
   NSURL *url = [[NYPLSettings sharedSettings] privacyPolicyURL];
   if (!url) {
@@ -72,8 +69,9 @@ static NSString * const fallbackPrivacyURLString = @"www.librarysimplified.org/p
   [self.activityIndicatorView stopAnimating];
   
   // Failed to load remote URL
-  if ([[[webView request] URL] isEqual:self.localURL] == NO) {
-    [self.webView loadRequest:[NSURLRequest requestWithURL:self.localURL]];
+  NSURL *localURL = [[NSBundle mainBundle] URLForResource:@"privacy-policy" withExtension:@"html"];
+  if ([[[webView request] URL] isEqual:localURL] == NO) {
+    [self.webView loadRequest:[NSURLRequest requestWithURL:localURL]];
     return;
   }
   

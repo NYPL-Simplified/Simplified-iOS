@@ -5,14 +5,13 @@
 
 @interface NYPLSettingsAboutViewController ()
 
-@property (nonatomic) NSURL *localURL;
 @property (nonatomic) UIWebView *webView;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 
 @end
 
-static NSString * const fallbackAboutNoticeURLString = @"www.librarysimplified.org/acknowledgments.html";
+static NSString * const fallbackAboutNoticeURLString = @"http://www.librarysimplified.org/acknowledgments.html";
 
 @implementation NYPLSettingsAboutViewController
 
@@ -41,13 +40,11 @@ static NSString * const fallbackAboutNoticeURLString = @"www.librarysimplified.o
   self.webView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.webView.delegate = self;
   
-  self.localURL = [[NSBundle mainBundle] URLForResource:@"credits" withExtension:@"html"];
   
   NSURL *url = [[NYPLSettings sharedSettings] acknowledgmentsURL];
   if (!url) {
     url = [NSURL URLWithString:fallbackAboutNoticeURLString];
   }
-  
   
   NSURLRequest *const request = [NSURLRequest requestWithURL:url
                                                  cachePolicy:NSURLRequestUseProtocolCachePolicy
@@ -72,8 +69,9 @@ static NSString * const fallbackAboutNoticeURLString = @"www.librarysimplified.o
   [self.activityIndicatorView stopAnimating];
   
   // Failed to load remote URL
-  if ([[[webView request] URL] isEqual:self.localURL] == NO) {
-    [self.webView loadRequest:[NSURLRequest requestWithURL:self.localURL]];
+  NSURL *localURL = [[NSBundle mainBundle] URLForResource:@"credits" withExtension:@"html"];
+  if ([[[webView request] URL] isEqual:localURL] == NO) {
+    [self.webView loadRequest:[NSURLRequest requestWithURL:localURL]];
     return;
   }
   

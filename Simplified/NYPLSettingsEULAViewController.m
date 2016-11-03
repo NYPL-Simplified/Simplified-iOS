@@ -4,7 +4,6 @@
 #import "NYPLSettingsEULAViewController.h"
 
 @interface NYPLSettingsEULAViewController ()
-@property (nonatomic) NSURL *localURL;
 @property (nonatomic) UIWebView *webView;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
@@ -36,8 +35,6 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
   self.webView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.webView.delegate = self;
   
-  self.localURL = [[NSBundle mainBundle] URLForResource:@"eula" withExtension:@"html"];
-
   NSURL *url = [[NYPLSettings sharedSettings] eulaURL];
   if (!url) {
     url = [NSURL URLWithString:fallbackEULAURLString];
@@ -66,8 +63,9 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
   [self.activityIndicatorView stopAnimating];
   
   // Failed to load remote URL
-  if ([[[webView request] URL] isEqual:self.localURL] == NO) {
-    [self.webView loadRequest:[NSURLRequest requestWithURL:self.localURL]];
+  NSURL *localURL = [[NSBundle mainBundle] URLForResource:@"eula" withExtension:@"html"];
+  if ([[[webView request] URL] isEqual:localURL] == NO) {
+    [self.webView loadRequest:[NSURLRequest requestWithURL:localURL]];
     return;
   }
   

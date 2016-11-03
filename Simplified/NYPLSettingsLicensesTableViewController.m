@@ -144,18 +144,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-- (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
+- (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
+ numberOfRowsInSection:(__attribute__((unused)) NSInteger)section
 {
-  return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-  if (tableView && section == 0) {
-    return 4;
-  } else {
-    return 0;
-  }
+  return 4;
 }
 
 

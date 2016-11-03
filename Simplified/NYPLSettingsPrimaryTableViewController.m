@@ -242,10 +242,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   switch(section) {
     case 2:
       return 2;
-    case 0: case 1: case 3:
-      return 1;
     default:
-      @throw NSInternalInconsistencyException;
+      return 1;
   }
 }
 
