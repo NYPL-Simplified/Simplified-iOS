@@ -5,7 +5,7 @@
 
 #import "NYPLRootTabBarController.h"
 
-@interface NYPLRootTabBarController ()
+@interface NYPLRootTabBarController () <UITabBarControllerDelegate>
 
 @property (nonatomic) NYPLCatalogNavigationController *catalogNavigationController;
 @property (nonatomic) NYPLMyBooksNavigationController *myBooksNavigationController;
@@ -38,6 +38,8 @@
   self = [super init];
   if(!self) return nil;
   
+  self.delegate = self;
+  
   self.catalogNavigationController = [[NYPLCatalogNavigationController alloc] init];
   self.myBooksNavigationController = [[NYPLMyBooksNavigationController alloc] init];
   self.holdsNavigationController = [[NYPLHoldsNavigationController alloc] init];
@@ -49,6 +51,17 @@
                            self.settingsSplitViewController];
   
   return self;
+}
+
+#pragma mark - UITabBarControllerDelegate
+
+- (void)tabBarController:(UITabBarController *)__unused tabBarController
+ didSelectViewController:(UIViewController *)viewController
+{
+  if ([viewController isEqual:self.settingsSplitViewController]) {
+    UINavigationController *navController = [[(UISplitViewController *)viewController viewControllers] firstObject];
+    [navController popToRootViewControllerAnimated:YES];
+  }
 }
 
 #pragma mark -

@@ -51,6 +51,11 @@
       [[NYPLSettings sharedSettings] setAcknowledgmentsURL:href];
       continue;
     }
+    else if ([link.rel isEqualToString:NYPLOPDSContentLicenseLink]) {
+      NSURL *href = link.href;
+      [[NYPLSettings sharedSettings] setContentLicenseURL:href];
+      continue;
+    }
   }
   
   // This holds group titles in order, without duplicates.

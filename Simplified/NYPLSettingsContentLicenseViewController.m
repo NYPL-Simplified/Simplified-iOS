@@ -1,9 +1,9 @@
 #import "NYPLConfiguration.h"
 #import "NYPLSettings.h"
 
-#import "NYPLSettingsCreditsViewController.h"
+#import "NYPLSettingsContentLicenseViewController.h"
 
-@interface NYPLSettingsCreditsViewController ()
+@interface NYPLSettingsContentLicenseViewController ()
 
 @property (nonatomic) UIWebView *webView;
 @property (nonatomic) UILabel *titleLabel;
@@ -11,9 +11,10 @@
 
 @end
 
-static NSString * const fallbackCreditsNoticeURLString = @"www.librarysimplified.org/acknowledgments.html";
+//godo double check this
+static NSString * const fallbackContentLicenseURLString = @"http://www.librarysimplified.org/contentlicense.html";
 
-@implementation NYPLSettingsCreditsViewController
+@implementation NYPLSettingsContentLicenseViewController
 
 #pragma mark NSObject
 
@@ -22,7 +23,7 @@ static NSString * const fallbackCreditsNoticeURLString = @"www.librarysimplified
   self = [super init];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"Acknowledgements", nil);
+  self.title = NSLocalizedString(@"ContentLicenses", nil);
   
   return self;
 }
@@ -40,10 +41,11 @@ static NSString * const fallbackCreditsNoticeURLString = @"www.librarysimplified
   self.webView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.webView.delegate = self;
   
-  NSURL *url = [[NYPLSettings sharedSettings] acknowledgmentsURL];
+  NSURL *url = [[NYPLSettings sharedSettings] contentLicenseURL];
   if (!url) {
-    url = [NSURL URLWithString:fallbackCreditsNoticeURLString];
+    url = [NSURL URLWithString:fallbackContentLicenseURLString];
   }
+  
   
   NSURLRequest *const request = [NSURLRequest requestWithURL:url
                                                  cachePolicy:NSURLRequestUseProtocolCachePolicy
@@ -66,6 +68,14 @@ static NSString * const fallbackCreditsNoticeURLString = @"www.librarysimplified
 #pragma mark NSURLConnectionDelegate
 - (void)webView:(__attribute__((unused)) UIWebView *)webView didFailLoadWithError:(__attribute__((unused)) NSError *)error {
   [self.activityIndicatorView stopAnimating];
+  
+  // Failed to load remote URL
+  NSURL *localURL = [[NSBundle mainBundle] URLForResource:@"content-license" withExtension:@"html"];
+  if ([[[webView request] URL] isEqual:localURL] == NO) {
+    [self.webView loadRequest:[NSURLRequest requestWithURL:localURL]];
+    return;
+  }
+  
   UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"ConnectionFailed", nil)
                                                                            message:NSLocalizedString(@"ConnectionFailed", nil)
                                                                     preferredStyle:UIAlertControllerStyleAlert];
@@ -78,9 +88,9 @@ static NSString * const fallbackCreditsNoticeURLString = @"www.librarysimplified
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction *reloadAction) {
                                                          if (reloadAction) {
-                                                           NSURL *url = [[NYPLSettings sharedSettings] acknowledgmentsURL];
+                                                           NSURL *url = [[NYPLSettings sharedSettings] privacyPolicyURL];
                                                            if (!url) {
-                                                             url = [NSURL URLWithString:fallbackCreditsNoticeURLString];
+                                                             url = [NSURL URLWithString:fallbackContentLicenseURLString];
                                                            }
                                                            
                                                            NSURLRequest *const request = [NSURLRequest requestWithURL:url
@@ -101,17 +111,6 @@ static NSString * const fallbackCreditsNoticeURLString = @"www.librarysimplified
 
 -(void)webViewDidFinishLoad:(__attribute__((unused)) UIWebView *)webView {
   [self.activityIndicatorView stopAnimating];
-}
-
--(BOOL)webView:(__attribute__((unused)) UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType {
-  if ([[[request URL] absoluteString] isEqualToString:[[[NYPLSettings sharedSettings] acknowledgmentsURL] absoluteString]]) {
-    return YES;
-  }
-  else if ([[[request URL] absoluteString] isEqualToString:fallbackCreditsNoticeURLString]) {
-    return YES;
-  }
-  
-  return NO;
 }
 
 @end

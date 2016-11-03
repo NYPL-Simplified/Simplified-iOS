@@ -1,5 +1,3 @@
-@import UIKit;
-
-@interface NYPLSettingsAboutViewController : UIViewController
+@interface NYPLSettingsAboutViewController : UIViewController <UIWebViewDelegate>
 
 @end

@@ -1,10 +1,11 @@
 #import "HSHelpStack.h"
 #import "NYPLSettingsAboutViewController.h"
 #import "NYPLSettingsAccountViewController.h"
-#import "NYPLSettingsCreditsViewController.h"
 #import "NYPLSettingsFeedbackViewController.h"
+#import "NYPLSettingsLicensesTableViewController.h"
 #import "NYPLSettingsPrimaryNavigationController.h"
 #import "NYPLSettingsPrimaryTableViewController.h"
+#import "NYPLSettingsPrivacyPolicyViewController.h"
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLSettings.h"
 #import "NYPLBook.h"
@@ -31,8 +32,8 @@
   
   self.delegate = self;
   
-  self.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMore tag:0];
-  self.title = NSLocalizedString(@"More", nil);
+  self.title = NSLocalizedString(@"Settings", nil);
+  self.tabBarItem.image = [UIImage imageNamed:@"Settings"];
   
   self.primaryNavigationController = [[NYPLSettingsPrimaryNavigationController alloc] init];
   self.primaryNavigationController.primaryTableViewController.delegate = self;
@@ -73,24 +74,20 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
 {
   UIViewController *viewController;
   switch(item) {
-    case NYPLSettingsPrimaryTableViewControllerItemAbout:
-      viewController = [[NYPLSettingsAboutViewController alloc] init];
+    case NYPLSettingsPrimaryTableViewControllerItemLicenses:
+      viewController = [[NYPLSettingsLicensesTableViewController alloc] init];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
       viewController = [[NYPLSettingsAccountViewController alloc] init];
       break;
-    case NYPLSettingsPrimaryTableViewControllerItemCredits:
-      viewController = [[NYPLSettingsCreditsViewController alloc] init];
+    case NYPLSettingsPrimaryTableViewControllerItemAbout:
+      viewController = [[NYPLSettingsAboutViewController alloc] init];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
       viewController = [[NYPLSettingsEULAViewController alloc] init];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
-      viewController = [[BundledHTMLViewController alloc]
-                        initWithFileURL:[[NSBundle mainBundle]
-                                         URLForResource:@"privacy-policy"
-                                         withExtension:@"html"]
-                        title:NSLocalizedString(@"PrivacyPolicy", nil)];
+      viewController = [[NYPLSettingsPrivacyPolicyViewController alloc] init];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses:
       viewController = [[BundledHTMLViewController alloc]
@@ -105,7 +102,7 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
       break;
   }
-  
+
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     [self showDetailViewController:[[UINavigationController alloc]
                                     initWithRootViewController:viewController]
