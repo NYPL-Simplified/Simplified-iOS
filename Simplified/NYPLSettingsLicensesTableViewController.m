@@ -1,5 +1,6 @@
 #import "NYPLConfiguration.h"
 #import "NYPLSettingsEULAViewController.h"
+#import "NYPLSettingsContentLicenseViewController.h"
 #import "NYPLSettingsLicensesTableViewController.h"
 #import "NYPLSettingsPrivacyPolicyViewController.h"
 #import "SimplyE-Swift.h"
@@ -75,14 +76,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case NYPLSettingsLicensesTableViewControllerItemPrivacyPolicy:
       viewController = [[NYPLSettingsPrivacyPolicyViewController alloc] init];
       break;
+    case NYPLSettingsLicensesTableViewControllerItemContentLicenses:
+      viewController = [[NYPLSettingsContentLicenseViewController alloc] init];
+      break;
     case NYPLSettingsLicensesTableViewControllerItemSoftwareLicenses:
       viewController = [[BundledHTMLViewController alloc]
                         initWithFileURL:[[NSBundle mainBundle]
                                          URLForResource:@"software-licenses"
                                          withExtension:@"html"]
                         title:NSLocalizedString(@"SoftwareLicenses", nil)];
-      break;
-    default:
       break;
   }
   
