@@ -223,8 +223,8 @@ static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
   
   [[NSNotificationCenter defaultCenter]
    addObserver:self
-   selector:@selector(willEnterForeground)
-   name:UIApplicationWillEnterForegroundNotification
+   selector:@selector(didBecomeActive)
+   name:UIApplicationDidBecomeActiveNotification
    object:nil];
 }
 
@@ -323,7 +323,7 @@ static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
   [self.server stopHTTPServer];
 }
 
-- (void)willEnterForeground
+- (void)didBecomeActive
 {
   [self.server startHTTPServer];
 }

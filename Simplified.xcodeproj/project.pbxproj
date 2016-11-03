@@ -7,8 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0345BFD71DBF002E00398B6F /* APIKeys.swift in Resources */ = {isa = PBXBuildFile; fileRef = 0345BFD61DBF002E00398B6F /* APIKeys.swift */; };
-		0345BFDD1DBF00C800398B6F /* NNYPLAnnotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0345BFDC1DBF00C800398B6F /* NNYPLAnnotations.swift */; };
+		032A31051DC02E8E0001E4AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 032A31071DC02E8E0001E4AF /* Localizable.strings */; };
 		0345BFE81DBF027200398B6F /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0345BFD61DBF002E00398B6F /* APIKeys.swift */; };
 		03DE7BE91DBF0DE400E89064 /* UpdateCheckShim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */; };
 		081387571BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387561BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m */; };
@@ -72,7 +71,6 @@
 		11616E11196B0531003D60D9 /* NYPLBookRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 11616E10196B0531003D60D9 /* NYPLBookRegistry.m */; };
 		1164A9F71A797238002BD3AE /* NYPLSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 1164A9F61A797238002BD3AE /* NYPLSettings.m */; };
 		1164F106199AC236009BF8BF /* NYPLBookLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1164F105199AC236009BF8BF /* NYPLBookLocation.m */; };
-		116A5EA4194653BE00491A21 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 116A5EA3194653BE00491A21 /* Localizable.strings */; };
 		116A5EAF194767B200491A21 /* NYPLMyBooksNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 116A5EAE194767B200491A21 /* NYPLMyBooksNavigationController.m */; };
 		116A5EB3194767DC00491A21 /* NYPLMyBooksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 116A5EB2194767DC00491A21 /* NYPLMyBooksViewController.m */; };
 		116A5EB91947B57500491A21 /* NYPLConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 116A5EB81947B57500491A21 /* NYPLConfiguration.m */; };
@@ -123,6 +121,8 @@
 		2DB436381D4C049200F8E69D /* NYPLReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DB436371D4C049200F8E69D /* NYPLReachability.m */; };
 		2DC8D9DC1D09F797007DD125 /* UpdateCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */; };
 		2DCF860B1CFC0DC6000BCE77 /* privacy-policy.html in Resources */ = {isa = PBXBuildFile; fileRef = 2DCF860A1CFC0DC6000BCE77 /* privacy-policy.html */; };
+		2DE514351DC3F0BE005A58BD /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */; };
+		2DF321831DC3B83500E1858F /* NYPLAnnotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */; };
 		2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */; };
 		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
@@ -210,8 +210,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		032A31061DC02E8E0001E4AF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		032A310C1DC02EAD0001E4AF /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
+		032A310D1DC02EB30001E4AF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		032A310E1DC02EC00001E4AF /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0345BFD61DBF002E00398B6F /* APIKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
-		0345BFDC1DBF00C800398B6F /* NNYPLAnnotations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NNYPLAnnotations.swift; sourceTree = "<group>"; };
 		080ADCBE1C04C26100C0575F /* libCHRTextFieldFormatter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libCHRTextFieldFormatter.a; path = "Pods/../build/Debug-iphoneos/libCHRTextFieldFormatter.a"; sourceTree = "<group>"; };
 		081387211BC3139A003DEA6A /* libGeoJSONSerialization.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGeoJSONSerialization.a; path = "Pods/../build/Debug-iphoneos/libGeoJSONSerialization.a"; sourceTree = "<group>"; };
 		081387501BC56B7A003DEA6A /* libpop.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpop.a; path = "Pods/../build/Debug-iphoneos/libpop.a"; sourceTree = "<group>"; };
@@ -335,7 +338,6 @@
 		1164A9F61A797238002BD3AE /* NYPLSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettings.m; sourceTree = "<group>"; };
 		1164F104199AC236009BF8BF /* NYPLBookLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookLocation.h; sourceTree = "<group>"; };
 		1164F105199AC236009BF8BF /* NYPLBookLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookLocation.m; sourceTree = "<group>"; };
-		116A5EA3194653BE00491A21 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		116A5EAD194767B200491A21 /* NYPLMyBooksNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksNavigationController.h; sourceTree = "<group>"; };
 		116A5EAE194767B200491A21 /* NYPLMyBooksNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksNavigationController.m; sourceTree = "<group>"; };
 		116A5EB1194767DC00491A21 /* NYPLMyBooksViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksViewController.h; sourceTree = "<group>"; };
@@ -433,6 +435,7 @@
 		2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheck.swift; sourceTree = "<group>"; };
 		2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheckShim.swift; sourceTree = "<group>"; };
 		2DCF860A1CFC0DC6000BCE77 /* privacy-policy.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "privacy-policy.html"; sourceTree = "<group>"; };
+		2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAnnotations.swift; sourceTree = "<group>"; };
 		2DFAC8EB1CD8DDD1003D9EC0 /* NYPLOPDSCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSCategory.h; sourceTree = "<group>"; };
 		2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSCategory.m; sourceTree = "<group>"; };
 		2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimplyE.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -566,7 +569,7 @@
 		0345BFE31DBF010100398B6F /* Annotations */ = {
 			isa = PBXGroup;
 			children = (
-				0345BFDC1DBF00C800398B6F /* NNYPLAnnotations.swift */,
+				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
 			);
 			name = Annotations;
 			sourceTree = "<group>";
@@ -1027,7 +1030,7 @@
 				B594C7551BB06F40000028F5 /* HelpStackTheme.plist */,
 				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
 				085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */,
-				116A5EA3194653BE00491A21 /* Localizable.strings */,
+				032A31071DC02E8E0001E4AF /* Localizable.strings */,
 				A823D822192BABA400B55DE2 /* Images.xcassets */,
 				A823D819192BABA400B55DE2 /* InfoPlist.strings */,
 				84B7A3421B84E8FE00584FB2 /* OpenDyslexicFont */,
@@ -1167,6 +1170,9 @@
 			knownRegions = (
 				en,
 				fr,
+				it,
+				de,
+				es,
 			);
 			mainGroup = A823D804192BABA400B55DE2;
 			productRefGroup = A823D80E192BABA400B55DE2 /* Products */;
@@ -1253,11 +1259,10 @@
 				2D6256911D41582A0080A81F /* software-licenses.html in Resources */,
 				A823D81B192BABA400B55DE2 /* InfoPlist.strings in Resources */,
 				11C113D019F842B9005B3F63 /* reader.html in Resources */,
-				0345BFD71DBF002E00398B6F /* APIKeys.swift in Resources */,
 				110F853E19D5FA7300052DF7 /* DetailSummaryTemplate.html in Resources */,
 				B594C7561BB06F40000028F5 /* HelpStackTheme.plist in Resources */,
 				111E758B1A840A1600718AD7 /* credits.html in Resources */,
-				116A5EA4194653BE00491A21 /* Localizable.strings in Resources */,
+				032A31051DC02E8E0001E4AF /* Localizable.strings in Resources */,
 				A823D823192BABA400B55DE2 /* Images.xcassets in Resources */,
 				5A6929101B95ACD100FB4C10 /* sdk.css in Resources */,
 				84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */,
@@ -1394,6 +1399,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2DE514351DC3F0BE005A58BD /* NYPLCirculationAnalytics.swift in Sources */,
 				03DE7BE91DBF0DE400E89064 /* UpdateCheckShim.swift in Sources */,
 				0345BFE81DBF027200398B6F /* APIKeys.swift in Sources */,
 				11172764197F31280043EFBF /* NYPLAccount.m in Sources */,
@@ -1487,12 +1493,11 @@
 				11C5DD16197727A6005A9945 /* NYPLKeychain.m in Sources */,
 				AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */,
 				11DC19281A12F92500721DBA /* NYPLReaderSettingsView.m in Sources */,
-				0345BFDD1DBF00C800398B6F /* NNYPLAnnotations.swift in Sources */,
-				E66AE3301DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift in Sources */,
 				113DB8A719C24E54004E1154 /* NYPLIndeterminateProgressView.m in Sources */,
 				119BEB89198C43A600121439 /* NSString+NYPLStringAdditions.m in Sources */,
 				A499BF261B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m in Sources */,
 				1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */,
+				2DF321831DC3B83500E1858F /* NYPLAnnotations.swift in Sources */,
 				A4BA1D131B43046B006F83DF /* NYPLCatalogGroupedFeed.m in Sources */,
 				112C6953197309C500C48F95 /* NYPLBookState.m in Sources */,
 				11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */,
@@ -1517,6 +1522,17 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		032A31071DC02E8E0001E4AF /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				032A31061DC02E8E0001E4AF /* en */,
+				032A310C1DC02EAD0001E4AF /* it */,
+				032A310D1DC02EB30001E4AF /* de */,
+				032A310E1DC02EC00001E4AF /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		A823D819192BABA400B55DE2 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1681,7 +1697,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1698,8 +1714,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "590b099f-9537-4dd1-b7fb-b8d89d3b41a0";
-				PROVISIONING_PROFILE_SPECIFIER = "XC: org.nypl.labs.SimplyE";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1723,7 +1738,7 @@
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: The New York Library Astor, Lenox, and Tilden Foundations (7262U6ST2R)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: The New York Library Astor, Lenox, and Tilden Foundations (7262U6ST2R)";
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
@@ -1741,8 +1756,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "712fc9f6-76ef-4fca-b73d-786e0476690b";
-				PROVISIONING_PROFILE_SPECIFIER = Development;
+				PROVISIONING_PROFILE = "9ba5bad4-c0e9-4d22-aae9-4d2e2e60ca6d";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (

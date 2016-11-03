@@ -614,9 +614,10 @@ spineItemTitle:(NSString *const)title
     [self.renderedImageView removeFromSuperview];
   
   [self.rendererView removeFromSuperview];
-  [self turnPageIsRight:turnRight];
   [[pendingViewControllers.firstObject view] addSubview:self.rendererView];
   self.rendererView.frame = pendingViewControllers.firstObject.view.bounds;
+  
+  [self turnPageIsRight:turnRight];
   
   // Hack to work around an issue that would occasionally occur after an orientation change.
   ((WKWebView *) self.rendererView.subviews[0]).scrollView.contentSize = self.rendererView.bounds.size;
