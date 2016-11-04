@@ -146,13 +146,6 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   }
 }
 
-//GODO temp spot
-- (void)pullToRefresh:(UIRefreshControl *)__unused refreshControl
-{
-  //GODO eventually will change target action to correct method
-  [self didSelectSync];
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
@@ -178,6 +171,11 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.instructionsLabel.textColor = [UIColor colorWithWhite:0.6667 alpha:1.0];
   [self.instructionsLabel centerInSuperview];
   [self.instructionsLabel integralizeFrame];
+}
+
+- (void)pullToRefresh:(UIRefreshControl *)__unused refreshControl
+{
+  [self didSelectSync];
 }
 
 #pragma mark UICollectionViewDelegate
