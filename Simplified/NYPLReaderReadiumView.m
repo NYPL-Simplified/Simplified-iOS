@@ -662,10 +662,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   self.isPageTurning = NO;
   
-  if (self.postLastRead)
-  {
   // Readium needs a moment...
-  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
     [self
      sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
      withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
@@ -683,9 +681,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                            initWithLocationString:locationJSON
                                            renderer:renderer];
        
-       // post last read position to server
-       [NYPLAnnotations postLastRead:weakSelf.book cfi:location.locationString];
-       
        [weakSelf calculateProgressionWithDictionary:dictionary withHandler:^{
          [weakSelf.delegate
           renderer:weakSelf
@@ -699,10 +694,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
          [[NYPLBookRegistry sharedRegistry]
           setLocation:location
           forIdentifier:weakSelf.book.identifier];
+         }
+       if( self.postLastRead) {
+         // post last read position to server
+         [NYPLAnnotations postLastRead:weakSelf.book cfi:location.locationString];
        }
      }];
   });
-  }
 }
 
 - (void)calculateBookLength
