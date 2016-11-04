@@ -118,7 +118,7 @@ static NSString * const fallbackPrivacyURLString = @"http://www.librarysimplifie
   NSCachedURLResponse *urlResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:webView.request];
   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*) urlResponse.response;
   NSInteger statusCode = httpResponse.statusCode;
-  if (statusCode > 399) {
+  if (statusCode != 200) {
     [self loadLocalURLFromRequest:[webView request]];
   }
 }
