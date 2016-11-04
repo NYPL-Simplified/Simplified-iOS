@@ -300,14 +300,6 @@ static NSString *const RecordsKey = @"records";
 {
   [self syncWithCompletionHandler:^(BOOL success) {
     if(success) {
-      [[[UIAlertView alloc]
-        initWithTitle:NSLocalizedString(@"SyncComplete", nil)
-        message:NSLocalizedString(@"YourBooksWereSyncedSuccessfully", nil)
-        delegate:nil
-        cancelButtonTitle:nil
-        otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-       show];
-      
       [[NYPLBookRegistry sharedRegistry] save];
     } else {
       [[[UIAlertView alloc]
