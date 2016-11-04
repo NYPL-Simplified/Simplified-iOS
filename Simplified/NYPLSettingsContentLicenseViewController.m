@@ -65,16 +65,20 @@ static NSString * const fallbackContentLicenseURLString = @"http://www.librarysi
   [self.view addSubview:self.activityIndicatorView];
 }
 
+- (void)loadLocalURLFromRequest:(NSURLRequest *)request
+{
+  NSURL *localURL = [[NSBundle mainBundle] URLForResource:@"content-license" withExtension:@"html"];
+  if ([[request URL] isEqual:localURL] == NO) {
+    [self.webView loadRequest:[NSURLRequest requestWithURL:localURL]];
+  }
+}
+
 #pragma mark NSURLConnectionDelegate
 - (void)webView:(__attribute__((unused)) UIWebView *)webView didFailLoadWithError:(__attribute__((unused)) NSError *)error {
   [self.activityIndicatorView stopAnimating];
   
-  // Failed to load remote URL
-  NSURL *localURL = [[NSBundle mainBundle] URLForResource:@"content-license" withExtension:@"html"];
-  if ([[[webView request] URL] isEqual:localURL] == NO) {
-    [self.webView loadRequest:[NSURLRequest requestWithURL:localURL]];
-    return;
-  }
+  // Try local URL if remote URL has failed
+  [self loadLocalURLFromRequest: [webView request]];
   
   UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"ConnectionFailed", nil)
                                                                            message:NSLocalizedString(@"ConnectionFailed", nil)
@@ -109,8 +113,15 @@ static NSString * const fallbackContentLicenseURLString = @"http://www.librarysi
                    completion:nil];
 }
 
--(void)webViewDidFinishLoad:(__attribute__((unused)) UIWebView *)webView {
+- (void)webViewDidFinishLoad:(__attribute__((unused)) UIWebView *)webView {
   [self.activityIndicatorView stopAnimating];
+  
+  NSCachedURLResponse *urlResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:webView.request];
+  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*) urlResponse.response;
+  NSInteger statusCode = httpResponse.statusCode;
+  if (statusCode != 200) {
+    [self loadLocalURLFromRequest:[webView request]];
+  }
 }
 
 @end
