@@ -55,13 +55,14 @@
 
 #pragma mark - UITabBarControllerDelegate
 
-- (void)tabBarController:(UITabBarController *)__unused tabBarController
- didSelectViewController:(UIViewController *)viewController
+- (BOOL)tabBarController:(UITabBarController *)__unused tabBarController
+shouldSelectViewController:(nonnull UIViewController *)viewController
 {
-  if ([viewController isEqual:self.settingsSplitViewController]) {
+  if ([viewController isEqual:self.settingsSplitViewController] && [self.selectedViewController isEqual:self.settingsSplitViewController]) {
     UINavigationController *navController = [[(UISplitViewController *)viewController viewControllers] firstObject];
     [navController popToRootViewControllerAnimated:YES];
   }
+  return YES;
 }
 
 #pragma mark -
