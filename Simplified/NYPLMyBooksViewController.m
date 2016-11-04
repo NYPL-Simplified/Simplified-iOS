@@ -70,8 +70,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 @property (nonatomic) NSArray *books;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) UILabel *instructionsLabel;
-@property (nonatomic) UIBarButtonItem *syncButton;
-@property (nonatomic) UIBarButtonItem *syncInProgressButton;
+@property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) UIBarButtonItem *searchButton;
 @property (nonatomic) NYPLMyBooksContainerView *containerView;
 
@@ -118,6 +117,11 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
   
+  self.collectionView.alwaysBounceVertical = YES;
+  self.refreshControl = [[UIRefreshControl alloc] init];
+  [self.refreshControl addTarget:self action:@selector(didSelectSync) forControlEvents:UIControlEventValueChanged];
+  [self.collectionView addSubview:self.refreshControl];
+  
   self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:0];
   self.facetBarView.facetView.dataSource = self;
   self.facetBarView.facetView.delegate = self;
@@ -129,12 +133,6 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.instructionsLabel.numberOfLines = 0;
   [self.view addSubview:self.instructionsLabel];
   
-  self.syncButton = [[UIBarButtonItem alloc]
-                     initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                     target:self
-                     action:@selector(didSelectSync)];
-  self.navigationItem.leftBarButtonItem = self.syncButton;
-  
   self.searchButton = [[UIBarButtonItem alloc]
                        initWithImage:[UIImage imageNamed:@"Search"]
                        style:UIBarButtonItemStylePlain
@@ -143,21 +141,8 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.searchButton.accessibilityLabel = NSLocalizedString(@"Search", nil);
   self.navigationItem.rightBarButtonItem = self.searchButton;
   
-  UIActivityIndicatorView *const activityIndicatorView =
-    [[UIActivityIndicatorView alloc]
-     initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  [activityIndicatorView sizeToFit];
-  activityIndicatorView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                            UIViewAutoresizingFlexibleHeight);
-  [activityIndicatorView startAnimating];
-  self.syncInProgressButton = [[UIBarButtonItem alloc]
-                               initWithCustomView:activityIndicatorView];
-  self.syncInProgressButton.enabled = NO;
-  
-  if([NYPLBookRegistry sharedRegistry].syncing) {
-    self.navigationItem.leftBarButtonItem = self.syncInProgressButton;
-  } else {
-    self.navigationItem.leftBarButtonItem = self.syncButton;
+  if([NYPLBookRegistry sharedRegistry].syncing == NO) {
+    [self.refreshControl endRefreshing];
   }
 }
 
@@ -186,6 +171,11 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.instructionsLabel.textColor = [UIColor colorWithWhite:0.6667 alpha:1.0];
   [self.instructionsLabel centerInSuperview];
   [self.instructionsLabel integralizeFrame];
+}
+
+- (void)pullToRefresh:(UIRefreshControl *)__unused refreshControl
+{
+  [self didSelectSync];
 }
 
 #pragma mark UICollectionViewDelegate
@@ -369,16 +359,15 @@ OK:
     [NYPLSettingsAccountViewController
      requestCredentialsUsingExistingBarcode:NO
      completionHandler:nil];
+    [self.refreshControl endRefreshing];
   }
 }
 
 - (void)bookRegistryDidChange
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if([NYPLBookRegistry sharedRegistry].syncing) {
-      self.navigationItem.leftBarButtonItem = self.syncInProgressButton;
-    } else {
-      self.navigationItem.leftBarButtonItem = self.syncButton;
+    if([NYPLBookRegistry sharedRegistry].syncing == NO) {
+      [self.refreshControl endRefreshing];
     }
   }];
 }

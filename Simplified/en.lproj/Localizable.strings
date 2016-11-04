@@ -50,14 +50,12 @@
 "SigningOut" = "Signing Out";
 "SignUp" = "Sign Up";
 "SoftwareLicenses" = "Software Licenses";
-"SyncComplete" = "Sync Complete";
 "SyncFailed" = "Sync Failed";
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";
 "TryAgain" = "Try Again";
 "UnknownRequestError" =
     "An unknown error occurred. Please check your connection or try again later.";
 "Verifying" = "Verifying";
-"YourBooksWereSyncedSuccessfully" = "Your books were synced successfully!";
 
 // NYPLAppDelegate
 

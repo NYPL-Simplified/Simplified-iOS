@@ -11,7 +11,6 @@
 
 @end
 
-//godo double check this
 static NSString * const fallbackContentLicenseURLString = @"http://www.librarysimplified.org/contentlicense.html";
 
 @implementation NYPLSettingsContentLicenseViewController

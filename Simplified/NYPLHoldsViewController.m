@@ -15,8 +15,7 @@
 
 @property (nonatomic) NSArray *reservedBooks;
 @property (nonatomic) NSArray *heldBooks;
-@property (nonatomic) UIBarButtonItem *syncButton;
-@property (nonatomic) UIBarButtonItem *syncInProgressButton;
+@property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) UIBarButtonItem *searchButton;
 
 @end
@@ -63,15 +62,15 @@
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
   [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView"];
+  
+  self.collectionView.alwaysBounceVertical = YES;
+  self.refreshControl = [[UIRefreshControl alloc] init];
+  [self.refreshControl addTarget:self action:@selector(didSelectSync) forControlEvents:UIControlEventValueChanged];
+  [self.collectionView addSubview:self.refreshControl];
+  
   // We know that super sets it to a flow layout.
   UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
   layout.headerReferenceSize = CGSizeMake(0, 20);
-  
-  self.syncButton = [[UIBarButtonItem alloc]
-                     initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                     target:self
-                     action:@selector(didSelectSync)];
-  self.navigationItem.leftBarButtonItem = self.syncButton;
   
   self.searchButton = [[UIBarButtonItem alloc]
                        initWithImage:[UIImage imageNamed:@"Search"]
@@ -81,21 +80,8 @@
   self.searchButton.accessibilityLabel = NSLocalizedString(@"Search", nil);
   self.navigationItem.rightBarButtonItem = self.searchButton;
   
-  UIActivityIndicatorView *const activityIndicatorView =
-  [[UIActivityIndicatorView alloc]
-   initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  [activityIndicatorView sizeToFit];
-  activityIndicatorView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                            UIViewAutoresizingFlexibleHeight);
-  [activityIndicatorView startAnimating];
-  self.syncInProgressButton = [[UIBarButtonItem alloc]
-                               initWithCustomView:activityIndicatorView];
-  self.syncInProgressButton.enabled = NO;
-  
-  if([NYPLBookRegistry sharedRegistry].syncing) {
-    self.navigationItem.leftBarButtonItem = self.syncInProgressButton;
-  } else {
-    self.navigationItem.leftBarButtonItem = self.syncButton;
+  if([NYPLBookRegistry sharedRegistry].syncing == NO) {
+    [self.refreshControl endRefreshing];
   }
 }
 
@@ -214,16 +200,15 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     [NYPLSettingsAccountViewController
      requestCredentialsUsingExistingBarcode:NO
      completionHandler:nil];
+    [self.refreshControl endRefreshing];
   }
 }
 
 - (void)bookRegistryDidChange
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if([NYPLBookRegistry sharedRegistry].syncing) {
-      self.navigationItem.leftBarButtonItem = self.syncInProgressButton;
-    } else {
-      self.navigationItem.leftBarButtonItem = self.syncButton;
+    if([NYPLBookRegistry sharedRegistry].syncing == NO) {
+      [self.refreshControl endRefreshing];
     }
   }];
 }
