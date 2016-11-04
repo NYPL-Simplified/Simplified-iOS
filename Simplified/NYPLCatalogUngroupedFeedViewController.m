@@ -4,7 +4,9 @@
 #import "NYPLCatalogUngroupedFeed.h"
 #import "NYPLCatalogFacet.h"
 #import "NYPLCatalogFacetGroup.h"
+#import "NYPLCatalogFeedViewController.h"
 #import "NYPLCatalogSearchViewController.h"
+#import "NYPLConfiguration.h"
 #import "NYPLFacetBarView.h"
 #import "NYPLFacetView.h"
 #import "NYPLOpenSearchDescription.h"
@@ -22,6 +24,7 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
 
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) NYPLCatalogUngroupedFeed *feed;
+@property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 @property (nonatomic) UIActivityIndicatorView *activityIndicator;
@@ -79,6 +82,11 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
   
+  self.collectionView.alwaysBounceVertical = YES;
+  self.refreshControl = [[UIRefreshControl alloc] init];
+  [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
+  [self.collectionView addSubview:self.refreshControl];
+  
   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                             initWithImage:[UIImage imageNamed:@"Search"]
                                             style:UIBarButtonItemStylePlain
@@ -116,6 +124,16 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
     [self.collectionView setContentOffset:CGPointMake(0, -CGRectGetMaxY(self.facetBarView.frame))
                                  animated:NO];
   }
+}
+
+- (void)userDidRefresh:(UIRefreshControl *)refreshControl
+{
+  if ([[self.navigationController.visibleViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] &&
+      [self.navigationController.visibleViewController respondsToSelector:@selector(load)]) {
+    [self.remoteViewController load];
+  }
+  
+  [refreshControl endRefreshing];
 }
 
 #pragma mark UICollectionViewDataSource

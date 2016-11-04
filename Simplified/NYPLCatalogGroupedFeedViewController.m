@@ -25,6 +25,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
 @property (nonatomic) NSMutableDictionary *cachedLaneCells;
 @property (nonatomic) NYPLCatalogGroupedFeed *feed;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
+@property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 @property (nonatomic) UITableView *tableView;
 
@@ -62,6 +63,9 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.navigationItem.rightBarButtonItem.accessibilityLabel = NSLocalizedString(@"Search", nil);
   self.navigationItem.rightBarButtonItem.enabled = NO;
   
+  self.refreshControl = [[UIRefreshControl alloc] init];
+  [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
+  
   self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
   self.tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);
@@ -71,6 +75,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.tableView.sectionHeaderHeight = sectionHeaderHeight;
   self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   self.tableView.allowsSelection = NO;
+  [self.tableView addSubview:self.refreshControl];
   [self.view addSubview:self.tableView];
   
   if(self.feed.openSearchURL) {
@@ -100,6 +105,17 @@ static CGFloat const sectionHeaderHeight = 50.0;
   [super didReceiveMemoryWarning];
   
   [self.cachedLaneCells removeAllObjects];
+}
+
+- (void)userDidRefresh:(UIRefreshControl *)refreshControl
+{
+  if ([[self.navigationController.visibleViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] &&
+      [self.navigationController.visibleViewController respondsToSelector:@selector(load)]) {
+    NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.navigationController.visibleViewController;
+    [viewController load];
+  }
+  
+  [refreshControl endRefreshing];
 }
 
 #pragma mark UITableViewDataSource
