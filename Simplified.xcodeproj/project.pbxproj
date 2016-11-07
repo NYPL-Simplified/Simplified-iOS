@@ -165,9 +165,9 @@
 		E15AF04E809009612AA10D16 /* libPods-SimplyETests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEEC686A5C71AFACFAC2A884 /* libPods-SimplyETests.a */; };
 		E66AE3301DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */; };
 		E677F8B31DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E677F8B21DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m */; };
+		E6B1F4E51DD1145300D73CA1 /* content-license.html in Resources */ = {isa = PBXBuildFile; fileRef = E6B1F4E41DD1145300D73CA1 /* content-license.html */; };
 		E6CA8E421DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CA8E411DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m */; };
 		E6CA8E571DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CA8E561DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m */; };
-		E6CA8E5B1DCA773400FE93B4 /* content-license.html in Resources */ = {isa = PBXBuildFile; fileRef = E6CA8E5A1DCA773400FE93B4 /* content-license.html */; };
 		EC89BB22576495E8A359D77E /* Pods_SimplyE.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */; };
 /* End PBXBuildFile section */
 
@@ -517,11 +517,11 @@
 		E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLCirculationAnalytics.swift; sourceTree = "<group>"; };
 		E677F8B11DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsLicensesTableViewController.h; sourceTree = "<group>"; };
 		E677F8B21DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsLicensesTableViewController.m; sourceTree = "<group>"; };
+		E6B1F4E41DD1145300D73CA1 /* content-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "content-license.html"; sourceTree = "<group>"; };
 		E6CA8E401DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsPrivacyPolicyViewController.h; sourceTree = "<group>"; };
 		E6CA8E411DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsPrivacyPolicyViewController.m; sourceTree = "<group>"; };
 		E6CA8E551DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsContentLicenseViewController.h; sourceTree = "<group>"; };
 		E6CA8E561DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsContentLicenseViewController.m; sourceTree = "<group>"; };
-		E6CA8E5A1DCA773400FE93B4 /* content-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "content-license.html"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1019,7 +1019,7 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				E6CA8E5A1DCA773400FE93B4 /* content-license.html */,
+				E6B1F4E41DD1145300D73CA1 /* content-license.html */,
 				111E758A1A840A1600718AD7 /* credits.html */,
 				110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */,
 				8418C0461B75176B00FAB724 /* eula.html */,
@@ -1253,7 +1253,6 @@
 				11C113D719F84613005B3F63 /* simplified.js in Resources */,
 				848FD95B1B83875D009D9BC4 /* NYPL_Launch_Screen.xib in Resources */,
 				085D31D91BE29ED4007F7672 /* NYPLProblemReportViewController.xib in Resources */,
-				E6CA8E5B1DCA773400FE93B4 /* content-license.html in Resources */,
 				5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */,
 				2D4379FE1C46FDB600AE1AD5 /* ReaderClientCert.sig in Resources */,
 				2D6256911D41582A0080A81F /* software-licenses.html in Resources */,
@@ -1265,6 +1264,7 @@
 				032A31051DC02E8E0001E4AF /* Localizable.strings in Resources */,
 				A823D823192BABA400B55DE2 /* Images.xcassets in Resources */,
 				5A6929101B95ACD100FB4C10 /* sdk.css in Resources */,
+				E6B1F4E51DD1145300D73CA1 /* content-license.html in Resources */,
 				84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */,
 				5A6929251B95C93B00FB4C10 /* readium-shared-js_all.js.map in Resources */,
 				11C113D219F842BE005B3F63 /* host_app_feedback.js in Resources */,
