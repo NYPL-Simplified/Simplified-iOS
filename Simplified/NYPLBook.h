@@ -66,7 +66,9 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
                             summary:(NSString *)summary
                               title:(NSString *)title
                             updated:(NSDate *)updated
-                     annotationsURL:(NSURL *)annotationsURL;
+                     annotationsURL:(NSURL *)annotationsURL
+                       analyticsURL:(NSURL *)analyticsURL
+                       alternateURL:(NSURL *)alternateURL;
 
 // designated initializer
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;

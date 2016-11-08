@@ -6,16 +6,17 @@ final class NYPLCirculationAnalytics : NSObject {
   
   class func postEvent(event: String, withBook book: NYPLBook) -> Void {
     
-
-    let requestURL = book.analyticsURL.URLByAppendingPathComponent(event)
+    if book.analyticsURL != nil{
+      let requestURL = book.analyticsURL.URLByAppendingPathComponent(event)
     
-    Alamofire.request(.GET, requestURL, headers: self.headers).response {
-       (request, response, data, error)  in
+      Alamofire.request(.GET, requestURL, headers: self.headers).response {
+        (request, response, data, error)  in
       
-      if (error != nil) || (response?.statusCode != 200) {
-        // Error posting event
+        if (error != nil) || (response?.statusCode != 200) {
+          // Error posting event
+        }
+      
       }
-      
     }
   }
   
