@@ -5,6 +5,7 @@
 #import "NYPLTenPrintCoverView+NYPLImageAdditions.h"
 
 #import "NYPLBookCoverRegistry.h"
+#import "NYPLSettings.h"
 
 @interface NYPLBookCoverRegistry ()
 
@@ -66,13 +67,24 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   assert([paths count] == 1);
   
   NSString *const path = paths[0];
-  
-  NSURL *const URL =
-    [[[NSURL fileURLWithPath:path]
-      URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                   objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
+  NSString *library = [[NYPLSettings sharedSettings] currentLibrary];
+
+  NSURL * URL =
+  [[[NSURL fileURLWithPath:path]
+    URLByAppendingPathComponent:[[NSBundle mainBundle]
+                                 objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
+   URLByAppendingPathComponent:@"pinned-thumbnail-images"];
+
+  if (![library isEqualToString:@"0"])
+  {
+  URL =
+    [[[[NSURL fileURLWithPath:path]
+       URLByAppendingPathComponent:[[NSBundle mainBundle]
+                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
+      URLByAppendingPathComponent:library]
      URLByAppendingPathComponent:@"pinned-thumbnail-images"];
   
+  }
   @synchronized(self) {
     NSError *error = nil;
     if(![[NSFileManager defaultManager]

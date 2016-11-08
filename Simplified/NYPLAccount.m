@@ -1,9 +1,10 @@
 #import "NYPLKeychain.h"
 
 #import "NYPLAccount.h"
+#import "NYPLSettings.h"
 
-static NSString *const barcodeKey = @"NYPLAccountBarcode";
-static NSString *const PINKey = @"NYPLAccountPIN";
+NSString * barcodeKey = @"NYPLAccountBarcode";
+NSString * PINKey = @"NYPLAccountPIN";
 
 @implementation NYPLAccount
 
@@ -18,6 +19,18 @@ static NSString *const PINKey = @"NYPLAccountPIN";
     }
   }
   
+  NSString *library = [[NYPLSettings sharedSettings] currentLibrary];
+
+  if (![library isEqualToString:@"0"])
+  {
+    barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode",library];
+    PINKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPIN",library];
+  }
+  else
+  {
+    barcodeKey = @"NYPLAccountBarcode";
+    PINKey = @"NYPLAccountPIN";
+  }
   return sharedAccount;
 }
 

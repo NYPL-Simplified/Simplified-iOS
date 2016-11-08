@@ -60,7 +60,14 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   
   return sharedSettings;
 }
-
+- (NSString*)currentLibrary
+{
+  if ([[NSUserDefaults standardUserDefaults] valueForKey:@"library"] == nil)
+  {
+    return @"0";
+  }
+  return [[NSUserDefaults standardUserDefaults] valueForKey:@"library"];
+}
 - (NSURL *)customMainFeedURL
 {
   return [[NSUserDefaults standardUserDefaults] URLForKey:customMainFeedURLKey];
@@ -99,7 +106,11 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   
   return [NSKeyedUnarchiver unarchiveObjectWithData:currentCardApplicationSerialization];
 }
-
+- (void)setCurrentLibrary:(NSString*)currentLibrary
+{
+  [[NSUserDefaults standardUserDefaults] setValue:currentLibrary forKey:@"library"];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
 - (void)setUserAcceptedEULA:(BOOL)userAcceptedEULA
 {
   [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:userAcceptedEULAKey];

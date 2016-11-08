@@ -80,11 +80,24 @@ static NSString *const RecordsKey = @"records";
   assert([paths count] == 1);
   
   NSString *const path = paths[0];
+  NSString *library = [[NYPLSettings sharedSettings] currentLibrary];
+
+  NSURL *URL =
+  [[[NSURL fileURLWithPath:path]
+     URLByAppendingPathComponent:[[NSBundle mainBundle]
+                                  objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
+   URLByAppendingPathComponent:@"registry"];
   
-  return [[[NSURL fileURLWithPath:path]
-           URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                        objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-          URLByAppendingPathComponent:@"registry"];
+  if (![library isEqualToString:@"0"])
+  {
+    URL =
+    [[[[NSURL fileURLWithPath:path]
+       URLByAppendingPathComponent:[[NSBundle mainBundle]
+                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
+      URLByAppendingPathComponent:library]
+     URLByAppendingPathComponent:@"registry"];
+  }
+  return URL;
 }
 
 - (void)performSynchronizedWithoutBroadcasting:(void (^)())block
