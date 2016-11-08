@@ -11,5 +11,6 @@
 
 // designated initializer
 - (instancetype)init;
+- (void)reloadSelected;
 
 @end

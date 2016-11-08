@@ -41,6 +41,8 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 // Saves the registry. This should be called before the application is terminated.
 - (void)save;
 
+- (void)justLoad;
+
 // Syncs the latest content from the server. Attempts to sync while a sync is already in progress
 // will simply be ignored. Resetting the registry while a sync is in progress will cause the handler
 // not to be called.
