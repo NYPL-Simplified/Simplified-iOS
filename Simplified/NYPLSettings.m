@@ -98,6 +98,11 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] URLForKey:contentLicenseURLKey];
 }
 
+- (NSArray *) libraryAccounts
+{
+  return [[NSUserDefaults standardUserDefaults] arrayForKey:@"libraryAccounts"];
+}
+
 - (NYPLCardApplicationModel *)currentCardApplication
 {
   NSData *currentCardApplicationSerialization = [[NSUserDefaults standardUserDefaults] objectForKey:currentCardApplicationSerializationKey];
@@ -197,6 +202,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLSettingsDidChangeNotification
    object:self];
+}
+
+- (void)setLibraryAccounts:(NSArray *)accounts
+{
+  [[NSUserDefaults standardUserDefaults] setObject:accounts forKey:@"libraryAccounts"];
+  [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (NYPLSettingsRenderingEngine)renderingEngine
