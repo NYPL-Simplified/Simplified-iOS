@@ -73,12 +73,15 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
                              didSelectItem:(NYPLSettingsPrimaryTableViewControllerItem const)item
 {
   UIViewController *viewController;
+  NSArray *libraries;
   switch(item) {
     case NYPLSettingsPrimaryTableViewControllerItemLicenses:
       viewController = [[NYPLSettingsLicensesTableViewController alloc] init];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
-      viewController = [[NYPLSettingsAccountViewController alloc] init];
+      [[NYPLSettings sharedSettings] setLibraryAccounts:@[@(NYPLChosenLibraryNYPL),@(NYPLChosenLibraryBrooklyn),@(NYPLChosenLibraryMagic)]];
+      libraries = [[NYPLSettings sharedSettings] libraryAccounts];
+      viewController = [[NYPLSettingsLibrarySelectionViewControlelr alloc] initWithLibraries:libraries];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
       viewController = [[NYPLSettingsAboutViewController alloc] init];
