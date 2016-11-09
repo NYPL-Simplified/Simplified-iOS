@@ -131,6 +131,7 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
     self.navigationController?.pushViewController(viewController, animated: true)
     //show detail is not working on iphone, still need to fix
 //    self.showDetailViewController(viewController, sender: self)
+    tableView.deselectRowAtIndexPath(indexPath, animated: true)
   }
   
   func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
