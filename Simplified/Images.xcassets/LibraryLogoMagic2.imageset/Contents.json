@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "MagicLibraryLogo@1x.jpg",
+      "filename" : "Magic 2@1x.jpg",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "MagicLibraryLogo@2x.jpg",
+      "filename" : "Magic 2@2x.jpg",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "MagicLibraryLogo@3x.jpg",
+      "filename" : "Magic 2@3x.jpg",
       "scale" : "3x"
     }
   ],
