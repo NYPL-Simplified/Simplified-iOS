@@ -25,7 +25,7 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
     didSet {
       var array = [Int]()
       for item in libraryList { array.append(item.rawValue) }
-      NYPLSettings.sharedSettings().libraryAccounts = array
+      NYPLSettings.sharedSettings().settingsLibraryAccounts = array
     }
   }
   
@@ -53,7 +53,7 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
     self.tableView.delegate = self
     self.tableView.dataSource = self
     
-    self.title = "Accounts"
+    self.title = "Libraries"
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
     
     updateUI()
@@ -117,7 +117,15 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
     cell.textLabel?.text = libraryList[indexPath.row].simpleDescription()
     cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 10)
     cell.detailTextLabel?.text = "Subtitle will go here."
-    cell.imageView?.image = UIImage(named: "Catalog")
+    
+    switch libraryList[indexPath.row] {
+    case .Brooklyn:
+      cell.imageView?.image = UIImage(named: "LibraryLogoBrooklyn")
+    case .NYPL:
+      cell.imageView?.image = UIImage(named: "LibraryLogoNYPL")
+    case .Magic:
+      cell.imageView?.image = UIImage(named: "LibraryLogoNYPL")
+    }
     
     return cell
   }
@@ -125,13 +133,11 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
   // MARK: UITableViewDelegate
   
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    //LOAD ACCOUNT VIEW CONTROLLER WITH LIBRARY: NYPLChosenLibrary.rawValue
-    //for now just navigating to sign in controller
-    let viewController = NYPLSettingsAccountViewController()
+    let library = libraryList[indexPath.row].rawValue
+    let viewController = NYPLSettingsAccountViewController(library: library)
+
+    self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
     self.navigationController?.pushViewController(viewController, animated: true)
-    //show detail is not working on iphone, still need to fix
-//    self.showDetailViewController(viewController, sender: self)
-    tableView.deselectRowAtIndexPath(indexPath, animated: true)
   }
   
   func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

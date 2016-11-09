@@ -38,10 +38,12 @@
   self.primaryNavigationController = [[NYPLSettingsPrimaryNavigationController alloc] init];
   self.primaryNavigationController.primaryTableViewController.delegate = self;
   
+  NSArray *libraries = [[NYPLSettings sharedSettings] settingsLibraryAccounts];
+  
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.viewControllers = @[self.primaryNavigationController,
                              [[UINavigationController alloc] initWithRootViewController:
-                              [[NYPLSettingsAccountViewController alloc] init]]];
+                              [[NYPLSettingsLibrarySelectionViewControlelr alloc] initWithLibraries:libraries]]];
     [self.primaryNavigationController.primaryTableViewController.tableView
      selectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
                             NYPLSettingsPrimaryTableViewControllerItemAccount)
@@ -79,8 +81,7 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
       viewController = [[NYPLSettingsLicensesTableViewController alloc] init];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
-      [[NYPLSettings sharedSettings] setLibraryAccounts:@[@(NYPLChosenLibraryNYPL),@(NYPLChosenLibraryBrooklyn),@(NYPLChosenLibraryMagic)]];
-      libraries = [[NYPLSettings sharedSettings] libraryAccounts];
+      libraries = [[NYPLSettings sharedSettings] settingsLibraryAccounts];
       viewController = [[NYPLSettingsLibrarySelectionViewControlelr alloc] initWithLibraries:libraries];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
