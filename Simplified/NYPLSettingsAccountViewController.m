@@ -85,7 +85,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"Accounts", nil);
+  self.title = NSLocalizedString(@"Account", nil);
 
   [[NSNotificationCenter defaultCenter]
    addObserver:self

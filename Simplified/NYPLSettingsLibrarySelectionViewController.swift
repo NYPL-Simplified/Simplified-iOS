@@ -53,7 +53,7 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
     self.tableView.delegate = self
     self.tableView.dataSource = self
     
-    self.title = "Libraries"
+    self.title = "Accounts"
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
     
     updateUI()
