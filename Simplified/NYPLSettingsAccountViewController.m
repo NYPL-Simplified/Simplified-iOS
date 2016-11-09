@@ -81,18 +81,13 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 
 #pragma mark NSObject
 
-// Any existing instances of NYPLSettingsAccountsViewController will
-// default to the 'Current Library' unless user selects a different one
-- (instancetype)init
+// User selected library
+- (instancetype)initWithLibrary:(NSInteger)library
 {
-  NSString *currentLibrary = [[NYPLSettings sharedSettings] currentLibrary];
-  //Currently locally saved as NSString, so converting to NSInteger to support Swift Int & Enum
-  NSInteger lib = [currentLibrary integerValue];
-  
-  return [self initWithLibrary:lib];
+  return [self init];
 }
 
-- (instancetype)initWithLibrary:(NSInteger)library
+- (instancetype)init
 {
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;

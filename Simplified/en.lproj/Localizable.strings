@@ -22,6 +22,7 @@
 "Downloading" = "Downloading";
 "Feedback" = "Feedback";
 "Hide" = "Hide";
+"Libraries" = "Libraries";
 "LibraryCard" = "Library Card";
 "Licenses" = "Licenses";
 "LogIn" = "Log In";
@@ -172,6 +173,9 @@
 "EULA" = "User Agreement";
 "EULAHaveToAgree" = "You must accept the End User License Agreement to use this application.";
 "NOTICE" = "NOTICE";
+
+// NYPLSettingsLibrarySelectionViewController
+"SettingsAccountLibrariesViewControllerAlertTitle" = "Add Your Library";
 
 // NYPLSettingsPrivacyPolicyViewController
 "PrivacyPolicy" = "Privacy Policy";

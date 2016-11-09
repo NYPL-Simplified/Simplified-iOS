@@ -20,16 +20,17 @@
 /// UITableView to display or add libraries that the user
 /// can then log in to after selecting Accounts.
 class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewDelegate, UITableViewDataSource {
+
+  weak var tableView: UITableView!
   
   private var libraryList: [NYPLChosenLibrary] {
     didSet {
       var array = [Int]()
       for item in libraryList { array.append(item.rawValue) }
       NYPLSettings.sharedSettings().settingsLibraryAccounts = array
+      self.updateUI()
     }
   }
-  
-  weak var tableView: UITableView!
   
   required init(libraries: [Int]) {
     self.libraryList = []
@@ -53,7 +54,8 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
     self.tableView.delegate = self
     self.tableView.dataSource = self
     
-    self.title = "Libraries"
+    self.title = NSLocalizedString("Libraries",
+                                   comment: "A title for a list of libraries the user may select or add to.")
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
     
     updateUI()
@@ -69,36 +71,32 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
   }
   
   func addLibrary() {
-    let alert = UIAlertController(title: "Add Your Library", message: nil, preferredStyle: .ActionSheet)
+    let alert = UIAlertController(title: NSLocalizedString(
+      "SettingsAccountLibrariesViewControllerAlertTitle",
+      comment: "Title to tell a user that they can add another library to the list"),
+                                  message: nil,
+                                  preferredStyle: .ActionSheet)
     alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
     alert.popoverPresentationController?.permittedArrowDirections = .Up
-    
-    //need to improve way to check for which to show
     
     if (libraryList.contains(.NYPL) == false) {
       alert.addAction(UIAlertAction(title: "New York Public Library", style: .Default, handler: { action in
         self.libraryList.append(NYPLChosenLibrary.NYPL)
         self.tableView.reloadData()
-        self.updateUI()
       }))
     }
-    
     if (libraryList.contains(.Brooklyn) == false) {
       alert.addAction(UIAlertAction(title: "Brooklyn Public Library", style: .Default, handler: { action in
         self.libraryList.append(NYPLChosenLibrary.Brooklyn)
         self.tableView.reloadData()
-        self.updateUI()
       }))
     }
-    
     if (libraryList.contains(.Magic) == false) {
       alert.addAction(UIAlertAction(title: "The Magic Library", style: .Default, handler: { action in
         self.libraryList.append(NYPLChosenLibrary.Magic)
         self.tableView.reloadData()
-        self.updateUI()
       }))
     }
-    
     alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler:nil))
     
     self.presentViewController(alert, animated: true, completion: nil)
@@ -107,24 +105,53 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
   // MARK: UITableViewDataSource
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return self.libraryList.count
+    if section == 0 {
+      return 1
+    } else if (self.libraryList.count >= 1) {
+      return self.libraryList.count - 1
+    } else {
+      return 0
+    }
+  }
+  
+  func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    return 2;
   }
   
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    
+    if (indexPath.section == 0) {
+      for library in libraryList {
+        if (Int(NYPLSettings.sharedSettings().currentLibrary) == library.rawValue) {
+          return cellForLibrary(library, indexPath)
+        }
+      }
+    } else {
+      for library in libraryList {
+        if (Int(NYPLSettings.sharedSettings().currentLibrary) != library.rawValue) {
+          return cellForLibrary(library, indexPath)
+        }
+      }
+    }
+    return cellForLibrary(.NYPL, indexPath)
+  }
+  
+  func cellForLibrary(library: NYPLChosenLibrary, _ indexPath: NSIndexPath) -> UITableViewCell {
     let cell = UITableViewCell.init(style: .Subtitle, reuseIdentifier: "")
     cell.accessoryType = .DisclosureIndicator
     cell.textLabel?.font = UIFont(name: "AvenirNext-Regular", size: 14)
     cell.textLabel?.text = libraryList[indexPath.row].simpleDescription()
+    
     cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 10)
     cell.detailTextLabel?.text = "Subtitle will go here."
     
-    switch libraryList[indexPath.row] {
+    switch library {
     case .Brooklyn:
       cell.imageView?.image = UIImage(named: "LibraryLogoBrooklyn")
     case .NYPL:
       cell.imageView?.image = UIImage(named: "LibraryLogoNYPL")
     case .Magic:
-      cell.imageView?.image = UIImage(named: "LibraryLogoNYPL")
+      cell.imageView?.image = UIImage(named: "LibraryLogoMagic2")
     }
     
     return cell
@@ -135,7 +162,6 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     let library = libraryList[indexPath.row].rawValue
     let viewController = NYPLSettingsAccountViewController(library: library)
-
     self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
     self.navigationController?.pushViewController(viewController, animated: true)
   }
@@ -156,7 +182,7 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
     if editingStyle == .Delete {
       self.libraryList.removeAtIndex(indexPath.row)
       tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-      updateUI()
+      self.tableView.reloadData()
     }
   }
 }
