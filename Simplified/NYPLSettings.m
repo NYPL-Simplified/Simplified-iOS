@@ -4,6 +4,7 @@
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
+#import "SimplyE-Swift.h"
 
 static NSString *const customMainFeedURLKey = @"NYPLSettingsCustomMainFeedURL";
 
@@ -20,6 +21,8 @@ static NSString *const acknowledgmentsURLKey = @"NYPLSettingsAcknowledgmentsURL"
 static NSString *const contentLicenseURLKey = @"NYPLSettingsContentLicenseURL";
 
 static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCurrentCardApplicationSerialized";
+
+static NSString *const settingsLibraryAccountsKey = @"NYPLSettingsLibraryAccountsKey";
 
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
 {
@@ -98,9 +101,17 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] URLForKey:contentLicenseURLKey];
 }
 
-- (NSArray *) libraryAccounts
+- (NSArray *) settingsLibraryAccounts
 {
-  return [[NSUserDefaults standardUserDefaults] arrayForKey:@"libraryAccounts"];
+  NSArray *libraryAccounts = [[NSUserDefaults standardUserDefaults] arrayForKey:settingsLibraryAccountsKey];
+  // If user has not selected libraries yet, return the "currentLibrary"
+  if (!libraryAccounts) {
+    int currentLibrary = [[self currentLibrary] intValue];
+    [self setSettingsLibraryAccounts:@[@(currentLibrary)]];
+    return [self settingsLibraryAccounts];
+  } else {
+    return libraryAccounts;
+  }
 }
 
 - (NYPLCardApplicationModel *)currentCardApplication
@@ -204,9 +215,9 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
    object:self];
 }
 
-- (void)setLibraryAccounts:(NSArray *)accounts
+- (void)setSettingsLibraryAccounts:(NSArray *)accounts
 {
-  [[NSUserDefaults standardUserDefaults] setObject:accounts forKey:@"libraryAccounts"];
+  [[NSUserDefaults standardUserDefaults] setObject:accounts forKey:settingsLibraryAccountsKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
