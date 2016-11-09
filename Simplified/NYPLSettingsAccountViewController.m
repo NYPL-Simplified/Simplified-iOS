@@ -12,6 +12,7 @@
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReachability.h"
+#import "NYPLSettings.h"
 #import "NYPLSettingsAccountViewController.h"
 #import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
@@ -80,7 +81,18 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 
 #pragma mark NSObject
 
+// Any existing instances of NYPLSettingsAccountsViewController will
+// default to the 'Current Library' unless user selects a different one
 - (instancetype)init
+{
+  NSString *currentLibrary = [[NYPLSettings sharedSettings] currentLibrary];
+  //Currently locally saved as NSString, so converting to NSInteger to support Swift Int & Enum
+  NSInteger lib = [currentLibrary integerValue];
+  
+  return [self initWithLibrary:lib];
+}
+
+- (instancetype)initWithLibrary:(NSInteger)library
 {
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
