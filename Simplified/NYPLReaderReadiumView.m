@@ -778,7 +778,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   if (!self.bookMapDictionary) return;
   
   NSArray *const openPages = dictionary[@"openPages"];
-  if(openPages.count != 1) {
+  if(openPages.count == 0) {
     NYPLLOG(@"Did not receive expected information on open pages.");
     return;
   }
