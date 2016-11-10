@@ -67,7 +67,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 {
   if ([[NSUserDefaults standardUserDefaults] valueForKey:@"library"] == nil)
   {
-    return NYPLChosenLibraryNYPL;
+    return [@(NYPLChosenLibraryNYPL) stringValue];
   }
   return [[NSUserDefaults standardUserDefaults] valueForKey:@"library"];
 }
