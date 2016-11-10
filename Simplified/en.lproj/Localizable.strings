@@ -1,5 +1,6 @@
 // Generic
 "Accounts" = "Accounts";
+"Account" = "Account";
 "Acknowledgements" = "Acknowledgements";
 "BarcodeOrUsername" = "Barcode or Username";
 "Borrow" = "Get";
@@ -22,7 +23,6 @@
 "Downloading" = "Downloading";
 "Feedback" = "Feedback";
 "Hide" = "Hide";
-"Libraries" = "Libraries";
 "LibraryCard" = "Library Card";
 "Licenses" = "Licenses";
 "LogIn" = "Log In";

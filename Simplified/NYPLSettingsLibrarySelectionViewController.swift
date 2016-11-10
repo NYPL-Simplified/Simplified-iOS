@@ -54,7 +54,7 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
     self.tableView.delegate = self
     self.tableView.dataSource = self
     
-    self.title = NSLocalizedString("Libraries",
+    self.title = NSLocalizedString("Accounts",
                                    comment: "A title for a list of libraries the user may select or add to.")
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
     
