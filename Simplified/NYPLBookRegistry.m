@@ -9,6 +9,7 @@
 #import "NYPLMyBooksDownloadCenter.h"
 
 #import "NYPLBookRegistry.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLBookRegistry ()
 
@@ -88,7 +89,7 @@ static NSString *const RecordsKey = @"records";
                                   objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
    URLByAppendingPathComponent:@"registry"];
   
-  if (![library isEqualToString:@"0"])
+  if (![library isEqualToString:[@(NYPLChosenLibraryNYPL) stringValue]])
   {
     URL =
     [[[[NSURL fileURLWithPath:path]

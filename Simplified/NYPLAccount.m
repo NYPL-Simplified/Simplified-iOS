@@ -2,6 +2,7 @@
 
 #import "NYPLAccount.h"
 #import "NYPLSettings.h"
+#import "SimplyE-Swift.h"
 
 NSString * barcodeKey = @"NYPLAccountBarcode";
 NSString * PINKey = @"NYPLAccountPIN";
@@ -21,7 +22,7 @@ NSString * PINKey = @"NYPLAccountPIN";
   
   NSString *library = [[NYPLSettings sharedSettings] currentLibrary];
 
-  if (![library isEqualToString:@"0"])
+  if (![library isEqualToString:[@(NYPLChosenLibraryNYPL) stringValue]])
   {
     barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode",library];
     PINKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPIN",library];

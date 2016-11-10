@@ -6,6 +6,7 @@
 
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLSettings.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLBookCoverRegistry ()
 
@@ -75,7 +76,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
                                  objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
    URLByAppendingPathComponent:@"pinned-thumbnail-images"];
 
-  if (![library isEqualToString:@"0"])
+  if (![library isEqualToString:[@(NYPLChosenLibraryNYPL) stringValue]])
   {
   URL =
     [[[[NSURL fileURLWithPath:path]

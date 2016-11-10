@@ -8,6 +8,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLCatalogNavigationController.h"
+#import "SimplyE-Swift.h"
 
 
 @implementation NYPLMyBooksNavigationController
@@ -44,15 +45,15 @@
   NSString *library = [[NYPLSettings sharedSettings] currentLibrary];
   
   NSString *libraryName = @"New York Public Library";
-  if ([library isEqualToString:@"0"])
+  if ([library isEqualToString:[@(NYPLChosenLibraryNYPL) stringValue]])
   {
     libraryName = @"New York Public Library";
   }
-  else if ([library isEqualToString:@"1"])
+  else if ([library isEqualToString:[@(NYPLChosenLibraryBrooklyn) stringValue]])
   {
     libraryName = @"Brooklyn Public Library";
   }
-  else if ([library isEqualToString:@"2"])
+  else if ([library isEqualToString:[@(NYPLChosenLibraryMagic) stringValue]])
   {
     libraryName = @"The Magic Library";
   }
@@ -75,7 +76,7 @@
   [alert addAction:[UIAlertAction actionWithTitle:@"New York Public Library" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
     
     
-    [[NYPLSettings sharedSettings] setCurrentLibrary:@"0"];
+    [[NYPLSettings sharedSettings] setCurrentLibrary:[@(NYPLChosenLibraryNYPL) stringValue]];
     
     [NYPLAccount sharedAccount];
     [[NSNotificationCenter defaultCenter]
@@ -95,7 +96,7 @@
   [alert addAction:[UIAlertAction actionWithTitle:@"Brooklyn Public Library" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull  action) {
     
     
-    [[NYPLSettings sharedSettings] setCurrentLibrary:@"1"];
+    [[NYPLSettings sharedSettings] setCurrentLibrary:[@(NYPLChosenLibraryBrooklyn) stringValue]];
     
     [NYPLAccount sharedAccount];
     [[NSNotificationCenter defaultCenter]
@@ -112,7 +113,7 @@
   [alert addAction:[UIAlertAction actionWithTitle:@"The Magic Library" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull  action) {
     
     
-    [[NYPLSettings sharedSettings] setCurrentLibrary:@"2"];
+    [[NYPLSettings sharedSettings] setCurrentLibrary:[@(NYPLChosenLibraryMagic) stringValue]];
     [NYPLAccount sharedAccount];
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NYPLAccountDidChangeNotification
@@ -141,15 +142,15 @@
     NSString *library = [[NYPLSettings sharedSettings] currentLibrary];
     
     NSString *libraryName = @"New York Public Library";
-    if ([library isEqualToString:@"0"])
+    if ([library isEqualToString:[@(NYPLChosenLibraryNYPL) stringValue]])
     {
       libraryName = @"New York Public Library";
     }
-    else if ([library isEqualToString:@"1"])
+    else if ([library isEqualToString:[@(NYPLChosenLibraryBrooklyn) stringValue]])
     {
       libraryName = @"Brooklyn Public Library";
     }
-    else if ([library isEqualToString:@"2"])
+    else if ([library isEqualToString:[@(NYPLChosenLibraryMagic) stringValue]])
     {
       libraryName = @"The Magic Library";
     }

@@ -15,6 +15,7 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksDownloadInfo.h"
 #import "NYPLSettings.h"
+#import "SimplyE-Swift.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -388,7 +389,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       URLByAppendingPathComponent:[[NSBundle mainBundle]
                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
      URLByAppendingPathComponent:@"content"];
-  if (![library isEqualToString:@"0"])
+  if (![library isEqualToString:[@(NYPLChosenLibraryNYPL) stringValue]])
   {
     directoryURL =
     [[[[NSURL fileURLWithPath:path]
