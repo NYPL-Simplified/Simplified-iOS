@@ -157,7 +157,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"Account", nil);
+      cell.textLabel.text = NSLocalizedString(@"Accounts", nil);
       cell.textLabel.font = [UIFont systemFontOfSize:17];
       if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
