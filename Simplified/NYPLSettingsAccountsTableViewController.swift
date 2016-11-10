@@ -29,7 +29,6 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
       for item in accountsList { array.append(item.rawValue) }
       NYPLSettings.sharedSettings().settingsAccountsList = array
       self.updateUI()
-      //GODO also reload tableview??
     }
   }
   
@@ -177,8 +176,13 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   // MARK: UITableViewDelegate
   
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    let library = accountsList[indexPath.row].rawValue
-    let viewController = NYPLSettingsAccountDetailViewController(library: library)
+    var account: Int
+    if (indexPath.section == 0) {
+      account = self.currentLibrary.rawValue
+    } else {
+      account = self.secondaryAccounts[indexPath.row].rawValue
+    }
+    let viewController = NYPLSettingsAccountDetailViewController(account: account)
     self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
     self.navigationController?.pushViewController(viewController, animated: true)
   }

@@ -83,7 +83,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 #pragma mark NSObject
 
 // User selected library
-- (instancetype)initWithLibrary:(NSInteger)library
+- (instancetype)initWithAccount:(NSInteger)account
 {
   return [self init];
 }
