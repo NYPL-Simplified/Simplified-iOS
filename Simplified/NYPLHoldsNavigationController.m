@@ -32,17 +32,17 @@
                                                      action:@selector(switchLibrary)];
   holdsViewController.navigationItem.leftBarButtonItem.enabled = YES;
   
-  NSString *library = [[NYPLSettings sharedSettings] currentLibrary];
+  NSString *library = [[NYPLSettings sharedSettings] currentAccount];
   NSString *libraryName = @"New York Public Library";
-  if ([library isEqualToString:[@(NYPLChosenLibraryNYPL) stringValue]])
+  if ([library isEqualToString:[@(NYPLUserAccountTypeNYPL) stringValue]])
   {
     libraryName = @"New York Public Library";
   }
-  else if ([library isEqualToString:[@(NYPLChosenLibraryBrooklyn) stringValue]])
+  else if ([library isEqualToString:[@(NYPLUserAccountTypeBrooklyn) stringValue]])
   {
     libraryName = @"Brooklyn Public Library";
   }
-  else if ([library isEqualToString:[@(NYPLChosenLibraryMagic) stringValue]])
+  else if ([library isEqualToString:[@(NYPLUserAccountTypeMagic) stringValue]])
   {
     libraryName = @"The Magic Library";
   }
@@ -57,18 +57,18 @@
 {
   [super viewWillAppear:animated];
   
-  NSString *library = [[NYPLSettings sharedSettings] currentLibrary];
+  NSString *library = [[NYPLSettings sharedSettings] currentAccount];
   
   NSString *libraryName = @"New York Public Library";
-  if ([library isEqualToString:[@(NYPLChosenLibraryNYPL) stringValue]])
+  if ([library isEqualToString:[@(NYPLUserAccountTypeNYPL) stringValue]])
   {
     libraryName = @"New York Public Library";
   }
-  else if ([library isEqualToString:[@(NYPLChosenLibraryBrooklyn) stringValue]])
+  else if ([library isEqualToString:[@(NYPLUserAccountTypeBrooklyn) stringValue]])
   {
     libraryName = @"Brooklyn Public Library";
   }
-  else if ([library isEqualToString:[@(NYPLChosenLibraryMagic) stringValue]])
+  else if ([library isEqualToString:[@(NYPLUserAccountTypeMagic) stringValue]])
   {
     libraryName = @"The Magic Library";
   }
@@ -90,7 +90,7 @@
   [alert addAction:[UIAlertAction actionWithTitle:@"New York Public Library" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
     
     
-    [[NYPLSettings sharedSettings] setCurrentLibrary:[@(NYPLChosenLibraryNYPL) stringValue]];
+    [[NYPLSettings sharedSettings] setCurrentAccount:[@(NYPLUserAccountTypeNYPL) stringValue]];
     
     [NYPLAccount sharedAccount];
     [[NSNotificationCenter defaultCenter]
@@ -110,7 +110,7 @@
   [alert addAction:[UIAlertAction actionWithTitle:@"Brooklyn Public Library" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull  action) {
     
     
-    [[NYPLSettings sharedSettings] setCurrentLibrary:[@(NYPLChosenLibraryBrooklyn) stringValue]];
+    [[NYPLSettings sharedSettings] setCurrentAccount:[@(NYPLUserAccountTypeBrooklyn) stringValue]];
     
     [NYPLAccount sharedAccount];
     [[NSNotificationCenter defaultCenter]
@@ -127,7 +127,7 @@
   [alert addAction:[UIAlertAction actionWithTitle:@"The Magic Library" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull  action) {
     
     
-    [[NYPLSettings sharedSettings] setCurrentLibrary:[@(NYPLChosenLibraryMagic) stringValue]];
+    [[NYPLSettings sharedSettings] setCurrentAccount:[@(NYPLUserAccountTypeMagic) stringValue]];
     [NYPLAccount sharedAccount];
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NYPLAccountDidChangeNotification
@@ -153,18 +153,18 @@
   
   [catalog reloadSelected];
   
-  NSString *library = [[NYPLSettings sharedSettings] currentLibrary];
+  NSString *library = [[NYPLSettings sharedSettings] currentAccount];
   
   NSString *libraryName = @"New York Public Library";
-  if ([library isEqualToString:[@(NYPLChosenLibraryNYPL) stringValue]])
+  if ([library isEqualToString:[@(NYPLUserAccountTypeNYPL) stringValue]])
   {
     libraryName = @"New York Public Library";
   }
-  else if ([library isEqualToString:[@(NYPLChosenLibraryBrooklyn) stringValue]])
+  else if ([library isEqualToString:[@(NYPLUserAccountTypeBrooklyn) stringValue]])
   {
     libraryName = @"Brooklyn Public Library";
   }
-  else if ([library isEqualToString:[@(NYPLChosenLibraryMagic) stringValue]])
+  else if ([library isEqualToString:[@(NYPLUserAccountTypeMagic) stringValue]])
   {
     libraryName = @"The Magic Library";
   }

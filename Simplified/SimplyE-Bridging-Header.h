@@ -8,4 +8,4 @@
 #import "NYPLBook.h"
 #import "NYPLAccount.h"
 #import "NYPLSettings.h"
-#import "NYPLSettingsAccountViewController.h"
+#import "NYPLSettingsAccountDetailViewController.h"

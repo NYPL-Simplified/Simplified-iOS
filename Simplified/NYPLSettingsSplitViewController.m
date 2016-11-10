@@ -1,6 +1,5 @@
 #import "HSHelpStack.h"
 #import "NYPLSettingsAboutViewController.h"
-#import "NYPLSettingsAccountViewController.h"
 #import "NYPLSettingsFeedbackViewController.h"
 #import "NYPLSettingsLicensesTableViewController.h"
 #import "NYPLSettingsPrimaryNavigationController.h"
@@ -38,12 +37,12 @@
   self.primaryNavigationController = [[NYPLSettingsPrimaryNavigationController alloc] init];
   self.primaryNavigationController.primaryTableViewController.delegate = self;
   
-  NSArray *libraries = [[NYPLSettings sharedSettings] settingsLibraryAccounts];
+  NSArray *accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.viewControllers = @[self.primaryNavigationController,
                              [[UINavigationController alloc] initWithRootViewController:
-                              [[NYPLSettingsLibrarySelectionViewControlelr alloc] initWithLibraries:libraries]]];
+                              [[NYPLSettingsAccountsTableViewController alloc] initWithAccounts:accounts]]];
     [self.primaryNavigationController.primaryTableViewController.tableView
      selectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
                             NYPLSettingsPrimaryTableViewControllerItemAccount)
@@ -75,14 +74,14 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
                              didSelectItem:(NYPLSettingsPrimaryTableViewControllerItem const)item
 {
   UIViewController *viewController;
-  NSArray *libraries;
+  NSArray *accounts;
   switch(item) {
     case NYPLSettingsPrimaryTableViewControllerItemLicenses:
       viewController = [[NYPLSettingsLicensesTableViewController alloc] init];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
-      libraries = [[NYPLSettings sharedSettings] settingsLibraryAccounts];
-      viewController = [[NYPLSettingsLibrarySelectionViewControlelr alloc] initWithLibraries:libraries];
+      accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
+      viewController = [[NYPLSettingsAccountsTableViewController alloc] initWithAccounts:accounts];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
       viewController = [[NYPLSettingsAboutViewController alloc] init];

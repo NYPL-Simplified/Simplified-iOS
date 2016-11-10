@@ -18,8 +18,8 @@ typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
 @property (atomic) NSURL *contentLicenseURL;
 @property (atomic) NYPLCardApplicationModel *currentCardApplication;
 
-@property (atomic) NSString* currentLibrary;
-@property (atomic) NSArray* settingsLibraryAccounts;
+@property (atomic) NSString* currentAccount;
+@property (atomic) NSArray* settingsAccountsList;
 
 // Leaving this set to |NYPLSettingsRenderingEngineAutomatic| (the default) is *highly* recommended.
 @property (atomic) NYPLSettingsRenderingEngine renderingEngine;

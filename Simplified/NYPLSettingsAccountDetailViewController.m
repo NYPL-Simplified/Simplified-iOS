@@ -13,7 +13,8 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReachability.h"
 #import "NYPLSettings.h"
-#import "NYPLSettingsAccountViewController.h"
+#import "NYPLSettingsAccountDetailViewController.h"
+#import "NYPLSettingsAccountSignInViewController.h"
 #import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -62,7 +63,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   }
 }
 
-@interface NYPLSettingsAccountViewController () <NSURLSessionDelegate, UITextFieldDelegate>
+@interface NYPLSettingsAccountDetailViewController () <NSURLSessionDelegate, UITextFieldDelegate>
 
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) UITextField *barcodeTextField;
@@ -77,7 +78,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 
 NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsAccountsSignInFinishedNotification";
 
-@implementation NYPLSettingsAccountViewController
+@implementation NYPLSettingsAccountDetailViewController
 
 #pragma mark NSObject
 
@@ -251,7 +252,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      __weak NYPLSettingsAccountViewController *const weakSelf = self;
+      __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
       CardCreatorConfiguration *const configuration =
         [[CardCreatorConfiguration alloc]
          initWithEndpointURL:[APIKeys cardCreatorEndpointURL]
@@ -782,7 +783,7 @@ requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
 authorizeImmediately:(BOOL)authorizeImmediately
 completionHandler:(void (^)())handler
 {
-  NYPLSettingsAccountViewController *const accountViewController = [[self alloc] init];
+  NYPLSettingsAccountDetailViewController *const accountViewController = [[self alloc] init];
   
   accountViewController.completionHandler = handler;
   

@@ -63,11 +63,11 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   
   return sharedSettings;
 }
-- (NSString*)currentLibrary
+- (NSString*)currentAccount
 {
   if ([[NSUserDefaults standardUserDefaults] valueForKey:@"library"] == nil)
   {
-    return [@(NYPLChosenLibraryNYPL) stringValue];
+    return [@(NYPLUserAccountTypeNYPL) stringValue];
   }
   return [[NSUserDefaults standardUserDefaults] valueForKey:@"library"];
 }
@@ -101,14 +101,14 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] URLForKey:contentLicenseURLKey];
 }
 
-- (NSArray *) settingsLibraryAccounts
+- (NSArray *) settingsAccountsList
 {
   NSArray *libraryAccounts = [[NSUserDefaults standardUserDefaults] arrayForKey:settingsLibraryAccountsKey];
-  // If user has not selected libraries yet, return the "currentLibrary"
+  // If user has not selected any accounts yet, return the "currentAccount"
   if (!libraryAccounts) {
-    int currentLibrary = [[self currentLibrary] intValue];
-    [self setSettingsLibraryAccounts:@[@(currentLibrary)]];
-    return [self settingsLibraryAccounts];
+    int currentLibrary = [[self currentAccount] intValue];
+    [self setSettingsAccountsList:@[@(currentLibrary)]];
+    return [self settingsAccountsList];
   } else {
     return libraryAccounts;
   }
@@ -122,9 +122,9 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   
   return [NSKeyedUnarchiver unarchiveObjectWithData:currentCardApplicationSerialization];
 }
-- (void)setCurrentLibrary:(NSString*)currentLibrary
+- (void)setCurrentAccount:(NSString*)account
 {
-  [[NSUserDefaults standardUserDefaults] setValue:currentLibrary forKey:@"library"];
+  [[NSUserDefaults standardUserDefaults] setValue:account forKey:@"library"];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 - (void)setUserAcceptedEULA:(BOOL)userAcceptedEULA
@@ -215,7 +215,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
    object:self];
 }
 
-- (void)setSettingsLibraryAccounts:(NSArray *)accounts
+- (void)setSettingsAccountsList:(NSArray *)accounts
 {
   [[NSUserDefaults standardUserDefaults] setObject:accounts forKey:settingsLibraryAccountsKey];
   [[NSUserDefaults standardUserDefaults] synchronize];

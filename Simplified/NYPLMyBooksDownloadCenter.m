@@ -1,7 +1,7 @@
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
-#import "NYPLSettingsAccountViewController.h"
+#import "NYPLSettingsAccountSignInViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
@@ -382,14 +382,14 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   assert([paths count] == 1);
   
   NSString *const path = paths[0];
-  NSString *library = [[NYPLSettings sharedSettings] currentLibrary];
+  NSString *library = [[NYPLSettings sharedSettings] currentAccount];
 
   NSURL * directoryURL =
     [[[NSURL fileURLWithPath:path]
       URLByAppendingPathComponent:[[NSBundle mainBundle]
                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
      URLByAppendingPathComponent:@"content"];
-  if (![library isEqualToString:[@(NYPLChosenLibraryNYPL) stringValue]])
+  if (![library isEqualToString:[@(NYPLUserAccountTypeNYPL) stringValue]])
   {
     directoryURL =
     [[[[NSURL fileURLWithPath:path]
@@ -553,7 +553,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     }
 
   } else {
-    [NYPLSettingsAccountViewController
+    [NYPLSettingsAccountSignInViewController
      requestCredentialsUsingExistingBarcode:NO
      completionHandler:^{
        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];

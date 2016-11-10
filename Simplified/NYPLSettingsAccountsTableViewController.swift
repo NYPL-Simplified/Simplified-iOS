@@ -1,6 +1,6 @@
 /// Type of library that can be added by the user
 /// to log in witih.
-@objc enum NYPLChosenLibrary: Int {
+@objc enum NYPLUserAccountType: Int {
   case NYPL = 0
   case Brooklyn
   case Magic
@@ -19,25 +19,52 @@
 
 /// UITableView to display or add libraries that the user
 /// can then log in to after selecting Accounts.
-class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   weak var tableView: UITableView!
   
-  private var libraryList: [NYPLChosenLibrary] {
+  private var accountsList: [NYPLUserAccountType] {
     didSet {
       var array = [Int]()
-      for item in libraryList { array.append(item.rawValue) }
-      NYPLSettings.sharedSettings().settingsLibraryAccounts = array
+      for item in accountsList { array.append(item.rawValue) }
+      NYPLSettings.sharedSettings().settingsAccountsList = array
       self.updateUI()
+      //GODO also reload tableview??
     }
   }
   
-  required init(libraries: [Int]) {
-    self.libraryList = []
-    for item in libraries {
-      guard let library = NYPLChosenLibrary(rawValue: item) else { continue }
-      self.libraryList.append(library)
+  private var secondaryAccounts: [NYPLUserAccountType] {
+    get {
+      var array = [NYPLUserAccountType]()
+      for account in self.accountsList {
+        if (account.rawValue != self.currentLibrary.rawValue) {
+          array.append(account)
+        }
+      }
+      return array
     }
+    set {
+      var array = newValue
+      array.append(currentLibrary)
+      self.accountsList = array
+    }
+  }
+
+  private var currentLibrary: NYPLUserAccountType {
+    get {
+      let libString = NYPLSettings.sharedSettings().currentAccount
+      guard let lib = NYPLUserAccountType(rawValue: Int(libString)!) else { return NYPLUserAccountType.NYPL }
+      return lib
+    }
+  }
+  
+  required init(accounts: [Int]) {
+    var filteredList = [NYPLUserAccountType]()
+    for item in accounts {
+      guard let library = NYPLUserAccountType(rawValue: item) else { continue }
+      filteredList.append(library)
+    }
+    self.accountsList = filteredList
     super.init(nibName:nil, bundle:nil)
   }
 
@@ -62,7 +89,7 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
   }
   
   func updateUI() {
-    if (libraryList.count < 3) {
+    if (accountsList.count < 3) {
       self.navigationItem.rightBarButtonItem = UIBarButtonItem(
         barButtonSystemItem: .Add, target: self, action: #selector(addLibrary))
     } else {
@@ -79,21 +106,21 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
     alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
     alert.popoverPresentationController?.permittedArrowDirections = .Up
     
-    if (libraryList.contains(.NYPL) == false) {
+    if (accountsList.contains(.NYPL) == false) {
       alert.addAction(UIAlertAction(title: "New York Public Library", style: .Default, handler: { action in
-        self.libraryList.append(NYPLChosenLibrary.NYPL)
+        self.accountsList.append(NYPLUserAccountType.NYPL)
         self.tableView.reloadData()
       }))
     }
-    if (libraryList.contains(.Brooklyn) == false) {
+    if (accountsList.contains(.Brooklyn) == false) {
       alert.addAction(UIAlertAction(title: "Brooklyn Public Library", style: .Default, handler: { action in
-        self.libraryList.append(NYPLChosenLibrary.Brooklyn)
+        self.accountsList.append(NYPLUserAccountType.Brooklyn)
         self.tableView.reloadData()
       }))
     }
-    if (libraryList.contains(.Magic) == false) {
+    if (accountsList.contains(.Magic) == false) {
       alert.addAction(UIAlertAction(title: "The Magic Library", style: .Default, handler: { action in
-        self.libraryList.append(NYPLChosenLibrary.Magic)
+        self.accountsList.append(NYPLUserAccountType.Magic)
         self.tableView.reloadData()
       }))
     }
@@ -107,8 +134,8 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
       return 1
-    } else if (self.libraryList.count >= 1) {
-      return self.libraryList.count - 1
+    } else if (self.accountsList.count >= 1) {
+      return self.accountsList.count - 1
     } else {
       return 0
     }
@@ -119,28 +146,18 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
   }
   
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    
     if (indexPath.section == 0) {
-      for library in libraryList {
-        if (Int(NYPLSettings.sharedSettings().currentLibrary) == library.rawValue) {
-          return cellForLibrary(library, indexPath)
-        }
-      }
+      return cellForLibrary(self.currentLibrary, indexPath)
     } else {
-      for library in libraryList {
-        if (Int(NYPLSettings.sharedSettings().currentLibrary) != library.rawValue) {
-          return cellForLibrary(library, indexPath)
-        }
-      }
+      return cellForLibrary(self.secondaryAccounts[indexPath.row], indexPath)
     }
-    return cellForLibrary(.NYPL, indexPath)
   }
   
-  func cellForLibrary(library: NYPLChosenLibrary, _ indexPath: NSIndexPath) -> UITableViewCell {
+  func cellForLibrary(library: NYPLUserAccountType, _ indexPath: NSIndexPath) -> UITableViewCell {
     let cell = UITableViewCell.init(style: .Subtitle, reuseIdentifier: "")
     cell.accessoryType = .DisclosureIndicator
     cell.textLabel?.font = UIFont(name: "AvenirNext-Regular", size: 14)
-    cell.textLabel?.text = libraryList[indexPath.row].simpleDescription()
+    cell.textLabel?.text = library.simpleDescription()
     
     cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 10)
     cell.detailTextLabel?.text = "Subtitle will go here."
@@ -160,8 +177,8 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
   // MARK: UITableViewDelegate
   
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    let library = libraryList[indexPath.row].rawValue
-    let viewController = NYPLSettingsAccountViewController(library: library)
+    let library = accountsList[indexPath.row].rawValue
+    let viewController = NYPLSettingsAccountDetailViewController(library: library)
     self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
     self.navigationController?.pushViewController(viewController, animated: true)
   }
@@ -171,7 +188,7 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
   }
   
   func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-    if self.libraryList.count <= 1 {
+    if indexPath.section == 0 {
       return false;
     } else {
       return true;
@@ -180,7 +197,7 @@ class NYPLSettingsLibrarySelectionViewControlelr: UIViewController, UITableViewD
   
   func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
     if editingStyle == .Delete {
-      self.libraryList.removeAtIndex(indexPath.row)
+      secondaryAccounts.removeAtIndex(indexPath.row)
       tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
       self.tableView.reloadData()
     }
