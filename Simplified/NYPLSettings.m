@@ -90,7 +90,15 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 
 - (BOOL)userAcceptedEULA
 {
-  return [[NSUserDefaults standardUserDefaults] boolForKey:userAcceptedEULAKey];
+  if (self.currentAccountIdentifier != NYPLUserAccountTypeNYPL)
+  {
+    NSString *accountAcceptedEULAKey = [NSString stringWithFormat:@"%@_%@",userAcceptedEULAKey,self.currentAccount.pathComponent];
+    return [[NSUserDefaults standardUserDefaults] boolForKey:accountAcceptedEULAKey];
+  }
+  else
+  {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:userAcceptedEULAKey];
+  }
 }
 
 - (BOOL)userPresentedWelcomeScreen
@@ -150,8 +158,17 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 }
 - (void)setUserAcceptedEULA:(BOOL)userAcceptedEULA
 {
-  [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:userAcceptedEULAKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
+  if (self.currentAccountIdentifier != NYPLUserAccountTypeNYPL)
+  {
+    NSString *accountAcceptedEULAKey = [NSString stringWithFormat:@"%@_%@",userAcceptedEULAKey,self.currentAccount.pathComponent];
+    [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:accountAcceptedEULAKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+  }
+  else
+  {
+    [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:userAcceptedEULAKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+  }
 }
 - (void)setUserPresentedWelcomeScreen:(BOOL)userPresentedScreen
 {
