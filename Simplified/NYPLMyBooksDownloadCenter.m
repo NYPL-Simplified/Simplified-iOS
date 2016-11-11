@@ -382,20 +382,20 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   assert([paths count] == 1);
   
   NSString *const path = paths[0];
-  NSString *library = [[NYPLSettings sharedSettings] currentAccount];
+  NYPLUserAccountType library = [[NYPLSettings sharedSettings] currentAccount];
 
   NSURL * directoryURL =
     [[[NSURL fileURLWithPath:path]
       URLByAppendingPathComponent:[[NSBundle mainBundle]
                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
      URLByAppendingPathComponent:@"content"];
-  if (![library isEqualToString:[@(NYPLUserAccountTypeNYPL) stringValue]])
+  if (library != NYPLUserAccountTypeNYPL)
   {
     directoryURL =
     [[[[NSURL fileURLWithPath:path]
        URLByAppendingPathComponent:[[NSBundle mainBundle]
                                     objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-      URLByAppendingPathComponent:library]
+      URLByAppendingPathComponent:[@(library) stringValue]]
      URLByAppendingPathComponent:@"content"];
   }
   NSError *error = nil;

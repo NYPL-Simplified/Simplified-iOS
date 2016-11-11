@@ -20,12 +20,12 @@ NSString * PINKey = @"NYPLAccountPIN";
     }
   }
   
-  NSString *library = [[NYPLSettings sharedSettings] currentAccount];
+  NYPLUserAccountType library = [[NYPLSettings sharedSettings] currentAccount];
 
-  if (![library isEqualToString:[@(NYPLUserAccountTypeNYPL) stringValue]])
+  if (library != NYPLUserAccountTypeNYPL)
   {
-    barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode",library];
-    PINKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPIN",library];
+    barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode",[@(library) stringValue]];
+    PINKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPIN",[@(library) stringValue]];
   }
   else
   {
@@ -47,7 +47,7 @@ NSString * PINKey = @"NYPLAccountPIN";
   }
   
   
-  if (![[@(account) stringValue] isEqualToString:[@(NYPLUserAccountTypeNYPL) stringValue]])
+  if (account != NYPLUserAccountTypeNYPL)
   {
     barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode",[@(account) stringValue]];
     PINKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPIN",[@(account) stringValue]];

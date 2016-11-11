@@ -76,7 +76,11 @@ static NSString *const heapIDDevelopment = @"1848989408";
   NSURL *const customURL = [NYPLSettings sharedSettings].customMainFeedURL;
 
   if(customURL) return customURL;
+
+  NSURL *const accountURL = [NYPLSettings sharedSettings].accountMainFeedURL;
   
+  if(accountURL) return accountURL;
+
   return [self circulationURL];
 }
 

@@ -15,6 +15,17 @@
       return "Instant Classics"
     }
   }
+  
+  func logo() -> UIImage? {
+    switch self {
+    case .NYPL:
+      return UIImage(named: "LibraryLogoNYPL")
+    case .Brooklyn:
+      return UIImage(named: "LibraryLogoBrooklyn")
+    case .Magic:
+      return UIImage(named: "LibraryLogoMagic2")
+    }
+  }
 }
 
 /// UITableView to display or add library accounts that the user
@@ -51,9 +62,9 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
 
   private var currentSelectedAccount: NYPLUserAccountType {
     get {
-      let libString = NYPLSettings.sharedSettings().currentAccount
-      guard let lib = NYPLUserAccountType(rawValue: Int(libString)!) else { return NYPLUserAccountType.NYPL }
-      return lib
+      let currentAccount = NYPLSettings.sharedSettings().currentAccount
+      guard let account = NYPLUserAccountType(rawValue: currentAccount) else { return NYPLUserAccountType.NYPL }
+      return account
     }
   }
   
@@ -120,19 +131,19 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     alert.popoverPresentationController?.permittedArrowDirections = .Up
     
     if (accountsList.contains(.NYPL) == false) {
-      alert.addAction(UIAlertAction(title: "New York Public Library", style: .Default, handler: { action in
+      alert.addAction(UIAlertAction(title: NYPLUserAccountType.NYPL.simpleDescription(), style: .Default, handler: { action in
         self.accountsList.append(NYPLUserAccountType.NYPL)
         self.tableView.reloadData()
       }))
     }
     if (accountsList.contains(.Brooklyn) == false) {
-      alert.addAction(UIAlertAction(title: "Brooklyn Public Library", style: .Default, handler: { action in
+      alert.addAction(UIAlertAction(title: NYPLUserAccountType.Brooklyn.simpleDescription(), style: .Default, handler: { action in
         self.accountsList.append(NYPLUserAccountType.Brooklyn)
         self.tableView.reloadData()
       }))
     }
     if (accountsList.contains(.Magic) == false) {
-      alert.addAction(UIAlertAction(title: "Instant Classics", style: .Default, handler: { action in
+      alert.addAction(UIAlertAction(title: NYPLUserAccountType.Magic.simpleDescription(), style: .Default, handler: { action in
         self.accountsList.append(NYPLUserAccountType.Magic)
         self.tableView.reloadData()
       }))
@@ -177,11 +188,11 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     
     switch library {
     case .Brooklyn:
-      cell.imageView?.image = UIImage(named: "LibraryLogoBrooklyn")
+      cell.imageView?.image = NYPLUserAccountType.Brooklyn.logo()
     case .NYPL:
-      cell.imageView?.image = UIImage(named: "LibraryLogoNYPL")
+      cell.imageView?.image = NYPLUserAccountType.NYPL.logo()
     case .Magic:
-      cell.imageView?.image = UIImage(named: "LibraryLogoMagic2")
+      cell.imageView?.image = NYPLUserAccountType.Magic.logo()
     }
     
     return cell

@@ -8,6 +8,8 @@
 
 static NSString *const customMainFeedURLKey = @"NYPLSettingsCustomMainFeedURL";
 
+static NSString *const accountMainFeedURLKey = @"NYPLSettingsAccountMainFeedURL";
+
 static NSString *const renderingEngineKey = @"NYPLSettingsRenderingEngine";
 
 static NSString *const userAcceptedEULAKey = @"NYPLSettingsUserAcceptedEULA";
@@ -65,17 +67,18 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   
   return sharedSettings;
 }
-- (NSString*)currentAccount
+- (NSInteger)currentAccount
 {
-  if ([[NSUserDefaults standardUserDefaults] valueForKey:@"library"] == nil)
-  {
-    return [@(NYPLUserAccountTypeNYPL) stringValue];
-  }
-  return [[NSUserDefaults standardUserDefaults] valueForKey:@"library"];
+  return [[NSUserDefaults standardUserDefaults] integerForKey:@"library"];
 }
 - (NSURL *)customMainFeedURL
 {
   return [[NSUserDefaults standardUserDefaults] URLForKey:customMainFeedURLKey];
+}
+
+- (NSURL *)accountMainFeedURL
+{
+  return [[NSUserDefaults standardUserDefaults] URLForKey:accountMainFeedURLKey];
 }
 
 - (BOOL)userAcceptedEULA
@@ -113,7 +116,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   NSArray *libraryAccounts = [[NSUserDefaults standardUserDefaults] arrayForKey:settingsLibraryAccountsKey];
   // If user has not selected any accounts yet, return the "currentAccount"
   if (!libraryAccounts) {
-    int currentLibrary = [[self currentAccount] intValue];
+    NSInteger currentLibrary = [self currentAccount];
     [self setSettingsAccountsList:@[@(currentLibrary)]];
     return [self settingsAccountsList];
   } else {
@@ -129,9 +132,9 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   
   return [NSKeyedUnarchiver unarchiveObjectWithData:currentCardApplicationSerialization];
 }
-- (void)setCurrentAccount:(NSString*)account
+- (void)setCurrentAccount:(NSInteger)account
 {
-  [[NSUserDefaults standardUserDefaults] setValue:account forKey:@"library"];
+  [[NSUserDefaults standardUserDefaults] setInteger:account forKey:@"library"];
   [[NSUserDefaults standardUserDefaults] synchronize];
   
   [[NSNotificationCenter defaultCenter]
@@ -155,6 +158,18 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   if([customMainFeedURL isEqual:self.customMainFeedURL]) return;
   
   [[NSUserDefaults standardUserDefaults] setURL:customMainFeedURL forKey:customMainFeedURLKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLSettingsDidChangeNotification
+   object:self];
+}
+- (void)setAccountMainFeedURL:(NSURL *const)accountMainFeedURL
+{
+  if(!accountMainFeedURL && !self.accountMainFeedURL) return;
+  if([accountMainFeedURL isEqual:self.accountMainFeedURL]) return;
+  
+  [[NSUserDefaults standardUserDefaults] setURL:accountMainFeedURL forKey:accountMainFeedURLKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
   
   [[NSNotificationCenter defaultCenter]

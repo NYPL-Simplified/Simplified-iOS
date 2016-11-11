@@ -81,7 +81,7 @@ static NSString *const RecordsKey = @"records";
   assert([paths count] == 1);
   
   NSString *const path = paths[0];
-  NSString *library = [[NYPLSettings sharedSettings] currentAccount];
+  NYPLUserAccountType library = [[NYPLSettings sharedSettings] currentAccount];
 
   NSURL *URL =
   [[[NSURL fileURLWithPath:path]
@@ -89,13 +89,12 @@ static NSString *const RecordsKey = @"records";
                                   objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
    URLByAppendingPathComponent:@"registry"];
   
-  if (![library isEqualToString:[@(NYPLUserAccountTypeNYPL) stringValue]])
-  {
+  if (library != NYPLUserAccountTypeNYPL)  {
     URL =
     [[[[NSURL fileURLWithPath:path]
        URLByAppendingPathComponent:[[NSBundle mainBundle]
                                     objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-      URLByAppendingPathComponent:library]
+      URLByAppendingPathComponent:[@(library) stringValue]]
      URLByAppendingPathComponent:@"registry"];
   }
   return URL;
