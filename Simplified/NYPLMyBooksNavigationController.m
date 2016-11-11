@@ -45,9 +45,7 @@
   NYPLMyBooksViewController *viewController = (NYPLMyBooksViewController *)self.visibleViewController;
   
   viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
-  
-  //  [[NYPLBookRegistry sharedRegistry] reset];
-  
+    
 }
 
 - (void) switchLibrary

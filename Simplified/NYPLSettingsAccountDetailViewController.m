@@ -543,10 +543,9 @@ replacementString:(NSString *)string
 {
   void (^afterDeauthorization)() = ^() {
     
-    // AM_FIXME
-    
-//    [[NYPLMyBooksDownloadCenter sharedDownloadCenter:self.account] reset];
-//    [[NYPLBookRegistry sharedRegistry:self.account] reset];
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.account];
+    [[NYPLBookRegistry sharedRegistry] reset:self.account];
+
     [[NYPLAccount sharedAccount:self.account] removeBarcodeAndPIN];
     [self.tableView reloadData];
   };

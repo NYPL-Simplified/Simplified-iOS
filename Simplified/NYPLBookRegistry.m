@@ -99,6 +99,31 @@ static NSString *const RecordsKey = @"records";
   }
   return URL;
 }
+- (NSURL *)registryDirectory:(NSInteger)account
+{
+  NSArray *const paths =
+  NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  
+  assert([paths count] == 1);
+  
+  NSString *const path = paths[0];
+  
+  NSURL *URL =
+  [[[NSURL fileURLWithPath:path]
+    URLByAppendingPathComponent:[[NSBundle mainBundle]
+                                 objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
+   URLByAppendingPathComponent:@"registry"];
+  
+  if (account != NYPLUserAccountTypeNYPL)  {
+    URL =
+    [[[[NSURL fileURLWithPath:path]
+       URLByAppendingPathComponent:[[NSBundle mainBundle]
+                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
+      URLByAppendingPathComponent:[@(account) stringValue]]
+     URLByAppendingPathComponent:@"registry"];
+  }
+  return URL;
+}
 
 - (void)performSynchronizedWithoutBroadcasting:(void (^)())block
 {
@@ -530,6 +555,19 @@ static NSString *const RecordsKey = @"records";
 {
   return [self.coverRegistry cachedThumbnailImageForBook:book];
 }
+
+- (void)reset:(NSInteger)account
+{
+  @synchronized(self) {
+//    self.syncShouldCommit = NO;
+//    [self.coverRegistry removeAllPinnedThumbnailImages];
+//    [self.identifiersToRecords removeAllObjects];
+    [[NSFileManager defaultManager] removeItemAtURL:[self registryDirectory:account] error:NULL];
+  }
+  
+//  [self broadcastChange];
+}
+
 
 - (void)reset
 {

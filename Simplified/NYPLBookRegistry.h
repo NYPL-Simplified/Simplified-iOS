@@ -128,6 +128,9 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 // Resets the registry to an empty state.
 - (void)reset;
 
+// Resets the registry for a scpecific account
+- (void)reset:(NSInteger)account;
+
 // Delay committing any changes from a sync indefinitely.
 - (void)delaySyncCommit;
 

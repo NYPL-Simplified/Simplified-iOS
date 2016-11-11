@@ -374,6 +374,42 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   return self.bookIdentifierToDownloadInfo[bookIdentifier];
 }
 
+- (NSURL *)contentDirectoryURL:(NSInteger)account
+{
+  NSArray *const paths =
+  NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  
+  assert([paths count] == 1);
+  
+  NSString *const path = paths[0];
+  
+  NSURL * directoryURL =
+  [[[NSURL fileURLWithPath:path]
+    URLByAppendingPathComponent:[[NSBundle mainBundle]
+                                 objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
+   URLByAppendingPathComponent:@"content"];
+  if (account != NYPLUserAccountTypeNYPL)
+  {
+    directoryURL =
+    [[[[NSURL fileURLWithPath:path]
+       URLByAppendingPathComponent:[[NSBundle mainBundle]
+                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
+      URLByAppendingPathComponent:[@(account) stringValue]]
+     URLByAppendingPathComponent:@"content"];
+  }
+  NSError *error = nil;
+  if(![[NSFileManager defaultManager]
+       createDirectoryAtURL:directoryURL
+       withIntermediateDirectories:YES
+       attributes:nil
+       error:&error]) {
+    NYPLLOG(@"Failed to create directory.");
+    return nil;
+  }
+  
+  return directoryURL;
+}
+
 - (NSURL *)contentDirectoryURL
 {
   NSArray *const paths =
@@ -615,6 +651,14 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     otherButtonTitles:NSLocalizedString(@"Delete", nil), nil]
    show];
 }
+
+- (void)reset:(NSInteger)account
+{
+  [[NSFileManager defaultManager]
+   removeItemAtURL:[self contentDirectoryURL:account]
+   error:NULL];
+}
+
 
 - (void)reset
 {
