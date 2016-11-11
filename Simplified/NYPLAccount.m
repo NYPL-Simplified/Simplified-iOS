@@ -35,6 +35,32 @@ NSString * PINKey = @"NYPLAccountPIN";
   return sharedAccount;
 }
 
++ (instancetype)sharedAccount:(NSInteger)account
+{
+  static NYPLAccount *sharedAccount = nil;
+  
+  if (sharedAccount == nil) {
+    sharedAccount = [[self alloc] init];
+    if(!sharedAccount) {
+      NYPLLOG(@"Failed to create shared account.");
+    }
+  }
+  
+  
+  if (![[@(account) stringValue] isEqualToString:[@(NYPLUserAccountTypeNYPL) stringValue]])
+  {
+    barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode",[@(account) stringValue]];
+    PINKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPIN",[@(account) stringValue]];
+  }
+  else
+  {
+    barcodeKey = @"NYPLAccountBarcode";
+    PINKey = @"NYPLAccountPIN";
+  }
+
+
+  return sharedAccount;
+}
 - (BOOL)hasBarcodeAndPIN
 {
   if(self.barcode && self.PIN) return YES;
