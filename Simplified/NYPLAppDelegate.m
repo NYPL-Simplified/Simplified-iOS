@@ -38,21 +38,16 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
   [self.window makeKeyAndVisible];
   
-  if ([[NYPLSettings sharedSettings] userAcceptedEULA]) {
-    self.window.rootViewController = [NYPLRootTabBarController sharedController];
-    [self beginCheckingForUpdates];
-  } else {
-    NYPLRootTabBarController *mainViewController = [NYPLRootTabBarController sharedController];
-    UIViewController *eulaViewController = [[NYPLEULAViewController alloc] initWithCompletionHandler:^(void) {
-      [UIView transitionWithView:self.window
-                        duration:0.5
-                         options:UIViewAnimationOptionTransitionCurlUp
-                      animations:^() {self.window.rootViewController = mainViewController; }
-                      completion:nil];
-      [self beginCheckingForUpdates];
-    }];
-    self.window.rootViewController = eulaViewController;
-  }
+  NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
+  self.window.rootViewController = vc;
+  
+  //GODO still working on 
+//  if ([[NYPLSettings sharedSettings] userPresentedWelcomeScreen] == NO) {
+//    [self.window.rootViewController presentViewController:[[NYPLWelcomeScreen alloc] init] animated:YES completion:nil];
+////    [vc safelyPresentViewController:[[NYPLWelcomeScreen alloc] init] animated:YES completion:nil];
+//  }
+  
+  [self beginCheckingForUpdates];
   
   return YES;
 }

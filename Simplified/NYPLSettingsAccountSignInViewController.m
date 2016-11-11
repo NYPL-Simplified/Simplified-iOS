@@ -5,10 +5,12 @@
 
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
+#import "NYPLAppDelegate.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
+#import "NYPLEULAViewController.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReachability.h"
@@ -84,7 +86,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"Account", nil);
+  self.title = NSLocalizedString(@"SignIn", nil);
 
   [[NSNotificationCenter defaultCenter]
    addObserver:self
@@ -849,10 +851,27 @@ completionHandler:(void (^)())handler
       self.completionHandler = nil;
       if(handler) handler();
       [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+      [self checkAndPresentEULA];
     } else {
       [self showLoginAlertWithError:error];
     }
   }];
+}
+
+- (void)checkAndPresentEULA
+{
+  if ([[NYPLSettings sharedSettings] userAcceptedEULA] == NO) {
+    NYPLAppDelegate *delegate = [UIApplication sharedApplication].delegate;
+    NYPLRootTabBarController *mainViewController = [NYPLRootTabBarController sharedController];
+    UIViewController *eulaViewController = [[NYPLEULAViewController alloc] initWithCompletionHandler:^(void) {
+      [UIView transitionWithView:delegate.window
+                        duration:0.5
+                         options:UIViewAnimationOptionTransitionCurlUp
+                      animations:^() {delegate.window.rootViewController = mainViewController; }
+                      completion:nil];
+    }];
+    delegate.window.rootViewController = eulaViewController;
+  }
 }
 
 - (void)willResignActive

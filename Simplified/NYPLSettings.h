@@ -1,4 +1,5 @@
 static NSString *const NYPLSettingsDidChangeNotification = @"NYPLSettingsDidChangeNotification";
+static NSString *const NYPLCurrentAccountDidChangeNotification = @"NYPLCurrentAccountDidChangeNotification";
 
 typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
   NYPLSettingsRenderingEngineAutomatic,
@@ -12,6 +13,7 @@ typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
 // Set to nil (the default) if no custom feed should be used.
 @property (atomic) NSURL *customMainFeedURL;
 @property (atomic) BOOL userAcceptedEULA;
+@property (atomic) BOOL userPresentedWelcomeScreen;
 @property (atomic) NSURL *eulaURL;
 @property (atomic) NSURL *privacyPolicyURL;
 @property (atomic) NSURL *acknowledgmentsURL;

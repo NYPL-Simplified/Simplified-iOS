@@ -1,5 +1,5 @@
-/// Type of library that can be added by the user
-/// to log in witih.
+/// Type of library accounts that can be added by the user
+/// to log in with.
 @objc enum NYPLUserAccountType: Int {
   case NYPL = 0
   case Brooklyn
@@ -17,8 +17,8 @@
   }
 }
 
-/// UITableView to display or add libraries that the user
-/// can then log in to after selecting Accounts.
+/// UITableView to display or add library accounts that the user
+/// can then log in and adjust settings after selecting Accounts.
 class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   weak var tableView: UITableView!
@@ -36,7 +36,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     get {
       var array = [NYPLUserAccountType]()
       for account in self.accountsList {
-        if (account.rawValue != self.currentLibrary.rawValue) {
+        if (account.rawValue != self.currentSelectedAccount.rawValue) {
           array.append(account)
         }
       }
@@ -44,12 +44,12 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     }
     set {
       var array = newValue
-      array.append(currentLibrary)
+      array.append(self.currentSelectedAccount)
       self.accountsList = array
     }
   }
 
-  private var currentLibrary: NYPLUserAccountType {
+  private var currentSelectedAccount: NYPLUserAccountType {
     get {
       let libString = NYPLSettings.sharedSettings().currentAccount
       guard let lib = NYPLUserAccountType(rawValue: Int(libString)!) else { return NYPLUserAccountType.NYPL }
@@ -64,7 +64,17 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
       filteredList.append(library)
     }
     self.accountsList = filteredList
+    
     super.init(nibName:nil, bundle:nil)
+    
+    NSNotificationCenter.defaultCenter().addObserver(self,
+                                                     selector: #selector(reloadTableView),
+                                                     name: NYPLCurrentAccountDidChangeNotification,
+                                                     object: nil)
+  }
+  
+  deinit {
+    NSNotificationCenter.defaultCenter().removeObserver(self)
   }
 
   @available(*, unavailable)
@@ -87,19 +97,23 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     updateUI()
   }
   
+  func reloadTableView() {
+    self.tableView.reloadData()
+  }
+  
   func updateUI() {
     if (accountsList.count < 3) {
       self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-        barButtonSystemItem: .Add, target: self, action: #selector(addLibrary))
+        barButtonSystemItem: .Add, target: self, action: #selector(addAccount))
     } else {
       self.navigationItem.rightBarButtonItem = nil
     }
   }
   
-  func addLibrary() {
+  func addAccount() {
     let alert = UIAlertController(title: NSLocalizedString(
       "SettingsAccountLibrariesViewControllerAlertTitle",
-      comment: "Title to tell a user that they can add another library to the list"),
+      comment: "Title to tell a user that they can add another account to the list"),
                                   message: nil,
                                   preferredStyle: .ActionSheet)
     alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
@@ -146,7 +160,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     if (indexPath.section == 0) {
-      return cellForLibrary(self.currentLibrary, indexPath)
+      return cellForLibrary(self.currentSelectedAccount, indexPath)
     } else {
       return cellForLibrary(self.secondaryAccounts[indexPath.row], indexPath)
     }
@@ -178,7 +192,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     var account: Int
     if (indexPath.section == 0) {
-      account = self.currentLibrary.rawValue
+      account = self.currentSelectedAccount.rawValue
     } else {
       account = self.secondaryAccounts[indexPath.row].rawValue
     }

@@ -12,6 +12,8 @@ static NSString *const renderingEngineKey = @"NYPLSettingsRenderingEngine";
 
 static NSString *const userAcceptedEULAKey = @"NYPLSettingsUserAcceptedEULA";
 
+static NSString *const userPresentedWelcomeScreenKey = @"NYPLUserPresentedWelcomeScreenKey";
+
 static NSString *const eulaURLKey = @"NYPLSettingsEULAURL";
 
 static NSString *const privacyPolicyURLKey = @"NYPLSettingsPrivacyPolicyURL";
@@ -81,6 +83,11 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] boolForKey:userAcceptedEULAKey];
 }
 
+- (BOOL)userPresentedWelcomeScreen
+{
+  return [[NSUserDefaults standardUserDefaults] boolForKey:userPresentedWelcomeScreenKey];
+}
+
 - (NSURL *)eulaURL
 {
   return [[NSUserDefaults standardUserDefaults] URLForKey:eulaURLKey];
@@ -126,10 +133,19 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 {
   [[NSUserDefaults standardUserDefaults] setValue:account forKey:@"library"];
   [[NSUserDefaults standardUserDefaults] synchronize];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLCurrentAccountDidChangeNotification
+   object:self];
 }
 - (void)setUserAcceptedEULA:(BOOL)userAcceptedEULA
 {
   [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:userAcceptedEULAKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+- (void)setUserPresentedWelcomeScreen:(BOOL)userPresentedScreen
+{
+  [[NSUserDefaults standardUserDefaults] setBool:userPresentedScreen forKey:userPresentedWelcomeScreenKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
