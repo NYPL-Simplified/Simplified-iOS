@@ -10,6 +10,8 @@ static NSString *const NYPLAccountDidChangeNotification = @"NYPLAccountDidChange
 
 + (instancetype)sharedAccount;
 
++ (instancetype)sharedAccount:(NSInteger)account;
+
 // Neither |barcode| nor |pin| may be null.
 - (void)setBarcode:(NSString *)barcode PIN:(NSString *)PIN;
 

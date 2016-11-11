@@ -1,7 +1,6 @@
 @import LocalAuthentication;
 @import NYPLCardCreator;
 
-#import "SimplyE-Swift.h"
 
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
@@ -18,6 +17,8 @@
 #import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "SimplyE-Swift.h"
+
 @import CoreLocation;
 
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -73,6 +74,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @property (nonatomic) UITextField *PINTextField;
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
+@property (nonatomic) NYPLUserAccountType account;
 
 @end
 
@@ -82,9 +84,10 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 
 #pragma mark NSObject
 
-// User selected library
+
 - (instancetype)initWithAccount:(NSInteger)account
 {
+  self.account = account;
   return [self init];
 }
 
@@ -199,13 +202,13 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
-  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
-    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-      self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
-      self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
-      [self logIn];
-    }
-  }
+//  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
+//    if ([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN]) {
+//      self.barcodeTextField.text = [NYPLAccount sharedAccount:self.account].barcode;
+//      self.PINTextField.text = [NYPLAccount sharedAccount:self.account].PIN;
+//      [self logIn];
+//    }
+//  }
 }
 #endif
 
@@ -223,7 +226,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindLogInSignOut:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+      if([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN]) {
         UIAlertController *const alertController =
           (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
            ? [UIAlertController
@@ -293,51 +296,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)verifyLocationServicesWithHandler:(void(^)(void))handler
-{
-  CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
-  
-  switch (status) {
-    case kCLAuthorizationStatusAuthorizedAlways:
-      if (handler) handler();
-      break;
-    case kCLAuthorizationStatusAuthorizedWhenInUse:
-      if (handler) handler();
-      break;
-    case kCLAuthorizationStatusDenied:
-    {
-      UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Location", nil)
-                                                                               message:NSLocalizedString(@"LocationRequiredMessage", nil)
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-      
-      UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Settings", nil)
-                                                           style:UIAlertActionStyleDefault
-                                                         handler:^(UIAlertAction *action) {
-                                                           if (action)[UIApplication.sharedApplication openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-                                                         }];
-
-      UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                           style:UIAlertActionStyleDestructive
-                                                         handler:nil];
-      
-      [alertController addAction:settingsAction];
-      [alertController addAction:cancelAction];
-      
-      [self presentViewController:alertController
-                         animated:NO
-                       completion:nil];
-      
-      break;
-    }
-    case kCLAuthorizationStatusRestricted:
-      if (handler) handler();
-      break;
-    case kCLAuthorizationStatusNotDetermined:
-      if (handler) handler();
-      break;
-  }
-}
-
 #pragma mark UITableViewDataSource
 
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -399,7 +357,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN] || ![NYPLConfiguration cardCreationEnabled]) {
+  if([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN] || ![NYPLConfiguration cardCreationEnabled]) {
     // No registration is possible.
     return 2;
   } else {
@@ -425,7 +383,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (BOOL)textFieldShouldBeginEditing:(__unused UITextField *)textField
 {
-  return ![[NYPLAccount sharedAccount] hasBarcodeAndPIN];
+  return ![[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN];
 }
 
 #pragma mark NSURLSessionDelegate
@@ -521,11 +479,11 @@ replacementString:(NSString *)string
 - (void)accountDidChange
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-      self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
+    if([NYPLAccount sharedAccount:self.account].hasBarcodeAndPIN) {
+      self.barcodeTextField.text = [NYPLAccount sharedAccount:self.account].barcode;
       self.barcodeTextField.enabled = NO;
       self.barcodeTextField.textColor = [UIColor grayColor];
-      self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
+      self.PINTextField.text = [NYPLAccount sharedAccount:self.account].PIN;
       self.PINTextField.textColor = [UIColor grayColor];
     } else {
       self.barcodeTextField.text = nil;
@@ -543,7 +501,7 @@ replacementString:(NSString *)string
 
 - (void)updateLoginLogoutCellAppearance
 {
-  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+  if([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN]) {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
@@ -584,9 +542,12 @@ replacementString:(NSString *)string
 - (void)logOut
 {
   void (^afterDeauthorization)() = ^() {
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
-    [[NYPLBookRegistry sharedRegistry] reset];
-    [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
+    
+    // AM_FIXME
+    
+//    [[NYPLMyBooksDownloadCenter sharedDownloadCenter:self.account] reset];
+//    [[NYPLBookRegistry sharedRegistry:self.account] reset];
+    [[NYPLAccount sharedAccount:self.account] removeBarcodeAndPIN];
     [self.tableView reloadData];
   };
   
@@ -609,8 +570,8 @@ replacementString:(NSString *)string
    handler:^(BOOL reachable) {
      if(reachable) {
        [[NYPLADEPT sharedInstance]
-        deauthorizeWithUsername:[[NYPLAccount sharedAccount] barcode]
-        password:[[NYPLAccount sharedAccount] PIN]
+        deauthorizeWithUsername:[[NYPLAccount sharedAccount:self.account] barcode]
+        password:[[NYPLAccount sharedAccount:self.account] PIN]
         completion:^(BOOL success, __unused NSError *error) {
           if(!success) {
             // Even though we failed, all we do is log the error. The reason is
@@ -704,6 +665,10 @@ replacementString:(NSString *)string
        
        // Success.
        if(statusCode == 200) {
+         
+         
+         //AM_FIXME
+         
 #if defined(FEATURE_DRM_CONNECTOR)
          [[NYPLADEPT sharedInstance]
           authorizeWithVendorID:@"NYPL"
@@ -715,6 +680,12 @@ replacementString:(NSString *)string
 #else
          [self authorizationAttemptDidFinish:YES error:nil];
 #endif
+         
+         
+         
+         
+         
+         
          self.isLoggingInAfterSignUp = NO;
          return;
        }
@@ -778,70 +749,6 @@ replacementString:(NSString *)string
   }];
 }
 
-+ (void)
-requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
-authorizeImmediately:(BOOL)authorizeImmediately
-completionHandler:(void (^)())handler
-{
-  NYPLSettingsAccountDetailViewController *const accountViewController = [[self alloc] init];
-  
-  accountViewController.completionHandler = handler;
-  
-  // Tell |accountViewController| to create its text fields so we can set their properties.
-  [accountViewController view];
-  
-  if(useExistingBarcode) {
-    NSString *const barcode = [NYPLAccount sharedAccount].barcode;
-    if(!barcode) {
-      @throw NSInvalidArgumentException;
-    }
-    accountViewController.barcodeTextField.text = barcode;
-  } else {
-    accountViewController.barcodeTextField.text = @"";
-  }
-  
-  accountViewController.PINTextField.text = @"";
-  
-  UIBarButtonItem *const cancelBarButtonItem =
-    [[UIBarButtonItem alloc]
-     initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-     target:accountViewController
-     action:@selector(didSelectCancel)];
-  
-  accountViewController.navigationItem.leftBarButtonItem = cancelBarButtonItem;
-  
-  UIViewController *const viewController = [[UINavigationController alloc]
-                                            initWithRootViewController:accountViewController];
-  viewController.modalPresentationStyle = UIModalPresentationFormSheet;
-  
-  [[NYPLRootTabBarController sharedController]
-   safelyPresentViewController:viewController 
-   animated:YES
-   completion:nil];
-  
-  if (authorizeImmediately && [NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-    accountViewController.PINTextField.text = [NYPLAccount sharedAccount].PIN;
-    [accountViewController logIn];
-  } else {
-    if(useExistingBarcode) {
-      [accountViewController.PINTextField becomeFirstResponder];
-    } else {
-      [accountViewController.barcodeTextField becomeFirstResponder];
-    }
-  }
-}
-
-+ (void)requestCredentialsUsingExistingBarcode:(BOOL)useExistingBarcode
-                             completionHandler:(void (^)())handler
-{
-  [self requestCredentialsUsingExistingBarcode:useExistingBarcode authorizeImmediately:NO completionHandler:handler];
-}
-
-+ (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)())handler
-{
-  [self requestCredentialsUsingExistingBarcode:YES authorizeImmediately:YES completionHandler:handler];
-}
-
 - (void)didSelectCancel
 {
   [self.navigationController.presentingViewController
@@ -856,15 +763,9 @@ completionHandler:(void (^)())handler
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
-      [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
+      [[NYPLAccount sharedAccount:self.account] setBarcode:self.barcodeTextField.text
                                           PIN:self.PINTextField.text];
-      if (!self.isLoggingInAfterSignUp) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-      }
-      void (^handler)() = self.completionHandler;
-      self.completionHandler = nil;
-      if(handler) handler();
-      [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+
     } else {
       [self showLoginAlertWithError:error];
     }
