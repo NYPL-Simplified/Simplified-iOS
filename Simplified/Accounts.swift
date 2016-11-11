@@ -56,11 +56,11 @@ class Accounts: NSObject
 
 class Account:NSObject
 {
-  let id:Int?
+  let id:Int
   let pathComponent:String?
   let name:String?
   let logo:String?
-  let needsAuth:Bool?
+  let needsAuth:Bool
   let catalogUrl:String?
   let mainColor:String?
   
@@ -78,12 +78,14 @@ class Account:NSObject
   init(json: [String: AnyObject])
   {
     name = json["name"] as? String
-    id = json["id"] as? Int
+    id = json["id"] as! Int
     pathComponent = json["pathComponent"] as? String
     logo = json["logo"] as? String
-    needsAuth = json["needsAuth"] as? Bool
+    needsAuth = json["needsAuth"] as! Bool
     catalogUrl = json["catalogUrl"] as? String
     mainColor = json["mainColor"] as? String
+    
+    
   }
 }
 
