@@ -1,33 +1,3 @@
-/// Type of library accounts that can be added by the user
-/// to log in with.
-@objc enum NYPLUserAccountType: Int {
-  case NYPL = 0
-  case Brooklyn
-  case Magic
-  
-  func simpleDescription() -> String {
-    switch self {
-    case .NYPL:
-      return "New York Public Library"
-    case .Brooklyn:
-      return "Brooklyn Public Library"
-    case .Magic:
-      return "Instant Classics"
-    }
-  }
-  
-  func logo() -> UIImage? {
-    switch self {
-    case .NYPL:
-      return UIImage(named: "LibraryLogoNYPL")
-    case .Brooklyn:
-      return UIImage(named: "LibraryLogoBrooklyn")
-    case .Magic:
-      return UIImage(named: "LibraryLogoMagic2")
-    }
-  }
-}
-
 /// UITableView to display or add library accounts that the user
 /// can then log in and adjust settings after selecting Accounts.
 class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -62,7 +32,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
 
   private var currentSelectedAccount: NYPLUserAccountType {
     get {
-      let currentAccount = NYPLSettings.sharedSettings().currentAccount
+      let currentAccount = NYPLSettings.sharedSettings().currentAccountIdentifier
       guard let account = NYPLUserAccountType(rawValue: currentAccount) else { return NYPLUserAccountType.NYPL }
       return account
     }
