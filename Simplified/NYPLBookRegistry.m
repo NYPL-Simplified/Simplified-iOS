@@ -558,14 +558,16 @@ static NSString *const RecordsKey = @"records";
 
 - (void)reset:(NSInteger)account
 {
-  @synchronized(self) {
-//    self.syncShouldCommit = NO;
-//    [self.coverRegistry removeAllPinnedThumbnailImages];
-//    [self.identifiersToRecords removeAllObjects];
-    [[NSFileManager defaultManager] removeItemAtURL:[self registryDirectory:account] error:NULL];
+  if ([[NYPLSettings sharedSettings] currentAccountIdentifier] == account)
+  {
+    [self reset];
   }
-  
-//  [self broadcastChange];
+  else
+  {
+    @synchronized(self) {
+      [[NSFileManager defaultManager] removeItemAtURL:[self registryDirectory:account] error:NULL];
+    }
+  }
 }
 
 

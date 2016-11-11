@@ -654,9 +654,16 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)reset:(NSInteger)account
 {
-  [[NSFileManager defaultManager]
-   removeItemAtURL:[self contentDirectoryURL:account]
-   error:NULL];
+  if ([[NYPLSettings sharedSettings] currentAccountIdentifier] == account)
+  {
+    [self reset];
+  }
+  else
+  {
+    [[NSFileManager defaultManager]
+     removeItemAtURL:[self contentDirectoryURL:account]
+     error:NULL];
+  }
 }
 
 
