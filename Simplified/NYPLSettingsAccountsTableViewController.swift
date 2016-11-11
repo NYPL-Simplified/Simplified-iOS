@@ -101,19 +101,19 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     alert.popoverPresentationController?.permittedArrowDirections = .Up
     
     if (accountsList.contains(.NYPL) == false) {
-      alert.addAction(UIAlertAction(title: NYPLUserAccountType.NYPL.simpleDescription(), style: .Default, handler: { action in
+      alert.addAction(UIAlertAction(title: Accounts().account(NYPLUserAccountType.NYPL.rawValue).name, style: .Default, handler: { action in
         self.accountsList.append(NYPLUserAccountType.NYPL)
         self.tableView.reloadData()
       }))
     }
     if (accountsList.contains(.Brooklyn) == false) {
-      alert.addAction(UIAlertAction(title: NYPLUserAccountType.Brooklyn.simpleDescription(), style: .Default, handler: { action in
+      alert.addAction(UIAlertAction(title: Accounts().account(NYPLUserAccountType.Brooklyn.rawValue).name, style: .Default, handler: { action in
         self.accountsList.append(NYPLUserAccountType.Brooklyn)
         self.tableView.reloadData()
       }))
     }
     if (accountsList.contains(.Magic) == false) {
-      alert.addAction(UIAlertAction(title: NYPLUserAccountType.Magic.simpleDescription(), style: .Default, handler: { action in
+      alert.addAction(UIAlertAction(title: Accounts().account(NYPLUserAccountType.Magic.rawValue).name, style: .Default, handler: { action in
         self.accountsList.append(NYPLUserAccountType.Magic)
         self.tableView.reloadData()
       }))
@@ -149,21 +149,18 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   
   func cellForLibrary(library: NYPLUserAccountType, _ indexPath: NSIndexPath) -> UITableViewCell {
     let cell = UITableViewCell.init(style: .Subtitle, reuseIdentifier: "")
+    
+    let account = Accounts().account(library.rawValue)
+    
     cell.accessoryType = .DisclosureIndicator
     cell.textLabel?.font = UIFont(name: "AvenirNext-Regular", size: 14)
-    cell.textLabel?.text = library.simpleDescription()
+    cell.textLabel?.text = account.name
     
     cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 10)
     cell.detailTextLabel?.text = "Subtitle will go here."
     
-    switch library {
-    case .Brooklyn:
-      cell.imageView?.image = NYPLUserAccountType.Brooklyn.logo()
-    case .NYPL:
-      cell.imageView?.image = NYPLUserAccountType.NYPL.logo()
-    case .Magic:
-      cell.imageView?.image = NYPLUserAccountType.Magic.logo()
-    }
+    cell.imageView?.image = UIImage(named: account.logo!)
+
     
     return cell
   }

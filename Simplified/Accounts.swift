@@ -15,27 +15,6 @@ import Foundation
   case Brooklyn
   case Magic
   
-  func simpleDescription() -> String {
-    switch self {
-    case .NYPL:
-      return "New York Public Library"
-    case .Brooklyn:
-      return "Brooklyn Public Library"
-    case .Magic:
-      return "Instant Classics"
-    }
-  }
-  
-  func logo() -> UIImage? {
-    switch self {
-    case .NYPL:
-      return UIImage(named: "LibraryLogoNYPL")
-    case .Brooklyn:
-      return UIImage(named: "LibraryLogoBrooklyn")
-    case .Magic:
-      return UIImage(named: "LibraryLogoMagic2")
-    }
-  }
 }
 
 class Accounts: NSObject
