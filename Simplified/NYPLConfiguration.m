@@ -10,6 +10,9 @@
 #import "NYPLConfiguration.h"
 #import "UILabel+NYPLAppearanceAdditions.h"
 #import "UIButton+NYPLAppearanceAdditions.h"
+#import "SimplyE-Swift.h"
+#import "NYPLAppDelegate.h"
+
 
 static NSString *const NYPLCirculationBaseURLProduction = @"https://circulation.librarysimplified.org";
 static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.librarysimplified.org/";
@@ -101,6 +104,14 @@ static NSString *const heapIDDevelopment = @"1848989408";
   return [NSURL URLWithString:@"https://patrons.librarysimplified.org/"];
 }
 
++ (UIColor *)colorFromHexString:(NSString *)hexString {
+  unsigned rgbValue = 0;
+  NSScanner *scanner = [NSScanner scannerWithString:hexString];
+  [scanner setScanLocation:1]; // bypass '#' character
+  [scanner scanHexInt:&rgbValue];
+  return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
+}
+
 + (NSURL *)minimumVersionURL
 {
   return [NSURL URLWithString:@"http://www.librarysimplified.org/simplye-client/minimum-version"];
@@ -108,7 +119,13 @@ static NSString *const heapIDDevelopment = @"1848989408";
 
 + (UIColor *)mainColor
 {
-  return [UIColor colorWithRed:220/255.0 green:34/255.0 blue:29/255.0 alpha:1.0];
+  Account * account = [[NYPLSettings sharedSettings] currentAccount];
+
+  if (account.mainColor == nil)
+  {
+    return [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
+  }
+  return [NYPLConfiguration colorFromHexString:[NSString stringWithFormat:@"#%@",account.mainColor]];
 }
 
 + (UIColor *)accentColor
