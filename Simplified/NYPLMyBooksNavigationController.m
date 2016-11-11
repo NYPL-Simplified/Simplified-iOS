@@ -41,29 +41,13 @@
 -(void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
-  
-  NYPLUserAccountType library = [[NYPLSettings sharedSettings] currentAccount];
-  
-  NSString *libraryName = @"New York Public Library";
-  if (library == NYPLUserAccountTypeNYPL)
-  {
-    libraryName = @"New York Public Library";
-  }
-  else if (library == NYPLUserAccountTypeBrooklyn)
-  {
-    libraryName = @"Brooklyn Public Library";
-  }
-  else if (library == NYPLUserAccountTypeMagic)
-  {
-    libraryName = @"Instant Classics";
-  }
-  
+    
   NYPLMyBooksViewController *viewController = (NYPLMyBooksViewController *)self.visibleViewController;
   
-  viewController.navigationItem.title = libraryName;
+  viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
   
-//  [[NYPLBookRegistry sharedRegistry] reset];
-
+  //  [[NYPLBookRegistry sharedRegistry] reset];
+  
 }
 
 - (void) switchLibrary
@@ -75,18 +59,7 @@
   
   [alert addAction:[UIAlertAction actionWithTitle:@"New York Public Library" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
     
-    
-    [[NYPLSettings sharedSettings] setCurrentAccount:NYPLUserAccountTypeNYPL];
-    
-    [NYPLAccount sharedAccount];
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLAccountDidChangeNotification
-     object:nil];
-    [[NYPLSettings sharedSettings] setAccountMainFeedURL:nil];
-    
-    
-    [[NYPLBookRegistry sharedRegistry] justLoad];
-    
+    [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:NYPLUserAccountTypeNYPL];
     
     [self reloadSelected];
 
@@ -96,33 +69,16 @@
   [alert addAction:[UIAlertAction actionWithTitle:@"Brooklyn Public Library" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull  action) {
     
     
-    [[NYPLSettings sharedSettings] setCurrentAccount:NYPLUserAccountTypeBrooklyn];
-    
-    [NYPLAccount sharedAccount];
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLAccountDidChangeNotification
-     object:nil];
-    [[NYPLSettings sharedSettings] setAccountMainFeedURL:nil];
-    
-    [[NYPLBookRegistry sharedRegistry] justLoad];
+    [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:NYPLUserAccountTypeBrooklyn];
     
     [self reloadSelected];
-
+    
   }]];
   
   [alert addAction:[UIAlertAction actionWithTitle:@"Instant Classics" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull  action) {
     
-    
-    [[NYPLSettings sharedSettings] setCurrentAccount:NYPLUserAccountTypeMagic];
-    [NYPLAccount sharedAccount];
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLAccountDidChangeNotification
-     object:nil];
-    
-    [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:@"http://oacontent.librarysimplified.org/"]];
-    
-    [[NYPLBookRegistry sharedRegistry] justLoad];
-    
+    [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:NYPLUserAccountTypeMagic];
+
     [self reloadSelected];
     
   }]];
@@ -132,35 +88,31 @@
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
   
 }
+
 - (void) reloadSelected {
+  
+  [NYPLAccount sharedAccount];
+  
+  Account *account = [[NYPLSettings sharedSettings] currentAccount];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLAccountDidChangeNotification
+   object:nil];
+  
+  [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
+  [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
+  
+  [[NYPLBookRegistry sharedRegistry] justLoad];
 
   
   NYPLCatalogNavigationController * catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
   
   [catalog reloadSelected];
   
-    NYPLUserAccountType library = [[NYPLSettings sharedSettings] currentAccount];
-    
-    NSString *libraryName = @"New York Public Library";
-  if (library == NYPLUserAccountTypeNYPL)
-  {
-    libraryName = @"New York Public Library";
-  }
-  else if (library == NYPLUserAccountTypeBrooklyn)
-  {
-    libraryName = @"Brooklyn Public Library";
-  }
-  else if (library == NYPLUserAccountTypeMagic)
-  {
-    libraryName = @"Instant Classics";
-  }
   
-    NYPLMyBooksViewController *viewController = (NYPLMyBooksViewController *)self.visibleViewController;
-
-    viewController.navigationItem.title = libraryName;
-    
-    
-    
+  NYPLMyBooksViewController *viewController = (NYPLMyBooksViewController *)self.visibleViewController;
+  
+  viewController.navigationItem.title =  [[NYPLSettings sharedSettings] currentAccount].name;
   
 }
 
