@@ -6,6 +6,8 @@
 #import "NYPLConfiguration.h"
 #import "SimplyE-Swift.h"
 
+static NSString *const currentAccountIdentifierKey = @"NYPLCurrentAccountIdentifier";
+
 static NSString *const customMainFeedURLKey = @"NYPLSettingsCustomMainFeedURL";
 
 static NSString *const accountMainFeedURLKey = @"NYPLSettingsAccountMainFeedURL";
@@ -74,7 +76,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 
 - (NSInteger)currentAccountIdentifier
 {
-  return [[NSUserDefaults standardUserDefaults] integerForKey:@"library"];
+  return [[NSUserDefaults standardUserDefaults] integerForKey:currentAccountIdentifierKey];
 }
 - (NSURL *)customMainFeedURL
 {
@@ -139,7 +141,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 }
 - (void)setCurrentAccountIdentifier:(NSInteger)account
 {
-  [[NSUserDefaults standardUserDefaults] setInteger:account forKey:@"library"];
+  [[NSUserDefaults standardUserDefaults] setInteger:account forKey:currentAccountIdentifierKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
   
   [[NSNotificationCenter defaultCenter]
