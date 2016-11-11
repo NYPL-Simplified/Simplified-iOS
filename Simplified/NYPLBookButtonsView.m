@@ -183,7 +183,7 @@
         
       if (self.showReturnButtonIfApplicable)
       {
-        NSString *title = self.book.acquisition.openAccess ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);\
+        NSString *title = self.book.acquisition.openAccess ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
         NSString *hint = self.book.acquisition.openAccess ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
 
         visibleButtonInfo = @[@{ButtonKey: self.readButton,
