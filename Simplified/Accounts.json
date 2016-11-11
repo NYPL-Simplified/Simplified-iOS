@@ -1,0 +1,28 @@
+[
+ {
+ "id" : 0,
+ "pathComponent" : "0",
+ "name" : "New York Public Library",
+ "logo" : "LibraryLogoNYPL",
+ "needsAuth" : true,
+ "catalogUrl" : "https://circulation.librarysimplified.org",
+ "mainColor" : "da2527"
+ },
+ {
+ "id" : 1,
+ "pathComponent" : "1",
+ "name" : "Brooklyn Public Library",
+ "logo" : "LibraryLogoBrooklyn",
+ "needsAuth" : true,
+ "catalogUrl" : "https://circulation.librarysimplified.org",
+ "mainColor" : "446ebf"
+ },
+ {
+ "id" : 2,
+ "pathComponent" : "2",
+ "name" : "Instant Classics",
+ "logo" : "LibraryLogoMagic",
+ "needsAuth" : false,
+ "catalogUrl" : "http://oacontent.librarysimplified.org/"
+ }
+]
