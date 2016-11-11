@@ -17,6 +17,7 @@
 @property (nonatomic) NSDate *availableSince;
 @property (nonatomic) NSDate *availableUntil;
 @property (nonatomic) NSMutableArray *mutableAcquisitionFormats;
+@property (nonatomic) NSDictionary *licensor;
 
 @end
 
@@ -62,6 +63,19 @@
   if (copiesXML) {
     self.availableCopies = [copiesXML.attributes[@"available"] integerValue];
   }
+  
+  NYPLXML *licensorXML = [linkXML firstChildWithName:@"licensor"];
+  if (licensorXML && licensorXML.attributes.allValues.count>0) {
+    NSString *vendor = licensorXML.attributes.allValues.firstObject;
+    NYPLXML *vendorXML = [licensorXML firstChildWithName:@"clientToken"];
+    if (vendorXML) {
+      NSString *clientToken = vendorXML.value;
+      
+      self.licensor = @{@"vendor":vendor,
+                        @"clientToken":clientToken};
+    }
+  }
+  
   
   [self addAcquisitionFormatsWithXML:linkXML];
   
