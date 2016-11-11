@@ -357,7 +357,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  if([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN] || ![NYPLConfiguration cardCreationEnabled]) {
+    
+  if (![[[Accounts alloc] init] account:self.account].needsAuth) {
+    return 0;
+  }
+  else if([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN] || ![NYPLConfiguration cardCreationEnabled]) {
     // No registration is possible.
     return 2;
   } else {
