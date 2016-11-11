@@ -765,6 +765,16 @@ replacementString:(NSString *)string
       [[NYPLAccount sharedAccount:self.account] setBarcode:self.barcodeTextField.text
                                           PIN:self.PINTextField.text];
 
+      if(self.account == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
+        if (!self.isLoggingInAfterSignUp) {
+          [self dismissViewControllerAnimated:YES completion:nil];
+        }
+        void (^handler)() = self.completionHandler;
+        self.completionHandler = nil;
+        if(handler) handler();
+        [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+      }
+      
     } else {
       [self showLoginAlertWithError:error];
     }
