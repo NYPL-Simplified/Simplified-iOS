@@ -67,7 +67,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   
   return sharedSettings;
 }
-- (NSInteger)currentAccount
+- (Account*)currentAccount
+{
+  return [[[Accounts alloc] init] account:[[NYPLSettings sharedSettings] currentAccountIdentifier]];
+}
+
+- (NSInteger)currentAccountIdentifier
 {
   return [[NSUserDefaults standardUserDefaults] integerForKey:@"library"];
 }
@@ -116,7 +121,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   NSArray *libraryAccounts = [[NSUserDefaults standardUserDefaults] arrayForKey:settingsLibraryAccountsKey];
   // If user has not selected any accounts yet, return the "currentAccount"
   if (!libraryAccounts) {
-    NSInteger currentLibrary = [self currentAccount];
+    NSInteger currentLibrary = [self currentAccountIdentifier];
     [self setSettingsAccountsList:@[@(currentLibrary)]];
     return [self settingsAccountsList];
   } else {
@@ -132,7 +137,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   
   return [NSKeyedUnarchiver unarchiveObjectWithData:currentCardApplicationSerialization];
 }
-- (void)setCurrentAccount:(NSInteger)account
+- (void)setCurrentAccountIdentifier:(NSInteger)account
 {
   [[NSUserDefaults standardUserDefaults] setInteger:account forKey:@"library"];
   [[NSUserDefaults standardUserDefaults] synchronize];

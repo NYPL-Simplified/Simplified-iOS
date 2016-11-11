@@ -68,7 +68,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   assert([paths count] == 1);
   
   NSString *const path = paths[0];
-  NYPLUserAccountType library = [[NYPLSettings sharedSettings] currentAccount];
+  NYPLUserAccountType library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
 
   NSURL * URL =
   [[[NSURL fileURLWithPath:path]

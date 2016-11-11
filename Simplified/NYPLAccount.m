@@ -20,7 +20,7 @@ NSString * PINKey = @"NYPLAccountPIN";
     }
   }
   
-  NYPLUserAccountType library = [[NYPLSettings sharedSettings] currentAccount];
+  NYPLUserAccountType library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
 
   if (library != NYPLUserAccountTypeNYPL)
   {
