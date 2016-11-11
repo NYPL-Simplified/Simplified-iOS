@@ -44,7 +44,7 @@
   }
   else if ([library isEqualToString:[@(NYPLUserAccountTypeMagic) stringValue]])
   {
-    libraryName = @"The Magic Library";
+    libraryName = @"Instant Classics";
   }
   
   holdsViewController.navigationItem.title = libraryName;
@@ -70,7 +70,7 @@
   }
   else if ([library isEqualToString:[@(NYPLUserAccountTypeMagic) stringValue]])
   {
-    libraryName = @"The Magic Library";
+    libraryName = @"Instant Classics";
   }
   
   NYPLHoldsViewController *viewController = (NYPLHoldsViewController *)self.visibleViewController;
@@ -124,7 +124,7 @@
     
   }]];
   
-  [alert addAction:[UIAlertAction actionWithTitle:@"The Magic Library" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull  action) {
+  [alert addAction:[UIAlertAction actionWithTitle:@"Instant Classics" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull  action) {
     
     
     [[NYPLSettings sharedSettings] setCurrentAccount:[@(NYPLUserAccountTypeMagic) stringValue]];
@@ -166,7 +166,7 @@
   }
   else if ([library isEqualToString:[@(NYPLUserAccountTypeMagic) stringValue]])
   {
-    libraryName = @"The Magic Library";
+    libraryName = @"Instant Classics";
   }
   
   NYPLHoldsViewController *viewController = (NYPLHoldsViewController *)self.visibleViewController;

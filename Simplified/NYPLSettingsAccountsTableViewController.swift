@@ -12,7 +12,7 @@
     case .Brooklyn:
       return "Brooklyn Public Library"
     case .Magic:
-      return "The Magic Library"
+      return "Instant Classics"
     }
   }
 }
@@ -132,7 +132,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
       }))
     }
     if (accountsList.contains(.Magic) == false) {
-      alert.addAction(UIAlertAction(title: "The Magic Library", style: .Default, handler: { action in
+      alert.addAction(UIAlertAction(title: "Instant Classics", style: .Default, handler: { action in
         self.accountsList.append(NYPLUserAccountType.Magic)
         self.tableView.reloadData()
       }))
