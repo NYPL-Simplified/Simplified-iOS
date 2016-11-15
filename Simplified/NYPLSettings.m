@@ -92,7 +92,8 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 
 - (BOOL)userAboveAge
 {
-    return [[NSUserDefaults standardUserDefaults] boolForKey:userAboveAgeKey];
+  NSString *ageEULAKey = [NSString stringWithFormat:@"%@_%@",userAboveAgeKey,self.currentAccount.pathComponent];
+  return [[NSUserDefaults standardUserDefaults] boolForKey:ageEULAKey];
 }
 
 - (BOOL)userAcceptedEULAForAccount:(Account *)account
@@ -158,7 +159,8 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 }
 - (void)setUserAboveAge:(BOOL)aboveAge
 {
-  [[NSUserDefaults standardUserDefaults] setBool:aboveAge forKey:userAboveAgeKey];
+  NSString *aboveAgeKey = [NSString stringWithFormat:@"%@_%@",userAboveAgeKey,self.currentAccount.pathComponent];
+  [[NSUserDefaults standardUserDefaults] setBool:aboveAge forKey:aboveAgeKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 - (void)setUserAcceptedEULA:(BOOL)userAcceptedEULA forAccount:(Account *)account

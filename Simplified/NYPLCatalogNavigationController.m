@@ -8,6 +8,7 @@
 #import "NYPLRootTabBarController.h"
 #import "NYPLMyBooksNavigationController.h"
 #import "NYPLMyBooksViewController.h"
+#import "NYPLSettingsPrimaryTableViewController.h"
 #import "SimplyE-Swift.h"
 #import "NYPLAppDelegate.h"
 
@@ -68,6 +69,16 @@
       [self reloadSelected];
     }]];
   }
+  
+  [alert addAction:[UIAlertAction actionWithTitle:@"Manage Accounts" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+    NSUInteger tabCount = [[[NYPLRootTabBarController sharedController] viewControllers] count];
+    UISplitViewController *splitViewVC = [[[NYPLRootTabBarController sharedController] viewControllers] lastObject];
+    UINavigationController *masterNavVC = [[splitViewVC viewControllers] firstObject];
+    [masterNavVC popToRootViewControllerAnimated:NO];
+    [[NYPLRootTabBarController sharedController] setSelectedIndex:tabCount-1];
+    NYPLSettingsPrimaryTableViewController *tableVC = [[masterNavVC viewControllers] firstObject];
+    [tableVC.delegate settingsPrimaryTableViewController:tableVC didSelectItem:NYPLSettingsPrimaryTableViewControllerItemAccount];
+  }]];
 
   [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:(UIAlertActionStyleCancel) handler:nil]];
 

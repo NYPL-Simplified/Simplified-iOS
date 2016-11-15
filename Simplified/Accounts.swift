@@ -14,7 +14,7 @@ import Foundation
   case NYPL = 0
   case Brooklyn
   case Magic
-  
+  case MagicExtra
 }
 
 class Accounts: NSObject
@@ -61,6 +61,7 @@ class Account:NSObject
   let name:String?
   let logo:String?
   let needsAuth:Bool
+  let supportsReservations:Bool
   let catalogUrl:String?
   let mainColor:String?
   
@@ -71,6 +72,7 @@ class Account:NSObject
     pathComponent = String()
     logo = String()
     needsAuth = Bool()
+    supportsReservations = Bool()
     catalogUrl = String()
     mainColor = String()
   }
@@ -82,10 +84,9 @@ class Account:NSObject
     pathComponent = json["pathComponent"] as? String
     logo = json["logo"] as? String
     needsAuth = json["needsAuth"] as! Bool
+    supportsReservations = json["supportsReservations"] as! Bool
     catalogUrl = json["catalogUrl"] as? String
     mainColor = json["mainColor"] as? String
-    
-    
   }
 }
 

@@ -7,6 +7,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLAccountSignInViewController.h"
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLHoldsViewController.h"
 
@@ -15,6 +16,7 @@
 
 @property (nonatomic) NSArray *reservedBooks;
 @property (nonatomic) NSArray *heldBooks;
+@property (nonatomic) UILabel *instructionsLabel;
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) UIBarButtonItem *searchButton;
 
@@ -72,6 +74,12 @@
   UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
   layout.headerReferenceSize = CGSizeMake(0, 20);
   
+  self.instructionsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+  self.instructionsLabel.hidden = YES;
+  self.instructionsLabel.text = NSLocalizedString(@"ReservationsGoToCatalog", nil);
+  self.instructionsLabel.numberOfLines = 0;
+  [self.view addSubview:self.instructionsLabel];
+  
   self.searchButton = [[UIBarButtonItem alloc]
                        initWithImage:[UIImage imageNamed:@"Search"]
                        style:UIBarButtonItemStylePlain
@@ -83,6 +91,16 @@
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
     [self.refreshControl endRefreshing];
   }
+}
+
+- (void)viewWillLayoutSubviews
+{
+  CGSize const instructionsLabelSize = [self.instructionsLabel sizeThatFits:CGSizeMake(300.0, CGFLOAT_MAX)];
+  self.instructionsLabel.frame = CGRectMake(0, 0, instructionsLabelSize.width, instructionsLabelSize.height);
+  self.instructionsLabel.textAlignment = NSTextAlignmentCenter;
+  self.instructionsLabel.textColor = [UIColor colorWithWhite:0.6667 alpha:1.0];
+  [self.instructionsLabel centerInSuperview];
+  [self.instructionsLabel integralizeFrame];
 }
 
 #pragma mark UICollectionViewDelegate
@@ -166,6 +184,9 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [super willReloadCollectionViewData];
   
   NSArray *books = [[NYPLBookRegistry sharedRegistry] heldBooks];
+  
+  self.instructionsLabel.hidden = !!books.count;
+  
   NSMutableArray *reserved = [NSMutableArray array];
   NSMutableArray *held = [NSMutableArray array];
   for(NYPLBook *book in books) {

@@ -8,6 +8,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLCatalogNavigationController.h"
+#import "NYPLSettingsPrimaryTableViewController.h"
 #import "SimplyE-Swift.h"
 
 
@@ -60,11 +61,23 @@
   
   for (int i = 0; i < (int)accounts.count; i++) {
     Account *account = [[[Accounts alloc] init] account:[accounts[i] intValue]];
-    [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
-      [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
-      [self reloadSelected];
-    }]];
+    if (account.id != [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
+      [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+        [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+        [self reloadSelected];
+      }]];
+    }
   }
+  
+  [alert addAction:[UIAlertAction actionWithTitle:@"Manage Accounts" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+    NSUInteger tabCount = [[[NYPLRootTabBarController sharedController] viewControllers] count];
+    UISplitViewController *splitViewVC = [[[NYPLRootTabBarController sharedController] viewControllers] lastObject];
+    UINavigationController *masterNavVC = [[splitViewVC viewControllers] firstObject];
+    [masterNavVC popToRootViewControllerAnimated:NO];
+    [[NYPLRootTabBarController sharedController] setSelectedIndex:tabCount-1];
+    NYPLSettingsPrimaryTableViewController *tableVC = [[masterNavVC viewControllers] firstObject];
+    [tableVC.delegate settingsPrimaryTableViewController:tableVC didSelectItem:NYPLSettingsPrimaryTableViewControllerItemAccount];
+  }]];
   
   [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:(UIAlertActionStyleCancel) handler:nil]];
   

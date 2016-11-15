@@ -57,7 +57,6 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
   [self.activityIndicatorView startAnimating];
   [self.view addSubview:self.activityIndicatorView];
   
-  //GODO localize 
   if ( self == [self.navigationController.viewControllers objectAtIndex:0] ) {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
                                                                               style:UIBarButtonItemStylePlain

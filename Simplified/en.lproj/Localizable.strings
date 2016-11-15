@@ -95,6 +95,7 @@
 "HoldsViewControllerSearchTitle" = "Search Reservations";
 "AvailableForCheckoutHeader" = "AVAILABLE FOR CHECKOUT";
 "WaitingForAvailabilityHeader" = "WAITING FOR AVAILABILITY";
+"ReservationsGoToCatalog" = "Visit the Catalog to reserve\nbooks not currently available.";
 
 // NYPLMyBooksDownloadCenter
 

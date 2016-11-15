@@ -3,6 +3,7 @@
 class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   weak var tableView: UITableView!
+  private var allAccountTypes: [Account]
   
   private var accountsList: [NYPLUserAccountType] {
     didSet {
@@ -45,6 +46,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
       filteredList.append(library)
     }
     self.accountsList = filteredList
+    self.allAccountTypes = Accounts().accounts
     
     super.init(nibName:nil, bundle:nil)
     
@@ -83,7 +85,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   }
   
   func updateUI() {
-    if (accountsList.count < 3) {
+    if (accountsList.count < self.allAccountTypes.count) {
       self.navigationItem.rightBarButtonItem = UIBarButtonItem(
         barButtonSystemItem: .Add, target: self, action: #selector(addAccount))
     } else {
@@ -100,24 +102,22 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
     alert.popoverPresentationController?.permittedArrowDirections = .Up
     
-    if (accountsList.contains(.NYPL) == false) {
-      alert.addAction(UIAlertAction(title: Accounts().account(NYPLUserAccountType.NYPL.rawValue).name, style: .Default, handler: { action in
-        self.accountsList.append(NYPLUserAccountType.NYPL)
-        self.tableView.reloadData()
-      }))
+    let allAccounts = self.allAccountTypes.map { account in
+      return NYPLUserAccountType(rawValue: account.id)
     }
-    if (accountsList.contains(.Brooklyn) == false) {
-      alert.addAction(UIAlertAction(title: Accounts().account(NYPLUserAccountType.Brooklyn.rawValue).name, style: .Default, handler: { action in
-        self.accountsList.append(NYPLUserAccountType.Brooklyn)
-        self.tableView.reloadData()
-      }))
+    
+    for userAccountType in allAccounts {
+      guard let account = userAccountType else { continue }
+      if (accountsList.contains(account) == false) {
+        alert.addAction(UIAlertAction(title: Accounts().account(account.rawValue).name,
+          style: .Default,
+          handler: { action in
+            self.accountsList.append(account)
+            self.tableView.reloadData()
+        }))
+      }
     }
-    if (accountsList.contains(.Magic) == false) {
-      alert.addAction(UIAlertAction(title: Accounts().account(NYPLUserAccountType.Magic.rawValue).name, style: .Default, handler: { action in
-        self.accountsList.append(NYPLUserAccountType.Magic)
-        self.tableView.reloadData()
-      }))
-    }
+
     alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler:nil))
     
     self.presentViewController(alert, animated: true, completion: nil)

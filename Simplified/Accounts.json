@@ -5,6 +5,7 @@
  "name" : "New York Public Library",
  "logo" : "LibraryLogoNYPL",
  "needsAuth" : true,
+ "supportsReservations" : true,
  "catalogUrl" : "https://circulation.librarysimplified.org",
  "mainColor" : "da2527"
  },
@@ -14,6 +15,7 @@
  "name" : "Brooklyn Public Library",
  "logo" : "LibraryLogoBrooklyn",
  "needsAuth" : true,
+ "supportsReservations" : true,
  "catalogUrl" : "https://circulation.librarysimplified.org",
  "mainColor" : "446ebf"
  },
@@ -23,6 +25,16 @@
  "name" : "Instant Classics",
  "logo" : "LibraryLogoMagic",
  "needsAuth" : false,
+ "supportsReservations" : false,
+ "catalogUrl" : "http://oacontent.librarysimplified.org/"
+ },
+ {
+ "id" : 3,
+ "pathComponent" : "2",
+ "name" : "Magic Classics",
+ "logo" : "LibraryLogoMagic2",
+ "needsAuth" : false,
+ "supportsReservations" : false,
  "catalogUrl" : "http://oacontent.librarysimplified.org/"
  }
 ]
