@@ -6,7 +6,7 @@
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLOpenSearchDescription.h"
-#import "NYPLSettingsAccountSignInViewController.h"
+#import "NYPLAccountSignInViewController.h"
 
 #import "NYPLHoldsViewController.h"
 
@@ -197,7 +197,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     // happen elsewhere is that the user will not receive an error if the sync fails because it will
     // be considered an automatic sync and not a manual sync.
     // TODO: We should make this into a manual sync while somehow avoiding double-syncing.
-    [NYPLSettingsAccountSignInViewController
+    [NYPLAccountSignInViewController
      requestCredentialsUsingExistingBarcode:NO
      completionHandler:nil];
     [self.refreshControl endRefreshing];

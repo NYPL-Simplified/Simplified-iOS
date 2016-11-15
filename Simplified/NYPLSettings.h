@@ -14,7 +14,7 @@ typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
 // Set to nil (the default) if no custom feed should be used.
 @property (atomic) NSURL *customMainFeedURL;
 @property (atomic) NSURL *accountMainFeedURL;
-@property (atomic) BOOL userAcceptedEULA;
+@property (atomic) BOOL userAboveAge;
 @property (atomic) BOOL userPresentedWelcomeScreen;
 @property (atomic) NSURL *eulaURL;
 @property (atomic) NSURL *privacyPolicyURL;
@@ -25,6 +25,9 @@ typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
 @property (readonly) Account* currentAccount;
 @property (atomic) NSInteger currentAccountIdentifier;
 @property (atomic) NSArray* settingsAccountsList;
+
+- (BOOL)userAcceptedEULAForAccount:(Account *)account;
+- (void)setUserAcceptedEULA:(BOOL)userAcceptedEULA forAccount:(Account *)account;
 
 // Leaving this set to |NYPLSettingsRenderingEngineAutomatic| (the default) is *highly* recommended.
 @property (atomic) NYPLSettingsRenderingEngine renderingEngine;

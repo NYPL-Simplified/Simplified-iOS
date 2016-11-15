@@ -1,7 +1,7 @@
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
-#import "NYPLSettingsAccountSignInViewController.h"
+#import "NYPLAccountSignInViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
@@ -589,7 +589,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     }
 
   } else {
-    [NYPLSettingsAccountSignInViewController
+    [NYPLAccountSignInViewController
      requestCredentialsUsingExistingBarcode:NO
      completionHandler:^{
        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];

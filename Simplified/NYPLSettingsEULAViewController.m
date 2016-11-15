@@ -56,6 +56,19 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
                                                  UIViewAutoresizingFlexibleHeight);
   [self.activityIndicatorView startAnimating];
   [self.view addSubview:self.activityIndicatorView];
+  
+  //GODO localize 
+  if ( self == [self.navigationController.viewControllers objectAtIndex:0] ) {
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(dismissEULA)];
+  }
+}
+
+- (void)dismissEULA
+{
+  [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)loadLocalURLFromRequest:(NSURLRequest *)request

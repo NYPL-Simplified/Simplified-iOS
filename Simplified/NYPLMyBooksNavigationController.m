@@ -51,35 +51,20 @@
 - (void) switchLibrary
 {
   NYPLMyBooksViewController *viewController = (NYPLMyBooksViewController *)self.visibleViewController;
+  
   UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Pick Your Library" message:nil preferredStyle:(UIAlertControllerStyleActionSheet)];
   alert.popoverPresentationController.barButtonItem = viewController.navigationItem.leftBarButtonItem;
   alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
   
-  [alert addAction:[UIAlertAction actionWithTitle:@"New York Public Library" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
-    
-    [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:NYPLUserAccountTypeNYPL];
-    
-    [self reloadSelected];
-
-    
-  }]];
+  NSArray *accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
   
-  [alert addAction:[UIAlertAction actionWithTitle:@"Brooklyn Public Library" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull  action) {
-    
-    
-    [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:NYPLUserAccountTypeBrooklyn];
-    
-    [self reloadSelected];
-    
-  }]];
-  
-  [alert addAction:[UIAlertAction actionWithTitle:@"Instant Classics" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull  action) {
-    
-    [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:NYPLUserAccountTypeMagic];
-
-    [self reloadSelected];
-    
-  }]];
+  for (int i = 0; i < (int)accounts.count; i++) {
+    Account *account = [[[Accounts alloc] init] account:[accounts[i] intValue]];
+    [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+      [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+      [self reloadSelected];
+    }]];
+  }
   
   [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:(UIAlertActionStyleCancel) handler:nil]];
   

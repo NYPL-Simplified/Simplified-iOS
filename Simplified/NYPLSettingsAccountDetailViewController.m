@@ -13,7 +13,7 @@
 #import "NYPLReachability.h"
 #import "NYPLSettings.h"
 #import "NYPLSettingsAccountDetailViewController.h"
-#import "NYPLSettingsAccountSignInViewController.h"
+#import "NYPLSettingsEULAViewController.h"
 #import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -29,13 +29,15 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindBarcode,
   CellKindPIN,
   CellKindLogInSignOut,
-  CellKindRegistration
+  CellKindRegistration,
+  CellKindEULA
 };
 
 typedef NS_ENUM(NSInteger, Section) {
   SectionBarcodePin = 0,
-  SectionLoginLogout = 1,
-  SectionRegistration = 2
+  SectionEULA = 1,
+  SectionLoginLogout = 2,
+  SectionRegistration = 3
 };
 
 static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
@@ -53,11 +55,18 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
     case 1:
       switch(indexPath.row) {
         case 0:
-          return CellKindLogInSignOut;
+          return CellKindEULA;
         default:
           @throw NSInvalidArgumentException;
       }
     case 2:
+      switch(indexPath.row) {
+        case 0:
+          return CellKindLogInSignOut;
+        default:
+          @throw NSInvalidArgumentException;
+      }
+    case 3:
       return CellKindRegistration;
     default:
       @throw NSInvalidArgumentException;
@@ -70,6 +79,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @property (nonatomic) UITextField *barcodeTextField;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) BOOL hiddenPIN;
+@property (nonatomic) UITableViewCell *eulaCell;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITextField *PINTextField;
 @property (nonatomic) NSURLSession *session;
@@ -120,6 +130,12 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
    addObserver:self
    selector:@selector(willEnterForeground)
    name:UIApplicationWillEnterForegroundNotification
+   object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(changedCurrentAccount)
+   name:NYPLCurrentAccountDidChangeNotification
    object:nil];
   
   NSURLSessionConfiguration *const configuration =
@@ -182,6 +198,11 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
                    forControlEvents:UIControlEventTouchUpInside];
   self.PINTextField.rightView = self.PINShowHideButton;
   self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
+  
+  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"EULA"
+                                                                            style:UIBarButtonItemStylePlain
+                                                                           target:self
+                                                                           action:@selector(showEULA)];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -224,6 +245,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindPIN:
       [self.PINTextField becomeFirstResponder];
       break;
+    case CellKindEULA: {
+      UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+      Account *accountItem = [[[Accounts alloc] init] account:self.account];
+      if ([[NYPLSettings sharedSettings] userAcceptedEULAForAccount:accountItem] == YES) {
+        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
+        [[NYPLSettings sharedSettings] setUserAcceptedEULA:NO forAccount:accountItem];
+      } else {
+        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
+        [[NYPLSettings sharedSettings] setUserAcceptedEULA:YES forAccount:accountItem];
+      }
+      [self updateLoginLogoutCellAppearance];
+      break;
+    }
     case CellKindLogInSignOut:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       if([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN]) {
@@ -333,6 +367,24 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       return cell;
     }
+    case CellKindEULA: {
+      self.eulaCell = [[UITableViewCell alloc]
+                       initWithStyle:UITableViewCellStyleDefault
+                       reuseIdentifier:nil];
+      Account *accountItem = [[[Accounts alloc] init] account:self.account];
+      if ([[NYPLSettings sharedSettings] userAcceptedEULAForAccount:accountItem] == YES) {
+        self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
+                                       [UIImage imageNamed:@"CheckboxOn"]];
+      } else {
+        self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
+                                       [UIImage imageNamed:@"CheckboxOff"]];
+      }
+      self.eulaCell.selectionStyle = UITableViewCellSelectionStyleNone;
+      self.eulaCell.textLabel.font = [UIFont systemFontOfSize:11];
+      self.eulaCell.textLabel.text = NSLocalizedString(@"SettingsAccountEULACheckbox", @"Statement letting a user know that they must agree to the User Agreement terms.");
+      self.eulaCell.textLabel.numberOfLines = 2;
+      return self.eulaCell;
+    }
     case CellKindLogInSignOut: {
       if(!self.logInSignOutCell) {
         self.logInSignOutCell = [[UITableViewCell alloc]
@@ -363,10 +415,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
   else if([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN] || ![NYPLConfiguration cardCreationEnabled]) {
     // No registration is possible.
-    return 2;
+    return 3;
   } else {
     // Registration is possible.
-    return 3;
+    return 4;
   }
 }
 
@@ -376,6 +428,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   switch(section) {
     case SectionBarcodePin:
       return 2;
+    case SectionEULA:
+      return 1;
     case SectionLoginLogout:
       return 1;
     case SectionRegistration:
@@ -503,6 +557,18 @@ replacementString:(NSString *)string
   }];
 }
 
+- (void)changedCurrentAccount
+{
+  [self.navigationController popViewControllerAnimated:NO];
+}
+
+- (void)showEULA
+{
+  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] init];
+  UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:eulaViewController];
+  [self.navigationController presentViewController:navVC animated:YES completion:nil];
+}
+
 - (void)updateLoginLogoutCellAppearance
 {
   if([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN]) {
@@ -510,14 +576,18 @@ replacementString:(NSString *)string
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     self.logInSignOutCell.userInteractionEnabled = YES;
+    self.eulaCell.userInteractionEnabled = NO;
   } else {
+    self.eulaCell.userInteractionEnabled = YES;
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
+    Account *accountItem = [[[Accounts alloc] init] account:self.account];
     BOOL const canLogIn =
       ([self.barcodeTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
        [self.PINTextField.text
-        stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length);
+        stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length) &&
+      [[NYPLSettings sharedSettings] userAcceptedEULAForAccount:accountItem];
     if(canLogIn) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];

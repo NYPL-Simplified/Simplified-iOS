@@ -14,6 +14,8 @@ static NSString *const accountMainFeedURLKey = @"NYPLSettingsAccountMainFeedURL"
 
 static NSString *const renderingEngineKey = @"NYPLSettingsRenderingEngine";
 
+static NSString *const userAboveAgeKey = @"NYPLSettingsUserAboveAgeKey";
+
 static NSString *const userAcceptedEULAKey = @"NYPLSettingsUserAcceptedEULA";
 
 static NSString *const userPresentedWelcomeScreenKey = @"NYPLUserPresentedWelcomeScreenKey";
@@ -88,17 +90,15 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] URLForKey:accountMainFeedURLKey];
 }
 
-- (BOOL)userAcceptedEULA
+- (BOOL)userAboveAge
 {
-  if (self.currentAccountIdentifier != NYPLUserAccountTypeNYPL)
-  {
-    NSString *accountAcceptedEULAKey = [NSString stringWithFormat:@"%@_%@",userAcceptedEULAKey,self.currentAccount.pathComponent];
-    return [[NSUserDefaults standardUserDefaults] boolForKey:accountAcceptedEULAKey];
-  }
-  else
-  {
-    return [[NSUserDefaults standardUserDefaults] boolForKey:userAcceptedEULAKey];
-  }
+    return [[NSUserDefaults standardUserDefaults] boolForKey:userAboveAgeKey];
+}
+
+- (BOOL)userAcceptedEULAForAccount:(Account *)account
+{
+  NSString *accountAcceptedEULAKey = [NSString stringWithFormat:@"%@_%@",userAcceptedEULAKey,account.pathComponent];
+  return [[NSUserDefaults standardUserDefaults] boolForKey:accountAcceptedEULAKey];
 }
 
 - (BOOL)userPresentedWelcomeScreen
@@ -156,19 +156,16 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
    postNotificationName:NYPLCurrentAccountDidChangeNotification
    object:self];
 }
-- (void)setUserAcceptedEULA:(BOOL)userAcceptedEULA
+- (void)setUserAboveAge:(BOOL)aboveAge
 {
-  if (self.currentAccountIdentifier != NYPLUserAccountTypeNYPL)
-  {
-    NSString *accountAcceptedEULAKey = [NSString stringWithFormat:@"%@_%@",userAcceptedEULAKey,self.currentAccount.pathComponent];
-    [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:accountAcceptedEULAKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-  }
-  else
-  {
-    [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:userAcceptedEULAKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-  }
+  [[NSUserDefaults standardUserDefaults] setBool:aboveAge forKey:userAboveAgeKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+- (void)setUserAcceptedEULA:(BOOL)userAcceptedEULA forAccount:(Account *)account
+{
+  NSString *accountAcceptedEULAKey = [NSString stringWithFormat:@"%@_%@",userAcceptedEULAKey,account.pathComponent];
+  [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:accountAcceptedEULAKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
 }
 - (void)setUserPresentedWelcomeScreen:(BOOL)userPresentedScreen
 {

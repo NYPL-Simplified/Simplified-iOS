@@ -149,6 +149,7 @@
 
 // NYPLSettingsAccountViewController
 
+"SettingsAccountEULACheckbox" = "I agree to the terms of the End User License Agreement.";
 "SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";
 "SettingsAccountViewControllerCannotLogOutTitle" =
   "Logout Failed";
@@ -168,7 +169,7 @@
 "Location" = "Location";
 "LocationRequiredMessage" = "Location information is required for Sign Up. Please allow access to location information in the iOS settings";
 
-// NYPLEULAViewController && NYPLSettingsEULAViewController
+// NYPLSettingsEULAViewController
 "Accept" = "Accept";
 "Reject" = "Reject";
 "EULA" = "User Agreement";
