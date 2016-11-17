@@ -131,12 +131,23 @@ static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
   
   self.delegate = delegate;
   
+  /*
+   * TEMPORARY HARDCODED CHANGE FOR PROOF OF CONCEPT:
+   * Because we cannot put a URMS protected book into the actual catalog of the NYPL,
+   * we have to resort to use a hardcoded path to a book that has been purchased in our
+   * URMS store. Once we have the OPDS feed delivering URMS protected books, we can get
+   * rid of this hardcoded path. In the mean time, you should hardcode a path to whatever
+   * book you want to open.
+   */
+  
   @try {
     self.container = [[RDContainer alloc]
                       initWithDelegate:self.containerDelegate
-                      path:[[[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                             fileURLForBookIndentifier:book.identifier]
-                            path]];
+                      path:@"/Users/nelson_leme/Documents/Temp/f24e70fab7857857c23a762530eabb7cfb141f49f3bfb9552503aecb4fb69212.epub"];
+    /*  path:[[[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+     fileURLForBookIndentifier:book.identifier]
+     path]]; */
+    
   } @catch (...) {
     self.bookIsCorrupt = YES;
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{

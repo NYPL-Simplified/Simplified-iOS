@@ -1,3 +1,6 @@
+#import <CommonCrypto/CommonCryptor.h>
+#import <CommonCrypto/CommonHMAC.h>
+
 @import LocalAuthentication;
 @import NYPLCardCreator;
 
@@ -21,6 +24,9 @@
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
 #endif
+
+#import "BCLUrms/BCLUrmsCreateProfileRequest.h"
+#import "BCLUrms/BCLUrmsInitializer.h"
 
 typedef NS_ENUM(NSInteger, CellKind) {
   CellKindBarcode,
@@ -61,7 +67,11 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   }
 }
 
-@interface NYPLSettingsAccountViewController () <NSURLSessionDelegate, UITextFieldDelegate>
+@interface NYPLSettingsAccountViewController () <NSURLSessionDelegate, UITextFieldDelegate, NSURLConnectionDataDelegate, BCLUrmsCreateProfileRequestDelegate>
+{
+    @private NSMutableData *m_connData;
+    @private BCLUrmsCreateProfileRequest *m_createProfileRequest;
+}
 
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) UITextField *barcodeTextField;
@@ -705,6 +715,55 @@ replacementString:(NSString *)string
             [self authorizationAttemptDidFinish:success error:error];
           }];
 #else
+         
+         /*
+          * TEMPORARY CODE FOR RETRIEVING A URMS AUTHORIZATION TOKEN:
+          * The plan for the Library Simplified app is that their OPDS feed
+          * will provide a URMS authorization token when we need. However,
+          * they have not implemented that yet. So, we had to improvise: we
+          * put the code to retrieve the URMS authorization token right here
+          * (and hardcoded it for a specific user). This is NOT, I repeat,
+          * NOT something that we ever intend to ship. This is ONLY being done
+          * so that we can get some traction in making the URMS work in Library
+          * Simplified. The code below will never leave Bluefire premises.
+          */
+         
+         // --- Beginning of temporary code ---
+         
+         NSString *userId = @"google-110495186711904557779";
+         NSString *path = [NSString stringWithFormat:@"/store/v2/users/%@/authtoken/generate", userId];
+         NSString *sessionUrl = [NSString stringWithFormat:@"http://urms-967957035.eu-west-1.elb.amazonaws.com%@", path];
+         long timestamp = [[NSDate date] timeIntervalSince1970];
+         NSString *strTimestamp = [NSString stringWithFormat:@"%ld", timestamp];
+         NSString *hmacMessage = [NSString stringWithFormat:@"%@%@", path, strTimestamp];
+         NSData *message = [hmacMessage dataUsingEncoding:NSUTF8StringEncoding];
+         NSString *strSecretkey = @"ucj0z3uthspfixtba5kmwewdgl7s1prm";
+         NSData *secretKey = [strSecretkey dataUsingEncoding:NSUTF8StringEncoding];
+         
+         uint8_t hashBytes[CC_SHA256_DIGEST_LENGTH];
+         memset(hashBytes, 0, CC_SHA256_DIGEST_LENGTH);
+         CCHmac(kCCHmacAlgSHA256, secretKey.bytes, secretKey.length, message.bytes, message.length, hashBytes);
+         NSData *hmac = [NSData dataWithBytes:hashBytes length:CC_SHA256_DIGEST_LENGTH];
+         NSString *authHash = [hmac base64EncodedStringWithOptions:0];
+         
+         NSString *storeId = @"129";
+         NSString *authString = [NSString stringWithFormat:@"%@-%@-%@", storeId, strTimestamp, authHash];
+         
+         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:sessionUrl]];
+         [request setHTTPMethod:@"POST"];
+         [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+         //this is hard coded based on your suggested values, obviously you'd probably need to make this more dynamic based on your application's specific data to send
+         NSString *postString = [NSString stringWithFormat:@"authString=%@&timestamp=%@", authString, strTimestamp];
+         //NSString *postString = @"paperid=6&q77=2&q80=blah";
+         NSData *postData = [postString dataUsingEncoding:NSUTF8StringEncoding];
+         [request setHTTPBody:postData];
+         [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[postData length]] forHTTPHeaderField:@"Content-Length"];
+         m_connData = [NSMutableData dataWithCapacity: 0];
+         [NSURLConnection connectionWithRequest:request delegate:self];
+         
+         // --- End of temporary code ---
+         
+         
          [self authorizationAttemptDidFinish:YES error:nil];
 #endif
          self.isLoggingInAfterSignUp = NO;
@@ -890,5 +949,56 @@ completionHandler:(void (^)())handler
     [self updateShowHidePINState];
   }];
 }
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+  [m_connData setLength:0];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+  [m_connData appendData:data];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+  NSLog(@"Connection failed! Error - %@ %@",
+        [error localizedDescription],
+        [[error userInfo] objectForKey:NSURLErrorFailingURLStringErrorKey]);
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+  NSLog(@"Succeeded! Received %lu bytes of data",(unsigned long)[m_connData length]);
+  
+  NSError *error = nil;
+  NSDictionary *rootDict = [NSJSONSerialization JSONObjectWithData:m_connData options:0 error:&error];
+  if (error == nil && [rootDict isKindOfClass:[NSDictionary class]])
+  {
+    /*
+     * ISSUE: sometimes the request for a URMS authorization token is failing.
+     * The problem seems to be related to the timestamp. I think that the way we
+     * were truncating the timestamp is messing up things. However, this only
+     * happens occasionally, and given that this is strictly temporary code, it is
+     * not worthy investigating that now. So, if you see that "authToken" is coming
+     * up empty, it's because the request failed. Just try again and you should get
+     * a token.
+     */
+    
+    NSString *authToken = [rootDict objectForKey:@"authToken"];
+    NSLog(@"Authorization token: %@", authToken);
+    
+    [BCLUrmsInitializer initializeWithMarlinURL:@"https://urms-marlin-us.codefusion.technology/bks/"];
+    
+    m_createProfileRequest = [[BCLUrmsCreateProfileRequest alloc] initWithDelegate:self authToken:authToken profileName:@"default"];
+  }
+}
+
+- (void)urmsCreateProfileRequestDidFinish:(nonnull BCLUrmsCreateProfileRequest *)request
+                                    error:(nullable NSError *)error
+{
+  NSLog(@"#===> createProfile succeeded.");
+}
+
 
 @end

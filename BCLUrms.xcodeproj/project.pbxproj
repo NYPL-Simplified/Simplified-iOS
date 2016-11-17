@@ -1,0 +1,683 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		340D0AD41D3FF59B00FF85E8 /* BCLUrmsSwitchProfileRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 340D0AD21D3FF59B00FF85E8 /* BCLUrmsSwitchProfileRequest.h */; };
+		340D0AD51D3FF59B00FF85E8 /* BCLUrmsSwitchProfileRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 340D0AD31D3FF59B00FF85E8 /* BCLUrmsSwitchProfileRequest.m */; };
+		3428CDAE1D0335400062064B /* BCLUrms.h in Headers */ = {isa = PBXBuildFile; fileRef = 3428CDA81D0335400062064B /* BCLUrms.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3428CDAF1D0335400062064B /* BCLUrmsEnum.h in Headers */ = {isa = PBXBuildFile; fileRef = 3428CDA91D0335400062064B /* BCLUrmsEnum.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3428CDB11D0335400062064B /* BCLUrmsError.m in Sources */ = {isa = PBXBuildFile; fileRef = 3428CDAB1D0335400062064B /* BCLUrmsError.m */; };
+		3431DF6E1D03480C008BB834 /* BCLUrmsLinkerHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3431DF6C1D03480C008BB834 /* BCLUrmsLinkerHelper.mm */; };
+		3431DF751D034A44008BB834 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3431DF711D03497A008BB834 /* libsqlite3.tbd */; };
+		3431DF771D034A79008BB834 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3431DF761D034A79008BB834 /* UIKit.framework */; };
+		3453E88D1D036818000B7D69 /* BCLUrmsCreateProfileRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 3453E88B1D036818000B7D69 /* BCLUrmsCreateProfileRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3453E88E1D036818000B7D69 /* BCLUrmsCreateProfileRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3453E88C1D036818000B7D69 /* BCLUrmsCreateProfileRequest.m */; };
+		345F596A1D0377F2007942F6 /* BCLUrmsEvaluateRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 345F59681D0377F2007942F6 /* BCLUrmsEvaluateRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		345F596B1D0377F2007942F6 /* BCLUrmsEvaluateRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 345F59691D0377F2007942F6 /* BCLUrmsEvaluateRequest.m */; };
+		345FB3A11D42CBC100B729AF /* BCLUrmsInitializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 345FB39F1D42CBC100B729AF /* BCLUrmsInitializer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		345FB3A21D42CBC100B729AF /* BCLUrmsInitializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 345FB3A01D42CBC100B729AF /* BCLUrmsInitializer.m */; };
+		3488746A1D3FFC95000F0F7E /* BCLUrmsInitializeRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 348874681D3FFC95000F0F7E /* BCLUrmsInitializeRequest.h */; };
+		3488746B1D3FFC95000F0F7E /* BCLUrmsInitializeRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 348874691D3FFC95000F0F7E /* BCLUrmsInitializeRequest.m */; };
+		34A32E8B1D03526300A4A7ED /* BCLUrmsRegisterBookRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 34A32E891D03526300A4A7ED /* BCLUrmsRegisterBookRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		34A32E8C1D03526300A4A7ED /* BCLUrmsRegisterBookRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 34A32E8A1D03526300A4A7ED /* BCLUrmsRegisterBookRequest.m */; };
+		34A9EAF21D6FCF4200C0E535 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 34A9EAF11D6FCF4100C0E535 /* libz.tbd */; };
+		34C7CA871D34941A00E04E08 /* AddGroupBookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA581D34941A00E04E08 /* AddGroupBookTask.h */; };
+		34C7CA881D34941A00E04E08 /* AddGroupUserTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA591D34941A00E04E08 /* AddGroupUserTask.h */; };
+		34C7CA891D34941A00E04E08 /* CancelSellingTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA5A1D34941A00E04E08 /* CancelSellingTask.h */; };
+		34C7CA8A1D34941A00E04E08 /* CreateBookmarkTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA5B1D34941A00E04E08 /* CreateBookmarkTask.h */; };
+		34C7CA8B1D34941A00E04E08 /* CreateGroupTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA5C1D34941A00E04E08 /* CreateGroupTask.h */; };
+		34C7CA8C1D34941A00E04E08 /* CreateProfileTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA5D1D34941A00E04E08 /* CreateProfileTask.h */; };
+		34C7CA8D1D34941A00E04E08 /* DeleteBookmarkTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA5E1D34941A00E04E08 /* DeleteBookmarkTask.h */; };
+		34C7CA8E1D34941A00E04E08 /* DeleteGroupTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA5F1D34941A00E04E08 /* DeleteGroupTask.h */; };
+		34C7CA8F1D34941A00E04E08 /* DeleteProfileTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA601D34941A00E04E08 /* DeleteProfileTask.h */; };
+		34C7CA901D34941A00E04E08 /* DeregisterBookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA611D34941A00E04E08 /* DeregisterBookTask.h */; };
+		34C7CA921D34941A00E04E08 /* DeviceID.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA631D34941A00E04E08 /* DeviceID.h */; };
+		34C7CA931D34941A00E04E08 /* EvaluateLicenseTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA641D34941A00E04E08 /* EvaluateLicenseTask.h */; };
+		34C7CA941D34941A00E04E08 /* GetActiveProfileTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA651D34941A00E04E08 /* GetActiveProfileTask.h */; };
+		34C7CA961D34941A00E04E08 /* GetbackBookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA671D34941A00E04E08 /* GetbackBookTask.h */; };
+		34C7CA971D34941A00E04E08 /* GetBookmarksTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA681D34941A00E04E08 /* GetBookmarksTask.h */; };
+		34C7CA991D34941A00E04E08 /* GetContentDetailTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA6A1D34941A00E04E08 /* GetContentDetailTask.h */; };
+		34C7CA9A1D34941A00E04E08 /* GetDownloadedBooksTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA6B1D34941A00E04E08 /* GetDownloadedBooksTask.h */; };
+		34C7CA9B1D34941A00E04E08 /* GetDownloadedBookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA6C1D34941A00E04E08 /* GetDownloadedBookTask.h */; };
+		34C7CA9C1D34941A00E04E08 /* GetGroupsTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA6D1D34941A00E04E08 /* GetGroupsTask.h */; };
+		34C7CA9D1D34941A00E04E08 /* GetLendExpiryTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA6E1D34941A00E04E08 /* GetLendExpiryTask.h */; };
+		34C7CA9E1D34941A00E04E08 /* GetLinkTokenTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA6F1D34941A00E04E08 /* GetLinkTokenTask.h */; };
+		34C7CA9F1D34941A00E04E08 /* GetOnlineBooksTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA701D34941A00E04E08 /* GetOnlineBooksTask.h */; };
+		34C7CAA01D34941A00E04E08 /* GetProfilesTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA711D34941A00E04E08 /* GetProfilesTask.h */; };
+		34C7CAA11D34941A00E04E08 /* GetSettingsTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA721D34941A00E04E08 /* GetSettingsTask.h */; };
+		34C7CAA21D34941A00E04E08 /* GiftBookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA731D34941A00E04E08 /* GiftBookTask.h */; };
+		34C7CAA31D34941A00E04E08 /* IsMarlinBookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA741D34941A00E04E08 /* IsMarlinBookTask.h */; };
+		34C7CAA41D34941A00E04E08 /* LendBookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA751D34941A00E04E08 /* LendBookTask.h */; };
+		34C7CAA51D34941A00E04E08 /* LinkAccountsTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA761D34941A00E04E08 /* LinkAccountsTask.h */; };
+		34C7CAA61D34941A00E04E08 /* RegisterBookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA771D34941A00E04E08 /* RegisterBookTask.h */; };
+		34C7CAA81D34941A00E04E08 /* RemoveGroupBookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA791D34941A00E04E08 /* RemoveGroupBookTask.h */; };
+		34C7CAA91D34941A00E04E08 /* RemoveGroupUserTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA7A1D34941A00E04E08 /* RemoveGroupUserTask.h */; };
+		34C7CAAA1D34941A00E04E08 /* RenameGroupTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA7B1D34941A00E04E08 /* RenameGroupTask.h */; };
+		34C7CAAB1D34941A00E04E08 /* ReturnBookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA7C1D34941A00E04E08 /* ReturnBookTask.h */; };
+		34C7CAAC1D34941A00E04E08 /* SellBookTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA7D1D34941A00E04E08 /* SellBookTask.h */; };
+		34C7CAAD1D34941A00E04E08 /* SwitchProfileTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA7E1D34941A00E04E08 /* SwitchProfileTask.h */; };
+		34C7CAAE1D34941A00E04E08 /* SynchronizeBookshelfTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA7F1D34941A00E04E08 /* SynchronizeBookshelfTask.h */; };
+		34C7CAAF1D34941A00E04E08 /* UnlinkAccountTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA801D34941A00E04E08 /* UnlinkAccountTask.h */; };
+		34C7CAB01D34941A00E04E08 /* UpdateBookmarkTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA811D34941A00E04E08 /* UpdateBookmarkTask.h */; };
+		34C7CAB11D34941A00E04E08 /* urms in Frameworks */ = {isa = PBXBuildFile; fileRef = 34C7CA821D34941A00E04E08 /* urms */; };
+		34C7CAB21D34941A00E04E08 /* Urms.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA831D34941A00E04E08 /* Urms.h */; };
+		34C7CAB31D34941A00E04E08 /* UrmsError.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA841D34941A00E04E08 /* UrmsError.h */; };
+		34C7CAB41D34941A00E04E08 /* UrmsTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA851D34941A00E04E08 /* UrmsTask.h */; };
+		34C7CAB51D34941A00E04E08 /* UrmsTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 34C7CA861D34941A00E04E08 /* UrmsTypes.h */; };
+		34E12BB21D034C71002732EA /* BCLUrmsEvaluateLicenseRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 34E12BB01D034C71002732EA /* BCLUrmsEvaluateLicenseRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		34E12BB31D034C71002732EA /* BCLUrmsEvaluateLicenseRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 34E12BB11D034C71002732EA /* BCLUrmsEvaluateLicenseRequest.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		347185D41D74EC2E00BC1B10 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 347185CE1D74EC2E00BC1B10 /* ePub3.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = ABA72C241655382E003125FF;
+			remoteInfo = ePub3;
+		};
+		347185D61D74EC2E00BC1B10 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 347185CE1D74EC2E00BC1B10 /* ePub3.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = ABA4BAE016ADF5A600161B77;
+			remoteInfo = "ePub3-iOS";
+		};
+		347185D81D74EC2E00BC1B10 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 347185CE1D74EC2E00BC1B10 /* ePub3.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AB61CE4A1694845700299BB1;
+			remoteInfo = UnitTests;
+		};
+		347185DA1D74EC3D00BC1B10 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 347185CE1D74EC2E00BC1B10 /* ePub3.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = ABA4BADF16ADF5A600161B77;
+			remoteInfo = "ePub3-iOS";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		340D0AD21D3FF59B00FF85E8 /* BCLUrmsSwitchProfileRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCLUrmsSwitchProfileRequest.h; sourceTree = "<group>"; };
+		340D0AD31D3FF59B00FF85E8 /* BCLUrmsSwitchProfileRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCLUrmsSwitchProfileRequest.m; sourceTree = "<group>"; };
+		3428CDA81D0335400062064B /* BCLUrms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCLUrms.h; sourceTree = "<group>"; };
+		3428CDA91D0335400062064B /* BCLUrmsEnum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCLUrmsEnum.h; sourceTree = "<group>"; };
+		3428CDAA1D0335400062064B /* BCLUrmsError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCLUrmsError.h; sourceTree = "<group>"; };
+		3428CDAB1D0335400062064B /* BCLUrmsError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCLUrmsError.m; sourceTree = "<group>"; };
+		3431DF6B1D03480C008BB834 /* BCLUrmsLinkerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCLUrmsLinkerHelper.h; sourceTree = "<group>"; };
+		3431DF6C1D03480C008BB834 /* BCLUrmsLinkerHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BCLUrmsLinkerHelper.mm; sourceTree = "<group>"; };
+		3431DF711D03497A008BB834 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		3431DF761D034A79008BB834 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		3453E88B1D036818000B7D69 /* BCLUrmsCreateProfileRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCLUrmsCreateProfileRequest.h; sourceTree = "<group>"; };
+		3453E88C1D036818000B7D69 /* BCLUrmsCreateProfileRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCLUrmsCreateProfileRequest.m; sourceTree = "<group>"; };
+		345F59681D0377F2007942F6 /* BCLUrmsEvaluateRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCLUrmsEvaluateRequest.h; sourceTree = "<group>"; };
+		345F59691D0377F2007942F6 /* BCLUrmsEvaluateRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCLUrmsEvaluateRequest.m; sourceTree = "<group>"; };
+		345FB39F1D42CBC100B729AF /* BCLUrmsInitializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCLUrmsInitializer.h; sourceTree = "<group>"; };
+		345FB3A01D42CBC100B729AF /* BCLUrmsInitializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCLUrmsInitializer.m; sourceTree = "<group>"; };
+		347185CE1D74EC2E00BC1B10 /* ePub3.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ePub3.xcodeproj; path = "BCLReader/readium-sdk-private/Platform/Apple/ePub3.xcodeproj"; sourceTree = SOURCE_ROOT; };
+		348874681D3FFC95000F0F7E /* BCLUrmsInitializeRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCLUrmsInitializeRequest.h; sourceTree = "<group>"; };
+		348874691D3FFC95000F0F7E /* BCLUrmsInitializeRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCLUrmsInitializeRequest.m; sourceTree = "<group>"; };
+		349DAE111D0326AC0068C2B7 /* BCLUrms.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BCLUrms.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		349DAE161D0326AC0068C2B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		34A32E891D03526300A4A7ED /* BCLUrmsRegisterBookRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCLUrmsRegisterBookRequest.h; sourceTree = "<group>"; };
+		34A32E8A1D03526300A4A7ED /* BCLUrmsRegisterBookRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCLUrmsRegisterBookRequest.m; sourceTree = "<group>"; };
+		34A9EAF11D6FCF4100C0E535 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		34C7CA581D34941A00E04E08 /* AddGroupBookTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddGroupBookTask.h; sourceTree = "<group>"; };
+		34C7CA591D34941A00E04E08 /* AddGroupUserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddGroupUserTask.h; sourceTree = "<group>"; };
+		34C7CA5A1D34941A00E04E08 /* CancelSellingTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CancelSellingTask.h; sourceTree = "<group>"; };
+		34C7CA5B1D34941A00E04E08 /* CreateBookmarkTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateBookmarkTask.h; sourceTree = "<group>"; };
+		34C7CA5C1D34941A00E04E08 /* CreateGroupTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateGroupTask.h; sourceTree = "<group>"; };
+		34C7CA5D1D34941A00E04E08 /* CreateProfileTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateProfileTask.h; sourceTree = "<group>"; };
+		34C7CA5E1D34941A00E04E08 /* DeleteBookmarkTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleteBookmarkTask.h; sourceTree = "<group>"; };
+		34C7CA5F1D34941A00E04E08 /* DeleteGroupTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleteGroupTask.h; sourceTree = "<group>"; };
+		34C7CA601D34941A00E04E08 /* DeleteProfileTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeleteProfileTask.h; sourceTree = "<group>"; };
+		34C7CA611D34941A00E04E08 /* DeregisterBookTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeregisterBookTask.h; sourceTree = "<group>"; };
+		34C7CA631D34941A00E04E08 /* DeviceID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceID.h; sourceTree = "<group>"; };
+		34C7CA641D34941A00E04E08 /* EvaluateLicenseTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EvaluateLicenseTask.h; sourceTree = "<group>"; };
+		34C7CA651D34941A00E04E08 /* GetActiveProfileTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetActiveProfileTask.h; sourceTree = "<group>"; };
+		34C7CA671D34941A00E04E08 /* GetbackBookTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetbackBookTask.h; sourceTree = "<group>"; };
+		34C7CA681D34941A00E04E08 /* GetBookmarksTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetBookmarksTask.h; sourceTree = "<group>"; };
+		34C7CA6A1D34941A00E04E08 /* GetContentDetailTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetContentDetailTask.h; sourceTree = "<group>"; };
+		34C7CA6B1D34941A00E04E08 /* GetDownloadedBooksTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetDownloadedBooksTask.h; sourceTree = "<group>"; };
+		34C7CA6C1D34941A00E04E08 /* GetDownloadedBookTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetDownloadedBookTask.h; sourceTree = "<group>"; };
+		34C7CA6D1D34941A00E04E08 /* GetGroupsTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetGroupsTask.h; sourceTree = "<group>"; };
+		34C7CA6E1D34941A00E04E08 /* GetLendExpiryTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetLendExpiryTask.h; sourceTree = "<group>"; };
+		34C7CA6F1D34941A00E04E08 /* GetLinkTokenTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetLinkTokenTask.h; sourceTree = "<group>"; };
+		34C7CA701D34941A00E04E08 /* GetOnlineBooksTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetOnlineBooksTask.h; sourceTree = "<group>"; };
+		34C7CA711D34941A00E04E08 /* GetProfilesTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetProfilesTask.h; sourceTree = "<group>"; };
+		34C7CA721D34941A00E04E08 /* GetSettingsTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GetSettingsTask.h; sourceTree = "<group>"; };
+		34C7CA731D34941A00E04E08 /* GiftBookTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GiftBookTask.h; sourceTree = "<group>"; };
+		34C7CA741D34941A00E04E08 /* IsMarlinBookTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IsMarlinBookTask.h; sourceTree = "<group>"; };
+		34C7CA751D34941A00E04E08 /* LendBookTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LendBookTask.h; sourceTree = "<group>"; };
+		34C7CA761D34941A00E04E08 /* LinkAccountsTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkAccountsTask.h; sourceTree = "<group>"; };
+		34C7CA771D34941A00E04E08 /* RegisterBookTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegisterBookTask.h; sourceTree = "<group>"; };
+		34C7CA791D34941A00E04E08 /* RemoveGroupBookTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoveGroupBookTask.h; sourceTree = "<group>"; };
+		34C7CA7A1D34941A00E04E08 /* RemoveGroupUserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoveGroupUserTask.h; sourceTree = "<group>"; };
+		34C7CA7B1D34941A00E04E08 /* RenameGroupTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenameGroupTask.h; sourceTree = "<group>"; };
+		34C7CA7C1D34941A00E04E08 /* ReturnBookTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReturnBookTask.h; sourceTree = "<group>"; };
+		34C7CA7D1D34941A00E04E08 /* SellBookTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SellBookTask.h; sourceTree = "<group>"; };
+		34C7CA7E1D34941A00E04E08 /* SwitchProfileTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchProfileTask.h; sourceTree = "<group>"; };
+		34C7CA7F1D34941A00E04E08 /* SynchronizeBookshelfTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SynchronizeBookshelfTask.h; sourceTree = "<group>"; };
+		34C7CA801D34941A00E04E08 /* UnlinkAccountTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnlinkAccountTask.h; sourceTree = "<group>"; };
+		34C7CA811D34941A00E04E08 /* UpdateBookmarkTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateBookmarkTask.h; sourceTree = "<group>"; };
+		34C7CA821D34941A00E04E08 /* urms */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = urms; sourceTree = "<group>"; };
+		34C7CA831D34941A00E04E08 /* Urms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Urms.h; sourceTree = "<group>"; };
+		34C7CA841D34941A00E04E08 /* UrmsError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UrmsError.h; sourceTree = "<group>"; };
+		34C7CA851D34941A00E04E08 /* UrmsTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UrmsTask.h; sourceTree = "<group>"; };
+		34C7CA861D34941A00E04E08 /* UrmsTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UrmsTypes.h; sourceTree = "<group>"; };
+		34E12BB01D034C71002732EA /* BCLUrmsEvaluateLicenseRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCLUrmsEvaluateLicenseRequest.h; sourceTree = "<group>"; };
+		34E12BB11D034C71002732EA /* BCLUrmsEvaluateLicenseRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCLUrmsEvaluateLicenseRequest.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		349DAE0D1D0326AC0068C2B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3431DF751D034A44008BB834 /* libsqlite3.tbd in Frameworks */,
+				34A9EAF21D6FCF4200C0E535 /* libz.tbd in Frameworks */,
+				3431DF771D034A79008BB834 /* UIKit.framework in Frameworks */,
+				34C7CAB11D34941A00E04E08 /* urms in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		34198AAE1D033F290023EE4C /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				3431DF711D03497A008BB834 /* libsqlite3.tbd */,
+				34A9EAF11D6FCF4100C0E535 /* libz.tbd */,
+				347185CE1D74EC2E00BC1B10 /* ePub3.xcodeproj */,
+				3431DF761D034A79008BB834 /* UIKit.framework */,
+			);
+			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		3428CDA71D0335400062064B /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				3428CDA81D0335400062064B /* BCLUrms.h */,
+				3453E88B1D036818000B7D69 /* BCLUrmsCreateProfileRequest.h */,
+				3453E88C1D036818000B7D69 /* BCLUrmsCreateProfileRequest.m */,
+				3428CDA91D0335400062064B /* BCLUrmsEnum.h */,
+				3428CDAA1D0335400062064B /* BCLUrmsError.h */,
+				3428CDAB1D0335400062064B /* BCLUrmsError.m */,
+				34E12BB01D034C71002732EA /* BCLUrmsEvaluateLicenseRequest.h */,
+				34E12BB11D034C71002732EA /* BCLUrmsEvaluateLicenseRequest.m */,
+				345F59681D0377F2007942F6 /* BCLUrmsEvaluateRequest.h */,
+				345F59691D0377F2007942F6 /* BCLUrmsEvaluateRequest.m */,
+				345FB39F1D42CBC100B729AF /* BCLUrmsInitializer.h */,
+				345FB3A01D42CBC100B729AF /* BCLUrmsInitializer.m */,
+				348874681D3FFC95000F0F7E /* BCLUrmsInitializeRequest.h */,
+				348874691D3FFC95000F0F7E /* BCLUrmsInitializeRequest.m */,
+				3431DF6B1D03480C008BB834 /* BCLUrmsLinkerHelper.h */,
+				3431DF6C1D03480C008BB834 /* BCLUrmsLinkerHelper.mm */,
+				34A32E891D03526300A4A7ED /* BCLUrmsRegisterBookRequest.h */,
+				34A32E8A1D03526300A4A7ED /* BCLUrmsRegisterBookRequest.m */,
+				340D0AD21D3FF59B00FF85E8 /* BCLUrmsSwitchProfileRequest.h */,
+				340D0AD31D3FF59B00FF85E8 /* BCLUrmsSwitchProfileRequest.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		347185CF1D74EC2E00BC1B10 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				347185D51D74EC2E00BC1B10 /* ePub3.dylib */,
+				347185D71D74EC2E00BC1B10 /* libePub3-iOS.a */,
+				347185D91D74EC2E00BC1B10 /* UnitTests */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		349DAE071D0326AC0068C2B7 = {
+			isa = PBXGroup;
+			children = (
+				349DAE131D0326AC0068C2B7 /* BCLUrms */,
+				349DAE121D0326AC0068C2B7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		349DAE121D0326AC0068C2B7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				349DAE111D0326AC0068C2B7 /* BCLUrms.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		349DAE131D0326AC0068C2B7 /* BCLUrms */ = {
+			isa = PBXGroup;
+			children = (
+				3428CDA71D0335400062064B /* Classes */,
+				34198AAE1D033F290023EE4C /* Dependencies */,
+				34C7CA571D34941A00E04E08 /* urms */,
+				349DAE161D0326AC0068C2B7 /* Info.plist */,
+			);
+			path = BCLUrms;
+			sourceTree = "<group>";
+		};
+		34C7CA571D34941A00E04E08 /* urms */ = {
+			isa = PBXGroup;
+			children = (
+				34C7CA581D34941A00E04E08 /* AddGroupBookTask.h */,
+				34C7CA591D34941A00E04E08 /* AddGroupUserTask.h */,
+				34C7CA5A1D34941A00E04E08 /* CancelSellingTask.h */,
+				34C7CA5B1D34941A00E04E08 /* CreateBookmarkTask.h */,
+				34C7CA5C1D34941A00E04E08 /* CreateGroupTask.h */,
+				34C7CA5D1D34941A00E04E08 /* CreateProfileTask.h */,
+				34C7CA5E1D34941A00E04E08 /* DeleteBookmarkTask.h */,
+				34C7CA5F1D34941A00E04E08 /* DeleteGroupTask.h */,
+				34C7CA601D34941A00E04E08 /* DeleteProfileTask.h */,
+				34C7CA611D34941A00E04E08 /* DeregisterBookTask.h */,
+				34C7CA631D34941A00E04E08 /* DeviceID.h */,
+				34C7CA641D34941A00E04E08 /* EvaluateLicenseTask.h */,
+				34C7CA651D34941A00E04E08 /* GetActiveProfileTask.h */,
+				34C7CA671D34941A00E04E08 /* GetbackBookTask.h */,
+				34C7CA681D34941A00E04E08 /* GetBookmarksTask.h */,
+				34C7CA6A1D34941A00E04E08 /* GetContentDetailTask.h */,
+				34C7CA6B1D34941A00E04E08 /* GetDownloadedBooksTask.h */,
+				34C7CA6C1D34941A00E04E08 /* GetDownloadedBookTask.h */,
+				34C7CA6D1D34941A00E04E08 /* GetGroupsTask.h */,
+				34C7CA6E1D34941A00E04E08 /* GetLendExpiryTask.h */,
+				34C7CA6F1D34941A00E04E08 /* GetLinkTokenTask.h */,
+				34C7CA701D34941A00E04E08 /* GetOnlineBooksTask.h */,
+				34C7CA711D34941A00E04E08 /* GetProfilesTask.h */,
+				34C7CA721D34941A00E04E08 /* GetSettingsTask.h */,
+				34C7CA731D34941A00E04E08 /* GiftBookTask.h */,
+				34C7CA741D34941A00E04E08 /* IsMarlinBookTask.h */,
+				34C7CA751D34941A00E04E08 /* LendBookTask.h */,
+				34C7CA761D34941A00E04E08 /* LinkAccountsTask.h */,
+				34C7CA771D34941A00E04E08 /* RegisterBookTask.h */,
+				34C7CA791D34941A00E04E08 /* RemoveGroupBookTask.h */,
+				34C7CA7A1D34941A00E04E08 /* RemoveGroupUserTask.h */,
+				34C7CA7B1D34941A00E04E08 /* RenameGroupTask.h */,
+				34C7CA7C1D34941A00E04E08 /* ReturnBookTask.h */,
+				34C7CA7D1D34941A00E04E08 /* SellBookTask.h */,
+				34C7CA7E1D34941A00E04E08 /* SwitchProfileTask.h */,
+				34C7CA7F1D34941A00E04E08 /* SynchronizeBookshelfTask.h */,
+				34C7CA801D34941A00E04E08 /* UnlinkAccountTask.h */,
+				34C7CA811D34941A00E04E08 /* UpdateBookmarkTask.h */,
+				34C7CA821D34941A00E04E08 /* urms */,
+				34C7CA831D34941A00E04E08 /* Urms.h */,
+				34C7CA841D34941A00E04E08 /* UrmsError.h */,
+				34C7CA851D34941A00E04E08 /* UrmsTask.h */,
+				34C7CA861D34941A00E04E08 /* UrmsTypes.h */,
+			);
+			name = urms;
+			path = ThirdParty/urms;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		349DAE0E1D0326AC0068C2B7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3428CDAE1D0335400062064B /* BCLUrms.h in Headers */,
+				3453E88D1D036818000B7D69 /* BCLUrmsCreateProfileRequest.h in Headers */,
+				3428CDAF1D0335400062064B /* BCLUrmsEnum.h in Headers */,
+				34E12BB21D034C71002732EA /* BCLUrmsEvaluateLicenseRequest.h in Headers */,
+				345F596A1D0377F2007942F6 /* BCLUrmsEvaluateRequest.h in Headers */,
+				34C7CAAB1D34941A00E04E08 /* ReturnBookTask.h in Headers */,
+				34C7CA971D34941A00E04E08 /* GetBookmarksTask.h in Headers */,
+				34C7CA881D34941A00E04E08 /* AddGroupUserTask.h in Headers */,
+				345FB3A11D42CBC100B729AF /* BCLUrmsInitializer.h in Headers */,
+				34C7CAB41D34941A00E04E08 /* UrmsTask.h in Headers */,
+				34C7CA9A1D34941A00E04E08 /* GetDownloadedBooksTask.h in Headers */,
+				34C7CA9D1D34941A00E04E08 /* GetLendExpiryTask.h in Headers */,
+				34C7CAA81D34941A00E04E08 /* RemoveGroupBookTask.h in Headers */,
+				34C7CA8C1D34941A00E04E08 /* CreateProfileTask.h in Headers */,
+				34C7CAB21D34941A00E04E08 /* Urms.h in Headers */,
+				34C7CA9C1D34941A00E04E08 /* GetGroupsTask.h in Headers */,
+				34C7CA9E1D34941A00E04E08 /* GetLinkTokenTask.h in Headers */,
+				34C7CAAC1D34941A00E04E08 /* SellBookTask.h in Headers */,
+				34C7CA8F1D34941A00E04E08 /* DeleteProfileTask.h in Headers */,
+				34C7CAA11D34941A00E04E08 /* GetSettingsTask.h in Headers */,
+				34C7CAB31D34941A00E04E08 /* UrmsError.h in Headers */,
+				34C7CA931D34941A00E04E08 /* EvaluateLicenseTask.h in Headers */,
+				34C7CA8B1D34941A00E04E08 /* CreateGroupTask.h in Headers */,
+				34C7CA8D1D34941A00E04E08 /* DeleteBookmarkTask.h in Headers */,
+				34C7CAA31D34941A00E04E08 /* IsMarlinBookTask.h in Headers */,
+				34C7CAAD1D34941A00E04E08 /* SwitchProfileTask.h in Headers */,
+				34C7CAAA1D34941A00E04E08 /* RenameGroupTask.h in Headers */,
+				34C7CA901D34941A00E04E08 /* DeregisterBookTask.h in Headers */,
+				34C7CA921D34941A00E04E08 /* DeviceID.h in Headers */,
+				34C7CAB01D34941A00E04E08 /* UpdateBookmarkTask.h in Headers */,
+				34C7CA991D34941A00E04E08 /* GetContentDetailTask.h in Headers */,
+				34C7CAA91D34941A00E04E08 /* RemoveGroupUserTask.h in Headers */,
+				34C7CA941D34941A00E04E08 /* GetActiveProfileTask.h in Headers */,
+				34C7CAA51D34941A00E04E08 /* LinkAccountsTask.h in Headers */,
+				34C7CA9B1D34941A00E04E08 /* GetDownloadedBookTask.h in Headers */,
+				34C7CAAF1D34941A00E04E08 /* UnlinkAccountTask.h in Headers */,
+				34C7CA8A1D34941A00E04E08 /* CreateBookmarkTask.h in Headers */,
+				34C7CA9F1D34941A00E04E08 /* GetOnlineBooksTask.h in Headers */,
+				34C7CAB51D34941A00E04E08 /* UrmsTypes.h in Headers */,
+				34C7CAA61D34941A00E04E08 /* RegisterBookTask.h in Headers */,
+				34C7CA891D34941A00E04E08 /* CancelSellingTask.h in Headers */,
+				3488746A1D3FFC95000F0F7E /* BCLUrmsInitializeRequest.h in Headers */,
+				34C7CAA41D34941A00E04E08 /* LendBookTask.h in Headers */,
+				34C7CAAE1D34941A00E04E08 /* SynchronizeBookshelfTask.h in Headers */,
+				34A32E8B1D03526300A4A7ED /* BCLUrmsRegisterBookRequest.h in Headers */,
+				34C7CA8E1D34941A00E04E08 /* DeleteGroupTask.h in Headers */,
+				340D0AD41D3FF59B00FF85E8 /* BCLUrmsSwitchProfileRequest.h in Headers */,
+				34C7CAA21D34941A00E04E08 /* GiftBookTask.h in Headers */,
+				34C7CA961D34941A00E04E08 /* GetbackBookTask.h in Headers */,
+				34C7CAA01D34941A00E04E08 /* GetProfilesTask.h in Headers */,
+				34C7CA871D34941A00E04E08 /* AddGroupBookTask.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		349DAE101D0326AC0068C2B7 /* BCLUrms */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 349DAE191D0326AC0068C2B7 /* Build configuration list for PBXNativeTarget "BCLUrms" */;
+			buildPhases = (
+				349DAE0C1D0326AC0068C2B7 /* Sources */,
+				349DAE0D1D0326AC0068C2B7 /* Frameworks */,
+				349DAE0E1D0326AC0068C2B7 /* Headers */,
+				349DAE0F1D0326AC0068C2B7 /* Resources */,
+				34C973AB1D932B4E00F9CE36 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				347185DB1D74EC3D00BC1B10 /* PBXTargetDependency */,
+			);
+			name = BCLUrms;
+			productName = BCLUrms;
+			productReference = 349DAE111D0326AC0068C2B7 /* BCLUrms.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		349DAE081D0326AC0068C2B7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = "Bluefire Productions, LLC";
+				TargetAttributes = {
+					349DAE101D0326AC0068C2B7 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 349DAE0B1D0326AC0068C2B7 /* Build configuration list for PBXProject "BCLUrms" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 349DAE071D0326AC0068C2B7;
+			productRefGroup = 349DAE121D0326AC0068C2B7 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 347185CF1D74EC2E00BC1B10 /* Products */;
+					ProjectRef = 347185CE1D74EC2E00BC1B10 /* ePub3.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				349DAE101D0326AC0068C2B7 /* BCLUrms */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		347185D51D74EC2E00BC1B10 /* ePub3.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = ePub3.dylib;
+			remoteRef = 347185D41D74EC2E00BC1B10 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		347185D71D74EC2E00BC1B10 /* libePub3-iOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libePub3-iOS.a";
+			remoteRef = 347185D61D74EC2E00BC1B10 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		347185D91D74EC2E00BC1B10 /* UnitTests */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = UnitTests;
+			remoteRef = 347185D81D74EC2E00BC1B10 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		349DAE0F1D0326AC0068C2B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		34C973AB1D932B4E00F9CE36 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" == \"Debug\" ]; then\n\techo Skipping scp-update-binary due to debug configuration.\nelse\n\techo Running scp-update-binary\n\t${PROJECT_DIR}/BCLUrms/ThirdParty/urms/scp-update-binary --binary=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/${PRODUCT_NAME} ${PROJECT_DIR}/BCLUrms/ThirdParty/urms/urms.nwdb\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		349DAE0C1D0326AC0068C2B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3453E88E1D036818000B7D69 /* BCLUrmsCreateProfileRequest.m in Sources */,
+				3428CDB11D0335400062064B /* BCLUrmsError.m in Sources */,
+				34E12BB31D034C71002732EA /* BCLUrmsEvaluateLicenseRequest.m in Sources */,
+				345F596B1D0377F2007942F6 /* BCLUrmsEvaluateRequest.m in Sources */,
+				345FB3A21D42CBC100B729AF /* BCLUrmsInitializer.m in Sources */,
+				3488746B1D3FFC95000F0F7E /* BCLUrmsInitializeRequest.m in Sources */,
+				3431DF6E1D03480C008BB834 /* BCLUrmsLinkerHelper.mm in Sources */,
+				34A32E8C1D03526300A4A7ED /* BCLUrmsRegisterBookRequest.m in Sources */,
+				340D0AD51D3FF59B00FF85E8 /* BCLUrmsSwitchProfileRequest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		347185DB1D74EC3D00BC1B10 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "ePub3-iOS";
+			targetProxy = 347185DA1D74EC3D00BC1B10 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		349DAE171D0326AC0068C2B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		349DAE181D0326AC0068C2B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		349DAE1A1D0326AC0068C2B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/BCLUrms/ThirdParty/urms";
+				INFOPLIST_FILE = BCLUrms/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/BCLUrms/ThirdParty/urms",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bluefirereader.bclurms;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		349DAE1B1D0326AC0068C2B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/BCLUrms/ThirdParty/urms";
+				INFOPLIST_FILE = BCLUrms/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/BCLUrms/ThirdParty/urms",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bluefirereader.bclurms;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		349DAE0B1D0326AC0068C2B7 /* Build configuration list for PBXProject "BCLUrms" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				349DAE171D0326AC0068C2B7 /* Debug */,
+				349DAE181D0326AC0068C2B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		349DAE191D0326AC0068C2B7 /* Build configuration list for PBXNativeTarget "BCLUrms" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				349DAE1A1D0326AC0068C2B7 /* Debug */,
+				349DAE1B1D0326AC0068C2B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 349DAE081D0326AC0068C2B7 /* Project object */;
+}
