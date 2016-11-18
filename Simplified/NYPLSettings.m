@@ -98,8 +98,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 
 - (BOOL)userAcceptedEULAForAccount:(Account *)account
 {
-  NSString *accountAcceptedEULAKey = [NSString stringWithFormat:@"%@_%@",userAcceptedEULAKey,account.pathComponent];
-  return [[NSUserDefaults standardUserDefaults] boolForKey:accountAcceptedEULAKey];
+  if (account.id != NYPLUserAccountTypeNYPL) {
+    NSString *accountAcceptedEULAKey = [NSString stringWithFormat:@"%@_%@",userAcceptedEULAKey,account.pathComponent];
+    return [[NSUserDefaults standardUserDefaults] boolForKey:accountAcceptedEULAKey];
+  } else {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:userAcceptedEULAKey];
+  }
 }
 
 - (BOOL)userPresentedWelcomeScreen
@@ -133,7 +137,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   // If user has not selected any accounts yet, return the "currentAccount"
   if (!libraryAccounts) {
     NSInteger currentLibrary = [self currentAccountIdentifier];
-    [self setSettingsAccountsList:@[@(currentLibrary)]];
+    [self setSettingsAccountsList:@[@(currentLibrary), @(NYPLUserAccountTypeMagic)]];
     return [self settingsAccountsList];
   } else {
     return libraryAccounts;
@@ -165,9 +169,14 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 }
 - (void)setUserAcceptedEULA:(BOOL)userAcceptedEULA forAccount:(Account *)account
 {
-  NSString *accountAcceptedEULAKey = [NSString stringWithFormat:@"%@_%@",userAcceptedEULAKey,account.pathComponent];
-  [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:accountAcceptedEULAKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
+  if (account.id != NYPLUserAccountTypeNYPL) {
+    NSString *accountAcceptedEULAKey = [NSString stringWithFormat:@"%@_%@",userAcceptedEULAKey,account.pathComponent];
+    [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:accountAcceptedEULAKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+  } else {
+    [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:userAcceptedEULAKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+  }
 }
 - (void)setUserPresentedWelcomeScreen:(BOOL)userPresentedScreen
 {

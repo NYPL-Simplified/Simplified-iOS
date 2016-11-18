@@ -27,7 +27,9 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
         case 0:
           return NYPLSettingsPrimaryTableViewControllerItemAbout;
         case 1:
-          return NYPLSettingsPrimaryTableViewControllerItemLicenses;
+          return NYPLSettingsPrimaryTableViewControllerItemEULA;
+        case 2:
+          return NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses;
         default:
           @throw NSInvalidArgumentException;
       }
@@ -53,8 +55,10 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
       return [NSIndexPath indexPathForRow:0 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
       return [NSIndexPath indexPathForRow:0 inSection:2];
-    case NYPLSettingsPrimaryTableViewControllerItemLicenses:
+    case NYPLSettingsPrimaryTableViewControllerItemEULA:
       return [NSIndexPath indexPathForRow:1 inSection:2];
+    case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses:
+      return [NSIndexPath indexPathForRow:2 inSection:2];
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
       return [NSIndexPath indexPathForRow:0 inSection:3];
     default:
@@ -142,49 +146,20 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(SettingsItemFromIndexPath(indexPath)) {
-    case NYPLSettingsPrimaryTableViewControllerItemLicenses: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"Licenses", nil);
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      }
-      return cell;
+    case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses: {
+      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"SoftwareLicenses", nil)];
+    }
+    case NYPLSettingsPrimaryTableViewControllerItemEULA: {
+      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"EULA", nil)];
     }
     case NYPLSettingsPrimaryTableViewControllerItemAccount: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"Accounts", nil);
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      }
-      return cell;
+      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"Accounts", nil)];
     }
     case NYPLSettingsPrimaryTableViewControllerItemAbout: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"About", nil);
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      }
-      return cell;
+      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"About", nil)];
     }
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      cell.textLabel.text = NSLocalizedString(@"Help", nil);
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      }
-      return cell;
+      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"Help", nil)];
     }
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
@@ -207,6 +182,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     default:
       return nil;
   }
+}
+
+- (UITableViewCell *)settingsPrimaryTableViewCellWithText:(NSString *)text
+{
+  UITableViewCell *const cell = [[UITableViewCell alloc]
+                                 initWithStyle:UITableViewCellStyleDefault
+                                 reuseIdentifier:nil];
+  cell.textLabel.text = text;
+  cell.textLabel.font = [UIFont systemFontOfSize:17];
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+  }
+  return cell;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
@@ -241,7 +229,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(section) {
     case 2:
-      return 2;
+      return 3;
     default:
       return 1;
   }

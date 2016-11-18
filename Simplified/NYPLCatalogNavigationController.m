@@ -47,8 +47,8 @@
   [super viewWillAppear:animated];
   
   NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
-  
-  viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;  
+  viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
+
 }
 
 
@@ -91,7 +91,6 @@
 
 - (void) reloadSelected {
   
-  
   Account *account = [[NYPLSettings sharedSettings] currentAccount];
   
   [[NSNotificationCenter defaultCenter]
@@ -103,15 +102,18 @@
   
   [[NYPLBookRegistry sharedRegistry] justLoad];
 
-  
-  
-  if ([[self.visibleViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] && [self.visibleViewController respondsToSelector:@selector(load)]) {
+  if ([[self.visibleViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] &&
+       [self.visibleViewController respondsToSelector:@selector(load)]) {
     NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
     viewController.URL = [NYPLConfiguration mainFeedURL]; // It may have changed
     [viewController load];
-    
     viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
-    
+  } else if ([[self.topViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] &&
+             [self.topViewController respondsToSelector:@selector(load)]) {
+    NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.topViewController;
+    viewController.URL = [NYPLConfiguration mainFeedURL]; // It may have changed
+    [viewController load];
+    viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
   }
 }
 
@@ -121,6 +123,18 @@
   
   if (UIAccessibilityIsVoiceOverRunning()) {
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+  }
+  
+  if ([[NYPLSettings sharedSettings] userPresentedWelcomeScreen] == NO) {
+    NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^() {
+        [self reloadSelected];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }];
+    
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
+    NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
+    [vc safelyPresentViewController:navController animated:YES completion:nil];
+    [[NYPLSettings sharedSettings] setUserPresentedWelcomeScreen:YES];
   }
 }
 
