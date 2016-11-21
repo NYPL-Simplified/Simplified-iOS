@@ -109,15 +109,25 @@ final class NYPLCirculationAnalytics : NSObject {
         
         if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
             let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(file)
-            let data: NSData? = NSData(contentsOfFile: (path?.absoluteString)!)
-            do {
-                if let jsonObject: NSDictionary = try! NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
-                {
-                    try! fileManager.removeItemAtURL(path!)
-                    Log.debug(#file,jsonObject.description)
-                } else {
-                    Log.error(#file,"Unable to read NYPLCirculationAnalytics.analyticsQueue data from file")
+            
+            if(fileManager.fileExistsAtPath((path?.path)!)) {
+                
+                
+                let data: NSData? = NSData(contentsOfFile: (path?.path)!)
+                do {
+                    if let jsonObject: NSDictionary = try! NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
+                    {
+                        //if we have sucessfully read the file back in, remove it
+                        try! fileManager.removeItemAtURL(path!)
+                        Log.debug(#file,jsonObject.description)
+                        
+                        //TODO: load file contents back into queue
+                        
+                    } else {
+                        Log.error(#file,"Unable to read NYPLCirculationAnalytics.analyticsQueue data from file")
+                    }
                 }
+                
             }
             
         }
