@@ -101,6 +101,7 @@ class NYPLAnnotations: NSObject {
                 NSKeyedArchiver.archiveRootObject(NYPLAnnotations.lastReadBookQueue.operations, toFile: (path?.path)!)            }
         }
         
+        //we have archived the operations, so remove them all from the active queue
         NYPLAnnotations.lastReadBookQueue.cancelAllOperations()
         
         //TODO: future state handle annotation queue in the same mannor

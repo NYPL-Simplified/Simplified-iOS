@@ -83,6 +83,7 @@ final class NYPLCirculationAnalytics : NSObject {
             }
         }
         
+        //we have archived the operations, so remove them all from the active queue
         NYPLCirculationAnalytics.analyticsQueue.cancelAllOperations()
         
     }
