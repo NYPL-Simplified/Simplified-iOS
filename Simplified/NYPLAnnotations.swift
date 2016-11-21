@@ -105,7 +105,7 @@ class NYPLAnnotations: NSObject {
             if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
                 let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(file)
                 
-                if(!data.writeToFile(path!.absoluteString!, atomically: true)) {
+                if(!data.writeToFile(path!.path!, atomically: true)) {
                     Log.error(#file,"Unable to write NYPLAnnotations.lastReadBookQueue data to file")
                 } else {
                     fileWriteSuccess = true

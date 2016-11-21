@@ -86,7 +86,7 @@ final class NYPLCirculationAnalytics : NSObject {
             if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
                 let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(file)
                 
-                if(!data.writeToFile(path!.absoluteString!, atomically: true)) {
+                if(!data.writeToFile(path!.path!, atomically: true)) {
                     Log.error(#file,"Unable to write NYPLCirculationAnalytics.analyticsQueue data to file")
                 } else {
                     fileWriteSuccess = true
@@ -159,6 +159,20 @@ final class NYPLCirculationAnalytics : NSObject {
         }
         
         analyticsQueue.addOperation(analyticsOperation)
+    }
+    
+    // Server currently not validating authentication in header, but including
+    // with call in case that changes in the future
+    private class var headers:[String:String] {
+        let authenticationString = "\(NYPLAccount.sharedAccount().barcode):\(NYPLAccount.sharedAccount().PIN)"
+        let authenticationData = authenticationString.dataUsingEncoding(NSASCIIStringEncoding)
+        let authenticationValue = "Basic \(authenticationData?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions.Encoding64CharacterLineLength)))"
+        
+        let headers = [
+            "Authorization": "\(authenticationValue)"
+        ]
+        
+        return headers
     }
     
 }
@@ -235,7 +249,7 @@ class NYPLCirculationAnalyticsOperation: NSOperation {
         
         let requestURL = self.book.analyticsURL.URLByAppendingPathComponent(self.event)
         
-        Alamofire.request(.GET, requestURL!, headers: NYPLCirculationAnalyticsOperation.headers).response {
+        Alamofire.request(.GET, requestURL!, headers: NYPLCirculationAnalytics.headers).response {
             (request, response, data, error)  in
             
             self.statusCode = response!.statusCode
@@ -257,20 +271,6 @@ class NYPLCirculationAnalyticsOperation: NSOperation {
         // Notify the completion of async task and hence the completion of the operation
         _executing = false
         _finished = true
-    }
-    
-    // Server currently not validating authentication in header, but including
-    // with call in case that changes in the future
-    private class var headers:[String:String] {
-        let authenticationString = "\(NYPLAccount.sharedAccount().barcode):\(NYPLAccount.sharedAccount().PIN)"
-        let authenticationData = authenticationString.dataUsingEncoding(NSASCIIStringEncoding)
-        let authenticationValue = "Basic \(authenticationData?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions.Encoding64CharacterLineLength)))"
-        
-        let headers = [
-            "Authorization": "\(authenticationValue)"
-        ]
-        
-        return headers
     }
     
 }
