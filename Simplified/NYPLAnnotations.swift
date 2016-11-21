@@ -8,51 +8,101 @@
 
 import UIKit
 import Alamofire
+import ReachabilitySwift
 
 class NYPLAnnotations: NSObject {
+    static let maxRetryCount: Int = 3
+    static var reachability: Reachability!
+    static var isReachable: Bool {return reachability.isReachable()}
     
+    private static var annotationsQueue:NSOperationQueue = {
+        var queue = NSOperationQueue()
+        queue.name = "AnnotationsQueue"
+        queue.maxConcurrentOperationCount = 1
+        queue.qualityOfService = .Utility
+        //suspend queued operations if server is not reachable
+        queue.suspended = !isReachable
+        return queue
+    }()
     
-    class func postLastRead(book:NYPLBook, cfi:NSString)
-    {
+    private static var lastReadBookQueue:NSOperationQueue = {
+        var queue = NSOperationQueue()
+        queue.name = "lastReadBookQueue"
+        queue.maxConcurrentOperationCount = 1
+        queue.qualityOfService = .Utility
+        //suspend queued operations if server is not reachable
+        queue.suspended = !isReachable
+        return queue
+    }()
+    
+    override class func initialize () {
+        //this host could change, we may need to observe for chage and reinitialize
+        var host: String { return NYPLConfiguration.mainFeedURL().host!}
         
-        func convertStringToDictionary(text: String) -> [String:AnyObject]? {
-            if let data = text.dataUsingEncoding(NSUTF8StringEncoding) {
-                do {
-                    return try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) as? [String:AnyObject]
-                } catch let error as NSError {
-                    print(error)
-                }
-            }
-            return nil
+        do {
+            reachability = try Reachability(hostname: host)
+        } catch {
+            Log.error(#file,"Unable to create Reachability")
         }
         
-        if (NYPLAccount.sharedAccount().hasBarcodeAndPIN())
-        {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.reachabilityChanged),name: ReachabilityChangedNotification,object: reachability)
+        do {
             
-            let parameters = [
-                "@context": "http://www.w3.org/ns/anno.jsonld",
-                "type": "Annotation",
-                "motivation": "http://librarysimplified.org/terms/annotation/idling",
-                "target":[
-                    "source": book.identifier,
-                    "selector": [
-                        "type": "oa:FragmentSelector",
-                        "value": cfi
-                    ]
-                ]
-            ]
-            
-            Alamofire.request(.POST, NYPLConfiguration.circulationURL().URLByAppendingPathComponent("annotations/")!, parameters:parameters, encoding: .JSON, headers:NYPLAnnotations.headers).response(completionHandler: { (request, response, data, error) in
-                
-                if response?.statusCode == 200
-                {
-                    print("post last read successful")
-                }
-            })
-            
+            try reachability?.startNotifier()
+        } catch {
+            Log.error(#file,"Unable to start notifier")
         }
+        
     }
     
+    @objc private class func reachabilityChanged(note: NSNotification) {
+        
+        let reachability = note.object as! Reachability
+        
+        if reachability.isReachable() {
+            if reachability.isReachableViaWiFi() {
+                Log.debug(#file,"Reachable via WiFi")
+            } else {
+                Log.debug(#file,"Reachable via Cellular")
+            }
+            
+        } else {
+            Log.debug(#file,"Network not reachable")
+        }
+        //suspend queued operations if server is not reachable
+        annotationsQueue.suspended = !reachability.isReachable()
+        lastReadBookQueue.suspended = !reachability.isReachable()
+    }
+    
+    class func postLastRead(book:NYPLBook, cfi:NSString) {
+        self.postLastRead(book, retryCount: 0, cfi:cfi)
+    }
+    
+    class func postLastRead(book:NYPLBook, retryCount: Int, cfi:NSString)
+    {
+        
+        let lastReadBookOperation = NYPLLastReadBookOperation(cfi: cfi as String, book: book)
+        
+        lastReadBookOperation.completionBlock = {
+            
+            //added max retry count just in case the failure was not do to loss of internet, possible mailformation
+            //of the url or server side issues
+            if(!lastReadBookOperation.success && !reachability.isReachable() && lastReadBookOperation.retryCount < maxRetryCount) {
+                //we need to add this operation back into the queue, internet was lost while in progress
+                //we only need the latest, so if there is another allready in queue, drop this one on the floor
+                if(lastReadBookQueue.operationCount == 0) {
+                    self.postLastRead(lastReadBookOperation.book, retryCount: lastReadBookOperation.retryCount+1, cfi: lastReadBookOperation.cfi)
+                }
+                
+            } else {
+                Log.error(#file, "Error posting event, retry count exceeds maximum or error occured on server side")
+            }
+            
+        }
+        
+        lastReadBookQueue.addOperation(lastReadBookOperation)
+    }
+
     class func syncLastRead(book:NYPLBook, completionHandler: (responseObject: String?,
         error: NSError?) -> ()) {
         
@@ -113,7 +163,8 @@ class NYPLAnnotations: NSObject {
         syncLastRead(book, completionHandler: completionHandler)
     }
     
-    
+    // Server currently not validating authentication in header, but including
+    // with call in case that changes in the future
     class var headers:[String:String]
     {
         let authenticationString = "\(NYPLAccount.sharedAccount().barcode):\(NYPLAccount.sharedAccount().PIN)"
@@ -127,3 +178,110 @@ class NYPLAnnotations: NSObject {
     }
     
 }
+
+class NYPLLastReadBookOperation: NSOperation {
+    
+    let book: NYPLBook
+    let cfi:NSString
+    private(set) var success: Bool = true
+    private(set) var statusCode: Int = 0
+    private(set) var retryCount: Int
+    
+    init(cfi: String, book: NYPLBook) {
+        self.book = book
+        self.cfi = cfi
+        self.retryCount = 0
+        super.init()
+    }
+    
+    init(cfi: String, book: NYPLBook, retryCount: Int) {
+        self.book = book
+        self.cfi = cfi
+        self.retryCount = retryCount
+        super.init()
+    }
+    
+    override var asynchronous: Bool {
+        return true
+    }
+    
+    private var _executing = false {
+        willSet {
+            willChangeValueForKey("isExecuting")
+        }
+        didSet {
+            didChangeValueForKey("isExecuting")
+        }
+    }
+    
+    override var executing: Bool {
+        return _executing
+    }
+    
+    private var _finished = false {
+        willSet {
+            willChangeValueForKey("isFinished")
+        }
+        
+        didSet {
+            didChangeValueForKey("isFinished")
+        }
+    }
+    
+    override var finished: Bool {
+        return _finished
+    }
+    
+    override func start() {
+        
+        if cancelled {
+            return
+        }
+        
+        _executing = true
+        execute()
+    }
+    
+    override func cancel() {
+        super.cancel()
+        self.finish()
+    }
+    
+    func execute() {
+        
+        if (NYPLAccount.sharedAccount().hasBarcodeAndPIN())
+        {
+            
+            let parameters = [
+                "@context": "http://www.w3.org/ns/anno.jsonld",
+                "type": "Annotation",
+                "motivation": "http://librarysimplified.org/terms/annotation/idling",
+                "target":[
+                    "source": book.identifier,
+                    "selector": [
+                        "type": "oa:FragmentSelector",
+                        "value": cfi
+                    ]
+                ]
+            ]
+            
+            Alamofire.request(.POST, NYPLConfiguration.circulationURL().URLByAppendingPathComponent("annotations/")!, parameters:parameters, encoding: .JSON, headers:NYPLAnnotations.headers).response(completionHandler: { (request, response, data, error) in
+                
+                if response?.statusCode == 200
+                {
+                    print("post last read successful")
+                }
+            })
+            
+        }
+        
+    }
+    
+    func finish() {
+        // Notify the completion of async task and hence the completion of the operation
+        _executing = false
+        _finished = true
+    }
+    
+}
+
