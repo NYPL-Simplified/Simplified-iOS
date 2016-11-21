@@ -2,10 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
+      "filename" : "simplye_welcome-2.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "simplye_welcome-1.png",
       "scale" : "2x"
     },
     {

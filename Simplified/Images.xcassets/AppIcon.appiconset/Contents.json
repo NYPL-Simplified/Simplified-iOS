@@ -3,79 +3,121 @@
     {
       "size" : "29x29",
       "idiom" : "iphone",
-      "filename" : "iPhone_29pt_@2x.png",
+      "filename" : "simplye_29_Icon.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "29x29",
+      "idiom" : "iphone",
+      "filename" : "simplye_58_Icon.png",
       "scale" : "2x"
     },
     {
       "size" : "29x29",
       "idiom" : "iphone",
-      "filename" : "iPhone_29pt_@3x.png",
+      "filename" : "simplye_87_Icon.png",
       "scale" : "3x"
     },
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "filename" : "iPhone_40pt_@2x.png",
+      "filename" : "simplye_80_Icon.png",
       "scale" : "2x"
     },
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "filename" : "iPhone_40pt_@3x.png",
+      "filename" : "simplye_120_Icon.png",
       "scale" : "3x"
     },
     {
-      "size" : "60x60",
+      "size" : "57x57",
       "idiom" : "iphone",
-      "filename" : "iPhone_120pt_@3x.png",
+      "filename" : "simplye_57_Icon.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "57x57",
+      "idiom" : "iphone",
+      "filename" : "simplye_114_Icon.png",
       "scale" : "2x"
     },
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "iPhone_60pt_@3x.png",
+      "filename" : "simplye_80_Icon-1.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "60x60",
+      "idiom" : "iphone",
+      "filename" : "simplye_120_Icon-1.png",
       "scale" : "3x"
     },
     {
       "size" : "29x29",
       "idiom" : "ipad",
-      "filename" : "iPad_29pt_@1x.png",
+      "filename" : "simplye_29_Icon-1.png",
       "scale" : "1x"
     },
     {
       "size" : "29x29",
       "idiom" : "ipad",
-      "filename" : "iPad_29pt_@2x.png",
+      "filename" : "simplye_58_Icon-1.png",
       "scale" : "2x"
     },
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "filename" : "iPad_40pt_@1x.png",
+      "filename" : "simplye_40_Icon.png",
       "scale" : "1x"
     },
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "filename" : "iPad_40pt_@2x.png",
+      "filename" : "simplye_80_Icon-2.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "50x50",
+      "idiom" : "ipad",
+      "filename" : "simplye_50_spot.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "50x50",
+      "idiom" : "ipad",
+      "filename" : "simplye_100_spot.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "72x72",
+      "idiom" : "ipad",
+      "filename" : "simplye_72_Icon.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "72x72",
+      "idiom" : "ipad",
+      "filename" : "simplye_144_Icon.png",
       "scale" : "2x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "iPad_76pt_@1x.png",
+      "filename" : "simplye_76_Icon.png",
       "scale" : "1x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "iPad_76pt_@2x.png",
+      "filename" : "simplye_152_Icon.png",
       "scale" : "2x"
     },
     {
       "size" : "83.5x83.5",
       "idiom" : "ipad",
-      "filename" : "iPadPro_83.5pt_@2x.png",
+      "filename" : "simplye_167_Icon.png",
       "scale" : "2x"
     }
   ],

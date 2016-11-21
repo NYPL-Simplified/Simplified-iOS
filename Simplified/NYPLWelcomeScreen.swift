@@ -1,6 +1,7 @@
 import UIKit
 import PureLayout
 
+
 /// Welcome screen for a first-time user
 final class NYPLWelcomeScreenViewController: UIViewController {
   
@@ -23,11 +24,27 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     self.title = "Welcome Screen"
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
     
+    setupViews()
+  }
+  
+  override func viewWillAppear(animated: Bool) {
+    super.viewWillAppear(animated)
+    self.navigationController?.setNavigationBarHidden(true, animated: false)
+  }
+  
+  override func viewWillDisappear(animated: Bool) {
+    super.viewWillDisappear(animated)
+    self.navigationController?.setNavigationBarHidden(false, animated: false)
+  }
+  
+  //MARK -
+  
+  func setupViews() {
     let view1 = splashScreenView("SplashPickLibraryIcon", headline: "Read Books From Your Library", subheadline: "Check out books and sync across devices", buttonTitle: "PICK YOUR LIBRARY", buttonTargetSelector: #selector(pickYourLibraryTapped))
     
     let view2 = splashScreenView("SplashInstantClassicsIcon", headline: "Read Books Without a Library Card", subheadline: "Find classic books in the public domain", buttonTitle: "INSTANT CLASSICS", buttonTargetSelector: #selector(instantClassicsTapped))
     
-    let logoView = UIImageView(image: UIImage(named: "SplashSimplyE"))
+    let logoView = UIImageView(image: UIImage(named: "FullLogo"))
     logoView.contentMode = .ScaleAspectFit
     
     let containerView = UIView()
@@ -37,24 +54,20 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     
     logoView.autoPinEdgeToSuperviewMargin(.Top)
     logoView.autoAlignAxisToSuperviewAxis(.Vertical)
-    logoView.autoSetDimensionsToSize(CGSizeMake(200, 100))
-  
+    logoView.autoSetDimensionsToSize(CGSizeMake(180, 150))
+    
     view1.autoAlignAxisToSuperviewAxis(.Vertical)
     view1.autoPinEdge(.Top, toEdge: .Bottom, ofView: logoView, withOffset: 30)
-//    view1.autoPinEdge(.Top, toEdge: .Bottom, ofView: logoView)
     
     view2.autoAlignAxisToSuperviewAxis(.Vertical)
     view2.autoPinEdge(.Top, toEdge: .Bottom, ofView: view1, withOffset: 8)
-//    view2.autoPinEdge(.Top, toEdge: .Bottom, ofView: view1)
-    view2.autoPinEdgesToSuperviewMarginsExcludingEdge(.Top)
+    view2.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 80)
+    view2.autoPinEdgeToSuperviewMargin(.Left)
+    view2.autoPinEdgeToSuperviewMargin(.Right)
+    
     
     self.view.addSubview(containerView)
     containerView.autoCenterInSuperview()
-    
-//    view1.autoAlignAxisToSuperviewMarginAxis(.Vertical)
-//    view1.autoConstrainAttribute(.Bottom, toAttribute: .Horizontal, ofView: self.view, withOffset: -40.0)
-//    view2.autoAlignAxisToSuperviewMarginAxis(.Vertical)
-//    view2.autoConstrainAttribute(.Top, toAttribute: .Horizontal, ofView: self.view, withOffset: 40.0)
   }
   
   func splashScreenView(imageName: String, headline: String, subheadline: String, buttonTitle: String, buttonTargetSelector: Selector) -> UIView {
@@ -82,18 +95,22 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     textLabel2.textAlignment = .Center
     textLabel2.text = subheadline
     textLabel2.font = UIFont.systemFontOfSize(12)
-    
+
     tempView.addSubview(textLabel2)
     textLabel2.autoPinEdge(.Top, toEdge: .Bottom, ofView: textLabel1, withOffset: 0.0, relation: .Equal)
     textLabel2.autoPinEdge(.Leading, toEdge: .Leading, ofView: tempView, withOffset: 0.0, relation: .GreaterThanOrEqual)
     textLabel2.autoPinEdge(.Trailing, toEdge: .Trailing, ofView: tempView, withOffset: 0.0, relation: .GreaterThanOrEqual)
     textLabel2.autoAlignAxisToSuperviewMarginAxis(.Vertical)
     
-    let button = NYPLRoundedButton()
+    let button = UIButton()
     button.setTitle(buttonTitle, forState: .Normal)
-//    button.layer.borderColor = NYPLConfiguration.colorFromHexString("8bc344").CGColor
-    button.layer.borderColor = UIColor.blackColor().CGColor
-    button.contentEdgeInsets = UIEdgeInsetsMake(6.0, 8.0, 6.0, 8.0)
+    button.titleLabel?.font = UIFont.systemFontOfSize(12)
+    button.setTitleColor(UIColor.init(red: 0.0, green: 122.0/255.0, blue: 1.0, alpha: 1.0), forState: .Normal)
+    button.layer.borderColor = UIColor.init(red: 141.0/255.0, green: 199.0/255.0, blue: 64.0/255.0, alpha: 1.0).CGColor
+    button.layer.borderWidth = 2
+    button.layer.cornerRadius = 6
+
+    button.contentEdgeInsets = UIEdgeInsetsMake(10.0, 10.0, 10.0, 10.0)
     button.addTarget(self, action: buttonTargetSelector, forControlEvents: .TouchUpInside)
     tempView.addSubview(button)
     
@@ -129,4 +146,48 @@ final class NYPLWelcomeScreenViewController: UIViewController {
       completion!()
     }
   }
+}
+
+
+/// List of available Libraries/Accounts to select as patron's primary
+/// when going through Welcome Screen flow.
+final class NYPLWelcomeScreenAccountList: UITableViewController {
+  
+  var accounts: [Account]!
+  let completion: Account -> ()
+  
+  required init(completion: Account -> ()) {
+    self.completion = completion
+    super.init(nibName: nil, bundle: nil)
+  }
+  
+  @available(*, unavailable)
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  override func viewDidLoad() {
+    self.accounts = Accounts().accounts
+    
+//    self.navigationItem.hidesBackButton = true
+    self.title = "Pick Your Library"
+  }
+  
+  override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    completion(accounts[indexPath.row])
+  }
+  
+  override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return self.accounts.count
+  }
+  
+  override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    var cell = tableView.dequeueReusableCellWithIdentifier("cellID") as UITableViewCell!
+    if (cell == nil) {
+      cell = UITableViewCell(style:.Default, reuseIdentifier:"cellID")
+    }
+    cell.textLabel!.text = self.accounts[indexPath.row].name
+    return cell
+  }
+  
 }

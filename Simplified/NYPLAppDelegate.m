@@ -40,12 +40,6 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
   self.window.rootViewController = vc;
   
-  //GODO still working on 
-//  if ([[NYPLSettings sharedSettings] userPresentedWelcomeScreen] == NO) {
-//    [self.window.rootViewController presentViewController:[[NYPLWelcomeScreen alloc] init] animated:YES completion:nil];
-////    [vc safelyPresentViewController:[[NYPLWelcomeScreen alloc] init] animated:YES completion:nil];
-//  }
-  
   [self beginCheckingForUpdates];
   
   return YES;
