@@ -78,11 +78,71 @@ class NYPLAnnotations: NSObject {
     }
     
     func applicationDidEnterBackground() {
+        //Currently only writing lastreadqueue, placeholder for annotation queue
+        
         Log.debug(#file,"App moved to background!")
+        Log.debug(#file,"Suspending analyticsQueue")
+        var fileWriteSuccess: Bool = false
+        
+        //suspend current operations while we attempt to write the contents to file
+        NYPLAnnotations.annotationsQueue.suspended = true
+        NYPLAnnotations.lastReadBookQueue.suspended = true
+        
+        //write operations to file if there are any still queued
+        if(NYPLAnnotations.lastReadBookQueue.operations.count == 0) {
+            return;
+        }
+        
+        do {
+            let data = try! NSJSONSerialization.dataWithJSONObject(NYPLAnnotations.lastReadBookQueue.operations, options: [])
+            
+            if(data.length == 0) {
+                return
+            }
+            
+            let file = NYPLAnnotations.lastReadBookQueue.name! + ".plist" //this is the file. we will write to and read from it
+            
+            if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
+                let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(file)
+                
+                if(!data.writeToFile(path!.absoluteString!, atomically: true)) {
+                    Log.error(#file,"Unable to write NYPLAnnotations.lastReadBookQueue data to file")
+                } else {
+                    fileWriteSuccess = true
+                }
+            }
+        }
+        
+        if(fileWriteSuccess) {
+            NYPLAnnotations.lastReadBookQueue.cancelAllOperations()
+        }
+
     }
     
     func applicationDidEnterForeground() {
         Log.debug(#file,"App moved to foreground!")
+        
+        //read file into queue if it exists, then enable queues if needed
+        
+        let file = NYPLAnnotations.lastReadBookQueue.name! + ".plist" //this is the file we will read from
+        let fileManager = NSFileManager.defaultManager()
+        
+        if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
+            let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(file)
+            let data: NSData? = NSData(contentsOfFile: (path?.absoluteString)!)
+            do {
+                if let jsonObject: NSDictionary = try! NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
+                {
+                    try! fileManager.removeItemAtURL(path!)
+                    Log.debug(#file,jsonObject.description)
+                } else {
+                    Log.error(#file,"Unable to read NYPLCirculationAnalytics.analyticsQueue data from file")
+                }
+            }
+            
+        }
+
+        NYPLAnnotations.lastReadBookQueue.suspended = !NYPLAnnotations.isReachable
     }
     
     class func postLastRead(book:NYPLBook, cfi:NSString) {
