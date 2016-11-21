@@ -1,4 +1,4 @@
-@interface NYPLBookAcquisition : NSObject
+@interface NYPLBookAcquisition : NSObject <NSCoding>
 
 @property (nonatomic, readonly) NSURL *borrow; // nilable
 @property (nonatomic, readonly) NSURL *generic; // nilable

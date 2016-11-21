@@ -82,7 +82,6 @@ class NYPLAnnotations: NSObject {
         
         Log.debug(#file,"App moved to background!")
         Log.debug(#file,"Suspending analyticsQueue")
-        var fileWriteSuccess: Bool = false
         
         //suspend current operations while we attempt to write the contents to file
         NYPLAnnotations.annotationsQueue.suspended = true
@@ -94,34 +93,21 @@ class NYPLAnnotations: NSObject {
         }
         
         do {
-            let data = try! NSJSONSerialization.dataWithJSONObject(NYPLAnnotations.lastReadBookQueue.operations, options: [])
-            
-            if(data.length == 0) {
-                return
-            }
             
             let file = NYPLAnnotations.lastReadBookQueue.name! + ".plist" //this is the file. we will write to and read from it
             
             if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
                 let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(file)
-                
-                if(!data.writeToFile(path!.path!, atomically: true)) {
-                    Log.error(#file,"Unable to write NYPLAnnotations.lastReadBookQueue data to file")
-                } else {
-                    fileWriteSuccess = true
-                }
-            }
+                NSKeyedArchiver.archiveRootObject(NYPLAnnotations.lastReadBookQueue.operations, toFile: (path?.path)!)            }
         }
         
-        if(fileWriteSuccess) {
-            NYPLAnnotations.lastReadBookQueue.cancelAllOperations()
-        }
+        NYPLAnnotations.lastReadBookQueue.cancelAllOperations()
+        
+        //TODO: future state handle annotation queue in the same mannor
         
     }
     
     func applicationDidEnterForeground() {
-        Log.debug(#file,"App moved to foreground!")
-        
         //read file into queue if it exists, then enable queues if needed
         
         let file = NYPLAnnotations.lastReadBookQueue.name! + ".plist" //this is the file we will read from
@@ -132,20 +118,12 @@ class NYPLAnnotations: NSObject {
             
             if(fileManager.fileExistsAtPath((path?.path)!)) {
                 
-                let data: NSData? = NSData(contentsOfFile: (path?.path)!)
                 do {
-                    if let jsonObject: NSDictionary = try! NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
-                    {
-                        //if we have sucessfully read the file back in, remove it
-                        try! fileManager.removeItemAtURL(path!)
-                        Log.debug(#file,jsonObject.description)
-                        
-                        //TODO: load file contents back into queue
-                        
-                        
-                    } else {
-                        Log.error(#file,"Unable to read NYPLCirculationAnalytics.analyticsQueue data from file")
-                    }
+                    let operations: [NYPLLastReadBookOperation] = NSKeyedUnarchiver.unarchiveObjectWithFile((path?.path)!) as! [NYPLLastReadBookOperation]
+                    NYPLAnnotations.lastReadBookQueue.addOperations(operations, waitUntilFinished: true)
+                    //we have sucessfully read the file back in, remove it
+                    try! fileManager.removeItemAtURL(path!)
+                    
                 }
                 
             }
@@ -153,6 +131,12 @@ class NYPLAnnotations: NSObject {
         }
         
         NYPLAnnotations.lastReadBookQueue.suspended = !NYPLAnnotations.isReachable
+        
+        Log.debug(#file,"App moved to foreground!")
+        
+        //TODO: future state handle annotation queue in the same mannor
+        NYPLAnnotations.annotationsQueue.suspended = !NYPLAnnotations.isReachable
+        
     }
     
     class func postLastRead(book:NYPLBook, cfi:NSString) {
@@ -260,7 +244,7 @@ class NYPLAnnotations: NSObject {
     
 }
 
-class NYPLLastReadBookOperation: NSOperation {
+final class NYPLLastReadBookOperation: NSOperation, NSCoding {
     
     let book: NYPLBook
     let cfi:NSString
@@ -280,6 +264,26 @@ class NYPLLastReadBookOperation: NSOperation {
         self.cfi = cfi
         self.retryCount = retryCount
         super.init()
+    }
+    
+    convenience init?(coder aDecoder: NSCoder) {
+        
+        guard let book = aDecoder.decodeObjectForKey("book") as? NYPLBook,
+            let cfi = aDecoder.decodeObjectForKey("cfi") as? String
+            else { return nil }
+        
+        self.init(
+            cfi: cfi,
+            book: book
+        )
+        
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        
+        aCoder.encodeObject(self.cfi, forKey: "cfi")
+        aCoder.encodeObject(self.book, forKey: "book")
+        
     }
     
     override var asynchronous: Bool {

@@ -64,7 +64,6 @@ final class NYPLCirculationAnalytics : NSObject {
     func applicationDidEnterBackground() {
         Log.debug(#file,"App moved to background!")
         Log.debug(#file,"Suspending analyticsQueue")
-        var fileWriteSuccess: Bool = false
         
         //suspend current operations while we attempt to write the contents to file
         NYPLCirculationAnalytics.analyticsQueue.suspended = true
@@ -75,28 +74,16 @@ final class NYPLCirculationAnalytics : NSObject {
         }
         
         do {
-            let data = try! NSJSONSerialization.dataWithJSONObject(NYPLCirculationAnalytics.analyticsQueue.operations, options: [])
-            
-            if(data.length == 0) {
-                return
-            }
             
             let file = NYPLCirculationAnalytics.analyticsQueue.name! + ".plist" //this is the file. we will write to and read from it
             
             if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
                 let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(file)
-                
-                if(!data.writeToFile(path!.path!, atomically: true)) {
-                    Log.error(#file,"Unable to write NYPLCirculationAnalytics.analyticsQueue data to file")
-                } else {
-                    fileWriteSuccess = true
-                }
+                NSKeyedArchiver.archiveRootObject(NYPLCirculationAnalytics.analyticsQueue.operations, toFile: (path?.path)!)
             }
         }
         
-        if(fileWriteSuccess) {
-            NYPLCirculationAnalytics.analyticsQueue.cancelAllOperations()
-        }
+        NYPLCirculationAnalytics.analyticsQueue.cancelAllOperations()
         
     }
     
@@ -112,20 +99,12 @@ final class NYPLCirculationAnalytics : NSObject {
             
             if(fileManager.fileExistsAtPath((path?.path)!)) {
                 
-                
-                let data: NSData? = NSData(contentsOfFile: (path?.path)!)
                 do {
-                    if let jsonObject: NSDictionary = try! NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
-                    {
-                        //if we have sucessfully read the file back in, remove it
-                        try! fileManager.removeItemAtURL(path!)
-                        Log.debug(#file,jsonObject.description)
-                        
-                        //TODO: load file contents back into queue
-                        
-                    } else {
-                        Log.error(#file,"Unable to read NYPLCirculationAnalytics.analyticsQueue data from file")
-                    }
+                    let operations: [NYPLCirculationAnalyticsOperation] = NSKeyedUnarchiver.unarchiveObjectWithFile((path?.path)!) as! [NYPLCirculationAnalyticsOperation]
+                    NYPLCirculationAnalytics.analyticsQueue.addOperations(operations, waitUntilFinished: true)
+                    //we have sucessfully read the file back in, remove it
+                    try! fileManager.removeItemAtURL(path!)
+                    
                 }
                 
             }
@@ -177,7 +156,7 @@ final class NYPLCirculationAnalytics : NSObject {
     
 }
 
-class NYPLCirculationAnalyticsOperation: NSOperation {
+final class NYPLCirculationAnalyticsOperation: NSOperation, NSCoding {
     
     let book: NYPLBook
     let event: String
@@ -197,6 +176,26 @@ class NYPLCirculationAnalyticsOperation: NSOperation {
         self.event = event
         self.retryCount = retryCount
         super.init()
+    }
+    
+    convenience init?(coder aDecoder: NSCoder) {
+        
+        guard let book = aDecoder.decodeObjectForKey("book") as? NYPLBook,
+            let event = aDecoder.decodeObjectForKey("event") as? String
+            else { return nil }
+        
+        self.init(
+            event: event,
+            book: book
+        )
+        
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        
+        aCoder.encodeObject(self.event, forKey: "event")
+        aCoder.encodeObject(self.book, forKey: "book")
+        
     }
     
     override var asynchronous: Bool {
