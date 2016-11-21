@@ -46,6 +46,9 @@ class NYPLAnnotations: NSObject {
         }
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.reachabilityChanged),name: ReachabilityChangedNotification,object: reachability)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterBackground), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterForeground), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        
         do {
             
             try reachability?.startNotifier()
@@ -72,6 +75,14 @@ class NYPLAnnotations: NSObject {
         //suspend queued operations if server is not reachable
         annotationsQueue.suspended = !reachability.isReachable()
         lastReadBookQueue.suspended = !reachability.isReachable()
+    }
+    
+    func applicationDidEnterBackground() {
+        Log.debug(#file,"App moved to background!")
+    }
+    
+    func applicationDidEnterForeground() {
+        Log.debug(#file,"App moved to foreground!")
     }
     
     class func postLastRead(book:NYPLBook, cfi:NSString) {

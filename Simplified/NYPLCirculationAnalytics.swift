@@ -31,6 +31,9 @@ final class NYPLCirculationAnalytics : NSObject {
         }
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.reachabilityChanged),name: ReachabilityChangedNotification,object: reachability)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterBackground), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterForeground), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        
         do {
             
             try reachability?.startNotifier()
@@ -56,6 +59,14 @@ final class NYPLCirculationAnalytics : NSObject {
         }
         //suspend queued operations if server is not reachable
         analyticsQueue.suspended = !reachability.isReachable()
+    }
+    
+    func applicationDidEnterBackground() {
+        Log.debug(#file,"App moved to background!")
+    }
+    
+    func applicationDidEnterForeground() {
+        Log.debug(#file,"App moved to foreground!")
     }
     
     class func postEvent(event: String, withBook book: NYPLBook) -> Void {
