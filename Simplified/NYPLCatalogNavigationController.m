@@ -27,7 +27,7 @@
   self = [super initWithRootViewController:viewController];
   if(!self) return nil;
   
-  self.tabBarItem.image = [UIImage imageNamed:@"lib-icon"];
+  self.tabBarItem.image = [UIImage imageNamed:@"Catalog"];
   
   // The top-level view controller uses the same image used for the tab bar in place of the usual
   // title text.
