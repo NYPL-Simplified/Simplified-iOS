@@ -57,6 +57,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     logoView.autoSetDimensionsToSize(CGSizeMake(180, 150))
     
     view1.autoAlignAxisToSuperviewAxis(.Vertical)
+    //GODO this will likely change when updating asset
     view1.autoPinEdge(.Top, toEdge: .Bottom, ofView: logoView, withOffset: 5)
     
     view2.autoAlignAxisToSuperviewAxis(.Vertical)
@@ -76,6 +77,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     let imageView1 = UIImageView(image: UIImage(named: imageName))
     
     tempView.addSubview(imageView1)
+    //GODO temp
     imageView1.autoSetDimensionsToSize(CGSizeMake(60, 60))
     imageView1.autoAlignAxisToSuperviewMarginAxis(.Vertical)
     imageView1.autoPinEdgeToSuperviewMargin(.Top)

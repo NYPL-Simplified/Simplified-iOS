@@ -32,6 +32,12 @@ static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCu
 
 static NSString *const settingsLibraryAccountsKey = @"NYPLSettingsLibraryAccountsKey";
 
+static NSString *const fallbackAcknowledgementsURLString = @"http://www.librarysimplified.org/acknowledgments.html";
+static NSString *const fallbackEULAURLString = @"http://www.librarysimplified.org/EULA.html";
+static NSString *const fallbackContentLicenseURLString = @"http://www.librarysimplified.org/contentlicense.html";
+static NSString *const fallbackPrivacyURLString = @"http://www.librarysimplified.org/privacypolicy.html";
+
+
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
 {
   if(!string || [string isEqualToString:@"automatic"]) {
@@ -113,22 +119,38 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 
 - (NSURL *)eulaURL
 {
-  return [[NSUserDefaults standardUserDefaults] URLForKey:eulaURLKey];
+  if ([[NSUserDefaults standardUserDefaults] URLForKey:eulaURLKey] == nil) {
+    return [NSURL URLWithString:fallbackEULAURLString];
+  } else {
+    return [[NSUserDefaults standardUserDefaults] URLForKey:eulaURLKey];
+  }
 }
 
 - (NSURL *)privacyPolicyURL
 {
-  return [[NSUserDefaults standardUserDefaults] URLForKey:privacyPolicyURLKey];
+  if ([[NSUserDefaults standardUserDefaults] URLForKey:privacyPolicyURLKey] == nil) {
+    return [NSURL URLWithString:fallbackPrivacyURLString];
+  } else {
+    return [[NSUserDefaults standardUserDefaults] URLForKey:privacyPolicyURLKey];
+  }
 }
 
 - (NSURL *) acknowledgmentsURL
 {
-  return [[NSUserDefaults standardUserDefaults] URLForKey:acknowledgmentsURLKey];
+  if ([[NSUserDefaults standardUserDefaults] URLForKey:acknowledgmentsURLKey] == nil) {
+    return [NSURL URLWithString:fallbackAcknowledgementsURLString];
+  } else {
+    return [[NSUserDefaults standardUserDefaults] URLForKey:acknowledgmentsURLKey];
+  }
 }
 
 - (NSURL *) contentLicenseURL
 {
-  return [[NSUserDefaults standardUserDefaults] URLForKey:contentLicenseURLKey];
+  if ([[NSUserDefaults standardUserDefaults] URLForKey:contentLicenseURLKey] == nil) {
+    return [NSURL URLWithString:fallbackContentLicenseURLString];
+  } else {
+    return [[NSUserDefaults standardUserDefaults] URLForKey:contentLicenseURLKey];
+  }
 }
 
 - (NSArray *) settingsAccountsList

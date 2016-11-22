@@ -13,7 +13,9 @@
 #import "NYPLReachability.h"
 #import "NYPLSettings.h"
 #import "NYPLSettingsAccountDetailViewController.h"
+#import "NYPLSettingsContentLicenseViewController.h"
 #import "NYPLSettingsEULAViewController.h"
+#import "NYPLSettingsPrivacyPolicyViewController.h"
 #import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -30,14 +32,19 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindPIN,
   CellKindLogInSignOut,
   CellKindRegistration,
-  CellKindEULA
+  CellKindEULA,
+  CellKindAccountHeader,
+  CellKindAbout,
+  CellKindPrivacyPolicy,
+  CellKindContentLicense,
+  CellKindContact
 };
 
 typedef NS_ENUM(NSInteger, Section) {
-  SectionBarcodePin = 0,
-  SectionEULA = 1,
-  SectionLoginLogout = 2,
-  SectionRegistration = 3
+  SectionAccountHeader = 0,
+  SectionBarcodePin = 1,
+  SectionEULA = 2,
+  SectionLicenses = 3
 };
 
 static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
@@ -46,28 +53,43 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
     case 0:
       switch(indexPath.row) {
         case 0:
-          return CellKindBarcode;
-        case 1:
-          return CellKindPIN;
+          return CellKindAccountHeader;
         default:
           @throw NSInvalidArgumentException;
       }
     case 1:
       switch(indexPath.row) {
         case 0:
-          return CellKindEULA;
+          return CellKindBarcode;
+        case 1:
+          return CellKindPIN;
         default:
           @throw NSInvalidArgumentException;
       }
     case 2:
       switch(indexPath.row) {
         case 0:
+          return CellKindEULA;
+        case 1:
           return CellKindLogInSignOut;
+        case 2:
+          return CellKindRegistration;
         default:
           @throw NSInvalidArgumentException;
       }
     case 3:
-      return CellKindRegistration;
+      switch (indexPath.row) {
+        case 0:
+          return CellKindAbout;
+        case 1:
+          return CellKindPrivacyPolicy;
+        case 2:
+          return CellKindContentLicense;
+        case 3:
+          return CellKindContact;
+        default:
+          @throw NSInvalidArgumentException;
+      }
     default:
       @throw NSInvalidArgumentException;
   }
@@ -239,6 +261,8 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(CellKindFromIndexPath(indexPath)) {
+    case CellKindAccountHeader:
+      break;
     case CellKindBarcode:
       [self.barcodeTextField becomeFirstResponder];
       break;
@@ -322,6 +346,34 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self presentViewController:navigationController animated:YES completion:nil];
       break;
     }
+    case CellKindAbout: {
+      //GODO
+    }
+    case CellKindPrivacyPolicy: {
+      NYPLSettingsPrivacyPolicyViewController *vc = [[NYPLSettingsPrivacyPolicyViewController alloc] init];
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.splitViewController showDetailViewController:[[UINavigationController alloc]
+                                        initWithRootViewController:vc]
+                                sender:self];
+      } else {
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [self.splitViewController showDetailViewController:vc sender:self];
+      }
+    }
+    case CellKindContentLicense: {
+      NYPLSettingsContentLicenseViewController *vc = [[NYPLSettingsContentLicenseViewController alloc] init];
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.splitViewController showDetailViewController:[[UINavigationController alloc]
+                                                            initWithRootViewController:vc]
+                                                    sender:self];
+      } else {
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [self.splitViewController showDetailViewController:vc sender:self];
+      }
+    }
+    case CellKindContact: {
+      //GODO
+    }
   }
 }
 
@@ -339,6 +391,18 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   CGFloat const padding = 16;
   
   switch(CellKindFromIndexPath(indexPath)) {
+    case CellKindAccountHeader: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleSubtitle
+                                     reuseIdentifier:nil];
+      Account *account = [[[Accounts alloc] init] account:self.account];
+      cell.textLabel.font = [UIFont systemFontOfSize:14];
+      cell.textLabel.text = account.name;
+      cell.detailTextLabel.font = [UIFont systemFontOfSize:10];
+      cell.detailTextLabel.text = @"Subtitle will go here";
+      cell.imageView.image = [UIImage imageNamed:account.logo];
+      return cell;
+    }
     case CellKindBarcode: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
@@ -380,7 +444,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                        [UIImage imageNamed:@"CheckboxOff"]];
       }
       self.eulaCell.selectionStyle = UITableViewCellSelectionStyleNone;
-      self.eulaCell.textLabel.font = [UIFont systemFontOfSize:11];
+      self.eulaCell.textLabel.font = [UIFont systemFontOfSize:12];
       self.eulaCell.textLabel.text = NSLocalizedString(@"SettingsAccountEULACheckbox", @"Statement letting a user know that they must agree to the User Agreement terms.");
       self.eulaCell.textLabel.numberOfLines = 2;
       return self.eulaCell;
@@ -404,6 +468,43 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.textLabel.textColor = [NYPLConfiguration mainColor];
       return cell;
     }
+    case CellKindAbout: {
+      Account *accountItem = [[[Accounts alloc] init] account:self.account];
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.text = [NSString stringWithFormat:@"About %@",accountItem.name];
+      return cell;
+    }
+    case CellKindPrivacyPolicy: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.text = @"Privacy Policy";
+      return cell;
+    }
+    case CellKindContentLicense: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.text = @"Content License";
+      return cell;
+    }
+    case CellKindContact: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.text = @"Contact";
+      return cell;
+    }
   }
 }
 
@@ -412,12 +513,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     
   if (![[[Accounts alloc] init] account:self.account].needsAuth) {
     return 0;
-  }
-  else if([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN] || ![NYPLConfiguration cardCreationEnabled]) {
-    // No registration is possible.
-    return 3;
   } else {
-    // Registration is possible.
     return 4;
   }
 }
@@ -426,16 +522,30 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
  numberOfRowsInSection:(NSInteger const)section
 {
   switch(section) {
+    case SectionAccountHeader:
+      return 1;
     case SectionBarcodePin:
       return 2;
     case SectionEULA:
-      return 1;
-    case SectionLoginLogout:
-      return 1;
-    case SectionRegistration:
-      return 1;
+      if ([self registrationIsPossible]) {
+        return 3;
+      } else {
+        return 2;
+      }
+    case SectionLicenses:
+      return 4;
     default:
       @throw NSInternalInconsistencyException;
+  }
+}
+
+- (CGFloat)tableView:(__unused UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  switch (indexPath.section) {
+    case 0:
+      return 60;
+    default:
+      return 44;
   }
 }
 
@@ -495,6 +605,12 @@ replacementString:(NSString *)string
 
 
 #pragma mark -
+
+- (BOOL)registrationIsPossible
+{
+  return !([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN] ||
+          ![NYPLConfiguration cardCreationEnabled]);
+}
 
 - (void)didSelectReveal
 {

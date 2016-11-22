@@ -14,6 +14,7 @@
 "CheckConnection" = "Please check your connection and try again.";
 "Close" = "Close";
 "ConnectionFailed" = "Connection Failed";
+"ConnectionFailedDescription" = "Unable to load the web page at this time.";
 "ContentLicenses" = "Content Licenses";
 "Delete" = "Delete";
 "DeviceAuthorizationError" = "An error occurred while authorizing this device.";
@@ -96,7 +97,7 @@
 "HoldsViewControllerSearchTitle" = "Search Reservations";
 "AvailableForCheckoutHeader" = "AVAILABLE FOR CHECKOUT";
 "WaitingForAvailabilityHeader" = "WAITING FOR AVAILABILITY";
-"ReservationsGoToCatalog" = "Visit the Catalog to reserve\nbooks not currently available.";
+"ReservationsGoToCatalog" = "Visit the Catalog to reserve books not currently available.";
 
 // NYPLMyBooksDownloadCenter
 
@@ -148,6 +149,11 @@
 // ReaderTOCViewController
 
 "ReaderTOCViewControllerTitle" = "Table of Contents";
+
+// NYPLSettings
+
+"SettingsAboutNoConnection" = "There was an internet connection error and the page could not load.";
+"SettingsAboutFailureMessage" = "The 'About' Page could not load due to a connection error.";
 
 // NYPLSettingsAccountViewController
 

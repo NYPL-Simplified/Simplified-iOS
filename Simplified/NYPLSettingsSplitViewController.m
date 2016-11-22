@@ -1,6 +1,4 @@
 #import "HSHelpStack.h"
-#import "NYPLSettingsAboutViewController.h"
-#import "NYPLSettingsFeedbackViewController.h"
 #import "NYPLSettingsLicensesTableViewController.h"
 #import "NYPLSettingsPrimaryNavigationController.h"
 #import "NYPLSettingsPrimaryTableViewController.h"
@@ -84,7 +82,10 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
       viewController = [[NYPLSettingsAccountsTableViewController alloc] initWithAccounts:accounts];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
-      viewController = [[NYPLSettingsAboutViewController alloc] init];
+      viewController = [[RemoteHTMLViewController alloc]
+                        initWithFileURL:[[NYPLSettings sharedSettings] acknowledgmentsURL]
+                        title:NSLocalizedString(@"About", nil)
+                        failureMessage:NSLocalizedString(@"SettingsAboutFailureMessage", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
       viewController = [[NYPLSettingsEULAViewController alloc] init];
