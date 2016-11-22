@@ -358,14 +358,33 @@ final class NYPLLastReadBookOperation: Operation, NSCoding {
                 ]
             ] as [String : Any]
             
-            Alamofire.request(.POST, NYPLConfiguration.circulationURL().URLByAppendingPathComponent("annotations/")!, parameters:parameters, encoding: .JSON, headers:NYPLAnnotations.headers).response(completionHandler: { (request, response, data, error) in
-                
-                if response?.statusCode == 200
-                {
-                    print("post last read successful")
-                }
-            })
+            //
             
+            let url: NSURL = NYPLConfiguration.circulationURL().appendingPathComponent("annotations/") as NSURL
+            
+            Alamofire.request(url.absoluteString!, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: nil).responseJSON { (response:DataResponse<Any>) in
+                
+                switch(response.result) {
+                case .success(_):
+                    if(response.response?.statusCode == 200) {
+                        self.success = true
+                    } else {
+                        self.success = false
+                    }
+                    break
+                    
+                case .failure(_):
+                    self.success = false
+                    break
+                    
+                }
+            }
+            
+        }
+        
+        //default completion block is called on finish
+        if !self.isCancelled {
+            self.finish()
         }
         
     }
