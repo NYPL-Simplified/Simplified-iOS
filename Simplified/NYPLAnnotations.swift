@@ -355,10 +355,19 @@ final class NYPLLastReadBookOperation: NSOperation, NSCoding {
                 
                 if response?.statusCode == 200
                 {
-                    print("post last read successful")
+                   self.success = true
+                } else {
+                   self.success = false
                 }
+                
+                
             })
             
+        }
+        
+        //default completion block is called on finish
+        if !self.cancelled {
+            self.finish()
         }
         
     }
