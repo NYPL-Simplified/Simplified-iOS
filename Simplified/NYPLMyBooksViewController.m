@@ -13,6 +13,7 @@
 #import "NYPLSettings.h"
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import <PureLayout/PureLayout.h>
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLMyBooksViewController.h"
@@ -132,8 +133,12 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.instructionsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
   self.instructionsLabel.hidden = YES;
   self.instructionsLabel.text = NSLocalizedString(@"MyBooksGoToCatalog", nil);
+  self.instructionsLabel.textAlignment = NSTextAlignmentCenter;
+  self.instructionsLabel.textColor = [UIColor colorWithWhite:0.6667 alpha:1.0];
   self.instructionsLabel.numberOfLines = 0;
   [self.view addSubview:self.instructionsLabel];
+  [self.instructionsLabel autoCenterInSuperview];
+  [self.instructionsLabel autoSetDimension:ALDimensionWidth toSize:300.0];
   
   self.searchButton = [[UIBarButtonItem alloc]
                        initWithImage:[UIImage imageNamed:@"Search"]
@@ -166,13 +171,6 @@ typedef NS_ENUM(NSInteger, FacetSort) {
                                                       self.collectionView.contentInset.bottom,
                                                       self.collectionView.contentInset.right);
   self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
-  
-  CGSize const instructionsLabelSize = [self.instructionsLabel sizeThatFits:CGSizeMake(300.0, CGFLOAT_MAX)];
-  self.instructionsLabel.frame = CGRectMake(0, 0, instructionsLabelSize.width, instructionsLabelSize.height);
-  self.instructionsLabel.textAlignment = NSTextAlignmentCenter;
-  self.instructionsLabel.textColor = [UIColor colorWithWhite:0.6667 alpha:1.0];
-  [self.instructionsLabel centerInSuperview];
-  [self.instructionsLabel integralizeFrame];
 }
 
 - (void)pullToRefresh:(UIRefreshControl *)__unused refreshControl
