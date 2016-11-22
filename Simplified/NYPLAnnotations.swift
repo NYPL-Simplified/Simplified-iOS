@@ -364,6 +364,8 @@ final class NYPLLastReadBookOperation: Operation, NSCoding {
             
             Alamofire.request(url.absoluteString!, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: nil).responseJSON { (response:DataResponse<Any>) in
                 
+                self.statusCode = (response.response?.statusCode)!
+                
                 switch(response.result) {
                 case .success(_):
                     if(response.response?.statusCode == 200) {
