@@ -124,11 +124,11 @@
 		3712F03C1DE3F5120036E128 /* NYPLOPDSLinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */; };
 		3712F03F1DE3F5380036E128 /* invalid.xml in Resources */ = {isa = PBXBuildFile; fileRef = 111559F019B8FAA10003BE94 /* invalid.xml */; };
 		3712F0401DE3F5380036E128 /* main.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C1D194109120086FCAF /* main.xml */; };
-		3712F0411DE3F5380036E128 /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
 		3712F0421DE3F5380036E128 /* valid.xml in Resources */ = {isa = PBXBuildFile; fileRef = 111559F119B8FAA10003BE94 /* valid.xml */; };
 		3712F05A1DE406E30036E128 /* NYPLCirculationAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3712F0591DE406E30036E128 /* NYPLCirculationAnalyticsTests.swift */; };
 		3712F05E1DE407160036E128 /* NYPLAnnotationsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3712F05D1DE407160036E128 /* NYPLAnnotationsTests.swift */; };
 		3712F0601DE410D00036E128 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 3712F05F1DE410D00036E128 /* README.md */; };
+		3712F0621DE41DFB0036E128 /* single_entry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 11F54C2419410BE40086FCAF /* single_entry.xml */; };
 		377D4C1B1DE3C34400448D2C /* NYPLBookTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 377D4C1A1DE3C34400448D2C /* NYPLBookTests.m */; };
 		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
@@ -1248,9 +1248,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3712F0621DE41DFB0036E128 /* single_entry.xml in Resources */,
 				3712F03F1DE3F5380036E128 /* invalid.xml in Resources */,
 				3712F0401DE3F5380036E128 /* main.xml in Resources */,
-				3712F0411DE3F5380036E128 /* single_entry.xml in Resources */,
 				3712F0421DE3F5380036E128 /* valid.xml in Resources */,
 				2D2B478E1D08FDF5007F7764 /* UpdateCheckNeedsUpdate.json in Resources */,
 				2D2B478F1D08FDF5007F7764 /* UpdateCheckUnknown.json in Resources */,

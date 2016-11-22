@@ -24,11 +24,8 @@ final class NYPLCirculationAnalytics : NSObject {
         //this host could change, we may need to observe for chage and reinitialize
         var host: String { return NYPLConfiguration.mainFeedURL().host!}
         
-        do {
-            reachability = try Reachability(hostname: host)
-        } catch {
-            Log.error(#file,"Unable to create Reachability")
-        }
+    
+        reachability = Reachability(hostname: host)
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.reachabilityChanged),name: ReachabilityChangedNotification,object: reachability)
         NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)

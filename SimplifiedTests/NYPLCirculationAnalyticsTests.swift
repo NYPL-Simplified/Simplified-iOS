@@ -17,7 +17,8 @@ class NYPLCirculationAnalyticsTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        let pathString = Bundle.main.path(forResource: "single_entry", ofType: "xml")
+        let pathString = Bundle(for: type(of: self)).path(forResource: "single_entry", ofType: "xml")
+        XCTAssertNotNil(pathString)
         let data = NSData( contentsOfFile: pathString!)
         XCTAssertNotNil(data)
         
@@ -35,7 +36,7 @@ class NYPLCirculationAnalyticsTests: XCTestCase {
         
         self.book = NYPLBook.init(entry: self.entry)
         XCTAssertNotNil(self.book)
-        
+      
     }
     
     override func tearDown() {
@@ -43,10 +44,24 @@ class NYPLCirculationAnalyticsTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
+    func testCirculationAnalyticOperationArrayEncodeDecode() {
   
-        let analyticsOperation = NYPLCirculationAnalyticsOperation(event: "open_book", book: self.book)
-        XCTAssertNotNil(analyticsOperation)
+        let analyticsOperation1 = NYPLCirculationAnalyticsOperation(event: "open_book", book: self.book)
+        XCTAssertNotNil(analyticsOperation1)
+    
+        let analyticsOperation2 = NYPLCirculationAnalyticsOperation(event: "close_book", book: self.book)
+        XCTAssertNotNil(analyticsOperation2)
+        
+        let operationEncodeArray = [analyticsOperation1,analyticsOperation2]
+        
+        let file: String = "analyticsOperations.plist"
+        let dir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.allDomainsMask, true).first
+        XCTAssertNotNil(dir)
+        let path = URL(fileURLWithPath: dir!).appendingPathComponent(file)
+        XCTAssertNotNil(path)
+        XCTAssertTrue(NSKeyedArchiver.archiveRootObject(operationEncodeArray, toFile: (path.path)))
+        let operationDecodeArray = NSKeyedUnarchiver.unarchiveObject(withFile: path.path) as! [NYPLCirculationAnalyticsOperation]
+        XCTAssertNotNil(operationDecodeArray)
     }
     
     func testPerformanceExample() {
