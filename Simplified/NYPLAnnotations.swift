@@ -98,7 +98,8 @@ class NYPLAnnotations: NSObject {
             
             if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
                 let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(file)
-                NSKeyedArchiver.archiveRootObject(NYPLAnnotations.lastReadBookQueue.operations, toFile: (path?.path)!)            }
+                NSKeyedArchiver.archiveRootObject(NYPLAnnotations.lastReadBookQueue.operations, toFile: (path?.path)!)
+            }
         }
         
         //we have archived the operations, so remove them all from the active queue
