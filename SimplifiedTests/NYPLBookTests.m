@@ -9,9 +9,12 @@
 @import XCTest;
 
 #import "NYPLBook.h"
+#import "NYPLBookAcquisition.h"
 #import "NYPLOPDSFeed.h"
 #import "NYPLOPDSEntry.h"
 #import "NYPLXML.h"
+
+#pragma GCC diagnostic ignored "-Wgnu"
 
 @interface NYPLBookTests : XCTestCase
 
@@ -26,10 +29,9 @@
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
     
-    NSData *const data = [NSData dataWithContentsOfFile:
-                          [[NSBundle bundleForClass:[self class]]
-                           pathForResource:@"single_entry"
-                           ofType:@"xml"]];
+    NSString *pathString = [[NSBundle bundleForClass:[self class]] pathForResource:@"single_entry" ofType:@"xml"];
+    
+    NSData *const data = [NSData dataWithContentsOfFile:pathString];
     assert(data);
     
     NYPLXML *const feedXML = [NYPLXML XMLWithData:data];
@@ -51,9 +53,38 @@
     [super tearDown];
 }
 
-- (void)testBookEncode {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+- (void)testBookAcquisitionEncodeDecode {
+    
+    NSString *fileName = @"NYPLBookAcquisition.plist";
+    NSURL *documentsUrl = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
+                                                                  inDomains:NSUserDomainMask] lastObject];
+    NSURL *path = [documentsUrl URLByAppendingPathComponent:fileName];
+    NSString *pathString = path.path;
+    
+    XCTAssertTrue([NSKeyedArchiver archiveRootObject:self.book.acquisition toFile:pathString]);
+    
+    NYPLBookAcquisition *unArchBookAcquisition = [NSKeyedUnarchiver unarchiveObjectWithFile:pathString];
+    
+    assert(unArchBookAcquisition);
+    
+}
+
+
+- (void)testBookEncodeDecode {
+    
+    NSString *fileName = @"NYPLBook.plist";
+    NSURL *documentsUrl = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
+                                            inDomains:NSUserDomainMask] lastObject];
+    NSURL *path = [documentsUrl URLByAppendingPathComponent:fileName];
+    NSString *pathString = path.path;
+    
+    XCTAssertTrue([NSKeyedArchiver archiveRootObject:self.book toFile:pathString]);
+    
+    NYPLBook *unArchBook = [NSKeyedUnarchiver unarchiveObjectWithFile:pathString];
+    
+    assert(unArchBook);
+    
+    
 }
 
 - (void)testBookDecode {
