@@ -9,14 +9,14 @@ import ReachabilitySwift
 final class NYPLCirculationAnalytics : NSObject {
     static let maxRetryCount: Int = 3
     static var reachability: Reachability!
-    static var isReachable: Bool {return reachability.isReachable()}
-    private static var analyticsQueue:NSOperationQueue = {
-        var queue = NSOperationQueue()
+    static var isReachable: Bool {return reachability.isReachable}
+    fileprivate static var analyticsQueue:OperationQueue = {
+        var queue = OperationQueue()
         queue.name = "AnalyticsQueue"
         queue.maxConcurrentOperationCount = 1
-        queue.qualityOfService = .Utility
+        queue.qualityOfService = .utility
         //suspend queued operations if server is not reachable
-        queue.suspended = !isReachable
+        queue.isSuspended = !isReachable
         return queue
     }()
     
@@ -30,9 +30,9 @@ final class NYPLCirculationAnalytics : NSObject {
             Log.error(#file,"Unable to create Reachability")
         }
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.reachabilityChanged),name: ReachabilityChangedNotification,object: reachability)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterBackground), name: UIApplicationDidEnterBackgroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterForeground), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reachabilityChanged),name: ReachabilityChangedNotification,object: reachability)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         
         do {
             
@@ -43,12 +43,12 @@ final class NYPLCirculationAnalytics : NSObject {
         
     }
     
-    @objc private class func reachabilityChanged(note: NSNotification) {
+    @objc fileprivate class func reachabilityChanged(_ note: Notification) {
         
         let reachability = note.object as! Reachability
         
-        if reachability.isReachable() {
-            if reachability.isReachableViaWiFi() {
+        if reachability.isReachable {
+            if reachability.isReachableViaWiFi {
                 Log.debug(#file,"Reachable via WiFi")
             } else {
                 Log.debug(#file,"Reachable via Cellular")
@@ -58,7 +58,7 @@ final class NYPLCirculationAnalytics : NSObject {
             Log.debug(#file,"Network not reachable")
         }
         //suspend queued operations if server is not reachable
-        analyticsQueue.suspended = !reachability.isReachable()
+        analyticsQueue.isSuspended = !reachability.isReachable
     }
     
     func applicationDidEnterBackground() {
@@ -66,7 +66,7 @@ final class NYPLCirculationAnalytics : NSObject {
         Log.debug(#file,"Suspending analyticsQueue")
         
         //suspend current operations while we attempt to write the contents to file
-        NYPLCirculationAnalytics.analyticsQueue.suspended = true
+        NYPLCirculationAnalytics.analyticsQueue.isSuspended = true
         
         //write operations to file if there are any still queued
         if(NYPLCirculationAnalytics.analyticsQueue.operations.count == 0) {
@@ -77,9 +77,9 @@ final class NYPLCirculationAnalytics : NSObject {
             
             let file = NYPLCirculationAnalytics.analyticsQueue.name! + ".plist" //this is the file. we will write to and read from it
             
-            if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
-                let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(file)
-                NSKeyedArchiver.archiveRootObject(NYPLCirculationAnalytics.analyticsQueue.operations, toFile: (path?.path)!)
+            if let dir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.allDomainsMask, true).first {
+                let path = URL(fileURLWithPath: dir).appendingPathComponent(file)
+                NSKeyedArchiver.archiveRootObject(NYPLCirculationAnalytics.analyticsQueue.operations, toFile: (path.path))
             }
         }
         
@@ -93,18 +93,18 @@ final class NYPLCirculationAnalytics : NSObject {
         //read file into queue if it exists, then enable queues if needed
         
         let file = NYPLCirculationAnalytics.analyticsQueue.name! + ".plist" //this is the file we will read from
-        let fileManager = NSFileManager.defaultManager()
+        let fileManager = FileManager.default
         
-        if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
-            let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(file)
+        if let dir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.allDomainsMask, true).first {
+            let path = URL(fileURLWithPath: dir).appendingPathComponent(file)
             
-            if(fileManager.fileExistsAtPath((path?.path)!)) {
+            if(fileManager.fileExists(atPath: (path.path))) {
                 
                 do {
-                    let operations: [NYPLCirculationAnalyticsOperation] = NSKeyedUnarchiver.unarchiveObjectWithFile((path?.path)!) as! [NYPLCirculationAnalyticsOperation]
+                    let operations: [NYPLCirculationAnalyticsOperation] = NSKeyedUnarchiver.unarchiveObject(withFile: (path.path)) as! [NYPLCirculationAnalyticsOperation]
                     NYPLCirculationAnalytics.analyticsQueue.addOperations(operations, waitUntilFinished: true)
                     //we have sucessfully read the file back in, remove it
-                    try! fileManager.removeItemAtURL(path!)
+                    try! fileManager.removeItem(at: path)
                     
                 }
                 
@@ -112,23 +112,23 @@ final class NYPLCirculationAnalytics : NSObject {
             
         }
         
-        NYPLCirculationAnalytics.analyticsQueue.suspended = !NYPLCirculationAnalytics.isReachable
+        NYPLCirculationAnalytics.analyticsQueue.isSuspended = !NYPLCirculationAnalytics.isReachable
         Log.debug(#file,"App moved to foreground!")
     }
     
-    class func postEvent(event: String, withBook book: NYPLBook) -> Void {
+    class func postEvent(_ event: String, withBook book: NYPLBook) -> Void {
         self.postEvent(event, withBook: book)
     }
     
     //private varient for tracking retries
-    private class func postEvent(event: String, retryCount: Int, withBook book: NYPLBook) -> Void {
+    fileprivate class func postEvent(_ event: String, retryCount: Int, withBook book: NYPLBook) -> Void {
         let analyticsOperation = NYPLCirculationAnalyticsOperation(event: event, book: book)
         
         analyticsOperation.completionBlock = {
             
             //added max retry count just in case the failure was not do to loss of internet, possible mailformation
             //of the url or server side issues
-            if(!analyticsOperation.success && !reachability.isReachable() && analyticsOperation.retryCount < maxRetryCount) {
+            if(!analyticsOperation.success && !reachability.isReachable && analyticsOperation.retryCount < maxRetryCount) {
                 //we need to add this operation back into the queue, internet was lost while in progress
                 //if order is importent, we need to remove all queued operations, then re-add starting with this one
                 self.postEvent(analyticsOperation.event, retryCount: analyticsOperation.retryCount+1, withBook: analyticsOperation.book)
@@ -143,10 +143,10 @@ final class NYPLCirculationAnalytics : NSObject {
     
     // Server currently not validating authentication in header, but including
     // with call in case that changes in the future
-    private class var headers:[String:String] {
-        let authenticationString = "\(NYPLAccount.sharedAccount().barcode):\(NYPLAccount.sharedAccount().PIN)"
-        let authenticationData = authenticationString.dataUsingEncoding(NSASCIIStringEncoding)
-        let authenticationValue = "Basic \(authenticationData?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions.Encoding64CharacterLineLength)))"
+    fileprivate class var headers:[String:String] {
+        let authenticationString = "\(NYPLAccount.shared().barcode):\(NYPLAccount.shared().pin)"
+        let authenticationData = authenticationString.data(using: String.Encoding.ascii)
+        let authenticationValue = "Basic \(authenticationData?.base64EncodedString(options: NSData.Base64EncodingOptions.lineLength64Characters)))"
         
         let headers = [
             "Authorization": "\(authenticationValue)"
@@ -157,13 +157,13 @@ final class NYPLCirculationAnalytics : NSObject {
     
 }
 
-final class NYPLCirculationAnalyticsOperation: NSOperation, NSCoding {
+final class NYPLCirculationAnalyticsOperation: Operation, NSCoding {
     
     let book: NYPLBook
     let event: String
-    private(set) var success: Bool = true
-    private(set) var statusCode: Int = 0
-    private(set) var retryCount: Int
+    fileprivate(set) var success: Bool = true
+    fileprivate(set) var statusCode: Int = 0
+    fileprivate(set) var retryCount: Int
     
     init(event: String, book: NYPLBook) {
         self.book = book
@@ -181,8 +181,8 @@ final class NYPLCirculationAnalyticsOperation: NSOperation, NSCoding {
     
     convenience init?(coder aDecoder: NSCoder) {
         
-        guard let book = aDecoder.decodeObjectForKey("book") as? NYPLBook,
-            let event = aDecoder.decodeObjectForKey("event") as? String
+        guard let book = aDecoder.decodeObject(forKey: "book") as? NYPLBook,
+            let event = aDecoder.decodeObject(forKey: "event") as? String
             else { return nil }
         
         self.init(
@@ -192,47 +192,47 @@ final class NYPLCirculationAnalyticsOperation: NSOperation, NSCoding {
         
     }
     
-    func encodeWithCoder(aCoder: NSCoder) {
+    func encode(with aCoder: NSCoder) {
         
-        aCoder.encodeObject(self.event, forKey: "event")
-        aCoder.encodeObject(self.book, forKey: "book")
+        aCoder.encode(self.event, forKey: "event")
+        aCoder.encode(self.book, forKey: "book")
         
     }
     
-    override var asynchronous: Bool {
+    override var isAsynchronous: Bool {
         return true
     }
     
-    private var _executing = false {
+    fileprivate var _executing = false {
         willSet {
-            willChangeValueForKey("isExecuting")
+            willChangeValue(forKey: "isExecuting")
         }
         didSet {
-            didChangeValueForKey("isExecuting")
+            didChangeValue(forKey: "isExecuting")
         }
     }
     
-    override var executing: Bool {
+    override var isExecuting: Bool {
         return _executing
     }
     
-    private var _finished = false {
+    fileprivate var _finished = false {
         willSet {
-            willChangeValueForKey("isFinished")
+            willChangeValue(forKey: "isFinished")
         }
         
         didSet {
-            didChangeValueForKey("isFinished")
+            didChangeValue(forKey: "isFinished")
         }
     }
     
-    override var finished: Bool {
+    override var isFinished: Bool {
         return _finished
     }
     
     override func start() {
         
-        if cancelled {
+        if isCancelled {
             return
         }
         
@@ -247,19 +247,29 @@ final class NYPLCirculationAnalyticsOperation: NSOperation, NSCoding {
     
     func execute() {
         
-        let requestURL = self.book.analyticsURL.URLByAppendingPathComponent(self.event)
+        let requestURL = self.book.analyticsURL.appendingPathComponent(self.event)
         
-        Alamofire.request(.GET, requestURL!, headers: NYPLCirculationAnalytics.headers).response {
-            (request, response, data, error)  in
+        Alamofire.request(requestURL, method: .get, parameters: ["":""], encoding: URLEncoding.default, headers: NYPLCirculationAnalytics.headers).responseJSON { (response:DataResponse<Any>) in
             
-            self.statusCode = response!.statusCode
+            self.statusCode = (response.response?.statusCode)!
             
-            if (error != nil) || (response?.statusCode != 200) {
+            switch(response.result) {
+            case .success(_):
+                if (response.response?.statusCode != 200) {
+                    self.success = false
+                } else {
+                    self.success = true
+                }
+                break
+                
+            case .failure(_):
                 self.success = false
+                break
+                
             }
             
             //default completion block is called on finish
-            if !self.cancelled {
+            if !self.isCancelled {
                 self.finish()
             }
             

@@ -1,0 +1,30 @@
+{
+  "name": "NYPLCardCreator",
+  "version": "0.1.0",
+  "summary": "A client and drop-in GUI for NYPL's RESTful card creator API",
+  "description": "NYPLCardCreator implements a native registration flow for NYPL's card creator API. Users can\nmake their way through the registration flow in order to obtain a new library card.",
+  "homepage": "https://github.com/NYPL-Simplified/CardCreator-iOS",
+  "license": {
+    "type": "Apache 2.0",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Winnie Quinn": "nypl@winniequinn.com"
+  },
+  "source": {
+    "git": "https://github.com/NYPL-Simplified/CardCreator-iOS.git",
+    "tag": "0.1.0"
+  },
+  "social_media_url": "https://twitter.com/nypl_labs",
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "NYPLCardCreator/Classes/**/*",
+  "resources": "NYPLCardCreator/Assets/*",
+  "frameworks": "UIKit",
+  "dependencies": {
+    "PureLayout": [
+      "~> 3.0"
+    ]
+  }
+}

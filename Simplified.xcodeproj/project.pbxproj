@@ -22,12 +22,7 @@
 		08A352241BDE8E640040BF1D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352231BDE8E640040BF1D /* Security.framework */; };
 		08A352261BDE8E700040BF1D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352251BDE8E700040BF1D /* SystemConfiguration.framework */; };
 		08A352271BDE91B80040BF1D /* libRDServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A49C25461AE05A2600D63B89 /* libRDServices.a */; };
-		08A352291BDE91B80040BF1D /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A352281BDE91B80040BF1D /* libePub3-iOS.a */; };
-		08A3522A1BDE94170040BF1D /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
-		08A3522B1BDE94170040BF1D /* libAdobe Content Filter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */; };
 		08A352731BDFF5380040BF1D /* NYPLAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A352721BDFF5380040BF1D /* NYPLAlertController.m */; };
-		08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A569A2C1B8351C6003B5B61 /* libADEPT.a */; };
-		08C469C21BDAAEB1009D8AFD /* libAdobe Content Filter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A7048961B94A6710046FFF0 /* libAdobe Content Filter.a */; };
 		11068C55196DD37900E8A94B /* NYPLNull.m in Sources */ = {isa = PBXBuildFile; fileRef = 11068C54196DD37900E8A94B /* NYPLNull.m */; };
 		11078357198160A50071AB1E /* NYPLBookDownloadFailedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 11078356198160A50071AB1E /* NYPLBookDownloadFailedCell.m */; };
 		1107835E19816E3D0071AB1E /* UIView+NYPLViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1107835D19816E3D0071AB1E /* UIView+NYPLViewAdditions.m */; };
@@ -124,11 +119,11 @@
 		2DE514351DC3F0BE005A58BD /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */; };
 		2DF321831DC3B83500E1858F /* NYPLAnnotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */; };
 		2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */; };
+		377D4C1B1DE3C34400448D2C /* NYPLBookTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 377D4C1A1DE3C34400448D2C /* NYPLBookTests.m */; };
 		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
 		5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
 		5A6929101B95ACD100FB4C10 /* sdk.css in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290F1B95ACD100FB4C10 /* sdk.css */; };
-		5A69291E1B95C8AD00FB4C10 /* readium-shared-js_all.js.map in Sources */ = {isa = PBXBuildFile; fileRef = 5A69291D1B95C8AD00FB4C10 /* readium-shared-js_all.js.map */; };
 		5A6929241B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A6929231B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js */; };
 		5A6929251B95C93B00FB4C10 /* readium-shared-js_all.js.map in Resources */ = {isa = PBXBuildFile; fileRef = 5A69291D1B95C8AD00FB4C10 /* readium-shared-js_all.js.map */; };
 		5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
@@ -163,7 +158,6 @@
 		B594C7561BB06F40000028F5 /* HelpStackTheme.plist in Resources */ = {isa = PBXBuildFile; fileRef = B594C7551BB06F40000028F5 /* HelpStackTheme.plist */; };
 		B5ED41DA1B8F6E2E009FC164 /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */; };
 		E15AF04E809009612AA10D16 /* libPods-SimplyETests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEEC686A5C71AFACFAC2A884 /* libPods-SimplyETests.a */; };
-		E66AE3301DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */; };
 		E677F8B31DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E677F8B21DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m */; };
 		E6CA8E421DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CA8E411DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m */; };
 		E6CA8E571DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CA8E561DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m */; };
@@ -439,6 +433,9 @@
 		2DFAC8EB1CD8DDD1003D9EC0 /* NYPLOPDSCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSCategory.h; sourceTree = "<group>"; };
 		2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSCategory.m; sourceTree = "<group>"; };
 		2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimplyE.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		377D4C191DE3C34300448D2C /* SimplyETests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyETests-Bridging-Header.h"; sourceTree = "<group>"; };
+		377D4C1A1DE3C34400448D2C /* NYPLBookTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookTests.m; sourceTree = "<group>"; };
+		4944593F33C27DF5B6E18534 /* Pods-SimplyE.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyE.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE.debug.xcconfig"; sourceTree = "<group>"; };
 		56A7B7786F9B146602623617 /* Pods-SimplyETests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyETests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests.release.xcconfig"; sourceTree = "<group>"; };
 		579E9BC126424F2B79C0FE7E /* Pods-SimplyETests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyETests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests.debug.xcconfig"; sourceTree = "<group>"; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
@@ -512,7 +509,6 @@
 		B5ED41D81B8F6E2E009FC164 /* NYPLBookButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookButtonsView.h; sourceTree = "<group>"; };
 		B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookButtonsView.m; sourceTree = "<group>"; };
 		BEEC686A5C71AFACFAC2A884 /* libPods-SimplyETests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SimplyETests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Simplified+RMSDK.xcconfig"; sourceTree = "<group>"; };
 		CAE35BC11B86308D00BF9BC5 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLCirculationAnalytics.swift; sourceTree = "<group>"; };
 		E677F8B11DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsLicensesTableViewController.h; sourceTree = "<group>"; };
@@ -522,6 +518,7 @@
 		E6CA8E551DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsContentLicenseViewController.h; sourceTree = "<group>"; };
 		E6CA8E561DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsContentLicenseViewController.m; sourceTree = "<group>"; };
 		E6CA8E5A1DCA773400FE93B4 /* content-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "content-license.html"; sourceTree = "<group>"; };
+		FE51A2BF3D91433BDA2AD40A /* Pods-SimplyE.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyE.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -539,11 +536,6 @@
 			files = (
 				2D6F7CA91D910C3C000B906A /* HelpStack.framework in Frameworks */,
 				2D6F7CA71D910C12000B906A /* Bugsnag.framework in Frameworks */,
-				08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */,
-				08C469C21BDAAEB1009D8AFD /* libAdobe Content Filter.a in Frameworks */,
-				08A3522A1BDE94170040BF1D /* libADEPT.a in Frameworks */,
-				08A3522B1BDE94170040BF1D /* libAdobe Content Filter.a in Frameworks */,
-				08A352291BDE91B80040BF1D /* libePub3-iOS.a in Frameworks */,
 				08A352271BDE91B80040BF1D /* libRDServices.a in Frameworks */,
 				08A352221BDE8E560040BF1D /* libicucore.tbd in Frameworks */,
 				5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */,
@@ -857,6 +849,8 @@
 			children = (
 				579E9BC126424F2B79C0FE7E /* Pods-SimplyETests.debug.xcconfig */,
 				56A7B7786F9B146602623617 /* Pods-SimplyETests.release.xcconfig */,
+				4944593F33C27DF5B6E18534 /* Pods-SimplyE.debug.xcconfig */,
+				FE51A2BF3D91433BDA2AD40A /* Pods-SimplyE.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -876,7 +870,6 @@
 				B54F998D1BAC976C0033F303 /* Simplified.debug.xcconfig */,
 				B54F998E1BAC97AB0033F303 /* Simplified.release.xcconfig */,
 				5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */,
-				CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */,
 				5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */,
 				5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */,
 				A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */,
@@ -1053,6 +1046,8 @@
 				A823D830192BABA400B55DE2 /* Supporting Files */,
 				11A14DF51A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m */,
 				2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */,
+				377D4C1A1DE3C34400448D2C /* NYPLBookTests.m */,
+				377D4C191DE3C34300448D2C /* SimplyETests-Bridging-Header.h */,
 			);
 			path = SimplifiedTests;
 			sourceTree = "<group>";
@@ -1156,10 +1151,12 @@
 				TargetAttributes = {
 					2D2B47711D08F807007F7764 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0810;
 						TestTargetID = A823D80C192BABA400B55DE2;
 					};
 					A823D80C192BABA400B55DE2 = {
 						DevelopmentTeam = 7262U6ST2R;
+						LastSwiftMigration = 0810;
 					};
 				};
 			};
@@ -1290,7 +1287,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		6A7EBB20A2BB10AD7F6FF9F1 /* [CP] Check Pods Manifest.lock */ = {
@@ -1305,7 +1302,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		7D35AB55AEA925FC3399FA2A /* [CP] Copy Pods Resources */ = {
@@ -1391,6 +1388,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */,
+				377D4C1B1DE3C34400448D2C /* NYPLBookTests.m in Sources */,
 				2D2B477E1D08F82C007F7764 /* Log.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1429,7 +1427,6 @@
 				11119742198827850014462F /* NYPLBookDetailDownloadingView.m in Sources */,
 				2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */,
 				11068C55196DD37900E8A94B /* NYPLNull.m in Sources */,
-				5A69291E1B95C8AD00FB4C10 /* readium-shared-js_all.js.map in Sources */,
 				1111973C19880E8D0014462F /* NYPLLinearView.m in Sources */,
 				11396FB9193D289100E16EE8 /* NSDate+NYPLDateAdditions.m in Sources */,
 				1183F347194F744D00DC322F /* NYPLBook.m in Sources */,
@@ -1561,6 +1558,7 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1573,7 +1571,9 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.SimplyETests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SimplifiedTests/SimplyETests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimplyE.app/SimplyE";
 			};
 			name = Debug;
@@ -1587,6 +1587,7 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1599,6 +1600,8 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.SimplyETests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SimplifiedTests/SimplyETests-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimplyE.app/SimplyE";
 			};
 			name = Release;
@@ -1691,7 +1694,7 @@
 		};
 		A823D83A192BABA400B55DE2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */;
+			baseConfigurationReference = 4944593F33C27DF5B6E18534 /* Pods-SimplyE.debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -1700,6 +1703,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
@@ -1717,6 +1721,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -1733,7 +1738,7 @@
 		};
 		A823D83B192BABA400B55DE2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */;
+			baseConfigurationReference = FE51A2BF3D91433BDA2AD40A /* Pods-SimplyE.release.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -1758,6 +1763,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "9ba5bad4-c0e9-4d22-aae9-4d2e2e60ca6d";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
 					"-Wall",

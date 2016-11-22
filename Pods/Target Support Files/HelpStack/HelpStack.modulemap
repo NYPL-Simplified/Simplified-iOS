@@ -1,0 +1,6 @@
+framework module HelpStack {
+  umbrella header "HelpStack-umbrella.h"
+
+  export *
+  module * { export * }
+}

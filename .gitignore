@@ -1,7 +1,6 @@
 .DS_Store
 *.xccheckout
 xcuserdata
-Pods
 DerivedData
 .idea
 Build

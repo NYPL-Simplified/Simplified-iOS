@@ -13,25 +13,25 @@ import ReachabilitySwift
 class NYPLAnnotations: NSObject {
     static let maxRetryCount: Int = 3
     static var reachability: Reachability!
-    static var isReachable: Bool {return reachability.isReachable()}
+    static var isReachable: Bool {return reachability.isReachable}
     
-    private static var annotationsQueue:NSOperationQueue = {
-        var queue = NSOperationQueue()
+    fileprivate static var annotationsQueue:OperationQueue = {
+        var queue = OperationQueue()
         queue.name = "AnnotationsQueue"
         queue.maxConcurrentOperationCount = 1
-        queue.qualityOfService = .Utility
+        queue.qualityOfService = .utility
         //suspend queued operations if server is not reachable
-        queue.suspended = !isReachable
+        queue.isSuspended = !isReachable
         return queue
     }()
     
-    private static var lastReadBookQueue:NSOperationQueue = {
-        var queue = NSOperationQueue()
+    fileprivate static var lastReadBookQueue:OperationQueue = {
+        var queue = OperationQueue()
         queue.name = "lastReadBookQueue"
         queue.maxConcurrentOperationCount = 1
-        queue.qualityOfService = .Utility
+        queue.qualityOfService = .utility
         //suspend queued operations if server is not reachable
-        queue.suspended = !isReachable
+        queue.isSuspended = !isReachable
         return queue
     }()
     
@@ -45,9 +45,9 @@ class NYPLAnnotations: NSObject {
             Log.error(#file,"Unable to create Reachability")
         }
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.reachabilityChanged),name: ReachabilityChangedNotification,object: reachability)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterBackground), name: UIApplicationDidEnterBackgroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterForeground), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reachabilityChanged),name: ReachabilityChangedNotification,object: reachability)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         
         do {
             
@@ -58,12 +58,12 @@ class NYPLAnnotations: NSObject {
         
     }
     
-    @objc private class func reachabilityChanged(note: NSNotification) {
+    @objc fileprivate class func reachabilityChanged(_ note: Notification) {
         
         let reachability = note.object as! Reachability
         
-        if reachability.isReachable() {
-            if reachability.isReachableViaWiFi() {
+        if reachability.isReachable {
+            if reachability.isReachableViaWiFi {
                 Log.debug(#file,"Reachable via WiFi")
             } else {
                 Log.debug(#file,"Reachable via Cellular")
@@ -73,8 +73,8 @@ class NYPLAnnotations: NSObject {
             Log.debug(#file,"Network not reachable")
         }
         //suspend queued operations if server is not reachable
-        annotationsQueue.suspended = !reachability.isReachable()
-        lastReadBookQueue.suspended = !reachability.isReachable()
+        annotationsQueue.isSuspended = !reachability.isReachable
+        lastReadBookQueue.isSuspended = !reachability.isReachable
     }
     
     func applicationDidEnterBackground() {
@@ -84,8 +84,8 @@ class NYPLAnnotations: NSObject {
         Log.debug(#file,"Suspending analyticsQueue")
         
         //suspend current operations while we attempt to write the contents to file
-        NYPLAnnotations.annotationsQueue.suspended = true
-        NYPLAnnotations.lastReadBookQueue.suspended = true
+        NYPLAnnotations.annotationsQueue.isSuspended = true
+        NYPLAnnotations.lastReadBookQueue.isSuspended = true
         
         //write operations to file if there are any still queued
         if(NYPLAnnotations.lastReadBookQueue.operations.count == 0) {
@@ -96,9 +96,9 @@ class NYPLAnnotations: NSObject {
             
             let file = NYPLAnnotations.lastReadBookQueue.name! + ".plist" //this is the file. we will write to and read from it
             
-            if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
-                let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(file)
-                NSKeyedArchiver.archiveRootObject(NYPLAnnotations.lastReadBookQueue.operations, toFile: (path?.path)!)            }
+            if let dir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.allDomainsMask, true).first {
+                let path = URL(fileURLWithPath: dir).appendingPathComponent(file)
+                NSKeyedArchiver.archiveRootObject(NYPLAnnotations.lastReadBookQueue.operations, toFile: (path.path))            }
         }
         
         //we have archived the operations, so remove them all from the active queue
@@ -112,18 +112,18 @@ class NYPLAnnotations: NSObject {
         //read file into queue if it exists, then enable queues if needed
         
         let file = NYPLAnnotations.lastReadBookQueue.name! + ".plist" //this is the file we will read from
-        let fileManager = NSFileManager.defaultManager()
+        let fileManager = FileManager.default
         
-        if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
-            let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(file)
+        if let dir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.allDomainsMask, true).first {
+            let path = URL(fileURLWithPath: dir).appendingPathComponent(file)
             
-            if(fileManager.fileExistsAtPath((path?.path)!)) {
+            if(fileManager.fileExists(atPath: (path.path))) {
                 
                 do {
-                    let operations: [NYPLLastReadBookOperation] = NSKeyedUnarchiver.unarchiveObjectWithFile((path?.path)!) as! [NYPLLastReadBookOperation]
+                    let operations: [NYPLLastReadBookOperation] = NSKeyedUnarchiver.unarchiveObject(withFile: (path.path)) as! [NYPLLastReadBookOperation]
                     NYPLAnnotations.lastReadBookQueue.addOperations(operations, waitUntilFinished: true)
                     //we have sucessfully read the file back in, remove it
-                    try! fileManager.removeItemAtURL(path!)
+                    try! fileManager.removeItem(at: path)
                     
                 }
                 
@@ -131,20 +131,20 @@ class NYPLAnnotations: NSObject {
             
         }
         
-        NYPLAnnotations.lastReadBookQueue.suspended = !NYPLAnnotations.isReachable
+        NYPLAnnotations.lastReadBookQueue.isSuspended = !NYPLAnnotations.isReachable
         
         Log.debug(#file,"App moved to foreground!")
         
-        //TODO: future state handle annotation queue in the same mannor
-        NYPLAnnotations.annotationsQueue.suspended = !NYPLAnnotations.isReachable
+        //TODO: lastbopok read fully impl'd, annotation queue is mearly here waiting for the impl to use it
+        NYPLAnnotations.annotationsQueue.isSuspended = !NYPLAnnotations.isReachable
         
     }
     
-    class func postLastRead(book:NYPLBook, cfi:NSString) {
+    class func postLastRead(_ book:NYPLBook, cfi:NSString) {
         self.postLastRead(book, retryCount: 0, cfi:cfi)
     }
     
-    class func postLastRead(book:NYPLBook, retryCount: Int, cfi:NSString)
+    class func postLastRead(_ book:NYPLBook, retryCount: Int, cfi:NSString)
     {
         
         let lastReadBookOperation = NYPLLastReadBookOperation(cfi: cfi as String, book: book)
@@ -153,7 +153,7 @@ class NYPLAnnotations: NSObject {
             
             //added max retry count just in case the failure was not do to loss of internet, possible mailformation
             //of the url or server side issues
-            if(!lastReadBookOperation.success && !reachability.isReachable() && lastReadBookOperation.retryCount < maxRetryCount) {
+            if(!lastReadBookOperation.success && !reachability.isReachable && lastReadBookOperation.retryCount < maxRetryCount) {
                 //we need to add this operation back into the queue, internet was lost while in progress
                 //we only need the latest, so if there is another allready in queue, drop this one on the floor
                 if(lastReadBookQueue.operationCount == 0) {
@@ -169,63 +169,70 @@ class NYPLAnnotations: NSObject {
         lastReadBookQueue.addOperation(lastReadBookOperation)
     }
     
-    class func syncLastRead(book:NYPLBook, completionHandler: (responseObject: String?,
-        error: NSError?) -> ()) {
+    class func syncLastRead(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: String?,
+        _ error: NSError?) -> ()) {
         
-        func convertDataToDictionary(data: NSData) -> [String:AnyObject]? {
+        func convertDataToDictionary(_ data: Data) -> [String:AnyObject]? {
             do {
-                return try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String:AnyObject]
+                return try JSONSerialization.jsonObject(with: data, options: []) as? [String:AnyObject]
             } catch let error as NSError {
                 print(error)
             }
             return nil
         }
         
-        if (NYPLAccount.sharedAccount().hasBarcodeAndPIN())
+        if (NYPLAccount.shared().hasBarcodeAndPIN())
         {
             if book.annotationsURL != nil {
                 
-                Alamofire.request(.GET, book.annotationsURL.absoluteString!, headers: NYPLAnnotations.headers).response { (request, response, data, error) in
+                
+                Alamofire.request(book.annotationsURL.absoluteString, method: .get, parameters: ["":""], encoding: URLEncoding.default, headers: NYPLAnnotations.headers).responseJSON { (response:DataResponse<Any>) in
                     
-                    if error == nil
-                    {
-                        let json = convertDataToDictionary(data!)
-                        
-                        let total:Int = json!["total"] as! Int
-                        if total > 0
-                        {
-                            let first = json!["first"] as! [String:AnyObject]
-                            let items = first["items"] as! [AnyObject]
-                            for item in items
+                    switch(response.result) {
+                    case .success(_):
+                        if let data = response.result.value{
+                            let json = convertDataToDictionary(data as! Data)
+                            
+                            let total:Int = json!["total"] as! Int
+                            if total > 0
                             {
-                                let target = item["target"] as! [String:AnyObject]
-                                let source = target["source"] as! String
-                                if source == book.identifier
+                                let first = json!["first"] as! [String:AnyObject]
+                                let items = first["items"] as! [AnyObject]
+                                for item in items
                                 {
-                                    
-                                    let selector = target["selector"] as! [String:AnyObject]
-                                    let value = selector["value"] as! String
-                                    
-                                    completionHandler(responseObject: value as String!, error: error)
-                                    print(value)
+                                    let target = item["target"] as! [String:AnyObject]
+                                    let source = target["source"] as! String
+                                    if source == book.identifier
+                                    {
+                                        
+                                        let selector = target["selector"] as! [String:AnyObject]
+                                        let value = selector["value"] as! String
+                                        
+                                        completionHandler(value as String!, response.result.error as NSError?)
+                                        print(value)
+                                    }
                                 }
                             }
+                            else
+                            {
+                                completionHandler(nil, response.result.error as NSError?)
+                            }
+
                         }
-                        else
-                        {
-                            completionHandler(responseObject: nil, error: error)
-                        }
-                    }
-                    else
-                    {
-                        completionHandler(responseObject: nil, error: error)
+                        break
+                        
+                    case .failure(_):
+                        completionHandler(nil, response.result.error as NSError?)
+                        break
+                        
                     }
                 }
+                
             }
         }
     }
     
-    class func sync(book:NYPLBook, completionHandler: (responseObject: String?, error: NSError?) -> ()) {
+    class func sync(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: String?, _ error: NSError?) -> ()) {
         syncLastRead(book, completionHandler: completionHandler)
     }
     
@@ -233,9 +240,9 @@ class NYPLAnnotations: NSObject {
     // with call in case that changes in the future
     class var headers:[String:String]
     {
-        let authenticationString = "\(NYPLAccount.sharedAccount().barcode):\(NYPLAccount.sharedAccount().PIN)"
-        let authenticationData:NSData = authenticationString.dataUsingEncoding(NSASCIIStringEncoding)!
-        let authenticationValue = "Basic \(authenticationData.base64EncodedStringWithOptions(NSDataBase64EncodingOptions.Encoding64CharacterLineLength)))"
+        let authenticationString = "\(NYPLAccount.shared().barcode):\(NYPLAccount.shared().pin)"
+        let authenticationData:Data = authenticationString.data(using: String.Encoding.ascii)!
+        let authenticationValue = "Basic \(authenticationData.base64EncodedString(options: NSData.Base64EncodingOptions.lineLength64Characters)))"
         
         let headers = [
             "Authorization": "\(authenticationValue)"      ]
@@ -245,32 +252,32 @@ class NYPLAnnotations: NSObject {
     
 }
 
-final class NYPLLastReadBookOperation: NSOperation, NSCoding {
+final class NYPLLastReadBookOperation: Operation, NSCoding {
     
     let book: NYPLBook
     let cfi:NSString
-    private(set) var success: Bool = true
-    private(set) var statusCode: Int = 0
-    private(set) var retryCount: Int
+    fileprivate(set) var success: Bool = true
+    fileprivate(set) var statusCode: Int = 0
+    fileprivate(set) var retryCount: Int
     
     init(cfi: String, book: NYPLBook) {
         self.book = book
-        self.cfi = cfi
+        self.cfi = cfi as NSString
         self.retryCount = 0
         super.init()
     }
     
     init(cfi: String, book: NYPLBook, retryCount: Int) {
         self.book = book
-        self.cfi = cfi
+        self.cfi = cfi as NSString
         self.retryCount = retryCount
         super.init()
     }
     
     convenience init?(coder aDecoder: NSCoder) {
         
-        guard let book = aDecoder.decodeObjectForKey("book") as? NYPLBook,
-            let cfi = aDecoder.decodeObjectForKey("cfi") as? String
+        guard let book = aDecoder.decodeObject(forKey: "book") as? NYPLBook,
+            let cfi = aDecoder.decodeObject(forKey: "cfi") as? String
             else { return nil }
         
         self.init(
@@ -280,47 +287,47 @@ final class NYPLLastReadBookOperation: NSOperation, NSCoding {
         
     }
     
-    func encodeWithCoder(aCoder: NSCoder) {
+    func encode(with aCoder: NSCoder) {
         
-        aCoder.encodeObject(self.cfi, forKey: "cfi")
-        aCoder.encodeObject(self.book, forKey: "book")
+        aCoder.encode(self.cfi, forKey: "cfi")
+        aCoder.encode(self.book, forKey: "book")
         
     }
     
-    override var asynchronous: Bool {
+    override var isAsynchronous: Bool {
         return true
     }
     
-    private var _executing = false {
+    fileprivate var _executing = false {
         willSet {
-            willChangeValueForKey("isExecuting")
+            willChangeValue(forKey: "isExecuting")
         }
         didSet {
-            didChangeValueForKey("isExecuting")
+            didChangeValue(forKey: "isExecuting")
         }
     }
     
-    override var executing: Bool {
+    override var isExecuting: Bool {
         return _executing
     }
     
-    private var _finished = false {
+    fileprivate var _finished = false {
         willSet {
-            willChangeValueForKey("isFinished")
+            willChangeValue(forKey: "isFinished")
         }
         
         didSet {
-            didChangeValueForKey("isFinished")
+            didChangeValue(forKey: "isFinished")
         }
     }
     
-    override var finished: Bool {
+    override var isFinished: Bool {
         return _finished
     }
     
     override func start() {
         
-        if cancelled {
+        if isCancelled {
             return
         }
         
@@ -335,7 +342,7 @@ final class NYPLLastReadBookOperation: NSOperation, NSCoding {
     
     func execute() {
         
-        if (NYPLAccount.sharedAccount().hasBarcodeAndPIN())
+        if (NYPLAccount.shared().hasBarcodeAndPIN())
         {
             
             let parameters = [
@@ -349,7 +356,7 @@ final class NYPLLastReadBookOperation: NSOperation, NSCoding {
                         "value": cfi
                     ]
                 ]
-            ]
+            ] as [String : Any]
             
             Alamofire.request(.POST, NYPLConfiguration.circulationURL().URLByAppendingPathComponent("annotations/")!, parameters:parameters, encoding: .JSON, headers:NYPLAnnotations.headers).response(completionHandler: { (request, response, data, error) in
                 
