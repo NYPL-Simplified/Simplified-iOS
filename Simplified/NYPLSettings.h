@@ -9,6 +9,9 @@ typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
 @class NYPLCardApplicationModel;
 @class Account;
 
+static NSString *const NYPLAcknowledgementsURLString = @"http://www.librarysimplified.org/acknowledgments.html";
+static NSString *const NYPLUserAgreementURLString = @"http://www.librarysimplified.org/EULA.html";
+
 @interface NYPLSettings : NSObject
 
 // Set to nil (the default) if no custom feed should be used.

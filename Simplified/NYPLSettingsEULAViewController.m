@@ -7,9 +7,9 @@
 @property (nonatomic) UIWebView *webView;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
-@end
+@property (nonatomic) NSURL *eulaURL;
 
-static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.org/EULA.html";
+@end
 
 @implementation NYPLSettingsEULAViewController
 
@@ -19,6 +19,18 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
   if(!self) return nil;
   
   self.title = NSLocalizedString(@"EULA", nil);
+  self.eulaURL = [[NYPLSettings sharedSettings] eulaURL];
+  
+  return self;
+}
+
+- (instancetype)initWithNYPLURL
+{
+  self = [super init];
+  if(!self) return nil;
+  
+  self.title = NSLocalizedString(@"EULA", nil);
+  self.eulaURL = [NSURL URLWithString:NYPLUserAgreementURLString];
   
   return self;
 }
@@ -35,8 +47,7 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
   self.webView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.webView.delegate = self;
   
-  NSURL *url = [[NYPLSettings sharedSettings] eulaURL];
-  NSURLRequest *const request = [NSURLRequest requestWithURL:url
+  NSURLRequest *const request = [NSURLRequest requestWithURL:self.eulaURL
                                                  cachePolicy:NSURLRequestUseProtocolCachePolicy
                                              timeoutInterval:15.0];
   
@@ -86,8 +97,7 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction *reloadAction) {
                                                        if (reloadAction) {
-                                                         NSURL *url = [[NYPLSettings sharedSettings] eulaURL];
-                                                         NSURLRequest *const request = [NSURLRequest requestWithURL:url
+                                                         NSURLRequest *const request = [NSURLRequest requestWithURL:self.eulaURL
                                                                                                         cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                                                                     timeoutInterval:15.0];
                                                          

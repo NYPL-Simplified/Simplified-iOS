@@ -1,8 +1,6 @@
 #import "HSHelpStack.h"
-#import "NYPLSettingsLicensesTableViewController.h"
 #import "NYPLSettingsPrimaryNavigationController.h"
 #import "NYPLSettingsPrimaryTableViewController.h"
-#import "NYPLSettingsPrivacyPolicyViewController.h"
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLSettings.h"
 #import "NYPLBook.h"
@@ -74,24 +72,21 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
   UIViewController *viewController;
   NSArray *accounts;
   switch(item) {
-    case NYPLSettingsPrimaryTableViewControllerItemLicenses:
-      viewController = [[NYPLSettingsLicensesTableViewController alloc] init];
-      break;
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
       accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
       viewController = [[NYPLSettingsAccountsTableViewController alloc] initWithAccounts:accounts];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
       viewController = [[RemoteHTMLViewController alloc]
-                        initWithFileURL:[[NYPLSettings sharedSettings] acknowledgmentsURL]
+                        initWithURL:[NSURL URLWithString:NYPLAcknowledgementsURLString]
                         title:NSLocalizedString(@"About", nil)
-                        failureMessage:NSLocalizedString(@"SettingsAboutFailureMessage", nil)];
+                        failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
-      viewController = [[NYPLSettingsEULAViewController alloc] init];
-      break;
-    case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
-      viewController = [[NYPLSettingsPrivacyPolicyViewController alloc] init];
+      viewController = [[RemoteHTMLViewController alloc]
+                        initWithURL:[NSURL URLWithString:NYPLUserAgreementURLString]
+                        title:NSLocalizedString(@"EULA", nil)
+                        failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses:
       viewController = [[BundledHTMLViewController alloc]

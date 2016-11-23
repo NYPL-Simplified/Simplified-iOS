@@ -153,7 +153,7 @@
 // NYPLSettings
 
 "SettingsAboutNoConnection" = "There was an internet connection error and the page could not load.";
-"SettingsAboutFailureMessage" = "The 'About' Page could not load due to a connection error.";
+"SettingsConnectionFailureMessage" = "The page could not load due to a connection error.";
 
 // NYPLSettingsAccountViewController
 
@@ -190,3 +190,12 @@
 // NYPLSettingsPrivacyPolicyViewController
 "PrivacyPolicy" = "Privacy Policy";
 "SettingsAccountViewControllerMessageTooManyActivations" = "Too many devices have been authorized with this library card.";
+
+// NYPLWelcomeScreen
+"WelcomeScreenTitle1" = "Read Books From Your Library";
+"WelcomeScreenSubtitle1" = "Check out books and sync across devices";
+"WelcomeScreenButtonTitle1" = "PICK YOUR LIBRARY";
+"WelcomeScreenTitle2" = "Read Books Without a Library Card";
+"WelcomeScreenSubtitle2" = "Find classic books in the public domain";
+"WelcomeScreenButtonTitle2" = "INSTANT CLASSICS";
+"LibraryListTitle" = "Pick Your Library";

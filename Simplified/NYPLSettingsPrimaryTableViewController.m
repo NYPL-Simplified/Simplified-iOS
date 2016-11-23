@@ -1,6 +1,5 @@
 #import "NYPLConfiguration.h"
 #import "NYPLSettings.h"
-#import "NYPLSettingsLicensesTableViewController.h"
 
 #import "NYPLSettingsPrimaryTableViewController.h"
 

@@ -4,14 +4,14 @@ import WebKit
 
 /// Similar functionality to BundledHTMLViewController, except for loading remote HTTP URL's where
 /// it does not make sense in certain contexts to have bundled resources loaded.
-final class RemoteHTMLViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
+final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
   let fileURL: NSURL
   let failureMessage: String
   var webView: WKWebView
   var activityView: UIActivityIndicatorView!
   
-  required init(fileURL: NSURL, title: String, failureMessage: String) {
-    self.fileURL = fileURL
+  required init(URL: NSURL, title: String, failureMessage: String) {
+    self.fileURL = URL
     self.failureMessage = failureMessage
     self.webView = WKWebView()
     
@@ -26,15 +26,16 @@ final class RemoteHTMLViewController: UIViewController, WKUIDelegate, WKNavigati
   }
   
   override func viewDidLoad() {
-    
     webView.frame = self.view.frame
     webView.navigationDelegate = self
     webView.backgroundColor = UIColor.whiteColor()
+    webView.allowsBackForwardNavigationGestures = true
 
     view.addSubview(self.webView)
     webView.autoPinEdgesToSuperviewEdges()
 
-    webView.loadRequest(NSURLRequest(URL: fileURL))
+    let request = NSURLRequest.init(URL: fileURL, cachePolicy: .UseProtocolCachePolicy, timeoutInterval: 10.0)
+    webView.loadRequest(request)
     
     activityView(animated:true)
   }
@@ -74,23 +75,4 @@ final class RemoteHTMLViewController: UIViewController, WKUIDelegate, WKNavigati
   func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
     activityView(animated: false)
   }
-
-  
-//  private class WebViewDelegate: NSObject, WKUIDelegate {
-//    @objc func webView(
-//      webView: UIWebView,
-//      shouldStartLoadWithRequest request: NSURLRequest,
-//                                 navigationType: UIWebViewNavigationType) -> Bool
-//    {
-//      if navigationType == .LinkClicked {
-//        UIApplication.sharedApplication().openURL(request.URL!)
-//        return false
-//      }
-//      
-//      // We should not be going out to the network for anything.
-//      return request.URL!.scheme == "file"
-//    }
-//  }
-  
-  
 }

@@ -13,9 +13,7 @@
 #import "NYPLReachability.h"
 #import "NYPLSettings.h"
 #import "NYPLSettingsAccountDetailViewController.h"
-#import "NYPLSettingsContentLicenseViewController.h"
 #import "NYPLSettingsEULAViewController.h"
-#import "NYPLSettingsPrivacyPolicyViewController.h"
 #import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -380,37 +378,45 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     }
     case CellKindAbout: {
-      //GODO temp until OPDS link created
+      RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
+                                      initWithURL:[[NYPLSettings sharedSettings] acknowledgmentsURL]
+                                      title:NSLocalizedString(@"About", nil)
+                                      failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+      [self showDetailVC:vc fromIndexPath:indexPath];
       break;
     }
     case CellKindPrivacyPolicy: {
-      NYPLSettingsPrivacyPolicyViewController *vc = [[NYPLSettingsPrivacyPolicyViewController alloc] init];
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self.splitViewController showDetailViewController:[[UINavigationController alloc]
-                                        initWithRootViewController:vc]
-                                sender:self];
-      } else {
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-        [self.splitViewController showDetailViewController:vc sender:self];
-      }
+      RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
+                                      initWithURL:[[NYPLSettings sharedSettings] privacyPolicyURL]
+                                      title:NSLocalizedString(@"PrivacyPolicy", nil)
+                                      failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+      [self showDetailVC:vc fromIndexPath:indexPath];
       break;
     }
     case CellKindContentLicense: {
-      NYPLSettingsContentLicenseViewController *vc = [[NYPLSettingsContentLicenseViewController alloc] init];
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self.splitViewController showDetailViewController:[[UINavigationController alloc]
-                                                            initWithRootViewController:vc]
-                                                    sender:self];
-      } else {
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-        [self.splitViewController showDetailViewController:vc sender:self];
-      }
+      RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
+                                      initWithURL:[[NYPLSettings sharedSettings] contentLicenseURL]
+                                      title:NSLocalizedString(@"ContentLicenses", nil)
+                                      failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+      [self showDetailVC:vc fromIndexPath:indexPath];
       break;
     }
     case CellKindContact: {
       //GODO temp until further information
       break;
     }
+  }
+}
+
+- (void)showDetailVC:(UIViewController *)vc fromIndexPath:(NSIndexPath *)indexPath
+{
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    [self.splitViewController showDetailViewController:[[UINavigationController alloc]
+                                                        initWithRootViewController:vc]
+                                                sender:self];
+  } else {
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self.splitViewController showDetailViewController:vc sender:self];
   }
 }
 

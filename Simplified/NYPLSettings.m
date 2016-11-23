@@ -37,12 +37,6 @@ static NSString *const annotationsURLKey = @"NYPLSettingsAnnotationsURL";
 static NSString *const accountSyncEnabledKey = @"NYPLAccountSyncEnabledKey";
 
 
-static NSString *const fallbackAcknowledgementsURLString = @"http://www.librarysimplified.org/acknowledgments.html";
-static NSString *const fallbackEULAURLString = @"http://www.librarysimplified.org/EULA.html";
-static NSString *const fallbackContentLicenseURLString = @"http://www.librarysimplified.org/contentlicense.html";
-static NSString *const fallbackPrivacyURLString = @"http://www.librarysimplified.org/privacypolicy.html";
-
-
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
 {
   if(!string || [string isEqualToString:@"automatic"]) {
@@ -127,31 +121,19 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] boolForKey:userPresentedWelcomeScreenKey];
 }
 
-- (NSURL *)eulaURL
+- (NSURL *) eulaURL
 {
-  if ([[NSUserDefaults standardUserDefaults] URLForKey:eulaURLKey] == nil) {
-    return [NSURL URLWithString:fallbackEULAURLString];
-  } else {
-    return [[NSUserDefaults standardUserDefaults] URLForKey:eulaURLKey];
-  }
+  return [[NSUserDefaults standardUserDefaults] URLForKey:eulaURLKey];
 }
 
-- (NSURL *)privacyPolicyURL
+- (NSURL *) privacyPolicyURL
 {
-  if ([[NSUserDefaults standardUserDefaults] URLForKey:privacyPolicyURLKey] == nil) {
-    return [NSURL URLWithString:fallbackPrivacyURLString];
-  } else {
-    return [[NSUserDefaults standardUserDefaults] URLForKey:privacyPolicyURLKey];
-  }
+  return [[NSUserDefaults standardUserDefaults] URLForKey:privacyPolicyURLKey];
 }
 
 - (NSURL *) acknowledgmentsURL
 {
-  if ([[NSUserDefaults standardUserDefaults] URLForKey:acknowledgmentsURLKey] == nil) {
-    return [NSURL URLWithString:fallbackAcknowledgementsURLString];
-  } else {
-    return [[NSUserDefaults standardUserDefaults] URLForKey:acknowledgmentsURLKey];
-  }
+  return [[NSUserDefaults standardUserDefaults] URLForKey:acknowledgmentsURLKey];
 }
 
 - (NSURL *) annotationsURL
@@ -161,11 +143,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 
 - (NSURL *) contentLicenseURL
 {
-  if ([[NSUserDefaults standardUserDefaults] URLForKey:contentLicenseURLKey] == nil) {
-    return [NSURL URLWithString:fallbackContentLicenseURLString];
-  } else {
-    return [[NSUserDefaults standardUserDefaults] URLForKey:contentLicenseURLKey];
-  }
+  return [[NSUserDefaults standardUserDefaults] URLForKey:contentLicenseURLKey];
 }
 
 - (NSArray *) settingsAccountsList
