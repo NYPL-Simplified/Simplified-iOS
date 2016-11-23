@@ -132,6 +132,9 @@
     }];
     
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
+    if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+      [navController setModalPresentationStyle:UIModalPresentationFormSheet];
+    }
     NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
     [vc safelyPresentViewController:navController animated:YES completion:nil];
     [[NYPLSettings sharedSettings] setUserPresentedWelcomeScreen:YES];

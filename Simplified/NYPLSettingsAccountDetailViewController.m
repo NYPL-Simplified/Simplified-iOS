@@ -382,7 +382,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                       initWithURL:[[NYPLSettings sharedSettings] acknowledgmentsURL]
                                       title:NSLocalizedString(@"About", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
-      [self showDetailVC:vc fromIndexPath:indexPath];
+      [self.navigationController pushViewController:vc animated:true];
       break;
     }
     case CellKindPrivacyPolicy: {
@@ -390,7 +390,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                       initWithURL:[[NYPLSettings sharedSettings] privacyPolicyURL]
                                       title:NSLocalizedString(@"PrivacyPolicy", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
-      [self showDetailVC:vc fromIndexPath:indexPath];
+      [self.navigationController pushViewController:vc animated:true];
       break;
     }
     case CellKindContentLicense: {
@@ -398,7 +398,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                       initWithURL:[[NYPLSettings sharedSettings] contentLicenseURL]
                                       title:NSLocalizedString(@"ContentLicenses", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
-      [self showDetailVC:vc fromIndexPath:indexPath];
+      [self.navigationController pushViewController:vc animated:true];
       break;
     }
     case CellKindContact: {

@@ -49,11 +49,6 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     self.allAccountTypes = Accounts().accounts
     
     super.init(nibName:nil, bundle:nil)
-    
-    NSNotificationCenter.defaultCenter().addObserver(self,
-                                                     selector: #selector(reloadTableView),
-                                                     name: NYPLCurrentAccountDidChangeNotification,
-                                                     object: nil)
   }
   
   deinit {
@@ -78,6 +73,11 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
     
     updateUI()
+    
+    NSNotificationCenter.defaultCenter().addObserver(self,
+                                                     selector: #selector(reloadTableView),
+                                                     name: NYPLCurrentAccountDidChangeNotification,
+                                                     object: nil)
   }
   
   func reloadTableView() {
