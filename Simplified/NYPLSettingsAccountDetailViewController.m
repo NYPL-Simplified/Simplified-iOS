@@ -28,12 +28,13 @@
 #endif
 
 typedef NS_ENUM(NSInteger, CellKind) {
+  CellKindAccountHeader,
   CellKindBarcode,
   CellKindPIN,
   CellKindLogInSignOut,
   CellKindRegistration,
   CellKindEULA,
-  CellKindAccountHeader,
+  CellKindSyncButton,
   CellKindAbout,
   CellKindPrivacyPolicy,
   CellKindContentLicense,
@@ -44,12 +45,14 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionAccountHeader = 0,
   SectionBarcodePin = 1,
   SectionEULA = 2,
-  SectionLicenses = 3
+  SectionSyncOrLicenses = 3,
+  SectionLicenses = 4,
 };
 
 static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 {
   switch(indexPath.section) {
+      
     case 0:
       switch(indexPath.row) {
         case 0:
@@ -57,6 +60,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
         default:
           @throw NSInvalidArgumentException;
       }
+      
     case 1:
       switch(indexPath.row) {
         case 0:
@@ -66,6 +70,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
         default:
           @throw NSInvalidArgumentException;
       }
+      
     case 2:
       switch(indexPath.row) {
         case 0:
@@ -77,7 +82,31 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
         default:
           @throw NSInvalidArgumentException;
       }
+      
     case 3:
+      if (YES) {                    //GODO will check for annotation link
+        switch (indexPath.row) {
+          case 0:
+            return CellKindSyncButton;
+          default:
+            @throw NSInvalidArgumentException;
+        }
+      } else {
+        switch (indexPath.row) {
+          case 0:
+            return CellKindAbout;
+          case 1:
+            return CellKindPrivacyPolicy;
+          case 2:
+            return CellKindContentLicense;
+          case 3:
+            return CellKindContact;
+          default:
+            @throw NSInvalidArgumentException;
+        }
+      }
+      
+    case 4:
       switch (indexPath.row) {
         case 0:
           return CellKindAbout;
@@ -90,6 +119,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
         default:
           @throw NSInvalidArgumentException;
       }
+      
     default:
       @throw NSInvalidArgumentException;
   }
@@ -346,8 +376,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self presentViewController:navigationController animated:YES completion:nil];
       break;
     }
+    case CellKindSyncButton: {
+      break;
+    }
     case CellKindAbout: {
-      //GODO
+      //GODO temp until OPDS link created
+      break;
     }
     case CellKindPrivacyPolicy: {
       NYPLSettingsPrivacyPolicyViewController *vc = [[NYPLSettingsPrivacyPolicyViewController alloc] init];
@@ -359,6 +393,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self.splitViewController showDetailViewController:vc sender:self];
       }
+      break;
     }
     case CellKindContentLicense: {
       NYPLSettingsContentLicenseViewController *vc = [[NYPLSettingsContentLicenseViewController alloc] init];
@@ -370,9 +405,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         [self.splitViewController showDetailViewController:vc sender:self];
       }
+      break;
     }
     case CellKindContact: {
-      //GODO
+      //GODO temp until further information
+      break;
     }
   }
 }
@@ -468,6 +505,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.textLabel.textColor = [NYPLConfiguration mainColor];
       return cell;
     }
+    case CellKindSyncButton: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      UISwitch* switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+      cell.accessoryView = switchView;
+      [switchView addTarget:self action:@selector(syncSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+      [cell.contentView addSubview:switchView];
+      cell.selectionStyle = UITableViewCellSelectionStyleNone;
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.text = @"Sync Annotations";
+      return cell;
+    }
     case CellKindAbout: {
       Account *accountItem = [[[Accounts alloc] init] account:self.account];
       UITableViewCell *const cell = [[UITableViewCell alloc]
@@ -513,6 +563,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     
   if (![[[Accounts alloc] init] account:self.account].needsAuth) {
     return 0;
+  } else if (YES) {  //GODO will check for annotation link
+    return 5;
   } else {
     return 4;
   }
@@ -531,6 +583,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         return 3;
       } else {
         return 2;
+      }
+    case SectionSyncOrLicenses:
+      if (YES) {        //GODO will check for annotation link
+        return 1;
+      } else {
+        return 4;
       }
     case SectionLicenses:
       return 4;
@@ -936,6 +994,11 @@ replacementString:(NSString *)string
       }
     }
   }];
+}
+
+- (void)syncSwitchChanged:(id)sender
+{
+  UISwitch *switchControl = sender;
 }
 
 - (void)didSelectCancel
