@@ -32,6 +32,11 @@ static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCu
 
 static NSString *const settingsLibraryAccountsKey = @"NYPLSettingsLibraryAccountsKey";
 
+static NSString *const annotationsURLKey = @"NYPLSettingsAnnotationsURL";
+
+static NSString *const accountSyncEnabledKey = @"NYPLAccountSyncEnabledKey";
+
+
 static NSString *const fallbackAcknowledgementsURLString = @"http://www.librarysimplified.org/acknowledgments.html";
 static NSString *const fallbackEULAURLString = @"http://www.librarysimplified.org/EULA.html";
 static NSString *const fallbackContentLicenseURLString = @"http://www.librarysimplified.org/contentlicense.html";
@@ -96,6 +101,11 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] URLForKey:accountMainFeedURLKey];
 }
 
+- (BOOL)accountSyncEnabled
+{
+  return [[NSUserDefaults standardUserDefaults] boolForKey:accountSyncEnabledKey];
+}
+
 - (BOOL)userAboveAge
 {
   NSString *ageEULAKey = [NSString stringWithFormat:@"%@_%@",userAboveAgeKey,self.currentAccount.pathComponent];
@@ -142,6 +152,11 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   } else {
     return [[NSUserDefaults standardUserDefaults] URLForKey:acknowledgmentsURLKey];
   }
+}
+
+- (NSURL *) annotationsURL
+{
+  return [[NSUserDefaults standardUserDefaults] URLForKey:annotationsURLKey];
 }
 
 - (NSURL *) contentLicenseURL
@@ -231,6 +246,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
    object:self];
 }
 
+- (void)setAccountSyncEnabled:(BOOL)syncEnabled
+{
+  [[NSUserDefaults standardUserDefaults] setBool:syncEnabled forKey:accountSyncEnabledKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (void)setEulaURL:(NSURL *const)eulaURL
 {
   if(!eulaURL) return;
@@ -263,6 +284,19 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   if([acknowledgmentsURL isEqual:self.acknowledgmentsURL]) return;
   
   [[NSUserDefaults standardUserDefaults] setURL:acknowledgmentsURL forKey:acknowledgmentsURLKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLSettingsDidChangeNotification
+   object:self];
+}
+
+- (void)setAnnotationsURL:(NSURL *)annotationsURL
+{
+  if(!annotationsURL) return;
+  if([annotationsURL isEqual:self.annotationsURL]) return;
+  
+  [[NSUserDefaults standardUserDefaults] setURL:annotationsURL forKey:annotationsURLKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
   
   [[NSNotificationCenter defaultCenter]

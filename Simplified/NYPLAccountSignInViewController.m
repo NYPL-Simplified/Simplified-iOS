@@ -409,7 +409,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                        [UIImage imageNamed:@"CheckboxOff"]];
       }
       self.eulaCell.selectionStyle = UITableViewCellSelectionStyleNone;
-      self.eulaCell.textLabel.font = [UIFont systemFontOfSize:11];
+      self.eulaCell.textLabel.font = [UIFont systemFontOfSize:13];
       self.eulaCell.textLabel.text = NSLocalizedString(@"SettingsAccountEULACheckbox", @"Statement letting a user know that they must agree to the User Agreement terms.");
       self.eulaCell.textLabel.numberOfLines = 2;
       return self.eulaCell;

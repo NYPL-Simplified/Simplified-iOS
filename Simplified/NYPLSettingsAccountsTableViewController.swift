@@ -153,10 +153,10 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     let account = Accounts().account(library.rawValue)
     
     cell.accessoryType = .DisclosureIndicator
-    cell.textLabel?.font = UIFont(name: "AvenirNext-Regular", size: 14)
+    cell.textLabel?.font = UIFont.systemFontOfSize(14)
     cell.textLabel?.text = account.name
     
-    cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 10)
+    cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 12)
     cell.detailTextLabel?.text = "Subtitle will go here."
     
     cell.imageView?.image = UIImage(named: account.logo!)

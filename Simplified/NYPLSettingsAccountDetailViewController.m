@@ -84,7 +84,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
       }
       
     case 3:
-      if (YES) {                    //GODO will check for annotation link
+      if ([[NYPLSettings sharedSettings] annotationsURL]) {
         switch (indexPath.row) {
           case 0:
             return CellKindSyncButton;
@@ -419,6 +419,16 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (CGFloat)tableView:(UITableView *)__unused tableView heightForHeaderInSection:(NSInteger)section
+{
+  if (section == 0) {
+    return CGFLOAT_MIN;
+  } else {
+    return UITableViewAutomaticDimension;
+  }
+}
+
+
 #pragma mark UITableViewDataSource
 
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -435,9 +445,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       Account *account = [[[Accounts alloc] init] account:self.account];
       cell.textLabel.font = [UIFont systemFontOfSize:14];
       cell.textLabel.text = account.name;
-      cell.detailTextLabel.font = [UIFont systemFontOfSize:10];
+      cell.detailTextLabel.font = [UIFont fontWithName:@"AvenirNext-Regular" size:12];
       cell.detailTextLabel.text = @"Subtitle will go here";
+      
+      UIView *backView = [[UIView alloc] initWithFrame:CGRectZero];
+      backView.backgroundColor = [UIColor clearColor];
+      cell.backgroundView = backView;
+      cell.backgroundColor = [UIColor clearColor];
+
       cell.imageView.image = [UIImage imageNamed:account.logo];
+
+      
       return cell;
     }
     case CellKindBarcode: {
@@ -481,7 +499,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                        [UIImage imageNamed:@"CheckboxOff"]];
       }
       self.eulaCell.selectionStyle = UITableViewCellSelectionStyleNone;
-      self.eulaCell.textLabel.font = [UIFont systemFontOfSize:12];
+      self.eulaCell.textLabel.font = [UIFont systemFontOfSize:13];
       self.eulaCell.textLabel.text = NSLocalizedString(@"SettingsAccountEULACheckbox", @"Statement letting a user know that they must agree to the User Agreement terms.");
       self.eulaCell.textLabel.numberOfLines = 2;
       return self.eulaCell;
@@ -510,6 +528,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       UISwitch* switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+      if ([[NYPLSettings sharedSettings] accountSyncEnabled]) {
+        [switchView setOn:YES];
+      } else {
+        [switchView setOn:NO];
+      }
       cell.accessoryView = switchView;
       [switchView addTarget:self action:@selector(syncSwitchChanged:) forControlEvents:UIControlEventValueChanged];
       [cell.contentView addSubview:switchView];
@@ -563,7 +586,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     
   if (![[[Accounts alloc] init] account:self.account].needsAuth) {
     return 0;
-  } else if (YES) {  //GODO will check for annotation link
+  } else if ([[NYPLSettings sharedSettings] annotationsURL]) {
     return 5;
   } else {
     return 4;
@@ -585,7 +608,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         return 2;
       }
     case SectionSyncOrLicenses:
-      if (YES) {        //GODO will check for annotation link
+      if ([[NYPLSettings sharedSettings] annotationsURL]) {
         return 1;
       } else {
         return 4;
@@ -999,6 +1022,11 @@ replacementString:(NSString *)string
 - (void)syncSwitchChanged:(id)sender
 {
   UISwitch *switchControl = sender;
+  if (switchControl.on) {
+    [[NYPLSettings sharedSettings] setAccountSyncEnabled:YES];
+  } else {
+    [[NYPLSettings sharedSettings] setAccountSyncEnabled:NO];
+  }
 }
 
 - (void)didSelectCancel
