@@ -8,12 +8,12 @@
 
 import UIKit
 import Alamofire
-import ReachabilitySwift
+
 
 class NYPLAnnotations: NSObject {
     static let maxRetryCount: Int = 3
-    static var reachability: Reachability!
-    static var isReachable: Bool {return reachability.isReachable()}
+    static var reachability: NetworkReachabilityManager!
+    static var isReachable: Bool {return reachability.isReachable}
     
     private static var annotationsQueue:NSOperationQueue = {
         var queue = NSOperationQueue()
@@ -39,42 +39,29 @@ class NYPLAnnotations: NSObject {
         //this host could change, we may need to observe for chage and reinitialize
         var host: String { return NYPLConfiguration.mainFeedURL().host!}
         
-        do {
-            reachability = try Reachability(hostname: host)
-        } catch {
-            Log.error(#file,"Unable to create Reachability")
-        }
+        reachability = NetworkReachabilityManager(host: host)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.reachabilityChanged),name: ReachabilityChangedNotification,object: reachability)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterBackground), name: UIApplicationDidEnterBackgroundNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterForeground), name: UIApplicationWillEnterForegroundNotification, object: nil)
         
-        do {
-            
-            try reachability?.startNotifier()
-        } catch {
-            Log.error(#file,"Unable to start notifier")
+        reachability?.listener = { status in
+            NYPLAnnotations.reachabilityChanged()
         }
+        
+        reachability?.startListening()
         
     }
     
-    @objc private class func reachabilityChanged(note: NSNotification) {
+    @objc private class func reachabilityChanged() {
         
-        let reachability = note.object as! Reachability
-        
-        if reachability.isReachable() {
-            if reachability.isReachableViaWiFi() {
-                Log.debug(#file,"Reachable via WiFi")
-            } else {
-                Log.debug(#file,"Reachable via Cellular")
-            }
-            
+        if reachability.isReachable {
+            Log.debug(#file,"isReachable true")
         } else {
             Log.debug(#file,"Network not reachable")
         }
         //suspend queued operations if server is not reachable
-        annotationsQueue.suspended = !reachability.isReachable()
-        lastReadBookQueue.suspended = !reachability.isReachable()
+        annotationsQueue.suspended = !reachability.isReachable
+        lastReadBookQueue.suspended = !reachability.isReachable
     }
     
     func applicationDidEnterBackground() {
@@ -154,7 +141,7 @@ class NYPLAnnotations: NSObject {
             
             //added max retry count just in case the failure was not do to loss of internet, possible mailformation
             //of the url or server side issues
-            if(!lastReadBookOperation.success && !reachability.isReachable() && lastReadBookOperation.retryCount < maxRetryCount) {
+            if(!lastReadBookOperation.success && !reachability.isReachable && lastReadBookOperation.retryCount < maxRetryCount) {
                 //we need to add this operation back into the queue, internet was lost while in progress
                 //we only need the latest, so if there is another allready in queue, drop this one on the floor
                 if(lastReadBookQueue.operationCount == 0) {

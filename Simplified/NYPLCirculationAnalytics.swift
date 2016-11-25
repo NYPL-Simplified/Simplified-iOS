@@ -1,15 +1,13 @@
 import Foundation
 import Alamofire
-import ReachabilitySwift
-
-
-//TODO: final task is to handle app backgrounding, that could lead to app termination.  If the application does not have internet access in this scenerio, the pending, queued event would be lost if terminated.  Note, event will only be lost if the applciation is terminated, backgrounding in and of itself will not cause event to be lost
 
 // This class encapsulates analytic events sent to the server.
 final class NYPLCirculationAnalytics : NSObject {
     static let maxRetryCount: Int = 3
-    static var reachability: Reachability!
-    static var isReachable: Bool {return reachability.isReachable()}
+    
+    static var reachability: NetworkReachabilityManager!
+    
+    static var isReachable: Bool {return reachability.isReachable}
     private static var analyticsQueue:NSOperationQueue = {
         var queue = NSOperationQueue()
         queue.name = "AnalyticsQueue"
@@ -21,44 +19,32 @@ final class NYPLCirculationAnalytics : NSObject {
     }()
     
     override class func initialize () {
+        
         //this host could change, we may need to observe for chage and reinitialize
         var host: String { return NYPLConfiguration.mainFeedURL().host!}
         
-        do {
-            reachability = try Reachability(hostname: host)
-        } catch {
-            Log.error(#file,"Unable to create Reachability")
-        }
+        reachability = NetworkReachabilityManager(host: host)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.reachabilityChanged),name: ReachabilityChangedNotification,object: reachability)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterBackground), name: UIApplicationDidEnterBackgroundNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(applicationDidEnterForeground), name: UIApplicationWillEnterForegroundNotification, object: nil)
         
-        do {
-            
-            try reachability?.startNotifier()
-        } catch {
-            Log.error(#file,"Unable to start notifier")
+        reachability?.listener = { status in
+            NYPLCirculationAnalytics.reachabilityChanged()
         }
+
+        reachability?.startListening()
         
     }
     
-    @objc private class func reachabilityChanged(note: NSNotification) {
+    @objc private class func reachabilityChanged() {
         
-        let reachability = note.object as! Reachability
-        
-        if reachability.isReachable() {
-            if reachability.isReachableViaWiFi() {
-                Log.debug(#file,"Reachable via WiFi")
-            } else {
-                Log.debug(#file,"Reachable via Cellular")
-            }
-            
+        if reachability.isReachable {
+            Log.debug(#file,"is Reachable")
         } else {
             Log.debug(#file,"Network not reachable")
         }
         //suspend queued operations if server is not reachable
-        analyticsQueue.suspended = !reachability.isReachable()
+        analyticsQueue.suspended = !reachability.isReachable
     }
     
     func applicationDidEnterBackground() {
@@ -128,7 +114,7 @@ final class NYPLCirculationAnalytics : NSObject {
             
             //added max retry count just in case the failure was not do to loss of internet, possible mailformation
             //of the url or server side issues
-            if(!analyticsOperation.success && !reachability.isReachable() && analyticsOperation.retryCount < maxRetryCount) {
+            if(!analyticsOperation.success && !reachability.isReachable && analyticsOperation.retryCount < maxRetryCount) {
                 //we need to add this operation back into the queue, internet was lost while in progress
                 //if order is importent, we need to remove all queued operations, then re-add starting with this one
                 self.postEvent(analyticsOperation.event, retryCount: analyticsOperation.retryCount+1, withBook: analyticsOperation.book)
