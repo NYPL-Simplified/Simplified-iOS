@@ -1,16 +1,13 @@
 import Foundation
 import Alamofire
-import ReachabilitySwift
-
-
-//TODO: final task is to handle app backgrounding, that could lead to app termination.  If the application does not have internet access in this scenerio, the pending, queued event would be lost if terminated.  Note, event will only be lost if the applciation is terminated, backgrounding in and of itself will not cause event to be lost
 
 // This class encapsulates analytic events sent to the server.
 final class NYPLCirculationAnalytics : NSObject {
     static let maxRetryCount: Int = 3
-    static var reachability: Reachability!
+    static var reachability: NetworkReachabilityManager!
+    
     static var isReachable: Bool {return reachability.isReachable}
-    fileprivate static var analyticsQueue:OperationQueue = {
+    private static var analyticsQueue:OperationQueue = {
         var queue = OperationQueue()
         queue.name = "AnalyticsQueue"
         queue.maxConcurrentOperationCount = 1
@@ -21,42 +18,34 @@ final class NYPLCirculationAnalytics : NSObject {
     }()
     
     override class func initialize () {
+        
         //this host could change, we may need to observe for chage and reinitialize
         var host: String { return NYPLConfiguration.mainFeedURL().host!}
         
-    
-        reachability = Reachability(hostname: host)
+        reachability = NetworkReachabilityManager(host: host)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.reachabilityChanged),name: ReachabilityChangedNotification,object: reachability)
         NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         
-        do {
-            
-            try reachability?.startNotifier()
-        } catch {
-            Log.error(#file,"Unable to start notifier")
+        reachability?.listener = { status in
+            NYPLCirculationAnalytics.reachabilityChanged()
         }
+
+        reachability?.startListening()
         
     }
     
-    @objc fileprivate class func reachabilityChanged(_ note: Notification) {
+    @objc fileprivate class func reachabilityChanged() {
         
-        let reachability = note.object as! Reachability
-        
-        if reachability.isReachable {
-            if reachability.isReachableViaWiFi {
-                Log.debug(#file,"Reachable via WiFi")
-            } else {
-                Log.debug(#file,"Reachable via Cellular")
-            }
-            
+       if reachability.isReachable {
+            Log.debug(#file,"Reachable true")
         } else {
             Log.debug(#file,"Network not reachable")
         }
         //suspend queued operations if server is not reachable
         analyticsQueue.isSuspended = !reachability.isReachable
-    }
+
+}
     
     func applicationDidEnterBackground() {
         Log.debug(#file,"App moved to background!")

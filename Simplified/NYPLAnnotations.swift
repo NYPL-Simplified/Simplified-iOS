@@ -8,11 +8,11 @@
 
 import UIKit
 import Alamofire
-import ReachabilitySwift
+
 
 class NYPLAnnotations: NSObject {
     static let maxRetryCount: Int = 3
-    static var reachability: Reachability!
+    static var reachability: NetworkReachabilityManager!
     static var isReachable: Bool {return reachability.isReachable}
     
     fileprivate static var annotationsQueue:OperationQueue = {
@@ -39,42 +39,30 @@ class NYPLAnnotations: NSObject {
         //this host could change, we may need to observe for chage and reinitialize
         var host: String { return NYPLConfiguration.mainFeedURL().host!}
         
-        do {
-            reachability = try Reachability(hostname: host)
-        } catch {
-            Log.error(#file,"Unable to create Reachability")
-        }
+        reachability = NetworkReachabilityManager(host: host)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.reachabilityChanged),name: ReachabilityChangedNotification,object: reachability)
         NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         
-        do {
-            
-            try reachability?.startNotifier()
-        } catch {
-            Log.error(#file,"Unable to start notifier")
+        reachability?.listener = { status in
+            NYPLAnnotations.reachabilityChanged()
         }
+        
+        reachability?.startListening()
         
     }
     
-    @objc fileprivate class func reachabilityChanged(_ note: Notification) {
-        
-        let reachability = note.object as! Reachability
+    @objc fileprivate class func reachabilityChanged() {
         
         if reachability.isReachable {
-            if reachability.isReachableViaWiFi {
-                Log.debug(#file,"Reachable via WiFi")
-            } else {
-                Log.debug(#file,"Reachable via Cellular")
-            }
-            
+            Log.debug(#file,"isReachable true")
         } else {
-            Log.debug(#file,"Network not reachable")
+            Log.debug(#file,"not reachable")
         }
-        //suspend queued operations if server is not reachable
+            
         annotationsQueue.isSuspended = !reachability.isReachable
         lastReadBookQueue.isSuspended = !reachability.isReachable
+
     }
     
     func applicationDidEnterBackground() {
@@ -99,6 +87,7 @@ class NYPLAnnotations: NSObject {
             if let dir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.allDomainsMask, true).first {
                 let path = URL(fileURLWithPath: dir).appendingPathComponent(file)
                 NSKeyedArchiver.archiveRootObject(NYPLAnnotations.lastReadBookQueue.operations, toFile: (path.path))            }
+
         }
         
         //we have archived the operations, so remove them all from the active queue

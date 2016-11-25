@@ -13,10 +13,6 @@ target 'SimplyE' do
 	pod 'CHRTextFieldFormatter'
   pod "NYPLCardCreator", :git => "https://github.com/NYPL-Simplified/CardCreator-iOS.git"
 
-  #https://github.com/ashleymills/Reachability.swift
-  # for swift 3.0 support, specify: pod 'ReachabilitySwift', '~> 3'
-  pod 'ReachabilitySwift', '~> 3'
-
 end
 
 target 'SimplyETests' do

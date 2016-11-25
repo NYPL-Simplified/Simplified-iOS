@@ -50,7 +50,6 @@ PODS:
   - NYPLCardCreator (0.1.0):
     - PureLayout (~> 3.0)
   - PureLayout (3.0.2)
-  - ReachabilitySwift (3)
 
 DEPENDENCIES:
   - Alamofire (~> 4.0)
@@ -58,7 +57,6 @@ DEPENDENCIES:
   - CHRTextFieldFormatter
   - HelpStack
   - NYPLCardCreator (from `https://github.com/NYPL-Simplified/CardCreator-iOS.git`)
-  - ReachabilitySwift (~> 3)
 
 EXTERNAL SOURCES:
   Bugsnag:
@@ -83,8 +81,7 @@ SPEC CHECKSUMS:
   KSCrash: 4c3a83f133b60f4bd57e05235ebf8d46e36d378d
   NYPLCardCreator: 460354288acc75f31e4058ccae7353ddc7daa6b6
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
-  ReachabilitySwift: f5b9bb30a0777fac8f09ce8b067e32faeb29bb64
 
-PODFILE CHECKSUM: b31c5dff87accf3ed9145b0755f7f3580da89013
+PODFILE CHECKSUM: 504b5aa560f83b3b35975d7b0e68038d87d881d7
 
 COCOAPODS: 1.1.1
