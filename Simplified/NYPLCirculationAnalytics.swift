@@ -30,22 +30,22 @@ final class NYPLCirculationAnalytics : NSObject {
         reachability?.listener = { status in
             NYPLCirculationAnalytics.reachabilityChanged()
         }
-
+        
         reachability?.startListening()
         
     }
     
     @objc fileprivate class func reachabilityChanged() {
         
-       if reachability.isReachable {
+        if reachability.isReachable {
             Log.debug(#file,"Reachable true")
         } else {
             Log.debug(#file,"Network not reachable")
         }
         //suspend queued operations if server is not reachable
         analyticsQueue.isSuspended = !reachability.isReachable
-
-}
+        
+    }
     
     func applicationDidEnterBackground() {
         Log.debug(#file,"App moved to background!")

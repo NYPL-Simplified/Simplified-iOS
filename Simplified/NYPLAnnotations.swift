@@ -59,10 +59,10 @@ class NYPLAnnotations: NSObject {
         } else {
             Log.debug(#file,"not reachable")
         }
-            
+        
         annotationsQueue.isSuspended = !reachability.isReachable
         lastReadBookQueue.isSuspended = !reachability.isReachable
-
+        
     }
     
     func applicationDidEnterBackground() {
@@ -87,7 +87,7 @@ class NYPLAnnotations: NSObject {
             if let dir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.allDomainsMask, true).first {
                 let path = URL(fileURLWithPath: dir).appendingPathComponent(file)
                 NSKeyedArchiver.archiveRootObject(NYPLAnnotations.lastReadBookQueue.operations, toFile: (path.path))            }
-
+            
         }
         
         //we have archived the operations, so remove them all from the active queue
@@ -206,7 +206,7 @@ class NYPLAnnotations: NSObject {
                             {
                                 completionHandler(nil, response.result.error as NSError?)
                             }
-
+                            
                         }
                         break
                         
@@ -345,7 +345,7 @@ final class NYPLLastReadBookOperation: Operation, NSCoding {
                         "value": cfi
                     ]
                 ]
-            ] as [String : Any]
+                ] as [String : Any]
             
             //
             
