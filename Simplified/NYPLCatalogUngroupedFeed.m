@@ -6,6 +6,7 @@
 #import "NYPLOPDS.h"
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLConfiguration.h"
+#import "NYPLSettings.h"
 
 #import "NYPLCatalogUngroupedFeed.h"
 
@@ -113,6 +114,13 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
     if([link.rel isEqualToString:NYPLOPDSRelationSearch] &&
        NYPLOPDSTypeStringIsOpenSearchDescription(link.type)) {
       self.openSearchURL = link.href;
+      continue;
+    }
+    //GODO still work in progress.. if Instant Classics gets a grouped feed then
+    //probably don't need this anymore
+    if ([link.rel isEqualToString:NYPLOPDSRelationAnnotations]) {
+      NSURL *href = link.href;
+      [[NYPLSettings sharedSettings] setAnnotationsURL:href];
       continue;
     }
   }

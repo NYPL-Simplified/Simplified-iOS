@@ -15,6 +15,7 @@
 "Close" = "Close";
 "ConnectionFailed" = "Connection Failed";
 "ConnectionFailedDescription" = "Unable to load the web page at this time.";
+"Contact" = "Contact";
 "ContentLicenses" = "Content Licenses";
 "Delete" = "Delete";
 "DeviceAuthorizationError" = "An error occurred while authorizing this device.";
@@ -158,6 +159,7 @@
 // NYPLSettingsAccountViewController
 
 "SettingsAccountEULACheckbox" = "I agree to the terms of the End User License Agreement.";
+"SettingsAccountSyncTitle" = "Sync Last-Read Position";
 "SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";
 "SettingsAccountViewControllerCannotLogOutTitle" =
   "Logout Failed";

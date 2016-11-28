@@ -95,9 +95,10 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] URLForKey:accountMainFeedURLKey];
 }
 
-- (BOOL)accountSyncEnabled
+- (BOOL)syncIsEnabledForAccount:(Account *)account
 {
-  return [[NSUserDefaults standardUserDefaults] boolForKey:accountSyncEnabledKey];
+  NSString *combinedKey = [NSString stringWithFormat:@"%@_%@",accountSyncEnabledKey,account.pathComponent];
+  return [[NSUserDefaults standardUserDefaults] boolForKey:combinedKey];
 }
 
 - (BOOL)userAboveAge
@@ -175,6 +176,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLCurrentAccountDidChangeNotification
    object:self];
+}
+- (void)setSyncEnabled:(BOOL)enabled forAccount:(Account *)account
+{
+    NSString *combinedKey = [NSString stringWithFormat:@"%@_%@",accountSyncEnabledKey,account.pathComponent];
+    [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:combinedKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 - (void)setUserAboveAge:(BOOL)aboveAge
 {

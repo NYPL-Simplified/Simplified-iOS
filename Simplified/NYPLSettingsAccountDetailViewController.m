@@ -27,7 +27,6 @@
 #endif
 
 typedef NS_ENUM(NSInteger, CellKind) {
-  CellKindAccountHeader,
   CellKindBarcode,
   CellKindPIN,
   CellKindLogInSignOut,
@@ -41,11 +40,10 @@ typedef NS_ENUM(NSInteger, CellKind) {
 };
 
 typedef NS_ENUM(NSInteger, Section) {
-  SectionAccountHeader = 0,
-  SectionBarcodePin = 1,
-  SectionEULA = 2,
-  SectionSyncOrLicenses = 3,
-  SectionLicenses = 4,
+  SectionBarcodePin = 0,
+  SectionEULA = 1,
+  SectionSyncOrLicenses = 2,
+  SectionLicenses = 3,
 };
 
 static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
@@ -55,14 +53,6 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
     case 0:
       switch(indexPath.row) {
         case 0:
-          return CellKindAccountHeader;
-        default:
-          @throw NSInvalidArgumentException;
-      }
-      
-    case 1:
-      switch(indexPath.row) {
-        case 0:
           return CellKindBarcode;
         case 1:
           return CellKindPIN;
@@ -70,7 +60,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
           @throw NSInvalidArgumentException;
       }
       
-    case 2:
+    case 1:
       switch(indexPath.row) {
         case 0:
           return CellKindEULA;
@@ -82,7 +72,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
           @throw NSInvalidArgumentException;
       }
       
-    case 3:
+    case 2:
       if ([[NYPLSettings sharedSettings] annotationsURL]) {
         switch (indexPath.row) {
           case 0:
@@ -105,7 +95,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
         }
       }
       
-    case 4:
+    case 3:
       switch (indexPath.row) {
         case 0:
           return CellKindAbout;
@@ -135,7 +125,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @property (nonatomic) UITextField *PINTextField;
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
-@property (nonatomic) NYPLUserAccountType account;
+@property (nonatomic) NYPLUserAccountType accountType;
 
 @end
 
@@ -148,7 +138,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 
 - (instancetype)initWithAccount:(NSInteger)account
 {
-  self.account = account;
+  self.accountType = account;
   return [self init];
 }
 
@@ -214,6 +204,10 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   [super viewDidLoad];
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  
+//  self.tableView.sectionHeaderHeight = UITableViewAutomaticDimension;
+//  //GODO temp
+//  self.tableView.estimatedSectionHeaderHeight = 60;
   
   self.barcodeTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.barcodeTextField.delegate = self;
@@ -290,8 +284,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(CellKindFromIndexPath(indexPath)) {
-    case CellKindAccountHeader:
-      break;
     case CellKindBarcode:
       [self.barcodeTextField becomeFirstResponder];
       break;
@@ -300,7 +292,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindEULA: {
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-      Account *accountItem = [[[Accounts alloc] init] account:self.account];
+      Account *accountItem = [[[Accounts alloc] init] account:self.accountType];
       if ([[NYPLSettings sharedSettings] userAcceptedEULAForAccount:accountItem] == YES) {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
         [[NYPLSettings sharedSettings] setUserAcceptedEULA:NO forAccount:accountItem];
@@ -313,7 +305,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindLogInSignOut:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      if([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN]) {
+      if([[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]) {
         UIAlertController *const alertController =
           (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
            ? [UIAlertController
@@ -426,15 +418,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (CGFloat)tableView:(UITableView *)__unused tableView heightForHeaderInSection:(NSInteger)section
-{
-  if (section == 0) {
-    return CGFLOAT_MIN;
-  } else {
-    return UITableViewAutomaticDimension;
-  }
-}
-
 
 #pragma mark UITableViewDataSource
 
@@ -445,25 +428,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   CGFloat const padding = 16;
   
   switch(CellKindFromIndexPath(indexPath)) {
-    case CellKindAccountHeader: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleSubtitle
-                                     reuseIdentifier:nil];
-      Account *account = [[[Accounts alloc] init] account:self.account];
-      cell.textLabel.font = [UIFont systemFontOfSize:14];
-      cell.textLabel.text = account.name;
-      cell.detailTextLabel.numberOfLines = 2;
-      cell.detailTextLabel.font = [UIFont fontWithName:@"AvenirNext-Regular" size:12];
-      cell.detailTextLabel.text = account.subtitle;
-      
-      UIView *backView = [[UIView alloc] initWithFrame:CGRectZero];
-      backView.backgroundColor = [UIColor clearColor];
-      cell.backgroundView = backView;
-      cell.backgroundColor = [UIColor clearColor];
-
-      cell.imageView.image = [UIImage imageNamed:account.logo];
-      return cell;
-    }
     case CellKindBarcode: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
@@ -496,7 +460,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.eulaCell = [[UITableViewCell alloc]
                        initWithStyle:UITableViewCellStyleDefault
                        reuseIdentifier:nil];
-      Account *accountItem = [[[Accounts alloc] init] account:self.account];
+      Account *accountItem = [[[Accounts alloc] init] account:self.accountType];
       if ([[NYPLSettings sharedSettings] userAcceptedEULAForAccount:accountItem] == YES) {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOn"]];
@@ -506,7 +470,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       self.eulaCell.selectionStyle = UITableViewCellSelectionStyleNone;
       self.eulaCell.textLabel.font = [UIFont systemFontOfSize:13];
-      self.eulaCell.textLabel.text = NSLocalizedString(@"SettingsAccountEULACheckbox", @"Statement letting a user know that they must agree to the User Agreement terms.");
+      self.eulaCell.textLabel.lineBreakMode 
+      self.eulaCell.textLabel.text = NSLocalizedString(@"SettingsAccountEULACheckbox",
+                                                       @"Statement letting a user know that they must agree to the User Agreement terms.");
       self.eulaCell.textLabel.numberOfLines = 2;
       return self.eulaCell;
     }
@@ -534,7 +500,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       UISwitch* switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
-      if ([[NYPLSettings sharedSettings] accountSyncEnabled]) {
+      Account *account = [[[Accounts alloc] init] account:self.accountType];
+      if ([[NYPLSettings sharedSettings] syncIsEnabledForAccount:account]) {
         [switchView setOn:YES];
       } else {
         [switchView setOn:NO];
@@ -544,11 +511,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [cell.contentView addSubview:switchView];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = @"Sync Annotations";
+      cell.textLabel.text = NSLocalizedString(@"SettingsAccountSyncTitle",
+                                              @"Title for switch to turn on or off syncing of the place where a user was reading a book.");
       return cell;
     }
     case CellKindAbout: {
-      Account *accountItem = [[[Accounts alloc] init] account:self.account];
+      Account *accountItem = [[[Accounts alloc] init] account:self.accountType];
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
@@ -563,7 +531,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = @"Privacy Policy";
+      cell.textLabel.text = NSLocalizedString(@"PrivacyPolicy", nil);
       return cell;
     }
     case CellKindContentLicense: {
@@ -572,7 +540,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = @"Content License";
+      cell.textLabel.text = NSLocalizedString(@"ContentLicenses", nil);
       return cell;
     }
     case CellKindContact: {
@@ -581,7 +549,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = @"Contact";
+      cell.textLabel.text = NSLocalizedString(@"Contact",
+                                              @"Setting to let a user contact or communicate with a particular Library");
       return cell;
     }
   }
@@ -590,12 +559,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
     
-  if (![[[Accounts alloc] init] account:self.account].needsAuth) {
+  if (![[[Accounts alloc] init] account:self.accountType].needsAuth) {
     return 0;
   } else if ([[NYPLSettings sharedSettings] annotationsURL]) {
-    return 5;
-  } else {
     return 4;
+  } else {
+    return 3;
   }
 }
 
@@ -603,8 +572,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
  numberOfRowsInSection:(NSInteger const)section
 {
   switch(section) {
-    case SectionAccountHeader:
-      return 1;
     case SectionBarcodePin:
       return 2;
     case SectionEULA:
@@ -626,19 +593,72 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-- (CGFloat)tableView:(__unused UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+- (CGFloat)tableView:(__unused UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-  switch (indexPath.section) {
-    case 0:
-      return 66;
-    default:
-      return 44;
+  if (section == 0) {
+    return UITableViewAutomaticDimension;
+  } else {
+    return 0;
+  }
+}
+
+-(CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section
+{
+  if (section == 0) {
+    return 80;
+  } else {
+    return 0;
+  }
+}
+
+- (CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForRowAtIndexPath:(__unused NSIndexPath *)indexPath
+{
+  return 44;
+}
+
+- (UIView *)tableView:(__unused UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+  if (section == 0) {
+    Account *account = [[[Accounts alloc] init] account:self.accountType];
+    
+    UIView *containerView = [[UIView alloc] init];
+    UILabel *titleLabel = [[UILabel alloc] init];
+    UILabel *subtitleLabel = [[UILabel alloc] init];
+    subtitleLabel.numberOfLines = 0;
+    UIImageView *logoView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:account.logo]];
+    logoView.contentMode = UIViewContentModeScaleAspectFit;
+    
+    titleLabel.text = account.name;
+    titleLabel.font = [UIFont systemFontOfSize:14];
+    subtitleLabel.text = account.subtitle;
+    subtitleLabel.font = [UIFont fontWithName:@"AvenirNext-Regular" size:12];
+    
+    [containerView addSubview:titleLabel];
+    [containerView addSubview:subtitleLabel];
+    [containerView addSubview:logoView];
+    
+    [logoView autoSetDimensionsToSize:CGSizeMake(45, 45)];
+    [logoView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:16];
+    [logoView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:16];
+    
+    [titleLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:16];
+    [titleLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:16];
+    [titleLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:logoView withOffset:8];
+    
+    [subtitleLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:titleLabel];
+    [subtitleLabel autoPinEdge:ALEdgeRight toEdge:ALEdgeRight ofView:titleLabel];
+    [subtitleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:titleLabel withOffset:4];
+    [subtitleLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:20];
+    
+    return containerView;
+  } else {
+    return nil;
   }
 }
 
 - (BOOL)textFieldShouldBeginEditing:(__unused UITextField *)textField
 {
-  return ![[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN];
+  return ![[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN];
 }
 
 #pragma mark NSURLSessionDelegate
@@ -695,7 +715,7 @@ replacementString:(NSString *)string
 
 - (BOOL)registrationIsPossible
 {
-  return !([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN] ||
+  return !([[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN] ||
           ![NYPLConfiguration cardCreationEnabled]);
 }
 
@@ -740,11 +760,11 @@ replacementString:(NSString *)string
 - (void)accountDidChange
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if([NYPLAccount sharedAccount:self.account].hasBarcodeAndPIN) {
-      self.barcodeTextField.text = [NYPLAccount sharedAccount:self.account].barcode;
+    if([NYPLAccount sharedAccount:self.accountType].hasBarcodeAndPIN) {
+      self.barcodeTextField.text = [NYPLAccount sharedAccount:self.accountType].barcode;
       self.barcodeTextField.enabled = NO;
       self.barcodeTextField.textColor = [UIColor grayColor];
-      self.PINTextField.text = [NYPLAccount sharedAccount:self.account].PIN;
+      self.PINTextField.text = [NYPLAccount sharedAccount:self.accountType].PIN;
       self.PINTextField.textColor = [UIColor grayColor];
     } else {
       self.barcodeTextField.text = nil;
@@ -774,7 +794,7 @@ replacementString:(NSString *)string
 
 - (void)updateLoginLogoutCellAppearance
 {
-  if([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN]) {
+  if([[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]) {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
@@ -784,7 +804,7 @@ replacementString:(NSString *)string
     self.eulaCell.userInteractionEnabled = YES;
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
-    Account *accountItem = [[[Accounts alloc] init] account:self.account];
+    Account *accountItem = [[[Accounts alloc] init] account:self.accountType];
     BOOL const canLogIn =
       ([self.barcodeTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
@@ -820,10 +840,10 @@ replacementString:(NSString *)string
 {
   void (^afterDeauthorization)() = ^() {
     
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.account];
-    [[NYPLBookRegistry sharedRegistry] reset:self.account];
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
+    [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
 
-    [[NYPLAccount sharedAccount:self.account] removeBarcodeAndPIN];
+    [[NYPLAccount sharedAccount:self.accountType] removeBarcodeAndPIN];
     [self.tableView reloadData];
   };
   
@@ -846,8 +866,8 @@ replacementString:(NSString *)string
    handler:^(BOOL reachable) {
      if(reachable) {
        [[NYPLADEPT sharedInstance]
-        deauthorizeWithUsername:[[NYPLAccount sharedAccount:self.account] barcode]
-        password:[[NYPLAccount sharedAccount:self.account] PIN]
+        deauthorizeWithUsername:[[NYPLAccount sharedAccount:self.accountType] barcode]
+        password:[[NYPLAccount sharedAccount:self.accountType] PIN]
         completion:^(BOOL success, __unused NSError *error) {
           if(!success) {
             // Even though we failed, all we do is log the error. The reason is
@@ -1027,11 +1047,12 @@ replacementString:(NSString *)string
 
 - (void)syncSwitchChanged:(id)sender
 {
+  Account *account = [[[Accounts alloc] init] account:[[NYPLSettings sharedSettings] currentAccountIdentifier]];
   UISwitch *switchControl = sender;
   if (switchControl.on) {
-    [[NYPLSettings sharedSettings] setAccountSyncEnabled:YES];
+    [[NYPLSettings sharedSettings] setSyncEnabled:YES forAccount:account];
   } else {
-    [[NYPLSettings sharedSettings] setAccountSyncEnabled:NO];
+    [[NYPLSettings sharedSettings] setSyncEnabled:NO forAccount:account];
   }
 }
 
@@ -1049,10 +1070,10 @@ replacementString:(NSString *)string
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
-      [[NYPLAccount sharedAccount:self.account] setBarcode:self.barcodeTextField.text
+      [[NYPLAccount sharedAccount:self.accountType] setBarcode:self.barcodeTextField.text
                                           PIN:self.PINTextField.text];
 
-      if(self.account == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
+      if(self.accountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
         if (!self.isLoggingInAfterSignUp) {
           [self dismissViewControllerAnimated:YES completion:nil];
         }
