@@ -18,6 +18,7 @@
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "SimplyE-Swift.h"
+#import <PureLayout/PureLayout.h>
 
 @import CoreLocation;
 
@@ -451,8 +452,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       Account *account = [[[Accounts alloc] init] account:self.account];
       cell.textLabel.font = [UIFont systemFontOfSize:14];
       cell.textLabel.text = account.name;
+      cell.detailTextLabel.numberOfLines = 2;
       cell.detailTextLabel.font = [UIFont fontWithName:@"AvenirNext-Regular" size:12];
-      cell.detailTextLabel.text = @"Subtitle will go here";
+      cell.detailTextLabel.text = account.subtitle;
       
       UIView *backView = [[UIView alloc] initWithFrame:CGRectZero];
       backView.backgroundColor = [UIColor clearColor];
@@ -460,8 +462,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.backgroundColor = [UIColor clearColor];
 
       cell.imageView.image = [UIImage imageNamed:account.logo];
-
-      
       return cell;
     }
     case CellKindBarcode: {
@@ -630,7 +630,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch (indexPath.section) {
     case 0:
-      return 60;
+      return 66;
     default:
       return 44;
   }

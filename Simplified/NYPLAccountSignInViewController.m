@@ -76,6 +76,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @interface NYPLAccountSignInViewController () <NSURLSessionDelegate, UITextFieldDelegate>
 
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
+@property (nonatomic) BOOL isCurrentlySigningIn;
 @property (nonatomic) UITextField *barcodeTextField;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) BOOL hiddenPIN;
@@ -183,6 +184,10 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self.PINTextField.rightView = self.PINShowHideButton;
   self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
   
+  self.logInSignOutCell = [[UITableViewCell alloc]
+                           initWithStyle:UITableViewCellStyleDefault
+                           reuseIdentifier:nil];
+  
   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"EULA"
                                                                             style:UIBarButtonItemStylePlain
                                                                            target:self
@@ -208,7 +213,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 {
   [super viewDidAppear:animated];
   if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
-    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN] && !self.isCurrentlySigningIn) {
       self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
       self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
       [self logIn];
@@ -415,12 +420,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return self.eulaCell;
     }
     case CellKindLogInSignOut: {
-      if(!self.logInSignOutCell) {
-        self.logInSignOutCell = [[UITableViewCell alloc]
-                                initWithStyle:UITableViewCellStyleDefault
-                                reuseIdentifier:nil];
-        self.logInSignOutCell.textLabel.font = [UIFont systemFontOfSize:17];
-      }
+      self.logInSignOutCell.textLabel.font = [UIFont systemFontOfSize:17];
       [self updateLoginLogoutCellAppearance];
       return self.logInSignOutCell;
     }
@@ -591,6 +591,9 @@ replacementString:(NSString *)string
 
 - (void)updateLoginLogoutCellAppearance
 {
+  if (self.isCurrentlySigningIn) {
+    return;
+  }
   if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
@@ -739,6 +742,7 @@ replacementString:(NSString *)string
   
   request.HTTPMethod = @"HEAD";
   
+  self.isCurrentlySigningIn = YES;
   NSURLSessionDataTask *const task =
     [self.session
      dataTaskWithRequest:request
@@ -746,6 +750,7 @@ replacementString:(NSString *)string
                          NSURLResponse *const response,
                          NSError *const error) {
        
+       self.isCurrentlySigningIn = NO;
        // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
        NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
        

@@ -157,7 +157,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     cell.textLabel?.text = account.name
     
     cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 12)
-    cell.detailTextLabel?.text = "Subtitle will go here."
+    cell.detailTextLabel?.text = account.subtitle
     
     cell.imageView?.image = UIImage(named: account.logo!)
 

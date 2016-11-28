@@ -59,6 +59,7 @@ class Account:NSObject
   let id:Int
   let pathComponent:String?
   let name:String?
+  let subtitle:String?
   let logo:String?
   let needsAuth:Bool
   let supportsReservations:Bool
@@ -69,6 +70,7 @@ class Account:NSObject
   {
     id = Int()
     name = String()
+    subtitle = String()
     pathComponent = String()
     logo = String()
     needsAuth = Bool()
@@ -80,6 +82,7 @@ class Account:NSObject
   init(json: [String: AnyObject])
   {
     name = json["name"] as? String
+    subtitle = json["subtitle"] as? String
     id = json["id"] as! Int
     pathComponent = json["pathComponent"] as? String
     logo = json["logo"] as? String
