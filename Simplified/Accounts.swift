@@ -30,9 +30,9 @@ class Accounts: NSObject
       let object = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
       if let array = object as? [[String: AnyObject]]
       {
-        for account in array
+        for dictionary in array
         {
-          accounts.append(Account(json: account))
+          accounts.append(Account(json: dictionary))
         }
       }
     } catch {
@@ -42,15 +42,55 @@ class Accounts: NSObject
     self.accounts = accounts
   }
   
-  @objc func account(id:Int) -> Account {
-    var account = Account()
-    for acc in accounts {
-      if acc.id == id
+  @objc class func initializeFromJson()
+  {
+    let url = NSBundle.mainBundle().URLForResource("Accounts", withExtension: "json")
+    let data = NSData(contentsOfURL: url!)
+    do {
+      let object = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
+      if let array = object as? [[String: AnyObject]]
       {
-        account = acc
+        for dictionary in array
+        {
+          let account = Account(json: dictionary)
+          
+          if (NSUserDefaults.standardUserDefaults().valueForKey(account.pathComponent!) == nil)
+          {
+            NSUserDefaults.standardUserDefaults().setObject(dictionary, forKey: account.pathComponent!)
+          }
+          else
+          {
+            // update
+            var dictionary = NSUserDefaults.standardUserDefaults().valueForKey(account.pathComponent!) as! [String: AnyObject]
+            dictionary["name"] = account.name
+            dictionary["subtitle"] = account.subtitle
+            dictionary["logo"] = account.logo
+            dictionary["needsAuth"] = account.needsAuth
+            dictionary["supportsReservations"] = account.supportsReservations
+            dictionary["catalogUrl"] = account.catalogUrl
+            dictionary["mainColor"] = account.mainColor
+            
+            NSUserDefaults.standardUserDefaults().setObject(dictionary, forKey: account.pathComponent!)
+            
+          }
+          
+        }
       }
+    } catch {
+      // Handle Error
     }
-    return account
+    
+
+  }
+  
+   @objc class func account(id:Int) -> Account {
+//    var account = Account()
+    
+    if let dictionary =  NSUserDefaults.standardUserDefaults().valueForKey("\(id)")
+    {
+        return Account(json: dictionary as! [String: AnyObject])
+    }
+    return Account()
   }
 }
 

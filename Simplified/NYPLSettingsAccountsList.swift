@@ -109,7 +109,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     for userAccountType in allAccounts {
       guard let account = userAccountType else { continue }
       if (accountsList.contains(account) == false) {
-        alert.addAction(UIAlertAction(title: Accounts().account(account.rawValue).name,
+        alert.addAction(UIAlertAction(title: Accounts.account(account.rawValue).name,
           style: .Default,
           handler: { action in
             self.accountsList.append(account)
@@ -150,7 +150,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   func cellForLibrary(library: NYPLUserAccountType, _ indexPath: NSIndexPath) -> UITableViewCell {
     let cell = UITableViewCell.init(style: .Subtitle, reuseIdentifier: "")
     
-    let account = Accounts().account(library.rawValue)
+    let account = Accounts.account(library.rawValue)
     
     cell.accessoryType = .DisclosureIndicator
     cell.textLabel?.font = UIFont.systemFontOfSize(14)

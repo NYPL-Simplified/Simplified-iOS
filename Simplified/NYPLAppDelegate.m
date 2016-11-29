@@ -32,6 +32,9 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   // NYPLConfiguration's class initializer.
   [NYPLConfiguration initialize];
   
+  // Initiallize Accounts from JSON file
+  [Accounts initializeFromJson];
+  
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.tintColor = [NYPLConfiguration mainColor];
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;

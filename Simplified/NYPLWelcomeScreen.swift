@@ -131,7 +131,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
       self.dismissViewControllerAnimated(true, completion: nil)
       return
     }
-    let accountNYPL = Accounts().account(NYPLUserAccountType.NYPL.rawValue)
+    let accountNYPL = Accounts.account(NYPLUserAccountType.NYPL.rawValue)
     // Existing User
     if NYPLSettings.sharedSettings().userAcceptedEULAForAccount(accountNYPL) == false {
       let listVC = NYPLWelcomeScreenAccountList { libraryAccount in

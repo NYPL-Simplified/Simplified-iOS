@@ -292,7 +292,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindEULA: {
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-      Account *accountItem = [[[Accounts alloc] init] account:self.accountType];
+      Account *accountItem = [Accounts account:self.accountType];
       if ([[NYPLSettings sharedSettings] userAcceptedEULAForAccount:accountItem] == YES) {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
         [[NYPLSettings sharedSettings] setUserAcceptedEULA:NO forAccount:accountItem];
@@ -460,7 +460,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.eulaCell = [[UITableViewCell alloc]
                        initWithStyle:UITableViewCellStyleDefault
                        reuseIdentifier:nil];
-      Account *accountItem = [[[Accounts alloc] init] account:self.accountType];
+      Account *accountItem = [Accounts account:self.accountType];
       if ([[NYPLSettings sharedSettings] userAcceptedEULAForAccount:accountItem] == YES) {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOn"]];
@@ -470,7 +470,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       self.eulaCell.selectionStyle = UITableViewCellSelectionStyleNone;
       self.eulaCell.textLabel.font = [UIFont systemFontOfSize:13];
-      self.eulaCell.textLabel.lineBreakMode 
+//      self.eulaCell.textLabel.lineBreakMode 
       self.eulaCell.textLabel.text = NSLocalizedString(@"SettingsAccountEULACheckbox",
                                                        @"Statement letting a user know that they must agree to the User Agreement terms.");
       self.eulaCell.textLabel.numberOfLines = 2;
@@ -500,7 +500,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       UISwitch* switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
-      Account *account = [[[Accounts alloc] init] account:self.accountType];
+      Account *account = [Accounts account:self.accountType];
       if ([[NYPLSettings sharedSettings] syncIsEnabledForAccount:account]) {
         [switchView setOn:YES];
       } else {
@@ -516,7 +516,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return cell;
     }
     case CellKindAbout: {
-      Account *accountItem = [[[Accounts alloc] init] account:self.accountType];
+      Account *accountItem = [Accounts account:self.accountType];
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
@@ -559,7 +559,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
     
-  if (![[[Accounts alloc] init] account:self.accountType].needsAuth) {
+  if (![Accounts account:self.accountType].needsAuth) {
     return 0;
   } else if ([[NYPLSettings sharedSettings] annotationsURL]) {
     return 4;
@@ -619,7 +619,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (UIView *)tableView:(__unused UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
   if (section == 0) {
-    Account *account = [[[Accounts alloc] init] account:self.accountType];
+    Account *account = [Accounts account:self.accountType];
     
     UIView *containerView = [[UIView alloc] init];
     UILabel *titleLabel = [[UILabel alloc] init];
@@ -804,7 +804,7 @@ replacementString:(NSString *)string
     self.eulaCell.userInteractionEnabled = YES;
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
-    Account *accountItem = [[[Accounts alloc] init] account:self.accountType];
+    Account *accountItem = [Accounts account:self.accountType];
     BOOL const canLogIn =
       ([self.barcodeTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
@@ -1047,7 +1047,7 @@ replacementString:(NSString *)string
 
 - (void)syncSwitchChanged:(id)sender
 {
-  Account *account = [[[Accounts alloc] init] account:[[NYPLSettings sharedSettings] currentAccountIdentifier]];
+  Account *account = [Accounts account:[[NYPLSettings sharedSettings] currentAccountIdentifier]];
   UISwitch *switchControl = sender;
   if (switchControl.on) {
     [[NYPLSettings sharedSettings] setSyncEnabled:YES forAccount:account];

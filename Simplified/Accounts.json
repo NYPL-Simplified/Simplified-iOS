@@ -33,8 +33,9 @@
  },
  {
  "id" : 3,
- "pathComponent" : "2",
- "name" : "Magic Classics",
+ "pathComponent" : "3",
+ "name" : "Magic Library",
+ "subtitle" : "Magic just Magic",
  "logo" : "LibraryLogoMagic2",
  "needsAuth" : false,
  "supportsReservations" : false,

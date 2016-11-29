@@ -78,7 +78,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 }
 - (Account*)currentAccount
 {
-  return [[[Accounts alloc] init] account:[[NYPLSettings sharedSettings] currentAccountIdentifier]];
+  return [Accounts account:[[NYPLSettings sharedSettings] currentAccountIdentifier]];
 }
 
 - (NSInteger)currentAccountIdentifier

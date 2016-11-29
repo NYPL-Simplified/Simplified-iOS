@@ -63,7 +63,7 @@
   NSArray *accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
   
   for (int i = 0; i < (int)accounts.count; i++) {
-    Account *account = [[[Accounts alloc] init] account:[accounts[i] intValue]];
+    Account *account = [Accounts account:[accounts[i] intValue]];
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
       [self reloadSelected];
