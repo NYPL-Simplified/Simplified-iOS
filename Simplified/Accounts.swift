@@ -17,7 +17,7 @@ import Foundation
   case MagicExtra
 }
 
-class Accounts: NSObject
+class AccountsManager: NSObject
 {
   var accounts:[Account]
   
@@ -105,6 +105,8 @@ class Account:NSObject
   let supportsReservations:Bool
   let catalogUrl:String?
   let mainColor:String?
+  
+  
   
   override init()
   {

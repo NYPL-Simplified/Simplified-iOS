@@ -33,7 +33,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   [NYPLConfiguration initialize];
   
   // Initiallize Accounts from JSON file
-  [Accounts initializeFromJson];
+  [AccountsManager initializeFromJson];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.tintColor = [NYPLConfiguration mainColor];

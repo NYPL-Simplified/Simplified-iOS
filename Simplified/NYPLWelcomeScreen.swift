@@ -131,7 +131,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
       self.dismissViewControllerAnimated(true, completion: nil)
       return
     }
-    let accountNYPL = Accounts.account(NYPLUserAccountType.NYPL.rawValue)
+    let accountNYPL = AccountsManager.account(NYPLUserAccountType.NYPL.rawValue)
     // Existing User
     if NYPLSettings.sharedSettings().userAcceptedEULAForAccount(accountNYPL) == false {
       let listVC = NYPLWelcomeScreenAccountList { libraryAccount in
@@ -171,7 +171,7 @@ final class NYPLWelcomeScreenAccountList: UITableViewController {
   }
   
   override func viewDidLoad() {
-    self.accounts = Accounts().accounts
+    self.accounts = AccountsManager().accounts
     self.title = NSLocalizedString("LibraryListTitle", comment: "Title that also informs the user that they should choose a library from the list.")
   }
   
