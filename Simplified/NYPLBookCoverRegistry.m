@@ -68,7 +68,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   assert([paths count] == 1);
   
   NSString *const path = paths[0];
-  NYPLUserAccountType library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
+  NSInteger library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
 
   NSURL * URL =
   [[[NSURL fileURLWithPath:path]
@@ -76,7 +76,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
                                  objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
    URLByAppendingPathComponent:@"pinned-thumbnail-images"];
 
-  if (library != NYPLUserAccountTypeNYPL)
+  if (library != 0)
   {
   URL =
     [[[[NSURL fileURLWithPath:path]

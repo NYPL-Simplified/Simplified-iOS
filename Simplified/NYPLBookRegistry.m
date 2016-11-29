@@ -81,7 +81,7 @@ static NSString *const RecordsKey = @"records";
   assert([paths count] == 1);
   
   NSString *const path = paths[0];
-  NYPLUserAccountType library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
+  NSInteger library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
 
   NSURL *URL =
   [[[NSURL fileURLWithPath:path]
@@ -89,7 +89,7 @@ static NSString *const RecordsKey = @"records";
                                   objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
    URLByAppendingPathComponent:@"registry"];
   
-  if (library != NYPLUserAccountTypeNYPL)  {
+  if (library != 0)  {
     URL =
     [[[[NSURL fileURLWithPath:path]
        URLByAppendingPathComponent:[[NSBundle mainBundle]
@@ -114,7 +114,7 @@ static NSString *const RecordsKey = @"records";
                                  objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
    URLByAppendingPathComponent:@"registry"];
   
-  if (account != NYPLUserAccountTypeNYPL)  {
+  if (account != 0)  {
     URL =
     [[[[NSURL fileURLWithPath:path]
        URLByAppendingPathComponent:[[NSBundle mainBundle]
@@ -280,7 +280,7 @@ static NSString *const RecordsKey = @"records";
   
   [NYPLOPDSFeed
    withURL:[NYPLConfiguration loanURL]
-   completionHandler:^(NYPLOPDSFeed *const feed, NSDictionary *error) {
+   completionHandler:^(NYPLOPDSFeed *const feed, __unused NSDictionary *error) {
      if(!feed) {
        NYPLLOG(@"Failed to obtain sync data.");
        self.syncing = NO;

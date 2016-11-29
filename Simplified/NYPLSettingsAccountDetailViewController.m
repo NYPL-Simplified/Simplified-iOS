@@ -125,7 +125,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @property (nonatomic) UITextField *PINTextField;
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
-@property (nonatomic) NYPLUserAccountType accountType;
+@property (nonatomic) NSInteger accountType;
 
 @end
 
@@ -292,13 +292,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindEULA: {
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-      Account *accountItem = [AccountsManager account:self.accountType];
-      if ([[NYPLSettings sharedSettings] userAcceptedEULAForAccount:accountItem] == YES) {
+      Account *accountItem = [[AccountsManager sharedInstance] account:self.accountType];
+      if (accountItem.eulaIsAccepted == YES) {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
-        [[NYPLSettings sharedSettings] setUserAcceptedEULA:NO forAccount:accountItem];
+        accountItem.eulaIsAccepted = NO;
       } else {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
-        [[NYPLSettings sharedSettings] setUserAcceptedEULA:YES forAccount:accountItem];
+        accountItem.eulaIsAccepted = YES;
       }
       [self updateLoginLogoutCellAppearance];
       break;
@@ -460,8 +460,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.eulaCell = [[UITableViewCell alloc]
                        initWithStyle:UITableViewCellStyleDefault
                        reuseIdentifier:nil];
-      Account *accountItem = [AccountsManager account:self.accountType];
-      if ([[NYPLSettings sharedSettings] userAcceptedEULAForAccount:accountItem] == YES) {
+      Account *accountItem = [[AccountsManager sharedInstance] account:self.accountType];
+      if (accountItem.eulaIsAccepted) {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOn"]];
       } else {
@@ -499,8 +499,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       UISwitch* switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
-      Account *account = [AccountsManager account:self.accountType];
-      if ([[NYPLSettings sharedSettings] syncIsEnabledForAccount:account]) {
+      Account *account = [[AccountsManager sharedInstance] account:self.accountType];
+      if (account.syncIsEnabled) {
         [switchView setOn:YES];
       } else {
         [switchView setOn:NO];
@@ -515,7 +515,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return cell;
     }
     case CellKindAbout: {
-      Account *accountItem = [AccountsManager account:self.accountType];
+      Account *accountItem = [[AccountsManager sharedInstance] account:self.accountType];
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
@@ -558,7 +558,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
     
-  if (![AccountsManager account:self.accountType].needsAuth) {
+  if (![[AccountsManager sharedInstance] account:self.accountType].needsAuth) {
     return 0;
   } else if ([[NYPLSettings sharedSettings] annotationsURL]) {
     return 4;
@@ -618,7 +618,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (UIView *)tableView:(__unused UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
   if (section == 0) {
-    Account *account = [AccountsManager account:self.accountType];
+    Account *account = [[AccountsManager sharedInstance] account:self.accountType];
     
     UIView *containerView = [[UIView alloc] init];
     UILabel *titleLabel = [[UILabel alloc] init];
@@ -803,13 +803,13 @@ replacementString:(NSString *)string
     self.eulaCell.userInteractionEnabled = YES;
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
-    Account *accountItem = [AccountsManager account:self.accountType];
+    Account *accountItem = [[AccountsManager sharedInstance] account:self.accountType];
     BOOL const canLogIn =
       ([self.barcodeTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
        [self.PINTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length) &&
-      [[NYPLSettings sharedSettings] userAcceptedEULAForAccount:accountItem];
+       accountItem.eulaIsAccepted;
     if(canLogIn) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
@@ -1046,12 +1046,12 @@ replacementString:(NSString *)string
 
 - (void)syncSwitchChanged:(id)sender
 {
-  Account *account = [AccountsManager account:[[NYPLSettings sharedSettings] currentAccountIdentifier]];
+  Account *account = [[AccountsManager sharedInstance] account:[[NYPLSettings sharedSettings] currentAccountIdentifier]];
   UISwitch *switchControl = sender;
   if (switchControl.on) {
-    [[NYPLSettings sharedSettings] setSyncEnabled:YES forAccount:account];
+    account.syncIsEnabled = YES;
   } else {
-    [[NYPLSettings sharedSettings] setSyncEnabled:NO forAccount:account];
+    account.syncIsEnabled = NO;
   }
 }
 

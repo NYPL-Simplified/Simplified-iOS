@@ -3,22 +3,19 @@
 class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   weak var tableView: UITableView!
-  private var allAccountTypes: [Account]
+  private var accounts: [Account]
   
-  private var accountsList: [NYPLUserAccountType] {
+  private var accountsAdded: [Int] {
     didSet {
-      var array = [Int]()
-      for item in accountsList { array.append(item.rawValue) }
-      NYPLSettings.sharedSettings().settingsAccountsList = array
       self.updateUI()
     }
   }
   
-  private var secondaryAccounts: [NYPLUserAccountType] {
+  private var secondaryAccounts: [Int] {
     get {
-      var array = [NYPLUserAccountType]()
-      for account in self.accountsList {
-        if (account.rawValue != self.currentSelectedAccount.rawValue) {
+      var array = [Int]()
+      for account in self.accountsAdded {
+        if (account != self.currentSelectedAccount.id) {
           array.append(account)
         }
       }
@@ -26,27 +23,21 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     }
     set {
       var array = newValue
-      array.append(self.currentSelectedAccount)
-      self.accountsList = array
+      array.append(self.currentSelectedAccount.id)
+      self.accountsAdded = array
     }
   }
 
-  private var currentSelectedAccount: NYPLUserAccountType {
+  private var currentSelectedAccount: Account {
     get {
-      let currentAccount = NYPLSettings.sharedSettings().currentAccountIdentifier
-      guard let account = NYPLUserAccountType(rawValue: currentAccount) else { return NYPLUserAccountType.NYPL }
-      return account
+      return AccountsManager.shared.currentAccount
     }
   }
   
   required init(accounts: [Int]) {
-    var filteredList = [NYPLUserAccountType]()
-    for item in accounts {
-      guard let library = NYPLUserAccountType(rawValue: item) else { continue }
-      filteredList.append(library)
-    }
-    self.accountsList = filteredList
-    self.allAccountTypes = AccountsManager().accounts
+
+    self.accountsAdded = accounts
+    self.accounts = AccountsManager.shared.accounts
     
     super.init(nibName:nil, bundle:nil)
   }
@@ -85,7 +76,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   }
   
   func updateUI() {
-    if (accountsList.count < self.allAccountTypes.count) {
+    if (accountsAdded.count < self.accounts.count) {
       self.navigationItem.rightBarButtonItem = UIBarButtonItem(
         barButtonSystemItem: .Add, target: self, action: #selector(addAccount))
     } else {
@@ -102,17 +93,12 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
     alert.popoverPresentationController?.permittedArrowDirections = .Up
     
-    let allAccounts = self.allAccountTypes.map { account in
-      return NYPLUserAccountType(rawValue: account.id)
-    }
-    
-    for userAccountType in allAccounts {
-      guard let account = userAccountType else { continue }
-      if (accountsList.contains(account) == false) {
-        alert.addAction(UIAlertAction(title: AccountsManager.account(account.rawValue).name,
+    for userAccount in accounts {
+      if (accountsAdded.contains(userAccount.id) == false) {
+        alert.addAction(UIAlertAction(title: userAccount.name,
           style: .Default,
           handler: { action in
-            self.accountsList.append(account)
+            self.accountsAdded.append(userAccount.id)
             self.tableView.reloadData()
         }))
       }
@@ -128,8 +114,8 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
       return 1
-    } else if (self.accountsList.count >= 1) {
-      return self.accountsList.count - 1
+    } else if (self.accountsAdded.count >= 1) {
+      return self.accountsAdded.count - 1
     } else {
       return 0
     }
@@ -143,24 +129,19 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     if (indexPath.section == 0) {
       return cellForLibrary(self.currentSelectedAccount, indexPath)
     } else {
-      return cellForLibrary(self.secondaryAccounts[indexPath.row], indexPath)
+      return cellForLibrary(AccountsManager.shared.account(self.secondaryAccounts[indexPath.row])!, indexPath)
     }
   }
   
-  func cellForLibrary(library: NYPLUserAccountType, _ indexPath: NSIndexPath) -> UITableViewCell {
+  func cellForLibrary(account: Account, _ indexPath: NSIndexPath) -> UITableViewCell {
     let cell = UITableViewCell.init(style: .Subtitle, reuseIdentifier: "")
-    
-    let account = AccountsManager.account(library.rawValue)
     
     cell.accessoryType = .DisclosureIndicator
     cell.textLabel?.font = UIFont.systemFontOfSize(14)
     cell.textLabel?.text = account.name
-    
     cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 12)
     cell.detailTextLabel?.text = account.subtitle
-    
     cell.imageView?.image = UIImage(named: account.logo!)
-
     
     return cell
   }
@@ -170,9 +151,9 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     var account: Int
     if (indexPath.section == 0) {
-      account = self.currentSelectedAccount.rawValue
+      account = self.currentSelectedAccount.id
     } else {
-      account = self.secondaryAccounts[indexPath.row].rawValue
+      account = self.secondaryAccounts[indexPath.row]
     }
     let viewController = NYPLSettingsAccountDetailViewController(account: account)
     self.tableView.deselectRowAtIndexPath(indexPath, animated: true)

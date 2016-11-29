@@ -41,16 +41,17 @@
 - (void)didSelectDownloadForBook:(NYPLBook *)book
 {
   NYPLSettings *settings = [NYPLSettings sharedSettings];
+  Account *currentAccount = [settings currentAccount];
   
-  if ([[settings currentAccount] needsAuth] == YES || [settings userAboveAge]) {
+  if (currentAccount.needsAuth == YES || currentAccount.userAboveAgeLimit) {
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
   } else if ([[settings currentAccount] needsAuth] == NO) {
     [self performAgeCheck:^(BOOL aboveAge) {
       if (aboveAge) {
-        [settings setUserAboveAge:YES];
+        currentAccount.userAboveAgeLimit = YES;
         [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
       } else {
-        [settings setUserAboveAge:NO];
+        currentAccount.userAboveAgeLimit = NO;
       }
     }];
   }

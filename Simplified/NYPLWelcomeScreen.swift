@@ -131,9 +131,9 @@ final class NYPLWelcomeScreenViewController: UIViewController {
       self.dismissViewControllerAnimated(true, completion: nil)
       return
     }
-    let accountNYPL = AccountsManager.account(NYPLUserAccountType.NYPL.rawValue)
+    let accountNYPL = AccountsManager.shared.account(0)!
     // Existing User
-    if NYPLSettings.sharedSettings().userAcceptedEULAForAccount(accountNYPL) == false {
+    if accountNYPL.eulaIsAccepted == false {
       let listVC = NYPLWelcomeScreenAccountList { libraryAccount in
         NYPLSettings.sharedSettings().currentAccountIdentifier = libraryAccount.id
         self.completion!()
@@ -145,7 +145,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
   }
   
   func instantClassicsTapped() {
-    NYPLSettings.sharedSettings().currentAccountIdentifier = NYPLUserAccountType.Magic.rawValue
+    AccountsManager.shared.updateCurrentAccount(AccountsManager.shared.account(2)!)
     if completion != nil {
       completion!()
     }
@@ -171,7 +171,7 @@ final class NYPLWelcomeScreenAccountList: UITableViewController {
   }
   
   override func viewDidLoad() {
-    self.accounts = AccountsManager().accounts
+    self.accounts = AccountsManager.shared.accounts
     self.title = NSLocalizedString("LibraryListTitle", comment: "Title that also informs the user that they should choose a library from the list.")
   }
   

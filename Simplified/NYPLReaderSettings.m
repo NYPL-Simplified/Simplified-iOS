@@ -201,7 +201,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
   assert([paths count] == 1);
   
   NSString *const path = paths[0];
-  NYPLUserAccountType library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
+  NSInteger library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
   
   NSURL *URL =
   [[[NSURL fileURLWithPath:path]
@@ -209,7 +209,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
                                   objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
    URLByAppendingPathComponent:@"settings.json"];
   
-  if (library != NYPLUserAccountTypeNYPL)
+  if (library != 0)
   {
     URL =
     [[[[NSURL fileURLWithPath:path]

@@ -14,10 +14,6 @@ static NSString *const accountMainFeedURLKey = @"NYPLSettingsAccountMainFeedURL"
 
 static NSString *const renderingEngineKey = @"NYPLSettingsRenderingEngine";
 
-static NSString *const userAboveAgeKey = @"NYPLSettingsUserAboveAgeKey";
-
-static NSString *const userAcceptedEULAKey = @"NYPLSettingsUserAcceptedEULA";
-
 static NSString *const userPresentedWelcomeScreenKey = @"NYPLUserPresentedWelcomeScreenKey";
 
 static NSString *const eulaURLKey = @"NYPLSettingsEULAURL";
@@ -33,8 +29,6 @@ static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCu
 static NSString *const settingsLibraryAccountsKey = @"NYPLSettingsLibraryAccountsKey";
 
 static NSString *const annotationsURLKey = @"NYPLSettingsAnnotationsURL";
-
-static NSString *const accountSyncEnabledKey = @"NYPLAccountSyncEnabledKey";
 
 
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
@@ -78,7 +72,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 }
 - (Account*)currentAccount
 {
-  return [AccountsManager account:[[NYPLSettings sharedSettings] currentAccountIdentifier]];
+  return [[AccountsManager sharedInstance] account:[[NYPLSettings sharedSettings] currentAccountIdentifier]];
 }
 
 - (NSInteger)currentAccountIdentifier
@@ -95,29 +89,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] URLForKey:accountMainFeedURLKey];
 }
 
-- (BOOL)syncIsEnabledForAccount:(Account *)account
-{
-  NSString *combinedKey = [NSString stringWithFormat:@"%@_%@",accountSyncEnabledKey,account.pathComponent];
-  return [[NSUserDefaults standardUserDefaults] boolForKey:combinedKey];
-}
-
-- (BOOL)userAboveAge
-{
-  NSString *ageEULAKey = [NSString stringWithFormat:@"%@_%@",userAboveAgeKey,self.currentAccount.pathComponent];
-  return [[NSUserDefaults standardUserDefaults] boolForKey:ageEULAKey];
-}
-
-- (BOOL)userAcceptedEULAForAccount:(Account *)account
-{
-  if (account.id != NYPLUserAccountTypeNYPL) {
-    NSString *accountAcceptedEULAKey = [NSString stringWithFormat:@"%@_%@",userAcceptedEULAKey,account.pathComponent];
-    return [[NSUserDefaults standardUserDefaults] boolForKey:accountAcceptedEULAKey];
-  } else {
-    return [[NSUserDefaults standardUserDefaults] boolForKey:userAcceptedEULAKey];
-  }
-}
-
-- (BOOL)userPresentedWelcomeScreen
+- (BOOL) userPresentedWelcomeScreen
 {
   return [[NSUserDefaults standardUserDefaults] boolForKey:userPresentedWelcomeScreenKey];
 }
@@ -153,7 +125,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   // If user has not selected any accounts yet, return the "currentAccount"
   if (!libraryAccounts) {
     NSInteger currentLibrary = [self currentAccountIdentifier];
-    [self setSettingsAccountsList:@[@(currentLibrary), @(NYPLUserAccountTypeMagic)]];
+    [self setSettingsAccountsList:@[@(currentLibrary), @2]];
     return [self settingsAccountsList];
   } else {
     return libraryAccounts;
@@ -177,29 +149,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
    postNotificationName:NYPLCurrentAccountDidChangeNotification
    object:self];
 }
-- (void)setSyncEnabled:(BOOL)enabled forAccount:(Account *)account
-{
-    NSString *combinedKey = [NSString stringWithFormat:@"%@_%@",accountSyncEnabledKey,account.pathComponent];
-    [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:combinedKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-- (void)setUserAboveAge:(BOOL)aboveAge
-{
-  NSString *aboveAgeKey = [NSString stringWithFormat:@"%@_%@",userAboveAgeKey,self.currentAccount.pathComponent];
-  [[NSUserDefaults standardUserDefaults] setBool:aboveAge forKey:aboveAgeKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-}
-- (void)setUserAcceptedEULA:(BOOL)userAcceptedEULA forAccount:(Account *)account
-{
-  if (account.id != NYPLUserAccountTypeNYPL) {
-    NSString *accountAcceptedEULAKey = [NSString stringWithFormat:@"%@_%@",userAcceptedEULAKey,account.pathComponent];
-    [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:accountAcceptedEULAKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-  } else {
-    [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:userAcceptedEULAKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-  }
-}
+
 - (void)setUserPresentedWelcomeScreen:(BOOL)userPresentedScreen
 {
   [[NSUserDefaults standardUserDefaults] setBool:userPresentedScreen forKey:userPresentedWelcomeScreenKey];
@@ -229,12 +179,6 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLSettingsDidChangeNotification
    object:self];
-}
-
-- (void)setAccountSyncEnabled:(BOOL)syncEnabled
-{
-  [[NSUserDefaults standardUserDefaults] setBool:syncEnabled forKey:accountSyncEnabledKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)setEulaURL:(NSURL *const)eulaURL

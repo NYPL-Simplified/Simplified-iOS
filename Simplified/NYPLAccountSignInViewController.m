@@ -237,12 +237,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindEULA: {
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
       Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
-      if ([[NYPLSettings sharedSettings] userAcceptedEULAForAccount:currentAccount] == YES) {
+      if (currentAccount.eulaIsAccepted) {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
-        [[NYPLSettings sharedSettings] setUserAcceptedEULA:NO forAccount:currentAccount];
+        currentAccount.eulaIsAccepted = NO;
       } else {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
-        [[NYPLSettings sharedSettings] setUserAcceptedEULA:YES forAccount:currentAccount];
+        currentAccount.eulaIsAccepted = YES;
       }
       [self updateLoginLogoutCellAppearance];
       break;
@@ -406,7 +406,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                        initWithStyle:UITableViewCellStyleDefault
                        reuseIdentifier:nil];
       Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
-      if ([[NYPLSettings sharedSettings] userAcceptedEULAForAccount:currentAccount] == YES) {
+      if (currentAccount.eulaIsAccepted) {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOn"]];
       } else {
@@ -610,7 +610,7 @@ replacementString:(NSString *)string
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
        [self.PINTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length) &&
-       [[NYPLSettings sharedSettings] userAcceptedEULAForAccount:currentAccount];
+       currentAccount.eulaIsAccepted;
     if(canLogIn) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];

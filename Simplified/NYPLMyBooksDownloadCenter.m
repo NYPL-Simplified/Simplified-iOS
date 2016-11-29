@@ -388,7 +388,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     URLByAppendingPathComponent:[[NSBundle mainBundle]
                                  objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
    URLByAppendingPathComponent:@"content"];
-  if (account != NYPLUserAccountTypeNYPL)
+  if (account != 0)
   {
     directoryURL =
     [[[[NSURL fileURLWithPath:path]
@@ -418,14 +418,14 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   assert([paths count] == 1);
   
   NSString *const path = paths[0];
-  NYPLUserAccountType library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
+  NSInteger library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
 
   NSURL * directoryURL =
     [[[NSURL fileURLWithPath:path]
       URLByAppendingPathComponent:[[NSBundle mainBundle]
                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
      URLByAppendingPathComponent:@"content"];
-  if (library != NYPLUserAccountTypeNYPL)
+  if (library != 0)
   {
     directoryURL =
     [[[[NSURL fileURLWithPath:path]
