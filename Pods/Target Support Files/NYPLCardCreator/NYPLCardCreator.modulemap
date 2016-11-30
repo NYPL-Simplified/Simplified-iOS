@@ -1,6 +1,0 @@
-framework module NYPLCardCreator {
-  umbrella header "NYPLCardCreator-umbrella.h"
-
-  export *
-  module * { export * }
-}
