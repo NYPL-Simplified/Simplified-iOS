@@ -205,10 +205,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
-//  self.tableView.sectionHeaderHeight = UITableViewAutomaticDimension;
-//  //GODO temp
-//  self.tableView.estimatedSectionHeaderHeight = 60;
-  
   self.barcodeTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.barcodeTextField.delegate = self;
   self.barcodeTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |

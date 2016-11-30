@@ -145,7 +145,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
   }
   
   func instantClassicsTapped() {
-    AccountsManager.shared.updateCurrentAccount(AccountsManager.shared.account(2)!)
+    AccountsManager.shared.changeCurrentAccount(identifier: 2)
     if completion != nil {
       completion!()
     }

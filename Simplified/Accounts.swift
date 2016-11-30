@@ -1,23 +1,13 @@
 import Foundation
 
-let currentAccountIdentifierKey             = "NYPLCurrentAccountIdentifier"
-let customMainFeedURLKey                    = "NYPLSettingsCustomMainFeedURL"
-let accountMainFeedURLKey                   = "NYPLSettingsAccountMainFeedURL"
-let renderingEngineKey                      = "NYPLSettingsRenderingEngine"
-let userAboveAgeKey                         = "NYPLSettingsUserAboveAgeKey"
-let userAcceptedEULAKey                     = "NYPLSettingsUserAcceptedEULA"
-let userPresentedWelcomeScreenKey           = "NYPLUserPresentedWelcomeScreenKey"
-let eulaURLKey                              = "NYPLSettingsEULAURL"
-let privacyPolicyURLKey                     = "NYPLSettingsPrivacyPolicyURL"
-let acknowledgmentsURLKey                   = "NYPLSettingsAcknowledgmentsURL"
-let contentLicenseURLKey                    = "NYPLSettingsContentLicenseURL"
-let currentCardApplicationSerializationKey  = "NYPLSettingsCurrentCardApplicationSerialized"
-let settingsLibraryAccountsKey              = "NYPLSettingsLibraryAccountsKey"
-let annotationsURLKey                       = "NYPLSettingsAnnotationsURL"
-let accountSyncEnabledKey                   = "NYPLAccountSyncEnabledKey"
+let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
+let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
+let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
+let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
 
-/// Manage the library accounts for the app. Initialized with JSON.
+/// Manage the library accounts for the app.
+/// Initialized with JSON.
 final class AccountsManager: NSObject
 {
   static let shared = AccountsManager()
@@ -28,18 +18,20 @@ final class AccountsManager: NSObject
     return AccountsManager.shared
   }
   
+  let defaults: NSUserDefaults
   var accounts = [Account]()
   var currentAccount: Account {
     get {
-      return account(NSUserDefaults.standardUserDefaults().integerForKey(currentAccountIdentifierKey))!
+      return account(defaults.integerForKey(currentAccountIdentifierKey))!
     }
     set {
-      NSUserDefaults.standardUserDefaults().setInteger(currentAccount.id, forKey: currentAccountIdentifierKey)
+      defaults.setInteger(currentAccount.id, forKey: currentAccountIdentifierKey)
     }
   }
 
   private override init()
   {
+    self.defaults = NSUserDefaults.standardUserDefaults()
     let url = NSBundle.mainBundle().URLForResource("Accounts", withExtension: "json")
     let data = NSData(contentsOfURL: url!)
     do {
@@ -50,14 +42,14 @@ final class AccountsManager: NSObject
         {
           let account = Account(json: jsonDict)
           
-          if (NSUserDefaults.standardUserDefaults().valueForKey(account.pathComponent!) == nil)
+          if (defaults.valueForKey(account.pathComponent!) == nil)
           {
-            NSUserDefaults.standardUserDefaults().setObject(jsonDict, forKey: account.pathComponent!)
+            defaults.setObject(jsonDict, forKey: account.pathComponent!)
           }
           else
           {
             // update
-            var savedDict = NSUserDefaults.standardUserDefaults().valueForKey(account.pathComponent!) as! [String: AnyObject]
+            var savedDict = defaults.valueForKey(account.pathComponent!) as! [String: AnyObject]
             savedDict["name"] = account.name
             savedDict["subtitle"] = account.subtitle
             savedDict["logo"] = account.logo
@@ -66,7 +58,7 @@ final class AccountsManager: NSObject
             savedDict["catalogUrl"] = account.catalogUrl
             savedDict["mainColor"] = account.mainColor
             
-            NSUserDefaults.standardUserDefaults().setObject(savedDict, forKey: account.pathComponent!)
+            defaults.setObject(savedDict, forKey: account.pathComponent!)
           }
           self.accounts.append(account)
         }
@@ -81,7 +73,7 @@ final class AccountsManager: NSObject
     return self.accounts.filter{ $0.id == id }.first
   }
   
-  func changeCurrentAccountWith(identifier id: Int)
+  func changeCurrentAccount(identifier id: Int)
   {
     if let account = account(id) {
       self.currentAccount = account
@@ -108,26 +100,29 @@ final class Account:NSObject
   
   var eulaIsAccepted:Bool {
     get {
-      return NSUserDefaults.standardUserDefaults().boolForKey(userAcceptedEULAKey + "_\(self.id)")
+      guard let result = getAccountDictionaryKey(userAcceptedEULAKey) else { return false }
+      return result as! Bool
     }
     set {
-      defaults.setBool(eulaIsAccepted, forKey: userAcceptedEULAKey + "_\(self.id)")
+      setAccountDictionaryKey(userAcceptedEULAKey, toValue: newValue)
     }
   }
   var syncIsEnabled:Bool {
     get {
-      return NSUserDefaults.standardUserDefaults().boolForKey(accountSyncEnabledKey + "_\(self.id)")
+      guard let result = getAccountDictionaryKey(accountSyncEnabledKey) else { return false }
+      return result as! Bool
     }
     set {
-      defaults.setBool(syncIsEnabled, forKey: accountSyncEnabledKey + "_\(self.id)")
+      setAccountDictionaryKey(accountSyncEnabledKey, toValue: newValue)
     }
   }
   var userAboveAgeLimit:Bool {
     get {
-      return NSUserDefaults.standardUserDefaults().boolForKey(userAboveAgeKey + "_\(self.id)")
+      guard let result = getAccountDictionaryKey(userAboveAgeKey) else { return false }
+      return result as! Bool
     }
     set {
-      defaults.setBool(userAboveAgeLimit, forKey: userAboveAgeKey + "_\(self.id)")
+      setAccountDictionaryKey(userAboveAgeKey, toValue: newValue)
     }
   }
   
@@ -144,6 +139,18 @@ final class Account:NSObject
     supportsReservations = json["supportsReservations"] as! Bool
     catalogUrl = json["catalogUrl"] as? String
     mainColor = json["mainColor"] as? String
+  }
+  
+  private func setAccountDictionaryKey(key: String, toValue value: AnyObject) {
+    var savedDict = defaults.valueForKey(self.pathComponent!) as! [String: AnyObject]
+    savedDict[key] = value
+    defaults.setObject(savedDict, forKey: self.pathComponent!)
+  }
+  
+  private func getAccountDictionaryKey(key: String) -> AnyObject? {
+    let savedDict = defaults.valueForKey(self.pathComponent!) as! [String: AnyObject]
+    guard let result = savedDict[key] else { return nil }
+    return result
   }
 }
 
