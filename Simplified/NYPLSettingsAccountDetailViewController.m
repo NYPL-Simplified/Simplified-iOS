@@ -891,6 +891,7 @@ replacementString:(NSString *)string
    }];
 #else
   afterDeauthorization();
+  [self removeActivityTitle];
 #endif
 }
 
@@ -927,6 +928,7 @@ replacementString:(NSString *)string
 - (void)removeActivityTitle {
   UIView *view = [self.logInSignOutCell.contentView viewWithTag:1];
   [view removeFromSuperview];
+  [self updateLoginLogoutCellAppearance];
 }
 
 - (void)validateCredentials
@@ -1008,7 +1010,7 @@ replacementString:(NSString *)string
                                                                 completion:nil];
   [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSettingsAccountsSignInFinishedNotification
                                                       object:self];
-  [self updateLoginLogoutCellAppearance];
+  [self removeActivityTitle];
 }
 
 - (void)textFieldsDidChange
@@ -1061,7 +1063,6 @@ replacementString:(NSString *)string
 - (void)authorizationAttemptDidFinish:(BOOL)success error:(NSError *)error
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    [self removeActivityTitle];
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
@@ -1075,6 +1076,7 @@ replacementString:(NSString *)string
         void (^handler)() = self.completionHandler;
         self.completionHandler = nil;
         if(handler) handler();
+        [self removeActivityTitle];
         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
       }
       
