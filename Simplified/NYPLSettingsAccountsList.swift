@@ -3,42 +3,21 @@
 class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   weak var tableView: UITableView!
-  fileprivate var accounts: [Account]
-  
-  fileprivate var accountsAdded: [Int] {
+  private var accounts: [Int] {
     didSet {
-      self.updateUI()
+      //update NYPLSettings
     }
   }
-  
-  fileprivate var secondaryAccounts: [Int] {
-    get {
-      var array = [Int]()
-      for account in self.accountsAdded {
-        if (account != self.currentSelectedAccount.id) {
-          array.append(account)
-        }
-      }
-      return array
-    }
-    set {
-      var array = newValue
-      array.append(self.currentSelectedAccount.id)
-      self.accountsAdded = array
-    }
-  }
-
-  fileprivate var currentSelectedAccount: Account {
-    get {
-      return AccountsManager.shared.currentAccount
-    }
-  }
+  private var libraryAccounts: [Account]
+  private var userAddedSecondaryAccounts: [Int]
+  private let manager: AccountsManager
   
   required init(accounts: [Int]) {
+    self.accounts = accounts
+    self.manager = AccountsManager.shared
+    self.libraryAccounts = manager.accounts
+    self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount.id }
 
-    self.accountsAdded = accounts
-    self.accounts = AccountsManager.shared.accounts
-    
     super.init(nibName:nil, bundle:nil)
   }
   
@@ -66,17 +45,18 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     updateUI()
     
     NotificationCenter.default.addObserver(self,
-                                                     selector: #selector(reloadTableView),
-                                                     name: NSNotification.Name(rawValue: NYPLCurrentAccountDidChangeNotification),
-                                                     object: nil)
+                                           selector: #selector(reloadAfterAccountChange),
+                                           name: NSNotification.Name(rawValue: NYPLCurrentAccountDidChangeNotification),
+                                           object: nil)
   }
   
-  func reloadTableView() {
+  func reloadAfterAccountChange() {
+    self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount.id }
     self.tableView.reloadData()
   }
   
   func updateUI() {
-    if (accountsAdded.count < self.accounts.count) {
+    if (userAddedSecondaryAccounts.count + 1 < libraryAccounts.count) {
       self.navigationItem.rightBarButtonItem = UIBarButtonItem(
         barButtonSystemItem: .add, target: self, action: #selector(addAccount))
     } else {
@@ -93,12 +73,13 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
     alert.popoverPresentationController?.permittedArrowDirections = .up
     
-    for userAccount in accounts {
-      if (accountsAdded.contains(userAccount.id) == false) {
+    for userAccount in libraryAccounts {
+      if (!userAddedSecondaryAccounts.contains(userAccount.id) && userAccount.id != manager.currentAccount.id) {
         alert.addAction(UIAlertAction(title: userAccount.name,
           style: .default,
           handler: { action in
-            self.accountsAdded.append(userAccount.id)
+            self.userAddedSecondaryAccounts.append(userAccount.id)
+            self.updateSettingsAccountList()
             self.tableView.reloadData()
         }))
       }
@@ -109,15 +90,19 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     self.present(alert, animated: true, completion: nil)
   }
   
+  func updateSettingsAccountList() {
+    var array = userAddedSecondaryAccounts
+    array.append(manager.currentAccount.id)
+    NYPLSettings.shared().settingsAccountsList = array
+  }
+  
   // MARK: UITableViewDataSource
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
       return 1
-    } else if (self.accountsAdded.count >= 1) {
-      return self.accountsAdded.count - 1
     } else {
-      return 0
+      return userAddedSecondaryAccounts.count
     }
   }
   
@@ -127,9 +112,9 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if (indexPath.section == 0) {
-      return cellForLibrary(self.currentSelectedAccount, indexPath)
+      return cellForLibrary(self.manager.currentAccount, indexPath)
     } else {
-      return cellForLibrary(AccountsManager.shared.account(self.secondaryAccounts[indexPath.row])!, indexPath)
+      return cellForLibrary(AccountsManager.shared.account(userAddedSecondaryAccounts[indexPath.row])!, indexPath)
     }
   }
   
@@ -151,9 +136,9 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     var account: Int
     if (indexPath.section == 0) {
-      account = self.currentSelectedAccount.id
+      account = self.manager.currentAccount.id
     } else {
-      account = self.secondaryAccounts[indexPath.row]
+      account = userAddedSecondaryAccounts[indexPath.row]
     }
     let viewController = NYPLSettingsAccountDetailViewController(account: account)
     self.tableView.deselectRow(at: indexPath, animated: true)
@@ -174,8 +159,9 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   
   func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
-      secondaryAccounts.remove(at: indexPath.row)
+      userAddedSecondaryAccounts.remove(at: indexPath.row)
       tableView.deleteRows(at: [indexPath], with: .fade)
+      updateSettingsAccountList()
       self.tableView.reloadData()
     }
   }

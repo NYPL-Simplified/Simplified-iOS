@@ -1063,6 +1063,7 @@ replacementString:(NSString *)string
 - (void)authorizationAttemptDidFinish:(BOOL)success error:(NSError *)error
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [self removeActivityTitle];
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
@@ -1076,7 +1077,6 @@ replacementString:(NSString *)string
         void (^handler)() = self.completionHandler;
         self.completionHandler = nil;
         if(handler) handler();
-        [self removeActivityTitle];
         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
       }
       

@@ -34,25 +34,34 @@
 
   viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
                                                      initWithImage:[UIImage imageNamed:@"lib-icon"] style:(UIBarButtonItemStylePlain)
-                                                     
                                                      target:self
                                                      action:@selector(switchLibrary)];
   viewController.navigationItem.leftBarButtonItem.enabled = YES;
   
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NYPLCurrentAccountDidChangeNotification object:nil];
   
   return self;
 }
--(void)viewWillAppear:(BOOL)animated
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
   
   NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
   viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
-
 }
 
+- (void)currentAccountChanged
+{
+  [self popToRootViewControllerAnimated:NO];
+}
 
-- (void) switchLibrary
+- (void)switchLibrary
 {
   NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
 
@@ -64,10 +73,12 @@
   
   for (int i = 0; i < (int)accounts.count; i++) {
     Account *account = [[AccountsManager sharedInstance] account:[accounts[i] intValue]];
-    [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
-      [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
-      [self reloadSelected];
-    }]];
+    if (account.id != [[AccountsManager sharedInstance] currentAccount].id) {
+      [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+        [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+        [self reloadSelected];
+      }]];
+    }
   }
   
   [alert addAction:[UIAlertAction actionWithTitle:@"Manage Accounts" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {

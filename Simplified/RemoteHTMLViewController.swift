@@ -60,7 +60,7 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
                                        message: error.localizedDescription,
                                        preferredStyle: .alert)
     let action1 = UIAlertAction.init(title: NSLocalizedString("Cancel", comment: "Button that says to cancel and go back to the last screen."), style: .destructive) { (cancelAction) in
-      self.navigationController?.popViewController(animated: true)
+      _ = self.navigationController?.popViewController(animated: true)
     }
     let action2 = UIAlertAction.init(title: NSLocalizedString("Reload", comment: "Button that says to try again"), style: .destructive) { (reloadAction) in
       let urlRequest = URLRequest(url: self.fileURL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
