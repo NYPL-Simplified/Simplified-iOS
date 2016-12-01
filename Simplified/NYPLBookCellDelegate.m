@@ -59,7 +59,7 @@
 
 - (void)didSelectReadForBook:(NYPLBook *)book
 {
-  [NYPLCirculationAnalytics postEvent:@"open_book" withBook:book];
+//  [NYPLCirculationAnalytics postEvent:@"open_book" withBook:book];
   [[NYPLRootTabBarController sharedController]
    pushViewController:[[NYPLReaderViewController alloc]
                        initWithBookIdentifier:book.identifier]

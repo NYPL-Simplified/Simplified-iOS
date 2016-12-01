@@ -18,47 +18,47 @@ final class AccountsManager: NSObject
     return AccountsManager.shared
   }
   
-  let defaults: NSUserDefaults
+  let defaults: UserDefaults
   var accounts = [Account]()
   var currentAccount: Account {
     get {
-      return account(defaults.integerForKey(currentAccountIdentifierKey))!
+      return account(defaults.integer(forKey: currentAccountIdentifierKey))!
     }
     set {
-      defaults.setInteger(currentAccount.id, forKey: currentAccountIdentifierKey)
+      defaults.set(currentAccount.id, forKey: currentAccountIdentifierKey)
     }
   }
 
-  private override init()
+  fileprivate override init()
   {
-    self.defaults = NSUserDefaults.standardUserDefaults()
-    let url = NSBundle.mainBundle().URLForResource("Accounts", withExtension: "json")
-    let data = NSData(contentsOfURL: url!)
+    self.defaults = UserDefaults.standard
+    let url = Bundle.main.url(forResource: "Accounts", withExtension: "json")
+    let data = try? Data(contentsOf: url!)
     do {
-      let object = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
+      let object = try JSONSerialization.jsonObject(with: data!, options: .allowFragments)
       if let array = object as? [[String: AnyObject]]
       {
         for jsonDict in array
         {
           let account = Account(json: jsonDict)
           
-          if (defaults.valueForKey(account.pathComponent!) == nil)
+          if (defaults.value(forKey: account.pathComponent!) == nil)
           {
-            defaults.setObject(jsonDict, forKey: account.pathComponent!)
+            defaults.set(jsonDict, forKey: account.pathComponent!)
           }
           else
           {
             // update
-            var savedDict = defaults.valueForKey(account.pathComponent!) as! [String: AnyObject]
-            savedDict["name"] = account.name
-            savedDict["subtitle"] = account.subtitle
-            savedDict["logo"] = account.logo
-            savedDict["needsAuth"] = account.needsAuth
-            savedDict["supportsReservations"] = account.supportsReservations
-            savedDict["catalogUrl"] = account.catalogUrl
-            savedDict["mainColor"] = account.mainColor
+            var savedDict = defaults.value(forKey: account.pathComponent!) as! [String: AnyObject]
+            savedDict["name"] = account.name as AnyObject?
+            savedDict["subtitle"] = account.subtitle as AnyObject?
+            savedDict["logo"] = account.logo as AnyObject?
+            savedDict["needsAuth"] = account.needsAuth as AnyObject?
+            savedDict["supportsReservations"] = account.supportsReservations as AnyObject?
+            savedDict["catalogUrl"] = account.catalogUrl as AnyObject?
+            savedDict["mainColor"] = account.mainColor as AnyObject?
             
-            defaults.setObject(savedDict, forKey: account.pathComponent!)
+            defaults.set(savedDict, forKey: account.pathComponent!)
           }
           self.accounts.append(account)
         }
@@ -68,7 +68,7 @@ final class AccountsManager: NSObject
     }
   }
   
-  @objc func account(id:Int) -> Account?
+  @objc func account(_ id:Int) -> Account?
   {
     return self.accounts.filter{ $0.id == id }.first
   }
@@ -86,7 +86,7 @@ final class AccountsManager: NSObject
 /// choose to sign up for multiple Accounts.
 final class Account:NSObject
 {
-  let defaults: NSUserDefaults
+  let defaults: UserDefaults
   
   let id:Int
   let pathComponent:String?
@@ -104,7 +104,7 @@ final class Account:NSObject
       return result as! Bool
     }
     set {
-      setAccountDictionaryKey(userAcceptedEULAKey, toValue: newValue)
+      setAccountDictionaryKey(userAcceptedEULAKey, toValue: newValue as AnyObject)
     }
   }
   var syncIsEnabled:Bool {
@@ -113,7 +113,7 @@ final class Account:NSObject
       return result as! Bool
     }
     set {
-      setAccountDictionaryKey(accountSyncEnabledKey, toValue: newValue)
+      setAccountDictionaryKey(accountSyncEnabledKey, toValue: newValue as AnyObject)
     }
   }
   var userAboveAgeLimit:Bool {
@@ -122,13 +122,13 @@ final class Account:NSObject
       return result as! Bool
     }
     set {
-      setAccountDictionaryKey(userAboveAgeKey, toValue: newValue)
+      setAccountDictionaryKey(userAboveAgeKey, toValue: newValue as AnyObject)
     }
   }
   
   init(json: [String: AnyObject])
   {
-    defaults = NSUserDefaults.standardUserDefaults()
+    defaults = UserDefaults.standard
     
     name = json["name"] as? String
     subtitle = json["subtitle"] as? String
@@ -141,14 +141,14 @@ final class Account:NSObject
     mainColor = json["mainColor"] as? String
   }
   
-  private func setAccountDictionaryKey(key: String, toValue value: AnyObject) {
-    var savedDict = defaults.valueForKey(self.pathComponent!) as! [String: AnyObject]
+  fileprivate func setAccountDictionaryKey(_ key: String, toValue value: AnyObject) {
+    var savedDict = defaults.value(forKey: self.pathComponent!) as! [String: AnyObject]
     savedDict[key] = value
-    defaults.setObject(savedDict, forKey: self.pathComponent!)
+    defaults.set(savedDict, forKey: self.pathComponent!)
   }
   
-  private func getAccountDictionaryKey(key: String) -> AnyObject? {
-    let savedDict = defaults.valueForKey(self.pathComponent!) as! [String: AnyObject]
+  fileprivate func getAccountDictionaryKey(_ key: String) -> AnyObject? {
+    let savedDict = defaults.value(forKey: self.pathComponent!) as! [String: AnyObject]
     guard let result = savedDict[key] else { return nil }
     return result
   }

@@ -3,15 +3,15 @@
 class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   weak var tableView: UITableView!
-  private var accounts: [Account]
+  fileprivate var accounts: [Account]
   
-  private var accountsAdded: [Int] {
+  fileprivate var accountsAdded: [Int] {
     didSet {
       self.updateUI()
     }
   }
   
-  private var secondaryAccounts: [Int] {
+  fileprivate var secondaryAccounts: [Int] {
     get {
       var array = [Int]()
       for account in self.accountsAdded {
@@ -28,7 +28,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     }
   }
 
-  private var currentSelectedAccount: Account {
+  fileprivate var currentSelectedAccount: Account {
     get {
       return AccountsManager.shared.currentAccount
     }
@@ -43,7 +43,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   }
   
   deinit {
-    NSNotificationCenter.defaultCenter().removeObserver(self)
+    NotificationCenter.default.removeObserver(self)
   }
 
   @available(*, unavailable)
@@ -54,7 +54,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   // MARK: UIViewController
   
   override func loadView() {
-    self.view = UITableView(frame: CGRectZero, style: .Grouped)
+    self.view = UITableView(frame: CGRect.zero, style: .grouped)
     self.tableView = self.view as! UITableView
     self.tableView.delegate = self
     self.tableView.dataSource = self
@@ -65,9 +65,9 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     
     updateUI()
     
-    NSNotificationCenter.defaultCenter().addObserver(self,
+    NotificationCenter.default.addObserver(self,
                                                      selector: #selector(reloadTableView),
-                                                     name: NYPLCurrentAccountDidChangeNotification,
+                                                     name: NSNotification.Name(rawValue: NYPLCurrentAccountDidChangeNotification),
                                                      object: nil)
   }
   
@@ -78,7 +78,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   func updateUI() {
     if (accountsAdded.count < self.accounts.count) {
       self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-        barButtonSystemItem: .Add, target: self, action: #selector(addAccount))
+        barButtonSystemItem: .add, target: self, action: #selector(addAccount))
     } else {
       self.navigationItem.rightBarButtonItem = nil
     }
@@ -89,14 +89,14 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
       "SettingsAccountLibrariesViewControllerAlertTitle",
       comment: "Title to tell a user that they can add another account to the list"),
                                   message: nil,
-                                  preferredStyle: .ActionSheet)
+                                  preferredStyle: .actionSheet)
     alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
-    alert.popoverPresentationController?.permittedArrowDirections = .Up
+    alert.popoverPresentationController?.permittedArrowDirections = .up
     
     for userAccount in accounts {
       if (accountsAdded.contains(userAccount.id) == false) {
         alert.addAction(UIAlertAction(title: userAccount.name,
-          style: .Default,
+          style: .default,
           handler: { action in
             self.accountsAdded.append(userAccount.id)
             self.tableView.reloadData()
@@ -104,14 +104,14 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
       }
     }
 
-    alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler:nil))
+    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler:nil))
     
-    self.presentViewController(alert, animated: true, completion: nil)
+    self.present(alert, animated: true, completion: nil)
   }
   
   // MARK: UITableViewDataSource
   
-  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
       return 1
     } else if (self.accountsAdded.count >= 1) {
@@ -121,11 +121,11 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     }
   }
   
-  func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+  func numberOfSections(in tableView: UITableView) -> Int {
     return 2;
   }
   
-  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if (indexPath.section == 0) {
       return cellForLibrary(self.currentSelectedAccount, indexPath)
     } else {
@@ -133,11 +133,11 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     }
   }
   
-  func cellForLibrary(account: Account, _ indexPath: NSIndexPath) -> UITableViewCell {
-    let cell = UITableViewCell.init(style: .Subtitle, reuseIdentifier: "")
+  func cellForLibrary(_ account: Account, _ indexPath: IndexPath) -> UITableViewCell {
+    let cell = UITableViewCell.init(style: .subtitle, reuseIdentifier: "")
     
-    cell.accessoryType = .DisclosureIndicator
-    cell.textLabel?.font = UIFont.systemFontOfSize(14)
+    cell.accessoryType = .disclosureIndicator
+    cell.textLabel?.font = UIFont.systemFont(ofSize: 14)
     cell.textLabel?.text = account.name
     cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 12)
     cell.detailTextLabel?.text = account.subtitle
@@ -148,7 +148,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   
   // MARK: UITableViewDelegate
   
-  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     var account: Int
     if (indexPath.section == 0) {
       account = self.currentSelectedAccount.id
@@ -156,15 +156,15 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
       account = self.secondaryAccounts[indexPath.row]
     }
     let viewController = NYPLSettingsAccountDetailViewController(account: account)
-    self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
-    self.navigationController?.pushViewController(viewController, animated: true)
+    self.tableView.deselectRow(at: indexPath, animated: true)
+    self.navigationController?.pushViewController(viewController!, animated: true)
   }
   
-  func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     return 60;
   }
   
-  func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+  func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
     if indexPath.section == 0 {
       return false;
     } else {
@@ -172,10 +172,10 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     }
   }
   
-  func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-    if editingStyle == .Delete {
-      secondaryAccounts.removeAtIndex(indexPath.row)
-      tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    if editingStyle == .delete {
+      secondaryAccounts.remove(at: indexPath.row)
+      tableView.deleteRows(at: [indexPath], with: .fade)
       self.tableView.reloadData()
     }
   }

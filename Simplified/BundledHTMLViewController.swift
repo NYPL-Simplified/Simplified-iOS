@@ -4,11 +4,11 @@ import UIKit
 /// bundled with an application. Any clicked links will open in an external
 /// web browser, thus their content should not be part of the application.
 final class BundledHTMLViewController: UIViewController {
-  let fileURL: NSURL
+  let fileURL: URL
   let webView: UIWebView
   let webViewDelegate: UIWebViewDelegate
   
-  required init(fileURL: NSURL, title: String) {
+  required init(fileURL: URL, title: String) {
     self.fileURL = fileURL
     self.webView = UIWebView.init()
     self.webViewDelegate = WebViewDelegate()
@@ -25,30 +25,30 @@ final class BundledHTMLViewController: UIViewController {
   
   override func viewDidLoad() {
     self.webView.frame = self.view.bounds
-    self.webView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-    self.webView.backgroundColor = UIColor.whiteColor()
+    self.webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    self.webView.backgroundColor = UIColor.white
     self.webView.delegate = self.webViewDelegate
-    self.webView.dataDetectorTypes = .None;
+    self.webView.dataDetectorTypes = UIDataDetectorTypes();
     self.view.addSubview(self.webView)
   }
   
-  override func viewWillAppear(animated: Bool) {
-    self.webView.loadRequest(NSURLRequest.init(URL: self.fileURL))
+  override func viewWillAppear(_ animated: Bool) {
+    self.webView.loadRequest(URLRequest.init(url: self.fileURL))
   }
   
-  private class WebViewDelegate: NSObject, UIWebViewDelegate {
+  fileprivate class WebViewDelegate: NSObject, UIWebViewDelegate {
     @objc func webView(
-      webView: UIWebView,
-      shouldStartLoadWithRequest request: NSURLRequest,
+      _ webView: UIWebView,
+      shouldStartLoadWith request: URLRequest,
                                  navigationType: UIWebViewNavigationType) -> Bool
     {
-      if navigationType == .LinkClicked {
-        UIApplication.sharedApplication().openURL(request.URL!)
+      if navigationType == .linkClicked {
+        UIApplication.shared.openURL(request.url!)
         return false
       }
       
       // We should not be going out to the network for anything.
-      return request.URL!.scheme == "file"
+      return request.url!.scheme == "file"
     }
   }
 }

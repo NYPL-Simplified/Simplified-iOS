@@ -5,12 +5,12 @@ import WebKit
 /// Similar functionality to BundledHTMLViewController, except for loading remote HTTP URL's where
 /// it does not make sense in certain contexts to have bundled resources loaded.
 final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
-  let fileURL: NSURL
+  let fileURL: URL
   let failureMessage: String
   var webView: WKWebView
   var activityView: UIActivityIndicatorView!
   
-  required init(URL: NSURL, title: String, failureMessage: String) {
+  required init(URL: Foundation.URL, title: String, failureMessage: String) {
     self.fileURL = URL
     self.failureMessage = failureMessage
     self.webView = WKWebView()
@@ -28,21 +28,21 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
   override func viewDidLoad() {
     webView.frame = self.view.frame
     webView.navigationDelegate = self
-    webView.backgroundColor = UIColor.whiteColor()
+    webView.backgroundColor = UIColor.white
     webView.allowsBackForwardNavigationGestures = true
 
     view.addSubview(self.webView)
     webView.autoPinEdgesToSuperviewEdges()
 
-    let request = NSURLRequest.init(URL: fileURL, cachePolicy: .UseProtocolCachePolicy, timeoutInterval: 10.0)
-    webView.loadRequest(request)
+    let request = URLRequest.init(url: fileURL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
+    webView.load(request)
     
     activityView(animated:true)
   }
   
-  func activityView(animated animated: Bool) -> Void {
+  func activityView(animated: Bool) -> Void {
     if animated == true {
-      activityView = UIActivityIndicatorView.init(activityIndicatorStyle: .Gray)
+      activityView = UIActivityIndicatorView.init(activityIndicatorStyle: .gray)
       activityView.center = self.view.center
       view.addSubview(activityView)
       activityView.startAnimating()
@@ -52,27 +52,27 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
     }
   }
 
-  func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: NSError) {
+  func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
     activityView(animated: false)
     let alert = UIAlertController.init(title: NSLocalizedString(
       "Connection Failed",
       comment: "Title for alert that explains that the page could not download the information"),
                                        message: error.localizedDescription,
-                                       preferredStyle: .Alert)
-    let action1 = UIAlertAction.init(title: NSLocalizedString("Cancel", comment: "Button that says to cancel and go back to the last screen."), style: .Destructive) { (cancelAction) in
-      self.navigationController?.popViewControllerAnimated(true)
+                                       preferredStyle: .alert)
+    let action1 = UIAlertAction.init(title: NSLocalizedString("Cancel", comment: "Button that says to cancel and go back to the last screen."), style: .destructive) { (cancelAction) in
+      self.navigationController?.popViewController(animated: true)
     }
-    let action2 = UIAlertAction.init(title: NSLocalizedString("Reload", comment: "Button that says to try again"), style: .Destructive) { (reloadAction) in
-      let urlRequest = NSURLRequest(URL: self.fileURL, cachePolicy: .UseProtocolCachePolicy, timeoutInterval: 10.0)
-      webView.loadRequest(urlRequest)
+    let action2 = UIAlertAction.init(title: NSLocalizedString("Reload", comment: "Button that says to try again"), style: .destructive) { (reloadAction) in
+      let urlRequest = URLRequest(url: self.fileURL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
+      webView.load(urlRequest)
     }
     
     alert.addAction(action1)
     alert.addAction(action2)
-    self.presentViewController(alert, animated: true, completion: nil)
+    self.present(alert, animated: true, completion: nil)
   }
   
-  func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
     activityView(animated: false)
   }
 }

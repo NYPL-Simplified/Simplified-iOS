@@ -24,12 +24,12 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     setupViews()
   }
   
-  override func viewWillAppear(animated: Bool) {
+  override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.navigationController?.setNavigationBarHidden(true, animated: false)
   }
   
-  override func viewWillDisappear(animated: Bool) {
+  override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     self.navigationController?.setNavigationBarHidden(false, animated: false)
   }
@@ -50,92 +50,92 @@ final class NYPLWelcomeScreenViewController: UIViewController {
                                  buttonTargetSelector: #selector(instantClassicsTapped))
     
     let logoView = UIImageView(image: UIImage(named: "FullLogo"))
-    logoView.contentMode = .ScaleAspectFit
+    logoView.contentMode = .scaleAspectFit
     
     let containerView = UIView()
     containerView.addSubview(logoView)
     containerView.addSubview(view1)
     containerView.addSubview(view2)
     
-    logoView.autoPinEdgeToSuperviewMargin(.Top)
-    logoView.autoAlignAxisToSuperviewAxis(.Vertical)
-    logoView.autoSetDimensionsToSize(CGSizeMake(180, 150))
+    logoView.autoPinEdge(toSuperviewMargin: .top)
+    logoView.autoAlignAxis(toSuperviewAxis: .vertical)
+    logoView.autoSetDimensions(to: CGSize(width: 180, height: 150))
     
-    view1.autoAlignAxisToSuperviewAxis(.Vertical)
-    view1.autoPinEdge(.Top, toEdge: .Bottom, ofView: logoView, withOffset: 5)
+    view1.autoAlignAxis(toSuperviewAxis: .vertical)
+    view1.autoPinEdge(.top, to: .bottom, of: logoView, withOffset: 5)
     
-    view2.autoAlignAxisToSuperviewAxis(.Vertical)
-    view2.autoPinEdge(.Top, toEdge: .Bottom, ofView: view1, withOffset: 8)
-    view2.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 80)
-    view2.autoPinEdgeToSuperviewMargin(.Left)
-    view2.autoPinEdgeToSuperviewMargin(.Right)
+    view2.autoAlignAxis(toSuperviewAxis: .vertical)
+    view2.autoPinEdge(.top, to: .bottom, of: view1, withOffset: 8)
+    view2.autoPinEdge(toSuperviewEdge: .bottom, withInset: 80)
+    view2.autoPinEdge(toSuperviewMargin: .left)
+    view2.autoPinEdge(toSuperviewMargin: .right)
     
     
     self.view.addSubview(containerView)
     containerView.autoCenterInSuperview()
   }
   
-  func splashScreenView(imageName: String, headline: String, subheadline: String, buttonTitle: String, buttonTargetSelector: Selector) -> UIView {
+  func splashScreenView(_ imageName: String, headline: String, subheadline: String, buttonTitle: String, buttonTargetSelector: Selector) -> UIView {
     let tempView = UIView()
     
     let imageView1 = UIImageView(image: UIImage(named: imageName))
     
     tempView.addSubview(imageView1)
-    imageView1.autoSetDimensionsToSize(CGSizeMake(60, 60))
-    imageView1.autoAlignAxisToSuperviewMarginAxis(.Vertical)
-    imageView1.autoPinEdgeToSuperviewMargin(.Top)
+    imageView1.autoSetDimensions(to: CGSize(width: 60, height: 60))
+    imageView1.autoAlignAxis(toSuperviewMarginAxis: .vertical)
+    imageView1.autoPinEdge(toSuperviewMargin: .top)
     
     let textLabel1 = UILabel()
-    textLabel1.textAlignment = .Center
+    textLabel1.textAlignment = .center
     textLabel1.text = headline
-    textLabel1.font = UIFont.systemFontOfSize(16)
+    textLabel1.font = UIFont.systemFont(ofSize: 16)
     
     tempView.addSubview(textLabel1)
-    textLabel1.autoPinEdge(.Top, toEdge: .Bottom, ofView: imageView1, withOffset: 2.0, relation: .Equal)
-    textLabel1.autoPinEdge(.Leading, toEdge: .Leading, ofView: tempView, withOffset: 0.0, relation: .GreaterThanOrEqual)
-    textLabel1.autoPinEdge(.Trailing, toEdge: .Trailing, ofView: tempView, withOffset: 0.0, relation: .GreaterThanOrEqual)
-    textLabel1.autoAlignAxisToSuperviewMarginAxis(.Vertical)
+    textLabel1.autoPinEdge(.top, to: .bottom, of: imageView1, withOffset: 2.0, relation: .equal)
+    textLabel1.autoPinEdge(.leading, to: .leading, of: tempView, withOffset: 0.0, relation: .greaterThanOrEqual)
+    textLabel1.autoPinEdge(.trailing, to: .trailing, of: tempView, withOffset: 0.0, relation: .greaterThanOrEqual)
+    textLabel1.autoAlignAxis(toSuperviewMarginAxis: .vertical)
     
     let textLabel2 = UILabel()
-    textLabel2.textAlignment = .Center
+    textLabel2.textAlignment = .center
     textLabel2.text = subheadline
-    textLabel2.font = UIFont.systemFontOfSize(12)
+    textLabel2.font = UIFont.systemFont(ofSize: 12)
 
     tempView.addSubview(textLabel2)
-    textLabel2.autoPinEdge(.Top, toEdge: .Bottom, ofView: textLabel1, withOffset: 0.0, relation: .Equal)
-    textLabel2.autoPinEdge(.Leading, toEdge: .Leading, ofView: tempView, withOffset: 0.0, relation: .GreaterThanOrEqual)
-    textLabel2.autoPinEdge(.Trailing, toEdge: .Trailing, ofView: tempView, withOffset: 0.0, relation: .GreaterThanOrEqual)
-    textLabel2.autoAlignAxisToSuperviewMarginAxis(.Vertical)
+    textLabel2.autoPinEdge(.top, to: .bottom, of: textLabel1, withOffset: 0.0, relation: .equal)
+    textLabel2.autoPinEdge(.leading, to: .leading, of: tempView, withOffset: 0.0, relation: .greaterThanOrEqual)
+    textLabel2.autoPinEdge(.trailing, to: .trailing, of: tempView, withOffset: 0.0, relation: .greaterThanOrEqual)
+    textLabel2.autoAlignAxis(toSuperviewMarginAxis: .vertical)
     
     let button = UIButton()
-    button.setTitle(buttonTitle, forState: .Normal)
-    button.titleLabel?.font = UIFont.systemFontOfSize(12)
-    button.setTitleColor(UIColor.init(red: 0.0, green: 122.0/255.0, blue: 1.0, alpha: 1.0), forState: .Normal)
-    button.layer.borderColor = UIColor.init(red: 141.0/255.0, green: 199.0/255.0, blue: 64.0/255.0, alpha: 1.0).CGColor
+    button.setTitle(buttonTitle, for: UIControlState())
+    button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+    button.setTitleColor(UIColor.init(red: 0.0, green: 122.0/255.0, blue: 1.0, alpha: 1.0), for: UIControlState())
+    button.layer.borderColor = UIColor.init(red: 141.0/255.0, green: 199.0/255.0, blue: 64.0/255.0, alpha: 1.0).cgColor
     button.layer.borderWidth = 2
     button.layer.cornerRadius = 6
 
     button.contentEdgeInsets = UIEdgeInsetsMake(10.0, 10.0, 10.0, 10.0)
-    button.addTarget(self, action: buttonTargetSelector, forControlEvents: .TouchUpInside)
+    button.addTarget(self, action: buttonTargetSelector, for: .touchUpInside)
     tempView.addSubview(button)
     
-    button.autoPinEdge(.Top, toEdge: .Bottom, ofView: textLabel2, withOffset: 6.0, relation: .Equal)
-    button.autoAlignAxisToSuperviewMarginAxis(.Vertical)
-    button.autoPinEdgeToSuperviewMargin(.Bottom)
+    button.autoPinEdge(.top, to: .bottom, of: textLabel2, withOffset: 6.0, relation: .equal)
+    button.autoAlignAxis(toSuperviewMarginAxis: .vertical)
+    button.autoPinEdge(toSuperviewMargin: .bottom)
     
     return tempView
   }
 
   func pickYourLibraryTapped() {
     if completion == nil {
-      self.dismissViewControllerAnimated(true, completion: nil)
+      self.dismiss(animated: true, completion: nil)
       return
     }
     let accountNYPL = AccountsManager.shared.account(0)!
     // Existing User
     if accountNYPL.eulaIsAccepted == false {
       let listVC = NYPLWelcomeScreenAccountList { libraryAccount in
-        NYPLSettings.sharedSettings().currentAccountIdentifier = libraryAccount.id
+        NYPLSettings.shared().currentAccountIdentifier = libraryAccount.id
         self.completion!()
       }
       self.navigationController?.pushViewController(listVC, animated: true)
@@ -158,11 +158,11 @@ final class NYPLWelcomeScreenViewController: UIViewController {
 final class NYPLWelcomeScreenAccountList: UITableViewController {
   
   var accounts: [Account]!
-  let completion: Account -> ()
+  let completion: (Account) -> ()
   
-  required init(completion: Account -> ()) {
+  required init(completion: @escaping (Account) -> ()) {
     self.completion = completion
-    super.init(style: .Grouped)
+    super.init(style: .grouped)
   }
   
   @available(*, unavailable)
@@ -175,22 +175,22 @@ final class NYPLWelcomeScreenAccountList: UITableViewController {
     self.title = NSLocalizedString("LibraryListTitle", comment: "Title that also informs the user that they should choose a library from the list.")
   }
   
-  override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     completion(accounts[indexPath.row])
   }
   
-  override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return self.accounts.count
   }
   
-  override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    var cell = tableView.dequeueReusableCellWithIdentifier("cellID") as UITableViewCell!
+  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    var cell = tableView.dequeueReusableCell(withIdentifier: "cellID") as UITableViewCell!
     if (cell == nil) {
-      cell = UITableViewCell(style:.Default, reuseIdentifier:"cellID")
+      cell = UITableViewCell(style:.default, reuseIdentifier:"cellID")
     }
-    cell.textLabel!.text = self.accounts[indexPath.row].name
-    cell.textLabel!.font = UIFont.systemFontOfSize(14)
-    return cell
+    cell?.textLabel!.text = self.accounts[indexPath.row].name
+    cell?.textLabel!.font = UIFont.systemFont(ofSize: 14)
+    return cell!
   }
   
 }
