@@ -140,9 +140,14 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     } else {
       account = userAddedSecondaryAccounts[indexPath.row]
     }
-    let viewController = NYPLSettingsAccountDetailViewController(account: account)
+    var viewController: UIViewController
+    if account != 2 {
+      viewController = NYPLSettingsAccountDetailViewController(account: account)
+    } else {
+      viewController = NYPLSettingsClassicsAccountDetailViewController()
+    }
     self.tableView.deselectRow(at: indexPath, animated: true)
-    self.navigationController?.pushViewController(viewController!, animated: true)
+    self.navigationController?.pushViewController(viewController, animated: true)
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

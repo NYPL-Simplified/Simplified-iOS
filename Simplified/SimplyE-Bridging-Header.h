@@ -9,4 +9,5 @@
 #import "NYPLAccount.h"
 #import "NYPLSettings.h"
 #import "NYPLSettingsAccountDetailViewController.h"
+#import "NYPLSettingsClassicsAccountDetailViewController.h"
 #import "NYPLRoundedButton.h"
