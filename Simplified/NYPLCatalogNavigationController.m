@@ -136,6 +136,7 @@
   
   if ([[NYPLSettings sharedSettings] userPresentedWelcomeScreen] == NO) {
     NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^() {
+        [[AccountsManager sharedInstance] account:2].eulaIsAccepted = YES;
         [self reloadSelected];
         [self dismissViewControllerAnimated:YES completion:nil];
     }];
@@ -144,6 +145,8 @@
     if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
       [navController setModalPresentationStyle:UIModalPresentationFormSheet];
     }
+    [navController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+    
     NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
     [vc safelyPresentViewController:navController animated:YES completion:nil];
     [[NYPLSettings sharedSettings] setUserPresentedWelcomeScreen:YES];

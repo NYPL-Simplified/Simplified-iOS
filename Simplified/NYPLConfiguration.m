@@ -160,6 +160,14 @@ static NSString *const heapIDDevelopment = @"1848989408";
   return [UIColor yellowColor];
 }
 
++(UIColor *)iconLogoBlueColor {
+  return [UIColor colorWithRed:17.0/255.0 green:50.0/255.0 blue:84.0/255.0 alpha:1.0];
+}
+
++(UIColor *)iconLogoGreenColor {
+  return [UIColor colorWithRed:141.0/255.0 green:199.0/255.0 blue:64.0/255.0 alpha:1.0];
+}
+
 // Set for the whole app via UIView+NYPLFontAdditions.
 + (NSString *)systemFontName
 {

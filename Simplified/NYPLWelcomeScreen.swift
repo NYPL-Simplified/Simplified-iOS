@@ -110,12 +110,12 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     let button = UIButton()
     button.setTitle(buttonTitle, for: UIControlState())
     button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
-    button.setTitleColor(UIColor.init(red: 0.0, green: 122.0/255.0, blue: 1.0, alpha: 1.0), for: UIControlState())
-    button.layer.borderColor = UIColor.init(red: 141.0/255.0, green: 199.0/255.0, blue: 64.0/255.0, alpha: 1.0).cgColor
+    button.setTitleColor(NYPLConfiguration.iconLogoBlueColor(), for: .normal)
+    button.layer.borderColor = NYPLConfiguration.iconLogoGreenColor().cgColor
     button.layer.borderWidth = 2
     button.layer.cornerRadius = 6
 
-    button.contentEdgeInsets = UIEdgeInsetsMake(10.0, 10.0, 10.0, 10.0)
+    button.contentEdgeInsets = UIEdgeInsetsMake(8.0, 10.0, 8.0, 10.0)
     button.addTarget(self, action: buttonTargetSelector, for: .touchUpInside)
     tempView.addSubview(button)
     
@@ -175,6 +175,10 @@ final class NYPLWelcomeScreenAccountList: UITableViewController {
     self.title = NSLocalizedString("LibraryListTitle", comment: "Title that also informs the user that they should choose a library from the list.")
   }
   
+  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    return 80
+  }
+  
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     completion(accounts[indexPath.row])
   }
@@ -184,13 +188,19 @@ final class NYPLWelcomeScreenAccountList: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    var cell = tableView.dequeueReusableCell(withIdentifier: "cellID") as UITableViewCell!
-    if (cell == nil) {
-      cell = UITableViewCell(style:.default, reuseIdentifier:"cellID")
-    }
-    cell?.textLabel!.text = self.accounts[indexPath.row].name
-    cell?.textLabel!.font = UIFont.systemFont(ofSize: 14)
-    return cell!
+    return cellForLibrary(self.accounts[indexPath.row])
   }
   
+  func cellForLibrary(_ account: Account) -> UITableViewCell {
+    let cell = UITableViewCell.init(style: .subtitle, reuseIdentifier: "")
+    
+    cell.textLabel?.font = UIFont.systemFont(ofSize: 14)
+    cell.textLabel?.text = account.name
+    cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 12)
+    cell.detailTextLabel?.text = account.subtitle
+    cell.detailTextLabel?.numberOfLines = 2
+    cell.imageView?.image = UIImage(named: account.logo!)
+    
+    return cell
+  }
 }

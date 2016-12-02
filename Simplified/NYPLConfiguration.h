@@ -41,6 +41,10 @@
 
 + (UIColor *)backgroundSepiaColor;
 
++ (UIColor *)iconLogoBlueColor;
+
++ (UIColor *)iconLogoGreenColor;
+
 + (NSString *)systemFontName;
 
 + (NSString *)boldSystemFontName;
