@@ -29,16 +29,6 @@
  "logo" : "LibraryLogoMagic",
  "needsAuth" : false,
  "supportsReservations" : false,
- "catalogUrl" : "http://oacontent.librarysimplified.org/"
- },
- {
- "id" : 3,
- "pathComponent" : "3",
- "name" : "Magic Library",
- "subtitle" : "Magic just Magic",
- "logo" : "LibraryLogoMagic2",
- "needsAuth" : false,
- "supportsReservations" : false,
- "catalogUrl" : "http://oacontent.librarysimplified.org/"
+ "catalogUrl" : "https://dev-mta.nypl.org/index.xml"
  }
 ]
