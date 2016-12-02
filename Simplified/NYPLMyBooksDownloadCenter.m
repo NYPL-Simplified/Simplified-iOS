@@ -317,7 +317,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 #if defined(FEATURE_DRM_CONNECTOR)
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
   if(fulfillmentId) {
-    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId completion:^(BOOL success, NSError *error) {
+    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId completion:^(BOOL success, __unused NSError *error) {
       if(!success) {
         NYPLLOG(@"Failed to return loan.");
       }
