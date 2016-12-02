@@ -642,7 +642,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     
     [subtitleLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:titleLabel];
     [subtitleLabel autoPinEdge:ALEdgeRight toEdge:ALEdgeRight ofView:titleLabel];
-    [subtitleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:titleLabel withOffset:4];
+    [subtitleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:titleLabel withOffset:0];
     [subtitleLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:20];
     
     return containerView;

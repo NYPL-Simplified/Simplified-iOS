@@ -13,8 +13,7 @@
 #import "NYPLSettingsClassicsAccountDetailViewController.h"
 
 typedef NS_ENUM(NSInteger, CellKind) {
-  CellKindEULA,
-  CellKindSyncButton,
+  CellKindAgeCheck,
   CellKindAbout,
   CellKindPrivacyPolicy,
   CellKindContentLicense,
@@ -22,9 +21,8 @@ typedef NS_ENUM(NSInteger, CellKind) {
 };
 
 typedef NS_ENUM(NSInteger, Section) {
-  SectionEULA = 0,
-  SectionSync = 1,
-  SectionLicenses = 2,
+  SectionAgreements = 0,
+  SectionLicenses = 1,
 };
 
 static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
@@ -34,20 +32,12 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
     case 0:
       switch(indexPath.row) {
         case 0:
-          return CellKindEULA;
+          return CellKindAgeCheck;
         default:
           @throw NSInvalidArgumentException;
       }
       
     case 1:
-        switch (indexPath.row) {
-          case 0:
-            return CellKindSyncButton;
-          default:
-            @throw NSInvalidArgumentException;
-        }
-      
-    case 2:
         switch (indexPath.row) {
           case 0:
             return CellKindAbout;
@@ -69,7 +59,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @interface NYPLSettingsClassicsAccountDetailViewController ()
 
 @property (nonatomic, copy) void (^completionHandler)();
-@property (nonatomic) UITableViewCell *eulaCell;
+@property (nonatomic) UITableViewCell *ageCheckCell;
 
 @end
 
@@ -80,22 +70,9 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 {
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
-  
-  self.title = NSLocalizedString(@"Account", nil);
-  
-//  [[NSNotificationCenter defaultCenter]
-//   addObserver:self
-//   selector:@selector(accountDidChange)
-//   name:NYPLAccountDidChangeNotification
-//   object:nil];
 
   return self;
 }
-
-//- (void)dealloc
-//{
-//  [[NSNotificationCenter defaultCenter] removeObserver:self];
-//}
 
 #pragma mark UIViewController
 
@@ -116,20 +93,17 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 - (void)tableView:(__attribute__((unused)) UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
+  Account *accountItem = [[AccountsManager sharedInstance] account:2];      //GODO hardcoded instant classic
   switch(CellKindFromIndexPath(indexPath)) {
-    case CellKindEULA: {
+    case CellKindAgeCheck: {
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-      Account *accountItem = [[AccountsManager sharedInstance] account:2];    //GODO hardcoded instant classic
-      if (accountItem.eulaIsAccepted == YES) {
+      if (accountItem.userAboveAgeLimit == YES) {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
-        accountItem.eulaIsAccepted = NO;
+        accountItem.userAboveAgeLimit = NO;
       } else {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
-        accountItem.eulaIsAccepted = YES;
+        accountItem.userAboveAgeLimit = YES;
       }
-      break;
-    }
-    case CellKindSyncButton: {
       break;
     }
     case CellKindAbout: {
@@ -180,51 +154,27 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  // This is the amount of horizontal padding Apple uses around the titles in cells by default.
-  CGFloat const padding = 16;
-  
+  Account *accountItem = [[AccountsManager sharedInstance] account:2];
   switch(CellKindFromIndexPath(indexPath)) {
-    case CellKindEULA: {
-      self.eulaCell = [[UITableViewCell alloc]
-                       initWithStyle:UITableViewCellStyleDefault
-                       reuseIdentifier:nil];
-      Account *accountItem = [[AccountsManager sharedInstance] account:2];
-      if (accountItem.eulaIsAccepted) {
-        self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
-                                       [UIImage imageNamed:@"CheckboxOn"]];
+    case CellKindAgeCheck: {
+      self.ageCheckCell = [[UITableViewCell alloc]
+                           initWithStyle:UITableViewCellStyleDefault
+                           reuseIdentifier:nil];
+      if (accountItem.userAboveAgeLimit) {
+        self.ageCheckCell.accessoryView = [[UIImageView alloc] initWithImage:
+                                           [UIImage imageNamed:@"CheckboxOn"]];
       } else {
-        self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
-                                       [UIImage imageNamed:@"CheckboxOff"]];
+        self.ageCheckCell.accessoryView = [[UIImageView alloc] initWithImage:
+                                           [UIImage imageNamed:@"CheckboxOff"]];
       }
-      self.eulaCell.selectionStyle = UITableViewCellSelectionStyleNone;
-      self.eulaCell.textLabel.font = [UIFont systemFontOfSize:13];
-      self.eulaCell.textLabel.text = NSLocalizedString(@"SettingsAccountEULACheckbox",
-                                                       @"Statement letting a user know that they must agree to the User Agreement terms.");
-      self.eulaCell.textLabel.numberOfLines = 2;
-      return self.eulaCell;
-    }
-    case CellKindSyncButton: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      UISwitch* switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
-      Account *account = [[AccountsManager sharedInstance] account:2];
-      if (account.syncIsEnabled) {
-        [switchView setOn:YES];
-      } else {
-        [switchView setOn:NO];
-      }
-      cell.accessoryView = switchView;
-      [switchView addTarget:self action:@selector(syncSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-      [cell.contentView addSubview:switchView];
-      cell.selectionStyle = UITableViewCellSelectionStyleNone;
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"SettingsAccountSyncTitle",
-                                              @"Title for switch to turn on or off syncing of the place where a user was reading a book.");
-      return cell;
+      self.ageCheckCell.selectionStyle = UITableViewCellSelectionStyleNone;
+      self.ageCheckCell.textLabel.font = [UIFont systemFontOfSize:13];
+      self.ageCheckCell.textLabel.text = NSLocalizedString(@"SettingsAccountAgeCheckbox",
+                                                           @"Statement that confirms if a user meets the age requirement to download books");
+      self.ageCheckCell.textLabel.numberOfLines = 2;
+      return self.ageCheckCell;
     }
     case CellKindAbout: {
-      Account *accountItem = [[AccountsManager sharedInstance] account:2];
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
@@ -266,16 +216,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return 3;
+  return 2;
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
  numberOfRowsInSection:(NSInteger const)section
 {
   switch(section) {
-    case SectionEULA:
-      return 1;
-    case SectionSync:
+    case SectionAgreements:
       return 1;
     case SectionLicenses:
       return 4;
@@ -338,7 +286,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     
     [subtitleLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:titleLabel];
     [subtitleLabel autoPinEdge:ALEdgeRight toEdge:ALEdgeRight ofView:titleLabel];
-    [subtitleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:titleLabel withOffset:4];
+    [subtitleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:titleLabel withOffset:0];
     [subtitleLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:20];
     
     return containerView;
@@ -366,11 +314,5 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     account.syncIsEnabled = NO;
   }
 }
-
-
-//- (void)accountDidChange
-//{
-//
-//}
 
 @end
