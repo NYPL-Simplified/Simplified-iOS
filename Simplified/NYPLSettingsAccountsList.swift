@@ -9,14 +9,13 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     }
   }
   private var libraryAccounts: [Account]
-  private var userAddedSecondaryAccounts: [Int]
+  private var userAddedSecondaryAccounts: [Int]!
   private let manager: AccountsManager
   
   required init(accounts: [Int]) {
     self.accounts = accounts
     self.manager = AccountsManager.shared
     self.libraryAccounts = manager.accounts
-    self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount.id }
 
     super.init(nibName:nil, bundle:nil)
   }
@@ -37,6 +36,8 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     self.tableView = self.view as! UITableView
     self.tableView.delegate = self
     self.tableView.dataSource = self
+    
+    self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount.id }
     
     self.title = NSLocalizedString("Accounts",
                                    comment: "A title for a list of libraries the user may select or add to.")
@@ -91,7 +92,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   }
   
   func updateSettingsAccountList() {
-    var array = userAddedSecondaryAccounts
+    var array = userAddedSecondaryAccounts!
     array.append(manager.currentAccount.id)
     NYPLSettings.shared().settingsAccountsList = array
   }

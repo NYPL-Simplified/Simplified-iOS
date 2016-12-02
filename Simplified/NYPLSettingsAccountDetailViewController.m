@@ -46,7 +46,7 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionLicenses = 3,
 };
 
-static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
+static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath, int const account)
 {
   switch(indexPath.section) {
       
@@ -73,7 +73,8 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
       }
       
     case 2:
-      if ([[NYPLSettings sharedSettings] annotationsURL]) {
+      if ([[NYPLSettings sharedSettings] annotationsURL] &&
+          [[NYPLAccount sharedAccount:account] hasBarcodeAndPIN]) {
         switch (indexPath.row) {
           case 0:
             return CellKindSyncButton;
@@ -279,7 +280,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 - (void)tableView:(__attribute__((unused)) UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  switch(CellKindFromIndexPath(indexPath)) {
+  switch(CellKindFromIndexPath(indexPath, (int)self.accountType)) {
     case CellKindBarcode:
       [self.barcodeTextField becomeFirstResponder];
       break;
@@ -423,7 +424,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   // This is the amount of horizontal padding Apple uses around the titles in cells by default.
   CGFloat const padding = 16;
   
-  switch(CellKindFromIndexPath(indexPath)) {
+  switch(CellKindFromIndexPath(indexPath, (int)self.accountType)) {
     case CellKindBarcode: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
@@ -556,7 +557,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     
   if (![[AccountsManager sharedInstance] account:self.accountType].needsAuth) {
     return 0;
-  } else if ([[NYPLSettings sharedSettings] annotationsURL]) {
+  } else if ([self syncButtonShouldBeVisible]) {
     return 4;
   } else {
     return 3;
@@ -576,7 +577,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         return 2;
       }
     case SectionSyncOrLicenses:
-      if ([[NYPLSettings sharedSettings] annotationsURL]) {
+      if ([self syncButtonShouldBeVisible]) {
         return 1;
       } else {
         return 4;
@@ -1112,6 +1113,12 @@ replacementString:(NSString *)string
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self updateShowHidePINState];
   }];
+}
+
+- (BOOL)syncButtonShouldBeVisible
+{
+  return ([[NYPLSettings sharedSettings] annotationsURL] &&
+          [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
 }
 
 @end

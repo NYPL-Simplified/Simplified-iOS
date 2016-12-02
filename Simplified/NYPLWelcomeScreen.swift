@@ -173,6 +173,7 @@ final class NYPLWelcomeScreenAccountList: UITableViewController {
   override func viewDidLoad() {
     self.accounts = AccountsManager.shared.accounts
     self.title = NSLocalizedString("LibraryListTitle", comment: "Title that also informs the user that they should choose a library from the list.")
+    self.view.backgroundColor = NYPLConfiguration.backgroundColor()
   }
   
   override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
