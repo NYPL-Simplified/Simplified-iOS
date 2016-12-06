@@ -29,6 +29,6 @@
  "logo" : "LibraryLogoMagic",
  "needsAuth" : false,
  "supportsReservations" : false,
- "catalogUrl" : "https://dev-mta.nypl.org/index.xml"
+ "catalogUrl" : "http://dev-mta.nypl.org/index.xml"
  }
 ]

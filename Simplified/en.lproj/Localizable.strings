@@ -160,6 +160,7 @@
 
 "SettingsAccountAgeCheckbox" = "I am 13 years of age or older.";
 "SettingsAccountEULACheckbox" = "I agree to the terms of the End User License Agreement.";
+"SettingsAccountSetAccountTitle" = "Set to Active Account";
 "SettingsAccountSyncTitle" = "Sync Last-Read Position";
 "SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";
 "SettingsAccountViewControllerCannotLogOutTitle" =

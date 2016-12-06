@@ -27,11 +27,13 @@
 #endif
 
 typedef NS_ENUM(NSInteger, CellKind) {
+  CellKindAgeCheck,
   CellKindBarcode,
   CellKindPIN,
   CellKindLogInSignOut,
   CellKindRegistration,
   CellKindEULA,
+  CellKindSetCurrentAccount,
   CellKindSyncButton,
   CellKindAbout,
   CellKindPrivacyPolicy,
@@ -40,48 +42,54 @@ typedef NS_ENUM(NSInteger, CellKind) {
 };
 
 typedef NS_ENUM(NSInteger, Section) {
-  SectionBarcodePin = 0,
-  SectionEULA = 1,
-  SectionSyncOrLicenses = 2,
-  SectionLicenses = 3,
+  SectionLogin = 0,
+  SectionSync = 1,
+  SectionLicenses = 2,
 };
 
-static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath, int const account)
+static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath, int const accountID)
 {
-  switch(indexPath.section) {
-      
-    case 0:
-      switch(indexPath.row) {
-        case 0:
-          return CellKindBarcode;
-        case 1:
-          return CellKindPIN;
-        default:
-          @throw NSInvalidArgumentException;
-      }
-      
-    case 1:
-      switch(indexPath.row) {
-        case 0:
-          return CellKindEULA;
-        case 1:
-          return CellKindLogInSignOut;
-        case 2:
-          return CellKindRegistration;
-        default:
-          @throw NSInvalidArgumentException;
-      }
-      
-    case 2:
-      if ([[NYPLSettings sharedSettings] annotationsURL] &&
-          [[NYPLAccount sharedAccount:account] hasBarcodeAndPIN]) {
+  
+  Account *account = [[AccountsManager sharedInstance] account:accountID];
+  
+    switch(indexPath.section) {
+        
+      case 0:
+        if (!account.needsAuth) {
+          switch(indexPath.row) {
+            case 0:
+              return CellKindAgeCheck;
+            default:
+              @throw NSInvalidArgumentException;
+          }
+        } else {
+          switch(indexPath.row) {
+            case 0:
+              return CellKindBarcode;
+            case 1:
+              return CellKindPIN;
+            case 2:
+              return CellKindEULA;
+            case 3:
+              return CellKindLogInSignOut;
+            case 4:
+              return CellKindRegistration;
+            default:
+              @throw NSInvalidArgumentException;
+          }
+        }
+        
+      case 1:
         switch (indexPath.row) {
           case 0:
+            return CellKindSetCurrentAccount;
+          case 1:
             return CellKindSyncButton;
           default:
             @throw NSInvalidArgumentException;
         }
-      } else {
+        
+      case 2:
         switch (indexPath.row) {
           case 0:
             return CellKindAbout;
@@ -94,24 +102,8 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath, int const ac
           default:
             @throw NSInvalidArgumentException;
         }
-      }
-      
-    case 3:
-      switch (indexPath.row) {
-        case 0:
-          return CellKindAbout;
-        case 1:
-          return CellKindPrivacyPolicy;
-        case 2:
-          return CellKindContentLicense;
-        case 3:
-          return CellKindContact;
-        default:
-          @throw NSInvalidArgumentException;
-      }
-      
-    default:
-      @throw NSInvalidArgumentException;
+      default:
+        @throw NSInvalidArgumentException;
   }
 }
 
@@ -121,6 +113,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath, int const ac
 @property (nonatomic) UITextField *barcodeTextField;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) BOOL hiddenPIN;
+@property (nonatomic) UITableViewCell *ageCheckCell;
 @property (nonatomic) UITableViewCell *eulaCell;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITextField *PINTextField;
@@ -424,6 +417,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   // This is the amount of horizontal padding Apple uses around the titles in cells by default.
   CGFloat const padding = 16;
   
+  Account *accountItem = [[AccountsManager sharedInstance] account:self.accountType];
+
   switch(CellKindFromIndexPath(indexPath, (int)self.accountType)) {
     case CellKindBarcode: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
@@ -457,7 +452,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.eulaCell = [[UITableViewCell alloc]
                        initWithStyle:UITableViewCellStyleDefault
                        reuseIdentifier:nil];
-      Account *accountItem = [[AccountsManager sharedInstance] account:self.accountType];
       if (accountItem.eulaIsAccepted) {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOn"]];
@@ -489,6 +483,45 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.textLabel.font = [UIFont systemFontOfSize:17];
       cell.textLabel.text = NSLocalizedString(@"SignUp", nil);
       cell.textLabel.textColor = [NYPLConfiguration mainColor];
+      return cell;
+    }
+    case CellKindAgeCheck: {
+      self.ageCheckCell = [[UITableViewCell alloc]
+                           initWithStyle:UITableViewCellStyleDefault
+                           reuseIdentifier:nil];
+      if (accountItem.userAboveAgeLimit) {
+        self.ageCheckCell.accessoryView = [[UIImageView alloc] initWithImage:
+                                           [UIImage imageNamed:@"CheckboxOn"]];
+      } else {
+        self.ageCheckCell.accessoryView = [[UIImageView alloc] initWithImage:
+                                           [UIImage imageNamed:@"CheckboxOff"]];
+      }
+      self.ageCheckCell.selectionStyle = UITableViewCellSelectionStyleNone;
+      self.ageCheckCell.textLabel.font = [UIFont systemFontOfSize:13];
+      self.ageCheckCell.textLabel.text = NSLocalizedString(@"SettingsAccountAgeCheckbox",
+                                                           @"Statement that confirms if a user meets the age requirement to download books");
+      self.ageCheckCell.textLabel.numberOfLines = 2;
+      return self.ageCheckCell;
+    }
+    case CellKindSetCurrentAccount: {
+      UITableViewCell *const cell = [[UITableViewCell alloc]
+                                     initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:nil];
+      UISwitch* switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+      if (currentAccount.id == self.accountType) {
+        [switchView setOn:YES];
+        switchView.enabled = false;
+      } else {
+        [switchView setOn:NO];
+      }
+      cell.accessoryView = switchView;
+      [switchView addTarget:self action:@selector(setAccountSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+      [cell.contentView addSubview:switchView];
+      cell.selectionStyle = UITableViewCellSelectionStyleNone;
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.text = NSLocalizedString(@"SettingsAccountSetAccountTitle",
+                                              @"Title for switch to make this account the current active library account for the app");
       return cell;
     }
     case CellKindSyncButton: {
@@ -554,33 +587,33 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-    
-  if (![[AccountsManager sharedInstance] account:self.accountType].needsAuth) {
-    return 0;
-  } else if ([self syncButtonShouldBeVisible]) {
-    return 4;
-  } else {
-    return 3;
-  }
+  return 3;
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
  numberOfRowsInSection:(NSInteger const)section
 {
+  Account *account = [[AccountsManager sharedInstance] account:self.accountType];
+
+  
   switch(section) {
-    case SectionBarcodePin:
-      return 2;
-    case SectionEULA:
-      if ([self registrationIsPossible]) {
-        return 3;
-      } else {
-        return 2;
-      }
-    case SectionSyncOrLicenses:
-      if ([self syncButtonShouldBeVisible]) {
+    case SectionLogin:
+      if (!account.needsAuth) {
         return 1;
+      }
+      else if ([self registrationIsPossible]) {
+        return 5;
       } else {
         return 4;
+      }
+    case SectionSync:
+      if (!account.needsAuth) {
+        return 1;
+      }
+      else if ([self syncButtonShouldBeVisible]) {
+        return 2;
+      } else {
+        return 1;
       }
     case SectionLicenses:
       return 4;
@@ -1052,6 +1085,11 @@ replacementString:(NSString *)string
   } else {
     account.syncIsEnabled = NO;
   }
+}
+
+- (void)setAccountSwitchChanged:(id)sender
+{
+  //GODO temp
 }
 
 - (void)didSelectCancel
