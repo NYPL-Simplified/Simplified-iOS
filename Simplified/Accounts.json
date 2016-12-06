@@ -7,6 +7,7 @@
  "logo" : "LibraryLogoNYPL",
  "needsAuth" : true,
  "supportsReservations" : true,
+ "supportsCardCreator" : true,
  "catalogUrl" : "https://circulation.librarysimplified.org",
  "mainColor" : "da2527"
  },
@@ -18,6 +19,7 @@
  "logo" : "LibraryLogoBrooklyn",
  "needsAuth" : true,
  "supportsReservations" : true,
+ "supportsCardCreator" : false,
  "catalogUrl" : "https://circulation.librarysimplified.org",
  "mainColor" : "446ebf"
  },
@@ -28,6 +30,7 @@
  "subtitle" : "Open access to the literature of our shared culture.",
  "logo" : "LibraryLogoMagic",
  "needsAuth" : false,
+ "supportsCardCreator" : false,
  "supportsReservations" : false,
  "catalogUrl" : "http://dev-mta.nypl.org/index.xml"
  }

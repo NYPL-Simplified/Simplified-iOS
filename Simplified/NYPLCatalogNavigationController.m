@@ -136,7 +136,8 @@
   
   if ([[NYPLSettings sharedSettings] userPresentedWelcomeScreen] == NO) {
     NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^() {
-        [[AccountsManager sharedInstance] account:2].eulaIsAccepted = YES;
+      //GODO don't think I need this...
+//        [[AccountsManager sharedInstance] account:2].eulaIsAccepted = YES;
         [self reloadSelected];
         [self dismissViewControllerAnimated:YES completion:nil];
     }];

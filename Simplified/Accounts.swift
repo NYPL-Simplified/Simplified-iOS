@@ -94,6 +94,7 @@ final class Account:NSObject
   let subtitle:String?
   let logo:String?
   let needsAuth:Bool
+  let supportsCardCreator:Bool
   let supportsReservations:Bool
   let catalogUrl:String?
   let mainColor:String?
@@ -137,6 +138,7 @@ final class Account:NSObject
     logo = json["logo"] as? String
     needsAuth = json["needsAuth"] as! Bool
     supportsReservations = json["supportsReservations"] as! Bool
+    supportsCardCreator = json["supportsCardCreator"] as! Bool
     catalogUrl = json["catalogUrl"] as? String
     mainColor = json["mainColor"] as? String
   }

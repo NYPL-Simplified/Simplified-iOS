@@ -273,7 +273,28 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 - (void)tableView:(__attribute__((unused)) UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
+  Account *accountItem = [[AccountsManager sharedInstance] account:self.accountType];
+  
   switch(CellKindFromIndexPath(indexPath, (int)self.accountType)) {
+    case CellKindAgeCheck: {
+      UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+      if (accountItem.userAboveAgeLimit == YES) {
+        [self confirmAgeChange:^(BOOL under13) {
+          if (under13) {
+            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
+            accountItem.userAboveAgeLimit = NO;
+            //Delete Books in My Books
+            [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
+            [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
+            //GODO refresh to "under-13" instant classic catalog
+          }
+        }];
+      } else {
+        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
+        accountItem.userAboveAgeLimit = YES;
+      }
+      break;
+    }
     case CellKindBarcode:
       [self.barcodeTextField becomeFirstResponder];
       break;
@@ -282,7 +303,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindEULA: {
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-      Account *accountItem = [[AccountsManager sharedInstance] account:self.accountType];
       if (accountItem.eulaIsAccepted == YES) {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
         accountItem.eulaIsAccepted = NO;
@@ -355,6 +375,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                         action:@selector(didSelectCancelForSignUp)];
       navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
       [self presentViewController:navigationController animated:YES completion:nil];
+      break;
+    }
+    case CellKindSetCurrentAccount: {
       break;
     }
     case CellKindSyncButton: {
@@ -481,6 +504,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.textAlignment = NSTextAlignmentCenter;
       cell.textLabel.text = NSLocalizedString(@"SignUp", nil);
       cell.textLabel.textColor = [NYPLConfiguration mainColor];
       return cell;
@@ -744,8 +768,9 @@ replacementString:(NSString *)string
 
 - (BOOL)registrationIsPossible
 {
-  return !([[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN] ||
-          ![NYPLConfiguration cardCreationEnabled]);
+  return ([NYPLConfiguration cardCreationEnabled] &&
+          [[AccountsManager sharedInstance] account:self.accountType].supportsCardCreator &&
+          ![[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
 }
 
 - (void)didSelectReveal
@@ -811,7 +836,7 @@ replacementString:(NSString *)string
 
 - (void)changedCurrentAccount
 {
-  [self.navigationController popViewControllerAnimated:NO];
+  [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)showEULA
@@ -1089,8 +1114,38 @@ replacementString:(NSString *)string
 
 - (void)setAccountSwitchChanged:(id)sender
 {
-  //GODO temp
+  //GODO
+  UISwitch *switchControl = sender;
+  if (switchControl.on) {
+    [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:self.accountType];
+//    UINavigationController *masterNavVC = [[self.splitViewController viewControllers] firstObject];
+//    [masterNavVC popToRootViewControllerAnimated:YES];
+  }
 }
+
+- (void)confirmAgeChange:(void (^)(BOOL))completion
+{
+  NYPLAlertController *alertCont = [NYPLAlertController
+                                    alertControllerWithTitle:NSLocalizedString(@"Age Verification", @"An alert title indicating the user needs to verify their age")
+                                    message:NSLocalizedString(@"SettingsAccountViewControllerAgeCheckMessage",
+                                                              @"An alert message warning the user they will lose their downloaded books if they continue.")
+                                    preferredStyle:UIAlertControllerStyleAlert];
+  
+  [alertCont addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"Under 13", comment: @"A button title indicating an age range")
+                                                 style:UIAlertActionStyleDefault
+                                               handler:^(UIAlertAction * _Nonnull __unused action) {
+                                                 if (completion) { completion(YES); }
+                                               }]];
+  
+  [alertCont addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"13 or Older", comment: @"A button title indicating an age range")
+                                                 style:UIAlertActionStyleDefault
+                                               handler:^(UIAlertAction * _Nonnull __unused action) {
+                                                 if (completion) { completion(NO); }
+                                               }]];
+  
+  [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
+}
+
 
 - (void)didSelectCancel
 {
