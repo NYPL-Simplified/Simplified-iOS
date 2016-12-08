@@ -20,7 +20,7 @@
  "needsAuth" : true,
  "supportsReservations" : true,
  "supportsCardCreator" : false,
- "catalogUrl" : "https://circulation.librarysimplified.org",
+ "catalogUrl" : "http://qa-bplapp-elasticl-1x9n88b7wl4x7-162943333.us-east-1.elb.amazonaws.com",
  "mainColor" : "446ebf"
  },
  {
