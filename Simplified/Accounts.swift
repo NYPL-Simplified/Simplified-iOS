@@ -81,7 +81,6 @@ final class AccountsManager: NSObject
   }
 }
 
-
 /// Object representing one library account in the app. Patrons may
 /// choose to sign up for multiple Accounts.
 final class Account:NSObject
@@ -98,6 +97,12 @@ final class Account:NSObject
   let supportsReservations:Bool
   let catalogUrl:String?
   let mainColor:String?
+  
+  private var urlAnnotations:URL?
+  private var urlAcknowledgements:URL?
+  private var urlContentLicenses:URL?
+  private var urlEULA:URL?
+  private var urlPrivacyPolicy:URL?
   
   var eulaIsAccepted:Bool {
     get {
@@ -143,17 +148,88 @@ final class Account:NSObject
     mainColor = json["mainColor"] as? String
   }
   
-  fileprivate func setAccountDictionaryKey(_ key: String, toValue value: AnyObject) {
+  func set(URL: URL, forLicense urlType: URLType) -> Void {
+    switch urlType {
+    case .acknowledgements:
+      urlAcknowledgements = URL
+      setAccountDictionaryKey("urlAcknowledgements", toValue: URL.absoluteString as AnyObject)
+    case .contentLicenses:
+      urlContentLicenses = URL
+      setAccountDictionaryKey("urlContentLicenses", toValue: URL.absoluteString as AnyObject)
+    case .eula:
+      urlEULA = URL
+      setAccountDictionaryKey("urlEULA", toValue: URL.absoluteString as AnyObject)
+    case .privacyPolicy:
+      urlPrivacyPolicy = URL
+      setAccountDictionaryKey("urlPrivacyPolicy", toValue: URL.absoluteString as AnyObject)
+    case .annotations:
+      urlAnnotations = URL
+      setAccountDictionaryKey("urlAnnotations", toValue: URL.absoluteString as AnyObject)
+    }
+  }
+  
+  func getLicenseURL(_ type: URLType) -> URL? {
+    switch type {
+    case .acknowledgements:
+      if let url = urlAcknowledgements {
+        return url
+      } else {
+        guard let urlString = getAccountDictionaryKey("urlAcknowledgements") as? String else { return nil }
+        guard let result = URL(string: urlString) else { return nil }
+        return result
+      }
+    case .contentLicenses:
+      if let url = urlContentLicenses {
+        return url
+      } else {
+        guard let urlString = getAccountDictionaryKey("urlContentLicenses") as? String else { return nil }
+        guard let result = URL(string: urlString) else { return nil }
+        return result
+      }
+    case .eula:
+      if let url = urlEULA {
+        return url
+      } else {
+        guard let urlString = getAccountDictionaryKey("urlEULA") as? String else { return nil }
+        guard let result = URL(string: urlString) else { return nil }
+        return result
+      }
+    case .privacyPolicy:
+      if let url = urlPrivacyPolicy {
+        return url
+      } else {
+        guard let urlString = getAccountDictionaryKey("urlPrivacyPolicy") as? String else { return nil }
+        guard let result = URL(string: urlString) else { return nil }
+        return result
+      }
+    case .annotations:
+      if let url = urlAnnotations {
+        return url
+      } else {
+        guard let urlString = getAccountDictionaryKey("urlAnnotations") as? String else { return nil }
+        guard let result = URL(string: urlString) else { return nil }
+        return result
+      }
+    }
+  }
+  
+  private func setAccountDictionaryKey(_ key: String, toValue value: AnyObject) {
     var savedDict = defaults.value(forKey: self.pathComponent!) as! [String: AnyObject]
     savedDict[key] = value
     defaults.set(savedDict, forKey: self.pathComponent!)
   }
   
-  fileprivate func getAccountDictionaryKey(_ key: String) -> AnyObject? {
+  private func getAccountDictionaryKey(_ key: String) -> AnyObject? {
     let savedDict = defaults.value(forKey: self.pathComponent!) as! [String: AnyObject]
     guard let result = savedDict[key] else { return nil }
     return result
   }
 }
 
-
+@objc enum URLType: Int {
+  case acknowledgements
+  case contentLicenses
+  case eula
+  case privacyPolicy
+  case annotations
+}

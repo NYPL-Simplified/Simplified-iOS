@@ -16,19 +16,9 @@ static NSString *const renderingEngineKey = @"NYPLSettingsRenderingEngine";
 
 static NSString *const userPresentedWelcomeScreenKey = @"NYPLUserPresentedWelcomeScreenKey";
 
-static NSString *const eulaURLKey = @"NYPLSettingsEULAURL";
-
-static NSString *const privacyPolicyURLKey = @"NYPLSettingsPrivacyPolicyURL";
-
-static NSString *const acknowledgmentsURLKey = @"NYPLSettingsAcknowledgmentsURL";
-
-static NSString *const contentLicenseURLKey = @"NYPLSettingsContentLicenseURL";
-
 static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCurrentCardApplicationSerialized";
 
 static NSString *const settingsLibraryAccountsKey = @"NYPLSettingsLibraryAccountsKey";
-
-static NSString *const annotationsURLKey = @"NYPLSettingsAnnotationsURL";
 
 
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
@@ -94,31 +84,6 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] boolForKey:userPresentedWelcomeScreenKey];
 }
 
-- (NSURL *) eulaURL
-{
-  return [[NSUserDefaults standardUserDefaults] URLForKey:eulaURLKey];
-}
-
-- (NSURL *) privacyPolicyURL
-{
-  return [[NSUserDefaults standardUserDefaults] URLForKey:privacyPolicyURLKey];
-}
-
-- (NSURL *) acknowledgmentsURL
-{
-  return [[NSUserDefaults standardUserDefaults] URLForKey:acknowledgmentsURLKey];
-}
-
-- (NSURL *) annotationsURL
-{
-  return [[NSUserDefaults standardUserDefaults] URLForKey:annotationsURLKey];
-}
-
-- (NSURL *) contentLicenseURL
-{
-  return [[NSUserDefaults standardUserDefaults] URLForKey:contentLicenseURLKey];
-}
-
 - (NSArray *) settingsAccountsList
 {
   NSArray *libraryAccounts = [[NSUserDefaults standardUserDefaults] arrayForKey:settingsLibraryAccountsKey];
@@ -174,71 +139,6 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   if([accountMainFeedURL isEqual:self.accountMainFeedURL]) return;
   
   [[NSUserDefaults standardUserDefaults] setURL:accountMainFeedURL forKey:accountMainFeedURLKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLSettingsDidChangeNotification
-   object:self];
-}
-
-- (void)setEulaURL:(NSURL *const)eulaURL
-{
-  if(!eulaURL) return;
-  if([eulaURL isEqual:self.eulaURL]) return;
-  
-  [[NSUserDefaults standardUserDefaults] setURL:eulaURL forKey:eulaURLKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLSettingsDidChangeNotification
-   object:self];
-}
-
-- (void)setPrivacyPolicyURL:(NSURL *)privacyPolicyURL
-{
-  if(!privacyPolicyURL) return;
-  if([privacyPolicyURL isEqual:self.privacyPolicyURL]) return;
-  
-  [[NSUserDefaults standardUserDefaults] setURL:privacyPolicyURL forKey:privacyPolicyURLKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLSettingsDidChangeNotification
-   object:self];
-}
-
-- (void)setAcknowledgmentsURL:(NSURL *)acknowledgmentsURL
-{
-  if(!acknowledgmentsURL) return;
-  if([acknowledgmentsURL isEqual:self.acknowledgmentsURL]) return;
-  
-  [[NSUserDefaults standardUserDefaults] setURL:acknowledgmentsURL forKey:acknowledgmentsURLKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLSettingsDidChangeNotification
-   object:self];
-}
-
-- (void)setAnnotationsURL:(NSURL *)annotationsURL
-{
-  if(!annotationsURL) return;
-  if([annotationsURL isEqual:self.annotationsURL]) return;
-  
-  [[NSUserDefaults standardUserDefaults] setURL:annotationsURL forKey:annotationsURLKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLSettingsDidChangeNotification
-   object:self];
-}
-
-- (void)setContentLicenseURL:(NSURL *const)contentLicenseURL
-{
-  if(!contentLicenseURL) return;
-  if([contentLicenseURL isEqual:self.contentLicenseURL]) return;
-  
-  [[NSUserDefaults standardUserDefaults] setURL:contentLicenseURL forKey:contentLicenseURLKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
   
   [[NSNotificationCenter defaultCenter]

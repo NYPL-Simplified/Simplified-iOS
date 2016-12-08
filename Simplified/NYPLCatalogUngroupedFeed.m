@@ -116,13 +116,6 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
       self.openSearchURL = link.href;
       continue;
     }
-    //GODO still work in progress.. if Instant Classics gets a grouped feed then
-    //probably don't need this anymore
-    if ([link.rel isEqualToString:NYPLOPDSRelationAnnotations]) {
-      NSURL *href = link.href;
-      [[NYPLSettings sharedSettings] setAnnotationsURL:href];
-      continue;
-    }
   }
   
   // Care is taken to preserve facet and facet group order from the original feed.

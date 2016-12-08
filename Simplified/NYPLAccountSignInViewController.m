@@ -583,7 +583,8 @@ replacementString:(NSString *)string
 
 - (void)showEULA
 {
-  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] init];
+  Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] initWithAccount:currentAccount];
   UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:eulaViewController];
   [self.navigationController presentViewController:navVC animated:YES completion:nil];
 }

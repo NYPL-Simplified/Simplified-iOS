@@ -9,6 +9,7 @@
 #import "NYPLXML.h"
 #import "NYPLSettings.h"
 #import "NYPLConfiguration.h"
+#import "SimplyE-Swift.h"
 
 #import "NYPLCatalogGroupedFeed.h"
 
@@ -30,6 +31,8 @@
   
   NSURL *openSearchURL = nil;
   
+  Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+  
   for(NYPLOPDSLink *const link in feed.links) {
     if([link.rel isEqualToString:NYPLOPDSRelationSearch] &&
        NYPLOPDSTypeStringIsOpenSearchDescription(link.type)) {
@@ -38,27 +41,27 @@
     }
     else if ([link.rel isEqualToString:NYPLOPDSEULALink]) {
       NSURL *href = link.href;
-      [[NYPLSettings sharedSettings] setEulaURL:href];
+      [currentAccount setWithURL:href forLicense:URLTypeEula];
       continue;
     }
     else if ([link.rel isEqualToString:NYPLOPDSPrivacyPolicyLink]) {
       NSURL *href = link.href;
-      [[NYPLSettings sharedSettings] setPrivacyPolicyURL:href];
+      [currentAccount setWithURL:href forLicense:URLTypePrivacyPolicy];
       continue;
     }
     else if ([link.rel isEqualToString:NYPLOPDSAcknowledgmentsLink]) {
       NSURL *href = link.href;
-      [[NYPLSettings sharedSettings] setAcknowledgmentsURL:href];
+      [currentAccount setWithURL:href forLicense:URLTypeAcknowledgements];
       continue;
     }
     else if ([link.rel isEqualToString:NYPLOPDSContentLicenseLink]) {
       NSURL *href = link.href;
-      [[NYPLSettings sharedSettings] setContentLicenseURL:href];
+      [currentAccount setWithURL:href forLicense:URLTypeContentLicenses];
       continue;
     }
     else if ([link.rel isEqualToString:NYPLOPDSRelationAnnotations]) {
       NSURL *href = link.href;
-      [[NYPLSettings sharedSettings] setAnnotationsURL:href];
+      [currentAccount setWithURL:href forLicense:URLTypeAnnotations];
       continue;
     }
   }

@@ -13,13 +13,13 @@
 
 @implementation NYPLSettingsEULAViewController
 
-- (instancetype)init
+- (instancetype)initWithAccount:(Account *)account
 {
   self = [super init];
   if(!self) return nil;
   
   self.title = NSLocalizedString(@"EULA", nil);
-  self.eulaURL = [[NYPLSettings sharedSettings] eulaURL];
+  self.eulaURL = [account getLicenseURL:URLTypeEula];
   
   return self;
 }

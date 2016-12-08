@@ -36,8 +36,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindSyncButton,
   CellKindAbout,
   CellKindPrivacyPolicy,
-  CellKindContentLicense,
-  CellKindContact
+  CellKindContentLicense
 };
 
 typedef NS_ENUM(NSInteger, Section) {
@@ -96,8 +95,6 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath, int const ac
             return CellKindPrivacyPolicy;
           case 2:
             return CellKindContentLicense;
-          case 3:
-            return CellKindContact;
           default:
             @throw NSInvalidArgumentException;
         }
@@ -112,13 +109,18 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath, int const ac
 @property (nonatomic) UITextField *barcodeTextField;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) BOOL hiddenPIN;
-@property (nonatomic) UITableViewCell *ageCheckCell;
-@property (nonatomic) UITableViewCell *eulaCell;
-@property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITextField *PINTextField;
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
+@property (nonatomic) Account *account;
 @property (nonatomic) NSInteger accountType;
+
+@property (nonatomic) UITableViewCell *ageCheckCell;
+@property (nonatomic) UITableViewCell *eulaCell;
+@property (nonatomic) UITableViewCell *logInSignOutCell;
+@property (nonatomic) UITableViewCell *licenseCreditsCell;
+@property (nonatomic) UITableViewCell *licensePrivacyCell;
+@property (nonatomic) UITableViewCell *licenseContentCell;
 
 @end
 
@@ -132,6 +134,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 - (instancetype)initWithAccount:(NSInteger)account
 {
   self.accountType = account;
+  self.account = [[AccountsManager sharedInstance] account:self.accountType];
   return [self init];
 }
 
@@ -232,16 +235,13 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
                    forControlEvents:UIControlEventTouchUpInside];
   self.PINTextField.rightView = self.PINShowHideButton;
   self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
-  
-  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"EULA"
-                                                                            style:UIBarButtonItemStylePlain
-                                                                           target:self
-                                                                           action:@selector(showEULA)];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
+  
+  [self updateVisibilityForLicenseLinks];
   
   // The new credentials are not yet saved when logging in after signup. As such,
   // reloading the table would lose the values in the barcode and PIN fields.
@@ -251,6 +251,17 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
     [self.tableView reloadData];
     [self updateShowHidePINState];
   }
+}
+
+- (void)updateVisibilityForLicenseLinks
+{
+  if ([self.account getLicenseURL:URLTypeEula]) {
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"EULA"
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(showEULA)];
+  }
+//  self.navigationItem.rightBarButtonItem.enabled = ([self.account getLicenseURL:URLTypeEula]) ? YES : NO;
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -272,16 +283,14 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 - (void)tableView:(__attribute__((unused)) UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  Account *accountItem = [[AccountsManager sharedInstance] account:self.accountType];
-  
   switch(CellKindFromIndexPath(indexPath, (int)self.accountType)) {
     case CellKindAgeCheck: {
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-      if (accountItem.userAboveAgeLimit == YES) {
+      if (self.account.userAboveAgeLimit == YES) {
         [self confirmAgeChange:^(BOOL under13) {
           if (under13) {
             cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
-            accountItem.userAboveAgeLimit = NO;
+            self.account.userAboveAgeLimit = NO;
             //Delete Books in My Books
             [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
             [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
@@ -290,7 +299,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         }];
       } else {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
-        accountItem.userAboveAgeLimit = YES;
+        self.account.userAboveAgeLimit = YES;
       }
       break;
     }
@@ -302,12 +311,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindEULA: {
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-      if (accountItem.eulaIsAccepted == YES) {
+      if (self.account.eulaIsAccepted == YES) {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
-        accountItem.eulaIsAccepted = NO;
+        self.account.eulaIsAccepted = NO;
       } else {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
-        accountItem.eulaIsAccepted = YES;
+        self.account.eulaIsAccepted = YES;
       }
       [self updateLoginLogoutCellAppearance];
       break;
@@ -384,7 +393,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindAbout: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
-                                      initWithURL:[[NYPLSettings sharedSettings] acknowledgmentsURL]
+                                      initWithURL:[self.account getLicenseURL:URLTypeAcknowledgements]
                                       title:NSLocalizedString(@"About", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       [self.navigationController pushViewController:vc animated:true];
@@ -392,7 +401,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindPrivacyPolicy: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
-                                      initWithURL:[[NYPLSettings sharedSettings] privacyPolicyURL]
+                                      initWithURL:[self.account getLicenseURL:URLTypePrivacyPolicy]
                                       title:NSLocalizedString(@"PrivacyPolicy", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       [self.navigationController pushViewController:vc animated:true];
@@ -400,14 +409,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindContentLicense: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
-                                      initWithURL:[[NYPLSettings sharedSettings] contentLicenseURL]
+                                      initWithURL:[self.account getLicenseURL:URLTypeContentLicenses]
                                       title:NSLocalizedString(@"ContentLicenses", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       [self.navigationController pushViewController:vc animated:true];
-      break;
-    }
-    case CellKindContact: {
-      //GODO temp until further information
       break;
     }
   }
@@ -439,8 +444,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   // This is the amount of horizontal padding Apple uses around the titles in cells by default.
   CGFloat const padding = 16;
   
-  Account *accountItem = [[AccountsManager sharedInstance] account:self.accountType];
-
   switch(CellKindFromIndexPath(indexPath, (int)self.accountType)) {
     case CellKindBarcode: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
@@ -474,7 +477,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.eulaCell = [[UITableViewCell alloc]
                        initWithStyle:UITableViewCellStyleDefault
                        reuseIdentifier:nil];
-      if (accountItem.eulaIsAccepted) {
+      if (self.account.eulaIsAccepted) {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOn"]];
       } else {
@@ -512,7 +515,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.ageCheckCell = [[UITableViewCell alloc]
                            initWithStyle:UITableViewCellStyleDefault
                            reuseIdentifier:nil];
-      if (accountItem.userAboveAgeLimit) {
+      if (self.account.userAboveAgeLimit) {
         self.ageCheckCell.accessoryView = [[UIImageView alloc] initWithImage:
                                            [UIImage imageNamed:@"CheckboxOn"]];
       } else {
@@ -552,8 +555,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       UISwitch* switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
-      Account *account = [[AccountsManager sharedInstance] account:self.accountType];
-      if (account.syncIsEnabled) {
+      if (self.account.syncIsEnabled) {
         [switchView setOn:YES];
       } else {
         [switchView setOn:NO];
@@ -565,45 +567,38 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.textLabel.font = [UIFont systemFontOfSize:17];
       cell.textLabel.text = NSLocalizedString(@"SettingsAccountSyncTitle",
                                               @"Title for switch to turn on or off syncing of the place where a user was reading a book.");
+//      cell.hidden = ([self.account getLicenseURL:URLTypeAnnotations]) ? NO : YES;
       return cell;
     }
     case CellKindAbout: {
-      Account *accountItem = [[AccountsManager sharedInstance] account:self.accountType];
-      UITableViewCell *const cell = [[UITableViewCell alloc]
+      self.licenseCreditsCell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = [NSString stringWithFormat:@"About %@",accountItem.name];
-      return cell;
+      self.licenseCreditsCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      self.licenseCreditsCell.textLabel.font = [UIFont systemFontOfSize:17];
+      self.licenseCreditsCell.textLabel.text = [NSString stringWithFormat:@"About %@",self.account.name];
+      self.licenseCreditsCell.hidden = ([self.account getLicenseURL:URLTypeAcknowledgements]) ? NO : YES;
+      return self.licenseCreditsCell;
     }
     case CellKindPrivacyPolicy: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
+      self.licensePrivacyCell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"PrivacyPolicy", nil);
-      return cell;
+      self.licensePrivacyCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      self.licensePrivacyCell.textLabel.font = [UIFont systemFontOfSize:17];
+      self.licensePrivacyCell.textLabel.text = NSLocalizedString(@"PrivacyPolicy", nil);
+      self.licensePrivacyCell.hidden = ([self.account getLicenseURL:URLTypePrivacyPolicy]) ? NO : YES;
+      return self.licensePrivacyCell;
     }
     case CellKindContentLicense: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
+      self.licenseContentCell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"ContentLicenses", nil);
-      return cell;
-    }
-    case CellKindContact: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"Contact",
-                                              @"Setting to let a user contact or communicate with a particular Library");
-      return cell;
+      self.licenseContentCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      self.licenseContentCell.textLabel.font = [UIFont systemFontOfSize:17];
+      self.licenseContentCell.textLabel.text = NSLocalizedString(@"ContentLicenses", nil);
+      self.licenseContentCell.hidden = ([self.account getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
+      return self.licenseContentCell;
     }
   }
 }
@@ -639,7 +634,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         return 1;
       }
     case SectionLicenses:
-      return 4;
+      return 3;
     default:
       @throw NSInternalInconsistencyException;
   }
@@ -840,7 +835,7 @@ replacementString:(NSString *)string
 
 - (void)showEULA
 {
-  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] init];
+  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] initWithAccount:self.account];
   UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:eulaViewController];
   [self.navigationController presentViewController:navVC animated:YES completion:nil];
 }
@@ -857,13 +852,12 @@ replacementString:(NSString *)string
     self.eulaCell.userInteractionEnabled = YES;
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
-    Account *accountItem = [[AccountsManager sharedInstance] account:self.accountType];
     BOOL const canLogIn =
       ([self.barcodeTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
        [self.PINTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length) &&
-       accountItem.eulaIsAccepted;
+       self.account.eulaIsAccepted;
     if(canLogIn) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
@@ -1114,7 +1108,7 @@ replacementString:(NSString *)string
 
 - (void)setAccountSwitchChanged:(id)sender
 {
-  //GODO
+  //GODO not finished yet
   UISwitch *switchControl = sender;
   if (switchControl.on) {
     [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:self.accountType];
@@ -1210,7 +1204,7 @@ replacementString:(NSString *)string
 
 - (BOOL)syncButtonShouldBeVisible
 {
-  return ([[NYPLSettings sharedSettings] annotationsURL] &&
+  return ([self.account getLicenseURL:URLTypeAnnotations] &&
           [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
 }
 
