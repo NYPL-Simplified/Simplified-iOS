@@ -18,7 +18,7 @@
 
 + (BOOL)cardCreationEnabled;
 
-+ (NSURL *)circulationURL;
+//+ (NSURL *)circulationURL;
 
 // This can be overriden by setting |customMainFeedURL| in NYPLSettings.
 + (NSURL *)mainFeedURL;

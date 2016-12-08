@@ -14,8 +14,8 @@
 #import "NYPLAppDelegate.h"
 
 
-static NSString *const NYPLCirculationBaseURLProduction = @"https://circulation.librarysimplified.org";
-static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.librarysimplified.org/";
+//static NSString *const NYPLCirculationBaseURLProduction = @"https://circulation.librarysimplified.org";
+//static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.librarysimplified.org/";
 
 static NSString *const heapIDProduction = @"3245728259";
 static NSString *const heapIDDevelopment = @"1848989408";
@@ -69,10 +69,10 @@ static NSString *const heapIDDevelopment = @"1848989408";
   return @"76cb0080ae8cc30d903663e10b138381";
 }
 
-+ (NSURL *)circulationURL
-{
-  return [NSURL URLWithString:NYPLCirculationBaseURLProduction];
-}
+//+ (NSURL *)circulationURL
+//{
+//  return [NSURL URLWithString:NYPLCirculationBaseURLProduction];
+//}
 
 + (NSURL *)mainFeedURL
 {
@@ -84,12 +84,13 @@ static NSString *const heapIDDevelopment = @"1848989408";
   
   if(accountURL) return accountURL;
 
-  return [self circulationURL];
+  return nil;
+//  return [self circulationURL];
 }
 
 + (NSURL *)loanURL
 {
-    return [[self circulationURL] URLByAppendingPathComponent:@"loans"];
+    return [[self mainFeedURL] URLByAppendingPathComponent:@"loans"];
 }
 
 + (BOOL)cardCreationEnabled
