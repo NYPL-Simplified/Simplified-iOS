@@ -98,11 +98,6 @@ static NSString *const heapIDDevelopment = @"1848989408";
   return YES;
 }
 
-+ (NSURL *)registrationURL
-{
-//  return [NSURL URLWithString:@"https://simplifiedcard.herokuapp.com"];
-  return [NSURL URLWithString:@"https://patrons.librarysimplified.org/"];
-}
 
 + (UIColor *)colorFromHexString:(NSString *)hexString {
   unsigned rgbValue = 0;

@@ -25,7 +25,6 @@
 
 + (NSURL *)loanURL;
 
-+ (NSURL *)registrationURL;
 
 + (NSURL *)minimumVersionURL;
 

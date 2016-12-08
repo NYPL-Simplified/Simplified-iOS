@@ -14,7 +14,6 @@
 #import "NYPLSettings.h"
 #import "NYPLSettingsAccountDetailViewController.h"
 #import "NYPLSettingsEULAViewController.h"
-#import "NYPLSettingsRegistrationViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "SimplyE-Swift.h"
