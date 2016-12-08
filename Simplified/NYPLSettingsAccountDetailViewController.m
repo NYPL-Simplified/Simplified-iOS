@@ -992,8 +992,9 @@ replacementString:(NSString *)string
 
 - (void)validateCredentials
 {
+  Account *account = [[AccountsManager sharedInstance] account:self.accountType];
   NSMutableURLRequest *const request =
-    [NSMutableURLRequest requestWithURL:[NYPLConfiguration loanURL]];
+    [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[account catalogUrl]] URLByAppendingPathComponent:@"loans"]];
   
   // Necessary to support longer login times when using usernames.
   request.timeoutInterval = 20.0;
@@ -1103,7 +1104,7 @@ replacementString:(NSString *)string
 
 - (void)syncSwitchChanged:(id)sender
 {
-  Account *account = [[AccountsManager sharedInstance] account:[[NYPLSettings sharedSettings] currentAccountIdentifier]];
+  Account *account = [[AccountsManager sharedInstance] account:self.accountType];
   UISwitch *switchControl = sender;
   if (switchControl.on) {
     account.syncIsEnabled = YES;
