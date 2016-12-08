@@ -28,6 +28,11 @@
 - (BOOL)application:(__attribute__((unused)) UIApplication *)application
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
+  NSArray *const paths =
+  NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  NYPLLOG(paths);
+  
+  
   // This is normally not called directly, but we put all programmatic appearance setup in
   // NYPLConfiguration's class initializer.
   [NYPLConfiguration initialize];
@@ -95,17 +100,20 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   [[NYPLReaderSettings sharedSettings] save];
 }
 
-#if defined(FEATURE_DRM_CONNECTOR)
-- (void)applicationDidBecomeActive:(__unused UIApplication *)application
-{
-  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
-    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-      [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:nil];
-    }
-  }
 
-}
-#endif
+// why do we need this?????
+
+//#if defined(FEATURE_DRM_CONNECTOR)
+//- (void)applicationDidBecomeActive:(__unused UIApplication *)application
+//{
+//  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
+//    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+//      [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:nil];
+//    }
+//  }
+//
+//}
+//#endif
 
 - (void)beginCheckingForUpdates
 {
