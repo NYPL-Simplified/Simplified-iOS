@@ -915,7 +915,7 @@ replacementString:(NSString *)string
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   
   [[NYPLReachability sharedReachability]
-   reachabilityForURL:[NYPLConfiguration circulationURL]
+   reachabilityForURL:[NYPLConfiguration mainFeedURL]
    timeoutInternal:5.0
    handler:^(BOOL reachable) {
      if(reachable) {
@@ -1021,17 +1021,17 @@ replacementString:(NSString *)string
          
          //AM_FIXME
          
-#if defined(FEATURE_DRM_CONNECTOR)
-         [[NYPLADEPT sharedInstance]
-          authorizeWithVendorID:@"NYPL"
-          username:self.barcodeTextField.text
-          password:self.PINTextField.text
-          completion:^(BOOL success, NSError *error) {
-            [self authorizationAttemptDidFinish:success error:error];
-          }];
-#else
+//#if defined(FEATURE_DRM_CONNECTOR)
+//         [[NYPLADEPT sharedInstance]
+//          authorizeWithVendorID:@"NYPL"
+//          username:self.barcodeTextField.text
+//          password:self.PINTextField.text
+//          completion:^(BOOL success, NSError *error) {
+//            [self authorizationAttemptDidFinish:success error:error];
+//          }];
+//#else
          [self authorizationAttemptDidFinish:YES error:nil];
-#endif
+//#endif
          
          
          
