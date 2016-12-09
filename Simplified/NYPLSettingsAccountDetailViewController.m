@@ -281,6 +281,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
     [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
     
     [[NYPLAccount sharedAccount:self.accountType] removeBarcodeAndPIN];
+    [self setupTableData];
     [self.tableView reloadData];
   };
   
@@ -299,7 +300,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   
   [[NYPLReachability sharedReachability]
    reachabilityForURL:[NYPLConfiguration mainFeedURL]
-   timeoutInternal:5.0
+   timeoutInternal:8.0
    handler:^(BOOL reachable) {
      if(reachable) {
        [[NYPLADEPT sharedInstance]
@@ -998,6 +999,7 @@ replacementString:(NSString *)string
       self.PINTextField.textColor = [UIColor blackColor];
     }
     
+    [self setupTableData];
     [self.tableView reloadData];
     
     [self updateLoginLogoutCellAppearance];
@@ -1088,17 +1090,16 @@ replacementString:(NSString *)string
 
 - (void)changedCurrentAccount
 {
-  [self.navigationController popViewControllerAnimated:YES];
+//  [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)setAccountSwitchChanged:(id)sender
 {
-  //GODO not finished yet
   UISwitch *switchControl = sender;
   if (switchControl.on) {
-    [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:self.accountType];
-//    UINavigationController *masterNavVC = [[self.splitViewController viewControllers] firstObject];
-//    [masterNavVC popToRootViewControllerAnimated:YES];
+    [[AccountsManager sharedInstance] changeCurrentAccountWithIdentifier:self.accountType];
+    [self setupTableData];
+    [self.tableView reloadData];
   }
 }
 
