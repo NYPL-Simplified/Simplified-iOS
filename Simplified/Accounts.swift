@@ -26,6 +26,7 @@ final class AccountsManager: NSObject
     }
     set {
       defaults.set(currentAccount.id, forKey: currentAccountIdentifierKey)
+      NotificationCenter.default.post(name: NSNotification.Name(rawValue: NYPLAccountDidChangeNotification), object: nil)
     }
   }
 

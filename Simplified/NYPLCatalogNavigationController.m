@@ -100,7 +100,7 @@
 
 - (void) reloadSelected {
   
-  Account *account = [[NYPLSettings sharedSettings] currentAccount];
+  Account *account = [[AccountsManager sharedInstance] currentAccount];
   
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLAccountDidChangeNotification
@@ -136,12 +136,10 @@
   
   if ([[NYPLSettings sharedSettings] userPresentedWelcomeScreen] == NO) {
     NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^() {
-      //GODO don't think I need this...
-//        [[AccountsManager sharedInstance] account:2].eulaIsAccepted = YES;
         [self reloadSelected];
         [self dismissViewControllerAnimated:YES completion:nil];
     }];
-    
+  
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
     if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
       [navController setModalPresentationStyle:UIModalPresentationFormSheet];

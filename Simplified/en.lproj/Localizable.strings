@@ -196,6 +196,8 @@
 "SettingsAccountViewControllerMessageTooManyActivations" = "Too many devices have been authorized with this library card.";
 
 // NYPLWelcomeScreen
+"WelcomeScreenAgeVerifyTitle" = "Age Verification";
+"WelcomeScreenAgeVerifyMessage" = "You must be 13 years of age or older to download a book from the collection. How old are you?";
 "WelcomeScreenTitle1" = "Read Books From Your Library";
 "WelcomeScreenSubtitle1" = "Check out books and sync across devices";
 "WelcomeScreenButtonTitle1" = "PICK YOUR LIBRARY";

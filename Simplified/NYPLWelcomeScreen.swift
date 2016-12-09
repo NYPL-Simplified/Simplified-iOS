@@ -136,19 +136,38 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     if accountNYPL.eulaIsAccepted == false {
       let listVC = NYPLWelcomeScreenAccountList { libraryAccount in
         NYPLSettings.shared().currentAccountIdentifier = libraryAccount.id
-        self.completion!()
+        self.completion?()
       }
       self.navigationController?.pushViewController(listVC, animated: true)
     } else {
-      completion!()
+      completion?()
     }
   }
   
   func instantClassicsTapped() {
-    AccountsManager.shared.changeCurrentAccount(identifier: 2)
-    if completion != nil {
-      completion!()
+    performAgeCheck()
+  }
+  
+  func performAgeCheck() {
+    
+    let classicAcct = AccountsManager.shared.account(2)!
+    if (classicAcct.userAboveAgeLimit == true) {
+      return
     }
+    
+    let alertCont = NYPLAlertController.alert(withTitle: NSLocalizedString("WelcomeScreenAgeVerifyTitle", comment: "An alert title indicating the user needs to verify their age"), singleMessage: NSLocalizedString("WelcomeScreenAgeVerifyMessage", comment: "An alert message telling the user they must be at least 13 years old and asking how old they are"))
+    
+    alertCont?.addAction(UIAlertAction.init(title: "Under 13", style: .default, handler: { _ in
+//      AccountsManager.shared.changeCurrentAccount(identifier: 2)
+//      self.completion?()
+    }))
+    
+    alertCont?.addAction(UIAlertAction.init(title: "13 or Older", style: .default, handler: { _ in
+      NYPLSettings.shared().currentAccountIdentifier = 2
+      self.completion?()
+    }))
+    
+    alertCont?.present(fromViewControllerOrNil: self, animated: true, completion: nil)
   }
 }
 

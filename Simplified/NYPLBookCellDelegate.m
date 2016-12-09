@@ -40,21 +40,7 @@
 
 - (void)didSelectDownloadForBook:(NYPLBook *)book
 {
-  NYPLSettings *settings = [NYPLSettings sharedSettings];
-  Account *currentAccount = [settings currentAccount];
-  
-  if (currentAccount.needsAuth == YES || currentAccount.userAboveAgeLimit) {
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-  } else if ([[settings currentAccount] needsAuth] == NO) {
-    [self performAgeCheck:^(BOOL aboveAge) {
-      if (aboveAge) {
-        currentAccount.userAboveAgeLimit = YES;
-        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-      } else {
-        currentAccount.userAboveAgeLimit = NO;
-      }
-    }];
-  }
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
 }
 
 - (void)didSelectReadForBook:(NYPLBook *)book
@@ -76,29 +62,6 @@
   problemVC.book = book;
   problemVC.delegate = self;
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:problemVC animated:YES completion:nil];
-}
-
-- (void)performAgeCheck:(void (^)(BOOL))completion
-{
-  NYPLAlertController *alertCont = [NYPLAlertController
-                                  alertControllerWithTitle:NSLocalizedString(@"Age Verification", @"An alert title indicating the user needs to verify their age")
-                                  message:NSLocalizedString(@"You must be 13 years of age or older to download a book from the collection. How old are you?",
-                                                            @"An alert message telling the user they must be at least 13 years old and asking how old they are")
-                                  preferredStyle:UIAlertControllerStyleAlert];
-  
-  [alertCont addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"Under 13", comment: @"A button title indicating an age range")
-                                                 style:UIAlertActionStyleDefault
-                                               handler:^(UIAlertAction * _Nonnull __unused action) {
-                                                 if (completion) { completion(NO); }
-                                               }]];
-  
-  [alertCont addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"13 or Older", comment: @"A button title indicating an age range")
-                                                 style:UIAlertActionStyleDefault
-                                               handler:^(UIAlertAction * _Nonnull __unused action) {
-                                                 if (completion) { completion(YES); }
-                                               }]];
-
-  [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate
