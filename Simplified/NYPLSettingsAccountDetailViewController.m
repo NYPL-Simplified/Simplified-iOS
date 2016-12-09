@@ -1,7 +1,6 @@
 @import LocalAuthentication;
 @import NYPLCardCreator;
 
-
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
 #import "NYPLBasicAuth.h"
@@ -45,64 +44,6 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionLicenses = 2,
 };
 
-static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath, int const accountID)
-{
-  
-  Account *account = [[AccountsManager sharedInstance] account:accountID];
-  
-    switch(indexPath.section) {
-        
-      case 0:
-        if (!account.needsAuth) {
-          switch(indexPath.row) {
-            case 0:
-              return CellKindAgeCheck;
-            default:
-              @throw NSInvalidArgumentException;
-          }
-        } else {
-          switch(indexPath.row) {
-            case 0:
-              return CellKindBarcode;
-            case 1:
-              return CellKindPIN;
-            case 2:
-              return CellKindEULA;
-            case 3:
-              return CellKindLogInSignOut;
-            case 4:
-              return CellKindRegistration;
-            default:
-              @throw NSInvalidArgumentException;
-          }
-        }
-        
-      case 1:
-        switch (indexPath.row) {
-          case 0:
-            return CellKindSetCurrentAccount;
-          case 1:
-            return CellKindSyncButton;
-          default:
-            @throw NSInvalidArgumentException;
-        }
-        
-      case 2:
-        switch (indexPath.row) {
-          case 0:
-            return CellKindAbout;
-          case 1:
-            return CellKindPrivacyPolicy;
-          case 2:
-            return CellKindContentLicense;
-          default:
-            @throw NSInvalidArgumentException;
-        }
-      default:
-        @throw NSInvalidArgumentException;
-  }
-}
-
 @interface NYPLSettingsAccountDetailViewController () <NSURLSessionDelegate, UITextFieldDelegate>
 
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
@@ -112,8 +53,8 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath, int const ac
 @property (nonatomic) UITextField *PINTextField;
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
-@property (nonatomic) Account *account;
 @property (nonatomic) NSInteger accountType;
+@property (nonatomic) Account *account;
 
 @property (nonatomic) UITableViewCell *ageCheckCell;
 @property (nonatomic) UITableViewCell *eulaCell;
@@ -121,6 +62,8 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath, int const ac
 @property (nonatomic) UITableViewCell *licenseCreditsCell;
 @property (nonatomic) UITableViewCell *licensePrivacyCell;
 @property (nonatomic) UITableViewCell *licenseContentCell;
+
+@property (nonatomic) NSArray *tableData;
 
 @end
 
@@ -235,6 +178,41 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
                    forControlEvents:UIControlEventTouchUpInside];
   self.PINTextField.rightView = self.PINShowHideButton;
   self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
+  
+  [self setupTableData];
+}
+
+- (void)setupTableData
+{
+  //GODO move this out eventually
+  NSMutableArray *section0;
+  if (self.account.needsAuth == NO) {
+    section0 = @[@(CellKindAgeCheck)].mutableCopy;
+  } else {
+    section0 = @[@(CellKindBarcode),
+                 @(CellKindPIN),
+                 @(CellKindEULA),
+                 @(CellKindLogInSignOut)].mutableCopy;
+    if ([self registrationIsPossible]) {
+      [section0 addObject:@(CellKindRegistration)];
+    }
+  }
+  NSMutableArray *section1 = @[@(CellKindSetCurrentAccount)].mutableCopy;
+  if ([self syncButtonShouldBeVisible]) {
+    [section1 addObject:@(CellKindSyncButton)];
+  }
+  NSMutableArray *section2 = [[NSMutableArray alloc] init];
+  if ([self.account getLicenseURL:URLTypeAcknowledgements]) {
+    [section2 addObject:@(CellKindAbout)];
+  }
+  if ([self.account getLicenseURL:URLTypePrivacyPolicy]) {
+    [section2 addObject:@(CellKindPrivacyPolicy)];
+  }
+  if ([self.account getLicenseURL:URLTypeContentLicenses]) {
+    [section2 addObject:@(CellKindContentLicense)];
+  }
+  
+  self.tableData = @[section0, section1, section2];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -261,7 +239,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
                                                                              target:self
                                                                              action:@selector(showEULA)];
   }
-//  self.navigationItem.rightBarButtonItem.enabled = ([self.account getLicenseURL:URLTypeEula]) ? YES : NO;
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -278,12 +255,208 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 }
 #endif
 
+#pragma mark
+#pragma mark Account SignIn/SignOut
+
+- (void)logIn
+{
+  assert(self.barcodeTextField.text.length > 0);
+  assert(self.PINTextField.text.length > 0);
+  
+  [self.barcodeTextField resignFirstResponder];
+  [self.PINTextField resignFirstResponder];
+  
+  [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
+  
+  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+  
+  [self validateCredentials];
+}
+
+- (void)logOut
+{
+  void (^afterDeauthorization)() = ^() {
+    
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
+    [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
+    
+    [[NYPLAccount sharedAccount:self.accountType] removeBarcodeAndPIN];
+    [self.tableView reloadData];
+  };
+  
+#if defined(FEATURE_DRM_CONNECTOR)
+  if([NYPLADEPT sharedInstance].workflowsInProgress) {
+    [self presentViewController:[NYPLAlertController
+                                 alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
+                                 message:@"SettingsAccountViewControllerCannotLogOutMessage"]
+                       animated:YES
+                     completion:nil];
+    return;
+  }
+  
+  [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
+  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+  
+  [[NYPLReachability sharedReachability]
+   reachabilityForURL:[NYPLConfiguration mainFeedURL]
+   timeoutInternal:5.0
+   handler:^(BOOL reachable) {
+     if(reachable) {
+       [[NYPLADEPT sharedInstance]
+        deauthorizeWithUsername:[[NYPLAccount sharedAccount:self.accountType] barcode]
+        password:[[NYPLAccount sharedAccount:self.accountType] PIN]
+        completion:^(BOOL success, __unused NSError *error) {
+          if(!success) {
+            // Even though we failed, all we do is log the error. The reason is
+            // that we want the user to be able to log out anyway because the
+            // failure is probably due to bad credentials and we do not want the
+            // user to have to change their barcode or PIN just to log out. This
+            // is only a temporary measure and we'll switch to deauthorizing with
+            // a token that will remain invalid indefinitely in the near future.
+            NYPLLOG(@"Failed to deauthorize successfully.");
+          }
+          [self removeActivityTitle];
+          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+          afterDeauthorization();
+        }];
+     } else {
+       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+         [self removeActivityTitle];
+         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+         [self presentViewController:[NYPLAlertController
+                                      alertWithTitle:@"SettingsAccountViewControllerLogoutFailed"
+                                      message:@"TimedOut"]
+                            animated:YES
+                          completion:nil];
+       }];
+     }
+   }];
+#else
+  afterDeauthorization();
+  [self removeActivityTitle];
+#endif
+}
+
+- (void)validateCredentials
+{
+  Account *account = [[AccountsManager sharedInstance] account:self.accountType];
+  NSMutableURLRequest *const request =
+  [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[account catalogUrl]] URLByAppendingPathComponent:@"loans"]];
+  
+  // Necessary to support longer login times when using usernames.
+  request.timeoutInterval = 20.0;
+  
+  request.HTTPMethod = @"HEAD";
+  
+  NSURLSessionDataTask *const task =
+  [self.session
+   dataTaskWithRequest:request
+   completionHandler:^(__attribute__((unused)) NSData *data,
+                       NSURLResponse *const response,
+                       NSError *const error) {
+     
+     if (self.isLoggingInAfterSignUp) {
+       [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSettingsAccountsSignInFinishedNotification
+                                                           object:self];
+     }
+     
+     // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
+     NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
+     
+     // Success.
+     if(statusCode == 200) {
+       
+       
+       //AM_FIXME
+       
+       //#if defined(FEATURE_DRM_CONNECTOR)
+       //         [[NYPLADEPT sharedInstance]
+       //          authorizeWithVendorID:@"NYPL"
+       //          username:self.barcodeTextField.text
+       //          password:self.PINTextField.text
+       //          completion:^(BOOL success, NSError *error) {
+       //            [self authorizationAttemptDidFinish:success error:error];
+       //          }];
+       //#else
+       [self authorizationAttemptDidFinish:YES error:nil];
+       //#endif
+       
+       
+       
+       
+       
+       
+       self.isLoggingInAfterSignUp = NO;
+       return;
+     }
+     
+     [self removeActivityTitle];
+     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+     
+     if (error.code == NSURLErrorCancelled) {
+       // We cancelled the request when asked to answer the server's challenge a second time
+       // because we don't have valid credentials.
+       self.PINTextField.text = @"";
+       [self textFieldsDidChange];
+       [self.PINTextField becomeFirstResponder];
+     }
+     
+     self.barcodeTextField.text = nil;
+     self.PINTextField.text = nil;
+     [self showLoginAlertWithError:error];
+   }];
+  
+  [task resume];
+}
+
+- (void)showLoginAlertWithError:(NSError *)error
+{
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:
+   [NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
+                                                                  animated:YES
+                                                                completion:nil];
+  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSettingsAccountsSignInFinishedNotification
+                                                      object:self];
+  [self removeActivityTitle];
+}
+
+- (void)authorizationAttemptDidFinish:(BOOL)success error:(NSError *)error
+{
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [self removeActivityTitle];
+    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+    
+    if(success) {
+      [[NYPLAccount sharedAccount:self.accountType] setBarcode:self.barcodeTextField.text
+                                                           PIN:self.PINTextField.text];
+      
+      if(self.accountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
+        if (!self.isLoggingInAfterSignUp) {
+          [self dismissViewControllerAnimated:YES completion:nil];
+        }
+        void (^handler)() = self.completionHandler;
+        self.completionHandler = nil;
+        if(handler) handler();
+        [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+      }
+      
+    } else {
+      [self showLoginAlertWithError:error];
+    }
+  }];
+}
+
+#pragma mark
+
 #pragma mark UITableViewDelegate
 
 - (void)tableView:(__attribute__((unused)) UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  switch(CellKindFromIndexPath(indexPath, (int)self.accountType)) {
+  NSArray *sectionArray = (NSArray *)self.tableData[indexPath.section];
+  CellKind cellKind = (CellKind)[sectionArray[indexPath.row] intValue];
+  
+  switch(cellKind) {
     case CellKindAgeCheck: {
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
       if (self.account.userAboveAgeLimit == YES) {
@@ -325,16 +498,16 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       if([[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]) {
         UIAlertController *const alertController =
-          (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
-           ? [UIAlertController
-              alertControllerWithTitle:NSLocalizedString(@"SignOut", nil)
-              message:NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
-              preferredStyle:UIAlertControllerStyleAlert]
-           : [UIAlertController
-              alertControllerWithTitle:
-                NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
-              message:nil
-              preferredStyle:UIAlertControllerStyleActionSheet]);
+        (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+         ? [UIAlertController
+            alertControllerWithTitle:NSLocalizedString(@"SignOut", nil)
+            message:NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
+            preferredStyle:UIAlertControllerStyleAlert]
+         : [UIAlertController
+            alertControllerWithTitle:
+            NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
+            message:nil
+            preferredStyle:UIAlertControllerStyleActionSheet]);
         [alertController addAction:[UIAlertAction
                                     actionWithTitle:NSLocalizedString(@"SignOut", nil)
                                     style:UIAlertActionStyleDestructive
@@ -354,33 +527,33 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
       CardCreatorConfiguration *const configuration =
-        [[CardCreatorConfiguration alloc]
-         initWithEndpointURL:[APIKeys cardCreatorEndpointURL]
-         endpointUsername:[APIKeys cardCreatorUsername]
-         endpointPassword:[APIKeys cardCreatorPassword]
-         requestTimeoutInterval:20.0
-         completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
-           if (userInitiated) {
-             // If SettingsAccount has been presented modally, dismiss both
-             // the CardCreator and the modal window.
-             [weakSelf dismissViewControllerAnimated:YES completion:nil];
-             [weakSelf dismissViewControllerAnimated:YES completion:nil];
-           } else {
-             weakSelf.barcodeTextField.text = username;
-             weakSelf.PINTextField.text = PIN;
-             [weakSelf updateLoginLogoutCellAppearance];
-             self.isLoggingInAfterSignUp = YES;
-             [weakSelf logIn];
-           }
-         }];
+      [[CardCreatorConfiguration alloc]
+       initWithEndpointURL:[APIKeys cardCreatorEndpointURL]
+       endpointUsername:[APIKeys cardCreatorUsername]
+       endpointPassword:[APIKeys cardCreatorPassword]
+       requestTimeoutInterval:20.0
+       completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
+         if (userInitiated) {
+           // If SettingsAccount has been presented modally, dismiss both
+           // the CardCreator and the modal window.
+           [weakSelf dismissViewControllerAnimated:YES completion:nil];
+           [weakSelf dismissViewControllerAnimated:YES completion:nil];
+         } else {
+           weakSelf.barcodeTextField.text = username;
+           weakSelf.PINTextField.text = PIN;
+           [weakSelf updateLoginLogoutCellAppearance];
+           self.isLoggingInAfterSignUp = YES;
+           [weakSelf logIn];
+         }
+       }];
       
       UINavigationController *const navigationController =
-        [CardCreator initialNavigationControllerWithConfiguration:configuration];
+      [CardCreator initialNavigationControllerWithConfiguration:configuration];
       navigationController.navigationBar.topItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
-                                         style:UIBarButtonItemStylePlain
-                                        target:self
-                                        action:@selector(didSelectCancelForSignUp)];
+      [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                       style:UIBarButtonItemStylePlain
+                                      target:self
+                                      action:@selector(didSelectCancelForSignUp)];
       navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
       [self presentViewController:navigationController animated:YES completion:nil];
       break;
@@ -435,7 +608,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-
 #pragma mark UITableViewDataSource
 
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -444,7 +616,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   // This is the amount of horizontal padding Apple uses around the titles in cells by default.
   CGFloat const padding = 16;
   
-  switch(CellKindFromIndexPath(indexPath, (int)self.accountType)) {
+  NSArray *sectionArray = (NSArray *)self.tableData[indexPath.section];
+  CellKind cellKind = (CellKind)[sectionArray[indexPath.row] intValue];
+  
+  switch(cellKind) {
     case CellKindBarcode: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
@@ -567,7 +742,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.textLabel.font = [UIFont systemFontOfSize:17];
       cell.textLabel.text = NSLocalizedString(@"SettingsAccountSyncTitle",
                                               @"Title for switch to turn on or off syncing of the place where a user was reading a book.");
-//      cell.hidden = ([self.account getLicenseURL:URLTypeAnnotations]) ? NO : YES;
       return cell;
     }
     case CellKindAbout: {
@@ -600,43 +774,24 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.licenseContentCell.hidden = ([self.account getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
       return self.licenseContentCell;
     }
+    default: {
+      return nil;
+    }
   }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return 3;
+  return self.tableData.count;
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
  numberOfRowsInSection:(NSInteger const)section
 {
-  Account *account = [[AccountsManager sharedInstance] account:self.accountType];
-
-  
-  switch(section) {
-    case SectionLogin:
-      if (!account.needsAuth) {
-        return 1;
-      }
-      else if ([self registrationIsPossible]) {
-        return 5;
-      } else {
-        return 4;
-      }
-    case SectionSync:
-      if (!account.needsAuth) {
-        return 1;
-      }
-      else if ([self syncButtonShouldBeVisible]) {
-        return 2;
-      } else {
-        return 1;
-      }
-    case SectionLicenses:
-      return 3;
-    default:
-      @throw NSInternalInconsistencyException;
+  if (section > (int)self.tableData.count - 1) {
+    return 0;
+  } else {
+    return [(NSArray *)self.tableData[section] count];
   }
 }
 
@@ -757,15 +912,36 @@ replacementString:(NSString *)string
   return YES;
 }
 
+- (void)textFieldsDidChange
+{
+  [self updateLoginLogoutCellAppearance];
+}
+
+- (void)keyboardDidShow:(NSNotification *const)notification
+{
+  // This nudges the scroll view up slightly so that the log in button is clearly visible even on
+  // older 3:2 iPhone displays. I wish there were a more general way to do this, but this does at
+  // least work very well.
+  
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+      CGSize const keyboardSize =
+      [[notification userInfo][UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+      CGRect visibleRect = self.view.frame;
+      visibleRect.size.height -= keyboardSize.height + self.tableView.contentInset.top;
+      if(!CGRectContainsPoint(visibleRect,
+                              CGPointMake(0, CGRectGetMaxY(self.logInSignOutCell.frame)))) {
+        // We use an explicit animation block here because |setContentOffset:animated:| does not seem
+        // to work at all.
+        [UIView animateWithDuration:0.25 animations:^{
+          [self.tableView setContentOffset:CGPointMake(0, -self.tableView.contentInset.top + 20)];
+        }];
+      }
+    }
+  }];
+}
 
 #pragma mark -
-
-- (BOOL)registrationIsPossible
-{
-  return ([NYPLConfiguration cardCreationEnabled] &&
-          [[AccountsManager sharedInstance] account:self.accountType].supportsCardCreator &&
-          ![[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
-}
 
 - (void)didSelectReveal
 {
@@ -828,18 +1004,6 @@ replacementString:(NSString *)string
   }];
 }
 
-- (void)changedCurrentAccount
-{
-  [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void)showEULA
-{
-  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] initWithAccount:self.account];
-  UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:eulaViewController];
-  [self.navigationController presentViewController:navVC animated:YES completion:nil];
-}
-
 - (void)updateLoginLogoutCellAppearance
 {
   if([[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]) {
@@ -866,85 +1030,6 @@ replacementString:(NSString *)string
       self.logInSignOutCell.textLabel.textColor = [UIColor lightGrayColor];
     }
   }
-}
-
-- (void)logIn
-{
-  assert(self.barcodeTextField.text.length > 0);
-  assert(self.PINTextField.text.length > 0);
-  
-  [self.barcodeTextField resignFirstResponder];
-  [self.PINTextField resignFirstResponder];
-
-  [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
-  
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-  
-  [self validateCredentials];
-}
-
-- (void)logOut
-{
-  void (^afterDeauthorization)() = ^() {
-    
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
-    [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
-
-    [[NYPLAccount sharedAccount:self.accountType] removeBarcodeAndPIN];
-    [self.tableView reloadData];
-  };
-  
-#if defined(FEATURE_DRM_CONNECTOR)
-  if([NYPLADEPT sharedInstance].workflowsInProgress) {
-    [self presentViewController:[NYPLAlertController
-                                 alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
-                                 message:@"SettingsAccountViewControllerCannotLogOutMessage"]
-                       animated:YES
-                     completion:nil];
-    return;
-  }
-  
-  [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-  
-  [[NYPLReachability sharedReachability]
-   reachabilityForURL:[NYPLConfiguration mainFeedURL]
-   timeoutInternal:5.0
-   handler:^(BOOL reachable) {
-     if(reachable) {
-       [[NYPLADEPT sharedInstance]
-        deauthorizeWithUsername:[[NYPLAccount sharedAccount:self.accountType] barcode]
-        password:[[NYPLAccount sharedAccount:self.accountType] PIN]
-        completion:^(BOOL success, __unused NSError *error) {
-          if(!success) {
-            // Even though we failed, all we do is log the error. The reason is
-            // that we want the user to be able to log out anyway because the
-            // failure is probably due to bad credentials and we do not want the
-            // user to have to change their barcode or PIN just to log out. This
-            // is only a temporary measure and we'll switch to deauthorizing with
-            // a token that will remain invalid indefinitely in the near future.
-            NYPLLOG(@"Failed to deauthorize successfully.");
-          }
-          [self removeActivityTitle];
-          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-          afterDeauthorization();
-        }];
-     } else {
-       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         [self removeActivityTitle];
-         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-         [self presentViewController:[NYPLAlertController
-                                      alertWithTitle:@"SettingsAccountViewControllerLogoutFailed"
-                                      message:@"TimedOut"]
-                            animated:YES
-                          completion:nil];
-       }];
-     }
-   }];
-#else
-  afterDeauthorization();
-  [self removeActivityTitle];
-#endif
 }
 
 - (void)setActivityTitleWithText:(NSString *)text
@@ -983,116 +1068,11 @@ replacementString:(NSString *)string
   [self updateLoginLogoutCellAppearance];
 }
 
-- (void)validateCredentials
+- (void)showEULA
 {
-  Account *account = [[AccountsManager sharedInstance] account:self.accountType];
-  NSMutableURLRequest *const request =
-    [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[account catalogUrl]] URLByAppendingPathComponent:@"loans"]];
-  
-  // Necessary to support longer login times when using usernames.
-  request.timeoutInterval = 20.0;
-  
-  request.HTTPMethod = @"HEAD";
-  
-  NSURLSessionDataTask *const task =
-    [self.session
-     dataTaskWithRequest:request
-     completionHandler:^(__attribute__((unused)) NSData *data,
-                         NSURLResponse *const response,
-                         NSError *const error) {
-       
-       if (self.isLoggingInAfterSignUp) {
-         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSettingsAccountsSignInFinishedNotification
-                                                             object:self];
-       }
-       
-       // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
-       NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
-       
-       // Success.
-       if(statusCode == 200) {
-         
-         
-         //AM_FIXME
-         
-//#if defined(FEATURE_DRM_CONNECTOR)
-//         [[NYPLADEPT sharedInstance]
-//          authorizeWithVendorID:@"NYPL"
-//          username:self.barcodeTextField.text
-//          password:self.PINTextField.text
-//          completion:^(BOOL success, NSError *error) {
-//            [self authorizationAttemptDidFinish:success error:error];
-//          }];
-//#else
-         [self authorizationAttemptDidFinish:YES error:nil];
-//#endif
-         
-         
-         
-         
-         
-         
-         self.isLoggingInAfterSignUp = NO;
-         return;
-       }
-       
-       [self removeActivityTitle];
-       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-       
-       if (error.code == NSURLErrorCancelled) {
-         // We cancelled the request when asked to answer the server's challenge a second time
-         // because we don't have valid credentials.
-         self.PINTextField.text = @"";
-         [self textFieldsDidChange];
-         [self.PINTextField becomeFirstResponder];
-       }
-       
-       self.barcodeTextField.text = nil;
-       self.PINTextField.text = nil;
-       [self showLoginAlertWithError:error];
-     }];
-  
-  [task resume];
-}
-
-- (void)showLoginAlertWithError:(NSError *)error
-{
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:
-   [NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
-                                                                  animated:YES
-                                                                completion:nil];
-  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSettingsAccountsSignInFinishedNotification
-                                                      object:self];
-  [self removeActivityTitle];
-}
-
-- (void)textFieldsDidChange
-{
-  [self updateLoginLogoutCellAppearance];
-}
-
-- (void)keyboardDidShow:(NSNotification *const)notification
-{
-  // This nudges the scroll view up slightly so that the log in button is clearly visible even on
-  // older 3:2 iPhone displays. I wish there were a more general way to do this, but this does at
-  // least work very well.
-  
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-      CGSize const keyboardSize =
-      [[notification userInfo][UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-      CGRect visibleRect = self.view.frame;
-      visibleRect.size.height -= keyboardSize.height + self.tableView.contentInset.top;
-      if(!CGRectContainsPoint(visibleRect,
-                              CGPointMake(0, CGRectGetMaxY(self.logInSignOutCell.frame)))) {
-        // We use an explicit animation block here because |setContentOffset:animated:| does not seem
-        // to work at all.
-        [UIView animateWithDuration:0.25 animations:^{
-          [self.tableView setContentOffset:CGPointMake(0, -self.tableView.contentInset.top + 20)];
-        }];
-      }
-    }
-  }];
+  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] initWithAccount:self.account];
+  UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:eulaViewController];
+  [self.navigationController presentViewController:navVC animated:YES completion:nil];
 }
 
 - (void)syncSwitchChanged:(id)sender
@@ -1104,6 +1084,11 @@ replacementString:(NSString *)string
   } else {
     account.syncIsEnabled = NO;
   }
+}
+
+- (void)changedCurrentAccount
+{
+  [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)setAccountSwitchChanged:(id)sender
@@ -1140,47 +1125,6 @@ replacementString:(NSString *)string
   [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
 }
 
-
-- (void)didSelectCancel
-{
-  [self.navigationController.presentingViewController
-   dismissViewControllerAnimated:YES
-   completion:nil];
-}
-
-- (void)authorizationAttemptDidFinish:(BOOL)success error:(NSError *)error
-{
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    [self removeActivityTitle];
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-    
-    if(success) {
-      [[NYPLAccount sharedAccount:self.accountType] setBarcode:self.barcodeTextField.text
-                                          PIN:self.PINTextField.text];
-
-      if(self.accountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
-        if (!self.isLoggingInAfterSignUp) {
-          [self dismissViewControllerAnimated:YES completion:nil];
-        }
-        void (^handler)() = self.completionHandler;
-        self.completionHandler = nil;
-        if(handler) handler();
-        [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
-      }
-      
-    } else {
-      [self showLoginAlertWithError:error];
-    }
-  }];
-}
-
-- (void)willResignActive
-{
-  if(!self.PINTextField.secureTextEntry) {
-    [self togglePINShowHideState];
-  }
-}
-
 - (void)updateShowHidePINState
 {
   self.PINTextField.rightView.hidden = YES;
@@ -1194,18 +1138,41 @@ replacementString:(NSString *)string
   }
 }
 
-- (void)willEnterForeground
+- (BOOL)registrationIsPossible
 {
-  // We update the state again in case the user enabled or disabled an authentication mechanism.
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    [self updateShowHidePINState];
-  }];
+  return ([NYPLConfiguration cardCreationEnabled] &&
+          [[AccountsManager sharedInstance] account:self.accountType].supportsCardCreator &&
+          ![[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
 }
 
 - (BOOL)syncButtonShouldBeVisible
 {
   return ([self.account getLicenseURL:URLTypeAnnotations] &&
           [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
+}
+
+- (void)didSelectCancel
+{
+  [self.navigationController.presentingViewController
+   dismissViewControllerAnimated:YES
+   completion:nil];
+}
+
+#pragma mark
+
+- (void)willResignActive
+{
+  if(!self.PINTextField.secureTextEntry) {
+    [self togglePINShowHideState];
+  }
+}
+
+- (void)willEnterForeground
+{
+  // We update the state again in case the user enabled or disabled an authentication mechanism.
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [self updateShowHidePINState];
+  }];
 }
 
 @end
