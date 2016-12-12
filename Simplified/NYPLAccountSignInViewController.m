@@ -428,6 +428,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.textAlignment = NSTextAlignmentCenter;
       cell.textLabel.text = NSLocalizedString(@"SignUp", nil);
       cell.textLabel.textColor = [NYPLConfiguration mainColor];
       return cell;

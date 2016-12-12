@@ -184,7 +184,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 
 - (void)setupTableData
 {
-  //GODO move this out eventually
   NSMutableArray *section0;
   if (self.account.needsAuth == NO) {
     section0 = @[@(CellKindAgeCheck)].mutableCopy;
@@ -468,7 +467,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             //Delete Books in My Books
             [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
             [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
-            //GODO refresh to "under-13" instant classic catalog
+            //GODO refresh to "under-13" instant classic catalog when it becomes available
           }
         }];
       } else {
@@ -519,7 +518,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                     actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                     style:UIAlertActionStyleCancel
                                     handler:nil]];
-        [self presentViewController:alertController animated:YES completion:nil];
+        [self presentViewController:alertController animated:YES completion:^{
+          alertController.view.tintColor = [NYPLConfiguration mainColor];
+        }];
       } else {
         [self logIn];
       }
