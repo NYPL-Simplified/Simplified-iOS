@@ -27,6 +27,7 @@
 @property (nonatomic) NSURL *annotationsURL;
 @property (nonatomic) NSURL *analyticsURL;
 @property (nonatomic) NSURL *alternateURL;
+@property (nonatomic) NSDictionary *licensor;
 
 @end
 
@@ -77,6 +78,7 @@ static NSString *const AlternateURLKey = @"alternate";
   }
   
   NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail, *annotations, *report = nil;
+  NSDictionary *licensor = nil;
   
   NYPLBookAvailabilityStatus availabilityStatus = NYPLBookAvailabilityStatusUnknown;
   NSInteger availableCopies = 0;
@@ -89,6 +91,11 @@ static NSString *const AlternateURLKey = @"alternate";
         isEPUBAvailable = YES;
       }
     }
+    if (link.licensor != nil)
+    {
+      licensor = link.licensor;
+    }
+
     if(link.availabilityStatus) {
       if([link.availabilityStatus isEqualToString:@"available"]) {
         availabilityStatus = NYPLBookAvailabilityStatusAvailable;
@@ -187,7 +194,8 @@ static NSString *const AlternateURLKey = @"alternate";
           updated:entry.updated
           annotationsURL:entry.annotations.href
           analyticsURL:entry.analytics
-          alternateURL:entry.alternate.href];
+          alternateURL:entry.alternate.href
+          licensor:licensor];
 }
 
 - (instancetype)bookWithMetadataFromBook:(NYPLBook *)book
@@ -211,7 +219,8 @@ static NSString *const AlternateURLKey = @"alternate";
           updated:book.updated
           annotationsURL:book.annotationsURL
           analyticsURL:book.analyticsURL
-          alternateURL:book.alternateURL];
+          alternateURL:book.alternateURL
+          licensor:book.licensor];
 }
 
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
@@ -233,6 +242,7 @@ static NSString *const AlternateURLKey = @"alternate";
                      annotationsURL:(NSURL *)annotationsURL
                        analyticsURL:(NSURL *)analyticsURL
                        alternateURL:(NSURL *)alternateURL
+                           licensor:(NSDictionary *)licensor
 {
   self = [super init];
   if(!self) return nil;
@@ -266,6 +276,7 @@ static NSString *const AlternateURLKey = @"alternate";
   self.annotationsURL = annotationsURL;
   self.analyticsURL = analyticsURL;
   self.alternateURL = alternateURL;
+  self.licensor = licensor;
   
   return self;
 }

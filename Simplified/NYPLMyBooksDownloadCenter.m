@@ -182,7 +182,41 @@ didFinishDownloadingToURL:(NSURL *const)location
           [[NYPLBookRegistry sharedRegistry]
            setState:NYPLBookStateDownloadFailed
            forIdentifier:book.identifier];
-        } else {
+        }
+        else if (![[NYPLAccount sharedAccount] hasLicensor])
+        {
+          
+          
+
+          [[NYPLADEPT sharedInstance]
+           authorizeWithVendorID:@"NYPL"
+           username:[[NYPLAccount sharedAccount] barcode]
+           password:[[NYPLAccount sharedAccount] PIN]
+           completion:^(BOOL success, NSError *error, NSString *userID, NSString *deviceID) {
+             
+             NYPLLOG(error);
+             
+             if (book.licensor!=nil)
+             {
+               [[NYPLAccount sharedAccount] setLicensor:book.licensor];
+             }
+             [[NYPLAccount sharedAccount] setUserID:userID];
+             [[NYPLAccount sharedAccount] setDeviceID:deviceID];
+             
+             if (success)
+             {
+               [[NYPLADEPT sharedInstance]
+                fulfillWithACSMData:ACSMData
+                tag:book.identifier];
+             }
+
+             
+             
+             
+           }];
+
+        }
+        else {
           [[NYPLADEPT sharedInstance]
            fulfillWithACSMData:ACSMData
            tag:book.identifier];
