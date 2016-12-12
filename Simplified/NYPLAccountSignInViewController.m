@@ -425,12 +425,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindRegistration: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
+                                     initWithStyle:UITableViewCellStyleValue1
                                      reuseIdentifier:nil];
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.textAlignment = NSTextAlignmentCenter;
-      cell.textLabel.text = NSLocalizedString(@"SignUp", nil);
-      cell.textLabel.textColor = [NYPLConfiguration mainColor];
+      cell.textLabel.text = @"Dont't have a library card?";
+      cell.detailTextLabel.font = [UIFont systemFontOfSize:17];
+      cell.detailTextLabel.text = NSLocalizedString(@"SignUp", nil);
+      cell.detailTextLabel.textColor = [NYPLConfiguration mainColor];
       return cell;
     }
   }
@@ -604,7 +605,6 @@ replacementString:(NSString *)string
   } else {
     self.eulaCell.userInteractionEnabled = YES;
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
-    self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
     BOOL const canLogIn =
       ([self.barcodeTextField.text

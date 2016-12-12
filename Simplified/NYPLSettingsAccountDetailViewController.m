@@ -192,10 +192,11 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
                  @(CellKindPIN),
                  @(CellKindEULA),
                  @(CellKindLogInSignOut)].mutableCopy;
-    if ([self registrationIsPossible]) {
-      [section0 addObject:@(CellKindRegistration)];
-    }
   }
+  
+  NSMutableArray *sectionRegister = @[@(CellKindRegistration)].mutableCopy;
+
+
   NSMutableArray *section1 = @[@(CellKindSetCurrentAccount)].mutableCopy;
   if ([self syncButtonShouldBeVisible]) {
     [section1 addObject:@(CellKindSyncButton)];
@@ -211,7 +212,12 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
     [section2 addObject:@(CellKindContentLicense)];
   }
   
-  self.tableData = @[section0, section1, section2];
+  if ([self registrationIsPossible]) {
+    self.tableData = @[section0, sectionRegister, section1, section2];
+  }
+  else{
+    self.tableData = @[section0, section1, section2];
+  }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -680,12 +686,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindRegistration: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
+                                     initWithStyle:UITableViewCellStyleValue1
                                      reuseIdentifier:nil];
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.textAlignment = NSTextAlignmentCenter;
-      cell.textLabel.text = NSLocalizedString(@"SignUp", nil);
-      cell.textLabel.textColor = [NYPLConfiguration mainColor];
+      cell.textLabel.text = @"Dont't have a library card?";
+      cell.detailTextLabel.font = [UIFont systemFontOfSize:17];
+      cell.detailTextLabel.text = NSLocalizedString(@"SignUp", nil);
+      cell.detailTextLabel.textColor = [NYPLConfiguration mainColor];
+
       return cell;
     }
     case CellKindAgeCheck: {
@@ -1018,7 +1026,6 @@ replacementString:(NSString *)string
   } else {
     self.eulaCell.userInteractionEnabled = YES;
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
-    self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     BOOL const canLogIn =
       ([self.barcodeTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
