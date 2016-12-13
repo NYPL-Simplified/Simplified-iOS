@@ -164,6 +164,7 @@
 		E6202A041DD52B8600C99553 /* NYPLWelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6202A031DD52B8600C99553 /* NYPLWelcomeScreen.swift */; };
 		E6B1F4FB1DD20EA900D73CA1 /* NYPLSettingsAccountsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B1F4FA1DD20EA900D73CA1 /* NYPLSettingsAccountsList.swift */; };
 		E6BA02B81DE4B6F600F76404 /* RemoteHTMLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */; };
+		E6F26E731DFF672F00C103CA /* NYPLDirectoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */; };
 		EC89BB22576495E8A359D77E /* Pods_SimplyE.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */; };
 /* End PBXBuildFile section */
 
@@ -510,6 +511,7 @@
 		E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLCirculationAnalytics.swift; sourceTree = "<group>"; };
 		E6B1F4FA1DD20EA900D73CA1 /* NYPLSettingsAccountsList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsAccountsList.swift; sourceTree = "<group>"; };
 		E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteHTMLViewController.swift; sourceTree = "<group>"; };
+		E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLDirectoryManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -951,6 +953,7 @@
 				E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
+				E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */,
 				111197321986D7550014462F /* NYPLDismissibleViewController.h */,
 				111197331986D7550014462F /* NYPLDismissibleViewController.m */,
 				1142E4E919EED86A00D9B3D9 /* NYPLFacetBarView.h */,
@@ -1457,6 +1460,7 @@
 				110AF89C1961ED1F004887C3 /* NYPLBookDetailViewController.m in Sources */,
 				1164A9F71A797238002BD3AE /* NYPLSettings.m in Sources */,
 				11BFDB39199C117B00378691 /* NYPLReaderTOCCell.m in Sources */,
+				E6F26E731DFF672F00C103CA /* NYPLDirectoryManager.swift in Sources */,
 				085D31D71BE29E38007F7672 /* NYPLProblemReportViewController.m in Sources */,
 				11C5DCF21976D1E0005A9945 /* NYPLHoldsNavigationController.m in Sources */,
 				A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */,

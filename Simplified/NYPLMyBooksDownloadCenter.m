@@ -374,66 +374,10 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   return self.bookIdentifierToDownloadInfo[bookIdentifier];
 }
 
-- (NSURL *)contentDirectoryURL:(NSInteger)account
-{
-  NSArray *const paths =
-  NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-  
-  assert([paths count] == 1);
-  
-  NSString *const path = paths[0];
-  
-  NSURL * directoryURL =
-  [[[NSURL fileURLWithPath:path]
-    URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                 objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-   URLByAppendingPathComponent:@"content"];
-  if (account != 0)
-  {
-    directoryURL =
-    [[[[NSURL fileURLWithPath:path]
-       URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-      URLByAppendingPathComponent:[@(account) stringValue]]
-     URLByAppendingPathComponent:@"content"];
-  }
-  NSError *error = nil;
-  if(![[NSFileManager defaultManager]
-       createDirectoryAtURL:directoryURL
-       withIntermediateDirectories:YES
-       attributes:nil
-       error:&error]) {
-    NYPLLOG(@"Failed to create directory.");
-    return nil;
-  }
-  
-  return directoryURL;
-}
-
 - (NSURL *)contentDirectoryURL
 {
-  NSArray *const paths =
-  NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  NSURL *directoryURL = [[DirectoryManager current] URLByAppendingPathComponent:@"content"];
   
-  assert([paths count] == 1);
-  
-  NSString *const path = paths[0];
-  NSInteger library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
-
-  NSURL * directoryURL =
-    [[[NSURL fileURLWithPath:path]
-      URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                   objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-     URLByAppendingPathComponent:@"content"];
-  if (library != 0)
-  {
-    directoryURL =
-    [[[[NSURL fileURLWithPath:path]
-       URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-      URLByAppendingPathComponent:[@(library) stringValue]]
-     URLByAppendingPathComponent:@"content"];
-  }
   NSError *error = nil;
   if(![[NSFileManager defaultManager]
        createDirectoryAtURL:directoryURL
@@ -443,7 +387,21 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     NYPLLOG(@"Failed to create directory.");
     return nil;
   }
+  return directoryURL;
+}
+- (NSURL *)contentDirectoryURL:(NSInteger)account
+{
+  NSURL *directoryURL = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"content"];
   
+  NSError *error = nil;
+  if(![[NSFileManager defaultManager]
+       createDirectoryAtURL:directoryURL
+       withIntermediateDirectories:YES
+       attributes:nil
+       error:&error]) {
+    NYPLLOG(@"Failed to create directory.");
+    return nil;
+  }
   return directoryURL;
 }
 

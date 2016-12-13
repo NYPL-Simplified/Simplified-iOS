@@ -62,30 +62,8 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 
 - (NSURL *)pinnedThumbnailImageDirectoryURL
 {
-  NSArray *const paths =
-    NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-  
-  assert([paths count] == 1);
-  
-  NSString *const path = paths[0];
-  NSInteger library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
+  NSURL *URL = [[DirectoryManager current] URLByAppendingPathComponent:@"pinned-thumbnail-images"];
 
-  NSURL * URL =
-  [[[NSURL fileURLWithPath:path]
-    URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                 objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-   URLByAppendingPathComponent:@"pinned-thumbnail-images"];
-
-  if (library != 0)
-  {
-  URL =
-    [[[[NSURL fileURLWithPath:path]
-       URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-      URLByAppendingPathComponent:[@(library) stringValue]]
-     URLByAppendingPathComponent:@"pinned-thumbnail-images"];
-  
-  }
   @synchronized(self) {
     NSError *error = nil;
     if(![[NSFileManager defaultManager]

@@ -75,53 +75,14 @@ static NSString *const RecordsKey = @"records";
 
 - (NSURL *)registryDirectory
 {
-  NSArray *const paths =
-    NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-  
-  assert([paths count] == 1);
-  
-  NSString *const path = paths[0];
-  NSInteger library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
+  NSURL *URL = [[DirectoryManager current] URLByAppendingPathComponent:@"registry"];
 
-  NSURL *URL =
-  [[[NSURL fileURLWithPath:path]
-     URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                  objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-   URLByAppendingPathComponent:@"registry"];
-  
-  if (library != 0)  {
-    URL =
-    [[[[NSURL fileURLWithPath:path]
-       URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-      URLByAppendingPathComponent:[@(library) stringValue]]
-     URLByAppendingPathComponent:@"registry"];
-  }
   return URL;
 }
 - (NSURL *)registryDirectory:(NSInteger)account
 {
-  NSArray *const paths =
-  NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  NSURL *URL = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"registry"];
   
-  assert([paths count] == 1);
-  
-  NSString *const path = paths[0];
-  
-  NSURL *URL =
-  [[[NSURL fileURLWithPath:path]
-    URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                 objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-   URLByAppendingPathComponent:@"registry"];
-  
-  if (account != 0)  {
-    URL =
-    [[[[NSURL fileURLWithPath:path]
-       URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-      URLByAppendingPathComponent:[@(account) stringValue]]
-     URLByAppendingPathComponent:@"registry"];
-  }
   return URL;
 }
 

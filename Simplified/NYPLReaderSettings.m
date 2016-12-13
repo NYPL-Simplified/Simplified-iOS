@@ -195,29 +195,8 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
 
 - (NSURL *)settingsURL
 {
-  NSArray *const paths =
-    NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  NSURL *URL = [[DirectoryManager current] URLByAppendingPathComponent:@"settings.json"];
   
-  assert([paths count] == 1);
-  
-  NSString *const path = paths[0];
-  NSInteger library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
-  
-  NSURL *URL =
-  [[[NSURL fileURLWithPath:path]
-     URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                  objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-   URLByAppendingPathComponent:@"settings.json"];
-  
-  if (library != 0)
-  {
-    URL =
-    [[[[NSURL fileURLWithPath:path]
-       URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                    objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-      URLByAppendingPathComponent:[@(library) stringValue]]
-     URLByAppendingPathComponent:@"settings.json"];
-  }
   return URL;
 }
 
