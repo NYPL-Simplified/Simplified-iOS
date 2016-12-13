@@ -221,6 +221,10 @@
        
      }];
   }
+  else if (account.needsAuth)
+  {
+    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+  }
   
 }
 
