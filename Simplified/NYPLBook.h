@@ -38,6 +38,7 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 @property (nonatomic, readonly) NSURL *annotationsURL; // nilable
 @property (nonatomic, readonly) NSURL *analyticsURL; // nilable
 @property (nonatomic, readonly) NSURL *alternateURL; // nilable
+@property (nonatomic, readonly) NSDictionary *licensor; // nilable
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
@@ -68,7 +69,8 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
                             updated:(NSDate *)updated
                      annotationsURL:(NSURL *)annotationsURL
                        analyticsURL:(NSURL *)analyticsURL
-                       alternateURL:(NSURL *)alternateURL;
+                       alternateURL:(NSURL *)alternateURL
+                           licensor:(NSDictionary *)licensor;
 
 // designated initializer
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
