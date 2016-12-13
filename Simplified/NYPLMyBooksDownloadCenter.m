@@ -163,6 +163,7 @@ didFinishDownloadingToURL:(NSURL *const)location
     success = NO;
   }
   
+//  NSString *userId = [[NYPLADEPT sharedInstance] userID];
   if (success) {
     switch([self downloadInfoForBookIdentifier:book.identifier].rightsManagement) {
       case NYPLMyBooksDownloadRightsManagementUnknown:
@@ -183,28 +184,38 @@ didFinishDownloadingToURL:(NSURL *const)location
            setState:NYPLBookStateDownloadFailed
            forIdentifier:book.identifier];
         }
-        else if (![[NYPLAccount sharedAccount] hasLicensor])
+        else if (![[NYPLADEPT sharedInstance] deviceAuthorized])
         {
           
-          
+//          clientToken
+          NSMutableArray* foo = [book.licensor[@"clientToken"] componentsSeparatedByString: @"|"].mutableCopy;
+          NSString *last = foo.lastObject;
+          [foo removeLastObject];
+          NSString *first = [foo componentsJoinedByString:@"|"];
 
+          NYPLLOG(first);
+          NYPLLOG(last);
+          NYPLLOG(book.licensor[@"clientToken"]);
+          
+          
+          
+          
           [[NYPLADEPT sharedInstance]
-           authorizeWithVendorID:@"NYPL"
-           username:[[NYPLAccount sharedAccount] barcode]
-           password:[[NYPLAccount sharedAccount] PIN]
-           completion:^(BOOL success, NSError *error, NSString *userID, NSString *deviceID) {
+           authorizeWithVendorID:book.licensor[@"vendor"]
+           username:first
+           password:last
+           completion:^(BOOL success, NSError *error) {
              
              NYPLLOG(error);
              
-             if (book.licensor!=nil)
-             {
-               [[NYPLAccount sharedAccount] setLicensor:book.licensor];
-             }
-             [[NYPLAccount sharedAccount] setUserID:userID];
-             [[NYPLAccount sharedAccount] setDeviceID:deviceID];
              
              if (success)
              {
+               if (book.licensor!=nil)
+               {
+                 [[NYPLAccount sharedAccount] setLicensor:book.licensor];
+               }
+
                [[NYPLADEPT sharedInstance]
                 fulfillWithACSMData:ACSMData
                 tag:book.identifier];

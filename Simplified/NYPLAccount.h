@@ -12,8 +12,6 @@ static NSString *const NYPLAccountLoginDidChangeNotification =
 @property (atomic, readonly) NSString *patronFullName;     // nil if not logged in
 @property (atomic, readonly) NSString *authToken;     // nil if not logged in
 @property (atomic, readonly) NSString *adobeToken; // nil if not logged in
-@property (atomic, readonly) NSString *userID;     // nil if not logged in
-@property (atomic, readonly) NSString *deviceID; // nil if not logged in
 
 
 
@@ -41,9 +39,6 @@ static NSString *const NYPLAccountLoginDidChangeNotification =
 
 - (void)setProvider:(NSString *)provider;
 
-- (void)setUserID:(NSString *)userID;
-
-- (void)setDeviceID:(NSString *)deviceID;
 
 - (BOOL)hasAuthToken;
 
@@ -60,5 +55,7 @@ static NSString *const NYPLAccountLoginDidChangeNotification =
 - (void)removeAll;
 
 - (void)removeObject:(NSString *const)key;
+
+- (NSDictionary *)licensor;
 
 @end

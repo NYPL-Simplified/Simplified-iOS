@@ -11,6 +11,13 @@
 #import "NYPLSettingsPrimaryTableViewController.h"
 #import "SimplyE-Swift.h"
 #import "NYPLAppDelegate.h"
+#import "NSString+NYPLStringAdditions.h"
+#import "NYPLAlertController.h"
+
+#if defined(FEATURE_DRM_CONNECTOR)
+#import <ADEPT/ADEPT.h>
+#endif
+
 
 @implementation NYPLCatalogNavigationController
 
@@ -61,8 +68,46 @@
   [self popToRootViewControllerAnimated:NO];
 }
 
+- (void)deactivateAccount
+{
+  Account *account = [[AccountsManager sharedInstance] currentAccount];
+  
+  if (account.needsAuth && [[NYPLAccount sharedAccount:account.id] hasBarcodeAndPIN] && [[NYPLAccount sharedAccount:account.id] hasLicensor])
+  {
+    NSMutableArray* foo = [ [[NYPLAccount sharedAccount:account.id] licensor][@"clientToken"] componentsSeparatedByString: @"|"].mutableCopy;
+    NSString *last = foo.lastObject;
+    [foo removeLastObject];
+    NSString *first = [foo componentsJoinedByString:@"|"];
+    
+    NYPLLOG([[NYPLAccount sharedAccount:account.id] licensor]);
+    NYPLLOG(first);
+    NYPLLOG(last);
+    
+    
+    [[NYPLADEPT sharedInstance]
+     deauthorizeWithUsername:first
+     password:last
+     completion:^(BOOL success, __unused NSError *error) {
+       if(!success) {
+         // Even though we failed, all we do is log the error. The reason is
+         // that we want the user to be able to log out anyway because the
+         // failure is probably due to bad credentials and we do not want the
+         // user to have to change their barcode or PIN just to log out. This
+         // is only a temporary measure and we'll switch to deauthorizing with
+         // a token that will remain invalid indefinitely in the near future.
+         NYPLLOG(@"Failed to deauthorize successfully.");
+       }
+       
+       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+       
+     }];
+  }
+
+}
 - (void)switchLibrary
 {
+  
+  
   NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
 
   UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Pick Your Library" message:nil preferredStyle:(UIAlertControllerStyleActionSheet)];
@@ -74,6 +119,7 @@
   for (int i = 0; i < (int)accounts.count; i++) {
     Account *account = [[AccountsManager sharedInstance] account:[accounts[i] intValue]];
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+      [self deactivateAccount];
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
       [self reloadSelected];
     }]];
@@ -124,6 +170,58 @@
     [viewController load];
     viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
   }
+  
+  
+  if (account.needsAuth && [[NYPLAccount sharedAccount:account.id] hasBarcodeAndPIN] && [[NYPLAccount sharedAccount:account.id] hasLicensor])
+  {
+    NSMutableArray* foo = [ [[NYPLAccount sharedAccount:account.id] licensor][@"clientToken"] componentsSeparatedByString: @"|"].mutableCopy;
+    NSString *last = foo.lastObject;
+    [foo removeLastObject];
+    NSString *first = [foo componentsJoinedByString:@"|"];
+    
+    NYPLLOG([[NYPLAccount sharedAccount:account.id] licensor]);
+    NYPLLOG(first);
+    NYPLLOG(last);
+    
+    
+    [[NYPLADEPT sharedInstance]
+     authorizeWithVendorID:[[NYPLAccount sharedAccount:account.id] licensor][@"vendor"]
+     username:first
+     password:last
+     completion:^(BOOL success, NSError *error) {
+       
+       NYPLLOG(error);
+       
+       if (success)
+       {
+         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+       }
+       else{
+         
+         
+         // show alert Temporary, needs to be replaced or removed.
+         
+         
+         NYPLAlertController *alertCont = [NYPLAlertController
+                                           alertControllerWithTitle:NSLocalizedString(@"Error", nil)
+                                           message:error.userInfo[@"originalCode"]
+                                           preferredStyle:UIAlertControllerStyleAlert];
+         
+         [alertCont addAction: [UIAlertAction actionWithTitle:@"OK"
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:nil]];
+         
+         
+         [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
+
+         
+
+       }
+      
+       
+     }];
+  }
+  
 }
 
 - (void) viewDidAppear:(BOOL)animated

@@ -246,19 +246,19 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   }
 }
 
-#if defined(FEATURE_DRM_CONNECTOR)
-- (void)viewDidAppear:(BOOL)animated
-{
-  [super viewDidAppear:animated];
-//  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
-//    if ([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN]) {
-//      self.barcodeTextField.text = [NYPLAccount sharedAccount:self.account].barcode;
-//      self.PINTextField.text = [NYPLAccount sharedAccount:self.account].PIN;
-//      [self logIn];
-//    }
-//  }
-}
-#endif
+//#if defined(FEATURE_DRM_CONNECTOR)
+//- (void)viewDidAppear:(BOOL)animated
+//{
+//  [super viewDidAppear:animated];
+////  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
+////    if ([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN]) {
+////      self.barcodeTextField.text = [NYPLAccount sharedAccount:self.account].barcode;
+////      self.PINTextField.text = [NYPLAccount sharedAccount:self.account].PIN;
+////      [self logIn];
+////    }
+////  }
+//}
+//#endif
 
 #pragma mark
 #pragma mark Account SignIn/SignOut
@@ -308,9 +308,18 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
    timeoutInternal:8.0
    handler:^(BOOL reachable) {
      if(reachable) {
+       
+      
+       NSMutableArray* foo = [ [[NYPLAccount sharedAccount:self.accountType] licensor][@"clientToken"] componentsSeparatedByString: @"|"].mutableCopy;
+       NSString *last = foo.lastObject;
+       [foo removeLastObject];
+       NSString *first = [foo componentsJoinedByString:@"|"];
+
+       
+       
        [[NYPLADEPT sharedInstance]
-        deauthorizeWithUsername:[[NYPLAccount sharedAccount:self.accountType] barcode]
-        password:[[NYPLAccount sharedAccount:self.accountType] PIN]
+        deauthorizeWithUsername:first
+        password:last
         completion:^(BOOL success, __unused NSError *error) {
           if(!success) {
             // Even though we failed, all we do is log the error. The reason is
