@@ -81,6 +81,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
           handler: { action in
             self.userAddedSecondaryAccounts.append(userAccount.id)
             self.updateSettingsAccountList()
+            self.updateUI()
             self.tableView.reloadData()
         }))
       }
@@ -163,6 +164,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
       userAddedSecondaryAccounts.remove(at: indexPath.row)
       tableView.deleteRows(at: [indexPath], with: .fade)
       updateSettingsAccountList()
+      updateUI()
       self.tableView.reloadData()
     }
   }

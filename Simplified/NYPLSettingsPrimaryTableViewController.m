@@ -155,7 +155,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"Accounts", nil)];
     }
     case NYPLSettingsPrimaryTableViewControllerItemAbout: {
-      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"About", nil)];
+      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"AboutApp", nil)];
     }
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
       return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"Help", nil)];

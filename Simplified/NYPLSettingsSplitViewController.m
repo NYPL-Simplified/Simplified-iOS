@@ -79,7 +79,7 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
       viewController = [[RemoteHTMLViewController alloc]
                         initWithURL:[NSURL URLWithString:NYPLAcknowledgementsURLString]
-                        title:NSLocalizedString(@"About", nil)
+                        title:NSLocalizedString(@"AboutApp", nil)
                         failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemEULA:

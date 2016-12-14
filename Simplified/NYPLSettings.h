@@ -18,6 +18,7 @@ static NSString *const NYPLUserAgreementURLString = @"http://www.librarysimplifi
 @property (atomic) NSURL *customMainFeedURL;
 @property (atomic) NSURL *accountMainFeedURL;
 @property (atomic) BOOL userPresentedWelcomeScreen;
+@property (atomic) BOOL userPresentedAgeCheck;
 @property (atomic) NYPLCardApplicationModel *currentCardApplication;
 
 @property (readonly) Account* currentAccount;
