@@ -198,7 +198,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   NSMutableArray *sectionRegister = @[@(CellKindRegistration)].mutableCopy;
 
 
-  NSMutableArray *section1 = @[@(CellKindSetCurrentAccount)].mutableCopy;
+  NSMutableArray *section1 = [[NSMutableArray alloc] init];
   if ([self syncButtonShouldBeVisible]) {
     [section1 addObject:@(CellKindSyncButton)];
   }
@@ -219,6 +219,11 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   else{
     self.tableData = @[section0, section1, section2];
   }
+  NSMutableArray *newArray = [[NSMutableArray alloc] init];
+  for (NSMutableArray *section in self.tableData) {
+    if ([section count] != 0) { [newArray addObject:section]; }
+  }
+  self.tableData = newArray;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -483,9 +488,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             //Delete Books in My Books
             [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
             [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
-            //GODO refresh to "under-13" instant classic catalog when it becomes available
             NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
-            [catalog deactivateAccount];
             [catalog reloadSelected];
           }
         }];
@@ -493,7 +496,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
         self.account.userAboveAgeLimit = YES;
         NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
-        [catalog deactivateAccount];
         [catalog reloadSelected];
       }
       break;
