@@ -42,7 +42,7 @@
 {
   self.reloadView.hidden = YES;
   
-  if(self.childViewControllers.count > 0) {
+  while(self.childViewControllers.count > 0) {
     UIViewController *const childViewController = self.childViewControllers[0];
     [childViewController.view removeFromSuperview];
     [childViewController removeFromParentViewController];

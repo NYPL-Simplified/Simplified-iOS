@@ -32,7 +32,17 @@
                                                      action:@selector(switchLibrary)];
   holdsViewController.navigationItem.leftBarButtonItem.enabled = YES;
   
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(reloadSelected)
+                                               name:NYPLCurrentAccountDidChangeNotification
+                                             object:nil];
+  
   return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void)viewWillAppear:(BOOL)animated
