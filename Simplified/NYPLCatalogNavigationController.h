@@ -12,5 +12,7 @@
 // designated initializer
 - (instancetype)init;
 - (void)reloadSelected;
+- (void)deactivateAccount;
+
 
 @end

@@ -40,6 +40,8 @@
 
 - (void)load
 {
+  self.reloadView.hidden = YES;
+  
   if(self.childViewControllers.count > 0) {
     UIViewController *const childViewController = self.childViewControllers[0];
     [childViewController.view removeFromSuperview];
@@ -145,7 +147,7 @@
   
   self.response = nil;
   self.connection = nil;
-  self.data = nil;
+  self.data = [NSMutableData data];
 }
 
 #pragma mark NSURLConnectionDelegate
@@ -158,7 +160,7 @@
   self.reloadView.hidden = NO;
   
   self.connection = nil;
-  self.data = nil;
+  self.data = [NSMutableData data];
   self.response = nil;
 }
 

@@ -16,6 +16,8 @@ static NSString *const renderingEngineKey = @"NYPLSettingsRenderingEngine";
 
 static NSString *const userPresentedWelcomeScreenKey = @"NYPLUserPresentedWelcomeScreenKey";
 
+static NSString *const userPresentedAgeCheckKey = @"NYPLUserPresentedAgeCheckKey";
+
 static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCurrentCardApplicationSerialized";
 
 static NSString *const settingsLibraryAccountsKey = @"NYPLSettingsLibraryAccountsKey";
@@ -84,6 +86,11 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] boolForKey:userPresentedWelcomeScreenKey];
 }
 
+- (BOOL) userPresentedAgeCheck
+{
+  return [[NSUserDefaults standardUserDefaults] boolForKey:userPresentedAgeCheckKey];
+}
+
 - (NSArray *) settingsAccountsList
 {
   NSArray *libraryAccounts = [[NSUserDefaults standardUserDefaults] arrayForKey:settingsLibraryAccountsKey];
@@ -118,6 +125,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 - (void)setUserPresentedWelcomeScreen:(BOOL)userPresentedScreen
 {
   [[NSUserDefaults standardUserDefaults] setBool:userPresentedScreen forKey:userPresentedWelcomeScreenKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setUserPresentedAgeCheck:(BOOL)userPresentedAgeCheck
+{
+  [[NSUserDefaults standardUserDefaults] setBool:userPresentedAgeCheck forKey:userPresentedAgeCheckKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

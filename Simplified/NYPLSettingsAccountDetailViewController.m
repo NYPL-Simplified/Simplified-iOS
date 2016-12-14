@@ -6,6 +6,7 @@
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLCatalogNavigationController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
@@ -483,11 +484,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
             [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
             //GODO refresh to "under-13" instant classic catalog when it becomes available
+            NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
+            [catalog deactivateAccount];
+            [catalog reloadSelected];
           }
         }];
       } else {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
         self.account.userAboveAgeLimit = YES;
+        NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
+        [catalog deactivateAccount];
+        [catalog reloadSelected];
       }
       break;
     }
