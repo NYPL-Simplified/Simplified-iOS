@@ -153,14 +153,15 @@ final class NYPLWelcomeScreenViewController: UIViewController {
 
 /// List of available Libraries/Accounts to select as patron's primary
 /// when going through Welcome Screen flow.
-final class NYPLWelcomeScreenAccountList: UITableViewController {
+final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
   var accounts: [Account]!
   let completion: (Account) -> ()
+  weak var tableView : UITableView!
   
   required init(completion: @escaping (Account) -> ()) {
     self.completion = completion
-    super.init(style: .grouped)
+    super.init(nibName:nil, bundle:nil)
   }
   
   @available(*, unavailable)
@@ -169,24 +170,29 @@ final class NYPLWelcomeScreenAccountList: UITableViewController {
   }
   
   override func viewDidLoad() {
+    self.view = UITableView(frame: .zero, style: .grouped)
+    self.tableView = self.view as! UITableView
+    self.tableView.delegate = self
+    self.tableView.dataSource = self
+    
     self.accounts = AccountsManager.shared.accounts
     self.title = NSLocalizedString("LibraryListTitle", comment: "Title that also informs the user that they should choose a library from the list.")
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
   }
   
-  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     return 80
   }
   
-  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     completion(accounts[indexPath.row])
   }
   
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return self.accounts.count
   }
   
-  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     return cellForLibrary(self.accounts[indexPath.row])
   }
   

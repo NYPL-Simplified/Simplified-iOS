@@ -15,6 +15,11 @@ class NYPLAnnotations: NSObject {
   class func postLastRead(_ book:NYPLBook, cfi:NSString)
   {
     
+    //Cannot make AF 4.0 request in iOS8
+    if floor(NSFoundationVersionNumber) < NSFoundationVersionNumber_iOS_9_0 {
+      return;
+    }
+    
     func convertStringToDictionary(_ text: String) -> [String:AnyObject]? {
       if let data = text.data(using: String.Encoding.utf8) {
         do {
@@ -56,7 +61,12 @@ class NYPLAnnotations: NSObject {
   
   class func syncLastRead(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: String?,
     _ error: NSError?) -> ()) {
-        
+    
+    //Cannot make AF 4.0 request in iOS8
+    if floor(NSFoundationVersionNumber) < NSFoundationVersionNumber_iOS_9_0 {
+      return;
+    }
+    
     if (NYPLAccount.shared().hasBarcodeAndPIN())
     {
       if book.annotationsURL != nil {

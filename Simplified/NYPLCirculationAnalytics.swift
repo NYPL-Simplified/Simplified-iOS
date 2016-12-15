@@ -6,6 +6,11 @@ final class NYPLCirculationAnalytics : NSObject {
   
   class func postEvent(_ event: String, withBook book: NYPLBook) -> Void {
     
+    //Cannot make AF 4.0 request in iOS8
+    if floor(NSFoundationVersionNumber) < NSFoundationVersionNumber_iOS_9_0 {
+      return;
+    }
+    
     if book.analyticsURL != nil{
       
       let requestURL = book.analyticsURL.appendingPathComponent(event)
