@@ -22,6 +22,8 @@ static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCu
 
 static NSString *const settingsLibraryAccountsKey = @"NYPLSettingsLibraryAccountsKey";
 
+static NSString *const settingsOfflineQueueKey = @"NYPLSettingsOfflineQueueKey";
+
 
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
 {
@@ -89,6 +91,15 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 - (BOOL) userPresentedAgeCheck
 {
   return [[NSUserDefaults standardUserDefaults] boolForKey:userPresentedAgeCheckKey];
+}
+
+- (NSMutableArray *) offlineQueue
+{
+  if ([[NSUserDefaults standardUserDefaults] arrayForKey:settingsOfflineQueueKey] == nil) {
+    return [[NSMutableArray alloc] init];
+  } else {
+    return [[NSUserDefaults standardUserDefaults] arrayForKey:settingsOfflineQueueKey].mutableCopy;
+  }
 }
 
 - (NSArray *) settingsAccountsList
@@ -198,6 +209,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLSettingsDidChangeNotification
    object:self];
+}
+
+- (void)setOfflineQueue:(NSMutableArray *)queue
+{
+  [[NSUserDefaults standardUserDefaults] setObject:queue forKey:settingsOfflineQueueKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end

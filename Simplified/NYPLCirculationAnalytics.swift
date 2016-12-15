@@ -1,9 +1,19 @@
 import Alamofire
 import Foundation
 
-// This class encapsulates analytic events sent to the server. 
+let offlineQueueStatusCodes = [NSURLErrorTimedOut,
+                               NSURLErrorCannotFindHost,
+                               NSURLErrorCannotConnectToHost,
+                               NSURLErrorNetworkConnectionLost,
+                               NSURLErrorNotConnectedToInternet,
+                               NSURLErrorInternationalRoamingOff,
+                               NSURLErrorCallIsActive,
+                               NSURLErrorDataNotAllowed,
+                               NSURLErrorSecureConnectionFailed]
+
+// This class encapsulates analytic events sent to the server.
 final class NYPLCirculationAnalytics : NSObject {
-  
+
   class func postEvent(_ event: String, withBook book: NYPLBook) -> Void {
     
     //Cannot make AF 4.0 request in iOS8
@@ -12,31 +22,49 @@ final class NYPLCirculationAnalytics : NSObject {
     }
     
     if book.analyticsURL != nil{
-      
       let requestURL = book.analyticsURL.appendingPathComponent(event)
-    
-      Alamofire.request(requestURL, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: self.headers).responseData { response in
-      
-        if response.response?.statusCode != 200 {
-          // Error posting event
-        }
-      }
-      
+      post(event, withURL: requestURL)
     }
   }
   
-  // Server currently not validating authentication in header, but including
-  // with call in case that changes in the future
-  fileprivate class var headers:[String:String] {
-    let authenticationString = "\(NYPLAccount.shared().barcode!):\(NYPLAccount.shared().pin!)"
-    let authenticationData = authenticationString.data(using: String.Encoding.ascii)
-    let authenticationValue = "Basic \(authenticationData?.base64EncodedString(options: Data.Base64EncodingOptions.lineLength64Characters)))"
+  
+  fileprivate class func post(_ event: String, withURL url: URL) -> Void {
     
-    let headers = [
-      "Authorization": "\(authenticationValue)"
-    ]
-    
-    return headers
+    Alamofire.request(url, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseData { response in
+      
+      let statusCode = response.response?.statusCode
+      
+      if response.result.isSuccess {
+        
+        if statusCode == 200 {
+          print("open book event successfuly posted")
+        }
+        
+        let queue = NYPLSettings.shared().offlineQueue as! [[String]]
+        NYPLSettings.shared().offlineQueue = nil
+        if !queue.isEmpty {
+          //Retry any in Queue
+          for queuedEvent in queue {
+            post(queuedEvent[0], withURL: URL.init(string: queuedEvent[1])!)
+          }
+        }
+
+      }
+      else {
+        guard let error = response.result.error as? NSError else { return }
+        if offlineQueueStatusCodes.contains(error.code) {
+          self.addToOfflineQueue(event, url)
+          print("open book event added to offline queue. reason: \(response.result.error?.localizedDescription)")
+        }
+      }
+    }
   }
   
+  fileprivate class func addToOfflineQueue(_ event: String, _ bookURL: URL) -> Void {
+    
+    let newRow = [event, bookURL.absoluteString]
+    var queue = NYPLSettings.shared().offlineQueue as! [[String]]
+    queue.append(newRow)
+    NYPLSettings.shared().offlineQueue = queue
+  }
 }
