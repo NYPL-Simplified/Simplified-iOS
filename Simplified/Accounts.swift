@@ -149,7 +149,7 @@ final class Account:NSObject
     mainColor = json["mainColor"] as? String
   }
   
-  func set(_ URL: URL, forLicense urlType: URLType) -> Void {
+  func setURL(_ URL: URL, forLicense urlType: URLType) -> Void {
     switch urlType {
     case .acknowledgements:
       urlAcknowledgements = URL

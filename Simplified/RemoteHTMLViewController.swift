@@ -37,7 +37,7 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
     let request = URLRequest.init(url: fileURL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
     webView.load(request)
     
-    activityView(animated:true)
+    activityView(true)
   }
   
   func activityView(_ animated: Bool) -> Void {
@@ -53,7 +53,7 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
   }
 
   func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-    activityView(animated: false)
+    activityView(false)
     let alert = UIAlertController.init(title: NSLocalizedString(
       "Connection Failed",
       comment: "Title for alert that explains that the page could not download the information"),
@@ -73,6 +73,6 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
   }
   
   func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-    activityView(animated: false)
+    activityView(false)
   }
 }

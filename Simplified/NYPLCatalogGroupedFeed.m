@@ -41,27 +41,27 @@
     }
     else if ([link.rel isEqualToString:NYPLOPDSEULALink]) {
       NSURL *href = link.href;
-      [currentAccount setWithURL:href forLicense:URLTypeEula];
+      [currentAccount setURL:href forLicense:URLTypeEula];
       continue;
     }
     else if ([link.rel isEqualToString:NYPLOPDSPrivacyPolicyLink]) {
       NSURL *href = link.href;
-      [currentAccount setWithURL:href forLicense:URLTypePrivacyPolicy];
+      [currentAccount setURL:href forLicense:URLTypePrivacyPolicy];
       continue;
     }
     else if ([link.rel isEqualToString:NYPLOPDSAcknowledgmentsLink]) {
       NSURL *href = link.href;
-      [currentAccount setWithURL:href forLicense:URLTypeAcknowledgements];
+      [currentAccount setURL:href forLicense:URLTypeAcknowledgements];
       continue;
     }
     else if ([link.rel isEqualToString:NYPLOPDSContentLicenseLink]) {
       NSURL *href = link.href;
-      [currentAccount setWithURL:href forLicense:URLTypeContentLicenses];
+      [currentAccount setURL:href forLicense:URLTypeContentLicenses];
       continue;
     }
     else if ([link.rel isEqualToString:NYPLOPDSRelationAnnotations]) {
       NSURL *href = link.href;
-      [currentAccount setWithURL:href forLicense:URLTypeAnnotations];
+      [currentAccount setURL:href forLicense:URLTypeAnnotations];
       continue;
     }
   }

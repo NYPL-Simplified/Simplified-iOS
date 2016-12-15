@@ -68,7 +68,7 @@
     return nil;
   }
   
-  [AgeCheck verifyCurrentAccountAgeRequirementWithCompletion:^(BOOL ageAboveLimit) {
+  [AgeCheck verifyCurrentAccountAgeRequirement:^(BOOL ageAboveLimit) {
     NSURL *url;
     if (ageAboveLimit) {
       url = [NSURL URLWithString:gatedXML.attributes[@"restriction-met"]];
