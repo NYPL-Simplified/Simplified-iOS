@@ -3,14 +3,14 @@
 class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   weak var tableView: UITableView!
-  private var accounts: [Int] {
+  fileprivate var accounts: [Int] {
     didSet {
       //update NYPLSettings
     }
   }
-  private var libraryAccounts: [Account]
-  private var userAddedSecondaryAccounts: [Int]!
-  private let manager: AccountsManager
+  fileprivate var libraryAccounts: [Account]
+  fileprivate var userAddedSecondaryAccounts: [Int]!
+  fileprivate let manager: AccountsManager
   
   required init(accounts: [Int]) {
     self.accounts = accounts

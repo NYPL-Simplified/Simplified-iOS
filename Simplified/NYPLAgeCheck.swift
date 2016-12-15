@@ -2,7 +2,7 @@ import Foundation
 
 final class AgeCheck : NSObject {
 
-  class func verifyCurrentAccountAgeRequirement(completion: ((Bool) -> ())?) -> Void
+  class func verifyCurrentAccountAgeRequirement(_ completion: ((Bool) -> ())?) -> Void
   {
     let account = AccountsManager.shared.currentAccount
     
@@ -28,7 +28,7 @@ final class AgeCheck : NSObject {
     }
   }
   
-  private class func presentAgeVerificationView(completion: @escaping (Bool) -> ()) -> Void
+  fileprivate class func presentAgeVerificationView(_ completion: @escaping (Bool) -> ()) -> Void
   {
     let alertCont = NYPLAlertController.alert(withTitle: NSLocalizedString("WelcomeScreenAgeVerifyTitle", comment: "An alert title indicating the user needs to verify their age"), singleMessage: NSLocalizedString("WelcomeScreenAgeVerifyMessage", comment: "An alert message telling the user they must be at least 13 years old and asking how old they are"))
     

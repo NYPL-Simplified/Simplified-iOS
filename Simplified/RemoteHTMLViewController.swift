@@ -40,7 +40,7 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
     activityView(animated:true)
   }
   
-  func activityView(animated: Bool) -> Void {
+  func activityView(_ animated: Bool) -> Void {
     if animated == true {
       activityView = UIActivityIndicatorView.init(activityIndicatorStyle: .gray)
       activityView.center = self.view.center

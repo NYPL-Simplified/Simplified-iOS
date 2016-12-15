@@ -23,7 +23,7 @@ final class DirectoryManager : NSObject {
     return directoryURL
   }
   
-  private class func performNYPLDirectoryMigration() -> Void {
+  fileprivate class func performNYPLDirectoryMigration() -> Void {
     
   }
   

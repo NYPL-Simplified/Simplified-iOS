@@ -99,11 +99,11 @@ final class Account:NSObject
   let catalogUrl:String?
   let mainColor:String?
   
-  private var urlAnnotations:URL?
-  private var urlAcknowledgements:URL?
-  private var urlContentLicenses:URL?
-  private var urlEULA:URL?
-  private var urlPrivacyPolicy:URL?
+  fileprivate var urlAnnotations:URL?
+  fileprivate var urlAcknowledgements:URL?
+  fileprivate var urlContentLicenses:URL?
+  fileprivate var urlEULA:URL?
+  fileprivate var urlPrivacyPolicy:URL?
   
   var eulaIsAccepted:Bool {
     get {
@@ -149,7 +149,7 @@ final class Account:NSObject
     mainColor = json["mainColor"] as? String
   }
   
-  func set(URL: URL, forLicense urlType: URLType) -> Void {
+  func set(_ URL: URL, forLicense urlType: URLType) -> Void {
     switch urlType {
     case .acknowledgements:
       urlAcknowledgements = URL
@@ -214,13 +214,13 @@ final class Account:NSObject
     }
   }
   
-  private func setAccountDictionaryKey(_ key: String, toValue value: AnyObject) {
+  fileprivate func setAccountDictionaryKey(_ key: String, toValue value: AnyObject) {
     var savedDict = defaults.value(forKey: self.pathComponent!) as! [String: AnyObject]
     savedDict[key] = value
     defaults.set(savedDict, forKey: self.pathComponent!)
   }
   
-  private func getAccountDictionaryKey(_ key: String) -> AnyObject? {
+  fileprivate func getAccountDictionaryKey(_ key: String) -> AnyObject? {
     let savedDict = defaults.value(forKey: self.pathComponent!) as! [String: AnyObject]
     guard let result = savedDict[key] else { return nil }
     return result
