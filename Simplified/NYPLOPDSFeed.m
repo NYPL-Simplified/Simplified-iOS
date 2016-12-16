@@ -5,8 +5,13 @@
 #import "NYPLOPDSRelation.h"
 #import "NYPLSession.h"
 #import "NYPLXML.h"
-
+#import "SimplyE-Swift.h"
+#import "NYPLAccount.h"
 #import "NYPLOPDSFeed.h"
+
+#if defined(FEATURE_DRM_CONNECTOR)
+#import <ADEPT/ADEPT.h>
+#endif
 
 @interface NYPLOPDSFeed ()
 
@@ -17,6 +22,7 @@
 @property (nonatomic) NYPLOPDSFeedType type;
 @property (nonatomic) BOOL typeIsCached;
 @property (nonatomic) NSDate *updated;
+@property (nonatomic) NSDictionary *licensor;
 
 @end
 
@@ -158,6 +164,65 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     
     self.entries = entries;
   }
+  
+  {
+    //licensor
+    NYPLXML *licensorXML = [feedXML firstChildWithName:@"licensor"];
+    if (licensorXML && licensorXML.attributes.allValues.count>0) {
+      
+      NSString *vendor = licensorXML.attributes[@"drm:vendor"];
+      
+//      NSString *vendor = licensorXML.attributes.allValues.firstObject;
+      
+      
+      NYPLXML *vendorXML = [licensorXML firstChildWithName:@"clientToken"];
+      if (vendorXML) {
+        NSString *clientToken = vendorXML.value;
+        
+        self.licensor = @{@"vendor":vendor,
+                          @"clientToken":clientToken};
+        
+        Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+        [[NYPLAccount sharedAccount:currentAccount.id] setLicensor:self.licensor];
+        
+        
+        if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
+        if (currentAccount.needsAuth && [[NYPLAccount sharedAccount:currentAccount.id] hasBarcodeAndPIN] && [[NYPLAccount sharedAccount:currentAccount.id] hasLicensor])
+        {
+          NSMutableArray* foo = [[[[NYPLAccount sharedAccount:currentAccount.id] licensor][@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
+          
+          NSString *last = foo.lastObject;
+          [foo removeLastObject];
+          NSString *first = [foo componentsJoinedByString:@"|"];
+          
+          NYPLLOG([[NYPLAccount sharedAccount:currentAccount.id] licensor]);
+          NYPLLOG(first);
+          NYPLLOG(last);
+          
+          
+          //    first = @"NYBKLYN|1481838079|b621ba66-c2fc-11e6-a8cc-0e93cef2de1e";
+          //    last = @"8dpMiqNisnkYHcNvl4DFv47cw+e8dMhBuP35ptno4ko=\n";
+          
+          [[NYPLADEPT sharedInstance]
+           authorizeWithVendorID:[[NYPLAccount sharedAccount:currentAccount.id] licensor][@"vendor"]
+           username:first
+           password:last
+           completion:^(BOOL success, NSError *error) {
+             
+             NYPLLOG(error);
+             if (success) {
+               
+             }
+             
+             
+           }];
+        }
+        }
+      }
+    }
+
+  }
+  
   
   return self;
 }
