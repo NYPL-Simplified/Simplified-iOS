@@ -20,7 +20,7 @@
  "needsAuth" : true,
  "supportsReservations" : true,
  "supportsCardCreator" : false,
- "catalogUrl" : "http://qa-bplapp-elasticl-1x9n88b7wl4x7-162943333.us-east-1.elb.amazonaws.com",
+ "catalogUrl" : "https://bplsimplye.bklynlibrary.org",
  "mainColor" : "446ebf"
  },
  {

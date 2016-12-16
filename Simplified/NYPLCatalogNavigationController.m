@@ -74,7 +74,8 @@
   
   if (account.needsAuth && [[NYPLAccount sharedAccount:account.id] hasBarcodeAndPIN] && [[NYPLAccount sharedAccount:account.id] hasLicensor])
   {
-    NSMutableArray* foo = [ [[NYPLAccount sharedAccount:account.id] licensor][@"clientToken"] componentsSeparatedByString: @"|"].mutableCopy;
+    NSMutableArray* foo = [[[[NYPLAccount sharedAccount:account.id] licensor][@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
+
     NSString *last = foo.lastObject;
     [foo removeLastObject];
     NSString *first = [foo componentsJoinedByString:@"|"];
@@ -83,7 +84,9 @@
     NYPLLOG(first);
     NYPLLOG(last);
     
-    
+//    first = @"NYBKLYN|1481838079|b621ba66-c2fc-11e6-a8cc-0e93cef2de1e";
+//    last = @"8dpMiqNisnkYHcNvl4DFv47cw+e8dMhBuP35ptno4ko=\n";
+
     [[NYPLADEPT sharedInstance]
      deauthorizeWithUsername:first
      password:last
@@ -174,7 +177,8 @@
   
   if (account.needsAuth && [[NYPLAccount sharedAccount:account.id] hasBarcodeAndPIN] && [[NYPLAccount sharedAccount:account.id] hasLicensor])
   {
-    NSMutableArray* foo = [ [[NYPLAccount sharedAccount:account.id] licensor][@"clientToken"] componentsSeparatedByString: @"|"].mutableCopy;
+    NSMutableArray* foo = [[[[NYPLAccount sharedAccount:account.id] licensor][@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
+
     NSString *last = foo.lastObject;
     [foo removeLastObject];
     NSString *first = [foo componentsJoinedByString:@"|"];
@@ -184,6 +188,9 @@
     NYPLLOG(last);
     
     
+//    first = @"NYBKLYN|1481838079|b621ba66-c2fc-11e6-a8cc-0e93cef2de1e";
+//    last = @"8dpMiqNisnkYHcNvl4DFv47cw+e8dMhBuP35ptno4ko=\n";
+
     [[NYPLADEPT sharedInstance]
      authorizeWithVendorID:[[NYPLAccount sharedAccount:account.id] licensor][@"vendor"]
      username:first
@@ -202,17 +209,17 @@
          // show alert Temporary, needs to be replaced or removed.
          
          
-         NYPLAlertController *alertCont = [NYPLAlertController
-                                           alertControllerWithTitle:NSLocalizedString(@"Error", nil)
-                                           message:error.userInfo[@"originalCode"]
-                                           preferredStyle:UIAlertControllerStyleAlert];
-         
-         [alertCont addAction: [UIAlertAction actionWithTitle:@"OK"
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:nil]];
-         
-         
-         [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
+//         NYPLAlertController *alertCont = [NYPLAlertController
+//                                           alertControllerWithTitle:NSLocalizedString(@"Error", nil)
+//                                           message:error.userInfo[@"originalCode"]
+//                                           preferredStyle:UIAlertControllerStyleAlert];
+//         
+//         [alertCont addAction: [UIAlertAction actionWithTitle:@"OK"
+//                                                        style:UIAlertActionStyleDefault
+//                                                      handler:nil]];
+//         
+//         
+//         [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
 
          
 

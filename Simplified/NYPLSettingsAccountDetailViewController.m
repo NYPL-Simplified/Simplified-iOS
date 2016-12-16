@@ -315,13 +315,15 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
    handler:^(BOOL reachable) {
      if(reachable) {
        
-      
-       NSMutableArray* foo = [ [[NYPLAccount sharedAccount:self.accountType] licensor][@"clientToken"] componentsSeparatedByString: @"|"].mutableCopy;
+       NSMutableArray* foo = [[[[NYPLAccount sharedAccount:self.accountType] licensor][@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
+
        NSString *last = foo.lastObject;
        [foo removeLastObject];
        NSString *first = [foo componentsJoinedByString:@"|"];
 
-       
+//       first = @"NYBKLYN|1481838079|b621ba66-c2fc-11e6-a8cc-0e93cef2de1e";
+//       last = @"8dpMiqNisnkYHcNvl4DFv47cw+e8dMhBuP35ptno4ko=\n";
+
        
        [[NYPLADEPT sharedInstance]
         deauthorizeWithUsername:first

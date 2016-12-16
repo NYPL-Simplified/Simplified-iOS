@@ -187,18 +187,25 @@ didFinishDownloadingToURL:(NSURL *const)location
         else if (![[NYPLADEPT sharedInstance] deviceAuthorized])
         {
           
+          
 //          clientToken
-          NSMutableArray* foo = [book.licensor[@"clientToken"] componentsSeparatedByString: @"|"].mutableCopy;
+          NSMutableArray* foo = [[book.licensor[@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
           NSString *last = foo.lastObject;
           [foo removeLastObject];
           NSString *first = [foo componentsJoinedByString:@"|"];
 
           NYPLLOG(first);
           NYPLLOG(last);
-          NYPLLOG(book.licensor[@"clientToken"]);
+//          NYPLLOG(book.licensor[@"clientToken"]);
           
+          //23333094313069
+          //8dpMiqNisnkYHcNvl4DFv47cw:e8dMhBuP35ptno4ko="
           
-          
+//          first = @"NYBKLYN|1481838079|b621ba66-c2fc-11e6-a8cc-0e93cef2de1e";
+//          last = @"8dpMiqNisnkYHcNvl4DFv47cw+e8dMhBuP35ptno4ko=\n";
+          NYPLLOG(first);
+          NYPLLOG(last);
+
           
           [[NYPLADEPT sharedInstance]
            authorizeWithVendorID:book.licensor[@"vendor"]
