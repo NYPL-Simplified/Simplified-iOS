@@ -34,5 +34,17 @@
  "supportsReservations" : false,
  "catalogUrl" : "http://dev-mta.nypl.org/index.xml",
  "mainColor" : "497049"
+ },
+ {
+ "id" : 3,
+ "pathComponent" : "3",
+ "name" : "Brooklyn Public Library QA",
+ "subtitle" : "Connecting people to resources to achieve their goals.",
+ "logo" : "LibraryLogoBrooklyn",
+ "needsAuth" : true,
+ "supportsReservations" : true,
+ "supportsCardCreator" : false,
+ "catalogUrl" : "http://qabplsimplye.bklynlibrary.org",
+ "mainColor" : "af1c98"
  }
 ]
