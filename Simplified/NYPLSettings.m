@@ -24,6 +24,8 @@ static NSString *const settingsLibraryAccountsKey = @"NYPLSettingsLibraryAccount
 
 static NSString *const settingsOfflineQueueKey = @"NYPLSettingsOfflineQueueKey";
 
+static NSString *const settingsAnnotationsOfflineQueueKey = @"NYPLSettingsAnnotationsOfflineQueueKey";
+
 
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
 {
@@ -99,6 +101,15 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
     return [[NSMutableArray alloc] init];
   } else {
     return [[NSUserDefaults standardUserDefaults] arrayForKey:settingsOfflineQueueKey].mutableCopy;
+  }
+}
+
+- (NSMutableArray *) annotationsOfflineQueue
+{
+  if ([[NSUserDefaults standardUserDefaults] arrayForKey:settingsAnnotationsOfflineQueueKey] == nil) {
+    return [[NSMutableArray alloc] init];
+  } else {
+    return [[NSUserDefaults standardUserDefaults] arrayForKey:settingsAnnotationsOfflineQueueKey].mutableCopy;
   }
 }
 
@@ -216,5 +227,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   [[NSUserDefaults standardUserDefaults] setObject:queue forKey:settingsOfflineQueueKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
+
+- (void)setAnnotationsOfflineQueue:(NSMutableArray *)queue
+{
+  [[NSUserDefaults standardUserDefaults] setObject:queue forKey:settingsAnnotationsOfflineQueueKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 
 @end

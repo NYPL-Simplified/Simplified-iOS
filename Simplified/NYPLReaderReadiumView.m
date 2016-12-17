@@ -572,7 +572,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
       NYPLLOG_F(@"serverLocationString %@",serverLocationString);
       NYPLLOG_F(@"currentLocationString %@",currentLocationString);
       NSDictionary *spineItemDetails = self.bookMapDictionary[responsJson[@"idref"]];
-      NSString * message=[NSString stringWithFormat:@"Would you like to go to the furthest page read?\n\nChapter:\n\"%@\"",spineItemDetails[@"tocElementTitle"]];
+      NSString * message=[NSString stringWithFormat:@"Would you like to go to the latest page read?\n\nChapter:\n\"%@\"",spineItemDetails[@"tocElementTitle"]];
    
       alertController = [UIAlertController alertControllerWithTitle:@"Sync Reading Position"
                                                                                message:message

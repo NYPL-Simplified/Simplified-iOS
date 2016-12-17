@@ -21,6 +21,12 @@
 
 #import "NYPLAppDelegate.h"
 
+@interface NYPLAppDelegate()
+
+@property (strong) Reachability *reachabilityClass;
+
+@end
+
 @implementation NYPLAppDelegate
 
 #pragma mark UIApplicationDelegate
@@ -47,6 +53,8 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   
   NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
   self.window.rootViewController = vc;
+  
+  self.reachabilityClass = [Reachability beginListeningForReachabilityChanges];
   
   [self beginCheckingForUpdates];
   
