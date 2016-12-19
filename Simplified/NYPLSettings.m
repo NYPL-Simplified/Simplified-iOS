@@ -14,6 +14,8 @@ static NSString *const accountMainFeedURLKey = @"NYPLSettingsAccountMainFeedURL"
 
 static NSString *const renderingEngineKey = @"NYPLSettingsRenderingEngine";
 
+static NSString *const legacyUserAcceptedEULAKey = @"NYPLSettingsUserAcceptedEULA";
+
 static NSString *const userPresentedWelcomeScreenKey = @"NYPLUserPresentedWelcomeScreenKey";
 
 static NSString *const userPresentedAgeCheckKey = @"NYPLUserPresentedAgeCheckKey";
@@ -83,6 +85,11 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 - (NSURL *)accountMainFeedURL
 {
   return [[NSUserDefaults standardUserDefaults] URLForKey:accountMainFeedURLKey];
+}
+
+- (BOOL)userAcceptedEULABeforeMultiLibrary
+{
+  return [[NSUserDefaults standardUserDefaults] boolForKey:legacyUserAcceptedEULAKey];
 }
 
 - (BOOL) userPresentedWelcomeScreen

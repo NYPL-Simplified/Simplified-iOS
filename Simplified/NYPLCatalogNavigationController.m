@@ -243,15 +243,18 @@
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
   }
   
-  if ([[NYPLSettings sharedSettings] userPresentedWelcomeScreen] == NO) {
+  NYPLSettings *settings = [NYPLSettings sharedSettings];
   
-    [self deactivateAccount];
-    [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:2];
-    [self reloadSelected];
+  if (settings.userPresentedWelcomeScreen == NO) {
     
+    if (settings.userAcceptedEULABeforeMultiLibrary == YES) {
+      [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:2];
+      [self reloadSelected];
+    }
     
     NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(NSInteger accountID) {
         [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:accountID];
+        [self reloadSelected];
         [self dismissViewControllerAnimated:YES completion:nil];
     }];
   

@@ -131,20 +131,26 @@ final class NYPLWelcomeScreenViewController: UIViewController {
       self.dismiss(animated: true, completion: nil)
       return
     }
-    let accountNYPL = AccountsManager.shared.account(0)!
     // Existing User
-    if accountNYPL.eulaIsAccepted == false {
-      let listVC = NYPLWelcomeScreenAccountList { libraryAccount in
-        NYPLSettings.shared().settingsAccountsList = [libraryAccount.id, 2]
-        self.completion?(libraryAccount.id)
+    if NYPLSettings.shared().userAcceptedEULABeforeMultiLibrary == false {
+      let listVC = NYPLWelcomeScreenAccountList { acct in
+        NYPLSettings.shared().settingsAccountsList = [acct.id, 2]
+        self.completion?(acct.id)
       }
       self.navigationController?.pushViewController(listVC, animated: true)
     } else {
-      NYPLSettings.shared().settingsAccountsList = [0, 2]
-      completion?(0)
+      let listVC = NYPLWelcomeScreenAccountList { acct in
+        if (acct.id != 0 && acct.id != 2) {
+          NYPLSettings.shared().settingsAccountsList = [acct.id, 0, 2]
+        } else {
+          NYPLSettings.shared().settingsAccountsList = [0, 2]
+        }
+        self.completion?(acct.id)
+      }
+      self.navigationController?.pushViewController(listVC, animated: true)
     }
   }
-  //GODO come back to this to get rid of hardcoding
+
   func instantClassicsTapped() {
     NYPLSettings.shared().settingsAccountsList = [2]
     completion?(2)
