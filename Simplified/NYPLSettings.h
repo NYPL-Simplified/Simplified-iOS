@@ -17,7 +17,7 @@ static NSString *const NYPLUserAgreementURLString = @"http://www.librarysimplifi
 // Set to nil (the default) if no custom feed should be used.
 @property (atomic) NSURL *customMainFeedURL;
 @property (atomic) NSURL *accountMainFeedURL;
-@property (atomic) BOOL userAcceptedEULABeforeMultiLibrary;
+@property (atomic) BOOL acceptedEULABeforeMultiLibrary;
 @property (atomic) BOOL userPresentedWelcomeScreen;
 @property (atomic) BOOL userPresentedAgeCheck;
 @property (atomic) NYPLCardApplicationModel *currentCardApplication;

@@ -32,7 +32,14 @@
                                                      action:@selector(switchLibrary)];
   holdsViewController.navigationItem.leftBarButtonItem.enabled = YES;
   
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NYPLCurrentAccountDidChangeNotification object:nil];
+  
   return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -42,7 +49,11 @@
   NYPLHoldsViewController *viewController = (NYPLHoldsViewController *)self.visibleViewController;
   
   viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
+}
 
+- (void)currentAccountChanged
+{
+  [self popToRootViewControllerAnimated:NO];
 }
 
 - (void) switchLibrary

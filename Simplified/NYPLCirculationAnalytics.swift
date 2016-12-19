@@ -45,7 +45,7 @@ final class NYPLCirculationAnalytics : NSObject {
                           guard let error = response.result.error as? NSError else { return }
                           if offlineQueueStatusCodes.contains(error.code) {
                             self.addToOfflineAnalyticsQueue(event, url)
-                            print("Analytic Event Added to OfflineQueue. Response Error: \(response.result.error?.localizedDescription)")
+//                            print("Analytic Event Added to OfflineQueue. Response Error: \(response.result.error?.localizedDescription)")
                           }
                         }
                       }

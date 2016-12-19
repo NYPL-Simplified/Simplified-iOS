@@ -8,6 +8,7 @@
 #import "NYPLRootTabBarController.h"
 #import "NYPLMyBooksNavigationController.h"
 #import "NYPLMyBooksViewController.h"
+#import "NYPLHoldsNavigationController.h"
 #import "NYPLSettingsPrimaryTableViewController.h"
 #import "SimplyE-Swift.h"
 #import "NYPLAppDelegate.h"
@@ -247,7 +248,10 @@
   
   if (settings.userPresentedWelcomeScreen == NO) {
     
-    if (settings.userAcceptedEULABeforeMultiLibrary == YES) {
+    if (settings.acceptedEULABeforeMultiLibrary == YES) {
+      Account *nyplAccount = [[AccountsManager sharedInstance] account:0];
+      nyplAccount.eulaIsAccepted = YES;
+      
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:2];
       [self reloadSelected];
     }

@@ -132,7 +132,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
       return
     }
     // Existing User
-    if NYPLSettings.shared().userAcceptedEULABeforeMultiLibrary == false {
+    if NYPLSettings.shared().acceptedEULABeforeMultiLibrary == false {
       let listVC = NYPLWelcomeScreenAccountList { acct in
         NYPLSettings.shared().settingsAccountsList = [acct.id, 2]
         self.completion?(acct.id)
