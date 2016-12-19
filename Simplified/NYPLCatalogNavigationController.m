@@ -248,9 +248,10 @@
     [self deactivateAccount];
     [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:2];
     [self reloadSelected];
-  
-    NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^() {
-        [self reloadSelected];
+    
+    
+    NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(NSInteger accountID) {
+        [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:accountID];
         [self dismissViewControllerAnimated:YES completion:nil];
     }];
   

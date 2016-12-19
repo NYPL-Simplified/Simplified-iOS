@@ -5,9 +5,9 @@ import PureLayout
 /// Welcome screen for a first-time user
 final class NYPLWelcomeScreenViewController: UIViewController {
   
-  var completion: (() -> ())?
+  var completion: ((Int) -> ())?
   
-  required init(completion: (() -> ())?) {
+  required init(completion: ((Int) -> ())?) {
     self.completion = completion
     super.init(nibName: nil, bundle: nil)
   }
@@ -135,18 +135,19 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     // Existing User
     if accountNYPL.eulaIsAccepted == false {
       let listVC = NYPLWelcomeScreenAccountList { libraryAccount in
-        NYPLSettings.shared().currentAccountIdentifier = libraryAccount.id
-        self.completion?()
+        NYPLSettings.shared().settingsAccountsList = [libraryAccount.id, 2]
+        self.completion?(libraryAccount.id)
       }
       self.navigationController?.pushViewController(listVC, animated: true)
     } else {
-      completion?()
+      NYPLSettings.shared().settingsAccountsList = [0, 2]
+      completion?(0)
     }
   }
   //GODO come back to this to get rid of hardcoding
   func instantClassicsTapped() {
-    AccountsManager.shared.changeCurrentAccount(identifier: 2)
-    completion?()
+    NYPLSettings.shared().settingsAccountsList = [2]
+    completion?(2)
   }
 }
 

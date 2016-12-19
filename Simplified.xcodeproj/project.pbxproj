@@ -216,7 +216,6 @@
 		0345BFD61DBF002E00398B6F /* APIKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
 		036B02C01DCBF3360098784A /* HelpStackStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = HelpStackStoryboard.storyboard; path = Pods/HelpStack/Resources/HelpStackStoryboard.storyboard; sourceTree = "<group>"; };
 		036B02C61DCBF33A0098784A /* HelpStackStoryboard-iPad.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = "HelpStackStoryboard-iPad.storyboard"; path = "Pods/HelpStack/Resources/HelpStackStoryboard-iPad.storyboard"; sourceTree = "<group>"; };
-		038076BF1DF1192500191D15 /* SimplyE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SimplyE.entitlements; sourceTree = "<group>"; };
 		03F94CCE1DD627AA00CE8F4F /* Accounts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Accounts.json; sourceTree = "<group>"; };
 		03F94CD01DD6288C00CE8F4F /* Accounts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Accounts.swift; sourceTree = "<group>"; };
 		080ADCBE1C04C26100C0575F /* libCHRTextFieldFormatter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libCHRTextFieldFormatter.a; path = "Pods/../build/Debug-iphoneos/libCHRTextFieldFormatter.a"; sourceTree = "<group>"; };
@@ -858,7 +857,6 @@
 		A823D804192BABA400B55DE2 = {
 			isa = PBXGroup;
 			children = (
-				038076BF1DF1192500191D15 /* SimplyE.entitlements */,
 				036B02C61DCBF33A0098784A /* HelpStackStoryboard-iPad.storyboard */,
 				036B02C01DCBF3360098784A /* HelpStackStoryboard.storyboard */,
 				CAE35BC11B86308D00BF9BC5 /* README */,

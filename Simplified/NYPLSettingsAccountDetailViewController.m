@@ -491,14 +491,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
             [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
             NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
-            [catalog reloadSelected];
+            [catalog currentAccountChanged];
           }
         }];
       } else {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
         self.account.userAboveAgeLimit = YES;
         NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
-        [catalog reloadSelected];
+        [catalog currentAccountChanged];
       }
       break;
     }
