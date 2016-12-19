@@ -13,6 +13,8 @@ final class NYPLAnnotations: NSObject {
   
   class func postLastRead(_ book:NYPLBook, cfi:NSString)
   {
+    //Last Read currently disabled
+    return
     if (NYPLAccount.shared().hasBarcodeAndPIN())
     {
       let parameters = [
@@ -35,7 +37,8 @@ final class NYPLAnnotations: NSObject {
   }
   
   class func sync(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: String?, _ error: NSError?) -> ()) {
-    syncLastRead(book, completionHandler: completionHandler)
+    //Sync Currently Disabled
+//    syncLastRead(book, completionHandler: completionHandler)
   }
   
   private class func postJSONRequest(_ url: URL, _ parameters: [String:Any], _ headers: [String:String])

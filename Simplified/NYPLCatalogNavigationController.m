@@ -244,6 +244,11 @@
   }
   
   if ([[NYPLSettings sharedSettings] userPresentedWelcomeScreen] == NO) {
+  
+    [self deactivateAccount];
+    [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:2];
+    [self reloadSelected];
+  
     NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^() {
         [self reloadSelected];
         [self dismissViewControllerAnimated:YES completion:nil];
