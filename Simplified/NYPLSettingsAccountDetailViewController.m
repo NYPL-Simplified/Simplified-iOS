@@ -57,12 +57,10 @@ typedef NS_ENUM(NSInteger, Section) {
 @property (nonatomic) NSInteger accountType;
 @property (nonatomic) Account *account;
 
-@property (nonatomic) UITableViewCell *ageCheckCell;
+@property (nonatomic) UITableViewCell *registrationCell;
 @property (nonatomic) UITableViewCell *eulaCell;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
-@property (nonatomic) UITableViewCell *licenseCreditsCell;
-@property (nonatomic) UITableViewCell *licensePrivacyCell;
-@property (nonatomic) UITableViewCell *licenseContentCell;
+@property (nonatomic) UITableViewCell *ageCheckCell;
 
 @property (nonatomic) NSArray *tableData;
 
@@ -99,6 +97,12 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
    addObserver:self
    selector:@selector(keyboardDidShow:)
    name:UIKeyboardWillShowNotification
+   object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(keyboardWillHide)
+   name:UIKeyboardWillHideNotification
    object:nil];
   
   [[NSNotificationCenter defaultCenter]
@@ -707,16 +711,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return self.logInSignOutCell;
     }
     case CellKindRegistration: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
+      
+      self.registrationCell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleValue1
                                      reuseIdentifier:nil];
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = @"Dont't have a library card?";
-      cell.detailTextLabel.font = [UIFont systemFontOfSize:17];
-      cell.detailTextLabel.text = NSLocalizedString(@"SignUp", nil);
-      cell.detailTextLabel.textColor = [NYPLConfiguration mainColor];
+      self.registrationCell.textLabel.font = [UIFont systemFontOfSize:17];
+      self.registrationCell.textLabel.text = @"Dont't have a library card?";
+      self.registrationCell.detailTextLabel.font = [UIFont systemFontOfSize:17];
+      self.registrationCell.detailTextLabel.text = NSLocalizedString(@"SignUp", nil);
+      self.registrationCell.detailTextLabel.textColor = [NYPLConfiguration mainColor];
 
-      return cell;
+      return self.registrationCell;
     }
     case CellKindAgeCheck: {
       self.ageCheckCell = [[UITableViewCell alloc]
@@ -777,34 +782,34 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return cell;
     }
     case CellKindAbout: {
-      self.licenseCreditsCell = [[UITableViewCell alloc]
+      UITableViewCell *cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      self.licenseCreditsCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      self.licenseCreditsCell.textLabel.font = [UIFont systemFontOfSize:17];
-      self.licenseCreditsCell.textLabel.text = [NSString stringWithFormat:@"About %@",self.account.name];
-      self.licenseCreditsCell.hidden = ([self.account getLicenseURL:URLTypeAcknowledgements]) ? NO : YES;
-      return self.licenseCreditsCell;
+      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.text = [NSString stringWithFormat:@"About %@",self.account.name];
+      cell.hidden = ([self.account getLicenseURL:URLTypeAcknowledgements]) ? NO : YES;
+      return cell;
     }
     case CellKindPrivacyPolicy: {
-      self.licensePrivacyCell = [[UITableViewCell alloc]
+      UITableViewCell *cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      self.licensePrivacyCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      self.licensePrivacyCell.textLabel.font = [UIFont systemFontOfSize:17];
-      self.licensePrivacyCell.textLabel.text = NSLocalizedString(@"PrivacyPolicy", nil);
-      self.licensePrivacyCell.hidden = ([self.account getLicenseURL:URLTypePrivacyPolicy]) ? NO : YES;
-      return self.licensePrivacyCell;
+      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.text = NSLocalizedString(@"PrivacyPolicy", nil);
+      cell.hidden = ([self.account getLicenseURL:URLTypePrivacyPolicy]) ? NO : YES;
+      return cell;
     }
     case CellKindContentLicense: {
-      self.licenseContentCell = [[UITableViewCell alloc]
+      UITableViewCell *cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      self.licenseContentCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      self.licenseContentCell.textLabel.font = [UIFont systemFontOfSize:17];
-      self.licenseContentCell.textLabel.text = NSLocalizedString(@"ContentLicenses", nil);
-      self.licenseContentCell.hidden = ([self.account getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
-      return self.licenseContentCell;
+      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.text = NSLocalizedString(@"ContentLicenses", nil);
+      cell.hidden = ([self.account getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
+      return cell;
     }
     default: {
       return nil;
@@ -949,8 +954,19 @@ replacementString:(NSString *)string
   [self updateLoginLogoutCellAppearance];
 }
 
+- (void)keyboardWillHide
+{
+  self.registrationCell.textLabel.enabled = YES;
+  self.registrationCell.detailTextLabel.enabled = YES;
+  self.registrationCell.userInteractionEnabled = YES;
+}
+
 - (void)keyboardDidShow:(NSNotification *const)notification
 {
+  self.registrationCell.textLabel.enabled = NO;
+  self.registrationCell.detailTextLabel.enabled = NO;
+  self.registrationCell.userInteractionEnabled = NO;
+  
   // This nudges the scroll view up slightly so that the log in button is clearly visible even on
   // older 3:2 iPhone displays. I wish there were a more general way to do this, but this does at
   // least work very well.
