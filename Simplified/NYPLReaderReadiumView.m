@@ -411,8 +411,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NSURLRequest *const request = navigationAction.request;
   
   if([request.URL.scheme isEqualToString:@"simplified"]) {
-    NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
-    NSString *const function = components[0];
+//    NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
+//    NSString *const function = components[0];
     NYPLLOG(@"Ignoring unknown simplified function.");
     decisionHandler(WKNavigationActionPolicyCancel);
     return;

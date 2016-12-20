@@ -537,7 +537,7 @@ spineItemTitle:(NSString *const)title
   [self.bottomViewProgressView setProgress:progressWithinBook animated:NO];
   
   self.bottomViewProgressLabel.text =
-    [NSString stringWithFormat:@"Page %ld of %ld (%@)",
+    [NSString stringWithFormat:@"Page %u of %u (%@)",
      pageIndex + 1,
      pageCount,
      title ? title : NSLocalizedString(@"ReaderViewControllerCurrentChapter", nil)];
