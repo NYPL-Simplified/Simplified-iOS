@@ -196,23 +196,12 @@ didFinishDownloadingToURL:(NSURL *const)location
 
           NYPLLOG(first);
           NYPLLOG(last);
-//          NYPLLOG(book.licensor[@"clientToken"]);
-          
-          //23333094313069
-          //8dpMiqNisnkYHcNvl4DFv47cw:e8dMhBuP35ptno4ko="
-          
-//          first = @"NYBKLYN|1481838079|b621ba66-c2fc-11e6-a8cc-0e93cef2de1e";
-//          last = @"8dpMiqNisnkYHcNvl4DFv47cw+e8dMhBuP35ptno4ko=\n";
-
           
           [[NYPLADEPT sharedInstance]
            authorizeWithVendorID:book.licensor[@"vendor"]
            username:first
            password:last
            completion:^(BOOL success, NSError *error) {
-             
-             NYPLLOG(error);
-             
              
              if (success)
              {
@@ -225,10 +214,11 @@ didFinishDownloadingToURL:(NSURL *const)location
                 fulfillWithACSMData:ACSMData
                 tag:book.identifier];
              }
+             else
+             {
+               NYPLLOG(error);
+             }
 
-             
-             
-             
            }];
 
         }

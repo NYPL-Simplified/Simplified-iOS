@@ -261,7 +261,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (void)revealCustomFeedUrl
 {
   // Insert a URL to force the field to show.
-  self.shouldShowEmptyCustomODPSURLField = @YES;
+  self.shouldShowEmptyCustomODPSURLField = YES;
   
   [self.tableView reloadData];
 }
