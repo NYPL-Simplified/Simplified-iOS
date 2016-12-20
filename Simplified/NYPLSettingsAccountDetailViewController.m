@@ -428,9 +428,12 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
        [self.PINTextField becomeFirstResponder];
      }
      
-     self.barcodeTextField.text = nil;
-     self.PINTextField.text = nil;
+     if (statusCode == 401) {
+       NSError *error401 = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
+       [self showLoginAlertWithError:error401];
+     }
      [self showLoginAlertWithError:error];
+     
    }];
   
   [task resume];
