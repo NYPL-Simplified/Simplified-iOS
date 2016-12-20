@@ -99,13 +99,13 @@
 "HoldsViewControllerSearchTitle" = "Search Reservations";
 "AvailableForCheckoutHeader" = "AVAILABLE FOR CHECKOUT";
 "WaitingForAvailabilityHeader" = "WAITING FOR AVAILABILITY";
-"ReservationsGoToCatalog" = "Visit the Catalog to reserve books not currently available.";
+"ReservationsGoToCatalog" = "When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download.";
 
 // NYPLMyBooksDownloadCenter
 
 "MyBooksDownloadCenterConfirmDeleteTitle" = "Delete";
 "MyBooksDownloadCenterConfirmDeleteTitleMessageFormat" = "Are you sure you want to delete \"%@\"?";
-"MyBooksGoToCatalog" = "When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download.";
+"MyBooksGoToCatalog" = "Visit the Catalog to\nadd books to My Books.";
 
 "MyBooksDownloadCenterConfirmReturnTitle" = "Return";
 "MyBooksDownloadCenterConfirmReturnTitleMessageFormat" = "Are you sure you want to return \"%@\"?";
