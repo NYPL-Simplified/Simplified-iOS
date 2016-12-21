@@ -121,7 +121,7 @@
     Account *account = [[AccountsManager sharedInstance] account:[accounts[i] intValue]];
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
       [[NYPLBookRegistry sharedRegistry] save];
-      [[NYPLBookRegistry sharedRegistry] reset];
+//      [[NYPLBookRegistry sharedRegistry] reset];
       [self deactivateDevice];
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
       [self reloadSelectedLibraryAccount];
