@@ -69,6 +69,10 @@
   for (int i = 0; i < (int)accounts.count; i++) {
     Account *account = [[AccountsManager sharedInstance] account:[accounts[i] intValue]];
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+      [[NYPLBookRegistry sharedRegistry] save];
+      [[NYPLBookRegistry sharedRegistry] reset];
+      NYPLCatalogNavigationController * catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
+      [catalog deactivateDevice];
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
       [self reloadSelected];
     }]];
@@ -100,11 +104,11 @@
   [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
   [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
   
-  [[NYPLBookRegistry sharedRegistry] justLoad];
+//  [[NYPLBookRegistry sharedRegistry] justLoad];
 
   NYPLCatalogNavigationController * catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
   
-  [catalog reloadSelected];
+  [catalog reloadSelectedLibraryAccount];
   
   
   NYPLHoldsViewController *viewController = (NYPLHoldsViewController *)self.visibleViewController;

@@ -32,7 +32,7 @@
  "needsAuth" : false,
  "supportsCardCreator" : false,
  "supportsReservations" : false,
- "catalogUrl" : "http://dev-mta.nypl.org/index.xml",
+ "catalogUrl" : "https://instantclassics.librarysimplified.org/index.xml",
  "mainColor" : "497049"
  }
 ]

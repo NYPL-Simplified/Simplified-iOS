@@ -69,7 +69,7 @@
   [self popToRootViewControllerAnimated:NO];
 }
 
-- (void)deactivateAccount
+- (void)deactivateDevice
 {
   Account *account = [[AccountsManager sharedInstance] currentAccount];
   
@@ -85,9 +85,6 @@
     NYPLLOG(first);
     NYPLLOG(last);
     
-//    first = @"NYBKLYN|1481838079|b621ba66-c2fc-11e6-a8cc-0e93cef2de1e";
-//    last = @"8dpMiqNisnkYHcNvl4DFv47cw+e8dMhBuP35ptno4ko=\n";
-
     [[NYPLADEPT sharedInstance]
      deauthorizeWithUsername:first
      password:last
@@ -123,9 +120,11 @@
   for (int i = 0; i < (int)accounts.count; i++) {
     Account *account = [[AccountsManager sharedInstance] account:[accounts[i] intValue]];
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
-      [self deactivateAccount];
+      [[NYPLBookRegistry sharedRegistry] save];
+      [[NYPLBookRegistry sharedRegistry] reset];
+      [self deactivateDevice];
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
-      [self reloadSelected];
+      [self reloadSelectedLibraryAccount];
     }]];
   }
   
@@ -148,7 +147,7 @@
 }
 
 
-- (void) reloadSelected {
+- (void) reloadSelectedLibraryAccount {
   
   Account *account = [[AccountsManager sharedInstance] currentAccount];
   
@@ -159,7 +158,6 @@
   [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
   [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
   
-  [[NYPLBookRegistry sharedRegistry] justLoad];
 
   if ([[self.visibleViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] &&
        [self.visibleViewController respondsToSelector:@selector(load)]) {
@@ -198,7 +196,9 @@
        
        if (success)
        {
-         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+           [[NYPLBookRegistry sharedRegistry] justLoad];
+
+//         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
        }
        else{
          
@@ -226,7 +226,9 @@
   }
   else if (account.needsAuth)
   {
-    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+      [[NYPLBookRegistry sharedRegistry] justLoad];
+
+//    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
   }
   
 }
@@ -248,13 +250,16 @@
       nyplAccount.eulaIsAccepted = YES;
       
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:2];
-      [self reloadSelected];
+      [self reloadSelectedLibraryAccount];
     }
     
     NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(NSInteger accountID) {
-        [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:accountID];
-        [self reloadSelected];
-        [self dismissViewControllerAnimated:YES completion:nil];
+      [[NYPLBookRegistry sharedRegistry] save];
+      [[NYPLBookRegistry sharedRegistry] reset];
+      [self deactivateDevice];
+      [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:accountID];
+      [self reloadSelectedLibraryAccount];
+      [self dismissViewControllerAnimated:YES completion:nil];
     }];
   
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
