@@ -181,33 +181,34 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
         [[NYPLAccount sharedAccount:currentAccount.id] setLicensor:self.licensor];
         
         
-        if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
-          if (currentAccount.needsAuth && [[NYPLAccount sharedAccount:currentAccount.id] hasBarcodeAndPIN] && [[NYPLAccount sharedAccount:currentAccount.id] hasLicensor])
-          {
-            NSMutableArray* foo = [[[[NYPLAccount sharedAccount:currentAccount.id] licensor][@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
-            
-            NSString *last = foo.lastObject;
-            [foo removeLastObject];
-            NSString *first = [foo componentsJoinedByString:@"|"];
-            
-            NYPLLOG([[NYPLAccount sharedAccount:currentAccount.id] licensor]);
-            NYPLLOG(first);
-            NYPLLOG(last);
-            
-            [[NYPLADEPT sharedInstance]
-             authorizeWithVendorID:[[NYPLAccount sharedAccount:currentAccount.id] licensor][@"vendor"]
-             username:first
-             password:last
-             completion:^(BOOL success, NSError *error) {
-               
-               NYPLLOG(error);
-               if (success) {
-                 
-               }
-               
-             }];
-          }
-        }
+//        if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
+//          if (currentAccount.needsAuth && [[NYPLAccount sharedAccount:currentAccount.id] hasBarcodeAndPIN] && [[NYPLAccount sharedAccount:currentAccount.id] hasLicensor])
+//          {
+//            NSMutableArray* foo = [[[[NYPLAccount sharedAccount:currentAccount.id] licensor][@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
+//            
+//            NSString *last = foo.lastObject;
+//            [foo removeLastObject];
+//            NSString *first = [foo componentsJoinedByString:@"|"];
+//            
+//            NYPLLOG([[NYPLAccount sharedAccount:currentAccount.id] licensor]);
+//            NYPLLOG(first);
+//            NYPLLOG(last);
+//            NYPLLOG(@"#### feed reload ####");
+
+//            [[NYPLADEPT sharedInstance]
+//             authorizeWithVendorID:[[NYPLAccount sharedAccount:currentAccount.id] licensor][@"vendor"]
+//             username:first
+//             password:last
+//             completion:^(BOOL success, NSError *error) {
+//               
+//               NYPLLOG(error);
+//               if (success) {
+//                 
+//               }
+//               
+//             }];
+//          }
+//        }
       }
     }
   }
