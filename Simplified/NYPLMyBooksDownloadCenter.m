@@ -418,6 +418,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 {
   NSURL *directoryURL = [[DirectoryManager current] URLByAppendingPathComponent:@"content"];
   
+  NYPLLOG_F(@"directoryURL %@", directoryURL);
+
   NSError *error = nil;
   if(![[NSFileManager defaultManager]
        createDirectoryAtURL:directoryURL
