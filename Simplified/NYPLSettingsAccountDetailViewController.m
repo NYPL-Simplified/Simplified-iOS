@@ -689,7 +689,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.eulaCell = [[UITableViewCell alloc]
                        initWithStyle:UITableViewCellStyleDefault
                        reuseIdentifier:nil];
-      if (self.account.eulaIsAccepted) {
+      if (self.account.eulaIsAccepted || [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]) {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOn"]];
       } else {

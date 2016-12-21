@@ -243,7 +243,7 @@
   
   NYPLSettings *settings = [NYPLSettings sharedSettings];
   
-  if (settings.userPresentedWelcomeScreen == NO) {
+  if (settings.userHasSeenWelcomeScreen == NO) {
     
     if (settings.acceptedEULABeforeMultiLibrary == YES) {
       Account *nyplAccount = [[AccountsManager sharedInstance] account:0];
@@ -270,7 +270,7 @@
     
     NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
     [vc safelyPresentViewController:navController animated:YES completion:nil];
-    [[NYPLSettings sharedSettings] setUserPresentedWelcomeScreen:YES];
+    [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
   }
 }
 

@@ -72,6 +72,7 @@
     self.viewControllers = @[self.catalogNavigationController,
                              self.myBooksNavigationController,
                              self.settingsSplitViewController];
+    [self setSelectedIndex:0];
   }
 }
 

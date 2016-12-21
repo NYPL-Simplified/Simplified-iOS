@@ -16,7 +16,7 @@ static NSString *const renderingEngineKey = @"NYPLSettingsRenderingEngine";
 
 static NSString *const legacyUserAcceptedEULAKey = @"NYPLSettingsUserAcceptedEULA";
 
-static NSString *const userPresentedWelcomeScreenKey = @"NYPLUserPresentedWelcomeScreenKey";
+static NSString *const userHasSeenWelcomeScreenKey = @"NYPLUserHasSeenWelcomeScreenKey";
 
 static NSString *const userPresentedAgeCheckKey = @"NYPLUserPresentedAgeCheckKey";
 
@@ -92,9 +92,9 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] boolForKey:legacyUserAcceptedEULAKey];
 }
 
-- (BOOL) userPresentedWelcomeScreen
+- (BOOL) userHasSeenWelcomeScreen
 {
-  return [[NSUserDefaults standardUserDefaults] boolForKey:userPresentedWelcomeScreenKey];
+  return [[NSUserDefaults standardUserDefaults] boolForKey:userHasSeenWelcomeScreenKey];
 }
 
 - (BOOL) userPresentedAgeCheck
@@ -151,9 +151,9 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
    object:self];
 }
 
-- (void)setUserPresentedWelcomeScreen:(BOOL)userPresentedScreen
+- (void)setUserHasSeenWelcomeScreen:(BOOL)userPresentedScreen
 {
-  [[NSUserDefaults standardUserDefaults] setBool:userPresentedScreen forKey:userPresentedWelcomeScreenKey];
+  [[NSUserDefaults standardUserDefaults] setBool:userPresentedScreen forKey:userHasSeenWelcomeScreenKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
