@@ -188,10 +188,6 @@
     NYPLLOG(first);
     NYPLLOG(last);
     
-    
-//    first = @"NYBKLYN|1481838079|b621ba66-c2fc-11e6-a8cc-0e93cef2de1e";
-//    last = @"8dpMiqNisnkYHcNvl4DFv47cw+e8dMhBuP35ptno4ko=\n";
-
     [[NYPLADEPT sharedInstance]
      authorizeWithVendorID:[[NYPLAccount sharedAccount:account.id] licensor][@"vendor"]
      username:first
@@ -223,7 +219,6 @@
 //         [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
 
          
-
        }
       
        
