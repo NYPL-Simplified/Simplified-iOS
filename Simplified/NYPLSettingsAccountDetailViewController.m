@@ -432,6 +432,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
      if (statusCode == 401) {
        NSError *error401 = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
        [self showLoginAlertWithError:error401];
+       return;
      }
      [self showLoginAlertWithError:error];
      
