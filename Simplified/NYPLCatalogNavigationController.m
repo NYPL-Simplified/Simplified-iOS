@@ -122,8 +122,6 @@
     Account *account = [[AccountsManager sharedInstance] account:[accounts[i] intValue]];
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
       [[NYPLBookRegistry sharedRegistry] save];
-//      [[NYPLBookRegistry sharedRegistry] reset];
-//      [self deactivateDevice];
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
       [self reloadSelectedLibraryAccount];
     }]];
@@ -159,6 +157,7 @@
   [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
   [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
   
+  [[NYPLBookRegistry sharedRegistry] justLoad];
 
   if ([[self.visibleViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] &&
        [self.visibleViewController respondsToSelector:@selector(load)]) {
@@ -199,9 +198,7 @@
        {
          [[NYPLAccount sharedAccount:account.id] setUserID:userID];
          [[NYPLAccount sharedAccount:account.id] setDeviceID:deviceID];
-           [[NYPLBookRegistry sharedRegistry] justLoad];
-
-//         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
        }
        else{
          
@@ -229,9 +226,7 @@
   }
   else if (account.needsAuth)
   {
-      [[NYPLBookRegistry sharedRegistry] justLoad];
-
-//    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
   }
   
 }
@@ -261,8 +256,6 @@
     
     NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(NSInteger accountID) {
       [[NYPLBookRegistry sharedRegistry] save];
-//      [[NYPLBookRegistry sharedRegistry] reset];
-//      [self deactivateDevice];
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:accountID];
       [self reloadSelectedLibraryAccount];
       [self dismissViewControllerAnimated:YES completion:nil];

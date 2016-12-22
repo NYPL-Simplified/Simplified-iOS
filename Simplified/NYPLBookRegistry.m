@@ -224,9 +224,6 @@ static NSString *const RecordsKey = @"records";
 - (void)justLoad
 {
     [self load];
-    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-      [self syncWithCompletionHandler:nil];
-    }
     [self broadcastChange];
 }
 
