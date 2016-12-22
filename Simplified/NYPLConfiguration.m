@@ -26,7 +26,7 @@ static NSString *const heapIDDevelopment = @"1848989408";
 {
   [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
   HSDeskGear *deskGear = [[HSDeskGear alloc]
-                          initWithInstanceBaseUrl:@"https://nypl.desk.com/"
+                          initWithInstanceBaseUrl:@"https://nypl.desk.com/api/v2/brands/12060/topics"
                           toHelpEmail:@"jamesenglish@nypl.org"
                           staffLoginEmail:@"jamesenglish@nypl.org"
                           AndStaffLoginPassword:@"Marin1010!"];

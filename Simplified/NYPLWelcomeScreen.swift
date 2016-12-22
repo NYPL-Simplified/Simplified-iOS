@@ -152,7 +152,12 @@ final class NYPLWelcomeScreenViewController: UIViewController {
   }
 
   func instantClassicsTapped() {
-    NYPLSettings.shared().settingsAccountsList = [2]
+    if NYPLSettings.shared().acceptedEULABeforeMultiLibrary == true {
+      NYPLSettings.shared().settingsAccountsList = [0,2]
+    }
+    else {
+      NYPLSettings.shared().settingsAccountsList = [2]
+    }
     completion?(2)
   }
 }
