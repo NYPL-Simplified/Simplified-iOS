@@ -28,7 +28,7 @@
   
   
   viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
-                                                     initWithImage:[UIImage imageNamed:@"lib-icon"] style:(UIBarButtonItemStylePlain)
+                                                     initWithImage:[UIImage imageNamed:@"Catalog"] style:(UIBarButtonItemStylePlain)
                                                      target:self
                                                      action:@selector(switchLibrary)];
   viewController.navigationItem.leftBarButtonItem.enabled = YES;
