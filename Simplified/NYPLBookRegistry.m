@@ -223,13 +223,11 @@ static NSString *const RecordsKey = @"records";
 
 - (void)justLoad
 {
-  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-    [self syncWithCompletionHandler:nil];
-  }
-  else {
     [self load];
+    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+      [self syncWithCompletionHandler:nil];
+    }
     [self broadcastChange];
-  }
 }
 
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler

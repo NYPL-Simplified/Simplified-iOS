@@ -88,6 +88,7 @@
     [[NYPLADEPT sharedInstance]
      deauthorizeWithUsername:first
      password:last
+     userID:[[NYPLAccount sharedAccount:account.id] userID] deviceID:[[NYPLAccount sharedAccount:account.id] deviceID]
      completion:^(BOOL success, __unused NSError *error) {
        if(!success) {
          // Even though we failed, all we do is log the error. The reason is
@@ -122,7 +123,7 @@
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
       [[NYPLBookRegistry sharedRegistry] save];
 //      [[NYPLBookRegistry sharedRegistry] reset];
-      [self deactivateDevice];
+//      [self deactivateDevice];
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
       [self reloadSelectedLibraryAccount];
     }]];
@@ -190,12 +191,14 @@
      authorizeWithVendorID:[[NYPLAccount sharedAccount:account.id] licensor][@"vendor"]
      username:first
      password:last
-     completion:^(BOOL success, NSError *error) {
+     completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
        
        NYPLLOG(error);
        
        if (success)
        {
+         [[NYPLAccount sharedAccount:account.id] setUserID:userID];
+         [[NYPLAccount sharedAccount:account.id] setDeviceID:deviceID];
            [[NYPLBookRegistry sharedRegistry] justLoad];
 
 //         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
@@ -237,6 +240,9 @@
 {
   [super viewDidAppear:animated];
   
+  
+//  [[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount] userID] withDevice:[[NYPLAccount sharedAccount] deviceID]];
+  
   if (UIAccessibilityIsVoiceOverRunning()) {
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
   }
@@ -255,8 +261,8 @@
     
     NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(NSInteger accountID) {
       [[NYPLBookRegistry sharedRegistry] save];
-      [[NYPLBookRegistry sharedRegistry] reset];
-      [self deactivateDevice];
+//      [[NYPLBookRegistry sharedRegistry] reset];
+//      [self deactivateDevice];
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:accountID];
       [self reloadSelectedLibraryAccount];
       [self dismissViewControllerAnimated:YES completion:nil];

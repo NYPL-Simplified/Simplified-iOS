@@ -211,7 +211,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
-  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
+  if (![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount] userID] withDevice:[[NYPLAccount sharedAccount] deviceID]]) {
     if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN] && !self.isCurrentlySigningIn) {
       self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
       self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
@@ -667,6 +667,7 @@ replacementString:(NSString *)string
        [[NYPLADEPT sharedInstance]
         deauthorizeWithUsername:[[NYPLAccount sharedAccount] barcode]
         password:[[NYPLAccount sharedAccount] PIN]
+        userID:[[NYPLAccount sharedAccount] userID] deviceID:[[NYPLAccount sharedAccount] deviceID]
         completion:^(BOOL success, __unused NSError *error) {
           if(!success) {
             // Even though we failed, all we do is log the error. The reason is

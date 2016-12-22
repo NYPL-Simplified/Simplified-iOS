@@ -184,7 +184,7 @@ didFinishDownloadingToURL:(NSURL *const)location
            setState:NYPLBookStateDownloadFailed
            forIdentifier:book.identifier];
         }
-        else if (![[NYPLADEPT sharedInstance] deviceAuthorized])
+        else if (![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount] userID] withDevice:[[NYPLAccount sharedAccount] deviceID]])
         {
           
           
@@ -201,10 +201,12 @@ didFinishDownloadingToURL:(NSURL *const)location
            authorizeWithVendorID:book.licensor[@"vendor"]
            username:first
            password:last
-           completion:^(BOOL success, NSError *error) {
+           completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
              
              if (success)
              {
+               [[NYPLAccount sharedAccount] setDeviceID:deviceID];
+               [[NYPLAccount sharedAccount] setUserID:userID];
                if (book.licensor!=nil)
                {
                  [[NYPLAccount sharedAccount] setLicensor:book.licensor];
@@ -212,7 +214,7 @@ didFinishDownloadingToURL:(NSURL *const)location
 
                [[NYPLADEPT sharedInstance]
                 fulfillWithACSMData:ACSMData
-                tag:book.identifier];
+                tag:book.identifier userID:userID deviceID:deviceID];
              }
              else
              {
@@ -225,7 +227,7 @@ didFinishDownloadingToURL:(NSURL *const)location
         else {
           [[NYPLADEPT sharedInstance]
            fulfillWithACSMData:ACSMData
-           tag:book.identifier];
+           tag:book.identifier userID:[[NYPLAccount sharedAccount] userID] deviceID:[[NYPLAccount sharedAccount] deviceID]];
         }
 #endif
         break;
@@ -357,7 +359,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 #if defined(FEATURE_DRM_CONNECTOR)
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
   if(fulfillmentId) {
-    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId completion:^(BOOL success, __unused NSError *error) {
+    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId userID:[[NYPLAccount sharedAccount] userID] deviceID:[[NYPLAccount sharedAccount] deviceID] completion:^(BOOL success, __unused NSError *error) {
       if(!success) {
         NYPLLOG(@"Failed to return loan.");
       }

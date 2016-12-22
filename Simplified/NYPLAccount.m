@@ -308,7 +308,30 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
    postNotificationName:NYPLAccountDidChangeNotification
    object:self];
 }
-
+- (void)setUserID:(NSString *)userID
+{
+  if(!(userID)) {
+    @throw NSInvalidArgumentException;
+  }
+  
+  [[NYPLKeychain sharedKeychain] setObject:userID forKey:userIDKey];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLAccountDidChangeNotification
+   object:self];
+}
+- (void)setDeviceID:(NSString *)deviceID
+{
+  if(!(deviceID)) {
+    @throw NSInvalidArgumentException;
+  }
+  
+  [[NYPLKeychain sharedKeychain] setObject:deviceID forKey:deviceIDKey];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLAccountDidChangeNotification
+   object:self];
+}
 
 - (void)removeAll
 {

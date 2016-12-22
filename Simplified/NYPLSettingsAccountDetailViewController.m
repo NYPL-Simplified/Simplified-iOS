@@ -332,6 +332,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
        [[NYPLADEPT sharedInstance]
         deauthorizeWithUsername:first
         password:last
+        userID:[[NYPLAccount sharedAccount:self.accountType] userID] deviceID:[[NYPLAccount sharedAccount:self.accountType] deviceID]
         completion:^(BOOL success, __unused NSError *error) {
           if(!success) {
             // Even though we failed, all we do is log the error. The reason is

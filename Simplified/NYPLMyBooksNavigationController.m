@@ -73,8 +73,8 @@
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
       [[NYPLBookRegistry sharedRegistry] save];
 //      [[NYPLBookRegistry sharedRegistry] reset];
-      NYPLCatalogNavigationController * catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
-      [catalog deactivateDevice];
+//      NYPLCatalogNavigationController * catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
+//      [catalog deactivateDevice];
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
       [self reloadSelected];
     }]];
