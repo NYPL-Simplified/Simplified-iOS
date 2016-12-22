@@ -6,6 +6,7 @@
 #import "NYPLOPDS.h"
 #import "NYPLXML.h"
 #import "SimplyE-Swift.h"
+#import "NYPLSettings.h"
 
 #import "NYPLCatalogFeedViewController.h"
 
@@ -87,8 +88,11 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+  NYPLSettings *settings = [NYPLSettings sharedSettings];
   
-  [self load];
+  if (settings.userHasSeenWelcomeScreen == YES) {
+    [self load];
+  }
 }
 
 - (void) reloadCatalogue {

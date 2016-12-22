@@ -56,14 +56,6 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-  [super viewWillAppear:animated];
-  
-  NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
-  viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
-}
-
 - (void)currentAccountChanged
 {
   [self popToRootViewControllerAnimated:NO];
@@ -231,13 +223,14 @@
   
 }
 
-- (void) viewDidAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
   
-  
-//  [[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount] userID] withDevice:[[NYPLAccount sharedAccount] deviceID]];
-  
+  NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
+  viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
+
+ 
   if (UIAccessibilityIsVoiceOverRunning()) {
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
   }
@@ -249,16 +242,18 @@
     if (settings.acceptedEULABeforeMultiLibrary == YES) {
       Account *nyplAccount = [[AccountsManager sharedInstance] account:0];
       nyplAccount.eulaIsAccepted = YES;
-      
-      [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:2];
-      [self reloadSelectedLibraryAccount];
     }
     
+    [self reloadSelectedLibraryAccount];
+    
     NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(NSInteger accountID) {
+     
       [[NYPLBookRegistry sharedRegistry] save];
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:accountID];
       [self reloadSelectedLibraryAccount];
+      [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
       [self dismissViewControllerAnimated:YES completion:nil];
+      
     }];
   
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
@@ -269,7 +264,6 @@
     
     NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
     [vc safelyPresentViewController:navController animated:YES completion:nil];
-    [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
   }
 }
 
