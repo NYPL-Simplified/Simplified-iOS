@@ -356,6 +356,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
   
+  if ([[AccountsManager sharedInstance] currentAccount].needsAuth){
 #if defined(FEATURE_DRM_CONNECTOR)
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
   if(fulfillmentId) {
@@ -366,8 +367,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     }];
   }
 #endif
-  
-  if(book.acquisition.revoke) {
+  }
+  if(book.acquisition.revoke || [[AccountsManager sharedInstance] currentAccount].needsAuth) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
     [NYPLOPDSFeed withURL:book.acquisition.revoke completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
       [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
@@ -408,6 +409,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       [self deleteLocalContentForBookIdentifier:identifier];
     }
     [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
+    [[NYPLBookRegistry sharedRegistry] save];
   }
 }
 
@@ -482,7 +484,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   switch(state) {
     case NYPLBookStateUnregistered:
-      if(!book.acquisition.borrow && book.acquisition.openAccess) {
+      if(!book.acquisition.borrow && (book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)) {
         [[NYPLBookRegistry sharedRegistry]
          addBook:book
          location:nil
