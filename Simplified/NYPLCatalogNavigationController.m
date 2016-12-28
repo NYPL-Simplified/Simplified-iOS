@@ -166,9 +166,13 @@
   }
   
   
-  if (account.needsAuth && [[NYPLAccount sharedAccount:account.id] hasBarcodeAndPIN] && [[NYPLAccount sharedAccount:account.id] hasLicensor])
+  if (account.needsAuth
+      && [[NYPLAccount sharedAccount:account.id] hasBarcodeAndPIN]
+      && [[NYPLAccount sharedAccount:account.id] hasLicensor])
   {
-    NSMutableArray* foo = [[[[NYPLAccount sharedAccount:account.id] licensor][@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
+    NSMutableArray* foo = [[[[NYPLAccount sharedAccount:account.id] licensor][@"clientToken"]
+                            stringByReplacingOccurrencesOfString:@"\n" withString:@""]
+                           componentsSeparatedByString: @"|"].mutableCopy;
 
     NSString *last = foo.lastObject;
     [foo removeLastObject];
