@@ -159,10 +159,10 @@
   
   self.reloadView.hidden = NO;
   
-  if (error) {
-    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"Error" error:error];
-    [self presentViewController:alert animated:YES completion:nil];
-  }
+//  if (error) {
+//    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"Error" error:error];
+//    [self presentViewController:alert animated:YES completion:nil];
+//  }
   
   self.connection = nil;
   self.data = [NSMutableData data];
