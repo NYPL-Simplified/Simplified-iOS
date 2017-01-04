@@ -238,9 +238,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
       if (currentAccount.eulaIsAccepted) {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
+        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAUnchecked", nil);
+        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
         currentAccount.eulaIsAccepted = NO;
       } else {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
+        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAChecked", nil);
+        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintChecked", nil);
         currentAccount.eulaIsAccepted = YES;
       }
       [self updateLoginLogoutCellAppearance];
@@ -408,9 +412,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (currentAccount.eulaIsAccepted) {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOn"]];
+        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAChecked", nil);
+        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintChecked", nil);
       } else {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOff"]];
+        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAUnchecked", nil);
+        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
       }
       self.eulaCell.selectionStyle = UITableViewCellSelectionStyleNone;
       self.eulaCell.textLabel.font = [UIFont systemFontOfSize:13];
@@ -428,7 +436,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleValue1
                                      reuseIdentifier:nil];
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = @"Dont't have a library card?";
+      cell.textLabel.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
       cell.detailTextLabel.font = [UIFont systemFontOfSize:17];
       cell.detailTextLabel.text = NSLocalizedString(@"SignUp", nil);
       cell.detailTextLabel.textColor = [NYPLConfiguration mainColor];
