@@ -26,10 +26,10 @@
   [holdsViewController updateBadge];
   
   holdsViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
-                                                     initWithImage:[UIImage imageNamed:@"Catalog"] style:(UIBarButtonItemStylePlain)
-                                                     
-                                                     target:self
-                                                     action:@selector(switchLibrary)];
+                                                          initWithImage:[UIImage imageNamed:@"Catalog"] style:(UIBarButtonItemStylePlain)
+                                                          target:self
+                                                          action:@selector(switchLibrary)];
+  holdsViewController.navigationItem.leftBarButtonItem.accessibilityLabel = NSLocalizedString(@"AccessibilitySwitchLibrary", nil);
   holdsViewController.navigationItem.leftBarButtonItem.enabled = YES;
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NYPLCurrentAccountDidChangeNotification object:nil];

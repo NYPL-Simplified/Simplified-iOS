@@ -1,4 +1,14 @@
+// Accessibility Labels
+
+"AccessibilitySwitchLibrary" = "Change Library Account";
+"AccessibilityEULAChecked" = "I agree to the terms of the End User License Agreement: Yes.";
+"AccessibilityEULAUnchecked" = "I agree to the terms of the End User License Agreement: No.";
+"AccessibilityEULAHintChecked" = "Select if you no longer agree to the terms. You will not be able to sign in.";
+"AccessibilityEULAHintUnchecked" = "Select if you agree to the terms so that you can sign in.";
+
+
 // Generic
+
 "AboutApp" = "About SimplyE";
 "About" = "About";
 "Accounts" = "Accounts";
@@ -161,6 +171,7 @@
 
 "SettingsAccountAgeCheckbox" = "I am 13 years of age or older.";
 "SettingsAccountEULACheckbox" = "I agree to the terms of the End User License Agreement.";
+"SettingsAccountRegistrationTitle" = "Don't have a library card?";
 "SettingsAccountSetAccountTitle" = "Set to Active Account";
 "SettingsAccountSyncTitle" = "Sync Last-Read Position";
 "SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";

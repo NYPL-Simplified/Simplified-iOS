@@ -44,6 +44,7 @@
                                                      initWithImage:[UIImage imageNamed:@"Catalog"] style:(UIBarButtonItemStylePlain)
                                                      target:self
                                                      action:@selector(switchLibrary)];
+  viewController.navigationItem.leftBarButtonItem.accessibilityLabel = NSLocalizedString(@"AccessibilitySwitchLibrary", nil);
   viewController.navigationItem.leftBarButtonItem.enabled = YES;
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NYPLCurrentAccountDidChangeNotification object:nil];

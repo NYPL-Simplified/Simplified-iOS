@@ -523,9 +523,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
       if (self.account.eulaIsAccepted == YES) {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
+        cell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAUnchecked", nil);
+        cell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
         self.account.eulaIsAccepted = NO;
       } else {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
+        cell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAChecked", nil);
+        cell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintChecked", nil);
         self.account.eulaIsAccepted = YES;
       }
       [self updateLoginLogoutCellAppearance];
@@ -694,9 +698,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (self.account.eulaIsAccepted || [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]) {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOn"]];
+        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAChecked", nil);
+        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintChecked", nil);
       } else {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOff"]];
+        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAUnchecked", nil);
+        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
       }
       self.eulaCell.selectionStyle = UITableViewCellSelectionStyleNone;
       self.eulaCell.textLabel.font = [UIFont systemFontOfSize:13];
@@ -1069,6 +1077,7 @@ replacementString:(NSString *)string
   } else {
     self.eulaCell.userInteractionEnabled = YES;
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
+    self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentLeft;
     BOOL const canLogIn =
       ([self.barcodeTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
