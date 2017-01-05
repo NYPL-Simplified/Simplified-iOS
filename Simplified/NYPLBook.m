@@ -124,8 +124,14 @@ static NSString *const AlternateURLKey = @"alternate";
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionOpenAccess]) {
-      openAccess = link.href;
-      continue;
+      
+      for(NSString *const acqusitionFormat in link.acquisitionFormats) {
+        if([acqusitionFormat containsString:@"application/epub+zip"]) {
+          openAccess = link.href;
+          continue;
+        }
+      }
+     
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionRevoke]) {
       revoke = link.href;
