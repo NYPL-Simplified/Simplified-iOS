@@ -19,6 +19,12 @@
 #import <ADEPT/ADEPT.h>
 #endif
 
+@interface NYPLCatalogNavigationController()
+
+@property (nonatomic) NYPLCatalogFeedViewController *const viewController;
+
+@end
+
 
 @implementation NYPLCatalogNavigationController
 
@@ -26,28 +32,32 @@
 
 - (instancetype)init
 {
-  NYPLCatalogFeedViewController *const viewController =
-    [[NYPLCatalogFeedViewController alloc]
-     initWithURL:[NYPLConfiguration mainFeedURL]];
+  self.viewController =
+  [[NYPLCatalogFeedViewController alloc]
+   initWithURL:[NYPLConfiguration mainFeedURL]];
   
-  viewController.title = NSLocalizedString(@"Catalog", nil);
+  self.viewController.title = NSLocalizedString(@"Catalog", nil);
   
-  self = [super initWithRootViewController:viewController];
+  self = [super initWithRootViewController:self.viewController];
   if(!self) return nil;
   
   self.tabBarItem.image = [UIImage imageNamed:@"Catalog"];
   
   // The top-level view controller uses the same image used for the tab bar in place of the usual
   // title text.
-
-  viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
-                                                     initWithImage:[UIImage imageNamed:@"Catalog"] style:(UIBarButtonItemStylePlain)
-                                                     target:self
-                                                     action:@selector(switchLibrary)];
-  viewController.navigationItem.leftBarButtonItem.accessibilityLabel = NSLocalizedString(@"AccessibilitySwitchLibrary", nil);
-  viewController.navigationItem.leftBarButtonItem.enabled = YES;
+  
+  self.viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
+                                                          initWithImage:[UIImage imageNamed:@"Catalog"] style:(UIBarButtonItemStylePlain)
+                                                          target:self
+                                                          action:@selector(switchLibrary)];
+  self.viewController.navigationItem.leftBarButtonItem.accessibilityLabel = NSLocalizedString(@"AccessibilitySwitchLibrary", nil);
+  self.viewController.navigationItem.leftBarButtonItem.enabled = YES;
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NYPLCurrentAccountDidChangeNotification object:nil];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncBegan) name:NYPLSyncBeganNotification object:nil];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncEnded) name:NYPLSyncEndedNotification object:nil];
   
   return self;
 }
@@ -60,6 +70,16 @@
 - (void)currentAccountChanged
 {
   [self popToRootViewControllerAnimated:NO];
+}
+
+- (void)syncBegan
+{
+  self.viewController.navigationItem.leftBarButtonItem.enabled = NO;
+}
+
+- (void)syncEnded
+{
+  self.viewController.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
 - (void)deactivateDevice

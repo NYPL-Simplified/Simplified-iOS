@@ -150,6 +150,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
     [self.refreshControl endRefreshing];
+    self.navigationItem.leftBarButtonItem.enabled = YES;
   }
 }
 
@@ -350,6 +351,8 @@ OK:
 {
   Account *account = [[NYPLSettings sharedSettings] currentAccount];
   
+  self.navigationItem.leftBarButtonItem.enabled = NO;
+  
   if (account.needsAuth)
   {
     if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
@@ -364,6 +367,7 @@ OK:
        requestCredentialsUsingExistingBarcode:NO
        completionHandler:nil];
       [self.refreshControl endRefreshing];
+      self.navigationItem.leftBarButtonItem.enabled = YES;
     }
   }
   else
@@ -377,6 +381,7 @@ OK:
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if([NYPLBookRegistry sharedRegistry].syncing == NO) {
       [self.refreshControl endRefreshing];
+      self.navigationItem.leftBarButtonItem.enabled = YES;
     }
   }];
 }

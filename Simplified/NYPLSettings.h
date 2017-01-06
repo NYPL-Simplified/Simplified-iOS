@@ -1,5 +1,7 @@
 static NSString *const NYPLSettingsDidChangeNotification = @"NYPLSettingsDidChangeNotification";
 static NSString *const NYPLCurrentAccountDidChangeNotification = @"NYPLCurrentAccountDidChangeNotification";
+static NSString *const NYPLSyncBeganNotification = @"NYPLSyncBeganNotification";
+static NSString *const NYPLSyncEndedNotification = @"NYPLSyncEndedNotification";
 
 typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
   NYPLSettingsRenderingEngineAutomatic,
