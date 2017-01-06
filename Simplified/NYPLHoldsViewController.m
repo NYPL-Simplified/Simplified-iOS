@@ -96,6 +96,7 @@
   
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
     [self.refreshControl endRefreshing];
+    self.navigationItem.leftBarButtonItem.enabled = YES;
   }
 }
 
@@ -206,6 +207,8 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)didSelectSync
 {
+  self.navigationItem.leftBarButtonItem.enabled = NO;
+  
   if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
     [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
   } else {
@@ -218,6 +221,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
      requestCredentialsUsingExistingBarcode:NO
      completionHandler:nil];
     [self.refreshControl endRefreshing];
+    self.navigationItem.leftBarButtonItem.enabled = YES;
   }
 }
 
@@ -226,6 +230,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if([NYPLBookRegistry sharedRegistry].syncing == NO) {
       [self.refreshControl endRefreshing];
+      self.navigationItem.leftBarButtonItem.enabled = YES;
     }
   }];
 }
