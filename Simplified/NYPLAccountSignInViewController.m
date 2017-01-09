@@ -285,6 +285,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       CardCreatorConfiguration *const configuration =
         [[CardCreatorConfiguration alloc]
          initWithEndpointURL:[APIKeys cardCreatorEndpointURL]
+         endpointVersion:[APIKeys cardCreatorVersion]
          endpointUsername:[APIKeys cardCreatorUsername]
          endpointPassword:[APIKeys cardCreatorPassword]
          requestTimeoutInterval:20.0
