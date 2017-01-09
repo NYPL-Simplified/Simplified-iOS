@@ -267,10 +267,13 @@
     if (settings.acceptedEULABeforeMultiLibrary == YES) {
       Account *nyplAccount = [[AccountsManager sharedInstance] account:0];
       nyplAccount.eulaIsAccepted = YES;
+      [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
+
     }
     
     [self reloadSelectedLibraryAccount];
     
+    if (settings.acceptedEULABeforeMultiLibrary == NO) {
     NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(NSInteger accountID) {
      
       [[NYPLBookRegistry sharedRegistry] save];
@@ -280,15 +283,18 @@
       [self dismissViewControllerAnimated:YES completion:nil];
       
     }];
-  
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
-    if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-      [navController setModalPresentationStyle:UIModalPresentationFormSheet];
+      
+      UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
+      if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        [navController setModalPresentationStyle:UIModalPresentationFormSheet];
+      }
+      [navController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+      
+      NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
+      [vc safelyPresentViewController:navController animated:YES completion:nil];
+
     }
-    [navController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     
-    NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
-    [vc safelyPresentViewController:navController animated:YES completion:nil];
   }
 }
 
