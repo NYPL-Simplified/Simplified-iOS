@@ -121,8 +121,6 @@
 		2DB436381D4C049200F8E69D /* NYPLReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DB436371D4C049200F8E69D /* NYPLReachability.m */; };
 		2DC8D9DC1D09F797007DD125 /* UpdateCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */; };
 		2DCF860B1CFC0DC6000BCE77 /* privacy-policy.html in Resources */ = {isa = PBXBuildFile; fileRef = 2DCF860A1CFC0DC6000BCE77 /* privacy-policy.html */; };
-		2DE514351DC3F0BE005A58BD /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */; };
-		2DF321831DC3B83500E1858F /* NYPLAnnotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */; };
 		2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */; };
 		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
@@ -163,7 +161,6 @@
 		B594C7561BB06F40000028F5 /* HelpStackTheme.plist in Resources */ = {isa = PBXBuildFile; fileRef = B594C7551BB06F40000028F5 /* HelpStackTheme.plist */; };
 		B5ED41DA1B8F6E2E009FC164 /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */; };
 		E15AF04E809009612AA10D16 /* libPods-SimplyETests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEEC686A5C71AFACFAC2A884 /* libPods-SimplyETests.a */; };
-		E66AE3301DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */; };
 		E677F8B31DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E677F8B21DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m */; };
 		E6CA8E421DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CA8E411DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m */; };
 		E6CA8E571DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CA8E561DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m */; };
@@ -435,7 +432,6 @@
 		2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheck.swift; sourceTree = "<group>"; };
 		2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheckShim.swift; sourceTree = "<group>"; };
 		2DCF860A1CFC0DC6000BCE77 /* privacy-policy.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "privacy-policy.html"; sourceTree = "<group>"; };
-		2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAnnotations.swift; sourceTree = "<group>"; };
 		2DFAC8EB1CD8DDD1003D9EC0 /* NYPLOPDSCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSCategory.h; sourceTree = "<group>"; };
 		2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSCategory.m; sourceTree = "<group>"; };
 		2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimplyE.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -514,7 +510,6 @@
 		BEEC686A5C71AFACFAC2A884 /* libPods-SimplyETests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SimplyETests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Simplified+RMSDK.xcconfig"; sourceTree = "<group>"; };
 		CAE35BC11B86308D00BF9BC5 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
-		E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLCirculationAnalytics.swift; sourceTree = "<group>"; };
 		E677F8B11DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsLicensesTableViewController.h; sourceTree = "<group>"; };
 		E677F8B21DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsLicensesTableViewController.m; sourceTree = "<group>"; };
 		E6CA8E401DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsPrivacyPolicyViewController.h; sourceTree = "<group>"; };
@@ -569,7 +564,6 @@
 		0345BFE31DBF010100398B6F /* Annotations */ = {
 			isa = PBXGroup;
 			children = (
-				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
 			);
 			name = Annotations;
 			sourceTree = "<group>";
@@ -963,7 +957,6 @@
 				114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */,
 				A4E254F81B0E610900193FE4 /* NYPLBasicAuth.h */,
 				A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */,
-				E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
 				111197321986D7550014462F /* NYPLDismissibleViewController.h */,
@@ -1156,10 +1149,12 @@
 				TargetAttributes = {
 					2D2B47711D08F807007F7764 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0820;
 						TestTargetID = A823D80C192BABA400B55DE2;
 					};
 					A823D80C192BABA400B55DE2 = {
 						DevelopmentTeam = 7262U6ST2R;
+						LastSwiftMigration = 0820;
 					};
 				};
 			};
@@ -1399,7 +1394,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2DE514351DC3F0BE005A58BD /* NYPLCirculationAnalytics.swift in Sources */,
 				03DE7BE91DBF0DE400E89064 /* UpdateCheckShim.swift in Sources */,
 				0345BFE81DBF027200398B6F /* APIKeys.swift in Sources */,
 				11172764197F31280043EFBF /* NYPLAccount.m in Sources */,
@@ -1497,7 +1491,6 @@
 				119BEB89198C43A600121439 /* NSString+NYPLStringAdditions.m in Sources */,
 				A499BF261B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m in Sources */,
 				1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */,
-				2DF321831DC3B83500E1858F /* NYPLAnnotations.swift in Sources */,
 				A4BA1D131B43046B006F83DF /* NYPLCatalogGroupedFeed.m in Sources */,
 				112C6953197309C500C48F95 /* NYPLBookState.m in Sources */,
 				11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */,
@@ -1574,6 +1567,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.SimplyETests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimplyE.app/SimplyE";
 			};
 			name = Debug;
@@ -1599,6 +1593,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.SimplyETests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimplyE.app/SimplyE";
 			};
 			name = Release;
@@ -1717,6 +1712,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -1758,6 +1754,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "9ba5bad4-c0e9-4d22-aae9-4d2e2e60ca6d";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
 					"-Wall",

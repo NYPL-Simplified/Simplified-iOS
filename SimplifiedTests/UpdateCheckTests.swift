@@ -11,9 +11,9 @@ class UpdateCheckTests: XCTestCase {
   }
   
   func testUpToDate() {
-    let URL = NSBundle(forClass: UpdateCheckTests.self).URLForResource("UpdateCheckUpToDate", withExtension: "json")!
+    let URL = Bundle(for: UpdateCheckTests.self).url(forResource: "UpdateCheckUpToDate", withExtension: "json")!
     
-    let expectation = expectationWithDescription("performUpdateCheck")
+    let expectation = self.expectation(description: "performUpdateCheck")
     
     UpdateCheck.performUpdateCheck(URL) { (result: UpdateCheck.Result) in
       switch result {
@@ -25,13 +25,13 @@ class UpdateCheckTests: XCTestCase {
       expectation.fulfill()
     }
     
-    waitForExpectationsWithTimeout(1.0, handler: nil)
+    waitForExpectations(timeout: 1.0, handler: nil)
   }
   
   func testNeedsUpdate() {
-    let URL = NSBundle(forClass: UpdateCheckTests.self).URLForResource("UpdateCheckNeedsUpdate", withExtension: "json")!
+    let URL = Bundle(for: UpdateCheckTests.self).url(forResource: "UpdateCheckNeedsUpdate", withExtension: "json")!
     
-    let expectation = expectationWithDescription("performUpdateCheck")
+    let expectation = self.expectation(description: "performUpdateCheck")
     
     UpdateCheck.performUpdateCheck(URL) { (result: UpdateCheck.Result) in
       switch result {
@@ -43,13 +43,13 @@ class UpdateCheckTests: XCTestCase {
       expectation.fulfill()
     }
     
-    waitForExpectationsWithTimeout(1.0, handler: nil)
+    waitForExpectations(timeout: 1.0, handler: nil)
   }
   
   func testUnknown0() {
-    let URL = NSBundle(forClass: UpdateCheckTests.self).URLForResource("UpdateCheckUnknown", withExtension: "json")!
+    let URL = Bundle(for: UpdateCheckTests.self).url(forResource: "UpdateCheckUnknown", withExtension: "json")!
     
-    let expectation = expectationWithDescription("performUpdateCheck")
+    let expectation = self.expectation(description: "performUpdateCheck")
     
     UpdateCheck.performUpdateCheck(URL) { (result: UpdateCheck.Result) in
       switch result {
@@ -61,13 +61,13 @@ class UpdateCheckTests: XCTestCase {
       expectation.fulfill()
     }
     
-    waitForExpectationsWithTimeout(1.0, handler: nil)
+    waitForExpectations(timeout: 1.0, handler: nil)
   }
   
   func testUnknown1() {
-    let URL = NSURL(string: "http://a2b21063-3cef-47a2-94b7-6941c97d3259.com/does-not-exist")!
+    let URL = Foundation.URL(string: "http://a2b21063-3cef-47a2-94b7-6941c97d3259.com/does-not-exist")!
     
-    let expectation = expectationWithDescription("performUpdateCheck")
+    let expectation = self.expectation(description: "performUpdateCheck")
     
     UpdateCheck.performUpdateCheck(URL) { (result: UpdateCheck.Result) in
       switch result {
@@ -79,6 +79,6 @@ class UpdateCheckTests: XCTestCase {
       expectation.fulfill()
     }
     
-    waitForExpectationsWithTimeout(1.0, handler: nil)
+    waitForExpectations(timeout: 1.0, handler: nil)
   }
 }

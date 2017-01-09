@@ -1,17 +1,17 @@
 xcodeproj 'Simplified.xcodeproj'
 
 # Uncomment this line to define a global platform for your project
-platform :ios, '8.0'
+platform :ios, '9.0'
 
 target 'SimplyE' do
 
   use_frameworks!
 
-  pod 'Alamofire'
-  pod 'HelpStack'
+  pod 'Alamofire', '~> 4.0'
+  pod 'HelpStack', :git => 'https://github.com/NYPL-Simplified/helpstack-ios'
 	pod 'Bugsnag', :git => "https://github.com/bugsnag/bugsnag-cocoa.git"
 	pod 'CHRTextFieldFormatter'
-  pod "NYPLCardCreator", :git => "https://github.com/NYPL-Simplified/CardCreator-iOS.git"
+  pod "NYPLCardCreator", :git => 'https://github.com/NYPL-Simplified/CardCreator-iOS.git', :branch => 'swift3'
 
 
 end
