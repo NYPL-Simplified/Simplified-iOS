@@ -20,6 +20,7 @@
  "needsAuth" : true,
  "supportsReservations" : true,
  "supportsCardCreator" : false,
+ "cardCreatorUrl" : "https://go.bklynlibrary.org/ecard",
  "catalogUrl" : "https://bplsimplye.bklynlibrary.org",
  "mainColor" : "446ebf"
  },

@@ -57,6 +57,7 @@ final class AccountsManager: NSObject
             savedDict["needsAuth"] = account.needsAuth as AnyObject?
             savedDict["supportsReservations"] = account.supportsReservations as AnyObject?
             savedDict["catalogUrl"] = account.catalogUrl as AnyObject?
+            savedDict["cardCreatorUrl"] = account.cardCreatorUrl as AnyObject?
             savedDict["mainColor"] = account.mainColor as AnyObject?
             
             defaults.set(savedDict, forKey: account.pathComponent!)
@@ -97,6 +98,7 @@ final class Account:NSObject
   let supportsCardCreator:Bool
   let supportsReservations:Bool
   let catalogUrl:String?
+  let cardCreatorUrl:String?
   let mainColor:String?
   
   fileprivate var urlAnnotations:URL?
@@ -146,6 +148,7 @@ final class Account:NSObject
     supportsReservations = json["supportsReservations"] as! Bool
     supportsCardCreator = json["supportsCardCreator"] as! Bool
     catalogUrl = json["catalogUrl"] as? String
+    cardCreatorUrl = json["cardCreatorUrl"] as? String
     mainColor = json["mainColor"] as? String
   }
   

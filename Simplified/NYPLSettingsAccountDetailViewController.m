@@ -568,6 +568,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+      
+      if (self.account.supportsCardCreator) {
+
       __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
       CardCreatorConfiguration *const configuration =
       [[CardCreatorConfiguration alloc]
@@ -600,6 +603,26 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                       action:@selector(didSelectCancelForSignUp)];
       navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
       [self presentViewController:navigationController animated:YES completion:nil];
+      
+      }
+      else
+      {
+        
+        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:self.account.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+        
+        UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webViewController];
+        
+        navigationController.navigationBar.topItem.leftBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil)
+                                         style:UIBarButtonItemStylePlain
+                                        target:self
+                                        action:@selector(didSelectCancelForSignUp)];
+        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:navigationController animated:YES completion:nil];
+        
+        
+      }
+      
       break;
     }
     case CellKindSetCurrentAccount: {
@@ -1203,7 +1226,7 @@ replacementString:(NSString *)string
 - (BOOL)registrationIsPossible
 {
   return ([NYPLConfiguration cardCreationEnabled] &&
-          [[AccountsManager sharedInstance] account:self.accountType].supportsCardCreator &&
+          ([[AccountsManager sharedInstance] account:self.accountType].supportsCardCreator  || [[AccountsManager sharedInstance] account:self.accountType].cardCreatorUrl) &&
           ![[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
 }
 

@@ -281,38 +281,59 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      __weak NYPLAccountSignInViewController *const weakSelf = self;
-      CardCreatorConfiguration *const configuration =
-        [[CardCreatorConfiguration alloc]
-         initWithEndpointURL:[APIKeys cardCreatorEndpointURL]
-         endpointVersion:[APIKeys cardCreatorVersion]
-         endpointUsername:[APIKeys cardCreatorUsername]
-         endpointPassword:[APIKeys cardCreatorPassword]
-         requestTimeoutInterval:20.0
-         completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
-           if (userInitiated) {
-             // If SettingsAccount has been presented modally, dismiss both
-             // the CardCreator and the modal window.
-             [weakSelf dismissViewControllerAnimated:YES completion:nil];
-             [weakSelf dismissViewControllerAnimated:YES completion:nil];
-           } else {
-             weakSelf.barcodeTextField.text = username;
-             weakSelf.PINTextField.text = PIN;
-             [weakSelf updateLoginLogoutCellAppearance];
-             self.isLoggingInAfterSignUp = YES;
-             [weakSelf logIn];
-           }
-         }];
       
-      UINavigationController *const navigationController =
-        [CardCreator initialNavigationControllerWithConfiguration:configuration];
-      navigationController.navigationBar.topItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+      Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
+      if (currentAccount.supportsCardCreator) {
+        __weak NYPLAccountSignInViewController *const weakSelf = self;
+        CardCreatorConfiguration *const configuration =
+          [[CardCreatorConfiguration alloc]
+           initWithEndpointURL:[APIKeys cardCreatorEndpointURL]
+           endpointVersion:[APIKeys cardCreatorVersion]
+           endpointUsername:[APIKeys cardCreatorUsername]
+           endpointPassword:[APIKeys cardCreatorPassword]
+           requestTimeoutInterval:20.0
+           completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
+             if (userInitiated) {
+               // If SettingsAccount has been presented modally, dismiss both
+               // the CardCreator and the modal window.
+               [weakSelf dismissViewControllerAnimated:YES completion:nil];
+               [weakSelf dismissViewControllerAnimated:YES completion:nil];
+             } else {
+               weakSelf.barcodeTextField.text = username;
+               weakSelf.PINTextField.text = PIN;
+               [weakSelf updateLoginLogoutCellAppearance];
+               self.isLoggingInAfterSignUp = YES;
+               [weakSelf logIn];
+             }
+           }];
+        
+        UINavigationController *const navigationController =
+          [CardCreator initialNavigationControllerWithConfiguration:configuration];
+        navigationController.navigationBar.topItem.leftBarButtonItem =
+          [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                           style:UIBarButtonItemStylePlain
+                                          target:self
+                                          action:@selector(didSelectCancelForSignUp)];
+        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:navigationController animated:YES completion:nil];
+      }
+      else
+      {
+        
+        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:currentAccount.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+        
+        UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webViewController];
+       
+        navigationController.navigationBar.topItem.leftBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil)
                                          style:UIBarButtonItemStylePlain
                                         target:self
                                         action:@selector(didSelectCancelForSignUp)];
-      navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-      [self presentViewController:navigationController animated:YES completion:nil];
+        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:navigationController animated:YES completion:nil];
+
+        
+      }
       break;
     }
   }
@@ -446,14 +467,21 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
+- (BOOL)registrationIsPossible
+{
+  return ([NYPLConfiguration cardCreationEnabled] &&
+          ([[AccountsManager sharedInstance] currentAccount].supportsCardCreator || [[AccountsManager sharedInstance] currentAccount].cardCreatorUrl) &&
+          ![[NYPLAccount sharedAccount] hasBarcodeAndPIN]);
+}
+
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN] || ![NYPLConfiguration cardCreationEnabled]) {
-    // No registration is possible.
-    return 3;
-  } else {
-    // Registration is possible.
+  if([self registrationIsPossible]) {
+    // registration is possible.
     return 4;
+  } else {
+    // no Registration is possible.
+    return 3;
   }
 }
 
