@@ -194,6 +194,7 @@ didFinishDownloadingToURL:(NSURL *const)location
           [foo removeLastObject];
           NSString *first = [foo componentsJoinedByString:@"|"];
 
+          NYPLLOG(book.licensor);
           NYPLLOG(first);
           NYPLLOG(last);
           
@@ -201,6 +202,7 @@ didFinishDownloadingToURL:(NSURL *const)location
            authorizeWithVendorID:book.licensor[@"vendor"]
            username:first
            password:last
+           userID:[[NYPLAccount sharedAccount] userID] deviceID:[[NYPLAccount sharedAccount] deviceID]
            completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
              
              if (success)

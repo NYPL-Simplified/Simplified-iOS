@@ -295,7 +295,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
     [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
     
-    [[NYPLAccount sharedAccount:self.accountType] removeBarcodeAndPIN];
+    [[NYPLAccount sharedAccount:self.accountType] removeAll];
     [self setupTableData];
     [self.tableView reloadData];
   };
@@ -325,10 +325,10 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
        [foo removeLastObject];
        NSString *first = [foo componentsJoinedByString:@"|"];
 
-//       first = @"NYBKLYN|1481838079|b621ba66-c2fc-11e6-a8cc-0e93cef2de1e";
-//       last = @"8dpMiqNisnkYHcNvl4DFv47cw+e8dMhBuP35ptno4ko=\n";
+       NYPLLOG([[NYPLAccount sharedAccount:self.accountType] licensor]);
+       NYPLLOG(first);
+       NYPLLOG(last);
 
-       
        [[NYPLADEPT sharedInstance]
         deauthorizeWithUsername:first
         password:last
@@ -342,11 +342,36 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
             // is only a temporary measure and we'll switch to deauthorizing with
             // a token that will remain invalid indefinitely in the near future.
             NYPLLOG(@"Failed to deauthorize successfully.");
+            
+           [[NYPLADEPT sharedInstance]
+            deauthorizeWithUsername:[[NYPLAccount sharedAccount] barcode]
+            password:[[NYPLAccount sharedAccount] PIN]
+            userID:[[NYPLAccount sharedAccount] userID] deviceID:[[NYPLAccount sharedAccount] deviceID]
+            completion:^(BOOL success, __unused NSError *error) {
+              if(!success) {
+                // Even though we failed, all we do is log the error. The reason is
+                // that we want the user to be able to log out anyway because the
+                // failure is probably due to bad credentials and we do not want the
+                // user to have to change their barcode or PIN just to log out. This
+                // is only a temporary measure and we'll switch to deauthorizing with
+                // a token that will remain invalid indefinitely in the near future.
+                NYPLLOG(@"Failed to deauthorize successfully.");
+              }
+              [self removeActivityTitle];
+              [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+              afterDeauthorization();
+
+            }];
+
           }
-          [self removeActivityTitle];
-          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-          afterDeauthorization();
+          else
+          {
+            [self removeActivityTitle];
+            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+            afterDeauthorization();
+          }
         }];
+       
      } else {
        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
          [self removeActivityTitle];
@@ -393,27 +418,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
      
      // Success.
      if(statusCode == 200) {
-       
-       
-       //AM_FIXME
-       
-       //#if defined(FEATURE_DRM_CONNECTOR)
-       //         [[NYPLADEPT sharedInstance]
-       //          authorizeWithVendorID:@"NYPL"
-       //          username:self.barcodeTextField.text
-       //          password:self.PINTextField.text
-       //          completion:^(BOOL success, NSError *error) {
-       //            [self authorizationAttemptDidFinish:success error:error];
-       //          }];
-       //#else
        [self authorizationAttemptDidFinish:YES error:nil];
-       //#endif
-       
-       
-       
-       
-       
-       
        self.isLoggingInAfterSignUp = NO;
        return;
      }

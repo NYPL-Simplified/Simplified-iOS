@@ -252,32 +252,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindLogInSignOut:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-        UIAlertController *const alertController =
-          (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
-           ? [UIAlertController
-              alertControllerWithTitle:NSLocalizedString(@"SignOut", nil)
-              message:NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
-              preferredStyle:UIAlertControllerStyleAlert]
-           : [UIAlertController
-              alertControllerWithTitle:
-                NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
-              message:nil
-              preferredStyle:UIAlertControllerStyleActionSheet]);
-        [alertController addAction:[UIAlertAction
-                                    actionWithTitle:NSLocalizedString(@"SignOut", nil)
-                                    style:UIAlertActionStyleDestructive
-                                    handler:^(__attribute__((unused)) UIAlertAction *action) {
-                                      [self logOut];
-                                    }]];
-        [alertController addAction:[UIAlertAction
-                                    actionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                    style:UIAlertActionStyleCancel
-                                    handler:nil]];
-        [self presentViewController:alertController animated:YES completion:nil];
-      } else {
-        [self logIn];
-      }
+      [self logIn];
       break;
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -674,68 +649,6 @@ replacementString:(NSString *)string
   [self validateCredentials];
 }
 
-- (void)logOut
-{
-  void (^afterDeauthorization)() = ^() {
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset];
-    [[NYPLBookRegistry sharedRegistry] reset];
-    [[NYPLAccount sharedAccount] removeBarcodeAndPIN];
-    [self.tableView reloadData];
-  };
-  
-#if defined(FEATURE_DRM_CONNECTOR)
-  if([NYPLADEPT sharedInstance].workflowsInProgress) {
-    [self presentViewController:[NYPLAlertController
-                                 alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
-                                 message:@"SettingsAccountViewControllerCannotLogOutMessage"]
-                       animated:YES
-                     completion:nil];
-    return;
-  }
-  
-  [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-  
-  [[NYPLReachability sharedReachability]
-   reachabilityForURL:[NYPLConfiguration mainFeedURL]
-   timeoutInternal:5.0
-   handler:^(BOOL reachable) {
-     if(reachable) {
-       [[NYPLADEPT sharedInstance]
-        deauthorizeWithUsername:[[NYPLAccount sharedAccount] barcode]
-        password:[[NYPLAccount sharedAccount] PIN]
-        userID:[[NYPLAccount sharedAccount] userID] deviceID:[[NYPLAccount sharedAccount] deviceID]
-        completion:^(BOOL success, __unused NSError *error) {
-          if(!success) {
-            // Even though we failed, all we do is log the error. The reason is
-            // that we want the user to be able to log out anyway because the
-            // failure is probably due to bad credentials and we do not want the
-            // user to have to change their barcode or PIN just to log out. This
-            // is only a temporary measure and we'll switch to deauthorizing with
-            // a token that will remain invalid indefinitely in the near future.
-            NYPLLOG(@"Failed to deauthorize successfully.");
-          }
-          [self removeActivityTitle];
-          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-          afterDeauthorization();
-        }];
-     } else {
-       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         [self removeActivityTitle];
-         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-         [self presentViewController:[NYPLAlertController
-                                      alertWithTitle:@"SettingsAccountViewControllerLogoutFailed"
-                                      message:@"TimedOut"]
-                            animated:YES
-                          completion:nil];
-       }];
-     }
-   }];
-#else
-  afterDeauthorization();
-#endif
-}
-
 - (void)setActivityTitleWithText:(NSString *)text
 {
   UIActivityIndicatorView *const activityIndicatorView =
@@ -795,17 +708,7 @@ replacementString:(NSString *)string
        
        // Success.
        if(statusCode == 200) {
-//#if defined(FEATURE_DRM_CONNECTOR)
-//         [[NYPLADEPT sharedInstance]
-//          authorizeWithVendorID:@"NYPL"
-//          username:self.barcodeTextField.text
-//          password:self.PINTextField.text
-//          completion:^(BOOL success, NSError *error) {
-//            [self authorizationAttemptDidFinish:success error:error];
-//          }];
-//#else
          [self authorizationAttemptDidFinish:YES error:nil];
-//#endif
          self.isLoggingInAfterSignUp = NO;
          return;
        }

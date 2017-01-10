@@ -82,43 +82,6 @@
   self.viewController.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
-- (void)deactivateDevice
-{
-  Account *account = [[AccountsManager sharedInstance] currentAccount];
-  
-  if (account.needsAuth && [[NYPLAccount sharedAccount:account.id] hasBarcodeAndPIN] && [[NYPLAccount sharedAccount:account.id] hasLicensor])
-  {
-    NSMutableArray* foo = [[[[NYPLAccount sharedAccount:account.id] licensor][@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
-
-    NSString *last = foo.lastObject;
-    [foo removeLastObject];
-    NSString *first = [foo componentsJoinedByString:@"|"];
-    
-    NYPLLOG([[NYPLAccount sharedAccount:account.id] licensor]);
-    NYPLLOG(first);
-    NYPLLOG(last);
-    
-    [[NYPLADEPT sharedInstance]
-     deauthorizeWithUsername:first
-     password:last
-     userID:[[NYPLAccount sharedAccount:account.id] userID] deviceID:[[NYPLAccount sharedAccount:account.id] deviceID]
-     completion:^(BOOL success, __unused NSError *error) {
-       if(!success) {
-         // Even though we failed, all we do is log the error. The reason is
-         // that we want the user to be able to log out anyway because the
-         // failure is probably due to bad credentials and we do not want the
-         // user to have to change their barcode or PIN just to log out. This
-         // is only a temporary measure and we'll switch to deauthorizing with
-         // a token that will remain invalid indefinitely in the near future.
-         NYPLLOG(@"Failed to deauthorize successfully.");
-       }
-       
-       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-       
-     }];
-  }
-
-}
 - (void)switchLibrary
 {
   
@@ -203,10 +166,14 @@
     NYPLLOG(first);
     NYPLLOG(last);
     
+//    first = @"23333999999918";
+//    last = @"1914";
+
     [[NYPLADEPT sharedInstance]
      authorizeWithVendorID:[[NYPLAccount sharedAccount:account.id] licensor][@"vendor"]
      username:first
      password:last
+     userID:[[NYPLAccount sharedAccount:account.id] userID] deviceID:[[NYPLAccount sharedAccount:account.id] deviceID]
      completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
        
        NYPLLOG(error);

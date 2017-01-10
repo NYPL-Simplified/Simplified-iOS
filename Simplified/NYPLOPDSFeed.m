@@ -199,6 +199,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
              authorizeWithVendorID:[[NYPLAccount sharedAccount:currentAccount.id] licensor][@"vendor"]
              username:first
              password:last
+             userID:[[NYPLAccount sharedAccount:currentAccount.id] userID] deviceID:[[NYPLAccount sharedAccount:currentAccount.id] deviceID]
              completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
                
                NYPLLOG(error);
