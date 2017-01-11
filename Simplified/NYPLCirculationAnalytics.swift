@@ -32,13 +32,10 @@ final class NYPLCirculationAnalytics : NSObject {
 
     let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
       
-      guard let response = response as? HTTPURLResponse else {
-        print("Invalid response from server. Error: \(error?.localizedDescription)")
-        return
-      }
-      
-      if (response.statusCode == 200) {
+      let response = response as? HTTPURLResponse
+      if (error == nil && response?.statusCode == 200) {
         self.retryOfflineAnalyticsQueueRequests()
+        print("upload success")
       } else {
         guard let error = error as? NSError else { return }
         if offlineQueueStatusCodes.contains(error.code) {
@@ -52,12 +49,12 @@ final class NYPLCirculationAnalytics : NSObject {
   
   class func retryOfflineAnalyticsQueueRequests() -> Void
   {
-    let queue = NYPLSettings.shared().offlineQueue as! [[String]]
-    NYPLSettings.shared().offlineQueue = nil
-    
-    if !queue.isEmpty {
-      for queuedEvent in queue {
-        post(queuedEvent[0], withURL: URL.init(string: queuedEvent[1])!)
+    if let queue = NYPLSettings.shared().offlineQueue as? [[String]] {
+      NYPLSettings.shared().offlineQueue = nil
+      if !queue.isEmpty {
+        for queuedEvent in queue {
+          post(queuedEvent[0], withURL: URL.init(string: queuedEvent[1])!)
+        }
       }
     }
   }
