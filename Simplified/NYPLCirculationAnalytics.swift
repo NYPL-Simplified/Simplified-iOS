@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 let MaxOfflineQueueSize = 30
@@ -14,7 +13,7 @@ let offlineQueueStatusCodes = [NSURLErrorTimedOut,
                                NSURLErrorSecureConnectionFailed]
 
 /// This class encapsulates analytic events sent to the server
-/// and keeps a local queue of failed attempts to update them
+/// and keeps a local queue of failed attempts to retry them
 /// at a later time.
 final class NYPLCirculationAnalytics : NSObject {
 
@@ -28,27 +27,27 @@ final class NYPLCirculationAnalytics : NSObject {
   
   private class func post(_ event: String, withURL url: URL) -> Void
   {
-    // iOS 8 not supported by Alamofire 4
-    if floor(NSFoundationVersionNumber) < NSFoundationVersionNumber_iOS_9_0 {
-      return;
+    var request = URLRequest(url: url)
+    request.httpMethod = "GET"
+
+    let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
+      
+      guard let response = response as? HTTPURLResponse else {
+        print("Invalid response from server. Error: \(error?.localizedDescription)")
+        return
+      }
+      
+      if (response.statusCode == 200) {
+        self.retryOfflineAnalyticsQueueRequests()
+      } else {
+        guard let error = error as? NSError else { return }
+        if offlineQueueStatusCodes.contains(error.code) {
+          self.addToOfflineAnalyticsQueue(event, url)
+          print("Analytic Event Added to OfflineQueue. Response Error: \(error.localizedDescription)")
+        }
+      }
     }
-    
-    Alamofire.request(url,
-                      method: .get,
-                      parameters: nil,
-                      encoding: JSONEncoding.default,
-                      headers: nil).responseData { response in
-                        
-                        if response.result.isSuccess {
-                          self.retryOfflineAnalyticsQueueRequests()
-                        } else {
-                          guard let error = response.result.error as? NSError else { return }
-                          if offlineQueueStatusCodes.contains(error.code) {
-                            self.addToOfflineAnalyticsQueue(event, url)
-//                            print("Analytic Event Added to OfflineQueue. Response Error: \(response.result.error?.localizedDescription)")
-                          }
-                        }
-                      }
+    dataTask.resume()
   }
   
   class func retryOfflineAnalyticsQueueRequests() -> Void
