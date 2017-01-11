@@ -166,9 +166,6 @@
     NYPLLOG(first);
     NYPLLOG(last);
     
-//    first = @"23333999999918";
-//    last = @"1914";
-
     [[NYPLADEPT sharedInstance]
      authorizeWithVendorID:[[NYPLAccount sharedAccount:account.id] licensor][@"vendor"]
      username:first
@@ -184,27 +181,6 @@
          [[NYPLAccount sharedAccount:account.id] setDeviceID:deviceID];
          [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
        }
-       else{
-         
-         
-         // show alert Temporary, needs to be replaced or removed.
-         
-         
-//         NYPLAlertController *alertCont = [NYPLAlertController
-//                                           alertControllerWithTitle:NSLocalizedString(@"Error", nil)
-//                                           message:error.userInfo[@"originalCode"]
-//                                           preferredStyle:UIAlertControllerStyleAlert];
-//         
-//         [alertCont addAction: [UIAlertAction actionWithTitle:@"OK"
-//                                                        style:UIAlertActionStyleDefault
-//                                                      handler:nil]];
-//         
-//         
-//         [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
-
-         
-       }
-      
        
      }];
   }
