@@ -12,5 +12,4 @@
 // designated initializer
 - (instancetype)init;
 - (void)reloadSelectedLibraryAccount;
-- (void)deactivateDevice;
 @end
