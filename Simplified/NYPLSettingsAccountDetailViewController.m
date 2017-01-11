@@ -343,33 +343,10 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
             // a token that will remain invalid indefinitely in the near future.
             NYPLLOG(@"Failed to deauthorize successfully.");
             
-           [[NYPLADEPT sharedInstance]
-            deauthorizeWithUsername:[[NYPLAccount sharedAccount] barcode]
-            password:[[NYPLAccount sharedAccount] PIN]
-            userID:[[NYPLAccount sharedAccount] userID] deviceID:[[NYPLAccount sharedAccount] deviceID]
-            completion:^(BOOL success, __unused NSError *error) {
-              if(!success) {
-                // Even though we failed, all we do is log the error. The reason is
-                // that we want the user to be able to log out anyway because the
-                // failure is probably due to bad credentials and we do not want the
-                // user to have to change their barcode or PIN just to log out. This
-                // is only a temporary measure and we'll switch to deauthorizing with
-                // a token that will remain invalid indefinitely in the near future.
-                NYPLLOG(@"Failed to deauthorize successfully.");
-              }
-              [self removeActivityTitle];
-              [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-              afterDeauthorization();
-
-            }];
-
           }
-          else
-          {
-            [self removeActivityTitle];
-            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-            afterDeauthorization();
-          }
+          [self removeActivityTitle];
+          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+          afterDeauthorization();
         }];
        
      } else {
