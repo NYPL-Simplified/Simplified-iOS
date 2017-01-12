@@ -3,6 +3,7 @@
 #import "NYPLHoldsNavigationController.h"
 #import "NYPLSettings.h"
 #import "NYPLAccount.h"
+#import "NYPLAlertController.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogFeedViewController.h"
 #import "NYPLConfiguration.h"
@@ -11,6 +12,9 @@
 #import "NYPLSettingsPrimaryTableViewController.h"
 #import "SimplyE-Swift.h"
 
+#if defined(FEATURE_DRM_CONNECTOR)
+#import <ADEPT/ADEPT.h>
+#endif
 
 @implementation NYPLHoldsNavigationController
 
@@ -69,9 +73,23 @@
   for (int i = 0; i < (int)accounts.count; i++) {
     Account *account = [[AccountsManager sharedInstance] account:[accounts[i] intValue]];
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+#if defined(FEATURE_DRM_CONNECTOR)
+      if([NYPLADEPT sharedInstance].workflowsInProgress) {
+        [self presentViewController:[NYPLAlertController
+                                     alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
+                                     message:@"SettingsAccountViewControllerCannotLogOutMessage"]
+                           animated:YES
+                         completion:nil];
+      } else {
+        [[NYPLBookRegistry sharedRegistry] save];
+        [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+        [self reloadSelected];
+      }
+#else
       [[NYPLBookRegistry sharedRegistry] save];
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
       [self reloadSelected];
+#endif
     }]];
   }
   
