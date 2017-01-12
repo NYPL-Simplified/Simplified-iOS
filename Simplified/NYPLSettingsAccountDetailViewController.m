@@ -735,7 +735,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleValue1
                                      reuseIdentifier:nil];
       self.registrationCell.textLabel.font = [UIFont systemFontOfSize:17];
-      self.registrationCell.textLabel.text = @"Dont't have a library card?";
+      self.registrationCell.textLabel.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
       self.registrationCell.detailTextLabel.font = [UIFont systemFontOfSize:17];
       self.registrationCell.detailTextLabel.text = NSLocalizedString(@"SignUp", nil);
       self.registrationCell.detailTextLabel.textColor = [NYPLConfiguration mainColor];
