@@ -88,7 +88,7 @@
   
   NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
 
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Pick Your Library" message:nil preferredStyle:(UIAlertControllerStyleActionSheet)];
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"PickYourLibrary", nil) message:nil preferredStyle:(UIAlertControllerStyleActionSheet)];
   alert.popoverPresentationController.barButtonItem = viewController.navigationItem.leftBarButtonItem;
   alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
   
@@ -117,7 +117,7 @@
     }]];
   }
   
-  [alert addAction:[UIAlertAction actionWithTitle:@"Manage Accounts" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"ManageAccounts", nil) style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
     NSUInteger tabCount = [[[NYPLRootTabBarController sharedController] viewControllers] count];
     UISplitViewController *splitViewVC = [[[NYPLRootTabBarController sharedController] viewControllers] lastObject];
     UINavigationController *masterNavVC = [[splitViewVC viewControllers] firstObject];
@@ -127,7 +127,7 @@
     [tableVC.delegate settingsPrimaryTableViewController:tableVC didSelectItem:NYPLSettingsPrimaryTableViewControllerItemAccount];
   }]];
 
-  [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:(UIAlertActionStyleCancel) handler:nil]];
+  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:(UIAlertActionStyleCancel) handler:nil]];
 
   [[NYPLRootTabBarController sharedController]
    safelyPresentViewController:alert
