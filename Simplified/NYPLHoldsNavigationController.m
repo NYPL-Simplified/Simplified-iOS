@@ -76,8 +76,8 @@
 #if defined(FEATURE_DRM_CONNECTOR)
       if([NYPLADEPT sharedInstance].workflowsInProgress) {
         [self presentViewController:[NYPLAlertController
-                                     alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
-                                     message:@"SettingsAccountViewControllerCannotLogOutMessage"]
+                                     alertWithTitle:@"PleaseWait"
+                                     message:@"PleaseWaitMessage"]
                            animated:YES
                          completion:nil];
       } else {
@@ -122,12 +122,9 @@
   [[NYPLBookRegistry sharedRegistry] justLoad];
 
   NYPLCatalogNavigationController * catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
-  
   [catalog reloadSelectedLibraryAccount];
   
-  
   NYPLHoldsViewController *viewController = (NYPLHoldsViewController *)self.visibleViewController;
-  
   viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
   viewController.navigationItem.leftBarButtonItem.enabled = NO;
 
