@@ -161,8 +161,6 @@
 		B594C7561BB06F40000028F5 /* HelpStackTheme.plist in Resources */ = {isa = PBXBuildFile; fileRef = B594C7551BB06F40000028F5 /* HelpStackTheme.plist */; };
 		B5ED41DA1B8F6E2E009FC164 /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */; };
 		E15AF04E809009612AA10D16 /* libPods-SimplyETests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEEC686A5C71AFACFAC2A884 /* libPods-SimplyETests.a */; };
-		E63159CA1E282A5B00BC1924 /* NYPLAnnotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63159C91E282A5B00BC1924 /* NYPLAnnotations.swift */; };
-		E63159D01E282A6A00BC1924 /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63159CF1E282A6A00BC1924 /* NYPLCirculationAnalytics.swift */; };
 		E677F8B31DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E677F8B21DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m */; };
 		E6CA8E421DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CA8E411DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.m */; };
 		E6CA8E571DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CA8E561DCA664F00FE93B4 /* NYPLSettingsContentLicenseViewController.m */; };
@@ -512,8 +510,6 @@
 		BEEC686A5C71AFACFAC2A884 /* libPods-SimplyETests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SimplyETests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Simplified+RMSDK.xcconfig"; sourceTree = "<group>"; };
 		CAE35BC11B86308D00BF9BC5 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
-		E63159C91E282A5B00BC1924 /* NYPLAnnotations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAnnotations.swift; sourceTree = "<group>"; };
-		E63159CF1E282A6A00BC1924 /* NYPLCirculationAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLCirculationAnalytics.swift; sourceTree = "<group>"; };
 		E677F8B11DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsLicensesTableViewController.h; sourceTree = "<group>"; };
 		E677F8B21DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsLicensesTableViewController.m; sourceTree = "<group>"; };
 		E6CA8E401DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsPrivacyPolicyViewController.h; sourceTree = "<group>"; };
@@ -565,14 +561,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0345BFE31DBF010100398B6F /* Annotations */ = {
-			isa = PBXGroup;
-			children = (
-				E63159C91E282A5B00BC1924 /* NYPLAnnotations.swift */,
-			);
-			name = Annotations;
-			sourceTree = "<group>";
-		};
 		0345BFEE1DBF031B00398B6F /* CardCreator */ = {
 			isa = PBXGroup;
 			children = (
@@ -943,7 +931,6 @@
 		A823D816192BABA400B55DE2 /* Simplified */ = {
 			isa = PBXGroup;
 			children = (
-				0345BFE31DBF010100398B6F /* Annotations */,
 				110AF8891961D66C004887C3 /* Additions */,
 				0345BFEE1DBF031B00398B6F /* CardCreator */,
 				110AF8901961D822004887C3 /* Book */,
@@ -962,7 +949,6 @@
 				114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */,
 				A4E254F81B0E610900193FE4 /* NYPLBasicAuth.h */,
 				A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */,
-				E63159CF1E282A6A00BC1924 /* NYPLCirculationAnalytics.swift */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
 				111197321986D7550014462F /* NYPLDismissibleViewController.h */,
@@ -1484,9 +1470,7 @@
 				11C5DCF51976D22F005A9945 /* NYPLHoldsViewController.m in Sources */,
 				A823D821192BABA400B55DE2 /* NYPLAppDelegate.m in Sources */,
 				112C684F19EF003300106973 /* NYPLCatalogFacetGroup.m in Sources */,
-				E63159D01E282A6A00BC1924 /* NYPLCirculationAnalytics.swift in Sources */,
 				085D31DF1BE3CD3C007F7672 /* NSURLRequest+NYPLURLRequestAdditions.m in Sources */,
-				E63159CA1E282A5B00BC1924 /* NYPLAnnotations.swift in Sources */,
 				11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */,
 				118A0B1B19915BDF00792DDE /* NYPLCatalogSearchViewController.m in Sources */,
 				A4E254FA1B0E610900193FE4 /* NYPLBasicAuth.m in Sources */,
