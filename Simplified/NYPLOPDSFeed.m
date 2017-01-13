@@ -22,7 +22,7 @@
 @property (nonatomic) NYPLOPDSFeedType type;
 @property (nonatomic) BOOL typeIsCached;
 @property (nonatomic) NSDate *updated;
-@property (nonatomic) NSDictionary *licensor;
+@property (nonatomic) NSMutableDictionary *licensor;
 
 @end
 
@@ -171,12 +171,31 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     if (licensorXML && licensorXML.attributes.allValues.count>0) {
       NSString *vendor = licensorXML.attributes[@"drm:vendor"];
       NYPLXML *vendorXML = [licensorXML firstChildWithName:@"clientToken"];
-      if (vendorXML) {
-        NSString *clientToken = vendorXML.value;
-        
-        self.licensor = @{@"vendor":vendor,
-                          @"clientToken":clientToken};
-        
+      
+     if (vendorXML) {
+       
+       NSString *clientToken = vendorXML.value;
+       
+       self.licensor = @{@"vendor":vendor,
+                         @"clientToken":clientToken}.mutableCopy;
+
+       
+      for(NYPLXML *const linkXML in [licensorXML childrenWithName:@"link"]) {
+        NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
+        if(!link) {
+          NYPLLOG(@"Ignoring malformed 'link' element.");
+          continue;
+        }
+        if ([link.rel isEqualToString:@"http://librarysimplified.org/terms/drm/rel/devices"])
+        {
+          [self.licensor setValue:link.href.absoluteString forKey:@"deviceManager"];
+          continue;
+        }
+      }
+      
+      
+      
+       
         Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
         [[NYPLAccount sharedAccount:currentAccount.id] setLicensor:self.licensor];
         
@@ -208,6 +227,11 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
                  [[NYPLAccount sharedAccount:currentAccount.id] setUserID:userID];
                  [[NYPLAccount sharedAccount:currentAccount.id] setDeviceID:deviceID];
                  
+                 // POST deviceID to adobeDevicesLink
+                 NSURL *deviceManager = [NSURL URLWithString: [[NYPLAccount sharedAccount:currentAccount.id] licensor][@"deviceManager"]];
+                 if (deviceManager != nil) {
+                   [NYPLDeviceManager postDevice:deviceID url:deviceManager];
+                 }
                }
                
              }];

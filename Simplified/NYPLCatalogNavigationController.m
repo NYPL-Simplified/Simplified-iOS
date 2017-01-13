@@ -194,6 +194,13 @@
          [[NYPLAccount sharedAccount:account.id] setUserID:userID];
          [[NYPLAccount sharedAccount:account.id] setDeviceID:deviceID];
          [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+         
+         // POST deviceID to adobeDevicesLink
+         NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:account.id] licensor][@"deviceManager"]];
+         if (deviceManager != nil) {
+           [NYPLDeviceManager postDevice:deviceID url:deviceManager];
+         }
+
        }
        
      }];
