@@ -30,7 +30,7 @@ final class NYPLAnnotations: NSObject {
 //      
 //      let url = NYPLConfiguration.mainFeedURL().appendingPathComponent("annotations/")
 //      
-//      postJSONRequest(url, parameters, NYPLAnnotations.authorizationHeader, nil)
+//      postJSONRequest(url, parameters, NYPLAnnotations.headers)
 //    }
   }
   
@@ -39,41 +39,37 @@ final class NYPLAnnotations: NSObject {
 //    syncLastRead(book, completionHandler: completionHandler)
   }
   
-  private class func postJSONRequest(_ url: URL, _ parameters: [String:Any], _ authHeader: String?, _ additionalHeaders: [String:String]?)
+  private class func postJSONRequest(_ url: URL, _ parameters: [String:Any], _ headers: [String:String]?)
   {
 
     //FIXME: this network code needs to be tested before being re-implemented. Alamofire was removed. Remove this comment after turning annotations/sync back on.
     
-//    let config = URLSessionConfiguration()
-//    if additionalHeaders != nil {
-//      config.httpAdditionalHeaders = additionalHeaders
-//    }
-//
 //    let jsonData: Data?
 //    do {
 //      jsonData = try JSONSerialization.data(withJSONObject: parameters)
 //    } catch {
-//      jsonData = nil
-//      print("Could not create JSON data from given parameters")
+//      print("Network request abandoned: Could not create JSON from given parameters")
+//      return
 //    }
 //    
 //    var request = URLRequest(url: url)
 //    request.httpMethod = "POST"
 //    request.httpBody = jsonData
-//    if let value = authHeader {
-//      request.setValue(value, forHTTPHeaderField: "Authorization")
+//    
+//    if let headers = headers {
+//      for (headerKey, headerValue) in headers {
+//        request.setValue(headerValue, forHTTPHeaderField: headerKey)
+//      }
 //    }
-//
-//    let session = URLSession.init(configuration: config)
-//    let task = session.dataTask(with: request) { (data, response, error) in
-//      
+//    
+//    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
 //      guard let response = response as? HTTPURLResponse else { return }
 //      if response.statusCode == 200 {
 //        print("Post Last-Read: Success")
 //      } else {
 //        guard let error = error as? NSError else { return }
 //        if offlineQueueStatusCodes.contains(error.code) {
-//          self.addToOfflineAnnotationsQueue(url, parameters, additionalHeaders)
+//          self.addToOfflineAnnotationsQueue(url, parameters)
 //          print("Last Read Position Added to OfflineQueue. Response Error: \(error.localizedDescription)")
 //        }
 //      }
@@ -82,7 +78,7 @@ final class NYPLAnnotations: NSObject {
 //    task.resume()
   }
   
-  private class func addToOfflineAnnotationsQueue(_ url: URL, _ parameters: [String:Any], _ additionalHeaders: [String:String]?)
+  private class func addToOfflineAnnotationsQueue(_ url: URL, _ parameters: [String:Any])
   {
 //    var queue = NYPLSettings.shared().annotationsOfflineQueue as! [[Any]]
 //    
@@ -96,11 +92,11 @@ final class NYPLAnnotations: NSObject {
 //        let urlString = queueEntry[0] as! String
 //        if urlString == url.absoluteString {
 //          queue.remove(at: i)
-//          print("Replacing older offline queue entry")
+////          print("Replacing older offline queue entry")
 //        }
 //      }
 //    }
-//    let newRow = [url.absoluteString as Any, parameters, additionalHeaders as Any] as [Any]
+//    let newRow = [url.absoluteString, parameters] as [Any]
 //    queue.append(newRow)
 //    
 //    NYPLSettings.shared().annotationsOfflineQueue = queue
@@ -114,7 +110,7 @@ final class NYPLAnnotations: NSObject {
 //    if !queue.isEmpty {
 //      for queuedEvent in queue {
 //        let url = URL.init(string: queuedEvent[0] as! String)!
-//        postJSONRequest(url, queuedEvent[1] as! [String : Any], NYPLAnnotations.authorizationHeader, (queuedEvent[2] as! [String : String]))
+//        postJSONRequest(url, queuedEvent[1] as! [String : Any], NYPLAnnotations.headers)
 //      }
 //    }
   }
@@ -130,7 +126,10 @@ final class NYPLAnnotations: NSObject {
 //        
 //        var request = URLRequest(url: book.annotationsURL)
 //        request.httpMethod = "GET"
-//        request.setValue(NYPLAnnotations.authorizationHeader, forHTTPHeaderField: "Authorization")
+//        
+//        for (headerKey, headerValue) in NYPLAnnotations.headers {
+//          request.setValue(headerValue, forHTTPHeaderField: headerKey)
+//        }
 //        
 //        let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
 //          
@@ -178,12 +177,12 @@ final class NYPLAnnotations: NSObject {
 //    }
   }
   
-  private class var authorizationHeader: String
+  private class var headers: [String:String]
   {
     let authenticationString = "\(NYPLAccount.shared().barcode!):\(NYPLAccount.shared().pin!)"
     let authenticationData:Data = authenticationString.data(using: String.Encoding.ascii)!
     let authenticationValue = "Basic \(authenticationData.base64EncodedString(options: Data.Base64EncodingOptions.lineLength64Characters)))"
     
-    return "\(authenticationValue)"
+    return ["Authentication" : "\(authenticationValue)"]
   }
 }
