@@ -539,7 +539,105 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   ", [NYPLConfiguration backgroundMediaOverlayHighlightColor].javascriptHexString] ;
   
   [self sequentiallyEvaluateJavaScript:javascript];
-  [self syncLastReadingPosition];
+  //Currently Disabled
+//  [self syncLastReadingPosition];
+}
+
+- (void)syncLastReadingPosition
+{
+  NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
+  dictionary[@"package"] = self.package.dictionary;
+  dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
+  NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry]
+                                      locationForIdentifier:self.book.identifier];
+  
+  [self syncLastReadingPosition:dictionary andLocation:location andBook:self.book];
+}
+- (void)syncLastReadingPosition:(NSMutableDictionary *const)dictionary andLocation:(NYPLBookLocation *const)location andBook:(NYPLBook *const)book
+{
+  [NYPLAnnotations sync:book completionHandler:^(NSString * _Nullable responseObject, NSError * _Nullable error) {
+    
+    if (error)
+    {
+      return;
+    }
+    
+    NSString* serverLocationString;
+    NSString* currentLocationString;
+    UIAlertController *alertController;
+    
+    if (responseObject != nil)
+    {
+      NSDictionary *responsJson = [NSJSONSerialization JSONObjectWithData:[responseObject dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
+      serverLocationString = responseObject;
+      currentLocationString = location.locationString;
+      NYPLLOG_F(@"serverLocationString %@",serverLocationString);
+      NYPLLOG_F(@"currentLocationString %@",currentLocationString);
+      NSDictionary *spineItemDetails = self.bookMapDictionary[responsJson[@"idref"]];
+      NSString * message=[NSString stringWithFormat:@"Would you like to go to the latest page read?\n\nChapter:\n\"%@\"",spineItemDetails[@"tocElementTitle"]];
+      
+      alertController = [UIAlertController alertControllerWithTitle:@"Sync Reading Position"
+                                                            message:message
+                                                     preferredStyle:UIAlertControllerStyleAlert];
+      
+      [alertController addAction:
+       [UIAlertAction actionWithTitle:NSLocalizedString(@"NO", nil)
+                                style:UIAlertActionStyleCancel
+                              handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
+                                
+                                self.postLastRead = YES;
+                                
+                              }]];
+      
+      [alertController addAction:
+       [UIAlertAction actionWithTitle:NSLocalizedString(@"YES", nil)
+                                style:UIAlertActionStyleDefault
+                              handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
+                                
+                                self.postLastRead = YES;
+                                NSDictionary *const locationDictionary =
+                                NYPLJSONObjectFromData([serverLocationString dataUsingEncoding:NSUTF8StringEncoding]);
+                                
+                                NSString *contentCFI = locationDictionary[@"contentCFI"];
+                                if (!contentCFI) {
+                                  contentCFI = @"";
+                                }
+                                dictionary[@"openPageRequest"] =
+                                @{@"idref": locationDictionary[@"idref"], @"elementCfi": contentCFI};
+                                
+                                
+                                NSData *data = NYPLJSONDataFromObject(dictionary);
+                                
+                                [self sequentiallyEvaluateJavaScript:
+                                 [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
+                                  [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
+                                
+                                NYPLLOG(@"opened server book location");
+                                
+                              }]];
+      
+    }
+    
+    if ((currentLocationString == nil && serverLocationString == nil) || (currentLocationString != nil && serverLocationString == nil))
+    {
+      self.postLastRead = YES;
+    }
+    else if (currentLocationString == nil && currentLocationString != nil)
+    {
+      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
+      
+    }
+    else if (![currentLocationString isEqualToString:serverLocationString])
+    {
+      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
+      
+    }
+    else
+    {
+      self.postLastRead = YES;
+    }
+    
+  }];
 }
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary

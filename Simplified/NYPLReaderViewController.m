@@ -415,7 +415,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)syncLastRead
 {
-  [[NYPLReaderSettings sharedSettings].currentReaderReadiumView syncLastReadingPosition];
+//  [[NYPLReaderSettings sharedSettings].currentReaderReadiumView syncLastReadingPosition];
 }
 
 - (void)viewDidAppear:(BOOL)animated
