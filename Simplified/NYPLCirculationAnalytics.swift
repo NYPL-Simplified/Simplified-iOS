@@ -35,12 +35,12 @@ final class NYPLCirculationAnalytics : NSObject {
       let response = response as? HTTPURLResponse
       if (error == nil && response?.statusCode == 200) {
         self.retryOfflineAnalyticsQueueRequests()
-        print("upload success")
+//        print("upload success")
       } else {
         guard let error = error as? NSError else { return }
         if offlineQueueStatusCodes.contains(error.code) {
           self.addToOfflineAnalyticsQueue(event, url)
-          print("Analytic Event Added to OfflineQueue. Response Error: \(error.localizedDescription)")
+          print("Analytics Upload Queued. Response Error: \(error.localizedDescription)")
         }
       }
     }
