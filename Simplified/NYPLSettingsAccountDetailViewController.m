@@ -341,6 +341,16 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
             NYPLLOG(@"Failed to deauthorize successfully.");
             
           }
+          else {
+            
+            // DELETE deviceID to adobeDevicesLink
+            NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:self.accountType] licensor][@"deviceManager"]];
+            if (deviceManager != nil) {
+              [NYPLDeviceManager deleteDevice:[[NYPLAccount sharedAccount:self.accountType] deviceID] url:deviceManager];
+            }
+
+          }
+          
           [self removeActivityTitle];
           [[UIApplication sharedApplication] endIgnoringInteractionEvents];
           afterDeauthorization();

@@ -212,6 +212,14 @@ didFinishDownloadingToURL:(NSURL *const)location
                if (book.licensor!=nil)
                {
                  [[NYPLAccount sharedAccount] setLicensor:book.licensor];
+
+                 // POST deviceID to adobeDevicesLink
+                 
+                 NSURL *deviceManager =  [NSURL URLWithString: book.licensor[@"deviceManager"]];
+                 if (deviceManager != nil) {
+                   [NYPLDeviceManager postDevice:deviceID url:deviceManager];
+                 }
+
                }
 
                [[NYPLADEPT sharedInstance]

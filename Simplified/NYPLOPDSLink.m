@@ -17,7 +17,7 @@
 @property (nonatomic) NSDate *availableSince;
 @property (nonatomic) NSDate *availableUntil;
 @property (nonatomic) NSMutableArray *mutableAcquisitionFormats;
-@property (nonatomic) NSDictionary *licensor;
+@property (nonatomic) NSMutableDictionary *licensor;
 
 @end
 
@@ -72,7 +72,20 @@
       NSString *clientToken = vendorXML.value;
       
       self.licensor = @{@"vendor":vendor,
-                        @"clientToken":clientToken};
+                        @"clientToken":clientToken}.mutableCopy;
+    
+      for(NYPLXML *const linkXML in [licensorXML childrenWithName:@"link"]) {
+        NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
+        if(!link) {
+          NYPLLOG(@"Ignoring malformed 'link' element.");
+          continue;
+        }
+        if ([link.rel isEqualToString:@"http://librarysimplified.org/terms/drm/rel/devices"])
+        {
+          [self.licensor setValue:link.href.absoluteString forKey:@"deviceManager"];
+          continue;
+        }
+      }
     }
   }
   

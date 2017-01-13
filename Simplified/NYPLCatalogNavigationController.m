@@ -193,11 +193,17 @@
        {
          [[NYPLAccount sharedAccount:account.id] setUserID:userID];
          [[NYPLAccount sharedAccount:account.id] setDeviceID:deviceID];
+
          [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
            [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
          }];
+         
+         // POST deviceID to adobeDevicesLink
+         NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:account.id] licensor][@"deviceManager"]];
+         if (deviceManager != nil) {
+           [NYPLDeviceManager postDevice:deviceID url:deviceManager];
+         }
        }
-       
      }];
   }
   else if (account.needsAuth)
