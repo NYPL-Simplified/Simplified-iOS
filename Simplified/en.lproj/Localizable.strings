@@ -51,6 +51,7 @@
 "PickYourLibrary" = "Pick Your Library";
 "PIN" = "PIN";
 "PleaseWait" = "Please Wait";
+"PleaseWaitMessage" = "Please wait a moment before switching library accounts.";
 "PrivacyPolicy" = "Privacy Policy";
 "Published" = "Published";
 "Publisher" = "Publisher";

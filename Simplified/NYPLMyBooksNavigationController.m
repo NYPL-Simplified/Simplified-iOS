@@ -80,7 +80,7 @@
       if([NYPLADEPT sharedInstance].workflowsInProgress) {
         [self presentViewController:[NYPLAlertController
                                      alertWithTitle:@"PleaseWait"
-                                     message:@"SettingsAccountViewControllerCannotLogOutMessage"]
+                                     message:@"PleaseWaitMessage"]
                            animated:YES
                          completion:nil];
       } else {
@@ -124,7 +124,9 @@
   
   [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
   [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
-   
+  
+  [[NYPLBookRegistry sharedRegistry] justLoad];
+  
   NYPLCatalogNavigationController * catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
   [catalog reloadSelectedLibraryAccount];
   
