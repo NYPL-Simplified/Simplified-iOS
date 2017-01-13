@@ -98,6 +98,11 @@ typedef NS_ENUM(NSInteger, FacetSort) {
    name:NYPLBookRegistryDidChangeNotification
    object:nil];
   
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(syncEnded)
+   name:NYPLSyncEndedNotification object:nil];
+  
   return self;
 }
 
@@ -356,7 +361,20 @@ OK:
   if (account.needsAuth)
   {
     if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-      [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
+      [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+        if(success) {
+          [[NYPLBookRegistry sharedRegistry] save];
+        } else {
+          [[[UIAlertView alloc]
+            initWithTitle:NSLocalizedString(@"SyncFailed", nil)
+            message:NSLocalizedString(@"CheckConnection", nil)
+            delegate:nil
+            cancelButtonTitle:nil
+            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+           show];
+        }
+        [self syncEnded];
+      }];
     } else {
       // We can't sync if we're not logged in, so let's log in. We don't need a completion handler
       // here because logging in will trigger a sync anyway. The only downside of letting the sync
@@ -381,7 +399,6 @@ OK:
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if([NYPLBookRegistry sharedRegistry].syncing == NO) {
       [self.refreshControl endRefreshing];
-      self.navigationItem.leftBarButtonItem.enabled = YES;
     }
   }];
 }
@@ -393,6 +410,11 @@ OK:
   [self.navigationController
    pushViewController:[[NYPLCatalogSearchViewController alloc] initWithOpenSearchDescription:searchDescription]
    animated:YES];
+}
+
+- (void)syncEnded
+{
+  self.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
 @end

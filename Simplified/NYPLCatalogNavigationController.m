@@ -193,7 +193,9 @@
        {
          [[NYPLAccount sharedAccount:account.id] setUserID:userID];
          [[NYPLAccount sharedAccount:account.id] setDeviceID:deviceID];
-         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+           [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+         }];
        }
        
      }];
