@@ -207,9 +207,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
     [section1 addObject:@(CellKindSyncButton)];
   }
   NSMutableArray *section2 = [[NSMutableArray alloc] init];
-  if ([self.account getLicenseURL:URLTypeAcknowledgements]) {
-    [section2 addObject:@(CellKindAbout)];
-  }
   if ([self.account getLicenseURL:URLTypePrivacyPolicy]) {
     [section2 addObject:@(CellKindPrivacyPolicy)];
   }

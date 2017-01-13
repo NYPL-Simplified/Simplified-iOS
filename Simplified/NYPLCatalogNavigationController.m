@@ -88,7 +88,7 @@
   
   NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
 
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Pick Your Library" message:nil preferredStyle:(UIAlertControllerStyleActionSheet)];
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"PickYourLibrary", nil) message:nil preferredStyle:(UIAlertControllerStyleActionSheet)];
   alert.popoverPresentationController.barButtonItem = viewController.navigationItem.leftBarButtonItem;
   alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
   
@@ -97,13 +97,27 @@
   for (int i = 0; i < (int)accounts.count; i++) {
     Account *account = [[AccountsManager sharedInstance] account:[accounts[i] intValue]];
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+#if defined(FEATURE_DRM_CONNECTOR)
+      if([NYPLADEPT sharedInstance].workflowsInProgress) {
+        [self presentViewController:[NYPLAlertController
+                                     alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
+                                     message:@"SettingsAccountViewControllerCannotLogOutMessage"]
+                           animated:YES
+                         completion:nil];
+      } else {
+        [[NYPLBookRegistry sharedRegistry] save];
+        [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+        [self reloadSelectedLibraryAccount];
+      }
+#else
       [[NYPLBookRegistry sharedRegistry] save];
       [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
       [self reloadSelectedLibraryAccount];
+#endif
     }]];
   }
   
-  [alert addAction:[UIAlertAction actionWithTitle:@"Manage Accounts" style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"ManageAccounts", nil) style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
     NSUInteger tabCount = [[[NYPLRootTabBarController sharedController] viewControllers] count];
     UISplitViewController *splitViewVC = [[[NYPLRootTabBarController sharedController] viewControllers] lastObject];
     UINavigationController *masterNavVC = [[splitViewVC viewControllers] firstObject];
@@ -113,7 +127,7 @@
     [tableVC.delegate settingsPrimaryTableViewController:tableVC didSelectItem:NYPLSettingsPrimaryTableViewControllerItemAccount];
   }]];
 
-  [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:(UIAlertActionStyleCancel) handler:nil]];
+  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:(UIAlertActionStyleCancel) handler:nil]];
 
   [[NYPLRootTabBarController sharedController]
    safelyPresentViewController:alert

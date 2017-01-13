@@ -40,6 +40,7 @@
 "LibraryCard" = "Library Card";
 "Licenses" = "Licenses";
 "LogIn" = "Log In";
+"ManageAccounts" = "Manage Accounts";
 "More..." = "More…";
 "MoreBooks" = "More %@ books";
 "NoResultsFound" = "No results found.";
@@ -47,6 +48,7 @@
 "OK" = "OK";
 "PDFNotSupported" = "Adobe PDF Not Supported";
 "PDFNotSupportedDescriptionFormat" = "%@ is an Adobe PDF, which is not supported.";
+"PickYourLibrary" = "Pick Your Library";
 "PIN" = "PIN";
 "PrivacyPolicy" = "Privacy Policy";
 "Published" = "Published";
