@@ -266,6 +266,10 @@
     }
     
   }
+  else
+  {
+    [self reloadSelectedLibraryAccount];
+  }
 }
 
 @end
