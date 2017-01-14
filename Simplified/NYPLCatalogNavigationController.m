@@ -218,6 +218,18 @@
   
 }
 
+- (void)viewDidLoad
+{
+  [super viewDidLoad];
+  
+  NYPLSettings *settings = [NYPLSettings sharedSettings];
+  
+  if (settings.userHasSeenWelcomeScreen == YES) {
+    [self reloadSelectedLibraryAccount];
+  }
+  
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
@@ -266,10 +278,7 @@
     }
     
   }
-  else
-  {
-    [self reloadSelectedLibraryAccount];
-  }
+  
 }
 
 @end
