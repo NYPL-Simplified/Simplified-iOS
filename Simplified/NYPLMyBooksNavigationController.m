@@ -114,19 +114,8 @@
 
 - (void) reloadSelected {
   
-//  [NYPLAccount sharedAccount];
-  
-  Account *account = [[NYPLSettings sharedSettings] currentAccount];
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLAccountDidChangeNotification
-   object:nil];
-  
-  [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
-  [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
-  
-  [[NYPLBookRegistry sharedRegistry] justLoad];
-  
+  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+
   NYPLCatalogNavigationController * catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
   [catalog reloadSelectedLibraryAccount];
   

@@ -103,6 +103,11 @@ typedef NS_ENUM(NSInteger, FacetSort) {
    selector:@selector(syncEnded)
    name:NYPLSyncEndedNotification object:nil];
   
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(syncBegan)
+   name:NYPLSyncBeganNotification object:nil];
+  
   return self;
 }
 
@@ -155,7 +160,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
     [self.refreshControl endRefreshing];
-    self.navigationItem.leftBarButtonItem.enabled = YES;
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }
 }
 
@@ -354,9 +359,10 @@ OK:
 
 - (void)didSelectSync
 {
-  Account *account = [[NYPLSettings sharedSettings] currentAccount];
   
-  self.navigationItem.leftBarButtonItem.enabled = NO;
+  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+
+  Account *account = [[NYPLSettings sharedSettings] currentAccount];
   
   if (account.needsAuth)
   {
@@ -385,7 +391,7 @@ OK:
        requestCredentialsUsingExistingBarcode:NO
        completionHandler:nil];
       [self.refreshControl endRefreshing];
-      self.navigationItem.leftBarButtonItem.enabled = YES;
+      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
     }
   }
   else
@@ -410,6 +416,11 @@ OK:
   [self.navigationController
    pushViewController:[[NYPLCatalogSearchViewController alloc] initWithOpenSearchDescription:searchDescription]
    animated:YES];
+}
+
+- (void)syncBegan
+{
+  self.navigationItem.leftBarButtonItem.enabled = NO;
 }
 
 - (void)syncEnded

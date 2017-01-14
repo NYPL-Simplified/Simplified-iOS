@@ -208,7 +208,12 @@
   }
   else if (account.needsAuth)
   {
-    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+    }];
+  }
+  else{
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }
   
 }

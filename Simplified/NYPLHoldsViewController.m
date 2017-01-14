@@ -48,6 +48,11 @@
    selector:@selector(syncEnded)
    name:NYPLSyncEndedNotification object:nil];
   
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(syncBegan)
+   name:NYPLSyncBeganNotification object:nil];
+
   return self;
 }
 
@@ -102,7 +107,7 @@
   
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
     [self.refreshControl endRefreshing];
-    self.navigationItem.leftBarButtonItem.enabled = YES;
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }
 }
 
@@ -213,8 +218,8 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)didSelectSync
 {
-  self.navigationItem.leftBarButtonItem.enabled = NO;
-  
+  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+
   if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
     [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
       if(success) {
@@ -240,7 +245,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
      requestCredentialsUsingExistingBarcode:NO
      completionHandler:nil];
     [self.refreshControl endRefreshing];
-    self.navigationItem.leftBarButtonItem.enabled = YES;
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }
 }
 
@@ -260,6 +265,11 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [self.navigationController
    pushViewController:[[NYPLCatalogSearchViewController alloc] initWithOpenSearchDescription:searchDescription]
    animated:YES];
+}
+
+- (void)syncBegan
+{
+  self.navigationItem.leftBarButtonItem.enabled = NO;
 }
 
 - (void)syncEnded
