@@ -121,8 +121,9 @@
   
   NYPLMyBooksViewController *viewController = (NYPLMyBooksViewController *)self.visibleViewController;
   viewController.navigationItem.title =  [[NYPLSettings sharedSettings] currentAccount].name;
-  viewController.navigationItem.leftBarButtonItem.enabled = NO;
-  
+//  viewController.navigationItem.leftBarButtonItem.enabled = NO;
+//  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+
 }
 
 @end

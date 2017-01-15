@@ -379,7 +379,7 @@ OK:
             otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
            show];
         }
-        [self syncEnded];
+        [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
       }];
     } else {
       // We can't sync if we're not logged in, so let's log in. We don't need a completion handler
@@ -397,6 +397,8 @@ OK:
   else
   {
     [[NYPLBookRegistry sharedRegistry] justLoad];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+
   }
 }
 

@@ -61,7 +61,7 @@
   
   [self.activityIndicatorView startAnimating];
   
-  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+//  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
   
   [self.connection start];
 }

@@ -223,7 +223,8 @@ static NSString *const RecordsKey = @"records";
 
 - (void)justLoad
 {
-    [self load];
+  [self load];
+  [self broadcastChange];
 }
 
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler

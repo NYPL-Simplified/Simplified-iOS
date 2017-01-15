@@ -458,7 +458,10 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
         void (^handler)() = self.completionHandler;
         self.completionHandler = nil;
         if(handler) handler();
-        [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+        [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+          [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+        }];
       }
       
     } else {
