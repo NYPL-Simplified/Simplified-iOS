@@ -18,6 +18,7 @@
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
+#import <PureLayout/PureLayout.h>
 @import CoreLocation;
 
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -369,9 +370,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  // This is the amount of horizontal padding Apple uses around the titles in cells by default.
-  CGFloat const padding = 16;
-  
   switch(CellKindFromIndexPath(indexPath)) {
     case CellKindBarcode: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
@@ -379,11 +377,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       {
-        CGRect frame = cell.contentView.bounds;
-        frame.origin.x += padding;
-        frame.size.width -= padding * 2;
-        self.barcodeTextField.frame = frame;
         [cell.contentView addSubview:self.barcodeTextField];
+        [self.barcodeTextField autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [self.barcodeTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+        [self.barcodeTextField autoPinEdgeToSuperviewMargin:ALEdgeRight];
       }
       return cell;
     }
@@ -393,11 +390,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       {
-        CGRect frame = cell.contentView.bounds;
-        frame.origin.x += padding;
-        frame.size.width -= padding * 2;
-        self.PINTextField.frame = frame;
         [cell.contentView addSubview:self.PINTextField];
+        [self.PINTextField autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [self.PINTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+        [self.PINTextField autoPinEdgeToSuperviewMargin:ALEdgeRight];
       }
       return cell;
     }

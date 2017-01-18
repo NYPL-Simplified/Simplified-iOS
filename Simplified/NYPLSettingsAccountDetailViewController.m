@@ -673,9 +673,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  // This is the amount of horizontal padding Apple uses around the titles in cells by default.
-  CGFloat const padding = 16;
-  
   NSArray *sectionArray = (NSArray *)self.tableData[indexPath.section];
   CellKind cellKind = (CellKind)[sectionArray[indexPath.row] intValue];
   
@@ -686,11 +683,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       {
-        CGRect frame = cell.contentView.bounds;
-        frame.origin.x += padding;
-        frame.size.width -= padding * 2;
-        self.barcodeTextField.frame = frame;
         [cell.contentView addSubview:self.barcodeTextField];
+        [self.barcodeTextField autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [self.barcodeTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+        [self.barcodeTextField autoPinEdgeToSuperviewMargin:ALEdgeRight];
       }
       return cell;
     }
@@ -700,11 +696,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       {
-        CGRect frame = cell.contentView.bounds;
-        frame.origin.x += padding;
-        frame.size.width -= padding * 2;
-        self.PINTextField.frame = frame;
         [cell.contentView addSubview:self.PINTextField];
+        [self.PINTextField autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [self.PINTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+        [self.PINTextField autoPinEdgeToSuperviewMargin:ALEdgeRight];
       }
       return cell;
     }
@@ -907,11 +902,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     [containerView addSubview:logoView];
     
     [logoView autoSetDimensionsToSize:CGSizeMake(45, 45)];
-    [logoView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:16];
+    [logoView autoPinEdgeToSuperviewMargin:ALEdgeLeft];
     [logoView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:16];
     
     [titleLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:16];
-    [titleLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:16];
+    [titleLabel autoPinEdgeToSuperviewMargin:ALEdgeRight];
     [titleLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:logoView withOffset:8];
     
     [subtitleLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeLeft ofView:titleLabel];
