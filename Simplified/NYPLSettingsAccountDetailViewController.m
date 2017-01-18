@@ -465,6 +465,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
       }
       
     } else {
+      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
       [self showLoginAlertWithError:error];
     }
   }];
