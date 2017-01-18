@@ -134,7 +134,11 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     // Existing User
     if NYPLSettings.shared().acceptedEULABeforeMultiLibrary == false {
       let listVC = NYPLWelcomeScreenAccountList { acct in
-        NYPLSettings.shared().settingsAccountsList = [acct.id, 2]
+        if (acct.id != 2) {
+          NYPLSettings.shared().settingsAccountsList = [acct.id, 2]
+        } else {
+          NYPLSettings.shared().settingsAccountsList = [2]
+        }
         self.completion?(acct.id)
       }
       self.navigationController?.pushViewController(listVC, animated: true)
