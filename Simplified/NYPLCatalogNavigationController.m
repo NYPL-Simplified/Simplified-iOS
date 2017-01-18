@@ -210,6 +210,10 @@
            [NYPLDeviceManager postDevice:deviceID url:deviceManager];
          }
        }
+       else
+       {
+         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+       }
      }];
   }
 //  else if (account.needsAuth)
