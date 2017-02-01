@@ -67,7 +67,8 @@ class NYPLDeviceManager: NSObject {
         print("POST device: Success")
       } else {
         guard let error = error as? NSError else { return }
-        if offlineQueueStatusCodes.contains(error.code) {
+        if
+          OfflineQueueStatusCodes.contains(error.code) {
           print("POST device: Response Error: \(error.localizedDescription)")
         }
       }
@@ -95,7 +96,7 @@ class NYPLDeviceManager: NSObject {
         print("DELETE device: Success")
       } else {
         guard let error = error as? NSError else { return }
-        if offlineQueueStatusCodes.contains(error.code) {
+        if OfflineQueueStatusCodes.contains(error.code) {
           print("DELETE device: Response Error: \(error.localizedDescription)")
         }
       }
