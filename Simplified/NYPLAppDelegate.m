@@ -2,6 +2,7 @@
 
 #import "NYPLConfiguration.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLReachability.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLSettings.h"
@@ -21,6 +22,12 @@
 
 #import "NYPLAppDelegate.h"
 
+@interface NYPLAppDelegate()
+
+@property (nonatomic) NYPLReachability *reachabilityManager;
+
+@end
+
 @implementation NYPLAppDelegate
 
 #pragma mark UIApplicationDelegate
@@ -39,6 +46,8 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   
   // Initiallize Accounts from JSON file
   [AccountsManager sharedInstance];
+  
+  self.reachabilityManager = [NYPLReachability sharedReachability];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.tintColor = [NYPLConfiguration mainColor];

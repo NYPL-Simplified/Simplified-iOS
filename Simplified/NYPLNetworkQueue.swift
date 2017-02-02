@@ -10,17 +10,19 @@ let OfflineQueueStatusCodes = [NSURLErrorTimedOut,
                                NSURLErrorCallIsActive,
                                NSURLErrorDataNotAllowed,
                                NSURLErrorSecureConnectionFailed]
+let MaxRetryCount = 3
 
 enum HTTPMethodType: String {
   case GET, POST, HEAD, PUT, DELETE, OPTIONS, CONNECT
 }
 
-final class NetworkQueue {
+final class NetworkQueue: NSObject {
   
   private static let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first!
   
   private static let sqlTable = Table("queueTable")
   
+  static let sqlID = Expression<Int64>("id")
   static let sqlLibraryID = Expression<Int>("libraryIdentifier")
   static let sqlUpdateID = Expression<String?>("updateIdentifier")
   static let sqlUrl = Expression<String>("requestUrl")
@@ -57,6 +59,7 @@ final class NetworkQueue {
     // Get or create table
     do {
       try db.run(sqlTable.create(ifNotExists: true) { t in
+        t.column(sqlID, primaryKey: true)
         t.column(sqlLibraryID)
         t.column(sqlUpdateID)
         t.column(sqlUrl)
@@ -66,54 +69,69 @@ final class NetworkQueue {
         t.column(sqlRetries)
       })
     } catch {
-      print("Error: Could not create table")
+      print("SQLite Error: Could not create table")
       return
     }
     
-    // If ID's exist in table, row should only be updated
+    // For this query, only most recent row is kept/updated
     let query = sqlTable.filter(sqlLibraryID == libraryID && sqlUpdateID == updateID)
     
     do {
       // Update row
-      if try db.run(query.update(sqlRetries++)) > 0 {
-        print("SQL Row Updated - Success")  //GODO temp
-      
+      //GODO: what do we actually have to update?
+      if try db.run(query.update(sqlUrl <- urlString, sqlMethod <- methodString, sqlParameters <- parameters, sqlHeader <- headerData)) > 0 {
+        print("SQLite Row Updated - Success")  //GODO temp
+        
       // Insert new row
       } else {
-        
         do {
           try db.run(sqlTable.insert(sqlLibraryID <- libraryID, sqlUpdateID <- updateID, sqlUrl <- urlString, sqlMethod <- methodString, sqlParameters <- parameters, sqlHeader <- headerData))
-          print("SQL Row Added - Success")  //GODO temp
+          print("SQLite Row Added - Success")  //GODO temp
         } catch {
-          print("Error: Could not update table")
+          print("SQLite Error: Could not update table")
         }
       }
     } catch {
-      print("Error: SQLite Error. Could not update queue")
-    }
-  }
-
-  class func queue() -> [Row]?
-  {
-    guard let db = startDatabaseConnection() else { return nil }
-    
-    var array = [Row]()
-    do {
-      array = Array(try db.prepare(sqlTable))
-      return array
-    } catch {
-      print("Error: could not retrieve array")
-      return nil
+      print("SQLite Error: Could not update queue")
     }
   }
   
-  private class func retry(request: Row)
-  {  
-    var urlRequest = URLRequest(url: URL(string: request[sqlUrl])!)
-    urlRequest.httpMethod = request[sqlMethod]
-    urlRequest.httpBody = request[sqlParameters]
+  class func retryQueue()
+  {
+    guard let db = startDatabaseConnection() else { return }
     
-    let headerDict = NSKeyedUnarchiver.unarchiveObject(with: request[sqlHeader]!) as? [String:String]
+    do {
+      for row in try db.prepare(sqlTable) {
+        self.retry(requestRow: row)
+      }
+    } catch {
+      print("DB Error")
+    }
+  }
+  
+  
+  // MARK: - Private Functions
+  
+  private class func retry(requestRow: Row)
+  {
+    if (requestRow[sqlRetries] > MaxRetryCount) {
+      deleteRow(id: requestRow[sqlID])
+      return
+    }
+    
+    guard let db = startDatabaseConnection() else { return }
+    do {
+      try db.run(sqlTable.filter(sqlID == requestRow[sqlID]).update(sqlRetries++))
+    } catch {
+      print("Error updating database")
+    }
+    
+    // Re-attempt network request
+    var urlRequest = URLRequest(url: URL(string: requestRow[sqlUrl])!)
+    urlRequest.httpMethod = requestRow[sqlMethod]
+    urlRequest.httpBody = requestRow[sqlParameters]
+    
+    let headerDict = NSKeyedUnarchiver.unarchiveObject(with: requestRow[sqlHeader]!) as? [String:String]
     
     if let headers = headerDict {
       for (headerKey, headerValue) in headers {
@@ -123,46 +141,27 @@ final class NetworkQueue {
     
     let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
       
-      guard let response = response as? HTTPURLResponse else { return }
-      if response.statusCode == 200 {
+      if let response = response as? HTTPURLResponse {
+        if response.statusCode == 200 {
+          self.deleteRow(id: requestRow[sqlID])
           print("Post Last-Read: Success")
-      } else {
-        guard let error = error as? NSError else { return }
-        if OfflineQueueStatusCodes.contains(error.code) {
-          //Re-Add Request
-          print("Last Read Position Added to OfflineQueue. Response Error: \(error.localizedDescription)")
         }
       }
     }
     task.resume()
   }
   
-  class func row(id: Int) -> Row?
-  {
-    guard let db = startDatabaseConnection() else { return nil }
-    
-    let query = sqlTable.filter(rowid == Int64(id))
-    if let row = try? db.pluck(query) {
-      return row
-    } else {
-      return nil
-    }
-  }
-  
-  class func deleteRow(id: Int)
+  private class func deleteRow(id: Int64)
   {
     guard let db = startDatabaseConnection() else { return }
     
-    let rowToDelete = sqlTable.filter(rowid == Int64(id))
+    let rowToDelete = sqlTable.filter(sqlID == id)
     if let _ = try? db.run(rowToDelete.delete()) {
       print("Successfully deleted row")         //GODO temp
     } else {
-      print("Error: Could not delete row")
+      print("SQLite Error: Could not delete row")
     }
   }
-  
-  
-  // MARK: - Private Functions
   
   private class func startDatabaseConnection() -> Connection?
   {
@@ -170,7 +169,7 @@ final class NetworkQueue {
     do {
       db = try Connection("\(path)/db.sqlite3")
     } catch {
-      print("Could not open sqlite db connection.")
+      print("Could not open SQLite db connection.")
       return nil
     }
     return db

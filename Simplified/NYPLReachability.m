@@ -1,8 +1,12 @@
+#import "AFNetworking.h"
+#import "NYPLConfiguration.h"
 #import "NYPLReachability.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLReachability ()
 
 @property (nonatomic) NSURLSession *session;
+@property (nonatomic) AFNetworkReachabilityManager *reachabilityManager;
 
 @end
 
@@ -27,6 +31,24 @@
   
   self.session = [NSURLSession sessionWithConfiguration:
                   [NSURLSessionConfiguration ephemeralSessionConfiguration]];
+  
+  self.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:[NYPLConfiguration mainFeedURL].absoluteString];
+  [self.reachabilityManager startMonitoring];
+  
+  [self.reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+    switch (status) {
+      case AFNetworkReachabilityStatusNotReachable:
+        NYPLLOG(@"Network Reachability changed: No Internet Connection");
+        break;
+      case AFNetworkReachabilityStatusUnknown:
+        NYPLLOG(@"Network Reachability changed: Unkown network status");
+        break;
+      default:
+        [NetworkQueue retryQueue];
+        NYPLLOG(@"Network Reachability changed: WIFI or 3G");
+        break;
+    }
+  }];
   
   return self;
 }

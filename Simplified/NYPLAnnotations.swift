@@ -59,14 +59,15 @@ final class NYPLAnnotations: NSObject {
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
       
-      guard let response = response as? HTTPURLResponse else { return }
-      if response.statusCode == 200 {
-//        print("Post Last-Read: Success")
+      if let response = response as? HTTPURLResponse {
+        if response.statusCode == 200 {
+  //        print("Post Last-Read: Success")
+        }
       } else {
         guard let error = error as? NSError else { return }
         if OfflineQueueStatusCodes.contains(error.code) {
           self.addToOfflineQueue(book, url, parameters)
-          print("Last Read Position Added to OfflineQueue. Response Error: \(error.localizedDescription)")
+          print("Network Response Error: \(error.localizedDescription)")
         }
       }
     }
