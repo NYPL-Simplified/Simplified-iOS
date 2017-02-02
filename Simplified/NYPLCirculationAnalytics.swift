@@ -32,41 +32,24 @@ final class NYPLCirculationAnalytics : NSObject {
 
     let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
       
-      let response = response as? HTTPURLResponse
-      if (error == nil && response?.statusCode == 200) {
-        self.retryOfflineAnalyticsQueueRequests()
-//        print("upload success")
+      if let response = response as? HTTPURLResponse {
+        if response.statusCode == 200 {
+          print("Analytics Upload: Success")
+        }
       } else {
         guard let error = error as? NSError else { return }
-        if offlineQueueStatusCodes.contains(error.code) {
+        if OfflineQueueStatusCodes.contains(error.code) {
           self.addToOfflineAnalyticsQueue(event, url)
-          print("Analytics Upload Queued. Response Error: \(error.localizedDescription)")
         }
+        print("Request Error Code: \(error.code). Description: \(error.localizedDescription)")
       }
     }
     dataTask.resume()
   }
   
-  class func retryOfflineAnalyticsQueueRequests() -> Void
-  {
-    if let queue = NYPLSettings.shared().offlineQueue as? [[String]] {
-      NYPLSettings.shared().offlineQueue = nil
-      if !queue.isEmpty {
-        for queuedEvent in queue {
-          post(queuedEvent[0], withURL: URL.init(string: queuedEvent[1])!)
-        }
-      }
-    }
-  }
-  
   private class func addToOfflineAnalyticsQueue(_ event: String, _ bookURL: URL) -> Void
   {
-    let newRow = [event, bookURL.absoluteString]
-    var queue = NYPLSettings.shared().offlineQueue as! [[String]]
-    while queue.count >= MaxOfflineQueueSize {
-      queue.remove(at: 0)
-    }
-    queue.append(newRow)
-    NYPLSettings.shared().offlineQueue = queue
+    let libraryID = AccountsManager.shared.currentAccount.id
+    NetworkQueue.addRequest(libraryID, nil, bookURL, .GET, nil, nil)
   }
 }

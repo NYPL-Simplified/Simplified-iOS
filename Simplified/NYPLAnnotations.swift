@@ -43,7 +43,7 @@ final class NYPLAnnotations: NSObject {
     do {
       jsonData = try JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted])
     } catch {
-      print("Network request abandoned: Could not create JSON from given parameters")
+      print("Network request abandoned. Could not create JSON from given parameters.")
       return
     }
     
@@ -61,14 +61,14 @@ final class NYPLAnnotations: NSObject {
       
       if let response = response as? HTTPURLResponse {
         if response.statusCode == 200 {
-  //        print("Post Last-Read: Success")
+          print("Post Last-Read: Success")
         }
       } else {
         guard let error = error as? NSError else { return }
         if OfflineQueueStatusCodes.contains(error.code) {
           self.addToOfflineQueue(book, url, parameters)
-          print("Network Response Error: \(error.localizedDescription)")
         }
+        print("Request Error Code: \(error.code). Description: \(error.localizedDescription)")
       }
     }
     task.resume()
