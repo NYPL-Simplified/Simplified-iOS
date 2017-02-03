@@ -43,7 +43,7 @@ final class NYPLAnnotations: NSObject {
     do {
       jsonData = try JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted])
     } catch {
-      print("Network request abandoned. Could not create JSON from given parameters.")
+      Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
       return
     }
     
@@ -61,14 +61,14 @@ final class NYPLAnnotations: NSObject {
       
       if let response = response as? HTTPURLResponse {
         if response.statusCode == 200 {
-          print("Post Last-Read: Success")
+          Log.info(#file, "Post Last-Read: Success")
         }
       } else {
         guard let error = error as? NSError else { return }
         if OfflineQueueStatusCodes.contains(error.code) {
           self.addToOfflineQueue(book, url, parameters)
         }
-        print("Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+        Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
       }
     }
     task.resume()
@@ -105,7 +105,7 @@ final class NYPLAnnotations: NSObject {
             do {
               jsonData = try JSONSerialization.jsonObject(with: data!, options: []) as? [String:Any]
             } catch {
-              print("JSON could not be created from data.")
+              Log.error(#file, "JSON could not be created from data.")
               completionHandler(nil, nil)
               return
             }
@@ -126,7 +126,7 @@ final class NYPLAnnotations: NSObject {
                     let value = selector["value"] as! String
                     
                     completionHandler(value as String!, error as? NSError)
-                    print(value)
+                    Log.info(value)
                   }
                 }
               } else {

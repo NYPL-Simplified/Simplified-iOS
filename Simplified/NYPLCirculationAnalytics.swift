@@ -34,14 +34,14 @@ final class NYPLCirculationAnalytics : NSObject {
       
       if let response = response as? HTTPURLResponse {
         if response.statusCode == 200 {
-          print("Analytics Upload: Success")
+          Log.info(#file, "Analytics Upload: Success")
         }
       } else {
         guard let error = error as? NSError else { return }
         if OfflineQueueStatusCodes.contains(error.code) {
           self.addToOfflineAnalyticsQueue(event, url)
         }
-        print("Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+        Log.error(#file, "URLRequest Error: \(error.code). Description: \(error.localizedDescription)")
       }
     }
     dataTask.resume()
