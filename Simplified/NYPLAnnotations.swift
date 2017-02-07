@@ -61,7 +61,7 @@ final class NYPLAnnotations: NSObject {
       
       if let response = response as? HTTPURLResponse {
         if response.statusCode == 200 {
-          Log.info(#file, "Post Last-Read: Success")
+          Log.info(#file, "Posted Last-Read \(((parameters["target"] as! [String:Any])["selector"] as! [String:Any])["value"] as! String)")
         }
       } else {
         guard let error = error as? NSError else { return }
@@ -126,7 +126,7 @@ final class NYPLAnnotations: NSObject {
                     let value = selector["value"] as! String
                     
                     completionHandler(value as String!, error as? NSError)
-                    Log.info(value)
+                    Log.info(#file, value)
                   }
                 }
               } else {

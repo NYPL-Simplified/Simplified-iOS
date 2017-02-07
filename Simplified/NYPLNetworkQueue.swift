@@ -10,7 +10,7 @@ let OfflineQueueStatusCodes = [NSURLErrorTimedOut,
                                NSURLErrorCallIsActive,
                                NSURLErrorDataNotAllowed,
                                NSURLErrorSecureConnectionFailed]
-let MaxRetryCount = 3
+let QueueMaxRetryCount = 3
 
 enum HTTPMethodType: String {
   case GET, POST, HEAD, PUT, DELETE, OPTIONS, CONNECT
@@ -22,14 +22,14 @@ final class NetworkQueue: NSObject {
   
   private static let sqlTable = Table("queueTable")
   
-  static let sqlID = Expression<Int>("rowid")
-  static let sqlLibraryID = Expression<Int>("libraryIdentifier")
-  static let sqlUpdateID = Expression<String?>("updateIdentifier")
-  static let sqlUrl = Expression<String>("requestUrl")
-  static let sqlMethod = Expression<String>("requestMethod")
-  static let sqlParameters = Expression<Data?>("requestParameters")
-  static let sqlHeader = Expression<Data?>("requestHeader")
-  static let sqlRetries = Expression<Int>("retryCount")
+  private static let sqlID = Expression<Int>("rowid")
+  private static let sqlLibraryID = Expression<Int>("libraryIdentifier")
+  private static let sqlUpdateID = Expression<String?>("updateIdentifier")
+  private static let sqlUrl = Expression<String>("requestUrl")
+  private static let sqlMethod = Expression<String>("requestMethod")
+  private static let sqlParameters = Expression<Data?>("requestParameters")
+  private static let sqlHeader = Expression<Data?>("requestHeader")
+  private static let sqlRetries = Expression<Int>("retryCount")
   
   
   // MARK: - Public Functions
@@ -112,7 +112,7 @@ final class NetworkQueue: NSObject {
   
   private class func retry(db: Connection, requestRow: Row)
   {
-    if (Int(requestRow[sqlRetries]) > MaxRetryCount) {
+    if (Int(requestRow[sqlRetries]) > QueueMaxRetryCount) {
       deleteRow(db: db, id: Int(requestRow[sqlID]))
       Log.info(#file, "Removing after \(Int(requestRow[sqlRetries])) retries")
       return
