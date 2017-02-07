@@ -24,6 +24,10 @@ final class NYPLAnnotations: NSObject {
             "type": "oa:FragmentSelector",
             "value": cfi
           ]
+        ],
+        "body": [
+          "http://librarysimplified.org/terms/time" : iso8601CurrentTime(),
+          "http://librarysimplified.org/terms/device" : NYPLAccount.shared().deviceID
         ]
         ] as [String : Any]
       
@@ -151,4 +155,15 @@ final class NYPLAnnotations: NSObject {
     return ["Authorization" : "\(authenticationValue)",
             "Content-Type" : "application/json"]
   }
+  
+  private class func iso8601CurrentTime() -> String
+  {
+    let dateFormatter = DateFormatter()
+    let enUSPosixLocale = Locale(identifier: "en_US_POSIX")
+    dateFormatter.locale = enUSPosixLocale
+    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+  
+    return dateFormatter.string(from: Date())
+  }
+
 }
