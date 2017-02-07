@@ -27,7 +27,7 @@ class NYPLDeviceManager: NSObject {
   {
     if (NYPLAccount.shared().hasBarcodeAndPIN())
     {
-      print("device: \(deviceID)")
+      Log.info(#file, "device: \(deviceID)")
 
       let body = deviceID.data(using: String.Encoding.utf8)!
       postRequest(url, body, authorizationHeader, contentTypeHeader)
@@ -38,7 +38,7 @@ class NYPLDeviceManager: NSObject {
   {
     if (NYPLAccount.shared().hasBarcodeAndPIN())
     {
-      print("device: \(deviceID)")
+      Log.info(#file, "device: \(deviceID)")
 
       var deleteUrl:URL = url
       deleteUrl.appendPathComponent(deviceID)
@@ -64,11 +64,12 @@ class NYPLDeviceManager: NSObject {
       
       guard let response = response as? HTTPURLResponse else { return }
       if response.statusCode == 200 {
-        print("POST device: Success")
+        Log.info(#file, "POST device: Success")
       } else {
         guard let error = error as? NSError else { return }
-        if OfflineQueueStatusCodes.contains(error.code) {
-          print("POST device: Response Error: \(error.localizedDescription)")
+        if
+          OfflineQueueStatusCodes.contains(error.code) {
+          Log.info(#file, "POST device: Response Error: \(error.localizedDescription)")
         }
       }
     }
@@ -92,11 +93,11 @@ class NYPLDeviceManager: NSObject {
       
       guard let response = response as? HTTPURLResponse else { return }
       if response.statusCode == 200 {
-        print("DELETE device: Success")
+        Log.info(#file, "DELETE device: Success")
       } else {
         guard let error = error as? NSError else { return }
         if OfflineQueueStatusCodes.contains(error.code) {
-          print("DELETE device: Response Error: \(error.localizedDescription)")
+          Log.error(#file, "DELETE device: Response Error: \(error.localizedDescription)")
         }
       }
     }
