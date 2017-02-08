@@ -146,7 +146,7 @@ final class NYPLAnnotations: NSObject {
     }
   }
   
-  private class var headers: [String:String]
+  class var headers: [String:String]
   {
     let authenticationString = "\(NYPLAccount.shared().barcode!):\(NYPLAccount.shared().pin!)"
     let authenticationData:Data = authenticationString.data(using: String.Encoding.ascii)!
@@ -156,7 +156,7 @@ final class NYPLAnnotations: NSObject {
             "Content-Type" : "application/json"]
   }
   
-  private class func iso8601CurrentTime() -> String
+  class func iso8601CurrentTime() -> String
   {
     let dateFormatter = DateFormatter()
     let enUSPosixLocale = Locale(identifier: "en_US_POSIX")

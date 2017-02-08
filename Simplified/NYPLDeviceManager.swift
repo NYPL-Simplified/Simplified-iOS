@@ -10,14 +10,6 @@ import UIKit
 
 class NYPLDeviceManager: NSObject {
   
-  private class var authorizationHeader: String
-  {
-    let authenticationString = "\(NYPLAccount.shared().barcode!):\(NYPLAccount.shared().pin!)"
-    let authenticationData:Data = authenticationString.data(using: String.Encoding.ascii)!
-    let authenticationValue = "Basic \(authenticationData.base64EncodedString(options: Data.Base64EncodingOptions.lineLength64Characters)))"
-    
-    return "\(authenticationValue)"
-  }
   private class var contentTypeHeader: String
   {
     return "vnd.librarysimplified/drm-device-id-list"
@@ -30,7 +22,7 @@ class NYPLDeviceManager: NSObject {
       Log.info(#file, "device: \(deviceID)")
 
       let body = deviceID.data(using: String.Encoding.utf8)!
-      postRequest(url, body, authorizationHeader, contentTypeHeader)
+      postRequest(url, body, NYPLAnnotations.headers, contentTypeHeader)
     }
   }
   
@@ -42,19 +34,22 @@ class NYPLDeviceManager: NSObject {
 
       var deleteUrl:URL = url
       deleteUrl.appendPathComponent(deviceID)
-      deleteRequest(deleteUrl, authorizationHeader, contentTypeHeader)
+      deleteRequest(deleteUrl, NYPLAnnotations.headers, contentTypeHeader)
     }
   }
   
   
-  private class func postRequest(_ url: URL, _ body: Data, _ authHeader: String?, _ contentType: String?)
+  private class func postRequest(_ url: URL, _ body: Data, _ headers: [String:String]?, _ contentType: String?)
   {
     
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
     request.httpBody = body
-    if let value = authHeader {
-      request.setValue(value, forHTTPHeaderField: "Authorization")
+    
+    if let headers = headers {
+      for (headerKey, headerValue) in headers {
+        request.setValue(headerValue, forHTTPHeaderField: headerKey)
+      }
     }
     if let value = contentType {
       request.setValue(value, forHTTPHeaderField: "Content-Type")
@@ -67,8 +62,7 @@ class NYPLDeviceManager: NSObject {
         Log.info(#file, "POST device: Success")
       } else {
         guard let error = error as? NSError else { return }
-        if
-          OfflineQueueStatusCodes.contains(error.code) {
+        if OfflineQueueStatusCodes.contains(error.code) {
           Log.info(#file, "POST device: Response Error: \(error.localizedDescription)")
         }
       }
@@ -77,13 +71,16 @@ class NYPLDeviceManager: NSObject {
     task.resume()
   }
   
-  private class func deleteRequest(_ url: URL, _ authHeader: String?, _ contentType: String?)
+  private class func deleteRequest(_ url: URL, _ headers: [String:String]?, _ contentType: String?)
   {
     
     var request = URLRequest(url: url)
     request.httpMethod = "DELETE"
-    if let value = authHeader {
-      request.setValue(value, forHTTPHeaderField: "Authorization")
+    
+    if let headers = headers {
+      for (headerKey, headerValue) in headers {
+        request.setValue(headerValue, forHTTPHeaderField: headerKey)
+      }
     }
     if let value = contentType {
       request.setValue(value, forHTTPHeaderField: "Content-Type")
