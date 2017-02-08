@@ -1220,9 +1220,8 @@ replacementString:(NSString *)string
 
 - (BOOL)syncButtonShouldBeVisible
 {
-  return NO; //Currently Disabled
-//  return ([self.account getLicenseURL:URLTypeAnnotations] &&
-//          [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
+  return ([self.account getLicenseURL:URLTypeAnnotations] &&
+          [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
 }
 
 - (void)didSelectCancel

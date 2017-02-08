@@ -37,7 +37,7 @@ final class NYPLAnnotations: NSObject {
     }
   }
   
-  class func sync(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: String?, _ error: NSError?) -> ()) {
+  class func sync(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: [String:String]?, _ error: NSError?) -> ()) {
     syncLastRead(book, completionHandler: completionHandler)
   }
   
@@ -85,14 +85,16 @@ final class NYPLAnnotations: NSObject {
     NetworkQueue.addRequest(libraryID, book.identifier, url, .POST, parameterData, headers)
   }
   
-  private class func syncLastRead(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: String?,
+  private class func syncLastRead(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: [String:String]?,
     _ error: NSError?) -> ()) {
        
     if (NYPLAccount.shared().hasBarcodeAndPIN())
     {
       if book.annotationsURL != nil {
         
-        var request = URLRequest(url: book.annotationsURL)
+        var request = URLRequest.init(url: book.annotationsURL,
+                                      cachePolicy: .reloadIgnoringLocalCacheData,
+                                      timeoutInterval: 30)
         request.httpMethod = "GET"
         
         for (headerKey, headerValue) in NYPLAnnotations.headers {
@@ -127,10 +129,20 @@ final class NYPLAnnotations: NSObject {
                   if source == book.identifier
                   {
                     let selector = target["selector"] as! [String:AnyObject]
-                    let value = selector["value"] as! String
+                    let serverCFI = selector["value"] as! String
                     
-                    completionHandler(value as String!, error as? NSError)
-                    Log.info(#file, value)
+                    var responseObject = ["serverCFI" : serverCFI]
+                    
+                    if let body = item["body"] as? [String:AnyObject],
+                      let device = body["http://librarysimplified.org/terms/device"] as? String,
+                      let time = body["http://librarysimplified.org/terms/time"] as? String
+                    {
+                        responseObject["device"] = device
+                        responseObject["time"] = time
+                    }
+                    
+                    completionHandler(responseObject, error as? NSError)
+                    Log.info(#file, "\(responseObject["serverCFI"])")
                   }
                 }
               } else {

@@ -1,5 +1,6 @@
 @import WebKit;
 
+#import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookLocation.h"
 #import "NYPLBookRegistry.h"
@@ -543,18 +544,21 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 }
 - (void)syncLastReadingPosition
 {
-  NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
-  dictionary[@"package"] = self.package.dictionary;
-  dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
-  NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry]
-                                      locationForIdentifier:self.book.identifier];
+  Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+  if (currentAccount.syncIsEnabled) {
+    NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
+    dictionary[@"package"] = self.package.dictionary;
+    dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
+    NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry]
+                                        locationForIdentifier:self.book.identifier];
 
-  [self syncLastReadingPosition:dictionary andLocation:location andBook:self.book];
+    [self syncLastReadingPosition:dictionary andLocation:location andBook:self.book];
+  }
 }
 - (void)syncLastReadingPosition:(NSMutableDictionary *const)dictionary andLocation:(NYPLBookLocation *const)location andBook:(NYPLBook *const)book
 {
-  [NYPLAnnotations sync:book completionHandler:^(NSString * _Nullable responseObject, NSError * _Nullable error) {
-    
+  [NYPLAnnotations sync:book completionHandler:^(NSDictionary * _Nullable responseObject, NSError * _Nullable error) {
+  
     if (error)
     {
       return;
@@ -562,16 +566,20 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     
     NSString* serverLocationString;
     NSString* currentLocationString;
+    NSString* timestampString;
+    NSString* deviceIDString;
     UIAlertController *alertController;
     
     if (responseObject != nil)
     {
-      NSDictionary *responsJson = [NSJSONSerialization JSONObjectWithData:[responseObject dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
-      serverLocationString = responseObject;
+      NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:[responseObject[@"serverCFI"] dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
+      deviceIDString = responseObject[@"device"];
+      timestampString = responseObject[@"time"];
+      serverLocationString = responseObject[@"serverCFI"];
       currentLocationString = location.locationString;
       NYPLLOG_F(@"serverLocationString %@",serverLocationString);
       NYPLLOG_F(@"currentLocationString %@",currentLocationString);
-      NSDictionary *spineItemDetails = self.bookMapDictionary[responsJson[@"idref"]];
+      NSDictionary *spineItemDetails = self.bookMapDictionary[responseJSON[@"idref"]];
       NSString * message=[NSString stringWithFormat:@"Would you like to go to the latest page read?\n\nChapter:\n\"%@\"",spineItemDetails[@"tocElementTitle"]];
    
       alertController = [UIAlertController alertControllerWithTitle:@"Sync Reading Position"
@@ -616,19 +624,17 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
     }
     
-    if ((currentLocationString == nil && serverLocationString == nil) || (currentLocationString != nil && serverLocationString == nil))
+    if ((currentLocationString == nil && serverLocationString == nil) ||
+        (currentLocationString != nil && serverLocationString == nil) ||
+        (currentLocationString != nil && [deviceIDString isEqualToString:[NYPLAccount sharedAccount].deviceID]))
     {
         self.postLastRead = YES;
     }
-    else if (currentLocationString == nil && currentLocationString != nil)
+    else if ((currentLocationString == nil && serverLocationString != nil) ||
+             (![currentLocationString isEqualToString:serverLocationString]) ||
+             (currentLocationString == nil && [deviceIDString isEqualToString:[NYPLAccount sharedAccount].deviceID]))
     {
       [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
-
-    }
-    else if (![currentLocationString isEqualToString:serverLocationString])
-    {
-      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
-    
     }
     else
     {
@@ -696,7 +702,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
           forIdentifier:weakSelf.book.identifier];
          }
        if(self.postLastRead) {
-         // post last read position to server
          [NYPLAnnotations postLastRead:weakSelf.book cfi:location.locationString];
        }
      }];
