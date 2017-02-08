@@ -1,12 +1,11 @@
-#import "AFNetworking.h"
 #import "NYPLConfiguration.h"
 #import "NYPLReachability.h"
+#import "NYPLReachabilityManager.h"
 #import "SimplyE-Swift.h"
 
 @interface NYPLReachability ()
 
 @property (nonatomic) NSURLSession *session;
-@property (nonatomic) AFNetworkReachabilityManager *reachabilityManager;
 
 @end
 
@@ -32,26 +31,49 @@
   self.session = [NSURLSession sessionWithConfiguration:
                   [NSURLSessionConfiguration ephemeralSessionConfiguration]];
   
-  self.reachabilityManager = [AFNetworkReachabilityManager managerForDomain:[NYPLConfiguration mainFeedURL].absoluteString];
-  [self.reachabilityManager startMonitoring];
-  
-  [self.reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-    switch (status) {
-      case AFNetworkReachabilityStatusNotReachable:
-        NYPLLOG(@"Network Reachability changed: No Internet Connection");
-        break;
-      case AFNetworkReachabilityStatusUnknown:
-        NYPLLOG(@"Network Reachability changed: Unkown network status");
-        break;
-      default:
-        [NetworkQueue retryQueue];
-        NYPLLOG(@"Network Reachability changed: WIFI or 3G");
-        break;
-    }
-  }];
+  [self setupAppleReachability];
   
   return self;
 }
+
+- (void)setupAppleReachability
+{
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(reachabilityChanged:)
+                                               name:kReachabilityChangedNotification
+                                             object:nil];
+  
+  NSString *remoteHostName = [NYPLConfiguration mainFeedURL].absoluteString;
+  
+  self.hostReachabilityManager = [ReachabilityManager reachabilityWithHostName:remoteHostName];
+  [self.hostReachabilityManager startNotifier];
+}
+
+/// Called by ReachabilityManager whenever status changes.
+- (void) reachabilityChanged:(NSNotification *)note
+{
+  ReachabilityManager* curReach = [note object];
+  if (curReach == self.hostReachabilityManager) {
+    NetworkStatus netStatus = [self.hostReachabilityManager currentReachabilityStatus];
+    switch (netStatus) {
+      case ReachableViaWiFi:
+      case ReachableViaWWAN:
+        [NetworkQueue retryQueue];
+        NYPLLOG(@"Host Reachability changed: WIFI or 3G");
+        break;
+      default:
+        NYPLLOG(@"Host Reachability changed: Not Reachable");
+        break;
+    }
+  }
+}
+
+- (void) dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - NYPL
 
 - (void)reachabilityForURL:(NSURL *const)URL
            timeoutInternal:(NSTimeInterval const)timeoutInternal

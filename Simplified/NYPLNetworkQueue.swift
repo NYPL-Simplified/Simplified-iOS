@@ -103,7 +103,7 @@ final class NetworkQueue: NSObject {
         self.retry(db: db, requestRow: row)
       }
     } catch {
-      Log.error(#file, "SQLite Error accessing table")
+      Log.error(#file, "SQLite Error accessing table or no events to retry")
     }
   }
   
