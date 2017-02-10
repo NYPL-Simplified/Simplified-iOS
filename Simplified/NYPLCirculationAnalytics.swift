@@ -22,7 +22,7 @@ final class NYPLCirculationAnalytics : NSObject {
       
       if let response = response as? HTTPURLResponse {
         if response.statusCode == 200 {
-          Log.info(#file, "Analytics Upload: Success")
+          debugPrint(#file, "Analytics Upload: Success")
         }
       } else {
         guard let error = error as? NSError else { return }

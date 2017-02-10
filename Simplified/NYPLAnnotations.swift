@@ -43,10 +43,7 @@ final class NYPLAnnotations: NSObject {
   
   private class func postJSONRequest(_ book: NYPLBook, _ url: URL, _ parameters: [String:Any], _ headers: [String:String]?)
   {
-    let jsonData: Data?
-    do {
-      jsonData = try JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted])
-    } catch {
+    guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted]) else {
       Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
       return
     }
@@ -65,7 +62,7 @@ final class NYPLAnnotations: NSObject {
       
       if let response = response as? HTTPURLResponse {
         if response.statusCode == 200 {
-          Log.info(#file, "Posted Last-Read \(((parameters["target"] as! [String:Any])["selector"] as! [String:Any])["value"] as! String)")
+          debugPrint(#file, "Posted Last-Read \(((parameters["target"] as! [String:Any])["selector"] as! [String:Any])["value"] as! String)")
         }
       } else {
         guard let error = error as? NSError else { return }

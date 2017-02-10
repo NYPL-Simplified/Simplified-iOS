@@ -12,7 +12,7 @@ final class NetworkQueue: NSObject {
                      NSURLErrorCallIsActive,
                      NSURLErrorDataNotAllowed,
                      NSURLErrorSecureConnectionFailed]
-  static let MaxRetryCount = 3
+  static let MaxRetriesInQueue = 5
   
   enum HTTPMethodType: String {
     case GET, POST, HEAD, PUT, DELETE, OPTIONS, CONNECT
@@ -78,13 +78,13 @@ final class NetworkQueue: NSObject {
     do {
       // Update row
       if try db.run(query.update(sqlParameters <- parameters, sqlHeader <- headerData)) > 0 {
-        Log.info(#file, "SQLite Row Updated - Success")
+        debugPrint("SQLite Row Updated - Success")
         
       // Insert new row
       } else {
         do {
           try db.run(sqlTable.insert(sqlLibraryID <- libraryID, sqlUpdateID <- updateID, sqlUrl <- urlString, sqlMethod <- methodString, sqlParameters <- parameters, sqlHeader <- headerData, sqlRetries <- 0))
-          Log.info(#file, "SQLite Row Added - Success")
+          debugPrint(#file, "SQLite Row Added - Success")
         } catch {
           Log.error(#file, "SQLite Error: Could not update table")
         }
@@ -112,9 +112,9 @@ final class NetworkQueue: NSObject {
   
   private class func retry(db: Connection, requestRow: Row)
   {
-    if (Int(requestRow[sqlRetries]) > MaxRetryCount) {
+    if (Int(requestRow[sqlRetries]) > MaxRetriesInQueue) {
       deleteRow(db: db, id: Int(requestRow[sqlID]))
-      Log.info(#file, "Removing after \(Int(requestRow[sqlRetries])) retries")
+      debugPrint(#file, "Removing after \(Int(requestRow[sqlRetries])) retries")
       return
     }
     
@@ -142,7 +142,7 @@ final class NetworkQueue: NSObject {
       if let response = response as? HTTPURLResponse {
         if response.statusCode == 200 {
           self.deleteRow(db: db, id: requestRow[sqlID])
-          Log.info(#file, "Successfully Completed Queued Request")
+          debugPrint(#file, "Successfully Completed Queued Request")
         }
       }
     }
@@ -153,7 +153,7 @@ final class NetworkQueue: NSObject {
   {
     let rowToDelete = sqlTable.filter(sqlID == id)
     if let _ = try? db.run(rowToDelete.delete()) {
-      Log.info(#file, "SQLite deleted row from queue")
+      debugPrint(#file, "SQLite deleted row from queue")
     } else {
       Log.error(#file, "SQLite Error: Could not delete row")
     }
