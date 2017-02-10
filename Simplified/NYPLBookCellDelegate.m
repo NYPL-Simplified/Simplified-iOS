@@ -61,7 +61,8 @@
   problemVC.popoverPresentationController.sourceRect = ((UIView *)sender).bounds;
   problemVC.book = book;
   problemVC.delegate = self;
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:problemVC animated:YES completion:nil];
+  UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:problemVC];
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:navController animated:YES completion:nil];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate
