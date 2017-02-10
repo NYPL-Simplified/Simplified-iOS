@@ -620,7 +620,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     {
         self.postLastRead = YES;
     }
-    else if (currentLocationString == nil && currentLocationString != nil)
+    else if (currentLocationString == nil && serverLocationString != nil)
     {
       [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
 

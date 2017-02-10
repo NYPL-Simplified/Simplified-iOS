@@ -181,8 +181,9 @@ final class NYPLAnnotations: NSObject {
   {
     let authenticationString = "\(NYPLAccount.shared().barcode!):\(NYPLAccount.shared().pin!)"
     let authenticationData:Data = authenticationString.data(using: String.Encoding.ascii)!
-    let authenticationValue = "Basic \(authenticationData.base64EncodedString(options: Data.Base64EncodingOptions.lineLength64Characters)))"
+    let authenticationValue = "Basic \(authenticationData.base64EncodedString(options: Data.Base64EncodingOptions.lineLength64Characters))"
     
-    return ["Authentication" : "\(authenticationValue)"]
+    return ["Authorization" : "\(authenticationValue)",
+      "Content-Type" : "application/json" ]
   }
 }
