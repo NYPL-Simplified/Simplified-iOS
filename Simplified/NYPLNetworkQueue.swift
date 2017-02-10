@@ -1,22 +1,22 @@
 import Foundation
 import SQLite
 
-let OfflineQueueStatusCodes = [NSURLErrorTimedOut,
-                               NSURLErrorCannotFindHost,
-                               NSURLErrorCannotConnectToHost,
-                               NSURLErrorNetworkConnectionLost,
-                               NSURLErrorNotConnectedToInternet,
-                               NSURLErrorInternationalRoamingOff,
-                               NSURLErrorCallIsActive,
-                               NSURLErrorDataNotAllowed,
-                               NSURLErrorSecureConnectionFailed]
-let QueueMaxRetryCount = 3
-
-enum HTTPMethodType: String {
-  case GET, POST, HEAD, PUT, DELETE, OPTIONS, CONNECT
-}
-
 final class NetworkQueue: NSObject {
+  
+  static let StatusCodes = [NSURLErrorTimedOut,
+                     NSURLErrorCannotFindHost,
+                     NSURLErrorCannotConnectToHost,
+                     NSURLErrorNetworkConnectionLost,
+                     NSURLErrorNotConnectedToInternet,
+                     NSURLErrorInternationalRoamingOff,
+                     NSURLErrorCallIsActive,
+                     NSURLErrorDataNotAllowed,
+                     NSURLErrorSecureConnectionFailed]
+  static let MaxRetryCount = 3
+  
+  enum HTTPMethodType: String {
+    case GET, POST, HEAD, PUT, DELETE, OPTIONS, CONNECT
+  }
   
   private static let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first!
   
@@ -112,7 +112,7 @@ final class NetworkQueue: NSObject {
   
   private class func retry(db: Connection, requestRow: Row)
   {
-    if (Int(requestRow[sqlRetries]) > QueueMaxRetryCount) {
+    if (Int(requestRow[sqlRetries]) > MaxRetryCount) {
       deleteRow(db: db, id: Int(requestRow[sqlID]))
       Log.info(#file, "Removing after \(Int(requestRow[sqlRetries])) retries")
       return

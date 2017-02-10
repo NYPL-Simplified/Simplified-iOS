@@ -26,7 +26,7 @@ final class NYPLAnnotations: NSObject {
           ]
         ],
         "body": [
-          "http://librarysimplified.org/terms/time" : iso8601CurrentTime(),
+          "http://librarysimplified.org/terms/time" : NSDate().rfc3339String(),
           "http://librarysimplified.org/terms/device" : NYPLAccount.shared().deviceID
         ]
         ] as [String : Any]
@@ -69,7 +69,7 @@ final class NYPLAnnotations: NSObject {
         }
       } else {
         guard let error = error as? NSError else { return }
-        if OfflineQueueStatusCodes.contains(error.code) {
+        if NetworkQueue.StatusCodes.contains(error.code) {
           self.addToOfflineQueue(book, url, parameters)
         }
         Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
@@ -167,15 +167,4 @@ final class NYPLAnnotations: NSObject {
     return ["Authorization" : "\(authenticationValue)",
             "Content-Type" : "application/json"]
   }
-  
-  class func iso8601CurrentTime() -> String
-  {
-    let dateFormatter = DateFormatter()
-    let enUSPosixLocale = Locale(identifier: "en_US_POSIX")
-    dateFormatter.locale = enUSPosixLocale
-    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-  
-    return dateFormatter.string(from: Date())
-  }
-
 }
