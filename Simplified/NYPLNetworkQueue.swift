@@ -30,6 +30,7 @@ final class NetworkQueue: NSObject {
   private static let sqlParameters = Expression<Data?>("requestParameters")
   private static let sqlHeader = Expression<Data?>("requestHeader")
   private static let sqlRetries = Expression<Int>("retryCount")
+  private static let sqlDateCreated = Expression<Data>("dateCreated")
   
   
   // MARK: - Public Functions
@@ -44,6 +45,7 @@ final class NetworkQueue: NSObject {
     // Serialize Data
     let urlString = requestUrl.absoluteString
     let methodString = method.rawValue
+    let dateCreated = NSKeyedArchiver.archivedData(withRootObject: Date())
     
     let headerData: Data?
     if headers != nil {
@@ -65,6 +67,7 @@ final class NetworkQueue: NSObject {
         t.column(sqlParameters)
         t.column(sqlHeader)
         t.column(sqlRetries)
+        t.column(sqlDateCreated)
       })
     } catch {
       Log.error(#file, "SQLite Error: Could not create table")
@@ -83,7 +86,7 @@ final class NetworkQueue: NSObject {
       // Insert new row
       } else {
         do {
-          try db.run(sqlTable.insert(sqlLibraryID <- libraryID, sqlUpdateID <- updateID, sqlUrl <- urlString, sqlMethod <- methodString, sqlParameters <- parameters, sqlHeader <- headerData, sqlRetries <- 0))
+          try db.run(sqlTable.insert(sqlLibraryID <- libraryID, sqlUpdateID <- updateID, sqlUrl <- urlString, sqlMethod <- methodString, sqlParameters <- parameters, sqlHeader <- headerData, sqlRetries <- 0, sqlDateCreated <- dateCreated))
           debugPrint(#file, "SQLite Row Added - Success")
         } catch {
           Log.error(#file, "SQLite Error: Could not update table")
