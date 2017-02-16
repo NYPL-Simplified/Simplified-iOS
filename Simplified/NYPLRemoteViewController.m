@@ -4,6 +4,9 @@
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLAlertController.h"
 #import "NYPLProblemDocument.h"
+#import "NYPLSession.h"
+#import "NYPLAccount.h"
+#import "NYPLSettingsAccountViewController.h"
 
 @interface NYPLRemoteViewController () <NSURLConnectionDataDelegate>
 
@@ -47,18 +50,29 @@
     [childViewController didMoveToParentViewController:nil];
   }
   
-  [self.connection cancel];
-  
-  NSURLRequest *const request = [NSURLRequest requestWithURL:self.URL
-                                                 cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                             timeoutInterval:10.0];
-  
-  self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-  self.data = [NSMutableData data];
-  
   [self.activityIndicatorView startAnimating];
   
-  [self.connection start];
+  
+  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+      [self.connection cancel];
+    
+      NSURLRequest *const request = [NSURLRequest requestWithURL:self.URL
+                                                     cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                 timeoutInterval:10.0];
+    
+      self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+      self.data = [NSMutableData data];
+    
+      
+      [self.connection start];
+  
+  } else {
+    [NYPLSettingsAccountViewController
+     requestCredentialsUsingExistingBarcode:NO
+     completionHandler:^{
+       [self load];
+     }];
+  }
 }
 
 #pragma mark UIViewController

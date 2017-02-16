@@ -11,7 +11,8 @@
 #import "UILabel+NYPLAppearanceAdditions.h"
 #import "UIButton+NYPLAppearanceAdditions.h"
 
-static NSString *const NYPLCirculationBaseURLProduction = @"https://circulation.librarysimplified.org";
+static NSString *const NYPLCirculationBaseURLProduction = @"http://api.deslibris.ca/api/opds?criteria=f_subject:HIS006000";
+//static NSString *const NYPLCirculationBaseURLProduction = @"https://circulation.librarysimplified.org";
 static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.librarysimplified.org/";
 
 static NSString *const heapIDProduction = @"3245728259";
