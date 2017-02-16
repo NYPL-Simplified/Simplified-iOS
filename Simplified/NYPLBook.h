@@ -15,7 +15,7 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
   NYPLBookAvailabilityStatusReserved     = 1 << 4
 };
 
-@interface NYPLBook : NSObject
+@interface NYPLBook : NSObject <NSCoding>
 
 @property (nonatomic, readonly) NYPLBookAcquisition *acquisition;
 @property (nonatomic, readonly) NSString *authors;

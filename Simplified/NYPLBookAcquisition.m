@@ -57,6 +57,53 @@ static NSString *const ReportKey = @"report";
   return self;
 }
 
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [super init]) {
+        
+        //@property (nonatomic) NSURL *borrow;
+        self.borrow = [decoder decodeObjectForKey:@"borrow"];
+        
+        //@property (nonatomic) NSURL *generic;
+        self.generic = [decoder decodeObjectForKey:@"generic"];
+        
+        //@property (nonatomic) NSURL *openAccess;
+        self.openAccess = [decoder decodeObjectForKey:@"openAccess"];
+        
+        //@property (nonatomic) NSURL *revoke;
+        self.revoke = [decoder decodeObjectForKey:@"revoke"];
+        
+        //@property (nonatomic) NSURL *sample;
+        self.sample = [decoder decodeObjectForKey:@"sample"];
+        
+        //@property (nonatomic) NSURL *report;
+        self.report = [decoder decodeObjectForKey:@"report"];
+        
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    
+    //@property (nonatomic) NSURL *borrow;
+    [encoder encodeObject:self.borrow forKey:@"borrow"];
+    
+    //@property (nonatomic) NSURL *generic;
+    [encoder encodeObject:self.generic forKey:@"generic"];
+    
+    //@property (nonatomic) NSURL *openAccess;
+    [encoder encodeObject:self.openAccess forKey:@"openAccess"];
+    
+    //@property (nonatomic) NSURL *revoke;
+    [encoder encodeObject:self.revoke forKey:@"revoke"];
+    
+    //@property (nonatomic) NSURL *sample;
+    [encoder encodeObject:self.sample forKey:@"sample"];
+    
+    //@property (nonatomic) NSURL *report;
+    [encoder encodeObject:self.report forKey:@"report"];
+    
+}
+
 - (NSDictionary *)dictionaryRepresentation
 {
   return @{BorrowKey: NYPLNullFromNil([self.borrow absoluteString]),

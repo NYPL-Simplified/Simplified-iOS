@@ -330,6 +330,134 @@ static NSString *const AlternateURLKey = @"alternate";
   return self;
 }
 
+- (id)initWithCoder:(NSCoder *)decoder {
+    
+    if (self = [super init]) {
+        
+        //@property (nonatomic) NYPLBookAcquisition *acquisition;
+        self.acquisition = [decoder decodeObjectForKey:@"acquisition"];
+        
+        //@property (nonatomic) NSArray *authorStrings;
+        self.authorStrings = [decoder decodeObjectForKey:@"authorStrings"];
+        
+        //@property (nonatomic) NYPLBookAvailabilityStatus availabilityStatus;
+        self.availabilityStatus = [decoder decodeIntegerForKey:@"availabilityStatus"];
+        
+        //@property (nonatomic) NSInteger availableCopies;
+        self.availableCopies = [decoder decodeIntegerForKey:@""];
+        
+        //@property (nonatomic) NSDate *availableUntil;
+        self.availableUntil = [decoder decodeObjectForKey:@"availableUntil"];
+        
+        //@property (nonatomic) NSArray *categoryStrings;
+        self.categoryStrings = [decoder decodeObjectForKey:@"categoryStrings"];
+        
+        //@property (nonatomic) NSString *distributor;
+        self.distributor = [decoder decodeObjectForKey:@"distributor"];
+        
+        //@property (nonatomic) NSString *identifier;
+        self.identifier = [decoder decodeObjectForKey:@"identifier"];
+        
+        //@property (nonatomic) NSURL *imageURL;
+        self.imageURL = [decoder decodeObjectForKey:@"imageURL"];
+        
+        //@property (nonatomic) NSURL *imageThumbnailURL;
+        self.imageThumbnailURL = [decoder decodeObjectForKey:@"imageThumbnailURL"];
+        
+        //@property (nonatomic) NSDate *published;
+        self.published = [decoder decodeObjectForKey:@"published"];
+        
+        //@property (nonatomic) NSString *publisher;
+        self.publisher = [decoder decodeObjectForKey:@"publisher"];
+        
+        //@property (nonatomic) NSString *subtitle;
+        self.subtitle = [decoder decodeObjectForKey:@"subtitle"];
+        
+        //@property (nonatomic) NSString *summary;
+        self.summary = [decoder decodeObjectForKey:@"summary"];
+        
+        //@property (nonatomic) NSString *title;
+        self.title = [decoder decodeObjectForKey:@"title"];
+        
+        //@property (nonatomic) NSDate *updated;
+        self.updated = [decoder decodeObjectForKey:@"updated"];
+        
+        //@property (nonatomic) NSURL *annotationsURL;
+        self.annotationsURL = [decoder decodeObjectForKey:@"annotationsURL"];
+        
+        //@property (nonatomic) NSURL *analyticsURL;
+        self.analyticsURL = [decoder decodeObjectForKey:@"analyticsURL"];
+        
+        //@property (nonatomic) NSURL *alternateURL;
+        self.alternateURL = [decoder decodeObjectForKey:@"alternateURL"];
+        
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    
+    //@property (nonatomic) NYPLBookAcquisition *acquisition;
+    [encoder encodeObject:self.acquisition forKey:@"acquisition"];
+    
+    //@property (nonatomic) NSArray *authorStrings;
+    [encoder encodeObject:self.authorStrings forKey:@"authorStrings"];
+    
+    //@property (nonatomic) NYPLBookAvailabilityStatus availabilityStatus;
+    [encoder encodeInteger:self.availabilityStatus forKey:@"availabilityStatus"];
+    
+    //@property (nonatomic) NSInteger availableCopies;
+    [encoder encodeInteger:self.availableCopies forKey:@"availableCopies"];
+    
+    //@property (nonatomic) NSDate *availableUntil;
+    [encoder encodeObject:self.availableUntil forKey:@"availableUntil"];
+    
+    //@property (nonatomic) NSArray *categoryStrings;
+    [encoder encodeObject:self.categoryStrings forKey:@"categoryStrings"];
+    
+    //@property (nonatomic) NSString *distributor;
+    [encoder encodeObject:self.distributor forKey:@"distributor"];
+    
+    //@property (nonatomic) NSString *identifier;
+    [encoder encodeObject:self.identifier forKey:@"identifier"];
+    
+    //@property (nonatomic) NSURL *imageURL;
+    [encoder encodeObject:self.imageURL forKey:@"imageURL"];
+    
+    //@property (nonatomic) NSURL *imageThumbnailURL;
+    [encoder encodeObject:self.imageThumbnailURL forKey:@"imageThumbnailURL"];
+    
+    //@property (nonatomic) NSDate *published;
+    [encoder encodeObject:self.published forKey:@"published"];
+    
+    //@property (nonatomic) NSString *publisher;
+    [encoder encodeObject:self.publisher forKey:@"publisher"];
+    
+    //@property (nonatomic) NSString *subtitle;
+    [encoder encodeObject:self.subtitle forKey:@"subtitle"];
+    
+    //@property (nonatomic) NSString *summary;
+    [encoder encodeObject:self.summary forKey:@"summary"];
+    
+    //@property (nonatomic) NSString *title;
+    [encoder encodeObject:self.title forKey:@"title"];
+    
+    //@property (nonatomic) NSDate *updated;
+    [encoder encodeObject:self.updated forKey:@"updated"];
+    
+    //@property (nonatomic) NSURL *annotationsURL;
+    [encoder encodeObject:self.annotationsURL forKey:@"annotationsURL"];
+    
+    //@property (nonatomic) NSURL *analyticsURL;
+    [encoder encodeObject:self.analyticsURL forKey:@"analyticsURL"];
+    
+    //@property (nonatomic) NSURL *alternateURL;
+    [encoder encodeObject:self.alternateURL forKey:@"alternateURL"];
+    
+}
+
+
 - (NSDictionary *)dictionaryRepresentation
 {
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],

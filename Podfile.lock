@@ -20,8 +20,8 @@ PODS:
   - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - Alamofire (3.5.1)
-  - Bugsnag (5.6.3):
+  - Alamofire (4.2.0)
+  - Bugsnag (5.6.5):
     - KSCrash/RecordingAdvanced (= 1.8.13)
   - CHRTextFieldFormatter (1.0.1)
   - HelpStack (1.1.2):
@@ -52,7 +52,7 @@ PODS:
   - PureLayout (3.0.2)
 
 DEPENDENCIES:
-  - Alamofire
+  - Alamofire (~> 4.0)
   - Bugsnag (from `https://github.com/bugsnag/bugsnag-cocoa.git`)
   - CHRTextFieldFormatter
   - HelpStack
@@ -66,7 +66,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Bugsnag:
-    :commit: 0f4b6ca821c997d04914bd3afe7cbcae7ae6d288
+    :commit: 3d79110a9e152d4b183c4ab10e37c510fe068c44
     :git: https://github.com/bugsnag/bugsnag-cocoa.git
   NYPLCardCreator:
     :commit: 1eabfd4071a2f3dbb1e4b3a3f049ffa2527a21cc
@@ -74,14 +74,14 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
-  Alamofire: 0dfba1184a543e2aa160f4e39cac4e8aba48d223
-  Bugsnag: cfddb45a8c56cf93169d29837797ac2786e35321
+  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
+  Bugsnag: a390acb8d937a9af54dd5044298a892e716c6eef
   CHRTextFieldFormatter: 13b6449dbd421d97b6e179e50d817165f9feebec
   HelpStack: a9067738597ef81835d84ac8bb75ee346e34f000
   KSCrash: 4c3a83f133b60f4bd57e05235ebf8d46e36d378d
   NYPLCardCreator: 460354288acc75f31e4058ccae7353ddc7daa6b6
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
 
-PODFILE CHECKSUM: 731f9b4ba564b2cd9be452f9d9badf0bbfa1b1f3
+PODFILE CHECKSUM: 504b5aa560f83b3b35975d7b0e68038d87d881d7
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.1.1

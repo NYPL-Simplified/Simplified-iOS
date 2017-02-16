@@ -44,7 +44,6 @@
     button.tag = bookIndex;
     UIImage *const image = bookIdentifiersToImages[book.identifier];
     if(!image) {
-      NSDictionary *infodict = @{@"title":book.title, @"identifier":book.identifier};
       NYPLLOG_F(@"Did not receive cover for '%@'.", book.title);
     }
     [button setImage:(image ? image : [UIImage imageNamed:@"NoCover"])

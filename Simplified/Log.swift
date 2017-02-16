@@ -3,30 +3,30 @@ import Foundation
 final class Log {
   
   enum Level {
-    case Debug
-    case Info
-    case Warn
-    case Error
+    case debug
+    case info
+    case warn
+    case error
   }
   
-  private class func levelToString(level: Level) -> String {
+  fileprivate class func levelToString(_ level: Level) -> String {
     switch level {
-    case .Debug:
+    case .debug:
       return "DEBUG"
-    case .Info:
+    case .info:
       return "INFO"
-    case .Warn:
+    case .warn:
       return "WARNING"
-    case .Error:
+    case .error:
       return "ERROR"
     }
   }
   
-  class func log(level: Level, _ tag: String, _ message: String, error: ErrorType? = nil) {
+  class func log(_ level: Level, _ tag: String, _ message: String, error: Error? = nil) {
     #if DEBUG
       let shouldLog = true
     #else
-      let shouldLog = level != .Debug
+      let shouldLog = level != .debug
     #endif
     
     if shouldLog {
@@ -34,19 +34,19 @@ final class Log {
     }
   }
   
-  class func debug(tag: String, _ message: String, error: ErrorType? = nil) {
-    log(.Debug, tag, message, error: error)
+  class func debug(_ tag: String, _ message: String, error: Error? = nil) {
+    log(.debug, tag, message, error: error)
   }
   
-  class func info(tag: String, _ message: String, error: ErrorType? = nil) {
-    log(.Info, tag, message, error: error)
+  class func info(_ tag: String, _ message: String, error: Error? = nil) {
+    log(.info, tag, message, error: error)
   }
   
-  class func warn(tag: String, _ message: String, error: ErrorType? = nil) {
-    log(.Warn, tag, message, error: error)
+  class func warn(_ tag: String, _ message: String, error: Error? = nil) {
+    log(.warn, tag, message, error: error)
   }
   
-  class func error(tag: String, _ message: String, error: ErrorType? = nil) {
-    log(.Error, tag, message, error: error)
+  class func error(_ tag: String, _ message: String, error: Error? = nil) {
+    log(.error, tag, message, error: error)
   }
 }
