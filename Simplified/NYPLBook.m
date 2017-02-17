@@ -85,7 +85,7 @@ static NSString *const AlternateURLKey = @"alternate";
   BOOL isEPUBAvailable = NO;
   for(NYPLOPDSLink *const link in entry.links) {
     for(NSString *const acqusitionFormat in link.acquisitionFormats) {
-      if([acqusitionFormat containsString:@"application/epub+zip"]) {
+      if([acqusitionFormat containsString:@"application/epub+zip"] || [acqusitionFormat containsString:@"application/epub"]) {
         isEPUBAvailable = YES;
       }
     }
