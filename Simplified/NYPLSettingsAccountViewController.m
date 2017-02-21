@@ -188,17 +188,17 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
-- (void)viewDidAppear:(BOOL)animated
-{
-  [super viewDidAppear:animated];
-  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
-    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-      self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
-      self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
-      [self logIn];
-    }
-  }
-}
+//- (void)viewDidAppear:(BOOL)animated
+//{
+//  [super viewDidAppear:animated];
+//  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
+//    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+//      self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
+//      self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
+//      [self logIn];
+//    }
+//  }
+//}
 #endif
 
 #pragma mark UITableViewDelegate

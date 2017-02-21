@@ -83,7 +83,7 @@ static NSString *const heapIDDevelopment = @"1848989408";
 
 + (NSURL *)loanURL
 {
-    return [[self circulationURL] URLByAppendingPathComponent:@"loans"];
+  return [NSURL URLWithString:@"http://api.deslibris.ca/api/opds?action=GetShelf"];
 }
 
 + (BOOL)cardCreationEnabled

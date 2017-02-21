@@ -28,7 +28,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   for(NYPLOPDSLink *const link in entry.links) {
     // This is how you can detect a catalog entry of an acquisition feed according to section 8 of
     // OPDS Catalog 1.1.
-    if([link.rel hasPrefix:@"http://opds-spec.org/acquisition"]) {
+    if([link.rel hasPrefix:@"http://opds-spec.org/acquisition"] || [link.rel hasPrefix:@"borrow"]) {
       entryIsCatalogEntry = YES;
     } else if([link.rel isEqualToString:NYPLOPDSRelationGroup]) {
       entryIsGrouped = YES;
