@@ -1,6 +1,9 @@
 #import "NYPLConfiguration.h"
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
+#import "NYPLSession.h"
+#import "NYPLSettingsAccountViewController.h"
+#import "NYPLAppDelegate.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLAlertController.h"
 #import "NYPLProblemDocument.h"
@@ -51,28 +54,47 @@
   }
   
   [self.activityIndicatorView startAnimating];
+  self.reloadView.hidden = YES;
   
+  [[NYPLSession sharedSession] withURL:self.URL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    [self.activityIndicatorView stopAnimating];
   
-  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-      [self.connection cancel];
+    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
     
-      NSURLRequest *const request = [NSURLRequest requestWithURL:self.URL
-                                                     cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                                 timeoutInterval:10.0];
+    // It should only ever be cancelled due to failing to authenticate
+    if(error.code == NSURLErrorCancelled ||  httpResponse.statusCode == 401) {
     
-      self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-      self.data = [NSMutableData data];
-    
-      
-      [self.connection start];
-  
-  } else {
-    [NYPLSettingsAccountViewController
+        [NYPLSettingsAccountViewController
      requestCredentialsUsingExistingBarcode:NO
      completionHandler:^{
        [self load];
      }];
+
+    
+      self.reloadView.hidden = NO;
+      return;
+    }
+      
+    UIViewController *const viewController = self.handler(self, data, response);
+  
+    if(viewController) {
+      [self addChildViewController:viewController];
+      viewController.view.frame = self.view.bounds;
+      [self.view addSubview:viewController.view];
+      if(viewController.navigationItem.rightBarButtonItems) {
+        self.navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems;
+      }
+      if(viewController.navigationItem.leftBarButtonItems) {
+        self.navigationItem.leftBarButtonItems = viewController.navigationItem.leftBarButtonItems;
+      }
+      if(viewController.navigationItem.title) {
+        self.navigationItem.title = viewController.navigationItem.title;
+      }
+      [viewController didMoveToParentViewController:self];
+  } else {
+      self.reloadView.hidden = NO;
   }
+  }];
 }
 
 #pragma mark UIViewController

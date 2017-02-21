@@ -111,7 +111,7 @@ static NSString *const AlternateURLKey = @"alternate";
       generic = link.href;
       continue;
     }
-    if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionBorrow]) {
+    if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionBorrow] || [link.rel isEqualToString:@"borrow"]) {
       borrow = link.href;
       borrowFormats = link.acquisitionFormats;
       continue;
