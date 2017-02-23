@@ -132,11 +132,17 @@ static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
   self.delegate = delegate;
   
   @try {
+    // TEMPORARY. Hard code the path to demonstrate a URMS protected book.
+    NSURL *bookURL = [[NSBundle mainBundle] URLForResource:@"UrmsSample.epub" withExtension:nil];
+    self.container = [[RDContainer alloc] initWithDelegate:self.containerDelegate path:bookURL.path];
+
+/*
     self.container = [[RDContainer alloc]
                       initWithDelegate:self.containerDelegate
                       path:[[[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                              fileURLForBookIndentifier:book.identifier]
                             path]];
+*/
   } @catch (...) {
     self.bookIsCorrupt = YES;
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{

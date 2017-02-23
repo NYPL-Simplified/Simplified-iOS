@@ -121,6 +121,9 @@
 		2DC8D9DC1D09F797007DD125 /* UpdateCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */; };
 		2DCF860B1CFC0DC6000BCE77 /* privacy-policy.html in Resources */ = {isa = PBXBuildFile; fileRef = 2DCF860A1CFC0DC6000BCE77 /* privacy-policy.html */; };
 		2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */; };
+		34652F481E5F61B00032C140 /* BCLUrms.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34652F471E5F61B00032C140 /* BCLUrms.framework */; };
+		34652F491E5F61B00032C140 /* BCLUrms.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 34652F471E5F61B00032C140 /* BCLUrms.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		34652F511E5F620F0032C140 /* UrmsSample.epub in Resources */ = {isa = PBXBuildFile; fileRef = 34652F501E5F620F0032C140 /* UrmsSample.epub */; };
 		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
 		5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
@@ -204,6 +207,20 @@
 			remoteInfo = RDServices;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		34652F4E1E5F61B00032C140 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				34652F491E5F61B00032C140 /* BCLUrms.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		032A31061DC02E8E0001E4AF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -435,6 +452,8 @@
 		2DFAC8EB1CD8DDD1003D9EC0 /* NYPLOPDSCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSCategory.h; sourceTree = "<group>"; };
 		2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSCategory.m; sourceTree = "<group>"; };
 		2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimplyE.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		34652F471E5F61B00032C140 /* BCLUrms.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BCLUrms.framework; sourceTree = "<group>"; };
+		34652F501E5F620F0032C140 /* UrmsSample.epub */ = {isa = PBXFileReference; lastKnownFileType = file; path = UrmsSample.epub; sourceTree = "<group>"; };
 		56A7B7786F9B146602623617 /* Pods-SimplyETests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyETests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests.release.xcconfig"; sourceTree = "<group>"; };
 		579E9BC126424F2B79C0FE7E /* Pods-SimplyETests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyETests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests.debug.xcconfig"; sourceTree = "<group>"; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
@@ -532,6 +551,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34652F481E5F61B00032C140 /* BCLUrms.framework in Frameworks */,
 				035E29F41E5666D80010A6C2 /* NYPLCardCreator.framework in Frameworks */,
 				2D6F7CA91D910C3C000B906A /* HelpStack.framework in Frameworks */,
 				2D6F7CA71D910C12000B906A /* Bugsnag.framework in Frameworks */,
@@ -811,6 +831,15 @@
 			name = Holds;
 			sourceTree = "<group>";
 		};
+		34652F4F1E5F61CB0032C140 /* URMS */ = {
+			isa = PBXGroup;
+			children = (
+				34652F471E5F61B00032C140 /* BCLUrms.framework */,
+				34652F501E5F620F0032C140 /* UrmsSample.epub */,
+			);
+			name = URMS;
+			sourceTree = "<group>";
+		};
 		5A569A271B8351C6003B5B61 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -872,6 +901,7 @@
 				A823D80E192BABA400B55DE2 /* Products */,
 				A823D816192BABA400B55DE2 /* Simplified */,
 				A823D82F192BABA400B55DE2 /* SimplifiedTests */,
+				34652F4F1E5F61CB0032C140 /* URMS */,
 				A12A6ACAB811A2E0B2BC0047 /* Pods */,
 			);
 			sourceTree = "<group>";
@@ -1118,6 +1148,8 @@
 				FE8719C55955B22F68EDF819 /* Upload Bugsnag dSYM */,
 				8ED1E1320C2F37F0410DA796 /* [CP] Embed Pods Frameworks */,
 				7D35AB55AEA925FC3399FA2A /* [CP] Copy Pods Resources */,
+				34652F4E1E5F61B00032C140 /* Embed Frameworks */,
+				349904191E5F6394004A044A /* Remove Unused Architectures from the Bluefire Cloudshelf SDK Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1246,6 +1278,7 @@
 				2D6256911D41582A0080A81F /* software-licenses.html in Resources */,
 				A823D81B192BABA400B55DE2 /* InfoPlist.strings in Resources */,
 				11C113D019F842B9005B3F63 /* reader.html in Resources */,
+				34652F511E5F620F0032C140 /* UrmsSample.epub in Resources */,
 				110F853E19D5FA7300052DF7 /* DetailSummaryTemplate.html in Resources */,
 				B594C7561BB06F40000028F5 /* HelpStackTheme.plist in Resources */,
 				111E758B1A840A1600718AD7 /* credits.html in Resources */,
@@ -1265,6 +1298,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		349904191E5F6394004A044A /* Remove Unused Architectures from the Bluefire Cloudshelf SDK Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Remove Unused Architectures from the Bluefire Cloudshelf SDK Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#\n# This script removes unused architectures from the Bluefire Cloudshelf SDK frameworks, which\n# are fat binaries that make it possible to develop apps in both the simulator and on devices.\n# Apple does not allow app store submissions to contain simulator architectures.\n#\n# In Xcode, select the target, then Build Phases, and make sure this script comes after the\n# \"Embed Frameworks\" step.\n#\n# This script is based on\n# http://ikennd.ac/blog/2015/02/stripping-unwanted-architectures-from-dynamic-libraries-in-xcode/\n#\n\nAPP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\nfind \"$APP_PATH\" -name 'BCL*.framework' -type d | while read -r FRAMEWORK\ndo\n\tFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\n\tFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\n\techo \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\tEXTRACTED_ARCHS=()\n\n\tfor ARCH in $ARCHS\n\tdo\n\t\techo \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\n\t\tlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\n\t\tEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\n\tdone\n\n\techo \"Merging extracted architectures: ${ARCHS}\"\n\tlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\n\trm \"${EXTRACTED_ARCHS[@]}\"\n\n\techo \"Replacing original executable with thinned version\"\n\trm \"$FRAMEWORK_EXECUTABLE_PATH\"\n\tmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\ndone\n";
+		};
 		41F038C098C06905E3E27529 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1703,6 +1750,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos/NYPLCardCreator",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
@@ -1750,6 +1798,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos/NYPLCardCreator",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";

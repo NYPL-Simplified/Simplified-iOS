@@ -1,0 +1,6 @@
+framework module BCLUrms {
+  umbrella header "BCLUrms.h"
+
+  export *
+  module * { export * }
+}

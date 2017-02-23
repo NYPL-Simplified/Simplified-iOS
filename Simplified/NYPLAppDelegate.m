@@ -7,6 +7,8 @@
 #import "NYPLEULAViewController.h"
 #import "NYPLSettings.h"
 
+@import BCLUrms;
+
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
 #import "NYPLAccount.h"
@@ -32,7 +34,10 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   // This is normally not called directly, but we put all programmatic appearance setup in
   // NYPLConfiguration's class initializer.
   [NYPLConfiguration initialize];
-  
+
+  [BCLUrmsInitializer initializeWithApiKey:@"4f22965e1bf7679114850aac7ff644fefabc9af5"
+    marlinURL:@"https://urms-marlin-us.codefusion.technology/bks/"];
+
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.tintColor = [NYPLConfiguration mainColor];
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;

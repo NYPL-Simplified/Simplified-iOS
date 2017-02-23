@@ -156,7 +156,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
                                         UIViewAutoresizingFlexibleHeight);
   self.PINTextField.font = [UIFont systemFontOfSize:17];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
-//  self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
+  self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
   self.PINTextField.secureTextEntry = YES;
   self.PINTextField.delegate = self;
   [self.PINTextField
@@ -188,17 +188,17 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
-//- (void)viewDidAppear:(BOOL)animated
-//{
-//  [super viewDidAppear:animated];
-//  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
-//    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-//      self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
-//      self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
-//      [self logIn];
-//    }
-//  }
-//}
+- (void)viewDidAppear:(BOOL)animated
+{
+  [super viewDidAppear:animated];
+  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
+    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+      self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
+      self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
+      [self logIn];
+    }
+  }
+}
 #endif
 
 #pragma mark UITableViewDelegate
@@ -458,7 +458,7 @@ replacementString:(NSString *)string
   }
   
   if(textField == self.PINTextField) {
-    if([string stringByTrimmingCharactersInSet:[NSCharacterSet alphanumericCharacterSet]].length > 0) {
+    if([string stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]].length > 0) {
       return NO;
     }
     
@@ -673,12 +673,12 @@ replacementString:(NSString *)string
 - (void)validateCredentials
 {
   NSMutableURLRequest *const request =
-    [NSMutableURLRequest requestWithURL:[NYPLConfiguration circulationURL]];
+    [NSMutableURLRequest requestWithURL:[NYPLConfiguration loanURL]];
   
   // Necessary to support longer login times when using usernames.
   request.timeoutInterval = 20.0;
   
-  request.HTTPMethod = @"GET";
+  request.HTTPMethod = @"HEAD";
   
   NSURLSessionDataTask *const task =
     [self.session
@@ -697,17 +697,17 @@ replacementString:(NSString *)string
        
        // Success.
        if(statusCode == 200) {
-//#if defined(FEATURE_DRM_CONNECTOR)
-//         [[NYPLADEPT sharedInstance]
-//          authorizeWithVendorID:@"NYPL"
-//          username:self.barcodeTextField.text
-//          password:self.PINTextField.text
-//          completion:^(BOOL success, NSError *error) {
-//            [self authorizationAttemptDidFinish:success error:error];
-//          }];
-//#else
+#if defined(FEATURE_DRM_CONNECTOR)
+         [[NYPLADEPT sharedInstance]
+          authorizeWithVendorID:@"NYPL"
+          username:self.barcodeTextField.text
+          password:self.PINTextField.text
+          completion:^(BOOL success, NSError *error) {
+            [self authorizationAttemptDidFinish:success error:error];
+          }];
+#else
          [self authorizationAttemptDidFinish:YES error:nil];
-//#endif
+#endif
          self.isLoggingInAfterSignUp = NO;
          return;
        }

@@ -1,5 +1,6 @@
 #import "NYPLReaderContainerDelegate.h"
 #import "NYPLLOG.h"
+#include <ePub3/marlin_decrypter.h>
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #pragma clang diagnostic push
@@ -23,7 +24,8 @@ isSevereEpubError:(__unused const BOOL)isSevereEpubError
 #if defined(FEATURE_DRM_CONNECTOR)
 - (void)containerRegisterContentFilters:(__attribute__((unused)) RDContainer *)container
 {
-  ePub3::AdeptFilter::Register();
+  //ePub3::AdeptFilter::Register();
+  ePub3::MarlinDecrypter::Register();
 }
 #endif
 
