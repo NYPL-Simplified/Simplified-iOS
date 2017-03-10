@@ -13,27 +13,19 @@
 #import "SimplyE-Swift.h"
 #import "NYPLAppDelegate.h"
 
-
-//static NSString *const NYPLCirculationBaseURLProduction = @"https://circulation.librarysimplified.org";
-//static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.librarysimplified.org/";
-
-static NSString *const heapIDProduction = @"3245728259";
-static NSString *const heapIDDevelopment = @"1848989408";
-
 @implementation NYPLConfiguration
 
 + (void)initialize
 {
   [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
+    
   HSDeskGear *deskGear = [[HSDeskGear alloc]
                           initWithInstanceBaseUrl:@"https://nypl.desk.com/"
-                          toHelpEmail:@"jamesenglish@nypl.org"
-                          staffLoginEmail:@"jamesenglish@nypl.org"
-                          AndStaffLoginPassword:@"Marin1010!"
-                          andBrand:@"12060"];
+                          token:@""
+                          andBrand:@""];
+    
   HSHelpStack *helpStack = [HSHelpStack instance];
   helpStack.gear = deskGear;
-  
   
   if([NYPLConfiguration bugsnagEnabled]) {
     [Bugsnag startBugsnagWithApiKey:[NYPLConfiguration bugsnagID]];
@@ -49,31 +41,18 @@ static NSString *const heapIDDevelopment = @"1848989408";
 #endif
 }
 
-+ (BOOL) heapEnabled
-{
-  return !TARGET_OS_SIMULATOR;
-}
 
 + (BOOL) bugsnagEnabled
 {
   return !TARGET_OS_SIMULATOR;
 }
 
-+ (NSString *)heapID
-{
-//  return heapIDProduction;
-  return heapIDDevelopment;
-}
 
 + (NSString *) bugsnagID
 {
   return @"76cb0080ae8cc30d903663e10b138381";
 }
 
-//+ (NSURL *)circulationURL
-//{
-//  return [NSURL URLWithString:NYPLCirculationBaseURLProduction];
-//}
 
 + (NSURL *)mainFeedURL
 {
@@ -86,7 +65,6 @@ static NSString *const heapIDDevelopment = @"1848989408";
   if(accountURL) return accountURL;
 
   return nil;
-//  return [self circulationURL];
 }
 
 + (NSURL *)loanURL
