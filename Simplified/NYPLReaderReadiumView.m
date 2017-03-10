@@ -411,8 +411,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NSURLRequest *const request = navigationAction.request;
   
   if([request.URL.scheme isEqualToString:@"simplified"]) {
-    NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
-    NSString *const function = components[0];
+//    NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
+//    NSString *const function = components[0];
     NYPLLOG(@"Ignoring unknown simplified function.");
     decisionHandler(WKNavigationActionPolicyCancel);
     return;
@@ -620,7 +620,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     {
         self.postLastRead = YES;
     }
-    else if (currentLocationString == nil && currentLocationString != nil)
+    else if (currentLocationString == nil && serverLocationString != nil)
     {
       [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
 
@@ -695,7 +695,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
           setLocation:location
           forIdentifier:weakSelf.book.identifier];
          }
-       if( self.postLastRead) {
+       if(self.postLastRead) {
          // post last read position to server
          [NYPLAnnotations postLastRead:weakSelf.book cfi:location.locationString];
        }

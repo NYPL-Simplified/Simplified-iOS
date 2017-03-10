@@ -13,6 +13,7 @@
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "NYPLSettings.h"
 
 #import "NYPLCatalogUngroupedFeedViewController.h"
 
@@ -134,6 +135,7 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
   }
   
   [refreshControl endRefreshing];
+  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
 }
 
 #pragma mark UICollectionViewDataSource

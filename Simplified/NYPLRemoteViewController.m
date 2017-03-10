@@ -1,6 +1,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
+#import "NYPLSettings.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLAlertController.h"
 #import "NYPLProblemDocument.h"
@@ -40,7 +41,9 @@
 
 - (void)load
 {
-  if(self.childViewControllers.count > 0) {
+  self.reloadView.hidden = YES;
+  
+  while(self.childViewControllers.count > 0) {
     UIViewController *const childViewController = self.childViewControllers[0];
     [childViewController.view removeFromSuperview];
     [childViewController removeFromParentViewController];
@@ -57,6 +60,8 @@
   self.data = [NSMutableData data];
   
   [self.activityIndicatorView startAnimating];
+  
+//  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
   
   [self.connection start];
 }
@@ -145,7 +150,7 @@
   
   self.response = nil;
   self.connection = nil;
-  self.data = nil;
+  self.data = [NSMutableData data];
 }
 
 #pragma mark NSURLConnectionDelegate
@@ -157,8 +162,13 @@
   
   self.reloadView.hidden = NO;
   
+//  if (error) {
+//    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"Error" error:error];
+//    [self presentViewController:alert animated:YES completion:nil];
+//  }
+  
   self.connection = nil;
-  self.data = nil;
+  self.data = [NSMutableData data];
   self.response = nil;
 }
 

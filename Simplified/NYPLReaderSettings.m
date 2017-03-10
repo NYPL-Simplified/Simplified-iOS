@@ -3,6 +3,8 @@
 #import "UIColor+NYPLColorAdditions.h"
 
 #import "NYPLReaderSettings.h"
+#import "NYPLSettings.h"
+#import "SimplyE-Swift.h"
 
 BOOL NYPLReaderSettingsDecreasedFontSize(NYPLReaderSettingsFontSize const input,
                                          NYPLReaderSettingsFontSize *const output)
@@ -193,17 +195,9 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
 
 - (NSURL *)settingsURL
 {
-  NSArray *const paths =
-    NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  NSURL *URL = [[DirectoryManager current] URLByAppendingPathComponent:@"settings.json"];
   
-  assert([paths count] == 1);
-  
-  NSString *const path = paths[0];
-  
-  return [[[NSURL fileURLWithPath:path]
-           URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                        objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-          URLByAppendingPathComponent:@"settings.json"];
+  return URL;
 }
 
 - (void)load

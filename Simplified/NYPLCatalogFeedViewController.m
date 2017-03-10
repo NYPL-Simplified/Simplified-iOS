@@ -5,6 +5,8 @@
 #import "NYPLConfiguration.h"
 #import "NYPLOPDS.h"
 #import "NYPLXML.h"
+#import "SimplyE-Swift.h"
+#import "NYPLSettings.h"
 
 #import "NYPLCatalogFeedViewController.h"
 
@@ -41,9 +43,9 @@
                 case NYPLOPDSFeedTypeInvalid:
                   NYPLLOG(@"Cannot initialize due to invalid feed.");
                   return nil;
-                case NYPLOPDSFeedTypeNavigation:
-                  NYPLLOG(@"Cannot initialize due to lack of support for navigation feeds.");
-                  return nil;
+                case NYPLOPDSFeedTypeNavigation: {
+                  return [self navigationFeedWithData:XML remoteVC:remoteViewController];
+                }
               }
             }
             else {
@@ -57,17 +59,50 @@
   return self;
 }
 
+// Only NavigationType Feed currently supported in the app is for two
+// "Instant Classic" feeds presented based on user's age.
+- (UIViewController *)navigationFeedWithData:(NYPLXML *)data remoteVC:(NYPLRemoteViewController *)vc
+{
+  NYPLXML *gatedXML = [data firstChildWithName:@"gate"];
+  if (!gatedXML) {
+    NYPLLOG(@"Cannot initialize due to lack of support for navigation feeds.");
+    return nil;
+  }
+  
+  [AgeCheck verifyCurrentAccountAgeRequirement:^(BOOL ageAboveLimit) {
+    NSURL *url;
+    if (ageAboveLimit) {
+      url = [NSURL URLWithString:gatedXML.attributes[@"restriction-met"]];
+    } else {
+      url = [NSURL URLWithString:gatedXML.attributes[@"restriction-not-met"]];
+    }
+    [vc setURL:url];
+    [vc load];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+
+  }];
+  
+  return [[UIViewController alloc] init];
+}
+
 #pragma mark UIViewController
 
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+  NYPLSettings *settings = [NYPLSettings sharedSettings];
   
-  [self load];
+  if (settings.userHasSeenWelcomeScreen == YES) {
+    [self load];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+
+  }
 }
 
 - (void) reloadCatalogue {
   [self load];
+//  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+
 }
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated

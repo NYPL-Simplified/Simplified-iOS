@@ -7,18 +7,30 @@
 @property (nonatomic) UIWebView *webView;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
-@end
+@property (nonatomic) NSURL *eulaURL;
 
-static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.org/EULA.html";
+@end
 
 @implementation NYPLSettingsEULAViewController
 
-- (instancetype)init
+- (instancetype)initWithAccount:(Account *)account
 {
   self = [super init];
   if(!self) return nil;
   
   self.title = NSLocalizedString(@"EULA", nil);
+  self.eulaURL = [account getLicenseURL:URLTypeEula];
+  
+  return self;
+}
+
+- (instancetype)initWithNYPLURL
+{
+  self = [super init];
+  if(!self) return nil;
+  
+  self.title = NSLocalizedString(@"EULA", nil);
+  self.eulaURL = [NSURL URLWithString:NYPLUserAgreementURLString];
   
   return self;
 }
@@ -35,17 +47,11 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
   self.webView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.webView.delegate = self;
   
-  NSURL *url = [[NYPLSettings sharedSettings] eulaURL];
-  if (!url) {
-    url = [NSURL URLWithString:fallbackEULAURLString];
-  }
-  
-  NSURLRequest *const request = [NSURLRequest requestWithURL:url
+  NSURLRequest *const request = [NSURLRequest requestWithURL:self.eulaURL
                                                  cachePolicy:NSURLRequestUseProtocolCachePolicy
                                              timeoutInterval:15.0];
   
-  [self.webView loadRequest:
-   request];
+  [self.webView loadRequest:request];
   [self.view addSubview:self.webView];
   
   self.activityIndicatorView =
@@ -56,45 +62,46 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
                                                  UIViewAutoresizingFlexibleHeight);
   [self.activityIndicatorView startAnimating];
   [self.view addSubview:self.activityIndicatorView];
+  
+  if ( self == [self.navigationController.viewControllers objectAtIndex:0] ) {
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(dismissEULA)];
+  }
 }
 
-- (void)loadLocalURLFromRequest:(NSURLRequest *)request
+- (void)dismissEULA
 {
-  NSURL *localURL = [[NSBundle mainBundle] URLForResource:@"eula" withExtension:@"html"];
-  if ([[request URL] isEqual:localURL] == NO) {
-    [self.webView loadRequest:[NSURLRequest requestWithURL:localURL]];
-  }
+  [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark NSURLConnectionDelegate
 - (void)webView:(__attribute__((unused)) UIWebView *)webView didFailLoadWithError:(__attribute__((unused)) NSError *)error {
   [self.activityIndicatorView stopAnimating];
   
-  // Try local URL if remote URL has failed
-  [self loadLocalURLFromRequest: [webView request]];
-  
-  UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"ConnectionFailed", nil)
-                                                                           message:NSLocalizedString(@"ConnectionFailed", nil)
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
+  UIAlertController *alertController = [UIAlertController
+                                        alertControllerWithTitle:NSLocalizedString(@"ConnectionFailed", nil)
+                                        message:NSLocalizedString(@"ConnectionFailedDescription", nil)
+                                        preferredStyle:UIAlertControllerStyleAlert];
   
   UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                          style:UIAlertActionStyleDestructive
-                                                       handler:nil];
+                                                       handler:^(UIAlertAction *cancelAction) {
+                                                         if (cancelAction) {
+                                                           [self.navigationController popViewControllerAnimated:YES];
+                                                         }
+                                                       }];
   
   UIAlertAction *reloadAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Reload", nil)
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction *reloadAction) {
                                                        if (reloadAction) {
-                                                         NSURL *url = [[NYPLSettings sharedSettings] eulaURL];
-                                                         if (!url) {
-                                                           url = [NSURL URLWithString:fallbackEULAURLString];
-                                                         }
-                                                         NSURLRequest *const request = [NSURLRequest requestWithURL:url
+                                                         NSURLRequest *const request = [NSURLRequest requestWithURL:self.eulaURL
                                                                                                         cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                                                                     timeoutInterval:15.0];
                                                          
-                                                         [self.webView loadRequest:
-                                                          request];
+                                                         [self.webView loadRequest:request];
                                                        }
                                                      }];
   
@@ -107,13 +114,6 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
 
 - (void)webViewDidFinishLoad:(__attribute__((unused)) UIWebView *)webView {
   [self.activityIndicatorView stopAnimating];
-  
-  NSCachedURLResponse *urlResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:webView.request];
-  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*) urlResponse.response;
-  NSInteger statusCode = httpResponse.statusCode;
-  if (statusCode != 200) {
-    [self loadLocalURLFromRequest:[webView request]];
-  }
 }
 
 @end

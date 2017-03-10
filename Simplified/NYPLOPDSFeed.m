@@ -5,8 +5,13 @@
 #import "NYPLOPDSRelation.h"
 #import "NYPLSession.h"
 #import "NYPLXML.h"
-
+#import "SimplyE-Swift.h"
+#import "NYPLAccount.h"
 #import "NYPLOPDSFeed.h"
+
+#if defined(FEATURE_DRM_CONNECTOR)
+#import <ADEPT/ADEPT.h>
+#endif
 
 @interface NYPLOPDSFeed ()
 
@@ -17,6 +22,7 @@
 @property (nonatomic) NYPLOPDSFeedType type;
 @property (nonatomic) BOOL typeIsCached;
 @property (nonatomic) NSDate *updated;
+@property (nonatomic) NSMutableDictionary *licensor;
 
 @end
 
@@ -54,8 +60,8 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     @throw NSInvalidArgumentException;
   }
   
-  [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-    NSDictionary *infoDict = error ? @{@"error":[error localizedDescription]} : nil;
+  [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data, NSURLResponse *response, __attribute__((unused))NSError *error) {
+//    NSDictionary *infoDict = error ? @{@"error":[error localizedDescription]} : nil;
     if(!data) {
       NYPLLOG(@"Failed to retrieve data.");
       NYPLAsyncDispatch(^{handler(nil, nil);});
@@ -65,10 +71,10 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     if ([(NSHTTPURLResponse *)response statusCode] != 200
         && ([response.MIMEType isEqualToString:@"application/problem+json"]
             || [response.MIMEType isEqualToString:@"application/api-problem+json"])) {
-      NSDictionary *error = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
-      NYPLAsyncDispatch(^{handler(nil, error);});
-      return;
-    }
+          NSDictionary *error = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
+          NYPLAsyncDispatch(^{handler(nil, error);});
+          return;
+        }
     
     NYPLXML *const feedXML = [NYPLXML XMLWithData:data];
     if(!feedXML) {
@@ -159,6 +165,82 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     self.entries = entries;
   }
   
+  {
+    //licensor
+    NYPLXML *licensorXML = [feedXML firstChildWithName:@"licensor"];
+    if (licensorXML && licensorXML.attributes.allValues.count>0) {
+      NSString *vendor = licensorXML.attributes[@"drm:vendor"];
+      NYPLXML *vendorXML = [licensorXML firstChildWithName:@"clientToken"];
+      
+     if (vendorXML) {
+       
+       NSString *clientToken = vendorXML.value;
+       
+       self.licensor = @{@"vendor":vendor,
+                         @"clientToken":clientToken}.mutableCopy;
+
+       
+      for(NYPLXML *const linkXML in [licensorXML childrenWithName:@"link"]) {
+        NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
+        if(!link) {
+          NYPLLOG(@"Ignoring malformed 'link' element.");
+          continue;
+        }
+        if ([link.rel isEqualToString:@"http://librarysimplified.org/terms/drm/rel/devices"])
+        {
+          [self.licensor setValue:link.href.absoluteString forKey:@"deviceManager"];
+          continue;
+        }
+      }
+      
+      
+      
+       
+        Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+        [[NYPLAccount sharedAccount:currentAccount.id] setLicensor:self.licensor];
+        
+        
+//        if (![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount:currentAccount.id] userID] withDevice:[[NYPLAccount sharedAccount:currentAccount.id] deviceID]]) {
+          if (currentAccount.needsAuth && [[NYPLAccount sharedAccount:currentAccount.id] hasBarcodeAndPIN] && [[NYPLAccount sharedAccount:currentAccount.id] hasLicensor])
+          {
+            NSMutableArray* foo = [[[[NYPLAccount sharedAccount:currentAccount.id] licensor][@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
+            
+            NSString *last = foo.lastObject;
+            [foo removeLastObject];
+            NSString *first = [foo componentsJoinedByString:@"|"];
+            
+            NYPLLOG([[NYPLAccount sharedAccount:currentAccount.id] licensor]);
+            NYPLLOG(first);
+            NYPLLOG(last);
+            NYPLLOG(@"#### feed reload ####");
+
+            [[NYPLADEPT sharedInstance]
+             authorizeWithVendorID:[[NYPLAccount sharedAccount:currentAccount.id] licensor][@"vendor"]
+             username:first
+             password:last
+             userID:[[NYPLAccount sharedAccount:currentAccount.id] userID] deviceID:[[NYPLAccount sharedAccount:currentAccount.id] deviceID]
+             completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
+               
+               NYPLLOG(error);
+               if (success) {
+                 
+                 [[NYPLAccount sharedAccount:currentAccount.id] setUserID:userID];
+                 [[NYPLAccount sharedAccount:currentAccount.id] setDeviceID:deviceID];
+                 
+                 // POST deviceID to adobeDevicesLink
+                 NSURL *deviceManager = [NSURL URLWithString: [[NYPLAccount sharedAccount:currentAccount.id] licensor][@"deviceManager"]];
+                 if (deviceManager != nil) {
+                   [NYPLDeviceManager postDevice:deviceID url:deviceManager];
+                 }
+               }
+               
+             }];
+          }
+//        }
+      }
+    }
+  }
+  
   return self;
 }
 
@@ -185,7 +267,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
       return (_type = NYPLOPDSFeedTypeInvalid);
     }
   }
-       
+  
   return (_type = provisionalType);
 }
 

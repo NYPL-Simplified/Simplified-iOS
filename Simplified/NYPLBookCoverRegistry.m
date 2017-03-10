@@ -5,6 +5,8 @@
 #import "NYPLTenPrintCoverView+NYPLImageAdditions.h"
 
 #import "NYPLBookCoverRegistry.h"
+#import "NYPLSettings.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLBookCoverRegistry ()
 
@@ -60,19 +62,8 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 
 - (NSURL *)pinnedThumbnailImageDirectoryURL
 {
-  NSArray *const paths =
-    NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-  
-  assert([paths count] == 1);
-  
-  NSString *const path = paths[0];
-  
-  NSURL *const URL =
-    [[[NSURL fileURLWithPath:path]
-      URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                   objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-     URLByAppendingPathComponent:@"pinned-thumbnail-images"];
-  
+  NSURL *URL = [[DirectoryManager current] URLByAppendingPathComponent:@"pinned-thumbnail-images"];
+
   @synchronized(self) {
     NSError *error = nil;
     if(![[NSFileManager defaultManager]

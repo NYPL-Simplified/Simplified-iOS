@@ -9,6 +9,7 @@
 #import "NYPLMyBooksDownloadCenter.h"
 
 #import "NYPLBookRegistry.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLBookRegistry ()
 
@@ -74,17 +75,15 @@ static NSString *const RecordsKey = @"records";
 
 - (NSURL *)registryDirectory
 {
-  NSArray *const paths =
-    NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  NSURL *URL = [[DirectoryManager current] URLByAppendingPathComponent:@"registry"];
+
+  return URL;
+}
+- (NSURL *)registryDirectory:(NSInteger)account
+{
+  NSURL *URL = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"registry"];
   
-  assert([paths count] == 1);
-  
-  NSString *const path = paths[0];
-  
-  return [[[NSURL fileURLWithPath:path]
-           URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                        objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-          URLByAppendingPathComponent:@"registry"];
+  return URL;
 }
 
 - (void)performSynchronizedWithoutBroadcasting:(void (^)())block
@@ -222,6 +221,12 @@ static NSString *const RecordsKey = @"records";
   }
 }
 
+- (void)justLoad
+{
+  [self load];
+  [self broadcastChange];
+}
+
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
 {
   @synchronized(self) {
@@ -236,7 +241,7 @@ static NSString *const RecordsKey = @"records";
   
   [NYPLOPDSFeed
    withURL:[NYPLConfiguration loanURL]
-   completionHandler:^(NYPLOPDSFeed *const feed, NSDictionary *error) {
+   completionHandler:^(NYPLOPDSFeed *const feed, __unused NSDictionary *error) {
      if(!feed) {
        NYPLLOG(@"Failed to obtain sync data.");
        self.syncing = NO;
@@ -511,6 +516,21 @@ static NSString *const RecordsKey = @"records";
 {
   return [self.coverRegistry cachedThumbnailImageForBook:book];
 }
+
+- (void)reset:(NSInteger)account
+{
+  if ([[NYPLSettings sharedSettings] currentAccountIdentifier] == account)
+  {
+    [self reset];
+  }
+  else
+  {
+    @synchronized(self) {
+      [[NSFileManager defaultManager] removeItemAtURL:[self registryDirectory:account] error:NULL];
+    }
+  }
+}
+
 
 - (void)reset
 {

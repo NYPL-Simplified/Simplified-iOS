@@ -1,6 +1,7 @@
 #import "NYPLBook.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
+#import "NYPLSettings.h"
 #import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLBookDownloadingCell.h"
@@ -17,6 +18,25 @@
 @end
 
 @implementation NYPLBookDownloadingCell
+
+#pragma mark NSObject
+
+- (instancetype)init
+{
+  self = [super init];
+  if(!self) return nil;
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(setup)
+                                               name:NYPLCurrentAccountDidChangeNotification
+                                             object:nil];
+  return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 #pragma mark UIView
 

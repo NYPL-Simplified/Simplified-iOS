@@ -83,6 +83,26 @@
   return nil;
 }
 
++ (instancetype)alertWithTitle:(NSString *)title singleMessage:(NSString *)message
+{
+  if ([title length] > 0) {
+    title = NSLocalizedString(title, nil);
+  }
+  
+  if ([message length] > 0) {
+    message = NSLocalizedString(message, nil);
+  }
+  
+  if (title.length > 0 || message.length > 0) {
+    NYPLAlertController *alertController = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    
+    alertController.localMessage = message;
+    return alertController;
+  }
+  
+  return nil;
+}
+
 - (void)setProblemDocument:(NYPLProblemDocument *)document displayDocumentMessage:(BOOL)doDisplayDocumentMessage
 {
   self.problemDocument = document;

@@ -29,6 +29,9 @@ static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
 // Deletes all local content and silently cancels downloads, but does NOT touch the registry.
 - (void)reset;
 
+// Deletes all local content for a specific account
+- (void)reset:(NSInteger)account;
+
 // The value returned is in the range [0.0, 1.0].
 - (double)downloadProgressForBookIdentifier:(NSString *)bookIdentifier;
 

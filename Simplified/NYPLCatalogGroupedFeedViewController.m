@@ -12,6 +12,7 @@
 #import "NYPLSession.h"
 #import "NYPLXML.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "NYPLSettings.h"
 
 #import "NYPLCatalogGroupedFeedViewController.h"
 
@@ -116,6 +117,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
   }
   
   [refreshControl endRefreshing];
+  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
 }
 
 #pragma mark UITableViewDataSource

@@ -1,9 +1,10 @@
 #import "NYPLCatalogNavigationController.h"
 #import "NYPLHoldsNavigationController.h"
 #import "NYPLMyBooksNavigationController.h"
+#import "NYPLSettings.h"
 #import "NYPLSettingsSplitViewController.h"
-
 #import "NYPLRootTabBarController.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLRootTabBarController () <UITabBarControllerDelegate>
 
@@ -45,12 +46,34 @@
   self.holdsNavigationController = [[NYPLHoldsNavigationController alloc] init];
   self.settingsSplitViewController = [[NYPLSettingsSplitViewController alloc] init];
   
-  self.viewControllers = @[self.catalogNavigationController,
-                           self.myBooksNavigationController,
-                           self.holdsNavigationController,
-                           self.settingsSplitViewController];
+  [self setTabViewControllers];
   
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(setTabViewControllers)
+                                               name:NYPLCurrentAccountDidChangeNotification
+                                             object:nil];
   return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)setTabViewControllers
+{
+  Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
+  if (currentAccount.supportsReservations) {
+    self.viewControllers = @[self.catalogNavigationController,
+                             self.myBooksNavigationController,
+                             self.holdsNavigationController,
+                             self.settingsSplitViewController];
+  } else {
+    self.viewControllers = @[self.catalogNavigationController,
+                             self.myBooksNavigationController,
+                             self.settingsSplitViewController];
+    [self setSelectedIndex:0];
+  }
 }
 
 #pragma mark - UITabBarControllerDelegate

@@ -1,4 +1,5 @@
 #import "NYPLSession.h"
+#import "NYPLAlertController.h"
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
 #import "NYPLBookDownloadFailedCell.h"
@@ -7,6 +8,7 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReaderViewController.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLSettings.h"
 #import "NSURLRequest+NYPLURLRequestAdditions.h"
 
 #import "NYPLBookCellDelegate.h"
@@ -59,7 +61,8 @@
   problemVC.popoverPresentationController.sourceRect = ((UIView *)sender).bounds;
   problemVC.book = book;
   problemVC.delegate = self;
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:problemVC animated:YES completion:nil];
+  UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:problemVC];
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:navController animated:YES completion:nil];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate

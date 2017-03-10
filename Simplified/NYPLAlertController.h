@@ -13,6 +13,7 @@
 @interface NYPLAlertController : UIAlertController
 + (instancetype)alertWithTitle:(NSString *)title error:(NSError *)error;
 + (instancetype)alertWithTitle:(NSString *)title message:(NSString *)message, ...;
++ (instancetype)alertWithTitle:(NSString *)title singleMessage:(NSString *)message;          // Exposed to Swift classes
 
 - (void)setProblemDocument:(NYPLProblemDocument *)document displayDocumentMessage:(BOOL)yn;
 - (void)presentFromViewControllerOrNil:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion;

@@ -4,22 +4,30 @@
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
+#import "SimplyE-Swift.h"
+
+static NSString *const currentAccountIdentifierKey = @"NYPLCurrentAccountIdentifier";
 
 static NSString *const customMainFeedURLKey = @"NYPLSettingsCustomMainFeedURL";
 
+static NSString *const accountMainFeedURLKey = @"NYPLSettingsAccountMainFeedURL";
+
 static NSString *const renderingEngineKey = @"NYPLSettingsRenderingEngine";
 
-static NSString *const userAcceptedEULAKey = @"NYPLSettingsUserAcceptedEULA";
+static NSString *const legacyUserAcceptedEULAKey = @"NYPLSettingsUserAcceptedEULA";
 
-static NSString *const eulaURLKey = @"NYPLSettingsEULAURL";
+static NSString *const userHasSeenWelcomeScreenKey = @"NYPLUserHasSeenWelcomeScreenKey";
 
-static NSString *const privacyPolicyURLKey = @"NYPLSettingsPrivacyPolicyURL";
-
-static NSString *const acknowledgmentsURLKey = @"NYPLSettingsAcknowledgmentsURL";
-
-static NSString *const contentLicenseURLKey = @"NYPLSettingsContentLicenseURL";
+static NSString *const userPresentedAgeCheckKey = @"NYPLUserPresentedAgeCheckKey";
 
 static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCurrentCardApplicationSerialized";
+
+static NSString *const settingsLibraryAccountsKey = @"NYPLSettingsLibraryAccountsKey";
+
+static NSString *const settingsOfflineQueueKey = @"NYPLSettingsOfflineQueueKey";
+
+static NSString *const settingsAnnotationsOfflineQueueKey = @"NYPLSettingsAnnotationsOfflineQueueKey";
+
 
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
 {
@@ -60,35 +68,73 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   
   return sharedSettings;
 }
+- (Account*)currentAccount
+{
+  return [[AccountsManager sharedInstance] account:[[NYPLSettings sharedSettings] currentAccountIdentifier]];
+}
 
+- (NSInteger)currentAccountIdentifier
+{
+  if ([[NSUserDefaults standardUserDefaults] objectForKey:currentAccountIdentifierKey] == nil)
+  {
+    [self setCurrentAccountIdentifier:0];
+  }
+  return [[NSUserDefaults standardUserDefaults] integerForKey:currentAccountIdentifierKey];
+}
 - (NSURL *)customMainFeedURL
 {
   return [[NSUserDefaults standardUserDefaults] URLForKey:customMainFeedURLKey];
 }
 
-- (BOOL)userAcceptedEULA
+- (NSURL *)accountMainFeedURL
 {
-  return [[NSUserDefaults standardUserDefaults] boolForKey:userAcceptedEULAKey];
+  return [[NSUserDefaults standardUserDefaults] URLForKey:accountMainFeedURLKey];
 }
 
-- (NSURL *)eulaURL
+- (BOOL)acceptedEULABeforeMultiLibrary
 {
-  return [[NSUserDefaults standardUserDefaults] URLForKey:eulaURLKey];
+  return [[NSUserDefaults standardUserDefaults] boolForKey:legacyUserAcceptedEULAKey];
 }
 
-- (NSURL *)privacyPolicyURL
+- (BOOL) userHasSeenWelcomeScreen
 {
-  return [[NSUserDefaults standardUserDefaults] URLForKey:privacyPolicyURLKey];
+  return [[NSUserDefaults standardUserDefaults] boolForKey:userHasSeenWelcomeScreenKey];
 }
 
-- (NSURL *) acknowledgmentsURL
+- (BOOL) userPresentedAgeCheck
 {
-  return [[NSUserDefaults standardUserDefaults] URLForKey:acknowledgmentsURLKey];
+  return [[NSUserDefaults standardUserDefaults] boolForKey:userPresentedAgeCheckKey];
 }
 
-- (NSURL *) contentLicenseURL
+- (NSMutableArray *) offlineQueue
 {
-  return [[NSUserDefaults standardUserDefaults] URLForKey:contentLicenseURLKey];
+  if ([[NSUserDefaults standardUserDefaults] arrayForKey:settingsOfflineQueueKey] == nil) {
+    return [[NSMutableArray alloc] init];
+  } else {
+    return [[NSUserDefaults standardUserDefaults] arrayForKey:settingsOfflineQueueKey].mutableCopy;
+  }
+}
+
+- (NSMutableArray *) annotationsOfflineQueue
+{
+  if ([[NSUserDefaults standardUserDefaults] arrayForKey:settingsAnnotationsOfflineQueueKey] == nil) {
+    return [[NSMutableArray alloc] init];
+  } else {
+    return [[NSUserDefaults standardUserDefaults] arrayForKey:settingsAnnotationsOfflineQueueKey].mutableCopy;
+  }
+}
+
+- (NSArray *) settingsAccountsList
+{
+  NSArray *libraryAccounts = [[NSUserDefaults standardUserDefaults] arrayForKey:settingsLibraryAccountsKey];
+  // If user has not selected any accounts yet, return the "currentAccount"
+  if (!libraryAccounts) {
+    NSInteger currentLibrary = [self currentAccountIdentifier];
+    [self setSettingsAccountsList:@[@(currentLibrary), @2]];
+    return [self settingsAccountsList];
+  } else {
+    return libraryAccounts;
+  }
 }
 
 - (NYPLCardApplicationModel *)currentCardApplication
@@ -99,10 +145,25 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   
   return [NSKeyedUnarchiver unarchiveObjectWithData:currentCardApplicationSerialization];
 }
-
-- (void)setUserAcceptedEULA:(BOOL)userAcceptedEULA
+- (void)setCurrentAccountIdentifier:(NSInteger)account
 {
-  [[NSUserDefaults standardUserDefaults] setBool:userAcceptedEULA forKey:userAcceptedEULAKey];
+  [[NSUserDefaults standardUserDefaults] setInteger:account forKey:currentAccountIdentifierKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLCurrentAccountDidChangeNotification
+   object:self];
+}
+
+- (void)setUserHasSeenWelcomeScreen:(BOOL)userPresentedScreen
+{
+  [[NSUserDefaults standardUserDefaults] setBool:userPresentedScreen forKey:userHasSeenWelcomeScreenKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setUserPresentedAgeCheck:(BOOL)userPresentedAgeCheck
+{
+  [[NSUserDefaults standardUserDefaults] setBool:userPresentedAgeCheck forKey:userPresentedAgeCheckKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -118,52 +179,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
    postNotificationName:NYPLSettingsDidChangeNotification
    object:self];
 }
-
-- (void)setEulaURL:(NSURL *const)eulaURL
+- (void)setAccountMainFeedURL:(NSURL *const)accountMainFeedURL
 {
-  if(!eulaURL) return;
-  if([eulaURL isEqual:self.eulaURL]) return;
+  if(!accountMainFeedURL && !self.accountMainFeedURL) return;
+  if([accountMainFeedURL isEqual:self.accountMainFeedURL]) return;
   
-  [[NSUserDefaults standardUserDefaults] setURL:eulaURL forKey:eulaURLKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLSettingsDidChangeNotification
-   object:self];
-}
-
-- (void)setPrivacyPolicyURL:(NSURL *)privacyPolicyURL
-{
-  if(!privacyPolicyURL) return;
-  if([privacyPolicyURL isEqual:self.privacyPolicyURL]) return;
-  
-  [[NSUserDefaults standardUserDefaults] setURL:privacyPolicyURL forKey:privacyPolicyURLKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLSettingsDidChangeNotification
-   object:self];
-}
-
-- (void)setAcknowledgmentsURL:(NSURL *)acknowledgmentsURL
-{
-  if(!acknowledgmentsURL) return;
-  if([acknowledgmentsURL isEqual:self.acknowledgmentsURL]) return;
-  
-  [[NSUserDefaults standardUserDefaults] setURL:acknowledgmentsURL forKey:acknowledgmentsURLKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLSettingsDidChangeNotification
-   object:self];
-}
-
-- (void)setContentLicenseURL:(NSURL *const)contentLicenseURL
-{
-  if(!contentLicenseURL) return;
-  if([contentLicenseURL isEqual:self.contentLicenseURL]) return;
-  
-  [[NSUserDefaults standardUserDefaults] setURL:contentLicenseURL forKey:contentLicenseURLKey];
+  [[NSUserDefaults standardUserDefaults] setURL:accountMainFeedURL forKey:accountMainFeedURLKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
   
   [[NSNotificationCenter defaultCenter]
@@ -188,6 +209,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
    object:self];
 }
 
+- (void)setSettingsAccountsList:(NSArray *)accounts
+{
+  [[NSUserDefaults standardUserDefaults] setObject:accounts forKey:settingsLibraryAccountsKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (NYPLSettingsRenderingEngine)renderingEngine
 {
   return RenderingEngineFromString([[NSUserDefaults standardUserDefaults]
@@ -205,5 +232,24 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
    postNotificationName:NYPLSettingsDidChangeNotification
    object:self];
 }
+
+- (void)setAcceptedEULABeforeMultiLibrary:(BOOL)acceptedEULA
+{
+  [[NSUserDefaults standardUserDefaults] setBool:acceptedEULA forKey:legacyUserAcceptedEULAKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setOfflineQueue:(NSMutableArray *)queue
+{
+  [[NSUserDefaults standardUserDefaults] setObject:queue forKey:settingsOfflineQueueKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setAnnotationsOfflineQueue:(NSMutableArray *)queue
+{
+  [[NSUserDefaults standardUserDefaults] setObject:queue forKey:settingsAnnotationsOfflineQueueKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 
 @end

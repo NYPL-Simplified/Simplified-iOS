@@ -4,13 +4,12 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLRootTabBarController.h"
-#import "NYPLEULAViewController.h"
 #import "NYPLSettings.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
 #import "NYPLAccount.h"
-#import "NYPLSettingsAccountViewController.h"
+#import "NYPLAccountSignInViewController.h"
 #endif
 
 // TODO: Remove these imports and move handling the "open a book url" code to a more appropriate handler
@@ -29,30 +28,27 @@
 - (BOOL)application:(__attribute__((unused)) UIApplication *)application
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
+  NSArray *const paths =
+  NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  NYPLLOG(paths);
+  
+  
   // This is normally not called directly, but we put all programmatic appearance setup in
   // NYPLConfiguration's class initializer.
   [NYPLConfiguration initialize];
+  
+  // Initiallize Accounts from JSON file
+  [AccountsManager sharedInstance];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.tintColor = [NYPLConfiguration mainColor];
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
   [self.window makeKeyAndVisible];
   
-  if ([[NYPLSettings sharedSettings] userAcceptedEULA]) {
-    self.window.rootViewController = [NYPLRootTabBarController sharedController];
-    [self beginCheckingForUpdates];
-  } else {
-    NYPLRootTabBarController *mainViewController = [NYPLRootTabBarController sharedController];
-    UIViewController *eulaViewController = [[NYPLEULAViewController alloc] initWithCompletionHandler:^(void) {
-      [UIView transitionWithView:self.window
-                        duration:0.5
-                         options:UIViewAnimationOptionTransitionCurlUp
-                      animations:^() {self.window.rootViewController = mainViewController; }
-                      completion:nil];
-      [self beginCheckingForUpdates];
-    }];
-    self.window.rootViewController = eulaViewController;
-  }
+  NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
+  self.window.rootViewController = vc;
+    
+  [self beginCheckingForUpdates];
   
   return YES;
 }
@@ -104,17 +100,20 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   [[NYPLReaderSettings sharedSettings] save];
 }
 
-#if defined(FEATURE_DRM_CONNECTOR)
-- (void)applicationDidBecomeActive:(__unused UIApplication *)application
-{
-  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
-    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-      [NYPLSettingsAccountViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:nil];
-    }
-  }
 
-}
-#endif
+// why do we need this?????
+
+//#if defined(FEATURE_DRM_CONNECTOR)
+//- (void)applicationDidBecomeActive:(__unused UIApplication *)application
+//{
+//  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
+//    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+//      [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:nil];
+//    }
+//  }
+//
+//}
+//#endif
 
 - (void)beginCheckingForUpdates
 {

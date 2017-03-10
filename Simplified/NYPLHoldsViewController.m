@@ -6,15 +6,21 @@
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLOpenSearchDescription.h"
-#import "NYPLSettingsAccountViewController.h"
+#import "NYPLSettings.h"
+#import "NYPLAccountSignInViewController.h"
+#import <PureLayout/PureLayout.h>
+#import "UIView+NYPLViewAdditions.h"
 
 #import "NYPLHoldsViewController.h"
+
+#import "SimplyE-Swift.h"
 
 @interface NYPLHoldsViewController ()
 <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic) NSArray *reservedBooks;
 @property (nonatomic) NSArray *heldBooks;
+@property (nonatomic) UILabel *instructionsLabel;
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) UIBarButtonItem *searchButton;
 
@@ -39,6 +45,16 @@
    name:NYPLBookRegistryDidChangeNotification
    object:nil];
   
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(syncEnded)
+   name:NYPLSyncEndedNotification object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(syncBegan)
+   name:NYPLSyncBeganNotification object:nil];
+
   return self;
 }
 
@@ -72,6 +88,17 @@
   UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
   layout.headerReferenceSize = CGSizeMake(0, 20);
   
+  self.instructionsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+  self.instructionsLabel.hidden = YES;
+  self.instructionsLabel.text = NSLocalizedString(@"ReservationsGoToCatalog", nil);
+  self.instructionsLabel.textAlignment = NSTextAlignmentCenter;
+  self.instructionsLabel.textColor = [UIColor colorWithWhite:0.6667 alpha:1.0];
+  self.instructionsLabel.numberOfLines = 0;
+  [self.view addSubview:self.instructionsLabel];
+  [self.instructionsLabel autoCenterInSuperview];
+  [self.instructionsLabel autoSetDimension:ALDimensionWidth toSize:300.0];
+
+  
   self.searchButton = [[UIBarButtonItem alloc]
                        initWithImage:[UIImage imageNamed:@"Search"]
                        style:UIBarButtonItemStylePlain
@@ -82,6 +109,7 @@
   
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
     [self.refreshControl endRefreshing];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }
 }
 
@@ -166,6 +194,9 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [super willReloadCollectionViewData];
   
   NSArray *books = [[NYPLBookRegistry sharedRegistry] heldBooks];
+  
+  self.instructionsLabel.hidden = !!books.count;
+  
   NSMutableArray *reserved = [NSMutableArray array];
   NSMutableArray *held = [NSMutableArray array];
   for(NYPLBook *book in books) {
@@ -189,18 +220,46 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)didSelectSync
 {
-  if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-    [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
-  } else {
-    // We can't sync if we're not logged in, so let's log in. We don't need a completion handler
-    // here because logging in will trigger a sync anyway. The only downside of letting the sync
-    // happen elsewhere is that the user will not receive an error if the sync fails because it will
-    // be considered an automatic sync and not a manual sync.
-    // TODO: We should make this into a manual sync while somehow avoiding double-syncing.
-    [NYPLSettingsAccountViewController
-     requestCredentialsUsingExistingBarcode:NO
-     completionHandler:nil];
-    [self.refreshControl endRefreshing];
+  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+  
+  Account *account = [[NYPLSettings sharedSettings] currentAccount];
+  
+  if (account.needsAuth)
+  {
+
+    if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+      [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+        if(success) {
+          [[NYPLBookRegistry sharedRegistry] save];
+        } else {
+          [[[UIAlertView alloc]
+            initWithTitle:NSLocalizedString(@"SyncFailed", nil)
+            message:NSLocalizedString(@"CheckConnection", nil)
+            delegate:nil
+            cancelButtonTitle:nil
+            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+           show];
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+      }];
+    } else {
+      // We can't sync if we're not logged in, so let's log in. We don't need a completion handler
+      // here because logging in will trigger a sync anyway. The only downside of letting the sync
+      // happen elsewhere is that the user will not receive an error if the sync fails because it will
+      // be considered an automatic sync and not a manual sync.
+      // TODO: We should make this into a manual sync while somehow avoiding double-syncing.
+      [NYPLAccountSignInViewController
+       requestCredentialsUsingExistingBarcode:NO
+       completionHandler:nil];
+      [self.refreshControl endRefreshing];
+      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+    }
+  }
+  else
+  {
+    [[NYPLBookRegistry sharedRegistry] justLoad];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+    
   }
 }
 
@@ -220,6 +279,16 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [self.navigationController
    pushViewController:[[NYPLCatalogSearchViewController alloc] initWithOpenSearchDescription:searchDescription]
    animated:YES];
+}
+
+- (void)syncBegan
+{
+  self.navigationItem.leftBarButtonItem.enabled = NO;
+}
+
+- (void)syncEnded
+{
+  self.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
 @end
