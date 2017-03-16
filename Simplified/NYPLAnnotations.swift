@@ -31,9 +31,13 @@ final class NYPLAnnotations: NSObject {
         ]
         ] as [String : Any]
       
-      let url = NYPLConfiguration.mainFeedURL().appendingPathComponent("annotations/")
+      let url = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
       
-      postJSONRequest(book, url, parameters, NYPLAnnotations.headers)
+      if let url = url {
+        postJSONRequest(book, url, parameters, NYPLAnnotations.headers)
+      } else {
+        Log.error(#file, "MainFeedURL does not exist")
+      }
     }
   }
   
