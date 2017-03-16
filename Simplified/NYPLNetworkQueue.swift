@@ -79,21 +79,17 @@ final class NetworkQueue: NSObject {
                         .filter(sqlUpdateID != nil)
     
     do {
-      // Update row
-      if try db.run(query.update(sqlParameters <- parameters, sqlHeader <- headerData)) > 0 {
-        debugPrint("SQLite Row Updated - Success")
-        
-      // Insert new row
+      //Try to update row
+      let result = try db.run(query.update(sqlParameters <- parameters, sqlHeader <- headerData))
+      if result > 0 {
+        Log.debug(#file, "SQLite: Row Updated")
       } else {
-        do {
-          try db.run(sqlTable.insert(sqlLibraryID <- libraryID, sqlUpdateID <- updateID, sqlUrl <- urlString, sqlMethod <- methodString, sqlParameters <- parameters, sqlHeader <- headerData, sqlRetries <- 0, sqlDateCreated <- dateCreated))
-          debugPrint(#file, "SQLite Row Added - Success")
-        } catch {
-          Log.error(#file, "SQLite Error: Could not update table")
-        }
+        //Insert new row
+        try db.run(sqlTable.insert(sqlLibraryID <- libraryID, sqlUpdateID <- updateID, sqlUrl <- urlString, sqlMethod <- methodString, sqlParameters <- parameters, sqlHeader <- headerData, sqlRetries <- 0, sqlDateCreated <- dateCreated))
+        Log.debug(#file, "SQLite: Row Added")
       }
     } catch {
-      Log.error(#file, "SQLite Error: Could not update queue")
+      Log.error(#file, "SQLite Error: Could not insert or update row")
     }
   }
   
@@ -117,7 +113,7 @@ final class NetworkQueue: NSObject {
   {
     if (Int(requestRow[sqlRetries]) > MaxRetriesInQueue) {
       deleteRow(db: db, id: Int(requestRow[sqlID]))
-      debugPrint(#file, "Removing after \(Int(requestRow[sqlRetries])) retries")
+      Log.info(#file, "Removing from queue after \(Int(requestRow[sqlRetries])) retries")
       return
     }
     
@@ -144,8 +140,8 @@ final class NetworkQueue: NSObject {
     let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
       if let response = response as? HTTPURLResponse {
         if response.statusCode == 200 {
+          Log.info(#file, "Queued Request Upload: Success")
           self.deleteRow(db: db, id: requestRow[sqlID])
-          debugPrint(#file, "Successfully Completed Queued Request")
         }
       }
     }
@@ -156,7 +152,7 @@ final class NetworkQueue: NSObject {
   {
     let rowToDelete = sqlTable.filter(sqlID == id)
     if let _ = try? db.run(rowToDelete.delete()) {
-      debugPrint(#file, "SQLite deleted row from queue")
+      Log.info(#file, "SQLite: deleted row from queue")
     } else {
       Log.error(#file, "SQLite Error: Could not delete row")
     }
@@ -168,7 +164,7 @@ final class NetworkQueue: NSObject {
     do {
       db = try Connection("\(path)/db.sqlite3")
     } catch {
-      Log.error(#file, "Could not open SQLite db connection.")
+      Log.error(#file, "SQLite: Could not start DB connection.")
       return nil
     }
     return db
