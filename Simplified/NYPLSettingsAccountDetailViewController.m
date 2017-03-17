@@ -20,7 +20,7 @@
 #import <PureLayout/PureLayout.h>
 #import <ScanditBarcodeScanner/ScanditBarcodeScanner.h>
 
-#define kScanditBarcodeScannerAppKey    @"dp8IMf+h03FPitlCpHpLA2dcYQfQ8aJi2grwapW74qo"
+#define kScanditBarcodeScannerAppKey    @"ADD YOUR APP KEY"
 
 @import CoreLocation;
 
