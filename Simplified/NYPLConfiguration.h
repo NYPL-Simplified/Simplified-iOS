@@ -8,17 +8,11 @@
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
-+ (BOOL) heapEnabled;
-
 + (BOOL) bugsnagEnabled;
-
-+ (NSString *)heapID;
 
 + (NSString *)bugsnagID;
 
 + (BOOL)cardCreationEnabled;
-
-//+ (NSURL *)circulationURL;
 
 // This can be overriden by setting |customMainFeedURL| in NYPLSettings.
 + (NSURL *)mainFeedURL;
