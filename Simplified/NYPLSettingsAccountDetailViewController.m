@@ -74,6 +74,7 @@ typedef NS_ENUM(NSInteger, Section) {
 @property (nonatomic) bool rotated;
 @property (nonatomic, strong, nullable) SBSBarcodePicker *picker;
 
+@property (nonatomic) UISwitch* switchView;
 
 @end
 
@@ -208,6 +209,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
     self.barcodeTextField.rightViewMode = UITextFieldViewModeAlways;
   [self setupTableData];
   
+  self.switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
 }
 
 - (void)barcodeZoom
@@ -885,19 +887,18 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      UISwitch* switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
       if (self.account.syncIsEnabled) {
-        [switchView setOn:YES];
+        [self.switchView setOn:YES];
       } else {
-        [switchView setOn:NO];
+        [self.switchView setOn:NO];
       }
-      cell.accessoryView = switchView;
-      [switchView addTarget:self action:@selector(syncSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-      [cell.contentView addSubview:switchView];
+      cell.accessoryView = self.switchView;
+      [self.switchView addTarget:self action:@selector(syncSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+      [cell.contentView addSubview:self.switchView];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
       cell.textLabel.text = NSLocalizedString(@"SettingsAccountSyncTitle",
-                                              @"Title for switch to turn on or off syncing of the place where a user was reading a book.");
+                                              @"Title for switch to turn on or off syncing.");
       return cell;
     }
     case CellKindAbout: {
@@ -959,7 +960,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     return 0;
   }
 }
-
+-(NSString *)tableView:(__unused UITableView *)tableView titleForFooterInSection:(NSInteger)section
+{
+  if ([self syncButtonShouldBeVisible] && section == 1) {
+  return NSLocalizedString(@"SettingsAccountSyncSubTitle",
+                           @"Disclaimer for switch to turn on or off syncing.");
+  }
+  return nil;
+}
 -(CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section
 {
   if (section == 0) {
@@ -1370,15 +1378,75 @@ replacementString:(NSString *)string
   [self.navigationController presentViewController:navVC animated:YES completion:nil];
 }
 
-- (void)syncSwitchChanged:(id)sender
+- (void)syncSwitchChanged:(UISwitch*)sender
 {
+  
   Account *account = [[AccountsManager sharedInstance] account:self.accountType];
-  UISwitch *switchControl = sender;
-  if (switchControl.on) {
-    account.syncIsEnabled = YES;
-  } else {
-    account.syncIsEnabled = NO;
+  NSString *title, *message;
+  
+  if (account.syncIsEnabled)
+  {
+    title = @"Disable Sync";
+    message = @"Would you like to disable syncing bookmarks and last reading position only for this device or for all your devices?";
   }
+  else
+  {
+    title = @"Enable Sync";
+    message = @"This will enable syncing of bookmarks and last reading position across all your devices.";
+  }
+  
+  NYPLAlertController *alertController = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+  if (account.syncIsEnabled)
+  {
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Only this device" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
+    
+      // add server update here as well
+      
+      if (sender.on) {
+        account.syncIsEnabled = YES;
+      } else {
+        account.syncIsEnabled = NO;
+      }
+      self.switchView.on = account.syncIsEnabled;
+
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"All my devices" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
+      
+      // add server update here as well
+      
+      if (sender.on) {
+        account.syncIsEnabled = YES;
+      } else {
+        account.syncIsEnabled = NO;
+      }
+      self.switchView.on = account.syncIsEnabled;
+      
+    }]];
+  }
+  else
+  {
+    [alertController addAction:[UIAlertAction actionWithTitle:@"I understand" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
+      
+      // add server update here as well
+      
+      if (sender.on) {
+        account.syncIsEnabled = YES;
+      } else {
+        account.syncIsEnabled = NO;
+      }
+      self.switchView.on = account.syncIsEnabled;
+      
+    }]];
+  }
+  
+  [alertController addAction:[UIAlertAction actionWithTitle:@"Never mind" style:UIAlertActionStyleCancel handler:^(__unused UIAlertAction * _Nonnull action) {
+
+    self.switchView.on = account.syncIsEnabled;
+    
+  }]];
+  
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController
+                                                                  animated:YES completion:nil];
 }
 
 - (void)changedCurrentAccount

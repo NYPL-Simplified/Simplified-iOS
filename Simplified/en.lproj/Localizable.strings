@@ -178,7 +178,8 @@
 "SettingsAccountEULACheckbox" = "I agree to the terms of the End User License Agreement.";
 "SettingsAccountRegistrationTitle" = "Don't have a library card?";
 "SettingsAccountSetAccountTitle" = "Set to Active Account";
-"SettingsAccountSyncTitle" = "Sync Last-Read Position";
+"SettingsAccountSyncTitle" = "Sync";
+"SettingsAccountSyncSubTitle" = "Enable if you would like to sync your bookmarks and last reading position accross devices. Disable if you'd like to keep your bookmarks and last reading position only for this device.";
 "SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";
 "SettingsAccountViewControllerCannotLogOutTitle" =
   "Logout Failed";
