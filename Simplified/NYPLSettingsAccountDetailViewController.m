@@ -1387,18 +1387,18 @@ replacementString:(NSString *)string
   if (account.syncIsEnabled)
   {
     title = @"Disable Sync";
-    message = @"Would you like to disable syncing bookmarks and last reading position only for this device or for all your devices?";
+    message = @"Bookmarks and last reading position in this device will not be shared with your other SimplyE devices.";
   }
   else
   {
     title = @"Enable Sync";
-    message = @"This will enable syncing of bookmarks and last reading position across all your devices.";
+    message = @"This will synchronize your bookmarks and last reading position across all your SimplyE devices.";
   }
   
   NYPLAlertController *alertController = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
   if (account.syncIsEnabled)
   {
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Only this device" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Remove Current Device From Sync" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
     
       // add server update here as well
       
@@ -1410,7 +1410,7 @@ replacementString:(NSString *)string
       self.switchView.on = account.syncIsEnabled;
 
     }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"All my devices" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Remove All Devices From Sync" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
       
       // add server update here as well
       
@@ -1425,7 +1425,7 @@ replacementString:(NSString *)string
   }
   else
   {
-    [alertController addAction:[UIAlertAction actionWithTitle:@"I understand" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Enable Sync" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
       
       // add server update here as well
       
