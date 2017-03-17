@@ -166,27 +166,6 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   }
   
   {
-    NYPLXML *patronXML = [feedXML firstChildWithName:@"patron"];
-    if (patronXML && patronXML.attributes.allValues.count>0) {
-      NSString *barcode = patronXML.attributes[@"simplified:authorizationIdentifier"];
-      
-      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-
-      [[NYPLAccount sharedAccount:currentAccount.id] setAuthorizationIdentifier:barcode];
-
-//      NYPLXML *vendorXML = [patronXML firstChildWithName:@"clientToken"];
-      
-//      if (vendorXML) {
-      
-//        NSString *clientToken = vendorXML.value;
-      
-//        self.licensor = @{@"vendor":vendor,
-//                          @"clientToken":clientToken}.mutableCopy;
-//      }
-    }
-  }
-  
-  {
     //licensor
     NYPLXML *licensorXML = [feedXML firstChildWithName:@"licensor"];
     if (licensorXML && licensorXML.attributes.allValues.count>0) {
@@ -213,7 +192,10 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
           continue;
         }
       }
-
+      
+      
+      
+       
         Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
         [[NYPLAccount sharedAccount:currentAccount.id] setLicensor:self.licensor];
         

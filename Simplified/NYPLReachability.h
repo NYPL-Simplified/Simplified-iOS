@@ -1,5 +1,7 @@
 @import Foundation;
 
+@class ReachabilityManager;
+
 @interface NYPLReachability : NSObject
 
 + (NYPLReachability *)sharedReachability;
@@ -14,5 +16,7 @@
 - (void)reachabilityForURL:(NSURL *)URL
            timeoutInternal:(NSTimeInterval)timeoutInternal
                    handler:(void (^)(BOOL reachable))handler;
+
+@property (nonatomic) ReachabilityManager *hostReachabilityManager;
 
 @end

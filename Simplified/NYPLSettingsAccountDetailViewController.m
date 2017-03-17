@@ -18,9 +18,6 @@
 #import "UIView+NYPLViewAdditions.h"
 #import "SimplyE-Swift.h"
 #import <PureLayout/PureLayout.h>
-#import <ScanditBarcodeScanner/ScanditBarcodeScanner.h>
-
-#define kScanditBarcodeScannerAppKey    @"dp8IMf+h03FPitlCpHpLA2dcYQfQ8aJi2grwapW74qo"
 
 @import CoreLocation;
 
@@ -30,7 +27,6 @@
 
 typedef NS_ENUM(NSInteger, CellKind) {
   CellKindAgeCheck,
-  CellKindBarcodeImage,
   CellKindBarcode,
   CellKindPIN,
   CellKindLogInSignOut,
@@ -49,19 +45,15 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionLicenses = 2,
 };
 
-@interface NYPLSettingsAccountDetailViewController () <NSURLSessionDelegate, UITextFieldDelegate, SBSScanDelegate, UIAlertViewDelegate>
+@interface NYPLSettingsAccountDetailViewController () <NSURLSessionDelegate, UITextFieldDelegate>
 
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) UITextField *barcodeTextField;
-@property (nonatomic) UILabel *barcodeLabelImage;
-@property (nonatomic) UILabel *barcodeLabelImageZoom;
-@property (nonatomic) UIView *zoomView;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) BOOL hiddenPIN;
 @property (nonatomic) UITextField *PINTextField;
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
-@property (nonatomic) UIButton *barcodeScanButton;
 @property (nonatomic) NSInteger accountType;
 @property (nonatomic) Account *account;
 
@@ -71,9 +63,6 @@ typedef NS_ENUM(NSInteger, Section) {
 @property (nonatomic) UITableViewCell *ageCheckCell;
 
 @property (nonatomic) NSArray *tableData;
-@property (nonatomic) bool rotated;
-@property (nonatomic, strong, nullable) SBSBarcodePicker *picker;
-
 
 @end
 
@@ -192,66 +181,12 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   [self.PINShowHideButton sizeToFit];
   [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected)
                    forControlEvents:UIControlEventTouchUpInside];
-  
-  
-  self.barcodeScanButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [self.barcodeScanButton setImage:[UIImage imageNamed:@"ic_camera"] forState:UIControlStateNormal];
-  [self.barcodeScanButton sizeToFit];
-  [self.barcodeScanButton addTarget:self action:@selector(scanLibraryCard)
-                   forControlEvents:UIControlEventTouchUpInside];
-
-
   self.PINTextField.rightView = self.PINShowHideButton;
   self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
   
-    self.barcodeTextField.rightView = self.barcodeScanButton;
-    self.barcodeTextField.rightViewMode = UITextFieldViewModeAlways;
   [self setupTableData];
-  
-  
 }
 
-- (void)barcodeZoom
-{
-
-  if (self.rotated)
-  {
-    self.rotated = NO;
-       
-    [self.barcodeLabelImageZoom removeFromSuperview];
-    [self.zoomView removeFromSuperview];
-  }
-  else
-  {
-    self.rotated = YES;
-    
-    self.barcodeLabelImageZoom = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.height  -130, self.view.frame.size.width/2)];
-    
-    CGAffineTransform transform = CGAffineTransformMakeRotation(-M_PI / 2);
-    transform = CGAffineTransformScale(transform, 1.0, 3.0);
-    [self.barcodeLabelImageZoom setTransform:transform];
-    CGRect frame = self.barcodeLabelImageZoom.frame;
-    frame.origin.x = 25 ;//+ (self.barcodeLabelImageZoom.frame.size.width/4);
-    frame.origin.y = 10;
-    self.barcodeLabelImageZoom.frame = frame;
-    self.barcodeLabelImageZoom.text = [NSString stringWithFormat:@"A%@B", [NYPLAccount sharedAccount:self.accountType].authorizationIdentifier];
-    self.barcodeLabelImageZoom.font = [UIFont fontWithName:@"CodabarLarge" size:50.0];
-    self.barcodeLabelImageZoom.textAlignment = NSTextAlignmentCenter;
-    self.barcodeLabelImageZoom.adjustsFontSizeToFitWidth = YES;
-    self.barcodeLabelImageZoom.backgroundColor = [UIColor whiteColor];
-    
-    self.zoomView = [[UIView alloc] initWithFrame:self.tableView.frame];
-    self.zoomView.backgroundColor = [UIColor whiteColor];
-    
-    [self.zoomView addSubview:self.barcodeLabelImageZoom];
-    [self.view addSubview:self.zoomView];
-
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(barcodeZoom)];
-    [self.barcodeLabelImageZoom addGestureRecognizer:tap];
-    self.barcodeLabelImageZoom.userInteractionEnabled = YES;
-
-  }
-}
 - (void)setupTableData
 {
   NSMutableArray *section0;
@@ -266,9 +201,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   
   NSMutableArray *sectionRegister = @[@(CellKindRegistration)].mutableCopy;
 
-  if (self.account.needsAuth == YES && [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]){
-    [section0 insertObject:@(CellKindBarcodeImage) atIndex: 0];
-  }
+
   NSMutableArray *section1 = [[NSMutableArray alloc] init];
   if ([self syncButtonShouldBeVisible]) {
     [section1 addObject:@(CellKindSyncButton)];
@@ -757,34 +690,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       return cell;
     }
-    case CellKindBarcodeImage:{
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      cell.selectionStyle = UITableViewCellSelectionStyleNone;
-      self.barcodeLabelImage = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, self.view.bounds.size.width, 140)];
-      self.barcodeLabelImage.text = [NSString stringWithFormat:@"A%@B", [NYPLAccount sharedAccount:self.accountType].authorizationIdentifier];
-      self.barcodeLabelImage.font = [UIFont fontWithName:@"CodabarLarge" size:36.0];
-      self.barcodeLabelImage.textAlignment = NSTextAlignmentCenter;
-      self.barcodeLabelImage.adjustsFontSizeToFitWidth = YES;
-      UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(barcodeZoom)];
-      
-      [self.barcodeLabelImage addGestureRecognizer:tap];
-      self.barcodeLabelImage.userInteractionEnabled = YES;
-
-      [cell.contentView addSubview:self.barcodeLabelImage];
-      
-      UILabel *labelD = [[UILabel alloc] initWithFrame:CGRectMake(0, 95, self.view.bounds.size.width, 10)];
-      labelD.text =  [NYPLAccount sharedAccount:self.accountType].authorizationIdentifier;
-      labelD.font = [UIFont systemFontOfSize:10];
-      labelD.textAlignment = NSTextAlignmentCenter;
-      labelD.adjustsFontSizeToFitWidth = YES;
-      [cell.contentView addSubview:labelD];
-
-      
-
-      return cell;
-    }
     case CellKindPIN: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
@@ -974,19 +879,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   return 44;
 }
--(CGFloat)tableView:(__unused UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-  NSArray *sectionArray = (NSArray *)self.tableData[indexPath.section];
-  CellKind cellKind = (CellKind)[sectionArray[indexPath.row] intValue];
-  
-  if (cellKind == CellKindBarcodeImage)
-  {
-    NSLog(@"barcode");
-    return 120;
-  }
-  return 44;
-
-}
 
 - (UIView *)tableView:(__unused UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
@@ -1129,114 +1021,6 @@ replacementString:(NSString *)string
   self.hiddenPIN = NO;
   [self.tableView reloadData];
 }
-- (void)scanLibraryCard
-{
-  [SBSLicense setAppKey:kScanditBarcodeScannerAppKey];
-  
-  SBSScanSettings* settings = [SBSScanSettings defaultSettings];
-  
-  //By default, all symbologies are turned off so you need to explicity enable the desired simbologies.
-  NSSet *symbologiesToEnable = [NSSet setWithObjects:
-                                @(SBSSymbologyCodabar), nil];
-  [settings enableSymbologies:symbologiesToEnable];
-  
-  
-  // Some 1d barcode symbologies allow you to encode variable-length data. By default, the
-  // Scandit BarcodeScanner SDK only scans barcodes in a certain length range. If your
-  // application requires scanning of one of these symbologies, and the length is falling
-  // outside the default range, you may need to adjust the "active symbol counts" for this
-  // symbology. This is shown in the following 3 lines of code.
-  
-  SBSSymbologySettings *symSettings = [settings settingsForSymbology:SBSSymbologyCode39];
-  symSettings.activeSymbolCounts =
-  [NSSet setWithObjects:@7, @8, @9, @10, @11, @12, @13, @14, @15, @16, @17, @18, @19, @20, nil];
-  // For details on defaults and how to calculate the symbol counts for each symbology, take
-  // a look at http://docs.scandit.com/stable/c_api/symbologies.html.
-  
-  // Initialize the barcode picker - make sure you set the app key above
-  self.picker = [[SBSBarcodePicker alloc] initWithSettings:settings];
-  
-  [self.picker.overlayController setTorchEnabled:NO];
-
-  // only show camera switch button on tablets. For all other devices the switch button is
-  // hidden, even if they have a front camera.
-  [self.picker.overlayController setCameraSwitchVisibility:SBSCameraSwitchVisibilityOnTablet];
-  // set the allowed interface orientations. The value UIInterfaceOrientationMaskAll is the
-  // default and is only shown here for completeness.
-  [self.picker setAllowedInterfaceOrientations:UIInterfaceOrientationMaskAll];
-  // Set the delegate to receive scan event callbacks
-  self.picker.scanDelegate = self;
-  
-  // Open the camera and start scanning barcodes
-  [self.picker startScanning];
-  
-  UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:self.picker];
-  UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissPicker)];
-  self.picker.navigationItem.rightBarButtonItem = cancel;
-  [self presentViewController:navController animated:YES completion:nil];
-}
-
-
--(void)dismissPicker
-{
-  [self.picker dismissViewControllerAnimated:YES completion:nil];
-}
-
-//! [SBSScanDelegate callback]
-/**
- * This delegate method of the SBSScanDelegate protocol needs to be implemented by
- * every app that uses the Scandit Barcode Scanner and this is where the custom application logic
- * goes. In the example below, we are just showing an alert view with the result.
- */
-- (void)barcodePicker:(__unused SBSBarcodePicker *)thePicker didScan:(SBSScanSession *)session {
-  
-  // call stopScanning on the session to immediately stop scanning and close the camera. This
-  // is the preferred way to stop scanning barcodes from the SBSScanDelegate as it is made sure
-  // that no new codes are scanned. When calling stopScanning on the picker, another code may be
-  // scanned before stopScanning has completely stoppen the scanning process.
-  [session stopScanning];
-  
-  SBSCode *code = [session.newlyRecognizedCodes objectAtIndex:0];
-  // the barcodePicker:didScan delegate method is invoked from a picker-internal queue. To display
-  // the results in the UI, you need to dispatch to the main queue. Note that it's not allowed
-  // to use SBSScanSession in the dispatched block as it's only allowed to access the
-  // SBSScanSession inside the barcodePicker:didScan callback. It is however safe to use results
-  // returned by session.newlyRecognizedCodes etc.
-  dispatch_async(dispatch_get_main_queue(), ^{
-    
-    NSString *symbology = code.symbologyString;
-    NSString *barcode = code.data;
-    
-    UIAlertView *alert = [[UIAlertView alloc]
-                          initWithTitle:[NSString stringWithFormat:@"Scanned %@", symbology]
-                          message:barcode
-                          delegate:self
-                          cancelButtonTitle:@"Done"
-                          otherButtonTitles:@"Try Again", nil];
-    [alert show];
-    
-
-  });
-  
-}
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-  
-  if (buttonIndex == 0)
-  {
-    [self.picker dismissViewControllerAnimated:YES completion:^{
-      NSString *barcode = alertView.message;
-      barcode = [barcode stringByReplacingOccurrencesOfString:@"A" withString:@""];
-      barcode = [barcode stringByReplacingOccurrencesOfString:@"B" withString:@""];
-      self.barcodeTextField.text = barcode;
-    }];
-  }
-  else{
-    [self.picker startScanning];
-    
-  }
-}
-
 
 - (void)PINShowHideSelected
 {
@@ -1275,22 +1059,16 @@ replacementString:(NSString *)string
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if([NYPLAccount sharedAccount:self.accountType].hasBarcodeAndPIN) {
       self.barcodeTextField.text = [NYPLAccount sharedAccount:self.accountType].barcode;
-      self.barcodeLabelImage.text = [NSString stringWithFormat:@"A%@B", [NYPLAccount sharedAccount:self.accountType].authorizationIdentifier];
-
       self.barcodeTextField.enabled = NO;
       self.barcodeTextField.textColor = [UIColor grayColor];
       self.PINTextField.text = [NYPLAccount sharedAccount:self.accountType].PIN;
       self.PINTextField.textColor = [UIColor grayColor];
-      self.barcodeTextField.rightView.hidden = YES;
-
     } else {
       self.barcodeTextField.text = nil;
       self.barcodeTextField.enabled = YES;
       self.barcodeTextField.textColor = [UIColor blackColor];
       self.PINTextField.text = nil;
       self.PINTextField.textColor = [UIColor blackColor];
-      self.barcodeTextField.rightView.hidden = NO;
-
     }
     
     [self setupTableData];
@@ -1442,9 +1220,8 @@ replacementString:(NSString *)string
 
 - (BOOL)syncButtonShouldBeVisible
 {
-  return NO; //Currently Disabled
-//  return ([self.account getLicenseURL:URLTypeAnnotations] &&
-//          [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
+  return ([self.account getLicenseURL:URLTypeAnnotations] &&
+          [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
 }
 
 - (void)didSelectCancel
