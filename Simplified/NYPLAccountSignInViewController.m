@@ -535,7 +535,10 @@ replacementString:(NSString *)string
   self.hiddenPIN = NO;
   [self.tableView reloadData];
 }
-
+- (void)scanLibraryCard
+{
+  
+}
 - (void)PINShowHideSelected
 {
   if(self.PINTextField.text.length > 0 && self.PINTextField.secureTextEntry) {
