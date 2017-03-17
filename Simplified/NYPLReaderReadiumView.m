@@ -557,12 +557,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 }
 - (void)syncLastReadingPosition:(NSMutableDictionary *const)dictionary andLocation:(NYPLBookLocation *const)location andBook:(NYPLBook *const)book
 {
-  [NYPLAnnotations sync:book completionHandler:^(NSDictionary * _Nullable responseObject, NSError * _Nullable error) {
-  
-    if (error)
-    {
-      return;
-    }
+  [NYPLAnnotations sync:book completionHandler:^(NSDictionary * _Nullable responseObject) {
     
     NSString* serverLocationString;
     NSString* currentLocationString;
@@ -623,24 +618,23 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                               }]];
 
     }
+      if ((currentLocationString == nil && serverLocationString == nil) ||
+          (currentLocationString != nil && serverLocationString == nil) ||
+          (currentLocationString != nil && [deviceIDString isEqualToString:[NYPLAccount sharedAccount].deviceID]))
+      {
+        self.postLastRead = YES;
+      }
+      else if ((currentLocationString == nil && serverLocationString != nil) ||
+               (![currentLocationString isEqualToString:serverLocationString]) ||
+               (currentLocationString == nil && [deviceIDString isEqualToString:[NYPLAccount sharedAccount].deviceID]))
+      {
+        [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
+      }
+      else
+      {
+        self.postLastRead = YES;
+      }
     
-    if ((currentLocationString == nil && serverLocationString == nil) ||
-        (currentLocationString != nil && serverLocationString == nil) ||
-        (currentLocationString != nil && [deviceIDString isEqualToString:[NYPLAccount sharedAccount].deviceID]))
-    {
-        self.postLastRead = YES;
-    }
-    else if ((currentLocationString == nil && serverLocationString != nil) ||
-             (![currentLocationString isEqualToString:serverLocationString]) ||
-             (currentLocationString == nil && [deviceIDString isEqualToString:[NYPLAccount sharedAccount].deviceID]))
-    {
-      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
-    }
-    else
-    {
-        self.postLastRead = YES;
-    }
-
   }];
 }
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary

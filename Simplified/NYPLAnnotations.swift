@@ -41,7 +41,7 @@ final class NYPLAnnotations: NSObject {
     }
   }
   
-  class func sync(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: [String:String]?, _ error: NSError?) -> ()) {
+  class func sync(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: [String:String]?) -> ()) {
     syncLastRead(book, completionHandler: completionHandler)
   }
   
@@ -86,76 +86,89 @@ final class NYPLAnnotations: NSObject {
     NetworkQueue.addRequest(libraryID, book.identifier, url, .POST, parameterData, headers)
   }
   
-  private class func syncLastRead(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: [String:String]?,
-    _ error: NSError?) -> ()) {
+  private class func syncLastRead(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: [String:String]?) -> ()) {
        
-    if (NYPLAccount.shared().hasBarcodeAndPIN())
+    if (NYPLAccount.shared().hasBarcodeAndPIN() && book.annotationsURL != nil)
     {
-      if book.annotationsURL != nil {
+      var request = URLRequest.init(url: book.annotationsURL,
+                                    cachePolicy: .reloadIgnoringLocalCacheData,
+                                    timeoutInterval: 30)
+      request.httpMethod = "GET"
+      
+      for (headerKey, headerValue) in NYPLAnnotations.headers {
+        request.setValue(headerValue, forHTTPHeaderField: headerKey)
+      }
+      
+      let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
         
-        var request = URLRequest.init(url: book.annotationsURL,
-                                      cachePolicy: .reloadIgnoringLocalCacheData,
-                                      timeoutInterval: 30)
-        request.httpMethod = "GET"
-        
-        for (headerKey, headerValue) in NYPLAnnotations.headers {
-          request.setValue(headerValue, forHTTPHeaderField: headerKey)
-        }
-        
-        let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
+        if error != nil {
+          completionHandler(nil)
+          return
+        } else {
           
-          if error != nil {
-            completionHandler(nil, error as? NSError)
-          } else {
+          guard let json = try? JSONSerialization.jsonObject(with: data!, options: []) as! [String:Any] else {
+            Log.error(#file, "JSON could not be created from data.")
+            completionHandler(nil)
+            return
+          }
+          
+          guard let total:Int = json["total"] as? Int else {
+            completionHandler(nil)
+            return
+          }
+          
+          if total > 0
+          {
             
-            let jsonData: [String:Any]?
-            do {
-              jsonData = try JSONSerialization.jsonObject(with: data!, options: []) as? [String:Any]
-            } catch {
-              Log.error(#file, "JSON could not be created from data.")
-              completionHandler(nil, nil)
+            guard let first = json["first"] as? [String:AnyObject], let items = first["items"] as? [AnyObject] else {
+              completionHandler(nil)
               return
             }
             
-            if let json = jsonData {
-              let total:Int = json["total"] as! Int
-              if total > 0
-              {
-                let first = json["first"] as! [String:AnyObject]
-                let items = first["items"] as! [AnyObject]
-                for item in items
-                {
-                  let target = item["target"] as! [String:AnyObject]
-                  let source = target["source"] as! String
-                  if source == book.identifier
-                  {
-                    let selector = target["selector"] as! [String:AnyObject]
-                    let serverCFI = selector["value"] as! String
-                    
-                    var responseObject = ["serverCFI" : serverCFI]
-                    
-                    if let body = item["body"] as? [String:AnyObject],
-                      let device = body["http://librarysimplified.org/terms/device"] as? String,
-                      let time = body["http://librarysimplified.org/terms/time"] as? String
-                    {
-                        responseObject["device"] = device
-                        responseObject["time"] = time
-                    }
-                    
-                    completionHandler(responseObject, error as? NSError)
-                    Log.info(#file, "\(responseObject["serverCFI"])")
-                  }
-                }
-              } else {
-                completionHandler(nil, error as? NSError)
+            for item in items
+            {
+              
+              guard let target = item["target"] as? [String:AnyObject], let source = target["source"] as? String else {
+                completionHandler(nil)
+                return
               }
-            } else {
-              completionHandler(nil, error as? NSError)
+              
+              if source == book.identifier
+              {
+                
+                guard let selector = target["selector"] as? [String:AnyObject], let serverCFI = selector["value"] as? String else {
+                  completionHandler(nil)
+                  return
+                }
+                
+                var responseObject = ["serverCFI" : serverCFI]
+                
+                if let body = item["body"] as? [String:AnyObject],
+                  let device = body["http://librarysimplified.org/terms/device"] as? String,
+                  let time = body["http://librarysimplified.org/terms/time"] as? String
+                {
+                  responseObject["device"] = device
+                  responseObject["time"] = time
+                }
+                
+                Log.info(#file, "\(responseObject["serverCFI"])")
+                completionHandler(responseObject)
+                return
+              }
             }
+          } else {
+            completionHandler(nil)
+            return
           }
+          
         }
-        dataTask.resume()
       }
+      dataTask.resume()
+    }
+    else
+    {
+      completionHandler(nil)
+      return
     }
   }
   
