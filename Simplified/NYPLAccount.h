@@ -5,6 +5,7 @@ static NSString *const NYPLAccountLoginDidChangeNotification =
 @interface NYPLAccount : NSObject
 
 @property (atomic, readonly) NSString *barcode; // nil if not logged in
+@property (atomic, readonly) NSString *authorizationIdentifier;
 @property (atomic, readonly) NSString *PIN;     // nil if not logged in
 @property (atomic, readonly) NSString *deviceID;     // nil if not logged in
 @property (atomic, readonly) NSString *userID;     // nil if not logged in
@@ -34,6 +35,8 @@ static NSString *const NYPLAccountLoginDidChangeNotification =
 - (void)setAdobeToken:(NSString *)adobeToken;
 
 - (void)setLicensor:(NSDictionary *)licensor;
+
+- (void)setAuthorizationIdentifier:(NSString *)identifier;
 
 - (void)setPatron:(NSDictionary *)patron;
 

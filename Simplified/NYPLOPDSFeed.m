@@ -166,6 +166,18 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   }
   
   {
+    NYPLXML *patronXML = [feedXML firstChildWithName:@"patron"];
+    if (patronXML && patronXML.attributes.allValues.count>0) {
+      NSString *barcode = patronXML.attributes[@"simplified:authorizationIdentifier"];
+      
+      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+
+      [[NYPLAccount sharedAccount:currentAccount.id] setAuthorizationIdentifier:barcode];
+
+    }
+  }
+  
+  {
     //licensor
     NYPLXML *licensorXML = [feedXML firstChildWithName:@"licensor"];
     if (licensorXML && licensorXML.attributes.allValues.count>0) {
