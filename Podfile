@@ -9,7 +9,6 @@ target 'SimplyE' do
 
   pod 'HelpStack', :git => 'https://github.com/NYPL-Simplified/helpstack-ios'
   pod 'Bugsnag', :git => 'https://github.com/bugsnag/bugsnag-cocoa.git'
-  pod 'CHRTextFieldFormatter'
   pod 'NYPLCardCreator', :git => 'https://github.com/NYPL-Simplified/CardCreator-iOS.git'
 
 end
