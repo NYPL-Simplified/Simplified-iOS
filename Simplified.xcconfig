@@ -1,7 +1,10 @@
-
-HEADER_SEARCH_PATHS = $(inherited) "$(SDKROOT)/usr/include/libxml2" "$(SRCROOT)/readium-sdk/Platform/Apple/RDServices" "$(SRCROOT)/readium-sdk/Platform/Apple/include" "$(SRCROOT)/tenprintcover-ios/TenPrintCover"
+HEADER_SEARCH_PATHS = $(inherited) "$(SDKROOT)/usr/include/libxml2" "$(SRCROOT)/readium-sdk/Platform/Apple/RDServices" "$(SRCROOT)/readium-sdk/Platform/Apple/include" "$(SRCROOT)/tenprintcover-ios/TenPrintCover" "$(SRCROOT)/adept-ios" "$(SRCROOT)/adobe-content-filter/public"
 
 WARNING_CFLAGS = -Wall -Wextra -Weverything -Wno-objc-missing-property-synthesis -Wno-c11-extensions -Wno-documentation -Wno-c++98-compat-pedantic -Wno-c++98-compat
 
 CLANG_CXX_LANGUAGE_STANDARD = gnu++0x
 CLANG_CXX_LIBRARY = libc++
+
+// Remove this to build without DRM.
+// NOTE: Building without DRM is currently unsupported.
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) FEATURE_DRM_CONNECTOR=1

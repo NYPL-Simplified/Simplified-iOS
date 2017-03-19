@@ -26,7 +26,7 @@
 06. `rm -rf adept-ios adobe-content-filter`
 07. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
 08. `open Simplified.xcworkspace`
-09. Remove "Simplified+RMSDK.xcconfig" from the project.
+09. Comment out the last line of "Simplified.xcconfig" that sets `FEATURE_DRM_CONNECTOR=1`.
 10. Delete "libAdept.a" and "libAdobe Content Filter.a" from "Link Binary with Libraries" for the "SimplyE" target.
 11. Build.
 
