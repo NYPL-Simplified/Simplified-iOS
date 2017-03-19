@@ -27,15 +27,5 @@ for SDK in ${SDKS[@]}; do
     cp \
       dp/build/xc5/Build/${CONFIGURATION}-${SDK}/libdp-iOS.a \
       lib/ios/${CONFIGURATION}-${SDK}
-    cd "$ADOBE_RMSDK/samples/book2png/build/xc5"
-    xcodebuild \
-      -project book2png.xcodeproj \
-      -configuration ${CONFIGURATION} \
-      -target book2png-iOS \
-      ONLY_ACTIVE_ARCH=NO \
-      ENABLE_BITCODE=NO \
-      ARCHS="${ARCHS}" \
-      -sdk ${SDK} \
-      build
   done
 done
