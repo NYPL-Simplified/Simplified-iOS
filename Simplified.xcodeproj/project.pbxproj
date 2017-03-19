@@ -421,6 +421,7 @@
 		2D382BD61D08BA99002C423D /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		2D62568A1D412BCB0080A81F /* BundledHTMLViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BundledHTMLViewController.swift; sourceTree = "<group>"; };
 		2D6256901D41582A0080A81F /* software-licenses.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "software-licenses.html"; sourceTree = "<group>"; };
+		2D6AF74A1E7E341F005CEC90 /* Simplified+RMSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Simplified+RMSDK.xcconfig"; sourceTree = "<group>"; };
 		2D6F7CA41D910C0D000B906A /* CHRTextFieldFormatter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHRTextFieldFormatter.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Simplified-bozbabgxnjsiwdfvcgffxbzqjxsq/Build/Products/Debug-iphonesimulator/CHRTextFieldFormatter/CHRTextFieldFormatter.framework"; sourceTree = "<group>"; };
 		2D6F7CA61D910C12000B906A /* Bugsnag.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bugsnag.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Simplified-bozbabgxnjsiwdfvcgffxbzqjxsq/Build/Products/Debug-iphonesimulator/Bugsnag/Bugsnag.framework"; sourceTree = "<group>"; };
 		2D6F7CA81D910C3C000B906A /* HelpStack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HelpStack.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Simplified-bozbabgxnjsiwdfvcgffxbzqjxsq/Build/Products/Debug-iphonesimulator/HelpStack/HelpStack.framework"; sourceTree = "<group>"; };
@@ -436,7 +437,6 @@
 		56A7B7786F9B146602623617 /* Pods-SimplyETests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyETests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests.release.xcconfig"; sourceTree = "<group>"; };
 		579E9BC126424F2B79C0FE7E /* Pods-SimplyETests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyETests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests.debug.xcconfig"; sourceTree = "<group>"; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
-		5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Simplified.xcconfig; sourceTree = "<group>"; };
 		5A5B90111B946763002C53E9 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "usr/lib/libc++.1.dylib"; sourceTree = SDKROOT; };
 		5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
 		5A5B90191B946FAD002C53E9 /* NYPLReaderContainerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReaderContainerDelegate.h; sourceTree = "<group>"; };
@@ -452,6 +452,7 @@
 		841B55411B740F2700FAC1AF /* NYPLSettingsEULAViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsEULAViewController.h; sourceTree = "<group>"; };
 		841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsEULAViewController.m; sourceTree = "<group>"; };
 		848FD95A1B83875D009D9BC4 /* NYPL_Launch_Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NYPL_Launch_Screen.xib; path = Simplified/NYPL_Launch_Screen.xib; sourceTree = "<group>"; };
+		8499EE06365A73ACE6116D3C /* Pods-SimplyE.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyE.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE.debug.xcconfig"; sourceTree = "<group>"; };
 		84B7A3431B84E8FE00584FB2 /* OFL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
 		84B7A3441B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenDyslexic3-Bold.ttf"; sourceTree = "<group>"; };
 		84B7A3451B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenDyslexic3-Regular.ttf"; sourceTree = "<group>"; };
@@ -498,16 +499,15 @@
 		AE77ECC029F3DABDB46A64EB /* NYPLOPDSLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLink.m; sourceTree = "<group>"; };
 		AE77EDCF05BE5D54CF8E0E70 /* NYPLOPDSType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSType.h; sourceTree = "<group>"; };
 		AE77EFD5622206475B6715A9 /* NYPLOPDSType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSType.m; sourceTree = "<group>"; };
-		B54F998D1BAC976C0033F303 /* Simplified.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Simplified.debug.xcconfig; sourceTree = "<group>"; };
-		B54F998E1BAC97AB0033F303 /* Simplified.release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Simplified.release.xcconfig; sourceTree = "<group>"; };
 		B54F998F1BACB0CD0033F303 /* libAFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAFNetworking.a; path = "Pods/../build/Debug-iphoneos/libAFNetworking.a"; sourceTree = "<group>"; };
 		B54F99901BACB0CE0033F303 /* libHelpStack.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libHelpStack.a; path = "Pods/../build/Debug-iphoneos/libHelpStack.a"; sourceTree = "<group>"; };
 		B594C7551BB06F40000028F5 /* HelpStackTheme.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = HelpStackTheme.plist; sourceTree = "<group>"; };
 		B5ED41D81B8F6E2E009FC164 /* NYPLBookButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookButtonsView.h; sourceTree = "<group>"; };
 		B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookButtonsView.m; sourceTree = "<group>"; };
 		BEEC686A5C71AFACFAC2A884 /* libPods-SimplyETests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SimplyETests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Simplified+RMSDK.xcconfig"; sourceTree = "<group>"; };
+		CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Simplified.xcconfig; sourceTree = "<group>"; };
 		CAE35BC11B86308D00BF9BC5 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		DE9D07935ED4E0F0BB8AD7B7 /* Pods-SimplyE.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyE.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE.release.xcconfig"; sourceTree = "<group>"; };
 		E677F8B11DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsLicensesTableViewController.h; sourceTree = "<group>"; };
 		E677F8B21DC2A8F500071222 /* NYPLSettingsLicensesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsLicensesTableViewController.m; sourceTree = "<group>"; };
 		E6CA8E401DC9246A00FE93B4 /* NYPLSettingsPrivacyPolicyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsPrivacyPolicyViewController.h; sourceTree = "<group>"; };
@@ -840,6 +840,8 @@
 			children = (
 				579E9BC126424F2B79C0FE7E /* Pods-SimplyETests.debug.xcconfig */,
 				56A7B7786F9B146602623617 /* Pods-SimplyETests.release.xcconfig */,
+				8499EE06365A73ACE6116D3C /* Pods-SimplyE.debug.xcconfig */,
+				DE9D07935ED4E0F0BB8AD7B7 /* Pods-SimplyE.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -856,20 +858,18 @@
 			isa = PBXGroup;
 			children = (
 				CAE35BC11B86308D00BF9BC5 /* README */,
-				B54F998D1BAC976C0033F303 /* Simplified.debug.xcconfig */,
-				B54F998E1BAC97AB0033F303 /* Simplified.release.xcconfig */,
-				5A5B90101B9460D3002C53E9 /* Simplified.xcconfig */,
-				CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */,
+				CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */,
+				2D6AF74A1E7E341F005CEC90 /* Simplified+RMSDK.xcconfig */,
 				5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */,
 				5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */,
 				A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */,
 				1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */,
 				848FD95A1B83875D009D9BC4 /* NYPL_Launch_Screen.xib */,
 				A823D80F192BABA400B55DE2 /* Frameworks */,
+				A12A6ACAB811A2E0B2BC0047 /* Pods */,
 				A823D80E192BABA400B55DE2 /* Products */,
 				A823D816192BABA400B55DE2 /* Simplified */,
 				A823D82F192BABA400B55DE2 /* SimplifiedTests */,
-				A12A6ACAB811A2E0B2BC0047 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1588,7 +1588,7 @@
 		};
 		A823D837192BABA400B55DE2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B54F998D1BAC976C0033F303 /* Simplified.debug.xcconfig */;
+			baseConfigurationReference = CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = YES;
@@ -1641,7 +1641,7 @@
 		};
 		A823D838192BABA400B55DE2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B54F998E1BAC97AB0033F303 /* Simplified.release.xcconfig */;
+			baseConfigurationReference = CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = YES;
@@ -1688,7 +1688,7 @@
 		};
 		A823D83A192BABA400B55DE2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */;
+			baseConfigurationReference = 8499EE06365A73ACE6116D3C /* Pods-SimplyE.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1730,7 +1730,7 @@
 		};
 		A823D83B192BABA400B55DE2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CAE35BBA1B86289500BF9BC5 /* Simplified+RMSDK.xcconfig */;
+			baseConfigurationReference = DE9D07935ED4E0F0BB8AD7B7 /* Pods-SimplyE.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
