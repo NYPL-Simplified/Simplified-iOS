@@ -20,15 +20,16 @@
 
 01. `git clone https://github.com/NYPL/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
 02. `cd Simplified-iOS`
-03. `git submodule update --init --recursive`
-04. Install [Cocoapods](https://cocoapods.org) if you haven't already.
-05. `pod install`
-06. `rm -rf adept-ios adobe-content-filter`
-07. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
-08. `open Simplified.xcworkspace`
-09. Remove "Simplified+RMSDK.xcconfig" from the project.
-10. Delete "libAdept.a" and "libAdobe Content Filter.a" from "Link Binary with Libraries" for the "SimplyE" target.
-11. Build.
+03. `git submodule deinit adept-ios && git rm -rf adept-ios`
+04. `git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter`
+05. `git submodule update --init --recursive`
+06. Install [Cocoapods](https://cocoapods.org) if you haven't already.
+07. `pod install`
+08. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
+09. `open Simplified.xcworkspace`
+10. Remove "Simplified+RMSDK.xcconfig" from the project.
+11. Delete "libADEPT.a" and "libAdobe Content Filter.a" from "Link Binary with Libraries" for the "SimplyE" target.
+12. Build.
 
 # Contributing
 
