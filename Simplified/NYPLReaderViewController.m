@@ -83,8 +83,8 @@
       self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
       self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
       self.bottomViewImageViewTopBorder.backgroundColor = [UIColor darkGrayColor];
-      self.headerViewLabel.textColor = [UIColor lightGrayColor];
-      self.footerViewLabel.textColor = [UIColor lightGrayColor];
+      self.headerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
+      self.footerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
       break;
   }
   
