@@ -52,6 +52,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   }
   
   func reloadAfterAccountChange() {
+    accounts = NYPLSettings.shared().settingsAccountsList as! [Int]
     self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount.id }
     self.tableView.reloadData()
   }
