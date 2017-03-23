@@ -665,16 +665,16 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
      {
        NSNumber const *isBookmarked = result;
        NYPLLOG(isBookmarked);
-       if ([isBookmarked  isEqual: @0])
+       if (isBookmarked && ![isBookmarked  isEqual: @0])
        {
          // is not a bookmarked page
-         NYPLLOG(@"there is no bookmark for this page");
+         NYPLLOG(@"there is a bookmark for this page");
        }
        else
        {
          // is not a bookmarked page
-         NYPLLOG(@"there is a bookmark for this page");
          
+         NYPLLOG(@"there is no bookmark for this page");
        }
        
      }
