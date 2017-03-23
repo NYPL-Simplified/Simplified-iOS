@@ -128,12 +128,14 @@ final class NYPLAnnotations: NSObject {
             for item in items
             {
               
-              guard let target = item["target"] as? [String:AnyObject], let source = target["source"] as? String else {
+              guard let target = item["target"] as? [String:AnyObject],
+                let source = target["source"] as? String,
+                let motivation = item["motivation"] as? String else {
                 completionHandler(nil)
                 return
               }
               
-              if source == book.identifier
+              if source == book.identifier && motivation == "http://librarysimplified.org/terms/annotation/idling"
               {
                 
                 guard let selector = target["selector"] as? [String:AnyObject], let serverCFI = selector["value"] as? String else {
