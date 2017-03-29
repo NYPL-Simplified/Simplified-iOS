@@ -811,7 +811,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
         [spineItemDict setObject:title forKey:@"tocElementTitle"];
       }
       else {
-        [spineItemDict setObject:NSLocalizedString(@"chapter", nil) forKey:@"tocElementTitle"];
+        [spineItemDict setObject:NSLocalizedString(@"ReaderViewControllerCurrentChapter", nil) forKey:@"tocElementTitle"];
       }
       
       [bookDicts setObject:spineItemDict forKey:spineItem.idref];
