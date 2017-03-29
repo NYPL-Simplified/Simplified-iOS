@@ -76,7 +76,7 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
     if navigationAction.navigationType == .linkActivated,
     let url = navigationAction.request.url {
       if !UIApplication.shared.canOpenURL(url) {
-        decisionHandler(.allow)
+        decisionHandler(.cancel)
       } else {
         if #available(iOS 10.0, *) {
           UIApplication.shared.open(url, options: [:], completionHandler: nil)
