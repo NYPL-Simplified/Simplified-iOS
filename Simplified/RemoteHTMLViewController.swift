@@ -72,6 +72,24 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
     self.present(alert, animated: true, completion: nil)
   }
   
+  func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    if navigationAction.navigationType == .linkActivated,
+    let url = navigationAction.request.url {
+      if !UIApplication.shared.canOpenURL(url) {
+        decisionHandler(.cancel)
+      } else {
+        if #available(iOS 10.0, *) {
+          UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+          UIApplication.shared.openURL(url)
+        }
+        decisionHandler(.cancel)
+      }
+    } else {
+      decisionHandler(.allow)
+    }
+  }
+  
   func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
     activityView(false)
   }
