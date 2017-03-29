@@ -109,7 +109,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   }
   
   func numberOfSections(in tableView: UITableView) -> Int {
-    return 2;
+    return 2
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -121,14 +121,47 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   }
   
   func cellForLibrary(_ account: Account, _ indexPath: IndexPath) -> UITableViewCell {
-    let cell = UITableViewCell.init(style: .subtitle, reuseIdentifier: "")
+
+    let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
+    
+    
+    let container = UIView()
     
     cell.accessoryType = .disclosureIndicator
-    cell.textLabel?.font = UIFont.systemFont(ofSize: 14)
-    cell.textLabel?.text = account.name
-    cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 12)
-    cell.detailTextLabel?.text = account.subtitle
-    cell.imageView?.image = UIImage(named: account.logo!)
+    
+    let imageView = UIImageView(image: UIImage(named: account.logo!))
+    imageView.contentMode = .center
+    
+    let textLabel = UILabel()
+    textLabel.font = UIFont.systemFont(ofSize: 14)
+    textLabel.text = account.name
+    textLabel.numberOfLines = 0
+
+    let detailLabel = UILabel()
+    detailLabel.font = UIFont(name: "AvenirNext-Regular", size: 12)
+    detailLabel.numberOfLines = 0
+    detailLabel.text = account.subtitle
+    
+    container.addSubview(imageView)
+    container.addSubview(textLabel)
+    container.addSubview(detailLabel)
+    cell.contentView.addSubview(container)
+    
+    imageView.autoAlignAxis(toSuperviewAxis: .horizontal)
+    imageView.autoPinEdge(toSuperviewEdge: .left)
+    imageView.autoSetDimensions(to: CGSize(width: 45, height: 45))
+    
+    textLabel.autoPinEdge(toSuperviewEdge: .top)
+    textLabel.autoPinEdge(.bottom, to: .top, of: detailLabel)
+    textLabel.autoPinEdge(.left, to: .right, of: imageView, withOffset: cell.contentView.layoutMargins.left)
+    textLabel.autoPinEdge(toSuperviewEdge: .right)
+    
+    detailLabel.autoPinEdge(.top, to: .bottom, of: textLabel)
+    detailLabel.autoPinEdge(toSuperviewEdge: .bottom)
+    detailLabel.autoPinEdge(.left, to: .left, of: textLabel)
+    detailLabel.autoPinEdge(toSuperviewEdge: .right)
+    
+    container.autoPinEdgesToSuperviewMargins()
     
     return cell
   }
@@ -148,14 +181,18 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return 60;
+    return UITableViewAutomaticDimension
+  }
+  
+  func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+    return 80
   }
   
   func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
     if indexPath.section == 0 {
-      return false;
+      return false
     } else {
-      return true;
+      return true
     }
   }
   
