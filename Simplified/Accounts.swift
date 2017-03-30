@@ -22,6 +22,10 @@ final class AccountsManager: NSObject
   var accounts = [Account]()
   var currentAccount: Account {
     get {
+      if account(defaults.integer(forKey: currentAccountIdentifierKey)) == nil
+      {
+        defaults.set(0, forKey: currentAccountIdentifierKey)
+      }
       return account(defaults.integer(forKey: currentAccountIdentifierKey))!
     }
     set {
@@ -33,6 +37,7 @@ final class AccountsManager: NSObject
   fileprivate override init()
   {
     self.defaults = UserDefaults.standard
+//    let url = URL(string: "http://www.librarysimplified.org/assets/s9fhw9p8fuewpufje.json")
     let url = Bundle.main.url(forResource: "Accounts", withExtension: "json")
     let data = try? Data(contentsOf: url!)
     do {
@@ -55,7 +60,12 @@ final class AccountsManager: NSObject
             savedDict["subtitle"] = account.subtitle as AnyObject?
             savedDict["logo"] = account.logo as AnyObject?
             savedDict["needsAuth"] = account.needsAuth as AnyObject?
+            savedDict["supportsSimplyESync"] = account.supportsSimplyESync as AnyObject?
+            savedDict["supportsBarcodeScanner"] = account.supportsBarcodeScanner as AnyObject?
+            savedDict["supportsBarcodeDisplay"] = account.supportsBarcodeDisplay as AnyObject?
+            savedDict["supportsCardCreator"] = account.supportsCardCreator as AnyObject?
             savedDict["supportsReservations"] = account.supportsReservations as AnyObject?
+            savedDict["supportEmail"] = account.supportEmail as AnyObject?
             savedDict["catalogUrl"] = account.catalogUrl as AnyObject?
             savedDict["cardCreatorUrl"] = account.cardCreatorUrl as AnyObject?
             savedDict["mainColor"] = account.mainColor as AnyObject?
@@ -95,10 +105,14 @@ final class Account:NSObject
   let subtitle:String?
   let logo:String?
   let needsAuth:Bool
+  let supportsSimplyESync:Bool
+  let supportsBarcodeScanner:Bool
+  let supportsBarcodeDisplay:Bool
   let supportsCardCreator:Bool
   let supportsReservations:Bool
   let catalogUrl:String?
   let cardCreatorUrl:String?
+  let supportEmail:String?
   let mainColor:String?
   
   fileprivate var urlAnnotations:URL?
@@ -146,9 +160,13 @@ final class Account:NSObject
     logo = json["logo"] as? String
     needsAuth = json["needsAuth"] as! Bool
     supportsReservations = json["supportsReservations"] as! Bool
+    supportsSimplyESync = json["supportsSimplyESync"] as! Bool
+    supportsBarcodeScanner = json["supportsBarcodeScanner"] as! Bool
+    supportsBarcodeDisplay = json["supportsBarcodeDisplay"] as! Bool
     supportsCardCreator = json["supportsCardCreator"] as! Bool
     catalogUrl = json["catalogUrl"] as? String
     cardCreatorUrl = json["cardCreatorUrl"] as? String
+    supportEmail = json["supportEmail"] as? String
     mainColor = json["mainColor"] as? String
   }
   
