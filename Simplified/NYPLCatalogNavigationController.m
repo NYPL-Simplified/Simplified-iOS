@@ -185,7 +185,8 @@
     NYPLLOG([[NYPLAccount sharedAccount:account.id] licensor]);
     NYPLLOG(first);
     NYPLLOG(last);
-    
+#if defined(FEATURE_DRM_CONNECTOR)
+
     [[NYPLADEPT sharedInstance]
      authorizeWithVendorID:[[NYPLAccount sharedAccount:account.id] licensor][@"vendor"]
      username:first
@@ -215,13 +216,9 @@
          [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
        }
      }];
+#endif
+
   }
-//  else if (account.needsAuth)
-//  {
-////    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
-//      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-////    }];
-//  }
   else{
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
       [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];

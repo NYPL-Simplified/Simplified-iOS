@@ -731,13 +731,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
        }
        NYPLLOG(locationJSON);
        
-       NSError *jsonError;
-       NSData *objectData = [locationJSON dataUsingEncoding:NSUTF8StringEncoding];
-       NSDictionary *json = [NSJSONSerialization JSONObjectWithData:objectData
-                                                            options:NSJSONReadingMutableContainers
-                                                              error:&jsonError];
+//       NSError *jsonError;
+//       NSData *objectData = [locationJSON dataUsingEncoding:NSUTF8StringEncoding];
+//       NSDictionary *json = [NSJSONSerialization JSONObjectWithData:objectData
+//                                                            options:NSJSONReadingMutableContainers
+//                                                              error:&jsonError];
 
-       [self hasBookmarkForSpineItem:json[@"idref"]];
+//       [self hasBookmarkForSpineItem:json[@"idref"]];
        
        NYPLBookLocation *const location = [[NYPLBookLocation alloc]
                                            initWithLocationString:locationJSON

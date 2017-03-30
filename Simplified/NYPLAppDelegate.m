@@ -109,21 +109,6 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   [[NYPLReaderSettings sharedSettings] save];
 }
 
-
-// why do we need this?????
-
-//#if defined(FEATURE_DRM_CONNECTOR)
-//- (void)applicationDidBecomeActive:(__unused UIApplication *)application
-//{
-//  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
-//    if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-//      [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:nil];
-//    }
-//  }
-//
-//}
-//#endif
-
 - (void)beginCheckingForUpdates
 {
   [UpdateCheckShim

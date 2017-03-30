@@ -18,6 +18,8 @@ static NSString *const legacyUserAcceptedEULAKey = @"NYPLSettingsUserAcceptedEUL
 
 static NSString *const userHasSeenWelcomeScreenKey = @"NYPLUserHasSeenWelcomeScreenKey";
 
+//static NSString *const settingsSynchronizeAnnotationsKey = @"NYPLSettingsSynchronizeAnnotationsKey";
+
 static NSString *const userPresentedAgeCheckKey = @"NYPLUserPresentedAgeCheckKey";
 
 static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCurrentCardApplicationSerialized";
@@ -95,6 +97,10 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 {
   return [[NSUserDefaults standardUserDefaults] boolForKey:legacyUserAcceptedEULAKey];
 }
+//- (BOOL) settingsSynchronizeAnnotations
+//{
+//  return [[NSUserDefaults standardUserDefaults] objectForKey:settingsSynchronizeAnnotationsKey];
+//}
 
 - (BOOL) userHasSeenWelcomeScreen
 {
@@ -232,6 +238,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
    postNotificationName:NYPLSettingsDidChangeNotification
    object:self];
 }
+
+//- (void)setSettingsSynchronizeAnnotations:(BOOL)synchronizeSettings
+//{
+//  [[NSUserDefaults standardUserDefaults] setBool:synchronizeSettings forKey:settingsSynchronizeAnnotationsKey];
+//  [[NSUserDefaults standardUserDefaults] synchronize];
+//}
 
 - (void)setAcceptedEULABeforeMultiLibrary:(BOOL)acceptedEULA
 {
