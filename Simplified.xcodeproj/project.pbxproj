@@ -232,7 +232,6 @@
 		032A310C1DC02EAD0001E4AF /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		032A310D1DC02EB30001E4AF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		032A310E1DC02EC00001E4AF /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
-		032A45E81E8053E90050BEDB /* SimplyE copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "SimplyE copy-Info.plist"; path = "/Users/aferditamuriqi/XcodeProjects/Simplified-iOS/SimplyE copy-Info.plist"; sourceTree = "<absolute>"; };
 		033C1FCA1E7C4D4700318B68 /* ScanditBarcodeScanner.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ScanditBarcodeScanner.framework; sourceTree = "<group>"; };
 		033C1FCC1E7C4D5400318B68 /* ScanditBarcodeScanner.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ScanditBarcodeScanner.bundle; sourceTree = "<group>"; };
 		0345BFD61DBF002E00398B6F /* APIKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
@@ -919,7 +918,6 @@
 				A823D80E192BABA400B55DE2 /* Products */,
 				A823D816192BABA400B55DE2 /* Simplified */,
 				A823D82F192BABA400B55DE2 /* SimplifiedTests */,
-				032A45E81E8053E90050BEDB /* SimplyE copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
