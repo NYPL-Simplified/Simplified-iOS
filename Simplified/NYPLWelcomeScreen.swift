@@ -220,7 +220,14 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
     cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 12)
     cell.detailTextLabel?.text = account.subtitle
     cell.detailTextLabel?.numberOfLines = 2
-    cell.imageView?.image = UIImage(named: account.logo!)
+    if let logo = account.logo
+    {
+      cell.imageView?.image = UIImage(named: logo)
+    }
+    else
+    {
+      cell.imageView?.image = #imageLiteral(resourceName: "LibraryLogoMagic")
+    }
     
     return cell
   }

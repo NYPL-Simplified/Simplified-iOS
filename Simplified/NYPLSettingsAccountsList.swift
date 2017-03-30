@@ -37,8 +37,30 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     self.tableView.delegate = self
     self.tableView.dataSource = self
     
+    
+    // cleanup accounts, remove demo account or accounts not supported through accounts.json // will be refactored when implementing librsry registry
+    var accountsToRemove = [Int]()
+    
+    for account in accounts
+    {
+      if (AccountsManager.shared.account(account) == nil)
+      {
+        accountsToRemove.append(account)
+      }
+    }
+
+    for remove in accountsToRemove
+    {
+      if let index = accounts.index(of: remove) {
+        accounts.remove(at: index)
+      }
+
+    }
+    
     self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount.id }
     
+    updateSettingsAccountList()
+
     self.title = NSLocalizedString("Accounts",
                                    comment: "A title for a list of libraries the user may select or add to.")
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
@@ -129,7 +151,17 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     
     cell.accessoryType = .disclosureIndicator
     
-    let imageView = UIImageView(image: UIImage(named: account.logo!))
+    var imageView = UIImageView(image: UIImage(named: account.logo!))
+    
+    if let logo = account.logo
+    {
+      imageView = UIImageView(image: UIImage(named: logo))
+    }
+    else
+    {
+      imageView = UIImageView(image: #imageLiteral(resourceName: "LibraryLogoMagic"))
+    }
+    
     imageView.contentMode = .center
     
     let textLabel = UILabel()
