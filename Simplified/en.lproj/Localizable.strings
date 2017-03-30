@@ -216,10 +216,10 @@
 // NYPLWelcomeScreen
 "WelcomeScreenAgeVerifyTitle" = "Age Verification";
 "WelcomeScreenAgeVerifyMessage" = "You must be 13 years of age or older to download some of the books from this collection. How old are you?";
-"WelcomeScreenTitle1" = "Read Books From Your Library";
-"WelcomeScreenSubtitle1" = "Check out books and sync across devices";
-"WelcomeScreenButtonTitle1" = "PICK YOUR LIBRARY";
-"WelcomeScreenTitle2" = "Read Books Without a Library Card";
-"WelcomeScreenSubtitle2" = "Find classic books in the public domain";
-"WelcomeScreenButtonTitle2" = "SIMPLY READ";
+"WelcomeScreenTitle1" = "Read Books from your Library";
+"WelcomeScreenSubtitle1" = "Simply browse borrow and read free ebooks from you local library";
+"WelcomeScreenButtonTitle1" = "Pick Your Library";
+"WelcomeScreenTitle2" = "SimplyRead";
+"WelcomeScreenSubtitle2" = "Download and read ebooks without a library card";
+"WelcomeScreenButtonTitle2" = "Read Now";
 "LibraryListTitle" = "Pick Your Library";

@@ -12,7 +12,7 @@
  "supportsReservations" : true,
  "supportsCardCreator" : true,
  "catalogUrl" : "https://circulation.librarysimplified.org",
- "supportEmail" : "SimplyEhelp@nypl.org",
+ "supportEmail" : "simplyehelp@nypl.org",
  "mainColor" : "da2527"
  },
  {
@@ -35,7 +35,7 @@
  {
  "id" : 2,
  "pathComponent" : "2",
- "name" : "Simply Read",
+ "name" : "SimplyRead",
  "subtitle" : "Open access to the literature of our shared culture.",
  "logo" : "LibraryLogoMagic",
  "needsAuth" : false,
