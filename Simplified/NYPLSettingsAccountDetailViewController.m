@@ -19,10 +19,12 @@
 #import "SimplyE-Swift.h"
 #import <PureLayout/PureLayout.h>
 #import <ScanditBarcodeScanner/ScanditBarcodeScanner.h>
+#import <HelpStack/HSUtility.h>
 
 #define kScanditBarcodeScannerAppKey    @"ADD YOUR APP KEY"
 
 @import CoreLocation;
+@import MessageUI;
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -40,7 +42,8 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindSyncButton,
   CellKindAbout,
   CellKindPrivacyPolicy,
-  CellKindContentLicense
+  CellKindContentLicense,
+  CellReportIssue
 };
 
 typedef NS_ENUM(NSInteger, Section) {
@@ -70,7 +73,7 @@ typedef NS_ENUM(NSInteger, Section) {
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITableViewCell *ageCheckCell;
 
-@property (nonatomic) NSArray *tableData;
+@property (nonatomic) NSMutableArray *tableData;
 @property (nonatomic) bool rotated;
 @property (nonatomic, strong, nullable) SBSBarcodePicker *picker;
 
@@ -283,11 +286,20 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   }
   
   if ([self registrationIsPossible]) {
-    self.tableData = @[section0, sectionRegister, section1, section2];
+    self.tableData = @[section0, sectionRegister, section1, section2].mutableCopy;
   }
   else{
-    self.tableData = @[section0, section1, section2];
+    self.tableData = @[section0, section1, section2].mutableCopy;
   }
+  
+  NSMutableArray *reportIssue = [[NSMutableArray alloc] init];
+  if (self.account.supportEmail != nil && [MFMailComposeViewController canSendMail])
+  {
+    [reportIssue addObject:@(CellReportIssue)];
+    [self.tableData addObject:reportIssue];
+  }
+
+  
   NSMutableArray *newArray = [[NSMutableArray alloc] init];
   for (NSMutableArray *section in self.tableData) {
     if ([section count] != 0) { [newArray addObject:section]; }
@@ -692,6 +704,20 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindSyncButton: {
       break;
     }
+    case CellReportIssue: {
+      if ([MFMailComposeViewController canSendMail])
+      {
+        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"ReportIssue" bundle:nil];
+        NYPLReportIssueViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ReportIssueController"];
+        vc.account = self.account;
+        [self.navigationController pushViewController:vc animated:YES];
+      }
+      else
+      {
+        NSLog(@"This device cannot send email");
+      }
+      break;
+    }
     case CellKindAbout: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
                                       initWithURL:[self.account getLicenseURL:URLTypeAcknowledgements]
@@ -899,6 +925,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.textLabel.font = [UIFont systemFontOfSize:17];
       cell.textLabel.text = NSLocalizedString(@"SettingsAccountSyncTitle",
                                               @"Title for switch to turn on or off syncing.");
+      return cell;
+    }
+    case CellReportIssue: {
+      UITableViewCell *cell = [[UITableViewCell alloc]
+                               initWithStyle:UITableViewCellStyleDefault
+                               reuseIdentifier:nil];
+      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.text = NSLocalizedString(@"Report An Issue", nil);
       return cell;
     }
     case CellKindAbout: {
