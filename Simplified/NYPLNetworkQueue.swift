@@ -20,17 +20,17 @@ final class NetworkQueue: NSObject {
   
   private static let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first!
   
-  private static let sqlTable = Table("queueTable")
+  private static let sqlTable = Table("offline_queue")
   
-  private static let sqlID = Expression<Int>("rowid")
-  private static let sqlLibraryID = Expression<Int>("libraryIdentifier")
-  private static let sqlUpdateID = Expression<String?>("updateIdentifier")
-  private static let sqlUrl = Expression<String>("requestUrl")
-  private static let sqlMethod = Expression<String>("requestMethod")
-  private static let sqlParameters = Expression<Data?>("requestParameters")
-  private static let sqlHeader = Expression<Data?>("requestHeader")
-  private static let sqlRetries = Expression<Int>("retryCount")
-  private static let sqlDateCreated = Expression<Data>("dateCreated")
+  private static let sqlID = Expression<Int>("id")
+  private static let sqlLibraryID = Expression<Int>("library_identifier")
+  private static let sqlUpdateID = Expression<String?>("update_identifier")
+  private static let sqlUrl = Expression<String>("request_url")
+  private static let sqlMethod = Expression<String>("request_method")
+  private static let sqlParameters = Expression<Data?>("request_parameters")
+  private static let sqlHeader = Expression<Data?>("request_header")
+  private static let sqlRetries = Expression<Int>("retry_count")
+  private static let sqlDateCreated = Expression<Data>("date_created")
   
   
   // MARK: - Public Functions
@@ -162,7 +162,7 @@ final class NetworkQueue: NSObject {
   {
     let db: Connection
     do {
-      db = try Connection("\(path)/db.sqlite3")
+      db = try Connection("\(path)/simplified.db")
     } catch {
       Log.error(#file, "SQLite: Could not start DB connection.")
       return nil
