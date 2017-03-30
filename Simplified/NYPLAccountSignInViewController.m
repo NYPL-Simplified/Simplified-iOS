@@ -608,6 +608,60 @@ replacementString:(NSString *)string
 {
   [self.picker dismissViewControllerAnimated:YES completion:nil];
 }
+//! [SBSScanDelegate callback]
+/**
+ * This delegate method of the SBSScanDelegate protocol needs to be implemented by
+ * every app that uses the Scandit Barcode Scanner and this is where the custom application logic
+ * goes. In the example below, we are just showing an alert view with the result.
+ */
+- (void)barcodePicker:(__unused SBSBarcodePicker *)thePicker didScan:(SBSScanSession *)session {
+  
+  // call stopScanning on the session to immediately stop scanning and close the camera. This
+  // is the preferred way to stop scanning barcodes from the SBSScanDelegate as it is made sure
+  // that no new codes are scanned. When calling stopScanning on the picker, another code may be
+  // scanned before stopScanning has completely stoppen the scanning process.
+  [session stopScanning];
+  
+  SBSCode *code = [session.newlyRecognizedCodes objectAtIndex:0];
+  // the barcodePicker:didScan delegate method is invoked from a picker-internal queue. To display
+  // the results in the UI, you need to dispatch to the main queue. Note that it's not allowed
+  // to use SBSScanSession in the dispatched block as it's only allowed to access the
+  // SBSScanSession inside the barcodePicker:didScan callback. It is however safe to use results
+  // returned by session.newlyRecognizedCodes etc.
+  dispatch_async(dispatch_get_main_queue(), ^{
+    
+    NSString *symbology = code.symbologyString;
+    NSString *barcode = code.data;
+    
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:[NSString stringWithFormat:@"Scanned %@", symbology]
+                          message:barcode
+                          delegate:self
+                          cancelButtonTitle:@"Done"
+                          otherButtonTitles:@"Try Again", nil];
+    [alert show];
+    
+    
+  });
+  
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+  
+  if (buttonIndex == 0)
+  {
+    [self.picker dismissViewControllerAnimated:YES completion:^{
+      NSString *barcode = alertView.message;
+      barcode = [barcode stringByReplacingOccurrencesOfString:@"A" withString:@""];
+      barcode = [barcode stringByReplacingOccurrencesOfString:@"B" withString:@""];
+      self.barcodeTextField.text = barcode;
+    }];
+  }
+  else{
+    [self.picker startScanning];
+    
+  }
+}
 
 - (void)PINShowHideSelected
 {
