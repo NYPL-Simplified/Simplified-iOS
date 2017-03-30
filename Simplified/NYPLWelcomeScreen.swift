@@ -57,22 +57,35 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     containerView.addSubview(view1)
     containerView.addSubview(view2)
     
+    self.view.addSubview(containerView)
+    
     logoView.autoPinEdge(toSuperviewMargin: .top)
     logoView.autoAlignAxis(toSuperviewAxis: .vertical)
-    logoView.autoSetDimensions(to: CGSize(width: 180, height: 150))
-    
+
     view1.autoAlignAxis(toSuperviewAxis: .vertical)
-    view1.autoPinEdge(.top, to: .bottom, of: logoView, withOffset: 5)
+    view1.autoPinEdge(.top, to: .bottom, of: logoView, withOffset: 2)
+    view1.autoPinEdge(toSuperviewMargin: .left)
+    view1.autoPinEdge(toSuperviewMargin: .right)
     
     view2.autoAlignAxis(toSuperviewAxis: .vertical)
-    view2.autoPinEdge(.top, to: .bottom, of: view1, withOffset: 8)
-    view2.autoPinEdge(toSuperviewEdge: .bottom, withInset: 80)
+    view2.autoPinEdge(.top, to: .bottom, of: view1, withOffset: 10)
     view2.autoPinEdge(toSuperviewMargin: .left)
     view2.autoPinEdge(toSuperviewMargin: .right)
     
+    containerView.autoAlignAxis(toSuperviewAxis: .vertical)
+    containerView.autoPinEdge(toSuperviewEdge: .left, withInset: 24, relation: .greaterThanOrEqual)
+    containerView.autoPinEdge(toSuperviewEdge: .right, withInset: 24, relation: .greaterThanOrEqual)
+    containerView.autoPinEdge(toSuperviewEdge: .top, withInset: 0, relation: .greaterThanOrEqual)
+    containerView.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0, relation: .greaterThanOrEqual)
     
-    self.view.addSubview(containerView)
-    containerView.autoCenterInSuperview()
+    NSLayoutConstraint.autoSetPriority(UILayoutPriorityDefaultHigh) {
+      containerView.autoSetDimension(.width, toSize: 350)
+      containerView.autoAlignAxis(toSuperviewAxis: .horizontal)
+    }
+    NSLayoutConstraint.autoSetPriority(UILayoutPriorityDefaultLow) {
+      logoView.autoSetDimensions(to: CGSize(width: 180, height: 150))
+      view2.autoPinEdge(toSuperviewEdge: .bottom, withInset: 80)
+    }
   }
   
   func splashScreenView(_ imageName: String, headline: String, subheadline: String, buttonTitle: String, buttonTargetSelector: Selector) -> UIView {
@@ -86,9 +99,10 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     imageView1.autoPinEdge(toSuperviewMargin: .top)
     
     let textLabel1 = UILabel()
+    textLabel1.numberOfLines = 0
     textLabel1.textAlignment = .center
     textLabel1.text = headline
-    textLabel1.font = UIFont.systemFont(ofSize: 16)
+    textLabel1.font = UIFont.systemFont(ofSize: 20)
     
     tempView.addSubview(textLabel1)
     textLabel1.autoPinEdge(.top, to: .bottom, of: imageView1, withOffset: 2.0, relation: .equal)
@@ -97,9 +111,10 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     textLabel1.autoAlignAxis(toSuperviewMarginAxis: .vertical)
     
     let textLabel2 = UILabel()
+    textLabel2.numberOfLines = 0
     textLabel2.textAlignment = .center
     textLabel2.text = subheadline
-    textLabel2.font = UIFont.systemFont(ofSize: 12)
+    textLabel2.font = UIFont.systemFont(ofSize: 16)
 
     tempView.addSubview(textLabel2)
     textLabel2.autoPinEdge(.top, to: .bottom, of: textLabel1, withOffset: 0.0, relation: .equal)
@@ -109,7 +124,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     
     let button = UIButton()
     button.setTitle(buttonTitle, for: UIControlState())
-    button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+    button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
     button.setTitleColor(NYPLConfiguration.iconLogoBlueColor(), for: .normal)
     button.layer.borderColor = NYPLConfiguration.iconLogoGreenColor().cgColor
     button.layer.borderWidth = 2
@@ -119,7 +134,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     button.addTarget(self, action: buttonTargetSelector, for: .touchUpInside)
     tempView.addSubview(button)
     
-    button.autoPinEdge(.top, to: .bottom, of: textLabel2, withOffset: 6.0, relation: .equal)
+    button.autoPinEdge(.top, to: .bottom, of: textLabel2, withOffset: 8.0, relation: .equal)
     button.autoAlignAxis(toSuperviewMarginAxis: .vertical)
     button.autoPinEdge(toSuperviewMargin: .bottom)
     
@@ -197,7 +212,7 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
   }
   
    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return 80
+    return 100
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -215,11 +230,11 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
   func cellForLibrary(_ account: Account) -> UITableViewCell {
     let cell = UITableViewCell.init(style: .subtitle, reuseIdentifier: "")
     
-    cell.textLabel?.font = UIFont.systemFont(ofSize: 14)
+    cell.textLabel?.font = UIFont.systemFont(ofSize: 18)
     cell.textLabel?.text = account.name
-    cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 12)
+    cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 13)
     cell.detailTextLabel?.text = account.subtitle
-    cell.detailTextLabel?.numberOfLines = 2
+    cell.detailTextLabel?.numberOfLines = 3
     if let logo = account.logo
     {
       cell.imageView?.image = UIImage(named: logo)
