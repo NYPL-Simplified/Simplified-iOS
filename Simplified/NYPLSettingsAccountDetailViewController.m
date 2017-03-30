@@ -197,19 +197,19 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected)
                    forControlEvents:UIControlEventTouchUpInside];
   
-  
-  self.barcodeScanButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [self.barcodeScanButton setImage:[UIImage imageNamed:@"ic_camera"] forState:UIControlStateNormal];
-  [self.barcodeScanButton sizeToFit];
-  [self.barcodeScanButton addTarget:self action:@selector(scanLibraryCard)
+  if (self.account.supportsBarcodeScanner) {
+    self.barcodeScanButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.barcodeScanButton setImage:[UIImage imageNamed:@"ic_camera"] forState:UIControlStateNormal];
+    [self.barcodeScanButton sizeToFit];
+    [self.barcodeScanButton addTarget:self action:@selector(scanLibraryCard)
                    forControlEvents:UIControlEventTouchUpInside];
 
-
+    self.barcodeTextField.rightView = self.barcodeScanButton;
+    self.barcodeTextField.rightViewMode = UITextFieldViewModeAlways;
+  }
   self.PINTextField.rightView = self.PINShowHideButton;
   self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
   
-    self.barcodeTextField.rightView = self.barcodeScanButton;
-    self.barcodeTextField.rightViewMode = UITextFieldViewModeAlways;
   [self setupTableData];
   
   [self checkSyncSetting];
@@ -271,7 +271,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   
   NSMutableArray *sectionRegister = @[@(CellKindRegistration)].mutableCopy;
 
-  if (self.account.needsAuth == YES && [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]){
+  if (self.account.needsAuth == YES && [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN] && self.account.supportsBarcodeDisplay){
     [section0 insertObject:@(CellKindBarcodeImage) atIndex: 0];
   }
   NSMutableArray *section1 = [[NSMutableArray alloc] init];
@@ -709,6 +709,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     }
     case CellKindSyncButton: {
+      break;
+    }
+    case CellKindBarcodeImage: {
       break;
     }
     case CellReportIssue: {
