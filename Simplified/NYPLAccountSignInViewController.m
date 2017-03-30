@@ -19,7 +19,10 @@
 #import "NYPLRootTabBarController.h"
 #import "UIView+NYPLViewAdditions.h"
 #import <PureLayout/PureLayout.h>
+#import <ScanditBarcodeScanner/ScanditBarcodeScanner.h>
 @import CoreLocation;
+
+#define kScanditBarcodeScannerAppKey    @"ADD YOUR APP KEY"
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -73,11 +76,12 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   }
 }
 
-@interface NYPLAccountSignInViewController () <NSURLSessionDelegate, UITextFieldDelegate>
+@interface NYPLAccountSignInViewController () <NSURLSessionDelegate, UITextFieldDelegate,SBSScanDelegate, UIAlertViewDelegate>
 
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) BOOL isCurrentlySigningIn;
 @property (nonatomic) UITextField *barcodeTextField;
+@property (nonatomic) UIButton *barcodeScanButton;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) BOOL hiddenPIN;
 @property (nonatomic) UITableViewCell *eulaCell;
@@ -85,6 +89,8 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @property (nonatomic) UITextField *PINTextField;
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
+@property (nonatomic) bool rotated;
+@property (nonatomic, strong, nullable) SBSBarcodePicker *picker;
 
 @end
 
@@ -183,6 +189,21 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
                    forControlEvents:UIControlEventTouchUpInside];
   self.PINTextField.rightView = self.PINShowHideButton;
   self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
+  
+  Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
+
+  if (currentAccount.supportsBarcodeScanner) {
+    self.barcodeScanButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.barcodeScanButton setImage:[UIImage imageNamed:@"ic_camera"] forState:UIControlStateNormal];
+    [self.barcodeScanButton sizeToFit];
+    [self.barcodeScanButton addTarget:self action:@selector(scanLibraryCard)
+                     forControlEvents:UIControlEventTouchUpInside];
+    
+    self.barcodeTextField.rightView = self.barcodeScanButton;
+    self.barcodeTextField.rightViewMode = UITextFieldViewModeAlways;
+  }
+
+  
   
   self.logInSignOutCell = [[UITableViewCell alloc]
                            initWithStyle:UITableViewCellStyleDefault
@@ -534,6 +555,58 @@ replacementString:(NSString *)string
 {
   self.hiddenPIN = NO;
   [self.tableView reloadData];
+}
+
+- (void)scanLibraryCard
+{
+  [SBSLicense setAppKey:kScanditBarcodeScannerAppKey];
+  
+  SBSScanSettings* settings = [SBSScanSettings defaultSettings];
+  
+  //By default, all symbologies are turned off so you need to explicity enable the desired simbologies.
+  NSSet *symbologiesToEnable = [NSSet setWithObjects:
+                                @(SBSSymbologyCodabar), nil];
+  [settings enableSymbologies:symbologiesToEnable];
+  
+  
+  // Some 1d barcode symbologies allow you to encode variable-length data. By default, the
+  // Scandit BarcodeScanner SDK only scans barcodes in a certain length range. If your
+  // application requires scanning of one of these symbologies, and the length is falling
+  // outside the default range, you may need to adjust the "active symbol counts" for this
+  // symbology. This is shown in the following 3 lines of code.
+  
+  SBSSymbologySettings *symSettings = [settings settingsForSymbology:SBSSymbologyCode39];
+  symSettings.activeSymbolCounts =
+  [NSSet setWithObjects:@7, @8, @9, @10, @11, @12, @13, @14, @15, @16, @17, @18, @19, @20, nil];
+  // For details on defaults and how to calculate the symbol counts for each symbology, take
+  // a look at http://docs.scandit.com/stable/c_api/symbologies.html.
+  
+  // Initialize the barcode picker - make sure you set the app key above
+  self.picker = [[SBSBarcodePicker alloc] initWithSettings:settings];
+  
+  [self.picker.overlayController setTorchEnabled:NO];
+  
+  // only show camera switch button on tablets. For all other devices the switch button is
+  // hidden, even if they have a front camera.
+  [self.picker.overlayController setCameraSwitchVisibility:SBSCameraSwitchVisibilityOnTablet];
+  // set the allowed interface orientations. The value UIInterfaceOrientationMaskAll is the
+  // default and is only shown here for completeness.
+  [self.picker setAllowedInterfaceOrientations:UIInterfaceOrientationMaskAll];
+  // Set the delegate to receive scan event callbacks
+  self.picker.scanDelegate = self;
+  
+  // Open the camera and start scanning barcodes
+  [self.picker startScanning];
+  
+  UINavigationController *navController = [[UINavigationController alloc]initWithRootViewController:self.picker];
+  UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissPicker)];
+  self.picker.navigationItem.rightBarButtonItem = cancel;
+  [self presentViewController:navController animated:YES completion:nil];
+
+}
+-(void)dismissPicker
+{
+  [self.picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)PINShowHideSelected
