@@ -152,7 +152,7 @@ static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
                  specialPayloadAnnotationsCSS:nil
                  specialPayloadMathJaxJS:nil];
   
-  self.webView = [[WKWebView alloc] initWithFrame:self.bounds];
+  self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 60, self.bounds.size.width, self.bounds.size.height - 100)];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
   self.webView.navigationDelegate = self;

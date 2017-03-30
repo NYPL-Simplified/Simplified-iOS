@@ -14,6 +14,7 @@
 
 #import "NYPLReaderViewController.h"
 #import "SimplyE-Swift.h"
+#import <PureLayout/PureLayout.h>
 
 #define EDGE_OF_SCREEN_POINT_FRACTION    0.2
 
@@ -40,6 +41,11 @@
 @property (nonatomic) UIButton *largeTransparentAccessibilityButton;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 
+@property (nonatomic) UIView *footerView;
+@property (nonatomic) UILabel *footerViewLabel;
+@property (nonatomic) UIView *headerView;
+@property (nonatomic) UILabel *headerViewLabel;
+
 @property (nonatomic, getter = isStatusBarHidden) BOOL statusBarHidden;
 
 @property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer, *doubleTapGestureRecognizer;
@@ -61,18 +67,24 @@
       self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
       self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
       self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
+      self.headerViewLabel.textColor = [UIColor darkGrayColor];
+      self.footerViewLabel.textColor = [UIColor darkGrayColor];
       break;
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
       self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
       self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundColor];
       self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
+      self.headerViewLabel.textColor = [UIColor darkGrayColor];
+      self.footerViewLabel.textColor = [UIColor darkGrayColor];
       break;
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
       self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
       self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
       self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
       self.bottomViewImageViewTopBorder.backgroundColor = [UIColor darkGrayColor];
+      self.headerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
+      self.footerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
       break;
   }
   
@@ -315,6 +327,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.view bringSubviewToFront:self.activityIndicatorView];
   
   [self prepareBottomView];
+  [self prepareHeaderFooterViews];
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncLastRead) name:UIApplicationWillEnterForegroundNotification object:nil];
   
@@ -324,6 +337,54 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   if (!parent && [[NYPLReaderSettings sharedSettings].currentReaderReadiumView bookHasMediaOverlaysBeingPlayed]) {
     [[NYPLReaderSettings sharedSettings].currentReaderReadiumView applyMediaOverlayPlaybackToggle];
   }
+}
+
+- (void) prepareHeaderFooterViews {
+  self.headerView = [[UIView alloc] init];
+  self.headerView.hidden = YES;
+  
+  self.headerViewLabel = [[UILabel alloc] init];
+  self.headerViewLabel.numberOfLines = 2;
+  self.headerViewLabel.textColor = [NYPLConfiguration mainColor];
+  self.headerViewLabel.textAlignment = NSTextAlignmentCenter;
+  [self.headerViewLabel setFont:[UIFont systemFontOfSize:13]];
+  
+  if (self.bookIdentifier) {
+    NSString *title = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
+    self.headerViewLabel.text = title;
+  }
+  
+  [self.headerView addSubview:self.headerViewLabel];
+  [self.view addSubview:self.headerView];
+
+  [self.headerView autoPinEdgesToSuperviewMarginsExcludingEdge:ALEdgeBottom];
+  [self.headerView autoSetDimension:ALDimensionHeight toSize:60];
+  
+  [self.headerViewLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:self.headerView withOffset:10];
+  [self.headerViewLabel autoSetDimension:ALDimensionWidth toSize:400 relation:NSLayoutRelationLessThanOrEqual];
+  [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultHigh forConstraints:^{
+    [self.headerViewLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+    [self.headerViewLabel autoPinEdgeToSuperviewEdge:ALEdgeRight];
+  }];
+  
+  self.footerView = [[UIView alloc] init];
+  self.footerView.hidden = YES;
+  
+  self.footerViewLabel = [[UILabel alloc] init];
+  self.footerViewLabel.numberOfLines = 1;
+  self.footerViewLabel.textColor = [NYPLConfiguration mainColor];
+  self.footerViewLabel.textAlignment = NSTextAlignmentCenter;
+  [self.footerViewLabel setFont:[UIFont systemFontOfSize:13]];
+  
+  [self.footerView addSubview:self.footerViewLabel];
+  [self.view addSubview:self.footerView];
+  
+  [self.footerView autoPinEdgesToSuperviewMarginsExcludingEdge:ALEdgeTop];
+  [self.footerView autoSetDimension:ALDimensionHeight toSize:40];
+  
+  [self.footerViewLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:self.footerView withOffset:-10];
+  [self.footerViewLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+  [self.footerViewLabel autoPinEdgeToSuperviewEdge:ALEdgeRight];
 }
 
 - (void) prepareBottomView {
@@ -536,11 +597,19 @@ spineItemTitle:(NSString *const)title
   
   [self.bottomViewProgressView setProgress:progressWithinBook animated:NO];
   
-  self.bottomViewProgressLabel.text =
-    [NSString stringWithFormat:@"Page %u of %u (%@)",
-     pageIndex + 1,
-     pageCount,
-     title ? title : NSLocalizedString(@"ReaderViewControllerCurrentChapter", nil)];
+  NSString *bookLocationString = [NSString stringWithFormat:@"Page %lu of %lu (%@)",
+                                  pageIndex + 1,
+                                  (unsigned long)pageCount,
+                                  title ? title : NSLocalizedString(@"ReaderViewControllerCurrentChapter", nil)];
+  
+  self.bottomViewProgressLabel.text = bookLocationString;
+  
+  [UIView transitionWithView:self.footerViewLabel
+                    duration:0.2
+                     options:UIViewAnimationOptionTransitionCrossDissolve
+                  animations:^{
+                    self.footerViewLabel.text = bookLocationString;
+                  } completion:nil];
   
   [self.bottomViewProgressLabel needsUpdateConstraints];
 }
@@ -730,9 +799,13 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
                        options:UIViewAnimationOptionTransitionCrossDissolve
                     animations:^{
                       self.bottomView.hidden = interfaceHidden;
+                      self.footerView.hidden = !interfaceHidden;
+                      self.headerView.hidden = !interfaceHidden;
                     } completion:nil];
   } else {
     self.bottomView.hidden = self.interfaceHidden;
+    self.footerView.hidden = !self.interfaceHidden;
+    self.headerView.hidden = !self.interfaceHidden;
   }
   
   if(self.interfaceHidden) {
