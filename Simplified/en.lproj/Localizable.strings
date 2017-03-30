@@ -179,7 +179,7 @@
 "SettingsAccountRegistrationTitle" = "Don't have a library card?";
 "SettingsAccountSetAccountTitle" = "Set to Active Account";
 "SettingsAccountSyncTitle" = "SimplyE Sync";
-"SettingsAccountSyncSubTitle" = "Enable if you want to synchronize your bookmarks and last reading position across all your SimplyE devices. Bookmarks and last reading position will be saved for this device anyway.";
+"SettingsAccountSyncSubTitle" = "Enable if you want to synchronize your bookmarks and last reading position across all your SimplyE devices. Bookmarks and last reading position will be saved for this device anyway. Note: This requires the information to be saved in SimplyE servers";
 "SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";
 "SettingsAccountViewControllerCannotLogOutTitle" =
   "Logout Failed";

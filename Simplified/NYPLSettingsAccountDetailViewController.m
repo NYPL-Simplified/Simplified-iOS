@@ -212,6 +212,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
     self.barcodeTextField.rightViewMode = UITextFieldViewModeAlways;
   [self setupTableData];
   
+  [self checkSyncSetting];
   self.switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
 }
 
@@ -274,7 +275,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
     [section0 insertObject:@(CellKindBarcodeImage) atIndex: 0];
   }
   NSMutableArray *section1 = [[NSMutableArray alloc] init];
-  if ([self syncButtonShouldBeVisible]) {
+  if (self.account.supportsSimplyESync && [self syncButtonShouldBeVisible]) {
     [section1 addObject:@(CellKindSyncButton)];
   }
   NSMutableArray *section2 = [[NSMutableArray alloc] init];
@@ -528,6 +529,12 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        [self checkSyncSetting];
+      
+      }];
+      
       [[NYPLAccount sharedAccount:self.accountType] setBarcode:self.barcodeTextField.text
                                                            PIN:self.PINTextField.text];
       
@@ -997,7 +1004,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 }
 -(NSString *)tableView:(__unused UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
-  if ([self syncButtonShouldBeVisible] && section == 1) {
+  if (self.account.supportsSimplyESync && [self syncButtonShouldBeVisible] && section == 1) {
   return NSLocalizedString(@"SettingsAccountSyncSubTitle",
                            @"Disclaimer for switch to turn on or off syncing.");
   }
@@ -1370,6 +1377,46 @@ replacementString:(NSString *)string
   }
 }
 
+- (void)checkSyncSetting
+{
+  [NYPLAnnotations syncSettingsWithCompletionHandler:^(BOOL exist) {
+    
+    if (!exist)
+    {
+      // alert
+      
+      Account *account = [[AccountsManager sharedInstance] account:self.accountType];
+      
+      NSString *title = @"SimplyE Sync";
+      NSString *message = @"<Initial setup> Synchronize your bookmarks and last reading position across all your SimplyE devices.";
+      
+      NYPLAlertController *alertController = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+      
+      
+      [alertController addAction:[UIAlertAction actionWithTitle:@"Do not Enable Sync" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
+        
+        // add server update here as well
+        [NYPLAnnotations updateSyncSettings:false];
+        account.syncIsEnabled = NO;
+        self.switchView.on = account.syncIsEnabled;
+      }]];
+      
+      
+      [alertController addAction:[UIAlertAction actionWithTitle:@"Enable Sync" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
+        
+        // add server update here as well
+        [NYPLAnnotations updateSyncSettings:true];
+        account.syncIsEnabled = YES;
+        self.switchView.on = account.syncIsEnabled;
+        
+      }]];
+      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController
+                                                                      animated:YES completion:nil];
+      
+    }
+    
+  }];
+}
 - (void)setActivityTitleWithText:(NSString *)text
 {
   UIActivityIndicatorView *const activityIndicatorView =
@@ -1449,6 +1496,7 @@ replacementString:(NSString *)string
       
       // add server update here as well
       
+      [NYPLAnnotations updateSyncSettings:false];
       if (sender.on) {
         account.syncIsEnabled = YES;
       } else {
@@ -1464,6 +1512,7 @@ replacementString:(NSString *)string
       
       // add server update here as well
       
+      [NYPLAnnotations updateSyncSettings:true];
       if (sender.on) {
         account.syncIsEnabled = YES;
       } else {
