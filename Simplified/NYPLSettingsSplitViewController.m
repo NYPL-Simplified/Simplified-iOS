@@ -95,11 +95,23 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
                                          withExtension:@"html"]
                         title:NSLocalizedString(@"SoftwareLicenses", nil)];
       break;
-    case NYPLSettingsPrimaryTableViewControllerItemHelpStack:
-      [[HSHelpStack instance] showHelp:self];
-      break;
+    case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard" bundle:[NSBundle mainBundle]];
+        UINavigationController *mainNavVC = [helpStoryboard instantiateInitialViewController];
+        UIViewController *firstVC = mainNavVC.viewControllers.firstObject;
+        firstVC.navigationItem.leftBarButtonItem = nil;
+        [self showDetailViewController:mainNavVC sender:self];
+      } else {
+        [settingsPrimaryTableViewController.tableView
+         deselectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(item)
+         animated:YES];
+        [[HSHelpStack instance] showHelp:self];
+      }
+      return;
+    }
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
-      break;
+      return;
   }
 
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {

@@ -16,7 +16,6 @@
 		033C1FCD1E7C4D5400318B68 /* ScanditBarcodeScanner.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 033C1FCC1E7C4D5400318B68 /* ScanditBarcodeScanner.bundle */; };
 		0345BFE81DBF027200398B6F /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0345BFD61DBF002E00398B6F /* APIKeys.swift */; };
 		036B02C11DCBF3360098784A /* HelpStackStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 036B02C01DCBF3360098784A /* HelpStackStoryboard.storyboard */; };
-		036B02C71DCBF33B0098784A /* HelpStackStoryboard-iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 036B02C61DCBF33A0098784A /* HelpStackStoryboard-iPad.storyboard */; };
 		0378BC1C1E27FFC80095428E /* NYPLDeviceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0378BC1B1E27FFC80095428E /* NYPLDeviceManager.swift */; };
 		03AC46C51E39573500D88541 /* attach.png in Resources */ = {isa = PBXBuildFile; fileRef = 03AC46C31E39573500D88541 /* attach.png */; };
 		03AC46C61E39573500D88541 /* attach@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 03AC46C41E39573500D88541 /* attach@2x.png */; };
@@ -236,7 +235,6 @@
 		033C1FCC1E7C4D5400318B68 /* ScanditBarcodeScanner.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ScanditBarcodeScanner.bundle; sourceTree = "<group>"; };
 		0345BFD61DBF002E00398B6F /* APIKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
 		036B02C01DCBF3360098784A /* HelpStackStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = HelpStackStoryboard.storyboard; path = Pods/HelpStack/Resources/HelpStackStoryboard.storyboard; sourceTree = "<group>"; };
-		036B02C61DCBF33A0098784A /* HelpStackStoryboard-iPad.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = "HelpStackStoryboard-iPad.storyboard"; path = "Pods/HelpStack/Resources/HelpStackStoryboard-iPad.storyboard"; sourceTree = "<group>"; };
 		0378BC1B1E27FFC80095428E /* NYPLDeviceManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLDeviceManager.swift; sourceTree = "<group>"; };
 		03AC46C31E39573500D88541 /* attach.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = attach.png; path = Pods/HelpStack/Resources/attach.png; sourceTree = "<group>"; };
 		03AC46C41E39573500D88541 /* attach@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "attach@2x.png"; path = "Pods/HelpStack/Resources/attach@2x.png"; sourceTree = "<group>"; };
@@ -903,7 +901,6 @@
 			children = (
 				03AC46C31E39573500D88541 /* attach.png */,
 				03AC46C41E39573500D88541 /* attach@2x.png */,
-				036B02C61DCBF33A0098784A /* HelpStackStoryboard-iPad.storyboard */,
 				036B02C01DCBF3360098784A /* HelpStackStoryboard.storyboard */,
 				CAE35BC11B86308D00BF9BC5 /* README */,
 				CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */,
@@ -1308,7 +1305,6 @@
 				0320E8271E8BFD5700806EF0 /* ReportIssue.storyboard in Resources */,
 				84B7A3461B84E8FE00584FB2 /* OFL.txt in Resources */,
 				036B02C11DCBF3360098784A /* HelpStackStoryboard.storyboard in Resources */,
-				036B02C71DCBF33B0098784A /* HelpStackStoryboard-iPad.storyboard in Resources */,
 				11C113D719F84613005B3F63 /* simplified.js in Resources */,
 				848FD95B1B83875D009D9BC4 /* NYPL_Launch_Screen.xib in Resources */,
 				085D31D91BE29ED4007F7672 /* NYPLProblemReportViewController.xib in Resources */,
