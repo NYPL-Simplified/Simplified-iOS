@@ -361,6 +361,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.headerView autoSetDimension:ALDimensionHeight toSize:60];
   
   [self.headerViewLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:self.headerView withOffset:10];
+  [self.headerViewLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
   [self.headerViewLabel autoSetDimension:ALDimensionWidth toSize:400 relation:NSLayoutRelationLessThanOrEqual];
   [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultHigh forConstraints:^{
     [self.headerViewLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft];
@@ -383,8 +384,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.footerView autoSetDimension:ALDimensionHeight toSize:40];
   
   [self.footerViewLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:self.footerView withOffset:-10];
-  [self.footerViewLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-  [self.footerViewLabel autoPinEdgeToSuperviewEdge:ALEdgeRight];
+  [self.footerViewLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:8];
+  [self.footerViewLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:8];
 }
 
 - (void) prepareBottomView {
