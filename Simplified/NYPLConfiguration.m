@@ -17,16 +17,6 @@
 
 + (void)initialize
 {
-  [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
-    
-  HSDeskGear *deskGear = [[HSDeskGear alloc]
-                          initWithInstanceBaseUrl:@"https://nypl.desk.com/"
-                          token:@""
-                          andBrand:@""];
-    
-  HSHelpStack *helpStack = [HSHelpStack instance];
-  helpStack.gear = deskGear;
-  
   if([NYPLConfiguration bugsnagEnabled]) {
     [Bugsnag startBugsnagWithApiKey:[NYPLConfiguration bugsnagID]];
   }

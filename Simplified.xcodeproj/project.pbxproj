@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0305005E1E8EF65100EA02C4 /* HelpStackThemeNYPL.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0305005D1E8EF65100EA02C4 /* HelpStackThemeNYPL.plist */; };
 		030713661E749D5600DDE3FA /* CodabarLarge.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 030713641E749D5600DDE3FA /* CodabarLarge.ttf */; };
 		030713671E749D5600DDE3FA /* CodabarMedium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 030713651E749D5600DDE3FA /* CodabarMedium.ttf */; };
 		0320E8241E8BFCC900806EF0 /* NYPLReportIssueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320E8221E8BFCC900806EF0 /* NYPLReportIssueViewController.swift */; };
@@ -223,6 +224,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0305005D1E8EF65100EA02C4 /* HelpStackThemeNYPL.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = HelpStackThemeNYPL.plist; sourceTree = "<group>"; };
 		030713641E749D5600DDE3FA /* CodabarLarge.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = CodabarLarge.ttf; sourceTree = "<group>"; };
 		030713651E749D5600DDE3FA /* CodabarMedium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = CodabarMedium.ttf; sourceTree = "<group>"; };
 		0320E8221E8BFCC900806EF0 /* NYPLReportIssueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLReportIssueViewController.swift; sourceTree = "<group>"; };
@@ -534,7 +536,6 @@
 		B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookButtonsView.m; sourceTree = "<group>"; };
 		BEEC686A5C71AFACFAC2A884 /* libPods-SimplyETests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SimplyETests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Simplified.xcconfig; sourceTree = "<group>"; };
-		CAE35BC11B86308D00BF9BC5 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		DE9D07935ED4E0F0BB8AD7B7 /* Pods-SimplyE.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyE.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE.release.xcconfig"; sourceTree = "<group>"; };
 		E6202A001DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsAccountDetailViewController.h; sourceTree = "<group>"; };
 		E6202A011DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAccountDetailViewController.m; sourceTree = "<group>"; };
@@ -902,7 +903,6 @@
 				03AC46C31E39573500D88541 /* attach.png */,
 				03AC46C41E39573500D88541 /* attach@2x.png */,
 				036B02C01DCBF3360098784A /* HelpStackStoryboard.storyboard */,
-				CAE35BC11B86308D00BF9BC5 /* README */,
 				CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */,
 				2D6AF74A1E7E341F005CEC90 /* Simplified+RMSDK.xcconfig */,
 				5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */,
@@ -1071,6 +1071,7 @@
 				A823D81C192BABA400B55DE2 /* main.m */,
 				A823D81E192BABA400B55DE2 /* Simplified-Prefix.pch */,
 				B594C7551BB06F40000028F5 /* HelpStackTheme.plist */,
+				0305005D1E8EF65100EA02C4 /* HelpStackThemeNYPL.plist */,
 				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
 				085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */,
 				032A31071DC02E8E0001E4AF /* Localizable.strings */,
@@ -1303,6 +1304,7 @@
 				03AC46C51E39573500D88541 /* attach.png in Resources */,
 				03AC46C61E39573500D88541 /* attach@2x.png in Resources */,
 				0320E8271E8BFD5700806EF0 /* ReportIssue.storyboard in Resources */,
+				0305005E1E8EF65100EA02C4 /* HelpStackThemeNYPL.plist in Resources */,
 				84B7A3461B84E8FE00584FB2 /* OFL.txt in Resources */,
 				036B02C11DCBF3360098784A /* HelpStackStoryboard.storyboard in Resources */,
 				11C113D719F84613005B3F63 /* simplified.js in Resources */,

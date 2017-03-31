@@ -20,6 +20,8 @@
 #import <PureLayout/PureLayout.h>
 #import <ScanditBarcodeScanner/ScanditBarcodeScanner.h>
 #import <HelpStack/HSUtility.h>
+#import "HSHelpStack.h"
+#import "HSDeskGear.h"
 
 #define kScanditBarcodeScannerAppKey    @"ADD YOUR APP KEY"
 
@@ -43,7 +45,8 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindAbout,
   CellKindPrivacyPolicy,
   CellKindContentLicense,
-  CellReportIssue
+  CellReportIssue,
+  CellSupportCenter
 };
 
 typedef NS_ENUM(NSInteger, Section) {
@@ -287,18 +290,27 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   }
   
   if ([self registrationIsPossible]) {
-    self.tableData = @[section0, sectionRegister, section1, section2].mutableCopy;
+    self.tableData = @[section0, sectionRegister, section1].mutableCopy;
   }
   else{
-    self.tableData = @[section0, section1, section2].mutableCopy;
+    self.tableData = @[section0, section1].mutableCopy;
   }
   
+
+  NSMutableArray *supportCenter = [[NSMutableArray alloc] init];
+  if (self.account.supportsHelpCenter)
+  {
+    [supportCenter addObject:@(CellSupportCenter)];
+    [self.tableData addObject:supportCenter];
+    
+  }
   NSMutableArray *reportIssue = [[NSMutableArray alloc] init];
   if (self.account.supportEmail != nil && [MFMailComposeViewController canSendMail])
   {
     [reportIssue addObject:@(CellReportIssue)];
     [self.tableData addObject:reportIssue];
   }
+  [self.tableData addObject:section2];
 
   
   NSMutableArray *newArray = [[NSMutableArray alloc] init];
@@ -728,6 +740,27 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       break;
     }
+    case CellSupportCenter: {
+      
+      [[HSHelpStack instance] setThemeFrompList:@"HelpStackThemeNYPL"];
+
+      HSDeskGear *deskGear = [[HSDeskGear alloc]
+      
+      HSHelpStack *helpStack = [HSHelpStack instance];
+      helpStack.gear = deskGear;
+    
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard" bundle:[NSBundle mainBundle]];
+        UINavigationController *mainNavVC = [helpStoryboard instantiateInitialViewController];
+        UIViewController *firstVC = mainNavVC.viewControllers.firstObject;
+        firstVC.navigationItem.leftBarButtonItem = nil;
+        [self.navigationController pushViewController:firstVC animated:true];
+
+      } else {
+        [[HSHelpStack instance] showHelp:self];
+      }
+      break;
+    }
     case CellKindAbout: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
                                       initWithURL:[self.account getLicenseURL:URLTypeAcknowledgements]
@@ -944,6 +977,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
       cell.textLabel.text = NSLocalizedString(@"Report An Issue", nil);
+      return cell;
+    }
+    case CellSupportCenter: {
+      UITableViewCell *cell = [[UITableViewCell alloc]
+                               initWithStyle:UITableViewCellStyleDefault
+                               reuseIdentifier:nil];
+      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.text = NSLocalizedString(@"Support Center", nil);
       return cell;
     }
     case CellKindAbout: {

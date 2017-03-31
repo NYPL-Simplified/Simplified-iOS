@@ -11,6 +11,7 @@
  "supportsBarcodeDisplay" : false,
  "supportsReservations" : true,
  "supportsCardCreator" : true,
+ "supportsHelpCenter" : true,
  "catalogUrl" : "https://circulation.librarysimplified.org",
  "supportEmail" : "simplyehelp@nypl.org",
  "mainColor" : "da2527"
@@ -27,6 +28,7 @@
  "supportsBarcodeDisplay" : true,
  "supportsReservations" : true,
  "supportsCardCreator" : false,
+ "supportsHelpCenter" : false,
  "catalogUrl" : "https://bplsimplye.bklynlibrary.org",
  "supportEmail" : "ask@bklynlibrary.org",
  "cardCreatorUrl" : "https://go.bklynlibrary.org/ecard",
@@ -36,7 +38,7 @@
  "id" : 2,
  "pathComponent" : "2",
  "name" : "SimplyRead",
- "subtitle" : "Open access to the literature of our shared culture.",
+ "subtitle" : "Download and read ebooks without a library card",
  "logo" : "LibraryLogoMagic",
  "needsAuth" : false,
  "supportsSimplyESync" : false,
@@ -44,6 +46,7 @@
  "supportsBarcodeDisplay" : false,
  "supportsCardCreator" : false,
  "supportsReservations" : false,
+ "supportsHelpCenter" : false,
  "catalogUrl" : "https://instantclassics.librarysimplified.org/index.xml",
  "mainColor" : "497049"
  }

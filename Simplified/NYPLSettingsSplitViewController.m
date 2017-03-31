@@ -1,4 +1,5 @@
 #import "HSHelpStack.h"
+#import "HSDeskGear.h"
 #import "NYPLSettingsPrimaryNavigationController.h"
 #import "NYPLSettingsPrimaryTableViewController.h"
 #import "NYPLSettingsEULAViewController.h"
@@ -96,6 +97,12 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
                         title:NSLocalizedString(@"SoftwareLicenses", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
+      [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
+      HSDeskGear *deskGear = [[HSDeskGear alloc]
+      
+      HSHelpStack *helpStack = [HSHelpStack instance];
+      helpStack.gear = deskGear;
+
       if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard" bundle:[NSBundle mainBundle]];
         UINavigationController *mainNavVC = [helpStoryboard instantiateInitialViewController];
