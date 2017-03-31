@@ -99,6 +99,9 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
       [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
       HSDeskGear *deskGear = [[HSDeskGear alloc]
+                              initWithInstanceBaseUrl:@"######## REPLACE #########"
+                              token:@"######## REPLACE #########"
+                              andBrand:@"######## REPLACE #########"];
       
       HSHelpStack *helpStack = [HSHelpStack instance];
       helpStack.gear = deskGear;
