@@ -58,11 +58,14 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
   [self.view addSubview:self.activityIndicatorView];
 }
 
-- (void)loadLocalURLFromRequest:(NSURLRequest *)request
+- (BOOL)loadLocalURLFromRequest:(NSURLRequest *)request
 {
   NSURL *localURL = [[NSBundle mainBundle] URLForResource:@"eula" withExtension:@"html"];
   if ([[request URL] isEqual:localURL] == NO) {
     [self.webView loadRequest:[NSURLRequest requestWithURL:localURL]];
+    return YES;
+  } else {
+    return NO;
   }
 }
 
@@ -71,7 +74,9 @@ static NSString * const fallbackEULAURLString = @"http://www.librarysimplified.o
   [self.activityIndicatorView stopAnimating];
   
   // Try local URL if remote URL has failed
-  [self loadLocalURLFromRequest: [webView request]];
+  if ([self loadLocalURLFromRequest: [webView request]]) {
+    return;
+  }
   
   UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"ConnectionFailed", nil)
                                                                            message:NSLocalizedString(@"ConnectionFailed", nil)
