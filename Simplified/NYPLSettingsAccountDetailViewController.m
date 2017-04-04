@@ -305,7 +305,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
     
   }
   NSMutableArray *reportIssue = [[NSMutableArray alloc] init];
-  if (self.account.supportEmail != nil && [MFMailComposeViewController canSendMail])
+  if (self.account.supportEmail != nil)
   {
     [reportIssue addObject:@(CellReportIssue)];
     [self.tableData addObject:reportIssue];
@@ -736,7 +736,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       else
       {
-        NSLog(@"This device cannot send email");
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle:@"No email account is set for this device. "
+                              message:[NSString stringWithFormat:@"If you have web email, contact %@ to report an issue.", self.account.supportEmail]
+                              delegate:nil
+                              cancelButtonTitle:nil
+                              otherButtonTitles:@"OK", nil];
+        [alert show];
       }
       break;
     }
