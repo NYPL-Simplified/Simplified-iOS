@@ -14,6 +14,7 @@
 "Accounts" = "Accounts";
 "Account" = "Account";
 "Acknowledgements" = "Acknowledgements";
+"ActivitySlowLoadMessage" = "Downloading. Please wait.";
 "BarcodeOrUsername" = "Barcode or Username";
 "Borrow" = "Get";
 "BorrowFailed" = "Borrowing failed";
