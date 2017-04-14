@@ -162,11 +162,15 @@ NSString * mediaOverlaysEnableClickToString(BOOL mediaClickOverlayAlwaysEnable)
 
 NYPLReaderSettingsFontSize fontSizeFromString(NSString *const string)
 {
+  // Had to re-add older keys 'larger' and 'largest' to save from a
+  // crash for versions before 2.0.0 (1087)
   NSNumber *const fontSizeNumber = @{@"smallest": @(NYPLReaderSettingsFontSizeSmallest),
                                      @"smaller": @(NYPLReaderSettingsFontSizeSmaller),
                                      @"small": @(NYPLReaderSettingsFontSizeSmall),
                                      @"normal": @(NYPLReaderSettingsFontSizeNormal),
                                      @"large": @(NYPLReaderSettingsFontSizeLarge),
+                                     @"larger": @(NYPLReaderSettingsFontSizeXLarge),
+                                     @"largest": @(NYPLReaderSettingsFontSizeXXLarge),
                                      @"xlarge": @(NYPLReaderSettingsFontSizeXLarge),
                                      @"xxlarge": @(NYPLReaderSettingsFontSizeXXLarge),
                                      @"xxxlarge": @(NYPLReaderSettingsFontSizeXXXLarge)}[string];
