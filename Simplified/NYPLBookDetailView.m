@@ -11,6 +11,8 @@
 #import "NYPLConfiguration.h"
 #import "SimplyE-Swift.h"
 
+#import <PureLayout/PureLayout.h>
+
 @interface NYPLBookDetailView ()
   <NYPLBookDetailDownloadFailedViewDelegate, NYPLBookDetailDownloadingViewDelegate, UIWebViewDelegate>
 
@@ -25,7 +27,10 @@
 @property (nonatomic) UILabel *publishedLabel;
 @property (nonatomic) UILabel *publisherLabel;
 @property (nonatomic) UILabel *subtitleLabel;
-@property (nonatomic) UIWebView *summaryWebView;
+
+@property (nonatomic) UIView *contentView;
+@property (nonatomic) UITextView *summaryTextView;
+
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIImageView *unreadImageView;
 @property (nonatomic) UIButton *closeButton;
@@ -58,28 +63,31 @@ static NSString *detailTemplate = nil;
   
   self.book = book;
   
+  self.contentView = [[UIView alloc] init];
+  [self addSubview:self.contentView];
+  [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeTop];
+  [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+  [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+  [self.contentView autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self];
+  
+  
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.closeButton setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
     [self.closeButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
     [self.closeButton addTarget:self action:@selector(closeButtonPressed) forControlEvents:UIControlEventTouchDown];
-    [self addSubview:self.closeButton];
+    [self.contentView addSubview:self.closeButton];
+    [self.closeButton autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.titleLabel withOffset:mainTextPaddingLeft];
+    [self.closeButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.titleLabel withOffset:1];
   }
-
-  self.authorsLabel = [[UILabel alloc] init];
-  self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-  self.authorsLabel.font = [UIFont systemFontOfSize:12];
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    self.authorsLabel.text = book.authors;
-  } else {
-    self.authorsLabel.attributedText = NYPLAttributedStringForAuthorsFromString(book.authors);
-  }
-  [self addSubview:self.authorsLabel];
   
   self.coverImageView = [[UIImageView alloc] init];
   self.coverImageView.contentMode = UIViewContentModeScaleAspectFit;
-  self.coverImageView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-  [self addSubview:self.coverImageView];
+  [self.contentView addSubview:self.coverImageView];
+  [self.coverImageView autoPinEdgeToSuperviewEdge:ALEdgeLeading withInset:coverPaddingLeft];
+  [self.coverImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:coverPaddingTop];
+  [self.coverImageView autoSetDimension:ALDimensionWidth toSize:coverWidth];
+  [self.coverImageView autoSetDimension:ALDimensionHeight toSize:coverHeight];
   
   [[NYPLBookRegistry sharedRegistry]
    thumbnailImageForBook:book
@@ -88,7 +96,7 @@ static NSString *detailTemplate = nil;
    }];
   
   self.titleLabel = [[UILabel alloc] init];
-  self.titleLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+  //GODO is this right for numberOfLines?
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.titleLabel.numberOfLines = 1;
   } else {
@@ -96,60 +104,102 @@ static NSString *detailTemplate = nil;
   }
   self.titleLabel.font = [UIFont boldSystemFontOfSize:17];
   self.titleLabel.attributedText = NYPLAttributedStringForTitleFromString(book.title);
-  [self addSubview:self.titleLabel];
+  [self.contentView addSubview:self.titleLabel];
+  [self.titleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
+  [self.titleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  [self.titleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];
   
   self.subtitleLabel = [[UILabel alloc] init];
-  self.subtitleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
   self.subtitleLabel.text = book.subtitle;
   self.subtitleLabel.font = [UIFont systemFontOfSize:12];
-  [self addSubview:self.subtitleLabel];
+  [self.contentView addSubview:self.subtitleLabel];
+  [self.subtitleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
+  [self.subtitleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  [self.subtitleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.titleLabel];
   
-  self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
-  self.downloadFailedView.delegate = self;
-  self.downloadFailedView.hidden = YES;
-  [self addSubview:self.downloadFailedView];
-  
-  self.downloadingView = [[NYPLBookDetailDownloadingView alloc] initWithWidth:0];
-  self.downloadingView.delegate = self;
-  self.downloadingView.hidden = YES;
-  [self addSubview:self.downloadingView];
+  self.authorsLabel = [[UILabel alloc] init];
+  self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+  self.authorsLabel.font = [UIFont systemFontOfSize:12];
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.authorsLabel.text = book.authors;
+  } else {
+    self.authorsLabel.attributedText = NYPLAttributedStringForAuthorsFromString(book.authors);
+  }
+  [self.contentView addSubview:self.authorsLabel];
+  [self.authorsLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
+  [self.authorsLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  [self.authorsLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.subtitleLabel];
   
   self.normalView = [[NYPLBookDetailNormalView alloc] initWithWidth:0];
   self.normalView.delegate = [NYPLBookCellDelegate sharedDelegate];
   self.normalView.book = self.book;
   self.normalView.hidden = YES;
-  [self addSubview:self.normalView];
+  [self.contentView addSubview:self.normalView];
+  [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+  [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+  [self.normalView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:coverPaddingTop];
+  //GODO TEMP
+  [self.normalView autoSetDimension:ALDimensionHeight toSize:100];
   
+//  self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
+//  self.downloadFailedView.delegate = self;
+//  self.downloadFailedView.hidden = YES;
+//  [self.contentView addSubview:self.downloadFailedView];
+//  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+//  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+//  [self.downloadFailedView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:coverPaddingTop];
+//  
+//  self.downloadingView = [[NYPLBookDetailDownloadingView alloc] initWithWidth:0];
+//  self.downloadingView.delegate = self;
+//  self.downloadingView.hidden = YES;
+//  [self.contentView addSubview:self.downloadingView];
+//  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+//  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+//  [self.downloadingView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:coverPaddingTop];
+
   self.unreadImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Unread"]];
   self.unreadImageView.image = [self.unreadImageView.image
                                 imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
   [self.unreadImageView setTintColor:[NYPLConfiguration accentColor]];
-  [self addSubview:self.unreadImageView];
+  [self.contentView addSubview:self.unreadImageView];
+  [self.unreadImageView autoPinEdge:ALEdgeTrailing toEdge:ALEdgeLeading ofView:self.coverImageView withOffset:5];
+  [self.unreadImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:10];
   
   self.distributorLabel = [[UILabel alloc] init];
   self.distributorLabel.font = [UIFont systemFontOfSize:12];
   self.distributorLabel.textColor = [UIColor grayColor];
   self.distributorLabel.numberOfLines = 1;
-  [self addSubview:self.distributorLabel];
+  [self.contentView addSubview:self.distributorLabel];
+  [self.distributorLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
+  [self.distributorLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.normalView withOffset:coverPaddingTop];
+  //GODO TEMP
+//  [self.distributorLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:coverPaddingTop];
+
   
-  self.summaryWebView = [[UIWebView alloc] init];
-  self.summaryWebView.scrollView.alwaysBounceVertical = NO;
-  self.summaryWebView.backgroundColor = [UIColor clearColor];
-  self.summaryWebView.suppressesIncrementalRendering = YES;
-  self.summaryWebView.delegate = self;
-  self.summaryWebView.opaque = NO;
-  self.summaryWebView.userInteractionEnabled = NO;
   
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wformat-nonliteral"
-  [self.summaryWebView
-   loadHTMLString:[NSString stringWithFormat:detailTemplate,
-                   [NYPLConfiguration systemFontName],
-                   book.summary ? book.summary : @""]
-   baseURL:nil];
-#pragma clang diagnostic pop
+  self.summaryTextView = [[UITextView alloc] init];
+  self.summaryTextView.backgroundColor = [UIColor clearColor];
+  self.summaryTextView.scrollEnabled = NO;
   
-  [self addSubview:self.summaryWebView];
+  NSString *htmlString = [NSString stringWithFormat:detailTemplate,
+                          [NYPLConfiguration systemFontName],
+                          book.summary ? book.summary : @""];
+  NSData *htmlData = [htmlString dataUsingEncoding:NSUnicodeStringEncoding];
+  NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+  [style setLineBreakMode:NSLineBreakByWordWrapping];
+  [style setHyphenationFactor:0.5];
+  NSDictionary *attributes = @{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType,
+                               NSParagraphStyleAttributeName: style};
+  NSAttributedString *atrString = [[NSAttributedString alloc] initWithData:htmlData options:attributes documentAttributes:nil error: nil];
+  self.summaryTextView.attributedText = atrString;
+  
+  [self.contentView addSubview:self.summaryTextView];
+  [self.summaryTextView autoPinEdgeToSuperviewMargin:ALEdgeRight];
+  [self.summaryTextView autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+  [self.summaryTextView autoPinEdgeToSuperviewMargin:ALEdgeBottom];
+  [self.summaryTextView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.distributorLabel withOffset:12];
+  
+  
   
   NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
   dateFormatter.timeStyle = NSDateFormatterNoStyle;
@@ -181,23 +231,38 @@ static NSString *detailTemplate = nil;
   
   self.distributorLabel.text = book.distributor ? [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerDistributedByFormat", nil), book.distributor] : nil;
   
-  // Metadata is shown via separate lines to the right of the cover. As such, we to
-  // use a series of labels in order to get the desired truncation.
   self.categoriesLabel = [[UILabel alloc] init];
   self.categoriesLabel.font = [UIFont systemFontOfSize:12];
   self.categoriesLabel.textColor = [UIColor lightGrayColor];
   self.categoriesLabel.text = categoriesString;
-  [self addSubview:self.categoriesLabel];
-  self.publishedLabel = [[UILabel alloc] init];
-  self.publishedLabel.font = [UIFont systemFontOfSize:12];
-  self.publishedLabel.textColor = [UIColor lightGrayColor];
-  self.publishedLabel.text = publishedString;
-  [self addSubview:self.publishedLabel];
+
   self.publisherLabel = [[UILabel alloc] init];
   self.publisherLabel.font = [UIFont systemFontOfSize:12];
   self.publisherLabel.textColor = [UIColor lightGrayColor];
   self.publisherLabel.text = publisherString;
-  [self addSubview:self.publisherLabel];
+  
+  self.publishedLabel = [[UILabel alloc] init];
+  self.publishedLabel.font = [UIFont systemFontOfSize:12];
+  self.publishedLabel.textColor = [UIColor lightGrayColor];
+  self.publishedLabel.text = publishedString;
+  
+  [self.contentView addSubview:self.publishedLabel];
+  [self.contentView addSubview:self.publisherLabel];
+  [self.contentView addSubview:self.categoriesLabel];
+  
+  [self.categoriesLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
+  [self.categoriesLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  [self.categoriesLabel autoAlignAxis:ALAxisBaseline toSameAxisOfView:self.coverImageView];
+//  [self.categoriesLabel autoPinEdge:NSLayoutAttributeBaseline toEdge:ALEdgeBottom ofView:self.coverImageView];
+
+  [self.publishedLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
+  [self.publishedLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  [self.publishedLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.publisherLabel];
+
+  [self.publisherLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
+  [self.publisherLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  [self.publisherLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.categoriesLabel];
+  
   
   return self;
 }
@@ -214,123 +279,6 @@ static NSString *detailTemplate = nil;
                     error:NULL];
   
   assert(detailTemplate);
-}
-
-#pragma mark UIView
-
-- (void)layoutSubviews
-{
-  {
-    CGRect const frame = CGRectMake(coverPaddingLeft, coverPaddingTop, coverWidth, coverHeight);
-    self.coverImageView.frame = frame;
-  }
-  
-  {
-    float closeButtonRigthPadding = 7.0f;
-    [self.closeButton sizeToFit];
-    CGFloat const x = CGRectGetMaxX(self.coverImageView.frame) + mainTextPaddingLeft;
-    CGFloat const y = mainTextPaddingTop;
-    CGFloat const w = CGRectGetWidth(self.bounds) - x - mainTextPaddingRight - self.closeButton.frame.size.width - closeButtonRigthPadding;
-    CGFloat const h = [self.titleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-    // The extra five height pixels account for a bug in |sizeThatFits:| that does not properly take
-    // into account |lineHeightMultiple|.
-    self.titleLabel.frame = CGRectMake(x, y, w, h + 3);
-    self.closeButton.frame = CGRectMake(CGRectGetMaxX(self.titleLabel.frame), self.titleLabel.frame.origin.y - 1, self.closeButton.frame.size.width, self.titleLabel.frame.size.height);
-  }
-  
-  {
-    CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
-    CGFloat const y = CGRectGetMaxY(self.titleLabel.frame);
-    CGFloat const w = CGRectGetWidth(self.titleLabel.frame);
-    CGFloat const h = [self.subtitleLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-    self.subtitleLabel.frame = CGRectMake(x, y, w, h);
-  }
-  
-  {
-    CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
-    CGFloat const y = CGRectGetMaxY(self.subtitleLabel.frame);
-    CGFloat const w = CGRectGetWidth(self.titleLabel.frame);
-    CGFloat const h = [self.authorsLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-    self.authorsLabel.frame = CGRectMake(x, y, w, h);
-  }
-  
-  {
-    CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
-    CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
-    CGFloat const h = [self.categoriesLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-    // FIXME: This detail view is getting way too crowded with metadata information,
-    // and the awkward layout here is a symptom of that. We should rethink the whole
-    // design of the top portion of detail views at some point.
-    //
-    // '3' is a magic value that provides mostly consistent baseline spacing.
-    CGFloat const y = CGRectGetMaxY(self.coverImageView.frame) - h + 3;
-    self.categoriesLabel.frame = CGRectMake(x, y, w, h);
-  }
-  {
-    CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
-    CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
-    CGFloat const h = [self.publisherLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-    CGFloat const y = CGRectGetMinY(self.categoriesLabel.frame) - h;
-    self.publisherLabel.frame = CGRectMake(x, y, w, h);
-  }
-  {
-    CGFloat const x = CGRectGetMinX(self.titleLabel.frame);
-    CGFloat const w = CGRectGetWidth(self.subtitleLabel.frame);
-    CGFloat const h = [self.publishedLabel sizeThatFits:CGSizeMake(w, CGFLOAT_MAX)].height;
-    CGFloat const y = CGRectGetMinY(self.publisherLabel.frame) - h;
-    self.publishedLabel.frame = CGRectMake(x, y, w, h);
-  }
-  
-  {
-    self.normalView.frame = CGRectMake(0,
-                                       CGRectGetMaxY(self.coverImageView.frame) + 10.0,
-                                       CGRectGetWidth(self.frame),
-                                       CGRectGetHeight(self.normalView.frame));
-    
-    self.downloadingView.frame = self.normalView.frame;
-    
-    self.downloadFailedView.frame = self.normalView.frame;
-  }
-  
-  {
-    [self.distributorLabel sizeToFit];
-    CGFloat const x = CGRectGetWidth(self.frame) / 2 - CGRectGetWidth(self.distributorLabel.frame) / 2;
-    CGFloat const w = CGRectGetWidth(self.distributorLabel.frame);
-    CGFloat const h = CGRectGetHeight(self.distributorLabel.frame);
-    CGFloat const y = CGRectGetMaxY(self.normalView.frame) + 10.0;
-    self.distributorLabel.frame = CGRectMake(x, y, w, h);
-  }
-  
-  {
-    CGRect unreadImageViewFrame = self.unreadImageView.frame;
-    unreadImageViewFrame.origin.x = (CGRectGetMinX(self.coverImageView.frame) -
-                                     CGRectGetWidth(unreadImageViewFrame) - 5);
-    unreadImageViewFrame.origin.y = 10;
-    self.unreadImageView.frame = unreadImageViewFrame;
-  }
-  
-  {
-    // 40 left padding, 35 right to visually compensate for ragged text.
-    CGFloat const leftPadding = 40;
-    CGFloat const rightPadding = 35;
-    
-    self.summaryWebView.frame = CGRectMake(0,
-                                           0,
-                                           CGRectGetWidth(self.frame) - leftPadding - rightPadding,
-                                           5);
-    
-    CGSize const size = [self.summaryWebView
-                         sizeThatFits:CGSizeMake(CGRectGetWidth(self.summaryWebView.frame),
-                                                 CGFLOAT_MAX)];
-    
-    self.summaryWebView.frame = CGRectMake(leftPadding,
-                                           CGRectGetMaxY(self.distributorLabel.frame) + 10,
-                                           size.width,
-                                           size.height);
-  }
-  
-  self.contentSize = CGSizeMake(CGRectGetWidth(self.frame),
-                                CGRectGetMaxY(self.summaryWebView.frame) + 10);
 }
 
 #pragma mark NYPLBookDetailDownloadFailedViewDelegate

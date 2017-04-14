@@ -5,6 +5,7 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReaderViewController.h"
 #import "NYPLRootTabBarController.h"
+#import <PureLayout/PureLayout.h>
 
 #import "NYPLBookDetailViewController.h"
 
@@ -32,7 +33,8 @@
   view.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
   view.detailViewDelegate = self;
   
-  self.view = view;
+  [self.view addSubview:view];
+  [view autoPinEdgesToSuperviewEdges];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.modalPresentationStyle = UIModalPresentationFormSheet;
