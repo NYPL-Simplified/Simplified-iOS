@@ -127,4 +127,9 @@
   return @"AvenirNext-Bold";
 }
 
++ (NSString *)systemFontFamilyName
+{
+  return @"Avenir Next";
+}
+
 @end
