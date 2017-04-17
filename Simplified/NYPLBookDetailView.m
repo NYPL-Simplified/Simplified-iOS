@@ -10,6 +10,7 @@
 #import "NYPLBookDetailView.h"
 #import "NYPLConfiguration.h"
 #import "SimplyE-Swift.h"
+#import "UIFont+NYPLSystemFontOverride.h"
 
 #import <PureLayout/PureLayout.h>
 
@@ -58,36 +59,14 @@ static NSString *detailTemplate = nil;
   if(!book) {
     @throw NSInvalidArgumentException;
   }
-
-  self.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.book = book;
+  self.backgroundColor = [NYPLConfiguration backgroundColor];
   
   self.contentView = [[UIView alloc] init];
-  [self addSubview:self.contentView];
-  [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeTop];
-  [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeBottom];
-  [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-  [self.contentView autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self];
-  
-  
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.closeButton setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
-    [self.closeButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
-    [self.closeButton addTarget:self action:@selector(closeButtonPressed) forControlEvents:UIControlEventTouchDown];
-    [self.contentView addSubview:self.closeButton];
-    [self.closeButton autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.titleLabel withOffset:mainTextPaddingLeft];
-    [self.closeButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.titleLabel withOffset:1];
-  }
   
   self.coverImageView = [[UIImageView alloc] init];
   self.coverImageView.contentMode = UIViewContentModeScaleAspectFit;
-  [self.contentView addSubview:self.coverImageView];
-  [self.coverImageView autoPinEdgeToSuperviewEdge:ALEdgeLeading withInset:coverPaddingLeft];
-  [self.coverImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:coverPaddingTop];
-  [self.coverImageView autoSetDimension:ALDimensionWidth toSize:coverWidth];
-  [self.coverImageView autoSetDimension:ALDimensionHeight toSize:coverHeight];
   
   [[NYPLBookRegistry sharedRegistry]
    thumbnailImageForBook:book
@@ -96,115 +75,49 @@ static NSString *detailTemplate = nil;
    }];
   
   self.titleLabel = [[UILabel alloc] init];
-  //GODO is this right for numberOfLines?
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    self.titleLabel.numberOfLines = 1;
-  } else {
-    self.titleLabel.numberOfLines = 2;
-  }
-  self.titleLabel.font = [UIFont boldSystemFontOfSize:17];
+  self.titleLabel.numberOfLines = 2;
   self.titleLabel.attributedText = NYPLAttributedStringForTitleFromString(book.title);
-  [self.contentView addSubview:self.titleLabel];
-  [self.titleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
-  [self.titleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
-  [self.titleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];
-  
+
   self.subtitleLabel = [[UILabel alloc] init];
   self.subtitleLabel.text = book.subtitle;
-  self.subtitleLabel.font = [UIFont systemFontOfSize:12];
-  [self.contentView addSubview:self.subtitleLabel];
-  [self.subtitleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
-  [self.subtitleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
-  [self.subtitleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.titleLabel];
+  self.subtitleLabel.numberOfLines = 2;
   
   self.authorsLabel = [[UILabel alloc] init];
   self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-  self.authorsLabel.font = [UIFont systemFontOfSize:12];
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.authorsLabel.text = book.authors;
   } else {
     self.authorsLabel.attributedText = NYPLAttributedStringForAuthorsFromString(book.authors);
   }
-  [self.contentView addSubview:self.authorsLabel];
-  [self.authorsLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
-  [self.authorsLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
-  [self.authorsLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.subtitleLabel];
   
-  self.normalView = [[NYPLBookDetailNormalView alloc] initWithWidth:0];
-  self.normalView.delegate = [NYPLBookCellDelegate sharedDelegate];
-  self.normalView.book = self.book;
-  self.normalView.hidden = YES;
-  [self.contentView addSubview:self.normalView];
-  [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeRight];
-  [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-  [self.normalView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:coverPaddingTop];
-  //GODO TEMP
-  [self.normalView autoSetDimension:ALDimensionHeight toSize:100];
-  
-//  self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
-//  self.downloadFailedView.delegate = self;
-//  self.downloadFailedView.hidden = YES;
-//  [self.contentView addSubview:self.downloadFailedView];
-//  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeRight];
-//  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-//  [self.downloadFailedView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:coverPaddingTop];
-//  
-//  self.downloadingView = [[NYPLBookDetailDownloadingView alloc] initWithWidth:0];
-//  self.downloadingView.delegate = self;
-//  self.downloadingView.hidden = YES;
-//  [self.contentView addSubview:self.downloadingView];
-//  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeRight];
-//  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-//  [self.downloadingView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:coverPaddingTop];
-
   self.unreadImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Unread"]];
   self.unreadImageView.image = [self.unreadImageView.image
                                 imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
   [self.unreadImageView setTintColor:[NYPLConfiguration accentColor]];
-  [self.contentView addSubview:self.unreadImageView];
-  [self.unreadImageView autoPinEdge:ALEdgeTrailing toEdge:ALEdgeLeading ofView:self.coverImageView withOffset:5];
-  [self.unreadImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:10];
   
   self.distributorLabel = [[UILabel alloc] init];
   self.distributorLabel.font = [UIFont systemFontOfSize:12];
   self.distributorLabel.textColor = [UIColor grayColor];
   self.distributorLabel.numberOfLines = 1;
-  [self.contentView addSubview:self.distributorLabel];
-  [self.distributorLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
-  [self.distributorLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.normalView withOffset:coverPaddingTop];
-  //GODO TEMP
-//  [self.distributorLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:coverPaddingTop];
-
-  
   
   self.summaryTextView = [[UITextView alloc] init];
   self.summaryTextView.backgroundColor = [UIColor clearColor];
   self.summaryTextView.scrollEnabled = NO;
+  self.summaryTextView.editable = NO;
   
   NSString *htmlString = [NSString stringWithFormat:detailTemplate,
                           [NYPLConfiguration systemFontName],
                           book.summary ? book.summary : @""];
   NSData *htmlData = [htmlString dataUsingEncoding:NSUnicodeStringEncoding];
-  NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-  [style setLineBreakMode:NSLineBreakByWordWrapping];
-  [style setHyphenationFactor:0.5];
-  NSDictionary *attributes = @{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType,
-                               NSParagraphStyleAttributeName: style};
-  NSAttributedString *atrString = [[NSAttributedString alloc] initWithData:htmlData options:attributes documentAttributes:nil error: nil];
+  NSDictionary *attributes = @{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType};
+  NSAttributedString *atrString = [[NSAttributedString alloc] initWithData:htmlData options:attributes documentAttributes:nil error:nil];
   self.summaryTextView.attributedText = atrString;
   
-  [self.contentView addSubview:self.summaryTextView];
-  [self.summaryTextView autoPinEdgeToSuperviewMargin:ALEdgeRight];
-  [self.summaryTextView autoPinEdgeToSuperviewMargin:ALEdgeLeft];
-  [self.summaryTextView autoPinEdgeToSuperviewMargin:ALEdgeBottom];
-  [self.summaryTextView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.distributorLabel withOffset:12];
-  
-  
-  
+
   NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
   dateFormatter.timeStyle = NSDateFormatterNoStyle;
   dateFormatter.dateStyle = NSDateFormatterLongStyle;
-  
+
   NSString *const publishedString =
     self.book.published
     ? [NSString stringWithFormat:@"%@: %@",
@@ -246,25 +159,133 @@ static NSString *detailTemplate = nil;
   self.publishedLabel.textColor = [UIColor lightGrayColor];
   self.publishedLabel.text = publishedString;
   
-  [self.contentView addSubview:self.publishedLabel];
-  [self.contentView addSubview:self.publisherLabel];
+  
+  [self addSubview:self.contentView];
+  [self.contentView addSubview:self.coverImageView];
+  [self.contentView addSubview:self.titleLabel];
+  [self.contentView addSubview:self.subtitleLabel];
+  [self.contentView addSubview:self.authorsLabel];
+  [self.contentView addSubview:self.unreadImageView];
+  [self.contentView addSubview:self.distributorLabel];
+  [self.contentView addSubview:self.summaryTextView];
+//  [self.contentView addSubview:self.publishedLabel];
+//  [self.contentView addSubview:self.publisherLabel];
   [self.contentView addSubview:self.categoriesLabel];
+  
+  
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.closeButton setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
+    [self.closeButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
+    [self.closeButton addTarget:self action:@selector(closeButtonPressed) forControlEvents:UIControlEventTouchDown];
+    [self.contentView addSubview:self.closeButton];
+    [self.closeButton autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+    [self.closeButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.titleLabel withOffset:1];
+  }
+  
+  [self setupDownloadViews];
+  [self setupAutolayoutConstraints];
+  [self updateFonts];
+  
+  return self;
+}
+
+- (void)updateFonts
+{
+  self.titleLabel.font = [UIFont systemFontForTextStyle:UIFontTextStyleTitle2];
+  self.subtitleLabel.font = [UIFont systemFontForTextStyle:UIFontTextStyleCaption1];
+  self.authorsLabel.font = [UIFont systemFontForTextStyle:UIFontTextStyleCaption1];
+  self.summaryTextView.font = [UIFont systemFontForTextStyle:UIFontTextStyleCaption2];
+}
+
+- (void)setupDownloadViews
+{
+  self.normalView = [[NYPLBookDetailNormalView alloc] initWithWidth:0];
+  self.normalView.delegate = [NYPLBookCellDelegate sharedDelegate];
+  self.normalView.book = self.book;
+  self.normalView.hidden = YES;
+  [self.contentView addSubview:self.normalView];
+  [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+  [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+  
+  //GODO TEMP
+  [self.normalView autoSetDimension:ALDimensionHeight toSize:70];
+  
+  self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
+  self.downloadFailedView.delegate = self;
+  self.downloadFailedView.hidden = YES;
+  [self.contentView addSubview:self.downloadFailedView];
+  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+  [self.downloadFailedView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:coverPaddingTop];
+  //GODO TEMP
+  [self.downloadFailedView autoSetDimension:ALDimensionHeight toSize:70];
+  
+  self.downloadingView = [[NYPLBookDetailDownloadingView alloc] initWithWidth:0];
+  self.downloadingView.delegate = self;
+  self.downloadingView.hidden = YES;
+  [self.contentView addSubview:self.downloadingView];
+  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+  [self.downloadingView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:coverPaddingTop];
+  //GODO TEMP
+  [self.downloadingView autoSetDimension:ALDimensionHeight toSize:70];
+}
+
+- (void)setupAutolayoutConstraints
+{
+  [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeTop];
+  [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeBottom];
+  [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+  [self.contentView autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self];
+  
+  [self.coverImageView autoPinEdgeToSuperviewEdge:ALEdgeLeading withInset:coverPaddingLeft];
+  [self.coverImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:coverPaddingTop];
+  [self.coverImageView autoSetDimension:ALDimensionWidth toSize:coverWidth];
+  [self.coverImageView autoSetDimension:ALDimensionHeight toSize:coverHeight];
+  
+  [self.titleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
+  [self.titleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  [self.titleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];
+  
+  [self.subtitleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
+  [self.subtitleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  [self.subtitleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.titleLabel];
+  
+  [self.authorsLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
+  [self.authorsLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  [self.authorsLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.subtitleLabel];
+  
+  [self.unreadImageView autoPinEdge:ALEdgeTrailing toEdge:ALEdgeLeading ofView:self.coverImageView withOffset:5];
+  [self.unreadImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:10];
+  
+  [self.distributorLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
+  [self.distributorLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.normalView withOffset:coverPaddingTop];
   
   [self.categoriesLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
   [self.categoriesLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
   [self.categoriesLabel autoAlignAxis:ALAxisBaseline toSameAxisOfView:self.coverImageView];
-//  [self.categoriesLabel autoPinEdge:NSLayoutAttributeBaseline toEdge:ALEdgeBottom ofView:self.coverImageView];
-
-  [self.publishedLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
-  [self.publishedLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
-  [self.publishedLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.publisherLabel];
-
-  [self.publisherLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
-  [self.publisherLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
-  [self.publisherLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.categoriesLabel];
   
+  //  [self.categoriesLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.publisherLabel];
+  ////  [self.categoriesLabel autoPinEdge:NSLayoutAttributeBaseline toEdge:ALEdgeBottom ofView:self.coverImageView];
+  ////
+  [self.normalView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.categoriesLabel withOffset:coverPaddingTop];
+  //
+  //  [self.publishedLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
+  //  [self.publishedLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  //  [self.publishedLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.publisherLabel];
+  //  //GODO Temp
+  //  [self.publishedLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.authorsLabel withOffset:0 relation:NSLayoutRelationGreaterThanOrEqual];
+  //
+  //  [self.publisherLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:mainTextPaddingLeft];
+  //  [self.publisherLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  //  [self.publisherLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.categoriesLabel];
+  //  [self.publisherLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.publishedLabel];
   
-  return self;
+  [self.summaryTextView autoPinEdgeToSuperviewMargin:ALEdgeRight];
+  [self.summaryTextView autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+  [self.summaryTextView autoPinEdgeToSuperviewMargin:ALEdgeBottom];
+  [self.summaryTextView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.distributorLabel withOffset:12];
 }
 
 #pragma mark NSObject
