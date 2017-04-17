@@ -13,6 +13,7 @@
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) NSMutableArray *observers;
+@property (nonatomic) NYPLBookDetailView *bookDetailView;
 
 @end
 
@@ -29,12 +30,12 @@
   
   self.book = book;
   
-  NYPLBookDetailView *const view = [[NYPLBookDetailView alloc] initWithBook:book];
-  view.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
-  view.detailViewDelegate = self;
+  self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:book];
+  self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
+  self.bookDetailView.detailViewDelegate = self;
   
-  [self.view addSubview:view];
-  [view autoPinEdgesToSuperviewEdges];
+  [self.view addSubview:self.bookDetailView];
+  [self.bookDetailView autoPinEdgesToSuperviewEdges];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -53,9 +54,9 @@
       NYPLBook *newBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
       if(newBook) {
         self.book = newBook;
-        view.book = newBook;
+        self.bookDetailView.book = newBook;
       }
-      view.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
+      self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
     }]];
   
   [self.observers addObject:
@@ -64,9 +65,9 @@
     object:nil
     queue:[NSOperationQueue mainQueue]
     usingBlock:^(__attribute__((unused)) NSNotification *note) {
-      view.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+      self.bookDetailView.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                                downloadProgressForBookIdentifier:book.identifier];
-      view.downloadStarted = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+      self.bookDetailView.downloadStarted = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                               downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementUnknown;
     }]];
   
@@ -76,10 +77,22 @@
     object:nil
     queue:[NSOperationQueue mainQueue]
     usingBlock:^(__unused NSNotification *note) {
-      [view runProblemReportedAnimation];
+      [self.bookDetailView runProblemReportedAnimation];
     }]];
   
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(didChangePreferredContentSize)
+                                               name:UIContentSizeCategoryDidChangeNotification
+                                             object:nil];
+  
   return self;
+}
+
+//GODO TEMP
+
+- (void)didChangePreferredContentSize
+{
+  [self.bookDetailView updateFonts];
 }
 
 #pragma mark NSObject
