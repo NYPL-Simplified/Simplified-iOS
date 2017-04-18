@@ -506,6 +506,12 @@ static NSString *const RecordsKey = @"records";
   [self.coverRegistry thumbnailImageForBook:book handler:handler];
 }
 
+- (void)coverImageForBook:(NYPLBook *const)book
+                  handler:(void (^)(UIImage *image))handler
+{
+  [self.coverRegistry coverImageForBook:book handler:handler];
+}
+
 - (void)thumbnailImagesForBooks:(NSSet *const)books
                         handler:(void (^)(NSDictionary *bookIdentifiersToImages))handler
 {

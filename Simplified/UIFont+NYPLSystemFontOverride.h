@@ -1,5 +1,5 @@
 @interface UIFont (NYPLSystemFontOverride)
 
-+ (UIFont *)systemFontForTextStyle:(UIFontTextStyle)style;
++ (UIFont *)customFontForTextStyle:(UIFontTextStyle)style;
 
 @end

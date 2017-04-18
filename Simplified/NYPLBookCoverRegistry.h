@@ -9,6 +9,9 @@
 - (void)thumbnailImageForBook:(NYPLBook *)book
                       handler:(void (^)(UIImage *image))handler;
 
+- (void)coverImageForBook:(NYPLBook *)book
+                  handler:(void (^)(UIImage *image))handler;
+
 // The set passed in must contain NYPLBook objects. The dictionary passed to the handler maps book
 // identifiers to images.
 - (void)thumbnailImagesForBooks:(NSSet *)books
