@@ -114,6 +114,10 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 - (void)thumbnailImageForBook:(NYPLBook *)book
                       handler:(void (^)(UIImage *image))handler;
 
+// Returns a higher-res version of the thumbnail image.
+- (void)coverImageForBook:(NYPLBook *)book
+                  handler:(void (^)(UIImage *image))handler;
+
 // The set passed in should contain NYPLBook objects. If |books| is nil or does not strictly contain
 // NYPLBook objects, the handler will be called with nil. Otherwise, the dictionary passed to the
 // handler maps book identifiers to images. The handler is always called on the main thread. The

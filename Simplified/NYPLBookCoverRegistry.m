@@ -87,6 +87,16 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 
 - (void)thumbnailImageForBook:(NYPLBook *)book handler:(void (^)(UIImage *image))handler
 {
+  [self imageForBook:book atURL:book.imageThumbnailURL handler:handler];
+}
+
+- (void)coverImageForBook:(NYPLBook *)book handler:(void (^)(UIImage *image))handler
+{
+  [self imageForBook:book atURL:book.imageURL handler:handler];
+}
+
+- (void)imageForBook:(NYPLBook *)book atURL:(NSURL *)url handler:(void (^)(UIImage *image))handler
+{
   if(!(book && handler)) {
     @throw NSInvalidArgumentException;
   }
@@ -106,7 +116,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
     
     // If the image didn't load, that means we still need to download the pinned image.
     [[self.session
-      dataTaskWithRequest:[NSURLRequest requestWithURL:book.imageThumbnailURL]
+      dataTaskWithRequest:[NSURLRequest requestWithURL:url]
       completionHandler:^(NSData *const data,
                           __attribute__((unused)) NSURLResponse *response,
                           __attribute__((unused)) NSError *error) {
@@ -134,7 +144,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
       return;
     }
     [[self.session
-      dataTaskWithRequest:[NSURLRequest requestWithURL:book.imageThumbnailURL]
+      dataTaskWithRequest:[NSURLRequest requestWithURL:url]
       completionHandler:^(NSData *const data,
                           __attribute__((unused)) NSURLResponse *response,
                           __attribute__((unused)) NSError *error) {
