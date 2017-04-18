@@ -10,27 +10,13 @@
 #import "NYPLConfiguration.h"
 #import "UILabel+NYPLAppearanceAdditions.h"
 #import "UIButton+NYPLAppearanceAdditions.h"
-
-static NSString *const NYPLCirculationBaseURLProduction = @"https://circulation.librarysimplified.org";
-static NSString *const NYPLCirculationBaseURLTesting = @"http://qa.circulation.librarysimplified.org/";
-
-static NSString *const heapIDProduction = @"3245728259";
-static NSString *const heapIDDevelopment = @"1848989408";
+#import "SimplyE-Swift.h"
+#import "NYPLAppDelegate.h"
 
 @implementation NYPLConfiguration
 
 + (void)initialize
 {
-  [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
-  HSDeskGear *deskGear = [[HSDeskGear alloc]
-                          initWithInstanceBaseUrl:@"https://nypl.desk.com/"
-                          toHelpEmail:@"jamesenglish@nypl.org"
-                          staffLoginEmail:@"jamesenglish@nypl.org"
-                          AndStaffLoginPassword:@"Marin1010!"];
-  HSHelpStack *helpStack = [HSHelpStack instance];
-  helpStack.gear = deskGear;
-  
-  
   if([NYPLConfiguration bugsnagEnabled]) {
     [Bugsnag startBugsnagWithApiKey:[NYPLConfiguration bugsnagID]];
   }
@@ -45,56 +31,49 @@ static NSString *const heapIDDevelopment = @"1848989408";
 #endif
 }
 
-+ (BOOL) heapEnabled
-{
-  return !TARGET_OS_SIMULATOR;
-}
 
 + (BOOL) bugsnagEnabled
 {
   return !TARGET_OS_SIMULATOR;
 }
 
-+ (NSString *)heapID
-{
-//  return heapIDProduction;
-  return heapIDDevelopment;
-}
 
 + (NSString *) bugsnagID
 {
   return @"76cb0080ae8cc30d903663e10b138381";
 }
 
-+ (NSURL *)circulationURL
-{
-  return [NSURL URLWithString:NYPLCirculationBaseURLProduction];
-}
 
 + (NSURL *)mainFeedURL
 {
   NSURL *const customURL = [NYPLSettings sharedSettings].customMainFeedURL;
 
   if(customURL) return customURL;
+
+  NSURL *const accountURL = [NYPLSettings sharedSettings].accountMainFeedURL;
   
-  return [self circulationURL];
+  if(accountURL) return accountURL;
+
+  return nil;
 }
 
 + (NSURL *)loanURL
 {
-    return [[self circulationURL] URLByAppendingPathComponent:@"loans"];
+    return [[self mainFeedURL] URLByAppendingPathComponent:@"loans"];
 }
 
 + (BOOL)cardCreationEnabled
 {
-  //Card Creator functionality is currently disabled until a later date.
-  return NO;
+  return YES;
 }
 
-+ (NSURL *)registrationURL
-{
-//  return [NSURL URLWithString:@"https://simplifiedcard.herokuapp.com"];
-  return [NSURL URLWithString:@"https://patrons.librarysimplified.org/"];
+
++ (UIColor *)colorFromHexString:(NSString *)hexString {
+  unsigned rgbValue = 0;
+  NSScanner *scanner = [NSScanner scannerWithString:hexString];
+  [scanner setScanLocation:1]; // bypass '#' character
+  [scanner scanHexInt:&rgbValue];
+  return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
 }
 
 + (NSURL *)minimumVersionURL
@@ -104,7 +83,13 @@ static NSString *const heapIDDevelopment = @"1848989408";
 
 + (UIColor *)mainColor
 {
-  return [UIColor colorWithRed:220/255.0 green:34/255.0 blue:29/255.0 alpha:1.0];
+  Account * account = [[NYPLSettings sharedSettings] currentAccount];
+
+  if (account.mainColor == nil)
+  {
+    return [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
+  }
+  return [NYPLConfiguration colorFromHexString:[NSString stringWithFormat:@"#%@",account.mainColor]];
 }
 
 + (UIColor *)accentColor
@@ -137,6 +122,14 @@ static NSString *const heapIDDevelopment = @"1848989408";
 
 +(UIColor *)backgroundMediaOverlayHighlightSepiaColor {
   return [UIColor yellowColor];
+}
+
++(UIColor *)iconLogoBlueColor {
+  return [UIColor colorWithRed:17.0/255.0 green:50.0/255.0 blue:84.0/255.0 alpha:1.0];
+}
+
++(UIColor *)iconLogoGreenColor {
+  return [UIColor colorWithRed:141.0/255.0 green:199.0/255.0 blue:64.0/255.0 alpha:1.0];
 }
 
 // Set for the whole app via UIView+NYPLFontAdditions.

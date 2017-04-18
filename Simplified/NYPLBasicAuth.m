@@ -7,6 +7,11 @@ void NYPLBasicAuthHandler(NSURLAuthenticationChallenge *const challenge,
                           (NSURLSessionAuthChallengeDisposition disposition,
                            NSURLCredential *credential))
 {
+  if(![challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodHTTPBasic]) {
+    completionHandler(NSURLSessionAuthChallengeRejectProtectionSpace, nil);
+    return;
+  }
+  
   if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
     NSString *const barcode = [NYPLAccount sharedAccount].barcode;
     NSString *const PIN = [NYPLAccount sharedAccount].PIN;

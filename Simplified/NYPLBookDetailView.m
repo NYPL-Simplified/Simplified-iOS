@@ -9,6 +9,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLBookDetailView.h"
 #import "NYPLConfiguration.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLBookDetailView ()
   <NYPLBookDetailDownloadFailedViewDelegate, NYPLBookDetailDownloadingViewDelegate, UIWebViewDelegate>
@@ -384,7 +385,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
-      if(self.book.acquisition.openAccess) {
+      if(self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) {
         self.normalView.state = NYPLBookButtonsStateCanKeep;
       } else {
         if (self.book.availableCopies > 0) {

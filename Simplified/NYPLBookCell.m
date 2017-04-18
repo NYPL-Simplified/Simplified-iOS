@@ -5,7 +5,9 @@
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLBookNormalCell.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "SimplyE-Swift.h"
 
 static NSString *const reuseIdentifierDownloading = @"Downloading";
 static NSString *const reuseIdentifierDownloadFailed = @"DownloadFailed";
@@ -57,7 +59,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                         forIndexPath:indexPath];
       cell.book = book;
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
-      if(book.acquisition.openAccess) {
+      if(book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) {
         cell.state = NYPLBookButtonsStateCanKeep;
       } else {
         if (book.availableCopies > 0) {
@@ -97,6 +99,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
       cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                                downloadProgressForBookIdentifier:book.identifier];
+      cell.backgroundColor = [NYPLConfiguration mainColor];
       return cell;
     }
     case NYPLBookStateDownloadFailed:

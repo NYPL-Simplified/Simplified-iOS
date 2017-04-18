@@ -1,7 +1,7 @@
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
-#import "NYPLSettingsAccountViewController.h"
+#import "NYPLAccountSignInViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
@@ -14,6 +14,8 @@
 
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksDownloadInfo.h"
+#import "NYPLSettings.h"
+#import "SimplyE-Swift.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -161,6 +163,7 @@ didFinishDownloadingToURL:(NSURL *const)location
     success = NO;
   }
   
+//  NSString *userId = [[NYPLADEPT sharedInstance] userID];
   if (success) {
     switch([self downloadInfoForBookIdentifier:book.identifier].rightsManagement) {
       case NYPLMyBooksDownloadRightsManagementUnknown:
@@ -180,10 +183,80 @@ didFinishDownloadingToURL:(NSURL *const)location
           [[NYPLBookRegistry sharedRegistry]
            setState:NYPLBookStateDownloadFailed
            forIdentifier:book.identifier];
-        } else {
+        }
+        else if (![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount] userID] withDevice:[[NYPLAccount sharedAccount] deviceID]])
+        {
+          
+          
+//          clientToken
+          NSMutableArray* foo = [[book.licensor[@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
+          NSString *last = foo.lastObject;
+          [foo removeLastObject];
+          NSString *first = [foo componentsJoinedByString:@"|"];
+
+          NYPLLOG(book.licensor);
+          NYPLLOG(first);
+          NYPLLOG(last);
+          
+          [[NYPLADEPT sharedInstance]
+           authorizeWithVendorID:book.licensor[@"vendor"]
+           username:first
+           password:last
+           userID:[[NYPLAccount sharedAccount] userID] deviceID:[[NYPLAccount sharedAccount] deviceID]
+           completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
+             
+             if (success)
+             {
+               [[NYPLAccount sharedAccount] setDeviceID:deviceID];
+               [[NYPLAccount sharedAccount] setUserID:userID];
+               if (book.licensor!=nil)
+               {
+                 [[NYPLAccount sharedAccount] setLicensor:book.licensor];
+
+                 // POST deviceID to adobeDevicesLink
+                 
+                 NSURL *deviceManager =  [NSURL URLWithString: book.licensor[@"deviceManager"]];
+                 if (deviceManager != nil) {
+                   [NYPLDeviceManager postDevice:deviceID url:deviceManager];
+                 }
+
+               }
+
+               [[NYPLADEPT sharedInstance]
+                fulfillWithACSMData:ACSMData
+                tag:book.identifier userID:userID deviceID:deviceID];
+             }
+             else
+             {
+               NYPLLOG(error);
+               dispatch_async(dispatch_get_main_queue(), ^{
+                 NYPLAlertController *alert = [NYPLAlertController
+                                               alertWithTitle:@"DownloadFailed"
+                                               message:@"SettingsAccountViewControllerMessageTooManyActivations"];
+                 if (problemDocument) {
+                   [alert setProblemDocument:problemDocument displayDocumentMessage:YES];
+                   
+                   if ([problemDocument.type isEqualToString:NYPLProblemDocumentTypeNoActiveLoan])
+                   {
+                     [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:book.identifier];
+                   }
+                 }
+                 
+                 [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+               });
+               [[NYPLBookRegistry sharedRegistry]
+                setState:NYPLBookStateDownloadFailed
+                forIdentifier:book.identifier];
+
+             }
+
+           }];
+
+        }
+        else {
           [[NYPLADEPT sharedInstance]
            fulfillWithACSMData:ACSMData
-           tag:book.identifier];
+           tag:book.identifier userID:[[NYPLAccount sharedAccount] userID] deviceID:[[NYPLAccount sharedAccount] deviceID]];
         }
 #endif
         break;
@@ -312,18 +385,19 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
   
+  if ([[AccountsManager sharedInstance] currentAccount].needsAuth){
 #if defined(FEATURE_DRM_CONNECTOR)
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
   if(fulfillmentId) {
-    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId completion:^(BOOL success, NSError *error) {
+    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId userID:[[NYPLAccount sharedAccount] userID] deviceID:[[NYPLAccount sharedAccount] deviceID] completion:^(BOOL success, __unused NSError *error) {
       if(!success) {
         NYPLLOG(@"Failed to return loan.");
       }
     }];
   }
 #endif
-  
-  if(book.acquisition.revoke) {
+  }
+  if(book.acquisition.revoke || [[AccountsManager sharedInstance] currentAccount].needsAuth) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
     [NYPLOPDSFeed withURL:book.acquisition.revoke completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
       [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
@@ -364,6 +438,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       [self deleteLocalContentForBookIdentifier:identifier];
     }
     [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
+    [[NYPLBookRegistry sharedRegistry] save];
   }
 }
 
@@ -374,18 +449,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (NSURL *)contentDirectoryURL
 {
-  NSArray *const paths =
-  NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  NSURL *directoryURL = [[DirectoryManager current] URLByAppendingPathComponent:@"content"];
   
-  assert([paths count] == 1);
-  
-  NSString *const path = paths[0];
-  
-  NSURL *const directoryURL =
-    [[[NSURL fileURLWithPath:path]
-      URLByAppendingPathComponent:[[NSBundle mainBundle]
-                                   objectForInfoDictionaryKey:@"CFBundleIdentifier"]]
-     URLByAppendingPathComponent:@"content"];
+  NYPLLOG_F(@"directoryURL %@", directoryURL);
 
   NSError *error = nil;
   if(![[NSFileManager defaultManager]
@@ -396,7 +462,21 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     NYPLLOG(@"Failed to create directory.");
     return nil;
   }
+  return directoryURL;
+}
+- (NSURL *)contentDirectoryURL:(NSInteger)account
+{
+  NSURL *directoryURL = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"content"];
   
+  NSError *error = nil;
+  if(![[NSFileManager defaultManager]
+       createDirectoryAtURL:directoryURL
+       withIntermediateDirectories:YES
+       attributes:nil
+       error:&error]) {
+    NYPLLOG(@"Failed to create directory.");
+    return nil;
+  }
   return directoryURL;
 }
 
@@ -433,7 +513,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   switch(state) {
     case NYPLBookStateUnregistered:
-      if(!book.acquisition.borrow && book.acquisition.openAccess) {
+      if(!book.acquisition.borrow && (book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)) {
         [[NYPLBookRegistry sharedRegistry]
          addBook:book
          location:nil
@@ -542,7 +622,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     }
 
   } else {
-    [NYPLSettingsAccountViewController
+    [NYPLAccountSignInViewController
      requestCredentialsUsingExistingBarcode:NO
      completionHandler:^{
        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
@@ -604,6 +684,21 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     otherButtonTitles:NSLocalizedString(@"Delete", nil), nil]
    show];
 }
+
+- (void)reset:(NSInteger)account
+{
+  if ([[NYPLSettings sharedSettings] currentAccountIdentifier] == account)
+  {
+    [self reset];
+  }
+  else
+  {
+    [[NSFileManager defaultManager]
+     removeItemAtURL:[self contentDirectoryURL:account]
+     error:NULL];
+  }
+}
+
 
 - (void)reset
 {

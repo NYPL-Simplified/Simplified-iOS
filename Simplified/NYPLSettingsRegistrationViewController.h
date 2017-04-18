@@ -1,3 +1,0 @@
-@interface NYPLSettingsRegistrationViewController : UIViewController
-
-@end

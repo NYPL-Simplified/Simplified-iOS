@@ -44,9 +44,9 @@
 		<key>TitleFontSize</key>
 		<string>17</string>
 		<key>TitleFontColor</key>
-		<string>220,34,39,1.0</string>
+		<string>0,0,0,1.0</string>
 		<key>ButtonTintColor</key>
-		<string>220,34,39,1.0</string>
+		<string>0,0,0,1.0</string>
 	</dict>
 	<key>TableViewAttributes</key>
 	<dict>

@@ -1,5 +1,18 @@
+// Accessibility Labels
+
+"AccessibilitySwitchLibrary" = "Change Library Account";
+"AccessibilityEULAChecked" = "I agree to the terms of the End User License Agreement: Yes.";
+"AccessibilityEULAUnchecked" = "I agree to the terms of the End User License Agreement: No.";
+"AccessibilityEULAHintChecked" = "Select if you no longer agree to the terms. You will not be able to sign in.";
+"AccessibilityEULAHintUnchecked" = "Select if you agree to the terms so that you can sign in.";
+
+
 // Generic
+
+"AboutApp" = "About SimplyE";
+"About" = "About";
 "Accounts" = "Accounts";
+"Account" = "Account";
 "Acknowledgements" = "Acknowledgements";
 "BarcodeOrUsername" = "Barcode or Username";
 "Borrow" = "Get";
@@ -12,6 +25,8 @@
 "CheckConnection" = "Please check your connection and try again.";
 "Close" = "Close";
 "ConnectionFailed" = "Connection Failed";
+"ConnectionFailedDescription" = "Unable to load the web page at this time.";
+"Contact" = "Contact";
 "ContentLicenses" = "Content Licenses";
 "Delete" = "Delete";
 "DeviceAuthorizationError" = "An error occurred while authorizing this device.";
@@ -21,10 +36,12 @@
 "DownloadFailed" = "Download Failed";
 "Downloading" = "Downloading";
 "Feedback" = "Feedback";
+"Help" = "Frequently Asked Questions";
 "Hide" = "Hide";
 "LibraryCard" = "Library Card";
 "Licenses" = "Licenses";
 "LogIn" = "Log In";
+"ManageAccounts" = "Manage Accounts";
 "More..." = "More…";
 "MoreBooks" = "More %@ books";
 "NoResultsFound" = "No results found.";
@@ -32,7 +49,10 @@
 "OK" = "OK";
 "PDFNotSupported" = "Adobe PDF Not Supported";
 "PDFNotSupportedDescriptionFormat" = "%@ is an Adobe PDF, which is not supported.";
+"PickYourLibrary" = "Pick Your Library";
 "PIN" = "PIN";
+"PleaseWait" = "Please Wait";
+"PleaseWaitMessage" = "Please wait a moment before switching library accounts.";
 "PrivacyPolicy" = "Privacy Policy";
 "Published" = "Published";
 "Publisher" = "Publisher";
@@ -46,6 +66,7 @@
 "Search" = "Search";
 "Settings" = "Settings";
 "Show" = "Show";
+"SignIn" = "Sign In";
 "SignOut" = "Sign Out";
 "SigningOut" = "Signing Out";
 "SignUp" = "Sign Up";
@@ -93,6 +114,7 @@
 "HoldsViewControllerSearchTitle" = "Search Reservations";
 "AvailableForCheckoutHeader" = "AVAILABLE FOR CHECKOUT";
 "WaitingForAvailabilityHeader" = "WAITING FOR AVAILABILITY";
+"ReservationsGoToCatalog" = "When you reserve a book from the catalog, it will show up here. Look here from time to time to see if your book is available to download.";
 
 // NYPLMyBooksDownloadCenter
 
@@ -145,8 +167,19 @@
 
 "ReaderTOCViewControllerTitle" = "Table of Contents";
 
+// NYPLSettings
+
+"SettingsAboutNoConnection" = "There was an internet connection error and the page could not load.";
+"SettingsConnectionFailureMessage" = "The page could not load due to a connection error.";
+
 // NYPLSettingsAccountViewController
 
+"SettingsAccountAgeCheckbox" = "I am 13 years of age or older.";
+"SettingsAccountEULACheckbox" = "I agree to the terms of the End User License Agreement.";
+"SettingsAccountRegistrationTitle" = "Don't have a library card?";
+"SettingsAccountSetAccountTitle" = "Set to Active Account";
+"SettingsAccountSyncTitle" = "SimplyE Sync";
+"SettingsAccountSyncSubTitle" = "Enable if you want to synchronize your bookmarks and last reading position across all your SimplyE devices. Bookmarks and last reading position will be saved for this device anyway. Note: This requires the information to be saved in SimplyE servers";
 "SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";
 "SettingsAccountViewControllerCannotLogOutTitle" =
   "Logout Failed";
@@ -156,8 +189,8 @@
   "Your barcode and pin combination was not valid. Please try again.";
 "SettingsAccountViewControllerLoginFailed" = "Login Failed";
 "SettingsAccountViewControllerLogoutFailed" = "Sign Out Failed";
-"SettingsAccountViewControllerLogoutMessage" =
-  "If you sign out of your account, all content accessible via My Books will be removed from this device.";
+"SettingsAccountViewControllerLogoutMessage" = "If you sign out of your account, all content accessible via My Books will be removed from this device.";
+"SettingsAccountViewControllerAgeCheckMessage" = "If you are under 13, all content downloaded to My Books will be removed.";
 "SettingsAccountViewControllerMessageLogIn" = "Use your library card to log in.";
 "SettingsAccountViewControllerMessageLogInToDownloadBook" =
   "You need a library card to download this book.";
@@ -166,13 +199,27 @@
 "Location" = "Location";
 "LocationRequiredMessage" = "Location information is required for Sign Up. Please allow access to location information in the iOS settings";
 
-// NYPLEULAViewController && NYPLSettingsEULAViewController
+// NYPLSettingsEULAViewController
 "Accept" = "Accept";
 "Reject" = "Reject";
 "EULA" = "User Agreement";
 "EULAHaveToAgree" = "You must accept the End User License Agreement to use this application.";
 "NOTICE" = "NOTICE";
 
+// NYPLSettingsLibrarySelectionViewController
+"SettingsAccountLibrariesViewControllerAlertTitle" = "Add Your Library";
+
 // NYPLSettingsPrivacyPolicyViewController
 "PrivacyPolicy" = "Privacy Policy";
 "SettingsAccountViewControllerMessageTooManyActivations" = "Too many devices have been authorized with this library card.";
+
+// NYPLWelcomeScreen
+"WelcomeScreenAgeVerifyTitle" = "Age Verification";
+"WelcomeScreenAgeVerifyMessage" = "You must be 13 years of age or older to download some of the books from this collection. How old are you?";
+"WelcomeScreenTitle1" = "Read Books from your Library";
+"WelcomeScreenSubtitle1" = "Simply browse borrow and read free ebooks from you local library";
+"WelcomeScreenButtonTitle1" = "Pick Your Library";
+"WelcomeScreenTitle2" = "SimplyE";
+"WelcomeScreenSubtitle2" = "Download and read ebooks without a library card";
+"WelcomeScreenButtonTitle2" = "Read Now";
+"LibraryListTitle" = "Pick Your Library";

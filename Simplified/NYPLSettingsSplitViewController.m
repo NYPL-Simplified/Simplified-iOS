@@ -1,11 +1,7 @@
 #import "HSHelpStack.h"
-#import "NYPLSettingsAboutViewController.h"
-#import "NYPLSettingsAccountViewController.h"
-#import "NYPLSettingsFeedbackViewController.h"
-#import "NYPLSettingsLicensesTableViewController.h"
+#import "HSDeskGear.h"
 #import "NYPLSettingsPrimaryNavigationController.h"
 #import "NYPLSettingsPrimaryTableViewController.h"
-#import "NYPLSettingsPrivacyPolicyViewController.h"
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLSettings.h"
 #import "NYPLBook.h"
@@ -38,10 +34,12 @@
   self.primaryNavigationController = [[NYPLSettingsPrimaryNavigationController alloc] init];
   self.primaryNavigationController.primaryTableViewController.delegate = self;
   
+  NSArray *accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
+  
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.viewControllers = @[self.primaryNavigationController,
                              [[UINavigationController alloc] initWithRootViewController:
-                              [[NYPLSettingsAccountViewController alloc] init]]];
+                              [[NYPLSettingsAccountsTableViewController alloc] initWithAccounts:accounts]]];
     [self.primaryNavigationController.primaryTableViewController.tableView
      selectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
                             NYPLSettingsPrimaryTableViewControllerItemAccount)
@@ -73,21 +71,23 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
                              didSelectItem:(NYPLSettingsPrimaryTableViewControllerItem const)item
 {
   UIViewController *viewController;
+  NSArray *accounts;
   switch(item) {
-    case NYPLSettingsPrimaryTableViewControllerItemLicenses:
-      viewController = [[NYPLSettingsLicensesTableViewController alloc] init];
-      break;
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
-      viewController = [[NYPLSettingsAccountViewController alloc] init];
+      accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
+      viewController = [[NYPLSettingsAccountsTableViewController alloc] initWithAccounts:accounts];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
-      viewController = [[NYPLSettingsAboutViewController alloc] init];
+      viewController = [[RemoteHTMLViewController alloc]
+                        initWithURL:[NSURL URLWithString:NYPLAcknowledgementsURLString]
+                        title:NSLocalizedString(@"AboutApp", nil)
+                        failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
-      viewController = [[NYPLSettingsEULAViewController alloc] init];
-      break;
-    case NYPLSettingsPrimaryTableViewControllerItemPrivacyPolicy:
-      viewController = [[NYPLSettingsPrivacyPolicyViewController alloc] init];
+      viewController = [[RemoteHTMLViewController alloc]
+                        initWithURL:[NSURL URLWithString:NYPLUserAgreementURLString]
+                        title:NSLocalizedString(@"EULA", nil)
+                        failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses:
       viewController = [[BundledHTMLViewController alloc]
@@ -96,11 +96,32 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
                                          withExtension:@"html"]
                         title:NSLocalizedString(@"SoftwareLicenses", nil)];
       break;
-    case NYPLSettingsPrimaryTableViewControllerItemHelpStack:
-      [[HSHelpStack instance] showHelp:self];
-      break;
+    case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
+      [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
+      HSDeskGear *deskGear = [[HSDeskGear alloc]
+                              initWithInstanceBaseUrl:@"######## REPLACE #########"
+                              token:@"######## REPLACE #########"
+                              andBrand:@"######## REPLACE #########"];
+      
+      HSHelpStack *helpStack = [HSHelpStack instance];
+      helpStack.gear = deskGear;
+
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard" bundle:[NSBundle mainBundle]];
+        UINavigationController *mainNavVC = [helpStoryboard instantiateInitialViewController];
+        UIViewController *firstVC = mainNavVC.viewControllers.firstObject;
+        firstVC.navigationItem.leftBarButtonItem = nil;
+        [self showDetailViewController:mainNavVC sender:self];
+      } else {
+        [settingsPrimaryTableViewController.tableView
+         deselectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(item)
+         animated:YES];
+        [[HSHelpStack instance] showHelp:self];
+      }
+      return;
+    }
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
-      break;
+      return;
   }
 
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {

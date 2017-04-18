@@ -13,6 +13,7 @@
 @property (nonatomic, readonly) NSInteger availableCopies;
 @property (nonatomic, readonly) NSDate *availableSince; // nilable
 @property (nonatomic, readonly) NSDate *availableUntil; // nilable
+@property (nonatomic, readonly) NSDictionary *licensor; // nilable
 
 // FIXME: This should not be here: Most links are not acquisition links and the
 // representation of indirect acquisitions should be handled elsewhere.

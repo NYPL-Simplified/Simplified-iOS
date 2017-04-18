@@ -403,7 +403,7 @@
       self.decreaseButton.enabled = NO;
       self.increaseButton.enabled = YES;
       break;
-    case NYPLReaderSettingsFontSizeLargest:
+    case NYPLReaderSettingsFontSizeXXXLarge:
       self.decreaseButton.enabled = YES;
       self.increaseButton.enabled = NO;
       break;
@@ -415,7 +415,9 @@
       // fallthrough
     case NYPLReaderSettingsFontSizeLarge:
       // fallthrough
-    case NYPLReaderSettingsFontSizeLarger:
+    case NYPLReaderSettingsFontSizeXLarge:
+      // fallthrough
+    case NYPLReaderSettingsFontSizeXXLarge:
       self.decreaseButton.enabled = YES;
       self.increaseButton.enabled = YES;
       break;
