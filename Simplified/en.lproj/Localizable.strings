@@ -103,7 +103,7 @@
 "BookDetailViewControllerCanKeepTitle" = "This open-access book is available to keep.";
 "BookDetailViewControllerHoldingTitleFormat" = "Available for checkout in approximately %@.";
 "BookDetailViewControllerReservedTitleFormat" = "This reservation will be automatically cancelled in %@.";
-"BookDetailViewControllerDistributedByFormat" = "Distributed by: %@";
+"BookDetailViewControllerDistributedByFormat" = "Distributed by: ";
 
 // NYPLFacetView
 
