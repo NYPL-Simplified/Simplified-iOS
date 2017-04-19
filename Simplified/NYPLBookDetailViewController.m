@@ -88,13 +88,6 @@
   return self;
 }
 
-//GODO TEMP
-
-- (void)didChangePreferredContentSize
-{
-  [self.bookDetailView updateFonts];
-}
-
 #pragma mark NSObject
 
 - (void)dealloc
@@ -147,6 +140,11 @@
 }
 
 #pragma mark -
+
+- (void)didChangePreferredContentSize
+{
+  [self.bookDetailView updateFonts];
+}
 
 - (void)presentFromViewController:(UIViewController *)viewController{
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
