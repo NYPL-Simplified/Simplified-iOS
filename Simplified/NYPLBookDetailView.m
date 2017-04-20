@@ -15,7 +15,7 @@
 #import <PureLayout/PureLayout.h>
 
 @interface NYPLBookDetailView ()
-  <NYPLBookDetailDownloadFailedViewDelegate, NYPLBookDetailDownloadingViewDelegate, UIWebViewDelegate>
+  <NYPLBookDetailDownloadFailedViewDelegate, NYPLBookDetailDownloadingViewDelegate>
 
 @property (nonatomic) BOOL beganInitialRequest;
 @property (nonatomic) UIView *contentView;
@@ -43,6 +43,8 @@
 @property (nonatomic) UILabel *publisherLabelValue;
 @property (nonatomic) UILabel *categoriesLabelValue;
 @property (nonatomic) UILabel *distributorLabelValue;
+
+@property (nonatomic) UIButton *reportProblemLabel;
 
 @end
 
@@ -90,6 +92,9 @@ static NSString *DetailHTMLTemplate = nil;
   [self.contentView addSubview:self.categoriesLabelValue];
   [self.contentView addSubview:self.distributorLabelValue];
   [self.contentView addSubview:self.readMoreLabel];
+  if (self.book.acquisition.report != nil) {
+    [self.contentView addSubview:self.reportProblemLabel];
+  }
 
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -114,10 +119,11 @@ static NSString *DetailHTMLTemplate = nil;
 {
   self.titleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleHeadline];
   self.subtitleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleSubheadline];
-  self.authorsLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleSubheadline];
+  self.authorsLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   self.summaryTextView.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
   self.readMoreLabel.titleLabel.font = [UIFont systemFontOfSize:14];
-  
+  self.reportProblemLabel.titleLabel.font = [UIFont systemFontOfSize:14];
+
   self.publishedLabelKey.font = [UIFont systemFontOfSize:12];
   self.publisherLabelKey.font = [UIFont systemFontOfSize:12];
   self.categoriesLabelKey.font = [UIFont systemFontOfSize:12];
@@ -263,6 +269,12 @@ static NSString *DetailHTMLTemplate = nil;
   self.publisherLabelValue.numberOfLines = 2;
   self.publishedLabelValue = [self createFooterLabelWithString:publishedValueString alignment:NSTextAlignmentLeft];
   self.distributorLabelValue = [self createFooterLabelWithString:self.book.distributor alignment:NSTextAlignmentLeft];
+  
+  self.reportProblemLabel = [[UIButton alloc] init];
+  [self.reportProblemLabel setTitle:NSLocalizedString(@"Report a Problem", nil) forState:UIControlStateNormal];
+  [self.reportProblemLabel addTarget:self action:@selector(reportProblemTapped:) forControlEvents:UIControlEventTouchUpInside];
+  [self.reportProblemLabel setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal]; 
+  
 }
 
 - (UILabel *)createFooterLabelWithString:(NSString *)string alignment:(NSTextAlignment)alignment
@@ -331,7 +343,6 @@ static NSString *DetailHTMLTemplate = nil;
   [self.distributorLabelValue autoPinEdgeToSuperviewMargin:ALEdgeRight];
   [self.distributorLabelValue autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.categoriesLabelValue];
   [self.distributorLabelValue autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:self.distributorLabelKey withOffset:MainTextPaddingLeft];
-  [self.distributorLabelValue autoPinEdgeToSuperviewMargin:ALEdgeBottom];
   
   
   [self.publishedLabelKey autoPinEdgeToSuperviewMargin:ALEdgeLeft];
@@ -350,6 +361,10 @@ static NSString *DetailHTMLTemplate = nil;
   [self.distributorLabelKey autoConstrainAttribute:ALAttributeTrailing toAttribute:ALAttributeMarginAxisVertical ofView:self.contentView withMultiplier:FooterLabelVertAxisMultiplier];
   [self.distributorLabelKey autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.distributorLabelValue];
   
+  [self.reportProblemLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.distributorLabelValue withOffset:12];
+  [self.reportProblemLabel autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+  [self.reportProblemLabel autoPinEdgeToSuperviewMargin:ALEdgeBottom];
+
   if (self.closeButton) {
     [self.closeButton autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
     [self.closeButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.titleLabel withOffset:1];
@@ -516,9 +531,9 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   return YES;
 }
 
-- (void)runProblemReportedAnimation
+- (void)reportProblemTapped:(id)sender
 {
-  [self.normalView runProblemReportedAnimation];
+  [self.detailViewDelegate didSelectReportProblemForBook:self.book sender:sender];
 }
 
 - (void)readMoreTapped:(__unused UIButton *)sender

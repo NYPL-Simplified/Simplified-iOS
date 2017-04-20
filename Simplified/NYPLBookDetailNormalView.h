@@ -14,6 +14,4 @@
 // designated initializer
 - (instancetype)initWithWidth:(CGFloat)width;
 
-- (void)runProblemReportedAnimation;
-
 @end

@@ -13,6 +13,7 @@
 - (void)didSelectReadForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectTryAgainForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectCloseButton:(NYPLBookDetailView *)detailView;
+- (void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender;
 
 @end
 
@@ -32,7 +33,6 @@
 // designated initializer
 // |book| must not be nil.
 - (instancetype)initWithBook:(NYPLBook *)book;
-- (void)runProblemReportedAnimation;
 - (void)updateFonts;
 
 @end

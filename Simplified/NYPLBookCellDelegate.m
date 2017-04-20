@@ -1,7 +1,6 @@
 #import "NYPLSession.h"
 #import "NYPLAlertController.h"
 #import "NYPLBook.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLBookNormalCell.h"
@@ -52,19 +51,6 @@
    animated:YES];
 }
 
-- (void)didSelectReportForBook:(NYPLBook *)book sender:(UIButton *)sender
-{
-  NYPLProblemReportViewController *problemVC = [[NYPLProblemReportViewController alloc] initWithNibName:@"NYPLProblemReportViewController" bundle:nil];
-  BOOL isIPad = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad;
-  problemVC.modalPresentationStyle = isIPad ? UIModalPresentationPopover : UIModalPresentationOverCurrentContext;
-  problemVC.popoverPresentationController.sourceView = sender;
-  problemVC.popoverPresentationController.sourceRect = ((UIView *)sender).bounds;
-  problemVC.book = book;
-  problemVC.delegate = self;
-  UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:problemVC];
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:navController animated:YES completion:nil];
-}
-
 #pragma mark NYPLBookDownloadFailedDelegate
 
 - (void)didSelectCancelForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *const)cell
@@ -84,20 +70,6 @@
 {
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
    cancelDownloadForBookIdentifier:cell.book.identifier];
-}
-
-#pragma mark NYPLProblemReportViewControllerDelegate
-
-- (void)problemReportViewController:(NYPLProblemReportViewController *)problemReportViewController didSelectProblemWithType:(NSString *)type
-{
-  NSURL *reportURL = problemReportViewController.book.acquisition.report;
-  if (reportURL) {
-    NSURLRequest *r = [NSURLRequest postRequestWithProblemDocument:@{@"type":type} url:reportURL];
-    [[NYPLSession sharedSession] uploadWithRequest:r completionHandler:nil];
-  }
-  [problemReportViewController dismissViewControllerAnimated:YES completion:^{
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLBookProblemReportedNotification object:problemReportViewController.book];
-  }];
 }
 
 @end
