@@ -24,6 +24,7 @@
 @property (nonatomic) double downloadProgress;
 @property (nonatomic) BOOL downloadStarted;
 @property (nonatomic) NYPLBookState state;
+@property (nonatomic) UIButton *reportProblemLabel;
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;

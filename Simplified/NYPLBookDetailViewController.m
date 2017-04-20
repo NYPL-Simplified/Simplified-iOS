@@ -138,6 +138,9 @@
   problemVC.book = book;
   problemVC.delegate = self;
   UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:problemVC];
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    navController.modalPresentationStyle = UIModalPresentationFormSheet;
+  }
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:navController animated:YES completion:nil];
 }
 
@@ -149,6 +152,9 @@
     [[NYPLSession sharedSession] uploadWithRequest:r completionHandler:nil];
   }
   [problemReportViewController dismissViewControllerAnimated:YES completion:nil];
+  [UIView transitionWithView:self.bookDetailView.reportProblemLabel duration:1 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+    [self.bookDetailView.reportProblemLabel setTitle:NSLocalizedString(@"ReportProblemSent", nil) forState:UIControlStateNormal];
+  } completion:nil];
 }
 
 #pragma mark -
