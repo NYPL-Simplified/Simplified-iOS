@@ -44,8 +44,6 @@
 @property (nonatomic) UILabel *categoriesLabelValue;
 @property (nonatomic) UILabel *distributorLabelValue;
 
-@property (nonatomic) UIButton *reportProblemLabel;
-
 @end
 
 static CGFloat const CoverImageHeight = 200.0;
@@ -92,9 +90,11 @@ static NSString *DetailHTMLTemplate = nil;
   [self.contentView addSubview:self.categoriesLabelValue];
   [self.contentView addSubview:self.distributorLabelValue];
   [self.contentView addSubview:self.readMoreLabel];
-  if (self.book.acquisition.report != nil) {
-    [self.contentView addSubview:self.reportProblemLabel];
-  }
+  [self.contentView addSubview:self.reportProblemLabel];
+//
+//  if (self.book.acquisition.report != nil) {
+//    [self.contentView addSubview:self.reportProblemLabel];
+//  }
 
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -271,10 +271,10 @@ static NSString *DetailHTMLTemplate = nil;
   self.distributorLabelValue = [self createFooterLabelWithString:self.book.distributor alignment:NSTextAlignmentLeft];
   
   self.reportProblemLabel = [[UIButton alloc] init];
-  [self.reportProblemLabel setTitle:NSLocalizedString(@"Report a Problem", nil) forState:UIControlStateNormal];
+  [self.reportProblemLabel setTitle:NSLocalizedString(@"ReportProblem", nil) forState:UIControlStateNormal];
   [self.reportProblemLabel addTarget:self action:@selector(reportProblemTapped:) forControlEvents:UIControlEventTouchUpInside];
-  [self.reportProblemLabel setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal]; 
-  
+  [self.reportProblemLabel setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
+
 }
 
 - (UILabel *)createFooterLabelWithString:(NSString *)string alignment:(NSTextAlignment)alignment
@@ -293,8 +293,9 @@ static NSString *DetailHTMLTemplate = nil;
   [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
   [self.contentView autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self];
   
-  [self.coverImageView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [self.coverImageView autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.coverImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:VerticalPadding];
+
   //  [self.coverImageView autoSetDimension:ALDimensionWidth toSize:coverWidth];
   //  [self.coverImageView autoSetDimension:ALDimensionHeight toSize:coverHeight];
   
@@ -305,6 +306,7 @@ static NSString *DetailHTMLTemplate = nil;
   [self.titleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
   [self.titleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
   [self.titleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];
+//  [self.titleLabel autoSetDimension:ALDimensionWidth toSize:100 relation:NSLayoutRelationGreaterThanOrEqual];
   
   [self.subtitleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
   [self.subtitleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
@@ -364,6 +366,11 @@ static NSString *DetailHTMLTemplate = nil;
   [self.reportProblemLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.distributorLabelValue withOffset:12];
   [self.reportProblemLabel autoPinEdgeToSuperviewMargin:ALEdgeLeft];
   [self.reportProblemLabel autoPinEdgeToSuperviewMargin:ALEdgeBottom];
+  
+  if (self.book.acquisition.report == nil) {
+    self.reportProblemLabel.hidden = YES;
+    [self.reportProblemLabel autoSetDimension:ALDimensionHeight toSize:0];
+  }
 
   if (self.closeButton) {
     [self.closeButton autoPinEdgeToSuperviewMargin:ALEdgeTrailing];

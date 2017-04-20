@@ -58,6 +58,8 @@
 "Publisher" = "Publisher";
 "Read" = "Read"; // present tense
 "Remove" = "Remove";
+"ReportProblem" = "Report A Problem";
+"ReportProblemSent" = "Sent Report";
 "Reserve" = "Reserve";
 "Return" = "Return";
 "ReturnCouldNotBeCompletedFormat" = "The return of %@ could not be completed.";
