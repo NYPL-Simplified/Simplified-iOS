@@ -15,11 +15,9 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   NYPLProblemReportButtonStateSent
 };
 
-@property (nonatomic, assign) NYPLProblemReportButtonState reportButtonState;
 @property (nonatomic) UIView *backgroundView;
 @property (nonatomic) UILabel *messageLabel;
 @property (nonatomic) NYPLBookButtonsView *buttonsView;
-@property (nonatomic) UIButton *reportAProblemButton;
 
 @end
 
@@ -40,12 +38,6 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   self.buttonsView.showReturnButtonIfApplicable = YES;
   [self addSubview:self.buttonsView];
   
-  self.reportAProblemButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  [self.reportAProblemButton.titleLabel setFont:[UIFont systemFontOfSize:12.0]];
-  [self.reportAProblemButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
-  [self.reportAProblemButton addTarget:self action:@selector(reportAProblem:) forControlEvents:UIControlEventTouchUpInside];
-  [self addSubview:self.reportAProblemButton];
-  
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont systemFontOfSize:12];
   self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
@@ -61,21 +53,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   self.frame = frame;
 }
 
-- (void)reportAProblem:(id)sender
-{
-  [self.delegate didSelectReportForBook:self.book sender:sender];
-}
-
 #pragma mark UIView
-
-- (NSString *) reportButtonTitleForCurrentSize
-{
-  NSString *longName = self.reportButtonState == NYPLProblemReportButtonStateNormal ? NSLocalizedString(@"Report a Problem", nil) : NSLocalizedString(@"Sent Report", nil);
-  NSString *shortName = self.reportButtonState == NYPLProblemReportButtonStateNormal ? NSLocalizedString(@"Report", nil) : NSLocalizedString(@"Sent", nil);
-  CGFloat maxWidth = (self.bounds.size.width - self.buttonsView.bounds.size.width)/2.0 - 8.0 - 17.0;
-  CGSize textSize = [longName sizeWithAttributes:@{NSFontAttributeName: self.reportAProblemButton.titleLabel.font}];
-  return (textSize.width <= maxWidth) ? longName : shortName;
-}
 
 - (void)layoutSubviews
 {
@@ -95,16 +73,6 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
                                       CGRectGetWidth(self.buttonsView.frame),
                                       CGRectGetHeight(self.buttonsView.frame));
   [self.buttonsView integralizeFrame];
-  
-  [UIView transitionWithView:self.reportAProblemButton
-                    duration:0.25
-                     options:UIViewAnimationOptionTransitionCrossDissolve
-                  animations:^{
-                    [self.reportAProblemButton setTitle:[self reportButtonTitleForCurrentSize] forState:UIControlStateNormal];
-                  } completion:nil];
-  [self.reportAProblemButton sizeToFit];
-  self.reportAProblemButton.center = CGPointMake(self.bounds.size.width - self.reportAProblemButton.bounds.size.width/2.0 - 17.0, self.buttonsView.center.y);
-  [self.reportAProblemButton integralizeFrame];
 }
 
 #pragma mark -
@@ -158,17 +126,6 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 {
   _book = book;
   self.buttonsView.book = book;
-  self.reportAProblemButton.hidden = book.acquisition.report == nil;
-}
-
-- (void)runProblemReportedAnimation
-{
-  self.reportButtonState = NYPLProblemReportButtonStateSent;
-  [self setNeedsLayout];
-  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    self.reportButtonState = NYPLProblemReportButtonStateNormal;
-    [self setNeedsLayout];
-  });
 }
 
 @end

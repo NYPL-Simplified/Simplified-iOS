@@ -1,18 +1,22 @@
 #import "NYPLBook.h"
+#import "NYPLBookAcquisition.h"
 #import "NYPLBookDetailView.h"
 #import "NYPLMyBooksDownloadInfo.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLCatalogSearchViewController.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReaderViewController.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLSession.h"
+#import "NYPLProblemReportViewController.h"
+#import "NSURLRequest+NYPLURLRequestAdditions.h"
 #import <PureLayout/PureLayout.h>
 
 #import "NYPLBookDetailViewController.h"
 
-@interface NYPLBookDetailViewController () <NYPLBookDetailViewDelegate>
+@interface NYPLBookDetailViewController () <NYPLBookDetailViewDelegate, NYPLProblemReportViewControllerDelegate>
 
 @property (nonatomic) NYPLBook *book;
-@property (nonatomic) NSMutableArray *observers;
 @property (nonatomic) NYPLBookDetailView *bookDetailView;
 
 @end
@@ -41,44 +45,29 @@
     self.modalPresentationStyle = UIModalPresentationFormSheet;
   }
   
-  self.title = NSLocalizedString(@"BookDetailViewControllerTitle", nil);
+  [[NSNotificationCenter defaultCenter]
+   addObserverForName:NYPLBookRegistryDidChangeNotification
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(__attribute__((unused)) NSNotification *note) {
+     NYPLBook *newBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
+     if(newBook) {
+       self.book = newBook;
+       self.bookDetailView.book = newBook;
+     }
+     self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
+   }];
   
-  self.observers = [NSMutableArray array];
-  
-  [self.observers addObject:
-   [[NSNotificationCenter defaultCenter]
-    addObserverForName:NYPLBookRegistryDidChangeNotification
-    object:nil
-    queue:[NSOperationQueue mainQueue]
-    usingBlock:^(__attribute__((unused)) NSNotification *note) {
-      NYPLBook *newBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
-      if(newBook) {
-        self.book = newBook;
-        self.bookDetailView.book = newBook;
-      }
-      self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
-    }]];
-  
-  [self.observers addObject:
-   [[NSNotificationCenter defaultCenter]
-    addObserverForName:NYPLMyBooksDownloadCenterDidChangeNotification
-    object:nil
-    queue:[NSOperationQueue mainQueue]
-    usingBlock:^(__attribute__((unused)) NSNotification *note) {
-      self.bookDetailView.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                               downloadProgressForBookIdentifier:book.identifier];
-      self.bookDetailView.downloadStarted = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
-                              downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementUnknown;
-    }]];
-  
-  [self.observers addObject:
-   [[NSNotificationCenter defaultCenter]
-    addObserverForName:NYPLBookProblemReportedNotification
-    object:nil
-    queue:[NSOperationQueue mainQueue]
-    usingBlock:^(__unused NSNotification *note) {
-      [self.bookDetailView runProblemReportedAnimation];
-    }]];
+  [[NSNotificationCenter defaultCenter]
+   addObserverForName:NYPLMyBooksDownloadCenterDidChangeNotification
+   object:nil
+   queue:[NSOperationQueue mainQueue]
+   usingBlock:^(__attribute__((unused)) NSNotification *note) {
+     self.bookDetailView.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                                             downloadProgressForBookIdentifier:book.identifier];
+     self.bookDetailView.downloadStarted = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                                            downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementUnknown;
+   }];
   
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(didChangePreferredContentSize)
@@ -92,9 +81,7 @@
 
 - (void)dealloc
 {
-  for(id const observer in self.observers) {
-    [[NSNotificationCenter defaultCenter] removeObserver:observer];
-  }
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark NYPLBookDetailViewDelegate
@@ -139,6 +126,31 @@
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:self.book];
 }
 
+#pragma mark - ProblemReportViewControllerDelegate
+
+-(void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender
+{
+  NYPLProblemReportViewController *problemVC = [[NYPLProblemReportViewController alloc] initWithNibName:@"NYPLProblemReportViewController" bundle:nil];
+  BOOL isIPad = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad;
+  problemVC.modalPresentationStyle = isIPad ? UIModalPresentationPopover : UIModalPresentationOverCurrentContext;
+  problemVC.popoverPresentationController.sourceView = sender;
+  problemVC.popoverPresentationController.sourceRect = ((UIView *)sender).bounds;
+  problemVC.book = book;
+  problemVC.delegate = self;
+  UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:problemVC];
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:navController animated:YES completion:nil];
+}
+
+- (void)problemReportViewController:(NYPLProblemReportViewController *)problemReportViewController didSelectProblemWithType:(NSString *)type
+{
+  NSURL *reportURL = problemReportViewController.book.acquisition.report;
+  if (reportURL) {
+    NSURLRequest *r = [NSURLRequest postRequestWithProblemDocument:@{@"type":type} url:reportURL];
+    [[NYPLSession sharedSession] uploadWithRequest:r completionHandler:nil];
+  }
+  [problemReportViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark -
 
 - (void)didChangePreferredContentSize
@@ -147,6 +159,19 @@
 }
 
 - (void)presentFromViewController:(UIViewController *)viewController{
+  int index = [[NYPLRootTabBarController sharedController] selectedIndex];
+  UINavigationItem *navItem = viewController.navigationItem;
+  if ([viewController isKindOfClass:[NYPLCatalogSearchViewController class]]) {
+    [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Search", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
+  }
+  else if (index == 0) {
+    [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
+  } else if (index == 1) {
+    [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"MyBooksViewControllerTitle", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
+  } else if (index == 2) {
+    [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HoldsViewControllerTitle", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
+  }
+  
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
     [viewController.navigationController pushViewController:self animated:YES];
   } else {

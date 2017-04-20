@@ -31,8 +31,6 @@
 
 @end
 
-NSString *const NYPLBookProblemReportedNotification = @"NYPLBookProblemReportedNotification";
-
 static NSString *const AcquisitionKey = @"acquisition";
 static NSString *const AuthorsKey = @"authors";
 static NSString *const AvailabilityStatusKey = @"availability-status";

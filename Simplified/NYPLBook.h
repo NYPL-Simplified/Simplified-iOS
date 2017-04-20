@@ -2,11 +2,6 @@
 @class NYPLOPDSEntry;
 @class NYPLOPDSEvent;
 
-#ifndef __NYPLBookNotifications__
-#define __NYPLBookNotifications__
-extern NSString *const NYPLBookProblemReportedNotification;
-#endif 
-
 typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
   NYPLBookAvailabilityStatusUnknown      = 1 << 0,
   NYPLBookAvailabilityStatusAvailable    = 1 << 1,
