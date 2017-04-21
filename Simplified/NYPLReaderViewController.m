@@ -948,7 +948,7 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   NYPLReaderTOCViewController *viewController = [sb instantiateViewControllerWithIdentifier:@"NYPLTOC"];
   viewController.delegate = self;
   viewController.tableOfContents = self.rendererView.TOCElements;
-//  viewController.bookmarks = self.rendererView.bookmarkElements;
+  viewController.bookTitle = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
 
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&

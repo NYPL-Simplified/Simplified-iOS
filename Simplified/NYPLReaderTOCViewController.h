@@ -14,6 +14,7 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *)opaqueLocation;
 @property (nonatomic, weak) id<NYPLReaderTOCViewControllerDelegate> delegate;
 @property (nonatomic) NSArray *tableOfContents;
 @property (nonatomic) NSArray *bookmarks;
+@property (nonatomic) NSString *bookTitle;
 
 
 @end
