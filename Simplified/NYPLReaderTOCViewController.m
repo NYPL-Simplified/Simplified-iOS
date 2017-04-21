@@ -3,14 +3,15 @@
 #import "NYPLReaderTOCCell.h"
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReadium.h"
+#import <PureLayout/PureLayout.h>
 
 #import "NYPLReaderTOCViewController.h"
 
 @interface NYPLReaderTOCViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic) RDNavigationElement *navigationElement;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
+@property (strong, nonatomic) IBOutlet UILabel *noBookmarksLabel;
 
 - (IBAction)didSelectSegment:(id)sender;
 
@@ -31,8 +32,12 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
   
+  self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
+  
   self.title = NSLocalizedString(@"ReaderTOCViewControllerTitle", nil);
   self.view.backgroundColor = [UIColor whiteColor];
+  
+  [self createViews];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -144,6 +149,34 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (IBAction)didSelectSegment:(__attribute__((unused)) UISegmentedControl*)sender
 {
-  [self.tableView reloadData];
+  if (self.segmentedControl.selectedSegmentIndex == 1) {
+    if (self.bookmarks.count == 0 || self.bookmarks == nil) {
+      self.tableView.hidden = YES;
+    }
+  } else {
+    if (self.tableView.isHidden) {
+      self.tableView.hidden = NO;
+    }
+    [self.tableView reloadData];
+  }
 }
+
+#pragma mark -
+
+- (void) createViews
+{
+  NSString *label;
+  if (self.bookTitle) {
+    label = [NSString stringWithFormat:@"There are no bookmarks for %@", self.bookTitle];
+  } else {
+    label = [NSString stringWithFormat:@"There are no bookmarks for this book."];
+  }
+  self.noBookmarksLabel.text = label;
+  
+  [self.view insertSubview:self.noBookmarksLabel belowSubview:self.tableView];
+  
+  [self.noBookmarksLabel autoCenterInSuperview];
+  [self.noBookmarksLabel autoSetDimension:ALDimensionWidth toSize:250];
+}
+
 @end
