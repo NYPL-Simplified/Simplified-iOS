@@ -141,28 +141,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (IBAction)didSelectSegment:(__attribute__((unused)) UISegmentedControl*)sender
 {
-  [self.tableView reloadData];
-
-//  switch (sender.selectedSegmentIndex) {
-//    case 0:
-//    {
-//      for (NYPLReaderTOCElement *element in self.tableOfContents)
-//      {
-//        NSLog(@"element: %@, %lu, %@", element.opaqueLocation, (unsigned long)element.nestingLevel, element.title);
-//      }
-//      break;
-//    }
-//    case 1:
-//    {
-//      for (NYPLReaderBookmarkElement *element in self.bookmarks)
-//      {
-//        NSLog(@"element: %@", element.CFI);
-//      }
-//      
-//    }
-//    default:
-//      break;
-//  }
-  
+  [self.tableView reloadData];  
 }
 @end
