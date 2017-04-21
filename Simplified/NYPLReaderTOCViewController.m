@@ -3,15 +3,14 @@
 #import "NYPLReaderTOCCell.h"
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReadium.h"
-#import <PureLayout/PureLayout.h>
 
 #import "NYPLReaderTOCViewController.h"
 
 @interface NYPLReaderTOCViewController () <UITableViewDataSource, UITableViewDelegate>
 
+@property (nonatomic) RDNavigationElement *navigationElement;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
-@property (strong, nonatomic) IBOutlet UILabel *noBookmarksLabel;
 
 - (IBAction)didSelectSegment:(id)sender;
 
@@ -32,12 +31,8 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
   
-  self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
-  
   self.title = NSLocalizedString(@"ReaderTOCViewControllerTitle", nil);
-  self.view.backgroundColor = [UIColor whiteColor];
-  
-  [self createViews];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -88,16 +83,21 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       NYPLReaderTOCCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierTOC];
       NYPLReaderTOCElement *const toc = self.tableOfContents[indexPath.row];
   
-      cell.leadingEdgeConstraint.constant = 0;
-      if (toc.nestingLevel > 0) {
-            cell.leadingEdgeConstraint.constant = toc.nestingLevel * 20 + 10;
-      }
+      cell.nestingLevel = toc.nestingLevel;
       cell.titleLabel.text = toc.title;
 
       return cell;
     }
     case 1:{
-      return nil;
+      NYPLReaderBookmarkCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierBookmark];
+  
+//        NYPLReaderBookmarkElement *const bookmarkElement = self.bookmarks[indexPath.row];
+  
+      cell.titleLabel.text = @"Bookmark Title";
+      cell.excerptLabel.text = @"Bookmark Excerpt";
+      cell.pageNumberLabel.text = @"Bookmark PageNumber";
+      
+      return cell;
     }
     default:
       return nil;
@@ -118,13 +118,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case 1:{
       // bookmark selected
+      
     }
     default:
       break;
   }
 }
 
--(CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView estimatedHeightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
+-(CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView heightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
 {
   switch (self.segmentedControl.selectedSegmentIndex) {
     case 0:
@@ -134,49 +135,34 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     default:
       return 44;
   }
+
 }
 
--(CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView heightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
-{
-  switch (self.segmentedControl.selectedSegmentIndex) {
-    case 0:
-    case 1:
-      return UITableViewAutomaticDimension;
-    default:
-      return 44;
-  }
-}
 
 - (IBAction)didSelectSegment:(__attribute__((unused)) UISegmentedControl*)sender
 {
-  if (self.segmentedControl.selectedSegmentIndex == 1) {
-    if (self.bookmarks.count == 0 || self.bookmarks == nil) {
-      self.tableView.hidden = YES;
-    }
-  } else {
-    if (self.tableView.isHidden) {
-      self.tableView.hidden = NO;
-    }
-    [self.tableView reloadData];
-  }
-}
+  [self.tableView reloadData];
 
-#pragma mark -
-
-- (void) createViews
-{
-  NSString *label;
-  if (self.bookTitle) {
-    label = [NSString stringWithFormat:@"There are no bookmarks for %@", self.bookTitle];
-  } else {
-    label = [NSString stringWithFormat:@"There are no bookmarks for this book."];
-  }
-  self.noBookmarksLabel.text = label;
+//  switch (sender.selectedSegmentIndex) {
+//    case 0:
+//    {
+//      for (NYPLReaderTOCElement *element in self.tableOfContents)
+//      {
+//        NSLog(@"element: %@, %lu, %@", element.opaqueLocation, (unsigned long)element.nestingLevel, element.title);
+//      }
+//      break;
+//    }
+//    case 1:
+//    {
+//      for (NYPLReaderBookmarkElement *element in self.bookmarks)
+//      {
+//        NSLog(@"element: %@", element.CFI);
+//      }
+//      
+//    }
+//    default:
+//      break;
+//  }
   
-  [self.view insertSubview:self.noBookmarksLabel belowSubview:self.tableView];
-  
-  [self.noBookmarksLabel autoCenterInSuperview];
-  [self.noBookmarksLabel autoSetDimension:ALDimensionWidth toSize:250];
 }
-
 @end

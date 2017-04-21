@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="AvenirNext.ttc">
-            <string>AvenirNext-Medium</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--ReaderTOC View Controller-->
         <scene sceneID="Cmh-2r-B8h">
             <objects>
-                <viewController storyboardIdentifier="NYPLTOC" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bPm-fj-1gl" customClass="NYPLReaderTOCViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NYPLTOC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bPm-fj-1gl" customClass="NYPLReaderTOCViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Z5l-KL-uGh"/>
                         <viewControllerLayoutGuide type="bottom" id="eud-aA-3XE"/>
@@ -27,127 +22,99 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="56" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="b6a-LK-Ngd" userLabel="TOC Table View">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="F46-qe-vSb">
+                                <rect key="frame" x="16" y="28" width="343" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="29" id="wuX-JK-sMc"/>
+                                </constraints>
+                                <segments>
+                                    <segment title="Contents"/>
+                                    <segment title="Bookmarks"/>
+                                </segments>
+                                <connections>
+                                    <action selector="didSelectSegment:" destination="bPm-fj-1gl" eventType="valueChanged" id="Uj3-V3-8k9"/>
+                                </connections>
+                            </segmentedControl>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="56" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="b6a-LK-Ngd">
+                                <rect key="frame" x="0.0" y="65" width="375" height="602"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="contentCell" rowHeight="56" id="g4U-cz-zN8" userLabel="TOCCell" customClass="NYPLReaderTOCCell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="contentCell" rowHeight="56" id="g4U-cz-zN8" customClass="NYPLReaderTOCCell">
                                         <rect key="frame" x="0.0" y="28" width="375" height="56"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="g4U-cz-zN8" id="EjL-Iz-7v0">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="55.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="55"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Table of Contents Item" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iWm-n9-kgW" userLabel="TOC Label">
-                                                    <rect key="frame" x="15" y="17" width="345" height="22"/>
-                                                    <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Table of Contents Stuff" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iWm-n9-kgW">
+                                                    <rect key="frame" x="15" y="17" width="346" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstItem="iWm-n9-kgW" firstAttribute="leading" secondItem="EjL-Iz-7v0" secondAttribute="leadingMargin" id="37I-4D-dK0"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="iWm-n9-kgW" secondAttribute="bottom" constant="6" id="SBH-NN-eaB"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="iWm-n9-kgW" secondAttribute="trailing" id="TDw-k1-flt"/>
-                                                <constraint firstItem="iWm-n9-kgW" firstAttribute="top" secondItem="EjL-Iz-7v0" secondAttribute="topMargin" constant="6" id="rZB-Qb-i4t"/>
-                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="leadingEdgeConstraint" destination="37I-4D-dK0" id="1fu-Vf-RNq"/>
                                             <outlet property="titleLabel" destination="iWm-n9-kgW" id="ccO-5w-icn"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="bookmarkCell" rowHeight="70" id="TEj-nU-fdd" customClass="NYPLReaderBookmarkCell">
-                                        <rect key="frame" x="0.0" y="84" width="375" height="70"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="bookmarkCell" rowHeight="100" id="TEj-nU-fdd" customClass="NYPLReaderBookmarkCell">
+                                        <rect key="frame" x="0.0" y="84" width="375" height="100"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TEj-nU-fdd" id="wsS-tD-dSx">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="69.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="99"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="249" ambiguous="YES" text="Bookmark Chapter Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uaf-vU-xEs">
-                                                    <rect key="frame" x="15" y="8" width="345" height="25.5"/>
-                                                    <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="249" fixedFrame="YES" text="Part 3 - Accidental Magic" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uaf-vU-xEs">
+                                                    <rect key="frame" x="15" y="8" width="346" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Bookmark Page Number" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QQP-TR-adZ">
-                                                    <rect key="frame" x="15" y="39.5" width="345" height="22"/>
-                                                    <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="16"/>
-                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Bookmark Page Number" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QQP-TR-adZ">
+                                                    <rect key="frame" x="15" y="70" width="346" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="247" fixedFrame="YES" text="&quot;...some quotes on this page...&quot;" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="msw-5b-4NZ">
+                                                    <rect key="frame" x="15" y="39" width="346" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstAttribute="trailingMargin" secondItem="QQP-TR-adZ" secondAttribute="trailing" id="6oM-sW-0dK"/>
-                                                <constraint firstItem="uaf-vU-xEs" firstAttribute="leading" secondItem="wsS-tD-dSx" secondAttribute="leadingMargin" id="Bhj-SV-93X"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="QQP-TR-adZ" secondAttribute="bottom" id="PPp-37-3Kk"/>
-                                                <constraint firstAttribute="topMargin" secondItem="uaf-vU-xEs" secondAttribute="top" id="fgA-Il-GS0"/>
-                                                <constraint firstItem="QQP-TR-adZ" firstAttribute="top" secondItem="uaf-vU-xEs" secondAttribute="bottom" constant="6" id="jgv-bv-qcC"/>
-                                                <constraint firstItem="QQP-TR-adZ" firstAttribute="leading" secondItem="wsS-tD-dSx" secondAttribute="leadingMargin" id="o5x-yd-iUo"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="uaf-vU-xEs" secondAttribute="trailing" id="vPI-Ms-vzX"/>
-                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="excerptLabel" destination="msw-5b-4NZ" id="8eV-yP-JkI"/>
                                             <outlet property="pageNumberLabel" destination="QQP-TR-adZ" id="Caq-md-Ms7"/>
                                             <outlet property="titleLabel" destination="uaf-vU-xEs" id="xvs-J9-pfz"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EhZ-Gf-Laz" customClass="ExtendedNavBarView" customModule="SimplyE" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="20" width="375" height="0.0"/>
-                                <subviews>
-                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="F46-qe-vSb">
-                                        <rect key="frame" x="16" y="-15" width="343" height="31"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="350" id="8YL-BF-WyR"/>
-                                            <constraint firstAttribute="height" constant="30" id="wuX-JK-sMc"/>
-                                        </constraints>
-                                        <segments>
-                                            <segment title="Contents"/>
-                                            <segment title="Bookmarks"/>
-                                        </segments>
-                                        <color key="tintColor" red="1" green="0.21119650130000001" blue="0.13095004860000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <connections>
-                                            <action selector="didSelectSegment:" destination="bPm-fj-1gl" eventType="valueChanged" id="Uj3-V3-8k9"/>
-                                        </connections>
-                                    </segmentedControl>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstItem="F46-qe-vSb" firstAttribute="centerY" secondItem="EhZ-Gf-Laz" secondAttribute="centerY" id="BvG-Cf-2Ru"/>
-                                    <constraint firstItem="F46-qe-vSb" firstAttribute="centerX" secondItem="EhZ-Gf-Laz" secondAttribute="centerX" id="FPO-yO-f1B"/>
-                                    <constraint firstAttribute="trailing" secondItem="F46-qe-vSb" secondAttribute="trailing" priority="750" constant="16" id="Isr-tD-EkR"/>
-                                    <constraint firstItem="F46-qe-vSb" firstAttribute="leading" secondItem="EhZ-Gf-Laz" secondAttribute="leading" priority="750" constant="16" id="Z5p-4J-Uo2"/>
-                                    <constraint firstAttribute="height" id="nvw-Y7-40k"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="EhZ-Gf-Laz" secondAttribute="trailing" constant="-16" id="G9i-bi-pZf"/>
-                            <constraint firstItem="b6a-LK-Ngd" firstAttribute="leading" secondItem="59U-2G-GDB" secondAttribute="leading" id="JAz-Ze-1FN"/>
-                            <constraint firstAttribute="bottom" secondItem="b6a-LK-Ngd" secondAttribute="bottom" id="S7W-Nm-Pca"/>
-                            <constraint firstItem="EhZ-Gf-Laz" firstAttribute="leading" secondItem="59U-2G-GDB" secondAttribute="leadingMargin" constant="-16" id="iRx-Bh-UP3"/>
-                            <constraint firstItem="EhZ-Gf-Laz" firstAttribute="top" secondItem="Z5l-KL-uGh" secondAttribute="bottom" id="lXd-Ga-T0A"/>
-                            <constraint firstAttribute="trailing" secondItem="b6a-LK-Ngd" secondAttribute="trailing" id="yJ7-mb-VdT"/>
-                            <constraint firstItem="b6a-LK-Ngd" firstAttribute="top" secondItem="EhZ-Gf-Laz" secondAttribute="bottom" id="yzV-3j-AKR"/>
+                            <constraint firstItem="F46-qe-vSb" firstAttribute="leading" secondItem="59U-2G-GDB" secondAttribute="leadingMargin" id="75a-mD-bMI"/>
+                            <constraint firstItem="F46-qe-vSb" firstAttribute="top" secondItem="Z5l-KL-uGh" secondAttribute="bottom" constant="8" id="M0U-SR-6Uv"/>
+                            <constraint firstAttribute="trailing" secondItem="b6a-LK-Ngd" secondAttribute="trailing" id="MHY-cD-tnh"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="F46-qe-vSb" secondAttribute="trailing" id="QT7-mZ-qtH"/>
+                            <constraint firstItem="b6a-LK-Ngd" firstAttribute="top" secondItem="F46-qe-vSb" secondAttribute="bottom" constant="8" id="aw4-iE-1R1"/>
+                            <constraint firstItem="eud-aA-3XE" firstAttribute="top" secondItem="b6a-LK-Ngd" secondAttribute="bottom" id="mWe-eq-DKu"/>
+                            <constraint firstItem="b6a-LK-Ngd" firstAttribute="leading" secondItem="59U-2G-GDB" secondAttribute="leading" id="ryd-K2-BMJ"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="noBookmarksLabel" destination="yOg-55-ZVo" id="oSN-jz-1S2"/>
                         <outlet property="segmentedControl" destination="F46-qe-vSb" id="Ts8-Pi-jRt"/>
                         <outlet property="tableView" destination="b6a-LK-Ngd" id="Xcv-Ce-lkt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="j12-hH-I42" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="There are no bookmarks for this book." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yOg-55-ZVo" userLabel="No Bookmarks Label">
-                    <rect key="frame" x="0.0" y="0.0" width="210" height="94"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
             </objects>
             <point key="canvasLocation" x="-599.20000000000005" y="-134.48275862068968"/>
         </scene>
