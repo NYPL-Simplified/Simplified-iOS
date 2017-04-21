@@ -89,15 +89,9 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       return cell;
     }
     case 1:{
-      NYPLReaderBookmarkCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierBookmark];
-  
-//        NYPLReaderBookmarkElement *const bookmarkElement = self.bookmarks[indexPath.row];
-  
-      cell.titleLabel.text = @"Bookmark Title";
-      cell.excerptLabel.text = @"Bookmark Excerpt";
-      cell.pageNumberLabel.text = @"Bookmark PageNumber";
+
       
-      return cell;
+      return nil;
     }
     default:
       return nil;
@@ -141,6 +135,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (IBAction)didSelectSegment:(__attribute__((unused)) UISegmentedControl*)sender
 {
-  [self.tableView reloadData];  
+  [self.tableView reloadData];
 }
 @end
