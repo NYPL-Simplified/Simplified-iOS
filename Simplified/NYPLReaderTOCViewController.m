@@ -32,7 +32,7 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
   self.tableView.delegate = self;
   
   self.title = NSLocalizedString(@"ReaderTOCViewControllerTitle", nil);
-    
+  self.view.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -83,14 +83,15 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       NYPLReaderTOCCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierTOC];
       NYPLReaderTOCElement *const toc = self.tableOfContents[indexPath.row];
   
-      cell.nestingLevel = toc.nestingLevel;
+      cell.leadingEdgeConstraint.constant = 0;
+      if (toc.nestingLevel > 0) {
+            cell.leadingEdgeConstraint.constant = toc.nestingLevel * 20 + 10;
+      }
       cell.titleLabel.text = toc.title;
 
       return cell;
     }
     case 1:{
-
-      
       return nil;
     }
     default:
@@ -112,14 +113,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case 1:{
       // bookmark selected
-      
     }
     default:
       break;
   }
 }
 
--(CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView heightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
+-(CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView estimatedHeightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
 {
   switch (self.segmentedControl.selectedSegmentIndex) {
     case 0:
@@ -129,9 +129,18 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     default:
       return 44;
   }
-
 }
 
+-(CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView heightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
+{
+  switch (self.segmentedControl.selectedSegmentIndex) {
+    case 0:
+    case 1:
+      return UITableViewAutomaticDimension;
+    default:
+      return 44;
+  }
+}
 
 - (IBAction)didSelectSegment:(__attribute__((unused)) UISegmentedControl*)sender
 {
