@@ -12,12 +12,8 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *)opaqueLocation;
 @interface NYPLReaderTOCViewController : UIViewController
 
 @property (nonatomic, weak) id<NYPLReaderTOCViewControllerDelegate> delegate;
+@property (nonatomic) NSArray *tableOfContents;
+@property (nonatomic) NSArray *bookmarks;
 
-+ (id)new NS_UNAVAILABLE;
-- (id)init NS_UNAVAILABLE;
-- (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
-- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle NS_UNAVAILABLE;
-
-- (instancetype)initWithTOCElements:(NSArray *)TOCElements;
 
 @end
