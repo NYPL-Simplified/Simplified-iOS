@@ -288,8 +288,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
            requestTimeoutInterval:20.0
            completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
              if (userInitiated) {
-               // If SettingsAccount has been presented modally, dismiss both
-               // the CardCreator and the modal window.
+               // Dismiss CardCreator & SignInVC when user finishes Credential Review
                [weakSelf dismissViewControllerAnimated:YES completion:nil];
                [weakSelf dismissViewControllerAnimated:YES completion:nil];
              } else {
@@ -741,6 +740,7 @@ replacementString:(NSString *)string
        if (statusCode == 401) {
          NSError *error401 = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
          [self showLoginAlertWithError:error401];
+         return;
        }
        [self showLoginAlertWithError:error];
        

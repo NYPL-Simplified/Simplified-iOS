@@ -548,9 +548,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
                                                            PIN:self.PINTextField.text];
       
       if(self.accountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
-        if (!self.isLoggingInAfterSignUp) {
-          [self dismissViewControllerAnimated:YES completion:nil];
-        }
         void (^handler)() = self.completionHandler;
         self.completionHandler = nil;
         if(handler) handler();
@@ -670,9 +667,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
        requestTimeoutInterval:20.0
        completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
          if (userInitiated) {
-           // If SettingsAccount has been presented modally, dismiss both
-           // the CardCreator and the modal window.
-           [weakSelf dismissViewControllerAnimated:YES completion:nil];
+           // Dismiss CardCreator when user finishes Credential Review
            [weakSelf dismissViewControllerAnimated:YES completion:nil];
          } else {
            weakSelf.barcodeTextField.text = username;
