@@ -1,0 +1,91 @@
+PODS:
+  - AFNetworking (2.6.3):
+    - AFNetworking/NSURLConnection (= 2.6.3)
+    - AFNetworking/NSURLSession (= 2.6.3)
+    - AFNetworking/Reachability (= 2.6.3)
+    - AFNetworking/Security (= 2.6.3)
+    - AFNetworking/Serialization (= 2.6.3)
+    - AFNetworking/UIKit (= 2.6.3)
+  - AFNetworking/NSURLConnection (2.6.3):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.6.3):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.6.3)
+  - AFNetworking/Security (2.6.3)
+  - AFNetworking/Serialization (2.6.3)
+  - AFNetworking/UIKit (2.6.3):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
+  - Bugsnag (5.8.0):
+    - KSCrash/RecordingAdvanced (= 1.8.13)
+  - HelpStack (1.1.2):
+    - AFNetworking (~> 2.0)
+    - HelpStack/Core (= 1.1.2)
+    - HelpStack/Stacks (= 1.1.2)
+    - HelpStack/UI (= 1.1.2)
+    - HelpStack/Util (= 1.1.2)
+  - HelpStack/Core (1.1.2):
+    - AFNetworking (~> 2.0)
+    - HelpStack/Util
+  - HelpStack/Stacks (1.1.2):
+    - AFNetworking (~> 2.0)
+    - HelpStack/Core
+    - HelpStack/Util
+  - HelpStack/UI (1.1.2):
+    - AFNetworking (~> 2.0)
+    - HelpStack/Core
+    - HelpStack/Stacks
+    - HelpStack/Util
+  - HelpStack/Util (1.1.2):
+    - AFNetworking (~> 2.0)
+  - KSCrash/Recording (1.8.13)
+  - KSCrash/RecordingAdvanced (1.8.13):
+    - KSCrash/Recording
+  - NYPLCardCreator (1.0.0):
+    - PureLayout (~> 3.0)
+  - PureLayout (3.0.2)
+  - SQLite.swift (0.11.2):
+    - SQLite.swift/standard (= 0.11.2)
+  - SQLite.swift/standard (0.11.2)
+
+DEPENDENCIES:
+  - Bugsnag (from `https://github.com/bugsnag/bugsnag-cocoa.git`)
+  - HelpStack (from `https://github.com/NYPL-Simplified/helpstack-ios`)
+  - NYPLCardCreator (from `https://github.com/NYPL-Simplified/CardCreator-iOS.git`)
+  - SQLite.swift (~> 0.11.2)
+
+EXTERNAL SOURCES:
+  Bugsnag:
+    :git: https://github.com/bugsnag/bugsnag-cocoa.git
+  HelpStack:
+    :git: https://github.com/NYPL-Simplified/helpstack-ios
+  NYPLCardCreator:
+    :git: https://github.com/NYPL-Simplified/CardCreator-iOS.git
+
+CHECKOUT OPTIONS:
+  Bugsnag:
+    :commit: 67b693902da7a31652ab617c30ddc55065ffdefd
+    :git: https://github.com/bugsnag/bugsnag-cocoa.git
+  HelpStack:
+    :commit: 59338f5920b76a234d5cfecc8639662ff5f51f9e
+    :git: https://github.com/NYPL-Simplified/helpstack-ios
+  NYPLCardCreator:
+    :commit: 5c2b6928bc74d32f0f165cb80455e4e505430bd7
+    :git: https://github.com/NYPL-Simplified/CardCreator-iOS.git
+
+SPEC CHECKSUMS:
+  AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
+  Bugsnag: 2ddbf21cb69e04f49ef79d9db6429e9b668bc876
+  HelpStack: a9067738597ef81835d84ac8bb75ee346e34f000
+  KSCrash: 4c3a83f133b60f4bd57e05235ebf8d46e36d378d
+  NYPLCardCreator: e0f5034902008b4c8cdfb5edbffa2a51ec0b261d
+  PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
+  SQLite.swift: 670c3e9e0a806bbfd56a3de5d530768dc0e6fe7c
+
+PODFILE CHECKSUM: 8bc1b2ad0946ab537f031f0dbf65997ce41778e2
+
+COCOAPODS: 1.2.0
