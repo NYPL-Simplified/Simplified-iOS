@@ -24,7 +24,7 @@
 #import "SimplyE-Swift.h"
 
 @interface NYPLReaderReadiumView ()
-  <NYPLReaderRenderer, RDPackageResourceServerDelegate, WKNavigationDelegate>
+  <NYPLReaderRenderer, RDPackageResourceServerDelegate, WKNavigationDelegate, WKUIDelegate>
 
 @property (nonatomic) BOOL postLastRead;
 @property (nonatomic) NYPLBook *book;
@@ -55,6 +55,8 @@
 @property (nonatomic) double secondsSinceComplete;
 
 @end
+
+static NSString *const localhost = @"127.0.0.1";
 
 static NSString *const renderer = @"readium";
 
@@ -157,6 +159,7 @@ static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
   self.webView.navigationDelegate = self;
+  self.webView.UIDelegate = self;
   self.webView.scrollView.bounces = NO;
   self.webView.alpha = 0.0;
   [self addSubview:self.webView];
@@ -166,7 +169,8 @@ static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
    [NSURLRequest requestWithURL:
     [NSURL URLWithString:
      [NSString stringWithFormat:
-      @"http://127.0.0.1:%d/simplified-readium/reader.html",
+      @"http://%@:%d/simplified-readium/reader.html",
+      localhost,
       self.server.port]]]];
   
   // Disable text selection.
@@ -401,6 +405,19 @@ executeJavaScript:(NSString *const)javaScript
 
 #pragma mark WKNavigationDelegate
 
+- (WKWebView *)webView:(WKWebView *)webView
+createWebViewWithConfiguration:(__unused WKWebViewConfiguration *)configuration
+   forNavigationAction:(WKNavigationAction *)navigationAction
+        windowFeatures:(__unused WKWindowFeatures *)windowFeatures
+{
+  if(![navigationAction.request.URL.host isEqualToString:localhost]) {
+    [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+    return nil;
+  }
+  
+  return webView;
+}
+
 - (void)webView:(__unused WKWebView *)webView
 decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction
 decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
@@ -474,7 +491,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     });
   }
   
-  self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
+  self.package.rootURL = [NSString stringWithFormat:@"http://%@:%d/", localhost, self.server.port];
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
     [self calculateBookLength];
