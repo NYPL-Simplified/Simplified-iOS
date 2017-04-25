@@ -6,6 +6,7 @@
 @property (nonatomic) UIImageView *iconView;
 @property (nonatomic) UILabel *label;
 
+
 @end
 
 @implementation NYPLRoundedButton
@@ -15,7 +16,7 @@
   // The cast lets us call the constructor even though it's marked NS_UNAVAILABLE.
   NYPLRoundedButton *const button = [(id)self buttonWithType:UIButtonTypeSystem];
   
-  button.titleLabel.font = [UIFont systemFontOfSize:12];
+  button.titleLabel.font = [UIFont systemFontOfSize:14];
   button.layer.borderColor = button.tintColor.CGColor;
   button.layer.borderWidth = 1;
   button.layer.cornerRadius = 3;
@@ -54,7 +55,11 @@
 - (void)updateViews
 {
   if(self.type == NYPLRoundedButtonTypeNormal) {
-    self.contentEdgeInsets = UIEdgeInsetsZero;
+    if (!self.fromDetailView) {
+      self.contentEdgeInsets = UIEdgeInsetsZero;
+    } else {
+      self.contentEdgeInsets = UIEdgeInsetsMake(8, 20, 8, 20);
+    }
     self.iconView.hidden = YES;
     self.label.hidden = YES;
   } else {
@@ -71,11 +76,19 @@
     
     [self.label sizeToFit];
     
-    self.iconView.frame = CGRectMake(8, 3, 14, 14);
+    if (!self.fromDetailView) {
+      self.iconView.frame = CGRectMake(8, 3, 14, 14);
+    } else {
+      self.iconView.frame = CGRectMake(12, 6, 14, 14);
+    }
     CGRect frame = self.label.frame;
     frame.origin = CGPointMake(self.iconView.center.x - frame.size.width/2, CGRectGetMaxY(self.iconView.frame));
     self.label.frame = frame;
-    self.contentEdgeInsets = UIEdgeInsetsMake(6, self.iconView.frame.size.width + 8, 6, 0);
+    if (!self.fromDetailView) {
+      self.contentEdgeInsets = UIEdgeInsetsMake(6, self.iconView.frame.size.width + 8, 6, 0);
+    } else {
+      self.contentEdgeInsets = UIEdgeInsetsMake(8, self.iconView.frame.size.width + 20, 8, 20);
+    }
   }
 }
 
