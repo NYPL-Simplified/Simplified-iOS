@@ -21,7 +21,7 @@ typedef NS_ENUM(NSInteger, NYPLReaderRendererGesture) {
 // throw |NSInvalidArgumentException| in the event it is not.
 - (void)openOpaqueLocation:(nonnull NYPLReaderRendererOpaqueLocation *)opaqueLocation;
 
-- (void)openBookmark:(nonnull NYPLReaderBookmarkElement *)bookmark;
+- (void)gotoBookmark:(nonnull NYPLReaderBookmarkElement *)bookmark;
 
 @end
 
