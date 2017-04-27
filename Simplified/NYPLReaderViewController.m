@@ -34,7 +34,7 @@
 @property (nonatomic) UIView<NYPLReaderRenderer> *rendererView;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) UIBarButtonItem *bookmarkBarButtonItem;
-@property (nonatomic) UIBarButtonItem *TOCBarButtonItem;
+@property (nonatomic) UIBarButtonItem *contentsBarButtonItem;
 @property (nonatomic) NYPLReaderBookmarkElement *currentBookmark;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
 @property (nonatomic) UIView *bottomView;
@@ -250,40 +250,40 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   // Table of Contents button
-  NYPLRoundedButton *const TOCButton = [NYPLRoundedButton button];
-  TOCButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"TOC", nil)];
-  [TOCButton sizeToFit];
-  [TOCButton setImage:[UIImage imageNamed:@"TOC"] forState:UIControlStateNormal];
-  [TOCButton addTarget:self
-                action:@selector(didSelectTOCButton)
+  NYPLRoundedButton *const contentsButton = [NYPLRoundedButton button];
+  contentsButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"TOC", nil)];
+  [contentsButton sizeToFit];
+  [contentsButton setImage:[UIImage imageNamed:@"TOC"] forState:UIControlStateNormal];
+  [contentsButton addTarget:self
+                action:@selector(didSelectContents)
       forControlEvents:UIControlEventTouchUpInside];
   
-  self.TOCBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:TOCButton];
+  self.contentsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:contentsButton];
   
   // Settings button
   NYPLRoundedButton *const settingsButton = [NYPLRoundedButton button];
   settingsButton.accessibilityLabel = NSLocalizedString(@"ReaderViewControllerToggleReaderSettings", nil);
-  settingsButton.bounds = TOCButton.bounds;
+  settingsButton.bounds = contentsButton.bounds;
   [settingsButton setImage:[UIImage imageNamed:@"Format"] forState:UIControlStateNormal];
   [settingsButton addTarget:self
-                     action:@selector(didSelectSettingsButton)
+                     action:@selector(didSelectSettings)
            forControlEvents:UIControlEventTouchUpInside];
   self.settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
   
   // Bookmark button
   NYPLRoundedButton *const bookmarkButton = [NYPLRoundedButton button];
   bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Add Bookmark", nil)];
-  bookmarkButton.bounds = TOCButton.bounds;
+  bookmarkButton.bounds = bookmarkButton.bounds;
   [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOff"] forState:UIControlStateNormal];
   [bookmarkButton addTarget:self
-                     action:@selector(didSelectBookmarkButton)
+                     action:@selector(toggleBookmark)
            forControlEvents:UIControlEventTouchUpInside];
   
   self.bookmarkBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:bookmarkButton];
   
   // Corruption may have occurred before we added these, so we need to set their enabled status
   // here (in addition to |readerView:didEncounterCorruptionForBook:|).
-  self.navigationItem.rightBarButtonItems = @[self.bookmarkBarButtonItem, self.settingsBarButtonItem, self.TOCBarButtonItem];
+  self.navigationItem.rightBarButtonItems = @[self.bookmarkBarButtonItem, self.settingsBarButtonItem, self.contentsBarButtonItem];
   if(self.rendererView.bookIsCorrupt) {
     for(UIBarButtonItem *const item in self.navigationItem.rightBarButtonItems) {
       item.enabled = NO;
@@ -882,7 +882,7 @@ spineItemTitle:(NSString *const)title
   return YES;
 }
 
-- (void)didSelectSettingsButton
+- (void)didSelectSettings
 {
   if(self.readerSettingsViewPhone) {
     [self.readerSettingsViewPhone removeFromSuperview];
@@ -928,7 +928,7 @@ spineItemTitle:(NSString *const)title
   UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.readerSettingsViewPhone);
 }
 
-- (void)didSelectTOCButton
+- (void)didSelectContents
 {
   
   UIStoryboard *sb = [UIStoryboard storyboardWithName:@"NYPLTOC" bundle:nil];
@@ -955,7 +955,7 @@ spineItemTitle:(NSString *const)title
   }
 }
 
-- (void)didSelectBookmarkButton
+- (void)toggleBookmark
 {
   NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
   if (self.currentBookmark) {
