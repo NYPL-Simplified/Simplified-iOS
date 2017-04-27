@@ -14,7 +14,6 @@
 #import "NYPLReaderBookmarkElement.h"
 #import "NYPLReadium.h"
 #import "UIColor+NYPLColorAdditions.h"
-#import "NYPLLog.h"
 #import "NYPLReaderReadiumView.h"
 #import "UIColor+NYPLColorAdditions.h"
 #import "NSURL+NYPLURLAdditions.h"
@@ -709,8 +708,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
     
   NYPLBookLocation *location = [registry locationForIdentifier:self.book.identifier];
-  NSDictionary *const locationDictionary =
-  NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
+  NSDictionary *const locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
 	  
   NSString *contentCFI = locationDictionary[@"contentCFI"];
   NSString *idref = locationDictionary[@"idref"];
@@ -781,6 +779,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
        if (openPages.count>0 && [locationJSON rangeOfString:openPages[0][@"idref"]].location != NSNotFound) {
          completed = YES;
        }
+       
        NYPLLOG(locationJSON);
        
        NSError *jsonError;
@@ -790,8 +789,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                                               error:&jsonError];
 
        [self hasBookmarkForSpineItem:json[@"idref"] completionHandler:^(bool success,NYPLReaderBookmarkElement *bookmark) {
-                [weakSelf.delegate renderer:weakSelf bookmark:bookmark icon:success];
-           }];
+         [weakSelf.delegate renderer:weakSelf bookmark:bookmark icon:success];
+       }];
        
        NYPLBookLocation *const location = [[NYPLBookLocation alloc]
                                            initWithLocationString:locationJSON
@@ -1002,17 +1001,17 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 - (void)openBookmark:(NYPLReaderBookmarkElement *)bookmark
 {
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
+  
   dictionary[@"package"] = self.package.dictionary;
   dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
   
-  dictionary[@"openPageRequest"] =
-  @{@"idref": bookmark.idref, @"elementCfi": bookmark.contentCFI};
+  dictionary[@"openPageRequest"] = @{@"idref": bookmark.idref, @"elementCfi": bookmark.contentCFI};
   
   NSData *data = NYPLJSONDataFromObject(dictionary);
     
   [self sequentiallyEvaluateJavaScript:
-    [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
-      [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
+   [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
+    [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
 }
 
 - (BOOL) bookHasMediaOverlays {

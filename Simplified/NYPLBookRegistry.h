@@ -114,10 +114,10 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 - (NSArray *)bookmarksForIdentifier:(NSString *)identifier;
   
 // Add bookmark for a book given its identifier
--(void)addBookmark:(NYPLReaderBookmarkElement *)bookmark forIdentifier:(NSString *)identifier;
+- (void)addBookmark:(NYPLReaderBookmarkElement *)bookmark forIdentifier:(NSString *)identifier;
   
 // Delete bookmark for a book given its identifer
--(void)deleteBookmark:(NYPLReaderBookmarkElement *)bookmark forIdentifier:(NSString *)identifier;
+- (void)deleteBookmark:(NYPLReaderBookmarkElement *)bookmark forIdentifier:(NSString *)identifier;
   
 // Given an identifier, this method removes a book from the registry. Attempting to remove a book
 // that is not present will result in an error being logged.
