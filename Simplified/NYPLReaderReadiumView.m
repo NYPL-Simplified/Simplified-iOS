@@ -724,9 +724,9 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
         {
           NYPLLOG(error);
         }
-      }]; // end sequentiallyEvaluateJavaScript
+      }];
       
-    } // end if bookmark.idref == idref
+    }
     
     // a bookmark was not found
     completionHandler(NO, nil);
