@@ -52,7 +52,7 @@
                                             <outlet property="titleLabel" destination="iWm-n9-kgW" id="ccO-5w-icn"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="bookmarkCell" rowHeight="70" id="TEj-nU-fdd" customClass="NYPLReaderBookmarkCell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="bookmarkCell" rowHeight="70" id="TEj-nU-fdd" customClass="NYPLReaderBookmarkCell" customModule="SimplyE" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="84" width="375" height="70"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TEj-nU-fdd" id="wsS-tD-dSx">
@@ -83,8 +83,8 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="pageNumberLabel" destination="QQP-TR-adZ" id="Caq-md-Ms7"/>
-                                            <outlet property="titleLabel" destination="uaf-vU-xEs" id="xvs-J9-pfz"/>
+                                            <outlet property="chapterLabel" destination="uaf-vU-xEs" id="QTW-pN-wHb"/>
+                                            <outlet property="pageNumberLabel" destination="QQP-TR-adZ" id="GN0-1v-Frg"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

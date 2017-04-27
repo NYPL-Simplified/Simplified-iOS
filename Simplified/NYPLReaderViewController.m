@@ -10,7 +10,6 @@
 #import "NYPLRoundedButton.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "NYPLReaderTOCElement.h"
-#import "NYPLReaderBookmarkElement.h"
 #import "NYPLReaderSettings.h"
 #import "UIView+NYPLViewAdditions.h"
 
