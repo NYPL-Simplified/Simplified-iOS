@@ -2,12 +2,11 @@
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCCell.h"
 #import "NYPLReaderTOCElement.h"
-#import "NYPLReaderBookmarkCell.h"
-#import "NYPLReaderBookmarkElement.h"
 #import "NYPLReadium.h"
 #import <PureLayout/PureLayout.h>
-
 #import "NYPLReaderTOCViewController.h"
+
+#import "SimplyE-Swift.h"
 
 @interface NYPLReaderTOCViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -102,7 +101,7 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       NYPLReaderBookmarkCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierBookmark];
       NYPLReaderBookmarkElement *const bookmark = self.bookmarks[indexPath.row];
       
-      cell.titleLabel.text = bookmark.chapterTitle;
+      cell.chapterLabel.text = bookmark.chapter;
       cell.pageNumberLabel.text = bookmark.contentCFI;
       
       return cell;

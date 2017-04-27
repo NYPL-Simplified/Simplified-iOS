@@ -11,7 +11,6 @@
 #import "NYPLReaderRenderer.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCElement.h"
-#import "NYPLReaderBookmarkElement.h"
 #import "NYPLReadium.h"
 #import "UIColor+NYPLColorAdditions.h"
 #import "NYPLReaderReadiumView.h"
@@ -706,8 +705,12 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 	  
   NSString *contentCFI = locationDictionary[@"contentCFI"];
   NSString *idref = locationDictionary[@"idref"];
+  NSDictionary *spineItemDetails = self.bookMapDictionary[idref];
+  NSString *chapter = spineItemDetails[@"tocElementTitle"];
     
-  NYPLReaderBookmarkElement * bookmark = [[NYPLReaderBookmarkElement alloc] initWithCFI:contentCFI andAnnotationId:nil andIdref:idref];
+
+  NYPLReaderBookmarkElement *bookmark = [[NYPLReaderBookmarkElement alloc] initWithAnnotationId:nil contentCFI:contentCFI idref:idref chapter:chapter page:nil];
+  
   
   // add the bookmark to the local registry
   [registry addBookmark:bookmark forIdentifier:self.book.identifier];
