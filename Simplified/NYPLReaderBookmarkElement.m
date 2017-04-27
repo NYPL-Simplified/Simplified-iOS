@@ -14,7 +14,7 @@
 
 // serverAnnotationId will be used to identify which bookmark to delete
 // from the server, after an annotation has been created on the server
-@property (nonatomic) NSString *serverAnnotationId;
+@property (nonatomic) NSString *annotationId;
 
 // idref is like the chapter
 @property (nonatomic) NSString *idref;
@@ -29,13 +29,13 @@
 @implementation  NYPLReaderBookmarkElement
 
 
-- (instancetype)initWithCFI:(NSString *)contentCFI andId:(NSString *)serverAnnotationId andIdref:(NSString *)idref
+- (instancetype)initWithCFI:(NSString *)contentCFI andAnnotationId:(NSString *)annotationId andIdref:(NSString *)idref
 {
     self = [super init];
     if(!self) return nil;
     
     self.contentCFI = contentCFI;
-    self.serverAnnotationId = serverAnnotationId;
+    self.annotationId = annotationId;
     self.idref = idref;
     
     self.chapterTitle = @"";

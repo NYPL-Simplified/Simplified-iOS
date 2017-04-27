@@ -10,9 +10,9 @@
 
 @property (nonatomic, readonly) NSString *contentCFI;
 
-// serverAnnotationId will be used to identify which bookmark to delete
+// annotationId will be used to identify which bookmark to delete
 // from the server, after an annotation has been created on the server
-@property (nonatomic, readonly) NSString *serverAnnotationId;
+@property (nonatomic, readonly) NSString *annotationId;
 
 // idref is like the chapter
 @property (nonatomic, readonly) NSString *idref;
@@ -24,6 +24,6 @@
 @property (nonatomic, readonly) NSString *pageNumber;
 
 
-- (instancetype)initWithCFI:(NSString *)CFI andId:(NSString *)annotationId andIdref:(NSString *)idref;
+- (instancetype)initWithCFI:(NSString *)CFI andAnnotationId:(NSString *)annotationId andIdref:(NSString *)idref;
 
 @end

@@ -751,7 +751,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NSString *contentCFI = locationDictionary[@"contentCFI"];
   NSString *idref = locationDictionary[@"idref"];
     
-  NYPLReaderBookmarkElement * bookmark = [[NYPLReaderBookmarkElement alloc] initWithCFI:contentCFI andId:nil andIdref:idref];
+  NYPLReaderBookmarkElement * bookmark = [[NYPLReaderBookmarkElement alloc] initWithCFI:contentCFI andAnnotationId:nil andIdref:idref];
   
   // add the bookmark to the local registry
   [registry addBookmark:bookmark forIdentifier:self.book.identifier];
