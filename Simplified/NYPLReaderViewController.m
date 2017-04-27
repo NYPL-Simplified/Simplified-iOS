@@ -688,11 +688,11 @@ spineItemTitle:(NSString *const)title
 -(void)renderer:(__unused id<NYPLReaderRenderer>)renderer bookmark:(NYPLReaderBookmarkElement*)bookmark icon:(bool)on
 {
   NYPLRoundedButton * bookmarkButton = self.bookmarkBarButtonItem.customView;
-  if (on){
+  if (on) {
     [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOn"] forState:UIControlStateNormal];
     bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Remove Bookmark", nil)];
   }
-  else{
+  else {
     [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOff"] forState:UIControlStateNormal];
     bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Add Bookmark", nil)];
   }
@@ -798,7 +798,7 @@ spineItemTitle:(NSString *const)title
 #pragma mark NYPLReaderTOCViewControllerDelegate
 
 - (void)TOCViewController:(__attribute__((unused)) NYPLReaderTOCViewController *)controller
-didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
+  didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
 {
   [self.rendererView openOpaqueLocation:opaqueLocation];
   
@@ -815,7 +815,7 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
 
 #pragma mark NYPLReaderTOCViewControllerDelegate
 - (void)TOCViewController:(__attribute__((unused))NYPLReaderTOCViewController *)controller
-didSelectBookmark:(NYPLReaderBookmarkElement *)bookmark
+        didSelectBookmark:(NYPLReaderBookmarkElement *)bookmark
 {
   [self.rendererView openBookmark:bookmark];
     
@@ -823,10 +823,10 @@ didSelectBookmark:(NYPLReaderBookmarkElement *)bookmark
     [self.activePopoverController dismissPopoverAnimated:YES];
     if (!UIAccessibilityIsVoiceOverRunning())
       self.interfaceHidden = YES;
-    } else {
-      self.shouldHideInterfaceOnNextAppearance = YES;
-      [self.navigationController popViewControllerAnimated:YES];
-    }
+  } else {
+    self.shouldHideInterfaceOnNextAppearance = YES;
+    [self.navigationController popViewControllerAnimated:YES];
+  }
 }
 
 #pragma mark NYPLReaderSettingsViewDelegate
@@ -1021,12 +1021,10 @@ didSelectBookmark:(NYPLReaderBookmarkElement *)bookmark
 - (void)didSelectBookmarkButton
 {
   NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
-  if (self.currentBookmark)
-  {
-    [rv deleteBookmark:self.currentBookmark ];
+  if (self.currentBookmark) {
+    [rv deleteBookmark:self.currentBookmark];
   }
-  else
-  {
+  else {
     [rv addBookmark];
   }
 }
