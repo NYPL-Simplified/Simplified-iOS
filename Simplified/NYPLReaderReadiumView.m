@@ -992,7 +992,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     navigationElement.sourceHref]];
 }
 
-- (void)openBookmark:(NYPLReaderBookmarkElement *)bookmark
+- (void)gotoBookmark:(NYPLReaderBookmarkElement *)bookmark
 {
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
   

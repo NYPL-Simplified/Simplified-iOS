@@ -763,8 +763,8 @@ spineItemTitle:(NSString *const)title
 - (void)TOCViewController:(__attribute__((unused))NYPLReaderTOCViewController *)controller
         didSelectBookmark:(NYPLReaderBookmarkElement *)bookmark
 {
-  [self.rendererView openBookmark:bookmark];
-    
+  [self.rendererView gotoBookmark:bookmark];
+  
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     [self.activePopoverController dismissPopoverAnimated:YES];
     if (!UIAccessibilityIsVoiceOverRunning())
