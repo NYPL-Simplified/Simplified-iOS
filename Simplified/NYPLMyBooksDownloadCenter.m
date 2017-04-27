@@ -494,7 +494,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    addBook:book
    location:nil
    state:NYPLBookStateDownloadFailed
-   fulfillmentId:nil];
+   fulfillmentId:nil
+   bookmarks:nil];
   
   dispatch_async(dispatch_get_main_queue(), ^{
     NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"DownloadFailed" message:@"DownloadCouldNotBeCompletedFormat", book.title];
@@ -518,7 +519,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
          addBook:book
          location:nil
          state:NYPLBookStateDownloadNeeded
-         fulfillmentId:nil];
+         fulfillmentId:nil
+         bookmarks:nil];
         state = NYPLBookStateDownloadNeeded;
         loginRequired = NO;
       }
@@ -575,7 +577,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
          addBook:book
          location:nil
          state:NYPLBookStateDownloadNeeded
-         fulfillmentId:nil];
+         fulfillmentId:nil
+         bookmarks:nil];
         
         if(book.availabilityStatus & (NYPLBookAvailabilityStatusAvailable | NYPLBookAvailabilityStatusReady)) {
           [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
@@ -611,7 +614,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
        addBook:book
        location:nil
        state:NYPLBookStateDownloading
-       fulfillmentId:nil];
+       fulfillmentId:nil
+       bookmarks:nil];
       
       // It is important to issue this immediately because a previous download may have left the
       // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to

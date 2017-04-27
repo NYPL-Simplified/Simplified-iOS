@@ -2,6 +2,8 @@
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCCell.h"
 #import "NYPLReaderTOCElement.h"
+#import "NYPLReaderBookmarkCell.h"
+#import "NYPLReaderBookmarkElement.h"
 #import "NYPLReadium.h"
 #import <PureLayout/PureLayout.h>
 
@@ -97,7 +99,13 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       return cell;
     }
     case 1:{
-      return nil;
+      NYPLReaderBookmarkCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierBookmark];
+      NYPLReaderBookmarkElement *const bookmark = self.bookmarks[indexPath.row];
+      
+      cell.titleLabel.text = bookmark.chapterTitle;
+      cell.pageNumberLabel.text = bookmark.contentCFI;
+      
+      return cell;
     }
     default:
       return nil;
@@ -117,7 +125,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     }
     case 1:{
-      // bookmark selected
+      NYPLReaderBookmarkElement *const bookmark = self.bookmarks[indexPath.row];
+      [self.delegate TOCViewController:self didSelectBookmark:bookmark];
+      break;
     }
     default:
       break;
@@ -157,8 +167,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     if (self.tableView.isHidden) {
       self.tableView.hidden = NO;
     }
-    [self.tableView reloadData];
   }
+  [self.tableView reloadData];
 }
 
 #pragma mark -
