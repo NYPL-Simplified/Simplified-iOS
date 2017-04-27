@@ -54,7 +54,7 @@
 
 - (void)updateViews
 {
-  if(self.type == NYPLRoundedButtonTypeNormal) {
+  if(self.type == NYPLRoundedButtonTypeNormal || self.fromDetailView) {
     if (!self.fromDetailView) {
       self.contentEdgeInsets = UIEdgeInsetsZero;
     } else {
@@ -76,19 +76,11 @@
     
     [self.label sizeToFit];
     
-    if (!self.fromDetailView) {
-      self.iconView.frame = CGRectMake(8, 3, 14, 14);
-    } else {
-      self.iconView.frame = CGRectMake(12, 6, 14, 14);
-    }
+    self.iconView.frame = CGRectMake(8, 3, 14, 14);
     CGRect frame = self.label.frame;
     frame.origin = CGPointMake(self.iconView.center.x - frame.size.width/2, CGRectGetMaxY(self.iconView.frame));
     self.label.frame = frame;
-    if (!self.fromDetailView) {
-      self.contentEdgeInsets = UIEdgeInsetsMake(6, self.iconView.frame.size.width + 8, 6, 0);
-    } else {
-      self.contentEdgeInsets = UIEdgeInsetsMake(8, self.iconView.frame.size.width + 20, 8, 20);
-    }
+    self.contentEdgeInsets = UIEdgeInsetsMake(6, self.iconView.frame.size.width + 8, 6, 0);
   }
 }
 

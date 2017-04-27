@@ -2,6 +2,7 @@
 #import "NYPLBookAcquisition.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLBookDetailButtonsView.h"
+#import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
 #import "NYPLSettings.h"
 #import "NYPLRootTabBarController.h"
@@ -47,6 +48,7 @@
   [self addSubview:self.readButton];
   
   self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  self.activityIndicator.color = [NYPLConfiguration mainColor];
   self.activityIndicator.hidesWhenStopped = YES;
   [self addSubview:self.activityIndicator];
   
@@ -70,15 +72,16 @@
 
 - (void)updateButtonFrames
 {
+  [NSLayoutConstraint deactivateConstraints:self.constraints];
+
   if (self.visibleButtons.count == 0) {
     return;
   }
   
-  [NSLayoutConstraint deactivateConstraints:self.constraints];
+  [self.constraints removeAllObjects];
   int count = 0;
   NYPLRoundedButton *lastButton = nil;
   for (NYPLRoundedButton *button in self.visibleButtons) {
-    [self.constraints removeAllObjects];
     [self.constraints addObject:[button autoPinEdgeToSuperviewEdge:ALEdgeTop]];
     [self.constraints addObject:[button autoPinEdgeToSuperviewEdge:ALEdgeBottom]];
     if (!lastButton) {
@@ -92,18 +95,6 @@
     lastButton = button;
     count++;
   }
-  
-  //GODO TEMP... try to hover over each button
-  [self.constraints addObject:[self.activityIndicator autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:lastButton withOffset:5.0]];
-  [self.constraints addObject:[self.activityIndicator autoAlignAxis:ALAxisHorizontal toSameAxisOfView:lastButton]];
-}
-
-- (void)sizeToFit
-{
-  NYPLRoundedButton *lastButton = [self.visibleButtons lastObject];
-  CGRect frame = self.frame;
-  frame.size = CGSizeMake(CGRectGetMaxX(lastButton.frame), CGRectGetMaxY(lastButton.frame));
-  self.frame = frame;
 }
 
 - (void)updateProcessingState
@@ -287,6 +278,8 @@
 
 - (void)didSelectReturn
 {
+  self.activityIndicator.center = self.deleteButton.center;
+  
   NSString *title = nil;
   NSString *message = nil;
   NSString *confirmButtonTitle = nil;
@@ -337,11 +330,13 @@
 
 - (void)didSelectRead
 {
+  self.activityIndicator.center = self.readButton.center;
   [self.delegate didSelectReadForBook:self.book];
 }
 
 - (void)didSelectDownload
 {
+  self.activityIndicator.center = self.downloadButton.center;
   [self.delegate didSelectDownloadForBook:self.book];
 }
 

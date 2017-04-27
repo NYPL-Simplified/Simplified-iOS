@@ -26,7 +26,6 @@
 @property (nonatomic) UILabel *subtitleLabel;
 @property (nonatomic) UILabel *authorsLabel;
 @property (nonatomic) UIImageView *coverImageView;
-@property (nonatomic) UIImageView *unreadImageView;
 @property (nonatomic) UIButton *closeButton;
 
 @property (nonatomic) NYPLBookDetailButtonsView *buttonsView;
@@ -54,6 +53,7 @@ static CGFloat const SubtitleBaselineOffset = 10;
 static CGFloat const AuthorBaselineOffset = 12;
 static CGFloat const CoverImageHeight = 200.0;
 static CGFloat const CoverImageWidth = 160.0;
+static CGFloat const DownloadViewHeight = 70.0;
 static CGFloat const VerticalPadding = 10.0;
 static CGFloat const MainTextPaddingLeft = 10.0;
 static CGFloat const SummaryTextAbbreviatedHeight = 150.0;
@@ -80,20 +80,19 @@ static NSString *DetailHTMLTemplate = nil;
   [self createHeaderLabels];
   [self createFooterLabels];
   
-  //GODO TEMP
-//  self.buttonsView = [[NYPLBookDetailButtonsView alloc] init];
-//  self.buttonsView.showReturnButtonIfApplicable = YES;
-//  self.buttonsView.delegate = [NYPLBookCellDelegate sharedDelegate];
-//  self.buttonsView.book = book;
+  self.buttonsView = [[NYPLBookDetailButtonsView alloc] init];
+  self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
+  self.buttonsView.showReturnButtonIfApplicable = YES;
+  self.buttonsView.delegate = [NYPLBookCellDelegate sharedDelegate];
+  self.buttonsView.book = book;
   
   [self addSubview:self.contentView];
   [self.contentView addSubview:self.coverImageView];
   [self.contentView addSubview:self.titleLabel];
   [self.contentView addSubview:self.subtitleLabel];
   [self.contentView addSubview:self.authorsLabel];
-  [self.contentView addSubview:self.unreadImageView];
   
-//  [self.contentView addSubview:self.buttonsView];
+  [self.contentView addSubview:self.buttonsView];
 
   [self.contentView addSubview:self.summaryTextView];
   [self.contentView addSubview:self.readMoreLabel];
@@ -107,12 +106,6 @@ static NSString *DetailHTMLTemplate = nil;
   [self.contentView addSubview:self.distributorLabelValue];
   [self.contentView addSubview:self.reportProblemLabel];
   
-  
-//
-//  if (self.book.acquisition.report != nil) {
-//    [self.contentView addSubview:self.reportProblemLabel];
-//  }
-
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.closeButton setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
@@ -122,6 +115,9 @@ static NSString *DetailHTMLTemplate = nil;
   }
   
   [self createDownloadViews];
+  [self.contentView addSubview:self.normalView];
+  [self.contentView addSubview:self.downloadFailedView];
+  [self.contentView addSubview:self.downloadingView];
   [self updateFonts];
   
   return self;
@@ -177,23 +173,20 @@ static NSString *DetailHTMLTemplate = nil;
     self.authorsLabel.attributedText = NYPLAttributedStringForAuthorsFromString(self.book.authors);
   }
   
-  self.unreadImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Unread"]];
-  self.unreadImageView.image = [self.unreadImageView.image
-                                imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-  [self.unreadImageView setTintColor:[NYPLConfiguration accentColor]];
-  
   self.summaryTextView = [[UITextView alloc] init];
   self.summaryTextView.backgroundColor = [UIColor clearColor];
   self.summaryTextView.scrollEnabled = NO;
   self.summaryTextView.editable = NO;
-  [self.summaryTextView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0) ];
+  self.summaryTextView.clipsToBounds = YES;
+  [self.summaryTextView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
   [self.summaryTextView setTextContainerInset:UIEdgeInsetsMake(0, 0, 0, 0)];
   
   self.readMoreLabel = [[UIButton alloc] init];
   self.readMoreLabel.hidden = YES;
   self.readMoreLabel.titleLabel.textAlignment = NSTextAlignmentRight;
   [self.readMoreLabel addTarget:self action:@selector(readMoreTapped:) forControlEvents:UIControlEventTouchUpInside];
-  //GODO translate
+  //needs translation
+  [self.readMoreLabel setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
   [self.readMoreLabel setTitle:@"...Read More" forState:UIControlStateNormal];
   [self.readMoreLabel setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
   
@@ -209,36 +202,18 @@ static NSString *DetailHTMLTemplate = nil;
 
 - (void)createDownloadViews
 {
-  self.normalView = [[NYPLBookDetailNormalView alloc] initWithWidth:0];
-  self.normalView.delegate = [NYPLBookCellDelegate sharedDelegate];
+  self.normalView = [[NYPLBookDetailNormalView alloc] init];
+  self.normalView.translatesAutoresizingMaskIntoConstraints = NO;
   self.normalView.book = self.book;
   self.normalView.hidden = YES;
-  [self.contentView addSubview:self.normalView];
-  [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeRight];
-  [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-  
-  //GODO TEMP
-  [self.normalView autoSetDimension:ALDimensionHeight toSize:70];
-  
+
   self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
   self.downloadFailedView.delegate = self;
   self.downloadFailedView.hidden = YES;
-  [self.contentView addSubview:self.downloadFailedView];
-  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeRight];
-  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-  [self.downloadFailedView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:VerticalPadding];
-  //GODO TEMP
-  [self.downloadFailedView autoSetDimension:ALDimensionHeight toSize:70];
   
   self.downloadingView = [[NYPLBookDetailDownloadingView alloc] initWithWidth:0];
   self.downloadingView.delegate = self;
   self.downloadingView.hidden = YES;
-  [self.contentView addSubview:self.downloadingView];
-  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeRight];
-  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-  [self.downloadingView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:VerticalPadding];
-  //GODO TEMP
-  [self.downloadingView autoSetDimension:ALDimensionHeight toSize:70];
 }
 
 - (void)createFooterLabels
@@ -288,7 +263,6 @@ static NSString *DetailHTMLTemplate = nil;
   [self.reportProblemLabel setTitle:NSLocalizedString(@"ReportProblem", nil) forState:UIControlStateNormal];
   [self.reportProblemLabel addTarget:self action:@selector(reportProblemTapped:) forControlEvents:UIControlEventTouchUpInside];
   [self.reportProblemLabel setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
-
 }
 
 - (UILabel *)createFooterLabelWithString:(NSString *)string alignment:(NSTextAlignment)alignment
@@ -309,18 +283,12 @@ static NSString *DetailHTMLTemplate = nil;
   
   [self.coverImageView autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.coverImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:VerticalPadding];
-
-  //  [self.coverImageView autoSetDimension:ALDimensionWidth toSize:coverWidth];
-  //  [self.coverImageView autoSetDimension:ALDimensionHeight toSize:coverHeight];
-  
-  //GODO TEMP
   [self.coverImageView autoSetDimension:ALDimensionWidth toSize:CoverImageWidth];
   [self.coverImageView autoSetDimension:ALDimensionHeight toSize:CoverImageHeight];
   
   [self.titleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
-  [self.titleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
-  [self.titleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];
-//  [self.titleLabel autoSetDimension:ALDimensionWidth toSize:100 relation:NSLayoutRelationGreaterThanOrEqual];
+    [self.titleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];
+  NSLayoutConstraint *titleLabelConstraint = [self.titleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
   
   [self.subtitleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
   [self.subtitleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
@@ -334,24 +302,22 @@ static NSString *DetailHTMLTemplate = nil;
     [self.authorsLabel autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeBaseline ofView:self.titleLabel withOffset:AuthorBaselineOffset];
   }
   
-  [self.unreadImageView autoPinEdge:ALEdgeTrailing toEdge:ALEdgeLeading ofView:self.coverImageView withOffset:5];
-  [self.unreadImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:10];
+  [self.buttonsView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.coverImageView];
+  [self.buttonsView autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
+  [self.buttonsView autoPinEdgeToSuperviewMargin:ALEdgeTrailing relation:NSLayoutRelationGreaterThanOrEqual];
   
   [self.normalView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:VerticalPadding];
-  
-//  //GODO
-//  [self.buttonsView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.coverImageView];
-//  [self.buttonsView autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
-//  [self.buttonsView autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+  [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
   
   [self.summaryTextView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.normalView withOffset:VerticalPadding];
-  self.textHeightConstraint = [self.summaryTextView autoSetDimension:ALDimensionHeight toSize:SummaryTextAbbreviatedHeight relation:NSLayoutRelationLessThanOrEqual];
   [self.summaryTextView autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
   [self.summaryTextView autoPinEdgeToSuperviewMargin:ALEdgeLeading];
-  
+  self.textHeightConstraint = [self.summaryTextView autoSetDimension:ALDimensionHeight toSize:SummaryTextAbbreviatedHeight relation:NSLayoutRelationLessThanOrEqual];
+
+  [self.readMoreLabel autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.readMoreLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
-  [self.readMoreLabel autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeBottom ofView:self.summaryTextView withOffset:VerticalPadding];
-  
+  [self.readMoreLabel autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeBottom ofView:self.summaryTextView];
   
   [self.publishedLabelValue autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
   [self.publishedLabelValue autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.summaryTextView withOffset:VerticalPadding + 20];
@@ -368,7 +334,6 @@ static NSString *DetailHTMLTemplate = nil;
   [self.distributorLabelValue autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
   [self.distributorLabelValue autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.categoriesLabelValue];
   [self.distributorLabelValue autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.distributorLabelKey withOffset:MainTextPaddingLeft];
-  
   
   [self.publishedLabelKey autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.publishedLabelKey autoConstrainAttribute:ALAttributeTrailing toAttribute:ALAttributeMarginAxisVertical ofView:self.contentView withMultiplier:FooterLabelVertAxisMultiplier];
@@ -388,16 +353,28 @@ static NSString *DetailHTMLTemplate = nil;
   
   [self.reportProblemLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.distributorLabelValue withOffset:VerticalPadding];
   [self.reportProblemLabel autoPinEdgeToSuperviewMargin:ALEdgeLeading];
-  [self.reportProblemLabel autoPinEdgeToSuperviewMargin:ALEdgeBottom];
+  [self.reportProblemLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:12];
   
   if (!self.book.acquisition.report) {
     self.reportProblemLabel.hidden = YES;
     [self.reportProblemLabel autoSetDimension:ALDimensionHeight toSize:0];
   }
-
+  
+  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+  [self.downloadFailedView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:VerticalPadding];
+  [self.downloadFailedView autoSetDimension:ALDimensionHeight toSize:DownloadViewHeight];
+  
+  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+  [self.downloadingView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:VerticalPadding];
+  [self.downloadingView autoSetDimension:ALDimensionHeight toSize:DownloadViewHeight];
+  
   if (self.closeButton) {
     [self.closeButton autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
-    [self.closeButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.titleLabel withOffset:1];
+    [self.closeButton autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.titleLabel];
+    [NSLayoutConstraint deactivateConstraints:@[titleLabelConstraint]];
+    [self.closeButton autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.titleLabel withOffset:MainTextPaddingLeft];
   }
 }
 
@@ -493,7 +470,6 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
           self.buttonsView.state = NYPLBookButtonsStateCanHold;
         }
       }
-      self.unreadImageView.hidden = YES;
       break;
     case NYPLBookStateDownloadNeeded:
       self.normalView.hidden = NO;
@@ -501,19 +477,16 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.downloadingView.hidden = YES;
       self.normalView.state = NYPLBookButtonsStateDownloadNeeded;
       self.buttonsView.state = NYPLBookButtonsStateDownloadNeeded;
-      self.unreadImageView.hidden = YES;
       break;
     case NYPLBookStateDownloading:
       self.normalView.hidden = YES;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = NO;
-      self.unreadImageView.hidden = YES;
       break;
     case NYPLBookStateDownloadFailed:
       self.normalView.hidden = YES;
       self.downloadFailedView.hidden = NO;
       self.downloadingView.hidden = YES;
-      self.unreadImageView.hidden = YES;
       break;
     case NYPLBookStateDownloadSuccessful:
       self.normalView.hidden = NO;
@@ -521,7 +494,6 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.downloadingView.hidden = YES;
       self.normalView.state = NYPLBookButtonsStateDownloadSuccessful;
       self.buttonsView.state = NYPLBookButtonsStateDownloadSuccessful;
-      self.unreadImageView.hidden = NO;
       break;
     case NYPLBookStateHolding:
       self.normalView.hidden = NO;
@@ -534,7 +506,6 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
         self.normalView.state = NYPLBookButtonsStateHolding;
         self.buttonsView.state = NYPLBookButtonsStateHolding;
       }
-      self.unreadImageView.hidden = YES;
       break;
     case NYPLBookStateUsed:
       self.normalView.hidden = NO;
@@ -542,7 +513,6 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.downloadingView.hidden = YES;
       self.normalView.state = NYPLBookButtonsStateUsed;
       self.buttonsView.state = NYPLBookButtonsStateUsed;
-      self.unreadImageView.hidden = YES;
       break;
   }
 }
