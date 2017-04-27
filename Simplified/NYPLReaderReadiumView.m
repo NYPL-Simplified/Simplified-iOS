@@ -646,8 +646,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
   NSArray * bookmarks = [registry bookmarksForIdentifier:self.book.identifier];
   
-  __block bool bookmarkFound = NO;
-  
   // loop through bookmarks, and grab all the CFIs for the current chapter (idref)
   // check to see is any of those CFIs can be found on the current page
   // break out of the loop if a CFI is found on that page
@@ -691,10 +689,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
         }
       }]; // end sequentiallyEvaluateJavaScript
       
-      if (bookmarkFound)
-      {
-        break;
-      }
     } // end if bookmark.idref == idref
     
     // a bookmark was not found
