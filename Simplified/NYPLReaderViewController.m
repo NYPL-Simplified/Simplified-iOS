@@ -267,7 +267,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   // Settings button
   NYPLRoundedButton *const settingsButton = [NYPLRoundedButton button];
   settingsButton.accessibilityLabel = NSLocalizedString(@"ReaderViewControllerToggleReaderSettings", nil);
-  settingsButton.bounds = contentsButton.bounds;
+  [settingsButton sizeToFit];
   [settingsButton setImage:[UIImage imageNamed:@"Format"] forState:UIControlStateNormal];
   [settingsButton addTarget:self
                      action:@selector(didSelectSettings)
@@ -277,7 +277,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   // Bookmark button
   NYPLRoundedButton *const bookmarkButton = [NYPLRoundedButton button];
   bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Add Bookmark", nil)];
-  bookmarkButton.bounds = bookmarkButton.bounds;
+  [bookmarkButton sizeToFit];
   [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOff"] forState:UIControlStateNormal];
   [bookmarkButton addTarget:self
                      action:@selector(toggleBookmark)
