@@ -21,7 +21,6 @@
 
 // properties that we will set in NYPLReaderBookmarkCell
 @property (nonatomic) NSString *chapterTitle;
-@property (nonatomic) NSString *excerpt;
 @property (nonatomic) NSString *pageNumber;
 
 @end
@@ -39,7 +38,6 @@
     self.idref = idref;
     
     self.chapterTitle = @"";
-    self.excerpt = @"";
     self.pageNumber = @"";
     
     return self;

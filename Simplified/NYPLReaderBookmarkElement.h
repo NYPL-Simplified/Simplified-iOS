@@ -20,7 +20,6 @@
 
 // properties that we will set in NYPLReaderBookmarkCell
 @property (nonatomic, readonly) NSString *chapterTitle;
-@property (nonatomic, readonly) NSString *excerpt;
 @property (nonatomic, readonly) NSString *pageNumber;
 
 
