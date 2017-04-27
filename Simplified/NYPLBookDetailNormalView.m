@@ -5,6 +5,8 @@
 #import "NYPLLinearView.h"
 #import "NYPLBookButtonsView.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "UIFont+NYPLSystemFontOverride.h"
+#import <PureLayout/PureLayout.h>
 
 #import "NYPLBookDetailNormalView.h"
 
@@ -17,7 +19,6 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 
 @property (nonatomic) UIView *backgroundView;
 @property (nonatomic) UILabel *messageLabel;
-@property (nonatomic) NYPLBookButtonsView *buttonsView;
 
 @end
 
@@ -25,54 +26,30 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 
 #pragma mark UIView
 
-- (instancetype)initWithWidth:(CGFloat)width
+- (instancetype)init
 {
-  self = [super initWithFrame:CGRectMake(0, 0, width, 70)];
+  self = [super init];
   if(!self) return nil;
   
   self.backgroundView = [[UIView alloc] init];
   self.backgroundView.backgroundColor = [NYPLConfiguration mainColor];
   [self addSubview:self.backgroundView];
-  
-  self.buttonsView = [[NYPLBookButtonsView alloc] init];
-  self.buttonsView.showReturnButtonIfApplicable = YES;
-  [self addSubview:self.buttonsView];
+  [self.backgroundView autoPinEdgesToSuperviewEdges];
   
   self.messageLabel = [[UILabel alloc] init];
-  self.messageLabel.font = [UIFont systemFontOfSize:12];
+  self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
+//  self.messageLabel.font = [UIFont systemFontOfSize:12];
   self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.messageLabel.numberOfLines = 2;
+  self.messageLabel.textAlignment = NSTextAlignmentCenter;
   [self addSubview:self.messageLabel];
+  [self.messageLabel autoCenterInSuperview];
+  [self.messageLabel autoPinEdgeToSuperviewEdge:ALEdgeLeading withInset:12 relation:NSLayoutRelationGreaterThanOrEqual];
+  [self.messageLabel autoPinEdgeToSuperviewEdge:ALEdgeTrailing withInset:12 relation:NSLayoutRelationGreaterThanOrEqual];
+  [self.messageLabel autoPinEdgeToSuperviewMargin:ALEdgeTop relation:NSLayoutRelationGreaterThanOrEqual];
+  [self.messageLabel autoPinEdgeToSuperviewMargin:ALEdgeBottom relation:NSLayoutRelationGreaterThanOrEqual];
   
   return self;
-}
-
-- (void)sizeToFit
-{
-  CGRect frame = self.frame;
-  frame.size.height = CGRectGetMaxY(self.buttonsView.frame);
-  self.frame = frame;
-}
-
-#pragma mark UIView
-
-- (void)layoutSubviews
-{
-  CGFloat padding = 10;
-  
-  self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), 30);
-  CGFloat nextY = CGRectGetMaxY(self.backgroundView.frame) + padding;
-  
-  [self.messageLabel sizeToFit];
-  self.messageLabel.center = self.backgroundView.center;
-  [self.messageLabel integralizeFrame];
-  
-  [self.buttonsView sizeToFit];
-  self.buttonsView.center = self.center;
-  self.buttonsView.frame = CGRectMake(CGRectGetMinX(self.buttonsView.frame),
-                                      nextY,
-                                      CGRectGetWidth(self.buttonsView.frame),
-                                      CGRectGetHeight(self.buttonsView.frame));
-  [self.buttonsView integralizeFrame];
 }
 
 #pragma mark -
@@ -80,52 +57,53 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 - (void)setState:(NYPLBookButtonsState const)state
 {
   _state = state;
-  self.buttonsView.state = state;
   
+  NSString *newMessageString;
   switch(state) {
     case NYPLBookButtonsStateCanBorrow:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerAvailableToBorrowTitle", nil);
+      newMessageString = NSLocalizedString(@"BookDetailViewControllerAvailableToBorrowTitle", nil);
       break;
     case NYPLBookButtonsStateCanHold:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerCanHoldTitle", nil);
+      newMessageString = NSLocalizedString(@"BookDetailViewControllerCanHoldTitle", nil);
       break;
     case NYPLBookButtonsStateCanKeep:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerCanKeepTitle", nil);
+      newMessageString = NSLocalizedString(@"BookDetailViewControllerCanKeepTitle", nil);
       break;
     case NYPLBookButtonsStateDownloadNeeded:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerDownloadNeededTitle", nil);
+      newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadNeededTitle", nil);
       break;
     case NYPLBookButtonsStateDownloadSuccessful:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
+      newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
       break;
     case NYPLBookButtonsStateHolding:
-      self.messageLabel.text = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerHoldingTitleFormat", nil),
+      newMessageString = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerHoldingTitleFormat", nil),
                                 [self.book.availableUntil longTimeUntilString]];
       break;
     case NYPLBookButtonsStateHoldingFOQ:
-      self.messageLabel.text = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerReservedTitleFormat", nil),
+      newMessageString = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerReservedTitleFormat", nil),
                                 [self.book.availableUntil longTimeUntilString]];
       break;
     case NYPLBookButtonsStateUsed:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
+      newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
       break;
   }
   
-  [self.messageLabel sizeToFit];
-  self.messageLabel.center = self.backgroundView.center;
-  [self.messageLabel integralizeFrame];
-}
-
-- (void)setDelegate:(id<NYPLBookButtonsDelegate>)delegate
-{
-  _delegate = delegate;
-  self.buttonsView.delegate = delegate;
-}
-
-- (void)setBook:(NYPLBook *)book
-{
-  _book = book;
-  self.buttonsView.book = book;
+  if (!self.messageLabel.text) {
+    self.messageLabel.text = newMessageString;
+  } else {
+    CGFloat duration = 0.3f;
+    [UIView animateWithDuration:duration animations:^{
+      self.messageLabel.alpha = 0.0f;
+    } completion:^(__unused BOOL finished) {
+      self.messageLabel.alpha = 0.0f;
+      self.messageLabel.text = newMessageString;
+      [UIView animateWithDuration:duration animations:^{
+        self.messageLabel.alpha = 1.0f;
+      } completion:^(__unused BOOL finished) {
+        self.messageLabel.alpha = 1.0f;
+      }];
+    }];
+  }
 }
 
 @end

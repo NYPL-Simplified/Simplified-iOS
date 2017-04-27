@@ -63,10 +63,10 @@
 {
   CGFloat const sidePadding = 10;
   
-  self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), 30);
+  self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), 80);
   
   [self.progressLabel sizeToFit];
-  self.progressLabel.center = self.backgroundView.center;
+  self.progressLabel.center = CGPointMake(self.backgroundView.center.x, 15);
   self.progressLabel.frame = CGRectMake(sidePadding,
                                         CGRectGetMinY(self.progressLabel.frame),
                                         CGRectGetWidth(self.progressLabel.frame),
@@ -95,7 +95,7 @@
   self.cancelButton.center = self.center;
   self.cancelButton.frame = CGRectMake(CGRectGetMinX(self.cancelButton.frame),
                                        (CGRectGetHeight(self.frame) -
-                                        CGRectGetHeight(self.cancelButton.frame)),
+                                        CGRectGetHeight(self.cancelButton.frame) - 15),
                                        CGRectGetWidth(self.cancelButton.frame),
                                        CGRectGetHeight(self.cancelButton.frame));
   [self.cancelButton integralizeFrame];
