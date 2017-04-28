@@ -2,6 +2,7 @@
 #import "NYPLBookLocation.h"
 #import "NYPLBookRegistryRecord.h"
 #import "NYPLNull.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLBookRegistryRecord ()
 
@@ -9,6 +10,7 @@
 @property (nonatomic) NYPLBookLocation *location;
 @property (nonatomic) NYPLBookState state;
 @property (nonatomic) NSString *fulfillmentId;
+@property (nonatomic) NSArray *bookmarks;
 
 @end
 
@@ -16,6 +18,7 @@ static NSString *const BookKey = @"metadata";
 static NSString *const LocationKey = @"location";
 static NSString *const StateKey = @"state";
 static NSString *const FulfillmentIdKey = @"fulfillmentId";
+static NSString *const BookmarksKey = @"bookmarks";
 
 @implementation NYPLBookRegistryRecord
 
@@ -23,6 +26,7 @@ static NSString *const FulfillmentIdKey = @"fulfillmentId";
                     location:(NYPLBookLocation *const)location
                        state:(NYPLBookState)state
                fulfillmentId:(NSString *)fulfillmentId
+                   bookmarks:(NSArray *)bookmarks
 {
   self = [super init];
   if(!self) return nil;
@@ -35,6 +39,7 @@ static NSString *const FulfillmentIdKey = @"fulfillmentId";
   self.location = location;
   self.state = state;
   self.fulfillmentId = fulfillmentId;
+  self.bookmarks = bookmarks;
   
   // If the book availability indicates that the book is held, make sure the state
   // reflects that. Otherwise, make sure it's not in the Holding state.
@@ -72,35 +77,60 @@ static NSString *const FulfillmentIdKey = @"fulfillmentId";
   
   self.fulfillmentId = NYPLNullToNil(dictionary[FulfillmentIdKey]);
   
+  NSMutableArray *bookmarks = [[NSMutableArray alloc] init];
+  
+  // bookmarks from dictionary to elements
+  for (NSDictionary *dict in NYPLNullToNil(dictionary[BookmarksKey])) {
+    
+    [bookmarks addObject:[[NYPLReaderBookmarkElement alloc] initWithDictionary:dict]];
+    
+  }
+  
+  self.bookmarks = bookmarks;
+  
   return self;
 }
 
 - (NSDictionary *)dictionaryRepresentation
 {
+  NSMutableArray *bookmarksDictionaryRepresentation = [[NSMutableArray alloc] init];
+  
+  for (NYPLReaderBookmarkElement *element in self.bookmarks) {
+    
+    [bookmarksDictionaryRepresentation addObject:element.dictionaryRepresentation];
+    
+  }
+  
   return @{BookKey: [self.book dictionaryRepresentation],
            LocationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
            StateKey: NYPLBookStateToString(self.state),
-           FulfillmentIdKey: NYPLNullFromNil(self.fulfillmentId)};
+           FulfillmentIdKey: NYPLNullFromNil(self.fulfillmentId),
+           BookmarksKey: NYPLNullToNil(bookmarksDictionaryRepresentation)};
 }
 
 - (instancetype)recordWithBook:(NYPLBook *const)book
 {
-  return [[[self class] alloc] initWithBook:book location:self.location state:self.state fulfillmentId:self.fulfillmentId];
+  return [[[self class] alloc] initWithBook:book location:self.location state:self.state fulfillmentId:self.fulfillmentId bookmarks:self.bookmarks];
 }
 
 - (instancetype)recordWithLocation:(NYPLBookLocation *const)location
 {
-  return [[[self class] alloc] initWithBook:self.book location:location state:self.state fulfillmentId:self.fulfillmentId];
+  return [[[self class] alloc] initWithBook:self.book location:location state:self.state fulfillmentId:self.fulfillmentId bookmarks:self.bookmarks];
 }
 
 - (instancetype)recordWithState:(NYPLBookState const)state
 {
-  return [[[self class] alloc] initWithBook:self.book location:self.location state:state fulfillmentId:self.fulfillmentId];
+  return [[[self class] alloc] initWithBook:self.book location:self.location state:state fulfillmentId:self.fulfillmentId bookmarks:self.bookmarks];
 }
 
 - (instancetype)recordWithFulfillmentId:(NSString *)fulfillmentId
 {
-  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:fulfillmentId];
+  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:fulfillmentId bookmarks:self.bookmarks];
 }
-
+  
+- (instancetype)recordWithBookmarks:(NSArray *)bookmarks
+{
+  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:self.fulfillmentId bookmarks:bookmarks];
+}
+  
 @end
