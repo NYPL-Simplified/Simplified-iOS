@@ -2,6 +2,7 @@
 #import "NYPLBookLocation.h"
 #import "NYPLBookRegistryRecord.h"
 #import "NYPLNull.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLBookRegistryRecord ()
 
@@ -76,18 +77,35 @@ static NSString *const BookmarksKey = @"bookmarks";
   
   self.fulfillmentId = NYPLNullToNil(dictionary[FulfillmentIdKey]);
   
-  self.bookmarks = NYPLNullToNil(dictionary[BookmarksKey]);
+  NSMutableArray *bookmarks = [[NSMutableArray alloc] init];
+  
+  // bookmarks from dictionary to elements
+  for (NSDictionary *dict in NYPLNullToNil(dictionary[BookmarksKey])) {
+    
+    [bookmarks addObject:[[NYPLReaderBookmarkElement alloc] initWithDictionary:dict]];
+    
+  }
+  
+  self.bookmarks = bookmarks;
   
   return self;
 }
 
 - (NSDictionary *)dictionaryRepresentation
 {
+  NSMutableArray *bookmarksDictionaryRepresentation = [[NSMutableArray alloc] init];
+  
+  for (NYPLReaderBookmarkElement *element in self.bookmarks) {
+    
+    [bookmarksDictionaryRepresentation addObject:element.dictionaryRepresentation];
+    
+  }
+  
   return @{BookKey: [self.book dictionaryRepresentation],
            LocationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
            StateKey: NYPLBookStateToString(self.state),
            FulfillmentIdKey: NYPLNullFromNil(self.fulfillmentId),
-           BookmarksKey: NYPLNullToNil(self.bookmarks)};
+           BookmarksKey: NYPLNullToNil(bookmarksDictionaryRepresentation)};
 }
 
 - (instancetype)recordWithBook:(NYPLBook *const)book
