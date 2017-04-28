@@ -504,6 +504,7 @@ static NSString *const RecordsKey = @"records";
     NSMutableArray * newBookmarks = [[NSMutableArray alloc] initWithArray:record.bookmarks];
     [newBookmarks addObject:bookmark];
     self.identifiersToRecords[identifier] = [record recordWithBookmarks:newBookmarks];
+    [[NYPLBookRegistry sharedRegistry] save];
   }
 }
   
@@ -516,6 +517,7 @@ static NSString *const RecordsKey = @"records";
     NSMutableArray * newBookmarks = [[NSMutableArray alloc] initWithArray:record.bookmarks];
     [newBookmarks removeObject:bookmark];
     self.identifiersToRecords[identifier] = [record recordWithBookmarks:newBookmarks];
+    [[NYPLBookRegistry sharedRegistry] save];
   }
 }
   
