@@ -34,16 +34,19 @@
   
   self.deleteButton = [NYPLRoundedButton button];
   self.deleteButton.fromDetailView = YES;
+  self.deleteButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.deleteButton addTarget:self action:@selector(didSelectReturn) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.deleteButton];
 
   self.downloadButton = [NYPLRoundedButton button];
   self.downloadButton.fromDetailView = YES;
+  self.downloadButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.downloadButton addTarget:self action:@selector(didSelectDownload) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.downloadButton];
 
   self.readButton = [NYPLRoundedButton button];
   self.readButton.fromDetailView = YES;
+  self.readButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.readButton addTarget:self action:@selector(didSelectRead) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.readButton];
   

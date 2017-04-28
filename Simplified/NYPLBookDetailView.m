@@ -53,7 +53,7 @@ static CGFloat const SubtitleBaselineOffset = 10;
 static CGFloat const AuthorBaselineOffset = 12;
 static CGFloat const CoverImageHeight = 200.0;
 static CGFloat const CoverImageWidth = 160.0;
-static CGFloat const DownloadViewHeight = 70.0;
+static CGFloat const DownloadViewHeight = 60.0;
 static CGFloat const VerticalPadding = 10.0;
 static CGFloat const MainTextPaddingLeft = 10.0;
 static CGFloat const SummaryTextAbbreviatedHeight = 150.0;
@@ -74,6 +74,7 @@ static NSString *DetailHTMLTemplate = nil;
   
   self.book = book;
   self.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.translatesAutoresizingMaskIntoConstraints = NO;
   
   self.contentView = [[UIView alloc] init];
   
@@ -129,19 +130,8 @@ static NSString *DetailHTMLTemplate = nil;
   self.subtitleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
   self.authorsLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
   self.summaryTextView.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
-//  self.summaryTextView.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
   self.readMoreLabel.titleLabel.font = [UIFont systemFontOfSize:14];
   self.reportProblemLabel.titleLabel.font = [UIFont systemFontOfSize:14];
-
-  self.publishedLabelKey.font = [UIFont systemFontOfSize:12];
-  self.publisherLabelKey.font = [UIFont systemFontOfSize:12];
-  self.categoriesLabelKey.font = [UIFont systemFontOfSize:12];
-  self.distributorLabelKey.font = [UIFont systemFontOfSize:12];
-  
-  self.publishedLabelValue.font = [UIFont systemFontOfSize:12];
-  self.publisherLabelValue.font = [UIFont systemFontOfSize:12];
-  self.categoriesLabelValue.font = [UIFont systemFontOfSize:12];
-  self.distributorLabelValue.font = [UIFont systemFontOfSize:12];
 }
 
 - (void)createHeaderLabels
@@ -187,7 +177,7 @@ static NSString *DetailHTMLTemplate = nil;
   [self.readMoreLabel addTarget:self action:@selector(readMoreTapped:) forControlEvents:UIControlEventTouchUpInside];
   //needs translation
   [self.readMoreLabel setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
-  [self.readMoreLabel setTitle:@"...Read More" forState:UIControlStateNormal];
+  [self.readMoreLabel setTitle:NSLocalizedString(@"More...", nil) forState:UIControlStateNormal];
   [self.readMoreLabel setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
   
   
@@ -271,6 +261,7 @@ static NSString *DetailHTMLTemplate = nil;
   label.textAlignment = alignment;
   label.textColor = [UIColor grayColor];
   label.text = string;
+  label.font = [UIFont systemFontOfSize:12];
   return label;
 }
 
@@ -283,11 +274,16 @@ static NSString *DetailHTMLTemplate = nil;
   
   [self.coverImageView autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.coverImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:VerticalPadding];
-  [self.coverImageView autoSetDimension:ALDimensionWidth toSize:CoverImageWidth];
-  [self.coverImageView autoSetDimension:ALDimensionHeight toSize:CoverImageHeight];
+  if (self.frame.size.width <= 330) {
+    [self.coverImageView autoSetDimension:ALDimensionWidth toSize:CoverImageWidth/1.5];
+    [self.coverImageView autoSetDimension:ALDimensionHeight toSize:CoverImageHeight/1.5];
+  } else {
+    [self.coverImageView autoSetDimension:ALDimensionWidth toSize:CoverImageWidth];
+    [self.coverImageView autoSetDimension:ALDimensionHeight toSize:CoverImageHeight];
+  }
   
   [self.titleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
-    [self.titleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];
+  [self.titleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];
   NSLayoutConstraint *titleLabelConstraint = [self.titleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
   
   [self.subtitleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
@@ -302,11 +298,13 @@ static NSString *DetailHTMLTemplate = nil;
     [self.authorsLabel autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeBaseline ofView:self.titleLabel withOffset:AuthorBaselineOffset];
   }
   
-  [self.buttonsView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.coverImageView];
+  [self.buttonsView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.authorsLabel withOffset:VerticalPadding relation:NSLayoutRelationGreaterThanOrEqual];
+  [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultLow forConstraints:^{
+    [self.buttonsView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.coverImageView];
+  }];
   [self.buttonsView autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
-  [self.buttonsView autoPinEdgeToSuperviewMargin:ALEdgeTrailing relation:NSLayoutRelationGreaterThanOrEqual];
   
-  [self.normalView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:VerticalPadding];
+  [self.normalView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.buttonsView withOffset:VerticalPadding];
   [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeRight];
   [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
   
@@ -362,12 +360,12 @@ static NSString *DetailHTMLTemplate = nil;
   
   [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeRight];
   [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-  [self.downloadFailedView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:VerticalPadding];
+  [self.downloadFailedView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.buttonsView withOffset:VerticalPadding];
   [self.downloadFailedView autoSetDimension:ALDimensionHeight toSize:DownloadViewHeight];
   
   [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeRight];
   [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-  [self.downloadingView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coverImageView withOffset:VerticalPadding];
+  [self.downloadingView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.buttonsView withOffset:VerticalPadding];
   [self.downloadingView autoSetDimension:ALDimensionHeight toSize:DownloadViewHeight];
   
   if (self.closeButton) {
@@ -458,6 +456,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
+      self.buttonsView.hidden = NO;
       if(self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) {
         self.normalView.state = NYPLBookButtonsStateCanKeep;
         self.buttonsView.state = NYPLBookButtonsStateCanKeep;
@@ -475,6 +474,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
+      self.buttonsView.hidden = NO;
       self.normalView.state = NYPLBookButtonsStateDownloadNeeded;
       self.buttonsView.state = NYPLBookButtonsStateDownloadNeeded;
       break;
@@ -482,16 +482,19 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = YES;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = NO;
+      self.buttonsView.hidden = YES;
       break;
     case NYPLBookStateDownloadFailed:
       self.normalView.hidden = YES;
       self.downloadFailedView.hidden = NO;
       self.downloadingView.hidden = YES;
+      self.buttonsView.hidden = YES;
       break;
     case NYPLBookStateDownloadSuccessful:
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
+      self.buttonsView.hidden = NO;
       self.normalView.state = NYPLBookButtonsStateDownloadSuccessful;
       self.buttonsView.state = NYPLBookButtonsStateDownloadSuccessful;
       break;
@@ -499,6 +502,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
+      self.buttonsView.hidden = NO;
       if (self.book.availabilityStatus == NYPLBookAvailabilityStatusReady) {
         self.normalView.state = NYPLBookButtonsStateHoldingFOQ;
         self.buttonsView.state = NYPLBookButtonsStateHoldingFOQ;
@@ -511,6 +515,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = NO;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = YES;
+      self.buttonsView.hidden = NO;
       self.normalView.state = NYPLBookButtonsStateUsed;
       self.buttonsView.state = NYPLBookButtonsStateUsed;
       break;

@@ -37,6 +37,7 @@
    initWithURL:[NYPLConfiguration mainFeedURL]];
   
   self.viewController.title = NSLocalizedString(@"Catalog", nil);
+  self.viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
   
   self = [super initWithRootViewController:self.viewController];
   if(!self) return nil;
@@ -289,10 +290,6 @@
 {
   [super viewDidAppear:animated];
   
-  NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
-  viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
-
- 
   if (UIAccessibilityIsVoiceOverRunning()) {
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
   }
