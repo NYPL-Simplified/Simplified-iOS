@@ -489,20 +489,6 @@ static NSString *const RecordsKey = @"records";
   }
 }
 
-- (void)setBookmarks:(NSArray *)bookmarks forIdentifier:(NSString *)identifier
-{
-  @synchronized(self) {
-    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
-    if(!record) {
-      @throw NSInvalidArgumentException;
-    }
-    
-    self.identifiersToRecords[identifier] = [record recordWithBookmarks:bookmarks];
-    
-    [self broadcastChange];
-  }
-}
-  
 - (NSArray *)bookmarksForIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
@@ -516,9 +502,11 @@ static NSString *const RecordsKey = @"records";
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
       
-    NSMutableArray * newBookmarks = [[NSMutableArray alloc] initWithArray:record.bookmarks];
-    [newBookmarks addObject:bookmark];
-    self.identifiersToRecords[identifier] = [record recordWithBookmarks:newBookmarks];
+    NSMutableArray *bookmarks = record.bookmarks.mutableCopy;
+    [bookmarks addObject:bookmark];
+    
+    self.identifiersToRecords[identifier] = [record recordWithBookmarks:bookmarks];
+    
     [[NYPLBookRegistry sharedRegistry] save];
   }
 }
@@ -529,9 +517,11 @@ static NSString *const RecordsKey = @"records";
       
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
       
-    NSMutableArray * newBookmarks = [[NSMutableArray alloc] initWithArray:record.bookmarks];
-    [newBookmarks removeObject:bookmark];
-    self.identifiersToRecords[identifier] = [record recordWithBookmarks:newBookmarks];
+    NSMutableArray *bookmarks = record.bookmarks.mutableCopy;
+    [bookmarks removeObject:bookmark];
+    
+    self.identifiersToRecords[identifier] = [record recordWithBookmarks:bookmarks];
+    
     [[NYPLBookRegistry sharedRegistry] save];
   }
 }
