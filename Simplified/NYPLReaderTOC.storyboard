@@ -13,7 +13,7 @@
         <!--ReaderTOC View Controller-->
         <scene sceneID="Cmh-2r-B8h">
             <objects>
-                <viewController storyboardIdentifier="NYPLTOC" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bPm-fj-1gl" customClass="NYPLReaderTOCViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NYPLReaderTOC" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bPm-fj-1gl" customClass="NYPLReaderTOCViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Z5l-KL-uGh"/>
                         <viewControllerLayoutGuide type="bottom" id="eud-aA-3XE"/>
@@ -34,16 +34,16 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Table of Contents Item" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iWm-n9-kgW" userLabel="TOC Label">
-                                                    <rect key="frame" x="8" y="14" width="359" height="27.5"/>
+                                                    <rect key="frame" x="18" y="14" width="339" height="27.5"/>
                                                     <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="iWm-n9-kgW" firstAttribute="leading" secondItem="EjL-Iz-7v0" secondAttribute="leadingMargin" id="37I-4D-dK0"/>
+                                                <constraint firstItem="iWm-n9-kgW" firstAttribute="leading" secondItem="EjL-Iz-7v0" secondAttribute="leadingMargin" constant="10" id="37I-4D-dK0"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="iWm-n9-kgW" secondAttribute="bottom" constant="6" id="SBH-NN-eaB"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="iWm-n9-kgW" secondAttribute="trailing" id="TDw-k1-flt"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="iWm-n9-kgW" secondAttribute="trailing" constant="10" id="TDw-k1-flt"/>
                                                 <constraint firstItem="iWm-n9-kgW" firstAttribute="top" secondItem="EjL-Iz-7v0" secondAttribute="topMargin" constant="6" id="rZB-Qb-i4t"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -60,26 +60,26 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="249" text="Bookmark Chapter Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uaf-vU-xEs">
-                                                    <rect key="frame" x="8" y="8" width="359" height="25.5"/>
+                                                    <rect key="frame" x="18" y="8" width="339" height="25.5"/>
                                                     <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bookmark Page Number" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QQP-TR-adZ">
-                                                    <rect key="frame" x="8" y="39.5" width="359" height="22"/>
+                                                    <rect key="frame" x="18" y="39.5" width="339" height="22"/>
                                                     <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="16"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailingMargin" secondItem="QQP-TR-adZ" secondAttribute="trailing" id="6oM-sW-0dK"/>
-                                                <constraint firstItem="uaf-vU-xEs" firstAttribute="leading" secondItem="wsS-tD-dSx" secondAttribute="leadingMargin" id="Bhj-SV-93X"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="QQP-TR-adZ" secondAttribute="trailing" constant="10" id="6oM-sW-0dK"/>
+                                                <constraint firstItem="uaf-vU-xEs" firstAttribute="leading" secondItem="wsS-tD-dSx" secondAttribute="leadingMargin" constant="10" id="Bhj-SV-93X"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="QQP-TR-adZ" secondAttribute="bottom" id="PPp-37-3Kk"/>
                                                 <constraint firstAttribute="topMargin" secondItem="uaf-vU-xEs" secondAttribute="top" id="fgA-Il-GS0"/>
                                                 <constraint firstItem="QQP-TR-adZ" firstAttribute="top" secondItem="uaf-vU-xEs" secondAttribute="bottom" constant="6" id="jgv-bv-qcC"/>
-                                                <constraint firstItem="QQP-TR-adZ" firstAttribute="leading" secondItem="wsS-tD-dSx" secondAttribute="leadingMargin" id="o5x-yd-iUo"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="uaf-vU-xEs" secondAttribute="trailing" id="vPI-Ms-vzX"/>
+                                                <constraint firstItem="QQP-TR-adZ" firstAttribute="leading" secondItem="wsS-tD-dSx" secondAttribute="leadingMargin" constant="10" id="o5x-yd-iUo"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="uaf-vU-xEs" secondAttribute="trailing" constant="10" id="vPI-Ms-vzX"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>

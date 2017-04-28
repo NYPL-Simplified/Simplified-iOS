@@ -29,7 +29,7 @@
 		03B092301E78871A00AD338D /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B0922F1E78871A00AD338D /* MediaPlayer.framework */; };
 		03CE00EA1E0C436400C91489 /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03CE00E91E0C436400C91489 /* libePub3-iOS.a */; };
 		03DE7BE91DBF0DE400E89064 /* UpdateCheckShim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */; };
-		03E5F42D1EA5BCE400DFFC3A /* NYPLTOC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03E5F42A1EA5BCE400DFFC3A /* NYPLTOC.storyboard */; };
+		03E5F42D1EA5BCE400DFFC3A /* NYPLReaderTOC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03E5F42A1EA5BCE400DFFC3A /* NYPLReaderTOC.storyboard */; };
 		03F94CCF1DD627AA00CE8F4F /* Accounts.json in Resources */ = {isa = PBXBuildFile; fileRef = 03F94CCE1DD627AA00CE8F4F /* Accounts.json */; };
 		03F94CD11DD6288C00CE8F4F /* Accounts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F94CD01DD6288C00CE8F4F /* Accounts.swift */; };
 		081387571BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 081387561BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m */; };
@@ -250,7 +250,7 @@
 		03B0922D1E7886ED00AD338D /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		03B0922F1E78871A00AD338D /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		03CE00E91E0C436400C91489 /* libePub3-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libePub3-iOS.a"; path = "readium-sdk/Platform/Apple/build/Release-iphoneos/libePub3-iOS.a"; sourceTree = "<group>"; };
-		03E5F42A1EA5BCE400DFFC3A /* NYPLTOC.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = NYPLTOC.storyboard; sourceTree = "<group>"; };
+		03E5F42A1EA5BCE400DFFC3A /* NYPLReaderTOC.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = NYPLReaderTOC.storyboard; sourceTree = "<group>"; };
 		03F94CCE1DD627AA00CE8F4F /* Accounts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Accounts.json; sourceTree = "<group>"; };
 		03F94CD01DD6288C00CE8F4F /* Accounts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Accounts.swift; sourceTree = "<group>"; };
 		080ADCBE1C04C26100C0575F /* libCHRTextFieldFormatter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libCHRTextFieldFormatter.a; path = "Pods/../build/Debug-iphoneos/libCHRTextFieldFormatter.a"; sourceTree = "<group>"; };
@@ -785,7 +785,6 @@
 				03690E221EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift */,
 				03690E281EB2B44300F75D5F /* NYPLReaderBookmarkElement.swift */,
 				E63F2C6B1EAA81B3002B6373 /* ExtendedNavBarView.swift */,
-				03E5F42A1EA5BCE400DFFC3A /* NYPLTOC.storyboard */,
 				113137E51A48DAB90082954E /* NYPLReaderReadiumView.h */,
 				113137E61A48DAB90082954E /* NYPLReaderReadiumView.m */,
 				5A5B90191B946FAD002C53E9 /* NYPLReaderContainerDelegate.h */,
@@ -795,6 +794,7 @@
 				1188F3E01A1ECC4B006B2F36 /* NYPLReaderSettings.m */,
 				11DC19261A12F92500721DBA /* NYPLReaderSettingsView.h */,
 				11DC19271A12F92500721DBA /* NYPLReaderSettingsView.m */,
+				03E5F42A1EA5BCE400DFFC3A /* NYPLReaderTOC.storyboard */,
 				11BFDB37199C117B00378691 /* NYPLReaderTOCCell.h */,
 				11BFDB38199C117B00378691 /* NYPLReaderTOCCell.m */,
 				11BFDB34199C08E900378691 /* NYPLReaderTOCElement.h */,
@@ -1328,7 +1328,7 @@
 				A823D823192BABA400B55DE2 /* Images.xcassets in Resources */,
 				5A6929101B95ACD100FB4C10 /* sdk.css in Resources */,
 				84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */,
-				03E5F42D1EA5BCE400DFFC3A /* NYPLTOC.storyboard in Resources */,
+				03E5F42D1EA5BCE400DFFC3A /* NYPLReaderTOC.storyboard in Resources */,
 				5A6929251B95C93B00FB4C10 /* readium-shared-js_all.js.map in Resources */,
 				030713661E749D5600DDE3FA /* CodabarLarge.ttf in Resources */,
 				11C113D219F842BE005B3F63 /* host_app_feedback.js in Resources */,
