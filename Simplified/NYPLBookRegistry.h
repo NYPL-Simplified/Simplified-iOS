@@ -106,10 +106,7 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 
 // Returns the fulfillmentId of a book given its identifier.
 - (NSString *)fulfillmentIdForIdentifier:(NSString *)identifier;
-  
-// Set the bookmarks for a book previously registered given its identifier
-- (void)setBookmarks:(NSArray *)bookmarks forIdentifier:(NSString *)identifier;
-  
+    
 // Returns the bookmarks for a book given its identifier
 - (NSArray *)bookmarksForIdentifier:(NSString *)identifier;
   
