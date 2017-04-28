@@ -638,62 +638,41 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   }];
 }
 
-// This function checks to see if the current page has a bookmark or not
-// If it does, turn the bookmark icon to ON. If it does not, turn the bookmark icon to OFF.
 - (void) hasBookmarkForSpineItem:(NSString*)idref completionHandler:(void(^)(bool success, NYPLReaderBookmarkElement *bookmark))completionHandler
 {
-  NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
-  NSArray * bookmarks = [registry bookmarksForIdentifier:self.book.identifier];
+
+  NSArray * bookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];
   
-  // loop through bookmarks, and grab all the CFIs for the current chapter (idref)
-  // check to see is any of those CFIs can be found on the current page
-  // break out of the loop if a CFI is found on that page
-  for (NSUInteger i = 0; i < bookmarks.count; i++)
-  {
-    NYPLReaderBookmarkElement *bookmark = bookmarks[i];
-    
-    if (bookmark.idref == idref)
-    {
-      NSString *contentCFI = bookmark.contentCFI;
-  
+  for (NYPLReaderBookmarkElement *bookmark in bookmarks) {
+
+    if (bookmark.idref == idref) {
       NSString *js = [NSString stringWithFormat:@"ReadiumSDK.reader.isVisibleSpineItemElementCfi('%@', '%@')",
-                      idref,
-                      contentCFI];
-  
-      NYPLLOG(js);
-  
+                      bookmark.idref,
+                      bookmark.contentCFI];
+    
       [self
         sequentiallyEvaluateJavaScript:js
         withCompletionHandler:^(id  _Nullable result, NSError * _Nullable error) {
      
-        if (!error)
-        {
+        if (!error) {
           NSNumber const *isBookmarked = result;
           NYPLLOG(isBookmarked);
           if (isBookmarked && ![isBookmarked  isEqual: @0])
           {
-            // is a bookmarked page
-            NYPLLOG(@"there is a bookmark for this page");
+            // a bookmark was found
             completionHandler(YES, bookmark);
           }
-          else
-          {
-            // is not a bookmarked page
-            NYPLLOG(@"there is no bookmark for this page");
-          }
         }
-        else
-        {
+        else {
           NYPLLOG(error);
         }
       }];
-      
     }
     
     // a bookmark was not found
     completionHandler(NO, nil);
     
-  } // end loop through bookmarks
+  }
 }
 
 - (void)addBookmark
