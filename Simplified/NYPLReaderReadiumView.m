@@ -707,10 +707,11 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NSString *idref = locationDictionary[@"idref"];
   NSDictionary *spineItemDetails = self.bookMapDictionary[idref];
   NSString *chapter = spineItemDetails[@"tocElementTitle"];
-    
-
-  NYPLReaderBookmarkElement *bookmark = [[NYPLReaderBookmarkElement alloc] initWithAnnotationId:nil contentCFI:contentCFI idref:idref chapter:chapter page:nil];
   
+  // annotation id and page need to be implemented
+  // annotation id only when SimplyE sync is enabled
+  // page needs to be determined where that info comes from.
+  NYPLReaderBookmarkElement *bookmark = [[NYPLReaderBookmarkElement alloc] initWithAnnotationId:@"" contentCFI:contentCFI idref:idref chapter:chapter page:@""];
   
   // add the bookmark to the local registry
   [registry addBookmark:bookmark forIdentifier:self.book.identifier];
