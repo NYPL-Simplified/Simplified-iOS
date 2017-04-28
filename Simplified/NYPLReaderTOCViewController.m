@@ -90,9 +90,7 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       NYPLReaderTOCElement *const toc = self.tableOfContents[indexPath.row];
   
       cell.leadingEdgeConstraint.constant = 0;
-      if (toc.nestingLevel > 0) {
-            cell.leadingEdgeConstraint.constant = toc.nestingLevel * 20 + 10;
-      }
+      cell.leadingEdgeConstraint.constant = toc.nestingLevel * 20 + 10;
       cell.titleLabel.text = toc.title;
 
       return cell;

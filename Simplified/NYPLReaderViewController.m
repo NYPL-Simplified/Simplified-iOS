@@ -992,8 +992,8 @@ spineItemTitle:(NSString *const)title
 - (void)didSelectContents
 {
   
-  UIStoryboard *sb = [UIStoryboard storyboardWithName:@"NYPLTOC" bundle:nil];
-  NYPLReaderTOCViewController *viewController = [sb instantiateViewControllerWithIdentifier:@"NYPLTOC"];
+  UIStoryboard *sb = [UIStoryboard storyboardWithName:@"NYPLReaderTOC" bundle:nil];
+  NYPLReaderTOCViewController *viewController = [sb instantiateViewControllerWithIdentifier:@"NYPLReaderTOC"];
   viewController.delegate = self;
   viewController.tableOfContents = self.rendererView.TOCElements;
   viewController.bookTitle = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
