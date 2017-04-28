@@ -4,8 +4,9 @@
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReadium.h"
 #import <PureLayout/PureLayout.h>
-
 #import "NYPLReaderTOCViewController.h"
+
+#import "SimplyE-Swift.h"
 
 @interface NYPLReaderTOCViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -89,15 +90,19 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       NYPLReaderTOCElement *const toc = self.tableOfContents[indexPath.row];
   
       cell.leadingEdgeConstraint.constant = 0;
-      if (toc.nestingLevel > 0) {
-            cell.leadingEdgeConstraint.constant = toc.nestingLevel * 20 + 10;
-      }
+      cell.leadingEdgeConstraint.constant = toc.nestingLevel * 20 + 10;
       cell.titleLabel.text = toc.title;
 
       return cell;
     }
     case 1:{
-      return nil;
+      NYPLReaderBookmarkCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierBookmark];
+      NYPLReaderBookmarkElement *const bookmark = self.bookmarks[indexPath.row];
+      
+      cell.chapterLabel.text = bookmark.chapter;
+      cell.pageNumberLabel.text = bookmark.contentCFI;
+      
+      return cell;
     }
     default:
       return nil;
@@ -117,7 +122,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     }
     case 1:{
-      // bookmark selected
+      NYPLReaderBookmarkElement *const bookmark = self.bookmarks[indexPath.row];
+      [self.delegate TOCViewController:self didSelectBookmark:bookmark];
+      break;
     }
     default:
       break;
@@ -157,8 +164,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     if (self.tableView.isHidden) {
       self.tableView.hidden = NO;
     }
-    [self.tableView reloadData];
   }
+  [self.tableView reloadData];
 }
 
 #pragma mark -

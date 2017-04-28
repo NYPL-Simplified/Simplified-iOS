@@ -32,6 +32,9 @@
 @property (nonatomic) BOOL previousPageTurnWasRight;
 @property (nonatomic) UIView<NYPLReaderRenderer> *rendererView;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
+@property (nonatomic) UIBarButtonItem *bookmarkBarButtonItem;
+@property (nonatomic) UIBarButtonItem *contentsBarButtonItem;
+@property (nonatomic) NYPLReaderBookmarkElement *currentBookmark;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
 @property (nonatomic) UIView *bottomView;
 @property (nonatomic) UIImageView *bottomViewImageView;
@@ -245,30 +248,41 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
+  // Table of Contents button
+  NYPLRoundedButton *const contentsButton = [NYPLRoundedButton button];
+  contentsButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"TOC", nil)];
+  [contentsButton sizeToFit];
+  [contentsButton setImage:[UIImage imageNamed:@"TOC"] forState:UIControlStateNormal];
+  [contentsButton addTarget:self
+                action:@selector(didSelectContents)
+      forControlEvents:UIControlEventTouchUpInside];
+  
+  self.contentsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:contentsButton];
+  
+  // Settings button
   NYPLRoundedButton *const settingsButton = [NYPLRoundedButton button];
   settingsButton.accessibilityLabel = NSLocalizedString(@"ReaderViewControllerToggleReaderSettings", nil);
-  [settingsButton setTitle:@"Aa" forState:UIControlStateNormal];
   [settingsButton sizeToFit];
-  // We set a larger font after sizing because we want large text in a standard-size button.
-  settingsButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+  [settingsButton setImage:[UIImage imageNamed:@"Format"] forState:UIControlStateNormal];
   [settingsButton addTarget:self
                      action:@selector(didSelectSettings)
            forControlEvents:UIControlEventTouchUpInside];
   self.settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
   
-  NYPLRoundedButton *const TOCButton = [NYPLRoundedButton button];
-  TOCButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"TOC", nil)];
-  TOCButton.bounds = settingsButton.bounds;
-  [TOCButton setImage:[UIImage imageNamed:@"TOC"] forState:UIControlStateNormal];
-  [TOCButton addTarget:self
-                action:@selector(didSelectTOC)
-      forControlEvents:UIControlEventTouchUpInside];
+  // Bookmark button
+  NYPLRoundedButton *const bookmarkButton = [NYPLRoundedButton button];
+  bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Add Bookmark", nil)];
+  [bookmarkButton sizeToFit];
+  [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOff"] forState:UIControlStateNormal];
+  [bookmarkButton addTarget:self
+                     action:@selector(toggleBookmark)
+           forControlEvents:UIControlEventTouchUpInside];
   
-  UIBarButtonItem *const TOCBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:TOCButton];
+  self.bookmarkBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:bookmarkButton];
   
   // Corruption may have occurred before we added these, so we need to set their enabled status
   // here (in addition to |readerView:didEncounterCorruptionForBook:|).
-  self.navigationItem.rightBarButtonItems = @[TOCBarButtonItem, self.settingsBarButtonItem];
+  self.navigationItem.rightBarButtonItems = @[self.bookmarkBarButtonItem, self.settingsBarButtonItem, self.contentsBarButtonItem];
   if(self.rendererView.bookIsCorrupt) {
     for(UIBarButtonItem *const item in self.navigationItem.rightBarButtonItems) {
       item.enabled = NO;
@@ -615,6 +629,22 @@ spineItemTitle:(NSString *const)title
   [self.bottomViewProgressLabel needsUpdateConstraints];
 }
 
+#pragma mark NYPLReaderReadiumDelegate
+
+-(void)renderer:(__unused id<NYPLReaderRenderer>)renderer bookmark:(NYPLReaderBookmarkElement*)bookmark icon:(bool)on
+{
+  NYPLRoundedButton * bookmarkButton = self.bookmarkBarButtonItem.customView;
+  if (on) {
+    [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOn"] forState:UIControlStateNormal];
+    bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Remove Bookmark", nil)];
+  }
+  else {
+    [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOff"] forState:UIControlStateNormal];
+    bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Add Bookmark", nil)];
+  }
+  self.currentBookmark = bookmark;
+}
+
 #pragma mark UIPopoverControllerDelegate
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
@@ -714,9 +744,25 @@ spineItemTitle:(NSString *const)title
 #pragma mark NYPLReaderTOCViewControllerDelegate
 
 - (void)TOCViewController:(__attribute__((unused)) NYPLReaderTOCViewController *)controller
-didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
+  didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
 {
   [self.rendererView openOpaqueLocation:opaqueLocation];
+  
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    [self.activePopoverController dismissPopoverAnimated:YES];
+    if (!UIAccessibilityIsVoiceOverRunning())
+      self.interfaceHidden = YES;
+  } else {
+    self.shouldHideInterfaceOnNextAppearance = YES;
+    [self.navigationController popViewControllerAnimated:YES];
+  }
+}
+
+#pragma mark NYPLReaderTOCViewControllerDelegate
+- (void)TOCViewController:(__attribute__((unused))NYPLReaderTOCViewController *)controller
+        didSelectBookmark:(NYPLReaderBookmarkElement *)bookmark
+{
+  [self.rendererView gotoBookmark:bookmark];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     [self.activePopoverController dismissPopoverAnimated:YES];
@@ -881,14 +927,15 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.readerSettingsViewPhone);
 }
 
-- (void)didSelectTOC
+- (void)didSelectContents
 {
   
-  UIStoryboard *sb = [UIStoryboard storyboardWithName:@"NYPLTOC" bundle:nil];
-  NYPLReaderTOCViewController *viewController = [sb instantiateViewControllerWithIdentifier:@"NYPLTOC"];
+  UIStoryboard *sb = [UIStoryboard storyboardWithName:@"NYPLReaderTOC" bundle:nil];
+  NYPLReaderTOCViewController *viewController = [sb instantiateViewControllerWithIdentifier:@"NYPLReaderTOC"];
   viewController.delegate = self;
   viewController.tableOfContents = self.rendererView.TOCElements;
   viewController.bookTitle = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
+  viewController.bookmarks = self.rendererView.bookmarkElements;
 
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -904,6 +951,17 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
      animated:YES];
   } else {
     [self.navigationController pushViewController:viewController animated:YES];
+  }
+}
+
+- (void)toggleBookmark
+{
+  NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
+  if (self.currentBookmark) {
+    [rv deleteBookmark:self.currentBookmark];
+  }
+  else {
+    [rv addBookmark];
   }
 }
 
