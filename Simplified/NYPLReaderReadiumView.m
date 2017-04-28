@@ -405,17 +405,26 @@ executeJavaScript:(NSString *const)javaScript
 
 #pragma mark WKNavigationDelegate
 
-- (WKWebView *)webView:(WKWebView *)webView
+- (WKWebView *)webView:(__unused WKWebView *)webView
 createWebViewWithConfiguration:(__unused WKWebViewConfiguration *)configuration
    forNavigationAction:(WKNavigationAction *)navigationAction
         windowFeatures:(__unused WKWindowFeatures *)windowFeatures
 {
-  if(![navigationAction.request.URL.host isEqualToString:localhost]) {
-    [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+  if([navigationAction.request.URL.host isEqualToString:localhost]) {
+    // We don't want to ever open such things in an external browser so we cancel the
+    // request. It's not clear why we'd end up here but doing nothing is better than
+    // switching to Safari and failing. (Keep in mind that this delegate method is only
+    // called when we MUST either create a new web view or cancel the request: Opening
+    // the request in the existing web view is not an option.)
     return nil;
   }
   
-  return webView;
+  // Since this is very likely a link to a web page, a mailto: URL, or similar, let
+  // Safari handle it.
+  [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+  
+  // Cancel the request.
+  return nil;
 }
 
 - (void)webView:(__unused WKWebView *)webView
