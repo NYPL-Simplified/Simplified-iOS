@@ -9,6 +9,7 @@
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
+#import <PureLayout/PureLayout.h>
 
 #import "NYPLCatalogSearchViewController.h"
 
@@ -17,6 +18,7 @@
    UISearchBarDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic) UILabel *activityIndicatorLabel;
 @property (nonatomic) NYPLCatalogUngroupedFeed *category;
 @property (nonatomic) UILabel *noResultsLabel;
 @property (nonatomic) NYPLReloadView *reloadView;
@@ -56,6 +58,14 @@
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   self.activityIndicatorView.hidden = YES;
   [self.view addSubview:self.activityIndicatorView];
+  
+  self.activityIndicatorLabel = [[UILabel alloc] init];
+  self.activityIndicatorLabel.font = [UIFont systemFontOfSize:14.0];
+  self.activityIndicatorLabel.text = NSLocalizedString(@"ActivitySlowLoadMessage", @"Message explaining that the download is still going");
+  self.activityIndicatorLabel.hidden = YES;
+  [self.view addSubview:self.activityIndicatorLabel];
+  [self.activityIndicatorLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:self.activityIndicatorView];
+  [self.activityIndicatorLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.activityIndicatorView withOffset:8.0];
   
   self.searchBar = [[UISearchBar alloc] init];
   self.searchBar.delegate = self;
@@ -105,6 +115,19 @@
   [super viewWillDisappear:animated];
   
   [self.searchBar resignFirstResponder];
+}
+
+- (void)addActivityIndicatorLabel:(NSTimer*)timer
+{
+  if (!self.activityIndicatorView.isHidden) {
+    [UIView transitionWithView:self.activityIndicatorLabel
+                      duration:0.5
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^{
+                      self.activityIndicatorLabel.hidden = NO;
+                    } completion:nil];
+  }
+  [timer invalidate];
 }
 
 #pragma mark UICollectionViewDataSource
@@ -162,6 +185,11 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   self.reloadView.hidden = YES;
   self.activityIndicatorView.hidden = NO;
   [self.activityIndicatorView startAnimating];
+
+  self.activityIndicatorLabel.hidden = YES;
+  [NSTimer scheduledTimerWithTimeInterval: 10.0 target: self
+                                 selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
+  
   self.searchBar.userInteractionEnabled = NO;
   self.searchBar.alpha = 0.5;
   [self.searchBar resignFirstResponder];
@@ -196,6 +224,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
   self.activityIndicatorView.hidden = YES;
   [self.activityIndicatorView stopAnimating];
+  self.activityIndicatorLabel.hidden = YES;
   self.searchBar.userInteractionEnabled = YES;
   self.searchBar.alpha = 1.0;
   

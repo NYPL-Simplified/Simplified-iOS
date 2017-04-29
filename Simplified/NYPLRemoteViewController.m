@@ -5,10 +5,12 @@
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLAlertController.h"
 #import "NYPLProblemDocument.h"
+#import <PureLayout/PureLayout.h>
 
 @interface NYPLRemoteViewController () <NSURLConnectionDataDelegate>
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic) UILabel *activityIndicatorLabel;
 @property (nonatomic) NSURLConnection *connection;
 @property (nonatomic) NSMutableData *data;
 @property (nonatomic, strong)
@@ -52,16 +54,21 @@
   
   [self.connection cancel];
   
+  NSTimeInterval timeoutInterval = 30.0;
+  NSTimeInterval activityLabelTimer = 10.0;
+  
   NSURLRequest *const request = [NSURLRequest requestWithURL:self.URL
                                                  cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                             timeoutInterval:10.0];
+                                             timeoutInterval:timeoutInterval];
+  
+  self.activityIndicatorLabel.hidden = YES;
+  [NSTimer scheduledTimerWithTimeInterval: activityLabelTimer target: self
+                                 selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
   
   self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
   self.data = [NSMutableData data];
   
   [self.activityIndicatorView startAnimating];
-  
-//  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
   
   [self.connection start];
 }
@@ -77,6 +84,14 @@
   self.activityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   [self.view addSubview:self.activityIndicatorView];
+  
+  self.activityIndicatorLabel = [[UILabel alloc] init];
+  self.activityIndicatorLabel.font = [UIFont systemFontOfSize:14.0];
+  self.activityIndicatorLabel.text = NSLocalizedString(@"ActivitySlowLoadMessage", @"Message explaining that the download is still going");
+  self.activityIndicatorLabel.hidden = YES;
+  [self.view addSubview:self.activityIndicatorLabel];
+  [self.activityIndicatorLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:self.activityIndicatorView];
+  [self.activityIndicatorLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.activityIndicatorView withOffset:8.0];
   
   // We always nil out the connection when not in use so this is reliable.
   if(self.connection) {
@@ -102,6 +117,19 @@
   [self.reloadView integralizeFrame];
 }
 
+- (void)addActivityIndicatorLabel:(NSTimer*)timer
+{
+  if (!self.activityIndicatorView.isHidden) {
+    [UIView transitionWithView:self.activityIndicatorLabel
+                      duration:0.5
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^{
+                      self.activityIndicatorLabel.hidden = NO;
+                    } completion:nil];
+  }
+  [timer invalidate];
+}
+
 #pragma mark NSURLConnectionDataDelegate
 
 - (void)connection:(__attribute__((unused)) NSURLConnection *)connection
@@ -118,6 +146,7 @@
 - (void)connectionDidFinishLoading:(__attribute__((unused)) NSURLConnection *)connection
 {
   [self.activityIndicatorView stopAnimating];
+  self.activityIndicatorLabel.hidden = YES;
   
   if ([(NSHTTPURLResponse *)self.response statusCode] != 200
       && ([self.response.MIMEType isEqualToString:@"application/problem+json"]
@@ -159,6 +188,7 @@
   didFailWithError:(__attribute__((unused)) NSError *)error
 {
   [self.activityIndicatorView stopAnimating];
+  self.activityIndicatorLabel.hidden = YES;
   
   self.reloadView.hidden = NO;
   

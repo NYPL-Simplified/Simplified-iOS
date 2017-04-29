@@ -102,8 +102,8 @@
 #if defined(FEATURE_DRM_CONNECTOR)
       if([NYPLADEPT sharedInstance].workflowsInProgress) {
         [self presentViewController:[NYPLAlertController
-                                     alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
-                                     message:@"SettingsAccountViewControllerCannotLogOutMessage"]
+                                     alertWithTitle:@"PleaseWait"
+                                     message:@"PleaseWaitMessage"]
                            animated:YES
                          completion:nil];
       } else {

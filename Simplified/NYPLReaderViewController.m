@@ -883,10 +883,13 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
 
 - (void)didSelectTOC
 {
-  NYPLReaderTOCViewController *const viewController =
-    [[NYPLReaderTOCViewController alloc] initWithTOCElements:self.rendererView.TOCElements];
   
+  UIStoryboard *sb = [UIStoryboard storyboardWithName:@"NYPLTOC" bundle:nil];
+  NYPLReaderTOCViewController *viewController = [sb instantiateViewControllerWithIdentifier:@"NYPLTOC"];
   viewController.delegate = self;
+  viewController.tableOfContents = self.rendererView.TOCElements;
+  viewController.bookTitle = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
+
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     [self.activePopoverController dismissPopoverAnimated:NO];

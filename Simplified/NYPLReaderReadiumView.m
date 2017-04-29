@@ -811,7 +811,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
         [spineItemDict setObject:title forKey:@"tocElementTitle"];
       }
       else {
-        [spineItemDict setObject:NSLocalizedString(@"chapter", nil) forKey:@"tocElementTitle"];
+        [spineItemDict setObject:NSLocalizedString(@"ReaderViewControllerCurrentChapter", nil) forKey:@"tocElementTitle"];
       }
       
       [bookDicts setObject:spineItemDict forKey:spineItem.idref];
@@ -893,8 +893,14 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   dispatch_time_t const dispatchTime =
     dispatch_time(DISPATCH_TIME_NOW, (int64_t)(readyStateCheckIntervalInSeconds * NSEC_PER_SEC));
   
+  // A weak reference is needed here so that the main queue does not retain
+  // `NYPLReaderReadiumView` indefinitely. After the reference to `weakSelf`
+  // becomes nil, the block passed to `dispatch_after` will be called one
+  // final time and will not be rescheduled (because `pollReadyState` will
+  // be sent to nil).
+  __weak NYPLReaderReadiumView *const weakSelf = self;
   dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
-    [self pollReadyState];
+    [weakSelf pollReadyState];
   });
 }
 
