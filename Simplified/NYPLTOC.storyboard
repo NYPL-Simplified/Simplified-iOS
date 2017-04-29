@@ -23,7 +23,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="56" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="b6a-LK-Ngd" userLabel="TOC Table View">
-                                <rect key="frame" x="0.0" y="80" width="375" height="587"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="contentCell" rowHeight="56" id="g4U-cz-zN8" userLabel="TOCCell" customClass="NYPLReaderTOCCell">
@@ -89,11 +89,11 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EhZ-Gf-Laz" customClass="ExtendedNavBarView" customModule="SimplyE" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="20" width="375" height="60"/>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EhZ-Gf-Laz" customClass="ExtendedNavBarView" customModule="SimplyE" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="20" width="375" height="0.0"/>
                                 <subviews>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="F46-qe-vSb">
-                                        <rect key="frame" x="16" y="15" width="343" height="31"/>
+                                        <rect key="frame" x="16" y="-15" width="343" height="31"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="350" id="8YL-BF-WyR"/>
                                             <constraint firstAttribute="height" constant="30" id="wuX-JK-sMc"/>
@@ -114,7 +114,7 @@
                                     <constraint firstItem="F46-qe-vSb" firstAttribute="centerX" secondItem="EhZ-Gf-Laz" secondAttribute="centerX" id="FPO-yO-f1B"/>
                                     <constraint firstAttribute="trailing" secondItem="F46-qe-vSb" secondAttribute="trailing" priority="750" constant="16" id="Isr-tD-EkR"/>
                                     <constraint firstItem="F46-qe-vSb" firstAttribute="leading" secondItem="EhZ-Gf-Laz" secondAttribute="leading" priority="750" constant="16" id="Z5p-4J-Uo2"/>
-                                    <constraint firstAttribute="height" constant="60" id="nvw-Y7-40k"/>
+                                    <constraint firstAttribute="height" id="nvw-Y7-40k"/>
                                 </constraints>
                             </view>
                         </subviews>
