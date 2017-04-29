@@ -39,7 +39,12 @@ static NSString *const BookmarksKey = @"bookmarks";
   self.location = location;
   self.state = state;
   self.fulfillmentId = fulfillmentId;
-  self.bookmarks = bookmarks;
+  if (bookmarks != nil) {
+    self.bookmarks = bookmarks;
+  }
+  else {
+    self.bookmarks = [[NSMutableArray alloc] init];
+  }
   
   // If the book availability indicates that the book is held, make sure the state
   // reflects that. Otherwise, make sure it's not in the Holding state.

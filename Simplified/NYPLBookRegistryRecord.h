@@ -12,7 +12,7 @@
 @property (nonatomic, readonly) NYPLBookLocation *location; // nilable
 @property (nonatomic, readonly) NYPLBookState state;
 @property (nonatomic, readonly) NSString *fulfillmentId; // nilable
-@property (nonatomic, readonly) NSArray *bookmarks; // nilable
+@property (nonatomic, readonly) NSArray *bookmarks;
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
