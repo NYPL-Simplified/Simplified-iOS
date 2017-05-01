@@ -11,7 +11,8 @@ typedef NS_ENUM(NSInteger, NYPLBookButtonsState) {
   NYPLBookButtonsStateHoldingFOQ, // Front Of Queue
   NYPLBookButtonsStateDownloadNeeded,
   NYPLBookButtonsStateDownloadSuccessful,
-  NYPLBookButtonsStateUsed
+  NYPLBookButtonsStateUsed,
+  NYPLBookButtonsStateDownloadInProgress
 };
 
 @protocol NYPLBookButtonsDelegate
