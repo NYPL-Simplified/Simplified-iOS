@@ -15,6 +15,7 @@
 @property (nonatomic) NYPLRoundedButton *deleteButton;
 @property (nonatomic) NYPLRoundedButton *downloadButton;
 @property (nonatomic) NYPLRoundedButton *readButton;
+@property (nonatomic) NYPLRoundedButton *cancelButton;
 @property (nonatomic) NSArray *visibleButtons;
 @property (nonatomic) NSMutableArray *constraints;
 @property (nonatomic) id observer;
@@ -49,6 +50,12 @@
   self.readButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.readButton addTarget:self action:@selector(didSelectRead) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.readButton];
+  
+  self.cancelButton = [NYPLRoundedButton button];
+  self.cancelButton.fromDetailView = YES;
+  self.cancelButton.titleLabel.minimumScaleFactor = 0.8f;
+  [self.cancelButton addTarget:self action:@selector(didSelectCancel) forControlEvents:UIControlEventTouchUpInside];
+  [self addSubview:self.cancelButton];
   
   self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   self.activityIndicator.color = [NYPLConfiguration mainColor];
@@ -108,7 +115,7 @@
   } else {
     [self.activityIndicator stopAnimating];
   }
-  for(NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton]) {
+  for(NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton, self.cancelButton]) {
     button.enabled = !state;
   }
 }
@@ -198,7 +205,17 @@
                               @{ButtonKey: self.deleteButton,
                                 TitleKey: title,
                                 HintKey: hint}];
-
+      }
+      break;
+    case NYPLBookButtonsStateDownloadInProgress:
+      {
+        if (self.showReturnButtonIfApplicable)
+        {
+          visibleButtonInfo = @[@{ButtonKey: self.cancelButton,
+                                  TitleKey: NSLocalizedString(@"Cancel", nil),
+                                  HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels the download for the current book: %@", nil), self.book.title],
+                                  AddIndicatorKey: @(NO)}];
+        }
       }
       break;
     }
@@ -255,7 +272,7 @@
     
     [visibleButtons addObject:button];
   }
-  for (NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton]) {
+  for (NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton, self.cancelButton]) {
     if (![visibleButtons containsObject:button]) {
       button.hidden = YES;
     }
@@ -341,6 +358,11 @@
 {
   self.activityIndicator.center = self.downloadButton.center;
   [self.delegate didSelectDownloadForBook:self.book];
+}
+
+- (void)didSelectCancel
+{
+  [self.downloadingDelegate didSelectCancelForBookDetailDownloadingView:self];
 }
 
 @end

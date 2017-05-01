@@ -2,12 +2,12 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
+#import <PureLayout/PureLayout.h>
 
 #import "NYPLBookDetailDownloadingView.h"
 
 @interface NYPLBookDetailDownloadingView ()
 
-@property (nonatomic) NYPLRoundedButton *cancelButton;
 @property (nonatomic) UIView *backgroundView;
 @property (nonatomic) UILabel *progressLabel;
 @property (nonatomic) UILabel *percentageLabel;
@@ -17,24 +17,15 @@
 
 @implementation NYPLBookDetailDownloadingView
 
-- (instancetype)initWithWidth:(CGFloat)width
+- (instancetype)init
 {
-  self = [super initWithFrame:CGRectMake(0, 0, width, 70)];
+  self = [super init];
   if(!self) return nil;
   
   self.backgroundView = [[UIView alloc] init];
   self.backgroundView.backgroundColor = [NYPLConfiguration mainColor];
   [self addSubview:self.backgroundView];
-  
-  self.cancelButton = [NYPLRoundedButton button];
-  [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
-                     forState:UIControlStateNormal];
-  [self.cancelButton addTarget:self
-                        action:@selector(didSelectCancel)
-              forControlEvents:UIControlEventTouchUpInside];
-  self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
-  self.cancelButton.tintColor = [NYPLConfiguration mainColor];
-  [self addSubview:self.cancelButton];
+  [self.backgroundView autoPinEdgesToSuperviewEdges];
   
   self.progressLabel = [[UILabel alloc] init];
   self.progressLabel.font = [UIFont systemFontOfSize:12];
@@ -63,10 +54,8 @@
 {
   CGFloat const sidePadding = 10;
   
-  self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), 60);
-  
   [self.progressLabel sizeToFit];
-  self.progressLabel.center = CGPointMake(self.backgroundView.center.x, 15);
+  self.progressLabel.center = CGPointMake(self.backgroundView.center.x, self.backgroundView.center.y);
   self.progressLabel.frame = CGRectMake(sidePadding,
                                         CGRectGetMinY(self.progressLabel.frame),
                                         CGRectGetWidth(self.progressLabel.frame),
@@ -90,15 +79,6 @@
                                         CGRectGetWidth(self.percentageLabel.frame)),
                                        CGRectGetHeight(self.progressView.frame));
   [self.progressView integralizeFrame];
-  
-  [self.cancelButton sizeToFit];
-  self.cancelButton.center = self.center;
-  self.cancelButton.frame = CGRectMake(CGRectGetMinX(self.cancelButton.frame),
-                                       (CGRectGetHeight(self.frame) -
-                                        CGRectGetHeight(self.cancelButton.frame) - 6),
-                                       CGRectGetWidth(self.cancelButton.frame),
-                                       CGRectGetHeight(self.cancelButton.frame));
-  [self.cancelButton integralizeFrame];
 }
 
 #pragma mark -
@@ -123,9 +103,9 @@
   [self setNeedsLayout];
 }
 
-- (void)didSelectCancel
-{
-  [self.delegate didSelectCancelForBookDetailDownloadingView:self];
-}
+//- (void)didSelectCancel
+//{
+//  [self.down didSelectCancelForBookDetailDownloadingView:self];
+//}
 
 @end

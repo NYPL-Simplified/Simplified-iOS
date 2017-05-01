@@ -85,6 +85,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
   self.buttonsView.showReturnButtonIfApplicable = YES;
   self.buttonsView.delegate = [NYPLBookCellDelegate sharedDelegate];
+  self.buttonsView.downloadingDelegate = self;
   self.buttonsView.book = book;
   
   [self addSubview:self.contentView];
@@ -201,8 +202,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.downloadFailedView.delegate = self;
   self.downloadFailedView.hidden = YES;
   
-  self.downloadingView = [[NYPLBookDetailDownloadingView alloc] initWithWidth:0];
-  self.downloadingView.delegate = self;
+  self.downloadingView = [[NYPLBookDetailDownloadingView alloc] init];
   self.downloadingView.hidden = YES;
 }
 
@@ -274,7 +274,7 @@ static NSString *DetailHTMLTemplate = nil;
   
   [self.coverImageView autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.coverImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:VerticalPadding];
-  if (self.frame.size.width <= 330) {
+  if ([UIScreen mainScreen].bounds.size.width <= 330) {
     [self.coverImageView autoSetDimension:ALDimensionWidth toSize:CoverImageWidth/1.5];
     [self.coverImageView autoSetDimension:ALDimensionHeight toSize:CoverImageHeight/1.5];
   } else {
@@ -307,6 +307,20 @@ static NSString *DetailHTMLTemplate = nil;
   [self.normalView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.buttonsView withOffset:VerticalPadding];
   [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeRight];
   [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+  
+  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+  [self.downloadingView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.buttonsView withOffset:VerticalPadding];
+  [self.downloadingView autoConstrainAttribute:ALAttributeHeight toAttribute:ALAttributeHeight ofView:self.normalView];
+//  [self.downloadingView autoSetDimension:ALDimensionHeight toSize:DownloadViewHeight];
+  
+  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeRight];
+  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+  [self.downloadFailedView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.buttonsView withOffset:VerticalPadding];
+  [self.downloadFailedView autoConstrainAttribute:ALAttributeHeight toAttribute:ALAttributeHeight ofView:self.normalView];
+//  [self.downloadFailedView autoSetDimension:ALDimensionHeight toSize:DownloadViewHeight];
+  
+
   
   [self.summaryTextView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.normalView withOffset:VerticalPadding];
   [self.summaryTextView autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
@@ -357,16 +371,6 @@ static NSString *DetailHTMLTemplate = nil;
     self.reportProblemLabel.hidden = YES;
     [self.reportProblemLabel autoSetDimension:ALDimensionHeight toSize:0];
   }
-  
-  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeRight];
-  [self.downloadFailedView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-  [self.downloadFailedView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.buttonsView withOffset:VerticalPadding];
-  [self.downloadFailedView autoSetDimension:ALDimensionHeight toSize:DownloadViewHeight];
-  
-  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeRight];
-  [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
-  [self.downloadingView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.buttonsView withOffset:VerticalPadding];
-  [self.downloadingView autoSetDimension:ALDimensionHeight toSize:DownloadViewHeight];
   
   if (self.closeButton) {
     [self.closeButton autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
@@ -482,7 +486,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = YES;
       self.downloadFailedView.hidden = YES;
       self.downloadingView.hidden = NO;
-      self.buttonsView.hidden = YES;
+      self.buttonsView.hidden = NO;
+      self.buttonsView.state = NYPLBookButtonsStateDownloadInProgress;
       break;
     case NYPLBookStateDownloadFailed:
       self.normalView.hidden = YES;

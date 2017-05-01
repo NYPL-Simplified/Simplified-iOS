@@ -37,8 +37,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   [self.backgroundView autoPinEdgesToSuperviewEdges];
   
   self.messageLabel = [[UILabel alloc] init];
-  self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
-//  self.messageLabel.font = [UIFont systemFontOfSize:12];
+  self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
   self.messageLabel.numberOfLines = 2;
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
@@ -85,6 +84,8 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
       break;
     case NYPLBookButtonsStateUsed:
       newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
+      break;
+    case NYPLBookButtonsStateDownloadInProgress:
       break;
   }
   
