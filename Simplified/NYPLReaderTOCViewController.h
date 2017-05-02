@@ -17,7 +17,7 @@ didSelectBookmark:(NYPLReaderBookmarkElement *)bookmark;
 
 @property (nonatomic, weak) id<NYPLReaderTOCViewControllerDelegate> delegate;
 @property (nonatomic) NSArray *tableOfContents;
-@property (nonatomic) NSArray *bookmarks;
+@property (nonatomic) NSMutableArray *bookmarks;
 @property (nonatomic) NSString *bookTitle;
 
 

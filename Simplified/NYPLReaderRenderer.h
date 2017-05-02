@@ -38,7 +38,8 @@ didUpdateProgressWithinBook:(float)progressWithinBook
        pageCount:(NSUInteger)pageCount
   spineItemTitle:(nullable NSString *)spineItemTitle;
 
-- (void)renderer:(nonnull id<NYPLReaderRenderer>)renderer bookmark:(nullable NYPLReaderBookmarkElement*)bookmark icon:(bool)on;
+- (void)renderer:(nonnull id<NYPLReaderRenderer>)renderer icon:(bool)on;
+- (void)renderer:(nonnull id<NYPLReaderRenderer>)renderer bookmark:(nullable NYPLReaderBookmarkElement*)bookmark;
 
 - (void)rendererDidBeginLongLoad:(nonnull id<NYPLReaderRenderer>)render;
 

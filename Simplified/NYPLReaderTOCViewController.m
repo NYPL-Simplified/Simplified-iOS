@@ -6,6 +6,7 @@
 #import <PureLayout/PureLayout.h>
 #import "NYPLReaderTOCViewController.h"
 
+#import "NYPLReaderReadiumView.h"
 #import "SimplyE-Swift.h"
 
 @interface NYPLReaderTOCViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -151,6 +152,23 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return UITableViewAutomaticDimension;
     default:
       return 44;
+  }
+}
+
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+  
+  if (editingStyle == UITableViewCellEditingStyleDelete)
+  {
+    
+    NYPLReaderBookmarkElement *bookmark = self.bookmarks[indexPath.row];
+    
+    NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
+    [rv deleteBookmark:bookmark];
+    
+    [self.bookmarks removeObjectAtIndex:indexPath.row];
+    
+    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:(UITableViewRowAnimationFade)];
+    
   }
 }
 

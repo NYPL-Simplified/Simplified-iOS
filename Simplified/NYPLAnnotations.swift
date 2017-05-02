@@ -50,7 +50,6 @@ final class NYPLAnnotations: NSObject {
         }
         else
         {
-//          NYPLSettings.shared().settingsSynchronizeAnnotations = syncSetting as! Bool
           completionHandler(true)
         }
         
@@ -107,18 +106,18 @@ final class NYPLAnnotations: NSObject {
       let annotationsUrl = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
       
       if let url = annotationsUrl {
-        postJSONRequest(book, url, parameters, NYPLAnnotations.headers)
+        postJSONRequest(book, url, parameters, NYPLAnnotations.headers, completionHandler: { (success) in
+          
+          Log.debug(#file, "successfully posted last reading position")
+          
+        })
       } else {
         Log.error(#file, "MainFeedURL does not exist")
       }
     }
   }
   
-  class func sync(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: [String:String]?) -> ()) {
-    syncLastRead(book, completionHandler: completionHandler)
-  }
-  
-  private class func postJSONRequest(_ book: NYPLBook, _ url: URL, _ parameters: [String:Any], _ headers: [String:String]?)
+  private class func postJSONRequest(_ book: NYPLBook, _ url: URL, _ parameters: [String:Any], _ headers: [String:String]?, completionHandler: @escaping (_ success: Bool) -> ())
   {
     guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted]) else {
       Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
@@ -139,10 +138,11 @@ final class NYPLAnnotations: NSObject {
       
       if let response = response as? HTTPURLResponse {
         if response.statusCode == 200 {
+          completionHandler(true)
           debugPrint(#file, "Posted Last-Read \(((parameters["target"] as! [String:Any])["selector"] as! [String:Any])["value"] as! String)")
         }
       } else {
-        guard let error = error as? NSError else { return }
+        guard let error = error as NSError? else { return }
         if NetworkQueue.StatusCodes.contains(error.code) {
           self.addToOfflineQueue(book, url, parameters)
         }
@@ -191,7 +191,7 @@ final class NYPLAnnotations: NSObject {
           Log.error(#file, "Response Status Code: \(response.statusCode). Description: \(HTTPURLResponse.localizedString(forStatusCode: response.statusCode))")
         }
       } else {
-        guard let error = error as? NSError else { return }
+        guard let error = error as NSError? else { return }
         if NetworkQueue.StatusCodes.contains(error.code) {
           self.addToOfflineQueue(nil, url, parameters)
         }
@@ -206,6 +206,213 @@ final class NYPLAnnotations: NSObject {
     let libraryID = AccountsManager.shared.currentAccount.id
     let parameterData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted])
     NetworkQueue.addRequest(libraryID, book?.identifier, url, .POST, parameterData, headers)
+  }
+  
+  class func sync(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: [String:String]?) -> ()) {
+    syncLastRead(book, completionHandler: completionHandler)
+  }
+  
+  class func getBookmark(_ book:NYPLBook, _ cfi:NSString,  completionHandler: @escaping (_ responseObject: NYPLReaderBookmarkElement?) -> ()) {
+  
+    let responseJSON = try! JSONSerialization.jsonObject(with: cfi.data(using: String.Encoding.utf8.rawValue)!, options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:String]
+    
+    let contentCFI = responseJSON["contentCFI"]!
+    let idref = responseJSON["idref"]!
+
+    var request = URLRequest.init(url: book.annotationsURL,
+                                  cachePolicy: .reloadIgnoringLocalCacheData,
+                                  timeoutInterval: 30)
+    request.httpMethod = "GET"
+    
+    for (headerKey, headerValue) in NYPLAnnotations.headers {
+      request.setValue(headerValue, forHTTPHeaderField: headerKey)
+    }
+    
+    let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
+      
+      if error != nil {
+        completionHandler(nil)
+        return
+      } else {
+        
+        guard let json = try? JSONSerialization.jsonObject(with: data!, options: []) as! [String:Any] else {
+          Log.error(#file, "JSON could not be created from data.")
+          completionHandler(nil)
+          return
+        }
+        
+        guard let total:Int = json["total"] as? Int else {
+          completionHandler(nil)
+          return
+        }
+        
+        if total > 0
+        {
+          
+          guard let first = json["first"] as? [String:AnyObject], let items = first["items"] as? [AnyObject] else {
+            completionHandler(nil)
+            return
+          }
+                    
+          for item in items
+          {
+            
+            guard let target = item["target"] as? [String:AnyObject],
+              let source = target["source"] as? String,
+              let id = item["id"] as? String,
+              let motivation = item["motivation"] as? String else {
+                completionHandler(nil)
+                return
+            }
+            
+            if source == book.identifier && motivation.contains("bookmarking")
+            {
+              
+              
+              guard let selector = target["selector"] as? [String:AnyObject],
+                let serverCFI = selector["value"] as? String else {
+                  completionHandler(nil)
+                  return
+              }
+              
+              var responseObject = ["serverCFI" : serverCFI]
+              
+              if let body = item["body"] as? [String:AnyObject],
+                let device = body["http://librarysimplified.org/terms/device"] as? String,
+                let time = body["http://librarysimplified.org/terms/time"] as? String,
+                let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
+              {
+                responseObject["device"] = device
+                responseObject["time"] = time
+                responseObject["chapter"] = chapter
+              }
+              
+              
+              let responseJSON = try! JSONSerialization.jsonObject(with: serverCFI.data(using: String.Encoding.utf8)!, options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:String]
+              
+              if (contentCFI == responseJSON["contentCFI"]! && idref == responseJSON["idref"]!) {
+                
+                let bookmark = NYPLReaderBookmarkElement(annotationId: id, contentCFI: responseJSON["contentCFI"]!, idref: responseJSON["idref"]!, chapter: responseObject["chapter"]!, page: "")
+                completionHandler(bookmark)
+                return
+
+              }
+            }
+          }
+          
+          
+        } else {
+          completionHandler(nil)
+          return
+        }
+        
+      }
+    }
+    dataTask.resume()
+  
+  }
+
+  class func syncBookmarks(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: [NYPLReaderBookmarkElement]?) -> ()) {
+    if (NYPLAccount.shared().hasBarcodeAndPIN() && book.annotationsURL != nil  && AccountsManager.shared.currentAccount.supportsSimplyESync)
+    {
+      var request = URLRequest.init(url: book.annotationsURL,
+                                    cachePolicy: .reloadIgnoringLocalCacheData,
+                                    timeoutInterval: 30)
+      request.httpMethod = "GET"
+      
+      for (headerKey, headerValue) in NYPLAnnotations.headers {
+        request.setValue(headerValue, forHTTPHeaderField: headerKey)
+      }
+      
+      let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
+        
+        if error != nil {
+          completionHandler(nil)
+          return
+        } else {
+          
+          guard let json = try? JSONSerialization.jsonObject(with: data!, options: []) as! [String:Any] else {
+            Log.error(#file, "JSON could not be created from data.")
+            completionHandler(nil)
+            return
+          }
+          
+          guard let total:Int = json["total"] as? Int else {
+            completionHandler(nil)
+            return
+          }
+          
+          if total > 0
+          {
+            
+            guard let first = json["first"] as? [String:AnyObject], let items = first["items"] as? [AnyObject] else {
+              completionHandler(nil)
+              return
+            }
+            
+            var bookmarks = [NYPLReaderBookmarkElement]()
+            
+            for item in items
+            {
+              
+              guard let target = item["target"] as? [String:AnyObject],
+                let source = target["source"] as? String,
+                let id = item["id"] as? String,
+                let motivation = item["motivation"] as? String else {
+                  completionHandler(nil)
+                  return
+              }
+            
+              if source == book.identifier && motivation.contains("bookmarking")
+              {
+                
+                
+                guard let selector = target["selector"] as? [String:AnyObject],
+                  let serverCFI = selector["value"] as? String else {
+                  completionHandler(nil)
+                  return
+                }
+                
+                var responseObject = ["serverCFI" : serverCFI]
+                
+                if let body = item["body"] as? [String:AnyObject],
+                  let device = body["http://librarysimplified.org/terms/device"] as? String,
+                  let time = body["http://librarysimplified.org/terms/time"] as? String,
+                  let chapter = body["http://librarysimplified.org/terms/chapter"] as? String
+                {
+                  responseObject["device"] = device
+                  responseObject["time"] = time
+                  responseObject["chapter"] = chapter
+                }
+
+                
+                let responseJSON = try! JSONSerialization.jsonObject(with: serverCFI.data(using: String.Encoding.utf8)!, options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:String]
+                  
+                
+                let bookmark = NYPLReaderBookmarkElement(annotationId: id, contentCFI: responseJSON["contentCFI"]!, idref: responseJSON["idref"]!, chapter: "", page: "")
+                bookmarks.append(bookmark)
+
+              }
+            }
+
+            completionHandler(bookmarks)
+            return
+
+          } else {
+            completionHandler(nil)
+            return
+          }
+          
+        }
+      }
+      dataTask.resume()
+    }
+    else
+    {
+      completionHandler(nil)
+      return
+    }
+
   }
   
   private class func syncLastRead(_ book:NYPLBook, completionHandler: @escaping (_ responseObject: [String:String]?) -> ()) {
@@ -253,8 +460,8 @@ final class NYPLAnnotations: NSObject {
               guard let target = item["target"] as? [String:AnyObject],
                 let source = target["source"] as? String,
                 let motivation = item["motivation"] as? String else {
-                completionHandler(nil)
-                return
+                  completionHandler(nil)
+                  return
               }
               
               if source == book.identifier && motivation == "http://librarysimplified.org/terms/annotation/idling"
@@ -275,7 +482,6 @@ final class NYPLAnnotations: NSObject {
                   responseObject["time"] = time
                 }
                 
-                Log.info(#file, "\(responseObject["serverCFI"])")
                 completionHandler(responseObject)
                 return
               }
@@ -295,6 +501,80 @@ final class NYPLAnnotations: NSObject {
       return
     }
   }
+  
+  
+  class func postBookmark(_ book:NYPLBook, cfi:NSString, chapter:NSString, completionHandler: @escaping (_ responseObject: NYPLReaderBookmarkElement) -> ())
+  {
+    if (NYPLAccount.shared().hasBarcodeAndPIN())
+    {
+      let parameters = [
+        "@context": "http://www.w3.org/ns/anno.jsonld",
+        "type": "Annotation",
+        "motivation": "http://www.w3.org/ns/oa#bookmarking",
+        "target":[
+          "source":  book.identifier,
+          "selector": [
+            "type": "oa:FragmentSelector",
+            "value": cfi
+          ]
+        ],
+        "body": [
+          "http://librarysimplified.org/terms/time" : NSDate().rfc3339String(),
+          "http://librarysimplified.org/terms/device" : NYPLAccount.shared().deviceID,
+          "http://librarysimplified.org/terms/chapter" : chapter
+        ]
+        ] as [String : Any]
+      
+      let url = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
+      
+      if let url = url {
+        
+        postJSONRequest(book, url, parameters, NYPLAnnotations.headers, completionHandler: { (success) in
+          
+          getBookmark(book, cfi, completionHandler: {(bookmark) in
+            
+            completionHandler(bookmark!)
+
+          })
+          
+        })
+        
+      } else {
+        Log.error(#file, "MainFeedURL does not exist")
+      }
+    }
+  }
+  
+  class func deleteBookmark(annotationId:NSString)
+  {
+    let url: URL = URL(string: annotationId as String)!
+    var request = URLRequest(url: url)
+    request.httpMethod = "DELETE"
+    
+    if let headers = NYPLAnnotations.headers as [String:String]? {
+      for (headerKey, headerValue) in headers {
+        request.setValue(headerValue, forHTTPHeaderField: headerKey)
+      }
+    }
+    
+    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+      
+      if let response = response as? HTTPURLResponse {
+        print("NYPLAnnotations::deleteBookmark, response.statusCode is \(response.statusCode)")
+        
+        if response.statusCode == 200 {
+          debugPrint(#file, "Deleted Bookmark")
+        }
+      } else {
+        guard let error = error as NSError? else { return }
+        Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+      }
+    }
+    
+    task.resume()
+  }
+ 
+
   
   class var headers: [String:String]
   {

@@ -1519,19 +1519,19 @@ replacementString:(NSString *)string
   
   if (account.syncIsEnabled)
   {
-    title = @"Disable Sync";
-    message = @"Bookmarks and last reading position in this device will not be shared with your other SimplyE devices.";
+    title = @"Disable Sync?";
+    message = @"Do not synchronize your bookmarks and last reading position across all of your devices.";
   }
   else
   {
-    title = @"Enable Sync";
-    message = @"This will synchronize your bookmarks and last reading position across all your SimplyE devices.";
+    title = @"Enable Sync?";
+    message = @"Synchronize your bookmarks and last reading position across all of your devices.";
   }
   
   NYPLAlertController *alertController = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
   if (account.syncIsEnabled)
   {
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Remove Current Device From Sync" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Disable This Device" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
     
       // add server update here as well
       
@@ -1543,7 +1543,7 @@ replacementString:(NSString *)string
       self.switchView.on = account.syncIsEnabled;
 
     }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Remove All Devices From Sync" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Disable All Devices" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
       
       // add server update here as well
       
@@ -1574,7 +1574,7 @@ replacementString:(NSString *)string
     }]];
   }
   
-  [alertController addAction:[UIAlertAction actionWithTitle:@"Never mind" style:UIAlertActionStyleCancel handler:^(__unused UIAlertAction * _Nonnull action) {
+  [alertController addAction:[UIAlertAction actionWithTitle:@"Not Now" style:UIAlertActionStyleCancel handler:^(__unused UIAlertAction * _Nonnull action) {
 
     self.switchView.on = account.syncIsEnabled;
     
