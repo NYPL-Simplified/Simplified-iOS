@@ -205,14 +205,14 @@
       
       Account *account = [[AccountsManager sharedInstance] currentAccount];
       
-      NSString *title = @"SimplyE Sync";
-      NSString *message = @"<Initial setup> Synchronize your bookmarks and last reading position across all your SimplyE devices.";
+      NSString *title = @"New! SimplyE Sync";
+      NSString *message = @"Automatically update your bookmarks and last reading position across all of your devices.";
       
       
       NYPLAlertController *alertController = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
       
       
-      [alertController addAction:[UIAlertAction actionWithTitle:@"Do not Enable Sync" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
+      [alertController addAction:[UIAlertAction actionWithTitle:@"Not Now" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
         
         // add server update here as well
         [NYPLAnnotations updateSyncSettings:false];
