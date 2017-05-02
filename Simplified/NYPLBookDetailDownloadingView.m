@@ -22,63 +22,42 @@
   self = [super init];
   if(!self) return nil;
   
+  CGFloat const sidePadding = 10;
+  
+  self.translatesAutoresizingMaskIntoConstraints = NO;
+  
   self.backgroundView = [[UIView alloc] init];
   self.backgroundView.backgroundColor = [NYPLConfiguration mainColor];
   [self addSubview:self.backgroundView];
   [self.backgroundView autoPinEdgesToSuperviewEdges];
   
   self.progressLabel = [[UILabel alloc] init];
-  self.progressLabel.font = [UIFont systemFontOfSize:12];
+  self.progressLabel.font = [UIFont systemFontOfSize:14];
   self.progressLabel.text = NSLocalizedString(@"Requesting", nil);
   self.progressLabel.textColor = [NYPLConfiguration backgroundColor];
   [self addSubview:self.progressLabel];
+  [self.progressLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+  [self.progressLabel autoPinEdgeToSuperviewEdge:ALEdgeLeading withInset:sidePadding];
   
   self.percentageLabel = [[UILabel alloc] init];
-  self.percentageLabel.font = [UIFont systemFontOfSize:12];
+  self.percentageLabel.font = [UIFont systemFontOfSize:14];
   self.percentageLabel.textColor = [NYPLConfiguration backgroundColor];
   self.percentageLabel.textAlignment = NSTextAlignmentRight;
   self.percentageLabel.text = @"0%";
   [self addSubview:self.percentageLabel];
+  [self.percentageLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+  [self.percentageLabel autoPinEdgeToSuperviewEdge:ALEdgeTrailing withInset:sidePadding];
+  
   
   self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
   self.progressView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5];
   self.progressView.tintColor = [NYPLConfiguration backgroundColor];
   [self addSubview:self.progressView];
+  [self.progressView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+  [self.progressView autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.progressLabel withOffset:sidePadding*2];
+  [self.progressView autoPinEdge:ALEdgeTrailing toEdge:ALEdgeLeading ofView:self.percentageLabel withOffset:-sidePadding*2];
   
   return self;
-}
-
-#pragma mark UIView
-
-- (void)layoutSubviews
-{
-  CGFloat const sidePadding = 10;
-  
-  [self.progressLabel sizeToFit];
-  self.progressLabel.center = CGPointMake(self.backgroundView.center.x, self.backgroundView.center.y);
-  self.progressLabel.frame = CGRectMake(sidePadding,
-                                        CGRectGetMinY(self.progressLabel.frame),
-                                        CGRectGetWidth(self.progressLabel.frame),
-                                        CGRectGetHeight(self.progressLabel.frame));
-  
-  NSString *const percentageLabelText = self.percentageLabel.text;
-  self.percentageLabel.text = @"100%";
-  [self.percentageLabel sizeToFit];
-  self.percentageLabel.text = percentageLabelText;
-  self.percentageLabel.frame = CGRectMake((CGRectGetWidth(self.frame) - sidePadding -
-                                           CGRectGetWidth(self.percentageLabel.frame)),
-                                          CGRectGetMinY(self.progressLabel.frame),
-                                          CGRectGetWidth(self.percentageLabel.frame),
-                                          CGRectGetHeight(self.percentageLabel.frame));
-  
-  self.progressView.center = self.progressLabel.center;
-  self.progressView.frame = CGRectMake(CGRectGetMaxX(self.progressLabel.frame) + sidePadding,
-                                       CGRectGetMinY(self.progressView.frame),
-                                       (CGRectGetWidth(self.frame) - sidePadding * 4 -
-                                        CGRectGetWidth(self.progressLabel.frame) -
-                                        CGRectGetWidth(self.percentageLabel.frame)),
-                                       CGRectGetHeight(self.progressView.frame));
-  [self.progressView integralizeFrame];
 }
 
 #pragma mark -
@@ -102,10 +81,5 @@
   self.progressLabel.text = NSLocalizedString(status, nil);
   [self setNeedsLayout];
 }
-
-//- (void)didSelectCancel
-//{
-//  [self.down didSelectCancelForBookDetailDownloadingView:self];
-//}
 
 @end

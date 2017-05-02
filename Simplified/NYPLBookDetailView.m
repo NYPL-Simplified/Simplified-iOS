@@ -15,8 +15,7 @@
 
 #import <PureLayout/PureLayout.h>
 
-@interface NYPLBookDetailView ()
-  <NYPLBookDetailDownloadFailedViewDelegate, NYPLBookDetailDownloadingViewDelegate>
+@interface NYPLBookDetailView () <NYPLBookDetailDownloadingDelegate>
 
 @property (nonatomic) BOOL didSetupConstraints;
 @property (nonatomic) BOOL beganInitialRequest;
@@ -53,7 +52,7 @@ static CGFloat const SubtitleBaselineOffset = 10;
 static CGFloat const AuthorBaselineOffset = 12;
 static CGFloat const CoverImageHeight = 200.0;
 static CGFloat const CoverImageWidth = 160.0;
-static CGFloat const DownloadViewHeight = 60.0;
+static CGFloat const NormalViewMinimumHeight = 38.0;
 static CGFloat const VerticalPadding = 10.0;
 static CGFloat const MainTextPaddingLeft = 10.0;
 static CGFloat const SummaryTextAbbreviatedHeight = 150.0;
@@ -198,8 +197,8 @@ static NSString *DetailHTMLTemplate = nil;
   self.normalView.book = self.book;
   self.normalView.hidden = YES;
 
-  self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] initWithWidth:0];
-  self.downloadFailedView.delegate = self;
+  self.downloadFailedView = [[NYPLBookDetailDownloadFailedView alloc] init];
+//  self.downloadFailedView.delegate = self;
   self.downloadFailedView.hidden = YES;
   
   self.downloadingView = [[NYPLBookDetailDownloadingView alloc] init];
@@ -307,6 +306,7 @@ static NSString *DetailHTMLTemplate = nil;
   [self.normalView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.buttonsView withOffset:VerticalPadding];
   [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeRight];
   [self.normalView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
+  [self.normalView autoSetDimension:ALDimensionHeight toSize:NormalViewMinimumHeight relation:NSLayoutRelationGreaterThanOrEqual];
   
   [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeRight];
   [self.downloadingView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
@@ -408,26 +408,18 @@ static NSString *DetailHTMLTemplate = nil;
   [super updateConstraints];
 }
 
-#pragma mark NYPLBookDetailDownloadFailedViewDelegate
-
-- (void)didSelectCancelForBookDetailDownloadFailedView:
-(__attribute__((unused)) NYPLBookDetailDownloadFailedView *)NYPLBookDetailDownloadFailedView
-{
-  [self.detailViewDelegate didSelectCancelDownloadFailedForBookDetailView:self];
-}
-
-- (void)didSelectTryAgainForBookDetailDownloadFailedView:
-(__attribute__((unused)) NYPLBookDetailDownloadFailedView *)NYPLBookDetailDownloadFailedView
-{
-  [self.detailViewDelegate didSelectTryAgainForBookDetailView:self];
-}
-
-#pragma mark NYPLBookDetailDownloadingViewDelegate
+#pragma mark NYPLBookDetailDownloadingDelegate
 
 - (void)didSelectCancelForBookDetailDownloadingView:
 (__attribute__((unused)) NYPLBookDetailDownloadingView *)bookDetailDownloadingView
 {
   [self.detailViewDelegate didSelectCancelDownloadingForBookDetailView:self];
+}
+
+- (void)didSelectCancelForBookDetailDownloadFailedView:
+(__attribute__((unused)) NYPLBookDetailDownloadFailedView *)NYPLBookDetailDownloadFailedView
+{
+  [self.detailViewDelegate didSelectCancelDownloadFailedForBookDetailView:self];
 }
 
 #pragma mark UIWebViewDelegate
@@ -493,7 +485,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.hidden = YES;
       self.downloadFailedView.hidden = NO;
       self.downloadingView.hidden = YES;
-      self.buttonsView.hidden = YES;
+      self.buttonsView.hidden = NO;
+      self.buttonsView.state = NYPLBookButtonsStateDownloadFailed;
       break;
     case NYPLBookStateDownloadSuccessful:
       self.normalView.hidden = NO;
