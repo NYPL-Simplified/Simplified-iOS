@@ -121,11 +121,6 @@
    animated:YES];
 }
 
-- (void)didSelectTryAgainForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView
-{
-  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:self.book];
-}
-
 #pragma mark - ProblemReportViewControllerDelegate
 
 -(void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender

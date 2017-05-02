@@ -200,7 +200,7 @@
 
         visibleButtonInfo = @[@{ButtonKey: self.readButton,
                                 TitleKey: NSLocalizedString(@"Read", nil),
-                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens %@ for reading", nil), self.book.title],
+                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Retry to download the book %@", nil), self.book.title],
                                 AddIndicatorKey: @(YES)},
                               @{ButtonKey: self.deleteButton,
                                 TitleKey: title,
@@ -219,8 +219,23 @@
       }
       break;
     }
+    case NYPLBookButtonsStateDownloadFailed:
+    {
+      if (self.showReturnButtonIfApplicable)
+      {
+        visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
+                                TitleKey: NSLocalizedString(@"Retry", nil),
+                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Retry the failed download for this book: %@", nil), self.book.title],
+                                AddIndicatorKey: @(NO)},
+                              @{ButtonKey: self.cancelButton,
+                                TitleKey: NSLocalizedString(@"Cancel", nil),
+                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels the failed download for this book: %@", nil), self.book.title],
+                                AddIndicatorKey: @(NO)}];
+      }
+    }
+      break;
   }
-  
+
   NSMutableArray *visibleButtons = [NSMutableArray array];
   
   BOOL fulfillmentIdRequired = NO;
@@ -362,7 +377,19 @@
 
 - (void)didSelectCancel
 {
-  [self.downloadingDelegate didSelectCancelForBookDetailDownloadingView:self];
+  switch([[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier]) {
+    case NYPLBookStateDownloading: {
+      [self.downloadingDelegate didSelectCancelForBookDetailDownloadingView:self];
+      break;
+    }
+    case NYPLBookStateDownloadFailed: {
+      [self.downloadingDelegate didSelectCancelForBookDetailDownloadFailedView:self];
+      break;
+    }
+    default:
+      break;
+  }
+  
 }
 
 @end
