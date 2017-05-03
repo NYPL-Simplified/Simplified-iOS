@@ -19,8 +19,20 @@ import UIKit
   var page:String?
   
   var location:String?
+  var progressWithinChapter:Float = 0.0
+  var progressWithinBook:Float = 0.0
   
-  init(annotationId:String, contentCFI:String, idref:String, chapter:String?, page:String?, location:String?)
+  var device:String?
+  var time:String?
+  
+  init(annotationId:String,
+       contentCFI:String,
+       idref:String,
+       chapter:String?,
+       page:String?,
+       location:String?,
+       progressWithinChapter:Float,
+       progressWithinBook:Float)
   {
     self.annotationId = annotationId
     self.contentCFI = contentCFI
@@ -28,6 +40,8 @@ import UIKit
     self.chapter = chapter ?? ""
     self.page = page ?? ""
     self.location = location ?? ""
+    self.progressWithinChapter = progressWithinChapter
+    self.progressWithinBook = progressWithinBook
   }
   
   init(dictionary:NSDictionary)
@@ -38,6 +52,16 @@ import UIKit
     self.chapter = dictionary["chapter"] as? String
     self.page = dictionary["page"] as? String
     self.location = dictionary["location"] as? String
+    self.time = dictionary["time"] as? String
+    self.device = dictionary["device"] as? String
+    if let progressChapter = dictionary["progressWithinChapter"] as? Float
+    {
+      self.progressWithinChapter = progressChapter
+    }
+    if let progressBook = dictionary["progressWithinBook"] as? Float
+    {
+      self.progressWithinBook = progressBook
+    }
   }
 
   var dictionaryRepresentation:NSDictionary {
@@ -47,7 +71,12 @@ import UIKit
             "idref":self.idref,
             "chapter":self.chapter ?? "",
             "page":self.page ?? "",
-            "location":self.location ?? ""]
+            "location":self.location ?? "",
+            "time":self.time ?? "",
+            "device":self.device ?? "",
+            "progressWithinChapter":self.progressWithinChapter,
+            "progressWithinBook":self.progressWithinBook
+            ]
   }
   
   override func isEqual(_ object: Any?) -> Bool {
@@ -65,4 +94,20 @@ import UIKit
     return false
   }
   
+  var percentInChapter:String {
+    
+    return (self.progressWithinChapter * 100).roundTo(decimalPlaces: 0)
+    
+  }
+  var percentInBook:String {
+    
+    return (self.progressWithinBook * 100).roundTo(decimalPlaces: 0)
+    
+  }
+}
+
+extension Float {
+  func roundTo(decimalPlaces: Int) -> String {
+    return String(format: "%.\(decimalPlaces)f%%", self) as String
+  }
 }

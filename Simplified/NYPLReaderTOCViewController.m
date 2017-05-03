@@ -8,6 +8,8 @@
 
 #import "NYPLReaderReadiumView.h"
 #import "SimplyE-Swift.h"
+#import "NSDate+NYPLDateAdditions.h"
+
 
 @interface NYPLReaderTOCViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -101,7 +103,15 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       NYPLReaderBookmarkElement *const bookmark = self.bookmarks[indexPath.row];
       
       cell.chapterLabel.text = bookmark.chapter;
-      cell.pageNumberLabel.text = bookmark.contentCFI;
+      
+      NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
+      dateFormatter.timeStyle = NSDateFormatterShortStyle;
+      dateFormatter.dateStyle = NSDateFormatterShortStyle;
+      
+      NSDate *date = [NSDate dateWithRFC3339String:bookmark.time];
+      NSString *prettyDate = [dateFormatter stringFromDate:date];
+
+      cell.pageNumberLabel.text = [NSString stringWithFormat:@"%@ - %@ through chapter",prettyDate, bookmark.percentInChapter];
       
       return cell;
     }
