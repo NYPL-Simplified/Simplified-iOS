@@ -511,7 +511,7 @@ static NSString *const RecordsKey = @"records";
   }
 }
   
--(void)deleteBookmark:(NYPLReaderBookmarkElement *)bookmark forIdentifier:(NSString *)identifier
+- (void)deleteBookmark:(NYPLReaderBookmarkElement *)bookmark forIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
       
@@ -525,7 +525,24 @@ static NSString *const RecordsKey = @"records";
     [[NYPLBookRegistry sharedRegistry] save];
   }
 }
-  
+
+- (void)replaceBookmark:(NYPLReaderBookmarkElement *)old with:(NYPLReaderBookmarkElement *)new forIdentifier:(NSString *)identifier
+{
+  @synchronized(self) {
+    
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+    
+    NSMutableArray *bookmarks = record.bookmarks.mutableCopy;
+    [bookmarks removeObject:old];
+    [bookmarks addObject:new];
+
+    self.identifiersToRecords[identifier] = [record recordWithBookmarks:bookmarks];
+    
+    [[NYPLBookRegistry sharedRegistry] save];
+  }
+}
+
+
 - (void)setProcessing:(BOOL)processing forIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
