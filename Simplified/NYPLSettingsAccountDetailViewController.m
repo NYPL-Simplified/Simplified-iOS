@@ -1427,9 +1427,9 @@ replacementString:(NSString *)string
 
 - (void)checkSyncSetting
 {
-  [NYPLAnnotations syncSettingsWithCompletionHandler:^(BOOL exist) {
+  [NYPLAnnotations getSyncSettingsWithCompletionHandler:^(BOOL initialized, BOOL value) {
     
-    if (!exist)
+    if (!initialized)
     {
       // alert
       
