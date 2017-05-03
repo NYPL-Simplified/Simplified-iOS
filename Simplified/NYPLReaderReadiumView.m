@@ -602,7 +602,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 }
 - (void)syncLastReadingPosition:(NSMutableDictionary *const)dictionary andLocation:(NYPLBookLocation *const)location andBook:(NYPLBook *const)book
 {
-  [NYPLAnnotations sync:book completionHandler:^(NSDictionary * _Nullable responseObject) {
+  [NYPLAnnotations syncLastRead:book completionHandler:^(NSDictionary * _Nullable responseObject) {
     
     NSString* serverLocationString;
     NSString* currentLocationString;
