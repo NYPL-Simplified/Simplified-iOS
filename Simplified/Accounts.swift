@@ -3,7 +3,8 @@ import Foundation
 let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
 let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
-let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
+let accountSyncEnabledThisKey    = "NYPLAccountSyncEnabledKey"
+let accountSyncEnabledAllKey     = "NYPLAccountSyncEnabledAllKey"
 
 
 /// Manage the library accounts for the app.
@@ -132,13 +133,22 @@ final class Account:NSObject
       setAccountDictionaryKey(userAcceptedEULAKey, toValue: newValue as AnyObject)
     }
   }
-  var syncIsEnabled:Bool {
+  var syncIsEnabledForThisDevice:Bool {
     get {
-      guard let result = getAccountDictionaryKey(accountSyncEnabledKey) else { return false }
+      guard let result = getAccountDictionaryKey(accountSyncEnabledThisKey) else { return false }
       return result as! Bool
     }
     set {
-      setAccountDictionaryKey(accountSyncEnabledKey, toValue: newValue as AnyObject)
+      setAccountDictionaryKey(accountSyncEnabledThisKey, toValue: newValue as AnyObject)
+    }
+  }
+  var syncIsEnabledForAllDevices:Bool {
+    get {
+      guard let result = getAccountDictionaryKey(accountSyncEnabledAllKey) else { return false }
+      return result as! Bool
+    }
+    set {
+      setAccountDictionaryKey(accountSyncEnabledAllKey, toValue: newValue as AnyObject)
     }
   }
   var userAboveAgeLimit:Bool {

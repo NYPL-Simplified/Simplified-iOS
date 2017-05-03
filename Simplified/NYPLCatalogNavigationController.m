@@ -216,7 +216,8 @@
         
         // add server update here as well
         [NYPLAnnotations updateSyncSettings:false];
-        account.syncIsEnabled = NO;
+        account.syncIsEnabledForAllDevices = NO;
+        account.syncIsEnabledForThisDevice = NO;
         
       }]];
       
@@ -226,7 +227,8 @@
         // add server update here as well
         
         [NYPLAnnotations updateSyncSettings:true];
-        account.syncIsEnabled = YES;
+        account.syncIsEnabledForAllDevices = YES;
+        account.syncIsEnabledForThisDevice = YES;
         
       }]];
       

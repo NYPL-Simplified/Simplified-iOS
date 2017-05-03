@@ -1004,7 +1004,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      if (self.account.syncIsEnabled) {
+      if (self.account.syncIsEnabledForAllDevices) {
         [self.switchView setOn:YES];
       } else {
         [self.switchView setOn:NO];
@@ -1427,7 +1427,7 @@ replacementString:(NSString *)string
 
 - (void)checkSyncSetting
 {
-  [NYPLAnnotations getSyncSettingsWithCompletionHandler:^(BOOL initialized, BOOL value) {
+  [NYPLAnnotations getSyncSettingsWithCompletionHandler:^(BOOL initialized, BOOL __unused value) {
     
     if (!initialized)
     {
@@ -1445,8 +1445,9 @@ replacementString:(NSString *)string
       [alertController addAction:[UIAlertAction actionWithTitle:@"Not Now" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
         // add server update here as well
         [NYPLAnnotations updateSyncSettings:false];
-        account.syncIsEnabled = NO;
-        self.switchView.on = account.syncIsEnabled;
+        account.syncIsEnabledForAllDevices = NO;
+        account.syncIsEnabledForThisDevice = NO;
+        self.switchView.on = account.syncIsEnabledForThisDevice;
       }]];
       
       
@@ -1454,8 +1455,9 @@ replacementString:(NSString *)string
         
         // add server update here as well
         [NYPLAnnotations updateSyncSettings:true];
-        account.syncIsEnabled = YES;
-        self.switchView.on = account.syncIsEnabled;
+        account.syncIsEnabledForAllDevices = YES;
+        account.syncIsEnabledForThisDevice = YES;
+        self.switchView.on = account.syncIsEnabledForThisDevice;
         
       }]];
       [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController
@@ -1517,7 +1519,7 @@ replacementString:(NSString *)string
   Account *account = [[AccountsManager sharedInstance] account:self.accountType];
   NSString *title, *message;
   
-  if (account.syncIsEnabled)
+  if (account.syncIsEnabledForAllDevices)
   {
     title = @"Disable Sync?";
     message = @"Do not synchronize your bookmarks and last reading position across all of your devices.";
@@ -1529,18 +1531,18 @@ replacementString:(NSString *)string
   }
   
   NYPLAlertController *alertController = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-  if (account.syncIsEnabled)
+  if (account.syncIsEnabledForAllDevices)
   {
     [alertController addAction:[UIAlertAction actionWithTitle:@"Disable This Device" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
     
       // add server update here as well
       
       if (sender.on) {
-        account.syncIsEnabled = YES;
+        account.syncIsEnabledForThisDevice = YES;
       } else {
-        account.syncIsEnabled = NO;
+        account.syncIsEnabledForThisDevice = NO;
       }
-      self.switchView.on = account.syncIsEnabled;
+      self.switchView.on = account.syncIsEnabledForThisDevice;
 
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Disable All Devices" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
@@ -1549,11 +1551,13 @@ replacementString:(NSString *)string
       
       [NYPLAnnotations updateSyncSettings:false];
       if (sender.on) {
-        account.syncIsEnabled = YES;
+        account.syncIsEnabledForAllDevices = YES;
+        account.syncIsEnabledForThisDevice = YES;
       } else {
-        account.syncIsEnabled = NO;
+        account.syncIsEnabledForAllDevices = NO;
+        account.syncIsEnabledForThisDevice = NO;
       }
-      self.switchView.on = account.syncIsEnabled;
+      self.switchView.on = account.syncIsEnabledForAllDevices;
       
     }]];
   }
@@ -1565,18 +1569,20 @@ replacementString:(NSString *)string
       
       [NYPLAnnotations updateSyncSettings:true];
       if (sender.on) {
-        account.syncIsEnabled = YES;
+        account.syncIsEnabledForAllDevices = YES;
+        account.syncIsEnabledForThisDevice = YES;
       } else {
-        account.syncIsEnabled = NO;
+        account.syncIsEnabledForAllDevices = NO;
+        account.syncIsEnabledForThisDevice = NO;
       }
-      self.switchView.on = account.syncIsEnabled;
+      self.switchView.on = account.syncIsEnabledForAllDevices;
       
     }]];
   }
   
   [alertController addAction:[UIAlertAction actionWithTitle:@"Not Now" style:UIAlertActionStyleCancel handler:^(__unused UIAlertAction * _Nonnull action) {
 
-    self.switchView.on = account.syncIsEnabled;
+    self.switchView.on = account.syncIsEnabledForThisDevice;
     
   }]];
   
