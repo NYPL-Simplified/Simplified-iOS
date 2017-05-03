@@ -17,7 +17,6 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   NYPLProblemReportButtonStateSent
 };
 
-@property (nonatomic) UIView *backgroundView;
 @property (nonatomic) UILabel *messageLabel;
 
 @end
@@ -30,11 +29,6 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 {
   self = [super init];
   if(!self) return nil;
-  
-  self.backgroundView = [[UIView alloc] init];
-  self.backgroundView.backgroundColor = [NYPLConfiguration mainColor];
-  [self addSubview:self.backgroundView];
-  [self.backgroundView autoPinEdgesToSuperviewEdges];
   
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
@@ -49,6 +43,43 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   [self.messageLabel autoPinEdgeToSuperviewMargin:ALEdgeBottom relation:NSLayoutRelationGreaterThanOrEqual];
   
   return self;
+}
+
+- (void)drawRect:(__unused CGRect)rect
+{
+  //Inner drop-shadow
+  CGRect bounds = [self bounds];
+  CGContextRef context = UIGraphicsGetCurrentContext();
+
+  CGMutablePathRef visiblePath = CGPathCreateMutable();
+  CGPathMoveToPoint(visiblePath, NULL, bounds.origin.x, bounds.origin.y);
+  CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x + bounds.size.width, bounds.origin.y);
+  CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
+  CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x, bounds.origin.y + bounds.size.height);
+  CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x, bounds.origin.y);
+  CGPathCloseSubpath(visiblePath);
+  
+  UIColor *aColor = [NYPLConfiguration mainColor];
+  [aColor setFill];
+  CGContextAddPath(context, visiblePath);
+  CGContextFillPath(context);
+  
+  CGMutablePathRef path = CGPathCreateMutable();
+  CGPathAddRect(path, NULL, CGRectInset(bounds, -42, -42));
+  CGPathAddPath(path, NULL, visiblePath);
+  CGPathCloseSubpath(path);
+  CGContextAddPath(context, visiblePath);
+  CGContextClip(context);
+  
+  aColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.5f];
+  CGContextSaveGState(context);
+  CGContextSetShadowWithColor(context, CGSizeMake(0.0f, 0.0f), 5.0f, [aColor CGColor]);
+  [aColor setFill];
+  CGContextSaveGState(context);
+  CGContextAddPath(context, path);
+  CGContextEOFillPath(context);
+  CGPathRelease(path);
+  CGPathRelease(visiblePath);
 }
 
 #pragma mark -
