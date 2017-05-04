@@ -20,11 +20,13 @@
 @property (nonatomic) BOOL didSetupConstraints;
 @property (nonatomic) BOOL beganInitialRequest;
 @property (nonatomic) UIView *contentView;
+@property (nonatomic) UIVisualEffectView *visualEffectView;
 
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UILabel *subtitleLabel;
 @property (nonatomic) UILabel *authorsLabel;
 @property (nonatomic) UIImageView *coverImageView;
+@property (nonatomic) UIImageView *blurCoverImageView;
 @property (nonatomic) UIButton *closeButton;
 
 @property (nonatomic) NYPLBookDetailButtonsView *buttonsView;
@@ -86,6 +88,8 @@ static NSString *DetailHTMLTemplate = nil;
                                                     self.layoutMargins.bottom,
                                                     self.layoutMargins.right+12);
   
+  
+  
   [self createHeaderLabels];
   [self createFooterLabels];
   
@@ -97,16 +101,18 @@ static NSString *DetailHTMLTemplate = nil;
   self.buttonsView.book = book;
   
   [self addSubview:self.contentView];
+  [self.contentView addSubview:self.blurCoverImageView];
+  [self.contentView addSubview:self.visualEffectView];
   [self.contentView addSubview:self.coverImageView];
   [self.contentView addSubview:self.titleLabel];
   [self.contentView addSubview:self.subtitleLabel];
   [self.contentView addSubview:self.authorsLabel];
-  
   [self.contentView addSubview:self.buttonsView];
-
   [self.contentView addSubview:self.summarySectionLabel];
   [self.contentView addSubview:self.summaryTextView];
   [self.contentView addSubview:self.readMoreLabel];
+  
+  [self.contentView addSubview:self.topFootnoteSeparater];
   [self.contentView addSubview:self.infoSectionLabel];
   [self.contentView addSubview:self.publishedLabelKey];
   [self.contentView addSubview:self.publisherLabelKey];
@@ -116,6 +122,7 @@ static NSString *DetailHTMLTemplate = nil;
   [self.contentView addSubview:self.publisherLabelValue];
   [self.contentView addSubview:self.categoriesLabelValue];
   [self.contentView addSubview:self.distributorLabelValue];
+  [self.contentView addSubview:self.bottomFootnoteSeparator];
   [self.contentView addSubview:self.reportProblemLabel];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -126,13 +133,6 @@ static NSString *DetailHTMLTemplate = nil;
     [self.contentView addSubview:self.closeButton];
   }
   
-  self.topFootnoteSeparater = [[UIView alloc] init];
-  self.topFootnoteSeparater.backgroundColor = [UIColor grayColor];
-  self.bottomFootnoteSeparator = [[UIView alloc] init];
-  self.bottomFootnoteSeparator.backgroundColor = [UIColor grayColor];
-  [self.contentView addSubview:self.topFootnoteSeparater];
-  [self.contentView addSubview:self.bottomFootnoteSeparator];
-
   [self createDownloadViews];
   [self updateFonts];
   
@@ -151,14 +151,20 @@ static NSString *DetailHTMLTemplate = nil;
 
 - (void)createHeaderLabels
 {
+  UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+  self.visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
   
   self.coverImageView = [[UIImageView alloc] init];
   self.coverImageView.contentMode = UIViewContentModeScaleAspectFit;
+  self.blurCoverImageView = [[UIImageView alloc] init];
+  self.blurCoverImageView.contentMode = UIViewContentModeScaleAspectFit;
+  self.blurCoverImageView.alpha = 0.4f;
   
   [[NYPLBookRegistry sharedRegistry]
    thumbnailImageForBook:self.book
    handler:^(UIImage *const image) {
      self.coverImageView.image = image;
+     self.blurCoverImageView.image = image;
    }];
   
   self.titleLabel = [[UILabel alloc] init];
@@ -281,6 +287,11 @@ static NSString *DetailHTMLTemplate = nil;
   [self.reportProblemLabel setTitle:NSLocalizedString(@"ReportProblem", nil) forState:UIControlStateNormal];
   [self.reportProblemLabel addTarget:self action:@selector(reportProblemTapped:) forControlEvents:UIControlEventTouchUpInside];
   [self.reportProblemLabel setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
+  
+  self.topFootnoteSeparater = [[UIView alloc] init];
+  self.topFootnoteSeparater.backgroundColor = [UIColor grayColor];
+  self.bottomFootnoteSeparator = [[UIView alloc] init];
+  self.bottomFootnoteSeparator.backgroundColor = [UIColor grayColor];
 }
 
 - (UILabel *)createFooterLabelWithString:(NSString *)string alignment:(NSTextAlignment)alignment
@@ -300,10 +311,17 @@ static NSString *DetailHTMLTemplate = nil;
   [self.contentView autoPinEdgeToSuperviewEdge:ALEdgeLeft];
   [self.contentView autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self];
   
+  [self.visualEffectView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
+  [self.visualEffectView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.normalView];
+  
   [self.coverImageView autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.coverImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:VerticalPadding];
   [self.coverImageView autoMatchDimension:ALDimensionWidth toDimension:ALDimensionHeight ofView:self.coverImageView withMultiplier:CoverImageAspectRatio];
   [self.coverImageView autoSetDimension:ALDimensionWidth toSize:CoverImageMaxWidth relation:NSLayoutRelationLessThanOrEqual];
+  [self.blurCoverImageView autoPinEdge:ALEdgeLeading toEdge:ALEdgeLeading ofView:self.coverImageView];
+  [self.blurCoverImageView autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.coverImageView];
+  [self.blurCoverImageView autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];
+  [self.blurCoverImageView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.coverImageView];
   
   [self.titleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
   [self.titleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];
