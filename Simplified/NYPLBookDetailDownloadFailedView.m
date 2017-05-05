@@ -2,6 +2,7 @@
 #import "NYPLLinearView.h"
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "UIFont+NYPLSystemFontOverride.h"
 #import <PureLayout/PureLayout.h>
 
 #import "NYPLBookDetailDownloadFailedView.h"
@@ -25,14 +26,29 @@
   self.backgroundColor = [UIColor grayColor];
   
   self.messageLabel = [[UILabel alloc] init];
-  self.messageLabel.font = [UIFont boldSystemFontOfSize:14];
+  self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
   self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
   self.messageLabel.text = NSLocalizedString(@"DownloadCouldNotBeCompleted", nil);
   [self addSubview:self.messageLabel];
   [self.messageLabel autoPinEdgesToSuperviewEdges];
   
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(didChangePreferredContentSize)
+                                               name:UIContentSizeCategoryDidChangeNotification
+                                             object:nil];
+  
   return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)didChangePreferredContentSize
+{
+  self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
 }
 
 @end

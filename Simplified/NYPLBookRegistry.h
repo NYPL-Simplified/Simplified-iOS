@@ -114,8 +114,8 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 - (void)thumbnailImageForBook:(NYPLBook *)book
                       handler:(void (^)(UIImage *image))handler;
 
-// Returns a higher-res version of the thumbnail image.
-- (void)coverImageForBook:(NYPLBook *)book
+// Returns cover image if it exists, or falls back to thumbnail image load.
+- (void)coverImageForBook:(NYPLBook *const)book
                   handler:(void (^)(UIImage *image))handler;
 
 // The set passed in should contain NYPLBook objects. If |books| is nil or does not strictly contain

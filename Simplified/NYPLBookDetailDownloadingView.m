@@ -25,11 +25,6 @@
   
   self.translatesAutoresizingMaskIntoConstraints = NO;
   
-//  self.backgroundView = [[UIView alloc] init];
-//  self.backgroundView.backgroundColor = [NYPLConfiguration mainColor];
-//  [self addSubview:self.backgroundView];
-//  [self.backgroundView autoPinEdgesToSuperviewEdges];
-  
   self.progressLabel = [[UILabel alloc] init];
   self.progressLabel.font = [UIFont systemFontOfSize:14];
   self.progressLabel.text = NSLocalizedString(@"Requesting", nil);

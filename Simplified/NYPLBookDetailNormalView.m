@@ -42,7 +42,17 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   [self.messageLabel autoPinEdgeToSuperviewMargin:ALEdgeTop relation:NSLayoutRelationGreaterThanOrEqual];
   [self.messageLabel autoPinEdgeToSuperviewMargin:ALEdgeBottom relation:NSLayoutRelationGreaterThanOrEqual];
   
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(didChangePreferredContentSize)
+                                               name:UIContentSizeCategoryDidChangeNotification
+                                             object:nil];
+  
   return self;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)drawRect:(__unused CGRect)rect
@@ -82,6 +92,11 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   CGPathRelease(visiblePath);
 }
 
+- (void)didChangePreferredContentSize
+{
+  self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+}
+
 #pragma mark -
 
 - (void)setState:(NYPLBookButtonsState const)state
@@ -117,6 +132,9 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
       newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
       break;
     case NYPLBookButtonsStateDownloadInProgress:
+      break;
+    default:
+      newMessageString = nil;
       break;
   }
   
