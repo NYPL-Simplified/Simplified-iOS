@@ -144,7 +144,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.titleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleHeadline];
   self.subtitleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
   self.authorsLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
-  self.summaryTextView.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
+  self.summaryTextView.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   self.readMoreLabel.titleLabel.font = [UIFont systemFontOfSize:14];
   self.reportProblemLabel.titleLabel.font = [UIFont systemFontOfSize:14];
 }
@@ -161,8 +161,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.blurCoverImageView.alpha = 0.4f;
   
   [[NYPLBookRegistry sharedRegistry]
-   thumbnailImageForBook:self.book
-   handler:^(UIImage *const image) {
+   coverImageForBook:self.book handler:^(UIImage *image) {
      self.coverImageView.image = image;
      self.blurCoverImageView.image = image;
    }];
@@ -197,7 +196,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.summaryTextView.editable = NO;
   self.summaryTextView.clipsToBounds = YES;
   self.summaryTextView.textContainer.lineFragmentPadding = 0;
-  [self.summaryTextView setTextContainerInset:UIEdgeInsetsZero];
+  self.summaryTextView.textContainerInset = UIEdgeInsetsZero;
   
   NSString *htmlString = [NSString stringWithFormat:DetailHTMLTemplate,
                           [NYPLConfiguration systemFontName],
@@ -362,7 +361,7 @@ static NSString *DetailHTMLTemplate = nil;
   [self.downloadFailedView autoConstrainAttribute:ALAttributeHeight toAttribute:ALAttributeHeight ofView:self.normalView];
   
   [self.summarySectionLabel autoPinEdgeToSuperviewMargin:ALEdgeLeading];
-  [self.summarySectionLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.normalView withOffset:VerticalPadding];
+  [self.summarySectionLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.normalView withOffset:VerticalPadding + 4];
   
   [self.summaryTextView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.summarySectionLabel withOffset:VerticalPadding];
   [self.summaryTextView autoPinEdgeToSuperviewMargin:ALEdgeTrailing];

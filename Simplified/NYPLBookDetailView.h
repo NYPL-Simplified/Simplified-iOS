@@ -11,7 +11,6 @@
 - (void)didSelectReturnForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectDownloadForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectReadForBookDetailView:(NYPLBookDetailView *)detailView;
-- (void)didSelectTryAgainForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectCloseButton:(NYPLBookDetailView *)detailView;
 - (void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender;
 
