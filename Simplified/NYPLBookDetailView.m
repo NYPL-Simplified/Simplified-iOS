@@ -129,6 +129,8 @@ static NSString *DetailHTMLTemplate = nil;
     self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.closeButton setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
     [self.closeButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
+    [self.closeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
+    [self.closeButton setContentEdgeInsets:UIEdgeInsetsMake(0, 2, 0, 0)];
     [self.closeButton addTarget:self action:@selector(closeButtonPressed) forControlEvents:UIControlEventTouchDown];
     [self.contentView addSubview:self.closeButton];
   }
@@ -144,9 +146,11 @@ static NSString *DetailHTMLTemplate = nil;
   self.titleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleHeadline];
   self.subtitleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
   self.authorsLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
-  self.summaryTextView.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+  self.summaryTextView.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
   self.readMoreLabel.titleLabel.font = [UIFont systemFontOfSize:14];
   self.reportProblemLabel.titleLabel.font = [UIFont systemFontOfSize:14];
+  self.summarySectionLabel.font = [UIFont boldSystemFontOfSize:12.0];
+  self.infoSectionLabel.font = [UIFont boldSystemFontOfSize:12.0];
 }
 
 - (void)createHeaderLabels
@@ -184,10 +188,8 @@ static NSString *DetailHTMLTemplate = nil;
   }
   
   self.summarySectionLabel = [[UILabel alloc] init];
-  self.summarySectionLabel.font = [UIFont boldSystemFontOfSize:12.0];
   self.summarySectionLabel.text = @"Description";
   self.infoSectionLabel = [[UILabel alloc] init];
-  self.infoSectionLabel.font = [UIFont boldSystemFontOfSize:12.0];
   self.infoSectionLabel.text = @"Information";
   
   self.summaryTextView = [[UITextView alloc] init];
@@ -297,7 +299,7 @@ static NSString *DetailHTMLTemplate = nil;
 {
   UILabel *label = [[UILabel alloc] init];
   label.textAlignment = alignment;
-  label.textColor = [UIColor grayColor];
+//  label.textColor = [UIColor grayColor];
   label.text = string;
   label.font = [UIFont systemFontOfSize:12];
   return label;
@@ -328,11 +330,11 @@ static NSString *DetailHTMLTemplate = nil;
   NSLayoutConstraint *titleLabelConstraint = [self.titleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
   
   [self.subtitleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
-  [self.subtitleLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  [self.subtitleLabel autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.titleLabel];
   [self.subtitleLabel autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeBaseline ofView:self.titleLabel withOffset:SubtitleBaselineOffset];
   
   [self.authorsLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
-  [self.authorsLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+  [self.authorsLabel autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.titleLabel];
   if (self.subtitleLabel.text) {
     [self.authorsLabel autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeBaseline ofView:self.subtitleLabel withOffset:AuthorBaselineOffset];
   } else {
@@ -418,8 +420,10 @@ static NSString *DetailHTMLTemplate = nil;
   if (self.closeButton) {
     [self.closeButton autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
     [self.closeButton autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.titleLabel];
+    [self.closeButton autoSetDimension:ALDimensionWidth toSize:80 relation:NSLayoutRelationLessThanOrEqual];
     [NSLayoutConstraint deactivateConstraints:@[titleLabelConstraint]];
     [self.closeButton autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.titleLabel withOffset:MainTextPaddingLeft];
+    [self.closeButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
   }
   
   [self.topFootnoteSeparater autoSetDimension:ALDimensionHeight toSize: 1.0f / [UIScreen mainScreen].scale];
