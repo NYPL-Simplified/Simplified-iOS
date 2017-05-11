@@ -149,8 +149,8 @@ static NSString *DetailHTMLTemplate = nil;
   self.summaryTextView.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
   self.readMoreLabel.titleLabel.font = [UIFont systemFontOfSize:14];
   self.reportProblemLabel.titleLabel.font = [UIFont systemFontOfSize:14];
-  self.summarySectionLabel.font = [UIFont boldSystemFontOfSize:12.0];
-  self.infoSectionLabel.font = [UIFont boldSystemFontOfSize:12.0];
+  self.summarySectionLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleCaption1];
+  self.infoSectionLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleCaption1];
 }
 
 - (void)createHeaderLabels
