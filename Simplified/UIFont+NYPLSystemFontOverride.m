@@ -17,8 +17,6 @@
 
 #pragma clang diagnostic pop
 
-//GODO this may not need all the work the the UIFont instantiated first.. check once all the text has been updated
-//What i mean is that i may be fine just grabbing and modifying the font descriptor and not messing with the font
 + (UIFont *)customFontForTextStyle:(UIFontTextStyle)style {
   UIFont *preferredFont = [UIFont preferredFontForTextStyle:style];
   NSDictionary *traitDict = [(NSDictionary *)preferredFont.fontDescriptor objectForKey:UIFontDescriptorTraitsAttribute];
@@ -29,6 +27,17 @@
                                                                           size:preferredFont.pointSize]
                                                       fontDescriptorWithFamily:[NYPLConfiguration systemFontFamilyName]]
                                               fontDescriptorByAddingAttributes:attributes];
+  
+  return [UIFont fontWithDescriptor:newDescriptor size:preferredFont.pointSize];
+}
+
++ (UIFont *)customBoldFontForTextStyle:(UIFontTextStyle)style {
+  UIFont *preferredFont = [UIFont preferredFontForTextStyle:style];
+  NSDictionary *attributes = @{UIFontDescriptorTraitsAttribute:@{UIFontWeightTrait:@(UIFontWeightBold)}};
+  UIFontDescriptor *newDescriptor = [[[UIFontDescriptor fontDescriptorWithName:preferredFont.fontName
+                                                                          size:preferredFont.pointSize]
+                                      fontDescriptorWithFamily:[NYPLConfiguration systemFontFamilyName]]
+                                     fontDescriptorByAddingAttributes:attributes];
   
   return [UIFont fontWithDescriptor:newDescriptor size:preferredFont.pointSize];
 }
