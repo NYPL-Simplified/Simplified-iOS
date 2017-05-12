@@ -45,6 +45,7 @@
 "ManageAccounts" = "Manage Accounts";
 "More..." = "More…";
 "MoreBooks" = "More %@ books";
+"NO" = "No"
 "NoResultsFound" = "No results found.";
 "NotConnected" = "You are not connected to the internet. Please connect and try again.";
 "OK" = "OK";
@@ -58,6 +59,7 @@
 "Published" = "Published";
 "Publisher" = "Publisher";
 "Read" = "Read"; // present tense
+"Reload" = "Reload"
 "Remove" = "Remove";
 "Reserve" = "Reserve";
 "Return" = "Return";
@@ -72,12 +74,14 @@
 "SigningOut" = "Signing Out";
 "SignUp" = "Sign Up";
 "SoftwareLicenses" = "Software Licenses";
+"Submit" = "Submit"
 "SyncFailed" = "Sync Failed";
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";
 "TryAgain" = "Try Again";
 "UnknownRequestError" =
     "An unknown error occurred. Please check your connection or try again later.";
 "Verifying" = "Verifying";
+"YES" = "Yes"
 
 // NYPLAppDelegate
 
@@ -92,6 +96,12 @@
 "BookButtonsViewRemoveHoldMessage" = "Are you sure you want to remove \"%@\" from your reservations? You will no longer be in line for this book.";
 "BookButtonsViewRemoveHoldConfirm" = "Remove";
 
+// NYPLBookDetailNormalView
+
+"ReportAProblem" = "Report a Problem"
+"Report" = "Report"
+"SentReport" = "Sent Report"
+"Sent" = "Sent"
 
 // NYPLBookDetailViewControllerTitle
 
@@ -145,6 +155,10 @@
 "Book" = "Book";
 "leftin" = "left in";
 "TOC" = "Table of contents";
+"RemoveBookmark" = "Remove Bookmark"
+"AddBookmark" = "Add Bookmark"
+"ReturnToReader" = "Return to Reader"
+"MagicTap" = "Magic Tap for Tools and Table of Contents"
 
 // NYPLReaderReadiumView
 "chapter" = "chapter";
@@ -200,6 +214,13 @@
 "Location" = "Location";
 "LocationRequiredMessage" = "Location information is required for Sign Up. Please allow access to location information in the iOS settings";
 
+// NYPLSettingsAccountDetailViewController
+"AgeVerification" = "Age Verification"
+"Under13" = "Under 13"
+"13orOlder" = "13 or Older"
+"ReportAnIssue" = "Report An Issue"
+"SupportCenter" = "Support Center"
+
 // NYPLSettingsEULAViewController
 "Accept" = "Accept";
 "Reject" = "Reject";
@@ -209,6 +230,12 @@
 
 // NYPLSettingsLibrarySelectionViewController
 "SettingsAccountLibrariesViewControllerAlertTitle" = "Add Your Library";
+
+// NYPLSettingsPrimaryTableViewController
+"NotNow" = "Not Now"
+"Exit" = "Exit"
+"RestartRequired" = "Restart Required"
+"RestartRequiredForOPDS" = "You need to restart the app to use a new OPDS feed. Select Exit and then restart the app from the home screen."
 
 // NYPLSettingsPrivacyPolicyViewController
 "PrivacyPolicy" = "Privacy Policy";

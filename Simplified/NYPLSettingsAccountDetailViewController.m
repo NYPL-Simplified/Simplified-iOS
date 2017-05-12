@@ -978,7 +978,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"Report An Issue", nil);
+      cell.textLabel.text = NSLocalizedString(@"ReportAnIssue", nil);
       return cell;
     }
     case CellSupportCenter: {
@@ -987,7 +987,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"Support Center", nil);
+      cell.textLabel.text = NSLocalizedString(@"SupportCenter", nil);
       return cell;
     }
     case CellKindAbout: {
@@ -1491,18 +1491,18 @@ replacementString:(NSString *)string
 - (void)confirmAgeChange:(void (^)(BOOL))completion
 {
   NYPLAlertController *alertCont = [NYPLAlertController
-                                    alertControllerWithTitle:NSLocalizedString(@"Age Verification", @"An alert title indicating the user needs to verify their age")
+                                    alertControllerWithTitle:NSLocalizedString(@"AgeVerification", @"An alert title indicating the user needs to verify their age")
                                     message:NSLocalizedString(@"SettingsAccountViewControllerAgeCheckMessage",
                                                               @"An alert message warning the user they will lose their downloaded books if they continue.")
                                     preferredStyle:UIAlertControllerStyleAlert];
   
-  [alertCont addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"Under 13", comment: @"A button title indicating an age range")
+  [alertCont addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"Under13", comment: @"A button title indicating an age range")
                                                  style:UIAlertActionStyleDefault
                                                handler:^(UIAlertAction * _Nonnull __unused action) {
                                                  if (completion) { completion(YES); }
                                                }]];
   
-  [alertCont addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"13 or Older", comment: @"A button title indicating an age range")
+  [alertCont addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"13orOlder", comment: @"A button title indicating an age range")
                                                  style:UIAlertActionStyleDefault
                                                handler:^(UIAlertAction * _Nonnull __unused action) {
                                                  if (completion) { completion(NO); }

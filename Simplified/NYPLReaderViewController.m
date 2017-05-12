@@ -271,7 +271,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   // Bookmark button
   NYPLRoundedButton *const bookmarkButton = [NYPLRoundedButton button];
-  bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Add Bookmark", nil)];
+  bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"AddBookmark", nil)];
   [bookmarkButton sizeToFit];
   [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOff"] forState:UIControlStateNormal];
   [bookmarkButton addTarget:self
@@ -331,7 +331,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.largeTransparentAccessibilityButton.frame = CGRectMake(0, self.navigationController.navigationBar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - self.navigationController.navigationBar.frame.size.height - self.bottomView.frame.size.height);
   [self.view addSubview:self.largeTransparentAccessibilityButton];
   self.largeTransparentAccessibilityButton.userInteractionEnabled = NO;
-  self.largeTransparentAccessibilityButton.accessibilityLabel = NSLocalizedString(@"Return to Reader", @"Return to Reader");
+  self.largeTransparentAccessibilityButton.accessibilityLabel = NSLocalizedString(@"ReturnToReader", nil);
   self.largeTransparentAccessibilityButton.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                                                UIViewAutoresizingFlexibleHeight);
   
@@ -504,7 +504,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   self.isAccessibilityConfigurationActive = UIAccessibilityIsVoiceOverRunning();
   if (UIAccessibilityIsVoiceOverRunning()) {
-    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"Magic Tap for Tools and Table of Contents", nil));
+    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"MagicTap", nil));
   }
 
   [super viewDidAppear:animated];
@@ -636,11 +636,11 @@ spineItemTitle:(NSString *const)title
   NYPLRoundedButton * bookmarkButton = self.bookmarkBarButtonItem.customView;
   if (on) {
     [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOn"] forState:UIControlStateNormal];
-    bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Remove Bookmark", nil)];
+    bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"RemoveBookmark", nil)];
   }
   else {
     [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOff"] forState:UIControlStateNormal];
-    bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Add Bookmark", nil)];
+    bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"AddBookmark", nil)];
   }
   self.currentBookmark = bookmark;
 }
