@@ -15,7 +15,7 @@
 
 #import <PureLayout/PureLayout.h>
 
-@interface NYPLBookDetailView () <NYPLBookDetailDownloadingDelegate>
+@interface NYPLBookDetailView () <NYPLBookDetailDownloadingDelegate, BookDetailTableViewDelegate>
 
 @property (nonatomic) BOOL didSetupConstraints;
 @property (nonatomic) BOOL beganInitialRequest;
@@ -49,6 +49,9 @@
 @property (nonatomic) UILabel *publisherLabelValue;
 @property (nonatomic) UILabel *categoriesLabelValue;
 @property (nonatomic) UILabel *distributorLabelValue;
+
+@property (nonatomic) NYPLBookDetailTableView *footerTableView;
+@property (nonatomic) NYPLBookDetailTableViewDelegate *tableViewDelegate;
 
 @property (nonatomic) UIView *topFootnoteSeparater;
 @property (nonatomic) UIView *bottomFootnoteSeparator;
@@ -122,8 +125,8 @@ static NSString *DetailHTMLTemplate = nil;
   [self.contentView addSubview:self.publisherLabelValue];
   [self.contentView addSubview:self.categoriesLabelValue];
   [self.contentView addSubview:self.distributorLabelValue];
+  [self.contentView addSubview:self.footerTableView];
   [self.contentView addSubview:self.bottomFootnoteSeparator];
-  [self.contentView addSubview:self.reportProblemLabel];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -284,22 +287,21 @@ static NSString *DetailHTMLTemplate = nil;
   self.publishedLabelValue = [self createFooterLabelWithString:publishedValueString alignment:NSTextAlignmentLeft];
   self.distributorLabelValue = [self createFooterLabelWithString:self.book.distributor alignment:NSTextAlignmentLeft];
   
-  self.reportProblemLabel = [[UIButton alloc] init];
-  [self.reportProblemLabel setTitle:NSLocalizedString(@"ReportProblem", nil) forState:UIControlStateNormal];
-  [self.reportProblemLabel addTarget:self action:@selector(reportProblemTapped:) forControlEvents:UIControlEventTouchUpInside];
-  [self.reportProblemLabel setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
-  
   self.topFootnoteSeparater = [[UIView alloc] init];
-  self.topFootnoteSeparater.backgroundColor = [UIColor grayColor];
+  self.topFootnoteSeparater.backgroundColor = [UIColor lightGrayColor];
   self.bottomFootnoteSeparator = [[UIView alloc] init];
-  self.bottomFootnoteSeparator.backgroundColor = [UIColor grayColor];
+  self.bottomFootnoteSeparator.backgroundColor = [UIColor lightGrayColor];
+  
+  self.footerTableView = [[NYPLBookDetailTableView alloc] init];
+  self.tableViewDelegate = [[NYPLBookDetailTableViewDelegate alloc] initWithDelegate:self];
+  self.footerTableView.delegate = self.tableViewDelegate;
+  self.footerTableView.dataSource = self.tableViewDelegate;
 }
 
 - (UILabel *)createFooterLabelWithString:(NSString *)string alignment:(NSTextAlignment)alignment
 {
   UILabel *label = [[UILabel alloc] init];
   label.textAlignment = alignment;
-//  label.textColor = [UIColor grayColor];
   label.text = string;
   label.font = [UIFont systemFontOfSize:12];
   return label;
@@ -396,26 +398,22 @@ static NSString *DetailHTMLTemplate = nil;
   [self.publishedLabelKey autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.publishedLabelKey autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.publisherLabelKey];
   [self.publishedLabelKey autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.publishedLabelValue];
-  
+  [self.publishedLabelKey setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+
   [self.publisherLabelKey autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.publisherLabelKey autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.categoriesLabelKey];
   [self.publisherLabelKey autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.publisherLabelValue];
+  [self.publisherLabelKey setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
   
   [self.categoriesLabelKey autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.categoriesLabelKey autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.distributorLabelKey];
   [self.categoriesLabelKey autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.categoriesLabelValue];
-  
+  [self.categoriesLabelKey setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+
   [self.distributorLabelKey autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.distributorLabelKey autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.distributorLabelValue];
+  [self.distributorLabelKey setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
   
-  [self.reportProblemLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.bottomFootnoteSeparator withOffset:VerticalPadding];
-  [self.reportProblemLabel autoPinEdgeToSuperviewMargin:ALEdgeLeading];
-  [self.reportProblemLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:12];
-  
-  if (!self.book.acquisition.report) {
-    self.reportProblemLabel.hidden = YES;
-    [self.reportProblemLabel autoSetDimension:ALDimensionHeight toSize:0];
-  }
   
   if (self.closeButton) {
     [self.closeButton autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
@@ -435,6 +433,9 @@ static NSString *DetailHTMLTemplate = nil;
   [self.bottomFootnoteSeparator autoPinEdgeToSuperviewEdge:ALEdgeRight];
   [self.bottomFootnoteSeparator autoPinEdgeToSuperviewMargin:ALEdgeLeft];
   [self.bottomFootnoteSeparator autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.distributorLabelValue withOffset:VerticalPadding];
+  
+  [self.footerTableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
+  [self.footerTableView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.distributorLabelValue withOffset:VerticalPadding];
 }
 
 #pragma mark NSObject
@@ -642,7 +643,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   return YES;
 }
 
-- (void)reportProblemTapped:(id)sender
+- (void)reportProblemTappedWithSender:(UIButton *)sender
 {
   [self.detailViewDelegate didSelectReportProblemForBook:self.book sender:sender];
 }
