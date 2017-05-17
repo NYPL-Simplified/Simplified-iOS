@@ -643,9 +643,14 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   return YES;
 }
 
-- (void)reportProblemTappedWithSender:(UIButton *)sender
+- (void)reportProblemTapped
 {
-  [self.detailViewDelegate didSelectReportProblemForBook:self.book sender:sender];
+  [self.detailViewDelegate didSelectReportProblemForBook:self.book sender:self];
+}
+
+- (void)relatedWorksTapped
+{
+  [self.detailViewDelegate didSelectRelatedWorksForBook:self.book sender:self];
 }
 
 - (void)readMoreTapped:(__unused UIButton *)sender

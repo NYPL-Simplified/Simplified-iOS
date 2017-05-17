@@ -12,6 +12,8 @@
 #import "NSURLRequest+NYPLURLRequestAdditions.h"
 #import <PureLayout/PureLayout.h>
 
+#import "NYPLCatalogFeedViewController.h"
+
 #import "NYPLBookDetailViewController.h"
 
 @interface NYPLBookDetailViewController () <NYPLBookDetailViewDelegate, NYPLProblemReportViewControllerDelegate>
@@ -77,6 +79,14 @@
   return self;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+  [super viewWillAppear:animated];
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    self.navigationController.navigationBarHidden = YES;
+  }
+}
+
 #pragma mark NSObject
 
 - (void)dealloc
@@ -139,6 +149,12 @@
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:navController animated:YES completion:nil];
 }
 
+- (void)didSelectRelatedWorksForBook:(NYPLBook *)book sender:(__unused id)sender
+{
+  NYPLCatalogFeedViewController *vc = [[NYPLCatalogFeedViewController alloc] initWithURL:book.relatedWorksURL];
+  [self.navigationController pushViewController:vc animated:YES];
+}
+
 - (void)problemReportViewController:(NYPLProblemReportViewController *)problemReportViewController didSelectProblemWithType:(NSString *)type
 {
   NSURL *reportURL = problemReportViewController.book.acquisition.report;
@@ -160,7 +176,7 @@
 }
 
 - (void)presentFromViewController:(UIViewController *)viewController{
-  int index = [[NYPLRootTabBarController sharedController] selectedIndex];
+  NSUInteger index = [[NYPLRootTabBarController sharedController] selectedIndex];
   UINavigationItem *navItem = viewController.navigationItem;
   if ([viewController isKindOfClass:[NYPLCatalogSearchViewController class]]) {
     [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Search", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
@@ -173,10 +189,13 @@
     [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HoldsViewControllerTitle", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
   }
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+  UIViewController *currentVCTab = [[[NYPLRootTabBarController sharedController] viewControllers] objectAtIndex:index];
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone || currentVCTab.presentedViewController != nil) {
     [viewController.navigationController pushViewController:self animated:YES];
   } else {
-    [viewController presentViewController:self animated:YES completion:nil];
+    UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:self];
+    navVC.modalPresentationStyle = UIModalPresentationFormSheet;
+    [viewController presentViewController:navVC animated:YES completion:nil];
   }
 }
 
