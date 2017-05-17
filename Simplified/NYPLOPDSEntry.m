@@ -16,6 +16,7 @@
 @property (nonatomic) NSArray *links;
 @property (nonatomic) NYPLOPDSLink *annotations;
 @property (nonatomic) NYPLOPDSLink *alternate;
+@property (nonatomic) NYPLOPDSLink *relatedWorks;
 @property (nonatomic) NSURL *analytics;
 @property (nonatomic) NSString *providerName;
 @property (nonatomic) NSDate *published;
@@ -99,6 +100,8 @@
       } else if ([link.rel isEqualToString:@"alternate"]){
         self.alternate = link;
         self.analytics = [NSURL URLWithString:[link.href.absoluteString stringByReplacingOccurrencesOfString:@"/works/" withString:@"/analytics/"]];
+      } else if ([link.rel isEqualToString:@"related"]){
+        self.relatedWorks = link;
       } else {
         [links addObject:link];
       }

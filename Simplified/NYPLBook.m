@@ -27,6 +27,8 @@
 @property (nonatomic) NSURL *annotationsURL;
 @property (nonatomic) NSURL *analyticsURL;
 @property (nonatomic) NSURL *alternateURL;
+@property (nonatomic) NSURL *relatedWorksURL;
+
 @property (nonatomic) NSDictionary *licensor;
 
 @end
@@ -75,7 +77,7 @@ static NSString *const AlternateURLKey = @"alternate";
     return nil;
   }
   
-  NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail, *annotations, *report = nil;
+  NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail, *annotations, *report, *relatedWorks = nil;
   NSDictionary *licensor = nil;
   
   NYPLBookAvailabilityStatus availabilityStatus = NYPLBookAvailabilityStatusUnknown;
@@ -199,6 +201,7 @@ static NSString *const AlternateURLKey = @"alternate";
           annotationsURL:entry.annotations.href
           analyticsURL:entry.analytics
           alternateURL:entry.alternate.href
+          relatedWorksURL:entry.relatedWorks.href
           licensor:licensor];
 }
 
@@ -224,6 +227,7 @@ static NSString *const AlternateURLKey = @"alternate";
           annotationsURL:book.annotationsURL
           analyticsURL:book.analyticsURL
           alternateURL:book.alternateURL
+          relatedWorksURL:book.relatedWorksURL
           licensor:book.licensor];
 }
 
@@ -246,6 +250,7 @@ static NSString *const AlternateURLKey = @"alternate";
                      annotationsURL:(NSURL *)annotationsURL
                        analyticsURL:(NSURL *)analyticsURL
                        alternateURL:(NSURL *)alternateURL
+                    relatedWorksURL:(NSURL *)relatedWorksURL
                            licensor:(NSDictionary *)licensor
 {
   self = [super init];
@@ -280,6 +285,7 @@ static NSString *const AlternateURLKey = @"alternate";
   self.annotationsURL = annotationsURL;
   self.analyticsURL = analyticsURL;
   self.alternateURL = alternateURL;
+  self.relatedWorksURL = relatedWorksURL;
   self.licensor = licensor;
   
   return self;
