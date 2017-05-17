@@ -1,7 +1,8 @@
 import Foundation
 
 @objc protocol BookDetailTableViewDelegate {
-  func reportProblemTapped(sender: UITableViewCell)
+  func reportProblemTapped()
+  func relatedWorksTapped()
   var book: NYPLBook { get }
 }
 
@@ -67,9 +68,9 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDelegate, UITableVie
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     switch (cells[indexPath.row] as BookDetailCellType) {
     case .relatedWorks:
-      break
+      viewDelegate.relatedWorksTapped()
     case .reportAProblem:
-      viewDelegate.reportProblemTapped(sender: tableView.cellForRow(at: indexPath)!)
+      viewDelegate.reportProblemTapped()
     }
     tableView.deselectRow(at: indexPath, animated: true)
   }

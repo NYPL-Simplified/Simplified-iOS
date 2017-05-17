@@ -13,6 +13,7 @@
 - (void)didSelectReadForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectCloseButton:(NYPLBookDetailView *)detailView;
 - (void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender;
+- (void)didSelectRelatedWorksForBook:(NYPLBook *)book sender:(id)sender;
 
 @end
 
