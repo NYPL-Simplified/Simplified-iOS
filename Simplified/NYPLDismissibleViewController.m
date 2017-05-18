@@ -24,14 +24,6 @@
   [self.view.window addGestureRecognizer:self.tapGestureRecognizer];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-  [self.view.window removeGestureRecognizer:self.tapGestureRecognizer];
-  self.tapGestureRecognizer = nil;
-  
-  [super viewWillDisappear:animated];
-}
-
 #pragma mark -
 
 -(BOOL)gestureRecognizer:(__attribute__((unused)) UIGestureRecognizer *)gestureRecognizer
@@ -45,8 +37,8 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(__attribute__((unused))
 {
   if(self.presentedViewController) return;
   
-  if (![self.view pointInside:[gestureRecognizer locationInView:self.view] withEvent:nil]) {
-    [self dismissViewControllerAnimated:YES completion:nil];
+  if (![self.navigationController.view pointInside:[gestureRecognizer locationInView:self.navigationController.view] withEvent:nil]) {
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
   }
 }
 
