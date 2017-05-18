@@ -12,11 +12,13 @@ import MessageUI
 
 class NYPLReportIssueViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, MFMailComposeViewControllerDelegate {
   
-  var subjectField: UITextField!
+  var completion: (() -> Void)?
   
+  var subjectField: UITextField!
   var messageField: HSTextViewInternal!
   var submitBarItem:UIBarButtonItem!;
   var account:Account!
+  var book:NYPLBook?
   
   
   override func viewDidLoad() {
@@ -36,9 +38,11 @@ class NYPLReportIssueViewController: UITableViewController, UITextFieldDelegate,
     switch result {
     case .sent:
       self.navigationController?.popViewController(animated: false)
+      if let completion = completion { completion() }
       break
     case .saved:
       self.navigationController?.popViewController(animated: false)
+      if let completion = completion { completion() }
       break
     case .cancelled:
       subjectField.becomeFirstResponder()
@@ -79,6 +83,18 @@ class NYPLReportIssueViewController: UITableViewController, UITextFieldDelegate,
       
       let messageContent:NSMutableString = NSMutableString.init(string: messageField.text);
       messageContent.append(HSUtility.deviceInformation())
+      if let title = book?.title,
+        let distributor = book?.distributor,
+        let id = book?.identifier {
+        messageContent.append("\n\nBook:\n\(title)")
+        messageContent.append("\nIdentifier:\n\(id)")
+        messageContent.append("\nDistributor:\n\(distributor)")
+      }
+      if (NYPLAccount.shared().hasBarcodeAndPIN()) {
+        if let barcode = NYPLAccount.shared().barcode {
+          messageContent.append("\n\nUser:\n\(barcode)")
+        }
+      }
       
       let mailVC:MFMailComposeViewController = MFMailComposeViewController();
       mailVC.mailComposeDelegate = self;
@@ -86,7 +102,6 @@ class NYPLReportIssueViewController: UITableViewController, UITextFieldDelegate,
       mailVC.setMessageBody(messageContent as String, isHTML: false);
       mailVC.setToRecipients([account.supportEmail!]);
       self.present(mailVC, animated: true, completion: nil)
-      
     }
     
   }

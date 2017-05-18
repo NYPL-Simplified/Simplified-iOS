@@ -146,7 +146,7 @@
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     navController.modalPresentationStyle = UIModalPresentationFormSheet;
   }
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:navController animated:YES completion:nil];
+  [self.navigationController pushViewController:problemVC animated:YES];
 }
 
 - (void)didSelectRelatedWorksForBook:(NYPLBook *)book sender:(__unused id)sender
