@@ -653,6 +653,11 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   [self.detailViewDelegate didSelectRelatedWorksForBook:self.book sender:self];
 }
 
+- (void)exportCitationTapped
+{
+  [self.detailViewDelegate didSelectExportCitationForBook:self.book sender:self];
+}
+
 - (void)readMoreTapped:(__unused UIButton *)sender
 {
   self.textHeightConstraint.active = NO;

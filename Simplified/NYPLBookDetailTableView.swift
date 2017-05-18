@@ -3,6 +3,7 @@ import Foundation
 @objc protocol BookDetailTableViewDelegate {
   func reportProblemTapped()
   func relatedWorksTapped()
+  func exportCitationTapped()
   var book: NYPLBook { get }
 }
 
@@ -37,7 +38,7 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDelegate, UITableVie
   
   init (withDelegate viewDelegate: BookDetailTableViewDelegate) {
     self.viewDelegate = viewDelegate
-    cells = [.relatedWorks]
+    cells = [.relatedWorks, .citations]
     if (viewDelegate.book.acquisition.report != nil) {
       cells.append(BookDetailCellType.reportAProblem)
     }
@@ -46,6 +47,7 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDelegate, UITableVie
   enum BookDetailCellType: String {
     case relatedWorks = "Related Works"
     case reportAProblem = "Report a Problem"
+    case citations = "Export Citation"
   }
   
 
@@ -71,6 +73,8 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDelegate, UITableVie
       viewDelegate.relatedWorksTapped()
     case .reportAProblem:
       viewDelegate.reportProblemTapped()
+    case .citations:
+      viewDelegate.exportCitationTapped()
     }
     tableView.deselectRow(at: indexPath, animated: true)
   }

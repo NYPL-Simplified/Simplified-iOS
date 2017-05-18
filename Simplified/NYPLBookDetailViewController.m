@@ -15,6 +15,7 @@
 #import "NYPLCatalogFeedViewController.h"
 
 #import "NYPLBookDetailViewController.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLBookDetailViewController () <NYPLBookDetailViewDelegate, NYPLProblemReportViewControllerDelegate>
 
@@ -153,6 +154,22 @@
 {
   NYPLCatalogFeedViewController *vc = [[NYPLCatalogFeedViewController alloc] initWithURL:book.relatedWorksURL];
   [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)didSelectExportCitationForBook:(NYPLBook *)book sender:(__unused id)sender
+{
+
+  NYPLLOG(@"didSelectExportCitationForBook");
+  UIStoryboard *sb = [UIStoryboard storyboardWithName:@"NYPLCitations" bundle:nil];
+  NYPLCitationsViewController *citationsViewController = (NYPLCitationsViewController*)[sb instantiateViewControllerWithIdentifier:@"NYPLCitations"];
+  
+  citationsViewController.book = book;
+  
+  [self.navigationController pushViewController:citationsViewController animated:YES];
+  
+  //UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:(UIViewController*)citationsViewController];
+  //[[NYPLRootTabBarController sharedController] safelyPresentViewController:navController animated:YES completion:nil];
+  
 }
 
 - (void)problemReportViewController:(NYPLProblemReportViewController *)problemReportViewController didSelectProblemWithType:(NSString *)type
