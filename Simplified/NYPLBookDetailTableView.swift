@@ -39,7 +39,7 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDelegate, UITableVie
     self.viewDelegate = viewDelegate
     cells = [.relatedWorks]
     if (viewDelegate.book.acquisition.report != nil) {
-      cells.append(BookDetailCellType.reportAProblem)
+      cells.append(.reportAProblem)
     }
   }
   
@@ -47,10 +47,7 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDelegate, UITableVie
     case relatedWorks = "Related Works"
     case reportAProblem = "Report a Problem"
   }
-  
 
-  
-  
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return cells.count
   }

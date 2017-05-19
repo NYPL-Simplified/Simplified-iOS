@@ -151,7 +151,6 @@ static NSString *DetailHTMLTemplate = nil;
   self.authorsLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
   self.summaryTextView.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
   self.readMoreLabel.titleLabel.font = [UIFont systemFontOfSize:14];
-  self.reportProblemLabel.titleLabel.font = [UIFont systemFontOfSize:14];
   self.summarySectionLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleCaption1];
   self.infoSectionLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleCaption1];
 }
@@ -303,7 +302,7 @@ static NSString *DetailHTMLTemplate = nil;
   UILabel *label = [[UILabel alloc] init];
   label.textAlignment = alignment;
   label.text = string;
-  label.font = [UIFont systemFontOfSize:12];
+  label.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
   return label;
 }
 

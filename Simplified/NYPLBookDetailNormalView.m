@@ -94,7 +94,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 
 - (void)didChangePreferredContentSize
 {
-  self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+  self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1 multiplier:1.2];
 }
 
 #pragma mark -
