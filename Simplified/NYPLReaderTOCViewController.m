@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 @property (strong, nonatomic) IBOutlet UILabel *noBookmarksLabel;
 @property (nonatomic) UIRefreshControl *refreshControl;
+@property (nonatomic) BOOL darkColorScheme;
 
 - (IBAction)didSelectSegment:(id)sender;
 
@@ -37,10 +38,7 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
   
-  self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
-  
   self.title = NSLocalizedString(@"ReaderTOCViewControllerTitle", nil);
-  self.view.backgroundColor = [UIColor whiteColor];
   
   [self createViews];
 }
@@ -69,7 +67,27 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
     default:
       break;
   }
-  
+
+  switch([NYPLReaderSettings sharedSettings].colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+    self.tableView.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+    self.view.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+    self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
+    break;
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+    self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
+    self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+    self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
+    break;
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    self.tableView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
+    self.view.backgroundColor = [NYPLConfiguration backgroundDarkColor];
+    self.segmentedControl.tintColor = [UIColor whiteColor];
+    self.darkColorScheme = YES;
+    break;
+  }
+
+  [self.tableView reloadData];
 }
 
 - (void)userDidRefresh:(UIRefreshControl *)refreshControl
@@ -118,10 +136,18 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       cell.leadingEdgeConstraint.constant = 0;
       cell.leadingEdgeConstraint.constant = toc.nestingLevel * 20 + 10;
       cell.titleLabel.text = toc.title;
+
+      //GODO
       cell.background.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
       cell.background.layer.borderWidth = 1;
       cell.background.layer.cornerRadius = 3;
 
+      cell.backgroundColor = [UIColor clearColor];
+      if (self.darkColorScheme) {
+        cell.titleLabel.textColor = [UIColor whiteColor];
+      }
+
+      
       if ([self.currentChapter isEqualToString:toc.title])
       {
         cell.background.hidden = NO;
@@ -133,6 +159,8 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
     }
     case 1:{
       NYPLReaderBookmarkCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierBookmark];
+      cell.backgroundColor = [UIColor clearColor];
+      
       NYPLReaderBookmarkElement *const bookmark = self.bookmarks[indexPath.row];
       
       cell.chapterLabel.text = bookmark.chapter;
@@ -145,6 +173,11 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       NSString *prettyDate = [dateFormatter stringFromDate:date];
 
       cell.pageNumberLabel.text = [NSString stringWithFormat:@"%@ - %@ through chapter",prettyDate, bookmark.percentInChapter];
+      
+      if (self.darkColorScheme) {
+        cell.chapterLabel.textColor = [UIColor whiteColor];
+        cell.pageNumberLabel.textColor = [UIColor whiteColor];
+      }
       
       return cell;
     }
