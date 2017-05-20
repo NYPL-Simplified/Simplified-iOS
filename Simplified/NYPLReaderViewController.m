@@ -1001,7 +1001,7 @@ spineItemTitle:(NSString *const)title
   viewController.delegate = self;
   viewController.tableOfContents = self.rendererView.TOCElements;
   viewController.bookTitle = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
-  viewController.bookmarks = self.rendererView.bookmarkElements;
+  viewController.bookmarks = self.rendererView.bookmarkElements.mutableCopy;
   NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
   viewController.currentChapter = [rv currentChapter];
 

@@ -225,7 +225,7 @@ final class NYPLAnnotations: NSObject {
   
   class func postLastRead(_ book:NYPLBook, cfi:NSString)
   {
-    if (NYPLAccount.shared().hasBarcodeAndPIN() && AccountsManager.shared.currentAccount.supportsSimplyESync)
+    if (NYPLAccount.shared().hasBarcodeAndPIN() && AccountsManager.shared.currentAccount.supportsSimplyESync && AccountsManager.shared.currentAccount.syncLastReadingPositionIsEnabled)
     {
       let parameters = [
         "@context": "http://www.w3.org/ns/anno.jsonld",

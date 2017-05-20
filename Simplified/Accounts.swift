@@ -6,6 +6,9 @@ let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
 let accountSyncEnabledThisKey    = "NYPLAccountSyncEnabledKey"
 let accountSyncEnabledAllKey     = "NYPLAccountSyncEnabledAllKey"
 
+let accountSyncBookmarksKey    = "NYPLAccountSyncBookmarksEnabledKey"
+let accountSyncLastReadimngPositionKey    = "NYPLAccountSyncLastReadingPositionEnabledKey"
+
 
 /// Manage the library accounts for the app.
 /// Initialized with JSON.
@@ -149,6 +152,24 @@ final class Account:NSObject
     }
     set {
       setAccountDictionaryKey(accountSyncEnabledAllKey, toValue: newValue as AnyObject)
+    }
+  }
+  var syncBookmarksIsEnabled:Bool {
+    get {
+      guard let result = getAccountDictionaryKey(accountSyncBookmarksKey) else { return false }
+      return result as! Bool
+    }
+    set {
+      setAccountDictionaryKey(accountSyncBookmarksKey, toValue: newValue as AnyObject)
+    }
+  }
+  var syncLastReadingPositionIsEnabled:Bool {
+    get {
+      guard let result = getAccountDictionaryKey(accountSyncLastReadimngPositionKey) else { return false }
+      return result as! Bool
+    }
+    set {
+      setAccountDictionaryKey(accountSyncLastReadimngPositionKey, toValue: newValue as AnyObject)
     }
   }
   var userAboveAgeLimit:Bool {

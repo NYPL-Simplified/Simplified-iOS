@@ -13,6 +13,7 @@
 		0320E8241E8BFCC900806EF0 /* NYPLReportIssueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320E8221E8BFCC900806EF0 /* NYPLReportIssueViewController.swift */; };
 		032A31051DC02E8E0001E4AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 032A31071DC02E8E0001E4AF /* Localizable.strings */; };
 		0345BFE81DBF027200398B6F /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0345BFD61DBF002E00398B6F /* APIKeys.swift */; };
+		03685C5C1EBB7CC500849AD1 /* NYPLSettingsSyncViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03685C5B1EBB7CC500849AD1 /* NYPLSettingsSyncViewController.swift */; };
 		03690E231EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03690E221EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift */; };
 		03690E291EB2B44300F75D5F /* NYPLReaderBookmarkElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03690E281EB2B44300F75D5F /* NYPLReaderBookmarkElement.swift */; };
 		036B02C11DCBF3360098784A /* HelpStackStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 036B02C01DCBF3360098784A /* HelpStackStoryboard.storyboard */; };
@@ -240,6 +241,7 @@
 		032A310D1DC02EB30001E4AF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		032A310E1DC02EC00001E4AF /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0345BFD61DBF002E00398B6F /* APIKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
+		03685C5B1EBB7CC500849AD1 /* NYPLSettingsSyncViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsSyncViewController.swift; sourceTree = "<group>"; };
 		03690E221EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLReaderBookmarkCell.swift; sourceTree = "<group>"; };
 		03690E281EB2B44300F75D5F /* NYPLReaderBookmarkElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLReaderBookmarkElement.swift; sourceTree = "<group>"; };
 		036B02C01DCBF3360098784A /* HelpStackStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = HelpStackStoryboard.storyboard; path = Pods/HelpStack/Resources/HelpStackStoryboard.storyboard; sourceTree = "<group>"; };
@@ -863,6 +865,7 @@
 				111E75781A80165C00718AD7 /* NYPLSettingsSplitViewController.h */,
 				111E75791A80165C00718AD7 /* NYPLSettingsSplitViewController.m */,
 				0320E8221E8BFCC900806EF0 /* NYPLReportIssueViewController.swift */,
+				03685C5B1EBB7CC500849AD1 /* NYPLSettingsSyncViewController.swift */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -1603,6 +1606,7 @@
 				A823D821192BABA400B55DE2 /* NYPLAppDelegate.m in Sources */,
 				112C684F19EF003300106973 /* NYPLCatalogFacetGroup.m in Sources */,
 				085D31DF1BE3CD3C007F7672 /* NSURLRequest+NYPLURLRequestAdditions.m in Sources */,
+				03685C5C1EBB7CC500849AD1 /* NYPLSettingsSyncViewController.swift in Sources */,
 				11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */,
 				E63F2C6C1EAA81B3002B6373 /* ExtendedNavBarView.swift in Sources */,
 				E6DA7EA01F2A718600CFBEC8 /* NYPLBookAuthor.swift in Sources */,
