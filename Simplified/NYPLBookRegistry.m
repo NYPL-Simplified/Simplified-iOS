@@ -493,7 +493,16 @@ static NSString *const RecordsKey = @"records";
 {
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
-    return record.bookmarks;
+    
+    NSArray *sortedArray = [record.bookmarks sortedArrayUsingComparator:^NSComparisonResult(NYPLReaderBookmarkElement * obj1, NYPLReaderBookmarkElement* obj2) {
+      if (obj1.progressWithinBook > obj2.progressWithinBook)
+        return NSOrderedDescending;
+      else if (obj1.progressWithinBook < obj2.progressWithinBook)
+        return NSOrderedAscending;
+      return NSOrderedSame;
+    }];
+
+    return sortedArray;
   }
 }
   
