@@ -61,7 +61,7 @@ class NYPLDeviceManager: NSObject {
       if response.statusCode == 200 {
         debugPrint(#file, "POST device: Success")
       } else {
-        guard let error = error as? NSError else { return }
+        guard let error = error as NSError? else { return }
         debugPrint(#file, "POST device: Response Error: \(error.localizedDescription)")
       }
     }
@@ -90,7 +90,7 @@ class NYPLDeviceManager: NSObject {
       if response.statusCode == 200 {
         debugPrint(#file, "DELETE device: Success")
       } else {
-        guard let error = error as? NSError else { return }
+        guard let error = error as NSError? else { return }
         Log.error(#file, "DELETE device: Response Error: \(error.localizedDescription)")
       }
     }
