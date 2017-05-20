@@ -1002,6 +1002,8 @@ spineItemTitle:(NSString *const)title
   viewController.tableOfContents = self.rendererView.TOCElements;
   viewController.bookTitle = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
   viewController.bookmarks = self.rendererView.bookmarkElements;
+  NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
+  viewController.currentChapter = [rv currentChapter];
 
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&

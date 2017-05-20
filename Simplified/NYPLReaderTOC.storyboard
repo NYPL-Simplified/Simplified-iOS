@@ -33,6 +33,10 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="55.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CS7-F6-rCt">
+                                                    <rect key="frame" x="5" y="5" width="365" height="45.5"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Table of Contents Item" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iWm-n9-kgW" userLabel="TOC Label">
                                                     <rect key="frame" x="18" y="14" width="339" height="27.5"/>
                                                     <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="17"/>
@@ -41,13 +45,18 @@
                                                 </label>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="CS7-F6-rCt" firstAttribute="top" secondItem="EjL-Iz-7v0" secondAttribute="top" constant="5" id="2XK-eI-zby"/>
                                                 <constraint firstItem="iWm-n9-kgW" firstAttribute="leading" secondItem="EjL-Iz-7v0" secondAttribute="leadingMargin" constant="10" id="37I-4D-dK0"/>
+                                                <constraint firstItem="CS7-F6-rCt" firstAttribute="leading" secondItem="EjL-Iz-7v0" secondAttribute="leading" constant="5" id="5s4-HK-bBX"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="iWm-n9-kgW" secondAttribute="bottom" constant="6" id="SBH-NN-eaB"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="iWm-n9-kgW" secondAttribute="trailing" constant="10" id="TDw-k1-flt"/>
+                                                <constraint firstAttribute="bottom" secondItem="CS7-F6-rCt" secondAttribute="bottom" constant="5" id="fls-Xa-2NH"/>
+                                                <constraint firstAttribute="trailing" secondItem="CS7-F6-rCt" secondAttribute="trailing" constant="5" id="qwg-pT-6bA"/>
                                                 <constraint firstItem="iWm-n9-kgW" firstAttribute="top" secondItem="EjL-Iz-7v0" secondAttribute="topMargin" constant="6" id="rZB-Qb-i4t"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="background" destination="CS7-F6-rCt" id="BJV-Yb-7Z1"/>
                                             <outlet property="leadingEdgeConstraint" destination="37I-4D-dK0" id="1fu-Vf-RNq"/>
                                             <outlet property="titleLabel" destination="iWm-n9-kgW" id="ccO-5w-icn"/>
                                         </connections>

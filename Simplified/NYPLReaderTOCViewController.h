@@ -19,6 +19,7 @@ didSelectBookmark:(NYPLReaderBookmarkElement *)bookmark;
 @property (nonatomic) NSArray *tableOfContents;
 @property (nonatomic) NSMutableArray *bookmarks;
 @property (nonatomic) NSString *bookTitle;
+@property (nonatomic) NSString *currentChapter;
 
 
 @end

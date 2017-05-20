@@ -24,6 +24,7 @@
 - (BOOL) touchIntersectsLink:(UITouch *)touch;
 
 - (void) syncLastReadingPosition;
+- (NSString*) currentChapter;
 
 - (void) addBookmark;
 - (void) deleteBookmark:(NYPLReaderBookmarkElement*)bookmark;

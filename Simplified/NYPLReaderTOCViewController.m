@@ -95,7 +95,17 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       cell.leadingEdgeConstraint.constant = 0;
       cell.leadingEdgeConstraint.constant = toc.nestingLevel * 20 + 10;
       cell.titleLabel.text = toc.title;
+      cell.background.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
+      cell.background.layer.borderWidth = 1;
+      cell.background.layer.cornerRadius = 3;
 
+      if ([self.currentChapter isEqualToString:toc.title])
+      {
+        cell.background.hidden = NO;
+      }
+      else {
+        cell.background.hidden = YES;
+      }
       return cell;
     }
     case 1:{
