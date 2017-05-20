@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 @property (strong, nonatomic) IBOutlet UILabel *noBookmarksLabel;
+@property (nonatomic) UIRefreshControl *refreshControl;
 
 - (IBAction)didSelectSegment:(id)sender;
 
@@ -48,19 +49,41 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
 {
   [super viewWillAppear:animated];
 
-  switch([NYPLReaderSettings sharedSettings].colorScheme) {
-    case NYPLReaderSettingsColorSchemeBlackOnSepia:
-      self.tableView.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+  self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+  self.navigationController.navigationBar.translucent = YES;
+  self.navigationController.navigationBar.barTintColor = nil;
+  
+  [self.tableView reloadData];
+  
+  switch (self.segmentedControl.selectedSegmentIndex) {
+    case 0:
+      if ([self.tableView.subviews containsObject:self.refreshControl]){
+        [self.refreshControl removeFromSuperview];
+      }
       break;
-    case NYPLReaderSettingsColorSchemeBlackOnWhite:
-      self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
+    case 1:
+      self.refreshControl = [[UIRefreshControl alloc] init];
+      [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
+      [self.tableView addSubview:self.refreshControl];
       break;
-    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-      self.tableView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
+    default:
       break;
   }
   
-  [self.tableView reloadData];
+}
+
+- (void)userDidRefresh:(UIRefreshControl *)refreshControl
+{
+  NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
+  [rv syncBookmarksWithCompletionHandler:^(bool success, NSArray *bookmarks) {
+    
+    if (success) {
+      self.bookmarks = bookmarks.mutableCopy;
+      [self.tableView reloadData];
+    }
+    
+    [refreshControl endRefreshing];
+  }];
 }
 
 #pragma mark UITableViewDataSource
@@ -204,6 +227,20 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
   }
   [self.tableView reloadData];
+  switch (self.segmentedControl.selectedSegmentIndex) {
+    case 0:
+      if ([self.tableView.subviews containsObject:self.refreshControl]){
+        [self.refreshControl removeFromSuperview];
+      }
+      break;
+    case 1:
+      self.refreshControl = [[UIRefreshControl alloc] init];
+      [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
+      [self.tableView addSubview:self.refreshControl];
+      break;
+    default:
+      break;
+  }
 }
 
 #pragma mark -

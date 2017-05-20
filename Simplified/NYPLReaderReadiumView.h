@@ -24,6 +24,7 @@
 - (BOOL) touchIntersectsLink:(UITouch *)touch;
 
 - (void) syncLastReadingPosition;
+- (void) syncBookmarksWithCompletionHandler:(void(^)(bool success, NSArray *bookmarks))completionHandler;
 - (NSString*) currentChapter;
 
 - (void) addBookmark;
