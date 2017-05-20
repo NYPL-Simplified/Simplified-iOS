@@ -181,7 +181,12 @@
 "SettingsAccountEULACheckbox" = "I agree to the terms of the End User License Agreement.";
 "SettingsAccountRegistrationTitle" = "Don't have a library card?";
 "SettingsAccountSetAccountTitle" = "Set to Active Account";
-"SettingsAccountSyncTitle" = "SimplyE Sync";
+"SettingsAccountSyncTitle" = "Sync";
+"SettingsBookmarkSyncTitle" = "Sync Bookmarks";
+"SettingsLastReadSyncTitle" = "Sync Last Reading Position";
+"SettingsGlobalSyncTitle" = "Sync Accross Devices";
+"SettingsGlobalSync" =  "Automatically update your bookmarks and last reading position across all of your devices.";
+"SettingsIndividualSync" =  "Choose if you would like to update bookmarks or last reading position accross all of your devices.";
 "SettingsAccountSyncSubTitle" = "Automatically update your bookmarks and last reading position across all of your devices.";
 "SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";
 "SettingsAccountViewControllerCannotLogOutTitle" =
