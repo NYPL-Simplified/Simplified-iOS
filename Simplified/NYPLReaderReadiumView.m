@@ -21,6 +21,9 @@
 #import "NYPLConfiguration.h"
 #import "NYPLAlertController.h"
 #import "NYPLRootTabBarController.h"
+#import "NSDate+NYPLDateAdditions.h"
+#import "NYPLReachability.h"
+
 #import "SimplyE-Swift.h"
 
 @interface NYPLReaderReadiumView ()
@@ -136,26 +139,14 @@ static void generateTOCElements(NSArray *const navigationElements,
                  specialPayloadAnnotationsCSS:nil
                  specialPayloadMathJaxJS:nil];
   
-  CGRect webviewFrame;
-  if (@available (iOS 11.0, *)) {
-    UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
-    webviewFrame = CGRectMake(0,
-                              60 + window.safeAreaInsets.top,
-                              self.bounds.size.width,
-                              self.bounds.size.height - 100 - window.safeAreaInsets.top - window.safeAreaInsets.bottom);
-  } else {
-    webviewFrame = CGRectMake(0, 60, self.bounds.size.width, self.bounds.size.height - 100);
-  }
-  
-  self.webView = [[WKWebView alloc] initWithFrame:webviewFrame];
+  self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 60, self.bounds.size.width, self.bounds.size.height - 100)];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
-  
   self.webView.navigationDelegate = self;
   self.webView.UIDelegate = self;
   self.webView.scrollView.bounces = NO;
+  // Prevent content from shifting when toggling the status bar.
   if (@available(iOS 11, *)) {
-    // Prevent content from shifting when toggling the status bar.
     self.webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
   }
   self.webView.alpha = 0.0;
@@ -577,29 +568,128 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   ", [NYPLConfiguration backgroundMediaOverlayHighlightColor].javascriptHexString] ;
   
   [self sequentiallyEvaluateJavaScript:javascript];
-  [self syncLastReadingPosition];
+  [self syncAnnotations];
 }
-- (void)syncLastReadingPosition
+- (void)syncAnnotations
 {
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
   
-  // Sync SimplyE Settings, this needs to be done here, in case the remote setting has been changed from a differtn device
+  // Sync SimplyE Settings, this needs to be done here, in case the remote setting has been changed from a different device
   [NYPLAnnotations getSyncSettingsWithCompletionHandler:^(BOOL initialized, BOOL value) {
     if (initialized && !value) {
-      currentAccount.syncIsEnabled = value;
+      currentAccount.syncIsEnabledForAllDevices = value;
+      if (!value) {
+        currentAccount.syncIsEnabledForThisDevice = value;
+      }
     }
   }];
   
-  if (currentAccount.syncIsEnabled) {
-    NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
-    dictionary[@"package"] = self.package.dictionary;
-    dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
-    NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry]
-                                        locationForIdentifier:self.book.identifier];
-
-    [self syncLastReadingPosition:dictionary andLocation:location andBook:self.book];
+  if (currentAccount.syncIsEnabledForThisDevice) {
+    
+    if (currentAccount.syncLastReadingPositionIsEnabled) {
+      NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
+      dictionary[@"package"] = self.package.dictionary;
+      dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
+      NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry]
+                                          locationForIdentifier:self.book.identifier];
+      
+      [self syncLastReadingPosition:dictionary andLocation:location andBook:self.book];
+    }
+    
+    if (currentAccount.syncBookmarksIsEnabled) {
+      
+      [self syncBookmarksWithCompletionHandler:^(bool success, NSArray *bookmarks) {
+        
+        
+      }];
+      
+    }
   }
 }
+
+- (void) syncBookmarksWithCompletionHandler:(void(^)(bool success, NSArray *bookmarks))completionHandler {
+  
+  [[NYPLReachability sharedReachability]
+   reachabilityForURL:[NYPLConfiguration mainFeedURL]
+   timeoutInternal:8.0
+   handler:^(BOOL reachable) {
+     
+     if (reachable) {
+       // 1.
+       // post all local bookmarks if they have not been posted yet,
+       // this can happen if device was storing local bookmarks first and SImplyE Sync was enabled afterwards.
+       NSArray * localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];
+       for (NYPLReaderBookmarkElement *localBookmark in localBookmarks) {
+         
+         if (localBookmark.annotationId.length == 0 || localBookmark.annotationId == nil) {
+           
+           [NYPLAnnotations postBookmark:self.book cfi:localBookmark.location bookmark:localBookmark completionHandler:^(NYPLReaderBookmarkElement *bookmark) {
+             
+             [[NYPLBookRegistry sharedRegistry] replaceBookmark:localBookmark with:bookmark forIdentifier:self.book.identifier];
+             
+           }];
+         }
+       }
+       
+       [NYPLAnnotations getBookmarks:self.book completionHandler:^(NSArray *remoteBookmarks) {
+         
+         // 2.
+         // delete local bookmarks if annotation id exists locally but not remote
+         NSMutableArray *keepLocalBookmarks = [[NSMutableArray alloc] init];
+         for (NYPLReaderBookmarkElement *bookmark in remoteBookmarks) {
+           
+           NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", bookmark.annotationId];
+           [keepLocalBookmarks addObjectsFromArray:[localBookmarks filteredArrayUsingPredicate:predicate]];
+           
+         }
+         NYPLLOG(keepLocalBookmarks);
+         
+         NSMutableArray *deleteLocalBookmarks = [[NSMutableArray alloc] init];
+         for (NYPLReaderBookmarkElement *bookmark in localBookmarks) {
+           if (![keepLocalBookmarks containsObject:bookmark]) {
+             [deleteLocalBookmarks addObject:bookmark];
+           }
+         }
+         NYPLLOG(deleteLocalBookmarks);
+         
+         for (NYPLReaderBookmarkElement *bookmark in deleteLocalBookmarks) {
+           [[NYPLBookRegistry sharedRegistry] deleteBookmark:bookmark forIdentifier:self.book.identifier];
+         }
+         
+         // 3.
+         // get remote bookmarks and store locally if not already stored
+         NSMutableArray *addLocalBookmarks = remoteBookmarks.mutableCopy;
+         NSMutableArray *ignoreBookmarks = [[NSMutableArray alloc] init];
+         
+         for (NYPLReaderBookmarkElement *bookmark in remoteBookmarks) {
+           NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", bookmark.annotationId];
+           [ignoreBookmarks addObjectsFromArray:[localBookmarks filteredArrayUsingPredicate:predicate]];
+         }
+         
+         for (NYPLReaderBookmarkElement *el in remoteBookmarks) {
+           for (NYPLReaderBookmarkElement *el2 in ignoreBookmarks) {
+             if ([el isEqual:el2]) {
+               [addLocalBookmarks removeObject:el];
+             }
+           }
+         }
+         
+         for (NYPLReaderBookmarkElement *bookmark in addLocalBookmarks) {
+           [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.book.identifier];
+         }
+         
+         
+         completionHandler(true, [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier]);
+         
+       }];
+     }
+     
+     
+   }];
+  
+  
+}
+
 - (void)syncLastReadingPosition:(NSMutableDictionary *const)dictionary andLocation:(NYPLBookLocation *const)location andBook:(NYPLBook *const)book
 {
   [NYPLAnnotations syncLastRead:book completionHandler:^(NSDictionary * _Nullable responseObject) {
@@ -690,7 +780,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   for (NYPLReaderBookmarkElement *bookmark in bookmarks) {
 
-    if (bookmark.idref == idref) {
+    if ([bookmark.idref isEqualToString:idref]) {
       NSString *js = [NSString stringWithFormat:@"ReadiumSDK.reader.isVisibleSpineItemElementCfi('%@', '%@')",
                       bookmark.idref,
                       bookmark.contentCFI];
@@ -715,12 +805,11 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     }
     
     // a bookmark was not found
-    completionHandler(NO, nil);
     
   }
+  completionHandler(NO, nil);
 }
 
-- (void)addBookmark
 - (NSString*) currentChapter {
   
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
@@ -734,32 +823,97 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   return self.bookMapDictionary[idref][@"tocElementTitle"];
 
 }
+
+- (void) addBookmark
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
     
   NYPLBookLocation *location = [registry locationForIdentifier:self.book.identifier];
-  NSDictionary *const locationDictionary =
-  NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
+  NSDictionary *const locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
 	  
   NSString *contentCFI = locationDictionary[@"contentCFI"];
   NSString *idref = locationDictionary[@"idref"];
-  NSDictionary *spineItemDetails = self.bookMapDictionary[idref];
-  NSString *chapter = spineItemDetails[@"tocElementTitle"];
+  NSString *chapter = self.bookMapDictionary[idref][@"tocElementTitle"];
+
+  float progressWithinChapter = 0.0;
+  if (self.spineItemPageIndex > 0 && self.spineItemPageCount > 0)
+  {
+    progressWithinChapter = (float) self.spineItemPageIndex / (float) self.spineItemPageCount;
+  }
+  float progressWithinBook = self.progressWithinBook;
   
-  // annotation id and page need to be implemented
-  // annotation id only when SimplyE sync is enabled
-  // page needs to be determined where that info comes from.
-  NYPLReaderBookmarkElement *bookmark = [[NYPLReaderBookmarkElement alloc] initWithAnnotationId:@"" contentCFI:contentCFI idref:idref chapter:chapter page:@""];
   
-  // add the bookmark to the local registry
-  [registry addBookmark:bookmark forIdentifier:self.book.identifier];
+  NYPLReaderBookmarkElement *bookmark =
+  [[NYPLReaderBookmarkElement alloc] initWithAnnotationId:@"" contentCFI:contentCFI idref:idref chapter:chapter page:nil location:location.locationString progressWithinChapter:progressWithinChapter progressWithinBook:progressWithinBook];
+
+  Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
   
-  // set the new bookmarks in this class
-  self.bookmarkElements = [registry bookmarksForIdentifier:self.book.identifier];
-  
-  // change bookmark icon to ON
   __weak NYPLReaderReadiumView *const weakSelf = self;
-  [weakSelf.delegate renderer:weakSelf bookmark:bookmark icon:YES];
+  [weakSelf.delegate renderer:weakSelf icon:YES];
+
+  
+  if (currentAccount.syncIsEnabledForThisDevice) {
+  
+    [NYPLAnnotations postBookmark:self.book cfi:location.locationString bookmark:bookmark completionHandler:^(NYPLReaderBookmarkElement *bookmark) {
+      
+      
+      if (bookmark) {
+        // add the bookmark to the local registry
+        [registry addBookmark:bookmark forIdentifier:self.book.identifier];
+        
+        // set the new bookmarks in this class
+        self.bookmarkElements = [registry bookmarksForIdentifier:self.book.identifier];
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+          // set current bookmark
+          [weakSelf.delegate renderer:weakSelf bookmark:bookmark];
+
+        }];
+      }
+      else {
+        
+        bookmark.time = [[[NSDate alloc] init ] RFC3339String];
+        bookmark.device = [[NYPLAccount sharedAccount] deviceID];
+
+        // add the bookmark to the local registry
+        [registry addBookmark:bookmark forIdentifier:self.book.identifier];
+        
+        // set the new bookmarks in this class
+        self.bookmarkElements = [registry bookmarksForIdentifier:self.book.identifier];
+        
+        // set current bookmark and change bookmark icon to ON
+        [weakSelf.delegate renderer:weakSelf bookmark:bookmark];
+        [weakSelf.delegate renderer:weakSelf icon:YES];
+
+      }
+      
+    }];
+
+  }
+  else {
+  
+    
+    bookmark.time = [[[NSDate alloc] init ] RFC3339String];
+    bookmark.device = [[NYPLAccount sharedAccount] deviceID];
+    
+    // annotation id and page need to be implemented
+    // annotation id only when SimplyE sync is enabled
+    // page needs to be determined where that info comes from.
+
+    // add the bookmark to the local registry
+    [registry addBookmark:bookmark forIdentifier:self.book.identifier];
+  
+    // set the new bookmarks in this class
+    self.bookmarkElements = [registry bookmarksForIdentifier:self.book.identifier];
+  
+    // set current bookmark and change bookmark icon to ON
+    [weakSelf.delegate renderer:weakSelf bookmark:bookmark];
+    [weakSelf.delegate renderer:weakSelf icon:YES];
+  
+  }
+  
+  
 }
 
 - (void) deleteBookmark:(NYPLReaderBookmarkElement*)bookmark
@@ -773,7 +927,19 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   // set the bookmark icon to no bookmark
   __weak NYPLReaderReadiumView *const weakSelf = self;
-  [weakSelf.delegate renderer:weakSelf bookmark:nil icon:NO];
+  [weakSelf.delegate renderer:weakSelf icon:NO];
+  [weakSelf.delegate renderer:weakSelf bookmark:nil];
+
+  
+  Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+
+  if (currentAccount.syncIsEnabledForThisDevice && (bookmark.annotationId != nil && bookmark.annotationId.length > 0)) {
+  
+    [NYPLAnnotations deleteBookmarkWithAnnotationId:bookmark.annotationId];
+  
+  }
+  
+  
 }
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
@@ -805,13 +971,9 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
     [self
      sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
-     withCompletionHandler:^(id _Nullable result, __unused NSError *_Nullable error) {
+     withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
        if(!result) {
          NYPLLOG(@"Readium failed to generate a CFI. This is a bug in Readium.");
-         return;
-       }
-       if(!NYPLNullToNil(result)) {
-         [self reportNullCFIToBugsnag];
          return;
        }
        NSString *const locationJSON = result;
@@ -819,6 +981,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
        if (openPages.count>0 && [locationJSON rangeOfString:openPages[0][@"idref"]].location != NSNotFound) {
          completed = YES;
        }
+       
        NYPLLOG(locationJSON);
        
        NSError *jsonError;
@@ -828,8 +991,9 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                                               error:&jsonError];
 
        [self hasBookmarkForSpineItem:json[@"idref"] completionHandler:^(bool success,NYPLReaderBookmarkElement *bookmark) {
-                [weakSelf.delegate renderer:weakSelf bookmark:bookmark icon:success];
-           }];
+         [weakSelf.delegate renderer:weakSelf icon:success];
+         [weakSelf.delegate renderer:weakSelf bookmark:bookmark];
+       }];
        
        NYPLBookLocation *const location = [[NYPLBookLocation alloc]
                                            initWithLocationString:locationJSON
@@ -884,23 +1048,19 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     
       if (headError || responseStatusCode != 200) {
         NSError *dataError;
-        NSData *data;
-        if (url) {
-          data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&dataError];
-          if (data && !dataError) {
-            NSNumber *length = [NSNumber numberWithUnsignedInteger:data.length];
-            expectedLengthDec = [NSDecimalNumber decimalNumberWithDecimal:length.decimalValue];
-          }
-        } else {
-          [self reportNilUrlToBugsnagWithSpineItem:spineItem];
+        NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&dataError];
+        
+        if (data || !dataError) {
+          NSNumber *length = [NSNumber numberWithUnsignedInteger:data.length];
+          expectedLengthDec = [NSDecimalNumber decimalNumberWithDecimal:length.decimalValue];
         }
       }
       
       NSMutableDictionary *spineItemDict = [[NSMutableDictionary alloc] init];
-      if (expectedLengthDec) [spineItemDict setObject:expectedLengthDec forKey:@"spineItemBytesLength"];
-      if (spineItem.baseHref) [spineItemDict setObject:spineItem.baseHref forKey:@"spineItemBaseHref"];
-      if (spineItem.idref) [spineItemDict setObject:spineItem.idref forKey:@"spineItemIdref"];
-      if (totalLength) [spineItemDict setObject:totalLength forKey:@"totalLengthSoFar"];
+      [spineItemDict setObject:expectedLengthDec forKey:@"spineItemBytesLength"];
+      [spineItemDict setObject:spineItem.baseHref forKey:@"spineItemBaseHref"];
+      [spineItemDict setObject:spineItem.idref forKey:@"spineItemIdref"];
+      [spineItemDict setObject:totalLength forKey:@"totalLengthSoFar"];
       
       NSString *title = [self tocTitleForSpineItem:spineItem];
       if (title && [[title class] isSubclassOfClass:[NSString class]]) {
@@ -1061,17 +1221,17 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 - (void)gotoBookmark:(NYPLReaderBookmarkElement *)bookmark
 {
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
+  
   dictionary[@"package"] = self.package.dictionary;
   dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
   
-  dictionary[@"openPageRequest"] =
-  @{@"idref": bookmark.idref, @"elementCfi": bookmark.contentCFI};
+  dictionary[@"openPageRequest"] = @{@"idref": bookmark.idref, @"elementCfi": bookmark.contentCFI};
   
   NSData *data = NYPLJSONDataFromObject(dictionary);
     
   [self sequentiallyEvaluateJavaScript:
-    [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
-      [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
+   [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
+    [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
 }
 
 - (BOOL) bookHasMediaOverlays {
@@ -1153,23 +1313,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 - (void)sequentiallyEvaluateJavaScript:(nonnull NSString *const)javaScript
 {
   [self sequentiallyEvaluateJavaScript:javaScript withCompletionHandler:nil];
-}
-
-// FIXME: This can be removed when sufficient data has been collected, and the fix can be integrated
-// into the existing CFI check directly above it. example: if (!result || !NYPLNulltonil...)
-// Bug: CFI was being checked for 'nil' but NOT as NSNULL class.
-- (void)reportNullCFIToBugsnag
-{
-  NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
-  if (self.book.identifier) [metadataParams setObject:self.book.identifier forKey:@"bookID"];
-  if (self.book.title) [metadataParams setObject:self.book.identifier forKey:@"title"];
-  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:7 userInfo:nil]
-                 block:^(BugsnagCrashReport * _Nonnull report) {
-                   report.context = @"NYPLReaderReadiumView";
-                   report.severity = BSGSeverityWarning;
-                   report.errorMessage = @"CFI was nil, specifically from JSON response being NULL.";
-                   [report addMetadata:metadataParams toTabWithName:@"Extra CFI Data"];
-                 }];
 }
 
 @end
