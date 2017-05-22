@@ -37,7 +37,10 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDelegate, UITableVie
   
   init (withDelegate viewDelegate: BookDetailTableViewDelegate) {
     self.viewDelegate = viewDelegate
-    cells = [.relatedWorks]
+    cells = [BookDetailCellType]()
+    if (viewDelegate.book.relatedWorksURL != nil) {
+      cells.append(.relatedWorks)
+    }
     if (viewDelegate.book.acquisition.report != nil) {
       cells.append(.reportAProblem)
     }

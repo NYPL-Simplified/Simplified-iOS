@@ -56,14 +56,6 @@ static CGFloat const sectionHeaderHeight = 50.0;
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
-  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-                                            initWithImage:[UIImage imageNamed:@"Search"]
-                                            style:UIBarButtonItemStylePlain
-                                            target:self
-                                            action:@selector(didSelectSearch)];
-  self.navigationItem.rightBarButtonItem.accessibilityLabel = NSLocalizedString(@"Search", nil);
-  self.navigationItem.rightBarButtonItem.enabled = NO;
-  
   self.refreshControl = [[UIRefreshControl alloc] init];
   [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
   
@@ -80,6 +72,14 @@ static CGFloat const sectionHeaderHeight = 50.0;
   [self.view addSubview:self.tableView];
   
   if(self.feed.openSearchURL) {
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                              initWithImage:[UIImage imageNamed:@"Search"]
+                                              style:UIBarButtonItemStylePlain
+                                              target:self
+                                              action:@selector(didSelectSearch)];
+    self.navigationItem.rightBarButtonItem.accessibilityLabel = NSLocalizedString(@"Search", nil);
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+    
     [self fetchOpenSearchDescription];
   }
   

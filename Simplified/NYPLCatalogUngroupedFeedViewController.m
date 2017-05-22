@@ -88,15 +88,15 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
   [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
   [self.collectionView addSubview:self.refreshControl];
   
-  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-                                            initWithImage:[UIImage imageNamed:@"Search"]
-                                            style:UIBarButtonItemStylePlain
-                                            target:self
-                                            action:@selector(didSelectSearch)];
-  self.navigationItem.rightBarButtonItem.accessibilityLabel = NSLocalizedString(@"Search", nil);
-  self.navigationItem.rightBarButtonItem.enabled = NO;
-  
   if(self.feed.openSearchURL) {
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                              initWithImage:[UIImage imageNamed:@"Search"]
+                                              style:UIBarButtonItemStylePlain
+                                              target:self
+                                              action:@selector(didSelectSearch)];
+    self.navigationItem.rightBarButtonItem.accessibilityLabel = NSLocalizedString(@"Search", nil);
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+    
     [self fetchOpenSearchDescription];
   }
   
