@@ -45,7 +45,7 @@
 "ManageAccounts" = "Manage Accounts";
 "More..." = "More…";
 "MoreBooks" = "More %@ books";
-"NO" = "No"
+"NO" = "No";
 "NoResultsFound" = "No results found.";
 "NotConnected" = "You are not connected to the internet. Please connect and try again.";
 "OK" = "OK";
@@ -59,7 +59,7 @@
 "Published" = "Published";
 "Publisher" = "Publisher";
 "Read" = "Read"; // present tense
-"Reload" = "Reload"
+"Reload" = "Reload";
 "Remove" = "Remove";
 "Reserve" = "Reserve";
 "Return" = "Return";
@@ -74,14 +74,14 @@
 "SigningOut" = "Signing Out";
 "SignUp" = "Sign Up";
 "SoftwareLicenses" = "Software Licenses";
-"Submit" = "Submit"
+"Submit" = "Submit";
 "SyncFailed" = "Sync Failed";
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";
 "TryAgain" = "Try Again";
 "UnknownRequestError" =
     "An unknown error occurred. Please check your connection or try again later.";
 "Verifying" = "Verifying";
-"YES" = "Yes"
+"YES" = "Yes";
 
 // NYPLAppDelegate
 
@@ -98,10 +98,10 @@
 
 // NYPLBookDetailNormalView
 
-"ReportAProblem" = "Report a Problem"
-"Report" = "Report"
-"SentReport" = "Sent Report"
-"Sent" = "Sent"
+"ReportAProblem" = "Report a Problem";
+"Report" = "Report";
+"SentReport" = "Sent Report";
+"Sent" = "Sent";
 
 // NYPLBookDetailViewControllerTitle
 
@@ -155,10 +155,10 @@
 "Book" = "Book";
 "leftin" = "left in";
 "TOC" = "Table of contents";
-"RemoveBookmark" = "Remove Bookmark"
-"AddBookmark" = "Add Bookmark"
-"ReturnToReader" = "Return to Reader"
-"MagicTap" = "Magic Tap for Tools and Table of Contents"
+"RemoveBookmark" = "Remove Bookmark";
+"AddBookmark" = "Add Bookmark";
+"ReturnToReader" = "Return to Reader";
+"MagicTap" = "Magic Tap for Tools and Table of Contents";
 
 // NYPLReaderReadiumView
 "chapter" = "chapter";
@@ -196,10 +196,8 @@
 "SettingsAccountSyncTitle" = "SimplyE Sync";
 "SettingsAccountSyncSubTitle" = "Enable if you want to synchronize your bookmarks and last reading position across all your SimplyE devices. Bookmarks and last reading position will be saved for this device anyway. Note: This requires the information to be saved in SimplyE servers";
 "SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";
-"SettingsAccountViewControllerCannotLogOutTitle" =
-  "Logout Failed";
-"SettingsAccountViewControllerCannotLogOutMessage" =
-  "Please wait for certain download-related actions to finish before logging out.";
+"SettingsAccountViewControllerCannotLogOutTitle" =  "Logout Failed";
+"SettingsAccountViewControllerCannotLogOutMessage" =  "Please wait for certain download-related actions to finish before logging out.";
 "SettingsAccountViewControllerInvalidCredentials" =
   "Your barcode and pin combination was not valid. Please try again.";
 "SettingsAccountViewControllerLoginFailed" = "Login Failed";
@@ -215,11 +213,11 @@
 "LocationRequiredMessage" = "Location information is required for Sign Up. Please allow access to location information in the iOS settings";
 
 // NYPLSettingsAccountDetailViewController
-"AgeVerification" = "Age Verification"
-"Under13" = "Under 13"
-"13orOlder" = "13 or Older"
-"ReportAnIssue" = "Report An Issue"
-"SupportCenter" = "Support Center"
+"AgeVerification" = "Age Verification";
+"Under13" = "Under 13";
+"13orOlder" = "13 or Older";
+"ReportAnIssue" = "Report An Issue";
+"SupportCenter" = "Support Center";
 
 // NYPLSettingsEULAViewController
 "Accept" = "Accept";
@@ -232,10 +230,10 @@
 "SettingsAccountLibrariesViewControllerAlertTitle" = "Add Your Library";
 
 // NYPLSettingsPrimaryTableViewController
-"NotNow" = "Not Now"
-"Exit" = "Exit"
-"RestartRequired" = "Restart Required"
-"RestartRequiredForOPDS" = "You need to restart the app to use a new OPDS feed. Select Exit and then restart the app from the home screen."
+"NotNow" = "Not Now";
+"Exit" = "Exit";
+"RestartRequired" = "Restart Required";
+"RestartRequiredForOPDS" = "You need to restart the app to use a new OPDS feed. Select Exit and then restart the app from the home screen.";
 
 // NYPLSettingsPrivacyPolicyViewController
 "PrivacyPolicy" = "Privacy Policy";
