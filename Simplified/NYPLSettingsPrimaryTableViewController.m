@@ -268,10 +268,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)exitApp
 {
-  UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Restart Required", nil)
-                                                                               message:NSLocalizedString(@"You need to restart the app to use a new OPDS feed. Select Exit and then restart the app from the home screen.", nil)
+  UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"RestartRequired", nil)
+                                                                               message:NSLocalizedString(@"RestartRequiredForOPDS", nil)
                                                                         preferredStyle:UIAlertControllerStyleAlert];
-  [alertViewController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Not Now", nil)
+  [alertViewController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"NotNow", nil)
                                                           style:UIAlertActionStyleDefault
                                                         handler:nil]];
   [alertViewController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Exit", nil)

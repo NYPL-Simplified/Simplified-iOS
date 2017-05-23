@@ -70,7 +70,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 
 - (NSString *) reportButtonTitleForCurrentSize
 {
-  NSString *longName = self.reportButtonState == NYPLProblemReportButtonStateNormal ? NSLocalizedString(@"Report a Problem", nil) : NSLocalizedString(@"Sent Report", nil);
+  NSString *longName = self.reportButtonState == NYPLProblemReportButtonStateNormal ? NSLocalizedString(@"ReportAProblem", nil) : NSLocalizedString(@"SentReport", nil);
   NSString *shortName = self.reportButtonState == NYPLProblemReportButtonStateNormal ? NSLocalizedString(@"Report", nil) : NSLocalizedString(@"Sent", nil);
   CGFloat maxWidth = (self.bounds.size.width - self.buttonsView.bounds.size.width)/2.0 - 8.0 - 17.0;
   CGSize textSize = [longName sizeWithAttributes:@{NSFontAttributeName: self.reportAProblemButton.titleLabel.font}];
