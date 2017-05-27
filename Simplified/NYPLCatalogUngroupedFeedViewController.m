@@ -93,7 +93,7 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
                                             style:UIBarButtonItemStylePlain
                                             target:self
                                             action:@selector(didSelectSearch)];
-  self.navigationItem.rightBarButtonItem.accessibilityLabel = NSLocalizedString(@"Search", nil);
+  self.navigationItem.rightBarButtonItem.accessibilityLabel = NYPLLocalizedString(@"Search", nil);
   self.navigationItem.rightBarButtonItem.enabled = NO;
   
   if(self.feed.openSearchURL) {

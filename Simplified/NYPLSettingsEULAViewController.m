@@ -18,7 +18,7 @@
   self = [super init];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"EULA", nil);
+  self.title = NYPLLocalizedString(@"EULA", nil);
   self.eulaURL = [account getLicenseURL:URLTypeEula];
   
   return self;
@@ -29,7 +29,7 @@
   self = [super init];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"EULA", nil);
+  self.title = NYPLLocalizedString(@"EULA", nil);
   self.eulaURL = [NSURL URLWithString:NYPLUserAgreementURLString];
   
   return self;
@@ -81,11 +81,11 @@
   [self.activityIndicatorView stopAnimating];
   
   UIAlertController *alertController = [UIAlertController
-                                        alertControllerWithTitle:NSLocalizedString(@"ConnectionFailed", nil)
-                                        message:NSLocalizedString(@"ConnectionFailedDescription", nil)
+                                        alertControllerWithTitle:NYPLLocalizedString(@"ConnectionFailed", nil)
+                                        message:NYPLLocalizedString(@"ConnectionFailedDescription", nil)
                                         preferredStyle:UIAlertControllerStyleAlert];
   
-  UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+  UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NYPLLocalizedString(@"Cancel", nil)
                                                          style:UIAlertActionStyleDestructive
                                                        handler:^(UIAlertAction *cancelAction) {
                                                          if (cancelAction) {
@@ -93,7 +93,7 @@
                                                          }
                                                        }];
   
-  UIAlertAction *reloadAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Reload", nil)
+  UIAlertAction *reloadAction = [UIAlertAction actionWithTitle:NYPLLocalizedString(@"Reload", nil)
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction *reloadAction) {
                                                        if (reloadAction) {

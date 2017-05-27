@@ -61,7 +61,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
                                             style:UIBarButtonItemStylePlain
                                             target:self
                                             action:@selector(didSelectSearch)];
-  self.navigationItem.rightBarButtonItem.accessibilityLabel = NSLocalizedString(@"Search", nil);
+  self.navigationItem.rightBarButtonItem.accessibilityLabel = NYPLLocalizedString(@"Search", nil);
   self.navigationItem.rightBarButtonItem.enabled = NO;
   
   self.refreshControl = [[UIRefreshControl alloc] init];
@@ -211,7 +211,7 @@ viewForHeaderInSection:(NSInteger const)section
   {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeSystem];
     button.titleLabel.font = [UIFont systemFontOfSize:13];
-    NSString *const title = NSLocalizedString(@"More...", nil);
+    NSString *const title = NYPLLocalizedString(@"More...", nil);
     [button setTitle:title forState:UIControlStateNormal];
     [button sizeToFit];
     button.frame = CGRectMake(CGRectGetWidth(view.frame) - CGRectGetWidth(button.frame) - 10,
@@ -220,7 +220,7 @@ viewForHeaderInSection:(NSInteger const)section
                               CGRectGetHeight(button.frame));
     button.tag = section;
     NYPLCatalogLane *const lane = self.feed.lanes[button.tag];
-    button.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"MoreBooks", nil), lane.title];
+    button.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"MoreBooks", nil), lane.title];
     button.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
     [button addTarget:self
                action:@selector(didSelectCategory:)

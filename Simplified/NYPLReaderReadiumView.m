@@ -608,7 +608,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                                                         preferredStyle:UIAlertControllerStyleAlert];
       
       [alertController addAction:
-       [UIAlertAction actionWithTitle:NSLocalizedString(@"NO", nil)
+       [UIAlertAction actionWithTitle:NYPLLocalizedString(@"NO", nil)
                                 style:UIAlertActionStyleCancel
                               handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
                                 
@@ -617,7 +617,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                               }]];
       
       [alertController addAction:
-       [UIAlertAction actionWithTitle:NSLocalizedString(@"YES", nil)
+       [UIAlertAction actionWithTitle:NYPLLocalizedString(@"YES", nil)
                                 style:UIAlertActionStyleDefault
                               handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
                                 
@@ -867,7 +867,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
         [spineItemDict setObject:title forKey:@"tocElementTitle"];
       }
       else {
-        [spineItemDict setObject:NSLocalizedString(@"ReaderViewControllerCurrentChapter", nil) forKey:@"tocElementTitle"];
+        [spineItemDict setObject:NYPLLocalizedString(@"ReaderViewControllerCurrentChapter", nil) forKey:@"tocElementTitle"];
       }
       
       [bookDicts setObject:spineItemDict forKey:spineItem.idref];

@@ -61,7 +61,7 @@
   
   self.activityIndicatorLabel = [[UILabel alloc] init];
   self.activityIndicatorLabel.font = [UIFont systemFontOfSize:14.0];
-  self.activityIndicatorLabel.text = NSLocalizedString(@"ActivitySlowLoadMessage", @"Message explaining that the download is still going");
+  self.activityIndicatorLabel.text = NYPLLocalizedString(@"ActivitySlowLoadMessage",  @"Message explaining that the download is still going");
   self.activityIndicatorLabel.hidden = YES;
   [self.view addSubview:self.activityIndicatorLabel];
   [self.activityIndicatorLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:self.activityIndicatorView];
@@ -74,7 +74,7 @@
   [self.searchBar becomeFirstResponder];
   
   self.noResultsLabel = [[UILabel alloc] init];
-  self.noResultsLabel.text = NSLocalizedString(@"NoResultsFound", nil);
+  self.noResultsLabel.text = NYPLLocalizedString(@"NoResultsFound", nil);
   self.noResultsLabel.font = [UIFont systemFontOfSize:17];
   [self.noResultsLabel sizeToFit];
   self.noResultsLabel.hidden = YES;

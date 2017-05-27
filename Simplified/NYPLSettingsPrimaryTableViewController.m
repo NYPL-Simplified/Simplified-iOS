@@ -81,7 +81,7 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"Settings", nil);
+  self.title = NYPLLocalizedString(@"Settings", nil);
   
   self.clearsSelectionOnViewWillAppear = NO;
   
@@ -146,19 +146,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(SettingsItemFromIndexPath(indexPath)) {
     case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses: {
-      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"SoftwareLicenses", nil)];
+      return [self settingsPrimaryTableViewCellWithText:NYPLLocalizedString(@"SoftwareLicenses", nil)];
     }
     case NYPLSettingsPrimaryTableViewControllerItemEULA: {
-      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"EULA", nil)];
+      return [self settingsPrimaryTableViewCellWithText:NYPLLocalizedString(@"EULA", nil)];
     }
     case NYPLSettingsPrimaryTableViewControllerItemAccount: {
-      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"Accounts", nil)];
+      return [self settingsPrimaryTableViewCellWithText:NYPLLocalizedString(@"Accounts", nil)];
     }
     case NYPLSettingsPrimaryTableViewControllerItemAbout: {
-      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"AboutApp", nil)];
+      return [self settingsPrimaryTableViewCellWithText:NYPLLocalizedString(@"AboutApp", nil)];
     }
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
-      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"Help", nil)];
+      return [self settingsPrimaryTableViewCellWithText:NYPLLocalizedString(@"Help", nil)];
     }
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
@@ -268,13 +268,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)exitApp
 {
-  UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"RestartRequired", nil)
-                                                                               message:NSLocalizedString(@"RestartRequiredForOPDS", nil)
+  UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NYPLLocalizedString(@"RestartRequired", nil)
+                                                                               message:NYPLLocalizedString(@"RestartRequiredForOPDS", nil)
                                                                         preferredStyle:UIAlertControllerStyleAlert];
-  [alertViewController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"NotNow", nil)
+  [alertViewController addAction:[UIAlertAction actionWithTitle:NYPLLocalizedString(@"NotNow", nil)
                                                           style:UIAlertActionStyleDefault
                                                         handler:nil]];
-  [alertViewController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Exit", nil)
+  [alertViewController addAction:[UIAlertAction actionWithTitle:NYPLLocalizedString(@"Exit", nil)
                                                           style:UIAlertActionStyleDefault
                                                         handler:^(__attribute__((unused)) UIAlertAction * action) {
                                                           exit(0);

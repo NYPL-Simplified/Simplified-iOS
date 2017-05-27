@@ -28,7 +28,7 @@
   
   self.delegate = self;
   
-  self.title = NSLocalizedString(@"Settings", nil);
+  self.title = NYPLLocalizedString(@"Settings", nil);
   self.tabBarItem.image = [UIImage imageNamed:@"Settings"];
   
   self.primaryNavigationController = [[NYPLSettingsPrimaryNavigationController alloc] init];
@@ -80,21 +80,21 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
       viewController = [[RemoteHTMLViewController alloc]
                         initWithURL:[NSURL URLWithString:NYPLAcknowledgementsURLString]
-                        title:NSLocalizedString(@"AboutApp", nil)
-                        failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+                        title:NYPLLocalizedString(@"AboutApp", nil)
+                        failureMessage:NYPLLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
       viewController = [[RemoteHTMLViewController alloc]
                         initWithURL:[NSURL URLWithString:NYPLUserAgreementURLString]
-                        title:NSLocalizedString(@"EULA", nil)
-                        failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+                        title:NYPLLocalizedString(@"EULA", nil)
+                        failureMessage:NYPLLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses:
       viewController = [[BundledHTMLViewController alloc]
                         initWithFileURL:[[NSBundle mainBundle]
                                          URLForResource:@"software-licenses"
                                          withExtension:@"html"]
-                        title:NSLocalizedString(@"SoftwareLicenses", nil)];
+                        title:NYPLLocalizedString(@"SoftwareLicenses", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
       [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];

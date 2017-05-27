@@ -231,6 +231,7 @@
 		030713651E749D5600DDE3FA /* CodabarMedium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = CodabarMedium.ttf; sourceTree = "<group>"; };
 		0320E8221E8BFCC900806EF0 /* NYPLReportIssueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLReportIssueViewController.swift; sourceTree = "<group>"; };
 		0320E8261E8BFD5700806EF0 /* ReportIssue.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ReportIssue.storyboard; sourceTree = "<group>"; };
+		0322CAC11ED9B6CA000B65C0 /* NYPLLocalizableFallbackLanguage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLLocalizableFallbackLanguage.h; sourceTree = "<group>"; };
 		032A31061DC02E8E0001E4AF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		032A310C1DC02EAD0001E4AF /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		032A310D1DC02EB30001E4AF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -1069,6 +1070,7 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0322CAC11ED9B6CA000B65C0 /* NYPLLocalizableFallbackLanguage.h */,
 				030713641E749D5600DDE3FA /* CodabarLarge.ttf */,
 				030713651E749D5600DDE3FA /* CodabarMedium.ttf */,
 				110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */,

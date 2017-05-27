@@ -100,7 +100,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"Account", nil);
+  self.title = NYPLLocalizedString(@"Account", nil);
 
   [[NSNotificationCenter defaultCenter]
    addObserver:self
@@ -169,7 +169,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   self.barcodeTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                             UIViewAutoresizingFlexibleHeight);
   self.barcodeTextField.font = [UIFont systemFontOfSize:17];
-  self.barcodeTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
+  self.barcodeTextField.placeholder = NYPLLocalizedString(@"BarcodeOrUsername", nil);
   self.barcodeTextField.keyboardType = UIKeyboardTypeASCIICapable;
   self.barcodeTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
   self.barcodeTextField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -182,7 +182,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   self.PINTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                         UIViewAutoresizingFlexibleHeight);
   self.PINTextField.font = [UIFont systemFontOfSize:17];
-  self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
+  self.PINTextField.placeholder = NYPLLocalizedString(@"PIN", nil);
   self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
   self.PINTextField.secureTextEntry = YES;
   self.PINTextField.delegate = self;
@@ -192,7 +192,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
    forControlEvents:UIControlEventEditingChanged];
 
   self.PINShowHideButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [self.PINShowHideButton setTitle:NSLocalizedString(@"Show", nil) forState:UIControlStateNormal];
+  [self.PINShowHideButton setTitle:NYPLLocalizedString(@"Show", nil) forState:UIControlStateNormal];
   [self.PINShowHideButton sizeToFit];
   [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected)
                    forControlEvents:UIControlEventTouchUpInside];
@@ -368,7 +368,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   [self.barcodeTextField resignFirstResponder];
   [self.PINTextField resignFirstResponder];
   
-  [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
+  [self setActivityTitleWithText:NYPLLocalizedString(@"Verifying", nil)];
   
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   
@@ -397,7 +397,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
     return;
   }
   
-  [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
+  [self setActivityTitleWithText:NYPLLocalizedString(@"SigningOut", nil)];
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   
   [[NYPLReachability sharedReachability]
@@ -609,13 +609,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
       if (self.account.eulaIsAccepted == YES) {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
-        cell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAUnchecked", nil);
-        cell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
+        cell.accessibilityLabel = NYPLLocalizedString(@"AccessibilityEULAUnchecked", nil);
+        cell.accessibilityHint = NYPLLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
         self.account.eulaIsAccepted = NO;
       } else {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
-        cell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAChecked", nil);
-        cell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintChecked", nil);
+        cell.accessibilityLabel = NYPLLocalizedString(@"AccessibilityEULAChecked", nil);
+        cell.accessibilityHint = NYPLLocalizedString(@"AccessibilityEULAHintChecked", nil);
         self.account.eulaIsAccepted = YES;
       }
       [self updateLoginLogoutCellAppearance];
@@ -627,22 +627,22 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         UIAlertController *const alertController =
         (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
          ? [UIAlertController
-            alertControllerWithTitle:NSLocalizedString(@"SignOut", nil)
-            message:NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
+            alertControllerWithTitle:NYPLLocalizedString(@"SignOut", nil)
+            message:NYPLLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
             preferredStyle:UIAlertControllerStyleAlert]
          : [UIAlertController
             alertControllerWithTitle:
-            NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
+            NYPLLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
             message:nil
             preferredStyle:UIAlertControllerStyleActionSheet]);
         [alertController addAction:[UIAlertAction
-                                    actionWithTitle:NSLocalizedString(@"SignOut", nil)
+                                    actionWithTitle:NYPLLocalizedString(@"SignOut", nil)
                                     style:UIAlertActionStyleDestructive
                                     handler:^(__attribute__((unused)) UIAlertAction *action) {
                                       [self logOut];
                                     }]];
         [alertController addAction:[UIAlertAction
-                                    actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                    actionWithTitle:NYPLLocalizedString(@"Cancel", nil)
                                     style:UIAlertActionStyleCancel
                                     handler:nil]];
         [self presentViewController:alertController animated:YES completion:^{
@@ -681,7 +681,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UINavigationController *const navigationController =
       [CardCreator initialNavigationControllerWithConfiguration:configuration];
       navigationController.navigationBar.topItem.leftBarButtonItem =
-      [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+      [[UIBarButtonItem alloc] initWithTitle:NYPLLocalizedString(@"Cancel", nil)
                                        style:UIBarButtonItemStylePlain
                                       target:self
                                       action:@selector(didSelectCancelForSignUp)];
@@ -692,12 +692,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       else
       {
         
-        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:self.account.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:self.account.cardCreatorUrl] title:@"eCard" failureMessage:NYPLLocalizedString(@"SettingsConnectionFailureMessage", nil)];
         
         UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webViewController];
         
         navigationController.navigationBar.topItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil)
+        [[UIBarButtonItem alloc] initWithTitle:NYPLLocalizedString(@"Close", nil)
                                          style:UIBarButtonItemStylePlain
                                         target:self
                                         action:@selector(didSelectCancelForSignUp)];
@@ -766,24 +766,24 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindAbout: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
                                       initWithURL:[self.account getLicenseURL:URLTypeAcknowledgements]
-                                      title:NSLocalizedString(@"About", nil)
-                                      failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+                                      title:NYPLLocalizedString(@"About", nil)
+                                      failureMessage:NYPLLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       [self.navigationController pushViewController:vc animated:true];
       break;
     }
     case CellKindPrivacyPolicy: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
                                       initWithURL:[self.account getLicenseURL:URLTypePrivacyPolicy]
-                                      title:NSLocalizedString(@"PrivacyPolicy", nil)
-                                      failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+                                      title:NYPLLocalizedString(@"PrivacyPolicy", nil)
+                                      failureMessage:NYPLLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       [self.navigationController pushViewController:vc animated:true];
       break;
     }
     case CellKindContentLicense: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
                                       initWithURL:[self.account getLicenseURL:URLTypeContentLicenses]
-                                      title:NSLocalizedString(@"ContentLicenses", nil)
-                                      failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+                                      title:NYPLLocalizedString(@"ContentLicenses", nil)
+                                      failureMessage:NYPLLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       [self.navigationController pushViewController:vc animated:true];
       break;
     }
@@ -877,18 +877,18 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (self.account.eulaIsAccepted || [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]) {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOn"]];
-        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAChecked", nil);
-        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintChecked", nil);
+        self.eulaCell.accessibilityLabel = NYPLLocalizedString(@"AccessibilityEULAChecked", nil);
+        self.eulaCell.accessibilityHint = NYPLLocalizedString(@"AccessibilityEULAHintChecked", nil);
       } else {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOff"]];
-        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAUnchecked", nil);
-        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
+        self.eulaCell.accessibilityLabel = NYPLLocalizedString(@"AccessibilityEULAUnchecked", nil);
+        self.eulaCell.accessibilityHint = NYPLLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
       }
       self.eulaCell.selectionStyle = UITableViewCellSelectionStyleNone;
       self.eulaCell.textLabel.font = [UIFont systemFontOfSize:13];
-      self.eulaCell.textLabel.text = NSLocalizedString(@"SettingsAccountEULACheckbox",
-                                                       @"Statement letting a user know that they must agree to the User Agreement terms.");
+      self.eulaCell.textLabel.text = NYPLLocalizedString(@"SettingsAccountEULACheckbox",  @"Statement letting a user know that they must agree to the User Agreement terms.");
+      
       self.eulaCell.textLabel.numberOfLines = 2;
       return self.eulaCell;
     }
@@ -908,9 +908,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleValue1
                                      reuseIdentifier:nil];
       self.registrationCell.textLabel.font = [UIFont systemFontOfSize:17];
-      self.registrationCell.textLabel.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
+      self.registrationCell.textLabel.text = NYPLLocalizedString(@"SettingsAccountRegistrationTitle",  @"Title for registration. Asking the user if they already have a library card.");
       self.registrationCell.detailTextLabel.font = [UIFont systemFontOfSize:17];
-      self.registrationCell.detailTextLabel.text = NSLocalizedString(@"SignUp", nil);
+      self.registrationCell.detailTextLabel.text = NYPLLocalizedString(@"SignUp", nil);
       self.registrationCell.detailTextLabel.textColor = [NYPLConfiguration mainColor];
 
       return self.registrationCell;
@@ -928,7 +928,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       self.ageCheckCell.selectionStyle = UITableViewCellSelectionStyleNone;
       self.ageCheckCell.textLabel.font = [UIFont systemFontOfSize:13];
-      self.ageCheckCell.textLabel.text = NSLocalizedString(@"SettingsAccountAgeCheckbox",
+      self.ageCheckCell.textLabel.text = NYPLLocalizedString(@"SettingsAccountAgeCheckbox", 
                                                            @"Statement that confirms if a user meets the age requirement to download books");
       self.ageCheckCell.textLabel.numberOfLines = 2;
       return self.ageCheckCell;
@@ -950,7 +950,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [cell.contentView addSubview:switchView];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"SettingsAccountSetAccountTitle",
+      cell.textLabel.text = NYPLLocalizedString(@"SettingsAccountSetAccountTitle", 
                                               @"Title for switch to make this account the current active library account for the app");
       return cell;
     }
@@ -968,7 +968,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [cell.contentView addSubview:self.switchView];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"SettingsAccountSyncTitle",
+      cell.textLabel.text = NYPLLocalizedString(@"SettingsAccountSyncTitle", 
                                               @"Title for switch to turn on or off syncing.");
       return cell;
     }
@@ -978,7 +978,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"ReportAnIssue", nil);
+      cell.textLabel.text = NYPLLocalizedString(@"ReportAnIssue", nil);
       return cell;
     }
     case CellSupportCenter: {
@@ -987,7 +987,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"SupportCenter", nil);
+      cell.textLabel.text = NYPLLocalizedString(@"SupportCenter", nil);
       return cell;
     }
     case CellKindAbout: {
@@ -1006,7 +1006,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"PrivacyPolicy", nil);
+      cell.textLabel.text = NYPLLocalizedString(@"PrivacyPolicy", nil);
       cell.hidden = ([self.account getLicenseURL:URLTypePrivacyPolicy]) ? NO : YES;
       return cell;
     }
@@ -1016,7 +1016,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"ContentLicenses", nil);
+      cell.textLabel.text = NYPLLocalizedString(@"ContentLicenses", nil);
       cell.hidden = ([self.account getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
       return cell;
     }
@@ -1052,7 +1052,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 -(NSString *)tableView:(__unused UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
   if (self.account.supportsSimplyESync && [self syncButtonShouldBeVisible] && section == 1) {
-  return NSLocalizedString(@"SettingsAccountSyncSubTitle",
+  return NYPLLocalizedString(@"SettingsAccountSyncSubTitle", 
                            @"Disclaimer for switch to turn on or off syncing.");
   }
   return nil;
@@ -1233,7 +1233,7 @@ replacementString:(NSString *)string
     LAContext *const context = [[LAContext alloc] init];
     if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
       [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication
-              localizedReason:NSLocalizedString(@"SettingsAccountViewControllerAuthenticationReason", nil)
+              localizedReason:NYPLLocalizedString(@"SettingsAccountViewControllerAuthenticationReason", nil)
                         reply:^(__unused BOOL success,
                                 __unused NSError *_Nullable error) {
                           if(success) {
@@ -1254,7 +1254,7 @@ replacementString:(NSString *)string
 {
   self.PINTextField.secureTextEntry = !self.PINTextField.secureTextEntry;
   NSString *title = self.PINTextField.secureTextEntry ? @"Show" : @"Hide";
-  [self.PINShowHideButton setTitle:NSLocalizedString(title, nil) forState:UIControlStateNormal];
+  [self.PINShowHideButton setTitle:NYPLLocalizedString(title, nil) forState:UIControlStateNormal];
   [self.PINShowHideButton sizeToFit];
   [self.tableView reloadData];
 }
@@ -1292,14 +1292,14 @@ replacementString:(NSString *)string
 - (void)updateLoginLogoutCellAppearance
 {
   if([[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]) {
-    self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
+    self.logInSignOutCell.textLabel.text = NYPLLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     self.logInSignOutCell.userInteractionEnabled = YES;
     self.eulaCell.userInteractionEnabled = NO;
   } else {
     self.eulaCell.userInteractionEnabled = YES;
-    self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
+    self.logInSignOutCell.textLabel.text = NYPLLocalizedString(@"LogIn", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentLeft;
     BOOL const canLogIn =
       ([self.barcodeTextField.text
@@ -1491,18 +1491,18 @@ replacementString:(NSString *)string
 - (void)confirmAgeChange:(void (^)(BOOL))completion
 {
   NYPLAlertController *alertCont = [NYPLAlertController
-                                    alertControllerWithTitle:NSLocalizedString(@"AgeVerification", @"An alert title indicating the user needs to verify their age")
-                                    message:NSLocalizedString(@"SettingsAccountViewControllerAgeCheckMessage",
+                                    alertControllerWithTitle:NYPLLocalizedString(@"AgeVerification",  @"An alert title indicating the user needs to verify their age")
+                                    message:NYPLLocalizedString(@"SettingsAccountViewControllerAgeCheckMessage", 
                                                               @"An alert message warning the user they will lose their downloaded books if they continue.")
                                     preferredStyle:UIAlertControllerStyleAlert];
   
-  [alertCont addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"Under13", comment: @"A button title indicating an age range")
+  [alertCont addAction: [UIAlertAction actionWithTitle:NYPLLocalizedString(@"Under13",  @"A button title indicating an age range")
                                                  style:UIAlertActionStyleDefault
                                                handler:^(UIAlertAction * _Nonnull __unused action) {
                                                  if (completion) { completion(YES); }
                                                }]];
   
-  [alertCont addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"13orOlder", comment: @"A button title indicating an age range")
+  [alertCont addAction: [UIAlertAction actionWithTitle:NYPLLocalizedString(@"13orOlder",  @"A button title indicating an age range")
                                                  style:UIAlertActionStyleDefault
                                                handler:^(UIAlertAction * _Nonnull __unused action) {
                                                  if (completion) { completion(NO); }

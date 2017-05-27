@@ -105,7 +105,7 @@
   self.cancelButton = [NYPLRoundedButton button];
   self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.cancelButton.layer.borderWidth = 0;
-  [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
+  [self.cancelButton setTitle:NYPLLocalizedString(@"Cancel", nil)
                      forState:UIControlStateNormal];
   [self.cancelButton addTarget:self
                         action:@selector(didSelectCancel)
@@ -114,7 +114,7 @@
   
   self.downloadingLabel = [[UILabel alloc] init];
   self.downloadingLabel.font = [UIFont systemFontOfSize:12];
-  self.downloadingLabel.text = NSLocalizedString(@"Downloading", nil);
+  self.downloadingLabel.text = NYPLLocalizedString(@"Downloading", nil);
   self.downloadingLabel.textColor = [NYPLConfiguration backgroundColor];
   [self.contentView addSubview:self.downloadingLabel];
   

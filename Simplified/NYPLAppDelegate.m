@@ -117,19 +117,19 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
        UIAlertController *const alertController =
          [UIAlertController
-          alertControllerWithTitle:NSLocalizedString(@"AppDelegateUpdateRequiredTitle", nil)
-          message:[NSString stringWithFormat:NSLocalizedString(@"AppDelegateUpdateRequiredMessageFormat", nil), version]
+          alertControllerWithTitle:NYPLLocalizedString(@"AppDelegateUpdateRequiredTitle", nil)
+          message:[NSString stringWithFormat:NYPLLocalizedString(@"AppDelegateUpdateRequiredMessageFormat", nil), version]
           preferredStyle:UIAlertControllerStyleAlert];
        [alertController addAction:
         [UIAlertAction
-         actionWithTitle:NSLocalizedString(@"AppDelegateUpdateNow", nil)
+         actionWithTitle:NYPLLocalizedString(@"AppDelegateUpdateNow", nil)
          style:UIAlertActionStyleDefault
          handler:^(__unused UIAlertAction *_Nonnull action) {
            [[UIApplication sharedApplication] openURL:updateURL];
          }]];
        [alertController addAction:
         [UIAlertAction
-         actionWithTitle:NSLocalizedString(@"AppDelegateUpdateRemindMeLater", nil)
+         actionWithTitle:NYPLLocalizedString(@"AppDelegateUpdateRemindMeLater", nil)
          style:UIAlertActionStyleCancel
          handler:nil]];
        [self.window.rootViewController

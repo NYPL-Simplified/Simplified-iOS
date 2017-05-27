@@ -27,7 +27,7 @@
   [self addSubview:self.backgroundView];
   
   self.cancelButton = [NYPLRoundedButton button];
-  [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
+  [self.cancelButton setTitle:NYPLLocalizedString(@"Cancel", nil)
                      forState:UIControlStateNormal];
   [self.cancelButton addTarget:self
                         action:@selector(didSelectCancel)
@@ -38,7 +38,7 @@
   
   self.progressLabel = [[UILabel alloc] init];
   self.progressLabel.font = [UIFont systemFontOfSize:12];
-  self.progressLabel.text = NSLocalizedString(@"Requesting", nil);
+  self.progressLabel.text = NYPLLocalizedString(@"Requesting", nil);
   self.progressLabel.textColor = [NYPLConfiguration backgroundColor];
   [self addSubview:self.progressLabel];
   
@@ -119,7 +119,7 @@
 {
   _downloadStarted = downloadStarted;
   NSString *status = downloadStarted ? @"Downloading" : @"Requesting";
-  self.progressLabel.text = NSLocalizedString(status, nil);
+  self.progressLabel.text = NYPLLocalizedString(status, nil);
   [self setNeedsLayout];
 }
 
