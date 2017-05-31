@@ -226,6 +226,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
             NYPLLOG(last);
             NYPLLOG(@"#### feed reload ####");
 
+#if defined(FEATURE_DRM_CONNECTOR)
             [[NYPLADEPT sharedInstance]
              authorizeWithVendorID:[[NYPLAccount sharedAccount:currentAccount.id] licensor][@"vendor"]
              username:first
@@ -247,6 +248,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
                }
                
              }];
+#endif
           }
 //        }
       }
