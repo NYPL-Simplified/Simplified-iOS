@@ -3,6 +3,7 @@
 @class NYPLBook;
 
 @class NYPLBookDetailView;
+@class NYPLBookDetailTableViewDelegate;
 
 @protocol NYPLBookDetailViewDelegate
 
@@ -14,6 +15,7 @@
 - (void)didSelectCloseButton:(NYPLBookDetailView *)detailView;
 - (void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender;
 - (void)didSelectRelatedWorksForBook:(NYPLBook *)book sender:(id)sender;
+- (void)didSelectCitationsForBook:(NYPLBook *)book sender:(id)sender;
 
 @end
 
@@ -24,7 +26,8 @@
 @property (nonatomic) double downloadProgress;
 @property (nonatomic) BOOL downloadStarted;
 @property (nonatomic) NYPLBookState state;
-@property (nonatomic) UIButton *reportProblemLabel;
+@property (nonatomic) NYPLBookDetailTableViewDelegate *tableViewDelegate;
+
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;

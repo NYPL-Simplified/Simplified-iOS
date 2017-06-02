@@ -7,9 +7,15 @@
 #import "NYPLBookDetailDownloadingView.h"
 #import "NYPLBookDetailNormalView.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLCatalogGroupedFeed.h"
+#import "NYPLCatalogFeedViewController.h"
+#import "NYPLCatalogGroupedFeedViewController.h"
+#import "NYPLCatalogLaneCell.h"
+#import "NYPLCatalogUngroupedFeed.h"
 #import "NYPLConfiguration.h"
 #import "NYPLBookDetailView.h"
 #import "NYPLConfiguration.h"
+#import "NYPLOPDSFeed.h"
 #import "SimplyE-Swift.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 
@@ -30,7 +36,6 @@
 @property (nonatomic) UIButton *closeButton;
 
 @property (nonatomic) NYPLBookDetailButtonsView *buttonsView;
-
 @property (nonatomic) NYPLBookDetailDownloadFailedView *downloadFailedView;
 @property (nonatomic) NYPLBookDetailDownloadingView *downloadingView;
 @property (nonatomic) NYPLBookDetailNormalView *normalView;
@@ -49,9 +54,7 @@
 @property (nonatomic) UILabel *publisherLabelValue;
 @property (nonatomic) UILabel *categoriesLabelValue;
 @property (nonatomic) UILabel *distributorLabelValue;
-
 @property (nonatomic) NYPLBookDetailTableView *footerTableView;
-@property (nonatomic) NYPLBookDetailTableViewDelegate *tableViewDelegate;
 
 @property (nonatomic) UIView *topFootnoteSeparater;
 @property (nonatomic) UIView *bottomFootnoteSeparator;
@@ -292,9 +295,11 @@ static NSString *DetailHTMLTemplate = nil;
   self.bottomFootnoteSeparator.backgroundColor = [UIColor lightGrayColor];
   
   self.footerTableView = [[NYPLBookDetailTableView alloc] init];
-  self.tableViewDelegate = [[NYPLBookDetailTableViewDelegate alloc] initWithDelegate:self];
+  self.tableViewDelegate = [[NYPLBookDetailTableViewDelegate alloc] init:self.footerTableView book:self.book];
+  self.tableViewDelegate.viewDelegate = self;
   self.footerTableView.delegate = self.tableViewDelegate;
   self.footerTableView.dataSource = self.tableViewDelegate;
+  [self.tableViewDelegate load];
 }
 
 - (UILabel *)createFooterLabelWithString:(NSString *)string alignment:(NSTextAlignment)alignment
@@ -649,7 +654,13 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 
 - (void)relatedWorksTapped
 {
+  //GODO 'self.book' will likely need to refer to the feed instead
   [self.detailViewDelegate didSelectRelatedWorksForBook:self.book sender:self];
+}
+
+- (void)citationsTapped
+{
+  [self.detailViewDelegate didSelectCitationsForBook:self.book sender:self];
 }
 
 - (void)readMoreTapped:(__unused UIButton *)sender

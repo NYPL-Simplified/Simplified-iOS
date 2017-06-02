@@ -1,22 +1,25 @@
 #import "NYPLBook.h"
 #import "NYPLBookAcquisition.h"
 #import "NYPLBookDetailView.h"
-#import "NYPLMyBooksDownloadInfo.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLCatalogLane.h"
+#import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLMyBooksDownloadInfo.h"
 #import "NYPLReaderViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLSession.h"
 #import "NYPLProblemReportViewController.h"
 #import "NSURLRequest+NYPLURLRequestAdditions.h"
+#import "SimplyE-Swift.h"
 #import <PureLayout/PureLayout.h>
 
 #import "NYPLCatalogFeedViewController.h"
 
 #import "NYPLBookDetailViewController.h"
 
-@interface NYPLBookDetailViewController () <NYPLBookDetailViewDelegate, NYPLProblemReportViewControllerDelegate>
+@interface NYPLBookDetailViewController () <NYPLBookDetailViewDelegate, NYPLProblemReportViewControllerDelegate, NYPLCatalogLaneCellDelegate>
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) NYPLBookDetailView *bookDetailView;
@@ -131,6 +134,24 @@
    animated:YES];
 }
 
+- (void)didSelectCitationsForBook:(NYPLBook *)book sender:(id)sender
+{
+  //FIXME: add logic for launching citations here
+}
+
+//GODO
+#pragma mark NYPLCatalogLaneCellDelegate
+
+- (void)catalogLaneCell:(__unused NYPLCatalogLaneCell *const)cell
+     didSelectBookIndex:(NSUInteger const)bookIndex
+{
+  NYPLCatalogLane *const lane = self.bookDetailView.tableViewDelegate.laneFeeds[cell.laneIndex];
+  NYPLBook *const feedBook = lane.books[bookIndex];
+  NYPLBook *const localBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:feedBook.identifier];
+  NYPLBook *const book = (localBook != nil) ? localBook : feedBook;
+  [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
+}
+
 #pragma mark - ProblemReportViewControllerDelegate
 
 -(void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender
@@ -163,9 +184,6 @@
     [[NYPLSession sharedSession] uploadWithRequest:r completionHandler:nil];
   }
   [problemReportViewController dismissViewControllerAnimated:YES completion:nil];
-  [UIView transitionWithView:self.bookDetailView.reportProblemLabel duration:1 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-    [self.bookDetailView.reportProblemLabel setTitle:NSLocalizedString(@"ReportProblemSent", nil) forState:UIControlStateNormal];
-  } completion:nil];
 }
 
 #pragma mark -
