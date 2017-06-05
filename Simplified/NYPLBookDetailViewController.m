@@ -11,6 +11,7 @@
 #import "NYPLProblemReportViewController.h"
 #import "NSURLRequest+NYPLURLRequestAdditions.h"
 #import <PureLayout/PureLayout.h>
+#import <Citations/Citations.h>
 
 #import "NYPLCatalogFeedViewController.h"
 
@@ -158,18 +159,12 @@
 
 - (void)didSelectExportCitationForBook:(NYPLBook *)book sender:(__unused id)sender
 {
+  NSBundle *bundle = [NSBundle bundleWithIdentifier:@"edu.umn.minitex.simplye.Citations"];
+  UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Citations" bundle:bundle];
 
-  NYPLLOG(@"didSelectExportCitationForBook");
-  UIStoryboard *sb = [UIStoryboard storyboardWithName:@"NYPLCitations" bundle:nil];
-  NYPLCitationsViewController *citationsViewController = (NYPLCitationsViewController*)[sb instantiateViewControllerWithIdentifier:@"NYPLCitations"];
-  
-  citationsViewController.book = book;
-  
+  CitationsViewController *citationsViewController = (CitationsViewController*)[sb instantiateViewControllerWithIdentifier:@"Citations"];
+  citationsViewController.metadata = book.dictionaryRepresentation;
   [self.navigationController pushViewController:citationsViewController animated:YES];
-  
-  //UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:(UIViewController*)citationsViewController];
-  //[[NYPLRootTabBarController sharedController] safelyPresentViewController:navController animated:YES completion:nil];
-  
 }
 
 - (void)problemReportViewController:(NYPLProblemReportViewController *)problemReportViewController didSelectProblemWithType:(NSString *)type
