@@ -149,7 +149,7 @@
 - (void)catalogLaneCell:(NYPLCatalogLaneCell *)cell
      didSelectBookIndex:(NSUInteger)bookIndex
 {
-  NYPLCatalogLane *const lane = self.bookDetailView.tableViewDelegate.laneFeeds[cell.laneIndex];
+  NYPLCatalogLane *const lane = self.bookDetailView.tableViewDelegate.catalogLanes[cell.laneIndex];
   NYPLBook *const feedBook = lane.books[bookIndex];
   NYPLBook *const localBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:feedBook.identifier];
   NYPLBook *const book = (localBook != nil) ? localBook : feedBook;
@@ -174,10 +174,12 @@
   [self.navigationController pushViewController:problemVC animated:YES];
 }
 
-- (void)didSelectRelatedWorksForBook:(NYPLBook *)book sender:(__unused id)sender
+- (void)didSelectMoreBooksForLane:(NYPLCatalogLane *)lane
 {
-  NYPLCatalogFeedViewController *vc = [[NYPLCatalogFeedViewController alloc] initWithURL:book.relatedWorksURL];
-  [self.navigationController pushViewController:vc animated:YES];
+  UIViewController *const viewController = [[NYPLCatalogFeedViewController alloc]
+                                            initWithURL:lane.subsectionURL];
+  viewController.title = lane.title;
+  [self.navigationController pushViewController:viewController animated:YES];
 }
 
 - (void)problemReportViewController:(NYPLProblemReportViewController *)problemReportViewController didSelectProblemWithType:(NSString *)type

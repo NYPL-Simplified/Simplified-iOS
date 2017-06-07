@@ -658,11 +658,11 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   [self.detailViewDelegate didSelectReportProblemForBook:self.book sender:self];
 }
 
-- (void)relatedWorksTapped
+- (void)moreBooksTappedForLane:(NYPLCatalogLane *)lane
 {
-  //GODO 'self.book' will likely need to refer to the feed instead
-  [self.detailViewDelegate didSelectRelatedWorksForBook:self.book sender:self];
+  [self.detailViewDelegate didSelectMoreBooksForLane:lane];
 }
+
 
 - (void)citationsTapped
 {

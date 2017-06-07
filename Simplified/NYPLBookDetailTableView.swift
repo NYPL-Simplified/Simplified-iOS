@@ -4,6 +4,7 @@ import PureLayout
 @objc protocol BookDetailTableViewDelegate {
   func reportProblemTapped()
   func citationsTapped()
+  func moreBooksTapped(forLane: NYPLCatalogLane)
 }
 
 
@@ -51,8 +52,8 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
   var book: NYPLBook
   
   var standardCells = [(UITableViewCell,BookDetailCellType)]()
-  var laneCells = [NYPLCatalogLaneCell]()
-  var laneFeeds = [NYPLCatalogLane]()
+  var catalogLaneCells = [NYPLCatalogLaneCell]()
+  var catalogLanes = [NYPLCatalogLane]()
   
   init (_ tableView: UITableView, book: NYPLBook) {
     self.tableView = tableView
@@ -101,8 +102,8 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
                                               bookIdentifiersToImages: bookIdentifierToImages)
         {
           laneCell.delegate = self.laneCellDelegate
-          self.laneCells.append(laneCell)
-          self.laneFeeds.append(lane)
+          self.catalogLaneCells.append(laneCell)
+          self.catalogLanes.append(lane)
           index += 1
           self.checkAndRemoveRedundantTitles(lane, &index)
         }
@@ -123,15 +124,15 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
   func checkAndRemoveRedundantTitles(_ lane: NYPLCatalogLane, _ index: inout UInt) {
     if (lane.books.count == 1) {
       if (lane.books[0] as! NYPLBook).title == self.book.title {
-        self.laneCells.removeLast()
-        self.laneFeeds.removeLast()
+        self.catalogLaneCells.removeLast()
+        self.catalogLanes.removeLast()
         index -= 1
       }
     }
   }
 
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if (section < self.laneCells.count) {
+    if (section < self.catalogLaneCells.count) {
       return 1
     } else {
       return self.standardCells.count
@@ -139,23 +140,23 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
   }
   
   func numberOfSections(in tableView: UITableView) -> Int {
-    if (self.laneCells.count == 0) {
+    if (self.catalogLaneCells.count == 0) {
       return 1
     } else {
-      return 1 + self.laneCells.count
+      return 1 + self.catalogLaneCells.count
     }
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    if (indexPath.section < self.laneCells.count) {
-      return self.laneCells[indexPath.section]
+    if (indexPath.section < self.catalogLaneCells.count) {
+      return self.catalogLaneCells[indexPath.section]
     } else {
       return self.standardCells[indexPath.row].0
     }
   }
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    if (indexPath.section >= self.laneCells.count) {
+    if (indexPath.section >= self.catalogLaneCells.count) {
       switch self.standardCells[indexPath.row].1 {
       case .reportAProblem:
         self.viewDelegate?.reportProblemTapped()
@@ -169,7 +170,7 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    if (indexPath.section < self.laneCells.count) {
+    if (indexPath.section < self.catalogLaneCells.count) {
       return laneCellHeight
     } else {
       return standardCellHeight
@@ -177,7 +178,7 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
   }
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    if (section >= self.laneCells.count) {
+    if (section >= self.catalogLaneCells.count) {
       return nil
     } else {
       return laneHeaderView(section)
@@ -185,7 +186,7 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
   }
   
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    if (section >= self.laneCells.count) {
+    if (section >= self.catalogLaneCells.count) {
       return 0
     } else {
       return sectionHeaderHeight
@@ -193,7 +194,7 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
   }
   
   func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-    if (section >= self.laneCells.count) {
+    if (section >= self.catalogLaneCells.count) {
       return nil
     } else {
       return laneFooterView()
@@ -201,7 +202,7 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
   }
   
   func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-    if (section >= self.laneCells.count) {
+    if (section >= self.catalogLaneCells.count) {
       return 0
     } else {
       return sectionFooterHeight
@@ -211,23 +212,24 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
   func laneHeaderView(_ section: Int) -> UIView? {
     let container = UIView()
     let headerButton = UIButton()
-//    let moreButton = UIButton()
+    let moreButton = UIButton()
 //    headerButton.addTarget(viewDelegate, action: #selector(viewDelegate.didSelectReportProblem(for:sender:)), for: .touchUpInside)
-    headerButton.setTitle(laneFeeds[section].title, for: .normal)
+    headerButton.setTitle(catalogLanes[section].title, for: .normal)
     headerButton.setTitleColor(.black, for: .normal)
     headerButton.titleLabel?.font = UIFont.customBoldFont(forTextStyle: UIFontTextStyle.caption1)
     
-//    moreButton.addTarget(viewDelegate, action: #selector(viewDelegate.didSelectRelatedWorks(for:sender:)), for: .touchUpInside)
-//    moreButton.setTitle("More...", for: .normal)
-//    moreButton.setTitleColor(.black, for: .normal)
-//    moreButton.titleLabel?.font = UIFont.customFont(forTextStyle: UIFontTextStyle.caption1)
+    moreButton.addTarget(self, action: #selector(moreBooksTapped(sender:)), for: .touchUpInside)
+    moreButton.tag = section
+    moreButton.setTitle("More...", for: .normal)
+    moreButton.setTitleColor(.black, for: .normal)
+    moreButton.titleLabel?.font = UIFont.customFont(forTextStyle: UIFontTextStyle.caption1)
     
     container.addSubview(headerButton)
-//    container.addSubview(moreButton)
+    container.addSubview(moreButton)
     headerButton.autoAlignAxis(toSuperviewAxis: .horizontal)
     headerButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
-//    moreButton.autoAlignAxis(toSuperviewAxis: .horizontal)
-//    moreButton.autoPinEdge(toSuperviewMargin: .trailing)
+    moreButton.autoAlignAxis(toSuperviewAxis: .horizontal)
+    moreButton.autoPinEdge(toSuperviewMargin: .trailing)
     return container
   }
   
@@ -242,5 +244,9 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
     separator.autoPinEdge(toSuperviewEdge: .leading)
     
     return container
+  }
+  
+  func moreBooksTapped(sender: UIButton) {
+    self.viewDelegate?.moreBooksTapped(forLane: self.catalogLanes[sender.tag])
   }
 }

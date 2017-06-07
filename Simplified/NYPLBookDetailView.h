@@ -1,9 +1,9 @@
 #import "NYPLBookState.h"
 
 @class NYPLBook;
-
 @class NYPLBookDetailView;
 @class NYPLBookDetailTableViewDelegate;
+@class NYPLCatalogLane;
 @protocol NYPLCatalogLaneCellDelegate;
 
 @protocol NYPLBookDetailViewDelegate
@@ -14,8 +14,8 @@
 - (void)didSelectDownloadForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectReadForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectCloseButton:(NYPLBookDetailView *)detailView;
+- (void)didSelectMoreBooksForLane:(NYPLCatalogLane *)lane;
 - (void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender;
-- (void)didSelectRelatedWorksForBook:(NYPLBook *)book sender:(id)sender;
 - (void)didSelectCitationsForBook:(NYPLBook *)book sender:(id)sender;
 
 @end
