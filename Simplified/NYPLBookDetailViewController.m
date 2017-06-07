@@ -39,9 +39,12 @@
   
   self.book = book;
   
-  self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:book];
+  self.title = book.title;
+  UILabel *label = [[UILabel alloc] init];
+  self.navigationItem.titleView = label;
+  
+  self.bookDetailView = [[NYPLBookDetailView alloc] initWithBook:book delegate:self];
   self.bookDetailView.state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:book.identifier];
-  self.bookDetailView.detailViewDelegate = self;
   
   [self.view addSubview:self.bookDetailView];
   [self.bookDetailView autoPinEdgesToSuperviewEdges];
@@ -85,8 +88,10 @@
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && self.navigationController.viewControllers.count <= 1) {
     self.navigationController.navigationBarHidden = YES;
+  } else {
+    self.navigationController.navigationBarHidden = NO;
   }
 }
 
@@ -139,11 +144,10 @@
   //FIXME: add logic for launching citations here
 }
 
-//GODO
-#pragma mark NYPLCatalogLaneCellDelegate
+#pragma mark - NYPLCatalogLaneCellDelegate
 
-- (void)catalogLaneCell:(__unused NYPLCatalogLaneCell *const)cell
-     didSelectBookIndex:(NSUInteger const)bookIndex
+- (void)catalogLaneCell:(NYPLCatalogLaneCell *)cell
+     didSelectBookIndex:(NSUInteger)bookIndex
 {
   NYPLCatalogLane *const lane = self.bookDetailView.tableViewDelegate.laneFeeds[cell.laneIndex];
   NYPLBook *const feedBook = lane.books[bookIndex];
@@ -200,10 +204,15 @@
     [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Search", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
   }
   else if (index == 0) {
-    [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
-  } else if (index == 1) {
+    if (viewController.navigationController.viewControllers.count <= 1 &&
+        UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+      [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
+    }
+  }
+  else if (index == 1) {
     [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"MyBooksViewControllerTitle", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
-  } else if (index == 2) {
+  }
+  else if (index == 2) {
     [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HoldsViewControllerTitle", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
   }
   

@@ -4,6 +4,7 @@
 
 @class NYPLBookDetailView;
 @class NYPLBookDetailTableViewDelegate;
+@protocol NYPLCatalogLaneCellDelegate;
 
 @protocol NYPLBookDetailViewDelegate
 
@@ -22,7 +23,6 @@
 @interface NYPLBookDetailView : UIScrollView
 
 @property (nonatomic) NYPLBook *book;
-@property (nonatomic, weak) id<NYPLBookDetailViewDelegate> detailViewDelegate;
 @property (nonatomic) double downloadProgress;
 @property (nonatomic) BOOL downloadStarted;
 @property (nonatomic) NYPLBookState state;
@@ -36,7 +36,8 @@
 
 // designated initializer
 // |book| must not be nil.
-- (instancetype)initWithBook:(NYPLBook *)book;
+- (instancetype)initWithBook:(NYPLBook *const)book
+                    delegate:(id)delegate;
 - (void)updateFonts;
 
 @end

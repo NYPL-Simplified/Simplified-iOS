@@ -10,6 +10,7 @@
 
 #import <PureLayout/PureLayout.h>
 #import "NYPLProblemReportViewController.h"
+#import "UIFont+NYPLSystemFontOverride.h"
 #import "SimplyE-Swift.h"
 
 static NSArray *s_problems = nil;
@@ -158,7 +159,7 @@ static NSArray *s_problems = nil;
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ProblemReportCell"];
   }
   cell.textLabel.text = s_problems[indexPath.row][@"title"];
-  cell.textLabel.font = [UIFont systemFontOfSize:16];
+  cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   if (indexPath.row == (int)s_problems.count - 1) {
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
   }

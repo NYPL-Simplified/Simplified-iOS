@@ -33,6 +33,7 @@ class NYPLBookDetailTableView: UITableView {
 }
 
 private let sectionHeaderHeight: CGFloat = 40.0
+private let sectionFooterHeight: CGFloat = 18.0
 private let laneCellHeight: CGFloat = 120.0
 private let standardCellHeight: CGFloat = 44.0
 
@@ -45,6 +46,7 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
   }
   
   weak var viewDelegate: BookDetailTableViewDelegate?
+  weak var laneCellDelegate: NYPLCatalogLaneCellDelegate?
   weak var tableView: UITableView?
   var book: NYPLBook
   
@@ -90,17 +92,19 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
       books += lane.books as! [NYPLBook]
     }
 
+    UIApplication.shared.isNetworkActivityIndicatorVisible = true
     NYPLBookRegistry.shared().thumbnailImages(forBooks: Set(books.map{$0})) { (bookIdentifierToImages) in
+      UIApplication.shared.isNetworkActivityIndicatorVisible = false
       var index: UInt = 0
       for lane in feed.lanes as! [NYPLCatalogLane] {
         if let laneCell = NYPLCatalogLaneCell(laneIndex: index, books: lane.books,
                                               bookIdentifiersToImages: bookIdentifierToImages)
         {
-          laneCell.delegate = self.viewDelegate as? NYPLCatalogLaneCellDelegate
+          laneCell.delegate = self.laneCellDelegate
           self.laneCells.append(laneCell)
           self.laneFeeds.append(lane)
           index += 1
-          //GODO check and rid of redundant title lanes
+          self.checkAndRemoveRedundantTitles(lane, &index)
         }
       }
       self.refresh()
@@ -114,6 +118,16 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
     cell.textLabel?.font = UIFont.customFont(forTextStyle: .body)
     cell.textLabel?.text = type.rawValue
     return (cell,type)
+  }
+  
+  func checkAndRemoveRedundantTitles(_ lane: NYPLCatalogLane, _ index: inout UInt) {
+    if (lane.books.count == 1) {
+      if (lane.books[0] as! NYPLBook).title == self.book.title {
+        self.laneCells.removeLast()
+        self.laneFeeds.removeLast()
+        index -= 1
+      }
+    }
   }
 
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -177,6 +191,22 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
       return sectionHeaderHeight
     }
   }
+  
+  func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    if (section >= self.laneCells.count) {
+      return nil
+    } else {
+      return laneFooterView()
+    }
+  }
+  
+  func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    if (section >= self.laneCells.count) {
+      return 0
+    } else {
+      return sectionFooterHeight
+    }
+  }
 
   func laneHeaderView(_ section: Int) -> UIView? {
     let container = UIView()
@@ -201,4 +231,16 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
     return container
   }
   
+  func laneFooterView() -> UIView? {
+    let container = UIView()
+    let separator = UIView()
+    separator.backgroundColor = UIColor.lightGray
+    container.addSubview(separator)
+    separator.autoSetDimension(.height, toSize: CGFloat(1.0) / UIScreen.main.scale)
+    separator.autoPinEdge(toSuperviewEdge: .trailing)
+    separator.autoPinEdge(toSuperviewEdge: .bottom)
+    separator.autoPinEdge(toSuperviewEdge: .leading)
+    
+    return container
+  }
 }

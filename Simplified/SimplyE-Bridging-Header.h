@@ -8,6 +8,7 @@
 #import "NYPLOPDSLink.h"
 #import "NYPLBook.h"
 #import "NYPLBookDetailView.h"
+#import "NYPLBookDetailViewController.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLAccount.h"
 #import "NYPLSettings.h"

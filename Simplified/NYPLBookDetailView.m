@@ -23,6 +23,8 @@
 
 @interface NYPLBookDetailView () <NYPLBookDetailDownloadingDelegate, BookDetailTableViewDelegate>
 
+@property (nonatomic, weak) id<NYPLBookDetailViewDelegate, NYPLCatalogLaneCellDelegate> detailViewDelegate;
+
 @property (nonatomic) BOOL didSetupConstraints;
 @property (nonatomic) BOOL beganInitialRequest;
 @property (nonatomic) UIView *contentView;
@@ -76,6 +78,7 @@ static NSString *DetailHTMLTemplate = nil;
 
 // designated initializer
 - (instancetype)initWithBook:(NYPLBook *const)book
+                    delegate:(id)delegate
 {
   self = [super init];
   if(!self) return nil;
@@ -85,6 +88,7 @@ static NSString *DetailHTMLTemplate = nil;
   }
   
   self.book = book;
+  self.detailViewDelegate = delegate;
   self.backgroundColor = [NYPLConfiguration backgroundColor];
   self.translatesAutoresizingMaskIntoConstraints = NO;
   
@@ -156,6 +160,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.readMoreLabel.titleLabel.font = [UIFont systemFontOfSize:14];
   self.summarySectionLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleCaption1];
   self.infoSectionLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleCaption1];
+  [self.footerTableView reloadData];
 }
 
 - (void)createHeaderLabels
@@ -297,6 +302,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.footerTableView = [[NYPLBookDetailTableView alloc] init];
   self.tableViewDelegate = [[NYPLBookDetailTableViewDelegate alloc] init:self.footerTableView book:self.book];
   self.tableViewDelegate.viewDelegate = self;
+  self.tableViewDelegate.laneCellDelegate = self.detailViewDelegate;
   self.footerTableView.delegate = self.tableViewDelegate;
   self.footerTableView.dataSource = self.tableViewDelegate;
   [self.tableViewDelegate load];
