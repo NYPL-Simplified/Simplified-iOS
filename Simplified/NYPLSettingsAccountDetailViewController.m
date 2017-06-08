@@ -493,7 +493,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
      // Success.
      if(statusCode == 200) {
        [self authorizationAttemptDidFinish:YES error:nil];
-       self.isLoggingInAfterSignUp = NO;
        return;
      }
      
