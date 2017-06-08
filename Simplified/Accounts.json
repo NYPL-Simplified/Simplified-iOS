@@ -49,5 +49,21 @@
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://instantclassics.librarysimplified.org/index.xml",
  "mainColor" : "497049"
+ },
+ {
+ "id" : 3,
+ "pathComponent" : "3",
+ "name" : "Alameda",
+ "subtitle" : "Infinite possibilities",
+ "logo" : "LibraryLogoAlameda",
+ "needsAuth" : true,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : false,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "http://acl.simplye-ca.org",
+ "mainColor" : "58a6f5"
  }
 ]
