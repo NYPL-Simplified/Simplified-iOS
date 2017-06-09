@@ -11,6 +11,7 @@
 
 @property (nonatomic) NSString *alternativeHeadline;
 @property (nonatomic) NSArray *authorStrings;
+@property (nonatomic) NSArray<NYPLOPDSLink *> *authorLinks;
 @property (nonatomic) NSArray<NYPLOPDSCategory *> *categories;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSArray *links;
@@ -38,6 +39,7 @@
   
   {
     NSMutableArray *const authorStrings = [NSMutableArray array];
+    NSMutableArray<NYPLOPDSLink *> const *authorLinks = [NSMutableArray array];
     
     for(NYPLXML *const authorXML in [entryXML childrenWithName:@"author"]) {
       NYPLXML *const nameXML = [authorXML firstChildWithName:@"name"];
@@ -46,9 +48,18 @@
         continue;
       }
       [authorStrings addObject:nameXML.value];
+      
+      NYPLXML *const authorLinkXML = [authorXML firstChildWithName:@"link"];
+      NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:authorLinkXML];
+      if(!link) {
+        NYPLLOG(@"Ignoring malformed 'link' element for author.");
+      } else if ([link.rel isEqualToString:@"contributor"]) {
+        [authorLinks addObject:link];
+      }
     }
 
     self.authorStrings = authorStrings;
+    self.authorLinks = [authorLinks copy];
   }
   
   {

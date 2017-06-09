@@ -61,6 +61,8 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
   }
   
   func load() {
+    NotificationCenter.default.addObserver(self, selector: #selector(self.updateFonts), name: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil)
+    
     if book.acquisition.report != nil {
       standardCells.append(createCell(type: .reportAProblem))
     }
@@ -68,7 +70,11 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
     standardCells.append(createCell(type: .citations))
     refresh()
     
-    NYPLOPDSFeed.withURL(self.book.relatedWorksURL) { (feed, errorDict) in
+    guard let url = self.book.relatedWorksURL else {
+      Log.error(#file, "No URL for Related Works")
+      return
+    }
+    NYPLOPDSFeed.withURL(url) { (feed, errorDict) in
       DispatchQueue.main.async {
         if feed?.type == .acquisitionGrouped {
           let groupedFeed = NYPLCatalogGroupedFeed.init(opdsFeed: feed)
@@ -83,6 +89,13 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
   private func refresh() {
     self.tableView?.reloadData()
     self.tableView?.invalidateIntrinsicContentSize()
+  }
+  
+  func updateFonts() {
+    for tuple in standardCells {
+      tuple.0.textLabel?.font = UIFont.customFont(forTextStyle: .body)
+      tuple.0.textLabel?.text = tuple.1.rawValue
+    }
   }
   
   private func createLaneCells(_ groupedFeed: NYPLCatalogGroupedFeed?) {
@@ -213,7 +226,7 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
     let container = UIView()
     let headerButton = UIButton()
     let moreButton = UIButton()
-//    headerButton.addTarget(viewDelegate, action: #selector(viewDelegate.didSelectReportProblem(for:sender:)), for: .touchUpInside)
+
     headerButton.setTitle(catalogLanes[section].title, for: .normal)
     headerButton.setTitleColor(.black, for: .normal)
     headerButton.titleLabel?.font = UIFont.customBoldFont(forTextStyle: UIFontTextStyle.caption1)

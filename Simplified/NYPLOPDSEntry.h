@@ -8,6 +8,7 @@
 
 @property (nonatomic, readonly) NSString *alternativeHeadline; // nilable
 @property (nonatomic, readonly) NSArray *authorStrings;
+@property (nonatomic, readonly) NSArray<NYPLOPDSLink *> *authorLinks;
 @property (nonatomic, readonly) NSArray<NYPLOPDSCategory *> *categories;
 @property (nonatomic, readonly) NYPLOPDSEntryGroupAttributes *groupAttributes; // nilable
 @property (nonatomic, readonly) NSString *identifier;
