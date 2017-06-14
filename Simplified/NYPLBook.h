@@ -14,6 +14,7 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 
 @property (nonatomic, readonly) NYPLBookAcquisition *acquisition;
 @property (nonatomic, readonly) NSString *authors;
+@property (nonatomic, readonly) NSArray *authorLinks;
 @property (nonatomic, readonly) NSArray *authorStrings;
 @property (nonatomic, readonly) NYPLBookAvailabilityStatus availabilityStatus;
 @property (nonatomic, readonly) NSInteger availableCopies;
@@ -34,6 +35,7 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 @property (nonatomic, readonly) NSURL *analyticsURL; // nilable
 @property (nonatomic, readonly) NSURL *alternateURL; // nilable
 @property (nonatomic, readonly) NSURL *relatedWorksURL; // nilable
+@property (nonatomic, readonly) NSURL *seriesURL; // nilable
 @property (nonatomic, readonly) NSDictionary *licensor; // nilable
 
 + (id)new NS_UNAVAILABLE;
@@ -48,6 +50,7 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 
 // designated initializer
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
+                        authorLinks:(NSArray *)authorLinks
                       authorStrings:(NSArray *)authorStrings
                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
                     availableCopies:(NSInteger)availableCopies
@@ -67,6 +70,7 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
                        analyticsURL:(NSURL *)analyticsURL
                        alternateURL:(NSURL *)alternateURL
                     relatedWorksURL:(NSURL *)relatedWorksURL
+                          seriesURL:(NSURL *)seriesURL
                            licensor:(NSDictionary *)licensor;
 
 // designated initializer

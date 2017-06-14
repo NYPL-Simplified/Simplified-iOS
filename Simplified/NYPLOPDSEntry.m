@@ -12,6 +12,7 @@
 @property (nonatomic) NSString *alternativeHeadline;
 @property (nonatomic) NSArray *authorStrings;
 @property (nonatomic) NSArray<NYPLOPDSLink *> *authorLinks;
+@property (nonatomic) NYPLOPDSLink *seriesLink;
 @property (nonatomic) NSArray<NYPLOPDSCategory *> *categories;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSArray *links;
@@ -150,6 +151,14 @@
     if(!self.updated) {
       NYPLLOG(@"Element 'updated' does not contain an RFC 3339 date.");
       return nil;
+    }
+  }
+  
+  {
+    NYPLXML *const linkXML = [entryXML firstChildWithName:@"Series"];
+    self.seriesLink = [[NYPLOPDSLink alloc] initWithXML:linkXML];
+    if (!self.seriesLink) {
+      NYPLLOG(@"Ignoring malformed 'link' element for Series title.");
     }
   }
   

@@ -9,6 +9,7 @@
 @interface NYPLBook ()
 
 @property (nonatomic) NYPLBookAcquisition *acquisition;
+@property (nonatomic) NSArray *authorLinks;
 @property (nonatomic) NSArray *authorStrings;
 @property (nonatomic) NYPLBookAvailabilityStatus availabilityStatus;
 @property (nonatomic) NSInteger availableCopies;
@@ -28,6 +29,7 @@
 @property (nonatomic) NSURL *analyticsURL;
 @property (nonatomic) NSURL *alternateURL;
 @property (nonatomic) NSURL *relatedWorksURL;
+@property (nonatomic) NSURL *seriesURL;
 
 @property (nonatomic) NSDictionary *licensor;
 
@@ -35,6 +37,7 @@
 
 static NSString *const AcquisitionKey = @"acquisition";
 static NSString *const AuthorsKey = @"authors";
+static NSString *const AuthorLinksKey = @"author-links";
 static NSString *const AvailabilityStatusKey = @"availability-status";
 static NSString *const AvailableCopiesKey = @"available-copies";
 static NSString *const AvailableUntilKey = @"available-until";
@@ -45,6 +48,8 @@ static NSString *const ImageURLKey = @"image";
 static NSString *const ImageThumbnailURLKey = @"image-thumbnail";
 static NSString *const PublishedKey = @"published";
 static NSString *const PublisherKey = @"publisher";
+static NSString *const RelatedURLKey = @"related-works-url";
+static NSString *const SeriesLinkKey = @"series-link";
 static NSString *const SubtitleKey = @"subtitle";
 static NSString *const SummaryKey = @"summary";
 static NSString *const TitleKey = @"title";
@@ -183,6 +188,7 @@ static NSString *const AlternateURLKey = @"alternate";
                                revoke:revoke
                                sample:sample
                                report:report]
+          authorLinks:entry.authorLinks
           authorStrings:entry.authorStrings
           availabilityStatus: availabilityStatus
           availableCopies:availableCopies
@@ -202,6 +208,7 @@ static NSString *const AlternateURLKey = @"alternate";
           analyticsURL:entry.analytics
           alternateURL:entry.alternate.href
           relatedWorksURL:entry.relatedWorks.href
+          seriesURL:entry.seriesLink.href
           licensor:licensor];
 }
 
@@ -209,6 +216,7 @@ static NSString *const AlternateURLKey = @"alternate";
 {
   return [[NYPLBook alloc]
           initWithAcquisition:self.acquisition
+          authorLinks:book.authorLinks
           authorStrings:book.authorStrings
           availabilityStatus:self.availabilityStatus
           availableCopies:self.availableCopies
@@ -228,10 +236,12 @@ static NSString *const AlternateURLKey = @"alternate";
           analyticsURL:book.analyticsURL
           alternateURL:book.alternateURL
           relatedWorksURL:book.relatedWorksURL
+          seriesURL:book.seriesURL
           licensor:book.licensor];
 }
 
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
+                        authorLinks:(NSArray *)authorLinks
                       authorStrings:(NSArray *)authorStrings
                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
                     availableCopies:(NSInteger)availableCopies
@@ -251,6 +261,7 @@ static NSString *const AlternateURLKey = @"alternate";
                        analyticsURL:(NSURL *)analyticsURL
                        alternateURL:(NSURL *)alternateURL
                     relatedWorksURL:(NSURL *)relatedWorksURL
+                          seriesURL:(NSURL *)seriesURL
                            licensor:(NSDictionary *)licensor
 {
   self = [super init];
@@ -267,6 +278,10 @@ static NSString *const AlternateURLKey = @"alternate";
   }
   
   self.acquisition = acquisition;
+  self.alternateURL = alternateURL;
+  self.annotationsURL = annotationsURL;
+  self.analyticsURL = analyticsURL;
+  self.authorLinks = authorLinks;
   self.authorStrings = authorStrings;
   self.availabilityStatus = availabilityStatus;
   self.availableCopies = availableCopies;
@@ -276,17 +291,15 @@ static NSString *const AlternateURLKey = @"alternate";
   self.identifier = identifier;
   self.imageURL = imageURL;
   self.imageThumbnailURL = imageThumbnailURL;
+  self.licensor = licensor;
   self.published = published;
   self.publisher = publisher;
+  self.relatedWorksURL = relatedWorksURL;
+  self.seriesURL = seriesURL;
   self.subtitle = subtitle;
   self.summary = summary;
   self.title = title;
   self.updated = updated;
-  self.annotationsURL = annotationsURL;
-  self.analyticsURL = analyticsURL;
-  self.alternateURL = alternateURL;
-  self.relatedWorksURL = relatedWorksURL;
-  self.licensor = licensor;
   
   return self;
 }
@@ -298,6 +311,17 @@ static NSString *const AlternateURLKey = @"alternate";
   
   self.acquisition = [[NYPLBookAcquisition alloc] initWithDictionary:dictionary[AcquisitionKey]];
   if(!self.acquisition) return nil;
+  
+  NSString *const alternate = NYPLNullToNil(dictionary[AlternateURLKey]);
+  self.alternateURL = alternate ? [NSURL URLWithString:alternate] : nil;
+  
+  NSString *const analytics = NYPLNullToNil(dictionary[AnalyticsURLKey]);
+  self.analyticsURL = analytics ? [NSURL URLWithString:analytics] : nil;
+  
+  NSString *const annotations = NYPLNullToNil(dictionary[AnnotationsURLKey]);
+  self.annotationsURL = annotations ? [NSURL URLWithString:annotations] : nil;
+  
+  self.authorLinks = dictionary[AuthorLinksKey];
   
   self.authorStrings = dictionary[AuthorsKey];
   if(!self.authorStrings) return nil;
@@ -328,6 +352,12 @@ static NSString *const AlternateURLKey = @"alternate";
   
   self.publisher = NYPLNullToNil(dictionary[PublisherKey]);
   
+  NSString *const relatedWorksString = NYPLNullToNil(dictionary[RelatedURLKey]);
+  self.relatedWorksURL = relatedWorksString ? [NSURL URLWithString:relatedWorksString] : nil;
+  
+  NSString *const seriesString = NYPLNullToNil(dictionary[SeriesLinkKey]);
+  self.seriesURL = seriesString ? [NSURL URLWithString:seriesString] : nil;
+  
   self.subtitle = NYPLNullToNil(dictionary[SubtitleKey]);
   
   self.summary = NYPLNullToNil(dictionary[SummaryKey]);
@@ -338,22 +368,16 @@ static NSString *const AlternateURLKey = @"alternate";
   self.updated = [NSDate dateWithRFC3339String:dictionary[UpdatedKey]];
   if(!self.updated) return nil;
   
-  NSString *const annotations = NYPLNullToNil(dictionary[AnnotationsURLKey]);
-  self.annotationsURL = annotations ? [NSURL URLWithString:annotations] : nil;
-  
-  NSString *const alternate = NYPLNullToNil(dictionary[AlternateURLKey]);
-  self.alternateURL = alternate ? [NSURL URLWithString:alternate] : nil;
-
-  NSString *const analytics = NYPLNullToNil(dictionary[AnalyticsURLKey]);
-  self.analyticsURL = analytics ? [NSURL URLWithString:analytics] : nil;
-  
-  
   return self;
 }
 
 - (NSDictionary *)dictionaryRepresentation
 {
   return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
+           AlternateURLKey: NYPLNullFromNil([self.alternateURL absoluteString]),
+           AnnotationsURLKey: NYPLNullFromNil([self.annotationsURL absoluteString]),
+           AnalyticsURLKey: NYPLNullFromNil([self.analyticsURL absoluteString]),
+           AuthorLinksKey: self.authorLinks,
            AuthorsKey: self.authorStrings,
            AvailabilityStatusKey: @(self.availabilityStatus),
            AvailableCopiesKey: @(self.availableCopies),
@@ -365,13 +389,12 @@ static NSString *const AlternateURLKey = @"alternate";
            ImageThumbnailURLKey: NYPLNullFromNil([self.imageThumbnailURL absoluteString]),
            PublishedKey: NYPLNullFromNil([self.published RFC3339String]),
            PublisherKey: NYPLNullFromNil(self.publisher),
+           RelatedURLKey: NYPLNullFromNil([self.relatedWorksURL absoluteString]),
+           SeriesLinkKey: NYPLNullFromNil([self.seriesURL absoluteString]),
            SubtitleKey: NYPLNullFromNil(self.subtitle),
            SummaryKey: NYPLNullFromNil(self.summary),
            TitleKey: self.title,
-           UpdatedKey: [self.updated RFC3339String],
-           AnnotationsURLKey: NYPLNullFromNil([self.annotationsURL absoluteString]),
-           AnalyticsURLKey: NYPLNullFromNil([self.analyticsURL absoluteString]),
-           AlternateURLKey: NYPLNullFromNil([self.alternateURL absoluteString])
+           UpdatedKey: [self.updated RFC3339String]
           };
 }
 
