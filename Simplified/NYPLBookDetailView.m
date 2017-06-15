@@ -98,17 +98,12 @@ static NSString *DetailHTMLTemplate = nil;
                                                     self.layoutMargins.bottom,
                                                     self.layoutMargins.right+12);
   
-  
-  
   [self createHeaderLabels];
+  [self createButtonsView];
+  [self createBookDescriptionViews];
   [self createFooterLabels];
-  
-  self.buttonsView = [[NYPLBookDetailButtonsView alloc] init];
-  self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
-  self.buttonsView.showReturnButtonIfApplicable = YES;
-  self.buttonsView.delegate = [NYPLBookCellDelegate sharedDelegate];
-  self.buttonsView.downloadingDelegate = self;
-  self.buttonsView.book = book;
+  [self createDownloadViews];
+  [self updateFonts];
   
   [self addSubview:self.contentView];
   [self.contentView addSubview:self.blurCoverImageView];
@@ -144,10 +139,7 @@ static NSString *DetailHTMLTemplate = nil;
     [self.closeButton addTarget:self action:@selector(closeButtonPressed) forControlEvents:UIControlEventTouchDown];
     [self.contentView addSubview:self.closeButton];
   }
-  
-  [self createDownloadViews];
-  [self updateFonts];
-  
+
   return self;
 }
 
@@ -161,6 +153,49 @@ static NSString *DetailHTMLTemplate = nil;
   self.summarySectionLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleCaption1];
   self.infoSectionLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleCaption1];
   [self.footerTableView reloadData];
+}
+
+- (void)createButtonsView
+{
+  self.buttonsView = [[NYPLBookDetailButtonsView alloc] init];
+  self.buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
+  self.buttonsView.showReturnButtonIfApplicable = YES;
+  self.buttonsView.delegate = [NYPLBookCellDelegate sharedDelegate];
+  self.buttonsView.downloadingDelegate = self;
+  self.buttonsView.book = self.book;
+}
+
+- (void)createBookDescriptionViews
+{
+  self.summarySectionLabel = [[UILabel alloc] init];
+  self.summarySectionLabel.text = @"Description";
+  self.infoSectionLabel = [[UILabel alloc] init];
+  self.infoSectionLabel.text = @"Information";
+  
+  self.summaryTextView = [[UITextView alloc] init];
+  self.summaryTextView.backgroundColor = [UIColor clearColor];
+  self.summaryTextView.scrollEnabled = NO;
+  self.summaryTextView.editable = NO;
+  self.summaryTextView.clipsToBounds = YES;
+  self.summaryTextView.textContainer.lineFragmentPadding = 0;
+  self.summaryTextView.textContainerInset = UIEdgeInsetsZero;
+  
+  NSString *htmlString = [NSString stringWithFormat:DetailHTMLTemplate,
+                          [NYPLConfiguration systemFontName],
+                          self.book.summary ? self.book.summary : @""];
+  NSData *htmlData = [htmlString dataUsingEncoding:NSUnicodeStringEncoding];
+  NSDictionary *attributes = @{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType};
+  NSAttributedString *atrString = [[NSAttributedString alloc] initWithData:htmlData options:attributes documentAttributes:nil error:nil];
+  self.summaryTextView.attributedText = atrString;
+  
+  self.readMoreLabel = [[UIButton alloc] init];
+  self.readMoreLabel.hidden = YES;
+  self.readMoreLabel.titleLabel.textAlignment = NSTextAlignmentRight;
+  [self.readMoreLabel addTarget:self action:@selector(readMoreTapped:) forControlEvents:UIControlEventTouchUpInside];
+  
+  [self.readMoreLabel setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
+  [self.readMoreLabel setTitle:NSLocalizedString(@"More...", nil) forState:UIControlStateNormal];
+  [self.readMoreLabel setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
 }
 
 - (void)createHeaderLabels
@@ -196,36 +231,6 @@ static NSString *DetailHTMLTemplate = nil;
   } else {
     self.authorsLabel.attributedText = NYPLAttributedStringForAuthorsFromString(self.book.authors);
   }
-  
-  self.summarySectionLabel = [[UILabel alloc] init];
-  self.summarySectionLabel.text = @"Description";
-  self.infoSectionLabel = [[UILabel alloc] init];
-  self.infoSectionLabel.text = @"Information";
-  
-  self.summaryTextView = [[UITextView alloc] init];
-  self.summaryTextView.backgroundColor = [UIColor clearColor];
-  self.summaryTextView.scrollEnabled = NO;
-  self.summaryTextView.editable = NO;
-  self.summaryTextView.clipsToBounds = YES;
-  self.summaryTextView.textContainer.lineFragmentPadding = 0;
-  self.summaryTextView.textContainerInset = UIEdgeInsetsZero;
-  
-  NSString *htmlString = [NSString stringWithFormat:DetailHTMLTemplate,
-                          [NYPLConfiguration systemFontName],
-                          self.book.summary ? self.book.summary : @""];
-  NSData *htmlData = [htmlString dataUsingEncoding:NSUnicodeStringEncoding];
-  NSDictionary *attributes = @{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType};
-  NSAttributedString *atrString = [[NSAttributedString alloc] initWithData:htmlData options:attributes documentAttributes:nil error:nil];
-  self.summaryTextView.attributedText = atrString;
-  
-  self.readMoreLabel = [[UIButton alloc] init];
-  self.readMoreLabel.hidden = YES;
-  self.readMoreLabel.titleLabel.textAlignment = NSTextAlignmentRight;
-  [self.readMoreLabel addTarget:self action:@selector(readMoreTapped:) forControlEvents:UIControlEventTouchUpInside];
-  
-  [self.readMoreLabel setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
-  [self.readMoreLabel setTitle:NSLocalizedString(@"More...", nil) forState:UIControlStateNormal];
-  [self.readMoreLabel setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
 }
 
 - (void)createDownloadViews
@@ -300,6 +305,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.bottomFootnoteSeparator.backgroundColor = [UIColor lightGrayColor];
   
   self.footerTableView = [[NYPLBookDetailTableView alloc] init];
+  self.footerTableView.isAccessibilityElement = NO;
   self.tableViewDelegate = [[NYPLBookDetailTableViewDelegate alloc] init:self.footerTableView book:self.book];
   self.tableViewDelegate.viewDelegate = self;
   self.tableViewDelegate.laneCellDelegate = self.detailViewDelegate;
@@ -543,14 +549,12 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.buttonsView.state = NYPLBookButtonsStateDownloadNeeded;
       break;
     case NYPLBookStateDownloading:
-//      self.normalView.hidden = YES;
       self.downloadFailedView.hidden = YES;
       [self hideDownloadingView:NO];
       self.buttonsView.hidden = NO;
       self.buttonsView.state = NYPLBookButtonsStateDownloadInProgress;
       break;
     case NYPLBookStateDownloadFailed:
-//      self.normalView.hidden = YES;
       self.downloadFailedView.hidden = NO;
       [self hideDownloadingView:YES];
       self.buttonsView.hidden = NO;

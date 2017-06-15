@@ -140,7 +140,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   
   if (!self.messageLabel.text) {
     self.messageLabel.text = newMessageString;
-  } else {
+  } else if (![self.messageLabel.text isEqualToString:newMessageString]){
     CGFloat duration = 0.3f;
     [UIView animateWithDuration:duration animations:^{
       self.messageLabel.alpha = 0.0f;
