@@ -715,6 +715,8 @@ replacementString:(NSString *)string
                          NSURLResponse *const response,
                          NSError *const error) {
        
+       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+       
        self.isCurrentlySigningIn = NO;
        // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
        NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
@@ -722,7 +724,6 @@ replacementString:(NSString *)string
        // Success.
        if(statusCode == 200) {
          [self authorizationAttemptDidFinish:YES error:nil];
-         self.isLoggingInAfterSignUp = NO;
          return;
        }
        
@@ -747,6 +748,7 @@ replacementString:(NSString *)string
      }];
   
   [task resume];
+  [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 }
 
 - (void)showLoginAlertWithError:(NSError *)error
