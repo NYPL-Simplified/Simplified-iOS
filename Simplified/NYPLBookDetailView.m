@@ -183,6 +183,8 @@ static NSString *DetailHTMLTemplate = nil;
   NSString *htmlString = [NSString stringWithFormat:DetailHTMLTemplate,
                           [NYPLConfiguration systemFontName],
                           self.book.summary ? self.book.summary : @""];
+  htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<p>" withString:@"<span>"];
+  htmlString = [htmlString stringByReplacingOccurrencesOfString:@"</p>" withString:@"</span>"];
   NSData *htmlData = [htmlString dataUsingEncoding:NSUnicodeStringEncoding];
   NSDictionary *attributes = @{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType};
   NSAttributedString *atrString = [[NSAttributedString alloc] initWithData:htmlData options:attributes documentAttributes:nil error:nil];
@@ -390,10 +392,10 @@ static NSString *DetailHTMLTemplate = nil;
 
   [self.readMoreLabel autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.readMoreLabel autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
-  [self.readMoreLabel autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeBottom ofView:self.summaryTextView];
+  [self.readMoreLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.summaryTextView];
+  [self.readMoreLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.topFootnoteSeparater];
   
   [self.infoSectionLabel autoPinEdgeToSuperviewMargin:ALEdgeLeading];
-  [self.infoSectionLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.summaryTextView withOffset:VerticalPadding + 40];
   
   [self.publishedLabelValue autoPinEdgeToSuperviewMargin:ALEdgeTrailing relation:NSLayoutRelationGreaterThanOrEqual];
   [self.publishedLabelValue autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.infoSectionLabel withOffset:VerticalPadding];
@@ -474,6 +476,7 @@ static NSString *DetailHTMLTemplate = nil;
     [self setupAutolayoutConstraints];
     self.didSetupConstraints = YES;
   }
+  //FIXME I don't believe this is working
   if (self.textHeightConstraint.constant >= SummaryTextAbbreviatedHeight) {
     self.readMoreLabel.hidden = NO;
   } else {
@@ -677,6 +680,7 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
 {
   self.textHeightConstraint.active = NO;
   [self.readMoreLabel removeFromSuperview];
+  [self.topFootnoteSeparater autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.summaryTextView withOffset:VerticalPadding];
 }
 
 
