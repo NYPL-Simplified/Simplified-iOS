@@ -1170,9 +1170,6 @@ replacementString:(NSString *)string
       return NO;
     }
     
-    if([textField.text stringByReplacingCharactersInRange:range withString:string].length > 4) {
-      return NO;
-    }
   }
 
   return YES;
