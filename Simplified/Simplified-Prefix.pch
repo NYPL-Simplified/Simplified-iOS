@@ -10,7 +10,7 @@
   @import UIKit;
   @import Foundation;
   #import "NYPLLOG.h"
-  #import "NYPLLocalizableFallbackLanguage.h"
+  #import "StringUtilities.h"
 
 #endif
 

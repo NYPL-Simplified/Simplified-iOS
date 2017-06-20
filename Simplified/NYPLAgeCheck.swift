@@ -30,7 +30,7 @@ final class AgeCheck : NSObject {
   
   fileprivate class func presentAgeVerificationView(_ completion: @escaping (Bool) -> ()) -> Void
   {
-    let alertCont = NYPLAlertController.alert(withTitle: NSLocalizedString("WelcomeScreenAgeVerifyTitle", comment: "An alert title indicating the user needs to verify their age"), singleMessage: NSLocalizedString("WelcomeScreenAgeVerifyMessage", comment: "An alert message telling the user they must be at least 13 years old and asking how old they are"))
+    let alertCont = NYPLAlertController.alert(withTitle: NYPLLocalizedString("WelcomeScreenAgeVerifyTitle", "An alert title indicating the user needs to verify their age"), singleMessage: NYPLLocalizedString("WelcomeScreenAgeVerifyMessage", "An alert message telling the user they must be at least 13 years old and asking how old they are"))
     
     alertCont?.addAction(UIAlertAction.init(title: "Under 13", style: .default, handler: { _ in
       completion(false)

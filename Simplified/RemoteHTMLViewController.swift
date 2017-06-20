@@ -54,15 +54,15 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
 
   func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
     activityView(false)
-    let alert = UIAlertController.init(title: NSLocalizedString(
+    let alert = UIAlertController.init(title: NYPLLocalizedString(
       "Connection Failed",
-      comment: "Title for alert that explains that the page could not download the information"),
+      "Title for alert that explains that the page could not download the information"),
                                        message: error.localizedDescription,
                                        preferredStyle: .alert)
-    let action1 = UIAlertAction.init(title: NSLocalizedString("Cancel", comment: "Button that says to cancel and go back to the last screen."), style: .destructive) { (cancelAction) in
+    let action1 = UIAlertAction.init(title: NYPLLocalizedString("Cancel", "Button that says to cancel and go back to the last screen."), style: .destructive) { (cancelAction) in
       _ = self.navigationController?.popViewController(animated: true)
     }
-    let action2 = UIAlertAction.init(title: NSLocalizedString("Reload", comment: "Button that says to try again"), style: .destructive) { (reloadAction) in
+    let action2 = UIAlertAction.init(title: NYPLLocalizedString("Reload", "Button that says to try again"), style: .destructive) { (reloadAction) in
       let urlRequest = URLRequest(url: self.fileURL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 10.0)
       webView.load(urlRequest)
     }

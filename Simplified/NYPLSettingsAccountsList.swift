@@ -61,8 +61,9 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     
     updateSettingsAccountList()
 
-    self.title = NSLocalizedString("Accounts",
-                                   comment: "A title for a list of libraries the user may select or add to.")
+    
+    self.title = NYPLLocalizedString("Accounts",
+                                   "A title for a list of libraries the user may select or add to.")
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
     
     updateUI()
@@ -89,9 +90,9 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   }
   
   func addAccount() {
-    let alert = UIAlertController(title: NSLocalizedString(
+    let alert = UIAlertController(title: NYPLLocalizedString(
       "SettingsAccountLibrariesViewControllerAlertTitle",
-      comment: "Title to tell a user that they can add another account to the list"),
+      "Title to tell a user that they can add another account to the list"),
                                   message: nil,
                                   preferredStyle: .actionSheet)
     alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
