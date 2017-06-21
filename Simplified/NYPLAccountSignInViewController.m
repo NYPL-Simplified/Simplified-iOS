@@ -171,7 +171,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
                                         UIViewAutoresizingFlexibleHeight);
   self.PINTextField.font = [UIFont systemFontOfSize:17];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
-  self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
+  self.PINTextField.keyboardType = UIKeyboardTypeDefault;
   self.PINTextField.secureTextEntry = YES;
   self.PINTextField.delegate = self;
   [self.PINTextField
@@ -532,9 +532,6 @@ replacementString:(NSString *)string
   }
   
   if(textField == self.PINTextField) {
-    if([string stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]].length > 0) {
-      return NO;
-    }
     
     if([textField.text stringByReplacingCharactersInRange:range withString:string].length > 4) {
       return NO;
