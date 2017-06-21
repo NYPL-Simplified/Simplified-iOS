@@ -482,10 +482,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
                        NSURLResponse *const response,
                        NSError *const error) {
      
-     if (self.isLoggingInAfterSignUp) {
-       [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSettingsAccountsSignInFinishedNotification
-                                                           object:self];
-     }
+     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
      
      // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
      NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
@@ -493,7 +490,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
      // Success.
      if(statusCode == 200) {
        [self authorizationAttemptDidFinish:YES error:nil];
-       self.isLoggingInAfterSignUp = NO;
        return;
      }
      
@@ -518,6 +514,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
    }];
   
   [task resume];
+  [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 }
 
 - (void)showLoginAlertWithError:(NSError *)error
@@ -656,38 +653,36 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       
       if (self.account.supportsCardCreator) {
-
-      __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
-      CardCreatorConfiguration *const configuration =
-      [[CardCreatorConfiguration alloc]
-       initWithEndpointURL:[APIKeys cardCreatorEndpointURL]
-       endpointVersion:[APIKeys cardCreatorVersion]
-       endpointUsername:[APIKeys cardCreatorUsername]
-       endpointPassword:[APIKeys cardCreatorPassword]
-       requestTimeoutInterval:20.0
-       completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
-         if (userInitiated) {
-           // Dismiss CardCreator when user finishes Credential Review
-           [weakSelf dismissViewControllerAnimated:YES completion:nil];
-         } else {
-           weakSelf.barcodeTextField.text = username;
-           weakSelf.PINTextField.text = PIN;
-           [weakSelf updateLoginLogoutCellAppearance];
-           self.isLoggingInAfterSignUp = YES;
-           [weakSelf logIn];
-         }
-       }];
-      
-      UINavigationController *const navigationController =
-      [CardCreator initialNavigationControllerWithConfiguration:configuration];
-      navigationController.navigationBar.topItem.leftBarButtonItem =
-      [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
-                                       style:UIBarButtonItemStylePlain
-                                      target:self
-                                      action:@selector(didSelectCancelForSignUp)];
-      navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-      [self presentViewController:navigationController animated:YES completion:nil];
-      
+        __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
+        CardCreatorConfiguration *const configuration =
+        [[CardCreatorConfiguration alloc]
+         initWithEndpointURL:[APIKeys cardCreatorEndpointURL]
+         endpointVersion:[APIKeys cardCreatorVersion]
+         endpointUsername:[APIKeys cardCreatorUsername]
+         endpointPassword:[APIKeys cardCreatorPassword]
+         requestTimeoutInterval:20.0
+         completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
+           if (userInitiated) {
+             // Dismiss CardCreator when user finishes Credential Review
+             [weakSelf dismissViewControllerAnimated:YES completion:nil];
+           } else {
+             weakSelf.barcodeTextField.text = username;
+             weakSelf.PINTextField.text = PIN;
+             [weakSelf updateLoginLogoutCellAppearance];
+             self.isLoggingInAfterSignUp = YES;
+             [weakSelf logIn];
+           }
+         }];
+        
+        UINavigationController *const navigationController =
+        [CardCreator initialNavigationControllerWithConfiguration:configuration];
+        navigationController.navigationBar.topItem.leftBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                         style:UIBarButtonItemStylePlain
+                                        target:self
+                                        action:@selector(didSelectCancelForSignUp)];
+        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:navigationController animated:YES completion:nil];
       }
       else
       {
@@ -703,10 +698,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                         action:@selector(didSelectCancelForSignUp)];
         navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
         [self presentViewController:navigationController animated:YES completion:nil];
-        
-        
       }
-      
       break;
     }
     case CellKindSetCurrentAccount: {
