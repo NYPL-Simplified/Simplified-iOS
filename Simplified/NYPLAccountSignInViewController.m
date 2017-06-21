@@ -90,6 +90,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
 @property (nonatomic) bool rotated;
+@property (nonatomic) Account *currentAccount;
 
 @end
 
@@ -138,6 +139,8 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
                   delegate:self
                   delegateQueue:[NSOperationQueue mainQueue]];
   
+  self.currentAccount = [[AccountsManager sharedInstance] currentAccount];
+  
   return self;
 }
 
@@ -173,7 +176,11 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
                                         UIViewAutoresizingFlexibleHeight);
   self.PINTextField.font = [UIFont systemFontOfSize:17];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
-  self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
+  if (self.currentAccount.authPasscodeAllowsLetters) {
+    self.PINTextField.keyboardType = UIKeyboardTypeASCIICapable;
+  } else {
+    self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
+  }
   self.PINTextField.secureTextEntry = YES;
   self.PINTextField.delegate = self;
   [self.PINTextField
@@ -522,7 +529,7 @@ replacementString:(NSString *)string
   }
   
   if(textField == self.barcodeTextField) {
-    // Barcodes are numeric and usernames are alphanumeric.
+    // Usernames are alphanumeric.
     if([string stringByTrimmingCharactersInSet:[NSCharacterSet alphanumericCharacterSet]].length > 0) {
       return NO;
     }
@@ -534,11 +541,20 @@ replacementString:(NSString *)string
   }
   
   if(textField == self.PINTextField) {
-    if([string stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]].length > 0) {
+    
+    NSCharacterSet *charSet = [NSCharacterSet decimalDigitCharacterSet];
+    bool alphanumericPin = self.currentAccount.authPasscodeAllowsLetters;
+    bool containsNonNumericChar = [string stringByTrimmingCharactersInSet:charSet].length > 0;
+    bool abovePinCharLimit = [textField.text stringByReplacingCharactersInRange:range withString:string].length > self.currentAccount.authPasscodeLength;
+    
+    // PIN's support numeric or alphanumeric.
+    if (!alphanumericPin && containsNonNumericChar) {
       return NO;
     }
-    
-    if([textField.text stringByReplacingCharactersInRange:range withString:string].length > 4) {
+    // PIN's character limit. Zero is unlimited.
+    if (self.currentAccount.authPasscodeLength == 0) {
+      return YES;
+    } else if (abovePinCharLimit) {
       return NO;
     }
   }

@@ -181,7 +181,11 @@ NSInteger const linearViewTag = 1;
                                         UIViewAutoresizingFlexibleHeight);
   self.PINTextField.font = [UIFont systemFontOfSize:17];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
-  self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
+  if (self.account.authPasscodeAllowsLetters) {
+    self.PINTextField.keyboardType = UIKeyboardTypeASCIICapable;
+  } else {
+    self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
+  }
   self.PINTextField.secureTextEntry = YES;
   self.PINTextField.delegate = self;
   [self.PINTextField
@@ -1244,7 +1248,7 @@ replacementString:(NSString *)string
   }
   
   if(textField == self.barcodeTextField) {
-    // Barcodes are numeric and usernames are alphanumeric.
+    // Usernames are alphanumeric.
     if([string stringByTrimmingCharactersInSet:[NSCharacterSet alphanumericCharacterSet]].length > 0) {
       return NO;
     }
@@ -1256,11 +1260,20 @@ replacementString:(NSString *)string
   }
   
   if(textField == self.PINTextField) {
-    if([string stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]].length > 0) {
+    
+    NSCharacterSet *charSet = [NSCharacterSet decimalDigitCharacterSet];
+    bool alphanumericPin = self.account.authPasscodeAllowsLetters;
+    bool containsNonNumericChar = [string stringByTrimmingCharactersInSet:charSet].length > 0;
+    bool abovePinCharLimit = [textField.text stringByReplacingCharactersInRange:range withString:string].length > self.account.authPasscodeLength;
+    
+    // PIN's support numeric or alphanumeric.
+    if (!alphanumericPin && containsNonNumericChar) {
       return NO;
     }
-    
-    if([textField.text stringByReplacingCharactersInRange:range withString:string].length > 4) {
+    // PIN's character limit. Zero is unlimited.
+    if (self.account.authPasscodeLength == 0) {
+      return YES;
+    } else if (abovePinCharLimit) {
       return NO;
     }
   }

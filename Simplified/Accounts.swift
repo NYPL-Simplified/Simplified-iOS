@@ -60,6 +60,8 @@ final class AccountsManager: NSObject
             savedDict["subtitle"] = account.subtitle as AnyObject?
             savedDict["logo"] = account.logo as AnyObject?
             savedDict["needsAuth"] = account.needsAuth as AnyObject?
+            savedDict["authPasscodeLength"] = account.authPasscodeLength as AnyObject?
+            savedDict["authPasscodeAllowsLetters"] = account.authPasscodeAllowsLetters as AnyObject?
             savedDict["supportsSimplyESync"] = account.supportsSimplyESync as AnyObject?
             savedDict["supportsBarcodeScanner"] = account.supportsBarcodeScanner as AnyObject?
             savedDict["supportsBarcodeDisplay"] = account.supportsBarcodeDisplay as AnyObject?
@@ -106,6 +108,8 @@ final class Account:NSObject
   let subtitle:String?
   let logo:String?
   let needsAuth:Bool
+  let authPasscodeLength: UInt
+  let authPasscodeAllowsLetters: Bool
   let supportsSimplyESync:Bool
   let supportsBarcodeScanner:Bool
   let supportsBarcodeDisplay:Bool
@@ -171,6 +175,17 @@ final class Account:NSObject
     cardCreatorUrl = json["cardCreatorUrl"] as? String
     supportEmail = json["supportEmail"] as? String
     mainColor = json["mainColor"] as? String
+    
+    if let length = json["authPasscodeLength"] as? UInt {
+      authPasscodeLength = length
+    } else {
+      authPasscodeLength = 0
+    }
+    if let allows = json["authPasscodeAllowsLetters"] as? Bool {
+      authPasscodeAllowsLetters = allows
+    } else {
+      authPasscodeAllowsLetters = true
+    }
   }
   
   func setURL(_ URL: URL, forLicense urlType: URLType) -> Void {
