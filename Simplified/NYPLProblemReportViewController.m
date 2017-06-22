@@ -74,13 +74,13 @@ static NSArray *s_problems = nil;
   [super viewDidLoad];
   
   self.submitProblemButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [self.submitProblemButton setTitle:NSLocalizedString(@"Submit", nil) forState:UIControlStateNormal];
+  [self.submitProblemButton setTitle:NYPLLocalizedString(@"Submit", nil) forState:UIControlStateNormal];
   [self.submitProblemButton addTarget:self action:@selector(submitProblem) forControlEvents:UIControlEventTouchUpInside];
   [self.submitProblemButton sizeToFit];
   self.submitProblemButton.enabled = NO;
   
   self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil) forState:UIControlStateNormal];
+  [self.cancelButton setTitle:NYPLLocalizedString(@"Cancel", nil) forState:UIControlStateNormal];
   [self.cancelButton addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
   [self.cancelButton sizeToFit];
   

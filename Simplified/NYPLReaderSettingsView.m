@@ -48,7 +48,7 @@
   self.sansButton = [UIButton buttonWithType:UIButtonTypeCustom];
   
   
-  self.sansButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"SansFont", nil)];
+  self.sansButton.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"SansFont", nil)];
   self.sansButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.sansButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   self.sansButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:24];
@@ -65,7 +65,7 @@
 
   
   self.serifButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  self.serifButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"SerifFont", nil)];
+  self.serifButton.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"SerifFont", nil)];
   self.serifButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.serifButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   self.serifButton.titleLabel.font = [UIFont fontWithName:@"Georgia" size:24];
@@ -83,7 +83,7 @@
   
   
   self.openDyslexicButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  self.openDyslexicButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"OpenDyslexicFont", nil)];
+  self.openDyslexicButton.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"OpenDyslexicFont", nil)];
   self.openDyslexicButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.openDyslexicButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   self.openDyslexicButton.titleLabel.font = [UIFont fontWithName:@"OpenDyslexic3" size:20];
@@ -100,7 +100,7 @@
   [self addSubview:self.openDyslexicButton];
 
   self.whiteOnBlackButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  self.whiteOnBlackButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"WhiteOnBlackText", nil)];
+  self.whiteOnBlackButton.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"WhiteOnBlackText", nil)];
   self.whiteOnBlackButton.backgroundColor = [NYPLConfiguration backgroundDarkColor];
   
   NSDictionary *whiteColourWithoutUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone), NSForegroundColorAttributeName : [UIColor whiteColor] };
@@ -119,7 +119,7 @@
   [self addSubview:self.whiteOnBlackButton];
 
   self.blackOnSepiaButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  self.blackOnSepiaButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"BlackOnSepiaText", nil)];
+  self.blackOnSepiaButton.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"BlackOnSepiaText", nil)];
   self.blackOnSepiaButton.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
   [self.blackOnSepiaButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [self.blackOnSepiaButton setTitleColor:[NYPLConfiguration mainColor]
@@ -137,7 +137,7 @@
   [self addSubview:self.blackOnSepiaButton];
 
   self.blackOnWhiteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  self.blackOnWhiteButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"BlackOnWhiteText", nil)];
+  self.blackOnWhiteButton.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"BlackOnWhiteText", nil)];
   self.blackOnWhiteButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.blackOnWhiteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [self.blackOnWhiteButton setTitleColor:[NYPLConfiguration mainColor]
@@ -155,7 +155,7 @@
   [self addSubview:self.blackOnWhiteButton];
 
   self.decreaseButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  self.decreaseButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"DecreaseFontSize", nil)];
+  self.decreaseButton.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"DecreaseFontSize", nil)];
   self.decreaseButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.decreaseButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [self.decreaseButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
@@ -167,7 +167,7 @@
   [self addSubview:self.decreaseButton];
 
   self.increaseButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  self.increaseButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"IncreaseFontSize", nil)];
+  self.increaseButton.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"IncreaseFontSize", nil)];
   [self.increaseButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [self.increaseButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
   [self.increaseButton setTitle:@"A" forState:UIControlStateNormal];
@@ -181,7 +181,7 @@
   [self addSubview:self.brightnessView];
   
   self.mediaOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  self.mediaOverlayButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"MediaOverlayPlaybackToggle", nil)];
+  self.mediaOverlayButton.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"MediaOverlayPlaybackToggle", nil)];
   self.mediaOverlayButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.mediaOverlayToggle = NO;
   
@@ -226,7 +226,7 @@
   [self.brightnessView addSubview:self.brightnessHighImageView];
   
   self.brightnessSlider = [[UISlider alloc] init];
-  self.brightnessSlider.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"BrightnessSlider", nil)];
+  self.brightnessSlider.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"BrightnessSlider", nil)];
   [self.brightnessSlider addTarget:self
                             action:@selector(didChangeBrightness)
                   forControlEvents:UIControlEventValueChanged];

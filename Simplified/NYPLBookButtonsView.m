@@ -122,49 +122,49 @@
   switch(self.state) {
     case NYPLBookButtonsStateCanBorrow:
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
-                              TitleKey: NSLocalizedString(@"Borrow", nil),
-                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Borrows %@", nil), self.book.title]}];
+                              TitleKey: NYPLLocalizedString(@"Borrow", nil),
+                              HintKey: [NSString stringWithFormat:NYPLLocalizedString(@"Borrows %@", nil), self.book.title]}];
       break;
     case NYPLBookButtonsStateCanKeep:
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
-                              TitleKey: NSLocalizedString(@"Download", nil),
-                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Downloads %@", nil), self.book.title]}];
+                              TitleKey: NYPLLocalizedString(@"Download", nil),
+                              HintKey: [NSString stringWithFormat:NYPLLocalizedString(@"Downloads %@", nil), self.book.title]}];
       break;
     case NYPLBookButtonsStateCanHold:
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
-                              TitleKey: NSLocalizedString(@"Reserve", nil),
-                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Holds %@", nil), self.book.title]}];
+                              TitleKey: NYPLLocalizedString(@"Reserve", nil),
+                              HintKey: [NSString stringWithFormat:NYPLLocalizedString(@"Holds %@", nil), self.book.title]}];
       break;
     case NYPLBookButtonsStateHolding:
       visibleButtonInfo = @[@{ButtonKey: self.deleteButton,
-                              TitleKey: NSLocalizedString(@"Remove", nil),
-                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels hold for %@", nil), self.book.title],
+                              TitleKey: NYPLLocalizedString(@"Remove", nil),
+                              HintKey: [NSString stringWithFormat:NYPLLocalizedString(@"Cancels hold for %@", nil), self.book.title],
                               AddIndicatorKey: @(YES)}];
       break;
     case NYPLBookButtonsStateHoldingFOQ:
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
-                              TitleKey: NSLocalizedString(@"Borrow", nil),
-                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Borrows %@", nil), self.book.title],
+                              TitleKey: NYPLLocalizedString(@"Borrow", nil),
+                              HintKey: [NSString stringWithFormat:NYPLLocalizedString(@"Borrows %@", nil), self.book.title],
                               AddIndicatorKey: @(YES)},
                             @{ButtonKey: self.deleteButton,
-                              TitleKey: NSLocalizedString(@"Remove", nil),
-                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels hold for %@", nil), self.book.title]}];
+                              TitleKey: NYPLLocalizedString(@"Remove", nil),
+                              HintKey: [NSString stringWithFormat:NYPLLocalizedString(@"Cancels hold for %@", nil), self.book.title]}];
       break;
     case NYPLBookButtonsStateDownloadNeeded:
     {
       visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
-                              TitleKey: NSLocalizedString(@"Download", nil),
-                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Downloads %@", nil), self.book.title],
+                              TitleKey: NYPLLocalizedString(@"Download", nil),
+                              HintKey: [NSString stringWithFormat:NYPLLocalizedString(@"Downloads %@", nil), self.book.title],
                               AddIndicatorKey: @(YES)}];
         
       if (self.showReturnButtonIfApplicable)
       {
-        NSString *title = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
-        NSString *hint = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+        NSString *title = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? NYPLLocalizedString(@"Delete", nil) : NYPLLocalizedString(@"Return", nil);
+        NSString *hint = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? [NSString stringWithFormat:NYPLLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NYPLLocalizedString(@"Returns %@", nil), self.book.title];
 
         visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
-                                TitleKey: NSLocalizedString(@"Download", nil),
-                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Downloads %@", nil), self.book.title],
+                                TitleKey: NYPLLocalizedString(@"Download", nil),
+                                HintKey: [NSString stringWithFormat:NYPLLocalizedString(@"Downloads %@", nil), self.book.title],
                                 AddIndicatorKey: @(YES)},
                               @{ButtonKey: self.deleteButton,
                                 TitleKey: title,
@@ -178,18 +178,18 @@
     case NYPLBookButtonsStateUsed:
     {
       visibleButtonInfo = @[@{ButtonKey: self.readButton,
-                              TitleKey: NSLocalizedString(@"Read", nil),
-                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens %@ for reading", nil), self.book.title],
+                              TitleKey: NYPLLocalizedString(@"Read", nil),
+                              HintKey: [NSString stringWithFormat:NYPLLocalizedString(@"Opens %@ for reading", nil), self.book.title],
                               AddIndicatorKey: @(YES)}];
         
       if (self.showReturnButtonIfApplicable)
       {
-        NSString *title = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
-        NSString *hint = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+        NSString *title = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? NYPLLocalizedString(@"Delete", nil) : NYPLLocalizedString(@"Return", nil);
+        NSString *hint = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? [NSString stringWithFormat:NYPLLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NYPLLocalizedString(@"Returns %@", nil), self.book.title];
 
         visibleButtonInfo = @[@{ButtonKey: self.readButton,
-                                TitleKey: NSLocalizedString(@"Read", nil),
-                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens %@ for reading", nil), self.book.title],
+                                TitleKey: NYPLLocalizedString(@"Read", nil),
+                                HintKey: [NSString stringWithFormat:NYPLLocalizedString(@"Opens %@ for reading", nil), self.book.title],
                                 AddIndicatorKey: @(YES)},
                               @{ButtonKey: self.deleteButton,
                                 TitleKey: title,
@@ -289,21 +289,21 @@
     case NYPLBookStateDownloadNeeded:
     case NYPLBookStateDownloadSuccessful:
       title = ((self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
-               ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
-               : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil));
+               ? NYPLLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
+               : NYPLLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil));
       message = ((self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
-                 ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil)
-                 : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitleMessageFormat", nil));
+                 ? NYPLLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil)
+                 : NYPLLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitleMessageFormat", nil));
       confirmButtonTitle = ((self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
-                            ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
-                            : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil));
+                            ? NYPLLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
+                            : NYPLLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil));
       break;
     case NYPLBookStateHolding:
-      title = NSLocalizedString(@"BookButtonsViewRemoveHoldTitle", nil);
+      title = NYPLLocalizedString(@"BookButtonsViewRemoveHoldTitle", nil);
       message = [NSString stringWithFormat:
-                 NSLocalizedString(@"BookButtonsViewRemoveHoldMessage", nil),
+                 NYPLLocalizedString(@"BookButtonsViewRemoveHoldMessage", nil),
                  self.book.title];
-      confirmButtonTitle = NSLocalizedString(@"BookButtonsViewRemoveHoldConfirm", nil);
+      confirmButtonTitle = NYPLLocalizedString(@"BookButtonsViewRemoveHoldConfirm", nil);
       break;
   }
   
@@ -312,7 +312,7 @@
                                                                                     message, self.book.title]
                                                                     preferredStyle:UIAlertControllerStyleAlert];
   
-  [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+  [alertController addAction:[UIAlertAction actionWithTitle:NYPLLocalizedString(@"Cancel", nil)
                                                       style:UIAlertActionStyleCancel
                                                     handler:nil]];
   

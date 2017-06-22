@@ -35,7 +35,7 @@
   self = [super init];
   if(!self) return nil;
 
-  self.title = NSLocalizedString(@"HoldsViewControllerTitle", nil);
+  self.title = NYPLLocalizedString(@"HoldsViewControllerTitle", nil);
   
   [self willReloadCollectionViewData];
   
@@ -90,7 +90,7 @@
   
   self.instructionsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
   self.instructionsLabel.hidden = YES;
-  self.instructionsLabel.text = NSLocalizedString(@"ReservationsGoToCatalog", nil);
+  self.instructionsLabel.text = NYPLLocalizedString(@"ReservationsGoToCatalog", nil);
   self.instructionsLabel.textAlignment = NSTextAlignmentCenter;
   self.instructionsLabel.textColor = [UIColor colorWithWhite:0.6667 alpha:1.0];
   self.instructionsLabel.numberOfLines = 0;
@@ -104,7 +104,7 @@
                        style:UIBarButtonItemStylePlain
                        target:self
                        action:@selector(didSelectSearch)];
-  self.searchButton.accessibilityLabel = NSLocalizedString(@"Search", nil);
+  self.searchButton.accessibilityLabel = NYPLLocalizedString(@"Search", nil);
   self.navigationItem.rightBarButtonItem = self.searchButton;
   
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
@@ -170,10 +170,10 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     }
     if([self bookArrayForSection:indexPath.section] == self.reservedBooks) {
       view.layer.backgroundColor = [NYPLConfiguration mainColor].CGColor;
-      title.text = NSLocalizedString(@"AvailableForCheckoutHeader", nil);
+      title.text = NYPLLocalizedString(@"AvailableForCheckoutHeader", nil);
     } else {
       view.layer.backgroundColor = [UIColor colorWithRed:172.0/255.0 green:177.0/255.0 blue:182.0/255 alpha:1.0].CGColor;
-      title.text = NSLocalizedString(@"WaitingForAvailabilityHeader", nil);
+      title.text = NYPLLocalizedString(@"WaitingForAvailabilityHeader", nil);
     }
     [title sizeToFit];
     CGRect frame = title.frame;
@@ -233,11 +233,11 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
           [[NYPLBookRegistry sharedRegistry] save];
         } else {
           [[[UIAlertView alloc]
-            initWithTitle:NSLocalizedString(@"SyncFailed", nil)
-            message:NSLocalizedString(@"CheckConnection", nil)
+            initWithTitle:NYPLLocalizedString(@"SyncFailed", nil)
+            message:NYPLLocalizedString(@"CheckConnection", nil)
             delegate:nil
             cancelButtonTitle:nil
-            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+            otherButtonTitles:NYPLLocalizedString(@"OK", nil), nil]
            show];
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
@@ -274,7 +274,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)didSelectSearch
 {
-  NSString *title = NSLocalizedString(@"HoldsViewControllerSearchTitle", nil);
+  NSString *title = NYPLLocalizedString(@"HoldsViewControllerSearchTitle", nil);
   NYPLOpenSearchDescription *searchDescription = [[NYPLOpenSearchDescription alloc] initWithTitle:title books:[[NYPLBookRegistry sharedRegistry] heldBooks]];
   [self.navigationController
    pushViewController:[[NYPLCatalogSearchViewController alloc] initWithOpenSearchDescription:searchDescription]

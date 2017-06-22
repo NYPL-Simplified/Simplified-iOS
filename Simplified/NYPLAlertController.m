@@ -56,11 +56,11 @@
 + (instancetype)alertWithTitle:(NSString *)title message:(NSString *)message, ...
 {
   if ([title length] > 0) {
-    title = NSLocalizedString(title, nil);
+    title = NYPLLocalizedString(title, nil);
   }
   
   if ([message length] > 0) {
-    message = NSLocalizedString(message, nil);
+    message = NYPLLocalizedString(message, nil);
     
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
@@ -73,7 +73,7 @@
   
   if (title.length > 0 || message.length > 0) {
     NYPLAlertController *alertController = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+    [alertController addAction:[UIAlertAction actionWithTitle:NYPLLocalizedString(@"OK", nil)
                                                         style:UIAlertActionStyleDefault
                                                       handler:nil]];
     alertController.localMessage = message;
@@ -86,11 +86,11 @@
 + (instancetype)alertWithTitle:(NSString *)title singleMessage:(NSString *)message
 {
   if ([title length] > 0) {
-    title = NSLocalizedString(title, nil);
+    title = NYPLLocalizedString(title, nil);
   }
   
   if ([message length] > 0) {
-    message = NSLocalizedString(message, nil);
+    message = NYPLLocalizedString(message, nil);
   }
   
   if (title.length > 0 || message.length > 0) {

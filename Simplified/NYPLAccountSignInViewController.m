@@ -100,7 +100,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
   
-  self.title = NSLocalizedString(@"SignIn", nil);
+  self.title = NYPLLocalizedString(@"SignIn", nil);
 
   [[NSNotificationCenter defaultCenter]
    addObserver:self
@@ -157,7 +157,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self.barcodeTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                             UIViewAutoresizingFlexibleHeight);
   self.barcodeTextField.font = [UIFont systemFontOfSize:17];
-  self.barcodeTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
+  self.barcodeTextField.placeholder = NYPLLocalizedString(@"BarcodeOrUsername", nil);
   self.barcodeTextField.keyboardType = UIKeyboardTypeASCIICapable;
   self.barcodeTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
   self.barcodeTextField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -170,7 +170,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self.PINTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                         UIViewAutoresizingFlexibleHeight);
   self.PINTextField.font = [UIFont systemFontOfSize:17];
-  self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
+  self.PINTextField.placeholder = NYPLLocalizedString(@"PIN", nil);
   self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
   self.PINTextField.secureTextEntry = YES;
   self.PINTextField.delegate = self;
@@ -180,7 +180,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
    forControlEvents:UIControlEventEditingChanged];
 
   self.PINShowHideButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [self.PINShowHideButton setTitle:NSLocalizedString(@"Show", nil) forState:UIControlStateNormal];
+  [self.PINShowHideButton setTitle:NYPLLocalizedString(@"Show", nil) forState:UIControlStateNormal];
   [self.PINShowHideButton sizeToFit];
   [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected)
                    forControlEvents:UIControlEventTouchUpInside];
@@ -257,13 +257,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
       if (currentAccount.eulaIsAccepted) {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
-        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAUnchecked", nil);
-        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
+        self.eulaCell.accessibilityLabel = NYPLLocalizedString(@"AccessibilityEULAUnchecked", nil);
+        self.eulaCell.accessibilityHint = NYPLLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
         currentAccount.eulaIsAccepted = NO;
       } else {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
-        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAChecked", nil);
-        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintChecked", nil);
+        self.eulaCell.accessibilityLabel = NYPLLocalizedString(@"AccessibilityEULAChecked", nil);
+        self.eulaCell.accessibilityHint = NYPLLocalizedString(@"AccessibilityEULAHintChecked", nil);
         currentAccount.eulaIsAccepted = YES;
       }
       [self updateLoginLogoutCellAppearance];
@@ -303,7 +303,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         UINavigationController *const navigationController =
           [CardCreator initialNavigationControllerWithConfiguration:configuration];
         navigationController.navigationBar.topItem.leftBarButtonItem =
-          [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+          [[UIBarButtonItem alloc] initWithTitle:NYPLLocalizedString(@"Cancel", nil)
                                            style:UIBarButtonItemStylePlain
                                           target:self
                                           action:@selector(didSelectCancelForSignUp)];
@@ -313,12 +313,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       else
       {
         
-        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:currentAccount.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:currentAccount.cardCreatorUrl] title:@"eCard" failureMessage:NYPLLocalizedString(@"SettingsConnectionFailureMessage", nil)];
         
         UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webViewController];
        
         navigationController.navigationBar.topItem.leftBarButtonItem =
-        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil)
+        [[UIBarButtonItem alloc] initWithTitle:NYPLLocalizedString(@"Close", nil)
                                          style:UIBarButtonItemStylePlain
                                         target:self
                                         action:@selector(didSelectCancelForSignUp)];
@@ -350,17 +350,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case kCLAuthorizationStatusDenied:
     {
-      UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Location", nil)
-                                                                               message:NSLocalizedString(@"LocationRequiredMessage", nil)
+      UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NYPLLocalizedString(@"Location", nil)
+                                                                               message:NYPLLocalizedString(@"LocationRequiredMessage", nil)
                                                                         preferredStyle:UIAlertControllerStyleAlert];
       
-      UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Settings", nil)
+      UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:NYPLLocalizedString(@"Settings", nil)
                                                            style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction *action) {
                                                            if (action)[UIApplication.sharedApplication openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
                                                          }];
 
-      UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+      UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NYPLLocalizedString(@"Cancel", nil)
                                                            style:UIAlertActionStyleDestructive
                                                          handler:nil];
       
@@ -422,17 +422,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (currentAccount.eulaIsAccepted) {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOn"]];
-        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAChecked", nil);
-        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintChecked", nil);
+        self.eulaCell.accessibilityLabel = NYPLLocalizedString(@"AccessibilityEULAChecked", nil);
+        self.eulaCell.accessibilityHint = NYPLLocalizedString(@"AccessibilityEULAHintChecked", nil);
       } else {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOff"]];
-        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAUnchecked", nil);
-        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
+        self.eulaCell.accessibilityLabel = NYPLLocalizedString(@"AccessibilityEULAUnchecked", nil);
+        self.eulaCell.accessibilityHint = NYPLLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
       }
       self.eulaCell.selectionStyle = UITableViewCellSelectionStyleNone;
       self.eulaCell.textLabel.font = [UIFont systemFontOfSize:13];
-      self.eulaCell.textLabel.text = NSLocalizedString(@"SettingsAccountEULACheckbox", @"Statement letting a user know that they must agree to the User Agreement terms.");
+      self.eulaCell.textLabel.text = NYPLLocalizedString(@"SettingsAccountEULACheckbox",  @"Statement letting a user know that they must agree to the User Agreement terms.");
       self.eulaCell.textLabel.numberOfLines = 2;
       return self.eulaCell;
     }
@@ -446,9 +446,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleValue1
                                      reuseIdentifier:nil];
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
+      cell.textLabel.text = NYPLLocalizedString(@"SettingsAccountRegistrationTitle",  @"Title for registration. Asking the user if they already have a library card.");
       cell.detailTextLabel.font = [UIFont systemFontOfSize:17];
-      cell.detailTextLabel.text = NSLocalizedString(@"SignUp", nil);
+      cell.detailTextLabel.text = NYPLLocalizedString(@"SignUp", nil);
       cell.detailTextLabel.textColor = [NYPLConfiguration mainColor];
       return cell;
     }
@@ -559,7 +559,7 @@ replacementString:(NSString *)string
     LAContext *const context = [[LAContext alloc] init];
     if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
       [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication
-              localizedReason:NSLocalizedString(@"SettingsAccountViewControllerAuthenticationReason", nil)
+              localizedReason:NYPLLocalizedString(@"SettingsAccountViewControllerAuthenticationReason", nil)
                         reply:^(__unused BOOL success,
                                 __unused NSError *_Nullable error) {
                           if(success) {
@@ -580,7 +580,7 @@ replacementString:(NSString *)string
 {
   self.PINTextField.secureTextEntry = !self.PINTextField.secureTextEntry;
   NSString *title = self.PINTextField.secureTextEntry ? @"Show" : @"Hide";
-  [self.PINShowHideButton setTitle:NSLocalizedString(title, nil) forState:UIControlStateNormal];
+  [self.PINShowHideButton setTitle:NYPLLocalizedString(title, nil) forState:UIControlStateNormal];
   [self.PINShowHideButton sizeToFit];
   [self.tableView reloadData];
 }
@@ -622,14 +622,14 @@ replacementString:(NSString *)string
     return;
   }
   if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-    self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
+    self.logInSignOutCell.textLabel.text = NYPLLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     self.logInSignOutCell.userInteractionEnabled = YES;
     self.eulaCell.userInteractionEnabled = NO;
   } else {
     self.eulaCell.userInteractionEnabled = YES;
-    self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
+    self.logInSignOutCell.textLabel.text = NYPLLocalizedString(@"LogIn", nil);
     Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
     BOOL const canLogIn =
       ([self.barcodeTextField.text
@@ -655,7 +655,7 @@ replacementString:(NSString *)string
   [self.barcodeTextField resignFirstResponder];
   [self.PINTextField resignFirstResponder];
 
-  [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
+  [self setActivityTitleWithText:NYPLLocalizedString(@"Verifying", nil)];
   
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   

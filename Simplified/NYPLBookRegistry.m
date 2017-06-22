@@ -308,11 +308,11 @@ static NSString *const RecordsKey = @"records";
       [[NYPLBookRegistry sharedRegistry] save];
     } else {
       [[[UIAlertView alloc]
-        initWithTitle:NSLocalizedString(@"SyncFailed", nil)
-        message:NSLocalizedString(@"CheckConnection", nil)
+        initWithTitle:NYPLLocalizedString(@"SyncFailed", nil)
+        message:NYPLLocalizedString(@"CheckConnection", nil)
         delegate:nil
         cancelButtonTitle:nil
-        otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+        otherButtonTitles:NYPLLocalizedString(@"OK", nil), nil]
        show];
     }
   }];

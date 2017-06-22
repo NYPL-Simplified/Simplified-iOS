@@ -38,15 +38,15 @@ final class NYPLWelcomeScreenViewController: UIViewController {
   
   func setupViews() {
     let view1 = splashScreenView("SplashPickLibraryIcon",
-                                 headline: NSLocalizedString("WelcomeScreenTitle1", comment: "Title to tell users they can read books from a library they already have a card for."),
-                                 subheadline: NSLocalizedString("WelcomeScreenSubtitle1", comment: "Informs a user of the features of being able to check out a book in the app and even use more than one mobile device"),
-                                 buttonTitle: NSLocalizedString("WelcomeScreenButtonTitle1", comment: "Button that lets user know they can select a library they have a card for"),
+                                 headline: NYPLLocalizedString("WelcomeScreenTitle1", "Title to tell users they can read books from a library they already have a card for."),
+                                 subheadline: NYPLLocalizedString("WelcomeScreenSubtitle1", "Informs a user of the features of being able to check out a book in the app and even use more than one mobile device"),
+                                 buttonTitle: NYPLLocalizedString("WelcomeScreenButtonTitle1", "Button that lets user know they can select a library they have a card for"),
                                  buttonTargetSelector: #selector(pickYourLibraryTapped))
     
     let view2 = splashScreenView("SplashInstantClassicsIcon",
-                                 headline: NSLocalizedString("WelcomeScreenTitle2", comment: "Title to show a user an option if they do not have a library card to check out books."),
-                                 subheadline: NSLocalizedString("WelcomeScreenSubtitle2", comment: "Explains what a user can do with the catalog provided. Free books in the public domain."),
-                                 buttonTitle: NSLocalizedString("WelcomeScreenButtonTitle2", comment: "Name of section for free books means books that are well-known popular novels for many people."),
+                                 headline: NYPLLocalizedString("WelcomeScreenTitle2", "Title to show a user an option if they do not have a library card to check out books."),
+                                 subheadline: NYPLLocalizedString("WelcomeScreenSubtitle2", "Explains what a user can do with the catalog provided. Free books in the public domain."),
+                                 buttonTitle: NYPLLocalizedString("WelcomeScreenButtonTitle2", "Name of section for free books means books that are well-known popular novels for many people."),
                                  buttonTargetSelector: #selector(instantClassicsTapped))
     
     let logoView = UIImageView(image: UIImage(named: "FullLogo"))
@@ -207,7 +207,7 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
     self.tableView.dataSource = self
     
     self.accounts = AccountsManager.shared.accounts
-    self.title = NSLocalizedString("LibraryListTitle", comment: "Title that also informs the user that they should choose a library from the list.")
+    self.title = NYPLLocalizedString("LibraryListTitle", "Title that also informs the user that they should choose a library from the list.")
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
   }
   

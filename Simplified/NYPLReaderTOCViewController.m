@@ -35,7 +35,7 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
   
   self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
   
-  self.title = NSLocalizedString(@"ReaderTOCViewControllerTitle", nil);
+  self.title = NYPLLocalizedString(@"ReaderTOCViewControllerTitle", nil);
   self.view.backgroundColor = [UIColor whiteColor];
   
   [self createViews];

@@ -88,7 +88,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self = [super init];
   if(!self) return nil;
 
-  self.title = NSLocalizedString(@"MyBooksViewControllerTitle", nil);
+  self.title = NYPLLocalizedString(@"MyBooksViewControllerTitle", nil);
   
   [self willReloadCollectionViewData];
   
@@ -142,7 +142,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   
   self.instructionsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
   self.instructionsLabel.hidden = YES;
-  self.instructionsLabel.text = NSLocalizedString(@"MyBooksGoToCatalog", nil);
+  self.instructionsLabel.text = NYPLLocalizedString(@"MyBooksGoToCatalog", nil);
   self.instructionsLabel.textAlignment = NSTextAlignmentCenter;
   self.instructionsLabel.textColor = [UIColor colorWithWhite:0.6667 alpha:1.0];
   self.instructionsLabel.numberOfLines = 0;
@@ -155,7 +155,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
                        style:UIBarButtonItemStylePlain
                        target:self
                        action:@selector(didSelectSearch)];
-  self.searchButton.accessibilityLabel = NSLocalizedString(@"Search", nil);
+  self.searchButton.accessibilityLabel = NYPLLocalizedString(@"Search", nil);
   self.navigationItem.rightBarButtonItem = self.searchButton;
   
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
@@ -269,8 +269,8 @@ numberOfFacetsInFacetGroupAtIndex:(__attribute__((unused)) NSUInteger)index
 - (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 nameForFacetGroupAtIndex:(NSUInteger const)index
 {
-  return @[NSLocalizedString(@"MyBooksViewControllerGroupSortBy", nil),
-           NSLocalizedString(@"MyBooksViewControllerGroupShow", nil)
+  return @[NYPLLocalizedString(@"MyBooksViewControllerGroupSortBy", nil),
+           NYPLLocalizedString(@"MyBooksViewControllerGroupShow", nil)
            ][index];
 }
 
@@ -281,17 +281,17 @@ nameForFacetAtIndexPath:(NSIndexPath *const)indexPath
     case GroupShow:
       switch([indexPath indexAtPosition:1]) {
         case FacetShowAll:
-          return NSLocalizedString(@"MyBooksViewControllerFacetAll", nil);
+          return NYPLLocalizedString(@"MyBooksViewControllerFacetAll", nil);
         case FacetShowOnLoan:
-          return NSLocalizedString(@"MyBooksViewControllerFacetOnLoan", nil);
+          return NYPLLocalizedString(@"MyBooksViewControllerFacetOnLoan", nil);
       }
       break;
     case GroupSortBy:
       switch([indexPath indexAtPosition:1]) {
         case FacetSortAuthor:
-          return NSLocalizedString(@"MyBooksViewControllerFacetAuthor", nil);
+          return NYPLLocalizedString(@"MyBooksViewControllerFacetAuthor", nil);
         case FacetSortTitle:
-          return NSLocalizedString(@"MyBooksViewControllerFacetTitle", nil);
+          return NYPLLocalizedString(@"MyBooksViewControllerFacetTitle", nil);
       }
       break;
   }
@@ -372,11 +372,11 @@ OK:
           [[NYPLBookRegistry sharedRegistry] save];
         } else {
           [[[UIAlertView alloc]
-            initWithTitle:NSLocalizedString(@"SyncFailed", nil)
-            message:NSLocalizedString(@"CheckConnection", nil)
+            initWithTitle:NYPLLocalizedString(@"SyncFailed", nil)
+            message:NYPLLocalizedString(@"CheckConnection", nil)
             delegate:nil
             cancelButtonTitle:nil
-            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+            otherButtonTitles:NYPLLocalizedString(@"OK", nil), nil]
            show];
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
@@ -413,7 +413,7 @@ OK:
 
 - (void)didSelectSearch
 {
-  NSString *title = NSLocalizedString(@"MyBooksViewControllerSearchTitle", nil);
+  NSString *title = NYPLLocalizedString(@"MyBooksViewControllerSearchTitle", nil);
   NYPLOpenSearchDescription *searchDescription = [[NYPLOpenSearchDescription alloc] initWithTitle:title books:self.books];
   [self.navigationController
    pushViewController:[[NYPLCatalogSearchViewController alloc] initWithOpenSearchDescription:searchDescription]

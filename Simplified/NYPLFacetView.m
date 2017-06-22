@@ -97,7 +97,7 @@
       [button setTitle:self.groupIndexesToFacetNames[groupIndex][facetIndex]
               forState:UIControlStateNormal];
     } else {
-      [button setTitle:NSLocalizedString(@"FacetViewNotActive", nil)
+      [button setTitle:NYPLLocalizedString(@"FacetViewNotActive", nil)
               forState:UIControlStateNormal];
     }
     [button addTarget:self
@@ -135,7 +135,7 @@
   // abort selecting a facet on the iPhone.
   if(!isActive) {
     [alertController addAction:[UIAlertAction
-                                actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                actionWithTitle:NYPLLocalizedString(@"Cancel", nil)
                                 style:UIAlertActionStyleCancel
                                 handler:nil]];
   }

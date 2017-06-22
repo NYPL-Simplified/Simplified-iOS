@@ -82,7 +82,7 @@
   self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.cancelButton.tintColor = [UIColor grayColor];
   self.cancelButton.layer.borderWidth = 0;
-  [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
+  [self.cancelButton setTitle:NYPLLocalizedString(@"Cancel", nil)
                      forState:UIControlStateNormal];
   [self.cancelButton addTarget:self
                         action:@selector(didSelectCancel)
@@ -92,7 +92,7 @@
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont systemFontOfSize:12];
   self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
-  self.messageLabel.text = NSLocalizedString(@"DownloadCouldNotBeCompleted", nil);
+  self.messageLabel.text = NYPLLocalizedString(@"DownloadCouldNotBeCompleted", nil);
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
   [self.contentView addSubview:self.messageLabel];
   
@@ -105,7 +105,7 @@
   self.tryAgainButton.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tryAgainButton.tintColor = [UIColor grayColor];
   self.tryAgainButton.layer.borderWidth = 0;
-  [self.tryAgainButton setTitle:NSLocalizedString(@"TryAgain", nil)
+  [self.tryAgainButton setTitle:NYPLLocalizedString(@"TryAgain", nil)
                        forState:UIControlStateNormal];
   [self.tryAgainButton addTarget:self
                           action:@selector(didSelectTryAgain)

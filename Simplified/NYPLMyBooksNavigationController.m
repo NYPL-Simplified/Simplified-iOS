@@ -35,7 +35,7 @@
                                                      initWithImage:[UIImage imageNamed:@"Catalog"] style:(UIBarButtonItemStylePlain)
                                                      target:self
                                                      action:@selector(switchLibrary)];
-  viewController.navigationItem.leftBarButtonItem.accessibilityLabel = NSLocalizedString(@"AccessibilitySwitchLibrary", nil);
+  viewController.navigationItem.leftBarButtonItem.accessibilityLabel = NYPLLocalizedString(@"AccessibilitySwitchLibrary", nil);
   viewController.navigationItem.leftBarButtonItem.enabled = YES;
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NYPLCurrentAccountDidChangeNotification object:nil];
@@ -67,7 +67,7 @@
 {
   NYPLMyBooksViewController *viewController = (NYPLMyBooksViewController *)self.visibleViewController;
   
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"PickYourLibrary", nil) message:nil preferredStyle:(UIAlertControllerStyleActionSheet)];
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NYPLLocalizedString(@"PickYourLibrary", nil) message:nil preferredStyle:(UIAlertControllerStyleActionSheet)];
   alert.popoverPresentationController.barButtonItem = viewController.navigationItem.leftBarButtonItem;
   alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
   
@@ -96,7 +96,7 @@
     }]];
   }
   
-  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"ManageAccounts", nil) style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+  [alert addAction:[UIAlertAction actionWithTitle:NYPLLocalizedString(@"ManageAccounts", nil) style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
     NSUInteger tabCount = [[[NYPLRootTabBarController sharedController] viewControllers] count];
     UISplitViewController *splitViewVC = [[[NYPLRootTabBarController sharedController] viewControllers] lastObject];
     UINavigationController *masterNavVC = [[splitViewVC viewControllers] firstObject];
@@ -106,7 +106,7 @@
     [tableVC.delegate settingsPrimaryTableViewController:tableVC didSelectItem:NYPLSettingsPrimaryTableViewControllerItemAccount];
   }]];
   
-  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:(UIAlertActionStyleCancel) handler:nil]];
+  [alert addAction:[UIAlertAction actionWithTitle:NYPLLocalizedString(@"Cancel", nil) style:(UIAlertActionStyleCancel) handler:nil]];
   
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
   

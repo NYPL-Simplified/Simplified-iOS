@@ -60,7 +60,7 @@ static NSString *detailTemplate = nil;
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
     self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.closeButton setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
+    [self.closeButton setTitle:NYPLLocalizedString(@"Close", nil) forState:UIControlStateNormal];
     [self.closeButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
     [self.closeButton addTarget:self action:@selector(closeButtonPressed) forControlEvents:UIControlEventTouchDown];
     [self addSubview:self.closeButton];
@@ -158,14 +158,14 @@ static NSString *detailTemplate = nil;
   NSString *const publishedString =
     self.book.published
     ? [NSString stringWithFormat:@"%@: %@",
-       NSLocalizedString(@"Published", nil),
+       NYPLLocalizedString(@"Published", nil),
        [dateFormatter stringFromDate:self.book.published]]
     : nil;
   
   NSString *const publisherString =
     self.book.publisher
     ? [NSString stringWithFormat:@"%@: %@",
-       NSLocalizedString(@"Publisher", nil),
+       NYPLLocalizedString(@"Publisher", nil),
        self.book.publisher]
     : nil;
   
@@ -173,13 +173,13 @@ static NSString *detailTemplate = nil;
     self.book.categoryStrings.count
     ? [NSString stringWithFormat:@"%@: %@",
        (self.book.categoryStrings.count == 1
-        ? NSLocalizedString(@"Category", nil)
-        : NSLocalizedString(@"Categories", nil)),
+        ? NYPLLocalizedString(@"Category", nil)
+        : NYPLLocalizedString(@"Categories", nil)),
        self.book.categories]
     : nil;
   
   
-  self.distributorLabel.text = book.distributor ? [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerDistributedByFormat", nil), book.distributor] : nil;
+  self.distributorLabel.text = book.distributor ? [NSString stringWithFormat:NYPLLocalizedString(@"BookDetailViewControllerDistributedByFormat", nil), book.distributor] : nil;
   
   // Metadata is shown via separate lines to the right of the cover. As such, we to
   // use a series of labels in order to get the desired truncation.

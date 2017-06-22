@@ -70,8 +70,8 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 
 - (NSString *) reportButtonTitleForCurrentSize
 {
-  NSString *longName = self.reportButtonState == NYPLProblemReportButtonStateNormal ? NSLocalizedString(@"ReportAProblem", nil) : NSLocalizedString(@"SentReport", nil);
-  NSString *shortName = self.reportButtonState == NYPLProblemReportButtonStateNormal ? NSLocalizedString(@"Report", nil) : NSLocalizedString(@"Sent", nil);
+  NSString *longName = self.reportButtonState == NYPLProblemReportButtonStateNormal ? NYPLLocalizedString(@"ReportAProblem", nil) : NYPLLocalizedString(@"SentReport", nil);
+  NSString *shortName = self.reportButtonState == NYPLProblemReportButtonStateNormal ? NYPLLocalizedString(@"Report", nil) : NYPLLocalizedString(@"Sent", nil);
   CGFloat maxWidth = (self.bounds.size.width - self.buttonsView.bounds.size.width)/2.0 - 8.0 - 17.0;
   CGSize textSize = [longName sizeWithAttributes:@{NSFontAttributeName: self.reportAProblemButton.titleLabel.font}];
   return (textSize.width <= maxWidth) ? longName : shortName;
@@ -116,30 +116,30 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   
   switch(state) {
     case NYPLBookButtonsStateCanBorrow:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerAvailableToBorrowTitle", nil);
+      self.messageLabel.text = NYPLLocalizedString(@"BookDetailViewControllerAvailableToBorrowTitle", nil);
       break;
     case NYPLBookButtonsStateCanHold:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerCanHoldTitle", nil);
+      self.messageLabel.text = NYPLLocalizedString(@"BookDetailViewControllerCanHoldTitle", nil);
       break;
     case NYPLBookButtonsStateCanKeep:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerCanKeepTitle", nil);
+      self.messageLabel.text = NYPLLocalizedString(@"BookDetailViewControllerCanKeepTitle", nil);
       break;
     case NYPLBookButtonsStateDownloadNeeded:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerDownloadNeededTitle", nil);
+      self.messageLabel.text = NYPLLocalizedString(@"BookDetailViewControllerDownloadNeededTitle", nil);
       break;
     case NYPLBookButtonsStateDownloadSuccessful:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
+      self.messageLabel.text = NYPLLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
       break;
     case NYPLBookButtonsStateHolding:
-      self.messageLabel.text = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerHoldingTitleFormat", nil),
+      self.messageLabel.text = [NSString stringWithFormat:NYPLLocalizedString(@"BookDetailViewControllerHoldingTitleFormat", nil),
                                 [self.book.availableUntil longTimeUntilString]];
       break;
     case NYPLBookButtonsStateHoldingFOQ:
-      self.messageLabel.text = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerReservedTitleFormat", nil),
+      self.messageLabel.text = [NSString stringWithFormat:NYPLLocalizedString(@"BookDetailViewControllerReservedTitleFormat", nil),
                                 [self.book.availableUntil longTimeUntilString]];
       break;
     case NYPLBookButtonsStateUsed:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
+      self.messageLabel.text = NYPLLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
       break;
   }
   

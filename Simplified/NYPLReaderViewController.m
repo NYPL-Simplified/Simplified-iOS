@@ -207,11 +207,11 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.interfaceHidden = NO;
   
   [[[UIAlertView alloc]
-    initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptTitle", nil)
-    message:NSLocalizedString(@"ReaderViewControllerCorruptMessage", nil)
+    initWithTitle:NYPLLocalizedString(@"ReaderViewControllerCorruptTitle", nil)
+    message:NYPLLocalizedString(@"ReaderViewControllerCorruptMessage", nil)
     delegate:nil
     cancelButtonTitle:nil
-    otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
+    otherButtonTitles:NYPLLocalizedString(@"OK", nil), nil]
    show];
 }
 
@@ -250,7 +250,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   // Table of Contents button
   NYPLRoundedButton *const contentsButton = [NYPLRoundedButton button];
-  contentsButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"TOC", nil)];
+  contentsButton.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"TOC", nil)];
   [contentsButton sizeToFit];
   [contentsButton setImage:[UIImage imageNamed:@"TOC"] forState:UIControlStateNormal];
   [contentsButton addTarget:self
@@ -261,7 +261,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   // Settings button
   NYPLRoundedButton *const settingsButton = [NYPLRoundedButton button];
-  settingsButton.accessibilityLabel = NSLocalizedString(@"ReaderViewControllerToggleReaderSettings", nil);
+  settingsButton.accessibilityLabel = NYPLLocalizedString(@"ReaderViewControllerToggleReaderSettings", nil);
   [settingsButton sizeToFit];
   [settingsButton setImage:[UIImage imageNamed:@"Format"] forState:UIControlStateNormal];
   [settingsButton addTarget:self
@@ -271,7 +271,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   // Bookmark button
   NYPLRoundedButton *const bookmarkButton = [NYPLRoundedButton button];
-  bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"AddBookmark", nil)];
+  bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"AddBookmark", nil)];
   [bookmarkButton sizeToFit];
   [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOff"] forState:UIControlStateNormal];
   [bookmarkButton addTarget:self
@@ -331,7 +331,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.largeTransparentAccessibilityButton.frame = CGRectMake(0, self.navigationController.navigationBar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - self.navigationController.navigationBar.frame.size.height - self.bottomView.frame.size.height);
   [self.view addSubview:self.largeTransparentAccessibilityButton];
   self.largeTransparentAccessibilityButton.userInteractionEnabled = NO;
-  self.largeTransparentAccessibilityButton.accessibilityLabel = NSLocalizedString(@"ReturnToReader", nil);
+  self.largeTransparentAccessibilityButton.accessibilityLabel = NYPLLocalizedString(@"ReturnToReader", nil);
   self.largeTransparentAccessibilityButton.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                                                UIViewAutoresizingFlexibleHeight);
   
@@ -504,7 +504,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   self.isAccessibilityConfigurationActive = UIAccessibilityIsVoiceOverRunning();
   if (UIAccessibilityIsVoiceOverRunning()) {
-    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NSLocalizedString(@"MagicTap", nil));
+    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, NYPLLocalizedString(@"MagicTap", nil));
   }
 
   [super viewDidAppear:animated];
@@ -605,7 +605,7 @@ spineItemTitle:(NSString *const)title
 {
   if (UIAccessibilityIsVoiceOverRunning()) {
     UIAccessibilityPostNotification(UIAccessibilityPageScrolledNotification,
-                                    [NSString stringWithFormat:NSLocalizedString(@"Page %d of %d", nil),
+                                    [NSString stringWithFormat:NYPLLocalizedString(@"Page %d of %d", nil),
                                      pageIndex + 1,
                                      pageCount]);
   }
@@ -615,7 +615,7 @@ spineItemTitle:(NSString *const)title
   NSString *bookLocationString = [NSString stringWithFormat:@"Page %lu of %lu (%@)",
                                   pageIndex + 1,
                                   (unsigned long)pageCount,
-                                  title ? title : NSLocalizedString(@"ReaderViewControllerCurrentChapter", nil)];
+                                  title ? title : NYPLLocalizedString(@"ReaderViewControllerCurrentChapter", nil)];
   
   self.bottomViewProgressLabel.text = bookLocationString;
   
@@ -636,11 +636,11 @@ spineItemTitle:(NSString *const)title
   NYPLRoundedButton * bookmarkButton = self.bookmarkBarButtonItem.customView;
   if (on) {
     [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOn"] forState:UIControlStateNormal];
-    bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"RemoveBookmark", nil)];
+    bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"RemoveBookmark", nil)];
   }
   else {
     [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOff"] forState:UIControlStateNormal];
-    bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"AddBookmark", nil)];
+    bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NYPLLocalizedString(@"AddBookmark", nil)];
   }
   self.currentBookmark = bookmark;
 }

@@ -10,6 +10,8 @@
   @import UIKit;
   @import Foundation;
   #import "NYPLLOG.h"
+  #import "StringUtilities.h"
+
 #endif
 
 #endif

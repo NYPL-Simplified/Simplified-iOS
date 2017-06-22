@@ -680,12 +680,12 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   NSString *title = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier].title;
   [[[UIAlertView alloc]
-    initWithTitle:NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
+    initWithTitle:NYPLLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
     message:[NSString stringWithFormat:
-             NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil), title]
+             NYPLLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil), title]
     delegate:self
-    cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-    otherButtonTitles:NSLocalizedString(@"Delete", nil), nil]
+    cancelButtonTitle:NYPLLocalizedString(@"Cancel", nil)
+    otherButtonTitles:NYPLLocalizedString(@"Delete", nil), nil]
    show];
 }
 

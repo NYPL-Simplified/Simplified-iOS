@@ -24,7 +24,7 @@ static CGFloat const width = 250;
   
   self.titleLabel = [[UILabel alloc] init];
   self.titleLabel.font = [UIFont boldSystemFontOfSize:17];
-  self.titleLabel.text = NSLocalizedString(@"ConnectionFailed", nil);
+  self.titleLabel.text = NYPLLocalizedString(@"ConnectionFailed", nil);
   self.titleLabel.textColor = [UIColor grayColor];
   [self addSubview:self.titleLabel];
   
@@ -32,12 +32,12 @@ static CGFloat const width = 250;
   self.messageLabel.numberOfLines = 2;
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
   self.messageLabel.font = [UIFont systemFontOfSize:12];
-  self.messageLabel.text = NSLocalizedString(@"CheckConnection", nil);
+  self.messageLabel.text = NYPLLocalizedString(@"CheckConnection", nil);
   self.messageLabel.textColor = [UIColor grayColor];
   [self addSubview:self.messageLabel];
   
   self.reloadButton = [NYPLRoundedButton button];
-  [self.reloadButton setTitle:NSLocalizedString(@"TryAgain", nil)
+  [self.reloadButton setTitle:NYPLLocalizedString(@"TryAgain", nil)
                      forState:UIControlStateNormal];
   [self.reloadButton addTarget:self
                         action:@selector(didSelectReload)
