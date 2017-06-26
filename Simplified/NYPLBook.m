@@ -85,7 +85,7 @@ static NSString *const AlternateURLKey = @"alternate";
   BOOL isEPUBAvailable = NO;
   for(NYPLOPDSLink *const link in entry.links) {
     for(NSString *const acqusitionFormat in link.acquisitionFormats) {
-      if([acqusitionFormat containsString:@"application/epub+zip"]) {
+      if([acqusitionFormat containsString:@"application/epub+zip"] || [acqusitionFormat containsString:@"application/epub"]) {
         isEPUBAvailable = YES;
       }
     }
@@ -111,7 +111,7 @@ static NSString *const AlternateURLKey = @"alternate";
       generic = link.href;
       continue;
     }
-    if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionBorrow]) {
+    if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionBorrow] || [link.rel isEqualToString:@"borrow"]) {
       borrow = link.href;
       borrowFormats = link.acquisitionFormats;
       continue;

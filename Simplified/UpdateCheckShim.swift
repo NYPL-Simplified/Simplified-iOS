@@ -11,10 +11,10 @@ import Foundation
   ///
   /// @param updateNeededForURL A handler that is called on an arbitrary thread with a
   /// version string and an update URL _only_ when an update is needed.
-  static func performUpdateCheckWithURL(minimumVersionURL: NSURL, handler: (String, NSURL) -> Void) {
+  static func performUpdateCheckWithURL(_ minimumVersionURL: URL, handler: @escaping (String, URL) -> Void) {
     UpdateCheck.performUpdateCheck(minimumVersionURL) { (result) in
       switch result {
-      case let UpdateCheck.Result.NeedsUpdate(minimumVersion, updateURL):
+      case let UpdateCheck.Result.needsUpdate(minimumVersion, updateURL):
         handler("\(minimumVersion.major).\(minimumVersion.minor).\(minimumVersion.patch)", updateURL)
       default:
         break
