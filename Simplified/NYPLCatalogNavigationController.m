@@ -187,35 +187,35 @@
     NYPLLOG(last);
 #if defined(FEATURE_DRM_CONNECTOR)
 
-    [[NYPLADEPT sharedInstance]
-     authorizeWithVendorID:[[NYPLAccount sharedAccount:account.id] licensor][@"vendor"]
-     username:first
-     password:last
-     userID:[[NYPLAccount sharedAccount:account.id] userID] deviceID:[[NYPLAccount sharedAccount:account.id] deviceID]
-     completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
-       
-       NYPLLOG(error);
-       
-       if (success)
-       {
-         [[NYPLAccount sharedAccount:account.id] setUserID:userID];
-         [[NYPLAccount sharedAccount:account.id] setDeviceID:deviceID];
-
-         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
-           [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-         }];
-         
-         // POST deviceID to adobeDevicesLink
-         NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:account.id] licensor][@"deviceManager"]];
-         if (deviceManager != nil) {
-           [NYPLDeviceManager postDevice:deviceID url:deviceManager];
-         }
-       }
-       else
-       {
-         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-       }
-     }];
+//    [[NYPLADEPT sharedInstance]
+//     authorizeWithVendorID:[[NYPLAccount sharedAccount:account.id] licensor][@"vendor"]
+//     username:first
+//     password:last
+//     userID:[[NYPLAccount sharedAccount:account.id] userID] deviceID:[[NYPLAccount sharedAccount:account.id] deviceID]
+//     completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
+//       
+//       NYPLLOG(error);
+//       
+//       if (success)
+//       {
+//         [[NYPLAccount sharedAccount:account.id] setUserID:userID];
+//         [[NYPLAccount sharedAccount:account.id] setDeviceID:deviceID];
+//
+//         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+//           [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+//         }];
+//         
+//         // POST deviceID to adobeDevicesLink
+//         NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:account.id] licensor][@"deviceManager"]];
+//         if (deviceManager != nil) {
+//           [NYPLDeviceManager postDevice:deviceID url:deviceManager];
+//         }
+//       }
+//       else
+//       {
+//         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+//       }
+//     }];
 #endif
 
   }

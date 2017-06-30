@@ -79,6 +79,10 @@ typedef NS_ENUM(NSInteger, Section) {
 
 @property (nonatomic) UISwitch* switchView;
 
+
+@property (nonatomic) bool firstAccount;
+
+
 @end
 
 NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsAccountsSignInFinishedNotification";
@@ -336,7 +340,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 - (void)updateVisibilityForLicenseLinks
 {
   if ([self.account getLicenseURL:URLTypeEula]) {
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"EULA"
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Switch Account"
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
                                                                              action:@selector(showEULA)];
@@ -416,35 +420,44 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
        NYPLLOG(first);
        NYPLLOG(last);
 
-       [[NYPLADEPT sharedInstance]
-        deauthorizeWithUsername:first
-        password:last
-        userID:[[NYPLAccount sharedAccount:self.accountType] userID] deviceID:[[NYPLAccount sharedAccount:self.accountType] deviceID]
-        completion:^(BOOL success, __unused NSError *error) {
-          if(!success) {
-            // Even though we failed, all we do is log the error. The reason is
-            // that we want the user to be able to log out anyway because the
-            // failure is probably due to bad credentials and we do not want the
-            // user to have to change their barcode or PIN just to log out. This
-            // is only a temporary measure and we'll switch to deauthorizing with
-            // a token that will remain invalid indefinitely in the near future.
-            NYPLLOG(@"Failed to deauthorize successfully.");
-            
-          }
-          else {
-            
-            // DELETE deviceID to adobeDevicesLink
-            NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:self.accountType] licensor][@"deviceManager"]];
-            if (deviceManager != nil) {
-              [NYPLDeviceManager deleteDevice:[[NYPLAccount sharedAccount:self.accountType] deviceID] url:deviceManager];
-            }
+//       [[NYPLADEPT sharedInstance]
+//        deauthorizeWithUsername:first
+//        password:last
+//        userID:[[NYPLAccount sharedAccount:self.accountType] userID] deviceID:[[NYPLAccount sharedAccount:self.accountType] deviceID]
+//        completion:^(BOOL success, __unused NSError *error) {
+//          if(!success) {
+//            // Even though we failed, all we do is log the error. The reason is
+//            // that we want the user to be able to log out anyway because the
+//            // failure is probably due to bad credentials and we do not want the
+//            // user to have to change their barcode or PIN just to log out. This
+//            // is only a temporary measure and we'll switch to deauthorizing with
+//            // a token that will remain invalid indefinitely in the near future.
+//            NYPLLOG(@"Failed to deauthorize successfully.");
+//            
+//          }
+//          else {
+//            
+//            // DELETE deviceID to adobeDevicesLink
+//            NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:self.accountType] licensor][@"deviceManager"]];
+//            if (deviceManager != nil) {
+//              [NYPLDeviceManager deleteDevice:[[NYPLAccount sharedAccount:self.accountType] deviceID] url:deviceManager];
+//            }
+//
+//          }
+//       
+//          [self removeActivityTitle];
+//          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+//          afterDeauthorization();
+//        }];
+       
+       
+       //is this temp from me? i believe so
+       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+         [self removeActivityTitle];
+         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+         afterDeauthorization();
+       }];
 
-          }
-          
-          [self removeActivityTitle];
-          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-          afterDeauthorization();
-        }];
        
      } else {
        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -492,7 +505,65 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
      
      // Success.
      if(statusCode == 200) {
+//GODO
+       
+       
+       
+#if defined(FEATURE_DRM_CONNECTOR)
+       
+
+       
+////       //Eventually need to use licensor from feed and not manually
+//       NSDictionary *licensor = [[NYPLAccount sharedAccount:self.accountType] licensor];
+//       NSMutableArray *licensorItems = [[licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
+//       NSString *tokenPassword = [licensorItems lastObject];
+//       [licensorItems removeLastObject];
+//       NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
+//       
+//       NYPLLOG(@"***DRM Auth/Activation Attempt***");
+//       NYPLLOG_F(@"\nLicensor: %@\n",licensor);
+//       NYPLLOG_F(@"Username: %@\n",tokenUsername);
+//       NYPLLOG_F(@"Password: %@\n",tokenPassword);
+//       
+//       [[NYPLADEPT sharedInstance]
+//        authorizeWithVendorID:[[NYPLAccount sharedAccount:self.accountType] licensor][@"vendor"]
+//        username:tokenUsername
+//        password:tokenPassword
+//        userID:nil
+//        deviceID:nil
+//        completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
+//
+//          NYPLLOG(@"***DRM Auth/Activation Completion***");
+//          NYPLLOG_F(@"Success: %@\n", success ? @"Yes" : @"No");
+//          NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
+//          NYPLLOG_F(@"UserID: %@\n",userID);
+//          NYPLLOG_F(@"DeviceID: %@\n",deviceID);
+//          
+//          // POST deviceID to adobeDevicesLink
+////          NSURL *deviceManager = [NSURL URLWithString: [[NYPLAccount sharedAccount:self.accountType] licensor][@"deviceManager"]];
+////          if (deviceManager != nil) {
+////            [NYPLDeviceManager postDevice:deviceID url:deviceManager];
+////          }
+//          
+//          [[NYPLAccount sharedAccount:0] setUserID:userID];
+//          [[NYPLAccount sharedAccount:0] setDeviceID:deviceID];
+//          
+//          [self authorizationAttemptDidFinish:success error:error];
+//        
+//        }];
+      
+       [self authorizationAttemptDidFinish:YES error:error];
+
+
+#else
+       
        [self authorizationAttemptDidFinish:YES error:nil];
+       
+#endif
+
+       
+       
+       
        self.isLoggingInAfterSignUp = NO;
        return;
      }
@@ -1263,20 +1334,20 @@ replacementString:(NSString *)string
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if([NYPLAccount sharedAccount:self.accountType].hasBarcodeAndPIN) {
-      self.barcodeTextField.text = [NYPLAccount sharedAccount:self.accountType].barcode;
+//      self.barcodeTextField.text = [NYPLAccount sharedAccount:self.accountType].barcode;
       self.barcodeLabelImage.text = [NSString stringWithFormat:@"A%@B", [NYPLAccount sharedAccount:self.accountType].authorizationIdentifier];
 
       self.barcodeTextField.enabled = NO;
       self.barcodeTextField.textColor = [UIColor grayColor];
-      self.PINTextField.text = [NYPLAccount sharedAccount:self.accountType].PIN;
+//      self.PINTextField.text = [NYPLAccount sharedAccount:self.accountType].PIN;
       self.PINTextField.textColor = [UIColor grayColor];
       self.barcodeTextField.rightView.hidden = YES;
 
     } else {
-      self.barcodeTextField.text = nil;
+//      self.barcodeTextField.text = nil;
       self.barcodeTextField.enabled = YES;
       self.barcodeTextField.textColor = [UIColor blackColor];
-      self.PINTextField.text = nil;
+//      self.PINTextField.text = nil;
       self.PINTextField.textColor = [UIColor blackColor];
       self.barcodeTextField.rightView.hidden = NO;
 
@@ -1395,9 +1466,56 @@ replacementString:(NSString *)string
 
 - (void)showEULA
 {
-  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] initWithAccount:self.account];
-  UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:eulaViewController];
-  [self.navigationController presentViewController:navVC animated:YES completion:nil];
+  
+  //GODO
+  
+  
+
+    if (self.firstAccount) {
+      self.firstAccount = NO;
+
+      self.barcodeTextField.text = @"nypltest02";
+      self.PINTextField.text = @"1234";
+      
+      NSString *userID = @"urn:uuid:05f2cd8c-5db7-11e7-9095-ebd28876c900";
+      NSString *deviceID = @"urn:uuid:d66d39ae-2d65-42ff-9f20-7e7c97dfd571";
+      
+      [[NYPLAccount sharedAccount:0] setUserID:userID];
+      [[NYPLAccount sharedAccount:0] setDeviceID:deviceID];
+
+      [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+      }];
+      
+      [[NYPLADEPT sharedInstance] setNewUser:userID];
+      NYPLLOG_F(@"Switched to nypltest02. UserID: %@",userID);
+      
+      
+    } else {
+      self.firstAccount = YES;
+      
+      self.barcodeTextField.text = @"nypldrm1";
+      self.PINTextField.text = @"1234";
+      
+      NSString *userID = @"urn:uuid:0033d814-408e-11e7-be34-ebd28876c900";
+      NSString *deviceID = @"urn:uuid:06942586-b2a7-42d2-a858-edfc0dcc1f15";
+      
+      [[NYPLAccount sharedAccount:0] setUserID:userID];
+      [[NYPLAccount sharedAccount:0] setDeviceID:deviceID];
+
+      [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+      }];
+
+      [[NYPLADEPT sharedInstance] setNewUser:userID];
+      NYPLLOG_F(@"Switched to nypldrm1. UserID: %@",userID);
+    }
+  
+  
+  
+//  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] initWithAccount:self.account];
+//  UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:eulaViewController];
+//  [self.navigationController presentViewController:navVC animated:YES completion:nil];
 }
 
 - (void)syncSwitchChanged:(UISwitch*)sender
