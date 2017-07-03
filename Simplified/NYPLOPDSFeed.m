@@ -204,53 +204,6 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
           continue;
         }
       }
-      
-      
-      
-       
-        Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-        [[NYPLAccount sharedAccount:currentAccount.id] setLicensor:self.licensor];
-        
-        
-//        if (![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount:currentAccount.id] userID] withDevice:[[NYPLAccount sharedAccount:currentAccount.id] deviceID]]) {
-//          if (currentAccount.needsAuth && [[NYPLAccount sharedAccount:currentAccount.id] hasBarcodeAndPIN] && [[NYPLAccount sharedAccount:currentAccount.id] hasLicensor])
-//          {
-//            NSMutableArray* foo = [[[[NYPLAccount sharedAccount:currentAccount.id] licensor][@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
-//            
-//            NSString *last = foo.lastObject;
-//            [foo removeLastObject];
-//            NSString *first = [foo componentsJoinedByString:@"|"];
-//            
-//            NYPLLOG([[NYPLAccount sharedAccount:currentAccount.id] licensor]);
-//            NYPLLOG(first);
-//            NYPLLOG(last);
-//            NYPLLOG(@"#### feed reload ####");
-
-#if defined(FEATURE_DRM_CONNECTOR)
-//            [[NYPLADEPT sharedInstance]
-//             authorizeWithVendorID:[[NYPLAccount sharedAccount:currentAccount.id] licensor][@"vendor"]
-//             username:first
-//             password:last
-//             userID:[[NYPLAccount sharedAccount:currentAccount.id] userID] deviceID:[[NYPLAccount sharedAccount:currentAccount.id] deviceID]
-//             completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
-//               
-//               NYPLLOG(error);
-//               if (success) {
-//                 
-//                 [[NYPLAccount sharedAccount:currentAccount.id] setUserID:userID];
-//                 [[NYPLAccount sharedAccount:currentAccount.id] setDeviceID:deviceID];
-//                 
-//                 // POST deviceID to adobeDevicesLink
-//                 NSURL *deviceManager = [NSURL URLWithString: [[NYPLAccount sharedAccount:currentAccount.id] licensor][@"deviceManager"]];
-//                 if (deviceManager != nil) {
-//                   [NYPLDeviceManager postDevice:deviceID url:deviceManager];
-//                 }
-//               }
-//               
-//             }];
-#endif
-//          }
-//        }
       }
     }
   }

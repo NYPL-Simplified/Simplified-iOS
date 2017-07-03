@@ -170,21 +170,27 @@
   }
   
   
+  //GODO is "needs auth" still applicable?
   if (account.needsAuth
       && [[NYPLAccount sharedAccount:account.id] hasBarcodeAndPIN]
       && [[NYPLAccount sharedAccount:account.id] hasLicensor])
   {
-    NSMutableArray* foo = [[[[NYPLAccount sharedAccount:account.id] licensor][@"clientToken"]
-                            stringByReplacingOccurrencesOfString:@"\n" withString:@""]
-                           componentsSeparatedByString: @"|"].mutableCopy;
-
-    NSString *last = foo.lastObject;
-    [foo removeLastObject];
-    NSString *first = [foo componentsJoinedByString:@"|"];
+    NSDictionary *licensor = [[NYPLAccount sharedAccount:account.id] licensor];
+    NSString *tokenString = [licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n"
+                                                                                       withString:@""];
+    NSMutableArray *tokenComponents = [tokenString componentsSeparatedByString: @"|"].mutableCopy;
+                                   
     
-    NYPLLOG([[NYPLAccount sharedAccount:account.id] licensor]);
-    NYPLLOG(first);
-    NYPLLOG(last);
+    NSString *tokenPassword = tokenComponents.lastObject;
+    [tokenComponents removeLastObject];
+    NSString *tokenUsername = [tokenComponents componentsJoinedByString:@"|"];
+    
+    NYPLLOG(@"***DRM Auth/Activation Attempt***");
+    NYPLLOG_F(@"\nLicensor: %@\n",licensor);
+    NYPLLOG_F(@"Username: %@\n",tokenUsername);
+    NYPLLOG_F(@"Password: %@\n",tokenPassword);
+    
+
 #if defined(FEATURE_DRM_CONNECTOR)
 
 //    [[NYPLADEPT sharedInstance]

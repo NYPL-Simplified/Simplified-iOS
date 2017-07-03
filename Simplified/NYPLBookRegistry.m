@@ -262,6 +262,10 @@ static NSString *const RecordsKey = @"records";
      
      void (^commitBlock)() = ^void() {
        [self performSynchronizedWithoutBroadcasting:^{
+         
+         Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+         [[NYPLAccount sharedAccount:currentAccount.id] setLicensor:feed.licensor];
+         
          NSMutableSet *identifiersToRemove = [NSMutableSet setWithArray:self.identifiersToRecords.allKeys];
          for(NYPLOPDSEntry *const entry in feed.entries) {
            NYPLBook *const book = [NYPLBook bookWithEntry:entry];
