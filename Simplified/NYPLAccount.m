@@ -261,9 +261,11 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
   
   [[NYPLKeychain sharedKeychain] setObject:licensor forKey:licensorKey];
   
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLAccountDidChangeNotification
-   object:self];
+  //GODO come back to this
+//  
+//  [[NSNotificationCenter defaultCenter]
+//   postNotificationName:NYPLAccountDidChangeNotification
+//   object:self];
   
 }
 - (void)setAuthorizationIdentifier:(NSString *)identifier
@@ -273,10 +275,11 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
   }
   
   [[NYPLKeychain sharedKeychain] setObject:identifier forKey:authorizationIdentifierKey];
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLAccountDidChangeNotification
-   object:self];
+
+  //GODO come back to this
+//  [[NSNotificationCenter defaultCenter]
+//   postNotificationName:NYPLAccountDidChangeNotification
+//   object:self];
   
 }
 - (void)setPatron:(NSDictionary *)patron

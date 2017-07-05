@@ -702,9 +702,7 @@ replacementString:(NSString *)string
   NSMutableURLRequest *const request =
     [NSMutableURLRequest requestWithURL:[NYPLConfiguration loanURL]];
   
-  // Necessary to support longer login times when using usernames.
   request.timeoutInterval = 20.0;
-  
   request.HTTPMethod = @"HEAD";
   
   self.isCurrentlySigningIn = YES;
@@ -715,13 +713,77 @@ replacementString:(NSString *)string
                          NSURLResponse *const response,
                          NSError *const error) {
        
+       //GODO audit this for blocking UI
        self.isCurrentlySigningIn = NO;
-       // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
+
        NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
        
-       // Success.
        if(statusCode == 200) {
+         
+#if defined(FEATURE_DRM_CONNECTOR)
+         
+         // GODO If an old set of Adobe Keys is saved on the user, try and purge/deactivate those first..
+         // Log this case in bugsnag
+         
+         
+         //       NYPLXML *loansXML = [NYPLXML XMLWithData:data];
+         //       NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
+         //       if (!loansFeed.licensor) {
+         //         NYPLLOG(@"No Licensor received or parsed from OPDS Loans feed");
+         //         return;
+         //       }
+         //       [[NYPLAccount sharedAccount:self.accountType] setLicensor:loansFeed.licensor];
+         
+         NSDictionary *licensor = [[NYPLAccount sharedAccount] licensor];
+         
+         if (!licensor) {
+           NYPLLOG(@"No Licensor received or parsed from OPDS Loans feed");
+           return;
+         }
+         
+         NSMutableArray *licensorItems = [[licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
+         NSString *tokenPassword = [licensorItems lastObject];
+         [licensorItems removeLastObject];
+         NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
+         
+         NYPLLOG(@"***DRM Auth/Activation Attempt***");
+         NYPLLOG_F(@"\nLicensor: %@\n",licensor);
+         NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
+         NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
+         
+         [[NYPLADEPT sharedInstance]
+          authorizeWithVendorID:[[NYPLAccount sharedAccount] licensor][@"vendor"]
+          username:tokenUsername
+          password:tokenPassword
+          completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
+            
+            NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
+            NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
+            NYPLLOG_F(@"UserID: %@\n",userID);
+            NYPLLOG_F(@"DeviceID: %@\n",deviceID);
+            NYPLLOG(@"***DRM Auth/Activation Completion***");
+            
+            if (success) {
+              // POST deviceID to adobeDevicesLink
+              NSURL *deviceManager = [NSURL URLWithString: [[NYPLAccount sharedAccount] licensor][@"deviceManager"]];
+              if (deviceManager != nil) {
+                [NYPLDeviceManager postDevice:deviceID url:deviceManager];
+              }
+              
+              [[NYPLAccount sharedAccount] setUserID:userID];
+              [[NYPLAccount sharedAccount] setDeviceID:deviceID];
+            }
+            
+            [self authorizationAttemptDidFinish:success error:error];
+            
+          }];
+         
+#else
+         
          [self authorizationAttemptDidFinish:YES error:nil];
+         
+#endif
+
          self.isLoggingInAfterSignUp = NO;
          return;
        }

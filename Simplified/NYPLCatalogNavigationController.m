@@ -169,68 +169,10 @@
     viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
   }
   
-  
-  //GODO is "needs auth" still applicable?
-  if (account.needsAuth
-      && [[NYPLAccount sharedAccount:account.id] hasBarcodeAndPIN]
-      && [[NYPLAccount sharedAccount:account.id] hasLicensor])
-  {
-    NSDictionary *licensor = [[NYPLAccount sharedAccount:account.id] licensor];
-    NSString *tokenString = [licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n"
-                                                                                       withString:@""];
-    NSMutableArray *tokenComponents = [tokenString componentsSeparatedByString: @"|"].mutableCopy;
-                                   
-    
-    NSString *tokenPassword = tokenComponents.lastObject;
-    [tokenComponents removeLastObject];
-    NSString *tokenUsername = [tokenComponents componentsJoinedByString:@"|"];
-    
-    NYPLLOG(@"***DRM Auth/Activation Attempt***");
-    NYPLLOG_F(@"\nLicensor: %@\n",licensor);
-    NYPLLOG_F(@"Username: %@\n",tokenUsername);
-    NYPLLOG_F(@"Password: %@\n",tokenPassword);
-    
-
-#if defined(FEATURE_DRM_CONNECTOR)
-
-//    [[NYPLADEPT sharedInstance]
-//     authorizeWithVendorID:[[NYPLAccount sharedAccount:account.id] licensor][@"vendor"]
-//     username:first
-//     password:last
-//     userID:[[NYPLAccount sharedAccount:account.id] userID] deviceID:[[NYPLAccount sharedAccount:account.id] deviceID]
-//     completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
-//       
-//       NYPLLOG(error);
-//       
-//       if (success)
-//       {
-//         [[NYPLAccount sharedAccount:account.id] setUserID:userID];
-//         [[NYPLAccount sharedAccount:account.id] setDeviceID:deviceID];
-//
-//         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
-//           [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-//         }];
-//         
-//         // POST deviceID to adobeDevicesLink
-//         NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:account.id] licensor][@"deviceManager"]];
-//         if (deviceManager != nil) {
-//           [NYPLDeviceManager postDevice:deviceID url:deviceManager];
-//         }
-//       }
-//       else
-//       {
-//         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-//       }
-//     }];
-#endif
-
-  }
-  else{
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-    }];
-  }
-  
+  //GODO is this even needed anymore?
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+  }];
 }
 
 - (void)viewDidLoad
