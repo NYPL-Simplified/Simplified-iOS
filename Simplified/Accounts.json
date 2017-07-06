@@ -49,5 +49,23 @@
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://instantclassics.librarysimplified.org/index.xml",
  "mainColor" : "497049"
+ },
+ {
+ "id" : 8,
+ "pathComponent" : "8",
+ "name" : "Howard County Library",
+ "subtitle" : "Public education for all",
+ "logo" : "LibraryLogoNYPL",
+ "needsAuth" : false,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : false,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "http://howard.simplye-md.org",
+ "mainColor" : "0066CC",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
  }
 ]
