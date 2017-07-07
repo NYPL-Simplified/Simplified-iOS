@@ -169,7 +169,6 @@
     viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
   }
   
-  //GODO is this even needed anymore?
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }];

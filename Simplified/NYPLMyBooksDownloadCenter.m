@@ -170,7 +170,9 @@ didFinishDownloadingToURL:(NSURL *const)location
             
       case NYPLMyBooksDownloadRightsManagementAdobe:
       {
+        
 #if defined(FEATURE_DRM_CONNECTOR)
+        
         NSData *ACSMData = [NSData dataWithContentsOfURL:location];
         NSString *PDFString = @">application/pdf</dc:format>";
         if([[[NSString alloc] initWithData:ACSMData encoding:NSUTF8StringEncoding] containsString:PDFString]) {
@@ -182,26 +184,18 @@ didFinishDownloadingToURL:(NSURL *const)location
           [[NYPLBookRegistry sharedRegistry]
            setState:NYPLBookStateDownloadFailed
            forIdentifier:book.identifier];
+          
         } else {
           
+          NYPLLOG_F(@"Download attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
           [[NYPLADEPT sharedInstance]
-           switchAdeptActivationToAdobeID:[[NYPLAccount sharedAccount] userID]
-           deviceID:[[NYPLAccount sharedAccount] deviceID]
-           completion:^(BOOL success) {
-            
-            NYPLLOG_F(@"Attempting to Download book with userID: %@",[[NYPLAccount sharedAccount] userID]);
-            
-             if (success) {
-              [[NYPLADEPT sharedInstance]
-               fulfillWithACSMData:ACSMData
-               tag:book.identifier
-               userID:[[NYPLAccount sharedAccount] userID]
-               deviceID:[[NYPLAccount sharedAccount] deviceID]];
-             }
-          }];
-          
+           fulfillWithACSMData:ACSMData
+           tag:book.identifier
+           userID:[[NYPLAccount sharedAccount] userID]
+           deviceID:[[NYPLAccount sharedAccount] deviceID]];
         }
-#endif
+        
+#endif        
         break;
       }
         
@@ -333,23 +327,15 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
   if(fulfillmentId) {
     
-    [[NYPLADEPT sharedInstance]
-     switchAdeptActivationToAdobeID:[[NYPLAccount sharedAccount] userID]
-     deviceID:[[NYPLAccount sharedAccount] deviceID]
-     completion:^(BOOL success) {
-    
-      NYPLLOG_F(@"Attempting to Return Load with userID: %@",[[NYPLAccount sharedAccount] userID]);
-      [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
-                                      userID:[[NYPLAccount sharedAccount] userID]
-                                    deviceID:[[NYPLAccount sharedAccount] deviceID]
-                                  completion:^(BOOL success, __unused NSError *error) {
-                                    if(!success) {
-                                      NYPLLOG(@"Failed to return loan.");
-                                    }
-                                  }];
-    
-     }];
-    
+    NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
+    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
+                                    userID:[[NYPLAccount sharedAccount] userID]
+                                  deviceID:[[NYPLAccount sharedAccount] deviceID]
+                                completion:^(BOOL success, __unused NSError *error) {
+                                  if(!success) {
+                                    NYPLLOG(@"Failed to return loan.");
+                                  }
+                                }];
   }
 #endif
   }

@@ -263,9 +263,8 @@ static NSString *const RecordsKey = @"records";
      void (^commitBlock)() = ^void() {
        [self performSynchronizedWithoutBroadcasting:^{
          
-         //GODO bring back once i understand how 
-//         Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-//         [[NYPLAccount sharedAccount:currentAccount.id] setLicensor:feed.licensor];
+         [[NYPLAccount sharedAccount] setLicensor:feed.licensor];
+         NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",feed.licensor[@"clientToken"],[NYPLAccount sharedAccount].userID);
          
          NSMutableSet *identifiersToRemove = [NSMutableSet setWithArray:self.identifiersToRecords.allKeys];
          for(NYPLOPDSEntry *const entry in feed.entries) {
