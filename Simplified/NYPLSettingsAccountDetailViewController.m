@@ -377,15 +377,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 
 - (void)logOut
 {
-  void (^afterDeauthorization)() = ^() {
-    
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
-    [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
-    
-    [[NYPLAccount sharedAccount:self.accountType] removeAll];
-    [self setupTableData];
-    [self.tableView reloadData];
-  };
   
 #if defined(FEATURE_DRM_CONNECTOR)
   
@@ -408,65 +399,14 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
      
      if(reachable) {
        
-       NSDictionary *licensor = [[NYPLAccount sharedAccount:self.accountType] licensor];
-       if (!licensor) {
-         NYPLLOG(@"No Licensor received or parsed from OPDS Loans feed");
-         return;
+       if (self.accountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
+         [self deauthorizeDevice];
+       } else {
+         [self refreshLicensorTokenForLogout:^{
+           [self deauthorizeDevice];
+         }];
        }
        
-       NSMutableArray *licensorItems = [[licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
-       NSString *tokenPassword = [licensorItems lastObject];
-       [licensorItems removeLastObject];
-       NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
-       
-       NYPLLOG(@"***DRM Deactivation Attempt***");
-       NYPLLOG_F(@"\nLicensor: %@\n",licensor);
-       NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
-       NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
-       NYPLLOG_F(@"UserID: %@\n",[[NYPLAccount sharedAccount:self.accountType] userID]);
-       NYPLLOG_F(@"DeviceID: %@\n",[[NYPLAccount sharedAccount:self.accountType] deviceID]);
-       
-       [[NYPLADEPT sharedInstance]
-        deauthorizeWithUsername:tokenUsername
-        password:tokenPassword
-        userID:[[NYPLAccount sharedAccount:self.accountType] userID]
-        deviceID:[[NYPLAccount sharedAccount:self.accountType] deviceID]
-        completion:^(BOOL success, __unused NSError *error) {
-          
-          if(!success) {
-            
-            // Likely caused by an expired licensor token.
-            if ([error.domain isEqual:NYPLADEPTErrorDomain] &&
-                error.code == 0 &&
-                self.logoutRetryCount == 0) {
-              
-              NYPLLOG(@"Failed to deauthorize. Retrying a silent logout with a fresh licensor token.");
-              self.logoutRetryCount++;
-              [self refreshLicensorTokenForLogout];
-              
-            } else {
-              // Even though we failed, all we do is log the error. The reason is
-              // that we want the user to be able to log out anyway because the
-              // failure is probably due to bad credentials and we do not want the
-              // user to have to change their barcode or PIN just to log out. This
-              // is only a temporary measure and we'll switch to deauthorizing with
-              // a token that will remain invalid indefinitely in the near future.
-              NYPLLOG(@"Failed to deauthorize successfully.");
-            }
-          }
-          else {
-            NYPLLOG(@"***Successful DRM Deactivation***");
-            // DELETE deviceID to adobeDevicesLink
-            NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:self.accountType] licensor][@"deviceManager"]];
-            if (deviceManager != nil) {
-              [NYPLDeviceManager deleteDevice:[[NYPLAccount sharedAccount:self.accountType] deviceID] url:deviceManager];
-            }
-          }
-          [self removeActivityTitle];
-          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-          afterDeauthorization();
-        }];
-
      } else {
        
        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -479,23 +419,50 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
                           completion:nil];
        }];
      }
-     
    }];
   
 #else
-  afterDeauthorization();
+  
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
+  [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
+  [[NYPLAccount sharedAccount:self.accountType] removeAll];
+  [self setupTableData];
+  [self.tableView reloadData];
   [self removeActivityTitle];
+  
 #endif
+  
 }
 
-- (void)deauthorizeInBackground
+- (void)deauthorizeDevice
 {
+  void (^afterDeauthorization)() = ^() {
+    
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
+    [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
+    
+    [[NYPLAccount sharedAccount:self.accountType] removeAll];
+    [self setupTableData];
+    [self.tableView reloadData];
+  };
+
   NSDictionary *licensor = [[NYPLAccount sharedAccount:self.accountType] licensor];
+  if (!licensor) {
+    NYPLLOG(@"No Licensor received or parsed from OPDS Loans feed");
+    return;
+  }
   
   NSMutableArray *licensorItems = [[licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
   NSString *tokenPassword = [licensorItems lastObject];
   [licensorItems removeLastObject];
   NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
+  
+  NYPLLOG(@"***DRM Deactivation Attempt***");
+  NYPLLOG_F(@"\nLicensor: %@\n",licensor);
+  NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
+  NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
+  NYPLLOG_F(@"UserID: %@\n",[[NYPLAccount sharedAccount:self.accountType] userID]);
+  NYPLLOG_F(@"DeviceID: %@\n",[[NYPLAccount sharedAccount:self.accountType] deviceID]);
   
   [[NYPLADEPT sharedInstance]
    deauthorizeWithUsername:tokenUsername
@@ -503,9 +470,17 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
    userID:[[NYPLAccount sharedAccount:self.accountType] userID]
    deviceID:[[NYPLAccount sharedAccount:self.accountType] deviceID]
    completion:^(BOOL success, __unused NSError *error) {
+     
      if(!success) {
-       NYPLLOG(@"Failed to deauthorize after refreshing token.");
-     } else {
+       // Even though we failed, all we do is log the error. The reason is
+       // that we want the user to be able to log out anyway because the
+       // failure is probably due to bad credentials and we do not want the
+       // user to have to change their barcode or PIN just to log out. This
+       // is only a temporary measure and we'll switch to deauthorizing with
+       // a token that will remain invalid indefinitely in the near future.
+       NYPLLOG(@"Failed to deauthorize successfully.");
+     }
+     else {
        NYPLLOG(@"***Successful DRM Deactivation***");
        // DELETE deviceID to adobeDevicesLink
        NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:self.accountType] licensor][@"deviceManager"]];
@@ -513,6 +488,9 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
          [NYPLDeviceManager deleteDevice:[[NYPLAccount sharedAccount:self.accountType] deviceID] url:deviceManager];
        }
      }
+     [self removeActivityTitle];
+     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+     afterDeauthorization();
    }];
 }
 
@@ -625,7 +603,7 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   [task resume];
 }
 
-- (void)refreshLicensorTokenForLogout
+- (void)refreshLicensorTokenForLogout:(void(^)(void))completion
 {
   Account *account = [[AccountsManager sharedInstance] account:self.accountType];
   NSMutableURLRequest *const request =
@@ -646,14 +624,11 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
        NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
        
        [[NYPLAccount sharedAccount:self.accountType] setLicensor:loansFeed.licensor];
-       NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",loansFeed.licensor[@"clientToken"],[NYPLAccount sharedAccount].userID);
+       NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",loansFeed.licensor[@"clientToken"],[NYPLAccount sharedAccount:self.accountType].userID);
+     } else {
+       NYPLLOG(@"Unable to refresh Licensor Token. Continue Logging Out.");
      }
-     
-     // Attempt will fail with new server licensor token unless the client waits a moment.
-     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-       [self deauthorizeInBackground];
-     });
-     
+     completion();
    }];
   
   [task resume];
