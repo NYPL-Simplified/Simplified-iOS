@@ -17,6 +17,8 @@
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLXML.h"
+#import "NYPLOPDSFeed.h"
 #import "UIView+NYPLViewAdditions.h"
 #import <PureLayout/PureLayout.h>
 @import CoreLocation;
@@ -703,51 +705,41 @@ replacementString:(NSString *)string
     [NSMutableURLRequest requestWithURL:[NYPLConfiguration loanURL]];
   
   request.timeoutInterval = 20.0;
-  request.HTTPMethod = @"HEAD";
   
   self.isCurrentlySigningIn = YES;
   NSURLSessionDataTask *const task =
     [self.session
      dataTaskWithRequest:request
-     completionHandler:^(__attribute__((unused)) NSData *data,
+     completionHandler:^(NSData *data,
                          NSURLResponse *const response,
                          NSError *const error) {
        
-       //GODO audit this for blocking UI
        self.isCurrentlySigningIn = NO;
 
        NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
        
        if(statusCode == 200) {
          
-#if defined(FEATURE_DRM_CONNECTOR)
+#if defined(FEATURE_DRM_CONNECTOR)        
+
+         NYPLXML *loansXML = [NYPLXML XMLWithData:data];
+         NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
          
-         // GODO If an old set of Adobe Keys is saved on the user, try and purge/deactivate those first..
-         // Log this case in bugsnag
-         
-         
-         //       NYPLXML *loansXML = [NYPLXML XMLWithData:data];
-         //       NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
-         //       if (!loansFeed.licensor) {
-         //         NYPLLOG(@"No Licensor received or parsed from OPDS Loans feed");
-         //         return;
-         //       }
-         //       [[NYPLAccount sharedAccount:self.accountType] setLicensor:loansFeed.licensor];
-         
-         NSDictionary *licensor = [[NYPLAccount sharedAccount] licensor];
-         
-         if (!licensor) {
-           NYPLLOG(@"No Licensor received or parsed from OPDS Loans feed");
+         if (loansFeed.licensor) {
+           [[NYPLAccount sharedAccount] setLicensor:loansFeed.licensor];
+         } else {
+           NYPLLOG(@"Login Failed: No Licensor Token received or parsed from OPDS Loans feed");
+           [self authorizationAttemptDidFinish:NO error:nil];
            return;
          }
          
-         NSMutableArray *licensorItems = [[licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
+         NSMutableArray *licensorItems = [[loansFeed.licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
          NSString *tokenPassword = [licensorItems lastObject];
          [licensorItems removeLastObject];
          NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
          
          NYPLLOG(@"***DRM Auth/Activation Attempt***");
-         NYPLLOG_F(@"\nLicensor: %@\n",licensor);
+         NYPLLOG_F(@"\nLicensor: %@\n",loansFeed.licensor);
          NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
          NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
          
@@ -770,8 +762,10 @@ replacementString:(NSString *)string
                 [NYPLDeviceManager postDevice:deviceID url:deviceManager];
               }
               
-              [[NYPLAccount sharedAccount] setUserID:userID];
-              [[NYPLAccount sharedAccount] setDeviceID:deviceID];
+              [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                [[NYPLAccount sharedAccount] setUserID:userID];
+                [[NYPLAccount sharedAccount] setDeviceID:deviceID];
+              }];
             }
             
             [self authorizationAttemptDidFinish:success error:error];
