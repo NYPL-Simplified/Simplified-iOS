@@ -343,20 +343,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   }
 }
 
-//#if defined(FEATURE_DRM_CONNECTOR)
-//- (void)viewDidAppear:(BOOL)animated
-//{
-//  [super viewDidAppear:animated];
-////  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
-////    if ([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN]) {
-////      self.barcodeTextField.text = [NYPLAccount sharedAccount:self.account].barcode;
-////      self.PINTextField.text = [NYPLAccount sharedAccount:self.account].PIN;
-////      [self logIn];
-////    }
-////  }
-//}
-//#endif
-
 #pragma mark
 #pragma mark Account SignIn/SignOut
 
@@ -392,34 +378,44 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   
-  [[NYPLReachability sharedReachability]
-   reachabilityForURL:[NYPLConfiguration mainFeedURL]
-   timeoutInternal:8.0
-   handler:^(BOOL reachable) {
+  
+  // Get a fresh licensor token before attempting to deauthorize
+  Account *account = [[AccountsManager sharedInstance] account:self.accountType];
+  NSMutableURLRequest *const request =
+  [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[account catalogUrl]] URLByAppendingPathComponent:@"loans"]];
+  
+  request.timeoutInterval = 8.0;
+  
+  NSURLSessionDataTask *const task =
+  [self.session
+   dataTaskWithRequest:request
+   completionHandler:^(NSData *data,
+                       NSURLResponse *const response,
+                       __unused NSError *const error) {
      
-     if(reachable) {
+     NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
+     if(statusCode == 200) {
        
-       if (self.accountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
-         [self deauthorizeDevice];
-       } else {
-         [self refreshLicensorTokenForLogout:^{
-           [self deauthorizeDevice];
-         }];
-       }
+       NYPLXML *loansXML = [NYPLXML XMLWithData:data];
+       NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
+       [[NYPLAccount sharedAccount:self.accountType] setLicensor:loansFeed.licensor];
+       NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",loansFeed.licensor[@"clientToken"],[NYPLAccount sharedAccount:self.accountType].userID);
        
+       [self deauthorizeDevice];
+     
      } else {
-       
-       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         [self removeActivityTitle];
-         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-         [self presentViewController:[NYPLAlertController
-                                      alertWithTitle:@"SettingsAccountViewControllerLogoutFailed"
-                                      message:@"TimedOut"]
-                            animated:YES
-                          completion:nil];
-       }];
+
+       [self removeActivityTitle];
+       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+       [self presentViewController:[NYPLAlertController
+                                    alertWithTitle:@"SettingsAccountViewControllerLogoutFailed"
+                                    message:@"TimedOut"]
+                          animated:YES
+                        completion:nil];
      }
    }];
+
+  [task resume];
   
 #else
   
@@ -598,37 +594,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
      }
      [self showLoginAlertWithError:error];
      
-   }];
-  
-  [task resume];
-}
-
-- (void)refreshLicensorTokenForLogout:(void(^)(void))completion
-{
-  Account *account = [[AccountsManager sharedInstance] account:self.accountType];
-  NSMutableURLRequest *const request =
-  [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[account catalogUrl]] URLByAppendingPathComponent:@"loans"]];
-  
-  request.timeoutInterval = 10.0;
-  
-  NSURLSessionDataTask *const task =
-  [self.session
-   dataTaskWithRequest:request
-   completionHandler:^(__unused NSData *data,
-                       NSURLResponse *const response,
-                       __unused NSError *const error) {
-     
-     if(((NSHTTPURLResponse *) response).statusCode == 200) {
-       
-       NYPLXML *loansXML = [NYPLXML XMLWithData:data];
-       NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
-       
-       [[NYPLAccount sharedAccount:self.accountType] setLicensor:loansFeed.licensor];
-       NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",loansFeed.licensor[@"clientToken"],[NYPLAccount sharedAccount:self.accountType].userID);
-     } else {
-       NYPLLOG(@"Unable to refresh Licensor Token. Continue Logging Out.");
-     }
-     completion();
    }];
   
   [task resume];
