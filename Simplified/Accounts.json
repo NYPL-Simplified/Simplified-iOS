@@ -49,5 +49,21 @@
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://instantclassics.librarysimplified.org/index.xml",
  "mainColor" : "497049"
+ },
+ {
+ "id" : 3,
+ "pathComponent" : "3",
+ "name" : "Montgomery County Library",
+ "subtitle" : "Where the County Reads, Meets, Learns",
+ "logo" : "LibraryLogoMontgomery",
+ "needsAuth" : true,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : false,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "http://montgomery.simplye-md.org",
+ "mainColor" : "0067b1"
  }
 ]
