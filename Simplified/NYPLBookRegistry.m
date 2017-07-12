@@ -262,6 +262,10 @@ static NSString *const RecordsKey = @"records";
      
      void (^commitBlock)() = ^void() {
        [self performSynchronizedWithoutBroadcasting:^{
+         
+         [[NYPLAccount sharedAccount] setLicensor:feed.licensor];
+         NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",feed.licensor[@"clientToken"],[NYPLAccount sharedAccount].userID);
+         
          NSMutableSet *identifiersToRemove = [NSMutableSet setWithArray:self.identifiersToRecords.allKeys];
          for(NYPLOPDSEntry *const entry in feed.entries) {
            NYPLBook *const book = [NYPLBook bookWithEntry:entry];
@@ -315,6 +319,8 @@ static NSString *const RecordsKey = @"records";
         otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
        show];
     }
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLSyncEndedNotification object:nil];
   }];
 }
 

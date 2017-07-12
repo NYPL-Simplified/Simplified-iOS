@@ -1,5 +1,6 @@
 @import WebKit;
 
+#import "Bugsnag.h"
 #import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookLocation.h"
@@ -13,7 +14,7 @@
 #import "NYPLReaderTOCElement.h"
 #import "NYPLReadium.h"
 #import "UIColor+NYPLColorAdditions.h"
-#import "NYPLLog.h"
+#import "NYPLLOG.h"
 #import "NYPLReaderReadiumView.h"
 #import "UIColor+NYPLColorAdditions.h"
 #import "NSURL+NYPLURLAdditions.h"
@@ -490,14 +491,31 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     // have to create a new dictionary.
     NSDictionary *const locationDictionary =
     NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
-	  
+    
     NSString *contentCFI = locationDictionary[@"contentCFI"];
     if (!contentCFI) {
       contentCFI = @"";
+      
+      [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:0 userInfo:nil]
+                     block:^(BugsnagCrashReport * _Nonnull report) {
+                       report.context = @"NYPLReaderReadiumView";
+                       report.severity = BSGSeverityWarning;
+                       report.groupingHash = @"open-book-nil-cfi";
+                       report.errorMessage = @"The content CFI is nil on book re-open.";
+                       NSDictionary *metadata = @{
+                                                  @"bookID" : self.book.identifier,
+                                                  @"registry locationString" : location.locationString,
+                                                  @"renderer" : location.renderer,
+                                                  @"openPageRequest cfi" : locationDictionary[@"contentCFI"],
+                                                  @"openPageRequest idref" : locationDictionary[@"idref"]
+                                                  };
+                       [report addMetadata:metadata toTabWithName:@"Extra CFI Data"];
+                     }];
     }
     dictionary[@"openPageRequest"] = @{@"idref": locationDictionary[@"idref"],
                                        @"elementCfi": contentCFI};
-}
+    NYPLLOG_F(@"Open Page Req idref: %@ elementCfi: %@", locationDictionary[@"idref"], contentCFI);
+  }
   
   NSData *data = NYPLJSONDataFromObject(dictionary);
   

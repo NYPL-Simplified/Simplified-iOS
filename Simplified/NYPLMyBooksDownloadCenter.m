@@ -163,7 +163,6 @@ didFinishDownloadingToURL:(NSURL *const)location
     success = NO;
   }
   
-//  NSString *userId = [[NYPLADEPT sharedInstance] userID];
   if (success) {
     switch([self downloadInfoForBookIdentifier:book.identifier].rightsManagement) {
       case NYPLMyBooksDownloadRightsManagementUnknown:
@@ -171,7 +170,9 @@ didFinishDownloadingToURL:(NSURL *const)location
             
       case NYPLMyBooksDownloadRightsManagementAdobe:
       {
+        
 #if defined(FEATURE_DRM_CONNECTOR)
+        
         NSData *ACSMData = [NSData dataWithContentsOfURL:location];
         NSString *PDFString = @">application/pdf</dc:format>";
         if([[[NSString alloc] initWithData:ACSMData encoding:NSUTF8StringEncoding] containsString:PDFString]) {
@@ -183,82 +184,18 @@ didFinishDownloadingToURL:(NSURL *const)location
           [[NYPLBookRegistry sharedRegistry]
            setState:NYPLBookStateDownloadFailed
            forIdentifier:book.identifier];
-        }
-        else if (![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount] userID] withDevice:[[NYPLAccount sharedAccount] deviceID]])
-        {
           
+        } else {
           
-//          clientToken
-          NSMutableArray* foo = [[book.licensor[@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
-          NSString *last = foo.lastObject;
-          [foo removeLastObject];
-          NSString *first = [foo componentsJoinedByString:@"|"];
-
-          NYPLLOG(book.licensor);
-          NYPLLOG(first);
-          NYPLLOG(last);
-          
-          [[NYPLADEPT sharedInstance]
-           authorizeWithVendorID:book.licensor[@"vendor"]
-           username:first
-           password:last
-           userID:[[NYPLAccount sharedAccount] userID] deviceID:[[NYPLAccount sharedAccount] deviceID]
-           completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
-             
-             if (success)
-             {
-               [[NYPLAccount sharedAccount] setDeviceID:deviceID];
-               [[NYPLAccount sharedAccount] setUserID:userID];
-               if (book.licensor!=nil)
-               {
-                 [[NYPLAccount sharedAccount] setLicensor:book.licensor];
-
-                 // POST deviceID to adobeDevicesLink
-                 
-                 NSURL *deviceManager =  [NSURL URLWithString: book.licensor[@"deviceManager"]];
-                 if (deviceManager != nil) {
-                   [NYPLDeviceManager postDevice:deviceID url:deviceManager];
-                 }
-
-               }
-
-               [[NYPLADEPT sharedInstance]
-                fulfillWithACSMData:ACSMData
-                tag:book.identifier userID:userID deviceID:deviceID];
-             }
-             else
-             {
-               NYPLLOG(error);
-               dispatch_async(dispatch_get_main_queue(), ^{
-                 NYPLAlertController *alert = [NYPLAlertController
-                                               alertWithTitle:@"DownloadFailed"
-                                               message:@"SettingsAccountViewControllerMessageTooManyActivations"];
-                 if (problemDocument) {
-                   [alert setProblemDocument:problemDocument displayDocumentMessage:YES];
-                   
-                   if ([problemDocument.type isEqualToString:NYPLProblemDocumentTypeNoActiveLoan])
-                   {
-                     [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:book.identifier];
-                   }
-                 }
-                 
-                 [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
-               });
-               [[NYPLBookRegistry sharedRegistry]
-                setState:NYPLBookStateDownloadFailed
-                forIdentifier:book.identifier];
-
-             }
-
-           }];
-
-        }
-        else {
+          NYPLLOG_F(@"Download attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
           [[NYPLADEPT sharedInstance]
            fulfillWithACSMData:ACSMData
-           tag:book.identifier userID:[[NYPLAccount sharedAccount] userID] deviceID:[[NYPLAccount sharedAccount] deviceID]];
+           tag:book.identifier
+           userID:[[NYPLAccount sharedAccount] userID]
+           deviceID:[[NYPLAccount sharedAccount] deviceID]];
         }
-#endif
+        
+#endif        
         break;
       }
         
@@ -389,11 +326,16 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 #if defined(FEATURE_DRM_CONNECTOR)
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
   if(fulfillmentId) {
-    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId userID:[[NYPLAccount sharedAccount] userID] deviceID:[[NYPLAccount sharedAccount] deviceID] completion:^(BOOL success, __unused NSError *error) {
-      if(!success) {
-        NYPLLOG(@"Failed to return loan.");
-      }
-    }];
+    
+    NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
+    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
+                                    userID:[[NYPLAccount sharedAccount] userID]
+                                  deviceID:[[NYPLAccount sharedAccount] deviceID]
+                                completion:^(BOOL success, __unused NSError *error) {
+                                  if(!success) {
+                                    NYPLLOG(@"Failed to return loan.");
+                                  }
+                                }];
   }
 #endif
   }

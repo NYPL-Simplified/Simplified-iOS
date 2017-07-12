@@ -22,6 +22,9 @@
 #import "HSHelpStack.h"
 #import "HSDeskGear.h"
 
+#import "NYPLXML.h"
+#import "NYPLOPDS.h"
+
 
 @import CoreLocation;
 @import MessageUI;
@@ -82,6 +85,7 @@ typedef NS_ENUM(NSInteger, Section) {
 @end
 
 NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsAccountsSignInFinishedNotification";
+NSInteger const linearViewTag = 1;
 
 @implementation NYPLSettingsAccountDetailViewController
 
@@ -130,12 +134,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
    addObserver:self
    selector:@selector(willEnterForeground)
    name:UIApplicationWillEnterForegroundNotification
-   object:nil];
-  
-  [[NSNotificationCenter defaultCenter]
-   addObserver:self
-   selector:@selector(changedCurrentAccount)
-   name:NYPLCurrentAccountDidChangeNotification
    object:nil];
   
   NSURLSessionConfiguration *const configuration =
@@ -343,20 +341,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   }
 }
 
-//#if defined(FEATURE_DRM_CONNECTOR)
-//- (void)viewDidAppear:(BOOL)animated
-//{
-//  [super viewDidAppear:animated];
-////  if (![[NYPLADEPT sharedInstance] deviceAuthorized]) {
-////    if ([[NYPLAccount sharedAccount:self.account] hasBarcodeAndPIN]) {
-////      self.barcodeTextField.text = [NYPLAccount sharedAccount:self.account].barcode;
-////      self.PINTextField.text = [NYPLAccount sharedAccount:self.account].PIN;
-////      [self logIn];
-////    }
-////  }
-//}
-//#endif
-
 #pragma mark
 #pragma mark Account SignIn/SignOut
 
@@ -377,17 +361,9 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
 
 - (void)logOut
 {
-  void (^afterDeauthorization)() = ^() {
-    
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
-    [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
-    
-    [[NYPLAccount sharedAccount:self.accountType] removeAll];
-    [self setupTableData];
-    [self.tableView reloadData];
-  };
   
 #if defined(FEATURE_DRM_CONNECTOR)
+  
   if([NYPLADEPT sharedInstance].workflowsInProgress) {
     [self presentViewController:[NYPLAlertController
                                  alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
@@ -400,68 +376,116 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   
-  [[NYPLReachability sharedReachability]
-   reachabilityForURL:[NYPLConfiguration mainFeedURL]
-   timeoutInternal:8.0
-   handler:^(BOOL reachable) {
-     if(reachable) {
+  
+  // Get a fresh licensor token before attempting to deauthorize
+  Account *account = [[AccountsManager sharedInstance] account:self.accountType];
+  NSMutableURLRequest *const request =
+  [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[account catalogUrl]] URLByAppendingPathComponent:@"loans"]];
+  
+  request.timeoutInterval = 8.0;
+  
+  NSURLSessionDataTask *const task =
+  [self.session
+   dataTaskWithRequest:request
+   completionHandler:^(NSData *data,
+                       NSURLResponse *const response,
+                       __unused NSError *const error) {
+     
+     NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
+     if(statusCode == 200) {
        
-       NSMutableArray* foo = [[[[NYPLAccount sharedAccount:self.accountType] licensor][@"clientToken"]  stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString: @"|"].mutableCopy;
-
-       NSString *last = foo.lastObject;
-       [foo removeLastObject];
-       NSString *first = [foo componentsJoinedByString:@"|"];
-
-       NYPLLOG([[NYPLAccount sharedAccount:self.accountType] licensor]);
-       NYPLLOG(first);
-       NYPLLOG(last);
-
-       [[NYPLADEPT sharedInstance]
-        deauthorizeWithUsername:first
-        password:last
-        userID:[[NYPLAccount sharedAccount:self.accountType] userID] deviceID:[[NYPLAccount sharedAccount:self.accountType] deviceID]
-        completion:^(BOOL success, __unused NSError *error) {
-          if(!success) {
-            // Even though we failed, all we do is log the error. The reason is
-            // that we want the user to be able to log out anyway because the
-            // failure is probably due to bad credentials and we do not want the
-            // user to have to change their barcode or PIN just to log out. This
-            // is only a temporary measure and we'll switch to deauthorizing with
-            // a token that will remain invalid indefinitely in the near future.
-            NYPLLOG(@"Failed to deauthorize successfully.");
-            
-          }
-          else {
-            
-            // DELETE deviceID to adobeDevicesLink
-            NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:self.accountType] licensor][@"deviceManager"]];
-            if (deviceManager != nil) {
-              [NYPLDeviceManager deleteDevice:[[NYPLAccount sharedAccount:self.accountType] deviceID] url:deviceManager];
-            }
-
-          }
-          
-          [self removeActivityTitle];
-          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-          afterDeauthorization();
-        }];
+       NYPLXML *loansXML = [NYPLXML XMLWithData:data];
+       NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
+       [[NYPLAccount sharedAccount:self.accountType] setLicensor:loansFeed.licensor];
+       NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",loansFeed.licensor[@"clientToken"],[NYPLAccount sharedAccount:self.accountType].userID);
        
+       [self deauthorizeDevice];
+     
      } else {
-       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         [self removeActivityTitle];
-         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-         [self presentViewController:[NYPLAlertController
-                                      alertWithTitle:@"SettingsAccountViewControllerLogoutFailed"
-                                      message:@"TimedOut"]
-                            animated:YES
-                          completion:nil];
-       }];
+
+       [self removeActivityTitle];
+       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+       [self presentViewController:[NYPLAlertController
+                                    alertWithTitle:@"SettingsAccountViewControllerLogoutFailed"
+                                    message:@"TimedOut"]
+                          animated:YES
+                        completion:nil];
      }
    }];
+
+  [task resume];
+  
 #else
-  afterDeauthorization();
+  
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
+  [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
+  [[NYPLAccount sharedAccount:self.accountType] removeAll];
+  [self setupTableData];
+  [self.tableView reloadData];
   [self removeActivityTitle];
+  
 #endif
+  
+}
+
+- (void)deauthorizeDevice
+{
+  void (^afterDeauthorization)() = ^() {
+    
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
+    [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
+    
+    [[NYPLAccount sharedAccount:self.accountType] removeAll];
+    [self setupTableData];
+    [self.tableView reloadData];
+  };
+
+  NSDictionary *licensor = [[NYPLAccount sharedAccount:self.accountType] licensor];
+  if (!licensor) {
+    NYPLLOG(@"No Licensor received or parsed from OPDS Loans feed");
+    return;
+  }
+  
+  NSMutableArray *licensorItems = [[licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
+  NSString *tokenPassword = [licensorItems lastObject];
+  [licensorItems removeLastObject];
+  NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
+  
+  NYPLLOG(@"***DRM Deactivation Attempt***");
+  NYPLLOG_F(@"\nLicensor: %@\n",licensor);
+  NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
+  NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
+  NYPLLOG_F(@"UserID: %@\n",[[NYPLAccount sharedAccount:self.accountType] userID]);
+  NYPLLOG_F(@"DeviceID: %@\n",[[NYPLAccount sharedAccount:self.accountType] deviceID]);
+  
+  [[NYPLADEPT sharedInstance]
+   deauthorizeWithUsername:tokenUsername
+   password:tokenPassword
+   userID:[[NYPLAccount sharedAccount:self.accountType] userID]
+   deviceID:[[NYPLAccount sharedAccount:self.accountType] deviceID]
+   completion:^(BOOL success, __unused NSError *error) {
+     
+     if(!success) {
+       // Even though we failed, all we do is log the error. The reason is
+       // that we want the user to be able to log out anyway because the
+       // failure is probably due to bad credentials and we do not want the
+       // user to have to change their barcode or PIN just to log out. This
+       // is only a temporary measure and we'll switch to deauthorizing with
+       // a token that will remain invalid indefinitely in the near future.
+       NYPLLOG(@"Failed to deauthorize successfully.");
+     }
+     else {
+       NYPLLOG(@"***Successful DRM Deactivation***");
+       // DELETE deviceID to adobeDevicesLink
+       NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:self.accountType] licensor][@"deviceManager"]];
+       if (deviceManager != nil) {
+         [NYPLDeviceManager deleteDevice:[[NYPLAccount sharedAccount:self.accountType] deviceID] url:deviceManager];
+       }
+     }
+     [self removeActivityTitle];
+     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+     afterDeauthorization();
+   }];
 }
 
 - (void)validateCredentials
@@ -470,15 +494,12 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   NSMutableURLRequest *const request =
   [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[account catalogUrl]] URLByAppendingPathComponent:@"loans"]];
   
-  // Necessary to support longer login times when using usernames.
   request.timeoutInterval = 20.0;
-  
-  request.HTTPMethod = @"HEAD";
   
   NSURLSessionDataTask *const task =
   [self.session
    dataTaskWithRequest:request
-   completionHandler:^(__attribute__((unused)) NSData *data,
+   completionHandler:^(NSData *data,
                        NSURLResponse *const response,
                        NSError *const error) {
      
@@ -487,12 +508,68 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
                                                            object:self];
      }
      
-     // This cast is always valid according to Apple's documentation for NSHTTPURLResponse.
      NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
-     
-     // Success.
+
      if(statusCode == 200) {
+       
+#if defined(FEATURE_DRM_CONNECTOR)
+
+       NYPLXML *loansXML = [NYPLXML XMLWithData:data];
+       NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
+       
+       if (loansFeed.licensor) {
+         [[NYPLAccount sharedAccount:self.accountType] setLicensor:loansFeed.licensor];
+       } else {
+         NYPLLOG(@"Login Failed: No Licensor Token received or parsed from OPDS Loans feed");
+         [self authorizationAttemptDidFinish:NO error:nil];
+         return;
+       }
+       
+       NSMutableArray *licensorItems = [[loansFeed.licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
+       NSString *tokenPassword = [licensorItems lastObject];
+       [licensorItems removeLastObject];
+       NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
+       
+       NYPLLOG(@"***DRM Auth/Activation Attempt***");
+       NYPLLOG_F(@"\nLicensor: %@\n",loansFeed.licensor);
+       NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
+       NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
+       
+       [[NYPLADEPT sharedInstance]
+        authorizeWithVendorID:[[NYPLAccount sharedAccount:self.accountType] licensor][@"vendor"]
+        username:tokenUsername
+        password:tokenPassword
+        completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
+
+          NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
+          NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
+          NYPLLOG_F(@"UserID: %@\n",userID);
+          NYPLLOG_F(@"DeviceID: %@\n",deviceID);
+          NYPLLOG(@"***DRM Auth/Activation Completion***");
+          
+          if (success) {
+            // POST deviceID to adobeDevicesLink
+            NSURL *deviceManager = [NSURL URLWithString: [[NYPLAccount sharedAccount:self.accountType] licensor][@"deviceManager"]];
+            if (deviceManager != nil) {
+              [NYPLDeviceManager postDevice:deviceID url:deviceManager];
+            }
+            
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+              [[NYPLAccount sharedAccount:self.accountType] setUserID:userID];
+              [[NYPLAccount sharedAccount:self.accountType] setDeviceID:deviceID];
+            }];
+          }
+          
+          [self authorizationAttemptDidFinish:success error:error];
+          
+        }];
+
+#else
+       
        [self authorizationAttemptDidFinish:YES error:nil];
+       
+#endif
+
        self.isLoggingInAfterSignUp = NO;
        return;
      }
@@ -1383,12 +1460,14 @@ replacementString:(NSString *)string
   [linearView sizeToFit];
   
   self.logInSignOutCell.textLabel.text = nil;
-  [self.logInSignOutCell.contentView addSubview:linearView];
+  if (![self.logInSignOutCell.contentView viewWithTag:linearViewTag]) {
+    [self.logInSignOutCell.contentView addSubview:linearView];
+  }
   linearView.center = self.logInSignOutCell.contentView.center;
 }
 
 - (void)removeActivityTitle {
-  UIView *view = [self.logInSignOutCell.contentView viewWithTag:1];
+  UIView *view = [self.logInSignOutCell.contentView viewWithTag:linearViewTag];
   [view removeFromSuperview];
   [self updateLoginLogoutCellAppearance];
 }
@@ -1471,11 +1550,6 @@ replacementString:(NSString *)string
   
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController
                                                                   animated:YES completion:nil];
-}
-
-- (void)changedCurrentAccount
-{
-//  [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)setAccountSwitchChanged:(id)sender

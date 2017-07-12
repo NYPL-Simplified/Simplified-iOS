@@ -148,8 +148,11 @@
   
   [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
   [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
-  
+
   [[NYPLBookRegistry sharedRegistry] justLoad];
+  [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+  }];
 
   if ([[self.visibleViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] &&
        [self.visibleViewController respondsToSelector:@selector(load)]) {
@@ -169,62 +172,9 @@
     viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
   }
   
-  
-  if (account.needsAuth
-      && [[NYPLAccount sharedAccount:account.id] hasBarcodeAndPIN]
-      && [[NYPLAccount sharedAccount:account.id] hasLicensor])
-  {
-    NSMutableArray* foo = [[[[NYPLAccount sharedAccount:account.id] licensor][@"clientToken"]
-                            stringByReplacingOccurrencesOfString:@"\n" withString:@""]
-                           componentsSeparatedByString: @"|"].mutableCopy;
-
-    NSString *last = foo.lastObject;
-    [foo removeLastObject];
-    NSString *first = [foo componentsJoinedByString:@"|"];
-    
-    NYPLLOG([[NYPLAccount sharedAccount:account.id] licensor]);
-    NYPLLOG(first);
-    NYPLLOG(last);
-#if defined(FEATURE_DRM_CONNECTOR)
-
-    [[NYPLADEPT sharedInstance]
-     authorizeWithVendorID:[[NYPLAccount sharedAccount:account.id] licensor][@"vendor"]
-     username:first
-     password:last
-     userID:[[NYPLAccount sharedAccount:account.id] userID] deviceID:[[NYPLAccount sharedAccount:account.id] deviceID]
-     completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
-       
-       NYPLLOG(error);
-       
-       if (success)
-       {
-         [[NYPLAccount sharedAccount:account.id] setUserID:userID];
-         [[NYPLAccount sharedAccount:account.id] setDeviceID:deviceID];
-
-         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
-           [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-         }];
-         
-         // POST deviceID to adobeDevicesLink
-         NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:account.id] licensor][@"deviceManager"]];
-         if (deviceManager != nil) {
-           [NYPLDeviceManager postDevice:deviceID url:deviceManager];
-         }
-       }
-       else
-       {
-         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-       }
-     }];
-#endif
-
-  }
-  else{
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-    }];
-  }
-  
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+  }];
 }
 
 - (void)viewDidLoad

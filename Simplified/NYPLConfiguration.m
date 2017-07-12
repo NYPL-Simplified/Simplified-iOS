@@ -20,15 +20,6 @@
   if([NYPLConfiguration bugsnagEnabled]) {
     [Bugsnag startBugsnagWithApiKey:[NYPLConfiguration bugsnagID]];
   }
-  
-#if defined(FEATURE_DRM_CONNECTOR)
-  [[NYPLADEPT sharedInstance] setLogCallback:^(__unused NSString *logLevel,
-                                               NSString *const exceptionName,
-                                               __unused NSDictionary *data,
-                                               NSString *const message) {
-    NSLog(@"ADEPT: %@: %@", exceptionName, message);
-  }];
-#endif
 }
 
 
