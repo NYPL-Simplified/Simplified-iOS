@@ -148,8 +148,11 @@
   
   [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
   [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
-  
+
   [[NYPLBookRegistry sharedRegistry] justLoad];
+  [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+  }];
 
   if ([[self.visibleViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] &&
        [self.visibleViewController respondsToSelector:@selector(load)]) {

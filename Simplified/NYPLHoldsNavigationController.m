@@ -117,8 +117,6 @@
   
   NYPLHoldsViewController *viewController = (NYPLHoldsViewController *)self.visibleViewController;
   viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
-  
-  [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil];
 }
 
 @end

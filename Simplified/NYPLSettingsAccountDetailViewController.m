@@ -71,7 +71,6 @@ typedef NS_ENUM(NSInteger, Section) {
 @property (nonatomic) UIButton *barcodeScanButton;
 @property (nonatomic) NSInteger accountType;
 @property (nonatomic) Account *account;
-@property (nonatomic) int logoutRetryCount;
 
 @property (nonatomic) UITableViewCell *registrationCell;
 @property (nonatomic) UITableViewCell *eulaCell;
@@ -86,6 +85,7 @@ typedef NS_ENUM(NSInteger, Section) {
 @end
 
 NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsAccountsSignInFinishedNotification";
+NSInteger const linearViewTag = 1;
 
 @implementation NYPLSettingsAccountDetailViewController
 
@@ -161,8 +161,6 @@ NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsA
   [super viewDidLoad];
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
-  
-  self.logoutRetryCount = 0;
   
   self.barcodeTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.barcodeTextField.delegate = self;
@@ -1462,14 +1460,14 @@ replacementString:(NSString *)string
   [linearView sizeToFit];
   
   self.logInSignOutCell.textLabel.text = nil;
-  if (![self.logInSignOutCell.contentView viewWithTag:1]) {
+  if (![self.logInSignOutCell.contentView viewWithTag:linearViewTag]) {
     [self.logInSignOutCell.contentView addSubview:linearView];
   }
   linearView.center = self.logInSignOutCell.contentView.center;
 }
 
 - (void)removeActivityTitle {
-  UIView *view = [self.logInSignOutCell.contentView viewWithTag:1];
+  UIView *view = [self.logInSignOutCell.contentView viewWithTag:linearViewTag];
   [view removeFromSuperview];
   [self updateLoginLogoutCellAppearance];
 }

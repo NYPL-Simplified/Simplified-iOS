@@ -367,20 +367,7 @@ OK:
   if (account.needsAuth)
   {
     if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-      [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
-        if(success) {
-          [[NYPLBookRegistry sharedRegistry] save];
-        } else {
-          [[[UIAlertView alloc]
-            initWithTitle:NSLocalizedString(@"SyncFailed", nil)
-            message:NSLocalizedString(@"CheckConnection", nil)
-            delegate:nil
-            cancelButtonTitle:nil
-            otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-           show];
-        }
-        [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-      }];
+      [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
     } else {
       // We can't sync if we're not logged in, so let's log in. We don't need a completion handler
       // here because logging in will trigger a sync anyway. The only downside of letting the sync
@@ -398,7 +385,6 @@ OK:
   {
     [[NYPLBookRegistry sharedRegistry] justLoad];
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-
   }
 }
 

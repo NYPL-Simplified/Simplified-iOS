@@ -319,6 +319,8 @@ static NSString *const RecordsKey = @"records";
         otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
        show];
     }
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLSyncEndedNotification object:nil];
   }];
 }
 
