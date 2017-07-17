@@ -71,7 +71,7 @@ CHECKOUT OPTIONS:
     :commit: 8eaf62293d6343a83f3764a7fee1c2e4a251b0cc
     :git: https://github.com/bugsnag/bugsnag-cocoa.git
   HelpStack:
-    :commit: 59338f5920b76a234d5cfecc8639662ff5f51f9e
+    :commit: 7cdcdf6327936080eac728566cc86bab5e914700
     :git: https://github.com/NYPL-Simplified/helpstack-ios
   NYPLCardCreator:
     :commit: 5c2b6928bc74d32f0f165cb80455e4e505430bd7
