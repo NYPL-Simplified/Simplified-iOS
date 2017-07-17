@@ -217,8 +217,8 @@
 // NYPLWelcomeScreen
 "WelcomeScreenAgeVerifyTitle" = "Age Verification";
 "WelcomeScreenAgeVerifyMessage" = "You must be 13 years of age or older to download some of the books from this collection. How old are you?";
-"WelcomeScreenTitle1" = "Read Books from your Library";
-"WelcomeScreenSubtitle1" = "Simply browse borrow and read free ebooks from you local library";
+"WelcomeScreenTitle1" = "Read Books from Your Library";
+"WelcomeScreenSubtitle1" = "Simply browse, borrow, and read free ebooks from your local library";
 "WelcomeScreenButtonTitle1" = "Pick Your Library";
 "WelcomeScreenTitle2" = "The SimplyE Collection";
 "WelcomeScreenSubtitle2" = "Download and read ebooks without a library card";
