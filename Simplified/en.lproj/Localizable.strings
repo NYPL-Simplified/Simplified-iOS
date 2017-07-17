@@ -50,7 +50,7 @@
 "OK" = "OK";
 "PDFNotSupported" = "Adobe PDF Not Supported";
 "PDFNotSupportedDescriptionFormat" = "%@ is an Adobe PDF, which is not supported.";
-"PickYourLibrary" = "Pick Your Library";
+"PickYourLibrary" = "Find Your Library";
 "PIN" = "PIN";
 "PleaseWait" = "Please Wait";
 "PleaseWaitMessage" = "Please wait a moment before switching library accounts.";
@@ -217,10 +217,10 @@
 // NYPLWelcomeScreen
 "WelcomeScreenAgeVerifyTitle" = "Age Verification";
 "WelcomeScreenAgeVerifyMessage" = "You must be 13 years of age or older to download some of the books from this collection. How old are you?";
-"WelcomeScreenTitle1" = "Read Books from Your Library";
-"WelcomeScreenSubtitle1" = "Simply browse, borrow, and read free ebooks from your local library";
-"WelcomeScreenButtonTitle1" = "Pick Your Library";
+"WelcomeScreenTitle1" = "Read E-Books from Your Library";
+"WelcomeScreenSubtitle1" = "Simply browse, borrow, and read free e-books from your local library.";
+"WelcomeScreenButtonTitle1" = "Find Your Library";
 "WelcomeScreenTitle2" = "The SimplyE Collection";
-"WelcomeScreenSubtitle2" = "Download and read ebooks without a library card";
+"WelcomeScreenSubtitle2" = "E-books free to download and read without a library card.";
 "WelcomeScreenButtonTitle2" = "Read Now";
 "LibraryListTitle" = "Pick Your Library";
