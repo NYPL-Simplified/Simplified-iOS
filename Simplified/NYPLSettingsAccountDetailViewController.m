@@ -1055,7 +1055,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"Report An Issue", nil);
+      cell.textLabel.text = NSLocalizedString(@"Report an Issue", nil);
       return cell;
     }
     case CellSupportCenter: {
