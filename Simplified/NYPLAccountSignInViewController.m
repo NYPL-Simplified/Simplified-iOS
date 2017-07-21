@@ -621,7 +621,6 @@ replacementString:(NSString *)string
 - (void)updateLoginLogoutCellAppearance
 {
   if (self.isCurrentlySigningIn) {
-    self.eulaCell.userInteractionEnabled = NO;
     return;
   }
   if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
