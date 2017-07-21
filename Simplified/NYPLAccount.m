@@ -60,9 +60,8 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
     userIDKey = @"NYPLAccountUserIDKey";
     deviceIDKey = @"NYPLAccountDeviceIDKey";
     licensorKey = @"NYPLAccountLicensorKey";
-
-
   }
+
   return sharedAccount;
 }
 
