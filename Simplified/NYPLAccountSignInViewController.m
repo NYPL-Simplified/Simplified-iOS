@@ -421,7 +421,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                        initWithStyle:UITableViewCellStyleDefault
                        reuseIdentifier:nil];
       Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
-      if (currentAccount.eulaIsAccepted) {
+      if (currentAccount.eulaIsAccepted || [[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
         self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
                                        [UIImage imageNamed:@"CheckboxOn"]];
         self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAChecked", nil);
@@ -621,6 +621,7 @@ replacementString:(NSString *)string
 - (void)updateLoginLogoutCellAppearance
 {
   if (self.isCurrentlySigningIn) {
+    self.eulaCell.userInteractionEnabled = NO;
     return;
   }
   if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
@@ -935,6 +936,8 @@ completionHandler:(void (^)())handler
       }];
 
     } else {
+      [[NYPLAccount sharedAccount] removeAll];
+      [self accountDidChange];
       [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
       [self showLoginAlertWithError:error];
     }

@@ -16,8 +16,6 @@ static NSString *const renderingEngineKey = @"NYPLSettingsRenderingEngine";
 
 static NSString *const legacyUserAcceptedEULAKey = @"NYPLSettingsUserAcceptedEULA";
 
-static NSString *const userHasSeenWelcomeScreenKey = @"NYPLUserHasSeenWelcomeScreenKey";
-
 //static NSString *const settingsSynchronizeAnnotationsKey = @"NYPLSettingsSynchronizeAnnotationsKey";
 
 static NSString *const userPresentedAgeCheckKey = @"NYPLUserPresentedAgeCheckKey";

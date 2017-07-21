@@ -3,6 +3,8 @@ static NSString *const NYPLCurrentAccountDidChangeNotification = @"NYPLCurrentAc
 static NSString *const NYPLSyncBeganNotification = @"NYPLSyncBeganNotification";
 static NSString *const NYPLSyncEndedNotification = @"NYPLSyncEndedNotification";
 
+static NSString *const userHasSeenWelcomeScreenKey = @"NYPLUserHasSeenWelcomeScreenKey";
+
 typedef NS_ENUM(NSInteger, NYPLSettingsRenderingEngine) {
   NYPLSettingsRenderingEngineAutomatic,
   NYPLSettingsRenderingEngineReadium
