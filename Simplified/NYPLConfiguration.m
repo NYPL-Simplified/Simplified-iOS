@@ -1,39 +1,31 @@
+#import "NYPLConfiguration.h"
+#import "NYPLAppDelegate.h"
 #import "NYPLSettings.h"
+
 #import "Bugsnag.h"
 #import "HSHelpStack.h"
 #import "HSDeskGear.h"
+#import "UILabel+NYPLAppearanceAdditions.h"
+#import "UIButton+NYPLAppearanceAdditions.h"
+#import "SimplyE-Swift.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
 #endif
-
-#import "NYPLConfiguration.h"
-#import "UILabel+NYPLAppearanceAdditions.h"
-#import "UIButton+NYPLAppearanceAdditions.h"
-#import "SimplyE-Swift.h"
-#import "NYPLAppDelegate.h"
 
 @implementation NYPLConfiguration
 
 + (void)initialize
 {
   if([NYPLConfiguration bugsnagEnabled]) {
-    [Bugsnag startBugsnagWithApiKey:[NYPLConfiguration bugsnagID]];
+    [Bugsnag startBugsnagWithApiKey:[APIKeys bugsnagID]];
   }
 }
 
-
-+ (BOOL) bugsnagEnabled
++ (BOOL)bugsnagEnabled
 {
   return !TARGET_OS_SIMULATOR;
 }
-
-
-+ (NSString *) bugsnagID
-{
-  return @"76cb0080ae8cc30d903663e10b138381";
-}
-
 
 + (NSURL *)mainFeedURL
 {
@@ -50,7 +42,7 @@
 
 + (NSURL *)loanURL
 {
-    return [[self mainFeedURL] URLByAppendingPathComponent:@"loans"];
+  return [[self mainFeedURL] URLByAppendingPathComponent:@"loans"];
 }
 
 + (BOOL)cardCreationEnabled
