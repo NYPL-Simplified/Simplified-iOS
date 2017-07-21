@@ -187,7 +187,7 @@ didFinishDownloadingToURL:(NSURL *const)location
           
         } else {
           
-          NYPLLOG_F(@"Download attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
+          NYPLLOG_F(@"Download finished. Fulfilling with userID: %@",[[NYPLAccount sharedAccount] userID]);
           [[NYPLADEPT sharedInstance]
            fulfillWithACSMData:ACSMData
            tag:book.identifier
@@ -751,12 +751,17 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
 - (void)adept:(__attribute__((unused)) NYPLADEPT *)adept didCancelDownloadWithTag:(NSString *)tag
 {
-   [[NYPLBookRegistry sharedRegistry]
-    setState:NYPLBookStateDownloadNeeded forIdentifier:tag];
-   
-   [self broadcastUpdate];
+  [[NYPLBookRegistry sharedRegistry]
+   setState:NYPLBookStateDownloadNeeded forIdentifier:tag];
+
+  [self broadcastUpdate];
 }
-  
+
+- (void)didIgnoreFulfillmentWithNoAuthorizationPresent
+{
+  [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:nil];
+}
+
 #endif
 
 @end
