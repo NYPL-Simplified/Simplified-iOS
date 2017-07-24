@@ -821,8 +821,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [[HSHelpStack instance] setThemeFrompList:@"HelpStackThemeNYPL"];
 
       HSDeskGear *deskGear = [[HSDeskGear alloc]
-                              initWithInstanceBaseUrl:@"######## REPLACE #########"
-                              token:@"######## REPLACE #########"
+                              initWithInstanceBaseUrl:[APIKeys helpstackBaseUrl]
+                              token:[APIKeys helpstackToken]
                               andBrand:nil];
       
       HSHelpStack *helpStack = [HSHelpStack instance];
