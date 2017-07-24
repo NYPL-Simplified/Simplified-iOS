@@ -24,7 +24,7 @@
 
 + (BOOL)bugsnagEnabled
 {
-  return !TARGET_OS_SIMULATOR;
+  return !(TARGET_OS_SIMULATOR || DEBUG);
 }
 
 + (NSURL *)mainFeedURL
