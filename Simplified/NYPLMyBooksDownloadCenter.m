@@ -325,19 +325,18 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   if ([[AccountsManager sharedInstance] currentAccount].needsAuth){
 #if defined(FEATURE_DRM_CONNECTOR)
-  NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
-  if(fulfillmentId) {
-    
-    NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
-    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
-                                    userID:[[NYPLAccount sharedAccount] userID]
-                                  deviceID:[[NYPLAccount sharedAccount] deviceID]
-                                completion:^(BOOL success, __unused NSError *error) {
-                                  if(!success) {
-                                    NYPLLOG(@"Failed to return loan.");
-                                  }
-                                }];
-  }
+    NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
+    if(fulfillmentId) {
+      NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
+      [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
+                                      userID:[[NYPLAccount sharedAccount] userID]
+                                    deviceID:[[NYPLAccount sharedAccount] deviceID]
+                                  completion:^(BOOL success, __unused NSError *error) {
+                                    if(!success) {
+                                      NYPLLOG(@"Failed to return loan.");
+                                    }
+                                  }];
+    }
 #endif
   }
 
