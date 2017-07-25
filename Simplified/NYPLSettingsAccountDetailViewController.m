@@ -84,7 +84,6 @@ typedef NS_ENUM(NSInteger, Section) {
 
 @end
 
-NSString *const NYPLSettingsAccountsSignInFinishedNotification = @"NYPLSettingsAccountsSignInFinishedNotification";
 NSInteger const linearViewTag = 1;
 
 @implementation NYPLSettingsAccountDetailViewController
@@ -502,12 +501,7 @@ NSInteger const linearViewTag = 1;
    completionHandler:^(NSData *data,
                        NSURLResponse *const response,
                        NSError *const error) {
-     
-     if (self.isLoggingInAfterSignUp) {
-       [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSettingsAccountsSignInFinishedNotification
-                                                           object:self];
-     }
-     
+
      NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
 
      if(statusCode == 200) {
@@ -570,7 +564,6 @@ NSInteger const linearViewTag = 1;
        
 #endif
 
-       self.isLoggingInAfterSignUp = NO;
        return;
      }
      
@@ -603,8 +596,6 @@ NSInteger const linearViewTag = 1;
    [NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
                                                                   animated:YES
                                                                 completion:nil];
-  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSettingsAccountsSignInFinishedNotification
-                                                      object:self];
   [self removeActivityTitle];
 }
 

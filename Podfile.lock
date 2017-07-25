@@ -74,7 +74,7 @@ CHECKOUT OPTIONS:
     :commit: 7cdcdf6327936080eac728566cc86bab5e914700
     :git: https://github.com/NYPL-Simplified/helpstack-ios
   NYPLCardCreator:
-    :commit: 5c2b6928bc74d32f0f165cb80455e4e505430bd7
+    :commit: 0225028ae6ccad34eeb4e375bb02127c8a0bd5c1
     :git: https://github.com/NYPL-Simplified/CardCreator-iOS.git
 
 SPEC CHECKSUMS:
