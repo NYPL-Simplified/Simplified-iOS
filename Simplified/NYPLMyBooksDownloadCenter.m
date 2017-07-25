@@ -1,3 +1,4 @@
+#import "Bugsnag.h"
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
@@ -339,7 +340,13 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
 #endif
   }
-  if(book.acquisition.revoke || [[AccountsManager sharedInstance] currentAccount].needsAuth) {
+
+  if (!book.identifier) {
+    [self recordUnexpectedNilIdentifierForBook:book identifier:identifier title:bookTitle];
+  }
+
+  if((book.acquisition.revoke && book.identifier) ||
+     ([[AccountsManager sharedInstance] currentAccount].needsAuth && book.identifier)) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
     [NYPLOPDSFeed withURL:book.acquisition.revoke completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
       [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
@@ -353,7 +360,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
         if(returnedBook) {
           [[NYPLBookRegistry sharedRegistry] updateAndRemoveBook:returnedBook];
         } else {
-          NYPLLOG(@"Failed to create book from entry.");
+          NYPLLOG(@"Failed to create book from entry. Book not removed from registry.");
         }
       } else {
         if([error[@"type"] isEqualToString:NYPLProblemDocumentTypeNoActiveLoan]) {
@@ -688,8 +695,26 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
    object:self];
 }
-  
-  
+
+// FIXME: Can be removed when sufficient data for bug is collected
+- (void)recordUnexpectedNilIdentifierForBook:(NYPLBook *)book identifier:(NSString *)identifier title:(NSString *)bookTitle
+{
+  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:2 userInfo:nil]
+                 block:^(BugsnagCrashReport * _Nonnull report) {
+                   report.context = @"NYPLMyBooksDownloadCenter";
+                   report.severity = BSGSeverityWarning;
+                   report.errorMessage = @"The book identifier was unexpectedly nil when attempting to return.";
+                   NSDictionary *metadata = @{
+                                              @"incomingIdentifierString" : identifier,
+                                              @"currentAccount" : [[AccountsManager sharedInstance] currentAccount],
+                                              @"bookTitle" : bookTitle,
+                                              @"revokeLink" : book.acquisition.revoke.absoluteString
+                                              };
+                   [report addMetadata:metadata toTabWithName:@"Extra Data"];
+                 }];
+}
+
+
 #if defined(FEATURE_DRM_CONNECTOR)
   
 #pragma mark NYPLADEPTDelegate
