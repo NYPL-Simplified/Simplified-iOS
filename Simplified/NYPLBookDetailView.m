@@ -670,12 +670,6 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
   [self.detailViewDelegate didSelectMoreBooksForLane:lane];
 }
 
-
-- (void)citationsTapped
-{
-  [self.detailViewDelegate didSelectCitationsForBook:self.book sender:self];
-}
-
 - (void)readMoreTapped:(__unused UIButton *)sender
 {
   self.textHeightConstraint.active = NO;

@@ -16,7 +16,6 @@
 - (void)didSelectCloseButton:(NYPLBookDetailView *)detailView;
 - (void)didSelectMoreBooksForLane:(NYPLCatalogLane *)lane;
 - (void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender;
-- (void)didSelectCitationsForBook:(NYPLBook *)book sender:(id)sender;
 
 @end
 

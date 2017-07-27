@@ -139,11 +139,6 @@
    animated:YES];
 }
 
-- (void)didSelectCitationsForBook:(NYPLBook *)book sender:(id)sender
-{
-  //FIXME: add logic for launching citations here
-}
-
 #pragma mark - NYPLCatalogLaneCellDelegate
 
 - (void)catalogLaneCell:(NYPLCatalogLaneCell *)cell

@@ -3,7 +3,6 @@ import PureLayout
 
 @objc protocol BookDetailTableViewDelegate {
   func reportProblemTapped()
-  func citationsTapped()
   func moreBooksTapped(forLane: NYPLCatalogLane)
 }
 
@@ -43,7 +42,6 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
   enum BookDetailCellType: String {
     case groupedFeedLane = "Related Books"
     case reportAProblem = "Report a Problem"
-    case citations = "Create Citation"
   }
   
   weak var viewDelegate: BookDetailTableViewDelegate?
@@ -66,8 +64,6 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
     if book.acquisition.report != nil {
       standardCells.append(createCell(type: .reportAProblem))
     }
-    //GOOD Temporary Citations Example
-    standardCells.append(createCell(type: .citations))
     refresh()
     
     guard let url = self.book.relatedWorksURL else {
@@ -175,8 +171,6 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
         self.viewDelegate?.reportProblemTapped()
       case .groupedFeedLane:
         break
-      case .citations:
-        self.viewDelegate?.citationsTapped()
       }
     }
     tableView.deselectRow(at: indexPath, animated: true)
