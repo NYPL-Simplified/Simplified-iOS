@@ -1,6 +1,7 @@
 @class NYPLBookAcquisition;
 @class NYPLOPDSEntry;
 @class NYPLOPDSEvent;
+@class NYPLBookAuthor;
 
 typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
   NYPLBookAvailabilityStatusUnknown      = 1 << 0,
@@ -14,8 +15,7 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 
 @property (nonatomic, readonly) NYPLBookAcquisition *acquisition;
 @property (nonatomic, readonly) NSString *authors;
-@property (nonatomic, readonly) NSArray *authorLinks;
-@property (nonatomic, readonly) NSArray *authorStrings;
+@property (nonatomic, readonly) NSArray<NYPLBookAuthor *> *bookAuthors;
 @property (nonatomic, readonly) NYPLBookAvailabilityStatus availabilityStatus;
 @property (nonatomic, readonly) NSInteger availableCopies;
 @property (nonatomic, readonly) NSDate *availableUntil;
@@ -50,8 +50,7 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 
 // designated initializer
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
-                        authorLinks:(NSArray *)authorLinks
-                      authorStrings:(NSArray *)authorStrings
+                        bookAuthors:(NSArray<NYPLBookAuthor *> *)authors
                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
                     availableCopies:(NSInteger)availableCopies
                      availableUntil:(NSDate *)availableUntil

@@ -3,14 +3,16 @@
 #import "NYPLNull.h"
 #import "NYPLOPDS.h"
 #import "NYPLConfiguration.h"
+#import "SimplyE-Swift.h"
 
 #import "NYPLBook.h"
 
 @interface NYPLBook ()
 
 @property (nonatomic) NYPLBookAcquisition *acquisition;
-@property (nonatomic) NSArray *authorLinks;
-@property (nonatomic) NSArray *authorStrings;
+//@property (nonatomic) NSArray *authorLinks;
+//@property (nonatomic) NSArray *authorStrings;
+@property (nonatomic) NSArray<NYPLBookAuthor *> *bookAuthors;
 @property (nonatomic) NYPLBookAvailabilityStatus availabilityStatus;
 @property (nonatomic) NSInteger availableCopies;
 @property (nonatomic) NSDate *availableUntil;
@@ -84,6 +86,15 @@ static NSString *const AlternateURLKey = @"alternate";
   
   NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail, *annotations, *report = nil;
   NSDictionary *licensor = nil;
+  NSMutableArray<NYPLBookAuthor *> *authors = [[NSMutableArray alloc] init];
+
+  for (int i = 0; i < (int)entry.authorStrings.count; i++) {
+    NYPLBookAuthor *bookAuthor = [[NYPLBookAuthor alloc] initWithAuthorName:entry.authorStrings[i]];
+    if ((int)entry.authorLinks.count > i) {
+      bookAuthor.relatedBooksLink = entry.authorLinks[i].href;
+    }
+    [authors addObject:bookAuthor];
+  }
   
   NYPLBookAvailabilityStatus availabilityStatus = NYPLBookAvailabilityStatusUnknown;
   NSInteger availableCopies = 0;
@@ -188,9 +199,8 @@ static NSString *const AlternateURLKey = @"alternate";
                                revoke:revoke
                                sample:sample
                                report:report]
-          authorLinks:entry.authorLinks
-          authorStrings:entry.authorStrings
-          availabilityStatus: availabilityStatus
+          bookAuthors:authors
+          availabilityStatus:availabilityStatus
           availableCopies:availableCopies
           availableUntil:availableUntil
           categoryStrings:[[self class] categoryStringsFromCategories:entry.categories]
@@ -216,8 +226,7 @@ static NSString *const AlternateURLKey = @"alternate";
 {
   return [[NYPLBook alloc]
           initWithAcquisition:self.acquisition
-          authorLinks:book.authorLinks
-          authorStrings:book.authorStrings
+          bookAuthors:book.bookAuthors
           availabilityStatus:self.availabilityStatus
           availableCopies:self.availableCopies
           availableUntil:self.availableUntil
@@ -241,8 +250,7 @@ static NSString *const AlternateURLKey = @"alternate";
 }
 
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
-                        authorLinks:(NSArray *)authorLinks
-                      authorStrings:(NSArray *)authorStrings
+                        bookAuthors:(NSArray<NYPLBookAuthor *> *)authors
                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
                     availableCopies:(NSInteger)availableCopies
                      availableUntil:(NSDate *)availableUntil
@@ -267,22 +275,15 @@ static NSString *const AlternateURLKey = @"alternate";
   self = [super init];
   if(!self) return nil;
   
-  if(!(acquisition && authorStrings && identifier && title && updated)) {
+  if(!(acquisition && identifier && title && updated)) {
     @throw NSInvalidArgumentException;
-  }
-  
-  for(id object in authorStrings) {
-    if(![object isKindOfClass:[NSString class]]) {
-      @throw NSInvalidArgumentException;
-    }
   }
   
   self.acquisition = acquisition;
   self.alternateURL = alternateURL;
   self.annotationsURL = annotationsURL;
   self.analyticsURL = analyticsURL;
-  self.authorLinks = authorLinks;
-  self.authorStrings = authorStrings;
+  self.bookAuthors = authors;
   self.availabilityStatus = availabilityStatus;
   self.availableCopies = availableCopies;
   self.availableUntil = availableUntil;
@@ -320,11 +321,26 @@ static NSString *const AlternateURLKey = @"alternate";
   
   NSString *const annotations = NYPLNullToNil(dictionary[AnnotationsURLKey]);
   self.annotationsURL = annotations ? [NSURL URLWithString:annotations] : nil;
-  
-  self.authorLinks = dictionary[AuthorLinksKey];
-  
-  self.authorStrings = dictionary[AuthorsKey];
-  if(!self.authorStrings) return nil;
+
+  NSMutableArray<NYPLBookAuthor *> *authors = [[NSMutableArray alloc] init];
+  NSArray *authorStrings = dictionary[AuthorsKey];
+  if(authorStrings) {
+    for (NSString *str in authorStrings) {
+      [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:str]];
+    }
+  } else {
+    self.bookAuthors = nil;
+  }
+  NSArray *authorLinks = dictionary[AuthorLinksKey];
+  if (authorLinks) {
+    for (int i = 0; i < (int)authorLinks.count; i++) {
+      NSURL *url = [NSURL URLWithString:authorLinks[i]];
+      if (url && (int)authors.count > i) {
+        authors[i].relatedBooksLink = url;
+      }
+    }
+  }
+  self.bookAuthors = authors;
   
   self.availabilityStatus = [dictionary[AvailabilityStatusKey] integerValue];
   
@@ -377,8 +393,8 @@ static NSString *const AlternateURLKey = @"alternate";
            AlternateURLKey: NYPLNullFromNil([self.alternateURL absoluteString]),
            AnnotationsURLKey: NYPLNullFromNil([self.annotationsURL absoluteString]),
            AnalyticsURLKey: NYPLNullFromNil([self.analyticsURL absoluteString]),
-           AuthorLinksKey: self.authorLinks,
-           AuthorsKey: self.authorStrings,
+           AuthorLinksKey: [self authorLinkArray],
+           AuthorsKey: [self authorNameArray],
            AvailabilityStatusKey: @(self.availabilityStatus),
            AvailableCopiesKey: @(self.availableCopies),
            AvailableUntilKey: NYPLNullFromNil([self.availableUntil RFC3339String]),
@@ -398,9 +414,29 @@ static NSString *const AlternateURLKey = @"alternate";
           };
 }
 
+- (NSArray *)authorNameArray {
+  NSMutableArray *array = [[NSMutableArray alloc] init];
+  for (NYPLBookAuthor *auth in self.bookAuthors) {
+    [array addObject:auth.name];
+  }
+  return array;
+}
+
+- (NSArray *)authorLinkArray {
+  NSMutableArray *array = [[NSMutableArray alloc] init];
+  for (NYPLBookAuthor *auth in self.bookAuthors) {
+    [array addObject:auth.relatedBooksLink.absoluteString];
+  }
+  return array;
+}
+
 - (NSString *)authors
 {
-  return [self.authorStrings componentsJoinedByString:@"; "];
+  NSMutableArray *authorsArray = [[NSMutableArray alloc] init];
+  for (NYPLBookAuthor *author in self.bookAuthors) {
+    [authorsArray addObject:author.name];
+  }
+  return [authorsArray componentsJoinedByString:@"; "];
 }
 
 - (NSString *)categories
