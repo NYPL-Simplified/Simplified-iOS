@@ -19,6 +19,8 @@
 
 @end
 
+static CGFloat const SummaryTextAbbreviatedHeight = 150.0;
+
 @interface NYPLBookDetailView : UIScrollView
 
 @property (nonatomic) NYPLBook *book;
@@ -26,6 +28,8 @@
 @property (nonatomic) BOOL downloadStarted;
 @property (nonatomic) NYPLBookState state;
 @property (nonatomic) NYPLBookDetailTableViewDelegate *tableViewDelegate;
+@property (nonatomic, readonly) UIButton *readMoreLabel;
+@property (nonatomic, readonly) UITextView *summaryTextView;
 
 
 + (id)new NS_UNAVAILABLE;

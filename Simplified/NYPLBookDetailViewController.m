@@ -95,6 +95,15 @@
   }
 }
 
+- (void)viewDidLayoutSubviews
+{
+  if (self.bookDetailView.summaryTextView.frame.size.height < SummaryTextAbbreviatedHeight) {
+    self.bookDetailView.readMoreLabel.hidden = YES;
+  } else {
+    self.bookDetailView.readMoreLabel.hidden = NO;
+  }
+}
+
 #pragma mark NSObject
 
 - (void)dealloc

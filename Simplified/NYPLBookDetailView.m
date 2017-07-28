@@ -71,7 +71,6 @@ static CGFloat const TitleLabelMinimumWidth = 185.0;
 static CGFloat const NormalViewMinimumHeight = 38.0;
 static CGFloat const VerticalPadding = 10.0;
 static CGFloat const MainTextPaddingLeft = 10.0;
-static CGFloat const SummaryTextAbbreviatedHeight = 150.0;
 static NSString *DetailHTMLTemplate = nil;
 
 @implementation NYPLBookDetailView
@@ -475,12 +474,6 @@ static NSString *DetailHTMLTemplate = nil;
   if (!self.didSetupConstraints) {
     [self setupAutolayoutConstraints];
     self.didSetupConstraints = YES;
-  }
-  //FIXME I don't believe this is working
-  if (self.textHeightConstraint.constant >= SummaryTextAbbreviatedHeight) {
-    self.readMoreLabel.hidden = NO;
-  } else {
-    self.readMoreLabel.hidden = YES;
   }
   [super updateConstraints];
 }
