@@ -778,7 +778,6 @@ replacementString:(NSString *)string
          
 #endif
 
-         self.isLoggingInAfterSignUp = NO;
          return;
        }
        
