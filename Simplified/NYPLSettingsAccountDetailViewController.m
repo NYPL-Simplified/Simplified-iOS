@@ -1,6 +1,7 @@
 @import LocalAuthentication;
 @import NYPLCardCreator;
 
+#import "Bugsnag.h"
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
 #import "NYPLBasicAuth.h"
@@ -138,7 +139,7 @@ NSInteger const linearViewTag = 1;
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
-  configuration.timeoutIntervalForResource = 10.0;
+  configuration.timeoutIntervalForResource = 20.0;
   
   self.session = [NSURLSession
                   sessionWithConfiguration:configuration
@@ -381,7 +382,7 @@ NSInteger const linearViewTag = 1;
   NSMutableURLRequest *const request =
   [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[account catalogUrl]] URLByAppendingPathComponent:@"loans"]];
   
-  request.timeoutInterval = 8.0;
+  request.timeoutInterval = 20.0;
   
   NSURLSessionDataTask *const task =
   [self.session
@@ -402,14 +403,15 @@ NSInteger const linearViewTag = 1;
      
      } else {
 
-       [self removeActivityTitle];
-       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
        [self presentViewController:[NYPLAlertController
                                     alertWithTitle:@"SettingsAccountViewControllerLogoutFailed"
                                     message:@"TimedOut"]
                           animated:YES
                         completion:nil];
      }
+
+     [self removeActivityTitle];
+     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
    }];
 
   [task resume];
@@ -422,13 +424,17 @@ NSInteger const linearViewTag = 1;
   [self setupTableData];
   [self.tableView reloadData];
   [self removeActivityTitle];
-  
+  [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+
 #endif
   
 }
 
 - (void)deauthorizeDevice
 {
+
+#if defined(FEATURE_DRM_CONNECTOR)
+
   void (^afterDeauthorization)() = ^() {
     
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
@@ -441,10 +447,12 @@ NSInteger const linearViewTag = 1;
 
   NSDictionary *licensor = [[NYPLAccount sharedAccount:self.accountType] licensor];
   if (!licensor) {
-    NYPLLOG(@"No Licensor received or parsed from OPDS Loans feed");
+    NYPLLOG(@"No Licensor available to deauthorize device. Signing out NYPLAccount creds anyway.");
+    [self bugsnagLogInvalidLicensor];
+    afterDeauthorization();
     return;
   }
-  
+
   NSMutableArray *licensorItems = [[licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
   NSString *tokenPassword = [licensorItems lastObject];
   [licensorItems removeLastObject];
@@ -481,10 +489,12 @@ NSInteger const linearViewTag = 1;
          [NYPLDeviceManager deleteDevice:[[NYPLAccount sharedAccount:self.accountType] deviceID] url:deviceManager];
        }
      }
-     [self removeActivityTitle];
-     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+
      afterDeauthorization();
    }];
+  
+#endif
+
 }
 
 - (void)validateCredentials
@@ -630,6 +640,18 @@ NSInteger const linearViewTag = 1;
       [self showLoginAlertWithError:error];
     }
   }];
+}
+
+- (void)bugsnagLogInvalidLicensor
+{
+  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:3 userInfo:nil]
+                 block:^(BugsnagCrashReport * _Nonnull report) {
+                   report.context = @"NYPLSettingsAccountDetailViewController";
+                   report.severity = BSGSeverityWarning;
+                   report.errorMessage = @"No Valid Licensor available to deauthorize device. Signing out NYPLAccount credentials anyway with no message to the user.";
+                   NSDictionary *metadata = @{@"accountTypeID" : @(self.accountType)};
+                   [report addMetadata:metadata toTabWithName:@"Extra Data"];
+                 }];
 }
 
 #pragma mark
