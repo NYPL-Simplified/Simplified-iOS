@@ -1,8 +1,10 @@
 #import "NYPLBookState.h"
 
 @class NYPLBook;
-
 @class NYPLBookDetailView;
+@class NYPLBookDetailTableViewDelegate;
+@class NYPLCatalogLane;
+@protocol NYPLCatalogLaneCellDelegate;
 
 @protocol NYPLBookDetailViewDelegate
 
@@ -11,18 +13,24 @@
 - (void)didSelectReturnForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectDownloadForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectReadForBookDetailView:(NYPLBookDetailView *)detailView;
-- (void)didSelectTryAgainForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectCloseButton:(NYPLBookDetailView *)detailView;
+- (void)didSelectMoreBooksForLane:(NYPLCatalogLane *)lane;
+- (void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender;
 
 @end
+
+static CGFloat const SummaryTextAbbreviatedHeight = 150.0;
 
 @interface NYPLBookDetailView : UIScrollView
 
 @property (nonatomic) NYPLBook *book;
-@property (nonatomic, weak) id<NYPLBookDetailViewDelegate> detailViewDelegate;
 @property (nonatomic) double downloadProgress;
 @property (nonatomic) BOOL downloadStarted;
 @property (nonatomic) NYPLBookState state;
+@property (nonatomic) NYPLBookDetailTableViewDelegate *tableViewDelegate;
+@property (nonatomic, readonly) UIButton *readMoreLabel;
+@property (nonatomic, readonly) UITextView *summaryTextView;
+
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
@@ -31,8 +39,9 @@
 
 // designated initializer
 // |book| must not be nil.
-- (instancetype)initWithBook:(NYPLBook *)book;
-- (void)runProblemReportedAnimation;
+- (instancetype)initWithBook:(NYPLBook *const)book
+                    delegate:(id)delegate;
+- (void)updateFonts;
 
 @end
 

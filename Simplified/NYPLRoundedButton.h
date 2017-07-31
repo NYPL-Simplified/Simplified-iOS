@@ -15,6 +15,7 @@ typedef NS_ENUM(NSInteger, NYPLRoundedButtonType) {
 @property (nonatomic) NYPLRoundedButtonType type;
 @property (nonatomic) NSInteger queuePosition;
 @property (nonatomic) NSDate *endDate;
+@property (nonatomic) BOOL fromDetailView;
 
 + (instancetype)button;
 

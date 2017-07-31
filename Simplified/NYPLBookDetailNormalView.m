@@ -5,6 +5,8 @@
 #import "NYPLLinearView.h"
 #import "NYPLBookButtonsView.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "UIFont+NYPLSystemFontOverride.h"
+#import <PureLayout/PureLayout.h>
 
 #import "NYPLBookDetailNormalView.h"
 
@@ -15,11 +17,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   NYPLProblemReportButtonStateSent
 };
 
-@property (nonatomic, assign) NYPLProblemReportButtonState reportButtonState;
-@property (nonatomic) UIView *backgroundView;
 @property (nonatomic) UILabel *messageLabel;
-@property (nonatomic) NYPLBookButtonsView *buttonsView;
-@property (nonatomic) UIButton *reportAProblemButton;
 
 @end
 
@@ -27,84 +25,76 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 
 #pragma mark UIView
 
-- (instancetype)initWithWidth:(CGFloat)width
+- (instancetype)init
 {
-  self = [super initWithFrame:CGRectMake(0, 0, width, 70)];
+  self = [super init];
   if(!self) return nil;
   
-  self.backgroundView = [[UIView alloc] init];
-  self.backgroundView.backgroundColor = [NYPLConfiguration mainColor];
-  [self addSubview:self.backgroundView];
-  
-  self.buttonsView = [[NYPLBookButtonsView alloc] init];
-  self.buttonsView.showReturnButtonIfApplicable = YES;
-  [self addSubview:self.buttonsView];
-  
-  self.reportAProblemButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  [self.reportAProblemButton.titleLabel setFont:[UIFont systemFontOfSize:12.0]];
-  [self.reportAProblemButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
-  [self.reportAProblemButton addTarget:self action:@selector(reportAProblem:) forControlEvents:UIControlEventTouchUpInside];
-  [self addSubview:self.reportAProblemButton];
-  
   self.messageLabel = [[UILabel alloc] init];
-  self.messageLabel.font = [UIFont systemFontOfSize:12];
+  self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.messageLabel.numberOfLines = 2;
+  self.messageLabel.textAlignment = NSTextAlignmentCenter;
   [self addSubview:self.messageLabel];
+  [self.messageLabel autoCenterInSuperview];
+  [self.messageLabel autoPinEdgeToSuperviewEdge:ALEdgeLeading withInset:12 relation:NSLayoutRelationGreaterThanOrEqual];
+  [self.messageLabel autoPinEdgeToSuperviewEdge:ALEdgeTrailing withInset:12 relation:NSLayoutRelationGreaterThanOrEqual];
+  [self.messageLabel autoPinEdgeToSuperviewMargin:ALEdgeTop relation:NSLayoutRelationGreaterThanOrEqual];
+  [self.messageLabel autoPinEdgeToSuperviewMargin:ALEdgeBottom relation:NSLayoutRelationGreaterThanOrEqual];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(didChangePreferredContentSize)
+                                               name:UIContentSizeCategoryDidChangeNotification
+                                             object:nil];
   
   return self;
 }
 
-- (void)sizeToFit
+- (void)dealloc
 {
-  CGRect frame = self.frame;
-  frame.size.height = CGRectGetMaxY(self.buttonsView.frame);
-  self.frame = frame;
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)reportAProblem:(id)sender
+- (void)drawRect:(__unused CGRect)rect
 {
-  [self.delegate didSelectReportForBook:self.book sender:sender];
+  //Inner drop-shadow
+  CGRect bounds = [self bounds];
+  CGContextRef context = UIGraphicsGetCurrentContext();
+
+  CGMutablePathRef visiblePath = CGPathCreateMutable();
+  CGPathMoveToPoint(visiblePath, NULL, bounds.origin.x, bounds.origin.y);
+  CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x + bounds.size.width, bounds.origin.y);
+  CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
+  CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x, bounds.origin.y + bounds.size.height);
+  CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x, bounds.origin.y);
+  CGPathCloseSubpath(visiblePath);
+  
+  UIColor *aColor = [NYPLConfiguration mainColor];
+  [aColor setFill];
+  CGContextAddPath(context, visiblePath);
+  CGContextFillPath(context);
+  
+  CGMutablePathRef path = CGPathCreateMutable();
+  CGPathAddRect(path, NULL, CGRectInset(bounds, -42, -42));
+  CGPathAddPath(path, NULL, visiblePath);
+  CGPathCloseSubpath(path);
+  CGContextAddPath(context, visiblePath);
+  CGContextClip(context);
+  
+  aColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.5f];
+  CGContextSaveGState(context);
+  CGContextSetShadowWithColor(context, CGSizeMake(0.0f, 0.0f), 5.0f, [aColor CGColor]);
+  [aColor setFill];
+  CGContextSaveGState(context);
+  CGContextAddPath(context, path);
+  CGContextEOFillPath(context);
+  CGPathRelease(path);
+  CGPathRelease(visiblePath);
 }
 
-#pragma mark UIView
-
-- (NSString *) reportButtonTitleForCurrentSize
+- (void)didChangePreferredContentSize
 {
-  NSString *longName = self.reportButtonState == NYPLProblemReportButtonStateNormal ? NSLocalizedString(@"Report a Problem", nil) : NSLocalizedString(@"Sent Report", nil);
-  NSString *shortName = self.reportButtonState == NYPLProblemReportButtonStateNormal ? NSLocalizedString(@"Report", nil) : NSLocalizedString(@"Sent", nil);
-  CGFloat maxWidth = (self.bounds.size.width - self.buttonsView.bounds.size.width)/2.0 - 8.0 - 17.0;
-  CGSize textSize = [longName sizeWithAttributes:@{NSFontAttributeName: self.reportAProblemButton.titleLabel.font}];
-  return (textSize.width <= maxWidth) ? longName : shortName;
-}
-
-- (void)layoutSubviews
-{
-  CGFloat padding = 10;
-  
-  self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), 30);
-  CGFloat nextY = CGRectGetMaxY(self.backgroundView.frame) + padding;
-  
-  [self.messageLabel sizeToFit];
-  self.messageLabel.center = self.backgroundView.center;
-  [self.messageLabel integralizeFrame];
-  
-  [self.buttonsView sizeToFit];
-  self.buttonsView.center = self.center;
-  self.buttonsView.frame = CGRectMake(CGRectGetMinX(self.buttonsView.frame),
-                                      nextY,
-                                      CGRectGetWidth(self.buttonsView.frame),
-                                      CGRectGetHeight(self.buttonsView.frame));
-  [self.buttonsView integralizeFrame];
-  
-  [UIView transitionWithView:self.reportAProblemButton
-                    duration:0.25
-                     options:UIViewAnimationOptionTransitionCrossDissolve
-                  animations:^{
-                    [self.reportAProblemButton setTitle:[self reportButtonTitleForCurrentSize] forState:UIControlStateNormal];
-                  } completion:nil];
-  [self.reportAProblemButton sizeToFit];
-  self.reportAProblemButton.center = CGPointMake(self.bounds.size.width - self.reportAProblemButton.bounds.size.width/2.0 - 17.0, self.buttonsView.center.y);
-  [self.reportAProblemButton integralizeFrame];
+  self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1 multiplier:1.2];
 }
 
 #pragma mark -
@@ -112,63 +102,58 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 - (void)setState:(NYPLBookButtonsState const)state
 {
   _state = state;
-  self.buttonsView.state = state;
   
+  NSString *newMessageString;
   switch(state) {
     case NYPLBookButtonsStateCanBorrow:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerAvailableToBorrowTitle", nil);
+      newMessageString = NSLocalizedString(@"BookDetailViewControllerAvailableToBorrowTitle", nil);
       break;
     case NYPLBookButtonsStateCanHold:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerCanHoldTitle", nil);
+      newMessageString = NSLocalizedString(@"BookDetailViewControllerCanHoldTitle", nil);
       break;
     case NYPLBookButtonsStateCanKeep:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerCanKeepTitle", nil);
+      newMessageString = NSLocalizedString(@"BookDetailViewControllerCanKeepTitle", nil);
       break;
     case NYPLBookButtonsStateDownloadNeeded:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerDownloadNeededTitle", nil);
+      newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadNeededTitle", nil);
       break;
     case NYPLBookButtonsStateDownloadSuccessful:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
+      newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
       break;
     case NYPLBookButtonsStateHolding:
-      self.messageLabel.text = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerHoldingTitleFormat", nil),
+      newMessageString = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerHoldingTitleFormat", nil),
                                 [self.book.availableUntil longTimeUntilString]];
       break;
     case NYPLBookButtonsStateHoldingFOQ:
-      self.messageLabel.text = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerReservedTitleFormat", nil),
+      newMessageString = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerReservedTitleFormat", nil),
                                 [self.book.availableUntil longTimeUntilString]];
       break;
     case NYPLBookButtonsStateUsed:
-      self.messageLabel.text = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
+      newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
+      break;
+    case NYPLBookButtonsStateDownloadInProgress:
+      break;
+    default:
+      newMessageString = nil;
       break;
   }
   
-  [self.messageLabel sizeToFit];
-  self.messageLabel.center = self.backgroundView.center;
-  [self.messageLabel integralizeFrame];
-}
-
-- (void)setDelegate:(id<NYPLBookButtonsDelegate>)delegate
-{
-  _delegate = delegate;
-  self.buttonsView.delegate = delegate;
-}
-
-- (void)setBook:(NYPLBook *)book
-{
-  _book = book;
-  self.buttonsView.book = book;
-  self.reportAProblemButton.hidden = book.acquisition.report == nil;
-}
-
-- (void)runProblemReportedAnimation
-{
-  self.reportButtonState = NYPLProblemReportButtonStateSent;
-  [self setNeedsLayout];
-  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    self.reportButtonState = NYPLProblemReportButtonStateNormal;
-    [self setNeedsLayout];
-  });
+  if (!self.messageLabel.text) {
+    self.messageLabel.text = newMessageString;
+  } else if (![self.messageLabel.text isEqualToString:newMessageString]){
+    CGFloat duration = 0.3f;
+    [UIView animateWithDuration:duration animations:^{
+      self.messageLabel.alpha = 0.0f;
+    } completion:^(__unused BOOL finished) {
+      self.messageLabel.alpha = 0.0f;
+      self.messageLabel.text = newMessageString;
+      [UIView animateWithDuration:duration animations:^{
+        self.messageLabel.alpha = 1.0f;
+      } completion:^(__unused BOOL finished) {
+        self.messageLabel.alpha = 1.0f;
+      }];
+    }];
+  }
 }
 
 @end

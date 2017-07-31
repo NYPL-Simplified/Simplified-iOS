@@ -8,12 +8,15 @@
 
 @property (nonatomic, readonly) NSString *alternativeHeadline; // nilable
 @property (nonatomic, readonly) NSArray *authorStrings;
+@property (nonatomic, readonly) NSArray<NYPLOPDSLink *> *authorLinks;
+@property (nonatomic, readonly) NYPLOPDSLink *seriesLink;
 @property (nonatomic, readonly) NSArray<NYPLOPDSCategory *> *categories;
 @property (nonatomic, readonly) NYPLOPDSEntryGroupAttributes *groupAttributes; // nilable
 @property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) NSArray *links;
 @property (nonatomic, readonly) NYPLOPDSLink *annotations;
 @property (nonatomic, readonly) NYPLOPDSLink *alternate;
+@property (nonatomic, readonly) NYPLOPDSLink *relatedWorks;
 @property (nonatomic, readonly) NSURL *analytics;
 @property (nonatomic, readonly) NSString *providerName; // nilable
 @property (nonatomic, readonly) NSDate *published; // nilable

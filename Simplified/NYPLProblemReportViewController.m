@@ -6,15 +6,18 @@
 //  Copyright © 2015 NYPL Labs. All rights reserved.
 //
 
+@import MessageUI;
+
+#import <PureLayout/PureLayout.h>
 #import "NYPLProblemReportViewController.h"
+#import "UIFont+NYPLSystemFontOverride.h"
+#import "SimplyE-Swift.h"
 
 static NSArray *s_problems = nil;
 
 @interface NYPLProblemReportViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) IBOutlet UITableView *problemDescriptionTable;
-@property (nonatomic, strong) UIButton *submitProblemButton, *cancelButton;
-@property (nonatomic, strong) UIView *footerView;
-@property (nonatomic, strong) IBOutlet NSLayoutConstraint *problemTableTopConstraint;
+@property (nonatomic, strong) UIBarButtonItem *submitProblemButton;
 @end
 
 @implementation NYPLProblemReportViewController
@@ -66,6 +69,10 @@ static NSArray *s_problems = nil;
                    @"type": @"http://librarysimplified.org/terms/problem/cannot-render",
                    @"title": @"Book Contents Blank or Incorrect"
                    },
+                 @{
+                   @"type": @"",
+                   @"title": @"Other..."
+                   },
                  ];
 }
 
@@ -73,42 +80,19 @@ static NSArray *s_problems = nil;
 {
   [super viewDidLoad];
   
-  self.submitProblemButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [self.submitProblemButton setTitle:NSLocalizedString(@"Submit", nil) forState:UIControlStateNormal];
-  [self.submitProblemButton addTarget:self action:@selector(submitProblem) forControlEvents:UIControlEventTouchUpInside];
-  [self.submitProblemButton sizeToFit];
+  self.submitProblemButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Submit", nil)
+                                                              style:UIBarButtonItemStyleDone
+                                                             target:self action:@selector(submitProblem)];
   self.submitProblemButton.enabled = NO;
-  
-  self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil) forState:UIControlStateNormal];
-  [self.cancelButton addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
-  [self.cancelButton sizeToFit];
-  
+  self.navigationItem.rightBarButtonItem = self.submitProblemButton;
   [self.problemDescriptionTable setBackgroundColor:[UIColor whiteColor]];
 }
 
-- (void)viewWillAppear:(__unused BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
-  if (self.modalPresentationStyle != UIModalPresentationPopover) {
-    self.problemTableTopConstraint.constant = 20;
-  }
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-  [super viewDidAppear:animated];
-  BOOL isIPad = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad;
-  
-  if (isIPad) {
-    CGFloat maxWidth = 0.0;
-    CGFloat height = 0;
-    for (uint i=0; i<[self.problemDescriptionTable numberOfRowsInSection:0]; ++i) {
-      UILabel *l = [[self.problemDescriptionTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] textLabel];
-      maxWidth = MAX(maxWidth, l.bounds.size.width);
-      height += [self.problemDescriptionTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]].bounds.size.height;
-    }
-    height += 45.0;
-    self.preferredContentSize = CGSizeMake(maxWidth+16.0, height+8);
+  [super viewWillAppear:animated];
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    [self.navigationController setNavigationBarHidden:NO];
   }
 }
 
@@ -121,7 +105,39 @@ static NSArray *s_problems = nil;
 
 - (void)cancel
 {
-  [self dismissViewControllerAnimated:YES completion:nil];
+  if (self.navigationController) {
+    [self.navigationController popViewControllerAnimated:YES];
+  } else {
+    [self dismissViewControllerAnimated:YES completion:nil];
+  }
+}
+
+- (void)reportIssueVC
+{
+  Account *currentAcct = [[AccountsManager sharedInstance] currentAccount];
+  if ([MFMailComposeViewController canSendMail])
+  {
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"ReportIssue" bundle:nil];
+    NYPLReportIssueViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ReportIssueController"];
+    vc.account = currentAcct;
+    if (self.book) {
+      vc.book = self.book;
+    }
+    vc.completion = ^{
+      [self cancel];
+    };
+    [self.navigationController pushViewController:vc animated:YES];
+  }
+  else
+  {
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:@"No email account is set for this device. "
+                          message:[NSString stringWithFormat:@"If you have web email, contact %@ to report an issue.", currentAcct.supportEmail]
+                          delegate:nil
+                          cancelButtonTitle:nil
+                          otherButtonTitles:@"OK", nil];
+    [alert show];
+  }
 }
 
 #pragma mark UITableViewDataSource
@@ -143,25 +159,16 @@ static NSArray *s_problems = nil;
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ProblemReportCell"];
   }
   cell.textLabel.text = s_problems[indexPath.row][@"title"];
+  cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+  if (indexPath.row == (int)s_problems.count - 1) {
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+  }
   return cell;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(__unused NSInteger)section
+- (CGFloat)tableView:(__unused UITableView *)tableView heightForRowAtIndexPath:(__unused NSIndexPath *)indexPath
 {
-  if (!self.footerView) {
-    self.footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 45.0)];
-    [self.footerView setBackgroundColor:[UIColor whiteColor]];
-    [self.footerView addSubview:self.submitProblemButton];
-    
-    if (self.modalPresentationStyle == UIModalPresentationPopover) {
-      self.submitProblemButton.center = CGPointMake(self.footerView.bounds.size.width/2.0, self.footerView.bounds.size.height/2.0);
-    } else {
-      [self.footerView addSubview:self.cancelButton];
-      self.cancelButton.center = CGPointMake(self.footerView.bounds.size.width*2.0/6.0, self.footerView.bounds.size.height/2.0);
-      self.submitProblemButton.center = CGPointMake(self.footerView.bounds.size.width*4.0/6.0, self.footerView.bounds.size.height/2.0);
-    }
-  }
-  return self.footerView;
+  return 44;
 }
 
 #pragma mark UITableViewDelegate
@@ -169,20 +176,23 @@ static NSArray *s_problems = nil;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
   UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-  cell.accessoryType = UITableViewCellAccessoryCheckmark;
-  if (!self.submitProblemButton.enabled)
-    [self.submitProblemButton setEnabled:YES];
+  
+  NSString *typeLabel = s_problems[indexPath.row][@"type"];
+  if ([typeLabel isEqualToString:@""]) {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self reportIssueVC];
+  } else {
+    cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    if (!self.submitProblemButton.enabled) {
+      [self.submitProblemButton setEnabled:YES];
+    }
+  }
 }
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(nonnull NSIndexPath *)indexPath
 {
   UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
   cell.accessoryType = UITableViewCellAccessoryNone;
-}
-
-- (CGFloat)tableView:(__unused UITableView *)tableView heightForFooterInSection:(__unused NSInteger)section
-{
-  return 45.0;
 }
 
 @end

@@ -6,6 +6,7 @@
 @property (nonatomic) UIImageView *iconView;
 @property (nonatomic) UILabel *label;
 
+
 @end
 
 @implementation NYPLRoundedButton
@@ -15,7 +16,7 @@
   // The cast lets us call the constructor even though it's marked NS_UNAVAILABLE.
   NYPLRoundedButton *const button = [(id)self buttonWithType:UIButtonTypeSystem];
   
-  button.titleLabel.font = [UIFont systemFontOfSize:12];
+  button.titleLabel.font = [UIFont systemFontOfSize:14];
   button.layer.borderColor = button.tintColor.CGColor;
   button.layer.borderWidth = 1;
   button.layer.cornerRadius = 3;
@@ -53,8 +54,12 @@
 
 - (void)updateViews
 {
-  if(self.type == NYPLRoundedButtonTypeNormal) {
-    self.contentEdgeInsets = UIEdgeInsetsZero;
+  if(self.type == NYPLRoundedButtonTypeNormal || self.fromDetailView) {
+    if (!self.fromDetailView) {
+      self.contentEdgeInsets = UIEdgeInsetsZero;
+    } else {
+      self.contentEdgeInsets = UIEdgeInsetsMake(8, 20, 8, 20);
+    }
     self.iconView.hidden = YES;
     self.label.hidden = YES;
   } else {

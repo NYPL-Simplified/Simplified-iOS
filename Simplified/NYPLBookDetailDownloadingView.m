@@ -2,13 +2,12 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
+#import <PureLayout/PureLayout.h>
 
 #import "NYPLBookDetailDownloadingView.h"
 
 @interface NYPLBookDetailDownloadingView ()
 
-@property (nonatomic) NYPLRoundedButton *cancelButton;
-@property (nonatomic) UIView *backgroundView;
 @property (nonatomic) UILabel *progressLabel;
 @property (nonatomic) UILabel *percentageLabel;
 @property (nonatomic) UIProgressView *progressView;
@@ -17,88 +16,79 @@
 
 @implementation NYPLBookDetailDownloadingView
 
-- (instancetype)initWithWidth:(CGFloat)width
+- (instancetype)init
 {
-  self = [super initWithFrame:CGRectMake(0, 0, width, 70)];
+  self = [super init];
   if(!self) return nil;
   
-  self.backgroundView = [[UIView alloc] init];
-  self.backgroundView.backgroundColor = [NYPLConfiguration mainColor];
-  [self addSubview:self.backgroundView];
+  CGFloat const sidePadding = 10;
   
-  self.cancelButton = [NYPLRoundedButton button];
-  [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
-                     forState:UIControlStateNormal];
-  [self.cancelButton addTarget:self
-                        action:@selector(didSelectCancel)
-              forControlEvents:UIControlEventTouchUpInside];
-  self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
-  self.cancelButton.tintColor = [NYPLConfiguration mainColor];
-  [self addSubview:self.cancelButton];
+  self.translatesAutoresizingMaskIntoConstraints = NO;
   
   self.progressLabel = [[UILabel alloc] init];
-  self.progressLabel.font = [UIFont systemFontOfSize:12];
+  self.progressLabel.font = [UIFont systemFontOfSize:14];
   self.progressLabel.text = NSLocalizedString(@"Requesting", nil);
   self.progressLabel.textColor = [NYPLConfiguration backgroundColor];
   [self addSubview:self.progressLabel];
+  [self.progressLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+  [self.progressLabel autoPinEdgeToSuperviewEdge:ALEdgeLeading withInset:sidePadding];
   
   self.percentageLabel = [[UILabel alloc] init];
-  self.percentageLabel.font = [UIFont systemFontOfSize:12];
+  self.percentageLabel.font = [UIFont systemFontOfSize:14];
   self.percentageLabel.textColor = [NYPLConfiguration backgroundColor];
   self.percentageLabel.textAlignment = NSTextAlignmentRight;
   self.percentageLabel.text = @"0%";
   [self addSubview:self.percentageLabel];
+  [self.percentageLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+  [self.percentageLabel autoPinEdgeToSuperviewEdge:ALEdgeTrailing withInset:sidePadding];
+  
   
   self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
   self.progressView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5];
   self.progressView.tintColor = [NYPLConfiguration backgroundColor];
   [self addSubview:self.progressView];
+  [self.progressView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+  [self.progressView autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.progressLabel withOffset:sidePadding*2];
+  [self.progressView autoPinEdge:ALEdgeTrailing toEdge:ALEdgeLeading ofView:self.percentageLabel withOffset:-sidePadding*2];
   
   return self;
 }
 
-#pragma mark UIView
-
-- (void)layoutSubviews
+- (void)drawRect:(__unused CGRect)rect
 {
-  CGFloat const sidePadding = 10;
+  //Inner drop-shadow
+  CGRect bounds = [self bounds];
+  CGContextRef context = UIGraphicsGetCurrentContext();
   
-  self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), 30);
+  CGMutablePathRef visiblePath = CGPathCreateMutable();
+  CGPathMoveToPoint(visiblePath, NULL, bounds.origin.x, bounds.origin.y);
+  CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x + bounds.size.width, bounds.origin.y);
+  CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
+  CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x, bounds.origin.y + bounds.size.height);
+  CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x, bounds.origin.y);
+  CGPathCloseSubpath(visiblePath);
   
-  [self.progressLabel sizeToFit];
-  self.progressLabel.center = self.backgroundView.center;
-  self.progressLabel.frame = CGRectMake(sidePadding,
-                                        CGRectGetMinY(self.progressLabel.frame),
-                                        CGRectGetWidth(self.progressLabel.frame),
-                                        CGRectGetHeight(self.progressLabel.frame));
+  UIColor *aColor = [NYPLConfiguration mainColor];
+  [aColor setFill];
+  CGContextAddPath(context, visiblePath);
+  CGContextFillPath(context);
   
-  NSString *const percentageLabelText = self.percentageLabel.text;
-  self.percentageLabel.text = @"100%";
-  [self.percentageLabel sizeToFit];
-  self.percentageLabel.text = percentageLabelText;
-  self.percentageLabel.frame = CGRectMake((CGRectGetWidth(self.frame) - sidePadding -
-                                           CGRectGetWidth(self.percentageLabel.frame)),
-                                          CGRectGetMinY(self.progressLabel.frame),
-                                          CGRectGetWidth(self.percentageLabel.frame),
-                                          CGRectGetHeight(self.percentageLabel.frame));
+  CGMutablePathRef path = CGPathCreateMutable();
+  CGPathAddRect(path, NULL, CGRectInset(bounds, -42, -42));
+  CGPathAddPath(path, NULL, visiblePath);
+  CGPathCloseSubpath(path);
+  CGContextAddPath(context, visiblePath);
+  CGContextClip(context);
   
-  self.progressView.center = self.progressLabel.center;
-  self.progressView.frame = CGRectMake(CGRectGetMaxX(self.progressLabel.frame) + sidePadding,
-                                       CGRectGetMinY(self.progressView.frame),
-                                       (CGRectGetWidth(self.frame) - sidePadding * 4 -
-                                        CGRectGetWidth(self.progressLabel.frame) -
-                                        CGRectGetWidth(self.percentageLabel.frame)),
-                                       CGRectGetHeight(self.progressView.frame));
-  [self.progressView integralizeFrame];
-  
-  [self.cancelButton sizeToFit];
-  self.cancelButton.center = self.center;
-  self.cancelButton.frame = CGRectMake(CGRectGetMinX(self.cancelButton.frame),
-                                       (CGRectGetHeight(self.frame) -
-                                        CGRectGetHeight(self.cancelButton.frame)),
-                                       CGRectGetWidth(self.cancelButton.frame),
-                                       CGRectGetHeight(self.cancelButton.frame));
-  [self.cancelButton integralizeFrame];
+  aColor = [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.5f];
+  CGContextSaveGState(context);
+  CGContextSetShadowWithColor(context, CGSizeMake(0.0f, 0.0f), 5.0f, [aColor CGColor]);
+  [aColor setFill];
+  CGContextSaveGState(context);
+  CGContextAddPath(context, path);
+  CGContextEOFillPath(context);
+  CGPathRelease(path);
+  CGPathRelease(visiblePath);
 }
 
 #pragma mark -
@@ -121,11 +111,6 @@
   NSString *status = downloadStarted ? @"Downloading" : @"Requesting";
   self.progressLabel.text = NSLocalizedString(status, nil);
   [self setNeedsLayout];
-}
-
-- (void)didSelectCancel
-{
-  [self.delegate didSelectCancelForBookDetailDownloadingView:self];
 }
 
 @end

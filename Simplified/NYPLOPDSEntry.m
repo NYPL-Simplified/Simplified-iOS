@@ -11,11 +11,14 @@
 
 @property (nonatomic) NSString *alternativeHeadline;
 @property (nonatomic) NSArray *authorStrings;
+@property (nonatomic) NSArray<NYPLOPDSLink *> *authorLinks;
+@property (nonatomic) NYPLOPDSLink *seriesLink;
 @property (nonatomic) NSArray<NYPLOPDSCategory *> *categories;
 @property (nonatomic) NSString *identifier;
 @property (nonatomic) NSArray *links;
 @property (nonatomic) NYPLOPDSLink *annotations;
 @property (nonatomic) NYPLOPDSLink *alternate;
+@property (nonatomic) NYPLOPDSLink *relatedWorks;
 @property (nonatomic) NSURL *analytics;
 @property (nonatomic) NSString *providerName;
 @property (nonatomic) NSDate *published;
@@ -37,6 +40,7 @@
   
   {
     NSMutableArray *const authorStrings = [NSMutableArray array];
+    NSMutableArray<NYPLOPDSLink *> const *authorLinks = [NSMutableArray array];
     
     for(NYPLXML *const authorXML in [entryXML childrenWithName:@"author"]) {
       NYPLXML *const nameXML = [authorXML firstChildWithName:@"name"];
@@ -45,9 +49,18 @@
         continue;
       }
       [authorStrings addObject:nameXML.value];
+      
+      NYPLXML *const authorLinkXML = [authorXML firstChildWithName:@"link"];
+      NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:authorLinkXML];
+      if(!link) {
+        NYPLLOG(@"Ignoring malformed 'link' element for author.");
+      } else if ([link.rel isEqualToString:@"contributor"]) {
+        [authorLinks addObject:link];
+      }
     }
 
     self.authorStrings = authorStrings;
+    self.authorLinks = [authorLinks copy];
   }
   
   {
@@ -99,6 +112,8 @@
       } else if ([link.rel isEqualToString:@"alternate"]){
         self.alternate = link;
         self.analytics = [NSURL URLWithString:[link.href.absoluteString stringByReplacingOccurrencesOfString:@"/works/" withString:@"/analytics/"]];
+      } else if ([link.rel isEqualToString:@"related"]){
+        self.relatedWorks = link;
       } else {
         [links addObject:link];
       }
@@ -136,6 +151,14 @@
     if(!self.updated) {
       NYPLLOG(@"Element 'updated' does not contain an RFC 3339 date.");
       return nil;
+    }
+  }
+  
+  {
+    NYPLXML *const linkXML = [entryXML firstChildWithName:@"Series"];
+    self.seriesLink = [[NYPLOPDSLink alloc] initWithXML:linkXML];
+    if (!self.seriesLink) {
+      NYPLLOG(@"Ignoring malformed 'link' element for Series title.");
     }
   }
   

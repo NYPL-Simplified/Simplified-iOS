@@ -85,6 +85,29 @@ static NSUInteger const memoryCacheInMegabytes = 2;
           URLByAppendingPathComponent:[bookIdentifier SHA256]];
 }
 
+- (void)coverImageForBook:(NYPLBook *)book handler:(void (^)(UIImage *image))handler
+{
+
+  //Thumbnail first as placeholder
+  [self thumbnailImageForBook:book handler:handler];
+
+  [[self.session
+    dataTaskWithRequest:[NSURLRequest requestWithURL:book.imageURL]
+    completionHandler:^(NSData *const data,
+                        __attribute__((unused)) NSURLResponse *response,
+                        __attribute__((unused)) NSError *error) {
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        UIImage *const image = [UIImage imageWithData:data];
+        if(image) {
+          handler(image);
+        } else {
+          [self thumbnailImageForBook:book handler:handler];
+        }
+      }];
+    }]
+   resume];
+}
+
 - (void)thumbnailImageForBook:(NYPLBook *)book handler:(void (^)(UIImage *image))handler
 {
   if(!(book && handler)) {

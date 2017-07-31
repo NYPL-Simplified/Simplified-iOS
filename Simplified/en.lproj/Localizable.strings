@@ -59,6 +59,8 @@
 "Publisher" = "Publisher";
 "Read" = "Read"; // present tense
 "Remove" = "Remove";
+"ReportProblem" = "Report a Problem";
+"ReportProblemSent" = "Sent Report";
 "Reserve" = "Reserve";
 "Return" = "Return";
 "ReturnCouldNotBeCompletedFormat" = "The return of %@ could not be completed.";
@@ -103,7 +105,7 @@
 "BookDetailViewControllerCanKeepTitle" = "This open-access book is available to keep.";
 "BookDetailViewControllerHoldingTitleFormat" = "Available for checkout in approximately %@.";
 "BookDetailViewControllerReservedTitleFormat" = "This reservation will be automatically cancelled in %@.";
-"BookDetailViewControllerDistributedByFormat" = "Distributed by: %@";
+"BookDetailViewControllerDistributedByFormat" = "Distributed by: ";
 
 // NYPLFacetView
 

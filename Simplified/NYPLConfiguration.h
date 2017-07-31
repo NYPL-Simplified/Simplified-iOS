@@ -37,6 +37,8 @@
 
 + (NSString *)systemFontName;
 
++ (NSString *)systemFontFamilyName;
+
 + (NSString *)boldSystemFontName;
 
 + (UIColor *)backgroundMediaOverlayHighlightColor;
