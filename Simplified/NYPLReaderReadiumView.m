@@ -810,7 +810,12 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     
       if (headError || responseStatusCode != 200) {
         NSError *dataError;
-        NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&dataError];
+        NSData *data;
+        if (url) {
+          data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&dataError];
+        } else {
+          [self reportNilUrlToBugsnagWithSpineItem:spineItem];
+        }
         
         if (data || !dataError) {
           NSNumber *length = [NSNumber numberWithUnsignedInteger:data.length];
@@ -920,6 +925,21 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
     [weakSelf pollReadyState];
   });
+}
+
+// FIXME: This can be removed when sufficient data has been collected
+- (void)reportNilUrlToBugsnagWithSpineItem:(RDSpineItem *)spineItem
+{
+  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:1 userInfo:nil]
+                 block:^(BugsnagCrashReport * _Nonnull report) {
+                   report.context = @"NYPLReaderReadiumView";
+                   report.severity = BSGSeverityInfo;
+                   report.errorMessage = @"URL for creating book length was unexpectedly nil";
+                   NSDictionary *metadata = @{@"packageRootUrl" : self.server.package.rootURL,
+                                              @"spineItemBaseHref" : spineItem.baseHref,
+                                              @"bookIdentifier" : self.book.identifier};
+                   [report addMetadata:metadata toTabWithName:@"Extra Data"];
+                 }];
 }
 
 #pragma mark NYPLReaderRenderer
