@@ -1,12 +1,12 @@
 import Foundation
 
-@objc final class NYPLBookAuthor: NSObject {
+final class NYPLBookAuthor: NSObject {
 
-  var name: String
-  var relatedBooksLink: URL?
+  let name: String
+  let relatedBooksLink: URL?
 
-  init(authorName: String) {
-    name = authorName
+  init(authorName: String, relatedBooksLink: URL?) {
+    self.name = authorName
+    self.relatedBooksLink = relatedBooksLink
   }
 }
-
