@@ -101,7 +101,8 @@ static NSUInteger const memoryCacheInMegabytes = 2;
         if(image) {
           handler(image);
         } else {
-          [self thumbnailImageForBook:book handler:handler];
+          //[self thumbnailImageForBook:book handler:handler];  // why are we calling this again?
+          handler([NYPLTenPrintCoverView detailImageForBook:book]);
         }
       }];
     }]
@@ -144,7 +145,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
           if(image) {
             handler(image);
           } else {
-            handler([NYPLTenPrintCoverView imageForBook:book]);
+            handler([NYPLTenPrintCoverView thumbnailImageForBook:book]);
           }
         }];
       }]
@@ -152,7 +153,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   } else {
     if(!book.imageThumbnailURL) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        handler([NYPLTenPrintCoverView imageForBook:book]);
+        handler([NYPLTenPrintCoverView thumbnailImageForBook:book]);
       }];
       return;
     }
@@ -166,7 +167,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
           if(image) {
             handler(image);
           } else {
-            handler([NYPLTenPrintCoverView imageForBook:book]);
+            handler([NYPLTenPrintCoverView thumbnailImageForBook:book]);
           }
         }];
       }]
@@ -201,7 +202,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
   for(NYPLBook *const book in books) {
     if(!book.imageThumbnailURL) {
       [lock lock];
-      dictionary[book.identifier] = [NYPLTenPrintCoverView imageForBook:book];
+      dictionary[book.identifier] = [NYPLTenPrintCoverView thumbnailImageForBook:book];
       --remaining;
       if(!remaining) {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -235,7 +236,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
                                                             __attribute__((unused)) BOOL *stop) {
               if([imageOrNull isKindOfClass:[NSNull class]]) {
                 dictionary[identifier] =
-                  [NYPLTenPrintCoverView imageForBook:identifiersToBooks[identifier]];
+                  [NYPLTenPrintCoverView thumbnailImageForBook:identifiersToBooks[identifier]];
               }
             }];
             handler(dictionary);

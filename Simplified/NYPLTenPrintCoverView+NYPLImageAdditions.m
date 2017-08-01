@@ -16,10 +16,22 @@ extern int authorHeight;
   authorHeight = 15;
 }
 
-+ (UIImage *)imageForBook:(NYPLBook *const)book
++ (UIImage *)detailImageForBook:(NYPLBook *const)book
 {
-  CGFloat const width = 80;
-  CGFloat const height = 120;
+  return [NYPLTenPrintCoverView imageForBook:book withSize:CGSizeMake(510,680)];
+}
+
++ (UIImage *)thumbnailImageForBook:(NYPLBook *const)book
+{
+  return [NYPLTenPrintCoverView imageForBook:book withSize:CGSizeMake(80,120)];
+}
+
++ (UIImage *)imageForBook:(NYPLBook *const)book withSize:(CGSize)size
+{
+  CGFloat const width = size.width;
+  CGFloat const height = size.height;
+
+  Float32 scale = (width <= 80) ? 0.4 : 1.5;
   
   // The scale argument below refers to the size of the font and nothing to do with the scale used
   // for rendering by the main screen.
@@ -28,7 +40,7 @@ extern int authorHeight;
      initWithFrame:CGRectMake(0, 0, width, height)
      withTitle:book.title
      withAuthor:book.authors
-     withScale:0.4];
+     withScale:scale];
   
   UIGraphicsBeginImageContextWithOptions(CGSizeMake(width, height), YES, 0.0);
   [coverView.layer renderInContext:UIGraphicsGetCurrentContext()];
