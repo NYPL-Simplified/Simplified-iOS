@@ -91,10 +91,10 @@ static NSString *const AlternateURLKey = @"alternate";
   for (int i = 0; i < (int)entry.authorStrings.count; i++) {
     if ((int)entry.authorLinks.count > i) {
       [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:entry.authorStrings[i]
-                                                   relatedBooksLink:entry.authorLinks[i].href]];
+                                                   relatedBooksURL:entry.authorLinks[i].href]];
     } else {
       [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:entry.authorStrings[i]
-                                                   relatedBooksLink:nil]];
+                                                   relatedBooksURL:nil]];
     }
   }
 
@@ -334,14 +334,14 @@ static NSString *const AlternateURLKey = @"alternate";
         NSURL *url = [NSURL URLWithString:authorLinks[i]];
         if (url) {
           [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
-                                                       relatedBooksLink:authorLinks[i]]];
+                                                       relatedBooksURL:url]];
         } else {
           [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
-                                                       relatedBooksLink:nil]];
+                                                       relatedBooksURL:nil]];
         }
       } else {
         [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
-                                                     relatedBooksLink:nil]];
+                                                     relatedBooksURL:nil]];
       }
     }
   } else {
@@ -432,7 +432,7 @@ static NSString *const AlternateURLKey = @"alternate";
 - (NSArray *)authorLinkArray {
   NSMutableArray *array = [[NSMutableArray alloc] init];
   for (NYPLBookAuthor *auth in self.bookAuthors) {
-    [array addObject:auth.relatedBooksLink.absoluteString];
+    [array addObject:auth.relatedBooksURL.absoluteString];
   }
   return array;
 }
