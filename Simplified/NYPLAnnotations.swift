@@ -298,11 +298,19 @@ final class NYPLAnnotations: NSObject {
   
   class var headers: [String:String]
   {
-    let authenticationString = "\(NYPLAccount.shared().barcode!):\(NYPLAccount.shared().pin!)"
-    let authenticationData:Data = authenticationString.data(using: String.Encoding.ascii)!
-    let authenticationValue = "Basic \(authenticationData.base64EncodedString(options: Data.Base64EncodingOptions.lineLength64Characters))"
-    
-    return ["Authorization" : "\(authenticationValue)",
+    if let barcode = NYPLAccount.shared().barcode, let pin = NYPLAccount.shared().pin {
+      let authenticationString = "\(barcode):\(pin)"
+      if let authenticationData = authenticationString.data(using: String.Encoding.ascii) {
+        let authenticationValue = "Basic \(authenticationData.base64EncodedString(options: Data.Base64EncodingOptions.lineLength64Characters))"
+        return ["Authorization" : "\(authenticationValue)",
+                "Content-Type" : "application/json"]
+      } else {
+        Log.error(#file, "Error formatting auth headers.")
+      }
+    } else {
+      Log.error(#file, "Attmpeted to create authorization header without a barcode or pin.")
+    }
+    return ["Authorization" : "",
             "Content-Type" : "application/json"]
   }
 }
