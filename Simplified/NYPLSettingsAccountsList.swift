@@ -163,7 +163,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
       imageView = UIImageView(image: #imageLiteral(resourceName: "LibraryLogoMagic"))
     }
     
-    imageView.contentMode = .center
+    imageView.contentMode = .scaleAspectFit
     
     let textLabel = UILabel()
     textLabel.font = UIFont.systemFont(ofSize: 14)
