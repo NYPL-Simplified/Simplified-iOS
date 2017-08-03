@@ -101,8 +101,7 @@ static NSUInteger const memoryCacheInMegabytes = 2;
         if(image) {
           handler(image);
         } else {
-          //[self thumbnailImageForBook:book handler:handler];  // why are we calling this again?
-          handler([NYPLTenPrintCoverView detailImageForBook:book]);
+          [self thumbnailImageForBook:book handler:handler];
         }
       }];
     }]
