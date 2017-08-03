@@ -62,7 +62,7 @@ static NSString *const RecordsKey = @"records";
   
   void (^handlerBlock)(BOOL success)= ^(BOOL success){
     if(success) {
-      [[NYPLBookRegistry sharedRegistry] save];
+      [self save];
     } else {
     }};
   
@@ -309,7 +309,7 @@ static NSString *const RecordsKey = @"records";
 {
   [self syncWithCompletionHandler:^(BOOL success) {
     if(success) {
-      [[NYPLBookRegistry sharedRegistry] save];
+      [self save];
     } else {
       [[[UIAlertView alloc]
         initWithTitle:NSLocalizedString(@"SyncFailed", nil)

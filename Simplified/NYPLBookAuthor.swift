@@ -3,10 +3,10 @@ import Foundation
 final class NYPLBookAuthor: NSObject {
 
   let name: String
-  let relatedBooksLink: URL?
+  let relatedBooksURL: URL?
 
-  init(authorName: String, relatedBooksLink: URL?) {
+  init(authorName: String, relatedBooksURL: URL?) {
     self.name = authorName
-    self.relatedBooksLink = relatedBooksLink
+    self.relatedBooksURL = relatedBooksURL
   }
 }
