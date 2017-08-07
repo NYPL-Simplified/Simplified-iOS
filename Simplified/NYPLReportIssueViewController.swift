@@ -147,43 +147,33 @@ class NYPLReportIssueViewController: UITableViewController, UITextFieldDelegate,
   }
   
   override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    
-    if HSAppearance.isIPad()
-    {
-      if(indexPath.row == 0){
-        return 44.0;
-      }else if(indexPath.row == 1){
-        return self.view.frame.size.height - 44.0;
-      }else{
-        return 44.0;
-      }
+
+    // height for the subject line of the message
+    let subjectHeight:CGFloat = 44.0
+
+    // height for the actual message body, it gets increased as we increase device screen size
+    var messageHeight:CGFloat = subjectHeight
+
+    let iPhonePadding:CGFloat  = 155.0
+    let iPadPadding:CGFloat    = 200.0
+
+    if indexPath.row == 0 {
+      return subjectHeight
     }
-    else{
-      if(indexPath.row == 0) {
-        return 44.0;
+    // we're at the message body
+    else if indexPath.row == 1 {
+      // is iPad
+      if HSAppearance.isIPad() {
+        messageHeight = messageHeight + iPadPadding
       }
-      else if(indexPath.row == 1) {
-        var messageHeight:CGFloat;
-        //Instead, get the keyboard height and calculate the message field height
-        let orientation:UIDeviceOrientation = UIDevice.current.orientation;
-        if (UIDeviceOrientationIsLandscape(orientation))
-        {
-          messageHeight = 68.0;
-        }
-        else {
-          
-          if (HSAppearance.isTall()) {
-            messageHeight = 249.0;
-          }else{
-            messageHeight = 155.0 + 44.0;
-          }
-        }
-        // return self.view.bounds.size.height - 88.0;
-        return messageHeight;
-        
+      // is iPhone
+      else {
+        messageHeight = messageHeight + iPhonePadding
       }
+
+      return messageHeight
     }
-    
+
     return 0.0
   }
   
