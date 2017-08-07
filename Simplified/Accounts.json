@@ -51,6 +51,40 @@
  "mainColor" : "497049"
  },
  {
+ "id" : 3,
+ "pathComponent" : "3",
+ "name" : "Alameda County Library",
+ "subtitle" : "Infinite possibilities",
+ "logo" : "LibraryLogoAlameda",
+ "needsAuth" : true,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : false,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "http://acl.simplye-ca.org",
+ "mainColor" : "58a6f5"
+ },
+ {
+ "id" : 8,
+ "pathComponent" : "8",
+ "name" : "Howard County Library System",
+ "subtitle" : "Public education for all",
+ "logo" : "LibraryLogoHoward",
+ "needsAuth" : true,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : true,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "http://howard.simplye-md.org",
+ "mainColor" : "0066CC",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
+ },
+ {
  "id" : 9,
  "pathComponent" : "9",
  "name" : "Montgomery County Public Libraries",
@@ -65,5 +99,23 @@
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://montgomery.simplye-md.org",
  "mainColor" : "0067b1"
+ },
+ {
+ "id" : 10,
+ "pathComponent" : "10",
+ "name" : "Frederick County Public Library",
+ "subtitle" : "Explore. Invent. Transform.",
+ "logo" : "LibraryLogoFrederick",
+ "needsAuth" : true,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : true,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "http://frederick.simplye-md.org",
+ "mainColor" : "ef4123",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
  }
 ]
