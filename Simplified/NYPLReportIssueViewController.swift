@@ -26,7 +26,6 @@ class NYPLReportIssueViewController: UIViewController, UITableViewDataSource, UI
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    tableView = UITableView.init(frame: self.view.frame)
     tableView.isScrollEnabled = false
     tableView.backgroundColor = UIColor.white
     tableView.alwaysBounceVertical = false
