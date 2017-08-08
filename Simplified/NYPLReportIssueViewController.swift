@@ -10,8 +10,10 @@ import UIKit
 import HelpStack
 import MessageUI
 
-class NYPLReportIssueViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, MFMailComposeViewControllerDelegate {
-  
+class NYPLReportIssueViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UITextViewDelegate, MFMailComposeViewControllerDelegate {
+
+  @IBOutlet var tableView: UITableView!
+
   var completion: (() -> Void)?
   
   var subjectField: UITextField!
@@ -23,7 +25,12 @@ class NYPLReportIssueViewController: UITableViewController, UITextFieldDelegate,
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+
+    tableView = UITableView.init(frame: self.view.frame)
+    tableView.isScrollEnabled = false
+    tableView.backgroundColor = UIColor.white
+    tableView.alwaysBounceVertical = false
+
     let appearance:HSAppearance = (HSHelpStack.instance() as AnyObject).appearance
     self.view.backgroundColor = appearance.getBackgroundColor()
     submitBarItem = UIBarButtonItem.init(title: "Submit", style: .done, target: self, action:  #selector(submitPressed(sender:)))
@@ -110,12 +117,12 @@ class NYPLReportIssueViewController: UITableViewController, UITextFieldDelegate,
     // Dispose of any resources that can be recreated.
   }
   
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     // #warning Incomplete implementation, return the number of rows
     return 2
   }
   
-  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     
     var cell = UITableViewCell.init(style: .subtitle, reuseIdentifier: "")
     
@@ -146,34 +153,44 @@ class NYPLReportIssueViewController: UITableViewController, UITextFieldDelegate,
     
   }
   
-  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-
-    // height for the subject line of the message
-    let subjectHeight:CGFloat = 44.0
-
-    // height for the actual message body, it gets increased as we increase device screen size
-    var messageHeight:CGFloat = subjectHeight
-
-    let iPhonePadding:CGFloat  = 155.0
-    let iPadPadding:CGFloat    = 200.0
-
-    if indexPath.row == 0 {
-      return subjectHeight
-    }
-    // we're at the message body
-    else if indexPath.row == 1 {
-      // is iPad
-      if HSAppearance.isIPad() {
-        messageHeight = messageHeight + iPadPadding
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    
+    if HSAppearance.isIPad()
+    {
+      if(indexPath.row == 0){
+        return 44.0;
+      }else if(indexPath.row == 1){
+        return self.view.frame.size.height - 44.0;
+      }else{
+        return 44.0;
       }
-      // is iPhone
-      else {
-        messageHeight = messageHeight + iPhonePadding
-      }
-
-      return messageHeight
     }
-
+    else{
+      if(indexPath.row == 0) {
+        return 44.0;
+      }
+      else if(indexPath.row == 1) {
+        var messageHeight:CGFloat;
+        //Instead, get the keyboard height and calculate the message field height
+        let orientation:UIDeviceOrientation = UIDevice.current.orientation;
+        if (UIDeviceOrientationIsLandscape(orientation))
+        {
+          messageHeight = 68.0;
+        }
+        else {
+          
+          if (HSAppearance.isTall()) {
+            messageHeight = 249.0;
+          }else{
+            messageHeight = 155.0 + 44.0;
+          }
+        }
+        // return self.view.bounds.size.height - 88.0;
+        return messageHeight;
+        
+      }
+    }
+    
     return 0.0
   }
   
