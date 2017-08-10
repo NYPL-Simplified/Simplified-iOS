@@ -427,7 +427,9 @@ static NSString *const AlternateURLKey = @"alternate";
 - (NSArray *)authorNameArray {
   NSMutableArray *array = [[NSMutableArray alloc] init];
   for (NYPLBookAuthor *auth in self.bookAuthors) {
-    [array addObject:auth.name];
+    if (auth.name) {
+      [array addObject:auth.name];
+    }
   }
   return array;
 }
@@ -435,7 +437,9 @@ static NSString *const AlternateURLKey = @"alternate";
 - (NSArray *)authorLinkArray {
   NSMutableArray *array = [[NSMutableArray alloc] init];
   for (NYPLBookAuthor *auth in self.bookAuthors) {
-    [array addObject:auth.relatedBooksURL.absoluteString];
+    if (auth.relatedBooksURL.absoluteString) {
+      [array addObject:auth.relatedBooksURL.absoluteString];
+    }
   }
   return array;
 }
