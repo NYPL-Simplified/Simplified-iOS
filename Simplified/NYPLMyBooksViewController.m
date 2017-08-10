@@ -378,6 +378,12 @@ OK:
        requestCredentialsUsingExistingBarcode:NO
        completionHandler:nil];
       [self.refreshControl endRefreshing];
+
+      // the following lines will force a screen refresh so the
+      // activity indicator doesn't stay stuck on the screen
+      [self viewDidLoad];
+      [self viewWillAppear:YES];
+
       [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
     }
   }
