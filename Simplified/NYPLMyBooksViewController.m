@@ -157,16 +157,16 @@ typedef NS_ENUM(NSInteger, FacetSort) {
                        action:@selector(didSelectSearch)];
   self.searchButton.accessibilityLabel = NSLocalizedString(@"Search", nil);
   self.navigationItem.rightBarButtonItem = self.searchButton;
-  
-  if([NYPLBookRegistry sharedRegistry].syncing == NO) {
-    [self.refreshControl endRefreshing];
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-  }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
+  if([NYPLBookRegistry sharedRegistry].syncing == NO) {
+    [self.refreshControl endRefreshing];
+    self.collectionView.contentOffset = CGPointZero;
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+  }
   [self.navigationController setNavigationBarHidden:NO];
 }
 
@@ -378,12 +378,6 @@ OK:
        requestCredentialsUsingExistingBarcode:NO
        completionHandler:nil];
       [self.refreshControl endRefreshing];
-
-      // the following lines will force a screen refresh so the
-      // activity indicator doesn't stay stuck on the screen
-      [self viewDidLoad];
-      [self viewWillAppear:YES];
-
       [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
     }
   }
