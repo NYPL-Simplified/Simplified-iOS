@@ -89,11 +89,16 @@
 
 - (void)switchLibrary
 {
-  
-  
   NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
 
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"PickYourLibrary", nil) message:nil preferredStyle:(UIAlertControllerStyleActionSheet)];
+  UIAlertControllerStyle style;
+  if (viewController) {
+    style = UIAlertControllerStyleActionSheet;
+  } else {
+    style = UIAlertControllerStyleAlert;
+  }
+
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"PickYourLibrary", nil) message:nil preferredStyle:(style)];
   alert.popoverPresentationController.barButtonItem = viewController.navigationItem.leftBarButtonItem;
   alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
   
