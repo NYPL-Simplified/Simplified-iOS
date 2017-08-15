@@ -21,48 +21,15 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
 
 + (instancetype)sharedAccount
 {
-  static NYPLAccount *sharedAccount = nil;
-  
-  if (sharedAccount == nil) {
-    sharedAccount = [[self alloc] init];
-    if(!sharedAccount) {
-      NYPLLOG(@"Failed to create shared account.");
-    }
-  }
-  
   NSInteger library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
 
-  if (library != 0)
-  {
-    barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode",[@(library) stringValue]];
-    authorizationIdentifierKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAuthorization",[@(library) stringValue]];
-    PINKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPIN",[@(library) stringValue]];
-    adobeTokenKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAdobeTokenKey",[@(library) stringValue]];
-    patronKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPatronKey",[@(library) stringValue]];
-    authTokenKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAuthTokenKey",[@(library) stringValue]];
-    adobeVendorKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAdobeVendorKey",[@(library) stringValue]];
-    providerKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountProviderKey",[@(library) stringValue]];
-    userIDKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountUserIDKey",[@(library) stringValue]];
-    deviceIDKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountDeviceIDKey",[@(library) stringValue]];
-    licensorKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountLicensorKey",[@(library) stringValue]];
-
+  //GODO should be fine, right?
+  if (library) {
+    return [self sharedAccount:library];
+  } else {
+    NYPLLOG(@"Error: Could not initialize current account ID.");
+    return [self sharedAccount:0];
   }
-  else
-  {
-    barcodeKey = @"NYPLAccountBarcode";
-    authorizationIdentifierKey = @"NYPLAccountAuthorization";
-    PINKey = @"NYPLAccountPIN";
-    adobeTokenKey = @"NYPLAccountAdobeTokenKey";
-    patronKey = @"NYPLAccountPatronKey";
-    authTokenKey = @"NYPLAccountAuthTokenKey";
-    adobeVendorKey = @"NYPLAccountAdobeVendorKey";
-    providerKey = @"NYPLAccountProviderKey";
-    userIDKey = @"NYPLAccountUserIDKey";
-    deviceIDKey = @"NYPLAccountDeviceIDKey";
-    licensorKey = @"NYPLAccountLicensorKey";
-  }
-
-  return sharedAccount;
 }
 
 + (instancetype)sharedAccount:(NSInteger)account
@@ -76,7 +43,8 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
     }
   }
   
-  
+  //GODO may be an opportunity to fully collapse this with the planned keychain migration
+
   if (account != 0)
   {
     barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode",[@(account) stringValue]];
