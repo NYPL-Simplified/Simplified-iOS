@@ -10,8 +10,6 @@
 @interface NYPLBook ()
 
 @property (nonatomic) NYPLBookAcquisition *acquisition;
-//@property (nonatomic) NSArray *authorLinks;
-//@property (nonatomic) NSArray *authorStrings;
 @property (nonatomic) NSArray<NYPLBookAuthor *> *bookAuthors;
 @property (nonatomic) NYPLBookAvailabilityStatus availabilityStatus;
 @property (nonatomic) NSInteger availableCopies;
@@ -328,21 +326,26 @@ static NSString *const AlternateURLKey = @"alternate";
   NSArray *authorStrings = dictionary[AuthorsKey];
   NSArray *authorLinks = dictionary[AuthorLinksKey];
 
-  if(authorStrings && authorLinks) {
+  if (authorStrings && authorLinks) {
     for (int i = 0; i < (int)authorStrings.count; i++) {
       if ((int)authorLinks.count > i) {
         NSURL *url = [NSURL URLWithString:authorLinks[i]];
         if (url) {
           [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
-                                                       relatedBooksURL:url]];
+                                                        relatedBooksURL:url]];
         } else {
           [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
-                                                       relatedBooksURL:nil]];
+                                                        relatedBooksURL:nil]];
         }
       } else {
         [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
-                                                     relatedBooksURL:nil]];
+                                                      relatedBooksURL:nil]];
       }
+    }
+  } else if (authorStrings) {
+    for (int i = 0; i < (int)authorStrings.count; i++) {
+      [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:authorStrings[i]
+                                                    relatedBooksURL:nil]];
     }
   } else {
     self.bookAuthors = nil;
@@ -424,7 +427,9 @@ static NSString *const AlternateURLKey = @"alternate";
 - (NSArray *)authorNameArray {
   NSMutableArray *array = [[NSMutableArray alloc] init];
   for (NYPLBookAuthor *auth in self.bookAuthors) {
-    [array addObject:auth.name];
+    if (auth.name) {
+      [array addObject:auth.name];
+    }
   }
   return array;
 }
@@ -432,7 +437,9 @@ static NSString *const AlternateURLKey = @"alternate";
 - (NSArray *)authorLinkArray {
   NSMutableArray *array = [[NSMutableArray alloc] init];
   for (NYPLBookAuthor *auth in self.bookAuthors) {
-    [array addObject:auth.relatedBooksURL.absoluteString];
+    if (auth.relatedBooksURL.absoluteString) {
+      [array addObject:auth.relatedBooksURL.absoluteString];
+    }
   }
   return array;
 }
