@@ -95,7 +95,7 @@
  "supportsBarcodeScanner" : false,
  "supportsBarcodeDisplay" : false,
  "supportsCardCreator" : false,
- "supportsReservations" : false,
+ "supportsReservations" : true,
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://montgomery.simplye-md.org",
  "mainColor" : "0067b1",
