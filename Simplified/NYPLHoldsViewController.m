@@ -113,6 +113,7 @@
   [super viewWillAppear:animated];
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
     [self.refreshControl endRefreshing];
+    self.collectionView.contentOffset = CGPointZero;
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }
 }
