@@ -129,7 +129,10 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
-  
+
+  if (@available(iOS 11.0, *)) {
+    self.collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+  }
   self.collectionView.alwaysBounceVertical = YES;
   self.refreshControl = [[UIRefreshControl alloc] init];
   [self.refreshControl addTarget:self action:@selector(didSelectSync) forControlEvents:UIControlEventValueChanged];
