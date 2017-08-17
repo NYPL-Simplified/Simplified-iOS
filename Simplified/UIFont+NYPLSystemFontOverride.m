@@ -7,13 +7,14 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 
-+ (UIFont *)boldSystemFontOfSize:(CGFloat)fontSize {
-  return [UIFont fontWithName:[NYPLConfiguration boldSystemFontName] size:fontSize];
-}
-
-+ (UIFont *)systemFontOfSize:(CGFloat)fontSize {
-  return [UIFont fontWithName:[NYPLConfiguration systemFontName] size:fontSize];
-}
+//GODO change to a unique method name
+//+ (UIFont *)boldSystemFontOfSize:(CGFloat)fontSize {
+//  return [UIFont fontWithName:[NYPLConfiguration boldSystemFontName] size:fontSize];
+//}
+//
+//+ (UIFont *)systemFontOfSize:(CGFloat)fontSize {
+//  return [UIFont fontWithName:[NYPLConfiguration systemFontName] size:fontSize];
+//}
 
 #pragma clang diagnostic pop
 
