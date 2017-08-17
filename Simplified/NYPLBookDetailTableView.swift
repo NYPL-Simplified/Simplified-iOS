@@ -18,6 +18,9 @@ class NYPLBookDetailTableView: UITableView {
                                           self.layoutMargins.left+12,
                                           self.layoutMargins.bottom,
                                           self.layoutMargins.right+12)
+    self.estimatedRowHeight = 0
+    self.estimatedSectionHeaderHeight = 0
+    self.estimatedSectionFooterHeight = 0
   }
   
   required init?(coder aDecoder: NSCoder) {
