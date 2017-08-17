@@ -10,8 +10,10 @@ import UIKit
 import HelpStack
 import MessageUI
 
-class NYPLReportIssueViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, MFMailComposeViewControllerDelegate {
-  
+class NYPLReportIssueViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UITextViewDelegate, MFMailComposeViewControllerDelegate {
+
+  @IBOutlet var tableView: UITableView!
+
   var completion: (() -> Void)?
   
   var subjectField: UITextField!
@@ -23,7 +25,11 @@ class NYPLReportIssueViewController: UITableViewController, UITextFieldDelegate,
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+
+    tableView.isScrollEnabled = false
+    tableView.backgroundColor = UIColor.white
+    tableView.alwaysBounceVertical = false
+
     let appearance:HSAppearance = (HSHelpStack.instance() as AnyObject).appearance
     self.view.backgroundColor = appearance.getBackgroundColor()
     submitBarItem = UIBarButtonItem.init(title: "Submit", style: .done, target: self, action:  #selector(submitPressed(sender:)))
@@ -110,12 +116,12 @@ class NYPLReportIssueViewController: UITableViewController, UITextFieldDelegate,
     // Dispose of any resources that can be recreated.
   }
   
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     // #warning Incomplete implementation, return the number of rows
     return 2
   }
   
-  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     
     var cell = UITableViewCell.init(style: .subtitle, reuseIdentifier: "")
     
@@ -146,7 +152,7 @@ class NYPLReportIssueViewController: UITableViewController, UITextFieldDelegate,
     
   }
   
-  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     
     if HSAppearance.isIPad()
     {

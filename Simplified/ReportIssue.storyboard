@@ -77,6 +77,9 @@
                     </navigationItem>
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="tableView" destination="GRj-EQ-BXo" id="8Y9-oc-jsc"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xNn-Zm-Ijr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
