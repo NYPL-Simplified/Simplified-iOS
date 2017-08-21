@@ -157,16 +157,16 @@ typedef NS_ENUM(NSInteger, FacetSort) {
                        action:@selector(didSelectSearch)];
   self.searchButton.accessibilityLabel = NSLocalizedString(@"Search", nil);
   self.navigationItem.rightBarButtonItem = self.searchButton;
-  
-  if([NYPLBookRegistry sharedRegistry].syncing == NO) {
-    [self.refreshControl endRefreshing];
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-  }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
+  if([NYPLBookRegistry sharedRegistry].syncing == NO) {
+    [self.refreshControl endRefreshing];
+    self.collectionView.contentOffset = CGPointZero;
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+  }
   [self.navigationController setNavigationBarHidden:NO];
 }
 
