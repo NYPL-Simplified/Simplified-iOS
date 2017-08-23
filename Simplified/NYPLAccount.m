@@ -22,14 +22,7 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
 + (instancetype)sharedAccount
 {
   NSInteger library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
-
-  //GODO should be fine, right?
-  if (library) {
-    return [self sharedAccount:library];
-  } else {
-    NYPLLOG(@"Error: Could not initialize current account ID.");
-    return [self sharedAccount:0];
-  }
+  return [self sharedAccount:library];
 }
 
 + (instancetype)sharedAccount:(NSInteger)account
@@ -43,8 +36,6 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
     }
   }
   
-  //GODO may be an opportunity to fully collapse this with the planned keychain migration
-
   if (account != 0)
   {
     barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode",[@(account) stringValue]];

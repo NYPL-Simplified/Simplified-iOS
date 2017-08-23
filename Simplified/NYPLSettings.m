@@ -75,12 +75,9 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 
 - (NSInteger)currentAccountIdentifier
 {
-  if ([[NSUserDefaults standardUserDefaults] objectForKey:currentAccountIdentifierKey] == nil)
-  {
-    [self setCurrentAccountIdentifier:0];
-  }
   return [[NSUserDefaults standardUserDefaults] integerForKey:currentAccountIdentifierKey];
 }
+
 - (NSURL *)customMainFeedURL
 {
   return [[NSUserDefaults standardUserDefaults] URLForKey:customMainFeedURLKey];
