@@ -402,11 +402,10 @@ NSInteger const linearViewTag = 1;
        [self deauthorizeDevice];
 
      } else {
-       [self showLogoutAlertWithErrorCode:statusCode];
+       [self showLogoutAlertWithError:error];
+       [self removeActivityTitle];
+       [[UIApplication sharedApplication] endIgnoringInteractionEvents];
      }
-
-     [self removeActivityTitle];
-     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
    }];
 
   [task resume];
@@ -431,6 +430,8 @@ NSInteger const linearViewTag = 1;
 #if defined(FEATURE_DRM_CONNECTOR)
 
   void (^afterDeauthorization)() = ^() {
+    [self removeActivityTitle];
+    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
     [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
@@ -604,21 +605,18 @@ NSInteger const linearViewTag = 1;
   [self removeActivityTitle];
 }
 
-- (void)showLogoutAlertWithErrorCode:(NSInteger)code
+- (void)showLogoutAlertWithError:(NSError *)error
 {
-  NSString *title;
-  NSString *message;
-  if (code == 401) {
+  NSString *title; NSString *message;
+  if (error.code == 401) {
     title = @"Unexpected Credentials";
     message = @"Your username or password may have changed since the last time you logged in.\n\nIf you believe this is an error, please contact your library.";
     [self deauthorizeDevice];
   } else {
     title = @"SettingsAccountViewControllerLogoutFailed";
-    message = @"TimedOut";
+    message = error.localizedDescription;
   }
-  [self presentViewController:[NYPLAlertController
-                               alertWithTitle:title
-                               message:message]
+  [self presentViewController:[NYPLAlertController alertWithTitle:title message:message]
                      animated:YES
                    completion:nil];
 }
