@@ -61,7 +61,7 @@
  "supportsBarcodeScanner" : false,
  "supportsBarcodeDisplay" : false,
  "supportsCardCreator" : false,
- "supportsReservations" : false,
+ "supportsReservations" : true,
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://acl.simplye-ca.org",
  "mainColor" : "58a6f5"
