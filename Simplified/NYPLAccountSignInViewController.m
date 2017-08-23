@@ -20,6 +20,7 @@
 #import "NYPLXML.h"
 #import "NYPLOPDSFeed.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "UIFont+NYPLSystemFontOverride.h"
 #import <PureLayout/PureLayout.h>
 @import CoreLocation;
 
@@ -32,15 +33,12 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindBarcode,
   CellKindPIN,
   CellKindLogInSignOut,
-  CellKindRegistration,
-  CellKindEULA
+  CellKindRegistration
 };
 
 typedef NS_ENUM(NSInteger, Section) {
-  SectionBarcodePin = 0,
-  SectionEULA = 1,
-  SectionLoginLogout = 2,
-  SectionRegistration = 3
+  SectionCredentials = 0,
+  SectionRegistration = 1
 };
 
 static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
@@ -52,25 +50,18 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
           return CellKindBarcode;
         case 1:
           return CellKindPIN;
+        case 2:
+          return CellKindLogInSignOut;
         default:
           @throw NSInvalidArgumentException;
       }
     case 1:
       switch(indexPath.row) {
         case 0:
-          return CellKindEULA;
+          return CellKindRegistration;
         default:
           @throw NSInvalidArgumentException;
       }
-    case 2:
-      switch(indexPath.row) {
-        case 0:
-          return CellKindLogInSignOut;
-        default:
-          @throw NSInvalidArgumentException;
-      }
-    case 3:
-      return CellKindRegistration;
     default:
       @throw NSInvalidArgumentException;
   }
@@ -84,7 +75,6 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @property (nonatomic) UIButton *barcodeScanButton;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) BOOL hiddenPIN;
-@property (nonatomic) UITableViewCell *eulaCell;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITextField *PINTextField;
 @property (nonatomic) NSURLSession *session;
@@ -207,11 +197,6 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   self.logInSignOutCell = [[UITableViewCell alloc]
                            initWithStyle:UITableViewCellStyleDefault
                            reuseIdentifier:nil];
-  
-  self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"EULA"
-                                                                            style:UIBarButtonItemStylePlain
-                                                                           target:self
-                                                                           action:@selector(showEULA)];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -254,23 +239,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindPIN:
       [self.PINTextField becomeFirstResponder];
       break;
-    case CellKindEULA: {
-      UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-      Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
-      if (currentAccount.eulaIsAccepted) {
-        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
-        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAUnchecked", nil);
-        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
-        currentAccount.eulaIsAccepted = NO;
-      } else {
-        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
-        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAChecked", nil);
-        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintChecked", nil);
-        currentAccount.eulaIsAccepted = YES;
-      }
-      [self updateLoginLogoutCellAppearance];
-      break;
-    }
     case CellKindLogInSignOut:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       [self logIn];
@@ -334,56 +302,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-- (void)didSelectCancelForSignUp
-{
-  [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)verifyLocationServicesWithHandler:(void(^)(void))handler
-{
-  CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
-  
-  switch (status) {
-    case kCLAuthorizationStatusAuthorizedAlways:
-      if (handler) handler();
-      break;
-    case kCLAuthorizationStatusAuthorizedWhenInUse:
-      if (handler) handler();
-      break;
-    case kCLAuthorizationStatusDenied:
-    {
-      UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Location", nil)
-                                                                               message:NSLocalizedString(@"LocationRequiredMessage", nil)
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-      
-      UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Settings", nil)
-                                                           style:UIAlertActionStyleDefault
-                                                         handler:^(UIAlertAction *action) {
-                                                           if (action)[UIApplication.sharedApplication openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-                                                         }];
-
-      UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                           style:UIAlertActionStyleDestructive
-                                                         handler:nil];
-      
-      [alertController addAction:settingsAction];
-      [alertController addAction:cancelAction];
-      
-      [self presentViewController:alertController
-                         animated:NO
-                       completion:nil];
-      
-      break;
-    }
-    case kCLAuthorizationStatusRestricted:
-      if (handler) handler();
-      break;
-    case kCLAuthorizationStatusNotDetermined:
-      if (handler) handler();
-      break;
-  }
-}
-
 #pragma mark UITableViewDataSource
 
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -416,30 +334,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       return cell;
     }
-    case CellKindEULA: {
-      self.eulaCell = [[UITableViewCell alloc]
-                       initWithStyle:UITableViewCellStyleDefault
-                       reuseIdentifier:nil];
-      Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
-      if (currentAccount.eulaIsAccepted || [[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-        self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
-                                       [UIImage imageNamed:@"CheckboxOn"]];
-        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAChecked", nil);
-        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintChecked", nil);
-      } else {
-        self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
-                                       [UIImage imageNamed:@"CheckboxOff"]];
-        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAUnchecked", nil);
-        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
-      }
-      self.eulaCell.selectionStyle = UITableViewCellSelectionStyleNone;
-      self.eulaCell.textLabel.font = [UIFont systemFontOfSize:13];
-      self.eulaCell.textLabel.text = NSLocalizedString(@"SettingsAccountEULACheckbox", @"Statement letting a user know that they must agree to the User Agreement terms.");
-      self.eulaCell.textLabel.numberOfLines = 2;
-      return self.eulaCell;
-    }
     case CellKindLogInSignOut: {
-      self.logInSignOutCell.textLabel.font = [UIFont systemFontOfSize:17];
+      self.logInSignOutCell.textLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleBody];
       [self updateLoginLogoutCellAppearance];
       return self.logInSignOutCell;
     }
@@ -447,9 +343,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleValue1
                                      reuseIdentifier:nil];
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
-      cell.detailTextLabel.font = [UIFont systemFontOfSize:17];
+      cell.detailTextLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleBody];
       cell.detailTextLabel.text = NSLocalizedString(@"SignUp", nil);
       cell.detailTextLabel.textColor = [NYPLConfiguration mainColor];
       return cell;
@@ -467,11 +363,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
   if([self registrationIsPossible]) {
-    // registration is possible.
-    return 4;
+    return 2;
   } else {
-    // no Registration is possible.
-    return 3;
+    return 1;
   }
 }
 
@@ -479,12 +373,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
  numberOfRowsInSection:(NSInteger const)section
 {
   switch(section) {
-    case SectionBarcodePin:
-      return 2;
-    case SectionEULA:
-      return 1;
-    case SectionLoginLogout:
-      return 1;
+    case SectionCredentials:
+      return 3;
     case SectionRegistration:
       return 1;
     default:
@@ -492,9 +382,52 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-- (BOOL)textFieldShouldBeginEditing:(__unused UITextField *)textField
+- (CGFloat)tableView:(UITableView *)__unused tableView heightForRowAtIndexPath:(NSIndexPath *)__unused indexPath {
+  return UITableViewAutomaticDimension;
+}
+
+- (CGFloat)tableView:(UITableView *)__unused tableView heightForFooterInSection:(NSInteger)__unused section {
+  return UITableViewAutomaticDimension;
+}
+
+- (CGFloat)tableView:(UITableView *)__unused tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)__unused indexPath {
+  return 80;
+}
+
+- (CGFloat)tableView:(UITableView *)__unused tableView estimatedHeightForFooterInSection:(NSInteger)__unused section {
+  return 80;
+}
+
+- (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
 {
-  return ![[NYPLAccount sharedAccount] hasBarcodeAndPIN];
+  if (section == SectionCredentials) {
+    UIView *container = [[UIView alloc] init];
+    UILabel *footerLabel = [[UILabel alloc] init];
+    footerLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
+    footerLabel.textColor = [UIColor lightGrayColor];
+    footerLabel.numberOfLines = 0;
+    footerLabel.userInteractionEnabled = YES;
+
+    NSMutableAttributedString *eulaString = [[NSMutableAttributedString alloc] initWithString:@"By signing in, you agree to the " attributes:nil];
+    NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName : [UIColor colorWithRed:0.05 green:0.4 blue:0.65 alpha:1.0],
+                                      NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle) };
+    NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc] initWithString:@"End User License Agreement." attributes:linkAttributes];
+    [eulaString appendAttributedString:linkString];
+
+    footerLabel.attributedText = eulaString;
+    [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
+
+    [container addSubview:footerLabel];
+    [footerLabel autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+    [footerLabel autoPinEdgeToSuperviewMargin:ALEdgeRight];
+    [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:8.0];
+    [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:8.0];
+
+    return container;
+
+  } else {
+    return nil;
+  }
 }
 
 #pragma mark NSURLSessionDelegate
@@ -546,8 +479,129 @@ replacementString:(NSString *)string
   return YES;
 }
 
+- (BOOL)textFieldShouldBeginEditing:(__unused UITextField *)textField
+{
+  return ![[NYPLAccount sharedAccount] hasBarcodeAndPIN];
+}
+
+#pragma mark Class Methods
+
+
++ (void)
+requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
+authorizeImmediately:(BOOL)authorizeImmediately
+completionHandler:(void (^)())handler
+{
+  NYPLAccountSignInViewController *const accountViewController = [[self alloc] init];
+
+  accountViewController.completionHandler = handler;
+
+  // Tell |accountViewController| to create its text fields so we can set their properties.
+  [accountViewController view];
+
+  if(useExistingBarcode) {
+    NSString *const barcode = [NYPLAccount sharedAccount].barcode;
+    if(!barcode) {
+      @throw NSInvalidArgumentException;
+    }
+    accountViewController.barcodeTextField.text = barcode;
+  } else {
+    accountViewController.barcodeTextField.text = @"";
+  }
+
+  accountViewController.PINTextField.text = @"";
+
+  UIBarButtonItem *const cancelBarButtonItem =
+  [[UIBarButtonItem alloc]
+   initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+   target:accountViewController
+   action:@selector(didSelectCancel)];
+
+  accountViewController.navigationItem.leftBarButtonItem = cancelBarButtonItem;
+
+  UIViewController *const viewController = [[UINavigationController alloc]
+                                            initWithRootViewController:accountViewController];
+  viewController.modalPresentationStyle = UIModalPresentationFormSheet;
+
+  [[NYPLRootTabBarController sharedController]
+   safelyPresentViewController:viewController
+   animated:YES
+   completion:nil];
+
+  if (authorizeImmediately && [NYPLAccount sharedAccount].hasBarcodeAndPIN) {
+    accountViewController.PINTextField.text = [NYPLAccount sharedAccount].PIN;
+    [accountViewController logIn];
+  } else {
+    if(useExistingBarcode) {
+      [accountViewController.PINTextField becomeFirstResponder];
+    } else {
+      [accountViewController.barcodeTextField becomeFirstResponder];
+    }
+  }
+}
+
++ (void)requestCredentialsUsingExistingBarcode:(BOOL)useExistingBarcode
+                             completionHandler:(void (^)())handler
+{
+  [self requestCredentialsUsingExistingBarcode:useExistingBarcode authorizeImmediately:NO completionHandler:handler];
+}
+
++ (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)())handler
+{
+  [self requestCredentialsUsingExistingBarcode:YES authorizeImmediately:YES completionHandler:handler];
+}
 
 #pragma mark -
+
+- (void)didSelectCancelForSignUp
+{
+  [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)verifyLocationServicesWithHandler:(void(^)(void))handler
+{
+  CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
+
+  switch (status) {
+    case kCLAuthorizationStatusAuthorizedAlways:
+      if (handler) handler();
+      break;
+    case kCLAuthorizationStatusAuthorizedWhenInUse:
+      if (handler) handler();
+      break;
+    case kCLAuthorizationStatusDenied:
+    {
+      UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Location", nil)
+                                                                               message:NSLocalizedString(@"LocationRequiredMessage", nil)
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+
+      UIAlertAction *settingsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Settings", nil)
+                                                               style:UIAlertActionStyleDefault
+                                                             handler:^(UIAlertAction *action) {
+                                                               if (action)[UIApplication.sharedApplication openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                                             }];
+
+      UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                             style:UIAlertActionStyleDestructive
+                                                           handler:nil];
+
+      [alertController addAction:settingsAction];
+      [alertController addAction:cancelAction];
+
+      [self presentViewController:alertController
+                         animated:NO
+                       completion:nil];
+
+      break;
+    }
+    case kCLAuthorizationStatusRestricted:
+      if (handler) handler();
+      break;
+    case kCLAuthorizationStatusNotDetermined:
+      if (handler) handler();
+      break;
+  }
+}
 
 - (void)didSelectReveal
 {
@@ -628,17 +682,13 @@ replacementString:(NSString *)string
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     self.logInSignOutCell.userInteractionEnabled = YES;
-    self.eulaCell.userInteractionEnabled = NO;
   } else {
-    self.eulaCell.userInteractionEnabled = YES;
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
-    Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
     BOOL const canLogIn =
       ([self.barcodeTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
        [self.PINTextField.text
-        stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length) &&
-       currentAccount.eulaIsAccepted;
+        stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length);
     if(canLogIn) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
@@ -806,11 +856,45 @@ replacementString:(NSString *)string
 
 - (void)showLoginAlertWithError:(NSError *)error
 {
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:
-   [NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
+  NYPLAlertController *alert;
+  NSString *title = NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil);
+
+  if (error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled)
+  {
+    NSString *message = NSLocalizedString(@"SettingsAccountViewControllerInvalidCredentials", nil);
+    alert = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:nil]];
+    NSInteger library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
+    if (library == 0 || library == 1) {
+      [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Forgot Password?", nil)
+                                                style:UIAlertActionStyleDefault
+                                              handler:^(UIAlertAction * _Nonnull __unused action) {
+                                                [self resetPasswordTapped];
+                                              }]];
+    }
+  } else {
+    alert = [NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error];
+  }
+
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
                                                                   animated:YES
                                                                 completion:nil];
+
   [self updateLoginLogoutCellAppearance];
+}
+
+// GODO - Method and caller can be removed after 2.1.0 release.
+- (void)resetPasswordTapped
+{
+  if ([[NYPLSettings sharedSettings] currentAccountIdentifier] == 0) {
+    NSURL *url = [NSURL URLWithString:@"https://catalog.nypl.org/pinreset"];
+    [[UIApplication sharedApplication] openURL:url];
+  } else if ([[NYPLSettings sharedSettings] currentAccountIdentifier] == 1) {
+    NSURL *url = [NSURL URLWithString:@"https://www.bklynlibrary.org/mybpl/prefs/pin"];
+    [[UIApplication sharedApplication] openURL:url];
+  }
 }
 
 - (void)textFieldsDidChange
@@ -840,70 +924,6 @@ replacementString:(NSString *)string
       }
     }
   }];
-}
-
-+ (void)
-requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
-authorizeImmediately:(BOOL)authorizeImmediately
-completionHandler:(void (^)())handler
-{
-  NYPLAccountSignInViewController *const accountViewController = [[self alloc] init];
-  
-  accountViewController.completionHandler = handler;
-  
-  // Tell |accountViewController| to create its text fields so we can set their properties.
-  [accountViewController view];
-  
-  if(useExistingBarcode) {
-    NSString *const barcode = [NYPLAccount sharedAccount].barcode;
-    if(!barcode) {
-      @throw NSInvalidArgumentException;
-    }
-    accountViewController.barcodeTextField.text = barcode;
-  } else {
-    accountViewController.barcodeTextField.text = @"";
-  }
-  
-  accountViewController.PINTextField.text = @"";
-  
-  UIBarButtonItem *const cancelBarButtonItem =
-    [[UIBarButtonItem alloc]
-     initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-     target:accountViewController
-     action:@selector(didSelectCancel)];
-  
-  accountViewController.navigationItem.leftBarButtonItem = cancelBarButtonItem;
-  
-  UIViewController *const viewController = [[UINavigationController alloc]
-                                            initWithRootViewController:accountViewController];
-  viewController.modalPresentationStyle = UIModalPresentationFormSheet;
-  
-  [[NYPLRootTabBarController sharedController]
-   safelyPresentViewController:viewController 
-   animated:YES
-   completion:nil];
-  
-  if (authorizeImmediately && [NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-    accountViewController.PINTextField.text = [NYPLAccount sharedAccount].PIN;
-    [accountViewController logIn];
-  } else {
-    if(useExistingBarcode) {
-      [accountViewController.PINTextField becomeFirstResponder];
-    } else {
-      [accountViewController.barcodeTextField becomeFirstResponder];
-    }
-  }
-}
-
-+ (void)requestCredentialsUsingExistingBarcode:(BOOL)useExistingBarcode
-                             completionHandler:(void (^)())handler
-{
-  [self requestCredentialsUsingExistingBarcode:useExistingBarcode authorizeImmediately:NO completionHandler:handler];
-}
-
-+ (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)())handler
-{
-  [self requestCredentialsUsingExistingBarcode:YES authorizeImmediately:YES completionHandler:handler];
 }
 
 - (void)didSelectCancel
