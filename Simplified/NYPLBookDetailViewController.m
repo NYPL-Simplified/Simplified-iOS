@@ -95,12 +95,19 @@
   }
 }
 
-- (void)viewDidLayoutSubviews
+- (void)viewDidAppear:(BOOL)animated
 {
+  [super viewDidAppear:animated];
   if (self.bookDetailView.summaryTextView.frame.size.height < SummaryTextAbbreviatedHeight) {
     self.bookDetailView.readMoreLabel.hidden = YES;
   } else {
+    self.bookDetailView.readMoreLabel.alpha = 0.0;
     self.bookDetailView.readMoreLabel.hidden = NO;
+    [UIView animateWithDuration:0.3 animations:^{
+      self.bookDetailView.readMoreLabel.alpha = 1.0;
+    } completion:^(__unused BOOL finished) {
+      self.bookDetailView.readMoreLabel.alpha = 1.0;
+    }];
   }
 }
 
