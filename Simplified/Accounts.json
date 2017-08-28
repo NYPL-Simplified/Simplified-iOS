@@ -119,5 +119,23 @@
  "mainColor" : "ef4123",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
+ },
+ {
+ "id" : 11,
+ "pathComponent" : "11",
+ "name" : "Anne Arundel Co. Public Library",
+ "subtitle" : "Educate. Enrich. Inspire.",
+ "logo" : "LibraryLogoAnneArundel",
+ "needsAuth" : true,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : true,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "http://anne-arundel.simplye-md.org",
+ "mainColor" : "0b9da1",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
  }
 ]
