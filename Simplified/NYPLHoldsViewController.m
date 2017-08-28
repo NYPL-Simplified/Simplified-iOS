@@ -273,6 +273,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if([NYPLBookRegistry sharedRegistry].syncing == NO) {
       [self.refreshControl endRefreshing];
+      [self willReloadCollectionViewData];
     }
   }];
 }
