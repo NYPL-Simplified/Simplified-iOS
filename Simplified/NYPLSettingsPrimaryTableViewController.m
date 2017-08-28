@@ -103,6 +103,14 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   [[self.navigationController.navigationBar.subviews objectAtIndex:1] addGestureRecognizer:tap];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+  [super viewWillAppear:animated];
+  if (self.splitViewController.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+  }
+}
+
 #pragma mark UITableViewDelegate
 
 - (void)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -190,8 +198,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                  reuseIdentifier:nil];
   cell.textLabel.text = text;
   cell.textLabel.font = [UIFont systemFontOfSize:17];
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+  if (self.splitViewController.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+  } else {
+    cell.accessoryType = UITableViewCellAccessoryNone;
   }
   return cell;
 }

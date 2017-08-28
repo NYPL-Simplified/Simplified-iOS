@@ -620,6 +620,7 @@
   
   CGFloat const thin = 1.0 / [UIScreen mainScreen].scale;
   
+  //GODO
   if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone
       ) {
     UIView *const line = [[UIView alloc]

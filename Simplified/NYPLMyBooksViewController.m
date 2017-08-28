@@ -416,4 +416,9 @@ OK:
   self.navigationItem.leftBarButtonItem.enabled = YES;
 }
 
+- (void)viewWillTransitionToSize:(CGSize)__unused size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)__unused coordinator
+{
+  [self.collectionView reloadData];
+}
+
 @end
