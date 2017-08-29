@@ -80,6 +80,7 @@
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://howard.simplye-md.org",
+ "supportEmail" : "askhcls@hclibrary.org",
  "mainColor" : "0066CC",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
