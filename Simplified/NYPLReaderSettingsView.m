@@ -620,9 +620,7 @@
   
   CGFloat const thin = 1.0 / [UIScreen mainScreen].scale;
   
-  //GODO
-  if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone
-      ) {
+  if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
     UIView *const line = [[UIView alloc]
                           initWithFrame:CGRectMake(CGRectGetMinX(self.sansButton.frame),
                                                    CGRectGetMinY(self.sansButton.frame),

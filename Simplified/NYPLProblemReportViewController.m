@@ -91,7 +91,7 @@ static NSArray *s_problems = nil;
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if(self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
     [self.navigationController setNavigationBarHidden:NO];
   }
 }

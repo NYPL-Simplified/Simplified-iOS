@@ -855,7 +855,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       helpStack.gear = deskGear;
     
       if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
-         ([[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact)) {
+         self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
         UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard" bundle:[NSBundle mainBundle]];
         UINavigationController *mainNavVC = [helpStoryboard instantiateInitialViewController];
         UIViewController *firstVC = mainNavVC.viewControllers.firstObject;
@@ -897,7 +897,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (void)showDetailVC:(UIViewController *)vc fromIndexPath:(NSIndexPath *)indexPath
 {
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
-     ([[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact)) {
+     self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     [self.splitViewController showDetailViewController:[[UINavigationController alloc]
                                                         initWithRootViewController:vc]
                                                 sender:self];
@@ -1306,7 +1306,9 @@ replacementString:(NSString *)string
   // least work very well.
   
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) ||
+       (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact &&
+        self.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact)) {
       CGSize const keyboardSize =
       [[notification userInfo][UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
       CGRect visibleRect = self.view.frame;
