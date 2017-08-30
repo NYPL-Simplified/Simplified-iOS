@@ -95,26 +95,6 @@ static void generateTOCElements(NSArray *const navigationElements,
   }
 }
 
-// The idea for this was taken from here:
-// http://stackoverflow.com/a/34679880
-//
-// We must use this approach to disable text selection beause "user-select: none;"
-// breaks bookmarking in Readium due to a bug in WebKit:
-// https://bugs.chromium.org/p/chromium/issues/detail?id=263813
-
-static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
-{
-  // This seems to be the only reliable way of finding the correct view.
-  if([view isMemberOfClass:[UIView class]] && CGRectIsEmpty(view.frame))
-  {
-    [view removeFromSuperview];
-  } else {
-    for(UIView *const subview in [view subviews]) {
-      removeCalloutBarFromSuperviewStartingFromView(subview);
-    }
-  }
-}
-
 @implementation NYPLReaderReadiumView
 
 - (instancetype)initWithFrame:(CGRect const)frame
@@ -172,9 +152,6 @@ static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
       @"http://%@:%d/simplified-readium/reader.html",
       localhost,
       self.server.port]]]];
-  
-  // Disable text selection.
-  removeCalloutBarFromSuperviewStartingFromView(self.webView);
   
   [self addObservers];
   
