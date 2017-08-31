@@ -6,6 +6,7 @@
 #import "NYPLSettings.h"
 #import "NYPLBook.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLRootTabBarController.h"
 #import "SimplyE-Swift.h"
 
 #import "NYPLSettingsSplitViewController.h"
@@ -14,6 +15,7 @@
   <UISplitViewControllerDelegate, NYPLSettingsPrimaryTableViewControllerDelegate>
 
 @property (nonatomic) NYPLSettingsPrimaryNavigationController *primaryNavigationController;
+@property (nonatomic) bool isFirstLoad;
 
 @end
 
@@ -34,25 +36,48 @@
   self.primaryNavigationController = [[NYPLSettingsPrimaryNavigationController alloc] init];
   self.primaryNavigationController.primaryTableViewController.delegate = self;
   
-  NSArray *accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
-  
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    self.viewControllers = @[self.primaryNavigationController,
-                             [[UINavigationController alloc] initWithRootViewController:
-                              [[NYPLSettingsAccountsTableViewController alloc] initWithAccounts:accounts]]];
-    [self.primaryNavigationController.primaryTableViewController.tableView
-     selectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
-                            NYPLSettingsPrimaryTableViewControllerItemAccount)
-     animated:NO
-     scrollPosition:UITableViewScrollPositionMiddle];
-  } else {
-    self.viewControllers = @[self.primaryNavigationController];
-  }
-  
   self.presentsWithGesture = NO;
   self.preferredDisplayMode = UISplitViewControllerDisplayModeAllVisible;
   
   return self;
+}
+
+- (void)viewDidLoad
+{
+  [super viewDidLoad];
+  
+  NSArray *accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
+  
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+     (self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact)) {
+    
+    
+    self.viewControllers = @[self.primaryNavigationController,
+                             [[UINavigationController alloc] initWithRootViewController:
+                              [[NYPLSettingsAccountsTableViewController alloc] initWithAccounts:accounts]]];
+    [self highlightFirstTableViewRow:YES];
+    
+    
+  } else {
+    self.viewControllers = @[self.primaryNavigationController];
+  }
+  
+  self.isFirstLoad = YES;
+  
+}
+
+- (void)highlightFirstTableViewRow:(bool)highlight
+{
+  if (highlight) {
+    [self.primaryNavigationController.primaryTableViewController.tableView
+     selectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(NYPLSettingsPrimaryTableViewControllerItemAccount)
+     animated:NO
+     scrollPosition:UITableViewScrollPositionMiddle];
+  } else {
+    [self.primaryNavigationController.primaryTableViewController.tableView
+     deselectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(                                     NYPLSettingsPrimaryTableViewControllerItemAccount)
+     animated:NO];
+  }
 }
 
 #pragma mark UISplitViewControllerDelegate
@@ -61,7 +86,13 @@
 collapseSecondaryViewController:(__attribute__((unused)) UIViewController *)secondaryViewController
 ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryViewController
 {
-  return YES;
+  if (self.isFirstLoad) {
+    self.isFirstLoad = NO;
+    return YES;
+  } else {
+    self.isFirstLoad = NO;
+    return NO;
+  }
 }
 
 #pragma mark NYPLSettingsPrimaryTableViewControllerDelegate
@@ -106,7 +137,8 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
       HSHelpStack *helpStack = [HSHelpStack instance];
       helpStack.gear = deskGear;
 
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+         ([[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact)) {
         UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard" bundle:[NSBundle mainBundle]];
         UINavigationController *mainNavVC = [helpStoryboard instantiateInitialViewController];
         UIViewController *firstVC = mainNavVC.viewControllers.firstObject;
@@ -123,17 +155,10 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
       return;
   }
-
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    [self showDetailViewController:[[UINavigationController alloc]
-                                    initWithRootViewController:viewController]
-                            sender:self];
-  } else {
-    [settingsPrimaryTableViewController.tableView
-     deselectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(item)
-     animated:YES];
-    [self showDetailViewController:viewController sender:self];
-  }
+  
+  [self showDetailViewController:[[UINavigationController alloc]
+                                  initWithRootViewController:viewController]
+                          sender:self];
 }
 
 @end

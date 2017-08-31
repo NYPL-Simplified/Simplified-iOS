@@ -83,6 +83,9 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
   
+  if (@available(iOS 11.0, *)) {
+    self.collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+  }
   self.collectionView.alwaysBounceVertical = YES;
   self.refreshControl = [[UIRefreshControl alloc] init];
   [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];

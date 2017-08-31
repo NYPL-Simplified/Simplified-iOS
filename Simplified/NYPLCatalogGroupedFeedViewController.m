@@ -29,6 +29,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 @property (nonatomic) UITableView *tableView;
+@property (nonatomic) NYPLBook *mostRecentBookSelected;
 
 @end
 
@@ -65,9 +66,11 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
-  self.tableView.sectionHeaderHeight = sectionHeaderHeight;
   self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   self.tableView.allowsSelection = NO;
+  if (@available(iOS 11.0, *)) {
+    self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+  }
   [self.tableView addSubview:self.refreshControl];
   [self.view addSubview:self.tableView];
   
@@ -118,6 +121,34 @@ static CGFloat const sectionHeaderHeight = 50.0;
   
   [refreshControl endRefreshing];
   [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+  [super viewDidAppear:animated];
+  if (!self.presentedViewController) {
+    self.mostRecentBookSelected = nil;
+  }
+}
+
+// Transition book detail view between Form Sheet and Nav Controller
+// when changing between compact and regular size classes
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+  if (!self.mostRecentBookSelected) {
+    return;
+  }
+  if (previousTraitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact &&
+      self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
+    if (!self.presentedViewController) {
+      return;
+    } else {
+      [self dismissViewControllerAnimated:NO completion:nil];
+    }
+  }
+  if (self.mostRecentBookSelected) {
+    [[[NYPLBookDetailViewController alloc] initWithBook:self.mostRecentBookSelected] presentFromViewController:self];
+  }
 }
 
 #pragma mark UITableViewDataSource
@@ -247,6 +278,7 @@ viewForHeaderInSection:(NSInteger const)section
   NYPLBook *const localBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:feedBook.identifier];
   NYPLBook *const book = (localBook != nil) ? localBook : feedBook;
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
+  self.mostRecentBookSelected = book;
 }
 
 #pragma mark -

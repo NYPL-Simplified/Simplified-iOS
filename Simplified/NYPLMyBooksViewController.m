@@ -129,7 +129,10 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
-  
+
+  if (@available(iOS 11.0, *)) {
+    self.collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+  }
   self.collectionView.alwaysBounceVertical = YES;
   self.refreshControl = [[UIRefreshControl alloc] init];
   [self.refreshControl addTarget:self action:@selector(didSelectSync) forControlEvents:UIControlEventValueChanged];
@@ -164,7 +167,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   [super viewWillAppear:animated];
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
     [self.refreshControl endRefreshing];
-    self.collectionView.contentOffset = CGPointZero;
+    self.collectionView.contentOffset = CGPointMake(0, -self.collectionView.contentInset.top);
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }
   [self.navigationController setNavigationBarHidden:NO];
@@ -414,6 +417,11 @@ OK:
 - (void)syncEnded
 {
   self.navigationItem.leftBarButtonItem.enabled = YES;
+}
+
+- (void)viewWillTransitionToSize:(CGSize)__unused size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)__unused coordinator
+{
+  [self.collectionView reloadData];
 }
 
 @end

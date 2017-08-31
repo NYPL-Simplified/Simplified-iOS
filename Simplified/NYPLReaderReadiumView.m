@@ -24,7 +24,7 @@
 #import "SimplyE-Swift.h"
 
 @interface NYPLReaderReadiumView ()
-  <NYPLReaderRenderer, RDPackageResourceServerDelegate, WKNavigationDelegate>
+  <NYPLReaderRenderer, RDPackageResourceServerDelegate, WKNavigationDelegate, WKUIDelegate>
 
 @property (nonatomic) BOOL postLastRead;
 @property (nonatomic) NYPLBook *book;
@@ -55,6 +55,8 @@
 @property (nonatomic) double secondsSinceComplete;
 
 @end
+
+static NSString *const localhost = @"127.0.0.1";
 
 static NSString *const renderer = @"readium";
 
@@ -90,26 +92,6 @@ static void generateTOCElements(NSArray *const navigationElements,
        nestingLevel:nestingLevel];
     [TOCElements addObject:TOCElement];
     generateTOCElements(navigationElement.children, nestingLevel + 1, TOCElements);
-  }
-}
-
-// The idea for this was taken from here:
-// http://stackoverflow.com/a/34679880
-//
-// We must use this approach to disable text selection beause "user-select: none;"
-// breaks bookmarking in Readium due to a bug in WebKit:
-// https://bugs.chromium.org/p/chromium/issues/detail?id=263813
-
-static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
-{
-  // This seems to be the only reliable way of finding the correct view.
-  if([view isMemberOfClass:[UIView class]] && CGRectIsEmpty(view.frame))
-  {
-    [view removeFromSuperview];
-  } else {
-    for(UIView *const subview in [view subviews]) {
-      removeCalloutBarFromSuperviewStartingFromView(subview);
-    }
   }
 }
 
@@ -157,6 +139,7 @@ static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
   self.webView.navigationDelegate = self;
+  self.webView.UIDelegate = self;
   self.webView.scrollView.bounces = NO;
   self.webView.alpha = 0.0;
   [self addSubview:self.webView];
@@ -166,11 +149,9 @@ static void removeCalloutBarFromSuperviewStartingFromView(UIView *const view)
    [NSURLRequest requestWithURL:
     [NSURL URLWithString:
      [NSString stringWithFormat:
-      @"http://127.0.0.1:%d/simplified-readium/reader.html",
+      @"http://%@:%d/simplified-readium/reader.html",
+      localhost,
       self.server.port]]]];
-  
-  // Disable text selection.
-  removeCalloutBarFromSuperviewStartingFromView(self.webView);
   
   [self addObservers];
   
@@ -401,6 +382,28 @@ executeJavaScript:(NSString *const)javaScript
 
 #pragma mark WKNavigationDelegate
 
+- (WKWebView *)webView:(__unused WKWebView *)webView
+createWebViewWithConfiguration:(__unused WKWebViewConfiguration *)configuration
+   forNavigationAction:(WKNavigationAction *)navigationAction
+        windowFeatures:(__unused WKWindowFeatures *)windowFeatures
+{
+  if([navigationAction.request.URL.host isEqualToString:localhost]) {
+    // We don't want to ever open such things in an external browser so we cancel the
+    // request. It's not clear why we'd end up here but doing nothing is better than
+    // switching to Safari and failing. (Keep in mind that this delegate method is only
+    // called when we MUST either create a new web view or cancel the request: Opening
+    // the request in the existing web view is not an option.)
+    return nil;
+  }
+  
+  // Since this is very likely a link to a web page, a mailto: URL, or similar, let
+  // Safari handle it.
+  [[UIApplication sharedApplication] openURL:navigationAction.request.URL];
+  
+  // Cancel the request.
+  return nil;
+}
+
 - (void)webView:(__unused WKWebView *)webView
 decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction
 decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
@@ -474,7 +477,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     });
   }
   
-  self.package.rootURL = [NSString stringWithFormat:@"http://127.0.0.1:%d/", self.server.port];
+  self.package.rootURL = [NSString stringWithFormat:@"http://%@:%d/", localhost, self.server.port];
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
     [self calculateBookLength];
