@@ -48,34 +48,35 @@ PODS:
   - NYPLCardCreator (1.0.0):
     - PureLayout (~> 3.0)
   - PureLayout (3.0.2)
-  - SQLite.swift (0.11.2):
-    - SQLite.swift/standard (= 0.11.2)
-  - SQLite.swift/standard (0.11.2)
+  - SQLite.swift (0.11.3):
+    - SQLite.swift/standard (= 0.11.3)
+  - SQLite.swift/standard (0.11.3)
 
 DEPENDENCIES:
-  - Bugsnag (from `https://github.com/bugsnag/bugsnag-cocoa.git`)
+  - Bugsnag
   - HelpStack (from `https://github.com/NYPL-Simplified/helpstack-ios`)
   - NYPLCardCreator (from `https://github.com/NYPL-Simplified/CardCreator-iOS.git`)
-  - SQLite.swift (~> 0.11.2)
+  - SQLite.swift (from `https://github.com/NYPL-Simplified/SQLite.swift`, branch `nypl-swift4-ios8-target`)
 
 EXTERNAL SOURCES:
-  Bugsnag:
-    :git: https://github.com/bugsnag/bugsnag-cocoa.git
   HelpStack:
     :git: https://github.com/NYPL-Simplified/helpstack-ios
   NYPLCardCreator:
     :git: https://github.com/NYPL-Simplified/CardCreator-iOS.git
+  SQLite.swift:
+    :branch: nypl-swift4-ios8-target
+    :git: https://github.com/NYPL-Simplified/SQLite.swift
 
 CHECKOUT OPTIONS:
-  Bugsnag:
-    :commit: 8eaf62293d6343a83f3764a7fee1c2e4a251b0cc
-    :git: https://github.com/bugsnag/bugsnag-cocoa.git
   HelpStack:
-    :commit: 7cdcdf6327936080eac728566cc86bab5e914700
+    :commit: 9f821fd8ebf58972809a44b611d91513499885df
     :git: https://github.com/NYPL-Simplified/helpstack-ios
   NYPLCardCreator:
     :commit: 0225028ae6ccad34eeb4e375bb02127c8a0bd5c1
     :git: https://github.com/NYPL-Simplified/CardCreator-iOS.git
+  SQLite.swift:
+    :commit: f080c1349e938882963c226a68b1bb671650cba9
+    :git: https://github.com/NYPL-Simplified/SQLite.swift
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
@@ -84,8 +85,8 @@ SPEC CHECKSUMS:
   KSCrash: 4c3a83f133b60f4bd57e05235ebf8d46e36d378d
   NYPLCardCreator: e0f5034902008b4c8cdfb5edbffa2a51ec0b261d
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
-  SQLite.swift: 670c3e9e0a806bbfd56a3de5d530768dc0e6fe7c
+  SQLite.swift: 0cb8585c21684b2290ec7792b3ca8089f68bdd29
 
-PODFILE CHECKSUM: 8bc1b2ad0946ab537f031f0dbf65997ce41778e2
+PODFILE CHECKSUM: fc16f960bdd8945afc1aaa1e70e6a497cc4b3913
 
-COCOAPODS: 1.2.0
+COCOAPODS: 1.3.1

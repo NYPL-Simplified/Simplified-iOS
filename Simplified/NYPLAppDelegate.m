@@ -97,7 +97,8 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   NYPLBookDetailViewController *modalBookController = [[NYPLBookDetailViewController alloc] initWithBook:book];
   NYPLRootTabBarController *tbc = (NYPLRootTabBarController *) self.window.rootViewController;
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ||
+     tbc.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
     if ([tbc.selectedViewController isKindOfClass:[UINavigationController class]])
       [tbc.selectedViewController pushViewController:modalBookController animated:YES];
   } else {

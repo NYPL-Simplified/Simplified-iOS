@@ -154,7 +154,7 @@ class NYPLReportIssueViewController: UIViewController, UITableViewDataSource, UI
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     
-    if HSAppearance.isIPad()
+    if traitCollection.horizontalSizeClass == .regular
     {
       if(indexPath.row == 0){
         return 44.0;

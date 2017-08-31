@@ -154,7 +154,8 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
   self = [super initWithFrame:frame];
   if(!self) return nil;
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if(self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+
     // This is no longer set by default as of iOS 8.0.
     self.contentView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                          UIViewAutoresizingFlexibleWidth);
@@ -192,7 +193,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
 {
   CGRect frame = self.contentView.frame;
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if(self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
     frame.size.width = CGRectGetWidth(frame) - 1;
     frame.size.height = CGRectGetHeight(frame) - 1;
     return frame;
