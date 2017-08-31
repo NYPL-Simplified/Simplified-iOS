@@ -65,9 +65,11 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
-  self.tableView.sectionHeaderHeight = sectionHeaderHeight;
   self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
   self.tableView.allowsSelection = NO;
+  if (@available(iOS 11.0, *)) {
+    self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+  }
   [self.tableView addSubview:self.refreshControl];
   [self.view addSubview:self.tableView];
   
