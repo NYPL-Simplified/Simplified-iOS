@@ -277,16 +277,15 @@
     }];
       
       UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
-      if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+      
+      if([[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
         [navController setModalPresentationStyle:UIModalPresentationFormSheet];
       }
       [navController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
       
       NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
       [vc safelyPresentViewController:navController animated:YES completion:nil];
-
     }
-    
   }
   else
   {

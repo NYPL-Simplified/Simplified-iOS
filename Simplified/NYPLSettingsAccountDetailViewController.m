@@ -727,7 +727,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       if([[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]) {
         UIAlertController *const alertController =
-        (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+        (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+         (self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact))
          ? [UIAlertController
             alertControllerWithTitle:NSLocalizedString(@"SignOut", nil)
             message:NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
@@ -736,7 +737,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             alertControllerWithTitle:
             NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
             message:nil
-            preferredStyle:UIAlertControllerStyleActionSheet]);
+            preferredStyle:UIAlertControllerStyleActionSheet];
         [alertController addAction:[UIAlertAction
                                     actionWithTitle:NSLocalizedString(@"SignOut", nil)
                                     style:UIAlertActionStyleDestructive
@@ -853,7 +854,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       HSHelpStack *helpStack = [HSHelpStack instance];
       helpStack.gear = deskGear;
     
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+         self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
         UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard" bundle:[NSBundle mainBundle]];
         UINavigationController *mainNavVC = [helpStoryboard instantiateInitialViewController];
         UIViewController *firstVC = mainNavVC.viewControllers.firstObject;
@@ -894,7 +896,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)showDetailVC:(UIViewController *)vc fromIndexPath:(NSIndexPath *)indexPath
 {
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+     self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     [self.splitViewController showDetailViewController:[[UINavigationController alloc]
                                                         initWithRootViewController:vc]
                                                 sender:self];
@@ -1303,7 +1306,9 @@ replacementString:(NSString *)string
   // least work very well.
   
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) ||
+       (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact &&
+        self.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact)) {
       CGSize const keyboardSize =
       [[notification userInfo][UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
       CGRect visibleRect = self.view.frame;
@@ -1658,6 +1663,12 @@ replacementString:(NSString *)string
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self updateShowHidePINState];
   }];
+}
+
+- (void)viewWillTransitionToSize:(__unused CGSize)size
+       withTransitionCoordinator:(__unused id<UIViewControllerTransitionCoordinator>)coordinator
+{
+  [self.tableView reloadData];
 }
 
 @end

@@ -909,7 +909,9 @@ completionHandler:(void (^)())handler
   // least work very well.
   
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) ||
+       (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact &&
+        self.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact)) {
       CGSize const keyboardSize =
       [[notification userInfo][UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
       CGRect visibleRect = self.view.frame;
