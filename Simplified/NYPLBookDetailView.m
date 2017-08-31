@@ -15,6 +15,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLBookDetailView.h"
 #import "NYPLConfiguration.h"
+#import "NYPLRootTabBarController.h"
 #import "NYPLOPDSFeed.h"
 #import "SimplyE-Swift.h"
 #import "UIFont+NYPLSystemFontOverride.h"
@@ -129,7 +130,8 @@ static NSString *DetailHTMLTemplate = nil;
   [self.contentView addSubview:self.footerTableView];
   [self.contentView addSubview:self.bottomFootnoteSeparator];
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+     [[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.closeButton setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
     [self.closeButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
@@ -186,9 +188,12 @@ static NSString *DetailHTMLTemplate = nil;
   htmlString = [htmlString stringByReplacingOccurrencesOfString:@"</p>" withString:@"</span>"];
   NSData *htmlData = [htmlString dataUsingEncoding:NSUnicodeStringEncoding];
   NSDictionary *attributes = @{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType};
-  NSAttributedString *atrString = [[NSAttributedString alloc] initWithData:htmlData options:attributes documentAttributes:nil error:nil];
-  self.summaryTextView.attributedText = atrString;
-  
+
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    NSAttributedString *atrString = [[NSAttributedString alloc] initWithData:htmlData options:attributes documentAttributes:nil error:nil];
+    self.summaryTextView.attributedText = atrString;
+  }];
+
   self.readMoreLabel = [[UIButton alloc] init];
   self.readMoreLabel.hidden = YES;
   self.readMoreLabel.titleLabel.textAlignment = NSTextAlignmentRight;
@@ -203,31 +208,32 @@ static NSString *DetailHTMLTemplate = nil;
 {
   UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
   self.visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-  
+
   self.coverImageView = [[UIImageView alloc] init];
   self.coverImageView.contentMode = UIViewContentModeScaleAspectFit;
   self.blurCoverImageView = [[UIImageView alloc] init];
   self.blurCoverImageView.contentMode = UIViewContentModeScaleAspectFit;
   self.blurCoverImageView.alpha = 0.4f;
-  
+
   [[NYPLBookRegistry sharedRegistry]
    coverImageForBook:self.book handler:^(UIImage *image) {
      self.coverImageView.image = image;
      self.blurCoverImageView.image = image;
    }];
-  
+
   self.titleLabel = [[UILabel alloc] init];
   self.titleLabel.numberOfLines = 2;
   self.titleLabel.attributedText = NYPLAttributedStringForTitleFromString(self.book.title);
-  
+
   self.subtitleLabel = [[UILabel alloc] init];
   self.subtitleLabel.attributedText = NYPLAttributedStringForTitleFromString(self.book.subtitle);
   self.subtitleLabel.numberOfLines = 3;
-  
+
   self.authorsLabel = [[UILabel alloc] init];
   self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
   self.authorsLabel.numberOfLines = 2;
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+      [[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     self.authorsLabel.text = self.book.authors;
   } else {
     self.authorsLabel.attributedText = NYPLAttributedStringForAuthorsFromString(self.book.authors);
