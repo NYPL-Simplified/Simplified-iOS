@@ -265,7 +265,13 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
       forControlEvents:UIControlEventTouchUpInside];
   
   UIBarButtonItem *const TOCBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:TOCButton];
-  
+
+  // Bar button items require autolayout help 11.0+
+  if (@available(iOS 11.0, *)) {
+    [self.settingsBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(55, 30)];
+    [TOCBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(55, 30)];
+  }
+
   // Corruption may have occurred before we added these, so we need to set their enabled status
   // here (in addition to |readerView:didEncounterCorruptionForBook:|).
   self.navigationItem.rightBarButtonItems = @[TOCBarButtonItem, self.settingsBarButtonItem];
