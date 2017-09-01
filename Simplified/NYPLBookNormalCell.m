@@ -10,7 +10,6 @@
 @interface NYPLBookNormalCell ()
 
 @property (nonatomic) UILabel *authors;
-@property (nonatomic) UIImageView *cover;
 @property (nonatomic) NYPLBookButtonsView *buttonsView;
 @property (nonatomic) UILabel *title;
 @property (nonatomic) UIImageView *unreadImageView;

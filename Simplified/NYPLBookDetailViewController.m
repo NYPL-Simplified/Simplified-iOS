@@ -249,7 +249,7 @@
 {
   if (previousTraitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact &&
       self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
-    [self.navigationController popViewControllerAnimated:NO];
+    [self.navigationController popToRootViewControllerAnimated:NO];
   }
 }
 

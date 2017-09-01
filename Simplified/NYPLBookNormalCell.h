@@ -10,4 +10,6 @@
 @property (nonatomic) NYPLBookButtonsState state;
 @property (nonatomic, weak) id<NYPLBookButtonsDelegate> delegate;
 
+@property (nonatomic) UIImageView *cover;
+
 @end
