@@ -149,6 +149,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     
     
     let container = UIView()
+    let textContainer = UIView()
     
     cell.accessoryType = .disclosureIndicator
     
@@ -174,27 +175,34 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     detailLabel.font = UIFont(name: "AvenirNext-Regular", size: 12)
     detailLabel.numberOfLines = 0
     detailLabel.text = account.subtitle
+
+    textContainer.addSubview(textLabel)
+    textContainer.addSubview(detailLabel)
     
     container.addSubview(imageView)
-    container.addSubview(textLabel)
-    container.addSubview(detailLabel)
+    container.addSubview(textContainer)
     cell.contentView.addSubview(container)
     
     imageView.autoAlignAxis(toSuperviewAxis: .horizontal)
     imageView.autoPinEdge(toSuperviewEdge: .left)
     imageView.autoSetDimensions(to: CGSize(width: 45, height: 45))
-    
-    textLabel.autoPinEdge(toSuperviewEdge: .top)
-    textLabel.autoPinEdge(.bottom, to: .top, of: detailLabel)
-    textLabel.autoPinEdge(.left, to: .right, of: imageView, withOffset: cell.contentView.layoutMargins.left)
-    textLabel.autoPinEdge(toSuperviewEdge: .right)
-    
+
+    textContainer.autoPinEdge(.left, to: .right, of: imageView, withOffset: cell.contentView.layoutMargins.left)
+    textContainer.autoPinEdge(toSuperviewMargin: .right)
+    textContainer.autoAlignAxis(toSuperviewAxis: .horizontal)
+
+    NSLayoutConstraint .autoSetPriority(UILayoutPriorityDefaultLow) {
+      textContainer.autoPinEdge(toSuperviewEdge: .top, withInset: 0, relation: .greaterThanOrEqual)
+      textContainer.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0, relation: .greaterThanOrEqual)
+    }
+
+    textLabel.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
+
     detailLabel.autoPinEdge(.top, to: .bottom, of: textLabel)
-    detailLabel.autoPinEdge(toSuperviewEdge: .bottom)
-    detailLabel.autoPinEdge(.left, to: .left, of: textLabel)
-    detailLabel.autoPinEdge(toSuperviewEdge: .right)
-    
+    detailLabel.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
+
     container.autoPinEdgesToSuperviewMargins()
+    container.autoSetDimension(.height, toSize: 55, relation: .greaterThanOrEqual)
     
     return cell
   }
