@@ -91,7 +91,7 @@ static NSArray *s_problems = nil;
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
-  if(self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+  if(self.presentingViewController.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
     [self.navigationController setNavigationBarHidden:NO];
   }
 }

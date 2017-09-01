@@ -135,20 +135,21 @@ static CGFloat const sectionHeaderHeight = 50.0;
 // when changing between compact and regular size classes
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
 {
+  NYPLLOG_F(@"View's horizontal size class changed from %ld to %ld",
+            (long)previousTraitCollection.horizontalSizeClass,
+            (long)self.traitCollection.horizontalSizeClass);
+
   if (!self.mostRecentBookSelected) {
     return;
   }
-  if (previousTraitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact &&
-      self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
-    if (!self.presentedViewController) {
-      return;
-    } else {
-      [self dismissViewControllerAnimated:NO completion:nil];
-    }
+
+  if (self.presentedViewController) {
+    [self dismissViewControllerAnimated:NO completion:nil];
+  } else if ([self.navigationController viewControllers].count > 1) {
+    [self.navigationController popToRootViewControllerAnimated:NO];
   }
-  if (self.mostRecentBookSelected) {
-    [[[NYPLBookDetailViewController alloc] initWithBook:self.mostRecentBookSelected] presentFromViewController:self];
-  }
+
+  [[[NYPLBookDetailViewController alloc] initWithBook:self.mostRecentBookSelected] presentFromViewController:self];
 }
 
 #pragma mark UITableViewDataSource
