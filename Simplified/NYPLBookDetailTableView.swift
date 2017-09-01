@@ -71,19 +71,16 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
       return
     }
 
-    // Catalog Lanes for Related Works is temporarily disabled
-    // until we haveUX parity on the Android client.
-
-//    NYPLOPDSFeed.withURL(url) { (feed, errorDict) in
-//      DispatchQueue.main.async {
-//        if feed?.type == .acquisitionGrouped {
-//          let groupedFeed = NYPLCatalogGroupedFeed.init(opdsFeed: feed)
-//          self.createLaneCells(groupedFeed)
-//        } else {
-//          Log.error(#file, "Grouped feed expected")
-//        }
-//      }
-//    }
+    NYPLOPDSFeed.withURL(url) { (feed, errorDict) in
+      DispatchQueue.main.async {
+        if feed?.type == .acquisitionGrouped {
+          let groupedFeed = NYPLCatalogGroupedFeed.init(opdsFeed: feed)
+          self.createLaneCells(groupedFeed)
+        } else {
+          Log.error(#file, "Grouped feed expected")
+        }
+      }
+    }
   }
   
   private func refresh() {
