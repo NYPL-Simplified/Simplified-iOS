@@ -118,6 +118,7 @@
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://frederick.simplye-md.org",
+ "supportEmail" : "fcplweb@fcpl.org",
  "mainColor" : "ef4123",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
