@@ -335,7 +335,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return cell;
     }
     case CellKindLogInSignOut: {
-      self.logInSignOutCell.textLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleBody];
+      self.logInSignOutCell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       [self updateLoginLogoutCellAppearance];
       return self.logInSignOutCell;
     }
@@ -345,7 +345,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
-      cell.detailTextLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleBody];
+      cell.detailTextLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.detailTextLabel.text = NSLocalizedString(@"SignUp", nil);
       cell.detailTextLabel.textColor = [NYPLConfiguration mainColor];
       return cell;
@@ -400,18 +400,24 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
 {
-  if (section == SectionCredentials) {
+  Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
+  if (section == SectionCredentials && [currentAccount getLicenseURL:URLTypeEula]) {
     UIView *container = [[UIView alloc] init];
+    container.preservesSuperviewLayoutMargins = YES;
     UILabel *footerLabel = [[UILabel alloc] init];
     footerLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
     footerLabel.textColor = [UIColor lightGrayColor];
     footerLabel.numberOfLines = 0;
     footerLabel.userInteractionEnabled = YES;
 
-    NSMutableAttributedString *eulaString = [[NSMutableAttributedString alloc] initWithString:@"By signing in, you agree to the " attributes:nil];
-    NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName : [UIColor colorWithRed:0.05 green:0.4 blue:0.65 alpha:1.0],
-                                      NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle) };
-    NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc] initWithString:@"End User License Agreement." attributes:linkAttributes];
+    NSMutableAttributedString *eulaString = [[NSMutableAttributedString alloc]
+                                             initWithString:NSLocalizedString(@"By signing in, you agree to the ", nil) attributes:nil];
+    NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName :
+                                        [UIColor colorWithRed:0.05 green:0.4 blue:0.65 alpha:1.0],
+                                      NSUnderlineStyleAttributeName :
+                                        @(NSUnderlineStyleSingle) };
+    NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc]
+                                             initWithString:@"End User License Agreement." attributes:linkAttributes];
     [eulaString appendAttributedString:linkString];
 
     footerLabel.attributedText = eulaString;
