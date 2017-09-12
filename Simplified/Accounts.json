@@ -140,5 +140,23 @@
  "mainColor" : "0b9da1",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
+ },
+ {
+ "id" : 12,
+ "pathComponent" : "12",
+ "name" : "Black Gold Cooperative",
+ "subtitle" : "TBD",
+ "logo" : "LibraryLogoMagic",
+ "needsAuth" : true,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : true,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "http://bgc.simplye-ca.org",
+ "mainColor" : "0b9da1",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
  }
 ]
