@@ -20,8 +20,10 @@
 
 - (NSMutableDictionary *const)defaultDictionary
 {
+  NSString *accessGroupID = @"7262U6ST2R.org.nypl.labs.SharedKeychainGroup";
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
   dictionary[(__bridge __strong id) kSecClass] = (__bridge id) kSecClassGenericPassword;
+  dictionary[(__bridge __strong id) kSecAttrAccessGroup] = accessGroupID;
   
   return dictionary;
 }

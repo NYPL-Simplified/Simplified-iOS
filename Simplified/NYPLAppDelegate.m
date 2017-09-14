@@ -35,20 +35,7 @@
 - (BOOL)application:(__attribute__((unused)) UIApplication *)application
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
-  // App does not currently handle DRM authorization when
-  // keychain items persist from previous app installs.
-  if (![[NSUserDefaults standardUserDefaults] objectForKey:userHasSeenWelcomeScreenKey]) {
-    NYPLLOG(@"Fresh install detected. Purging any keychain items...");
-    NSArray *secItemClasses = @[(__bridge id)kSecClassGenericPassword,
-                                (__bridge id)kSecClassInternetPassword,
-                                (__bridge id)kSecClassCertificate,
-                                (__bridge id)kSecClassKey,
-                                (__bridge id)kSecClassIdentity];
-    for (id secItemClass in secItemClasses) {
-      NSDictionary *spec = @{(__bridge id)kSecClass: secItemClass};
-      SecItemDelete((__bridge CFDictionaryRef)spec);
-    }
-  }
+  [NYPLKeychainManager validateKeychain];
 
   // This is normally not called directly, but we put all programmatic appearance setup in
   // NYPLConfiguration's class initializer.
