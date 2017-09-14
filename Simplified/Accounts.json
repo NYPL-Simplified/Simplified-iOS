@@ -176,5 +176,23 @@
  "mainColor" : "194483",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
+ },
+ {
+ "id" : 14,
+ "pathComponent" : "14",
+ "name" : "Calvert Library",
+ "subtitle" : "Inspiring Possibility",
+ "logo" : "LibraryLogoCalvert",
+ "needsAuth" : true,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : true,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "http://smrla.simplye-md.org/MDCALV",
+ "mainColor" : "440099",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
  }
 ]
