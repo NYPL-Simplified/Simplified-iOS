@@ -158,5 +158,23 @@
  "mainColor" : "0b9da1",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
+ },
+ {
+ "id" : 13,
+ "pathComponent" : "13",
+ "name" : "St. Mary's County Library",
+ "subtitle" : "Read, Learn, Discover",
+ "logo" : "LibraryLogoStMary",
+ "needsAuth" : true,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : true,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "http://smrla.simplye-md.org/MDMARY",
+ "mainColor" : "194483",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
  }
 ]
