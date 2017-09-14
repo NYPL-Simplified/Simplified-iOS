@@ -89,6 +89,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.book = book;
   self.detailViewDelegate = delegate;
   self.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.alwaysBounceVertical = YES;
   self.translatesAutoresizingMaskIntoConstraints = NO;
   
   self.contentView = [[UIView alloc] init];
