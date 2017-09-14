@@ -15,11 +15,11 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="FullLogo" translatesAutoresizingMaskIntoConstraints="NO" id="aU7-0U-gPl">
-                    <rect key="frame" x="67.5" y="213.5" width="240" height="240"/>
+                <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchImageLogo" translatesAutoresizingMaskIntoConstraints="NO" id="aU7-0U-gPl">
+                    <rect key="frame" x="62.5" y="258.5" width="250" height="150"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="240" id="2JH-Rf-jIB"/>
-                        <constraint firstAttribute="height" constant="240" id="l6A-Wi-e0z"/>
+                        <constraint firstAttribute="width" constant="250" id="2JH-Rf-jIB"/>
+                        <constraint firstAttribute="height" constant="150" id="l6A-Wi-e0z"/>
                     </constraints>
                 </imageView>
             </subviews>
@@ -33,6 +33,6 @@
         </view>
     </objects>
     <resources>
-        <image name="FullLogo" width="170" height="91"/>
+        <image name="LaunchImageLogo" width="250" height="150"/>
     </resources>
 </document>
