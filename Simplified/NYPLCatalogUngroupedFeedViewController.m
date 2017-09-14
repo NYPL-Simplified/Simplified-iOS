@@ -17,11 +17,13 @@
 
 #import "NYPLCatalogUngroupedFeedViewController.h"
 
+#import <PureLayout/PureLayout.h>
+
 static const CGFloat kActivityIndicatorPadding = 20.0;
 
 @interface NYPLCatalogUngroupedFeedViewController ()
   <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate,
-   UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+   UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate>
 
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) NYPLCatalogUngroupedFeed *feed;
@@ -83,6 +85,9 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
   
+  if (@available(iOS 11.0, *)) {
+    self.collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+  }
   self.collectionView.alwaysBounceVertical = YES;
   self.refreshControl = [[UIRefreshControl alloc] init];
   [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
@@ -107,6 +112,8 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
   self.activityIndicator.hidden = YES;
   [self.activityIndicator startAnimating];
   [self.collectionView addSubview:self.activityIndicator];
+  
+  [self enable3DTouch];
 }
 
 - (void)didMoveToParentViewController:(UIViewController *)parent
@@ -261,6 +268,43 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
   self.remoteViewController.URL = facet.href;
   
   [self.remoteViewController load];
+}
+
+#pragma mark - 3D Touch
+
+-(void)enable3DTouch
+{
+  if ([self.traitCollection respondsToSelector:@selector(forceTouchCapability)] &&
+      (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable)) {
+    [self registerForPreviewingWithDelegate:self sourceView:self.view];
+  }
+}
+
+- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext
+              viewControllerForLocation:(CGPoint)location
+{
+  CGPoint referencePoint = [self.collectionView convertPoint:location fromView:self.view];
+  NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:referencePoint];
+  NYPLBookNormalCell *cell = (NYPLBookNormalCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+  
+  UIViewController *vc = [[UIViewController alloc] init];
+  vc.view.tag = indexPath.row;
+  UIImageView *imView = [[UIImageView alloc] initWithImage:cell.cover.image];
+  imView.contentMode = UIViewContentModeScaleAspectFill;
+  [vc.view addSubview:imView];
+  [imView autoPinEdgesToSuperviewEdges];
+  
+  vc.preferredContentSize = CGSizeZero;
+  previewingContext.sourceRect = [self.view convertRect:cell.frame fromView:[cell superview]];
+  
+  return vc;
+}
+
+- (void)previewingContext:(__unused id<UIViewControllerPreviewing>)previewingContext
+     commitViewController:(UIViewController *)viewControllerToCommit
+{
+  NYPLBook *const book = self.feed.books[viewControllerToCommit.view.tag];
+  [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
 
 #pragma mark -

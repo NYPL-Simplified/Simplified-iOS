@@ -113,7 +113,9 @@
   [super viewWillAppear:animated];
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
     [self.refreshControl endRefreshing];
-    self.collectionView.contentOffset = CGPointMake(0, -self.collectionView.contentInset.top);
+    if (self.collectionView.numberOfSections == 0) {
+      self.collectionView.contentOffset = CGPointMake(0, -self.collectionView.contentInset.top);
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }
 }
@@ -295,6 +297,11 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 - (void)syncEnded
 {
   self.navigationItem.leftBarButtonItem.enabled = YES;
+}
+
+- (void)viewWillTransitionToSize:(CGSize)__unused size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)__unused coordinator
+{
+  [self.collectionView reloadData];
 }
 
 @end

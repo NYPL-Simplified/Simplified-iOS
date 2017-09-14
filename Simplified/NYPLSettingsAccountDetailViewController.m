@@ -16,6 +16,7 @@
 #import "NYPLSettingsAccountDetailViewController.h"
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLRootTabBarController.h"
+#import "UIFont+NYPLSystemFontOverride.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "SimplyE-Swift.h"
 #import <PureLayout/PureLayout.h>
@@ -41,7 +42,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindPIN,
   CellKindLogInSignOut,
   CellKindRegistration,
-  CellKindEULA,
   CellKindSetCurrentAccount,
   CellKindSyncButton,
   CellKindAbout,
@@ -49,12 +49,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindContentLicense,
   CellReportIssue,
   CellSupportCenter
-};
-
-typedef NS_ENUM(NSInteger, Section) {
-  SectionLogin = 0,
-  SectionSync = 1,
-  SectionLicenses = 2,
 };
 
 @interface NYPLSettingsAccountDetailViewController () <NSURLSessionDelegate, UITextFieldDelegate, UIAlertViewDelegate>
@@ -74,7 +68,6 @@ typedef NS_ENUM(NSInteger, Section) {
 @property (nonatomic) Account *account;
 
 @property (nonatomic) UITableViewCell *registrationCell;
-@property (nonatomic) UITableViewCell *eulaCell;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITableViewCell *ageCheckCell;
 
@@ -263,7 +256,6 @@ NSInteger const linearViewTag = 1;
   } else {
     section0 = @[@(CellKindBarcode),
                  @(CellKindPIN),
-                 @(CellKindEULA),
                  @(CellKindLogInSignOut)].mutableCopy;
   }
   
@@ -319,8 +311,7 @@ NSInteger const linearViewTag = 1;
 {
   [super viewWillAppear:animated];
   
-  [self updateVisibilityForLicenseLinks];
-  
+
   // The new credentials are not yet saved when logging in after signup. As such,
   // reloading the table would lose the values in the barcode and PIN fields.
   if(!self.isLoggingInAfterSignUp) {
@@ -328,16 +319,6 @@ NSInteger const linearViewTag = 1;
     [self accountDidChange];
     [self.tableView reloadData];
     [self updateShowHidePINState];
-  }
-}
-
-- (void)updateVisibilityForLicenseLinks
-{
-  if ([self.account getLicenseURL:URLTypeEula]) {
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"EULA"
-                                                                              style:UIBarButtonItemStylePlain
-                                                                             target:self
-                                                                             action:@selector(showEULA)];
   }
 }
 
@@ -707,27 +688,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindPIN:
       [self.PINTextField becomeFirstResponder];
       break;
-    case CellKindEULA: {
-      UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-      if (self.account.eulaIsAccepted == YES) {
-        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
-        cell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAUnchecked", nil);
-        cell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
-        self.account.eulaIsAccepted = NO;
-      } else {
-        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
-        cell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAChecked", nil);
-        cell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintChecked", nil);
-        self.account.eulaIsAccepted = YES;
-      }
-      [self updateLoginLogoutCellAppearance];
-      break;
-    }
     case CellKindLogInSignOut:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       if([[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]) {
         UIAlertController *const alertController =
-        (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+        (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+         (self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact))
          ? [UIAlertController
             alertControllerWithTitle:NSLocalizedString(@"SignOut", nil)
             message:NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
@@ -736,7 +702,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             alertControllerWithTitle:
             NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
             message:nil
-            preferredStyle:UIAlertControllerStyleActionSheet]);
+            preferredStyle:UIAlertControllerStyleActionSheet];
         [alertController addAction:[UIAlertAction
                                     actionWithTitle:NSLocalizedString(@"SignOut", nil)
                                     style:UIAlertActionStyleDestructive
@@ -853,7 +819,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       HSHelpStack *helpStack = [HSHelpStack instance];
       helpStack.gear = deskGear;
     
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+         self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
         UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard" bundle:[NSBundle mainBundle]];
         UINavigationController *mainNavVC = [helpStoryboard instantiateInitialViewController];
         UIViewController *firstVC = mainNavVC.viewControllers.firstObject;
@@ -894,7 +861,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)showDetailVC:(UIViewController *)vc fromIndexPath:(NSIndexPath *)indexPath
 {
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+     self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     [self.splitViewController showDetailViewController:[[UINavigationController alloc]
                                                         initWithRootViewController:vc]
                                                 sender:self];
@@ -971,28 +939,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self.PINTextField autoPinEdgeToSuperviewMargin:ALEdgeRight];
       }
       return cell;
-    }
-    case CellKindEULA: {
-      self.eulaCell = [[UITableViewCell alloc]
-                       initWithStyle:UITableViewCellStyleDefault
-                       reuseIdentifier:nil];
-      if (self.account.eulaIsAccepted || [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]) {
-        self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
-                                       [UIImage imageNamed:@"CheckboxOn"]];
-        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAChecked", nil);
-        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintChecked", nil);
-      } else {
-        self.eulaCell.accessoryView = [[UIImageView alloc] initWithImage:
-                                       [UIImage imageNamed:@"CheckboxOff"]];
-        self.eulaCell.accessibilityLabel = NSLocalizedString(@"AccessibilityEULAUnchecked", nil);
-        self.eulaCell.accessibilityHint = NSLocalizedString(@"AccessibilityEULAHintUnchecked", nil);
-      }
-      self.eulaCell.selectionStyle = UITableViewCellSelectionStyleNone;
-      self.eulaCell.textLabel.font = [UIFont systemFontOfSize:13];
-      self.eulaCell.textLabel.text = NSLocalizedString(@"SettingsAccountEULACheckbox",
-                                                       @"Statement letting a user know that they must agree to the User Agreement terms.");
-      self.eulaCell.textLabel.numberOfLines = 2;
-      return self.eulaCell;
     }
     case CellKindLogInSignOut: {
       if(!self.logInSignOutCell) {
@@ -1151,6 +1097,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     return 0;
   }
 }
+- (CGFloat)tableView:(__unused UITableView *)tableView heightForFooterInSection:(__unused NSInteger)section
+{
+  return UITableViewAutomaticDimension;
+}
 -(NSString *)tableView:(__unused UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
   if (self.account.supportsSimplyESync && [self syncButtonShouldBeVisible] && section == 1) {
@@ -1166,6 +1116,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   } else {
     return 0;
   }
+}
+- (CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForFooterInSection:(__unused NSInteger)section
+{
+  return 44;
 }
 
 - (CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForRowAtIndexPath:(__unused NSIndexPath *)indexPath
@@ -1192,6 +1146,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     Account *account = [[AccountsManager sharedInstance] account:self.accountType];
     
     UIView *containerView = [[UIView alloc] init];
+    containerView.preservesSuperviewLayoutMargins = YES;
     UILabel *titleLabel = [[UILabel alloc] init];
     UILabel *subtitleLabel = [[UILabel alloc] init];
     subtitleLabel.numberOfLines = 0;
@@ -1221,6 +1176,43 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     [subtitleLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:20];
     
     return containerView;
+  } else {
+    return nil;
+  }
+}
+
+- (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
+{
+  if (section == 0 && [self.account getLicenseURL:URLTypeEula]) {
+    UIView *container = [[UIView alloc] init];
+    container.preservesSuperviewLayoutMargins = YES;
+    UILabel *footerLabel = [[UILabel alloc] init];
+    footerLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
+    footerLabel.textColor = [UIColor lightGrayColor];
+    footerLabel.numberOfLines = 0;
+    footerLabel.userInteractionEnabled = YES;
+
+    NSMutableAttributedString *eulaString = [[NSMutableAttributedString alloc]
+                                             initWithString:NSLocalizedString(@"By signing in, you agree to the ", nil) attributes:nil];
+    NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName :
+                                        [UIColor colorWithRed:0.05 green:0.4 blue:0.65 alpha:1.0],
+                                      NSUnderlineStyleAttributeName :
+                                        @(NSUnderlineStyleSingle) };
+    NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc]
+                                             initWithString:@"End User License Agreement." attributes:linkAttributes];
+    [eulaString appendAttributedString:linkString];
+
+    footerLabel.attributedText = eulaString;
+    [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
+
+    [container addSubview:footerLabel];
+    [footerLabel autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+    [footerLabel autoPinEdgeToSuperviewMargin:ALEdgeRight];
+    [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:8.0];
+    [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:8.0];
+
+    return container;
+
   } else {
     return nil;
   }
@@ -1303,7 +1295,9 @@ replacementString:(NSString *)string
   // least work very well.
   
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) ||
+       (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact &&
+        self.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact)) {
       CGSize const keyboardSize =
       [[notification userInfo][UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
       CGRect visibleRect = self.view.frame;
@@ -1398,17 +1392,14 @@ replacementString:(NSString *)string
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     self.logInSignOutCell.userInteractionEnabled = YES;
-    self.eulaCell.userInteractionEnabled = NO;
   } else {
-    self.eulaCell.userInteractionEnabled = YES;
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentLeft;
     BOOL const canLogIn =
       ([self.barcodeTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
        [self.PINTextField.text
-        stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length) &&
-       self.account.eulaIsAccepted;
+        stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length);
     if(canLogIn) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
@@ -1658,6 +1649,12 @@ replacementString:(NSString *)string
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self updateShowHidePINState];
   }];
+}
+
+- (void)viewWillTransitionToSize:(__unused CGSize)size
+       withTransitionCoordinator:(__unused id<UIViewControllerTransitionCoordinator>)coordinator
+{
+  [self.tableView reloadData];
 }
 
 @end

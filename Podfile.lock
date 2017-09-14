@@ -53,14 +53,12 @@ PODS:
   - SQLite.swift/standard (0.11.3)
 
 DEPENDENCIES:
-  - Bugsnag (from `https://github.com/bugsnag/bugsnag-cocoa.git`)
+  - Bugsnag
   - HelpStack (from `https://github.com/NYPL-Simplified/helpstack-ios`)
   - NYPLCardCreator (from `https://github.com/NYPL-Simplified/CardCreator-iOS.git`)
   - SQLite.swift (from `https://github.com/NYPL-Simplified/SQLite.swift`, branch `nypl-swift4-ios8-target`)
 
 EXTERNAL SOURCES:
-  Bugsnag:
-    :git: https://github.com/bugsnag/bugsnag-cocoa.git
   HelpStack:
     :git: https://github.com/NYPL-Simplified/helpstack-ios
   NYPLCardCreator:
@@ -70,11 +68,8 @@ EXTERNAL SOURCES:
     :git: https://github.com/NYPL-Simplified/SQLite.swift
 
 CHECKOUT OPTIONS:
-  Bugsnag:
-    :commit: 8eaf62293d6343a83f3764a7fee1c2e4a251b0cc
-    :git: https://github.com/bugsnag/bugsnag-cocoa.git
   HelpStack:
-    :commit: 7cdcdf6327936080eac728566cc86bab5e914700
+    :commit: 9f821fd8ebf58972809a44b611d91513499885df
     :git: https://github.com/NYPL-Simplified/helpstack-ios
   NYPLCardCreator:
     :commit: 0225028ae6ccad34eeb4e375bb02127c8a0bd5c1
@@ -92,6 +87,6 @@ SPEC CHECKSUMS:
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
   SQLite.swift: 0cb8585c21684b2290ec7792b3ca8089f68bdd29
 
-PODFILE CHECKSUM: 7b307087adee427ba51e675e2184f691e1d26825
+PODFILE CHECKSUM: fc16f960bdd8945afc1aaa1e70e6a497cc4b3913
 
 COCOAPODS: 1.3.1

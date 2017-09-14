@@ -2,6 +2,7 @@
 #import "NYPLBookAcquisition.h"
 #import "NYPLBookDetailView.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLCatalogFeedViewController.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogSearchViewController.h"
@@ -15,11 +16,9 @@
 #import "SimplyE-Swift.h"
 #import <PureLayout/PureLayout.h>
 
-#import "NYPLCatalogFeedViewController.h"
-
 #import "NYPLBookDetailViewController.h"
 
-@interface NYPLBookDetailViewController () <NYPLBookDetailViewDelegate, NYPLProblemReportViewControllerDelegate, NYPLCatalogLaneCellDelegate>
+@interface NYPLBookDetailViewController () <NYPLBookDetailViewDelegate, NYPLProblemReportViewControllerDelegate, NYPLCatalogLaneCellDelegate, UIAdaptivePresentationControllerDelegate>
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) NYPLBookDetailView *bookDetailView;
@@ -49,7 +48,8 @@
   [self.view addSubview:self.bookDetailView];
   [self.bookDetailView autoPinEdgesToSuperviewEdges];
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+     [[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     self.modalPresentationStyle = UIModalPresentationFormSheet;
   }
   
@@ -88,7 +88,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && self.navigationController.viewControllers.count <= 1) {
+  if(self.presentingViewController.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular &&
+     self.navigationController.viewControllers.count <= 1) {
     self.navigationController.navigationBarHidden = YES;
   } else {
     self.navigationController.navigationBarHidden = NO;
@@ -172,14 +173,14 @@
 -(void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender
 {
   NYPLProblemReportViewController *problemVC = [[NYPLProblemReportViewController alloc] initWithNibName:@"NYPLProblemReportViewController" bundle:nil];
-  BOOL isIPad = [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad;
+  BOOL isIPad = self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular;
   problemVC.modalPresentationStyle = isIPad ? UIModalPresentationPopover : UIModalPresentationOverCurrentContext;
   problemVC.popoverPresentationController.sourceView = sender;
   problemVC.popoverPresentationController.sourceRect = ((UIView *)sender).bounds;
   problemVC.book = book;
   problemVC.delegate = self;
   UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:problemVC];
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if(self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
     navController.modalPresentationStyle = UIModalPresentationFormSheet;
   }
   [self.navigationController pushViewController:problemVC animated:YES];
@@ -218,7 +219,7 @@
   }
   else if (index == 0) {
     if (viewController.navigationController.viewControllers.count <= 1 &&
-        UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        viewController.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
       [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
     }
   }
@@ -228,14 +229,37 @@
   else if (index == 2) {
     [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HoldsViewControllerTitle", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
   }
-  
+
   UIViewController *currentVCTab = [[[NYPLRootTabBarController sharedController] viewControllers] objectAtIndex:index];
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone || currentVCTab.presentedViewController != nil) {
+  // If a VC is already presented as a form sheet (iPad), we push the next one
+  // so the user can navigate through multiple book details without "stacking" them.
+  if((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ||
+      viewController.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) ||
+     currentVCTab.presentedViewController != nil)
+  {
     [viewController.navigationController pushViewController:self animated:YES];
   } else {
     UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:self];
     navVC.modalPresentationStyle = UIModalPresentationFormSheet;
     [viewController presentViewController:navVC animated:YES completion:nil];
+  }
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+  if (previousTraitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact &&
+      self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+    [self.navigationController popToRootViewControllerAnimated:NO];
+  }
+}
+
+- (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)__unused controller
+                                                               traitCollection:(UITraitCollection *)traitCollection
+{
+  if (traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+    return UIModalPresentationFormSheet;
+  } else {
+    return UIModalPresentationNone;
   }
 }
 

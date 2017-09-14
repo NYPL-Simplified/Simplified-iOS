@@ -265,7 +265,13 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
       forControlEvents:UIControlEventTouchUpInside];
   
   UIBarButtonItem *const TOCBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:TOCButton];
-  
+
+  // Bar button items require autolayout help 11.0+
+  if (@available(iOS 11.0, *)) {
+    [self.settingsBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(55, 30)];
+    [TOCBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(55, 30)];
+  }
+
   // Corruption may have occurred before we added these, so we need to set their enabled status
   // here (in addition to |readerView:didEncounterCorruptionForBook:|).
   self.navigationItem.rightBarButtonItems = @[TOCBarButtonItem, self.settingsBarButtonItem];
@@ -718,7 +724,8 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
 {
   [self.rendererView openOpaqueLocation:opaqueLocation];
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+     self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     [self.activePopoverController dismissPopoverAnimated:YES];
     if (!UIAccessibilityIsVoiceOverRunning())
       self.interfaceHidden = YES;
@@ -844,9 +851,10 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   }
   
   CGFloat const width =
-    (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+    (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+     self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact)
      ? 320
-     : CGRectGetWidth(self.view.frame));
+     : CGRectGetWidth(self.view.frame);
   
   NYPLReaderSettingsView *const readerSettingsView =
     [[NYPLReaderSettingsView alloc] initWithWidth:width];
@@ -855,7 +863,8 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   readerSettingsView.fontSize = [NYPLReaderSettings sharedSettings].fontSize;
   readerSettingsView.fontFace = [NYPLReaderSettings sharedSettings].fontFace;
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+     self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     UIViewController *const viewController = [[UIViewController alloc] init];
     viewController.view = readerSettingsView;
     viewController.preferredContentSize = viewController.view.bounds.size;
@@ -891,7 +900,8 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   viewController.bookTitle = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
 
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+     self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     [self.activePopoverController dismissPopoverAnimated:NO];
     self.activePopoverController =
       [[UIPopoverController alloc] initWithContentViewController:viewController];

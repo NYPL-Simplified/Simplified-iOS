@@ -8,7 +8,7 @@ target 'SimplyE' do
   use_frameworks!
 
   pod 'HelpStack', :git => 'https://github.com/NYPL-Simplified/helpstack-ios'
-  pod 'Bugsnag', :git => 'https://github.com/bugsnag/bugsnag-cocoa.git'
+  pod 'Bugsnag'
   pod 'NYPLCardCreator', :git => 'https://github.com/NYPL-Simplified/CardCreator-iOS.git'
   pod 'SQLite.swift', :git => 'https://github.com/NYPL-Simplified/SQLite.swift', :branch => 'nypl-swift4-ios8-target'
 
