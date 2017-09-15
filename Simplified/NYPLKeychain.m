@@ -20,15 +20,18 @@
 
 - (NSMutableDictionary *const)defaultDictionary
 {
-  NSString *accessGroupID = @"7262U6ST2R.org.nypl.labs.SharedKeychainGroup";
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
   dictionary[(__bridge __strong id) kSecClass] = (__bridge id) kSecClassGenericPassword;
-  dictionary[(__bridge __strong id) kSecAttrAccessGroup] = accessGroupID;
-  
+
   return dictionary;
 }
 
 - (id)objectForKey:(NSString *const)key
+{
+  return [self objectForKey:key accessGroup:nil];
+}
+
+- (id)objectForKey:(NSString *const)key accessGroup:(NSString *const)groupID
 {
   NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key];
   
@@ -36,6 +39,9 @@
   dictionary[(__bridge __strong id) kSecAttrAccount] = keyData;
   dictionary[(__bridge __strong id) kSecMatchLimit] = (__bridge id) kSecMatchLimitOne;
   dictionary[(__bridge __strong id) kSecReturnData] = (__bridge id) kCFBooleanTrue;
+  if (groupID) {
+    dictionary[(__bridge __strong id) kSecAttrAccessGroup] = groupID;
+  }
   
   CFTypeRef resultRef = NULL;
   SecItemCopyMatching((__bridge CFDictionaryRef) dictionary, &resultRef);
@@ -46,37 +52,59 @@
   return [NSKeyedUnarchiver unarchiveObjectWithData:result];
 }
 
-- (void)setObject:(id const)value forKey:(NSString *const)key
+- (void)setObject:(id)value forKey:(NSString *)key
+{
+  [self setObject:value forKey:key accessGroup:nil];
+}
+
+- (void)setObject:(id const)value forKey:(NSString *const)key accessGroup:(NSString *const)groupID
 {
   NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key];
   NSData *const valueData = [NSKeyedArchiver archivedDataWithRootObject:value];
   
   NSMutableDictionary *const dictionary = [self defaultDictionary];
   dictionary[(__bridge __strong id) kSecAttrAccount] = keyData;
-  
-  if([self objectForKey:key]) {
+  if (groupID) {
+    dictionary[(__bridge __strong id) kSecAttrAccessGroup] = groupID;
+  }
+
+  OSStatus status;
+  if([self objectForKey:key accessGroup:groupID]) {
     NSMutableDictionary *const updateDictionary = [NSMutableDictionary dictionary];
     updateDictionary[(__bridge __strong id) kSecValueData] = valueData;
-    SecItemUpdate((__bridge CFDictionaryRef) dictionary,
-                  (__bridge CFDictionaryRef) updateDictionary);
+    status = SecItemUpdate((__bridge CFDictionaryRef) dictionary,
+                           (__bridge CFDictionaryRef) updateDictionary);
+    if (status != noErr) {
+      NYPLLOG_F(@"Failed to UPDATE secure values to keychain for group: %@. This is a known issue when running from the debugger", groupID);
+    }
   } else {
-    OSStatus status;
     dictionary[(__bridge __strong id) kSecValueData] = valueData;
     status = SecItemAdd((__bridge CFDictionaryRef) dictionary, NULL);
     if (status != noErr) {
-      NYPLLOG(@"Failed to write secure values to keychain. This is a known issue when running from the debugger");
+      NYPLLOG_F(@"Failed to ADD secure values to keychain for group: %@. This is a known issue when running from the debugger", groupID);
     }
   }
 }
 
 - (void)removeObjectForKey:(NSString *const)key
 {
+  [self removeObjectForKey:key accessGroup:nil];
+}
+
+- (void)removeObjectForKey:(NSString *const)key accessGroup:(NSString *const)groupID
+{
   NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key];
   
   NSMutableDictionary *const dictionary = [self defaultDictionary];
   dictionary[(__bridge __strong id) kSecAttrAccount] = keyData;
+  if (groupID) {
+    dictionary[(__bridge __strong id) kSecAttrAccessGroup] = groupID;
+  }
   
-  SecItemDelete((__bridge CFDictionaryRef) dictionary);
+  OSStatus status = SecItemDelete((__bridge CFDictionaryRef) dictionary);
+  if (status != noErr) {
+    NYPLLOG_F(@"Failed to REMOVE object from keychain group: %@",groupID);
+  }
 }
 
 @end
