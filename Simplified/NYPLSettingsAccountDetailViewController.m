@@ -1467,19 +1467,20 @@ replacementString:(NSString *)string
   UIView *const rightPaddingView = [[UIView alloc] initWithFrame:activityIndicatorView.bounds];
   
   NYPLLinearView *const linearView = [[NYPLLinearView alloc] init];
-  linearView.tag = 1;
+  linearView.tag = linearViewTag;
   linearView.contentVerticalAlignment = NYPLLinearViewContentVerticalAlignmentMiddle;
   linearView.padding = 5.0;
   [linearView addSubview:activityIndicatorView];
   [linearView addSubview:titleLabel];
   [linearView addSubview:rightPaddingView];
   [linearView sizeToFit];
+  [linearView autoSetDimensionsToSize:CGSizeMake(linearView.frame.size.width, linearView.frame.size.height)];
   
   self.logInSignOutCell.textLabel.text = nil;
   if (![self.logInSignOutCell.contentView viewWithTag:linearViewTag]) {
     [self.logInSignOutCell.contentView addSubview:linearView];
   }
-  linearView.center = self.logInSignOutCell.contentView.center;
+  [linearView autoCenterInSuperview];
 }
 
 - (void)removeActivityTitle {

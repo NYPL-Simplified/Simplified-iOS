@@ -49,7 +49,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
                                  buttonTitle: NSLocalizedString("WelcomeScreenButtonTitle2", comment: "Name of section for free books means books that are well-known popular novels for many people."),
                                  buttonTargetSelector: #selector(instantClassicsTapped))
     
-    let logoView = UIImageView(image: UIImage(named: "FullLogo"))
+    let logoView = UIImageView(image: UIImage(named: "LaunchImageLogo"))
     logoView.contentMode = .scaleAspectFit
     
     let containerView = UIView()
