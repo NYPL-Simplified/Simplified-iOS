@@ -121,7 +121,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
-  configuration.timeoutIntervalForResource = 15.0;
+  configuration.timeoutIntervalForResource = 10.0;
   
   self.session = [NSURLSession
                   sessionWithConfiguration:configuration
@@ -747,7 +747,7 @@ completionHandler:(void (^)())handler
   
   self.logInSignOutCell.textLabel.text = nil;
   [self.logInSignOutCell.contentView addSubview:linearView];
-  [linearView autoCenterInSuperview];
+  linearView.center = self.logInSignOutCell.contentView.center;
 }
 
 - (void)removeActivityTitle {
