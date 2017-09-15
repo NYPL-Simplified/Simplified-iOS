@@ -2,6 +2,11 @@ import Foundation
 
 final class NYPLKeychainManager: NSObject {
 
+  private enum KeychainGroups: String {
+    case legacyKeychainID = "NLJ22T6E9W.org.nypl.labs.SimplyE"
+    case groupKeychainID = "7262U6ST2R.org.nypl.labs.SharedKeychainGroup"
+  }
+
   private static let secClassItems: [String] = [
     kSecClassGenericPassword as String,
     kSecClassInternetPassword as String,
@@ -11,8 +16,8 @@ final class NYPLKeychainManager: NSObject {
   ]
 
   private static let secAttrAccessGroups: [String] = [
-    "7262U6ST2R.org.nypl.labs.SharedKeychainGroup",
-    "NLJ22T6E9W.org.nypl.labs.SimplyE"
+    KeychainGroups.groupKeychainID.rawValue,
+    KeychainGroups.legacyKeychainID.rawValue
   ]
 
   class func validateKeychain() {
@@ -51,7 +56,11 @@ final class NYPLKeychainManager: NSObject {
     for secClass in secClassItems {
       let values = getAllKeyChainItemsOfClass(secClass)
       for (key, value) in values {
-        NYPLKeychain.shared().setObject(value, forKey: key)
+        NYPLKeychain.shared().setObject(value,
+                                        forKey: key,
+                                        accessGroup: KeychainGroups.groupKeychainID.rawValue)
+        NYPLKeychain.shared().removeObject(forKey: key,
+                                           accessGroup: KeychainGroups.legacyKeychainID.rawValue)
         Log.debug(#file, "Keychain item with key: \"\(key)\" found. Migrating item to new shared group...")
       }
     }

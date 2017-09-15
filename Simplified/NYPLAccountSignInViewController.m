@@ -809,7 +809,11 @@ completionHandler:(void (^)())handler
           username:tokenUsername
           password:tokenPassword
           completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
-            
+
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+              [NSObject cancelPreviousPerformRequestsWithTarget:self];    // Cancel DRM delay timer
+            }];
+
             NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
             NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
             NYPLLOG_F(@"UserID: %@\n",userID);
@@ -832,6 +836,8 @@ completionHandler:(void (^)())handler
             [self authorizationAttemptDidFinish:success error:error];
             
           }];
+
+         [self performSelector:@selector(dismissAfterUnexpectedDRMDelay) withObject:self afterDelay:25];    // DRM delay timer
          
 #else
          
@@ -863,6 +869,25 @@ completionHandler:(void (^)())handler
      }];
   
   [task resume];
+}
+
+- (void)dismissAfterUnexpectedDRMDelay
+{
+  __weak NYPLAccountSignInViewController *const weakSelf = self;
+
+  NYPLAlertController *alert;
+  NSString *title = NSLocalizedString(@"Sign In Error", nil);
+  NSString *message = NSLocalizedString(@"The DRM Library is taking longer than expected. Please wait and try again later.\n\nIf the problem persists, try to sign out and back in again from the Library Settings menu.", nil);
+
+  alert = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                            style:UIAlertActionStyleDefault
+                                          handler:^(UIAlertAction * _Nonnull __unused action) {
+                                            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+                                          }]];
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
+                                                                  animated:YES
+                                                                completion:nil];
 }
 
 - (void)showLoginAlertWithError:(NSError *)error
