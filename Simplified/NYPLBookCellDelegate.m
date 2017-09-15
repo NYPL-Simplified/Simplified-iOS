@@ -1,3 +1,5 @@
+#import "NYPLAccount.h"
+#import "NYPLAccountSignInViewController.h"
 #import "NYPLSession.h"
 #import "NYPLAlertController.h"
 #import "NYPLBook.h"
@@ -12,6 +14,10 @@
 
 #import "NYPLBookCellDelegate.h"
 #import "SimplyE-Swift.h"
+
+#if defined(FEATURE_DRM_CONNECTOR)
+#import <ADEPT/ADEPT.h>
+#endif
 
 @implementation NYPLBookCellDelegate
 
@@ -43,6 +49,20 @@
 }
 
 - (void)didSelectReadForBook:(NYPLBook *)book
+{
+  // Try to prevent blank books bug
+  if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount] userID]
+                                         withDevice:[[NYPLAccount sharedAccount] deviceID]]) &&
+      ([[NYPLAccount sharedAccount] hasBarcodeAndPIN])) {
+    [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:^{
+      [self openBook:book];   // with successful DRM activation
+    }];
+  } else {
+    [self openBook:book];
+  }
+}
+
+- (void)openBook:(NYPLBook *)book
 {
   [NYPLCirculationAnalytics postEvent:@"open_book" withBook:book];
   [[NYPLRootTabBarController sharedController]
