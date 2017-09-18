@@ -145,7 +145,7 @@
  "id" : 12,
  "pathComponent" : "12",
  "name" : "Black Gold Cooperative Library",
- "subtitle" : "",
+ "subtitle" : " ",
  "logo" : "LibraryLogoBlackGold",
  "needsAuth" : true,
  "supportsSimplyESync" : false,
