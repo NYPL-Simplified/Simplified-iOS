@@ -191,6 +191,7 @@
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://smrla.simplye-md.org/MDCALV",
+ "supportEmail" : "ill.calv@somd.lib.md.us",
  "mainColor" : "440099",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
