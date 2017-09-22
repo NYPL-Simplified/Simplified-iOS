@@ -64,6 +64,7 @@
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://acl.simplye-ca.org",
+ "supportEmail" : "ask@aclibrary.libanswers.com",
  "mainColor" : "58a6f5"
  },
  {
