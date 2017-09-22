@@ -122,7 +122,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
-  configuration.timeoutIntervalForResource = 10.0;
+  configuration.timeoutIntervalForResource = 15.0;
   
   self.session = [NSURLSession
                   sessionWithConfiguration:configuration
@@ -342,7 +342,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return cell;
     }
     case CellKindLogInSignOut: {
-      self.logInSignOutCell.textLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleBody];
+      self.logInSignOutCell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       [self updateLoginLogoutCellAppearance];
       return self.logInSignOutCell;
     }
@@ -352,7 +352,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
-      cell.detailTextLabel.font = [UIFont customBoldFontForTextStyle:UIFontTextStyleBody];
+      cell.detailTextLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.detailTextLabel.text = NSLocalizedString(@"SignUp", nil);
       cell.detailTextLabel.textColor = [NYPLConfiguration mainColor];
       return cell;
@@ -407,18 +407,24 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
 {
-  if (section == SectionCredentials) {
+  Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
+  if (section == SectionCredentials && [currentAccount getLicenseURL:URLTypeEula]) {
     UIView *container = [[UIView alloc] init];
+    container.preservesSuperviewLayoutMargins = YES;
     UILabel *footerLabel = [[UILabel alloc] init];
     footerLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
     footerLabel.textColor = [UIColor lightGrayColor];
     footerLabel.numberOfLines = 0;
     footerLabel.userInteractionEnabled = YES;
 
-    NSMutableAttributedString *eulaString = [[NSMutableAttributedString alloc] initWithString:@"By signing in, you agree to the " attributes:nil];
-    NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName : [UIColor colorWithRed:0.05 green:0.4 blue:0.65 alpha:1.0],
-                                      NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle) };
-    NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc] initWithString:@"End User License Agreement." attributes:linkAttributes];
+    NSMutableAttributedString *eulaString = [[NSMutableAttributedString alloc]
+                                             initWithString:NSLocalizedString(@"By signing in, you agree to the ", nil) attributes:nil];
+    NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName :
+                                        [UIColor colorWithRed:0.05 green:0.4 blue:0.65 alpha:1.0],
+                                      NSUnderlineStyleAttributeName :
+                                        @(NSUnderlineStyleSingle) };
+    NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc]
+                                             initWithString:@"End User License Agreement." attributes:linkAttributes];
     [eulaString appendAttributedString:linkString];
 
     footerLabel.attributedText = eulaString;
@@ -745,19 +751,24 @@ completionHandler:(void (^)())handler
   
   // This view is used to keep the title label centered as in Apple's Settings application.
   UIView *const rightPaddingView = [[UIView alloc] initWithFrame:activityIndicatorView.bounds];
+
+  NSInteger linearViewTag = 1;
   
   NYPLLinearView *const linearView = [[NYPLLinearView alloc] init];
-  linearView.tag = 1;
+  linearView.tag = linearViewTag;
   linearView.contentVerticalAlignment = NYPLLinearViewContentVerticalAlignmentMiddle;
   linearView.padding = 5.0;
   [linearView addSubview:activityIndicatorView];
   [linearView addSubview:titleLabel];
   [linearView addSubview:rightPaddingView];
   [linearView sizeToFit];
+  [linearView autoSetDimensionsToSize:CGSizeMake(linearView.frame.size.width, linearView.frame.size.height)];
   
   self.logInSignOutCell.textLabel.text = nil;
-  [self.logInSignOutCell.contentView addSubview:linearView];
-  linearView.center = self.logInSignOutCell.contentView.center;
+  if (![self.logInSignOutCell.contentView viewWithTag:linearViewTag]) {
+    [self.logInSignOutCell.contentView addSubview:linearView];
+  }
+  [linearView autoCenterInSuperview];
 }
 
 - (void)removeActivityTitle {
@@ -814,7 +825,11 @@ completionHandler:(void (^)())handler
           username:tokenUsername
           password:tokenPassword
           completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
-            
+
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+              [NSObject cancelPreviousPerformRequestsWithTarget:self];    // Cancel DRM delay timer
+            }];
+
             NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
             NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
             NYPLLOG_F(@"UserID: %@\n",userID);
@@ -837,6 +852,8 @@ completionHandler:(void (^)())handler
             [self authorizationAttemptDidFinish:success error:error];
             
           }];
+
+         [self performSelector:@selector(dismissAfterUnexpectedDRMDelay) withObject:self afterDelay:25];    // DRM delay timer
          
 #else
          
@@ -868,6 +885,25 @@ completionHandler:(void (^)())handler
      }];
   
   [task resume];
+}
+
+- (void)dismissAfterUnexpectedDRMDelay
+{
+  __weak NYPLAccountSignInViewController *const weakSelf = self;
+
+  NYPLAlertController *alert;
+  NSString *title = NSLocalizedString(@"Sign In Error", nil);
+  NSString *message = NSLocalizedString(@"The DRM Library is taking longer than expected. Please wait and try again later.\n\nIf the problem persists, try to sign out and back in again from the Library Settings menu.", nil);
+
+  alert = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                            style:UIAlertActionStyleDefault
+                                          handler:^(UIAlertAction * _Nonnull __unused action) {
+                                            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+                                          }]];
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
+                                                                  animated:YES
+                                                                completion:nil];
 }
 
 - (void)showLoginAlertWithError:(NSError *)error
