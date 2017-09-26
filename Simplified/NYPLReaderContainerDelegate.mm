@@ -1,5 +1,8 @@
 #import "NYPLReaderContainerDelegate.h"
 #import "NYPLLOG.h"
+#import "NYPLAccount.h"
+
+#include <ePub3/MarlinContentModule.h>
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #pragma clang diagnostic push
@@ -20,11 +23,18 @@ isSevereEpubError:(__unused const BOOL)isSevereEpubError
   return YES;
 }
 
-#if defined(FEATURE_DRM_CONNECTOR)
 - (void)containerRegisterContentFilters:(__attribute__((unused)) RDContainer *)container
 {
-  ePub3::AdeptFilter::Register();
-}
+#if defined(FEATURE_DRM_CONNECTOR)
+  if([NYPLAccount sharedAccount].licensor[@"clientToken"]) {
+    ePub3::AdeptFilter::Register();
+  }
 #endif
+}
+
+-(void)containerRegisterContentModules:(__attribute__((unused)) RDContainer *)container
+{
+  MarlinContentModule::Register();
+}
 
 @end
