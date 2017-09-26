@@ -18,6 +18,8 @@
 #import "NYPLSettings.h"
 #import "SimplyE-Swift.h"
 
+@import DITAURMS;
+
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
 @interface NYPLMyBooksDownloadCenter () <NYPLADEPTDelegate>
@@ -218,6 +220,38 @@ didFinishDownloadingToURL:(NSURL *const)location
           [[NYPLBookRegistry sharedRegistry]
            setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
           [[NYPLBookRegistry sharedRegistry] save];
+          
+          if (book.ccid) {
+            NSString* path = [[self fileURLForBookIndentifier:book.identifier] path];
+            Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
+            NYPLAccount *account = [NYPLAccount sharedAccount];
+            NSString *user = account.barcode;
+            NSString *password = account.PIN;
+            NSString *abbreviation = currentAccount.abbreviation;
+            NSString *tokenUrl = account.licensor[@"clientTokenUrl"];
+            if (user) {
+              // URMS evaluate Book license
+              [DITAURMS evaluateBookWithCcid:book.ccid
+                                        path:path
+                                 profileName:abbreviation
+                                        user:user
+                                    password:password
+                                    tokenUrl:tokenUrl
+                                 showLoading:false
+                                    callback:^(DITAURMSCallback callback) {
+                                      switch (callback) {
+                                        case DITAURMSCallbackSuccess:
+                                          NYPLLOG(@"AMURMSCallbackSuccess - evaluateLicenseWithCcid");
+                                          
+                                          break;
+                                        case DITAURMSCallbackFailure:
+                                          NYPLLOG(@"AMURMSCallbackFailure - evaluateLicenseWithCcid");
+                                          
+                                          break;
+                                      }
+                                    }];
+            }
+          }
         }
         
         break;

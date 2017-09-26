@@ -18,6 +18,10 @@
 
 #import "NYPLBookDetailViewController.h"
 
+@import DITAURMS;
+#import "NYPLAccount.h"
+#import "NYPLSettings.h"
+
 @interface NYPLBookDetailViewController () <NYPLBookDetailViewDelegate, NYPLProblemReportViewControllerDelegate, NYPLCatalogLaneCellDelegate, UIAdaptivePresentationControllerDelegate>
 
 @property (nonatomic) NYPLBook *book;
@@ -150,10 +154,58 @@
 
 - (void)didSelectReadForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView
 {
-  [[NYPLRootTabBarController sharedController]
-   pushViewController:[[NYPLReaderViewController alloc]
-                       initWithBookIdentifier:self.book.identifier]
-   animated:YES];
+  
+  if (self.book.ccid) {
+    
+    NSString* path = [[[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+                       fileURLForBookIndentifier:self.book.identifier] path];
+    Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
+    NYPLAccount *account = [NYPLAccount sharedAccount];
+    NSString *user = account.barcode;
+    NSString *password = account.PIN;
+    NSString *abbreviation = currentAccount.abbreviation;
+    NSString *tokenUrl = account.licensor[@"clientTokenUrl"];
+    
+    if (user) {
+      // URMS evaluate Book license
+      [DITAURMS evaluateBookWithCcid:self.book.ccid
+                                path:path
+                         profileName:abbreviation
+                                user:user
+                            password:password
+                            tokenUrl:tokenUrl
+                         showLoading:true
+                            callback:^(DITAURMSCallback callback) {
+                              switch (callback) {
+                                case DITAURMSCallbackSuccess:
+                                  NYPLLOG(@"AMURMSCallbackSuccess - evaluateLicenseWithCcid");
+                                  [NYPLCirculationAnalytics postEvent:@"open_book" withBook:self.book];
+                                  [[NYPLRootTabBarController sharedController]
+                                   pushViewController:[[NYPLReaderViewController alloc]
+                                                       initWithBookIdentifier:self.book.identifier]
+                                   animated:YES];
+                                  break;
+                                case DITAURMSCallbackFailure:
+                                  NYPLLOG(@"AMURMSCallbackFailure - evaluateLicenseWithCcid");
+                                  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                                    [[NSNotificationCenter defaultCenter]
+                                     postNotificationName:@"URMSFailed"
+                                     object:nil
+                                     userInfo:nil];
+                                  }];
+                                  
+                                  break;
+                              }
+                            }];
+    }
+  }
+  else {
+      [NYPLCirculationAnalytics postEvent:@"open_book" withBook:self.book];
+      [[NYPLRootTabBarController sharedController]
+       pushViewController:[[NYPLReaderViewController alloc]
+                           initWithBookIdentifier:self.book.identifier]
+       animated:YES];
+  }
 }
 
 #pragma mark - NYPLCatalogLaneCellDelegate
