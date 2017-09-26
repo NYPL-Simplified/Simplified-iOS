@@ -793,7 +793,7 @@ completionHandler:(void (^)())handler
            [self authorizationAttemptDidFinish:NO error:nil];
            return;
          }
-         
+         if (loansFeed.licensor[@"clientToken"]) {
          NSMutableArray *licensorItems = [[loansFeed.licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
          NSString *tokenPassword = [licensorItems lastObject];
          [licensorItems removeLastObject];
@@ -838,7 +838,10 @@ completionHandler:(void (^)())handler
           }];
 
          [self performSelector:@selector(dismissAfterUnexpectedDRMDelay) withObject:self afterDelay:25];    // DRM delay timer
-         
+         }
+         else {
+           [self authorizationAttemptDidFinish:YES error:nil];
+         }
 #else
          
          [self authorizationAttemptDidFinish:YES error:nil];
