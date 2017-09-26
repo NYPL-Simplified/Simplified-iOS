@@ -376,7 +376,7 @@ CGFloat const verticalMarginPadding = 2.0;
        [self deauthorizeDevice];
 
      } else {
-       [self showLogoutAlertWithError:error];
+       [self showLogoutAlertWithError:error responseCode:statusCode];
        [self removeActivityTitle];
        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
      }
@@ -443,13 +443,16 @@ CGFloat const verticalMarginPadding = 2.0;
    completion:^(BOOL success, __unused NSError *error) {
      
      if(!success) {
-       // Even though we failed, all we do is log the error. The reason is
-       // that we want the user to be able to log out anyway because the
-       // failure is probably due to bad credentials and we do not want the
-       // user to have to change their barcode or PIN just to log out. This
-       // is only a temporary measure and we'll switch to deauthorizing with
-       // a token that will remain invalid indefinitely in the near future.
-       NYPLLOG(@"Failed to deauthorize successfully.");
+       // Even though we failed, let the user continue to log out.
+       // The most likely reason is a user changing their PIN.
+       // TODO: Remote logging can be removed when it is determined that sufficient data has been collected.
+       NYPLLOG(@"Failed to deauthorize successfully. User will lose an activation on this device.");
+       [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:4 userInfo:nil]
+                      block:^(BugsnagCrashReport * _Nonnull report) {
+                        report.context = @"NYPLSettingsAccountDetailViewController";
+                        report.severity = BSGSeverityInfo;
+                        report.errorMessage = @"User has lost an activation on signout due to NYPLAdept Error.";
+                      }];
      }
      else {
        NYPLLOG(@"***Successful DRM Deactivation***");
@@ -579,16 +582,19 @@ CGFloat const verticalMarginPadding = 2.0;
   [self removeActivityTitle];
 }
 
-- (void)showLogoutAlertWithError:(NSError *)error
+- (void)showLogoutAlertWithError:(NSError *)error responseCode:(NSInteger)code
 {
   NSString *title; NSString *message;
-  if (error.code == 401) {
+  if (code == 401) {
     title = @"Unexpected Credentials";
     message = @"Your username or password may have changed since the last time you logged in.\n\nIf you believe this is an error, please contact your library.";
     [self deauthorizeDevice];
-  } else {
+  } else if (error) {
     title = @"SettingsAccountViewControllerLogoutFailed";
     message = error.localizedDescription;
+  } else {
+    title = @"SettingsAccountViewControllerLogoutFailed";
+    message = NSLocalizedString(@"An unknown error occurred while trying to sign out.", nil);
   }
   [self presentViewController:[NYPLAlertController alertWithTitle:title message:message]
                      animated:YES
