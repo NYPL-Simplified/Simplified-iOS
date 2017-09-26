@@ -62,7 +62,9 @@
   if(!self) return nil;
   
 #if defined(FEATURE_DRM_CONNECTOR)
-  [NYPLADEPT sharedInstance].delegate = self;
+  if ([NYPLAccount sharedAccount].licensor[@"clientToken"]) {
+    [NYPLADEPT sharedInstance].delegate = self;
+  }
 #endif
   
   NSURLSessionConfiguration *const configuration =

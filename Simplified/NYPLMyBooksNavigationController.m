@@ -84,12 +84,18 @@
     Account *account = [[AccountsManager sharedInstance] account:[accounts[i] intValue]];
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
 #if defined(FEATURE_DRM_CONNECTOR)
+      if ([NYPLAccount sharedAccount].licensor[@"clientToken"]) {
       if([NYPLADEPT sharedInstance].workflowsInProgress) {
         [self presentViewController:[NYPLAlertController
                                      alertWithTitle:@"PleaseWait"
                                      message:@"PleaseWaitMessage"]
                            animated:YES
                          completion:nil];
+      } else {
+        [[NYPLBookRegistry sharedRegistry] save];
+        [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+        [self reloadSelected];
+      }
       } else {
         [[NYPLBookRegistry sharedRegistry] save];
         [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
