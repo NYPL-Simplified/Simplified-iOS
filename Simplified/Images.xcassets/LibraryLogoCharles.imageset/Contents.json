@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "LibraryLogoCharles.png",
+      "filename" : "CCPL 45X45.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "LibraryLogoCharles@2x.png",
+      "filename" : "CCPL 89X89.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "LibraryLogoCharles@3x.png",
+      "filename" : "CCPL 135X135.png",
       "scale" : "3x"
     }
   ],
