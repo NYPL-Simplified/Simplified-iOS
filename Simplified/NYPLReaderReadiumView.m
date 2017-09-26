@@ -498,6 +498,12 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     NSString *contentCFI = locationDictionary[@"contentCFI"];
     if (!contentCFI) {
       contentCFI = @"";
+
+      NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
+      if (self.book.identifier) [metadataParams setObject:self.book.identifier forKey:@"bookID"];
+      if (location.locationString) [metadataParams setObject:location.locationString forKey:@"registry locationString"];
+      if (location.renderer) [metadataParams setObject:location.renderer forKey:@"renderer"];
+      if (locationDictionary[@"idref"]) [metadataParams setObject:locationDictionary[@"idref"] forKey:@"openPageRequest idref"];
       
       [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:0 userInfo:nil]
                      block:^(BugsnagCrashReport * _Nonnull report) {
@@ -505,14 +511,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                        report.severity = BSGSeverityWarning;
                        report.groupingHash = @"open-book-nil-cfi";
                        report.errorMessage = @"The content CFI is nil on book re-open.";
-                       NSDictionary *metadata = @{
-                                                  @"bookID" : self.book.identifier,
-                                                  @"registry locationString" : location.locationString,
-                                                  @"renderer" : location.renderer,
-                                                  @"openPageRequest cfi" : locationDictionary[@"contentCFI"],
-                                                  @"openPageRequest idref" : locationDictionary[@"idref"]
-                                                  };
-                       [report addMetadata:metadata toTabWithName:@"Extra CFI Data"];
+                       [report addMetadata:metadataParams toTabWithName:@"Extra CFI Data"];
                      }];
     }
     dictionary[@"openPageRequest"] = @{@"idref": locationDictionary[@"idref"],
@@ -933,15 +932,17 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 // FIXME: This can be removed when sufficient data has been collected
 - (void)reportNilUrlToBugsnagWithSpineItem:(RDSpineItem *)spineItem
 {
+  NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
+  if (self.server.package.rootURL) [metadataParams setObject:self.server.package.rootURL forKey:@"packageRootUrl"];
+  if (spineItem.baseHref) [metadataParams setObject:spineItem.baseHref forKey:@"spineItemBaseHref"];
+  if (self.book.identifier) [metadataParams setObject:self.book.identifier forKey:@"bookIdentifier"];
+
   [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:1 userInfo:nil]
                  block:^(BugsnagCrashReport * _Nonnull report) {
                    report.context = @"NYPLReaderReadiumView";
                    report.severity = BSGSeverityInfo;
                    report.errorMessage = @"URL for creating book length was unexpectedly nil";
-                   NSDictionary *metadata = @{@"packageRootUrl" : self.server.package.rootURL,
-                                              @"spineItemBaseHref" : spineItem.baseHref,
-                                              @"bookIdentifier" : self.book.identifier};
-                   [report addMetadata:metadata toTabWithName:@"Extra Data"];
+                   [report addMetadata:metadataParams toTabWithName:@"Extra Data"];
                  }];
 }
 
