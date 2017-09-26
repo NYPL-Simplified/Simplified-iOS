@@ -146,9 +146,6 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
   
   self.barcodeTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.barcodeTextField.delegate = self;
-  self.barcodeTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                            UIViewAutoresizingFlexibleHeight);
-  self.barcodeTextField.font = [UIFont systemFontOfSize:17];
   self.barcodeTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
   self.barcodeTextField.keyboardType = UIKeyboardTypeASCIICapable;
   self.barcodeTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -159,9 +156,6 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
    forControlEvents:UIControlEventEditingChanged];
   
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
-  self.PINTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                        UIViewAutoresizingFlexibleHeight);
-  self.PINTextField.font = [UIFont systemFontOfSize:17];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
   self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
   self.PINTextField.secureTextEntry = YES;
@@ -314,10 +308,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       {
+        self.barcodeTextField.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
         [cell.contentView addSubview:self.barcodeTextField];
-        [self.barcodeTextField autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-        [self.barcodeTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+        self.barcodeTextField.preservesSuperviewLayoutMargins = YES;
         [self.barcodeTextField autoPinEdgeToSuperviewMargin:ALEdgeRight];
+        [self.barcodeTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+        [self.barcodeTextField autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop
+                                               ofView:[self.barcodeTextField superview]
+                                           withOffset:6.0];
+        [self.barcodeTextField autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom
+                                               ofView:[self.barcodeTextField superview]
+                                           withOffset:-6.0];
       }
       return cell;
     }
@@ -327,10 +328,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       {
+        self.PINTextField.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
         [cell.contentView addSubview:self.PINTextField];
-        [self.PINTextField autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-        [self.PINTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+        self.PINTextField.preservesSuperviewLayoutMargins = YES;
         [self.PINTextField autoPinEdgeToSuperviewMargin:ALEdgeRight];
+        [self.PINTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+        [self.PINTextField autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop
+                                               ofView:[self.PINTextField superview]
+                                           withOffset:6.0];
+        [self.PINTextField autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom
+                                               ofView:[self.PINTextField superview]
+                                           withOffset:-6.0];
       }
       return cell;
     }
@@ -340,15 +348,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return self.logInSignOutCell;
     }
     case CellKindRegistration: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleValue1
-                                     reuseIdentifier:nil];
-      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-      cell.textLabel.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
-      cell.detailTextLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-      cell.detailTextLabel.text = NSLocalizedString(@"SignUp", nil);
-      cell.detailTextLabel.textColor = [NYPLConfiguration mainColor];
-      return cell;
+      return [self registrationCell];
     }
   }
 }
@@ -358,6 +358,36 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   return ([NYPLConfiguration cardCreationEnabled] &&
           ([[AccountsManager sharedInstance] currentAccount].supportsCardCreator || [[AccountsManager sharedInstance] currentAccount].cardCreatorUrl) &&
           ![[NYPLAccount sharedAccount] hasBarcodeAndPIN]);
+}
+
+- (UITableViewCell *)registrationCell
+{
+  UIView *containerView = [[UIView alloc] init];
+  UILabel *regTitle = [[UILabel alloc] init];
+  UILabel *regButton = [[UILabel alloc] init];
+
+  regTitle.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+  regTitle.numberOfLines = 2;
+  regTitle.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
+  regButton.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+  regButton.text = NSLocalizedString(@"SignUp", nil);
+  regButton.textColor = [NYPLConfiguration mainColor];
+
+  [containerView addSubview:regTitle];
+  [containerView addSubview:regButton];
+  [regTitle autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+  [regTitle autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+  [regTitle autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop ofView:[regTitle superview] withOffset:6.0];
+  [regTitle autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom ofView:[regTitle superview] withOffset:-6.0];
+  [regTitle autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:regButton withOffset:-8.0];
+  [regButton autoPinEdgesToSuperviewMarginsExcludingEdge:ALEdgeLeft];
+  [regButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+
+  UITableViewCell *cell = [[UITableViewCell alloc] init];
+  [cell.contentView addSubview:containerView];
+  containerView.preservesSuperviewLayoutMargins = YES;
+  [containerView autoPinEdgesToSuperviewEdges];
+  return cell;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
@@ -427,7 +457,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     [footerLabel autoPinEdgeToSuperviewMargin:ALEdgeLeft];
     [footerLabel autoPinEdgeToSuperviewMargin:ALEdgeRight];
     [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:8.0];
-    [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:8.0];
+    [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:16.0 relation:NSLayoutRelationGreaterThanOrEqual];
 
     return container;
 
