@@ -85,6 +85,8 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 
 @implementation NYPLAccountSignInViewController
 
+CGFloat const marginPadding = 2.0;
+
 #pragma mark NSObject
 
 - (instancetype)init
@@ -315,10 +317,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self.barcodeTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
         [self.barcodeTextField autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop
                                                ofView:[self.barcodeTextField superview]
-                                           withOffset:6.0];
+                                           withOffset:marginPadding];
         [self.barcodeTextField autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom
                                                ofView:[self.barcodeTextField superview]
-                                           withOffset:-6.0];
+                                           withOffset:-marginPadding];
       }
       return cell;
     }
@@ -335,10 +337,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self.PINTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
         [self.PINTextField autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop
                                                ofView:[self.PINTextField superview]
-                                           withOffset:6.0];
+                                           withOffset:marginPadding];
         [self.PINTextField autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom
                                                ofView:[self.PINTextField superview]
-                                           withOffset:-6.0];
+                                           withOffset:-marginPadding];
       }
       return cell;
     }
@@ -348,7 +350,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return self.logInSignOutCell;
     }
     case CellKindRegistration: {
-      return [self registrationCell];
+      return [self createRegistrationCell];
     }
   }
 }
@@ -360,7 +362,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           ![[NYPLAccount sharedAccount] hasBarcodeAndPIN]);
 }
 
-- (UITableViewCell *)registrationCell
+- (UITableViewCell *)createRegistrationCell
 {
   UIView *containerView = [[UIView alloc] init];
   UILabel *regTitle = [[UILabel alloc] init];
@@ -375,11 +377,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
   [containerView addSubview:regTitle];
   [containerView addSubview:regButton];
-  [regTitle autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
   [regTitle autoPinEdgeToSuperviewMargin:ALEdgeLeft];
-  [regTitle autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop ofView:[regTitle superview] withOffset:6.0];
-  [regTitle autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom ofView:[regTitle superview] withOffset:-6.0];
-  [regTitle autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:regButton withOffset:-8.0];
+  [regTitle autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop ofView:[regTitle superview] withOffset:marginPadding];
+  [regTitle autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom ofView:[regTitle superview] withOffset:-marginPadding];
+  [regButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:regTitle withOffset:8.0 relation:NSLayoutRelationGreaterThanOrEqual];
   [regButton autoPinEdgesToSuperviewMarginsExcludingEdge:ALEdgeLeft];
   [regButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
 
@@ -760,7 +761,7 @@ completionHandler:(void (^)())handler
   
   UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
   titleLabel.text = text;
-  titleLabel.font = [UIFont systemFontOfSize:17];
+  titleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   [titleLabel sizeToFit];
   
   // This view is used to keep the title label centered as in Apple's Settings application.
