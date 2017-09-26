@@ -42,7 +42,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindPIN,
   CellKindLogInSignOut,
   CellKindRegistration,
-  CellKindSetCurrentAccount,
   CellKindSyncButton,
   CellKindAbout,
   CellKindPrivacyPolicy,
@@ -78,12 +77,13 @@ typedef NS_ENUM(NSInteger, CellKind) {
 
 @end
 
-NSInteger const linearViewTag = 1;
 
 @implementation NYPLSettingsAccountDetailViewController
 
-#pragma mark NSObject
+NSInteger const linearViewTag = 1;
+CGFloat const verticalMarginPadding = 2.0;
 
+#pragma mark NSObject
 
 - (instancetype)initWithAccount:(NSInteger)account
 {
@@ -157,9 +157,6 @@ NSInteger const linearViewTag = 1;
   
   self.barcodeTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.barcodeTextField.delegate = self;
-  self.barcodeTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                            UIViewAutoresizingFlexibleHeight);
-  self.barcodeTextField.font = [UIFont systemFontOfSize:17];
   self.barcodeTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
   self.barcodeTextField.keyboardType = UIKeyboardTypeASCIICapable;
   self.barcodeTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -170,9 +167,6 @@ NSInteger const linearViewTag = 1;
    forControlEvents:UIControlEventEditingChanged];
   
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
-  self.PINTextField.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
-                                        UIViewAutoresizingFlexibleHeight);
-  self.PINTextField.font = [UIFont systemFontOfSize:17];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
   self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
   self.PINTextField.secureTextEntry = YES;
@@ -322,8 +316,7 @@ NSInteger const linearViewTag = 1;
   }
 }
 
-#pragma mark
-#pragma mark Account SignIn/SignOut
+#pragma mark - Account SignIn/SignOut
 
 - (void)logIn
 {
@@ -647,9 +640,7 @@ NSInteger const linearViewTag = 1;
                  }];
 }
 
-#pragma mark
-
-#pragma mark UITableViewDelegate
+#pragma mark - UITableViewDelegate
 
 - (void)tableView:(__attribute__((unused)) UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
@@ -777,9 +768,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       
       break;
     }
-    case CellKindSetCurrentAccount: {
-      break;
-    }
     case CellKindSyncButton: {
       break;
     }
@@ -892,10 +880,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       {
+        self.barcodeTextField.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
         [cell.contentView addSubview:self.barcodeTextField];
-        [self.barcodeTextField autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-        [self.barcodeTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+        self.barcodeTextField.preservesSuperviewLayoutMargins = YES;
         [self.barcodeTextField autoPinEdgeToSuperviewMargin:ALEdgeRight];
+        [self.barcodeTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+        [self.barcodeTextField autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop
+                                               ofView:[self.barcodeTextField superview]
+                                           withOffset:verticalMarginPadding];
+        [self.barcodeTextField autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom
+                                               ofView:[self.barcodeTextField superview]
+                                           withOffset:-verticalMarginPadding];
       }
       return cell;
     }
@@ -933,10 +928,17 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       {
+        self.PINTextField.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
         [cell.contentView addSubview:self.PINTextField];
-        [self.PINTextField autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-        [self.PINTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+        self.PINTextField.preservesSuperviewLayoutMargins = YES;
         [self.PINTextField autoPinEdgeToSuperviewMargin:ALEdgeRight];
+        [self.PINTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+        [self.PINTextField autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop
+                                           ofView:[self.PINTextField superview]
+                                       withOffset:2.0];
+        [self.PINTextField autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom
+                                           ofView:[self.PINTextField superview]
+                                       withOffset:-2.0];
       }
       return cell;
     }
@@ -945,23 +947,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         self.logInSignOutCell = [[UITableViewCell alloc]
                                 initWithStyle:UITableViewCellStyleDefault
                                 reuseIdentifier:nil];
-        self.logInSignOutCell.textLabel.font = [UIFont systemFontOfSize:17];
+        self.logInSignOutCell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       }
       [self updateLoginLogoutCellAppearance];
       return self.logInSignOutCell;
     }
     case CellKindRegistration: {
-      
-      self.registrationCell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleValue1
-                                     reuseIdentifier:nil];
-      self.registrationCell.textLabel.font = [UIFont systemFontOfSize:17];
-      self.registrationCell.textLabel.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
-      self.registrationCell.detailTextLabel.font = [UIFont systemFontOfSize:17];
-      self.registrationCell.detailTextLabel.text = NSLocalizedString(@"SignUp", nil);
-      self.registrationCell.detailTextLabel.textColor = [NYPLConfiguration mainColor];
-
-      return self.registrationCell;
+      return [self createRegistrationCell];
     }
     case CellKindAgeCheck: {
       self.ageCheckCell = [[UITableViewCell alloc]
@@ -981,27 +973,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.ageCheckCell.textLabel.numberOfLines = 2;
       return self.ageCheckCell;
     }
-    case CellKindSetCurrentAccount: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      UISwitch* switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
-      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-      if (currentAccount.id == self.accountType) {
-        [switchView setOn:YES];
-        switchView.enabled = false;
-      } else {
-        [switchView setOn:NO];
-      }
-      cell.accessoryView = switchView;
-      [switchView addTarget:self action:@selector(setAccountSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-      [cell.contentView addSubview:switchView];
-      cell.selectionStyle = UITableViewCellSelectionStyleNone;
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
-      cell.textLabel.text = NSLocalizedString(@"SettingsAccountSetAccountTitle",
-                                              @"Title for switch to make this account the current active library account for the app");
-      return cell;
-    }
     case CellKindSyncButton: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
@@ -1015,7 +986,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self.switchView addTarget:self action:@selector(syncSwitchChanged:) forControlEvents:UIControlEventValueChanged];
       [cell.contentView addSubview:self.switchView];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"SettingsAccountSyncTitle",
                                               @"Title for switch to turn on or off syncing.");
       return cell;
@@ -1025,7 +996,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                initWithStyle:UITableViewCellStyleDefault
                                reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"Report an Issue", nil);
       return cell;
     }
@@ -1034,7 +1005,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                initWithStyle:UITableViewCellStyleDefault
                                reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"Support Center", nil);
       return cell;
     }
@@ -1043,7 +1014,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = [NSString stringWithFormat:@"About %@",self.account.name];
       cell.hidden = ([self.account getLicenseURL:URLTypeAcknowledgements]) ? NO : YES;
       return cell;
@@ -1053,7 +1024,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"PrivacyPolicy", nil);
       cell.hidden = ([self.account getLicenseURL:URLTypePrivacyPolicy]) ? NO : YES;
       return cell;
@@ -1063,7 +1034,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      cell.textLabel.font = [UIFont systemFontOfSize:17];
+      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"ContentLicenses", nil);
       cell.hidden = ([self.account getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
       return cell;
@@ -1072,6 +1043,36 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       return nil;
     }
   }
+}
+
+- (UITableViewCell *)createRegistrationCell
+{
+  UIView *containerView = [[UIView alloc] init];
+  UILabel *regTitle = [[UILabel alloc] init];
+  UILabel *regButton = [[UILabel alloc] init];
+
+  regTitle.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+  regTitle.numberOfLines = 2;
+  regTitle.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
+  regButton.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+  regButton.text = NSLocalizedString(@"SignUp", nil);
+  regButton.textColor = [NYPLConfiguration mainColor];
+
+  [containerView addSubview:regTitle];
+  [containerView addSubview:regButton];
+  [regTitle autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+  [regTitle autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop ofView:[regTitle superview] withOffset:verticalMarginPadding];
+  [regTitle autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom ofView:[regTitle superview] withOffset:-verticalMarginPadding];
+  [regButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:regTitle withOffset:8.0 relation:NSLayoutRelationGreaterThanOrEqual];
+  [regButton autoPinEdgeToSuperviewMargin:ALEdgeRight];
+  [regButton autoAlignAxisToSuperviewMarginAxis:ALAxisHorizontal];
+  [regButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+
+  UITableViewCell *cell = [[UITableViewCell alloc] init];
+  [cell.contentView addSubview:containerView];
+  containerView.preservesSuperviewLayoutMargins = YES;
+  [containerView autoPinEdgesToSuperviewEdges];
+  return cell;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
@@ -1136,7 +1137,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     NSLog(@"barcode");
     return 120;
   }
-  return 44;
+  return UITableViewAutomaticDimension;
 
 }
 
@@ -1209,7 +1210,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     [footerLabel autoPinEdgeToSuperviewMargin:ALEdgeLeft];
     [footerLabel autoPinEdgeToSuperviewMargin:ALEdgeRight];
     [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:8.0];
-    [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:8.0];
+    [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:16.0 relation:NSLayoutRelationGreaterThanOrEqual];
 
     return container;
 
@@ -1460,7 +1461,7 @@ replacementString:(NSString *)string
   
   UILabel *const titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
   titleLabel.text = text;
-  titleLabel.font = [UIFont systemFontOfSize:17];
+  titleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   [titleLabel sizeToFit];
   
   // This view is used to keep the title label centered as in Apple's Settings application.
@@ -1635,7 +1636,7 @@ replacementString:(NSString *)string
    completion:nil];
 }
 
-#pragma mark
+#pragma mark - View Controller Methods
 
 - (void)willResignActive
 {
