@@ -24,6 +24,7 @@
 @property (nonatomic, readonly) NSString *summary; // nilable
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSDate *updated;
+@property (nonatomic, readonly) NSString *ccid;
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;

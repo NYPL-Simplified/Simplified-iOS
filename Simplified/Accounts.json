@@ -2,6 +2,7 @@
  {
  "id" : 0,
  "pathComponent" : "0",
+ "abbreviation" : "NYPL",
  "name" : "The New York Public Library",
  "subtitle" : "Inspiring lifelong learning, advancing knowledge, and strengthening our communities.",
  "logo" : "LibraryLogoNYPL",
@@ -19,6 +20,7 @@
  {
  "id" : 1,
  "pathComponent" : "1",
+ "abbreviation" : "BPL",
  "name" : "Brooklyn Public Library",
  "subtitle" : "Connecting people to resources to achieve their goals.",
  "logo" : "LibraryLogoBrooklyn",
@@ -37,6 +39,7 @@
  {
  "id" : 2,
  "pathComponent" : "2",
+ "abbreviation" : "SIMPLYE",
  "name" : "SimplyE Collection",
  "subtitle" : "E-books free to download and read without a library card.",
  "logo" : "LibraryLogoMagic",

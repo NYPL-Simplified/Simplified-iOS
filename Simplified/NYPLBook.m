@@ -30,7 +30,7 @@
 @property (nonatomic) NSURL *alternateURL;
 @property (nonatomic) NSURL *relatedWorksURL;
 @property (nonatomic) NSURL *seriesURL;
-
+@property (nonatomic) NSString *ccid;
 @property (nonatomic) NSDictionary *licensor;
 
 @end
@@ -57,6 +57,7 @@ static NSString *const UpdatedKey = @"updated";
 static NSString *const AnnotationsURLKey = @"annotations";
 static NSString *const AnalyticsURLKey = @"analytics";
 static NSString *const AlternateURLKey = @"alternate";
+static NSString *const CCIDKey = @"ccid";
 
 @implementation NYPLBook
 
@@ -83,7 +84,6 @@ static NSString *const AlternateURLKey = @"alternate";
   }
   
   NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail, *annotations, *report = nil;
-  NSDictionary *licensor = nil;
   NSMutableArray<NYPLBookAuthor *> *authors = [[NSMutableArray alloc] init];
 
   for (int i = 0; i < (int)entry.authorStrings.count; i++) {
@@ -106,10 +106,6 @@ static NSString *const AlternateURLKey = @"alternate";
       if([acqusitionFormat containsString:@"application/epub+zip"]) {
         isEPUBAvailable = YES;
       }
-    }
-    if (link.licensor != nil)
-    {
-      licensor = link.licensor;
     }
 
     if(link.availabilityStatus) {
@@ -219,7 +215,7 @@ static NSString *const AlternateURLKey = @"alternate";
           alternateURL:entry.alternate.href
           relatedWorksURL:entry.relatedWorks.href
           seriesURL:entry.seriesLink.href
-          licensor:licensor];
+          ccid:entry.ccid];
 }
 
 - (instancetype)bookWithMetadataFromBook:(NYPLBook *)book
@@ -246,7 +242,7 @@ static NSString *const AlternateURLKey = @"alternate";
           alternateURL:book.alternateURL
           relatedWorksURL:book.relatedWorksURL
           seriesURL:book.seriesURL
-          licensor:book.licensor];
+          ccid:self.ccid];
 }
 
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
@@ -270,7 +266,7 @@ static NSString *const AlternateURLKey = @"alternate";
                        alternateURL:(NSURL *)alternateURL
                     relatedWorksURL:(NSURL *)relatedWorksURL
                           seriesURL:(NSURL *)seriesURL
-                           licensor:(NSDictionary *)licensor
+                               ccid:(NSString *)ccid
 {
   self = [super init];
   if(!self) return nil;
@@ -292,7 +288,6 @@ static NSString *const AlternateURLKey = @"alternate";
   self.identifier = identifier;
   self.imageURL = imageURL;
   self.imageThumbnailURL = imageThumbnailURL;
-  self.licensor = licensor;
   self.published = published;
   self.publisher = publisher;
   self.relatedWorksURL = relatedWorksURL;
@@ -301,7 +296,8 @@ static NSString *const AlternateURLKey = @"alternate";
   self.summary = summary;
   self.title = title;
   self.updated = updated;
-  
+  self.ccid = ccid;
+
   return self;
 }
 
@@ -387,6 +383,8 @@ static NSString *const AlternateURLKey = @"alternate";
   self.subtitle = NYPLNullToNil(dictionary[SubtitleKey]);
   
   self.summary = NYPLNullToNil(dictionary[SummaryKey]);
+ 
+  self.ccid = NYPLNullToNil(dictionary[CCIDKey]);
   
   self.title = dictionary[TitleKey];
   if(!self.title) return nil;
@@ -411,6 +409,7 @@ static NSString *const AlternateURLKey = @"alternate";
            CategoriesKey: self.categoryStrings,
            DistributorKey: NYPLNullFromNil(self.distributor),
            IdentifierKey: self.identifier,
+           CCIDKey: NYPLNullFromNil(self.ccid),
            ImageURLKey: NYPLNullFromNil([self.imageURL absoluteString]),
            ImageThumbnailURLKey: NYPLNullFromNil([self.imageThumbnailURL absoluteString]),
            PublishedKey: NYPLNullFromNil([self.published RFC3339String]),

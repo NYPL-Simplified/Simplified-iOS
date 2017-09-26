@@ -2,6 +2,7 @@
 #import "NYPLXML.h"
 
 #import "NYPLOPDSLink.h"
+#import "NYPLAccount.h"
 
 @interface NYPLOPDSLink ()
 
@@ -65,28 +66,41 @@
   }
   
   NYPLXML *licensorXML = [linkXML firstChildWithName:@"licensor"];
-  if (licensorXML && licensorXML.attributes.allValues.count>0) {
-    NSString *vendor = licensorXML.attributes.allValues.firstObject;
-    NYPLXML *vendorXML = [licensorXML firstChildWithName:@"clientToken"];
-    if (vendorXML) {
-      NSString *clientToken = vendorXML.value;
-      
-      self.licensor = @{@"vendor":vendor,
-                        @"clientToken":clientToken}.mutableCopy;
+  if (licensorXML) {
+    self.licensor = @{}.mutableCopy;
+    NSString *scheme = licensorXML.attributes[@"scheme"];
     
-      for(NYPLXML *const linkXML in [licensorXML childrenWithName:@"link"]) {
-        NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
-        if(!link) {
-          NYPLLOG(@"Ignoring malformed 'link' element.");
-          continue;
+    if ((scheme && [scheme isEqualToString:@"http://librarysimplified.org/terms/drm/scheme/ACS"]) ||
+        (licensorXML.attributes.allValues.count>0)) {
+        NSString *vendor = licensorXML.attributes.allValues.firstObject;
+        [self.licensor setValue:vendor forKey:@"vendor"];
+        NYPLXML *vendorXML = [licensorXML firstChildWithName:@"clientToken"];
+        if (vendorXML) {
+          NSString *clientToken = vendorXML.value;
+          [self.licensor setValue:clientToken forKey:@"clientToken"];
+          
+          for(NYPLXML *const linkXML in [licensorXML childrenWithName:@"link"]) {
+            NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
+            if(!link) {
+              NYPLLOG(@"Ignoring malformed 'link' element.");
+              continue;
+            }
+            if ([link.rel isEqualToString:@"http://librarysimplified.org/terms/drm/rel/devices"])
+            {
+              [self.licensor setValue:link.href.absoluteString forKey:@"deviceManager"];
+              continue;
+            }
+          }
         }
-        if ([link.rel isEqualToString:@"http://librarysimplified.org/terms/drm/rel/devices"])
-        {
-          [self.licensor setValue:link.href.absoluteString forKey:@"deviceManager"];
-          continue;
-        }
+    }
+    else {
+      NYPLXML *clientTokenXML = [licensorXML firstChildWithName:@"clientToken"];
+      if (clientTokenXML) {
+        NSString *clientTokenUrl = clientTokenXML.attributes[@"drm:href"];
+        [self.licensor setValue:clientTokenUrl forKey:@"clientTokenUrl"];
       }
     }
+    [[NYPLAccount sharedAccount] setLicensor:self.licensor];
   }
   
   

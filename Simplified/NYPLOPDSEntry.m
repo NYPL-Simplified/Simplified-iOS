@@ -27,6 +27,8 @@
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSDate *updated;
 
+@property (nonatomic) NSString *ccid;
+
 @end
 
 @implementation NYPLOPDSEntry
@@ -102,8 +104,19 @@
         if([linkXML childrenWithName:@"indirectAcquisition"].count == 1
            && [((NYPLXML *)[linkXML childrenWithName:@"indirectAcquisition"][0]).attributes[@"type"]
                isEqualToString:@"application/epub+zip"])
-        {
-          [links addObject:link];
+        {          
+          if ([linkXML.attributes[@"type"] isEqualToString:@"vnd.librarysimplified/obfuscated;scheme=http://librarysimplified.org/terms/drm/scheme/URMS"]) {
+            for(NYPLXML *const urmsXML in [((NYPLXML *)[linkXML childrenWithName:@"indirectAcquisition"][0]) childrenWithName:@"link"]) {
+              NYPLOPDSLink *const urmsLink = [[NYPLOPDSLink alloc] initWithXML:urmsXML];
+              
+              self.ccid = link.href.absoluteString;
+              
+              [links addObject:urmsLink];
+            }
+          }
+          else {
+            [links addObject:link];
+          }
         } else if ([linkXML.attributes[@"type"] isEqualToString:@"application/epub+zip"]) {
           [links addObject:link];
         }
