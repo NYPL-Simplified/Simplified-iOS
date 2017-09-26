@@ -58,6 +58,7 @@ final class AccountsManager: NSObject
             var savedDict = defaults.value(forKey: account.pathComponent!) as! [String: AnyObject]
             savedDict["name"] = account.name as AnyObject?
             savedDict["subtitle"] = account.subtitle as AnyObject?
+            savedDict["abbreviation"] = account.abbreviation as AnyObject?
             savedDict["logo"] = account.logo as AnyObject?
             savedDict["needsAuth"] = account.needsAuth as AnyObject?
             savedDict["supportsSimplyESync"] = account.supportsSimplyESync as AnyObject?
@@ -103,6 +104,7 @@ final class Account:NSObject
   let id:Int
   let pathComponent:String?
   let name:String?
+  let abbreviation:String?
   let subtitle:String?
   let logo:String?
   let needsAuth:Bool
@@ -157,6 +159,7 @@ final class Account:NSObject
     
     name = json["name"] as? String
     subtitle = json["subtitle"] as? String
+    abbreviation = json["abbreviation"] as? String
     id = json["id"] as! Int
     pathComponent = json["pathComponent"] as? String
     logo = json["logo"] as? String
