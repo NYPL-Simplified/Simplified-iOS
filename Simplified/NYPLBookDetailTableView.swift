@@ -7,7 +7,7 @@ import PureLayout
 }
 
 
-class NYPLBookDetailTableView: UITableView {
+final class NYPLBookDetailTableView: UITableView {
   
   override init(frame: CGRect, style: UITableViewStyle) {
     super.init(frame: frame, style: style)
@@ -40,9 +40,10 @@ private let sectionFooterHeight: CGFloat = 18.0
 private let laneCellHeight: CGFloat = 120.0
 private let standardCellHeight: CGFloat = 44.0
 
-class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableViewDelegate {
+final class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableViewDelegate {
   
   enum BookDetailCellType: String {
+    case groupedFeedDownloadPending = "Loading Related Books"
     case groupedFeedLane = "Related Books"
     case reportAProblem = "Report a Problem"
   }
@@ -74,21 +75,34 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
       return
     }
 
+    addPendingIndicator()
     NYPLOPDSFeed.withURL(url) { (feed, errorDict) in
       DispatchQueue.main.async {
         if feed?.type == .acquisitionGrouped {
           let groupedFeed = NYPLCatalogGroupedFeed.init(opdsFeed: feed)
           self.createLaneCells(groupedFeed)
         } else {
-          Log.error(#file, "Grouped feed expected")
+          self.removePendingIndicator()
+          Log.error(#file, "Abandonding attempt to create related books lanes. OPDS Grouped Feed was expected.")
         }
       }
     }
   }
   
   private func refresh() {
-    self.tableView?.reloadData()
-    self.tableView?.invalidateIntrinsicContentSize()
+    tableView?.reloadData()
+    tableView?.invalidateIntrinsicContentSize()
+  }
+
+  fileprivate func addPendingIndicator() {
+    standardCells.insert(self.createPendingActivityCell(), at:0)
+    tableView?.reloadSections(IndexSet.init(integer: 0), with: .fade)
+    refresh()
+  }
+
+  fileprivate func removePendingIndicator() {
+    standardCells.removeFirst()
+    refresh()
   }
   
   func updateFonts() {
@@ -97,10 +111,12 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
       tuple.0.textLabel?.text = tuple.1.rawValue
     }
   }
-  
+
   private func createLaneCells(_ groupedFeed: NYPLCatalogGroupedFeed?) {
-    guard let feed = groupedFeed else { return }
-    
+    guard let feed = groupedFeed else {
+      removePendingIndicator()
+      return
+    }
     var books = [NYPLBook]()
     for lane in feed.lanes as! [NYPLCatalogLane] {
       books += lane.books as! [NYPLBook]
@@ -121,7 +137,7 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
           self.checkAndRemoveRedundantTitles(lane, &index)
         }
       }
-      self.refresh()
+      self.removePendingIndicator()
     }
   }
 
@@ -133,6 +149,17 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
     cell.textLabel?.text = type.rawValue
     return (cell,type)
   }
+
+  func createPendingActivityCell() -> (UITableViewCell,BookDetailCellType) {
+    let cell = UITableViewCell()
+    cell.backgroundColor = .clear
+    let activityIndicator = UIActivityIndicatorView()
+    activityIndicator.activityIndicatorViewStyle = .gray
+    cell.contentView.addSubview(activityIndicator)
+    activityIndicator.autoCenterInSuperview()
+    activityIndicator.startAnimating()
+    return (cell, .groupedFeedDownloadPending)
+  }
   
   func checkAndRemoveRedundantTitles(_ lane: NYPLCatalogLane, _ index: inout UInt) {
     if (lane.books.count == 1) {
@@ -143,6 +170,12 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
       }
     }
   }
+
+  func moreBooksTapped(sender: UIButton) {
+    self.viewDelegate?.moreBooksTapped(forLane: self.catalogLanes[sender.tag])
+  }
+
+  // MARK: - UITableView Delegate Methods
 
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if (section < self.catalogLaneCells.count) {
@@ -173,7 +206,7 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
       switch self.standardCells[indexPath.row].1 {
       case .reportAProblem:
         self.viewDelegate?.reportProblemTapped()
-      case .groupedFeedLane:
+      default:
         break
       }
     }
@@ -255,9 +288,5 @@ class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableV
     separator.autoPinEdge(toSuperviewEdge: .leading)
     
     return container
-  }
-  
-  func moreBooksTapped(sender: UIButton) {
-    self.viewDelegate?.moreBooksTapped(forLane: self.catalogLanes[sender.tag])
   }
 }
