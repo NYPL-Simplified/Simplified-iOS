@@ -14,7 +14,9 @@
  "supportsHelpCenter" : true,
  "catalogUrl" : "https://circulation.librarysimplified.org",
  "supportEmail" : "simplyehelp@nypl.org",
- "mainColor" : "da2527"
+ "mainColor" : "#da2527",
+ "authPasscodeLength" : 4,
+ "authPasscodeAllowsLetters" : false
  },
  {
  "id" : 1,
@@ -32,7 +34,9 @@
  "catalogUrl" : "https://bplsimplye.bklynlibrary.org",
  "supportEmail" : "askus@bklynlibrary.org",
  "cardCreatorUrl" : "https://go.bklynlibrary.org/ecard",
- "mainColor" : "446ebf"
+ "mainColor" : "#446ebf",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
  },
  {
  "id" : 2,
@@ -48,7 +52,7 @@
  "supportsReservations" : false,
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://instantclassics.librarysimplified.org/index.xml",
- "mainColor" : "497049"
+ "mainColor" : "#497049"
  },
  {
  "id" : 7,
@@ -65,7 +69,7 @@
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://acl.simplye-ca.org/CALMDA/",
  "supportEmail" : "ask@aclibrary.libanswers.com",
- "mainColor" : "58a6f5"
+ "mainColor" : "#58a6f5"
  },
  {
  "id" : 8,
@@ -82,7 +86,7 @@
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://howard.simplye-md.org/",
  "supportEmail" : "askhcls@hclibrary.org",
- "mainColor" : "0066CC",
+ "mainColor" : "#0066CC",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  },
@@ -101,7 +105,7 @@
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://montgomery.simplye-md.org/",
  "supportEmail" : "Ask.Librarian@montgomerycountymd.gov",
- "mainColor" : "0067b1",
+ "mainColor" : "#0067b1",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  },
@@ -120,7 +124,7 @@
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://frederick.simplye-md.org/",
  "supportEmail" : "fcplweb@fcpl.org",
- "mainColor" : "ef4123",
+ "mainColor" : "#ef4123",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  },
@@ -138,7 +142,7 @@
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://anne-arundel.simplye-md.org/",
- "mainColor" : "0b9da1",
+ "mainColor" : "#0b9da1",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  },
@@ -156,7 +160,7 @@
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://bgc.simplye-ca.org/",
- "mainColor" : "d2a74a",
+ "mainColor" : "#d2a74a",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  },
@@ -174,7 +178,7 @@
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://smrla.simplye-md.org/MDMARY/",
- "mainColor" : "194483",
+ "mainColor" : "#194483",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  },
@@ -193,7 +197,7 @@
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://smrla.simplye-md.org/MDCALV/",
  "supportEmail" : "ill.calv@somd.lib.md.us",
- "mainColor" : "440099",
+ "mainColor" : "#440099",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  },
@@ -211,7 +215,7 @@
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://smrla.simplye-md.org/MDCHAR/",
- "mainColor" : "20428B",
+ "mainColor" : "#20428B",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  },
@@ -229,7 +233,7 @@
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://carroll.simplye-md.org/CARROLL/",
- "mainColor" : "fcb033",
+ "mainColor" : "#fcb033",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  }
