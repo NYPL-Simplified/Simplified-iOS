@@ -1,5 +1,6 @@
 #import "SimplyE-Swift.h"
 
+#import "NYPLAlertController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLReachability.h"
@@ -61,37 +62,43 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 
 - (BOOL)application:(__attribute__((unused)) UIApplication *)application handleOpenURL:(NSURL *)url
 {
-  // The url has the simplifiedapp scheme; we want to give it the http scheme
+  // URLs should be a permalink to a feed URL
   NSURL *entryURL = [url URLBySwappingForScheme:@"http"];
-  
-  // Get XML from the url, which should be a permalink to a feed URL
   NSData *data = [NSData dataWithContentsOfURL:entryURL];
-  
-  // Turn the raw data into a real XML
   NYPLXML *xml = [NYPLXML XMLWithData:data];
-  
-  // Throw that xml at a NYPLOPDSEntry
   NYPLOPDSEntry *entry = [[NYPLOPDSEntry alloc] initWithXML:xml];
   
-  // Create a book from the entry
   NYPLBook *book = [NYPLBook bookWithEntry:entry];
   if(!book) {
-    NYPLLOG(@"Failed to create book from entry.");
+    NSString *alertTitle = @"Error Opening Link";
+    NSString *alertMessage = @"There was an error opening the linked book.";
+    [NYPLAlertController alertWithTitle:alertTitle message:alertMessage];
+    NYPLLOG(@"Failed to create book from deep-linked URL.");
     return NO;
   }
   
-  // Finally (we hope) launch the book modal view
-  NYPLBookDetailViewController *modalBookController = [[NYPLBookDetailViewController alloc] initWithBook:book];
+  NYPLBookDetailViewController *bookDetailVC = [[NYPLBookDetailViewController alloc] initWithBook:book];
   NYPLRootTabBarController *tbc = (NYPLRootTabBarController *) self.window.rootViewController;
-  
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ||
-     tbc.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
-    if ([tbc.selectedViewController isKindOfClass:[UINavigationController class]])
-      [tbc.selectedViewController pushViewController:modalBookController animated:YES];
-  } else {
-    [tbc.selectedViewController presentViewController:modalBookController animated:YES completion:nil];
+
+  if (!tbc || ![tbc.selectedViewController isKindOfClass:[UINavigationController class]]) {
+    NYPLLOG(@"Casted views were not of expected types.");
+    return NO;
   }
-  
+
+  [tbc setSelectedIndex:0];
+
+  // Presentation logic should match 'presentFromViewController:' in NYPLBookDetailViewController
+  UINavigationController *navFormSheet = (UINavigationController *) tbc.selectedViewController.presentedViewController;
+  if (tbc.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
+    [tbc.selectedViewController pushViewController:bookDetailVC animated:YES];
+  } else if (navFormSheet) {
+    [navFormSheet pushViewController:bookDetailVC animated:YES];
+  } else {
+    UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:bookDetailVC];
+    navVC.modalPresentationStyle = UIModalPresentationFormSheet;
+    [tbc.selectedViewController presentViewController:navVC animated:YES completion:nil];
+  }
+
   return YES;
 }
 
