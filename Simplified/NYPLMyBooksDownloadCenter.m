@@ -698,18 +698,18 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 // FIXME: Can be removed when sufficient data for bug is collected
 - (void)recordUnexpectedNilIdentifierForBook:(NYPLBook *)book identifier:(NSString *)identifier title:(NSString *)bookTitle
 {
+  NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
+  [metadataParams setObject:[[AccountsManager sharedInstance] currentAccount] forKey:@"currentAccount"];
+  if (identifier) [metadataParams setObject:identifier forKey:@"incomingIdentifierString"];
+  if (bookTitle) [metadataParams setObject:bookTitle forKey:@"bookTitle"];
+  if (book.acquisition.revoke.absoluteString) [metadataParams setObject:book.acquisition.revoke.absoluteString forKey:@"revokeLink"];
+
   [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:2 userInfo:nil]
                  block:^(BugsnagCrashReport * _Nonnull report) {
                    report.context = @"NYPLMyBooksDownloadCenter";
                    report.severity = BSGSeverityWarning;
                    report.errorMessage = @"The book identifier was unexpectedly nil when attempting to return.";
-                   NSDictionary *metadata = @{
-                                              @"incomingIdentifierString" : identifier,
-                                              @"currentAccount" : [[AccountsManager sharedInstance] currentAccount],
-                                              @"bookTitle" : bookTitle,
-                                              @"revokeLink" : book.acquisition.revoke.absoluteString
-                                              };
-                   [report addMetadata:metadata toTabWithName:@"Extra Data"];
+                   [report addMetadata:metadataParams toTabWithName:@"Extra Data"];
                  }];
 }
 
