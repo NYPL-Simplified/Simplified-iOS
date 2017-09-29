@@ -339,6 +339,12 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
 }
 
+- (void)didReceiveMemoryWarning
+{
+  [super didReceiveMemoryWarning];
+  [[NYPLBookRegistry sharedRegistry] save];
+}
+
 -(void)didMoveToParentViewController:(UIViewController *)parent {
   if (!parent && [[NYPLReaderSettings sharedSettings].currentReaderReadiumView bookHasMediaOverlaysBeingPlayed]) {
     [[NYPLReaderSettings sharedSettings].currentReaderReadiumView applyMediaOverlayPlaybackToggle];
@@ -507,6 +513,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
   self.navigationController.navigationBar.translucent = YES;
   self.navigationController.navigationBar.barTintColor = nil;
+  if (!parent) {
+    [[NYPLBookRegistry sharedRegistry] save];
+  }
 }
 
 - (void)viewWillLayoutSubviews
