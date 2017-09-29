@@ -173,6 +173,7 @@
  "supportsCardCreator" : false,
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
+ "supportEmail" : "sstephenson@stmalib.org",
  "catalogUrl" : "http://smrla.simplye-md.org/MDMARY/",
  "mainColor" : "194483",
  "authPasscodeLength" : 0,
