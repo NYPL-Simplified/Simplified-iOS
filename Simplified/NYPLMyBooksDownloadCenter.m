@@ -695,7 +695,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    object:self];
 }
 
-// FIXME: Can be removed when sufficient data for bug is collected
+// FIXME: Bugnsag methods can be removed when sufficient data for bugs are collected
 - (void)recordUnexpectedNilIdentifierForBook:(NYPLBook *)book identifier:(NSString *)identifier title:(NSString *)bookTitle
 {
   NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
@@ -713,6 +713,21 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
                  }];
 }
 
+- (void)recordFailureToCopy:(NYPLBook *)book
+{
+  NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
+  [metadataParams setObject:[[AccountsManager sharedInstance] currentAccount] forKey:@"currentAccount"];
+  if (book.title) [metadataParams setObject:book.title forKey:@"bookTitle"];
+  if (book.identifier) [metadataParams setObject:book.identifier forKey:@"bookIdentifier"];
+
+  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:5 userInfo:nil]
+                 block:^(BugsnagCrashReport * _Nonnull report) {
+                   report.context = @"NYPLMyBooksDownloadCenter";
+                   report.severity = BSGSeverityWarning;
+                   report.errorMessage = @"fileURLForBookIndentifier returned nil, so no destination to copy file to.";
+                   [report addMetadata:metadataParams toTabWithName:@"Extra Data"];
+                 }];
+}
 
 #if defined(FEATURE_DRM_CONNECTOR)
   
@@ -735,6 +750,12 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
      removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
      error:NULL];
 
+    if (![self fileURLForBookIndentifier:book.identifier]) {
+      [self failDownloadForBook:book];
+      [self recordFailureToCopy:book];
+      return;
+    }
+    
     // This needs to be a copy else the Adept connector will explode when it tries to delete the
     // temporary file.
     success = [[NSFileManager defaultManager]
