@@ -214,7 +214,8 @@
  "catalogUrl" : "http://smrla.simplye-md.org/MDCHAR/",
  "mainColor" : "20428B",
  "authPasscodeLength" : 0,
- "authPasscodeAllowsLetters" : true
+ "authPasscodeAllowsLetters" : true,
+ "supportEmail" : "itstaff@ccplonline.org"
  },
  {
  "id" : 16,
