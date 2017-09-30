@@ -177,6 +177,7 @@
  "supportsCardCreator" : false,
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
+ "supportEmail" : "sstephenson@stmalib.org",
  "catalogUrl" : "http://smrla.simplye-md.org/MDMARY/",
  "mainColor" : "#194483",
  "authPasscodeLength" : 0,
@@ -217,7 +218,8 @@
  "catalogUrl" : "http://smrla.simplye-md.org/MDCHAR/",
  "mainColor" : "#20428B",
  "authPasscodeLength" : 0,
- "authPasscodeAllowsLetters" : true
+ "authPasscodeAllowsLetters" : true,
+ "supportEmail" : "itstaff@ccplonline.org"
  },
  {
  "id" : 16,
