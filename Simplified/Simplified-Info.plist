@@ -25,14 +25,14 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleURLName</key>
+			<string>org.nypl.labs.SimplyE</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>SimplyE</string>
 				<string>Simplifiedapp</string>
 				<string>OPDS</string>
 			</array>
-			<key>CFBundleURLName</key>
-			<string>org.nypl.labs.SimplyE</string>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
