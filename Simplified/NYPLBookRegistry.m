@@ -262,9 +262,13 @@ static NSString *const RecordsKey = @"records";
      
      void (^commitBlock)() = ^void() {
        [self performSynchronizedWithoutBroadcasting:^{
-         
-         [[NYPLAccount sharedAccount] setLicensor:feed.licensor];
-         NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",feed.licensor[@"clientToken"],[NYPLAccount sharedAccount].userID);
+
+         if (feed.licensor) {
+           [[NYPLAccount sharedAccount] setLicensor:feed.licensor];
+           NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",feed.licensor[@"clientToken"],[NYPLAccount sharedAccount].userID);
+         } else {
+           NYPLLOG(@"A Licensor Token was not received or parsed from the OPDS feed.");
+         }
          
          NSMutableSet *identifiersToRemove = [NSMutableSet setWithArray:self.identifiersToRecords.allKeys];
          for(NYPLOPDSEntry *const entry in feed.entries) {
