@@ -75,13 +75,13 @@
     status = SecItemUpdate((__bridge CFDictionaryRef) dictionary,
                            (__bridge CFDictionaryRef) updateDictionary);
     if (status != noErr) {
-      NYPLLOG_F(@"Failed to UPDATE secure values to keychain for group: %@. This is a known issue when running from the debugger", groupID);
+      NYPLLOG_F(@"Failed to UPDATE secure values to keychain for group: %@. This is a known issue when running from the debugger. Error: %d", groupID, status);
     }
   } else {
     dictionary[(__bridge __strong id) kSecValueData] = valueData;
     status = SecItemAdd((__bridge CFDictionaryRef) dictionary, NULL);
     if (status != noErr) {
-      NYPLLOG_F(@"Failed to ADD secure values to keychain for group: %@. This is a known issue when running from the debugger", groupID);
+      NYPLLOG_F(@"Failed to ADD secure values to keychain for group: %@. This is a known issue when running from the debugger. Error: %d", groupID, status);
     }
   }
 }
@@ -103,7 +103,7 @@
   
   OSStatus status = SecItemDelete((__bridge CFDictionaryRef) dictionary);
   if (status != noErr) {
-    NYPLLOG_F(@"Failed to REMOVE object from keychain group: %@",groupID);
+    NYPLLOG_F(@"Failed to REMOVE object from keychain group: %@. error: %d", groupID, (int)status);
   }
 }
 

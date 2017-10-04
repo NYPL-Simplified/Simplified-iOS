@@ -153,18 +153,20 @@
       return nil;
     }
   }
-  
+
   {
-    NYPLXML *const linkXML = [entryXML firstChildWithName:@"Series"];
-    self.seriesLink = [[NYPLOPDSLink alloc] initWithXML:linkXML];
-    if (!self.seriesLink) {
-      NYPLLOG(@"Ignoring malformed 'link' element for Series title.");
+    NYPLXML *const seriesXML = [entryXML firstChildWithName:@"Series"];
+    NYPLXML *const linkXML = [seriesXML firstChildWithName:@"link"];
+    if (linkXML) {
+      self.seriesLink = [[NYPLOPDSLink alloc] initWithXML:linkXML];
+      if (!self.seriesLink) {
+        NYPLLOG(@"Ignoring malformed 'link' element for schema:Series.");
+      }
     }
   }
   
   return self;
 }
-
 - (NYPLOPDSEntryGroupAttributes *)groupAttributes
 {
   for(NYPLOPDSLink *const link in self.links) {
