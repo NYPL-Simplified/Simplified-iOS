@@ -69,7 +69,9 @@
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://acl.simplye-ca.org/CALMDA/",
  "supportEmail" : "ask@aclibrary.libanswers.com",
- "mainColor" : "#58a6f5"
+ "mainColor" : "#58a6f5",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
  },
  {
  "id" : 8,
