@@ -141,6 +141,10 @@ static void generateTOCElements(NSArray *const navigationElements,
   self.webView.navigationDelegate = self;
   self.webView.UIDelegate = self;
   self.webView.scrollView.bounces = NO;
+  // Prevent content from shifting when toggling the status bar.
+  if (@available(iOS 11, *)) {
+    self.webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+  }
   self.webView.alpha = 0.0;
   [self addSubview:self.webView];
   
