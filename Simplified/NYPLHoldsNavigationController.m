@@ -120,9 +120,6 @@
 }
 
 - (void) reloadSelected {
-  
-  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
-
   NYPLCatalogNavigationController * catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
   [catalog reloadSelectedLibraryAccount];
   
