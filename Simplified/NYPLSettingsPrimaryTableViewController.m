@@ -92,15 +92,8 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
 
 - (void)viewDidLoad
 {
-  [super viewDidLoad];
-  
+  [super viewDidLoad];  
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
-
-  UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(revealCustomFeedUrl)];
-  tap.numberOfTapsRequired = 7;
-  
-  [[self.navigationController.navigationBar.subviews objectAtIndex:1] setUserInteractionEnabled:YES];
-  [[self.navigationController.navigationBar.subviews objectAtIndex:1] addGestureRecognizer:tap];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -141,6 +134,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.infoLabel.text = [NSString stringWithFormat:@"%@ version %@ (%@)", productName, version, build];
       self.infoLabel.textAlignment = NSTextAlignmentCenter;
       [self.infoLabel sizeToFit];
+
+      UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(revealCustomFeedUrl)];
+      tap.numberOfTapsRequired = 7;
+      [self.infoLabel setUserInteractionEnabled:YES];
+      [self.infoLabel addGestureRecognizer:tap];
     }
     return self.infoLabel;
   }
