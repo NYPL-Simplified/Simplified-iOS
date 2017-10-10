@@ -98,7 +98,7 @@
     style = UIAlertControllerStyleAlert;
   }
 
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"PickYourLibrary", nil) message:nil preferredStyle:(style)];
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"PickYourLibrary", nil) message:nil preferredStyle:style];
   alert.popoverPresentationController.barButtonItem = viewController.navigationItem.leftBarButtonItem;
   alert.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
   
@@ -106,29 +106,29 @@
   
   for (int i = 0; i < (int)accounts.count; i++) {
     Account *account = [[AccountsManager sharedInstance] account:[accounts[i] intValue]];
-    if (account) {
-      [alert addAction:[UIAlertAction actionWithTitle:account.name
-                                                style:(UIAlertActionStyleDefault)
-                                              handler:^(__unused UIAlertAction *_Nonnull action) {
-        #if defined(FEATURE_DRM_CONNECTOR)
-          if([NYPLADEPT sharedInstance].workflowsInProgress) {
-            [self presentViewController:[NYPLAlertController
-                                         alertWithTitle:@"PleaseWait"
-                                         message:@"PleaseWaitMessage"]
-                               animated:YES
-                             completion:nil];
-          } else {
-            [[NYPLBookRegistry sharedRegistry] save];
-            [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
-            [self reloadSelectedLibraryAccount];
-          }
-        #else
-          [[NYPLBookRegistry sharedRegistry] save];
-          [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
-          [self reloadSelectedLibraryAccount];
-        #endif
-      }]];
+    if (!account) {
+      continue;
     }
+
+    [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+    #if defined(FEATURE_DRM_CONNECTOR)
+      if([NYPLADEPT sharedInstance].workflowsInProgress) {
+        [self presentViewController:[NYPLAlertController
+                                     alertWithTitle:@"PleaseWait"
+                                     message:@"PleaseWaitMessage"]
+                           animated:YES
+                         completion:nil];
+      } else {
+        [[NYPLBookRegistry sharedRegistry] save];
+        [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+        [self reloadSelectedLibraryAccount];
+      }
+    #else
+      [[NYPLBookRegistry sharedRegistry] save];
+      [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+      [self reloadSelectedLibraryAccount];
+    #endif
+    }]];
   }
   
   [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"ManageAccounts", nil) style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {

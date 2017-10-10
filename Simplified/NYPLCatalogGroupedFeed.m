@@ -82,7 +82,7 @@
     
     NYPLBook *book = [NYPLBook bookWithEntry:entry];
     if(!book) {
-      NYPLLOG(@"Failed to create book from entry.");
+      NYPLLOG_F(@"Failed to create book from entry: %@",entry.title);
       continue;
     }
     

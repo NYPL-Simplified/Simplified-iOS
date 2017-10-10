@@ -49,17 +49,21 @@
 }
 
 - (void)didSelectReadForBook:(NYPLBook *)book
-{
-  // Try to prevent blank books bug
-  if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount] userID]
-                                         withDevice:[[NYPLAccount sharedAccount] deviceID]]) &&
-      ([[NYPLAccount sharedAccount] hasBarcodeAndPIN])) {
-    [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:^{
-      [self openBook:book];   // with successful DRM activation
-    }];
-  } else {
+{ 
+  #if defined(FEATURE_DRM_CONNECTOR)
+    // Try to prevent blank books bug
+    if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount] userID]
+                                           withDevice:[[NYPLAccount sharedAccount] deviceID]]) &&
+        ([[NYPLAccount sharedAccount] hasBarcodeAndPIN])) {
+      [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:^{
+        [self openBook:book];   // with successful DRM activation
+      }];
+    } else {
+      [self openBook:book];
+    }
+  #else
     [self openBook:book];
-  }
+  #endif
 }
 
 - (void)openBook:(NYPLBook *)book

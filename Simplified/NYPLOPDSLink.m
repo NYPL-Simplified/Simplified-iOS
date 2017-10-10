@@ -17,7 +17,6 @@
 @property (nonatomic) NSDate *availableSince;
 @property (nonatomic) NSDate *availableUntil;
 @property (nonatomic) NSMutableArray *mutableAcquisitionFormats;
-@property (nonatomic) NSMutableDictionary *licensor;
 
 @end
 
@@ -63,32 +62,6 @@
   if (copiesXML) {
     self.availableCopies = [copiesXML.attributes[@"available"] integerValue];
   }
-  
-  NYPLXML *licensorXML = [linkXML firstChildWithName:@"licensor"];
-  if (licensorXML && licensorXML.attributes.allValues.count>0) {
-    NSString *vendor = licensorXML.attributes.allValues.firstObject;
-    NYPLXML *vendorXML = [licensorXML firstChildWithName:@"clientToken"];
-    if (vendorXML) {
-      NSString *clientToken = vendorXML.value;
-      
-      self.licensor = @{@"vendor":vendor,
-                        @"clientToken":clientToken}.mutableCopy;
-    
-      for(NYPLXML *const linkXML in [licensorXML childrenWithName:@"link"]) {
-        NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
-        if(!link) {
-          NYPLLOG(@"Ignoring malformed 'link' element.");
-          continue;
-        }
-        if ([link.rel isEqualToString:@"http://librarysimplified.org/terms/drm/rel/devices"])
-        {
-          [self.licensor setValue:link.href.absoluteString forKey:@"deviceManager"];
-          continue;
-        }
-      }
-    }
-  }
-  
   
   [self addAcquisitionFormatsWithXML:linkXML];
   

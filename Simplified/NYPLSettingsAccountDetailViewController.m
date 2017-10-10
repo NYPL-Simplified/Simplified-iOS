@@ -704,6 +704,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
             message:nil
             preferredStyle:UIAlertControllerStyleActionSheet];
+        alertController.popoverPresentationController.sourceRect = self.view.bounds;
+        alertController.popoverPresentationController.sourceView = self.view;
         [alertController addAction:[UIAlertAction
                                     actionWithTitle:NSLocalizedString(@"SignOut", nil)
                                     style:UIAlertActionStyleDestructive
