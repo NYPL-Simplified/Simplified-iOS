@@ -241,5 +241,23 @@
  "mainColor" : "#fcb033",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
+ },
+ {
+ "id" : 18,
+ "pathComponent" : "18",
+ "name" : "Los Angeles Public Library",
+ "subtitle" : "Creating Opportunity, Building Community, Inspiring Innovation",
+ "logo" : "LibraryLogoLAPublic",
+ "needsAuth" : true,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : true,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "http://lapl.simplye-ca.org/",
+ "mainColor" : "#07818d",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
  }
 ]
