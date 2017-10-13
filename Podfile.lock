@@ -20,7 +20,7 @@ PODS:
   - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - Bugsnag (5.11.2)
+  - Bugsnag (5.13.0)
   - HelpStack (1.1.2):
     - AFNetworking (~> 2.0)
     - HelpStack/Core (= 1.1.2)
@@ -76,7 +76,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
-  Bugsnag: daab816e964545823e9f9b826486bd30c67f22da
+  Bugsnag: 530eda12cfc85026cb67e1c12bdfabc7a319f59c
   HelpStack: a9067738597ef81835d84ac8bb75ee346e34f000
   NYPLCardCreator: e0f5034902008b4c8cdfb5edbffa2a51ec0b261d
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
