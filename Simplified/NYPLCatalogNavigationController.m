@@ -162,6 +162,7 @@
   [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
 
   [[NYPLBookRegistry sharedRegistry] justLoad];
+  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
   [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }];
@@ -171,7 +172,6 @@
     NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
     viewController.URL = [NYPLConfiguration mainFeedURL]; // It may have changed
     [viewController load];
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
 
     viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
   } else if ([[self.topViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] &&
@@ -179,14 +179,9 @@
     NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.topViewController;
     viewController.URL = [NYPLConfiguration mainFeedURL]; // It may have changed
     [viewController load];
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
 
     viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
   }
-  
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-  }];
 }
 
 - (void)viewDidLoad
@@ -291,20 +286,6 @@
       [vc safelyPresentViewController:navController animated:YES completion:nil];
     }
   }
-  else
-  {
-    Account *account = [[AccountsManager sharedInstance] currentAccount];
-
-    if ((account.needsAuth
-        && ![[NYPLAccount sharedAccount:account.id] hasBarcodeAndPIN]) || !account.needsAuth)
-    {
-      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-      }];
-    }
-    
-  }
-  
 }
 
 @end
