@@ -259,5 +259,24 @@
  "mainColor" : "#07818d",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
+ },
+ {
+ "id" : 17,
+ "pathComponent" : "17",
+ "name" : "Butte County Library",
+ "subtitle" : " ",
+ "logo" : "LibraryLogoButte",
+ "needsAuth" : true,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : true,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "http://bcl.simplye-ca.org/",
+ "mainColor" : "#1b7fa7",
+ "supportEmail" : "ebookrequest@buttecounty.net",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
  }
 ]
