@@ -271,8 +271,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [settingsButton addTarget:self
                      action:@selector(didSelectSettings)
            forControlEvents:UIControlEventTouchUpInside];
-  self.settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
-  
+
   // Bookmark button
   NYPLRoundedButton *const bookmarkButton = [NYPLRoundedButton button];
   bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Add Bookmark", nil)];
@@ -282,16 +281,17 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
                      action:@selector(toggleBookmark)
            forControlEvents:UIControlEventTouchUpInside];
   
-  UIBarButtonItem *const TOCBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:TOCButton];
+  UIBarButtonItem *const TOCBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:contentsButton];
+  self.settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
+  self.bookmarkBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:bookmarkButton];
 
   // Bar button items require autolayout help 11.0+
   if (@available(iOS 11.0, *)) {
     [self.settingsBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(55, 30)];
+    [self.bookmarkBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(55,30)];
     [TOCBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(55, 30)];
   }
 
-  self.bookmarkBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:bookmarkButton];
-  
   // Corruption may have occurred before we added these, so we need to set their enabled status
   // here (in addition to |readerView:didEncounterCorruptionForBook:|).
   self.navigationItem.rightBarButtonItems = @[self.bookmarkBarButtonItem, self.settingsBarButtonItem, self.contentsBarButtonItem];
