@@ -3,9 +3,12 @@
 @import CoreLocation;
 @import MessageUI;
 
+#import "NYPLSettingsAccountDetailViewController.h"
+
 #import "Bugsnag.h"
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
+#import "NYPLBarcodeScanningViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
@@ -13,19 +16,17 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLReachability.h"
 #import "NYPLSettings.h"
-#import "NYPLSettingsAccountDetailViewController.h"
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "SimplyE-Swift.h"
-#import "HSHelpStack.h"
-#import "HSDeskGear.h"
 #import "NYPLXML.h"
 #import "NYPLOPDS.h"
 #import <HelpStack/HSUtility.h>
+#import "HSHelpStack.h"
+#import "HSDeskGear.h"
 #import <PureLayout/PureLayout.h>
 #import <ZXingObjC/ZXingObjC.h>
 
@@ -51,6 +52,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @interface NYPLSettingsAccountDetailViewController () <NSURLSessionDelegate, UITextFieldDelegate, UIAlertViewDelegate>
 
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
+@property (nonatomic) BOOL loggingInAfterBarcodeScan;
 @property (nonatomic) UITextField *usernameTextField;
 @property (nonatomic) UIImageView *barcodeImageView;
 @property (nonatomic) UILabel *barcodeImageLabel;
@@ -181,14 +183,12 @@ CGFloat const verticalMarginPadding = 2.0;
   [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected)
                    forControlEvents:UIControlEventTouchUpInside];
 
-  //TODO Scanning, Phase 1, to be audited and matched in UX to Barcode Image Creation already completed
   if (self.account.supportsBarcodeScanner) {
     self.barcodeScanButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.barcodeScanButton setImage:[UIImage imageNamed:@"ic_camera"] forState:UIControlStateNormal];
+    [self.barcodeScanButton setImage:[UIImage imageNamed:@"CameraIcon"] forState:UIControlStateNormal];
     [self.barcodeScanButton sizeToFit];
     [self.barcodeScanButton addTarget:self action:@selector(scanLibraryCard)
                    forControlEvents:UIControlEventTouchUpInside];
-
     self.usernameTextField.rightView = self.barcodeScanButton;
     self.usernameTextField.rightViewMode = UITextFieldViewModeAlways;
   }
@@ -263,11 +263,12 @@ CGFloat const verticalMarginPadding = 2.0;
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
-  
 
-  // The new credentials are not yet saved when logging in after signup. As such,
+  // The new credentials are not yet saved after signup or after scanning. As such,
   // reloading the table would lose the values in the barcode and PIN fields.
-  if(!self.isLoggingInAfterSignUp) {
+  if (self.isLoggingInAfterSignUp || self.loggingInAfterBarcodeScan) {
+    return;
+  } else {
     self.hiddenPIN = YES;
     [self accountDidChange];
     [self.tableView reloadData];
@@ -283,6 +284,20 @@ CGFloat const verticalMarginPadding = 2.0;
   return ((acct.hasBarcodeAndPIN) &&
           (acct.authorizationIdentifier) &&
           (self.account.supportsBarcodeDisplay));
+}
+
+- (void)scanLibraryCard
+{
+  NYPLBarcodeScanningViewController *scannerVC = [[NYPLBarcodeScanningViewController alloc]
+                                              initWithCompletion:^(NSString *resultString) {
+                                                if (resultString) {
+                                                  self.usernameTextField.text = resultString;
+                                                  [self.PINTextField becomeFirstResponder];
+                                                  self.loggingInAfterBarcodeScan = YES;  //Prevent text from clearing
+                                                }
+                                              }];
+  UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:scannerVC];
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:navVC animated:YES completion:nil];
 }
 
 #pragma mark - Account SignIn/SignOut

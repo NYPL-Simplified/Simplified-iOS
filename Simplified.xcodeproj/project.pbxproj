@@ -183,6 +183,7 @@
 		E6B6E76F1F6859A4007EE361 /* NYPLKeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B6E76E1F6859A4007EE361 /* NYPLKeychainManager.swift */; };
 		E6BA02B81DE4B6F600F76404 /* RemoteHTMLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */; };
 		E6BC315D1E009F3E0021B65E /* NYPLAgeCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */; };
+		E6D775421F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6D7753D1F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m */; };
 		E6DA7EA01F2A718600CFBEC8 /* NYPLBookAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */; };
 		E6F26E731DFF672F00C103CA /* NYPLDirectoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */; };
 		EC89BB22576495E8A359D77E /* Pods_SimplyE.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */; };
@@ -552,6 +553,8 @@
 		E6B6E76E1F6859A4007EE361 /* NYPLKeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLKeychainManager.swift; sourceTree = "<group>"; };
 		E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteHTMLViewController.swift; sourceTree = "<group>"; };
 		E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAgeCheck.swift; sourceTree = "<group>"; };
+		E6D7753D1F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBarcodeScanningViewController.m; sourceTree = "<group>"; };
+		E6D775431F9FE0C400C0B722 /* NYPLBarcodeScanningViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBarcodeScanningViewController.h; sourceTree = "<group>"; };
 		E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookAuthor.swift; sourceTree = "<group>"; };
 		E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLDirectoryManager.swift; sourceTree = "<group>"; };
 		E6FAFBE81F7A9AD40026F0EE /* HelpStackStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = HelpStackStoryboard.storyboard; path = Simplified/HelpStackStoryboard.storyboard; sourceTree = SOURCE_ROOT; };
@@ -836,6 +839,8 @@
 				2D62568A1D412BCB0080A81F /* BundledHTMLViewController.swift */,
 				E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */,
 				E68CCFC41F9F80CF003DDA6C /* NYPLBarcode.swift */,
+				E6D775431F9FE0C400C0B722 /* NYPLBarcodeScanningViewController.h */,
+				E6D7753D1F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m */,
 				1164A9F51A797238002BD3AE /* NYPLSettings.h */,
 				1164A9F61A797238002BD3AE /* NYPLSettings.m */,
 				E6202A001DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.h */,
@@ -1610,6 +1615,7 @@
 				11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */,
 				1158812E1A894F4E008672C3 /* NYPLAccountSignInViewController.m in Sources */,
 				03F94CD11DD6288C00CE8F4F /* Accounts.swift in Sources */,
+				E6D775421F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m in Sources */,
 				1111973F1988226F0014462F /* NYPLBookDetailDownloadFailedView.m in Sources */,
 				AE77EE7AACC975280BAB9A4C /* NYPLOPDSFeed.m in Sources */,
 				114C8CDA19BF55F900719B72 /* NYPLRoundedButton.m in Sources */,

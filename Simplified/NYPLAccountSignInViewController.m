@@ -6,6 +6,7 @@
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
 #import "NYPLAppDelegate.h"
+#import "NYPLBarcodeScanningViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
@@ -70,8 +71,9 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @interface NYPLAccountSignInViewController () <NSURLSessionDelegate, UITextFieldDelegate, UIAlertViewDelegate>
 
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
+@property (nonatomic) BOOL loggingInAfterBarcodeScan;
 @property (nonatomic) BOOL isCurrentlySigningIn;
-@property (nonatomic) UITextField *barcodeTextField;
+@property (nonatomic) UITextField *usernameTextField;
 @property (nonatomic) UIButton *barcodeScanButton;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) BOOL hiddenPIN;
@@ -146,13 +148,13 @@ CGFloat const marginPadding = 2.0;
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
-  self.barcodeTextField = [[UITextField alloc] initWithFrame:CGRectZero];
-  self.barcodeTextField.delegate = self;
-  self.barcodeTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
-  self.barcodeTextField.keyboardType = UIKeyboardTypeASCIICapable;
-  self.barcodeTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-  self.barcodeTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-  [self.barcodeTextField
+  self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectZero];
+  self.usernameTextField.delegate = self;
+  self.usernameTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
+  self.usernameTextField.keyboardType = UIKeyboardTypeASCIICapable;
+  self.usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+  self.usernameTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+  [self.usernameTextField
    addTarget:self
    action:@selector(textFieldsDidChange)
    forControlEvents:UIControlEventEditingChanged];
@@ -176,20 +178,16 @@ CGFloat const marginPadding = 2.0;
   self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
   
   Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
-
   if (currentAccount.supportsBarcodeScanner) {
     self.barcodeScanButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.barcodeScanButton setImage:[UIImage imageNamed:@"ic_camera"] forState:UIControlStateNormal];
+    [self.barcodeScanButton setImage:[UIImage imageNamed:@"CameraIcon"] forState:UIControlStateNormal];
     [self.barcodeScanButton sizeToFit];
     [self.barcodeScanButton addTarget:self action:@selector(scanLibraryCard)
                      forControlEvents:UIControlEventTouchUpInside];
-    
-    self.barcodeTextField.rightView = self.barcodeScanButton;
-    self.barcodeTextField.rightViewMode = UITextFieldViewModeAlways;
+    self.usernameTextField.rightView = self.barcodeScanButton;
+    self.usernameTextField.rightViewMode = UITextFieldViewModeAlways;
   }
 
-  
-  
   self.logInSignOutCell = [[UITableViewCell alloc]
                            initWithStyle:UITableViewCellStyleDefault
                            reuseIdentifier:nil];
@@ -199,9 +197,11 @@ CGFloat const marginPadding = 2.0;
 {
   [super viewWillAppear:animated];
   
-  // The new credentials are not yet saved when logging in after signup. As such,
+  // The new credentials are not yet saved after signup or after scanning. As such,
   // reloading the table would lose the values in the barcode and PIN fields.
-  if(!self.isLoggingInAfterSignUp) {
+  if (self.isLoggingInAfterSignUp || self.loggingInAfterBarcodeScan) {
+    return;
+  } else {
     self.hiddenPIN = YES;
     [self accountDidChange];
     [self.tableView reloadData];
@@ -215,7 +215,7 @@ CGFloat const marginPadding = 2.0;
   [super viewDidAppear:animated];
   if (![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount] userID] withDevice:[[NYPLAccount sharedAccount] deviceID]]) {
     if ([[NYPLAccount sharedAccount] hasBarcodeAndPIN] && !self.isCurrentlySigningIn) {
-      self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
+      self.usernameTextField.text = [NYPLAccount sharedAccount].barcode;
       self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
       [self logIn];
     }
@@ -230,7 +230,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch(CellKindFromIndexPath(indexPath)) {
     case CellKindBarcode:
-      [self.barcodeTextField becomeFirstResponder];
+      [self.usernameTextField becomeFirstResponder];
       break;
     case CellKindPIN:
       [self.PINTextField becomeFirstResponder];
@@ -258,7 +258,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                [weakSelf dismissViewControllerAnimated:YES completion:nil];
                [weakSelf dismissViewControllerAnimated:YES completion:nil];
              } else {
-               weakSelf.barcodeTextField.text = username;
+               weakSelf.usernameTextField.text = username;
                weakSelf.PINTextField.text = PIN;
                [weakSelf updateLoginLogoutCellAppearance];
                self.isLoggingInAfterSignUp = YES;
@@ -310,16 +310,16 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       {
-        self.barcodeTextField.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-        [cell.contentView addSubview:self.barcodeTextField];
-        self.barcodeTextField.preservesSuperviewLayoutMargins = YES;
-        [self.barcodeTextField autoPinEdgeToSuperviewMargin:ALEdgeRight];
-        [self.barcodeTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
-        [self.barcodeTextField autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop
-                                               ofView:[self.barcodeTextField superview]
+        self.usernameTextField.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+        [cell.contentView addSubview:self.usernameTextField];
+        self.usernameTextField.preservesSuperviewLayoutMargins = YES;
+        [self.usernameTextField autoPinEdgeToSuperviewMargin:ALEdgeRight];
+        [self.usernameTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
+        [self.usernameTextField autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop
+                                               ofView:[self.usernameTextField superview]
                                            withOffset:marginPadding];
-        [self.barcodeTextField autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom
-                                               ofView:[self.barcodeTextField superview]
+        [self.usernameTextField autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom
+                                               ofView:[self.usernameTextField superview]
                                            withOffset:-marginPadding];
       }
       return cell;
@@ -477,7 +477,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 {
   NYPLBasicAuthCustomHandler(challenge,
                              completionHandler,
-                             self.barcodeTextField.text,
+                             self.usernameTextField.text,
                              self.PINTextField.text);
 }
 
@@ -491,7 +491,7 @@ replacementString:(NSString *)string
     return NO;
   }
   
-  if(textField == self.barcodeTextField) {
+  if(textField == self.usernameTextField) {
     // Barcodes are numeric and usernames are alphanumeric.
     if([string stringByTrimmingCharactersInSet:[NSCharacterSet alphanumericCharacterSet]].length > 0) {
       return NO;
@@ -541,9 +541,9 @@ completionHandler:(void (^)())handler
     if(!barcode) {
       @throw NSInvalidArgumentException;
     }
-    accountViewController.barcodeTextField.text = barcode;
+    accountViewController.usernameTextField.text = barcode;
   } else {
-    accountViewController.barcodeTextField.text = @"";
+    accountViewController.usernameTextField.text = @"";
   }
 
   accountViewController.PINTextField.text = @"";
@@ -572,7 +572,7 @@ completionHandler:(void (^)())handler
     if(useExistingBarcode) {
       [accountViewController.PINTextField becomeFirstResponder];
     } else {
-      [accountViewController.barcodeTextField becomeFirstResponder];
+      [accountViewController.usernameTextField becomeFirstResponder];
     }
   }
 }
@@ -589,6 +589,20 @@ completionHandler:(void (^)())handler
 }
 
 #pragma mark -
+
+- (void)scanLibraryCard
+{
+  NYPLBarcodeScanningViewController *scannerVC = [[NYPLBarcodeScanningViewController alloc]
+                                                  initWithCompletion:^(NSString *resultString) {
+                                                    if (resultString) {
+                                                      self.usernameTextField.text = resultString;
+                                                      [self.PINTextField becomeFirstResponder];
+                                                      self.loggingInAfterBarcodeScan = YES;  //Prevent text from clearing
+                                                    }
+                                                  }];
+  UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:scannerVC];
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:navVC animated:YES completion:nil];
+}
 
 - (void)didSelectCancelForSignUp
 {
@@ -682,15 +696,15 @@ completionHandler:(void (^)())handler
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if([NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-      self.barcodeTextField.text = [NYPLAccount sharedAccount].barcode;
-      self.barcodeTextField.enabled = NO;
-      self.barcodeTextField.textColor = [UIColor grayColor];
+      self.usernameTextField.text = [NYPLAccount sharedAccount].barcode;
+      self.usernameTextField.enabled = NO;
+      self.usernameTextField.textColor = [UIColor grayColor];
       self.PINTextField.text = [NYPLAccount sharedAccount].PIN;
       self.PINTextField.textColor = [UIColor grayColor];
     } else {
-      self.barcodeTextField.text = nil;
-      self.barcodeTextField.enabled = YES;
-      self.barcodeTextField.textColor = [UIColor blackColor];
+      self.usernameTextField.text = nil;
+      self.usernameTextField.enabled = YES;
+      self.usernameTextField.textColor = [UIColor blackColor];
       self.PINTextField.text = nil;
       self.PINTextField.textColor = [UIColor blackColor];
     }
@@ -722,7 +736,7 @@ completionHandler:(void (^)())handler
   } else {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
     BOOL const canLogIn =
-      ([self.barcodeTextField.text
+      ([self.usernameTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
        [self.PINTextField.text
         stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length);
@@ -738,10 +752,10 @@ completionHandler:(void (^)())handler
 
 - (void)logIn
 {
-  assert(self.barcodeTextField.text.length > 0);
+  assert(self.usernameTextField.text.length > 0);
   assert(self.PINTextField.text.length > 0);
   
-  [self.barcodeTextField resignFirstResponder];
+  [self.usernameTextField resignFirstResponder];
   [self.PINTextField resignFirstResponder];
 
   [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
@@ -1009,7 +1023,7 @@ completionHandler:(void (^)())handler
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
-      [[NYPLAccount sharedAccount] setBarcode:self.barcodeTextField.text
+      [[NYPLAccount sharedAccount] setBarcode:self.usernameTextField.text
                                           PIN:self.PINTextField.text];
       if (!self.isLoggingInAfterSignUp) {
         [self dismissViewControllerAnimated:YES completion:nil];
