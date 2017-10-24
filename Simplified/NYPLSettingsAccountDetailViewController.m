@@ -1,5 +1,7 @@
 @import LocalAuthentication;
 @import NYPLCardCreator;
+@import CoreLocation;
+@import MessageUI;
 
 #import "Bugsnag.h"
 #import "NYPLAccount.h"
@@ -19,17 +21,13 @@
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "SimplyE-Swift.h"
-#import <PureLayout/PureLayout.h>
-#import <HelpStack/HSUtility.h>
 #import "HSHelpStack.h"
 #import "HSDeskGear.h"
-
 #import "NYPLXML.h"
 #import "NYPLOPDS.h"
-
-
-@import CoreLocation;
-@import MessageUI;
+#import <HelpStack/HSUtility.h>
+#import <PureLayout/PureLayout.h>
+#import <ZXingObjC/ZXingObjC.h>
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -54,9 +52,13 @@ typedef NS_ENUM(NSInteger, CellKind) {
 
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) UITextField *barcodeTextField;
-@property (nonatomic) UILabel *barcodeLabelImage;
-@property (nonatomic) UILabel *barcodeLabelImageZoom;
-@property (nonatomic) UIView *zoomView;
+@property (nonatomic) UIImageView *barcodeImageView;
+@property (nonatomic) UILabel *barcodeImageLabel;
+@property (nonatomic) NSLayoutConstraint *barcodeHeightConstraint;
+@property (nonatomic) NSLayoutConstraint *barcodeLabelSpaceConstraint;
+@property (nonatomic) float userBrightnessSetting;
+
+@property (nonatomic) NSMutableArray *tableData;
 @property (nonatomic, copy) void (^completionHandler)();
 @property (nonatomic) BOOL hiddenPIN;
 @property (nonatomic) UITextField *PINTextField;
@@ -69,9 +71,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) UITableViewCell *registrationCell;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITableViewCell *ageCheckCell;
-
-@property (nonatomic) NSMutableArray *tableData;
-@property (nonatomic) bool rotated;
 
 @property (nonatomic) UISwitch* switchView;
 
@@ -181,7 +180,8 @@ CGFloat const verticalMarginPadding = 2.0;
   [self.PINShowHideButton sizeToFit];
   [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected)
                    forControlEvents:UIControlEventTouchUpInside];
-  
+
+  //TODO Scanning, Phase 1, to be audited and matched in UX to Barcode Image Creation already completed
   if (self.account.supportsBarcodeScanner) {
     self.barcodeScanButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.barcodeScanButton setImage:[UIImage imageNamed:@"ic_camera"] forState:UIControlStateNormal];
@@ -201,47 +201,6 @@ CGFloat const verticalMarginPadding = 2.0;
   self.switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
 }
 
-- (void)barcodeZoom
-{
-
-  if (self.rotated)
-  {
-    self.rotated = NO;
-       
-    [self.barcodeLabelImageZoom removeFromSuperview];
-    [self.zoomView removeFromSuperview];
-  }
-  else
-  {
-    self.rotated = YES;
-    
-    self.barcodeLabelImageZoom = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.height  -130, self.view.frame.size.width/2)];
-    
-    CGAffineTransform transform = CGAffineTransformMakeRotation(-M_PI / 2);
-    transform = CGAffineTransformScale(transform, 1.0, 3.0);
-    [self.barcodeLabelImageZoom setTransform:transform];
-    CGRect frame = self.barcodeLabelImageZoom.frame;
-    frame.origin.x = 25 ;//+ (self.barcodeLabelImageZoom.frame.size.width/4);
-    frame.origin.y = 10;
-    self.barcodeLabelImageZoom.frame = frame;
-    self.barcodeLabelImageZoom.text = [NSString stringWithFormat:@"A%@B", [NYPLAccount sharedAccount:self.accountType].authorizationIdentifier];
-    self.barcodeLabelImageZoom.font = [UIFont fontWithName:@"CodabarLarge" size:50.0];
-    self.barcodeLabelImageZoom.textAlignment = NSTextAlignmentCenter;
-    self.barcodeLabelImageZoom.adjustsFontSizeToFitWidth = YES;
-    self.barcodeLabelImageZoom.backgroundColor = [UIColor whiteColor];
-    
-    self.zoomView = [[UIView alloc] initWithFrame:self.tableView.frame];
-    self.zoomView.backgroundColor = [UIColor whiteColor];
-    
-    [self.zoomView addSubview:self.barcodeLabelImageZoom];
-    [self.view addSubview:self.zoomView];
-
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(barcodeZoom)];
-    [self.barcodeLabelImageZoom addGestureRecognizer:tap];
-    self.barcodeLabelImageZoom.userInteractionEnabled = YES;
-
-  }
-}
 - (void)setupTableData
 {
   NSMutableArray *section0;
@@ -255,7 +214,7 @@ CGFloat const verticalMarginPadding = 2.0;
   
   NSMutableArray *sectionRegister = @[@(CellKindRegistration)].mutableCopy;
 
-  if (self.account.needsAuth == YES && [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN] && self.account.supportsBarcodeDisplay){
+  if ([self librarySupportsBarcodeDisplay]) {
     [section0 insertObject:@(CellKindBarcodeImage) atIndex: 0];
   }
   NSMutableArray *section1 = [[NSMutableArray alloc] init];
@@ -314,6 +273,16 @@ CGFloat const verticalMarginPadding = 2.0;
     [self.tableView reloadData];
     [self updateShowHidePINState];
   }
+}
+
+- (BOOL)librarySupportsBarcodeDisplay
+{
+  // For now, only supports libraries granted access in Accounts.json,
+  // is signed in, and has an authorization ID returned from the loans feed.
+  NYPLAccount *acct = [NYPLAccount sharedAccount:self.accountType];
+  return ((acct.hasBarcodeAndPIN) &&
+          (acct.authorizationIdentifier) &&
+          (self.account.supportsBarcodeDisplay));
 }
 
 #pragma mark - Account SignIn/SignOut
@@ -780,6 +749,21 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     }
     case CellKindBarcodeImage: {
+      [self.tableView beginUpdates];
+      // Collapse barcode by adjusting certain constraints
+      if (self.barcodeHeightConstraint.constant > 0) {
+        self.barcodeHeightConstraint.constant = 0.0;
+        self.barcodeLabelSpaceConstraint.constant = 0.0;
+        self.barcodeImageLabel.text = NSLocalizedString(@"Show Barcode", nil);
+        [[UIScreen mainScreen] setBrightness:self.userBrightnessSetting];
+      } else {
+        self.barcodeHeightConstraint.constant = 100.0;
+        self.barcodeLabelSpaceConstraint.constant = -12.0;
+        self.barcodeImageLabel.text = NSLocalizedString(@"Hide Barcode", nil);
+        self.userBrightnessSetting = [[UIScreen mainScreen] brightness];
+        [[UIScreen mainScreen] setBrightness:1.0];
+      }
+      [self.tableView endUpdates];
       break;
     }
     case CellReportIssue: {
@@ -880,7 +864,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   NSArray *sectionArray = (NSArray *)self.tableData[indexPath.section];
   CellKind cellKind = (CellKind)[sectionArray[indexPath.row] intValue];
-  
+
   switch(cellKind) {
     case CellKindBarcode: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
@@ -907,27 +891,36 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
-      self.barcodeLabelImage = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, self.view.bounds.size.width, 140)];
-      self.barcodeLabelImage.text = [NSString stringWithFormat:@"A%@B", [NYPLAccount sharedAccount:self.accountType].authorizationIdentifier];
-      self.barcodeLabelImage.font = [UIFont fontWithName:@"CodabarLarge" size:36.0];
-      self.barcodeLabelImage.textAlignment = NSTextAlignmentCenter;
-      self.barcodeLabelImage.adjustsFontSizeToFitWidth = YES;
-      UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(barcodeZoom)];
-      
-      [self.barcodeLabelImage addGestureRecognizer:tap];
-      self.barcodeLabelImage.userInteractionEnabled = YES;
 
-      [cell.contentView addSubview:self.barcodeLabelImage];
-      
-      UILabel *labelD = [[UILabel alloc] initWithFrame:CGRectMake(0, 95, self.view.bounds.size.width, 10)];
-      labelD.text =  [NYPLAccount sharedAccount:self.accountType].authorizationIdentifier;
-      labelD.font = [UIFont systemFontOfSize:10];
-      labelD.textAlignment = NSTextAlignmentCenter;
-      labelD.adjustsFontSizeToFitWidth = YES;
-      [cell.contentView addSubview:labelD];
 
-      
+      if (![self librarySupportsBarcodeDisplay]) {
+        NYPLLOG(@"A nonvalid library was attempting to create a barcode image.");
+      } else {
+        CGSize barcodeSize = [NYPLBarcode sizeForSuperviewBounds:self.tableView.bounds];
+        UIImage *barcodeImage = [NYPLBarcode imageWithString:@"23333103390991"
+                                                        size:barcodeSize
+                                                        type:NYPLBarcodeTypeCodabar];
+        if (barcodeImage) {
+          self.barcodeImageView = [[UIImageView alloc] initWithImage:barcodeImage];
+          self.barcodeImageLabel = [[UILabel alloc] init];
+          self.barcodeImageLabel.text = NSLocalizedString(@"Show Barcode", nil);
+          self.barcodeImageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+          self.barcodeImageLabel.textColor = [NYPLConfiguration mainColor];
 
+          [cell.contentView addSubview:self.barcodeImageView];
+          [cell.contentView addSubview:self.barcodeImageLabel];
+          [self.barcodeImageView autoAlignAxisToSuperviewAxis:ALAxisVertical];
+          [self.barcodeImageView autoSetDimension:ALDimensionWidth toSize:barcodeSize.width];
+          [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultHigh forConstraints:^{
+            // Hidden to start
+            self.barcodeHeightConstraint = [self.barcodeImageView autoSetDimension:ALDimensionHeight toSize:0];
+            self.barcodeLabelSpaceConstraint = [self.barcodeImageView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.barcodeImageLabel withOffset:0];
+          }];
+          [self.barcodeImageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:12.0];
+          [self.barcodeImageLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
+          [self.barcodeImageLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10.0];
+        }
+      }
       return cell;
     }
     case CellKindPIN: {
@@ -1135,18 +1128,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   return 44;
 }
--(CGFloat)tableView:(__unused UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+-(CGFloat)tableView:(__unused UITableView *)tableView heightForRowAtIndexPath:(__unused NSIndexPath *)indexPath
 {
-  NSArray *sectionArray = (NSArray *)self.tableData[indexPath.section];
-  CellKind cellKind = (CellKind)[sectionArray[indexPath.row] intValue];
-  
-  if (cellKind == CellKindBarcodeImage)
-  {
-    NSLog(@"barcode");
-    return 120;
-  }
   return UITableViewAutomaticDimension;
-
 }
 
 - (UIView *)tableView:(__unused UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -1369,8 +1353,6 @@ replacementString:(NSString *)string
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if([NYPLAccount sharedAccount:self.accountType].hasBarcodeAndPIN) {
       self.barcodeTextField.text = [NYPLAccount sharedAccount:self.accountType].barcode;
-      self.barcodeLabelImage.text = [NSString stringWithFormat:@"A%@B", [NYPLAccount sharedAccount:self.accountType].authorizationIdentifier];
-
       self.barcodeTextField.enabled = NO;
       self.barcodeTextField.textColor = [UIColor grayColor];
       self.PINTextField.text = [NYPLAccount sharedAccount:self.accountType].PIN;
