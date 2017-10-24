@@ -7,7 +7,7 @@
  "logo" : "LibraryLogoNYPL",
  "needsAuth" : true,
  "supportsSimplyESync" : false,
- "supportsBarcodeScanner" : false,
+ "supportsBarcodeScanner" : true,
  "supportsBarcodeDisplay" : true,
  "supportsReservations" : true,
  "supportsCardCreator" : true,
