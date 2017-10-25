@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+@import PureLayout;
 #import <AudioToolbox/AudioToolbox.h>
 #import "NYPLBarcodeScanningViewController.h"
 
@@ -48,13 +49,27 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
 
-  UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(didSelectCancel)];
+  UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                target:self
+                                                                                action:@selector(didSelectCancel)];
   self.navigationItem.leftBarButtonItem = cancelButton;
 
   self.capture = [[ZXCapture alloc] init];
   self.capture.camera = self.capture.back;
   self.capture.focusMode = AVCaptureFocusModeContinuousAutoFocus;
   [self.view.layer addSublayer:self.capture.layer];
+
+  UIView *previewRect = [[UIView alloc] init];
+  previewRect.layer.borderColor = [UIColor redColor].CGColor;
+  previewRect.layer.borderWidth = 4.0;
+  previewRect.layer.cornerRadius = 20.0;
+  [self.view addSubview:previewRect];
+  [previewRect autoCenterInSuperview];
+  if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+    [previewRect autoSetDimensionsToSize:CGSizeMake(350, 170)];
+  } else {
+    [previewRect autoSetDimensionsToSize:CGSizeMake(250, 120)];
+  }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -233,7 +248,7 @@
   // We got a result. Close the window and send the format string back to the delegate.
 
   NSString *formatString = [self barcodeFormatToString:result.barcodeFormat];
-  NSString *display = [NSString stringWithFormat:@"Scanned! Format: %@\nContents:\n%@\nLocation: %@", formatString, result.text, location];
+  NSString *display = [NSString stringWithFormat:@"Scanned! Format: %@  Contents: %@  Location: %@", formatString, result.text, location];
   NYPLLOG(display);
   // Vibrate
   AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);

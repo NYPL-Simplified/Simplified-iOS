@@ -147,6 +147,7 @@ CGFloat const marginPadding = 2.0;
   [super viewDidLoad];
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
   
   self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.usernameTextField.delegate = self;

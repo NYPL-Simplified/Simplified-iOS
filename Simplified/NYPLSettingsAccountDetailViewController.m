@@ -155,7 +155,8 @@ CGFloat const verticalMarginPadding = 2.0;
   [super viewDidLoad];
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
-  
+  self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
+
   self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.usernameTextField.delegate = self;
   self.usernameTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
@@ -194,7 +195,7 @@ CGFloat const verticalMarginPadding = 2.0;
   }
   self.PINTextField.rightView = self.PINShowHideButton;
   self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
-  
+
   [self setupTableData];
   
   [self checkSyncSetting];

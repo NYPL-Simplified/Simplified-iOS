@@ -24,7 +24,7 @@
  "logo" : "LibraryLogoBrooklyn",
  "needsAuth" : true,
  "supportsSimplyESync" : false,
- "supportsBarcodeScanner" : false,
+ "supportsBarcodeScanner" : true,
  "supportsBarcodeDisplay" : false,
  "supportsReservations" : true,
  "supportsCardCreator" : false,
