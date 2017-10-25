@@ -23,11 +23,11 @@ fileprivate func ZXBarcodeFormatFor(_ NYPLBarcodeType:NYPLBarcodeType) -> ZXBarc
   }
 }
 
-/// Manage creation of barcode images that are scannable by physical scanners.
+/// Manage creation and scanning of barcodes on library cards.
 /// Keep any third party dependency abstracted out of the main app.
 final class NYPLBarcode: NSObject {
 
-  class func image(string: String, size: CGSize, type: NYPLBarcodeType) -> UIImage?
+  class func image(fromString string: String, size: CGSize, type: NYPLBarcodeType) -> UIImage?
   {
     let writer = ZXMultiFormatWriter.writer() as? ZXWriter
     do {
@@ -45,12 +45,19 @@ final class NYPLBarcode: NSObject {
     }
   }
 
-  class func size(forSuperviewBounds bounds: CGRect) -> CGSize
+  class func imageSize(forSuperviewBounds bounds: CGRect) -> CGSize
   {
     if bounds.size.width > 500 {
       return CGSize(width: 500, height: barcodeHeight)
     } else {
       return CGSize(width: bounds.size.width, height: barcodeHeight)
     }
+  }
+
+  class func presentScanner(withCompletion completion: @escaping (String?) -> ())
+  {
+    guard let scannerVC = NYPLBarcodeScanningViewController.init(completion: completion) else { return }
+    let navController = UINavigationController.init(rootViewController: scannerVC)
+    NYPLRootTabBarController.shared().safelyPresentViewController(navController, animated: true, completion: nil)
   }
 }

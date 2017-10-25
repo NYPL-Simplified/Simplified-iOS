@@ -592,16 +592,13 @@ completionHandler:(void (^)())handler
 
 - (void)scanLibraryCard
 {
-  NYPLBarcodeScanningViewController *scannerVC = [[NYPLBarcodeScanningViewController alloc]
-                                                  initWithCompletion:^(NSString *resultString) {
-                                                    if (resultString) {
-                                                      self.usernameTextField.text = resultString;
-                                                      [self.PINTextField becomeFirstResponder];
-                                                      self.loggingInAfterBarcodeScan = YES;  //Prevent text from clearing
-                                                    }
-                                                  }];
-  UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:scannerVC];
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:navVC animated:YES completion:nil];
+  [NYPLBarcode presentScannerWithCompletion:^(NSString * _Nullable resultString) {
+    if (resultString) {
+      self.usernameTextField.text = resultString;
+      [self.PINTextField becomeFirstResponder];
+      self.loggingInAfterBarcodeScan = YES;  //Prevent text from clearing
+    }
+  }];
 }
 
 - (void)didSelectCancelForSignUp

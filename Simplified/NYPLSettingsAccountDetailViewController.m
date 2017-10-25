@@ -288,16 +288,13 @@ CGFloat const verticalMarginPadding = 2.0;
 
 - (void)scanLibraryCard
 {
-  NYPLBarcodeScanningViewController *scannerVC = [[NYPLBarcodeScanningViewController alloc]
-                                              initWithCompletion:^(NSString *resultString) {
-                                                if (resultString) {
-                                                  self.usernameTextField.text = resultString;
-                                                  [self.PINTextField becomeFirstResponder];
-                                                  self.loggingInAfterBarcodeScan = YES;  //Prevent text from clearing
-                                                }
-                                              }];
-  UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:scannerVC];
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:navVC animated:YES completion:nil];
+  [NYPLBarcode presentScannerWithCompletion:^(NSString * _Nullable resultString) {
+    if (resultString) {
+      self.usernameTextField.text = resultString;
+      [self.PINTextField becomeFirstResponder];
+      self.loggingInAfterBarcodeScan = YES;  //Prevent text from clearing
+    }
+  }];
 }
 
 #pragma mark - Account SignIn/SignOut
@@ -911,8 +908,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (![self librarySupportsBarcodeDisplay]) {
         NYPLLOG(@"A nonvalid library was attempting to create a barcode image.");
       } else {
-        CGSize barcodeSize = [NYPLBarcode sizeForSuperviewBounds:self.tableView.bounds];
-        UIImage *barcodeImage = [NYPLBarcode imageWithString:@"23333103390991"
+        CGSize barcodeSize = [NYPLBarcode imageSizeForSuperviewBounds:self.tableView.bounds];
+        UIImage *barcodeImage = [NYPLBarcode imageFromString:@"23333103390991"
                                                         size:barcodeSize
                                                         type:NYPLBarcodeTypeCodabar];
         if (barcodeImage) {
