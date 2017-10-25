@@ -908,9 +908,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (![self librarySupportsBarcodeDisplay]) {
         NYPLLOG(@"A nonvalid library was attempting to create a barcode image.");
       } else {
-        CGSize barcodeSize = [NYPLBarcode imageSizeForSuperviewBounds:self.tableView.bounds];
         UIImage *barcodeImage = [NYPLBarcode imageFromString:@"23333103390991"
-                                                        size:barcodeSize
+                                              superviewWidth:self.tableView.bounds.size.width
                                                         type:NYPLBarcodeTypeCodabar];
         if (barcodeImage) {
           self.barcodeImageView = [[UIImageView alloc] initWithImage:barcodeImage];
@@ -922,7 +921,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           [cell.contentView addSubview:self.barcodeImageView];
           [cell.contentView addSubview:self.barcodeImageLabel];
           [self.barcodeImageView autoAlignAxisToSuperviewAxis:ALAxisVertical];
-          [self.barcodeImageView autoSetDimension:ALDimensionWidth toSize:barcodeSize.width];
+          [self.barcodeImageView autoSetDimension:ALDimensionWidth toSize:barcodeImage.size.width];
           [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultHigh forConstraints:^{
             // Hidden to start
             self.barcodeHeightConstraint = [self.barcodeImageView autoSetDimension:ALDimensionHeight toSize:0];

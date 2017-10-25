@@ -2,6 +2,7 @@ import Foundation
 import ZXingObjC
 
 fileprivate let barcodeHeight: CGFloat = 100
+fileprivate let maxBarcodeWidth: CGFloat = 500
 
 @objc enum NYPLBarcodeType: Int {
   case codabar
@@ -27,30 +28,23 @@ fileprivate func ZXBarcodeFormatFor(_ NYPLBarcodeType:NYPLBarcodeType) -> ZXBarc
 /// Keep any third party dependency abstracted out of the main app.
 final class NYPLBarcode: NSObject {
 
-  class func image(fromString string: String, size: CGSize, type: NYPLBarcodeType) -> UIImage?
+  class func image(fromString string: String, superviewWidth: CGFloat, type: NYPLBarcodeType) -> UIImage?
   {
-    let writer = ZXMultiFormatWriter.writer() as? ZXWriter
+    let width = imageWidthFor(superviewWidth)
+    guard let writer = ZXMultiFormatWriter.writer() as? ZXWriter else { return nilWithGenericError() }
     do {
-      let result = try writer?.encode(string, format: ZXBarcodeFormatFor(type), width: Int32(size.width), height: Int32(size.height))
-
+      let result = try writer.encode(string,
+                                     format: ZXBarcodeFormatFor(type),
+                                     width: Int32(width),
+                                     height: Int32(barcodeHeight))
       if let cgImage = ZXImage.init(matrix: result).cgimage {
         return UIImage.init(cgImage: cgImage)
       } else {
-        Log.error(#file, "Error creating image from barcode string.")
-        return nil
+        return nilWithGenericError()
       }
     } catch {
-      Log.error(#file, "Failed to create barcode image with error: \(error.localizedDescription)")
+      Log.error(#file, "Failed to create barcode image: \(error.localizedDescription)")
       return nil
-    }
-  }
-
-  class func imageSize(forSuperviewBounds bounds: CGRect) -> CGSize
-  {
-    if bounds.size.width > 500 {
-      return CGSize(width: 500, height: barcodeHeight)
-    } else {
-      return CGSize(width: bounds.size.width, height: barcodeHeight)
     }
   }
 
@@ -59,5 +53,20 @@ final class NYPLBarcode: NSObject {
     guard let scannerVC = NYPLBarcodeScanningViewController.init(completion: completion) else { return }
     let navController = UINavigationController.init(rootViewController: scannerVC)
     NYPLRootTabBarController.shared().safelyPresentViewController(navController, animated: true, completion: nil)
+  }
+
+  private class func imageWidthFor(_ superviewWidth: CGFloat) -> CGFloat
+  {
+    if superviewWidth > maxBarcodeWidth {
+      return maxBarcodeWidth
+    } else {
+      return superviewWidth
+    }
+  }
+
+  private class func nilWithGenericError() -> UIImage?
+  {
+    Log.error(#file, "Error creating image from barcode string.")
+    return nil
   }
 }
