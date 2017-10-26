@@ -167,6 +167,11 @@ CGFloat const verticalMarginPadding = 2.0;
    addTarget:self
    action:@selector(textFieldsDidChange)
    forControlEvents:UIControlEventEditingChanged];
+
+  self.barcodeScanButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [self.barcodeScanButton setImage:[UIImage imageNamed:@"CameraIcon"] forState:UIControlStateNormal];
+  [self.barcodeScanButton addTarget:self action:@selector(scanLibraryCard)
+                   forControlEvents:UIControlEventTouchUpInside];
   
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
@@ -183,16 +188,6 @@ CGFloat const verticalMarginPadding = 2.0;
   [self.PINShowHideButton sizeToFit];
   [self.PINShowHideButton addTarget:self action:@selector(PINShowHideSelected)
                    forControlEvents:UIControlEventTouchUpInside];
-
-  if (self.account.supportsBarcodeScanner) {
-    self.barcodeScanButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.barcodeScanButton setImage:[UIImage imageNamed:@"CameraIcon"] forState:UIControlStateNormal];
-    [self.barcodeScanButton sizeToFit];
-    [self.barcodeScanButton addTarget:self action:@selector(scanLibraryCard)
-                   forControlEvents:UIControlEventTouchUpInside];
-    self.usernameTextField.rightView = self.barcodeScanButton;
-    self.usernameTextField.rightViewMode = UITextFieldViewModeAlways;
-  }
   self.PINTextField.rightView = self.PINShowHideButton;
   self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
 
@@ -896,6 +891,16 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self.usernameTextField autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom
                                                ofView:[self.usernameTextField superview]
                                            withOffset:-verticalMarginPadding];
+
+        if (self.account.supportsBarcodeScanner) {
+          [cell.contentView addSubview:self.barcodeScanButton];
+          CGFloat rightMargin = cell.layoutMargins.right;
+          self.barcodeScanButton.contentEdgeInsets = UIEdgeInsetsMake(0, rightMargin * 2, 0, rightMargin);
+          [self.barcodeScanButton autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeLeading];
+          if (!self.usernameTextField.enabled) {
+            self.barcodeScanButton.hidden = YES;
+          }
+        }
       }
       return cell;
     }
@@ -922,7 +927,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           [cell.contentView addSubview:self.barcodeImageView];
           [cell.contentView addSubview:self.barcodeImageLabel];
           [self.barcodeImageView autoAlignAxisToSuperviewAxis:ALAxisVertical];
-          [self.barcodeImageView autoSetDimension:ALDimensionWidth toSize:barcodeImage.size.width];
+          [self.barcodeImageView autoSetDimension:ALDimensionWidth toSize:self.tableView.bounds.size.width];
           [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultHigh forConstraints:^{
             // Hidden to start
             self.barcodeHeightConstraint = [self.barcodeImageView autoSetDimension:ALDimensionHeight toSize:0];
@@ -1369,16 +1374,14 @@ replacementString:(NSString *)string
       self.usernameTextField.textColor = [UIColor grayColor];
       self.PINTextField.text = [NYPLAccount sharedAccount:self.accountType].PIN;
       self.PINTextField.textColor = [UIColor grayColor];
-      self.usernameTextField.rightView.hidden = YES;
-
+      self.barcodeScanButton.hidden = YES;
     } else {
       self.usernameTextField.text = nil;
       self.usernameTextField.enabled = YES;
       self.usernameTextField.textColor = [UIColor blackColor];
       self.PINTextField.text = nil;
       self.PINTextField.textColor = [UIColor blackColor];
-      self.usernameTextField.rightView.hidden = NO;
-
+      self.barcodeScanButton.hidden = NO;
     }
     
     [self setupTableData];

@@ -70,6 +70,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 
 @interface NYPLAccountSignInViewController () <NSURLSessionDelegate, UITextFieldDelegate, UIAlertViewDelegate>
 
+@property (nonatomic) Account *currentAccount;
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
 @property (nonatomic) BOOL isCurrentlySigningIn;
@@ -148,6 +149,8 @@ CGFloat const marginPadding = 2.0;
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
+
+  self.currentAccount = [[NYPLSettings sharedSettings] currentAccount];
   
   self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.usernameTextField.delegate = self;
@@ -177,17 +180,11 @@ CGFloat const marginPadding = 2.0;
                    forControlEvents:UIControlEventTouchUpInside];
   self.PINTextField.rightView = self.PINShowHideButton;
   self.PINTextField.rightViewMode = UITextFieldViewModeAlways;
-  
-  Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
-  if (currentAccount.supportsBarcodeScanner) {
-    self.barcodeScanButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.barcodeScanButton setImage:[UIImage imageNamed:@"CameraIcon"] forState:UIControlStateNormal];
-    [self.barcodeScanButton sizeToFit];
-    [self.barcodeScanButton addTarget:self action:@selector(scanLibraryCard)
-                     forControlEvents:UIControlEventTouchUpInside];
-    self.usernameTextField.rightView = self.barcodeScanButton;
-    self.usernameTextField.rightViewMode = UITextFieldViewModeAlways;
-  }
+
+  self.barcodeScanButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [self.barcodeScanButton setImage:[UIImage imageNamed:@"CameraIcon"] forState:UIControlStateNormal];
+  [self.barcodeScanButton addTarget:self action:@selector(scanLibraryCard)
+                   forControlEvents:UIControlEventTouchUpInside];
 
   self.logInSignOutCell = [[UITableViewCell alloc]
                            initWithStyle:UITableViewCellStyleDefault
@@ -243,8 +240,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       
-      Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
-      if (currentAccount.supportsCardCreator) {
+      if (self.currentAccount.supportsCardCreator) {
         __weak NYPLAccountSignInViewController *const weakSelf = self;
         CardCreatorConfiguration *const configuration =
           [[CardCreatorConfiguration alloc]
@@ -280,7 +276,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       else
       {
         
-        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:currentAccount.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:self.currentAccount.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
         
         UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webViewController];
        
@@ -322,6 +318,16 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self.usernameTextField autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom
                                                ofView:[self.usernameTextField superview]
                                            withOffset:-marginPadding];
+
+        if (self.currentAccount.supportsBarcodeScanner) {
+          [cell.contentView addSubview:self.barcodeScanButton];
+          CGFloat rightMargin = cell.layoutMargins.right;
+          self.barcodeScanButton.contentEdgeInsets = UIEdgeInsetsMake(0, rightMargin * 2, 0, rightMargin);
+          [self.barcodeScanButton autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeLeading];
+          if (!self.usernameTextField.enabled) {
+            self.barcodeScanButton.hidden = YES;
+          }
+        }
       }
       return cell;
     }
@@ -432,8 +438,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
 {
-  Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
-  if (section == SectionCredentials && [currentAccount getLicenseURL:URLTypeEula]) {
+  if (section == SectionCredentials && [self.currentAccount getLicenseURL:URLTypeEula]) {
     UIView *container = [[UIView alloc] init];
     container.preservesSuperviewLayoutMargins = YES;
     UILabel *footerLabel = [[UILabel alloc] init];

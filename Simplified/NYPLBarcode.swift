@@ -2,7 +2,7 @@ import Foundation
 import ZXingObjC
 
 fileprivate let barcodeHeight: CGFloat = 100
-fileprivate let maxBarcodeWidth: CGFloat = 500
+fileprivate let maxBarcodeWidth: CGFloat = 414
 
 @objc enum NYPLBarcodeType: Int {
   case codabar
@@ -30,13 +30,16 @@ final class NYPLBarcode: NSObject {
 
   class func image(fromString string: String, superviewWidth: CGFloat, type: NYPLBarcodeType) -> UIImage?
   {
-    let width = imageWidthFor(superviewWidth)
+    let barcodeWidth = imageWidthFor(superviewWidth)
     guard let writer = ZXMultiFormatWriter.writer() as? ZXWriter else { return nilWithGenericError() }
     do {
+      let encodeHints = ZXEncodeHints.init()
+      encodeHints.margin = 0
       let result = try writer.encode(string,
                                      format: ZXBarcodeFormatFor(type),
-                                     width: Int32(width),
-                                     height: Int32(barcodeHeight))
+                                     width: Int32(barcodeWidth),
+                                     height: Int32(barcodeHeight),
+                                     hints: encodeHints)
       if let cgImage = ZXImage.init(matrix: result).cgimage {
         return UIImage.init(cgImage: cgImage)
       } else {
