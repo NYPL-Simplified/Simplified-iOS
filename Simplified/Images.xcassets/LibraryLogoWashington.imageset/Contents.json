@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "wcfl-logo1-135x135.png",
+      "filename" : "LibraryLogoWashington@1x.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "wcfl-logo2-135x135.png",
+      "filename" : "LibraryLogoWashington@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "wcfl-logo3-135x135.png",
+      "filename" : "LibraryLogoWashington@3x.png",
       "scale" : "3x"
     }
   ],
