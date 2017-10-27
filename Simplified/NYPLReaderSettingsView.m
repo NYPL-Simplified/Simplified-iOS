@@ -19,8 +19,6 @@
 @property (nonatomic) UIButton *serifButton;
 @property (nonatomic) UIButton *openDyslexicButton;
 @property (nonatomic) UIButton *whiteOnBlackButton;
-@property (nonatomic) UIButton *mediaOverlayButton;
-@property (nonatomic) BOOL mediaOverlayToggle;
 
 @end
 
@@ -180,39 +178,6 @@
   self.brightnessView = [[UIView alloc] init];
   [self addSubview:self.brightnessView];
   
-  self.mediaOverlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
-  self.mediaOverlayButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"MediaOverlayPlaybackToggle", nil)];
-  self.mediaOverlayButton.backgroundColor = [NYPLConfiguration backgroundColor];
-  self.mediaOverlayToggle = NO;
-  
-  [self.mediaOverlayButton setImage:  [[UIImage imageNamed:@"IconButtonVolumeOff"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-  
-  [self.mediaOverlayButton addTarget:self
-                              action:@selector(didSelectMediaOverlayToggle)
-                    forControlEvents:UIControlEventTouchUpInside];
-  [self.brightnessView addSubview:self.mediaOverlayButton];
-  
-  if ([NYPLReaderSettings sharedSettings].currentReaderReadiumView) {
-    
-    if ([[NYPLReaderSettings sharedSettings].currentReaderReadiumView bookHasMediaOverlays]) {
-      self.mediaOverlayButton.userInteractionEnabled = YES;
-      self.mediaOverlayButton.alpha = 1.0;
-      
-      if ([[NYPLReaderSettings sharedSettings].currentReaderReadiumView bookHasMediaOverlaysBeingPlayed]) {
-        self.mediaOverlayToggle = YES;
-        [self.mediaOverlayButton setImage:  [[UIImage imageNamed:@"IconButtonVolumeOn"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-      }
-      else {
-        self.mediaOverlayToggle = NO;
-        [self.mediaOverlayButton setImage:  [[UIImage imageNamed:@"IconButtonVolumeOff"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-      }
-    }
-    else {
-      self.mediaOverlayButton.userInteractionEnabled = NO;
-      self.mediaOverlayButton.alpha = 0.3;
-    }
-  }
-  
   self.brightnessLowImageView = [[UIImageView alloc]
                                  initWithImage:[[UIImage imageNamed:@"BrightnessLow"]
                                                 imageWithRenderingMode:
@@ -306,22 +271,8 @@
                                          innerWidth,
                                          CGRectGetHeight(self.frame) / 4.0);
   
-  
-  CGRect mediaOverlayButtonLineToItsRight = CGRectMake(self.brightnessView.frame.size.width / 4,
-                                                   CGRectGetMinY(self.brightnessView.frame),
-                                                   1,
-                                                   CGRectGetHeight(self.brightnessView.frame));
-  
-  float spaceWidth = mediaOverlayButtonLineToItsRight.origin.x - self.brightnessView.frame.origin.x;
-  
-  CGSize mediaOverlayButtonSize = CGSizeMake(36, 32);
-  self.mediaOverlayButton.frame =  CGRectMake( (spaceWidth / 2) - mediaOverlayButtonSize.width / 2,
-                                              (self.brightnessView.frame.size.height / 2) - (mediaOverlayButtonSize.height / 2),
-                                              mediaOverlayButtonSize.width,
-                                              mediaOverlayButtonSize.height);
-  
   self.brightnessLowImageView.frame =
-    CGRectMake(mediaOverlayButtonLineToItsRight.origin.x,
+    CGRectMake(0,
                (CGRectGetHeight(self.brightnessView.frame) / 2 -
                 CGRectGetHeight(self.brightnessLowImageView.frame) / 2),
                CGRectGetWidth(self.brightnessLowImageView.frame),
@@ -457,9 +408,6 @@
   
   self.backgroundColor = backgroundColor;
   
-  self.mediaOverlayButton.backgroundColor = backgroundColor;
-  self.mediaOverlayButton.tintColor = foregroundColor;
-  
   [self.brightnessHighImageView setTintColor:foregroundColor];
   [self.brightnessLowImageView setTintColor:foregroundColor];
   
@@ -540,20 +488,6 @@
   self.fontFace = NYPLReaderSettingsFontFaceOpenDyslexic;
   
   [self.delegate readerSettingsView:self didSelectFontFace:self.fontFace];
-}
-
-- (void)didSelectMediaOverlayToggle
-{
-  [self.delegate readerSettingsViewDidSelectMediaOverlayToggle:self];
-  
-  if (self.mediaOverlayToggle) {
-    self.mediaOverlayToggle = NO;
-    [self.mediaOverlayButton setImage:  [[UIImage imageNamed:@"IconButtonVolumeOff"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-  }
-  else {
-    self.mediaOverlayToggle = YES;
-    [self.mediaOverlayButton setImage:  [[UIImage imageNamed:@"IconButtonVolumeOn"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-  }
 }
 
 - (void)didChangeBrightness
@@ -709,16 +643,6 @@
                                                    CGRectGetMinY(self.increaseButton.frame),
                                                    thin,
                                                    CGRectGetHeight(self.increaseButton.frame))];
-    [line setBackgroundColor:[UIColor lightGrayColor]];
-    [self addSubview:line];
-  }
-  
-  {
-    UIView *const line = [[UIView alloc]
-                          initWithFrame:CGRectMake(self.brightnessView.frame.size.width / 4,
-                                                   CGRectGetMinY(self.brightnessView.frame),
-                                                   thin,
-                                                   CGRectGetHeight(self.brightnessView.frame))];
     [line setBackgroundColor:[UIColor lightGrayColor]];
     [self addSubview:line];
   }
