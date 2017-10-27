@@ -294,7 +294,7 @@
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://wmrl.simplye-md.org/MDRUTH/groups/",
  "mainColor" : "#1b7fa7",
- "supportEmail" : "supportemailgoeshere@example.com",
+ "supportEmail" : "webmaster@relib.net",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  },
@@ -313,7 +313,7 @@
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://wmrl.simplye-md.org/MDWASH/groups/",
  "mainColor" : "#1b7fa7",
- "supportEmail" : "supportemailgoeshere@example.com",
+ "supportEmail" : "webmaster@washcolibrary.org",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  }
