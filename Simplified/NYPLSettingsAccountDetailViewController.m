@@ -272,6 +272,14 @@ CGFloat const verticalMarginPadding = 2.0;
   }
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+  [super viewWillDisappear:animated];
+  if (self.userBrightnessSetting && [[UIScreen mainScreen] brightness] != self.userBrightnessSetting) {
+    [[UIScreen mainScreen] setBrightness:self.userBrightnessSetting];
+  }
+}
+
 - (BOOL)librarySupportsBarcodeDisplay
 {
   // For now, only supports libraries granted access in Accounts.json,
@@ -288,7 +296,7 @@ CGFloat const verticalMarginPadding = 2.0;
     if (resultString) {
       self.usernameTextField.text = resultString;
       [self.PINTextField becomeFirstResponder];
-      self.loggingInAfterBarcodeScan = YES;  //Prevent text from clearing
+      self.loggingInAfterBarcodeScan = YES;
     }
   }];
 }
@@ -872,6 +880,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   NSArray *sectionArray = (NSArray *)self.tableData[indexPath.section];
   CellKind cellKind = (CellKind)[sectionArray[indexPath.row] intValue];
+  NYPLAccount *account = [NYPLAccount sharedAccount:self.accountType];
 
   switch(cellKind) {
     case CellKindBarcode: {
@@ -914,7 +923,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (![self librarySupportsBarcodeDisplay]) {
         NYPLLOG(@"A nonvalid library was attempting to create a barcode image.");
       } else {
-        UIImage *barcodeImage = [NYPLBarcode imageFromString:@"23333103390991"
+        UIImage *barcodeImage = [NYPLBarcode imageFromString:account.authorizationIdentifier
                                               superviewWidth:self.tableView.bounds.size.width
                                                         type:NYPLBarcodeTypeCodabar];
         if (barcodeImage) {

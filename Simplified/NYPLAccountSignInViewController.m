@@ -602,7 +602,7 @@ completionHandler:(void (^)())handler
     if (resultString) {
       self.usernameTextField.text = resultString;
       [self.PINTextField becomeFirstResponder];
-      self.loggingInAfterBarcodeScan = YES;  //Prevent text from clearing
+      self.loggingInAfterBarcodeScan = YES;
     }
   }];
 }
