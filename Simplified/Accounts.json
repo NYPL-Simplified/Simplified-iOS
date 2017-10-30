@@ -240,7 +240,8 @@
  "catalogUrl" : "http://carroll.simplye-md.org/CARROLL/",
  "mainColor" : "#fcb033",
  "authPasscodeLength" : 0,
- "authPasscodeAllowsLetters" : true
+ "authPasscodeAllowsLetters" : true,
+ "supportEmail" : "ask@carr.org"
  },
  {
  "id" : 18,
