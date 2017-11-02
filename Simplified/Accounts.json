@@ -257,6 +257,7 @@
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
  "catalogUrl" : "http://lapl.simplye-ca.org/",
+ "supportEmail" : "webmaster@lapl.org",
  "mainColor" : "#07818d",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
