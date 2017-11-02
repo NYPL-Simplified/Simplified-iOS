@@ -240,7 +240,8 @@
  "catalogUrl" : "http://carroll.simplye-md.org/CARROLL/",
  "mainColor" : "#fcb033",
  "authPasscodeLength" : 0,
- "authPasscodeAllowsLetters" : true
+ "authPasscodeAllowsLetters" : true,
+ "supportEmail" : "ask@carr.org"
  },
  {
  "id" : 18,
@@ -311,7 +312,7 @@
  "supportsCardCreator" : false,
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
- "catalogUrl" : "http://wmrl.simplye-md.org/MDRUTH/groups/",
+ "catalogUrl" : "http://wmrl.simplye-md.org/MDRUTH/",
  "mainColor" : "#1b7fa7",
  "supportEmail" : "webmaster@relib.net",
  "authPasscodeLength" : 0,
@@ -330,7 +331,7 @@
  "supportsCardCreator" : false,
  "supportsReservations" : true,
  "supportsHelpCenter" : false,
- "catalogUrl" : "http://wmrl.simplye-md.org/MDWASH/groups/",
+ "catalogUrl" : "http://wmrl.simplye-md.org/MDWASH/",
  "mainColor" : "#1b7fa7",
  "supportEmail" : "webmaster@washcolibrary.org",
  "authPasscodeLength" : 0,
