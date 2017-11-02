@@ -25,3 +25,5 @@
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogGroupedFeed.h"
 #import "NYPLKeychain.h"
+#import "NYPLBarcodeScanningViewController.h"
+#import "NYPLRootTabBarController.h"

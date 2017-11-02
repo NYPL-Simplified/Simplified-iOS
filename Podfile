@@ -11,6 +11,7 @@ target 'SimplyE' do
   pod 'Bugsnag', '~> 5.11'
   pod 'NYPLCardCreator', :git => 'https://github.com/NYPL-Simplified/CardCreator-iOS.git'
   pod 'SQLite.swift', :git => 'https://github.com/NYPL-Simplified/SQLite.swift', :branch => 'nypl-swift4-ios8-target'
+  pod 'ZXingObjC', '~> 3.2.1'
 
 end
 
