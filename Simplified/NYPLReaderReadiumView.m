@@ -743,9 +743,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
     [self
      sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
-     withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
+     withCompletionHandler:^(id _Nullable result, __unused NSError *_Nullable error) {
        if(!result) {
          NYPLLOG(@"Readium failed to generate a CFI. This is a bug in Readium.");
+         return;
+       }
+       if(!NYPLNullToNil(result)) {
+         [self reportNullCFIToBugsnag];
          return;
        }
        NSString *const locationJSON = result;
@@ -1056,6 +1060,23 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 - (void)sequentiallyEvaluateJavaScript:(nonnull NSString *const)javaScript
 {
   [self sequentiallyEvaluateJavaScript:javaScript withCompletionHandler:nil];
+}
+
+// FIXME: This can be removed when sufficient data has been collected, and the fix can be integrated
+// into the existing CFI check directly above it. example: if (!result || !NYPLNulltonil...)
+// Bug: CFI was being checked for 'nil' but NOT as NSNULL class.
+- (void)reportNullCFIToBugsnag
+{
+  NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
+  if (self.book.identifier) [metadataParams setObject:self.book.identifier forKey:@"bookID"];
+  if (self.book.title) [metadataParams setObject:self.book.identifier forKey:@"title"];
+  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:7 userInfo:nil]
+                 block:^(BugsnagCrashReport * _Nonnull report) {
+                   report.context = @"NYPLReaderReadiumView";
+                   report.severity = BSGSeverityWarning;
+                   report.errorMessage = @"CFI was nil, specifically from JSON response being NULL.";
+                   [report addMetadata:metadataParams toTabWithName:@"Extra CFI Data"];
+                 }];
 }
 
 @end
