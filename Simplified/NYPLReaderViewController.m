@@ -1,3 +1,4 @@
+@import Bugsnag;
 @import WebKit;
 
 #import "NYPLBook.h"
@@ -300,16 +301,23 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
     if ([gr isKindOfClass:[UITapGestureRecognizer class]])
       gr.enabled = NO;
   }
-  
-  self.dummyViewControllers = @[[[UIViewController alloc] init], [[UIViewController alloc] init], [[UIViewController alloc] init]];
-  for (UIViewController *v in self.dummyViewControllers)
-    [v.view setBackgroundColor:[UIColor whiteColor]];
-  [self.dummyViewControllers.firstObject.view addSubview:self.rendererView];
+
   self.renderedImageView = [[UIImageView alloc] init];
-  
-  NSArray *viewControllers = [NSArray arrayWithObject:self.dummyViewControllers.firstObject];
-  
-  [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
+  UIViewController *viewController1 = [[UIViewController alloc] init];
+  UIViewController *viewController2 = [[UIViewController alloc] init];
+  UIViewController *viewController3 = [[UIViewController alloc] init];
+  self.dummyViewControllers = @[viewController1, viewController2, viewController3];
+  for (UIViewController *v in self.dummyViewControllers) {
+    [v.view setBackgroundColor:[UIColor whiteColor]];
+  }
+  [self.dummyViewControllers.firstObject.view addSubview:self.rendererView];
+
+  NSArray *viewControllerArray = @[self.dummyViewControllers.firstObject];
+  if (viewControllerArray.count != 0) {
+    [self.pageViewController setViewControllers:viewControllerArray direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
+  } else {
+    [self reportPageViewControllerErrorToBugnsag];
+  }
   
   [self addChildViewController:self.pageViewController];
   [[self view] addSubview:[self.pageViewController view]];
@@ -944,6 +952,18 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   if (self.renderedImageView.superview != nil && (self.renderedImageView.superview == self.rendererView.superview)) {
     [self.renderedImageView removeFromSuperview];
   }
+}
+
+// FIXME: This can be removed when sufficient data has been collected
+// Bug: Something has gone wrong with the VC array configuration. Observed in crash analytics.
+- (void)reportPageViewControllerErrorToBugnsag
+{
+  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:6 userInfo:nil]
+                 block:^(BugsnagCrashReport * _Nonnull report) {
+                   report.context = @"NYPLReaderViewController";
+                   report.severity = BSGSeverityWarning;
+                   report.errorMessage = @"UIPageViewController was attempting to set 0 view controllers.";
+                 }];
 }
 
 @end
