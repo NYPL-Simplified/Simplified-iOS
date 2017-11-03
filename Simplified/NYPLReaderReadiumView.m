@@ -42,7 +42,7 @@
 @property (nonatomic) BOOL isPageTurning, canGoLeft, canGoRight;
 @property (nonatomic) RDPackageResourceServer *server;
 @property (nonatomic) NSArray *TOCElements;
-@property (nonatomic) NSArray *bookmarkElements;
+@property (nonatomic) NSArray<NYPLReaderBookmarkElement *> *bookmarkElements;
 @property (nonatomic) WKWebView *webView;
 
 @property (nonatomic) NSDictionary *bookMapDictionary;
@@ -568,128 +568,134 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   ", [NYPLConfiguration backgroundMediaOverlayHighlightColor].javascriptHexString] ;
   
   [self sequentiallyEvaluateJavaScript:javascript];
+
+  //GODO where's the best spot to do this?
   [self syncAnnotations];
 }
 - (void)syncAnnotations
 {
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-  
-  // Sync SimplyE Settings, this needs to be done here, in case the remote setting has been changed from a different device
-  [NYPLAnnotations getSyncSettingsWithCompletionHandler:^(BOOL initialized, BOOL value) {
-    if (initialized && !value) {
-      currentAccount.syncIsEnabledForAllDevices = value;
-      if (!value) {
-        currentAccount.syncIsEnabledForThisDevice = value;
-      }
-    }
-  }];
-  
-  if (currentAccount.syncIsEnabledForThisDevice) {
-    
-    if (currentAccount.syncLastReadingPositionIsEnabled) {
-      NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
-      dictionary[@"package"] = self.package.dictionary;
-      dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
-      NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry]
-                                          locationForIdentifier:self.book.identifier];
-      
-      [self syncLastReadingPosition:dictionary andLocation:location andBook:self.book];
-    }
-    
-    if (currentAccount.syncBookmarksIsEnabled) {
-      
-      [self syncBookmarksWithCompletionHandler:^(bool success, NSArray *bookmarks) {
-        
-        
-      }];
-      
-    }
-  }
+
+  //GODO come back to this
+  //  // Sync SimplyE Settings, this needs to be done here, in case the remote setting has been changed from a different device
+  //  [NYPLAnnotations getPermissionStatusFromServerWithCompletionHandler:^(BOOL initialized, BOOL value) {
+  //    if (initialized && !value) {
+  //      currentAccount.syncPermissionGranted = value;
+  //      if (!value) {
+  //        currentAccount.syncPermissionGranted = value;
+  //      }
+  //    }
+  //  }];
+
+
+//  if (currentAccount.syncIsEnabled) {
+
+    //sync read position
+    NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
+    dictionary[@"package"] = self.package.dictionary;
+    dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
+    NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry]
+                                        locationForIdentifier:self.book.identifier];
+
+    [self syncLastReadingPosition:dictionary andLocation:location andBook:self.book];
+
+
+    //sync bookmarks
+//    [self syncBookmarksWithCompletionHandler:^(bool success, NSArray *bookmarks) {
+//
+//      //??
+//    }];
+
+//  }
 }
 
-- (void) syncBookmarksWithCompletionHandler:(void(^)(bool success, NSArray *bookmarks))completionHandler {
-  
-  [[NYPLReachability sharedReachability]
-   reachabilityForURL:[NYPLConfiguration mainFeedURL]
-   timeoutInternal:8.0
-   handler:^(BOOL reachable) {
-     
-     if (reachable) {
-       // 1.
-       // post all local bookmarks if they have not been posted yet,
-       // this can happen if device was storing local bookmarks first and SImplyE Sync was enabled afterwards.
-       NSArray * localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];
-       for (NYPLReaderBookmarkElement *localBookmark in localBookmarks) {
-         
-         if (localBookmark.annotationId.length == 0 || localBookmark.annotationId == nil) {
-           
-           [NYPLAnnotations postBookmark:self.book cfi:localBookmark.location bookmark:localBookmark completionHandler:^(NYPLReaderBookmarkElement *bookmark) {
-             
-             [[NYPLBookRegistry sharedRegistry] replaceBookmark:localBookmark with:bookmark forIdentifier:self.book.identifier];
-             
-           }];
-         }
-       }
-       
-       [NYPLAnnotations getBookmarks:self.book completionHandler:^(NSArray *remoteBookmarks) {
-         
-         // 2.
-         // delete local bookmarks if annotation id exists locally but not remote
-         NSMutableArray *keepLocalBookmarks = [[NSMutableArray alloc] init];
-         for (NYPLReaderBookmarkElement *bookmark in remoteBookmarks) {
-           
-           NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", bookmark.annotationId];
-           [keepLocalBookmarks addObjectsFromArray:[localBookmarks filteredArrayUsingPredicate:predicate]];
-           
-         }
-         NYPLLOG(keepLocalBookmarks);
-         
-         NSMutableArray *deleteLocalBookmarks = [[NSMutableArray alloc] init];
-         for (NYPLReaderBookmarkElement *bookmark in localBookmarks) {
-           if (![keepLocalBookmarks containsObject:bookmark]) {
-             [deleteLocalBookmarks addObject:bookmark];
-           }
-         }
-         NYPLLOG(deleteLocalBookmarks);
-         
-         for (NYPLReaderBookmarkElement *bookmark in deleteLocalBookmarks) {
-           [[NYPLBookRegistry sharedRegistry] deleteBookmark:bookmark forIdentifier:self.book.identifier];
-         }
-         
-         // 3.
-         // get remote bookmarks and store locally if not already stored
-         NSMutableArray *addLocalBookmarks = remoteBookmarks.mutableCopy;
-         NSMutableArray *ignoreBookmarks = [[NSMutableArray alloc] init];
-         
-         for (NYPLReaderBookmarkElement *bookmark in remoteBookmarks) {
-           NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", bookmark.annotationId];
-           [ignoreBookmarks addObjectsFromArray:[localBookmarks filteredArrayUsingPredicate:predicate]];
-         }
-         
-         for (NYPLReaderBookmarkElement *el in remoteBookmarks) {
-           for (NYPLReaderBookmarkElement *el2 in ignoreBookmarks) {
-             if ([el isEqual:el2]) {
-               [addLocalBookmarks removeObject:el];
-             }
-           }
-         }
-         
-         for (NYPLReaderBookmarkElement *bookmark in addLocalBookmarks) {
-           [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.book.identifier];
-         }
-         
-         
-         completionHandler(true, [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier]);
-         
-       }];
-     }
-     
-     
-   }];
-  
-  
-}
+//- (void) syncBookmarksWithCompletionHandler:(void(^)(bool success, NSArray *bookmarks))completionHandler {
+//
+//  //GODO can't this be abstracted out of this class?
+//
+//  [[NYPLReachability sharedReachability]
+//   reachabilityForURL:[NYPLConfiguration mainFeedURL]
+//   timeoutInternal:8.0
+//   handler:^(BOOL reachable) {
+//
+//     if (reachable) {
+//       // 1.
+//       // post all local bookmarks if they have not been posted yet,
+//       // this can happen if device was storing local bookmarks first and SImplyE Sync was enabled afterwards.
+//       NSArray * localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];
+//       for (NYPLReaderBookmarkElement *localBookmark in localBookmarks) {
+//
+//         if (localBookmark.annotationId.length == 0 || localBookmark.annotationId == nil) {
+//
+//           [NYPLAnnotations postBookmark:self.book cfi:localBookmark.location bookmark:localBookmark completionHandler:^(NYPLReaderBookmarkElement *bookmark) {
+//
+//             [[NYPLBookRegistry sharedRegistry] replaceBookmark:localBookmark with:bookmark forIdentifier:self.book.identifier];
+//
+//           }];
+//         }
+//       }
+//
+//       [NYPLAnnotations getBookmarks:self.book completionHandler:^(NSArray *remoteBookmarks) {
+//
+//         // 2.
+//         // delete local bookmarks if annotation id exists locally but not remote
+//         NSMutableArray *keepLocalBookmarks = [[NSMutableArray alloc] init];
+//         for (NYPLReaderBookmarkElement *bookmark in remoteBookmarks) {
+//
+//           NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", bookmark.annotationId];
+//           [keepLocalBookmarks addObjectsFromArray:[localBookmarks filteredArrayUsingPredicate:predicate]];
+//
+//         }
+//         NYPLLOG(keepLocalBookmarks);
+//
+//         NSMutableArray *deleteLocalBookmarks = [[NSMutableArray alloc] init];
+//         for (NYPLReaderBookmarkElement *bookmark in localBookmarks) {
+//           if (![keepLocalBookmarks containsObject:bookmark]) {
+//             [deleteLocalBookmarks addObject:bookmark];
+//           }
+//         }
+//         NYPLLOG(deleteLocalBookmarks);
+//
+//         for (NYPLReaderBookmarkElement *bookmark in deleteLocalBookmarks) {
+//           [[NYPLBookRegistry sharedRegistry] deleteBookmark:bookmark forIdentifier:self.book.identifier];
+//         }
+//
+//         // 3.
+//         // get remote bookmarks and store locally if not already stored
+//         NSMutableArray *addLocalBookmarks = remoteBookmarks.mutableCopy;
+//         NSMutableArray *ignoreBookmarks = [[NSMutableArray alloc] init];
+//
+//         for (NYPLReaderBookmarkElement *bookmark in remoteBookmarks) {
+//           NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", bookmark.annotationId];
+//           [ignoreBookmarks addObjectsFromArray:[localBookmarks filteredArrayUsingPredicate:predicate]];
+//         }
+//
+//         for (NYPLReaderBookmarkElement *el in remoteBookmarks) {
+//           for (NYPLReaderBookmarkElement *el2 in ignoreBookmarks) {
+//             if ([el isEqual:el2]) {
+//               [addLocalBookmarks removeObject:el];
+//             }
+//           }
+//         }
+//
+//         for (NYPLReaderBookmarkElement *bookmark in addLocalBookmarks) {
+//           [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.book.identifier];
+//         }
+//
+//
+//         completionHandler(true, [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier]);
+//
+//       }];
+//     }
+//
+//
+//   }];
+//
+//
+//}
 
+
+//GODO can't this be abstracted out of this class?
 - (void)syncLastReadingPosition:(NSMutableDictionary *const)dictionary andLocation:(NYPLBookLocation *const)location andBook:(NYPLBook *const)book
 {
   [NYPLAnnotations syncLastRead:book completionHandler:^(NSDictionary * _Nullable responseObject) {
@@ -852,7 +858,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   [weakSelf.delegate renderer:weakSelf icon:YES];
 
   
-  if (currentAccount.syncIsEnabledForThisDevice) {
+  if (currentAccount.syncPermissionGranted) {
   
     [NYPLAnnotations postBookmark:self.book cfi:location.locationString bookmark:bookmark completionHandler:^(NYPLReaderBookmarkElement *bookmark) {
       
@@ -933,7 +939,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
 
-  if (currentAccount.syncIsEnabledForThisDevice && (bookmark.annotationId != nil && bookmark.annotationId.length > 0)) {
+  if (currentAccount.syncPermissionGranted && (bookmark.annotationId != nil && bookmark.annotationId.length > 0)) {
   
     [NYPLAnnotations deleteBookmarkWithAnnotationId:bookmark.annotationId];
   

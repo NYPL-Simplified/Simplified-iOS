@@ -23,10 +23,12 @@
 - (void) openPageRight;
 - (BOOL) touchIntersectsLink:(UITouch *)touch;
 
-- (void) syncLastReadingPosition;
-- (void) syncBookmarksWithCompletionHandler:(void(^)(bool success, NSArray *bookmarks))completionHandler;
+
+//GODO can these be abstracted better?
 - (NSString*) currentChapter;
 
+- (void) syncLastReadingPosition;
+- (void) syncBookmarksWithCompletionHandler:(void(^)(bool success, NSArray<NYPLReaderBookmarkElement *> *bookmarks))completionHandler;
 - (void) addBookmark;
 - (void) deleteBookmark:(NYPLReaderBookmarkElement*)bookmark;
 

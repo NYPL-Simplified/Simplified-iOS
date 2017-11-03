@@ -16,7 +16,6 @@
 		03685C5C1EBB7CC500849AD1 /* NYPLSettingsSyncViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03685C5B1EBB7CC500849AD1 /* NYPLSettingsSyncViewController.swift */; };
 		03690E231EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03690E221EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift */; };
 		03690E291EB2B44300F75D5F /* NYPLReaderBookmarkElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03690E281EB2B44300F75D5F /* NYPLReaderBookmarkElement.swift */; };
-		036B02C11DCBF3360098784A /* HelpStackStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 036B02C01DCBF3360098784A /* HelpStackStoryboard.storyboard */; };
 		0378BC1C1E27FFC80095428E /* NYPLDeviceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0378BC1B1E27FFC80095428E /* NYPLDeviceManager.swift */; };
 		03B092241E78839D00AD338D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092231E78839D00AD338D /* QuartzCore.framework */; };
 		03B092261E7883C400AD338D /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092251E7883C400AD338D /* libiconv.tbd */; };
@@ -244,7 +243,6 @@
 		03685C5B1EBB7CC500849AD1 /* NYPLSettingsSyncViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsSyncViewController.swift; sourceTree = "<group>"; };
 		03690E221EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLReaderBookmarkCell.swift; sourceTree = "<group>"; };
 		03690E281EB2B44300F75D5F /* NYPLReaderBookmarkElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLReaderBookmarkElement.swift; sourceTree = "<group>"; };
-		036B02C01DCBF3360098784A /* HelpStackStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = HelpStackStoryboard.storyboard; path = Pods/HelpStack/Resources/HelpStackStoryboard.storyboard; sourceTree = "<group>"; };
 		0378BC1B1E27FFC80095428E /* NYPLDeviceManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLDeviceManager.swift; sourceTree = "<group>"; };
 		03B092231E78839D00AD338D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		03B092251E7883C400AD338D /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };

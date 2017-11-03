@@ -15,7 +15,7 @@ typedef NS_ENUM(NSInteger, NYPLReaderRendererGesture) {
 @property (nonatomic, readonly) BOOL bookIsCorrupt;
 @property (nonatomic, readonly) BOOL loaded;
 @property (nonatomic, readonly, nonnull) NSArray *TOCElements;
-@property (nonatomic, readonly, nonnull) NSArray *bookmarkElements;
+@property (nonatomic, readonly, nonnull) NSArray<NYPLReaderBookmarkElement *> *bookmarkElements;
 
 // This must be called with a reader-appropriate underlying value. Readers implementing this should
 // throw |NSInvalidArgumentException| in the event it is not.

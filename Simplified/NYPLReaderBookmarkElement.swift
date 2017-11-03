@@ -1,14 +1,7 @@
-//
-//  NYPLReaderBookmarkElement.swift
-//  Simplified
-//
-//  Created by Aferdita Muriqi on 4/27/17.
-//  Copyright © 2017 NYPL Labs. All rights reserved.
-//
-
 import UIKit
 
-@objc class NYPLReaderBookmarkElement: NSObject {
+/// GODO Represents a bookmark? Need to check this out.
+final class NYPLReaderBookmarkElement: NSObject {
   
   var annotationId:String
 
@@ -21,6 +14,13 @@ import UIKit
   var location:String?
   var progressWithinChapter:Float = 0.0
   var progressWithinBook:Float = 0.0
+
+  var percentInChapter:String {
+    return (self.progressWithinChapter * 100).roundTo(decimalPlaces: 0)
+  }
+  var percentInBook:String {
+    return (self.progressWithinBook * 100).roundTo(decimalPlaces: 0)
+  }
   
   var device:String?
   var time:String?
@@ -65,7 +65,6 @@ import UIKit
   }
 
   var dictionaryRepresentation:NSDictionary {
-  
     return ["annotationId":self.annotationId,
             "contentCFI":self.contentCFI,
             "idref":self.idref,
@@ -80,7 +79,6 @@ import UIKit
   }
   
   override func isEqual(_ object: Any?) -> Bool {
-    
     let other = object as! NYPLReaderBookmarkElement
     
     if (self.annotationId == other.annotationId &&
@@ -92,17 +90,6 @@ import UIKit
       return true
     }
     return false
-  }
-  
-  var percentInChapter:String {
-    
-    return (self.progressWithinChapter * 100).roundTo(decimalPlaces: 0)
-    
-  }
-  var percentInBook:String {
-    
-    return (self.progressWithinBook * 100).roundTo(decimalPlaces: 0)
-    
   }
 }
 

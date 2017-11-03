@@ -10,7 +10,7 @@
 @property (nonatomic) NYPLBookLocation *location;
 @property (nonatomic) NYPLBookState state;
 @property (nonatomic) NSString *fulfillmentId;
-@property (nonatomic) NSArray *bookmarks;
+@property (nonatomic) NSArray<NYPLReaderBookmarkElement *> *bookmarks;
 
 @end
 
@@ -26,7 +26,7 @@ static NSString *const BookmarksKey = @"bookmarks";
                     location:(NYPLBookLocation *const)location
                        state:(NYPLBookState)state
                fulfillmentId:(NSString *)fulfillmentId
-                   bookmarks:(NSArray *)bookmarks
+                   bookmarks:(NSArray<NYPLReaderBookmarkElement *> *)bookmarks
 {
   self = [super init];
   if(!self) return nil;
@@ -82,7 +82,7 @@ static NSString *const BookmarksKey = @"bookmarks";
   
   self.fulfillmentId = NYPLNullToNil(dictionary[FulfillmentIdKey]);
   
-  NSMutableArray *bookmarks = [[NSMutableArray alloc] init];
+  NSMutableArray<NYPLReaderBookmarkElement *> *bookmarks = [[NSMutableArray alloc] init];
   
   // bookmarks from dictionary to elements
   for (NSDictionary *dict in NYPLNullToNil(dictionary[BookmarksKey])) {
@@ -98,11 +98,11 @@ static NSString *const BookmarksKey = @"bookmarks";
 
 - (NSDictionary *)dictionaryRepresentation
 {
-  NSMutableArray *bookmarksDictionaryRepresentation = [[NSMutableArray alloc] init];
+  NSMutableArray *bookmarkDictionaries = [[NSMutableArray alloc] init];
   
   for (NYPLReaderBookmarkElement *element in self.bookmarks) {
     
-    [bookmarksDictionaryRepresentation addObject:element.dictionaryRepresentation];
+    [bookmarkDictionaries addObject:element.dictionaryRepresentation];
     
   }
   
@@ -110,7 +110,7 @@ static NSString *const BookmarksKey = @"bookmarks";
            LocationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
            StateKey: NYPLBookStateToString(self.state),
            FulfillmentIdKey: NYPLNullFromNil(self.fulfillmentId),
-           BookmarksKey: NYPLNullToNil(bookmarksDictionaryRepresentation)};
+           BookmarksKey: NYPLNullToNil(bookmarkDictionaries)};
 }
 
 - (instancetype)recordWithBook:(NYPLBook *const)book

@@ -195,52 +195,11 @@
   }
   
 }
-- (void)checkSyncSetting
-{
-  [NYPLAnnotations getSyncSettingsWithCompletionHandler:^(BOOL initialized, BOOL __unused value) {
-    
-    if (!initialized)
-    {
-      // alert
-      
-      Account *account = [[AccountsManager sharedInstance] currentAccount];
-      
-      NSString *title = @"New! SimplyE Sync";
-      NSString *message = @"Automatically update your bookmarks and last reading position across all of your devices.";
-      
-      
-      NYPLAlertController *alertController = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-      
-      
-      [alertController addAction:[UIAlertAction actionWithTitle:@"Not Now" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
-        
-        // add server update here as well
-        [NYPLAnnotations updateSyncSettings:false];
-        account.syncIsEnabledForAllDevices = NO;
-        account.syncIsEnabledForThisDevice = NO;
-        
-      }]];
-      
-      
-      [alertController addAction:[UIAlertAction actionWithTitle:@"Enable Sync" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
-        
-        // add server update here as well
-        
-        [NYPLAnnotations updateSyncSettings:true];
-        account.syncIsEnabledForAllDevices = YES;
-        account.syncIsEnabledForThisDevice = YES;
-        
-      }]];
-      
-      
-      
-      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController
-                                                                      animated:YES completion:nil];
-      
-    }
-    
-  }];
-}
+
+
+//GODO check if this is necessary at the catalog nav controller (maybe just have it in settings for now)
+//also, this would have been sending a network request every time the catalog view appeared...
+
 
 - (void)viewDidAppear:(BOOL)animated
 {
@@ -251,9 +210,6 @@
   }
   
   NYPLSettings *settings = [NYPLSettings sharedSettings];
-  
-  
-  [self checkSyncSetting];
   
   if (settings.userHasSeenWelcomeScreen == NO) {
     

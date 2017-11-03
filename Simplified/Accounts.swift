@@ -3,11 +3,7 @@ import Foundation
 let currentAccountIdentifierKey  = "NYPLCurrentAccountIdentifier"
 let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
 let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
-let accountSyncEnabledThisKey    = "NYPLAccountSyncEnabledKey"
-let accountSyncEnabledAllKey     = "NYPLAccountSyncEnabledAllKey"
-
-let accountSyncBookmarksKey    = "NYPLAccountSyncBookmarksEnabledKey"
-let accountSyncLastReadimngPositionKey    = "NYPLAccountSyncLastReadingPositionEnabledKey"
+let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
 
 /// Manage the library accounts for the app.
@@ -136,40 +132,13 @@ final class Account:NSObject
       setAccountDictionaryKey(userAcceptedEULAKey, toValue: newValue as AnyObject)
     }
   }
-  var syncIsEnabledForThisDevice:Bool {
+  var syncPermissionGranted:Bool {
     get {
-      guard let result = getAccountDictionaryKey(accountSyncEnabledThisKey) else { return false }
+      guard let result = getAccountDictionaryKey(accountSyncEnabledKey) else { return false }
       return result as! Bool
     }
     set {
-      setAccountDictionaryKey(accountSyncEnabledThisKey, toValue: newValue as AnyObject)
-    }
-  }
-  var syncIsEnabledForAllDevices:Bool {
-    get {
-      guard let result = getAccountDictionaryKey(accountSyncEnabledAllKey) else { return false }
-      return result as! Bool
-    }
-    set {
-      setAccountDictionaryKey(accountSyncEnabledAllKey, toValue: newValue as AnyObject)
-    }
-  }
-  var syncBookmarksIsEnabled:Bool {
-    get {
-      guard let result = getAccountDictionaryKey(accountSyncBookmarksKey) else { return false }
-      return result as! Bool
-    }
-    set {
-      setAccountDictionaryKey(accountSyncBookmarksKey, toValue: newValue as AnyObject)
-    }
-  }
-  var syncLastReadingPositionIsEnabled:Bool {
-    get {
-      guard let result = getAccountDictionaryKey(accountSyncLastReadimngPositionKey) else { return false }
-      return result as! Bool
-    }
-    set {
-      setAccountDictionaryKey(accountSyncLastReadimngPositionKey, toValue: newValue as AnyObject)
+      setAccountDictionaryKey(accountSyncEnabledKey, toValue: newValue as AnyObject)
     }
   }
   var userAboveAgeLimit:Bool {

@@ -1,3 +1,5 @@
+#import "NYPLBookRegistry.h"
+
 #import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookCoverRegistry.h"
@@ -7,8 +9,6 @@
 #import "NYPLOPDS.h"
 #import "NYPLSettings.h"
 #import "NYPLMyBooksDownloadCenter.h"
-
-#import "NYPLBookRegistry.h"
 #import "SimplyE-Swift.h"
 
 @interface NYPLBookRegistry ()
@@ -337,7 +337,7 @@ static NSString *const RecordsKey = @"records";
        location:(NYPLBookLocation *const)location
           state:(NYPLBookState)state
   fulfillmentId:(NSString *)fulfillmentId
-      bookmarks:(NSArray *)bookmarks
+      bookmarks:(NSArray<NYPLReaderBookmarkElement *> *)bookmarks
 {
   if(!book) {
     @throw NSInvalidArgumentException;
@@ -489,12 +489,12 @@ static NSString *const RecordsKey = @"records";
   }
 }
 
-- (NSArray *)bookmarksForIdentifier:(NSString *)identifier
+- (NSArray<NYPLReaderBookmarkElement *> *)bookmarksForIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     
-    NSArray *sortedArray = [record.bookmarks sortedArrayUsingComparator:^NSComparisonResult(NYPLReaderBookmarkElement * obj1, NYPLReaderBookmarkElement* obj2) {
+    NSArray<NYPLReaderBookmarkElement *> *sortedArray = [record.bookmarks sortedArrayUsingComparator:^NSComparisonResult(NYPLReaderBookmarkElement *obj1, NYPLReaderBookmarkElement *obj2) {
       if (obj1.progressWithinBook > obj2.progressWithinBook)
         return NSOrderedDescending;
       else if (obj1.progressWithinBook < obj2.progressWithinBook)
@@ -511,7 +511,7 @@ static NSString *const RecordsKey = @"records";
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
       
-    NSMutableArray *bookmarks = record.bookmarks.mutableCopy;
+    NSMutableArray<NYPLReaderBookmarkElement *> *bookmarks = record.bookmarks.mutableCopy;
     [bookmarks addObject:bookmark];
     
     self.identifiersToRecords[identifier] = [record recordWithBookmarks:bookmarks];
@@ -526,7 +526,7 @@ static NSString *const RecordsKey = @"records";
       
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
       
-    NSMutableArray *bookmarks = record.bookmarks.mutableCopy;
+    NSMutableArray<NYPLReaderBookmarkElement *> *bookmarks = record.bookmarks.mutableCopy;
     [bookmarks removeObject:bookmark];
     
     self.identifiersToRecords[identifier] = [record recordWithBookmarks:bookmarks];
@@ -541,7 +541,7 @@ static NSString *const RecordsKey = @"records";
     
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     
-    NSMutableArray *bookmarks = record.bookmarks.mutableCopy;
+    NSMutableArray<NYPLReaderBookmarkElement *> *bookmarks = record.bookmarks.mutableCopy;
     [bookmarks removeObject:old];
     [bookmarks addObject:new];
 
