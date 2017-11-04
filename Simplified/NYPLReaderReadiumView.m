@@ -136,11 +136,16 @@ static void generateTOCElements(NSArray *const navigationElements,
                  specialPayloadMathJaxJS:nil];
   
   CGRect webviewFrame;
-  if (self.bounds.size.height != 812) {
-    webviewFrame = CGRectMake(0, 60, self.bounds.size.width, self.bounds.size.height - 100);
+  if (@available (iOS 11.0, *)) {
+    UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
+    webviewFrame = CGRectMake(0,
+                              60 + window.safeAreaInsets.top,
+                              self.bounds.size.width,
+                              self.bounds.size.height - 100 - window.safeAreaInsets.top - window.safeAreaInsets.bottom);
   } else {
-    webviewFrame = CGRectMake(0, 105, self.bounds.size.width, self.bounds.size.height - 185);   //iPhone X
+    webviewFrame = CGRectMake(0, 60, self.bounds.size.width, self.bounds.size.height - 100);
   }
+  
   self.webView = [[WKWebView alloc] initWithFrame:webviewFrame];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
