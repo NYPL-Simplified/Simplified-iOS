@@ -349,8 +349,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)didReceiveMemoryWarning
 {
-  [super didReceiveMemoryWarning];
   [[NYPLBookRegistry sharedRegistry] save];
+  [super didReceiveMemoryWarning];
 }
 
 -(void)didMoveToParentViewController:(UIViewController *)parent {
