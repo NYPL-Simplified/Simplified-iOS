@@ -816,7 +816,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         UINavigationController *mainNavVC = [helpStoryboard instantiateInitialViewController];
         UIViewController *firstVC = mainNavVC.viewControllers.firstObject;
         firstVC.navigationItem.leftBarButtonItem = nil;
-        [self.navigationController pushViewController:firstVC animated:true];
+        [self.navigationController pushViewController:firstVC animated:YES];
 
       } else {
         [[HSHelpStack instance] showHelp:self];
@@ -828,7 +828,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                       initWithURL:[self.account getLicenseURL:URLTypeAcknowledgements]
                                       title:NSLocalizedString(@"About", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
-      [self.navigationController pushViewController:vc animated:true];
+      [self.navigationController pushViewController:vc animated:YES];
       break;
     }
     case CellKindPrivacyPolicy: {
@@ -836,7 +836,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                       initWithURL:[self.account getLicenseURL:URLTypePrivacyPolicy]
                                       title:NSLocalizedString(@"PrivacyPolicy", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
-      [self.navigationController pushViewController:vc animated:true];
+      [self.navigationController pushViewController:vc animated:YES];
       break;
     }
     case CellKindContentLicense: {
@@ -844,7 +844,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                       initWithURL:[self.account getLicenseURL:URLTypeContentLicenses]
                                       title:NSLocalizedString(@"ContentLicenses", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
-      [self.navigationController pushViewController:vc animated:true];
+      [self.navigationController pushViewController:vc animated:YES];
       break;
     }
   }
@@ -999,13 +999,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-
-
-      //GODO Maybe this should wait for the server response (if we haven't established that the user has already specified their intent..
-      //what would happen if you tried to turn this "on" while not having an internet connection??.. actually i guess it's
-      //always okay if this is a local switch
-
-
       self.syncSwitch.on = self.account.syncPermissionGranted;
       cell.accessoryView = self.syncSwitch;
       [self.syncSwitch addTarget:self action:@selector(syncSwitchChanged:) forControlEvents:UIControlEventValueChanged];
@@ -1013,9 +1006,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"SettingsBookmarkSyncTitle",
                                               @"Title for switch to turn on or off syncing.");
-
-      self.syncSwitch.enabled = false;
-
       return cell;
     }
     case CellReportIssue: {
@@ -1132,8 +1122,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 -(NSString *)tableView:(__unused UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
   if (section == 1 && [self syncButtonShouldBeVisible]) {
-    return NSLocalizedString(@"SettingsAccountSyncSubTitle",
-                             @"Save your bookmarks across all your devices.");
+    return NSLocalizedString(@"SettingsAccountSyncFooterTitle",
+                             @"Explain to the user they can save their bookmarks in the cloud across all their devices.");
   }
   return nil;
 }
@@ -1423,27 +1413,6 @@ replacementString:(NSString *)string
   }
 }
 
-//GODO MAKE SURE WE'RE NOT CHECKING ONE ANNOTATION SERVER FOR ALL LIBRARIES
-
-
-- (void)checkSyncPermissionForCurrentPatron
-{
-  if (self.permissionCheckIsInProgress) {
-    NYPLLOG(@"Permission Request already in progress for Bookmark Syncing. Suppressing UIAlertController.");
-    return;
-  }
-
-  self.permissionCheckIsInProgress = YES;
-  self.syncSwitch.enabled = false;
-
-  [NYPLAnnotations checkServerSyncSettingWithUserAlertWithCompletion:^(BOOL enableSync) {
-    self.account.syncPermissionGranted = enableSync;
-    self.syncSwitch.on = enableSync;
-    self.syncSwitch.enabled = YES;
-    self.permissionCheckIsInProgress = NO;
-  }];
-}
-
 - (void)setActivityTitleWithText:(NSString *)text
 {
   UIActivityIndicatorView *const activityIndicatorView =
@@ -1490,30 +1459,6 @@ replacementString:(NSString *)string
   [self.navigationController presentViewController:navVC animated:YES completion:nil];
 }
 
-- (void)syncSwitchChanged:(UISwitch*)sender
-{
-  // When switching on, attempt to enable on the server.
-  // When switching off, just ignore the server's annotations.
-  if (sender.on) {
-    self.syncSwitch.enabled = NO;
-    [NYPLAnnotations updateServerSyncSettingToEnabled:YES completion:^(BOOL success) {
-      if (success) {
-        self.account.syncPermissionGranted = YES;
-        self.syncSwitch.on = YES;
-      } else {
-        //GODO display error turning on sync
-        //error to the user that it could not be activated at this time
-        self.account.syncPermissionGranted = NO;
-        self.syncSwitch.on = NO;
-      }
-      self.syncSwitch.enabled = YES;
-    }];
-  } else {
-    self.account.syncPermissionGranted = NO;
-    self.syncSwitch.on = NO;
-  }
-}
-
 - (void)confirmAgeChange:(void (^)(BOOL))completion
 {
   NYPLAlertController *alertCont = [NYPLAlertController
@@ -1555,6 +1500,50 @@ replacementString:(NSString *)string
   return ([NYPLConfiguration cardCreationEnabled] &&
           (self.account.supportsCardCreator || self.account.cardCreatorUrl) &&
           ![[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
+}
+
+- (void)syncSwitchChanged:(UISwitch*)sender
+{
+  // When switching on, attempt to enable on the server.
+  // When switching off, just ignore the server's annotations.
+  if (sender.on) {
+    self.syncSwitch.enabled = NO;
+    [NYPLAnnotations updateServerSyncSettingToEnabled:YES completion:^(BOOL success) {
+      if (success) {
+        self.account.syncPermissionGranted = YES;
+        self.syncSwitch.on = YES;
+      } else {
+        [NYPLAnnotations presentSyncSettingChangeError];
+        self.account.syncPermissionGranted = NO;
+        self.syncSwitch.on = NO;
+      }
+      self.syncSwitch.enabled = YES;
+    }];
+  } else {
+    self.account.syncPermissionGranted = NO;
+    self.syncSwitch.on = NO;
+  }
+}
+
+//GODO MAKE SURE WE'RE NOT CHECKING ONE ANNOTATION SERVER FOR ALL LIBRARIES
+
+- (void)checkSyncPermissionForCurrentPatron
+{
+  if (self.permissionCheckIsInProgress ||
+      [[NYPLSettings sharedSettings] userHasSeenFirstTimeSyncMessage]) {
+    NYPLLOG(@"Skipping sync setting network request.");
+    return;
+  }
+
+  self.permissionCheckIsInProgress = YES;
+  self.syncSwitch.enabled = NO;
+
+  [NYPLAnnotations checkServerSyncSettingWithUserAlertWithCompletion:^(BOOL enableSync) {
+    self.account.syncPermissionGranted = enableSync;
+    self.syncSwitch.on = enableSync;
+    self.syncSwitch.enabled = YES;
+    self.permissionCheckIsInProgress = NO;
+  }];
 }
 
 - (BOOL)syncButtonShouldBeVisible

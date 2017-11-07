@@ -5,6 +5,57 @@ import UIKit
 
 final class NYPLAnnotations: NSObject {
 
+  // MARK: - Sync Settings
+
+  // Query Server: If it's the user's first time, present an Alert Controller.
+  // Attempt to update server if user selects YES to enable.
+  // Notify the caller whether or not the device can use sync and update any logic/UI.
+  // A client will not turn OFF sync server-side until a better UX is determined.
+
+  //GODO you don't want the setting to appear "off" every time you go to settings without an internet connection
+
+  class func checkServerSyncSettingWithUserAlert(
+    completion: @escaping (_ enableSync: Bool) -> ()) {
+
+    self.requestServerSyncPermissionStatus { (initialized, syncIsPermitted) in
+
+      if (initialized && syncIsPermitted) {
+        completion(true)
+        NYPLSettings.shared().userHasSeenFirstTimeSyncMessage = true;
+        Log.debug(#file, "Sync has already been enabled on the server. Enable here as well.")
+        return
+      } else if (!initialized) {
+        Log.debug(#file, "Sync has never been initialized for the patron. Showing UIAlertController flow.")
+        let title = "SimplyE Sync"
+        let message = "Enable sync to save your bookmarks across all your devices.\n\nYou can change this any time in Settings."
+        let alertController = NYPLAlertController.init(title: title, message: message, preferredStyle: .alert)
+        let notNowAction = UIAlertAction.init(title: "Not Now", style: .default, handler: { action in
+          completion(false)
+          NYPLSettings.shared().userHasSeenFirstTimeSyncMessage = true;
+        })
+        let enableSyncAction = UIAlertAction.init(title: "Enable Sync", style: .default, handler: { action in
+          self.updateServerSyncSetting(toEnabled: true) { success in
+            if success {
+              completion(true)
+            } else {
+              self.presentSyncSettingChangeError()
+              completion(false)
+            }
+            NYPLSettings.shared().userHasSeenFirstTimeSyncMessage = true;
+          }
+        })
+        alertController.addAction(notNowAction)
+        alertController.addAction(enableSyncAction)
+        if #available(iOS 9.0, *) {
+          alertController.preferredAction = enableSyncAction
+        }
+        alertController.present(fromViewControllerOrNil: nil, animated: true, completion: nil)
+      } else {
+        completion(false)
+      }
+    }
+  }
+
   // 'initialized' == true if the value of 'syncIsPermitted' has ever been set on the server
   class func requestServerSyncPermissionStatus(completionHandler: @escaping (_ initialized: Bool, _ syncIsPermitted: Bool) -> ()) {
 
@@ -114,6 +165,16 @@ final class NYPLAnnotations: NSObject {
     }
     task.resume()
   }
+
+  class func presentSyncSettingChangeError() {
+    let title = NSLocalizedString("Error Turning On Sync", comment: "")
+    let message = NSLocalizedString("There was a problem contacting the server.\nPlease make sure you are connected to the internet, or try again later.", comment: "")
+    let alert = NYPLAlertController.init(title: title, message: message, preferredStyle: .alert)
+    alert.addAction(UIAlertAction.init(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+    alert.present(fromViewControllerOrNil: nil, animated: true, completion: nil)
+  }
+
+  // MARK: - Reading Position
   
   class func syncLastRead(_ book:NYPLBook,
                           completionHandler: @escaping (_ responseObject: [String:String]?) -> ()) {
@@ -210,7 +271,7 @@ final class NYPLAnnotations: NSObject {
       
       if let annotationsUrl = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/") {
         postAnnotationJSONRequest(book, annotationsUrl, parameters, completionHandler: { success in
-          Log.debug(#file, "Successfully posted last reading position.")
+          //Post has finished.
         })
       } else {
         Log.error(#file, "MainFeedURL does not exist")
@@ -249,7 +310,7 @@ final class NYPLAnnotations: NSObject {
       }
 
       if statusCode == 200 {
-        Log.debug(#file, "Posted Last-Read \(((parameters["target"] as! [String:Any])["selector"] as! [String:Any])["value"] as! String)")
+        Log.debug(#file, "Marked Reading Position To Server: \(((parameters["target"] as! [String:Any])["selector"] as! [String:Any])["value"] as! String)")
         completionHandler(true)
       } else {
         Log.error(#file, "Server Response Error. Status Code: \(statusCode)")
@@ -258,6 +319,8 @@ final class NYPLAnnotations: NSObject {
     }
     task.resume()
   }
+
+  // MARK: - Bookmarks
 
   //GODO need to test this method
   class func getBookmark(_ book:NYPLBook,
@@ -452,6 +515,7 @@ final class NYPLAnnotations: NSObject {
     task.resume()
   }
 
+  // MARK: -
   
   private class func addToOfflineQueue(_ book: NYPLBook?, _ url: URL, _ parameters: [String:Any]) {
     let libraryID = AccountsManager.shared.currentAccount.id
@@ -480,53 +544,6 @@ final class NYPLAnnotations: NSObject {
     }
     return ["Authorization" : "",
             "Content-Type" : "application/json"]
-  }
-
-  // Query Server: If it's the user's first time, present an Alert Controller.
-  // Attempt to update server if user selects YES to enable.
-  // Notify the caller whether or not the device can use sync and update any logic/UI.
-  // A client will not turn OFF sync server-side until a better UX is determined.
-
-
-  //GODO you don't want the setting to appear "off" every time you go to settings without an internet connection
-
-  class func checkServerSyncSettingWithUserAlert(
-    completion: @escaping (_ enableSync: Bool) -> ()) {
-
-    self.requestServerSyncPermissionStatus { (initialized, syncIsPermitted) in
-
-      if (initialized && syncIsPermitted) {
-        completion(true)
-        Log.debug(#file, "Sync has already been enabled on the server. Enable here as well.")
-        return
-      } else if (!initialized) {
-        Log.debug(#file, "Sync has never been initialized for the patron. Showing UIAlertController flow.")
-        let title = "SimplyE Sync"
-        let message = "Enable sync to save your bookmarks across all your devices.\n\nYou can change this any time in Settings."
-        let alertController = NYPLAlertController.init(title: title, message: message, preferredStyle: .alert)
-        let notNowAction = UIAlertAction.init(title: "Not Now", style: .default, handler: { action in
-          completion(false)
-        })
-        let enableSyncAction = UIAlertAction.init(title: "Enable Sync", style: .default, handler: { action in
-          self.updateServerSyncSetting(toEnabled: true) { success in
-            if success {
-              completion(true)
-            } else {
-              //error to the user that it could not be activated at this time
-              completion(false)
-            }
-          }
-        })
-        alertController.addAction(notNowAction)
-        alertController.addAction(enableSyncAction)
-        if #available(iOS 9.0, *) {
-          alertController.preferredAction = enableSyncAction
-        }
-        alertController.present(fromViewControllerOrNil: nil, animated: true, completion: nil)
-      } else {
-        completion(false)
-      }
-    }
   }
   
 }

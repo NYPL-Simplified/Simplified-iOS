@@ -187,7 +187,7 @@
 "SettingsGlobalSyncTitle" = "Sync Accross Devices";
 "SettingsGlobalSync" =  "Automatically update your bookmarks and last reading position across all of your devices.";
 "SettingsIndividualSync" =  "Choose if you would like to update bookmarks or last reading position accross all of your devices.";
-"SettingsAccountSyncSubTitle" = "Automatically update your bookmarks and last reading position across all of your devices.";
+"SettingsAccountSyncFooterTitle" = "Save your reading position and bookmarks across all your devices.";
 "SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";
 "SettingsAccountViewControllerCannotLogOutTitle" =
   "Logout Failed";

@@ -20,6 +20,8 @@ static NSString *const legacyUserAcceptedEULAKey = @"NYPLSettingsUserAcceptedEUL
 
 static NSString *const userPresentedAgeCheckKey = @"NYPLUserPresentedAgeCheckKey";
 
+static NSString *const userSeenFirstTimeSyncMessageKey = @"userSeenFirstTimeSyncMessageKey";
+
 static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCurrentCardApplicationSerialized";
 
 static NSString *const settingsLibraryAccountsKey = @"NYPLSettingsLibraryAccountsKey";
@@ -92,10 +94,6 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 {
   return [[NSUserDefaults standardUserDefaults] boolForKey:legacyUserAcceptedEULAKey];
 }
-//- (BOOL) settingsSynchronizeAnnotations
-//{
-//  return [[NSUserDefaults standardUserDefaults] objectForKey:settingsSynchronizeAnnotationsKey];
-//}
 
 - (BOOL) userHasSeenWelcomeScreen
 {
@@ -107,22 +105,9 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] boolForKey:userPresentedAgeCheckKey];
 }
 
-- (NSMutableArray *) offlineQueue
+- (BOOL) userHasSeenFirstTimeSyncMessage
 {
-  if ([[NSUserDefaults standardUserDefaults] arrayForKey:settingsOfflineQueueKey] == nil) {
-    return [[NSMutableArray alloc] init];
-  } else {
-    return [[NSUserDefaults standardUserDefaults] arrayForKey:settingsOfflineQueueKey].mutableCopy;
-  }
-}
-
-- (NSMutableArray *) annotationsOfflineQueue
-{
-  if ([[NSUserDefaults standardUserDefaults] arrayForKey:settingsAnnotationsOfflineQueueKey] == nil) {
-    return [[NSMutableArray alloc] init];
-  } else {
-    return [[NSUserDefaults standardUserDefaults] arrayForKey:settingsAnnotationsOfflineQueueKey].mutableCopy;
-  }
+  return [[NSUserDefaults standardUserDefaults] boolForKey:userSeenFirstTimeSyncMessageKey];
 }
 
 - (NSArray *) settingsAccountsList
@@ -165,6 +150,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 - (void)setUserPresentedAgeCheck:(BOOL)userPresentedAgeCheck
 {
   [[NSUserDefaults standardUserDefaults] setBool:userPresentedAgeCheck forKey:userPresentedAgeCheckKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setUserHasSeenFirstTimeSyncMessage:(BOOL)seenSyncMesssage
+{
+  [[NSUserDefaults standardUserDefaults] setBool:seenSyncMesssage forKey:userSeenFirstTimeSyncMessageKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -234,29 +225,10 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
    object:self];
 }
 
-//- (void)setSettingsSynchronizeAnnotations:(BOOL)synchronizeSettings
-//{
-//  [[NSUserDefaults standardUserDefaults] setBool:synchronizeSettings forKey:settingsSynchronizeAnnotationsKey];
-//  [[NSUserDefaults standardUserDefaults] synchronize];
-//}
-
 - (void)setAcceptedEULABeforeMultiLibrary:(BOOL)acceptedEULA
 {
   [[NSUserDefaults standardUserDefaults] setBool:acceptedEULA forKey:legacyUserAcceptedEULAKey];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
-
-- (void)setOfflineQueue:(NSMutableArray *)queue
-{
-  [[NSUserDefaults standardUserDefaults] setObject:queue forKey:settingsOfflineQueueKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-- (void)setAnnotationsOfflineQueue:(NSMutableArray *)queue
-{
-  [[NSUserDefaults standardUserDefaults] setObject:queue forKey:settingsAnnotationsOfflineQueueKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
 
 @end
