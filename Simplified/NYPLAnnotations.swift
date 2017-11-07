@@ -1,72 +1,82 @@
 import UIKit
 
-//  NYPLAnnotations.swift
-//  GODO Add class description
+///  Handling requests and certain actions related to:
+///  OPDS Annotations saving & syncing
+
 final class NYPLAnnotations: NSObject {
 
+  // 'initialized' == true if the value of 'syncIsPermitted' has ever been set on the server
+  class func requestServerSyncPermissionStatus(completionHandler: @escaping (_ initialized: Bool, _ syncIsPermitted: Bool) -> ()) {
 
-  // THis first method may be completely unneeded if we're just letting a user pick their preference on each device.
-  class func getPermissionStatusFromServer(completionHandler: @escaping (_ initialized: Bool, _ value:Bool) -> ()) {
-
-    //GODO AccountsManager.shared.currentAccount.supportsSimplyESync - should it be Current Account or should it be whatever account you're in the Settings Detail for?
     if (NYPLAccount.shared().hasBarcodeAndPIN() && AccountsManager.shared.currentAccount.supportsSimplyESync) {
 
       guard let annotationSettingsUrl = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("patrons/me/") else {
         Log.error(#file, "Failed to create Annotations URL. Abandoning attempt to retrieve sync setting.")
         return
       }
-      var request = URLRequest.init(url: annotationSettingsUrl, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
+      //GODO need to add error messages for users and logging
+      var request = URLRequest.init(url: annotationSettingsUrl,
+                                    cachePolicy: .reloadIgnoringLocalCacheData,
+                                    timeoutInterval: 15)
       request.httpMethod = "GET"
       setDefaultAnnotationHeaders(forRequest: &request)
 
       let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
 
-        if let error = error as NSError? {
-          Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
-          return
-        }
-        guard let data = data,
-        let response = (response as? HTTPURLResponse) else {
-          Log.error(#file, "No Data or No Server Response present after request.")
-          return
-        }
+        DispatchQueue.main.async {
 
-        if response.statusCode == 200 {
-          if let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any],
-          let settings = json["settings"] as? [String:Any],
-          let syncSetting = settings["simplified:synchronize_annotations"] {
-            if syncSetting is NSNull {
-              completionHandler(false, false)
+          if let error = error as NSError? {
+            Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+            return
+          }
+          guard let data = data,
+          let response = (response as? HTTPURLResponse) else {
+            Log.error(#file, "No Data or No Server Response present after request.")
+            return
+          }
+
+          if response.statusCode == 200 {
+            if let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any],
+            let settings = json["settings"] as? [String:Any],
+            let syncSetting = settings["simplified:synchronize_annotations"] {
+              if syncSetting is NSNull {
+                completionHandler(false, false)
+              } else {
+                completionHandler(true, syncSetting as? Bool ?? false)
+              }
             } else {
-              completionHandler(true, syncSetting as? Bool ?? false)
+              Log.error(#file, "Error parsing JSON or finding sync-setting key/value.")
             }
           } else {
-            Log.error(#file, "Error parsing JSON or finding sync-setting key/value.")
+            Log.error(#file, "Server response returned error code: \(response.statusCode))")
           }
-        } else {
-          Log.error(#file, "Server response returned error code: \(response.statusCode))")
         }
       }
       dataTask.resume()
     }
   }
   
-  class func updateSyncSettings(_ synchronize_annotations:Bool) {
+  //GODO Consider some method to "reset" initialized back to NSNull
+  
+  class func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->()) {
     if (NYPLAccount.shared().hasBarcodeAndPIN() &&
       AccountsManager.shared.currentAccount.supportsSimplyESync) {
-      guard let annotationSettingsUrl = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("patrons/me/") else {
+      guard let patronAnnotationSettingUrl = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("patrons/me/") else {
         Log.error(#file, "Could not create Annotations URL from Main Feed URL. Abandoning attempt to update sync setting.")
+        completion(false)
         return
       }
-      let parameters = ["settings": ["simplified:synchronize_annotations": synchronize_annotations]] as [String : Any]
-      putSyncSettingsJSONRequest(annotationSettingsUrl, parameters)
+      let parameters = ["settings": ["simplified:synchronize_annotations": enabled]] as [String : Any]
+      putSyncSettingsJSONRequest(patronAnnotationSettingUrl, parameters, completion)
     }
   }
   
   private class func putSyncSettingsJSONRequest(_ url: URL,
-                                                _ parameters: [String:Any]) {
+                                                _ parameters: [String:Any],
+                                                _ completion: @escaping (Bool)->()) {
     guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted]) else {
       Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
+      completion(false)
       return
     }
     
@@ -78,27 +88,28 @@ final class NYPLAnnotations: NSObject {
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
 
-      if let error = error as NSError? {
-        Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
-        if NetworkQueue.StatusCodes.contains(error.code) {
-          self.addToOfflineQueue(nil, url, parameters)
-        }
-        return
-      }
-      guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
-        Log.error(#file, "No response received from server")
-        return
-      }
+      DispatchQueue.main.async {
 
-      if statusCode == 200 {
-        //          {
-        //            "simplified:authorization_expires": "2020-03-16T00:00:00Z",
-        //            "settings": {
-        //              "simplified:synchronize_annotations": true
-        //            }
-        //          }
-      } else {
-        Log.error(#file, "Server Response Error. Status Code: \(statusCode)")
+        if let error = error as NSError? {
+          Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+          if NetworkQueue.StatusCodes.contains(error.code) {
+            self.addToOfflineQueue(nil, url, parameters)
+          }
+          completion(false)
+          return
+        }
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
+          Log.error(#file, "No response received from server")
+          completion(false)
+          return
+        }
+
+        if statusCode == 200 {
+          completion(true)
+        } else {
+          Log.error(#file, "Server Response Error. Status Code: \(statusCode)")
+          completion(false)
+        }
       }
     }
     task.resume()
@@ -177,7 +188,7 @@ final class NYPLAnnotations: NSObject {
   class func postLastRead(_ book:NYPLBook,
                           cfi:NSString) {
 
-    //GODO need to update the conditionals
+    //GODO probably need to update the conditionals
     if (NYPLAccount.shared().hasBarcodeAndPIN() && AccountsManager.shared.currentAccount.supportsSimplyESync &&
       AccountsManager.shared.currentAccount.syncPermissionGranted) {
       let parameters = [
@@ -360,9 +371,7 @@ final class NYPLAnnotations: NSObject {
           return nil
       }
 
-      //GODO which parameters are optional and which are required?
-      // for now i'm assuming that any of hte parameters that were being forced unwrapped are required
-      //can change the factory method and let those optionals percolate through instead of all this nonsense here
+      //GODO any of the previous '!' var's I'm assuming were not optional
       let bookmark = NYPLReaderBookmarkElement(annotationId: id,
                                                contentCFI: serverCfiJson,
                                                idref: serverIdrefJson,
@@ -472,4 +481,52 @@ final class NYPLAnnotations: NSObject {
     return ["Authorization" : "",
             "Content-Type" : "application/json"]
   }
+
+  // Query Server: If it's the user's first time, present an Alert Controller.
+  // Attempt to update server if user selects YES to enable.
+  // Notify the caller whether or not the device can use sync and update any logic/UI.
+  // A client will not turn OFF sync server-side until a better UX is determined.
+
+
+  //GODO you don't want the setting to appear "off" every time you go to settings without an internet connection
+
+  class func checkServerSyncSettingWithUserAlert(
+    completion: @escaping (_ enableSync: Bool) -> ()) {
+
+    self.requestServerSyncPermissionStatus { (initialized, syncIsPermitted) in
+
+      if (initialized && syncIsPermitted) {
+        completion(true)
+        Log.debug(#file, "Sync has already been enabled on the server. Enable here as well.")
+        return
+      } else if (!initialized) {
+        Log.debug(#file, "Sync has never been initialized for the patron. Showing UIAlertController flow.")
+        let title = "SimplyE Sync"
+        let message = "Enable sync to save your bookmarks across all your devices.\n\nYou can change this any time in Settings."
+        let alertController = NYPLAlertController.init(title: title, message: message, preferredStyle: .alert)
+        let notNowAction = UIAlertAction.init(title: "Not Now", style: .default, handler: { action in
+          completion(false)
+        })
+        let enableSyncAction = UIAlertAction.init(title: "Enable Sync", style: .default, handler: { action in
+          self.updateServerSyncSetting(toEnabled: true) { success in
+            if success {
+              completion(true)
+            } else {
+              //error to the user that it could not be activated at this time
+              completion(false)
+            }
+          }
+        })
+        alertController.addAction(notNowAction)
+        alertController.addAction(enableSyncAction)
+        if #available(iOS 9.0, *) {
+          alertController.preferredAction = enableSyncAction
+        }
+        alertController.present(fromViewControllerOrNil: nil, animated: true, completion: nil)
+      } else {
+        completion(false)
+      }
+    }
+  }
+  
 }

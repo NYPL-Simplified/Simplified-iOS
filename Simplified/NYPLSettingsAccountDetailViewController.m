@@ -74,7 +74,8 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITableViewCell *ageCheckCell;
 
-@property (nonatomic) UISwitch* switchView;
+@property (nonatomic) UISwitch *syncSwitch;
+@property (nonatomic) BOOL permissionCheckIsInProgress;
 
 @end
 
@@ -194,7 +195,7 @@ CGFloat const verticalMarginPadding = 2.0;
   [self setupTableData];
   
 //  [self checkSyncPermissionForCurrentPatron];
-  self.switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+  self.syncSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
 }
 
 - (void)setupTableData
@@ -214,8 +215,10 @@ CGFloat const verticalMarginPadding = 2.0;
     [section0 insertObject:@(CellKindBarcodeImage) atIndex: 0];
   }
   NSMutableArray *section1 = [[NSMutableArray alloc] init];
-  if (self.account.supportsSimplyESync && [self syncButtonShouldBeVisible]) {
+  if ([self syncButtonShouldBeVisible]) {
     [section1 addObject:@(CellKindSyncButton)];
+    //GODO
+    [self checkSyncPermissionForCurrentPatron];
   }
   NSMutableArray *section2 = [[NSMutableArray alloc] init];
   if ([self.account getLicenseURL:URLTypePrivacyPolicy]) {
@@ -591,15 +594,9 @@ CGFloat const verticalMarginPadding = 2.0;
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
-      //GODO check if this is correct
-      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//        [self checkSyncPermissionForCurrentPatron];
-      }];
-      //
-      
       [[NYPLAccount sharedAccount:self.accountType] setBarcode:self.usernameTextField.text
                                                            PIN:self.PINTextField.text];
-      
+
       if(self.accountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
         void (^handler)() = self.completionHandler;
         self.completionHandler = nil;
@@ -1002,18 +999,23 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      if (self.account.syncPermissionGranted) {
-        [self.switchView setOn:YES];
-      } else {
-        [self.switchView setOn:NO];
-      }
-      cell.accessoryView = self.switchView;
-      [self.switchView addTarget:self action:@selector(syncSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-      [cell.contentView addSubview:self.switchView];
+
+
+      //GODO Maybe this should wait for the server response (if we haven't established that the user has already specified their intent..
+      //what would happen if you tried to turn this "on" while not having an internet connection??.. actually i guess it's
+      //always okay if this is a local switch
+
+
+      self.syncSwitch.on = self.account.syncPermissionGranted;
+      cell.accessoryView = self.syncSwitch;
+      [self.syncSwitch addTarget:self action:@selector(syncSwitchChanged:) forControlEvents:UIControlEventValueChanged];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-      cell.textLabel.text = NSLocalizedString(@"SettingsAccountSyncTitle",
+      cell.textLabel.text = NSLocalizedString(@"SettingsBookmarkSyncTitle",
                                               @"Title for switch to turn on or off syncing.");
+
+      self.syncSwitch.enabled = false;
+
       return cell;
     }
     case CellReportIssue: {
@@ -1129,9 +1131,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 }
 -(NSString *)tableView:(__unused UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
-  if (section == 1 && (self.account.supportsSimplyESync && [self syncButtonShouldBeVisible])) {
+  if (section == 1 && [self syncButtonShouldBeVisible]) {
     return NSLocalizedString(@"SettingsAccountSyncSubTitle",
-                             @"Disclaimer for switch to turn on or off syncing.");
+                             @"Save your bookmarks across all your devices.");
   }
   return nil;
 }
@@ -1421,40 +1423,27 @@ replacementString:(NSString *)string
   }
 }
 
-//- (void)checkSyncPermissionForCurrentPatron
-//{
-//  [NYPLAnnotations permissionStatusForCurrentPatronWithCompletionHandler:^(BOOL initialized, BOOL __unused value) {
-//
-//    if (!initialized)
-//    {
-//      NSString *title = @"SimplyE Sync";
-//      NSString *message = @"Save your bookmarks and last reading position across all of your devices.";
-//
-//      NYPLAlertController *alertController = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-//
-//      [alertController addAction:[UIAlertAction actionWithTitle:@"Not Now" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
-//        //GODO not sure what she means by this comment
-//        // add server update here as well
-//        [NYPLAnnotations updateSyncSettings:false];
-//        //GODO why is this new property not compiling yet?
-//        self.account.syncPermissionGranted = NO;
-//        self.switchView.on = self.account.syncPermissionGranted;
-//      }]];
-//
-//      [alertController addAction:[UIAlertAction actionWithTitle:@"Enable Sync" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
-//        //GODO not sure what she means by this comment
-//        // add server update here as well
-//        [NYPLAnnotations updateSyncSettings:true];
-//
-//        self.account.syncPermissionGranted = YES;
-//        self.switchView.on = self.account.syncPermissionGranted;
-//
-//      }]];
-//      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController
-//                                                                      animated:YES completion:nil];
-//    }
-//  }];
-//}
+//GODO MAKE SURE WE'RE NOT CHECKING ONE ANNOTATION SERVER FOR ALL LIBRARIES
+
+
+- (void)checkSyncPermissionForCurrentPatron
+{
+  if (self.permissionCheckIsInProgress) {
+    NYPLLOG(@"Permission Request already in progress for Bookmark Syncing. Suppressing UIAlertController.");
+    return;
+  }
+
+  self.permissionCheckIsInProgress = YES;
+  self.syncSwitch.enabled = false;
+
+  [NYPLAnnotations checkServerSyncSettingWithUserAlertWithCompletion:^(BOOL enableSync) {
+    self.account.syncPermissionGranted = enableSync;
+    self.syncSwitch.on = enableSync;
+    self.syncSwitch.enabled = YES;
+    self.permissionCheckIsInProgress = NO;
+  }];
+}
+
 - (void)setActivityTitleWithText:(NSString *)text
 {
   UIActivityIndicatorView *const activityIndicatorView =
@@ -1503,87 +1492,25 @@ replacementString:(NSString *)string
 
 - (void)syncSwitchChanged:(UISwitch*)sender
 {
-  
-  NSString *title, *message;
-  
-  if (self.account.syncPermissionGranted)
-  {
-    title = @"Disable Sync?";
-    message = @"Do not synchronize your bookmarks and last reading position across all of your devices.";
-  }
-  else
-  {
-    title = @"Enable Sync?";
-    message = @"Synchronize your bookmarks and last reading position across all of your devices.";
-  }
-  
-  NYPLAlertController *alertController = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-  if (self.account.syncPermissionGranted)
-  {
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Disable This Device" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
-    
-      // add server update here as well
-      
-      if (sender.on) {
+  // When switching on, attempt to enable on the server.
+  // When switching off, just ignore the server's annotations.
+  if (sender.on) {
+    self.syncSwitch.enabled = NO;
+    [NYPLAnnotations updateServerSyncSettingToEnabled:YES completion:^(BOOL success) {
+      if (success) {
         self.account.syncPermissionGranted = YES;
+        self.syncSwitch.on = YES;
       } else {
+        //GODO display error turning on sync
+        //error to the user that it could not be activated at this time
         self.account.syncPermissionGranted = NO;
+        self.syncSwitch.on = NO;
       }
-      self.switchView.on = self.account.syncPermissionGranted;
-
-    }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Disable All Devices" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
-      
-      // add server update here as well
-      
-      [NYPLAnnotations updateSyncSettings:false];
-      if (sender.on) {
-        self.account.syncPermissionGranted = YES;
-        self.account.syncPermissionGranted = YES;
-      } else {
-        self.account.syncPermissionGranted = NO;
-        self.account.syncPermissionGranted = NO;
-      }
-      self.switchView.on = self.account.syncPermissionGranted;
-      
-    }]];
-  }
-  else
-  {
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Enable Sync" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
-      
-      // add server update here as well
-      
-      [NYPLAnnotations updateSyncSettings:true];
-      if (sender.on) {
-        self.account.syncPermissionGranted = YES;
-        self.account.syncPermissionGranted = YES;
-      } else {
-        self.account.syncPermissionGranted = NO;
-        self.account.syncPermissionGranted = NO;
-      }
-      self.switchView.on = self.account.syncPermissionGranted;
-      
-    }]];
-  }
-  
-  [alertController addAction:[UIAlertAction actionWithTitle:@"Not Now" style:UIAlertActionStyleCancel handler:^(__unused UIAlertAction * _Nonnull action) {
-
-    self.switchView.on = self.account.syncPermissionGranted;
-    
-  }]];
-  
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController
-                                                                  animated:YES completion:nil];
-}
-
-- (void)setAccountSwitchChanged:(id)sender
-{
-  UISwitch *switchControl = sender;
-  if (switchControl.on) {
-    [[AccountsManager sharedInstance] changeCurrentAccountWithIdentifier:self.accountType];
-    [self setupTableData];
-    [self.tableView reloadData];
+      self.syncSwitch.enabled = YES;
+    }];
+  } else {
+    self.account.syncPermissionGranted = NO;
+    self.syncSwitch.on = NO;
   }
 }
 
@@ -1632,8 +1559,8 @@ replacementString:(NSString *)string
 
 - (BOOL)syncButtonShouldBeVisible
 {
-  return ([self.account getLicenseURL:URLTypeAnnotations] &&
-          [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
+  return ((self.account.supportsSimplyESync) &&
+          ([self.account getLicenseURL:URLTypeAnnotations] && [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]));
 }
 
 - (void)didSelectCancel
