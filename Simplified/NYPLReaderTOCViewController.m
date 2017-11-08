@@ -5,6 +5,7 @@
 #import "NYPLReadium.h"
 #import <PureLayout/PureLayout.h>
 #import "NYPLReaderTOCViewController.h"
+#import "NYPLReadiumViewSyncManager.h"
 
 #import "NYPLReaderReadiumView.h"
 #import "SimplyE-Swift.h"
@@ -93,7 +94,7 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
 - (void)userDidRefresh:(UIRefreshControl *)refreshControl
 {
   NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
-  [rv syncBookmarksWithCompletionHandler:^(bool success, NSArray *bookmarks) {
+  [rv.syncManager syncBookmarksWithCompletion:^(BOOL success, NSArray *bookmarks) {
     
     if (success) {
       self.bookmarks = bookmarks.mutableCopy;

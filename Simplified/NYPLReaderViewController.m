@@ -361,7 +361,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   [self prepareBottomView];
   [self prepareHeaderFooterViews];
-  
+
+  //GODO why does this need to be here? And in this class?
+  //Right now it fires for any library as well (maybe that's okay though).
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncLastRead) name:UIApplicationWillEnterForegroundNotification object:nil];
   
 }
@@ -541,7 +543,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)syncLastRead
 {
-  [[NYPLReaderSettings sharedSettings].currentReaderReadiumView syncLastReadingPosition];
+  [[NYPLReaderSettings sharedSettings].currentReaderReadiumView syncAnnotations];
 }
 
 - (void)viewDidAppear:(BOOL)animated
