@@ -41,6 +41,7 @@
 @property (nonatomic) UILabel *bottomViewProgressLabel;
 @property (nonatomic) UIButton *largeTransparentAccessibilityButton;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic) int pagesProgressedSinceSave;
 
 @property (nonatomic) UIView *footerView;
 @property (nonatomic) UILabel *footerViewLabel;
@@ -101,7 +102,9 @@
   if(!bookIdentifier) {
     @throw NSInvalidArgumentException;
   }
-  
+
+  self.pagesProgressedSinceSave = 0;
+
   self.bookIdentifier = bookIdentifier;
   
   self.title = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
@@ -940,10 +943,12 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   if (rv.isPageTurning) {
     return;
   } else {
-    if (isRight)
+    if (isRight) {
       [rv openPageRight];
-    else
+    } else {
       [rv openPageLeft];
+    }
+    [self recordPageTurnForPeriodicSaving];
   }
 }
 
@@ -951,6 +956,18 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
 {
   if (self.renderedImageView.superview != nil && (self.renderedImageView.superview == self.rendererView.superview)) {
     [self.renderedImageView removeFromSuperview];
+  }
+}
+
+// FIXME: This can be removed when we've solved the touch-gesture crashing.
+// Until then, there is just too many users losing their page position to not necessitate
+// something to be saving the position more frequently while still in the book.
+-(void)recordPageTurnForPeriodicSaving
+{
+  self.pagesProgressedSinceSave++;
+  if (self.pagesProgressedSinceSave > 6) {
+    [[NYPLBookRegistry sharedRegistry] save];
+    self.pagesProgressedSinceSave = 0;
   }
 }
 
