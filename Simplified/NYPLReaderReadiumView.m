@@ -135,14 +135,26 @@ static void generateTOCElements(NSArray *const navigationElements,
                  specialPayloadAnnotationsCSS:nil
                  specialPayloadMathJaxJS:nil];
   
-  self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 60, self.bounds.size.width, self.bounds.size.height - 100)];
+  CGRect webviewFrame;
+  if (@available (iOS 11.0, *)) {
+    UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
+    webviewFrame = CGRectMake(0,
+                              60 + window.safeAreaInsets.top,
+                              self.bounds.size.width,
+                              self.bounds.size.height - 100 - window.safeAreaInsets.top - window.safeAreaInsets.bottom);
+  } else {
+    webviewFrame = CGRectMake(0, 60, self.bounds.size.width, self.bounds.size.height - 100);
+  }
+  
+  self.webView = [[WKWebView alloc] initWithFrame:webviewFrame];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
+  
   self.webView.navigationDelegate = self;
   self.webView.UIDelegate = self;
   self.webView.scrollView.bounces = NO;
-  // Prevent content from shifting when toggling the status bar.
   if (@available(iOS 11, *)) {
+    // Prevent content from shifting when toggling the status bar.
     self.webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
   }
   self.webView.alpha = 0.0;
