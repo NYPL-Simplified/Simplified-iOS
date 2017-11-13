@@ -11,13 +11,24 @@ final class NYPLAnnotations: NSObject {
   // Attempt to update server if user selects YES to enable.
   // Notify the caller whether or not the device can use sync and update any logic/UI.
   // A client will not turn OFF sync server-side until a better UX is determined.
+  
+  // One byproduct of this, every time a user signs in fresh, it will default that
+  // client sync setting back to on until they disable it completely from the server.
+  
+  // userHasSeenFirstTimeSyncMessage is how we know if a user explicitly chose "no"
+  
+  //GODO still need to check the logic of this method...
 
-  //GODO you don't want the setting to appear "off" every time you go to settings without an internet connection
+  class func requestServerSyncSettingWithUserAlert(
+    _ completion: @escaping (_ enableSync: Bool) -> ()) {
+    
+    if !accountSatisfiesSyncConditions() ||
+      NYPLSettings.shared().userHasSeenFirstTimeSyncMessage == true {
+      Log.debug(#file, "Account does not satisfy conditions for sync request.")
+      return
+    }
 
-  class func checkServerSyncSettingWithUserAlert(
-    completion: @escaping (_ enableSync: Bool) -> ()) {
-
-    self.requestServerSyncPermissionStatus { (initialized, syncIsPermitted) in
+    self.permissionUrlRequest { (initialized, syncIsPermitted) in
 
       if (initialized && syncIsPermitted) {
         completion(true)
@@ -27,7 +38,7 @@ final class NYPLAnnotations: NSObject {
       } else if (!initialized) {
         Log.debug(#file, "Sync has never been initialized for the patron. Showing UIAlertController flow.")
         let title = "SimplyE Sync"
-        let message = "Enable sync to save your bookmarks across all your devices.\n\nYou can change this any time in Settings."
+        let message = "Enable sync to save your reading position and bookmarks to your other devices.\n\nYou can change this any time in Settings."
         let alertController = NYPLAlertController.init(title: title, message: message, preferredStyle: .alert)
         let notNowAction = UIAlertAction.init(title: "Not Now", style: .default, handler: { action in
           completion(false)
@@ -38,7 +49,7 @@ final class NYPLAnnotations: NSObject {
             if success {
               completion(true)
             } else {
-              self.presentSyncSettingChangeError()
+              self.handleSyncSettingError()
               completion(false)
             }
             NYPLSettings.shared().userHasSeenFirstTimeSyncMessage = true;
@@ -55,9 +66,22 @@ final class NYPLAnnotations: NSObject {
       }
     }
   }
+  
+  class func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->()) {
+    if (NYPLAccount.shared().hasBarcodeAndPIN() &&
+      AccountsManager.shared.currentAccount.supportsSimplyESync) {
+      guard let patronAnnotationSettingUrl = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("patrons/me/") else {
+        Log.error(#file, "Could not create Annotations URL from Main Feed URL. Abandoning attempt to update sync setting.")
+        completion(false)
+        return
+      }
+      let parameters = ["settings": ["simplified:synchronize_annotations": enabled]] as [String : Any]
+      syncSettingUrlRequest(patronAnnotationSettingUrl, parameters, 10, completion)
+    }
+  }
 
   // 'initialized' == true if the value of 'syncIsPermitted' has ever been set on the server
-  class func requestServerSyncPermissionStatus(completionHandler: @escaping (_ initialized: Bool, _ syncIsPermitted: Bool) -> ()) {
+  private class func permissionUrlRequest(completionHandler: @escaping (_ initialized: Bool, _ syncIsPermitted: Bool) -> ()) {
 
     if (NYPLAccount.shared().hasBarcodeAndPIN() && AccountsManager.shared.currentAccount.supportsSimplyESync) {
 
@@ -104,27 +128,15 @@ final class NYPLAnnotations: NSObject {
         }
       }
       dataTask.resume()
+    } else {
+      Log.debug(#file, "Skipping sync check. Account does not meet requirements to support sync.")
     }
   }
   
-  //GODO Consider some method to "reset" initialized back to NSNull
-  
-  class func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->()) {
-    if (NYPLAccount.shared().hasBarcodeAndPIN() &&
-      AccountsManager.shared.currentAccount.supportsSimplyESync) {
-      guard let patronAnnotationSettingUrl = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("patrons/me/") else {
-        Log.error(#file, "Could not create Annotations URL from Main Feed URL. Abandoning attempt to update sync setting.")
-        completion(false)
-        return
-      }
-      let parameters = ["settings": ["simplified:synchronize_annotations": enabled]] as [String : Any]
-      putSyncSettingsJSONRequest(patronAnnotationSettingUrl, parameters, completion)
-    }
-  }
-  
-  private class func putSyncSettingsJSONRequest(_ url: URL,
-                                                _ parameters: [String:Any],
-                                                _ completion: @escaping (Bool)->()) {
+  private class func syncSettingUrlRequest(_ url: URL,
+                                           _ parameters: [String:Any],
+                                           _ timeout: Double?,
+                                           _ completion: @escaping (Bool)->()) {
     guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted]) else {
       Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
       completion(false)
@@ -136,6 +148,9 @@ final class NYPLAnnotations: NSObject {
     request.httpBody = jsonData
     setDefaultAnnotationHeaders(forRequest: &request)
     request.setValue("vnd.librarysimplified/user-profile+json", forHTTPHeaderField: "Content-Type")
+    if let timeout = timeout {
+      request.timeoutInterval = timeout
+    }
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
 
@@ -166,8 +181,8 @@ final class NYPLAnnotations: NSObject {
     task.resume()
   }
 
-  class func presentSyncSettingChangeError() {
-    let title = NSLocalizedString("Error Turning On Sync", comment: "")
+  class func handleSyncSettingError() {
+    let title = NSLocalizedString("Error Changing Sync Setting", comment: "")
     let message = NSLocalizedString("There was a problem contacting the server.\nPlease make sure you are connected to the internet, or try again later.", comment: "")
     let alert = NYPLAlertController.init(title: title, message: message, preferredStyle: .alert)
     alert.addAction(UIAlertAction.init(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
@@ -176,113 +191,120 @@ final class NYPLAnnotations: NSObject {
 
   // MARK: - Reading Position
   
-  class func syncLastRead(_ book:NYPLBook,
-                          completionHandler: @escaping (_ responseObject: [String:String]?) -> ()) {
+  class func syncReadingPosition(ofBook bookID: String?, toURL url:URL?,
+                                 completionHandler: @escaping (_ responseObject: [String:String]?) -> ()) {
     
-    if (NYPLAccount.shared().hasBarcodeAndPIN() && book.annotationsURL != nil  &&
-      AccountsManager.shared.currentAccount.supportsSimplyESync) {
+    guard let url = url, let bookID = bookID else {
+      Log.error(#file, "Required parameters are nil.")
+      return
+    }
+    
+    if (NYPLAccount.shared().hasBarcodeAndPIN() == false) ||
+      (AccountsManager.shared.currentAccount.supportsSimplyESync == false) {
+      Log.debug(#file, "Not signed in or acct does not support it.")
+      return
+    }
 
-      var request = URLRequest.init(url: book.annotationsURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
-      request.httpMethod = "GET"
-      setDefaultAnnotationHeaders(forRequest: &request)
+    var request = URLRequest.init(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
+    request.httpMethod = "GET"
+    setDefaultAnnotationHeaders(forRequest: &request)
+    
+    let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
       
-      let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-        
-        if let error = error as NSError? {
-          Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+      if let error = error as NSError? {
+        Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+        completionHandler(nil)
+        return
+      }
+      guard let data = data,
+        let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] else {
+          Log.error(#file, "JSON could not be created from data, or data was nil.")
+          completionHandler(nil)
+          return
+      }
+      if let total = json["total"] as? Int {
+        if total <= 0 {
+          Log.error(#file, "\"total\" key was empty")
           completionHandler(nil)
           return
         }
-        guard let data = data,
-          let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] else {
-            Log.error(#file, "JSON could not be created from data, or data was nil.")
+      }
+      guard let first = json["first"] as? [String:AnyObject],
+        let items = first["items"] as? [AnyObject] else {
+          completionHandler(nil)
+          return
+      }
+      
+      for item in items {
+        guard let target = item["target"] as? [String:AnyObject],
+          let source = target["source"] as? String,
+          let motivation = item["motivation"] as? String else {
             completionHandler(nil)
             return
         }
-        if let total = json["total"] as? Int {
-          if total <= 0 {
-            Log.error(#file, "\"total\" key was empty")
-            completionHandler(nil)
-            return
-          }
-        }
-        guard let first = json["first"] as? [String:AnyObject],
-          let items = first["items"] as? [AnyObject] else {
-            completionHandler(nil)
-            return
-        }
-
-        for item in items {
-          guard let target = item["target"] as? [String:AnyObject],
-            let source = target["source"] as? String,
-            let motivation = item["motivation"] as? String else {
+        
+        if source == bookID && motivation == "http://librarysimplified.org/terms/annotation/idling" {
+          
+          guard let selector = target["selector"] as? [String:AnyObject],
+            let serverCFI = selector["value"] as? String else {
               completionHandler(nil)
               return
           }
-
-          if source == book.identifier && motivation == "http://librarysimplified.org/terms/annotation/idling" {
-
-            guard let selector = target["selector"] as? [String:AnyObject],
-              let serverCFI = selector["value"] as? String else {
-                completionHandler(nil)
-                return
-            }
-
-            var responseObject = ["serverCFI" : serverCFI]
-
-            if let body = item["body"] as? [String:AnyObject],
-              let device = body["http://librarysimplified.org/terms/device"] as? String,
-              let time = body["http://librarysimplified.org/terms/time"] as? String {
-              responseObject["device"] = device
-              responseObject["time"] = time
-            }
-
-            completionHandler(responseObject)
-            return
+          
+          var responseObject = ["serverCFI" : serverCFI]
+          
+          if let body = item["body"] as? [String:AnyObject],
+            let device = body["http://librarysimplified.org/terms/device"] as? String,
+            let time = body["http://librarysimplified.org/terms/time"] as? String {
+            responseObject["device"] = device
+            responseObject["time"] = time
           }
+          
+          completionHandler(responseObject)
+          return
         }
       }
-      dataTask.resume()
     }
+    dataTask.resume()
   }
   
-  class func postLastRead(_ book:NYPLBook,
-                          cfi:NSString) {
-
-    //GODO probably need to update the conditionals
-    if (NYPLAccount.shared().hasBarcodeAndPIN() && AccountsManager.shared.currentAccount.supportsSimplyESync &&
-      AccountsManager.shared.currentAccount.syncPermissionGranted) {
-      let parameters = [
-        "@context": "http://www.w3.org/ns/anno.jsonld",
-        "type": "Annotation",
-        "motivation": "http://librarysimplified.org/terms/annotation/idling",
-        "target":[
-          "source":  book.identifier,
-          "selector": [
-            "type": "oa:FragmentSelector",
-            "value": cfi
-          ]
-        ],
-        "body": [
-          "http://librarysimplified.org/terms/time" : NSDate().rfc3339String(),
-          "http://librarysimplified.org/terms/device" : NYPLAccount.shared().deviceID
+  class func postReadingPosition(forBook bookID: String, annotationsURL:URL?, cfi: NSString) {
+    
+    guard let annotationsURL = annotationsURL else {
+      Log.error(#file, "Required parameter was nil.")
+      return
+    }
+    if !accountSatisfiesSyncConditions() {
+      Log.debug(#file, "Account does not support sync.")
+      return
+    }
+    
+    let parameters = [
+      "@context": "http://www.w3.org/ns/anno.jsonld",
+      "type": "Annotation",
+      "motivation": "http://librarysimplified.org/terms/annotation/idling",
+      "target": [
+        "source": bookID,
+        "selector": [
+          "type": "oa:FragmentSelector",
+          "value": cfi
         ]
-        ] as [String : Any]
-      
-      if let annotationsUrl = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/") {
-        postAnnotationJSONRequest(book, annotationsUrl, parameters, completionHandler: { success in
-          //Post has finished.
-        })
-      } else {
-        Log.error(#file, "MainFeedURL does not exist")
-      }
+      ],
+      "body": [
+        "http://librarysimplified.org/terms/time" : NSDate().rfc3339String(),
+        "http://librarysimplified.org/terms/device" : NYPLAccount.shared().deviceID
+      ]
+      ] as [String : Any]
+    
+    postAnnotation(forBook: bookID, toUrl: annotationsURL, withParameters: parameters) { success in
+      Log.debug(#file, "Annotation posted successfully to the server.")
     }
   }
   
-  private class func postAnnotationJSONRequest(_ book: NYPLBook,
-                                               _ url: URL,
-                                               _ parameters: [String:Any],
-                                               completionHandler: @escaping (_ success: Bool) -> ()) {
+  private class func postAnnotation(forBook bookID: String,
+                                    toUrl url: URL,
+                                    withParameters parameters: [String:Any],
+                                    _ completionHandler: @escaping (_ success: Bool) -> ()) {
 
     guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted]) else {
       Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
@@ -299,7 +321,7 @@ final class NYPLAnnotations: NSObject {
       if let error = error as NSError? {
         Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
         if NetworkQueue.StatusCodes.contains(error.code) {
-          self.addToOfflineQueue(book, url, parameters)
+          self.addToOfflineQueue(bookID, url, parameters)
         }
         completionHandler(false)
       }
@@ -323,8 +345,9 @@ final class NYPLAnnotations: NSObject {
   // MARK: - Bookmarks
 
   //GODO need to test this method
-  class func getBookmark(_ book:NYPLBook,
-                         _ cfi:NSString,
+  class func getBookmark(book id:String?,
+                         atURL annotationUrl:URL?,
+                         locationCFI cfi:NSString,
                          completionHandler: @escaping (_ responseObject: NYPLReaderBookmarkElement?) -> ()) {
     
     guard let data = cfi.data(using: String.Encoding.utf8.rawValue),
@@ -339,65 +362,71 @@ final class NYPLAnnotations: NSObject {
         return
     }
 
-    getBookmarks(book) { bookmarks in
+    getBookmarks(forBook: id, atURL: annotationUrl) { bookmarks in
       completionHandler(bookmarks
         .filter({ $0.contentCFI == localContentCfi && $0.idref == localIdref })
         .first)
     }
   }
   
-  class func getBookmarks(_ book:NYPLBook, completionHandler: @escaping (_ bookmarks: [NYPLReaderBookmarkElement]) -> ()) {
+  class func getBookmarks(forBook bookID:String?, atURL annotationURL:URL?, completionHandler: @escaping (_ bookmarks: [NYPLReaderBookmarkElement]) -> ()) {
+    
+    guard let bookID = bookID, let annotationURL = annotationURL else {
+      Log.error(#file, "Required parameter was nil.")
+      return
+    }
+    
+    if !NYPLAccount.shared().hasBarcodeAndPIN() ||
+      !AccountsManager.shared.currentAccount.supportsSimplyESync {
+      Log.debug(#file, "Account does not support sync.")
+      return
+    }
     
     var bookmarks = [NYPLReaderBookmarkElement]()
 
-    //GODO double check these conditionals at the callsites. example: there are no conditionals in getBookmark() .. is that wrong?
-    if (NYPLAccount.shared().hasBarcodeAndPIN() && book.annotationsURL != nil &&
-      AccountsManager.shared.currentAccount.supportsSimplyESync) {
-
-      var request = URLRequest.init(url: book.annotationsURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
-      request.httpMethod = "GET"
-      setDefaultAnnotationHeaders(forRequest: &request)
+    var request = URLRequest.init(url: annotationURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
+    request.httpMethod = "GET"
+    setDefaultAnnotationHeaders(forRequest: &request)
+    
+    let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
       
-      let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-        
-        if let error = error as NSError? {
-          Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+      if let error = error as NSError? {
+        Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+        completionHandler(bookmarks)
+        return
+      }
+      guard let data = data,
+        let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] else {
+          Log.error(#file, "JSON could not be created from data.")
           completionHandler(bookmarks)
           return
-        }
-        guard let data = data,
-          let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] else {
-            Log.error(#file, "JSON could not be created from data.")
-            completionHandler(bookmarks)
-            return
-        }
-        if let total = json["total"] as? Int {
-          if total <= 0 {
-            Log.error(#file, "\"total\" key was empty")
-            return
-          }
-        }
-        guard let first = json["first"] as? [String:AnyObject],
-          let items = first["items"] as? [AnyObject] else {
-            completionHandler(bookmarks)
-            return
-        }
-
-        for item in items {
-          if let bookmark = createBookmarkElement(book, item) {
-            bookmarks.append(bookmark)
-          } else {
-            Log.error(#file, "Could not create bookmark element from item.")
-            continue
-          }
-        }
-        completionHandler(bookmarks)
       }
-      dataTask.resume()
+      if let total = json["total"] as? Int {
+        if total <= 0 {
+          Log.error(#file, "\"total\" key was empty")
+          return
+        }
+      }
+      guard let first = json["first"] as? [String:AnyObject],
+        let items = first["items"] as? [AnyObject] else {
+          completionHandler(bookmarks)
+          return
+      }
+
+      for item in items {
+        if let bookmark = createBookmarkElement(bookID, item) {
+          bookmarks.append(bookmark)
+        } else {
+          Log.error(#file, "Could not create bookmark element from item.")
+          continue
+        }
+      }
+      completionHandler(bookmarks)
     }
+    dataTask.resume()
   }
 
-  private class func createBookmarkElement(_ book: NYPLBook, _ item: AnyObject) -> NYPLReaderBookmarkElement? {
+  private class func createBookmarkElement(_ bookID: String, _ item: AnyObject) -> NYPLReaderBookmarkElement? {
 
     guard let target = item["target"] as? [String:AnyObject],
     let source = target["source"] as? String,
@@ -407,7 +436,7 @@ final class NYPLAnnotations: NSObject {
       return nil
     }
 
-    if source == book.identifier && motivation.contains("bookmarking") {
+    if source == bookID && motivation.contains("bookmarking") {
 
       guard let selector = target["selector"] as? [String:AnyObject],
         let serverCFI = selector["value"] as? String,
@@ -452,45 +481,52 @@ final class NYPLAnnotations: NSObject {
     return nil
   }
   
-  class func postBookmark(_ book:NYPLBook,
-                          cfi:NSString,
-                          bookmark:NYPLReaderBookmarkElement,
+  class func postBookmark(forBook bookID: String,
+                          toURL annotationsURL: URL?,
+                          cfi: NSString,
+                          bookmark: NYPLReaderBookmarkElement,
                           completionHandler: @escaping (_ responseObject: NYPLReaderBookmarkElement?) -> ())
   {
-    //GODO all these need to be re-thought supportsSimplyESync, syncIsEnabled, etc. etc.
-    if (NYPLAccount.shared().hasBarcodeAndPIN() && AccountsManager.shared.currentAccount.supportsSimplyESync) {
-      let parameters = [
-        "@context": "http://www.w3.org/ns/anno.jsonld",
-        "type": "Annotation",
-        "motivation": "http://www.w3.org/ns/oa#bookmarking",
-        "target":[
-          "source":  book.identifier,
-          "selector": [
-            "type": "oa:FragmentSelector",
-            "value": cfi
-          ]
-        ],
-        "body": [
-          "http://librarysimplified.org/terms/time" : NSDate().rfc3339String(),
-          "http://librarysimplified.org/terms/device" : NYPLAccount.shared().deviceID,
-          "http://librarysimplified.org/terms/chapter" : bookmark.chapter!,
-          "http://librarysimplified.org/terms/progressWithinChapter" : bookmark.progressWithinChapter,
-          "http://librarysimplified.org/terms/progressWithinBook" : bookmark.progressWithinBook,
+    
+    //GODO these may be able to be consolidated
+    guard let annotationsURL = annotationsURL else {
+      Log.error(#file, "Required parameter was nil.")
+      return
+    }
+    
+    if !NYPLAccount.shared().hasBarcodeAndPIN() ||
+      !AccountsManager.shared.currentAccount.supportsSimplyESync {
+      Log.debug(#file, "Account does not support sync.")
+      return
+    }
+
+    let parameters = [
+      "@context": "http://www.w3.org/ns/anno.jsonld",
+      "type": "Annotation",
+      "motivation": "http://www.w3.org/ns/oa#bookmarking",
+      "target": [
+        "source": bookID,
+        "selector": [
+          "type": "oa:FragmentSelector",
+          "value": cfi
         ]
-        ] as [String : Any]
-      
-    if let url = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/") {
-        postAnnotationJSONRequest(book, url, parameters, completionHandler: { success in
-          if success {
-            getBookmark(book, cfi, completionHandler: { bookmark in
-              completionHandler(bookmark!)
-            })
-          } else {
-            completionHandler(nil)
-          }
+      ],
+      "body": [
+        "http://librarysimplified.org/terms/time" : NSDate().rfc3339String(),
+        "http://librarysimplified.org/terms/device" : NYPLAccount.shared().deviceID,
+        "http://librarysimplified.org/terms/chapter" : bookmark.chapter as Any,
+        "http://librarysimplified.org/terms/progressWithinChapter" : bookmark.progressWithinChapter,
+        "http://librarysimplified.org/terms/progressWithinBook" : bookmark.progressWithinBook,
+      ]
+      ] as [String : Any]
+    
+    postAnnotation(forBook: bookID, toUrl: annotationsURL, withParameters: parameters) { success in
+      if success {
+        getBookmark(book: bookID, atURL: annotationsURL, locationCFI: cfi, completionHandler: { bookmark in
+          completionHandler(bookmark)
         })
       } else {
-        Log.error(#file, "MainFeedURL does not exist")
+        completionHandler(nil)
       }
     }
   }
@@ -517,10 +553,15 @@ final class NYPLAnnotations: NSObject {
 
   // MARK: -
   
-  private class func addToOfflineQueue(_ book: NYPLBook?, _ url: URL, _ parameters: [String:Any]) {
+  class func accountSatisfiesSyncConditions() -> Bool {
+    let acct = AccountsManager.shared.currentAccount
+    return NYPLAccount.shared().hasBarcodeAndPIN() && acct.supportsSimplyESync
+  }
+  
+  private class func addToOfflineQueue(_ bookID: String?, _ url: URL, _ parameters: [String:Any]) {
     let libraryID = AccountsManager.shared.currentAccount.id
     let parameterData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted])
-    NetworkQueue.addRequest(libraryID, book?.identifier, url, .POST, parameterData, headers)
+    NetworkQueue.addRequest(libraryID, bookID, url, .POST, parameterData, headers)
   }
 
   class func setDefaultAnnotationHeaders(forRequest request: inout URLRequest) {

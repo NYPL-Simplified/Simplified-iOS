@@ -11,7 +11,7 @@
 - (void)patronDecidedNavigation:(BOOL)toLatestPage
                     withNavDict:(NSDictionary *)dict;
 - (void)updatePostLasReadStatus:(BOOL)status;
-
+- (NSDictionary *)getCurrentSpineDetailsFromJSON:(NSDictionary *)responseJSON;
 @optional
 
 - (void)didCompleteBookmarkSync:(BOOL)success
@@ -21,9 +21,9 @@
 
 @interface NYPLReadiumViewSyncManager : NSObject
 
-- (instancetype) initWithBook:(NYPLBook *)book
-                      bookMap:(NSDictionary *)bookMap
-                     delegate:(id)delegate;
+- (instancetype) initWithBookID:(NSString *)bookID
+                 annotationsURL:(NSURL *)URL
+                       delegate:(id)delegate;
 
 - (void)syncAnnotationsForAccount:(Account *)account
                   withPackageDict:(NSDictionary *)dict;

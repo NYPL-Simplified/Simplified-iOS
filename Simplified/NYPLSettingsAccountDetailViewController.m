@@ -194,7 +194,6 @@ CGFloat const verticalMarginPadding = 2.0;
 
   [self setupTableData];
   
-//  [self checkSyncPermissionForCurrentPatron];
   self.syncSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
 }
 
@@ -226,6 +225,11 @@ CGFloat const verticalMarginPadding = 2.0;
   }
   if ([self.account getLicenseURL:URLTypeContentLicenses]) {
     [section2 addObject:@(CellKindContentLicense)];
+  }
+  NSMutableArray *section1 = [[NSMutableArray alloc] init];
+  if ([self syncButtonShouldBeVisible]) {
+    [section1 addObject:@(CellKindSyncButton)];
+    [self checkSyncPermissionForCurrentPatron];
   }
   
   if ([self registrationIsPossible]) {
@@ -1513,7 +1517,7 @@ replacementString:(NSString *)string
         self.account.syncPermissionGranted = YES;
         self.syncSwitch.on = YES;
       } else {
-        [NYPLAnnotations presentSyncSettingChangeError];
+        [NYPLAnnotations handleSyncSettingError];
         self.account.syncPermissionGranted = NO;
         self.syncSwitch.on = NO;
       }
@@ -1529,16 +1533,15 @@ replacementString:(NSString *)string
 
 - (void)checkSyncPermissionForCurrentPatron
 {
-  if (self.permissionCheckIsInProgress ||
-      [[NYPLSettings sharedSettings] userHasSeenFirstTimeSyncMessage]) {
-    NYPLLOG(@"Skipping sync setting network request.");
+  if (self.permissionCheckIsInProgress) {
+    NYPLLOG(@"Skipping sync. Request already in progress.");
     return;
   }
 
   self.permissionCheckIsInProgress = YES;
   self.syncSwitch.enabled = NO;
 
-  [NYPLAnnotations checkServerSyncSettingWithUserAlertWithCompletion:^(BOOL enableSync) {
+  [NYPLAnnotations requestServerSyncSettingWithUserAlert:^(BOOL enableSync) {
     self.account.syncPermissionGranted = enableSync;
     self.syncSwitch.on = enableSync;
     self.syncSwitch.enabled = YES;

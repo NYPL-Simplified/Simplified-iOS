@@ -15,8 +15,8 @@
 
 @interface NYPLReadiumViewSyncManager ()
 
-@property (nonatomic) NYPLBook *book;
-@property (nonatomic) NSDictionary *map;
+@property (nonatomic) NSString *bookID;
+@property (nonatomic) NSURL *annotationsURL;
 @property (nonatomic, weak) id<NYPLReadiumViewSyncManagerDelegate> delegate;
 
 @end
@@ -24,14 +24,14 @@
 
 @implementation NYPLReadiumViewSyncManager
 
-- (instancetype) initWithBook:(NYPLBook *)book
-                      bookMap:(NSDictionary *)bookMap
-                     delegate:(id)delegate
+- (instancetype) initWithBookID:(NSString *)bookID
+                 annotationsURL:(NSURL *)URL
+                       delegate:(id)delegate
 {
   self = [super init];
   if (self) {
-    self.book = book;
-    self.map = bookMap;
+    self.bookID = bookID;
+    self.annotationsURL = URL;
     self.delegate = delegate;
   }
   return self;
@@ -46,19 +46,23 @@
     dictionary[@"package"] = packageDict;
     dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
     NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry]
-                                        locationForIdentifier:self.book.identifier];
-
-    [self syncLastReadingPosition:dictionary andLocation:location andBook:self.book];
-
+                                        locationForIdentifier:self.bookID];
+    
+    [self syncReadingPositionForBook:self.bookID
+                          atLocation:location
+                               toURL:self.annotationsURL
+                         withPackage:dictionary];
     [self syncBookmarks];
   }
 }
 
-- (void)syncLastReadingPosition:(NSMutableDictionary *const)dictionary
-                    andLocation:(NYPLBookLocation *const)location
-                        andBook:(NYPLBook *const)book
+- (void)syncReadingPositionForBook:(NSString *)bookID
+                        atLocation:(NYPLBookLocation *)location
+                             toURL:(NSURL *)URL
+                       withPackage:(NSMutableDictionary *)dictionary
 {
-  [NYPLAnnotations syncLastRead:book completionHandler:^(NSDictionary * _Nullable responseObject) {
+  [NYPLAnnotations syncReadingPositionOfBook:bookID toURL:URL
+              completionHandler:^(NSDictionary * _Nullable responseObject) {
 
     if (!responseObject) {
       NYPLLOG(@"Sync Error: No reponse object received from NYPLAnnotations.");
@@ -78,12 +82,18 @@
     currentLocationString = location.locationString;
     NYPLLOG_F(@"serverLocationString %@",serverLocationString);
     NYPLLOG_F(@"currentLocationString %@",currentLocationString);
-    NSDictionary *spineItemDetails = self.map[responseJSON[@"idref"]];
 
-    //GODO also seems like it's getting a message from it's own position, which it should not be doing
-    //should be checking device ID and not showing the alert if it's from itself.
-
-    NSString * message=[NSString stringWithFormat:@"Would you like to go to the latest page read?\n\nChapter:\n\"%@\"",spineItemDetails[@"tocElementTitle"]];
+    NSDictionary *spineItemDetails;
+    NSString *elementTitle;
+    if ([self.delegate respondsToSelector:@selector(getCurrentSpineDetailsFromJSON:)]) {
+      spineItemDetails = [self.delegate getCurrentSpineDetailsFromJSON:responseJSON];
+      elementTitle = spineItemDetails[@"tocElementTitle"];
+    }
+    if (!elementTitle) {
+      elementTitle = @"";
+    }
+                
+    NSString * message=[NSString stringWithFormat:@"Would you like to go to the latest page read?\n\nChapter:\n\"%@\"",elementTitle];
 
     alertController = [UIAlertController alertControllerWithTitle:@"Sync Reading Position"
                                                           message:message
@@ -164,23 +174,21 @@
        // post all local bookmarks if they have not been posted yet,
        // this can happen if device was storing local bookmarks first and SImplyE Sync was enabled afterwards.
 
-       NSArray<NYPLReaderBookmarkElement *> *localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];
+       NSArray<NYPLReaderBookmarkElement *> *localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID];
        for (NYPLReaderBookmarkElement *localBookmark in localBookmarks) {
 
          if (localBookmark.annotationId.length == 0 || localBookmark.annotationId == nil) {
 
-           [NYPLAnnotations postBookmark:self.book cfi:localBookmark.location bookmark:localBookmark completionHandler:^(NYPLReaderBookmarkElement *bookmark) {
-
-             [[NYPLBookRegistry sharedRegistry] replaceBookmark:localBookmark with:bookmark forIdentifier:self.book.identifier];
-
+           [NYPLAnnotations postBookmarkForBook:self.bookID toURL:self.annotationsURL cfi:localBookmark.location bookmark:localBookmark completionHandler:^(NYPLReaderBookmarkElement * _Nullable bookmark) { //GODO make sure this _nullable works
+             [[NYPLBookRegistry sharedRegistry] replaceBookmark:localBookmark with:bookmark forIdentifier:self.bookID];
            }];
          }
        }
 
        //GODO does this need to be nested from completion block of previous postBookmark operations??
-
-       [NYPLAnnotations getBookmarks:self.book completionHandler:^(NSArray *remoteBookmarks) {
-
+       
+       [NYPLAnnotations getBookmarksForBook:self.bookID atURL:self.annotationsURL completionHandler:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull remoteBookmarks) {  //GODO make sure this _Nonnull works
+         
          // 2.
          // delete local bookmarks if annotation id exists locally but not remote
 
@@ -202,7 +210,7 @@
          NYPLLOG(deleteLocalBookmarks);
 
          for (NYPLReaderBookmarkElement *bookmark in deleteLocalBookmarks) {
-           [[NYPLBookRegistry sharedRegistry] deleteBookmark:bookmark forIdentifier:self.book.identifier];
+           [[NYPLBookRegistry sharedRegistry] deleteBookmark:bookmark forIdentifier:self.bookID];
          }
 
          // 3.
@@ -225,10 +233,10 @@
          }
 
          for (NYPLReaderBookmarkElement *bookmark in addLocalBookmarks) {
-           [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.book.identifier];
+           [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.bookID];
          }
 
-         completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier]);
+         completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
 
        }];
      }

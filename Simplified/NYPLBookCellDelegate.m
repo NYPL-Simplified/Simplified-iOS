@@ -36,7 +36,7 @@
   return sharedDelegate;
 }
 
-#pragma mark NYPLBookNormalCellDelegate
+#pragma mark NYPLBookButtonsDelegate
 
 - (void)didSelectReturnForBook:(NYPLBook *)book
 {
@@ -73,6 +73,12 @@
    pushViewController:[[NYPLReaderViewController alloc]
                        initWithBookIdentifier:book.identifier]
    animated:YES];
+  if ([NYPLAnnotations accountSatisfiesSyncConditions]) {
+    [NYPLAnnotations requestServerSyncSettingWithUserAlert:^(BOOL enableSync) {
+      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+      currentAccount.syncPermissionGranted = enableSync;
+    }];
+  }
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate

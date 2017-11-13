@@ -497,6 +497,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   self.postLastRead = status;
 }
 
+- (NSDictionary *)getCurrentSpineDetailsFromJSON:(NSDictionary *)responseJSON{
+  return self.bookMapDictionary[responseJSON[@"idref"]];
+}
+
 
 #pragma mark -
 
@@ -604,8 +608,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   [self sequentiallyEvaluateJavaScript:javascript];
 
-  //GODO Maybe another spot for this
-  self.syncManager = [[NYPLReadiumViewSyncManager alloc] initWithBook:self.book bookMap:self.bookMapDictionary delegate:self];
+  //GODO Maybe another spot for this?
+  self.syncManager = [[NYPLReadiumViewSyncManager alloc] initWithBookID:self.book.identifier
+                                                         annotationsURL:self.book.annotationsURL
+                                                               delegate:self];
   [self syncAnnotations];
 }
 
@@ -691,8 +697,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   if (currentAccount.syncPermissionGranted) {
   
-    [NYPLAnnotations postBookmark:self.book cfi:location.locationString bookmark:bookmark completionHandler:^(NYPLReaderBookmarkElement *bookmark) {
-      
+    [NYPLAnnotations postBookmarkForBook:self.book.identifier toURL:self.book.annotationsURL cfi:location.locationString bookmark:bookmark completionHandler:^(NYPLReaderBookmarkElement * _Nullable bookmark) {
       
       if (bookmark) {
         // add the bookmark to the local registry
@@ -852,7 +857,9 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
           forIdentifier:weakSelf.book.identifier];
          }
        if(self.postLastRead) {
-         [NYPLAnnotations postLastRead:weakSelf.book cfi:location.locationString];
+         [NYPLAnnotations postReadingPositionForBook:weakSelf.book.identifier
+                                      annotationsURL:weakSelf.book.annotationsURL
+                                                 cfi:location.locationString];
        }
      }];
   });
