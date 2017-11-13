@@ -35,6 +35,7 @@
 #endif
 
 typedef NS_ENUM(NSInteger, CellKind) {
+  CellKindAdvancedSettings,
   CellKindAgeCheck,
   CellKindBarcodeImage,
   CellKindBarcode,
@@ -213,12 +214,6 @@ CGFloat const verticalMarginPadding = 2.0;
   if ([self librarySupportsBarcodeDisplay]) {
     [section0 insertObject:@(CellKindBarcodeImage) atIndex: 0];
   }
-  NSMutableArray *section1 = [[NSMutableArray alloc] init];
-  if ([self syncButtonShouldBeVisible]) {
-    [section1 addObject:@(CellKindSyncButton)];
-    //GODO
-    [self checkSyncPermissionForCurrentPatron];
-  }
   NSMutableArray *section2 = [[NSMutableArray alloc] init];
   if ([self.account getLicenseURL:URLTypePrivacyPolicy]) {
     [section2 addObject:@(CellKindPrivacyPolicy)];
@@ -229,6 +224,7 @@ CGFloat const verticalMarginPadding = 2.0;
   NSMutableArray *section1 = [[NSMutableArray alloc] init];
   if ([self syncButtonShouldBeVisible]) {
     [section1 addObject:@(CellKindSyncButton)];
+    [section2 addObject:@(CellKindAdvancedSettings)];
     [self checkSyncPermissionForCurrentPatron];
   }
   
@@ -763,6 +759,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindSyncButton: {
       break;
     }
+    case CellKindAdvancedSettings: {
+      NYPLSettingsAdvancedViewController *vc = [[NYPLSettingsAdvancedViewController alloc] initWithAccount:self.accountType];
+      [self.navigationController pushViewController:vc animated:YES];
+    }
     case CellKindBarcodeImage: {
       [self.tableView beginUpdates];
       // Collapse barcode by adjusting certain constraints
@@ -1058,6 +1058,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"ContentLicenses", nil);
       cell.hidden = ([self.account getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
+      return cell;
+    }
+    case CellKindAdvancedSettings: {
+      UITableViewCell *cell = [[UITableViewCell alloc]
+                               initWithStyle:UITableViewCellStyleDefault
+                               reuseIdentifier:nil];
+      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+      cell.textLabel.text = NSLocalizedString(@"Advanced", nil);
       return cell;
     }
     default: {
