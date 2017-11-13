@@ -23,7 +23,7 @@
  "subtitle" : "Connecting people to resources to achieve their goals.",
  "logo" : "LibraryLogoBrooklyn",
  "needsAuth" : true,
- "supportsSimplyESync" : false,
+ "supportsSimplyESync" : true,
  "supportsBarcodeScanner" : true,
  "supportsBarcodeDisplay" : true,
  "supportsReservations" : true,

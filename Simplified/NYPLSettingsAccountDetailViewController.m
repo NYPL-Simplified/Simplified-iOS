@@ -68,8 +68,9 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
 @property (nonatomic) UIButton *barcodeScanButton;
-@property (nonatomic) NSInteger accountType;
-@property (nonatomic) Account *account;
+@property (nonatomic) NSInteger selectedAccountType;
+@property (nonatomic) Account *selectedAccount;
+@property (nonatomic) NYPLAccount *selectedNYPLAccount;
 
 @property (nonatomic) UITableViewCell *registrationCell;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
@@ -90,8 +91,9 @@ CGFloat const verticalMarginPadding = 2.0;
 
 - (instancetype)initWithAccount:(NSInteger)account
 {
-  self.accountType = account;
-  self.account = [[AccountsManager sharedInstance] account:self.accountType];
+  self.selectedAccountType = account;
+  self.selectedAccount = [[AccountsManager sharedInstance] account:self.selectedAccountType];
+  self.selectedNYPLAccount = [NYPLAccount sharedAccount:self.selectedAccountType];
   return [self init];
 }
 
@@ -201,7 +203,7 @@ CGFloat const verticalMarginPadding = 2.0;
 - (void)setupTableData
 {
   NSMutableArray *section0;
-  if (self.account.needsAuth == NO) {
+  if (self.selectedAccount.needsAuth == NO) {
     section0 = @[@(CellKindAgeCheck)].mutableCopy;
   } else {
     section0 = @[@(CellKindBarcode),
@@ -215,10 +217,10 @@ CGFloat const verticalMarginPadding = 2.0;
     [section0 insertObject:@(CellKindBarcodeImage) atIndex: 0];
   }
   NSMutableArray *section2 = [[NSMutableArray alloc] init];
-  if ([self.account getLicenseURL:URLTypePrivacyPolicy]) {
+  if ([self.selectedAccount getLicenseURL:URLTypePrivacyPolicy]) {
     [section2 addObject:@(CellKindPrivacyPolicy)];
   }
-  if ([self.account getLicenseURL:URLTypeContentLicenses]) {
+  if ([self.selectedAccount getLicenseURL:URLTypeContentLicenses]) {
     [section2 addObject:@(CellKindContentLicense)];
   }
   NSMutableArray *section1 = [[NSMutableArray alloc] init];
@@ -237,14 +239,14 @@ CGFloat const verticalMarginPadding = 2.0;
   
 
   NSMutableArray *supportCenter = [[NSMutableArray alloc] init];
-  if (self.account.supportsHelpCenter)
+  if (self.selectedAccount.supportsHelpCenter)
   {
     [supportCenter addObject:@(CellSupportCenter)];
     [self.tableData addObject:supportCenter];
     
   }
   NSMutableArray *reportIssue = [[NSMutableArray alloc] init];
-  if (self.account.supportEmail != nil)
+  if (self.selectedAccount.supportEmail != nil)
   {
     [reportIssue addObject:@(CellReportIssue)];
     [self.tableData addObject:reportIssue];
@@ -287,10 +289,9 @@ CGFloat const verticalMarginPadding = 2.0;
 {
   // For now, only supports libraries granted access in Accounts.json,
   // is signed in, and has an authorization ID returned from the loans feed.
-  NYPLAccount *acct = [NYPLAccount sharedAccount:self.accountType];
-  return ((acct.hasBarcodeAndPIN) &&
-          (acct.authorizationIdentifier) &&
-          (self.account.supportsBarcodeDisplay));
+  return ((self.selectedNYPLAccount.hasBarcodeAndPIN) &&
+          (self.selectedNYPLAccount.authorizationIdentifier) &&
+          (self.selectedAccount.supportsBarcodeDisplay));
 }
 
 - (void)scanLibraryCard
@@ -341,7 +342,7 @@ CGFloat const verticalMarginPadding = 2.0;
   
   // Get a fresh licensor token before attempting to deauthorize
   NSMutableURLRequest *const request =
-  [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[self.account catalogUrl]] URLByAppendingPathComponent:@"loans"]];
+  [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[self.selectedAccount catalogUrl]] URLByAppendingPathComponent:@"loans"]];
   
   request.timeoutInterval = 20.0;
   
@@ -357,8 +358,8 @@ CGFloat const verticalMarginPadding = 2.0;
        
        NYPLXML *loansXML = [NYPLXML XMLWithData:data];
        NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
-       [[NYPLAccount sharedAccount:self.accountType] setLicensor:loansFeed.licensor];
-       NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",loansFeed.licensor[@"clientToken"],[NYPLAccount sharedAccount:self.accountType].userID);
+       [self.selectedNYPLAccount setLicensor:loansFeed.licensor];
+       NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",loansFeed.licensor[@"clientToken"],self.selectedNYPLAccount.userID);
        
        [self deauthorizeDevice];
 
@@ -394,15 +395,15 @@ CGFloat const verticalMarginPadding = 2.0;
     [self removeActivityTitle];
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
-    [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountType];
+    [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountType];
     
-    [[NYPLAccount sharedAccount:self.accountType] removeAll];
+    [self.selectedNYPLAccount removeAll];
     [self setupTableData];
     [self.tableView reloadData];
   };
 
-  NSDictionary *licensor = [[NYPLAccount sharedAccount:self.accountType] licensor];
+  NSDictionary *licensor = [self.selectedNYPLAccount licensor];
   if (!licensor) {
     NYPLLOG(@"No Licensor available to deauthorize device. Signing out NYPLAccount creds anyway.");
     [self bugsnagLogInvalidLicensor];
@@ -419,14 +420,14 @@ CGFloat const verticalMarginPadding = 2.0;
   NYPLLOG_F(@"\nLicensor: %@\n",licensor);
   NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
   NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
-  NYPLLOG_F(@"UserID: %@\n",[[NYPLAccount sharedAccount:self.accountType] userID]);
-  NYPLLOG_F(@"DeviceID: %@\n",[[NYPLAccount sharedAccount:self.accountType] deviceID]);
+  NYPLLOG_F(@"UserID: %@\n",[self.selectedNYPLAccount userID]);
+  NYPLLOG_F(@"DeviceID: %@\n",[self.selectedNYPLAccount deviceID]);
   
   [[NYPLADEPT sharedInstance]
    deauthorizeWithUsername:tokenUsername
    password:tokenPassword
-   userID:[[NYPLAccount sharedAccount:self.accountType] userID]
-   deviceID:[[NYPLAccount sharedAccount:self.accountType] deviceID]
+   userID:[self.selectedNYPLAccount userID]
+   deviceID:[self.selectedNYPLAccount deviceID]
    completion:^(BOOL success, __unused NSError *error) {
      
      if(!success) {
@@ -444,9 +445,9 @@ CGFloat const verticalMarginPadding = 2.0;
      else {
        NYPLLOG(@"***Successful DRM Deactivation***");
        // DELETE deviceID to adobeDevicesLink
-       NSURL *deviceManager =  [NSURL URLWithString: [[NYPLAccount sharedAccount:self.accountType] licensor][@"deviceManager"]];
+       NSURL *deviceManager =  [NSURL URLWithString: [self.selectedNYPLAccount licensor][@"deviceManager"]];
        if (deviceManager != nil) {
-         [NYPLDeviceManager deleteDevice:[[NYPLAccount sharedAccount:self.accountType] deviceID] url:deviceManager];
+         [NYPLDeviceManager deleteDevice:[self.selectedNYPLAccount deviceID] url:deviceManager];
        }
      }
 
@@ -460,7 +461,7 @@ CGFloat const verticalMarginPadding = 2.0;
 - (void)validateCredentials
 {
   NSMutableURLRequest *const request =
-  [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[self.account catalogUrl]] URLByAppendingPathComponent:@"loans"]];
+  [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[self.selectedAccount catalogUrl]] URLByAppendingPathComponent:@"loans"]];
   
   request.timeoutInterval = 20.0;
   
@@ -481,7 +482,7 @@ CGFloat const verticalMarginPadding = 2.0;
        NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
        
        if (loansFeed.licensor) {
-         [[NYPLAccount sharedAccount:self.accountType] setLicensor:loansFeed.licensor];
+         [self.selectedNYPLAccount setLicensor:loansFeed.licensor];
        } else {
          NYPLLOG(@"Login Failed: No Licensor Token received or parsed from OPDS Loans feed");
          [self authorizationAttemptDidFinish:NO error:nil];
@@ -499,7 +500,7 @@ CGFloat const verticalMarginPadding = 2.0;
        NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
        
        [[NYPLADEPT sharedInstance]
-        authorizeWithVendorID:[[NYPLAccount sharedAccount:self.accountType] licensor][@"vendor"]
+        authorizeWithVendorID:[self.selectedNYPLAccount licensor][@"vendor"]
         username:tokenUsername
         password:tokenPassword
         completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
@@ -512,14 +513,14 @@ CGFloat const verticalMarginPadding = 2.0;
           
           if (success) {
             // POST deviceID to adobeDevicesLink
-            NSURL *deviceManager = [NSURL URLWithString: [[NYPLAccount sharedAccount:self.accountType] licensor][@"deviceManager"]];
+            NSURL *deviceManager = [NSURL URLWithString: [self.selectedNYPLAccount licensor][@"deviceManager"]];
             if (deviceManager != nil) {
               [NYPLDeviceManager postDevice:deviceID url:deviceManager];
             }
             
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-              [[NYPLAccount sharedAccount:self.accountType] setUserID:userID];
-              [[NYPLAccount sharedAccount:self.accountType] setDeviceID:deviceID];
+              [self.selectedNYPLAccount setUserID:userID];
+              [self.selectedNYPLAccount setDeviceID:deviceID];
             }];
           }
           
@@ -594,10 +595,10 @@ CGFloat const verticalMarginPadding = 2.0;
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
-      [[NYPLAccount sharedAccount:self.accountType] setBarcode:self.usernameTextField.text
+      [self.selectedNYPLAccount setBarcode:self.usernameTextField.text
                                                            PIN:self.PINTextField.text];
 
-      if(self.accountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
+      if(self.selectedAccountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
         void (^handler)() = self.completionHandler;
         self.completionHandler = nil;
         if(handler) handler();
@@ -621,7 +622,7 @@ CGFloat const verticalMarginPadding = 2.0;
                    report.context = @"NYPLSettingsAccountDetailViewController";
                    report.severity = BSGSeverityWarning;
                    report.errorMessage = @"No Valid Licensor available to deauthorize device. Signing out NYPLAccount credentials anyway with no message to the user.";
-                   NSDictionary *metadata = @{@"accountTypeID" : @(self.accountType)};
+                   NSDictionary *metadata = @{@"accountTypeID" : @(self.selectedAccountType)};
                    [report addMetadata:metadata toTabWithName:@"Extra Data"];
                  }];
 }
@@ -637,14 +638,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   switch(cellKind) {
     case CellKindAgeCheck: {
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-      if (self.account.userAboveAgeLimit == YES) {
+      if (self.selectedAccount.userAboveAgeLimit == YES) {
         [self confirmAgeChange:^(BOOL under13) {
           if (under13) {
             cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
-            self.account.userAboveAgeLimit = NO;
+            self.selectedAccount.userAboveAgeLimit = NO;
             //Delete Books in My Books
-            [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
-            [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
+            [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountType];
+            [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountType];
             NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
             [catalog popToRootViewControllerAnimated:NO];
             [catalog reloadSelectedLibraryAccount];
@@ -652,7 +653,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         }];
       } else {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
-        self.account.userAboveAgeLimit = YES;
+        self.selectedAccount.userAboveAgeLimit = YES;
         NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
         [catalog popToRootViewControllerAnimated:NO];
         [catalog reloadSelectedLibraryAccount];
@@ -667,7 +668,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindLogInSignOut:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-      if([[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]) {
+      if([self.selectedNYPLAccount hasBarcodeAndPIN]) {
         UIAlertController *const alertController =
         (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
          (self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact))
@@ -702,7 +703,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       
-      if (self.account.supportsCardCreator) {
+      if (self.selectedAccount.supportsCardCreator) {
 
       __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
       CardCreatorConfiguration *const configuration =
@@ -739,7 +740,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       else
       {
         
-        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:self.account.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:self.selectedAccount.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
         
         UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webViewController];
         
@@ -760,7 +761,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     }
     case CellKindAdvancedSettings: {
-      NYPLSettingsAdvancedViewController *vc = [[NYPLSettingsAdvancedViewController alloc] initWithAccount:self.accountType];
+      NYPLSettingsAdvancedViewController *vc = [[NYPLSettingsAdvancedViewController alloc] initWithAccount:self.selectedAccountType];
       [self.navigationController pushViewController:vc animated:YES];
     }
     case CellKindBarcodeImage: {
@@ -786,7 +787,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       {
         UIStoryboard *sb = [UIStoryboard storyboardWithName:@"ReportIssue" bundle:nil];
         NYPLReportIssueViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ReportIssueController"];
-        vc.account = self.account;
+        vc.account = self.selectedAccount;
         [self.navigationController pushViewController:vc animated:YES];
       }
       else
@@ -794,7 +795,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         UIAlertView *alert = [[UIAlertView alloc]
                               initWithTitle:@"No email account is set for this device. "
-                              message:[NSString stringWithFormat:@"If you have web email, contact %@ to report an issue.", self.account.supportEmail]
+                              message:[NSString stringWithFormat:@"If you have web email, contact %@ to report an issue.", self.selectedAccount.supportEmail]
                               delegate:nil
                               cancelButtonTitle:nil
                               otherButtonTitles:@"OK", nil];
@@ -829,7 +830,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindAbout: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
-                                      initWithURL:[self.account getLicenseURL:URLTypeAcknowledgements]
+                                      initWithURL:[self.selectedAccount getLicenseURL:URLTypeAcknowledgements]
                                       title:NSLocalizedString(@"About", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       [self.navigationController pushViewController:vc animated:YES];
@@ -837,7 +838,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindPrivacyPolicy: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
-                                      initWithURL:[self.account getLicenseURL:URLTypePrivacyPolicy]
+                                      initWithURL:[self.selectedAccount getLicenseURL:URLTypePrivacyPolicy]
                                       title:NSLocalizedString(@"PrivacyPolicy", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       [self.navigationController pushViewController:vc animated:YES];
@@ -845,7 +846,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindContentLicense: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
-                                      initWithURL:[self.account getLicenseURL:URLTypeContentLicenses]
+                                      initWithURL:[self.selectedAccount getLicenseURL:URLTypeContentLicenses]
                                       title:NSLocalizedString(@"ContentLicenses", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       [self.navigationController pushViewController:vc animated:YES];
@@ -879,7 +880,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   NSArray *sectionArray = (NSArray *)self.tableData[indexPath.section];
   CellKind cellKind = (CellKind)[sectionArray[indexPath.row] intValue];
-  NYPLAccount *account = [NYPLAccount sharedAccount:self.accountType];
 
   switch(cellKind) {
     case CellKindBarcode: {
@@ -900,7 +900,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                                ofView:[self.usernameTextField superview]
                                            withOffset:-verticalMarginPadding];
 
-        if (self.account.supportsBarcodeScanner) {
+        if (self.selectedAccount.supportsBarcodeScanner) {
           [cell.contentView addSubview:self.barcodeScanButton];
           CGFloat rightMargin = cell.layoutMargins.right;
           self.barcodeScanButton.contentEdgeInsets = UIEdgeInsetsMake(0, rightMargin * 2, 0, rightMargin);
@@ -922,7 +922,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (![self librarySupportsBarcodeDisplay]) {
         NYPLLOG(@"A nonvalid library was attempting to create a barcode image.");
       } else {
-        UIImage *barcodeImage = [NYPLBarcode imageFromString:account.authorizationIdentifier
+        UIImage *barcodeImage = [NYPLBarcode imageFromString:self.selectedNYPLAccount.authorizationIdentifier
                                               superviewWidth:self.tableView.bounds.size.width
                                                         type:NYPLBarcodeTypeCodabar];
         if (barcodeImage) {
@@ -985,7 +985,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.ageCheckCell = [[UITableViewCell alloc]
                            initWithStyle:UITableViewCellStyleDefault
                            reuseIdentifier:nil];
-      if (self.account.userAboveAgeLimit) {
+      if (self.selectedAccount.userAboveAgeLimit) {
         self.ageCheckCell.accessoryView = [[UIImageView alloc] initWithImage:
                                            [UIImage imageNamed:@"CheckboxOn"]];
       } else {
@@ -1003,7 +1003,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      self.syncSwitch.on = self.account.syncPermissionGranted;
+      self.syncSwitch.on = self.selectedAccount.syncPermissionGranted;
       cell.accessoryView = self.syncSwitch;
       [self.syncSwitch addTarget:self action:@selector(syncSwitchChanged:) forControlEvents:UIControlEventValueChanged];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -1036,8 +1036,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-      cell.textLabel.text = [NSString stringWithFormat:@"About %@",self.account.name];
-      cell.hidden = ([self.account getLicenseURL:URLTypeAcknowledgements]) ? NO : YES;
+      cell.textLabel.text = [NSString stringWithFormat:@"About %@",self.selectedAccount.name];
+      cell.hidden = ([self.selectedAccount getLicenseURL:URLTypeAcknowledgements]) ? NO : YES;
       return cell;
     }
     case CellKindPrivacyPolicy: {
@@ -1047,7 +1047,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"PrivacyPolicy", nil);
-      cell.hidden = ([self.account getLicenseURL:URLTypePrivacyPolicy]) ? NO : YES;
+      cell.hidden = ([self.selectedAccount getLicenseURL:URLTypePrivacyPolicy]) ? NO : YES;
       return cell;
     }
     case CellKindContentLicense: {
@@ -1057,7 +1057,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"ContentLicenses", nil);
-      cell.hidden = ([self.account getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
+      cell.hidden = ([self.selectedAccount getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
       return cell;
     }
     case CellKindAdvancedSettings: {
@@ -1130,7 +1130,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 }
 - (CGFloat)tableView:(__unused UITableView *)tableView heightForFooterInSection:(__unused NSInteger)section
 {
-  return UITableViewAutomaticDimension;
+  if (section == 1 && [self syncButtonShouldBeVisible]) {
+    return 44;
+  } else {
+    return UITableViewAutomaticDimension;
+  }
 }
 -(NSString *)tableView:(__unused UITableView *)tableView titleForFooterInSection:(NSInteger)section
 {
@@ -1170,12 +1174,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     UILabel *titleLabel = [[UILabel alloc] init];
     UILabel *subtitleLabel = [[UILabel alloc] init];
     subtitleLabel.numberOfLines = 0;
-    UIImageView *logoView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.account.logo]];
+    UIImageView *logoView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.selectedAccount.logo]];
     logoView.contentMode = UIViewContentModeScaleAspectFit;
     
-    titleLabel.text = self.account.name;
+    titleLabel.text = self.selectedAccount.name;
     titleLabel.font = [UIFont systemFontOfSize:14];
-    subtitleLabel.text = self.account.subtitle;
+    subtitleLabel.text = self.selectedAccount.subtitle;
     subtitleLabel.font = [UIFont fontWithName:@"AvenirNext-Regular" size:12];
     
     [containerView addSubview:titleLabel];
@@ -1203,7 +1207,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
 {
-  if (section == 0 && [self.account getLicenseURL:URLTypeEula]) {
+  if (section == 0 && [self.selectedAccount getLicenseURL:URLTypeEula]) {
     UIView *container = [[UIView alloc] init];
     container.preservesSuperviewLayoutMargins = YES;
     UILabel *footerLabel = [[UILabel alloc] init];
@@ -1240,7 +1244,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (BOOL)textFieldShouldBeginEditing:(__unused UITextField *)textField
 {
-  return ![[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN];
+  return ![self.selectedNYPLAccount hasBarcodeAndPIN];
 }
 
 #pragma mark NSURLSessionDelegate
@@ -1378,11 +1382,11 @@ replacementString:(NSString *)string
 - (void)accountDidChange
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if([NYPLAccount sharedAccount:self.accountType].hasBarcodeAndPIN) {
-      self.usernameTextField.text = [NYPLAccount sharedAccount:self.accountType].barcode;
+    if(self.selectedNYPLAccount.hasBarcodeAndPIN) {
+      self.usernameTextField.text = self.selectedNYPLAccount.barcode;
       self.usernameTextField.enabled = NO;
       self.usernameTextField.textColor = [UIColor grayColor];
-      self.PINTextField.text = [NYPLAccount sharedAccount:self.accountType].PIN;
+      self.PINTextField.text = self.selectedNYPLAccount.PIN;
       self.PINTextField.textColor = [UIColor grayColor];
       self.barcodeScanButton.hidden = YES;
     } else {
@@ -1403,7 +1407,7 @@ replacementString:(NSString *)string
 
 - (void)updateLoginLogoutCellAppearance
 {
-  if([[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]) {
+  if([self.selectedNYPLAccount hasBarcodeAndPIN]) {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
@@ -1467,7 +1471,7 @@ replacementString:(NSString *)string
 
 - (void)showEULA
 {
-  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] initWithAccount:self.account];
+  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] initWithAccount:self.selectedAccount];
   UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:eulaViewController];
   [self.navigationController presentViewController:navVC animated:YES completion:nil];
 }
@@ -1511,8 +1515,8 @@ replacementString:(NSString *)string
 - (BOOL)registrationIsPossible
 {
   return ([NYPLConfiguration cardCreationEnabled] &&
-          (self.account.supportsCardCreator || self.account.cardCreatorUrl) &&
-          ![[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]);
+          (self.selectedAccount.supportsCardCreator || self.selectedAccount.cardCreatorUrl) &&
+          ![self.selectedNYPLAccount hasBarcodeAndPIN]);
 }
 
 - (void)syncSwitchChanged:(UISwitch*)sender
@@ -1523,17 +1527,17 @@ replacementString:(NSString *)string
     self.syncSwitch.enabled = NO;
     [NYPLAnnotations updateServerSyncSettingToEnabled:YES completion:^(BOOL success) {
       if (success) {
-        self.account.syncPermissionGranted = YES;
+        self.selectedAccount.syncPermissionGranted = YES;
         self.syncSwitch.on = YES;
       } else {
         [NYPLAnnotations handleSyncSettingError];
-        self.account.syncPermissionGranted = NO;
+        self.selectedAccount.syncPermissionGranted = NO;
         self.syncSwitch.on = NO;
       }
       self.syncSwitch.enabled = YES;
     }];
   } else {
-    self.account.syncPermissionGranted = NO;
+    self.selectedAccount.syncPermissionGranted = NO;
     self.syncSwitch.on = NO;
   }
 }
@@ -1551,7 +1555,7 @@ replacementString:(NSString *)string
   self.syncSwitch.enabled = NO;
 
   [NYPLAnnotations requestServerSyncSettingWithUserAlert:^(BOOL enableSync) {
-    self.account.syncPermissionGranted = enableSync;
+    self.selectedAccount.syncPermissionGranted = enableSync;
     self.syncSwitch.on = enableSync;
     self.syncSwitch.enabled = YES;
     self.permissionCheckIsInProgress = NO;
@@ -1560,8 +1564,10 @@ replacementString:(NSString *)string
 
 - (BOOL)syncButtonShouldBeVisible
 {
-  return ((self.account.supportsSimplyESync) &&
-          ([self.account getLicenseURL:URLTypeAnnotations] && [[NYPLAccount sharedAccount:self.accountType] hasBarcodeAndPIN]));
+  return ((self.selectedAccount.supportsSimplyESync) &&
+          ([self.selectedAccount getLicenseURL:URLTypeAnnotations] &&
+           [self.selectedNYPLAccount hasBarcodeAndPIN]) &&
+           [self.selectedNYPLAccount isEqual:[NYPLAccount sharedAccount]]); //only works on main acct for now
 }
 
 - (void)didSelectCancel

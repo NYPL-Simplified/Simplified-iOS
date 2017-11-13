@@ -31,6 +31,9 @@ class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSourc
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     if (indexPath.row == 0) {
+
+      let cell = tableView.cellForRow(at: indexPath)
+      cell?.setSelected(false, animated: true)
       
       let message = "Choosing Delete will remove all bookmarks from the server for [this library name]."
       let alert = NYPLAlertController.init(title: nil, message: message, preferredStyle: .actionSheet)
@@ -51,7 +54,19 @@ class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSourc
   }
   
   private func disableSync() {
-    NYPLAnnotations.updateServerSyncSetting(toEnabled: false, completion: { (success) in
+
+    //Disable UI while working
+    let alert = UIAlertController(title: nil, message: "Please wait...", preferredStyle: .alert)
+    let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
+    loadingIndicator.hidesWhenStopped = true
+    loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+    loadingIndicator.startAnimating();
+
+    alert.view.addSubview(loadingIndicator)
+    present(alert, animated: true, completion: nil)
+
+    NYPLAnnotations.updateServerSyncSetting(toEnabled: false, completion: { success in
+      self.dismiss(animated: true, completion: nil)
       if (success) {
         self.account.syncPermissionGranted = false;
         self.navigationController?.popViewController(animated: true)
@@ -82,6 +97,5 @@ class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSourc
   func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
     return "Delete all the bookmarks you have saved in the cloud."
   }
-
 
 }
