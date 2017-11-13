@@ -25,8 +25,8 @@
                  annotationsURL:(NSURL *)URL
                        delegate:(id)delegate;
 
-- (void)syncAnnotationsForAccount:(Account *)account
-                  withPackageDict:(NSDictionary *)dict;
+- (void)syncAnnotationsWithPermissionForAccount:(Account *)account
+                                withPackageDict:(NSDictionary *)packageDict;
 
 - (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray *bookmarks))completion;
 

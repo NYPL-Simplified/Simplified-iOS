@@ -37,8 +37,8 @@
   return self;
 }
 
-- (void)syncAnnotationsForAccount:(Account *)account
-                  withPackageDict:(NSDictionary *)packageDict
+- (void)syncAnnotationsWithPermissionForAccount:(Account *)account
+                                withPackageDict:(NSDictionary *)packageDict
 {
   if (account.syncPermissionGranted) {
 
@@ -65,7 +65,8 @@
               completionHandler:^(NSDictionary * _Nullable responseObject) {
 
     if (!responseObject) {
-      NYPLLOG(@"Sync Error: No reponse object received from NYPLAnnotations.");
+      NYPLLOG(@"No Server Annotation for this book exists.");
+      [self shouldPostLastRead:YES];
       return;
     }
 
@@ -178,10 +179,15 @@
        for (NYPLReaderBookmarkElement *localBookmark in localBookmarks) {
 
          if (localBookmark.annotationId.length == 0 || localBookmark.annotationId == nil) {
-
-           [NYPLAnnotations postBookmarkForBook:self.bookID toURL:self.annotationsURL cfi:localBookmark.location bookmark:localBookmark completionHandler:^(NYPLReaderBookmarkElement * _Nullable bookmark) { //GODO make sure this _nullable works
-             [[NYPLBookRegistry sharedRegistry] replaceBookmark:localBookmark with:bookmark forIdentifier:self.bookID];
-           }];
+           [NYPLAnnotations postBookmarkForBook:self.bookID
+                                          toURL:nil
+                                            cfi:localBookmark.location
+                                       bookmark:localBookmark
+                              completionHandler:^(NYPLReaderBookmarkElement * _Nullable bookmark) {
+                                [[NYPLBookRegistry sharedRegistry] replaceBookmark:localBookmark
+                                                                              with:bookmark
+                                                                     forIdentifier:self.bookID];
+                              }];
          }
        }
 

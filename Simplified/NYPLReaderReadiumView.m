@@ -467,9 +467,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
 #pragma mark - ReadiumViewSyncManagerDelegate Methods
 
-- (void)syncAnnotations
+- (void)syncAnnotationsWhenPermitted
 {
-  [self.syncManager syncAnnotationsForAccount:[[AccountsManager sharedInstance] currentAccount] withPackageDict:self.package.dictionary];
+  [self.syncManager syncAnnotationsWithPermissionForAccount:[[AccountsManager sharedInstance] currentAccount]
+                                            withPackageDict:self.package.dictionary];
 }
 
 //- (void)didCompleteBookmarkSync:(BOOL)success withBookmarks:(NSArray<NYPLReaderBookmarkElement *> *)bookmarks
@@ -480,13 +481,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 - (void)patronDecidedNavigation:(BOOL)toLatestPage withNavDict:(NSDictionary *)dict
 {
   if (toLatestPage == YES) {
-
     NSData *data = NYPLJSONDataFromObject(dict);
-
     [self sequentiallyEvaluateJavaScript:
      [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
       [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
-
   } else {
     self.postLastRead = YES;
   }
@@ -500,7 +498,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 - (NSDictionary *)getCurrentSpineDetailsFromJSON:(NSDictionary *)responseJSON{
   return self.bookMapDictionary[responseJSON[@"idref"]];
 }
-
 
 #pragma mark -
 
@@ -612,7 +609,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   self.syncManager = [[NYPLReadiumViewSyncManager alloc] initWithBookID:self.book.identifier
                                                          annotationsURL:self.book.annotationsURL
                                                                delegate:self];
-  [self syncAnnotations];
+  [self syncAnnotationsWhenPermitted];
 }
 
 //GODO not sure what this method is for...
@@ -697,7 +694,11 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   if (currentAccount.syncPermissionGranted) {
   
-    [NYPLAnnotations postBookmarkForBook:self.book.identifier toURL:self.book.annotationsURL cfi:location.locationString bookmark:bookmark completionHandler:^(NYPLReaderBookmarkElement * _Nullable bookmark) {
+    [NYPLAnnotations postBookmarkForBook:self.book.identifier
+                                   toURL:nil
+                                     cfi:location.locationString
+                                bookmark:bookmark
+                       completionHandler:^(NYPLReaderBookmarkElement * _Nullable bookmark) {
       
       if (bookmark) {
         // add the bookmark to the local registry
@@ -858,7 +859,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
          }
        if(self.postLastRead) {
          [NYPLAnnotations postReadingPositionForBook:weakSelf.book.identifier
-                                      annotationsURL:weakSelf.book.annotationsURL
+                                      annotationsURL:nil
                                                  cfi:location.locationString];
        }
      }];

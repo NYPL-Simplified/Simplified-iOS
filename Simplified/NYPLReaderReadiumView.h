@@ -27,7 +27,7 @@
 
 - (NSString*) currentChapter;
 
-- (void) syncAnnotations;
+- (void) syncAnnotationsWhenPermitted;
 - (void) addBookmark;
 - (void) deleteBookmark:(NYPLReaderBookmarkElement*)bookmark;
 
