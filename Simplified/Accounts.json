@@ -339,7 +339,7 @@
  "mainColor": "#1b7fa7",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
- }
+ },
  {
  "id" : 22,
  "pathComponent" : "22",
