@@ -7,16 +7,18 @@
 @protocol NYPLReadiumViewSyncManagerDelegate <NSObject>
 
 @required
-
+// From UIALert, user made decision
+// to stay or to leave current page
 - (void)patronDecidedNavigation:(BOOL)toLatestPage
                     withNavDict:(NSDictionary *)dict;
-- (void)updatePostLasReadStatus:(BOOL)status;
-- (NSDictionary *)getCurrentSpineDetailsFromJSON:(NSDictionary *)responseJSON;
-@optional
 
+- (void)shouldPostReadingPosition:(BOOL)status;
+
+- (NSDictionary *)getCurrentSpineDetailsFromJSON:(NSDictionary *)responseJSON;
+
+@optional
 - (void)didCompleteBookmarkSync:(BOOL)success
                   withBookmarks:(NSArray<NYPLReaderBookmarkElement *> *)bookmarks;
-
 @end
 
 @interface NYPLReadiumViewSyncManager : NSObject

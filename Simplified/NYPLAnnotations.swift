@@ -1,24 +1,13 @@
 import UIKit
 
-///  Handling requests and certain actions related to:
-///  OPDS Annotations saving & syncing
-
 final class NYPLAnnotations: NSObject {
 
   // MARK: - Sync Settings
 
-  // Query Server: If it's the user's first time, present an Alert Controller.
-  // Attempt to update server if user selects YES to enable.
-  // Notify the caller whether or not the device can use sync and update any logic/UI.
-  // A client will not turn OFF sync server-side until a better UX is determined.
-  
-  // One byproduct of this, every time a user signs in fresh, it will default that
-  // client sync setting back to on until they disable it completely from the server.
-  
-  // userHasSeenFirstTimeSyncMessage is how we know if a user explicitly chose "no"
-  
-  //GODO still need to check the logic of this method...
-
+  // The Alert Controller introduces Sync as an opt-in feature.
+  // If the user has never seen it before, show it.
+  // If the user has seen it on one of their other devices, suppress it.
+  // Opting in will attempt to enable on the server, with appropriate error handling.
   class func requestServerSyncSettingWithUserAlert(
     _ completion: @escaping (_ enableSync: Bool) -> ()) {
     
@@ -67,7 +56,11 @@ final class NYPLAnnotations: NSObject {
       }
     }
   }
-  
+
+  // Ask the server to enable Annotations. Server will return null, true, or false. Null
+  // assumes the user has never been introduced to the feature ("initialized").
+  // The closure expects "enabled" which is strictly to inform this single client
+  // how to respond based on the server's response.
   class func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->()) {
     if (NYPLAccount.shared().hasBarcodeAndPIN() &&
       AccountsManager.shared.currentAccount.supportsSimplyESync) {
@@ -81,7 +74,6 @@ final class NYPLAnnotations: NSObject {
     }
   }
 
-  // 'initialized' == true if the value of 'syncIsPermitted' has ever been set on the server
   private class func permissionUrlRequest(completionHandler: @escaping (_ initialized: Bool, _ syncIsPermitted: Bool) -> ()) {
 
     if (NYPLAccount.shared().hasBarcodeAndPIN() && AccountsManager.shared.currentAccount.supportsSimplyESync) {
@@ -192,8 +184,6 @@ final class NYPLAnnotations: NSObject {
 
   // MARK: - Reading Position
 
-  // Even if we were not able to receive a valid Annotation (position) from the server
-  // go ahead and still try and post reading positions and let those methods handle their errors.
   class func syncReadingPosition(ofBook bookID: String?, toURL url:URL?,
                                  completionHandler: @escaping (_ responseObject: [String:String]?) -> ()) {
     
@@ -351,31 +341,6 @@ final class NYPLAnnotations: NSObject {
   }
 
   // MARK: - Bookmarks
-
-  //GODO need to test this method
-  class func getBookmark(book id: String?,
-                         atURL annotationUrl: URL?,
-                         locationCFI cfi: String,
-                         completionHandler: @escaping (_ responseObject: NYPLReaderBookmarkElement?) -> ()) {
-    
-    guard let data = cfi.data(using: .utf8),
-      let responseJSON = try? JSONSerialization.jsonObject(with: data,
-      options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:Any] else {
-        Log.error(#file, "Error creating JSON Object")
-        return
-    }
-    guard let localContentCfi = responseJSON["contentCFI"] as? String,
-      let localIdref = responseJSON["idref"] as? String else {
-        Log.error(#file, "Could not get contentCFI or idref from responseJSON")
-        return
-    }
-
-    getBookmarks(forBook: id, atURL: annotationUrl) { bookmarks in
-      completionHandler(bookmarks
-        .filter({ $0.contentCFI == localContentCfi && $0.idref == localIdref })
-        .first)
-    }
-  }
   
   class func getBookmarks(forBook bookID:String?, atURL annotationURL:URL?, completionHandler: @escaping (_ bookmarks: [NYPLReaderBookmarkElement]) -> ()) {
     
@@ -428,6 +393,31 @@ final class NYPLAnnotations: NSObject {
       completionHandler(bookmarks)
     }
     dataTask.resume()
+  }
+
+  //GODO need to test this method
+  class func getBookmark(book id: String?,
+                         atURL annotationUrl: URL?,
+                         locationCFI cfi: String,
+                         completionHandler: @escaping (_ responseObject: NYPLReaderBookmarkElement?) -> ()) {
+
+    guard let data = cfi.data(using: .utf8),
+      let responseJSON = try? JSONSerialization.jsonObject(with: data,
+                                                           options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:Any] else {
+                                                            Log.error(#file, "Error creating JSON Object")
+                                                            return
+    }
+    guard let localContentCfi = responseJSON["contentCFI"] as? String,
+      let localIdref = responseJSON["idref"] as? String else {
+        Log.error(#file, "Could not get contentCFI or idref from responseJSON")
+        return
+    }
+
+    getBookmarks(forBook: id, atURL: annotationUrl) { bookmarks in
+      completionHandler(bookmarks
+        .filter({ $0.contentCFI == localContentCfi && $0.idref == localIdref })
+        .first)
+    }
   }
 
   private class func createBookmarkElement(_ bookID: String, _ item: AnyObject) -> NYPLReaderBookmarkElement? {
@@ -484,7 +474,27 @@ final class NYPLAnnotations: NSObject {
     }
     return nil
   }
-  
+
+  class func deleteBookmark(annotationId:NSString) {
+    guard let url: URL = URL(string: annotationId as String) else {
+      Log.error(#file, "Invalid URL Created")
+      return
+    }
+    var request = URLRequest(url: url)
+    request.httpMethod = "DELETE"
+    setDefaultAnnotationHeaders(forRequest: &request)
+    
+    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+      if (response as? HTTPURLResponse)?.statusCode == 200 {
+        Log.info(#file, "Deleted Bookmark")
+      } else {
+        guard let error = error as NSError? else { return }
+        Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+      }
+    }
+    task.resume()
+  }
+
   class func postBookmark(forBook bookID: String,
                           toURL annotationsURL: URL?,
                           cfi: String?,
@@ -498,9 +508,9 @@ final class NYPLAnnotations: NSObject {
     // If no specific URL is provided, post to annotation URL provided by OPDS Main Feed.
     let mainFeedAnnotationURL = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
     guard let annotationsURL = annotationsURL ?? mainFeedAnnotationURL,
-    let cfi = cfi else {
-      Log.error(#file, "Required parameter was nil.")
-      return
+      let cfi = cfi else {
+        Log.error(#file, "Required parameter was nil.")
+        return
     }
 
     let parameters = [
@@ -535,38 +545,12 @@ final class NYPLAnnotations: NSObject {
       }
     }
   }
-  
-  class func deleteBookmark(annotationId:NSString) {
-    guard let url: URL = URL(string: annotationId as String) else {
-      Log.error(#file, "Invalid URL Created")
-      return
-    }
-    var request = URLRequest(url: url)
-    request.httpMethod = "DELETE"
-    setDefaultAnnotationHeaders(forRequest: &request)
-    
-    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-      if (response as? HTTPURLResponse)?.statusCode == 200 {
-        Log.info(#file, "Deleted Bookmark")
-      } else {
-        guard let error = error as NSError? else { return }
-        Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
-      }
-    }
-    task.resume()
-  }
 
   // MARK: -
   
   class func accountSatisfiesSyncConditions() -> Bool {
     let acct = AccountsManager.shared.currentAccount
     return NYPLAccount.shared().hasBarcodeAndPIN() && acct.supportsSimplyESync
-  }
-  
-  private class func addToOfflineQueue(_ bookID: String?, _ url: URL, _ parameters: [String:Any]) {
-    let libraryID = AccountsManager.shared.currentAccount.id
-    let parameterData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted])
-    NetworkQueue.addRequest(libraryID, bookID, url, .POST, parameterData, headers)
   }
 
   class func setDefaultAnnotationHeaders(forRequest request: inout URLRequest) {
@@ -591,5 +575,10 @@ final class NYPLAnnotations: NSObject {
     return ["Authorization" : "",
             "Content-Type" : "application/json"]
   }
-  
+
+  private class func addToOfflineQueue(_ bookID: String?, _ url: URL, _ parameters: [String:Any]) {
+    let libraryID = AccountsManager.shared.currentAccount.id
+    let parameterData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted])
+    NetworkQueue.addRequest(libraryID, bookID, url, .POST, parameterData, headers)
+  }
 }

@@ -11,7 +11,6 @@
 #import "NYPLRootTabBarController.h"
 #import "SimplyE-Swift.h"
 
-@class RDPackage;
 
 @interface NYPLReadiumViewSyncManager ()
 
@@ -20,7 +19,6 @@
 @property (nonatomic, weak) id<NYPLReadiumViewSyncManagerDelegate> delegate;
 
 @end
-
 
 @implementation NYPLReadiumViewSyncManager
 
@@ -147,8 +145,8 @@
 
 - (void)shouldPostLastRead:(BOOL)status
 {
-  if ([self.delegate respondsToSelector:@selector(updatePostLasReadStatus:)]) {
-    [self.delegate updatePostLasReadStatus:status];
+  if ([self.delegate respondsToSelector:@selector(shouldPostReadingPosition:)]) {
+    [self.delegate shouldPostReadingPosition:status];
   }
 }
 
@@ -193,58 +191,60 @@
 
        //GODO does this need to be nested from completion block of previous postBookmark operations??
        
-       [NYPLAnnotations getBookmarksForBook:self.bookID atURL:self.annotationsURL completionHandler:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull remoteBookmarks) {  //GODO make sure this _Nonnull works
-         
-         // 2.
-         // delete local bookmarks if annotation id exists locally but not remote
+       [NYPLAnnotations getBookmarksForBook:self.bookID
+                                      atURL:self.annotationsURL
+                          completionHandler:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull remoteBookmarks) {  //GODO make sure this _Nonnull works, why different from _NULLable on other one?
 
-         NSMutableArray *keepLocalBookmarks = [[NSMutableArray alloc] init];
-         for (NYPLReaderBookmarkElement *bookmark in remoteBookmarks) {
+                            // 2.
+                            // delete local bookmarks if annotation id exists locally but not remote
 
-           NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", bookmark.annotationId];
-           [keepLocalBookmarks addObjectsFromArray:[localBookmarks filteredArrayUsingPredicate:predicate]];
+                            NSMutableArray *keepLocalBookmarks = [[NSMutableArray alloc] init];
+                            for (NYPLReaderBookmarkElement *bookmark in remoteBookmarks) {
 
-         }
-         NYPLLOG(keepLocalBookmarks);
+                              NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", bookmark.annotationId];
+                              [keepLocalBookmarks addObjectsFromArray:[localBookmarks filteredArrayUsingPredicate:predicate]];
 
-         NSMutableArray *deleteLocalBookmarks = [[NSMutableArray alloc] init];
-         for (NYPLReaderBookmarkElement *bookmark in localBookmarks) {
-           if (![keepLocalBookmarks containsObject:bookmark]) {
-             [deleteLocalBookmarks addObject:bookmark];
-           }
-         }
-         NYPLLOG(deleteLocalBookmarks);
+                            }
+                            NYPLLOG(keepLocalBookmarks);
 
-         for (NYPLReaderBookmarkElement *bookmark in deleteLocalBookmarks) {
-           [[NYPLBookRegistry sharedRegistry] deleteBookmark:bookmark forIdentifier:self.bookID];
-         }
+                            NSMutableArray *deleteLocalBookmarks = [[NSMutableArray alloc] init];
+                            for (NYPLReaderBookmarkElement *bookmark in localBookmarks) {
+                              if (![keepLocalBookmarks containsObject:bookmark]) {
+                                [deleteLocalBookmarks addObject:bookmark];
+                              }
+                            }
+                            NYPLLOG(deleteLocalBookmarks);
 
-         // 3.
-         // get remote bookmarks and store locally if not already stored
+                            for (NYPLReaderBookmarkElement *bookmark in deleteLocalBookmarks) {
+                              [[NYPLBookRegistry sharedRegistry] deleteBookmark:bookmark forIdentifier:self.bookID];
+                            }
 
-         NSMutableArray *addLocalBookmarks = remoteBookmarks.mutableCopy;
-         NSMutableArray *ignoreBookmarks = [[NSMutableArray alloc] init];
+                            // 3.
+                            // get remote bookmarks and store locally if not already stored
 
-         for (NYPLReaderBookmarkElement *bookmark in remoteBookmarks) {
-           NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", bookmark.annotationId];
-           [ignoreBookmarks addObjectsFromArray:[localBookmarks filteredArrayUsingPredicate:predicate]];
-         }
+                            NSMutableArray *addLocalBookmarks = remoteBookmarks.mutableCopy;
+                            NSMutableArray *ignoreBookmarks = [[NSMutableArray alloc] init];
 
-         for (NYPLReaderBookmarkElement *el in remoteBookmarks) {
-           for (NYPLReaderBookmarkElement *el2 in ignoreBookmarks) {
-             if ([el isEqual:el2]) {
-               [addLocalBookmarks removeObject:el];
-             }
-           }
-         }
+                            for (NYPLReaderBookmarkElement *bookmark in remoteBookmarks) {
+                              NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", bookmark.annotationId];
+                              [ignoreBookmarks addObjectsFromArray:[localBookmarks filteredArrayUsingPredicate:predicate]];
+                            }
 
-         for (NYPLReaderBookmarkElement *bookmark in addLocalBookmarks) {
-           [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.bookID];
-         }
+                            for (NYPLReaderBookmarkElement *el in remoteBookmarks) {
+                              for (NYPLReaderBookmarkElement *el2 in ignoreBookmarks) {
+                                if ([el isEqual:el2]) {
+                                  [addLocalBookmarks removeObject:el];
+                                }
+                              }
+                            }
 
-         completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+                            for (NYPLReaderBookmarkElement *bookmark in addLocalBookmarks) {
+                              [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.bookID];
+                            }
 
-       }];
+                            completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+
+                          }];
      }
    }];
 }

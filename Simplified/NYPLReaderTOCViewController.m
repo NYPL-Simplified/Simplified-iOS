@@ -95,13 +95,13 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
 {
   NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
   [rv.syncManager syncBookmarksWithCompletion:^(BOOL success, NSArray *bookmarks) {
-    
-    if (success) {
-      self.bookmarks = bookmarks.mutableCopy;
-      [self.tableView reloadData];
-    }
-    
-    [refreshControl endRefreshing];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (success) {
+        self.bookmarks = bookmarks.mutableCopy;
+        [self.tableView reloadData];
+      }
+      [refreshControl endRefreshing];
+    });
   }];
 }
 

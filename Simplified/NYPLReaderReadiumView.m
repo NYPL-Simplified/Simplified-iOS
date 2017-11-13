@@ -490,7 +490,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   }
 }
 
-- (void)updatePostLasReadStatus:(BOOL)status
+- (void)shouldPostReadingPosition:(BOOL)status
 {
   self.postLastRead = status;
 }
