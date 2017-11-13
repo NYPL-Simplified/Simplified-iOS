@@ -320,6 +320,25 @@
  "authPasscodeAllowsLetters" : true
  },
  {
+ "id" : 21,
+ "pathComponent" : "21",
+ "name" : "Allegany County Library System",
+ "subtitle" : " ",
+ "logo" : "LibraryLogoAllegany",
+ "needsAuth" : true,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : true,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "alleganycountylibrary@alleganycountylibrary.info",
+ "mainColor" : "#1b7fa7",
+ "supportEmail" : "ask@sccl.org",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
+ },
+ {
  "id" : 22,
  "pathComponent" : "22",
  "name" : "Ruth Enlow Library of Garrett County",
