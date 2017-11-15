@@ -1542,8 +1542,6 @@ replacementString:(NSString *)string
   }
 }
 
-//GODO MAKE SURE WE'RE NOT CHECKING ONE ANNOTATION SERVER FOR ALL LIBRARIES
-
 - (void)checkSyncPermissionForCurrentPatron
 {
   if (self.permissionCheckIsInProgress) {

@@ -50,6 +50,7 @@
                           atLocation:location
                                toURL:self.annotationsURL
                          withPackage:dictionary];
+    //GODO working on this at the moment.
     [self syncBookmarks];
   }
 }
@@ -152,100 +153,94 @@
 
 - (void)syncBookmarks
 {
-  [self syncBookmarksWithCompletion:^(BOOL success, NSArray *bookmarks) {
+  [self syncBookmarksWithCompletion:^(BOOL success, NSArray<NYPLReaderBookmarkElement *> *bookmarks) {
     if ([self.delegate respondsToSelector:@selector(didCompleteBookmarkSync:withBookmarks:)]) {
       [self.delegate didCompleteBookmarkSync:success withBookmarks:bookmarks];
     }
   }];
 }
 
-//GODO need to audit this class since not sure what it's going or why a delegate is needed at all
-- (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray *bookmarks))completion
+- (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray<NYPLReaderBookmarkElement *> *bookmarks))completion
 {
+  //GODO using reachability like this necessary?
   [[NYPLReachability sharedReachability]
    reachabilityForURL:[NYPLConfiguration mainFeedURL]
    timeoutInternal:8.0
    handler:^(BOOL reachable) {
 
-     if (reachable) {
-
-       // 1.
-       // post all local bookmarks if they have not been posted yet,
-       // this can happen if device was storing local bookmarks first and SImplyE Sync was enabled afterwards.
-
-       NSArray<NYPLReaderBookmarkElement *> *localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID];
-       for (NYPLReaderBookmarkElement *localBookmark in localBookmarks) {
-
-         if (localBookmark.annotationId.length == 0 || localBookmark.annotationId == nil) {
-           [NYPLAnnotations postBookmarkForBook:self.bookID
-                                          toURL:nil
-                                            cfi:localBookmark.location
-                                       bookmark:localBookmark
-                              completionHandler:^(NYPLReaderBookmarkElement * _Nullable bookmark) {
-                                [[NYPLBookRegistry sharedRegistry] replaceBookmark:localBookmark
-                                                                              with:bookmark
-                                                                     forIdentifier:self.bookID];
-                              }];
-         }
-       }
-
-       //GODO does this need to be nested from completion block of previous postBookmark operations??
-       
-       [NYPLAnnotations getBookmarksForBook:self.bookID
-                                      atURL:self.annotationsURL
-                          completionHandler:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull remoteBookmarks) {  //GODO make sure this _Nonnull works, why different from _NULLable on other one?
-
-                            // 2.
-                            // delete local bookmarks if annotation id exists locally but not remote
-
-                            NSMutableArray *keepLocalBookmarks = [[NSMutableArray alloc] init];
-                            for (NYPLReaderBookmarkElement *bookmark in remoteBookmarks) {
-
-                              NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", bookmark.annotationId];
-                              [keepLocalBookmarks addObjectsFromArray:[localBookmarks filteredArrayUsingPredicate:predicate]];
-
-                            }
-                            NYPLLOG(keepLocalBookmarks);
-
-                            NSMutableArray *deleteLocalBookmarks = [[NSMutableArray alloc] init];
-                            for (NYPLReaderBookmarkElement *bookmark in localBookmarks) {
-                              if (![keepLocalBookmarks containsObject:bookmark]) {
-                                [deleteLocalBookmarks addObject:bookmark];
-                              }
-                            }
-                            NYPLLOG(deleteLocalBookmarks);
-
-                            for (NYPLReaderBookmarkElement *bookmark in deleteLocalBookmarks) {
-                              [[NYPLBookRegistry sharedRegistry] deleteBookmark:bookmark forIdentifier:self.bookID];
-                            }
-
-                            // 3.
-                            // get remote bookmarks and store locally if not already stored
-
-                            NSMutableArray *addLocalBookmarks = remoteBookmarks.mutableCopy;
-                            NSMutableArray *ignoreBookmarks = [[NSMutableArray alloc] init];
-
-                            for (NYPLReaderBookmarkElement *bookmark in remoteBookmarks) {
-                              NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", bookmark.annotationId];
-                              [ignoreBookmarks addObjectsFromArray:[localBookmarks filteredArrayUsingPredicate:predicate]];
-                            }
-
-                            for (NYPLReaderBookmarkElement *el in remoteBookmarks) {
-                              for (NYPLReaderBookmarkElement *el2 in ignoreBookmarks) {
-                                if ([el isEqual:el2]) {
-                                  [addLocalBookmarks removeObject:el];
-                                }
-                              }
-                            }
-
-                            for (NYPLReaderBookmarkElement *bookmark in addLocalBookmarks) {
-                              [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.bookID];
-                            }
-
-                            completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
-
-                          }];
+     if (!reachable) {
+       NYPLLOG(@"Error: host was not reachable for bookmark sync attempt.");
+       completion(NO, nil);
+       return;
      }
+
+
+     NSArray<NYPLReaderBookmarkElement *> *localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID];
+
+     // 1.
+     // Upload local bookmarks if they have not been posted yet.
+     // This can happen if the device was already storing local bookmarks, and Sync was enabled later.
+     // When all requests have completed, execute completion block and provide any bookmarks not uploaded
+
+     [NYPLAnnotations postLocalBookmarksWithBookmarks:localBookmarks forBook:self.bookID completion:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull bookmarksNotUploaded) {
+
+         // After upload attempt finishes for local bookmarks,
+         // Attempt to pull list of bookmarks from the server.
+
+         [NYPLAnnotations getBookmarksForBook:self.bookID atURL:self.annotationsURL completionHandler:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull serverBookmarks) {
+
+           if (serverBookmarks.count == 0) {
+             NYPLLOG(@"No bookmarks were returned. No need to continue syncing.");
+             return;
+           }
+
+           // 2.
+           // Filter out bookmarks that don't exist on the server.
+
+           NSMutableArray *localBookmarksToKeep = [[NSMutableArray alloc] init];
+           for (NYPLReaderBookmarkElement *serverBookmark in serverBookmarks) {
+             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", serverBookmark.annotationId];
+             [localBookmarksToKeep addObjectsFromArray:[localBookmarks filteredArrayUsingPredicate:predicate]];
+           }
+           // Add back in the bookmarks that failed to upload.
+           [localBookmarksToKeep addObjectsFromArray:bookmarksNotUploaded];
+
+           NYPLLOG(localBookmarksToKeep);
+
+           NSMutableArray *bookmarksToDelete = [[NSMutableArray alloc] init];
+           for (NYPLReaderBookmarkElement *localBookmark in localBookmarks) {
+             if (![localBookmarksToKeep containsObject:localBookmark]) {
+               [bookmarksToDelete addObject:localBookmark];
+             }
+           }
+
+           NYPLLOG(bookmarksToDelete);
+
+           for (NYPLReaderBookmarkElement *bookmark in bookmarksToDelete) {
+             [[NYPLBookRegistry sharedRegistry] deleteBookmark:bookmark forIdentifier:self.bookID];
+           }
+
+           // 3.
+           // Filter for new server bookmarks and store locally
+
+           NSMutableArray *newBookmarksToSave = serverBookmarks.mutableCopy;
+
+           for (NYPLReaderBookmarkElement *serverMark in serverBookmarks) {
+             for (NYPLReaderBookmarkElement *localMark in localBookmarksToKeep) {
+               if ([serverMark isEqual:localMark]) {
+                 [newBookmarksToSave removeObject:serverMark];
+               }
+             }
+           }
+
+           for (NYPLReaderBookmarkElement *bookmark in newBookmarksToSave) {
+             [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.bookID];
+           }
+
+           completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+
+         }];
+     }];
    }];
 }
 

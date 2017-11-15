@@ -70,60 +70,55 @@ final class NYPLAnnotations: NSObject {
         return
       }
       let parameters = ["settings": ["simplified:synchronize_annotations": enabled]] as [String : Any]
-      syncSettingUrlRequest(patronAnnotationSettingUrl, parameters, 10, completion)
+      syncSettingUrlRequest(patronAnnotationSettingUrl, parameters, 15, completion)
     }
   }
 
   private class func permissionUrlRequest(completionHandler: @escaping (_ initialized: Bool, _ syncIsPermitted: Bool) -> ()) {
 
-    if (NYPLAccount.shared().hasBarcodeAndPIN() && AccountsManager.shared.currentAccount.supportsSimplyESync) {
+    guard let annotationSettingsUrl = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("patrons/me/") else {
+      Log.error(#file, "Failed to create Annotations URL. Abandoning attempt to retrieve sync setting.")
+      return
+    }
 
-      guard let annotationSettingsUrl = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("patrons/me/") else {
-        Log.error(#file, "Failed to create Annotations URL. Abandoning attempt to retrieve sync setting.")
-        return
-      }
-      //GODO need to add error messages for users and logging
-      var request = URLRequest.init(url: annotationSettingsUrl,
-                                    cachePolicy: .reloadIgnoringLocalCacheData,
-                                    timeoutInterval: 15)
-      request.httpMethod = "GET"
-      setDefaultAnnotationHeaders(forRequest: &request)
+    var request = URLRequest.init(url: annotationSettingsUrl,
+                                  cachePolicy: .reloadIgnoringLocalCacheData,
+                                  timeoutInterval: 30)
+    request.httpMethod = "GET"
+    setDefaultAnnotationHeaders(forRequest: &request)
 
-      let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
+    let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
 
-        DispatchQueue.main.async {
+      DispatchQueue.main.async {
 
-          if let error = error as NSError? {
-            Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
-            return
-          }
-          guard let data = data,
+        if let error = error as NSError? {
+          Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+          return
+        }
+        guard let data = data,
           let response = (response as? HTTPURLResponse) else {
             Log.error(#file, "No Data or No Server Response present after request.")
             return
-          }
+        }
 
-          if response.statusCode == 200 {
-            if let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any],
+        if response.statusCode == 200 {
+          if let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any],
             let settings = json["settings"] as? [String:Any],
             let syncSetting = settings["simplified:synchronize_annotations"] {
-              if syncSetting is NSNull {
-                completionHandler(false, false)
-              } else {
-                completionHandler(true, syncSetting as? Bool ?? false)
-              }
+            if syncSetting is NSNull {
+              completionHandler(false, false)
             } else {
-              Log.error(#file, "Error parsing JSON or finding sync-setting key/value.")
+              completionHandler(true, syncSetting as? Bool ?? false)
             }
           } else {
-            Log.error(#file, "Server response returned error code: \(response.statusCode))")
+            Log.error(#file, "Error parsing JSON or finding sync-setting key/value.")
           }
+        } else {
+          Log.error(#file, "Server response returned error code: \(response.statusCode))")
         }
       }
-      dataTask.resume()
-    } else {
-      Log.debug(#file, "Skipping sync check. Account does not meet requirements to support sync.")
     }
+    dataTask.resume()
   }
   
   private class func syncSettingUrlRequest(_ url: URL,
@@ -395,7 +390,6 @@ final class NYPLAnnotations: NSObject {
     dataTask.resume()
   }
 
-  //GODO need to test this method
   class func getBookmark(book id: String?,
                          atURL annotationUrl: URL?,
                          locationCFI cfi: String,
@@ -457,7 +451,6 @@ final class NYPLAnnotations: NSObject {
           return nil
       }
 
-      //GODO any of the previous '!' var's I'm assuming were not optional
       let bookmark = NYPLReaderBookmarkElement(annotationId: id,
                                                contentCFI: serverCfiJson,
                                                idref: serverIdrefJson,
@@ -475,6 +468,8 @@ final class NYPLAnnotations: NSObject {
     return nil
   }
 
+  //GODO okay so if you delete bookmarks and you're offline right now, they will likely come right back
+  //the next time you pull to sync.
   class func deleteBookmark(annotationId:NSString) {
     guard let url: URL = URL(string: annotationId as String) else {
       Log.error(#file, "Invalid URL Created")
@@ -495,12 +490,40 @@ final class NYPLAnnotations: NSObject {
     task.resume()
   }
 
+  //GODO work in progress
+  // When all requests have completed, send back any bookmarks that failed to upload.
+  class func postLocalBookmarks(bookmarks: [NYPLReaderBookmarkElement],
+                                forBook bookID: String,
+                                completion: @escaping ([NYPLReaderBookmarkElement])->())
+  {
+    let uploadGroup = DispatchGroup()
+    var bookmarksNotUploaded = [NYPLReaderBookmarkElement]()
+
+    for localBookmark in bookmarks {
+      if (localBookmark.annotationId.count == 0) {
+        uploadGroup.enter()
+        postBookmark(forBook: bookID, toURL: nil, cfi: localBookmark.location, bookmark: localBookmark, completionHandler: { success in
+          if !success {
+            bookmarksNotUploaded.append(localBookmark)
+          }
+          uploadGroup.leave()
+        })
+      }
+    }
+
+    uploadGroup.notify(queue: DispatchQueue.main) {
+      Log.debug(#file, "Finished task of uploading local bookmarks.")
+      completion(bookmarksNotUploaded)
+    }
+  }
+
   class func postBookmark(forBook bookID: String,
                           toURL annotationsURL: URL?,
                           cfi: String?,
                           bookmark: NYPLReaderBookmarkElement,
-                          completionHandler: @escaping (_ responseObject: NYPLReaderBookmarkElement?) -> ())
+                          completionHandler: @escaping (_ success: Bool) -> ())
   {
+    //GODO should put a custom timeout on annotations that are also bookmarks
     if !accountSatisfiesSyncConditions() {
       Log.debug(#file, "Account does not support sync.")
       return
@@ -535,13 +558,9 @@ final class NYPLAnnotations: NSObject {
 
     postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters) { success in
       if success {
-        //GODO why are we turning around and immediately doing another url request after performing this step?
-        //does that make sense?
-        getBookmark(book: bookID, atURL: annotationsURL, locationCFI: cfi, completionHandler: { bookmark in
-          completionHandler(bookmark)
-        })
+        completionHandler(true)
       } else {
-        completionHandler(nil)
+        completionHandler(false)
       }
     }
   }

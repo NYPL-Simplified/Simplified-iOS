@@ -94,7 +94,7 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
 - (void)userDidRefresh:(UIRefreshControl *)refreshControl
 {
   NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
-  [rv.syncManager syncBookmarksWithCompletion:^(BOOL success, NSArray *bookmarks) {
+  [rv.syncManager syncBookmarksWithCompletion:^(BOOL success, NSArray<NYPLReaderBookmarkElement *> *bookmarks) {
     dispatch_async(dispatch_get_main_queue(), ^{
       if (success) {
         self.bookmarks = bookmarks.mutableCopy;
@@ -138,7 +138,6 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       cell.leadingEdgeConstraint.constant = toc.nestingLevel * 20 + 10;
       cell.titleLabel.text = toc.title;
 
-      //GODO
       cell.background.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
       cell.background.layer.borderWidth = 1;
       cell.background.layer.cornerRadius = 3;

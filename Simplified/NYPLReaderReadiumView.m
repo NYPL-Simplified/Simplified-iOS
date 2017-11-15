@@ -605,7 +605,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   [self sequentiallyEvaluateJavaScript:javascript];
 
-  //GODO Maybe another spot for this?
+  //GODO Best spot for this?
   self.syncManager = [[NYPLReadiumViewSyncManager alloc] initWithBookID:self.book.identifier
                                                          annotationsURL:self.book.annotationsURL
                                                                delegate:self];
@@ -698,7 +698,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                    toURL:nil
                                      cfi:location.locationString
                                 bookmark:bookmark
-                       completionHandler:^(NYPLReaderBookmarkElement * _Nullable bookmark) {
+                       completionHandler:^(BOOL success) {
       
       if (bookmark) {
         // add the bookmark to the local registry

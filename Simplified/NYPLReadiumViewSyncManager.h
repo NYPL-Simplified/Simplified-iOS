@@ -30,7 +30,6 @@
 - (void)syncAnnotationsWithPermissionForAccount:(Account *)account
                                 withPackageDict:(NSDictionary *)packageDict;
 
-- (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray *bookmarks))completion;
-
+- (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray<NYPLReaderBookmarkElement *> *bookmarks))completion;
 
 @end
