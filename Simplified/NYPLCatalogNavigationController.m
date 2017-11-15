@@ -187,19 +187,11 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  
   NYPLSettings *settings = [NYPLSettings sharedSettings];
-  
   if (settings.userHasSeenWelcomeScreen == YES) {
     [self reloadSelectedLibraryAccount];
   }
-  
 }
-
-
-//GODO check if this is necessary at the catalog nav controller (maybe just have it in settings for now)
-//also, this would have been sending a network request every time the catalog view appeared...
-
 
 - (void)viewDidAppear:(BOOL)animated
 {

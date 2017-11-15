@@ -34,7 +34,7 @@ final class NetworkQueue: NSObject {
   
   
   // MARK: - Public Functions
-  
+
   class func addRequest(_ libraryID: Int,
                         _ updateID: String?,
                         _ requestUrl: URL,

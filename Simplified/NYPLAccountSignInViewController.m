@@ -969,7 +969,7 @@ completionHandler:(void (^)())handler
   [self updateLoginLogoutCellAppearance];
 }
 
-// GODO - Method and caller can be removed after 2.1.0 release.
+// FIXME - Method and caller can be removed after 2.1.0 release.
 - (void)resetPasswordTapped
 {
   if ([[NYPLSettings sharedSettings] currentAccountIdentifier] == 0) {

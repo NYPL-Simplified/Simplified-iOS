@@ -473,11 +473,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                             withPackageDict:self.package.dictionary];
 }
 
-//- (void)didCompleteBookmarkSync:(BOOL)success withBookmarks:(NSArray<NYPLReaderBookmarkElement *> *)bookmarks
-//{
-//  //GODO app is not using this method at the moment.
-//}
-
 - (void)patronDecidedNavigation:(BOOL)toLatestPage withNavDict:(NSDictionary *)dict
 {
   if (toLatestPage == YES) {
@@ -858,6 +853,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
           forIdentifier:weakSelf.book.identifier];
          }
        if(self.postLastRead) {
+         //GODO probably should just get rid of url parameter
          [NYPLAnnotations postReadingPositionForBook:weakSelf.book.identifier
                                       annotationsURL:nil
                                                  cfi:location.locationString];

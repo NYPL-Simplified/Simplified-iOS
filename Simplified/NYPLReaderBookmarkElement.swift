@@ -1,6 +1,5 @@
 import UIKit
 
-/// GODO Represents a bookmark? Need to check this out.
 final class NYPLReaderBookmarkElement: NSObject {
   
   var annotationId:String
