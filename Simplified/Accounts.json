@@ -321,6 +321,27 @@
  "authPasscodeAllowsLetters" : true
  },
  {
+ "id": 21,
+ "pathComponent": "21",
+ "name": "Allegany County Library System",
+ "subtitle": " ",
+ "logo": "LibraryLogoAllegany",
+ "needsAuth": true,
+ "supportsSimplyESync": false,
+ "supportsBarcodeScanner": false,
+ "supportsBarcodeDisplay": false,
+ "supportsReservations": true,
+ "supportsCardCreator": false,
+ "supportsHelpCenter": false,
+ "supportEmail" : "alleganycountylibrary@alleganycountylibrary.info",
+ "catalogUrl" : "http://allegany.simplye-md.org/",
+ "licenseUrl": "http://www.librarysimplified.org/license.html",
+ "privacyUrl": "http://www.alleganycountylibrary.info/contentpages.asp?loc=81",
+ "mainColor": "#1b7fa7",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
+ },
+ {
  "id" : 22,
  "pathComponent" : "22",
  "name" : "Ruth Enlow Library of Garrett County",
