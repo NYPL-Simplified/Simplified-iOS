@@ -2,6 +2,7 @@
 
 @class Account;
 @class NYPLBook;
+@class NYPLBookLocation;
 @class NYPLReaderBookmarkElement;
 
 @protocol NYPLReadiumViewSyncManagerDelegate <NSObject>
@@ -14,7 +15,11 @@
 
 - (void)shouldPostReadingPosition:(BOOL)status;
 
-- (NSDictionary *)getCurrentSpineDetailsFromJSON:(NSDictionary *)responseJSON;
+- (NSDictionary *)getCurrentSpineDetailsForKey:(NSString *)dictionaryKey;
+
+-(void)bookmarkUploadDidFinish:(NYPLReaderBookmarkElement *)bookmark
+                       forBook:(NSString *)bookID
+                 savedOnServer:(BOOL)success;
 
 @optional
 - (void)didCompleteBookmarkSync:(BOOL)success
@@ -31,5 +36,9 @@
                                 withPackageDict:(NSDictionary *)packageDict;
 
 - (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray<NYPLReaderBookmarkElement *> *bookmarks))completion;
+
+- (void)addBookmark:(NYPLReaderBookmarkElement *)bookmark
+            withCFI:(NSString *)location
+            forBook:(NSString *)bookID;
 
 @end

@@ -284,7 +284,7 @@ final class NYPLAnnotations: NSObject {
       ]
       ] as [String : Any]
     
-    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters) { success in
+    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, timeout: nil) { success in
       if success {
         Log.debug(#file, "Annotation posted successfully to the server.")
       } else {
@@ -296,6 +296,7 @@ final class NYPLAnnotations: NSObject {
   private class func postAnnotation(forBook bookID: String,
                                     withAnnotationURL url: URL,
                                     withParameters parameters: [String:Any],
+                                    timeout: Double?,
                                     _ completionHandler: @escaping (_ success: Bool) -> ()) {
 
     guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted]) else {
@@ -307,6 +308,9 @@ final class NYPLAnnotations: NSObject {
     request.httpMethod = "POST"
     request.httpBody = jsonData
     setDefaultAnnotationHeaders(forRequest: &request)
+    if let timeout = timeout {
+      request.timeoutInterval = timeout
+    }
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
 
@@ -468,30 +472,55 @@ final class NYPLAnnotations: NSObject {
     return nil
   }
 
-  //GODO okay so if you delete bookmarks and you're offline right now, they will likely come right back
-  //the next time you pull to sync.
-  class func deleteBookmark(annotationId:NSString) {
-    guard let url: URL = URL(string: annotationId as String) else {
-      Log.error(#file, "Invalid URL Created")
+  class func delete(bookmarks: [NYPLReaderBookmarkElement],
+                    completion: @escaping ([NYPLReaderBookmarkElement])->())
+  {
+    let uploadGroup = DispatchGroup()
+    var bookmarksNotDeleted = [NYPLReaderBookmarkElement]()
+
+    for localBookmark in bookmarks {
+      uploadGroup.enter()
+      deleteBookmark(annotationId: localBookmark.annotationId, completionHandler: { success in
+        if !success {
+          bookmarksNotDeleted.append(localBookmark)
+          //GODO add to offline queue?
+        }
+        uploadGroup.leave()
+      })
+    }
+
+    uploadGroup.notify(queue: DispatchQueue.main) {
+      Log.debug(#file, "Finished attempting to delete bookmarks.")
+      completion(bookmarksNotDeleted)
+    }
+  }
+
+//GODO think about if adding bookmarks really need offline queue. maybe not. maybe really it only makes sense for deleting server ones
+  //sinse the sync action will automatically try and download them again on the next refresh. but a failed delete would be different.
+
+  class func deleteBookmark(annotationId: String,
+                            completionHandler: @escaping (_ success: Bool) -> ()) {
+    guard let url = URL(string: annotationId) else {
+      Log.error(#file, "Invalid URL from Annotation ID")
       return
     }
     var request = URLRequest(url: url)
     request.httpMethod = "DELETE"
     setDefaultAnnotationHeaders(forRequest: &request)
+    //GODO shorten timeout?
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
       if (response as? HTTPURLResponse)?.statusCode == 200 {
-        Log.info(#file, "Deleted Bookmark")
+        Log.info(#file, "200: DELETE bookmark success")
       } else {
         guard let error = error as NSError? else { return }
-        Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
+        Log.error(#file, "DELETE bookmark Request Failed with Error Code: \(error.code). Description: \(error.localizedDescription)")
       }
     }
     task.resume()
   }
 
-  //GODO work in progress
-  // When all requests have completed, send back any bookmarks that failed to upload.
+
   class func postLocalBookmarks(bookmarks: [NYPLReaderBookmarkElement],
                                 forBook bookID: String,
                                 completion: @escaping ([NYPLReaderBookmarkElement])->())
@@ -523,7 +552,6 @@ final class NYPLAnnotations: NSObject {
                           bookmark: NYPLReaderBookmarkElement,
                           completionHandler: @escaping (_ success: Bool) -> ())
   {
-    //GODO should put a custom timeout on annotations that are also bookmarks
     if !accountSatisfiesSyncConditions() {
       Log.debug(#file, "Account does not support sync.")
       return
@@ -556,7 +584,7 @@ final class NYPLAnnotations: NSObject {
       ]
       ] as [String : Any]
 
-    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters) { success in
+    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, timeout: 20.0) { success in
       if success {
         completionHandler(true)
       } else {

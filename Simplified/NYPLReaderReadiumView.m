@@ -490,8 +490,27 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   self.postLastRead = status;
 }
 
-- (NSDictionary *)getCurrentSpineDetailsFromJSON:(NSDictionary *)responseJSON{
-  return self.bookMapDictionary[responseJSON[@"idref"]];
+- (NSDictionary *)getCurrentSpineDetailsForKey:(NSString *)dictionaryKey{
+  return self.bookMapDictionary[dictionaryKey];
+}
+
+-(void)bookmarkUploadDidFinish:(NYPLReaderBookmarkElement *)bookmark
+                       forBook:(NSString *)bookID
+                 savedOnServer:(BOOL)success
+{
+  if (!success) {
+    bookmark.time = [[[NSDate alloc] init] RFC3339String];
+    bookmark.device = [[NYPLAccount sharedAccount] deviceID];
+  }
+  
+  NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
+  [registry addBookmark:bookmark forIdentifier:bookID];
+  
+  self.bookmarkElements = [registry bookmarksForIdentifier:bookID];
+  
+  //GODO updates icons, but need to double check these methods
+  [self.delegate renderer:self bookmark:bookmark];
+  [self.delegate renderer:self icon:YES];
 }
 
 #pragma mark -
@@ -607,11 +626,11 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   [self syncAnnotationsWhenPermitted];
 }
 
-//GODO not sure what this method is for...
+//GODO audit this
 - (void) hasBookmarkForSpineItem:(NSString*)idref completionHandler:(void(^)(bool success, NYPLReaderBookmarkElement *bookmark))completionHandler
 {
 
-  NSArray * bookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];
+  NSArray *bookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];
   
   for (NYPLReaderBookmarkElement *bookmark in bookmarks) {
 
@@ -620,16 +639,14 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                       bookmark.idref,
                       bookmark.contentCFI];
     
-      [self
-        sequentiallyEvaluateJavaScript:js
+      [self sequentiallyEvaluateJavaScript:js
         withCompletionHandler:^(id  _Nullable result, NSError * _Nullable error) {
      
         if (!error) {
           NSNumber const *isBookmarked = result;
           NYPLLOG(isBookmarked);
-          if (isBookmarked && ![isBookmarked  isEqual: @0])
+          if (isBookmarked && ![isBookmarked isEqual: @0])
           {
-            // a bookmark was found
             completionHandler(YES, bookmark);
           }
         }
@@ -638,9 +655,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
         }
       }];
     }
-    
-    // a bookmark was not found
-    
   }
   completionHandler(NO, nil);
 }
@@ -659,126 +673,57 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
 }
 
-- (void) addBookmark
+//GODO
+- (void)addBookmark
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
-    
   NYPLBookLocation *location = [registry locationForIdentifier:self.book.identifier];
   NSDictionary *const locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
-	  
   NSString *contentCFI = locationDictionary[@"contentCFI"];
   NSString *idref = locationDictionary[@"idref"];
-  NSString *chapter = self.bookMapDictionary[idref][@"tocElementTitle"];
+  NSString *chapter = self.bookMapDictionary[@"idref"][@"tocElementTitle"];
 
   float progressWithinChapter = 0.0;
-  if (self.spineItemPageIndex > 0 && self.spineItemPageCount > 0)
-  {
+  if (self.spineItemPageIndex > 0 && self.spineItemPageCount > 0) {
     progressWithinChapter = (float) self.spineItemPageIndex / (float) self.spineItemPageCount;
   }
-  float progressWithinBook = self.progressWithinBook;
-  
   
   NYPLReaderBookmarkElement *bookmark =
-  [[NYPLReaderBookmarkElement alloc] initWithAnnotationId:@"" contentCFI:contentCFI idref:idref chapter:chapter page:nil location:location.locationString progressWithinChapter:progressWithinChapter progressWithinBook:progressWithinBook];
-
-  Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+  [[NYPLReaderBookmarkElement alloc] initWithAnnotationId:@"" contentCFI:contentCFI idref:idref chapter:chapter page:nil location:location.locationString progressWithinChapter:progressWithinChapter progressWithinBook:self.progressWithinBook];
   
-  __weak NYPLReaderReadiumView *const weakSelf = self;
-  [weakSelf.delegate renderer:weakSelf icon:YES];
-
-  
-  if (currentAccount.syncPermissionGranted) {
-  
-    [NYPLAnnotations postBookmarkForBook:self.book.identifier
-                                   toURL:nil
-                                     cfi:location.locationString
-                                bookmark:bookmark
-                       completionHandler:^(BOOL success) {
-      
-      if (bookmark) {
-        // add the bookmark to the local registry
-        [registry addBookmark:bookmark forIdentifier:self.book.identifier];
-        
-        // set the new bookmarks in this class
-        self.bookmarkElements = [registry bookmarksForIdentifier:self.book.identifier];
-        
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-
-          // set current bookmark
-          [weakSelf.delegate renderer:weakSelf bookmark:bookmark];
-
-        }];
-      }
-      else {
-        
-        bookmark.time = [[[NSDate alloc] init ] RFC3339String];
-        bookmark.device = [[NYPLAccount sharedAccount] deviceID];
-
-        // add the bookmark to the local registry
-        [registry addBookmark:bookmark forIdentifier:self.book.identifier];
-        
-        // set the new bookmarks in this class
-        self.bookmarkElements = [registry bookmarksForIdentifier:self.book.identifier];
-        
-        // set current bookmark and change bookmark icon to ON
-        [weakSelf.delegate renderer:weakSelf bookmark:bookmark];
-        [weakSelf.delegate renderer:weakSelf icon:YES];
-
-      }
-      
-    }];
-
-  }
-  else {
-  
-    
-    bookmark.time = [[[NSDate alloc] init ] RFC3339String];
-    bookmark.device = [[NYPLAccount sharedAccount] deviceID];
-    
-    // annotation id and page need to be implemented
-    // annotation id only when SimplyE sync is enabled
-    // page needs to be determined where that info comes from.
-
-    // add the bookmark to the local registry
-    [registry addBookmark:bookmark forIdentifier:self.book.identifier];
-  
-    // set the new bookmarks in this class
-    self.bookmarkElements = [registry bookmarksForIdentifier:self.book.identifier];
-  
-    // set current bookmark and change bookmark icon to ON
-    [weakSelf.delegate renderer:weakSelf bookmark:bookmark];
-    [weakSelf.delegate renderer:weakSelf icon:YES];
-  
-  }
-  
-  
+  [self.syncManager addBookmark:bookmark withCFI:location.locationString forBook:self.book.identifier];
+  //GODO double check the completion protocol on this one
 }
 
-//GODO audit this
-- (void) deleteBookmark:(NYPLReaderBookmarkElement*)bookmark
+- (void)deleteBookmark:(NYPLReaderBookmarkElement*)bookmark
 {
-  // delete the bookmark from the local registry
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
   [registry deleteBookmark:bookmark forIdentifier:self.book.identifier];
   
-  // set the new bookmarks in this class
   self.bookmarkElements = [registry bookmarksForIdentifier:self.book.identifier];
   
   // set the bookmark icon to no bookmark
   __weak NYPLReaderReadiumView *const weakSelf = self;
+  //GODO is an instance of self even needed for these methods?
   [weakSelf.delegate renderer:weakSelf icon:NO];
   [weakSelf.delegate renderer:weakSelf bookmark:nil];
 
   
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+  if (currentAccount.syncPermissionGranted &&
+      (bookmark.annotationId != nil &&
+       bookmark.annotationId.length > 0)) {
+        
+        [NYPLAnnotations deleteBookmarkWithAnnotationId:bookmark.annotationId
+                                      completionHandler:^(BOOL success) {
+                                        if (success) {
+                                          //Deleted from server successfully
+                                        } else {
+                                          //GODO do we care at this point?
+                                        }
+                                      }];
+      }
 
-  if (currentAccount.syncPermissionGranted && (bookmark.annotationId != nil && bookmark.annotationId.length > 0)) {
-  
-    [NYPLAnnotations deleteBookmarkWithAnnotationId:bookmark.annotationId];
-  
-  }
-  
-  
 }
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
