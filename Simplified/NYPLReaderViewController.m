@@ -1,3 +1,4 @@
+@import Bugsnag;
 @import WebKit;
 
 #import "NYPLBook.h"
@@ -40,6 +41,7 @@
 @property (nonatomic) UILabel *bottomViewProgressLabel;
 @property (nonatomic) UIButton *largeTransparentAccessibilityButton;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic) int pagesProgressedSinceSave;
 
 @property (nonatomic) UIView *footerView;
 @property (nonatomic) UILabel *footerViewLabel;
@@ -100,7 +102,9 @@
   if(!bookIdentifier) {
     @throw NSInvalidArgumentException;
   }
-  
+
+  self.pagesProgressedSinceSave = 0;
+
   self.bookIdentifier = bookIdentifier;
   
   self.title = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
@@ -300,16 +304,23 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
     if ([gr isKindOfClass:[UITapGestureRecognizer class]])
       gr.enabled = NO;
   }
-  
-  self.dummyViewControllers = @[[[UIViewController alloc] init], [[UIViewController alloc] init], [[UIViewController alloc] init]];
-  for (UIViewController *v in self.dummyViewControllers)
-    [v.view setBackgroundColor:[UIColor whiteColor]];
-  [self.dummyViewControllers.firstObject.view addSubview:self.rendererView];
+
   self.renderedImageView = [[UIImageView alloc] init];
-  
-  NSArray *viewControllers = [NSArray arrayWithObject:self.dummyViewControllers.firstObject];
-  
-  [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
+  UIViewController *viewController1 = [[UIViewController alloc] init];
+  UIViewController *viewController2 = [[UIViewController alloc] init];
+  UIViewController *viewController3 = [[UIViewController alloc] init];
+  self.dummyViewControllers = @[viewController1, viewController2, viewController3];
+  for (UIViewController *v in self.dummyViewControllers) {
+    [v.view setBackgroundColor:[UIColor whiteColor]];
+  }
+  [self.dummyViewControllers.firstObject.view addSubview:self.rendererView];
+
+  NSArray *viewControllerArray = @[self.dummyViewControllers.firstObject];
+  if (viewControllerArray.count != 0) {
+    [self.pageViewController setViewControllers:viewControllerArray direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
+  } else {
+    [self reportPageViewControllerErrorToBugnsag];
+  }
   
   [self addChildViewController:self.pageViewController];
   [[self view] addSubview:[self.pageViewController view]];
@@ -341,8 +352,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)didReceiveMemoryWarning
 {
-  [super didReceiveMemoryWarning];
   [[NYPLBookRegistry sharedRegistry] save];
+  [super didReceiveMemoryWarning];
 }
 
 -(void)didMoveToParentViewController:(UIViewController *)parent {
@@ -369,7 +380,14 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.headerView addSubview:self.headerViewLabel];
   [self.view addSubview:self.headerView];
 
-  [self.headerView autoPinEdgesToSuperviewMarginsExcludingEdge:ALEdgeBottom];
+  if (@available (iOS 11.0, *)) {
+    [self.headerView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
+    [self.headerView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+    [self.headerView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  } else {
+    [self.headerView autoPinEdgesToSuperviewMarginsExcludingEdge:ALEdgeBottom];
+  }
+  
   [self.headerView autoSetDimension:ALDimensionHeight toSize:60];
   
   [self.headerViewLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:self.headerView withOffset:10];
@@ -392,7 +410,14 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.footerView addSubview:self.footerViewLabel];
   [self.view addSubview:self.footerView];
   
-  [self.footerView autoPinEdgesToSuperviewMarginsExcludingEdge:ALEdgeTop];
+  if (@available (iOS 11.0, *)) {
+    [self.footerView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
+    [self.footerView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+    [self.footerView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  } else {
+    [self.footerView autoPinEdgesToSuperviewMarginsExcludingEdge:ALEdgeTop];
+  }
+  
   [self.footerView autoSetDimension:ALDimensionHeight toSize:40];
   
   [self.footerViewLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:self.footerView withOffset:-10];
@@ -406,12 +431,23 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.bottomView.frame = CGRectMake(0, self.view.frame.size.height - 44, self.view.frame.size.width, 44);
   
   [self.view addSubview:self.bottomView];
-  NSLayoutConstraint *constraintBV1 = [NSLayoutConstraint constraintWithItem:self.bottomView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeLeading multiplier:1.f constant:0];
-  NSLayoutConstraint *constraintBV2 = [NSLayoutConstraint constraintWithItem:self.bottomView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeTrailing multiplier:1.f constant:0];
-  NSLayoutConstraint *constraintBV3 = [NSLayoutConstraint constraintWithItem:self.bottomView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeBottom multiplier:1.f constant:-self.bottomView.frame.size.height];
-  [self.view addConstraint:constraintBV1];
-  [self.view addConstraint:constraintBV2];
-  [self.view addConstraint:constraintBV3];
+  
+  if (@available (iOS 11.0, *)) {
+    
+    [self.bottomView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
+    [self.bottomView autoPinEdgeToSuperviewMargin:ALEdgeLeading];
+    [self.bottomView autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+    [self.bottomView autoSetDimension:ALDimensionHeight toSize:44];
+  
+  } else {
+  
+    NSLayoutConstraint *constraintBV1 = [NSLayoutConstraint constraintWithItem:self.bottomView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeLeading multiplier:1.f constant:0];
+    NSLayoutConstraint *constraintBV2 = [NSLayoutConstraint constraintWithItem:self.bottomView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeTrailing multiplier:1.f constant:0];
+    NSLayoutConstraint *constraintBV3 = [NSLayoutConstraint constraintWithItem:self.bottomView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem: self.view attribute:NSLayoutAttributeBottom multiplier:1.f constant:-self.bottomView.frame.size.height];
+    [self.view addConstraint:constraintBV1];
+    [self.view addConstraint:constraintBV2];
+    [self.view addConstraint:constraintBV3];
+  }
   
   self.bottomViewImageView = [[UIImageView alloc] init];
   self.bottomViewImageView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -894,6 +930,12 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
                                              CGRectGetHeight(readerSettingsView.frame)));
     [self.view addSubview:readerSettingsView];
     self.readerSettingsViewPhone = readerSettingsView;
+    if (@available (iOS 11.0, *)) {
+      [readerSettingsView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
+      [readerSettingsView autoPinEdgeToSuperviewMargin:ALEdgeLeading];
+      [readerSettingsView autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
+      [readerSettingsView autoSetDimension:ALDimensionHeight toSize:readerSettingsView.frame.size.height];
+    }
   }
   
   UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.readerSettingsViewPhone);
@@ -932,10 +974,12 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   if (rv.isPageTurning) {
     return;
   } else {
-    if (isRight)
+    if (isRight) {
       [rv openPageRight];
-    else
+    } else {
       [rv openPageLeft];
+    }
+    [self recordPageTurnForPeriodicSaving];
   }
 }
 
@@ -944,6 +988,30 @@ didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *const)opaqueLocation
   if (self.renderedImageView.superview != nil && (self.renderedImageView.superview == self.rendererView.superview)) {
     [self.renderedImageView removeFromSuperview];
   }
+}
+
+// FIXME: This can be removed when we've solved the touch-gesture crashing.
+// Until then, there is just too many users losing their page position to not necessitate
+// something to be saving the position more frequently while still in the book.
+-(void)recordPageTurnForPeriodicSaving
+{
+  self.pagesProgressedSinceSave++;
+  if (self.pagesProgressedSinceSave > 6) {
+    [[NYPLBookRegistry sharedRegistry] save];
+    self.pagesProgressedSinceSave = 0;
+  }
+}
+
+// FIXME: This can be removed when sufficient data has been collected
+// Bug: Something has gone wrong with the VC array configuration. Observed in crash analytics.
+- (void)reportPageViewControllerErrorToBugnsag
+{
+  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:6 userInfo:nil]
+                 block:^(BugsnagCrashReport * _Nonnull report) {
+                   report.context = @"NYPLReaderViewController";
+                   report.severity = BSGSeverityWarning;
+                   report.errorMessage = @"UIPageViewController was attempting to set 0 view controllers.";
+                 }];
 }
 
 @end

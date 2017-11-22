@@ -135,14 +135,26 @@ static void generateTOCElements(NSArray *const navigationElements,
                  specialPayloadAnnotationsCSS:nil
                  specialPayloadMathJaxJS:nil];
   
-  self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 60, self.bounds.size.width, self.bounds.size.height - 100)];
+  CGRect webviewFrame;
+  if (@available (iOS 11.0, *)) {
+    UIWindow *window = [[[UIApplication sharedApplication] delegate] window];
+    webviewFrame = CGRectMake(0,
+                              60 + window.safeAreaInsets.top,
+                              self.bounds.size.width,
+                              self.bounds.size.height - 100 - window.safeAreaInsets.top - window.safeAreaInsets.bottom);
+  } else {
+    webviewFrame = CGRectMake(0, 60, self.bounds.size.width, self.bounds.size.height - 100);
+  }
+  
+  self.webView = [[WKWebView alloc] initWithFrame:webviewFrame];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                    UIViewAutoresizingFlexibleWidth);
+  
   self.webView.navigationDelegate = self;
   self.webView.UIDelegate = self;
   self.webView.scrollView.bounces = NO;
-  // Prevent content from shifting when toggling the status bar.
   if (@available(iOS 11, *)) {
+    // Prevent content from shifting when toggling the status bar.
     self.webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
   }
   self.webView.alpha = 0.0;
@@ -743,9 +755,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
     [self
      sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
-     withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
+     withCompletionHandler:^(id _Nullable result, __unused NSError *_Nullable error) {
        if(!result) {
          NYPLLOG(@"Readium failed to generate a CFI. This is a bug in Readium.");
+         return;
+       }
+       if(!NYPLNullToNil(result)) {
+         [self reportNullCFIToBugsnag];
          return;
        }
        NSString *const locationJSON = result;
@@ -819,21 +835,20 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
         NSData *data;
         if (url) {
           data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&dataError];
+          if (data && !dataError) {
+            NSNumber *length = [NSNumber numberWithUnsignedInteger:data.length];
+            expectedLengthDec = [NSDecimalNumber decimalNumberWithDecimal:length.decimalValue];
+          }
         } else {
           [self reportNilUrlToBugsnagWithSpineItem:spineItem];
-        }
-        
-        if (data || !dataError) {
-          NSNumber *length = [NSNumber numberWithUnsignedInteger:data.length];
-          expectedLengthDec = [NSDecimalNumber decimalNumberWithDecimal:length.decimalValue];
         }
       }
       
       NSMutableDictionary *spineItemDict = [[NSMutableDictionary alloc] init];
-      [spineItemDict setObject:expectedLengthDec forKey:@"spineItemBytesLength"];
-      [spineItemDict setObject:spineItem.baseHref forKey:@"spineItemBaseHref"];
-      [spineItemDict setObject:spineItem.idref forKey:@"spineItemIdref"];
-      [spineItemDict setObject:totalLength forKey:@"totalLengthSoFar"];
+      if (expectedLengthDec) [spineItemDict setObject:expectedLengthDec forKey:@"spineItemBytesLength"];
+      if (spineItem.baseHref) [spineItemDict setObject:spineItem.baseHref forKey:@"spineItemBaseHref"];
+      if (spineItem.idref) [spineItemDict setObject:spineItem.idref forKey:@"spineItemIdref"];
+      if (totalLength) [spineItemDict setObject:totalLength forKey:@"totalLengthSoFar"];
       
       NSString *title = [self tocTitleForSpineItem:spineItem];
       if (title && [[title class] isSubclassOfClass:[NSString class]]) {
@@ -1057,6 +1072,23 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 - (void)sequentiallyEvaluateJavaScript:(nonnull NSString *const)javaScript
 {
   [self sequentiallyEvaluateJavaScript:javaScript withCompletionHandler:nil];
+}
+
+// FIXME: This can be removed when sufficient data has been collected, and the fix can be integrated
+// into the existing CFI check directly above it. example: if (!result || !NYPLNulltonil...)
+// Bug: CFI was being checked for 'nil' but NOT as NSNULL class.
+- (void)reportNullCFIToBugsnag
+{
+  NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
+  if (self.book.identifier) [metadataParams setObject:self.book.identifier forKey:@"bookID"];
+  if (self.book.title) [metadataParams setObject:self.book.identifier forKey:@"title"];
+  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:7 userInfo:nil]
+                 block:^(BugsnagCrashReport * _Nonnull report) {
+                   report.context = @"NYPLReaderReadiumView";
+                   report.severity = BSGSeverityWarning;
+                   report.errorMessage = @"CFI was nil, specifically from JSON response being NULL.";
+                   [report addMetadata:metadataParams toTabWithName:@"Extra CFI Data"];
+                 }];
 }
 
 @end

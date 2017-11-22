@@ -230,7 +230,12 @@ static NSString *const RecordsKey = @"records";
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
 {
   @synchronized(self) {
-    if(self.syncing || ![[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+    if(self.syncing) {
+      return;
+    } else if (![[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        if(handler) handler(NO);
+      }];
       return;
     } else {
       self.syncing = YES;

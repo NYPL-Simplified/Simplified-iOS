@@ -301,7 +301,9 @@ viewForHeaderInSection:(NSInteger const)section
 {
   NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
   NYPLCatalogLaneCell *cell = (NYPLCatalogLaneCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-  
+  if (!cell) {
+    return nil;
+  }
   UIViewController *vc = [[UIViewController alloc] init];
   vc.view.tag = cell.laneIndex;
   
