@@ -210,6 +210,7 @@
 
            if (serverBookmarks.count == 0) {
              NYPLLOG(@"No bookmarks were returned. No need to continue syncing.");
+             completion(YES, nil);
              return;
            }
 
@@ -264,13 +265,14 @@
              [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.bookID];
            }
 
-           NYPLLOG_F(@"\nServer Bookmarks To Delete:\n\n%@", serverBookmarksToDelete);
-           
-//           [NYPLAnnotations deleteBookmarks:serverBookmarksToDelete completion...]
-           //GODO Send delete request
-
-           completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
-
+           if (serverBookmarksToDelete.count > 0) {
+              NYPLLOG_F(@"\nServer Bookmarks To Delete:\n\n%@", serverBookmarksToDelete);
+             [NYPLAnnotations deleteBookmarks:serverBookmarksToDelete completionHandler:^{
+               completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+             }];
+           } else {
+             completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+           }
          }];
      }];
    }];

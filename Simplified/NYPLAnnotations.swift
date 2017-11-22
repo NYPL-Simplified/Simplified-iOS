@@ -467,31 +467,30 @@ final class NYPLAnnotations: NSObject {
       bookmark.device = device
       return bookmark
     } else {
-      Log.error(#file, "'source' key/value does not match current NYPLBook object ID, or 'motivation' key/value is invalid.")
+      Log.error(#file, "Bookmark not created. 'source' key/value does not match current NYPLBook object ID, or 'motivation' key/value is invalid.")
     }
     return nil
   }
 
-  class func delete(bookmarks: [NYPLReaderBookmarkElement],
-                    completion: @escaping ([NYPLReaderBookmarkElement])->())
+  class func deleteBookmarks(_ bookmarks: [NYPLReaderBookmarkElement],
+                             completionHandler: @escaping ()->())
   {
     let uploadGroup = DispatchGroup()
-    var bookmarksNotDeleted = [NYPLReaderBookmarkElement]()
 
     for localBookmark in bookmarks {
       uploadGroup.enter()
+      //GODO custom timeout?
       deleteBookmark(annotationId: localBookmark.annotationId, completionHandler: { success in
         if !success {
-          bookmarksNotDeleted.append(localBookmark)
-          //GODO add to offline queue?
+          Log.error(#file, "Bookmark not deleted from server. Moving on.")
         }
         uploadGroup.leave()
       })
     }
 
     uploadGroup.notify(queue: DispatchQueue.main) {
-      Log.debug(#file, "Finished attempting to delete bookmarks.")
-      completion(bookmarksNotDeleted)
+      Log.debug(#file, "Finished attempt to delete bookmarks.")
+      completionHandler()
     }
   }
 

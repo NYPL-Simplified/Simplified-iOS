@@ -682,22 +682,20 @@ spineItemTitle:(NSString *const)title
   [self.bottomViewProgressLabel needsUpdateConstraints];
 }
 
-#pragma mark NYPLReaderReadiumDelegate
-
--(void)renderer:(__unused id<NYPLReaderRenderer>)renderer icon:(bool)on
+- (void)updateBookmarkIcon:(BOOL)on
 {
-  NYPLRoundedButton * bookmarkButton = self.bookmarkBarButtonItem.customView;
-  if (on) {
-    [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOn"] forState:UIControlStateNormal];
-    bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Remove Bookmark", nil)];
-  }
-  else {
-    [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOff"] forState:UIControlStateNormal];
-    bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Add Bookmark", nil)];
-  }
+  dispatch_async(dispatch_get_main_queue(), ^{
+    NYPLRoundedButton *bookmarkButton = self.bookmarkBarButtonItem.customView;
+    if (on) {
+      [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOn"] forState:UIControlStateNormal];
+      bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Remove Bookmark", nil)];
+    } else {
+      [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOff"] forState:UIControlStateNormal];
+      bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Add Bookmark", nil)];
+    }
+  });
 }
-
--(void)renderer:(__unused id<NYPLReaderRenderer>)renderer bookmark:(NYPLReaderBookmarkElement*)bookmark
+- (void)updateCurrentBookmark:(NYPLReaderBookmarkElement *)bookmark
 {
   self.currentBookmark = bookmark;
 }

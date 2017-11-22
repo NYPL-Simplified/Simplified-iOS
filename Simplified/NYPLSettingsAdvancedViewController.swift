@@ -42,7 +42,7 @@ class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSourc
         self.disableSync()
       })
       
-      let cancelAction = UIAlertAction.init(title: "Cancel", style: .default, handler: { (action) in
+      let cancelAction = UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (action) in
         Log.debug(#file, "User cancelled bookmark server delete.")
       })
       

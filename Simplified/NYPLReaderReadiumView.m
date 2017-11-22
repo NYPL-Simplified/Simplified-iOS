@@ -507,10 +507,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   [registry addBookmark:bookmark forIdentifier:bookID];
   
   self.bookmarkElements = [registry bookmarksForIdentifier:bookID];
-  
-  //GODO updates icons, but need to double check these methods
-  [self.delegate renderer:self bookmark:bookmark];
-  [self.delegate renderer:self icon:YES];
 }
 
 #pragma mark -
@@ -681,18 +677,23 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NSDictionary *const locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
   NSString *contentCFI = locationDictionary[@"contentCFI"];
   NSString *idref = locationDictionary[@"idref"];
-  NSString *chapter = self.bookMapDictionary[@"idref"][@"tocElementTitle"];
+  NSString *chapter = self.bookMapDictionary[idref][@"tocElementTitle"];
 
   float progressWithinChapter = 0.0;
   if (self.spineItemPageIndex > 0 && self.spineItemPageCount > 0) {
     progressWithinChapter = (float) self.spineItemPageIndex / (float) self.spineItemPageCount;
   }
-  
+
   NYPLReaderBookmarkElement *bookmark =
   [[NYPLReaderBookmarkElement alloc] initWithAnnotationId:@"" contentCFI:contentCFI idref:idref chapter:chapter page:nil location:location.locationString progressWithinChapter:progressWithinChapter progressWithinBook:self.progressWithinBook];
   
+  if (bookmark) {
+    [self.delegate updateBookmarkIcon:YES];
+    [self.delegate updateCurrentBookmark:bookmark];
+  }
+  
   [self.syncManager addBookmark:bookmark withCFI:location.locationString forBook:self.book.identifier];
-  //GODO double check the completion protocol on this one
+//GODO make sure delegate handles everything ok
 }
 
 - (void)deleteBookmark:(NYPLReaderBookmarkElement*)bookmark
@@ -700,14 +701,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
   [registry deleteBookmark:bookmark forIdentifier:self.book.identifier];
   
-  self.bookmarkElements = [registry bookmarksForIdentifier:self.book.identifier];
+  [self.delegate updateBookmarkIcon:NO];
+  [self.delegate updateCurrentBookmark:nil];
   
-  // set the bookmark icon to no bookmark
-  __weak NYPLReaderReadiumView *const weakSelf = self;
-  //GODO is an instance of self even needed for these methods?
-  [weakSelf.delegate renderer:weakSelf icon:NO];
-  [weakSelf.delegate renderer:weakSelf bookmark:nil];
-
+  self.bookmarkElements = [registry bookmarksForIdentifier:self.book.identifier];
   
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
   if (currentAccount.syncPermissionGranted &&
@@ -717,13 +714,12 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
         [NYPLAnnotations deleteBookmarkWithAnnotationId:bookmark.annotationId
                                       completionHandler:^(BOOL success) {
                                         if (success) {
-                                          //Deleted from server successfully
+                                          NYPLLOG(@"Bookmark successfully deleted");
                                         } else {
                                           //GODO do we care at this point?
                                         }
                                       }];
       }
-
 }
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
@@ -775,8 +771,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                                               error:&jsonError];
 
        [self hasBookmarkForSpineItem:json[@"idref"] completionHandler:^(bool success, NYPLReaderBookmarkElement *bookmark) {
-         [weakSelf.delegate renderer:weakSelf icon:success];
-         [weakSelf.delegate renderer:weakSelf bookmark:bookmark];
+         [self.delegate updateBookmarkIcon:success];
+         [self.delegate updateCurrentBookmark:bookmark];
        }];
        
        NYPLBookLocation *const location = [[NYPLBookLocation alloc]
