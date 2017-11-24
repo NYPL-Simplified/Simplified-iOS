@@ -17,6 +17,7 @@
 
 @property (nonatomic) NSString *bookID;
 @property (nonatomic) NSURL *annotationsURL;
+@property (nonatomic) NSDictionary *bookMapDictionary;
 @property (nonatomic, weak) id<NYPLReadiumViewSyncManagerDelegate> delegate;
 
 @end
@@ -25,12 +26,14 @@
 
 - (instancetype) initWithBookID:(NSString *)bookID
                  annotationsURL:(NSURL *)URL
+                        bookMap:(NSDictionary *)map
                        delegate:(id)delegate
 {
   self = [super init];
   if (self) {
     self.bookID = bookID;
     self.annotationsURL = URL;
+    self.bookMapDictionary = map;
     self.delegate = delegate;
   }
   return self;
@@ -66,8 +69,7 @@
                              toURL:(NSURL *)URL
                        withPackage:(NSMutableDictionary *)dictionary
 {
-  [NYPLAnnotations syncReadingPositionOfBook:bookID toURL:URL
-              completionHandler:^(NSDictionary * _Nullable responseObject) {
+  [NYPLAnnotations syncReadingPositionOfBook:bookID toURL:URL completionHandler:^(NSDictionary * _Nullable responseObject) {
 
     if (!responseObject) {
       NYPLLOG(@"No Server Annotation for this book exists.");
@@ -75,35 +77,24 @@
       return;
     }
 
-    NSString* serverLocationString;
-    NSString* currentLocationString;
-    NSString* timestampString;
-    NSString* deviceIDString;
-    UIAlertController *alertController;
-
     NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:[responseObject[@"serverCFI"] dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
-    deviceIDString = responseObject[@"device"];
-    timestampString = responseObject[@"time"];
-    serverLocationString = responseObject[@"serverCFI"];
-    currentLocationString = location.locationString;
+    NSString* deviceIDString = responseObject[@"device"];
+    NSString* serverLocationString = responseObject[@"serverCFI"];
+    NSString* currentLocationString = location.locationString;
     NYPLLOG_F(@"serverLocationString %@",serverLocationString);
     NYPLLOG_F(@"currentLocationString %@",currentLocationString);
 
-    NSDictionary *spineItemDetails;
-    NSString *elementTitle;
-    if ([self.delegate respondsToSelector:@selector(getCurrentSpineDetailsForKey:)]) {
-      spineItemDetails = [self.delegate getCurrentSpineDetailsForKey:responseJSON[@"idref"]];
-      elementTitle = spineItemDetails[@"tocElementTitle"];
-    }
+    NSDictionary *spineItemDetails = self.bookMapDictionary[responseJSON[@"idref"]];
+    NSString *elementTitle = spineItemDetails[@"tocElementTitle"];
     if (!elementTitle) {
       elementTitle = @"";
     }
                 
-    NSString * message=[NSString stringWithFormat:@"Would you like to go to the latest page read?\n\nChapter:\n\"%@\"",elementTitle];
+    NSString *message = [NSString stringWithFormat:@"Would you like to go to the latest page read?\n\nChapter:\n\"%@\"",elementTitle];
 
-    alertController = [UIAlertController alertControllerWithTitle:@"Sync Reading Position"
-                                                          message:message
-                                                   preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Sync Reading Position"
+                                                                             message:message
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
 
     [alertController addAction:
      [UIAlertAction actionWithTitle:NSLocalizedString(@"NO", nil)
@@ -181,6 +172,8 @@
   }
 }
 
+//GODO audit this
+//GODO yeah this method is definitely not working right now
 - (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray<NYPLReaderBookmarkElement *> *bookmarks))completion
 {
   [[NYPLReachability sharedReachability]

@@ -15,8 +15,6 @@
 
 - (void)shouldPostReadingPosition:(BOOL)status;
 
-- (NSDictionary *)getCurrentSpineDetailsForKey:(NSString *)dictionaryKey;
-
 -(void)bookmarkUploadDidFinish:(NYPLReaderBookmarkElement *)bookmark
                        forBook:(NSString *)bookID
                  savedOnServer:(BOOL)success;
@@ -30,6 +28,7 @@
 
 - (instancetype) initWithBookID:(NSString *)bookID
                  annotationsURL:(NSURL *)URL
+                        bookMap:(NSDictionary *)map
                        delegate:(id)delegate;
 
 - (void)syncAnnotationsWithPermissionForAccount:(Account *)account

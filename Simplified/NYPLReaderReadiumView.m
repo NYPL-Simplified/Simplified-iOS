@@ -490,10 +490,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   self.postLastRead = status;
 }
 
-- (NSDictionary *)getCurrentSpineDetailsForKey:(NSString *)dictionaryKey{
-  return self.bookMapDictionary[dictionaryKey];
-}
-
 -(void)bookmarkUploadDidFinish:(NYPLReaderBookmarkElement *)bookmark
                        forBook:(NSString *)bookID
                  savedOnServer:(BOOL)success
@@ -535,6 +531,17 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
     [self calculateBookLength];
+    
+    //GODO
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      ///GODO Check last read here??
+      self.syncManager = [[NYPLReadiumViewSyncManager alloc] initWithBookID:self.book.identifier
+                                                             annotationsURL:self.book.annotationsURL
+                                                                    bookMap:self.bookMapDictionary
+                                                                   delegate:self];
+      [self syncAnnotationsWhenPermitted];
+    });
+    
   });
   
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
@@ -552,21 +559,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     NSString *contentCFI = locationDictionary[@"contentCFI"];
     if (!contentCFI) {
       contentCFI = @"";
-
-      NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
-      if (self.book.identifier) [metadataParams setObject:self.book.identifier forKey:@"bookID"];
-      if (location.locationString) [metadataParams setObject:location.locationString forKey:@"registry locationString"];
-      if (location.renderer) [metadataParams setObject:location.renderer forKey:@"renderer"];
-      if (locationDictionary[@"idref"]) [metadataParams setObject:locationDictionary[@"idref"] forKey:@"openPageRequest idref"];
-      
-      [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:0 userInfo:nil]
-                     block:^(BugsnagCrashReport * _Nonnull report) {
-                       report.context = @"NYPLReaderReadiumView";
-                       report.severity = BSGSeverityWarning;
-                       report.groupingHash = @"open-book-nil-cfi";
-                       report.errorMessage = @"The content CFI is nil on book re-open.";
-                       [report addMetadata:metadataParams toTabWithName:@"Extra CFI Data"];
-                     }];
+      [self reportNilContentCFIToBugsnag:location locationDictionary:locationDictionary];
     }
     dictionary[@"openPageRequest"] = @{@"idref": locationDictionary[@"idref"],
                                        @"elementCfi": contentCFI};
@@ -614,12 +607,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   ", [NYPLConfiguration backgroundMediaOverlayHighlightColor].javascriptHexString] ;
   
   [self sequentiallyEvaluateJavaScript:javascript];
-
-  //GODO Best spot for this?
-  self.syncManager = [[NYPLReadiumViewSyncManager alloc] initWithBookID:self.book.identifier
-                                                         annotationsURL:self.book.annotationsURL
-                                                               delegate:self];
-  [self syncAnnotationsWhenPermitted];
 }
 
 //GODO audit this
@@ -655,18 +642,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   completionHandler(NO, nil);
 }
 
-- (NSString*) currentChapter {
-  
+- (NSString*) currentChapter
+{
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
-
   NYPLBookLocation *location = [registry locationForIdentifier:self.book.identifier];
-
   NSDictionary *const locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
-
   NSString *idref = locationDictionary[@"idref"];
-
   return self.bookMapDictionary[idref][@"tocElementTitle"];
-
 }
 
 //GODO
@@ -1096,6 +1078,24 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 - (void)sequentiallyEvaluateJavaScript:(nonnull NSString *const)javaScript
 {
   [self sequentiallyEvaluateJavaScript:javaScript withCompletionHandler:nil];
+}
+
+//FIXME: Can be removed when sufficient data has been collected
+- (void)reportNilContentCFIToBugsnag:(NYPLBookLocation *)location locationDictionary:(NSDictionary *)locationDictionary {
+  NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
+  if (self.book.identifier) [metadataParams setObject:self.book.identifier forKey:@"bookID"];
+  if (location.locationString) [metadataParams setObject:location.locationString forKey:@"registry locationString"];
+  if (location.renderer) [metadataParams setObject:location.renderer forKey:@"renderer"];
+  if (locationDictionary[@"idref"]) [metadataParams setObject:locationDictionary[@"idref"] forKey:@"openPageRequest idref"];
+  
+  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:0 userInfo:nil]
+                 block:^(BugsnagCrashReport * _Nonnull report) {
+                   report.context = @"NYPLReaderReadiumView";
+                   report.severity = BSGSeverityWarning;
+                   report.groupingHash = @"open-book-nil-cfi";
+                   report.errorMessage = @"The content CFI is nil on book re-open.";
+                   [report addMetadata:metadataParams toTabWithName:@"Extra CFI Data"];
+                 }];
 }
 
 @end
