@@ -14,6 +14,8 @@
 @property (nonatomic) NSString *length;
 @property (nonatomic) NSString *availabilityStatus;
 @property (nonatomic) NSInteger availableCopies;
+@property (nonatomic) NSInteger totalCopies;
+@property (nonatomic) NSInteger holdsPosition;
 @property (nonatomic) NSDate *availableSince;
 @property (nonatomic) NSDate *availableUntil;
 @property (nonatomic) NSMutableArray *mutableAcquisitionFormats;
@@ -61,6 +63,12 @@
   NYPLXML *copiesXML = [linkXML firstChildWithName:@"copies"];
   if (copiesXML) {
     self.availableCopies = [copiesXML.attributes[@"available"] integerValue];
+    self.totalCopies = [copiesXML.attributes[@"total"] integerValue];
+  }
+  
+  NYPLXML *holdsXML = [linkXML firstChildWithName:@"holds"];
+  if (holdsXML) {
+    self.holdsPosition = [holdsXML.attributes[@"position"] integerValue];
   }
   
   [self addAcquisitionFormatsWithXML:linkXML];
