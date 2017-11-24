@@ -250,6 +250,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   
   NYPLRoundedButton *const settingsButton = [NYPLRoundedButton button];
+  settingsButton.contentEdgeInsets = UIEdgeInsetsZero;
   settingsButton.accessibilityLabel = NSLocalizedString(@"ReaderViewControllerToggleReaderSettings", nil);
   [settingsButton setTitle:@"Aa" forState:UIControlStateNormal];
   [settingsButton sizeToFit];
@@ -261,6 +262,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
   
   NYPLRoundedButton *const TOCButton = [NYPLRoundedButton button];
+  TOCButton.contentEdgeInsets = UIEdgeInsetsZero;
   TOCButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"TOC", nil)];
   TOCButton.bounds = settingsButton.bounds;
   [TOCButton setImage:[UIImage imageNamed:@"TOC"] forState:UIControlStateNormal];
