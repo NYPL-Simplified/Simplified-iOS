@@ -766,6 +766,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindAdvancedSettings: {
       NYPLSettingsAdvancedViewController *vc = [[NYPLSettingsAdvancedViewController alloc] initWithAccount:self.selectedAccountType];
       [self.navigationController pushViewController:vc animated:YES];
+      break;
     }
     case CellKindBarcodeImage: {
       [self.tableView beginUpdates];
