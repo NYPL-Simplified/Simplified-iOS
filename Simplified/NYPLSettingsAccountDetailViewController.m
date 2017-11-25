@@ -374,9 +374,9 @@ CGFloat const verticalMarginPadding = 2.0;
   
 #else
   
-  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.accountType];
-  [[NYPLBookRegistry sharedRegistry] reset:self.accountType];
-  [[NYPLAccount sharedAccount:self.accountType] removeAll];
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountType];
+  [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountType];
+  [[NYPLAccount sharedAccount:self.selectedAccountType] removeAll];
   [self setupTableData];
   [self.tableView reloadData];
   [self removeActivityTitle];
@@ -668,19 +668,22 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case CellKindLogInSignOut:
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+      NSString *logoutString;
       if([self.selectedNYPLAccount hasBarcodeAndPIN]) {
+        if ([self syncButtonShouldBeVisible] && !self.syncSwitch.on) {
+          logoutString = NSLocalizedString(@"SettingsAccountViewControllerLogoutMessageSync", nil);
+        } else {
+          logoutString = NSLocalizedString(@"SettingsAccountViewControllerLogoutMessageDefault", nil);
+        }
         UIAlertController *const alertController =
         (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
          (self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact))
-         ? [UIAlertController
-            alertControllerWithTitle:NSLocalizedString(@"SignOut", nil)
-            message:NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
-            preferredStyle:UIAlertControllerStyleAlert]
-         : [UIAlertController
-            alertControllerWithTitle:
-            NSLocalizedString(@"SettingsAccountViewControllerLogoutMessage", nil)
-            message:nil
-            preferredStyle:UIAlertControllerStyleActionSheet];
+        ? [UIAlertController alertControllerWithTitle:NSLocalizedString(@"SignOut", nil)
+                                              message:logoutString
+                                       preferredStyle:UIAlertControllerStyleAlert]
+        : [UIAlertController alertControllerWithTitle:logoutString
+                                              message:nil
+                                       preferredStyle:UIAlertControllerStyleActionSheet];
         alertController.popoverPresentationController.sourceRect = self.view.bounds;
         alertController.popoverPresentationController.sourceView = self.view;
         [alertController addAction:[UIAlertAction

@@ -3,6 +3,7 @@ import UIKit
 final class NYPLReaderBookmarkElement: NSObject {
   
   var annotationId:String
+  var savedOnServer:Bool
 
   var contentCFI:String
   var idref:String
@@ -22,7 +23,7 @@ final class NYPLReaderBookmarkElement: NSObject {
   }
   
   var device:String?
-  var time:String?
+  let time:String
   
   init(annotationId:String,
        contentCFI:String,
@@ -31,9 +32,12 @@ final class NYPLReaderBookmarkElement: NSObject {
        page:String?,
        location:String?,
        progressWithinChapter:Float,
-       progressWithinBook:Float)
+       progressWithinBook:Float,
+       time:String?,
+       device:String?)
   {
     self.annotationId = annotationId
+    self.savedOnServer = false
     self.contentCFI = contentCFI
     self.idref = idref
     self.chapter = chapter ?? ""
@@ -41,17 +45,20 @@ final class NYPLReaderBookmarkElement: NSObject {
     self.location = location ?? ""
     self.progressWithinChapter = progressWithinChapter
     self.progressWithinBook = progressWithinBook
+    self.time = time ?? NSDate().rfc3339String()
+    self.device = device
   }
   
   init(dictionary:NSDictionary)
   {
     self.annotationId = dictionary["annotationId"] as! String
+    self.savedOnServer = dictionary["savedOnServer"] as! Bool
     self.contentCFI = dictionary["contentCFI"] as! String
     self.idref = dictionary["idref"] as! String
     self.chapter = dictionary["chapter"] as? String
     self.page = dictionary["page"] as? String
     self.location = dictionary["location"] as? String
-    self.time = dictionary["time"] as? String
+    self.time = dictionary["time"] as! String
     self.device = dictionary["device"] as? String
     if let progressChapter = dictionary["progressWithinChapter"] as? Float
     {
@@ -65,12 +72,13 @@ final class NYPLReaderBookmarkElement: NSObject {
 
   var dictionaryRepresentation:NSDictionary {
     return ["annotationId":self.annotationId,
+            "savedOnServer":self.savedOnServer,
             "contentCFI":self.contentCFI,
             "idref":self.idref,
             "chapter":self.chapter ?? "",
             "page":self.page ?? "",
             "location":self.location ?? "",
-            "time":self.time ?? "",
+            "time":self.time,
             "device":self.device ?? "",
             "progressWithinChapter":self.progressWithinChapter,
             "progressWithinBook":self.progressWithinBook
@@ -80,6 +88,8 @@ final class NYPLReaderBookmarkElement: NSObject {
   override func isEqual(_ object: Any?) -> Bool {
     let other = object as! NYPLReaderBookmarkElement
     
+    //GODO should annotation ID really need to be equal for the
+    // bookmark to be "equal"?? should check the sync method
     if (self.annotationId == other.annotationId &&
       self.contentCFI == other.contentCFI &&
       self.idref == other.idref &&

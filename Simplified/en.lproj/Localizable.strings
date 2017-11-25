@@ -193,7 +193,8 @@
   "Your barcode and pin combination was not valid. Please try again.";
 "SettingsAccountViewControllerLoginFailed" = "Login Failed";
 "SettingsAccountViewControllerLogoutFailed" = "Sign Out Failed";
-"SettingsAccountViewControllerLogoutMessage" = "If you sign out of your account, all content accessible via My Books will be removed from this device.";
+"SettingsAccountViewControllerLogoutMessageDefault" = "If you sign out, your books and any saved bookmarks will be removed.";
+"SettingsAccountViewControllerLogoutMessageSync" = "If you sign out without enabling Sync, your books and any saved bookmarks will be removed.";
 "SettingsAccountViewControllerAgeCheckMessage" = "If you are under 13, all content downloaded to My Books will be removed.";
 "SettingsAccountViewControllerMessageLogIn" = "Use your library card to log in.";
 "SettingsAccountViewControllerMessageLogInToDownloadBook" =

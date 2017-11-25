@@ -462,11 +462,12 @@ final class NYPLAnnotations: NSObject {
                                                page: nil,
                                                location: serverCFI,
                                                progressWithinChapter: progressWithinChapter,
-                                               progressWithinBook: progressWithinBook)
-      bookmark.time = time
-      bookmark.device = device
+                                               progressWithinBook: progressWithinBook,
+                                               time:time,
+                                               device:device)
       return bookmark
     } else {
+      //GODO oh does this imply an annotation that represents book position?
       Log.error(#file, "Bookmark not created. 'source' key/value does not match current NYPLBook object ID, or 'motivation' key/value is invalid.")
     }
     return nil
@@ -528,7 +529,8 @@ final class NYPLAnnotations: NSObject {
     var bookmarksNotUploaded = [NYPLReaderBookmarkElement]()
 
     for localBookmark in bookmarks {
-      if (localBookmark.annotationId.count == 0) {
+      //GODO this is wrong, because now we dont replace a local with the server's immediately after posting. we need to compare it to the list of server bookmarks that are downloaded.
+      if (localBookmark.savedOnServer == false) {
         uploadGroup.enter()
         postBookmark(forBook: bookID, toURL: nil, cfi: localBookmark.location, bookmark: localBookmark, completionHandler: { success in
           if !success {
@@ -575,9 +577,9 @@ final class NYPLAnnotations: NSObject {
         ]
       ],
       "body": [
-        "http://librarysimplified.org/terms/time" : NSDate().rfc3339String(),
-        "http://librarysimplified.org/terms/device" : NYPLAccount.shared().deviceID,
-        "http://librarysimplified.org/terms/chapter" : bookmark.chapter as Any,
+        "http://librarysimplified.org/terms/time" : bookmark.time,
+        "http://librarysimplified.org/terms/device" : bookmark.device ?? "",
+        "http://librarysimplified.org/terms/chapter" : bookmark.chapter ?? "",
         "http://librarysimplified.org/terms/progressWithinChapter" : bookmark.progressWithinChapter,
         "http://librarysimplified.org/terms/progressWithinBook" : bookmark.progressWithinBook,
       ]

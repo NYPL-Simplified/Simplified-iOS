@@ -494,10 +494,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                        forBook:(NSString *)bookID
                  savedOnServer:(BOOL)success
 {
-  if (!success) {
-    bookmark.time = [[[NSDate alloc] init] RFC3339String];
-    bookmark.device = [[NYPLAccount sharedAccount] deviceID];
-  }
+  bookmark.savedOnServer = success;
   
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
   [registry addBookmark:bookmark forIdentifier:bookID];
@@ -666,8 +663,17 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     progressWithinChapter = (float) self.spineItemPageIndex / (float) self.spineItemPageCount;
   }
 
-  NYPLReaderBookmarkElement *bookmark =
-  [[NYPLReaderBookmarkElement alloc] initWithAnnotationId:@"" contentCFI:contentCFI idref:idref chapter:chapter page:nil location:location.locationString progressWithinChapter:progressWithinChapter progressWithinBook:self.progressWithinBook];
+  NYPLReaderBookmarkElement *bookmark = [[NYPLReaderBookmarkElement alloc]
+                                         initWithAnnotationId:@""
+                                         contentCFI:contentCFI
+                                         idref:idref
+                                         chapter:chapter
+                                         page:nil
+                                         location:location.locationString
+                                         progressWithinChapter:progressWithinChapter
+                                         progressWithinBook:self.progressWithinBook
+                                         time:nil
+                                         device:[[NYPLAccount sharedAccount] deviceID]];
   
   if (bookmark) {
     [self.delegate updateBookmarkIcon:YES];
