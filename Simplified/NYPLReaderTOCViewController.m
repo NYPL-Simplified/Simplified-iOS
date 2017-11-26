@@ -27,7 +27,6 @@
 static NSString *const reuseIdentifierTOC = @"contentCell";
 static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
 
-//GODO bear in mind i basically have not reviewed this class at all...
 @implementation NYPLReaderTOCViewController
 
 #pragma mark UIViewController

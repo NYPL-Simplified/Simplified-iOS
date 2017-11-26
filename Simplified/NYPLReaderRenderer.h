@@ -42,7 +42,6 @@ didUpdateProgressWithinBook:(float)progressWithinBook
 
 - (void)renderDidEndLongLoad:(nonnull id<NYPLReaderRenderer>)render;
 
-//GODO Audit this
 - (void)updateBookmarkIcon:(BOOL)on;
 - (void)updateCurrentBookmark:(nullable NYPLReaderBookmarkElement*)bookmark;
 

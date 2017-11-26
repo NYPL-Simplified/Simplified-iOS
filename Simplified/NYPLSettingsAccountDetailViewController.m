@@ -666,7 +666,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindPIN:
       [self.PINTextField becomeFirstResponder];
       break;
-    case CellKindLogInSignOut:
+    case CellKindLogInSignOut: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       NSString *logoutString;
       if([self.selectedNYPLAccount hasBarcodeAndPIN]) {
@@ -703,6 +703,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self logIn];
       }
       break;
+    }
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       

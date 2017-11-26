@@ -529,9 +529,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
     [self calculateBookLength];
     
-    //GODO
+    //GODO verify this is good enough solution to no spine item during sync
     dispatch_sync(dispatch_get_main_queue(), ^{
-      ///GODO Check last read here??
       self.syncManager = [[NYPLReadiumViewSyncManager alloc] initWithBookID:self.book.identifier
                                                              annotationsURL:self.book.annotationsURL
                                                                     bookMap:self.bookMapDictionary
@@ -606,14 +605,12 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   [self sequentiallyEvaluateJavaScript:javascript];
 }
 
-//GODO audit this
-- (void) hasBookmarkForSpineItem:(NSString*)idref completionHandler:(void(^)(bool success, NYPLReaderBookmarkElement *bookmark))completionHandler
+- (void)checkForExistingBookmarkAtLocation:(NSString*)idref completionHandler:(void(^)(BOOL success, NYPLReaderBookmarkElement *bookmark))completionHandler
 {
-
-  NSArray *bookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];
+  completionHandler(NO, nil);   //Remove bookmark icon at beginning of page turn
   
+  NSArray *bookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];
   for (NYPLReaderBookmarkElement *bookmark in bookmarks) {
-
     if ([bookmark.idref isEqualToString:idref]) {
       NSString *js = [NSString stringWithFormat:@"ReadiumSDK.reader.isVisibleSpineItemElementCfi('%@', '%@')",
                       bookmark.idref,
@@ -621,22 +618,19 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     
       [self sequentiallyEvaluateJavaScript:js
         withCompletionHandler:^(id  _Nullable result, NSError * _Nullable error) {
-     
         if (!error) {
           NSNumber const *isBookmarked = result;
-          NYPLLOG(isBookmarked);
-          if (isBookmarked && ![isBookmarked isEqual: @0])
-          {
+          NYPLLOG_F(@"Bookmark exists at location: %@", isBookmarked);
+          if (isBookmarked && ![isBookmarked isEqual: @0]) {
             completionHandler(YES, bookmark);
+            return;
           }
-        }
-        else {
-          NYPLLOG(error);
+        } else {
+          NYPLLOG_F(@"JS Error: %@", error);
         }
       }];
     }
   }
-  completionHandler(NO, nil);
 }
 
 - (NSString*) currentChapter
@@ -648,7 +642,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   return self.bookMapDictionary[idref][@"tocElementTitle"];
 }
 
-//GODO
+//GODO test adding a bookmark. Test showing the icon and what happens under slower network conditions
 - (void)addBookmark
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
@@ -681,7 +675,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   }
   
   [self.syncManager addBookmark:bookmark withCFI:location.locationString forBook:self.book.identifier];
-//GODO make sure delegate handles everything ok
 }
 
 - (void)deleteBookmark:(NYPLReaderBookmarkElement*)bookmark
@@ -704,7 +697,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                         if (success) {
                                           NYPLLOG(@"Bookmark successfully deleted");
                                         } else {
-                                          //GODO do we care at this point?
+                                          NYPLLOG(@"Failed to delete bookmark from server. Will attempt again on next Sync");
                                         }
                                       }];
       }
@@ -758,7 +751,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                                             options:NSJSONReadingMutableContainers
                                                               error:&jsonError];
 
-       [self hasBookmarkForSpineItem:json[@"idref"] completionHandler:^(bool success, NYPLReaderBookmarkElement *bookmark) {
+       [self checkForExistingBookmarkAtLocation:json[@"idref"] completionHandler:^(bool success, NYPLReaderBookmarkElement *bookmark) {
          [self.delegate updateBookmarkIcon:success];
          [self.delegate updateCurrentBookmark:bookmark];
        }];
@@ -782,7 +775,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
           forIdentifier:weakSelf.book.identifier];
          }
        if(self.postLastRead) {
-         //GODO probably should just get rid of url parameter
          [NYPLAnnotations postReadingPositionForBook:weakSelf.book.identifier
                                       annotationsURL:nil
                                                  cfi:location.locationString];

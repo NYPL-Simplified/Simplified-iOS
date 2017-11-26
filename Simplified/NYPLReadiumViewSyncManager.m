@@ -55,7 +55,6 @@
                                toURL:self.annotationsURL
                          withPackage:dictionary];
     
-    //GODO working on this at the moment.
     [self syncBookmarksWithCompletion:^(BOOL success, NSArray<NYPLReaderBookmarkElement *> *bookmarks) {
       if ([self.delegate respondsToSelector:@selector(didCompleteBookmarkSync:withBookmarks:)]) {
         [self.delegate didCompleteBookmarkSync:success withBookmarks:bookmarks];
@@ -148,8 +147,6 @@
   }
 }
 
-// GODO Bookmarks being added do not need to be queued if the upload fails.
-// They will be considered a "local" bookmark for the book and will re-attempt upload on next sync for that book.
 - (void)addBookmark:(NYPLReaderBookmarkElement *)bookmark
             withCFI:(NSString *)location
             forBook:(NSString *)bookID
@@ -172,8 +169,7 @@
   }
 }
 
-//GODO audit this
-//GODO yeah this method is definitely not working right now
+//GODO need to test
 - (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray<NYPLReaderBookmarkElement *> *bookmarks))completion
 {
   [[NYPLReachability sharedReachability]
@@ -182,82 +178,77 @@
    handler:^(BOOL reachable) {
 
      if (!reachable) {
+       //GODO Alert Controller here?
        NYPLLOG(@"Error: host was not reachable for bookmark sync attempt.");
        completion(NO, nil);
        return;
      }
 
      NSArray<NYPLReaderBookmarkElement *> *localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID];
+     
+     // Attempt to upload any local bookmarks that have never been before
+     
+     [NYPLAnnotations postLocalBookmarks:localBookmarks forBook:self.bookID completion:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull localsNotUploaded) {
 
-     // 1.
-     // Upload local bookmarks if they have not been posted yet.
-     // This can happen if the device was already storing local bookmarks, and Sync was enabled later.
-     // When all requests have completed, execute completion block and provide any bookmarks not uploaded
-
-     [NYPLAnnotations postLocalBookmarksWithBookmarks:localBookmarks forBook:self.bookID completion:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull bookmarksNotUploaded) {
-
-         // After upload attempt finishes for local bookmarks,
-         // Attempt to pull list of bookmarks from the server.
+         // Download server list
 
          [NYPLAnnotations getBookmarksForBook:self.bookID atURL:self.annotationsURL completionHandler:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull serverBookmarks) {
 
            if (serverBookmarks.count == 0) {
              NYPLLOG(@"No bookmarks were returned. No need to continue syncing.");
+             //GODO yes or no here?
              completion(YES, nil);
              return;
            }
 
-           // 2.
-           // Filter out bookmarks that don't exist on the server.
-
            NSMutableArray<NYPLReaderBookmarkElement *> *localBookmarksToKeep = [[NSMutableArray alloc] init];
+           NSMutableArray<NYPLReaderBookmarkElement *> *serverBookmarksToKeep = serverBookmarks.mutableCopy;
            NSMutableArray<NYPLReaderBookmarkElement *> *serverBookmarksToDelete = [[NSMutableArray alloc] init];
 
            for (NYPLReaderBookmarkElement *serverBookmark in serverBookmarks) {
              NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", serverBookmark.annotationId];
              NSArray *matchingBookmarks = [localBookmarks filteredArrayUsingPredicate:predicate];
              [localBookmarksToKeep addObjectsFromArray:matchingBookmarks];
-
+             
+             // Server bookmarks, created on this device, that are no longer present as a local bookmark
              if (matchingBookmarks.count == 0 &&
                  [serverBookmark.device isEqualToString:[[NYPLAccount sharedAccount] deviceID]]) {
                [serverBookmarksToDelete addObject:serverBookmark];
+               [serverBookmarksToKeep removeObject:serverBookmark];
              }
            }
 
            // Add back in the bookmarks that failed to upload.
-           [localBookmarksToKeep addObjectsFromArray:bookmarksNotUploaded];
+           
+           [localBookmarksToKeep addObjectsFromArray:localsNotUploaded];
            NYPLLOG_F(@"\nLocal Bookmarks To Keep:\n\n%@", localBookmarksToKeep);
 
            NSMutableArray<NYPLReaderBookmarkElement *> *localBookmarksToDelete = [[NSMutableArray alloc] init];
            for (NYPLReaderBookmarkElement *localBookmark in localBookmarks) {
-             if (![localBookmarksToKeep containsObject:localBookmark]) {
+             if (![localBookmarksToKeep containsObject:localBookmark] &&
+                 localBookmark.savedOnServer == YES) {
                [localBookmarksToDelete addObject:localBookmark];
              }
            }
            NYPLLOG_F(@"\nLocal Bookmarks To Delete:\n\n%@", localBookmarksToDelete);
-
            for (NYPLReaderBookmarkElement *bookmark in localBookmarksToDelete) {
              [[NYPLBookRegistry sharedRegistry] deleteBookmark:bookmark forIdentifier:self.bookID];
            }
 
-           // 3.
-           // Search for any bookmarks that need to be stored locally.
-           // Filter out any bookmarks that should be deleted on the server.
-
            NSMutableArray<NYPLReaderBookmarkElement *> *newBookmarksToSave = serverBookmarks.mutableCopy;
-           [newBookmarksToSave removeObjectsInArray:serverBookmarksToDelete];
-           for (NYPLReaderBookmarkElement *serverMark in serverBookmarks) {
+           for (NYPLReaderBookmarkElement *serverMark in serverBookmarksToKeep) {
              for (NYPLReaderBookmarkElement *localMark in localBookmarksToKeep) {
                if ([serverMark isEqual:localMark]) {
                  [newBookmarksToSave removeObject:serverMark];
                }
              }
            }
-
+           NYPLLOG_F(@"\nBookmarks To Save Locally:\n\n%@", newBookmarksToSave);
            for (NYPLReaderBookmarkElement *bookmark in newBookmarksToSave) {
              [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.bookID];
            }
 
+           // Loop through and attempt to delete server bookmarks, ignoring failures
            if (serverBookmarksToDelete.count > 0) {
               NYPLLOG_F(@"\nServer Bookmarks To Delete:\n\n%@", serverBookmarksToDelete);
              [NYPLAnnotations deleteBookmarks:serverBookmarksToDelete completionHandler:^{

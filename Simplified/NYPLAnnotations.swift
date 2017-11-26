@@ -301,6 +301,7 @@ final class NYPLAnnotations: NSObject {
 
     guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted]) else {
       Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
+      completionHandler(false)
       return
     }
     
@@ -382,7 +383,7 @@ final class NYPLAnnotations: NSObject {
       }
 
       for item in items {
-        if let bookmark = createBookmarkElement(bookID, item) {
+        if let bookmark = createBookmark(fromBook: bookID, annotation: item) {
           bookmarks.append(bookmark)
         } else {
           Log.error(#file, "Could not create bookmark element from item.")
@@ -418,12 +419,12 @@ final class NYPLAnnotations: NSObject {
     }
   }
 
-  private class func createBookmarkElement(_ bookID: String, _ item: AnyObject) -> NYPLReaderBookmarkElement? {
+  private class func createBookmark(fromBook bookID: String, annotation: AnyObject) -> NYPLReaderBookmarkElement? {
 
-    guard let target = item["target"] as? [String:AnyObject],
+    guard let target = annotation["target"] as? [String:AnyObject],
     let source = target["source"] as? String,
-    let id = item["id"] as? String,
-    let motivation = item["motivation"] as? String else {
+    let id = annotation["id"] as? String,
+    let motivation = annotation["motivation"] as? String else {
       Log.error(#file, "Error parsing key/values for target.")
       return nil
     }
@@ -432,7 +433,7 @@ final class NYPLAnnotations: NSObject {
 
       guard let selector = target["selector"] as? [String:AnyObject],
         let serverCFI = selector["value"] as? String,
-        let body = item["body"] as? [String:AnyObject] else {
+        let body = annotation["body"] as? [String:AnyObject] else {
           Log.error(#file, "ServerCFI could not be parsed.")
           return nil
       }
@@ -467,8 +468,7 @@ final class NYPLAnnotations: NSObject {
                                                device:device)
       return bookmark
     } else {
-      //GODO oh does this imply an annotation that represents book position?
-      Log.error(#file, "Bookmark not created. 'source' key/value does not match current NYPLBook object ID, or 'motivation' key/value is invalid.")
+      Log.error(#file, "Bookmark not created from Annotation Element. 'Motivation' Value: \(motivation)")
     }
     return nil
   }
@@ -480,7 +480,7 @@ final class NYPLAnnotations: NSObject {
 
     for localBookmark in bookmarks {
       uploadGroup.enter()
-      //GODO custom timeout?
+      //GODO timeout?
       deleteBookmark(annotationId: localBookmark.annotationId, completionHandler: { success in
         if !success {
           Log.error(#file, "Bookmark not deleted from server. Moving on.")
@@ -495,33 +495,33 @@ final class NYPLAnnotations: NSObject {
     }
   }
 
-//GODO think about if adding bookmarks really need offline queue. maybe not. maybe really it only makes sense for deleting server ones
-  //sinse the sync action will automatically try and download them again on the next refresh. but a failed delete would be different.
-
   class func deleteBookmark(annotationId: String,
                             completionHandler: @escaping (_ success: Bool) -> ()) {
     guard let url = URL(string: annotationId) else {
       Log.error(#file, "Invalid URL from Annotation ID")
+      completionHandler(false)
       return
     }
     var request = URLRequest(url: url)
     request.httpMethod = "DELETE"
     setDefaultAnnotationHeaders(forRequest: &request)
-    //GODO shorten timeout?
+    //GODO timeout?
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
       if (response as? HTTPURLResponse)?.statusCode == 200 {
         Log.info(#file, "200: DELETE bookmark success")
+        completionHandler(true)
       } else {
         guard let error = error as NSError? else { return }
         Log.error(#file, "DELETE bookmark Request Failed with Error Code: \(error.code). Description: \(error.localizedDescription)")
+        completionHandler(false)
       }
     }
     task.resume()
   }
 
 
-  class func postLocalBookmarks(bookmarks: [NYPLReaderBookmarkElement],
+  class func postLocalBookmarks(_ bookmarks: [NYPLReaderBookmarkElement],
                                 forBook bookID: String,
                                 completion: @escaping ([NYPLReaderBookmarkElement])->())
   {
@@ -529,7 +529,6 @@ final class NYPLAnnotations: NSObject {
     var bookmarksNotUploaded = [NYPLReaderBookmarkElement]()
 
     for localBookmark in bookmarks {
-      //GODO this is wrong, because now we dont replace a local with the server's immediately after posting. we need to compare it to the list of server bookmarks that are downloaded.
       if (localBookmark.savedOnServer == false) {
         uploadGroup.enter()
         postBookmark(forBook: bookID, toURL: nil, cfi: localBookmark.location, bookmark: localBookmark, completionHandler: { success in
@@ -555,13 +554,14 @@ final class NYPLAnnotations: NSObject {
   {
     if !accountSatisfiesSyncConditions() {
       Log.debug(#file, "Account does not support sync.")
+      completionHandler(false)
       return
     }
-    // If no specific URL is provided, post to annotation URL provided by OPDS Main Feed.
     let mainFeedAnnotationURL = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
     guard let annotationsURL = annotationsURL ?? mainFeedAnnotationURL,
       let cfi = cfi else {
         Log.error(#file, "Required parameter was nil.")
+        completionHandler(false)
         return
     }
 

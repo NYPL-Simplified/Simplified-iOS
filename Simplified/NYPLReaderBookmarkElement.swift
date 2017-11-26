@@ -87,11 +87,8 @@ final class NYPLReaderBookmarkElement: NSObject {
   
   override func isEqual(_ object: Any?) -> Bool {
     let other = object as! NYPLReaderBookmarkElement
-    
-    //GODO should annotation ID really need to be equal for the
-    // bookmark to be "equal"?? should check the sync method
-    if (self.annotationId == other.annotationId &&
-      self.contentCFI == other.contentCFI &&
+
+    if (self.contentCFI == other.contentCFI &&
       self.idref == other.idref &&
       self.chapter == other.chapter &&
       self.location == other.location)

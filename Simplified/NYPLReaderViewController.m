@@ -1021,7 +1021,6 @@ spineItemTitle:(NSString *const)title
   }
 }
 
-//GODO make sure this is working correctly and also observe how the enabled button glitches a bit when turning on
 - (void)toggleBookmark
 {
   NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
