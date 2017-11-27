@@ -157,10 +157,10 @@
                        completionHandler:^(BOOL success) {
                          if (success) {
                            [self.delegate bookmarkUploadDidFinish:bookmark forBook:bookID savedOnServer:YES];
-                           NYPLLOG_F(@"Bookmark at location: %@ successfully uploaded to server.", location);
+                           NYPLLOG_F(@"Bookmark upload success: %@", location);
                          } else {
                            [self.delegate bookmarkUploadDidFinish:bookmark forBook:bookID savedOnServer:NO];
-                           NYPLLOG_F(@"Bookmark at location: %@ failed to upload to server.", location);
+                           NYPLLOG_F(@"Bookmark failed to upload: %@", location);
                          }
                        }];
   } else {
@@ -195,11 +195,13 @@
          [NYPLAnnotations getBookmarksForBook:self.bookID atURL:self.annotationsURL completionHandler:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull serverBookmarks) {
 
            if (serverBookmarks.count == 0) {
-             NYPLLOG(@"No bookmarks were returned. No need to continue syncing.");
-             //GODO yes or no here?
-             completion(YES, nil);
-             return;
+             NYPLLOG(@"No server bookmarks were returned.");
+//             completion(YES, nil);
+//             return;
            }
+
+           NYPLLOG_F(@"\nLocal Bookmarks:\n\n%@", localBookmarks);
+           NYPLLOG_F(@"\nServer Bookmarks:\n\n%@", serverBookmarks);
 
            NSMutableArray<NYPLReaderBookmarkElement *> *localBookmarksToKeep = [[NSMutableArray alloc] init];
            NSMutableArray<NYPLReaderBookmarkElement *> *serverBookmarksToKeep = serverBookmarks.mutableCopy;
@@ -208,6 +210,7 @@
            for (NYPLReaderBookmarkElement *serverBookmark in serverBookmarks) {
              NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", serverBookmark.annotationId];
              NSArray *matchingBookmarks = [localBookmarks filteredArrayUsingPredicate:predicate];
+             //GODO have known issues now that annotation ID does not get saved right away with "localBookmarks"
              [localBookmarksToKeep addObjectsFromArray:matchingBookmarks];
              
              // Server bookmarks, created on this device, that are no longer present as a local bookmark
@@ -225,8 +228,7 @@
 
            NSMutableArray<NYPLReaderBookmarkElement *> *localBookmarksToDelete = [[NSMutableArray alloc] init];
            for (NYPLReaderBookmarkElement *localBookmark in localBookmarks) {
-             if (![localBookmarksToKeep containsObject:localBookmark] &&
-                 localBookmark.savedOnServer == YES) {
+             if (![localBookmarksToKeep containsObject:localBookmark]) {
                [localBookmarksToDelete addObject:localBookmark];
              }
            }
@@ -243,8 +245,9 @@
                }
              }
            }
-           NYPLLOG_F(@"\nBookmarks To Save Locally:\n\n%@", newBookmarksToSave);
+           NYPLLOG_F(@"\nNew Bookmarks To Save Locally:\n\n%@", newBookmarksToSave);
            for (NYPLReaderBookmarkElement *bookmark in newBookmarksToSave) {
+             bookmark.savedOnServer = YES;
              [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.bookID];
            }
 

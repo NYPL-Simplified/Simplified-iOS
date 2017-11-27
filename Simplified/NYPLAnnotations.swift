@@ -284,9 +284,10 @@ final class NYPLAnnotations: NSObject {
       ]
       ] as [String : Any]
     
-    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, timeout: nil) { success in
+    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, timeout: nil, queueOffline: true) { success in
       if success {
-        Log.debug(#file, "Annotation posted successfully to the server.")
+        let location = ((parameters["target"] as? [String:Any])?["selector"] as? [String:Any])?["value"] as? String ?? "null"
+        Log.debug(#file, "Success: Marked Reading Position To Server: \(location)")
       } else {
         Log.error(#file, "Annotation not posted.")
       }
@@ -297,6 +298,7 @@ final class NYPLAnnotations: NSObject {
                                     withAnnotationURL url: URL,
                                     withParameters parameters: [String:Any],
                                     timeout: Double?,
+                                    queueOffline: Bool,
                                     _ completionHandler: @escaping (_ success: Bool) -> ()) {
 
     guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted]) else {
@@ -317,7 +319,7 @@ final class NYPLAnnotations: NSObject {
 
       if let error = error as NSError? {
         Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
-        if NetworkQueue.StatusCodes.contains(error.code) {
+        if (NetworkQueue.StatusCodes.contains(error.code)) && (queueOffline == true) {
           self.addToOfflineQueue(bookID, url, parameters)
         }
         completionHandler(false)
@@ -329,11 +331,10 @@ final class NYPLAnnotations: NSObject {
       }
 
       if statusCode == 200 {
-        let location = ((parameters["target"] as? [String:Any])?["selector"] as? [String:Any])?["value"] as? String ?? "null"
-        Log.debug(#file, "Success: Marked Reading Position To Server: \(location)")
+        Log.debug(#file, "Annotation POST: Success 200.")
         completionHandler(true)
       } else {
-        Log.error(#file, "Server Response Error. Status Code: \(statusCode)")
+        Log.error(#file, "Annotation POST: Response Error. Status Code: \(statusCode)")
         completionHandler(false)
       }
     }
@@ -466,6 +467,7 @@ final class NYPLAnnotations: NSObject {
                                                progressWithinBook: progressWithinBook,
                                                time:time,
                                                device:device)
+      bookmark.savedOnServer = true
       return bookmark
     } else {
       Log.error(#file, "Bookmark not created from Annotation Element. 'Motivation' Value: \(motivation)")
@@ -505,7 +507,7 @@ final class NYPLAnnotations: NSObject {
     var request = URLRequest(url: url)
     request.httpMethod = "DELETE"
     setDefaultAnnotationHeaders(forRequest: &request)
-    //GODO timeout?
+    request.timeoutInterval = 20.0
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
       if (response as? HTTPURLResponse)?.statusCode == 200 {
@@ -525,6 +527,7 @@ final class NYPLAnnotations: NSObject {
                                 forBook bookID: String,
                                 completion: @escaping ([NYPLReaderBookmarkElement])->())
   {
+    Log.debug(#file, "Begin task of uploading local bookmarks.")
     let uploadGroup = DispatchGroup()
     var bookmarksNotUploaded = [NYPLReaderBookmarkElement]()
 
@@ -534,6 +537,7 @@ final class NYPLAnnotations: NSObject {
         postBookmark(forBook: bookID, toURL: nil, cfi: localBookmark.location, bookmark: localBookmark, completionHandler: { success in
           if !success {
             bookmarksNotUploaded.append(localBookmark)
+            Log.error(#file, "Local Bookmark not uploaded: \(localBookmark)")
           }
           uploadGroup.leave()
         })
@@ -585,7 +589,7 @@ final class NYPLAnnotations: NSObject {
       ]
       ] as [String : Any]
 
-    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, timeout: 20.0) { success in
+    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, timeout: 20.0, queueOffline: false) { success in
       if success {
         completionHandler(true)
       } else {

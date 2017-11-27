@@ -232,40 +232,32 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
   
-  if (editingStyle == UITableViewCellEditingStyleDelete)
-  {
-    
+  if (editingStyle == UITableViewCellEditingStyleDelete) {
     NYPLReaderBookmarkElement *bookmark = self.bookmarks[indexPath.row];
-    
     NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
     [rv deleteBookmark:bookmark];
     
     [self.bookmarks removeObjectAtIndex:indexPath.row];
-    
     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:(UITableViewRowAnimationFade)];
-    
   }
 }
 
-- (IBAction)didSelectSegment:(__attribute__((unused)) UISegmentedControl*)sender
+- (IBAction)didSelectSegment:(UISegmentedControl *)__unused sender
 {
-  if (self.segmentedControl.selectedSegmentIndex == 1) {
-    if (self.bookmarks.count == 0 || self.bookmarks == nil) {
-      self.tableView.hidden = YES;
-    }
-  } else {
-    if (self.tableView.isHidden) {
-      self.tableView.hidden = NO;
-    }
-  }
   [self.tableView reloadData];
   switch (self.segmentedControl.selectedSegmentIndex) {
     case 0:
       if ([self.tableView.subviews containsObject:self.refreshControl]){
         [self.refreshControl removeFromSuperview];
       }
+      if (self.tableView.isHidden) {
+        self.tableView.hidden = NO;
+      }
       break;
     case 1:
+      if (self.bookmarks.count == 0 || self.bookmarks == nil) {
+        self.tableView.hidden = YES;
+      }
       self.refreshControl = [[UIRefreshControl alloc] init];
       [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
       [self.tableView addSubview:self.refreshControl];
@@ -277,16 +269,16 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 #pragma mark -
 
-- (void) createViews
+- (void)createViews
 {
-  NSString *label;
+  NSString *label1 = [NSString stringWithFormat:NSLocalizedString(@"There are no bookmarks for %@", nil), self.bookTitle];
+  NSString *label2 = NSLocalizedString(@"There are no bookmarks for this book.", nil);
   if (self.bookTitle) {
-    label = [NSString stringWithFormat:@"There are no bookmarks for %@", self.bookTitle];
+    self.noBookmarksLabel.text = label1;
   } else {
-    label = [NSString stringWithFormat:@"There are no bookmarks for this book."];
+    self.noBookmarksLabel.text = label2;
   }
-  self.noBookmarksLabel.text = label;
-  
+
   [self.view insertSubview:self.noBookmarksLabel belowSubview:self.tableView];
   
   [self.noBookmarksLabel autoCenterInSuperview];
