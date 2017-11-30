@@ -14,7 +14,7 @@
 		032A31051DC02E8E0001E4AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 032A31071DC02E8E0001E4AF /* Localizable.strings */; };
 		0345BFE81DBF027200398B6F /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0345BFD61DBF002E00398B6F /* APIKeys.swift */; };
 		03690E231EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03690E221EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift */; };
-		03690E291EB2B44300F75D5F /* NYPLReaderBookmarkElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03690E281EB2B44300F75D5F /* NYPLReaderBookmarkElement.swift */; };
+		03690E291EB2B44300F75D5F /* NYPLBookmarkAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03690E281EB2B44300F75D5F /* NYPLBookmarkAnnotation.swift */; };
 		0378BC1C1E27FFC80095428E /* NYPLDeviceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0378BC1B1E27FFC80095428E /* NYPLDeviceManager.swift */; };
 		03B092241E78839D00AD338D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092231E78839D00AD338D /* QuartzCore.framework */; };
 		03B092261E7883C400AD338D /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B092251E7883C400AD338D /* libiconv.tbd */; };
@@ -242,7 +242,7 @@
 		032A310E1DC02EC00001E4AF /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0345BFD61DBF002E00398B6F /* APIKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
 		03690E221EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLReaderBookmarkCell.swift; sourceTree = "<group>"; };
-		03690E281EB2B44300F75D5F /* NYPLReaderBookmarkElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLReaderBookmarkElement.swift; sourceTree = "<group>"; };
+		03690E281EB2B44300F75D5F /* NYPLBookmarkAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookmarkAnnotation.swift; sourceTree = "<group>"; };
 		0378BC1B1E27FFC80095428E /* NYPLDeviceManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLDeviceManager.swift; sourceTree = "<group>"; };
 		03B092231E78839D00AD338D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		03B092251E7883C400AD338D /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
@@ -806,7 +806,7 @@
 			isa = PBXGroup;
 			children = (
 				03690E221EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift */,
-				03690E281EB2B44300F75D5F /* NYPLReaderBookmarkElement.swift */,
+				03690E281EB2B44300F75D5F /* NYPLBookmarkAnnotation.swift */,
 				E63F2C6B1EAA81B3002B6373 /* ExtendedNavBarView.swift */,
 				113137E51A48DAB90082954E /* NYPLReaderReadiumView.h */,
 				113137E61A48DAB90082954E /* NYPLReaderReadiumView.m */,
@@ -1563,7 +1563,7 @@
 				1107835E19816E3D0071AB1E /* UIView+NYPLViewAdditions.m in Sources */,
 				111E75831A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m in Sources */,
 				11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */,
-				03690E291EB2B44300F75D5F /* NYPLReaderBookmarkElement.swift in Sources */,
+				03690E291EB2B44300F75D5F /* NYPLBookmarkAnnotation.swift in Sources */,
 				0320E8241E8BFCC900806EF0 /* NYPLReportIssueViewController.swift in Sources */,
 				1183F353194F795800DC322F /* NYPLBookAcquisition.m in Sources */,
 				11A14DF41A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m in Sources */,

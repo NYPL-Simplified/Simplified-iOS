@@ -8,16 +8,13 @@
 @protocol NYPLReadiumViewSyncManagerDelegate <NSObject>
 
 @required
-// From UIALert, user made decision
-// to stay or to leave current page
 - (void)patronDecidedNavigation:(BOOL)toLatestPage
                     withNavDict:(NSDictionary *)dict;
 
 - (void)shouldPostReadingPosition:(BOOL)status;
 
--(void)bookmarkUploadDidFinish:(NYPLReaderBookmarkElement *)bookmark
-                       forBook:(NSString *)bookID
-                 savedOnServer:(BOOL)success;
+- (void)uploadFinishedForBookmark:(NYPLReaderBookmarkElement *)bookmark
+                           inBook:(NSString *)bookID;
 
 @optional
 - (void)didCompleteBookmarkSync:(BOOL)success
@@ -26,10 +23,10 @@
 
 @interface NYPLReadiumViewSyncManager : NSObject
 
-- (instancetype) initWithBookID:(NSString *)bookID
-                 annotationsURL:(NSURL *)URL
-                        bookMap:(NSDictionary *)map
-                       delegate:(id)delegate;
+- (instancetype)initWithBookID:(NSString *)bookID
+                annotationsURL:(NSURL *)URL
+                       bookMap:(NSDictionary *)map
+                      delegate:(id)delegate;
 
 - (void)syncAnnotationsWithPermissionForAccount:(Account *)account
                                 withPackageDict:(NSDictionary *)packageDict;

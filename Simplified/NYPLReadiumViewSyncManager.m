@@ -153,18 +153,19 @@
 {
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
   if (currentAccount.syncPermissionGranted) {
-    [NYPLAnnotations postBookmarkForBook:bookID toURL:nil cfi:location bookmark:bookmark
-                       completionHandler:^(BOOL success) {
-                         if (success) {
-                           [self.delegate bookmarkUploadDidFinish:bookmark forBook:bookID savedOnServer:YES];
+    [NYPLAnnotations postBookmarkForBook:bookID toURL:nil bookmark:bookmark
+                       completionHandler:^(NSString * _Nullable serverAnnotationID) {
+                         if (serverAnnotationID) {
                            NYPLLOG_F(@"Bookmark upload success: %@", location);
                          } else {
-                           [self.delegate bookmarkUploadDidFinish:bookmark forBook:bookID savedOnServer:NO];
                            NYPLLOG_F(@"Bookmark failed to upload: %@", location);
                          }
+//                         bookmark.annotationId = serverAnnotationID;
+                         //GODO maybe there's more to abstract out of readium view now.
+                         [self.delegate uploadFinishedForBookmark:bookmark inBook:bookID];
                        }];
   } else {
-    [self.delegate bookmarkUploadDidFinish:bookmark forBook:bookID savedOnServer:NO];
+    [self.delegate uploadFinishedForBookmark:bookmark inBook:bookID];
     NYPLLOG(@"Bookmark saving locally. Sync is not enabled for account.");
   }
 }
@@ -180,87 +181,84 @@
      if (!reachable) {
        //GODO Alert Controller here?
        NYPLLOG(@"Error: host was not reachable for bookmark sync attempt.");
-       completion(NO, nil);
+       //GODO is completion corect here?
+//       completion(NO, nil);
        return;
      }
 
-     NSArray<NYPLReaderBookmarkElement *> *localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID];
+     // Sync: First upload any local bookmarks that have never been saved to the server.
+     // Then pull server bookmark list and filter out any that can be deleted.
+
+     NSArray<NYPLReaderBookmarkElement *> *localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID].mutableCopy;
+     NYPLLOG_F(@"\nLocally Saved Bookmarks:\n\n%@", localBookmarks);
      
-     // Attempt to upload any local bookmarks that have never been before
-     
-     [NYPLAnnotations postLocalBookmarks:localBookmarks forBook:self.bookID completion:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull localsNotUploaded) {
+     [NYPLAnnotations uploadLocalBookmarks:localBookmarks forBook:self.bookID completion:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull updatedBookmarks, NSArray<NYPLReaderBookmarkElement *> * _Nonnull localsNotUploaded) {
 
-         // Download server list
+       NYPLLOG_F(@"\nUploaded Bookmarks:\n\n%@", updatedBookmarks);
+       NYPLLOG_F(@"\nBookmarks That Failed To Upload:\n\n%@", localsNotUploaded);
 
-         [NYPLAnnotations getBookmarksForBook:self.bookID atURL:self.annotationsURL completionHandler:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull serverBookmarks) {
+       [NYPLAnnotations getServerBookmarksForBook:self.bookID atURL:self.annotationsURL completionHandler:^(NSArray<NYPLReaderBookmarkElement *> * _Nonnull serverBookmarks) {
 
-           if (serverBookmarks.count == 0) {
-             NYPLLOG(@"No server bookmarks were returned.");
-//             completion(YES, nil);
-//             return;
-           }
-
-           NYPLLOG_F(@"\nLocal Bookmarks:\n\n%@", localBookmarks);
+         if (serverBookmarks.count == 0) {
+           NYPLLOG(@"No server bookmarks were returned.");
+         } else {
            NYPLLOG_F(@"\nServer Bookmarks:\n\n%@", serverBookmarks);
+         }
 
-           NSMutableArray<NYPLReaderBookmarkElement *> *localBookmarksToKeep = [[NSMutableArray alloc] init];
-           NSMutableArray<NYPLReaderBookmarkElement *> *serverBookmarksToKeep = serverBookmarks.mutableCopy;
-           NSMutableArray<NYPLReaderBookmarkElement *> *serverBookmarksToDelete = [[NSMutableArray alloc] init];
+         NSMutableArray<NYPLReaderBookmarkElement *> *localBookmarksToKeep = [[NSMutableArray alloc] init];
+         NSMutableArray<NYPLReaderBookmarkElement *> *localBookmarksToDelete = [[NSMutableArray alloc] init];
+         NSMutableArray<NYPLReaderBookmarkElement *> *serverBookmarksToKeep = serverBookmarks.mutableCopy;
+         NSMutableArray<NYPLReaderBookmarkElement *> *serverBookmarksToDelete = [[NSMutableArray alloc] init];
 
-           for (NYPLReaderBookmarkElement *serverBookmark in serverBookmarks) {
-             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", serverBookmark.annotationId];
-             NSArray *matchingBookmarks = [localBookmarks filteredArrayUsingPredicate:predicate];
-             //GODO have known issues now that annotation ID does not get saved right away with "localBookmarks"
-             [localBookmarksToKeep addObjectsFromArray:matchingBookmarks];
-             
-             // Server bookmarks, created on this device, that are no longer present as a local bookmark
-             if (matchingBookmarks.count == 0 &&
-                 [serverBookmark.device isEqualToString:[[NYPLAccount sharedAccount] deviceID]]) {
-               [serverBookmarksToDelete addObject:serverBookmark];
-               [serverBookmarksToKeep removeObject:serverBookmark];
+         for (NYPLReaderBookmarkElement *serverBookmark in serverBookmarks) {
+           NSPredicate *predicate = [NSPredicate predicateWithFormat:@"annotationId == %@", serverBookmark.annotationId];
+           NSArray *matchingBookmarks = [localBookmarks filteredArrayUsingPredicate:predicate];
+
+           [localBookmarksToKeep addObjectsFromArray:matchingBookmarks];
+
+           // Server bookmarks, created on this device, that are no longer present as a local bookmark,
+           // should be deleted on the server.
+           if (matchingBookmarks.count == 0 &&
+               [serverBookmark.device isEqualToString:[[NYPLAccount sharedAccount] deviceID]]) {
+             [serverBookmarksToDelete addObject:serverBookmark];
+             [serverBookmarksToKeep removeObject:serverBookmark];
+           }
+         }
+
+         for (NYPLReaderBookmarkElement *localBookmark in localBookmarks) {
+           if (![localBookmarksToKeep containsObject:localBookmark]) {
+             [[NYPLBookRegistry sharedRegistry] deleteBookmark:localBookmark forIdentifier:self.bookID];
+             [localBookmarksToDelete addObject:localBookmark];
+           }
+         }
+         //GODO temp logging
+         NYPLLOG_F(@"\nLocal Bookmarks To Delete:\n\n%@", localBookmarksToDelete);
+
+         NSMutableArray<NYPLReaderBookmarkElement *> *bookmarksToAdd = serverBookmarks.mutableCopy;
+         for (NYPLReaderBookmarkElement *serverMark in serverBookmarksToKeep) {
+           for (NYPLReaderBookmarkElement *localMark in localBookmarksToKeep) {
+             if ([serverMark isEqual:localMark]) {
+               [bookmarksToAdd removeObject:serverMark];
              }
            }
+         }
+         [bookmarksToAdd addObjectsFromArray:updatedBookmarks];
+         [bookmarksToAdd addObjectsFromArray:localsNotUploaded];
+         NYPLLOG_F(@"\nNew Bookmarks To Save Locally:\n\n%@", bookmarksToAdd);
 
-           // Add back in the bookmarks that failed to upload.
-           
-           [localBookmarksToKeep addObjectsFromArray:localsNotUploaded];
-           NYPLLOG_F(@"\nLocal Bookmarks To Keep:\n\n%@", localBookmarksToKeep);
+         for (NYPLReaderBookmarkElement *bookmark in bookmarksToAdd) {
+           [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.bookID];
+         }
 
-           NSMutableArray<NYPLReaderBookmarkElement *> *localBookmarksToDelete = [[NSMutableArray alloc] init];
-           for (NYPLReaderBookmarkElement *localBookmark in localBookmarks) {
-             if (![localBookmarksToKeep containsObject:localBookmark]) {
-               [localBookmarksToDelete addObject:localBookmark];
-             }
-           }
-           NYPLLOG_F(@"\nLocal Bookmarks To Delete:\n\n%@", localBookmarksToDelete);
-           for (NYPLReaderBookmarkElement *bookmark in localBookmarksToDelete) {
-             [[NYPLBookRegistry sharedRegistry] deleteBookmark:bookmark forIdentifier:self.bookID];
-           }
-
-           NSMutableArray<NYPLReaderBookmarkElement *> *newBookmarksToSave = serverBookmarks.mutableCopy;
-           for (NYPLReaderBookmarkElement *serverMark in serverBookmarksToKeep) {
-             for (NYPLReaderBookmarkElement *localMark in localBookmarksToKeep) {
-               if ([serverMark isEqual:localMark]) {
-                 [newBookmarksToSave removeObject:serverMark];
-               }
-             }
-           }
-           NYPLLOG_F(@"\nNew Bookmarks To Save Locally:\n\n%@", newBookmarksToSave);
-           for (NYPLReaderBookmarkElement *bookmark in newBookmarksToSave) {
-             bookmark.savedOnServer = YES;
-             [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.bookID];
-           }
-
-           // Loop through and attempt to delete server bookmarks, ignoring failures
-           if (serverBookmarksToDelete.count > 0) {
-              NYPLLOG_F(@"\nServer Bookmarks To Delete:\n\n%@", serverBookmarksToDelete);
-             [NYPLAnnotations deleteBookmarks:serverBookmarksToDelete completionHandler:^{
-               completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
-             }];
-           } else {
+         if (serverBookmarksToDelete.count > 0) {
+           NYPLLOG_F(@"\nServer Bookmarks To Delete:\n\n%@", serverBookmarksToDelete);
+           [NYPLAnnotations deleteBookmarks:serverBookmarksToDelete completionHandler:^{
              completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
-           }
-         }];
+           }];
+         } else {
+           completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+         }
+       }];
      }];
    }];
 }

@@ -501,15 +501,11 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   self.postLastRead = status;
 }
 
--(void)bookmarkUploadDidFinish:(NYPLReaderBookmarkElement *)bookmark
-                       forBook:(NSString *)bookID
-                 savedOnServer:(BOOL)success
+- (void)uploadFinishedForBookmark:(NYPLReaderBookmarkElement *)bookmark
+                          inBook:(NSString *)bookID
 {
-  bookmark.savedOnServer = success;
-  
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
   [registry addBookmark:bookmark forIdentifier:bookID];
-  
   self.bookmarkElements = [registry bookmarksForIdentifier:bookID];
 }
 
@@ -669,7 +665,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   }
 
   NYPLReaderBookmarkElement *bookmark = [[NYPLReaderBookmarkElement alloc]
-                                         initWithAnnotationId:@""
+                                         initWithAnnotationId:nil
                                          contentCFI:contentCFI
                                          idref:idref
                                          chapter:chapter
@@ -764,7 +760,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                                             options:NSJSONReadingMutableContainers
                                                               error:&jsonError];
 
-       [self checkForExistingBookmarkAtLocation:json[@"idref"] completionHandler:^(bool success, NYPLReaderBookmarkElement *bookmark) {
+       [self checkForExistingBookmarkAtLocation:json[@"idref"] completionHandler:^(BOOL success, NYPLReaderBookmarkElement *bookmark) {
          [self.delegate updateBookmarkIcon:success];
          [self.delegate updateCurrentBookmark:bookmark];
        }];

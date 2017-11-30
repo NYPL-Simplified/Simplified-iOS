@@ -284,7 +284,7 @@ final class NYPLAnnotations: NSObject {
       ]
       ] as [String : Any]
     
-    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, timeout: nil, queueOffline: true) { success in
+    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, timeout: nil, queueOffline: true) { (success, id) in
       if success {
         let location = ((parameters["target"] as? [String:Any])?["selector"] as? [String:Any])?["value"] as? String ?? "null"
         Log.debug(#file, "Success: Marked Reading Position To Server: \(location)")
@@ -299,11 +299,11 @@ final class NYPLAnnotations: NSObject {
                                     withParameters parameters: [String:Any],
                                     timeout: Double?,
                                     queueOffline: Bool,
-                                    _ completionHandler: @escaping (_ success: Bool) -> ()) {
+                                    _ completionHandler: @escaping (_ success: Bool, _ annotationID: String?) -> ()) {
 
     guard let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted]) else {
       Log.error(#file, "Network request abandoned. Could not create JSON from given parameters.")
-      completionHandler(false)
+      completionHandler(false, nil)
       return
     }
     
@@ -322,28 +322,47 @@ final class NYPLAnnotations: NSObject {
         if (NetworkQueue.StatusCodes.contains(error.code)) && (queueOffline == true) {
           self.addToOfflineQueue(bookID, url, parameters)
         }
-        completionHandler(false)
+        completionHandler(false, nil)
       }
       guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
         Log.error(#file, "No response received from server")
-        completionHandler(false)
+        completionHandler(false, nil)
         return
       }
 
       if statusCode == 200 {
         Log.debug(#file, "Annotation POST: Success 200.")
-        completionHandler(true)
+        let serverAnnotationID = annotationID(fromNetworkData: data)
+        completionHandler(true, serverAnnotationID)
       } else {
         Log.error(#file, "Annotation POST: Response Error. Status Code: \(statusCode)")
-        completionHandler(false)
+        completionHandler(false, nil)
       }
     }
     task.resume()
   }
 
+  private class func annotationID(fromNetworkData data: Data?) -> String? {
+
+    guard let data = data else {
+      Log.error(#file, "No Annotation ID saved: No data received from server.")
+      return nil
+    }
+    guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] else {
+      Log.error(#file, "No Annotation ID saved: JSON could not be created from data.")
+      return nil
+    }
+    if let annotationID = json["id"] as? String {
+      return annotationID
+    } else {
+      Log.error(#file, "No Annotation ID saved: Key/Value not found in JSON response.")
+      return nil
+    }
+  }
+
   // MARK: - Bookmarks
   
-  class func getBookmarks(forBook bookID:String?, atURL annotationURL:URL?, completionHandler: @escaping (_ bookmarks: [NYPLReaderBookmarkElement]) -> ()) {
+  class func getServerBookmarks(forBook bookID:String?, atURL annotationURL:URL?, completionHandler: @escaping (_ bookmarks: [NYPLReaderBookmarkElement]) -> ()) {
     
     guard let bookID = bookID, let annotationURL = annotationURL else {
       Log.error(#file, "Required parameter was nil.")
@@ -384,7 +403,7 @@ final class NYPLAnnotations: NSObject {
       }
 
       for item in items {
-        if let bookmark = createBookmark(fromBook: bookID, annotation: item) {
+        if let bookmark = createBookmark(fromBook: bookID, serverAnnotation: item) {
           bookmarks.append(bookmark)
         } else {
           Log.error(#file, "Could not create bookmark element from item.")
@@ -413,18 +432,18 @@ final class NYPLAnnotations: NSObject {
         return
     }
 
-    getBookmarks(forBook: id, atURL: annotationUrl) { bookmarks in
+    getServerBookmarks(forBook: id, atURL: annotationUrl) { bookmarks in
       completionHandler(bookmarks
         .filter({ $0.contentCFI == localContentCfi && $0.idref == localIdref })
         .first)
     }
   }
 
-  private class func createBookmark(fromBook bookID: String, annotation: AnyObject) -> NYPLReaderBookmarkElement? {
+  private class func createBookmark(fromBook bookID: String, serverAnnotation annotation: AnyObject) -> NYPLReaderBookmarkElement? {
 
     guard let target = annotation["target"] as? [String:AnyObject],
     let source = target["source"] as? String,
-    let id = annotation["id"] as? String,
+    let annotationID = annotation["id"] as? String,
     let motivation = annotation["motivation"] as? String else {
       Log.error(#file, "Error parsing key/values for target.")
       return nil
@@ -457,17 +476,16 @@ final class NYPLAnnotations: NSObject {
           return nil
       }
 
-      let bookmark = NYPLReaderBookmarkElement(annotationId: id,
+      let bookmark = NYPLReaderBookmarkElement(annotationId: annotationID,
                                                contentCFI: serverCfiJson,
                                                idref: serverIdrefJson,
-                                               chapter: chapter ?? "",
+                                               chapter: chapter,
                                                page: nil,
                                                location: serverCFI,
                                                progressWithinChapter: progressWithinChapter,
                                                progressWithinBook: progressWithinBook,
                                                time:time,
                                                device:device)
-      bookmark.savedOnServer = true
       return bookmark
     } else {
       Log.error(#file, "Bookmark not created from Annotation Element. 'Motivation' Value: \(motivation)")
@@ -481,14 +499,16 @@ final class NYPLAnnotations: NSObject {
     let uploadGroup = DispatchGroup()
 
     for localBookmark in bookmarks {
-      uploadGroup.enter()
-      //GODO timeout?
-      deleteBookmark(annotationId: localBookmark.annotationId, completionHandler: { success in
-        if !success {
-          Log.error(#file, "Bookmark not deleted from server. Moving on.")
-        }
-        uploadGroup.leave()
-      })
+      if let annotationID = localBookmark.annotationId {
+        uploadGroup.enter()
+        //GODO timeout?
+        deleteBookmark(annotationId: annotationID, completionHandler: { success in
+          if !success {
+            Log.error(#file, "Bookmark not deleted from server. Moving on.")
+          }
+          uploadGroup.leave()
+        })
+      }
     }
 
     uploadGroup.notify(queue: DispatchQueue.main) {
@@ -523,21 +543,27 @@ final class NYPLAnnotations: NSObject {
   }
 
 
-  class func postLocalBookmarks(_ bookmarks: [NYPLReaderBookmarkElement],
-                                forBook bookID: String,
-                                completion: @escaping ([NYPLReaderBookmarkElement])->())
+  // If bookmark is missing an annotationID, assume it still needs to be uploaded.
+  class func uploadLocalBookmarks(_ bookmarks: [NYPLReaderBookmarkElement],
+                                  forBook bookID: String,
+                                  completion: @escaping ([NYPLReaderBookmarkElement], [NYPLReaderBookmarkElement])->())
   {
     Log.debug(#file, "Begin task of uploading local bookmarks.")
     let uploadGroup = DispatchGroup()
-    var bookmarksNotUploaded = [NYPLReaderBookmarkElement]()
+    var bookmarksFailedToUpdate = [NYPLReaderBookmarkElement]()
+    var bookmarksUpdated = [NYPLReaderBookmarkElement]()
 
     for localBookmark in bookmarks {
-      if (localBookmark.savedOnServer == false) {
+      if localBookmark.annotationId == nil {
         uploadGroup.enter()
-        postBookmark(forBook: bookID, toURL: nil, cfi: localBookmark.location, bookmark: localBookmark, completionHandler: { success in
-          if !success {
-            bookmarksNotUploaded.append(localBookmark)
+        //GODO timeout?
+        postBookmark(forBook: bookID, toURL: nil, bookmark: localBookmark, completionHandler: { serverID in
+          if let ID = serverID {
+            localBookmark.annotationId = ID //GODO this is likely unneccessary (at least for the current caller)
+            bookmarksUpdated.append(localBookmark)
+          } else {
             Log.error(#file, "Local Bookmark not uploaded: \(localBookmark)")
+            bookmarksFailedToUpdate.append(localBookmark)
           }
           uploadGroup.leave()
         })
@@ -546,26 +572,24 @@ final class NYPLAnnotations: NSObject {
 
     uploadGroup.notify(queue: DispatchQueue.main) {
       Log.debug(#file, "Finished task of uploading local bookmarks.")
-      completion(bookmarksNotUploaded)
+      completion(bookmarksUpdated, bookmarksFailedToUpdate)
     }
   }
 
   class func postBookmark(forBook bookID: String,
                           toURL annotationsURL: URL?,
-                          cfi: String?,
                           bookmark: NYPLReaderBookmarkElement,
-                          completionHandler: @escaping (_ success: Bool) -> ())
+                          completionHandler: @escaping (_ serverID: String?) -> ())
   {
     if !accountSatisfiesSyncConditions() {
       Log.debug(#file, "Account does not support sync.")
-      completionHandler(false)
+      completionHandler(nil)
       return
     }
     let mainFeedAnnotationURL = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
-    guard let annotationsURL = annotationsURL ?? mainFeedAnnotationURL,
-      let cfi = cfi else {
+    guard let annotationsURL = annotationsURL ?? mainFeedAnnotationURL else {
         Log.error(#file, "Required parameter was nil.")
-        completionHandler(false)
+        completionHandler(nil)
         return
     }
 
@@ -577,7 +601,7 @@ final class NYPLAnnotations: NSObject {
         "source": bookID,
         "selector": [
           "type": "oa:FragmentSelector",
-          "value": cfi
+          "value": bookmark.location
         ]
       ],
       "body": [
@@ -589,12 +613,8 @@ final class NYPLAnnotations: NSObject {
       ]
       ] as [String : Any]
 
-    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, timeout: 20.0, queueOffline: false) { success in
-      if success {
-        completionHandler(true)
-      } else {
-        completionHandler(false)
-      }
+    postAnnotation(forBook: bookID, withAnnotationURL: annotationsURL, withParameters: parameters, timeout: 20.0, queueOffline: false) { (success, id) in
+      completionHandler(id)
     }
   }
 
@@ -615,7 +635,7 @@ final class NYPLAnnotations: NSObject {
     if let barcode = NYPLAccount.shared().barcode, let pin = NYPLAccount.shared().pin {
       let authenticationString = "\(barcode):\(pin)"
       if let authenticationData = authenticationString.data(using: String.Encoding.ascii) {
-        let authenticationValue = "Basic \(authenticationData.base64EncodedString(options: Data.Base64EncodingOptions.lineLength64Characters))"
+        let authenticationValue = "Basic \(authenticationData.base64EncodedString(options: .lineLength64Characters))"
         return ["Authorization" : "\(authenticationValue)",
                 "Content-Type" : "application/json"]
       } else {
