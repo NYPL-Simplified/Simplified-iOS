@@ -14,6 +14,8 @@
 @property (nonatomic) NYPLBookAvailabilityStatus availabilityStatus;
 @property (nonatomic) NSInteger availableCopies;
 @property (nonatomic) NSDate *availableUntil;
+@property (nonatomic) NSInteger totalCopies;
+@property (nonatomic) NSInteger holdsPosition;
 @property (nonatomic) NSArray *categoryStrings;
 @property (nonatomic) NSString *distributor;
 @property (nonatomic) NSString *identifier;
@@ -41,6 +43,8 @@ static NSString *const AuthorLinksKey = @"author-links";
 static NSString *const AvailabilityStatusKey = @"availability-status";
 static NSString *const AvailableCopiesKey = @"available-copies";
 static NSString *const AvailableUntilKey = @"available-until";
+static NSString *const TotalCopiesKey = @"total-copies";
+static NSString *const HoldsPositionKey = @"holds-position";
 static NSString *const CategoriesKey = @"categories";
 static NSString *const DistributorKey = @"distributor";
 static NSString *const IdentifierKey = @"id";
@@ -98,6 +102,8 @@ static NSString *const AlternateURLKey = @"alternate";
 
   NYPLBookAvailabilityStatus availabilityStatus = NYPLBookAvailabilityStatusUnknown;
   NSInteger availableCopies = 0;
+  NSInteger totalCopies = 0;
+  NSInteger holdsPosition = 0;
   NSDate *availableUntil = nil;
   NSArray *borrowFormats = @[];
   BOOL isEPUBAvailable = NO;
@@ -128,6 +134,12 @@ static NSString *const AlternateURLKey = @"alternate";
     }
     if(link.availableUntil) {
       availableUntil = link.availableUntil;
+    }
+    if(link.totalCopies > totalCopies) {
+      totalCopies = link.totalCopies;
+    }
+    if(link.holdsPosition > holdsPosition) {
+      holdsPosition = link.holdsPosition;
     }
     
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisition]) {
@@ -203,6 +215,8 @@ static NSString *const AlternateURLKey = @"alternate";
           availabilityStatus:availabilityStatus
           availableCopies:availableCopies
           availableUntil:availableUntil
+          totalCopies:totalCopies
+          holdsPosition:holdsPosition
           categoryStrings:[[self class] categoryStringsFromCategories:entry.categories]
           distributor:entry.providerName
           identifier:entry.identifier
@@ -230,6 +244,8 @@ static NSString *const AlternateURLKey = @"alternate";
           availabilityStatus:self.availabilityStatus
           availableCopies:self.availableCopies
           availableUntil:self.availableUntil
+          totalCopies:self.totalCopies
+          holdsPosition:self.holdsPosition
           categoryStrings:book.categoryStrings
           distributor:book.distributor
           identifier:self.identifier
@@ -254,6 +270,8 @@ static NSString *const AlternateURLKey = @"alternate";
                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
                     availableCopies:(NSInteger)availableCopies
                      availableUntil:(NSDate *)availableUntil
+                        totalCopies:(NSInteger)totalCopies
+                      holdsPosition:(NSInteger)holdsPosition
                     categoryStrings:(NSArray *)categoryStrings
                         distributor:(NSString *)distributor
                          identifier:(NSString *)identifier
@@ -287,6 +305,8 @@ static NSString *const AlternateURLKey = @"alternate";
   self.availabilityStatus = availabilityStatus;
   self.availableCopies = availableCopies;
   self.availableUntil = availableUntil;
+  self.totalCopies = totalCopies;
+  self.holdsPosition = holdsPosition;
   self.categoryStrings = categoryStrings;
   self.distributor = distributor;
   self.identifier = identifier;
@@ -353,8 +373,9 @@ static NSString *const AlternateURLKey = @"alternate";
   self.bookAuthors = authors;
   
   self.availabilityStatus = [dictionary[AvailabilityStatusKey] integerValue];
-  
   self.availableCopies = [dictionary[AvailableCopiesKey] integerValue];
+  self.totalCopies = [dictionary[TotalCopiesKey] integerValue];
+  self.holdsPosition = [dictionary[HoldsPositionKey] integerValue];
   
   NSString *const availableUntilString = NYPLNullToNil(dictionary[AvailableUntilKey]);
   self.availableUntil = NYPLNullToNil(availableUntilString ? [NSDate dateWithRFC3339String:availableUntilString] : nil);

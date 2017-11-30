@@ -11,6 +11,8 @@
 @property (nonatomic, readonly) NSString *length; // nilable
 @property (nonatomic, readonly) NSString *availabilityStatus; // nilable
 @property (nonatomic, readonly) NSInteger availableCopies;
+@property (nonatomic, readonly) NSInteger totalCopies;
+@property (nonatomic, readonly) NSInteger holdsPosition; // nilable
 @property (nonatomic, readonly) NSDate *availableSince; // nilable
 @property (nonatomic, readonly) NSDate *availableUntil; // nilable
 @property (nonatomic, readonly) NSDictionary *licensor; // nilable

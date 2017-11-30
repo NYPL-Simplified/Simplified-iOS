@@ -121,8 +121,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
       newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
       break;
     case NYPLBookButtonsStateHolding:
-      newMessageString = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerHoldingTitleFormat", nil),
-                                [self.book.availableUntil longTimeUntilString]];
+      newMessageString = [self messageStringForNYPLBookButtonsStateHolding];
       break;
     case NYPLBookButtonsStateHoldingFOQ:
       newMessageString = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerReservedTitleFormat", nil),
@@ -153,6 +152,18 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
         self.messageLabel.alpha = 1.0f;
       }];
     }];
+  }
+}
+
+-(NSString *)messageStringForNYPLBookButtonsStateHolding
+{
+  NSString *newMessageString = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerHoldingTitleFormat", nil),[self.book.availableUntil longTimeUntilString]];
+
+  if ((self.book.holdsPosition > 0) && (self.book.totalCopies > 0)) {
+    NSString *positionString = [NSString stringWithFormat:NSLocalizedString(@"\n#%d in line for %d copies.", @"Describe the line that a person is waiting in for a total number of books that are available for everyone to check out, to help tell them how long they will be waiting."), self.book.holdsPosition, self.book.totalCopies];
+    return [newMessageString stringByAppendingString:positionString];
+  } else {
+    return newMessageString;
   }
 }
 
