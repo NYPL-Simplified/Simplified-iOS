@@ -1,4 +1,4 @@
-final class NYPLReaderBookmarkElement: NSObject {
+final class NYPLReaderBookmark: NSObject {
   
   var annotationId:String?
 
@@ -8,7 +8,6 @@ final class NYPLReaderBookmarkElement: NSObject {
   var location:String
   var idref:String
   var contentCFI:String
-  //GODO i don't like that these default to zero. see how they're used.
   var progressWithinChapter:Float = 0.0
   var progressWithinBook:Float = 0.0
 
@@ -22,19 +21,19 @@ final class NYPLReaderBookmarkElement: NSObject {
   var device:String?
   let time:String
   
-  init?(annotationId:String,
-        contentCFI:String,
-        idref:String,
+  init?(annotationId:String?,
+        contentCFI:String?,
+        idref:String?,
         chapter:String?,
         page:String?,
-        location:String,
+        location:String?,
         progressWithinChapter:Float,
         progressWithinBook:Float,
         time:String?,
         device:String?)
   {
     //Obj-C Nil Check
-    if (contentCFI == nil || idref == nil || location == nil) {
+    guard let contentCFI = contentCFI, let idref = idref, let location = location else {
       Log.error(#file, "Bookmark failed init due to nil parameter.")
       return nil
     }
@@ -94,7 +93,7 @@ final class NYPLReaderBookmarkElement: NSObject {
   }
   
   override func isEqual(_ object: Any?) -> Bool {
-    let other = object as! NYPLReaderBookmarkElement
+    let other = object as! NYPLReaderBookmark
 
     //GODO should I bring back annotationID?
     if (self.contentCFI == other.contentCFI &&

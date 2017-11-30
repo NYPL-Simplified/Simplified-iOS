@@ -3,7 +3,7 @@
 @class Account;
 @class NYPLBook;
 @class NYPLBookLocation;
-@class NYPLReaderBookmarkElement;
+@class NYPLReaderBookmark;
 
 @protocol NYPLReadiumViewSyncManagerDelegate <NSObject>
 
@@ -13,12 +13,12 @@
 
 - (void)shouldPostReadingPosition:(BOOL)status;
 
-- (void)uploadFinishedForBookmark:(NYPLReaderBookmarkElement *)bookmark
+- (void)uploadFinishedForBookmark:(NYPLReaderBookmark *)bookmark
                            inBook:(NSString *)bookID;
 
 @optional
 - (void)didCompleteBookmarkSync:(BOOL)success
-                  withBookmarks:(NSArray<NYPLReaderBookmarkElement *> *)bookmarks;
+                  withBookmarks:(NSArray<NYPLReaderBookmark *> *)bookmarks;
 @end
 
 @interface NYPLReadiumViewSyncManager : NSObject
@@ -31,9 +31,9 @@
 - (void)syncAnnotationsWithPermissionForAccount:(Account *)account
                                 withPackageDict:(NSDictionary *)packageDict;
 
-- (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray<NYPLReaderBookmarkElement *> *bookmarks))completion;
+- (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray<NYPLReaderBookmark *> *bookmarks))completion;
 
-- (void)addBookmark:(NYPLReaderBookmarkElement *)bookmark
+- (void)addBookmark:(NYPLReaderBookmark *)bookmark
             withCFI:(NSString *)location
             forBook:(NSString *)bookID;
 

@@ -10,7 +10,7 @@
 @property (nonatomic) NYPLBookLocation *location;
 @property (nonatomic) NYPLBookState state;
 @property (nonatomic) NSString *fulfillmentId;
-@property (nonatomic) NSArray<NYPLReaderBookmarkElement *> *bookmarks;
+@property (nonatomic) NSArray<NYPLReaderBookmark *> *bookmarks;
 
 @end
 
@@ -26,7 +26,7 @@ static NSString *const BookmarksKey = @"bookmarks";
                     location:(NYPLBookLocation *const)location
                        state:(NYPLBookState)state
                fulfillmentId:(NSString *)fulfillmentId
-                   bookmarks:(NSArray<NYPLReaderBookmarkElement *> *)bookmarks
+                   bookmarks:(NSArray<NYPLReaderBookmark *> *)bookmarks
 {
   self = [super init];
   if(!self) return nil;
@@ -82,12 +82,12 @@ static NSString *const BookmarksKey = @"bookmarks";
   
   self.fulfillmentId = NYPLNullToNil(dictionary[FulfillmentIdKey]);
   
-  NSMutableArray<NYPLReaderBookmarkElement *> *bookmarks = [[NSMutableArray alloc] init];
+  NSMutableArray<NYPLReaderBookmark *> *bookmarks = [[NSMutableArray alloc] init];
   
   // bookmarks from dictionary to elements
   for (NSDictionary *dict in NYPLNullToNil(dictionary[BookmarksKey])) {
     
-    [bookmarks addObject:[[NYPLReaderBookmarkElement alloc] initWithDictionary:dict]];
+    [bookmarks addObject:[[NYPLReaderBookmark alloc] initWithDictionary:dict]];
     
   }
   
@@ -100,7 +100,7 @@ static NSString *const BookmarksKey = @"bookmarks";
 {
   NSMutableArray *bookmarkDictionaries = [[NSMutableArray alloc] init];
   
-  for (NYPLReaderBookmarkElement *element in self.bookmarks) {
+  for (NYPLReaderBookmark *element in self.bookmarks) {
     
     [bookmarkDictionaries addObject:element.dictionaryRepresentation];
     

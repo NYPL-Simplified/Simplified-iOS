@@ -93,7 +93,7 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
 - (void)userDidRefresh:(UIRefreshControl *)refreshControl
 {
   NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
-  [rv.syncManager syncBookmarksWithCompletion:^(BOOL success, NSArray<NYPLReaderBookmarkElement *> *bookmarks) {
+  [rv.syncManager syncBookmarksWithCompletion:^(BOOL success, NSArray<NYPLReaderBookmark *> *bookmarks) {
     dispatch_async(dispatch_get_main_queue(), ^{
       if (success) {
         self.bookmarks = bookmarks.mutableCopy;
@@ -160,7 +160,7 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       NYPLReaderBookmarkCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierBookmark];
       cell.backgroundColor = [UIColor clearColor];
       
-      NYPLReaderBookmarkElement *const bookmark = self.bookmarks[indexPath.row];
+      NYPLReaderBookmark *const bookmark = self.bookmarks[indexPath.row];
       
       cell.chapterLabel.text = bookmark.chapter;
       
@@ -198,7 +198,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     }
     case 1:{
-      NYPLReaderBookmarkElement *const bookmark = self.bookmarks[indexPath.row];
+      NYPLReaderBookmark *const bookmark = self.bookmarks[indexPath.row];
       [self.delegate TOCViewController:self didSelectBookmark:bookmark];
       break;
     }
@@ -233,7 +233,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
   
   if (editingStyle == UITableViewCellEditingStyleDelete) {
-    NYPLReaderBookmarkElement *bookmark = self.bookmarks[indexPath.row];
+    NYPLReaderBookmark *bookmark = self.bookmarks[indexPath.row];
     NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
     [rv deleteBookmark:bookmark];
     

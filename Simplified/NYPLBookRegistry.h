@@ -4,7 +4,7 @@
 
 @class NYPLBook;
 @class NYPLBookLocation;
-@class NYPLReaderBookmarkElement;
+@class NYPLReaderBookmark;
 
 // This is broadcast whenever the book registry is modified.
 static NSString *const NYPLBookRegistryDidChangeNotification =
@@ -61,7 +61,7 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
        location:(NYPLBookLocation *)location
           state:(NYPLBookState)state
   fulfillmentId:(NSString *)fulfillmentId
-      bookmarks:(NSArray<NYPLReaderBookmarkElement *> *)bookmarks;
+      bookmarks:(NSArray<NYPLReaderBookmark *> *)bookmarks;
 
 // This method should be called whenever new book information is retrieved from a server. Doing so
 // ensures that once the user has seen the new information, they will continue to do so when
@@ -111,13 +111,13 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 - (NSArray *)bookmarksForIdentifier:(NSString *)identifier;
   
 // Add bookmark for a book given its identifier
-- (void)addBookmark:(NYPLReaderBookmarkElement *)bookmark forIdentifier:(NSString *)identifier;
+- (void)addBookmark:(NYPLReaderBookmark *)bookmark forIdentifier:(NSString *)identifier;
   
 // Delete bookmark for a book given its identifer
-- (void)deleteBookmark:(NYPLReaderBookmarkElement *)bookmark forIdentifier:(NSString *)identifier;
+- (void)deleteBookmark:(NYPLReaderBookmark *)bookmark forIdentifier:(NSString *)identifier;
 
 // replace bookmark for a book given its identifer
-- (void)replaceBookmark:(NYPLReaderBookmarkElement *)oldElemennt with:(NYPLReaderBookmarkElement *)newElement forIdentifier:(NSString *)identifier;
+- (void)replaceBookmark:(NYPLReaderBookmark *)oldElemennt with:(NYPLReaderBookmark *)newElement forIdentifier:(NSString *)identifier;
 
 // Given an identifier, this method removes a book from the registry. Attempting to remove a book
 // that is not present will result in an error being logged.

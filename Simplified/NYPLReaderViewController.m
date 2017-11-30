@@ -35,7 +35,7 @@
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) UIBarButtonItem *bookmarkBarButtonItem;
 @property (nonatomic) UIBarButtonItem *contentsBarButtonItem;
-@property (nonatomic) NYPLReaderBookmarkElement *currentBookmark;
+@property (nonatomic) NYPLReaderBookmark *currentBookmark;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
 @property (nonatomic) UIView *bottomView;
 @property (nonatomic) UIImageView *bottomViewImageView;
@@ -695,7 +695,7 @@ spineItemTitle:(NSString *const)title
     }
   });
 }
-- (void)updateCurrentBookmark:(NYPLReaderBookmarkElement *)bookmark
+- (void)updateCurrentBookmark:(NYPLReaderBookmark *)bookmark
 {
   self.currentBookmark = bookmark;
 }
@@ -816,7 +816,7 @@ spineItemTitle:(NSString *const)title
 
 #pragma mark NYPLReaderTOCViewControllerDelegate
 - (void)TOCViewController:(__attribute__((unused))NYPLReaderTOCViewController *)controller
-        didSelectBookmark:(NYPLReaderBookmarkElement *)bookmark
+        didSelectBookmark:(NYPLReaderBookmark *)bookmark
 {
   [self.rendererView gotoBookmark:bookmark];
   

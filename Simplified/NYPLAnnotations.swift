@@ -362,7 +362,7 @@ final class NYPLAnnotations: NSObject {
 
   // MARK: - Bookmarks
   
-  class func getServerBookmarks(forBook bookID:String?, atURL annotationURL:URL?, completionHandler: @escaping (_ bookmarks: [NYPLReaderBookmarkElement]) -> ()) {
+  class func getServerBookmarks(forBook bookID:String?, atURL annotationURL:URL?, completionHandler: @escaping (_ bookmarks: [NYPLReaderBookmark]) -> ()) {
     
     guard let bookID = bookID, let annotationURL = annotationURL else {
       Log.error(#file, "Required parameter was nil.")
@@ -375,7 +375,7 @@ final class NYPLAnnotations: NSObject {
       return
     }
     
-    var bookmarks = [NYPLReaderBookmarkElement]()
+    var bookmarks = [NYPLReaderBookmark]()
 
     var request = URLRequest.init(url: annotationURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
     request.httpMethod = "GET"
@@ -418,7 +418,7 @@ final class NYPLAnnotations: NSObject {
   class func getBookmark(book id: String?,
                          atURL annotationUrl: URL?,
                          locationCFI cfi: String,
-                         completionHandler: @escaping (_ responseObject: NYPLReaderBookmarkElement?) -> ()) {
+                         completionHandler: @escaping (_ responseObject: NYPLReaderBookmark?) -> ()) {
 
     guard let data = cfi.data(using: .utf8),
       let responseJSON = try? JSONSerialization.jsonObject(with: data,
@@ -439,7 +439,7 @@ final class NYPLAnnotations: NSObject {
     }
   }
 
-  private class func createBookmark(fromBook bookID: String, serverAnnotation annotation: AnyObject) -> NYPLReaderBookmarkElement? {
+  private class func createBookmark(fromBook bookID: String, serverAnnotation annotation: AnyObject) -> NYPLReaderBookmark? {
 
     guard let target = annotation["target"] as? [String:AnyObject],
     let source = target["source"] as? String,
@@ -476,16 +476,16 @@ final class NYPLAnnotations: NSObject {
           return nil
       }
 
-      let bookmark = NYPLReaderBookmarkElement(annotationId: annotationID,
-                                               contentCFI: serverCfiJson,
-                                               idref: serverIdrefJson,
-                                               chapter: chapter,
-                                               page: nil,
-                                               location: serverCFI,
-                                               progressWithinChapter: progressWithinChapter,
-                                               progressWithinBook: progressWithinBook,
-                                               time:time,
-                                               device:device)
+      let bookmark = NYPLReaderBookmark(annotationId: annotationID,
+                                        contentCFI: serverCfiJson,
+                                        idref: serverIdrefJson,
+                                        chapter: chapter,
+                                        page: nil,
+                                        location: serverCFI,
+                                        progressWithinChapter: progressWithinChapter,
+                                        progressWithinBook: progressWithinBook,
+                                        time:time,
+                                        device:device)
       return bookmark
     } else {
       Log.error(#file, "Bookmark not created from Annotation Element. 'Motivation' Value: \(motivation)")
@@ -493,7 +493,7 @@ final class NYPLAnnotations: NSObject {
     return nil
   }
 
-  class func deleteBookmarks(_ bookmarks: [NYPLReaderBookmarkElement],
+  class func deleteBookmarks(_ bookmarks: [NYPLReaderBookmark],
                              completionHandler: @escaping ()->())
   {
     let uploadGroup = DispatchGroup()
@@ -544,14 +544,14 @@ final class NYPLAnnotations: NSObject {
 
 
   // If bookmark is missing an annotationID, assume it still needs to be uploaded.
-  class func uploadLocalBookmarks(_ bookmarks: [NYPLReaderBookmarkElement],
+  class func uploadLocalBookmarks(_ bookmarks: [NYPLReaderBookmark],
                                   forBook bookID: String,
-                                  completion: @escaping ([NYPLReaderBookmarkElement], [NYPLReaderBookmarkElement])->())
+                                  completion: @escaping ([NYPLReaderBookmark], [NYPLReaderBookmark])->())
   {
     Log.debug(#file, "Begin task of uploading local bookmarks.")
     let uploadGroup = DispatchGroup()
-    var bookmarksFailedToUpdate = [NYPLReaderBookmarkElement]()
-    var bookmarksUpdated = [NYPLReaderBookmarkElement]()
+    var bookmarksFailedToUpdate = [NYPLReaderBookmark]()
+    var bookmarksUpdated = [NYPLReaderBookmark]()
 
     for localBookmark in bookmarks {
       if localBookmark.annotationId == nil {
@@ -578,7 +578,7 @@ final class NYPLAnnotations: NSObject {
 
   class func postBookmark(forBook bookID: String,
                           toURL annotationsURL: URL?,
-                          bookmark: NYPLReaderBookmarkElement,
+                          bookmark: NYPLReaderBookmark,
                           completionHandler: @escaping (_ serverID: String?) -> ())
   {
     if !accountSatisfiesSyncConditions() {

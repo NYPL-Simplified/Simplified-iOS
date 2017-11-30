@@ -1,7 +1,7 @@
 @class NYPLReaderRendererOpaqueLocation;
 @class NYPLReaderTOCViewController;
 @class RDNavigationElement;
-@class NYPLReaderBookmarkElement;
+@class NYPLReaderBookmark;
 
 @protocol NYPLReaderTOCViewControllerDelegate
 
@@ -9,7 +9,7 @@
 didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *)opaqueLocation;
 
 - (void)TOCViewController:(NYPLReaderTOCViewController *)controller
-didSelectBookmark:(NYPLReaderBookmarkElement *)bookmark;
+didSelectBookmark:(NYPLReaderBookmark *)bookmark;
 
 @end
 
@@ -17,7 +17,7 @@ didSelectBookmark:(NYPLReaderBookmarkElement *)bookmark;
 
 @property (nonatomic, weak) id<NYPLReaderTOCViewControllerDelegate> delegate;
 @property (nonatomic) NSArray *tableOfContents;
-@property (nonatomic) NSMutableArray<NYPLReaderBookmarkElement *> *bookmarks;
+@property (nonatomic) NSMutableArray<NYPLReaderBookmark *> *bookmarks;
 @property (nonatomic) NSString *bookTitle;
 @property (nonatomic) NSString *currentChapter;
 

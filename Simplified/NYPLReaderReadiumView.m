@@ -43,7 +43,7 @@
 @property (nonatomic) BOOL isPageTurning, canGoLeft, canGoRight;
 @property (nonatomic) RDPackageResourceServer *server;
 @property (nonatomic) NSArray *TOCElements;
-@property (nonatomic) NSArray<NYPLReaderBookmarkElement *> *bookmarkElements;
+@property (nonatomic) NSArray<NYPLReaderBookmark *> *bookmarkElements;
 @property (nonatomic) WKWebView *webView;
 
 @property (nonatomic) NSDictionary *bookMapDictionary;
@@ -501,7 +501,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   self.postLastRead = status;
 }
 
-- (void)uploadFinishedForBookmark:(NYPLReaderBookmarkElement *)bookmark
+- (void)uploadFinishedForBookmark:(NYPLReaderBookmark *)bookmark
                           inBook:(NSString *)bookID
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
@@ -612,12 +612,12 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   [self sequentiallyEvaluateJavaScript:javascript];
 }
 
-- (void)checkForExistingBookmarkAtLocation:(NSString*)idref completionHandler:(void(^)(BOOL success, NYPLReaderBookmarkElement *bookmark))completionHandler
+- (void)checkForExistingBookmarkAtLocation:(NSString*)idref completionHandler:(void(^)(BOOL success, NYPLReaderBookmark *bookmark))completionHandler
 {
   completionHandler(NO, nil);   //Remove bookmark icon at beginning of page turn
   
   NSArray *bookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];
-  for (NYPLReaderBookmarkElement *bookmark in bookmarks) {
+  for (NYPLReaderBookmark *bookmark in bookmarks) {
     if ([bookmark.idref isEqualToString:idref]) {
       NSString *js = [NSString stringWithFormat:@"ReadiumSDK.reader.isVisibleSpineItemElementCfi('%@', '%@')",
                       bookmark.idref,
@@ -664,17 +664,17 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     progressWithinChapter = (float) self.spineItemPageIndex / (float) self.spineItemPageCount;
   }
 
-  NYPLReaderBookmarkElement *bookmark = [[NYPLReaderBookmarkElement alloc]
-                                         initWithAnnotationId:nil
-                                         contentCFI:contentCFI
-                                         idref:idref
-                                         chapter:chapter
-                                         page:nil
-                                         location:location.locationString
-                                         progressWithinChapter:progressWithinChapter
-                                         progressWithinBook:self.progressWithinBook
-                                         time:nil
-                                         device:[[NYPLAccount sharedAccount] deviceID]];
+  NYPLReaderBookmark *bookmark = [[NYPLReaderBookmark alloc]
+                                  initWithAnnotationId:nil
+                                  contentCFI:contentCFI
+                                  idref:idref
+                                  chapter:chapter
+                                  page:nil
+                                  location:location.locationString
+                                  progressWithinChapter:progressWithinChapter
+                                  progressWithinBook:self.progressWithinBook
+                                  time:nil
+                                  device:[[NYPLAccount sharedAccount] deviceID]];
   
   if (bookmark) {
     [self.delegate updateBookmarkIcon:YES];
@@ -684,7 +684,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   [self.syncManager addBookmark:bookmark withCFI:location.locationString forBook:self.book.identifier];
 }
 
-- (void)deleteBookmark:(NYPLReaderBookmarkElement*)bookmark
+- (void)deleteBookmark:(NYPLReaderBookmark*)bookmark
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
   [registry deleteBookmark:bookmark forIdentifier:self.book.identifier];
@@ -760,7 +760,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                                             options:NSJSONReadingMutableContainers
                                                               error:&jsonError];
 
-       [self checkForExistingBookmarkAtLocation:json[@"idref"] completionHandler:^(BOOL success, NYPLReaderBookmarkElement *bookmark) {
+       [self checkForExistingBookmarkAtLocation:json[@"idref"] completionHandler:^(BOOL success, NYPLReaderBookmark *bookmark) {
          [self.delegate updateBookmarkIcon:success];
          [self.delegate updateCurrentBookmark:bookmark];
        }];
@@ -990,7 +990,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     navigationElement.sourceHref]];
 }
 
-- (void)gotoBookmark:(NYPLReaderBookmarkElement *)bookmark
+- (void)gotoBookmark:(NYPLReaderBookmark *)bookmark
 {
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
   

@@ -29,6 +29,6 @@
 
 - (void) syncAnnotationsWhenPermitted;
 - (void) addBookmark;
-- (void) deleteBookmark:(NYPLReaderBookmarkElement*)bookmark;
+- (void) deleteBookmark:(NYPLReaderBookmark*)bookmark;
 
 @end

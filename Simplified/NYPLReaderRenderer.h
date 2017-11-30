@@ -4,7 +4,7 @@
 // TOC-related location information. Any object that wants to do something with an opaque location
 // must verify that it is of the correct class and then cast it appropriately.
 @class NYPLReaderRendererOpaqueLocation;
-@class NYPLReaderBookmarkElement;
+@class NYPLReaderBookmark;
 
 typedef NS_ENUM(NSInteger, NYPLReaderRendererGesture) {
   NYPLReaderRendererGestureToggleUserInterface
@@ -15,13 +15,13 @@ typedef NS_ENUM(NSInteger, NYPLReaderRendererGesture) {
 @property (nonatomic, readonly) BOOL bookIsCorrupt;
 @property (nonatomic, readonly) BOOL loaded;
 @property (nonatomic, readonly, nonnull) NSArray *TOCElements;
-@property (nonatomic, readonly, nonnull) NSArray<NYPLReaderBookmarkElement *> *bookmarkElements;
+@property (nonatomic, readonly, nonnull) NSArray<NYPLReaderBookmark *> *bookmarkElements;
 
 // This must be called with a reader-appropriate underlying value. Readers implementing this should
 // throw |NSInvalidArgumentException| in the event it is not.
 - (void)openOpaqueLocation:(nonnull NYPLReaderRendererOpaqueLocation *)opaqueLocation;
 
-- (void)gotoBookmark:(nonnull NYPLReaderBookmarkElement *)bookmark;
+- (void)gotoBookmark:(nonnull NYPLReaderBookmark *)bookmark;
 
 @end
 
@@ -43,6 +43,6 @@ didUpdateProgressWithinBook:(float)progressWithinBook
 - (void)renderDidEndLongLoad:(nonnull id<NYPLReaderRenderer>)render;
 
 - (void)updateBookmarkIcon:(BOOL)on;
-- (void)updateCurrentBookmark:(nullable NYPLReaderBookmarkElement*)bookmark;
+- (void)updateCurrentBookmark:(nullable NYPLReaderBookmark*)bookmark;
 
 @end
