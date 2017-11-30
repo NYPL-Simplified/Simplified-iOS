@@ -254,8 +254,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   // Table of Contents button
   NYPLRoundedButton *const contentsButton = [NYPLRoundedButton button];
+  contentsButton.bounds = CGRectMake(0, 0, 44.0f, 44.0f);
+  contentsButton.layer.borderWidth = 0.0f;
   contentsButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"TOC", nil)];
-  [contentsButton sizeToFit];
   [contentsButton setImage:[UIImage imageNamed:@"TOC"] forState:UIControlStateNormal];
   [contentsButton addTarget:self
                 action:@selector(didSelectContents)
@@ -265,8 +266,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   // Settings button
   NYPLRoundedButton *const settingsButton = [NYPLRoundedButton button];
+  settingsButton.bounds = CGRectMake(0, 0, 44.0f, 44.0f);
+  settingsButton.layer.borderWidth = 0.0f;
   settingsButton.accessibilityLabel = NSLocalizedString(@"ReaderViewControllerToggleReaderSettings", nil);
-  [settingsButton sizeToFit];
   [settingsButton setImage:[UIImage imageNamed:@"Format"] forState:UIControlStateNormal];
   [settingsButton addTarget:self
                      action:@selector(didSelectSettings)
@@ -274,8 +276,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
   // Bookmark button
   NYPLRoundedButton *const bookmarkButton = [NYPLRoundedButton button];
+  bookmarkButton.bounds = CGRectMake(0, 0, 44.0f, 44.0f);
+  bookmarkButton.layer.borderWidth = 0.0f;
   bookmarkButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"Add Bookmark", nil)];
-  [bookmarkButton sizeToFit];
   [bookmarkButton setImage:[UIImage imageNamed:@"BookmarkOff"] forState:UIControlStateNormal];
   [bookmarkButton addTarget:self
                      action:@selector(toggleBookmark)
@@ -287,9 +290,9 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
   // Bar button items require autolayout help 11.0+
   if (@available(iOS 11.0, *)) {
-    [self.settingsBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(55, 30)];
-    [self.bookmarkBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(55,30)];
-    [TOCBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(55, 30)];
+    [self.settingsBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(44,44)];
+    [self.bookmarkBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(44,44)];
+    [TOCBarButtonItem.customView autoSetDimensionsToSize:CGSizeMake(44,44)];
   }
 
   // Corruption may have occurred before we added these, so we need to set their enabled status
