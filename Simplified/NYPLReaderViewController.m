@@ -283,6 +283,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [bookmarkButton addTarget:self
                      action:@selector(toggleBookmark)
            forControlEvents:UIControlEventTouchUpInside];
+
   
   UIBarButtonItem *const TOCBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:contentsButton];
   self.settingsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];

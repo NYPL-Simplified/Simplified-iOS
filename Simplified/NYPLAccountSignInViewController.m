@@ -940,45 +940,11 @@ completionHandler:(void (^)())handler
 
 - (void)showLoginAlertWithError:(NSError *)error
 {
-  NYPLAlertController *alert;
-  NSString *title = NSLocalizedString(@"SettingsAccountViewControllerLoginFailed", nil);
-
-  if (error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled)
-  {
-    NSString *message = NSLocalizedString(@"SettingsAccountViewControllerInvalidCredentials", nil);
-    alert = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:nil]];
-    NSInteger library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
-    if (library == 0 || library == 1) {
-      [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Forgot Password?", nil)
-                                                style:UIAlertActionStyleDefault
-                                              handler:^(UIAlertAction * _Nonnull __unused action) {
-                                                [self resetPasswordTapped];
-                                              }]];
-    }
-  } else {
-    alert = [NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error];
-  }
-
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:
+   [NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
                                                                   animated:YES
                                                                 completion:nil];
-
   [self updateLoginLogoutCellAppearance];
-}
-
-// FIXME - Method and caller can be removed after 2.1.0 release.
-- (void)resetPasswordTapped
-{
-  if ([[NYPLSettings sharedSettings] currentAccountIdentifier] == 0) {
-    NSURL *url = [NSURL URLWithString:@"https://catalog.nypl.org/pinreset"];
-    [[UIApplication sharedApplication] openURL:url];
-  } else if ([[NYPLSettings sharedSettings] currentAccountIdentifier] == 1) {
-    NSURL *url = [NSURL URLWithString:@"https://www.bklynlibrary.org/mybpl/prefs/pin"];
-    [[UIApplication sharedApplication] openURL:url];
-  }
 }
 
 - (void)textFieldsDidChange
