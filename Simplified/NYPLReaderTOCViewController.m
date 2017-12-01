@@ -1,3 +1,4 @@
+#import "NYPLAlertController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCCell.h"
@@ -93,13 +94,14 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
 - (void)userDidRefresh:(UIRefreshControl *)refreshControl
 {
   NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
-  [rv.syncManager syncBookmarksWithCompletion:^(BOOL success, NSArray<NYPLReaderBookmark *> *bookmarks) {
+  [rv.syncManager syncBookmarksWithCompletion:^(BOOL __unused success, NSArray<NYPLReaderBookmark *> *bookmarks) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      if (success) {
-        self.bookmarks = bookmarks.mutableCopy;
-        [self.tableView reloadData];
-      }
+      self.bookmarks = bookmarks.mutableCopy;
+      [self.tableView reloadData];
       [refreshControl endRefreshing];
+      if (!success) {
+        [self showAlertForFailedSync];
+      }
     });
   }];
 }
@@ -283,6 +285,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   
   [self.noBookmarksLabel autoCenterInSuperview];
   [self.noBookmarksLabel autoSetDimension:ALDimensionWidth toSize:250];
+}
+
+- (void)showAlertForFailedSync
+{
+  NSString *alertTitle = NSLocalizedString(@"Error Syncing Bookmarks", nil);
+  NSString *alertMessage = NSLocalizedString(@"There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later.", nil);
+  NYPLAlertController *alert = [NYPLAlertController alertWithTitle:alertTitle message:alertMessage];
+  [self presentViewController:alert animated:YES completion:nil];
 }
 
 @end

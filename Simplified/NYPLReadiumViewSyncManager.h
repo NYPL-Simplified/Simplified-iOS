@@ -11,8 +11,6 @@
 - (void)patronDecidedNavigation:(BOOL)toLatestPage
                     withNavDict:(NSDictionary *)dict;
 
-- (void)shouldPostReadingPosition:(BOOL)status;
-
 - (void)uploadFinishedForBookmark:(NYPLReaderBookmark *)bookmark
                            inBook:(NSString *)bookID;
 
@@ -28,8 +26,10 @@
                        bookMap:(NSDictionary *)map
                       delegate:(id)delegate;
 
-- (void)syncAnnotationsWithPermissionForAccount:(Account *)account
-                                withPackageDict:(NSDictionary *)packageDict;
+- (void)syncAllAnnotationsIfAllowedForAccount:(Account *)account
+                              withPackageDict:(NSDictionary *)packageDict;
+
+- (void)postLastReadPosition:(NSString *)location;
 
 - (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray<NYPLReaderBookmark *> *bookmarks))completion;
 

@@ -30,7 +30,6 @@
 @interface NYPLReaderReadiumView ()
   <NYPLReaderRenderer, RDPackageResourceServerDelegate, NYPLReadiumViewSyncManagerDelegate, WKNavigationDelegate, WKUIDelegate>
 
-@property (nonatomic) BOOL postLastRead;
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) BOOL bookIsCorrupt;
 @property (nonatomic) RDContainer *container;
@@ -113,8 +112,7 @@ static void generateTOCElements(NSArray *const navigationElements,
     NYPLLOG(@"Failed to initialize due to nil book.");
     return nil;
   }
-  self.postLastRead = NO;
-  
+
   self.book = book;
   self.containerDelegate = [[NYPLReaderContainerDelegate alloc] init];
   
@@ -480,8 +478,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
 - (void)syncAnnotationsWhenPermitted
 {
-  [self.syncManager syncAnnotationsWithPermissionForAccount:[[AccountsManager sharedInstance] currentAccount]
-                                            withPackageDict:self.package.dictionary];
+  [self.syncManager syncAllAnnotationsIfAllowedForAccount:[[AccountsManager sharedInstance] currentAccount]
+                                          withPackageDict:self.package.dictionary];
 }
 
 - (void)patronDecidedNavigation:(BOOL)toLatestPage withNavDict:(NSDictionary *)dict
@@ -491,14 +489,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     [self sequentiallyEvaluateJavaScript:
      [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
       [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
-  } else {
-    self.postLastRead = YES;
   }
-}
-
-- (void)shouldPostReadingPosition:(BOOL)status
-{
-  self.postLastRead = status;
 }
 
 - (void)uploadFinishedForBookmark:(NYPLReaderBookmark *)bookmark
@@ -536,7 +527,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
     [self calculateBookLength];
     
-    //GODO verify this is good enough solution to no spine item during sync
     dispatch_sync(dispatch_get_main_queue(), ^{
       self.syncManager = [[NYPLReadiumViewSyncManager alloc] initWithBookID:self.book.identifier
                                                              annotationsURL:self.book.annotationsURL
@@ -649,7 +639,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   return self.bookMapDictionary[idref][@"tocElementTitle"];
 }
 
-//GODO test adding a bookmark. Test showing the icon and what happens under slower network conditions
 - (void)addBookmark
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
@@ -760,9 +749,9 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                                             options:NSJSONReadingMutableContainers
                                                               error:&jsonError];
 
-       [self checkForExistingBookmarkAtLocation:json[@"idref"] completionHandler:^(BOOL success, NYPLReaderBookmark *bookmark) {
-         [self.delegate updateBookmarkIcon:success];
-         [self.delegate updateCurrentBookmark:bookmark];
+       [weakSelf checkForExistingBookmarkAtLocation:json[@"idref"] completionHandler:^(BOOL success, NYPLReaderBookmark *bookmark) {
+         [weakSelf.delegate updateBookmarkIcon:success];
+         [weakSelf.delegate updateCurrentBookmark:bookmark];
        }];
        
        NYPLBookLocation *const location = [[NYPLBookLocation alloc]
@@ -782,12 +771,9 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
          [[NYPLBookRegistry sharedRegistry]
           setLocation:location
           forIdentifier:weakSelf.book.identifier];
-         }
-       if(self.postLastRead) {
-         [NYPLAnnotations postReadingPositionForBook:weakSelf.book.identifier
-                                      annotationsURL:nil
-                                                 cfi:location.locationString];
        }
+
+       [weakSelf.syncManager postLastReadPosition:location.locationString];
      }];
   });
 }

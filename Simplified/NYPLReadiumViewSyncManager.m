@@ -12,6 +12,10 @@
 #import "NYPLRootTabBarController.h"
 #import "SimplyE-Swift.h"
 
+typedef NS_ENUM(NSInteger, NYPLReadPositionSyncStatus) {
+  NYPLReadPositionSyncStatusIdle,
+  NYPLReadPositionSyncStatusBusy
+};
 
 @interface NYPLReadiumViewSyncManager ()
 
@@ -19,10 +23,15 @@
 @property (nonatomic) NSURL *annotationsURL;
 @property (nonatomic) NSDictionary *bookMapDictionary;
 @property (nonatomic, weak) id<NYPLReadiumViewSyncManagerDelegate> delegate;
+@property (nonatomic) BOOL shouldPostLastRead;
+@property (nonatomic) NSString *queuedReadingPosition;
+@property (nonatomic) NYPLReadPositionSyncStatus syncStatus;
 
 @end
 
 @implementation NYPLReadiumViewSyncManager
+
+const double RequestTimeInterval = 30;
 
 - (instancetype) initWithBookID:(NSString *)bookID
                  annotationsURL:(NSURL *)URL
@@ -35,31 +44,79 @@
     self.annotationsURL = URL;
     self.bookMapDictionary = map;
     self.delegate = delegate;
+    self.shouldPostLastRead = NO;
+    self.syncStatus = NYPLReadPositionSyncStatusIdle;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendOffAnyQueuedRequest)
+                                                 name:UIApplicationWillResignActiveNotification object:nil];
   }
   return self;
 }
 
-- (void)syncAnnotationsWithPermissionForAccount:(Account *)account
-                                withPackageDict:(NSDictionary *)packageDict
+- (void)dealloc
 {
-  if (account.syncPermissionGranted) {
+  [self sendOffAnyQueuedRequest];
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
-    NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
-    dictionary[@"package"] = packageDict;
-    dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
-    NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry]
-                                        locationForIdentifier:self.bookID];
-    
-    [self syncReadingPositionForBook:self.bookID
-                          atLocation:location
-                               toURL:self.annotationsURL
-                         withPackage:dictionary];
-    
-    [self syncBookmarksWithCompletion:^(BOOL success, NSArray<NYPLReaderBookmark *> *bookmarks) {
-      if ([self.delegate respondsToSelector:@selector(didCompleteBookmarkSync:withBookmarks:)]) {
-        [self.delegate didCompleteBookmarkSync:success withBookmarks:bookmarks];
+- (void)syncAllAnnotationsIfAllowedForAccount:(Account *)account
+                              withPackageDict:(NSDictionary *)packageDict
+{
+  if (!account.syncPermissionGranted) {
+    return;
+  }
+
+  NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
+  dictionary[@"package"] = packageDict;
+  dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
+  NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry]
+                                      locationForIdentifier:self.bookID];
+
+  [self syncReadingPositionForBook:self.bookID
+                        atLocation:location
+                             toURL:self.annotationsURL
+                       withPackage:dictionary];
+
+  [self syncBookmarksWithCompletion:^(BOOL success, NSArray<NYPLReaderBookmark *> *bookmarks) {
+    if ([self.delegate respondsToSelector:@selector(didCompleteBookmarkSync:withBookmarks:)]) {
+      [self.delegate didCompleteBookmarkSync:success withBookmarks:bookmarks];
+    }
+  }];
+
+}
+
+- (void)postLastReadPosition:(NSString *)location
+{
+  if (!self.shouldPostLastRead) {
+    return;
+  }
+
+  // Protect against a high frequency of requests to the server
+  @synchronized(self) {
+    switch (self.syncStatus) {
+      case NYPLReadPositionSyncStatusIdle: {
+        self.syncStatus = NYPLReadPositionSyncStatusBusy;
+        [NYPLAnnotations postReadingPositionForBook:self.bookID annotationsURL:nil cfi:location];
+        [NSTimer scheduledTimerWithTimeInterval:RequestTimeInterval
+                                         target:self selector:@selector(timerFire) userInfo:nil repeats:NO];
+        break;
       }
-    }];
+      case NYPLReadPositionSyncStatusBusy: {
+        self.queuedReadingPosition = location;
+        break;
+      }
+    }
+  }
+}
+
+- (void)timerFire
+{
+  @synchronized(self) {
+    self.syncStatus = NYPLReadPositionSyncStatusIdle;
+    if (self.queuedReadingPosition) {
+      [self postLastReadPosition:self.queuedReadingPosition];
+      self.queuedReadingPosition = nil;
+    }
   }
 }
 
@@ -72,7 +129,7 @@
 
     if (!responseObject) {
       NYPLLOG(@"No Server Annotation for this book exists.");
-      [self shouldPostLastRead:YES];
+      self.shouldPostLastRead = YES;
       return;
     }
 
@@ -102,6 +159,7 @@
                               if ([self.delegate respondsToSelector:@selector(patronDecidedNavigation:withNavDict:)]) {
                                 [self.delegate patronDecidedNavigation:NO withNavDict:nil];
                               }
+                              self.shouldPostLastRead = YES;
                             }]];
 
     [alertController addAction:
@@ -109,7 +167,7 @@
                               style:UIAlertActionStyleDefault
                             handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
 
-                              [self shouldPostLastRead:YES];
+                              self.shouldPostLastRead = YES;
 
                               NSDictionary *const locationDictionary =
                               NYPLJSONObjectFromData([serverLocationString dataUsingEncoding:NSUTF8StringEncoding]);
@@ -133,18 +191,11 @@
     if ((currentLocationString && [deviceIDString isEqualToString:[NYPLAccount sharedAccount].deviceID]) ||
       [currentLocationString isEqualToString:serverLocationString] ||
       !serverLocationString) {
-      [self shouldPostLastRead:YES];
+      self.shouldPostLastRead = YES;
     } else {
       [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
     }
   }];
-}
-
-- (void)shouldPostLastRead:(BOOL)status
-{
-  if ([self.delegate respondsToSelector:@selector(shouldPostReadingPosition:)]) {
-    [self.delegate shouldPostReadingPosition:status];
-  }
 }
 
 - (void)addBookmark:(NYPLReaderBookmark *)bookmark
@@ -160,8 +211,7 @@
                          } else {
                            NYPLLOG_F(@"Bookmark failed to upload: %@", location);
                          }
-//                         bookmark.annotationId = serverAnnotationID;
-                         //GODO maybe there's more to abstract out of readium view now.
+                         bookmark.annotationId = serverAnnotationID;
                          [self.delegate uploadFinishedForBookmark:bookmark inBook:bookID];
                        }];
   } else {
@@ -179,10 +229,8 @@
    handler:^(BOOL reachable) {
 
      if (!reachable) {
-       //GODO Alert Controller here?
        NYPLLOG(@"Error: host was not reachable for bookmark sync attempt.");
-       //GODO is completion corect here?
-//       completion(NO, nil);
+       completion(NO, [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
        return;
      }
 
@@ -261,6 +309,14 @@
        }];
      }];
    }];
+}
+
+- (void)sendOffAnyQueuedRequest
+{
+  if (self.queuedReadingPosition) {
+    [NYPLAnnotations postReadingPositionForBook:self.bookID annotationsURL:nil cfi:self.queuedReadingPosition];
+    self.queuedReadingPosition = nil;
+  }
 }
 
 @end

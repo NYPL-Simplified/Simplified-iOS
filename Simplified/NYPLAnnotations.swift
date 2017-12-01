@@ -501,7 +501,6 @@ final class NYPLAnnotations: NSObject {
     for localBookmark in bookmarks {
       if let annotationID = localBookmark.annotationId {
         uploadGroup.enter()
-        //GODO timeout?
         deleteBookmark(annotationId: annotationID, completionHandler: { success in
           if !success {
             Log.error(#file, "Bookmark not deleted from server. Moving on.")
@@ -530,9 +529,12 @@ final class NYPLAnnotations: NSObject {
     request.timeoutInterval = 20.0
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-      if (response as? HTTPURLResponse)?.statusCode == 200 {
+      let response = response as? HTTPURLResponse
+      if response?.statusCode == 200 {
         Log.info(#file, "200: DELETE bookmark success")
         completionHandler(true)
+      } else if let code = response?.statusCode {
+        Log.error(#file, "DELETE bookmark failed with server response code: \(code)")
       } else {
         guard let error = error as NSError? else { return }
         Log.error(#file, "DELETE bookmark Request Failed with Error Code: \(error.code). Description: \(error.localizedDescription)")
@@ -556,10 +558,9 @@ final class NYPLAnnotations: NSObject {
     for localBookmark in bookmarks {
       if localBookmark.annotationId == nil {
         uploadGroup.enter()
-        //GODO timeout?
         postBookmark(forBook: bookID, toURL: nil, bookmark: localBookmark, completionHandler: { serverID in
           if let ID = serverID {
-            localBookmark.annotationId = ID //GODO this is likely unneccessary (at least for the current caller)
+            localBookmark.annotationId = ID
             bookmarksUpdated.append(localBookmark)
           } else {
             Log.error(#file, "Local Bookmark not uploaded: \(localBookmark)")

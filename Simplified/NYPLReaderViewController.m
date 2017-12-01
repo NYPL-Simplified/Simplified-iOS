@@ -371,8 +371,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)didReceiveMemoryWarning
 {
-  [[NYPLBookRegistry sharedRegistry] save];
   [super didReceiveMemoryWarning];
+  [[NYPLBookRegistry sharedRegistry] save];
 }
 
 -(void)didMoveToParentViewController:(UIViewController *)parent {
@@ -817,7 +817,6 @@ spineItemTitle:(NSString *const)title
   }
 }
 
-#pragma mark NYPLReaderTOCViewControllerDelegate
 - (void)TOCViewController:(__attribute__((unused))NYPLReaderTOCViewController *)controller
         didSelectBookmark:(NYPLReaderBookmark *)bookmark
 {
