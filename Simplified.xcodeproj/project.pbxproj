@@ -183,6 +183,7 @@
 		E6B6E76F1F6859A4007EE361 /* NYPLKeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B6E76E1F6859A4007EE361 /* NYPLKeychainManager.swift */; };
 		E6BA02B81DE4B6F600F76404 /* RemoteHTMLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */; };
 		E6BC315D1E009F3E0021B65E /* NYPLAgeCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */; };
+		E6C91BC21FD5F63B00A32F42 /* NYPLZXingEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C91BC11FD5F63B00A32F42 /* NYPLZXingEncoder.m */; };
 		E6D775421F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6D7753D1F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m */; };
 		E6DA7EA01F2A718600CFBEC8 /* NYPLBookAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */; };
 		E6F26E731DFF672F00C103CA /* NYPLDirectoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */; };
@@ -553,6 +554,8 @@
 		E6B6E76E1F6859A4007EE361 /* NYPLKeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLKeychainManager.swift; sourceTree = "<group>"; };
 		E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteHTMLViewController.swift; sourceTree = "<group>"; };
 		E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAgeCheck.swift; sourceTree = "<group>"; };
+		E6C91BC01FD5F63B00A32F42 /* NYPLZXingEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLZXingEncoder.h; sourceTree = "<group>"; };
+		E6C91BC11FD5F63B00A32F42 /* NYPLZXingEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLZXingEncoder.m; sourceTree = "<group>"; };
 		E6D7753D1F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBarcodeScanningViewController.m; sourceTree = "<group>"; };
 		E6D775431F9FE0C400C0B722 /* NYPLBarcodeScanningViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBarcodeScanningViewController.h; sourceTree = "<group>"; };
 		E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookAuthor.swift; sourceTree = "<group>"; };
@@ -1062,6 +1065,8 @@
 				E6202A031DD52B8600C99553 /* NYPLWelcomeScreen.swift */,
 				111559EB19B8FA530003BE94 /* NYPLXML.h */,
 				111559EC19B8FA590003BE94 /* NYPLXML.m */,
+				E6C91BC01FD5F63B00A32F42 /* NYPLZXingEncoder.h */,
+				E6C91BC11FD5F63B00A32F42 /* NYPLZXingEncoder.m */,
 				AE77E8DE5454517F1AE119BF /* OPDS */,
 				119504051994061E009FB788 /* Reader */,
 				11C5DCEE1976D19E005A9945 /* Settings */,
@@ -1582,6 +1587,7 @@
 				1164A9F71A797238002BD3AE /* NYPLSettings.m in Sources */,
 				11BFDB39199C117B00378691 /* NYPLReaderTOCCell.m in Sources */,
 				E6F26E731DFF672F00C103CA /* NYPLDirectoryManager.swift in Sources */,
+				E6C91BC21FD5F63B00A32F42 /* NYPLZXingEncoder.m in Sources */,
 				085D31D71BE29E38007F7672 /* NYPLProblemReportViewController.m in Sources */,
 				11C5DCF21976D1E0005A9945 /* NYPLHoldsNavigationController.m in Sources */,
 				A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */,

@@ -27,3 +27,4 @@
 #import "NYPLKeychain.h"
 #import "NYPLBarcodeScanningViewController.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLZXingEncoder.h"
