@@ -28,7 +28,13 @@ fileprivate func ZXBarcodeFormatFor(_ NYPLBarcodeType:NYPLBarcodeType) -> ZXBarc
 /// Keep any third party dependency abstracted out of the main app.
 final class NYPLBarcode: NSObject {
 
-  class func image(fromString stringToEncode: String, superviewWidth: CGFloat, type: NYPLBarcodeType) -> UIImage?
+  var libraryName: String?
+
+  init (library: String) {
+    self.libraryName = library
+  }
+
+  func image(fromString stringToEncode: String, superviewWidth: CGFloat, type: NYPLBarcodeType) -> UIImage?
   {
     let barcodeWidth = imageWidthFor(superviewWidth)
     let encodeHints = ZXEncodeHints.init()
@@ -37,6 +43,7 @@ final class NYPLBarcode: NSObject {
                                            format: ZXBarcodeFormatFor(type),
                                            width: Int32(barcodeWidth),
                                            height: Int32(barcodeHeight),
+                                           library: self.libraryName ?? "Unknown",
                                            encodeHints: encodeHints)
     {
       return image
@@ -53,18 +60,12 @@ final class NYPLBarcode: NSObject {
     NYPLRootTabBarController.shared().safelyPresentViewController(navController, animated: true, completion: nil)
   }
 
-  private class func imageWidthFor(_ superviewWidth: CGFloat) -> CGFloat
+  private func imageWidthFor(_ superviewWidth: CGFloat) -> CGFloat
   {
     if superviewWidth > maxBarcodeWidth {
       return maxBarcodeWidth
     } else {
       return superviewWidth
     }
-  }
-
-  private class func nilWithGenericError() -> UIImage?
-  {
-    Log.error(#file, "Error creating image from barcode string.")
-    return nil
   }
 }
