@@ -23,7 +23,6 @@
 - (void) applyMediaOverlayPlaybackToggle;
 - (void) openPageLeft;
 - (void) openPageRight;
-- (BOOL) touchIntersectsLink:(UITouch *)touch;
 
 - (NSString*) currentChapter;
 

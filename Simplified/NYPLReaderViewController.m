@@ -21,7 +21,7 @@
 
 @interface NYPLReaderViewController ()
   <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate,
-   UIPopoverControllerDelegate, UIGestureRecognizerDelegate, UIPageViewControllerDataSource, UIPageViewControllerDelegate>
+   UIPopoverControllerDelegate, UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic) UIPopoverController *activePopoverController;
 @property (nonatomic) NSString *bookIdentifier;
@@ -53,8 +53,12 @@
 
 @property (nonatomic, getter = isStatusBarHidden) BOOL statusBarHidden;
 
-@property (nonatomic) UITapGestureRecognizer *tapGestureRecognizer, *doubleTapGestureRecognizer;
 @end
+
+typedef NS_ENUM(NSInteger, NYPLReaderViewControllerDirection) {
+  NYPLReaderViewControllerDirectionLeft,
+  NYPLReaderViewControllerDirectionRight
+};
 
 @implementation NYPLReaderViewController
 
@@ -120,23 +124,6 @@
    setState:NYPLBookStateUsed
    forIdentifier:self.bookIdentifier];
   
-  self.tapGestureRecognizer = [[UITapGestureRecognizer alloc]
-                               initWithTarget:self
-                               action:@selector(didReceiveSingleTap:)];
-  self.tapGestureRecognizer.cancelsTouchesInView = NO;
-  self.tapGestureRecognizer.delegate = self;
-  self.tapGestureRecognizer.numberOfTapsRequired = 1;
-  
-  [self.view addGestureRecognizer:self.tapGestureRecognizer];
-  
-  self.doubleTapGestureRecognizer = [[UITapGestureRecognizer alloc]
-                               initWithTarget:self
-                               action:@selector(didReceiveDoubleTap:)];
-  self.doubleTapGestureRecognizer.cancelsTouchesInView = NO;
-  self.doubleTapGestureRecognizer.delegate = self;
-  self.doubleTapGestureRecognizer.numberOfTapsRequired = 2;
-  [self.view addGestureRecognizer:self.doubleTapGestureRecognizer];
-  
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged) name:UIAccessibilityVoiceOverStatusChanged object:nil];
   
   return self;
@@ -146,56 +133,6 @@
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   [[NYPLBookRegistry sharedRegistry] stopDelaySyncCommit];
-}
-
-- (void)didReceiveSingleTap:(UIGestureRecognizer *const)gestureRecognizer {
-  CGPoint p = [gestureRecognizer locationInView:self.view];
-  CGFloat edgeOfScreenWidth = CGRectGetWidth(self.view.bounds) * EDGE_OF_SCREEN_POINT_FRACTION;
-  if ([self.renderedImageView superview])
-    [self.renderedImageView removeFromSuperview];
-  
-  NYPLReaderReadiumView *rv = [NYPLReaderSettings sharedSettings].currentReaderReadiumView;
-  if (p.x < edgeOfScreenWidth) {
-    if (rv.isPageTurning || !rv.canGoLeft)
-      return;
-    [self turnPageIsRight:NO];
-  } else if (p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth)) {
-    if (rv.isPageTurning || !rv.canGoRight)
-      return;
-    [self turnPageIsRight:YES];
-  } else {
-    [self setInterfaceHidden:!self.interfaceHidden animated:YES];
-  }
-}
-
-- (void)didReceiveDoubleTap:(__unused UIGestureRecognizer *const)gestureRecognizer
-{
-  // No-op, for now, until we implement something like highlight
-}
-
-- (BOOL)gestureRecognizer:(__unused UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(__unused UIGestureRecognizer *)otherGestureRecognizer {
-  return YES;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-  CGPoint p = [touch locationInView:self.view];
-  if (!self.interfaceHidden && CGRectContainsPoint(self.bottomView.frame, p))
-    return NO;
-  if (!self.interfaceHidden && self.readerSettingsViewPhone && CGRectContainsPoint(self.readerSettingsViewPhone.frame, p))
-    return NO;
-  CGFloat edgeOfScreenWidth = CGRectGetWidth(self.view.bounds) * EDGE_OF_SCREEN_POINT_FRACTION;
-  if (gestureRecognizer == self.tapGestureRecognizer) {
-    if (p.x < edgeOfScreenWidth || p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth))
-      return YES;
-    return ![[NYPLReaderSettings sharedSettings].currentReaderReadiumView touchIntersectsLink:touch];
-  } else if (gestureRecognizer == self.doubleTapGestureRecognizer) {
-    return !(p.x < edgeOfScreenWidth || p.x > (CGRectGetWidth(self.view.bounds) - edgeOfScreenWidth));
-  }
-  return YES;
-}
-
-- (BOOL)gestureRecognizer:(__unused UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(__unused UIGestureRecognizer *)otherGestureRecognizer {
-  return NO;
 }
 
 #pragma mark NYPLReaderRendererDelegate
@@ -234,6 +171,21 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 {
   [self.activityIndicatorView stopAnimating];
   self.activityIndicatorView.hidden = YES;
+}
+
+- (void)renderer:(__unused id<NYPLReaderRenderer>)render didReceiveGesture:(NYPLReaderRendererGesture)gesture
+{
+  switch (gesture) {
+  case NYPLReaderRendererGestureToggleUserInterface:
+    self.interfaceHidden = !self.interfaceHidden;
+    break;
+  case NYPLReaderRendererGestureTurnLeft:
+    [self turnInDirection:NYPLReaderViewControllerDirectionLeft];
+    break;
+  case NYPLReaderRendererGestureTurnRight:
+    [self turnInDirection:NYPLReaderViewControllerDirectionRight];
+    break;
+  }
 }
 
 #pragma mark UIViewController
@@ -320,10 +272,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.pageViewController.dataSource = self;
   self.pageViewController.delegate = self;
   [[self.pageViewController view] setFrame:[[self view] bounds]];
-  for (UIGestureRecognizer *gr in self.pageViewController.gestureRecognizers) {
-    if ([gr isKindOfClass:[UITapGestureRecognizer class]])
-      gr.enabled = NO;
-  }
 
   self.renderedImageView = [[UIImageView alloc] init];
   UIViewController *viewController1 = [[UIViewController alloc] init];
@@ -553,7 +501,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   if(self.shouldHideInterfaceOnNextAppearance) {
     self.shouldHideInterfaceOnNextAppearance = NO;
     self.interfaceHidden = YES;
-    self.tapGestureRecognizer.enabled = !UIAccessibilityIsVoiceOverRunning();
   }
   
   self.isAccessibilityConfigurationActive = UIAccessibilityIsVoiceOverRunning();
@@ -587,7 +534,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   if (_isAccessibilityConfigurationActive != isAccessibilityConfigurationActive) {
     _isAccessibilityConfigurationActive = isAccessibilityConfigurationActive;
     self.largeTransparentAccessibilityButton.userInteractionEnabled = (_isAccessibilityConfigurationActive && !self.interfaceHidden);
-    self.tapGestureRecognizer.enabled = !_isAccessibilityConfigurationActive;
     
     if (_isAccessibilityConfigurationActive) {
       
@@ -677,7 +623,7 @@ spineItemTitle:(NSString *const)title
   self.bottomViewProgressLabel.text = bookLocationString;
   
   [UIView transitionWithView:self.footerViewLabel
-                    duration:0.2
+                    duration:0.1
                      options:UIViewAnimationOptionTransitionCrossDissolve
                   animations:^{
                     self.footerViewLabel.text = bookLocationString;
@@ -745,6 +691,63 @@ spineItemTitle:(NSString *const)title
   NSInteger i = [self.dummyViewControllers indexOfObject:viewController];
   i = (i+1)%3;
   return [self.dummyViewControllers objectAtIndex:i];
+}
+
+- (void)turnInDirection:(NYPLReaderViewControllerDirection const)direction {
+  // Bail out if we cannot sensibly turn right now.
+  NYPLReaderReadiumView *const readiumView = [NYPLReaderSettings sharedSettings].currentReaderReadiumView;
+  if (readiumView.isPageTurning
+      || direction == NYPLReaderViewControllerDirectionRight ? !readiumView.canGoRight : !readiumView.canGoLeft) {
+    return;
+  }
+
+  // Locate the view controller currently on the screen.
+  UIViewController *currentViewController = nil;
+  for (UIViewController *const viewController in self.dummyViewControllers) {
+    for (UIView *const view in viewController.view.subviews) {
+      if ([view isKindOfClass:[NYPLReaderReadiumView class]]) {
+        currentViewController = viewController;
+        break;
+      }
+    }
+
+    if (currentViewController) {
+      // We've already found what we're looking for, so we're done.
+      break;
+    }
+  }
+
+  if (!currentViewController) {
+    // We should never reach this point.
+    NYPLLOG(@"Error: Unable to find currrent view controller. Aborting page turn.");
+    return;
+  }
+
+  NSArray<UIViewController *> *const nextViewControllers =
+    direction == NYPLReaderViewControllerDirectionRight
+      ? @[[self.pageViewController.dataSource
+           pageViewController:self.pageViewController
+           viewControllerAfterViewController:currentViewController]]
+      : @[[self.pageViewController.dataSource
+           pageViewController:self.pageViewController
+           viewControllerBeforeViewController:currentViewController]];
+
+  [self pageViewController:self.pageViewController willTransitionToViewControllers:nextViewControllers];
+
+  __weak NYPLReaderViewController *const weakSelf = self;
+
+  [self.pageViewController
+   setViewControllers:nextViewControllers
+   direction:(direction == NYPLReaderViewControllerDirectionRight
+              ? UIPageViewControllerNavigationDirectionForward
+              : UIPageViewControllerNavigationDirectionReverse)
+   animated:YES
+   completion:^(BOOL completed) {
+     [weakSelf pageViewController:weakSelf.pageViewController
+               didFinishAnimating:YES
+          previousViewControllers:@[currentViewController]
+              transitionCompleted:completed];
+   }];
 }
 
 #pragma mark UIPageViewControllerDelegate
@@ -885,8 +888,6 @@ spineItemTitle:(NSString *const)title
   }
   
   _interfaceHidden = interfaceHidden;
-  
-  self.navigationController.interactivePopGestureRecognizer.enabled = !interfaceHidden;
   
   if (interfaceHidden) {
     [self.navigationController setNavigationBarHidden:YES animated:animated];

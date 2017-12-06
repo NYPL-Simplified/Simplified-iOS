@@ -7,7 +7,9 @@
 @class NYPLReaderBookmark;
 
 typedef NS_ENUM(NSInteger, NYPLReaderRendererGesture) {
-  NYPLReaderRendererGestureToggleUserInterface
+  NYPLReaderRendererGestureToggleUserInterface,
+  NYPLReaderRendererGestureTurnLeft,
+  NYPLReaderRendererGestureTurnRight
 };
 
 @protocol NYPLReaderRenderer
@@ -44,5 +46,7 @@ didUpdateProgressWithinBook:(float)progressWithinBook
 
 - (void)updateBookmarkIcon:(BOOL)on;
 - (void)updateCurrentBookmark:(nullable NYPLReaderBookmark*)bookmark;
+
+- (void)renderer:(nonnull id<NYPLReaderRenderer>)render didReceiveGesture:(NYPLReaderRendererGesture)gesture;
 
 @end
