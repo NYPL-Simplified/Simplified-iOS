@@ -18,31 +18,26 @@ final class NYPLAnnotations: NSObject {
 
     self.permissionUrlRequest { (initialized, syncIsPermitted) in
 
-      var alreadyShown = NYPLSettings.shared().userHasSeenFirstTimeSyncMessage
+      let settings = NYPLSettings.shared()
 
       if (initialized && syncIsPermitted) {
         completion(true)
-        alreadyShown = true;
+        settings?.userHasSeenFirstTimeSyncMessage = true;
         Log.debug(#file, "Sync has already been enabled on the server. Enable here as well.")
         return
-      } else if (!initialized && alreadyShown == false) {
+      } else if (!initialized && settings?.userHasSeenFirstTimeSyncMessage == false) {
         Log.debug(#file, "Sync has never been initialized for the patron. Showing UIAlertController flow.")
         let title = "SimplyE Sync"
         let message = "Enable sync to save your reading position and bookmarks to your other devices.\n\nYou can change this any time in Settings."
         let alertController = NYPLAlertController.init(title: title, message: message, preferredStyle: .alert)
         let notNowAction = UIAlertAction.init(title: "Not Now", style: .default, handler: { action in
           completion(false)
-          alreadyShown = true;
+          settings?.userHasSeenFirstTimeSyncMessage = true;
         })
         let enableSyncAction = UIAlertAction.init(title: "Enable Sync", style: .default, handler: { action in
           self.updateServerSyncSetting(toEnabled: true) { success in
-            if success {
-              completion(true)
-            } else {
-              self.handleSyncSettingError()
-              completion(false)
-            }
-            alreadyShown = true;
+            completion(success)
+            settings?.userHasSeenFirstTimeSyncMessage = true;
           }
         })
         alertController.addAction(notNowAction)
@@ -60,7 +55,7 @@ final class NYPLAnnotations: NSObject {
   // Ask the server to enable Annotations. Server will return null, true, or false. Null
   // assumes the user has never been introduced to the feature ("initialized").
   // The closure expects "enabled" which is strictly to inform this single client
-  // how to respond based on the server's response.
+  // how to respond based on the server's info.
   class func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->()) {
     if (NYPLAccount.shared().hasBarcodeAndPIN() &&
       AccountsManager.shared.currentAccount.supportsSimplyESync) {
@@ -70,7 +65,12 @@ final class NYPLAnnotations: NSObject {
         return
       }
       let parameters = ["settings": ["simplified:synchronize_annotations": enabled]] as [String : Any]
-      syncSettingUrlRequest(patronAnnotationSettingUrl, parameters, 15, completion)
+      syncSettingUrlRequest(patronAnnotationSettingUrl, parameters, 20, { success in
+        if !success {
+          handleSyncSettingError()
+        }
+        completion(success)
+      })
     }
   }
 
@@ -83,7 +83,7 @@ final class NYPLAnnotations: NSObject {
 
     var request = URLRequest.init(url: annotationSettingsUrl,
                                   cachePolicy: .reloadIgnoringLocalCacheData,
-                                  timeoutInterval: 30)
+                                  timeoutInterval: 60)
     request.httpMethod = "GET"
     setDefaultAnnotationHeaders(forRequest: &request)
 
@@ -488,7 +488,7 @@ final class NYPLAnnotations: NSObject {
                                         device:device)
       return bookmark
     } else {
-      Log.error(#file, "Bookmark not created from Annotation Element. 'Motivation' Value: \(motivation)")
+      Log.error(#file, "Bookmark not created from Annotation Element. 'Motivation' Type: \(motivation)")
     }
     return nil
   }

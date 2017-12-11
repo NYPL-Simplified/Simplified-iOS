@@ -127,6 +127,8 @@ const double RequestTimeInterval = 30;
 {
   [NYPLAnnotations syncReadingPositionOfBook:bookID toURL:URL completionHandler:^(NSDictionary * _Nullable responseObject) {
 
+    // Still on a background thread
+
     if (!responseObject) {
       NYPLLOG(@"No Server Annotation for this book exists.");
       self.shouldPostLastRead = YES;
@@ -146,9 +148,12 @@ const double RequestTimeInterval = 30;
       elementTitle = @"";
     }
                 
-    NSString *message = [NSString stringWithFormat:@"Would you like to go to the latest page read?\n\nChapter:\n\"%@\"",elementTitle];
+    NSString *message = NSLocalizedString(@"Do you want to move to the page you left off on?", nil);
+    if (![elementTitle isEqualToString:@"Current Chapter"]) {
+      message = [message stringByAppendingString:[NSString stringWithFormat:@"\n\nChapter:\n\"%@\"", elementTitle]];
+    }
 
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Sync Reading Position"
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Sync Reading Position", nil)
                                                                              message:message
                                                                       preferredStyle:UIAlertControllerStyleAlert];
 
@@ -193,7 +198,9 @@ const double RequestTimeInterval = 30;
       !serverLocationString) {
       self.shouldPostLastRead = YES;
     } else {
-      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
+      }];
     }
   }];
 }

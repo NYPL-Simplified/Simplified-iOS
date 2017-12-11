@@ -1135,19 +1135,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 }
 - (CGFloat)tableView:(__unused UITableView *)tableView heightForFooterInSection:(__unused NSInteger)section
 {
-  if (section == 1 && [self syncButtonShouldBeVisible]) {
-    return 44;
-  } else {
-    return UITableViewAutomaticDimension;
-  }
-}
--(NSString *)tableView:(__unused UITableView *)tableView titleForFooterInSection:(NSInteger)section
-{
-  if (section == 1 && [self syncButtonShouldBeVisible]) {
-    return NSLocalizedString(@"SettingsAccountSyncFooterTitle",
-                             @"Explain to the user they can save their bookmarks in the cloud across all their devices.");
-  }
-  return nil;
+  return UITableViewAutomaticDimension;
 }
 -(CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section
 {
@@ -1206,13 +1194,18 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     
     return containerView;
   } else {
+
+
+
     return nil;
   }
 }
 
 - (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
 {
-  if (section == 0 && [self.selectedAccount getLicenseURL:URLTypeEula]) {
+  if ((section == 0 && [self.selectedAccount getLicenseURL:URLTypeEula]) ||
+      (section == 1 && [self syncButtonShouldBeVisible])) {
+
     UIView *container = [[UIView alloc] init];
     container.preservesSuperviewLayoutMargins = YES;
     UILabel *footerLabel = [[UILabel alloc] init];
@@ -1221,18 +1214,29 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     footerLabel.numberOfLines = 0;
     footerLabel.userInteractionEnabled = YES;
 
-    NSMutableAttributedString *eulaString = [[NSMutableAttributedString alloc]
-                                             initWithString:NSLocalizedString(@"By signing in, you agree to the ", nil) attributes:nil];
-    NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName :
-                                        [UIColor colorWithRed:0.05 green:0.4 blue:0.65 alpha:1.0],
-                                      NSUnderlineStyleAttributeName :
-                                        @(NSUnderlineStyleSingle) };
-    NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc]
-                                             initWithString:@"End User License Agreement." attributes:linkAttributes];
-    [eulaString appendAttributedString:linkString];
+    NSMutableAttributedString *eulaString;
+    if (section == 0) {
+      [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
 
+      eulaString = [[NSMutableAttributedString alloc]
+                    initWithString:NSLocalizedString(@"By signing in, you agree to the ", nil) attributes:nil];
+      NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName :
+                                          [UIColor colorWithRed:0.05 green:0.4 blue:0.65 alpha:1.0],
+                                        NSUnderlineStyleAttributeName :
+                                          @(NSUnderlineStyleSingle) };
+      NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc]
+                                               initWithString:@"End User License Agreement." attributes:linkAttributes];
+      [eulaString appendAttributedString:linkString];
+    } else {
+
+      footerLabel.textColor = [UIColor blackColor];
+      eulaString = [[NSMutableAttributedString alloc]
+                    initWithString:NSLocalizedString(@"SettingsAccountSyncFooterTitle",
+                                                     @"Explain to the user they can save their bookmarks in the cloud across all their devices.")
+                    attributes:nil];
+
+    }
     footerLabel.attributedText = eulaString;
-    [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
 
     [container addSubview:footerLabel];
     [footerLabel autoPinEdgeToSuperviewMargin:ALEdgeLeft];
@@ -1241,7 +1245,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:16.0 relation:NSLayoutRelationGreaterThanOrEqual];
 
     return container;
-
   } else {
     return nil;
   }
@@ -1535,7 +1538,6 @@ replacementString:(NSString *)string
         self.selectedAccount.syncPermissionGranted = YES;
         self.syncSwitch.on = YES;
       } else {
-        [NYPLAnnotations handleSyncSettingError];
         self.selectedAccount.syncPermissionGranted = NO;
         self.syncSwitch.on = NO;
       }

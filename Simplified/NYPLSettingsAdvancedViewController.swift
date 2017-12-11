@@ -17,7 +17,7 @@ class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSourc
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    title = "Advanced"
+    title = NSLocalizedString("Advanced", comment: "")
     
     let tableView = UITableView.init(frame: .zero, style: .grouped)
     tableView.delegate = self
@@ -35,14 +35,14 @@ class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSourc
       let cell = tableView.cellForRow(at: indexPath)
       cell?.setSelected(false, animated: true)
       
-      let message = "Choosing Delete will remove all bookmarks from the server for [this library name]."
+      let message = "Selecting \"Delete\" will remove all bookmarks from the server for \(account.name ?? "this library")."
       let alert = NYPLAlertController.init(title: nil, message: message, preferredStyle: .actionSheet)
       
-      let deleteAction = UIAlertAction.init(title: "Delete", style: .destructive, handler: { (action) in
+      let deleteAction = UIAlertAction.init(title: NSLocalizedString("Delete", comment:""), style: .destructive, handler: { (action) in
         self.disableSync()
       })
       
-      let cancelAction = UIAlertAction.init(title: "Cancel", style: .cancel, handler: { (action) in
+      let cancelAction = UIAlertAction.init(title: NSLocalizedString("Cancel", comment:""), style: .cancel, handler: { (action) in
         Log.debug(#file, "User cancelled bookmark server delete.")
       })
       
@@ -70,8 +70,6 @@ class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSourc
       if (success) {
         self.account.syncPermissionGranted = false;
         self.navigationController?.popViewController(animated: true)
-      } else {
-        NYPLAnnotations.handleSyncSettingError()
       }
     })
   }
@@ -89,13 +87,13 @@ class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSourc
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     
     let cell = UITableViewCell()
-    cell.textLabel?.text = "Delete Server Data"
+    cell.textLabel?.text = NSLocalizedString("Delete Server Data", comment:"")
     cell.textLabel?.font = UIFont.customFont(forTextStyle: .body)
     return cell
   }
   
   func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-    return "Delete all the bookmarks you have saved in the cloud."
+    return NSLocalizedString("Delete all the bookmarks you have saved in the cloud.", comment:"")
   }
 
 }
