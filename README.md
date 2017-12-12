@@ -6,8 +6,8 @@
 04. Install [Cocoapods](https://cocoapods.org) if you haven't already.
 05. `pod install`
 06. Symlink the "DRM_Connector_Prerelease" directory to "adobe-rmsdk" within the "Simplified-iOS" directory. (You will need to have obtained the Adobe DRM Connector prerelease from Adobe.)
-07. Follow the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf" to build OpenSSL (section 12.1) and cURL (section 12.3). You will need to verify and edit both "build.sh" scripts to reflect correct versions and local directories (lines 11-24). You must also add `--enable-ipv6` to line 80 of Adobe's "build.sh" script used for building cURL.
-08. `sh adobe-rmsdk-build.sh` in the "Simplified-iOS" directory.
+07. Follow the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf" to build OpenSSL (section 12.1) and cURL (section 12.3). You will need to verify and edit both "build.sh" scripts to reflect the correct version numbers and local directory names (lines 11–24). You must also add `--enable-ipv6` to line 80 of Adobe's "build.sh" script used for building cURL. (**Note:** Ensure you're in the "Simplified-iOS" directory before continuing to the next step.)
+08. `sh adobe-rmsdk-build.sh`
 09. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
 10. `open Simplified.xcworkspace`
 11. Build.
