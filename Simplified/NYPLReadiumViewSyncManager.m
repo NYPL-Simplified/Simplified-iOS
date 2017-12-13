@@ -227,7 +227,6 @@ const double RequestTimeInterval = 30;
   }
 }
 
-//GODO need to test
 - (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray<NYPLReaderBookmark *> *bookmarks))completion
 {
   [[NYPLReachability sharedReachability]
@@ -286,7 +285,6 @@ const double RequestTimeInterval = 30;
              [localBookmarksToDelete addObject:localBookmark];
            }
          }
-         //GODO temp logging
          NYPLLOG_F(@"\nLocal Bookmarks To Delete:\n\n%@", localBookmarksToDelete);
 
          NSMutableArray<NYPLReaderBookmark *> *bookmarksToAdd = serverBookmarks.mutableCopy;

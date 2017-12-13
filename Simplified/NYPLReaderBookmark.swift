@@ -95,7 +95,6 @@ final class NYPLReaderBookmark: NSObject {
   override func isEqual(_ object: Any?) -> Bool {
     let other = object as! NYPLReaderBookmark
 
-    //GODO should I bring back annotationID?
     if (self.contentCFI == other.contentCFI &&
       self.idref == other.idref &&
       self.chapter == other.chapter &&

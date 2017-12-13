@@ -806,19 +806,23 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     
       if (headError || responseStatusCode != 200) {
         NSError *dataError;
-        NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&dataError];
-        
-        if (data || !dataError) {
-          NSNumber *length = [NSNumber numberWithUnsignedInteger:data.length];
-          expectedLengthDec = [NSDecimalNumber decimalNumberWithDecimal:length.decimalValue];
+        NSData *data;
+        if (url) {
+          data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&dataError];
+          if (data && !dataError) {
+            NSNumber *length = [NSNumber numberWithUnsignedInteger:data.length];
+            expectedLengthDec = [NSDecimalNumber decimalNumberWithDecimal:length.decimalValue];
+          }
+        } else {
+          [self reportNilUrlToBugsnagWithSpineItem:spineItem];
         }
       }
       
       NSMutableDictionary *spineItemDict = [[NSMutableDictionary alloc] init];
-      [spineItemDict setObject:expectedLengthDec forKey:@"spineItemBytesLength"];
-      [spineItemDict setObject:spineItem.baseHref forKey:@"spineItemBaseHref"];
-      [spineItemDict setObject:spineItem.idref forKey:@"spineItemIdref"];
-      [spineItemDict setObject:totalLength forKey:@"totalLengthSoFar"];
+      if (expectedLengthDec) [spineItemDict setObject:expectedLengthDec forKey:@"spineItemBytesLength"];
+      if (spineItem.baseHref) [spineItemDict setObject:spineItem.baseHref forKey:@"spineItemBaseHref"];
+      if (spineItem.idref) [spineItemDict setObject:spineItem.idref forKey:@"spineItemIdref"];
+      if (totalLength) [spineItemDict setObject:totalLength forKey:@"totalLengthSoFar"];
       
       NSString *title = [self tocTitleForSpineItem:spineItem];
       if (title && [[title class] isSubclassOfClass:[NSString class]]) {
