@@ -45,7 +45,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     
     let view2 = splashScreenView("SplashInstantClassicsIcon",
                                  headline: NSLocalizedString("WelcomeScreenTitle2", comment: "Title to show a user an option if they do not have a library card to check out books."),
-                                 subheadline: NSLocalizedString("WelcomeScreenSubtitle2", comment: "Explains what a user can do with the catalog provided. Free books in the public domain."),
+                                 subheadline: nil,
                                  buttonTitle: NSLocalizedString("WelcomeScreenButtonTitle2", comment: "Name of section for free books means books that are well-known popular novels for many people."),
                                  buttonTargetSelector: #selector(instantClassicsTapped))
     
@@ -63,7 +63,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     logoView.autoAlignAxis(toSuperviewAxis: .vertical)
 
     view1.autoAlignAxis(toSuperviewAxis: .vertical)
-    view1.autoPinEdge(.top, to: .bottom, of: logoView, withOffset: 2)
+    view1.autoPinEdge(.top, to: .bottom, of: logoView, withOffset: -12)
     view1.autoPinEdge(toSuperviewMargin: .left)
     view1.autoPinEdge(toSuperviewMargin: .right)
     
@@ -88,7 +88,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     }
   }
   
-  func splashScreenView(_ imageName: String, headline: String, subheadline: String, buttonTitle: String, buttonTargetSelector: Selector) -> UIView {
+  func splashScreenView(_ imageName: String, headline: String, subheadline: String?, buttonTitle: String, buttonTargetSelector: Selector) -> UIView {
     let tempView = UIView()
     
     let imageView1 = UIImageView(image: UIImage(named: imageName))
@@ -121,6 +121,9 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     textLabel2.autoPinEdge(.leading, to: .leading, of: tempView, withOffset: 0.0, relation: .greaterThanOrEqual)
     textLabel2.autoPinEdge(.trailing, to: .trailing, of: tempView, withOffset: 0.0, relation: .greaterThanOrEqual)
     textLabel2.autoAlignAxis(toSuperviewMarginAxis: .vertical)
+    if subheadline == nil {
+      textLabel2.autoSetDimension(.height, toSize: 0)
+    }
     
     let button = UIButton()
     button.setTitle(buttonTitle, for: UIControlState())
