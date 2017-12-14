@@ -120,6 +120,7 @@
 }
 
 #pragma mark NYPLBookDetailViewDelegate
+
 -(void)didSelectCloseButton:(__attribute__((unused)) NYPLBookDetailView *)detailView {
   [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -136,24 +137,6 @@
 {
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
    cancelDownloadForBookIdentifier:self.book.identifier];
-}
-
-- (void)didSelectReturnForBookDetailView:(NYPLBookDetailView *const)detailView
-{
-  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] returnBookWithIdentifier:detailView.book.identifier];
-}
-
-- (void)didSelectDownloadForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView
-{
-  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:self.book];
-}
-
-- (void)didSelectReadForBookDetailView:(__attribute__((unused)) NYPLBookDetailView *)detailView
-{
-  [[NYPLRootTabBarController sharedController]
-   pushViewController:[[NYPLReaderViewController alloc]
-                       initWithBookIdentifier:self.book.identifier]
-   animated:YES];
 }
 
 #pragma mark - NYPLCatalogLaneCellDelegate

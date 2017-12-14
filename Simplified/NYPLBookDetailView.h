@@ -10,9 +10,6 @@
 
 - (void)didSelectCancelDownloadFailedForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectCancelDownloadingForBookDetailView:(NYPLBookDetailView *)detailView;
-- (void)didSelectReturnForBookDetailView:(NYPLBookDetailView *)detailView;
-- (void)didSelectDownloadForBookDetailView:(NYPLBookDetailView *)detailView;
-- (void)didSelectReadForBookDetailView:(NYPLBookDetailView *)detailView;
 - (void)didSelectCloseButton:(NYPLBookDetailView *)detailView;
 - (void)didSelectMoreBooksForLane:(NYPLCatalogLane *)lane;
 - (void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender;

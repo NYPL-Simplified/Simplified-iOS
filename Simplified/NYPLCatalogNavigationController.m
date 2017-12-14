@@ -187,57 +187,10 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  
   NYPLSettings *settings = [NYPLSettings sharedSettings];
-  
   if (settings.userHasSeenWelcomeScreen == YES) {
     [self reloadSelectedLibraryAccount];
   }
-  
-}
-- (void)checkSyncSetting
-{
-  [NYPLAnnotations syncSettingsWithCompletionHandler:^(BOOL exist) {
-    
-    if (!exist)
-    {
-      // alert
-      
-      Account *account = [[AccountsManager sharedInstance] currentAccount];
-      
-      NSString *title = @"SimplyE Sync";
-      NSString *message = @"<Initial setup> Synchronize your bookmarks and last reading position across all your SimplyE devices.";
-      
-      
-      NYPLAlertController *alertController = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-      
-      
-      [alertController addAction:[UIAlertAction actionWithTitle:@"Do not Enable Sync" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
-        
-        // add server update here as well
-        [NYPLAnnotations updateSyncSettings:false];
-        account.syncIsEnabled = NO;
-        
-      }]];
-      
-      
-      [alertController addAction:[UIAlertAction actionWithTitle:@"Enable Sync" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction * _Nonnull action) {
-        
-        // add server update here as well
-        
-        [NYPLAnnotations updateSyncSettings:true];
-        account.syncIsEnabled = YES;
-        
-      }]];
-      
-      
-      
-      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController
-                                                                      animated:YES completion:nil];
-      
-    }
-    
-  }];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -249,9 +202,6 @@
   }
   
   NYPLSettings *settings = [NYPLSettings sharedSettings];
-  
-  
-  [self checkSyncSetting];
   
   if (settings.userHasSeenWelcomeScreen == NO) {
     

@@ -132,7 +132,7 @@ final class Account:NSObject
       setAccountDictionaryKey(userAcceptedEULAKey, toValue: newValue as AnyObject)
     }
   }
-  var syncIsEnabled:Bool {
+  var syncPermissionGranted:Bool {
     get {
       guard let result = getAccountDictionaryKey(accountSyncEnabledKey) else { return false }
       return result as! Bool

@@ -1,10 +1,12 @@
 #import "NYPLReaderRenderer.h"
 
 @class NYPLBook;
+@class NYPLReadiumViewSyncManager;
 
 @interface NYPLReaderReadiumView : UIView <NYPLReaderRenderer>
 
 @property (nonatomic, weak) id<NYPLReaderRendererDelegate> delegate;
+@property (nonatomic) NYPLReadiumViewSyncManager *syncManager;
 @property (nonatomic, readonly) BOOL isPageTurning;
 @property (nonatomic, readonly) BOOL canGoRight, canGoLeft;
 
@@ -23,5 +25,10 @@
 - (void) openPageRight;
 - (BOOL) touchIntersectsLink:(UITouch *)touch;
 
-- (void) syncLastReadingPosition;
+- (NSString*) currentChapter;
+
+- (void) syncAnnotationsWhenPermitted;
+- (void) addBookmark;
+- (void) deleteBookmark:(NYPLReaderBookmark*)bookmark;
+
 @end

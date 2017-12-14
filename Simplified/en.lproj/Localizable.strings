@@ -181,8 +181,9 @@
 "SettingsAccountEULACheckbox" = "I agree to the terms of the End User License Agreement.";
 "SettingsAccountRegistrationTitle" = "Don't have a library card?";
 "SettingsAccountSetAccountTitle" = "Set to Active Account";
-"SettingsAccountSyncTitle" = "SimplyE Sync";
-"SettingsAccountSyncSubTitle" = "Enable if you want to synchronize your bookmarks and last reading position across all your SimplyE devices. Bookmarks and last reading position will be saved for this device anyway. Note: This requires the information to be saved in SimplyE servers";
+"SettingsBookmarkSyncTitle" = "Sync Bookmarks";
+"SettingsGlobalSync" =  "Automatically update your bookmarks and last reading position across all of your devices.";
+"SettingsAccountSyncFooterTitle" = "Save your reading position and bookmarks to all your other devices.";
 "SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";
 "SettingsAccountViewControllerCannotLogOutTitle" =
   "Logout Failed";
@@ -192,7 +193,8 @@
   "Your barcode and pin combination was not valid. Please try again.";
 "SettingsAccountViewControllerLoginFailed" = "Login Failed";
 "SettingsAccountViewControllerLogoutFailed" = "Sign Out Failed";
-"SettingsAccountViewControllerLogoutMessage" = "If you sign out of your account, all content accessible via My Books will be removed from this device.";
+"SettingsAccountViewControllerLogoutMessageDefault" = "If you sign out, your books and any saved bookmarks will be removed.";
+"SettingsAccountViewControllerLogoutMessageSync" = "If you sign out without enabling Sync, your books and any saved bookmarks will be removed.";
 "SettingsAccountViewControllerAgeCheckMessage" = "If you are under 13, all content downloaded to My Books will be removed.";
 "SettingsAccountViewControllerMessageLogIn" = "Use your library card to log in.";
 "SettingsAccountViewControllerMessageLogInToDownloadBook" =
