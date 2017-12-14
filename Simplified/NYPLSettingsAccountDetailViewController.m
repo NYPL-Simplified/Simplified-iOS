@@ -927,9 +927,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (![self librarySupportsBarcodeDisplay]) {
         NYPLLOG(@"A nonvalid library was attempting to create a barcode image.");
       } else {
-        UIImage *barcodeImage = [NYPLBarcode imageFromString:self.selectedNYPLAccount.authorizationIdentifier
-                                              superviewWidth:self.tableView.bounds.size.width
-                                                        type:NYPLBarcodeTypeCodabar];
+        NYPLBarcode *barcode = [[NYPLBarcode alloc] initWithLibrary:self.selectedAccount.name];
+        UIImage *barcodeImage = [barcode imageFromString:self.selectedNYPLAccount.authorizationIdentifier
+                                          superviewWidth:self.tableView.bounds.size.width
+                                                    type:NYPLBarcodeTypeCodabar];
+
         if (barcodeImage) {
           self.barcodeImageView = [[UIImageView alloc] initWithImage:barcodeImage];
           self.barcodeImageLabel = [[UILabel alloc] init];
