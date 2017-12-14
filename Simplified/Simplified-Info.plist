@@ -47,9 +47,7 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>For Barcode Scanning</string>
-	<key>NSLocationUsageDescription</key>
-	<string>This service is available to New York State residents only. In order to determine your location, please allow access</string>
+	<string>SimplyE requires access to the camera in order to scan your library card.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This service is available to New York State residents only. In order to determine your location, please allow access</string>
 	<key>NSPhotoLibraryUsageDescription</key>
