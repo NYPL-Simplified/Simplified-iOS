@@ -53,9 +53,43 @@ final class NYPLBarcode: NSObject {
 
   class func presentScanner(withCompletion completion: @escaping (String?) -> ())
   {
-    guard let scannerVC = NYPLBarcodeScanningViewController.init(completion: completion) else { return }
-    let navController = UINavigationController.init(rootViewController: scannerVC)
-    NYPLRootTabBarController.shared().safelyPresentViewController(navController, animated: true, completion: nil)
+    AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo) { granted in
+      DispatchQueue.main.async {
+        if granted {
+          guard let scannerVC = NYPLBarcodeScanningViewController.init(completion: completion) else { return }
+          let navController = UINavigationController.init(rootViewController: scannerVC)
+          NYPLRootTabBarController.shared().safelyPresentViewController(navController, animated: true, completion: nil)
+        } else {
+          presentCameraPrivacyAlert()
+        }
+      }
+    }
+  }
+
+  private class func presentCameraPrivacyAlert()
+  {
+    let alertController = NYPLAlertController(
+      title: NSLocalizedString("Camera Access Disabled",
+                               comment: "An alert title stating the user has disallowed the app to access the user's location"),
+      message: NSLocalizedString(
+        ("You must enable camera access for this application " +
+          "in order to sign up for a library card."),
+        comment: "An alert message informing the user that camera access is required"),
+      preferredStyle: .alert)
+
+    alertController.addAction(UIAlertAction(
+      title: NSLocalizedString("Open Settings",
+                               comment: "A title for a button that will open the Settings app"),
+      style: .default,
+      handler: {_ in
+        UIApplication.shared.openURL(URL(string:UIApplicationOpenSettingsURLString)!)
+    }))
+    alertController.addAction(UIAlertAction(
+      title: NSLocalizedString("Cancel", comment: ""),
+      style: .cancel,
+      handler: nil))
+
+    alertController.present(fromViewControllerOrNil: nil, animated: true, completion: nil)
   }
 
   private class func imageWidthFor(_ superviewWidth: CGFloat) -> CGFloat
