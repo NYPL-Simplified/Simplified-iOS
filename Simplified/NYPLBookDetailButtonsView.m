@@ -34,21 +34,25 @@
   self.constraints = [[NSMutableArray alloc] init];
   
   self.deleteButton = [NYPLRoundedButton button];
+  self.deleteButton.fromDetailView = YES;
   self.deleteButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.deleteButton addTarget:self action:@selector(didSelectReturn) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.deleteButton];
 
   self.downloadButton = [NYPLRoundedButton button];
+  self.downloadButton.fromDetailView = YES;
   self.downloadButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.downloadButton addTarget:self action:@selector(didSelectDownload) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.downloadButton];
 
   self.readButton = [NYPLRoundedButton button];
+  self.readButton.fromDetailView = YES;
   self.readButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.readButton addTarget:self action:@selector(didSelectRead) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.readButton];
   
   self.cancelButton = [NYPLRoundedButton button];
+  self.cancelButton.fromDetailView = YES;
   self.cancelButton.titleLabel.minimumScaleFactor = 0.8f;
   [self.cancelButton addTarget:self action:@selector(didSelectCancel) forControlEvents:UIControlEventTouchUpInside];
   [self addSubview:self.cancelButton];
@@ -266,6 +270,18 @@
     
     // Re-enable animations as per usual.
     [UIView setAnimationsEnabled:YES];
+
+    // Provide End-Date for checked out loans
+    if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
+      if (self.book.availableUntil && [self.book.availableUntil timeIntervalSinceNow] > 0 && self.state != NYPLBookButtonsStateHolding) {
+        button.type = NYPLRoundedButtonTypeClock;
+        button.endDate = self.book.availableUntil;
+      } else {
+        button.type = NYPLRoundedButtonTypeNormal;
+      }
+    } else {
+      button.type = NYPLRoundedButtonTypeNormal;
+    }
     
     [visibleButtons addObject:button];
   }
