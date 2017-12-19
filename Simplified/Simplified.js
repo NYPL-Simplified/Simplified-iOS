@@ -96,9 +96,9 @@ function Simplified() {
     if(Math.abs(relativeDistanceX) < 0.1) {
       // ... we consider it a tap (as opposed to a swipe) and handle it as such.
       var position = touch.screenX / maxScreenX;
-      if(position <= 0.2) {
+      if(position <= 0.25) {
         window.location = "simplified:gesture-left";
-      } else if(position >= 0.8) {
+      } else if(position >= 0.75) {
         window.location = "simplified:gesture-right";
       } else {
         window.location = "simplified:gesture-center";
