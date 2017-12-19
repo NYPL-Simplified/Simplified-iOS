@@ -21,23 +21,22 @@ function Simplified() {
     // that `handleTouchEnd` will not do anything later on.
     if (event.touches.length > 1) {
       tracking = TRACKING_HAS_BEEN_CANCELLED_DUE_TO_MULTITOUCH;
-      return;
     }
 
-    if (tracking === TRACKING_IS_ACTIVE) {
-      tracking = TRACKING_HAS_BEEN_CANCELLED_DUE_TO_MULTITOUCH;
-      return;
-    }
-
+    // The user had more than one finger down during the current gesture so
+    // we do nothing.
     if (tracking === TRACKING_HAS_BEEN_CANCELLED_DUE_TO_MULTITOUCH) {
       return;
     }
 
+    // We're beginning to track a single-finger tap.
     tracking = TRACKING_IS_ACTIVE;
 
     var touch = event.changedTouches[0];
 
+    // If the user tapped a link...
     if(touch.target.nodeName.toUpperCase() === "A") {
+      // ... let the webview handle it normally.
       return;
     }
 
