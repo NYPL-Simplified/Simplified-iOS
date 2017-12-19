@@ -117,7 +117,10 @@ function Simplified() {
   document.addEventListener("touchstart", handleTouchStart, false);
   document.addEventListener("touchend", handleTouchEnd, false);
 
-  // Disable selection.
+  // Disable selection outside the iframe. This is probably not necessary as we
+  // do not disable it inside the iframe (because doing so breaks Readium's CFI
+  // logic), but it's safe to do and may avoid persistent selection strangeness
+  // across resource boundaries.
   document.documentElement.style.webkitTouchCallout = "none";
   document.documentElement.style.webkitUserSelect = "none";
 
@@ -129,10 +132,6 @@ function Simplified() {
     if (!iframe) {
       return;
     }
-
-    // Disable selection.
-    iframe.document.documentElement.style.webkitTouchCallout = "none";
-    iframe.document.documentElement.style.webkitUserSelect = "none";
 
     // Remove existing handlers, if any.
     try {
