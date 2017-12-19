@@ -644,8 +644,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
   NYPLBookLocation *location = [registry locationForIdentifier:self.book.identifier];
   NSDictionary *const locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
-  NSString *contentCFI = locationDictionary[@"contentCFI"];
-  NSString *idref = locationDictionary[@"idref"];
+  NSString *contentCFI = NYPLNullToNil(locationDictionary[@"contentCFI"]);
+  NSString *idref = NYPLNullToNil(locationDictionary[@"idref"]);
   NSString *chapter = self.bookMapDictionary[idref][@"tocElementTitle"];
 
   float progressWithinChapter = 0.0;
