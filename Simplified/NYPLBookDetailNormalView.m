@@ -118,7 +118,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
       newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadNeededTitle", nil);
       break;
     case NYPLBookButtonsStateDownloadSuccessful:
-      newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
+      newMessageString = [self messageStringForNYPLBookButtonStateSuccessful];
       break;
     case NYPLBookButtonsStateHolding:
       newMessageString = [self messageStringForNYPLBookButtonsStateHolding];
@@ -164,6 +164,18 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
     return [newMessageString stringByAppendingString:positionString];
   } else {
     return newMessageString;
+  }
+}
+
+-(NSString *)messageStringForNYPLBookButtonStateSuccessful
+{
+  NSString *message = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
+  if (self.book.availableUntil) {
+    NSString *timeUntilString = [self.book.availableUntil longTimeUntilString];
+    NSString *timeEstimateMessage = [NSString stringWithFormat:NSLocalizedString(@"It will expire in %@.", @"Tell the user how much time they have left for the book they have borrowed."),timeUntilString];
+    return [NSString stringWithFormat:@"%@\n%@",message,timeEstimateMessage];
+  } else {
+    return message;
   }
 }
 

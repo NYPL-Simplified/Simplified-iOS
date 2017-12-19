@@ -235,6 +235,18 @@
     // Re-enable animations as per usual.
     [UIView setAnimationsEnabled:YES];
     
+    // Provide End-Date for checked out loans
+    if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
+      if (self.book.availableUntil && [self.book.availableUntil timeIntervalSinceNow] > 0 && self.state != NYPLBookButtonsStateHolding) {
+        button.type = NYPLRoundedButtonTypeClock;
+        button.endDate = self.book.availableUntil;
+      } else {
+        button.type = NYPLRoundedButtonTypeNormal;
+      }
+    } else {
+      button.type = NYPLRoundedButtonTypeNormal;
+    }
+
     [visibleButtons addObject:button];
   }
   for (NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton]) {
