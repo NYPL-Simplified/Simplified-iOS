@@ -398,9 +398,9 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
     NSString *const function = components[0];
     if([function isEqualToString:@"gesture-left"]) {
-      [self.delegate renderer:self didReceiveGesture:NYPLReaderRendererGestureTurnLeft];
+      [self sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.openPageLeft()"];
     } else if([function isEqualToString:@"gesture-right"]) {
-      [self.delegate renderer:self didReceiveGesture:NYPLReaderRendererGestureTurnRight];
+      [self sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.openPageRight()"];
     } else if([function isEqualToString:@"gesture-center"]) {
       [self.delegate renderer:self didReceiveGesture:NYPLReaderRendererGestureToggleUserInterface];
     } else {

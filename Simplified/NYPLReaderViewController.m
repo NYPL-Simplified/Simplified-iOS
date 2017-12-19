@@ -178,13 +178,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 {
   switch (gesture) {
   case NYPLReaderRendererGestureToggleUserInterface:
-    self.interfaceHidden = !self.interfaceHidden;
-    break;
-  case NYPLReaderRendererGestureTurnLeft:
-    [self turnInDirection:NYPLReaderViewControllerDirectionLeft];
-    break;
-  case NYPLReaderRendererGestureTurnRight:
-    [self turnInDirection:NYPLReaderViewControllerDirectionRight];
+    [self setInterfaceHidden:!self.interfaceHidden animated:YES];
     break;
   }
 }
@@ -676,22 +670,12 @@ spineItemTitle:(NSString *const)title
 
 - (UIViewController *)pageViewController:(__unused UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
 {
-  NYPLReaderReadiumView *rv = self.rendererView;
-  if (rv.isPageTurning || ![rv canGoLeft])
-    return nil;
-  NSInteger i = [self.dummyViewControllers indexOfObject:viewController];
-  i = (i+2)%3;
-  return [self.dummyViewControllers objectAtIndex:i];
+  return nil;
 }
 
 - (UIViewController *)pageViewController:(__unused UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
-  NYPLReaderReadiumView *rv = self.rendererView;
-  if (rv.isPageTurning || ![rv canGoRight])
-    return nil;
-  NSInteger i = [self.dummyViewControllers indexOfObject:viewController];
-  i = (i+1)%3;
-  return [self.dummyViewControllers objectAtIndex:i];
+  return nil;
 }
 
 - (void)turnInDirection:(NYPLReaderViewControllerDirection const)direction {

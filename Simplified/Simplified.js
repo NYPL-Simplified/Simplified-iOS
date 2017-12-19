@@ -144,6 +144,9 @@ function Simplified() {
     // Handles gestures for the inner content.
     iframe.addEventListener("touchstart", handleTouchStart, false);
     iframe.addEventListener("touchend", handleTouchEnd, false);
+
+    // Set up the page turning animation.
+    iframe.document.documentElement.style["transition"] = "left 0.2s";
   };
 
   this.pageDidChange();

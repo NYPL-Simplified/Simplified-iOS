@@ -7,9 +7,7 @@
 @class NYPLReaderBookmark;
 
 typedef NS_ENUM(NSInteger, NYPLReaderRendererGesture) {
-  NYPLReaderRendererGestureToggleUserInterface,
-  NYPLReaderRendererGestureTurnLeft,
-  NYPLReaderRendererGestureTurnRight
+  NYPLReaderRendererGestureToggleUserInterface
 };
 
 @protocol NYPLReaderRenderer
