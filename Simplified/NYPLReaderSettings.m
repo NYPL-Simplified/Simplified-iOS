@@ -346,10 +346,6 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
     }];
 }
 
--(void)setCurrentReaderReadiumView:(id)currentReaderReadiumView {
-  _currentReaderReadiumView = currentReaderReadiumView;
-}
-
 - (void) toggleMediaOverlayPlayback {
   __weak NYPLReaderSettings const *weakSelf = self;
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{

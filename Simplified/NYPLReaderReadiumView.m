@@ -175,8 +175,6 @@ static void generateTOCElements(NSArray *const navigationElements,
   
   self.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
   
-  [NYPLReaderSettings sharedSettings].currentReaderReadiumView = self;
-  
   self.javaScriptIsRunning = NO;
   self.javaScriptHandlerQueue = [NSMutableArray array];
   self.javaScriptStringQueue = [NSMutableArray array];

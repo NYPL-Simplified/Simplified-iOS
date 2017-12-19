@@ -93,17 +93,20 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
 
 - (void)userDidRefresh:(UIRefreshControl *)refreshControl
 {
-  NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
-  [rv.syncManager syncBookmarksWithCompletion:^(BOOL __unused success, NSArray<NYPLReaderBookmark *> *bookmarks) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      self.bookmarks = bookmarks.mutableCopy;
-      [self.tableView reloadData];
-      [refreshControl endRefreshing];
-      if (!success) {
-        [self showAlertForFailedSync];
-      }
-    });
-  }];
+  __weak NYPLReaderTOCViewController *const weakSelf = self;
+
+  [self.delegate
+   TOCViewController:self
+   didRequestSyncBookmarksWithCompletion:^(BOOL __unused success, NSArray<NYPLReaderBookmark *> *bookmarks) {
+     dispatch_async(dispatch_get_main_queue(), ^{
+       weakSelf.bookmarks = bookmarks.mutableCopy;
+       [weakSelf.tableView reloadData];
+       [refreshControl endRefreshing];
+       if (!success) {
+         [weakSelf showAlertForFailedSync];
+       }
+     });
+   }];
 }
 
 #pragma mark UITableViewDataSource
@@ -236,11 +239,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   
   if (editingStyle == UITableViewCellEditingStyleDelete) {
     NYPLReaderBookmark *bookmark = self.bookmarks[indexPath.row];
-    NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
-    [rv deleteBookmark:bookmark];
-    
     [self.bookmarks removeObjectAtIndex:indexPath.row];
     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:(UITableViewRowAnimationFade)];
+    [self.delegate TOCViewController:self didDeleteBookmark:bookmark];
   }
 }
 

@@ -5,6 +5,7 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLReaderReadiumView.h"
+#import "NYPLReadiumViewSyncManager.h"
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReaderTOCViewController.h"
 #import "NYPLRoundedButton.h"
@@ -31,7 +32,7 @@
 @property (nonatomic) NSArray<UIViewController *> *dummyViewControllers;
 @property (nonatomic) UIImageView *renderedImageView;
 @property (nonatomic) BOOL previousPageTurnWasRight;
-@property (nonatomic) UIView<NYPLReaderRenderer> *rendererView;
+@property (nonatomic) NYPLReaderReadiumView *rendererView;
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) UIBarButtonItem *bookmarkBarButtonItem;
 @property (nonatomic) UIBarButtonItem *contentsBarButtonItem;
@@ -325,8 +326,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 }
 
 -(void)didMoveToParentViewController:(UIViewController *)parent {
-  if (!parent && [[NYPLReaderSettings sharedSettings].currentReaderReadiumView bookHasMediaOverlaysBeingPlayed]) {
-    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView applyMediaOverlayPlaybackToggle];
+  if (!parent && [self.rendererView bookHasMediaOverlaysBeingPlayed]) {
+    [self.rendererView applyMediaOverlayPlaybackToggle];
   }
 }
 
@@ -493,7 +494,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)syncLastRead
 {
-  [[NYPLReaderSettings sharedSettings].currentReaderReadiumView syncAnnotationsWhenPermitted];
+  [self.rendererView syncAnnotationsWhenPermitted];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -675,7 +676,7 @@ spineItemTitle:(NSString *const)title
 
 - (UIViewController *)pageViewController:(__unused UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
 {
-  NYPLReaderReadiumView *rv = [NYPLReaderSettings sharedSettings].currentReaderReadiumView;
+  NYPLReaderReadiumView *rv = self.rendererView;
   if (rv.isPageTurning || ![rv canGoLeft])
     return nil;
   NSInteger i = [self.dummyViewControllers indexOfObject:viewController];
@@ -685,7 +686,7 @@ spineItemTitle:(NSString *const)title
 
 - (UIViewController *)pageViewController:(__unused UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
-  NYPLReaderReadiumView *rv = [NYPLReaderSettings sharedSettings].currentReaderReadiumView;
+  NYPLReaderReadiumView *rv = self.rendererView;
   if (rv.isPageTurning || ![rv canGoRight])
     return nil;
   NSInteger i = [self.dummyViewControllers indexOfObject:viewController];
@@ -695,7 +696,7 @@ spineItemTitle:(NSString *const)title
 
 - (void)turnInDirection:(NYPLReaderViewControllerDirection const)direction {
   // Bail out if we cannot sensibly turn right now.
-  NYPLReaderReadiumView *const readiumView = [NYPLReaderSettings sharedSettings].currentReaderReadiumView;
+  NYPLReaderReadiumView *const readiumView = self.rendererView;
   if (readiumView.isPageTurning
       || direction == NYPLReaderViewControllerDirectionRight ? !readiumView.canGoRight : !readiumView.canGoLeft) {
     return;
@@ -798,8 +799,8 @@ spineItemTitle:(NSString *const)title
       [self.renderedImageView removeFromSuperview];
   } else {
     [self turnPageIsRight:!self.previousPageTurnWasRight];
-    [[NYPLReaderSettings sharedSettings].currentReaderReadiumView removeFromSuperview];
-    [pageViewController.viewControllers.firstObject.view insertSubview:[NYPLReaderSettings sharedSettings].currentReaderReadiumView belowSubview:self.renderedImageView];
+    [self.rendererView removeFromSuperview];
+    [pageViewController.viewControllers.firstObject.view insertSubview:self.rendererView belowSubview:self.renderedImageView];
   }
 }
 
@@ -834,6 +835,18 @@ spineItemTitle:(NSString *const)title
     self.shouldHideInterfaceOnNextAppearance = YES;
     [self.navigationController popViewControllerAnimated:YES];
   }
+}
+
+- (void)TOCViewController:(__unused NYPLReaderTOCViewController *)controller
+        didDeleteBookmark:(NYPLReaderBookmark *)bookmark
+{
+  [self.rendererView deleteBookmark:bookmark];
+}
+
+- (void)TOCViewController:(__unused NYPLReaderTOCViewController *)controller
+didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReaderBookmark *> *))completion
+{
+  [self.rendererView.syncManager syncBookmarksWithCompletion:completion];
 }
 
 #pragma mark NYPLReaderSettingsViewDelegate
@@ -1004,7 +1017,7 @@ spineItemTitle:(NSString *const)title
   viewController.tableOfContents = self.rendererView.TOCElements;
   viewController.bookTitle = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
   viewController.bookmarks = self.rendererView.bookmarkElements.mutableCopy;
-  NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
+  NYPLReaderReadiumView *rv = self.rendererView;
   viewController.currentChapter = [rv currentChapter];
 
   
@@ -1027,7 +1040,7 @@ spineItemTitle:(NSString *const)title
 
 - (void)toggleBookmark
 {
-  NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
+  NYPLReaderReadiumView *rv = self.rendererView;
   if (self.currentBookmark) {
     [rv deleteBookmark:self.currentBookmark];
   }
@@ -1038,7 +1051,7 @@ spineItemTitle:(NSString *const)title
 
 - (void)turnPageIsRight:(BOOL)isRight
 {
-  NYPLReaderReadiumView *rv = [[NYPLReaderSettings sharedSettings] currentReaderReadiumView];
+  NYPLReaderReadiumView *rv = self.rendererView;
   if (rv.isPageTurning) {
     return;
   } else {

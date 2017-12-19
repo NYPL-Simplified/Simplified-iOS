@@ -6,10 +6,17 @@
 @protocol NYPLReaderTOCViewControllerDelegate
 
 - (void)TOCViewController:(NYPLReaderTOCViewController *)controller
-didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *)opaqueLocation;
+  didSelectOpaqueLocation:(NYPLReaderRendererOpaqueLocation *)opaqueLocation;
 
 - (void)TOCViewController:(NYPLReaderTOCViewController *)controller
-didSelectBookmark:(NYPLReaderBookmark *)bookmark;
+        didSelectBookmark:(NYPLReaderBookmark *)bookmark;
+
+- (void)TOCViewController:(NYPLReaderTOCViewController *)controller
+        didDeleteBookmark:(NYPLReaderBookmark *)bookmark;
+
+- (void)TOCViewController:(NYPLReaderTOCViewController *)controller
+didRequestSyncBookmarksWithCompletion:
+  (void(^)(BOOL success, NSArray<NYPLReaderBookmark *> *bookmarks))completion;
 
 @end
 
