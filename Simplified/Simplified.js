@@ -45,9 +45,7 @@ function Simplified() {
   };
 
   // Called almost whenever the user lifts a finger that was previously placed
-  // within the webview. We say "almost" because the shuffling of views that the
-  // native layer does not handle the swipe transitions sometimes results in
-  // `ontuochend` events not being generated at the appropriate times.
+  // within the webview.
   var handleTouchEnd = function(event) {
 
     // If the user just lifted up more than one finger...
