@@ -110,6 +110,24 @@ function Simplified() {
       event.preventDefault();
 
       return;
+    } else {
+      var slope = (touch.screenY - startY) / (touch.screenX - startX);
+      // If the user swiped horizontally...
+      if(Math.abs(slope) <= 0.5) {
+        // ... we consider it a swipe-to-turn gesture.
+        if(relativeDistanceX > 0) {
+          window.location = "simplified:gesture-left";
+        } else {
+          window.location = "simplified:gesture-right";
+        }
+
+        // Since we handled the event, we stop the webview from applying its
+        // default behavior.
+        event.stopPropagation();
+        event.preventDefault();
+
+        return;
+      }
     }
   };
 
