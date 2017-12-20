@@ -5,8 +5,8 @@ function Simplified() {
   var TRACKING_IS_ACTIVE = 1;
   var TRACKING_HAS_BEEN_CANCELLED_DUE_TO_MULTITOUCH = 2;
 
-  // Stores whether or not we're still considering the current set of touches
-  // as a potential tap.
+  // Stores whether or not we're still considering the current set of touches as
+  // a potential tap.
   var tracking = TRACKING_IS_WAITING_FOR_TOUCH;
 
   // The starting location of a tap.
@@ -16,15 +16,15 @@ function Simplified() {
   // Called whenever the user puts a finger down anywhere within the webview.
   var handleTouchStart = function(event) {
 
-    // We only want to detect taps made with a single finger. As such, if
-    // we ever have more than one touch active at a time, we make a note so
-    // that `handleTouchEnd` will not do anything later on.
+    // We only want to detect taps made with a single finger. As such, if we
+    // ever have more than one touch active at a time, we make a note so that
+    // `handleTouchEnd` will not do anything later on.
     if (event.touches.length > 1) {
       tracking = TRACKING_HAS_BEEN_CANCELLED_DUE_TO_MULTITOUCH;
     }
 
-    // The user had more than one finger down during the current gesture so
-    // we do nothing.
+    // The user had more than one finger down during the current gesture so we
+    // do nothing.
     if (tracking === TRACKING_HAS_BEEN_CANCELLED_DUE_TO_MULTITOUCH) {
       return;
     }
@@ -121,8 +121,9 @@ function Simplified() {
   document.documentElement.style.webkitTouchCallout = "none";
   document.documentElement.style.webkitUserSelect = "none";
 
-  // This should be called by the host whenever the page changes. This is because a change in the
-  // page can mean a change in the iframe and thus requires resetting properties.
+  // This should be called by the host whenever the page changes. This is
+  // because a change in the page can mean a change in the iframe and thus
+  // requires resetting properties.
   this.pageDidChange = function() {
 
     var iframe = window.frames["epubContentIframe"];
