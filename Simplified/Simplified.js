@@ -59,12 +59,6 @@ function Simplified() {
 
     var touch = event.changedTouches[0];
 
-    // If the user tapped on a link...
-    if(touch.target.nodeName.toUpperCase() === "A") {
-      // ... let the webview apply its default behavior.
-      return;
-    }
-
     var maxScreenX = window.orientation === 0 || window.orientation == 180
       ? screen.width
       : screen.height;
@@ -74,6 +68,13 @@ function Simplified() {
     // If a touch began and ended in roughly the same place...
     if(Math.abs(relativeDistanceX) < 0.1) {
       // ... we consider it a tap (as opposed to a swipe) and handle it as such.
+
+      // If the user tapped on a link...
+      if(touch.target.nodeName.toUpperCase() === "A") {
+        // ... let the webview apply its default behavior.
+        return;
+      }
+
       var position = touch.screenX / maxScreenX;
       if(position <= 0.25) {
         window.location = "simplified:gesture-left";
