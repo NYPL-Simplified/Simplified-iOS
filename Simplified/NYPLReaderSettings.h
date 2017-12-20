@@ -63,7 +63,6 @@ BOOL NYPLReaderSettingsIncreasedFontSize(NYPLReaderSettingsFontSize input,
 @property (nonatomic) NYPLReaderSettingsFontSize fontSize;
 @property (nonatomic) NYPLReaderSettingsMediaOverlaysEnableClick mediaOverlaysEnableClick;
 @property (nonatomic, readonly) UIColor *foregroundColor;
-@property (nonatomic, weak) id currentReaderReadiumView;
 
 - (void) toggleMediaOverlayPlayback;
 

@@ -175,8 +175,6 @@ static void generateTOCElements(NSArray *const navigationElements,
   
   self.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
   
-  [NYPLReaderSettings sharedSettings].currentReaderReadiumView = self;
-  
   self.javaScriptIsRunning = NO;
   self.javaScriptHandlerQueue = [NSMutableArray array];
   self.javaScriptStringQueue = [NSMutableArray array];
@@ -345,43 +343,6 @@ static void generateTOCElements(NSArray *const navigationElements,
   [self sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.openPageRight()"];
 }
 
-- (BOOL) touchIntersectsLink:(UITouch *)touch
-{
-  // Adapted from http://stackoverflow.com/questions/7216356/iphone-tapgesture-on-uiwebview-conflicts-with-the-link-clicking
-  
-  __block BOOL retVal = NO;
-  
-  //Check if a link was clicked
-  NSString *js = @"simplified.getSemicolonSeparatedLinkRects()";
-  
-  dispatch_semaphore_t sephamore = dispatch_semaphore_create(0);
-  
-  __weak NYPLReaderReadiumView *const weakSelf = self;
-  
-  [self
-   sequentiallyEvaluateJavaScript:js
-   withCompletionHandler:^(id _Nullable result, __unused NSError * _Nullable error) {
-     NSArray *linkArray = [result componentsSeparatedByString:@";"];
-     CGPoint touchPoint = [touch locationInView:weakSelf.webView];
-     for ( NSString *linkRectStr in linkArray ) {
-       CGRect rect = CGRectFromString(linkRectStr);
-       if ( CGRectContainsPoint( rect, touchPoint ) ) {
-         retVal = YES;
-         break;
-       }
-     }
-     dispatch_semaphore_signal(sephamore);
-   }];
-  
-  while(dispatch_semaphore_wait(sephamore, DISPATCH_TIME_NOW)) {
-    [[NSRunLoop currentRunLoop]
-     runMode:NSDefaultRunLoopMode
-     beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-  }
-  
-  return retVal;
-}
-
 #pragma mark NSObject
 
 - (void)dealloc
@@ -434,9 +395,17 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NSURLRequest *const request = navigationAction.request;
   
   if([request.URL.scheme isEqualToString:@"simplified"]) {
-//    NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
-//    NSString *const function = components[0];
-    NYPLLOG(@"Ignoring unknown simplified function.");
+    NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
+    NSString *const function = components[0];
+    if([function isEqualToString:@"gesture-left"]) {
+      [self sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.openPageLeft()"];
+    } else if([function isEqualToString:@"gesture-right"]) {
+      [self sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.openPageRight()"];
+    } else if([function isEqualToString:@"gesture-center"]) {
+      [self.delegate renderer:self didReceiveGesture:NYPLReaderRendererGestureToggleUserInterface];
+    } else {
+      NYPLLOG(@"Ignoring unknown simplified function.");
+    }
     decisionHandler(WKNavigationActionPolicyCancel);
     return;
   }
@@ -727,7 +696,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   self.isPageTurning = NO;
   
   // Readium needs a moment...
-  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
     [self
      sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
      withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
