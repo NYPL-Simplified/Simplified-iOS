@@ -127,6 +127,7 @@ function Simplified() {
 
     var iframe = window.frames["epubContentIframe"];
     if (!iframe) {
+      // This method was called too early, so do nothing.
       return;
     }
 
