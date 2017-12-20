@@ -34,12 +34,6 @@ function Simplified() {
 
     var touch = event.changedTouches[0];
 
-    // If the user tapped a link...
-    if(touch.target.nodeName.toUpperCase() === "A") {
-      // ... let the webview handle it normally.
-      return;
-    }
-
     startX = touch.screenX;
     startY = touch.screenY;
   };
@@ -48,31 +42,19 @@ function Simplified() {
   // within the webview.
   var handleTouchEnd = function(event) {
 
-    // If the user just lifted up more than one finger...
-    if (event.changedTouches.length > 1) {
-      // ... we do not want to interpret it as the end of a tap because all taps
-      // should involve only a single finger.
+    // If tracking was aborted due to entering a multitouch state...
+    if (tracking !== TRACKING_IS_ACTIVE) {
+      // ... then if no fingers are on the screen...
+      if(event.touches.length === 0) {
+        // ... reset the tracking state.
+        tracking = TRACKING_IS_WAITING_FOR_TOUCH;
+      }
+
+      // Stop here because of having been in a multitouch state.
       return;
     }
 
-    // If the user still has any fingers on the screen...
-    if (event.touches.length !== 0) {
-      // FIXME: Normally we would want to bail out here, but we do not reliably get
-      // `ontouchend` events at the moment because of how swiping is handled in the
-      // native layer of the application.
-      //
-      // return
-    }
-
-    // If tracking was previosuly aborted due to entering a multitouch state...
-    if (tracking !== TRACKING_IS_ACTIVE) {
-      // FIXME: We cannot bail out here as we'd like to for the same reason
-      // mentioned above.
-      ///
-      // tracking = TRACKING_IS_WAITING_FOR_TOUCH;
-      // return
-    }
-
+    // This is the end of a single-finger gesture so reset tracking.
     tracking = TRACKING_IS_WAITING_FOR_TOUCH;
 
     var touch = event.changedTouches[0];
