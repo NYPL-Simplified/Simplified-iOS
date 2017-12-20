@@ -133,14 +133,10 @@ function Simplified() {
     }
 
     // Remove existing handlers, if any.
-    try {
-      iframe.removeEventListener("touchstart", handleTouchStart);
-      iframe.removeEventListener("touchend", handleTouchEnd);
-    } catch (e) {
-      // Do nothing.
-    }
+    iframe.removeEventListener("touchstart", handleTouchStart);
+    iframe.removeEventListener("touchend", handleTouchEnd);
 
-    // Handles gestures for the inner content.
+    // Handle gestures for the inner content.
     iframe.addEventListener("touchstart", handleTouchStart, false);
     iframe.addEventListener("touchend", handleTouchEnd, false);
 
