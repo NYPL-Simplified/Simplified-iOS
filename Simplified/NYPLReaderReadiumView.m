@@ -603,9 +603,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
   NYPLBookLocation *location = [registry locationForIdentifier:self.book.identifier];
-  NSDictionary *const locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
-  NSString *idref = locationDictionary[@"idref"];
-  return self.bookMapDictionary[idref][@"tocElementTitle"];
+  if (location.locationString) {
+    NSDictionary *const locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
+    NSString *idref = locationDictionary[@"idref"];
+    return self.bookMapDictionary[idref][@"tocElementTitle"];
+  } else {
+    return nil;
+  }
 }
 
 - (void)addBookmark
