@@ -69,16 +69,13 @@
 - (void)openBook:(NYPLBook *)book
 {
   [NYPLCirculationAnalytics postEvent:@"open_book" withBook:book];
-  [[NYPLRootTabBarController sharedController]
-   pushViewController:[[NYPLReaderViewController alloc]
-                       initWithBookIdentifier:book.identifier]
-   animated:YES];
-  if ([NYPLAnnotations accountSatisfiesSyncConditions]) {
-    [NYPLAnnotations requestServerSyncSettingWithUserAlert:^(BOOL enableSync) {
+  [[NYPLRootTabBarController sharedController] pushViewController:[[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier] animated:YES];
+  [NYPLAnnotations requestServerSyncSettingWithUserAlert:^(BOOL enableSync) {
+    if (enableSync == YES) {
       Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
       currentAccount.syncPermissionGranted = enableSync;
-    }];
-  }
+    }
+  }];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate

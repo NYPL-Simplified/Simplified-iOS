@@ -69,6 +69,7 @@ class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSourc
       self.dismiss(animated: true, completion: nil)
       if (success) {
         self.account.syncPermissionGranted = false;
+        NYPLSettings.shared().userHasSeenFirstTimeSyncMessage = false;
         self.navigationController?.popViewController(animated: true)
       }
     })

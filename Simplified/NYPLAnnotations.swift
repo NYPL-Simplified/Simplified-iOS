@@ -11,14 +11,20 @@ final class NYPLAnnotations: NSObject {
   class func requestServerSyncSettingWithUserAlert(
     _ completion: @escaping (_ enableSync: Bool) -> ()) {
     
-    if !accountSatisfiesSyncConditions() {
-      Log.debug(#file, "Account does not satisfy conditions for sync request.")
+    if !syncIsPossible() {
+      Log.debug(#file, "Account does not satisfy conditions for sync setting request.")
+      return
+    }
+
+    let settings = NYPLSettings.shared()
+
+    if (settings?.userHasSeenFirstTimeSyncMessage == true &&
+        AccountsManager.shared.currentAccount.syncPermissionGranted == false) {
+      completion(false)
       return
     }
 
     self.permissionUrlRequest { (initialized, syncIsPermitted) in
-
-      let settings = NYPLSettings.shared()
 
       if (initialized && syncIsPermitted) {
         completion(true)
@@ -181,15 +187,14 @@ final class NYPLAnnotations: NSObject {
 
   class func syncReadingPosition(ofBook bookID: String?, toURL url:URL?,
                                  completionHandler: @escaping (_ responseObject: [String:String]?) -> ()) {
-    
-    guard let url = url, let bookID = bookID else {
-      Log.error(#file, "Required parameters are nil.")
+
+    if !syncIsPossibleAndPermitted() {
+      Log.debug(#file, "Account does not support sync or sync is disabled.")
       return
     }
-    
-    if (NYPLAccount.shared().hasBarcodeAndPIN() == false) ||
-      (AccountsManager.shared.currentAccount.supportsSimplyESync == false) {
-      Log.debug(#file, "Not signed in or acct does not support it.")
+
+    guard let url = url, let bookID = bookID else {
+      Log.error(#file, "Required parameters are nil.")
       return
     }
 
@@ -256,8 +261,8 @@ final class NYPLAnnotations: NSObject {
   
   class func postReadingPosition(forBook bookID: String, annotationsURL:URL?, cfi: String) {
 
-    if !accountSatisfiesSyncConditions() {
-      Log.debug(#file, "Account does not support sync.")
+    if !syncIsPossibleAndPermitted() {
+      Log.debug(#file, "Account does not support sync or sync is disabled.")
       return
     }
     // If no specific URL is provided, post to annotation URL provided by OPDS Main Feed.
@@ -363,18 +368,17 @@ final class NYPLAnnotations: NSObject {
   // MARK: - Bookmarks
   
   class func getServerBookmarks(forBook bookID:String?, atURL annotationURL:URL?, completionHandler: @escaping (_ bookmarks: [NYPLReaderBookmark]) -> ()) {
-    
+
+    if !syncIsPossibleAndPermitted() {
+      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      return
+    }
+
     guard let bookID = bookID, let annotationURL = annotationURL else {
       Log.error(#file, "Required parameter was nil.")
       return
     }
-    
-    if !NYPLAccount.shared().hasBarcodeAndPIN() ||
-      !AccountsManager.shared.currentAccount.supportsSimplyESync {
-      Log.debug(#file, "Account does not support sync.")
-      return
-    }
-    
+
     var bookmarks = [NYPLReaderBookmark]()
 
     var request = URLRequest.init(url: annotationURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
@@ -494,8 +498,13 @@ final class NYPLAnnotations: NSObject {
   }
 
   class func deleteBookmarks(_ bookmarks: [NYPLReaderBookmark],
-                             completionHandler: @escaping ()->())
-  {
+                             completionHandler: @escaping ()->()) {
+
+    if !syncIsPossibleAndPermitted() {
+      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      return
+    }
+
     let uploadGroup = DispatchGroup()
 
     for localBookmark in bookmarks {
@@ -518,11 +527,19 @@ final class NYPLAnnotations: NSObject {
 
   class func deleteBookmark(annotationId: String,
                             completionHandler: @escaping (_ success: Bool) -> ()) {
+
+    if !syncIsPossibleAndPermitted() {
+      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      completionHandler(false)
+      return
+    }
+
     guard let url = URL(string: annotationId) else {
       Log.error(#file, "Invalid URL from Annotation ID")
       completionHandler(false)
       return
     }
+
     var request = URLRequest(url: url)
     request.httpMethod = "DELETE"
     setDefaultAnnotationHeaders(forRequest: &request)
@@ -548,8 +565,13 @@ final class NYPLAnnotations: NSObject {
   // If bookmark is missing an annotationID, assume it still needs to be uploaded.
   class func uploadLocalBookmarks(_ bookmarks: [NYPLReaderBookmark],
                                   forBook bookID: String,
-                                  completion: @escaping ([NYPLReaderBookmark], [NYPLReaderBookmark])->())
-  {
+                                  completion: @escaping ([NYPLReaderBookmark], [NYPLReaderBookmark])->()) {
+
+    if !syncIsPossibleAndPermitted() {
+      Log.debug(#file, "Account does not support sync or sync is disabled.")
+      return
+    }
+
     Log.debug(#file, "Begin task of uploading local bookmarks.")
     let uploadGroup = DispatchGroup()
     var bookmarksFailedToUpdate = [NYPLReaderBookmark]()
@@ -582,8 +604,8 @@ final class NYPLAnnotations: NSObject {
                           bookmark: NYPLReaderBookmark,
                           completionHandler: @escaping (_ serverID: String?) -> ())
   {
-    if !accountSatisfiesSyncConditions() {
-      Log.debug(#file, "Account does not support sync.")
+    if !syncIsPossibleAndPermitted() {
+      Log.debug(#file, "Account does not support sync or sync is disabled.")
       completionHandler(nil)
       return
     }
@@ -621,9 +643,14 @@ final class NYPLAnnotations: NSObject {
 
   // MARK: -
   
-  class func accountSatisfiesSyncConditions() -> Bool {
+  class func syncIsPossible() -> Bool {
     let acct = AccountsManager.shared.currentAccount
     return NYPLAccount.shared().hasBarcodeAndPIN() && acct.supportsSimplyESync
+  }
+
+  class func syncIsPossibleAndPermitted() -> Bool {
+    let acct = AccountsManager.shared.currentAccount
+    return syncIsPossible() && acct.syncPermissionGranted
   }
 
   class func setDefaultAnnotationHeaders(forRequest request: inout URLRequest) {
