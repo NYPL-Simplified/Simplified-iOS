@@ -20,7 +20,7 @@ PODS:
   - AFNetworking/UIKit (2.6.3):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - Bugsnag (5.13.2)
+  - Bugsnag (5.14.2)
   - HelpStack (1.1.2):
     - AFNetworking (~> 2.0)
     - HelpStack/Core (= 1.1.2)
@@ -47,12 +47,12 @@ PODS:
   - SQLite.swift (0.11.3):
     - SQLite.swift/standard (= 0.11.3)
   - SQLite.swift/standard (0.11.3)
-  - ZXingObjC (3.2.1):
-    - ZXingObjC/All (= 3.2.1)
-  - ZXingObjC/All (3.2.1)
+  - ZXingObjC (3.2.2):
+    - ZXingObjC/All (= 3.2.2)
+  - ZXingObjC/All (3.2.2)
 
 DEPENDENCIES:
-  - Bugsnag (~> 5.13.1)
+  - Bugsnag (~> 5.14.2)
   - HelpStack (from `https://github.com/NYPL-Simplified/helpstack-ios`)
   - NYPLCardCreator (from `https://github.com/NYPL-Simplified/CardCreator-iOS.git`)
   - SQLite.swift (from `https://github.com/NYPL-Simplified/SQLite.swift`, branch `nypl-swift4-ios8-target`)
@@ -80,13 +80,13 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
-  Bugsnag: c70c32f69a756a46b49acbb47a3998450636493a
+  Bugsnag: a2cd790d0281ddda6083c1a7b9b3fe89d2bdc032
   HelpStack: a9067738597ef81835d84ac8bb75ee346e34f000
   NYPLCardCreator: e0f5034902008b4c8cdfb5edbffa2a51ec0b261d
   PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
   SQLite.swift: 0cb8585c21684b2290ec7792b3ca8089f68bdd29
-  ZXingObjC: bbf7b8f0cf8933fdd33eb4f9f46e22308552869b
+  ZXingObjC: 2c95a0dc52daac69b23ec78fad8fa2fec05f8981
 
-PODFILE CHECKSUM: 40dfa0fcd93208f7c20331fbb959cb5b78627d92
+PODFILE CHECKSUM: 2e6d2a153ea0236f927d8142eb1a1dd8a40e3dbd
 
 COCOAPODS: 1.3.1
