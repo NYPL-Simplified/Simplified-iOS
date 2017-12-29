@@ -26,8 +26,7 @@
                        bookMap:(NSDictionary *)map
                       delegate:(id)delegate;
 
-- (void)syncAllAnnotationsIfAllowedForAccount:(Account *)account
-                              withPackageDict:(NSDictionary *)packageDict;
+- (void)syncAllAnnotationsIfAllowedWithPackage:(NSDictionary *)packageDict;
 
 - (void)postLastReadPosition:(NSString *)location;
 

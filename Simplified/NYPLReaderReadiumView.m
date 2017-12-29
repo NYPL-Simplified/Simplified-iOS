@@ -447,8 +447,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
 - (void)syncAnnotationsWhenPermitted
 {
-  [self.syncManager syncAllAnnotationsIfAllowedForAccount:[[AccountsManager sharedInstance] currentAccount]
-                                          withPackageDict:self.package.dictionary];
+  [self.syncManager syncAllAnnotationsIfAllowedWithPackage:self.package.dictionary];
 }
 
 - (void)patronDecidedNavigation:(BOOL)toLatestPage withNavDict:(NSDictionary *)dict
