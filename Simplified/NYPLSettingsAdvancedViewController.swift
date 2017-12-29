@@ -90,6 +90,7 @@ class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSourc
     let cell = UITableViewCell()
     cell.textLabel?.text = NSLocalizedString("Delete Server Data", comment:"")
     cell.textLabel?.font = UIFont.customFont(forTextStyle: .body)
+    cell.textLabel?.textColor = .red
     return cell
   }
   

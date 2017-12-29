@@ -328,6 +328,7 @@ final class NYPLAnnotations: NSObject {
           self.addToOfflineQueue(bookID, url, parameters)
         }
         completionHandler(false, nil)
+        return
       }
       guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
         Log.error(#file, "No response received from server")
@@ -505,21 +506,21 @@ final class NYPLAnnotations: NSObject {
       return
     }
 
-    let uploadGroup = DispatchGroup()
+    let deleteGroup = DispatchGroup()
 
     for localBookmark in bookmarks {
       if let annotationID = localBookmark.annotationId {
-        uploadGroup.enter()
+        deleteGroup.enter()
         deleteBookmark(annotationId: annotationID, completionHandler: { success in
           if !success {
             Log.error(#file, "Bookmark not deleted from server. Moving on.")
           }
-          uploadGroup.leave()
+          deleteGroup.leave()
         })
       }
     }
 
-    uploadGroup.notify(queue: DispatchQueue.main) {
+    deleteGroup.notify(queue: DispatchQueue.main) {
       Log.debug(#file, "Finished attempt to delete bookmarks.")
       completionHandler()
     }
@@ -562,7 +563,8 @@ final class NYPLAnnotations: NSObject {
   }
 
 
-  // If bookmark is missing an annotationID, assume it still needs to be uploaded.
+  // Method is called when the SyncManager is syncing bookmarks
+  // If an existing local bookmark is missing an annotationID, assume it still needs to be uploaded.
   class func uploadLocalBookmarks(_ bookmarks: [NYPLReaderBookmark],
                                   forBook bookID: String,
                                   completion: @escaping ([NYPLReaderBookmark], [NYPLReaderBookmark])->()) {
