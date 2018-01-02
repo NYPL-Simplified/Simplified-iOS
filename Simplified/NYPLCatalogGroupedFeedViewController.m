@@ -300,14 +300,15 @@ viewForHeaderInSection:(NSInteger const)section
               viewControllerForLocation:(CGPoint)location
 {
   NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
-  NYPLCatalogLaneCell *cell = (NYPLCatalogLaneCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-  if (!cell) {
+  UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+  if (!cell || ![cell isKindOfClass:[NYPLCatalogLaneCell class]]) {
     return nil;
   }
   UIViewController *vc = [[UIViewController alloc] init];
-  vc.view.tag = cell.laneIndex;
+  NYPLCatalogLaneCell *laneCell = (NYPLCatalogLaneCell *) cell;
+  vc.view.tag = laneCell.laneIndex;
   
-  for (UIButton *button in cell.buttons) {
+  for (UIButton *button in laneCell.buttons) {
     CGPoint referencePoint = [[button superview] convertPoint:location fromView:self.tableView];
     if (CGRectContainsPoint(button.frame, referencePoint)) {
       UIImageView *imgView = [[UIImageView alloc] initWithImage:button.imageView.image];

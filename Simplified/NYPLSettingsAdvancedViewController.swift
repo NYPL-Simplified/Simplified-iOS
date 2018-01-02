@@ -69,6 +69,7 @@ class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSourc
       self.dismiss(animated: true, completion: nil)
       if (success) {
         self.account.syncPermissionGranted = false;
+        NYPLSettings.shared().userHasSeenFirstTimeSyncMessage = false;
         self.navigationController?.popViewController(animated: true)
       }
     })
@@ -89,6 +90,7 @@ class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSourc
     let cell = UITableViewCell()
     cell.textLabel?.text = NSLocalizedString("Delete Server Data", comment:"")
     cell.textLabel?.font = UIFont.customFont(forTextStyle: .body)
+    cell.textLabel?.textColor = .red
     return cell
   }
   

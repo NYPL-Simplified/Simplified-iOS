@@ -59,10 +59,9 @@ const double RequestTimeInterval = 30;
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)syncAllAnnotationsIfAllowedForAccount:(Account *)account
-                              withPackageDict:(NSDictionary *)packageDict
+- (void)syncAllAnnotationsIfAllowedWithPackage:(NSDictionary *)packageDict
 {
-  if (!account.syncPermissionGranted) {
+  if (![NYPLAnnotations syncIsPossibleAndPermitted]) {
     return;
   }
 

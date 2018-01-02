@@ -61,9 +61,11 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       }
       break;
     case 1:
-      self.refreshControl = [[UIRefreshControl alloc] init];
-      [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
-      [self.tableView addSubview:self.refreshControl];
+      if ([NYPLAnnotations syncIsPossibleAndPermitted]) {
+        self.refreshControl = [[UIRefreshControl alloc] init];
+        [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
+        [self.tableView addSubview:self.refreshControl];
+      }
       break;
     default:
       break;

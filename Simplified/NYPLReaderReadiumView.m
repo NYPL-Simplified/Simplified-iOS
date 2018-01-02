@@ -447,8 +447,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
 - (void)syncAnnotationsWhenPermitted
 {
-  [self.syncManager syncAllAnnotationsIfAllowedForAccount:[[AccountsManager sharedInstance] currentAccount]
-                                          withPackageDict:self.package.dictionary];
+  [self.syncManager syncAllAnnotationsIfAllowedWithPackage:self.package.dictionary];
 }
 
 - (void)patronDecidedNavigation:(BOOL)toLatestPage withNavDict:(NSDictionary *)dict
@@ -603,8 +602,9 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
   NYPLBookLocation *location = [registry locationForIdentifier:self.book.identifier];
-  if (location.locationString) {
-    NSDictionary *const locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
+  NSData *data = [location.locationString dataUsingEncoding:NSUTF8StringEncoding];
+  if (data) {
+    NSDictionary *const locationDictionary = NYPLJSONObjectFromData(data);
     NSString *idref = locationDictionary[@"idref"];
     return self.bookMapDictionary[idref][@"tocElementTitle"];
   } else {
@@ -641,9 +641,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   if (bookmark) {
     [self.delegate updateBookmarkIcon:YES];
     [self.delegate updateCurrentBookmark:bookmark];
+    [self.syncManager addBookmark:bookmark withCFI:location.locationString forBook:self.book.identifier];
+  } else {
+    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"Bookmarking Error" singleMessage:@"A bookmark could not be created on the current page."];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+    [alert addAction:action];
+    [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
   }
-  
-  [self.syncManager addBookmark:bookmark withCFI:location.locationString forBook:self.book.identifier];
 }
 
 - (void)deleteBookmark:(NYPLReaderBookmark*)bookmark

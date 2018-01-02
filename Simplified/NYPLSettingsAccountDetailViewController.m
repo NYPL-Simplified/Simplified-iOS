@@ -202,6 +202,7 @@ CGFloat const verticalMarginPadding = 2.0;
   [self setupTableData];
   
   self.syncSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+  [self checkSyncPermissionForCurrentPatron];
 }
 
 - (void)setupTableData
@@ -231,7 +232,6 @@ CGFloat const verticalMarginPadding = 2.0;
   if ([self syncButtonShouldBeVisible]) {
     [section1 addObject:@(CellKindSyncButton)];
     [section2 addObject:@(CellKindAdvancedSettings)];
-    [self checkSyncPermissionForCurrentPatron];
   }
   
   if ([self registrationIsPossible]) {
@@ -599,8 +599,7 @@ CGFloat const verticalMarginPadding = 2.0;
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
-      [self.selectedNYPLAccount setBarcode:self.usernameTextField.text
-                                                           PIN:self.PINTextField.text];
+      [self.selectedNYPLAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
 
       if(self.selectedAccountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
         void (^handler)() = self.completionHandler;
@@ -1369,7 +1368,6 @@ replacementString:(NSString *)string
   [self.tableView reloadData];
 }
 
-
 - (void)PINShowHideSelected
 {
   if(self.PINTextField.text.length > 0 && self.PINTextField.secureTextEntry) {
@@ -1406,6 +1404,7 @@ replacementString:(NSString *)string
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     if(self.selectedNYPLAccount.hasBarcodeAndPIN) {
+      [self checkSyncPermissionForCurrentPatron];
       self.usernameTextField.text = self.selectedNYPLAccount.barcode;
       self.usernameTextField.enabled = NO;
       self.usernameTextField.textColor = [UIColor grayColor];
@@ -1566,8 +1565,8 @@ replacementString:(NSString *)string
 
 - (void)checkSyncPermissionForCurrentPatron
 {
-  if (self.permissionCheckIsInProgress) {
-    NYPLLOG(@"Skipping sync. Request already in progress.");
+  if (self.permissionCheckIsInProgress || !self.selectedAccount.supportsSimplyESync) {
+    NYPLLOG(@"Skipping sync setting check. Request already in progress or sync not supported.");
     return;
   }
 
@@ -1575,7 +1574,9 @@ replacementString:(NSString *)string
   self.syncSwitch.enabled = NO;
 
   [NYPLAnnotations requestServerSyncSettingWithUserAlert:^(BOOL enableSync) {
-    self.selectedAccount.syncPermissionGranted = enableSync;
+    if (enableSync == YES) {
+      self.selectedAccount.syncPermissionGranted = enableSync;
+    }
     self.syncSwitch.on = enableSync;
     self.syncSwitch.enabled = YES;
     self.permissionCheckIsInProgress = NO;

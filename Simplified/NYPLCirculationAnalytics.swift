@@ -25,7 +25,7 @@ final class NYPLCirculationAnalytics : NSObject {
           debugPrint(#file, "Analytics Upload: Success")
         }
       } else {
-        guard let error = error as? NSError else { return }
+        guard let error = error as NSError? else { return }
         if NetworkQueue.StatusCodes.contains(error.code) {
           self.addToOfflineAnalyticsQueue(event, url)
         }
