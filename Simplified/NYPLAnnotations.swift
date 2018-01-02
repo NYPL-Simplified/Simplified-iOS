@@ -8,11 +8,12 @@ final class NYPLAnnotations: NSObject {
   // If the user has never seen it before, show it.
   // If the user has seen it on one of their other devices, suppress it.
   // Opting in will attempt to enable on the server, with appropriate error handling.
-  class func requestServerSyncSettingWithUserAlert(
-    _ completion: @escaping (_ enableSync: Bool) -> ()) {
+  class func requestServerSyncStatus(forAccount account: NYPLAccount,
+                                     completion: @escaping (_ enableSync: Bool) -> ()) {
     
-    if !syncIsPossible() {
+    if !syncIsPossible(account) {
       Log.debug(#file, "Account does not satisfy conditions for sync setting request.")
+      completion(false)
       return
     }
 
@@ -645,14 +646,14 @@ final class NYPLAnnotations: NSObject {
 
   // MARK: -
   
-  class func syncIsPossible() -> Bool {
-    let acct = AccountsManager.shared.currentAccount
-    return NYPLAccount.shared().hasBarcodeAndPIN() && acct.supportsSimplyESync
+  class func syncIsPossible(_ account: NYPLAccount) -> Bool {
+    let library = AccountsManager.shared.currentAccount
+    return account.hasBarcodeAndPIN() && library.supportsSimplyESync
   }
 
   class func syncIsPossibleAndPermitted() -> Bool {
     let acct = AccountsManager.shared.currentAccount
-    return syncIsPossible() && acct.syncPermissionGranted
+    return syncIsPossible(NYPLAccount.shared()) && acct.syncPermissionGranted
   }
 
   class func setDefaultAnnotationHeaders(forRequest request: inout URLRequest) {

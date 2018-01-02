@@ -849,7 +849,11 @@ completionHandler:(void (^)())handler
          NYPLXML *loansXML = [NYPLXML XMLWithData:data];
          NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
 
-         [[NYPLAccount sharedAccount] setAuthorizationIdentifier:loansFeed.authorizationIdentifier];
+         if (loansFeed.authorizationIdentifier) {
+           [[NYPLAccount sharedAccount] setAuthorizationIdentifier:loansFeed.authorizationIdentifier];
+         } else {
+           NYPLLOG(@"Authorization ID (Barcode String) was nil.");
+         }
          if (loansFeed.licensor) {
            [[NYPLAccount sharedAccount] setLicensor:loansFeed.licensor];
          } else {

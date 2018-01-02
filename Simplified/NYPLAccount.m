@@ -222,7 +222,7 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
 - (void)setAuthorizationIdentifier:(NSString *)identifier
 {
   if(!(identifier)) {
-    NYPLLOG(@"Authorization ID (Barcode String) was nil.");
+    @throw NSInvalidArgumentException;
   }
   
   [[NYPLKeychain sharedKeychain] setObject:identifier forKey:authorizationIdentifierKey];

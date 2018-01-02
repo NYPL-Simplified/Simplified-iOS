@@ -448,10 +448,13 @@ CGFloat const verticalMarginPadding = 2.0;
      }
      else {
        NYPLLOG(@"***Successful DRM Deactivation***");
-       // DELETE deviceID to adobeDevicesLink
-       NSURL *deviceManager =  [NSURL URLWithString: [self.selectedNYPLAccount licensor][@"deviceManager"]];
-       if (deviceManager != nil) {
-         [NYPLDeviceManager deleteDevice:[self.selectedNYPLAccount deviceID] url:deviceManager];
+       // FIXME: NYPLDeviceManager should be updated once redesign of NYPLAccount is complete
+       // Until then, only use on currently active library account
+       if (self.selectedAccountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
+         NSURL *deviceManager =  [NSURL URLWithString: [self.selectedNYPLAccount licensor][@"deviceManager"]];
+         if (deviceManager != nil) {
+           [NYPLDeviceManager deleteDevice:[self.selectedNYPLAccount deviceID] url:deviceManager];
+         }
        }
      }
 
@@ -485,7 +488,11 @@ CGFloat const verticalMarginPadding = 2.0;
        NYPLXML *loansXML = [NYPLXML XMLWithData:data];
        NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
 
-       [[NYPLAccount sharedAccount:self.selectedAccountType] setAuthorizationIdentifier:loansFeed.authorizationIdentifier];
+       if (loansFeed.authorizationIdentifier) {
+         [[NYPLAccount sharedAccount:self.selectedAccountType] setAuthorizationIdentifier:loansFeed.authorizationIdentifier];
+       } else {
+         NYPLLOG(@"Authorization ID (Barcode String) was nil.");
+       }
        if (loansFeed.licensor) {
          [self.selectedNYPLAccount setLicensor:loansFeed.licensor];
        } else {
@@ -517,10 +524,13 @@ CGFloat const verticalMarginPadding = 2.0;
           NYPLLOG(@"***DRM Auth/Activation Completion***");
           
           if (success) {
-            // POST deviceID to adobeDevicesLink
-            NSURL *deviceManager = [NSURL URLWithString: [self.selectedNYPLAccount licensor][@"deviceManager"]];
-            if (deviceManager != nil) {
-              [NYPLDeviceManager postDevice:deviceID url:deviceManager];
+            // FIXME: NYPLDeviceManager should be updated once redesign of NYPLAccount is complete
+            // Until then, only use on currently active library account
+            if (self.selectedAccountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
+              NSURL *deviceManager = [NSURL URLWithString: [self.selectedNYPLAccount licensor][@"deviceManager"]];
+              if (deviceManager != nil) {
+                [NYPLDeviceManager postDevice:deviceID url:deviceManager];
+              }
             }
             
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -1574,7 +1584,7 @@ replacementString:(NSString *)string
   self.permissionCheckIsInProgress = YES;
   self.syncSwitch.enabled = NO;
 
-  [NYPLAnnotations requestServerSyncSettingWithUserAlert:^(BOOL enableSync) {
+  [NYPLAnnotations requestServerSyncStatusForAccount:self.selectedNYPLAccount completion:^(BOOL enableSync) {
     if (enableSync == YES) {
       self.selectedAccount.syncPermissionGranted = enableSync;
     }
@@ -1586,10 +1596,11 @@ replacementString:(NSString *)string
 
 - (BOOL)syncButtonShouldBeVisible
 {
+  //Only works on current active library account for now
   return ((self.selectedAccount.supportsSimplyESync) &&
           ([self.selectedAccount getLicenseURL:URLTypeAnnotations] &&
            [self.selectedNYPLAccount hasBarcodeAndPIN]) &&
-           [self.selectedNYPLAccount isEqual:[NYPLAccount sharedAccount]]); //only works on main acct for now
+           (self.selectedAccountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]));
 }
 
 - (void)didSelectCancel
