@@ -484,7 +484,8 @@ CGFloat const verticalMarginPadding = 2.0;
 
        NYPLXML *loansXML = [NYPLXML XMLWithData:data];
        NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
-       
+
+       [[NYPLAccount sharedAccount:self.selectedAccountType] setAuthorizationIdentifier:loansFeed.authorizationIdentifier];
        if (loansFeed.licensor) {
          [self.selectedNYPLAccount setLicensor:loansFeed.licensor];
        } else {

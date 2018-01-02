@@ -16,6 +16,7 @@ typedef NS_ENUM(NSInteger, NYPLOPDSFeedType) {
 @property (nonatomic, readonly) NYPLOPDSFeedType type;
 @property (nonatomic, readonly) NSDate *updated;
 @property (nonatomic, readonly) NSDictionary *licensor;
+@property (nonatomic, readonly) NSString *authorizationIdentifier;
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;

@@ -848,7 +848,8 @@ completionHandler:(void (^)())handler
 
          NYPLXML *loansXML = [NYPLXML XMLWithData:data];
          NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
-         
+
+         [[NYPLAccount sharedAccount] setAuthorizationIdentifier:loansFeed.authorizationIdentifier];
          if (loansFeed.licensor) {
            [[NYPLAccount sharedAccount] setLicensor:loansFeed.licensor];
          } else {
