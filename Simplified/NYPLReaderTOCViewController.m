@@ -263,9 +263,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (self.bookmarks.count == 0 || self.bookmarks == nil) {
         self.tableView.hidden = YES;
       }
-      self.refreshControl = [[UIRefreshControl alloc] init];
-      [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
-      [self.tableView addSubview:self.refreshControl];
+      if ([NYPLAnnotations syncIsPossibleAndPermitted]) {
+        self.refreshControl = [[UIRefreshControl alloc] init];
+        [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
+        [self.tableView addSubview:self.refreshControl];
+      }
       break;
     default:
       break;

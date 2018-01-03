@@ -240,15 +240,25 @@ const double RequestTimeInterval = 30;
      }
 
      // Sync: First upload any local bookmarks that have never been saved to the server.
-     // Then pull server bookmark list and filter out any that can be deleted.
+     // Then download the server's bookmark list and filter out any that can be deleted.
 
-     NSArray<NYPLReaderBookmark *> *localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID].mutableCopy;
+     NSArray<NYPLReaderBookmark *> *localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID];
      NYPLLOG_F(@"\nLocally Saved Bookmarks:\n\n%@", localBookmarks);
      
-     [NYPLAnnotations uploadLocalBookmarks:localBookmarks forBook:self.bookID completion:^(NSArray<NYPLReaderBookmark *> * _Nonnull updatedBookmarks, NSArray<NYPLReaderBookmark *> * _Nonnull localsNotUploaded) {
+     [NYPLAnnotations uploadLocalBookmarks:localBookmarks forBook:self.bookID completion:^(NSArray<NYPLReaderBookmark *> * _Nonnull bookmarksUploaded, NSArray<NYPLReaderBookmark *> * _Nonnull bookmarksFailedToUpload) {
 
-       NYPLLOG_F(@"\nUploaded Bookmarks:\n\n%@", updatedBookmarks);
-       NYPLLOG_F(@"\nBookmarks That Failed To Upload:\n\n%@", localsNotUploaded);
+       NYPLLOG_F(@"\nBookmarks First Time Uploaded:\n\n%@", bookmarksUploaded);
+       NYPLLOG_F(@"\nBookmarks Failed To Upload:\n\n%@", bookmarksFailedToUpload);
+
+       // Replace local bookmarks with server versions
+       for (NYPLReaderBookmark *localBKM in localBookmarks) {
+         for (NYPLReaderBookmark *uploadedBKM in bookmarksUploaded) {
+           if ([localBKM isEqual:uploadedBKM]) {
+             [[NYPLBookRegistry sharedRegistry] deleteBookmark:localBKM forIdentifier:self.bookID];
+             [[NYPLBookRegistry sharedRegistry] addBookmark:uploadedBKM forIdentifier:self.bookID];
+           }
+         }
+       }
 
        [NYPLAnnotations getServerBookmarksForBook:self.bookID atURL:self.annotationsURL completionHandler:^(NSArray<NYPLReaderBookmark *> * _Nonnull serverBookmarks) {
 
@@ -284,26 +294,26 @@ const double RequestTimeInterval = 30;
              [localBookmarksToDelete addObject:localBookmark];
            }
          }
-         NYPLLOG_F(@"\nLocal Bookmarks To Delete:\n\n%@", localBookmarksToDelete);
+         NYPLLOG_F(@"\nBookmarks To Delete From Registry:\n\n%@", localBookmarksToDelete);
 
          NSMutableArray<NYPLReaderBookmark *> *bookmarksToAdd = serverBookmarks.mutableCopy;
+         [bookmarksToAdd addObjectsFromArray:bookmarksFailedToUpload];
+
          for (NYPLReaderBookmark *serverMark in serverBookmarksToKeep) {
            for (NYPLReaderBookmark *localMark in localBookmarksToKeep) {
              if ([serverMark isEqual:localMark]) {
-               [bookmarksToAdd removeObject:serverMark];
+               [bookmarksToAdd removeObject:localMark];
              }
            }
          }
-         [bookmarksToAdd addObjectsFromArray:updatedBookmarks];
-         [bookmarksToAdd addObjectsFromArray:localsNotUploaded];
-         NYPLLOG_F(@"\nNew Bookmarks To Save Locally:\n\n%@", bookmarksToAdd);
+         NYPLLOG_F(@"\nBookmarks To Save To Registry:\n\n%@", bookmarksToAdd);
 
          for (NYPLReaderBookmark *bookmark in bookmarksToAdd) {
            [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.bookID];
          }
 
          if (serverBookmarksToDelete.count > 0) {
-           NYPLLOG_F(@"\nServer Bookmarks To Delete:\n\n%@", serverBookmarksToDelete);
+           NYPLLOG_F(@"\nBookmarks to Delete from the Server:\n\n%@", serverBookmarksToDelete);
            [NYPLAnnotations deleteBookmarks:serverBookmarksToDelete completionHandler:^{
              completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
            }];

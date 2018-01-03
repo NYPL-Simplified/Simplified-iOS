@@ -1596,7 +1596,7 @@ replacementString:(NSString *)string
 
 - (BOOL)syncButtonShouldBeVisible
 {
-  //Only works on current active library account for now
+  // Only supported for now on current active library account
   return ((self.selectedAccount.supportsSimplyESync) &&
           ([self.selectedAccount getLicenseURL:URLTypeAnnotations] &&
            [self.selectedNYPLAccount hasBarcodeAndPIN]) &&
