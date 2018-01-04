@@ -55,8 +55,9 @@ final class NYPLReaderBookmark: NSObject {
       let idref = dictionary["idref"] as? String,
       let location = dictionary["location"] as? String,
       let time = dictionary["time"] as? String {
-        let annotationID = dictionary["annotationId"] as? String
-        if (annotationID?.count == 0) {
+        if let annotationID = dictionary["annotationId"] as? String, !annotationID.isEmpty {
+          self.annotationId = annotationID
+        } else {
           self.annotationId = nil
         }
         self.contentCFI = contentCFI

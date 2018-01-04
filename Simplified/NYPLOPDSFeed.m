@@ -23,6 +23,7 @@
 @property (nonatomic) BOOL typeIsCached;
 @property (nonatomic) NSDate *updated;
 @property (nonatomic) NSMutableDictionary *licensor;
+@property (nonatomic) NSString *authorizationIdentifier;
 
 @end
 
@@ -169,11 +170,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     NYPLXML *patronXML = [feedXML firstChildWithName:@"patron"];
     if (patronXML && patronXML.attributes.allValues.count>0) {
       NSString *barcode = patronXML.attributes[@"simplified:authorizationIdentifier"];
-      
-      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-
-      [[NYPLAccount sharedAccount:currentAccount.id] setAuthorizationIdentifier:barcode];
-
+      self.authorizationIdentifier = barcode;
     }
   }
   

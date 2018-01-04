@@ -70,7 +70,7 @@
 {
   [NYPLCirculationAnalytics postEvent:@"open_book" withBook:book];
   [[NYPLRootTabBarController sharedController] pushViewController:[[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier] animated:YES];
-  [NYPLAnnotations requestServerSyncSettingWithUserAlert:^(BOOL enableSync) {
+  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLAccount sharedAccount] completion:^(BOOL enableSync) {
     if (enableSync == YES) {
       Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
       currentAccount.syncPermissionGranted = enableSync;
