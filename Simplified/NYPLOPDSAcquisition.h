@@ -1,6 +1,7 @@
 @import Foundation;
 
 @class NYPLOPDSIndirectAcquisition;
+@class NYPLXML;
 
 /// One of the six acquisition relations given in the OPDS specification.
 typedef NS_ENUM(NSInteger, NYPLOPDSAcquisitionRelation) {
@@ -14,12 +15,14 @@ typedef NS_ENUM(NSInteger, NYPLOPDSAcquisitionRelation) {
 
 /// @param string A string representing one of the six OPDS acqusition
 /// relations.
-/// @param success A pointer to a @c BOOL that will be set to @c YES if @c
-/// string is a valid relation, else one that will be set to @c NO.
-/// @return An @c NYPLOPDSAcquisitionRelation if and only if @c *success has
-/// been set to @c YES, else the result is undefined.
-NYPLOPDSAcquisitionRelation
-NYPLOPDSAcquisitionRelationWithString(NSString *_Nonnull string, BOOL *_Nonnull success);
+/// @param relationPointer A pointer to an @c NYPLOPDSAcquisitionRelation that
+/// will have been set to a valid relation if and only if the function returns
+/// @c YES.
+/// @return @c YES if the string was parsed successfully, else @c NO. In the
+/// event that @c NO is returned, @c *relationPointer is undefined.
+BOOL
+NYPLOPDSAcquisitionRelationWithString(NSString *_Nonnull string,
+                                      NYPLOPDSAcquisitionRelation *_Nonnull relationPointer);
 
 /// @param The @c NYPLOPDSAcquisitionRelation to convert to a string.
 /// @return The associated string.
@@ -49,6 +52,8 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation relation);
                                             type:(NSString *_Nonnull)type
                                          hrefURL:(NSURL *_Nonnull)hrefURL
                             indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *_Nonnull)indirectAcqusitions;
+
++ (_Nullable instancetype)acquisitionWithXML:(NYPLXML *_Nonnull)xml;
 
 - (_Nonnull instancetype)initWithRelation:(NYPLOPDSAcquisitionRelation)relation
                                      type:(NSString *_Nonnull)type

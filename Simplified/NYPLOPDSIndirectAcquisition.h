@@ -1,5 +1,7 @@
 @import Foundation;
 
+@class NYPLXML;
+
 @interface NYPLOPDSIndirectAcquisition : NSObject
 
 /// The type of the content indirectly obtainable.
@@ -13,6 +15,8 @@
 + (instancetype _Nonnull)
 indirectAcquisitionWithType:(NSString *_Nonnull)type
 indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *_Nonnull)indirectAcquisitions;
+
++ (instancetype _Nullable)indirectAcquisitionWithXML:(NYPLXML *_Nonnull)xml;
 
 - (instancetype _Nonnull)initWithType:(NSString *_Nonnull)type
                  indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *_Nonnull)indirectAcquisitions

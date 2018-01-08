@@ -1,5 +1,8 @@
 #import "NYPLOPDSAcquisition.h"
 
+#import "NYPLOPDSIndirectAcquisition.h"
+#import "NYPLXML.h"
+
 static NSString *const NYPLOPDSAcquisitionRelationGenericString =
   @"http://opds-spec.org/acquisition";
 
@@ -18,8 +21,9 @@ static NSString *const NYPLOPDSAcquisitionRelationSampleString =
 static NSString *const NYPLOPDSAcquisitionRelationSubscribeString =
   @"http://opds-spec.org/acquisition/subscribe";
 
-NYPLOPDSAcquisitionRelation
-NYPLOPDSAcquisitionRelationWithString(NSString *const _Nonnull string, BOOL *const _Nonnull success)
+BOOL
+NYPLOPDSAcquisitionRelationWithString(NSString *const _Nonnull string,
+                                      NYPLOPDSAcquisitionRelation *const _Nonnull relationPointer)
 {
   static NSDictionary<NSString *, NSNumber *> *lazyStringToRelationObjectDict = nil;
 
@@ -36,13 +40,12 @@ NYPLOPDSAcquisitionRelationWithString(NSString *const _Nonnull string, BOOL *con
 
   NSNumber *const relationObject = lazyStringToRelationObjectDict[string];
   if (!relationObject) {
-    *success = NO;
-    return (NYPLOPDSAcquisitionRelation) NSIntegerMax;
+    return NO;
   }
 
-  *success = YES;
+  *relationPointer = relationObject.integerValue;
 
-  return relationObject.integerValue;
+  return YES;
 }
 
 NSString *_Nonnull
@@ -85,6 +88,51 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)ind
                                    type:type
                                 hrefURL:hrefURL
                    indirectAcquisitions:indirectAcqusitions];
+}
+
++ (_Nullable instancetype)acquisitionWithXML:(NYPLXML *const _Nonnull)xml
+{
+  NSString *const relationString = [xml attributes][@"rel"];
+  if (!relationString) {
+    return nil;
+  }
+
+  NYPLOPDSAcquisitionRelation relation;
+  if (!NYPLOPDSAcquisitionRelationWithString(relationString, &relation)) {
+    return nil;
+  }
+
+  NSString *const type = [xml attributes][@"type"];
+  if (!type) {
+    return nil;
+  }
+
+  NSString *const hrefString = [xml attributes][@"href"];
+  if (!hrefString) {
+    return nil;
+  }
+
+  NSURL *const hrefURL = [NSURL URLWithString:hrefString];
+  if (!hrefURL) {
+    return nil;
+  }
+
+  NSMutableArray<NYPLOPDSIndirectAcquisition *> *const mutableIndirectAcquisitions = [NSMutableArray array];
+  for (NYPLXML *const indirectAcquisitionXML in [xml childrenWithName:@"indirectAcquisition"]) {
+    NYPLOPDSIndirectAcquisition *const indirectAcquisition =
+      [NYPLOPDSIndirectAcquisition indirectAcquisitionWithXML:indirectAcquisitionXML];
+
+    if (indirectAcquisition) {
+      [mutableIndirectAcquisitions addObject:indirectAcquisition];
+    } else {
+      NYPLLOG(@"Ignoring invalid indirect acquisition.");
+    }
+  }
+
+  return [self acquisitionWithRelation:relation
+                                  type:type
+                               hrefURL:hrefURL
+                  indirectAcquisitions:[mutableIndirectAcquisitions copy]];
 }
 
 - (_Nonnull instancetype)initWithRelation:(NYPLOPDSAcquisitionRelation const)relation
