@@ -1,3 +1,4 @@
+@class NYPLOPDSAcquisition;
 @class NYPLOPDSCategory;
 @class NYPLOPDSEntryGroupAttributes;
 @class NYPLOPDSEvent;
@@ -6,6 +7,7 @@
 
 @interface NYPLOPDSEntry : NSObject
 
+@property (nonatomic, readonly) NSArray<NYPLOPDSAcquisition *> *acquisitions;
 @property (nonatomic, readonly) NSString *alternativeHeadline; // nilable
 @property (nonatomic, readonly) NSArray *authorStrings;
 @property (nonatomic, readonly) NSArray<NYPLOPDSLink *> *authorLinks;

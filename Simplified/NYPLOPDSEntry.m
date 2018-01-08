@@ -1,4 +1,5 @@
 #import "NSDate+NYPLDateAdditions.h"
+#import "NYPLOPDSAcquisition.h"
 #import "NYPLOPDSCategory.h"
 #import "NYPLOPDSEntryGroupAttributes.h"
 #import "NYPLOPDSLink.h"
@@ -9,6 +10,7 @@
 
 @interface NYPLOPDSEntry ()
 
+@property (nonatomic) NSArray<NYPLOPDSAcquisition *> *acquisitions;
 @property (nonatomic) NSString *alternativeHeadline;
 @property (nonatomic) NSArray *authorStrings;
 @property (nonatomic) NSArray<NYPLOPDSLink *> *authorLinks;
@@ -89,23 +91,41 @@
   }
   
   {
-    NSMutableArray *const links = [NSMutableArray array];
+    NSMutableArray *const mutableLinks = [NSMutableArray array];
+    NSMutableArray<NYPLOPDSAcquisition *> *const mutableAcquisitions = [NSMutableArray array];
     
-    for(NYPLXML *const linkXML in [entryXML childrenWithName:@"link"]) {
+    for (NYPLXML *const linkXML in [entryXML childrenWithName:@"link"]) {
+
+      // Try parsing the link as an acquisition first to avoid creating an NYPLOPDSLink
+      // for no reason.
+      if ([[linkXML attributes][@"rel"] containsString:NYPLOPDSRelationAcquisition]) {
+        NYPLOPDSAcquisition *const acquisition = [NYPLOPDSAcquisition acquisitionWithXML:linkXML];
+        if (acquisition) {
+          [mutableAcquisitions addObject:acquisition];
+        } else {
+          NYPLLOG(@"Ignoring invalid acquisition.");
+        }
+
+        // TODO: We need to `continue` here and go onto the next `linkXML`, but doing so
+        // would break the rest of the app that expects acquisitions to show up the old
+        // way as a link. This will be revisited soon.
+      }
+
       NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
       if(!link) {
         NYPLLOG(@"Ignoring malformed 'link' element.");
         continue;
       }
+
       // FIXME: Total hack to avoid downloading PDF links.
       if([link.rel isEqualToString:NYPLOPDSRelationAcquisition]) {
         if([linkXML childrenWithName:@"indirectAcquisition"].count == 1
            && [((NYPLXML *)[linkXML childrenWithName:@"indirectAcquisition"][0]).attributes[@"type"]
                isEqualToString:@"application/epub+zip"])
         {
-          [links addObject:link];
+          [mutableLinks addObject:link];
         } else if ([linkXML.attributes[@"type"] isEqualToString:@"application/epub+zip"]) {
-          [links addObject:link];
+          [mutableLinks addObject:link];
         }
       } else if ([link.rel isEqualToString:@"http://www.w3.org/ns/oa#annotationService"]){
         self.annotations = link;
@@ -115,11 +135,12 @@
       } else if ([link.rel isEqualToString:@"related"]){
         self.relatedWorks = link;
       } else {
-        [links addObject:link];
+        [mutableLinks addObject:link];
       }
     }
-    
-    self.links = links;
+
+    self.acquisitions = [mutableAcquisitions copy];
+    self.links = [mutableLinks copy];
   }
   
   self.providerName = [entryXML firstChildWithName:@"distribution"].attributes[@"bibframe:ProviderName"];
