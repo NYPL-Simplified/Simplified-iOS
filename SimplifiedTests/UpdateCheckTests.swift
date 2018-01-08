@@ -1,5 +1,7 @@
 import XCTest
 
+@testable import SimplyE;
+
 class UpdateCheckTests: XCTestCase {
   
   override func setUp() {
@@ -17,7 +19,7 @@ class UpdateCheckTests: XCTestCase {
     
     UpdateCheck.performUpdateCheck(URL) { (result: UpdateCheck.Result) in
       switch result {
-      case .UpToDate:
+      case .upToDate:
         break
       default:
         XCTFail("Not up-to-date.")
@@ -35,7 +37,7 @@ class UpdateCheckTests: XCTestCase {
     
     UpdateCheck.performUpdateCheck(URL) { (result: UpdateCheck.Result) in
       switch result {
-      case .NeedsUpdate:
+      case .needsUpdate:
         break
       default:
         XCTFail("Does not need update.")
@@ -53,7 +55,7 @@ class UpdateCheckTests: XCTestCase {
     
     UpdateCheck.performUpdateCheck(URL) { (result: UpdateCheck.Result) in
       switch result {
-      case .Unknown:
+      case .unknown:
         break
       default:
         XCTFail("Is not unknown.")
@@ -71,7 +73,7 @@ class UpdateCheckTests: XCTestCase {
     
     UpdateCheck.performUpdateCheck(URL) { (result: UpdateCheck.Result) in
       switch result {
-      case .Unknown:
+      case .unknown:
         break
       default:
         XCTFail("Is not unknown.")
