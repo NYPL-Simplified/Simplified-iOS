@@ -292,6 +292,25 @@
  "authPasscodeAllowsLetters" : true
  },
  {
+ "id" : 28,
+ "pathComponent" : "28",
+ "name" : "Great River Regional Library",
+ "subtitle" : "Explore. Learn. Connect.",
+ "logo" : "LibraryLogoGreatRiver",
+ "needsAuth" : true,
+ "supportsSimplyESync" : false,
+ "supportsBarcodeScanner" : false,
+ "supportsBarcodeDisplay" : false,
+ "supportsCardCreator" : false,
+ "supportsReservations" : true,
+ "supportsHelpCenter" : false,
+ "catalogUrl" : "http://circ.minitex.net/GRRL/",
+ "mainColor" : "#660033",
+ "supportEmail" : "",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
+ },
+ {
  "id" : 37,
  "pathComponent" : "37",
  "name" : "Beaver Creek Public/School Library",
