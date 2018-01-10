@@ -1,4 +1,5 @@
 #import "NYPLConfiguration.h"
+#import "NYPLAccount.h"
 #import "NYPLAppDelegate.h"
 #import "NYPLSettings.h"
 
@@ -17,14 +18,33 @@
 
 + (void)initialize
 {
-  if([NYPLConfiguration bugsnagEnabled]) {
-    [Bugsnag startBugsnagWithApiKey:[APIKeys bugsnagID]];
+  [self configureCrashAnalytics];
+}
+
++ (void)configureCrashAnalytics
+{
+  if (!TARGET_OS_SIMULATOR) {
+
+    BugsnagConfiguration *config = [BugsnagConfiguration new];
+    config.apiKey = [APIKeys bugsnagID];
+
+    if (DEBUG) {
+      config.releaseStage = @"development";
+    } else if ([self releaseStageIsBeta]) {
+      config.releaseStage = @"beta";
+      [config setUser:[[NYPLAccount sharedAccount] barcode] withName:nil andEmail:nil];
+    } else {
+      config.releaseStage = @"production";
+    }
+
+    [Bugsnag startBugsnagWithConfiguration:config];
   }
 }
 
-+ (BOOL)bugsnagEnabled
++ (BOOL)releaseStageIsBeta
 {
-  return !(TARGET_OS_SIMULATOR || DEBUG);
+  NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
+  return ([[receiptURL path] rangeOfString:@"sandboxReceipt"].location != NSNotFound);
 }
 
 + (NSURL *)mainFeedURL
