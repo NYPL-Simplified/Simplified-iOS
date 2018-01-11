@@ -92,7 +92,7 @@ const double RequestTimeInterval = 30;
         self.syncStatus = NYPLReadPositionSyncStatusBusy;
         [NYPLAnnotations postReadingPositionForBook:self.bookID annotationsURL:nil cfi:location];
         [NSTimer scheduledTimerWithTimeInterval:RequestTimeInterval
-                                         target:self selector:@selector(timerFire) userInfo:nil repeats:NO];
+                                         target:self selector:@selector(syncAfterWaiting) userInfo:nil repeats:NO];
         break;
       }
       case NYPLReadPositionSyncStatusBusy: {
@@ -103,7 +103,7 @@ const double RequestTimeInterval = 30;
   }
 }
 
-- (void)timerFire
+- (void)syncAfterWaiting
 {
   @synchronized(self) {
     self.syncStatus = NYPLReadPositionSyncStatusIdle;

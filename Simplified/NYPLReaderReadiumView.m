@@ -719,11 +719,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
          [weakSelf.delegate updateBookmarkIcon:success];
          [weakSelf.delegate updateCurrentBookmark:bookmark];
        }];
-       
-       NYPLBookLocation *const location = [[NYPLBookLocation alloc]
-                                           initWithLocationString:locationJSON
-                                           renderer:renderer];
-       
+
        [weakSelf calculateProgressionWithDictionary:dictionary withHandler:^{
          [weakSelf.delegate
           renderer:weakSelf
@@ -732,14 +728,18 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
           pageCount:weakSelf.spineItemPageCount
           spineItemTitle:weakSelf.spineItemDetails[@"tocElementTitle"]];
        }];
-       
-       if(location) {
-         [[NYPLBookRegistry sharedRegistry]
-          setLocation:location
-          forIdentifier:weakSelf.book.identifier];
-       }
 
-       [weakSelf.syncManager postLastReadPosition:location.locationString];
+       NYPLBookLocation *const location = [[NYPLBookLocation alloc]
+                                           initWithLocationString:locationJSON
+                                           renderer:renderer];
+
+       [[NYPLBookRegistry sharedRegistry] setLocation:location forIdentifier:weakSelf.book.identifier];
+
+       if ([location.locationString containsString:@"null"]) {
+         NYPLLOG(@"Location CFI was unexpectedly null. Cancelling attempt to sync.");
+       } else {
+         [weakSelf.syncManager postLastReadPosition:location.locationString];
+       }
      }];
   });
 }
