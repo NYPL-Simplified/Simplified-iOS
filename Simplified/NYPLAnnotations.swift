@@ -499,8 +499,7 @@ final class NYPLAnnotations: NSObject {
     return nil
   }
 
-  class func deleteBookmarks(_ bookmarks: [NYPLReaderBookmark],
-                             completionHandler: @escaping ()->()) {
+  class func deleteBookmarks(_ bookmarks: [NYPLReaderBookmark]) {
 
     if !syncIsPossibleAndPermitted() {
       Log.debug(#file, "Account does not support sync or sync is disabled.")
@@ -523,7 +522,6 @@ final class NYPLAnnotations: NSObject {
 
     deleteGroup.notify(queue: DispatchQueue.main) {
       Log.debug(#file, "Finished attempt to delete bookmarks.")
-      completionHandler()
     }
   }
 

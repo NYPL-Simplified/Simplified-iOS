@@ -421,7 +421,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     } else if([function isEqualToString:@"media-overlay-status-changed"]) {
       NSDictionary *const dict = argument(request.URL);
       self.mediaOverlayIsPlaying = ((NSNumber *) dict[@"isPlaying"]).boolValue;
-      [self mediaOverlayStatusChangedWithDictionary:argument(request.URL)];
     } else if([function isEqualToString:@"settings-applied"]) {
       NSLog(@"");
       // Do nothing.
@@ -445,11 +444,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
 #pragma mark - ReadiumViewSyncManagerDelegate Methods
 
-- (void)syncAnnotationsWhenPermitted
-{
-  [self.syncManager syncAllAnnotationsIfAllowedWithPackage:self.package.dictionary];
-}
-
 - (void)patronDecidedNavigation:(BOOL)toLatestPage withNavDict:(NSDictionary *)dict
 {
   if (toLatestPage == YES) {
@@ -469,11 +463,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 }
 
 #pragma mark -
-
-- (void) mediaOverlayStatusChangedWithDictionary: (NSDictionary *) dictionary {
-  if (dictionary) {
-  }
-}
 
 - (void)readiumInitialize
 {
@@ -500,9 +489,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                                              annotationsURL:self.book.annotationsURL
                                                                     bookMap:self.bookMapDictionary
                                                                    delegate:self];
-      [self syncAnnotationsWhenPermitted];
+      [self.syncManager syncAllAnnotationsWithPackage:self.package.dictionary];
     });
-    
   });
   
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
@@ -572,6 +560,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
 - (void)checkForExistingBookmarkAtLocation:(NSString*)idref completionHandler:(void(^)(BOOL success, NYPLReaderBookmark *bookmark))completionHandler
 {
+
   completionHandler(NO, nil);   //Remove bookmark icon at beginning of page turn
   
   NSArray *bookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];

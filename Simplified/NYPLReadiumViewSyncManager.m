@@ -59,7 +59,7 @@ const double RequestTimeInterval = 30;
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)syncAllAnnotationsIfAllowedWithPackage:(NSDictionary *)packageDict
+- (void)syncAllAnnotationsWithPackage:(NSDictionary *)packageDict
 {
   if (![NYPLAnnotations syncIsPossibleAndPermitted]) {
     return;
@@ -76,12 +76,7 @@ const double RequestTimeInterval = 30;
                              toURL:self.annotationsURL
                        withPackage:dictionary];
 
-  [self syncBookmarksWithCompletion:^(BOOL success, NSArray<NYPLReaderBookmark *> *bookmarks) {
-    if ([self.delegate respondsToSelector:@selector(didCompleteBookmarkSync:withBookmarks:)]) {
-      [self.delegate didCompleteBookmarkSync:success withBookmarks:bookmarks];
-    }
-  }];
-
+  [self syncBookmarksWithCompletion:nil];
 }
 
 - (void)postLastReadPosition:(NSString *)location
@@ -235,7 +230,9 @@ const double RequestTimeInterval = 30;
 
      if (!reachable) {
        NYPLLOG(@"Error: host was not reachable for bookmark sync attempt.");
-       completion(NO, [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+       if (completion) {
+         completion(NO, [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+       }
        return;
      }
 
@@ -313,11 +310,11 @@ const double RequestTimeInterval = 30;
 
          if (serverBookmarksToDelete.count > 0) {
            NYPLLOG_F(@"\nBookmarks to Delete from the Server:\n\n%@", serverBookmarksToDelete);
-           [NYPLAnnotations deleteBookmarks:serverBookmarksToDelete completionHandler:^{
-             completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
-           }];
+           [NYPLAnnotations deleteBookmarks:serverBookmarksToDelete];
          } else {
-           completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+           if (completion) {
+             completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+           }
          }
        }];
      }];

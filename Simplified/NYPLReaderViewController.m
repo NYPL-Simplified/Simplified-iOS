@@ -272,9 +272,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   [self prepareBottomView];
   [self prepareHeaderFooterViews];
-
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncLastRead) name:UIApplicationWillEnterForegroundNotification object:nil];
-  
 }
 
 - (void)didReceiveMemoryWarning
@@ -448,11 +445,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self applyCurrentSettings];
   
   [super viewWillAppear:animated];
-}
-
-- (void)syncLastRead
-{
-  [self.rendererView syncAnnotationsWhenPermitted];
 }
 
 - (void)viewDidAppear:(BOOL)animated
