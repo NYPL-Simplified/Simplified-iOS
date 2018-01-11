@@ -254,8 +254,7 @@ const double RequestTimeInterval = 30;
        for (NYPLReaderBookmark *localBKM in localBookmarks) {
          for (NYPLReaderBookmark *uploadedBKM in bookmarksUploaded) {
            if ([localBKM isEqual:uploadedBKM]) {
-             [[NYPLBookRegistry sharedRegistry] deleteBookmark:localBKM forIdentifier:self.bookID];
-             [[NYPLBookRegistry sharedRegistry] addBookmark:uploadedBKM forIdentifier:self.bookID];
+             [[NYPLBookRegistry sharedRegistry] replaceBookmark:localBKM with:uploadedBKM forIdentifier:self.bookID];
            }
          }
        }
