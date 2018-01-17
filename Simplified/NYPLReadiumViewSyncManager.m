@@ -188,8 +188,8 @@ const double RequestTimeInterval = 30;
     // 2 - The server and the client have the same page marked
     // 3 - There is no recent page saved on the server
     if ((currentLocationString && [deviceIDString isEqualToString:[NYPLAccount sharedAccount].deviceID]) ||
-      [currentLocationString isEqualToString:serverLocationString] ||
-      !serverLocationString) {
+        [currentLocationString isEqualToString:serverLocationString] ||
+        !serverLocationString) {
       self.shouldPostLastRead = YES;
     } else {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{

@@ -650,21 +650,19 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   self.bookmarkElements = [registry bookmarksForIdentifier:self.book.identifier];
   
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-  if (currentAccount.syncPermissionGranted &&
-      (bookmark.annotationId != nil &&
-       bookmark.annotationId.length > 0)) {
-        
-        [NYPLAnnotations deleteBookmarkWithAnnotationId:bookmark.annotationId
-                                      completionHandler:^(BOOL success) {
-                                        if (success) {
-                                          NYPLLOG(@"Bookmark successfully deleted");
-                                        } else {
-                                          NYPLLOG(@"Failed to delete bookmark from server. Will attempt again on next Sync");
-                                        }
-                                      }];
-      } else {
-        NYPLLOG(@"Delete on Server skipped: Sync is not enabled or Annotation ID did not exist for bookmark.");
-      }
+
+  if (currentAccount.syncPermissionGranted && bookmark.annotationId.length > 0) {
+    [NYPLAnnotations deleteBookmarkWithAnnotationId:bookmark.annotationId
+                                  completionHandler:^(BOOL success) {
+                                    if (success) {
+                                      NYPLLOG(@"Bookmark successfully deleted");
+                                    } else {
+                                      NYPLLOG(@"Failed to delete bookmark from server. Will attempt again on next Sync");
+                                    }
+                                  }];
+  } else {
+    NYPLLOG(@"Delete on Server skipped: Sync is not enabled or Annotation ID did not exist for bookmark.");
+  }
 }
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
