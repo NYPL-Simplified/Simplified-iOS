@@ -32,7 +32,9 @@
       config.releaseStage = @"development";
     } else if ([self releaseStageIsBeta]) {
       config.releaseStage = @"beta";
-      [config setUser:[[NYPLAccount sharedAccount] barcode] withName:nil andEmail:nil];
+      if ([[NYPLAccount sharedAccount] barcode]) {
+        [config setUser:[[NYPLAccount sharedAccount] barcode] withName:nil andEmail:nil];
+      }
     } else {
       config.releaseStage = @"production";
     }
