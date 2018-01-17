@@ -3,6 +3,8 @@
 #import "NYPLOPDSIndirectAcquisition.h"
 #import "NYPLXML.h"
 
+#pragma mark OPDS Acqusition Relations
+
 static NSString *const NYPLOPDSAcquisitionRelationGenericString =
   @"http://opds-spec.org/acquisition";
 
@@ -20,6 +22,18 @@ static NSString *const NYPLOPDSAcquisitionRelationSampleString =
 
 static NSString *const NYPLOPDSAcquisitionRelationSubscribeString =
   @"http://opds-spec.org/acquisition/subscribe";
+
+#pragma mark Dictionary Keys
+
+static NSString *const NYPLOPDSAcquisitionRelationKey = @"rel";
+
+static NSString *const NYPLOPDSAcquisitionTypeKey = @"type";
+
+static NSString *const NYPLOPDSAcquisitionHrefURLKey = @"href";
+
+static NSString *const NYPLOPDSAcquisitionIndirectAcqusitionsKey = @"indirectAcqusitions";
+
+#pragma mark -
 
 BOOL
 NYPLOPDSAcquisitionRelationWithString(NSString *const _Nonnull string,
@@ -148,6 +162,79 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)ind
   self.indirectAcquisitions = indirectAcqusitions;
 
   return self;
+}
+
++ (_Nullable instancetype)acquisitionWithDictionary:(NSDictionary *const _Nonnull)dictionary
+{
+  NSString *const relationString = dictionary[NYPLOPDSAcquisitionRelationKey];
+  if (![relationString isKindOfClass:[NSString class]]) {
+    return nil;
+  }
+
+  NYPLOPDSAcquisitionRelation relation;
+  if (!NYPLOPDSAcquisitionRelationWithString(relationString, &relation)) {
+    return nil;
+  }
+
+  NSString *const type = dictionary[NYPLOPDSAcquisitionTypeKey];
+  if (![type isKindOfClass:[NSString class]]) {
+    return nil;
+  }
+
+  NSString *const hrefURLString = dictionary[NYPLOPDSAcquisitionHrefURLKey];
+  if (![hrefURLString isKindOfClass:[NSString class]]) {
+    return nil;
+  }
+
+  NSURL *const hrefURL = [NSURL URLWithString:hrefURLString];
+  if (!hrefURL) {
+    return nil;
+  }
+
+  NSDictionary *const indirectAcquisitionDictionaries = dictionary[NYPLOPDSAcquisitionIndirectAcqusitionsKey];
+  if (![indirectAcquisitionDictionaries isKindOfClass:[NSArray class]]) {
+    return nil;
+  }
+
+  NSMutableArray *const mutableIndirectAcquisitions =
+    [NSMutableArray arrayWithCapacity:indirectAcquisitionDictionaries.count];
+
+  for (NSDictionary *const indirectAcquisitionDictionary in indirectAcquisitionDictionaries) {
+    if (![indirectAcquisitionDictionary isKindOfClass:[NSDictionary class]]) {
+      return nil;
+    }
+
+    NYPLOPDSIndirectAcquisition *const indirectAcquisition =
+      [NYPLOPDSIndirectAcquisition indirectAcquisitionWithDictionary:indirectAcquisitionDictionary];
+    if (!indirectAcquisition) {
+      return nil;
+    }
+
+    [mutableIndirectAcquisitions addObject:indirectAcquisition];
+  }
+
+  return [NYPLOPDSAcquisition
+          acquisitionWithRelation:relation
+          type:type
+          hrefURL:hrefURL
+          indirectAcquisitions:[mutableIndirectAcquisitions copy]];
+}
+
+- (NSDictionary *_Nonnull)dictionary
+{
+  NSMutableArray *const mutableIndirectAcquistionDictionaries =
+    [NSMutableArray arrayWithCapacity:self.indirectAcquisitions.count];
+
+  for (NYPLOPDSIndirectAcquisition *const indirectAcqusition in self.indirectAcquisitions) {
+    [mutableIndirectAcquistionDictionaries addObject:[indirectAcqusition dictionary]];
+  }
+
+  return @{
+    NYPLOPDSAcquisitionRelationKey: NYPLOPDSAcquisitionRelationString(self.relation),
+    NYPLOPDSAcquisitionTypeKey: self.type,
+    NYPLOPDSAcquisitionHrefURLKey: self.hrefURL.absoluteString,
+    NYPLOPDSAcquisitionIndirectAcqusitionsKey: [mutableIndirectAcquistionDictionaries copy]
+  };
 }
 
 @end

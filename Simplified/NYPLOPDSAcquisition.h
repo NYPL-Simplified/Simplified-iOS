@@ -61,4 +61,12 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation relation);
                      indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *_Nonnull)indirectAcqusitions
   NS_DESIGNATED_INITIALIZER;
 
+/// @param dictionary An @c NSDictionary created via the @c dictionary method.
+/// @return An acqusition if the dictionary was valid.
++ (_Nullable instancetype)acquisitionWithDictionary:(NSDictionary *_Nonnull)dictionary;
+
+/// @return A serialized form of an acqusition suitable for passing to the
+/// @c acquisitionWithDictionary: method for later deserialization.
+- (NSDictionary *_Nonnull)dictionary;
+
 @end

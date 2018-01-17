@@ -10,6 +10,7 @@
 @interface NYPLBook ()
 
 @property (nonatomic) NYPLBookAcquisition *acquisition;
+@property (nonatomic) NSArray<NYPLOPDSAcquisition *> *acquisitions;
 @property (nonatomic) NSArray<NYPLBookAuthor *> *bookAuthors;
 @property (nonatomic) NYPLBookAvailabilityStatus availabilityStatus;
 @property (nonatomic) NSInteger availableCopies;
@@ -38,6 +39,7 @@
 @end
 
 static NSString *const AcquisitionKey = @"acquisition";
+static NSString *const AcquisitionsKey = @"acquisitions";
 static NSString *const AuthorsKey = @"authors";
 static NSString *const AuthorLinksKey = @"author-links";
 static NSString *const AvailabilityStatusKey = @"availability-status";
@@ -211,6 +213,7 @@ static NSString *const AlternateURLKey = @"alternate";
                                revoke:revoke
                                sample:sample
                                report:report]
+          acquisitions:entry.acquisitions
           bookAuthors:authors
           availabilityStatus:availabilityStatus
           availableCopies:availableCopies
@@ -240,6 +243,7 @@ static NSString *const AlternateURLKey = @"alternate";
 {
   return [[NYPLBook alloc]
           initWithAcquisition:self.acquisition
+          acquisitions:self.acquisitions
           bookAuthors:book.bookAuthors
           availabilityStatus:self.availabilityStatus
           availableCopies:self.availableCopies
@@ -266,6 +270,7 @@ static NSString *const AlternateURLKey = @"alternate";
 }
 
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
+                       acquisitions:(NSArray<NYPLOPDSAcquisition *> *)acquisitions
                         bookAuthors:(NSArray<NYPLBookAuthor *> *)authors
                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
                     availableCopies:(NSInteger)availableCopies
@@ -298,6 +303,7 @@ static NSString *const AlternateURLKey = @"alternate";
   }
   
   self.acquisition = acquisition;
+  self.acquisitions = acquisitions;
   self.alternateURL = alternateURL;
   self.annotationsURL = annotationsURL;
   self.analyticsURL = analyticsURL;

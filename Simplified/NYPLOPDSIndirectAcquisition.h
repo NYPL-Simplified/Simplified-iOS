@@ -22,4 +22,12 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *_Nonnull)indirectA
                  indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *_Nonnull)indirectAcquisitions
   NS_DESIGNATED_INITIALIZER;
 
+/// @param dictionary An @c NSDictionary created via the @c dictionary method.
+/// @return An indirect acqusition if the dictionary was valid.
++ (_Nullable instancetype)indirectAcquisitionWithDictionary:(NSDictionary *_Nonnull)dictionary;
+
+/// @return A serialized form of an acqusition suitable for passing to the
+/// @c indirectAcquisitionWithDictionary: method for later deserialization.
+- (NSDictionary *_Nonnull)dictionary;
+
 @end

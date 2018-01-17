@@ -2,6 +2,14 @@
 
 #import "NYPLXML.h"
 
+#pragma mark Dictionary Keys
+
+static NSString *const NYPLOPDSIndirectAcquisitionTypeKey = @"type";
+
+static NSString *const NYPLOPDSIndirectAcquisitionIndirectAcqusitionsKey = @"indirectAcquisitions";
+
+#pragma mark -
+
 @interface NYPLOPDSIndirectAcquisition ()
 
 @property (copy, nonnull) NSString *type;
@@ -50,6 +58,54 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)ind
   self.indirectAcquisitions = indirectAcquisitions;
 
   return self;
+}
+
++ (_Nullable instancetype)indirectAcquisitionWithDictionary:(NSDictionary *const _Nonnull)dictionary
+{
+  NSString *const type = dictionary[NYPLOPDSIndirectAcquisitionTypeKey];
+  if (![type isKindOfClass:[NSString class]]) {
+    return nil;
+  }
+
+  NSDictionary *const indirectAcquisitionDictionaries = dictionary[NYPLOPDSIndirectAcquisitionIndirectAcqusitionsKey];
+  if (![indirectAcquisitionDictionaries isKindOfClass:[NSArray class]]) {
+    return nil;
+  }
+
+  NSMutableArray *const mutableIndirectAcquisitions =
+    [NSMutableArray arrayWithCapacity:indirectAcquisitionDictionaries.count];
+
+  for (NSDictionary *const indirectAcquisitionDictionary in indirectAcquisitionDictionaries) {
+    if (![indirectAcquisitionDictionary isKindOfClass:[NSDictionary class]]) {
+      return nil;
+    }
+
+    NYPLOPDSIndirectAcquisition *const indirectAcquisition =
+    [NYPLOPDSIndirectAcquisition indirectAcquisitionWithDictionary:indirectAcquisitionDictionary];
+    if (!indirectAcquisition) {
+      return nil;
+    }
+
+    [mutableIndirectAcquisitions addObject:indirectAcquisition];
+  }
+
+  return [self indirectAcquisitionWithType:type
+                      indirectAcquisitions:[mutableIndirectAcquisitions copy]];
+}
+
+- (NSDictionary *_Nonnull)dictionary
+{
+  NSMutableArray *const mutableIndirectionAcqusitionDictionaries =
+    [NSMutableArray arrayWithCapacity:self.indirectAcquisitions.count];
+
+  for (NYPLOPDSIndirectAcquisition *const indirectAcqusition in self.indirectAcquisitions) {
+    [mutableIndirectionAcqusitionDictionaries addObject:[indirectAcqusition dictionary]];
+  }
+
+  return @{
+    NYPLOPDSIndirectAcquisitionTypeKey: self.type,
+    NYPLOPDSIndirectAcquisitionIndirectAcqusitionsKey: [mutableIndirectionAcqusitionDictionaries copy]
+  };
 }
 
 @end
