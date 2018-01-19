@@ -11,8 +11,13 @@
 /// The relation of the initial acquisition step.
 @property (nonatomic, readonly) NYPLOPDSAcquisitionRelation relation;
 
-/// The types of the path in acquisition order.
+/// The types of the path in acquisition order. It is guaranteed that
+/// @c types.count is at least 1.
 @property (nonatomic, readonly, nonnull) NSArray<NSString *> *types;
+
+/// The URL to fetch to begin processing the acquisition path. The server
+/// should, but is not guaranteed, to return a response of type @c types[0].
+@property (nonatomic, readonly, nonnull) NSURL *url;
 
 + (instancetype _Nonnull)new NS_UNAVAILABLE;
 - (instancetype _Nonnull)init NS_UNAVAILABLE;
@@ -32,8 +37,10 @@ supportedAcquisitionPathsForAllowedTypes:(NSSet<NSString *> *_Nonnull)types
 allowedRelations:(NYPLOPDSAcquisitionRelationSet)relations
 acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions;
 
+/// @param types A non-empty array of strings representing response types.
 - (instancetype _Nonnull)initWithRelation:(NYPLOPDSAcquisitionRelation)relation
                                     types:(NSArray<NSString *> *_Nonnull)types
+                                      url:(NSURL *_Nonnull)url
   NS_DESIGNATED_INITIALIZER;
 
 @end

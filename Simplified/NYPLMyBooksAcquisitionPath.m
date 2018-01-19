@@ -6,6 +6,7 @@
 
 @property (nonatomic) NYPLOPDSAcquisitionRelation relation;
 @property (nonatomic, nonnull) NSArray<NSString *> *types;
+@property (nonatomic, nonnull) NSURL *url;
 
 @end
 
@@ -13,11 +14,13 @@
 
 - (instancetype _Nonnull)initWithRelation:(NYPLOPDSAcquisitionRelation const)relation
                                     types:(NSArray<NSString *> *const _Nonnull)types
+                                      url:(NSURL *const _Nonnull)url
 {
   self = [super init];
 
   self.relation = relation;
   self.types = types;
+  self.url = url;
 
   return self;
 }
@@ -101,7 +104,10 @@ acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
         for (NSMutableArray<NSString *> *const mutableTypePath in mutableTypePaths(indirectAcquisition, types)) {
           [mutableTypePath insertObject:acquisition.type atIndex:0];
           NYPLMyBooksAcquisitionPath *const acquisitionPath =
-            [[NYPLMyBooksAcquisitionPath alloc] initWithRelation:acquisition.relation types:[mutableTypePath copy]];
+            [[NYPLMyBooksAcquisitionPath alloc]
+             initWithRelation:acquisition.relation
+             types:[mutableTypePath copy]
+             url:acquisition.hrefURL];
           [mutableAcquisitionPaths addObject:acquisitionPath];
         }
       }
