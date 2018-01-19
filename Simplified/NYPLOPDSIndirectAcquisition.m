@@ -12,8 +12,8 @@ static NSString *const NYPLOPDSIndirectAcquisitionIndirectAcqusitionsKey = @"ind
 
 @interface NYPLOPDSIndirectAcquisition ()
 
-@property (copy, nonnull) NSString *type;
-@property (nonnull) NSArray<NYPLOPDSIndirectAcquisition *> *indirectAcquisitions;
+@property (nonatomic, copy, nonnull) NSString *type;
+@property (nonatomic, nonnull) NSArray<NYPLOPDSIndirectAcquisition *> *indirectAcquisitions;
 
 @end
 

@@ -35,6 +35,29 @@ static NSString *const NYPLOPDSAcquisitionIndirectAcqusitionsKey = @"indirectAcq
 
 #pragma mark -
 
+static NSUInteger const numberOfRelations = 6;
+
+NYPLOPDSAcquisitionRelationSet const NYPLOPDSAcquisitionRelationSetAll = (1 << (numberOfRelations + 1)) - 1;
+
+NYPLOPDSAcquisitionRelationSet
+NYPLOPDSAcquisitionRelationSetWithRelation(NYPLOPDSAcquisitionRelation relation)
+{
+  switch (relation) {
+    case NYPLOPDSAcquisitionRelationBuy:
+      return NYPLOPDSAcquisitionRelationSetBuy;
+    case NYPLOPDSAcquisitionRelationBorrow:
+      return NYPLOPDSAcquisitionRelationSetBorrow;
+    case NYPLOPDSAcquisitionRelationSample:
+      return NYPLOPDSAcquisitionRelationSetSample;
+    case NYPLOPDSAcquisitionRelationGeneric:
+      return NYPLOPDSAcquisitionRelationSetGeneric;
+    case NYPLOPDSAcquisitionRelationSubscribe:
+      return NYPLOPDSAcquisitionRelationSetSubscribe;
+    case NYPLOPDSAcquisitionRelationOpenAccess:
+      return NYPLOPDSAcquisitionRelationSetOpenAccess;
+  }
+}
+
 BOOL
 NYPLOPDSAcquisitionRelationWithString(NSString *const _Nonnull string,
                                       NYPLOPDSAcquisitionRelation *const _Nonnull relationPointer)
@@ -84,9 +107,9 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation const relation)
 @interface NYPLOPDSAcquisition ()
 
 @property NYPLOPDSAcquisitionRelation relation;
-@property (copy, nonnull) NSString *type;
-@property (nonnull) NSURL *hrefURL;
-@property (nonnull) NSArray<NYPLOPDSIndirectAcquisition *> *indirectAcquisitions;
+@property (nonatomic, copy, nonnull) NSString *type;
+@property (nonatomic, nonnull) NSURL *hrefURL;
+@property (nonatomic, nonnull) NSArray<NYPLOPDSIndirectAcquisition *> *indirectAcquisitions;
 
 @end
 

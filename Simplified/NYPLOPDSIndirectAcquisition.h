@@ -5,12 +5,13 @@
 @interface NYPLOPDSIndirectAcquisition : NSObject
 
 /// The type of the content indirectly obtainable.
-@property (readonly, nonnull) NSString *type;
+@property (nonatomic, readonly, nonnull) NSString *type;
 
 /// Zero or more nested indirect acquisitions.
-@property (readonly, nonnull) NSArray<NYPLOPDSIndirectAcquisition *> *indirectAcquisitions;
+@property (nonatomic, readonly, nonnull) NSArray<NYPLOPDSIndirectAcquisition *> *indirectAcquisitions;
 
-- (_Nullable instancetype)init NS_UNAVAILABLE;
++ (instancetype _Nonnull)new NS_UNAVAILABLE;
+- (instancetype _Nonnull)init NS_UNAVAILABLE;
 
 + (instancetype _Nonnull)
 indirectAcquisitionWithType:(NSString *_Nonnull)type
@@ -24,7 +25,7 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *_Nonnull)indirectA
 
 /// @param dictionary An @c NSDictionary created via the @c dictionary method.
 /// @return An indirect acqusition if the dictionary was valid.
-+ (_Nullable instancetype)indirectAcquisitionWithDictionary:(NSDictionary *_Nonnull)dictionary;
++ (instancetype _Nullable)indirectAcquisitionWithDictionary:(NSDictionary *_Nonnull)dictionary;
 
 /// @return A serialized form of an acqusition suitable for passing to the
 /// @c indirectAcquisitionWithDictionary: method for later deserialization.
