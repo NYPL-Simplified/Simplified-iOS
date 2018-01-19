@@ -26,7 +26,7 @@
 /// @param types The types by which to limit the search for supported paths.
 /// @param acqusitions The OPDS acquisitions to search.
 /// @return The set of possible acquisition paths supported by the application
-/// limited by the types supplied.
+/// limited by the types and relations supplied.
 + (NSSet<NYPLMyBooksAcquisitionPath *> *_Nonnull)
 supportedAcquisitionPathsForAllowedTypes:(NSSet<NSString *> *_Nonnull)types
 allowedRelations:(NYPLOPDSAcquisitionRelationSet)relations
