@@ -14,7 +14,7 @@ typedef NS_ENUM(NSInteger, NYPLOPDSAcquisitionRelation) {
 };
 
 /// Represents zero or more relations given in the OPDS specification.
-typedef NS_OPTIONS(NSInteger, NYPLOPDSAcquisitionRelationSet) {
+typedef NS_OPTIONS(NSUInteger, NYPLOPDSAcquisitionRelationSet) {
   NYPLOPDSAcquisitionRelationSetGeneric    = 1 << 0,
   NYPLOPDSAcquisitionRelationSetOpenAccess = 1 << 1,
   NYPLOPDSAcquisitionRelationSetBorrow     = 1 << 2,

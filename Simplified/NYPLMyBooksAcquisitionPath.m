@@ -37,38 +37,69 @@
   return types;
 }
 
+- (BOOL)isEqual:(id const)object
+{
+  if (![object isKindOfClass:[NYPLMyBooksAcquisitionPath class]]) {
+    return NO;
+  }
+
+  NYPLMyBooksAcquisitionPath *const path = object;
+
+  return self.relation == path.relation && [self.types isEqualToArray:path.types];
+}
+
+- (NSUInteger)hash
+{
+  NSUInteger const prime = 31;
+  NSUInteger result = 1;
+
+  result = prime * result + self.relation;
+  result = prime * result + [self.types hash];
+
+  return result;
+}
+
 NSMutableArray<NSMutableArray<NSString *> *> *_Nonnull
 mutableTypePaths(
   NYPLOPDSIndirectAcquisition *const _Nonnull indirectAcquisition,
   NSSet<NSString *> *const _Nonnull allowedTypes)
 {
   if ([allowedTypes containsObject:indirectAcquisition.type]) {
-    NSMutableArray<NSMutableArray<NSString *> *> *const mutableTypePathResults = [NSMutableArray array];
-    for (NYPLOPDSIndirectAcquisition *const nestedIndirectAcquisition in indirectAcquisition.indirectAcquisitions) {
-      NSMutableArray<NSMutableArray<NSString *> *> *const mutableTypePathResult =
-        mutableTypePaths(nestedIndirectAcquisition, allowedTypes);
-      [mutableTypePathResults addObjectsFromArray:mutableTypePathResult];
+    if (indirectAcquisition.indirectAcquisitions.count == 0) {
+      return [NSMutableArray arrayWithObject:[NSMutableArray arrayWithObject:indirectAcquisition.type]];
+    } else {
+      NSMutableArray<NSMutableArray<NSString *> *> *const mutableTypePathsResults = [NSMutableArray array];
+      for (NYPLOPDSIndirectAcquisition *const nestedIndirectAcquisition in indirectAcquisition.indirectAcquisitions) {
+        for (NSMutableArray<NSString *> *const mutableTypePath
+             in mutableTypePaths(nestedIndirectAcquisition, allowedTypes))
+        {
+          // This operation is not O(1) as desired but it is close enough for our purposes.
+          [mutableTypePath insertObject:indirectAcquisition.type atIndex:0];
+          [mutableTypePathsResults addObject:mutableTypePath];
+        }
+      }
+      return mutableTypePathsResults;
     }
-    return mutableTypePathResults;
   } else {
     return [NSMutableArray array];
   }
 }
 
 
-+ (NSOrderedSet<NYPLMyBooksAcquisitionPath *> *_Nonnull)
++ (NSSet<NYPLMyBooksAcquisitionPath *> *_Nonnull)
 supportedAcquisitionPathsForAllowedTypes:(NSSet<NSString *> *_Nonnull)types
 allowedRelations:(NYPLOPDSAcquisitionRelationSet)relations
 acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
 {
-  NSMutableOrderedSet *const mutableAcquisitionPaths = [NSMutableOrderedSet orderedSet];
+  NSMutableSet *const mutableAcquisitionPaths = [NSMutableSet set];
 
   for (NYPLOPDSAcquisition *const acquisition in acquisitions) {
-    // `acquisition.relation & relations` checks set membership. The use of bitwise-AND
-    // is intentional.
-    if ([types containsObject:acquisition.type] && (acquisition.relation & relations)) {
+    if ([types containsObject:acquisition.type]
+        && (NYPLOPDSAcquisitionRelationSetWithRelation(acquisition.relation) & relations))
+    {
       for (NYPLOPDSIndirectAcquisition *const indirectAcquisition in acquisition.indirectAcquisitions) {
         for (NSMutableArray<NSString *> *const mutableTypePath in mutableTypePaths(indirectAcquisition, types)) {
+          [mutableTypePath insertObject:acquisition.type atIndex:0];
           NYPLMyBooksAcquisitionPath *const acquisitionPath =
             [[NYPLMyBooksAcquisitionPath alloc] initWithRelation:acquisition.relation types:[mutableTypePath copy]];
           [mutableAcquisitionPaths addObject:acquisitionPath];

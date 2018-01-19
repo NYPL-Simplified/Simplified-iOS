@@ -17,7 +17,6 @@
 #import "NYPLAlertController.h"
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLXML.h"
-#import "NYPLOPDSFeed.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "NYPLBookAcquisition.h"
 #import "NYPLCatalogUngroupedFeed.h"
@@ -29,3 +28,4 @@
 #import "NYPLRootTabBarController.h"
 #import "NYPLZXingEncoder.h"
 #import "NYPLReachability.h"
+#import "NYPLMyBooksAcquisitionPath.h"

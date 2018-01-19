@@ -132,6 +132,8 @@
 		2D754BBB2002E2FB0061D34F /* NYPLOPDSAcquisition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D754BBA2002E2FB0061D34F /* NYPLOPDSAcquisition.m */; };
 		2D754BC22002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D754BC12002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m */; };
 		2D87909D20127AA300E2763F /* NYPLMyBooksAcquisitionPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D87909C20127AA300E2763F /* NYPLMyBooksAcquisitionPath.m */; };
+		2D8790A320129AC400E2763F /* MyBooksAcquisitionPathEntry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2D8790A220129AC400E2763F /* MyBooksAcquisitionPathEntry.xml */; };
+		2D8790A520129AF200E2763F /* MyBooksAcquisitionPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8790A420129AF200E2763F /* MyBooksAcquisitionPathTests.swift */; };
 		2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */; };
 		2DB436381D4C049200F8E69D /* NYPLReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DB436371D4C049200F8E69D /* NYPLReachability.m */; };
 		2DC8D9DC1D09F797007DD125 /* UpdateCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */; };
@@ -476,6 +478,8 @@
 		2D754BC12002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSIndirectAcquisition.m; sourceTree = "<group>"; };
 		2D87909B20127AA300E2763F /* NYPLMyBooksAcquisitionPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksAcquisitionPath.h; sourceTree = "<group>"; };
 		2D87909C20127AA300E2763F /* NYPLMyBooksAcquisitionPath.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksAcquisitionPath.m; sourceTree = "<group>"; };
+		2D8790A220129AC400E2763F /* MyBooksAcquisitionPathEntry.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MyBooksAcquisitionPathEntry.xml; sourceTree = "<group>"; };
+		2D8790A420129AF200E2763F /* MyBooksAcquisitionPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyBooksAcquisitionPathTests.swift; sourceTree = "<group>"; };
 		2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		2DB436361D4C049200F8E69D /* NYPLReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReachability.h; sourceTree = "<group>"; };
 		2DB436371D4C049200F8E69D /* NYPLReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReachability.m; sourceTree = "<group>"; };
@@ -1148,6 +1152,7 @@
 				A823D830192BABA400B55DE2 /* Supporting Files */,
 				11A14DF51A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m */,
 				2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */,
+				2D8790A420129AF200E2763F /* MyBooksAcquisitionPathTests.swift */,
 			);
 			path = SimplifiedTests;
 			sourceTree = "<group>";
@@ -1164,6 +1169,7 @@
 				2D2B47891D08FC78007F7764 /* UpdateCheckUnknown.json */,
 				2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */,
 				111559F119B8FAA10003BE94 /* valid.xml */,
+				2D8790A220129AC400E2763F /* MyBooksAcquisitionPathEntry.xml */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1355,6 +1361,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D8790A320129AC400E2763F /* MyBooksAcquisitionPathEntry.xml in Resources */,
 				2D2B478E1D08FDF5007F7764 /* UpdateCheckNeedsUpdate.json in Resources */,
 				2D2B478F1D08FDF5007F7764 /* UpdateCheckUnknown.json in Resources */,
 				2D2B47841D08F8E2007F7764 /* UpdateCheckUpToDate.json in Resources */,
@@ -1531,6 +1538,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */,
+				2D8790A520129AF200E2763F /* MyBooksAcquisitionPathTests.swift in Sources */,
 				2D2B477E1D08F82C007F7764 /* Log.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
