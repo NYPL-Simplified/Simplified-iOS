@@ -59,6 +59,13 @@ NYPLOPDSAcquisitionRelationSetWithRelation(NYPLOPDSAcquisitionRelation relation)
 }
 
 BOOL
+NYPLOPDSAcquisitionRelationSetContainsRelation(NYPLOPDSAcquisitionRelationSet relationSet,
+                                               NYPLOPDSAcquisitionRelation relation)
+{
+  return NYPLOPDSAcquisitionRelationSetWithRelation(relation) & relationSet;
+}
+
+BOOL
 NYPLOPDSAcquisitionRelationWithString(NSString *const _Nonnull string,
                                       NYPLOPDSAcquisitionRelation *const _Nonnull relationPointer)
 {

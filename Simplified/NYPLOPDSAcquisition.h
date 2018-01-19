@@ -31,6 +31,11 @@ extern NYPLOPDSAcquisitionRelationSet const NYPLOPDSAcquisitionRelationSetAll;
 NYPLOPDSAcquisitionRelationSet
 NYPLOPDSAcquisitionRelationSetWithRelation(NYPLOPDSAcquisitionRelation relation);
 
+/// @return @c YES if @c relation is in @c relationSet, else @c NO.
+BOOL
+NYPLOPDSAcquisitionRelationSetContainsRelation(NYPLOPDSAcquisitionRelationSet relationSet,
+                                               NYPLOPDSAcquisitionRelation relation);
+
 /// @param string A string representing one of the six OPDS acqusition
 /// relations.
 /// @param relationPointer A pointer to an @c NYPLOPDSAcquisitionRelation that

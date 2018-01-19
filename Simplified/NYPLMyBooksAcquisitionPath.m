@@ -95,7 +95,7 @@ acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
 
   for (NYPLOPDSAcquisition *const acquisition in acquisitions) {
     if ([types containsObject:acquisition.type]
-        && (NYPLOPDSAcquisitionRelationSetWithRelation(acquisition.relation) & relations))
+        && NYPLOPDSAcquisitionRelationSetContainsRelation(relations, acquisition.relation))
     {
       for (NYPLOPDSIndirectAcquisition *const indirectAcquisition in acquisition.indirectAcquisitions) {
         for (NSMutableArray<NSString *> *const mutableTypePath in mutableTypePaths(indirectAcquisition, types)) {
