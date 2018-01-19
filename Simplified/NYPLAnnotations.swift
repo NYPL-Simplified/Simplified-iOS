@@ -508,26 +508,20 @@ final class NYPLAnnotations: NSObject {
       return
     }
 
-    let deleteGroup = DispatchGroup()
-
     for localBookmark in bookmarks {
       if let annotationID = localBookmark.annotationId {
-        deleteGroup.enter()
-        deleteBookmark(annotationId: annotationID, completionHandler: { success in
-          if !success {
-            Log.error(#file, "Bookmark not deleted from server. Moving on.")
+        deleteBookmark(annotationID) { success in
+          if success {
+            Log.debug(#file, "Server bookmark deleted: \(annotationID)")
+          } else {
+            Log.error(#file, "Bookmark not deleted from server. Moving on: \(annotationID)")
           }
-          deleteGroup.leave()
-        })
+        }
       }
-    }
-
-    deleteGroup.notify(queue: DispatchQueue.main) {
-      Log.debug(#file, "Finished attempt to delete bookmarks.")
     }
   }
 
-  class func deleteBookmark(annotationId: String,
+  class func deleteBookmark(_ annotationId: String,
                             completionHandler: @escaping (_ success: Bool) -> ()) {
 
     if !syncIsPossibleAndPermitted() {
