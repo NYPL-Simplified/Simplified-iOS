@@ -15,8 +15,9 @@ target 'SimplyE' do
   pod 'SQLite.swift', :git => 'https://github.com/NYPL-Simplified/SQLite.swift', :branch => 'nypl-swift4-ios8-target'
   pod 'ZXingObjC', '~> 3.2.1'
 
+  target 'SimplyETests' do
+    inherit! :search_paths
+  end
 end
 
-target 'SimplyETests' do
 
-end
