@@ -91,25 +91,21 @@ const double RequestTimeInterval = 30;
       case NYPLReadPositionSyncStatusIdle: {
         self.syncStatus = NYPLReadPositionSyncStatusBusy;
         [NYPLAnnotations postReadingPositionForBook:self.bookID annotationsURL:nil cfi:location];
-        [NSTimer scheduledTimerWithTimeInterval:RequestTimeInterval
-                                         target:self selector:@selector(syncAfterWaiting) userInfo:nil repeats:NO];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(RequestTimeInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+          @synchronized(self) {
+            self.syncStatus = NYPLReadPositionSyncStatusIdle;
+            if (self.queuedReadingPosition) {
+              [self postLastReadPosition:self.queuedReadingPosition];
+              self.queuedReadingPosition = nil;
+            }
+          }
+        });
         break;
       }
       case NYPLReadPositionSyncStatusBusy: {
         self.queuedReadingPosition = location;
         break;
       }
-    }
-  }
-}
-
-- (void)syncAfterWaiting
-{
-  @synchronized(self) {
-    self.syncStatus = NYPLReadPositionSyncStatusIdle;
-    if (self.queuedReadingPosition) {
-      [self postLastReadPosition:self.queuedReadingPosition];
-      self.queuedReadingPosition = nil;
     }
   }
 }

@@ -510,7 +510,7 @@ final class NYPLAnnotations: NSObject {
 
     for localBookmark in bookmarks {
       if let annotationID = localBookmark.annotationId {
-        deleteBookmark(annotationID) { success in
+        deleteBookmark(annotationId: annotationID) { success in
           if success {
             Log.debug(#file, "Server bookmark deleted: \(annotationID)")
           } else {
@@ -521,7 +521,7 @@ final class NYPLAnnotations: NSObject {
     }
   }
 
-  class func deleteBookmark(_ annotationId: String,
+  class func deleteBookmark(annotationId: String,
                             completionHandler: @escaping (_ success: Bool) -> ()) {
 
     if !syncIsPossibleAndPermitted() {
