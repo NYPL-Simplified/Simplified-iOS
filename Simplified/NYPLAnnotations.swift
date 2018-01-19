@@ -368,7 +368,9 @@ final class NYPLAnnotations: NSObject {
   }
 
   // MARK: - Bookmarks
-  
+
+  // Completion handler will return a nil parameter if there are any failures with
+  // the network request, deserialization, or sync permission is not allowed.
   class func getServerBookmarks(forBook bookID:String?, atURL annotationURL:URL?, completionHandler: @escaping (_ bookmarks: [NYPLReaderBookmark]?) -> ()) {
 
     if !syncIsPossibleAndPermitted() {
@@ -421,30 +423,6 @@ final class NYPLAnnotations: NSObject {
       completionHandler(bookmarks)
     }
     dataTask.resume()
-  }
-
-  class func getBookmark(book id: String?,
-                         atURL annotationUrl: URL?,
-                         locationCFI cfi: String,
-                         completionHandler: @escaping (_ responseObject: NYPLReaderBookmark?) -> ()) {
-
-    guard let data = cfi.data(using: .utf8),
-      let responseJSON = try? JSONSerialization.jsonObject(with: data,
-                                                           options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:Any] else {
-                                                            Log.error(#file, "Error creating JSON Object")
-                                                            return
-    }
-    guard let localContentCfi = responseJSON["contentCFI"] as? String,
-      let localIdref = responseJSON["idref"] as? String else {
-        Log.error(#file, "Could not get contentCFI or idref from responseJSON")
-        return
-    }
-
-    getServerBookmarks(forBook: id, atURL: annotationUrl) { bookmarks in
-      completionHandler(bookmarks?
-        .filter({ $0.contentCFI == localContentCfi && $0.idref == localIdref })
-        .first)
-    }
   }
 
   private class func createBookmark(fromBook bookID: String, serverAnnotation annotation: AnyObject) -> NYPLReaderBookmark? {
