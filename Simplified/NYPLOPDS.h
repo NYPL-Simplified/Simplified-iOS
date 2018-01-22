@@ -6,3 +6,4 @@
 #import "NYPLOPDSLink.h"
 #import "NYPLOPDSRelation.h"
 #import "NYPLOPDSType.h"
+#import "NYPLOPDSAcquisition.h"
