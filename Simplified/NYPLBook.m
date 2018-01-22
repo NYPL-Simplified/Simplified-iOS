@@ -1,5 +1,4 @@
 #import "NSDate+NYPLDateAdditions.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLOPDSAcquisition.h"
 #import "NYPLNull.h"
 #import "NYPLOPDS.h"
@@ -10,7 +9,6 @@
 
 @interface NYPLBook ()
 
-@property (nonatomic) NYPLBookAcquisition *acquisition;
 @property (nonatomic) NSArray<NYPLOPDSAcquisition *> *acquisitions;
 @property (nonatomic) NSArray<NYPLBookAuthor *> *bookAuthors;
 @property (nonatomic) NYPLBookAvailabilityStatus availabilityStatus;
@@ -40,33 +38,33 @@
 
 @end
 
-static NSString *const DeprecatedAcquisitionKey = @"acquisition";
 static NSString *const AcquisitionsKey = @"acquisitions";
-static NSString *const AuthorsKey = @"authors";
+static NSString *const AlternateURLKey = @"alternate";
+static NSString *const AnalyticsURLKey = @"analytics";
+static NSString *const AnnotationsURLKey = @"annotations";
 static NSString *const AuthorLinksKey = @"author-links";
+static NSString *const AuthorsKey = @"authors";
 static NSString *const AvailabilityStatusKey = @"availability-status";
 static NSString *const AvailableCopiesKey = @"available-copies";
 static NSString *const AvailableUntilKey = @"available-until";
-static NSString *const TotalCopiesKey = @"total-copies";
-static NSString *const HoldsPositionKey = @"holds-position";
 static NSString *const CategoriesKey = @"categories";
+static NSString *const DeprecatedAcquisitionKey = @"acquisition";
 static NSString *const DistributorKey = @"distributor";
+static NSString *const HoldsPositionKey = @"holds-position";
 static NSString *const IdentifierKey = @"id";
-static NSString *const ImageURLKey = @"image";
 static NSString *const ImageThumbnailURLKey = @"image-thumbnail";
+static NSString *const ImageURLKey = @"image";
 static NSString *const PublishedKey = @"published";
 static NSString *const PublisherKey = @"publisher";
 static NSString *const RelatedURLKey = @"related-works-url";
+static NSString *const ReportURLKey = @"report-url";
+static NSString *const RevokeURLKey = @"revoke-url";
 static NSString *const SeriesLinkKey = @"series-link";
 static NSString *const SubtitleKey = @"subtitle";
 static NSString *const SummaryKey = @"summary";
 static NSString *const TitleKey = @"title";
+static NSString *const TotalCopiesKey = @"total-copies";
 static NSString *const UpdatedKey = @"updated";
-static NSString *const AnnotationsURLKey = @"annotations";
-static NSString *const AnalyticsURLKey = @"analytics";
-static NSString *const AlternateURLKey = @"alternate";
-static NSString *const RevokeURLKey = @"revoke-url";
-static NSString *const ReportURLKey = @"report-url";
 
 @implementation NYPLBook
 
@@ -210,14 +208,7 @@ static NSString *const ReportURLKey = @"report-url";
   }
   
   return [[self alloc]
-          initWithAcquisition:[[NYPLBookAcquisition alloc]
-                               initWithBorrow:borrow
-                               generic:generic
-                               openAccess:openAccess
-                               revoke:revoke
-                               sample:sample
-                               report:report]
-          acquisitions:entry.acquisitions
+          initWithAcquisitions:entry.acquisitions
           bookAuthors:authors
           availabilityStatus:availabilityStatus
           availableCopies:availableCopies
@@ -248,8 +239,7 @@ static NSString *const ReportURLKey = @"report-url";
 - (instancetype)bookWithMetadataFromBook:(NYPLBook *)book
 {
   return [[NYPLBook alloc]
-          initWithAcquisition:self.acquisition
-          acquisitions:self.acquisitions
+          initWithAcquisitions:self.acquisitions
           bookAuthors:book.bookAuthors
           availabilityStatus:self.availabilityStatus
           availableCopies:self.availableCopies
@@ -277,42 +267,40 @@ static NSString *const ReportURLKey = @"report-url";
           reportURL:self.reportURL];
 }
 
-- (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
-                       acquisitions:(NSArray<NYPLOPDSAcquisition *> *)acquisitions
-                        bookAuthors:(NSArray<NYPLBookAuthor *> *)authors
-                 availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
-                    availableCopies:(NSInteger)availableCopies
-                     availableUntil:(NSDate *)availableUntil
-                        totalCopies:(NSInteger)totalCopies
-                      holdsPosition:(NSInteger)holdsPosition
-                    categoryStrings:(NSArray *)categoryStrings
-                        distributor:(NSString *)distributor
-                         identifier:(NSString *)identifier
-                           imageURL:(NSURL *)imageURL
-                  imageThumbnailURL:(NSURL *)imageThumbnailURL
-                          published:(NSDate *)published
-                          publisher:(NSString *)publisher
-                           subtitle:(NSString *)subtitle
-                            summary:(NSString *)summary
-                              title:(NSString *)title
-                            updated:(NSDate *)updated
-                     annotationsURL:(NSURL *)annotationsURL
-                       analyticsURL:(NSURL *)analyticsURL
-                       alternateURL:(NSURL *)alternateURL
-                    relatedWorksURL:(NSURL *)relatedWorksURL
-                          seriesURL:(NSURL *)seriesURL
-                           licensor:(NSDictionary *)licensor
-                          revokeURL:(NSURL *)revokeURL
-                          reportURL:(NSURL *)reportURL
+- (instancetype)initWithAcquisitions:(NSArray<NYPLOPDSAcquisition *> *)acquisitions
+                         bookAuthors:(NSArray<NYPLBookAuthor *> *)authors
+                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
+                     availableCopies:(NSInteger)availableCopies
+                      availableUntil:(NSDate *)availableUntil
+                         totalCopies:(NSInteger)totalCopies
+                       holdsPosition:(NSInteger)holdsPosition
+                     categoryStrings:(NSArray *)categoryStrings
+                         distributor:(NSString *)distributor
+                          identifier:(NSString *)identifier
+                            imageURL:(NSURL *)imageURL
+                   imageThumbnailURL:(NSURL *)imageThumbnailURL
+                           published:(NSDate *)published
+                           publisher:(NSString *)publisher
+                            subtitle:(NSString *)subtitle
+                             summary:(NSString *)summary
+                               title:(NSString *)title
+                             updated:(NSDate *)updated
+                      annotationsURL:(NSURL *)annotationsURL
+                        analyticsURL:(NSURL *)analyticsURL
+                        alternateURL:(NSURL *)alternateURL
+                     relatedWorksURL:(NSURL *)relatedWorksURL
+                           seriesURL:(NSURL *)seriesURL
+                            licensor:(NSDictionary *)licensor
+                           revokeURL:(NSURL *)revokeURL
+                           reportURL:(NSURL *)reportURL
 {
   self = [super init];
   if(!self) return nil;
   
-  if(!(acquisition && identifier && title && updated)) {
+  if(!(acquisitions && identifier && title && updated)) {
     @throw NSInvalidArgumentException;
   }
   
-  self.acquisition = acquisition;
   self.acquisitions = acquisitions;
   self.alternateURL = alternateURL;
   self.annotationsURL = annotationsURL;
@@ -495,8 +483,7 @@ static NSString *const ReportURLKey = @"report-url";
 
 - (NSDictionary *)dictionaryRepresentation
 {
-  return @{DeprecatedAcquisitionKey: [self.acquisition dictionaryRepresentation],
-           AlternateURLKey: NYPLNullFromNil([self.alternateURL absoluteString]),
+  return @{AlternateURLKey: NYPLNullFromNil([self.alternateURL absoluteString]),
            AnnotationsURLKey: NYPLNullFromNil([self.annotationsURL absoluteString]),
            AnalyticsURLKey: NYPLNullFromNil([self.analyticsURL absoluteString]),
            AuthorLinksKey: [self authorLinkArray],

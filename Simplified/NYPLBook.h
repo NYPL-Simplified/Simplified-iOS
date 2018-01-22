@@ -54,35 +54,35 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 // and metadata from the specified book
 - (instancetype)bookWithMetadataFromBook:(NYPLBook *)book;
 
-// designated initializer
-- (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
-                       acquisitions:(NSArray<NYPLOPDSAcquisition *> *)acquisitions
-                        bookAuthors:(NSArray<NYPLBookAuthor *> *)authors
-                 availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
-                    availableCopies:(NSInteger)availableCopies
-                     availableUntil:(NSDate *)availableUntil
-                        totalCopies:(NSInteger)totalCopies
-                      holdsPosition:(NSInteger)holdsPosition
-                    categoryStrings:(NSArray *)categoryStrings
-                        distributor:(NSString *)distributor
-                         identifier:(NSString *)identifier
-                           imageURL:(NSURL *)imageURL
-                  imageThumbnailURL:(NSURL *)imageThumbnailURL
-                          published:(NSDate *)published
-                          publisher:(NSString *)publisher
-                           subtitle:(NSString *)subtitle
-                            summary:(NSString *)summary
-                              title:(NSString *)title
-                            updated:(NSDate *)updated
-                     annotationsURL:(NSURL *)annotationsURL
-                       analyticsURL:(NSURL *)analyticsURL
-                       alternateURL:(NSURL *)alternateURL
-                    relatedWorksURL:(NSURL *)relatedWorksURL
-                          seriesURL:(NSURL *)seriesURL
-                           licensor:(NSDictionary *)licensor;
+- (instancetype)initWithAcquisitions:(NSArray<NYPLOPDSAcquisition *> *)acquisitions
+                         bookAuthors:(NSArray<NYPLBookAuthor *> *)authors
+                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
+                     availableCopies:(NSInteger)availableCopies
+                      availableUntil:(NSDate *)availableUntil
+                         totalCopies:(NSInteger)totalCopies
+                       holdsPosition:(NSInteger)holdsPosition
+                     categoryStrings:(NSArray *)categoryStrings
+                         distributor:(NSString *)distributor
+                          identifier:(NSString *)identifier
+                            imageURL:(NSURL *)imageURL
+                   imageThumbnailURL:(NSURL *)imageThumbnailURL
+                           published:(NSDate *)published
+                           publisher:(NSString *)publisher
+                            subtitle:(NSString *)subtitle
+                             summary:(NSString *)summary
+                               title:(NSString *)title
+                             updated:(NSDate *)updated
+                      annotationsURL:(NSURL *)annotationsURL
+                        analyticsURL:(NSURL *)analyticsURL
+                        alternateURL:(NSURL *)alternateURL
+                     relatedWorksURL:(NSURL *)relatedWorksURL
+                           seriesURL:(NSURL *)seriesURL
+                            licensor:(NSDictionary *)licensor
+                           revokeURL:(NSURL *)revokeURL
+                           reportURL:(NSURL *)reportURL
+  NS_DESIGNATED_INITIALIZER;
 
-// designated initializer
-- (instancetype)initWithDictionary:(NSDictionary *)dictionary;
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary NS_DESIGNATED_INITIALIZER;
 
 - (NSDictionary *)dictionaryRepresentation;
 
