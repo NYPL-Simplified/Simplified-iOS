@@ -285,11 +285,14 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 {
   CGPoint referencePoint = [self.collectionView convertPoint:location fromView:self.view];
   NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:referencePoint];
-  NYPLBookNormalCell *cell = (NYPLBookNormalCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-  
+  UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
+  if (!cell || ![cell isKindOfClass:[NYPLBookNormalCell class]]) {
+    return nil;
+  }
+  NYPLBookNormalCell *bookCell = (NYPLBookNormalCell *) cell;
   UIViewController *vc = [[UIViewController alloc] init];
   vc.view.tag = indexPath.row;
-  UIImageView *imView = [[UIImageView alloc] initWithImage:cell.cover.image];
+  UIImageView *imView = [[UIImageView alloc] initWithImage:bookCell.cover.image];
   imView.contentMode = UIViewContentModeScaleAspectFill;
   [vc.view addSubview:imView];
   [imView autoPinEdgesToSuperviewEdges];
