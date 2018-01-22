@@ -336,9 +336,43 @@ static NSString *const UpdatedKey = @"updated";
   self = [super init];
   if(!self) return nil;
 
+  // This is not present in older versions of serialized books.
+  NSArray *const acquisitionsArray = dictionary[AcquisitionsKey];
+  if (acquisitionsArray) {
+    assert([acquisitionsArray isKindOfClass:[NSArray class]]);
+
+    NSMutableArray<NYPLOPDSAcquisition *> *const mutableAcqusitions =
+      [NSMutableArray arrayWithCapacity:acquisitionsArray.count];
+
+    for (NSDictionary *const acquisitionDictionary in acquisitionsArray) {
+      assert([acquisitionDictionary isKindOfClass:[NSDictionary class]]);
+
+      NYPLOPDSAcquisition *const acquisition = [NYPLOPDSAcquisition acquisitionWithDictionary:dictionary];
+      assert(acquisition);
+
+      [mutableAcqusitions addObject:acquisition];
+    }
+
+    self.acquisitions = [mutableAcqusitions copy];
+  }
+
+  // This is not present in older versions of serialized books.
+  NSString *const revokeString = NYPLNullToNil(dictionary[RevokeURLKey]);
+  self.revokeURL = revokeString ? [NSURL URLWithString:revokeString] : nil;
+
+  // This is not present in older versions of serialized books.
+  NSString *const reportString = NYPLNullToNil(dictionary[ReportURLKey]);
+  self.reportURL = reportString ? [NSURL URLWithString:reportString] : nil;
+
   // If present, migrate old acquistion data to the new format.
   // This handles data originally serialized from an `NYPLBookAcquisition`.
   if (dictionary[DeprecatedAcquisitionKey]) {
+    // Old-format acqusitions previously held all of these. As such, if we have an old-format
+    // acquisition, none of these should have been successfully set above.
+    assert(!self.acquisitions);
+    assert(!self.revokeURL);
+    assert(!self.reportURL);
+
     NSString *const revokeString = NYPLNullToNil(dictionary[DeprecatedAcquisitionKey][@"revoke"]);
     self.revokeURL = revokeString ? [NSURL URLWithString:revokeString] : nil;
 
@@ -483,7 +517,14 @@ static NSString *const UpdatedKey = @"updated";
 
 - (NSDictionary *)dictionaryRepresentation
 {
-  return @{AlternateURLKey: NYPLNullFromNil([self.alternateURL absoluteString]),
+  NSMutableArray *const mutableAcquisitionDictionaryArray = [NSMutableArray arrayWithCapacity:self.acquisitions.count];
+
+  for (NYPLOPDSAcquisition *const acquisition in self.acquisitions) {
+    [mutableAcquisitionDictionaryArray addObject:[acquisition dictionaryRepresentation]];
+  }
+
+  return @{AcquisitionsKey:[mutableAcquisitionDictionaryArray copy],
+           AlternateURLKey: NYPLNullFromNil([self.alternateURL absoluteString]),
            AnnotationsURLKey: NYPLNullFromNil([self.annotationsURL absoluteString]),
            AnalyticsURLKey: NYPLNullFromNil([self.analyticsURL absoluteString]),
            AuthorLinksKey: [self authorLinkArray],

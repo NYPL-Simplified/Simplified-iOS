@@ -250,13 +250,13 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)ind
           indirectAcquisitions:[mutableIndirectAcquisitions copy]];
 }
 
-- (NSDictionary *_Nonnull)dictionary
+- (NSDictionary *_Nonnull)dictionaryRepresentation
 {
   NSMutableArray *const mutableIndirectAcquistionDictionaries =
     [NSMutableArray arrayWithCapacity:self.indirectAcquisitions.count];
 
   for (NYPLOPDSIndirectAcquisition *const indirectAcqusition in self.indirectAcquisitions) {
-    [mutableIndirectAcquistionDictionaries addObject:[indirectAcqusition dictionary]];
+    [mutableIndirectAcquistionDictionaries addObject:[indirectAcqusition dictionaryRepresentation]];
   }
 
   return @{

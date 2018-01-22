@@ -91,6 +91,6 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation relation);
 
 /// @return A serialized form of an acqusition suitable for passing to the
 /// @c acquisitionWithDictionary: method for later deserialization.
-- (NSDictionary *_Nonnull)dictionary;
+- (NSDictionary *_Nonnull)dictionaryRepresentation;
 
 @end

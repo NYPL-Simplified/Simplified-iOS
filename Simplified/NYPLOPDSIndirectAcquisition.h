@@ -29,6 +29,6 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *_Nonnull)indirectA
 
 /// @return A serialized form of an acqusition suitable for passing to the
 /// @c indirectAcquisitionWithDictionary: method for later deserialization.
-- (NSDictionary *_Nonnull)dictionary;
+- (NSDictionary *_Nonnull)dictionaryRepresentation;
 
 @end
