@@ -1,4 +1,3 @@
-@class NYPLBookAcquisition;
 @class NYPLOPDSAcquisition;
 @class NYPLOPDSEntry;
 @class NYPLOPDSEvent;
@@ -14,7 +13,6 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 
 @interface NYPLBook : NSObject
 
-@property (nonatomic, readonly) NYPLBookAcquisition *acquisition;
 @property (nonatomic, readonly) NSArray<NYPLOPDSAcquisition *> *acquisitions;
 @property (nonatomic, readonly) NSString *authors;
 @property (nonatomic, readonly) NSArray<NYPLBookAuthor *> *bookAuthors;
@@ -85,5 +83,31 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary NS_DESIGNATED_INITIALIZER;
 
 - (NSDictionary *)dictionaryRepresentation;
+
+/// A compatibility method to allow the app to continue to function until the
+/// user interface and other components support handling multiple valid
+/// acquisition possibilities. Its use should be avoided wherever possible and
+/// it will eventually be removed.
+///
+/// @return An acquisition leading to an EPUB or @c nil.
+- (NYPLOPDSAcquisition *)defaultAcquisition __deprecated;
+
+/// A compatibility method to allow the app to continue to function until the
+/// user interface and other components support handling multiple valid
+/// acquisition possibilities. Its use should be avoided wherever possible and
+/// it will eventually be removed.
+///
+/// @return The default acquisition leading to an EPUB if it has a borrow
+/// relation, else @c nil.
+- (NYPLOPDSAcquisition *)defaultAcquisitionIfBorrow __deprecated;
+
+/// A compatibility method to allow the app to continue to function until the
+/// user interface and other components support handling multiple valid
+/// acquisition possibilities. Its use should be avoided wherever possible and
+/// it will eventually be removed.
+///
+/// @return The default acquisition leading to an EPUB if it has an open access
+/// relation, else @c nil.
+- (NYPLOPDSAcquisition *)defaultAcquisitionIfOpenAccess __deprecated;
 
 @end

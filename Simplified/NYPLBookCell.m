@@ -1,5 +1,4 @@
 #import "NYPLBook.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLBookCellDelegate.h"
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
@@ -7,6 +6,7 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLOPDSAcquisition.h"
 #import "SimplyE-Swift.h"
 
 static NSString *const reuseIdentifierDownloading = @"Downloading";
@@ -59,7 +59,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
                                         forIndexPath:indexPath];
       cell.book = book;
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
-      if(book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) {
+      if(book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) {
         cell.state = NYPLBookButtonsStateCanKeep;
       } else {
         if (book.availableCopies > 0) {

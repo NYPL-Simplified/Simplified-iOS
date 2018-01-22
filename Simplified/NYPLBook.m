@@ -1,5 +1,6 @@
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLOPDSAcquisition.h"
+#import "NYPLOPDSIndirectAcquisition.h"
 #import "NYPLNull.h"
 #import "NYPLOPDS.h"
 #import "NYPLConfiguration.h"
@@ -566,6 +567,37 @@ static NSString *const UpdatedKey = @"updated";
 - (NSString *)categories
 {
   return [self.categoryStrings componentsJoinedByString:@"; "];
+}
+
+- (NYPLOPDSAcquisition *)defaultAcquisition
+{
+  for (NYPLOPDSAcquisition *const acquisition in self.acquisitions) {
+    if ([acquisition.type isEqualToString:@"application/epub+zip"]) {
+      return acquisition;
+    }
+
+    if (acquisition.indirectAcquisitions.count >= 1
+        && [acquisition.indirectAcquisitions.lastObject.type isEqualToString:@"application/epub+zip"])
+    {
+      return acquisition;
+    }
+  }
+
+  return nil;
+}
+
+- (NYPLOPDSAcquisition *)defaultAcquisitionIfBorrow
+{
+  NYPLOPDSAcquisition *const acquisition = [self defaultAcquisition];
+
+  return acquisition.relation == NYPLOPDSAcquisitionRelationBorrow ? acquisition : nil;
+}
+
+- (NYPLOPDSAcquisition *)defaultAcquisitionIfOpenAccess
+{
+  NYPLOPDSAcquisition *const acquisition = [self defaultAcquisition];
+
+  return acquisition.relation == NYPLOPDSAcquisitionRelationOpenAccess ? acquisition : nil;
 }
 
 @end

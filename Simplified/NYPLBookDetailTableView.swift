@@ -65,7 +65,7 @@ final class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UI
   func load() {
     NotificationCenter.default.addObserver(self, selector: #selector(self.updateFonts), name: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil)
     
-    if book.acquisition.report != nil {
+    if book.reportURL != nil {
       standardCells.append(createCell(type: .reportAProblem))
     }
     refresh()

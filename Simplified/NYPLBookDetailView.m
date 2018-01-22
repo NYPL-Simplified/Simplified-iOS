@@ -1,6 +1,5 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLBookCellDelegate.h"
 #import "NYPLBookDetailButtonsView.h"
 #import "NYPLBookDetailDownloadFailedView.h"
@@ -16,6 +15,7 @@
 #import "NYPLBookDetailView.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLOPDSAcquisition.h"
 #import "NYPLOPDSFeed.h"
 #import "SimplyE-Swift.h"
 #import "UIFont+NYPLSystemFontOverride.h"
@@ -530,7 +530,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.downloadFailedView.hidden = YES;
       [self hideDownloadingView:YES];
       self.buttonsView.hidden = NO;
-      if(self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) {
+      if(self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
+      {
         self.normalView.state = NYPLBookButtonsStateCanKeep;
         self.buttonsView.state = NYPLBookButtonsStateCanKeep;
       } else {
