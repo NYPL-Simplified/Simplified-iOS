@@ -41,6 +41,8 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 @property (nonatomic, readonly) NSURL *relatedWorksURL; // nilable
 @property (nonatomic, readonly) NSURL *seriesURL; // nilable
 @property (nonatomic, readonly) NSDictionary *licensor; // nilable
+@property (nonatomic, readonly) NSURL *revokeURL; // nilable
+@property (nonatomic, readonly) NSURL *reportURL; // nilable
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;

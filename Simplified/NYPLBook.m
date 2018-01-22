@@ -1,5 +1,6 @@
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLBookAcquisition.h"
+#import "NYPLOPDSAcquisition.h"
 #import "NYPLNull.h"
 #import "NYPLOPDS.h"
 #import "NYPLConfiguration.h"
@@ -33,12 +34,13 @@
 @property (nonatomic) NSURL *alternateURL;
 @property (nonatomic) NSURL *relatedWorksURL;
 @property (nonatomic) NSURL *seriesURL;
-
 @property (nonatomic) NSDictionary *licensor;
+@property (nonatomic) NSURL *revokeURL;
+@property (nonatomic) NSURL *reportURL;
 
 @end
 
-static NSString *const AcquisitionKey = @"acquisition";
+static NSString *const DeprecatedAcquisitionKey = @"acquisition";
 static NSString *const AcquisitionsKey = @"acquisitions";
 static NSString *const AuthorsKey = @"authors";
 static NSString *const AuthorLinksKey = @"author-links";
@@ -63,6 +65,8 @@ static NSString *const UpdatedKey = @"updated";
 static NSString *const AnnotationsURLKey = @"annotations";
 static NSString *const AnalyticsURLKey = @"analytics";
 static NSString *const AlternateURLKey = @"alternate";
+static NSString *const RevokeURLKey = @"revoke-url";
+static NSString *const ReportURLKey = @"report-url";
 
 @implementation NYPLBook
 
@@ -236,7 +240,9 @@ static NSString *const AlternateURLKey = @"alternate";
           alternateURL:entry.alternate.href
           relatedWorksURL:entry.relatedWorks.href
           seriesURL:entry.seriesLink.href
-          licensor:licensor];
+          licensor:licensor
+          revokeURL:revoke
+          reportURL:report];
 }
 
 - (instancetype)bookWithMetadataFromBook:(NYPLBook *)book
@@ -266,7 +272,9 @@ static NSString *const AlternateURLKey = @"alternate";
           alternateURL:book.alternateURL
           relatedWorksURL:book.relatedWorksURL
           seriesURL:book.seriesURL
-          licensor:book.licensor];
+          licensor:book.licensor
+          revokeURL:self.revokeURL
+          reportURL:self.reportURL];
 }
 
 - (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
@@ -294,6 +302,8 @@ static NSString *const AlternateURLKey = @"alternate";
                     relatedWorksURL:(NSURL *)relatedWorksURL
                           seriesURL:(NSURL *)seriesURL
                            licensor:(NSDictionary *)licensor
+                          revokeURL:(NSURL *)revokeURL
+                          reportURL:(NSURL *)reportURL
 {
   self = [super init];
   if(!self) return nil;
@@ -327,6 +337,8 @@ static NSString *const AlternateURLKey = @"alternate";
   self.summary = summary;
   self.title = title;
   self.updated = updated;
+  self.revokeURL = revokeURL;
+  self.reportURL = reportURL;
   
   return self;
 }
@@ -335,9 +347,64 @@ static NSString *const AlternateURLKey = @"alternate";
 {
   self = [super init];
   if(!self) return nil;
-  
-  self.acquisition = [[NYPLBookAcquisition alloc] initWithDictionary:dictionary[AcquisitionKey]];
-  if(!self.acquisition) return nil;
+
+  // If present, migrate old acquistion data to the new format.
+  // This handles data originally serialized from an `NYPLBookAcquisition`.
+  if (dictionary[DeprecatedAcquisitionKey]) {
+    NSString *const revokeString = NYPLNullToNil(dictionary[DeprecatedAcquisitionKey][@"revoke"]);
+    self.revokeURL = revokeString ? [NSURL URLWithString:revokeString] : nil;
+
+    NSString *const reportString = NYPLNullToNil(dictionary[DeprecatedAcquisitionKey][@"report"]);
+    self.reportURL = reportString ? [NSURL URLWithString:reportString] : nil;
+
+    NSMutableArray<NYPLOPDSAcquisition *> *const mutableAcquisitions = [NSMutableArray array];
+
+    NSString *const genericString = NYPLNullToNil(dictionary[DeprecatedAcquisitionKey][@"generic"]);
+    NSURL *const genericURL = genericString ? [NSURL URLWithString:genericString] : nil;
+    if (genericURL) {
+      [mutableAcquisitions addObject:
+       [NYPLOPDSAcquisition
+        acquisitionWithRelation:NYPLOPDSAcquisitionRelationGeneric
+        type:@"application/epub+zip"
+        hrefURL:genericURL
+        indirectAcquisitions:@[]]];
+    }
+
+    NSString *const borrowString = NYPLNullToNil(dictionary[DeprecatedAcquisitionKey][@"borrow"]);
+    NSURL *const borrowURL = borrowString ? [NSURL URLWithString:borrowString] : nil;
+    if (borrowURL) {
+      [mutableAcquisitions addObject:
+       [NYPLOPDSAcquisition
+        acquisitionWithRelation:NYPLOPDSAcquisitionRelationBorrow
+        type:@"application/epub+zip"
+        hrefURL:borrowURL
+        indirectAcquisitions:@[]]];
+    }
+
+    NSString *const openAccessString = NYPLNullToNil(dictionary[DeprecatedAcquisitionKey][@"open-access"]);
+    NSURL *const openAccessURL = openAccessString ? [NSURL URLWithString:openAccessString] : nil;
+    if (openAccessURL) {
+      [mutableAcquisitions addObject:
+       [NYPLOPDSAcquisition
+        acquisitionWithRelation:NYPLOPDSAcquisitionRelationOpenAccess
+        type:@"application/epub+zip"
+        hrefURL:openAccessURL
+        indirectAcquisitions:@[]]];
+    }
+
+    NSString *const sampleString = NYPLNullToNil(dictionary[DeprecatedAcquisitionKey][@"sample"]);
+    NSURL *const sampleURL = sampleString ? [NSURL URLWithString:sampleString] : nil;
+    if (sampleURL) {
+      [mutableAcquisitions addObject:
+       [NYPLOPDSAcquisition
+        acquisitionWithRelation:NYPLOPDSAcquisitionRelationSample
+        type:@"application/epub+zip"
+        hrefURL:sampleURL
+        indirectAcquisitions:@[]]];
+    }
+
+    self.acquisitions = [mutableAcquisitions copy];
+  }
   
   NSString *const alternate = NYPLNullToNil(dictionary[AlternateURLKey]);
   self.alternateURL = alternate ? [NSURL URLWithString:alternate] : nil;
@@ -426,7 +493,7 @@ static NSString *const AlternateURLKey = @"alternate";
 
 - (NSDictionary *)dictionaryRepresentation
 {
-  return @{AcquisitionKey: [self.acquisition dictionaryRepresentation],
+  return @{DeprecatedAcquisitionKey: [self.acquisition dictionaryRepresentation],
            AlternateURLKey: NYPLNullFromNil([self.alternateURL absoluteString]),
            AnnotationsURLKey: NYPLNullFromNil([self.annotationsURL absoluteString]),
            AnalyticsURLKey: NYPLNullFromNil([self.analyticsURL absoluteString]),
