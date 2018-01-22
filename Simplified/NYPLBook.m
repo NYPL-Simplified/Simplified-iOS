@@ -334,7 +334,7 @@ static NSString *const UpdatedKey = @"updated";
     for (NSDictionary *const acquisitionDictionary in acquisitionsArray) {
       assert([acquisitionDictionary isKindOfClass:[NSDictionary class]]);
 
-      NYPLOPDSAcquisition *const acquisition = [NYPLOPDSAcquisition acquisitionWithDictionary:dictionary];
+      NYPLOPDSAcquisition *const acquisition = [NYPLOPDSAcquisition acquisitionWithDictionary:acquisitionDictionary];
       assert(acquisition);
 
       [mutableAcqusitions addObject:acquisition];
