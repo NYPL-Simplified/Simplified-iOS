@@ -359,13 +359,15 @@ static NSString *const ReportURLKey = @"report-url";
 
     NSMutableArray<NYPLOPDSAcquisition *> *const mutableAcquisitions = [NSMutableArray array];
 
+    NSString *const applicationEPUBZIP = @"application/epub+zip";
+
     NSString *const genericString = NYPLNullToNil(dictionary[DeprecatedAcquisitionKey][@"generic"]);
     NSURL *const genericURL = genericString ? [NSURL URLWithString:genericString] : nil;
     if (genericURL) {
       [mutableAcquisitions addObject:
        [NYPLOPDSAcquisition
         acquisitionWithRelation:NYPLOPDSAcquisitionRelationGeneric
-        type:@"application/epub+zip"
+        type:applicationEPUBZIP
         hrefURL:genericURL
         indirectAcquisitions:@[]]];
     }
@@ -376,7 +378,7 @@ static NSString *const ReportURLKey = @"report-url";
       [mutableAcquisitions addObject:
        [NYPLOPDSAcquisition
         acquisitionWithRelation:NYPLOPDSAcquisitionRelationBorrow
-        type:@"application/epub+zip"
+        type:applicationEPUBZIP
         hrefURL:borrowURL
         indirectAcquisitions:@[]]];
     }
@@ -387,7 +389,7 @@ static NSString *const ReportURLKey = @"report-url";
       [mutableAcquisitions addObject:
        [NYPLOPDSAcquisition
         acquisitionWithRelation:NYPLOPDSAcquisitionRelationOpenAccess
-        type:@"application/epub+zip"
+        type:applicationEPUBZIP
         hrefURL:openAccessURL
         indirectAcquisitions:@[]]];
     }
@@ -398,7 +400,7 @@ static NSString *const ReportURLKey = @"report-url";
       [mutableAcquisitions addObject:
        [NYPLOPDSAcquisition
         acquisitionWithRelation:NYPLOPDSAcquisitionRelationSample
-        type:@"application/epub+zip"
+        type:applicationEPUBZIP
         hrefURL:sampleURL
         indirectAcquisitions:@[]]];
     }
