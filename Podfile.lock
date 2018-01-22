@@ -69,7 +69,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   HelpStack:
-    :commit: 12741ab23e1478c676095230b6ac0a78f687d1be
+    :commit: c449408d41626171650ab8e61af2c60decf10795
     :git: https://github.com/NYPL-Simplified/helpstack-ios
   NYPLCardCreator:
     :commit: 0225028ae6ccad34eeb4e375bb02127c8a0bd5c1
