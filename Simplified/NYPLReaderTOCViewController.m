@@ -238,12 +238,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 }
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-  
   if (editingStyle == UITableViewCellEditingStyleDelete) {
-    NYPLReaderBookmark *bookmark = self.bookmarks[indexPath.row];
-    [self.bookmarks removeObjectAtIndex:indexPath.row];
+    if ((NSUInteger)indexPath.row < self.bookmarks.count) {
+      NYPLReaderBookmark *bookmark = self.bookmarks[indexPath.row];
+      [self.bookmarks removeObjectAtIndex:indexPath.row];
+      [self.delegate TOCViewController:self didDeleteBookmark:bookmark];
+    }
     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:(UITableViewRowAnimationFade)];
-    [self.delegate TOCViewController:self didDeleteBookmark:bookmark];
   }
 }
 
