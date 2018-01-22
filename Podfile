@@ -12,7 +12,7 @@ target 'SimplyE' do
   pod 'HelpStack', :git => 'https://github.com/NYPL-Simplified/helpstack-ios'
   pod 'Bugsnag', '~> 5.14.2'
   pod 'NYPLCardCreator', :git => 'https://github.com/NYPL-Simplified/CardCreator-iOS.git'
-  pod 'SQLite.swift', :git => 'https://github.com/NYPL-Simplified/SQLite.swift', :branch => 'nypl-swift4-ios8-target'
+  pod 'SQLite.swift', '~> 0.11.4'
   pod 'ZXingObjC', '~> 3.2.1'
 
   target 'SimplyETests' do
