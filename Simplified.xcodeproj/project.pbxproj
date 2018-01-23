@@ -137,6 +137,7 @@
 		2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */; };
 		2DB436381D4C049200F8E69D /* NYPLReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DB436371D4C049200F8E69D /* NYPLReachability.m */; };
 		2DC8D9DC1D09F797007DD125 /* UpdateCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */; };
+		2DCB71EE2017DFB5000E041A /* NYPLOPDSAcquisitionAvailability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DCB71ED2017DFB5000E041A /* NYPLOPDSAcquisitionAvailability.m */; };
 		2DE514351DC3F0BE005A58BD /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */; };
 		2DF321831DC3B83500E1858F /* NYPLAnnotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */; };
 		2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */; };
@@ -485,6 +486,8 @@
 		2DB436371D4C049200F8E69D /* NYPLReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReachability.m; sourceTree = "<group>"; };
 		2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheck.swift; sourceTree = "<group>"; };
 		2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheckShim.swift; sourceTree = "<group>"; };
+		2DCB71EC2017DFB5000E041A /* NYPLOPDSAcquisitionAvailability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSAcquisitionAvailability.h; sourceTree = "<group>"; };
+		2DCB71ED2017DFB5000E041A /* NYPLOPDSAcquisitionAvailability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSAcquisitionAvailability.m; sourceTree = "<group>"; };
 		2DECDF1D20041A7E0088E7D6 /* Pods_SimplyE.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_SimplyE.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAnnotations.swift; sourceTree = "<group>"; };
 		2DFAC8EB1CD8DDD1003D9EC0 /* NYPLOPDSCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSCategory.h; sourceTree = "<group>"; };
@@ -1180,6 +1183,8 @@
 				119BEB8D19901E1000121439 /* NYPLOPDS.h */,
 				2D754BB92002E2FB0061D34F /* NYPLOPDSAcquisition.h */,
 				2D754BBA2002E2FB0061D34F /* NYPLOPDSAcquisition.m */,
+				2DCB71EC2017DFB5000E041A /* NYPLOPDSAcquisitionAvailability.h */,
+				2DCB71ED2017DFB5000E041A /* NYPLOPDSAcquisitionAvailability.m */,
 				110AD83A19E4960C005724C3 /* NYPLOPDSAttribute.h */,
 				110AD83B19E497D6005724C3 /* NYPLOPDSAttribute.m */,
 				2DFAC8EB1CD8DDD1003D9EC0 /* NYPLOPDSCategory.h */,
@@ -1604,6 +1609,7 @@
 				114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLImageAdditions.m in Sources */,
 				2D87909D20127AA300E2763F /* NYPLMyBooksAcquisitionPath.m in Sources */,
 				1142E4EB19EED86A00D9B3D9 /* NYPLFacetBarView.m in Sources */,
+				2DCB71EE2017DFB5000E041A /* NYPLOPDSAcquisitionAvailability.m in Sources */,
 				2DB436381D4C049200F8E69D /* NYPLReachability.m in Sources */,
 				1195040B1994075B009FB788 /* NYPLReaderViewController.m in Sources */,
 				1183F33B194B775900DC322F /* NYPLCatalogLaneCell.m in Sources */,

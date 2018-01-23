@@ -7,3 +7,4 @@
 #import "NYPLOPDSRelation.h"
 #import "NYPLOPDSType.h"
 #import "NYPLOPDSAcquisition.h"
+#import "NYPLOPDSAcquisitionAvailability.h"
