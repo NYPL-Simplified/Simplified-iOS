@@ -11,6 +11,8 @@
 
 @implementation NYPLReachability
 
+NSString *const NYPLReachabilityHostIsReachableNotification = @"NYPLReachabilityHostIsReachableNotification";
+
 + (NYPLReachability *)sharedReachability
 {
   static NYPLReachability *sharedReachability;
@@ -58,7 +60,7 @@
     switch (netStatus) {
       case ReachableViaWiFi:
       case ReachableViaWWAN:
-        [NetworkQueue retryQueue];
+        [[NSNotificationCenter defaultCenter] postNotificationName:NYPLReachabilityHostIsReachableNotification object:self];
         NYPLLOG(@"Host Reachability changed: WIFI or 3G");
         break;
       default:

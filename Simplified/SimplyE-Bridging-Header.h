@@ -28,3 +28,4 @@
 #import "NYPLBarcodeScanningViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLZXingEncoder.h"
+#import "NYPLReachability.h"

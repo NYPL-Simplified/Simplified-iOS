@@ -7,42 +7,51 @@ import SQLite
  will retry any queued requests and purge them if necessary.
  */
 final class NetworkQueue: NSObject {
-  
+
+  static let shared = NetworkQueue()
+
+  override init() {
+    super.init()
+    NotificationCenter.default.addObserver(forName: NSNotification.Name.NYPLReachabilityHostIsReachable,
+                                           object: nil,
+                                           queue: nil) { notification in self.retryQueue() }
+  }
+
   static let StatusCodes = [NSURLErrorTimedOut,
-                     NSURLErrorCannotFindHost,
-                     NSURLErrorCannotConnectToHost,
-                     NSURLErrorNetworkConnectionLost,
-                     NSURLErrorNotConnectedToInternet,
-                     NSURLErrorInternationalRoamingOff,
-                     NSURLErrorCallIsActive,
-                     NSURLErrorDataNotAllowed,
-                     NSURLErrorSecureConnectionFailed]
-  static let MaxRetriesInQueue = 5
-  
+                            NSURLErrorCannotFindHost,
+                            NSURLErrorCannotConnectToHost,
+                            NSURLErrorNetworkConnectionLost,
+                            NSURLErrorNotConnectedToInternet,
+                            NSURLErrorInternationalRoamingOff,
+                            NSURLErrorCallIsActive,
+                            NSURLErrorDataNotAllowed,
+                            NSURLErrorSecureConnectionFailed]
+  let MaxRetriesInQueue = 5
+
   let serialQueue = DispatchQueue(label: "org.nypl.labs.SimplyE.networkQueue")
 
   enum HTTPMethodType: String {
     case GET, POST, HEAD, PUT, DELETE, OPTIONS, CONNECT
   }
   
-  private static let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first!
+  private let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first!
   
-  private static let sqlTable = Table("offline_queue")
+  private let sqlTable = Table("offline_queue")
   
-  private static let sqlID = Expression<Int>("id")
-  private static let sqlLibraryID = Expression<Int>("library_identifier")
-  private static let sqlUpdateID = Expression<String?>("update_identifier")
-  private static let sqlUrl = Expression<String>("request_url")
-  private static let sqlMethod = Expression<String>("request_method")
-  private static let sqlParameters = Expression<Data?>("request_parameters")
-  private static let sqlHeader = Expression<Data?>("request_header")
-  private static let sqlRetries = Expression<Int>("retry_count")
-  private static let sqlDateCreated = Expression<Data>("date_created")
+  private let sqlID = Expression<Int>("id")
+  private let sqlLibraryID = Expression<Int>("library_identifier")
+  private let sqlUpdateID = Expression<String?>("update_identifier")
+  private let sqlUrl = Expression<String>("request_url")
+  private let sqlMethod = Expression<String>("request_method")
+  private let sqlParameters = Expression<Data?>("request_parameters")
+  private let sqlHeader = Expression<Data?>("request_header")
+  private let sqlRetries = Expression<Int>("retry_count")
+  private let sqlDateCreated = Expression<Data>("date_created")
   
   
   // MARK: - Public Functions
 
-  class func addRequest(_ libraryID: Int,
+  func addRequest(_ libraryID: Int,
                         _ updateID: String?,
                         _ requestUrl: URL,
                         _ method: HTTPMethodType,
@@ -99,8 +108,8 @@ final class NetworkQueue: NSObject {
       Log.error(#file, "SQLite Error: Could not insert or update row")
     }
   }
-  
-  class func retryQueue()
+
+  private func retryQueue()
   {
     serialQueue.async {
       guard let db = self.startDatabaseConnection() else { return }
@@ -109,6 +118,7 @@ final class NetworkQueue: NSObject {
       do {
         try db.run(expiredRows.delete())
         for row in try db.prepare(self.sqlTable) {
+          Log.debug(#file, "Retrying row: \(row[self.sqlID])")
           self.retry(db, requestRow: row)
         }
       } catch {
@@ -117,10 +127,9 @@ final class NetworkQueue: NSObject {
     }
   }
   
-  
   // MARK: - Private Functions
   
-  private class func retry(db: Connection, requestRow: Row)
+  private func retry(_ db: Connection, requestRow: Row)
   {
     do {
       let ID = Int(requestRow[sqlID])
@@ -154,8 +163,8 @@ final class NetworkQueue: NSObject {
     }
     task.resume()
   }
-  
-  private class func deleteRow(db: Connection, id: Int)
+
+  private func deleteRow(_ db: Connection, id: Int)
   {
     let rowToDelete = sqlTable.filter(sqlID == id)
     if let _ = try? db.run(rowToDelete.delete()) {
@@ -165,7 +174,7 @@ final class NetworkQueue: NSObject {
     }
   }
   
-  private class func startDatabaseConnection() -> Connection?
+  private func startDatabaseConnection() -> Connection?
   {
     let db: Connection
     do {
