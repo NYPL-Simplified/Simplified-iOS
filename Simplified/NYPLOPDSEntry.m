@@ -102,13 +102,12 @@
         NYPLOPDSAcquisition *const acquisition = [NYPLOPDSAcquisition acquisitionWithXML:linkXML];
         if (acquisition) {
           [mutableAcquisitions addObject:acquisition];
-        } else {
-          NYPLLOG(@"Ignoring invalid acquisition.");
+          continue;
         }
 
-        // TODO: We need to `continue` here and go onto the next `linkXML`, but doing so
-        // would break the rest of the app that expects acquisitions to show up the old
-        // way as a link. This will be revisited soon.
+        // It may sometimes bet the case that `!acquisition` if the acquisition used a
+        // non-standard relation. As such, we do not log an error here and let things
+        // continue so the link can be added to `self.links`.
       }
 
       NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
@@ -117,17 +116,7 @@
         continue;
       }
 
-      // FIXME: Total hack to avoid downloading PDF links.
-      if([link.rel isEqualToString:NYPLOPDSRelationAcquisition]) {
-        if([linkXML childrenWithName:@"indirectAcquisition"].count == 1
-           && [((NYPLXML *)[linkXML childrenWithName:@"indirectAcquisition"][0]).attributes[@"type"]
-               isEqualToString:@"application/epub+zip"])
-        {
-          [mutableLinks addObject:link];
-        } else if ([linkXML.attributes[@"type"] isEqualToString:@"application/epub+zip"]) {
-          [mutableLinks addObject:link];
-        }
-      } else if ([link.rel isEqualToString:@"http://www.w3.org/ns/oa#annotationService"]){
+      if ([link.rel isEqualToString:@"http://www.w3.org/ns/oa#annotationService"]){
         self.annotations = link;
       } else if ([link.rel isEqualToString:@"alternate"]){
         self.alternate = link;
