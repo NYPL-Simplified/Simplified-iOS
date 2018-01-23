@@ -59,7 +59,7 @@ const double RequestTimeInterval = 30;
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)syncAllAnnotationsIfAllowedWithPackage:(NSDictionary *)packageDict
+- (void)syncAllAnnotationsWithPackage:(NSDictionary *)packageDict
 {
   if (![NYPLAnnotations syncIsPossibleAndPermitted]) {
     return;
@@ -76,12 +76,7 @@ const double RequestTimeInterval = 30;
                              toURL:self.annotationsURL
                        withPackage:dictionary];
 
-  [self syncBookmarksWithCompletion:^(BOOL success, NSArray<NYPLReaderBookmark *> *bookmarks) {
-    if ([self.delegate respondsToSelector:@selector(didCompleteBookmarkSync:withBookmarks:)]) {
-      [self.delegate didCompleteBookmarkSync:success withBookmarks:bookmarks];
-    }
-  }];
-
+  [self syncBookmarksWithCompletion:nil];
 }
 
 - (void)postLastReadPosition:(NSString *)location
@@ -96,25 +91,21 @@ const double RequestTimeInterval = 30;
       case NYPLReadPositionSyncStatusIdle: {
         self.syncStatus = NYPLReadPositionSyncStatusBusy;
         [NYPLAnnotations postReadingPositionForBook:self.bookID annotationsURL:nil cfi:location];
-        [NSTimer scheduledTimerWithTimeInterval:RequestTimeInterval
-                                         target:self selector:@selector(timerFire) userInfo:nil repeats:NO];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(RequestTimeInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+          @synchronized(self) {
+            self.syncStatus = NYPLReadPositionSyncStatusIdle;
+            if (self.queuedReadingPosition) {
+              [self postLastReadPosition:self.queuedReadingPosition];
+              self.queuedReadingPosition = nil;
+            }
+          }
+        });
         break;
       }
       case NYPLReadPositionSyncStatusBusy: {
         self.queuedReadingPosition = location;
         break;
       }
-    }
-  }
-}
-
-- (void)timerFire
-{
-  @synchronized(self) {
-    self.syncStatus = NYPLReadPositionSyncStatusIdle;
-    if (self.queuedReadingPosition) {
-      [self postLastReadPosition:self.queuedReadingPosition];
-      self.queuedReadingPosition = nil;
     }
   }
 }
@@ -193,8 +184,8 @@ const double RequestTimeInterval = 30;
     // 2 - The server and the client have the same page marked
     // 3 - There is no recent page saved on the server
     if ((currentLocationString && [deviceIDString isEqualToString:[NYPLAccount sharedAccount].deviceID]) ||
-      [currentLocationString isEqualToString:serverLocationString] ||
-      !serverLocationString) {
+        [currentLocationString isEqualToString:serverLocationString] ||
+        !serverLocationString) {
       self.shouldPostLastRead = YES;
     } else {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -235,42 +226,49 @@ const double RequestTimeInterval = 30;
 
      if (!reachable) {
        NYPLLOG(@"Error: host was not reachable for bookmark sync attempt.");
-       completion(NO, [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+       if (completion) {
+         completion(NO, [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+       }
        return;
      }
 
-     // Sync: First upload any local bookmarks that have never been saved to the server.
-     // Then download the server's bookmark list and filter out any that can be deleted.
-
+     // First check for and upload any local bookmarks that have never been saved to the server.
+     // Wait til that's finished, then download the server's bookmark list and filter out any that can be deleted.
      NSArray<NYPLReaderBookmark *> *localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID];
-     NYPLLOG_F(@"\nLocally Saved Bookmarks:\n\n%@", localBookmarks);
-     
      [NYPLAnnotations uploadLocalBookmarks:localBookmarks forBook:self.bookID completion:^(NSArray<NYPLReaderBookmark *> * _Nonnull bookmarksUploaded, NSArray<NYPLReaderBookmark *> * _Nonnull bookmarksFailedToUpload) {
-
-       NYPLLOG_F(@"\nBookmarks First Time Uploaded:\n\n%@", bookmarksUploaded);
-       NYPLLOG_F(@"\nBookmarks Failed To Upload:\n\n%@", bookmarksFailedToUpload);
 
        // Replace local bookmarks with server versions
        for (NYPLReaderBookmark *localBKM in localBookmarks) {
          for (NYPLReaderBookmark *uploadedBKM in bookmarksUploaded) {
            if ([localBKM isEqual:uploadedBKM]) {
-             [[NYPLBookRegistry sharedRegistry] deleteBookmark:localBKM forIdentifier:self.bookID];
-             [[NYPLBookRegistry sharedRegistry] addBookmark:uploadedBKM forIdentifier:self.bookID];
+             [[NYPLBookRegistry sharedRegistry] replaceBookmark:localBKM with:uploadedBKM forIdentifier:self.bookID];
            }
          }
        }
 
        [NYPLAnnotations getServerBookmarksForBook:self.bookID atURL:self.annotationsURL completionHandler:^(NSArray<NYPLReaderBookmark *> * _Nonnull serverBookmarks) {
 
-         if (serverBookmarks.count == 0) {
+         if (!serverBookmarks) {
+           NYPLLOG(@"Ending sync without running completion. Returning original list of bookmarks.");
+           completion(NO, [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+           return;
+         } else if (serverBookmarks.count == 0) {
            NYPLLOG(@"No server bookmarks were returned.");
          } else {
            NYPLLOG_F(@"\nServer Bookmarks:\n\n%@", serverBookmarks);
          }
 
+         // Bookmarks that are present on the client, and have a corresponding version on the server
+         // with matching annotation ID's should be kept on the client.
          NSMutableArray<NYPLReaderBookmark *> *localBookmarksToKeep = [[NSMutableArray alloc] init];
+         // Bookmarks that are present on the client, have been uploaded before,
+         // but are no longer on the server, should be deleted on the client.
          NSMutableArray<NYPLReaderBookmark *> *localBookmarksToDelete = [[NSMutableArray alloc] init];
+         // Bookmarks that are present on the server, but not the client, should be added to this
+         // client as long as they were not created on this device originally.
          NSMutableArray<NYPLReaderBookmark *> *serverBookmarksToKeep = serverBookmarks.mutableCopy;
+         // Bookmarks present on the server, that were originally created on this device,
+         // and are no longer present on the client, should be deleted on the server.
          NSMutableArray<NYPLReaderBookmark *> *serverBookmarksToDelete = [[NSMutableArray alloc] init];
 
          for (NYPLReaderBookmark *serverBookmark in serverBookmarks) {
@@ -279,8 +277,6 @@ const double RequestTimeInterval = 30;
 
            [localBookmarksToKeep addObjectsFromArray:matchingBookmarks];
 
-           // Server bookmarks, created on this device, that are no longer present as a local bookmark,
-           // should be deleted on the server.
            if (matchingBookmarks.count == 0 &&
                [serverBookmark.device isEqualToString:[[NYPLAccount sharedAccount] deviceID]]) {
              [serverBookmarksToDelete addObject:serverBookmark];
@@ -294,7 +290,6 @@ const double RequestTimeInterval = 30;
              [localBookmarksToDelete addObject:localBookmark];
            }
          }
-         NYPLLOG_F(@"\nBookmarks To Delete From Registry:\n\n%@", localBookmarksToDelete);
 
          NSMutableArray<NYPLReaderBookmark *> *bookmarksToAdd = serverBookmarks.mutableCopy;
          [bookmarksToAdd addObjectsFromArray:bookmarksFailedToUpload];
@@ -306,18 +301,16 @@ const double RequestTimeInterval = 30;
              }
            }
          }
-         NYPLLOG_F(@"\nBookmarks To Save To Registry:\n\n%@", bookmarksToAdd);
 
          for (NYPLReaderBookmark *bookmark in bookmarksToAdd) {
            [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.bookID];
          }
 
          if (serverBookmarksToDelete.count > 0) {
-           NYPLLOG_F(@"\nBookmarks to Delete from the Server:\n\n%@", serverBookmarksToDelete);
-           [NYPLAnnotations deleteBookmarks:serverBookmarksToDelete completionHandler:^{
-             completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
-           }];
-         } else {
+           [NYPLAnnotations deleteBookmarks:serverBookmarksToDelete];
+         }
+
+         if (completion) {
            completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
          }
        }];

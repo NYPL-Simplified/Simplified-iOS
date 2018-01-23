@@ -13,10 +13,6 @@
 
 - (void)uploadFinishedForBookmark:(NYPLReaderBookmark *)bookmark
                            inBook:(NSString *)bookID;
-
-@optional
-- (void)didCompleteBookmarkSync:(BOOL)success
-                  withBookmarks:(NSArray<NYPLReaderBookmark *> *)bookmarks;
 @end
 
 @interface NYPLReadiumViewSyncManager : NSObject
@@ -26,8 +22,7 @@
                        bookMap:(NSDictionary *)map
                       delegate:(id)delegate;
 
-- (void)syncAllAnnotationsIfAllowedWithPackage:(NSDictionary *)packageDict;
-
+- (void)syncAllAnnotationsWithPackage:(NSDictionary *)packageDict;
 - (void)postLastReadPosition:(NSString *)location;
 
 - (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray<NYPLReaderBookmark *> *bookmarks))completion;

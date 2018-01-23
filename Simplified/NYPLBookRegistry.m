@@ -509,6 +509,7 @@ static NSString *const RecordsKey = @"records";
 -(void)addBookmark:(NYPLReaderBookmark *)bookmark forIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
+    
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
       
     NSMutableArray<NYPLReaderBookmark *> *bookmarks = record.bookmarks.mutableCopy;
@@ -535,15 +536,15 @@ static NSString *const RecordsKey = @"records";
   }
 }
 
-- (void)replaceBookmark:(NYPLReaderBookmark *)old with:(NYPLReaderBookmark *)new forIdentifier:(NSString *)identifier
+- (void)replaceBookmark:(NYPLReaderBookmark *)oldBookmark with:(NYPLReaderBookmark *)newBookmark forIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
     
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     
     NSMutableArray<NYPLReaderBookmark *> *bookmarks = record.bookmarks.mutableCopy;
-    [bookmarks removeObject:old];
-    [bookmarks addObject:new];
+    [bookmarks removeObject:oldBookmark];
+    [bookmarks addObject:newBookmark];
 
     self.identifiersToRecords[identifier] = [record recordWithBookmarks:bookmarks];
     

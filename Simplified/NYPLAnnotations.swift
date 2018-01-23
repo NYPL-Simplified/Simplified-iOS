@@ -368,20 +368,22 @@ final class NYPLAnnotations: NSObject {
   }
 
   // MARK: - Bookmarks
-  
-  class func getServerBookmarks(forBook bookID:String?, atURL annotationURL:URL?, completionHandler: @escaping (_ bookmarks: [NYPLReaderBookmark]) -> ()) {
+
+  // Completion handler will return a nil parameter if there are any failures with
+  // the network request, deserialization, or sync permission is not allowed.
+  class func getServerBookmarks(forBook bookID:String?, atURL annotationURL:URL?, completionHandler: @escaping (_ bookmarks: [NYPLReaderBookmark]?) -> ()) {
 
     if !syncIsPossibleAndPermitted() {
       Log.debug(#file, "Account does not support sync or sync is disabled.")
+      completionHandler(nil)
       return
     }
 
     guard let bookID = bookID, let annotationURL = annotationURL else {
       Log.error(#file, "Required parameter was nil.")
+      completionHandler(nil)
       return
     }
-
-    var bookmarks = [NYPLReaderBookmark]()
 
     var request = URLRequest.init(url: annotationURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30)
     request.httpMethod = "GET"
@@ -391,22 +393,24 @@ final class NYPLAnnotations: NSObject {
       
       if let error = error as NSError? {
         Log.error(#file, "Request Error Code: \(error.code). Description: \(error.localizedDescription)")
-        completionHandler(bookmarks)
+        completionHandler(nil)
         return
       }
       guard let data = data,
         let json = try? JSONSerialization.jsonObject(with: data, options: []) as! [String:Any] else {
           Log.error(#file, "JSON could not be created from data.")
-          completionHandler(bookmarks)
+          completionHandler(nil)
           return
       }
 
       guard let first = json["first"] as? [String:AnyObject],
         let items = first["items"] as? [AnyObject] else {
           Log.error(#file, "Missing required key from Annotations response, or no items exist.")
-          completionHandler(bookmarks)
+          completionHandler(nil)
           return
       }
+
+      var bookmarks = [NYPLReaderBookmark]()
 
       for item in items {
         if let bookmark = createBookmark(fromBook: bookID, serverAnnotation: item) {
@@ -419,30 +423,6 @@ final class NYPLAnnotations: NSObject {
       completionHandler(bookmarks)
     }
     dataTask.resume()
-  }
-
-  class func getBookmark(book id: String?,
-                         atURL annotationUrl: URL?,
-                         locationCFI cfi: String,
-                         completionHandler: @escaping (_ responseObject: NYPLReaderBookmark?) -> ()) {
-
-    guard let data = cfi.data(using: .utf8),
-      let responseJSON = try? JSONSerialization.jsonObject(with: data,
-                                                           options: JSONSerialization.ReadingOptions.mutableContainers) as! [String:Any] else {
-                                                            Log.error(#file, "Error creating JSON Object")
-                                                            return
-    }
-    guard let localContentCfi = responseJSON["contentCFI"] as? String,
-      let localIdref = responseJSON["idref"] as? String else {
-        Log.error(#file, "Could not get contentCFI or idref from responseJSON")
-        return
-    }
-
-    getServerBookmarks(forBook: id, atURL: annotationUrl) { bookmarks in
-      completionHandler(bookmarks
-        .filter({ $0.contentCFI == localContentCfi && $0.idref == localIdref })
-        .first)
-    }
   }
 
   private class func createBookmark(fromBook bookID: String, serverAnnotation annotation: AnyObject) -> NYPLReaderBookmark? {
@@ -499,31 +479,23 @@ final class NYPLAnnotations: NSObject {
     return nil
   }
 
-  class func deleteBookmarks(_ bookmarks: [NYPLReaderBookmark],
-                             completionHandler: @escaping ()->()) {
+  class func deleteBookmarks(_ bookmarks: [NYPLReaderBookmark]) {
 
     if !syncIsPossibleAndPermitted() {
       Log.debug(#file, "Account does not support sync or sync is disabled.")
       return
     }
 
-    let deleteGroup = DispatchGroup()
-
     for localBookmark in bookmarks {
       if let annotationID = localBookmark.annotationId {
-        deleteGroup.enter()
-        deleteBookmark(annotationId: annotationID, completionHandler: { success in
-          if !success {
-            Log.error(#file, "Bookmark not deleted from server. Moving on.")
+        deleteBookmark(annotationId: annotationID) { success in
+          if success {
+            Log.debug(#file, "Server bookmark deleted: \(annotationID)")
+          } else {
+            Log.error(#file, "Bookmark not deleted from server. Moving on: \(annotationID)")
           }
-          deleteGroup.leave()
-        })
+        }
       }
-    }
-
-    deleteGroup.notify(queue: DispatchQueue.main) {
-      Log.debug(#file, "Finished attempt to delete bookmarks.")
-      completionHandler()
     }
   }
 
@@ -554,6 +526,7 @@ final class NYPLAnnotations: NSObject {
         completionHandler(true)
       } else if let code = response?.statusCode {
         Log.error(#file, "DELETE bookmark failed with server response code: \(code)")
+        completionHandler(false)
       } else {
         guard let error = error as NSError? else { return }
         Log.error(#file, "DELETE bookmark Request Failed with Error Code: \(error.code). Description: \(error.localizedDescription)")

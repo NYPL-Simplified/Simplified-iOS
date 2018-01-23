@@ -421,7 +421,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     } else if([function isEqualToString:@"media-overlay-status-changed"]) {
       NSDictionary *const dict = argument(request.URL);
       self.mediaOverlayIsPlaying = ((NSNumber *) dict[@"isPlaying"]).boolValue;
-      [self mediaOverlayStatusChangedWithDictionary:argument(request.URL)];
     } else if([function isEqualToString:@"settings-applied"]) {
       NSLog(@"");
       // Do nothing.
@@ -445,11 +444,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
 #pragma mark - ReadiumViewSyncManagerDelegate Methods
 
-- (void)syncAnnotationsWhenPermitted
-{
-  [self.syncManager syncAllAnnotationsIfAllowedWithPackage:self.package.dictionary];
-}
-
 - (void)patronDecidedNavigation:(BOOL)toLatestPage withNavDict:(NSDictionary *)dict
 {
   if (toLatestPage == YES) {
@@ -469,11 +463,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 }
 
 #pragma mark -
-
-- (void) mediaOverlayStatusChangedWithDictionary: (NSDictionary *) dictionary {
-  if (dictionary) {
-  }
-}
 
 - (void)readiumInitialize
 {
@@ -500,9 +489,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                                              annotationsURL:self.book.annotationsURL
                                                                     bookMap:self.bookMapDictionary
                                                                    delegate:self];
-      [self syncAnnotationsWhenPermitted];
+      [self.syncManager syncAllAnnotationsWithPackage:self.package.dictionary];
     });
-    
   });
   
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
@@ -572,6 +560,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
 - (void)checkForExistingBookmarkAtLocation:(NSString*)idref completionHandler:(void(^)(BOOL success, NYPLReaderBookmark *bookmark))completionHandler
 {
+
   completionHandler(NO, nil);   //Remove bookmark icon at beginning of page turn
   
   NSArray *bookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];
@@ -661,21 +650,19 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   self.bookmarkElements = [registry bookmarksForIdentifier:self.book.identifier];
   
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-  if (currentAccount.syncPermissionGranted &&
-      (bookmark.annotationId != nil &&
-       bookmark.annotationId.length > 0)) {
-        
-        [NYPLAnnotations deleteBookmarkWithAnnotationId:bookmark.annotationId
-                                      completionHandler:^(BOOL success) {
-                                        if (success) {
-                                          NYPLLOG(@"Bookmark successfully deleted");
-                                        } else {
-                                          NYPLLOG(@"Failed to delete bookmark from server. Will attempt again on next Sync");
-                                        }
-                                      }];
-      } else {
-        NYPLLOG(@"Delete on Server skipped: Sync is not enabled or Annotation ID did not exist for bookmark.");
-      }
+
+  if (currentAccount.syncPermissionGranted && bookmark.annotationId.length > 0) {
+    [NYPLAnnotations deleteBookmarkWithAnnotationId:bookmark.annotationId
+                                  completionHandler:^(BOOL success) {
+                                    if (success) {
+                                      NYPLLOG(@"Bookmark successfully deleted");
+                                    } else {
+                                      NYPLLOG(@"Failed to delete bookmark from server. Will attempt again on next Sync");
+                                    }
+                                  }];
+  } else {
+    NYPLLOG(@"Delete on Server skipped: Sync is not enabled or Annotation ID did not exist for bookmark.");
+  }
 }
 
 - (void)readiumPaginationChangedWithDictionary:(NSDictionary *const)dictionary
@@ -730,11 +717,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
          [weakSelf.delegate updateBookmarkIcon:success];
          [weakSelf.delegate updateCurrentBookmark:bookmark];
        }];
-       
-       NYPLBookLocation *const location = [[NYPLBookLocation alloc]
-                                           initWithLocationString:locationJSON
-                                           renderer:renderer];
-       
+
        [weakSelf calculateProgressionWithDictionary:dictionary withHandler:^{
          [weakSelf.delegate
           renderer:weakSelf
@@ -743,14 +726,18 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
           pageCount:weakSelf.spineItemPageCount
           spineItemTitle:weakSelf.spineItemDetails[@"tocElementTitle"]];
        }];
-       
-       if(location) {
-         [[NYPLBookRegistry sharedRegistry]
-          setLocation:location
-          forIdentifier:weakSelf.book.identifier];
-       }
 
-       [weakSelf.syncManager postLastReadPosition:location.locationString];
+       NYPLBookLocation *const location = [[NYPLBookLocation alloc]
+                                           initWithLocationString:locationJSON
+                                           renderer:renderer];
+
+       [[NYPLBookRegistry sharedRegistry] setLocation:location forIdentifier:weakSelf.book.identifier];
+
+       if ([location.locationString containsString:@"null"]) {
+         NYPLLOG(@"Location CFI was unexpectedly null. Cancelling attempt to sync.");
+       } else {
+         [weakSelf.syncManager postLastReadPosition:location.locationString];
+       }
      }];
   });
 }

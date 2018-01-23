@@ -8,8 +8,6 @@
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
 
-+ (BOOL)bugsnagEnabled;
-
 + (BOOL)cardCreationEnabled;
 
 // This can be overriden by setting |customMainFeedURL| in NYPLSettings.
