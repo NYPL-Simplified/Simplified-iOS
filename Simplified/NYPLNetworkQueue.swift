@@ -1,6 +1,11 @@
 import Foundation
 import SQLite
 
+/**
+ The NetworkQueue is insantiated once on app startup and listens
+ for a valid network notification from a reachability class. It then
+ will retry any queued requests and purge them if necessary.
+ */
 final class NetworkQueue: NSObject {
   
   static let StatusCodes = [NSURLErrorTimedOut,
@@ -14,6 +19,8 @@ final class NetworkQueue: NSObject {
                      NSURLErrorSecureConnectionFailed]
   static let MaxRetriesInQueue = 5
   
+  let serialQueue = DispatchQueue(label: "org.nypl.labs.SimplyE.networkQueue")
+
   enum HTTPMethodType: String {
     case GET, POST, HEAD, PUT, DELETE, OPTIONS, CONNECT
   }
@@ -95,14 +102,18 @@ final class NetworkQueue: NSObject {
   
   class func retryQueue()
   {
-    guard let db = startDatabaseConnection() else { return }
-    
-    do {
-      for row in try db.prepare(sqlTable) {
-        self.retry(db: db, requestRow: row)
+    serialQueue.async {
+      guard let db = self.startDatabaseConnection() else { return }
+
+      let expiredRows = self.sqlTable.filter(self.sqlRetries > self.MaxRetriesInQueue)
+      do {
+        try db.run(expiredRows.delete())
+        for row in try db.prepare(self.sqlTable) {
+          self.retry(db, requestRow: row)
+        }
+      } catch {
+        Log.error(#file, "SQLite Error: Failure to prepare table or run deletion")
       }
-    } catch {
-      Log.error(#file, "SQLite Error accessing table or no events to retry")
     }
   }
   
@@ -111,12 +122,6 @@ final class NetworkQueue: NSObject {
   
   private class func retry(db: Connection, requestRow: Row)
   {
-    if (Int(requestRow[sqlRetries]) > MaxRetriesInQueue) {
-      deleteRow(db: db, id: Int(requestRow[sqlID]))
-      Log.info(#file, "Removing from queue after \(Int(requestRow[sqlRetries])) retries")
-      return
-    }
-    
     do {
       let ID = Int(requestRow[sqlID])
       let newValue = Int(requestRow[sqlRetries]) + 1
@@ -138,10 +143,12 @@ final class NetworkQueue: NSObject {
     }
     
     let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-      if let response = response as? HTTPURLResponse {
-        if response.statusCode == 200 {
-          Log.info(#file, "Queued Request Upload: Success")
-          self.deleteRow(db: db, id: requestRow[sqlID])
+      self.serialQueue.async {
+        if let response = response as? HTTPURLResponse {
+          if response.statusCode == 200 {
+            Log.info(#file, "Queued Request Upload: Success")
+            self.deleteRow(db, id: requestRow[self.sqlID])
+          }
         }
       }
     }
