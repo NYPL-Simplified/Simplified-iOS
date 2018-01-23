@@ -286,7 +286,7 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
   CGPoint referencePoint = [self.collectionView convertPoint:location fromView:self.view];
   NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:referencePoint];
   UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
-  if (!cell || ![cell isKindOfClass:[NYPLBookNormalCell class]]) {
+  if (![cell isKindOfClass:[NYPLBookNormalCell class]]) {
     return nil;
   }
   NYPLBookNormalCell *bookCell = (NYPLBookNormalCell *) cell;
