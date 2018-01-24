@@ -184,7 +184,11 @@
     NSURLRequest *r = [NSURLRequest postRequestWithProblemDocument:@{@"type":type} url:reportURL];
     [[NYPLSession sharedSession] uploadWithRequest:r completionHandler:nil];
   }
-  [problemReportViewController dismissViewControllerAnimated:YES completion:nil];
+  if (problemReportViewController.navigationController) {
+    [problemReportViewController.navigationController popViewControllerAnimated:YES];
+  } else {
+    [problemReportViewController dismissViewControllerAnimated:YES completion:nil];
+  }
 }
 
 #pragma mark -
