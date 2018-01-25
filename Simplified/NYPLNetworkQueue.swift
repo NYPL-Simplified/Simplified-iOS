@@ -17,6 +17,10 @@ final class NetworkQueue: NSObject {
                                            queue: nil) { notification in self.retryQueue() }
   }
 
+  deinit {
+    NotificationCenter.default.removeObserver(self)
+  }
+
   static let StatusCodes = [NSURLErrorTimedOut,
                             NSURLErrorCannotFindHost,
                             NSURLErrorCannotConnectToHost,
@@ -28,7 +32,9 @@ final class NetworkQueue: NSObject {
                             NSURLErrorSecureConnectionFailed]
   let MaxRetriesInQueue = 5
 
-  let serialQueue = DispatchQueue(label: "org.nypl.labs.SimplyE.networkQueue")
+  let serialQueue = DispatchQueue(label: Bundle.main.bundleIdentifier!
+                                  + "."
+                                  + String(describing: NetworkQueue.self))
 
   enum HTTPMethodType: String {
     case GET, POST, HEAD, PUT, DELETE, OPTIONS, CONNECT
@@ -109,9 +115,11 @@ final class NetworkQueue: NSObject {
     }
   }
 
+  // MARK: - Private Functions
+
   private func retryQueue()
   {
-    serialQueue.async {
+    self.serialQueue.async {
       guard let db = self.startDatabaseConnection() else { return }
 
       let expiredRows = self.sqlTable.filter(self.sqlRetries > self.MaxRetriesInQueue)
@@ -126,9 +134,7 @@ final class NetworkQueue: NSObject {
       }
     }
   }
-  
-  // MARK: - Private Functions
-  
+
   private func retry(_ db: Connection, requestRow: Row)
   {
     do {
