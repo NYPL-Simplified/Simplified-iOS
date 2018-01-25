@@ -1,41 +1,63 @@
 import Foundation
 import SQLite
 
+/**
+ The NetworkQueue is insantiated once on app startup and listens
+ for a valid network notification from a reachability class. It then
+ will retry any queued requests and purge them if necessary.
+ */
 final class NetworkQueue: NSObject {
-  
+
+  static let shared = NetworkQueue()
+
+  override init() {
+    super.init()
+    NotificationCenter.default.addObserver(forName: NSNotification.Name.NYPLReachabilityHostIsReachable,
+                                           object: nil,
+                                           queue: nil) { notification in self.retryQueue() }
+  }
+
+  deinit {
+    NotificationCenter.default.removeObserver(self)
+  }
+
   static let StatusCodes = [NSURLErrorTimedOut,
-                     NSURLErrorCannotFindHost,
-                     NSURLErrorCannotConnectToHost,
-                     NSURLErrorNetworkConnectionLost,
-                     NSURLErrorNotConnectedToInternet,
-                     NSURLErrorInternationalRoamingOff,
-                     NSURLErrorCallIsActive,
-                     NSURLErrorDataNotAllowed,
-                     NSURLErrorSecureConnectionFailed]
-  static let MaxRetriesInQueue = 5
-  
+                            NSURLErrorCannotFindHost,
+                            NSURLErrorCannotConnectToHost,
+                            NSURLErrorNetworkConnectionLost,
+                            NSURLErrorNotConnectedToInternet,
+                            NSURLErrorInternationalRoamingOff,
+                            NSURLErrorCallIsActive,
+                            NSURLErrorDataNotAllowed,
+                            NSURLErrorSecureConnectionFailed]
+  let MaxRetriesInQueue = 5
+
+  let serialQueue = DispatchQueue(label: Bundle.main.bundleIdentifier!
+                                  + "."
+                                  + String(describing: NetworkQueue.self))
+
   enum HTTPMethodType: String {
     case GET, POST, HEAD, PUT, DELETE, OPTIONS, CONNECT
   }
   
-  private static let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first!
+  private let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first!
   
-  private static let sqlTable = Table("offline_queue")
+  private let sqlTable = Table("offline_queue")
   
-  private static let sqlID = Expression<Int>("id")
-  private static let sqlLibraryID = Expression<Int>("library_identifier")
-  private static let sqlUpdateID = Expression<String?>("update_identifier")
-  private static let sqlUrl = Expression<String>("request_url")
-  private static let sqlMethod = Expression<String>("request_method")
-  private static let sqlParameters = Expression<Data?>("request_parameters")
-  private static let sqlHeader = Expression<Data?>("request_header")
-  private static let sqlRetries = Expression<Int>("retry_count")
-  private static let sqlDateCreated = Expression<Data>("date_created")
+  private let sqlID = Expression<Int>("id")
+  private let sqlLibraryID = Expression<Int>("library_identifier")
+  private let sqlUpdateID = Expression<String?>("update_identifier")
+  private let sqlUrl = Expression<String>("request_url")
+  private let sqlMethod = Expression<String>("request_method")
+  private let sqlParameters = Expression<Data?>("request_parameters")
+  private let sqlHeader = Expression<Data?>("request_header")
+  private let sqlRetries = Expression<Int>("retry_count")
+  private let sqlDateCreated = Expression<Data>("date_created")
   
   
   // MARK: - Public Functions
 
-  class func addRequest(_ libraryID: Int,
+  func addRequest(_ libraryID: Int,
                         _ updateID: String?,
                         _ requestUrl: URL,
                         _ method: HTTPMethodType,
@@ -92,31 +114,29 @@ final class NetworkQueue: NSObject {
       Log.error(#file, "SQLite Error: Could not insert or update row")
     }
   }
-  
-  class func retryQueue()
+
+  // MARK: - Private Functions
+
+  private func retryQueue()
   {
-    guard let db = startDatabaseConnection() else { return }
-    
-    do {
-      for row in try db.prepare(sqlTable) {
-        self.retry(db: db, requestRow: row)
+    self.serialQueue.async {
+      guard let db = self.startDatabaseConnection() else { return }
+
+      let expiredRows = self.sqlTable.filter(self.sqlRetries > self.MaxRetriesInQueue)
+      do {
+        try db.run(expiredRows.delete())
+        for row in try db.prepare(self.sqlTable) {
+          Log.debug(#file, "Retrying row: \(row[self.sqlID])")
+          self.retry(db, requestRow: row)
+        }
+      } catch {
+        Log.error(#file, "SQLite Error: Failure to prepare table or run deletion")
       }
-    } catch {
-      Log.error(#file, "SQLite Error accessing table or no events to retry")
     }
   }
-  
-  
-  // MARK: - Private Functions
-  
-  private class func retry(db: Connection, requestRow: Row)
+
+  private func retry(_ db: Connection, requestRow: Row)
   {
-    if (Int(requestRow[sqlRetries]) > MaxRetriesInQueue) {
-      deleteRow(db: db, id: Int(requestRow[sqlID]))
-      Log.info(#file, "Removing from queue after \(Int(requestRow[sqlRetries])) retries")
-      return
-    }
-    
     do {
       let ID = Int(requestRow[sqlID])
       let newValue = Int(requestRow[sqlRetries]) + 1
@@ -138,17 +158,19 @@ final class NetworkQueue: NSObject {
     }
     
     let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-      if let response = response as? HTTPURLResponse {
-        if response.statusCode == 200 {
-          Log.info(#file, "Queued Request Upload: Success")
-          self.deleteRow(db: db, id: requestRow[sqlID])
+      self.serialQueue.async {
+        if let response = response as? HTTPURLResponse {
+          if response.statusCode == 200 {
+            Log.info(#file, "Queued Request Upload: Success")
+            self.deleteRow(db, id: requestRow[self.sqlID])
+          }
         }
       }
     }
     task.resume()
   }
-  
-  private class func deleteRow(db: Connection, id: Int)
+
+  private func deleteRow(_ db: Connection, id: Int)
   {
     let rowToDelete = sqlTable.filter(sqlID == id)
     if let _ = try? db.run(rowToDelete.delete()) {
@@ -158,7 +180,7 @@ final class NetworkQueue: NSObject {
     }
   }
   
-  private class func startDatabaseConnection() -> Connection?
+  private func startDatabaseConnection() -> Connection?
   {
     let db: Connection
     do {

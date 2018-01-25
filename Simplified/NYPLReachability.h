@@ -19,4 +19,6 @@
 
 @property (nonatomic) ReachabilityManager *hostReachabilityManager;
 
+extern NSString *const NYPLReachabilityHostIsReachableNotification;
+
 @end

@@ -38,6 +38,6 @@ final class NYPLCirculationAnalytics : NSObject {
   private class func addToOfflineAnalyticsQueue(_ event: String, _ bookURL: URL) -> Void
   {
     let libraryID = AccountsManager.shared.currentAccount.id
-    NetworkQueue.addRequest(libraryID, nil, bookURL, .GET, nil, NYPLAnnotations.headers)
+    NetworkQueue.shared.addRequest(libraryID, nil, bookURL, .GET, nil, NYPLAnnotations.headers)
   }
 }

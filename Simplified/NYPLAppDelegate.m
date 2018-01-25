@@ -44,7 +44,8 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   
   // Initiallize Accounts from JSON file
   [AccountsManager sharedInstance];
-  
+  // Initialize Offline Requests Queue
+  [NetworkQueue shared];
   self.reachabilityManager = [NYPLReachability sharedReachability];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
