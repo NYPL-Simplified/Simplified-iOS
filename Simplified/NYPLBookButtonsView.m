@@ -12,8 +12,37 @@
 #import "NYPLRoundedButton.h"
 #import "NYPLSettings.h"
 #import "NYPLRootTabBarController.h"
-#import "NYPLOPDSAcquisition.h"
+#import "NYPLOPDS.h"
 #import "SimplyE-Swift.h"
+
+NYPLBookButtonsState
+NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> const availability)
+{
+  __block NYPLBookButtonsState state;
+
+  if (!availability) {
+    @throw NSInvalidArgumentException;
+  }
+
+  [availability
+   matchUnavailable:^(__unused NYPLOPDSAcquisitionAvailabilityUnavailable *_Nonnull unavailable) {
+     state = NYPLBookButtonsStateCanHold;
+   }
+   limited:^(__unused NYPLOPDSAcquisitionAvailabilityLimited *_Nonnull limited) {
+     state = NYPLBookButtonsStateCanBorrow;
+   }
+   unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *_Nonnull unlimited) {
+     state = NYPLBookButtonsStateCanKeep;
+   }
+   reserved:^(__unused NYPLOPDSAcquisitionAvailabilityReserved *_Nonnull reserved) {
+     state = NYPLBookButtonsStateHolding;
+   }
+   ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
+     state = NYPLBookButtonsStateHoldingFOQ;
+   }];
+
+  return state;
+}
 
 @interface NYPLBookButtonsView ()
 
@@ -234,17 +263,20 @@
     
     // Re-enable animations as per usual.
     [UIView setAnimationsEnabled:YES];
-    
-    // Provide End-Date for checked out loans
+
+    button.type = NYPLRoundedButtonTypeNormal;
     if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
-      if (self.book.availableUntil && [self.book.availableUntil timeIntervalSinceNow] > 0 && self.state != NYPLBookButtonsStateHolding) {
-        button.type = NYPLRoundedButtonTypeClock;
-        button.endDate = self.book.availableUntil;
-      } else {
-        button.type = NYPLRoundedButtonTypeNormal;
-      }
-    } else {
-      button.type = NYPLRoundedButtonTypeNormal;
+      [self.book.defaultAcquisition.availability
+       matchUnavailable:nil
+       limited:^(NYPLOPDSAcquisitionAvailabilityLimited *const _Nonnull limited) {
+         if (limited.until && [limited.until timeIntervalSinceNow] > 0) {
+           button.type = NYPLRoundedButtonTypeClock;
+           button.endDate = limited.until;
+         }
+       }
+       unlimited:nil
+       reserved:nil
+       ready:nil];
     }
 
     [visibleButtons addObject:button];

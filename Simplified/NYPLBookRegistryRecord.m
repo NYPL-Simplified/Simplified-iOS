@@ -2,6 +2,7 @@
 #import "NYPLBookLocation.h"
 #import "NYPLBookRegistryRecord.h"
 #import "NYPLNull.h"
+#import "NYPLOPDS.h"
 #import "SimplyE-Swift.h"
 
 @interface NYPLBookRegistryRecord ()
@@ -45,20 +46,38 @@ static NSString *const BookmarksKey = @"bookmarks";
   else {
     self.bookmarks = [[NSMutableArray alloc] init];
   }
-  
+
+  // FIXME: The logic below is confusing at best. Upon initial inspection, it's
+  // unclear why `book.state` needs to be "fixed" in this initializer. If said
+  // fixing is appropriate, a rationale should be added here.
+
   // If the book availability indicates that the book is held, make sure the state
-  // reflects that. Otherwise, make sure it's not in the Holding state.
-  // If the status of the book is unknown, don't override it in either direction.
-  if(book.availabilityStatus & (NYPLBookAvailabilityStatusReserved | NYPLBookAvailabilityStatusReady)) {
-    self.state = NYPLBookStateHolding;
-  } else {
+  // reflects that.
+  __block BOOL actuallyOnHold = NO;
+  [book.defaultAcquisition.availability
+   matchUnavailable:nil
+   limited:nil
+   unlimited:nil
+   reserved:^(__unused NYPLOPDSAcquisitionAvailabilityReserved *_Nonnull reserved) {
+     self.state = NYPLBookStateHolding;
+     actuallyOnHold = YES;
+   } ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
+     self.state = NYPLBookStateHolding;
+     actuallyOnHold = YES;
+   }];
+
+  if (!actuallyOnHold) {
+    // Set the correct non-holding state.
     if (!((NYPLBookStateDownloadFailed |
            NYPLBookStateDownloading |
            NYPLBookStateDownloadNeeded |
            NYPLBookStateDownloadSuccessful |
-           NYPLBookStateUsed) & self.state) &&
-        book.availabilityStatus != NYPLBookAvailabilityStatusUnknown &&
-        self.state != NYPLBookStateUnregistered) {
+           NYPLBookStateUsed)
+          & self.state)
+        && self.state != NYPLBookStateUnregistered)
+    {
+      // Since we're not in some download-related state and we're not unregistered,
+      // we must need to be downloaded.
       self.state = NYPLBookStateDownloadNeeded;
     }
   }

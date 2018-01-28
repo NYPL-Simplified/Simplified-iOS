@@ -8,6 +8,7 @@
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLSettings.h"
 #import "NYPLAccountSignInViewController.h"
+#import "NYPLOPDS.h"
 #import <PureLayout/PureLayout.h>
 #import "UIView+NYPLViewAdditions.h"
 
@@ -18,6 +19,10 @@
 @interface NYPLHoldsViewController ()
 <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
+// FIXME: It's unclear how "reserved" is different from "held" in this class. These
+// two terms are used interchangably in both OPDS and elsewhere in this application.
+// Presumably one is for books that are ready for checkout and one is for books that
+// are not yet available for checkout. The terminology should be updated appropriately.
 @property (nonatomic) NSArray *reservedBooks;
 @property (nonatomic) NSArray *heldBooks;
 @property (nonatomic) UILabel *instructionsLabel;
@@ -207,9 +212,17 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   NSMutableArray *reserved = [NSMutableArray array];
   NSMutableArray *held = [NSMutableArray array];
   for(NYPLBook *book in books) {
-    if (book.availabilityStatus == NYPLBookAvailabilityStatusReady) {
-      [reserved addObject:book];
-    } else {
+    __block BOOL addedToReserved = NO;
+    [book.defaultAcquisition.availability
+     matchUnavailable:nil
+     limited:nil
+     unlimited:nil
+     reserved:nil
+     ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
+       [reserved addObject:book];
+       addedToReserved = YES;
+     }];
+    if (!addedToReserved) {
       [held addObject:book];
     }
   }

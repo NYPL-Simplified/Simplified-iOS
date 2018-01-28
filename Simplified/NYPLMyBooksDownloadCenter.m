@@ -7,9 +7,7 @@
 #import "NYPLBook.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLOPDSAcquisition.h"
-#import "NYPLOPDSEntry.h"
-#import "NYPLOPDSFeed.h"
+#import "NYPLOPDS.h"
 #import "NYPLSession.h"
 #import "NYPLProblemDocument.h"
 
@@ -527,10 +525,19 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
          state:NYPLBookStateDownloadNeeded
          fulfillmentId:nil
          bookmarks:nil];
-        
-        if(book.availabilityStatus & (NYPLBookAvailabilityStatusAvailable | NYPLBookAvailabilityStatusReady)) {
-          [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-        }
+
+        [book.defaultAcquisition.availability
+         matchUnavailable:nil
+         limited:^(__unused NYPLOPDSAcquisitionAvailabilityLimited *_Nonnull limited) {
+           [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+         }
+         unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *_Nonnull unlimited) {
+           [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+         }
+         reserved:nil
+         ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
+           [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+         }];
       }];
     } else {
       // Actually download the book.

@@ -17,6 +17,14 @@ extern NYPLOPDSAcquisitionAvailabilityCopies const NYPLOPDSAcquisitionAvailabili
 /// @c YES for limited, unlimited, and ready states, else @c NO.
 @property (nonatomic, readonly) BOOL available;
 
+/// When this availability state began. Always @c nil unless @c Limited
+/// or @c Reserved.
+@property (nonatomic, readonly, nullable) NSDate *since;
+
+/// When this availability state will end. Always @c nil unless @c Limited
+/// or @c Reserved.
+@property (nonatomic, readonly, nullable) NSDate *until;
+
 - (void)
 matchUnavailable:(void (^ _Nullable)(NYPLOPDSAcquisitionAvailabilityUnavailable *_Nonnull unavailable))unavailable
 limited:(void (^ _Nullable)(NYPLOPDSAcquisitionAvailabilityLimited *_Nonnull limited))limited
@@ -62,16 +70,14 @@ NYPLOPDSAcquisitionAvailabilityDictionaryRepresentation(id<NYPLOPDSAcquisitionAv
 
 @property (nonatomic, readonly) NYPLOPDSAcquisitionAvailabilityCopies copiesAvailable;
 @property (nonatomic, readonly) NYPLOPDSAcquisitionAvailabilityCopies copiesTotal;
-@property (nonatomic, readonly, nullable) NSDate *availableSince;
-@property (nonatomic, readonly, nullable) NSDate *availableUntil;
 
 + (instancetype _Null_unspecified)new NS_UNAVAILABLE;
 - (instancetype _Null_unspecified)init NS_UNAVAILABLE;
 
 - (instancetype _Nonnull)initWithCopiesAvailable:(NYPLOPDSAcquisitionAvailabilityCopies)copiesAvailable
                                      copiesTotal:(NYPLOPDSAcquisitionAvailabilityCopies)copiesTotal
-                                  availableSince:(NSDate *_Nullable)availableSince
-                                  availableUntil:(NSDate *_Nullable)availableUntil
+                                           since:(NSDate *_Nullable)since
+                                           until:(NSDate *_Nullable)until
   NS_DESIGNATED_INITIALIZER;
 
 @end
@@ -85,16 +91,14 @@ NYPLOPDSAcquisitionAvailabilityDictionaryRepresentation(id<NYPLOPDSAcquisitionAv
 /// If equal to @c 1, the user is next in line. This value is never @c 0.
 @property (nonatomic, readonly) NSUInteger holdPosition;
 @property (nonatomic, readonly) NYPLOPDSAcquisitionAvailabilityCopies copiesTotal;
-@property (nonatomic, readonly, nullable) NSDate *reservedSince;
-@property (nonatomic, readonly, nullable) NSDate *reservedUntil;
 
 + (instancetype _Null_unspecified)new NS_UNAVAILABLE;
 - (instancetype _Null_unspecified)init NS_UNAVAILABLE;
 
 - (instancetype _Nonnull)initWithHoldPosition:(NSUInteger)holdPosition
                                   copiesTotal:(NYPLOPDSAcquisitionAvailabilityCopies)copiesTotal
-                                reservedSince:(NSDate *_Nullable)reservedSince
-                                reservedUntil:(NSDate *_Nullable)reservedUntil
+                                        since:(NSDate *_Nullable)since
+                                        until:(NSDate *_Nullable)until
   NS_DESIGNATED_INITIALIZER;
 
 @end

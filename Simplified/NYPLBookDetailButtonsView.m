@@ -6,6 +6,7 @@
 #import "NYPLRoundedButton.h"
 #import "NYPLSettings.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLOPDS.h"
 #import <PureLayout/PureLayout.h>
 #import "SimplyE-Swift.h"
 
@@ -273,9 +274,9 @@
 
     // Provide End-Date for checked out loans
     if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
-      if (self.book.availableUntil && [self.book.availableUntil timeIntervalSinceNow] > 0 && self.state != NYPLBookButtonsStateHolding) {
+      if (self.book.defaultAcquisition.availability.until && [self.book.defaultAcquisition.availability.until timeIntervalSinceNow] > 0 && self.state != NYPLBookButtonsStateHolding) {
         button.type = NYPLRoundedButtonTypeClock;
-        button.endDate = self.book.availableUntil;
+        button.endDate = self.book.defaultAcquisition.availability.until;
       } else {
         button.type = NYPLRoundedButtonTypeNormal;
       }

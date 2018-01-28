@@ -4,6 +4,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLBookButtonsView.h"
+#import "NYPLOPDS.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import <PureLayout/PureLayout.h>
@@ -125,7 +126,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
       break;
     case NYPLBookButtonsStateHoldingFOQ:
       newMessageString = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerReservedTitleFormat", nil),
-                                [self.book.availableUntil longTimeUntilString]];
+                                [self.book.defaultAcquisition.availability.until longTimeUntilString]];
       break;
     case NYPLBookButtonsStateUsed:
       newMessageString = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
@@ -157,10 +158,23 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 
 -(NSString *)messageStringForNYPLBookButtonsStateHolding
 {
-  NSString *newMessageString = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerHoldingTitleFormat", nil),[self.book.availableUntil longTimeUntilString]];
+  NSString *newMessageString = [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerHoldingTitleFormat", nil),[self.book.defaultAcquisition.availability.until longTimeUntilString]];
 
-  if ((self.book.holdsPosition > 0) && (self.book.totalCopies > 0)) {
-    NSString *positionString = [NSString stringWithFormat:NSLocalizedString(@"\n#%d in line for %d copies.", @"Describe the line that a person is waiting in for a total number of books that are available for everyone to check out, to help tell them how long they will be waiting."), self.book.holdsPosition, self.book.totalCopies];
+  __block NSUInteger holdPosition = 0;
+  __block NYPLOPDSAcquisitionAvailabilityCopies copiesTotal = 0;
+
+  [self.book.defaultAcquisition.availability
+   matchUnavailable:nil
+   limited:nil
+   unlimited:nil
+   reserved:^(NYPLOPDSAcquisitionAvailabilityReserved *const _Nonnull reserved) {
+     holdPosition = reserved.holdPosition;
+     copiesTotal = reserved.copiesTotal;
+   }
+   ready:nil];
+
+  if (holdPosition > 0 && copiesTotal > 0) {
+    NSString *positionString = [NSString stringWithFormat:NSLocalizedString(@"\n#%d in line for %d copies.", @"Describe the line that a person is waiting in for a total number of books that are available for everyone to check out, to help tell them how long they will be waiting."), holdPosition, copiesTotal];
     return [newMessageString stringByAppendingString:positionString];
   } else {
     return newMessageString;
@@ -170,8 +184,8 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 -(NSString *)messageStringForNYPLBookButtonStateSuccessful
 {
   NSString *message = NSLocalizedString(@"BookDetailViewControllerDownloadSuccessfulTitle", nil);
-  if (self.book.availableUntil) {
-    NSString *timeUntilString = [self.book.availableUntil longTimeUntilString];
+  if (self.book.defaultAcquisition.availability.until) {
+    NSString *timeUntilString = [self.book.defaultAcquisition.availability.until longTimeUntilString];
     NSString *timeEstimateMessage = [NSString stringWithFormat:NSLocalizedString(@"It will expire in %@.", @"Tell the user how much time they have left for the book they have borrowed."),timeUntilString];
     return [NSString stringWithFormat:@"%@\n%@",message,timeEstimateMessage];
   } else {

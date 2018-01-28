@@ -10,11 +10,6 @@
 
 @property (nonatomic) NSArray<NYPLOPDSAcquisition *> *acquisitions;
 @property (nonatomic) NSArray<NYPLBookAuthor *> *bookAuthors;
-@property (nonatomic) NYPLBookAvailabilityStatus availabilityStatus;
-@property (nonatomic) NSInteger availableCopies;
-@property (nonatomic) NSDate *availableUntil;
-@property (nonatomic) NSInteger totalCopies;
-@property (nonatomic) NSInteger holdsPosition;
 @property (nonatomic) NSArray *categoryStrings;
 @property (nonatomic) NSString *distributor;
 @property (nonatomic) NSString *identifier;
@@ -39,12 +34,12 @@
 
 // NOTE: Be cautious of these values!
 // Do NOT reuse them when declaring new keys.
-static NSString *const DeprecatedAcquisitionKey = @"acquisition";
-static NSString *const DeprecatedAvailableCopiesKey = @"available-copies";
-static NSString *const DeprecatedAvailableUntilKey = @"available-until";
-static NSString *const DeprecatedAvailabilityStatusKey = @"availability-status";
-static NSString *const DeprecatedHoldsPositionKey = @"holds-position";
-static NSString *const DeprecatedTotalCopiesKey = @"total-copies";
+__deprecated static NSString *const DeprecatedAcquisitionKey = @"acquisition";
+__deprecated static NSString *const DeprecatedAvailableCopiesKey = @"available-copies";
+__deprecated static NSString *const DeprecatedAvailableUntilKey = @"available-until";
+__deprecated static NSString *const DeprecatedAvailabilityStatusKey = @"availability-status";
+__deprecated static NSString *const DeprecatedHoldsPositionKey = @"holds-position";
+__deprecated static NSString *const DeprecatedTotalCopiesKey = @"total-copies";
 
 static NSString *const AcquisitionsKey = @"acquisitions";
 static NSString *const AlternateURLKey = @"alternate";
@@ -198,11 +193,6 @@ static NSString *const UpdatedKey = @"updated";
   return [[self alloc]
           initWithAcquisitions:entry.acquisitions
           bookAuthors:authors
-          availabilityStatus:availabilityStatus
-          availableCopies:availableCopies
-          availableUntil:availableUntil
-          totalCopies:totalCopies
-          holdsPosition:holdsPosition
           categoryStrings:[[self class] categoryStringsFromCategories:entry.categories]
           distributor:entry.providerName
           identifier:entry.identifier
@@ -229,11 +219,6 @@ static NSString *const UpdatedKey = @"updated";
   return [[NYPLBook alloc]
           initWithAcquisitions:self.acquisitions
           bookAuthors:book.bookAuthors
-          availabilityStatus:self.availabilityStatus
-          availableCopies:self.availableCopies
-          availableUntil:self.availableUntil
-          totalCopies:self.totalCopies
-          holdsPosition:self.holdsPosition
           categoryStrings:book.categoryStrings
           distributor:book.distributor
           identifier:self.identifier
@@ -257,11 +242,6 @@ static NSString *const UpdatedKey = @"updated";
 
 - (instancetype)initWithAcquisitions:(NSArray<NYPLOPDSAcquisition *> *)acquisitions
                          bookAuthors:(NSArray<NYPLBookAuthor *> *)authors
-                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
-                     availableCopies:(NSInteger)availableCopies
-                      availableUntil:(NSDate *)availableUntil
-                         totalCopies:(NSInteger)totalCopies
-                       holdsPosition:(NSInteger)holdsPosition
                      categoryStrings:(NSArray *)categoryStrings
                          distributor:(NSString *)distributor
                           identifier:(NSString *)identifier
@@ -294,11 +274,6 @@ static NSString *const UpdatedKey = @"updated";
   self.annotationsURL = annotationsURL;
   self.analyticsURL = analyticsURL;
   self.bookAuthors = authors;
-  self.availabilityStatus = availabilityStatus;
-  self.availableCopies = availableCopies;
-  self.availableUntil = availableUntil;
-  self.totalCopies = totalCopies;
-  self.holdsPosition = holdsPosition;
   self.categoryStrings = categoryStrings;
   self.distributor = distributor;
   self.identifier = identifier;
@@ -394,8 +369,8 @@ static NSString *const UpdatedKey = @"updated";
         availability = [[NYPLOPDSAcquisitionAvailabilityLimited alloc]
                         initWithCopiesAvailable:availableCopies
                         copiesTotal:totalCopies
-                        availableSince:since
-                        availableUntil:until];
+                        since:since
+                        until:until];
       }
     } else if ([availabilityStatus isEqual:@"unavailable"]) {
       // Unfortunately, no record of copies already on hold is present. As such,
@@ -408,8 +383,8 @@ static NSString *const UpdatedKey = @"updated";
       availability = [[NYPLOPDSAcquisitionAvailabilityReserved alloc]
                       initWithHoldPosition:holdsPosition
                       copiesTotal:totalCopies
-                      reservedSince:since
-                      reservedUntil:until];
+                      since:since
+                      until:until];
     } else if ([availabilityStatus isEqual:@"ready"]) {
       availability = [[NYPLOPDSAcquisitionAvailabilityReady alloc] init];
     }

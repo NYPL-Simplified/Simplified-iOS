@@ -16,11 +16,6 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 @property (nonatomic, readonly) NSArray<NYPLOPDSAcquisition *> *acquisitions;
 @property (nonatomic, readonly) NSString *authors;
 @property (nonatomic, readonly) NSArray<NYPLBookAuthor *> *bookAuthors;
-@property (nonatomic, readonly) NYPLBookAvailabilityStatus availabilityStatus;
-@property (nonatomic, readonly) NSInteger availableCopies;
-@property (nonatomic, readonly) NSDate *availableUntil;
-@property (nonatomic, readonly) NSInteger totalCopies;
-@property (nonatomic, readonly) NSInteger holdsPosition;
 @property (nonatomic, readonly) NSString *categories;
 @property (nonatomic, readonly) NSArray *categoryStrings;
 @property (nonatomic, readonly) NSString *distributor; // nilable
@@ -54,11 +49,6 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 
 - (instancetype)initWithAcquisitions:(NSArray<NYPLOPDSAcquisition *> *)acquisitions
                          bookAuthors:(NSArray<NYPLBookAuthor *> *)authors
-                  availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
-                     availableCopies:(NSInteger)availableCopies
-                      availableUntil:(NSDate *)availableUntil
-                         totalCopies:(NSInteger)totalCopies
-                       holdsPosition:(NSInteger)holdsPosition
                      categoryStrings:(NSArray *)categoryStrings
                          distributor:(NSString *)distributor
                           identifier:(NSString *)identifier
