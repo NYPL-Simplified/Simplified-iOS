@@ -99,7 +99,7 @@
       // Try parsing the link as an acquisition first to avoid creating an NYPLOPDSLink
       // for no reason.
       if ([[linkXML attributes][@"rel"] containsString:NYPLOPDSRelationAcquisition]) {
-        NYPLOPDSAcquisition *const acquisition = [NYPLOPDSAcquisition acquisitionWithXML:linkXML];
+        NYPLOPDSAcquisition *const acquisition = [NYPLOPDSAcquisition acquisitionWithLinkXML:linkXML];
         if (acquisition) {
           [mutableAcquisitions addObject:acquisition];
           continue;

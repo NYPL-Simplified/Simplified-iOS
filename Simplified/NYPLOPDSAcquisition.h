@@ -1,5 +1,7 @@
 @import Foundation;
 
+@protocol NYPLOPDSAcquisitionAvailability;
+
 @class NYPLOPDSIndirectAcquisition;
 @class NYPLXML;
 
@@ -69,20 +71,25 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation relation);
 /// Zero or more indirect acquisition objects.
 @property (nonatomic, readonly, nonnull) NSArray<NYPLOPDSIndirectAcquisition *> *indirectAcquisitions;
 
+/// The availability of the result of the acquisition.
+@property (nonatomic, readonly, nonnull) id<NYPLOPDSAcquisitionAvailability> availability;
+
 + (instancetype _Nonnull)new NS_UNAVAILABLE;
 - (instancetype _Nonnull)init NS_UNAVAILABLE;
 
 + (instancetype _Nonnull)acquisitionWithRelation:(NYPLOPDSAcquisitionRelation)relation
                                             type:(NSString *_Nonnull)type
                                          hrefURL:(NSURL *_Nonnull)hrefURL
-                            indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *_Nonnull)indirectAcqusitions;
+                            indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *_Nonnull)indirectAcqusitions
+                                    availability:(id<NYPLOPDSAcquisitionAvailability> _Nonnull)availability;
 
-+ (instancetype _Nullable)acquisitionWithXML:(NYPLXML *_Nonnull)xml;
++ (instancetype _Nullable)acquisitionWithLinkXML:(NYPLXML *_Nonnull)linkXML;
 
 - (instancetype _Nonnull)initWithRelation:(NYPLOPDSAcquisitionRelation)relation
                                      type:(NSString *_Nonnull)type
                                   hrefURL:(NSURL *_Nonnull)hrefURL
                      indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *_Nonnull)indirectAcqusitions
+                             availability:(id<NYPLOPDSAcquisitionAvailability> _Nonnull)availability
   NS_DESIGNATED_INITIALIZER;
 
 /// @param dictionary An @c NSDictionary created via the @c dictionary method.

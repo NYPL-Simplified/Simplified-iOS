@@ -1,39 +1,27 @@
 #import "NYPLOPDSAcquisition.h"
 
+#import "NYPLOPDSAcquisitionAvailability.h"
 #import "NYPLOPDSIndirectAcquisition.h"
 #import "NYPLXML.h"
 
-#pragma mark OPDS Acqusition Relations
+static NSString *const borrowRelationString = @"http://opds-spec.org/acquisition/borrow";
+static NSString *const buyRelationString = @"http://opds-spec.org/acquisition/buy";
+static NSString *const genericRelationString = @"http://opds-spec.org/acquisition";
+static NSString *const openAccessRelationString = @"http://opds-spec.org/acquisition/open-access";
+static NSString *const sampleRelationString = @"http://opds-spec.org/acquisition/sample";
+static NSString *const subscribeRelationString = @"http://opds-spec.org/acquisition/subscribe";
 
-static NSString *const NYPLOPDSAcquisitionRelationGenericString =
-  @"http://opds-spec.org/acquisition";
+static NSString *const availabilityKey = @"availability";
+static NSString *const hrefURLKey = @"href";
+static NSString *const indirectAcquisitionsKey = @"indirectAcqusitions";
+static NSString *const relationKey = @"rel";
+static NSString *const typeKey = @"type";
 
-static NSString *const NYPLOPDSAcquisitionRelationOpenAccessString =
-  @"http://opds-spec.org/acquisition/open-access";
+static NSString *const indirectAcquisitionName = @"indirectAcquisition";
 
-static NSString *const NYPLOPDSAcquisitionRelationBorrowString =
-  @"http://opds-spec.org/acquisition/borrow";
-
-static NSString *const NYPLOPDSAcquisitionRelationBuyString =
-  @"http://opds-spec.org/acquisition/buy";
-
-static NSString *const NYPLOPDSAcquisitionRelationSampleString =
-  @"http://opds-spec.org/acquisition/sample";
-
-static NSString *const NYPLOPDSAcquisitionRelationSubscribeString =
-  @"http://opds-spec.org/acquisition/subscribe";
-
-#pragma mark Dictionary Keys
-
-static NSString *const NYPLOPDSAcquisitionRelationKey = @"rel";
-
-static NSString *const NYPLOPDSAcquisitionTypeKey = @"type";
-
-static NSString *const NYPLOPDSAcquisitionHrefURLKey = @"href";
-
-static NSString *const NYPLOPDSAcquisitionIndirectAcqusitionsKey = @"indirectAcqusitions";
-
-#pragma mark -
+static NSString *const relAttribute = @"rel";
+static NSString *const typeAttribute = @"type";
+static NSString *const hrefAttribute = @"href";
 
 static NSUInteger const numberOfRelations = 6;
 
@@ -73,12 +61,12 @@ NYPLOPDSAcquisitionRelationWithString(NSString *const _Nonnull string,
 
   if (lazyStringToRelationObjectDict == nil) {
     lazyStringToRelationObjectDict = @{
-      NYPLOPDSAcquisitionRelationGenericString: @(NYPLOPDSAcquisitionRelationGeneric),
-      NYPLOPDSAcquisitionRelationOpenAccessString: @(NYPLOPDSAcquisitionRelationOpenAccess),
-      NYPLOPDSAcquisitionRelationBorrowString: @(NYPLOPDSAcquisitionRelationBorrow),
-      NYPLOPDSAcquisitionRelationBuyString: @(NYPLOPDSAcquisitionRelationBuy),
-      NYPLOPDSAcquisitionRelationSampleString: @(NYPLOPDSAcquisitionRelationSample),
-      NYPLOPDSAcquisitionRelationSubscribeString: @(NYPLOPDSAcquisitionRelationSubscribe)
+      genericRelationString: @(NYPLOPDSAcquisitionRelationGeneric),
+      openAccessRelationString: @(NYPLOPDSAcquisitionRelationOpenAccess),
+      borrowRelationString: @(NYPLOPDSAcquisitionRelationBorrow),
+      buyRelationString: @(NYPLOPDSAcquisitionRelationBuy),
+      sampleRelationString: @(NYPLOPDSAcquisitionRelationSample),
+      subscribeRelationString: @(NYPLOPDSAcquisitionRelationSubscribe)
     };
   }
 
@@ -97,17 +85,17 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation const relation)
 {
   switch (relation) {
     case NYPLOPDSAcquisitionRelationGeneric:
-      return NYPLOPDSAcquisitionRelationGenericString;
+      return genericRelationString;
     case NYPLOPDSAcquisitionRelationOpenAccess:
-      return NYPLOPDSAcquisitionRelationOpenAccessString;
+      return openAccessRelationString;
     case NYPLOPDSAcquisitionRelationBorrow:
-      return NYPLOPDSAcquisitionRelationBorrowString;
+      return borrowRelationString;
     case NYPLOPDSAcquisitionRelationBuy:
-      return NYPLOPDSAcquisitionRelationBuyString;
+      return buyRelationString;
     case NYPLOPDSAcquisitionRelationSample:
-      return NYPLOPDSAcquisitionRelationSampleString;
+      return sampleRelationString;
     case NYPLOPDSAcquisitionRelationSubscribe:
-      return NYPLOPDSAcquisitionRelationSubscribeString;
+      return subscribeRelationString;
   }
 }
 
@@ -117,6 +105,7 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation const relation)
 @property (nonatomic, copy, nonnull) NSString *type;
 @property (nonatomic, nonnull) NSURL *hrefURL;
 @property (nonatomic, nonnull) NSArray<NYPLOPDSIndirectAcquisition *> *indirectAcquisitions;
+@property (nonatomic, nonnull) id<NYPLOPDSAcquisitionAvailability> availability;
 
 @end
 
@@ -127,16 +116,18 @@ acquisitionWithRelation:(NYPLOPDSAcquisitionRelation const)relation
 type:(NSString *const _Nonnull)type
 hrefURL:(NSURL *const _Nonnull)hrefURL
 indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)indirectAcqusitions
+availability:(id<NYPLOPDSAcquisitionAvailability> const _Nonnull)availability
 {
   return [[self alloc] initWithRelation:relation
                                    type:type
                                 hrefURL:hrefURL
-                   indirectAcquisitions:indirectAcqusitions];
+                   indirectAcquisitions:indirectAcqusitions
+                           availability:availability];
 }
 
-+ (_Nullable instancetype)acquisitionWithXML:(NYPLXML *const _Nonnull)xml
++ (_Nullable instancetype)acquisitionWithLinkXML:(NYPLXML *const _Nonnull)linkXML
 {
-  NSString *const relationString = [xml attributes][@"rel"];
+  NSString *const relationString = [linkXML attributes][relAttribute];
   if (!relationString) {
     return nil;
   }
@@ -146,12 +137,12 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)ind
     return nil;
   }
 
-  NSString *const type = [xml attributes][@"type"];
+  NSString *const type = [linkXML attributes][typeAttribute];
   if (!type) {
     return nil;
   }
 
-  NSString *const hrefString = [xml attributes][@"href"];
+  NSString *const hrefString = [linkXML attributes][hrefAttribute];
   if (!hrefString) {
     return nil;
   }
@@ -162,7 +153,7 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)ind
   }
 
   NSMutableArray<NYPLOPDSIndirectAcquisition *> *const mutableIndirectAcquisitions = [NSMutableArray array];
-  for (NYPLXML *const indirectAcquisitionXML in [xml childrenWithName:@"indirectAcquisition"]) {
+  for (NYPLXML *const indirectAcquisitionXML in [linkXML childrenWithName:indirectAcquisitionName]) {
     NYPLOPDSIndirectAcquisition *const indirectAcquisition =
       [NYPLOPDSIndirectAcquisition indirectAcquisitionWithXML:indirectAcquisitionXML];
 
@@ -176,13 +167,15 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)ind
   return [self acquisitionWithRelation:relation
                                   type:type
                                hrefURL:hrefURL
-                  indirectAcquisitions:[mutableIndirectAcquisitions copy]];
+                  indirectAcquisitions:[mutableIndirectAcquisitions copy]
+                          availability:NYPLOPDSAcquisitionAvailabilityWithLinkXML(linkXML)];
 }
 
 - (_Nonnull instancetype)initWithRelation:(NYPLOPDSAcquisitionRelation const)relation
                                      type:(NSString *const _Nonnull)type
                                   hrefURL:(NSURL *const _Nonnull)hrefURL
                      indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)indirectAcqusitions
+                             availability:(id<NYPLOPDSAcquisitionAvailability> const _Nonnull)availability
 {
   self = [super init];
 
@@ -190,13 +183,14 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)ind
   self.type = type;
   self.hrefURL = hrefURL;
   self.indirectAcquisitions = indirectAcqusitions;
+  self.availability = availability;
 
   return self;
 }
 
 + (_Nullable instancetype)acquisitionWithDictionary:(NSDictionary *const _Nonnull)dictionary
 {
-  NSString *const relationString = dictionary[NYPLOPDSAcquisitionRelationKey];
+  NSString *const relationString = dictionary[relationKey];
   if (![relationString isKindOfClass:[NSString class]]) {
     return nil;
   }
@@ -206,12 +200,12 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)ind
     return nil;
   }
 
-  NSString *const type = dictionary[NYPLOPDSAcquisitionTypeKey];
+  NSString *const type = dictionary[typeKey];
   if (![type isKindOfClass:[NSString class]]) {
     return nil;
   }
 
-  NSString *const hrefURLString = dictionary[NYPLOPDSAcquisitionHrefURLKey];
+  NSString *const hrefURLString = dictionary[hrefURLKey];
   if (![hrefURLString isKindOfClass:[NSString class]]) {
     return nil;
   }
@@ -221,7 +215,7 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)ind
     return nil;
   }
 
-  NSDictionary *const indirectAcquisitionDictionaries = dictionary[NYPLOPDSAcquisitionIndirectAcqusitionsKey];
+  NSDictionary *const indirectAcquisitionDictionaries = dictionary[indirectAcquisitionsKey];
   if (![indirectAcquisitionDictionaries isKindOfClass:[NSArray class]]) {
     return nil;
   }
@@ -243,11 +237,24 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)ind
     [mutableIndirectAcquisitions addObject:indirectAcquisition];
   }
 
+  NSDictionary *const availabilityDictionary = dictionary[availabilityKey];
+  if (![availabilityDictionary isKindOfClass:[NSDictionary class]]) {
+    return nil;
+  }
+
+  id<NYPLOPDSAcquisitionAvailability> const availability =
+    NYPLOPDSAcquisitionAvailabilityWithDictionary(availabilityDictionary);
+
+  if (!availability) {
+    return nil;
+  }
+
   return [NYPLOPDSAcquisition
           acquisitionWithRelation:relation
           type:type
           hrefURL:hrefURL
-          indirectAcquisitions:[mutableIndirectAcquisitions copy]];
+          indirectAcquisitions:[mutableIndirectAcquisitions copy]
+          availability:availability];
 }
 
 - (NSDictionary *_Nonnull)dictionaryRepresentation
@@ -260,10 +267,11 @@ indirectAcquisitions:(NSArray<NYPLOPDSIndirectAcquisition *> *const _Nonnull)ind
   }
 
   return @{
-    NYPLOPDSAcquisitionRelationKey: NYPLOPDSAcquisitionRelationString(self.relation),
-    NYPLOPDSAcquisitionTypeKey: self.type,
-    NYPLOPDSAcquisitionHrefURLKey: self.hrefURL.absoluteString,
-    NYPLOPDSAcquisitionIndirectAcqusitionsKey: [mutableIndirectAcquistionDictionaries copy]
+    relationKey: NYPLOPDSAcquisitionRelationString(self.relation),
+    typeKey: self.type,
+    hrefURLKey: self.hrefURL.absoluteString,
+    indirectAcquisitionsKey: [mutableIndirectAcquistionDictionaries copy],
+    availabilityKey: NYPLOPDSAcquisitionAvailabilityDictionaryRepresentation(self.availability)
   };
 }
 
