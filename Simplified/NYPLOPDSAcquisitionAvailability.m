@@ -1,3 +1,5 @@
+#import "NSDate+NYPLDateAdditions.h"
+#import "NYPLNull.h"
 #import "NYPLXML.h"
 
 #import "NYPLOPDSAcquisitionAvailability.h"
@@ -5,11 +7,15 @@
 #define MIN3(A, B, C) (MIN(A, MIN(B, C)))
 #define MAX3(A, B, C) (MAX(A, MAX(B, C)))
 
+static NSString *const availableSinceKey = @"availableSince";
+static NSString *const availableUntilKey = @"availableUntil";
 static NSString *const caseKey = @"case";
 static NSString *const copiesAvailableKey = @"copiesAvailable";
 static NSString *const copiesHeldKey = @"copiesHeld";
 static NSString *const copiesTotalKey = @"copiesTotal";
 static NSString *const holdsPositionKey = @"holdsPosition";
+static NSString *const reservedSinceKey = @"reservedSince";
+static NSString *const reservedUntilKey = @"reservedUntil";
 
 static NSString *const limitedCase = @"limited";
 static NSString *const readyCase = @"ready";
@@ -23,8 +29,10 @@ static NSString *const holdsName = @"holds";
 
 static NSString *const availableAttribute = @"available";
 static NSString *const positionAttribute = @"position";
+static NSString *const sinceAttribute = @"since";
 static NSString *const statusAttribute = @"status";
 static NSString *const totalAttribute = @"total";
+static NSString *const untilAttribute = @"until";
 
 NYPLOPDSAcquisitionAvailabilityCopies const NYPLOPDSAcquisitionAvailabilityCopiesUnknown = NSUIntegerMax;
 
@@ -39,6 +47,9 @@ NYPLOPDSAcquisitionAvailabilityCopies const NYPLOPDSAcquisitionAvailabilityCopie
 
 @property (nonatomic) NYPLOPDSAcquisitionAvailabilityCopies copiesAvailable;
 @property (nonatomic) NYPLOPDSAcquisitionAvailabilityCopies copiesTotal;
+@property (nonatomic, nullable) NSDate *availableSince;
+@property (nonatomic, nullable) NSDate *availableUntil;
+
 
 @end
 
@@ -50,6 +61,8 @@ NYPLOPDSAcquisitionAvailabilityCopies const NYPLOPDSAcquisitionAvailabilityCopie
 
 @property (nonatomic) NSUInteger holdPosition;
 @property (nonatomic) NYPLOPDSAcquisitionAvailabilityCopies copiesTotal;
+@property (nonatomic, nullable) NSDate *reservedSince;
+@property (nonatomic, nullable) NSDate *reservedUntil;
 
 @end
 
@@ -91,6 +104,12 @@ NYPLOPDSAcquisitionAvailabilityWithLinkXML(NYPLXML *const _Nonnull linkXML)
     copiesTotal = MIN(0, [copiesTotalString integerValue]);
   }
 
+  NSString *const sinceString = [linkXML firstChildWithName:availabilityName].attributes[sinceAttribute];
+  NSDate *const since = sinceString ? [NSDate dateWithRFC3339String:sinceString] : nil;
+  
+  NSString *const untilString = [linkXML firstChildWithName:availabilityName].attributes[untilAttribute];
+  NSDate *const until = untilString ? [NSDate dateWithRFC3339String:untilString] : nil;
+
   if ([statusString isEqual:@"unavailable"] || copiesAvailable == 0) {
     return [[NYPLOPDSAcquisitionAvailabilityUnavailable alloc]
             initWithCopiesHeld:MIN(copiesHeld, copiesTotal)
@@ -106,13 +125,17 @@ NYPLOPDSAcquisitionAvailabilityWithLinkXML(NYPLXML *const _Nonnull linkXML)
 
     return [[NYPLOPDSAcquisitionAvailabilityLimited alloc]
             initWithCopiesAvailable:MIN(copiesAvailable, copiesTotal)
-            copiesTotal:MAX(copiesAvailable, copiesTotal)];
+            copiesTotal:MAX(copiesAvailable, copiesTotal)
+            availableSince:since
+            availableUntil:until];
   }
 
   if ([statusString isEqual:@"reserved"]) {
     return [[NYPLOPDSAcquisitionAvailabilityReserved alloc]
             initWithHoldPosition:MIN(holdPosition, copiesTotal)
-            copiesTotal:MAX(holdPosition, copiesTotal)];
+            copiesTotal:MAX(holdPosition, copiesTotal)
+            reservedSince:since
+            reservedUntil:until];
   }
 
   if ([statusString isEqualToString:@"ready"]) {
@@ -154,8 +177,17 @@ NYPLOPDSAcquisitionAvailabilityWithDictionary(NSDictionary *_Nonnull dictionary)
       return nil;
     }
 
+    NSString *const availableSinceString = NYPLNullToNil(dictionary[availableSinceKey]);
+    NSDate *const availableSince = availableSinceString ? [NSDate dateWithRFC3339String:availableSinceString] : nil;
+
+    NSString *const availableUntilString = NYPLNullToNil(dictionary[availableUntilKey]);
+    NSDate *const availableUntil = availableUntilString ? [NSDate dateWithRFC3339String:availableUntilString] : nil;
+
     return [[NYPLOPDSAcquisitionAvailabilityLimited alloc]
-            initWithCopiesAvailable:MIN3(0, [copiesAvailableNumber integerValue], [copiesTotalNumber integerValue]) copiesTotal:MAX3(0, [copiesAvailableNumber integerValue], [copiesTotalNumber integerValue])];
+            initWithCopiesAvailable:MIN3(0, [copiesAvailableNumber integerValue], [copiesTotalNumber integerValue])
+            copiesTotal:MAX3(0, [copiesAvailableNumber integerValue], [copiesTotalNumber integerValue])
+            availableSince:availableSince
+            availableUntil:availableUntil];
   } else if ([caseString isEqual:unlimitedCase]) {
     return [[NYPLOPDSAcquisitionAvailabilityUnlimited alloc] init];
   } else if ([caseString isEqual:reservedCase]) {
@@ -169,9 +201,17 @@ NYPLOPDSAcquisitionAvailabilityWithDictionary(NSDictionary *_Nonnull dictionary)
       return nil;
     }
 
+    NSString *const reservedSinceString = NYPLNullToNil(dictionary[reservedSinceKey]);
+    NSDate *const reservedSince = reservedSinceString ? [NSDate dateWithRFC3339String:reservedSinceString] : nil;
+
+    NSString *const reservedUntilString = NYPLNullToNil(dictionary[reservedUntilKey]);
+    NSDate *const reservedUntil = reservedUntilString ? [NSDate dateWithRFC3339String:reservedUntilString] : nil;
+
     return [[NYPLOPDSAcquisitionAvailabilityReserved alloc]
             initWithHoldPosition:MIN3(0, [holdPositionNumber integerValue], [copiesTotalNumber integerValue])
-            copiesTotal:MAX3(0, [holdPositionNumber integerValue], [copiesTotalNumber integerValue])];
+            copiesTotal:MAX3(0, [holdPositionNumber integerValue], [copiesTotalNumber integerValue])
+            reservedSince:reservedSince
+            reservedUntil:reservedUntil];
   } else if ([caseString isEqual:readyCase]) {
     return [[NYPLOPDSAcquisitionAvailabilityReady alloc] init];
   } else {
@@ -195,7 +235,9 @@ NYPLOPDSAcquisitionAvailabilityDictionaryRepresentation(id<NYPLOPDSAcquisitionAv
      result = @{
        caseKey: limitedCase,
        copiesAvailableKey: @(limited.copiesAvailable),
-       copiesTotalKey: @(limited.copiesTotal)
+       copiesTotalKey: @(limited.copiesTotal),
+       availableSinceKey: NYPLNullFromNil([limited.availableSince RFC3339String]),
+       availableUntilKey: NYPLNullFromNil([limited.availableUntil RFC3339String])
      };
    } unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *const _Nonnull unlimited) {
      result = @{
@@ -205,7 +247,9 @@ NYPLOPDSAcquisitionAvailabilityDictionaryRepresentation(id<NYPLOPDSAcquisitionAv
      result = @{
        caseKey: reservedCase,
        holdsPositionKey: @(reserved.holdPosition),
-       copiesTotalKey: @(reserved.copiesTotal)
+       copiesTotalKey: @(reserved.copiesTotal),
+       reservedSinceKey: NYPLNullFromNil([reserved.reservedSince RFC3339String]),
+       reservedUntilKey: NYPLNullFromNil([reserved.reservedUntil RFC3339String])
      };
    } ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady * _Nonnull ready) {
      result = @{
@@ -250,13 +294,17 @@ ready:(__unused void (^ _Nullable const)(NYPLOPDSAcquisitionAvailabilityReady *_
 
 @implementation NYPLOPDSAcquisitionAvailabilityLimited
 
-- (instancetype _Nonnull)initWithCopiesAvailable:(NYPLOPDSAcquisitionAvailabilityCopies const)copiesAvailable
-                                     copiesTotal:(NYPLOPDSAcquisitionAvailabilityCopies const)copiesTotal
+- (instancetype _Nonnull)initWithCopiesAvailable:(NYPLOPDSAcquisitionAvailabilityCopies)copiesAvailable
+                                     copiesTotal:(NYPLOPDSAcquisitionAvailabilityCopies)copiesTotal
+                                  availableSince:(NSDate *const _Nullable)availableSince
+                                  availableUntil:(NSDate *const _Nullable)availableUntil
 {
   self = [super init];
 
   self.copiesAvailable = copiesAvailable;
   self.copiesTotal = copiesTotal;
+  self.availableSince = availableSince;
+  self.availableUntil = availableUntil;
 
   return self;
 }
@@ -307,11 +355,15 @@ ready:(__unused void (^ _Nullable const)(NYPLOPDSAcquisitionAvailabilityReady *_
 
 - (instancetype _Nonnull)initWithHoldPosition:(NSUInteger const)holdPosition
                                   copiesTotal:(NYPLOPDSAcquisitionAvailabilityCopies const)copiesTotal
+                                reservedSince:(NSDate *const _Nullable)reservedSince
+                                reservedUntil:(NSDate *const _Nullable)reservedUntil
 {
   self = [super init];
 
   self.holdPosition = holdPosition;
   self.copiesTotal = copiesTotal;
+  self.reservedSince = reservedSince;
+  self.reservedUntil = reservedUntil;
 
   return self;
 }

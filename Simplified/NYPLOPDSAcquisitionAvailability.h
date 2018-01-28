@@ -62,12 +62,16 @@ NYPLOPDSAcquisitionAvailabilityDictionaryRepresentation(id<NYPLOPDSAcquisitionAv
 
 @property (nonatomic, readonly) NYPLOPDSAcquisitionAvailabilityCopies copiesAvailable;
 @property (nonatomic, readonly) NYPLOPDSAcquisitionAvailabilityCopies copiesTotal;
+@property (nonatomic, readonly, nullable) NSDate *availableSince;
+@property (nonatomic, readonly, nullable) NSDate *availableUntil;
 
 + (instancetype _Null_unspecified)new NS_UNAVAILABLE;
 - (instancetype _Null_unspecified)init NS_UNAVAILABLE;
 
 - (instancetype _Nonnull)initWithCopiesAvailable:(NYPLOPDSAcquisitionAvailabilityCopies)copiesAvailable
                                      copiesTotal:(NYPLOPDSAcquisitionAvailabilityCopies)copiesTotal
+                                  availableSince:(NSDate *_Nullable)availableSince
+                                  availableUntil:(NSDate *_Nullable)availableUntil
   NS_DESIGNATED_INITIALIZER;
 
 @end
@@ -80,14 +84,17 @@ NYPLOPDSAcquisitionAvailabilityDictionaryRepresentation(id<NYPLOPDSAcquisitionAv
 
 /// If equal to @c 1, the user is next in line. This value is never @c 0.
 @property (nonatomic, readonly) NSUInteger holdPosition;
-
 @property (nonatomic, readonly) NYPLOPDSAcquisitionAvailabilityCopies copiesTotal;
+@property (nonatomic, readonly, nullable) NSDate *reservedSince;
+@property (nonatomic, readonly, nullable) NSDate *reservedUntil;
 
 + (instancetype _Null_unspecified)new NS_UNAVAILABLE;
 - (instancetype _Null_unspecified)init NS_UNAVAILABLE;
 
 - (instancetype _Nonnull)initWithHoldPosition:(NSUInteger)holdPosition
                                   copiesTotal:(NYPLOPDSAcquisitionAvailabilityCopies)copiesTotal
+                                reservedSince:(NSDate *_Nullable)reservedSince
+                                reservedUntil:(NSDate *_Nullable)reservedUntil
   NS_DESIGNATED_INITIALIZER;
 
 @end

@@ -378,8 +378,11 @@ static NSString *const UpdatedKey = @"updated";
     NSString *const totalCopiesString = NYPLNullToNil(dictionary[DeprecatedTotalCopiesKey]);
     NSInteger const totalCopies = totalCopiesString ? [totalCopiesString integerValue] : NSNotFound;
 
-    NSString *const availableUntilString = NYPLNullToNil(dictionary[DeprecatedAvailableUntilKey]);
-    NSDate *const availableUntil = availableUntilString ? [NSDate dateWithRFC3339String:availableUntilString] : nil;
+    NSString *const untilString = NYPLNullToNil(dictionary[DeprecatedAvailableUntilKey]);
+    NSDate *const until = untilString ? [NSDate dateWithRFC3339String:untilString] : nil;
+
+    // This information is not available so we default to the until date.
+    NSDate *const since = until;
 
     // Default to unlimited availability if we cannot deduce anything more specific.
     id<NYPLOPDSAcquisitionAvailability> availability = [[NYPLOPDSAcquisitionAvailabilityUnlimited alloc] init];
@@ -390,7 +393,9 @@ static NSString *const UpdatedKey = @"updated";
       } else {
         availability = [[NYPLOPDSAcquisitionAvailabilityLimited alloc]
                         initWithCopiesAvailable:availableCopies
-                        copiesTotal:totalCopies];
+                        copiesTotal:totalCopies
+                        availableSince:since
+                        availableUntil:until];
       }
     } else if ([availabilityStatus isEqual:@"unavailable"]) {
       // Unfortunately, no record of copies already on hold is present. As such,
@@ -402,7 +407,9 @@ static NSString *const UpdatedKey = @"updated";
     } else if ([availabilityStatus isEqual:@"reserved"]) {
       availability = [[NYPLOPDSAcquisitionAvailabilityReserved alloc]
                       initWithHoldPosition:holdsPosition
-                      copiesTotal:totalCopies];
+                      copiesTotal:totalCopies
+                      reservedSince:since
+                      reservedUntil:until];
     } else if ([availabilityStatus isEqual:@"ready"]) {
       availability = [[NYPLOPDSAcquisitionAvailabilityReady alloc] init];
     }
