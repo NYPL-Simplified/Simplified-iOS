@@ -10,7 +10,7 @@
 #import "NYPLOPDS.h"
 #import "NYPLSession.h"
 #import "NYPLProblemDocument.h"
-
+#import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksDownloadInfo.h"
 #import "NYPLSettings.h"
@@ -119,6 +119,12 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
+    } else if ([downloadTask.response.MIMEType
+                isEqualToString:@"application/vnd.librarysimplified.bearer-token+json"])
+    {
+      self.bookIdentifierToDownloadInfo[book.identifier] =
+        [[self downloadInfoForBookIdentifier:book.identifier]
+         withRightsManagement:NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON];
     } else {
       NYPLLOG_F(@"Presuming no DRM for unrecognized MIME type \"%@\".", downloadTask.response.MIMEType);
       NYPLMyBooksDownloadInfo *info = [[self downloadInfoForBookIdentifier:book.identifier] withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
@@ -128,10 +134,12 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
     }
   }
   
-  // If the book is protected by Adobe DRM, the download will be very tiny and a later fulfillment
-  // step will be required to get the actual content. As such, we only report progress for books not
-  // protected by Adobe DRM at this stage.
-  if([self downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementAdobe) {
+  // If the book is protected by Adobe DRM or a Simplified bearer token flow, the download will be very tiny and a later
+  // fulfillment step will be required to get the actual content. As such, we do not report progress.
+  if([self downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementAdobe
+     || ([self downloadInfoForBookIdentifier:book.identifier].rightsManagement
+         != NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON))
+  {
     if(totalBytesExpectedToWrite > 0) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
         [[self downloadInfoForBookIdentifier:book.identifier]
@@ -197,7 +205,55 @@ didFinishDownloadingToURL:(NSURL *const)location
 #endif        
         break;
       }
-        
+      case NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON: {
+        NSData *const data = [NSData dataWithContentsOfURL:location];
+        if (!data) {
+          [self failDownloadForBook:book];
+          break;
+        }
+
+        NSDictionary *const dictionary = NYPLJSONObjectFromData(data);
+        if (![dictionary isKindOfClass:[NSDictionary class]]) {
+          [self failDownloadForBook:book];
+          break;
+        }
+
+        NSString *const location = dictionary[@"location"];
+        if (![location isKindOfClass:[NSString class]]) {
+          [self failDownloadForBook:book];
+          break;
+        }
+
+        NSURL *const url = [NSURL URLWithString:location];
+        if (!url) {
+          [self failDownloadForBook:book];
+          break;
+        }
+
+        NSString *const accessToken = dictionary[@"access_token"];
+        if (![accessToken isKindOfClass:[NSString class]]) {
+          [self failDownloadForBook:book];
+          break;
+        }
+
+        NSMutableURLRequest *const mutableRequest = [NSMutableURLRequest requestWithURL:url];
+        [mutableRequest setValue:[NSString stringWithFormat:@"Bearer %@", accessToken]
+              forHTTPHeaderField:@"Authorization"];
+
+        NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:mutableRequest];
+
+        self.bookIdentifierToDownloadInfo[book.identifier] =
+          [[NYPLMyBooksDownloadInfo alloc]
+           initWithDownloadProgress:0.0
+           downloadTask:task
+           rightsManagement:NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON];
+
+        self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
+
+        [task resume];
+
+        break;
+      }
       case NYPLMyBooksDownloadRightsManagementNone: {
         NSError *error = nil;
         
@@ -451,6 +507,56 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [self broadcastUpdate];
 }
 
+- (void)extracted:(NYPLBook *)book {
+  [NYPLOPDSFeed withURL:book.defaultAcquisitionIfBorrow.hrefURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
+    [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
+
+    if(error || !feed || feed.entries.count < 1) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"BorrowFailed"  message:@"BorrowCouldNotBeCompletedFormat", book.title];
+        if (error)
+          [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
+        [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+      });
+      return;
+    }
+
+    NYPLBook *book = [NYPLBook bookWithEntry:feed.entries[0]];
+
+    if(!book) {
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        NYPLAlertController *const alert =
+        [NYPLAlertController
+         alertWithTitle:@"BorrowFailed"
+         message:@"BorrowCouldNotBeCompletedFormat", book.title];
+        [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+      }];
+
+      return;
+    }
+
+    [[NYPLBookRegistry sharedRegistry]
+     addBook:book
+     location:nil
+     state:NYPLBookStateDownloadNeeded
+     fulfillmentId:nil
+     bookmarks:nil];
+
+    [book.defaultAcquisition.availability
+     matchUnavailable:nil
+     limited:^(__unused NYPLOPDSAcquisitionAvailabilityLimited *_Nonnull limited) {
+       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+     }
+     unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *_Nonnull unlimited) {
+       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+     }
+     reserved:nil
+     ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
+       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+     }];
+  }];
+}
+
 - (void)startDownloadForBook:(NYPLBook *const)book
 {
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry]
@@ -492,53 +598,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       // Check out the book
       
       [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-      [NYPLOPDSFeed withURL:book.defaultAcquisitionIfBorrow.hrefURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
-        [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
-        
-        if(error || !feed || feed.entries.count < 1) {
-          dispatch_async(dispatch_get_main_queue(), ^{
-            NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"BorrowFailed"  message:@"BorrowCouldNotBeCompletedFormat", book.title];
-            if (error)
-              [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
-            [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
-          });
-          return;
-        }
-        
-        NYPLBook *book = [NYPLBook bookWithEntry:feed.entries[0]];
-        
-        if(!book) {
-          [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            NYPLAlertController *const alert =
-              [NYPLAlertController
-               alertWithTitle:@"BorrowFailed"
-               message:@"BorrowCouldNotBeCompletedFormat", book.title];
-            [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
-          }];
-           
-          return;
-        }
-        
-        [[NYPLBookRegistry sharedRegistry]
-         addBook:book
-         location:nil
-         state:NYPLBookStateDownloadNeeded
-         fulfillmentId:nil
-         bookmarks:nil];
-
-        [book.defaultAcquisition.availability
-         matchUnavailable:nil
-         limited:^(__unused NYPLOPDSAcquisitionAvailabilityLimited *_Nonnull limited) {
-           [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-         }
-         unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *_Nonnull unlimited) {
-           [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-         }
-         reserved:nil
-         ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
-           [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-         }];
-      }];
+      [self extracted:book];
     } else {
       // Actually download the book.
       NSURL *URL = book.defaultAcquisition.hrefURL;
