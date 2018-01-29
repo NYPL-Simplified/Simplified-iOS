@@ -1,5 +1,4 @@
 #import "NYPLBook.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLBookDetailButtonsView.h"
 #import "NYPLConfiguration.h"

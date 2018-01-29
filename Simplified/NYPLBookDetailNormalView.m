@@ -1,6 +1,5 @@
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLBook.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLBookButtonsView.h"

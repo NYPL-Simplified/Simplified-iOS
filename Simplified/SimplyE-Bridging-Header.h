@@ -15,7 +15,6 @@
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLXML.h"
 #import "UIFont+NYPLSystemFontOverride.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLCatalogUngroupedFeed.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"

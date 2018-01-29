@@ -1,5 +1,4 @@
 #import "NYPLSettings.h"
-#import "NYPLBookAcquisition.h"
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
