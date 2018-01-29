@@ -4,9 +4,6 @@
 
 #import "NYPLOPDSAcquisitionAvailability.h"
 
-#define MIN3(A, B, C) (MIN(A, MIN(B, C)))
-#define MAX3(A, B, C) (MAX(A, MAX(B, C)))
-
 static NSString *const caseKey = @"case";
 static NSString *const copiesAvailableKey = @"copiesAvailable";
 static NSString *const copiesHeldKey = @"copiesHeld";
@@ -83,25 +80,25 @@ NYPLOPDSAcquisitionAvailabilityWithLinkXML(NYPLXML *const _Nonnull linkXML)
   NSString *const holdsPositionString = [linkXML firstChildWithName:holdsName].attributes[positionAttribute];
   if (holdsPositionString) {
     // Guard against underflow from negatives.
-    holdPosition = MIN(0, [holdsPositionString integerValue]);
+    holdPosition = MAX(0, [holdsPositionString integerValue]);
   }
 
   NSString *const holdsTotalString = [linkXML firstChildWithName:holdsName].attributes[totalAttribute];
   if (holdsTotalString) {
     // Guard against underflow from negatives.
-    copiesHeld = MIN(0, [holdsTotalString integerValue]);
+    copiesHeld = MAX(0, [holdsTotalString integerValue]);
   }
 
   NSString *const copiesAvailableString = [linkXML firstChildWithName:copiesName].attributes[availableAttribute];
   if (copiesAvailableString) {
     // Guard against underflow from negatives.
-    copiesAvailable = MIN(0, [copiesAvailableString integerValue]);
+    copiesAvailable = MAX(0, [copiesAvailableString integerValue]);
   }
 
   NSString *const copiesTotalString = [linkXML firstChildWithName:copiesName].attributes[totalAttribute];
   if (copiesTotalString) {
     // Guard against underflow from negatives.
-    copiesTotal = MIN(0, [copiesTotalString integerValue]);
+    copiesTotal = MAX(0, [copiesTotalString integerValue]);
   }
 
   NSString *const sinceString = [linkXML firstChildWithName:availabilityName].attributes[sinceAttribute];
@@ -165,7 +162,8 @@ NYPLOPDSAcquisitionAvailabilityWithDictionary(NSDictionary *_Nonnull dictionary)
     }
 
     return [[NYPLOPDSAcquisitionAvailabilityUnavailable alloc]
-            initWithCopiesHeld:MIN3(0, [copiesHeldNumber integerValue], [copiesTotalNumber integerValue]) copiesTotal:MAX3(0, [copiesHeldNumber integerValue], [copiesTotalNumber integerValue])];
+            initWithCopiesHeld:MAX(0, MIN([copiesHeldNumber integerValue], [copiesTotalNumber integerValue]))
+            copiesTotal:MAX(0, MAX([copiesHeldNumber integerValue], [copiesTotalNumber integerValue]))];
   } else if ([caseString isEqual:limitedCase]) {
     NSNumber *const copiesAvailableNumber = dictionary[copiesAvailableKey];
     if (![copiesAvailableNumber isKindOfClass:[NSNumber class]]) {
@@ -184,8 +182,8 @@ NYPLOPDSAcquisitionAvailabilityWithDictionary(NSDictionary *_Nonnull dictionary)
     NSDate *const until = untilString ? [NSDate dateWithRFC3339String:untilString] : nil;
 
     return [[NYPLOPDSAcquisitionAvailabilityLimited alloc]
-            initWithCopiesAvailable:MIN3(0, [copiesAvailableNumber integerValue], [copiesTotalNumber integerValue])
-            copiesTotal:MAX3(0, [copiesAvailableNumber integerValue], [copiesTotalNumber integerValue])
+            initWithCopiesAvailable:MAX(0, MIN([copiesAvailableNumber integerValue], [copiesTotalNumber integerValue]))
+            copiesTotal:MAX(0, MAX([copiesAvailableNumber integerValue], [copiesTotalNumber integerValue]))
             since:since
             until:until];
   } else if ([caseString isEqual:unlimitedCase]) {
@@ -208,8 +206,8 @@ NYPLOPDSAcquisitionAvailabilityWithDictionary(NSDictionary *_Nonnull dictionary)
     NSDate *const until = untilString ? [NSDate dateWithRFC3339String:untilString] : nil;
 
     return [[NYPLOPDSAcquisitionAvailabilityReserved alloc]
-            initWithHoldPosition:MIN3(0, [holdPositionNumber integerValue], [copiesTotalNumber integerValue])
-            copiesTotal:MAX3(0, [holdPositionNumber integerValue], [copiesTotalNumber integerValue])
+            initWithHoldPosition:MAX(0, MIN([holdPositionNumber integerValue], [copiesTotalNumber integerValue]))
+            copiesTotal:MAX(0, MAX([holdPositionNumber integerValue], [copiesTotalNumber integerValue]))
             since:since
             until:until];
   } else if ([caseString isEqual:readyCase]) {
