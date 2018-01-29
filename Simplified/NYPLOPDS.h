@@ -1,6 +1,6 @@
 #import "NYPLOPDSAcquisition.h"
 #import "NYPLOPDSAcquisitionAvailability.h"
-#import "NYPLOPDSAcquisitionPath.h"
+#import "NYPLBookAcquisitionPath.h"
 #import "NYPLOPDSAttribute.h"
 #import "NYPLOPDSCategory.h"
 #import "NYPLOPDSEntry.h"

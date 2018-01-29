@@ -1,8 +1,8 @@
 #import "NYPLOPDSIndirectAcquisition.h"
 
-#import "NYPLOPDSAcquisitionPath.h"
+#import "NYPLBookAcquisitionPath.h"
 
-@interface NYPLOPDSAcquisitionPath ()
+@interface NYPLBookAcquisitionPath ()
 
 @property (nonatomic) NYPLOPDSAcquisitionRelation relation;
 @property (nonatomic, nonnull) NSArray<NSString *> *types;
@@ -10,7 +10,7 @@
 
 @end
 
-@implementation NYPLOPDSAcquisitionPath : NSObject
+@implementation NYPLBookAcquisitionPath : NSObject
 
 - (instancetype _Nonnull)initWithRelation:(NYPLOPDSAcquisitionRelation const)relation
                                     types:(NSArray<NSString *> *const _Nonnull)types
@@ -42,11 +42,11 @@
 
 - (BOOL)isEqual:(id const)object
 {
-  if (![object isKindOfClass:[NYPLOPDSAcquisitionPath class]]) {
+  if (![object isKindOfClass:[NYPLBookAcquisitionPath class]]) {
     return NO;
   }
 
-  NYPLOPDSAcquisitionPath *const path = object;
+  NYPLBookAcquisitionPath *const path = object;
 
   return self.relation == path.relation && [self.types isEqualToArray:path.types];
 }
@@ -89,7 +89,7 @@ mutableTypePaths(
 }
 
 
-+ (NSSet<NYPLOPDSAcquisitionPath *> *_Nonnull)
++ (NSSet<NYPLBookAcquisitionPath *> *_Nonnull)
 supportedAcquisitionPathsForAllowedTypes:(NSSet<NSString *> *_Nonnull)types
 allowedRelations:(NYPLOPDSAcquisitionRelationSet)relations
 acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
@@ -102,7 +102,7 @@ acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
     {
       if (acquisition.indirectAcquisitions.count == 0) {
         [mutableAcquisitionPaths addObject:
-         [[NYPLOPDSAcquisitionPath alloc]
+         [[NYPLBookAcquisitionPath alloc]
           initWithRelation:acquisition.relation
           types:@[acquisition.type]
           url:acquisition.hrefURL]];
@@ -110,8 +110,8 @@ acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
         for (NYPLOPDSIndirectAcquisition *const indirectAcquisition in acquisition.indirectAcquisitions) {
           for (NSMutableArray<NSString *> *const mutableTypePath in mutableTypePaths(indirectAcquisition, types)) {
             [mutableTypePath insertObject:acquisition.type atIndex:0];
-            NYPLOPDSAcquisitionPath *const acquisitionPath =
-            [[NYPLOPDSAcquisitionPath alloc]
+            NYPLBookAcquisitionPath *const acquisitionPath =
+            [[NYPLBookAcquisitionPath alloc]
              initWithRelation:acquisition.relation
              types:[mutableTypePath copy]
              url:acquisition.hrefURL];

@@ -521,8 +521,8 @@ static NSString *const UpdatedKey = @"updated";
   }
 
   for (NYPLOPDSAcquisition *const acquisition in self.acquisitions) {
-    NSSet *const pathSet = [NYPLOPDSAcquisitionPath
-                            supportedAcquisitionPathsForAllowedTypes:[NYPLOPDSAcquisitionPath supportedTypes]
+    NSSet *const pathSet = [NYPLBookAcquisitionPath
+                            supportedAcquisitionPathsForAllowedTypes:[NYPLBookAcquisitionPath supportedTypes]
                             allowedRelations:NYPLOPDSAcquisitionRelationSetAll
                             acquisitions:@[acquisition]];
 

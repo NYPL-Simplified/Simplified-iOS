@@ -131,9 +131,9 @@
 		2D6F7CA91D910C3C000B906A /* HelpStack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6F7CA81D910C3C000B906A /* HelpStack.framework */; };
 		2D754BBB2002E2FB0061D34F /* NYPLOPDSAcquisition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D754BBA2002E2FB0061D34F /* NYPLOPDSAcquisition.m */; };
 		2D754BC22002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D754BC12002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m */; };
-		2D87909D20127AA300E2763F /* NYPLOPDSAcquisitionPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D87909C20127AA300E2763F /* NYPLOPDSAcquisitionPath.m */; };
-		2D8790A320129AC400E2763F /* MyBooksAcquisitionPathEntry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2D8790A220129AC400E2763F /* MyBooksAcquisitionPathEntry.xml */; };
-		2D8790A520129AF200E2763F /* NYPLOPDSAcquisitionPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8790A420129AF200E2763F /* NYPLOPDSAcquisitionPathTests.swift */; };
+		2D87909D20127AA300E2763F /* NYPLBookAcquisitionPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D87909C20127AA300E2763F /* NYPLBookAcquisitionPath.m */; };
+		2D8790A320129AC400E2763F /* NYPLBookAcquisitionPathEntry.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2D8790A220129AC400E2763F /* NYPLBookAcquisitionPathEntry.xml */; };
+		2D8790A520129AF200E2763F /* NYPLBookAcquisitionPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8790A420129AF200E2763F /* NYPLBookAcquisitionPathTests.swift */; };
 		2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */; };
 		2DB436381D4C049200F8E69D /* NYPLReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DB436371D4C049200F8E69D /* NYPLReachability.m */; };
 		2DC8D9DC1D09F797007DD125 /* UpdateCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */; };
@@ -477,10 +477,10 @@
 		2D754BBA2002E2FB0061D34F /* NYPLOPDSAcquisition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSAcquisition.m; sourceTree = "<group>"; };
 		2D754BC02002F1B10061D34F /* NYPLOPDSIndirectAcquisition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSIndirectAcquisition.h; sourceTree = "<group>"; };
 		2D754BC12002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSIndirectAcquisition.m; sourceTree = "<group>"; };
-		2D87909B20127AA300E2763F /* NYPLOPDSAcquisitionPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSAcquisitionPath.h; sourceTree = "<group>"; };
-		2D87909C20127AA300E2763F /* NYPLOPDSAcquisitionPath.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSAcquisitionPath.m; sourceTree = "<group>"; };
-		2D8790A220129AC400E2763F /* MyBooksAcquisitionPathEntry.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MyBooksAcquisitionPathEntry.xml; sourceTree = "<group>"; };
-		2D8790A420129AF200E2763F /* NYPLOPDSAcquisitionPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLOPDSAcquisitionPathTests.swift; sourceTree = "<group>"; };
+		2D87909B20127AA300E2763F /* NYPLBookAcquisitionPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLBookAcquisitionPath.h; sourceTree = "<group>"; };
+		2D87909C20127AA300E2763F /* NYPLBookAcquisitionPath.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLBookAcquisitionPath.m; sourceTree = "<group>"; };
+		2D8790A220129AC400E2763F /* NYPLBookAcquisitionPathEntry.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NYPLBookAcquisitionPathEntry.xml; sourceTree = "<group>"; };
+		2D8790A420129AF200E2763F /* NYPLBookAcquisitionPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookAcquisitionPathTests.swift; sourceTree = "<group>"; };
 		2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		2DB436361D4C049200F8E69D /* NYPLReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReachability.h; sourceTree = "<group>"; };
 		2DB436371D4C049200F8E69D /* NYPLReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReachability.m; sourceTree = "<group>"; };
@@ -733,6 +733,8 @@
 				1183F346194F744D00DC322F /* NYPLBook.m */,
 				1183F351194F795800DC322F /* NYPLBookAcquisition.h */,
 				1183F352194F795800DC322F /* NYPLBookAcquisition.m */,
+				2D87909B20127AA300E2763F /* NYPLBookAcquisitionPath.h */,
+				2D87909C20127AA300E2763F /* NYPLBookAcquisitionPath.m */,
 				E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */,
 				1139DA6319C7755D00A07810 /* NYPLBookCoverRegistry.h */,
 				1139DA6419C7755D00A07810 /* NYPLBookCoverRegistry.m */,
@@ -817,7 +819,6 @@
 		1183F34D194F775400DC322F /* OPDS */ = {
 			isa = PBXGroup;
 			children = (
-				2D8790A420129AF200E2763F /* NYPLOPDSAcquisitionPathTests.swift */,
 				11396FC8193F674F00E16EE8 /* NYPLOPDSFeedTests.m */,
 				11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */,
 				11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */,
@@ -1144,6 +1145,7 @@
 			isa = PBXGroup;
 			children = (
 				1157E92D19CA0009003BFDBF /* NSString+NYPLStringAdditionsTests.m */,
+				2D8790A420129AF200E2763F /* NYPLBookAcquisitionPathTests.swift */,
 				1142E4E719EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m */,
 				11396FBA193D2FAC00E16EE8 /* NYPLDateAdditionsTests.m */,
 				11C5DD171977335E005A9945 /* NYPLKeychainTests.m */,
@@ -1170,7 +1172,7 @@
 				2D2B47891D08FC78007F7764 /* UpdateCheckUnknown.json */,
 				2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */,
 				111559F119B8FAA10003BE94 /* valid.xml */,
-				2D8790A220129AC400E2763F /* MyBooksAcquisitionPathEntry.xml */,
+				2D8790A220129AC400E2763F /* NYPLBookAcquisitionPathEntry.xml */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1183,8 +1185,6 @@
 				2D754BBA2002E2FB0061D34F /* NYPLOPDSAcquisition.m */,
 				2DCB71EC2017DFB5000E041A /* NYPLOPDSAcquisitionAvailability.h */,
 				2DCB71ED2017DFB5000E041A /* NYPLOPDSAcquisitionAvailability.m */,
-				2D87909B20127AA300E2763F /* NYPLOPDSAcquisitionPath.h */,
-				2D87909C20127AA300E2763F /* NYPLOPDSAcquisitionPath.m */,
 				110AD83A19E4960C005724C3 /* NYPLOPDSAttribute.h */,
 				110AD83B19E497D6005724C3 /* NYPLOPDSAttribute.m */,
 				2DFAC8EB1CD8DDD1003D9EC0 /* NYPLOPDSCategory.h */,
@@ -1366,7 +1366,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D8790A320129AC400E2763F /* MyBooksAcquisitionPathEntry.xml in Resources */,
+				2D8790A320129AC400E2763F /* NYPLBookAcquisitionPathEntry.xml in Resources */,
 				2D2B478E1D08FDF5007F7764 /* UpdateCheckNeedsUpdate.json in Resources */,
 				2D2B478F1D08FDF5007F7764 /* UpdateCheckUnknown.json in Resources */,
 				2D2B47841D08F8E2007F7764 /* UpdateCheckUpToDate.json in Resources */,
@@ -1543,7 +1543,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */,
-				2D8790A520129AF200E2763F /* NYPLOPDSAcquisitionPathTests.swift in Sources */,
+				2D8790A520129AF200E2763F /* NYPLBookAcquisitionPathTests.swift in Sources */,
 				2D2B477E1D08F82C007F7764 /* Log.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1607,7 +1607,7 @@
 				A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */,
 				11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */,
 				114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLImageAdditions.m in Sources */,
-				2D87909D20127AA300E2763F /* NYPLOPDSAcquisitionPath.m in Sources */,
+				2D87909D20127AA300E2763F /* NYPLBookAcquisitionPath.m in Sources */,
 				1142E4EB19EED86A00D9B3D9 /* NYPLFacetBarView.m in Sources */,
 				2DCB71EE2017DFB5000E041A /* NYPLOPDSAcquisitionAvailability.m in Sources */,
 				2DB436381D4C049200F8E69D /* NYPLReachability.m in Sources */,

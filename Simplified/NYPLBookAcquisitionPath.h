@@ -6,7 +6,7 @@
 
 /// Represents a single path the application can take through an acquisition
 /// process.
-@interface NYPLOPDSAcquisitionPath : NSObject
+@interface NYPLBookAcquisitionPath : NSObject
 
 /// The relation of the initial acquisition step.
 @property (nonatomic, readonly) NYPLOPDSAcquisitionRelation relation;
@@ -32,7 +32,7 @@
 /// @param acqusitions The OPDS acquisitions to search.
 /// @return The set of possible acquisition paths supported by the application
 /// limited by the types and relations supplied.
-+ (NSSet<NYPLOPDSAcquisitionPath *> *_Nonnull)
++ (NSSet<NYPLBookAcquisitionPath *> *_Nonnull)
 supportedAcquisitionPathsForAllowedTypes:(NSSet<NSString *> *_Nonnull)types
 allowedRelations:(NYPLOPDSAcquisitionRelationSet)relations
 acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions;
