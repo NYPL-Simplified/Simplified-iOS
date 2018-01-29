@@ -408,13 +408,6 @@ ready:(__unused void (^ _Nullable const)(NYPLOPDSAcquisitionAvailabilityReady *_
 
 @implementation NYPLOPDSAcquisitionAvailabilityReady
 
-// Necessary because `init` is publicly unavailable and has been redeclared in
-// a private extension.
-- (instancetype)init
-{
-  return [super init];
-}
-
 - (BOOL)available
 {
   return YES;
