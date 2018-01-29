@@ -14,6 +14,7 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksDownloadInfo.h"
 #import "NYPLSettings.h"
+#import "NYPLMyBooksSimplifiedBearerToken.h"
 #import "SimplyE-Swift.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -218,26 +219,16 @@ didFinishDownloadingToURL:(NSURL *const)location
           break;
         }
 
-        NSString *const location = dictionary[@"location"];
-        if (![location isKindOfClass:[NSString class]]) {
+        NYPLMyBooksSimplifiedBearerToken *const simplifiedBearerToken =
+          [NYPLMyBooksSimplifiedBearerToken simplifiedBearerTokenWithDictionary:dictionary];
+
+        if (!simplifiedBearerToken) {
           [self failDownloadForBook:book];
           break;
         }
 
-        NSURL *const url = [NSURL URLWithString:location];
-        if (!url) {
-          [self failDownloadForBook:book];
-          break;
-        }
-
-        NSString *const accessToken = dictionary[@"access_token"];
-        if (![accessToken isKindOfClass:[NSString class]]) {
-          [self failDownloadForBook:book];
-          break;
-        }
-
-        NSMutableURLRequest *const mutableRequest = [NSMutableURLRequest requestWithURL:url];
-        [mutableRequest setValue:[NSString stringWithFormat:@"Bearer %@", accessToken]
+        NSMutableURLRequest *const mutableRequest = [NSMutableURLRequest requestWithURL:simplifiedBearerToken.location];
+        [mutableRequest setValue:[NSString stringWithFormat:@"Bearer %@", simplifiedBearerToken.accessToken]
               forHTTPHeaderField:@"Authorization"];
 
         NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:mutableRequest];
