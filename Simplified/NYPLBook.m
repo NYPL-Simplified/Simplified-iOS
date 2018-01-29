@@ -527,6 +527,8 @@ static NSString *const UpdatedKey = @"updated";
     }
   }
 
+  NYPLLOG(@"ERROR: Failed to find a suitable default acquisition.");
+
   return nil;
 }
 
