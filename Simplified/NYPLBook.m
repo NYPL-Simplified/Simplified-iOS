@@ -520,15 +520,13 @@ static NSString *const UpdatedKey = @"updated";
     return nil;
   }
 
-
   for (NYPLOPDSAcquisition *const acquisition in self.acquisitions) {
-    if ([acquisition.type isEqualToString:@"application/epub+zip"]) {
-      return acquisition;
-    }
+    NSSet *const pathSet = [NYPLOPDSAcquisitionPath
+                            supportedAcquisitionPathsForAllowedTypes:[NYPLOPDSAcquisitionPath supportedTypes]
+                            allowedRelations:NYPLOPDSAcquisitionRelationSetAll
+                            acquisitions:@[acquisition]];
 
-    if (acquisition.indirectAcquisitions.count >= 1
-        && [acquisition.indirectAcquisitions.lastObject.type isEqualToString:@"application/epub+zip"])
-    {
+    if (pathSet.count >= 1) {
       return acquisition;
     }
   }
