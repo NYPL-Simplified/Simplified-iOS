@@ -515,6 +515,11 @@ static NSString *const UpdatedKey = @"updated";
 
 - (NYPLOPDSAcquisition *)defaultAcquisition
 {
+  if (self.acquisitions.count == 0) {
+    NYPLLOG(@"ERROR: No acquisitions found when computing a default. This is an OPDS violation.");
+    return nil;
+  }
+
   for (NYPLOPDSAcquisition *const acquisition in self.acquisitions) {
     if ([acquisition.type isEqualToString:@"application/epub+zip"]) {
       return acquisition;
@@ -527,9 +532,7 @@ static NSString *const UpdatedKey = @"updated";
     }
   }
 
-  NYPLLOG(@"ERROR: Failed to find a suitable default acquisition.");
-
-  return nil;
+  return self.acquisitions.firstObject;
 }
 
 - (NYPLOPDSAcquisition *)defaultAcquisitionIfBorrow
