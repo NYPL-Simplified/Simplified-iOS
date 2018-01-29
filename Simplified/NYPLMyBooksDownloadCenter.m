@@ -492,7 +492,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       // Check out the book
       
       [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-      [NYPLOPDSFeed withURL:book.defaultAcquisitionIfBorrow completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
+      [NYPLOPDSFeed withURL:book.defaultAcquisitionIfBorrow.hrefURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
         [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
         
         if(error || !feed || feed.entries.count < 1) {
