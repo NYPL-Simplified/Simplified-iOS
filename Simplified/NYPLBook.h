@@ -25,7 +25,6 @@
 @property (nonatomic, readonly) NSURL *alternateURL; // nilable
 @property (nonatomic, readonly) NSURL *relatedWorksURL; // nilable
 @property (nonatomic, readonly) NSURL *seriesURL; // nilable
-@property (nonatomic, readonly) NSDictionary *licensor; // nilable
 @property (nonatomic, readonly) NSURL *revokeURL; // nilable
 @property (nonatomic, readonly) NSURL *reportURL; // nilable
 
@@ -57,7 +56,6 @@
                         alternateURL:(NSURL *)alternateURL
                      relatedWorksURL:(NSURL *)relatedWorksURL
                            seriesURL:(NSURL *)seriesURL
-                            licensor:(NSDictionary *)licensor
                            revokeURL:(NSURL *)revokeURL
                            reportURL:(NSURL *)reportURL
   NS_DESIGNATED_INITIALIZER;

@@ -26,7 +26,6 @@
 @property (nonatomic) NSURL *alternateURL;
 @property (nonatomic) NSURL *relatedWorksURL;
 @property (nonatomic) NSURL *seriesURL;
-@property (nonatomic) NSDictionary *licensor;
 @property (nonatomic) NSURL *revokeURL;
 @property (nonatomic) NSURL *reportURL;
 
@@ -88,9 +87,8 @@ static NSString *const UpdatedKey = @"updated";
   }
   
   NSURL *revoke, *image, *imageThumbnail, *annotations, *report = nil;
-  NSDictionary *licensor = nil;
-  NSMutableArray<NYPLBookAuthor *> *authors = [[NSMutableArray alloc] init];
 
+  NSMutableArray<NYPLBookAuthor *> *authors = [[NSMutableArray alloc] init];
   for (int i = 0; i < (int)entry.authorStrings.count; i++) {
     if ((int)entry.authorLinks.count > i) {
       [authors addObject:[[NYPLBookAuthor alloc] initWithAuthorName:entry.authorStrings[i]
@@ -143,7 +141,6 @@ static NSString *const UpdatedKey = @"updated";
           alternateURL:entry.alternate.href
           relatedWorksURL:entry.relatedWorks.href
           seriesURL:entry.seriesLink.href
-          licensor:licensor
           revokeURL:revoke
           reportURL:report];
 }
@@ -169,7 +166,6 @@ static NSString *const UpdatedKey = @"updated";
           alternateURL:book.alternateURL
           relatedWorksURL:book.relatedWorksURL
           seriesURL:book.seriesURL
-          licensor:book.licensor
           revokeURL:self.revokeURL
           reportURL:self.reportURL];
 }
@@ -192,7 +188,6 @@ static NSString *const UpdatedKey = @"updated";
                         alternateURL:(NSURL *)alternateURL
                      relatedWorksURL:(NSURL *)relatedWorksURL
                            seriesURL:(NSURL *)seriesURL
-                            licensor:(NSDictionary *)licensor
                            revokeURL:(NSURL *)revokeURL
                            reportURL:(NSURL *)reportURL
 {
@@ -213,7 +208,6 @@ static NSString *const UpdatedKey = @"updated";
   self.identifier = identifier;
   self.imageURL = imageURL;
   self.imageThumbnailURL = imageThumbnailURL;
-  self.licensor = licensor;
   self.published = published;
   self.publisher = publisher;
   self.relatedWorksURL = relatedWorksURL;
