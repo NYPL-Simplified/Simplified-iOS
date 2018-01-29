@@ -1,8 +1,8 @@
 #import "NYPLOPDSIndirectAcquisition.h"
 
-#import "NYPLMyBooksAcquisitionPath.h"
+#import "NYPLOPDSAcquisitionPath.h"
 
-@interface NYPLMyBooksAcquisitionPath ()
+@interface NYPLOPDSAcquisitionPath ()
 
 @property (nonatomic) NYPLOPDSAcquisitionRelation relation;
 @property (nonatomic, nonnull) NSArray<NSString *> *types;
@@ -10,7 +10,7 @@
 
 @end
 
-@implementation NYPLMyBooksAcquisitionPath : NSObject
+@implementation NYPLOPDSAcquisitionPath : NSObject
 
 - (instancetype _Nonnull)initWithRelation:(NYPLOPDSAcquisitionRelation const)relation
                                     types:(NSArray<NSString *> *const _Nonnull)types
@@ -42,11 +42,11 @@
 
 - (BOOL)isEqual:(id const)object
 {
-  if (![object isKindOfClass:[NYPLMyBooksAcquisitionPath class]]) {
+  if (![object isKindOfClass:[NYPLOPDSAcquisitionPath class]]) {
     return NO;
   }
 
-  NYPLMyBooksAcquisitionPath *const path = object;
+  NYPLOPDSAcquisitionPath *const path = object;
 
   return self.relation == path.relation && [self.types isEqualToArray:path.types];
 }
@@ -89,7 +89,7 @@ mutableTypePaths(
 }
 
 
-+ (NSSet<NYPLMyBooksAcquisitionPath *> *_Nonnull)
++ (NSSet<NYPLOPDSAcquisitionPath *> *_Nonnull)
 supportedAcquisitionPathsForAllowedTypes:(NSSet<NSString *> *_Nonnull)types
 allowedRelations:(NYPLOPDSAcquisitionRelationSet)relations
 acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
@@ -103,8 +103,8 @@ acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
       for (NYPLOPDSIndirectAcquisition *const indirectAcquisition in acquisition.indirectAcquisitions) {
         for (NSMutableArray<NSString *> *const mutableTypePath in mutableTypePaths(indirectAcquisition, types)) {
           [mutableTypePath insertObject:acquisition.type atIndex:0];
-          NYPLMyBooksAcquisitionPath *const acquisitionPath =
-            [[NYPLMyBooksAcquisitionPath alloc]
+          NYPLOPDSAcquisitionPath *const acquisitionPath =
+            [[NYPLOPDSAcquisitionPath alloc]
              initWithRelation:acquisition.relation
              types:[mutableTypePath copy]
              url:acquisition.hrefURL];

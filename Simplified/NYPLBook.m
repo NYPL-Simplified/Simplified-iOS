@@ -520,6 +520,7 @@ static NSString *const UpdatedKey = @"updated";
     return nil;
   }
 
+
   for (NYPLOPDSAcquisition *const acquisition in self.acquisitions) {
     if ([acquisition.type isEqualToString:@"application/epub+zip"]) {
       return acquisition;
@@ -531,6 +532,8 @@ static NSString *const UpdatedKey = @"updated";
       return acquisition;
     }
   }
+
+  NYPLLOG(@"WARNING: Choosing arbitrary default acquisition.");
 
   return self.acquisitions.firstObject;
 }

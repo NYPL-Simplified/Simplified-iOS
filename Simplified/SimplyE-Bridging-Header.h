@@ -3,9 +3,6 @@
 //
 
 #import "NYPLConfiguration.h"
-#import "NYPLOPDSEntry.h"
-#import "NYPLOPDSFeed.h"
-#import "NYPLOPDSLink.h"
 #import "NYPLBook.h"
 #import "NYPLBookDetailView.h"
 #import "NYPLBookDetailViewController.h"
@@ -28,4 +25,4 @@
 #import "NYPLRootTabBarController.h"
 #import "NYPLZXingEncoder.h"
 #import "NYPLReachability.h"
-#import "NYPLMyBooksAcquisitionPath.h"
+#import "NYPLOPDS.h"
