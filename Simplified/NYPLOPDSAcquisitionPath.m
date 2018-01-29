@@ -100,15 +100,23 @@ acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
     if ([types containsObject:acquisition.type]
         && NYPLOPDSAcquisitionRelationSetContainsRelation(relations, acquisition.relation))
     {
-      for (NYPLOPDSIndirectAcquisition *const indirectAcquisition in acquisition.indirectAcquisitions) {
-        for (NSMutableArray<NSString *> *const mutableTypePath in mutableTypePaths(indirectAcquisition, types)) {
-          [mutableTypePath insertObject:acquisition.type atIndex:0];
-          NYPLOPDSAcquisitionPath *const acquisitionPath =
+      if (acquisition.indirectAcquisitions.count == 0) {
+        [mutableAcquisitionPaths addObject:
+         [[NYPLOPDSAcquisitionPath alloc]
+          initWithRelation:acquisition.relation
+          types:@[acquisition.type]
+          url:acquisition.hrefURL]];
+      } else {
+        for (NYPLOPDSIndirectAcquisition *const indirectAcquisition in acquisition.indirectAcquisitions) {
+          for (NSMutableArray<NSString *> *const mutableTypePath in mutableTypePaths(indirectAcquisition, types)) {
+            [mutableTypePath insertObject:acquisition.type atIndex:0];
+            NYPLOPDSAcquisitionPath *const acquisitionPath =
             [[NYPLOPDSAcquisitionPath alloc]
              initWithRelation:acquisition.relation
              types:[mutableTypePath copy]
              url:acquisition.hrefURL];
-          [mutableAcquisitionPaths addObject:acquisitionPath];
+            [mutableAcquisitionPaths addObject:acquisitionPath];
+          }
         }
       }
     }
