@@ -3,14 +3,6 @@
 @class NYPLOPDSEvent;
 @class NYPLBookAuthor;
 
-typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
-  NYPLBookAvailabilityStatusUnknown      = 1 << 0,
-  NYPLBookAvailabilityStatusAvailable    = 1 << 1,
-  NYPLBookAvailabilityStatusUnavailable  = 1 << 2,
-  NYPLBookAvailabilityStatusReady        = 1 << 3,
-  NYPLBookAvailabilityStatusReserved     = 1 << 4
-};
-
 @interface NYPLBook : NSObject
 
 @property (nonatomic, readonly) NSArray<NYPLOPDSAcquisition *> *acquisitions;

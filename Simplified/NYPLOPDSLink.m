@@ -11,14 +11,6 @@
 @property (nonatomic) NSString *type;
 @property (nonatomic) NSString *hreflang;
 @property (nonatomic) NSString *title;
-@property (nonatomic) NSString *length;
-@property (nonatomic) NSString *availabilityStatus;
-@property (nonatomic) NSInteger availableCopies;
-@property (nonatomic) NSInteger totalCopies;
-@property (nonatomic) NSInteger holdsPosition;
-@property (nonatomic) NSDate *availableSince;
-@property (nonatomic) NSDate *availableUntil;
-@property (nonatomic) NSMutableArray *mutableAcquisitionFormats;
 
 @end
 
@@ -49,50 +41,8 @@
   self.type = linkXML.attributes[@"type"];
   self.hreflang = linkXML.attributes[@"hreflang"];
   self.title = linkXML.attributes[@"title"];
-  self.length = linkXML.attributes[@"length"];
-  self.mutableAcquisitionFormats = [NSMutableArray array];
-  
-  NYPLXML *availabilityXML = [linkXML firstChildWithName:@"availability"];
-  if (availabilityXML) {
-    NSDictionary *attributes = availabilityXML.attributes;
-    self.availabilityStatus = attributes[@"status"];
-    self.availableSince = [NSDate dateWithRFC3339String:attributes[@"since"]];
-    self.availableUntil = [NSDate dateWithRFC3339String:attributes[@"until"]];
-  }
-  
-  NYPLXML *copiesXML = [linkXML firstChildWithName:@"copies"];
-  if (copiesXML) {
-    self.availableCopies = [copiesXML.attributes[@"available"] integerValue];
-    self.totalCopies = [copiesXML.attributes[@"total"] integerValue];
-  }
-  
-  NYPLXML *holdsXML = [linkXML firstChildWithName:@"holds"];
-  if (holdsXML) {
-    self.holdsPosition = [holdsXML.attributes[@"position"] integerValue];
-  }
-  
-  [self addAcquisitionFormatsWithXML:linkXML];
-  
+
   return self;
-}
-
-- (void)addAcquisitionFormatsWithXML:(NYPLXML *)acquisitionXML
-{
-  NSArray *children = [acquisitionXML childrenWithName:@"indirectAcquisition"];
-  if (children.count > 0) {
-    for (NYPLXML *child in children)
-      [self addAcquisitionFormatsWithXML:child];
-  } else {
-    NSDictionary *attributes = acquisitionXML.attributes;
-    NSString *acquisitionFormat = attributes[@"type"];
-    if (acquisitionFormat)
-      [self.mutableAcquisitionFormats addObject:acquisitionFormat];
-  }
-}
-
-- (NSArray *)acquisitionFormats
-{
-  return [[NSArray alloc] initWithArray:self.mutableAcquisitionFormats];
 }
 
 @end

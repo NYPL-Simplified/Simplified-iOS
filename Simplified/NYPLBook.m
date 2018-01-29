@@ -87,7 +87,7 @@ static NSString *const UpdatedKey = @"updated";
     return nil;
   }
   
-  NSURL *borrow, *generic, *openAccess, *revoke, *sample, *image, *imageThumbnail, *annotations, *report = nil;
+  NSURL *revoke, *image, *imageThumbnail, *annotations, *report = nil;
   NSDictionary *licensor = nil;
   NSMutableArray<NYPLBookAuthor *> *authors = [[NSMutableArray alloc] init];
 
@@ -101,67 +101,9 @@ static NSString *const UpdatedKey = @"updated";
     }
   }
 
-  NYPLBookAvailabilityStatus availabilityStatus = NYPLBookAvailabilityStatusUnknown;
-  NSInteger availableCopies = 0;
-  NSInteger totalCopies = 0;
-  NSInteger holdsPosition = 0;
-  NSDate *availableUntil = nil;
-  NSArray *borrowFormats = @[];
-
   for(NYPLOPDSLink *const link in entry.links) {
-    if (link.licensor) {
-      licensor = link.licensor;
-    }
-
-    if(link.availabilityStatus) {
-      if([link.availabilityStatus isEqualToString:@"available"]) {
-        availabilityStatus = NYPLBookAvailabilityStatusAvailable;
-      } else if([link.availabilityStatus isEqualToString:@"unavailable"]) {
-        availabilityStatus = NYPLBookAvailabilityStatusUnavailable;
-      } else if([link.availabilityStatus isEqualToString:@"ready"]) {
-        availabilityStatus = NYPLBookAvailabilityStatusReady;
-      } else if([link.availabilityStatus isEqualToString:@"reserved"]) {
-        availabilityStatus = NYPLBookAvailabilityStatusReserved;
-      }
-    }
-    if(link.availableCopies > availableCopies) {
-      availableCopies = link.availableCopies;
-    }
-    if(link.availableUntil) {
-      availableUntil = link.availableUntil;
-    }
-    if(link.totalCopies > totalCopies) {
-      totalCopies = link.totalCopies;
-    }
-    if(link.holdsPosition > holdsPosition) {
-      holdsPosition = link.holdsPosition;
-    }
-    
-    if([link.rel isEqualToString:NYPLOPDSRelationAcquisition]) {
-      generic = link.href;
-      continue;
-    }
-    if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionBorrow]) {
-      borrow = link.href;
-      borrowFormats = link.acquisitionFormats;
-      continue;
-    }
-    if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionOpenAccess]) {
-      
-      for(NSString *const acqusitionFormat in link.acquisitionFormats) {
-        if([acqusitionFormat containsString:@"application/epub+zip"]) {
-          openAccess = link.href;
-          continue;
-        }
-      }
-     
-    }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionRevoke]) {
       revoke = link.href;
-      continue;
-    }
-    if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionSample]) {
-      sample = link.href;
       continue;
     }
     if([link.rel isEqualToString:NYPLOPDSRelationImage]) {
@@ -179,14 +121,6 @@ static NSString *const UpdatedKey = @"updated";
     if([link.rel isEqualToString:NYPLOPDSRelationAnnotations]) {
       annotations = link.href;
       continue;
-    }
-  }
-  
-  if(availabilityStatus == NYPLBookAvailabilityStatusUnknown) {
-    if(openAccess || availableCopies > 0) {
-      availabilityStatus = NYPLBookAvailabilityStatusAvailable;
-    } else {
-      availabilityStatus = NYPLBookAvailabilityStatusUnavailable;
     }
   }
   
