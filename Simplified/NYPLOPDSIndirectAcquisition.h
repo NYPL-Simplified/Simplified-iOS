@@ -10,8 +10,8 @@
 /// Zero or more nested indirect acquisitions.
 @property (nonatomic, readonly, nonnull) NSArray<NYPLOPDSIndirectAcquisition *> *indirectAcquisitions;
 
-+ (instancetype _Nonnull)new NS_UNAVAILABLE;
-- (instancetype _Nonnull)init NS_UNAVAILABLE;
++ (instancetype _Null_unspecified)new NS_UNAVAILABLE;
+- (instancetype _Null_unspecified)init NS_UNAVAILABLE;
 
 + (instancetype _Nonnull)
 indirectAcquisitionWithType:(NSString *_Nonnull)type

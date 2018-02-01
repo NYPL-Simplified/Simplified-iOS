@@ -74,8 +74,8 @@ NYPLOPDSAcquisitionRelationString(NYPLOPDSAcquisitionRelation relation);
 /// The availability of the result of the acquisition.
 @property (nonatomic, readonly, nonnull) id<NYPLOPDSAcquisitionAvailability> availability;
 
-+ (instancetype _Nonnull)new NS_UNAVAILABLE;
-- (instancetype _Nonnull)init NS_UNAVAILABLE;
++ (instancetype _Null_unspecified)new NS_UNAVAILABLE;
+- (instancetype _Null_unspecified)init NS_UNAVAILABLE;
 
 + (instancetype _Nonnull)acquisitionWithRelation:(NYPLOPDSAcquisitionRelation)relation
                                             type:(NSString *_Nonnull)type

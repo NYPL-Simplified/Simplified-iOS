@@ -19,8 +19,8 @@
 /// should, but is not guaranteed, to return a response of type @c types[0].
 @property (nonatomic, readonly, nonnull) NSURL *url;
 
-+ (instancetype _Nonnull)new NS_UNAVAILABLE;
-- (instancetype _Nonnull)init NS_UNAVAILABLE;
++ (instancetype _Null_unspecified)new NS_UNAVAILABLE;
+- (instancetype _Null_unspecified)init NS_UNAVAILABLE;
 
 /// O(1). Guaranteed to be consistent across a single application run.
 /// @return All types of acqusitions supported by the application, including
