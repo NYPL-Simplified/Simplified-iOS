@@ -243,7 +243,7 @@ CGFloat const verticalMarginPadding = 2.0;
   
 
   NSMutableArray *supportCenter = [[NSMutableArray alloc] init];
-  if (self.selectedAccount.supportsHelpCenter)
+  if ([APIKeys libraryIdentifiersToHelpStackGears][@(self.selectedAccount.id)])
   {
     [supportCenter addObject:@(CellSupportCenter)];
     [self.tableData addObject:supportCenter];
@@ -825,14 +825,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellSupportCenter: {
       
       [[HSHelpStack instance] setThemeFrompList:@"HelpStackThemeNYPL"];
-
-      HSDeskGear *deskGear = [[HSDeskGear alloc]
-                              initWithInstanceBaseUrl:[APIKeys helpstackBaseUrl]
-                              token:[APIKeys helpstackToken]
-                              andBrand:nil];
       
       HSHelpStack *helpStack = [HSHelpStack instance];
-      helpStack.gear = deskGear;
+      helpStack.gear = [APIKeys libraryIdentifiersToHelpStackGears][@(self.selectedAccount.id)];
     
       if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
          self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {

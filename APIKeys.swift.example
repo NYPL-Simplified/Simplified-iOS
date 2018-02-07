@@ -1,5 +1,7 @@
 import Foundation
 
+import HelpStack
+
 // All properties must be set to non-nil values.
 
 @objc class APIKeys: NSObject {
@@ -11,4 +13,10 @@ import Foundation
   static let helpstackBaseUrl: String = ""
   static let helpstackToken: String = ""
   static let helpstackBrandID: String = ""
+
+  // FIXME:
+  // As ugly as this is, this needs to live here until the library registry
+  // is completed and this information is pulled from a server. The
+  // identifiers correspond to the `id` fields in "Accounts.json".
+  static let libraryIdentifiersToHelpStackGears: [NSNumber: HSGear] = [:]
 }
