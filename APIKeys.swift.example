@@ -2,14 +2,16 @@ import Foundation
 
 import HelpStack
 
-// All properties must be set to non-nil values.
+class APIKeys: NSObject {
 
-@objc class APIKeys: NSObject {
   static let bugsnagID: String = ""
+
   static let cardCreatorEndpointURL: URL = URL.init(string: "")!
   static let cardCreatorVersion: String = ""
   static let cardCreatorUsername: String = ""
   static let cardCreatorPassword: String = ""
+
+  // These are used for the main help center in the top level of Settings.
   static let helpstackBaseUrl: String = ""
   static let helpstackToken: String = ""
   static let helpstackBrandID: String = ""
