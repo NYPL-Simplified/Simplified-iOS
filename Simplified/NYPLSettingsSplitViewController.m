@@ -129,13 +129,8 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
       break;
     case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
       [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
-      HSDeskGear *deskGear = [[HSDeskGear alloc]
-                              initWithInstanceBaseUrl:[APIKeys helpstackBaseUrl]
-                              token:[APIKeys helpstackToken]
-                              andBrand:[APIKeys helpstackBrandID]];
-      
       HSHelpStack *helpStack = [HSHelpStack instance];
-      helpStack.gear = deskGear;
+      helpStack.gear = [APIKeys topLevelHelpStackGear];
 
       if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
          ([[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact)) {
