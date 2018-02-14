@@ -1,26 +1,13 @@
-@class NYPLBookAcquisition;
+@class NYPLOPDSAcquisition;
 @class NYPLOPDSEntry;
 @class NYPLOPDSEvent;
 @class NYPLBookAuthor;
 
-typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
-  NYPLBookAvailabilityStatusUnknown      = 1 << 0,
-  NYPLBookAvailabilityStatusAvailable    = 1 << 1,
-  NYPLBookAvailabilityStatusUnavailable  = 1 << 2,
-  NYPLBookAvailabilityStatusReady        = 1 << 3,
-  NYPLBookAvailabilityStatusReserved     = 1 << 4
-};
-
 @interface NYPLBook : NSObject
 
-@property (nonatomic, readonly) NYPLBookAcquisition *acquisition;
+@property (nonatomic, readonly) NSArray<NYPLOPDSAcquisition *> *acquisitions;
 @property (nonatomic, readonly) NSString *authors;
 @property (nonatomic, readonly) NSArray<NYPLBookAuthor *> *bookAuthors;
-@property (nonatomic, readonly) NYPLBookAvailabilityStatus availabilityStatus;
-@property (nonatomic, readonly) NSInteger availableCopies;
-@property (nonatomic, readonly) NSDate *availableUntil;
-@property (nonatomic, readonly) NSInteger totalCopies;
-@property (nonatomic, readonly) NSInteger holdsPosition;
 @property (nonatomic, readonly) NSString *categories;
 @property (nonatomic, readonly) NSArray *categoryStrings;
 @property (nonatomic, readonly) NSString *distributor; // nilable
@@ -38,7 +25,8 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 @property (nonatomic, readonly) NSURL *alternateURL; // nilable
 @property (nonatomic, readonly) NSURL *relatedWorksURL; // nilable
 @property (nonatomic, readonly) NSURL *seriesURL; // nilable
-@property (nonatomic, readonly) NSDictionary *licensor; // nilable
+@property (nonatomic, readonly) NSURL *revokeURL; // nilable
+@property (nonatomic, readonly) NSURL *reportURL; // nilable
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
@@ -50,35 +38,56 @@ typedef NS_ENUM(NSInteger, NYPLBookAvailabilityStatus) {
 // and metadata from the specified book
 - (instancetype)bookWithMetadataFromBook:(NYPLBook *)book;
 
-// designated initializer
-- (instancetype)initWithAcquisition:(NYPLBookAcquisition *)acquisition
-                        bookAuthors:(NSArray<NYPLBookAuthor *> *)authors
-                 availabilityStatus:(NYPLBookAvailabilityStatus)availabilityStatus
-                    availableCopies:(NSInteger)availableCopies
-                     availableUntil:(NSDate *)availableUntil
-                        totalCopies:(NSInteger)totalCopies
-                      holdsPosition:(NSInteger)holdsPosition
-                    categoryStrings:(NSArray *)categoryStrings
-                        distributor:(NSString *)distributor
-                         identifier:(NSString *)identifier
-                           imageURL:(NSURL *)imageURL
-                  imageThumbnailURL:(NSURL *)imageThumbnailURL
-                          published:(NSDate *)published
-                          publisher:(NSString *)publisher
-                           subtitle:(NSString *)subtitle
-                            summary:(NSString *)summary
-                              title:(NSString *)title
-                            updated:(NSDate *)updated
-                     annotationsURL:(NSURL *)annotationsURL
-                       analyticsURL:(NSURL *)analyticsURL
-                       alternateURL:(NSURL *)alternateURL
-                    relatedWorksURL:(NSURL *)relatedWorksURL
-                          seriesURL:(NSURL *)seriesURL
-                           licensor:(NSDictionary *)licensor;
+- (instancetype)initWithAcquisitions:(NSArray<NYPLOPDSAcquisition *> *)acquisitions
+                         bookAuthors:(NSArray<NYPLBookAuthor *> *)authors
+                     categoryStrings:(NSArray *)categoryStrings
+                         distributor:(NSString *)distributor
+                          identifier:(NSString *)identifier
+                            imageURL:(NSURL *)imageURL
+                   imageThumbnailURL:(NSURL *)imageThumbnailURL
+                           published:(NSDate *)published
+                           publisher:(NSString *)publisher
+                            subtitle:(NSString *)subtitle
+                             summary:(NSString *)summary
+                               title:(NSString *)title
+                             updated:(NSDate *)updated
+                      annotationsURL:(NSURL *)annotationsURL
+                        analyticsURL:(NSURL *)analyticsURL
+                        alternateURL:(NSURL *)alternateURL
+                     relatedWorksURL:(NSURL *)relatedWorksURL
+                           seriesURL:(NSURL *)seriesURL
+                           revokeURL:(NSURL *)revokeURL
+                           reportURL:(NSURL *)reportURL
+  NS_DESIGNATED_INITIALIZER;
 
-// designated initializer
-- (instancetype)initWithDictionary:(NSDictionary *)dictionary;
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary NS_DESIGNATED_INITIALIZER;
 
 - (NSDictionary *)dictionaryRepresentation;
+
+/// A compatibility method to allow the app to continue to function until the
+/// user interface and other components support handling multiple valid
+/// acquisition possibilities. Its use should be avoided wherever possible and
+/// it will eventually be removed.
+///
+/// @return An acquisition leading to an EPUB or @c nil.
+- (NYPLOPDSAcquisition *)defaultAcquisition __deprecated;
+
+/// A compatibility method to allow the app to continue to function until the
+/// user interface and other components support handling multiple valid
+/// acquisition possibilities. Its use should be avoided wherever possible and
+/// it will eventually be removed.
+///
+/// @return The default acquisition leading to an EPUB if it has a borrow
+/// relation, else @c nil.
+- (NYPLOPDSAcquisition *)defaultAcquisitionIfBorrow __deprecated;
+
+/// A compatibility method to allow the app to continue to function until the
+/// user interface and other components support handling multiple valid
+/// acquisition possibilities. Its use should be avoided wherever possible and
+/// it will eventually be removed.
+///
+/// @return The default acquisition leading to an EPUB if it has an open access
+/// relation, else @c nil.
+- (NYPLOPDSAcquisition *)defaultAcquisitionIfOpenAccess __deprecated;
 
 @end

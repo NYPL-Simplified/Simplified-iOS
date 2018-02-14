@@ -1,5 +1,4 @@
 #import "NYPLAccount.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLBook.h"
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
@@ -233,7 +232,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
       break;
     case FacetShowOnLoan:
       books = [books filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NYPLBook *book, __unused NSDictionary *bindings) {
-        return book.acquisition.revoke != nil;
+        return book.revokeURL != nil;
       }]];
       break;
   }

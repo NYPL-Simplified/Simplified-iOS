@@ -3,6 +3,8 @@
 
 @class NYPLBook;
 
+@protocol NYPLOPDSAcquisitionAvailability;
+
 typedef NS_ENUM(NSInteger, NYPLBookButtonsState) {
   NYPLBookButtonsStateCanBorrow,
   NYPLBookButtonsStateCanKeep,
@@ -15,6 +17,10 @@ typedef NS_ENUM(NSInteger, NYPLBookButtonsState) {
   NYPLBookButtonsStateDownloadInProgress,
   NYPLBookButtonsStateDownloadFailed
 };
+
+/// @param availability A non-nil @c NYPLOPDSAcquisitionAvailability.
+/// @return A @c Borrow, @c Keep, @c Hold, @c Holding, or @c HoldingFOQ state.
+NYPLBookButtonsState NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> availability);
 
 @protocol NYPLBookButtonsDelegate
 

@@ -1,11 +1,11 @@
 #import "NYPLBook.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLBookDetailButtonsView.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
 #import "NYPLSettings.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLOPDS.h"
 #import <PureLayout/PureLayout.h>
 #import "SimplyE-Swift.h"
 
@@ -170,8 +170,8 @@
         
       if (self.showReturnButtonIfApplicable)
       {
-        NSString *title = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
-        NSString *hint = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+        NSString *title = (self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
+        NSString *hint = (self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
 
         visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
                                 TitleKey: NSLocalizedString(@"Download", nil),
@@ -195,8 +195,8 @@
         
       if (self.showReturnButtonIfApplicable)
       {
-        NSString *title = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
-        NSString *hint = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+        NSString *title = (self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
+        NSString *hint = (self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
 
         visibleButtonInfo = @[@{ButtonKey: self.readButton,
                                 TitleKey: NSLocalizedString(@"Read", nil),
@@ -240,19 +240,19 @@
   
   BOOL fulfillmentIdRequired = NO;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier];
-  BOOL hasRevokeLink = (self.book.acquisition.revoke && state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed));
+  BOOL hasRevokeLink = (self.book.revokeURL && state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed));
 
   #if defined(FEATURE_DRM_CONNECTOR)
   
   // It's required unless the book is being held and has a revoke link
-  fulfillmentIdRequired = !(self.state == NYPLBookButtonsStateHolding && self.book.acquisition.revoke);
+  fulfillmentIdRequired = !(self.state == NYPLBookButtonsStateHolding && self.book.revokeURL);
   
   #endif
   
   for (NSDictionary *buttonInfo in visibleButtonInfo) {
     NYPLRoundedButton *button = buttonInfo[ButtonKey];
     if(button == self.deleteButton && (!fulfillmentId && fulfillmentIdRequired) && !hasRevokeLink) {
-      if(!self.book.acquisition.openAccess && [[AccountsManager sharedInstance] currentAccount].needsAuth) {
+      if(!self.book.defaultAcquisitionIfOpenAccess && [[AccountsManager sharedInstance] currentAccount].needsAuth) {
         continue;
       }
     }
@@ -273,9 +273,9 @@
 
     // Provide End-Date for checked out loans
     if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
-      if (self.book.availableUntil && [self.book.availableUntil timeIntervalSinceNow] > 0 && self.state != NYPLBookButtonsStateHolding) {
+      if (self.book.defaultAcquisition.availability.until && [self.book.defaultAcquisition.availability.until timeIntervalSinceNow] > 0 && self.state != NYPLBookButtonsStateHolding) {
         button.type = NYPLRoundedButtonTypeClock;
-        button.endDate = self.book.availableUntil;
+        button.endDate = self.book.defaultAcquisition.availability.until;
       } else {
         button.type = NYPLRoundedButtonTypeNormal;
       }
@@ -324,13 +324,13 @@
     case NYPLBookStateDownloadFailed:
     case NYPLBookStateDownloadNeeded:
     case NYPLBookStateDownloadSuccessful:
-      title = ((self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
+      title = ((self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
                ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
                : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil));
-      message = ((self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
+      message = ((self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
                  ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil)
                  : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitleMessageFormat", nil));
-      confirmButtonTitle = ((self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
+      confirmButtonTitle = ((self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
                             ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
                             : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil));
       break;

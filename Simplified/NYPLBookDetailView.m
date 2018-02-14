@@ -1,6 +1,5 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLBookCellDelegate.h"
 #import "NYPLBookDetailButtonsView.h"
 #import "NYPLBookDetailDownloadFailedView.h"
@@ -16,6 +15,7 @@
 #import "NYPLBookDetailView.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLOPDSAcquisition.h"
 #import "NYPLOPDSFeed.h"
 #import "SimplyE-Swift.h"
 #import "UIFont+NYPLSystemFontOverride.h"
@@ -530,18 +530,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.downloadFailedView.hidden = YES;
       [self hideDownloadingView:YES];
       self.buttonsView.hidden = NO;
-      if(self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) {
-        self.normalView.state = NYPLBookButtonsStateCanKeep;
-        self.buttonsView.state = NYPLBookButtonsStateCanKeep;
-      } else {
-        if (self.book.availableCopies > 0) {
-          self.normalView.state = NYPLBookButtonsStateCanBorrow;
-          self.buttonsView.state = NYPLBookButtonsStateCanBorrow;
-        } else {
-          self.normalView.state = NYPLBookButtonsStateCanHold;
-          self.buttonsView.state = NYPLBookButtonsStateCanHold;
-        }
-      }
+      self.normalView.state = NYPLBookButtonsViewStateWithAvailability(self.book.defaultAcquisition.availability);
+      self.buttonsView.state = self.normalView.state;
       break;
     case NYPLBookStateDownloadNeeded:
       self.normalView.hidden = NO;
@@ -576,13 +566,8 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.downloadFailedView.hidden = YES;
       [self hideDownloadingView:YES];
       self.buttonsView.hidden = NO;
-      if (self.book.availabilityStatus == NYPLBookAvailabilityStatusReady) {
-        self.normalView.state = NYPLBookButtonsStateHoldingFOQ;
-        self.buttonsView.state = NYPLBookButtonsStateHoldingFOQ;
-      } else {
-        self.normalView.state = NYPLBookButtonsStateHolding;
-        self.buttonsView.state = NYPLBookButtonsStateHolding;
-      }
+      self.normalView.state = NYPLBookButtonsViewStateWithAvailability(self.book.defaultAcquisition.availability);
+      self.buttonsView.state = self.normalView.state;
       break;
     case NYPLBookStateUsed:
       self.normalView.hidden = NO;

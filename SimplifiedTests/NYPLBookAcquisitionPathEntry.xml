@@ -1,0 +1,64 @@
+
+<entry schema:additionalType="http://schema.org/Book">
+  <id>urn:librarysimplified.org/terms/id/Bibliotheca%20ID/eyk62g9</id>
+  <title>The Melody Lingers On</title>
+  <author>
+    <name>Mary Higgins Clark and Alafair Burke</name>
+    <link href="https://circulation.librarysimplified.org/NYNYPL/works/contributor/Mary%20Higgins%20Clark%20and%20Alafair%20Burke/eng/Adult%2CAdults+Only%2CChildren%2CYoung+Adult" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="contributor" title="Mary Higgins Clark and Alafair Burke"/>
+  </author>
+  <summary type="html">From #1&lt;i&gt; New York Times&lt;/i&gt; bestselling &#8220;Queen of Suspense&#8221; comes a thrilling novel about missing billions, a disgraced financier, and those determined to learn the truth at any cost&#8230;&lt;br /&gt;&lt;br /&gt;As the sole assistant to a famous upscale interior designer, Lane Harmon, mother to five-year-old Katie, is accustomed to visiting opulent homes around the tri-state area. A born optimist, Lane finds the glimpse into these gilded worlds fascinating, and loves the reward of exceeding the expectations of their often-demanding owners. When she is called to assist in redecorating a modest townhouse in Bergen County, she knows the job is unusual. Then she learns the home belongs to the wife of a notorious and disgraced financier named Parker Bennett.&lt;br /&gt; &lt;br /&gt;Parker Bennett has been missing for two years. He dropped out of sight just before it was discovered that the $5 billion dollars in the fund he had been managing had vanished. Bennett had gone out on his sailboat in the Caribbean. Was it suicide or had he staged his disappearance? The scandal around his name has not died down. His clients and the federal government all want to trace the money and find Bennett if he is still alive.&lt;br /&gt; &lt;br /&gt;Lane is surprised to find herself moved by Mrs. Bennett&#8217;s calm dignity and apparently sincere belief in her husband&#8217;s innocence. Gradually, Lane finds herself drawn to Eric, the Bennetts&#8217; son, who is similarly determined to prove that his father is not guilty. Lane doesn&#8217;t know that the closer she gets to the Bennetts, the more she puts her life&#8213;and her daughter&#8217;s life&#8213;in jeopardy.&lt;br /&gt; &lt;br /&gt;With the hair-raising storytelling skill that has made her America&#8217;s &#8220;Queen of Suspense,&#8221; Mary Higgins Clark combines a headline-making financial scandal and a breathtaking tale of deception and betrayal into one of her finest novels.</summary>
+  <updated>2017-11-27T16:07:22Z</updated>
+  <simplified:pwid>45aa132f-3527-6c3a-884b-a2dea8247d79</simplified:pwid>
+  <link href="https://d3pqhns20516vc.cloudfront.net/3M/3M%20ID/eyk62g9/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image"/>
+  <link href="https://d3pqhns20516vc.cloudfront.net/scaled/300/3M/3M%20ID/eyk62g9/cover.jpg" type="image/jpeg" rel="http://opds-spec.org/image/thumbnail"/>
+  <category term="Adult" scheme="http://schema.org/audience" label="Adult"/>
+  <category term="http://librarysimplified.org/terms/fiction/Fiction" scheme="http://librarysimplified.org/terms/fiction/" label="Fiction"/>
+  <category term="http://librarysimplified.org/terms/genres/Simplified/Suspense/Thriller" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Suspense/Thriller"/>
+  <category term="http://librarysimplified.org/terms/genres/Simplified/Mystery" scheme="http://librarysimplified.org/terms/genres/Simplified/" label="Mystery"/>
+  <dcterms:language>en</dcterms:language>
+  <dcterms:publisher>Simon &amp; Schuster</dcterms:publisher>
+  <published>2015-12-27T16:17:02Z</published>
+  <dcterms:created>2015-06-22</dcterms:created>
+  <bibframe:distribution bibframe:ProviderName="Bibliotheca"/>
+  <bibframe:distribution bibframe:ProviderName="Bibliotheca"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/eyk62g9" type="application/atom+xml;type=entry;profile=opds-catalog" rel="alternate"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/eyk62g9/report" rel="issues"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/eyk62g9/borrow" rel="http://opds-spec.org/acquisition/borrow" type="application/atom+xml;type=entry;profile=opds-catalog">
+    <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+      <opds:indirectAcquisition type="application/epub+zip"/>
+    </opds:indirectAcquisition>
+    <opds:indirectAcquisition type="application/unsupported">
+      <opds:indirectAcquisition type="application/epub+zip"/>
+    </opds:indirectAcquisition>
+    <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+      <opds:indirectAcquisition type="application/pdf"/>
+    </opds:indirectAcquisition>
+    <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+      <opds:indirectAcquisition type="application/pdf"/>
+      <opds:indirectAcquisition type="application/epub+zip"/>
+    </opds:indirectAcquisition>
+    <opds:availability status="available"/>
+    <opds:holds total="0"/>
+    <opds:copies available="1" total="2"/>
+  </link>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/eyk62g9/borrow" rel="http://opds-spec.org/acquisition/open-access" type="application/atom+xml;type=entry;profile=opds-catalog">
+    <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+      <opds:indirectAcquisition type="application/pdf"/>
+    </opds:indirectAcquisition>
+    <opds:availability status="available"/>
+    <opds:holds total="0"/>
+    <opds:copies available="1" total="2"/>
+  </link>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/eyk62g9/borrow" rel="http://opds-spec.org/acquisition/sample" type="application/atom+xml;type=entry;profile=opds-catalog">
+    <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
+      <opds:indirectAcquisition type="application/epub+zip"/>
+    </opds:indirectAcquisition>
+    <opds:availability status="available"/>
+    <opds:holds total="0"/>
+    <opds:copies available="1" total="2"/>
+  </link>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/eyk62g9/recommendations" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="recommendations" title="Recommended Works"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/works/Bibliotheca%20ID/eyk62g9/related_books" type="application/atom+xml;profile=opds-catalog;kind=acquisition" rel="related" title="Recommended Works"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/annotations/Bibliotheca%20ID/eyk62g9/" type="application/ld+json; profile=&quot;http://www.w3.org/ns/anno.jsonld&quot;" rel="http://www.w3.org/ns/oa#annotationService"/>
+  <link href="https://circulation.librarysimplified.org/NYNYPL/feed/eng/English%20-%20Best%20Sellers" rel="collection" title="Best Sellers"/>
+</entry>

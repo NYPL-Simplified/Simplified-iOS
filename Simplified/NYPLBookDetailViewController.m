@@ -1,5 +1,4 @@
 #import "NYPLBook.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLBookDetailView.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogFeedViewController.h"
@@ -179,7 +178,7 @@
 
 - (void)problemReportViewController:(NYPLProblemReportViewController *)problemReportViewController didSelectProblemWithType:(NSString *)type
 {
-  NSURL *reportURL = problemReportViewController.book.acquisition.report;
+  NSURL *reportURL = problemReportViewController.book.reportURL;
   if (reportURL) {
     NSURLRequest *r = [NSURLRequest postRequestWithProblemDocument:@{@"type":type} url:reportURL];
     [[NYPLSession sharedSession] uploadWithRequest:r completionHandler:nil];

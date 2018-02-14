@@ -3,9 +3,6 @@
 //
 
 #import "NYPLConfiguration.h"
-#import "NYPLOPDSEntry.h"
-#import "NYPLOPDSFeed.h"
-#import "NYPLOPDSLink.h"
 #import "NYPLBook.h"
 #import "NYPLBookDetailView.h"
 #import "NYPLBookDetailViewController.h"
@@ -17,9 +14,7 @@
 #import "NYPLAlertController.h"
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLXML.h"
-#import "NYPLOPDSFeed.h"
 #import "UIFont+NYPLSystemFontOverride.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLCatalogUngroupedFeed.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
@@ -29,3 +24,4 @@
 #import "NYPLRootTabBarController.h"
 #import "NYPLZXingEncoder.h"
 #import "NYPLReachability.h"
+#import "NYPLOPDS.h"

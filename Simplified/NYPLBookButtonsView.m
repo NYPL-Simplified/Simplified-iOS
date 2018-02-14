@@ -7,13 +7,42 @@
 //
 
 #import "NYPLBook.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLBookButtonsView.h"
 #import "NYPLRoundedButton.h"
 #import "NYPLSettings.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLOPDS.h"
 #import "SimplyE-Swift.h"
+
+NYPLBookButtonsState
+NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> const availability)
+{
+  __block NYPLBookButtonsState state;
+
+  if (!availability) {
+    @throw NSInvalidArgumentException;
+  }
+
+  [availability
+   matchUnavailable:^(__unused NYPLOPDSAcquisitionAvailabilityUnavailable *_Nonnull unavailable) {
+     state = NYPLBookButtonsStateCanHold;
+   }
+   limited:^(__unused NYPLOPDSAcquisitionAvailabilityLimited *_Nonnull limited) {
+     state = NYPLBookButtonsStateCanBorrow;
+   }
+   unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *_Nonnull unlimited) {
+     state = NYPLBookButtonsStateCanKeep;
+   }
+   reserved:^(__unused NYPLOPDSAcquisitionAvailabilityReserved *_Nonnull reserved) {
+     state = NYPLBookButtonsStateHolding;
+   }
+   ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
+     state = NYPLBookButtonsStateHoldingFOQ;
+   }];
+
+  return state;
+}
 
 @interface NYPLBookButtonsView ()
 
@@ -159,8 +188,8 @@
         
       if (self.showReturnButtonIfApplicable)
       {
-        NSString *title = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
-        NSString *hint = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+        NSString *title = (self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
+        NSString *hint = (self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
 
         visibleButtonInfo = @[@{ButtonKey: self.downloadButton,
                                 TitleKey: NSLocalizedString(@"Download", nil),
@@ -184,8 +213,8 @@
         
       if (self.showReturnButtonIfApplicable)
       {
-        NSString *title = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
-        NSString *hint = (self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
+        NSString *title = (self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
+        NSString *hint = (self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
 
         visibleButtonInfo = @[@{ButtonKey: self.readButton,
                                 TitleKey: NSLocalizedString(@"Read", nil),
@@ -204,19 +233,19 @@
   
   BOOL fulfillmentIdRequired = NO;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier];
-  BOOL hasRevokeLink = (self.book.acquisition.revoke && state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed));
+  BOOL hasRevokeLink = (self.book.revokeURL && state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed));
 
   #if defined(FEATURE_DRM_CONNECTOR)
   
   // It's required unless the book is being held and has a revoke link
-  fulfillmentIdRequired = !(self.state == NYPLBookButtonsStateHolding && self.book.acquisition.revoke);
+  fulfillmentIdRequired = !(self.state == NYPLBookButtonsStateHolding && self.book.revokeURL);
   
   #endif
   
   for (NSDictionary *buttonInfo in visibleButtonInfo) {
     NYPLRoundedButton *button = buttonInfo[ButtonKey];
     if(button == self.deleteButton && (!fulfillmentId && fulfillmentIdRequired) && !hasRevokeLink) {
-      if(!self.book.acquisition.openAccess && [[AccountsManager sharedInstance] currentAccount].needsAuth) {
+      if(!self.book.defaultAcquisitionIfOpenAccess && [[AccountsManager sharedInstance] currentAccount].needsAuth) {
         continue;
       }
     }
@@ -234,17 +263,20 @@
     
     // Re-enable animations as per usual.
     [UIView setAnimationsEnabled:YES];
-    
-    // Provide End-Date for checked out loans
+
+    button.type = NYPLRoundedButtonTypeNormal;
     if ([buttonInfo[AddIndicatorKey] isEqualToValue:@(YES)]) {
-      if (self.book.availableUntil && [self.book.availableUntil timeIntervalSinceNow] > 0 && self.state != NYPLBookButtonsStateHolding) {
-        button.type = NYPLRoundedButtonTypeClock;
-        button.endDate = self.book.availableUntil;
-      } else {
-        button.type = NYPLRoundedButtonTypeNormal;
-      }
-    } else {
-      button.type = NYPLRoundedButtonTypeNormal;
+      [self.book.defaultAcquisition.availability
+       matchUnavailable:nil
+       limited:^(NYPLOPDSAcquisitionAvailabilityLimited *const _Nonnull limited) {
+         if (limited.until && [limited.until timeIntervalSinceNow] > 0) {
+           button.type = NYPLRoundedButtonTypeClock;
+           button.endDate = limited.until;
+         }
+       }
+       unlimited:nil
+       reserved:nil
+       ready:nil];
     }
 
     [visibleButtons addObject:button];
@@ -286,13 +318,13 @@
     case NYPLBookStateDownloadFailed:
     case NYPLBookStateDownloadNeeded:
     case NYPLBookStateDownloadSuccessful:
-      title = ((self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
+      title = ((self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
                ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
                : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil));
-      message = ((self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
+      message = ((self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
                  ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil)
                  : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitleMessageFormat", nil));
-      confirmButtonTitle = ((self.book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
+      confirmButtonTitle = ((self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)
                             ? NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
                             : NSLocalizedString(@"MyBooksDownloadCenterConfirmReturnTitle", nil));
       break;

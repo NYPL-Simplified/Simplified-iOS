@@ -29,13 +29,15 @@
 
 static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
 {
-  BOOL entryIsCatalogEntry = NO;
   BOOL entryIsGrouped = NO;
-  
+
+  // NOTE: A catalog entry is an acquisition feed according to section 8 of
+  // OPDS Catalog 1.1 if it contains at least one acquisition link.
+  BOOL entryIsCatalogEntry = entry.acquisitions.count >= 1;
+
   for(NYPLOPDSLink *const link in entry.links) {
-    // This is how you can detect a catalog entry of an acquisition feed according to section 8 of
-    // OPDS Catalog 1.1.
     if([link.rel hasPrefix:@"http://opds-spec.org/acquisition"]) {
+      // This also means we have an acquisition feed.
       entryIsCatalogEntry = YES;
     } else if([link.rel isEqualToString:NYPLOPDSRelationGroup]) {
       entryIsGrouped = YES;

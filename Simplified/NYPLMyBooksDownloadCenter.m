@@ -5,11 +5,9 @@
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBook.h"
-#import "NYPLBookAcquisition.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLOPDSEntry.h"
-#import "NYPLOPDSFeed.h"
+#import "NYPLOPDS.h"
 #import "NYPLSession.h"
 #import "NYPLProblemDocument.h"
 
@@ -344,10 +342,10 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     [self recordUnexpectedNilIdentifierForBook:book identifier:identifier title:bookTitle];
   }
 
-  if((book.acquisition.revoke && book.identifier) ||
+  if((book.revokeURL && book.identifier) ||
      ([[AccountsManager sharedInstance] currentAccount].needsAuth && book.identifier)) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-    [NYPLOPDSFeed withURL:book.acquisition.revoke completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
+    [NYPLOPDSFeed withURL:book.revokeURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
       [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
       
       if(feed && feed.entries.count == 1)  {
@@ -462,7 +460,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   switch(state) {
     case NYPLBookStateUnregistered:
-      if(!book.acquisition.borrow && (book.acquisition.openAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)) {
+      if(!book.defaultAcquisitionIfBorrow && (book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)) {
         [[NYPLBookRegistry sharedRegistry]
          addBook:book
          location:nil
@@ -494,7 +492,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       // Check out the book
       
       [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-      [NYPLOPDSFeed withURL:book.acquisition.borrow completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
+      [NYPLOPDSFeed withURL:book.defaultAcquisitionIfBorrow.hrefURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
         [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
         
         if(error || !feed || feed.entries.count < 1) {
@@ -527,14 +525,23 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
          state:NYPLBookStateDownloadNeeded
          fulfillmentId:nil
          bookmarks:nil];
-        
-        if(book.availabilityStatus & (NYPLBookAvailabilityStatusAvailable | NYPLBookAvailabilityStatusReady)) {
-          [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-        }
+
+        [book.defaultAcquisition.availability
+         matchUnavailable:nil
+         limited:^(__unused NYPLOPDSAcquisitionAvailabilityLimited *_Nonnull limited) {
+           [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+         }
+         unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *_Nonnull unlimited) {
+           [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+         }
+         reserved:nil
+         ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
+           [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+         }];
       }];
     } else {
       // Actually download the book.
-      NSURL *URL = book.acquisition.generic ? book.acquisition.generic : book.acquisition.openAccess;
+      NSURL *URL = book.defaultAcquisition.hrefURL;
       NSURLRequest *const request = [NSURLRequest requestWithURL:URL];
       
       if(!request.URL) {
@@ -706,7 +713,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [metadataParams setObject:[[AccountsManager sharedInstance] currentAccount] forKey:@"currentAccount"];
   if (identifier) [metadataParams setObject:identifier forKey:@"incomingIdentifierString"];
   if (bookTitle) [metadataParams setObject:bookTitle forKey:@"bookTitle"];
-  if (book.acquisition.revoke.absoluteString) [metadataParams setObject:book.acquisition.revoke.absoluteString forKey:@"revokeLink"];
+  if (book.revokeURL.absoluteString) [metadataParams setObject:book.revokeURL.absoluteString forKey:@"revokeLink"];
 
   [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:2 userInfo:nil]
                  block:^(BugsnagCrashReport * _Nonnull report) {
