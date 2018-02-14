@@ -67,7 +67,6 @@ final class AccountsManager: NSObject
             savedDict["supportsBarcodeDisplay"] = account.supportsBarcodeDisplay as AnyObject?
             savedDict["supportsCardCreator"] = account.supportsCardCreator as AnyObject?
             savedDict["supportsReservations"] = account.supportsReservations as AnyObject?
-            savedDict["supportsHelpCenter"] = account.supportsHelpCenter as AnyObject?
             savedDict["supportEmail"] = account.supportEmail as AnyObject?
             savedDict["catalogUrl"] = account.catalogUrl as AnyObject?
             savedDict["cardCreatorUrl"] = account.cardCreatorUrl as AnyObject?
@@ -115,7 +114,6 @@ final class Account:NSObject
   let supportsBarcodeDisplay:Bool
   let supportsCardCreator:Bool
   let supportsReservations:Bool
-  let supportsHelpCenter:Bool
   let catalogUrl:String?
   let cardCreatorUrl:String?
   let supportEmail:String?
@@ -166,7 +164,6 @@ final class Account:NSObject
     logo = json["logo"] as? String
     needsAuth = json["needsAuth"] as! Bool
     supportsReservations = json["supportsReservations"] as! Bool
-    supportsHelpCenter = json["supportsHelpCenter"] as! Bool
     supportsSimplyESync = json["supportsSimplyESync"] as! Bool
     supportsBarcodeScanner = json["supportsBarcodeScanner"] as! Bool
     supportsBarcodeDisplay = json["supportsBarcodeDisplay"] as! Bool
