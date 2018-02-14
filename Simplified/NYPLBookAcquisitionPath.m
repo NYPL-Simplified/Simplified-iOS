@@ -33,7 +33,8 @@
     types = [NSSet setWithArray:@[
       @"application/atom+xml;type=entry;profile=opds-catalog",
       @"application/vnd.adobe.adept+xml",
-      @"application/epub+zip"
+      @"application/vnd.librarysimplified.bearer-token+json",
+      @"application/epub+zip",
     ]];
   }
 
