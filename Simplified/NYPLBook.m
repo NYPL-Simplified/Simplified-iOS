@@ -531,9 +531,7 @@ static NSString *const UpdatedKey = @"updated";
     }
   }
 
-  NYPLLOG(@"WARNING: Choosing arbitrary default acquisition.");
-
-  return self.acquisitions.firstObject;
+  return nil;
 }
 
 - (NYPLOPDSAcquisition *)defaultAcquisitionIfBorrow
