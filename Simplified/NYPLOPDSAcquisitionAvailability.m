@@ -107,7 +107,7 @@ NYPLOPDSAcquisitionAvailabilityWithLinkXML(NYPLXML *const _Nonnull linkXML)
   NSString *const untilString = [linkXML firstChildWithName:availabilityName].attributes[untilAttribute];
   NSDate *const until = untilString ? [NSDate dateWithRFC3339String:untilString] : nil;
 
-  if ([statusString isEqual:@"unavailable"] || copiesAvailable == 0) {
+  if ([statusString isEqual:@"unavailable"]) {
     return [[NYPLOPDSAcquisitionAvailabilityUnavailable alloc]
             initWithCopiesHeld:MIN(copiesHeld, copiesTotal)
             copiesTotal:MAX(copiesHeld, copiesTotal)];
