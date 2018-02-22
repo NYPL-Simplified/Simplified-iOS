@@ -27,6 +27,13 @@
     if(![object isKindOfClass:[NYPLBook class]]) {
       @throw NSInvalidArgumentException;
     }
+
+    NYPLBook *const book = object;
+
+    if(!book.defaultAcquisition) {
+      // The application is not able to support this, so we ignore it.
+      continue;
+    }
   }
   
   self.books = books;

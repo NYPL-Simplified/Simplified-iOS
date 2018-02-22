@@ -61,12 +61,17 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
     @throw NSInvalidArgumentException;
   }
   
-  self.books = [NSMutableArray arrayWithCapacity:feed.entries.count];
+  self.books = [NSMutableArray array];
   
   for(NYPLOPDSEntry *const entry in feed.entries) {
     NYPLBook *book = [NYPLBook bookWithEntry:entry];
     if(!book) {
       NYPLLOG(@"Failed to create book from entry.");
+      continue;
+    }
+
+    if(!book.defaultAcquisition) {
+      // The application is not able to support this, so we ignore it.
       continue;
     }
     
