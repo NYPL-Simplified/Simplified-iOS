@@ -47,6 +47,18 @@ static NSString *const BookmarksKey = @"bookmarks";
     self.bookmarks = [[NSMutableArray alloc] init];
   }
 
+  if (!book.defaultAcquisition) {
+    // Since the book has no default acqusition, there is no reliable way to
+    // determine if the book is on hold (although it may be), nor is there any
+    // way to download the book if it is available. As such, we give the book a
+    // special "unsupported" state which will allow other parts of the app to
+    // ignore it as appropriate. Unsupported books should generally only appear
+    // when a user has checked out a book in an unsupported format using another
+    // app.
+    self.state = NYPLBookStateUnsupported;
+    return self;
+  }
+
   // FIXME: The logic below is confusing at best. Upon initial inspection, it's
   // unclear why `book.state` needs to be "fixed" in this initializer. If said
   // fixing is appropriate, a rationale should be added here.

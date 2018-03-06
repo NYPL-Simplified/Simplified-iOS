@@ -7,6 +7,7 @@ static NSString *const DownloadSuccessful = @"download-successful";
 static NSString *const Unregistered = @"unregistered";
 static NSString *const Holding = @"holding";
 static NSString *const Used = @"used";
+static NSString *const Unsupported = @"unsupported";
 
 NYPLBookState NYPLBookStateFromString(NSString *const string)
 {
@@ -17,6 +18,7 @@ NYPLBookState NYPLBookStateFromString(NSString *const string)
   if([string isEqualToString:Unregistered]) return NYPLBookStateUnregistered;
   if([string isEqualToString:Holding]) return NYPLBookStateHolding;
   if([string isEqualToString:Used]) return NYPLBookStateUsed;
+  if([string isEqualToString:Unsupported]) return NYPLBookStateUnsupported;
   
   @throw NSInvalidArgumentException;
 }
@@ -38,5 +40,7 @@ NSString *NYPLBookStateToString(NYPLBookState state)
       return Holding;
     case NYPLBookStateUsed:
       return Used;
+    case NYPLBookStateUnsupported:
+      return Unsupported;
   }
 }

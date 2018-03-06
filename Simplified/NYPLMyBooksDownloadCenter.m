@@ -580,6 +580,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     case NYPLBookStateDownloadSuccessful:
       // fallthrough
     case NYPLBookStateUsed:
+      // fallthrough
+    case NYPLBookStateUnsupported:
       NYPLLOG(@"Ignoring nonsensical download request.");
       return;
   }
