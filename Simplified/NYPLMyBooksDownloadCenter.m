@@ -34,6 +34,16 @@
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) NSMutableDictionary *taskIdentifierToBook;
 
+/// Maps a task identifier to a non-negative redirect attempt count. This
+/// tracks the number of redirect attempts for a particular download task.
+/// If a task identifier is not present in the dictionary, the redirect
+/// attempt count for the associated task should be considered 0.
+///
+/// Tracking this explicitly is required because we override
+/// @c URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler
+/// in order to handle redirects when performing bearer token authentication.
+@property (nonatomic) NSMutableDictionary<NSNumber *, NSNumber *> *taskIdentifierToRedirectAttempts;
+
 @end
 
 @implementation NYPLMyBooksDownloadCenter
@@ -77,6 +87,7 @@
                   delegateQueue:[NSOperationQueue mainQueue]];
   
   self.taskIdentifierToBook = [NSMutableDictionary dictionary];
+  self.taskIdentifierToRedirectAttempts = [NSMutableDictionary dictionary];
   
   return self;
 }
@@ -161,6 +172,8 @@ didFinishDownloadingToURL:(NSURL *const)location
     // A reset must have occurred.
     return;
   }
+
+  [self.taskIdentifierToRedirectAttempts removeObjectForKey:@(downloadTask.taskIdentifier)];
   
   BOOL success = YES; 
   NYPLProblemDocument *problemDocument = nil;
@@ -237,7 +250,7 @@ didFinishDownloadingToURL:(NSURL *const)location
           [[NYPLMyBooksDownloadInfo alloc]
            initWithDownloadProgress:0.0
            downloadTask:task
-           rightsManagement:NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON];
+           rightsManagement:NYPLMyBooksDownloadRightsManagementNone];
 
         self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
 
@@ -307,17 +320,73 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   NYPLBasicAuthHandler(challenge, completionHandler);
 }
 
+// This is implemented in order to be able to handle redirects when using
+// bearer token authentication.
+- (void)URLSession:(__unused NSURLSession *)session
+              task:(NSURLSessionTask *const)task
+willPerformHTTPRedirection:(__unused NSHTTPURLResponse *)response
+        newRequest:(NSURLRequest *const)request
+ completionHandler:(void (^ const)(NSURLRequest *_Nullable))completionHandler
+{
+  NSUInteger const maxRedirectAttempts = 10;
+
+  NSNumber *const redirectAttemptsNumber = self.taskIdentifierToRedirectAttempts[@(task.taskIdentifier)];
+  NSUInteger const redirectAttempts = redirectAttemptsNumber ? redirectAttemptsNumber.unsignedIntegerValue : 0;
+
+  if (redirectAttempts >= maxRedirectAttempts) {
+    completionHandler(nil);
+    return;
+  }
+
+  self.taskIdentifierToRedirectAttempts[@(task.taskIdentifier)] = @(redirectAttempts + 1);
+
+  NSString *const authorizationKey = @"Authorization";
+
+  // Since any "Authorization" header will be dropped on redirection for security
+  // reasons, we need to again manually set the header for the redirected request
+  // if we originally manually set the header to a bearer token. There's no way
+  // to use NSURLSession's standard challenge handling approach for bearer tokens,
+  // sadly.
+  if ([task.originalRequest.allHTTPHeaderFields[authorizationKey] hasPrefix:@"Bearer"]) {
+    // Do not pass on the bearer token to other domains.
+    if (![task.originalRequest.URL.host isEqual:request.URL.host]) {
+      completionHandler(request);
+      return;
+    }
+
+    // Prevent redirection from HTTPS to a non-HTTPS URL.
+    if ([task.originalRequest.URL.scheme isEqualToString:@"https"]
+        && ![request.URL.scheme isEqualToString:@"https"]) {
+      completionHandler(nil);
+      return;
+    }
+
+    // Add the originally used bearer token to a new request.
+    NSMutableDictionary *const mutableAllHTTPHeaderFields =
+      [NSMutableDictionary dictionaryWithDictionary:request.allHTTPHeaderFields];
+    mutableAllHTTPHeaderFields[authorizationKey] = task.originalRequest.allHTTPHeaderFields[authorizationKey];
+    NSMutableURLRequest *const mutableRequest = [NSMutableURLRequest requestWithURL:request.URL];
+    mutableRequest.allHTTPHeaderFields = mutableAllHTTPHeaderFields;
+
+    // Redirect with the bearer token.
+    completionHandler(mutableRequest);
+  } else {
+    completionHandler(request);
+  }
+}
+
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
               task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
 {
-  NSNumber *const key = @(task.taskIdentifier);
-  NYPLBook *const book = self.taskIdentifierToBook[key];
+  NYPLBook *const book = self.taskIdentifierToBook[@(task.taskIdentifier)];
   
   if(!book) {
     // A reset must have occurred.
     return;
   }
+
+  [self.taskIdentifierToRedirectAttempts removeObjectForKey:@(task.taskIdentifier)];
 
   // FIXME: This is commented out because we can't remove this stuff if a book will need to be
   // fulfilled. Perhaps this logic should just be put a different place.
