@@ -53,8 +53,8 @@ static NSString *const BookmarksKey = @"bookmarks";
     // way to download the book if it is available. As such, we give the book a
     // special "unsupported" state which will allow other parts of the app to
     // ignore it as appropriate. Unsupported books should generally only appear
-    // when a user has checked out a book in an unsupported format using another
-    // app.
+    // when a user has checked out or reserved a book in an unsupported format
+    // using another app.
     self.state = NYPLBookStateUnsupported;
     return self;
   }
