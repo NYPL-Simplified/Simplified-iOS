@@ -227,6 +227,11 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
       }
       break;
     }
+    case NYPLBookButtonsStateUnsupported:
+      // The app should never show books it cannot support, but if it mistakenly does,
+      // no actions will be available.
+      visibleButtonInfo = @[];
+      break;
   }
   
   NSMutableArray *visibleButtons = [NSMutableArray array];
@@ -335,6 +340,8 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
                  self.book.title];
       confirmButtonTitle = NSLocalizedString(@"BookButtonsViewRemoveHoldConfirm", nil);
       break;
+    case NYPLBookStateUnsupported:
+      @throw NSInternalInconsistencyException;
   }
   
   UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title

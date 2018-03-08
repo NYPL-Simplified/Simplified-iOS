@@ -15,7 +15,8 @@ typedef NS_ENUM(NSInteger, NYPLBookButtonsState) {
   NYPLBookButtonsStateDownloadSuccessful,
   NYPLBookButtonsStateUsed,
   NYPLBookButtonsStateDownloadInProgress,
-  NYPLBookButtonsStateDownloadFailed
+  NYPLBookButtonsStateDownloadFailed,
+  NYPLBookButtonsStateUnsupported
 };
 
 /// @param availability A non-nil @c NYPLOPDSAcquisitionAvailability.

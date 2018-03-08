@@ -577,6 +577,14 @@ navigationType:(__attribute__((unused)) UIWebViewNavigationType)navigationType
       self.normalView.state = NYPLBookButtonsStateUsed;
       self.buttonsView.state = NYPLBookButtonsStateUsed;
       break;
+    case NYPLBookStateUnsupported:
+      self.normalView.hidden = NO;
+      self.downloadFailedView.hidden = YES;
+      [self hideDownloadingView:YES];
+      self.buttonsView.hidden = NO;
+      self.normalView.state = NYPLBookButtonsStateUnsupported;
+      self.buttonsView.state = NYPLBookButtonsStateUnsupported;
+      break;
   }
 }
 

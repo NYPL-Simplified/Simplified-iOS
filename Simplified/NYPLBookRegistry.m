@@ -662,7 +662,12 @@ static NSString *const RecordsKey = @"records";
 
 - (NSArray *)myBooks
 {
-  return [self booksMatchingStateMask:~(NYPLBookStateHolding | NYPLBookStateUnregistered)];
+  return [self booksMatchingStateMask:
+          (NYPLBookStateDownloadNeeded
+           | NYPLBookStateDownloading
+           | NYPLBookStateDownloadFailed
+           | NYPLBookStateDownloadSuccessful
+           | NYPLBookStateUsed)];
 }
 
 - (NSArray *)booksMatchingStateMask:(NSUInteger)mask

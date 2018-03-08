@@ -207,15 +207,15 @@
                                 HintKey: hint}];
       }
       break;
+    }
     case NYPLBookButtonsStateDownloadInProgress:
+    {
+      if (self.showReturnButtonIfApplicable)
       {
-        if (self.showReturnButtonIfApplicable)
-        {
-          visibleButtonInfo = @[@{ButtonKey: self.cancelButton,
-                                  TitleKey: NSLocalizedString(@"Cancel", nil),
-                                  HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels the download for the current book: %@", nil), self.book.title],
-                                  AddIndicatorKey: @(NO)}];
-        }
+        visibleButtonInfo = @[@{ButtonKey: self.cancelButton,
+                                TitleKey: NSLocalizedString(@"Cancel", nil),
+                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels the download for the current book: %@", nil), self.book.title],
+                                AddIndicatorKey: @(NO)}];
       }
       break;
     }
@@ -232,7 +232,12 @@
                                 HintKey: [NSString stringWithFormat:NSLocalizedString(@"Cancels the failed download for this book: %@", nil), self.book.title],
                                 AddIndicatorKey: @(NO)}];
       }
+      break;
     }
+    case NYPLBookButtonsStateUnsupported:
+      // The app should never show books it cannot support, but if it mistakenly does,
+      // no actions will be available.
+      visibleButtonInfo = @[];
       break;
   }
 
@@ -341,6 +346,8 @@
                  self.book.title];
       confirmButtonTitle = NSLocalizedString(@"BookButtonsViewRemoveHoldConfirm", nil);
       break;
+    case NYPLBookStateUnsupported:
+      @throw NSInternalInconsistencyException;
   }
   
   UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
