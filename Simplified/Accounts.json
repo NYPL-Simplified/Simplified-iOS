@@ -305,7 +305,7 @@
  "supportsCardCreator" : false,
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://lci.lyrasistechnology.org/avon/",
- "mainColor" : "52174f",
+ "mainColor" : "#52174f",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true,
  "pinRequired" : false
@@ -324,7 +324,7 @@
  "supportsCardCreator" : false,
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://bibliomation.lyrasistechnology.org/ansonia/",
- "mainColor" : "135772",
+ "mainColor" : "#135772",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true,
  "pinRequired" : false
@@ -343,7 +343,7 @@
  "supportsCardCreator" : true,
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://bibliomation.lyrasistechnology.org/beacon/",
- "mainColor" : "135772",
+ "mainColor" : "#135772",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true,
  "pinRequired" : false
@@ -362,7 +362,7 @@
  "supportsCardCreator" : false,
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://bibliomation.lyrasistechnology.org/bentley/",
- "mainColor" : "135772",
+ "mainColor" : "#135772",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true,
  "pinRequired" : false
@@ -381,7 +381,7 @@
  "supportsCardCreator" : false,
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://bibliomation.lyrasistechnology.org/cornwall/",
- "mainColor" : "135772",
+ "mainColor" : "#135772",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true,
  "pinRequired" : false
@@ -400,7 +400,7 @@
  "supportsCardCreator" : false,
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://bibliomation.lyrasistechnology.org/derbyneck/",
- "mainColor" : "135772",
+ "mainColor" : "#135772",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true,
  "pinRequired" : false
@@ -419,7 +419,7 @@
  "supportsCardCreator" : false,
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://bibliomation.lyrasistechnology.org/derby/",
- "mainColor" : "135772",
+ "mainColor" : "#135772",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true,
  "pinRequired" : false
@@ -438,7 +438,7 @@
  "supportsCardCreator" : false,
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://clp.lyrasistechnology.org/clp/",
- "mainColor" : "135772",
+ "mainColor" : "#135772",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  },
@@ -456,7 +456,7 @@
  "supportsCardCreator" : false,
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://yavapai.lyrasistechnology.org/beavercreek/",
- "mainColor" : "ffb81d",
+ "mainColor" : "#ffb81d",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  },
@@ -474,7 +474,7 @@
  "supportsCardCreator" : false,
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://yavapai.lyrasistechnology.org/campverde/",
- "mainColor" : "97272c",
+ "mainColor" : "#97272c",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  },
@@ -492,7 +492,7 @@
  "supportsCardCreator" : false,
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://yavapai.lyrasistechnology.org/embryriddle/",
- "mainColor" : "135772",
+ "mainColor" : "#135772",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  },
@@ -510,7 +510,7 @@
  "supportsCardCreator" : false,
  "supportsHelpCenter" : false,
  "catalogUrl" : "https://yavapai.lyrasistechnology.org/prescott/",
- "mainColor" : "54514a",
+ "mainColor" : "#54514a",
  "authPasscodeLength" : 0,
  "authPasscodeAllowsLetters" : true
  }
