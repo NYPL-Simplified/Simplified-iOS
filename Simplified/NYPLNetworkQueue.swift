@@ -39,7 +39,8 @@ final class NetworkQueue: NSObject {
   enum HTTPMethodType: String {
     case GET, POST, HEAD, PUT, DELETE, OPTIONS, CONNECT
   }
-  
+
+  private var retryRequestCount = 0
   private let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first!
   
   private let sqlTable = Table("offline_queue")
@@ -120,11 +121,24 @@ final class NetworkQueue: NSObject {
   private func retryQueue()
   {
     self.serialQueue.async {
-      guard let db = self.startDatabaseConnection() else { return }
+
+      if self.retryRequestCount > 0 {
+        Log.debug(#file, "Retry requests are still in progress. Cancelling this attempt.")
+        return
+      }
+
+      guard let db = self.startDatabaseConnection() else {
+        Log.error(#file, "Failed to start database connection for a retry attempt.")
+        return
+      }
 
       let expiredRows = self.sqlTable.filter(self.sqlRetries > self.MaxRetriesInQueue)
       do {
         try db.run(expiredRows.delete())
+
+        self.retryRequestCount = try db.scalar(self.sqlTable.count)
+        Log.debug(#file, "Executing \"retry\" with \(self.retryRequestCount) row(s) in the table.")
+
         for row in try db.prepare(self.sqlTable) {
           Log.debug(#file, "Retrying row: \(row[self.sqlID])")
           self.retry(db, requestRow: row)
@@ -165,6 +179,7 @@ final class NetworkQueue: NSObject {
             self.deleteRow(db, id: requestRow[self.sqlID])
           }
         }
+        self.retryRequestCount -= 1
       }
     }
     task.resume()
