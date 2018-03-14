@@ -85,6 +85,11 @@
       NYPLLOG_F(@"Failed to create book from entry: %@",entry.title);
       continue;
     }
+
+    if(!book.defaultAcquisition) {
+      // The application is not able to support this, so we ignore it.
+      continue;
+    }
     
     [[NYPLBookRegistry sharedRegistry] updateBookMetadata:book];
     NYPLBook *updatedBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:book.identifier];
