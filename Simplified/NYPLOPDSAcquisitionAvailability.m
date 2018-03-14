@@ -129,8 +129,8 @@ NYPLOPDSAcquisitionAvailabilityWithLinkXML(NYPLXML *const _Nonnull linkXML)
 
   if ([statusString isEqual:@"reserved"]) {
     return [[NYPLOPDSAcquisitionAvailabilityReserved alloc]
-            initWithHoldPosition:MIN(holdPosition, copiesTotal)
-            copiesTotal:MAX(holdPosition, copiesTotal)
+            initWithHoldPosition:holdPosition
+            copiesTotal:copiesTotal
             since:since
             until:until];
   }
@@ -206,8 +206,8 @@ NYPLOPDSAcquisitionAvailabilityWithDictionary(NSDictionary *_Nonnull dictionary)
     NSDate *const until = untilString ? [NSDate dateWithRFC3339String:untilString] : nil;
 
     return [[NYPLOPDSAcquisitionAvailabilityReserved alloc]
-            initWithHoldPosition:MAX(0, MIN([holdPositionNumber integerValue], [copiesTotalNumber integerValue]))
-            copiesTotal:MAX(0, MAX([holdPositionNumber integerValue], [copiesTotalNumber integerValue]))
+            initWithHoldPosition:MAX(0, [holdPositionNumber integerValue])
+            copiesTotal:MAX(0, [copiesTotalNumber integerValue])
             since:since
             until:until];
   } else if ([caseString isEqual:readyCase]) {
