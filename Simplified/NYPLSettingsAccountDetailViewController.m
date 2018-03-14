@@ -208,11 +208,16 @@ CGFloat const verticalMarginPadding = 2.0;
 - (void)setupTableData
 {
   NSMutableArray *section0;
-  if (self.selectedAccount.needsAuth == NO) {
+  if (!self.selectedAccount.needsAuth) {
     section0 = @[@(CellKindAgeCheck)].mutableCopy;
-  } else {
+  } else if (self.selectedAccount.pinRequired) {
     section0 = @[@(CellKindBarcode),
                  @(CellKindPIN),
+                 @(CellKindLogInSignOut)].mutableCopy;
+  } else {
+    //Server expects a blank string. Passes local textfield validation.
+    self.PINTextField.text = @"";
+    section0 = @[@(CellKindBarcode),
                  @(CellKindLogInSignOut)].mutableCopy;
   }
   
@@ -314,7 +319,7 @@ CGFloat const verticalMarginPadding = 2.0;
 - (void)logIn
 {
   assert(self.usernameTextField.text.length > 0);
-  assert(self.PINTextField.text.length > 0);
+  assert(self.PINTextField.text.length > 0 || [self.PINTextField.text isEqualToString:@""]);
   
   [self.usernameTextField resignFirstResponder];
   [self.PINTextField resignFirstResponder];
@@ -1443,12 +1448,11 @@ replacementString:(NSString *)string
   } else {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentLeft;
-    BOOL const canLogIn =
-      ([self.usernameTextField.text
-        stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
-       [self.PINTextField.text
-        stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length);
-    if(canLogIn) {
+    BOOL const barcodeHasText = [self.usernameTextField.text
+                                 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
+    BOOL const pinHasText = [self.PINTextField.text
+                             stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
+    if((barcodeHasText && pinHasText) || (barcodeHasText && !self.selectedAccount.pinRequired)) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     } else {

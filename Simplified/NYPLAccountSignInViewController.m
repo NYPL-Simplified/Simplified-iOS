@@ -42,32 +42,6 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionRegistration = 1
 };
 
-static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
-{
-  switch(indexPath.section) {
-    case 0:
-      switch(indexPath.row) {
-        case 0:
-          return CellKindBarcode;
-        case 1:
-          return CellKindPIN;
-        case 2:
-          return CellKindLogInSignOut;
-        default:
-          @throw NSInvalidArgumentException;
-      }
-    case 1:
-      switch(indexPath.row) {
-        case 0:
-          return CellKindRegistration;
-        default:
-          @throw NSInvalidArgumentException;
-      }
-    default:
-      @throw NSInvalidArgumentException;
-  }
-}
-
 @interface NYPLAccountSignInViewController () <NSURLSessionDelegate, UITextFieldDelegate, UIAlertViewDelegate>
 
 @property (nonatomic) Account *currentAccount;
@@ -83,6 +57,7 @@ static CellKind CellKindFromIndexPath(NSIndexPath *const indexPath)
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
 @property (nonatomic) bool rotated;
+@property (nonatomic) NSArray *tableData;
 
 @end
 
@@ -195,6 +170,30 @@ CGFloat const marginPadding = 2.0;
   self.logInSignOutCell = [[UITableViewCell alloc]
                            initWithStyle:UITableViewCellStyleDefault
                            reuseIdentifier:nil];
+
+  [self setupTableData];
+}
+
+- (void)setupTableData
+{
+  NSArray *section0;
+  if (self.currentAccount.pinRequired) {
+    section0 = @[@(CellKindBarcode),
+                 @(CellKindPIN),
+                 @(CellKindLogInSignOut)];
+  } else {
+    //Server expects a blank string. Passes local textfield validation.
+    self.PINTextField.text = @"";
+    section0 = @[@(CellKindBarcode),
+                 @(CellKindLogInSignOut)];
+  }
+  NSArray *section1;
+  if ([self registrationIsPossible]) {
+    section1 = @[@(CellKindRegistration)];
+  } else {
+    section1 = @[];
+  }
+  self.tableData = @[section0, section1];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -232,7 +231,10 @@ CGFloat const marginPadding = 2.0;
 - (void)tableView:(__attribute__((unused)) UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  switch(CellKindFromIndexPath(indexPath)) {
+  NSArray *sectionArray = (NSArray *)self.tableData[indexPath.section];
+  CellKind cellKind = (CellKind)[sectionArray[indexPath.row] intValue];
+
+  switch(cellKind) {
     case CellKindBarcode:
       [self.usernameTextField becomeFirstResponder];
       break;
@@ -306,7 +308,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
-  switch(CellKindFromIndexPath(indexPath)) {
+  NSArray *sectionArray = (NSArray *)self.tableData[indexPath.section];
+  CellKind cellKind = (CellKind)[sectionArray[indexPath.row] intValue];
+
+  switch(cellKind) {
     case CellKindBarcode: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
@@ -406,23 +411,16 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  if([self registrationIsPossible]) {
-    return 2;
-  } else {
-    return 1;
-  }
+  return self.tableData.count;
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
  numberOfRowsInSection:(NSInteger const)section
 {
-  switch(section) {
-    case SectionCredentials:
-      return 3;
-    case SectionRegistration:
-      return 1;
-    default:
-      @throw NSInternalInconsistencyException;
+  if (section > (int)self.tableData.count - 1) {
+    return 0;
+  } else {
+    return [(NSArray *)self.tableData[section] count];
   }
 }
 
@@ -753,12 +751,11 @@ completionHandler:(void (^)())handler
     self.logInSignOutCell.userInteractionEnabled = YES;
   } else {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
-    BOOL const canLogIn =
-      ([self.usernameTextField.text
-        stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length &&
-       [self.PINTextField.text
-        stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length);
-    if(canLogIn) {
+    BOOL const barcodeHasText = [self.usernameTextField.text
+                                 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
+    BOOL const pinHasText = [self.PINTextField.text
+                             stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
+    if((barcodeHasText && pinHasText) || (barcodeHasText && !self.currentAccount.pinRequired)) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     } else {
@@ -771,8 +768,8 @@ completionHandler:(void (^)())handler
 - (void)logIn
 {
   assert(self.usernameTextField.text.length > 0);
-  assert(self.PINTextField.text.length > 0);
-  
+  assert(self.PINTextField.text.length > 0 || [self.PINTextField.text isEqualToString:@""]);
+
   [self.usernameTextField resignFirstResponder];
   [self.PINTextField resignFirstResponder];
 
