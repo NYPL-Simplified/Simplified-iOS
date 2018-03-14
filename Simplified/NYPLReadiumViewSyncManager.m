@@ -320,9 +320,11 @@ const double RequestTimeInterval = 30;
 
 - (void)sendOffAnyQueuedRequest
 {
-  if (self.queuedReadingPosition) {
-    [NYPLAnnotations postReadingPositionForBook:self.bookID annotationsURL:nil cfi:self.queuedReadingPosition];
-    self.queuedReadingPosition = nil;
+  @synchronized(self) {
+    if (self.queuedReadingPosition) {
+      [NYPLAnnotations postReadingPositionForBook:self.bookID annotationsURL:nil cfi:self.queuedReadingPosition];
+      self.queuedReadingPosition = nil;
+    }
   }
 }
 
