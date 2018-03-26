@@ -56,8 +56,6 @@
 	<array>
 		<string>OpenDyslexic3-Regular.ttf</string>
 		<string>OpenDyslexic3-Bold.ttf</string>
-		<string>CodabarLarge.ttf</string>
-		<string>CodabarMedium.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>NYPL_Launch_Screen</string>
