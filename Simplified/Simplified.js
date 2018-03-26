@@ -143,7 +143,34 @@ function Simplified() {
 
     // Set up the page turning animation.
     iframe.document.documentElement.style["transition"] = "left 0.2s";
+
+    // Allow OpenDyslexic fonts to work.
+    this.linkOpenDyslexicFonts();
   };
+
+  // Allows the inner iframe to fetch OpenDyslexic fonts from the web server.
+  this.linkOpenDyslexicFonts = function() {
+    var id = 'simplified-opendyslexic';
+    var innerDocument = window.frames['epubContentIframe'].document;
+    if (innerDocument.getElementById(id)) {
+      return;
+    }
+    var styleElement = document.createElement('style');
+    styleElement.id = id;
+    styleElement.textContent =
+      "@font-face { \
+        font-family: 'OpenDyslexic3'; \
+        src: url('/simplified-readium/OpenDyslexic3-Medium.ttf'); \
+        font-weight: normal; \
+      } \
+      \
+      @font-face { \
+        font-family: 'OpenDyslexic3'; \
+        src: url('/simplified-readium/OpenDyslexic3-Bold.ttf'); \
+        font-weight: bold; \
+      }";
+    innerDocument.head.appendChild(styleElement);
+  }
 
   this.pageDidChange();
 }
