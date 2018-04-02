@@ -246,11 +246,13 @@ const double RequestTimeInterval = 60;
          }
        }
 
-       [NYPLAnnotations getServerBookmarksForBook:self.bookID atURL:self.annotationsURL completionHandler:^(NSArray<NYPLReaderBookmark *> * _Nonnull serverBookmarks) {
+       [NYPLAnnotations getServerBookmarksForBook:self.bookID atURL:self.annotationsURL completionHandler:^(NSArray<NYPLReaderBookmark *> * _Nullable serverBookmarks) {
 
          if (!serverBookmarks) {
            NYPLLOG(@"Ending sync without running completion. Returning original list of bookmarks.");
-           completion(NO, [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+           if (completion) {
+             completion(NO, [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+           }
            return;
          } else if (serverBookmarks.count == 0) {
            NYPLLOG(@"No server bookmarks were returned.");
