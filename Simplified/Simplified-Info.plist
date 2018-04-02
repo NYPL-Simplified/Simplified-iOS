@@ -50,8 +50,10 @@
 	<string>SimplyE requires access to the camera in order to scan your library card.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This service is available to New York State residents only. In order to determine your location, please allow access</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We use your screenshots to help support you by understanding what you see on the screen or share with us via screen capture. You must upload those images and we do not do that in the background or programmatically.</string>
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>We use your screenshots to help support you by understanding what you see on the screen or share with us via screen capture. You must upload those images and we do not do that in the background or programmatically.</string>
+  <key>NSPhotoLibraryAddUsageDescription</key>
+  <string>We use your screenshots to help support you by understanding what you see on the screen or share with us via screen capture. You must upload those images and we do not do that in the background or programmatically.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>OpenDyslexic3-Regular.ttf</string>
