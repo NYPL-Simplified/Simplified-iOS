@@ -138,27 +138,33 @@ const double RequestTimeInterval = 60;
       elementTitle = @"";
     }
                 
-    NSString *message = NSLocalizedString(@"Do you want to move to the page you left off on?", nil);
+    NSString *message = NSLocalizedString(@"Do you want to move to the page on which you left off?", nil);
+    NSAttributedString *atrString;
     if (![elementTitle isEqualToString:@"Current Chapter"]) {
-      message = [message stringByAppendingString:[NSString stringWithFormat:@"\n\nChapter:\n\"%@\"", elementTitle]];
+      message = [message stringByAppendingString:[NSString stringWithFormat:@"<br><br>Chapter:\n&ldquo;%@&ldquo;", elementTitle]];
+      atrString = [[NSAttributedString alloc] initWithData:[message dataUsingEncoding:NSUTF8StringEncoding]
+                                                                       options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                                                                 NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)}
+                                                            documentAttributes:nil error:nil];
     }
 
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Sync Reading Position", nil)
-                                                                             message:message
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alertController = [UIAlertController
+                                          alertControllerWithTitle:NSLocalizedString(@"Sync Reading Position", nil)
+                                          message:(atrString != nil) ? [atrString string] : message
+                                          preferredStyle:UIAlertControllerStyleAlert];
 
-    [alertController addAction:
-     [UIAlertAction actionWithTitle:NSLocalizedString(@"NO", nil)
+    UIAlertAction *stayAction =
+     [UIAlertAction actionWithTitle:NSLocalizedString(@"Stay", nil)
                               style:UIAlertActionStyleCancel
                             handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
                               if ([self.delegate respondsToSelector:@selector(patronDecidedNavigation:withNavDict:)]) {
                                 [self.delegate patronDecidedNavigation:NO withNavDict:nil];
                               }
                               self.shouldPostLastRead = YES;
-                            }]];
+                            }];
 
-    [alertController addAction:
-     [UIAlertAction actionWithTitle:NSLocalizedString(@"YES", nil)
+    UIAlertAction *moveAction =
+     [UIAlertAction actionWithTitle:NSLocalizedString(@"Move", nil)
                               style:UIAlertActionStyleDefault
                             handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
 
@@ -177,7 +183,14 @@ const double RequestTimeInterval = 60;
                               if ([self.delegate respondsToSelector:@selector(patronDecidedNavigation:withNavDict:)]) {
                                 [self.delegate patronDecidedNavigation:YES withNavDict:dictionary];
                               }
-                            }]];
+                            }];
+
+    [alertController addAction: stayAction];
+    [alertController addAction: moveAction];
+
+    if (@available (iOS 9.0, *)) {
+      alertController.preferredAction = moveAction;
+    }
 
     // Pass through without presenting the Alert Controller if:
     // 1 - The most recent page on the server comes from the same device
