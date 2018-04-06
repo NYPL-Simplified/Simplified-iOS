@@ -190,6 +190,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
 final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
   var accounts: [Account]!
+  var nyplAccounts: [Account]!
   let completion: (Account) -> ()
   weak var tableView : UITableView!
   
@@ -210,24 +211,47 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
     self.tableView.dataSource = self
     
     self.accounts = AccountsManager.shared.accounts
+
+    //FIXME Replace with SettingsAccounts improvements to library selection VC
+    //once that gets finalized and merged in.
+    self.accounts.sort { $0.name ?? "" < $1.name ?? "" }
+    self.nyplAccounts = self.accounts.filter { $0.id < 3 }
+    self.accounts = self.accounts.filter {  $0.id >= 3  }
+
     self.title = NSLocalizedString("LibraryListTitle", comment: "Title that also informs the user that they should choose a library from the list.")
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
   }
   
-   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     return 100
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    completion(accounts[indexPath.row])
+    if indexPath.section == 0 {
+      completion(nyplAccounts[indexPath.row])
+    } else {
+      completion(accounts[indexPath.row])
+    }
+  }
+
+  func numberOfSections(in tableView: UITableView) -> Int {
+    return 2
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return self.accounts.count
+    if section == 0 {
+      return self.nyplAccounts.count
+    } else {
+      return self.accounts.count
+    }
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    return cellForLibrary(self.accounts[indexPath.row])
+    if indexPath.section == 0 {
+      return cellForLibrary(self.nyplAccounts[indexPath.row])
+    } else {
+      return cellForLibrary(self.accounts[indexPath.row])
+    }
   }
   
   func cellForLibrary(_ account: Account) -> UITableViewCell {
