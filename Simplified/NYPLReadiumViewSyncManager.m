@@ -31,7 +31,7 @@ typedef NS_ENUM(NSInteger, NYPLReadPositionSyncStatus) {
 
 @implementation NYPLReadiumViewSyncManager
 
-const double RequestTimeInterval = 60;
+const double RequestTimeInterval = 120;
 
 - (instancetype) initWithBookID:(NSString *)bookID
                  annotationsURL:(NSURL *)URL
