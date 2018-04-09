@@ -314,7 +314,7 @@
  "id" : 38,
  "pathComponent" : "38",
  "name" : "Camp Verde Community Library",
- "subtitle" : "Public libary serving the community of Camp Verde",
+ "subtitle" : "Public library serving the community of Camp Verde",
  "logo" : "LibraryLogoYavapai",
  "needsAuth" : true,
  "supportsSimplyESync" : false,
