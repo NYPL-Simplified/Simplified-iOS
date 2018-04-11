@@ -280,10 +280,14 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
          }
        }
        unlimited:nil
-       reserved:nil
+       reserved:^(NYPLOPDSAcquisitionAvailabilityReserved * _Nonnull reserved) {
+         if (button == self.deleteButton && reserved.until && [reserved.until timeIntervalSinceNow] > 0) {
+           button.type = NYPLRoundedButtonTypeClock;
+           button.endDate = reserved.until;
+         }
+       }
        ready:nil];
     }
-
     [visibleButtons addObject:button];
   }
   for (NYPLRoundedButton *button in @[self.downloadButton, self.deleteButton, self.readButton]) {
