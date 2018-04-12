@@ -681,7 +681,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   [UIView beginAnimations:@"animations" context:NULL];
   [UIView setAnimationDuration:0.25];
-  weakSelf.webView.alpha = 1.0;
+  self.webView.alpha = 1.0;
   [UIView commitAnimations];
   
   UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.webView);
