@@ -18,9 +18,11 @@
                                   height:height
                                    hints:hints
                                    error:&error];
-    if (result) {
-      CGImageRef imageRef = [[ZXImage imageWithMatrix:result] cgimage];
-      UIImage *image = [[UIImage alloc] initWithCGImage:imageRef];
+    if (result && !error) {
+      // `[zxImage cgimage]` is garbage after `zxImage` is freed, so we bind it to
+      // a variable here to ensure it lives long enough to initialize `image`.
+      ZXImage *const zxImage = [ZXImage imageWithMatrix:result];
+      UIImage *image = [[UIImage alloc] initWithCGImage:[zxImage cgimage]];
       if (image) {
         return image;
       } else {
