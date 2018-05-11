@@ -7,6 +7,7 @@
 #import "NYPLReaderSettings.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLSettings.h"
+#import <NYPLAudiobookToolkit/NYPLAudiobookToolkit-Swift.h>
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -26,6 +27,7 @@
 @interface NYPLAppDelegate()
 
 @property (nonatomic) NYPLReachability *reachabilityManager;
+@property (nonatomic) AudiobookLifecycleManager *audiobookLifecycleManager;
 
 @end
 
@@ -36,6 +38,8 @@
 - (BOOL)application:(__attribute__((unused)) UIApplication *)application
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
+  self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
+  
   [NYPLKeychainManager validateKeychain];
 
   // This is normally not called directly, but we put all programmatic appearance setup in
@@ -52,12 +56,12 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.window.tintColor = [NYPLConfiguration mainColor];
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
   [self.window makeKeyAndVisible];
-  
+    
   NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
   self.window.rootViewController = vc;
     
   [self beginCheckingForUpdates];
-  
+  [self.audiobookLifecycleManager didFinishLaunching];
   return YES;
 }
 
@@ -113,6 +117,15 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 {
   [[NYPLBookRegistry sharedRegistry] save];
   [[NYPLReaderSettings sharedSettings] save];
+  [self.audiobookLifecycleManager willTerminate];
+}
+
+- (void)applicationDidEnterBackground:(__unused UIApplication *)application {
+  [self.audiobookLifecycleManager didEnterBackground];
+}
+
+- (void)application:(__unused UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)(void))completionHandler {
+  [self.audiobookLifecycleManager handleEventsForBackgroundURLSessionFor:identifier completionHandler:completionHandler];
 }
 
 - (void)beginCheckingForUpdates
