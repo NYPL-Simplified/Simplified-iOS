@@ -11,8 +11,8 @@ import NYPLAudiobookToolkit
 
 @objcMembers class NYPLAudiobookController: NSObject {
   var manager: AudiobookManager?
-  let encoder: JSONEncoder
-  let decoder: JSONDecoder
+  let encoder = JSONEncoder()
+  let decoder = JSONDecoder()
   func configurePlayhead() {
     guard let manager = self.manager else {
       return
@@ -29,9 +29,7 @@ import NYPLAudiobookToolkit
     manager.audiobook.player.movePlayheadToLocation(location)
   }
   
-  init(json: String, encoder: JSONEncoder = JSONEncoder(), decoder: JSONDecoder = JSONDecoder()) {
-    self.encoder = encoder
-    self.decoder = decoder
+  init(json: String) {
     guard let data = json.data(using: String.Encoding.utf8) else { return }
     let possibleJson = try? JSONSerialization.jsonObject(with: data, options: [])
     guard let unwrappedJSON = possibleJson as? [String: Any] else { return }

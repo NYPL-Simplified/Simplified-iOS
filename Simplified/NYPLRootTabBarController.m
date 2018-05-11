@@ -5,6 +5,7 @@
 #import "NYPLSettingsSplitViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "SimplyE-Swift.h"
+#import <NYPLAudiobookToolkit/NYPLAudiobookToolkit-Swift.h>
 
 @interface NYPLRootTabBarController () <UITabBarControllerDelegate>
 
@@ -12,6 +13,8 @@
 @property (nonatomic) NYPLMyBooksNavigationController *myBooksNavigationController;
 @property (nonatomic) NYPLHoldsNavigationController *holdsNavigationController;
 @property (nonatomic) NYPLSettingsSplitViewController *settingsSplitViewController;
+@property (nonatomic) AudiobookPlayerViewController *playerViewController;
+@property (nonatomic) NYPLAudiobookController *audiobookController;
 
 @end
 
@@ -36,6 +39,8 @@
 
 - (instancetype)init
 {
+  self.audiobookController = [[NYPLAudiobookController alloc] initWithJson: NYPLAudiobookController.payload];
+  
   self = [super init];
   if(!self) return nil;
   
