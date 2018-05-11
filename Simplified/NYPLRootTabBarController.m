@@ -40,7 +40,7 @@
 - (instancetype)init
 {
   self.audiobookController = [[NYPLAudiobookController alloc] initWithJson: NYPLAudiobookController.payload];
-  
+  self.playerViewController = [[AudiobookPlayerViewController alloc] initWithAudiobookManager:self.audiobookController.manager];
   self = [super init];
   if(!self) return nil;
   
@@ -72,7 +72,7 @@
     self.viewControllers = @[self.catalogNavigationController,
                              self.myBooksNavigationController,
                              self.holdsNavigationController,
-                             self.settingsSplitViewController];
+                             self.playerViewController];
   } else {
     self.viewControllers = @[self.catalogNavigationController,
                              self.myBooksNavigationController,
