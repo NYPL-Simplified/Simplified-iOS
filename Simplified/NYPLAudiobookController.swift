@@ -10,6 +10,7 @@ import UIKit
 import NYPLAudiobookToolkit
 
 @objcMembers class NYPLAudiobookController: NSObject {
+  static let payload = "" // replace with string-ified audiobook manifest
   var manager: AudiobookManager?
   let encoder = JSONEncoder()
   let decoder = JSONDecoder()
