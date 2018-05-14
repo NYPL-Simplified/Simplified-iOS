@@ -81,8 +81,11 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   
   func updateUI() {
     if (userAddedSecondaryAccounts.count + 1 < libraryAccounts.count) {
-      self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-        barButtonSystemItem: .add, target: self, action: #selector(addAccount))
+      self.navigationItem.rightBarButtonItem =
+        UIBarButtonItem(title: NSLocalizedString("Add Library", comment: "Title of button to add a new library"),
+                        style: .plain,
+                        target: self,
+                        action: #selector(addAccount))
     } else {
       self.navigationItem.rightBarButtonItem = nil
     }
@@ -96,8 +99,21 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
                                   preferredStyle: .actionSheet)
     alert.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
     alert.popoverPresentationController?.permittedArrowDirections = .up
-    
-    for userAccount in libraryAccounts {
+
+    let sortedLibraryAccounts = self.libraryAccounts.sorted { (a, b) in
+      // Check if we're one of the three "special" libraries that always come first.
+      // This is a complete hack.
+      if a.id <= 2 || b.id <= 2 {
+        // One of the libraries is special, so sort it first. Lower ids are "more
+        // special" than higher ids and thus show up earlier.
+        return a.id < b.id
+      } else {
+        // Neither library is special so we just go alphabetically.
+        return a.name.localizedCaseInsensitiveCompare(b.name) == .orderedAscending
+      }
+    }
+
+    for userAccount in sortedLibraryAccounts {
       if (!userAddedSecondaryAccounts.contains(userAccount.id) && userAccount.id != manager.currentAccount.id) {
         alert.addAction(UIAlertAction(title: userAccount.name,
           style: .default,
