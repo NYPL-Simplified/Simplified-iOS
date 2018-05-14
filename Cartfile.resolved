@@ -1,4 +1,4 @@
-binary "file:///Users/deansilfen/Projects/Simplified-iOS/AudioEngine.json" "6.1.13"
-git "file:///Users/deansilfen/Projects/NYPLAEToolkit" "0.0.5-alpha"
-git "file:///Users/deansilfen/Projects/NYPLAudiobookToolkit" "1.0.4-alpha"
+binary "AudioEngine.json" "6.1.13"
+github "NYPL-Simplified/NYPLAEToolkit" "0.0.6"
+github "NYPL-Simplified/NYPLAudiobookToolkit" "1.0.4-alpha"
 github "PureLayout/PureLayout" "v3.0.2"

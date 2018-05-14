@@ -1,5 +1,5 @@
-git "file:///Users/deansilfen/Projects/NYPLAudiobookToolkit" ~> 1.0.3
-git "file:///Users/deansilfen/Projects/NYPLAEToolkit" ~> 0.0.4
+github "NYPL-Simplified/NYPLAudiobookToolkit" ~> 1.0.4
+github "NYPL-Simplified/NYPLAEToolkit" ~> 0.0.6
 github "PureLayout/PureLayout" "v3.0.2"
 binary "AudioEngine.json" ~> 6.1.13
 
