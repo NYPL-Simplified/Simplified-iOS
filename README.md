@@ -39,6 +39,8 @@ Follow the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf" to build Ope
 11. Delete "libADEPT.a" and "libAdobe Content Filter.a" from "Link Binary with Libraries" for the "SimplyE" target.
 12. Build.
 
+**Notes:** Carthage is used for experimental dependencies related to unsupported functionality. Do not use carthage in SimplyE at this moment.
+
 # Contributing
 
 This codebase follows [Google's Objective-C Style Guide](https://google.github.io/styleguide/objcguide.xml)
