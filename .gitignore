@@ -7,3 +7,5 @@ DerivedData
 Build
 adobe-rmsdk
 Simplified/APIKeys.swift
+AudioEngine.json
+Carthage/
