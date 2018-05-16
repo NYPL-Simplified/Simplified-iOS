@@ -104,7 +104,7 @@ final class Account:NSObject
   
   let id:Int
   let pathComponent:String?
-  let name:String?
+  let name:String
   let subtitle:String?
   let logo:String?
   let needsAuth:Bool
@@ -159,7 +159,7 @@ final class Account:NSObject
   {
     defaults = UserDefaults.standard
     
-    name = json["name"] as? String
+    name = json["name"] as! String
     subtitle = json["subtitle"] as? String
     id = json["id"] as! Int
     pathComponent = json["pathComponent"] as? String
