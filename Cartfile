@@ -1,5 +1,4 @@
-github "NYPL-Simplified/NYPLAudiobookToolkit" ~> 1.0.4
-github "NYPL-Simplified/NYPLAEToolkit" ~> 0.0.6
+github "NYPL-Simplified/NYPLAudiobookToolkit" ~> 1.0.5
+github "NYPL-Simplified/NYPLAEToolkit" ~> 0.0.7
 github "PureLayout/PureLayout" "v3.0.2"
 binary "AudioEngine.json" ~> 6.1.13
-
