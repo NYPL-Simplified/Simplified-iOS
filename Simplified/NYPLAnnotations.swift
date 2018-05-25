@@ -446,8 +446,8 @@ final class NYPLAnnotations: NSObject {
 
       guard let device = body["http://librarysimplified.org/terms/device"] as? String,
       let time = body["http://librarysimplified.org/terms/time"] as? String,
-      let progressWithinChapter = body["http://librarysimplified.org/terms/progressWithinChapter"] as? Float,
-      let progressWithinBook = body["http://librarysimplified.org/terms/progressWithinBook"] as? Float else {
+      let progressWithinChapter = (body["http://librarysimplified.org/terms/progressWithinChapter"] as? NSNumber)?.floatValue,
+      let progressWithinBook = (body["http://librarysimplified.org/terms/progressWithinBook"] as? NSNumber)?.floatValue else {
         Log.error(#file, "Error reading required bookmark key/values from body")
         return nil
       }

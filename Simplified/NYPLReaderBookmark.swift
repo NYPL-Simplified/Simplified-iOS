@@ -67,10 +67,10 @@ final class NYPLReaderBookmark: NSObject {
         self.chapter = dictionary["chapter"] as? String
         self.page = dictionary["page"] as? String
         self.device = dictionary["device"] as? String
-        if let progressChapter = dictionary["progressWithinChapter"] as? Float {
+        if let progressChapter = (dictionary["progressWithinChapter"] as? NSNumber)?.floatValue {
           self.progressWithinChapter = progressChapter
         }
-        if let progressBook = dictionary["progressWithinBook"] as? Float {
+        if let progressBook = (dictionary["progressWithinBook"] as? NSNumber)?.floatValue {
           self.progressWithinBook = progressBook
         }
     } else {
