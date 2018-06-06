@@ -18,13 +18,15 @@
 
 + (void)initialize
 {
-  [self configureCrashAnalytics];
+  static dispatch_once_t onceToken;
+  dispatch_once (&onceToken, ^{
+    [self configureCrashAnalytics];
+  });
 }
 
 + (void)configureCrashAnalytics
 {
   if (!TARGET_OS_SIMULATOR) {
-
     BugsnagConfiguration *config = [BugsnagConfiguration new];
     config.apiKey = [APIKeys bugsnagID];
 
@@ -40,6 +42,7 @@
     }
 
     [Bugsnag startBugsnagWithConfiguration:config];
+    [self reportNewActiveSession];
   }
 }
 
@@ -47,6 +50,20 @@
 {
   NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
   return ([[receiptURL path] rangeOfString:@"sandboxReceipt"].location != NSNotFound);
+}
+
++ (void)reportNewActiveSession
+{
+  NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
+  NSString *name = [AccountsManager sharedInstance].currentAccount.name;
+  if (name) [metadataParams setObject:name forKey:@"libraryName"];
+
+  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:9 userInfo:nil]
+                 block:^(BugsnagCrashReport * _Nonnull report) {
+                   report.severity = BSGSeverityInfo;
+                   [report addMetadata:metadataParams toTabWithName:@"Library Info"];
+                 }];
+  NYPLLOG(@"Active User Session Reported to Bugsnag");
 }
 
 + (NSURL *)mainFeedURL

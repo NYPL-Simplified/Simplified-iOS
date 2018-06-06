@@ -38,12 +38,11 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 {
   [NYPLKeychainManager validateKeychain];
 
+  // Initiallize Accounts from JSON file
+  [AccountsManager sharedInstance];
   // This is normally not called directly, but we put all programmatic appearance setup in
   // NYPLConfiguration's class initializer.
   [NYPLConfiguration initialize];
-  
-  // Initiallize Accounts from JSON file
-  [AccountsManager sharedInstance];
   // Initialize Offline Requests Queue
   [NetworkQueue shared];
   self.reachabilityManager = [NYPLReachability sharedReachability];
