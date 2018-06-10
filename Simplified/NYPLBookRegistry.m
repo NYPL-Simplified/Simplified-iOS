@@ -19,7 +19,7 @@
 @property (atomic) BOOL syncing;
 @property (atomic) BOOL syncShouldCommit;
 @property (nonatomic) BOOL delaySync;
-@property (nonatomic, copy) void (^delayedSyncBlock)();
+@property (nonatomic, copy) void (^delayedSyncBlock)(void);
 @property (nonatomic) NSMutableSet *processingIdentifiers;
 
 @end
@@ -86,7 +86,7 @@ static NSString *const RecordsKey = @"records";
   return URL;
 }
 
-- (void)performSynchronizedWithoutBroadcasting:(void (^)())block
+- (void)performSynchronizedWithoutBroadcasting:(void (^)(void))block
 {
   @synchronized(self) {
     self.shouldBroadcast = NO;
@@ -265,7 +265,7 @@ static NSString *const RecordsKey = @"records";
        return;
      }
      
-     void (^commitBlock)() = ^void() {
+     void (^commitBlock)(void) = ^void() {
        [self performSynchronizedWithoutBroadcasting:^{
 
          if (feed.licensor) {

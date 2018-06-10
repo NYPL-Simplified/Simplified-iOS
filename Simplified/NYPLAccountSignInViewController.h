@@ -9,12 +9,12 @@
 // TODO: All calls to this method probably should go through NYPLAccount.
 // The existing barcode may only be used if set in the shared NYPLAccount.
 + (void)requestCredentialsUsingExistingBarcode:(BOOL)useExistingBarcode
-                             completionHandler:(void (^)())handler;
+                             completionHandler:(void (^)(void))handler;
 
 // This method is here almost entirely so we can handle a bug that seems to occur
 // when the user updates, where the barcode and pin are entered but accoring to
 // ADEPT the device is not authorized. To be used, the account must have a barcode
 // and pin.
-+ (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)())handler;
++ (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)(void))handler;
 
 @end

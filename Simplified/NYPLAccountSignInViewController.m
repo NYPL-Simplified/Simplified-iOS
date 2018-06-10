@@ -50,7 +50,7 @@ typedef NS_ENUM(NSInteger, Section) {
 @property (nonatomic) BOOL isCurrentlySigningIn;
 @property (nonatomic) UITextField *usernameTextField;
 @property (nonatomic) UIButton *barcodeScanButton;
-@property (nonatomic, copy) void (^completionHandler)();
+@property (nonatomic, copy) void (^completionHandler)(void);
 @property (nonatomic) BOOL hiddenPIN;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITextField *PINTextField;
@@ -546,7 +546,7 @@ replacementString:(NSString *)string
 + (void)
 requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
 authorizeImmediately:(BOOL)authorizeImmediately
-completionHandler:(void (^)())handler
+completionHandler:(void (^)(void))handler
 {
   NYPLAccountSignInViewController *const accountViewController = [[self alloc] init];
 
@@ -597,12 +597,12 @@ completionHandler:(void (^)())handler
 }
 
 + (void)requestCredentialsUsingExistingBarcode:(BOOL)useExistingBarcode
-                             completionHandler:(void (^)())handler
+                             completionHandler:(void (^)(void))handler
 {
   [self requestCredentialsUsingExistingBarcode:useExistingBarcode authorizeImmediately:NO completionHandler:handler];
 }
 
-+ (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)())handler
++ (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)(void))handler
 {
   [self requestCredentialsUsingExistingBarcode:YES authorizeImmediately:YES completionHandler:handler];
 }

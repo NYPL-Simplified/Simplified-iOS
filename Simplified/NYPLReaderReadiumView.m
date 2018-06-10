@@ -816,7 +816,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 }
 
 - (void)calculateProgressionWithDictionary:(NSDictionary *const)dictionary
-                               withHandler:(void(^ const)())handler
+                               withHandler:(void(^ const)(void))handler
 {
   if (!self.bookMapDictionary) return;
   

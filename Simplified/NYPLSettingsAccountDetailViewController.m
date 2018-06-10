@@ -62,7 +62,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) float userBrightnessSetting;
 
 @property (nonatomic) NSMutableArray *tableData;
-@property (nonatomic, copy) void (^completionHandler)();
+@property (nonatomic, copy) void (^completionHandler)(void);
 @property (nonatomic) BOOL hiddenPIN;
 @property (nonatomic) UITextField *PINTextField;
 @property (nonatomic) NSURLSession *session;
@@ -400,7 +400,7 @@ CGFloat const verticalMarginPadding = 2.0;
 
 #if defined(FEATURE_DRM_CONNECTOR)
 
-  void (^afterDeauthorization)() = ^() {
+  void (^afterDeauthorization)(void) = ^() {
     [self removeActivityTitle];
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
@@ -618,7 +618,7 @@ CGFloat const verticalMarginPadding = 2.0;
       [self.selectedNYPLAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
 
       if(self.selectedAccountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
-        void (^handler)() = self.completionHandler;
+        void (^handler)(void) = self.completionHandler;
         self.completionHandler = nil;
         if(handler) handler();
         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
