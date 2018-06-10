@@ -232,6 +232,9 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
       // no actions will be available.
       visibleButtonInfo = @[];
       break;
+    case NYPLBookButtonsStateDownloadInProgress:
+    case NYPLBookButtonsStateDownloadFailed:
+      break;
   }
   
   NSMutableArray *visibleButtons = [NSMutableArray array];

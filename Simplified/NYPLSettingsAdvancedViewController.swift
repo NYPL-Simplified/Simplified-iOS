@@ -35,7 +35,7 @@ class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSourc
       let cell = tableView.cellForRow(at: indexPath)
       cell?.setSelected(false, animated: true)
       
-      let message = "Selecting \"Delete\" will remove all bookmarks from the server for \(account.name ?? "this library")."
+      let message = "Selecting \"Delete\" will remove all bookmarks from the server for \(account.name)."
       let alert = NYPLAlertController.init(title: nil, message: message, preferredStyle: .actionSheet)
       
       let deleteAction = UIAlertAction.init(title: NSLocalizedString("Delete", comment:""), style: .destructive, handler: { (action) in
