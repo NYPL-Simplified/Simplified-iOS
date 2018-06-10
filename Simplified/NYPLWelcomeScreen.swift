@@ -214,7 +214,7 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
 
     //FIXME Replace with SettingsAccounts improvements to library selection VC
     //once that gets finalized and merged in.
-    self.accounts.sort { $0.name ?? "" < $1.name ?? "" }
+    self.accounts.sort { $0.name < $1.name }
     self.nyplAccounts = self.accounts.filter { $0.id < 3 }
     self.accounts = self.accounts.filter {  $0.id >= 3  }
 

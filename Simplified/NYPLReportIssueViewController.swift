@@ -129,7 +129,7 @@ class NYPLReportIssueViewController: UIViewController, UITableViewDataSource, UI
     let MessageCellIdentifier = "Cell_Message";
     if(indexPath.row == 0) {
       cell = tableView.dequeueReusableCell(withIdentifier: SubjectCellIdentifier, for: indexPath)
-      subjectField =  cell.viewWithTag(11) as! UITextField!
+      subjectField =  cell.viewWithTag(11) as! UITextField
       
       subjectField.delegate = self;
       
@@ -139,7 +139,7 @@ class NYPLReportIssueViewController: UIViewController, UITableViewDataSource, UI
     else if(indexPath.row == 1) {
       cell = tableView.dequeueReusableCell(withIdentifier: MessageCellIdentifier, for: indexPath)
       
-      messageField =  cell.viewWithTag(12) as! HSTextViewInternal!
+      messageField =  cell.viewWithTag(12) as! HSTextViewInternal
       
       var messageFrame = messageField.frame;
       messageFrame.size.height = cell.frame.size.height - 40.0;

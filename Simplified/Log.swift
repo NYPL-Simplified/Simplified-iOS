@@ -30,7 +30,7 @@ final class Log {
     #endif
     
     if shouldLog {
-      NSLog("[\(levelToString(level))] \(tag): \(message)\(error == nil ? "" : "\n\(error)")")
+      NSLog("[\(levelToString(level))] \(tag): \(message)\(error == nil ? "" : "\n\(error!)")")
     }
   }
   
