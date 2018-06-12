@@ -86,6 +86,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
 
 NSInteger const linearViewTag = 1;
 CGFloat const verticalMarginPadding = 2.0;
+double const requestTimeoutInterval = 25.0;
 
 #pragma mark NSObject
 
@@ -136,9 +137,7 @@ CGFloat const verticalMarginPadding = 2.0;
   
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
-  
-  configuration.timeoutIntervalForResource = 20.0;
-  
+
   self.session = [NSURLSession
                   sessionWithConfiguration:configuration
                   delegate:self
@@ -353,7 +352,7 @@ CGFloat const verticalMarginPadding = 2.0;
   NSMutableURLRequest *const request =
   [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[self.selectedAccount catalogUrl]] URLByAppendingPathComponent:@"loans"]];
   
-  request.timeoutInterval = 20.0;
+  request.timeoutInterval = requestTimeoutInterval;
   
   NSURLSessionDataTask *const task =
   [self.session
@@ -474,9 +473,9 @@ CGFloat const verticalMarginPadding = 2.0;
 {
   NSMutableURLRequest *const request =
   [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[self.selectedAccount catalogUrl]] URLByAppendingPathComponent:@"loans"]];
-  
-  request.timeoutInterval = 20.0;
-  
+
+  request.timeoutInterval = requestTimeoutInterval;
+
   NSURLSessionDataTask *const task =
   [self.session
    dataTaskWithRequest:request
@@ -545,7 +544,6 @@ CGFloat const verticalMarginPadding = 2.0;
           }
           
           [self authorizationAttemptDidFinish:success error:error];
-          
         }];
 
 #else
@@ -571,10 +569,11 @@ CGFloat const verticalMarginPadding = 2.0;
      if (statusCode == 401) {
        NSError *error401 = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
        [self showLoginAlertWithError:error401];
-       return;
+     } else {
+       [self showLoginAlertWithError:error];
      }
-     [self showLoginAlertWithError:error];
-     
+
+     return;
    }];
   
   [task resume];
@@ -587,6 +586,19 @@ CGFloat const verticalMarginPadding = 2.0;
                                                                   animated:YES
                                                                 completion:nil];
   [self removeActivityTitle];
+
+  //FIXME: Remove Bugsnag log when DRM Activation moves to the auth document
+  if ([error.domain isEqual:NSURLErrorDomain]) {
+    NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
+    if (self.selectedAccount.name) [metadataParams setObject:self.selectedAccount.name forKey:@"libraryName"];
+    if (error.code) [metadataParams setObject:[NSNumber numberWithInteger:error.code] forKey:@"errorCode"];
+    [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:10 userInfo:nil]
+                   block:^(BugsnagCrashReport * _Nonnull report) {
+                     report.severity = BSGSeverityInfo;
+                     report.errorMessage = @"Login Failed With Error";
+                     [report addMetadata:metadataParams toTabWithName:@"Library Info"];
+                   }];
+  }
 }
 
 - (void)showLogoutAlertWithError:(NSError *)error responseCode:(NSInteger)code
@@ -735,7 +747,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
        endpointVersion:[APIKeys cardCreatorVersion]
        endpointUsername:[APIKeys cardCreatorUsername]
        endpointPassword:[APIKeys cardCreatorPassword]
-       requestTimeoutInterval:20.0
+       requestTimeoutInterval:requestTimeoutInterval
        completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
          if (userInitiated) {
            // Dismiss CardCreator when user finishes Credential Review
