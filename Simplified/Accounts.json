@@ -48,7 +48,7 @@
  "supportsBarcodeDisplay" : false,
  "supportsCardCreator" : false,
  "supportsReservations" : false,
- "catalogUrl" : "https://instantclassics.librarysimplified.org/index.xml",
+ "catalogUrl" : "https://circulation.librarysimplified.org/CLASSICS/",
  "mainColor" : "#497049"
  },
  {
