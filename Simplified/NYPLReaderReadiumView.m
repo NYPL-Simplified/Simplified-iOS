@@ -695,7 +695,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     [self
      sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
      withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
-       if(!result) {
+       if(!result || [result isKindOfClass:[NSNull class]]) {
          NYPLLOG(@"Readium failed to generate a CFI. This is a bug in Readium.");
          return;
        }
