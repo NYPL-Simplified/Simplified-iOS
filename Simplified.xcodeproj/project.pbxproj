@@ -139,6 +139,9 @@
 		2DEF10BA201ECCEA0082843A /* NYPLMyBooksSimplifiedBearerToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF10B9201ECCEA0082843A /* NYPLMyBooksSimplifiedBearerToken.m */; };
 		2DF321831DC3B83500E1858F /* NYPLAnnotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */; };
 		2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */; };
+		52D4396E20EAB38200AD49B6 /* NYPLPDFBookMinitexDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4396D20EAB38200AD49B6 /* NYPLPDFBookMinitexDelegate.swift */; };
+		52D4397020EAB40500AD49B6 /* NYPLPDFBookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4396F20EAB40500AD49B6 /* NYPLPDFBookController.swift */; };
+		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
 		5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
 		5A6929101B95ACD100FB4C10 /* sdk.css in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290F1B95ACD100FB4C10 /* sdk.css */; };
@@ -488,6 +491,8 @@
 		2DFAC8EB1CD8DDD1003D9EC0 /* NYPLOPDSCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSCategory.h; sourceTree = "<group>"; };
 		2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSCategory.m; sourceTree = "<group>"; };
 		2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimplyE.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		52D4396D20EAB38200AD49B6 /* NYPLPDFBookMinitexDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLPDFBookMinitexDelegate.swift; sourceTree = "<group>"; };
+		52D4396F20EAB40500AD49B6 /* NYPLPDFBookController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLPDFBookController.swift; sourceTree = "<group>"; };
 		56A7B7786F9B146602623617 /* Pods-SimplyETests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyETests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests.release.xcconfig"; sourceTree = "<group>"; };
 		579E9BC126424F2B79C0FE7E /* Pods-SimplyETests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyETests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests.debug.xcconfig"; sourceTree = "<group>"; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
@@ -902,6 +907,15 @@
 			name = Holds;
 			sourceTree = "<group>";
 		};
+		52D4396C20EAB27900AD49B6 /* PDFBooks */ = {
+			isa = PBXGroup;
+			children = (
+				52D4396D20EAB38200AD49B6 /* NYPLPDFBookMinitexDelegate.swift */,
+				52D4396F20EAB40500AD49B6 /* NYPLPDFBookController.swift */,
+			);
+			name = PDFBooks;
+			sourceTree = "<group>";
+		};
 		5A569A271B8351C6003B5B61 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1028,6 +1042,7 @@
 		A823D816192BABA400B55DE2 /* Simplified */ = {
 			isa = PBXGroup;
 			children = (
+				52D4396C20EAB27900AD49B6 /* PDFBooks */,
 				0345BFE31DBF010100398B6F /* Annotations */,
 				110AF8891961D66C004887C3 /* Additions */,
 				0345BFEE1DBF031B00398B6F /* CardCreator */,
@@ -1580,6 +1595,7 @@
 				1111973C19880E8D0014462F /* NYPLLinearView.m in Sources */,
 				11396FB9193D289100E16EE8 /* NSDate+NYPLDateAdditions.m in Sources */,
 				1183F347194F744D00DC322F /* NYPLBook.m in Sources */,
+				52D4397020EAB40500AD49B6 /* NYPLPDFBookController.swift in Sources */,
 				1183F341194F723D00DC322F /* NYPLCatalogLane.m in Sources */,
 				11A16E6F195B60DF004147F4 /* NYPLBookNormalCell.m in Sources */,
 				11548C0E1939147D009DBF2E /* NYPLCatalogNavigationController.m in Sources */,
@@ -1631,6 +1647,7 @@
 				E6F26E731DFF672F00C103CA /* NYPLDirectoryManager.swift in Sources */,
 				E6C91BC21FD5F63B00A32F42 /* NYPLZXingEncoder.m in Sources */,
 				085D31D71BE29E38007F7672 /* NYPLProblemReportViewController.m in Sources */,
+				52D4396E20EAB38200AD49B6 /* NYPLPDFBookMinitexDelegate.swift in Sources */,
 				11C5DCF21976D1E0005A9945 /* NYPLHoldsNavigationController.m in Sources */,
 				A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */,
 				E6202A041DD52B8600C99553 /* NYPLWelcomeScreen.swift in Sources */,

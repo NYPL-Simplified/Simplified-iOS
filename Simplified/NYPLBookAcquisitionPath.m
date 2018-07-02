@@ -35,6 +35,7 @@
       @"application/vnd.adobe.adept+xml",
       @"application/vnd.librarysimplified.bearer-token+json",
       @"application/epub+zip",
+      @"application/pdf"
     ]];
   }
 
