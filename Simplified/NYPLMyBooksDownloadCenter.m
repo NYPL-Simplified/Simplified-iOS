@@ -127,7 +127,8 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementAdobe];
-    } else if([downloadTask.response.MIMEType isEqualToString:@"application/epub+zip"]) {
+    } else if([downloadTask.response.MIMEType isEqualToString:@"application/epub+zip"] ||
+              [downloadTask.response.MIMEType isEqualToString:@"application/pdf"]) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
@@ -545,9 +546,17 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 - (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
 {
   if(!identifier) return nil;
-  
+
+  NSString *pathExtension = @"epub";
+  NYPLBook const *bookWithIdentifier = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
+  NSString *type = bookWithIdentifier.acquisitions[0].type;
+  if (type) {
+    if ([type isEqualToString:@"application/pdf"]) {
+      pathExtension = @"pdf";
+    }
+  }
   return [[[self contentDirectoryURL] URLByAppendingPathComponent:[identifier SHA256]]
-          URLByAppendingPathExtension:@"epub"];
+          URLByAppendingPathExtension:pathExtension];
 }
 
 - (void)failDownloadForBook:(NYPLBook *const)book

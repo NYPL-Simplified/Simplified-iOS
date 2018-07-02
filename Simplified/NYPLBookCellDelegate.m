@@ -11,6 +11,7 @@
 #import "NYPLRootTabBarController.h"
 #import "NYPLSettings.h"
 #import "NSURLRequest+NYPLURLRequestAdditions.h"
+#import "NYPLOPDSAcquisition.h"
 
 #import "NYPLBookCellDelegate.h"
 #import "SimplyE-Swift.h"
@@ -69,7 +70,16 @@
 - (void)openBook:(NYPLBook *)book
 {
   [NYPLCirculationAnalytics postEvent:@"open_book" withBook:book];
-  [[NYPLRootTabBarController sharedController] pushViewController:[[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier] animated:YES];
+  if ([book.acquisitions[0].type isEqualToString:@"application/pdf"]) {
+    NYPLPDFBookMinitexDelegate *minitexDelegate = [[NYPLPDFBookMinitexDelegate alloc] init];
+    NSURL *bookURL = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
+    UIViewController *pdfController = [NYPLPDFBookController getPDFViewControllerWithDelegate:minitexDelegate fileURL:bookURL];
+    if (pdfController) {
+      [[NYPLRootTabBarController sharedController] pushViewController:pdfController animated:YES];
+    }
+  } else {
+   [[NYPLRootTabBarController sharedController] pushViewController:[[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier] animated:YES];
+  }
   [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLAccount sharedAccount] completion:^(BOOL enableSync) {
     if (enableSync == YES) {
       Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
