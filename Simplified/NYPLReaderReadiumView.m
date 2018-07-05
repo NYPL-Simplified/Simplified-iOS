@@ -697,6 +697,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
      withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
        if(!result || [result isKindOfClass:[NSNull class]]) {
          NYPLLOG(@"Readium failed to generate a CFI. This is a bug in Readium.");
+         [self reportNilContentCFIToBugsnag:nil locationDictionary:nil];
          return;
        }
        NSString *const locationJSON = result;
@@ -1045,6 +1046,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 - (void)reportNilContentCFIToBugsnag:(NYPLBookLocation *)location locationDictionary:(NSDictionary *)locationDictionary {
   NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
   if (self.book.identifier) [metadataParams setObject:self.book.identifier forKey:@"bookID"];
+  if (self.book.title) [metadataParams setObject:self.book.title forKey:@"bookTitle"];
   if (location.locationString) [metadataParams setObject:location.locationString forKey:@"registry locationString"];
   if (location.renderer) [metadataParams setObject:location.renderer forKey:@"renderer"];
   if (locationDictionary[@"idref"]) [metadataParams setObject:locationDictionary[@"idref"] forKey:@"openPageRequest idref"];
@@ -1054,7 +1056,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                    report.context = @"NYPLReaderReadiumView";
                    report.severity = BSGSeverityWarning;
                    report.groupingHash = @"open-book-nil-cfi";
-                   report.errorMessage = @"The content CFI is nil on book re-open.";
+                   report.errorMessage = @"No CFI parsed from NYPLBookLocation, or Readium failed to generate a CFI.";
                    [report addMetadata:metadataParams toTabWithName:@"Extra CFI Data"];
                  }];
 }
