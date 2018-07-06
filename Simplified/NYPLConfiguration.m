@@ -61,6 +61,7 @@
   [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:9 userInfo:nil]
                  block:^(BugsnagCrashReport * _Nonnull report) {
                    report.severity = BSGSeverityInfo;
+                   report.groupingHash = @"simplye-app-launch";
                    [report addMetadata:metadataParams toTabWithName:@"Library Info"];
                  }];
   NYPLLOG(@"Active User Session Reported to Bugsnag");

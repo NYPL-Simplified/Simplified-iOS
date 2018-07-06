@@ -237,6 +237,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
+-(UITableViewCellEditingStyle)tableView:(UITableView *)__unused tableView editingStyleForRowAtIndexPath:(NSIndexPath *)__unused indexPath {
+  if (self.segmentedControl.selectedSegmentIndex == 1) {
+    return UITableViewCellEditingStyleDelete;
+  } else {
+    return UITableViewCellEditingStyleNone;
+  }
+}
+
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
   if (editingStyle == UITableViewCellEditingStyleDelete) {
     if ((NSUInteger)indexPath.row < self.bookmarks.count) {
