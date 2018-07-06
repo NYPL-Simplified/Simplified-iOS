@@ -59,60 +59,63 @@ final class NetworkQueue: NSObject {
   // MARK: - Public Functions
 
   func addRequest(_ libraryID: Int,
-                        _ updateID: String?,
-                        _ requestUrl: URL,
-                        _ method: HTTPMethodType,
-                        _ parameters: Data?,
-                        _ headers: [String : String]?) -> Void
+                  _ updateID: String?,
+                  _ requestUrl: URL,
+                  _ method: HTTPMethodType,
+                  _ parameters: Data?,
+                  _ headers: [String : String]?) -> Void
   {
-    // Serialize Data
-    let urlString = requestUrl.absoluteString
-    let methodString = method.rawValue
-    let dateCreated = NSKeyedArchiver.archivedData(withRootObject: Date())
-    
-    let headerData: Data?
-    if headers != nil {
-      headerData = NSKeyedArchiver.archivedData(withRootObject: headers!)
-    } else {
-      headerData = nil
-    }
-    
-    guard let db = startDatabaseConnection() else { return }
-    
-    // Get or create table
-    do {
-      try db.run(sqlTable.create(ifNotExists: true) { t in
-        t.column(sqlID, primaryKey: true)
-        t.column(sqlLibraryID)
-        t.column(sqlUpdateID)
-        t.column(sqlUrl)
-        t.column(sqlMethod)
-        t.column(sqlParameters)
-        t.column(sqlHeader)
-        t.column(sqlRetries)
-        t.column(sqlDateCreated)
-      })
-    } catch {
-      Log.error(#file, "SQLite Error: Could not create table")
-      return
-    }
-    
-    // Update (not insert) if uniqueID and libraryID match existing row in table
-    let query = sqlTable.filter(sqlLibraryID == libraryID && sqlUpdateID == updateID)
-                        .filter(sqlUpdateID != nil)
-    
-    do {
-      //Try to update row
-      let result = try db.run(query.update(sqlParameters <- parameters, sqlHeader <- headerData))
-      if result > 0 {
-        Log.debug(#file, "SQLite: Row Updated")
+    self.serialQueue.async {
+
+      // Serialize Data
+      let urlString = requestUrl.absoluteString
+      let methodString = method.rawValue
+      let dateCreated = NSKeyedArchiver.archivedData(withRootObject: Date())
+      
+      let headerData: Data?
+      if headers != nil {
+        headerData = NSKeyedArchiver.archivedData(withRootObject: headers!)
       } else {
-        //Insert new row
-        try db.run(sqlTable.insert(sqlLibraryID <- libraryID, sqlUpdateID <- updateID, sqlUrl <- urlString, sqlMethod <- methodString, sqlParameters <- parameters, sqlHeader <- headerData, sqlRetries <- 0, sqlDateCreated <- dateCreated))
-        Log.debug(#file, "SQLite: Row Added")
+        headerData = nil
       }
-    } catch {
-      Log.error(#file, "SQLite Error: Could not insert or update row")
+      
+      guard let db = self.startDatabaseConnection() else { return }
+      
+      // Get or create table
+      do {
+        try db.run(self.sqlTable.create(ifNotExists: true) { t in
+          t.column(self.sqlID, primaryKey: true)
+          t.column(self.sqlLibraryID)
+          t.column(self.sqlUpdateID)
+          t.column(self.sqlUrl)
+          t.column(self.sqlMethod)
+          t.column(self.sqlParameters)
+          t.column(self.sqlHeader)
+          t.column(self.sqlRetries)
+          t.column(self.sqlDateCreated)
+        })
+      } catch {
+        Log.error(#file, "SQLite Error: Could not create table")
+        return
+      }
+      
+      // Update (not insert) if uniqueID and libraryID match existing row in table
+      let query = self.sqlTable.filter(self.sqlLibraryID == libraryID && self.sqlUpdateID == updateID)
+        .filter(self.sqlUpdateID != nil)
+      
+      do {
+        //Try to update row
+        let result = try db.run(query.update(self.sqlParameters <- parameters, self.sqlHeader <- headerData))
+        if result > 0 {
+          Log.debug(#file, "SQLite: Row Updated")
+        } else {
+          //Insert new row
+          try db.run(self.sqlTable.insert(self.sqlLibraryID <- libraryID, self.sqlUpdateID <- updateID, self.sqlUrl <- urlString, self.sqlMethod <- methodString, self.sqlParameters <- parameters, self.sqlHeader <- headerData, self.sqlRetries <- 0, self.sqlDateCreated <- dateCreated))
+          Log.debug(#file, "SQLite: Row Added")
+        }
+      } catch {
+        Log.error(#file, "SQLite Error: Could not insert or update row")
+      }
     }
   }
 
