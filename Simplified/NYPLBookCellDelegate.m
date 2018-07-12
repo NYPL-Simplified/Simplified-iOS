@@ -73,7 +73,8 @@
   if ([book.acquisitions[0].type isEqualToString:@"application/pdf"]) {
     NYPLPDFBookMinitexDelegate *minitexDelegate = [[NYPLPDFBookMinitexDelegate alloc] init];
     NSURL *bookURL = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
-    UIViewController *pdfController = [NYPLPDFBookController getPDFViewControllerWithDelegate:minitexDelegate fileURL:bookURL];
+    UIViewController *pdfController = [NYPLPDFBookController getPDFViewControllerWithBookIdentifier:book.identifier delegate:minitexDelegate fileURL:bookURL];
+
     if (pdfController) {
       [[NYPLRootTabBarController sharedController] pushViewController:pdfController animated:YES];
     }

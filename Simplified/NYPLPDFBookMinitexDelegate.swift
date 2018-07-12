@@ -21,4 +21,10 @@ class NYPLPDFBookMinitexDelegate: NSObject, MinitexPDFViewControllerDelegate {
   func saveAnnotations(annotations: [MinitexPDFAnnotation]) {
     print("saveAnnotations called")
   }
+
+  func willMoveToMinitexParentController(parent: UIViewController?) {
+    if (parent == nil) {
+      NYPLBookRegistry.shared().save()
+    }
+  }
 }

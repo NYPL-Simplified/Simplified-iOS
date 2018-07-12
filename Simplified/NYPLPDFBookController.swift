@@ -10,7 +10,7 @@ import Foundation
 import MinitexPDFProtocols
 
 class NYPLPDFBookController: NSObject {
-  static func getPDFViewController(delegate: MinitexPDFViewControllerDelegate?, fileURL: URL?) ->
+  static func getPDFViewController(bookIdentifier: String?, delegate: MinitexPDFViewControllerDelegate?, fileURL: URL?) ->
     MinitexPDFViewController? {
 
     print("instantiate NYPLPDFBookController")
@@ -30,14 +30,17 @@ class NYPLPDFBookController: NSObject {
       "annotations": []
     ]
 
-    // we should do some verification on types of dictionary so it doesn't fail
-    let pdfViewController = MinitexPDFViewControllerFactory.createPDFViewController(dictionary: pdfDictionary)
-
-    if pdfViewController != nil {
-      return pdfViewController
-    } else {
-      print("PDF module does not exist")
-      return nil
+    guard let pdfViewController: UIViewController = MinitexPDFViewControllerFactory.createPDFViewController(dictionary: pdfDictionary) as? UIViewController else {
+        print("PDF module does not exist")
+        return nil
     }
+
+    // have the PDF renderer cover the entire screen
+    pdfViewController.hidesBottomBarWhenPushed = true;
+
+    // mark the book as having been read
+    NYPLBookRegistry.shared().setState(NYPLBookState.used, forIdentifier: bookIdentifier)
+
+    return pdfViewController as? MinitexPDFViewController
   }
 }
