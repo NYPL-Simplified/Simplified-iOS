@@ -215,22 +215,26 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   self.typeIsCached = YES;
   
   if(self.entries.count == 0) {
-    return (_type = NYPLOPDSFeedTypeAcquisitionUngrouped);
+    _type = NYPLOPDSFeedTypeAcquisitionUngrouped;
+    return _type;
   }
   
   NYPLOPDSFeedType const provisionalType = TypeImpliedByEntry(self.entries.firstObject);
   
   if(provisionalType == NYPLOPDSFeedTypeInvalid) {
-    return (_type == NYPLOPDSFeedTypeInvalid);
+    _type = NYPLOPDSFeedTypeInvalid;
+    return _type;
   }
   
   for(unsigned int i = 1; i < self.entries.count; ++i) {
     if(TypeImpliedByEntry(self.entries[i]) != provisionalType) {
-      return (_type = NYPLOPDSFeedTypeInvalid);
+      _type = NYPLOPDSFeedTypeInvalid
+      return _type;
     }
   }
   
-  return (_type = provisionalType);
+  _type = provisionalType;
+  return _type;
 }
 
 @end
