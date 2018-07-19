@@ -533,6 +533,25 @@
  "authPasscodeAllowsLetters" : false
  },
  {
+ "id": 89,
+ "pathComponent" : "89",
+ "name" : "RAILS",
+ "subtitle" : "Reaching Across Illinois Library System",
+ "logo" : "LibraryLogoRails",
+ "needsAuth" : true,
+ "supportsSimplyESync" : true,
+ "supportsBarcodeScanner" : true,
+ "supportsBarcodeDisplay" : true,
+ "supportsReservations" : true,
+ "supportsCardCreator" : false,
+ "supportsHelpCenter" : true,
+ "catalogUrl" : "http://circ.rails.minitex.net/RAILS/",
+ "supportEmail" : "",
+ "mainColor": "#720a19",
+ "authPasscodeLength" : 0,
+ "authPasscodeAllowsLetters" : true
+ },
+ {
  "id": 136,
  "authPasscodeAllowsLetters": true,
  "cardCreatorUrl": "https://library.mountainview.gov/selfreg",
@@ -574,5 +593,5 @@
  "supportsCardCreator" : false,
  "supportsReservations": true,
  "supportsSimplyESync": true
- }
+ } 
 ]
