@@ -228,7 +228,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   
   for(unsigned int i = 1; i < self.entries.count; ++i) {
     if(TypeImpliedByEntry(self.entries[i]) != provisionalType) {
-      _type = NYPLOPDSFeedTypeInvalid
+      _type = NYPLOPDSFeedTypeInvalid;
       return _type;
     }
   }
