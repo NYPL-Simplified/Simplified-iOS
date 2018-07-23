@@ -37,7 +37,6 @@ final class AccountsManager: NSObject
   fileprivate override init()
   {
     self.defaults = UserDefaults.standard
-//    let url = URL(string: "http://www.librarysimplified.org/assets/s9fhw9p8fuewpufje.json")
     let url = Bundle.main.url(forResource: "Accounts", withExtension: "json")
     let data = try? Data(contentsOf: url!)
     do {
@@ -79,7 +78,7 @@ final class AccountsManager: NSObject
         }
       }
     } catch {
-      // Handle Error
+      Log.error(#file, "Accounts.json was invalid. Error: \(error.localizedDescription)")
     }
   }
   
