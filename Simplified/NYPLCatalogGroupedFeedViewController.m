@@ -87,6 +87,12 @@ static CGFloat const sectionHeaderHeight = 50.0;
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
     [self fetchOpenSearchDescription];
+  } else {
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                              initWithTitle:@""
+                                              style:UIBarButtonItemStylePlain
+                                              target:nil
+                                              action:nil];
   }
   
   [self downloadImages];
