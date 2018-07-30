@@ -129,9 +129,6 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
 
-  if (@available(iOS 11.0, *)) {
-    self.collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-  }
   self.collectionView.alwaysBounceVertical = YES;
   self.refreshControl = [[UIRefreshControl alloc] init];
   [self.refreshControl addTarget:self action:@selector(didSelectSync) forControlEvents:UIControlEventValueChanged];
@@ -166,7 +163,6 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   [super viewWillAppear:animated];
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
     [self.refreshControl endRefreshing];
-    self.collectionView.contentOffset = CGPointMake(0, -self.collectionView.contentInset.top);
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }
   [self.navigationController setNavigationBarHidden:NO];
@@ -178,12 +174,17 @@ typedef NS_ENUM(NSInteger, FacetSort) {
                                        CGRectGetMaxY(self.navigationController.navigationBar.frame),
                                        CGRectGetWidth(self.view.frame),
                                        CGRectGetHeight(self.facetBarView.frame));
-  
-  self.collectionView.contentInset = UIEdgeInsetsMake(CGRectGetMaxY(self.facetBarView.frame),
-                                                      self.collectionView.contentInset.left,
-                                                      self.collectionView.contentInset.bottom,
-                                                      self.collectionView.contentInset.right);
-  self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
+
+  UIEdgeInsets contentInset = self.collectionView.contentInset;
+  if (@available(iOS 11.0, *)) {
+    // In iOS >= 11.0, we only need to account for our custom views.
+    contentInset.top = CGRectGetHeight(self.facetBarView.frame);
+  } else {
+    // In older versions of iOS, we need to account for everything.
+    contentInset.top = CGRectGetMaxY(self.facetBarView.frame);
+  }
+  self.collectionView.contentInset = contentInset;
+  self.collectionView.scrollIndicatorInsets = contentInset;
 }
 
 - (void)pullToRefresh:(UIRefreshControl *)__unused refreshControl
