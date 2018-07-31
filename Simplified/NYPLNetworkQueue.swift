@@ -8,7 +8,13 @@ import SQLite
  */
 final class NetworkQueue: NSObject {
 
-  static let shared = NetworkQueue()
+  static let sharedInstance = NetworkQueue()
+
+  // For Objective-C classes
+  @objc @discardableResult class func shared() -> NetworkQueue
+  {
+    return NetworkQueue.sharedInstance
+  }
 
   override init() {
     super.init()
