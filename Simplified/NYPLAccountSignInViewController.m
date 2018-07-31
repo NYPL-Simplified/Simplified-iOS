@@ -1014,7 +1014,7 @@ completionHandler:(void (^)(void))handler
       if (!self.isLoggingInAfterSignUp) {
         [self dismissViewControllerAnimated:YES completion:nil];
       }
-      void (^handler)() = self.completionHandler;
+      void (^handler)(void) = self.completionHandler;
       self.completionHandler = nil;
       if(handler) handler();
       [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
