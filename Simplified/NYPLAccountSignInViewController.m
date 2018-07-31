@@ -831,7 +831,7 @@ completionHandler:(void (^)(void))handler
   NSURLSessionDataTask *const task =
     [self.session
      dataTaskWithRequest:request
-     completionHandler:^(NSData *data,
+     completionHandler:^(NSData *data __attribute__((unused)),
                          NSURLResponse *const response,
                          NSError *const error) {
        
