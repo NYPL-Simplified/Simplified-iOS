@@ -830,7 +830,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:@"No email account is set for this device. "
+                              initWithTitle:NSLocalizedString(@"NoEmailAccountSet", nil)
                               message:[NSString stringWithFormat:@"If you have web email, contact %@ to report an issue.", self.selectedAccount.supportEmail]
                               delegate:nil
                               cancelButtonTitle:nil

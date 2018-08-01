@@ -30,6 +30,7 @@
 "Contact" = "Contact";
 "ContentLicenses" = "Content Licenses";
 "Delete" = "Delete";
+"Description" = "Description";
 "DeviceAuthorizationError" = "An error occurred while authorizing this device.";
 "Download" = "Download";
 "DownloadCouldNotBeCompleted" = "The download could not be completed.";
@@ -39,17 +40,21 @@
 "Feedback" = "Feedback";
 "Help" = "Frequently Asked Questions";
 "Hide" = "Hide";
+"Information" = "Information";
 "LibraryCard" = "Library Card";
 "Licenses" = "Licenses";
 "LogIn" = "Log In";
 "ManageAccounts" = "Manage Accounts";
 "More..." = "More…";
 "MoreBooks" = "More %@ books";
+"NoEmailAccountSet" = "No email account is set for this device.";
 "NoResultsFound" = "No results found.";
 "NotConnected" = "You are not connected to the internet. Please connect and try again.";
 "OK" = "OK";
 "PDFNotSupported" = "Adobe PDF Not Supported";
 "PDFNotSupportedDescriptionFormat" = "%@ is an Adobe PDF, which is not supported.";
+"PercentageLabelHundred" = "100%";
+"PercentageLabelZero" = "0%";
 "PickYourLibrary" = "Find Your Library";
 "PIN" = "PIN";
 "PleaseWait" = "Please Wait";
@@ -80,6 +85,10 @@
 "UnknownRequestError" =
     "An unknown error occurred. Please check your connection or try again later.";
 "Verifying" = "Verifying";
+
+// NYPLAccountSignInViewController
+"SigningInAgree" = "By signing in, you agree to the ";
+"EndUserLicenseString" = "End User License Agreement.";
 
 // NYPLAppDelegate
 
@@ -213,6 +222,9 @@
 
 // NYPLSettingsLibrarySelectionViewController
 "SettingsAccountLibrariesViewControllerAlertTitle" = "Add Your Library";
+
+// NYPLSettingsPrimaryTableViewController
+"CustomOPDSURL" = "Custom HTTP(S) OPDS URL";
 
 // NYPLSettingsPrivacyPolicyViewController
 "PrivacyPolicy" = "Privacy Policy";

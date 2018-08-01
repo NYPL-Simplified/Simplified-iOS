@@ -174,7 +174,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       field.autoresizingMask = UIViewAutoresizingFlexibleWidth;
       field.delegate = self;
       field.text = [NYPLSettings sharedSettings].customMainFeedURL.absoluteString;
-      field.placeholder = @"Custom HTTP(S) OPDS URL";
+      field.placeholder = NSLocalizedString(@"CustomOPDSURL", nil);
       field.keyboardType = UIKeyboardTypeURL;
       field.returnKeyType = UIReturnKeyDone;
       field.clearButtonMode = UITextFieldViewModeWhileEditing;

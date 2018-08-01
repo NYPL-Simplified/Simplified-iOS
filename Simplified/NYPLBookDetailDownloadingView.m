@@ -37,7 +37,7 @@
   self.percentageLabel.font = [UIFont systemFontOfSize:14];
   self.percentageLabel.textColor = [NYPLConfiguration backgroundColor];
   self.percentageLabel.textAlignment = NSTextAlignmentRight;
-  self.percentageLabel.text = @"0%";
+  self.percentageLabel.text = NSLocalizedString(@"PercentageLabelZero", nil);
   [self addSubview:self.percentageLabel];
   [self.percentageLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
   [self.percentageLabel autoPinEdgeToSuperviewEdge:ALEdgeTrailing withInset:sidePadding];

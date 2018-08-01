@@ -170,9 +170,9 @@ static NSString *DetailHTMLTemplate = nil;
 - (void)createBookDescriptionViews
 {
   self.summarySectionLabel = [[UILabel alloc] init];
-  self.summarySectionLabel.text = @"Description";
+  self.summarySectionLabel.text = NSLocalizedString(@"Description", nil);
   self.infoSectionLabel = [[UILabel alloc] init];
-  self.infoSectionLabel.text = @"Information";
+  self.infoSectionLabel.text = NSLocalizedString(@"Information", nil);
   
   self.summaryTextView = [[UITextView alloc] init];
   self.summaryTextView.backgroundColor = [UIColor clearColor];
