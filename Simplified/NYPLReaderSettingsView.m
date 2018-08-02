@@ -50,10 +50,10 @@
   self.sansButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.sansButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   self.sansButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:24];
-  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
                                                                       attributes:noUnderlineAttribute] forState:UIControlStateNormal];
   
-  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
                                                                       attributes:underlineAttribute] forState:UIControlStateDisabled];
   
   [self.sansButton addTarget:self
@@ -67,10 +67,10 @@
   self.serifButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.serifButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   self.serifButton.titleLabel.font = [UIFont fontWithName:@"Georgia" size:24];
-  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
                                                                       attributes:noUnderlineAttribute] forState:UIControlStateNormal];
   
-  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
                                                                       attributes:underlineAttribute] forState:UIControlStateDisabled];
 
   
@@ -85,10 +85,10 @@
   self.openDyslexicButton.backgroundColor = [NYPLConfiguration backgroundColor];
   [self.openDyslexicButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   self.openDyslexicButton.titleLabel.font = [UIFont fontWithName:@"OpenDyslexic3" size:20];
-  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
                                                                        attributes:noUnderlineAttribute] forState:UIControlStateNormal];
   
-  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
                                                                        attributes:underlineAttribute] forState:UIControlStateDisabled];
 
   [self.openDyslexicButton setTitleEdgeInsets:UIEdgeInsetsMake(-4.0f, 0.0f, 0.0f, 0.0f)];
@@ -104,10 +104,10 @@
   NSDictionary *whiteColourWithoutUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone), NSForegroundColorAttributeName : [UIColor whiteColor] };
   NSDictionary *whiteColourWithUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSForegroundColorAttributeName : [UIColor whiteColor] };
   
-  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:whiteColourWithoutUnderline] forState:UIControlStateNormal];
   
-  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:whiteColourWithUnderline] forState:UIControlStateDisabled];
   
   self.whiteOnBlackButton.titleLabel.font = [UIFont systemFontOfSize:18];
@@ -123,10 +123,10 @@
   [self.blackOnSepiaButton setTitleColor:[NYPLConfiguration mainColor]
                                 forState:UIControlStateDisabled];
   
-  [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+  [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:noUnderlineAttribute] forState:UIControlStateNormal];
   
-  [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+  [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:underlineAttribute] forState:UIControlStateDisabled];
   self.blackOnSepiaButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.blackOnSepiaButton addTarget:self
@@ -141,10 +141,10 @@
   [self.blackOnWhiteButton setTitleColor:[NYPLConfiguration mainColor]
                                 forState:UIControlStateDisabled];
   
-  [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+  [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:noUnderlineAttribute] forState:UIControlStateNormal];
   
-  [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+  [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:underlineAttribute] forState:UIControlStateDisabled];
   self.blackOnWhiteButton.titleLabel.font = [UIFont systemFontOfSize:18];
   [self.blackOnWhiteButton addTarget:self
@@ -421,27 +421,27 @@
   NSDictionary *fontColourWithUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSForegroundColorAttributeName : foregroundColor };
   NSDictionary *fontColourWithoutUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone), NSForegroundColorAttributeName : foregroundColor };
   
-  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
                                                                       attributes:fontColourWithoutUnderline] forState:UIControlStateNormal];
   
-  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+  [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
                                                                       attributes:fontColourWithUnderline] forState:UIControlStateDisabled];
   
   self.sansButton.backgroundColor = backgroundColor;
   
   self.serifButton.backgroundColor = backgroundColor;
-  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
                                                                        attributes:fontColourWithoutUnderline] forState:UIControlStateNormal];
   
-  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+  [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
                                                                        attributes:fontColourWithUnderline] forState:UIControlStateDisabled];
   
   
   self.openDyslexicButton.backgroundColor = backgroundColor;
-  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
                                                                               attributes:fontColourWithoutUnderline] forState:UIControlStateNormal];
   
-  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Aa"
+  [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
                                                                               attributes:fontColourWithUnderline] forState:UIControlStateDisabled];
   
   
@@ -450,22 +450,22 @@
   NSDictionary *whiteColourWithUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSForegroundColorAttributeName : [UIColor whiteColor] };
   NSDictionary *whiteColourWithoutUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone), NSForegroundColorAttributeName : [UIColor whiteColor] };
   
-  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:whiteColourWithoutUnderline] forState:UIControlStateNormal];
   
-  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+  [self.whiteOnBlackButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:whiteColourWithUnderline] forState:UIControlStateDisabled];
   
-  [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+  [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:noUnderlineAttribute] forState:UIControlStateNormal];
   
-  [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+  [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:underlineAttribute] forState:UIControlStateDisabled];
   
-  [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+  [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:noUnderlineAttribute] forState:UIControlStateNormal];
   
-  [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"ABCabc"
+  [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
                                                                               attributes:underlineAttribute] forState:UIControlStateDisabled];
 }
 

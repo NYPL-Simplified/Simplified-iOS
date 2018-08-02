@@ -8,7 +8,8 @@
 
 
 // Generic
-
+"AlphabetFontType" = "Aa";
+"AlphabetFontStyle" = "ABCabc";
 "AboutApp" = "About SimplyE";
 "About" = "About";
 "Accounts" = "Accounts";
