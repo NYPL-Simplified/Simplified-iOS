@@ -133,20 +133,21 @@ function Simplified() {
       return;
     }
 
-    // Remove existing handlers, if any.
-    iframe.removeEventListener("touchstart", handleTouchStart);
-    iframe.removeEventListener("touchend", handleTouchEnd);
-
-    // Handle gestures for the inner content.
-    iframe.addEventListener("touchstart", handleTouchStart, false);
-    iframe.addEventListener("touchend", handleTouchEnd, false);
-
-    // Set up the page turning animation.
     var innerDocument = iframe.document;
     if (!innerDocument) {
       // iOS >= 12
       innerDocument = iframe.contentDocument;
     }
+    
+    // Remove existing handlers, if any.
+    innerDocument.removeEventListener("touchstart", handleTouchStart);
+    innerDocument.removeEventListener("touchend", handleTouchEnd);
+
+    // Handle gestures for the inner content.
+    innerDocument.addEventListener("touchstart", handleTouchStart, false);
+    innerDocument.addEventListener("touchend", handleTouchEnd, false);
+
+    // Set up the page turning animation.
     innerDocument.documentElement.style["transition"] = "left 0.2s";
 
     // Allow OpenDyslexic fonts to work.
