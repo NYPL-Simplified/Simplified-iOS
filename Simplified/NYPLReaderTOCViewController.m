@@ -163,7 +163,7 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       }
       return cell;
     }
-    case 1:{
+    default: {
       NYPLReaderBookmarkCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierBookmark];
       cell.backgroundColor = [UIColor clearColor];
       
@@ -187,8 +187,6 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       
       return cell;
     }
-    default:
-      return nil;
   }
 }
 
