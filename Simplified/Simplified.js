@@ -142,7 +142,12 @@ function Simplified() {
     iframe.addEventListener("touchend", handleTouchEnd, false);
 
     // Set up the page turning animation.
-    iframe.document.documentElement.style["transition"] = "left 0.2s";
+    var iframeDocument = iframe.document;
+    if (!iframeDocument) {
+      // iOS >= 12
+      iframeDocument = iframe.contentDocument;
+    }
+    iframeDocument.documentElement.style["transition"] = "left 0.2s";
 
     // Allow OpenDyslexic fonts to work.
     this.linkOpenDyslexicFonts();
@@ -152,6 +157,10 @@ function Simplified() {
   this.linkOpenDyslexicFonts = function() {
     var id = 'simplified-opendyslexic';
     var innerDocument = window.frames['epubContentIframe'].document;
+    if (!innerDocument) {
+      // iOS >= 12
+      innerDocument = window.frames['epubContentIframe'].contentDocument;
+    }
     if (innerDocument.getElementById(id)) {
       return;
     }
