@@ -107,6 +107,7 @@
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated
 {
+  [super viewWillAppear:animated];
   [self.navigationController setNavigationBarHidden:NO];
 }
 
