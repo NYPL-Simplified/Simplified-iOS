@@ -133,16 +133,22 @@ function Simplified() {
       return;
     }
 
+    var innerDocument = iframe.document;
+    if (!innerDocument) {
+      // iOS >= 12
+      innerDocument = iframe.contentDocument;
+    }
+    
     // Remove existing handlers, if any.
-    iframe.removeEventListener("touchstart", handleTouchStart);
-    iframe.removeEventListener("touchend", handleTouchEnd);
+    innerDocument.removeEventListener("touchstart", handleTouchStart);
+    innerDocument.removeEventListener("touchend", handleTouchEnd);
 
     // Handle gestures for the inner content.
-    iframe.addEventListener("touchstart", handleTouchStart, false);
-    iframe.addEventListener("touchend", handleTouchEnd, false);
+    innerDocument.addEventListener("touchstart", handleTouchStart, false);
+    innerDocument.addEventListener("touchend", handleTouchEnd, false);
 
     // Set up the page turning animation.
-    iframe.document.documentElement.style["transition"] = "left 0.2s";
+    innerDocument.documentElement.style["transition"] = "left 0.2s";
 
     // Allow OpenDyslexic fonts to work.
     this.linkOpenDyslexicFonts();
@@ -152,6 +158,10 @@ function Simplified() {
   this.linkOpenDyslexicFonts = function() {
     var id = 'simplified-opendyslexic';
     var innerDocument = window.frames['epubContentIframe'].document;
+    if (!innerDocument) {
+      // iOS >= 12
+      innerDocument = window.frames['epubContentIframe'].contentDocument;
+    }
     if (innerDocument.getElementById(id)) {
       return;
     }

@@ -139,7 +139,6 @@
 		2DEF10BA201ECCEA0082843A /* NYPLMyBooksSimplifiedBearerToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF10B9201ECCEA0082843A /* NYPLMyBooksSimplifiedBearerToken.m */; };
 		2DF321831DC3B83500E1858F /* NYPLAnnotations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */; };
 		2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */; };
-		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
 		5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
 		5A6929101B95ACD100FB4C10 /* sdk.css in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290F1B95ACD100FB4C10 /* sdk.css */; };
@@ -617,7 +616,6 @@
 				08A352271BDE91B80040BF1D /* libRDServices.a in Frameworks */,
 				08A352221BDE8E560040BF1D /* libicucore.tbd in Frameworks */,
 				5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */,
-				5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */,
 				2DA4F2331C68363B008853D7 /* LocalAuthentication.framework in Frameworks */,
 				08A352261BDE8E700040BF1D /* SystemConfiguration.framework in Frameworks */,
 				08A352241BDE8E640040BF1D /* Security.framework in Frameworks */,
