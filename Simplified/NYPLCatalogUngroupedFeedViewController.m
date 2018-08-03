@@ -103,6 +103,12 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
     [self fetchOpenSearchDescription];
+  } else {
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                              initWithTitle:@""
+                                              style:UIBarButtonItemStylePlain
+                                              target:nil
+                                              action:nil];
   }
   
   [self.collectionView reloadData];
