@@ -6,6 +6,7 @@ DerivedData
 .idea
 Build
 adobe-rmsdk
+ReaderClientCert.sig
 Simplified/APIKeys.swift
 AudioEngine.json
 Carthage

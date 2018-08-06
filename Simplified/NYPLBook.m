@@ -471,6 +471,7 @@ static NSString *const UpdatedKey = @"updated";
            PublishedKey: NYPLNullFromNil([self.published RFC3339String]),
            PublisherKey: NYPLNullFromNil(self.publisher),
            RelatedURLKey: NYPLNullFromNil([self.relatedWorksURL absoluteString]),
+           ReportURLKey: NYPLNullFromNil([self.reportURL absoluteString]),
            RevokeURLKey: NYPLNullFromNil([self.revokeURL absoluteString]),
            SeriesLinkKey: NYPLNullFromNil([self.seriesURL absoluteString]),
            SubtitleKey: NYPLNullFromNil(self.subtitle),

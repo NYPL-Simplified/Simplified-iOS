@@ -11,8 +11,9 @@
 07. Build OpenSSL and cURL as described in the following "Building OpenSSL and cURL" section. Ensure you're in the "Simplified-iOS" directory before continuing to the next step.
 08. `sh adobe-rmsdk-build.sh`
 09. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
-10. `open Simplified.xcworkspace`
-11. Build.
+10. Copy `ReaderClientCert.sig` (obtained elsewhere) to `Simplified/ReaderClientCert.sig`.
+11. `open Simplified.xcworkspace`
+12. Build.
 
 ## Building OpenSSL and cURL
 

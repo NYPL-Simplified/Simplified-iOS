@@ -861,8 +861,15 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   self.secondsSinceComplete += readyStateCheckIntervalInSeconds;
   
+  NSString *documentPath;
+  if (@available(iOS 12.0, *)) {
+    documentPath = @"window.frames[\"epubContentIframe\"].contentWindow.document";
+  } else {
+    documentPath = @"window.frames[\"epubContentIframe\"].document";
+  }
+  
   [self.webView
-   evaluateJavaScript:@"window.frames[\"epubContentIframe\"].document.readyState"
+   evaluateJavaScript:[documentPath stringByAppendingString:@".readyState"]
    completionHandler:^(id _Nullable result, __unused NSError *_Nullable error) {
      if([result isEqualToString:@"complete"]) {
        self.secondsSinceComplete = 0.0;
