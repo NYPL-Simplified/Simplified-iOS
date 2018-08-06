@@ -78,8 +78,6 @@
     }
     [vc setURL:url];
     [vc load];
-//    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
-
   }];
   
   return [[UIViewController alloc] init];
@@ -94,15 +92,11 @@
   
   if (settings.userHasSeenWelcomeScreen == YES) {
     [self load];
-//    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
-
   }
 }
 
 - (void) reloadCatalogue {
   [self load];
-//  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
-
 }
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated

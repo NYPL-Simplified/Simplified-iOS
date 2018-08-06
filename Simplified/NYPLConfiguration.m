@@ -90,17 +90,6 @@
   return YES;
 }
 
-
-+ (UIColor *)colorFromHexString:(NSString *)hexString {
-  unsigned int hexInt = 0;
-  NSScanner *scanner = [NSScanner scannerWithString:hexString];
-  [scanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@"#"]];
-  [scanner scanHexInt:&hexInt];
-  return [UIColor colorWithRed:((CGFloat) ((hexInt & 0xFF0000) >> 16))/255
-                         green:((CGFloat) ((hexInt & 0xFF00) >> 8))/255
-                          blue:((CGFloat) (hexInt & 0xFF))/255 alpha:1.0];
-}
-
 + (NSURL *)minimumVersionURL
 {
   return [NSURL URLWithString:@"http://www.librarysimplified.org/simplye-client/minimum-version"];
@@ -108,13 +97,12 @@
 
 + (UIColor *)mainColor
 {
-  Account * account = [[NYPLSettings sharedSettings] currentAccount];
-
-  if (account.mainColor == nil)
-  {
-    return [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
+  Account *const account = [[NYPLSettings sharedSettings] currentAccount];
+  if (account.mainColor) {
+    return [NYPLAppTheme themeColorFromStringWithName:account.mainColor];
+  } else {
+    return [UIColor blackColor];
   }
-  return [NYPLConfiguration colorFromHexString:[NSString stringWithFormat:@"#%@",account.mainColor]];
 }
 
 + (UIColor *)accentColor

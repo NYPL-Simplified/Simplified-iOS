@@ -17,8 +17,6 @@
 
 + (NSURL *)minimumVersionURL;
 
-+ (UIColor *)colorFromHexString:(NSString *)hexString;
-
 + (UIColor *)mainColor;
 
 + (UIColor *)accentColor;
