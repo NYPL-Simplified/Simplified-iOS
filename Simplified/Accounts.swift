@@ -13,7 +13,7 @@ final class AccountsManager: NSObject
   static let shared = AccountsManager()
   
   // For Objective-C classes
-  @objc @discardableResult class func sharedInstance() -> AccountsManager
+  @objc class func sharedInstance() -> AccountsManager
   {
     return AccountsManager.shared
   }

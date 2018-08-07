@@ -11,7 +11,7 @@ final class NetworkQueue: NSObject {
   static let sharedInstance = NetworkQueue()
 
   // For Objective-C classes
-  @objc @discardableResult class func shared() -> NetworkQueue
+  @objc class func shared() -> NetworkQueue
   {
     return NetworkQueue.sharedInstance
   }
