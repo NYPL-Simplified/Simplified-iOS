@@ -28,6 +28,11 @@
 static NSString *const reuseIdentifierTOC = @"contentCell";
 static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
 
+typedef NS_ENUM(NSInteger, SegmentControlType) {
+  SegmentControlTOC = 0,
+  SegmentControlBookmark = 1
+};
+
 @implementation NYPLReaderTOCViewController
 
 #pragma mark UIViewController
@@ -55,12 +60,12 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
   [self.tableView reloadData];
   
   switch (self.segmentedControl.selectedSegmentIndex) {
-    case 0:
+    case SegmentControlTOC:
       if ([self.tableView.subviews containsObject:self.refreshControl]){
         [self.refreshControl removeFromSuperview];
       }
       break;
-    case 1:
+    case SegmentControlBookmark:
       if ([NYPLAnnotations syncIsPossibleAndPermitted]) {
         self.refreshControl = [[UIRefreshControl alloc] init];
         [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
@@ -119,10 +124,10 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
   NSUInteger numRows = 0;
   
   switch (self.segmentedControl.selectedSegmentIndex) {
-    case 0:
+    case SegmentControlTOC:
       numRows = self.tableOfContents.count;
       break;
-    case 1:
+    case SegmentControlBookmark:
       numRows = self.bookmarks.count;
       break;
     default:
@@ -136,7 +141,7 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch (self.segmentedControl.selectedSegmentIndex) {
-    case 0:{
+    case SegmentControlTOC:{
       NYPLReaderTOCCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierTOC];
       NYPLReaderTOCElement *const toc = self.tableOfContents[indexPath.row];
   
@@ -163,7 +168,7 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       }
       return cell;
     }
-    default: {
+    case SegmentControlBookmark: {
       NYPLReaderBookmarkCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierBookmark];
       cell.backgroundColor = [UIColor clearColor];
       
@@ -187,6 +192,8 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
       
       return cell;
     }
+    default:
+      @throw NSInvalidArgumentException;
   }
 }
 
@@ -196,13 +203,13 @@ static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
 didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   switch (self.segmentedControl.selectedSegmentIndex) {
-    case 0:{
+    case SegmentControlTOC:{
       NYPLReaderTOCElement *const TOCElement = self.tableOfContents[indexPath.row];
       [self.delegate TOCViewController:self
                didSelectOpaqueLocation:TOCElement.opaqueLocation];
       break;
     }
-    case 1:{
+    case SegmentControlBookmark:{
       NYPLReaderBookmark *const bookmark = self.bookmarks[indexPath.row];
       [self.delegate TOCViewController:self didSelectBookmark:bookmark];
       break;
@@ -215,9 +222,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 -(CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView estimatedHeightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
 {
   switch (self.segmentedControl.selectedSegmentIndex) {
-    case 0:
+    case SegmentControlTOC:
       return 56;
-    case 1:
+    case SegmentControlBookmark:
       return 100;
     default:
       return 44;
@@ -227,8 +234,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 -(CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView heightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
 {
   switch (self.segmentedControl.selectedSegmentIndex) {
-    case 0:
-    case 1:
+    case SegmentControlTOC:
+    case SegmentControlBookmark:
       return UITableViewAutomaticDimension;
     default:
       return 44;
@@ -236,7 +243,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 }
 
 -(UITableViewCellEditingStyle)tableView:(UITableView *)__unused tableView editingStyleForRowAtIndexPath:(NSIndexPath *)__unused indexPath {
-  if (self.segmentedControl.selectedSegmentIndex == 1) {
+  if (self.segmentedControl.selectedSegmentIndex == SegmentControlBookmark) {
     return UITableViewCellEditingStyleDelete;
   } else {
     return UITableViewCellEditingStyleNone;
@@ -258,7 +265,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 {
   [self.tableView reloadData];
   switch (self.segmentedControl.selectedSegmentIndex) {
-    case 0:
+    case SegmentControlTOC:
       if ([self.tableView.subviews containsObject:self.refreshControl]){
         [self.refreshControl removeFromSuperview];
       }
@@ -266,7 +273,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         self.tableView.hidden = NO;
       }
       break;
-    case 1:
+    case SegmentControlBookmark:
       if (self.bookmarks.count == 0 || self.bookmarks == nil) {
         self.tableView.hidden = YES;
       }
