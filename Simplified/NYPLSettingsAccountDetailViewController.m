@@ -1195,7 +1195,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     UILabel *titleLabel = [[UILabel alloc] init];
     UILabel *subtitleLabel = [[UILabel alloc] init];
     subtitleLabel.numberOfLines = 0;
-    UIImageView *logoView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.selectedAccount.logo]];
+    UIImageView *logoView = [[UIImageView alloc] initWithImage:self.selectedAccount.logo];
     logoView.contentMode = UIViewContentModeScaleAspectFit;
     
     titleLabel.text = self.selectedAccount.name;

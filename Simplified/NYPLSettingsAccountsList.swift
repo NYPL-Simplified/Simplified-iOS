@@ -162,24 +162,12 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   func cellForLibrary(_ account: Account, _ indexPath: IndexPath) -> UITableViewCell {
 
     let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
-    
-    
+
     let container = UIView()
     let textContainer = UIView()
     
     cell.accessoryType = .disclosureIndicator
-    
-    var imageView = UIImageView(image: UIImage(named: account.logo!))
-    
-    if let logo = account.logo
-    {
-      imageView = UIImageView(image: UIImage(named: logo))
-    }
-    else
-    {
-      imageView = UIImageView(image: #imageLiteral(resourceName: "LibraryLogoMagic"))
-    }
-    
+    let imageView = UIImageView(image: account.logo)
     imageView.contentMode = .scaleAspectFit
     
     let textLabel = UILabel()

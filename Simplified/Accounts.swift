@@ -46,34 +46,6 @@ final class AccountsManager: NSObject
         for jsonDict in array
         {
           let account = Account(json: jsonDict)
-          
-          if (defaults.value(forKey: account.pathComponent!) == nil)
-          {
-            defaults.set(jsonDict, forKey: account.pathComponent!)
-          }
-          else
-          {
-            // update
-            var savedDict = defaults.value(forKey: account.pathComponent!) as! [String: AnyObject]
-            savedDict["name"] = account.name as AnyObject?
-            savedDict["subtitle"] = account.subtitle as AnyObject?
-            savedDict["logo"] = account.logo as AnyObject?
-            savedDict["needsAuth"] = account.needsAuth as AnyObject?
-            savedDict["pinRequired"] = account.pinRequired as AnyObject?
-            savedDict["authPasscodeLength"] = account.authPasscodeLength as AnyObject?
-            savedDict["authPasscodeAllowsLetters"] = account.authPasscodeAllowsLetters as AnyObject?
-            savedDict["supportsSimplyESync"] = account.supportsSimplyESync as AnyObject?
-            savedDict["supportsBarcodeScanner"] = account.supportsBarcodeScanner as AnyObject?
-            savedDict["supportsBarcodeDisplay"] = account.supportsBarcodeDisplay as AnyObject?
-            savedDict["supportsCardCreator"] = account.supportsCardCreator as AnyObject?
-            savedDict["supportsReservations"] = account.supportsReservations as AnyObject?
-            savedDict["supportEmail"] = account.supportEmail as AnyObject?
-            savedDict["catalogUrl"] = account.catalogUrl as AnyObject?
-            savedDict["cardCreatorUrl"] = account.cardCreatorUrl as AnyObject?
-            savedDict["mainColor"] = account.mainColor as AnyObject?
-            
-            defaults.set(savedDict, forKey: account.pathComponent!)
-          }
           self.accounts.append(account)
         }
       }
@@ -100,12 +72,11 @@ final class AccountsManager: NSObject
 final class Account:NSObject
 {
   let defaults: UserDefaults
-  
+  let logo: UIImage
   let id:Int
   let pathComponent:String?
   let name:String
   let subtitle:String?
-  let logo:String?
   let needsAuth:Bool
   let pinRequired:Bool
   let authPasscodeLength:UInt
@@ -162,7 +133,6 @@ final class Account:NSObject
     subtitle = json["subtitle"] as? String
     id = json["id"] as! Int
     pathComponent = json["pathComponent"] as? String
-    logo = json["logo"] as? String
     needsAuth = json["needsAuth"] as! Bool
     supportsReservations = json["supportsReservations"] as! Bool
     supportsSimplyESync = json["supportsSimplyESync"] as! Bool
@@ -174,7 +144,16 @@ final class Account:NSObject
     supportEmail = json["supportEmail"] as? String
     mainColor = json["mainColor"] as? String
     pinRequired = json["pinRequired"] as? Bool ?? true
-    
+
+    let logoString = json["logo"] as? String
+    if let modString = logoString?.replacingOccurrences(of: "data:image/png;base64,", with: ""),
+      let logoData = Data.init(base64Encoded: modString),
+      let logoImage = UIImage(data: logoData) {
+      logo = logoImage
+    } else {
+      logo = UIImage.init(named: "LibraryLogoMagic")!
+    }
+
     if let length = json["authPasscodeLength"] as? UInt {
       authPasscodeLength = length
     } else {
@@ -186,7 +165,7 @@ final class Account:NSObject
       authPasscodeAllowsLetters = true
     }
   }
-  
+
   func setURL(_ URL: URL, forLicense urlType: URLType) -> Void {
     switch urlType {
     case .acknowledgements:
