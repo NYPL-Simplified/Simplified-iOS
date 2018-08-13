@@ -2,6 +2,7 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "NYPLLocalization.h"
 #import <PureLayout/PureLayout.h>
 
 #import "NYPLBookDetailDownloadingView.h"
@@ -37,7 +38,7 @@
   self.percentageLabel.font = [UIFont systemFontOfSize:14];
   self.percentageLabel.textColor = [NYPLConfiguration backgroundColor];
   self.percentageLabel.textAlignment = NSTextAlignmentRight;
-  self.percentageLabel.text = NSLocalizedString(@"PercentageLabelZero", nil);
+  self.percentageLabel.text = NYPLLocalizationNotNeeded(@"0%");
   [self addSubview:self.percentageLabel];
   [self.percentageLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
   [self.percentageLabel autoPinEdgeToSuperviewEdge:ALEdgeTrailing withInset:sidePadding];

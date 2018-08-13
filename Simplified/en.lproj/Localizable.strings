@@ -54,8 +54,6 @@
 "OK" = "OK";
 "PDFNotSupported" = "Adobe PDF Not Supported";
 "PDFNotSupportedDescriptionFormat" = "%@ is an Adobe PDF, which is not supported.";
-"PercentageLabelHundred" = "100%";
-"PercentageLabelZero" = "0%";
 "PickYourLibrary" = "Find Your Library";
 "PIN" = "PIN";
 "PleaseWait" = "Please Wait";
