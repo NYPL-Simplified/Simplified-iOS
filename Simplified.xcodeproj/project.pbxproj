@@ -141,7 +141,6 @@
 		2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */; };
 		52D4396E20EAB38200AD49B6 /* NYPLPDFBookMinitexDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4396D20EAB38200AD49B6 /* NYPLPDFBookMinitexDelegate.swift */; };
 		52D4397020EAB40500AD49B6 /* NYPLPDFBookController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D4396F20EAB40500AD49B6 /* NYPLPDFBookController.swift */; };
-		5A5B90181B946D8B002C53E9 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */; };
 		5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A5B901A1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm */; };
 		5A69290E1B95ACC600FB4C10 /* readium-shared-js_all.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290D1B95ACC600FB4C10 /* readium-shared-js_all.js */; };
 		5A6929101B95ACD100FB4C10 /* sdk.css in Resources */ = {isa = PBXBuildFile; fileRef = 5A69290F1B95ACD100FB4C10 /* sdk.css */; };
@@ -199,6 +198,10 @@
 		E6DA7EA01F2A718600CFBEC8 /* NYPLBookAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */; };
 		E6F26E731DFF672F00C103CA /* NYPLDirectoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */; };
 		EC89BB22576495E8A359D77E /* Pods_SimplyE.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */; };
+		FBBAE246211B8E4E00042C19 /* PDF.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBBAE240211B8E4D00042C19 /* PDF.framework */; };
+		FBBAE247211B8E4E00042C19 /* MinitexPDFProtocols.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBBAE243211B8E4D00042C19 /* MinitexPDFProtocols.framework */; };
+		FBBAE248211B8E4E00042C19 /* PSPDFKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBBAE244211B8E4E00042C19 /* PSPDFKitUI.framework */; };
+		FBBAE249211B8E4E00042C19 /* PSPDFKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBBAE245211B8E4E00042C19 /* PSPDFKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -590,6 +593,10 @@
 		E6FAFBE81F7A9AD40026F0EE /* HelpStackStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = HelpStackStoryboard.storyboard; path = Simplified/HelpStackStoryboard.storyboard; sourceTree = SOURCE_ROOT; };
 		E6FAFBEE1F7A9B7A0026F0EE /* ReportIssue.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ReportIssue.storyboard; sourceTree = "<group>"; };
 		E6FAFBFE1F7A9D870026F0EE /* SimplyE-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyE-Bridging-Header.h"; sourceTree = "<group>"; };
+		FBBAE240211B8E4D00042C19 /* PDF.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PDF.framework; path = Carthage/Build/iOS/PDF.framework; sourceTree = "<group>"; };
+		FBBAE243211B8E4D00042C19 /* MinitexPDFProtocols.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MinitexPDFProtocols.framework; path = Carthage/Build/iOS/MinitexPDFProtocols.framework; sourceTree = "<group>"; };
+		FBBAE244211B8E4E00042C19 /* PSPDFKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PSPDFKitUI.framework; path = Carthage/Build/iOS/PSPDFKitUI.framework; sourceTree = "<group>"; };
+		FBBAE245211B8E4E00042C19 /* PSPDFKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PSPDFKit.framework; path = Carthage/Build/iOS/PSPDFKit.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -605,6 +612,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBBAE246211B8E4E00042C19 /* PDF.framework in Frameworks */,
+				FBBAE247211B8E4E00042C19 /* MinitexPDFProtocols.framework in Frameworks */,
+				FBBAE248211B8E4E00042C19 /* PSPDFKitUI.framework in Frameworks */,
+				FBBAE249211B8E4E00042C19 /* PSPDFKit.framework in Frameworks */,
 				03B092301E78871A00AD338D /* MediaPlayer.framework in Frameworks */,
 				03B092281E78859E00AD338D /* CoreMedia.framework in Frameworks */,
 				03B0922E1E7886ED00AD338D /* CoreVideo.framework in Frameworks */,
@@ -991,6 +1002,10 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FBBAE243211B8E4D00042C19 /* MinitexPDFProtocols.framework */,
+				FBBAE240211B8E4D00042C19 /* PDF.framework */,
+				FBBAE245211B8E4E00042C19 /* PSPDFKit.framework */,
+				FBBAE244211B8E4E00042C19 /* PSPDFKitUI.framework */,
 				2DECDF1D20041A7E0088E7D6 /* Pods_SimplyE.framework */,
 				03B0922F1E78871A00AD338D /* MediaPlayer.framework */,
 				03B0922D1E7886ED00AD338D /* CoreVideo.framework */,
@@ -1260,6 +1275,7 @@
 				FE8719C55955B22F68EDF819 /* Upload Bugsnag dSYM */,
 				8ED1E1320C2F37F0410DA796 /* [CP] Embed Pods Frameworks */,
 				7D35AB55AEA925FC3399FA2A /* [CP] Copy Pods Resources */,
+				FBBAE24A211B8E6200042C19 /* Embed Carthage Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1524,6 +1540,24 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		FBBAE24A211B8E6200042C19 /* Embed Carthage Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/PDF.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/MinitexPDFProtocols.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PSPDFKit.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PSPDFKitUI.framework",
+			);
+			name = "Embed Carthage Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
 		};
 		FE8719C55955B22F68EDF819 /* Upload Bugsnag dSYM */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1915,6 +1949,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
@@ -1964,6 +1999,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
