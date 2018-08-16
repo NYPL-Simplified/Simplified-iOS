@@ -12,6 +12,9 @@ function Simplified() {
   // The starting location of a tap.
   var startX = 0;
   var startY = 0;
+  
+  // The time the last tap was started.
+  var startTime = 0;
 
   // Called whenever the user puts a finger down anywhere within the webview.
   var handleTouchStart = function(event) {
@@ -36,6 +39,7 @@ function Simplified() {
 
     startX = touch.screenX;
     startY = touch.screenY;
+    startTime = Date.now();
   };
 
   // Called almost whenever the user lifts a finger that was previously placed
@@ -75,13 +79,16 @@ function Simplified() {
         return;
       }
 
-      var position = touch.screenX / maxScreenX;
-      if(position <= 0.25) {
-        window.location = "simplified:gesture-left";
-      } else if(position >= 0.75) {
-        window.location = "simplified:gesture-right";
-      } else {
-        window.location = "simplified:gesture-center";
+      // Prevent interference with holding for text selection.
+      if (Date.now() - startTime < 500) {
+        var position = touch.screenX / maxScreenX;
+        if(position <= 0.25) {
+          window.location = "simplified:gesture-left";
+        } else if(position >= 0.75) {
+          window.location = "simplified:gesture-right";
+        } else {
+          window.location = "simplified:gesture-center";
+        }
       }
 
       // Since we handled the event, we stop the webview from applying its
