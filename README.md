@@ -65,7 +65,7 @@ Immutability is preferred wherever possible.
 
 Questions and suggestions should be submitted as GitHub issues and tagged with
 the appropriate labels. More in-depth discussion occurs via Slack: Email
-`jamesenglish@nypl.org` for access.
+`swans062@umn.edu` for access.
 
 # License
 
