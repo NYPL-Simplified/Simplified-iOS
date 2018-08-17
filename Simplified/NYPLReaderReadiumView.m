@@ -225,6 +225,17 @@ static void generateTOCElements(NSArray *const navigationElements,
    selector:@selector(didBecomeActive)
    name:UIApplicationDidBecomeActiveNotification
    object:nil];
+  
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(didChangePasteboard)
+   name:UIPasteboardChangedNotification
+   object:nil];
+}
+
+- (void)didChangePasteboard
+{
+  [self clearTextSelection];
 }
 
 - (void)applyCurrentFlowDependentSettings
@@ -343,6 +354,12 @@ static void generateTOCElements(NSArray *const navigationElements,
   [self sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.openPageRight()"];
 }
 
+/// Toggles user interaction to ensure text selections are cleared.
+- (void)clearTextSelection {
+  self.webView.userInteractionEnabled = !self.webView.userInteractionEnabled;
+  self.webView.userInteractionEnabled = !self.webView.userInteractionEnabled;
+}
+
 #pragma mark NSObject
 
 - (void)dealloc
@@ -398,11 +415,19 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     NSArray *const components = [request.URL.resourceSpecifier componentsSeparatedByString:@"/"];
     NSString *const function = components[0];
     if([function isEqualToString:@"gesture-left"]) {
+      [self clearTextSelection];
       [self sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.openPageLeft()"];
     } else if([function isEqualToString:@"gesture-right"]) {
+      [self clearTextSelection];
       [self sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.openPageRight()"];
     } else if([function isEqualToString:@"gesture-center"]) {
-      [self.delegate renderer:self didReceiveGesture:NYPLReaderRendererGestureToggleUserInterface];
+      if ([UIMenuController sharedMenuController].isMenuVisible) {
+        [self clearTextSelection];
+      } else {
+        [self.delegate
+         renderer:self
+         didReceiveGesture:NYPLReaderRendererGestureToggleUserInterface];
+      }
     } else {
       NYPLLOG(@"Ignoring unknown simplified function.");
     }
