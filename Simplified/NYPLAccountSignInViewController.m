@@ -451,16 +451,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     footerLabel.numberOfLines = 0;
     footerLabel.userInteractionEnabled = YES;
 
-    NSMutableAttributedString *eulaString = [[NSMutableAttributedString alloc]
-                                             initWithString:NSLocalizedString(@"By signing in, you agree to the ", nil) attributes:nil];
     NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName :
                                         [UIColor colorWithRed:0.05 green:0.4 blue:0.65 alpha:1.0],
                                       NSUnderlineStyleAttributeName :
                                         @(NSUnderlineStyleSingle) };
-    NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc]
-                                             initWithString:@"End User License Agreement." attributes:linkAttributes];
-    [eulaString appendAttributedString:linkString];
-
+    NSMutableAttributedString *eulaString = [[NSMutableAttributedString alloc]
+                                             initWithString:NSLocalizedString(@"SigningInAgree", nil) attributes:linkAttributes];
     footerLabel.attributedText = eulaString;
     [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
 
@@ -831,7 +827,7 @@ completionHandler:(void (^)(void))handler
   NSURLSessionDataTask *const task =
     [self.session
      dataTaskWithRequest:request
-     completionHandler:^(NSData *data,
+     completionHandler:^(__unused NSData *data,
                          NSURLResponse *const response,
                          NSError *const error) {
        
@@ -1014,7 +1010,7 @@ completionHandler:(void (^)(void))handler
       if (!self.isLoggingInAfterSignUp) {
         [self dismissViewControllerAnimated:YES completion:nil];
       }
-      void (^handler)() = self.completionHandler;
+      void (^handler)(void) = self.completionHandler;
       self.completionHandler = nil;
       if(handler) handler();
       [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];

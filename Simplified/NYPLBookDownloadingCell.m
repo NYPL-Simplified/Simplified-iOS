@@ -3,6 +3,7 @@
 #import "NYPLRoundedButton.h"
 #import "NYPLSettings.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "NYPLLocalization.h"
 
 #import "NYPLBookDownloadingCell.h"
 
@@ -63,7 +64,7 @@
                                            CGRectGetHeight(self.downloadingLabel.frame));
   
   NSString *const percentageLabelText = self.percentageLabel.text;
-  self.percentageLabel.text = @"100%";
+  self.percentageLabel.text = NYPLLocalizationNotNeeded(@"100%");
   [self.percentageLabel sizeToFit];
   self.percentageLabel.text = percentageLabelText;
   self.percentageLabel.frame = CGRectMake((CGRectGetWidth([self contentFrame]) - sidePadding -
@@ -122,7 +123,7 @@
   self.percentageLabel.font = [UIFont systemFontOfSize:12];
   self.percentageLabel.textColor = [NYPLConfiguration backgroundColor];
   self.percentageLabel.textAlignment = NSTextAlignmentRight;
-  self.percentageLabel.text = @"0%";
+  self.percentageLabel.text = NYPLLocalizationNotNeeded(@"0%");
   [self.contentView addSubview:self.percentageLabel];
   
   self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];

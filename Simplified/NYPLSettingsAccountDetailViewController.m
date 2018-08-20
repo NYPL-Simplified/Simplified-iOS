@@ -479,7 +479,7 @@ double const requestTimeoutInterval = 25.0;
   NSURLSessionDataTask *const task =
   [self.session
    dataTaskWithRequest:request
-   completionHandler:^(NSData *data,
+   completionHandler:^(__unused NSData *data,
                        NSURLResponse *const response,
                        NSError *const error) {
 
@@ -830,7 +830,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:@"No email account is set for this device. "
+                              initWithTitle:NSLocalizedString(@"NoEmailAccountSet", nil)
                               message:[NSString stringWithFormat:@"If you have web email, contact %@ to report an issue.", self.selectedAccount.supportEmail]
                               delegate:nil
                               cancelButtonTitle:nil
@@ -1246,15 +1246,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     if (section == 0) {
       [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
 
-      eulaString = [[NSMutableAttributedString alloc]
-                    initWithString:NSLocalizedString(@"By signing in, you agree to the ", nil) attributes:nil];
       NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName :
                                           [UIColor colorWithRed:0.05 green:0.4 blue:0.65 alpha:1.0],
                                         NSUnderlineStyleAttributeName :
                                           @(NSUnderlineStyleSingle) };
-      NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc]
-                                               initWithString:@"End User License Agreement." attributes:linkAttributes];
-      [eulaString appendAttributedString:linkString];
+      eulaString = [[NSMutableAttributedString alloc]
+                    initWithString:NSLocalizedString(@"SigningInAgree", nil) attributes:linkAttributes];
     } else {
 
       footerLabel.textColor = [UIColor blackColor];

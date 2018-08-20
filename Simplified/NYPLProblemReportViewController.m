@@ -131,7 +131,7 @@ static NSArray *s_problems = nil;
   else
   {
     UIAlertView *alert = [[UIAlertView alloc]
-                          initWithTitle:@"No email account is set for this device. "
+                          initWithTitle:NSLocalizedString(@"NoEmailAccountSet", nil)
                           message:[NSString stringWithFormat:@"If you have web email, contact %@ to report an issue.", currentAcct.supportEmail]
                           delegate:nil
                           cancelButtonTitle:nil

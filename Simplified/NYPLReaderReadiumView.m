@@ -658,7 +658,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     [self.syncManager addBookmark:bookmark withCFI:location.locationString forBook:self.book.identifier];
   } else {
     NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"Bookmarking Error" singleMessage:@"A bookmark could not be created on the current page."];
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil];
     [alert addAction:action];
     [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
   }

@@ -64,7 +64,7 @@
   [self.view addSubview:self.activityIndicatorView];
   
   if ( self == [self.navigationController.viewControllers objectAtIndex:0] ) {
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil)
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
                                                                              action:@selector(dismissEULA)];
