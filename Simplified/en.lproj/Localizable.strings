@@ -86,8 +86,7 @@
 "Verifying" = "Verifying";
 
 // NYPLAccountSignInViewController
-"SigningInAgree" = "By signing in, you agree to the ";
-"EndUserLicenseString" = "End User License Agreement.";
+"SigningInAgree" = "By signing in, you agree to the End User License Agreement.";
 
 // NYPLAppDelegate
 

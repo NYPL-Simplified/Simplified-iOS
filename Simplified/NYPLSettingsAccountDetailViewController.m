@@ -1246,15 +1246,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     if (section == 0) {
       [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
 
-      eulaString = [[NSMutableAttributedString alloc]
-                    initWithString:NSLocalizedString(@"By signing in, you agree to the ", nil) attributes:nil];
       NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName :
                                           [UIColor colorWithRed:0.05 green:0.4 blue:0.65 alpha:1.0],
                                         NSUnderlineStyleAttributeName :
                                           @(NSUnderlineStyleSingle) };
-      NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc]
-                                               initWithString:@"End User License Agreement." attributes:linkAttributes];
-      [eulaString appendAttributedString:linkString];
+      eulaString = [[NSMutableAttributedString alloc]
+                    initWithString:NSLocalizedString(@"SigningInAgree", nil) attributes:linkAttributes];
     } else {
 
       footerLabel.textColor = [UIColor blackColor];
