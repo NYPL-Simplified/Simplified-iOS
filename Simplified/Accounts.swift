@@ -46,7 +46,10 @@ final class AccountsManager: NSObject
         for jsonDict in array
         {
           let account = Account(json: jsonDict)
-          self.accounts.append(account)
+          //All Accounts.json entries when beta testing
+          if (account.inProduction || NYPLConfiguration.releaseStageIsBeta()) {
+            self.accounts.append(account)
+          }
         }
       }
     } catch {
@@ -74,7 +77,7 @@ final class Account:NSObject
   let defaults: UserDefaults
   let logo: UIImage
   let id:Int
-  let pathComponent:String?
+  let pathComponent:String
   let name:String
   let subtitle:String?
   let needsAuth:Bool
@@ -90,6 +93,7 @@ final class Account:NSObject
   let cardCreatorUrl:String?
   let supportEmail:String?
   let mainColor:String?
+  let inProduction:Bool
   
   fileprivate var urlAnnotations:URL?
   fileprivate var urlAcknowledgements:URL?
@@ -131,8 +135,8 @@ final class Account:NSObject
     
     name = json["name"] as! String
     subtitle = json["subtitle"] as? String
-    id = json["id"] as! Int
-    pathComponent = json["pathComponent"] as? String
+    id = json["legacy_id"] as! Int
+    pathComponent = "\(id)"
     needsAuth = json["needsAuth"] as! Bool
     supportsReservations = json["supportsReservations"] as! Bool
     supportsSimplyESync = json["supportsSimplyESync"] as! Bool
@@ -144,6 +148,7 @@ final class Account:NSObject
     supportEmail = json["supportEmail"] as? String
     mainColor = json["mainColor"] as? String
     pinRequired = json["pinRequired"] as? Bool ?? true
+    inProduction = json["inProduction"] as! Bool
 
     let logoString = json["logo"] as? String
     if let modString = logoString?.replacingOccurrences(of: "data:image/png;base64,", with: ""),
@@ -232,13 +237,16 @@ final class Account:NSObject
   }
   
   fileprivate func setAccountDictionaryKey(_ key: String, toValue value: AnyObject) {
-    var savedDict = defaults.value(forKey: self.pathComponent!) as! [String: AnyObject]
-    savedDict[key] = value
-    defaults.set(savedDict, forKey: self.pathComponent!)
+    if var savedDict = defaults.value(forKey: self.pathComponent) as? [String: AnyObject] {
+      savedDict[key] = value
+      defaults.set(savedDict, forKey: self.pathComponent)
+    } else {
+      defaults.set([key:value], forKey: self.pathComponent)
+    }
   }
   
   fileprivate func getAccountDictionaryKey(_ key: String) -> AnyObject? {
-    let savedDict = defaults.value(forKey: self.pathComponent!) as! [String: AnyObject]
+    let savedDict = defaults.value(forKey: self.pathComponent) as! [String: AnyObject]
     guard let result = savedDict[key] else { return nil }
     return result
   }

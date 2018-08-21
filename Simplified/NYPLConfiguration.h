@@ -10,6 +10,8 @@
 
 + (BOOL)cardCreationEnabled;
 
++ (BOOL)releaseStageIsBeta;
+
 // This can be overriden by setting |customMainFeedURL| in NYPLSettings.
 + (NSURL *)mainFeedURL;
 
