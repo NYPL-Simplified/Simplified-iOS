@@ -94,6 +94,14 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
 {
   [super viewDidLoad];  
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+
+  if ([NYPLConfiguration releaseStageIsBeta]) {
+    UIBarButtonItem *betaButton = [[UIBarButtonItem alloc] initWithTitle:@"Beta"
+                                                                   style:UIBarButtonItemStyleDone
+                                                                  target:self
+                                                                  action:@selector(betaWasPressed)];
+    self.navigationItem.rightBarButtonItems = @[betaButton];
+  }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -272,6 +280,31 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   self.shouldShowEmptyCustomODPSURLField = YES;
   
   [self.tableView reloadData];
+}
+
+- (void)betaWasPressed {
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Beta Libraries"
+                                                                 message:@"Choose libraries only in production, or all libaries. App will restart."
+                                                          preferredStyle:UIAlertControllerStyleAlert];
+  UIAlertAction *betaAction = [UIAlertAction actionWithTitle:@"All Libraries"
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction * _Nonnull __unused action) {
+                                                       [defaults setBool:NO forKey:@"prod_only"];
+                                                       exit(0);
+                                                     }];
+  UIAlertAction *prodAction = [UIAlertAction actionWithTitle:@"Production Only"
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction * _Nonnull __unused action) {
+                                                       [defaults setBool:YES forKey:@"prod_only"];
+                                                       exit(0);
+                                                     }];
+  UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+
+  [alert addAction:betaAction];
+  [alert addAction:prodAction];
+  [alert addAction:cancelAction];
+  [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)exitApp

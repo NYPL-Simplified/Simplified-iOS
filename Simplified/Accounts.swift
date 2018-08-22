@@ -46,8 +46,7 @@ final class AccountsManager: NSObject
         for jsonDict in array
         {
           let account = Account(json: jsonDict)
-          //All Accounts.json entries when beta testing
-          if (account.inProduction || NYPLConfiguration.releaseStageIsBeta()) {
+          if (account.inProduction || (NYPLConfiguration.releaseStageIsBeta() && !UserDefaults.standard.bool(forKey: "prod_only"))) {
             self.accounts.append(account)
           }
         }
