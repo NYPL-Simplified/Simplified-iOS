@@ -195,7 +195,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     textContainer.autoPinEdge(toSuperviewMargin: .right)
     textContainer.autoAlignAxis(toSuperviewAxis: .horizontal)
 
-    NSLayoutConstraint .autoSetPriority(UILayoutPriorityDefaultLow) {
+    NSLayoutConstraint.autoSetPriority(UILayoutPriorityDefaultLow) {
       textContainer.autoPinEdge(toSuperviewEdge: .top, withInset: 0, relation: .greaterThanOrEqual)
       textContainer.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0, relation: .greaterThanOrEqual)
     }
