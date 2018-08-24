@@ -20,6 +20,24 @@
   return date;
 }
 
++ (NSDate *)dateWithDateOnlyString:(NSString *const)string
+{
+  NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
+
+  dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+  dateFormatter.dateFormat = @"yyyy'-'MM'-'dd";
+
+  NSDate *const date = [dateFormatter dateFromString:string];
+
+  // in case date came in as a year only format
+  if(!date) {
+    dateFormatter.dateFormat = @"yyyy";
+    return [dateFormatter dateFromString:string];
+  }
+
+  return date;
+}
+
 - (NSString *)RFC3339String
 {
   NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
