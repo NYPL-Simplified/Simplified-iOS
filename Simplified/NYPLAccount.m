@@ -21,7 +21,7 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
 
 + (instancetype)sharedAccount
 {
-  NSInteger library = [[NYPLSettings sharedSettings] currentAccountIdentifier];
+  NSInteger library = [AccountsManager shared].currentAccount.id;
   return [self sharedAccount:library];
 }
 

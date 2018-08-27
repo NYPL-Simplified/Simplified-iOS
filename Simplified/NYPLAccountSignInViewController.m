@@ -127,7 +127,7 @@ CGFloat const marginPadding = 2.0;
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
 
-  self.currentAccount = [[NYPLSettings sharedSettings] currentAccount];
+  self.currentAccount = [AccountsManager shared].currentAccount;
   
   self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.usernameTextField.delegate = self;

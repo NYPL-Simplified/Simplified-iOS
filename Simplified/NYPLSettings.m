@@ -5,8 +5,6 @@
 #import "NYPLConfiguration.h"
 #import "SimplyE-Swift.h"
 
-static NSString *const currentAccountIdentifierKey = @"NYPLCurrentAccountIdentifier";
-
 static NSString *const customMainFeedURLKey = @"NYPLSettingsCustomMainFeedURL";
 
 static NSString *const accountMainFeedURLKey = @"NYPLSettingsAccountMainFeedURL";
@@ -69,15 +67,6 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   
   return sharedSettings;
 }
-- (Account*)currentAccount
-{
-  return [[AccountsManager sharedInstance] account:[[NYPLSettings sharedSettings] currentAccountIdentifier]];
-}
-
-- (NSInteger)currentAccountIdentifier
-{
-  return [[NSUserDefaults standardUserDefaults] integerForKey:currentAccountIdentifierKey];
-}
 
 - (NSURL *)customMainFeedURL
 {
@@ -109,12 +98,13 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] boolForKey:userSeenFirstTimeSyncMessageKey];
 }
 
+// FIXME: This should be in `AccountsManager`, not `NYPLSettings`.
 - (NSArray *) settingsAccountsList
 {
   NSArray *libraryAccounts = [[NSUserDefaults standardUserDefaults] arrayForKey:settingsLibraryAccountsKey];
   // If user has not selected any accounts yet, return the "currentAccount"
   if (!libraryAccounts) {
-    NSInteger currentLibrary = [self currentAccountIdentifier];
+    NSInteger currentLibrary = [AccountsManager shared].currentAccount.id;
     [self setSettingsAccountsList:@[@(currentLibrary), @2]];
     return [self settingsAccountsList];
   } else {
@@ -129,15 +119,6 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
     return nil;
   
   return [NSKeyedUnarchiver unarchiveObjectWithData:currentCardApplicationSerialization];
-}
-- (void)setCurrentAccountIdentifier:(NSInteger)account
-{
-  [[NSUserDefaults standardUserDefaults] setInteger:account forKey:currentAccountIdentifierKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLCurrentAccountDidChangeNotification
-   object:self];
 }
 
 - (void)setUserHasSeenWelcomeScreen:(BOOL)userPresentedScreen

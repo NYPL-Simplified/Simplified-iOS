@@ -54,7 +54,7 @@
     
   NYPLMyBooksViewController *viewController = (NYPLMyBooksViewController *)self.visibleViewController;
   
-  viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
+  viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;
     
 }
 
@@ -96,12 +96,12 @@
                          completion:nil];
       } else {
         [[NYPLBookRegistry sharedRegistry] save];
-        [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+        [AccountsManager shared].currentAccount = account;
         [self reloadSelected];
       }
     #else
       [[NYPLBookRegistry sharedRegistry] save];
-      [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+      [AccountsManager shared].currentAccount = account;
       [self reloadSelected];
     #endif
     }]];
@@ -128,7 +128,7 @@
   [catalog reloadSelectedLibraryAccount];
   
   NYPLMyBooksViewController *viewController = (NYPLMyBooksViewController *)self.visibleViewController;
-  viewController.navigationItem.title =  [[NYPLSettings sharedSettings] currentAccount].name;
+  viewController.navigationItem.title =  [AccountsManager shared].currentAccount.name;
 }
 
 @end

@@ -5,7 +5,7 @@ import Foundation
 final class DirectoryManager : NSObject {
   
   class func current() -> URL? {
-    return directory(NYPLSettings.shared().currentAccountIdentifier)
+    return directory(AccountsManager.shared.currentAccount.id)
   }
   
   class func directory(_ account: Int) -> URL? {

@@ -454,7 +454,7 @@ double const requestTimeoutInterval = 25.0;
        NYPLLOG(@"***Successful DRM Deactivation***");
        // FIXME: NYPLDeviceManager should be updated once redesign of NYPLAccount is complete
        // Until then, only use on currently active library account
-       if (self.selectedAccountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
+       if (self.selectedAccountType == [AccountsManager shared].currentAccount) {
          NSURL *deviceManager =  [NSURL URLWithString: [self.selectedNYPLAccount licensor][@"deviceManager"]];
          if (deviceManager != nil) {
            [NYPLDeviceManager deleteDevice:[self.selectedNYPLAccount deviceID] url:deviceManager];
@@ -530,7 +530,7 @@ double const requestTimeoutInterval = 25.0;
           if (success) {
             // FIXME: NYPLDeviceManager should be updated once redesign of NYPLAccount is complete
             // Until then, only use on currently active library account
-            if (self.selectedAccountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
+            if (self.selectedAccountType == [AccountsManager shared].currentAccount.id) {
               NSURL *deviceManager = [NSURL URLWithString: [self.selectedNYPLAccount licensor][@"deviceManager"]];
               if (deviceManager != nil) {
                 [NYPLDeviceManager postDevice:deviceID url:deviceManager];
@@ -629,7 +629,7 @@ double const requestTimeoutInterval = 25.0;
     if(success) {
       [self.selectedNYPLAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
 
-      if(self.selectedAccountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]) {
+      if(self.selectedAccountType == [AccountsManager shared].currentAccount.id) {
         void (^handler)(void) = self.completionHandler;
         self.completionHandler = nil;
         if(handler) handler();
@@ -1610,7 +1610,7 @@ replacementString:(NSString *)string
   return ((self.selectedAccount.supportsSimplyESync) &&
           ([self.selectedAccount getLicenseURL:URLTypeAnnotations] &&
            [self.selectedNYPLAccount hasBarcodeAndPIN]) &&
-           (self.selectedAccountType == [[NYPLSettings sharedSettings] currentAccountIdentifier]));
+           (self.selectedAccountType == [AccountsManager shared].currentAccount.id));
 }
 
 - (void)didSelectCancel
