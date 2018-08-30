@@ -180,6 +180,7 @@
 		D7A88B031F8C02B200EF76F4 /* ReportIssue.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E6FAFBEE1F7A9B7A0026F0EE /* ReportIssue.storyboard */; };
 		E6202A021DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6202A011DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m */; };
 		E6202A041DD52B8600C99553 /* NYPLWelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6202A031DD52B8600C99553 /* NYPLWelcomeScreen.swift */; };
+		E6207B652118973800864143 /* NYPLAppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6207B642118973800864143 /* NYPLAppTheme.swift */; };
 		E63F2C6C1EAA81B3002B6373 /* ExtendedNavBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63F2C6B1EAA81B3002B6373 /* ExtendedNavBarView.swift */; };
 		E65977C51F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */; };
 		E66A6C441EAFB63300AA282D /* NYPLBookDetailButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = E66A6C431EAFB63300AA282D /* NYPLBookDetailButtonsView.m */; };
@@ -563,6 +564,7 @@
 		E6202A001DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsAccountDetailViewController.h; sourceTree = "<group>"; };
 		E6202A011DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAccountDetailViewController.m; sourceTree = "<group>"; };
 		E6202A031DD52B8600C99553 /* NYPLWelcomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLWelcomeScreen.swift; sourceTree = "<group>"; };
+		E6207B642118973800864143 /* NYPLAppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAppTheme.swift; sourceTree = "<group>"; };
 		E63F2C6B1EAA81B3002B6373 /* ExtendedNavBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedNavBarView.swift; sourceTree = "<group>"; };
 		E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = NYPL_Launch_Screen.storyboard; sourceTree = "<group>"; };
 		E66A6C421EAFB63300AA282D /* NYPLBookDetailButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDetailButtonsView.h; sourceTree = "<group>"; };
@@ -872,6 +874,7 @@
 				03F94CD01DD6288C00CE8F4F /* Accounts.swift */,
 				2D62568A1D412BCB0080A81F /* BundledHTMLViewController.swift */,
 				E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */,
+				E6207B642118973800864143 /* NYPLAppTheme.swift */,
 				E68CCFC41F9F80CF003DDA6C /* NYPLBarcode.swift */,
 				E6D775431F9FE0C400C0B722 /* NYPLBarcodeScanningViewController.h */,
 				E6D7753D1F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m */,
@@ -1597,6 +1600,7 @@
 				11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */,
 				03690E291EB2B44300F75D5F /* NYPLReaderBookmark.swift in Sources */,
 				0320E8241E8BFCC900806EF0 /* NYPLReportIssueViewController.swift in Sources */,
+				E6207B652118973800864143 /* NYPLAppTheme.swift in Sources */,
 				11A14DF41A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m in Sources */,
 				A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */,
 				11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */,
@@ -1972,8 +1976,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c9650af0-4da6-4776-a387-ac577b180b7b";
-				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Distribution (Keychain Migration)";
+				PROVISIONING_PROFILE = "b3d9154d-70e1-48d6-a0c5-869431277a5c";
+				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Distribution (2018)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;

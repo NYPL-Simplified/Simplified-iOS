@@ -257,20 +257,51 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
   func cellForLibrary(_ account: Account) -> UITableViewCell {
     let cell = UITableViewCell.init(style: .subtitle, reuseIdentifier: "")
     
-    cell.textLabel?.font = UIFont.systemFont(ofSize: 18)
-    cell.textLabel?.text = account.name
-    cell.detailTextLabel?.font = UIFont(name: "AvenirNext-Regular", size: 13)
-    cell.detailTextLabel?.text = account.subtitle
-    cell.detailTextLabel?.numberOfLines = 3
-    if let logo = account.logo
-    {
-      cell.imageView?.image = UIImage(named: logo)
+    let container = UIView()
+    let textContainer = UIView()
+
+    cell.accessoryType = .disclosureIndicator
+    let imageView = UIImageView(image: account.logo)
+    imageView.contentMode = .scaleAspectFit
+
+    let textLabel = UILabel()
+    textLabel.font = UIFont.systemFont(ofSize: 16)
+    textLabel.text = account.name
+    textLabel.numberOfLines = 0
+
+    let detailLabel = UILabel()
+    detailLabel.font = UIFont(name: "AvenirNext-Regular", size: 12)
+    detailLabel.numberOfLines = 0
+    detailLabel.text = account.subtitle
+
+    textContainer.addSubview(textLabel)
+    textContainer.addSubview(detailLabel)
+
+    container.addSubview(imageView)
+    container.addSubview(textContainer)
+    cell.contentView.addSubview(container)
+
+    imageView.autoAlignAxis(toSuperviewAxis: .horizontal)
+    imageView.autoPinEdge(toSuperviewEdge: .left)
+    imageView.autoSetDimensions(to: CGSize(width: 45, height: 45))
+
+    textContainer.autoPinEdge(.left, to: .right, of: imageView, withOffset: cell.contentView.layoutMargins.left * 2)
+    textContainer.autoPinEdge(toSuperviewMargin: .right)
+    textContainer.autoAlignAxis(toSuperviewAxis: .horizontal)
+
+    NSLayoutConstraint.autoSetPriority(UILayoutPriorityDefaultLow) {
+      textContainer.autoPinEdge(toSuperviewEdge: .top, withInset: 0, relation: .greaterThanOrEqual)
+      textContainer.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0, relation: .greaterThanOrEqual)
     }
-    else
-    {
-      cell.imageView?.image = #imageLiteral(resourceName: "LibraryLogoMagic")
-    }
-    
+
+    textLabel.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
+
+    detailLabel.autoPinEdge(.top, to: .bottom, of: textLabel)
+    detailLabel.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
+
+    container.autoPinEdgesToSuperviewMargins()
+    container.autoSetDimension(.height, toSize: 55, relation: .greaterThanOrEqual)
+
     return cell
   }
 }

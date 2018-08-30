@@ -1195,7 +1195,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     UILabel *titleLabel = [[UILabel alloc] init];
     UILabel *subtitleLabel = [[UILabel alloc] init];
     subtitleLabel.numberOfLines = 0;
-    UIImageView *logoView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.selectedAccount.logo]];
+    UIImageView *logoView = [[UIImageView alloc] initWithImage:self.selectedAccount.logo];
     logoView.contentMode = UIViewContentModeScaleAspectFit;
     
     titleLabel.text = self.selectedAccount.name;
@@ -1536,8 +1536,10 @@ replacementString:(NSString *)string
                                                handler:^(UIAlertAction * _Nonnull __unused action) {
                                                  if (completion) { completion(NO); }
                                                }]];
-  
-  [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
+
+  if (self.selectedAccountType == 2) {
+    [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
+  }
 }
 
 - (void)updateShowHidePINState
