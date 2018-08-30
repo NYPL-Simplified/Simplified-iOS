@@ -20,7 +20,9 @@
 {
   static dispatch_once_t onceToken;
   dispatch_once (&onceToken, ^{
-    [self configureCrashAnalytics];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self configureCrashAnalytics];
+    });
   });
 }
 
