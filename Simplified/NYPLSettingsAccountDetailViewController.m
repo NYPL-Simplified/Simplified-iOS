@@ -1536,8 +1536,10 @@ replacementString:(NSString *)string
                                                handler:^(UIAlertAction * _Nonnull __unused action) {
                                                  if (completion) { completion(NO); }
                                                }]];
-  
-  [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
+
+  if (self.selectedAccountType == 2) {
+    [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
+  }
 }
 
 - (void)updateShowHidePINState

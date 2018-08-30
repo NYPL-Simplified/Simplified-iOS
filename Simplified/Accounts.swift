@@ -46,7 +46,8 @@ final class AccountsManager: NSObject
         for jsonDict in array
         {
           let account = Account(json: jsonDict)
-          if (account.inProduction || (NYPLConfiguration.releaseStageIsBeta() && !UserDefaults.standard.bool(forKey: "prod_only"))) {
+          if (account.inProduction ||
+            (NYPLConfiguration.releaseStageIsBeta() && !UserDefaults.standard.bool(forKey: "prod_only"))) {
             self.accounts.append(account)
           }
         }
@@ -134,7 +135,7 @@ final class Account:NSObject
     
     name = json["name"] as! String
     subtitle = json["subtitle"] as? String
-    id = json["legacy_id"] as! Int
+    id = json["id"] as! Int
     pathComponent = "\(id)"
     needsAuth = json["needsAuth"] as! Bool
     supportsReservations = json["supportsReservations"] as! Bool
@@ -245,8 +246,8 @@ final class Account:NSObject
   }
   
   fileprivate func getAccountDictionaryKey(_ key: String) -> AnyObject? {
-    let savedDict = defaults.value(forKey: self.pathComponent) as! [String: AnyObject]
-    guard let result = savedDict[key] else { return nil }
+    let savedDict = defaults.value(forKey: self.pathComponent) as? [String: AnyObject]
+    guard let result = savedDict?[key] else { return nil }
     return result
   }
 }
