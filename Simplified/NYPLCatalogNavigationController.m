@@ -28,38 +28,42 @@
 
 @implementation NYPLCatalogNavigationController
 
-#pragma mark NSObject
-
-- (instancetype)init
+/// Replaces the current view controllers on the navigation stack with a single
+/// view controller pointed at the current catalog URL.
+- (void)loadTopLevelCatalogViewController
 {
-  self.viewController =
-  [[NYPLCatalogFeedViewController alloc]
-   initWithURL:[NYPLConfiguration mainFeedURL]];
+  self.viewController = [[NYPLCatalogFeedViewController alloc]
+                         initWithURL:[NYPLSettings sharedSettings].accountMainFeedURL];
   
   self.viewController.title = NSLocalizedString(@"Catalog", nil);
-  self.viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
-  
-  self = [super initWithRootViewController:self.viewController];
-  if(!self) return nil;
-  
-  self.tabBarItem.image = [UIImage imageNamed:@"Catalog"];
+  self.viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;
   
   // The top-level view controller uses the same image used for the tab bar in place of the usual
   // title text.
-  
   self.viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
                                                           initWithImage:[UIImage imageNamed:@"Catalog"] style:(UIBarButtonItemStylePlain)
                                                           target:self
                                                           action:@selector(switchLibrary)];
   self.viewController.navigationItem.leftBarButtonItem.accessibilityLabel = NSLocalizedString(@"AccessibilitySwitchLibrary", nil);
-  self.viewController.navigationItem.leftBarButtonItem.enabled = YES;
   
   self.viewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
   
+  self.viewControllers = @[self.viewController];
+}
+
+#pragma mark NSObject
+
+- (instancetype)init
+{
+  self = [super init];
+  
+  self.tabBarItem.title = NSLocalizedString(@"Catalog", nil);
+  self.tabBarItem.image = [UIImage imageNamed:@"Catalog"];
+  
+  [self loadTopLevelCatalogViewController];
+  
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NYPLCurrentAccountDidChangeNotification object:nil];
-  
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncBegan) name:NYPLSyncBeganNotification object:nil];
-  
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncEnded) name:NYPLSyncEndedNotification object:nil];
   
   return self;
@@ -72,7 +76,7 @@
 
 - (void)currentAccountChanged
 {
-  [self popToRootViewControllerAnimated:NO];
+  [self loadTopLevelCatalogViewController];
 }
 
 - (void)syncBegan
@@ -120,12 +124,12 @@
                          completion:nil];
       } else {
         [[NYPLBookRegistry sharedRegistry] save];
-        [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+        [AccountsManager shared].currentAccount = account;
         [self reloadSelectedLibraryAccount];
       }
     #else
       [[NYPLBookRegistry sharedRegistry] save];
-      [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+      [AccountsManager shared].currentAccount = account;
       [self reloadSelectedLibraryAccount];
     #endif
     }]];
@@ -154,10 +158,6 @@
   
   Account *account = [[AccountsManager sharedInstance] currentAccount];
   
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLAccountDidChangeNotification
-   object:nil];
-  
   [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
   [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
 
@@ -166,22 +166,10 @@
   [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }];
-
-  if ([[self.visibleViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] &&
-       [self.visibleViewController respondsToSelector:@selector(load)]) {
-    NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.visibleViewController;
-    viewController.URL = [NYPLConfiguration mainFeedURL]; // It may have changed
-    [viewController load];
-
-    viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
-  } else if ([[self.topViewController class] isSubclassOfClass:[NYPLCatalogFeedViewController class]] &&
-             [self.topViewController respondsToSelector:@selector(load)]) {
-    NYPLCatalogFeedViewController *viewController = (NYPLCatalogFeedViewController *)self.topViewController;
-    viewController.URL = [NYPLConfiguration mainFeedURL]; // It may have changed
-    [viewController load];
-
-    viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
-  }
+  
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLCurrentAccountDidChangeNotification
+   object:nil];
 }
 
 - (void)viewDidLoad
@@ -215,10 +203,10 @@
     [self reloadSelectedLibraryAccount];
     
     if (settings.acceptedEULABeforeMultiLibrary == NO) {
-    NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(NSInteger accountID) {
+    NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(Account *const account) {
      
       [[NYPLBookRegistry sharedRegistry] save];
-      [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:accountID];
+      [AccountsManager shared].currentAccount = account;
       [self reloadSelectedLibraryAccount];
       [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
       [self dismissViewControllerAnimated:YES completion:nil];

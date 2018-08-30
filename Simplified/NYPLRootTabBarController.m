@@ -62,7 +62,7 @@
 
 - (void)setTabViewControllers
 {
-  Account *currentAccount = [[NYPLSettings sharedSettings] currentAccount];
+  Account *const currentAccount = [AccountsManager shared].currentAccount;
   if (currentAccount.supportsReservations) {
     self.viewControllers = @[self.catalogNavigationController,
                              self.myBooksNavigationController,

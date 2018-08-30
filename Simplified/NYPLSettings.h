@@ -26,8 +26,6 @@ static NSString *const NYPLUserAgreementURLString = @"http://www.librarysimplifi
 @property (atomic) BOOL userPresentedAgeCheck;
 @property (atomic) BOOL userHasSeenFirstTimeSyncMessage;
 @property (atomic) NYPLCardApplicationModel *currentCardApplication;
-@property (readonly) Account* currentAccount;
-@property (atomic) NSInteger currentAccountIdentifier;
 @property (atomic) NSArray* settingsAccountsList;
 
 // Leaving this set to |NYPLSettingsRenderingEngineAutomatic| (the default) is *highly* recommended.

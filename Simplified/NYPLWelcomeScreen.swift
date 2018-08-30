@@ -5,9 +5,9 @@ import PureLayout
 /// Welcome screen for a first-time user
 final class NYPLWelcomeScreenViewController: UIViewController {
   
-  var completion: ((Int) -> ())?
+  var completion: ((Account) -> ())?
   
-  required init(completion: ((Int) -> ())?) {
+  required init(completion: ((Account) -> ())?) {
     self.completion = completion
     super.init(nibName: nil, bundle: nil)
   }
@@ -157,7 +157,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
         } else {
           NYPLSettings.shared().settingsAccountsList = [2]
         }
-        self.completion?(acct.id)
+        self.completion?(acct)
       }
       self.navigationController?.pushViewController(listVC, animated: true)
     } else {
@@ -167,7 +167,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
         } else {
           NYPLSettings.shared().settingsAccountsList = [0, 2]
         }
-        self.completion?(acct.id)
+        self.completion?(acct)
       }
       self.navigationController?.pushViewController(listVC, animated: true)
     }
@@ -180,7 +180,7 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     else {
       NYPLSettings.shared().settingsAccountsList = [2]
     }
-    completion?(2)
+    completion?(AccountsManager.shared.account(2)!)
   }
 }
 

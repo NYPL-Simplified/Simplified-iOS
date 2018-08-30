@@ -242,7 +242,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {
   [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
   
-  Account *account = [[NYPLSettings sharedSettings] currentAccount];
+  Account *const account = [AccountsManager shared].currentAccount;
   
   if (account.needsAuth)
   {

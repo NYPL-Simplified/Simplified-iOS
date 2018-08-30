@@ -99,7 +99,8 @@
 
 + (UIColor *)mainColor
 {
-  Account *const account = [[NYPLSettings sharedSettings] currentAccount];
+  Account *const account = [AccountsManager shared].currentAccount;
+
   if (account.mainColor) {
     return [NYPLAppTheme themeColorFromStringWithName:account.mainColor];
   } else {

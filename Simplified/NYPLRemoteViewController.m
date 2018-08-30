@@ -163,6 +163,8 @@
     [self addChildViewController:viewController];
     viewController.view.frame = self.view.bounds;
     [self.view addSubview:viewController.view];
+    // If `viewController` does not have its own bar button items or title, use whatever
+    // has been set on `self` by default.
     if(viewController.navigationItem.rightBarButtonItems) {
       self.navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems;
     }

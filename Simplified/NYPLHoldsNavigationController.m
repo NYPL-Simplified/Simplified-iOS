@@ -52,7 +52,7 @@
   
   NYPLHoldsViewController *viewController = (NYPLHoldsViewController *)self.visibleViewController;
   
-  viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
+  viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;
 }
 
 - (void)currentAccountChanged
@@ -93,12 +93,12 @@
                          completion:nil];
       } else {
         [[NYPLBookRegistry sharedRegistry] save];
-        [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+        [AccountsManager shared].currentAccount = account;
         [self reloadSelected];
       }
     #else
       [[NYPLBookRegistry sharedRegistry] save];
-      [[NYPLSettings sharedSettings] setCurrentAccountIdentifier:account.id];
+      [AccountsManager shared].currentAccount = account;
       [self reloadSelected];
     #endif
     }]];
@@ -124,7 +124,7 @@
   [catalog reloadSelectedLibraryAccount];
   
   NYPLHoldsViewController *viewController = (NYPLHoldsViewController *)self.visibleViewController;
-  viewController.navigationItem.title = [[NYPLSettings sharedSettings] currentAccount].name;
+  viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;
 }
 
 @end

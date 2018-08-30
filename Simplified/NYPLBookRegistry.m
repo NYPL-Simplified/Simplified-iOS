@@ -606,7 +606,7 @@ static NSString *const RecordsKey = @"records";
 
 - (void)reset:(NSInteger)account
 {
-  if ([[NYPLSettings sharedSettings] currentAccountIdentifier] == account)
+  if ([AccountsManager shared].currentAccount.id == account)
   {
     [self reset];
   }
