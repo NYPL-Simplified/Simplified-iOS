@@ -115,13 +115,19 @@ const double RequestTimeInterval = 120;
                              toURL:(NSURL *)URL
                        withPackage:(NSMutableDictionary *)dictionary
 {
+  __weak NYPLReadiumViewSyncManager *const weakSelf = self;
+
   [NYPLAnnotations syncReadingPositionOfBook:bookID toURL:URL completionHandler:^(NSDictionary * _Nullable responseObject) {
 
     // Still on a background thread
 
+    if (!weakSelf.delegate) {
+      return;
+    }
+
     if (!responseObject) {
       NYPLLOG(@"No Server Annotation for this book exists.");
-      self.shouldPostLastRead = YES;
+      weakSelf.shouldPostLastRead = YES;
       return;
     }
 
@@ -132,7 +138,7 @@ const double RequestTimeInterval = 120;
     NYPLLOG_F(@"serverLocationString %@",serverLocationString);
     NYPLLOG_F(@"currentLocationString %@",currentLocationString);
 
-    NSDictionary *spineItemDetails = self.bookMapDictionary[responseJSON[@"idref"]];
+    NSDictionary *spineItemDetails = weakSelf.bookMapDictionary[responseJSON[@"idref"]];
     NSString *elementTitle = spineItemDetails[@"tocElementTitle"];
     if (!elementTitle) {
       elementTitle = @"";
@@ -157,10 +163,10 @@ const double RequestTimeInterval = 120;
      [UIAlertAction actionWithTitle:NSLocalizedString(@"Stay", nil)
                               style:UIAlertActionStyleCancel
                             handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
-                              if ([self.delegate respondsToSelector:@selector(patronDecidedNavigation:withNavDict:)]) {
-                                [self.delegate patronDecidedNavigation:NO withNavDict:nil];
+                              if ([weakSelf.delegate respondsToSelector:@selector(patronDecidedNavigation:withNavDict:)]) {
+                                [weakSelf.delegate patronDecidedNavigation:NO withNavDict:nil];
                               }
-                              self.shouldPostLastRead = YES;
+                              weakSelf.shouldPostLastRead = YES;
                             }];
 
     UIAlertAction *moveAction =
@@ -168,7 +174,7 @@ const double RequestTimeInterval = 120;
                               style:UIAlertActionStyleDefault
                             handler:^(__attribute__((unused))UIAlertAction * _Nonnull action) {
 
-                              self.shouldPostLastRead = YES;
+                              weakSelf.shouldPostLastRead = YES;
 
                               NSDictionary *const locationDictionary =
                               NYPLJSONObjectFromData([serverLocationString dataUsingEncoding:NSUTF8StringEncoding]);
@@ -180,8 +186,8 @@ const double RequestTimeInterval = 120;
                               dictionary[@"openPageRequest"] =
                               @{@"idref": locationDictionary[@"idref"], @"elementCfi": contentCFI};
 
-                              if ([self.delegate respondsToSelector:@selector(patronDecidedNavigation:withNavDict:)]) {
-                                [self.delegate patronDecidedNavigation:YES withNavDict:dictionary];
+                              if ([weakSelf.delegate respondsToSelector:@selector(patronDecidedNavigation:withNavDict:)]) {
+                                [weakSelf.delegate patronDecidedNavigation:YES withNavDict:dictionary];
                               }
                             }];
 
@@ -199,7 +205,7 @@ const double RequestTimeInterval = 120;
     if ((currentLocationString && [deviceIDString isEqualToString:[NYPLAccount sharedAccount].deviceID]) ||
         [currentLocationString isEqualToString:serverLocationString] ||
         !serverLocationString) {
-      self.shouldPostLastRead = YES;
+      weakSelf.shouldPostLastRead = YES;
     } else {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         [[NYPLRootTabBarController sharedController] safelyPresentViewController:alertController animated:YES completion:nil];
