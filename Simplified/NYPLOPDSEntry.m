@@ -137,7 +137,7 @@
   {
     NSString *const dateString = [entryXML firstChildWithName:@"issued"].value;
     if(dateString) {
-      self.published = [NSDate dateWithDateOnlyString:dateString];
+      self.published = [NSDate dateWithISO8601DateString:dateString];
     }
   }
   

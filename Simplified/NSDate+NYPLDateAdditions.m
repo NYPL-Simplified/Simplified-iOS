@@ -20,17 +20,18 @@
   return date;
 }
 
-+ (NSDate *)dateWithDateOnlyString:(NSString *const)string
++ (NSDate *)dateWithISO8601DateString:(NSString *const)string
 {
-  NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
+  NSISO8601DateFormatter *const ISODateFormatter = [[NSISO8601DateFormatter alloc] init];
+  
+  ISODateFormatter.formatOptions = NSISO8601DateFormatWithFullDate;
+  ISODateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
 
-  dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-  dateFormatter.dateFormat = @"yyyy'-'MM'-'dd";
-
-  NSDate *const date = [dateFormatter dateFromString:string];
+  NSDate *const date = [ISODateFormatter dateFromString:string];
 
   // in case date came in as a year only format
   if(!date) {
+    NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy";
     return [dateFormatter dateFromString:string];
   }
