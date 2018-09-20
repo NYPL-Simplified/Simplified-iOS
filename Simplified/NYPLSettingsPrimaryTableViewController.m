@@ -15,13 +15,6 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
           @throw NSInvalidArgumentException;
       }
     case 1:
-      switch (indexPath.row) {
-        case 0:
-          return NYPLSettingsPrimaryTableViewControllerItemHelpStack;
-        default:
-          @throw NSInvalidArgumentException;
-      }
-    case 2:
       switch(indexPath.row) {
         case 0:
           return NYPLSettingsPrimaryTableViewControllerItemAbout;
@@ -32,7 +25,7 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
         default:
           @throw NSInvalidArgumentException;
       }
-    case 3:
+    case 2:
       switch (indexPath.row) {
         case 0:
           return NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL;
@@ -50,16 +43,14 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
   switch(settingsItem) {
     case NYPLSettingsPrimaryTableViewControllerItemAccount:
       return [NSIndexPath indexPathForRow:0 inSection:0];
-    case NYPLSettingsPrimaryTableViewControllerItemHelpStack:
-      return [NSIndexPath indexPathForRow:0 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
-      return [NSIndexPath indexPathForRow:0 inSection:2];
+      return [NSIndexPath indexPathForRow:0 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
-      return [NSIndexPath indexPathForRow:1 inSection:2];
+      return [NSIndexPath indexPathForRow:1 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses:
-      return [NSIndexPath indexPathForRow:2 inSection:2];
+      return [NSIndexPath indexPathForRow:2 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
-      return [NSIndexPath indexPathForRow:0 inSection:3];
+      return [NSIndexPath indexPathForRow:0 inSection:2];
     default:
       @throw NSInvalidArgumentException;
   }
@@ -171,9 +162,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case NYPLSettingsPrimaryTableViewControllerItemAbout: {
       return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"AboutApp", nil)];
     }
-    case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
-      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"Help", nil)];
-    }
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL: {
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
@@ -214,7 +202,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return 3 + (self.shouldShowEmptyCustomODPSURLField || !![NYPLSettings sharedSettings].customMainFeedURL);
+  return 2 + (self.shouldShowEmptyCustomODPSURLField || !![NYPLSettings sharedSettings].customMainFeedURL);
 }
 
 -(BOOL)tableView:(__attribute__((unused)) UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -243,7 +231,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
  numberOfRowsInSection:(NSInteger const)section
 {
   switch(section) {
-    case 2:
+    case 1:
       return 3;
     default:
       return 1;

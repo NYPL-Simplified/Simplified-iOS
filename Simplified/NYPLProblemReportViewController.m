@@ -117,16 +117,7 @@ static NSArray *s_problems = nil;
   Account *currentAcct = [[AccountsManager sharedInstance] currentAccount];
   if ([MFMailComposeViewController canSendMail])
   {
-    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"ReportIssue" bundle:nil];
-    NYPLReportIssueViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ReportIssueController"];
-    vc.account = currentAcct;
-    if (self.book) {
-      vc.book = self.book;
-    }
-    vc.completion = ^{
-      [self cancel];
-    };
-    [self.navigationController pushViewController:vc animated:YES];
+    // WINNIETODO
   }
   else
   {

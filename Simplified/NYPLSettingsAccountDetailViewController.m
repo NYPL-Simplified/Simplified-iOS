@@ -1,3 +1,4 @@
+@import Bugsnag;
 @import LocalAuthentication;
 @import NYPLCardCreator;
 @import CoreLocation;
@@ -5,7 +6,6 @@
 
 #import "NYPLSettingsAccountDetailViewController.h"
 
-#import "Bugsnag.h"
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
 #import "NYPLBarcodeScanningViewController.h"
@@ -24,9 +24,6 @@
 #import "SimplyE-Swift.h"
 #import "NYPLXML.h"
 #import "NYPLOPDS.h"
-#import <HelpStack/HSUtility.h>
-#import "HSHelpStack.h"
-#import "HSDeskGear.h"
 #import <PureLayout/PureLayout.h>
 #import <ZXingObjC/ZXingObjC.h>
 
@@ -46,8 +43,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindAbout,
   CellKindPrivacyPolicy,
   CellKindContentLicense,
-  CellReportIssue,
-  CellSupportCenter
+  CellReportIssue
 };
 
 @interface NYPLSettingsAccountDetailViewController () <NSURLSessionDelegate, UITextFieldDelegate, UIAlertViewDelegate>
@@ -245,14 +241,6 @@ double const requestTimeoutInterval = 25.0;
     self.tableData = @[section0, section1].mutableCopy;
   }
   
-
-  NSMutableArray *supportCenter = [[NSMutableArray alloc] init];
-  if ([APIKeys libraryIdentifiersToHelpStackGears][@(self.selectedAccount.id)])
-  {
-    [supportCenter addObject:@(CellSupportCenter)];
-    [self.tableData addObject:supportCenter];
-    
-  }
   NSMutableArray *reportIssue = [[NSMutableArray alloc] init];
   if (self.selectedAccount.supportEmail != nil)
   {
@@ -821,10 +809,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellReportIssue: {
       if ([MFMailComposeViewController canSendMail])
       {
-        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"ReportIssue" bundle:nil];
-        NYPLReportIssueViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ReportIssueController"];
-        vc.account = self.selectedAccount;
-        [self.navigationController pushViewController:vc animated:YES];
+        // WINNIETODO
       }
       else
       {
@@ -836,26 +821,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                               cancelButtonTitle:nil
                               otherButtonTitles:@"OK", nil];
         [alert show];
-      }
-      break;
-    }
-    case CellSupportCenter: {
-      
-      [[HSHelpStack instance] setThemeFrompList:@"HelpStackThemeNYPL"];
-      
-      HSHelpStack *helpStack = [HSHelpStack instance];
-      helpStack.gear = [APIKeys libraryIdentifiersToHelpStackGears][@(self.selectedAccount.id)];
-    
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
-         self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
-        UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard" bundle:[NSBundle mainBundle]];
-        UINavigationController *mainNavVC = [helpStoryboard instantiateInitialViewController];
-        UIViewController *firstVC = mainNavVC.viewControllers.firstObject;
-        firstVC.navigationItem.leftBarButtonItem = nil;
-        [self.navigationController pushViewController:firstVC animated:YES];
-
-      } else {
-        [[HSHelpStack instance] showHelp:self];
       }
       break;
     }
@@ -1052,15 +1017,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"Report an Issue", nil);
-      return cell;
-    }
-    case CellSupportCenter: {
-      UITableViewCell *cell = [[UITableViewCell alloc]
-                               initWithStyle:UITableViewCellStyleDefault
-                               reuseIdentifier:nil];
-      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-      cell.textLabel.text = NSLocalizedString(@"Support Center", nil);
       return cell;
     }
     case CellKindAbout: {
