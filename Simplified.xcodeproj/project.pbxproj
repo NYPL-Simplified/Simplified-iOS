@@ -1047,7 +1047,6 @@
 				AE77E8DE5454517F1AE119BF /* OPDS */,
 				119504051994061E009FB788 /* Reader */,
 				11C5DCEE1976D19E005A9945 /* Settings */,
-				E6FAFBEF1F7A9C310026F0EE /* Storyboards */,
 				A823D817192BABA400B55DE2 /* Supporting Files */,
 				E6FAFBFE1F7A9D870026F0EE /* SimplyE-Bridging-Header.h */,
 				2D382BD61D08BA99002C423D /* Log.swift */,
@@ -1061,21 +1060,22 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A823D822192BABA400B55DE2 /* Images.xcassets */,
-				11C113D319F842E2005B3F63 /* Reader */,
-				84B7A3421B84E8FE00584FB2 /* OpenDyslexicFont */,
-				E61D7F631F6AC78B0091C781 /* SimplyE.entitlements */,
-				2D382BCF1D08B1F5002C423D /* SimplyE-Bridging-Header.h */,
-				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
-				A823D81E192BABA400B55DE2 /* Simplified-Prefix.pch */,
-				A823D81C192BABA400B55DE2 /* main.m */,
 				110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */,
-				2D6256901D41582A0080A81F /* software-licenses.html */,
 				B594C7551BB06F40000028F5 /* HelpStackTheme.plist */,
 				0305005D1E8EF65100EA02C4 /* HelpStackThemeNYPL.plist */,
-				085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */,
-				032A31071DC02E8E0001E4AF /* Localizable.strings */,
+				A823D822192BABA400B55DE2 /* Images.xcassets */,
 				A823D819192BABA400B55DE2 /* InfoPlist.strings */,
+				032A31071DC02E8E0001E4AF /* Localizable.strings */,
+				A823D81C192BABA400B55DE2 /* main.m */,
+				E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */,
+				84B7A3421B84E8FE00584FB2 /* OpenDyslexicFont */,
+				11C113D319F842E2005B3F63 /* Reader */,
+				085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */,
+				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
+				A823D81E192BABA400B55DE2 /* Simplified-Prefix.pch */,
+				2D382BCF1D08B1F5002C423D /* SimplyE-Bridging-Header.h */,
+				E61D7F631F6AC78B0091C781 /* SimplyE.entitlements */,
+				2D6256901D41582A0080A81F /* software-licenses.html */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1145,14 +1145,6 @@
 				AE77EFD5622206475B6715A9 /* NYPLOPDSType.m */,
 			);
 			name = OPDS;
-			sourceTree = "<group>";
-		};
-		E6FAFBEF1F7A9C310026F0EE /* Storyboards */ = {
-			isa = PBXGroup;
-			children = (
-				E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */,
-			);
-			name = Storyboards;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
