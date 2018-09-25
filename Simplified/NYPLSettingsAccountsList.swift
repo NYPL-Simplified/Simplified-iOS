@@ -1,6 +1,6 @@
 /// UITableView to display or add library accounts that the user
 /// can then log in and adjust settings after selecting Accounts.
-class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+@objcMembers class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   weak var tableView: UITableView!
   fileprivate var accounts: [Int] {

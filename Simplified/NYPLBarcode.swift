@@ -26,7 +26,7 @@ fileprivate func ZXBarcodeFormatFor(_ NYPLBarcodeType:NYPLBarcodeType) -> ZXBarc
 
 /// Manage creation and scanning of barcodes on library cards.
 /// Keep any third party dependency abstracted out of the main app.
-final class NYPLBarcode: NSObject {
+@objcMembers final class NYPLBarcode: NSObject {
 
   var libraryName: String?
 

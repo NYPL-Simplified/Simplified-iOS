@@ -4,7 +4,7 @@ import WebKit
 
 /// Similar functionality to BundledHTMLViewController, except for loading remote HTTP URL's where
 /// it does not make sense in certain contexts to have bundled resources loaded.
-final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
+@objcMembers final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
   let fileURL: URL
   let failureMessage: String
   var webView: WKWebView

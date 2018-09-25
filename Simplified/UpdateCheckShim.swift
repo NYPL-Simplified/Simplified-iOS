@@ -4,7 +4,7 @@ import Foundation
 /// seems it cannot handle generating interfaces for classes containing
 /// structures that implement Swift protocols (e.g. `Comparable`), possibly
 /// amongst many other things.
-@objc final class UpdateCheckShim: NSObject {
+@objcMembers final class UpdateCheckShim: NSObject {
   
   /// @param minimumVersionURL An `NSURL` pointing to JSON data of the following format:
   /// {"iOS" = {"minimum-version" = "1.0.0", "update-url" = "http://example.com"}, …}

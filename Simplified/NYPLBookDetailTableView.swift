@@ -40,7 +40,7 @@ private let sectionFooterHeight: CGFloat = 18.0
 private let laneCellHeight: CGFloat = 120.0
 private let standardCellHeight: CGFloat = 44.0
 
-final class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableViewDelegate {
+@objcMembers final class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UITableViewDelegate {
   
   enum BookDetailCellType: String {
     case groupedFeedDownloadPending = "Loading Related Books"

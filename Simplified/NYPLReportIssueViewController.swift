@@ -10,7 +10,7 @@ import UIKit
 import HelpStack
 import MessageUI
 
-class NYPLReportIssueViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UITextViewDelegate, MFMailComposeViewControllerDelegate {
+@objcMembers class NYPLReportIssueViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UITextViewDelegate, MFMailComposeViewControllerDelegate {
 
   @IBOutlet var tableView: UITableView!
 

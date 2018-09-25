@@ -2,7 +2,7 @@ import Foundation
 
 /// Returns the URL of the directory used for storing content and metadata.
 /// The directory is not guaranteed to exist at the time this method is called.
-final class DirectoryManager : NSObject {
+@objcMembers final class DirectoryManager : NSObject {
   
   class func current() -> URL? {
     return directory(AccountsManager.shared.currentAccount.id)

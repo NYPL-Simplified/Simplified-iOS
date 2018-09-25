@@ -1,7 +1,7 @@
 import UIKit
 
 /// Advanced Menu in Settings
-class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+@objcMembers class NYPLSettingsAdvancedViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
   
   var account: Account
 

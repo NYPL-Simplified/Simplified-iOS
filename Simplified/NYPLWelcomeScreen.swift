@@ -3,7 +3,7 @@ import PureLayout
 
 
 /// Welcome screen for a first-time user
-final class NYPLWelcomeScreenViewController: UIViewController {
+@objcMembers final class NYPLWelcomeScreenViewController: UIViewController {
   
   var completion: ((Account) -> ())?
   

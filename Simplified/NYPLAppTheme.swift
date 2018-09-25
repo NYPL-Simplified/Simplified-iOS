@@ -1,4 +1,4 @@
-final class NYPLAppTheme: NSObject {
+@objcMembers final class NYPLAppTheme: NSObject {
 
   private enum NYPLAppThemeColor: String {
     case red
