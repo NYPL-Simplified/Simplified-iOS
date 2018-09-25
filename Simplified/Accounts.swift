@@ -191,7 +191,7 @@ final class Account:NSObject
     }
   }
   
-  func getLicenseURL(_ type: URLType) -> URL? {
+  @objc func getLicenseURL(_ type: URLType) -> URL? {
     switch type {
     case .acknowledgements:
       if let url = urlAcknowledgements {

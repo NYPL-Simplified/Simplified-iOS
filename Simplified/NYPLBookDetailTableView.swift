@@ -9,15 +9,15 @@ import PureLayout
 
 final class NYPLBookDetailTableView: UITableView {
   
-  override init(frame: CGRect, style: UITableViewStyle) {
+  override init(frame: CGRect, style: UITableView.Style) {
     super.init(frame: frame, style: style)
     self.isScrollEnabled = false
     self.backgroundColor = UIColor.clear
     self.separatorStyle = .singleLine
-    self.layoutMargins = UIEdgeInsetsMake(self.layoutMargins.top,
-                                          self.layoutMargins.left+12,
-                                          self.layoutMargins.bottom,
-                                          self.layoutMargins.right+12)
+    self.layoutMargins = UIEdgeInsets.init(top: self.layoutMargins.top,
+                                          left: self.layoutMargins.left+12,
+                                          bottom: self.layoutMargins.bottom,
+                                          right: self.layoutMargins.right+12)
     self.estimatedRowHeight = 0
     self.estimatedSectionHeaderHeight = 0
     self.estimatedSectionFooterHeight = 0
@@ -30,7 +30,7 @@ final class NYPLBookDetailTableView: UITableView {
   override public var intrinsicContentSize: CGSize {
     get {
       layoutIfNeeded()
-      return CGSize(width: UIViewNoIntrinsicMetric, height: contentSize.height)
+      return CGSize(width: UIView.noIntrinsicMetric, height: contentSize.height)
     }
   }
 }
@@ -63,7 +63,7 @@ final class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UI
   }
   
   func load() {
-    NotificationCenter.default.addObserver(self, selector: #selector(self.updateFonts), name: NSNotification.Name.UIContentSizeCategoryDidChange, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(self.updateFonts), name: UIContentSizeCategory.didChangeNotification, object: nil)
     
     if book.reportURL != nil {
       standardCells.append(createCell(type: .reportAProblem))
@@ -105,7 +105,7 @@ final class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UI
     refresh()
   }
   
-  func updateFonts() {
+  @objc func updateFonts() {
     for tuple in standardCells {
       tuple.0.textLabel?.font = UIFont.customFont(forTextStyle: .body)
       tuple.0.textLabel?.text = tuple.1.rawValue
@@ -154,7 +154,7 @@ final class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UI
     let cell = UITableViewCell()
     cell.backgroundColor = .clear
     let activityIndicator = UIActivityIndicatorView()
-    activityIndicator.activityIndicatorViewStyle = .gray
+    activityIndicator.style = .gray
     cell.contentView.addSubview(activityIndicator)
     activityIndicator.autoCenterInSuperview()
     activityIndicator.startAnimating()
@@ -171,7 +171,7 @@ final class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UI
     }
   }
 
-  func moreBooksTapped(sender: UIButton) {
+  @objc func moreBooksTapped(sender: UIButton) {
     self.viewDelegate?.moreBooksTapped(forLane: self.catalogLanes[sender.tag])
   }
 
@@ -260,13 +260,13 @@ final class NYPLBookDetailTableViewDelegate: NSObject, UITableViewDataSource, UI
 
     headerButton.setTitle(catalogLanes[section].title, for: .normal)
     headerButton.setTitleColor(.black, for: .normal)
-    headerButton.titleLabel?.font = UIFont.customBoldFont(forTextStyle: UIFontTextStyle.caption1)
+    headerButton.titleLabel?.font = UIFont.customBoldFont(forTextStyle: UIFont.TextStyle.caption1)
     
     moreButton.addTarget(self, action: #selector(moreBooksTapped(sender:)), for: .touchUpInside)
     moreButton.tag = section
     moreButton.setTitle("More...", for: .normal)
     moreButton.setTitleColor(.black, for: .normal)
-    moreButton.titleLabel?.font = UIFont.customFont(forTextStyle: UIFontTextStyle.caption1)
+    moreButton.titleLabel?.font = UIFont.customFont(forTextStyle: UIFont.TextStyle.caption1)
     
     container.addSubview(headerButton)
     container.addSubview(moreButton)

@@ -42,7 +42,7 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
   
   func activityView(_ animated: Bool) -> Void {
     if animated == true {
-      activityView = UIActivityIndicatorView.init(activityIndicatorStyle: .gray)
+      activityView = UIActivityIndicatorView.init(style: .gray)
       view.addSubview(activityView)
       activityView.autoCenterInSuperview()
       activityView.startAnimating()
@@ -79,7 +79,7 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
         decisionHandler(.cancel)
       } else {
         if #available(iOS 10.0, *) {
-          UIApplication.shared.open(url, options: [:], completionHandler: nil)
+          UIApplication.shared.open(url, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: nil)
         } else {
           UIApplication.shared.openURL(url)
         }
@@ -93,4 +93,9 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
   func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
     activityView(false)
   }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }

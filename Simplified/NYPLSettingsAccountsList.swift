@@ -73,7 +73,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
                                            object: nil)
   }
   
-  func reloadAfterAccountChange() {
+  @objc func reloadAfterAccountChange() {
     accounts = NYPLSettings.shared().settingsAccountsList as! [Int]
     self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount.id }
     self.tableView.reloadData()
@@ -91,7 +91,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     }
   }
   
-  func addAccount() {
+  @objc func addAccount() {
     let alert = UIAlertController(title: NSLocalizedString(
       "SettingsAccountLibrariesViewControllerAlertTitle",
       comment: "Title to tell a user that they can add another account to the list"),
@@ -161,7 +161,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   
   func cellForLibrary(_ account: Account, _ indexPath: IndexPath) -> UITableViewCell {
 
-    let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
+    let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "cell")
 
     let container = UIView()
     let textContainer = UIView()
@@ -195,7 +195,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     textContainer.autoPinEdge(toSuperviewMargin: .right)
     textContainer.autoAlignAxis(toSuperviewAxis: .horizontal)
 
-    NSLayoutConstraint.autoSetPriority(UILayoutPriorityDefaultLow) {
+    NSLayoutConstraint.autoSetPriority(UILayoutPriority.defaultLow) {
       textContainer.autoPinEdge(toSuperviewEdge: .top, withInset: 0, relation: .greaterThanOrEqual)
       textContainer.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0, relation: .greaterThanOrEqual)
     }
@@ -226,7 +226,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return UITableViewAutomaticDimension
+    return UITableView.automaticDimension
   }
   
   func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -241,7 +241,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     }
   }
   
-  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
       userAddedSecondaryAccounts.remove(at: indexPath.row)
       tableView.deleteRows(at: [indexPath], with: .fade)
