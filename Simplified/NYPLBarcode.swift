@@ -55,7 +55,7 @@ fileprivate func ZXBarcodeFormatFor(_ NYPLBarcodeType:NYPLBarcodeType) -> ZXBarc
 
   class func presentScanner(withCompletion completion: @escaping (String?) -> ())
   {
-    AVCaptureDevice.requestAccess(for: AVMediaType(rawValue: convertFromAVMediaType(AVMediaType.video))) { granted in
+    AVCaptureDevice.requestAccess(for: .video) { granted in
       DispatchQueue.main.async {
         if granted {
           guard let scannerVC = NYPLBarcodeScanningViewController.init(completion: completion) else { return }
