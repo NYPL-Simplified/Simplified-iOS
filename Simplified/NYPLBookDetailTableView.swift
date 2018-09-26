@@ -105,7 +105,7 @@ private let standardCellHeight: CGFloat = 44.0
     refresh()
   }
   
-  @objc func updateFonts() {
+  func updateFonts() {
     for tuple in standardCells {
       tuple.0.textLabel?.font = UIFont.customFont(forTextStyle: .body)
       tuple.0.textLabel?.text = tuple.1.rawValue
@@ -171,7 +171,7 @@ private let standardCellHeight: CGFloat = 44.0
     }
   }
 
-  @objc func moreBooksTapped(sender: UIButton) {
+  func moreBooksTapped(sender: UIButton) {
     self.viewDelegate?.moreBooksTapped(forLane: self.catalogLanes[sender.tag])
   }
 

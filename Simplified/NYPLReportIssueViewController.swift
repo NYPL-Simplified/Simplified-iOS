@@ -83,7 +83,7 @@ import MessageUI
   }
   
   
-  @objc func submitPressed(sender:Any)
+  func submitPressed(sender:Any)
   {
     if checkValidity() {
       
