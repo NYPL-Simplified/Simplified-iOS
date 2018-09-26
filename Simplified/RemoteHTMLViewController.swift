@@ -79,7 +79,7 @@ import WebKit
         decisionHandler(.cancel)
       } else {
         if #available(iOS 10.0, *) {
-          UIApplication.shared.open(url, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: nil)
+          UIApplication.shared.open(url)
         } else {
           UIApplication.shared.openURL(url)
         }
@@ -93,9 +93,4 @@ import WebKit
   func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
     activityView(false)
   }
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }
