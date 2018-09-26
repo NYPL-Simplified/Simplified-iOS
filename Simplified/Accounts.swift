@@ -13,7 +13,7 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   static let shared = AccountsManager()
   
   // For Objective-C classes
-  @objc class func sharedInstance() -> AccountsManager
+  class func sharedInstance() -> AccountsManager
   {
     return AccountsManager.shared
   }
@@ -57,7 +57,7 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     }
   }
   
-  @objc func account(_ id:Int) -> Account?
+  func account(_ id:Int) -> Account?
   {
     return self.accounts.filter{ $0.id == id }.first
   }
@@ -191,7 +191,7 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     }
   }
   
-  @objc func getLicenseURL(_ type: URLType) -> URL? {
+  func getLicenseURL(_ type: URLType) -> URL? {
     switch type {
     case .acknowledgements:
       if let url = urlAcknowledgements {
