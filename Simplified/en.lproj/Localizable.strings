@@ -106,6 +106,7 @@
 "BookDetailViewControllerHoldingTitleFormat" = "Available for checkout in less than %@.";
 "BookDetailViewControllerReservedTitleFormat" = "This reservation will be automatically cancelled in %@.";
 "BookDetailViewControllerDistributedByFormat" = "Distributed by: ";
+"BookDetailViewControllerBookFormat" = "Format: ";
 
 // NYPLFacetView
 

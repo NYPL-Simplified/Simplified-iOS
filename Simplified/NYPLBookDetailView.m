@@ -53,10 +53,12 @@
 @property (nonatomic) UILabel *publisherLabelKey;
 @property (nonatomic) UILabel *categoriesLabelKey;
 @property (nonatomic) UILabel *distributorLabelKey;
+@property (nonatomic) UILabel *formatLabelKey;
 @property (nonatomic) UILabel *publishedLabelValue;
 @property (nonatomic) UILabel *publisherLabelValue;
 @property (nonatomic) UILabel *categoriesLabelValue;
 @property (nonatomic) UILabel *distributorLabelValue;
+@property (nonatomic) UILabel *formatLabelValue;
 @property (nonatomic) NYPLBookDetailTableView *footerTableView;
 
 @property (nonatomic) UIView *topFootnoteSeparater;
@@ -124,10 +126,12 @@ static NSString *DetailHTMLTemplate = nil;
   [self.contentView addSubview:self.publisherLabelKey];
   [self.contentView addSubview:self.categoriesLabelKey];
   [self.contentView addSubview:self.distributorLabelKey];
+  [self.contentView addSubview:self.formatLabelKey];
   [self.contentView addSubview:self.publishedLabelValue];
   [self.contentView addSubview:self.publisherLabelValue];
   [self.contentView addSubview:self.categoriesLabelValue];
   [self.contentView addSubview:self.distributorLabelValue];
+  [self.contentView addSubview:self.formatLabelValue];
   [self.contentView addSubview:self.footerTableView];
   [self.contentView addSubview:self.bottomFootnoteSeparator];
   
@@ -289,6 +293,9 @@ static NSString *DetailHTMLTemplate = nil;
   NSString *const publishedValueString = self.book.published ? [dateFormatter stringFromDate:self.book.published] : nil;
   NSString *const publisherValueString = self.book.publisher;
   NSString *const distributorKeyString = self.book.distributor ? [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerDistributedByFormat", nil)] : nil;
+  NSString *const formatValueString = [self.book.acquisitions[0].type isEqualToString:@"application/pdf"] ? @"PDF" : @"EPUB";
+  NSString *const formatKeyString = formatValueString ? [NSString stringWithFormat:NSLocalizedString(@"BookDetailViewControllerBookFormat", nil)] : nil;
+
   
   if (!categoriesValueString && !publishedValueString && !publisherValueString && !self.book.distributor) {
     self.topFootnoteSeparater.hidden = YES;
@@ -299,6 +306,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.publisherLabelKey = [self createFooterLabelWithString:publisherKeyString alignment:NSTextAlignmentRight];
   self.publishedLabelKey = [self createFooterLabelWithString:publishedKeyString alignment:NSTextAlignmentRight];
   self.distributorLabelKey = [self createFooterLabelWithString:distributorKeyString alignment:NSTextAlignmentRight];
+  self.formatLabelKey = [self createFooterLabelWithString:formatKeyString alignment:NSTextAlignmentRight];
   
   self.categoriesLabelValue = [self createFooterLabelWithString:categoriesValueString alignment:NSTextAlignmentLeft];
   self.categoriesLabelValue.numberOfLines = 2;
@@ -306,6 +314,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.publisherLabelValue.numberOfLines = 2;
   self.publishedLabelValue = [self createFooterLabelWithString:publishedValueString alignment:NSTextAlignmentLeft];
   self.distributorLabelValue = [self createFooterLabelWithString:self.book.distributor alignment:NSTextAlignmentLeft];
+  self.formatLabelValue = [self createFooterLabelWithString:formatValueString alignment:NSTextAlignmentLeft];
   
   self.topFootnoteSeparater = [[UIView alloc] init];
   self.topFootnoteSeparater.backgroundColor = [UIColor lightGrayColor];
@@ -418,6 +427,10 @@ static NSString *DetailHTMLTemplate = nil;
   [self.distributorLabelValue autoPinEdgeToSuperviewMargin:ALEdgeTrailing relation:NSLayoutRelationGreaterThanOrEqual];
   [self.distributorLabelValue autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.categoriesLabelValue];
   [self.distributorLabelValue autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.distributorLabelKey withOffset:MainTextPaddingLeft];
+
+  [self.formatLabelValue autoPinEdgeToSuperviewMargin:ALEdgeTrailing relation:NSLayoutRelationGreaterThanOrEqual];
+  [self.formatLabelValue autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.distributorLabelValue];
+  [self.formatLabelValue autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.formatLabelKey withOffset:MainTextPaddingLeft];
   
   [self.publishedLabelKey autoPinEdgeToSuperviewMargin:ALEdgeLeading];
   [self.publishedLabelKey autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.publisherLabelKey];
@@ -435,8 +448,13 @@ static NSString *DetailHTMLTemplate = nil;
   [self.categoriesLabelKey setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
 
   [self.distributorLabelKey autoPinEdgeToSuperviewMargin:ALEdgeLeading];
+  [self.distributorLabelKey autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.formatLabelKey];
   [self.distributorLabelKey autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.distributorLabelValue];
   [self.distributorLabelKey setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+
+  [self.formatLabelKey autoPinEdgeToSuperviewMargin:ALEdgeLeading];
+  [self.formatLabelKey autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.formatLabelValue];
+  [self.formatLabelKey setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
   
   
   if (self.closeButton) {
@@ -456,10 +474,10 @@ static NSString *DetailHTMLTemplate = nil;
   [self.bottomFootnoteSeparator autoSetDimension:ALDimensionHeight toSize: 1.0f / [UIScreen mainScreen].scale];
   [self.bottomFootnoteSeparator autoPinEdgeToSuperviewEdge:ALEdgeRight];
   [self.bottomFootnoteSeparator autoPinEdgeToSuperviewMargin:ALEdgeLeft];
-  [self.bottomFootnoteSeparator autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.distributorLabelValue withOffset:VerticalPadding];
+  [self.bottomFootnoteSeparator autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.formatLabelValue withOffset:VerticalPadding];
   
   [self.footerTableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
-  [self.footerTableView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.distributorLabelValue withOffset:VerticalPadding];
+  [self.footerTableView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.formatLabelValue withOffset:VerticalPadding];
 }
 
 #pragma mark NSObject
