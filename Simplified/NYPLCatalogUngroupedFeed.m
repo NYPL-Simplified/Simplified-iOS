@@ -18,6 +18,8 @@
 @property (nonatomic) NSUInteger greatestPreparationIndex;
 @property (nonatomic) NSURL *nextURL;
 @property (nonatomic) NSURL *openSearchURL;
+@property (nonatomic) NSArray<NYPLCatalogFacet *> *entryPoints;
+
 
 @end
 
@@ -82,7 +84,8 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
     }
     [self.books addObject:book];
   }
-  
+
+  NSMutableArray *const entryPointFacets = [NSMutableArray array];
   NSMutableArray *const facetGroupNames = [NSMutableArray array];
   NSMutableDictionary *const facetGroupNamesToMutableFacetArrays =
     [NSMutableDictionary dictionary];
@@ -94,6 +97,15 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
         if(NYPLOPDSAttributeKeyStringIsFacetGroup(key)) {
           groupName = link.attributes[key];
           break;
+        }
+        if(NYPLOPDSAttributeKeyStringIsFacetGroupType(key)) {
+          NYPLCatalogFacet *facet = [NYPLCatalogFacet catalogFacetWithLink:link];
+          if (facet) {
+            [entryPointFacets addObject:facet];
+          } else {
+            NYPLLOG(@"Entrypoint Facet could not be created.");
+          }
+          continue;
         }
       }
       if(!groupName) {
@@ -132,6 +144,7 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   }
   
   self.facetGroups = facetGroups;
+  self.entryPoints = entryPointFacets;
   
   [[NSNotificationCenter defaultCenter]
    addObserver:self

@@ -1,5 +1,6 @@
 @class NYPLCatalogUngroupedFeed;
 @class NYPLOPDSFeed;
+@class NYPLCatalogFacet;
 
 @protocol NYPLCatalogUngroupedFeedDelegate
 
@@ -23,6 +24,7 @@
 @property (nonatomic, readonly) NSString *searchTemplate; // nilable
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) BOOL currentlyFetchingNextURL;
+@property (nonatomic, readonly) NSArray<NYPLCatalogFacet *> *entryPoints;
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;

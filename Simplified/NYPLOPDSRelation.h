@@ -54,3 +54,6 @@ static NSString *const NYPLOPDSRelationAcquisitionIssues =
 
 static NSString *const NYPLOPDSRelationAnnotations =
   @"http://www.w3.org/ns/oa#annotationService";
+
+static NSString *const NYPLOPDSRelationEntrypoint =
+  @"http://librarysimplified.org/terms/rel/entrypoint";

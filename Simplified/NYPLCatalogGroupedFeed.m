@@ -9,6 +9,7 @@
 #import "NYPLXML.h"
 #import "NYPLSettings.h"
 #import "NYPLConfiguration.h"
+#import "NYPLCatalogFacet.h"
 #import "SimplyE-Swift.h"
 
 #import "NYPLCatalogGroupedFeed.h"
@@ -18,6 +19,8 @@
 @property (nonatomic) NSArray *lanes;
 @property (nonatomic) NSURL *openSearchURL;
 @property (nonatomic) NSString *title;
+@property (nonatomic) NSArray<NYPLCatalogFacet *> *entryPoints;
+
 
 @end
 
@@ -29,11 +32,27 @@
     @throw NSInvalidArgumentException;
   }
   
-  NSURL *openSearchURL = nil;
-  
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+
+  NSURL *openSearchURL = nil;
+  NSMutableArray *const entryPointFacets = [NSMutableArray array];
   
   for(NYPLOPDSLink *const link in feed.links) {
+
+    if([link.rel isEqualToString:NYPLOPDSRelationFacet]) {
+      for(NSString *const key in link.attributes) {
+        if(NYPLOPDSAttributeKeyStringIsFacetGroupType(key)) {
+          NYPLCatalogFacet *facet = [NYPLCatalogFacet catalogFacetWithLink:link];
+          if (facet) {
+            [entryPointFacets addObject:facet];
+          } else {
+            NYPLLOG(@"Entrypoint Facet could not be created.");
+          }
+          continue;
+        }
+      }
+    }
+
     if([link.rel isEqualToString:NYPLOPDSRelationSearch] &&
        NYPLOPDSTypeStringIsOpenSearchDescription(link.type)) {
       openSearchURL = link.href;
@@ -65,6 +84,8 @@
       continue;
     }
   }
+
+  self.entryPoints = entryPointFacets;
   
   // This holds group titles in order, without duplicates.
   NSMutableArray *const groupTitles = [NSMutableArray array];
