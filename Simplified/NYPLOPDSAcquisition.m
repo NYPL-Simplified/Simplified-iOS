@@ -25,7 +25,7 @@ static NSString *const hrefAttribute = @"href";
 
 static NSUInteger const numberOfRelations = 6;
 
-NYPLOPDSAcquisitionRelationSet const NYPLOPDSAcquisitionRelationSetAll = (1 << (numberOfRelations + 1)) - 1;
+NYPLOPDSAcquisitionRelationSet const NYPLOPDSAcquisitionRelationSetAll = (1 << (numberOfRelations)) - 1;
 
 NYPLOPDSAcquisitionRelationSet
 NYPLOPDSAcquisitionRelationSetWithRelation(NYPLOPDSAcquisitionRelation relation)
