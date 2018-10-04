@@ -34,7 +34,8 @@
                 case NYPLOPDSFeedTypeAcquisitionGrouped:
                   return [[NYPLCatalogGroupedFeedViewController alloc]
                           initWithGroupedFeed:[[NYPLCatalogGroupedFeed alloc]
-                                               initWithOPDSFeed:feed]];
+                                               initWithOPDSFeed:feed]
+                          remoteViewController:remoteViewController];
                 case NYPLOPDSFeedTypeAcquisitionUngrouped:
                   return [[NYPLCatalogUngroupedFeedViewController alloc]
                           initWithUngroupedFeed:[[NYPLCatalogUngroupedFeed alloc]

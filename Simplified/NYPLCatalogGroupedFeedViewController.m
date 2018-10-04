@@ -13,17 +13,22 @@
 #import "NYPLXML.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLSettings.h"
-
+#import "NYPLCatalogFacet.h"
+#import "SimplyE-Swift.h"
 #import "NYPLCatalogGroupedFeedViewController.h"
 
 #import <PureLayout/PureLayout.h>
 
 static CGFloat const rowHeight = 115.0;
 static CGFloat const sectionHeaderHeight = 50.0;
+static CGFloat const SegmentedControlToolbarHeight = 50.0;
+static CGFloat const TableViewInsetAdjustment = SegmentedControlToolbarHeight - 10;
+
 
 @interface NYPLCatalogGroupedFeedViewController ()
-  <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate>
+  <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate, EntryPointControlDelegate>
 
+@property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
 @property (nonatomic) NSMutableDictionary *bookIdentifiersToImages;
 @property (nonatomic) NSMutableDictionary *cachedLaneCells;
 @property (nonatomic) NYPLCatalogGroupedFeed *feed;
@@ -40,7 +45,8 @@ static CGFloat const sectionHeaderHeight = 50.0;
 
 #pragma mark NSObject
 
-- (instancetype)initWithGroupedFeed:(NYPLCatalogGroupedFeed *)feed
+- (instancetype)initWithGroupedFeed:(NYPLCatalogGroupedFeed *const)feed
+               remoteViewController:(NYPLRemoteViewController *const)remoteViewController
 {
   self = [super init];
   if(!self) return nil;
@@ -48,7 +54,8 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.bookIdentifiersToImages = [NSMutableDictionary dictionary];
   self.cachedLaneCells = [NSMutableDictionary dictionary];
   self.feed = feed;
-  
+  self.remoteViewController = remoteViewController;
+
   return self;
 }
 
@@ -76,7 +83,11 @@ static CGFloat const sectionHeaderHeight = 50.0;
   }
   [self.tableView addSubview:self.refreshControl];
   [self.view addSubview:self.tableView];
-  
+
+  if (self.feed.entryPoints.count != 0) {
+    [self configureEntryPoints:self.feed.entryPoints];
+  }
+
   if(self.feed.openSearchURL) {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                               initWithImage:[UIImage imageNamed:@"Search"]
@@ -98,7 +109,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
   [super didMoveToParentViewController:parent];
   
   if(parent) {
-    CGFloat top = parent.topLayoutGuide.length;
+    CGFloat top = parent.topLayoutGuide.length + TableViewInsetAdjustment;
     CGFloat bottom = parent.bottomLayoutGuide.length;
     
     UIEdgeInsets insets = UIEdgeInsetsMake(top, 0, bottom, 0);
@@ -334,6 +345,33 @@ viewForHeaderInSection:(NSInteger const)section
   NYPLBook *const localBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:feedBook.identifier];
   NYPLBook *const book = (localBook != nil) ? localBook : feedBook;
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
+}
+
+#pragma mark - EntryPointControlDelegate
+
+- (void)configureEntryPoints:(NSArray<NYPLCatalogFacet *> *)facets
+{
+  NYPLEntryPointView *entryPointView = [[NYPLEntryPointView alloc] initWithFacets:facets delegate:self];
+  if (!entryPointView) {
+    return;
+  }
+
+  UIVisualEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+  UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:blur];
+
+  [blurView.contentView addSubview:entryPointView];
+  [entryPointView autoPinEdgesToSuperviewEdges];
+  [self.view addSubview:blurView];
+  [blurView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [blurView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  [blurView autoPinToTopLayoutGuideOfViewController:self withInset:0];
+  [blurView autoSetDimension:ALDimensionHeight toSize:SegmentedControlToolbarHeight];
+}
+
+- (void)didSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet {
+  NSURL *const newURL = entryPointFacet.href;
+  self.remoteViewController.URL = newURL;
+  [self.remoteViewController load];
 }
 
 #pragma mark -
