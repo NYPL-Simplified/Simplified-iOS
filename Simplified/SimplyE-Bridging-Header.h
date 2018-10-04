@@ -26,3 +26,4 @@
 #import "NYPLReachability.h"
 #import "NYPLOPDS.h"
 #import "NYPLLocalization.h"
+#import "NYPLCatalogFacet.h"

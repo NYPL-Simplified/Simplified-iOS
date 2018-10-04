@@ -1,4 +1,5 @@
 @class NYPLCatalogGroupedFeed;
+@class NYPLRemoteViewController;
 
 @interface NYPLCatalogGroupedFeedViewController : UIViewController
 
@@ -7,6 +8,6 @@
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
-- (instancetype)initWithGroupedFeed:(NYPLCatalogGroupedFeed *)feed;
-
+- (instancetype)initWithGroupedFeed:(NYPLCatalogGroupedFeed *const)feed
+               remoteViewController:(NYPLRemoteViewController *const)remoteViewController;
 @end
