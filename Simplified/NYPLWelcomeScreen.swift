@@ -144,7 +144,7 @@ import PureLayout
     return tempView
   }
 
-  @objc func pickYourLibraryTapped() {
+  func pickYourLibraryTapped() {
     if completion == nil {
       self.dismiss(animated: true, completion: nil)
       return
@@ -173,7 +173,7 @@ import PureLayout
     }
   }
 
-  @objc func instantClassicsTapped() {
+  func instantClassicsTapped() {
     if NYPLSettings.shared().acceptedEULABeforeMultiLibrary == true {
       NYPLSettings.shared().settingsAccountsList = [0,2]
     }

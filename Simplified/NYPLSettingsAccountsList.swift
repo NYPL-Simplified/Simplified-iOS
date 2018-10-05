@@ -73,7 +73,7 @@
                                            object: nil)
   }
   
-  @objc func reloadAfterAccountChange() {
+  func reloadAfterAccountChange() {
     accounts = NYPLSettings.shared().settingsAccountsList as! [Int]
     self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount.id }
     self.tableView.reloadData()
@@ -91,7 +91,7 @@
     }
   }
   
-  @objc func addAccount() {
+  func addAccount() {
     let alert = UIAlertController(title: NSLocalizedString(
       "SettingsAccountLibrariesViewControllerAlertTitle",
       comment: "Title to tell a user that they can add another account to the list"),
