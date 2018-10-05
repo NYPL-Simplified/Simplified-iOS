@@ -1,3 +1,4 @@
+#import "Bugsnag.h"
 #import "NYPLConfiguration.h"
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
@@ -193,12 +194,14 @@
   self.activityIndicatorLabel.hidden = YES;
   
   self.reloadView.hidden = NO;
-  
-//  if (error) {
-//    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"Error" error:error];
-//    [self presentViewController:alert animated:YES completion:nil];
-//  }
-  
+
+  NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+  if (self.URL) [dict setObject:self.URL forKey:@"URL"];
+  [Bugsnag notifyError:error block:^(BugsnagCrashReport * _Nonnull report) {
+    report.groupingHash = @"catalog-load-error";
+    report.metaData = dict;
+  }];
+
   self.connection = nil;
   self.data = [NSMutableData data];
   self.response = nil;
