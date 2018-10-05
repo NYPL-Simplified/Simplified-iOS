@@ -18,7 +18,7 @@ class NYPLEntryPointView: UIView {
   /// - Parameters:
   ///   - facets: the given OPDS facets
   ///   - delegate: delegate to handle segmented control selection
-  required init?(facets: [NYPLCatalogFacet], delegate: NYPLEntryPointControlDelegate) {
+  @objc required init?(facets: [NYPLCatalogFacet], delegate: NYPLEntryPointControlDelegate) {
     let titles = NYPLEntryPointView.titlesFrom(facets: facets)
     if titles.count < 2 {
       NSLog("Invalid parameters for entry point view")
@@ -44,10 +44,10 @@ class NYPLEntryPointView: UIView {
     segmentedControl.addTarget(self, action: #selector(didSelect(control:)), for: .valueChanged)
 
     self.addSubview(segmentedControl)
-    NSLayoutConstraint.autoSetPriority(UILayoutPriorityDefaultHigh) {
+    NSLayoutConstraint.autoSetPriority(.defaultHigh) {
       segmentedControl.autoSetDimension(.width, toSize: NYPLEntryPointView.SegmentedControlMaxWidth)
     }
-    NSLayoutConstraint.autoSetPriority(UILayoutPriorityDefaultLow) {
+    NSLayoutConstraint.autoSetPriority(.defaultLow) {
       segmentedControl.autoPinEdge(toSuperviewMargin: .leading)
       segmentedControl.autoPinEdge(toSuperviewMargin: .trailing)
     }
