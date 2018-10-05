@@ -87,9 +87,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   [self.tableView addSubview:self.refreshControl];
   [self.view addSubview:self.tableView];
 
-  if (self.feed.entryPoints.count != 0) {
-    [self configureEntryPoints:self.feed.entryPoints];
-  }
+  [self configureEntryPoints:self.feed.entryPoints];
 
   if(self.feed.openSearchURL) {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
