@@ -20,9 +20,8 @@
 #import <PureLayout/PureLayout.h>
 
 static const CGFloat kActivityIndicatorPadding = 20.0;
-static const CGFloat SegmentedControlToolbarHeight = 54.0;
-static const CGFloat CollectionViewInsetAdjustment = SegmentedControlToolbarHeight - 10;
-static const CGFloat CollectionViewCrossfadeDuration = 0.3;
+static const CGFloat kSegmentedControlToolbarHeight = 54.0;
+static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
 
 @interface NYPLCatalogUngroupedFeedViewController ()
   <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate, NYPLEntryPointControlDelegate,
@@ -134,7 +133,7 @@ static const CGFloat CollectionViewCrossfadeDuration = 0.3;
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
-  [UIView animateWithDuration:CollectionViewCrossfadeDuration animations:^{
+  [UIView animateWithDuration:kCollectionViewCrossfadeDuration animations:^{
     self.collectionView.alpha = 1.0;
     self.entryPointBarView.alpha = 1.0;
   }];
@@ -304,7 +303,7 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
   if (entryPointView) {
     [self.entryPointBarView.contentView addSubview:entryPointView];
     [entryPointView autoPinEdgesToSuperviewEdges];
-    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:SegmentedControlToolbarHeight];
+    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:kSegmentedControlToolbarHeight];
   } else {
     [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:0];
   }

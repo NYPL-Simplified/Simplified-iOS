@@ -19,11 +19,11 @@
 
 #import <PureLayout/PureLayout.h>
 
-static CGFloat const rowHeight = 115.0;
-static CGFloat const sectionHeaderHeight = 50.0;
-static CGFloat const SegmentedControlToolbarHeight = 54.0;
-static CGFloat const TableViewInsetAdjustmentWithEntryPoints = -8;
-static CGFloat const TableViewCrossfadeDuration = 0.3;
+static CGFloat const kRowHeight = 115.0;
+static CGFloat const kSectionHeaderHeight = 50.0;
+static CGFloat const kSegmentedControlToolbarHeight = 54.0;
+static CGFloat const kTableViewInsetAdjustmentWithEntryPoints = -8;
+static CGFloat const kTableViewCrossfadeDuration = 0.3;
 
 
 @interface NYPLCatalogGroupedFeedViewController ()
@@ -114,7 +114,7 @@ static CGFloat const TableViewCrossfadeDuration = 0.3;
   if(parent) {
     CGFloat top = parent.topLayoutGuide.length;
     if (self.entryPointBarView.frame.size.height > 0) {
-       top = CGRectGetMaxY(self.entryPointBarView.frame) + TableViewInsetAdjustmentWithEntryPoints;
+       top = CGRectGetMaxY(self.entryPointBarView.frame) + kTableViewInsetAdjustmentWithEntryPoints;
     }
     CGFloat bottom = parent.bottomLayoutGuide.length;
     
@@ -148,7 +148,7 @@ static CGFloat const TableViewCrossfadeDuration = 0.3;
 {
   [super viewDidAppear:animated];
 
-  [UIView animateWithDuration:TableViewCrossfadeDuration animations:^{
+  [UIView animateWithDuration:kTableViewCrossfadeDuration animations:^{
     self.tableView.alpha = 1.0;
     self.entryPointBarView.alpha = 1.0;
   }];
@@ -235,19 +235,19 @@ static CGFloat const TableViewCrossfadeDuration = 0.3;
 - (CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView
 heightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
 {
-  return rowHeight;
+  return kRowHeight;
 }
 
 - (CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView
 heightForHeaderInSection:(__attribute__((unused)) NSInteger)section
 {
-  return sectionHeaderHeight;
+  return kSectionHeaderHeight;
 }
 
 - (UIView *)tableView:(__attribute__((unused)) UITableView *)tableView
 viewForHeaderInSection:(NSInteger const)section
 {
-  CGRect const frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), sectionHeaderHeight);
+  CGRect const frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), kSectionHeaderHeight);
   UIView *const view = [[UIView alloc] initWithFrame:frame];
   view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
   view.backgroundColor = [[NYPLConfiguration backgroundColor] colorWithAlphaComponent:0.9];
@@ -375,7 +375,7 @@ viewForHeaderInSection:(NSInteger const)section
   if (entryPointView) {
     [self.entryPointBarView.contentView addSubview:entryPointView];
     [entryPointView autoPinEdgesToSuperviewEdges];
-    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:SegmentedControlToolbarHeight];
+    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:kSegmentedControlToolbarHeight];
   } else {
     [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:0];
   }
