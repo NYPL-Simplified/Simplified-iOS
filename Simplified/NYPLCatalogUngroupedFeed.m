@@ -92,31 +92,38 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
   
   for(NYPLOPDSLink *const link in feed.links) {
     if([link.rel isEqualToString:NYPLOPDSRelationFacet]) {
+
       NSString *groupName = nil;
+      NYPLCatalogFacet *facet = nil;
       for(NSString *const key in link.attributes) {
-        if(NYPLOPDSAttributeKeyStringIsFacetGroup(key)) {
-          groupName = link.attributes[key];
-          break;
-        }
         if(NYPLOPDSAttributeKeyStringIsFacetGroupType(key)) {
-          NYPLCatalogFacet *facet = [NYPLCatalogFacet catalogFacetWithLink:link];
+          facet = [NYPLCatalogFacet catalogFacetWithLink:link];
           if (facet) {
             [entryPointFacets addObject:facet];
           } else {
             NYPLLOG(@"Entrypoint Facet could not be created.");
           }
+          break;
+        } else if(NYPLOPDSAttributeKeyStringIsFacetGroup(key)) {
+          groupName = link.attributes[key];
           continue;
         }
+      }
+
+      if (facet) {
+        continue;
       }
       if(!groupName) {
         NYPLLOG(@"Ignoring facet without group due to UI limitations.");
         continue;
       }
-      NYPLCatalogFacet *const facet = [NYPLCatalogFacet catalogFacetWithLink:link];
+
+      facet = [NYPLCatalogFacet catalogFacetWithLink:link];
       if(!facet) {
         NYPLLOG(@"Ignoring invalid facet link.");
         continue;
       }
+
       if(![facetGroupNames containsObject:groupName]) {
         [facetGroupNames addObject:groupName];
         facetGroupNamesToMutableFacetArrays[groupName] = [NSMutableArray arrayWithCapacity:2];
@@ -124,10 +131,12 @@ handler:(void (^)(NYPLCatalogUngroupedFeed *category))handler
       [facetGroupNamesToMutableFacetArrays[groupName] addObject:facet];
       continue;
     }
+
     if([link.rel isEqualToString:NYPLOPDSRelationPaginationNext]) {
       self.nextURL = link.href;
       continue;
     }
+    
     if([link.rel isEqualToString:NYPLOPDSRelationSearch] &&
        NYPLOPDSTypeStringIsOpenSearchDescription(link.type)) {
       self.openSearchURL = link.href;

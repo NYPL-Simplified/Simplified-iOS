@@ -1,6 +1,6 @@
 import UIKit
 
-@objc protocol EntryPointControlDelegate {
+@objc protocol NYPLEntryPointControlDelegate {
   func didSelect(entryPointFacet: NYPLCatalogFacet)
 }
 
@@ -10,7 +10,7 @@ class NYPLEntryPointView: UIView {
 
   private let segmentedControl: UISegmentedControl
   private let facets: [NYPLCatalogFacet]
-  private weak var delegate: EntryPointControlDelegate?
+  private weak var delegate: NYPLEntryPointControlDelegate?
 
   /// Create a view to handle OPDS Entry Points.
   /// Will return nil if there are not enough valid facets.
@@ -18,7 +18,7 @@ class NYPLEntryPointView: UIView {
   /// - Parameters:
   ///   - facets: the given OPDS facets
   ///   - delegate: delegate to handle segmented control selection
-  required init?(facets: [NYPLCatalogFacet], delegate: EntryPointControlDelegate) {
+  required init?(facets: [NYPLCatalogFacet], delegate: NYPLEntryPointControlDelegate) {
     let titles = NYPLEntryPointView.titlesFrom(facets: facets)
     if titles.count < 2 {
       NSLog("Invalid parameters for entry point view")
