@@ -21,12 +21,13 @@
 
 static CGFloat const rowHeight = 115.0;
 static CGFloat const sectionHeaderHeight = 50.0;
-static CGFloat const SegmentedControlToolbarHeight = 50.0;
-static CGFloat const TableViewInsetAdjustment = SegmentedControlToolbarHeight - 10;
+static CGFloat const SegmentedControlToolbarHeight = 54.0;
+static CGFloat const TableViewInsetAdjustmentWithEntryPoints = -8;
+static CGFloat const TableViewCrossfadeDuration = 0.3;
 
 
 @interface NYPLCatalogGroupedFeedViewController ()
-  <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate, EntryPointControlDelegate>
+  <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate, NYPLEntryPointControlDelegate>
 
 @property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
 @property (nonatomic) NSMutableDictionary *bookIdentifiersToImages;
@@ -35,6 +36,7 @@ static CGFloat const TableViewInsetAdjustment = SegmentedControlToolbarHeight - 
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
+@property (nonatomic) UIVisualEffectView *entryPointBarView;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) NYPLBook *mostRecentBookSelected;
 @property (nonatomic) int tempBookPosition;
@@ -73,6 +75,7 @@ static CGFloat const TableViewInsetAdjustment = SegmentedControlToolbarHeight - 
   self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
   self.tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);
+  self.tableView.alpha = 0.0;
   self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
@@ -109,7 +112,10 @@ static CGFloat const TableViewInsetAdjustment = SegmentedControlToolbarHeight - 
   [super didMoveToParentViewController:parent];
   
   if(parent) {
-    CGFloat top = parent.topLayoutGuide.length + TableViewInsetAdjustment;
+    CGFloat top = parent.topLayoutGuide.length;
+    if (self.entryPointBarView.frame.size.height > 0) {
+       top = CGRectGetMaxY(self.entryPointBarView.frame) + TableViewInsetAdjustmentWithEntryPoints;
+    }
     CGFloat bottom = parent.bottomLayoutGuide.length;
     
     UIEdgeInsets insets = UIEdgeInsetsMake(top, 0, bottom, 0);
@@ -141,6 +147,12 @@ static CGFloat const TableViewInsetAdjustment = SegmentedControlToolbarHeight - 
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
+
+  [UIView animateWithDuration:TableViewCrossfadeDuration animations:^{
+    self.tableView.alpha = 1.0;
+    self.entryPointBarView.alpha = 1.0;
+  }];
+
   if (!self.presentedViewController) {
     self.mostRecentBookSelected = nil;
   }
@@ -347,25 +359,26 @@ viewForHeaderInSection:(NSInteger const)section
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
 
-#pragma mark - EntryPointControlDelegate
+#pragma mark - NYPLEntryPointControlDelegate
 
 - (void)configureEntryPoints:(NSArray<NYPLCatalogFacet *> *)facets
 {
-  NYPLEntryPointView *entryPointView = [[NYPLEntryPointView alloc] initWithFacets:facets delegate:self];
-  if (!entryPointView) {
-    return;
-  }
-
   UIVisualEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
-  UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:blur];
+  self.entryPointBarView = [[UIVisualEffectView alloc] initWithEffect:blur];
+  self.entryPointBarView.alpha = 0;
+  [self.view addSubview:self.entryPointBarView];
+  [self.entryPointBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [self.entryPointBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  [self.entryPointBarView autoPinToTopLayoutGuideOfViewController:self withInset:0];
 
-  [blurView.contentView addSubview:entryPointView];
-  [entryPointView autoPinEdgesToSuperviewEdges];
-  [self.view addSubview:blurView];
-  [blurView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
-  [blurView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
-  [blurView autoPinToTopLayoutGuideOfViewController:self withInset:0];
-  [blurView autoSetDimension:ALDimensionHeight toSize:SegmentedControlToolbarHeight];
+  NYPLEntryPointView *entryPointView = [[NYPLEntryPointView alloc] initWithFacets:facets delegate:self];
+  if (entryPointView) {
+    [self.entryPointBarView.contentView addSubview:entryPointView];
+    [entryPointView autoPinEdgesToSuperviewEdges];
+    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:SegmentedControlToolbarHeight];
+  } else {
+    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:0];
+  }
 }
 
 - (void)didSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet {
