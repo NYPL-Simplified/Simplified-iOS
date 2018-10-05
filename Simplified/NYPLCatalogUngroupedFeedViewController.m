@@ -14,15 +14,18 @@
 #import "NYPLRemoteViewController.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLSettings.h"
-
+#import "SimplyE-Swift.h"
 #import "NYPLCatalogUngroupedFeedViewController.h"
 
 #import <PureLayout/PureLayout.h>
 
 static const CGFloat kActivityIndicatorPadding = 20.0;
+static const CGFloat SegmentedControlToolbarHeight = 54.0;
+static const CGFloat CollectionViewInsetAdjustment = SegmentedControlToolbarHeight - 10;
+static const CGFloat CollectionViewCrossfadeDuration = 0.3;
 
 @interface NYPLCatalogUngroupedFeedViewController ()
-  <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate,
+  <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate, NYPLEntryPointControlDelegate,
    UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate>
 
 @property (nonatomic) NYPLFacetBarView *facetBarView;
@@ -31,6 +34,7 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
 @property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 @property (nonatomic) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic) UIVisualEffectView *entryPointBarView;
 
 @end
 
@@ -41,7 +45,6 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
 {
   self = [super init];
   if(!self) return nil;
-  
   self.feed = feed;
   self.feed.delegate = self;
   self.remoteViewController = remoteViewController;
@@ -76,15 +79,27 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  
+
+  [self configureEntryPoints:self.feed.entryPoints];
+
   self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:0];
   self.facetBarView.facetView.dataSource = self;
   self.facetBarView.facetView.delegate = self;
   [self.view addSubview:self.facetBarView];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  [self.facetBarView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.entryPointBarView];
+  if (self.feed.facetGroups.count > 0) {
+    [self.facetBarView autoSetDimension:ALDimensionHeight toSize:40.0];
+  } else {
+    [self.facetBarView autoSetDimension:ALDimensionHeight toSize:0];
+    self.facetBarView.hidden = YES;
+  }
   
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
-  
+  self.collectionView.alpha = 0.0;
+
   if (@available(iOS 11.0, *)) {
     self.collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
   }
@@ -116,17 +131,20 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
   [self enable3DTouch];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+  [super viewDidAppear:animated];
+  [UIView animateWithDuration:CollectionViewCrossfadeDuration animations:^{
+    self.collectionView.alpha = 1.0;
+    self.entryPointBarView.alpha = 1.0;
+  }];
+}
+
 - (void)didMoveToParentViewController:(UIViewController *)parent
 {
   [super didMoveToParentViewController:parent];
   
   if(parent) {
-    self.facetBarView.frame =
-      CGRectMake(0,
-                 CGRectGetMaxY(self.navigationController.navigationBar.frame),
-                 CGRectGetWidth(self.view.frame),
-                 CGRectGetHeight(self.facetBarView.frame));
-    
     [self updateActivityIndicator];
     self.collectionView.scrollIndicatorInsets = [self scrollIndicatorInsets];
     [self.collectionView setContentOffset:CGPointMake(0, -CGRectGetMaxY(self.facetBarView.frame))
@@ -267,6 +285,35 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
   
   self.remoteViewController.URL = facet.href;
   
+  [self.remoteViewController load];
+}
+
+#pragma mark NYPLEntryPointControlDelegate
+
+- (void)configureEntryPoints:(NSArray<NYPLCatalogFacet *> *)facets
+{
+  UIVisualEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+  self.entryPointBarView = [[UIVisualEffectView alloc] initWithEffect:blur];
+  self.entryPointBarView.alpha = 0;
+  [self.view addSubview:self.entryPointBarView];
+  [self.entryPointBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [self.entryPointBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  [self.entryPointBarView autoPinToTopLayoutGuideOfViewController:self withInset:0];
+
+  NYPLEntryPointView *entryPointView = [[NYPLEntryPointView alloc] initWithFacets:facets delegate:self];
+  if (entryPointView) {
+    [self.entryPointBarView.contentView addSubview:entryPointView];
+    [entryPointView autoPinEdgesToSuperviewEdges];
+    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:SegmentedControlToolbarHeight];
+  } else {
+    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:0];
+  }
+}
+
+- (void)didSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet
+{
+  NSURL *const newURL = entryPointFacet.href;
+  self.remoteViewController.URL = newURL;
   [self.remoteViewController load];
 }
 
