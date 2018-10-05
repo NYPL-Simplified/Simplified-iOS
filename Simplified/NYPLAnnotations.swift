@@ -1,6 +1,6 @@
 import UIKit
 
-final class NYPLAnnotations: NSObject {
+@objcMembers final class NYPLAnnotations: NSObject {
 
   // MARK: - Sync Settings
 

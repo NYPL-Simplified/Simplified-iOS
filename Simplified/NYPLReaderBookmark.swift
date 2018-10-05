@@ -1,4 +1,4 @@
-final class NYPLReaderBookmark: NSObject {
+@objcMembers final class NYPLReaderBookmark: NSObject {
   
   var annotationId:String?
 

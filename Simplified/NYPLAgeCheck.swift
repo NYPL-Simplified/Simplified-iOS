@@ -1,6 +1,6 @@
 import Foundation
 
-final class AgeCheck : NSObject {
+@objcMembers final class AgeCheck : NSObject {
 
   class func verifyCurrentAccountAgeRequirement(_ completion: ((Bool) -> ())?) -> Void
   {

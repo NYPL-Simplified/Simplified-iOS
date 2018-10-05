@@ -1,6 +1,6 @@
 import Foundation
 
-final class NYPLKeychainManager: NSObject {
+@objcMembers final class NYPLKeychainManager: NSObject {
 
   private enum KeychainGroups: String {
     case legacyKeychainID = "NLJ22T6E9W.org.nypl.labs.SimplyE"
