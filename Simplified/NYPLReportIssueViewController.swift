@@ -10,7 +10,7 @@ import UIKit
 import HelpStack
 import MessageUI
 
-class NYPLReportIssueViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UITextViewDelegate, MFMailComposeViewControllerDelegate {
+@objcMembers class NYPLReportIssueViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UITextViewDelegate, MFMailComposeViewControllerDelegate {
 
   @IBOutlet var tableView: UITableView!
 
@@ -172,7 +172,7 @@ class NYPLReportIssueViewController: UIViewController, UITableViewDataSource, UI
         var messageHeight:CGFloat;
         //Instead, get the keyboard height and calculate the message field height
         let orientation:UIDeviceOrientation = UIDevice.current.orientation;
-        if (UIDeviceOrientationIsLandscape(orientation))
+        if (orientation.isLandscape)
         {
           messageHeight = 68.0;
         }

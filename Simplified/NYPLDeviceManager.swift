@@ -5,7 +5,7 @@ import UIKit
 /// a beta and the production version, or through other ways we're not aware of.
 /// We may be able to recover (from the 6 allowed) activations by sending these
 /// through the deactivation process in the black box manually.
-class NYPLDeviceManager: NSObject {
+@objcMembers class NYPLDeviceManager: NSObject {
   
   private static let contentTypeHeader = "vnd.librarysimplified/drm-device-id-list"
   

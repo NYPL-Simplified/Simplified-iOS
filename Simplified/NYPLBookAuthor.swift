@@ -1,6 +1,6 @@
 import Foundation
 
-final class NYPLBookAuthor: NSObject {
+@objcMembers final class NYPLBookAuthor: NSObject {
 
   let name: String
   let relatedBooksURL: URL?

@@ -1,6 +1,6 @@
 /// UITableView to display or add library accounts that the user
 /// can then log in and adjust settings after selecting Accounts.
-class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+@objcMembers class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   weak var tableView: UITableView!
   fileprivate var accounts: [Int] {
@@ -161,7 +161,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   
   func cellForLibrary(_ account: Account, _ indexPath: IndexPath) -> UITableViewCell {
 
-    let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
+    let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "cell")
 
     let container = UIView()
     let textContainer = UIView()
@@ -195,7 +195,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     textContainer.autoPinEdge(toSuperviewMargin: .right)
     textContainer.autoAlignAxis(toSuperviewAxis: .horizontal)
 
-    NSLayoutConstraint.autoSetPriority(UILayoutPriorityDefaultLow) {
+    NSLayoutConstraint.autoSetPriority(UILayoutPriority.defaultLow) {
       textContainer.autoPinEdge(toSuperviewEdge: .top, withInset: 0, relation: .greaterThanOrEqual)
       textContainer.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0, relation: .greaterThanOrEqual)
     }
@@ -226,7 +226,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return UITableViewAutomaticDimension
+    return UITableView.automaticDimension
   }
   
   func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -241,7 +241,7 @@ class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDele
     }
   }
   
-  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
       userAddedSecondaryAccounts.remove(at: indexPath.row)
       tableView.deleteRows(at: [indexPath], with: .fade)

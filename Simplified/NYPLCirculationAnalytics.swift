@@ -3,7 +3,7 @@ import Foundation
 /// This class encapsulates analytic events sent to the server
 /// and keeps a local queue of failed attempts to retry them
 /// at a later time.
-final class NYPLCirculationAnalytics : NSObject {
+@objcMembers final class NYPLCirculationAnalytics : NSObject {
 
   class func postEvent(_ event: String, withBook book: NYPLBook) -> Void
   {
