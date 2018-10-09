@@ -807,21 +807,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     }
     case CellReportIssue: {
-      if ([MFMailComposeViewController canSendMail])
-      {
-        // WINNIETODO
-      }
-      else
-      {
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-        UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:NSLocalizedString(@"NoEmailAccountSet", nil)
-                              message:[NSString stringWithFormat:@"If you have web email, contact %@ to report an issue.", self.selectedAccount.supportEmail]
-                              delegate:nil
-                              cancelButtonTitle:nil
-                              otherButtonTitles:@"OK", nil];
-        [alert show];
-      }
+      [[ProblemReportEmail sharedInstance]
+       beginComposingTo:self.selectedAccount.supportEmail
+       presentingViewController:self
+       book:nil];
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       break;
     }
     case CellKindAbout: {
@@ -1014,7 +1004,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *cell = [[UITableViewCell alloc]
                                initWithStyle:UITableViewCellStyleDefault
                                reuseIdentifier:nil];
-      cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"Report an Issue", nil);
       return cell;
