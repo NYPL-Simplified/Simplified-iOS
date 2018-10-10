@@ -4,7 +4,6 @@ typedef NS_ENUM(NSInteger, NYPLSettingsPrimaryTableViewControllerItem) {
   NYPLSettingsPrimaryTableViewControllerItemAccount,
   NYPLSettingsPrimaryTableViewControllerItemAbout,
   NYPLSettingsPrimaryTableViewControllerItemEULA,
-  NYPLSettingsPrimaryTableViewControllerItemHelpStack,
   NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL,
   NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses,
 };

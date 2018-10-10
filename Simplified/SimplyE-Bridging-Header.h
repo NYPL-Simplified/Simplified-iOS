@@ -25,3 +25,4 @@
 #import "NYPLZXingEncoder.h"
 #import "NYPLReachability.h"
 #import "NYPLOPDS.h"
+#import "NYPLLocalization.h"
