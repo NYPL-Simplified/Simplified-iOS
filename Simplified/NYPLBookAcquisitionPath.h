@@ -4,6 +4,12 @@
 // enum.
 #import "NYPLOPDSAcquisition.h"
 
+static NSString * const _Nonnull ContentTypeOPDSCatalog = @"application/atom+xml;type=entry;profile=opds-catalog";
+static NSString * const _Nonnull ContentTypeAdobeAdept = @"application/vnd.adobe.adept+xml";
+static NSString * const _Nonnull ContentTypeBearerToken = @"application/vnd.librarysimplified.bearer-token+json";
+static NSString * const _Nonnull ContentTypeEpubZip = @"application/epub+zip";
+static NSString * const _Nonnull ContentTypeFindaway = @"application/vnd.librarysimplified.findaway.license+json";
+
 /// Represents a single path the application can take through an acquisition
 /// process.
 @interface NYPLBookAcquisitionPath : NSObject
