@@ -550,4 +550,25 @@ static NSString *const UpdatedKey = @"updated";
   return acquisition.relation == NYPLOPDSAcquisitionRelationOpenAccess ? acquisition : nil;
 }
 
+- (NYPLBookContentType)defaultBookContentType
+{
+  NSSet<NYPLBookAcquisitionPath *> *const paths =
+  [NYPLBookAcquisitionPath
+   supportedAcquisitionPathsForAllowedTypes:[NYPLBookAcquisitionPath supportedTypes]
+   allowedRelations:NYPLOPDSAcquisitionRelationSetAll
+   acquisitions:self.acquisitions];
+
+  NSMutableSet<NSString *> *const finalTypes = [NSMutableSet set];
+  for (NYPLBookAcquisitionPath *const path in paths) {
+    [finalTypes addObject:path.types.lastObject];
+  }
+
+  if (finalTypes.count != 1) {
+    NYPLLOG(@"UnsupportedBookContentType: Cannot handle anything other than 1 supported book content type.");
+    return NYPLBookContentTypeUnsupported;
+  }
+
+  return NYPLBookContentTypeFromMIMEType(finalTypes.anyObject);
+}
+
 @end
