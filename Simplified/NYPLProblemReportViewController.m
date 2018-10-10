@@ -114,30 +114,10 @@ static NSArray *s_problems = nil;
 
 - (void)reportIssueVC
 {
-  Account *currentAcct = [[AccountsManager sharedInstance] currentAccount];
-  if ([MFMailComposeViewController canSendMail])
-  {
-    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"ReportIssue" bundle:nil];
-    NYPLReportIssueViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ReportIssueController"];
-    vc.account = currentAcct;
-    if (self.book) {
-      vc.book = self.book;
-    }
-    vc.completion = ^{
-      [self cancel];
-    };
-    [self.navigationController pushViewController:vc animated:YES];
-  }
-  else
-  {
-    UIAlertView *alert = [[UIAlertView alloc]
-                          initWithTitle:NSLocalizedString(@"NoEmailAccountSet", nil)
-                          message:[NSString stringWithFormat:@"If you have web email, contact %@ to report an issue.", currentAcct.supportEmail]
-                          delegate:nil
-                          cancelButtonTitle:nil
-                          otherButtonTitles:@"OK", nil];
-    [alert show];
-  }
+  [[ProblemReportEmail sharedInstance]
+   beginComposingTo:[AccountsManager sharedInstance].currentAccount.supportEmail
+   presentingViewController:self
+   book:self.book];
 }
 
 #pragma mark UITableViewDataSource
@@ -160,9 +140,6 @@ static NSArray *s_problems = nil;
   }
   cell.textLabel.text = s_problems[indexPath.row][@"title"];
   cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-  if (indexPath.row == (int)s_problems.count - 1) {
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-  }
   return cell;
 }
 

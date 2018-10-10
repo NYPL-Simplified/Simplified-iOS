@@ -1,5 +1,3 @@
-#import "HSHelpStack.h"
-#import "HSDeskGear.h"
 #import "NYPLSettingsPrimaryNavigationController.h"
 #import "NYPLSettingsPrimaryTableViewController.h"
 #import "NYPLSettingsEULAViewController.h"
@@ -127,26 +125,6 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
                                          withExtension:@"html"]
                         title:NSLocalizedString(@"SoftwareLicenses", nil)];
       break;
-    case NYPLSettingsPrimaryTableViewControllerItemHelpStack: {
-      [[HSHelpStack instance] setThemeFrompList:@"HelpStackTheme"];
-      HSHelpStack *helpStack = [HSHelpStack instance];
-      helpStack.gear = [APIKeys topLevelHelpStackGear];
-
-      if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
-         ([[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact)) {
-        UIStoryboard* helpStoryboard = [UIStoryboard storyboardWithName:@"HelpStackStoryboard" bundle:[NSBundle mainBundle]];
-        UINavigationController *mainNavVC = [helpStoryboard instantiateInitialViewController];
-        UIViewController *firstVC = mainNavVC.viewControllers.firstObject;
-        firstVC.navigationItem.leftBarButtonItem = nil;
-        [self showDetailViewController:mainNavVC sender:self];
-      } else {
-        [settingsPrimaryTableViewController.tableView
-         deselectRowAtIndexPath:NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(item)
-         animated:YES];
-        [[HSHelpStack instance] showHelp:self];
-      }
-      return;
-    }
     case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
       return;
   }

@@ -1,4 +1,5 @@
-#import "Bugsnag.h"
+@import Bugsnag;
+
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
