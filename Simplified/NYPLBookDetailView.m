@@ -36,6 +36,7 @@
 @property (nonatomic) UILabel *authorsLabel;
 @property (nonatomic) UIImageView *coverImageView;
 @property (nonatomic) UIImageView *blurCoverImageView;
+@property (nonatomic) UIImageView *audiobookBadge;
 @property (nonatomic) UIButton *closeButton;
 
 @property (nonatomic) NYPLBookDetailButtonsView *buttonsView;
@@ -110,6 +111,7 @@ static NSString *DetailHTMLTemplate = nil;
   [self.contentView addSubview:self.blurCoverImageView];
   [self.contentView addSubview:self.visualEffectView];
   [self.contentView addSubview:self.coverImageView];
+  [self.contentView addSubview:self.audiobookBadge];
   [self.contentView addSubview:self.titleLabel];
   [self.contentView addSubview:self.subtitleLabel];
   [self.contentView addSubview:self.authorsLabel];
@@ -221,6 +223,15 @@ static NSString *DetailHTMLTemplate = nil;
      self.coverImageView.image = image;
      self.blurCoverImageView.image = image;
    }];
+
+  self.audiobookBadge = [[UIImageView alloc] init];
+  self.audiobookBadge.image = [UIImage imageNamed:@"AudiobookBadge"];
+  self.audiobookBadge.backgroundColor = [NYPLConfiguration mainColor];
+  self.audiobookBadge.contentMode = UIViewContentModeScaleAspectFit;
+  self.audiobookBadge.hidden = YES;
+  if ([self.book defaultBookContentType] == NYPLBookContentTypeAudiobook) {
+    self.audiobookBadge.hidden = NO;
+  }
 
   self.titleLabel = [[UILabel alloc] init];
   self.titleLabel.numberOfLines = 2;
@@ -349,6 +360,10 @@ static NSString *DetailHTMLTemplate = nil;
   [self.blurCoverImageView autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.coverImageView];
   [self.blurCoverImageView autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];
   [self.blurCoverImageView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.coverImageView];
+
+  [self.audiobookBadge autoSetDimensionsToSize:CGSizeMake(24, 24)];
+  [self.audiobookBadge autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.coverImageView];
+  [self.audiobookBadge autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.coverImageView];
   
   [self.titleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
   [self.titleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];

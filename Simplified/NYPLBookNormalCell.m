@@ -1,3 +1,4 @@
+@import PureLayout;
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
@@ -13,6 +14,7 @@
 @property (nonatomic) NYPLBookButtonsView *buttonsView;
 @property (nonatomic) UILabel *title;
 @property (nonatomic) UIImageView *unreadImageView;
+@property (nonatomic) UIImageView *audiobookBadge;
 
 @end
 
@@ -73,7 +75,23 @@
     self.cover = [[UIImageView alloc] init];
     [self.contentView addSubview:self.cover];
   }
-  
+
+  if (!self.audiobookBadge) {
+    self.audiobookBadge = [[UIImageView alloc] initWithFrame:CGRectZero];
+    [self.contentView addSubview:self.audiobookBadge];
+  }
+  self.audiobookBadge.hidden = YES;
+
+  if ([book defaultBookContentType] == NYPLBookContentTypeAudiobook) {
+    self.audiobookBadge.image = [UIImage imageNamed:@"AudiobookBadge"];
+    self.audiobookBadge.backgroundColor = [NYPLConfiguration mainColor];
+    self.audiobookBadge.contentMode = UIViewContentModeScaleAspectFit;
+    [self.audiobookBadge autoSetDimensionsToSize:CGSizeMake(24, 24)];
+    [self.audiobookBadge autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.cover];
+    [self.audiobookBadge autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.cover];
+    self.audiobookBadge.hidden = NO;
+  }
+
   if(!self.buttonsView) {
     self.buttonsView = [[NYPLBookButtonsView alloc] init];
     self.buttonsView.delegate = self.delegate;
