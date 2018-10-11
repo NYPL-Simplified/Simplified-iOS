@@ -1,3 +1,4 @@
+@import Bugsnag;
 #import "NYPLConfiguration.h"
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
