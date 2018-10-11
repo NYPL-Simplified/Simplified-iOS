@@ -1,7 +1,7 @@
 import MessageUI
 import UIKit
 
-@objc class ProblemReportEmail: NSObject {
+@objcMembers class ProblemReportEmail: NSObject {
   
   static let sharedInstance = ProblemReportEmail()
   
