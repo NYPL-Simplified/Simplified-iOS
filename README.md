@@ -12,7 +12,7 @@
 08. `sh adobe-rmsdk-build.sh`
 09. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
 10. Copy `ReaderClientCert.sig` (obtained elsewhere) to `Simplified/ReaderClientCert.sig`.
-11. `open Simplified.xcworkspace`
+11. `open Simplified.xcodeproj`
 12. Build.
 
 ## Building OpenSSL and cURL
@@ -35,7 +35,7 @@ Follow the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf" to build Ope
 06. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
 07. `carthage update --platform ios`
 08. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
-09. `open Simplified.xcworkspace`
+09. `open Simplified.xcodeproj`
 10. Remove "Simplified+RMSDK.xcconfig" from the project.
 11. Delete "libADEPT.a" and "libAdobe Content Filter.a" from "Link Binary with Libraries" for the "SimplyE" target.
 12. Build.

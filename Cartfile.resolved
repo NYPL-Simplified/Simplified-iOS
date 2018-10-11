@@ -1,5 +1,5 @@
-github "NYPL-Simplified/CardCreator-iOS" "v1.1.0"
+github "NYPL-Simplified/CardCreator-iOS" "v1.1.2"
 github "PureLayout/PureLayout" "v3.1.2"
-github "TheLevelUp/ZXingObjC" "3.3.0"
-github "bugsnag/bugsnag-cocoa" "v5.16.4"
+github "TheLevelUp/ZXingObjC" "3.5.0"
+github "bugsnag/bugsnag-cocoa" "v5.17.0"
 github "stephencelis/SQLite.swift" "0.11.5"
