@@ -195,6 +195,7 @@
 		E6BC315D1E009F3E0021B65E /* NYPLAgeCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */; };
 		E6C91BC21FD5F63B00A32F42 /* NYPLZXingEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = E6C91BC11FD5F63B00A32F42 /* NYPLZXingEncoder.m */; };
 		E6D775421F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6D7753D1F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m */; };
+		E6D848E32171334800CEC142 /* NYPLContentTypeBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D848E22171334800CEC142 /* NYPLContentTypeBadge.swift */; };
 		E6DA7EA01F2A718600CFBEC8 /* NYPLBookAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */; };
 		E6F26E731DFF672F00C103CA /* NYPLDirectoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */; };
 /* End PBXBuildFile section */
@@ -569,6 +570,7 @@
 		E6C91BC11FD5F63B00A32F42 /* NYPLZXingEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLZXingEncoder.m; sourceTree = "<group>"; };
 		E6D7753D1F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBarcodeScanningViewController.m; sourceTree = "<group>"; };
 		E6D775431F9FE0C400C0B722 /* NYPLBarcodeScanningViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBarcodeScanningViewController.h; sourceTree = "<group>"; };
+		E6D848E22171334800CEC142 /* NYPLContentTypeBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLContentTypeBadge.swift; sourceTree = "<group>"; };
 		E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookAuthor.swift; sourceTree = "<group>"; };
 		E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLDirectoryManager.swift; sourceTree = "<group>"; };
 		E6FAFBFE1F7A9D870026F0EE /* SimplyE-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyE-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -779,6 +781,7 @@
 				1183F340194F723D00DC322F /* NYPLCatalogLane.m */,
 				1183F339194B775900DC322F /* NYPLCatalogLaneCell.h */,
 				1183F33A194B775900DC322F /* NYPLCatalogLaneCell.m */,
+				E6D848E22171334800CEC142 /* NYPLContentTypeBadge.swift */,
 				11548C0C1939147D009DBF2E /* NYPLCatalogNavigationController.h */,
 				11548C0D1939147D009DBF2E /* NYPLCatalogNavigationController.m */,
 				118A0B1919915BDF00792DDE /* NYPLCatalogSearchViewController.h */,
@@ -1494,6 +1497,7 @@
 				1164A9F71A797238002BD3AE /* NYPLSettings.m in Sources */,
 				11BFDB39199C117B00378691 /* NYPLReaderTOCCell.m in Sources */,
 				E6F26E731DFF672F00C103CA /* NYPLDirectoryManager.swift in Sources */,
+				E6D848E32171334800CEC142 /* NYPLContentTypeBadge.swift in Sources */,
 				E6C91BC21FD5F63B00A32F42 /* NYPLZXingEncoder.m in Sources */,
 				085D31D71BE29E38007F7672 /* NYPLProblemReportViewController.m in Sources */,
 				11C5DCF21976D1E0005A9945 /* NYPLHoldsNavigationController.m in Sources */,

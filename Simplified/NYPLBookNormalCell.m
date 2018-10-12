@@ -5,6 +5,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
 #import "NYPLBookCellDelegate.h"
+#import "SimplyE-Swift.h"
 
 #import "NYPLBookNormalCell.h"
 
@@ -14,7 +15,7 @@
 @property (nonatomic) NYPLBookButtonsView *buttonsView;
 @property (nonatomic) UILabel *title;
 @property (nonatomic) UIImageView *unreadImageView;
-@property (nonatomic) UIImageView *audiobookBadge;
+@property (nonatomic) UIImageView *contentBadge;
 
 @end
 
@@ -76,20 +77,14 @@
     [self.contentView addSubview:self.cover];
   }
 
-  if (!self.audiobookBadge) {
-    self.audiobookBadge = [[UIImageView alloc] initWithFrame:CGRectZero];
-    [self.contentView addSubview:self.audiobookBadge];
+  if (!self.contentBadge) {
+    self.contentBadge = [[NYPLContentBadgeImageView alloc] initWithBadgeImage:NYPLBadgeImageAudiobook];
   }
-  self.audiobookBadge.hidden = YES;
-
   if ([book defaultBookContentType] == NYPLBookContentTypeAudiobook) {
-    self.audiobookBadge.image = [UIImage imageNamed:@"AudiobookBadge"];
-    self.audiobookBadge.backgroundColor = [NYPLConfiguration mainColor];
-    self.audiobookBadge.contentMode = UIViewContentModeScaleAspectFit;
-    [self.audiobookBadge autoSetDimensionsToSize:CGSizeMake(24, 24)];
-    [self.audiobookBadge autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.cover];
-    [self.audiobookBadge autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.cover];
-    self.audiobookBadge.hidden = NO;
+    [NYPLContentBadgeImageView pinWithBadge:self.contentBadge toView:self.cover];
+    self.contentBadge.hidden = NO;
+  } else {
+    self.contentBadge.hidden = YES;
   }
 
   if(!self.buttonsView) {
