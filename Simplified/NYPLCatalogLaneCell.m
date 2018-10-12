@@ -1,5 +1,7 @@
+@import PureLayout;
 #import "NYPLBook.h"
 #import "NYPLConfiguration.h"
+#import "SimplyE-Swift.h"
 
 #import "NYPLCatalogLaneCell.h"
 
@@ -54,8 +56,12 @@
      forControlEvents:UIControlEventTouchUpInside];
     button.exclusiveTouch = YES;
     [buttons addObject:button];
-    [self.scrollView addSubview:button];
     button.accessibilityLabel = book.title;
+    [self.scrollView addSubview:button];
+    if ([book defaultBookContentType] == NYPLBookContentTypeAudiobook) {
+      NYPLContentBadgeImageView *badge = [[NYPLContentBadgeImageView alloc] initWithBadgeImage:NYPLBadgeImageAudiobook];
+      [NYPLContentBadgeImageView pinWithBadge:badge toView:button];
+    }
   }];
   
   self.buttons = buttons;
