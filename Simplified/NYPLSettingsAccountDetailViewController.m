@@ -1251,9 +1251,22 @@ replacementString:(NSString *)string
   
   if(textField == self.usernameTextField) {
     // Barcodes are numeric and usernames are alphanumeric.
-    if([string stringByTrimmingCharactersInSet:[NSCharacterSet alphanumericCharacterSet]].length > 0) {
-      return NO;
-    }
+    // The below code forces only alphanumeric chars only, no "@" and "." for email address for instance
+    //Future version of app will need to re-implement this filter in a new way driven from dynamic data
+    //coming from https://circulation.librarysimplified.org/NYNYPL/authentication_document
+    //for example this document says which keyboard should be used for username and which for password,
+    //what the label should be for each, the maximum length of each, etc. however, right now the UI of the
+    //login form is dictated by the Accounts.json file compiled into the app
+    //The Following keys are what is currently driving the keyboard style and labels
+    //
+    //  "authPasscodeAllowsLetters": false,
+    //  "authPasscodeLength": 4,
+    //  "needsAuth": true,
+    //  "pinRequired": true,
+      
+    //if([string stringByTrimmingCharactersInSet:[NSCharacterSet alphanumericCharacterSet]].length > 0) {
+    //  return NO;
+    //}
     
     // Usernames cannot be longer than 25 characters.
     if([textField.text stringByReplacingCharactersInRange:range withString:string].length > 25) {
