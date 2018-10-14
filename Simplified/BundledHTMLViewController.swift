@@ -3,7 +3,7 @@ import UIKit
 /// Used for displaying HTML pages (and their associated resources) that are
 /// bundled with an application. Any clicked links will open in an external
 /// web browser, thus their content should not be part of the application.
-final class BundledHTMLViewController: UIViewController {
+@objcMembers final class BundledHTMLViewController: UIViewController {
   let fileURL: URL
   let webView: UIWebView
   let webViewDelegate: UIWebViewDelegate
@@ -40,7 +40,7 @@ final class BundledHTMLViewController: UIViewController {
     @objc func webView(
       _ webView: UIWebView,
       shouldStartLoadWith request: URLRequest,
-                                 navigationType: UIWebViewNavigationType) -> Bool
+                                 navigationType: UIWebView.NavigationType) -> Bool
     {
       if navigationType == .linkClicked {
         UIApplication.shared.openURL(request.url!)

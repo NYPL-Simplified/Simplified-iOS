@@ -26,7 +26,7 @@ fileprivate func ZXBarcodeFormatFor(_ NYPLBarcodeType:NYPLBarcodeType) -> ZXBarc
 
 /// Manage creation and scanning of barcodes on library cards.
 /// Keep any third party dependency abstracted out of the main app.
-final class NYPLBarcode: NSObject {
+@objcMembers final class NYPLBarcode: NSObject {
 
   var libraryName: String?
 
@@ -55,7 +55,7 @@ final class NYPLBarcode: NSObject {
 
   class func presentScanner(withCompletion completion: @escaping (String?) -> ())
   {
-    AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo) { granted in
+    AVCaptureDevice.requestAccess(for: .video) { granted in
       DispatchQueue.main.async {
         if granted {
           guard let scannerVC = NYPLBarcodeScanningViewController.init(completion: completion) else { return }
@@ -84,7 +84,7 @@ final class NYPLBarcode: NSObject {
                                comment: "A title for a button that will open the Settings app"),
       style: .default,
       handler: {_ in
-        UIApplication.shared.openURL(URL(string:UIApplicationOpenSettingsURLString)!)
+        UIApplication.shared.openURL(URL(string:UIApplication.openSettingsURLString)!)
     }))
     alertController.addAction(UIAlertAction(
       title: NSLocalizedString("Cancel", comment: ""),

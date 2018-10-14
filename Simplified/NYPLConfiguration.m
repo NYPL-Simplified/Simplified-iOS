@@ -1,11 +1,10 @@
+@import Bugsnag;
+
 #import "NYPLConfiguration.h"
 #import "NYPLAccount.h"
 #import "NYPLAppDelegate.h"
 #import "NYPLSettings.h"
 
-#import "Bugsnag.h"
-#import "HSHelpStack.h"
-#import "HSDeskGear.h"
 #import "UILabel+NYPLAppearanceAdditions.h"
 #import "UIButton+NYPLAppearanceAdditions.h"
 #import "SimplyE-Swift.h"

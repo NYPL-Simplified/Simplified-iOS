@@ -3,7 +3,7 @@ import PureLayout
 
 
 /// Welcome screen for a first-time user
-final class NYPLWelcomeScreenViewController: UIViewController {
+@objcMembers final class NYPLWelcomeScreenViewController: UIViewController {
   
   var completion: ((Account) -> ())?
   
@@ -78,11 +78,11 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     containerView.autoPinEdge(toSuperviewEdge: .top, withInset: 0, relation: .greaterThanOrEqual)
     containerView.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0, relation: .greaterThanOrEqual)
     
-    NSLayoutConstraint.autoSetPriority(UILayoutPriorityDefaultHigh) {
+    NSLayoutConstraint.autoSetPriority(UILayoutPriority.defaultHigh) {
       containerView.autoSetDimension(.width, toSize: 350)
       containerView.autoAlignAxis(toSuperviewAxis: .horizontal)
     }
-    NSLayoutConstraint.autoSetPriority(UILayoutPriorityDefaultLow) {
+    NSLayoutConstraint.autoSetPriority(UILayoutPriority.defaultLow) {
       logoView.autoSetDimensions(to: CGSize(width: 180, height: 150))
       view2.autoPinEdge(toSuperviewEdge: .bottom, withInset: 80)
     }
@@ -126,14 +126,14 @@ final class NYPLWelcomeScreenViewController: UIViewController {
     }
     
     let button = UIButton()
-    button.setTitle(buttonTitle, for: UIControlState())
+    button.setTitle(buttonTitle, for: UIControl.State())
     button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
     button.setTitleColor(NYPLConfiguration.iconLogoBlueColor(), for: .normal)
     button.layer.borderColor = NYPLConfiguration.iconLogoGreenColor().cgColor
     button.layer.borderWidth = 2
     button.layer.cornerRadius = 6
 
-    button.contentEdgeInsets = UIEdgeInsetsMake(8.0, 10.0, 8.0, 10.0)
+    button.contentEdgeInsets = UIEdgeInsets.init(top: 8.0, left: 10.0, bottom: 8.0, right: 10.0)
     button.addTarget(self, action: buttonTargetSelector, for: .touchUpInside)
     tempView.addSubview(button)
     
@@ -289,7 +289,7 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
     textContainer.autoPinEdge(toSuperviewMargin: .right)
     textContainer.autoAlignAxis(toSuperviewAxis: .horizontal)
 
-    NSLayoutConstraint.autoSetPriority(UILayoutPriorityDefaultLow) {
+    NSLayoutConstraint.autoSetPriority(UILayoutPriority.defaultLow) {
       textContainer.autoPinEdge(toSuperviewEdge: .top, withInset: 0, relation: .greaterThanOrEqual)
       textContainer.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0, relation: .greaterThanOrEqual)
     }

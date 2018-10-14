@@ -4,7 +4,7 @@ import WebKit
 
 /// Similar functionality to BundledHTMLViewController, except for loading remote HTTP URL's where
 /// it does not make sense in certain contexts to have bundled resources loaded.
-final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
+@objcMembers final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
   let fileURL: URL
   let failureMessage: String
   var webView: WKWebView
@@ -42,7 +42,7 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
   
   func activityView(_ animated: Bool) -> Void {
     if animated == true {
-      activityView = UIActivityIndicatorView.init(activityIndicatorStyle: .gray)
+      activityView = UIActivityIndicatorView.init(style: .gray)
       view.addSubview(activityView)
       activityView.autoCenterInSuperview()
       activityView.startAnimating()
@@ -79,7 +79,7 @@ final class RemoteHTMLViewController: UIViewController, WKNavigationDelegate {
         decisionHandler(.cancel)
       } else {
         if #available(iOS 10.0, *) {
-          UIApplication.shared.open(url, options: [:], completionHandler: nil)
+          UIApplication.shared.open(url)
         } else {
           UIApplication.shared.openURL(url)
         }

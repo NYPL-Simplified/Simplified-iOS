@@ -8,12 +8,12 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
 /// Manage the library accounts for the app.
 /// Initialized with JSON.
-final class AccountsManager: NSObject
+@objcMembers final class AccountsManager: NSObject
 {
   static let shared = AccountsManager()
   
   // For Objective-C classes
-  @objc class func sharedInstance() -> AccountsManager
+  class func sharedInstance() -> AccountsManager
   {
     return AccountsManager.shared
   }
@@ -57,7 +57,7 @@ final class AccountsManager: NSObject
     }
   }
   
-  @objc func account(_ id:Int) -> Account?
+  func account(_ id:Int) -> Account?
   {
     return self.accounts.filter{ $0.id == id }.first
   }
@@ -72,7 +72,7 @@ final class AccountsManager: NSObject
 
 /// Object representing one library account in the app. Patrons may
 /// choose to sign up for multiple Accounts.
-final class Account:NSObject
+@objcMembers final class Account:NSObject
 {
   let defaults: UserDefaults
   let logo: UIImage

@@ -1,6 +1,6 @@
+@import Bugsnag;
 @import WebKit;
 
-#import "Bugsnag.h"
 #import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookLocation.h"

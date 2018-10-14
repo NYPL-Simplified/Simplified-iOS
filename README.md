@@ -5,14 +5,14 @@
 01. `git clone https://github.com/NYPL/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
 02. `cd Simplified-iOS`
 03. `git submodule update --init --recursive`
-04. Install [Cocoapods](https://cocoapods.org) if you haven't already.
-05. `pod install`
+04. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
+05. `carthage update --platform ios`
 06. Symlink the "DRM_Connector_Prerelease" directory to "adobe-rmsdk" within the "Simplified-iOS" directory. (You will need to have obtained the Adobe DRM Connector prerelease from Adobe.)
 07. Build OpenSSL and cURL as described in the following "Building OpenSSL and cURL" section. Ensure you're in the "Simplified-iOS" directory before continuing to the next step.
 08. `sh adobe-rmsdk-build.sh`
 09. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
 10. Copy `ReaderClientCert.sig` (obtained elsewhere) to `Simplified/ReaderClientCert.sig`.
-11. `open Simplified.xcworkspace`
+11. `open Simplified.xcodeproj`
 12. Build.
 
 ## Building OpenSSL and cURL
@@ -32,10 +32,10 @@ Follow the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf" to build Ope
 03. `git submodule deinit adept-ios && git rm -rf adept-ios`
 04. `git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter`
 05. `git submodule update --init --recursive`
-06. Install [Cocoapods](https://cocoapods.org) if you haven't already.
-07. `pod install`
+06. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
+07. `carthage update --platform ios`
 08. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
-09. `open Simplified.xcworkspace`
+09. `open Simplified.xcodeproj`
 10. Remove "Simplified+RMSDK.xcconfig" from the project.
 11. Delete "libADEPT.a" and "libAdobe Content Filter.a" from "Link Binary with Libraries" for the "SimplyE" target.
 12. Build.

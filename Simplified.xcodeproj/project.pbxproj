@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0305005E1E8EF65100EA02C4 /* HelpStackThemeNYPL.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0305005D1E8EF65100EA02C4 /* HelpStackThemeNYPL.plist */; };
-		0320E8241E8BFCC900806EF0 /* NYPLReportIssueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0320E8221E8BFCC900806EF0 /* NYPLReportIssueViewController.swift */; };
 		032A31051DC02E8E0001E4AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 032A31071DC02E8E0001E4AF /* Localizable.strings */; };
 		0345BFE81DBF027200398B6F /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0345BFD61DBF002E00398B6F /* APIKeys.swift */; };
 		03690E231EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03690E221EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift */; };
@@ -21,7 +19,6 @@
 		03B0922C1E7886C900AD338D /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B0922B1E7886C900AD338D /* AVFoundation.framework */; };
 		03B0922E1E7886ED00AD338D /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B0922D1E7886ED00AD338D /* CoreVideo.framework */; };
 		03B092301E78871A00AD338D /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B0922F1E78871A00AD338D /* MediaPlayer.framework */; };
-		03CE00EA1E0C436400C91489 /* libePub3-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03CE00E91E0C436400C91489 /* libePub3-iOS.a */; };
 		03DE7BE91DBF0DE400E89064 /* UpdateCheckShim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */; };
 		03E5F42D1EA5BCE400DFFC3A /* NYPLReaderTOC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 03E5F42A1EA5BCE400DFFC3A /* NYPLReaderTOC.storyboard */; };
 		03F94CCF1DD627AA00CE8F4F /* Accounts.json in Resources */ = {isa = PBXBuildFile; fileRef = 03F94CCE1DD627AA00CE8F4F /* Accounts.json */; };
@@ -115,6 +112,12 @@
 		11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */ = {isa = PBXBuildFile; fileRef = 11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */; };
 		11F3771F19DB62B000487769 /* NYPLFacetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3771E19DB62B000487769 /* NYPLFacetView.m */; };
 		11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11F3773219E0876F00487769 /* NYPLCatalogFacet.m */; };
+		145798F6215BE9E300F68AFD /* ProblemReportEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145798F5215BE9E300F68AFD /* ProblemReportEmail.swift */; };
+		145DA48E215441A70055DB93 /* ZXingObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145DA48D215441A70055DB93 /* ZXingObjC.framework */; };
+		145DA4902154429E0055DB93 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145DA48F2154429E0055DB93 /* Bugsnag.framework */; };
+		145DA4922154464F0055DB93 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145DA4912154464F0055DB93 /* SQLite.framework */; };
+		145DA49421544A3F0055DB93 /* NYPLCardCreator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145DA49321544A3F0055DB93 /* NYPLCardCreator.framework */; };
+		145DA49621544A430055DB93 /* PureLayout.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145DA49521544A420055DB93 /* PureLayout.framework */; };
 		2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */; };
 		2D2B477E1D08F82C007F7764 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D382BD61D08BA99002C423D /* Log.swift */; };
 		2D2B47841D08F8E2007F7764 /* UpdateCheckUpToDate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */; };
@@ -124,8 +127,6 @@
 		2D4379FE1C46FDB600AE1AD5 /* ReaderClientCert.sig in Resources */ = {isa = PBXBuildFile; fileRef = 085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */; };
 		2D62568B1D412BCB0080A81F /* BundledHTMLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D62568A1D412BCB0080A81F /* BundledHTMLViewController.swift */; };
 		2D6256911D41582A0080A81F /* software-licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 2D6256901D41582A0080A81F /* software-licenses.html */; };
-		2D6F7CA71D910C12000B906A /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6F7CA61D910C12000B906A /* Bugsnag.framework */; };
-		2D6F7CA91D910C3C000B906A /* HelpStack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D6F7CA81D910C3C000B906A /* HelpStack.framework */; };
 		2D754BBB2002E2FB0061D34F /* NYPLOPDSAcquisition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D754BBA2002E2FB0061D34F /* NYPLOPDSAcquisition.m */; };
 		2D754BC22002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D754BC12002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m */; };
 		2D87909D20127AA300E2763F /* NYPLBookAcquisitionPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D87909C20127AA300E2763F /* NYPLBookAcquisitionPath.m */; };
@@ -152,7 +153,6 @@
 		84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3441B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf */; };
 		84B7A3481B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3451B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf */; };
 		84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */; };
-		938067EE8EA3BF40E9651E5A /* Pods_SimplyE.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DECDF1D20041A7E0088E7D6 /* Pods_SimplyE.framework */; };
 		A4276F481B00046300CA7194 /* NYPLMyBooksDownloadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */; };
 		A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */; };
 		A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF31B40F4E00095EBAE /* NYPLCatalogFeedViewController.m */; };
@@ -172,12 +172,8 @@
 		AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77E4AF64208439F78B3D73 /* NYPLOPDSEntry.m */; };
 		AE77EB0CB5B94AEC591E2D91 /* NYPLOPDSLink.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77ECC029F3DABDB46A64EB /* NYPLOPDSLink.m */; };
 		AE77EE7AACC975280BAB9A4C /* NYPLOPDSFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77E94D56B65997B861C0C0 /* NYPLOPDSFeed.m */; };
-		B594C7561BB06F40000028F5 /* HelpStackTheme.plist in Resources */ = {isa = PBXBuildFile; fileRef = B594C7551BB06F40000028F5 /* HelpStackTheme.plist */; };
 		B5ED41DA1B8F6E2E009FC164 /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */; };
-		C3CFADEC0E3E7F1956903B43 /* Pods_SimplyETests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1849A8E1AD3E32A24E7A4CC /* Pods_SimplyETests.framework */; };
 		D787E8441FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787E8431FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift */; };
-		D7A88AFE1F8C02AD00EF76F4 /* HelpStackStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E6FAFBE81F7A9AD40026F0EE /* HelpStackStoryboard.storyboard */; };
-		D7A88B031F8C02B200EF76F4 /* ReportIssue.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E6FAFBEE1F7A9B7A0026F0EE /* ReportIssue.storyboard */; };
 		E6202A021DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6202A011DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m */; };
 		E6202A041DD52B8600C99553 /* NYPLWelcomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6202A031DD52B8600C99553 /* NYPLWelcomeScreen.swift */; };
 		E6207B652118973800864143 /* NYPLAppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6207B642118973800864143 /* NYPLAppTheme.swift */; };
@@ -197,7 +193,6 @@
 		E6D775421F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6D7753D1F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m */; };
 		E6DA7EA01F2A718600CFBEC8 /* NYPLBookAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */; };
 		E6F26E731DFF672F00C103CA /* NYPLDirectoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */; };
-		EC89BB22576495E8A359D77E /* Pods_SimplyE.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -239,8 +234,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0305005D1E8EF65100EA02C4 /* HelpStackThemeNYPL.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = HelpStackThemeNYPL.plist; sourceTree = "<group>"; };
-		0320E8221E8BFCC900806EF0 /* NYPLReportIssueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLReportIssueViewController.swift; sourceTree = "<group>"; };
 		032A31061DC02E8E0001E4AF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		032A310C1DC02EAD0001E4AF /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		032A310D1DC02EB30001E4AF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -256,13 +249,9 @@
 		03B0922B1E7886C900AD338D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		03B0922D1E7886ED00AD338D /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		03B0922F1E78871A00AD338D /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
-		03CE00E91E0C436400C91489 /* libePub3-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libePub3-iOS.a"; path = "readium-sdk/Platform/Apple/build/Release-iphoneos/libePub3-iOS.a"; sourceTree = "<group>"; };
 		03E5F42A1EA5BCE400DFFC3A /* NYPLReaderTOC.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = NYPLReaderTOC.storyboard; sourceTree = "<group>"; };
 		03F94CCE1DD627AA00CE8F4F /* Accounts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Accounts.json; sourceTree = "<group>"; };
 		03F94CD01DD6288C00CE8F4F /* Accounts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Accounts.swift; sourceTree = "<group>"; };
-		080ADCBE1C04C26100C0575F /* libCHRTextFieldFormatter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libCHRTextFieldFormatter.a; path = "Pods/../build/Debug-iphoneos/libCHRTextFieldFormatter.a"; sourceTree = "<group>"; };
-		081387211BC3139A003DEA6A /* libGeoJSONSerialization.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGeoJSONSerialization.a; path = "Pods/../build/Debug-iphoneos/libGeoJSONSerialization.a"; sourceTree = "<group>"; };
-		081387501BC56B7A003DEA6A /* libpop.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpop.a; path = "Pods/../build/Debug-iphoneos/libpop.a"; sourceTree = "<group>"; };
 		081387551BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+NYPLAppearanceAdditions.h"; sourceTree = "<group>"; };
 		081387561BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+NYPLAppearanceAdditions.m"; sourceTree = "<group>"; };
 		081387581BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+NYPLAppearanceAdditions.h"; sourceTree = "<group>"; };
@@ -277,17 +266,12 @@
 		085D31DD1BE3CD3C007F7672 /* NSURLRequest+NYPLURLRequestAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLRequest+NYPLURLRequestAdditions.h"; sourceTree = "<group>"; };
 		085D31DE1BE3CD3C007F7672 /* NSURLRequest+NYPLURLRequestAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLRequest+NYPLURLRequestAdditions.m"; sourceTree = "<group>"; };
 		085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReaderClientCert.sig; sourceTree = "<group>"; };
-		08801EF21BDE8A4D005E1F32 /* libHeap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libHeap.a; path = Pods/Heap/libHeap.a; sourceTree = "<group>"; };
-		08801EF51BDE8D0D005E1F32 /* Heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Heap.h; sourceTree = "<group>"; };
-		08801EF61BDE8D0D005E1F32 /* libHeap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libHeap.a; sourceTree = "<group>"; };
 		08A3521F1BDE8E410040BF1D /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		08A352211BDE8E560040BF1D /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		08A352231BDE8E640040BF1D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		08A352251BDE8E700040BF1D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		08A352281BDE91B80040BF1D /* libePub3-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libePub3-iOS.a"; path = "readium-sdk/Platform/Apple/build/Debug-iphoneos/libePub3-iOS.a"; sourceTree = "<group>"; };
 		08A352711BDFF5380040BF1D /* NYPLAlertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAlertController.h; sourceTree = "<group>"; };
 		08A352721BDFF5380040BF1D /* NYPLAlertController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAlertController.m; sourceTree = "<group>"; };
-		08B3CF851BF0F8FA00E6485E /* libBugsnag.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBugsnag.a; path = "Pods/../build/Debug-iphoneos/libBugsnag.a"; sourceTree = "<group>"; };
 		11068C53196DD37900E8A94B /* NYPLNull.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLNull.h; sourceTree = "<group>"; };
 		11068C54196DD37900E8A94B /* NYPLNull.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLNull.m; sourceTree = "<group>"; };
 		11078355198160A50071AB1E /* NYPLBookDownloadFailedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDownloadFailedCell.h; sourceTree = "<group>"; };
@@ -453,6 +437,12 @@
 		11F54C2419410BE40086FCAF /* single_entry.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = single_entry.xml; sourceTree = "<group>"; };
 		11F54C2619410C700086FCAF /* NYPLOPDSEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryTests.m; sourceTree = "<group>"; };
 		11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLinkTests.m; sourceTree = "<group>"; };
+		145798F5215BE9E300F68AFD /* ProblemReportEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProblemReportEmail.swift; sourceTree = "<group>"; };
+		145DA48D215441A70055DB93 /* ZXingObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZXingObjC.framework; path = Carthage/Build/iOS/ZXingObjC.framework; sourceTree = "<group>"; };
+		145DA48F2154429E0055DB93 /* Bugsnag.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bugsnag.framework; path = Carthage/Build/iOS/Bugsnag.framework; sourceTree = "<group>"; };
+		145DA4912154464F0055DB93 /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/iOS/SQLite.framework; sourceTree = "<group>"; };
+		145DA49321544A3F0055DB93 /* NYPLCardCreator.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NYPLCardCreator.framework; path = Carthage/Build/iOS/NYPLCardCreator.framework; sourceTree = "<group>"; };
+		145DA49521544A420055DB93 /* PureLayout.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PureLayout.framework; path = Carthage/Build/iOS/PureLayout.framework; sourceTree = "<group>"; };
 		2D2B47621D08F1ED007F7764 /* SimplyETests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyETests-Bridging-Header.h"; sourceTree = "<group>"; };
 		2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheckTests.swift; sourceTree = "<group>"; };
 		2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = UpdateCheckUpToDate.json; sourceTree = "<group>"; };
@@ -465,9 +455,6 @@
 		2D62568A1D412BCB0080A81F /* BundledHTMLViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BundledHTMLViewController.swift; sourceTree = "<group>"; };
 		2D6256901D41582A0080A81F /* software-licenses.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "software-licenses.html"; sourceTree = "<group>"; };
 		2D6AF74A1E7E341F005CEC90 /* Simplified+RMSDK.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Simplified+RMSDK.xcconfig"; sourceTree = "<group>"; };
-		2D6F7CA41D910C0D000B906A /* CHRTextFieldFormatter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHRTextFieldFormatter.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Simplified-bozbabgxnjsiwdfvcgffxbzqjxsq/Build/Products/Debug-iphonesimulator/CHRTextFieldFormatter/CHRTextFieldFormatter.framework"; sourceTree = "<group>"; };
-		2D6F7CA61D910C12000B906A /* Bugsnag.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bugsnag.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Simplified-bozbabgxnjsiwdfvcgffxbzqjxsq/Build/Products/Debug-iphonesimulator/Bugsnag/Bugsnag.framework"; sourceTree = "<group>"; };
-		2D6F7CA81D910C3C000B906A /* HelpStack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HelpStack.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Simplified-bozbabgxnjsiwdfvcgffxbzqjxsq/Build/Products/Debug-iphonesimulator/HelpStack/HelpStack.framework"; sourceTree = "<group>"; };
 		2D754BB92002E2FB0061D34F /* NYPLOPDSAcquisition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSAcquisition.h; sourceTree = "<group>"; };
 		2D754BBA2002E2FB0061D34F /* NYPLOPDSAcquisition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSAcquisition.m; sourceTree = "<group>"; };
 		2D754BC02002F1B10061D34F /* NYPLOPDSIndirectAcquisition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSIndirectAcquisition.h; sourceTree = "<group>"; };
@@ -483,17 +470,13 @@
 		2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheckShim.swift; sourceTree = "<group>"; };
 		2DCB71EC2017DFB5000E041A /* NYPLOPDSAcquisitionAvailability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSAcquisitionAvailability.h; sourceTree = "<group>"; };
 		2DCB71ED2017DFB5000E041A /* NYPLOPDSAcquisitionAvailability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSAcquisitionAvailability.m; sourceTree = "<group>"; };
-		2DECDF1D20041A7E0088E7D6 /* Pods_SimplyE.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_SimplyE.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2DEF10B8201ECCEA0082843A /* NYPLMyBooksSimplifiedBearerToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksSimplifiedBearerToken.h; sourceTree = "<group>"; };
 		2DEF10B9201ECCEA0082843A /* NYPLMyBooksSimplifiedBearerToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksSimplifiedBearerToken.m; sourceTree = "<group>"; };
 		2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAnnotations.swift; sourceTree = "<group>"; };
 		2DFAC8EB1CD8DDD1003D9EC0 /* NYPLOPDSCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSCategory.h; sourceTree = "<group>"; };
 		2DFAC8EC1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSCategory.m; sourceTree = "<group>"; };
-		2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimplyE.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52592BB721220A1100587288 /* NYPLLocalization.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLLocalization.m; sourceTree = "<group>"; };
 		52592BBB21220A4F00587288 /* NYPLLocalization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLLocalization.h; sourceTree = "<group>"; };
-		56A7B7786F9B146602623617 /* Pods-SimplyETests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyETests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests.release.xcconfig"; sourceTree = "<group>"; };
-		579E9BC126424F2B79C0FE7E /* Pods-SimplyETests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyETests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests.debug.xcconfig"; sourceTree = "<group>"; };
 		5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ADEPT.xcodeproj; path = "adept-ios/ADEPT.xcodeproj"; sourceTree = "<group>"; };
 		5A5B90111B946763002C53E9 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "usr/lib/libc++.1.dylib"; sourceTree = SDKROOT; };
 		5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
@@ -506,7 +489,6 @@
 		5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Adobe Content Filter.xcodeproj"; path = "adobe-content-filter/build/iOS/Adobe Content Filter.xcodeproj"; sourceTree = "<group>"; };
 		841B55411B740F2700FAC1AF /* NYPLSettingsEULAViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsEULAViewController.h; sourceTree = "<group>"; };
 		841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsEULAViewController.m; sourceTree = "<group>"; };
-		8499EE06365A73ACE6116D3C /* Pods-SimplyE.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyE.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE.debug.xcconfig"; sourceTree = "<group>"; };
 		84B7A3431B84E8FE00584FB2 /* OFL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
 		84B7A3441B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenDyslexic3-Bold.ttf"; sourceTree = "<group>"; };
 		84B7A3451B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenDyslexic3-Regular.ttf"; sourceTree = "<group>"; };
@@ -522,7 +504,6 @@
 		A499BF241B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSEntryGroupAttributes.h; sourceTree = "<group>"; };
 		A499BF251B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSEntryGroupAttributes.m; sourceTree = "<group>"; };
 		A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RDServices.xcodeproj; sourceTree = "<group>"; };
-		A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libePub3-iOS.a"; path = "readium-sdk/Platform/Apple/build/Debug-iphoneos/libePub3-iOS.a"; sourceTree = "<group>"; };
 		A4BA1D0C1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogGroupedFeedViewController.h; sourceTree = "<group>"; };
 		A4BA1D0D1B430341006F83DF /* NYPLCatalogGroupedFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLCatalogGroupedFeedViewController.m; sourceTree = "<group>"; };
 		A4BA1D111B43046B006F83DF /* NYPLCatalogGroupedFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLCatalogGroupedFeed.h; sourceTree = "<group>"; };
@@ -540,7 +521,6 @@
 		A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLAppDelegate.h; sourceTree = "<group>"; };
 		A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLAppDelegate.m; sourceTree = "<group>"; };
 		A823D822192BABA400B55DE2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		A823D829192BABA400B55DE2 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		A823D833192BABA400B55DE2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AE77E0F3FB181D0C1529C865 /* NYPLOPDSLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSLink.h; sourceTree = "<group>"; };
 		AE77E304AA30ABF2921B6393 /* NYPLOPDSFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSFeed.h; sourceTree = "<group>"; };
@@ -551,15 +531,10 @@
 		AE77ECC029F3DABDB46A64EB /* NYPLOPDSLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLink.m; sourceTree = "<group>"; };
 		AE77EDCF05BE5D54CF8E0E70 /* NYPLOPDSType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSType.h; sourceTree = "<group>"; };
 		AE77EFD5622206475B6715A9 /* NYPLOPDSType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSType.m; sourceTree = "<group>"; };
-		B1849A8E1AD3E32A24E7A4CC /* Pods_SimplyETests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimplyETests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B54F998F1BACB0CD0033F303 /* libAFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAFNetworking.a; path = "Pods/../build/Debug-iphoneos/libAFNetworking.a"; sourceTree = "<group>"; };
-		B54F99901BACB0CE0033F303 /* libHelpStack.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libHelpStack.a; path = "Pods/../build/Debug-iphoneos/libHelpStack.a"; sourceTree = "<group>"; };
-		B594C7551BB06F40000028F5 /* HelpStackTheme.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = HelpStackTheme.plist; sourceTree = "<group>"; };
 		B5ED41D81B8F6E2E009FC164 /* NYPLBookButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookButtonsView.h; sourceTree = "<group>"; };
 		B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookButtonsView.m; sourceTree = "<group>"; };
 		CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Simplified.xcconfig; sourceTree = "<group>"; };
 		D787E8431FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSettingsAdvancedViewController.swift; sourceTree = "<group>"; };
-		DE9D07935ED4E0F0BB8AD7B7 /* Pods-SimplyE.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimplyE.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE.release.xcconfig"; sourceTree = "<group>"; };
 		E61D7F631F6AC78B0091C781 /* SimplyE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SimplyE.entitlements; sourceTree = "<group>"; };
 		E6202A001DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsAccountDetailViewController.h; sourceTree = "<group>"; };
 		E6202A011DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAccountDetailViewController.m; sourceTree = "<group>"; };
@@ -587,8 +562,6 @@
 		E6D775431F9FE0C400C0B722 /* NYPLBarcodeScanningViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBarcodeScanningViewController.h; sourceTree = "<group>"; };
 		E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookAuthor.swift; sourceTree = "<group>"; };
 		E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLDirectoryManager.swift; sourceTree = "<group>"; };
-		E6FAFBE81F7A9AD40026F0EE /* HelpStackStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = HelpStackStoryboard.storyboard; path = Simplified/HelpStackStoryboard.storyboard; sourceTree = SOURCE_ROOT; };
-		E6FAFBEE1F7A9B7A0026F0EE /* ReportIssue.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ReportIssue.storyboard; sourceTree = "<group>"; };
 		E6FAFBFE1F7A9D870026F0EE /* SimplyE-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyE-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -597,7 +570,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3CFADEC0E3E7F1956903B43 /* Pods_SimplyETests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -613,9 +585,6 @@
 				03B092261E7883C400AD338D /* libiconv.tbd in Frameworks */,
 				A823D813192BABA400B55DE2 /* CoreGraphics.framework in Frameworks */,
 				03B092241E78839D00AD338D /* QuartzCore.framework in Frameworks */,
-				03CE00EA1E0C436400C91489 /* libePub3-iOS.a in Frameworks */,
-				2D6F7CA91D910C3C000B906A /* HelpStack.framework in Frameworks */,
-				2D6F7CA71D910C12000B906A /* Bugsnag.framework in Frameworks */,
 				08C469C11BDAAEB1009D8AFD /* libADEPT.a in Frameworks */,
 				08C469C21BDAAEB1009D8AFD /* libAdobe Content Filter.a in Frameworks */,
 				08A352271BDE91B80040BF1D /* libRDServices.a in Frameworks */,
@@ -631,8 +600,11 @@
 				1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */,
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
-				EC89BB22576495E8A359D77E /* Pods_SimplyE.framework in Frameworks */,
-				938067EE8EA3BF40E9651E5A /* Pods_SimplyE.framework in Frameworks */,
+				145DA48E215441A70055DB93 /* ZXingObjC.framework in Frameworks */,
+				145DA4902154429E0055DB93 /* Bugsnag.framework in Frameworks */,
+				145DA49421544A3F0055DB93 /* NYPLCardCreator.framework in Frameworks */,
+				145DA49621544A430055DB93 /* PureLayout.framework in Frameworks */,
+				145DA4922154464F0055DB93 /* SQLite.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -655,15 +627,6 @@
 				0345BFD61DBF002E00398B6F /* APIKeys.swift */,
 			);
 			name = CardCreator;
-			sourceTree = "<group>";
-		};
-		08801EF41BDE8D0D005E1F32 /* heap-ios-latest */ = {
-			isa = PBXGroup;
-			children = (
-				08801EF51BDE8D0D005E1F32 /* Heap.h */,
-				08801EF61BDE8D0D005E1F32 /* libHeap.a */,
-			);
-			path = "heap-ios-latest";
 			sourceTree = "<group>";
 		};
 		110AF8881961D652004887C3 /* My Books */ = {
@@ -892,7 +855,6 @@
 				111E75821A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m */,
 				111E75781A80165C00718AD7 /* NYPLSettingsSplitViewController.h */,
 				111E75791A80165C00718AD7 /* NYPLSettingsSplitViewController.m */,
-				0320E8221E8BFCC900806EF0 /* NYPLReportIssueViewController.swift */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -935,17 +897,6 @@
 			path = Resources/OpenDyslexicFont;
 			sourceTree = "<group>";
 		};
-		A12A6ACAB811A2E0B2BC0047 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				579E9BC126424F2B79C0FE7E /* Pods-SimplyETests.debug.xcconfig */,
-				56A7B7786F9B146602623617 /* Pods-SimplyETests.release.xcconfig */,
-				8499EE06365A73ACE6116D3C /* Pods-SimplyE.debug.xcconfig */,
-				DE9D07935ED4E0F0BB8AD7B7 /* Pods-SimplyE.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		A49C25411AE05A2600D63B89 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -963,11 +914,10 @@
 				5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */,
 				A49C25401AE05A2600D63B89 /* RDServices.xcodeproj */,
 				1112A8191A322C53002B8CC1 /* TenPrintCover.xcodeproj */,
-				A823D80F192BABA400B55DE2 /* Frameworks */,
-				A12A6ACAB811A2E0B2BC0047 /* Pods */,
-				A823D80E192BABA400B55DE2 /* Products */,
 				A823D816192BABA400B55DE2 /* Simplified */,
 				A823D82F192BABA400B55DE2 /* SimplifiedTests */,
+				A823D80E192BABA400B55DE2 /* Products */,
+				A823D80F192BABA400B55DE2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -983,7 +933,11 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2DECDF1D20041A7E0088E7D6 /* Pods_SimplyE.framework */,
+				145DA49521544A420055DB93 /* PureLayout.framework */,
+				145DA49321544A3F0055DB93 /* NYPLCardCreator.framework */,
+				145DA4912154464F0055DB93 /* SQLite.framework */,
+				145DA48F2154429E0055DB93 /* Bugsnag.framework */,
+				145DA48D215441A70055DB93 /* ZXingObjC.framework */,
 				03B0922F1E78871A00AD338D /* MediaPlayer.framework */,
 				03B0922D1E7886ED00AD338D /* CoreVideo.framework */,
 				03B0922B1E7886C900AD338D /* AVFoundation.framework */,
@@ -991,28 +945,14 @@
 				03B092271E78859E00AD338D /* CoreMedia.framework */,
 				03B092251E7883C400AD338D /* libiconv.tbd */,
 				03B092231E78839D00AD338D /* QuartzCore.framework */,
-				03CE00E91E0C436400C91489 /* libePub3-iOS.a */,
-				2D6F7CA81D910C3C000B906A /* HelpStack.framework */,
-				2D6F7CA61D910C12000B906A /* Bugsnag.framework */,
-				2D6F7CA41D910C0D000B906A /* CHRTextFieldFormatter.framework */,
 				2DA4F2321C68363B008853D7 /* LocalAuthentication.framework */,
-				080ADCBE1C04C26100C0575F /* libCHRTextFieldFormatter.a */,
-				08B3CF851BF0F8FA00E6485E /* libBugsnag.a */,
-				08A352281BDE91B80040BF1D /* libePub3-iOS.a */,
 				08A352251BDE8E700040BF1D /* SystemConfiguration.framework */,
 				08A352231BDE8E640040BF1D /* Security.framework */,
 				08A352211BDE8E560040BF1D /* libicucore.tbd */,
 				08A3521F1BDE8E410040BF1D /* CFNetwork.framework */,
-				08801EF41BDE8D0D005E1F32 /* heap-ios-latest */,
-				08801EF21BDE8A4D005E1F32 /* libHeap.a */,
-				081387501BC56B7A003DEA6A /* libpop.a */,
-				081387211BC3139A003DEA6A /* libGeoJSONSerialization.a */,
-				B54F998F1BACB0CD0033F303 /* libAFNetworking.a */,
-				B54F99901BACB0CE0033F303 /* libHelpStack.a */,
 				5A5B90141B946CBD002C53E9 /* libstdc++.6.0.9.dylib */,
 				5A5B90111B946763002C53E9 /* libc++.1.dylib */,
 				84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */,
-				A49C25571AE05D0A00D63B89 /* libePub3-iOS.a */,
 				1146EE3F1A5DD071009F7576 /* CoreText.framework */,
 				112492571A5B5B690054D6E2 /* libstdc++.6.dylib */,
 				11D5219B1A449ABA00636240 /* libstdc++.dylib */,
@@ -1024,9 +964,6 @@
 				A823D810192BABA400B55DE2 /* Foundation.framework */,
 				A823D812192BABA400B55DE2 /* CoreGraphics.framework */,
 				A823D814192BABA400B55DE2 /* UIKit.framework */,
-				A823D829192BABA400B55DE2 /* XCTest.framework */,
-				2FBF380CA3C6978E66F4EFAB /* Pods_SimplyE.framework */,
-				B1849A8E1AD3E32A24E7A4CC /* Pods_SimplyETests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1034,13 +971,17 @@
 		A823D816192BABA400B55DE2 /* Simplified */ = {
 			isa = PBXGroup;
 			children = (
-				0345BFE31DBF010100398B6F /* Annotations */,
 				110AF8891961D66C004887C3 /* Additions */,
-				0345BFEE1DBF031B00398B6F /* CardCreator */,
+				0345BFE31DBF010100398B6F /* Annotations */,
 				110AF8901961D822004887C3 /* Book */,
+				0345BFEE1DBF031B00398B6F /* CardCreator */,
 				1183F349194F74EF00DC322F /* Catalog */,
 				11C5DCEF1976D1BA005A9945 /* Holds */,
+				2D382BD61D08BA99002C423D /* Log.swift */,
 				110AF8881961D652004887C3 /* My Books */,
+				AE77E8DE5454517F1AE119BF /* OPDS */,
+				119504051994061E009FB788 /* Reader */,
+				11C5DCEE1976D19E005A9945 /* Settings */,
 				11172762197F31280043EFBF /* NYPLAccount.h */,
 				11172763197F31280043EFBF /* NYPLAccount.m */,
 				1158812C1A894F4E008672C3 /* NYPLAccountSignInViewController.h */,
@@ -1050,7 +991,6 @@
 				08A352721BDFF5380040BF1D /* NYPLAlertController.m */,
 				A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */,
 				A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */,
-				E6B6E76E1F6859A4007EE361 /* NYPLKeychainManager.swift */,
 				1183F359194F847100DC322F /* NYPLAsync.h */,
 				1183F35A194F847100DC322F /* NYPLAsync.m */,
 				114C8CD519BE2FD300719B72 /* NYPLAttributedString.h */,
@@ -1060,6 +1000,7 @@
 				E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
+				0378BC1B1E27FFC80095428E /* NYPLDeviceManager.swift */,
 				E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */,
 				111197321986D7550014462F /* NYPLDismissibleViewController.h */,
 				111197331986D7550014462F /* NYPLDismissibleViewController.m */,
@@ -1073,6 +1014,7 @@
 				11369D47199527C200BB11F8 /* NYPLJSON.m */,
 				11C5DD14197727A6005A9945 /* NYPLKeychain.h */,
 				11C5DD15197727A6005A9945 /* NYPLKeychain.m */,
+				E6B6E76E1F6859A4007EE361 /* NYPLKeychainManager.swift */,
 				1111973A19880E8D0014462F /* NYPLLinearView.h */,
 				1111973B19880E8D0014462F /* NYPLLinearView.m */,
 				52592BBB21220A4F00587288 /* NYPLLocalization.h */,
@@ -1105,16 +1047,11 @@
 				111559EC19B8FA590003BE94 /* NYPLXML.m */,
 				E6C91BC01FD5F63B00A32F42 /* NYPLZXingEncoder.h */,
 				E6C91BC11FD5F63B00A32F42 /* NYPLZXingEncoder.m */,
-				AE77E8DE5454517F1AE119BF /* OPDS */,
-				119504051994061E009FB788 /* Reader */,
-				11C5DCEE1976D19E005A9945 /* Settings */,
-				E6FAFBEF1F7A9C310026F0EE /* Storyboards */,
-				A823D817192BABA400B55DE2 /* Supporting Files */,
+				145798F5215BE9E300F68AFD /* ProblemReportEmail.swift */,
 				E6FAFBFE1F7A9D870026F0EE /* SimplyE-Bridging-Header.h */,
-				2D382BD61D08BA99002C423D /* Log.swift */,
+				A823D817192BABA400B55DE2 /* Supporting Files */,
 				2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */,
 				2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */,
-				0378BC1B1E27FFC80095428E /* NYPLDeviceManager.swift */,
 			);
 			path = Simplified;
 			sourceTree = "<group>";
@@ -1122,21 +1059,20 @@
 		A823D817192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */,
 				A823D822192BABA400B55DE2 /* Images.xcassets */,
-				11C113D319F842E2005B3F63 /* Reader */,
+				A823D819192BABA400B55DE2 /* InfoPlist.strings */,
+				032A31071DC02E8E0001E4AF /* Localizable.strings */,
+				A823D81C192BABA400B55DE2 /* main.m */,
+				E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */,
 				84B7A3421B84E8FE00584FB2 /* OpenDyslexicFont */,
-				E61D7F631F6AC78B0091C781 /* SimplyE.entitlements */,
-				2D382BCF1D08B1F5002C423D /* SimplyE-Bridging-Header.h */,
+				11C113D319F842E2005B3F63 /* Reader */,
+				085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */,
 				A823D818192BABA400B55DE2 /* Simplified-Info.plist */,
 				A823D81E192BABA400B55DE2 /* Simplified-Prefix.pch */,
-				A823D81C192BABA400B55DE2 /* main.m */,
-				110F853C19D5FA7300052DF7 /* DetailSummaryTemplate.html */,
+				2D382BCF1D08B1F5002C423D /* SimplyE-Bridging-Header.h */,
+				E61D7F631F6AC78B0091C781 /* SimplyE.entitlements */,
 				2D6256901D41582A0080A81F /* software-licenses.html */,
-				B594C7551BB06F40000028F5 /* HelpStackTheme.plist */,
-				0305005D1E8EF65100EA02C4 /* HelpStackThemeNYPL.plist */,
-				085D31FB1BE7BE86007F7672 /* ReaderClientCert.sig */,
-				032A31071DC02E8E0001E4AF /* Localizable.strings */,
-				A823D819192BABA400B55DE2 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1208,16 +1144,6 @@
 			name = OPDS;
 			sourceTree = "<group>";
 		};
-		E6FAFBEF1F7A9C310026F0EE /* Storyboards */ = {
-			isa = PBXGroup;
-			children = (
-				E65977C41F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard */,
-				E6FAFBE81F7A9AD40026F0EE /* HelpStackStoryboard.storyboard */,
-				E6FAFBEE1F7A9B7A0026F0EE /* ReportIssue.storyboard */,
-			);
-			name = Storyboards;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1225,12 +1151,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D2B47791D08F808007F7764 /* Build configuration list for PBXNativeTarget "SimplyETests" */;
 			buildPhases = (
-				6A7EBB20A2BB10AD7F6FF9F1 /* [CP] Check Pods Manifest.lock */,
 				2D2B476E1D08F807007F7764 /* Sources */,
 				2D2B476F1D08F807007F7764 /* Frameworks */,
 				2D2B47701D08F807007F7764 /* Resources */,
-				B487400EDB77097CB06492D7 /* [CP] Embed Pods Frameworks */,
-				EF59547DD7650F380BEFECAF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1246,13 +1169,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A823D839192BABA400B55DE2 /* Build configuration list for PBXNativeTarget "SimplyE" */;
 			buildPhases = (
-				41F038C098C06905E3E27529 /* [CP] Check Pods Manifest.lock */,
 				A823D809192BABA400B55DE2 /* Sources */,
 				A823D80A192BABA400B55DE2 /* Frameworks */,
 				A823D80B192BABA400B55DE2 /* Resources */,
 				FE8719C55955B22F68EDF819 /* Upload Bugsnag dSYM */,
-				8ED1E1320C2F37F0410DA796 /* [CP] Embed Pods Frameworks */,
-				7D35AB55AEA925FC3399FA2A /* [CP] Copy Pods Resources */,
+				145DA48C215441260055DB93 /* Copy Frameworks (Carthage) */,
 			);
 			buildRules = (
 			);
@@ -1276,12 +1197,12 @@
 				TargetAttributes = {
 					2D2B47711D08F807007F7764 = {
 						CreatedOnToolsVersion = 7.3.1;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 1000;
 						TestTargetID = A823D80C192BABA400B55DE2;
 					};
 					A823D80C192BABA400B55DE2 = {
 						DevelopmentTeam = 7262U6ST2R;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Keychain = {
@@ -1377,8 +1298,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0305005E1E8EF65100EA02C4 /* HelpStackThemeNYPL.plist in Resources */,
-				D7A88AFE1F8C02AD00EF76F4 /* HelpStackStoryboard.storyboard in Resources */,
 				84B7A3461B84E8FE00584FB2 /* OFL.txt in Resources */,
 				11C113D719F84613005B3F63 /* simplified.js in Resources */,
 				085D31D91BE29ED4007F7672 /* NYPLProblemReportViewController.xib in Resources */,
@@ -1386,12 +1305,10 @@
 				2D4379FE1C46FDB600AE1AD5 /* ReaderClientCert.sig in Resources */,
 				2D6256911D41582A0080A81F /* software-licenses.html in Resources */,
 				E65977C51F82AC91003CD6BC /* NYPL_Launch_Screen.storyboard in Resources */,
-				D7A88B031F8C02B200EF76F4 /* ReportIssue.storyboard in Resources */,
 				03F94CCF1DD627AA00CE8F4F /* Accounts.json in Resources */,
 				A823D81B192BABA400B55DE2 /* InfoPlist.strings in Resources */,
 				11C113D019F842B9005B3F63 /* reader.html in Resources */,
 				110F853E19D5FA7300052DF7 /* DetailSummaryTemplate.html in Resources */,
-				B594C7561BB06F40000028F5 /* HelpStackTheme.plist in Resources */,
 				032A31051DC02E8E0001E4AF /* Localizable.strings in Resources */,
 				A823D823192BABA400B55DE2 /* Images.xcassets in Resources */,
 				5A6929101B95ACD100FB4C10 /* sdk.css in Resources */,
@@ -1407,116 +1324,33 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		41F038C098C06905E3E27529 /* [CP] Check Pods Manifest.lock */ = {
+		145DA48C215441260055DB93 /* Copy Frameworks (Carthage) */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
+			inputFileListPaths = (
 			);
-			name = "[CP] Check Pods Manifest.lock";
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/ZXingObjC.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Bugsnag.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/SQLite.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/PureLayout.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/NYPLCardCreator.framework",
+			);
+			name = "Copy Frameworks (Carthage)";
+			outputFileListPaths = (
+			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SimplyE-checkManifestLockResult.txt",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/ZXingObjC.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Bugsnag.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/SQLite.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/PureLayout.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/NYPLCardCreator.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6A7EBB20A2BB10AD7F6FF9F1 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SimplyETests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7D35AB55AEA925FC3399FA2A /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8ED1E1320C2F37F0410DA796 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
-				"${BUILT_PRODUCTS_DIR}/Bugsnag/Bugsnag.framework",
-				"${BUILT_PRODUCTS_DIR}/HelpStack/HelpStack.framework",
-				"${BUILT_PRODUCTS_DIR}/NYPLCardCreator/NYPLCardCreator.framework",
-				"${BUILT_PRODUCTS_DIR}/PureLayout/PureLayout.framework",
-				"${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework",
-				"${BUILT_PRODUCTS_DIR}/ZXingObjC/ZXingObjC.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bugsnag.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HelpStack.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NYPLCardCreator.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PureLayout.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLite.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZXingObjC.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SimplyE/Pods-SimplyE-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B487400EDB77097CB06492D7 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		EF59547DD7650F380BEFECAF /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SimplyETests/Pods-SimplyETests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 		FE8719C55955B22F68EDF819 /* Upload Bugsnag dSYM */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1599,7 +1433,6 @@
 				111E75831A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m in Sources */,
 				11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */,
 				03690E291EB2B44300F75D5F /* NYPLReaderBookmark.swift in Sources */,
-				0320E8241E8BFCC900806EF0 /* NYPLReportIssueViewController.swift in Sources */,
 				E6207B652118973800864143 /* NYPLAppTheme.swift in Sources */,
 				11A14DF41A1BF94F00D6C510 /* UIColor+NYPLColorAdditions.m in Sources */,
 				A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */,
@@ -1622,6 +1455,7 @@
 				11F3771F19DB62B000487769 /* NYPLFacetView.m in Sources */,
 				085D31C41BE2987E007F7672 /* NYPLProblemDocument.m in Sources */,
 				5A5B901B1B946FAD002C53E9 /* NYPLReaderContainerDelegate.mm in Sources */,
+				145798F6215BE9E300F68AFD /* ProblemReportEmail.swift in Sources */,
 				111197281986B43B0014462F /* NYPLBookCellDelegate.m in Sources */,
 				111197391987F4070014462F /* NYPLBookDetailNormalView.m in Sources */,
 				111E757D1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m in Sources */,
@@ -1727,7 +1561,6 @@
 /* Begin XCBuildConfiguration section */
 		2D2B477A1D08F808007F7764 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 579E9BC126424F2B79C0FE7E /* Pods-SimplyETests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1747,14 +1580,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.SimplyETests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimplyE.app/SimplyE";
 			};
 			name = Debug;
 		};
 		2D2B477B1D08F808007F7764 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 56A7B7786F9B146602623617 /* Pods-SimplyETests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1773,7 +1606,8 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.SimplyETests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimplyE.app/SimplyE";
 			};
 			name = Release;
@@ -1896,7 +1730,6 @@
 		};
 		A823D83A192BABA400B55DE2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8499EE06365A73ACE6116D3C /* Pods-SimplyE.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1908,6 +1741,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
@@ -1928,7 +1762,8 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -1945,7 +1780,6 @@
 		};
 		A823D83B192BABA400B55DE2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE9D07935ED4E0F0BB8AD7B7 /* Pods-SimplyE.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1957,6 +1791,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Simplified/Simplified-Prefix.pch";
@@ -1980,7 +1815,8 @@
 				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Distribution (2018)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WARNING_CFLAGS = (
 					"-Wall",
