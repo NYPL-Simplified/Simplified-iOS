@@ -7,9 +7,3 @@
 [submodule "tenprintcover-ios"]
 	path = tenprintcover-ios
 	url = git@github.com:NYPL/tenprintcover-ios.git
-[submodule "adept-ios"]
-	path = adept-ios
-	url = git@github.com:NYPL/DRM-iOS-Adobe.git
-[submodule "adobe-content-filter"]
-	path = adobe-content-filter
-	url = git@github.com:NYPL/Adobe-Content-Filter.git
