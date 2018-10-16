@@ -1,3 +1,5 @@
+@import NYPLAudiobookToolkit;
+
 #import "NYPLAccount.h"
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLSession.h"
@@ -11,6 +13,7 @@
 #import "NYPLRootTabBarController.h"
 #import "NYPLSettings.h"
 #import "NSURLRequest+NYPLURLRequestAdditions.h"
+#import "NYPLJSON.h"
 
 #import "NYPLBookCellDelegate.h"
 #import "SimplyE-Swift.h"
@@ -69,13 +72,48 @@
 - (void)openBook:(NYPLBook *)book
 {
   [NYPLCirculationAnalytics postEvent:@"open_book" withBook:book];
-  [[NYPLRootTabBarController sharedController] pushViewController:[[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier] animated:YES];
-  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLAccount sharedAccount] completion:^(BOOL enableSync) {
-    if (enableSync == YES) {
-      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-      currentAccount.syncPermissionGranted = enableSync;
+  
+  switch (book.defaultBookContentType) {
+    case NYPLBookContentTypeEPUB: {
+      [[NYPLRootTabBarController sharedController] pushViewController:[[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier] animated:YES];
+      [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLAccount sharedAccount] completion:^(BOOL enableSync) {
+        if (enableSync == YES) {
+          Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+          currentAccount.syncPermissionGranted = enableSync;
+        }
+      }];
+      break;
     }
-  }];
+    case NYPLBookContentTypeAudiobook: {
+      NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
+      NSData *const data = [NSData dataWithContentsOfURL:url];
+      id const json = NYPLJSONObjectFromData(data);
+      id<Audiobook> const audiobook = [AudiobookFactory audiobook:json];
+      if (audiobook) {
+        AudiobookMetadata *const metadata = [[AudiobookMetadata alloc]
+                                             initWithTitle:book.title
+                                             authors:@[book.authors]
+                                             narrators:@[]
+                                             publishers:@[book.publisher]
+                                             published:book.published
+                                             modified:book.published
+                                             language:@"English"];
+        AudiobookPlayerViewController *const viewController = [[AudiobookPlayerViewController alloc]
+                                                               initWithAudiobookManager:[[DefaultAudiobookManager alloc]
+                                                                                         initWithMetadata:metadata
+                                                                                         audiobook:audiobook]];
+        viewController.hidesBottomBarWhenPushed = YES;
+        [[NYPLRootTabBarController sharedController]
+         pushViewController:viewController
+         animated:YES];
+      } else {
+        // WINNIETODO
+      }
+    }
+    default:
+      // WINNIETODO: SHOW ERROR
+      break;
+  }
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate
