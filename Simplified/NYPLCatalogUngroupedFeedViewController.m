@@ -24,7 +24,7 @@ static const CGFloat kSegmentedControlToolbarHeight = 54.0;
 static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
 
 @interface NYPLCatalogUngroupedFeedViewController ()
-  <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate, NYPLEntryPointControlDelegate,
+  <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDelegate, NYPLEntryPointControlDelegate,
    UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate>
 
 @property (nonatomic) NYPLFacetBarView *facetBarView;
@@ -34,6 +34,7 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 @property (nonatomic) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic) UIVisualEffectView *entryPointBarView;
+@property (nonatomic) NYPLFacetViewDefaultDataSource *facetDS;
 
 @end
 
@@ -82,8 +83,10 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
   [self configureEntryPoints:self.feed.entryPoints];
 
   self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:0];
-  self.facetBarView.facetView.dataSource = self;
+  self.facetDS = [[NYPLFacetViewDefaultDataSource alloc] initWithFacetGroups:self.feed.facetGroups];
+  self.facetBarView.facetView.dataSource = self.facetDS;
   self.facetBarView.facetView.delegate = self;
+
   [self.view addSubview:self.facetBarView];
   [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
   [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
@@ -217,73 +220,14 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [self.collectionView reloadData];
 }
 
-#pragma mark NYPLFacetViewDataSource
-
-- (NSUInteger)numberOfFacetGroupsInFacetView:(__attribute__((unused)) NYPLFacetView *)facetView
-{
-  return self.feed.facetGroups.count;
-}
-
-- (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-numberOfFacetsInFacetGroupAtIndex:(NSUInteger const)index
-{
-  return ((NYPLCatalogFacetGroup *) self.feed.facetGroups[index]).facets.count;
-}
-
-- (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-nameForFacetGroupAtIndex:(NSUInteger const)index
-{
-  return ((NYPLCatalogFacetGroup *) self.feed.facetGroups[index]).name;
-}
-
-- (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-nameForFacetAtIndexPath:(NSIndexPath *const)indexPath
-{
-  NYPLCatalogFacetGroup *const group = self.feed.facetGroups[[indexPath indexAtPosition:0]];
-  
-  NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
-  
-  return facet.title;
-}
-
-- (BOOL)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-isActiveFacetForFacetGroupAtIndex:(NSUInteger const)index
-{
-  NYPLCatalogFacetGroup *const group = self.feed.facetGroups[index];
-  
-  for(NYPLCatalogFacet *const facet in group.facets) {
-    if(facet.active) return YES;
-  }
-  
-  return NO;
-}
-
-- (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-activeFacetIndexForFacetGroupAtIndex:(NSUInteger)index
-{
-  NYPLCatalogFacetGroup *const group = self.feed.facetGroups[index];
-  
-  NSUInteger i = 0;
-  
-  for(NYPLCatalogFacet *const facet in group.facets) {
-    if(facet.active) return i;
-    ++i;
-  }
-  
-  @throw NSInternalInconsistencyException;
-}
-
 #pragma mark NYPLFacetViewDelegate
 
 - (void)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 {
   NYPLCatalogFacetGroup *const group = self.feed.facetGroups[[indexPath indexAtPosition:0]];
-  
   NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
-  
   self.remoteViewController.URL = facet.href;
-  
   [self.remoteViewController load];
 }
 
