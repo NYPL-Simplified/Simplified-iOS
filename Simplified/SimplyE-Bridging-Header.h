@@ -27,3 +27,5 @@
 #import "NYPLOPDS.h"
 #import "NYPLLocalization.h"
 #import "NYPLCatalogFacet.h"
+#import "NYPLCatalogFacetGroup.h"
+#import "NYPLFacetView.h"
