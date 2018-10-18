@@ -105,6 +105,11 @@ NYPLOPDSAcquisitionAvailabilityDictionaryRepresentation(id<NYPLOPDSAcquisitionAv
 
 @interface NYPLOPDSAcquisitionAvailabilityReady : NSObject <NYPLOPDSAcquisitionAvailability>
 
-// TODO: It is not known what properties should be available here yet.
++ (instancetype _Null_unspecified)new NS_UNAVAILABLE;
+- (instancetype _Null_unspecified)init NS_UNAVAILABLE;
+
+- (instancetype _Nonnull)initWithSince:(NSDate *_Nullable)since
+                                 until:(NSDate *_Nullable)until
+  NS_DESIGNATED_INITIALIZER;
 
 @end
