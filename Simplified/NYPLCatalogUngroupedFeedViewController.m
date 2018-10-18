@@ -80,7 +80,7 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
 {
   [super viewDidLoad];
 
-  [self configureEntryPoints:self.feed.entryPoints];
+  [self configureEntryPointFacets:self.feed.entryPoints];
 
   self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:0];
   self.facetDS = [[NYPLFacetViewDefaultDataSource alloc] initWithFacetGroups:self.feed.facetGroups];
@@ -233,7 +233,7 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 
 #pragma mark NYPLEntryPointControlDelegate
 
-- (void)configureEntryPoints:(NSArray<NYPLCatalogFacet *> *)facets
+- (void)configureEntryPointFacets:(NSArray<NYPLCatalogFacet *> *)facets
 {
   UIVisualEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
   self.entryPointBarView = [[UIVisualEffectView alloc] initWithEffect:blur];
