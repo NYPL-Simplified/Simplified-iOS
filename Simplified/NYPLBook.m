@@ -314,7 +314,7 @@ static NSString *const UpdatedKey = @"updated";
                       since:since
                       until:until];
     } else if ([availabilityStatus isEqual:@"ready"]) {
-      availability = [[NYPLOPDSAcquisitionAvailabilityReady alloc] init];
+      availability = [[NYPLOPDSAcquisitionAvailabilityReady alloc] initWithSince:since until:until];
     }
 
     NSMutableArray<NYPLOPDSAcquisition *> *const mutableAcquisitions = [NSMutableArray array];

@@ -64,7 +64,8 @@ NYPLOPDSAcquisitionAvailabilityCopies const NYPLOPDSAcquisitionAvailabilityCopie
 @end
 
 @interface NYPLOPDSAcquisitionAvailabilityReady ()
-
+@property (nonatomic, nullable) NSDate *since;
+@property (nonatomic, nullable) NSDate *until;
 @end
 
 id<NYPLOPDSAcquisitionAvailability> _Nonnull
@@ -136,7 +137,7 @@ NYPLOPDSAcquisitionAvailabilityWithLinkXML(NYPLXML *const _Nonnull linkXML)
   }
 
   if ([statusString isEqualToString:@"ready"]) {
-    return [[NYPLOPDSAcquisitionAvailabilityReady alloc] init];
+    return [[NYPLOPDSAcquisitionAvailabilityReady alloc] initWithSince:since until:until];
   }
 
   return [[NYPLOPDSAcquisitionAvailabilityUnlimited alloc] init];
@@ -149,6 +150,12 @@ NYPLOPDSAcquisitionAvailabilityWithDictionary(NSDictionary *_Nonnull dictionary)
   if (!caseString) {
     return nil;
   }
+
+  NSString *const sinceString = NYPLNullToNil(dictionary[sinceKey]);
+  NSDate *const since = sinceString ? [NSDate dateWithRFC3339String:sinceString] : nil;
+
+  NSString *const untilString = NYPLNullToNil(dictionary[untilKey]);
+  NSDate *const until = untilString ? [NSDate dateWithRFC3339String:untilString] : nil;
 
   if ([caseString isEqual:unavailableCase]) {
     NSNumber *const copiesHeldNumber = dictionary[copiesHeldKey];
@@ -175,12 +182,6 @@ NYPLOPDSAcquisitionAvailabilityWithDictionary(NSDictionary *_Nonnull dictionary)
       return nil;
     }
 
-    NSString *const sinceString = NYPLNullToNil(dictionary[sinceKey]);
-    NSDate *const since = sinceString ? [NSDate dateWithRFC3339String:sinceString] : nil;
-
-    NSString *const untilString = NYPLNullToNil(dictionary[untilKey]);
-    NSDate *const until = untilString ? [NSDate dateWithRFC3339String:untilString] : nil;
-
     return [[NYPLOPDSAcquisitionAvailabilityLimited alloc]
             initWithCopiesAvailable:MAX(0, MIN([copiesAvailableNumber integerValue], [copiesTotalNumber integerValue]))
             copiesTotal:MAX(0, MAX([copiesAvailableNumber integerValue], [copiesTotalNumber integerValue]))
@@ -199,19 +200,13 @@ NYPLOPDSAcquisitionAvailabilityWithDictionary(NSDictionary *_Nonnull dictionary)
       return nil;
     }
 
-    NSString *const sinceString = NYPLNullToNil(dictionary[sinceKey]);
-    NSDate *const since = sinceString ? [NSDate dateWithRFC3339String:sinceString] : nil;
-
-    NSString *const untilString = NYPLNullToNil(dictionary[untilKey]);
-    NSDate *const until = untilString ? [NSDate dateWithRFC3339String:untilString] : nil;
-
     return [[NYPLOPDSAcquisitionAvailabilityReserved alloc]
             initWithHoldPosition:MAX(0, [holdPositionNumber integerValue])
             copiesTotal:MAX(0, [copiesTotalNumber integerValue])
             since:since
             until:until];
   } else if ([caseString isEqual:readyCase]) {
-    return [[NYPLOPDSAcquisitionAvailabilityReady alloc] init];
+    return [[NYPLOPDSAcquisitionAvailabilityReady alloc] initWithSince:since until:until];
   } else {
     return nil;
   }
@@ -408,19 +403,20 @@ ready:(__unused void (^ _Nullable const)(NYPLOPDSAcquisitionAvailabilityReady *_
 
 @implementation NYPLOPDSAcquisitionAvailabilityReady
 
+- (instancetype _Nonnull)initWithSince:(NSDate *const _Nullable)since
+                                 until:(NSDate *const _Nullable)until
+{
+  self = [super init];
+
+  self.since = since;
+  self.until = until;
+
+  return self;
+}
+
 - (BOOL)available
 {
   return YES;
-}
-
-- (NSDate *_Nullable)since
-{
-  return nil;
-}
-
-- (NSDate *_Nullable)until
-{
-  return nil;
 }
 
 - (void)
