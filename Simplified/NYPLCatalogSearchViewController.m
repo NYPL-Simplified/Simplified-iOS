@@ -11,11 +11,13 @@
 #import "UIView+NYPLViewAdditions.h"
 #import <PureLayout/PureLayout.h>
 
+#import "SimplyE-Swift.h"
+
 #import "NYPLCatalogSearchViewController.h"
 
 @interface NYPLCatalogSearchViewController ()
   <NYPLCatalogUngroupedFeedDelegate, UICollectionViewDelegate, UICollectionViewDataSource,
-   UISearchBarDelegate>
+   UISearchBarDelegate, NYPLEntryPointViewDelegate>
 
 @property (nonatomic) NSArray *books;
 
@@ -217,13 +219,69 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
+- (void)configureSearchEntryPointFacets:(NSArray<NYPLCatalogFacet *> *)facets
+{
+  if (self.entryPointBarView.subviews > 0) {
+    for (UIView *subview in self.entryPointBarView.subviews) {
+      [subview removeFromSuperview];
+    }
+    self.entryPointBarView = nil;
+  }
+
+  UIVisualEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+  self.entryPointBarView = [[UIVisualEffectView alloc] initWithEffect:blur];
+  self.entryPointBarView.alpha = 0;
+  [self.view addSubview:self.entryPointBarView];
+  [self.entryPointBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [self.entryPointBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  [self.entryPointBarView autoPinToTopLayoutGuideOfViewController:self withInset:0];
+
+  NYPLEntryPointView *entryPointView = [[NYPLEntryPointView alloc] initWithFacets:facets delegate:self];
+  if (entryPointView) {
+    [self.entryPointBarView.contentView addSubview:entryPointView];
+    [entryPointView autoPinEdgesToSuperviewEdges];
+    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:54.0];
+  } else {
+    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:0];
+  }
+}
+
+- (void)didSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet
+{
+  self.collectionView.hidden = YES;
+  self.noResultsLabel.hidden = YES;
+  self.reloadView.hidden = YES;
+  self.searchActivityIndicatorView.hidden = NO;
+  [self.searchActivityIndicatorView startAnimating];
+
+  self.searchActivityIndicatorLabel.hidden = YES;
+  [NSTimer scheduledTimerWithTimeInterval: 10.0 target: self
+                                 selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
+
+  self.searchBar.userInteractionEnabled = NO;
+  self.searchBar.alpha = 0.5;
+  [self.searchBar resignFirstResponder];
+
+
+  NSURL *const newURL = entryPointFacet.href;
+
+  [NYPLCatalogUngroupedFeed
+   withURL:newURL
+   handler:^(NYPLCatalogUngroupedFeed *const category) {
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       if(category) {
+         self.feed = category;
+         self.feed.delegate = self;
+       }
+       [self updateUIAfterSearchSuccess:(category != nil)];
+     }];
+   }];
+}
+
 - (void)updateUIAfterSearchSuccess:(BOOL)success
 {
 
-  [self configureEntryPointFacets:self.feed.entryPoints];
-
-  //TODO not working:
-//  [self.collectionView setContentOffset:CGPointMake(0, CGRectGetMaxY(self.entryPointBarView.frame))];
+  [self configureSearchEntryPointFacets:self.feed.entryPoints];
 
   self.collectionView.alpha = 0.0;
 
