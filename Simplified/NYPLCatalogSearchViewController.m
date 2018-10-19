@@ -49,7 +49,9 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  
+
+  [self.collectionViewRefreshControl removeFromSuperview];
+
   self.searchActivityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
   self.searchActivityIndicatorView.hidden = YES;
@@ -217,15 +219,21 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)updateUIAfterSearchSuccess:(BOOL)success
 {
+
+  [self configureEntryPointFacets:self.feed.entryPoints];
+
+  //TODO not working:
+//  [self.collectionView setContentOffset:CGPointMake(0, CGRectGetMaxY(self.entryPointBarView.frame))];
+
+  self.collectionView.alpha = 0.0;
+
+
   self.searchActivityIndicatorView.hidden = YES;
   [self.searchActivityIndicatorView stopAnimating];
   self.searchActivityIndicatorLabel.hidden = YES;
   self.searchBar.userInteractionEnabled = YES;
-  self.searchBar.alpha = 1.0;
-  
+
   if(success) {
-    self.collectionView.hidden = NO;
-    
     [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     [self.collectionView reloadData];
     
@@ -237,6 +245,12 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   } else {
     self.reloadView.hidden = NO;
   }
+
+  [UIView animateWithDuration:0.3 animations:^{
+    self.searchBar.alpha = 1.0;
+    self.entryPointBarView.alpha = 1.0;
+    self.collectionView.alpha = 1.0;
+  }];
 }
 
 - (BOOL)searchBarShouldBeginEditing:(__attribute__((unused)) UISearchBar *)searchBar

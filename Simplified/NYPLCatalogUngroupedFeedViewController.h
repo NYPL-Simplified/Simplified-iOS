@@ -1,6 +1,7 @@
 @class NYPLCatalogUngroupedFeed;
 @class NYPLRemoteViewController;
 @class NYPLOpenSearchDescription;
+@class NYPLCatalogFacet;
 
 #import "NYPLBookCellCollectionViewController.h"
 
@@ -8,6 +9,10 @@
 
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 @property (nonatomic) NYPLCatalogUngroupedFeed *feed;
+@property (nonatomic, readonly) UIRefreshControl *collectionViewRefreshControl;
+@property (nonatomic) UIVisualEffectView *entryPointBarView;
+
+
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
@@ -17,5 +22,8 @@
 // |remoteViewController| is weakly referenced.
 - (instancetype)initWithUngroupedFeed:(NYPLCatalogUngroupedFeed *)feed
                  remoteViewController:(NYPLRemoteViewController *)remoteViewController;
+
+- (void)configureEntryPointFacets:(NSArray<NYPLCatalogFacet *> *)facets;
+
 
 @end

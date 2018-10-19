@@ -28,9 +28,8 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
    UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate>
 
 @property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
-@property (nonatomic) UIRefreshControl *refreshControl;
+@property (nonatomic) UIRefreshControl *collectionViewRefreshControl;
 @property (nonatomic) UIActivityIndicatorView *collectionViewActivityIndicator;
-@property (nonatomic) UIVisualEffectView *entryPointBarView;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) NYPLFacetViewDefaultDataSource *facetViewDataSource;
 
@@ -84,15 +83,15 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
   
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
-  self.collectionView.alpha = 0.0;
+//  self.collectionView.alpha = 0.0;
 
   if (@available(iOS 11.0, *)) {
     self.collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
   }
   self.collectionView.alwaysBounceVertical = YES;
-  self.refreshControl = [[UIRefreshControl alloc] init];
-  [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
-  [self.collectionView addSubview:self.refreshControl];
+  self.collectionViewRefreshControl = [[UIRefreshControl alloc] init];
+  [self.collectionViewRefreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
+  [self.collectionView addSubview:self.collectionViewRefreshControl];
   
   if(self.feed.openSearchURL) {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
@@ -219,6 +218,10 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)configureEntryPointFacets:(NSArray<NYPLCatalogFacet *> *)facets
 {
+  if (self.entryPointBarView) {
+    self.entryPointBarView = nil;
+  }
+
   UIVisualEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
   self.entryPointBarView = [[UIVisualEffectView alloc] initWithEffect:blur];
   self.entryPointBarView.alpha = 0;
