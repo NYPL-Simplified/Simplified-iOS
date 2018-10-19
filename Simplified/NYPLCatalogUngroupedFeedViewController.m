@@ -24,17 +24,18 @@ static const CGFloat kSegmentedControlToolbarHeight = 54.0;
 static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
 
 @interface NYPLCatalogUngroupedFeedViewController ()
-  <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDelegate, NYPLEntryPointControlDelegate,
+  <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDelegate, NYPLEntryPointViewDelegate,
    UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate>
 
-@property (nonatomic) NYPLFacetBarView *facetBarView;
-@property (nonatomic) NYPLCatalogUngroupedFeed *feed;
-@property (nonatomic) UIRefreshControl *refreshControl;
-@property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
+@property (nonatomic) NYPLCatalogUngroupedFeed *feed;
+
+@property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
+@property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic) UIVisualEffectView *entryPointBarView;
-@property (nonatomic) NYPLFacetViewDefaultDataSource *facetDS;
+@property (nonatomic) NYPLFacetBarView *facetBarView;
+@property (nonatomic) NYPLFacetViewDefaultDataSource *facetViewDataSource;
 
 @end
 
@@ -60,20 +61,6 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
                           0);
 }
 
-- (void)updateActivityIndicator
-{
-  UIEdgeInsets insets = [self scrollIndicatorInsets];
-  if(self.feed.currentlyFetchingNextURL) {
-    insets.bottom += kActivityIndicatorPadding + self.activityIndicator.frame.size.height;
-    CGRect frame = self.activityIndicator.frame;
-    frame.origin = CGPointMake(CGRectGetMidX(self.collectionView.frame) - frame.size.width/2,
-                               self.collectionView.contentSize.height + kActivityIndicatorPadding/2);
-    self.activityIndicator.frame = frame;
-  }
-  self.activityIndicator.hidden = !self.feed.currentlyFetchingNextURL;
-  self.collectionView.contentInset = insets;
-}
-
 #pragma mark UIViewController
 
 - (void)viewDidLoad
@@ -83,8 +70,8 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
   [self configureEntryPointFacets:self.feed.entryPoints];
 
   self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:0];
-  self.facetDS = [[NYPLFacetViewDefaultDataSource alloc] initWithFacetGroups:self.feed.facetGroups];
-  self.facetBarView.facetView.dataSource = self.facetDS;
+  self.facetViewDataSource = [[NYPLFacetViewDefaultDataSource alloc] initWithFacetGroups:self.feed.facetGroups];
+  self.facetBarView.facetView.dataSource = self.facetViewDataSource;
   self.facetBarView.facetView.delegate = self;
 
   [self.view addSubview:self.facetBarView];
@@ -301,6 +288,20 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 }
 
 #pragma mark -
+
+- (void)updateActivityIndicator
+{
+  UIEdgeInsets insets = [self scrollIndicatorInsets];
+  if(self.feed.currentlyFetchingNextURL) {
+    insets.bottom += kActivityIndicatorPadding + self.activityIndicator.frame.size.height;
+    CGRect frame = self.activityIndicator.frame;
+    frame.origin = CGPointMake(CGRectGetMidX(self.collectionView.frame) - frame.size.width/2,
+                               self.collectionView.contentSize.height + kActivityIndicatorPadding/2);
+    self.activityIndicator.frame = frame;
+  }
+  self.activityIndicator.hidden = !self.feed.currentlyFetchingNextURL;
+  self.collectionView.contentInset = insets;
+}
 
 - (void)didSelectSearch
 {

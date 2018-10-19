@@ -1,16 +1,16 @@
 import UIKit
 
-@objc protocol NYPLEntryPointControlDelegate {
+@objc protocol NYPLEntryPointViewDelegate {
   func didSelect(entryPointFacet: NYPLCatalogFacet)
 }
 
-class NYPLEntryPointView: UIView {
+final class NYPLEntryPointView: UIView {
 
   private static let SegmentedControlMaxWidth: CGFloat = 300.0
 
   private let segmentedControl: UISegmentedControl
   private let facets: [NYPLCatalogFacet]
-  private weak var delegate: NYPLEntryPointControlDelegate?
+  private weak var delegate: NYPLEntryPointViewDelegate?
 
   /// Create a view to handle OPDS Entry Points.
   /// Will return nil if there are not enough valid facets.
@@ -18,7 +18,7 @@ class NYPLEntryPointView: UIView {
   /// - Parameters:
   ///   - facets: the given OPDS facets
   ///   - delegate: delegate to handle segmented control selection
-  @objc required init?(facets: [NYPLCatalogFacet], delegate: NYPLEntryPointControlDelegate) {
+  @objc required init?(facets: [NYPLCatalogFacet], delegate: NYPLEntryPointViewDelegate) {
     let titles = NYPLEntryPointView.titlesFrom(facets: facets)
     if titles.count < 2 {
       NSLog("Invalid parameters for entry point view")
@@ -43,7 +43,7 @@ class NYPLEntryPointView: UIView {
     }
     segmentedControl.addTarget(self, action: #selector(didSelect(control:)), for: .valueChanged)
 
-    self.addSubview(segmentedControl)
+    addSubview(segmentedControl)
     NSLayoutConstraint.autoSetPriority(.defaultHigh) {
       segmentedControl.autoSetDimension(.width, toSize: NYPLEntryPointView.SegmentedControlMaxWidth)
     }
