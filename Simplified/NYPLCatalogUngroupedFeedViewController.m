@@ -27,12 +27,9 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
   <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDelegate, NYPLEntryPointViewDelegate,
    UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate>
 
-@property (nonatomic) NYPLOpenSearchDescription *searchDescription;
-@property (nonatomic) NYPLCatalogUngroupedFeed *feed;
-
 @property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
 @property (nonatomic) UIRefreshControl *refreshControl;
-@property (nonatomic) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic) UIActivityIndicatorView *collectionViewActivityIndicator;
 @property (nonatomic) UIVisualEffectView *entryPointBarView;
 @property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) NYPLFacetViewDefaultDataSource *facetViewDataSource;
@@ -112,10 +109,10 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
   [self.collectionView reloadData];
   [self.facetBarView.facetView reloadData];
   
-  self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  self.activityIndicator.hidden = YES;
-  [self.activityIndicator startAnimating];
-  [self.collectionView addSubview:self.activityIndicator];
+  self.collectionViewActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  self.collectionViewActivityIndicator.hidden = YES;
+  [self.collectionViewActivityIndicator startAnimating];
+  [self.collectionView addSubview:self.collectionViewActivityIndicator];
   
   [self enable3DTouch];
 }
@@ -293,13 +290,13 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 {
   UIEdgeInsets insets = [self scrollIndicatorInsets];
   if(self.feed.currentlyFetchingNextURL) {
-    insets.bottom += kActivityIndicatorPadding + self.activityIndicator.frame.size.height;
-    CGRect frame = self.activityIndicator.frame;
+    insets.bottom += kActivityIndicatorPadding + self.collectionViewActivityIndicator.frame.size.height;
+    CGRect frame = self.collectionViewActivityIndicator.frame;
     frame.origin = CGPointMake(CGRectGetMidX(self.collectionView.frame) - frame.size.width/2,
                                self.collectionView.contentSize.height + kActivityIndicatorPadding/2);
-    self.activityIndicator.frame = frame;
+    self.collectionViewActivityIndicator.frame = frame;
   }
-  self.activityIndicator.hidden = !self.feed.currentlyFetchingNextURL;
+  self.collectionViewActivityIndicator.hidden = !self.feed.currentlyFetchingNextURL;
   self.collectionView.contentInset = insets;
 }
 

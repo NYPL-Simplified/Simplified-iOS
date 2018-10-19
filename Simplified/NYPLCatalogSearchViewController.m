@@ -17,12 +17,10 @@
   <NYPLCatalogUngroupedFeedDelegate, UICollectionViewDelegate, UICollectionViewDataSource,
    UISearchBarDelegate>
 
-@property (nonatomic) NYPLOpenSearchDescription *searchDescription;
-@property (nonatomic) NYPLCatalogUngroupedFeed *feed;
 @property (nonatomic) NSArray *books;
 
-@property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
-@property (nonatomic) UILabel *activityIndicatorLabel;
+@property (nonatomic) UIActivityIndicatorView *searchActivityIndicatorView;
+@property (nonatomic) UILabel *searchActivityIndicatorLabel;
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) UISearchBar *searchBar;
 @property (nonatomic) UILabel *noResultsLabel;
@@ -33,7 +31,7 @@
 
 - (instancetype)initWithOpenSearchDescription:(NYPLOpenSearchDescription *)searchDescription
 {
-  self = [super init];
+  self = [super initWithUngroupedFeed:nil remoteViewController:nil];
   if(!self) return nil;
 
   self.searchDescription = searchDescription;
@@ -52,21 +50,18 @@
 {
   [super viewDidLoad];
   
-  self.collectionView.dataSource = self;
-  self.collectionView.delegate = self;
-  
-  self.activityIndicatorView = [[UIActivityIndicatorView alloc]
+  self.searchActivityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  self.activityIndicatorView.hidden = YES;
-  [self.view addSubview:self.activityIndicatorView];
+  self.searchActivityIndicatorView.hidden = YES;
+  [self.view addSubview:self.searchActivityIndicatorView];
   
-  self.activityIndicatorLabel = [[UILabel alloc] init];
-  self.activityIndicatorLabel.font = [UIFont systemFontOfSize:14.0];
-  self.activityIndicatorLabel.text = NSLocalizedString(@"ActivitySlowLoadMessage", @"Message explaining that the download is still going");
-  self.activityIndicatorLabel.hidden = YES;
-  [self.view addSubview:self.activityIndicatorLabel];
-  [self.activityIndicatorLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:self.activityIndicatorView];
-  [self.activityIndicatorLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.activityIndicatorView withOffset:8.0];
+  self.searchActivityIndicatorLabel = [[UILabel alloc] init];
+  self.searchActivityIndicatorLabel.font = [UIFont systemFontOfSize:14.0];
+  self.searchActivityIndicatorLabel.text = NSLocalizedString(@"ActivitySlowLoadMessage", @"Message explaining that the download is still going");
+  self.searchActivityIndicatorLabel.hidden = YES;
+  [self.view addSubview:self.searchActivityIndicatorLabel];
+  [self.searchActivityIndicatorLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:self.searchActivityIndicatorView];
+  [self.searchActivityIndicatorLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.searchActivityIndicatorView withOffset:8.0];
   
   self.searchBar = [[UISearchBar alloc] init];
   self.searchBar.delegate = self;
@@ -81,7 +76,7 @@
   self.noResultsLabel.hidden = YES;
   [self.view addSubview:self.noResultsLabel];
   
-    __weak NYPLCatalogSearchViewController *weakSelf = self;
+  __weak NYPLCatalogSearchViewController *weakSelf = self;
   self.reloadView = [[NYPLReloadView alloc] init];
   self.reloadView.handler = ^{
     weakSelf.reloadView.hidden = YES;
@@ -97,8 +92,8 @@
 
 - (void)viewWillLayoutSubviews
 {
-  self.activityIndicatorView.center = self.view.center;
-  [self.activityIndicatorView integralizeFrame];
+  self.searchActivityIndicatorView.center = self.view.center;
+  [self.searchActivityIndicatorView integralizeFrame];
   
   self.noResultsLabel.center = self.view.center;
   self.noResultsLabel.frame = CGRectMake(CGRectGetMinX(self.noResultsLabel.frame),
@@ -120,12 +115,12 @@
 
 - (void)addActivityIndicatorLabel:(NSTimer*)timer
 {
-  if (!self.activityIndicatorView.isHidden) {
-    [UIView transitionWithView:self.activityIndicatorLabel
+  if (!self.searchActivityIndicatorView.isHidden) {
+    [UIView transitionWithView:self.searchActivityIndicatorLabel
                       duration:0.5
                        options:UIViewAnimationOptionTransitionCrossDissolve
                     animations:^{
-                      self.activityIndicatorLabel.hidden = NO;
+                      self.searchActivityIndicatorLabel.hidden = NO;
                     } completion:nil];
   }
   [timer invalidate];
@@ -184,10 +179,10 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   self.collectionView.hidden = YES;
   self.noResultsLabel.hidden = YES;
   self.reloadView.hidden = YES;
-  self.activityIndicatorView.hidden = NO;
-  [self.activityIndicatorView startAnimating];
+  self.searchActivityIndicatorView.hidden = NO;
+  [self.searchActivityIndicatorView startAnimating];
 
-  self.activityIndicatorLabel.hidden = YES;
+  self.searchActivityIndicatorLabel.hidden = YES;
   [NSTimer scheduledTimerWithTimeInterval: 10.0 target: self
                                  selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
   
@@ -222,9 +217,9 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)updateUIAfterSearchSuccess:(BOOL)success
 {
-  self.activityIndicatorView.hidden = YES;
-  [self.activityIndicatorView stopAnimating];
-  self.activityIndicatorLabel.hidden = YES;
+  self.searchActivityIndicatorView.hidden = YES;
+  [self.searchActivityIndicatorView stopAnimating];
+  self.searchActivityIndicatorLabel.hidden = YES;
   self.searchBar.userInteractionEnabled = YES;
   self.searchBar.alpha = 1.0;
   
