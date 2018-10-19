@@ -178,7 +178,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 #pragma mark UISearchBarDelegate
 
-- (void)searchBarSearchButtonClicked:(__attribute__((unused)) UISearchBar *)searchBar
+- (void)configureUIForActiveSearchState
 {
   self.collectionView.hidden = YES;
   self.noResultsLabel.hidden = YES;
@@ -189,10 +189,30 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   self.searchActivityIndicatorLabel.hidden = YES;
   [NSTimer scheduledTimerWithTimeInterval: 10.0 target: self
                                  selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
-  
+
   self.searchBar.userInteractionEnabled = NO;
   self.searchBar.alpha = 0.5;
   [self.searchBar resignFirstResponder];
+}
+
+- (void)fetchUngroupedFeedFromURL:(NSURL *)URL
+{
+  [NYPLCatalogUngroupedFeed
+   withURL:URL
+   handler:^(NYPLCatalogUngroupedFeed *const category) {
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       if(category) {
+         self.feed = category;
+         self.feed.delegate = self;
+       }
+       [self updateUIAfterSearchSuccess:(category != nil)];
+     }];
+   }];
+}
+
+- (void)searchBarSearchButtonClicked:(__attribute__((unused)) UISearchBar *)searchBar
+{
+  [self configureUIForActiveSearchState];
   
   if(self.searchDescription.books) {
     self.books = [self.searchDescription.books filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NYPLBook *book, __unused NSDictionary *bindings) {
@@ -202,20 +222,11 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     }]];
     [self updateUIAfterSearchSuccess:YES];
   } else {
-    [NYPLCatalogUngroupedFeed
-     withURL:[NSURL URLWithString:
-              [self.searchDescription.OPDSURLTemplate
-               stringByReplacingOccurrencesOfString:@"{searchTerms}"
-               withString:[self.searchBar.text stringByURLEncoding]]]
-     handler:^(NYPLCatalogUngroupedFeed *const category) {
-       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         if(category) {
-           self.feed = category;
-           self.feed.delegate = self;
-         }
-         [self updateUIAfterSearchSuccess:(category != nil)];
-       }];
-     }];
+    NSURL *searchURL = [NSURL URLWithString:
+                        [self.searchDescription.OPDSURLTemplate
+                         stringByReplacingOccurrencesOfString:@"{searchTerms}"
+                         withString:[self.searchBar.text stringByURLEncoding]]];
+    [self fetchUngroupedFeedFromURL:searchURL];
   }
 }
 
@@ -248,44 +259,16 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)didSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet
 {
-  self.collectionView.hidden = YES;
-  self.noResultsLabel.hidden = YES;
-  self.reloadView.hidden = YES;
-  self.searchActivityIndicatorView.hidden = NO;
-  [self.searchActivityIndicatorView startAnimating];
-
-  self.searchActivityIndicatorLabel.hidden = YES;
-  [NSTimer scheduledTimerWithTimeInterval: 10.0 target: self
-                                 selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
-
-  self.searchBar.userInteractionEnabled = NO;
-  self.searchBar.alpha = 0.5;
-  [self.searchBar resignFirstResponder];
-
-
+  [self configureUIForActiveSearchState];
   NSURL *const newURL = entryPointFacet.href;
-
-  [NYPLCatalogUngroupedFeed
-   withURL:newURL
-   handler:^(NYPLCatalogUngroupedFeed *const category) {
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       if(category) {
-         self.feed = category;
-         self.feed.delegate = self;
-       }
-       [self updateUIAfterSearchSuccess:(category != nil)];
-     }];
-   }];
+  [self fetchUngroupedFeedFromURL:newURL];
 }
 
 - (void)updateUIAfterSearchSuccess:(BOOL)success
 {
-
   [self configureSearchEntryPointFacets:self.feed.entryPoints];
 
   self.collectionView.alpha = 0.0;
-
-
   self.searchActivityIndicatorView.hidden = YES;
   [self.searchActivityIndicatorView stopAnimating];
   self.searchActivityIndicatorLabel.hidden = YES;
