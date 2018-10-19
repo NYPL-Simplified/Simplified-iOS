@@ -135,6 +135,12 @@ completionHandler:(void (^const)(void))completionHandler
    completionHandler:completionHandler];
 }
 
+// For local notifications
+// decrease the badge number once user has clicked on notification
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+  application.applicationIconBadgeNumber = notification.applicationIconBadgeNumber - 1;
+}
+
 - (void)beginCheckingForUpdates
 {
   [UpdateCheckShim

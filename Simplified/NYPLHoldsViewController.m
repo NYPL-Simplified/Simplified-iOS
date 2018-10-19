@@ -28,6 +28,7 @@
 @property (nonatomic) UILabel *instructionsLabel;
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) UIBarButtonItem *searchButton;
+@property (nonatomic) NYPLHoldsNotifications *localNotifications;
 
 @end
 
@@ -123,6 +124,13 @@
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }
+}
+
+- (void) viewDidAppear:(BOOL)animated {
+  [super viewDidAppear:animated];
+
+  self.localNotifications = [[NYPLHoldsNotifications alloc] init];
+  [self.localNotifications requestAuthorization];
 }
 
 #pragma mark UICollectionViewDelegate
@@ -224,6 +232,8 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
      }];
     if (!addedToReserved) {
       [held addObject:book];
+    } else {
+      [self.localNotifications sendNotificationWithBook:book];
     }
   }
   self.heldBooks = held;
