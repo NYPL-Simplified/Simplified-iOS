@@ -17,14 +17,15 @@
   <NYPLCatalogUngroupedFeedDelegate, UICollectionViewDelegate, UICollectionViewDataSource,
    UISearchBarDelegate>
 
+@property (nonatomic) NYPLOpenSearchDescription *searchDescription;
+@property (nonatomic) NYPLCatalogUngroupedFeed *feed;
+@property (nonatomic) NSArray *books;
+
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) UILabel *activityIndicatorLabel;
-@property (nonatomic) NYPLCatalogUngroupedFeed *category;
-@property (nonatomic) UILabel *noResultsLabel;
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) UISearchBar *searchBar;
-@property (nonatomic) NYPLOpenSearchDescription *searchDescription;
-@property (nonatomic) NSArray *books;
+@property (nonatomic) UILabel *noResultsLabel;
 
 @end
 
@@ -42,7 +43,7 @@
 
 - (NSArray *)books
 {
-  return _books ? _books : self.category.books;
+  return _books ? _books : self.feed.books;
 }
 
 #pragma mark UIViewController
@@ -141,7 +142,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-  [self.category prepareForBookIndex:indexPath.row];
+  [self.feed prepareForBookIndex:indexPath.row];
   
   NYPLBook *const book = self.books[indexPath.row];
   
@@ -210,10 +211,9 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
      handler:^(NYPLCatalogUngroupedFeed *const category) {
        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
          if(category) {
-           self.category = category;
-           self.category.delegate = self;
+           self.feed = category;
+           self.feed.delegate = self;
          }
-         
          [self updateUIAfterSearchSuccess:(category != nil)];
        }];
      }];
