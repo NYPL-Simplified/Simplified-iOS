@@ -125,6 +125,20 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
   }];
 }
 
+- (void)viewDidLayoutSubviews
+{
+  [super viewDidLayoutSubviews];
+
+  UIEdgeInsets newInsets = UIEdgeInsetsMake(CGRectGetMaxY(self.entryPointBarView.frame),
+                                            0,
+                                            self.bottomLayoutGuide.length,
+                                            0);
+  if (!UIEdgeInsetsEqualToEdgeInsets(self.collectionView.contentInset, newInsets)) {
+    self.collectionView.contentInset = newInsets;
+    self.collectionView.scrollIndicatorInsets = newInsets;
+  }
+}
+
 - (void)didMoveToParentViewController:(UIViewController *)parent
 {
   [super didMoveToParentViewController:parent];

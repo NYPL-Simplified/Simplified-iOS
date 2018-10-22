@@ -96,6 +96,8 @@
 
 - (void)viewWillLayoutSubviews
 {
+  [super viewWillLayoutSubviews];
+
   self.searchActivityIndicatorView.center = self.view.center;
   [self.searchActivityIndicatorView integralizeFrame];
   
