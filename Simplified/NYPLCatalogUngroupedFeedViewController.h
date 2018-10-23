@@ -1,13 +1,9 @@
 @class NYPLCatalogUngroupedFeed;
 @class NYPLRemoteViewController;
-@class NYPLOpenSearchDescription;
-@class NYPLCatalogFacet;
-@class NYPLFacetBarView;
 
 #import "NYPLBookCellCollectionViewController.h"
 
 @interface NYPLCatalogUngroupedFeedViewController : NYPLBookCellCollectionViewController
-
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;

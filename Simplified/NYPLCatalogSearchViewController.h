@@ -1,6 +1,6 @@
 @class NYPLOpenSearchDescription;
 
-#import "NYPLCatalogUngroupedFeedViewController.h"
+#import "NYPLBookCellCollectionViewController.h"
 
 @interface NYPLCatalogSearchViewController : NYPLBookCellCollectionViewController
 
