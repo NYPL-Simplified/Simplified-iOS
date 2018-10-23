@@ -1,3 +1,4 @@
+#import "SimplyE-Swift.h"
 #import "NYPLFacetView.h"
 #import <PureLayout/PureLayout.h>
 
@@ -5,6 +6,7 @@
 
 @interface NYPLFacetBarView ()
 
+@property (nonatomic) NYPLEntryPointView *entryPointView;
 @property (nonatomic) NYPLFacetView *facetView;
 
 @end
@@ -25,7 +27,10 @@
   [self addSubview:bgBlur];
   [bgBlur autoPinEdgesToSuperviewEdges];
 
+  self.entryPointView = [[NYPLEntryPointView alloc] init];
   self.facetView = [[NYPLFacetView alloc] init];
+  self.entryPointView.hidden = YES;
+  self.facetView.hidden = YES;
 
   UIView *bottomBorderView = [[UIView alloc] init];
   bottomBorderView.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.9];
@@ -33,16 +38,24 @@
   topBorderView.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.9];
 
   [self addSubview:self.facetView];
-  [self.facetView autoPinEdgesToSuperviewEdges];
+  [self addSubview:self.entryPointView];
+  [self.entryPointView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
+  [self.facetView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
+  [self.entryPointView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.facetView];
 
-  [self addSubview:bottomBorderView];
+  [self.facetView addSubview:bottomBorderView];
   [bottomBorderView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
   [bottomBorderView autoSetDimension:ALDimensionHeight toSize:borderHeight];
-  [self addSubview:topBorderView];
+  [self.facetView addSubview:topBorderView];
   [topBorderView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
   [topBorderView autoSetDimension:ALDimensionHeight toSize:borderHeight];
 
   return self;
+}
+
+- (void)setNeedsLayout
+{
+  [self layoutIfNeeded];
 }
 
 @end

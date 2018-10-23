@@ -1,41 +1,56 @@
 import UIKit
 
 @objc protocol NYPLEntryPointViewDelegate {
-  func didSelect(entryPointFacet: NYPLCatalogFacet)
+  func entryPointViewDidSelect(entryPointFacet: NYPLCatalogFacet)
+}
+
+@objc protocol NYPLEntryPointViewDataSource {
+  func facetsForEntryPointView() -> [NYPLCatalogFacet]
 }
 
 final class NYPLEntryPointView: UIView {
 
   private static let SegmentedControlMaxWidth: CGFloat = 300.0
+  private static let EntryPointViewHeight: CGFloat = 54.0
 
-  private let segmentedControl: UISegmentedControl
-  private let facets: [NYPLCatalogFacet]
-  private weak var delegate: NYPLEntryPointViewDelegate?
+  private var facets: [NYPLCatalogFacet]!
+  @objc weak var dataSource: NYPLEntryPointViewDataSource? {
+    didSet {
+      if (dataSource != nil && delegate != nil) {
+        reloadData()
+      }
+    }
+  }
+  @objc weak var delegate: NYPLEntryPointViewDelegate? {
+    didSet {
+      if (dataSource != nil && delegate != nil) {
+        reloadData()
+      }
+    }
+  }
 
-  /// Create a view to handle OPDS Entry Points.
-  /// Will return nil if there are not enough valid facets.
-  ///
-  /// - Parameters:
-  ///   - facets: the given OPDS facets
-  ///   - delegate: delegate to handle segmented control selection
-  @objc required init?(facets: [NYPLCatalogFacet], delegate: NYPLEntryPointViewDelegate) {
+  @objc func reloadData()
+  {
+    isHidden = true
+    
+    for subview in subviews {
+      subview.removeFromSuperview()
+    }
+
+    facets = dataSource!.facetsForEntryPointView()
     let titles = NYPLEntryPointView.titlesFrom(facets: facets)
     if titles.count < 2 {
-      NSLog("Invalid parameters for entry point view")
-      return nil
+      autoSetDimension(.height, toSize: 0.0)
+      return
     }
-    self.segmentedControl = UISegmentedControl.init(items: titles)
-    self.facets = facets
-    self.delegate = delegate
-    super.init(frame: .zero)
-    setupSubviews()
+
+    let segmentedControl = UISegmentedControl(items: titles)
+    setupSubviews(segmentedControl)
+    isHidden = false;
   }
 
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-
-  private func setupSubviews() {
+  private func setupSubviews(_ segmentedControl: UISegmentedControl)
+  {
     for index in 0..<facets.count {
       if (facets[index].active) {
         segmentedControl.selectedSegmentIndex = index
@@ -55,16 +70,20 @@ final class NYPLEntryPointView: UIView {
     segmentedControl.autoPinEdge(toSuperviewMargin: .trailing, relation: .greaterThanOrEqual)
     segmentedControl.autoCenterInSuperview()
 
+    autoSetDimension(.height, toSize: NYPLEntryPointView.EntryPointViewHeight)
   }
 
-  @objc private func didSelect(control: UISegmentedControl) {
+  @objc private func didSelect(control: UISegmentedControl)
+  {
+    let facets = dataSource!.facetsForEntryPointView()
     if control.selectedSegmentIndex >= facets.count {
       fatalError("InternalInconsistencyError")
     }
-    delegate?.didSelect(entryPointFacet: facets[control.selectedSegmentIndex])
+    delegate!.entryPointViewDidSelect(entryPointFacet: facets[control.selectedSegmentIndex])
   }
 
-  private class func titlesFrom(facets: [NYPLCatalogFacet]) -> [String] {
+  private class func titlesFrom(facets: [NYPLCatalogFacet]) -> [String]
+  {
     var titles = [String]()
     for facet in facets {
       if let title = facet.title {
