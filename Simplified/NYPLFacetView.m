@@ -2,6 +2,7 @@
 #import "NYPLRootTabBarController.h"
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
+#import <PureLayout/PureLayout.h>
 
 #import "NYPLFacetView.h"
 
@@ -12,6 +13,8 @@
 @property (nonatomic) UIScrollView *scrollView;
 
 @end
+
+CGFloat const toolbarHeight = 40;
 
 @implementation NYPLFacetView
 
@@ -52,6 +55,8 @@
 
 - (void)reloadData
 {
+  self.hidden = YES;
+
   if(!(self.dataSource && self.delegate)) {
     NYPLLOG(@"Ignoring attempt to reload data without a data source and delegate.");
     return;
@@ -107,8 +112,12 @@
   }
   
   if(groupCount > 0) {
+    [self autoSetDimension:ALDimensionHeight toSize:toolbarHeight];
+    self.hidden = NO;
     UIView *const paddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, 1)];
     [self.linearView addSubview:paddingView];
+  } else {
+    [self autoSetDimension:ALDimensionHeight toSize:0.0];
   }
   
   if(self.superview) {
