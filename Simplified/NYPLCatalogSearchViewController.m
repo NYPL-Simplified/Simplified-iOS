@@ -6,6 +6,7 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogUngroupedFeed.h"
+#import "NYPLFacetBarView.h"
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -17,8 +18,10 @@
 
 @interface NYPLCatalogSearchViewController ()
   <NYPLCatalogUngroupedFeedDelegate, UICollectionViewDelegate, UICollectionViewDataSource,
-   UISearchBarDelegate, NYPLEntryPointViewDelegate>
+   UISearchBarDelegate, NYPLEntryPointViewDelegate, NYPLEntryPointViewDataSource>
 
+@property (nonatomic) NYPLOpenSearchDescription *searchDescription;
+@property (nonatomic) NYPLCatalogUngroupedFeed *feed;
 @property (nonatomic) NSArray *books;
 
 @property (nonatomic) UIActivityIndicatorView *searchActivityIndicatorView;
@@ -26,6 +29,7 @@
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) UISearchBar *searchBar;
 @property (nonatomic) UILabel *noResultsLabel;
+@property (nonatomic) NYPLFacetBarView *facetBarView;
 
 @end
 
@@ -33,7 +37,7 @@
 
 - (instancetype)initWithOpenSearchDescription:(NYPLOpenSearchDescription *)searchDescription
 {
-  self = [super initWithUngroupedFeed:nil remoteViewController:nil];
+  self = [super init];
   if(!self) return nil;
 
   self.searchDescription = searchDescription;
@@ -52,7 +56,12 @@
 {
   [super viewDidLoad];
 
-  [self.collectionViewRefreshControl removeFromSuperview];
+  self.collectionView.dataSource = self;
+  self.collectionView.delegate = self;
+
+  if (@available(iOS 11.0, *)) {
+    self.collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+  }
 
   self.searchActivityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -100,22 +109,34 @@
 
   self.searchActivityIndicatorView.center = self.view.center;
   [self.searchActivityIndicatorView integralizeFrame];
-  
+
   self.noResultsLabel.center = self.view.center;
   self.noResultsLabel.frame = CGRectMake(CGRectGetMinX(self.noResultsLabel.frame),
                                          CGRectGetHeight(self.view.frame) * 0.333,
                                          CGRectGetWidth(self.noResultsLabel.frame),
                                          CGRectGetHeight(self.noResultsLabel.frame));
   [self.noResultsLabel integralizeFrame];
-  
+
   [self.reloadView centerInSuperview];
   [self.reloadView integralizeFrame];
+}
+
+- (void)viewDidLayoutSubviews
+{
+  [super viewDidLayoutSubviews];
+  UIEdgeInsets newInsets = UIEdgeInsetsMake(CGRectGetMaxY(self.facetBarView.frame),
+                                            0,
+                                            self.bottomLayoutGuide.length,
+                                            0);
+  if (!UIEdgeInsetsEqualToEdgeInsets(self.collectionView.contentInset, newInsets)) {
+    self.collectionView.contentInset = newInsets;
+    self.collectionView.scrollIndicatorInsets = newInsets;
+  }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
   [super viewWillDisappear:animated];
-  
   [self.searchBar resignFirstResponder];
 }
 
@@ -232,43 +253,9 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-- (void)configureSearchEntryPointFacets:(NSArray<NYPLCatalogFacet *> *)facets
-{
-  if (self.entryPointBarView.subviews > 0) {
-    for (UIView *subview in self.entryPointBarView.subviews) {
-      [subview removeFromSuperview];
-    }
-    self.entryPointBarView = nil;
-  }
-
-  UIVisualEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
-  self.entryPointBarView = [[UIVisualEffectView alloc] initWithEffect:blur];
-  self.entryPointBarView.alpha = 0;
-  [self.view addSubview:self.entryPointBarView];
-  [self.entryPointBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
-  [self.entryPointBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
-  [self.entryPointBarView autoPinToTopLayoutGuideOfViewController:self withInset:0];
-
-  NYPLEntryPointView *entryPointView = [[NYPLEntryPointView alloc] initWithFacets:facets delegate:self];
-  if (entryPointView) {
-    [self.entryPointBarView.contentView addSubview:entryPointView];
-    [entryPointView autoPinEdgesToSuperviewEdges];
-    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:54.0];
-  } else {
-    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:0];
-  }
-}
-
-- (void)didSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet
-{
-  [self configureUIForActiveSearchState];
-  NSURL *const newURL = entryPointFacet.href;
-  [self fetchUngroupedFeedFromURL:newURL];
-}
-
 - (void)updateUIAfterSearchSuccess:(BOOL)success
 {
-  [self configureSearchEntryPointFacets:self.feed.entryPoints];
+  [self createAndConfigureFacetBarView];
 
   self.collectionView.alpha = 0.0;
   self.searchActivityIndicatorView.hidden = YES;
@@ -291,7 +278,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
   [UIView animateWithDuration:0.3 animations:^{
     self.searchBar.alpha = 1.0;
-    self.entryPointBarView.alpha = 1.0;
+    self.facetBarView.alpha = 1.0;
     self.collectionView.alpha = 1.0;
   }];
 }
@@ -302,5 +289,36 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   
   return YES;
 }
-                                     
+
+- (void)createAndConfigureFacetBarView
+{
+  if (self.facetBarView) {
+    [self.facetBarView removeFromSuperview];
+  }
+
+  self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
+  self.facetBarView.entryPointView.delegate = self;
+  self.facetBarView.entryPointView.dataSource = self;
+  self.facetBarView.alpha = 0;
+
+  [self.view addSubview:self.facetBarView];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  [self.facetBarView autoPinToTopLayoutGuideOfViewController:self withInset:0.0];
+}
+
+#pragma mark NYPLEntryPointControlDelegate
+
+- (void)entryPointViewDidSelectWithEntryPointFacet:(NYPLCatalogFacet *)facet
+{
+  [self configureUIForActiveSearchState];
+  NSURL *const newURL = facet.href;
+  [self fetchUngroupedFeedFromURL:newURL];
+}
+
+- (NSArray<NYPLCatalogFacet *> *)facetsForEntryPointView
+{
+  return self.feed.entryPoints;
+}
+
 @end
