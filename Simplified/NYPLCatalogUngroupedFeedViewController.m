@@ -209,7 +209,7 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
   [self.remoteViewController load];
 }
 
-#pragma mark NYPLEntryPointControlDelegate
+#pragma mark NYPLEntryPointViewDelegate
 
 - (void)entryPointViewDidSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet
 {

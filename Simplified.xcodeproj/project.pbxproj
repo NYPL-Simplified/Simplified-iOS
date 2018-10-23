@@ -564,7 +564,7 @@
 		E68CCFC41F9F80CF003DDA6C /* NYPLBarcode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBarcode.swift; sourceTree = "<group>"; };
 		E69404081E4A789800E566ED /* NYPLReachabilityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReachabilityManager.h; sourceTree = "<group>"; };
 		E69404091E4A789800E566ED /* NYPLReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReachabilityManager.m; sourceTree = "<group>"; };
-		E699BA3F2166598B00A0736A /* NYPLEntryPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NYPLEntryPointView.swift; path = Simplified/NYPLEntryPointView.swift; sourceTree = "<group>"; };
+		E699BA3F2166598B00A0736A /* NYPLEntryPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLEntryPointView.swift; sourceTree = "<group>"; };
 		E6B1F4FA1DD20EA900D73CA1 /* NYPLSettingsAccountsList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsAccountsList.swift; sourceTree = "<group>"; };
 		E6B3269E1EE066DE00DB877A /* NYPLBookDetailTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookDetailTableView.swift; sourceTree = "<group>"; };
 		E6B6E76E1F6859A4007EE361 /* NYPLKeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLKeychainManager.swift; sourceTree = "<group>"; };
@@ -930,7 +930,6 @@
 		A823D804192BABA400B55DE2 = {
 			isa = PBXGroup;
 			children = (
-				E699BA3F2166598B00A0736A /* NYPLEntryPointView.swift */,
 				CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */,
 				2D6AF74A1E7E341F005CEC90 /* Simplified+RMSDK.xcconfig */,
 				5A569A261B8351C6003B5B61 /* ADEPT.xcodeproj */,
@@ -1030,6 +1029,7 @@
 				E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */,
 				111197321986D7550014462F /* NYPLDismissibleViewController.h */,
 				111197331986D7550014462F /* NYPLDismissibleViewController.m */,
+				E699BA3F2166598B00A0736A /* NYPLEntryPointView.swift */,
 				1142E4E919EED86A00D9B3D9 /* NYPLFacetBarView.h */,
 				1142E4EA19EED86A00D9B3D9 /* NYPLFacetBarView.m */,
 				11F3771D19DB62B000487769 /* NYPLFacetView.h */,

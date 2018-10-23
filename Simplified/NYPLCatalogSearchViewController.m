@@ -11,14 +11,12 @@
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 #import <PureLayout/PureLayout.h>
-
 #import "SimplyE-Swift.h"
 
 #import "NYPLCatalogSearchViewController.h"
 
 @interface NYPLCatalogSearchViewController ()
-  <NYPLCatalogUngroupedFeedDelegate, UICollectionViewDelegate, UICollectionViewDataSource,
-   UISearchBarDelegate, NYPLEntryPointViewDelegate, NYPLEntryPointViewDataSource>
+  <NYPLCatalogUngroupedFeedDelegate, NYPLEntryPointViewDataSource, NYPLEntryPointViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UISearchBarDelegate>
 
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
 @property (nonatomic) NYPLCatalogUngroupedFeed *feed;
@@ -307,7 +305,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [self.facetBarView autoPinToTopLayoutGuideOfViewController:self withInset:0.0];
 }
 
-#pragma mark NYPLEntryPointControlDelegate
+#pragma mark NYPLEntryPointViewDelegate
 
 - (void)entryPointViewDidSelectWithEntryPointFacet:(NYPLCatalogFacet *)facet
 {

@@ -27,7 +27,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
 
 
 @interface NYPLCatalogGroupedFeedViewController ()
-  <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate, NYPLEntryPointViewDelegate, NYPLEntryPointViewDataSource>
+  <NYPLCatalogLaneCellDelegate, NYPLEntryPointViewDelegate, NYPLEntryPointViewDataSource, UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate>
 
 @property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
 @property (nonatomic) NSMutableDictionary *bookIdentifiersToImages;
@@ -36,7 +36,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
-@property (nonatomic) NYPLFacetBarView *facetView;
+@property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) NYPLBook *mostRecentBookSelected;
 @property (nonatomic) int tempBookPosition;
@@ -87,14 +87,15 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   [self.tableView addSubview:self.refreshControl];
   [self.view addSubview:self.tableView];
 
-  self.facetView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
-  [self.view addSubview:self.facetView];
-  
-  [self.facetView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
-  [self.facetView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
-  [self.facetView autoPinToTopLayoutGuideOfViewController:self withInset:0.0];
-  self.facetView.entryPointView.delegate = self;
-  self.facetView.entryPointView.dataSource = self;
+  self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
+  self.facetBarView.entryPointView.delegate = self;
+  self.facetBarView.entryPointView.dataSource = self;
+
+  [self.view addSubview:self.facetBarView];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  [self.facetBarView autoPinToTopLayoutGuideOfViewController:self withInset:0.0];
+
 
   if(self.feed.openSearchURL) {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
@@ -118,8 +119,8 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   
   if(parent) {
     CGFloat top = parent.topLayoutGuide.length;
-    if (self.facetView.frame.size.height > 0) {
-       top = CGRectGetMaxY(self.facetView.frame) + kTableViewInsetAdjustmentWithEntryPoints;
+    if (self.facetBarView.frame.size.height > 0) {
+       top = CGRectGetMaxY(self.facetBarView.frame) + kTableViewInsetAdjustmentWithEntryPoints;
     }
     CGFloat bottom = parent.bottomLayoutGuide.length;
     
@@ -155,7 +156,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
 
   [UIView animateWithDuration:kTableViewCrossfadeDuration animations:^{
     self.tableView.alpha = 1.0;
-    self.facetView.alpha = 1.0;
+    self.facetBarView.alpha = 1.0;
   }];
 
   if (!self.presentedViewController) {

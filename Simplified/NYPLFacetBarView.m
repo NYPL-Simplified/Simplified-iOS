@@ -1,5 +1,5 @@
-#import "SimplyE-Swift.h"
 #import "NYPLFacetView.h"
+#import "SimplyE-Swift.h"
 #import <PureLayout/PureLayout.h>
 
 #import "NYPLFacetBarView.h"
@@ -51,11 +51,6 @@
   [topBorderView autoSetDimension:ALDimensionHeight toSize:borderHeight];
 
   return self;
-}
-
-- (void)setNeedsLayout
-{
-  [self layoutIfNeeded];
 }
 
 @end
