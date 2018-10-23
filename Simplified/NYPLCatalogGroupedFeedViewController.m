@@ -16,18 +16,18 @@
 #import "NYPLCatalogFacet.h"
 #import "SimplyE-Swift.h"
 #import "NYPLCatalogGroupedFeedViewController.h"
+#import "NYPLFacetBarView.h"
 
 #import <PureLayout/PureLayout.h>
 
 static CGFloat const kRowHeight = 115.0;
 static CGFloat const kSectionHeaderHeight = 50.0;
-static CGFloat const kSegmentedControlToolbarHeight = 54.0;
 static CGFloat const kTableViewInsetAdjustmentWithEntryPoints = -8;
 static CGFloat const kTableViewCrossfadeDuration = 0.3;
 
 
 @interface NYPLCatalogGroupedFeedViewController ()
-  <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate, NYPLEntryPointViewDelegate>
+  <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate, NYPLEntryPointViewDelegate, NYPLEntryPointViewDataSource>
 
 @property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
 @property (nonatomic) NSMutableDictionary *bookIdentifiersToImages;
@@ -36,7 +36,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
-@property (nonatomic) UIVisualEffectView *entryPointBarView;
+@property (nonatomic) NYPLFacetBarView *facetView;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) NYPLBook *mostRecentBookSelected;
 @property (nonatomic) int tempBookPosition;
@@ -87,7 +87,14 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   [self.tableView addSubview:self.refreshControl];
   [self.view addSubview:self.tableView];
 
-  [self configureEntryPoints:self.feed.entryPoints];
+  self.facetView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
+  [self.view addSubview:self.facetView];
+  
+  [self.facetView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [self.facetView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  [self.facetView autoPinToTopLayoutGuideOfViewController:self withInset:0.0];
+  self.facetView.entryPointView.delegate = self;
+  self.facetView.entryPointView.dataSource = self;
 
   if(self.feed.openSearchURL) {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
@@ -111,8 +118,8 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   
   if(parent) {
     CGFloat top = parent.topLayoutGuide.length;
-    if (self.entryPointBarView.frame.size.height > 0) {
-       top = CGRectGetMaxY(self.entryPointBarView.frame) + kTableViewInsetAdjustmentWithEntryPoints;
+    if (self.facetView.frame.size.height > 0) {
+       top = CGRectGetMaxY(self.facetView.frame) + kTableViewInsetAdjustmentWithEntryPoints;
     }
     CGFloat bottom = parent.bottomLayoutGuide.length;
     
@@ -148,7 +155,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
 
   [UIView animateWithDuration:kTableViewCrossfadeDuration animations:^{
     self.tableView.alpha = 1.0;
-    self.entryPointBarView.alpha = 1.0;
+    self.facetView.alpha = 1.0;
   }];
 
   if (!self.presentedViewController) {
@@ -357,32 +364,17 @@ viewForHeaderInSection:(NSInteger const)section
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
 }
 
-#pragma mark - NYPLEntryPointControlDelegate
+#pragma mark - NYPLEntryPointViewDataSource
 
-- (void)configureEntryPoints:(NSArray<NYPLCatalogFacet *> *)facets
-{
-  UIVisualEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
-  self.entryPointBarView = [[UIVisualEffectView alloc] initWithEffect:blur];
-  self.entryPointBarView.alpha = 0;
-  [self.view addSubview:self.entryPointBarView];
-  [self.entryPointBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
-  [self.entryPointBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
-  [self.entryPointBarView autoPinToTopLayoutGuideOfViewController:self withInset:0];
-
-  NYPLEntryPointView *entryPointView = [[NYPLEntryPointView alloc] initWithFacets:facets delegate:self];
-  if (entryPointView) {
-    [self.entryPointBarView.contentView addSubview:entryPointView];
-    [entryPointView autoPinEdgesToSuperviewEdges];
-    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:kSegmentedControlToolbarHeight];
-  } else {
-    [self.entryPointBarView autoSetDimension:ALDimensionHeight toSize:0];
-  }
-}
-
-- (void)didSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet {
+- (void)entryPointViewDidSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet {
   NSURL *const newURL = entryPointFacet.href;
   self.remoteViewController.URL = newURL;
   [self.remoteViewController load];
+}
+
+- (NSArray<NYPLCatalogFacet *> *)facetsForEntryPointView
+{
+  return self.feed.entryPoints;
 }
 
 #pragma mark -
