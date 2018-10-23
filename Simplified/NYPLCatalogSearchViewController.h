@@ -2,7 +2,7 @@
 
 #import "NYPLCatalogUngroupedFeedViewController.h"
 
-@interface NYPLCatalogSearchViewController : NYPLCatalogUngroupedFeedViewController
+@interface NYPLCatalogSearchViewController : NYPLBookCellCollectionViewController
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
