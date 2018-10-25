@@ -15,7 +15,7 @@ import UserNotifications
 
   // create the notification and then add it to the
   // notification center
-  func sendNotification(book: NYPLBook?) {
+  func sendNotification(books: [NYPLBook]) {
     // create the Trigger
     let seconds = 3
     let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(seconds), repeats: false)
@@ -23,10 +23,18 @@ import UserNotifications
     // create Notification content
     let content = UNMutableNotificationContent()
 
-    // adding title, subtitle, body and badge
-    content.title = "Book Ready to Check Out"
-    content.subtitle = book?.title ?? "No book title available"
-    content.body = "You'll Have the Option to Check Out Book from Here Later"
+    var bookTitles = ("Books available for checkout are: ")
+    for book in books {
+      bookTitles = bookTitles + book.title + " , "
+    }
+    print(bookTitles)
+
+    if books.count == 1 {
+      content.title = "You Have a Book Ready to Check Out"
+      content.body = books[0].title
+    } else if books.count > 1 {
+      content.title = "You have Books Ready to Check Out"
+    }
     content.badge = 1
 
     // getting the notification request
@@ -41,14 +49,28 @@ import UserNotifications
 
 
   func requestAuthorization() {
-    center.requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { [weak self] (granted, error) in
-      guard self != nil else { return }
+    // with provisional authorization, patrons don't have to be prompted to allow notifications,
+    // the notifications can still be sent to the Notification Center
+    if #available(iOS 12.0, *) {
+      center.requestAuthorization(options: [.alert, .sound, .badge, .provisional], completionHandler: { [weak self] (granted, error) in
+        guard self != nil else { return }
 
-      if granted {
+        if granted {
 
-      }
+        }
 
-    })
+      })
+    } else {
+      // Fallback on earlier versions
+      center.requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { [weak self] (granted, error) in
+        guard self != nil else { return }
+
+        if granted {
+
+        }
+
+      })
+    }
 
   }
 
