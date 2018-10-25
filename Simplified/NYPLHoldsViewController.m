@@ -29,6 +29,7 @@
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) UIBarButtonItem *searchButton;
 @property (nonatomic) NYPLHoldsNotifications *localNotifications;
+@property (nonatomic) NSArray *newlyAvailableBooks;
 
 @end
 
@@ -219,6 +220,8 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   
   NSMutableArray *reserved = [NSMutableArray array];
   NSMutableArray *held = [NSMutableArray array];
+  NSMutableArray *newlyAvailable = [NSMutableArray array];
+
   for(NYPLBook *book in books) {
     __block BOOL addedToReserved = NO;
     [book.defaultAcquisition.availability
@@ -233,11 +236,12 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     if (!addedToReserved) {
       [held addObject:book];
     } else {
-      [self.localNotifications sendNotificationWithBook:book];
+      [newlyAvailable addObject:book];
     }
   }
   self.heldBooks = held;
   self.reservedBooks = reserved;
+  self.newlyAvailableBooks = newlyAvailable;
   [self updateBadge];
 }
 
@@ -299,6 +303,9 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     if([NYPLBookRegistry sharedRegistry].syncing == NO) {
       [self.refreshControl endRefreshing];
       [self willReloadCollectionViewData];
+      
+      // send local notifications for any books that have become available to checkout
+      [self.localNotifications sendNotificationWithBooks:self.newlyAvailableBooks];
     }
   }];
 }
