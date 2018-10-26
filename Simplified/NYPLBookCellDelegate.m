@@ -98,10 +98,26 @@
                                              published:book.published
                                              modified:book.published
                                              language:@"English"];
+
+        id<AudiobookManager> const manager = [[DefaultAudiobookManager alloc]
+                                              initWithMetadata:metadata
+                                              audiobook:audiobook];
+
+        manager.logHandler = ^(enum LogLevel level, NSString * _Nonnull message, NSError * _Nullable error) {
+          if (error) {
+            [Bugsnag notifyError:error block:^(BugsnagCrashReport * _Nonnull report) {
+              report.errorMessage = message;
+            }];
+          } else {
+            NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:0 userInfo:nil];
+            [Bugsnag notifyError:error block:^(BugsnagCrashReport * _Nonnull report) {
+              report.errorMessage = [NSString stringWithFormat:@"Level: %ld. Message: %@", (long)level, message];
+            }];
+          }
+        };
+
         AudiobookPlayerViewController *const viewController = [[AudiobookPlayerViewController alloc]
-                                                               initWithAudiobookManager:[[DefaultAudiobookManager alloc]
-                                                                                         initWithMetadata:metadata
-                                                                                         audiobook:audiobook]];
+                                                               initWithAudiobookManager:manager];
         viewController.hidesBottomBarWhenPushed = YES;
         [[NYPLRootTabBarController sharedController]
          pushViewController:viewController
