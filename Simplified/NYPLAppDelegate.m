@@ -136,9 +136,15 @@ completionHandler:(void (^const)(void))completionHandler
 }
 
 // For local notifications
-// decrease the badge number once user has clicked on notification
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+  // decrease the badge number once user has clicked on notification
   application.applicationIconBadgeNumber = notification.applicationIconBadgeNumber - 1;
+
+  // Open the app to the Reservations tab when user clicks on notification
+  NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
+  self.window.rootViewController = vc;
+  // TODO: turn the tab indexes into an enum
+  [vc setSelectedIndex:2];
 }
 
 - (void)beginCheckingForUpdates
