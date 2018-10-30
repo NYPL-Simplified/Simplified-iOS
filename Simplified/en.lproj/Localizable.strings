@@ -118,6 +118,11 @@
 
 "FacetViewNotActive" = "<>";
 
+// NYPLHoldsNotifications
+
+"NYPLHoldsNotificationsBooksReadyToCheckout" = "You Have Books Ready To Check Out";
+"NYPLHoldsNotificationsABookReadyToCheckout" = "You Have A Book Ready To Check Out";
+
 // NYPLHoldsViewController
 
 "HoldsViewControllerTitle" = "Reservations";
