@@ -30,10 +30,12 @@ import UserNotifications
     print(bookTitles)
 
     if books.count == 1 {
-      content.title = "You Have a Book Ready to Check Out"
+      content.title = NSLocalizedString("NYPLHoldsNotificationsABookReadyToCheckout",
+                        comment: "Notification telling patron that a book they had on hold is now ready to checkout")
       content.body = books[0].title
     } else if books.count > 1 {
-      content.title = "You have Books Ready to Check Out"
+      content.title = NSLocalizedString("NYPLHoldsNotificationsBooksReadyToCheckout",
+                        comment: "Notification telling patron that multiple books they had on hold are now ready to checkout")
     }
     content.badge = 1
 
