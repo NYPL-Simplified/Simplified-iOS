@@ -132,6 +132,14 @@
 
         AudiobookPlayerViewController *const viewController = [[AudiobookPlayerViewController alloc]
                                                                initWithAudiobookManager:manager];
+        
+        [[NYPLBookRegistry sharedRegistry]
+         coverImageForBook:book handler:^(UIImage *image) {
+           if (image) {
+             [viewController.coverView setImage:image];
+           }
+         }];
+        
         viewController.hidesBottomBarWhenPushed = YES;
         [[NYPLRootTabBarController sharedController]
          pushViewController:viewController
