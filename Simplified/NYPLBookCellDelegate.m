@@ -7,6 +7,7 @@
 #import "NYPLBook.h"
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
+#import "NYPLBookLocation.h"
 #import "NYPLBookNormalCell.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReaderViewController.h"
@@ -21,6 +22,12 @@
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
 #endif
+
+@interface NYPLBookCellDelegate ()
+
+@property (nonatomic) NSString *lastOpenedAudiobookIdentifier;
+
+@end
 
 @implementation NYPLBookCellDelegate
 
@@ -37,6 +44,13 @@
   });
   
   return sharedDelegate;
+}
+
+- (instancetype)init
+{
+  self = [super init];
+  
+  return self;
 }
 
 #pragma mark NYPLBookButtonsDelegate
@@ -122,6 +136,34 @@
         [[NYPLRootTabBarController sharedController]
          pushViewController:viewController
          animated:YES];
+        
+        NYPLBookLocation *const bookLocation =
+          [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
+        
+        if (bookLocation) {
+          NSData *const data = [bookLocation.locationString dataUsingEncoding:NSUTF8StringEncoding];
+          ChapterLocation *const chapterLocation = [ChapterLocation fromData:data];
+          [manager.audiobook.player movePlayheadToLocation:chapterLocation];
+        }
+        
+        self.lastOpenedAudiobookIdentifier = book.identifier;
+        
+        __weak UIViewController *const weakViewController = viewController;
+        // WINNIETODO: Use the selector for iOS <10.0.
+        [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(__unused NSTimer *_Nonnull timer) {
+          if (!weakViewController.parentViewController) {
+            [manager.audiobook.player pause];
+            [timer invalidate];
+            return;
+          }
+          NSString *const string = [[NSString alloc]
+                                    initWithData:manager.audiobook.player.currentChapterLocation.toData
+                                    encoding:NSUTF8StringEncoding];
+          [[NYPLBookRegistry sharedRegistry]
+           setLocation:[[NYPLBookLocation alloc] initWithLocationString:string renderer:@"NYPLAudiobookToolkit"]
+           forIdentifier:book.identifier];
+        }];
+        
       } else {
         // WINNIETODO
       }
@@ -152,5 +194,9 @@
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
    cancelDownloadForBookIdentifier:cell.book.identifier];
 }
+
+#pragma mark PlayerDelegate
+
+
 
 @end
