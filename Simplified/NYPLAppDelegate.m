@@ -62,6 +62,10 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.window.rootViewController = vc;
     
   [self beginCheckingForUpdates];
+
+  // request permissions for local notifications
+  NYPLHoldsNotifications *localNotfications = [NYPLHoldsNotifications sharedInstance];
+  [localNotfications requestAuthorization];
   
   return YES;
 }

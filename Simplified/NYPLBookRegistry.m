@@ -30,6 +30,8 @@ static NSString *const RecordsKey = @"records";
 
 NSDictionary *preSyncBookLoanStatus;
 NSDictionary *postSyncBookLoanStatus;
+NSString *const waitingForAvailability = @"WAITING";
+NSString *const readyToCheckout = @"READY";
 
 @implementation NYPLBookRegistry
 
@@ -278,8 +280,7 @@ NSDictionary *postSyncBookLoanStatus;
       self.syncing = YES;
       self.syncShouldCommit = YES;
       [self broadcastChange];
-      // VN: is this where we create the map to check for changes post-synching?
-      NYPLLOG(@"MAP PRE-SYNC");
+      NYPLLOG(@"BOOK LOAN MAP PRE-SYNC");
       preSyncBookLoanStatus = [self buildBookLoanStatusDict];
     }
   }
@@ -337,10 +338,14 @@ NSDictionary *postSyncBookLoanStatus;
            }
            [self removeBookForIdentifier:identifier];
          }
-         // VN: do a diff of the map created earlier after completing sync here
-         NYPLLOG(@"MAP POST-SYNC");
+         NYPLLOG(@"BOOK LOAN MAP POST-SYNC");
          postSyncBookLoanStatus = [self buildBookLoanStatusDict];
-         NSArray *bookTitles = [self checkBookLoanStatusChange:preSyncBookLoanStatus WithPostSyncDict:postSyncBookLoanStatus];
+         NSArray *changedBookTitles = [[NSArray alloc] init];
+         changedBookTitles = [self checkBookLoanStatusChange:preSyncBookLoanStatus WithPostSyncDict:postSyncBookLoanStatus];
+         if (changedBookTitles.count > 0) {
+           NYPLHoldsNotifications *localNotfications = [NYPLHoldsNotifications sharedInstance];
+           [localNotfications sendNotificationWithBookTitles:changedBookTitles];
+         }
        }];
        self.syncing = NO;
        [self broadcastChange];
@@ -361,10 +366,6 @@ NSDictionary *postSyncBookLoanStatus;
 - (NSDictionary*)buildBookLoanStatusDict
 {
   NSMutableDictionary *loanStatusDict = [NSMutableDictionary dictionary];
-
-  NSString *waitingForAvailability = @"WAITING";
-  NSString *readyToCheckout = @"READY";
-
   for(NYPLBook *book in self.heldBooks) {
     __block BOOL addedToReady = NO;
     [book.defaultAcquisition.availability
@@ -396,12 +397,21 @@ NSDictionary *postSyncBookLoanStatus;
 }
 
 - (NSArray *)checkBookLoanStatusChange:(NSDictionary*)presyncDict WithPostSyncDict:(NSDictionary*)postSyncDict {
-  NSArray *bookTitles = [[NSArray alloc] init];
+  NSMutableArray *changedBookTitles = [[NSMutableArray alloc] init];
 
   // for all objects in presyncDic that are waiting, check if that key (book title) is in postSyncDict
   // with object of type ready. if so, add that title to the bookTitles
+  NSArray *waitingTitles = [presyncDict allKeysForObject:waitingForAvailability];
 
-  return bookTitles;
+  for (NSString *title in waitingTitles) {
+    if (postSyncDict[title] == readyToCheckout) {
+      // there's been a change, add to titles to send a notification later
+      NYPLLOG_F(@"This title has just become ready for checkout: %@", title);
+      [changedBookTitles addObject:title];
+    }
+  }
+
+  return changedBookTitles;
 }
 
 - (void)syncWithStandardAlertsOnCompletion

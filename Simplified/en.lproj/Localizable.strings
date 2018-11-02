@@ -120,8 +120,8 @@
 
 // NYPLHoldsNotifications
 
-"NYPLHoldsNotificationsBooksReadyToCheckout" = "You Have Books Ready To Check Out";
-"NYPLHoldsNotificationsABookReadyToCheckout" = "You Have A Book Ready To Check Out";
+"NYPLHoldsNotificationsBooksReadyToCheckout" = "You Have New Books Ready To Check Out";
+"NYPLHoldsNotificationsABookReadyToCheckout" = "You Have A New Book Ready To Check Out";
 
 // NYPLHoldsViewController
 
