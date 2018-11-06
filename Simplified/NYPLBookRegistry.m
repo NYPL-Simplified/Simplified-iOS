@@ -340,11 +340,11 @@ NSString *const readyToCheckout = @"READY";
          }
          NYPLLOG(@"BOOK LOAN MAP POST-SYNC");
          postSyncBookLoanStatus = [self buildBookLoanStatusDict];
-         NSArray *changedBookTitles = [[NSArray alloc] init];
-         changedBookTitles = [self checkBookLoanStatusChange:preSyncBookLoanStatus WithPostSyncDict:postSyncBookLoanStatus];
-         if (changedBookTitles.count > 0) {
-           NYPLHoldsNotifications *localNotfications = [NYPLHoldsNotifications sharedInstance];
-           [localNotfications sendNotificationWithBookTitles:changedBookTitles];
+         NSArray *booksWithChangedLoanStatus = [[NSArray alloc] init];
+         booksWithChangedLoanStatus = [self checkBookLoanStatusChange:preSyncBookLoanStatus WithPostSyncDict:postSyncBookLoanStatus];
+         if (booksWithChangedLoanStatus.count > 0) {
+           NYPLHoldsNotifications *localNotifications = [NYPLHoldsNotifications sharedInstance];
+           [localNotifications sendNotificationWithBooks:booksWithChangedLoanStatus];
          }
        }];
        self.syncing = NO;
@@ -365,8 +365,10 @@ NSString *const readyToCheckout = @"READY";
 
 - (NSDictionary*)buildBookLoanStatusDict
 {
+  NSArray *reservedBooks = self.heldBooks;
+
   NSMutableDictionary *loanStatusDict = [NSMutableDictionary dictionary];
-  for(NYPLBook *book in self.heldBooks) {
+  for(NYPLBook *book in reservedBooks) {
     __block BOOL addedToReady = NO;
     [book.defaultAcquisition.availability
      matchUnavailable:nil
@@ -374,44 +376,48 @@ NSString *const readyToCheckout = @"READY";
      unlimited:nil
      reserved:nil
      ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
-       [loanStatusDict setObject:readyToCheckout forKey:book.title];
+       [loanStatusDict setObject:readyToCheckout forKey:book.identifier];
        addedToReady = YES;
      }];
     if (!addedToReady) {
-      [loanStatusDict setObject:waitingForAvailability forKey:book.title];
+      [loanStatusDict setObject:waitingForAvailability forKey:book.identifier];
     }
   }
 
   NYPLLOG_F(@"Number of books in readyToCheckout are %lu", (unsigned long)[[loanStatusDict allKeysForObject:readyToCheckout] count]);
   NYPLLOG(@"Books Available To Checkout Are:");
-  for (NSString* title in [loanStatusDict allKeysForObject:readyToCheckout]) {
-    NYPLLOG_F(@"Book Title: %@", title);
+  for (NSString* identifier in [loanStatusDict allKeysForObject:readyToCheckout]) {
+    NYPLBook *book = [self bookForIdentifier:identifier];
+    NYPLLOG_F(@"Book Title: %@", book.title);
   }
 
   NYPLLOG_F(@"Number of books in waiting are %lu", (unsigned long)[[loanStatusDict allKeysForObject:waitingForAvailability] count]);
   NYPLLOG(@"Books Waiting for Availability Are:");
-  for (NSString* title in [loanStatusDict allKeysForObject:waitingForAvailability]) {
-    NYPLLOG_F(@"Book Title: %@", title);
+  for (NSString* identifier in [loanStatusDict allKeysForObject:waitingForAvailability]) {
+    NYPLBook *book = [self bookForIdentifier:identifier];
+    NYPLLOG_F(@"Book Title: %@", book.title);
   }
   return loanStatusDict;
 }
 
 - (NSArray *)checkBookLoanStatusChange:(NSDictionary*)presyncDict WithPostSyncDict:(NSDictionary*)postSyncDict {
-  NSMutableArray *changedBookTitles = [[NSMutableArray alloc] init];
+  NSMutableArray *booksWithChangedLoanStatus = [[NSMutableArray alloc] init];
 
   // for all objects in presyncDic that are waiting, check if that key (book title) is in postSyncDict
   // with object of type ready. if so, add that title to the bookTitles
   NSArray *waitingTitles = [presyncDict allKeysForObject:waitingForAvailability];
 
-  for (NSString *title in waitingTitles) {
-    if (postSyncDict[title] == readyToCheckout) {
+  for (NSString *identifier in waitingTitles) {
+    if (postSyncDict[identifier] == readyToCheckout) {
       // there's been a change, add to titles to send a notification later
-      NYPLLOG_F(@"This title has just become ready for checkout: %@", title);
-      [changedBookTitles addObject:title];
+
+      NYPLBook *book = [self bookForIdentifier:identifier];
+      NYPLLOG_F(@"This title has just become ready for checkout: %@", book.title);
+      [booksWithChangedLoanStatus addObject:book];
     }
   }
 
-  return changedBookTitles;
+  return booksWithChangedLoanStatus;
 }
 
 - (void)syncWithStandardAlertsOnCompletion
