@@ -33,10 +33,5 @@ final class NYPLContentBadgeImageView: UIImageView {
     badge.autoSetDimensions(to: CGSize(width: 24, height: 24))
     badge.autoPinEdge(.trailing, to: .trailing, of: view)
     badge.autoPinEdge(.bottom, to: .bottom, of: view)
-
-    badge.isAccessibilityElement = false
-    let accessibilityModifier = NSLocalizedString("Audiobook", comment: "")
-    let existingLabel = view.accessibilityLabel ?? ""
-    badge.accessibilityLabel = existingLabel + ". " + accessibilityModifier
   }
 }

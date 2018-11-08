@@ -113,6 +113,9 @@
   self.authors.attributedText = NYPLAttributedStringForAuthorsFromString(book.authors);
   self.cover.image = nil;
   self.title.attributedText = NYPLAttributedStringForTitleFromString(book.title);
+  if ([book defaultBookContentType] == NYPLBookContentTypeAudiobook) {
+    self.title.accessibilityLabel = [@"Audiobook." stringByAppendingString:book.title];
+  }
   
   // This avoids hitting the server constantly when scrolling within a category and ensures images
   // will still be there when the user scrolls back up. It also avoids creating tasks and refetching
