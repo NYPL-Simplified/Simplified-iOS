@@ -161,7 +161,7 @@
         // WINNIETODO: Use the selector for iOS <10.0.
         [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(__unused NSTimer *_Nonnull timer) {
           if (!weakViewController.parentViewController) {
-            [manager.audiobook.player pause];
+            [manager.audiobook.player unload];
             [timer invalidate];
             return;
           }
