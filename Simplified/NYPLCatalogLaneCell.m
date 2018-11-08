@@ -61,6 +61,7 @@
     if ([book defaultBookContentType] == NYPLBookContentTypeAudiobook) {
       NYPLContentBadgeImageView *badge = [[NYPLContentBadgeImageView alloc] initWithBadgeImage:NYPLBadgeImageAudiobook];
       [NYPLContentBadgeImageView pinWithBadge:badge toView:button];
+      button.accessibilityLabel = [@"Audiobook: " stringByAppendingString:book.title];
     }
   }];
   

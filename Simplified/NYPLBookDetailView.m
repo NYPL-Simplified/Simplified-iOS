@@ -214,6 +214,8 @@ static NSString *DetailHTMLTemplate = nil;
 
   self.coverImageView = [[UIImageView alloc] init];
   self.coverImageView.contentMode = UIViewContentModeScaleAspectFit;
+  self.coverImageView.isAccessibilityElement = YES;
+  self.coverImageView.accessibilityLabel = NSLocalizedString(@"Cover.", nil);
   self.blurCoverImageView = [[UIImageView alloc] init];
   self.blurCoverImageView.contentMode = UIViewContentModeScaleAspectFit;
   self.blurCoverImageView.alpha = 0.4f;
@@ -227,6 +229,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.contentBadge = [[NYPLContentBadgeImageView alloc] initWithBadgeImage:NYPLBadgeImageAudiobook];
   self.contentBadge.hidden = YES;
   if ([self.book defaultBookContentType] == NYPLBookContentTypeAudiobook) {
+    self.coverImageView.accessibilityLabel = [self.coverImageView.accessibilityLabel stringByAppendingString:@"Audiobook."];
     self.contentBadge.hidden = NO;
   }
 
