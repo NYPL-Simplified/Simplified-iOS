@@ -1,3 +1,4 @@
+@import MediaPlayer;
 @import NYPLAudiobookToolkit;
 
 #import "NYPLAccount.h"
@@ -162,6 +163,10 @@
         [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(__unused NSTimer *_Nonnull timer) {
           if (!weakViewController.parentViewController) {
             [manager.audiobook.player unload];
+            [[MPNowPlayingInfoCenter defaultCenter]
+             performSelector:@selector(setNowPlayingInfo:)
+             withObject:@{}
+             afterDelay:1.5];
             [timer invalidate];
             return;
           }

@@ -1,4 +1,5 @@
 @import Bugsnag;
+@import NYPLAudiobookToolkit;
 
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
@@ -497,9 +498,20 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       }
     }];
   } else {
-    if(downloaded) {
-      [self deleteLocalContentForBookIdentifier:identifier];
-    }
+      if (downloaded) {
+        switch (book.defaultBookContentType) {
+          case NYPLBookContentTypeEPUB:
+            [self deleteLocalContentForBookIdentifier:identifier];
+          case NYPLBookContentTypeAudiobook: {
+            id const json = NYPLJSONObjectFromData([NSData dataWithContentsOfURL:
+                                                    [self fileURLForBookIndentifier:book.identifier]]);
+            [[AudiobookFactory audiobook:json] deleteLocalContent];
+            break;
+          }
+          case NYPLBookContentTypeUnsupported:
+            break;
+        }
+      }
     [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
     [[NYPLBookRegistry sharedRegistry] save];
   }
