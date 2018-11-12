@@ -29,7 +29,6 @@
 
   NSDate *const date = [ISODateFormatter dateFromString:string];
 
-  // in case date came in as a year only format
   if(!date) {
     NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy";
