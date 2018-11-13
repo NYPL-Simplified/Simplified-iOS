@@ -135,9 +135,9 @@
   self.providerName = [entryXML firstChildWithName:@"distribution"].attributes[@"bibframe:ProviderName"];
   
   {
-    NSString *const dateString = [entryXML firstChildWithName:@"published"].value;
+    NSString *const dateString = [entryXML firstChildWithName:@"issued"].value;
     if(dateString) {
-      self.published = [NSDate dateWithRFC3339String:dateString];
+      self.published = [NSDate dateWithISO8601DateString:dateString];
     }
   }
   

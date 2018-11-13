@@ -20,6 +20,24 @@
   return date;
 }
 
++ (NSDate *)dateWithISO8601DateString:(NSString *const)string
+{
+  NSISO8601DateFormatter *const ISODateFormatter = [[NSISO8601DateFormatter alloc] init];
+  
+  ISODateFormatter.formatOptions = NSISO8601DateFormatWithFullDate;
+  ISODateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+
+  NSDate *const date = [ISODateFormatter dateFromString:string];
+
+  if(!date) {
+    NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyy";
+    return [dateFormatter dateFromString:string];
+  }
+
+  return date;
+}
+
 - (NSString *)RFC3339String
 {
   NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
