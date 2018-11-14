@@ -109,4 +109,14 @@
   [self updateColors];
 }
 
+- (NSString *)accessibilityLabel
+{
+  if (self.iconView.isHidden) {
+    return self.titleLabel.text;
+  } else {
+    NSString *timeString = [self.endDate longTimeUntilString];
+    return [NSString stringWithFormat:@"%@. %@ remaining.", self.titleLabel.text, timeString];
+  }
+}
+
 @end

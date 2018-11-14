@@ -278,6 +278,7 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
     [UIView setAnimationsEnabled:NO];
     
     [button setTitle:buttonInfo[TitleKey] forState:UIControlStateNormal];
+    [button setAccessibilityHint:buttonInfo[HintKey]];
     
     // We need to lay things out here else animations will be back on before it happens.
     [button layoutIfNeeded];
