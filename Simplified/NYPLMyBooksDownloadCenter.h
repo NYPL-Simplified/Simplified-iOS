@@ -20,8 +20,18 @@ static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
 // Removes local content and removes the book from the registry, after presenting a confirmation dialog.
 - (void)removeCompletedDownloadForBookIdentifier:(NSString *)identifier;
 
-// Deletes the downloaded book, but doesn't touch the registry.
+// Deletes the downloaded book, but doesn't touch the registry. The book should still be in the
+// registry when this is called.
 - (void)deleteLocalContentForBookIdentifier:(NSString *)identifier;
+
+/// Deletes local content for the specified book @c identifier and @c account. This method should be used with care:
+/// @c deleteLocalContentForBookIdentifier: should be preferred whenever possible.
+/// @warning The registry must currently have data loaded for @c account either in the standard manner or via
+///          @c -[NYPLBookRegistry @c performWithAccount:block:].
+/// @warning The book should still be in the registry when this is called.
+/// @param identifier The identifier of the book whose content should be deleted.
+/// @param account    The id of the account within which a book identified by @c identifier resides.
+- (void)deleteLocalContentForBookIdentifier:(NSString *const)identifier account:(NSInteger const)account;
 
 // Returns a borrowed book, cancels a held book, or "returns" a kept book.
 - (void)returnBookWithIdentifier:(NSString *)identifier;
