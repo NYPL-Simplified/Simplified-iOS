@@ -118,7 +118,7 @@
                                               initWithMetadata:metadata
                                               audiobook:audiobook];
 
-        manager.logHandler = ^(enum LogLevel level, NSString * _Nonnull message, NSError * _Nullable error) {
+        [DefaultAudiobookManager setLogHandler:^(enum LogLevel level, NSString * _Nonnull message, NSError * _Nullable error) {
           if (error) {
             [Bugsnag notifyError:error block:^(BugsnagCrashReport * _Nonnull report) {
               report.errorMessage = message;
@@ -129,7 +129,7 @@
               report.errorMessage = [NSString stringWithFormat:@"Level: %ld. Message: %@", (long)level, message];
             }];
           }
-        };
+        }];
 
         AudiobookPlayerViewController *const viewController = [[AudiobookPlayerViewController alloc]
                                                                initWithAudiobookManager:manager];
