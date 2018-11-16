@@ -86,6 +86,36 @@ static NSString *const RecordsKey = @"records";
   return URL;
 }
 
+- (NSArray<NSString *> *__nonnull)bookIdentifiersForAccount:(NSInteger const)account
+{
+  NSURL *const url = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"registry/registry.json"];
+  NSData *const data = [NSData dataWithContentsOfURL:url];
+  if (!data) {
+    return @[];
+  }
+  
+  id const json = NYPLJSONObjectFromData(data);
+  if (!json) @throw NSInternalInconsistencyException;
+  
+  NSDictionary *const dictionary = json;
+  if (![dictionary isKindOfClass:[NSDictionary class]]) @throw NSInternalInconsistencyException;
+  
+  NSArray *const records = dictionary[@"records"];
+  if (![records isKindOfClass:[NSArray class]]) @throw NSInternalInconsistencyException;
+  
+  NSMutableArray *const identifiers = [NSMutableArray arrayWithCapacity:records.count];
+  for (NSDictionary *const record in records) {
+    if (![record isKindOfClass:[NSDictionary class]]) @throw NSInternalInconsistencyException;
+    NSDictionary *const metadata = record[@"metadata"];
+    if (![metadata isKindOfClass:[NSDictionary class]]) @throw NSInternalInconsistencyException;
+    NSString *const identifier = metadata[@"id"];
+    if (![identifier isKindOfClass:[NSString class]]) @throw NSInternalInconsistencyException;
+    [identifiers addObject:identifier];
+  }
+  
+  return identifiers;
+}
+
 - (void)performSynchronizedWithoutBroadcasting:(void (^)(void))block
 {
   @synchronized(self) {
@@ -124,11 +154,17 @@ static NSString *const RecordsKey = @"records";
 
 - (void)load
 {
+  [self loadWithoutBroadcastingForAccount:[AccountsManager sharedInstance].currentAccount.id];
+  [self broadcastChange];
+}
+
+- (void)loadWithoutBroadcastingForAccount:(NSInteger)account
+{
   @synchronized(self) {
     self.identifiersToRecords = [NSMutableDictionary dictionary];
     
     NSData *const savedData = [NSData dataWithContentsOfURL:
-                               [[self registryDirectory]
+                               [[self registryDirectory:account]
                                 URLByAppendingPathComponent:RegistryFilename]];
     
     if(!savedData) return;
@@ -151,8 +187,6 @@ static NSString *const RecordsKey = @"records";
         self.identifiersToRecords[record.book.identifier] = record;
       }
     }
-    
-    [self broadcastChange];
   }
 }
 
@@ -700,6 +734,24 @@ static NSString *const RecordsKey = @"records";
   if(self.delayedSyncBlock) {
     self.delayedSyncBlock();
     self.delayedSyncBlock = nil;
+  }
+}
+
+- (void)performUsingAccount:(NSInteger const)account block:(void (^const __nonnull)(void))block
+{
+  @synchronized (self) {
+    if (account == [AccountsManager sharedInstance].currentAccount.id) {
+      // Since we're already set to the account, do not reload data. Doing so would
+      // be inefficient, but, more importantly, it would also wipe out download states.
+      block();
+    } else {
+      // Since the function contract specifies that the registry will not be modified
+      // by `block`, we have no need to copy `self.identifiersToRecords` here.
+      NSMutableDictionary *const currentIdentifiersToRecords = self.identifiersToRecords;
+      [self loadWithoutBroadcastingForAccount:account];
+      block();
+      self.identifiersToRecords = currentIdentifiersToRecords;
+    }
   }
 }
 

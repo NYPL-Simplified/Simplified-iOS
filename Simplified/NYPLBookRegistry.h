@@ -146,13 +146,29 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 // Resets the registry to an empty state.
 - (void)reset;
 
-// Resets the registry for a scpecific account
+// Resets the registry for a specific account
 - (void)reset:(NSInteger)account;
+
+/// Returns all book identifiers in the registry for a given account.
+/// @note The identifiers returned should not be passed to @c -[NYPLBookRegistry @c bookForIdentifier:]
+///       or similar methods unless the account provided to this method is also the currently active account.
+/// @param account The id of the account to inspect.
+/// @return A possibly empty array of book identifiers.
+- (NSArray<NSString *> *__nonnull)bookIdentifiersForAccount:(NSInteger)account;
 
 // Delay committing any changes from a sync indefinitely.
 - (void)delaySyncCommit;
 
 // Stop delaying committing synced data.
 - (void)stopDelaySyncCommit;
+
+/// Executes a function that does not modify the registry while the registry is set to a particular account, then
+/// restores the registry to the original account afterwards. During the execution of @c block, the registry will
+/// temporarily prevent access from other threads.
+/// @warning It is an error to modify the registry during the execution of @c block. Doing so will result in undefined
+///          behavior.
+/// @param account The account to use while @c block is executing.
+/// @param block   The function to execute while the registry is set to another account.
+- (void)performUsingAccount:(NSInteger)account block:(void (^__nonnull)(void))block;
 
 @end
