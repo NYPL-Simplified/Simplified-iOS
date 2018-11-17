@@ -133,8 +133,7 @@
 
         AudiobookPlayerViewController *const viewController = [[AudiobookPlayerViewController alloc]
                                                                initWithAudiobookManager:manager];
-        viewController.view.tintColor = [NYPLConfiguration mainColor];
-        
+
         [[NYPLBookRegistry sharedRegistry]
          coverImageForBook:book handler:^(UIImage *image) {
            if (image) {
@@ -146,6 +145,8 @@
         [[NYPLRootTabBarController sharedController]
          pushViewController:viewController
          animated:YES];
+
+        viewController.view.tintColor = [NYPLConfiguration mainColor];
         
         NYPLBookLocation *const bookLocation =
           [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
