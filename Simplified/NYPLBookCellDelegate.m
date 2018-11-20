@@ -154,6 +154,7 @@
         if (bookLocation) {
           NSData *const data = [bookLocation.locationString dataUsingEncoding:NSUTF8StringEncoding];
           ChapterLocation *const chapterLocation = [ChapterLocation fromData:data];
+          NYPLLOG_F(@"Returning to Audiobook Location: %@", chapterLocation);
           [manager.audiobook.player movePlayheadToLocation:chapterLocation];
         }
         
@@ -164,13 +165,10 @@
         [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(__unused NSTimer *_Nonnull timer) {
           if (!weakViewController.parentViewController) {
             [manager.audiobook.player unload];
-            [[MPNowPlayingInfoCenter defaultCenter]
-             performSelector:@selector(setNowPlayingInfo:)
-             withObject:@{}
-             afterDelay:1.5];
             [timer invalidate];
             return;
           }
+
           NSString *const string = [[NSString alloc]
                                     initWithData:manager.audiobook.player.currentChapterLocation.toData
                                     encoding:NSUTF8StringEncoding];
@@ -180,13 +178,22 @@
         }];
         
       } else {
-        // WINNIETODO
+        [self presentUnsupportedItemError];
       }
-    }
-    default:
-      // WINNIETODO: SHOW ERROR
       break;
+    }
+    default: {
+      [self presentUnsupportedItemError];
+      break;
+    }
   }
+}
+
+- (void)presentUnsupportedItemError {
+  NSString *title = NSLocalizedString(@"Unsupported Item", nil);
+  NSString *message = NSLocalizedString(@"The item you are trying to open is not currently supported by SimplyE.", nil);
+  NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title singleMessage:message];
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate
