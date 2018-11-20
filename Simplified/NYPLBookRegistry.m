@@ -658,6 +658,33 @@ NSString *const readyToCheckout = @"READY";
   }
 }
 
+// Sets the holds notificaiton state of a book given its identifier
+- (void)setHoldsNotificationState:(NYPLHoldsNotificationState)holdsNotificationState forIdentifier:(NSString *)identifier
+{
+  @synchronized(self) {
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+    if(!record) {
+      @throw NSInvalidArgumentException;
+    }
+
+    self.identifiersToRecords[identifier] = [record recordWithHoldsNotificationState:holdsNotificationState];
+
+    [self broadcastChange];
+  }
+}
+
+// Returns the holds notification state of a book given its identifier
+- (NYPLHoldsNotificationState)holdsNotificationState:(NSString *)identifier
+{
+  @synchronized(self) {
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+    if(record) {
+      return record.holdsNotificationState;
+    } else {
+      return NYPLHoldsNotificationStateNotApplicable;
+    }
+  }
+}
 
 - (void)setProcessing:(BOOL)processing forIdentifier:(NSString *)identifier
 {
