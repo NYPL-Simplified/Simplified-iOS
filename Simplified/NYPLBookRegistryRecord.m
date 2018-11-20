@@ -233,29 +233,17 @@ static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
     
   }
 
-  if (self.holdsNotificationState) {
-    return @{BookKey: [self.book dictionaryRepresentation],
-             LocationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
-             StateKey: NYPLBookStateToString(self.state),
-             FulfillmentIdKey: NYPLNullFromNil(self.fulfillmentId),
-             BookmarksKey: NYPLNullToNil(bookmarkDictionaries),
-             HoldsNotificationStateKey: NYPLHoldsNotificationStateToString(self.holdsNotificationState)
-             };
-  } else {
-    return @{BookKey: [self.book dictionaryRepresentation],
+  return @{BookKey: [self.book dictionaryRepresentation],
            LocationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
            StateKey: NYPLBookStateToString(self.state),
            FulfillmentIdKey: NYPLNullFromNil(self.fulfillmentId),
-           BookmarksKey: NYPLNullToNil(bookmarkDictionaries)
-           };
-  }
+           BookmarksKey: NYPLNullToNil(bookmarkDictionaries),
+           HoldsNotificationStateKey:NYPLHoldsNotificationStateToString(self.holdsNotificationState)};
 }
 
 - (instancetype)recordWithBook:(NYPLBook *const)book
 {
   return [[[self class] alloc] initWithBook:book location:self.location state:self.state fulfillmentId:self.fulfillmentId bookmarks:self.bookmarks holdsNotificationState:self.holdsNotificationState];
-  //return [[[self class] alloc] initWithBook:book location:self.location state:self.state fulfillmentId:self.fulfillmentId bookmarks:self.bookmarks];
-
 }
 
 - (instancetype)recordWithLocation:(NYPLBookLocation *const)location
@@ -277,5 +265,10 @@ static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
 {
   return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:self.fulfillmentId bookmarks:bookmarks holdsNotificationState:self.holdsNotificationState];
 }
-  
+
+- (instancetype)recordWithHoldsNotificationState:(NYPLHoldsNotificationState)holdsNotificationState
+{
+  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:self.fulfillmentId bookmarks:self.bookmarks holdsNotificationState:holdsNotificationState];
+}
+
 @end

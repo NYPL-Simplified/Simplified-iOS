@@ -48,5 +48,7 @@
 - (instancetype)recordWithFulfillmentId:(NSString *)fulfillmentId;
 
 - (instancetype)recordWithBookmarks:(NSArray<NYPLReaderBookmark *> *)bookmarks;
+
+- (instancetype)recordWithHoldsNotificationState:(NYPLHoldsNotificationState)holdsNotificationState;
   
 @end
