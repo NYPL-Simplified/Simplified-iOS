@@ -674,7 +674,7 @@ NSString *const readyToCheckout = @"READY";
 }
 
 // Returns the holds notification state of a book given its identifier
-- (NYPLHoldsNotificationState)holdsNotificationState:(NSString *)identifier
+- (NYPLHoldsNotificationState)holdsNotificationStateForIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];

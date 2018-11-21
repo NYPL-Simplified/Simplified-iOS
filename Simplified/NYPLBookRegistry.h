@@ -124,7 +124,7 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 - (void)setHoldsNotificationState:(NYPLHoldsNotificationState)holdsNotificationState forIdentifier:(NSString *)identifier;
 
 // Returns the holds notification state of a book given its identifier
-- (NYPLHoldsNotificationState)holdsNotificationState:(NSString *)identifier;
+- (NYPLHoldsNotificationState)holdsNotificationStateForIdentifier:(NSString *)identifier;
 
 // Given an identifier, this method removes a book from the registry. Attempting to remove a book
 // that is not present will result in an error being logged.
