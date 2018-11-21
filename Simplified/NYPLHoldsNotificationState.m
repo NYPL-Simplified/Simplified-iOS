@@ -7,31 +7,20 @@
 //
 
 #import "NYPLHoldsNotificationState.h"
-/*
-NYPLHoldsNotificationState NYPLHoldsNotificationStateFromInt(NSUInteger holdsNotificationInt) {
-
-}
-
-NSUInteger NYPLHoldsNotificationStateToInt(NYPLHoldsNotificationState holdsNotificationState) {
-  
-}
-*/
 
 static NSString *const NotApplicable = @"not-applicable";
-static NSString *const WaitingForAvailability = @"waiting-for-availability";
-static NSString *const AvailableForCheckout = @"available-for-checkout";
+static NSString *const ReadyForFirstNotification = @"ready-for-first-notification";
 static NSString *const FirstNotificationSent = @"first-notification-sent";
-static NSString *const WaitForOneDayLeft = @"wait-for-one-day-left";
-static NSString *const OneDayNotificationSent = @"one-day-notification-sent";
+static NSString *const ReadyForFinalNotification = @"ready-for-final-notification";
+static NSString *const FinalNotificationSent = @"final-notification-sent";
 
 NYPLHoldsNotificationState NYPLHoldsNotificationStateFromString(NSString *string)
 {
   if([string isEqualToString:NotApplicable]) return NYPLHoldsNotificationStateNotApplicable;
-  if([string isEqualToString:WaitingForAvailability]) return NYPLHoldsNotificationStateWaitingForAvailability;
-  if([string isEqualToString:AvailableForCheckout]) return NYPLHoldsNotificationStateAvailableForCheckout;
+  if([string isEqualToString:ReadyForFirstNotification]) return NYPLHoldsNotificationStateReadyForFirstNotification;
   if([string isEqualToString:FirstNotificationSent]) return NYPLHoldsNotificationStateFirstNotificationSent;
-  if([string isEqualToString:WaitForOneDayLeft]) return NYPLHoldsNotificationStateWaitForOneDayLeft;
-  if([string isEqualToString:OneDayNotificationSent]) return NYPLHoldsNotificationStateOneDayNotificationSent;
+  if([string isEqualToString:ReadyForFinalNotification]) return NYPLHoldsNotificationStateReadyForFinalNotification;
+  if([string isEqualToString:FinalNotificationSent]) return NYPLHoldsNotificationStateFinalNotificationSent;
 
   @throw NSInvalidArgumentException;
 }
@@ -41,15 +30,13 @@ NSString *NYPLHoldsNotificationStateToString(NYPLHoldsNotificationState state)
   switch(state) {
     case NYPLHoldsNotificationStateNotApplicable:
       return NotApplicable;
-    case NYPLHoldsNotificationStateWaitingForAvailability:
-      return WaitingForAvailability;
-    case NYPLHoldsNotificationStateAvailableForCheckout:
-      return AvailableForCheckout;
+    case NYPLHoldsNotificationStateReadyForFirstNotification:
+      return ReadyForFirstNotification;
     case NYPLHoldsNotificationStateFirstNotificationSent:
       return FirstNotificationSent;
-    case NYPLHoldsNotificationStateWaitForOneDayLeft:
-      return WaitForOneDayLeft;
-    case NYPLHoldsNotificationStateOneDayNotificationSent:
-      return OneDayNotificationSent;
+    case NYPLHoldsNotificationStateReadyForFinalNotification:
+      return ReadyForFinalNotification;
+    case NYPLHoldsNotificationStateFinalNotificationSent:
+      return FinalNotificationSent;
   }
 }

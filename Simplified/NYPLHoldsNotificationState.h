@@ -6,21 +6,14 @@
 //  Copyright © 2018 NYPL Labs. All rights reserved.
 //
 
-
 typedef NS_ENUM(NSInteger, NYPLHoldsNotificationState) {
   NYPLHoldsNotificationStateNotApplicable,
-  NYPLHoldsNotificationStateWaitingForAvailability,
-  NYPLHoldsNotificationStateAvailableForCheckout,
+  NYPLHoldsNotificationStateReadyForFirstNotification,
   NYPLHoldsNotificationStateFirstNotificationSent,
-  NYPLHoldsNotificationStateWaitForOneDayLeft,
-  NYPLHoldsNotificationStateOneDayNotificationSent
+  NYPLHoldsNotificationStateReadyForFinalNotification,
+  NYPLHoldsNotificationStateFinalNotificationSent
 };
- 
-/*
-NYPLHoldsNotificationState NYPLHoldsNotificationStateFromInt(NSUInteger holdsNotificationInt);
 
-NSUInteger NYPLHoldsNotificationStateToInt(NYPLHoldsNotificationState holdsNotificationState);
-*/
 NYPLHoldsNotificationState NYPLHoldsNotificationStateFromString(NSString *holdsNotificationString);
 
 NSString *NYPLHoldsNotificationStateToString(NYPLHoldsNotificationState holdsNotificationState);
