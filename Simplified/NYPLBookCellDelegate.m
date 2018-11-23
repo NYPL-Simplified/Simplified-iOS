@@ -26,7 +26,10 @@
 
 @interface NYPLBookCellDelegate ()
 
-@property (nonatomic) NSString *lastOpenedAudiobookIdentifier;
+@property (nonatomic) NSTimer *timer;
+@property (nonatomic) NYPLBook *book;
+@property (nonatomic) id<AudiobookManager> manager;
+@property (nonatomic, weak) AudiobookPlayerViewController *audiobookViewController;
 
 @end
 
@@ -157,26 +160,16 @@
           NYPLLOG_F(@"Returning to Audiobook Location: %@", chapterLocation);
           [manager.audiobook.player movePlayheadToLocation:chapterLocation];
         }
-        
-        self.lastOpenedAudiobookIdentifier = book.identifier;
-        
-        __weak UIViewController *const weakViewController = viewController;
-        // WINNIETODO: Use the selector for iOS <10.0.
-        [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(__unused NSTimer *_Nonnull timer) {
-          if (!weakViewController.parentViewController) {
-            [manager.audiobook.player unload];
-            [timer invalidate];
-            return;
-          }
 
-          NSString *const string = [[NSString alloc]
-                                    initWithData:manager.audiobook.player.currentChapterLocation.toData
-                                    encoding:NSUTF8StringEncoding];
-          [[NYPLBookRegistry sharedRegistry]
-           setLocation:[[NYPLBookLocation alloc] initWithLocationString:string renderer:@"NYPLAudiobookToolkit"]
-           forIdentifier:book.identifier];
-        }];
-        
+        // Target-Selector scheduled timer required for iOS <10.0
+        self.audiobookViewController = viewController;
+        self.book = book;
+        self.manager = manager;
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                                      target:self
+                                                    selector:@selector(pollAudiobookReadingLocation)
+                                                    userInfo:nil
+                                                     repeats:YES];
       } else {
         [self presentUnsupportedItemError];
       }
@@ -189,7 +182,26 @@
   }
 }
 
-- (void)presentUnsupportedItemError {
+- (void)pollAudiobookReadingLocation
+{
+  if (!self.audiobookViewController) {
+    [self.timer invalidate];
+    self.timer = nil;
+    self.book = nil;
+    self.manager = nil;
+    return;
+  }
+
+  NSString *const string = [[NSString alloc]
+                            initWithData:self.manager.audiobook.player.currentChapterLocation.toData
+                            encoding:NSUTF8StringEncoding];
+  [[NYPLBookRegistry sharedRegistry]
+   setLocation:[[NYPLBookLocation alloc] initWithLocationString:string renderer:@"NYPLAudiobookToolkit"]
+   forIdentifier:self.book.identifier];
+}
+
+- (void)presentUnsupportedItemError
+{
   NSString *title = NSLocalizedString(@"Unsupported Item", nil);
   NSString *message = NSLocalizedString(@"The item you are trying to open is not currently supported by SimplyE.", nil);
   NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title singleMessage:message];
