@@ -217,7 +217,6 @@ static NSString *DetailHTMLTemplate = nil;
 
   self.coverImageView = [[UIImageView alloc] init];
   self.coverImageView.contentMode = UIViewContentModeScaleAspectFit;
-  self.coverImageView.isAccessibilityElement = YES;
   self.blurCoverImageView = [[UIImageView alloc] init];
   self.blurCoverImageView.contentMode = UIViewContentModeScaleAspectFit;
   self.blurCoverImageView.alpha = 0.4f;
