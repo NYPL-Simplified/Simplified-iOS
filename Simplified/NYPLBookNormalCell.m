@@ -77,18 +77,6 @@
     [self.contentView addSubview:self.cover];
   }
 
-  if (!self.contentBadge) {
-    self.contentBadge = [[NYPLContentBadgeImageView alloc] initWithBadgeImage:NYPLBadgeImageAudiobook];
-  }
-  if ([book defaultBookContentType] == NYPLBookContentTypeAudiobook) {
-    self.title.accessibilityLabel = [book.title stringByAppendingString:@". Audiobook."];
-    [NYPLContentBadgeImageView pinWithBadge:self.contentBadge toView:self.cover];
-    self.contentBadge.hidden = NO;
-  } else {
-    self.title.accessibilityLabel = nil;
-    self.contentBadge.hidden = YES;
-  }
-
   if(!self.buttonsView) {
     self.buttonsView = [[NYPLBookButtonsView alloc] init];
     self.buttonsView.delegate = self.delegate;
@@ -115,6 +103,18 @@
   self.authors.attributedText = NYPLAttributedStringForAuthorsFromString(book.authors);
   self.cover.image = nil;
   self.title.attributedText = NYPLAttributedStringForTitleFromString(book.title);
+  
+  if (!self.contentBadge) {
+    self.contentBadge = [[NYPLContentBadgeImageView alloc] initWithBadgeImage:NYPLBadgeImageAudiobook];
+  }
+  if ([book defaultBookContentType] == NYPLBookContentTypeAudiobook) {
+    self.title.accessibilityLabel = [book.title stringByAppendingString:@". Audiobook."];
+    [NYPLContentBadgeImageView pinWithBadge:self.contentBadge toView:self.cover];
+    self.contentBadge.hidden = NO;
+  } else {
+    self.title.accessibilityLabel = nil;
+    self.contentBadge.hidden = YES;
+  }
   
   // This avoids hitting the server constantly when scrolling within a category and ensures images
   // will still be there when the user scrolls back up. It also avoids creating tasks and refetching
