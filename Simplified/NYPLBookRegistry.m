@@ -412,6 +412,8 @@ NSString *const readyToCheckout = @"READY";
       // there's been a change, add to titles to send a notification later
 
       NYPLBook *book = [self bookForIdentifier:identifier];
+      [[NYPLBookRegistry sharedRegistry]
+       setHoldsNotificationState:NYPLHoldsNotificationStateReadyForFirstNotification forIdentifier:identifier];
       NYPLLOG_F(@"This title has just become ready for checkout: %@", book.title);
       [booksWithChangedLoanStatus addObject:book];
     }
