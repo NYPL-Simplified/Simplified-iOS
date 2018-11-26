@@ -38,25 +38,36 @@ import UserNotifications
     }
     print(titlesString)
 
+    // this for loop is to change the notification sent status for each book
+    var readyForFinalNotificationStateExists = false
+    for book in books {
+      if NYPLBookRegistry.shared()?.holdsNotificationState(forIdentifier: book.identifier) ==
+        NYPLHoldsNotificationState.readyForFinalNotification {
+        readyForFinalNotificationStateExists = true
+        NYPLBookRegistry.shared()?.setHoldsNotificationState(NYPLHoldsNotificationState.finalNotificationSent, forIdentifier: book.identifier)
+      } else if NYPLBookRegistry.shared()?.holdsNotificationState(forIdentifier: book.identifier) ==
+        NYPLHoldsNotificationState.readyForFirstNotification {
+        NYPLBookRegistry.shared()?.setHoldsNotificationState(NYPLHoldsNotificationState.firstNotificationSent, forIdentifier: book.identifier)
+      }
+    }
+
     // if you have 1 book with more than 24 hours, send message for first notification
     // if you have 1 book with 24 hours left, send message for 24 hours
 
     // if there are multiple books and none of them is 24 hours, send message for 1st notification for multiple books
     // if there are multiple books, and 1 or more of them is 24 hours, you have 24 hours to check out book(s)
-
     if books.count == 1 {
-      content.title = NSLocalizedString("NYPLHoldsNotificationsABookReadyToCheckout",
-                                        comment: "Notification telling patron that a book they had on hold is now ready to checkout")
+      content.title = readyForFinalNotificationStateExists ?
+                      NSLocalizedString("NYPLHoldsNotificationsOneDayToCheckoutABook", comment: "Notification telling patron they have only a day left to checkout a book on hold"):
+                      NSLocalizedString("NYPLHoldsNotificationsABookReadyToCheckout", comment: "Notification telling patron that a book they had on hold is now ready to checkout")
+
       if let bookTitle = books[0].title {
         content.body = bookTitle
       }
     } else if books.count > 1 {
-      content.title = NSLocalizedString("NYPLHoldsNotificationsBooksReadyToCheckout",
-                                        comment: "Notification telling patron that multiple books they had on hold are now ready to checkout")
-
-      // create an array of the books where the holdsNotificationState is readyForFinalNotification
-      let TwentyFourHourBooks = books.filter { NYPLBookRegistry.shared()?.holdsNotificationState(forIdentifier: $0.identifier) == NYPLHoldsNotificationState.readyForFinalNotification }.map({return $0})
-      // if this number is 1 or more, send a different message
+      content.title = readyForFinalNotificationStateExists ?
+                      NSLocalizedString("NYPLHoldsNotificationsOneDayToCheckoutBooks", comment: "Notification telling patron they have only one day left checkout one or more books on hold"):
+                      NSLocalizedString("NYPLHoldsNotificationsBooksReadyToCheckout", comment: "Notification telling patron that multiple books they had on hold are now ready to checkout")
     }
     content.badge = 1
 
