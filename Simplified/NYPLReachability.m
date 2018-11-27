@@ -45,17 +45,14 @@ NSString *const NYPLReachabilityHostIsReachableNotification = @"NYPLReachability
                                                name:kReachabilityChangedNotification
                                              object:nil];
   
-  NSString *remoteHostName = [NYPLConfiguration mainFeedURL].absoluteString;
-  
-  self.hostReachabilityManager = [ReachabilityManager reachabilityWithHostName:remoteHostName];
+  self.hostReachabilityManager = [ReachabilityManager reachabilityWithHostName:@"www.apple.com"];
   [self.hostReachabilityManager startNotifier];
 }
 
-/// Called by ReachabilityManager whenever status changes.
-- (void) reachabilityChanged:(NSNotification *)note
+- (void)reachabilityChanged:(NSNotification *)note
 {
-  ReachabilityManager* curReach = [note object];
-  if (curReach == self.hostReachabilityManager) {
+  ReachabilityManager *currentReach = [note object];
+  if (currentReach == self.hostReachabilityManager) {
     NetworkStatus netStatus = [self.hostReachabilityManager currentReachabilityStatus];
     switch (netStatus) {
       case ReachableViaWiFi:
@@ -63,14 +60,14 @@ NSString *const NYPLReachabilityHostIsReachableNotification = @"NYPLReachability
         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLReachabilityHostIsReachableNotification object:self];
         NYPLLOG(@"Host Reachability changed: WIFI or 3G");
         break;
-      default:
+      case NotReachable:
         NYPLLOG(@"Host Reachability changed: Not Reachable");
         break;
     }
   }
 }
 
-- (void) dealloc
+- (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
