@@ -2,7 +2,7 @@ import Foundation
 
 import HelpStack
 
-class APIKeys: NSObject {
+@objcMembers class APIKeys: NSObject {
 
   static let bugsnagID: String = ""
 
