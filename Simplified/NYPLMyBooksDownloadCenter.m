@@ -1,4 +1,5 @@
 @import Bugsnag;
+@import NYPLAudiobookToolkit;
 
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
@@ -421,13 +422,41 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 #pragma mark -
 
-- (void)deleteLocalContentForBookIdentifier:(NSString *)identifier
+- (void)deleteLocalContentForBookIdentifier:(NSString *const)identifier
 {
-  NSError *error = nil;
-  if(![[NSFileManager defaultManager]
-     removeItemAtURL:[self fileURLForBookIndentifier:identifier]
-       error:&error]){
-    NYPLLOG(@"Failed to remove local content for download.");
+  [self deleteLocalContentForBookIdentifier:identifier account:[AccountsManager sharedInstance].currentAccount.id];
+}
+
+- (void)deleteLocalContentForBookIdentifier:(NSString *const)identifier account:(NSInteger const)account
+{
+  NYPLBook *const book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
+  if (!book) {
+    NYPLLOG(@"WARNING: Could not find book to delete local content.");
+    return;
+  }
+  
+  switch (book.defaultBookContentType) {
+    case NYPLBookContentTypeEPUB: {
+      NSError *error = nil;
+      if(![[NSFileManager defaultManager]
+           removeItemAtURL:[self fileURLForBookIndentifier:identifier account:account]
+           error:&error]){
+        NYPLLOG_F(@"Failed to remove local content for download: %@", error.localizedDescription);
+      }
+    }
+    case NYPLBookContentTypeAudiobook: {
+      NSData *const data = [NSData dataWithContentsOfURL:
+                            [self fileURLForBookIndentifier:book.identifier account:account]];
+      if (!data) {
+        break;
+      }
+      id const json = NYPLJSONObjectFromData([NSData dataWithContentsOfURL:
+                                              [self fileURLForBookIndentifier:book.identifier account:account]]);
+      [[AudiobookFactory audiobook:json] deleteLocalContent];
+      break;
+    }
+    case NYPLBookContentTypeUnsupported:
+      break;
   }
 }
   
@@ -497,7 +526,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       }
     }];
   } else {
-    if(downloaded) {
+    if (downloaded) {
       [self deleteLocalContentForBookIdentifier:identifier];
     }
     [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
@@ -512,21 +541,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (NSURL *)contentDirectoryURL
 {
-  NSURL *directoryURL = [[DirectoryManager current] URLByAppendingPathComponent:@"content"];
-  
-  NYPLLOG_F(@"directoryURL %@", directoryURL);
-
-  NSError *error = nil;
-  if(![[NSFileManager defaultManager]
-       createDirectoryAtURL:directoryURL
-       withIntermediateDirectories:YES
-       attributes:nil
-       error:&error]) {
-    NYPLLOG(@"Failed to create directory.");
-    return nil;
-  }
-  return directoryURL;
+  return [self contentDirectoryURL:[AccountsManager sharedInstance].currentAccount.id];
 }
+
 - (NSURL *)contentDirectoryURL:(NSInteger)account
 {
   NSURL *directoryURL = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"content"];
@@ -545,9 +562,14 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
 {
+  return [self fileURLForBookIndentifier:identifier account:[AccountsManager sharedInstance].currentAccount.id];
+}
+  
+- (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier account:(NSInteger const)account
+{
   if(!identifier) return nil;
   
-  return [[[self contentDirectoryURL] URLByAppendingPathComponent:[identifier SHA256]]
+  return [[[self contentDirectoryURL:account] URLByAppendingPathComponent:[identifier SHA256]]
           URLByAppendingPathExtension:@"epub"];
 }
 
@@ -767,6 +789,22 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    show];
 }
 
+- (void)deleteAudiobooksForAccount:(NSInteger const)account
+{
+  [[NYPLBookRegistry sharedRegistry]
+   performUsingAccount:account
+   block:^{
+     NSArray<NSString *> const *books = [[NYPLBookRegistry sharedRegistry] allBooks];
+     for (NYPLBook *const book in books) {
+       if (book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
+         [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
+          deleteLocalContentForBookIdentifier:book.identifier
+          account:account];
+       }
+     }
+   }];
+}
+
 - (void)reset:(NSInteger)account
 {
   if ([AccountsManager shared].currentAccount.id == account)
@@ -775,6 +813,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
   else
   {
+    [self deleteAudiobooksForAccount:account];
     [[NSFileManager defaultManager]
      removeItemAtURL:[self contentDirectoryURL:account]
      error:NULL];
@@ -784,6 +823,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)reset
 {
+  [self deleteAudiobooksForAccount:[AccountsManager sharedInstance].currentAccount.id];
+  
   for(NYPLMyBooksDownloadInfo *const info in [self.bookIdentifierToDownloadInfo allValues]) {
     [info.downloadTask cancelByProducingResumeData:^(__unused NSData *resumeData) {}];
   }

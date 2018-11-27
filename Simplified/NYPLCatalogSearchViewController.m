@@ -6,25 +6,28 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLCatalogUngroupedFeed.h"
+#import "NYPLFacetBarView.h"
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLReloadView.h"
 #import "UIView+NYPLViewAdditions.h"
 #import <PureLayout/PureLayout.h>
+#import "SimplyE-Swift.h"
 
 #import "NYPLCatalogSearchViewController.h"
 
 @interface NYPLCatalogSearchViewController ()
-  <NYPLCatalogUngroupedFeedDelegate, UICollectionViewDelegate, UICollectionViewDataSource,
-   UISearchBarDelegate>
+  <NYPLCatalogUngroupedFeedDelegate, NYPLEntryPointViewDataSource, NYPLEntryPointViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UISearchBarDelegate>
 
-@property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
-@property (nonatomic) UILabel *activityIndicatorLabel;
-@property (nonatomic) NYPLCatalogUngroupedFeed *category;
-@property (nonatomic) UILabel *noResultsLabel;
+@property (nonatomic) NYPLOpenSearchDescription *searchDescription;
+@property (nonatomic) NYPLCatalogUngroupedFeed *feed;
+@property (nonatomic) NSArray *books;
+
+@property (nonatomic) UIActivityIndicatorView *searchActivityIndicatorView;
+@property (nonatomic) UILabel *searchActivityIndicatorLabel;
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) UISearchBar *searchBar;
-@property (nonatomic) NYPLOpenSearchDescription *searchDescription;
-@property (nonatomic) NSArray *books;
+@property (nonatomic) UILabel *noResultsLabel;
+@property (nonatomic) NYPLFacetBarView *facetBarView;
 
 @end
 
@@ -42,7 +45,7 @@
 
 - (NSArray *)books
 {
-  return _books ? _books : self.category.books;
+  return _books ? _books : self.feed.books;
 }
 
 #pragma mark UIViewController
@@ -50,22 +53,26 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  
+
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
-  
-  self.activityIndicatorView = [[UIActivityIndicatorView alloc]
+
+  if (@available(iOS 11.0, *)) {
+    self.collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+  }
+
+  self.searchActivityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  self.activityIndicatorView.hidden = YES;
-  [self.view addSubview:self.activityIndicatorView];
+  self.searchActivityIndicatorView.hidden = YES;
+  [self.view addSubview:self.searchActivityIndicatorView];
   
-  self.activityIndicatorLabel = [[UILabel alloc] init];
-  self.activityIndicatorLabel.font = [UIFont systemFontOfSize:14.0];
-  self.activityIndicatorLabel.text = NSLocalizedString(@"ActivitySlowLoadMessage", @"Message explaining that the download is still going");
-  self.activityIndicatorLabel.hidden = YES;
-  [self.view addSubview:self.activityIndicatorLabel];
-  [self.activityIndicatorLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:self.activityIndicatorView];
-  [self.activityIndicatorLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.activityIndicatorView withOffset:8.0];
+  self.searchActivityIndicatorLabel = [[UILabel alloc] init];
+  self.searchActivityIndicatorLabel.font = [UIFont systemFontOfSize:14.0];
+  self.searchActivityIndicatorLabel.text = NSLocalizedString(@"ActivitySlowLoadMessage", @"Message explaining that the download is still going");
+  self.searchActivityIndicatorLabel.hidden = YES;
+  [self.view addSubview:self.searchActivityIndicatorLabel];
+  [self.searchActivityIndicatorLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:self.searchActivityIndicatorView];
+  [self.searchActivityIndicatorLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.searchActivityIndicatorView withOffset:8.0];
   
   self.searchBar = [[UISearchBar alloc] init];
   self.searchBar.delegate = self;
@@ -80,7 +87,7 @@
   self.noResultsLabel.hidden = YES;
   [self.view addSubview:self.noResultsLabel];
   
-    __weak NYPLCatalogSearchViewController *weakSelf = self;
+  __weak NYPLCatalogSearchViewController *weakSelf = self;
   self.reloadView = [[NYPLReloadView alloc] init];
   self.reloadView.handler = ^{
     weakSelf.reloadView.hidden = YES;
@@ -96,35 +103,49 @@
 
 - (void)viewWillLayoutSubviews
 {
-  self.activityIndicatorView.center = self.view.center;
-  [self.activityIndicatorView integralizeFrame];
-  
+  [super viewWillLayoutSubviews];
+
+  self.searchActivityIndicatorView.center = self.view.center;
+  [self.searchActivityIndicatorView integralizeFrame];
+
   self.noResultsLabel.center = self.view.center;
   self.noResultsLabel.frame = CGRectMake(CGRectGetMinX(self.noResultsLabel.frame),
                                          CGRectGetHeight(self.view.frame) * 0.333,
                                          CGRectGetWidth(self.noResultsLabel.frame),
                                          CGRectGetHeight(self.noResultsLabel.frame));
   [self.noResultsLabel integralizeFrame];
-  
+
   [self.reloadView centerInSuperview];
   [self.reloadView integralizeFrame];
+}
+
+- (void)viewDidLayoutSubviews
+{
+  [super viewDidLayoutSubviews];
+  UIEdgeInsets newInsets = UIEdgeInsetsMake(CGRectGetMaxY(self.facetBarView.frame),
+                                            0,
+                                            self.bottomLayoutGuide.length,
+                                            0);
+  if (!UIEdgeInsetsEqualToEdgeInsets(self.collectionView.contentInset, newInsets)) {
+    self.collectionView.contentInset = newInsets;
+    self.collectionView.scrollIndicatorInsets = newInsets;
+  }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
   [super viewWillDisappear:animated];
-  
   [self.searchBar resignFirstResponder];
 }
 
 - (void)addActivityIndicatorLabel:(NSTimer*)timer
 {
-  if (!self.activityIndicatorView.isHidden) {
-    [UIView transitionWithView:self.activityIndicatorLabel
+  if (!self.searchActivityIndicatorView.isHidden) {
+    [UIView transitionWithView:self.searchActivityIndicatorLabel
                       duration:0.5
                        options:UIViewAnimationOptionTransitionCrossDissolve
                     animations:^{
-                      self.activityIndicatorLabel.hidden = NO;
+                      self.searchActivityIndicatorLabel.hidden = NO;
                     } completion:nil];
   }
   [timer invalidate];
@@ -141,7 +162,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-  [self.category prepareForBookIndex:indexPath.row];
+  [self.feed prepareForBookIndex:indexPath.row];
   
   NYPLBook *const book = self.books[indexPath.row];
   
@@ -178,21 +199,41 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 
 #pragma mark UISearchBarDelegate
 
-- (void)searchBarSearchButtonClicked:(__attribute__((unused)) UISearchBar *)searchBar
+- (void)configureUIForActiveSearchState
 {
   self.collectionView.hidden = YES;
   self.noResultsLabel.hidden = YES;
   self.reloadView.hidden = YES;
-  self.activityIndicatorView.hidden = NO;
-  [self.activityIndicatorView startAnimating];
+  self.searchActivityIndicatorView.hidden = NO;
+  [self.searchActivityIndicatorView startAnimating];
 
-  self.activityIndicatorLabel.hidden = YES;
+  self.searchActivityIndicatorLabel.hidden = YES;
   [NSTimer scheduledTimerWithTimeInterval: 10.0 target: self
                                  selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
-  
+
   self.searchBar.userInteractionEnabled = NO;
   self.searchBar.alpha = 0.5;
   [self.searchBar resignFirstResponder];
+}
+
+- (void)fetchUngroupedFeedFromURL:(NSURL *)URL
+{
+  [NYPLCatalogUngroupedFeed
+   withURL:URL
+   handler:^(NYPLCatalogUngroupedFeed *const category) {
+     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+       if(category) {
+         self.feed = category;
+         self.feed.delegate = self;
+       }
+       [self updateUIAfterSearchSuccess:(category != nil)];
+     }];
+   }];
+}
+
+- (void)searchBarSearchButtonClicked:(__attribute__((unused)) UISearchBar *)searchBar
+{
+  [self configureUIForActiveSearchState];
   
   if(self.searchDescription.books) {
     self.books = [self.searchDescription.books filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NYPLBook *book, __unused NSDictionary *bindings) {
@@ -202,35 +243,25 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     }]];
     [self updateUIAfterSearchSuccess:YES];
   } else {
-    [NYPLCatalogUngroupedFeed
-     withURL:[NSURL URLWithString:
-              [self.searchDescription.OPDSURLTemplate
-               stringByReplacingOccurrencesOfString:@"{searchTerms}"
-               withString:[self.searchBar.text stringByURLEncoding]]]
-     handler:^(NYPLCatalogUngroupedFeed *const category) {
-       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-         if(category) {
-           self.category = category;
-           self.category.delegate = self;
-         }
-         
-         [self updateUIAfterSearchSuccess:(category != nil)];
-       }];
-     }];
+    NSURL *searchURL = [NSURL URLWithString:
+                        [self.searchDescription.OPDSURLTemplate
+                         stringByReplacingOccurrencesOfString:@"{searchTerms}"
+                         withString:[self.searchBar.text stringByURLEncoding]]];
+    [self fetchUngroupedFeedFromURL:searchURL];
   }
 }
 
 - (void)updateUIAfterSearchSuccess:(BOOL)success
 {
-  self.activityIndicatorView.hidden = YES;
-  [self.activityIndicatorView stopAnimating];
-  self.activityIndicatorLabel.hidden = YES;
+  [self createAndConfigureFacetBarView];
+
+  self.collectionView.alpha = 0.0;
+  self.searchActivityIndicatorView.hidden = YES;
+  [self.searchActivityIndicatorView stopAnimating];
+  self.searchActivityIndicatorLabel.hidden = YES;
   self.searchBar.userInteractionEnabled = YES;
-  self.searchBar.alpha = 1.0;
-  
+
   if(success) {
-    self.collectionView.hidden = NO;
-    
     [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     [self.collectionView reloadData];
     
@@ -242,6 +273,12 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   } else {
     self.reloadView.hidden = NO;
   }
+
+  [UIView animateWithDuration:0.3 animations:^{
+    self.searchBar.alpha = 1.0;
+    self.facetBarView.alpha = 1.0;
+    self.collectionView.alpha = 1.0;
+  }];
 }
 
 - (BOOL)searchBarShouldBeginEditing:(__attribute__((unused)) UISearchBar *)searchBar
@@ -250,5 +287,36 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   
   return YES;
 }
-                                     
+
+- (void)createAndConfigureFacetBarView
+{
+  if (self.facetBarView) {
+    [self.facetBarView removeFromSuperview];
+  }
+
+  self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
+  self.facetBarView.entryPointView.delegate = self;
+  self.facetBarView.entryPointView.dataSource = self;
+  self.facetBarView.alpha = 0;
+
+  [self.view addSubview:self.facetBarView];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  [self.facetBarView autoPinToTopLayoutGuideOfViewController:self withInset:0.0];
+}
+
+#pragma mark NYPLEntryPointViewDelegate
+
+- (void)entryPointViewDidSelectWithEntryPointFacet:(NYPLCatalogFacet *)facet
+{
+  [self configureUIForActiveSearchState];
+  NSURL *const newURL = facet.href;
+  [self fetchUngroupedFeedFromURL:newURL];
+}
+
+- (NSArray<NYPLCatalogFacet *> *)facetsForEntryPointView
+{
+  return self.feed.entryPoints;
+}
+
 @end

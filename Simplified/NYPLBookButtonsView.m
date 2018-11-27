@@ -206,20 +206,33 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
       // Fallthrough
     case NYPLBookButtonsStateUsed:
     {
-      visibleButtonInfo = @[@{ButtonKey: self.readButton,
-                              TitleKey: NSLocalizedString(@"Read", nil),
-                              HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens %@ for reading", nil), self.book.title],
-                              AddIndicatorKey: @(YES)}];
+      NSDictionary *buttonInfo;
+      switch (self.book.defaultBookContentType) {
+        case NYPLBookContentTypeAudiobook:
+          buttonInfo = @{ButtonKey: self.readButton,
+                        TitleKey: NSLocalizedString(@"Listen", nil),
+                        HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens audiobook %@ for listening", nil), self.book.title],
+                        AddIndicatorKey: @(YES)};
+          break;
+        case NYPLBookContentTypeEPUB:
+          buttonInfo = @{ButtonKey: self.readButton,
+                        TitleKey: NSLocalizedString(@"Read", nil),
+                        HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens %@ for reading", nil), self.book.title],
+                        AddIndicatorKey: @(YES)};
+          break;
+        case NYPLBookContentTypeUnsupported:
+          @throw NSInternalInconsistencyException;
+          break;
+      }
+
+      visibleButtonInfo = @[buttonInfo];
         
       if (self.showReturnButtonIfApplicable)
       {
         NSString *title = (self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? NSLocalizedString(@"Delete", nil) : NSLocalizedString(@"Return", nil);
         NSString *hint = (self.book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth) ? [NSString stringWithFormat:NSLocalizedString(@"Deletes %@", nil), self.book.title] : [NSString stringWithFormat:NSLocalizedString(@"Returns %@", nil), self.book.title];
 
-        visibleButtonInfo = @[@{ButtonKey: self.readButton,
-                                TitleKey: NSLocalizedString(@"Read", nil),
-                                HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens %@ for reading", nil), self.book.title],
-                                AddIndicatorKey: @(YES)},
+        visibleButtonInfo = @[buttonInfo,
                               @{ButtonKey: self.deleteButton,
                                 TitleKey: title,
                                 HintKey: hint}];
@@ -265,6 +278,7 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
     [UIView setAnimationsEnabled:NO];
     
     [button setTitle:buttonInfo[TitleKey] forState:UIControlStateNormal];
+    [button setAccessibilityHint:buttonInfo[HintKey]];
     
     // We need to lay things out here else animations will be back on before it happens.
     [button layoutIfNeeded];

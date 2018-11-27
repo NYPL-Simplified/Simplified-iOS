@@ -138,6 +138,9 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   self.facetBarView.facetView.dataSource = self;
   self.facetBarView.facetView.delegate = self;
   [self.view addSubview:self.facetBarView];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  [self.facetBarView autoPinToTopLayoutGuideOfViewController:self withInset:0.0];
   
   self.instructionsLabel = [[UILabel alloc] initWithFrame:CGRectZero];
   self.instructionsLabel.hidden = YES;
@@ -170,11 +173,6 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 
 - (void)viewWillLayoutSubviews
 {
-  self.facetBarView.frame = CGRectMake(0,
-                                       CGRectGetMaxY(self.navigationController.navigationBar.frame),
-                                       CGRectGetWidth(self.view.frame),
-                                       CGRectGetHeight(self.facetBarView.frame));
-
   UIEdgeInsets contentInset = self.collectionView.contentInset;
   if (@available(iOS 11.0, *)) {
     // In iOS >= 11.0, we only need to account for our custom views.

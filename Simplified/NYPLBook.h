@@ -1,3 +1,4 @@
+#import "NYPLBookContentType.h"
 @class NYPLOPDSAcquisition;
 @class NYPLOPDSEntry;
 @class NYPLOPDSEvent;
@@ -89,5 +90,13 @@
 /// @return The default acquisition leading to an EPUB if it has an open access
 /// relation, else @c nil.
 - (NYPLOPDSAcquisition *)defaultAcquisitionIfOpenAccess __deprecated;
+
+/// The client can currently only support one default content type per
+/// OPDS entry.
+///
+/// @return The default content type. Returns `unsupported` if either
+/// no supported content type exists OR there was more than one
+/// supported content type available.
+- (NYPLBookContentType)defaultBookContentType __deprecated;
 
 @end

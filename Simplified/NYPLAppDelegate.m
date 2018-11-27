@@ -1,3 +1,5 @@
+@import NYPLAudiobookToolkit;
+
 #import "SimplyE-Swift.h"
 
 #import "NYPLAlertController.h"
@@ -25,6 +27,7 @@
 
 @interface NYPLAppDelegate()
 
+@property (nonatomic) AudiobookLifecycleManager *audiobookLifecycleManager;
 @property (nonatomic) NYPLReachability *reachabilityManager;
 
 @end
@@ -37,6 +40,9 @@
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
   [NYPLKeychainManager validateKeychain];
+  
+  self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
+  [self.audiobookLifecycleManager didFinishLaunching];
 
   // Initiallize Accounts from JSON file
   [AccountsManager sharedInstance];
@@ -108,10 +114,25 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   [[NYPLReaderSettings sharedSettings] save];
 }
 
+- (void)applicationDidEnterBackground:(__unused UIApplication *)application
+{
+  [self.audiobookLifecycleManager didEnterBackground];
+}
+
 - (void)applicationWillTerminate:(__unused UIApplication *)application
 {
+  [self.audiobookLifecycleManager willTerminate];
   [[NYPLBookRegistry sharedRegistry] save];
   [[NYPLReaderSettings sharedSettings] save];
+}
+
+- (void)application:(__unused UIApplication *)application
+handleEventsForBackgroundURLSession:(NSString *const)identifier
+completionHandler:(void (^const)(void))completionHandler
+{
+  [self.audiobookLifecycleManager
+   handleEventsForBackgroundURLSessionFor:identifier
+   completionHandler:completionHandler];
 }
 
 - (void)beginCheckingForUpdates

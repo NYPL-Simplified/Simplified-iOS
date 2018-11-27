@@ -1,9 +1,11 @@
+@import PureLayout;
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
 #import "NYPLBookCellDelegate.h"
+#import "SimplyE-Swift.h"
 
 #import "NYPLBookNormalCell.h"
 
@@ -13,6 +15,7 @@
 @property (nonatomic) NYPLBookButtonsView *buttonsView;
 @property (nonatomic) UILabel *title;
 @property (nonatomic) UIImageView *unreadImageView;
+@property (nonatomic) UIImageView *contentBadge;
 
 @end
 
@@ -73,7 +76,7 @@
     self.cover = [[UIImageView alloc] init];
     [self.contentView addSubview:self.cover];
   }
-  
+
   if(!self.buttonsView) {
     self.buttonsView = [[NYPLBookButtonsView alloc] init];
     self.buttonsView.delegate = self.delegate;
@@ -100,6 +103,18 @@
   self.authors.attributedText = NYPLAttributedStringForAuthorsFromString(book.authors);
   self.cover.image = nil;
   self.title.attributedText = NYPLAttributedStringForTitleFromString(book.title);
+  
+  if (!self.contentBadge) {
+    self.contentBadge = [[NYPLContentBadgeImageView alloc] initWithBadgeImage:NYPLBadgeImageAudiobook];
+  }
+  if ([book defaultBookContentType] == NYPLBookContentTypeAudiobook) {
+    self.title.accessibilityLabel = [book.title stringByAppendingString:@". Audiobook."];
+    [NYPLContentBadgeImageView pinWithBadge:self.contentBadge toView:self.cover];
+    self.contentBadge.hidden = NO;
+  } else {
+    self.title.accessibilityLabel = nil;
+    self.contentBadge.hidden = YES;
+  }
   
   // This avoids hitting the server constantly when scrolling within a category and ensures images
   // will still be there when the user scrolls back up. It also avoids creating tasks and refetching

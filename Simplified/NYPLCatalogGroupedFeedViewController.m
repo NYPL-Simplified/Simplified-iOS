@@ -13,23 +13,30 @@
 #import "NYPLXML.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLSettings.h"
-
+#import "NYPLCatalogFacet.h"
+#import "SimplyE-Swift.h"
 #import "NYPLCatalogGroupedFeedViewController.h"
+#import "NYPLFacetBarView.h"
 
 #import <PureLayout/PureLayout.h>
 
-static CGFloat const rowHeight = 115.0;
-static CGFloat const sectionHeaderHeight = 50.0;
+static CGFloat const kRowHeight = 115.0;
+static CGFloat const kSectionHeaderHeight = 50.0;
+static CGFloat const kTableViewInsetAdjustmentWithEntryPoints = -8;
+static CGFloat const kTableViewCrossfadeDuration = 0.3;
+
 
 @interface NYPLCatalogGroupedFeedViewController ()
-  <NYPLCatalogLaneCellDelegate, UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate>
+  <NYPLCatalogLaneCellDelegate, NYPLEntryPointViewDelegate, NYPLEntryPointViewDataSource, UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate>
 
+@property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
 @property (nonatomic) NSMutableDictionary *bookIdentifiersToImages;
 @property (nonatomic) NSMutableDictionary *cachedLaneCells;
 @property (nonatomic) NYPLCatalogGroupedFeed *feed;
 @property (nonatomic) NSUInteger indexOfNextLaneRequiringImageDownload;
 @property (nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
+@property (nonatomic) NYPLFacetBarView *facetBarView;
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) NYPLBook *mostRecentBookSelected;
 @property (nonatomic) int tempBookPosition;
@@ -40,7 +47,8 @@ static CGFloat const sectionHeaderHeight = 50.0;
 
 #pragma mark NSObject
 
-- (instancetype)initWithGroupedFeed:(NYPLCatalogGroupedFeed *)feed
+- (instancetype)initWithGroupedFeed:(NYPLCatalogGroupedFeed *const)feed
+               remoteViewController:(NYPLRemoteViewController *const)remoteViewController
 {
   self = [super init];
   if(!self) return nil;
@@ -48,7 +56,8 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.bookIdentifiersToImages = [NSMutableDictionary dictionary];
   self.cachedLaneCells = [NSMutableDictionary dictionary];
   self.feed = feed;
-  
+  self.remoteViewController = remoteViewController;
+
   return self;
 }
 
@@ -66,6 +75,7 @@ static CGFloat const sectionHeaderHeight = 50.0;
   self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
   self.tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);
+  self.tableView.alpha = 0.0;
   self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
@@ -76,7 +86,17 @@ static CGFloat const sectionHeaderHeight = 50.0;
   }
   [self.tableView addSubview:self.refreshControl];
   [self.view addSubview:self.tableView];
-  
+
+  self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
+  self.facetBarView.entryPointView.delegate = self;
+  self.facetBarView.entryPointView.dataSource = self;
+
+  [self.view addSubview:self.facetBarView];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  [self.facetBarView autoPinToTopLayoutGuideOfViewController:self withInset:0.0];
+
+
   if(self.feed.openSearchURL) {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                               initWithImage:[UIImage imageNamed:@"Search"]
@@ -99,6 +119,9 @@ static CGFloat const sectionHeaderHeight = 50.0;
   
   if(parent) {
     CGFloat top = parent.topLayoutGuide.length;
+    if (self.facetBarView.frame.size.height > 0) {
+       top = CGRectGetMaxY(self.facetBarView.frame) + kTableViewInsetAdjustmentWithEntryPoints;
+    }
     CGFloat bottom = parent.bottomLayoutGuide.length;
     
     UIEdgeInsets insets = UIEdgeInsetsMake(top, 0, bottom, 0);
@@ -130,6 +153,12 @@ static CGFloat const sectionHeaderHeight = 50.0;
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
+
+  [UIView animateWithDuration:kTableViewCrossfadeDuration animations:^{
+    self.tableView.alpha = 1.0;
+    self.facetBarView.alpha = 1.0;
+  }];
+
   if (!self.presentedViewController) {
     self.mostRecentBookSelected = nil;
   }
@@ -212,19 +241,19 @@ static CGFloat const sectionHeaderHeight = 50.0;
 - (CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView
 heightForRowAtIndexPath:(__attribute__((unused)) NSIndexPath *)indexPath
 {
-  return rowHeight;
+  return kRowHeight;
 }
 
 - (CGFloat)tableView:(__attribute__((unused)) UITableView *)tableView
 heightForHeaderInSection:(__attribute__((unused)) NSInteger)section
 {
-  return sectionHeaderHeight;
+  return kSectionHeaderHeight;
 }
 
 - (UIView *)tableView:(__attribute__((unused)) UITableView *)tableView
 viewForHeaderInSection:(NSInteger const)section
 {
-  CGRect const frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), sectionHeaderHeight);
+  CGRect const frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), kSectionHeaderHeight);
   UIView *const view = [[UIView alloc] initWithFrame:frame];
   view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
   view.backgroundColor = [[NYPLConfiguration backgroundColor] colorWithAlphaComponent:0.9];
@@ -334,6 +363,19 @@ viewForHeaderInSection:(NSInteger const)section
   NYPLBook *const localBook = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:feedBook.identifier];
   NYPLBook *const book = (localBook != nil) ? localBook : feedBook;
   [[[NYPLBookDetailViewController alloc] initWithBook:book] presentFromViewController:self];
+}
+
+#pragma mark - NYPLEntryPointViewDataSource
+
+- (void)entryPointViewDidSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet {
+  NSURL *const newURL = entryPointFacet.href;
+  self.remoteViewController.URL = newURL;
+  [self.remoteViewController load];
+}
+
+- (NSArray<NYPLCatalogFacet *> *)facetsForEntryPointView
+{
+  return self.feed.entryPoints;
 }
 
 #pragma mark -

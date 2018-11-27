@@ -14,23 +14,26 @@
 #import "NYPLRemoteViewController.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLSettings.h"
-
+#import "SimplyE-Swift.h"
 #import "NYPLCatalogUngroupedFeedViewController.h"
 
 #import <PureLayout/PureLayout.h>
 
 static const CGFloat kActivityIndicatorPadding = 20.0;
+static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
 
 @interface NYPLCatalogUngroupedFeedViewController ()
-  <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDataSource, NYPLFacetViewDelegate,
+  <NYPLCatalogUngroupedFeedDelegate, NYPLFacetViewDelegate, NYPLEntryPointViewDelegate, NYPLEntryPointViewDataSource,
    UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate>
 
-@property (nonatomic) NYPLFacetBarView *facetBarView;
-@property (nonatomic) NYPLCatalogUngroupedFeed *feed;
-@property (nonatomic) UIRefreshControl *refreshControl;
-@property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
 @property (nonatomic) NYPLOpenSearchDescription *searchDescription;
-@property (nonatomic) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic) NYPLCatalogUngroupedFeed *feed;
+
+@property (nonatomic, weak) NYPLRemoteViewController *remoteViewController;
+@property (nonatomic) UIRefreshControl *collectionViewRefreshControl;
+@property (nonatomic) UIActivityIndicatorView *collectionViewActivityIndicator;
+@property (nonatomic) NYPLFacetBarView *facetBarView;
+@property (nonatomic) NYPLFacetViewDefaultDataSource *facetViewDataSource;
 
 @end
 
@@ -41,7 +44,6 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
 {
   self = [super init];
   if(!self) return nil;
-  
   self.feed = feed;
   self.feed.delegate = self;
   self.remoteViewController = remoteViewController;
@@ -57,41 +59,23 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
                           0);
 }
 
-- (void)updateActivityIndicator
-{
-  UIEdgeInsets insets = [self scrollIndicatorInsets];
-  if(self.feed.currentlyFetchingNextURL) {
-    insets.bottom += kActivityIndicatorPadding + self.activityIndicator.frame.size.height;
-    CGRect frame = self.activityIndicator.frame;
-    frame.origin = CGPointMake(CGRectGetMidX(self.collectionView.frame) - frame.size.width/2,
-                               self.collectionView.contentSize.height + kActivityIndicatorPadding/2);
-    self.activityIndicator.frame = frame;
-  }
-  self.activityIndicator.hidden = !self.feed.currentlyFetchingNextURL;
-  self.collectionView.contentInset = insets;
-}
-
 #pragma mark UIViewController
 
 - (void)viewDidLoad
 {
   [super viewDidLoad];
   
-  self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:0];
-  self.facetBarView.facetView.dataSource = self;
-  self.facetBarView.facetView.delegate = self;
-  [self.view addSubview:self.facetBarView];
-  
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
-  
+  self.collectionView.alpha = 0.0;
+
   if (@available(iOS 11.0, *)) {
     self.collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
   }
   self.collectionView.alwaysBounceVertical = YES;
-  self.refreshControl = [[UIRefreshControl alloc] init];
-  [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
-  [self.collectionView addSubview:self.refreshControl];
+  self.collectionViewRefreshControl = [[UIRefreshControl alloc] init];
+  [self.collectionViewRefreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
+  [self.collectionView addSubview:self.collectionViewRefreshControl];
   
   if(self.feed.openSearchURL) {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
@@ -106,14 +90,34 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
   }
   
   [self.collectionView reloadData];
-  [self.facetBarView.facetView reloadData];
-  
-  self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  self.activityIndicator.hidden = YES;
-  [self.activityIndicator startAnimating];
-  [self.collectionView addSubview:self.activityIndicator];
+
+  self.facetBarView = [[NYPLFacetBarView alloc] initWithOrigin:CGPointZero width:self.view.bounds.size.width];
+  self.facetBarView.entryPointView.delegate = self;
+  self.facetBarView.entryPointView.dataSource = self;
+  self.facetViewDataSource = [[NYPLFacetViewDefaultDataSource alloc] initWithFacetGroups:self.feed.facetGroups];
+  self.facetBarView.facetView.delegate = self;
+  self.facetBarView.facetView.dataSource = self.facetViewDataSource;
+
+  [self.view addSubview:self.facetBarView];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeLeading];
+  [self.facetBarView autoPinEdgeToSuperviewEdge:ALEdgeTrailing];
+  [self.facetBarView autoPinToTopLayoutGuideOfViewController:self withInset:0.0];
+
+  self.collectionViewActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  self.collectionViewActivityIndicator.hidden = YES;
+  [self.collectionViewActivityIndicator startAnimating];
+  [self.collectionView addSubview:self.collectionViewActivityIndicator];
   
   [self enable3DTouch];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+  [super viewDidAppear:animated];
+  [UIView animateWithDuration:kCollectionViewCrossfadeDuration animations:^{
+    self.collectionView.alpha = 1.0;
+    self.facetBarView.alpha = 1.0;
+  }];
 }
 
 - (void)didMoveToParentViewController:(UIViewController *)parent
@@ -121,12 +125,6 @@ static const CGFloat kActivityIndicatorPadding = 20.0;
   [super didMoveToParentViewController:parent];
   
   if(parent) {
-    self.facetBarView.frame =
-      CGRectMake(0,
-                 CGRectGetMaxY(self.navigationController.navigationBar.frame),
-                 CGRectGetWidth(self.view.frame),
-                 CGRectGetHeight(self.facetBarView.frame));
-    
     [self updateActivityIndicator];
     self.collectionView.scrollIndicatorInsets = [self scrollIndicatorInsets];
     [self.collectionView setContentOffset:CGPointMake(0, -CGRectGetMaxY(self.facetBarView.frame))
@@ -200,74 +198,29 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
   [self.collectionView reloadData];
 }
 
-#pragma mark NYPLFacetViewDataSource
-
-- (NSUInteger)numberOfFacetGroupsInFacetView:(__attribute__((unused)) NYPLFacetView *)facetView
-{
-  return self.feed.facetGroups.count;
-}
-
-- (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-numberOfFacetsInFacetGroupAtIndex:(NSUInteger const)index
-{
-  return ((NYPLCatalogFacetGroup *) self.feed.facetGroups[index]).facets.count;
-}
-
-- (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-nameForFacetGroupAtIndex:(NSUInteger const)index
-{
-  return ((NYPLCatalogFacetGroup *) self.feed.facetGroups[index]).name;
-}
-
-- (NSString *)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-nameForFacetAtIndexPath:(NSIndexPath *const)indexPath
-{
-  NYPLCatalogFacetGroup *const group = self.feed.facetGroups[[indexPath indexAtPosition:0]];
-  
-  NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
-  
-  return facet.title;
-}
-
-- (BOOL)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-isActiveFacetForFacetGroupAtIndex:(NSUInteger const)index
-{
-  NYPLCatalogFacetGroup *const group = self.feed.facetGroups[index];
-  
-  for(NYPLCatalogFacet *const facet in group.facets) {
-    if(facet.active) return YES;
-  }
-  
-  return NO;
-}
-
-- (NSUInteger)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
-activeFacetIndexForFacetGroupAtIndex:(NSUInteger)index
-{
-  NYPLCatalogFacetGroup *const group = self.feed.facetGroups[index];
-  
-  NSUInteger i = 0;
-  
-  for(NYPLCatalogFacet *const facet in group.facets) {
-    if(facet.active) return i;
-    ++i;
-  }
-  
-  @throw NSInternalInconsistencyException;
-}
-
 #pragma mark NYPLFacetViewDelegate
 
 - (void)facetView:(__attribute__((unused)) NYPLFacetView *)facetView
 didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 {
   NYPLCatalogFacetGroup *const group = self.feed.facetGroups[[indexPath indexAtPosition:0]];
-  
   NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
-  
   self.remoteViewController.URL = facet.href;
-  
   [self.remoteViewController load];
+}
+
+#pragma mark NYPLEntryPointViewDelegate
+
+- (void)entryPointViewDidSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet
+{
+  NSURL *const newURL = entryPointFacet.href;
+  self.remoteViewController.URL = newURL;
+  [self.remoteViewController load];
+}
+
+- (NSArray<NYPLCatalogFacet *> *)facetsForEntryPointView
+{
+  return self.feed.entryPoints;
 }
 
 #pragma mark - 3D Touch
@@ -311,6 +264,20 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 }
 
 #pragma mark -
+
+- (void)updateActivityIndicator
+{
+  UIEdgeInsets insets = [self scrollIndicatorInsets];
+  if(self.feed.currentlyFetchingNextURL) {
+    insets.bottom += kActivityIndicatorPadding + self.collectionViewActivityIndicator.frame.size.height;
+    CGRect frame = self.collectionViewActivityIndicator.frame;
+    frame.origin = CGPointMake(CGRectGetMidX(self.collectionView.frame) - frame.size.width/2,
+                               self.collectionView.contentSize.height + kActivityIndicatorPadding/2);
+    self.collectionViewActivityIndicator.frame = frame;
+  }
+  self.collectionViewActivityIndicator.hidden = !self.feed.currentlyFetchingNextURL;
+  self.collectionView.contentInset = insets;
+}
 
 - (void)didSelectSearch
 {

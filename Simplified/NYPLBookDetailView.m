@@ -33,9 +33,11 @@
 
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UILabel *subtitleLabel;
+@property (nonatomic) UILabel *audiobookLabel;
 @property (nonatomic) UILabel *authorsLabel;
 @property (nonatomic) UIImageView *coverImageView;
 @property (nonatomic) UIImageView *blurCoverImageView;
+@property (nonatomic) NYPLContentBadgeImageView *contentTypeBadge;
 @property (nonatomic) UIButton *closeButton;
 
 @property (nonatomic) NYPLBookDetailButtonsView *buttonsView;
@@ -110,8 +112,10 @@ static NSString *DetailHTMLTemplate = nil;
   [self.contentView addSubview:self.blurCoverImageView];
   [self.contentView addSubview:self.visualEffectView];
   [self.contentView addSubview:self.coverImageView];
+  [self.contentView addSubview:self.contentTypeBadge];
   [self.contentView addSubview:self.titleLabel];
   [self.contentView addSubview:self.subtitleLabel];
+  [self.contentView addSubview:self.audiobookLabel];
   [self.contentView addSubview:self.authorsLabel];
   [self.contentView addSubview:self.buttonsView];
   [self.contentView addSubview:self.summarySectionLabel];
@@ -149,6 +153,7 @@ static NSString *DetailHTMLTemplate = nil;
 {
   self.titleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleHeadline];
   self.subtitleLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
+  self.audiobookLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
   self.authorsLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption2];
   self.summaryTextView.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
   self.readMoreLabel.titleLabel.font = [UIFont systemFontOfSize:14];
@@ -222,6 +227,17 @@ static NSString *DetailHTMLTemplate = nil;
      self.blurCoverImageView.image = image;
    }];
 
+  self.audiobookLabel = [[UILabel alloc] init];
+  self.audiobookLabel.hidden = YES;
+  self.contentTypeBadge = [[NYPLContentBadgeImageView alloc] initWithBadgeImage:NYPLBadgeImageAudiobook];
+  self.contentTypeBadge.hidden = YES;
+
+  if ([self.book defaultBookContentType] == NYPLBookContentTypeAudiobook) {
+    self.contentTypeBadge.hidden = NO;
+    self.audiobookLabel.attributedText = NYPLAttributedStringForTitleFromString(NSLocalizedString(@"Audiobook", nil));
+    self.audiobookLabel.hidden = NO;
+  }
+
   self.titleLabel = [[UILabel alloc] init];
   self.titleLabel.numberOfLines = 2;
   self.titleLabel.attributedText = NYPLAttributedStringForTitleFromString(self.book.title);
@@ -229,6 +245,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.subtitleLabel = [[UILabel alloc] init];
   self.subtitleLabel.attributedText = NYPLAttributedStringForTitleFromString(self.book.subtitle);
   self.subtitleLabel.numberOfLines = 3;
+
 
   self.authorsLabel = [[UILabel alloc] init];
   self.authorsLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
@@ -349,6 +366,8 @@ static NSString *DetailHTMLTemplate = nil;
   [self.blurCoverImageView autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.coverImageView];
   [self.blurCoverImageView autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];
   [self.blurCoverImageView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.coverImageView];
+
+  [NYPLContentBadgeImageView pinWithBadge:self.contentTypeBadge toView:self.coverImageView];
   
   [self.titleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
   [self.titleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:self.coverImageView];
@@ -358,15 +377,25 @@ static NSString *DetailHTMLTemplate = nil;
   [self.subtitleLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
   [self.subtitleLabel autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.titleLabel];
   [self.subtitleLabel autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeBaseline ofView:self.titleLabel withOffset:SubtitleBaselineOffset];
-  
+
+  [self.audiobookLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
+  [self.audiobookLabel autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.titleLabel];
+  if (self.subtitleLabel.text) {
+    [self.audiobookLabel autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeBaseline ofView:self.subtitleLabel withOffset:AuthorBaselineOffset];
+  } else {
+    [self.audiobookLabel autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeBaseline ofView:self.titleLabel withOffset:AuthorBaselineOffset];
+  }
+
   [self.authorsLabel autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.coverImageView withOffset:MainTextPaddingLeft];
   [self.authorsLabel autoPinEdge:ALEdgeTrailing toEdge:ALEdgeTrailing ofView:self.titleLabel];
-  if (self.subtitleLabel.text) {
+  if (self.audiobookLabel.text) {
+    [self.authorsLabel autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeBaseline ofView:self.audiobookLabel withOffset:AuthorBaselineOffset];
+  } else if (self.subtitleLabel.text) {
     [self.authorsLabel autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeBaseline ofView:self.subtitleLabel withOffset:AuthorBaselineOffset];
   } else {
     [self.authorsLabel autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeBaseline ofView:self.titleLabel withOffset:AuthorBaselineOffset];
   }
-  
+
   [self.buttonsView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.authorsLabel withOffset:VerticalPadding relation:NSLayoutRelationGreaterThanOrEqual];
   [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultLow forConstraints:^{
     [self.buttonsView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:self.coverImageView];

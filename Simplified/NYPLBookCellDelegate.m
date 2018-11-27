@@ -1,3 +1,6 @@
+@import MediaPlayer;
+@import NYPLAudiobookToolkit;
+
 #import "NYPLAccount.h"
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLSession.h"
@@ -5,12 +8,15 @@
 #import "NYPLBook.h"
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
+#import "NYPLBookLocation.h"
 #import "NYPLBookNormalCell.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReaderViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLSettings.h"
 #import "NSURLRequest+NYPLURLRequestAdditions.h"
+#import "NYPLJSON.h"
+#import "NYPLReachabilityManager.h"
 
 #import "NYPLBookCellDelegate.h"
 #import "SimplyE-Swift.h"
@@ -18,6 +24,15 @@
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
 #endif
+
+@interface NYPLBookCellDelegate ()
+
+@property (nonatomic) NSTimer *timer;
+@property (nonatomic) NYPLBook *book;
+@property (nonatomic) id<AudiobookManager> manager;
+@property (nonatomic, weak) AudiobookPlayerViewController *audiobookViewController;
+
+@end
 
 @implementation NYPLBookCellDelegate
 
@@ -34,6 +49,13 @@
   });
   
   return sharedDelegate;
+}
+
+- (instancetype)init
+{
+  self = [super init];
+  
+  return self;
 }
 
 #pragma mark NYPLBookButtonsDelegate
@@ -69,13 +91,137 @@
 - (void)openBook:(NYPLBook *)book
 {
   [NYPLCirculationAnalytics postEvent:@"open_book" withBook:book];
-  [[NYPLRootTabBarController sharedController] pushViewController:[[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier] animated:YES];
-  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLAccount sharedAccount] completion:^(BOOL enableSync) {
-    if (enableSync == YES) {
-      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-      currentAccount.syncPermissionGranted = enableSync;
+  
+  switch (book.defaultBookContentType) {
+    case NYPLBookContentTypeEPUB: {
+      [[NYPLRootTabBarController sharedController] pushViewController:[[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier] animated:YES];
+      [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLAccount sharedAccount] completion:^(BOOL enableSync) {
+        if (enableSync == YES) {
+          Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+          currentAccount.syncPermissionGranted = enableSync;
+        }
+      }];
+      break;
+    }
+    case NYPLBookContentTypeAudiobook: {
+      NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
+      NSData *const data = [NSData dataWithContentsOfURL:url];
+      id const json = NYPLJSONObjectFromData(data);
+      id<Audiobook> const audiobook = [AudiobookFactory audiobook:json];
+
+      if (!audiobook) {
+        [self presentUnsupportedItemError];
+        return;
+      }
+
+      AudiobookMetadata *const metadata = [[AudiobookMetadata alloc]
+                                           initWithTitle:book.title
+                                           authors:@[book.authors]
+                                           narrators:@[]
+                                           publishers:@[book.publisher]
+                                           published:book.published
+                                           modified:book.published
+                                           language:@"English"];
+
+      id<AudiobookManager> const manager = [[DefaultAudiobookManager alloc]
+                                            initWithMetadata:metadata
+                                            audiobook:audiobook];
+
+      AudiobookPlayerViewController *const viewController = [[AudiobookPlayerViewController alloc]
+                                                             initWithAudiobookManager:manager];
+
+      [self registerCallbackForLogHandler];
+
+      [[NYPLBookRegistry sharedRegistry] coverImageForBook:book handler:^(UIImage *image) {
+         if (image) {
+           [viewController.coverView setImage:image];
+         }
+       }];
+
+      viewController.hidesBottomBarWhenPushed = YES;
+      [[NYPLRootTabBarController sharedController]
+       pushViewController:viewController
+       animated:YES];
+
+      viewController.view.tintColor = [NYPLConfiguration mainColor];
+
+      NYPLBookLocation *const bookLocation =
+      [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
+
+      if (bookLocation) {
+        NSData *const data = [bookLocation.locationString dataUsingEncoding:NSUTF8StringEncoding];
+        ChapterLocation *const chapterLocation = [ChapterLocation fromData:data];
+        NYPLLOG_F(@"Returning to Audiobook Location: %@", chapterLocation);
+        [manager.audiobook.player movePlayheadToLocation:chapterLocation];
+      } else {
+        [self presentWwanNetworkWarningIfNeeded];
+      }
+
+      [self scheduleTimerForAudiobook:book manager:manager viewController:viewController];
+
+      break;
+    }
+    default: {
+      [self presentUnsupportedItemError];
+      break;
+    }
+  }
+}
+
+- (void)registerCallbackForLogHandler {
+  [DefaultAudiobookManager setLogHandler:^(enum LogLevel level, NSString * _Nonnull message, NSError * _Nullable error) {
+    if (error) {
+      [Bugsnag notifyError:error block:^(BugsnagCrashReport * _Nonnull report) {
+        report.errorMessage = message;
+      }];
+    } else {
+      NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:0 userInfo:nil];
+      [Bugsnag notifyError:error block:^(BugsnagCrashReport * _Nonnull report) {
+        report.errorMessage = [NSString stringWithFormat:@"Level: %ld. Message: %@", (long)level, message];
+      }];
     }
   }];
+}
+
+- (void)scheduleTimerForAudiobook:(NYPLBook *)book
+                          manager:(id<AudiobookManager>)manager
+                   viewController:(AudiobookPlayerViewController *)viewController
+{
+  self.audiobookViewController = viewController;
+  self.book = book;
+  self.manager = manager;
+  // Target-Selector method required for iOS <10.0
+  self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0
+                                                target:self
+                                              selector:@selector(pollAudiobookReadingLocation)
+                                              userInfo:nil
+                                               repeats:YES];
+}
+
+- (void)pollAudiobookReadingLocation
+{
+  if (!self.audiobookViewController) {
+    [self.timer invalidate];
+    self.timer = nil;
+    self.book = nil;
+    self.manager = nil;
+    return;
+  }
+
+  NSString *const string = [[NSString alloc]
+                            initWithData:self.manager.audiobook.player.currentChapterLocation.toData
+                            encoding:NSUTF8StringEncoding];
+  [[NYPLBookRegistry sharedRegistry]
+   setLocation:[[NYPLBookLocation alloc] initWithLocationString:string renderer:@"NYPLAudiobookToolkit"]
+   forIdentifier:self.book.identifier];
+}
+
+- (void)presentUnsupportedItemError
+{
+  NSString *title = NSLocalizedString(@"Unsupported Item", nil);
+  NSString *message = NSLocalizedString(@"The item you are trying to open is not currently supported by SimplyE.", nil);
+  NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title singleMessage:message];
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate
@@ -97,6 +243,21 @@
 {
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
    cancelDownloadForBookIdentifier:cell.book.identifier];
+}
+
+#pragma mark
+
+- (void)presentWwanNetworkWarningIfNeeded
+{
+  // Inform a user if they're downloading over cellular once for each audiobook.
+  NetworkStatus status = [[NYPLReachability sharedReachability].hostReachabilityManager currentReachabilityStatus];
+  if (status == ReachableViaWWAN) {
+    NSString *title = NSLocalizedString(@"Large Download", nil);
+    NSString *message = NSLocalizedString(@"Connecting to Wi-Fi may improve performance.", nil);
+    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title singleMessage:message];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
+    [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
+  }
 }
 
 @end
