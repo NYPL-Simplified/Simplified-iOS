@@ -38,6 +38,23 @@
   return date;
 }
 
++ (BOOL)isTimeOneDayLeft:(NSDate *)date
+{
+  BOOL oneDayLeft = NO;
+  NSInteger oneDayHours = 24;
+
+  // time interval between now and a future date, in seconds
+  NSTimeInterval seconds = [date timeIntervalSinceDate:[NSDate date]];
+  seconds = seconds > 0 ? seconds : 0;
+  long minutes = seconds / 60;
+  long hours = minutes / 60;
+
+  if (hours <= oneDayHours) {
+    oneDayLeft = YES;
+  }
+  return oneDayLeft;
+}
+
 - (NSString *)RFC3339String
 {
   NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
