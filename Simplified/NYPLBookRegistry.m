@@ -9,6 +9,7 @@
 #import "NYPLOPDS.h"
 #import "NYPLSettings.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NSDate+NYPLDateAdditions.h"
 #import "SimplyE-Swift.h"
 
 @interface NYPLBookRegistry ()
@@ -403,19 +404,41 @@ NSString *const readyToCheckout = @"READY";
 - (NSArray *)checkBookLoanStatusChange:(NSDictionary*)presyncDict WithPostSyncDict:(NSDictionary*)postSyncDict {
   NSMutableArray *booksWithChangedLoanStatus = [[NSMutableArray alloc] init];
 
-  // for all objects in presyncDic that are waiting, check if that key (book title) is in postSyncDict
-  // with object of type ready. if so, add that title to the bookTitles
+  // For all objects in presyncDic that are waiting, check if that key (book identifier) is in postSyncDict
+  // with object of type readyToCheckout. If so, add that book to array of books with changed loan status
   NSArray *waitingTitles = [presyncDict allKeysForObject:waitingForAvailability];
 
   for (NSString *identifier in waitingTitles) {
+    // there's been a change, add to titles to send a notification later
     if (postSyncDict[identifier] == readyToCheckout) {
-      // there's been a change, add to titles to send a notification later
-
       NYPLBook *book = [self bookForIdentifier:identifier];
       [[NYPLBookRegistry sharedRegistry]
        setHoldsNotificationState:NYPLHoldsNotificationStateReadyForFirstNotification forIdentifier:identifier];
       NYPLLOG_F(@"This title has just become ready for checkout: %@", book.title);
       [booksWithChangedLoanStatus addObject:book];
+    }
+  }
+
+  // For all objects that are still in readyToCheckout (from pre to post SyncDict),
+  // see if a 1 day notification has already been sent. If not, check if there's only 1 day
+  // left to checkout the book. If so, add that title to the bookTitles
+  NSArray *readyTitles = [presyncDict allKeysForObject:readyToCheckout];
+
+  for (NSString *identifier in readyTitles) {
+    if (postSyncDict[identifier] == readyToCheckout) {
+      NYPLBook *book = [self bookForIdentifier:identifier];
+      if ([[NYPLBookRegistry sharedRegistry] holdsNotificationStateForIdentifier:book.identifier] ==
+          NYPLHoldsNotificationStateFinalNotificationSent) {
+        continue;
+      }
+
+      // Calculate the 24 hour period and set the NotificationState enum, if applicable
+      NSDate * dateReservationExpires = book.defaultAcquisition.availability.until;
+      if ([NSDate isTimeOneDayLeft:dateReservationExpires] == YES) {
+        [[NYPLBookRegistry sharedRegistry]
+         setHoldsNotificationState:NYPLHoldsNotificationStateReadyForFinalNotification forIdentifier:identifier];        NYPLLOG_F(@"This title has 24 hours or left to checkout: %@", book.title);
+        [booksWithChangedLoanStatus addObject:book];
+      }
     }
   }
 
