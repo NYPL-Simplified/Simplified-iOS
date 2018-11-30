@@ -144,9 +144,11 @@
         ChapterLocation *const chapterLocation = [ChapterLocation fromData:data];
         NYPLLOG_F(@"Returning to Audiobook Location: %@", chapterLocation);
         [manager.audiobook.player movePlayheadToLocation:chapterLocation];
-      } else {
-        [self presentWwanNetworkWarningIfNeeded];
       }
+      //TODO: Disabled until a better solution is decided on.
+//      else {
+//        [self presentWwanNetworkWarningIfNeeded];
+//      }
 
       [self scheduleTimerForAudiobook:book manager:manager viewController:audiobookVC];
 
