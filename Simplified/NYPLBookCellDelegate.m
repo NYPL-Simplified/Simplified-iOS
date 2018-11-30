@@ -94,7 +94,8 @@
   
   switch (book.defaultBookContentType) {
     case NYPLBookContentTypeEPUB: {
-      [[NYPLRootTabBarController sharedController] pushViewController:[[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier] animated:YES];
+      NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
+      [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
       [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLAccount sharedAccount] completion:^(BOOL enableSync) {
         if (enableSync == YES) {
           Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
@@ -116,34 +117,24 @@
 
       AudiobookMetadata *const metadata = [[AudiobookMetadata alloc]
                                            initWithTitle:book.title
-                                           authors:@[book.authors]
-                                           narrators:@[]
-                                           publishers:@[book.publisher]
-                                           published:book.published
-                                           modified:book.published
-                                           language:@"English"];
-
+                                           authors:@[book.authors]];
       id<AudiobookManager> const manager = [[DefaultAudiobookManager alloc]
                                             initWithMetadata:metadata
                                             audiobook:audiobook];
-
-      AudiobookPlayerViewController *const viewController = [[AudiobookPlayerViewController alloc]
+      AudiobookPlayerViewController *const audiobookVC = [[AudiobookPlayerViewController alloc]
                                                              initWithAudiobookManager:manager];
 
       [self registerCallbackForLogHandler];
 
       [[NYPLBookRegistry sharedRegistry] coverImageForBook:book handler:^(UIImage *image) {
          if (image) {
-           [viewController.coverView setImage:image];
+           [audiobookVC.coverView setImage:image];
          }
        }];
 
-      viewController.hidesBottomBarWhenPushed = YES;
-      [[NYPLRootTabBarController sharedController]
-       pushViewController:viewController
-       animated:YES];
-
-      viewController.view.tintColor = [NYPLConfiguration mainColor];
+      audiobookVC.hidesBottomBarWhenPushed = YES;
+      [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
+      audiobookVC.view.tintColor = [NYPLConfiguration mainColor];
 
       NYPLBookLocation *const bookLocation =
       [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
@@ -157,7 +148,7 @@
         [self presentWwanNetworkWarningIfNeeded];
       }
 
-      [self scheduleTimerForAudiobook:book manager:manager viewController:viewController];
+      [self scheduleTimerForAudiobook:book manager:manager viewController:audiobookVC];
 
       break;
     }
@@ -249,13 +240,13 @@
 
 - (void)presentWwanNetworkWarningIfNeeded
 {
-  // Inform a user if they're downloading over cellular once for each audiobook.
+  // Inform a user if they're downloading over cellular once for each new audiobook.
   NetworkStatus status = [[NYPLReachability sharedReachability].hostReachabilityManager currentReachabilityStatus];
   if (status == ReachableViaWWAN) {
     NSString *title = NSLocalizedString(@"Large Download", nil);
     NSString *message = NSLocalizedString(@"Connecting to Wi-Fi may improve performance.", nil);
     NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title singleMessage:message];
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Continue", nil) style:UIAlertActionStyleDefault handler:nil]];
     [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
   }
 }
