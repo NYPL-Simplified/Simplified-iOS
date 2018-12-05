@@ -66,8 +66,22 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   // request permissions for local notifications
   NYPLHoldsNotifications *localNotfications = [NYPLHoldsNotifications sharedInstance];
   [localNotfications requestAuthorization];
+
+  // set at least 24 hours in between background fetches
+  double TwentyFourHourDelay = 60*60*24;
+  [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:TwentyFourHourDelay];
   
   return YES;
+}
+
+- (void)application:(__attribute__((unused)) UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+  // call sync on the BookRegistry to fire off local notifications, for changes in
+  // books' reservation status
+  [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+    completionHandler(UIBackgroundFetchResultNewData);
+  }];
 }
 
 - (BOOL)application:(__attribute__((unused)) UIApplication *)application handleOpenURL:(NSURL *)url
