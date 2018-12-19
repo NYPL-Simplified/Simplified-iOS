@@ -17,8 +17,6 @@ import UserNotifications
 
   // create the notification and then add it to the
   // notification center
-  // we need to go back to using NYPLBook because now we need state (from BookRegistryRecord)
-  // and title, from book
   func sendNotification(books: [NYPLBook]) {
     if books.count == 0 { return }
     //sendNotification(bookTitles: books.map {$0.title})
@@ -54,8 +52,8 @@ import UserNotifications
     // if you have 1 book with more than 24 hours, send message for first notification
     // if you have 1 book with 24 hours left, send message for 24 hours
 
-    // if there are multiple books and none of them is 24 hours, send message for 1st notification for multiple books
-    // if there are multiple books, and 1 or more of them is 24 hours, you have 24 hours to check out book(s)
+    // else if there are multiple books and none of them is 24 hours, send message for 1st notification for multiple books
+    // else if there are multiple books, and 1 or more of them is 24 hours, you have 24 hours to check out book(s)
     if books.count == 1 {
       content.title = readyForFinalNotificationStateExists ?
                       NSLocalizedString("NYPLHoldsNotificationsOneDayToCheckoutABook", comment: "Notification telling patron they have only a day left to checkout a book on hold"):
@@ -79,42 +77,6 @@ import UserNotifications
     // adding the notification to notification center
     UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
   }
-
-  /*
-  func sendNotification(bookTitles: [String]) {
-    if bookTitles.count == 0 { return }
-    // create the Trigger
-    let seconds = 3
-    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(seconds), repeats: false)
-
-    // create Notification content
-    let content = UNMutableNotificationContent()
-
-    var titlesString = ("Books available for checkout are: ")
-    for title in bookTitles {
-      titlesString = titlesString + title + " , "
-    }
-    print(titlesString)
-
-    if bookTitles.count == 1 {
-      content.title = NSLocalizedString("NYPLHoldsNotificationsABookReadyToCheckout",
-                                        comment: "Notification telling patron that a book they had on hold is now ready to checkout")
-      content.body = bookTitles[0]
-    } else if bookTitles.count > 1 {
-      content.title = NSLocalizedString("NYPLHoldsNotificationsBooksReadyToCheckout",
-                                        comment: "Notification telling patron that multiple books they had on hold are now ready to checkout")
-    }
-    content.badge = 1
-
-    // getting the notification request
-    let request = UNNotificationRequest(identifier: "SimplyEIOSNotification_" + Date().description, content: content, trigger: trigger)
-
-    UNUserNotificationCenter.current().delegate = self
-
-    // adding the notification to notification center
-    UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-  }
- */
 
   func requestAuthorization() {
     // with provisional authorization, patrons don't have to be prompted to allow notifications,
