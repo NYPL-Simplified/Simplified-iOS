@@ -25,8 +25,8 @@ static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
 
 @implementation NYPLBookRegistryRecord
 
-- (instancetype)initWithBook:(NYPLBook *)book
-                    location:(NYPLBookLocation *)location
+- (instancetype)initWithBook:(NYPLBook *const)book
+                    location:(NYPLBookLocation *const)location
                        state:(NYPLBookState)state
                fulfillmentId:(NSString *)fulfillmentId
                    bookmarks:(NSArray<NYPLReaderBookmark *> *)bookmarks
@@ -34,11 +34,11 @@ static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
 {
   self = [super init];
   if(!self) return nil;
-
+  
   if(!book) {
     @throw NSInvalidArgumentException;
   }
-
+  
   self.book = book;
   self.location = location;
   self.state = state;
@@ -103,7 +103,7 @@ static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
       self.state = NYPLBookStateDownloadNeeded;
     }
   }
-
+  
   return self;
 }
 
@@ -164,7 +164,7 @@ static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
     [bookmarkDictionaries addObject:element.dictionaryRepresentation];
     
   }
-
+  
   return @{BookKey: [self.book dictionaryRepresentation],
            LocationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
            StateKey: NYPLBookStateToString(self.state),
