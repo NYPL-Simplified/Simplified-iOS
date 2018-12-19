@@ -107,6 +107,10 @@ static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
   return self;
 }
 
+// This function has been refactored and for now must remain,
+// Until we have some type of data migration in place so that the NYPLBookRegistryRecord doesn't break
+// between the period before the HoldsNotificationState is added to the Record and after the
+// HoldsNotificationState is added to the Record
 - (instancetype)initWithBook:(NYPLBook *const)book
                     location:(NYPLBookLocation *const)location
                        state:(NYPLBookState)state
@@ -115,78 +119,6 @@ static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
 {
   NYPLHoldsNotificationState holdsNotificationState = NYPLHoldsNotificationStateNotApplicable;
   return [self initWithBook:book location:location state:state fulfillmentId:fulfillmentId bookmarks:bookmarks holdsNotificationState:holdsNotificationState];
-
-
-  /*
-  self = [super init];
-  if(!self) return nil;
-  
-  if(!book) {
-    @throw NSInvalidArgumentException;
-  }
-  
-  self.book = book;
-  self.location = location;
-  self.state = state;
-  self.fulfillmentId = fulfillmentId;
-  if (bookmarks != nil) {
-    self.bookmarks = bookmarks;
-  }
-  else {
-    self.bookmarks = [[NSMutableArray alloc] init];
-  }
-
-  self.holdsNotificationState = NYPLHoldsNotificationStateNotApplicable;
-
-  if (!book.defaultAcquisition) {
-    // Since the book has no default acqusition, there is no reliable way to
-    // determine if the book is on hold (although it may be), nor is there any
-    // way to download the book if it is available. As such, we give the book a
-    // special "unsupported" state which will allow other parts of the app to
-    // ignore it as appropriate. Unsupported books should generally only appear
-    // when a user has checked out or reserved a book in an unsupported format
-    // using another app.
-    self.state = NYPLBookStateUnsupported;
-    return self;
-  }
-
-  // FIXME: The logic below is confusing at best. Upon initial inspection, it's
-  // unclear why `book.state` needs to be "fixed" in this initializer. If said
-  // fixing is appropriate, a rationale should be added here.
-
-  // If the book availability indicates that the book is held, make sure the state
-  // reflects that.
-  __block BOOL actuallyOnHold = NO;
-  [book.defaultAcquisition.availability
-   matchUnavailable:nil
-   limited:nil
-   unlimited:nil
-   reserved:^(__unused NYPLOPDSAcquisitionAvailabilityReserved *_Nonnull reserved) {
-     self.state = NYPLBookStateHolding;
-     actuallyOnHold = YES;
-   } ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
-     self.state = NYPLBookStateHolding;
-     actuallyOnHold = YES;
-   }];
-
-  if (!actuallyOnHold) {
-    // Set the correct non-holding state.
-    if (!((NYPLBookStateDownloadFailed |
-           NYPLBookStateDownloading |
-           NYPLBookStateDownloadNeeded |
-           NYPLBookStateDownloadSuccessful |
-           NYPLBookStateUsed)
-          & self.state)
-        && self.state != NYPLBookStateUnregistered)
-    {
-      // Since we're not in some download-related state and we're not unregistered,
-      // we must need to be downloaded.
-      self.state = NYPLBookStateDownloadNeeded;
-    }
-  }
-  
-  return self;
-   */
 }
 
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary
