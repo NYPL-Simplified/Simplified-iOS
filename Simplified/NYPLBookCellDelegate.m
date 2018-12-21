@@ -121,6 +121,7 @@
       id<AudiobookManager> const manager = [[DefaultAudiobookManager alloc]
                                             initWithMetadata:metadata
                                             audiobook:audiobook];
+
       AudiobookPlayerViewController *const audiobookVC = [[AudiobookPlayerViewController alloc]
                                                              initWithAudiobookManager:manager];
 
@@ -133,8 +134,13 @@
        }];
 
       audiobookVC.hidesBottomBarWhenPushed = YES;
-      [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
       audiobookVC.view.tintColor = [NYPLConfiguration mainColor];
+      [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
+
+      [manager setPlaybackCompletionHandler:^{
+        [audiobookVC.navigationController popViewControllerAnimated:YES];
+        [self promptUserToReturnAudiobook:book];
+      }];
 
       NYPLBookLocation *const bookLocation =
       [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
@@ -161,7 +167,11 @@
   }
 }
 
-- (void)registerCallbackForLogHandler {
+#pragma mark - Audiobook Methods
+
+- (void)registerCallbackForLogHandler
+{
+  //TODO: Make sure this is working
   [DefaultAudiobookManager setLogHandler:^(enum LogLevel level, NSString * _Nonnull message, NSError * _Nullable error) {
     if (error) {
       [Bugsnag notifyError:error block:^(BugsnagCrashReport * _Nonnull report) {
@@ -209,12 +219,56 @@
    forIdentifier:self.book.identifier];
 }
 
+- (void)promptUserToReturnAudiobook:(NYPLBook *)book
+{
+  NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, nil];
+  NSSet<NYPLBookAcquisitionPath *> *paths = [NYPLBookAcquisitionPath
+                                             supportedAcquisitionPathsForAllowedTypes:types
+                                             allowedRelations:(NYPLOPDSAcquisitionRelationSetBorrow |
+                                                               NYPLOPDSAcquisitionRelationSetGeneric)
+                                             acquisitions:book.acquisitions];
+  if (paths.count > 0) {
+    NSString *title = NSLocalizedString(@"Finished", nil);
+    NSString *localizedMessage = NSLocalizedString(@"You have finished %@. Would you like to return it?", nil);
+    NSString *message = [NSString stringWithFormat:localizedMessage, book.title];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *keepAction = [UIAlertAction actionWithTitle:@"Keep"
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:nil];
+    UIAlertAction *returnAction = [UIAlertAction actionWithTitle:@"Return"
+                                                           style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * _Nonnull __unused action) {
+                                                           [self didSelectReturnForBook:book];
+                                                         }];
+    [alert addAction:keepAction];
+    [alert addAction:returnAction];
+    [[NYPLRootTabBarController sharedController] presentViewController:alert animated:YES completion:nil];
+  } else {
+    NYPLLOG(@"Skipped prompt to return book because there was not an applicable acquisition path.");
+  }
+}
+
 - (void)presentUnsupportedItemError
 {
   NSString *title = NSLocalizedString(@"Unsupported Item", nil);
   NSString *message = NSLocalizedString(@"The item you are trying to open is not currently supported by SimplyE.", nil);
   NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title singleMessage:message];
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
+}
+
+- (void)presentWwanNetworkWarningIfNeeded
+{
+  // Inform a user if they're downloading over cellular once for each new audiobook.
+  NetworkStatus status = [[NYPLReachability sharedReachability].hostReachabilityManager currentReachabilityStatus];
+  if (status == ReachableViaWWAN) {
+    NSString *title = NSLocalizedString(@"Large Download", nil);
+    NSString *message = NSLocalizedString(@"Connecting to Wi-Fi may improve performance.", nil);
+    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title singleMessage:message];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Continue", nil) style:UIAlertActionStyleDefault handler:nil]];
+    [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
+  }
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate
@@ -236,21 +290,6 @@
 {
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
    cancelDownloadForBookIdentifier:cell.book.identifier];
-}
-
-#pragma mark
-
-- (void)presentWwanNetworkWarningIfNeeded
-{
-  // Inform a user if they're downloading over cellular once for each new audiobook.
-  NetworkStatus status = [[NYPLReachability sharedReachability].hostReachabilityManager currentReachabilityStatus];
-  if (status == ReachableViaWWAN) {
-    NSString *title = NSLocalizedString(@"Large Download", nil);
-    NSString *message = NSLocalizedString(@"Connecting to Wi-Fi may improve performance.", nil);
-    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title singleMessage:message];
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Continue", nil) style:UIAlertActionStyleDefault handler:nil]];
-    [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
-  }
 }
 
 @end
