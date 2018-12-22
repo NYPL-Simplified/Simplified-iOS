@@ -139,7 +139,21 @@
 
       [manager setPlaybackCompletionHandler:^{
         [audiobookVC.navigationController popViewControllerAnimated:YES];
-        [self promptUserToReturnAudiobook:book];
+
+        NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, nil];
+        NSSet<NYPLBookAcquisitionPath *> *paths = [NYPLBookAcquisitionPath
+                                                   supportedAcquisitionPathsForAllowedTypes:types
+                                                   allowedRelations:(NYPLOPDSAcquisitionRelationSetBorrow |
+                                                                     NYPLOPDSAcquisitionRelationSetGeneric)
+                                                   acquisitions:book.acquisitions];
+        if (paths.count > 0) {
+          [self promptUserToReturnAudiobook:book completion:^{
+            [NYPLAppStoreReviewPrompt presentIfAvailable];
+          }];
+        } else {
+          NYPLLOG(@"Skipped Return Prompt with no valid acquisition path.");
+          [NYPLAppStoreReviewPrompt presentIfAvailable];
+        }
       }];
 
       NYPLBookLocation *const bookLocation =
@@ -219,35 +233,19 @@
    forIdentifier:self.book.identifier];
 }
 
-- (void)promptUserToReturnAudiobook:(NYPLBook *)book
+- (void)promptUserToReturnAudiobook:(NYPLBook *)book completion:(void (^)(void))completion
 {
-  NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, nil];
-  NSSet<NYPLBookAcquisitionPath *> *paths = [NYPLBookAcquisitionPath
-                                             supportedAcquisitionPathsForAllowedTypes:types
-                                             allowedRelations:(NYPLOPDSAcquisitionRelationSetBorrow |
-                                                               NYPLOPDSAcquisitionRelationSetGeneric)
-                                             acquisitions:book.acquisitions];
-  if (paths.count > 0) {
-    NSString *title = NSLocalizedString(@"Finished", nil);
-    NSString *localizedMessage = NSLocalizedString(@"You have finished %@. Would you like to return it?", nil);
-    NSString *message = [NSString stringWithFormat:localizedMessage, book.title];
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
-                                                                   message:message
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *keepAction = [UIAlertAction actionWithTitle:@"Keep"
-                                                         style:UIAlertActionStyleDefault
-                                                       handler:nil];
-    UIAlertAction *returnAction = [UIAlertAction actionWithTitle:@"Return"
-                                                           style:UIAlertActionStyleDefault
-                                                         handler:^(UIAlertAction * _Nonnull __unused action) {
-                                                           [self didSelectReturnForBook:book];
-                                                         }];
-    [alert addAction:keepAction];
-    [alert addAction:returnAction];
-    [[NYPLRootTabBarController sharedController] presentViewController:alert animated:YES completion:nil];
-  } else {
-    NYPLLOG(@"Skipped prompt to return book because there was not an applicable acquisition path.");
-  }
+  UIAlertController *alert = [NYPLReturnPromptHelper alertControllerWithBookTitle:book.title];
+  UIAlertAction *keepAction = [NYPLReturnPromptHelper keepActionWithHandler:^{
+    completion();
+  }];
+  UIAlertAction *returnAction = [NYPLReturnPromptHelper returnActionWithHandler:^{
+    [self didSelectReturnForBook:book];
+    completion();
+  }];
+  [alert addAction:keepAction];
+  [alert addAction:returnAction];
+  [[NYPLRootTabBarController sharedController] presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)presentUnsupportedItemError
