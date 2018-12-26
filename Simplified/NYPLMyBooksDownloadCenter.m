@@ -569,6 +569,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 {
   if(!identifier) return nil;
   
+  // FIXME: The extension is always "epub" even when the URL refers to content of a different
+  // type (e.g. an audiobook). While there's no reason this must change, it's certainly likely
+  // to cause confusion for anyone looking at the filesystem.
   return [[[self contentDirectoryURL:account] URLByAppendingPathComponent:[identifier SHA256]]
           URLByAppendingPathExtension:@"epub"];
 }
