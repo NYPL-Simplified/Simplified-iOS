@@ -137,8 +137,9 @@
       audiobookVC.view.tintColor = [NYPLConfiguration mainColor];
       [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
 
+      __weak AudiobookPlayerViewController *weakAudiobookVC = audiobookVC;
       [manager setPlaybackCompletionHandler:^{
-        [audiobookVC.navigationController popViewControllerAnimated:YES];
+        [weakAudiobookVC.navigationController popViewControllerAnimated:YES];
 
         NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, nil];
         NSSet<NYPLBookAcquisitionPath *> *paths = [NYPLBookAcquisitionPath
@@ -165,7 +166,7 @@
         NYPLLOG_F(@"Returning to Audiobook Location: %@", chapterLocation);
         [manager.audiobook.player movePlayheadToLocation:chapterLocation];
       }
-      //TODO: Disabled until a better solution is decided on.
+      //FIXME: Disabled until a better solution is decided on.
 //      else {
 //        [self presentWwanNetworkWarningIfNeeded];
 //      }
@@ -185,7 +186,6 @@
 
 - (void)registerCallbackForLogHandler
 {
-  //TODO: Make sure this is working
   [DefaultAudiobookManager setLogHandler:^(enum LogLevel level, NSString * _Nonnull message, NSError * _Nullable error) {
     if (error) {
       [Bugsnag notifyError:error block:^(BugsnagCrashReport * _Nonnull report) {
@@ -235,6 +235,9 @@
 
 - (void)promptUserToReturnAudiobook:(NYPLBook *)book completion:(void (^)(void))completion
 {
+  if (!book) {
+    @throw NSInvalidArgumentException;
+  }
   UIAlertController *alert = [NYPLReturnPromptHelper alertControllerWithBookTitle:book.title];
   UIAlertAction *keepAction = [NYPLReturnPromptHelper keepActionWithHandler:^{
     completion();
