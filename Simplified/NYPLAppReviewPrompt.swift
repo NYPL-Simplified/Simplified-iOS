@@ -13,7 +13,7 @@ import StoreKit
       UserDefaults.standard.setValue(count, forKey: ReviewPromptChecksKey)
 
       // System will limit to 3 requests/yr as of 12/2018
-      if (count == 1 || count == 10 || count == 25) {
+      if (count == 1 || count == 5 || count == 15) {
         SKStoreReviewController.requestReview()
       }
     }

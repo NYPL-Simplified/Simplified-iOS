@@ -7,7 +7,8 @@
     return UIAlertController.init(title: title, message: message, preferredStyle: .alert)
   }
 
-  class func keepAction(handler: @escaping () -> ()) -> UIAlertAction {
+  class func keepAction(handler: @escaping () -> ()) -> UIAlertAction
+  {
     return UIAlertAction(
       title: NSLocalizedString("Keep", comment: ""),
       style: .cancel,
@@ -17,7 +18,8 @@
     })
   }
 
-  class func returnAction(handler: @escaping () -> ()) -> UIAlertAction {
+  class func returnAction(handler: @escaping () -> ()) -> UIAlertAction
+  {
     return UIAlertAction(
       title: NSLocalizedString("Return", comment: ""),
       style: .default,
@@ -28,16 +30,18 @@
   }
 }
 
-fileprivate func logKeepAction() {
+fileprivate func logKeepAction()
+{
   let keepException = NSException(name:NSExceptionName(rawValue: "NYPLAudiobookKeepException"),
                                   reason:"User chose to keep the audiobook, and not return it.",
                                   userInfo:nil)
   Bugsnag.notify(keepException)
 }
 
-fileprivate func logReturnAction() {
+fileprivate func logReturnAction()
+{
   let returnException = NSException(name:NSExceptionName(rawValue: "NYPLAudiobookReturnException"),
-                                  reason:"User chose to return the Audiobook early based on the prompt.",
-                                  userInfo:nil)
+                                    reason:"User chose to return the Audiobook early.",
+                                    userInfo:nil)
   Bugsnag.notify(returnException)
 }
