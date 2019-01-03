@@ -1,7 +1,7 @@
 binary "AudioEngine.json" "6.1.15"
 github "NYPL-Simplified/CardCreator-iOS" "v1.1.2"
 github "NYPL-Simplified/NYPLAEToolkit" "dbb7cac8a04ab907fa74190e2c95c6e6d42734ea"
-github "NYPL-Simplified/NYPLAudiobookToolkit" "27e93143ca77d4471720dc862566fd087ae6d9a5"
+github "NYPL-Simplified/NYPLAudiobookToolkit" "b1ce1136b9ff30816909381acadeb5e50590a5df"
 github "PureLayout/PureLayout" "v3.1.4"
 github "TheLevelUp/ZXingObjC" "3.5.0"
 github "bugsnag/bugsnag-cocoa" "v5.17.0"
