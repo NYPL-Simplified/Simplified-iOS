@@ -139,8 +139,6 @@
 
       __weak AudiobookPlayerViewController *weakAudiobookVC = audiobookVC;
       [manager setPlaybackCompletionHandler:^{
-        [weakAudiobookVC.navigationController popViewControllerAnimated:YES];
-
         NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, nil];
         NSSet<NYPLBookAcquisitionPath *> *paths = [NYPLBookAcquisitionPath
                                                    supportedAcquisitionPathsForAllowedTypes:types
@@ -148,9 +146,14 @@
                                                                      NYPLOPDSAcquisitionRelationSetGeneric)
                                                    acquisitions:book.acquisitions];
         if (paths.count > 0) {
-          [self promptUserToReturnAudiobook:book completion:^{
+          UIAlertController *alert = [NYPLReturnPromptHelper audiobookPromptWithCompletion:^(BOOL returnWasChosen) {
+            if (returnWasChosen) {
+              [weakAudiobookVC.navigationController popViewControllerAnimated:YES];
+              [self didSelectReturnForBook:book];
+            }
             [NYPLAppStoreReviewPrompt presentIfAvailable];
           }];
+          [[NYPLRootTabBarController sharedController] presentViewController:alert animated:YES completion:nil];
         } else {
           NYPLLOG(@"Skipped Return Prompt with no valid acquisition path.");
           [NYPLAppStoreReviewPrompt presentIfAvailable];
@@ -231,24 +234,6 @@
   [[NYPLBookRegistry sharedRegistry]
    setLocation:[[NYPLBookLocation alloc] initWithLocationString:string renderer:@"NYPLAudiobookToolkit"]
    forIdentifier:self.book.identifier];
-}
-
-- (void)promptUserToReturnAudiobook:(NYPLBook *)book completion:(void (^)(void))completion
-{
-  if (!book) {
-    @throw NSInvalidArgumentException;
-  }
-  UIAlertController *alert = [NYPLReturnPromptHelper alertControllerWithBookTitle:book.title];
-  UIAlertAction *keepAction = [NYPLReturnPromptHelper keepActionWithHandler:^{
-    completion();
-  }];
-  UIAlertAction *returnAction = [NYPLReturnPromptHelper returnActionWithHandler:^{
-    [self didSelectReturnForBook:book];
-    completion();
-  }];
-  [alert addAction:keepAction];
-  [alert addAction:returnAction];
-  [[NYPLRootTabBarController sharedController] presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)presentUnsupportedItemError
