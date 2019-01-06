@@ -390,6 +390,9 @@
 
 - (void)didSelectDownload
 {
+  if (self.state == NYPLBookButtonsStateCanHold) {
+//    [NYPLHoldsNotifications verifyAuthorization];
+  }
   self.activityIndicator.center = self.downloadButton.center;
   [self.delegate didSelectDownloadForBook:self.book];
 }

@@ -29,3 +29,4 @@
 #import "NYPLCatalogFacet.h"
 #import "NYPLCatalogFacetGroup.h"
 #import "NYPLFacetView.h"
+#import "NYPLBookRegistryRecord.h"

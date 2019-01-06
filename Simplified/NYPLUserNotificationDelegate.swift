@@ -1,0 +1,3 @@
+final class NYPLUserNotificationDelegate: NSObject {
+
+}

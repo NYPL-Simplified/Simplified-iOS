@@ -1,117 +1,148 @@
-//
-//  NYPLHoldsNotifications.swift
-//  SimplyE
-//
-//  Created by Vui Nguyen on 10/19/18.
-//  Copyright © 2018 NYPL Labs. All rights reserved.
-//
-
 import UserNotifications
 
-@available(iOS 10.0, *)
-@objcMembers class NYPLHoldsNotifications: NSObject, UNUserNotificationCenterDelegate {
+let HoldNotificationCategoryIdentifier = "NYPLHoldToReserveNotificationCategory"
+let HoldNotificationRequestIdentifier = "NYPLHoldNotificationRequest"
+let CheckOutActionIdentifier = "NYPLCheckOutNotificationAction"
 
-  private let center = UNUserNotificationCenter.current()
+/// Handle Local Notifications
+@objcMembers class NYPLHoldsNotifications: NSObject {
 
-  static let sharedInstance = NYPLHoldsNotifications()
+  /// Create a local notification if a book has moved from the holds queue and is
+  /// available to checkout.
 
-  // create the notification and then add it to the
-  // notification center
-  func sendNotification(books: [NYPLBook]) {
-    if books.count == 0 { return }
-    //sendNotification(bookTitles: books.map {$0.title})
+  //GODO rename this function
+  class func compareStatuses(cachedRecord:NYPLBookRegistryRecord, andNewBook newBook:NYPLBook) {
+    var wasOnHold = false
+    var isNowReady = false
+    let oldAvail = cachedRecord.book.defaultAcquisition()?.availability
+    oldAvail?.matchUnavailable(nil,
+                               limited: nil,
+                               unlimited: nil,
+                               reserved: { _ in wasOnHold = true },
+                               ready: nil)
+    let newAvail = newBook.defaultAcquisition()?.availability
+    newAvail?.matchUnavailable(nil,
+                               limited: nil,
+                               unlimited: nil,
+                               reserved: nil,
+                               ready: { _ in isNowReady = true })
 
-    // create the Trigger
-    let seconds = 3
-    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(seconds), repeats: false)
-
-    // create Notification content
-    let content = UNMutableNotificationContent()
-
-    var titlesString = ("Books available for checkout are: ")
-    for book in books {
-      if let title = book.title {
-        titlesString = titlesString + title + " , "
-      }
+    if (wasOnHold && isNowReady) {
+      createLocalNotification(book: newBook)
     }
-    print(titlesString)
-
-    // this for loop is to change the notification sent status for each book
-    var readyForFinalNotificationStateExists = false
-    for book in books {
-      if NYPLBookRegistry.shared()?.holdsNotificationState(forIdentifier: book.identifier) ==
-        NYPLHoldsNotificationState.readyForFinalNotification {
-        readyForFinalNotificationStateExists = true
-        NYPLBookRegistry.shared()?.setHoldsNotificationState(NYPLHoldsNotificationState.finalNotificationSent, forIdentifier: book.identifier)
-      } else if NYPLBookRegistry.shared()?.holdsNotificationState(forIdentifier: book.identifier) ==
-        NYPLHoldsNotificationState.readyForFirstNotification {
-        NYPLBookRegistry.shared()?.setHoldsNotificationState(NYPLHoldsNotificationState.firstNotificationSent, forIdentifier: book.identifier)
-      }
-    }
-
-    // if you have 1 book with more than 24 hours, send message for first notification
-    // if you have 1 book with 24 hours left, send message for 24 hours
-
-    // else if there are multiple books and none of them is 24 hours, send message for 1st notification for multiple books
-    // else if there are multiple books, and 1 or more of them is 24 hours, you have 24 hours to check out book(s)
-    if books.count == 1 {
-      content.title = readyForFinalNotificationStateExists ?
-                      NSLocalizedString("NYPLHoldsNotificationsOneDayToCheckoutABook", comment: "Notification telling patron they have only a day left to checkout a book on hold"):
-                      NSLocalizedString("NYPLHoldsNotificationsABookReadyToCheckout", comment: "Notification telling patron that a book they had on hold is now ready to checkout")
-
-      if let bookTitle = books[0].title {
-        content.body = bookTitle
-      }
-    } else if books.count > 1 {
-      content.title = readyForFinalNotificationStateExists ?
-                      NSLocalizedString("NYPLHoldsNotificationsOneDayToCheckoutBooks", comment: "Notification telling patron they have only one day left checkout one or more books on hold"):
-                      NSLocalizedString("NYPLHoldsNotificationsBooksReadyToCheckout", comment: "Notification telling patron that multiple books they had on hold are now ready to checkout")
-    }
-    content.badge = 1
-
-    // getting the notification request
-    let request = UNNotificationRequest(identifier: "SimplyEIOSNotification_" + Date().description, content: content, trigger: trigger)
-
-    UNUserNotificationCenter.current().delegate = self
-
-    // adding the notification to notification center
-    UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
   }
 
-  func requestAuthorization() {
-    // with provisional authorization, patrons don't have to be prompted to allow notifications,
-    // the notifications can still be sent to the Notification Center
+
+  //TODO GODO don't badge the icon inside notifications, badge it next to the existing badge logic for the toolbar
+
+  private class func createLocalNotification(book: NYPLBook) {
+
+    if #available(iOS 10.0, *) {
+      let center = UNUserNotificationCenter.current()
+      center.getNotificationSettings { (settings) in
+        guard settings.authorizationStatus == .authorized else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = NSLocalizedString("Ready for Checkout", comment: "")
+        if let bookTitle = book.title {
+          content.body = NSLocalizedString("Your loan, \(bookTitle), is now available for checkout!", comment: "")
+        } else {
+          content.body = NSLocalizedString("You have a loan available for checkout!", comment: "")
+        }
+        content.sound = UNNotificationSound.default
+        content.categoryIdentifier = HoldNotificationCategoryIdentifier
+
+        let request = UNNotificationRequest.init(identifier: HoldNotificationRequestIdentifier,
+                                                 content: content,
+                                                 trigger: nil)
+        center.add(request)
+      }
+    }
+  }
+
+  @available(iOS 10.0, *)
+  class func registerNotificationCategories() {
+
+    //GODO TODO make a plan on where to put this...
+    let checkOutNotificationAction = UNNotificationAction(identifier: CheckOutActionIdentifier,
+                                                          title: NSLocalizedString("Check Out", comment: ""),
+                                                          options: [])
+
+    let holdToReserveCategory = UNNotificationCategory(identifier: HoldNotificationCategoryIdentifier,
+                                                       actions: [checkOutNotificationAction],
+                                                       intentIdentifiers: [],
+                                                       options: [])
+
+    UNUserNotificationCenter.current().setNotificationCategories([holdToReserveCategory])
+  }
+
+  class func requestAuthorization() {
     if #available(iOS 12.0, *) {
-      center.requestAuthorization(options: [.alert, .sound, .badge, .provisional], completionHandler: { [weak self] (granted, error) in
-        guard self != nil else { return }
-
+      let center = UNUserNotificationCenter.current()
+      //GODO TODO i'm not convinced "provisional" is the UX we want. come back to this
+      center.requestAuthorization(options: [.provisional,.badge,.sound,.alert]) { (granted, error) in
         if granted {
-
+          Log.info(#file, "Full Notification Authorization granted.")
         }
-
-      })
-    } else {
-      // Fallback on earlier versions
-      center.requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { [weak self] (granted, error) in
-        guard self != nil else { return }
-
+      }
+    } else if #available(iOS 10.0, *) {
+      let center = UNUserNotificationCenter.current()
+      center.requestAuthorization(options: [.badge,.sound,.alert]) { (granted, error) in
         if granted {
-
+          Log.info(#file, "Full Notification Authorization granted.")
         }
-
-      })
+      }
     }
-
   }
-
-  override init() {
-
-  }
-
-  func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-
-    //displaying the ios local notification when app is in foreground
-    completionHandler([.alert, .badge, .sound])
-  }
-
 }
+
+
+
+
+/*
+- (NSArray *)checkBookLoanStatusChange:(NSDictionary*)presyncDict WithPostSyncDict:(NSDictionary*)postSyncDict {
+  NSMutableArray *booksWithChangedLoanStatus = [[NSMutableArray alloc] init];
+
+  // For all objects in presyncDic that are waiting, check if that key (book identifier) is in postSyncDict
+  // with object of type readyToCheckout. If so, add that book to array of books with changed loan status
+  NSArray *waitingTitles = [presyncDict allKeysForObject:waitingForAvailability];
+
+  for (NSString *identifier in waitingTitles) {
+    // there's been a change, add to titles to send a notification later
+    if (postSyncDict[identifier] == readyToCheckout) {
+      NYPLBook *book = [self bookForIdentifier:identifier];
+      [[NYPLBookRegistry sharedRegistry]
+        setHoldsNotificationState:NYPLHoldsNotificationStateReadyForFirstNotification forIdentifier:identifier];
+      NYPLLOG_F(@"This title has just become ready for checkout: %@", book.title);
+      [booksWithChangedLoanStatus addObject:book];
+    }
+  }
+
+  // For all objects that are still in readyToCheckout (from pre to post SyncDict),
+  // see if a 1 day notification has already been sent. If not, check if there's only 1 day
+  // left to checkout the book. If so, add that title to the bookTitles
+  NSArray *readyTitles = [presyncDict allKeysForObject:readyToCheckout];
+
+  for (NSString *identifier in readyTitles) {
+    if (postSyncDict[identifier] == readyToCheckout) {
+      NYPLBook *book = [self bookForIdentifier:identifier];
+      if ([[NYPLBookRegistry sharedRegistry] holdsNotificationStateForIdentifier:book.identifier] ==
+        NYPLHoldsNotificationStateFinalNotificationSent) {
+        continue;
+      }
+
+      // Calculate the 24 hour period and set the NotificationState enum, if applicable
+      NSDate * dateReservationExpires = book.defaultAcquisition.availability.until;
+      if ([NSDate isTimeOneDayLeft:dateReservationExpires] == YES) {
+        [[NYPLBookRegistry sharedRegistry]
+          setHoldsNotificationState:NYPLHoldsNotificationStateReadyForFinalNotification forIdentifier:identifier];        NYPLLOG_F(@"This title has 24 hours or left to checkout: %@", book.title);
+        [booksWithChangedLoanStatus addObject:book];
+      }
+    }
+  }
+
+  return booksWithChangedLoanStatus;
+}
+*/
+
+

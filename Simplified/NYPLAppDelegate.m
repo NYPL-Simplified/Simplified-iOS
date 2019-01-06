@@ -1,4 +1,6 @@
 @import NYPLAudiobookToolkit;
+@import NotificationCenter;
+@import UserNotifications;
 
 #import "SimplyE-Swift.h"
 
@@ -34,11 +36,16 @@
 
 @implementation NYPLAppDelegate
 
+const double MininumBackgroundFetchInterval = 60 * 60 * 12;
+
 #pragma mark UIApplicationDelegate
 
 - (BOOL)application:(__attribute__((unused)) UIApplication *)application
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
+  [[UIApplication sharedApplication]
+   setMinimumBackgroundFetchInterval:MininumBackgroundFetchInterval];
+
   [NYPLKeychainManager validateKeychain];
   
   self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
@@ -63,23 +70,15 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
     
   [self beginCheckingForUpdates];
 
-  // request permissions for local notifications
-  NYPLHoldsNotifications *localNotfications = [NYPLHoldsNotifications sharedInstance];
-  [localNotfications requestAuthorization];
-
-  // set at least 24 hours in between background fetches
-  double TwentyFourHourDelay = 60*60*24;
-  [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:TwentyFourHourDelay];
-  
   return YES;
 }
 
-- (void)application:(__attribute__((unused)) UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+- (void)application:(__attribute__((unused)) UIApplication *)application
+performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-  // call sync on the BookRegistry to fire off local notifications, for changes in
-  // books' reservation status
   [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+    //GODO this block is not being called in a lot of places. come back to this.
+    //GODO is a sync being called anywhere else when the app launches?
     completionHandler(UIBackgroundFetchResultNewData);
   }];
 }
@@ -153,16 +152,13 @@ completionHandler:(void (^const)(void))completionHandler
    completionHandler:completionHandler];
 }
 
-// For local notifications
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-  // decrease the badge number once user has clicked on notification
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+  //GODO: Audit the badging logic to make sure we want it this way
   application.applicationIconBadgeNumber = notification.applicationIconBadgeNumber - 1;
 
-  // Open the app to the Reservations tab when user clicks on notification
-  NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
-  self.window.rootViewController = vc;
-  // TODO: turn the tab indexes into an enum
-  [vc setSelectedIndex:2];
+  //GODO: Check to see if it's the correct type of notification. maybe send to My Books and not My Reservations
+  //GODO: This also will break if you've switched the library (or have a no-auth library)
 }
 
 - (void)beginCheckingForUpdates
