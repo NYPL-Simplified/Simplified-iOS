@@ -467,9 +467,11 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
 
-  //GODO TODO need to tally each if block the code enters, and then decrement at each
-  //async completion so that we know when the code executed is COMPLETELY done
-  
+  if (!book.identifier) {
+    [self recordUnexpectedNilIdentifierForBook:book identifier:identifier title:bookTitle];
+  }
+
+  // Process Adobe Return
 #if defined(FEATURE_DRM_CONNECTOR)
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
   if (fulfillmentId && [[AccountsManager sharedInstance] currentAccount].needsAuth) {
@@ -485,15 +487,10 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
 #endif
 
-  if (!book.identifier) {
-    [self recordUnexpectedNilIdentifierForBook:book identifier:identifier title:bookTitle];
-    return;
-  }
-
   if (book.revokeURL || [[AccountsManager sharedInstance] currentAccount].needsAuth) {
 
     [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-
+    // Process Circulation Manager Return
     [NYPLOPDSFeed withURL:book.revokeURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
 
       [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
@@ -598,7 +595,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [self broadcastUpdate];
 }
 
-- (void)extracted:(NYPLBook *)book {
+- (void)startBorrowAndDownload:(NYPLBook *)book borrowCompletion:(void (^)(void))borrowCompletion {
   [NYPLOPDSFeed withURL:book.defaultAcquisitionIfBorrow.hrefURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
 
@@ -609,6 +606,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
           [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
         [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
       });
+      borrowCompletion();
       return;
     }
 
@@ -622,9 +620,11 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
          message:@"BorrowCouldNotBeCompletedFormat", book.title];
         [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
       }];
-
+      borrowCompletion();
       return;
     }
+
+    borrowCompletion();
 
     [[NYPLBookRegistry sharedRegistry]
      addBook:book
@@ -689,9 +689,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   if([NYPLAccount sharedAccount].hasBarcodeAndPIN || !loginRequired) {
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
-      
       [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-      [self extracted:book];
+      [self startBorrowAndDownload:book borrowCompletion:nil];
     } else {
       // Actually download the book.
       NSURL *URL = book.defaultAcquisition.hrefURL;
@@ -878,7 +877,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    object:self];
 }
 
-// FIXME: Bugnsag methods can be removed when sufficient data for bugs are collected
+// This is known to occur when the server incorrectly keeps loans after their stated expiration date and time.
 - (void)recordUnexpectedNilIdentifierForBook:(NYPLBook *)book identifier:(NSString *)identifier title:(NSString *)bookTitle
 {
   NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];

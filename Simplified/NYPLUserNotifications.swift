@@ -130,14 +130,20 @@ extension NYPLUserNotifications: UNUserNotificationCenterDelegate {
       }
       completionHandler()
     } else if response.actionIdentifier == CheckOutActionIdentifier {
+      // User has selected "Check Out" action.
       let userInfo = response.notification.request.content.userInfo
       guard let bookID = userInfo["bookID"] as? String else {
         Log.error(#file, "Bad user info in Local Notification.")
         return
       }
-      let delegate = NYPLMyBooksDownloadCenter.shared()
-      delegate?.returnBook(withIdentifier: bookID)
-      //GODO TODO need to carefully insert the completion handler into this async method
+      guard let downloadCenter = NYPLMyBooksDownloadCenter.shared(),
+        let book = NYPLBookRegistry.shared()?.book(forIdentifier: bookID) else {
+          Log.error(#file, "Problem creating book or download center singleton.")
+          return
+      }
+      downloadCenter.startBorrowAndDownload(book) {
+        completionHandler()
+      }
     }
   }
 }
