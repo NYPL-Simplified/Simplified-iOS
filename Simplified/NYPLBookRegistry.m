@@ -267,16 +267,18 @@ static NSString *const RecordsKey = @"records";
 }
 
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
-            backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchResult
+            backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchHandler
 {
   @synchronized(self) {
     if(self.syncing) {
-      fetchResult(UIBackgroundFetchResultNoData);
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
+      }];
       return;
     } else if (![[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(handler) handler(NO);
-        fetchResult(UIBackgroundFetchResultNoData);
+        if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
       }];
       return;
     } else {
@@ -296,7 +298,7 @@ static NSString *const RecordsKey = @"records";
        [[NSOperationQueue mainQueue]
         addOperationWithBlock:^{
           if(handler) handler(NO);
-          fetchResult(UIBackgroundFetchResultFailed);
+          if(fetchHandler) fetchHandler(UIBackgroundFetchResultFailed);
         }];
        return;
      }
@@ -305,7 +307,7 @@ static NSString *const RecordsKey = @"records";
        // A reset must have occurred.
        self.syncing = NO;
        [self broadcastChange];
-       fetchResult(UIBackgroundFetchResultNoData);
+       if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
        return;
      }
      
@@ -341,14 +343,14 @@ static NSString *const RecordsKey = @"records";
            }
            [self removeBookForIdentifier:identifier];
          }
-         [NYPLUserNotifications updateAppIconBadgeWithHeldBooks:[self heldBooks]];
        }];
        self.syncing = NO;
        [self broadcastChange];
        [[NSOperationQueue mainQueue]
         addOperationWithBlock:^{
+          [NYPLUserNotifications updateAppIconBadgeWithHeldBooks:[self heldBooks]];
           if(handler) handler(YES);
-          fetchResult(UIBackgroundFetchResultNewData);
+          if(fetchHandler) fetchHandler(UIBackgroundFetchResultNewData);
         }];
      };
      

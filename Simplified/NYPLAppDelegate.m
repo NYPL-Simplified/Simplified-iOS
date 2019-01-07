@@ -50,8 +50,8 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   if (@available (iOS 10.0, *)) {
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:MininumFetchInterval];
     self.notificationsManager = [[NYPLUserNotifications alloc] init];
-    [self.notificationsManager authorizeAndRegister];
     [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self.notificationsManager];
+    [self.notificationsManager authorizeAndRegister];
   }
 
   // This is normally not called directly, but we put all programmatic appearance setup in

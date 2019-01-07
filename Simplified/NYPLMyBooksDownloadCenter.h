@@ -15,10 +15,10 @@ static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
 - (void)startDownloadForBook:(NYPLBook *)book;
 
 // This method will immediately perform a checkout (borrow link fulfillment) and
-// full download, and will inform 'early' when just the borrow portion has
-// completed. This method should ONLY be used for checkouts when the app is in a
-// background state. Failures can be recovered by the user at a later time if
-// necessary.
+// full download, and will inform 'early' (on the main thread) when just the
+// borrow portion has completed. This method should ONLY be used for checkouts
+// when the app is in a background state. Failures can be recovered by the user
+// at a later time if necessary.
 - (void)startBorrowAndDownload:(NYPLBook *)book borrowCompletion:(void (^)(void))borrowCompletion;
 
 // This works for both failed downloads (to reset their state) and for downloads in progress.

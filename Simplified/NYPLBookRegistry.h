@@ -50,8 +50,9 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler;
 
 // Calls `syncWithCompletionHandler` including required callbacks for the Background Fetch delegate.
+// Fetch Handler should be called on the main thread.
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
-            backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchResult;
+            backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchHandler;
 
 // Calls syncWithCompletionHandler: with a handler that presents standard success/failure alerts on
 // completion.

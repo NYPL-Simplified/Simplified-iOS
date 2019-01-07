@@ -602,11 +602,12 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     if(error || !feed || feed.entries.count < 1) {
       dispatch_async(dispatch_get_main_queue(), ^{
         NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"BorrowFailed"  message:@"BorrowCouldNotBeCompletedFormat", book.title];
-        if (error)
+        if (error) {
           [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
+        }
         [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+        if(borrowCompletion) borrowCompletion();
       });
-      borrowCompletion();
       return;
     }
 
@@ -619,12 +620,14 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
          alertWithTitle:@"BorrowFailed"
          message:@"BorrowCouldNotBeCompletedFormat", book.title];
         [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+        if(borrowCompletion) borrowCompletion();
       }];
-      borrowCompletion();
       return;
     }
 
-    borrowCompletion();
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+      if(borrowCompletion) borrowCompletion();
+    }];
 
     [[NYPLBookRegistry sharedRegistry]
      addBook:book
