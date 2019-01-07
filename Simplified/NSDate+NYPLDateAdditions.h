@@ -5,8 +5,6 @@
 
 + (NSDate *)dateWithISO8601DateString:(NSString *)string;
 
-+ (BOOL)isTimeOneDayLeft:(NSDate *)date;
-
 - (NSString *)RFC3339String;
 
 - (NSString *)shortTimeUntilString;
