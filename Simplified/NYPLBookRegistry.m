@@ -9,7 +9,6 @@
 #import "NYPLOPDS.h"
 #import "NYPLSettings.h"
 #import "NYPLMyBooksDownloadCenter.h"
-#import "NSDate+NYPLDateAdditions.h"
 #import "SimplyE-Swift.h"
 
 @interface NYPLBookRegistry ()
@@ -28,11 +27,6 @@
 static NSString *const RegistryFilename = @"registry.json";
 
 static NSString *const RecordsKey = @"records";
-
-NSDictionary *preSyncBookLoanStatus;
-NSDictionary *postSyncBookLoanStatus;
-NSString *const waitingForAvailability = @"WAITING";
-NSString *const readyToCheckout = @"READY";
 
 @implementation NYPLBookRegistry
 
@@ -281,8 +275,6 @@ NSString *const readyToCheckout = @"READY";
       self.syncing = YES;
       self.syncShouldCommit = YES;
       [self broadcastChange];
-      NYPLLOG(@"BOOK LOAN MAP PRE-SYNC");
-      preSyncBookLoanStatus = [self buildBookLoanStatusDict];
     }
   }
   
@@ -339,14 +331,7 @@ NSString *const readyToCheckout = @"READY";
            }
            [self removeBookForIdentifier:identifier];
          }
-         NYPLLOG(@"BOOK LOAN MAP POST-SYNC");
-         postSyncBookLoanStatus = [self buildBookLoanStatusDict];
-         NSArray *booksWithChangedLoanStatus = [[NSArray alloc] init];
-         booksWithChangedLoanStatus = [self checkBookLoanStatusChange:preSyncBookLoanStatus WithPostSyncDict:postSyncBookLoanStatus];
-         if (booksWithChangedLoanStatus.count > 0) {
-           NYPLHoldsNotifications *localNotifications = [NYPLHoldsNotifications sharedInstance];
-           [localNotifications sendNotificationWithBooks:booksWithChangedLoanStatus];
-         }
+         [NYPLUserNotifications updateAppIconBadgeWithHeldBooks:[self heldBooks]];
        }];
        self.syncing = NO;
        [self broadcastChange];
@@ -362,87 +347,6 @@ NSString *const readyToCheckout = @"READY";
        commitBlock();
      }
    }];
-}
-
-- (NSDictionary*)buildBookLoanStatusDict
-{
-  NSArray *reservedBooks = self.heldBooks;
-
-  NSMutableDictionary *loanStatusDict = [NSMutableDictionary dictionary];
-  for(NYPLBook *book in reservedBooks) {
-    __block BOOL addedToReady = NO;
-    [book.defaultAcquisition.availability
-     matchUnavailable:nil
-     limited:nil
-     unlimited:nil
-     reserved:nil
-     ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
-       [loanStatusDict setObject:readyToCheckout forKey:book.identifier];
-       addedToReady = YES;
-     }];
-    if (!addedToReady) {
-      [loanStatusDict setObject:waitingForAvailability forKey:book.identifier];
-    }
-  }
-
-  NYPLLOG_F(@"Number of books in readyToCheckout are %lu", (unsigned long)[[loanStatusDict allKeysForObject:readyToCheckout] count]);
-  NYPLLOG(@"Books Available To Checkout Are:");
-  for (NSString* identifier in [loanStatusDict allKeysForObject:readyToCheckout]) {
-    NYPLBook *book = [self bookForIdentifier:identifier];
-    NYPLLOG_F(@"Book Title: %@", book.title);
-  }
-
-  NYPLLOG_F(@"Number of books in waiting are %lu", (unsigned long)[[loanStatusDict allKeysForObject:waitingForAvailability] count]);
-  NYPLLOG(@"Books Waiting for Availability Are:");
-  for (NSString* identifier in [loanStatusDict allKeysForObject:waitingForAvailability]) {
-    NYPLBook *book = [self bookForIdentifier:identifier];
-    NYPLLOG_F(@"Book Title: %@", book.title);
-  }
-  return loanStatusDict;
-}
-
-- (NSArray *)checkBookLoanStatusChange:(NSDictionary*)presyncDict WithPostSyncDict:(NSDictionary*)postSyncDict {
-  NSMutableArray *booksWithChangedLoanStatus = [[NSMutableArray alloc] init];
-
-  // For all objects in presyncDic that are waiting, check if that key (book identifier) is in postSyncDict
-  // with object of type readyToCheckout. If so, add that book to array of books with changed loan status
-  NSArray *waitingTitles = [presyncDict allKeysForObject:waitingForAvailability];
-
-  for (NSString *identifier in waitingTitles) {
-    // there's been a change, add to titles to send a notification later
-    if (postSyncDict[identifier] == readyToCheckout) {
-      NYPLBook *book = [self bookForIdentifier:identifier];
-      [[NYPLBookRegistry sharedRegistry]
-       setHoldsNotificationState:NYPLHoldsNotificationStateReadyForFirstNotification forIdentifier:identifier];
-      NYPLLOG_F(@"This title has just become ready for checkout: %@", book.title);
-      [booksWithChangedLoanStatus addObject:book];
-    }
-  }
-
-  // For all objects that are still in readyToCheckout (from pre to post SyncDict),
-  // see if a 1 day notification has already been sent. If not, check if there's only 1 day
-  // left to checkout the book. If so, add that title to the bookTitles
-  NSArray *readyTitles = [presyncDict allKeysForObject:readyToCheckout];
-
-  for (NSString *identifier in readyTitles) {
-    if (postSyncDict[identifier] == readyToCheckout) {
-      NYPLBook *book = [self bookForIdentifier:identifier];
-      if ([[NYPLBookRegistry sharedRegistry] holdsNotificationStateForIdentifier:book.identifier] ==
-          NYPLHoldsNotificationStateFinalNotificationSent) {
-        continue;
-      }
-
-      // Calculate the 24 hour period and set the NotificationState enum, if applicable
-      NSDate * dateReservationExpires = book.defaultAcquisition.availability.until;
-      if ([NSDate isTimeOneDayLeft:dateReservationExpires] == YES) {
-        [[NYPLBookRegistry sharedRegistry]
-         setHoldsNotificationState:NYPLHoldsNotificationStateReadyForFinalNotification forIdentifier:identifier];        NYPLLOG_F(@"This title has 24 hours or left to checkout: %@", book.title);
-        [booksWithChangedLoanStatus addObject:book];
-      }
-    }
-  }
-
-  return booksWithChangedLoanStatus;
 }
 
 - (void)syncWithStandardAlertsOnCompletion
@@ -499,6 +403,7 @@ NSString *const readyToCheckout = @"READY";
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[book.identifier];
     if(record) {
+      [NYPLUserNotifications compareAvailabilityWithCachedRecord:record andNewBook:book];
       self.identifiersToRecords[book.identifier] = [record recordWithBook:book];
       [self broadcastChange];
     }
@@ -683,33 +588,6 @@ NSString *const readyToCheckout = @"READY";
   }
 }
 
-// Sets the holds notificaiton state of a book given its identifier
-- (void)setHoldsNotificationState:(NYPLHoldsNotificationState)holdsNotificationState forIdentifier:(NSString *)identifier
-{
-  @synchronized(self) {
-    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
-    if(!record) {
-      @throw NSInvalidArgumentException;
-    }
-
-    self.identifiersToRecords[identifier] = [record recordWithHoldsNotificationState:holdsNotificationState];
-
-    [self broadcastChange];
-  }
-}
-
-// Returns the holds notification state of a book given its identifier
-- (NYPLHoldsNotificationState)holdsNotificationStateForIdentifier:(NSString *)identifier
-{
-  @synchronized(self) {
-    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
-    if(record) {
-      return record.holdsNotificationState;
-    } else {
-      return NYPLHoldsNotificationStateNotApplicable;
-    }
-  }
-}
 
 - (void)setProcessing:(BOOL)processing forIdentifier:(NSString *)identifier
 {

@@ -12,7 +12,6 @@
 @property (nonatomic) NYPLBookState state;
 @property (nonatomic) NSString *fulfillmentId;
 @property (nonatomic) NSArray<NYPLReaderBookmark *> *bookmarks;
-@property (nonatomic) NYPLHoldsNotificationState holdsNotificationState;
 
 @end
 
@@ -21,7 +20,6 @@ static NSString *const LocationKey = @"location";
 static NSString *const StateKey = @"state";
 static NSString *const FulfillmentIdKey = @"fulfillmentId";
 static NSString *const BookmarksKey = @"bookmarks";
-static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
 
 @implementation NYPLBookRegistryRecord
 
@@ -30,7 +28,6 @@ static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
                        state:(NYPLBookState)state
                fulfillmentId:(NSString *)fulfillmentId
                    bookmarks:(NSArray<NYPLReaderBookmark *> *)bookmarks
-      holdsNotificationState:(NYPLHoldsNotificationState)holdsNotificationState
 {
   self = [super init];
   if(!self) return nil;
@@ -48,13 +45,6 @@ static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
   }
   else {
     self.bookmarks = [[NSMutableArray alloc] init];
-  }
-
-  if (holdsNotificationState) {
-    self.holdsNotificationState = holdsNotificationState;
-  }
-  else {
-    self.holdsNotificationState = NYPLHoldsNotificationStateNotApplicable;
   }
 
   if (!book.defaultAcquisition) {
@@ -107,20 +97,6 @@ static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
   return self;
 }
 
-// This function has been refactored and for now must remain,
-// Until we have some type of data migration in place so that the NYPLBookRegistryRecord doesn't break
-// between the period before the HoldsNotificationState is added to the Record and after the
-// HoldsNotificationState is added to the Record
-- (instancetype)initWithBook:(NYPLBook *const)book
-                    location:(NYPLBookLocation *const)location
-                       state:(NYPLBookState)state
-               fulfillmentId:(NSString *)fulfillmentId
-                   bookmarks:(NSArray<NYPLReaderBookmark *> *)bookmarks
-{
-  NYPLHoldsNotificationState holdsNotificationState = NYPLHoldsNotificationStateNotApplicable;
-  return [self initWithBook:book location:location state:state fulfillmentId:fulfillmentId bookmarks:bookmarks holdsNotificationState:holdsNotificationState];
-}
-
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary
 {
   self = [super init];
@@ -147,11 +123,7 @@ static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
   }
   
   self.bookmarks = bookmarks;
-
-  if (NYPLHoldsNotificationStateFromString(dictionary[HoldsNotificationStateKey])) {
-    self.holdsNotificationState = NYPLHoldsNotificationStateFromString(dictionary[HoldsNotificationStateKey]);
-  }
-
+  
   return self;
 }
 
@@ -169,38 +141,32 @@ static NSString *const HoldsNotificationStateKey = @"holdsNotificationState";
            LocationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
            StateKey: NYPLBookStateToString(self.state),
            FulfillmentIdKey: NYPLNullFromNil(self.fulfillmentId),
-           BookmarksKey: NYPLNullToNil(bookmarkDictionaries),
-           HoldsNotificationStateKey:NYPLHoldsNotificationStateToString(self.holdsNotificationState)};
+           BookmarksKey: NYPLNullToNil(bookmarkDictionaries)};
 }
 
 - (instancetype)recordWithBook:(NYPLBook *const)book
 {
-  return [[[self class] alloc] initWithBook:book location:self.location state:self.state fulfillmentId:self.fulfillmentId bookmarks:self.bookmarks holdsNotificationState:self.holdsNotificationState];
+  return [[[self class] alloc] initWithBook:book location:self.location state:self.state fulfillmentId:self.fulfillmentId bookmarks:self.bookmarks];
 }
 
 - (instancetype)recordWithLocation:(NYPLBookLocation *const)location
 {
-  return [[[self class] alloc] initWithBook:self.book location:location state:self.state fulfillmentId:self.fulfillmentId bookmarks:self.bookmarks holdsNotificationState:self.holdsNotificationState];
+  return [[[self class] alloc] initWithBook:self.book location:location state:self.state fulfillmentId:self.fulfillmentId bookmarks:self.bookmarks];
 }
 
 - (instancetype)recordWithState:(NYPLBookState const)state
 {
-  return [[[self class] alloc] initWithBook:self.book location:self.location state:state fulfillmentId:self.fulfillmentId bookmarks:self.bookmarks holdsNotificationState:self.holdsNotificationState];
+  return [[[self class] alloc] initWithBook:self.book location:self.location state:state fulfillmentId:self.fulfillmentId bookmarks:self.bookmarks];
 }
 
 - (instancetype)recordWithFulfillmentId:(NSString *)fulfillmentId
 {
-  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:fulfillmentId bookmarks:self.bookmarks holdsNotificationState:self.holdsNotificationState];
+  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:fulfillmentId bookmarks:self.bookmarks];
 }
   
 - (instancetype)recordWithBookmarks:(NSArray *)bookmarks
 {
-  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:self.fulfillmentId bookmarks:bookmarks holdsNotificationState:self.holdsNotificationState];
+  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:self.fulfillmentId bookmarks:bookmarks];
 }
-
-- (instancetype)recordWithHoldsNotificationState:(NYPLHoldsNotificationState)holdsNotificationState
-{
-  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:self.fulfillmentId bookmarks:self.bookmarks holdsNotificationState:holdsNotificationState];
-}
-
+  
 @end

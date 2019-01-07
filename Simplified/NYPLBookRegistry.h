@@ -1,7 +1,6 @@
 // This class encapsulates all access to book metadata and covers. All methods are thread-safe.
 
 #import "NYPLBookState.h"
-#import "NYPLHoldsNotificationState.h"
 
 @class NYPLBook;
 @class NYPLBookLocation;
@@ -119,12 +118,6 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 
 // Replace a bookmark with another, given its identifer
 - (void)replaceBookmark:(NYPLReaderBookmark *)oldBookmark with:(NYPLReaderBookmark *)newBookmark forIdentifier:(NSString *)identifier;
-
-// Sets the holds notification state of a book given its identifier
-- (void)setHoldsNotificationState:(NYPLHoldsNotificationState)holdsNotificationState forIdentifier:(NSString *)identifier;
-
-// Returns the holds notification state of a book given its identifier
-- (NYPLHoldsNotificationState)holdsNotificationStateForIdentifier:(NSString *)identifier;
 
 // Given an identifier, this method removes a book from the registry. Attempting to remove a book
 // that is not present will result in an error being logged.
