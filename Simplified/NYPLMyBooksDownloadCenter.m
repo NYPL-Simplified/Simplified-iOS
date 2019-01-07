@@ -466,32 +466,36 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   NSString *bookTitle = book.title;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
+
+  //GODO TODO need to tally each if block the code enters, and then decrement at each
+  //async completion so that we know when the code executed is COMPLETELY done
   
-  if ([[AccountsManager sharedInstance] currentAccount].needsAuth){
 #if defined(FEATURE_DRM_CONNECTOR)
-    NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
-    if(fulfillmentId) {
-      NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
-      [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
-                                      userID:[[NYPLAccount sharedAccount] userID]
-                                    deviceID:[[NYPLAccount sharedAccount] deviceID]
-                                  completion:^(BOOL success, __unused NSError *error) {
-                                    if(!success) {
-                                      NYPLLOG(@"Failed to return loan.");
-                                    }
-                                  }];
-    }
-#endif
+  NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
+  if (fulfillmentId && [[AccountsManager sharedInstance] currentAccount].needsAuth) {
+    NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
+    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
+                                    userID:[[NYPLAccount sharedAccount] userID]
+                                  deviceID:[[NYPLAccount sharedAccount] deviceID]
+                                completion:^(BOOL success, __unused NSError *error) {
+                                  if(!success) {
+                                    NYPLLOG(@"Failed to return loan via NYPLAdept.");
+                                  }
+                                }];
   }
+#endif
 
   if (!book.identifier) {
     [self recordUnexpectedNilIdentifierForBook:book identifier:identifier title:bookTitle];
+    return;
   }
 
-  if((book.revokeURL && book.identifier) ||
-     ([[AccountsManager sharedInstance] currentAccount].needsAuth && book.identifier)) {
+  if (book.revokeURL || [[AccountsManager sharedInstance] currentAccount].needsAuth) {
+
     [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
+
     [NYPLOPDSFeed withURL:book.revokeURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
+
       [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
       
       if(feed && feed.entries.count == 1)  {
@@ -525,7 +529,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
         }
       }
     }];
-  } else {
+  }
+  else {
     if (downloaded) {
       [self deleteLocalContentForBookIdentifier:identifier];
     }

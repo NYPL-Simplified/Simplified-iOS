@@ -236,6 +236,9 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 - (void)updateBadge
 {
   self.navigationController.tabBarItem.badgeValue = self.reservedBooks.count > 0 ? [@(self.reservedBooks.count) stringValue] : nil;
+  if ((NSUInteger)[[UIApplication sharedApplication] applicationIconBadgeNumber] != self.reservedBooks.count) {
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:self.reservedBooks.count];
+  }
 }
 
 - (void)didSelectSync

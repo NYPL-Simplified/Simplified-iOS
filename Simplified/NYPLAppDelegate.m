@@ -31,35 +31,39 @@
 
 @property (nonatomic) AudiobookLifecycleManager *audiobookLifecycleManager;
 @property (nonatomic) NYPLReachability *reachabilityManager;
+@property (nonatomic) NYPLUserNotifications *notificationsManager;
 
 @end
 
 @implementation NYPLAppDelegate
 
-const double MininumBackgroundFetchInterval = 60 * 60 * 12;
+const double MininumFetchInterval = 60 * 60 * 12;
 
 #pragma mark UIApplicationDelegate
 
 - (BOOL)application:(__attribute__((unused)) UIApplication *)application
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
-  [[UIApplication sharedApplication]
-   setMinimumBackgroundFetchInterval:MininumBackgroundFetchInterval];
-
   [NYPLKeychainManager validateKeychain];
   
   self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
   [self.audiobookLifecycleManager didFinishLaunching];
 
-  // Initiallize Accounts from JSON file
-  [AccountsManager sharedInstance];
+  if (@available (iOS 10.0, *)) {
+    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:MininumFetchInterval];
+    self.notificationsManager = [[NYPLUserNotifications alloc] init];
+    [self.notificationsManager authorizeAndRegister];
+    [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self.notificationsManager];
+  }
+
   // This is normally not called directly, but we put all programmatic appearance setup in
   // NYPLConfiguration's class initializer.
   [NYPLConfiguration initialize];
+
   // Initialize Offline Requests Queue
   [NetworkQueue shared];
   self.reachabilityManager = [NYPLReachability sharedReachability];
-  
+
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.tintColor = [NYPLConfiguration mainColor];
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
@@ -152,14 +156,7 @@ completionHandler:(void (^const)(void))completionHandler
    completionHandler:completionHandler];
 }
 
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
-{
-  //GODO: Audit the badging logic to make sure we want it this way
-  application.applicationIconBadgeNumber = notification.applicationIconBadgeNumber - 1;
-
-  //GODO: Check to see if it's the correct type of notification. maybe send to My Books and not My Reservations
-  //GODO: This also will break if you've switched the library (or have a no-auth library)
-}
+#pragma mark -
 
 - (void)beginCheckingForUpdates
 {
