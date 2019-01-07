@@ -61,7 +61,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   // Initialize Offline Requests Queue
   [NetworkQueue shared];
   self.reachabilityManager = [NYPLReachability sharedReachability];
-
+  
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   self.window.tintColor = [NYPLConfiguration mainColor];
   self.window.tintAdjustmentMode = UIViewTintAdjustmentModeNormal;
@@ -71,7 +71,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.window.rootViewController = vc;
     
   [self beginCheckingForUpdates];
-
+  
   return YES;
 }
 

@@ -177,7 +177,6 @@
   [super viewDidLoad];
   NYPLSettings *settings = [NYPLSettings sharedSettings];
   if (settings.userHasSeenWelcomeScreen == YES) {
-    NYPLLOG(@"RELOAD FROM CATALOG IS BEING RUN");
     Account *account = [[AccountsManager sharedInstance] currentAccount];
     [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
     [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
@@ -212,7 +211,6 @@
     
     if (settings.acceptedEULABeforeMultiLibrary == NO) {
       NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(Account *const account) {
-
         [[NYPLBookRegistry sharedRegistry] save];
         [AccountsManager shared].currentAccount = account;
         [self reloadSelectedLibraryAccount];
