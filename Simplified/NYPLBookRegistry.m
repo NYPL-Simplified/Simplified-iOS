@@ -263,12 +263,20 @@ static NSString *const RecordsKey = @"records";
 
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
 {
+  [self syncWithCompletionHandler:handler backgroundFetchHandler:nil];
+}
+
+- (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
+            backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchResult
+{
   @synchronized(self) {
     if(self.syncing) {
+      fetchResult(UIBackgroundFetchResultNoData);
       return;
     } else if (![[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(handler) handler(NO);
+        fetchResult(UIBackgroundFetchResultNoData);
       }];
       return;
     } else {
@@ -288,6 +296,7 @@ static NSString *const RecordsKey = @"records";
        [[NSOperationQueue mainQueue]
         addOperationWithBlock:^{
           if(handler) handler(NO);
+          fetchResult(UIBackgroundFetchResultFailed);
         }];
        return;
      }
@@ -296,6 +305,7 @@ static NSString *const RecordsKey = @"records";
        // A reset must have occurred.
        self.syncing = NO;
        [self broadcastChange];
+       fetchResult(UIBackgroundFetchResultNoData);
        return;
      }
      
@@ -338,6 +348,7 @@ static NSString *const RecordsKey = @"records";
        [[NSOperationQueue mainQueue]
         addOperationWithBlock:^{
           if(handler) handler(YES);
+          fetchResult(UIBackgroundFetchResultNewData);
         }];
      };
      

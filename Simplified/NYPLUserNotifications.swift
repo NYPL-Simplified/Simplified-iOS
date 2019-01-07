@@ -21,17 +21,6 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
     }
   }
 
-  /* Just a proposal for now...
-   if #available(iOS 12.0, *) {
-   //GODO TODO i'm not convinced "provisional" is the UX we want. come back to this
-   unCenter.requestAuthorization(options: [.provisional,.badge,.sound,.alert]) { (granted, error) in
-   if granted {
-   Log.info(#file, "Full Notification Authorization granted.")
-   }
-   }
-   }
- **/
-
   /// Create a local notification if a book has moved from the "holds queue" to
   /// the "reserved queue", and is available for the patron to checkout.
   class func compareAvailability(cachedRecord:NYPLBookRegistryRecord, andNewBook newBook:NYPLBook)

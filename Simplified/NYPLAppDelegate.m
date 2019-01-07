@@ -78,14 +78,11 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 }
 
 - (void)application:(__attribute__((unused)) UIApplication *)application
-performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundFetchHandler
 {
   // Only the current Library Account will perform background fetches.
-  [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
-    //GODO this block is not being called in a lot of places. come back to this.
-    //GODO is a sync being called anywhere else when the app launches?
-    completionHandler(UIBackgroundFetchResultNewData);
-  }];
+  [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil
+                                        backgroundFetchHandler:backgroundFetchHandler];
 }
 
 - (BOOL)application:(__attribute__((unused)) UIApplication *)application handleOpenURL:(NSURL *)url
