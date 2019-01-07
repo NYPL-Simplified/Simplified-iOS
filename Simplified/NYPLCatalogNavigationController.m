@@ -177,7 +177,16 @@
   [super viewDidLoad];
   NYPLSettings *settings = [NYPLSettings sharedSettings];
   if (settings.userHasSeenWelcomeScreen == YES) {
-    [self reloadSelectedLibraryAccount];
+    NYPLLOG(@"RELOAD FROM CATALOG IS BEING RUN");
+    Account *account = [[AccountsManager sharedInstance] currentAccount];
+    [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
+    [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
+
+    [[NYPLBookRegistry sharedRegistry] justLoad];
+
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLCurrentAccountDidChangeNotification
+     object:nil];
   }
 }
 
@@ -197,21 +206,19 @@
       Account *nyplAccount = [[AccountsManager sharedInstance] account:0];
       nyplAccount.eulaIsAccepted = YES;
       [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
-
     }
     
     [self reloadSelectedLibraryAccount];
     
     if (settings.acceptedEULABeforeMultiLibrary == NO) {
-    NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(Account *const account) {
-     
-      [[NYPLBookRegistry sharedRegistry] save];
-      [AccountsManager shared].currentAccount = account;
-      [self reloadSelectedLibraryAccount];
-      [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
-      [self dismissViewControllerAnimated:YES completion:nil];
-      
-    }];
+      NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(Account *const account) {
+
+        [[NYPLBookRegistry sharedRegistry] save];
+        [AccountsManager shared].currentAccount = account;
+        [self reloadSelectedLibraryAccount];
+        [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
+        [self dismissViewControllerAnimated:YES completion:nil];
+      }];
       
       UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
       
