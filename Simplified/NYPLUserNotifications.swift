@@ -8,27 +8,29 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
 @available (iOS 10.0, *)
 @objcMembers class NYPLUserNotifications: NSObject {
 
-  /// Authorization and category registration is recommended by Apple to be performed
-  /// before the app finishes launching.
+  /// Authorization and category registration is recommended by Apple to be
+  /// performed before the app finishes launching.
   func authorizeAndRegister()
   {
     self.registerNotificationCategories()
     let unCenter = UNUserNotificationCenter.current()
-    if #available(iOS 12.0, *) {
-      //GODO TODO i'm not convinced "provisional" is the UX we want. come back to this
-      unCenter.requestAuthorization(options: [.provisional,.badge,.sound,.alert]) { (granted, error) in
-        if granted {
-          Log.info(#file, "Full Notification Authorization granted.")
-        }
-      }
-    } else {
-      unCenter.requestAuthorization(options: [.badge,.sound,.alert]) { (granted, error) in
-        if granted {
-          Log.info(#file, "Full Notification Authorization granted.")
-        }
+    unCenter.requestAuthorization(options: [.badge,.sound,.alert]) { (granted, error) in
+      if granted {
+        Log.info(#file, "Full Notification Authorization granted.")
       }
     }
   }
+
+  /* Just a proposal for now...
+   if #available(iOS 12.0, *) {
+   //GODO TODO i'm not convinced "provisional" is the UX we want. come back to this
+   unCenter.requestAuthorization(options: [.provisional,.badge,.sound,.alert]) { (granted, error) in
+   if granted {
+   Log.info(#file, "Full Notification Authorization granted.")
+   }
+   }
+   }
+ **/
 
   /// Create a local notification if a book has moved from the "holds queue" to
   /// the "reserved queue", and is available for the patron to checkout.
