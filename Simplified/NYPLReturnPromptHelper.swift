@@ -1,13 +1,22 @@
 @objcMembers final class NYPLReturnPromptHelper: NSObject {
 
-  class func alertController(bookTitle: String) -> UIAlertController
+  class func audiobookPrompt(completion:@escaping (_ returnWasChosen:Bool)->()) -> UIAlertController
   {
     let title = NSLocalizedString("Your Audiobook Has Finished", comment: "")
     let message = NSLocalizedString("Would you like to return it?", comment: "")
-    return UIAlertController.init(title: title, message: message, preferredStyle: .alert)
+    let alert = UIAlertController.init(title: title, message: message, preferredStyle: .alert)
+    let keepBook = keepAction {
+      completion(false)
+    }
+    let returnBook = returnAction {
+      completion(true)
+    }
+    alert.addAction(keepBook)
+    alert.addAction(returnBook)
+    return alert
   }
 
-  class func keepAction(handler: @escaping () -> ()) -> UIAlertAction
+  fileprivate class func keepAction(handler: @escaping () -> ()) -> UIAlertAction
   {
     return UIAlertAction(
       title: NSLocalizedString("Keep", comment: ""),
@@ -18,7 +27,7 @@
     })
   }
 
-  class func returnAction(handler: @escaping () -> ()) -> UIAlertAction
+  fileprivate class func returnAction(handler: @escaping () -> ()) -> UIAlertAction
   {
     return UIAlertAction(
       title: NSLocalizedString("Return", comment: ""),

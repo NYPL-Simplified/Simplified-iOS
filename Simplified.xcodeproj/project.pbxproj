@@ -1204,8 +1204,8 @@
 				A823D809192BABA400B55DE2 /* Sources */,
 				A823D80A192BABA400B55DE2 /* Frameworks */,
 				A823D80B192BABA400B55DE2 /* Resources */,
-				FE8719C55955B22F68EDF819 /* Upload Bugsnag dSYM */,
 				145DA48C215441260055DB93 /* Copy Frameworks (Carthage) */,
+				FE8719C55955B22F68EDF819 /* Upload Bugsnag dSYM */,
 			);
 			buildRules = (
 			);
@@ -1406,7 +1406,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env ruby";
 			shellScript = "begin\n  require './bugsnag-dsym-upload'\nrescue LoadError => e\n  puts 'Bugsnag script is missing. Dsym files will not be uploaded for crash analytics.'\nend\n";
-			shellScript = "fork do\n  Process.setsid\n  STDIN.reopen(\"/dev/null\")\n  STDOUT.reopen(\"/dev/null\", \"a\")\n  STDERR.reopen(\"/dev/null\", \"a\")\n\n  require 'shellwords'\n\n  Dir[\"#{ENV[\"DWARF_DSYM_FOLDER_PATH\"]}/*/Contents/Resources/DWARF/*\"].each do |dsym|\nsystem(\"curl -F apiKey=0467dc0a7e0a6cfddda60b4a947e2e6a -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\"PROJECT_DIR\"])} https://upload.bugsnag.com/\")\n  end\nend\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
