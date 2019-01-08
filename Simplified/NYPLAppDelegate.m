@@ -78,12 +78,14 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 - (void)application:(__attribute__((unused)) UIApplication *)application
 performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundFetchHandler
 {
-  // Only the current Library Account will perform background fetches.
+  // Only the "current library" account will perform background fetches.
   [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:nil
                                         backgroundFetchHandler:backgroundFetchHandler];
 }
 
-- (BOOL)application:(__attribute__((unused)) UIApplication *)application handleOpenURL:(NSURL *)url
+- (BOOL)application:(__unused UIApplication *)app
+            openURL:(NSURL *)url
+            options:(__unused NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
   // URLs should be a permalink to a feed URL
   NSURL *entryURL = [url URLBySwappingForScheme:@"http"];

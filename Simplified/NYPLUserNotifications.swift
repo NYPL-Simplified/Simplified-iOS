@@ -132,7 +132,7 @@ extension NYPLUserNotifications: UNUserNotificationCenterDelegate {
           Log.error(#file, "Problem creating book or download center singleton.")
           return
       }
-      downloadCenter.startBorrowAndDownload(book) {
+      downloadCenter.startBorrow(for: book, attemptDownload: false) {
         completionHandler()
       }
     }

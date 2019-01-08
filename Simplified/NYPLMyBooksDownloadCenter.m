@@ -595,19 +595,24 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [self broadcastUpdate];
 }
 
-- (void)startBorrowAndDownload:(NYPLBook *)book borrowCompletion:(void (^)(void))borrowCompletion {
+- (void)startBorrowForBook:(NYPLBook *)book
+           attemptDownload:(BOOL)shouldAttemptDownload
+          borrowCompletion:(void (^)(void))borrowCompletion
+{
+  [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
   [NYPLOPDSFeed withURL:book.defaultAcquisitionIfBorrow.hrefURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
 
     if(error || !feed || feed.entries.count < 1) {
-      dispatch_async(dispatch_get_main_queue(), ^{
-        NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"BorrowFailed"  message:@"BorrowCouldNotBeCompletedFormat", book.title];
-        if (error) {
-          [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        if (borrowCompletion) {
+          borrowCompletion();
+          return;
         }
+        NYPLAlertController *const alert = [NYPLAlertController alertWithTitle:@"BorrowFailed" message:@"BorrowCouldNotBeCompletedFormat", book.title];
+        if (error) [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
         [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
-        if(borrowCompletion) borrowCompletion();
-      });
+      }];
       return;
     }
 
@@ -615,19 +620,17 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
     if(!book) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        NYPLAlertController *const alert =
-        [NYPLAlertController
-         alertWithTitle:@"BorrowFailed"
-         message:@"BorrowCouldNotBeCompletedFormat", book.title];
+        if (borrowCompletion) {
+          borrowCompletion();
+          return;
+        }
+        NYPLAlertController *const alert = [NYPLAlertController
+                                            alertWithTitle:@"BorrowFailed"
+                                            message:@"BorrowCouldNotBeCompletedFormat", book.title];
         [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
-        if(borrowCompletion) borrowCompletion();
       }];
       return;
     }
-
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-      if(borrowCompletion) borrowCompletion();
-    }];
 
     [[NYPLBookRegistry sharedRegistry]
      addBook:book
@@ -636,18 +639,27 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
      fulfillmentId:nil
      bookmarks:nil];
 
-    [book.defaultAcquisition.availability
-     matchUnavailable:nil
-     limited:^(__unused NYPLOPDSAcquisitionAvailabilityLimited *_Nonnull limited) {
-       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-     }
-     unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *_Nonnull unlimited) {
-       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-     }
-     reserved:nil
-     ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
-       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-     }];
+    if(borrowCompletion) {
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        borrowCompletion();
+        return;
+      }];
+    }
+
+    if (shouldAttemptDownload) {
+      [book.defaultAcquisition.availability
+       matchUnavailable:nil
+       limited:^(__unused NYPLOPDSAcquisitionAvailabilityLimited *_Nonnull limited) {
+         [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+       }
+       unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *_Nonnull unlimited) {
+         [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+       }
+       reserved:nil
+       ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
+         [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+       }];
+    }
   }];
 }
 
@@ -692,8 +704,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   if([NYPLAccount sharedAccount].hasBarcodeAndPIN || !loginRequired) {
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
-      [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-      [self startBorrowAndDownload:book borrowCompletion:nil];
+      [self startBorrowForBook:book attemptDownload:YES borrowCompletion:nil];
     } else {
       // Actually download the book.
       NSURL *URL = book.defaultAcquisition.hrefURL;
