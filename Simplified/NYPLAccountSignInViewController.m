@@ -1013,8 +1013,10 @@ completionHandler:(void (^)(void))handler
       void (^handler)(void) = self.completionHandler;
       self.completionHandler = nil;
       if(handler) handler();
-      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
       [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+        if (success) {
+          [[NYPLBookRegistry sharedRegistry] save];
+        }
         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
       }];
 

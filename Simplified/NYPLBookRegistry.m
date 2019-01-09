@@ -63,8 +63,9 @@ static NSString *const RecordsKey = @"records";
   void (^handlerBlock)(BOOL success)= ^(BOOL success){
     if(success) {
       [self save];
-    } else {
-    }};
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+  };
   
   [self performSelector:@selector(syncWithCompletionHandler:) withObject:handlerBlock afterDelay:3.0];
   
@@ -263,6 +264,7 @@ static NSString *const RecordsKey = @"records";
 
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
 {
+  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
   [self syncWithCompletionHandler:handler backgroundFetchHandler:nil];
 }
 
@@ -307,7 +309,10 @@ static NSString *const RecordsKey = @"records";
        // A reset must have occurred.
        self.syncing = NO;
        [self broadcastChange];
-       if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
+       [[NSOperationQueue mainQueue]
+        addOperationWithBlock:^{
+          if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
+        }];
        return;
      }
      
@@ -368,16 +373,16 @@ static NSString *const RecordsKey = @"records";
     if(success) {
       [self save];
     } else {
-      [[[UIAlertView alloc]
-        initWithTitle:NSLocalizedString(@"SyncFailed", nil)
-        message:NSLocalizedString(@"CheckConnection", nil)
-        delegate:nil
-        cancelButtonTitle:nil
-        otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-       show];
+      NYPLAlertController *alert =
+      [NYPLAlertController alertWithTitle:NSLocalizedString(@"SyncFailed", nil)
+                                  message:NSLocalizedString(@"CheckConnection", nil)];
+      UIAlertAction *button = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:nil];
+      [alert addAction:button];
+      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
     }
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLSyncEndedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }];
 }
 

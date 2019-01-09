@@ -162,8 +162,10 @@
   [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
 
   [[NYPLBookRegistry sharedRegistry] justLoad];
-  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
   [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+    if (success) {
+      [[NYPLBookRegistry sharedRegistry] save];
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }];
   
