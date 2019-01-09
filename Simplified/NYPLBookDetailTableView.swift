@@ -261,6 +261,8 @@ private let standardCellHeight: CGFloat = 44.0
     headerButton.setTitle(catalogLanes[section].title, for: .normal)
     headerButton.setTitleColor(.black, for: .normal)
     headerButton.titleLabel?.font = UIFont.customBoldFont(forTextStyle: UIFont.TextStyle.caption1)
+    headerButton.titleLabel?.textAlignment = NSTextAlignment.left
+    headerButton.titleLabel?.autoPinEdge(toSuperviewEdge: .left)
     headerButton.titleLabel?.lineBreakMode = NSLineBreakMode.byTruncatingTail;
 
     moreButton.addTarget(self, action: #selector(moreBooksTapped(sender:)), for: .touchUpInside)
@@ -268,12 +270,14 @@ private let standardCellHeight: CGFloat = 44.0
     moreButton.setTitle("More...", for: .normal)
     moreButton.setTitleColor(.black, for: .normal)
     moreButton.titleLabel?.font = UIFont.customFont(forTextStyle: UIFont.TextStyle.caption1)
+    moreButton.titleLabel?.textAlignment = NSTextAlignment.right
+    moreButton.titleLabel?.autoPinEdge(toSuperviewEdge: .right)
     
     container.addSubview(headerButton)
     container.addSubview(moreButton)
     headerButton.autoAlignAxis(toSuperviewAxis: .horizontal)
     headerButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
-    headerButton.widthAnchor.constraint(lessThanOrEqualTo: container.widthAnchor, multiplier: 0.75).isActive = true
+    headerButton.autoPinEdge(.trailing, to: .leading, of: moreButton, withOffset: -20)
     moreButton.autoAlignAxis(toSuperviewAxis: .horizontal)
     moreButton.autoPinEdge(toSuperviewMargin: .trailing)
     return container
