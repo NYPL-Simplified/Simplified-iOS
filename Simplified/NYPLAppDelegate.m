@@ -47,11 +47,11 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
   [self.audiobookLifecycleManager didFinishLaunching];
 
+  [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:MininumFetchInterval];
+
   if (@available (iOS 10.0, *)) {
-    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:MininumFetchInterval];
     self.notificationsManager = [[NYPLUserNotifications alloc] init];
-    [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self.notificationsManager];
-    [self.notificationsManager authorizeAndRegister];
+    [self.notificationsManager authorizeIfNeeded];
   }
 
   // This is normally not called directly, but we put all programmatic appearance setup in

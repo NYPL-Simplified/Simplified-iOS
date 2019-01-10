@@ -8,16 +8,31 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
 @available (iOS 10.0, *)
 @objcMembers class NYPLUserNotifications: NSObject {
 
-  /// Authorization and category registration is recommended by Apple to be
-  /// performed before the app finishes launching.
-  func authorizeAndRegister()
+  let unCenter = UNUserNotificationCenter.current()
+
+  /// If a user has not yet been presented with Notifications authorization,
+  /// defer the presentation for later to maximize acceptance rate. Otherwise,
+  /// Apple documents authorization to be preformed at app-launch to corretly
+  /// enable the delegate.
+  func authorizeIfNeeded()
   {
-    self.registerNotificationCategories()
+    unCenter.delegate = self
+    unCenter.getNotificationSettings { (settings) in
+      if settings.authorizationStatus == .notDetermined {
+        Log.info(#file, "Deferring first-time UN Auth to a later time.")
+      } else {
+        self.registerNotificationCategories()
+        NYPLUserNotifications.requestAuthorization()
+      }
+    }
+  }
+
+  class func requestAuthorization()
+  {
     let unCenter = UNUserNotificationCenter.current()
     unCenter.requestAuthorization(options: [.badge,.sound,.alert]) { (granted, error) in
-      if granted {
-        Log.info(#file, "Full Notification Authorization granted.")
-      }
+      Log.info(#file, "Request Authorization Results: 'Granted': \(granted)." +
+        " 'Error': \(error?.localizedDescription ?? "nil")")
     }
   }
 
@@ -45,7 +60,6 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
     }
   }
 
-  /// The app icon badge count should represent any loans in the "ready" state.
   class func updateAppIconBadge(heldBooks: [NYPLBook])
   {
     var readyBooks = 0
@@ -63,8 +77,8 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
 
   private class func createNotificationForReadyCheckout(book: NYPLBook)
   {
-    let center = UNUserNotificationCenter.current()
-    center.getNotificationSettings { (settings) in
+    let unCenter = UNUserNotificationCenter.current()
+    unCenter.getNotificationSettings { (settings) in
       guard settings.authorizationStatus == .authorized else { return }
 
       let title = NSLocalizedString("Ready for Checkout", comment: "")
@@ -82,7 +96,7 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
       let request = UNNotificationRequest.init(identifier: HoldNotificationRequestIdentifier,
                                                content: content,
                                                trigger: nil)
-      center.add(request)
+      unCenter.add(request)
     }
   }
 
