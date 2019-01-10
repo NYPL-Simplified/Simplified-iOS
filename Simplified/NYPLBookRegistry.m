@@ -376,11 +376,7 @@ static NSString *const RecordsKey = @"records";
       NYPLAlertController *alert =
       [NYPLAlertController alertWithTitle:NSLocalizedString(@"SyncFailed", nil)
                                   message:NSLocalizedString(@"CheckConnection", nil)];
-      UIAlertAction *button = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                       style:UIAlertActionStyleDefault
-                                                     handler:nil];
-      [alert addAction:button];
-      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
+      [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }];

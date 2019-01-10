@@ -946,9 +946,7 @@ completionHandler:(void (^)(void))handler
                                           handler:^(UIAlertAction * _Nonnull __unused action) {
                                             [weakSelf dismissViewControllerAnimated:YES completion:nil];
                                           }]];
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
-                                                                  animated:YES
-                                                                completion:nil];
+  [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
 }
 
 - (void)showLoginAlertWithError:(NSError *)error
