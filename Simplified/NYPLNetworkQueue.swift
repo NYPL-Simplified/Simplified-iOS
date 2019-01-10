@@ -16,13 +16,6 @@ final class NetworkQueue: NSObject {
     return NetworkQueue.sharedInstance
   }
 
-  override init() {
-    super.init()
-    NotificationCenter.default.addObserver(forName: NSNotification.Name.NYPLReachabilityHostIsReachable,
-                                           object: nil,
-                                           queue: nil) { notification in self.retryQueue() }
-  }
-
   deinit {
     NotificationCenter.default.removeObserver(self)
   }
@@ -63,6 +56,12 @@ final class NetworkQueue: NSObject {
   
   
   // MARK: - Public Functions
+
+  @objc func addObserverForOfflineQueue() {
+    NotificationCenter.default.addObserver(forName: NSNotification.Name.NYPLReachabilityHostIsReachable,
+                                           object: nil,
+                                           queue: nil) { notification in self.retryQueue() }
+  }
 
   func addRequest(_ libraryID: Int,
                   _ updateID: String?,

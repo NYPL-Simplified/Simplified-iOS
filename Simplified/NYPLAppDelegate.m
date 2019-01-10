@@ -58,8 +58,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   // NYPLConfiguration's class initializer.
   [NYPLConfiguration initialize];
 
-  // Initialize Offline Requests Queue
-  [NetworkQueue shared];
+  [[NetworkQueue shared] addObserverForOfflineQueue];
   self.reachabilityManager = [NYPLReachability sharedReachability];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];

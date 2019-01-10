@@ -56,6 +56,7 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
                                ready: { _ in isNowReady = true })
 
     if (wasOnHold && isNowReady) {
+      Log.debug(#file, "Creating notification for \(newBook.title ?? "--")")
       createNotificationForReadyCheckout(book: newBook)
     }
   }
@@ -81,12 +82,12 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
     unCenter.getNotificationSettings { (settings) in
       guard settings.authorizationStatus == .authorized else { return }
 
-      let title = NSLocalizedString("Ready for Checkout", comment: "")
+      let title = NSLocalizedString("Ready for Download", comment: "")
       let content = UNMutableNotificationContent()
       if let bookTitle = book.title {
-        content.body = NSLocalizedString("Your loan, \(bookTitle), is now available for checkout!", comment: "")
+        content.body = NSLocalizedString("The title you reserved, \(bookTitle), is available.", comment: "")
       } else {
-        content.body = NSLocalizedString("You have a loan available for checkout!", comment: "")
+        content.body = NSLocalizedString("The title you reserved is available.", comment: "")
       }
       content.title = title
       content.sound = UNNotificationSound.default
@@ -96,7 +97,11 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
       let request = UNNotificationRequest.init(identifier: HoldNotificationRequestIdentifier,
                                                content: content,
                                                trigger: nil)
-      unCenter.add(request)
+      Log.debug(#file, "Creating notification for: \(book.title ?? "--")")
+      unCenter.add(request, withCompletionHandler: { (error) in
+        Log.error(#file, "Error creating notification for: \(book.title ?? "--")." +
+          "Reason: \(error?.localizedDescription ?? "nil")")
+      })
     }
   }
 
@@ -128,25 +133,30 @@ extension NYPLUserNotifications: UNUserNotificationCenterDelegate {
                               withCompletionHandler completionHandler: @escaping () -> Void)
   {
     if response.actionIdentifier == DefaultActionIdentifier {
-      // User has tapped on the notification
       let currentAccount = AccountsManager.shared.currentAccount
       if currentAccount.supportsReservations {
-        NYPLRootTabBarController.shared()?.selectedIndex = 2
+        if let holdsTab = NYPLRootTabBarController.shared()?.viewControllers?[2],
+        holdsTab.isKind(of: NYPLHoldsNavigationController.self) {
+          NYPLRootTabBarController.shared()?.selectedIndex = 2
+        } else {
+          Log.error(#file, "Error moving to Holds tab from notification.")
+        }
       }
       completionHandler()
     } else if response.actionIdentifier == CheckOutActionIdentifier {
-      // User has selected "Check Out" action.
+      Log.debug(#file, "'Check Out' Notification Action.")
       let userInfo = response.notification.request.content.userInfo
       guard let bookID = userInfo["bookID"] as? String else {
-        Log.error(#file, "Bad user info in Local Notification.")
+        Log.error(#file, "Bad user info in Local Notification. UserInfo: \n\(userInfo)")
         return
       }
       guard let downloadCenter = NYPLMyBooksDownloadCenter.shared(),
         let book = NYPLBookRegistry.shared()?.book(forIdentifier: bookID) else {
-          Log.error(#file, "Problem creating book or download center singleton.")
+          Log.error(#file, "Problem creating book or download center singleton. BookID: \(bookID)")
           return
       }
       downloadCenter.startBorrow(for: book, attemptDownload: false) {
+        Log.debug(#file, "Borrow has completed.")
         completionHandler()
       }
     }
