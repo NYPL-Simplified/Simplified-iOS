@@ -1,7 +1,6 @@
 import UserNotifications
 
 let HoldNotificationCategoryIdentifier = "NYPLHoldToReserveNotificationCategory"
-let HoldNotificationRequestIdentifier = "NYPLHoldNotificationRequest"
 let CheckOutActionIdentifier = "NYPLCheckOutNotificationAction"
 let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
 
@@ -31,7 +30,7 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
   {
     let unCenter = UNUserNotificationCenter.current()
     unCenter.requestAuthorization(options: [.badge,.sound,.alert]) { (granted, error) in
-      Log.info(#file, "Request Authorization Results: 'Granted': \(granted)." +
+      Log.info(#file, "Notification Authorization Results: 'Granted': \(granted)." +
         " 'Error': \(error?.localizedDescription ?? "nil")")
     }
   }
@@ -56,7 +55,6 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
                                ready: { _ in isNowReady = true })
 
     if (wasOnHold && isNowReady) {
-      Log.debug(#file, "Creating notification for \(newBook.title ?? "--")")
       createNotificationForReadyCheckout(book: newBook)
     }
   }
@@ -94,14 +92,15 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
       content.categoryIdentifier = HoldNotificationCategoryIdentifier
       content.userInfo = ["bookID" : book.identifier]
 
-      let request = UNNotificationRequest.init(identifier: HoldNotificationRequestIdentifier,
+      let request = UNNotificationRequest.init(identifier: book.identifier,
                                                content: content,
                                                trigger: nil)
-      Log.debug(#file, "Creating notification for: \(book.title ?? "--")")
-      unCenter.add(request, withCompletionHandler: { (error) in
-        Log.error(#file, "Error creating notification for: \(book.title ?? "--")." +
-          "Reason: \(error?.localizedDescription ?? "nil")")
-      })
+      unCenter.add(request) { error in
+        if (error != nil) {
+          Log.error(#file, "Error creating notification for: \(book.title ?? "--")." +
+            "Reason: \(error?.localizedDescription ?? "nil")")
+        }
+      }
     }
   }
 

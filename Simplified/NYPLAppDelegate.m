@@ -77,13 +77,16 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 - (void)application:(__attribute__((unused)) UIApplication *)application
 performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundFetchHandler
 {
+  NYPLLOG(@"Background fetch has been initiated.");
   // Only the "current library" account will perform background fetches.
   [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+    NYPLLOG_F(@"Background Fetch sync completion handler. Success: %d", success);
     if (success) {
       [[NYPLBookRegistry sharedRegistry] save];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   } backgroundFetchHandler:^(UIBackgroundFetchResult result) {
+    NYPLLOG_F(@"Background Fetch completion result handler. Result: %lu", (unsigned long)result);
     backgroundFetchHandler(result);
   }];
 }
