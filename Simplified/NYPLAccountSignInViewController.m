@@ -946,9 +946,7 @@ completionHandler:(void (^)(void))handler
                                           handler:^(UIAlertAction * _Nonnull __unused action) {
                                             [weakSelf dismissViewControllerAnimated:YES completion:nil];
                                           }]];
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
-                                                                  animated:YES
-                                                                completion:nil];
+  [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
 }
 
 - (void)showLoginAlertWithError:(NSError *)error
@@ -1013,8 +1011,10 @@ completionHandler:(void (^)(void))handler
       void (^handler)(void) = self.completionHandler;
       self.completionHandler = nil;
       if(handler) handler();
-      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
       [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+        if (success) {
+          [[NYPLBookRegistry sharedRegistry] save];
+        }
         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
       }];
 

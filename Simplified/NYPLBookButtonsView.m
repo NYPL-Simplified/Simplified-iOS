@@ -386,6 +386,11 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
 
 - (void)didSelectDownload
 {
+  if (@available (iOS 10.0, *)) {
+    if (self.state == NYPLBookButtonsStateCanHold) {
+      [NYPLUserNotifications requestAuthorization];
+    }
+  }
   [self.delegate didSelectDownloadForBook:self.book];
 }
 

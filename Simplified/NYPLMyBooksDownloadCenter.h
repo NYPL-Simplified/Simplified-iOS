@@ -14,6 +14,13 @@ static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
 // This method will request credentials from the user if necessary.
 - (void)startDownloadForBook:(NYPLBook *)book;
 
+// This method will immediately perform a checkout (borrow link and/or adobe
+// fulfillment), and then optionally begin to download the book. A handler is
+// called at the completion of the borrow portion, so that if the app is in a
+// background state (like during a Notification Action), it can suppress
+// UIAlerts or other behavior requiring an Active State.
+- (void)startBorrowForBook:(NYPLBook *)book attemptDownload:(BOOL)shouldAttemptDownload borrowCompletion:(void (^)(void))borrowCompletion;
+
 // This works for both failed downloads (to reset their state) and for downloads in progress.
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier;
 
