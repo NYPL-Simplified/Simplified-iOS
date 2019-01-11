@@ -186,15 +186,6 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
         NSString *clientToken = tokenXML.value;
         self.licensor = @{@"vendor":vendor,
                           @"clientToken":clientToken}.mutableCopy;
-
-        for(NYPLXML *const linkXML in [licensorXML childrenWithName:@"link"]) {
-          NYPLOPDSLink *const link = [[NYPLOPDSLink alloc] initWithXML:linkXML];
-          if ([link.rel isEqualToString:@"http://librarysimplified.org/terms/drm/rel/devices"]) {
-            [self.licensor setValue:link.href.absoluteString forKey:@"deviceManager"];
-            continue;
-          }
-        }
-
       } else {
         NYPLLOG(@"Licensor not saved. Error parsing clientToken into XML.");
       }

@@ -872,7 +872,7 @@ completionHandler:(void (^)(void))handler
           completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
 
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-              [NSObject cancelPreviousPerformRequestsWithTarget:self];    // Cancel DRM delay timer
+              [NSObject cancelPreviousPerformRequestsWithTarget:self];
             }];
 
             NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
@@ -882,12 +882,6 @@ completionHandler:(void (^)(void))handler
             NYPLLOG(@"***DRM Auth/Activation Completion***");
             
             if (success) {
-              // POST deviceID to adobeDevicesLink
-              NSURL *deviceManager = [NSURL URLWithString: [[NYPLAccount sharedAccount] licensor][@"deviceManager"]];
-              if (deviceManager != nil) {
-                [NYPLDeviceManager postDevice:deviceID url:deviceManager];
-              }
-              
               [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 [[NYPLAccount sharedAccount] setUserID:userID];
                 [[NYPLAccount sharedAccount] setDeviceID:deviceID];
@@ -895,10 +889,9 @@ completionHandler:(void (^)(void))handler
             }
             
             [self authorizationAttemptDidFinish:success error:error];
-            
           }];
 
-         [self performSelector:@selector(dismissAfterUnexpectedDRMDelay) withObject:self afterDelay:25];    // DRM delay timer
+         [self performSelector:@selector(dismissAfterUnexpectedDRMDelay) withObject:self afterDelay:25];
          
 #else
          

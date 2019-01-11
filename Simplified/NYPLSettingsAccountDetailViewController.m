@@ -442,14 +442,6 @@ double const requestTimeoutInterval = 25.0;
      }
      else {
        NYPLLOG(@"***Successful DRM Deactivation***");
-       // FIXME: NYPLDeviceManager should be updated once redesign of NYPLAccount is complete
-       // Until then, only use on currently active library account
-       if (self.selectedAccountType == [AccountsManager shared].currentAccount) {
-         NSURL *deviceManager =  [NSURL URLWithString: [self.selectedNYPLAccount licensor][@"deviceManager"]];
-         if (deviceManager != nil) {
-           [NYPLDeviceManager deleteDevice:[self.selectedNYPLAccount deviceID] url:deviceManager];
-         }
-       }
      }
 
      afterDeauthorization();
@@ -518,15 +510,6 @@ double const requestTimeoutInterval = 25.0;
           NYPLLOG(@"***DRM Auth/Activation Completion***");
           
           if (success) {
-            // FIXME: NYPLDeviceManager should be updated once redesign of NYPLAccount is complete
-            // Until then, only use on currently active library account
-            if (self.selectedAccountType == [AccountsManager shared].currentAccount.id) {
-              NSURL *deviceManager = [NSURL URLWithString: [self.selectedNYPLAccount licensor][@"deviceManager"]];
-              if (deviceManager != nil) {
-                [NYPLDeviceManager postDevice:deviceID url:deviceManager];
-              }
-            }
-            
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
               [self.selectedNYPLAccount setUserID:userID];
               [self.selectedNYPLAccount setDeviceID:deviceID];
