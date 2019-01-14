@@ -44,10 +44,14 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 
 - (void)justLoad;
 
+// Calls syncWithCompletionHandler:backgroundFetchHandler: with no backgroundFetchHandler.
+- (void)syncWithCompletionHandler:(void (^)(BOOL success))handler;
+
 // Syncs the latest content from the server. Attempts to sync while a sync is already in progress
 // will simply be ignored. Resetting the registry while a sync is in progress will cause the handler
-// not to be called.
-- (void)syncWithCompletionHandler:(void (^)(BOOL success))handler;
+// not to be called. `fetchHandler` should only be used from the background fetch delegate.
+- (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
+            backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchHandler;
 
 // Calls syncWithCompletionHandler: with a handler that presents standard success/failure alerts on
 // completion.

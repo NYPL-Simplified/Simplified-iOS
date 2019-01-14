@@ -29,10 +29,13 @@
 
 @property (nonatomic) AudiobookLifecycleManager *audiobookLifecycleManager;
 @property (nonatomic) NYPLReachability *reachabilityManager;
+@property (nonatomic) NYPLUserNotifications *notificationsManager;
 
 @end
 
 @implementation NYPLAppDelegate
+
+const double MininumFetchInterval = 60 * 60 * 12;
 
 #pragma mark UIApplicationDelegate
 
@@ -44,13 +47,18 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
   [self.audiobookLifecycleManager didFinishLaunching];
 
-  // Initiallize Accounts from JSON file
-  [AccountsManager sharedInstance];
+  [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:MininumFetchInterval];
+
+  if (@available (iOS 10.0, *)) {
+    self.notificationsManager = [[NYPLUserNotifications alloc] init];
+    [self.notificationsManager authorizeIfNeeded];
+  }
+
   // This is normally not called directly, but we put all programmatic appearance setup in
   // NYPLConfiguration's class initializer.
   [NYPLConfiguration initialize];
-  // Initialize Offline Requests Queue
-  [NetworkQueue shared];
+
+  [[NetworkQueue shared] addObserverForOfflineQueue];
   self.reachabilityManager = [NYPLReachability sharedReachability];
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -66,7 +74,26 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   return YES;
 }
 
-- (BOOL)application:(__attribute__((unused)) UIApplication *)application handleOpenURL:(NSURL *)url
+- (void)application:(__attribute__((unused)) UIApplication *)application
+performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundFetchHandler
+{
+  NYPLLOG(@"Background fetch has been initiated.");
+  // Only the "current library" account will perform background fetches.
+  [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+    NYPLLOG_F(@"Background Fetch sync completion handler. Success: %d", success);
+    if (success) {
+      [[NYPLBookRegistry sharedRegistry] save];
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+  } backgroundFetchHandler:^(UIBackgroundFetchResult result) {
+    NYPLLOG_F(@"Background Fetch completion result handler. Result: %lu", (unsigned long)result);
+    backgroundFetchHandler(result);
+  }];
+}
+
+- (BOOL)application:(__unused UIApplication *)app
+            openURL:(NSURL *)url
+            options:(__unused NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
   // URLs should be a permalink to a feed URL
   NSURL *entryURL = [url URLBySwappingForScheme:@"http"];
@@ -134,6 +161,8 @@ completionHandler:(void (^const)(void))completionHandler
    handleEventsForBackgroundURLSessionFor:identifier
    completionHandler:completionHandler];
 }
+
+#pragma mark -
 
 - (void)beginCheckingForUpdates
 {

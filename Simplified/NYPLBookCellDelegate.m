@@ -121,6 +121,7 @@
       id<AudiobookManager> const manager = [[DefaultAudiobookManager alloc]
                                             initWithMetadata:metadata
                                             audiobook:audiobook];
+
       AudiobookPlayerViewController *const audiobookVC = [[AudiobookPlayerViewController alloc]
                                                              initWithAudiobookManager:manager];
 
@@ -133,8 +134,31 @@
        }];
 
       audiobookVC.hidesBottomBarWhenPushed = YES;
-      [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
       audiobookVC.view.tintColor = [NYPLConfiguration mainColor];
+      [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
+
+      __weak AudiobookPlayerViewController *weakAudiobookVC = audiobookVC;
+      [manager setPlaybackCompletionHandler:^{
+        NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, nil];
+        NSSet<NYPLBookAcquisitionPath *> *paths = [NYPLBookAcquisitionPath
+                                                   supportedAcquisitionPathsForAllowedTypes:types
+                                                   allowedRelations:(NYPLOPDSAcquisitionRelationSetBorrow |
+                                                                     NYPLOPDSAcquisitionRelationSetGeneric)
+                                                   acquisitions:book.acquisitions];
+        if (paths.count > 0) {
+          UIAlertController *alert = [NYPLReturnPromptHelper audiobookPromptWithCompletion:^(BOOL returnWasChosen) {
+            if (returnWasChosen) {
+              [weakAudiobookVC.navigationController popViewControllerAnimated:YES];
+              [self didSelectReturnForBook:book];
+            }
+            [NYPLAppStoreReviewPrompt presentIfAvailable];
+          }];
+          [[NYPLRootTabBarController sharedController] presentViewController:alert animated:YES completion:nil];
+        } else {
+          NYPLLOG(@"Skipped Return Prompt with no valid acquisition path.");
+          [NYPLAppStoreReviewPrompt presentIfAvailable];
+        }
+      }];
 
       NYPLBookLocation *const bookLocation =
       [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
@@ -145,7 +169,7 @@
         NYPLLOG_F(@"Returning to Audiobook Location: %@", chapterLocation);
         [manager.audiobook.player movePlayheadToLocation:chapterLocation];
       }
-      //TODO: Disabled until a better solution is decided on.
+      //FIXME: Disabled until a better solution is decided on.
 //      else {
 //        [self presentWwanNetworkWarningIfNeeded];
 //      }
@@ -161,7 +185,10 @@
   }
 }
 
-- (void)registerCallbackForLogHandler {
+#pragma mark - Audiobook Methods
+
+- (void)registerCallbackForLogHandler
+{
   [DefaultAudiobookManager setLogHandler:^(enum LogLevel level, NSString * _Nonnull message, NSError * _Nullable error) {
     if (error) {
       [Bugsnag notifyError:error block:^(BugsnagCrashReport * _Nonnull report) {
@@ -217,6 +244,19 @@
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
 }
 
+- (void)presentWwanNetworkWarningIfNeeded
+{
+  // Inform a user if they're downloading over cellular once for each new audiobook.
+  NetworkStatus status = [[NYPLReachability sharedReachability].hostReachabilityManager currentReachabilityStatus];
+  if (status == ReachableViaWWAN) {
+    NSString *title = NSLocalizedString(@"Large Download", nil);
+    NSString *message = NSLocalizedString(@"Connecting to Wi-Fi may improve performance.", nil);
+    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title singleMessage:message];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Continue", nil) style:UIAlertActionStyleDefault handler:nil]];
+    [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
+  }
+}
+
 #pragma mark NYPLBookDownloadFailedDelegate
 
 - (void)didSelectCancelForBookDownloadFailedCell:(NYPLBookDownloadFailedCell *const)cell
@@ -236,21 +276,6 @@
 {
   [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
    cancelDownloadForBookIdentifier:cell.book.identifier];
-}
-
-#pragma mark
-
-- (void)presentWwanNetworkWarningIfNeeded
-{
-  // Inform a user if they're downloading over cellular once for each new audiobook.
-  NetworkStatus status = [[NYPLReachability sharedReachability].hostReachabilityManager currentReachabilityStatus];
-  if (status == ReachableViaWWAN) {
-    NSString *title = NSLocalizedString(@"Large Download", nil);
-    NSString *message = NSLocalizedString(@"Connecting to Wi-Fi may improve performance.", nil);
-    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title singleMessage:message];
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Continue", nil) style:UIAlertActionStyleDefault handler:nil]];
-    [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
-  }
 }
 
 @end

@@ -466,32 +466,33 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   NSString *bookTitle = book.title;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
-  
-  if ([[AccountsManager sharedInstance] currentAccount].needsAuth){
-#if defined(FEATURE_DRM_CONNECTOR)
-    NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
-    if(fulfillmentId) {
-      NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
-      [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
-                                      userID:[[NYPLAccount sharedAccount] userID]
-                                    deviceID:[[NYPLAccount sharedAccount] deviceID]
-                                  completion:^(BOOL success, __unused NSError *error) {
-                                    if(!success) {
-                                      NYPLLOG(@"Failed to return loan.");
-                                    }
-                                  }];
-    }
-#endif
-  }
 
   if (!book.identifier) {
     [self recordUnexpectedNilIdentifierForBook:book identifier:identifier title:bookTitle];
   }
 
-  if((book.revokeURL && book.identifier) ||
-     ([[AccountsManager sharedInstance] currentAccount].needsAuth && book.identifier)) {
+  // Process Adobe Return
+#if defined(FEATURE_DRM_CONNECTOR)
+  NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
+  if (fulfillmentId && [[AccountsManager sharedInstance] currentAccount].needsAuth) {
+    NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
+    [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
+                                    userID:[[NYPLAccount sharedAccount] userID]
+                                  deviceID:[[NYPLAccount sharedAccount] deviceID]
+                                completion:^(BOOL success, __unused NSError *error) {
+                                  if(!success) {
+                                    NYPLLOG(@"Failed to return loan via NYPLAdept.");
+                                  }
+                                }];
+  }
+#endif
+
+  if (book.revokeURL || [[AccountsManager sharedInstance] currentAccount].needsAuth) {
+
     [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
+    // Process Circulation Manager Return
     [NYPLOPDSFeed withURL:book.revokeURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
+
       [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
       
       if(feed && feed.entries.count == 1)  {
@@ -525,7 +526,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
         }
       }
     }];
-  } else {
+  }
+  else {
     if (downloaded) {
       [self deleteLocalContentForBookIdentifier:identifier];
     }
@@ -569,6 +571,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 {
   if(!identifier) return nil;
   
+  // FIXME: The extension is always "epub" even when the URL refers to content of a different
+  // type (e.g. an audiobook). While there's no reason this must change, it's certainly likely
+  // to cause confusion for anyone looking at the filesystem.
   return [[[self contentDirectoryURL:account] URLByAppendingPathComponent:[identifier SHA256]]
           URLByAppendingPathExtension:@"epub"];
 }
@@ -590,17 +595,24 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [self broadcastUpdate];
 }
 
-- (void)extracted:(NYPLBook *)book {
+- (void)startBorrowForBook:(NYPLBook *)book
+           attemptDownload:(BOOL)shouldAttemptDownload
+          borrowCompletion:(void (^)(void))borrowCompletion
+{
+  [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
   [NYPLOPDSFeed withURL:book.defaultAcquisitionIfBorrow.hrefURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
 
     if(error || !feed || feed.entries.count < 1) {
-      dispatch_async(dispatch_get_main_queue(), ^{
-        NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"BorrowFailed"  message:@"BorrowCouldNotBeCompletedFormat", book.title];
-        if (error)
-          [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        if (borrowCompletion) {
+          borrowCompletion();
+          return;
+        }
+        NYPLAlertController *const alert = [NYPLAlertController alertWithTitle:@"BorrowFailed" message:@"BorrowCouldNotBeCompletedFormat", book.title];
+        if (error) [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
         [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
-      });
+      }];
       return;
     }
 
@@ -608,13 +620,15 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
     if(!book) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        NYPLAlertController *const alert =
-        [NYPLAlertController
-         alertWithTitle:@"BorrowFailed"
-         message:@"BorrowCouldNotBeCompletedFormat", book.title];
+        if (borrowCompletion) {
+          borrowCompletion();
+          return;
+        }
+        NYPLAlertController *const alert = [NYPLAlertController
+                                            alertWithTitle:@"BorrowFailed"
+                                            message:@"BorrowCouldNotBeCompletedFormat", book.title];
         [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
       }];
-
       return;
     }
 
@@ -625,18 +639,27 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
      fulfillmentId:nil
      bookmarks:nil];
 
-    [book.defaultAcquisition.availability
-     matchUnavailable:nil
-     limited:^(__unused NYPLOPDSAcquisitionAvailabilityLimited *_Nonnull limited) {
-       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-     }
-     unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *_Nonnull unlimited) {
-       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-     }
-     reserved:nil
-     ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
-       [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
-     }];
+    if(borrowCompletion) {
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        borrowCompletion();
+        return;
+      }];
+    }
+
+    if (shouldAttemptDownload) {
+      [book.defaultAcquisition.availability
+       matchUnavailable:nil
+       limited:^(__unused NYPLOPDSAcquisitionAvailabilityLimited *_Nonnull limited) {
+         [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+       }
+       unlimited:^(__unused NYPLOPDSAcquisitionAvailabilityUnlimited *_Nonnull unlimited) {
+         [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+       }
+       reserved:nil
+       ready:^(__unused NYPLOPDSAcquisitionAvailabilityReady *_Nonnull ready) {
+         [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
+       }];
+    }
   }];
 }
 
@@ -681,9 +704,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   if([NYPLAccount sharedAccount].hasBarcodeAndPIN || !loginRequired) {
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
-      
-      [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-      [self extracted:book];
+      [self startBorrowForBook:book attemptDownload:YES borrowCompletion:nil];
     } else {
       // Actually download the book.
       NSURL *URL = book.defaultAcquisition.hrefURL;
@@ -870,7 +891,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    object:self];
 }
 
-// FIXME: Bugnsag methods can be removed when sufficient data for bugs are collected
+// This is known to occur when the server incorrectly keeps loans after their stated expiration date and time.
 - (void)recordUnexpectedNilIdentifierForBook:(NYPLBook *)book identifier:(NSString *)identifier title:(NSString *)bookTitle
 {
   NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];

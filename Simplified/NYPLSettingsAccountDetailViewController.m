@@ -621,12 +621,13 @@ double const requestTimeoutInterval = 25.0;
         void (^handler)(void) = self.completionHandler;
         self.completionHandler = nil;
         if(handler) handler();
-        [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+          if (success) {
+            [[NYPLBookRegistry sharedRegistry] save];
+          }
           [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
         }];
       }
-      
     } else {
       [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
       [self showLoginAlertWithError:error];

@@ -390,6 +390,11 @@
 
 - (void)didSelectDownload
 {
+  if (@available (iOS 10.0, *)) {
+    if (self.state == NYPLBookButtonsStateCanHold) {
+      [NYPLUserNotifications requestAuthorization];
+    }
+  }
   self.activityIndicator.center = self.downloadButton.center;
   [self.delegate didSelectDownloadForBook:self.book];
 }

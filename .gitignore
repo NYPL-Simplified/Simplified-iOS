@@ -11,3 +11,4 @@ Simplified/APIKeys.swift
 AudioEngine.json
 Carthage
 Accounts.json
+bugsnag-dsym-upload.rb
