@@ -12,7 +12,7 @@ function Simplified() {
   // The starting location of a tap.
   var startX = 0;
   var startY = 0;
-  
+
   // The time the last tap was started.
   var startTime = 0;
 
@@ -145,7 +145,7 @@ function Simplified() {
       // iOS >= 12
       innerDocument = iframe.contentDocument;
     }
-    
+
     // Remove existing handlers, if any.
     innerDocument.removeEventListener("touchstart", handleTouchStart);
     innerDocument.removeEventListener("touchend", handleTouchEnd);
@@ -187,6 +187,31 @@ function Simplified() {
         font-weight: bold; \
       }";
     innerDocument.head.appendChild(styleElement);
+  }
+  
+  /**
+   * setCfiBeforeChange
+   * Before there's a font size or font family change in the UI, keep track of the CFI of
+   * the first visible element in the viewport.
+   */
+  this.setCfiBeforeChange = function() {
+    var firstVisibleCfi = ReadiumSDK.reader.getFirstVisibleCfi();
+    this.cfiBeforeChange = firstVisibleCfi;
+  }
+
+  /**
+   * updateCFI
+   * If there's an existing CFI that we are tracking, open the reader to that CFI.
+   * TODO: the CFI works well for the previous font size or font family. When switching to
+   * a new font size or font family, the CFI is no longer exactly the same as before. 
+   */
+  this.updateCFI = function() {
+    var previousCFI = this.cfiBeforeChange || undefined;
+    if (previousCFI) {
+      setTimeout(function () {
+        ReadiumSDK.reader.openSpineItemElementCfi(previousCFI.idref, previousCFI.contentCFI);
+      }, 250);
+    }
   }
 
   this.pageDidChange();

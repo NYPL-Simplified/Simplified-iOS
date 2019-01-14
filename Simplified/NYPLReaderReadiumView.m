@@ -248,8 +248,9 @@ static void generateTOCElements(NSArray *const navigationElements,
                                    initWithData:NYPLJSONDataFromObject([[NYPLReaderSettings sharedSettings]
                                                                         readiumSettingsRepresentation])
                                    encoding:NSUTF8StringEncoding]];
+    [self sequentiallyEvaluateJavaScript:@"simplified.setCfiBeforeChange();"];
     [self sequentiallyEvaluateJavaScript:javaScript];
-    [self sequentiallyEvaluateJavaScript:@"simplified.settingsDidChange();"];
+    [self sequentiallyEvaluateJavaScript:@"simplified.updateCFI();"];
   }];
 }
 
@@ -285,10 +286,8 @@ static void generateTOCElements(NSArray *const navigationElements,
                                                    ",  [NYPLReaderSettings sharedSettings].backgroundMediaOverlayHighlightColor.javascriptHexString];
     
     [self sequentiallyEvaluateJavaScript:javascriptToChangeHighlightColour];
-    
     self.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
     self.webView.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
-    [self sequentiallyEvaluateJavaScript:@"simplified.settingsDidChange();"];
   }];
 }
 
