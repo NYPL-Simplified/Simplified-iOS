@@ -190,6 +190,16 @@ function Simplified() {
   }
   
   /**
+   * FIXME: The following two functions are only here to provide slightly better
+   * support for returning to a particular spot in the book. This is due to the
+   * inconsistencies and the unreliability of Readium's CFI returning us to the same
+   * spot after certain UI actions take place. Previously, changing the font size (for
+   * example) constantly returned the user to the first page of the current chapter.
+   * This update is not perfect but stays within 2 to 3 pages of the previous
+   * "first visible CFI" captured before the UI update.
+   */
+   
+  /**
    * setCfiBeforeChange
    * Before there's a font size or font family change in the UI, keep track of the CFI of
    * the first visible element in the viewport.
