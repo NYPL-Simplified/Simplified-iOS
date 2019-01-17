@@ -74,6 +74,9 @@
   
   if(!self.cover) {
     self.cover = [[UIImageView alloc] init];
+    if (@available(iOS 11.0, *)) {
+      self.cover.accessibilityIgnoresInvertColors = YES;
+    }
     [self.contentView addSubview:self.cover];
   }
 

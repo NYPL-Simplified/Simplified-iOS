@@ -51,6 +51,9 @@
     }
     [button setImage:(image ? image : [UIImage imageNamed:@"NoCover"])
             forState:UIControlStateNormal];
+    if (@available(iOS 11.0, *)) {
+      button.accessibilityIgnoresInvertColors = YES;
+    }
     [button addTarget:self
                action:@selector(didSelectBookButton:)
      forControlEvents:UIControlEventTouchUpInside];
