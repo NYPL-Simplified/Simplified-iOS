@@ -195,18 +195,20 @@ function Simplified() {
    * inconsistencies and the unreliability of Readium's CFI returning us to the same
    * spot after certain UI actions take place. Previously, changing the font size (for
    * example) constantly returned the user to the first page of the current chapter.
-   * This update is not perfect but stays within 2 to 3 pages of the previous
-   * "first visible CFI" captured before the UI update.
+   * This update is not perfect but stays within 2 to 3 pages of the current
+   * bookmark CFI captured before the UI update.
    */
    
   /**
    * setCfiBeforeChange
    * Before there's a font size or font family change in the UI, keep track of the CFI of
-   * the first visible element in the viewport.
+   * the current view bookmark's CFI.
    */
   this.setCfiBeforeChange = function() {
-    var firstVisibleCfi = ReadiumSDK.reader.getFirstVisibleCfi();
-    this.cfiBeforeChange = firstVisibleCfi;
+    var currentView = ReadiumSDK.reader.getCurrentView();
+    var bookMark = currentView.bookmarkCurrentPage();
+    
+    this.currentViewCFI = bookMark;
   }
 
   /**
@@ -216,10 +218,11 @@ function Simplified() {
    * a new font size or font family, the CFI is no longer exactly the same as before. 
    */
   this.updateCFI = function() {
-    var previousCFI = this.cfiBeforeChange || undefined;
-    if (previousCFI) {
+    var currentViewCFI = this.currentViewCFI || undefined;
+
+    if (currentViewCFI) {
       setTimeout(function () {
-        ReadiumSDK.reader.openSpineItemElementCfi(previousCFI.idref, previousCFI.contentCFI);
+        ReadiumSDK.reader.openSpineItemElementCfi(currentViewCFI.idref, currentViewCFI.contentCFI);
       }, 250);
     }
   }
