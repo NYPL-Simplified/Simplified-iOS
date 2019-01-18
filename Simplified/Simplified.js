@@ -12,7 +12,7 @@ function Simplified() {
   // The starting location of a tap.
   var startX = 0;
   var startY = 0;
-  
+
   // The time the last tap was started.
   var startTime = 0;
 
@@ -145,7 +145,7 @@ function Simplified() {
       // iOS >= 12
       innerDocument = iframe.contentDocument;
     }
-    
+
     // Remove existing handlers, if any.
     innerDocument.removeEventListener("touchstart", handleTouchStart);
     innerDocument.removeEventListener("touchend", handleTouchEnd);
@@ -187,6 +187,44 @@ function Simplified() {
         font-weight: bold; \
       }";
     innerDocument.head.appendChild(styleElement);
+  }
+  
+  /**
+   * FIXME: The following two functions are only here to provide slightly better
+   * support for returning to a particular spot in the book. This is due to the
+   * inconsistencies and the unreliability of Readium's CFI returning us to the same
+   * spot after certain UI actions take place. Previously, changing the font size (for
+   * example) constantly returned the user to the first page of the current chapter.
+   * This update is not perfect but stays within 2 to 3 pages of the current
+   * bookmark CFI captured before the UI update.
+   */
+   
+  /**
+   * setCfiBeforeChange
+   * Before there's a font size or font family change in the UI, keep track of the CFI of
+   * the current view bookmark's CFI.
+   */
+  this.setCfiBeforeChange = function() {
+    var currentView = ReadiumSDK.reader.getCurrentView();
+    var bookMark = currentView.bookmarkCurrentPage();
+    
+    this.currentViewCFI = bookMark;
+  }
+
+  /**
+   * updateCFI
+   * If there's an existing CFI that we are tracking, open the reader to that CFI.
+   * TODO: the CFI works well for the previous font size or font family. When switching to
+   * a new font size or font family, the CFI is no longer exactly the same as before. 
+   */
+  this.updateCFI = function() {
+    var currentViewCFI = this.currentViewCFI || undefined;
+
+    if (currentViewCFI) {
+      setTimeout(function () {
+        ReadiumSDK.reader.openSpineItemElementCfi(currentViewCFI.idref, currentViewCFI.contentCFI);
+      }, 250);
+    }
   }
 
   this.pageDidChange();
