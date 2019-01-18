@@ -142,7 +142,8 @@ extension NYPLUserNotifications: UNUserNotificationCenterDelegate {
         }
       }
       completionHandler()
-    } else if response.actionIdentifier == CheckOutActionIdentifier {
+    }
+    else if response.actionIdentifier == CheckOutActionIdentifier {
       Log.debug(#file, "'Check Out' Notification Action.")
       let userInfo = response.notification.request.content.userInfo
       guard let bookID = userInfo["bookID"] as? String else {
@@ -154,9 +155,15 @@ extension NYPLUserNotifications: UNUserNotificationCenterDelegate {
           Log.error(#file, "Problem creating book or download center singleton. BookID: \(bookID)")
           return
       }
-      downloadCenter.startBorrow(for: book, attemptDownload: false) {
-        Log.debug(#file, "Borrow has completed.")
+
+      // Asynchronous network task in the background app state.
+      let bgTask = UIApplication.shared.beginBackgroundTask {
+        Log.error(#file, "Background task expired before borrow action completed.")
         completionHandler()
+      }
+      downloadCenter.startBorrow(for: book, attemptDownload: false) {
+        completionHandler()
+        UIApplication.shared.endBackgroundTask(bgTask)
       }
     }
   }

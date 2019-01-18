@@ -35,7 +35,7 @@
 
 @implementation NYPLAppDelegate
 
-const double MininumFetchInterval = 60 * 60 * 12;
+const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 6;
 
 #pragma mark UIApplicationDelegate
 
@@ -47,7 +47,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
   [self.audiobookLifecycleManager didFinishLaunching];
 
-  [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:MininumFetchInterval];
+  [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:MinimumBackgroundFetchInterval];
 
   if (@available (iOS 10.0, *)) {
     self.notificationsManager = [[NYPLUserNotifications alloc] init];
@@ -77,17 +77,20 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 - (void)application:(__attribute__((unused)) UIApplication *)application
 performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundFetchHandler
 {
-  NYPLLOG(@"Background fetch has been initiated.");
-  // Only the "current library" account will perform background fetches.
+  UIBackgroundTaskIdentifier bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
+    NYPLLOG(@"Error: Background fetch expired before completion.");
+    backgroundFetchHandler(UIBackgroundFetchResultFailed);
+  }];
+
+  // Only the "current library" account syncs during a background fetch.
   [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
-    NYPLLOG_F(@"Background Fetch sync completion handler. Success: %d", success);
     if (success) {
       [[NYPLBookRegistry sharedRegistry] save];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   } backgroundFetchHandler:^(UIBackgroundFetchResult result) {
-    NYPLLOG_F(@"Background Fetch completion result handler. Result: %lu", (unsigned long)result);
     backgroundFetchHandler(result);
+    [application endBackgroundTask:bgTask];
   }];
 }
 
