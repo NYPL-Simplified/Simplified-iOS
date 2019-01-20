@@ -264,7 +264,6 @@ static NSString *const RecordsKey = @"records";
 
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
 {
-  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
   [self syncWithCompletionHandler:handler backgroundFetchHandler:nil];
 }
 
@@ -272,6 +271,9 @@ static NSString *const RecordsKey = @"records";
             backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchHandler
 {
   @synchronized(self) {
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+
     if(self.syncing) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
@@ -281,6 +283,7 @@ static NSString *const RecordsKey = @"records";
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(handler) handler(NO);
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
+        [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
       }];
       return;
     } else {
@@ -301,6 +304,7 @@ static NSString *const RecordsKey = @"records";
         addOperationWithBlock:^{
           if(handler) handler(NO);
           if(fetchHandler) fetchHandler(UIBackgroundFetchResultFailed);
+          [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
         }];
        return;
      }
@@ -356,6 +360,7 @@ static NSString *const RecordsKey = @"records";
           [NYPLUserNotifications updateAppIconBadgeWithHeldBooks:[self heldBooks]];
           if(handler) handler(YES);
           if(fetchHandler) fetchHandler(UIBackgroundFetchResultNewData);
+          [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
         }];
      };
      
@@ -378,7 +383,6 @@ static NSString *const RecordsKey = @"records";
                                   message:NSLocalizedString(@"CheckConnection", nil)];
       [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }];
 }
 

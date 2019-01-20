@@ -1015,7 +1015,6 @@ completionHandler:(void (^)(void))handler
         if (success) {
           [[NYPLBookRegistry sharedRegistry] save];
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
       }];
 
     } else {

@@ -87,7 +87,6 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
     if (success) {
       [[NYPLBookRegistry sharedRegistry] save];
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   } backgroundFetchHandler:^(UIBackgroundFetchResult result) {
     backgroundFetchHandler(result);
     [application endBackgroundTask:bgTask];
