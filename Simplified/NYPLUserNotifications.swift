@@ -68,9 +68,9 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
                                                                unlimited: nil,
                                                                reserved: nil,
                                                                ready: { _ in readyBooks += 1 })
-      if UIApplication.shared.applicationIconBadgeNumber != readyBooks {
-        UIApplication.shared.applicationIconBadgeNumber = readyBooks
-      }
+    }
+    if UIApplication.shared.applicationIconBadgeNumber != readyBooks {
+      UIApplication.shared.applicationIconBadgeNumber = readyBooks
     }
   }
 
