@@ -625,7 +625,6 @@ double const requestTimeoutInterval = 25.0;
           if (success) {
             [[NYPLBookRegistry sharedRegistry] save];
           }
-          [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
         }];
       }
     } else {

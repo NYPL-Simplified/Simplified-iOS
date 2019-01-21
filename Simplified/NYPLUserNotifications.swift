@@ -5,8 +5,8 @@ let CheckOutActionIdentifier = "NYPLCheckOutNotificationAction"
 let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
 
 @available (iOS 10.0, *)
-@objcMembers class NYPLUserNotifications: NSObject {
-
+@objcMembers class NYPLUserNotifications: NSObject
+{
   let unCenter = UNUserNotificationCenter.current()
 
   /// If a user has not yet been presented with Notifications authorization,
@@ -68,9 +68,9 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
                                                                unlimited: nil,
                                                                reserved: nil,
                                                                ready: { _ in readyBooks += 1 })
-      if UIApplication.shared.applicationIconBadgeNumber != readyBooks {
-        UIApplication.shared.applicationIconBadgeNumber = readyBooks
-      }
+    }
+    if UIApplication.shared.applicationIconBadgeNumber != readyBooks {
+      UIApplication.shared.applicationIconBadgeNumber = readyBooks
     }
   }
 
@@ -118,8 +118,8 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
 }
 
 @available (iOS 10.0, *)
-extension NYPLUserNotifications: UNUserNotificationCenterDelegate {
-
+extension NYPLUserNotifications: UNUserNotificationCenterDelegate
+{
   func userNotificationCenter(_ center: UNUserNotificationCenter,
                               willPresent notification: UNNotification,
                               withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void)
@@ -142,7 +142,8 @@ extension NYPLUserNotifications: UNUserNotificationCenterDelegate {
         }
       }
       completionHandler()
-    } else if response.actionIdentifier == CheckOutActionIdentifier {
+    }
+    else if response.actionIdentifier == CheckOutActionIdentifier {
       Log.debug(#file, "'Check Out' Notification Action.")
       let userInfo = response.notification.request.content.userInfo
       guard let bookID = userInfo["bookID"] as? String else {
@@ -154,9 +155,15 @@ extension NYPLUserNotifications: UNUserNotificationCenterDelegate {
           Log.error(#file, "Problem creating book or download center singleton. BookID: \(bookID)")
           return
       }
-      downloadCenter.startBorrow(for: book, attemptDownload: false) {
-        Log.debug(#file, "Borrow has completed.")
+
+      // Asynchronous network task in the background app state.
+      let bgTask = UIApplication.shared.beginBackgroundTask {
+        Log.error(#file, "Background task expired before borrow action could complete.")
         completionHandler()
+      }
+      downloadCenter.startBorrow(for: book, attemptDownload: false) {
+        completionHandler()
+        UIApplication.shared.endBackgroundTask(bgTask)
       }
     }
   }

@@ -21,6 +21,7 @@
 @property (nonatomic) BOOL delaySync;
 @property (nonatomic, copy) void (^delayedSyncBlock)(void);
 @property (nonatomic) NSMutableSet *processingIdentifiers;
+@property (nonatomic) BOOL hasSynced;
 
 @end
 
@@ -59,15 +60,7 @@ static NSString *const RecordsKey = @"records";
   self.identifiersToRecords = [NSMutableDictionary dictionary];
   self.processingIdentifiers = [NSMutableSet set];
   self.shouldBroadcast = YES;
-  
-  void (^handlerBlock)(BOOL success)= ^(BOOL success){
-    if(success) {
-      [self save];
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-  };
-  
-  [self performSelector:@selector(syncWithCompletionHandler:) withObject:handlerBlock afterDelay:3.0];
+  self.hasSynced = YES;
   
   return self;
 }
@@ -264,7 +257,6 @@ static NSString *const RecordsKey = @"records";
 
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
 {
-  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
   [self syncWithCompletionHandler:handler backgroundFetchHandler:nil];
 }
 
@@ -272,6 +264,9 @@ static NSString *const RecordsKey = @"records";
             backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchHandler
 {
   @synchronized(self) {
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+
     if(self.syncing) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
@@ -281,6 +276,7 @@ static NSString *const RecordsKey = @"records";
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(handler) handler(NO);
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
+        [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
       }];
       return;
     } else {
@@ -301,6 +297,7 @@ static NSString *const RecordsKey = @"records";
         addOperationWithBlock:^{
           if(handler) handler(NO);
           if(fetchHandler) fetchHandler(UIBackgroundFetchResultFailed);
+          [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
         }];
        return;
      }
@@ -356,6 +353,7 @@ static NSString *const RecordsKey = @"records";
           [NYPLUserNotifications updateAppIconBadgeWithHeldBooks:[self heldBooks]];
           if(handler) handler(YES);
           if(fetchHandler) fetchHandler(UIBackgroundFetchResultNewData);
+          [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
         }];
      };
      
@@ -378,8 +376,20 @@ static NSString *const RecordsKey = @"records";
                                   message:NSLocalizedString(@"CheckConnection", nil)];
       [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
   }];
+}
+
+- (void)syncOnceIfNeeded {
+  @synchronized (self) {
+    if (self.hasSynced == NO) {
+      self.hasSynced = YES;
+      [self syncWithCompletionHandler:^(BOOL success) {
+        if (success) {
+          [self save];
+        }
+      }];
+    }
+  }
 }
 
 - (void)addBook:(NYPLBook *const)book

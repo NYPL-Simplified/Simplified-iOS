@@ -116,6 +116,9 @@
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
+
+  [[NYPLBookRegistry sharedRegistry] syncOnceIfNeeded];
+
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
     [self.refreshControl endRefreshing];
     if (self.collectionView.numberOfSections == 0) {

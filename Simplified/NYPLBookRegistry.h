@@ -57,6 +57,11 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 // completion.
 - (void)syncWithStandardAlertsOnCompletion;
 
+// This method should be called when the user expects an up-to-date book registry. For example,
+// when the user first visits My Books or Holds. The method will only run once for each app
+// launch so as to not interfere with a system-initiated background fetch.
+- (void)syncOnceIfNeeded;
+
 // Adds a book to the book registry until it is manually removed. It allows the application to
 // present information about obtained books when offline. Attempting to add a book already present
 // will overwrite the existing book as if |updateBook:| were called. The location may be nil. The
