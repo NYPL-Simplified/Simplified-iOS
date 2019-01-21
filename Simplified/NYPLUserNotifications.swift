@@ -5,8 +5,8 @@ let CheckOutActionIdentifier = "NYPLCheckOutNotificationAction"
 let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
 
 @available (iOS 10.0, *)
-@objcMembers class NYPLUserNotifications: NSObject {
-
+@objcMembers class NYPLUserNotifications: NSObject
+{
   let unCenter = UNUserNotificationCenter.current()
 
   /// If a user has not yet been presented with Notifications authorization,
@@ -118,8 +118,8 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
 }
 
 @available (iOS 10.0, *)
-extension NYPLUserNotifications: UNUserNotificationCenterDelegate {
-
+extension NYPLUserNotifications: UNUserNotificationCenterDelegate
+{
   func userNotificationCenter(_ center: UNUserNotificationCenter,
                               willPresent notification: UNNotification,
                               withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void)
@@ -158,7 +158,7 @@ extension NYPLUserNotifications: UNUserNotificationCenterDelegate {
 
       // Asynchronous network task in the background app state.
       let bgTask = UIApplication.shared.beginBackgroundTask {
-        Log.error(#file, "Background task expired before borrow action completed.")
+        Log.error(#file, "Background task expired before borrow action could complete.")
         completionHandler()
       }
       downloadCenter.startBorrow(for: book, attemptDownload: false) {

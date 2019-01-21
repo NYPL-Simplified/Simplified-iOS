@@ -35,7 +35,7 @@
 
 @implementation NYPLAppDelegate
 
-const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 6;
+const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 12;
 
 #pragma mark UIApplicationDelegate
 
@@ -78,7 +78,6 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundFetchHandler
 {
   UIBackgroundTaskIdentifier bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
-    NYPLLOG(@"Error: Background fetch expired before completion.");
     backgroundFetchHandler(UIBackgroundFetchResultFailed);
   }];
 

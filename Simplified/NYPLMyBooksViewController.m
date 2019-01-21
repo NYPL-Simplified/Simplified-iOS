@@ -164,6 +164,9 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 - (void)viewWillAppear:(BOOL)animated
 {
   [super viewWillAppear:animated];
+
+  [[NYPLBookRegistry sharedRegistry] syncOnceIfNeeded];
+
   if([NYPLBookRegistry sharedRegistry].syncing == NO) {
     [self.refreshControl endRefreshing];
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];

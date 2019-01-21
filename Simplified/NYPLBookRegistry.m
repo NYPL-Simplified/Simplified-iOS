@@ -21,6 +21,7 @@
 @property (nonatomic) BOOL delaySync;
 @property (nonatomic, copy) void (^delayedSyncBlock)(void);
 @property (nonatomic) NSMutableSet *processingIdentifiers;
+@property (nonatomic) BOOL hasSynced;
 
 @end
 
@@ -59,15 +60,7 @@ static NSString *const RecordsKey = @"records";
   self.identifiersToRecords = [NSMutableDictionary dictionary];
   self.processingIdentifiers = [NSMutableSet set];
   self.shouldBroadcast = YES;
-  
-  void (^handlerBlock)(BOOL success)= ^(BOOL success){
-    if(success) {
-      [self save];
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-  };
-  
-  [self performSelector:@selector(syncWithCompletionHandler:) withObject:handlerBlock afterDelay:3.0];
+  self.hasSynced = YES;
   
   return self;
 }
@@ -384,6 +377,19 @@ static NSString *const RecordsKey = @"records";
       [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
     }
   }];
+}
+
+- (void)syncOnceIfNeeded {
+  @synchronized (self) {
+    if (self.hasSynced == NO) {
+      self.hasSynced = YES;
+      [self syncWithCompletionHandler:^(BOOL success) {
+        if (success) {
+          [self save];
+        }
+      }];
+    }
+  }
 }
 
 - (void)addBook:(NYPLBook *const)book
