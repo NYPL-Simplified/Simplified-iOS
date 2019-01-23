@@ -60,7 +60,7 @@ static NSString *const RecordsKey = @"records";
   self.identifiersToRecords = [NSMutableDictionary dictionary];
   self.processingIdentifiers = [NSMutableSet set];
   self.shouldBroadcast = YES;
-  self.hasSynced = YES;
+  self.hasSynced = NO;
   
   return self;
 }
