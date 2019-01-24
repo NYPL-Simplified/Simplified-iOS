@@ -121,10 +121,10 @@
     BOOL isSyncing = [NYPLBookRegistry sharedRegistry].syncing;
     if(!isSyncing) {
       [self.refreshControl endRefreshing];
-      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
       if (self.collectionView.numberOfSections == 0) {
         self.collectionView.contentOffset = CGPointMake(0, -self.collectionView.contentInset.top);
       }
+      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];\
     } else {
       self.navigationItem.leftBarButtonItem.enabled = NO;
     }
