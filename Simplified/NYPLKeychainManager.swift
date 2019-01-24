@@ -23,6 +23,7 @@ import Foundation
   class func validateKeychain() {
     removeItemsFromPreviousInstalls()
     migrateItemsFromOldKeychain()
+    updateKeychainForBackgroundFetch()
   }
 
   // The app does not handle DRM Authentication logic when assuming a user
@@ -100,4 +101,44 @@ import Foundation
     return values
   }
 
+  /// Credentials need to be accessed while the phone is locked during a
+  /// background fetch, so those keychain items need their default accessible
+  /// level lowered one notch, if not already, to allow access any time after
+  /// the first unlock per phone reboot.
+  class func updateKeychainForBackgroundFetch() {
+
+    let query: [String: AnyObject] = [
+      kSecClass as String : kSecClassGenericPassword,
+      kSecAttrAccessible as String : kSecAttrAccessibleWhenUnlocked,  //old default
+      kSecReturnData as String  : kCFBooleanTrue,
+      kSecReturnAttributes as String : kCFBooleanTrue,
+      kSecReturnRef as String : kCFBooleanTrue,
+      kSecMatchLimit as String : kSecMatchLimitAll
+    ]
+
+    var result: AnyObject?
+    let lastResultCode = withUnsafeMutablePointer(to: &result) {
+      SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
+    }
+    Log.debug(#file, "Result of keychain query: \(lastResultCode)")
+
+    var values = [String:AnyObject]()
+    if lastResultCode == noErr {
+      guard let array = result as? Array<Dictionary<String, Any>> else { return }
+      for item in array {
+        if let keyData = item[kSecAttrAccount as String] as? Data,
+          let valueData = item[kSecValueData as String] as? Data,
+          let keyString = NSKeyedUnarchiver.unarchiveObject(with: keyData) as? String {
+          let value = NSKeyedUnarchiver.unarchiveObject(with: valueData) as AnyObject
+          values[keyString] = value
+        }
+      }
+    }
+
+    for (key, value) in values {
+      NYPLKeychain.shared().removeObject(forKey: key)
+      NYPLKeychain.shared().setObject(value, forKey: key)
+      Log.debug(#file, "Keychain item \"\(key)\" updated with new accessible security level...")
+    }
+  }
 }

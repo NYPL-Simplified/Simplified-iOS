@@ -11,7 +11,7 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
 
   /// If a user has not yet been presented with Notifications authorization,
   /// defer the presentation for later to maximize acceptance rate. Otherwise,
-  /// Apple documents authorization to be preformed at app-launch to corretly
+  /// Apple documents authorization to be preformed at app-launch to correctly
   /// enable the delegate.
   func authorizeIfNeeded()
   {
