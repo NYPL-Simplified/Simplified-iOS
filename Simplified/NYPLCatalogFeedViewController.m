@@ -94,6 +94,13 @@
   if (settings.userHasSeenWelcomeScreen == YES) {
     [self load];
   }
+
+  [[NYPLBookRegistry sharedRegistry] justLoad];
+  /// Performs with a delay because on a fresh launch, the application state takes
+  /// a moment to accurately update. Posts the notification to keep the switching
+  /// UI disabled while the sync occurs.
+  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+  [self performSelector:@selector(syncLoansIfActive) withObject:self afterDelay:2.0];
 }
 
 - (void) reloadCatalogue {
@@ -104,7 +111,19 @@
 {
   [super viewWillAppear:animated];
   [self.navigationController setNavigationBarHidden:NO];
-  [[NYPLBookRegistry sharedRegistry] syncOnceIfNeeded];
+}
+
+/// Syncs should not occur when the app is not Active. Background Fetch
+/// operations are handled elsewhere.
+- (void)syncLoansIfActive {
+  UIApplication *application = [UIApplication sharedApplication];
+  if (application.applicationState == UIApplicationStateActive) {
+    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+      if (success) {
+        [[NYPLBookRegistry sharedRegistry] save];
+      }
+    }];
+  }
 }
 
 @end

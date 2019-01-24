@@ -125,7 +125,7 @@
       } else {
         [[NYPLBookRegistry sharedRegistry] save];
         [AccountsManager shared].currentAccount = account;
-        [self reloadSelectedLibraryAccount];
+        [self updateFeedForCurrentAccount];
       }
     #else
       [[NYPLBookRegistry sharedRegistry] save];
@@ -154,20 +154,13 @@
 }
 
 
-- (void) reloadSelectedLibraryAccount {
+- (void) updateFeedForCurrentAccount {
   
   Account *account = [[AccountsManager sharedInstance] currentAccount];
   
   [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
   [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
 
-  [[NYPLBookRegistry sharedRegistry] justLoad];
-  [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
-    if (success) {
-      [[NYPLBookRegistry sharedRegistry] save];
-    }
-  }];
-  
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLCurrentAccountDidChangeNotification
    object:nil];
@@ -181,8 +174,6 @@
     Account *account = [[AccountsManager sharedInstance] currentAccount];
     [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
     [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
-
-    [[NYPLBookRegistry sharedRegistry] justLoad];
 
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NYPLCurrentAccountDidChangeNotification
@@ -208,13 +199,13 @@
       [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
     }
     
-    [self reloadSelectedLibraryAccount];
+    [self updateFeedForCurrentAccount];
     
     if (settings.acceptedEULABeforeMultiLibrary == NO) {
       NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(Account *const account) {
         [[NYPLBookRegistry sharedRegistry] save];
         [AccountsManager shared].currentAccount = account;
-        [self reloadSelectedLibraryAccount];
+        [self updateFeedForCurrentAccount];
         [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
         [self dismissViewControllerAnimated:YES completion:nil];
       }];

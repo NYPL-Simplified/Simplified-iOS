@@ -121,7 +121,7 @@
 
 - (void) reloadSelected {
   NYPLCatalogNavigationController * catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
-  [catalog reloadSelectedLibraryAccount];
+  [catalog updateFeedForCurrentAccount];
   
   NYPLHoldsViewController *viewController = (NYPLHoldsViewController *)self.visibleViewController;
   viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;

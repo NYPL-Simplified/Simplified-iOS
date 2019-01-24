@@ -165,12 +165,15 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 {
   [super viewWillAppear:animated];
 
-  [[NYPLBookRegistry sharedRegistry] syncOnceIfNeeded];
-
-  if([NYPLBookRegistry sharedRegistry].syncing == NO) {
-    [self.refreshControl endRefreshing];
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-  }
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    BOOL isSyncing = [NYPLBookRegistry sharedRegistry].syncing;
+    if(!isSyncing) {
+      [self.refreshControl endRefreshing];
+      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+    } else {
+      self.navigationItem.leftBarButtonItem.enabled = NO;
+    }
+  }];
   [self.navigationController setNavigationBarHidden:NO];
 }
 
