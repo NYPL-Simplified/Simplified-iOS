@@ -14,6 +14,7 @@
 #import "SimplyE-Swift.h"
 
 static NSArray *s_problems = nil;
+static NSInteger EstimatedRowHeight = 44;
 
 @interface NYPLProblemReportViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) IBOutlet UITableView *problemDescriptionTable;
@@ -143,11 +144,6 @@ static NSArray *s_problems = nil;
   return cell;
 }
 
-- (CGFloat)tableView:(__unused UITableView *)tableView heightForRowAtIndexPath:(__unused NSIndexPath *)indexPath
-{
-  return 44;
-}
-
 #pragma mark UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -170,6 +166,16 @@ static NSArray *s_problems = nil;
 {
   UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
   cell.accessoryType = UITableViewCellAccessoryNone;
+}
+
+- (CGFloat)tableView:(__unused UITableView *)tableView heightForRowAtIndexPath:(__unused NSIndexPath *)indexPath
+{
+  return UITableViewAutomaticDimension;
+}
+
+- (CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForRowAtIndexPath:(__unused NSIndexPath *)indexPath
+{
+  return EstimatedRowHeight;
 }
 
 @end
