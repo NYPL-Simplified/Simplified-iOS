@@ -323,7 +323,8 @@ double const requestTimeoutInterval = 25.0;
   
 #if defined(FEATURE_DRM_CONNECTOR)
   
-  if([NYPLADEPT sharedInstance].workflowsInProgress) {
+  if([NYPLADEPT sharedInstance].workflowsInProgress ||
+     [NYPLBookRegistry sharedRegistry].syncing == YES) {
     [self presentViewController:[NYPLAlertController
                                  alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
                                  message:@"SettingsAccountViewControllerCannotLogOutMessage"]
@@ -369,14 +370,22 @@ double const requestTimeoutInterval = 25.0;
   [task resume];
   
 #else
-  
-  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountType];
-  [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountType];
-  [[NYPLAccount sharedAccount:self.selectedAccountType] removeAll];
-  [self setupTableData];
-  [self.tableView reloadData];
-  [self removeActivityTitle];
-  [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+
+  if([NYPLBookRegistry sharedRegistry].syncing == YES) {
+    [self presentViewController:[NYPLAlertController
+                                 alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
+                                 message:@"SettingsAccountViewControllerCannotLogOutMessage"]
+                       animated:YES
+                     completion:nil];
+  } else {
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountType];
+    [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountType];
+    [[NYPLAccount sharedAccount:self.selectedAccountType] removeAll];
+    [self setupTableData];
+    [self.tableView reloadData];
+    [self removeActivityTitle];
+    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+  }
 
 #endif
   

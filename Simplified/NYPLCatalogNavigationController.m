@@ -115,8 +115,15 @@
     }
 
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
+
+      BOOL workflowsInProgress;
     #if defined(FEATURE_DRM_CONNECTOR)
-      if([NYPLADEPT sharedInstance].workflowsInProgress) {
+      workflowsInProgress = ([NYPLADEPT sharedInstance].workflowsInProgress || [NYPLBookRegistry sharedRegistry].syncing == YES);
+    #else
+      workflowsInProgress = ([NYPLBookRegistry sharedRegistry].syncing == YES);
+    #endif
+
+      if(workflowsInProgress) {
         [self presentViewController:[NYPLAlertController
                                      alertWithTitle:@"PleaseWait"
                                      message:@"PleaseWaitMessage"]
@@ -127,11 +134,6 @@
         [AccountsManager shared].currentAccount = account;
         [self updateFeedForCurrentAccount];
       }
-    #else
-      [[NYPLBookRegistry sharedRegistry] save];
-      [AccountsManager shared].currentAccount = account;
-      [self reloadSelectedLibraryAccount];
-    #endif
     }]];
   }
   
