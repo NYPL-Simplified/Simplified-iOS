@@ -94,6 +94,17 @@
   if (settings.userHasSeenWelcomeScreen == YES) {
     [self load];
   }
+
+  [[NYPLBookRegistry sharedRegistry] justLoad];
+  UIApplicationState applicationState = [[UIApplication sharedApplication] applicationState];
+  if (applicationState == UIApplicationStateActive) {
+    [self syncBookRegistryForNewFeed];
+  } else {
+    /// Performs with a delay because on a fresh launch, the application state takes
+    /// a moment to accurately update.
+    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+    [self performSelector:@selector(syncBookRegistryForNewFeed) withObject:self afterDelay:2.0];
+  }
 }
 
 - (void) reloadCatalogue {
@@ -104,7 +115,18 @@
 {
   [super viewWillAppear:animated];
   [self.navigationController setNavigationBarHidden:NO];
-  [[NYPLBookRegistry sharedRegistry] syncOnceIfNeeded];
+}
+
+/// Only sync the book registry for a new feed if the app is in the active state.
+- (void)syncBookRegistryForNewFeed {
+  UIApplicationState applicationState = [[UIApplication sharedApplication] applicationState];
+  if (applicationState == UIApplicationStateActive) {
+    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+      if (success) {
+        [[NYPLBookRegistry sharedRegistry] save];
+      }
+    }];
+  }
 }
 
 @end

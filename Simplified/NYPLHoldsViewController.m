@@ -117,15 +117,18 @@
 {
   [super viewWillAppear:animated];
 
-  [[NYPLBookRegistry sharedRegistry] syncOnceIfNeeded];
-
-  if([NYPLBookRegistry sharedRegistry].syncing == NO) {
-    [self.refreshControl endRefreshing];
-    if (self.collectionView.numberOfSections == 0) {
-      self.collectionView.contentOffset = CGPointMake(0, -self.collectionView.contentInset.top);
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    BOOL isSyncing = [NYPLBookRegistry sharedRegistry].syncing;
+    if(!isSyncing) {
+      [self.refreshControl endRefreshing];
+      if (self.collectionView.numberOfSections == 0) {
+        self.collectionView.contentOffset = CGPointMake(0, -self.collectionView.contentInset.top);
+      }
+      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];\
+    } else {
+      self.navigationItem.leftBarButtonItem.enabled = NO;
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
-  }
+  }];
 }
 
 #pragma mark UICollectionViewDelegate

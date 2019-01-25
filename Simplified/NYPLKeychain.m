@@ -62,26 +62,29 @@
   NSData *const keyData = [NSKeyedArchiver archivedDataWithRootObject:key];
   NSData *const valueData = [NSKeyedArchiver archivedDataWithRootObject:value];
   
-  NSMutableDictionary *const dictionary = [self defaultDictionary];
-  dictionary[(__bridge __strong id) kSecAttrAccount] = keyData;
+  NSMutableDictionary *const queryDictionary = [self defaultDictionary];
+  queryDictionary[(__bridge __strong id) kSecAttrAccount] = keyData;
   if (groupID) {
-    dictionary[(__bridge __strong id) kSecAttrAccessGroup] = groupID;
+    queryDictionary[(__bridge __strong id) kSecAttrAccessGroup] = groupID;
   }
 
   OSStatus status;
   if([self objectForKey:key accessGroup:groupID]) {
     NSMutableDictionary *const updateDictionary = [NSMutableDictionary dictionary];
     updateDictionary[(__bridge __strong id) kSecValueData] = valueData;
-    status = SecItemUpdate((__bridge CFDictionaryRef) dictionary,
+    updateDictionary[(__bridge __strong id) kSecAttrAccessible] = (__bridge id _Nullable)(kSecAttrAccessibleAfterFirstUnlock);
+    status = SecItemUpdate((__bridge CFDictionaryRef) queryDictionary,
                            (__bridge CFDictionaryRef) updateDictionary);
     if (status != noErr) {
-      NYPLLOG_F(@"Failed to UPDATE secure values to keychain for group: %@. This is a known issue when running from the debugger. Error: %d", groupID, status);
+      NYPLLOG_F(@"Failed to UPDATE secure values to keychain for group: %@. This is a known issue when running from the debugger. Error: %d", groupID, (int)status);
     }
   } else {
-    dictionary[(__bridge __strong id) kSecValueData] = valueData;
-    status = SecItemAdd((__bridge CFDictionaryRef) dictionary, NULL);
+    NSMutableDictionary *const newItemDictionary = queryDictionary.mutableCopy;
+    newItemDictionary[(__bridge __strong id) kSecValueData] = valueData;
+    newItemDictionary[(__bridge __strong id) kSecAttrAccessible] = (__bridge id _Nullable)(kSecAttrAccessibleAfterFirstUnlock);
+    status = SecItemAdd((__bridge CFDictionaryRef) newItemDictionary, NULL);
     if (status != noErr) {
-      NYPLLOG_F(@"Failed to ADD secure values to keychain for group: %@. This is a known issue when running from the debugger. Error: %d", groupID, status);
+      NYPLLOG_F(@"Failed to ADD secure values to keychain for group: %@. This is a known issue when running from the debugger. Error: %d", groupID, (int)status);
     }
   }
 }

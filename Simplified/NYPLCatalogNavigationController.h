@@ -11,5 +11,5 @@
 
 // designated initializer
 - (instancetype)init;
-- (void)reloadSelectedLibraryAccount;
+- (void)updateFeedForCurrentAccount;
 @end
