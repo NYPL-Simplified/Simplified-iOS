@@ -135,7 +135,7 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     
     name = json["name"] as! String
     subtitle = json["subtitle"] as? String
-    id = json["id"] as! Int
+    id = json["id_numeric"] as! Int
     pathComponent = "\(id)"
     needsAuth = json["needsAuth"] as! Bool
     supportsReservations = json["supportsReservations"] as! Bool
