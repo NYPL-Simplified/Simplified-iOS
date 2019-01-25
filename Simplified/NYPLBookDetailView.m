@@ -217,8 +217,14 @@ static NSString *DetailHTMLTemplate = nil;
 
   self.coverImageView = [[UIImageView alloc] init];
   self.coverImageView.contentMode = UIViewContentModeScaleAspectFit;
+  if (@available(iOS 11.0, *)) {
+    self.coverImageView.accessibilityIgnoresInvertColors = YES;
+  }
   self.blurCoverImageView = [[UIImageView alloc] init];
   self.blurCoverImageView.contentMode = UIViewContentModeScaleAspectFit;
+  if (@available(iOS 11.0, *)) {
+    self.blurCoverImageView.accessibilityIgnoresInvertColors = YES;
+  }
   self.blurCoverImageView.alpha = 0.4f;
 
   [[NYPLBookRegistry sharedRegistry]
