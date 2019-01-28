@@ -78,6 +78,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundFetchHandler
 {
   UIBackgroundTaskIdentifier bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
+    [NYPLBugsnagReports expiredBackgroundFetch];
     backgroundFetchHandler(UIBackgroundFetchResultFailed);
   }];
 
