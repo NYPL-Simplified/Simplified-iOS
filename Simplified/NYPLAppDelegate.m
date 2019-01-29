@@ -77,9 +77,10 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 - (void)application:(__attribute__((unused)) UIApplication *)application
 performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundFetchHandler
 {
-  UIBackgroundTaskIdentifier bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
+  __block UIBackgroundTaskIdentifier bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
     [NYPLBugsnagReports expiredBackgroundFetch];
     backgroundFetchHandler(UIBackgroundFetchResultFailed);
+    [application endBackgroundTask:bgTask];
   }];
 
   // Only the "current library" account syncs during a background fetch.
