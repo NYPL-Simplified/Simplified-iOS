@@ -123,7 +123,6 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 
   [tbc setSelectedIndex:0];
 
-  // Presentation logic should match 'presentFromViewController:' in NYPLBookDetailViewController
   UINavigationController *navFormSheet = (UINavigationController *) tbc.selectedViewController.presentedViewController;
   if (tbc.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
     [tbc.selectedViewController pushViewController:bookDetailVC animated:YES];
@@ -144,8 +143,17 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
   [[NYPLReaderSettings sharedSettings] save];
 }
 
+- (void)applicationWillEnterForeground:(__unused UIApplication *)application
+{
+  // https://jira.nypl.org/browse/SIMPLY-1298
+  [[NYPLRootTabBarController sharedController] reapplyReaderViewControllerIfNeeded];
+}
+
 - (void)applicationDidEnterBackground:(__unused UIApplication *)application
 {
+  // https://jira.nypl.org/browse/SIMPLY-1298
+  [[NYPLRootTabBarController sharedController] dismissReaderViewControllerIfNeeded];
+
   [self.audiobookLifecycleManager didEnterBackground];
 }
 
