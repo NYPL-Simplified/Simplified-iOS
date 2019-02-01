@@ -1,6 +1,8 @@
 #import "NYPLCatalogNavigationController.h"
 #import "NYPLHoldsNavigationController.h"
 #import "NYPLMyBooksNavigationController.h"
+#import "NYPLMyBooksViewController.h"
+#import "NYPLReaderViewController.h"
 #import "NYPLSettings.h"
 #import "NYPLSettingsSplitViewController.h"
 #import "NYPLRootTabBarController.h"
@@ -12,6 +14,7 @@
 @property (nonatomic) NYPLMyBooksNavigationController *myBooksNavigationController;
 @property (nonatomic) NYPLHoldsNavigationController *holdsNavigationController;
 @property (nonatomic) NYPLSettingsSplitViewController *settingsSplitViewController;
+@property (nonatomic) NSString *dismissedBookIdentifier;
 
 @end
 
@@ -118,6 +121,51 @@ shouldSelectViewController:(nonnull UIViewController *)viewController
   [(UINavigationController *)self.selectedViewController
    pushViewController:viewController
    animated:animated];
+}
+
+#pragma mark -
+
+/// Remove these some day if we can figure out why Readium stalls the entire app
+/// when the user returns from a suspended or background state back to the foreground
+/// while a book was left open.
+- (void)dismissReaderViewControllerIfNeeded
+{
+  if(![self.selectedViewController isKindOfClass:[NYPLMyBooksNavigationController class]]) {
+    NYPLLOG(@"Current selected view controller is not NYPLMyBooksNavigationController.");
+    return;
+  }
+
+  NYPLMyBooksNavigationController *booksVC = (NYPLMyBooksNavigationController *)self.selectedViewController;
+  if (![booksVC.topViewController isKindOfClass:[NYPLReaderViewController class]]) {
+    NYPLLOG(@"Current VC in the navigation controller is not NYPLReaderViewController.");
+    return;
+  }
+
+  NYPLReaderViewController *readerVC = (NYPLReaderViewController *)booksVC.topViewController;
+  self.dismissedBookIdentifier = readerVC.bookIdentifier;
+  [(NYPLMyBooksNavigationController *)self.selectedViewController popViewControllerAnimated:NO];
+}
+
+- (void)reapplyReaderViewControllerIfNeeded
+{
+  if (self.dismissedBookIdentifier) {
+    NSString *bookID = self.dismissedBookIdentifier;
+    self.dismissedBookIdentifier = nil;
+
+    if(![self.selectedViewController isKindOfClass:[NYPLMyBooksNavigationController class]]) {
+      NYPLLOG(@"Current selected view controller is not NYPLMyBooksNavigationController.");
+      return;
+    }
+
+    NYPLMyBooksNavigationController *booksVC = (NYPLMyBooksNavigationController *)self.selectedViewController;
+    if (![booksVC.topViewController isKindOfClass:[NYPLMyBooksViewController class]]) {
+      NYPLLOG(@"Current VC in the navigation controller is not NYPLMyBooksViewController.");
+      return;
+    }
+
+    NYPLReaderViewController *reappliedReaderVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:bookID];
+    [self pushViewController:reappliedReaderVC animated:NO];
+  }
 }
 
 @end
