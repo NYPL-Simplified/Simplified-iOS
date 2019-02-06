@@ -487,10 +487,14 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
 #endif
 
-  if (book.revokeURL || [[AccountsManager sharedInstance] currentAccount].needsAuth) {
-
+  if (!book.revokeURL) {
+    if (downloaded) {
+      [self deleteLocalContentForBookIdentifier:identifier];
+    }
+    [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
+    [[NYPLBookRegistry sharedRegistry] save];
+  } else {
     [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-    // Process Circulation Manager Return
     [NYPLOPDSFeed withURL:book.revokeURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
 
       [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
@@ -526,13 +530,6 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
         }
       }
     }];
-  }
-  else {
-    if (downloaded) {
-      [self deleteLocalContentForBookIdentifier:identifier];
-    }
-    [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
-    [[NYPLBookRegistry sharedRegistry] save];
   }
 }
 
