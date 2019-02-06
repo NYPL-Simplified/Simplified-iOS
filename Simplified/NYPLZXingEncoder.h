@@ -1,5 +1,4 @@
 #import <Foundation/Foundation.h>
-@import Bugsnag;
 @import ZXingObjC;
 
 /// The ZXingObj framework encoder throws exceptions, which Swift is not

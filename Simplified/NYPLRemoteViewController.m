@@ -1,4 +1,4 @@
-@import Bugsnag;
+#import "NYPLBugsnagLogs.h"
 #import "NYPLConfiguration.h"
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
@@ -195,12 +195,7 @@
   
   self.reloadView.hidden = NO;
 
-  NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-  if (self.URL) [dict setObject:self.URL forKey:@"URL"];
-  [Bugsnag notifyError:error block:^(BugsnagCrashReport * _Nonnull report) {
-    report.groupingHash = @"catalog-load-error";
-    report.metaData = dict;
-  }];
+  [NYPLBugsnagLogs catalogLoadError:error URL:self.URL];
 
   self.connection = nil;
   self.data = [NSMutableData data];

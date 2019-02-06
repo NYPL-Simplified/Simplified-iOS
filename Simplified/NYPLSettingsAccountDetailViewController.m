@@ -1,4 +1,3 @@
-@import Bugsnag;
 @import LocalAuthentication;
 @import NYPLCardCreator;
 @import CoreLocation;
@@ -12,6 +11,7 @@
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLBugsnagLogs.h"
 #import "NYPLCatalogNavigationController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
@@ -411,7 +411,7 @@ double const requestTimeoutInterval = 25.0;
   NSDictionary *licensor = [self.selectedNYPLAccount licensor];
   if (!licensor) {
     NYPLLOG(@"No Licensor available to deauthorize device. Signing out NYPLAccount creds anyway.");
-    [self bugsnagLogInvalidLicensor];
+    [NYPLBugsnagLogs bugsnagLogInvalidLicensorWithAccountType:self.selectedAccountType];
     afterDeauthorization();
     return;
   }
@@ -438,14 +438,7 @@ double const requestTimeoutInterval = 25.0;
      if(!success) {
        // Even though we failed, let the user continue to log out.
        // The most likely reason is a user changing their PIN.
-       // TODO: Remote logging can be removed when it is determined that sufficient data has been collected.
-       NYPLLOG(@"Failed to deauthorize successfully. User will lose an activation on this device.");
-       [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:4 userInfo:nil]
-                      block:^(BugsnagCrashReport * _Nonnull report) {
-                        report.context = @"NYPLSettingsAccountDetailViewController";
-                        report.severity = BSGSeverityInfo;
-                        report.errorMessage = @"User has lost an activation on signout due to NYPLAdept Error.";
-                      }];
+       [NYPLBugsnagLogs deauthorizationError];
      }
      else {
        NYPLLOG(@"***Successful DRM Deactivation***");
@@ -583,19 +576,7 @@ double const requestTimeoutInterval = 25.0;
                                                                   animated:YES
                                                                 completion:nil];
   [self removeActivityTitle];
-
-  //FIXME: Remove Bugsnag log when DRM Activation moves to the auth document
-  if ([error.domain isEqual:NSURLErrorDomain]) {
-    NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
-    if (self.selectedAccount.name) [metadataParams setObject:self.selectedAccount.name forKey:@"libraryName"];
-    if (error.code) [metadataParams setObject:[NSNumber numberWithInteger:error.code] forKey:@"errorCode"];
-    [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:10 userInfo:nil]
-                   block:^(BugsnagCrashReport * _Nonnull report) {
-                     report.severity = BSGSeverityInfo;
-                     report.errorMessage = @"Login Failed With Error";
-                     [report addMetadata:metadataParams toTabWithName:@"Library Info"];
-                   }];
-  }
+  [NYPLBugsnagLogs loginAlertError:error code:error.code libraryName:self.selectedAccount.name];
 }
 
 - (void)showLogoutAlertWithError:(NSError *)error responseCode:(NSInteger)code
@@ -641,18 +622,6 @@ double const requestTimeoutInterval = 25.0;
       [self showLoginAlertWithError:error];
     }
   }];
-}
-
-- (void)bugsnagLogInvalidLicensor
-{
-  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:3 userInfo:nil]
-                 block:^(BugsnagCrashReport * _Nonnull report) {
-                   report.context = @"NYPLSettingsAccountDetailViewController";
-                   report.severity = BSGSeverityWarning;
-                   report.errorMessage = @"No Valid Licensor available to deauthorize device. Signing out NYPLAccount credentials anyway with no message to the user.";
-                   NSDictionary *metadata = @{@"accountTypeID" : @(self.selectedAccountType)};
-                   [report addMetadata:metadata toTabWithName:@"Extra Data"];
-                 }];
 }
 
 #pragma mark - UITableViewDelegate

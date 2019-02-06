@@ -1,4 +1,3 @@
-@import Bugsnag;
 @import NYPLAudiobookToolkit;
 
 #import "NSString+NYPLStringAdditions.h"
@@ -9,6 +8,7 @@
 #import "NYPLBook.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLBugsnagLogs.h"
 #import "NYPLOPDS.h"
 #import "NYPLSession.h"
 #import "NYPLProblemDocument.h"
@@ -466,10 +466,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   NSString *bookTitle = book.title;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
-
-  if (!book.identifier) {
-    [self recordUnexpectedNilIdentifierForBook:book identifier:identifier title:bookTitle];
-  }
+  [NYPLBugsnagLogs recordUnexpectedNilIdentifierForBook:book identifier:identifier title:bookTitle];
 
   // Process Adobe Return
 #if defined(FEATURE_DRM_CONNECTOR)
@@ -888,40 +885,6 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    object:self];
 }
 
-// This is known to occur when the server incorrectly keeps loans after their stated expiration date and time.
-- (void)recordUnexpectedNilIdentifierForBook:(NYPLBook *)book identifier:(NSString *)identifier title:(NSString *)bookTitle
-{
-  NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
-  [metadataParams setObject:[[AccountsManager sharedInstance] currentAccount] forKey:@"currentAccount"];
-  if (identifier) [metadataParams setObject:identifier forKey:@"incomingIdentifierString"];
-  if (bookTitle) [metadataParams setObject:bookTitle forKey:@"bookTitle"];
-  if (book.revokeURL.absoluteString) [metadataParams setObject:book.revokeURL.absoluteString forKey:@"revokeLink"];
-
-  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:2 userInfo:nil]
-                 block:^(BugsnagCrashReport * _Nonnull report) {
-                   report.context = @"NYPLMyBooksDownloadCenter";
-                   report.severity = BSGSeverityWarning;
-                   report.errorMessage = @"The book identifier was unexpectedly nil when attempting to return.";
-                   [report addMetadata:metadataParams toTabWithName:@"Extra Data"];
-                 }];
-}
-
-- (void)recordFailureToCopy:(NYPLBook *)book
-{
-  NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
-  [metadataParams setObject:[[AccountsManager sharedInstance] currentAccount] forKey:@"currentAccount"];
-  if (book.title) [metadataParams setObject:book.title forKey:@"bookTitle"];
-  if (book.identifier) [metadataParams setObject:book.identifier forKey:@"bookIdentifier"];
-
-  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:5 userInfo:nil]
-                 block:^(BugsnagCrashReport * _Nonnull report) {
-                   report.context = @"NYPLMyBooksDownloadCenter";
-                   report.severity = BSGSeverityWarning;
-                   report.errorMessage = @"fileURLForBookIndentifier returned nil, so no destination to copy file to.";
-                   [report addMetadata:metadataParams toTabWithName:@"Extra Data"];
-                 }];
-}
-
 #if defined(FEATURE_DRM_CONNECTOR)
   
 #pragma mark NYPLADEPTDelegate
@@ -945,7 +908,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
     if (![self fileURLForBookIndentifier:book.identifier]) {
       [self failDownloadForBook:book];
-      [self recordFailureToCopy:book];
+      [NYPLBugsnagLogs recordFailureToCopy:book];
       return;
     }
     
