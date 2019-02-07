@@ -121,9 +121,10 @@
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
 }
 
-- (void) reloadSelected {
+- (void)reloadSelected
+{
   NYPLCatalogNavigationController * catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
-  [catalog updateFeedForCurrentAccount];
+  [catalog updateFeedAndRegistryOnAccountChange];
   
   NYPLHoldsViewController *viewController = (NYPLHoldsViewController *)self.visibleViewController;
   viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;

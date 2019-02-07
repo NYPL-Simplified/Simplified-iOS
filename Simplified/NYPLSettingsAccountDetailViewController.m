@@ -676,7 +676,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountType];
             NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
             [catalog popToRootViewControllerAnimated:NO];
-            [catalog updateFeedForCurrentAccount];
+            [catalog updateFeedAndRegistryOnAccountChange];
           }
         }];
       } else {
@@ -684,7 +684,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         self.selectedAccount.userAboveAgeLimit = YES;
         NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
         [catalog popToRootViewControllerAnimated:NO];
-        [catalog updateFeedForCurrentAccount];
+        [catalog updateFeedAndRegistryOnAccountChange];
       }
       break;
     }

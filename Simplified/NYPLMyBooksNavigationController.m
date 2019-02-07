@@ -88,7 +88,7 @@
 
     [alert addAction:[UIAlertAction actionWithTitle:account.name style:(UIAlertActionStyleDefault) handler:^(__unused UIAlertAction *_Nonnull action) {
 
-      BOOL workflowsInProgress;
+      BOOL workflowsInProgress = false;
     #if defined(FEATURE_DRM_CONNECTOR)
       workflowsInProgress = ([NYPLADEPT sharedInstance].workflowsInProgress || [NYPLBookRegistry sharedRegistry].syncing == YES);
     #else
@@ -125,9 +125,10 @@
   
 }
 
-- (void) reloadSelected {
+- (void)reloadSelected
+{
   NYPLCatalogNavigationController * catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
-  [catalog updateFeedForCurrentAccount];
+  [catalog updateFeedAndRegistryOnAccountChange];
   
   NYPLMyBooksViewController *viewController = (NYPLMyBooksViewController *)self.visibleViewController;
   viewController.navigationItem.title =  [AccountsManager shared].currentAccount.name;
