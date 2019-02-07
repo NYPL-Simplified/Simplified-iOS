@@ -132,7 +132,7 @@
       } else {
         [[NYPLBookRegistry sharedRegistry] save];
         [AccountsManager shared].currentAccount = account;
-        [self updateFeedForCurrentAccount];
+        [self updateFeedAndRegistryOnAccountChange];
       }
     }]];
   }
@@ -156,12 +156,18 @@
 }
 
 
-- (void) updateFeedForCurrentAccount {
-  
+- (void)updateFeedAndRegistryOnAccountChange
+{
   Account *account = [[AccountsManager sharedInstance] currentAccount];
-  
   [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
   [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
+
+  [[NYPLBookRegistry sharedRegistry] justLoad];
+  [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+    if (success) {
+      [[NYPLBookRegistry sharedRegistry] save];
+    }
+  }];
 
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLCurrentAccountDidChangeNotification
@@ -201,14 +207,17 @@
       [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
     }
     
-    [self updateFeedForCurrentAccount];
+    Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+    [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:currentAccount.catalogUrl]];
+    [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
     
     if (settings.acceptedEULABeforeMultiLibrary == NO) {
       NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(Account *const account) {
+        [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
         [[NYPLBookRegistry sharedRegistry] save];
         [AccountsManager shared].currentAccount = account;
-        [self updateFeedForCurrentAccount];
-        [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
+        [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
+        [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
         [self dismissViewControllerAnimated:YES completion:nil];
       }];
       
