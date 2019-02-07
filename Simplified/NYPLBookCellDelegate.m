@@ -1,3 +1,4 @@
+@import Bugsnag;
 @import MediaPlayer;
 @import NYPLAudiobookToolkit;
 

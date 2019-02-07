@@ -1,4 +1,3 @@
-@import Bugsnag;
 @import WebKit;
 
 #import "NYPLBook.h"
@@ -866,18 +865,6 @@ didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReaderBookmark
     [[NYPLBookRegistry sharedRegistry] save];
     self.pagesProgressedSinceSave = 0;
   }
-}
-
-// FIXME: This can be removed when sufficient data has been collected
-// Bug: Something has gone wrong with the VC array configuration. Observed in crash analytics.
-- (void)reportPageViewControllerErrorToBugnsag
-{
-  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:6 userInfo:nil]
-                 block:^(BugsnagCrashReport * _Nonnull report) {
-                   report.context = @"NYPLReaderViewController";
-                   report.severity = BSGSeverityWarning;
-                   report.errorMessage = @"UIPageViewController was attempting to set 0 view controllers.";
-                 }];
 }
 
 @end

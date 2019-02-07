@@ -1,3 +1,5 @@
+import Bugsnag
+
 @objcMembers final class NYPLReturnPromptHelper: NSObject {
 
   class func audiobookPrompt(completion:@escaping (_ returnWasChosen:Bool)->()) -> UIAlertController

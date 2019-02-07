@@ -5,6 +5,7 @@
 #import "NYPLAlertController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLBugsnagLogs.h"
 #import "NYPLReachability.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLRootTabBarController.h"
@@ -78,7 +79,7 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
 performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundFetchHandler
 {
   __block UIBackgroundTaskIdentifier bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
-    [NYPLBugsnagReports expiredBackgroundFetch];
+    [NYPLBugsnagLogs reportExpiredBackgroundFetch];
     backgroundFetchHandler(UIBackgroundFetchResultFailed);
     [application endBackgroundTask:bgTask];
   }];

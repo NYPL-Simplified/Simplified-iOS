@@ -1,10 +1,10 @@
-@import Bugsnag;
 @import WebKit;
 
 #import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookLocation.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLBugsnagLogs.h"
 #import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLNull.h"
@@ -532,7 +532,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     NSString *contentCFI = locationDictionary[@"contentCFI"];
     if (!contentCFI) {
       contentCFI = @"";
-      [self reportNilContentCFIToBugsnag:location locationDictionary:locationDictionary];
+      [NYPLBugsnagLogs reportNilContentCFIToBugsnag:location locationDictionary:locationDictionary bookID:self.book.identifier title:self.book.title];
     }
     dictionary[@"openPageRequest"] = @{@"idref": locationDictionary[@"idref"],
                                        @"elementCfi": contentCFI};
@@ -721,7 +721,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
      withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
        if(!result || [result isKindOfClass:[NSNull class]]) {
          NYPLLOG(@"Readium failed to generate a CFI. This is a bug in Readium.");
-         [self reportNilContentCFIToBugsnag:nil locationDictionary:nil];
+         [NYPLBugsnagLogs reportNilContentCFIToBugsnag:nil locationDictionary:nil bookID:nil title:nil];
          return;
        }
        NSString *const locationJSON = result;
@@ -803,7 +803,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
             expectedLengthDec = [NSDecimalNumber decimalNumberWithDecimal:length.decimalValue];
           }
         } else {
-          [self reportNilUrlToBugsnagWithSpineItem:spineItem];
+          [NYPLBugsnagLogs reportNilUrlToBugsnagWithBaseHref:spineItem.baseHref rootURL:self.server.package.rootURL bookID:self.book.identifier];
         }
       }
       
@@ -916,23 +916,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
     [weakSelf pollReadyState];
   });
-}
-
-// FIXME: This can be removed when sufficient data has been collected
-- (void)reportNilUrlToBugsnagWithSpineItem:(RDSpineItem *)spineItem
-{
-  NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
-  if (self.server.package.rootURL) [metadataParams setObject:self.server.package.rootURL forKey:@"packageRootUrl"];
-  if (spineItem.baseHref) [metadataParams setObject:spineItem.baseHref forKey:@"spineItemBaseHref"];
-  if (self.book.identifier) [metadataParams setObject:self.book.identifier forKey:@"bookIdentifier"];
-
-  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:1 userInfo:nil]
-                 block:^(BugsnagCrashReport * _Nonnull report) {
-                   report.context = @"NYPLReaderReadiumView";
-                   report.severity = BSGSeverityInfo;
-                   report.errorMessage = @"URL for creating book length was unexpectedly nil";
-                   [report addMetadata:metadataParams toTabWithName:@"Extra Data"];
-                 }];
 }
 
 #pragma mark NYPLReaderRenderer
@@ -1071,25 +1054,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 - (void)sequentiallyEvaluateJavaScript:(nonnull NSString *const)javaScript
 {
   [self sequentiallyEvaluateJavaScript:javaScript withCompletionHandler:nil];
-}
-
-//FIXME: Can be removed when sufficient data has been collected
-- (void)reportNilContentCFIToBugsnag:(NYPLBookLocation *)location locationDictionary:(NSDictionary *)locationDictionary {
-  NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
-  if (self.book.identifier) [metadataParams setObject:self.book.identifier forKey:@"bookID"];
-  if (self.book.title) [metadataParams setObject:self.book.title forKey:@"bookTitle"];
-  if (location.locationString) [metadataParams setObject:location.locationString forKey:@"registry locationString"];
-  if (location.renderer) [metadataParams setObject:location.renderer forKey:@"renderer"];
-  if (locationDictionary[@"idref"]) [metadataParams setObject:locationDictionary[@"idref"] forKey:@"openPageRequest idref"];
-  
-  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:0 userInfo:nil]
-                 block:^(BugsnagCrashReport * _Nonnull report) {
-                   report.context = @"NYPLReaderReadiumView";
-                   report.severity = BSGSeverityWarning;
-                   report.groupingHash = @"open-book-nil-cfi";
-                   report.errorMessage = @"No CFI parsed from NYPLBookLocation, or Readium failed to generate a CFI.";
-                   [report addMetadata:metadataParams toTabWithName:@"Extra CFI Data"];
-                 }];
 }
 
 @end

@@ -1,4 +1,5 @@
 #import "NYPLZXingEncoder.h"
+#import "NYPLBugsnagLogs.h"
 
 @implementation NYPLZXingEncoder
 
@@ -36,19 +37,9 @@
   }
   @catch (NSException *exception) {
     NYPLLOG_F(@"Exception thrown during barcode image encoding: %@",exception.name);
-    if (exception.name && exception.reason) [self logExceptionToBugsnag:exception library:library];
+    if (exception.name && exception.reason) [NYPLBugsnagLogs logExceptionToBugsnag:exception library:library];
     return nil;
   }
-}
-
-+ (void)logExceptionToBugsnag:(NSException *)exception library:(NSString *)library
-{
-  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:8 userInfo:nil]
-                 block:^(BugsnagCrashReport * _Nonnull report) {
-                   report.context = @"NYPLZXingEncoder";
-                   report.severity = BSGSeverityInfo;
-                   report.errorMessage = [NSString stringWithFormat:@"%@: %@. %@", library, exception.name, exception.reason];
-                 }];
 }
 
 @end
