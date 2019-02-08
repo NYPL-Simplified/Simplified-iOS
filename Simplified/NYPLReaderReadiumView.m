@@ -756,12 +756,11 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                            initWithLocationString:locationJSON
                                            renderer:renderer];
 
-       [[NYPLBookRegistry sharedRegistry] setLocation:location forIdentifier:weakSelf.book.identifier];
-
-       if ([location.locationString containsString:@"null"]) {
-         NYPLLOG(@"Location CFI was unexpectedly null. Cancelling attempt to sync.");
-       } else {
+       if (![location.locationString containsString:@"null"]) {
+         [[NYPLBookRegistry sharedRegistry] setLocation:location forIdentifier:weakSelf.book.identifier];
          [weakSelf.syncManager postLastReadPosition:location.locationString];
+       } else {
+         NYPLLOG(@"CFI was unexpectedly null. Not saving this invalid location.");
        }
      }];
   });
