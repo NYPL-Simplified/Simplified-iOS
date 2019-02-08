@@ -35,7 +35,8 @@
       ContentTypeAdobeAdept,
       ContentTypeBearerToken,
       ContentTypeEpubZip,
-      ContentTypeFindaway
+      ContentTypeFindaway,
+      ContentTypeOpenAccessAudiobook
     ]];
   }
 

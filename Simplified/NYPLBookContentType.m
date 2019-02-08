@@ -3,7 +3,8 @@
 
 NYPLBookContentType NYPLBookContentTypeFromMIMEType(NSString *const string)
 {
-  if ([string isEqualToString:ContentTypeFindaway]) {
+  if ([string isEqualToString:ContentTypeFindaway] ||
+      [string isEqualToString:ContentTypeOpenAccessAudiobook]) {
     return NYPLBookContentTypeAudiobook;
   } else if ([string isEqualToString:ContentTypeEpubZip] ||
              [string isEqualToString:ContentTypeAdobeAdept]) {
