@@ -15,22 +15,20 @@
 
 + (void)recordUnexpectedNilIdentifierForBook:(NYPLBook *)book identifier:(NSString *)identifier title:(NSString *)bookTitle {
 
-  if (!book.identifier) {
+  NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
+  [metadataParams setObject:[[AccountsManager sharedInstance] currentAccount] forKey:@"currentAccount"];
+  if (identifier) [metadataParams setObject:identifier forKey:@"incomingIdentifierString"];
+  if (bookTitle) [metadataParams setObject:bookTitle forKey:@"bookTitle"];
+  if (book.revokeURL.absoluteString) [metadataParams setObject:book.revokeURL.absoluteString forKey:@"revokeLink"];
 
-    NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
-    [metadataParams setObject:[[AccountsManager sharedInstance] currentAccount] forKey:@"currentAccount"];
-    if (identifier) [metadataParams setObject:identifier forKey:@"incomingIdentifierString"];
-    if (bookTitle) [metadataParams setObject:bookTitle forKey:@"bookTitle"];
-    if (book.revokeURL.absoluteString) [metadataParams setObject:book.revokeURL.absoluteString forKey:@"revokeLink"];
+  [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:2 userInfo:nil]
+                 block:^(BugsnagCrashReport * _Nonnull report) {
+                   report.context = @"NYPLMyBooksDownloadCenter";
+                   report.severity = BSGSeverityWarning;
+                   report.errorMessage = @"The book identifier was unexpectedly nil when attempting to return.";
+                   [report addMetadata:metadataParams toTabWithName:@"Extra Data"];
+                 }];
 
-    [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:2 userInfo:nil]
-                   block:^(BugsnagCrashReport * _Nonnull report) {
-                     report.context = @"NYPLMyBooksDownloadCenter";
-                     report.severity = BSGSeverityWarning;
-                     report.errorMessage = @"The book identifier was unexpectedly nil when attempting to return.";
-                     [report addMetadata:metadataParams toTabWithName:@"Extra Data"];
-                   }];
-  }
 }
 
 + (void)recordFailureToCopy:(NYPLBook *)book

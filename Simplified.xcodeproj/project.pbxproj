@@ -1414,7 +1414,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env ruby";
 			shellScript = "begin\n  require './bugsnag-dsym-upload'\nrescue LoadError => e\n  puts 'Bugsnag script is missing. Dsym files will not be uploaded for crash analytics.'\nend\n";
-			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 

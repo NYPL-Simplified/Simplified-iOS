@@ -466,7 +466,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   NSString *bookTitle = book.title;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
-  [NYPLBugsnagLogs recordUnexpectedNilIdentifierForBook:book identifier:identifier title:bookTitle];
+  if (!book.identifier) {
+    [NYPLBugsnagLogs recordUnexpectedNilIdentifierForBook:book identifier:identifier title:bookTitle];
+  }
 
   // Process Adobe Return
 #if defined(FEATURE_DRM_CONNECTOR)
