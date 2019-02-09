@@ -4,5 +4,5 @@ github "NYPL-Simplified/NYPLAEToolkit" "dbb7cac8a04ab907fa74190e2c95c6e6d42734ea
 github "NYPL-Simplified/NYPLAudiobookToolkit" "fbe96b5c2bd47452312a588f14bfbdfdce5dee39"
 github "PureLayout/PureLayout" "v3.1.4"
 github "TheLevelUp/ZXingObjC" "3.5.0"
-github "bugsnag/bugsnag-cocoa" "v5.17.0"
+github "bugsnag/bugsnag-cocoa" "v5.17.3"
 github "stephencelis/SQLite.swift" "0.11.5"
