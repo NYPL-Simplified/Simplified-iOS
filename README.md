@@ -6,13 +6,13 @@
 02. `cd Simplified-iOS`
 03. `git submodule update --init --recursive`
 04. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
-05. `carthage bootstrap --platform ios --use-ssh`
+05. `carthage bootstrap --platform ios --use-ssh`. Note: If `carthage bootstrap` fails, you may need to create an installer package from our fork: https://github.com/NYPL-Simplified/Carthage.
 06. Symlink the "DRM_Connector_Prerelease" directory to "adobe-rmsdk" within the "Simplified-iOS" directory. (You will need to have obtained the Adobe DRM Connector prerelease from Adobe.)
 07. Build OpenSSL and cURL as described in the following "Building OpenSSL and cURL" section. Ensure you're in the "Simplified-iOS" directory before continuing to the next step.
 08. `sh adobe-rmsdk-build.sh`
 09. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
 10. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
-11. Copy `Accounts.json` (obtained elsewhere) to `Simplified/Accounts.json`.
+11. `cp Accounts.json.example Simplfiied/Accounts.json`.
 12. `open Simplified.xcodeproj`
 13. Build.
 
@@ -40,7 +40,7 @@ Follow the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf" to build Ope
 10. `open Simplified.xcodeproj`
 11. Remove "Simplified+RMSDK.xcconfig" from the project.
 12. Delete "libADEPT.a" and "libAdobe Content Filter.a" from "Link Binary with Libraries" for the "SimplyE" target.
-13. Copy `Accounts.json` (obtained elsewhere) to `Simplified/Accounts.json`.
+13. `cp Accounts.json.example Simplfiied/Accounts.json`.
 14. Build.
 
 # Contributing

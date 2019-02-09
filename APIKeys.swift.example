@@ -1,25 +1,10 @@
 import Foundation
 
-import HelpStack
-
 @objcMembers class APIKeys: NSObject {
-
   static let bugsnagID: String = ""
 
   static let cardCreatorEndpointURL: URL = URL.init(string: "")!
   static let cardCreatorVersion: String = ""
   static let cardCreatorUsername: String = ""
   static let cardCreatorPassword: String = ""
-
-  /// Used for the top-level FAQ in Settings.
-  static let topLevelHelpStackGear: HSGear = HSZenDeskGear(
-    instanceUrl: "",
-    staffEmailAddress: "",
-    apiToken: "")
-
-  // FIXME:
-  // As ugly as this is, this needs to live here until the library registry
-  // is completed and this information is pulled from a server. The
-  // identifiers correspond to the `id` fields in "Accounts.json".
-  static let libraryIdentifiersToHelpStackGears: [NSNumber: HSGear] = [:]
 }
