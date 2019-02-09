@@ -1,20 +1,25 @@
 import UIKit
+import WebKit
 
 /// Used for displaying HTML pages (and their associated resources) that are
 /// bundled with an application. Any clicked links will open in an external
 /// web browser, thus their content should not be part of the application.
 @objcMembers final class BundledHTMLViewController: UIViewController {
   let fileURL: URL
-  let webView: UIWebView
-  let webViewDelegate: UIWebViewDelegate
+  let webView: WKWebView
+  let webViewDelegate: WKNavigationDelegate
   
   required init(fileURL: URL, title: String) {
     self.fileURL = fileURL
-    self.webView = UIWebView.init()
+    if #available(iOS 10.0, *) {
+      let config = WKWebViewConfiguration()
+      config.dataDetectorTypes = WKDataDetectorTypes()
+      self.webView = WKWebView(frame: .zero, configuration: config)
+    } else {
+      self.webView = WKWebView()
+    }
     self.webViewDelegate = WebViewDelegate()
-    
     super.init(nibName: nil, bundle: nil)
-    
     self.title = title
   }
   
@@ -22,33 +27,37 @@ import UIKit
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
+
+  deinit {
+    self.webView.navigationDelegate = nil
+    self.webView.stopLoading()
+  }
   
   override func viewDidLoad() {
     self.webView.frame = self.view.bounds
     self.webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     self.webView.backgroundColor = UIColor.white
-    self.webView.delegate = self.webViewDelegate
-    self.webView.dataDetectorTypes = UIDataDetectorTypes();
+    self.webView.navigationDelegate = self.webViewDelegate
     self.view.addSubview(self.webView)
   }
   
   override func viewWillAppear(_ animated: Bool) {
-    self.webView.loadRequest(URLRequest.init(url: self.fileURL))
+    self.webView.load(URLRequest(url: self.fileURL))
   }
   
-  fileprivate class WebViewDelegate: NSObject, UIWebViewDelegate {
-    @objc func webView(
-      _ webView: UIWebView,
-      shouldStartLoadWith request: URLRequest,
-                                 navigationType: UIWebView.NavigationType) -> Bool
+  fileprivate class WebViewDelegate: NSObject, WKNavigationDelegate
+  {
+    func webView(_ webView: WKWebView,
+                 decidePolicyFor navigationAction: WKNavigationAction,
+                 decisionHandler: @escaping (WKNavigationActionPolicy) -> Void)
     {
-      if navigationType == .linkClicked {
-        UIApplication.shared.openURL(request.url!)
-        return false
+      if navigationAction.navigationType == .linkActivated {
+        if let url = navigationAction.request.url {
+          UIApplication.shared.openURL(url)
+          decisionHandler(.allow)
+        }
       }
-      
-      // We should not be going out to the network for anything.
-      return request.url!.scheme == "file"
+      decisionHandler(.cancel)
     }
   }
 }

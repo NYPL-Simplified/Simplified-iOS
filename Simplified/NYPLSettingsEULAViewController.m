@@ -1,10 +1,11 @@
+@import WebKit;
+
 #import "NYPLConfiguration.h"
 #import "NYPLSettings.h"
-
 #import "NYPLSettingsEULAViewController.h"
 
 @interface NYPLSettingsEULAViewController ()
-@property (nonatomic) UIWebView *webView;
+@property (nonatomic) WKWebView *webView;
 @property (nonatomic) UILabel *titleLabel;
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) NSURL *eulaURL;
@@ -40,12 +41,12 @@
   [super viewDidLoad];
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
-  
-  self.webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
+
+  self.webView = [[WKWebView alloc] initWithFrame:self.view.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight
                                    | UIViewAutoresizingFlexibleWidth);
   self.webView.backgroundColor = [NYPLConfiguration backgroundColor];
-  self.webView.delegate = self;
+  self.webView.navigationDelegate = self;
   
   NSURLRequest *const request = [NSURLRequest requestWithURL:self.eulaURL
                                                  cachePolicy:NSURLRequestUseProtocolCachePolicy
@@ -76,15 +77,19 @@
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark NSURLConnectionDelegate
-- (void)webView:(__attribute__((unused)) UIWebView *)webView didFailLoadWithError:(__attribute__((unused)) NSError *)error {
+#pragma mark WKNavigationDelegate
+
+- (void)webView:(__unused WKWebView *)webView
+didFailNavigation:(__unused WKNavigation *)navigation
+      withError:(__unused NSError *)error
+{
   [self.activityIndicatorView stopAnimating];
-  
+
   UIAlertController *alertController = [UIAlertController
                                         alertControllerWithTitle:NSLocalizedString(@"ConnectionFailed", nil)
                                         message:NSLocalizedString(@"ConnectionFailedDescription", nil)
                                         preferredStyle:UIAlertControllerStyleAlert];
-  
+
   UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                          style:UIAlertActionStyleDestructive
                                                        handler:^(UIAlertAction *cancelAction) {
@@ -92,19 +97,19 @@
                                                            [self.navigationController popViewControllerAnimated:YES];
                                                          }
                                                        }];
-  
+
   UIAlertAction *reloadAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Reload", nil)
-                                                       style:UIAlertActionStyleDefault
-                                                     handler:^(UIAlertAction *reloadAction) {
-                                                       if (reloadAction) {
-                                                         NSURLRequest *const request = [NSURLRequest requestWithURL:self.eulaURL
-                                                                                                        cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                                                                                    timeoutInterval:15.0];
-                                                         
-                                                         [self.webView loadRequest:request];
-                                                       }
-                                                     }];
-  
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction *reloadAction) {
+                                                         if (reloadAction) {
+                                                           NSURLRequest *const request = [NSURLRequest requestWithURL:self.eulaURL
+                                                                                                          cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                                                                      timeoutInterval:15.0];
+
+                                                           [self.webView loadRequest:request];
+                                                         }
+                                                       }];
+
   [alertController addAction:reloadAction];
   [alertController addAction:cancelAction];
   [self presentViewController:alertController
@@ -112,7 +117,9 @@
                    completion:nil];
 }
 
-- (void)webViewDidFinishLoad:(__attribute__((unused)) UIWebView *)webView {
+- (void)webView:(__unused WKWebView *)webView
+didFinishNavigation:(__unused WKNavigation *)navigation
+{
   [self.activityIndicatorView stopAnimating];
 }
 

@@ -1,6 +1,6 @@
 #import "SimplyE-Swift.h"
 
-@interface NYPLSettingsEULAViewController : UIViewController <UIWebViewDelegate>
+@interface NYPLSettingsEULAViewController : UIViewController <WKNavigationDelegate>
 
 - (instancetype)initWithAccount:(Account *)account;
 - (instancetype)initWithNYPLURL;

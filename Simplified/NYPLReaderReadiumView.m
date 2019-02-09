@@ -364,6 +364,8 @@ static void generateTOCElements(NSArray *const navigationElements,
 - (void)dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+  self.webView.UIDelegate = nil;
+  self.webView.navigationDelegate = nil;
 }
 
 #pragma mark RDPackageResourceServerDelegate
