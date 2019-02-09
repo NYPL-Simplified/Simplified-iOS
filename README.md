@@ -34,14 +34,16 @@ Follow the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf" to build Ope
 04. `git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter`
 05. `git submodule update --init --recursive`
 06. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
-07. `carthage bootstrap --platform ios --use-ssh`
-08. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
+07. Remove dependencies: "NYPLAEToolkit" and "AudioEngine" in the `Cartfile` and `Cartfile.resolved`.
+08. `carthage bootstrap --platform ios --use-ssh`
 09. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
-10. `open Simplified.xcodeproj`
-11. Remove "Simplified+RMSDK.xcconfig" from the project.
-12. Delete "libADEPT.a" and "libAdobe Content Filter.a" from "Link Binary with Libraries" for the "SimplyE" target.
-13. `cp Accounts.json.example Simplfiied/Accounts.json`.
-14. Build.
+10. `cp Accounts.json.example Simplified/Accounts.json`. An up-to-date registry can be obtained from NYPL.
+11. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
+12. `open Simplified.xcodeproj`
+13. Remove "Simplified+RMSDK.xcconfig" from the project.
+14. Delete "libADEPT.a" and "libAdobe Content Filter.a" from "Link Binary with Libraries" for the "SimplyE" target.
+15. Delete "NYPLAEToolkit.framework" and "AudioEngine.framework" from "Link Binary with Libraries", and remove related references in the "Copy Frameworks (Carthage)" Build Phase.
+16. Build.
 
 # Contributing
 
@@ -64,8 +66,7 @@ The rest of the program follows Apple's usual pattern of passive views,
 relatively passive models, and one-off controllers for integrating everything.
 Immutability is preferred wherever possible.
 
-Questions and suggestions should be submitted as GitHub issues and tagged with
-the appropriate labels. More in-depth discussion occurs via Slack: Email
+Questions, suggestions, and general discussion occurs via Slack: Email
 `swans062@umn.edu` for access.
 
 # License
