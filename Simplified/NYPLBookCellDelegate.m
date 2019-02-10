@@ -140,7 +140,7 @@
 
       __weak AudiobookPlayerViewController *weakAudiobookVC = audiobookVC;
       [manager setPlaybackCompletionHandler:^{
-        NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, nil];
+        NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, ContentTypeOpenAccessAudiobook, nil];
         NSSet<NYPLBookAcquisitionPath *> *paths = [NYPLBookAcquisitionPath
                                                    supportedAcquisitionPathsForAllowedTypes:types
                                                    allowedRelations:(NYPLOPDSAcquisitionRelationSetBorrow |
@@ -170,10 +170,6 @@
         NYPLLOG_F(@"Returning to Audiobook Location: %@", chapterLocation);
         [manager.audiobook.player movePlayheadToLocation:chapterLocation];
       }
-      //FIXME: Disabled until a better solution is decided on.
-//      else {
-//        [self presentWwanNetworkWarningIfNeeded];
-//      }
 
       [self scheduleTimerForAudiobook:book manager:manager viewController:audiobookVC];
 
@@ -243,19 +239,6 @@
   NSString *message = NSLocalizedString(@"The item you are trying to open is not currently supported by SimplyE.", nil);
   NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title singleMessage:message];
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
-}
-
-- (void)presentWwanNetworkWarningIfNeeded
-{
-  // Inform a user if they're downloading over cellular once for each new audiobook.
-  NetworkStatus status = [[NYPLReachability sharedReachability].hostReachabilityManager currentReachabilityStatus];
-  if (status == ReachableViaWWAN) {
-    NSString *title = NSLocalizedString(@"Large Download", nil);
-    NSString *message = NSLocalizedString(@"Connecting to Wi-Fi may improve performance.", nil);
-    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title singleMessage:message];
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Continue", nil) style:UIAlertActionStyleDefault handler:nil]];
-    [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
-  }
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate
