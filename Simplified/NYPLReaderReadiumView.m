@@ -366,6 +366,7 @@ static void generateTOCElements(NSArray *const navigationElements,
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   self.webView.UIDelegate = nil;
   self.webView.navigationDelegate = nil;
+  NYPLLOG(@"NYPLReaderReadiumView was deallocated.");
 }
 
 #pragma mark RDPackageResourceServerDelegate
@@ -506,10 +507,16 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   }
   
   self.package.rootURL = [NSString stringWithFormat:@"http://%@:%d/", localhost, self.server.port];
+
+  __block UIBackgroundTaskIdentifier bgTask = [[UIApplication sharedApplication]
+                                               beginBackgroundTaskWithExpirationHandler:^{
+    [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+  }];
   
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
     [self calculateBookLength];
-    
+    [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+
     dispatch_sync(dispatch_get_main_queue(), ^{
       self.syncManager = [[NYPLReadiumViewSyncManager alloc] initWithBookID:self.book.identifier
                                                              annotationsURL:self.book.annotationsURL
@@ -771,7 +778,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 - (void)calculateBookLength
 {
   NSDecimalNumber *totalLength = [NSDecimalNumber zero];
-  
   NSMutableDictionary *bookDicts = [[NSMutableDictionary alloc] init];
   
   for (RDSpineItem *spineItem in self.package.spineItems) {
