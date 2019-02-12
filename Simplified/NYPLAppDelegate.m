@@ -144,20 +144,6 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
   [[NYPLReaderSettings sharedSettings] save];
 }
 
-- (void)applicationWillEnterForeground:(__unused UIApplication *)application
-{
-  // https://jira.nypl.org/browse/SIMPLY-1298
-  [[NYPLRootTabBarController sharedController] reapplyReaderViewControllerIfNeeded];
-}
-
-- (void)applicationDidEnterBackground:(__unused UIApplication *)application
-{
-  // https://jira.nypl.org/browse/SIMPLY-1298
-  [[NYPLRootTabBarController sharedController] dismissReaderViewControllerIfNeeded];
-
-  [self.audiobookLifecycleManager didEnterBackground];
-}
-
 - (void)applicationWillTerminate:(__unused UIApplication *)application
 {
   [self.audiobookLifecycleManager willTerminate];
