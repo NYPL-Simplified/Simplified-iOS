@@ -14,7 +14,6 @@
 @property (nonatomic) NYPLMyBooksNavigationController *myBooksNavigationController;
 @property (nonatomic) NYPLHoldsNavigationController *holdsNavigationController;
 @property (nonatomic) NYPLSettingsSplitViewController *settingsSplitViewController;
-@property (nonatomic) NSString *dismissedBookIdentifier;
 
 @end
 
@@ -54,6 +53,11 @@
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(setTabViewControllers)
                                                name:NYPLCurrentAccountDidChangeNotification
+                                             object:nil];
+
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(dismissReaderUponEnteringBackground)
+                                               name:UIApplicationDidEnterBackgroundNotification
                                              object:nil];
   return self;
 }
@@ -125,47 +129,19 @@ shouldSelectViewController:(nonnull UIViewController *)viewController
 
 #pragma mark -
 
-/// Remove these some day if we can figure out why Readium stalls the entire app
-/// when the user returns from a suspended or background state back to the foreground
-/// while a book was left open.
-- (void)dismissReaderViewControllerIfNeeded
+/// Dismiss NYPLReaderViewController if entering the background, to try and
+/// mitigate reported issue of the app freezing and not allowing navigation. Can
+/// be removed whenever the renderer is replaced.
+/// https://jira.nypl.org/browse/SIMPLY-1298
+- (void)dismissReaderUponEnteringBackground
 {
-  if(![self.selectedViewController isKindOfClass:[NYPLMyBooksNavigationController class]]) {
-    NYPLLOG(@"Current selected view controller is not NYPLMyBooksNavigationController.");
+  UINavigationController *selectedTab = (UINavigationController *)self.selectedViewController;
+  if (![selectedTab.topViewController isKindOfClass:[NYPLReaderViewController class]]) {
+    NYPLLOG(@"Entering Background: Ignoring VC that is not NYPLReaderViewController.");
     return;
   }
 
-  NYPLMyBooksNavigationController *booksVC = (NYPLMyBooksNavigationController *)self.selectedViewController;
-  if (![booksVC.topViewController isKindOfClass:[NYPLReaderViewController class]]) {
-    NYPLLOG(@"Current VC in the navigation controller is not NYPLReaderViewController.");
-    return;
-  }
-
-  NYPLReaderViewController *readerVC = (NYPLReaderViewController *)booksVC.topViewController;
-  self.dismissedBookIdentifier = readerVC.bookIdentifier;
-  [(NYPLMyBooksNavigationController *)self.selectedViewController popViewControllerAnimated:NO];
-}
-
-- (void)reapplyReaderViewControllerIfNeeded
-{
-  if (self.dismissedBookIdentifier) {
-    NSString *bookID = self.dismissedBookIdentifier;
-    self.dismissedBookIdentifier = nil;
-
-    if(![self.selectedViewController isKindOfClass:[NYPLMyBooksNavigationController class]]) {
-      NYPLLOG(@"Current selected view controller is not NYPLMyBooksNavigationController.");
-      return;
-    }
-
-    NYPLMyBooksNavigationController *booksVC = (NYPLMyBooksNavigationController *)self.selectedViewController;
-    if (![booksVC.topViewController isKindOfClass:[NYPLMyBooksViewController class]]) {
-      NYPLLOG(@"Current VC in the navigation controller is not NYPLMyBooksViewController.");
-      return;
-    }
-
-    NYPLReaderViewController *reappliedReaderVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:bookID];
-    [self pushViewController:reappliedReaderVC animated:NO];
-  }
+  [(UINavigationController *)self.selectedViewController popViewControllerAnimated:NO];
 }
 
 @end

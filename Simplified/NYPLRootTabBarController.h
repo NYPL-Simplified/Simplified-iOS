@@ -20,12 +20,4 @@
 - (void)pushViewController:(UIViewController *const)viewController
                   animated:(BOOL const)animated;
 
-/// Dismisses NYPLReaderViewController if it's on the top of the
-/// UINavigationController stack.
-- (void)dismissReaderViewControllerIfNeeded;
-
-/// Adds NYPLReaderViewController back to the stack if it was dismissed with
-/// `dismissReaderViewControllerIfNeeded`
-- (void)reapplyReaderViewControllerIfNeeded;
-
 @end
