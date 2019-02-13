@@ -605,9 +605,20 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
           borrowCompletion();
           return;
         }
-        NYPLAlertController *const alert = [NYPLAlertController alertWithTitle:@"BorrowFailed" message:@"BorrowCouldNotBeCompletedFormat", book.title];
-        if (error) [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
-        [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+
+        if (error) {
+          NSString *message = @"BorrowCouldNotBeCompletedFormat";
+          BOOL displayDocumentMessage = YES;
+          if([error[@"type"] isEqualToString:NYPLProblemDocumentTypeLoanAlreadyExists]) {
+            message = NSLocalizedString(@"You have already checked out this loan. You may need to refresh your My Books list to download the title.",
+                                        comment: @"When book is already checked out on patron's other device(s), they will get this message");
+            displayDocumentMessage = NO;
+          }
+          NYPLAlertController *const alert = [NYPLAlertController alertWithTitle:@"BorrowFailed" message:message, book.title];
+          [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:displayDocumentMessage];
+          [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+        }
+
       }];
       return;
     }
