@@ -751,7 +751,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.webView);
 
-  NYPLLOG(@"executing 'pageDidChange()'");
   [self sequentiallyEvaluateJavaScript:@"simplified.pageDidChange();"];
   
   self.isPageTurning = NO;
@@ -759,7 +758,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   __weak NYPLReaderReadiumView *const weakSelf = self;
   // Readium needs a moment...
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    NYPLLOG(@"executing bookmarkCurrentPage()");
     [weakSelf
      sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
      withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
@@ -809,8 +807,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
   NSDecimalNumber *totalLength = [NSDecimalNumber zero];
   NSMutableDictionary *bookDicts = [[NSMutableDictionary alloc] init];
-  int index = 0;
-  
+
   for (RDSpineItem *spineItem in self.package.spineItems) {
 
     if (self.backgroundWorkItem) {
@@ -828,8 +825,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
       NSHTTPURLResponse *response;
       NSError *headError;
       int responseStatusCode = 0;
-      index++;
-      NYPLLOG_F(@"spine item request: %d", index);
       [NSURLConnection sendSynchronousRequest: request returningResponse: &response error: &headError];
       if ([response respondsToSelector:@selector(allHeaderFields)]) {
         
