@@ -279,12 +279,6 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [[NYPLBookRegistry sharedRegistry] save];
 }
 
--(void)didMoveToParentViewController:(UIViewController *)parent {
-  if (!parent && [self.rendererView bookHasMediaOverlaysBeingPlayed]) {
-    [self.rendererView applyMediaOverlayPlaybackToggle];
-  }
-}
-
 - (void) prepareHeaderFooterViews {
   self.headerView = [[UIView alloc] init];
   self.headerView.hidden = YES;
@@ -676,10 +670,6 @@ didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReaderBookmark
       didSelectMediaOverlaysEnableClick:(NYPLReaderSettingsMediaOverlaysEnableClick) mediaOverlaysEnableClick {
   [NYPLReaderSettings sharedSettings].mediaOverlaysEnableClick = mediaOverlaysEnableClick;
   [self applyCurrentSettings];
-}
-
--(void)readerSettingsViewDidSelectMediaOverlayToggle:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView {
-  [[NYPLReaderSettings sharedSettings] toggleMediaOverlayPlayback];
 }
 
 #pragma mark -

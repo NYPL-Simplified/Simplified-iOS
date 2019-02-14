@@ -346,15 +346,6 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
     }];
 }
 
-- (void) toggleMediaOverlayPlayback {
-  __weak NYPLReaderSettings const *weakSelf = self;
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLReaderSettingsMediaOverlayPlaybackToggleDidChangeNotification
-     object:weakSelf];
-  }];
-}
-
 - (UIColor *)backgroundColor
 {
   switch(self.colorScheme) {

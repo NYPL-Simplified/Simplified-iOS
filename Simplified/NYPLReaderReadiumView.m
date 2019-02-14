@@ -35,7 +35,6 @@
 @property (nonatomic) RDContainer *container;
 @property (nonatomic) NYPLReaderContainerDelegate *containerDelegate;
 @property (nonatomic) BOOL loaded;
-@property (nonatomic) BOOL mediaOverlayIsPlaying;
 @property (nonatomic) NSInteger openPageCount;
 @property (nonatomic) RDPackage *package;
 @property (nonatomic) BOOL pageProgressionIsLTR;
@@ -61,7 +60,6 @@
 @end
 
 static NSString *const localhost = @"127.0.0.1";
-
 static NSString *const renderer = @"readium";
 
 // The web view will be checked this often to see if it is done loading. This check
@@ -78,7 +76,7 @@ static id argument(NSURL *const URL)
   assert(range.location != NSNotFound);
   
   NSData *const data = [[[s substringFromIndex:(range.location + 1)]
-                         stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
+                         stringByRemovingPercentEncoding]
                         dataUsingEncoding:NSUTF8StringEncoding];
   
   return NYPLJSONObjectFromData(data);
@@ -207,13 +205,7 @@ static void generateTOCElements(NSArray *const navigationElements,
    selector:@selector(applyCurrentFlowDependentSettings)
    name:NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification
    object:nil];
-  
-  [[NSNotificationCenter defaultCenter]
-   addObserver:self
-   selector:@selector(applyMediaOverlayPlaybackToggle)
-   name:NYPLReaderSettingsMediaOverlayPlaybackToggleDidChangeNotification
-   object:nil];
-  
+   
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(willResignActive)
@@ -289,6 +281,29 @@ static void generateTOCElements(NSArray *const navigationElements,
     self.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
     self.webView.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
   }];
+}
+
+- (void)applyBackgroundMediaOverlayHighlightColor {
+  NSString * javascript = [NSString stringWithFormat:@" \
+                           window.nsRdHighlightColor = '%@'; \
+                           var reader = ReadiumSDK.reader; \
+                           var stylesheetText = function(color){return \".-epub-media-overlay-active {background-color: \" + color + \" !important;}\"}; \
+                           \
+                           \
+                           var eventCb = function($iframe, spineItem) { \
+                           var contentDoc = $iframe[0].contentDocument; \
+                           var $head = $('head', contentDoc); \
+                           var styleEl = contentDoc.createElement('style'); \
+                           styleEl.id = 'ns-rd-custom-styles'; \
+                           styleEl.type = 'text/css'; \
+                           styleEl.textContent = stylesheetText(window.nsRdHighlightColor); \
+                           $head.append(styleEl); \
+                           }; \
+                           \
+                           reader.off(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \
+                           reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \
+                           ", [NYPLConfiguration backgroundMediaOverlayHighlightColor].javascriptHexString] ;
+  [self sequentiallyEvaluateJavaScript:javascript];
 }
 
 - (void) applyMediaOverlayPlaybackToggle
@@ -445,14 +460,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
       [self pollReadyState];
     } else if([function isEqualToString:@"pagination-changed"]) {
       [self readiumPaginationChangedWithDictionary:argument(request.URL)];
-    } else if([function isEqualToString:@"media-overlay-status-changed"]) {
-      NSDictionary *const dict = argument(request.URL);
-      self.mediaOverlayIsPlaying = ((NSNumber *) dict[@"isPlaying"]).boolValue;
     } else if([function isEqualToString:@"settings-applied"]) {
-      NSLog(@"");
-      // Do nothing.
+      NYPLLOG(@"Readium: Settings Applied.");
     } else {
-      NYPLLOG(@"Ignoring unknown readium function.");
+      NYPLLOG(@"Readium: Ignoring unknown function.");
     }
     decisionHandler(WKNavigationActionPolicyCancel);
     return;
@@ -493,15 +504,15 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
 - (void)readiumInitialize
 {
+  __weak NYPLReaderReadiumView *weakSelf = self;
+
   if(![self.package.spineItems firstObject]) {
     self.bookIsCorrupt = YES;
     [self.delegate renderer:self didEncounterCorruptionForBook:self.book];
     return;
   } else {
-    [self sequentiallyEvaluateJavaScript:@"simplified.shouldUpdateVisibilityOnUpdate = false;"];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-      self.webView.isAccessibilityElement = NO;
-      [self sequentiallyEvaluateJavaScript:@"simplified.beginVisibilityUpdates();"];
+      weakSelf.webView.isAccessibilityElement = NO;
       UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
     });
   }
@@ -533,62 +544,28 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry]
                                       locationForIdentifier:self.book.identifier];
   if([location.renderer isEqualToString:renderer]) {
-    // Readium stores a "contentCFI" but needs an "elementCfi" when handling a page request, so we
-    // have to create a new dictionary.
-    NSDictionary *const locationDictionary =
-    NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
-    
+    NSDictionary *const locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
     NSString *contentCFI = locationDictionary[@"contentCFI"];
     if (!contentCFI) {
       contentCFI = @"";
       [NYPLBugsnagLogs reportNilContentCFIToBugsnag:location locationDictionary:locationDictionary bookID:self.book.identifier title:self.book.title];
     }
-    dictionary[@"openPageRequest"] = @{@"idref": locationDictionary[@"idref"],
-                                       @"elementCfi": contentCFI};
-    NYPLLOG_F(@"Open Page Req idref: %@ elementCfi: %@", locationDictionary[@"idref"], contentCFI);
+    dictionary[@"openPageRequest"] = @{@"idref": locationDictionary[@"idref"], @"elementCfi": contentCFI};
+    NYPLLOG_F(@"Readium Initialize: Open Page Req idref: %@ elementCfi: %@", locationDictionary[@"idref"], contentCFI);
   }
   
   NSData *data = NYPLJSONDataFromObject(dictionary);
-  
   if(!data) {
     NYPLLOG(@"Failed to construct 'openBook' call.");
     return;
   }
-  
-//  var childs = $iframe.contentWindow.document.documentElement.getElementsByTagName('*');
-//  console.log(childs);
 
   [self applyCurrentFlowDependentSettings];
   [self applyCurrentFlowIndependentSettings];
+  [self applyBackgroundMediaOverlayHighlightColor];
+
   self.loaded = YES;
   [self.delegate rendererDidFinishLoading:self];
-  
-  [self sequentiallyEvaluateJavaScript:
-   [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
-    [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
-  
-  // this is so we can control the background colour of the media overlay highlighted text
-  NSString * javascript = [NSString stringWithFormat:@" \
-  window.nsRdHighlightColor = '%@'; \
-  var reader = ReadiumSDK.reader; \
-  var stylesheetText = function(color){return \".-epub-media-overlay-active {background-color: \" + color + \" !important;}\"}; \
-  \
-  \
-  var eventCb = function($iframe, spineItem) { \
-  var contentDoc = $iframe[0].contentDocument; \
-  var $head = $('head', contentDoc); \
-  var styleEl = contentDoc.createElement('style'); \
-  styleEl.id = 'ns-rd-custom-styles'; \
-  styleEl.type = 'text/css'; \
-  styleEl.textContent = stylesheetText(window.nsRdHighlightColor); \
-  $head.append(styleEl); \
-  }; \
-  \
-  reader.off(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \
-  reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \
-  ", [NYPLConfiguration backgroundMediaOverlayHighlightColor].javascriptHexString] ;
-  
-  [self sequentiallyEvaluateJavaScript:javascript];
 }
 
 - (void)checkForExistingBookmarkAtLocation:(NSString*)idref completionHandler:(void(^)(BOOL success, NYPLReaderBookmark *bookmark))completionHandler
@@ -809,8 +786,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
             NSNumber *length = [NSNumber numberWithUnsignedInteger:data.length];
             expectedLengthDec = [NSDecimalNumber decimalNumberWithDecimal:length.decimalValue];
           }
-        } else {
-          [NYPLBugsnagLogs reportNilUrlToBugsnagWithBaseHref:spineItem.baseHref rootURL:self.server.package.rootURL bookID:self.book.identifier];
         }
       }
       
@@ -980,38 +955,6 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   [self sequentiallyEvaluateJavaScript:
    [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
     [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]]];
-}
-
-- (BOOL) bookHasMediaOverlays {
-  /*
-  NSString *isAvailable = [self.webView stringByEvaluatingJavaScriptFromString:
-                           @"ReadiumSDK.reader.isMediaOverlayAvailable()"];
-  if ( [isAvailable containsString:@"true"]) {
-    return YES;
-  }
-  else {
-    return NO;
-  }
-  */
-  return NO;
-}
-
-- (BOOL) bookHasMediaOverlaysBeingPlayed {
-  /*
-  if (![self bookHasMediaOverlays]) {
-    return NO;
-  }
-  
-  NSString *isPlaying = [self.webView stringByEvaluatingJavaScriptFromString:
-                         @"ReadiumSDK.reader.isPlayingMediaOverlay()"];
-  if ( isPlaying.length == 0) {
-    return NO;
-  }
-  else {
-    return YES;
-  }
-  */
-  return NO;
 }
 
 - (void)sequentiallyEvaluateJavaScript:(NSString *const)javaScript
