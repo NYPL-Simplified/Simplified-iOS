@@ -41,8 +41,6 @@ static NSString *const NYPLReaderSettingsFontSizeDidChangeNotification =
 static NSString *const NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification =
 @"NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification";
 
-static NSString *const NYPLReaderSettingsMediaOverlayPlaybackToggleDidChangeNotification =
-@"NYPLReaderSettingsMediaOverlayPlaybackToggleDidChangeNotification";
 
 // Returns |YES| if output was set properly, else |NO| due to already being at the smallest size.
 BOOL NYPLReaderSettingsDecreasedFontSize(NYPLReaderSettingsFontSize input,

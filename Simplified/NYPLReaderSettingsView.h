@@ -18,8 +18,6 @@
 
 - (void)readerSettingsView:(NYPLReaderSettingsView *)readerSettingsView
     didSelectMediaOverlaysEnableClick:(NYPLReaderSettingsMediaOverlaysEnableClick)fontFace;
-
-- (void)readerSettingsViewDidSelectMediaOverlayToggle:(NYPLReaderSettingsView *)readerSettingsView;
 @end
 
 @interface NYPLReaderSettingsView : UIView
