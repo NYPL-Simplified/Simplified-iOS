@@ -53,9 +53,11 @@
 @property (nonatomic) BOOL javaScriptIsRunning;
 @property (nonatomic) NSMutableArray *javaScriptHandlerQueue;
 @property (nonatomic) NSMutableArray *javaScriptStringQueue;
+@property (copy) dispatch_block_t backgroundWorkItem;
 
-@property (nonatomic) BOOL performingLongLoad;
 @property (nonatomic) double secondsSinceComplete;
+@property (nonatomic) BOOL performingLongLoad;
+@property (nonatomic) BOOL updateSettingsInProgress;
 
 @end
 
@@ -217,6 +219,12 @@ static void generateTOCElements(NSArray *const navigationElements,
    selector:@selector(didBecomeActive)
    name:UIApplicationDidBecomeActiveNotification
    object:nil];
+
+  [[NSNotificationCenter defaultCenter]
+   addObserver:self
+   selector:@selector(didEnterBackground)
+   name:UIApplicationDidEnterBackgroundNotification
+   object:nil];
   
   [[NSNotificationCenter defaultCenter]
    addObserver:self
@@ -230,19 +238,34 @@ static void generateTOCElements(NSArray *const navigationElements,
   [self clearTextSelection];
 }
 
-- (void)applyCurrentFlowDependentSettings
+- (void)applyReaderSettings
 {
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    
     NSString *const javaScript = [NSString stringWithFormat:
                                   @"ReadiumSDK.reader.updateSettings(%@)",
                                   [[NSString alloc]
                                    initWithData:NYPLJSONDataFromObject([[NYPLReaderSettings sharedSettings]
                                                                         readiumSettingsRepresentation])
                                    encoding:NSUTF8StringEncoding]];
-    [self sequentiallyEvaluateJavaScript:@"simplified.setCfiBeforeChange();"];
     [self sequentiallyEvaluateJavaScript:javaScript];
-    [self sequentiallyEvaluateJavaScript:@"simplified.updateCFI();"];
+}
+
+- (void)applyCurrentFlowDependentSettings
+{
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    if (self.updateSettingsInProgress) {
+      NYPLLOG(@"rate limiting..");
+      return;
+    }
+    self.updateSettingsInProgress = YES;
+    NSString *const javaScript = [NSString stringWithFormat:
+                                  @"ReadiumSDK.reader.updateSettings(%@)",
+                                  [[NSString alloc]
+                                   initWithData:NYPLJSONDataFromObject([[NYPLReaderSettings sharedSettings]
+                                                                        readiumSettingsRepresentation])
+                                   encoding:NSUTF8StringEncoding]];
+    [self sequentiallyEvaluateJavaScript:@"simplified.saveLocationBeforeSettingsUpdate();"];
+    [self sequentiallyEvaluateJavaScript:javaScript];
+    [self sequentiallyEvaluateJavaScript:@"simplified.applyLocationAferSettingsUpdate();"];
   }];
 }
 
@@ -350,6 +373,15 @@ static void generateTOCElements(NSArray *const navigationElements,
 - (void)didBecomeActive
 {
   [self.server startHTTPServer];
+}
+
+- (void)didEnterBackground
+{
+  if (self.backgroundWorkItem) {
+    if (dispatch_block_testcancel(self.backgroundWorkItem) == NO) {
+      dispatch_block_cancel(self.backgroundWorkItem);
+    }
+  }
 }
 
 - (void) openPageLeft {
@@ -519,30 +551,11 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   self.package.rootURL = [NSString stringWithFormat:@"http://%@:%d/", localhost, self.server.port];
 
-  __block UIBackgroundTaskIdentifier bgTask = [[UIApplication sharedApplication]
-                                               beginBackgroundTaskWithExpirationHandler:^{
-    [[UIApplication sharedApplication] endBackgroundTask:bgTask];
-  }];
-  
-  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{
-    [self calculateBookLength];
-    [[UIApplication sharedApplication] endBackgroundTask:bgTask];
-
-    dispatch_sync(dispatch_get_main_queue(), ^{
-      self.syncManager = [[NYPLReadiumViewSyncManager alloc] initWithBookID:self.book.identifier
-                                                             annotationsURL:self.book.annotationsURL
-                                                                    bookMap:self.bookMapDictionary
-                                                                   delegate:self];
-      [self.syncManager syncAllAnnotationsWithPackage:self.package.dictionary];
-    });
-  });
-  
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
   dictionary[@"package"] = self.package.dictionary;
   dictionary[@"settings"] = [[NYPLReaderSettings sharedSettings] readiumSettingsRepresentation];
   
-  NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry]
-                                      locationForIdentifier:self.book.identifier];
+  NYPLBookLocation *const location = [[NYPLBookRegistry sharedRegistry] locationForIdentifier:self.book.identifier];
   if([location.renderer isEqualToString:renderer]) {
     NSDictionary *const locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
     NSString *contentCFI = locationDictionary[@"contentCFI"];
@@ -560,15 +573,53 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     return;
   }
 
-  [self applyCurrentFlowDependentSettings];
+  [self applyReaderSettings];
   [self applyCurrentFlowIndependentSettings];
   [self applyBackgroundMediaOverlayHighlightColor];
+
+  NSString *openBookJavascript = [NSString stringWithFormat:@"ReadiumSDK.reader.openBook(%@)",
+                                  [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
+  [self sequentiallyEvaluateJavaScript:openBookJavascript];
+
+  [self dispatchBackgroundWork];
 
   self.loaded = YES;
   [self.delegate rendererDidFinishLoading:self];
 }
 
-- (void)checkForExistingBookmarkAtLocation:(NSString*)idref completionHandler:(void(^)(BOOL success, NYPLReaderBookmark *bookmark))completionHandler
+/// Background Queue: Generate Book Length Dictionary
+/// Then, Main Queue: Initialize Sync Manager
+/// Cancel entire work item (long running) if app goes to background state so
+/// that self can dealloc immediately.
+- (void)dispatchBackgroundWork
+{
+  __weak NYPLReaderReadiumView *weakSelf = self;
+  __block UIBackgroundTaskIdentifier bgTask = [[UIApplication sharedApplication]
+                                               beginBackgroundTaskWithExpirationHandler:^{
+                                                 [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+                                               }];
+
+  self.backgroundWorkItem = dispatch_block_create(0, ^{
+    weakSelf.bookMapDictionary = [weakSelf asyncGenerateBookDictionary];
+
+     dispatch_sync(dispatch_get_main_queue(), ^{
+      weakSelf.syncManager = [[NYPLReadiumViewSyncManager alloc] initWithBookID:weakSelf.book.identifier
+                                                                 annotationsURL:weakSelf.book.annotationsURL
+                                                                        bookMap:weakSelf.bookMapDictionary
+                                                                       delegate:weakSelf];
+      [weakSelf.syncManager syncAllAnnotationsWithPackage:weakSelf.package.dictionary];
+    });
+
+    [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+    weakSelf.backgroundWorkItem = nil;
+  });
+
+  dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+  dispatch_async(backgroundQueue, self.backgroundWorkItem);
+}
+
+- (void)checkForExistingBookmarkAtLocation:(NSString*)idref
+                         completionHandler:(void(^)(BOOL success, NYPLReaderBookmark *bookmark))completionHandler
 {
 
   completionHandler(NO, nil);   //Remove bookmark icon at beginning of page turn
@@ -682,40 +733,43 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                 isEqualToString:@"rtl"];
   self.canGoLeft = [dictionary[@"canGoLeft_"] boolValue];
   self.canGoRight = [dictionary[@"canGoRight_"] boolValue];
+
+  if (self.updateSettingsInProgress) {
+    // Readium cannot maintain a CFI with rapid changes to Reader Settings.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      self.updateSettingsInProgress = NO;
+    });
+  }
   
   NSArray *const openPages = dictionary[@"openPages"];
-  
   self.openPageCount = openPages.count;
 
-  __weak NYPLReaderReadiumView *const weakSelf = self;
-  
   [UIView beginAnimations:@"animations" context:NULL];
   [UIView setAnimationDuration:0.25];
   self.webView.alpha = 1.0;
   [UIView commitAnimations];
   
   UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.webView);
-  
+
+  NYPLLOG(@"executing 'pageDidChange()'");
   [self sequentiallyEvaluateJavaScript:@"simplified.pageDidChange();"];
   
   self.isPageTurning = NO;
-  
+
+  __weak NYPLReaderReadiumView *const weakSelf = self;
   // Readium needs a moment...
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    [self
+    NYPLLOG(@"executing bookmarkCurrentPage()");
+    [weakSelf
      sequentiallyEvaluateJavaScript:@"ReadiumSDK.reader.bookmarkCurrentPage()"
      withCompletionHandler:^(id  _Nullable result, __unused NSError *_Nullable error) {
+
        if(!result || [result isKindOfClass:[NSNull class]]) {
          NYPLLOG(@"Readium failed to generate a CFI. This is a bug in Readium.");
          [NYPLBugsnagLogs reportNilContentCFIToBugsnag:nil locationDictionary:nil bookID:nil title:nil];
          return;
        }
        NSString *const locationJSON = result;
-       BOOL completed = NO;
-       if (openPages.count>0 && [locationJSON rangeOfString:openPages[0][@"idref"]].location != NSNotFound) {
-         completed = YES;
-       }
-       
        NYPLLOG(locationJSON);
        
        NSError *jsonError;
@@ -738,26 +792,33 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
           spineItemTitle:weakSelf.spineItemDetails[@"tocElementTitle"]];
        }];
 
-       NYPLBookLocation *const location = [[NYPLBookLocation alloc]
-                                           initWithLocationString:locationJSON
-                                           renderer:renderer];
+       NYPLBookLocation *const location = [[NYPLBookLocation alloc] initWithLocationString:locationJSON renderer:renderer];
+       NSString *const bookID = weakSelf.book.identifier;
 
-       if (![location.locationString containsString:@"null"]) {
-         [[NYPLBookRegistry sharedRegistry] setLocation:location forIdentifier:weakSelf.book.identifier];
+       if (![location.locationString containsString:@"null"] && bookID) {
+         [[NYPLBookRegistry sharedRegistry] setLocation:location forIdentifier:bookID];
          [weakSelf.syncManager postLastReadPosition:location.locationString];
        } else {
-         NYPLLOG(@"CFI was unexpectedly null. Not saving this invalid location.");
+         NYPLLOG(@"Ignoring Readium CFI output containing \"null\"");
        }
      }];
   });
 }
 
-- (void)calculateBookLength
+- (NSDictionary *)asyncGenerateBookDictionary
 {
   NSDecimalNumber *totalLength = [NSDecimalNumber zero];
   NSMutableDictionary *bookDicts = [[NSMutableDictionary alloc] init];
+  int index = 0;
   
   for (RDSpineItem *spineItem in self.package.spineItems) {
+
+    if (self.backgroundWorkItem) {
+      if (dispatch_block_testcancel(self.backgroundWorkItem)) {
+        return nil;
+      }
+    }
+
     if ([spineItem.mediaType isEqualToString:@"application/xhtml+xml"]) {
       NSURL *url =[NSURL URLWithString:[self.server.package.rootURL stringByAppendingPathComponent:spineItem.baseHref]];
       
@@ -767,6 +828,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
       NSHTTPURLResponse *response;
       NSError *headError;
       int responseStatusCode = 0;
+      index++;
+      NYPLLOG_F(@"spine item request: %d", index);
       [NSURLConnection sendSynchronousRequest: request returningResponse: &response error: &headError];
       if ([response respondsToSelector:@selector(allHeaderFields)]) {
         
@@ -794,15 +857,15 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
       if (spineItem.baseHref) [spineItemDict setObject:spineItem.baseHref forKey:@"spineItemBaseHref"];
       if (spineItem.idref) [spineItemDict setObject:spineItem.idref forKey:@"spineItemIdref"];
       if (totalLength) [spineItemDict setObject:totalLength forKey:@"totalLengthSoFar"];
-      
-      NSString *title = [self tocTitleForSpineItem:spineItem];
+
+      NSString *title = [self titleForSpineItem:spineItem inTOC:self.package.tableOfContents.children];
       if (title && [[title class] isSubclassOfClass:[NSString class]]) {
         [spineItemDict setObject:title forKey:@"tocElementTitle"];
       }
       else {
         [spineItemDict setObject:NSLocalizedString(@"ReaderViewControllerCurrentChapter", nil) forKey:@"tocElementTitle"];
       }
-      
+
       [bookDicts setObject:spineItemDict forKey:spineItem.idref];
       totalLength = [totalLength decimalNumberByAdding: expectedLengthDec];
     }
@@ -810,13 +873,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   [bookDicts setObject:totalLength forKey:@"totalLength"];
   
-  self.bookMapDictionary = bookDicts;
+  return bookDicts;
 }
 
-- (NSString *) tocTitleForSpineItem: (RDSpineItem *) spineItem {
-  for (RDNavigationElement *tocElement in self.package.tableOfContents.children) {
-    if ([tocElement.content containsString:spineItem.baseHref]) {
-      return tocElement.title;
+- (NSString *)titleForSpineItem:(RDSpineItem *)spineItem inTOC:(NSArray *)children {
+  for (RDNavigationElement *child in children) {
+    if ([child.content containsString:spineItem.baseHref]) {
+      return child.title;
     }
   }
   return nil;

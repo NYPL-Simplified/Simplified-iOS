@@ -200,11 +200,11 @@ function Simplified() {
    */
    
   /**
-   * setCfiBeforeChange
+   * saveLocationBeforeSettingsUpdate
    * Before there's a font size or font family change in the UI, keep track of the CFI of
    * the current view bookmark's CFI.
    */
-  this.setCfiBeforeChange = function() {
+  this.saveLocationBeforeSettingsUpdate = function() {
     var currentView = ReadiumSDK.reader.getCurrentView();
     var bookMark = currentView.bookmarkCurrentPage();
     
@@ -212,12 +212,12 @@ function Simplified() {
   }
 
   /**
-   * updateCFI
+   * applyLocationAferSettingsUpdate
    * If there's an existing CFI that we are tracking, open the reader to that CFI.
    * TODO: the CFI works well for the previous font size or font family. When switching to
    * a new font size or font family, the CFI is no longer exactly the same as before. 
    */
-  this.updateCFI = function() {
+  this.applyLocationAferSettingsUpdate = function() {
     var currentViewCFI = this.currentViewCFI || undefined;
 
     if (currentViewCFI) {
