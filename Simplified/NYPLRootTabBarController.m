@@ -135,13 +135,16 @@ shouldSelectViewController:(nonnull UIViewController *)viewController
 /// https://jira.nypl.org/browse/SIMPLY-1298
 - (void)dismissReaderUponEnteringBackground
 {
+  if (![self.selectedViewController isKindOfClass:[UINavigationController class]]) {
+    return;
+  }
   UINavigationController *selectedTab = (UINavigationController *)self.selectedViewController;
   if (![selectedTab.topViewController isKindOfClass:[NYPLReaderViewController class]]) {
     NYPLLOG(@"Entering Background: Ignoring VC that is not NYPLReaderViewController.");
     return;
   }
 
-  [(UINavigationController *)self.selectedViewController popViewControllerAnimated:NO];
+  [selectedTab popViewControllerAnimated:NO];
 }
 
 @end
