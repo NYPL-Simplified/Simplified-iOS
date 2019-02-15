@@ -609,7 +609,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
         // create an alert to display for error, feed, or feed count conditions
         NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"BorrowFailed" message:@"BorrowCouldNotBeCompletedFormat", book.title];
 
-        // display different message for special type of error or just add document message for generic error
+        // set different message for special type of error or just add document message for generic error
         if (error) {
           if([error[@"type"] isEqualToString:NYPLProblemDocumentTypeLoanAlreadyExists]) {
             alert = [NYPLAlertController alertWithTitle:@"BorrowFailed"
@@ -621,6 +621,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
           }
         }
 
+        // display the alert
         [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
       }];
       return;
