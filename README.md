@@ -2,7 +2,7 @@
 
 ## Building the Application
 
-01. `git clone https://github.com/NYPL/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
+01. `git clone https://github.com/NYPL-Simplified/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
 02. `cd Simplified-iOS`
 03. `git submodule update --init --recursive`
 04. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
@@ -28,7 +28,7 @@ Follow the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf" to build Ope
 
 **Note:** This configuration is not currently supported. In the interim, you _should_ be able to get it to build via the following steps:
 
-01. `git clone https://github.com/NYPL/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
+01. `git clone https://github.com/NYPL-Simplified/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
 02. `cd Simplified-iOS`
 03. `git submodule deinit adept-ios && git rm -rf adept-ios`
 04. `git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter`
@@ -41,9 +41,10 @@ Follow the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf" to build Ope
 11. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
 12. `open Simplified.xcodeproj`
 13. Remove "Simplified+RMSDK.xcconfig" from the project.
-14. Delete "libADEPT.a" and "libAdobe Content Filter.a" from "Link Binary with Libraries" for the "SimplyE" target.
-15. Delete "NYPLAEToolkit.framework" and "AudioEngine.framework" from "Link Binary with Libraries", and remove related references in the "Copy Frameworks (Carthage)" Build Phase.
-16. Build.
+14. Comment out reference to "Simplified+RMSDK.xcconfig" from the ```Simplified.xcconfig``` file, like so: ```//#include "Simplified+RMSDK.xcconfig"```
+15. Delete "libADEPT.a" and "libAdobe Content Filter.a" from "Link Binary with Libraries" for the "SimplyE" target.
+16. Delete "NYPLAEToolkit.framework" and "AudioEngine.framework" from "Link Binary with Libraries", and remove related references in the "Copy Frameworks (Carthage)" Build Phase.
+17. Build.
 
 # Contributing
 
