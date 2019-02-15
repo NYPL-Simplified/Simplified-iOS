@@ -606,19 +606,22 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
           return;
         }
 
+        // create an alert to display for error, feed, or feed count conditions
+        NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"BorrowFailed" message:@"BorrowCouldNotBeCompletedFormat", book.title];
+
+        // display different message for special type of error or just add document message for generic error
         if (error) {
-          NSString *message = @"BorrowCouldNotBeCompletedFormat";
-          BOOL displayDocumentMessage = YES;
           if([error[@"type"] isEqualToString:NYPLProblemDocumentTypeLoanAlreadyExists]) {
-            message = NSLocalizedString(@"You have already checked out this loan. You may need to refresh your My Books list to download the title.",
-                                        comment: @"When book is already checked out on patron's other device(s), they will get this message");
-            displayDocumentMessage = NO;
+            alert = [NYPLAlertController alertWithTitle:@"BorrowFailed"
+                                                message:NSLocalizedString(@"You have already checked out this loan. You may need to refresh your My Books list to download the title.",
+                                                  comment: @"When book is already checked out on patron's other device(s), they will get this message"),
+                                                book.title];
+          } else {
+            [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
           }
-          NYPLAlertController *const alert = [NYPLAlertController alertWithTitle:@"BorrowFailed" message:message, book.title];
-          [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:displayDocumentMessage];
-          [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
         }
 
+        [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
       }];
       return;
     }
