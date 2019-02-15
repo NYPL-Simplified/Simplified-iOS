@@ -81,9 +81,9 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   let name:String
   let subtitle:String?
   let needsAuth:Bool
-  let pinRequired:Bool
   let authPasscodeLength:UInt
-  let authPasscodeAllowsLetters:Bool
+  let patronIDKeyboard:PatronIDKeyboard
+  let pinKeyboard:PINKeyboard
   let supportsSimplyESync:Bool
   let supportsBarcodeScanner:Bool
   let supportsBarcodeDisplay:Bool
@@ -147,7 +147,8 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     cardCreatorUrl = json["cardCreatorUrl"] as? String
     supportEmail = json["supportEmail"] as? String
     mainColor = json["mainColor"] as? String
-    pinRequired = json["pinRequired"] as? Bool ?? true
+    patronIDKeyboard = PatronIDKeyboard(json["loginKeyboard"] as? String) ?? .standard
+    pinKeyboard = PINKeyboard(json["pinKeyboard"] as? String) ?? .standard
     inProduction = json["inProduction"] as! Bool
 
     let logoString = json["logo"] as? String
@@ -163,11 +164,6 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
       authPasscodeLength = length
     } else {
       authPasscodeLength = 0
-    }
-    if let allows = json["authPasscodeAllowsLetters"] as? Bool {
-      authPasscodeAllowsLetters = allows
-    } else {
-      authPasscodeAllowsLetters = true
     }
   }
 
@@ -258,4 +254,45 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   case eula
   case privacyPolicy
   case annotations
+}
+
+@objc enum PatronIDKeyboard: Int {
+  case standard
+  case email
+  case numeric
+
+  init?(_ stringValue: String?) {
+    if stringValue == "Default" {
+      self = .standard
+    } else if stringValue == "Email address" {
+      self = .email
+    } else if stringValue == "Number pad" {
+      self = .numeric
+    } else {
+      Log.error(#file, "Invalid init parameter for PatronIDKeyboard: \(stringValue ?? "nil")")
+      return nil
+    }
+  }
+}
+
+@objc enum PINKeyboard: Int {
+  case standard
+  case email
+  case numeric
+  case none
+
+  init?(_ stringValue: String?) {
+    if stringValue == "Default" {
+      self = .standard
+    } else if stringValue == "Email address" {
+      self = .email
+    } else if stringValue == "Number pad" {
+      self = .numeric
+    } else if stringValue == "No input" {
+      self = .none
+    } else {
+      Log.error(#file, "Invalid init parameter for PatronPINKeyboard: \(stringValue ?? "nil")")
+      return nil
+    }
+  }
 }
