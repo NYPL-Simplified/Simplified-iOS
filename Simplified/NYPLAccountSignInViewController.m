@@ -132,7 +132,19 @@ CGFloat const marginPadding = 2.0;
   self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.usernameTextField.delegate = self;
   self.usernameTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
-  self.usernameTextField.keyboardType = UIKeyboardTypeASCIICapable;
+
+  switch (self.currentAccount.patronIDKeyboard) {
+    case PatronIDKeyboardStandard:
+    self.usernameTextField.keyboardType = UIKeyboardTypeASCIICapable;
+    break;
+    case PatronIDKeyboardEmail:
+    self.usernameTextField.keyboardType = UIKeyboardTypeEmailAddress;
+    break;
+    case PatronIDKeyboardNumeric:
+    self.usernameTextField.keyboardType = UIKeyboardTypeNumberPad;
+    break;
+  }
+
   self.usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
   self.usernameTextField.autocorrectionType = UITextAutocorrectionTypeNo;
   [self.usernameTextField
@@ -142,11 +154,20 @@ CGFloat const marginPadding = 2.0;
   
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
-  if (self.currentAccount.authPasscodeAllowsLetters) {
-    self.PINTextField.keyboardType = UIKeyboardTypeASCIICapable;
-  } else {
+
+  switch (self.currentAccount.pinKeyboard) {
+    case PINKeyboardEmail:
+    self.PINTextField.keyboardType = UIKeyboardTypeEmailAddress;
+    break;
+    case PINKeyboardNumeric:
     self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
+    break;
+    case PINKeyboardStandard:
+    case PINKeyboardNone:
+    self.PINTextField.keyboardType = UIKeyboardTypeASCIICapable;
+    break;
   }
+
   self.PINTextField.secureTextEntry = YES;
   self.PINTextField.delegate = self;
   [self.PINTextField
@@ -177,7 +198,7 @@ CGFloat const marginPadding = 2.0;
 - (void)setupTableData
 {
   NSArray *section0;
-  if (self.currentAccount.pinRequired) {
+  if (self.currentAccount.pinKeyboard != PINKeyboardNone) {
     section0 = @[@(CellKindBarcode),
                  @(CellKindPIN),
                  @(CellKindLogInSignOut)];
@@ -497,7 +518,8 @@ replacementString:(NSString *)string
     return NO;
   }
   
-  if(textField == self.usernameTextField) {
+  if(textField == self.usernameTextField &&
+     self.currentAccount.patronIDKeyboard != PatronIDKeyboardEmail) {
     // Barcodes are numeric and usernames are alphanumeric.
     if([string stringByTrimmingCharactersInSet:[NSCharacterSet alphanumericCharacterSet]].length > 0) {
       return NO;
@@ -512,7 +534,7 @@ replacementString:(NSString *)string
   if(textField == self.PINTextField) {
     
     NSCharacterSet *charSet = [NSCharacterSet decimalDigitCharacterSet];
-    bool alphanumericPin = self.currentAccount.authPasscodeAllowsLetters;
+    bool alphanumericPin = self.currentAccount.pinKeyboard != PINKeyboardNumeric;
     bool containsNonNumericChar = [string stringByTrimmingCharactersInSet:charSet].length > 0;
     bool abovePinCharLimit = [textField.text stringByReplacingCharactersInRange:range withString:string].length > self.currentAccount.authPasscodeLength;
     
@@ -751,7 +773,8 @@ completionHandler:(void (^)(void))handler
                                  stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
     BOOL const pinHasText = [self.PINTextField.text
                              stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
-    if((barcodeHasText && pinHasText) || (barcodeHasText && !self.currentAccount.pinRequired)) {
+    BOOL const pinIsNotRequired = self.currentAccount.pinKeyboard == PINKeyboardNone;
+    if((barcodeHasText && pinHasText) || (barcodeHasText && pinIsNotRequired)) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     } else {
