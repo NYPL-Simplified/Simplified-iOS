@@ -736,7 +736,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
   if (self.updateSettingsInProgress) {
     // Readium cannot maintain a CFI with rapid changes to Reader Settings.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
       self.updateSettingsInProgress = NO;
     });
   }

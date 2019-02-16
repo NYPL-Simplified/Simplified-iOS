@@ -200,37 +200,27 @@
   NYPLSettings *settings = [NYPLSettings sharedSettings];
   
   if (settings.userHasSeenWelcomeScreen == NO) {
-    
-    if (settings.acceptedEULABeforeMultiLibrary == YES) {
-      Account *nyplAccount = [[AccountsManager sharedInstance] account:0];
-      nyplAccount.eulaIsAccepted = YES;
-      [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
-    }
-    
     Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
     [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:currentAccount.catalogUrl]];
     [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
     
-    if (settings.acceptedEULABeforeMultiLibrary == NO) {
-      NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(Account *const account) {
-        [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
-        [[NYPLBookRegistry sharedRegistry] save];
-        [AccountsManager shared].currentAccount = account;
-        [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
-        [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
-        [self dismissViewControllerAnimated:YES completion:nil];
-      }];
-      
-      UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
-      
-      if([[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
-        [navController setModalPresentationStyle:UIModalPresentationFormSheet];
-      }
-      [navController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
-      
-      NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
-      [vc safelyPresentViewController:navController animated:YES completion:nil];
+    NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(Account *const account) {
+      [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
+      [[NYPLBookRegistry sharedRegistry] save];
+      [AccountsManager sharedInstance].currentAccount = account;
+      [self updateFeedAndRegistryOnAccountChange];
+      [self dismissViewControllerAnimated:YES completion:nil];
+    }];
+
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
+
+    if([[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
+      [navController setModalPresentationStyle:UIModalPresentationFormSheet];
     }
+    [navController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+
+    NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
+    [vc safelyPresentViewController:navController animated:YES completion:nil];
   }
 }
 

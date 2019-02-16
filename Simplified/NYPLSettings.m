@@ -78,11 +78,6 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   return [[NSUserDefaults standardUserDefaults] URLForKey:accountMainFeedURLKey];
 }
 
-- (BOOL)acceptedEULABeforeMultiLibrary
-{
-  return [[NSUserDefaults standardUserDefaults] boolForKey:legacyUserAcceptedEULAKey];
-}
-
 - (BOOL) userHasSeenWelcomeScreen
 {
   return [[NSUserDefaults standardUserDefaults] boolForKey:userHasSeenWelcomeScreenKey];
@@ -203,12 +198,6 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLSettingsDidChangeNotification
    object:self];
-}
-
-- (void)setAcceptedEULABeforeMultiLibrary:(BOOL)acceptedEULA
-{
-  [[NSUserDefaults standardUserDefaults] setBool:acceptedEULA forKey:legacyUserAcceptedEULAKey];
-  [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end
