@@ -149,38 +149,20 @@ import PureLayout
       self.dismiss(animated: true, completion: nil)
       return
     }
-    // Existing User
-    if NYPLSettings.shared().acceptedEULABeforeMultiLibrary == false {
-      let listVC = NYPLWelcomeScreenAccountList { acct in
-        if (acct.id != 2) {
-          NYPLSettings.shared().settingsAccountsList = [acct.id, 2]
-        } else {
-          NYPLSettings.shared().settingsAccountsList = [2]
-        }
-        self.completion?(acct)
+    let listVC = NYPLWelcomeScreenAccountList { account in
+      if (account.id != 2) {
+        NYPLSettings.shared().settingsAccountsList = [account.id, 2]
+      } else {
+        NYPLSettings.shared().settingsAccountsList = [2]
       }
-      self.navigationController?.pushViewController(listVC, animated: true)
-    } else {
-      let listVC = NYPLWelcomeScreenAccountList { acct in
-        if (acct.id != 0 && acct.id != 2) {
-          NYPLSettings.shared().settingsAccountsList = [acct.id, 0, 2]
-        } else {
-          NYPLSettings.shared().settingsAccountsList = [0, 2]
-        }
-        self.completion?(acct)
-      }
-      self.navigationController?.pushViewController(listVC, animated: true)
+      self.completion?(account)
     }
+    self.navigationController?.pushViewController(listVC, animated: true)
   }
 
   func instantClassicsTapped() {
-    if NYPLSettings.shared().acceptedEULABeforeMultiLibrary == true {
-      NYPLSettings.shared().settingsAccountsList = [0,2]
-    }
-    else {
-      NYPLSettings.shared().settingsAccountsList = [2]
-    }
-    completion?(AccountsManager.shared.account(2)!)
+    NYPLSettings.shared().settingsAccountsList = [2]
+    self.completion?(AccountsManager.shared.account(2)!)
   }
 }
 
