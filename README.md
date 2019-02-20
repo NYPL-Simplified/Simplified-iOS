@@ -7,7 +7,7 @@
 03. `git submodule update --init --recursive`
 04. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
 05. `carthage bootstrap --platform ios --use-ssh`. Note: If `carthage bootstrap` fails, you may need to create an installer package from our fork: https://github.com/NYPL-Simplified/Carthage.
-06. Symlink the "DRM_Connector_Prerelease" directory to "adobe-rmsdk" within the "Simplified-iOS" directory. (You will need to have obtained the Adobe DRM Connector prerelease from Adobe.)
+06. Symlink the unzipped "DRM_Connector_Prerelease" directory to "adobe-rmsdk" within the "Simplified-iOS" directory. (You will need to have obtained this binary from Adobe.)
 07. Build OpenSSL and cURL as described in the following "Building OpenSSL and cURL" section. Ensure you're in the "Simplified-iOS" directory before continuing to the next step.
 08. `sh adobe-rmsdk-build.sh`
 09. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
@@ -24,7 +24,7 @@ Follow the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf" to build Ope
 * You must add `--enable-ipv6` to line 80 of Adobe's "build.sh" script used for building cURL. This necessary both due to Apple's requirements for IPv6 support and because the library may not build against recent iOS SDKs otherwise.
 * cURL 7.57.0 is known _not_ to work and later versions are unlikely to work either. 7.50.0 is recommended.
 
-# Building Without DRM
+# Building Without Adobe DRM
 
 **Note:** This configuration is not currently supported. In the interim, you _should_ be able to get it to build via the following steps:
 
@@ -34,17 +34,16 @@ Follow the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf" to build Ope
 04. `git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter`
 05. `git submodule update --init --recursive`
 06. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
-07. Remove dependencies: "NYPLAEToolkit" and "AudioEngine" in the `Cartfile` and `Cartfile.resolved`.
+07. Remove "NYPL-Simplified/NYPLAEToolkit" and "AudioEngine.json" in `Cartfile` and `Cartfile.resolved`.
 08. `carthage bootstrap --platform ios --use-ssh`
 09. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
-10. `cp Accounts.json.example Simplified/Accounts.json`. An up-to-date registry can be obtained from NYPL.
+10. `cp Accounts.json.example Simplified/Accounts.json`.
 11. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
 12. `open Simplified.xcodeproj`
-13. Remove "Simplified+RMSDK.xcconfig" from the project.
-14. Comment out reference to "Simplified+RMSDK.xcconfig" from the ```Simplified.xcconfig``` file, like so: ```//#include "Simplified+RMSDK.xcconfig"```
-15. Delete "libADEPT.a" and "libAdobe Content Filter.a" from "Link Binary with Libraries" for the "SimplyE" target.
-16. Delete "NYPLAEToolkit.framework" and "AudioEngine.framework" from "Link Binary with Libraries", and remove related references in the "Copy Frameworks (Carthage)" Build Phase.
-17. Build.
+13. Remove import of "Simplified+RMSDK.xcconfig" from "Simplified.xcconfig".
+14. Delete `NYPLAEToolkit.framework` and `AudioEngine.framework` from "Link Binary with Libraries", and remove input and output filepaths for `AudioEngine.framework` and `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)`.
+15. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
+16. Build.
 
 # Contributing
 
