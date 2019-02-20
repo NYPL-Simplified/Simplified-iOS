@@ -161,15 +161,16 @@ double const requestTimeoutInterval = 25.0;
   self.usernameTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
 
   switch (self.selectedAccount.patronIDKeyboard) {
-    case PatronIDKeyboardStandard:
-    self.usernameTextField.keyboardType = UIKeyboardTypeASCIICapable;
-    break;
-    case PatronIDKeyboardEmail:
-    self.usernameTextField.keyboardType = UIKeyboardTypeEmailAddress;
-    break;
-    case PatronIDKeyboardNumeric:
-    self.usernameTextField.keyboardType = UIKeyboardTypeNumberPad;
-    break;
+    case LoginKeyboardStandard:
+    case LoginKeyboardNone:
+      self.usernameTextField.keyboardType = UIKeyboardTypeASCIICapable;
+      break;
+    case LoginKeyboardEmail:
+      self.usernameTextField.keyboardType = UIKeyboardTypeEmailAddress;
+      break;
+    case LoginKeyboardNumeric:
+      self.usernameTextField.keyboardType = UIKeyboardTypeNumberPad;
+      break;
   }
 
   self.usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -188,16 +189,16 @@ double const requestTimeoutInterval = 25.0;
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
 
   switch (self.selectedAccount.pinKeyboard) {
-    case PINKeyboardEmail:
-    self.PINTextField.keyboardType = UIKeyboardTypeEmailAddress;
-    break;
-    case PINKeyboardNumeric:
-    self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
-    break;
-    case PINKeyboardStandard:
-    case PINKeyboardNone:
-    self.PINTextField.keyboardType = UIKeyboardTypeASCIICapable;
-    break;
+    case LoginKeyboardStandard:
+    case LoginKeyboardNone:
+      self.PINTextField.keyboardType = UIKeyboardTypeASCIICapable;
+      break;
+    case LoginKeyboardEmail:
+      self.PINTextField.keyboardType = UIKeyboardTypeEmailAddress;
+      break;
+    case LoginKeyboardNumeric:
+      self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
+      break;
   }
 
   self.PINTextField.secureTextEntry = YES;
@@ -226,7 +227,7 @@ double const requestTimeoutInterval = 25.0;
   NSMutableArray *section0;
   if (!self.selectedAccount.needsAuth) {
     section0 = @[@(CellKindAgeCheck)].mutableCopy;
-  } else if (self.selectedAccount.pinKeyboard != PINKeyboardNone) {
+  } else if (self.selectedAccount.pinKeyboard != LoginKeyboardNone) {
     section0 = @[@(CellKindBarcode),
                  @(CellKindPIN),
                  @(CellKindLogInSignOut)].mutableCopy;
@@ -1232,7 +1233,7 @@ replacementString:(NSString *)string
   }
 
   if(textField == self.usernameTextField &&
-     self.selectedAccount.patronIDKeyboard != PatronIDKeyboardEmail) {
+     self.selectedAccount.patronIDKeyboard != LoginKeyboardEmail) {
     // Barcodes are numeric and usernames are alphanumeric.
     if([string stringByTrimmingCharactersInSet:[NSCharacterSet alphanumericCharacterSet]].length > 0) {
       return NO;
@@ -1247,7 +1248,7 @@ replacementString:(NSString *)string
   if(textField == self.PINTextField) {
     
     NSCharacterSet *charSet = [NSCharacterSet decimalDigitCharacterSet];
-    bool alphanumericPin = self.selectedAccount.pinKeyboard != PINKeyboardNumeric;
+    bool alphanumericPin = self.selectedAccount.pinKeyboard != LoginKeyboardNumeric;
     bool containsNonNumericChar = [string stringByTrimmingCharactersInSet:charSet].length > 0;
     bool abovePinCharLimit = [textField.text stringByReplacingCharactersInRange:range withString:string].length > self.selectedAccount.authPasscodeLength;
     
@@ -1389,7 +1390,7 @@ replacementString:(NSString *)string
                                  stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
     BOOL const pinHasText = [self.PINTextField.text
                              stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
-    BOOL const pinIsNotRequired = self.selectedAccount.pinKeyboard == PINKeyboardNone;
+    BOOL const pinIsNotRequired = self.selectedAccount.pinKeyboard == LoginKeyboardNone;
     if((barcodeHasText && pinHasText) || (barcodeHasText && pinIsNotRequired)) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];

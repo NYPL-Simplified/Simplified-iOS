@@ -134,15 +134,16 @@ CGFloat const marginPadding = 2.0;
   self.usernameTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
 
   switch (self.currentAccount.patronIDKeyboard) {
-    case PatronIDKeyboardStandard:
-    self.usernameTextField.keyboardType = UIKeyboardTypeASCIICapable;
-    break;
-    case PatronIDKeyboardEmail:
-    self.usernameTextField.keyboardType = UIKeyboardTypeEmailAddress;
-    break;
-    case PatronIDKeyboardNumeric:
-    self.usernameTextField.keyboardType = UIKeyboardTypeNumberPad;
-    break;
+    case LoginKeyboardStandard:
+    case LoginKeyboardNone:
+      self.usernameTextField.keyboardType = UIKeyboardTypeASCIICapable;
+      break;
+    case LoginKeyboardEmail:
+      self.usernameTextField.keyboardType = UIKeyboardTypeEmailAddress;
+      break;
+    case LoginKeyboardNumeric:
+      self.usernameTextField.keyboardType = UIKeyboardTypeNumberPad;
+      break;
   }
 
   self.usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -156,16 +157,16 @@ CGFloat const marginPadding = 2.0;
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
 
   switch (self.currentAccount.pinKeyboard) {
-    case PINKeyboardEmail:
-    self.PINTextField.keyboardType = UIKeyboardTypeEmailAddress;
-    break;
-    case PINKeyboardNumeric:
-    self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
-    break;
-    case PINKeyboardStandard:
-    case PINKeyboardNone:
-    self.PINTextField.keyboardType = UIKeyboardTypeASCIICapable;
-    break;
+    case LoginKeyboardStandard:
+    case LoginKeyboardNone:
+      self.PINTextField.keyboardType = UIKeyboardTypeASCIICapable;
+      break;
+    case LoginKeyboardEmail:
+      self.PINTextField.keyboardType = UIKeyboardTypeEmailAddress;
+      break;
+    case LoginKeyboardNumeric:
+      self.PINTextField.keyboardType = UIKeyboardTypeNumberPad;
+      break;
   }
 
   self.PINTextField.secureTextEntry = YES;
@@ -198,7 +199,7 @@ CGFloat const marginPadding = 2.0;
 - (void)setupTableData
 {
   NSArray *section0;
-  if (self.currentAccount.pinKeyboard != PINKeyboardNone) {
+  if (self.currentAccount.pinKeyboard != LoginKeyboardNone) {
     section0 = @[@(CellKindBarcode),
                  @(CellKindPIN),
                  @(CellKindLogInSignOut)];
@@ -519,7 +520,7 @@ replacementString:(NSString *)string
   }
   
   if(textField == self.usernameTextField &&
-     self.currentAccount.patronIDKeyboard != PatronIDKeyboardEmail) {
+     self.currentAccount.patronIDKeyboard != LoginKeyboardEmail) {
     // Barcodes are numeric and usernames are alphanumeric.
     if([string stringByTrimmingCharactersInSet:[NSCharacterSet alphanumericCharacterSet]].length > 0) {
       return NO;
@@ -534,7 +535,7 @@ replacementString:(NSString *)string
   if(textField == self.PINTextField) {
     
     NSCharacterSet *charSet = [NSCharacterSet decimalDigitCharacterSet];
-    bool alphanumericPin = self.currentAccount.pinKeyboard != PINKeyboardNumeric;
+    bool alphanumericPin = self.currentAccount.pinKeyboard != LoginKeyboardNumeric;
     bool containsNonNumericChar = [string stringByTrimmingCharactersInSet:charSet].length > 0;
     bool abovePinCharLimit = [textField.text stringByReplacingCharactersInRange:range withString:string].length > self.currentAccount.authPasscodeLength;
     
@@ -773,7 +774,7 @@ completionHandler:(void (^)(void))handler
                                  stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
     BOOL const pinHasText = [self.PINTextField.text
                              stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
-    BOOL const pinIsNotRequired = self.currentAccount.pinKeyboard == PINKeyboardNone;
+    BOOL const pinIsNotRequired = self.currentAccount.pinKeyboard == LoginKeyboardNone;
     if((barcodeHasText && pinHasText) || (barcodeHasText && pinIsNotRequired)) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
