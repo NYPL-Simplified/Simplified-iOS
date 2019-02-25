@@ -237,8 +237,8 @@
 {
   NSString *title = NSLocalizedString(@"Unsupported Item", nil);
   NSString *message = NSLocalizedString(@"The item you are trying to open is not currently supported by SimplyE.", nil);
-  NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title singleMessage:message];
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert animated:YES completion:nil];
+  NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title message:message];
+  [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate
