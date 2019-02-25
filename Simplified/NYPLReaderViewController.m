@@ -20,10 +20,9 @@
 #define EDGE_OF_SCREEN_POINT_FRACTION    0.2
 
 @interface NYPLReaderViewController ()
-  <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate,
-   UIPopoverControllerDelegate>
+  <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate, UIPopoverPresentationControllerDelegate>
 
-@property (nonatomic) UIPopoverController *activePopoverController;
+@property (nonatomic) UIViewController *activePopoverController;
 @property (nonatomic) NSString *bookIdentifier;
 @property (nonatomic) BOOL interfaceHidden, isAccessibilityConfigurationActive;
 @property (nonatomic) NYPLReaderSettingsView *readerSettingsViewPhone;
@@ -63,6 +62,9 @@ typedef NS_ENUM(NSInteger, NYPLReaderViewControllerDirection) {
 {
   self.navigationController.navigationBar.barTintColor =
     [NYPLReaderSettings sharedSettings].backgroundColor;
+
+  self.activePopoverController.view.backgroundColor =
+  [NYPLReaderSettings sharedSettings].backgroundColor;
   
   switch([NYPLReaderSettings sharedSettings].colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
@@ -90,9 +92,6 @@ typedef NS_ENUM(NSInteger, NYPLReaderViewControllerDirection) {
       self.footerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
       break;
   }
-  
-  self.activePopoverController.backgroundColor =
-    [NYPLReaderSettings sharedSettings].backgroundColor;
 }
 
 - (instancetype)initWithBookIdentifier:(NSString *const)bookIdentifier
@@ -118,8 +117,10 @@ typedef NS_ENUM(NSInteger, NYPLReaderViewControllerDirection) {
    setState:NYPLBookStateUsed
    forIdentifier:self.bookIdentifier];
   
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(voiceOverStatusChanged) name:UIAccessibilityVoiceOverStatusChanged object:nil];
-  
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(voiceOverStatusChanged)
+                                               name:UIAccessibilityVoiceOverStatusChanged
+                                             object:nil];
   return self;
 }
 
@@ -137,17 +138,11 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   for(UIBarButtonItem *const item in self.navigationItem.rightBarButtonItems) {
     item.enabled = NO;
   }
-  
-  // Show the interface so the user can get back out.
   self.interfaceHidden = NO;
-  
-  [[[UIAlertView alloc]
-    initWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptTitle", nil)
-    message:NSLocalizedString(@"ReaderViewControllerCorruptMessage", nil)
-    delegate:nil
-    cancelButtonTitle:nil
-    otherButtonTitles:NSLocalizedString(@"OK", nil), nil]
-   show];
+  NYPLAlertController *alert = [NYPLAlertController
+                                alertWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptTitle", nil)
+                                message:NSLocalizedString(@"ReaderViewControllerCorruptMessage", nil)];
+  [alert presentFromViewControllerOrNil:self animated:YES completion:nil];
 }
 
 - (void)rendererDidFinishLoading:(__attribute__((unused)) id<NYPLReaderRenderer>)renderer
@@ -273,13 +268,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self prepareHeaderFooterViews];
 }
 
-- (void)didReceiveMemoryWarning
-{
-  [super didReceiveMemoryWarning];
-  [[NYPLBookRegistry sharedRegistry] save];
-}
-
-- (void) prepareHeaderFooterViews {
+- (void)prepareHeaderFooterViews {
   self.headerView = [[UIView alloc] init];
   self.headerView.hidden = YES;
   
@@ -471,6 +460,19 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [self.activityIndicatorView integralizeFrame];
 }
 
+- (void)willTransitionToTraitCollection:(__unused UITraitCollection *)newCollection
+              withTransitionCoordinator:(__unused id<UIViewControllerTransitionCoordinator>)coordinator
+{
+  if (self.activePopoverController) {
+    [self.activePopoverController.presentingViewController dismissViewControllerAnimated:NO completion:nil];
+    self.activePopoverController = nil;
+  }
+  if(self.readerSettingsViewPhone) {
+    [self.readerSettingsViewPhone removeFromSuperview];
+    self.readerSettingsViewPhone = nil;
+  }
+}
+
 #pragma mark Accessibility
 
 - (void)setIsAccessibilityConfigurationActive:(BOOL)isAccessibilityConfigurationActive
@@ -508,8 +510,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (BOOL)accessibilityPerformEscape
 {
-  if (self.activePopoverController.isPopoverVisible) {
-    [self.activePopoverController dismissPopoverAnimated:YES];
+  if (self.activePopoverController.beingPresented) {
+    [self.activePopoverController.presentingViewController dismissViewControllerAnimated:NO completion:nil];
   }
   [self.navigationController popViewControllerAnimated:YES];
   return YES;
@@ -568,18 +570,16 @@ spineItemTitle:(NSString *const)title
   self.currentBookmark = bookmark;
 }
 
-#pragma mark UIPopoverControllerDelegate
+#pragma mark UIPopoverPresentationControllerDelegate
 
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+- (void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController
 {
-  assert(popoverController == self.activePopoverController);
-  
-  if(UIAccessibilityIsVoiceOverRunning())
-  {
-    self.interfaceHidden = YES;
+  if (popoverPresentationController.presentedViewController == self.activePopoverController) {
+    if(UIAccessibilityIsVoiceOverRunning()) {
+      self.interfaceHidden = YES;
+    }
+    self.activePopoverController = nil;
   }
-  
-  self.activePopoverController = nil;
 }
 
 #pragma mark UIScrollViewDelegate
@@ -598,9 +598,10 @@ spineItemTitle:(NSString *const)title
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
      self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
-    [self.activePopoverController dismissPopoverAnimated:YES];
-    if (!UIAccessibilityIsVoiceOverRunning())
+    [self.activePopoverController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    if (!UIAccessibilityIsVoiceOverRunning()) {
       self.interfaceHidden = YES;
+    }
   } else {
     self.shouldHideInterfaceOnNextAppearance = YES;
     [self.navigationController popViewControllerAnimated:YES];
@@ -613,9 +614,10 @@ spineItemTitle:(NSString *const)title
   [self.rendererView gotoBookmark:bookmark];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-    [self.activePopoverController dismissPopoverAnimated:YES];
-    if (!UIAccessibilityIsVoiceOverRunning())
+    [self.activePopoverController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    if (!UIAccessibilityIsVoiceOverRunning()) {
       self.interfaceHidden = YES;
+    }
   } else {
     self.shouldHideInterfaceOnNextAppearance = YES;
     [self.navigationController popViewControllerAnimated:YES];
@@ -761,16 +763,17 @@ didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReaderBookmark
     UIViewController *const viewController = [[UIViewController alloc] init];
     viewController.view = readerSettingsView;
     viewController.preferredContentSize = viewController.view.bounds.size;
-    [self.activePopoverController dismissPopoverAnimated:NO];
-    self.activePopoverController =
-      [[UIPopoverController alloc] initWithContentViewController:viewController];
-    self.activePopoverController.backgroundColor =
+    if (self.activePopoverController && self.activePopoverController == self.presentedViewController) {
+      [self dismissViewControllerAnimated:NO completion:nil];
+    }
+    self.activePopoverController = viewController;
+    self.activePopoverController.view.backgroundColor =
       [NYPLReaderSettings sharedSettings].backgroundColor;
-    self.activePopoverController.delegate = self;
-    [self.activePopoverController
-     presentPopoverFromBarButtonItem:self.settingsBarButtonItem
-     permittedArrowDirections:UIPopoverArrowDirectionUp
-     animated:YES];
+    self.activePopoverController.modalPresentationStyle = UIModalPresentationPopover;
+    self.activePopoverController.popoverPresentationController.delegate = self;
+    self.activePopoverController.popoverPresentationController.barButtonItem = self.settingsBarButtonItem;
+    [self presentViewController:self.activePopoverController animated:YES completion:nil];
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.activePopoverController);
   } else {
     readerSettingsView.frame = CGRectOffset(readerSettingsView.frame,
                                             0,
@@ -784,14 +787,12 @@ didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReaderBookmark
       [readerSettingsView autoPinEdgeToSuperviewMargin:ALEdgeTrailing];
       [readerSettingsView autoSetDimension:ALDimensionHeight toSize:readerSettingsView.frame.size.height];
     }
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.readerSettingsViewPhone);
   }
-  
-  UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.readerSettingsViewPhone);
 }
 
 - (void)didSelectContents
 {
-  
   UIStoryboard *sb = [UIStoryboard storyboardWithName:@"NYPLReaderTOC" bundle:nil];
   NYPLReaderTOCViewController *viewController = [sb instantiateViewControllerWithIdentifier:@"NYPLReaderTOC"];
   viewController.delegate = self;
@@ -800,20 +801,19 @@ didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReaderBookmark
   viewController.bookmarks = self.rendererView.bookmarkElements.mutableCopy;
   NYPLReaderReadiumView *rv = self.rendererView;
   viewController.currentChapter = [rv currentChapter];
-
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
      self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
-    [self.activePopoverController dismissPopoverAnimated:NO];
-    self.activePopoverController =
-      [[UIPopoverController alloc] initWithContentViewController:viewController];
-    self.activePopoverController.delegate = self;
-    self.activePopoverController.backgroundColor =
+    if (self.activePopoverController && self.activePopoverController == self.presentedViewController) {
+      [self dismissViewControllerAnimated:NO completion:nil];
+    }
+    self.activePopoverController = viewController;
+    self.activePopoverController.view.backgroundColor =
       [NYPLReaderSettings sharedSettings].backgroundColor;
-    [self.activePopoverController
-     presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
-     permittedArrowDirections:UIPopoverArrowDirectionUp
-     animated:YES];
+    self.activePopoverController.modalPresentationStyle = UIModalPresentationPopover;
+    self.activePopoverController.popoverPresentationController.delegate = self;
+    self.activePopoverController.popoverPresentationController.barButtonItem = self.contentsBarButtonItem;
+    [self presentViewController:self.activePopoverController animated:YES completion:nil];
   } else {
     [self.navigationController pushViewController:viewController animated:YES];
   }
