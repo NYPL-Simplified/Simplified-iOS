@@ -1,6 +1,7 @@
 @import Bugsnag;
 @import MediaPlayer;
 @import NYPLAudiobookToolkit;
+@import PDFRendererProvider;
 
 #import "NYPLAccount.h"
 #import "NYPLAccountSignInViewController.h"
@@ -103,6 +104,14 @@
           currentAccount.syncPermissionGranted = enableSync;
         }
       }];
+      break;
+    }
+    case NYPLBookContentTypePDF: {
+      NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
+      NSDictionary *dict = @{@"filePath":url.path};
+      id<MinitexPDFViewController> pdfViewController = [MinitexPDFViewControllerFactory createPDFViewControllerWithDictionary:dict];
+
+      [[NYPLRootTabBarController sharedController] pushViewController:(UIViewController *)pdfViewController animated:YES];
       break;
     }
     case NYPLBookContentTypeAudiobook: {

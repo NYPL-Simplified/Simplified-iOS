@@ -9,6 +9,8 @@ NYPLBookContentType NYPLBookContentTypeFromMIMEType(NSString *const string)
   } else if ([string isEqualToString:ContentTypeEpubZip] ||
              [string isEqualToString:ContentTypeAdobeAdept]) {
     return NYPLBookContentTypeEPUB;
+  } else if ([string isEqualToString:ContentTypeOpenAccessPDF]) {
+    return NYPLBookContentTypePDF;
   } else {
     return NYPLBookContentTypeUnsupported;
   }

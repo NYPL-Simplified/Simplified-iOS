@@ -10,6 +10,7 @@ static NSString * const _Nonnull ContentTypeBearerToken = @"application/vnd.libr
 static NSString * const _Nonnull ContentTypeEpubZip = @"application/epub+zip";
 static NSString * const _Nonnull ContentTypeFindaway = @"application/vnd.librarysimplified.findaway.license+json";
 static NSString * const _Nonnull ContentTypeOpenAccessAudiobook = @"application/audiobook+json";
+static NSString * const _Nonnull ContentTypeOpenAccessPDF = @"application/pdf";
 
 /// Represents a single path the application can take through an acquisition
 /// process.
