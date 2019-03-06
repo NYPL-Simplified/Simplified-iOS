@@ -65,6 +65,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
+  NYPLLOG_F(@"NSURLSessionTask: %@. Challenge Received: %@",
+            task.currentRequest.URL.absoluteString,
+            challenge.protectionSpace.authenticationMethod);
+
   NYPLBasicAuthHandler(challenge, completionHandler);
 }
 
