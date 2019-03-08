@@ -666,7 +666,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
   NYPLBookLocation *location = [registry locationForIdentifier:self.book.identifier];
-  NSDictionary *const locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
+  NSDictionary *locationDictionary;
+  if (location.locationString) {
+    locationDictionary = NYPLJSONObjectFromData([location.locationString dataUsingEncoding:NSUTF8StringEncoding]);
+  }
   NSString *contentCFI = NYPLNullToNil(locationDictionary[@"contentCFI"]);
   NSString *idref = NYPLNullToNil(locationDictionary[@"idref"]);
   NSString *chapter = self.bookMapDictionary[idref][@"tocElementTitle"];
