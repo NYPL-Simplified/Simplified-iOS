@@ -108,9 +108,12 @@
     }
     case NYPLBookContentTypePDF: {
       NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
-      NSDictionary *dict = @{@"filePath":url.path};
-      id<MinitexPDFViewController> pdfViewController = [MinitexPDFViewControllerFactory createPDFViewControllerWithDictionary:dict];
-
+      id<MinitexPDFViewController> pdfViewController = [MinitexPDFViewControllerFactory createWithFileUrl:url openToPage:nil bookmarks:nil annotations:nil];
+      if (!pdfViewController) {
+        [self presentUnsupportedItemError];
+        return;
+      }
+      [(UIViewController *)pdfViewController setHidesBottomBarWhenPushed:YES];
       [[NYPLRootTabBarController sharedController] pushViewController:(UIViewController *)pdfViewController animated:YES];
       break;
     }
