@@ -122,14 +122,28 @@
 }
 
 - (void)openPDF:(NYPLBook *)book {
+
   NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
-  id<MinitexPDFViewController> pdfViewController = [MinitexPDFViewControllerFactory createWithFileUrl:url openToPage:nil bookmarks:nil annotations:nil];
-  if (!pdfViewController) {
+  NYPLBookLocation *const bookLocation = [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
+
+  id<MinitexPDFViewController> pdfViewController;
+  if (bookLocation) {
+    NSData *const data = [bookLocation.locationString dataUsingEncoding:NSUTF8StringEncoding];
+    MinitexPDFPage *const page = [MinitexPDFPage fromData:data];
+    NYPLLOG_F(@"Returning to PDF Location: %@", page);
+    pdfViewController = [MinitexPDFViewControllerFactory createWithFileUrl:url openToPage:page bookmarks:nil annotations:nil];
+  } else {
+    pdfViewController = [MinitexPDFViewControllerFactory createWithFileUrl:url openToPage:nil bookmarks:nil annotations:nil];
+  }
+
+  if (pdfViewController) {
+    pdfViewController.delegate = [[NYPLPDFViewControllerDelegate alloc] initWithBookIdentifier:book.identifier];
+    [(UIViewController *)pdfViewController setHidesBottomBarWhenPushed:YES];
+    [[NYPLRootTabBarController sharedController] pushViewController:(UIViewController *)pdfViewController animated:YES];
+  } else {
     [self presentUnsupportedItemError];
     return;
   }
-  [(UIViewController *)pdfViewController setHidesBottomBarWhenPushed:YES];
-  [[NYPLRootTabBarController sharedController] pushViewController:(UIViewController *)pdfViewController animated:YES];
 }
 
 - (void)openAudiobook:(NYPLBook *)book {

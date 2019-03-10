@@ -33,3 +33,4 @@
 #import "NYPLHoldsNavigationController.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLBookRegistry.h"
+#import "NYPLBookLocation.h"

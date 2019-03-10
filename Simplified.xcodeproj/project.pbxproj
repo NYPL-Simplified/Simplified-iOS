@@ -173,6 +173,7 @@
 		A823D823192BABA400B55DE2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A823D822192BABA400B55DE2 /* Images.xcassets */; };
 		A92FB0F921CDCE3D004740F4 /* NYPLReturnPromptHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92FB0F821CDCE3D004740F4 /* NYPLReturnPromptHelper.swift */; };
 		A93F9F9721CDACF700BD3B0C /* NYPLAppReviewPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F9F9621CDACF700BD3B0C /* NYPLAppReviewPrompt.swift */; };
+		A949984F2235826500CE4241 /* NYPLPDFViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A949984E2235826500CE4241 /* NYPLPDFViewControllerDelegate.swift */; };
 		A96CAE7D220B61950055FE51 /* NYPLBugnsagLogs.m in Sources */ = {isa = PBXBuildFile; fileRef = A96CAE7C220B61950055FE51 /* NYPLBugnsagLogs.m */; };
 		A9AD99402225D4AF009FF54A /* PDFRendererProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9AD993F2225D4AF009FF54A /* PDFRendererProvider.framework */; };
 		AE77E7E37D89FB3EED630624 /* NYPLOPDSType.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77EFD5622206475B6715A9 /* NYPLOPDSType.m */; };
@@ -538,6 +539,7 @@
 		A823D833192BABA400B55DE2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A92FB0F821CDCE3D004740F4 /* NYPLReturnPromptHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLReturnPromptHelper.swift; sourceTree = "<group>"; };
 		A93F9F9621CDACF700BD3B0C /* NYPLAppReviewPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAppReviewPrompt.swift; sourceTree = "<group>"; };
+		A949984E2235826500CE4241 /* NYPLPDFViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLPDFViewControllerDelegate.swift; sourceTree = "<group>"; };
 		A96CAE77220B61820055FE51 /* NYPLBugsnagLogs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLBugsnagLogs.h; sourceTree = "<group>"; };
 		A96CAE7C220B61950055FE51 /* NYPLBugnsagLogs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLBugnsagLogs.m; sourceTree = "<group>"; };
 		A9AD993F2225D4AF009FF54A /* PDFRendererProvider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PDFRendererProvider.framework; path = Carthage/Build/iOS/PDFRendererProvider.framework; sourceTree = "<group>"; };
@@ -738,6 +740,7 @@
 				112C694C197301FE00C48F95 /* NYPLBookRegistryRecord.m */,
 				112C6951197309C500C48F95 /* NYPLBookState.h */,
 				112C6952197309C500C48F95 /* NYPLBookState.m */,
+				A949984E2235826500CE4241 /* NYPLPDFViewControllerDelegate.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -1549,6 +1552,7 @@
 				118A0B1B19915BDF00792DDE /* NYPLCatalogSearchViewController.m in Sources */,
 				A4E254FA1B0E610900193FE4 /* NYPLBasicAuth.m in Sources */,
 				1188F3E11A1ECC4B006B2F36 /* NYPLReaderSettings.m in Sources */,
+				A949984F2235826500CE4241 /* NYPLPDFViewControllerDelegate.swift in Sources */,
 				11C5DD16197727A6005A9945 /* NYPLKeychain.m in Sources */,
 				AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */,
 				11DC19281A12F92500721DBA /* NYPLReaderSettingsView.m in Sources */,
