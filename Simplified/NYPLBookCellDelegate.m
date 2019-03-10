@@ -93,105 +93,112 @@
 - (void)openBook:(NYPLBook *)book
 {
   [NYPLCirculationAnalytics postEvent:@"open_book" withBook:book];
-  
+
   switch (book.defaultBookContentType) {
-    case NYPLBookContentTypeEPUB: {
-      NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
-      [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
-      [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLAccount sharedAccount] completion:^(BOOL enableSync) {
-        if (enableSync == YES) {
-          Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-          currentAccount.syncPermissionGranted = enableSync;
-        }
-      }];
+    case NYPLBookContentTypeEPUB:
+      [self openEPUB:book];
       break;
-    }
-    case NYPLBookContentTypePDF: {
-      NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
-      id<MinitexPDFViewController> pdfViewController = [MinitexPDFViewControllerFactory createWithFileUrl:url openToPage:nil bookmarks:nil annotations:nil];
-      if (!pdfViewController) {
-        [self presentUnsupportedItemError];
-        return;
-      }
-      [(UIViewController *)pdfViewController setHidesBottomBarWhenPushed:YES];
-      [[NYPLRootTabBarController sharedController] pushViewController:(UIViewController *)pdfViewController animated:YES];
+    case NYPLBookContentTypePDF:
+      [self openPDF:book];
       break;
-    }
-    case NYPLBookContentTypeAudiobook: {
-      NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
-      NSData *const data = [NSData dataWithContentsOfURL:url];
-      id const json = NYPLJSONObjectFromData(data);
-      id<Audiobook> const audiobook = [AudiobookFactory audiobook:json];
-
-      if (!audiobook) {
-        [self presentUnsupportedItemError];
-        return;
-      }
-
-      AudiobookMetadata *const metadata = [[AudiobookMetadata alloc]
-                                           initWithTitle:book.title
-                                           authors:@[book.authors]];
-      id<AudiobookManager> const manager = [[DefaultAudiobookManager alloc]
-                                            initWithMetadata:metadata
-                                            audiobook:audiobook];
-
-      AudiobookPlayerViewController *const audiobookVC = [[AudiobookPlayerViewController alloc]
-                                                             initWithAudiobookManager:manager];
-
-      [self registerCallbackForLogHandler];
-
-      [[NYPLBookRegistry sharedRegistry] coverImageForBook:book handler:^(UIImage *image) {
-         if (image) {
-           [audiobookVC.coverView setImage:image];
-         }
-       }];
-
-      audiobookVC.hidesBottomBarWhenPushed = YES;
-      audiobookVC.view.tintColor = [NYPLConfiguration mainColor];
-      [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
-
-      __weak AudiobookPlayerViewController *weakAudiobookVC = audiobookVC;
-      [manager setPlaybackCompletionHandler:^{
-        NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, ContentTypeOpenAccessAudiobook, nil];
-        NSSet<NYPLBookAcquisitionPath *> *paths = [NYPLBookAcquisitionPath
-                                                   supportedAcquisitionPathsForAllowedTypes:types
-                                                   allowedRelations:(NYPLOPDSAcquisitionRelationSetBorrow |
-                                                                     NYPLOPDSAcquisitionRelationSetGeneric)
-                                                   acquisitions:book.acquisitions];
-        if (paths.count > 0) {
-          UIAlertController *alert = [NYPLReturnPromptHelper audiobookPromptWithCompletion:^(BOOL returnWasChosen) {
-            if (returnWasChosen) {
-              [weakAudiobookVC.navigationController popViewControllerAnimated:YES];
-              [self didSelectReturnForBook:book];
-            }
-            [NYPLAppStoreReviewPrompt presentIfAvailable];
-          }];
-          [[NYPLRootTabBarController sharedController] presentViewController:alert animated:YES completion:nil];
-        } else {
-          NYPLLOG(@"Skipped Return Prompt with no valid acquisition path.");
-          [NYPLAppStoreReviewPrompt presentIfAvailable];
-        }
-      }];
-
-      NYPLBookLocation *const bookLocation =
-      [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
-
-      if (bookLocation) {
-        NSData *const data = [bookLocation.locationString dataUsingEncoding:NSUTF8StringEncoding];
-        ChapterLocation *const chapterLocation = [ChapterLocation fromData:data];
-        NYPLLOG_F(@"Returning to Audiobook Location: %@", chapterLocation);
-        [manager.audiobook.player movePlayheadToLocation:chapterLocation];
-      }
-
-      [self scheduleTimerForAudiobook:book manager:manager viewController:audiobookVC];
-
+    case NYPLBookContentTypeAudiobook:
+      [self openAudiobook:book];
       break;
-    }
-    default: {
+    default:
       [self presentUnsupportedItemError];
       break;
-    }
   }
+}
+
+- (void)openEPUB:(NYPLBook *)book {
+  NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
+  [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
+  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLAccount sharedAccount] completion:^(BOOL enableSync) {
+    if (enableSync == YES) {
+      Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
+      currentAccount.syncPermissionGranted = enableSync;
+    }
+  }];
+}
+
+- (void)openPDF:(NYPLBook *)book {
+  NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
+  id<MinitexPDFViewController> pdfViewController = [MinitexPDFViewControllerFactory createWithFileUrl:url openToPage:nil bookmarks:nil annotations:nil];
+  if (!pdfViewController) {
+    [self presentUnsupportedItemError];
+    return;
+  }
+  [(UIViewController *)pdfViewController setHidesBottomBarWhenPushed:YES];
+  [[NYPLRootTabBarController sharedController] pushViewController:(UIViewController *)pdfViewController animated:YES];
+}
+
+- (void)openAudiobook:(NYPLBook *)book {
+  NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
+  NSData *const data = [NSData dataWithContentsOfURL:url];
+  id const json = NYPLJSONObjectFromData(data);
+  id<Audiobook> const audiobook = [AudiobookFactory audiobook:json];
+
+  if (!audiobook) {
+    [self presentUnsupportedItemError];
+    return;
+  }
+
+  AudiobookMetadata *const metadata = [[AudiobookMetadata alloc]
+                                       initWithTitle:book.title
+                                       authors:@[book.authors]];
+  id<AudiobookManager> const manager = [[DefaultAudiobookManager alloc]
+                                        initWithMetadata:metadata
+                                        audiobook:audiobook];
+
+  AudiobookPlayerViewController *const audiobookVC = [[AudiobookPlayerViewController alloc]
+                                                      initWithAudiobookManager:manager];
+
+  [self registerCallbackForLogHandler];
+
+  [[NYPLBookRegistry sharedRegistry] coverImageForBook:book handler:^(UIImage *image) {
+    if (image) {
+      [audiobookVC.coverView setImage:image];
+    }
+  }];
+
+  audiobookVC.hidesBottomBarWhenPushed = YES;
+  audiobookVC.view.tintColor = [NYPLConfiguration mainColor];
+  [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
+
+  __weak AudiobookPlayerViewController *weakAudiobookVC = audiobookVC;
+  [manager setPlaybackCompletionHandler:^{
+    NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, ContentTypeOpenAccessAudiobook, nil];
+    NSSet<NYPLBookAcquisitionPath *> *paths = [NYPLBookAcquisitionPath
+                                               supportedAcquisitionPathsForAllowedTypes:types
+                                               allowedRelations:(NYPLOPDSAcquisitionRelationSetBorrow |
+                                                                 NYPLOPDSAcquisitionRelationSetGeneric)
+                                               acquisitions:book.acquisitions];
+    if (paths.count > 0) {
+      UIAlertController *alert = [NYPLReturnPromptHelper audiobookPromptWithCompletion:^(BOOL returnWasChosen) {
+        if (returnWasChosen) {
+          [weakAudiobookVC.navigationController popViewControllerAnimated:YES];
+          [self didSelectReturnForBook:book];
+        }
+        [NYPLAppStoreReviewPrompt presentIfAvailable];
+      }];
+      [[NYPLRootTabBarController sharedController] presentViewController:alert animated:YES completion:nil];
+    } else {
+      NYPLLOG(@"Skipped Return Prompt with no valid acquisition path.");
+      [NYPLAppStoreReviewPrompt presentIfAvailable];
+    }
+  }];
+
+  NYPLBookLocation *const bookLocation =
+  [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
+
+  if (bookLocation) {
+    NSData *const data = [bookLocation.locationString dataUsingEncoding:NSUTF8StringEncoding];
+    ChapterLocation *const chapterLocation = [ChapterLocation fromData:data];
+    NYPLLOG_F(@"Returning to Audiobook Location: %@", chapterLocation);
+    [manager.audiobook.player movePlayheadToLocation:chapterLocation];
+  }
+
+  [self scheduleTimerForAudiobook:book manager:manager viewController:audiobookVC];
 }
 
 #pragma mark - Audiobook Methods
