@@ -112,7 +112,7 @@ segmentControlTypeWithInteger(NSInteger const integer)
 
   [self.delegate
    TOCViewController:self
-   didRequestSyncBookmarksWithCompletion:^(BOOL __unused success, NSArray<NYPLReaderBookmark *> *bookmarks) {
+   didRequestSyncBookmarksWithCompletion:^(BOOL __unused success, NSArray<NYPLReadiumBookmark *> *bookmarks) {
      dispatch_async(dispatch_get_main_queue(), ^{
        weakSelf.bookmarks = bookmarks.mutableCopy;
        [weakSelf.tableView reloadData];
@@ -178,7 +178,7 @@ segmentControlTypeWithInteger(NSInteger const integer)
       NYPLReaderBookmarkCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierBookmark];
       cell.backgroundColor = [UIColor clearColor];
       
-      NYPLReaderBookmark *const bookmark = self.bookmarks[indexPath.row];
+      NYPLReadiumBookmark *const bookmark = self.bookmarks[indexPath.row];
       
       cell.chapterLabel.text = bookmark.chapter;
       
@@ -214,7 +214,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     }
     case SegmentControlTypeBookmark:{
-      NYPLReaderBookmark *const bookmark = self.bookmarks[indexPath.row];
+      NYPLReadiumBookmark *const bookmark = self.bookmarks[indexPath.row];
       [self.delegate TOCViewController:self didSelectBookmark:bookmark];
       break;
     }
@@ -253,7 +253,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
   if (editingStyle == UITableViewCellEditingStyleDelete) {
     if ((NSUInteger)indexPath.row < self.bookmarks.count) {
-      NYPLReaderBookmark *bookmark = self.bookmarks[indexPath.row];
+      NYPLReadiumBookmark *bookmark = self.bookmarks[indexPath.row];
       [self.bookmarks removeObjectAtIndex:indexPath.row];
       [self.delegate TOCViewController:self didDeleteBookmark:bookmark];
     }

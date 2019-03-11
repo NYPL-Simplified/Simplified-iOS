@@ -371,7 +371,7 @@ import UIKit
 
   // Completion handler will return a nil parameter if there are any failures with
   // the network request, deserialization, or sync permission is not allowed.
-  class func getServerBookmarks(forBook bookID:String?, atURL annotationURL:URL?, completionHandler: @escaping (_ bookmarks: [NYPLReaderBookmark]?) -> ()) {
+  class func getServerBookmarks(forBook bookID:String?, atURL annotationURL:URL?, completionHandler: @escaping (_ bookmarks: [NYPLReadiumBookmark]?) -> ()) {
 
     if !syncIsPossibleAndPermitted() {
       Log.debug(#file, "Account does not support sync or sync is disabled.")
@@ -410,7 +410,7 @@ import UIKit
           return
       }
 
-      var bookmarks = [NYPLReaderBookmark]()
+      var bookmarks = [NYPLReadiumBookmark]()
 
       for item in items {
         if let bookmark = createBookmark(fromBook: bookID, serverAnnotation: item) {
@@ -425,7 +425,7 @@ import UIKit
     dataTask.resume()
   }
 
-  private class func createBookmark(fromBook bookID: String, serverAnnotation annotation: AnyObject) -> NYPLReaderBookmark? {
+  private class func createBookmark(fromBook bookID: String, serverAnnotation annotation: AnyObject) -> NYPLReadiumBookmark? {
 
     guard let target = annotation["target"] as? [String:AnyObject],
     let source = target["source"] as? String,
@@ -462,7 +462,7 @@ import UIKit
           return nil
       }
 
-      let bookmark = NYPLReaderBookmark(annotationId: annotationID,
+      let bookmark = NYPLReadiumBookmark(annotationId: annotationID,
                                         contentCFI: serverCfiJson,
                                         idref: serverIdrefJson,
                                         chapter: chapter,
@@ -479,7 +479,7 @@ import UIKit
     return nil
   }
 
-  class func deleteBookmarks(_ bookmarks: [NYPLReaderBookmark]) {
+  class func deleteBookmarks(_ bookmarks: [NYPLReadiumBookmark]) {
 
     if !syncIsPossibleAndPermitted() {
       Log.debug(#file, "Account does not support sync or sync is disabled.")
@@ -539,9 +539,9 @@ import UIKit
 
   // Method is called when the SyncManager is syncing bookmarks
   // If an existing local bookmark is missing an annotationID, assume it still needs to be uploaded.
-  class func uploadLocalBookmarks(_ bookmarks: [NYPLReaderBookmark],
+  class func uploadLocalBookmarks(_ bookmarks: [NYPLReadiumBookmark],
                                   forBook bookID: String,
-                                  completion: @escaping ([NYPLReaderBookmark], [NYPLReaderBookmark])->()) {
+                                  completion: @escaping ([NYPLReadiumBookmark], [NYPLReadiumBookmark])->()) {
 
     if !syncIsPossibleAndPermitted() {
       Log.debug(#file, "Account does not support sync or sync is disabled.")
@@ -550,8 +550,8 @@ import UIKit
 
     Log.debug(#file, "Begin task of uploading local bookmarks.")
     let uploadGroup = DispatchGroup()
-    var bookmarksFailedToUpdate = [NYPLReaderBookmark]()
-    var bookmarksUpdated = [NYPLReaderBookmark]()
+    var bookmarksFailedToUpdate = [NYPLReadiumBookmark]()
+    var bookmarksUpdated = [NYPLReadiumBookmark]()
 
     for localBookmark in bookmarks {
       if localBookmark.annotationId == nil {
@@ -577,7 +577,7 @@ import UIKit
 
   class func postBookmark(forBook bookID: String,
                           toURL annotationsURL: URL?,
-                          bookmark: NYPLReaderBookmark,
+                          bookmark: NYPLReadiumBookmark,
                           completionHandler: @escaping (_ serverID: String?) -> ())
   {
     if !syncIsPossibleAndPermitted() {

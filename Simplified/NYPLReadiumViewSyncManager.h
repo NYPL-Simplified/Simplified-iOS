@@ -3,7 +3,7 @@
 @class Account;
 @class NYPLBook;
 @class NYPLBookLocation;
-@class NYPLReaderBookmark;
+@class NYPLReadiumBookmark;
 
 @protocol NYPLReadiumViewSyncManagerDelegate <NSObject>
 
@@ -11,7 +11,7 @@
 - (void)patronDecidedNavigation:(BOOL)toLatestPage
                     withNavDict:(NSDictionary *)dict;
 
-- (void)uploadFinishedForBookmark:(NYPLReaderBookmark *)bookmark
+- (void)uploadFinishedForBookmark:(NYPLReadiumBookmark *)bookmark
                            inBook:(NSString *)bookID;
 @end
 
@@ -25,9 +25,9 @@
 - (void)syncAllAnnotationsWithPackage:(NSDictionary *)packageDict;
 - (void)postLastReadPosition:(NSString *)location;
 
-- (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray<NYPLReaderBookmark *> *bookmarks))completion;
+- (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray<NYPLReadiumBookmark *> *bookmarks))completion;
 
-- (void)addBookmark:(NYPLReaderBookmark *)bookmark
+- (void)addBookmark:(NYPLReadiumBookmark *)bookmark
             withCFI:(NSString *)location
             forBook:(NSString *)bookID;
 

@@ -41,7 +41,7 @@
 @property (nonatomic) BOOL isPageTurning, canGoLeft, canGoRight;
 @property (nonatomic) RDPackageResourceServer *server;
 @property (nonatomic) NSArray *TOCElements;
-@property (nonatomic) NSArray<NYPLReaderBookmark *> *bookmarkElements;
+@property (nonatomic) NSArray<NYPLReadiumBookmark *> *bookmarkElements;
 @property (nonatomic) WKWebView *webView;
 
 @property (nonatomic) NSDictionary *bookMapDictionary;
@@ -524,7 +524,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   }
 }
 
-- (void)uploadFinishedForBookmark:(NYPLReaderBookmark *)bookmark
+- (void)uploadFinishedForBookmark:(NYPLReadiumBookmark *)bookmark
                           inBook:(NSString *)bookID
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
@@ -619,13 +619,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 }
 
 - (void)checkForExistingBookmarkAtLocation:(NSString*)idref
-                         completionHandler:(void(^)(BOOL success, NYPLReaderBookmark *bookmark))completionHandler
+                         completionHandler:(void(^)(BOOL success, NYPLReadiumBookmark *bookmark))completionHandler
 {
 
   completionHandler(NO, nil);   //Remove bookmark icon at beginning of page turn
   
   NSArray *bookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];
-  for (NYPLReaderBookmark *bookmark in bookmarks) {
+  for (NYPLReadiumBookmark *bookmark in bookmarks) {
     if ([bookmark.idref isEqualToString:idref]) {
       NSString *js = [NSString stringWithFormat:@"ReadiumSDK.reader.isVisibleSpineItemElementCfi('%@', '%@')",
                       bookmark.idref,
@@ -679,7 +679,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     progressWithinChapter = (float) self.spineItemPageIndex / (float) self.spineItemPageCount;
   }
 
-  NYPLReaderBookmark *bookmark = [[NYPLReaderBookmark alloc]
+  NYPLReadiumBookmark *bookmark = [[NYPLReadiumBookmark alloc]
                                   initWithAnnotationId:nil
                                   contentCFI:contentCFI
                                   idref:idref
@@ -703,7 +703,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   }
 }
 
-- (void)deleteBookmark:(NYPLReaderBookmark*)bookmark
+- (void)deleteBookmark:(NYPLReadiumBookmark*)bookmark
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
   [registry deleteBookmark:bookmark forIdentifier:self.book.identifier];
@@ -779,7 +779,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                                             options:NSJSONReadingMutableContainers
                                                               error:&jsonError];
 
-       [weakSelf checkForExistingBookmarkAtLocation:json[@"idref"] completionHandler:^(BOOL success, NYPLReaderBookmark *bookmark) {
+       [weakSelf checkForExistingBookmarkAtLocation:json[@"idref"] completionHandler:^(BOOL success, NYPLReadiumBookmark *bookmark) {
          [weakSelf.delegate updateBookmarkIcon:success];
          [weakSelf.delegate updateCurrentBookmark:bookmark];
        }];
@@ -1002,7 +1002,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     navigationElement.sourceHref]];
 }
 
-- (void)gotoBookmark:(NYPLReaderBookmark *)bookmark
+- (void)gotoBookmark:(NYPLReadiumBookmark *)bookmark
 {
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
   

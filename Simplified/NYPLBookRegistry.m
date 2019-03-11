@@ -380,7 +380,7 @@ static NSString *const RecordsKey = @"records";
        location:(NYPLBookLocation *const)location
           state:(NYPLBookState)state
   fulfillmentId:(NSString *)fulfillmentId
-      bookmarks:(NSArray<NYPLReaderBookmark *> *)bookmarks
+      bookmarks:(NSArray<NYPLReadiumBookmark *> *)bookmarks
 {
   if(!book) {
     @throw NSInvalidArgumentException;
@@ -533,12 +533,12 @@ static NSString *const RecordsKey = @"records";
   }
 }
 
-- (NSArray<NYPLReaderBookmark *> *)bookmarksForIdentifier:(NSString *)identifier
+- (NSArray<NYPLReadiumBookmark *> *)bookmarksForIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     
-    NSArray<NYPLReaderBookmark *> *sortedArray = [record.bookmarks sortedArrayUsingComparator:^NSComparisonResult(NYPLReaderBookmark *obj1, NYPLReaderBookmark *obj2) {
+    NSArray<NYPLReadiumBookmark *> *sortedArray = [record.bookmarks sortedArrayUsingComparator:^NSComparisonResult(NYPLReadiumBookmark *obj1, NYPLReadiumBookmark *obj2) {
       if (obj1.progressWithinBook > obj2.progressWithinBook)
         return NSOrderedDescending;
       else if (obj1.progressWithinBook < obj2.progressWithinBook)
@@ -550,13 +550,13 @@ static NSString *const RecordsKey = @"records";
   }
 }
   
--(void)addBookmark:(NYPLReaderBookmark *)bookmark forIdentifier:(NSString *)identifier
+-(void)addBookmark:(NYPLReadiumBookmark *)bookmark forIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
     
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
       
-    NSMutableArray<NYPLReaderBookmark *> *bookmarks = record.bookmarks.mutableCopy;
+    NSMutableArray<NYPLReadiumBookmark *> *bookmarks = record.bookmarks.mutableCopy;
     [bookmarks addObject:bookmark];
     
     self.identifiersToRecords[identifier] = [record recordWithBookmarks:bookmarks];
@@ -565,13 +565,13 @@ static NSString *const RecordsKey = @"records";
   }
 }
   
-- (void)deleteBookmark:(NYPLReaderBookmark *)bookmark forIdentifier:(NSString *)identifier
+- (void)deleteBookmark:(NYPLReadiumBookmark *)bookmark forIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
       
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
       
-    NSMutableArray<NYPLReaderBookmark *> *bookmarks = record.bookmarks.mutableCopy;
+    NSMutableArray<NYPLReadiumBookmark *> *bookmarks = record.bookmarks.mutableCopy;
     [bookmarks removeObject:bookmark];
     
     self.identifiersToRecords[identifier] = [record recordWithBookmarks:bookmarks];
@@ -580,13 +580,13 @@ static NSString *const RecordsKey = @"records";
   }
 }
 
-- (void)replaceBookmark:(NYPLReaderBookmark *)oldBookmark with:(NYPLReaderBookmark *)newBookmark forIdentifier:(NSString *)identifier
+- (void)replaceBookmark:(NYPLReadiumBookmark *)oldBookmark with:(NYPLReadiumBookmark *)newBookmark forIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
     
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     
-    NSMutableArray<NYPLReaderBookmark *> *bookmarks = record.bookmarks.mutableCopy;
+    NSMutableArray<NYPLReadiumBookmark *> *bookmarks = record.bookmarks.mutableCopy;
     [bookmarks removeObject:oldBookmark];
     [bookmarks addObject:newBookmark];
 

@@ -1,4 +1,5 @@
-@objcMembers final class NYPLReaderBookmark: NSObject {
+/// Bookmark representation for the Readium-1 epub renderer.
+@objcMembers final class NYPLReadiumBookmark: NSObject {
   
   var annotationId:String?
 
@@ -94,7 +95,7 @@
   }
   
   override func isEqual(_ object: Any?) -> Bool {
-    let other = object as! NYPLReaderBookmark
+    let other = object as! NYPLReadiumBookmark
 
     if (self.contentCFI == other.contentCFI &&
       self.idref == other.idref &&
