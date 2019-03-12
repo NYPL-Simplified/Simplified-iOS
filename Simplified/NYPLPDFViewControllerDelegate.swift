@@ -11,7 +11,7 @@ import PDFRendererProvider
 
   func userDidNavigate(toPage page: MinitexPDFPage) {
 
-    Log.debug(#file, "NYPLPDFViewControllerDelegate: User did navigate to page: \(page)")
+    Log.debug(#file, "User did navigate to page: \(page)")
 
     let data = page.toData()
     if let string = String(data: data, encoding: .utf8),
@@ -24,22 +24,28 @@ import PDFRendererProvider
 
   func userDidCreate(bookmark: MinitexPDFPage) {
 
-    //WIP
-    /**
-    Log.debug(#file, "NYPLPDFViewControllerDelegate: User did navigate to page: \(bookmark)")
+    Log.debug(#file, "User did add bookmark: \(bookmark)")
 
     let data = bookmark.toData()
     if let string = String(data: data, encoding: .utf8),
       let bookLocation = NYPLBookLocation(locationString: string, renderer: "PDFRendererProvider") {
-//      NYPLBookRegistry.shared().add(bookLocation, forIdentifier: self.bookIdentifier)
+      NYPLBookRegistry.shared().addGenericBookmark(bookLocation, forIdentifier: self.bookIdentifier)
     } else {
-      Log.error(#file, "Error creating and saving PDF Page Location")
+      Log.error(#file, "Error adding PDF Page Location")
     }
-     */
   }
 
   func userDidDelete(bookmark: MinitexPDFPage) {
-    //TODO save to book registry
+
+    Log.debug(#file, "User did delete bookmark: \(bookmark)")
+
+    let data = bookmark.toData()
+    if let string = String(data: data, encoding: .utf8),
+      let bookLocation = NYPLBookLocation(locationString: string, renderer: "PDFRendererProvider") {
+      NYPLBookRegistry.shared().deleteGenericBookmark(bookLocation, forIdentifier: self.bookIdentifier)
+    } else {
+      Log.error(#file, "Error deleting PDF Page Location")
+    }
   }
 
   func userDidCreate(annotation: MinitexPDFAnnotation) { }

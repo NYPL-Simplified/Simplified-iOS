@@ -124,17 +124,24 @@
 - (void)openPDF:(NYPLBook *)book {
 
   NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
-  NYPLBookLocation *const bookLocation = [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
 
-  id<MinitexPDFViewController> pdfViewController;
-  if (bookLocation) {
-    NSData *const data = [bookLocation.locationString dataUsingEncoding:NSUTF8StringEncoding];
+  NSArray<NYPLBookLocation *> *const genericMarks = [[NYPLBookRegistry sharedRegistry] genericBookmarksForIdentifier:book.identifier];
+  NSMutableArray<MinitexPDFPage *> *const bookmarks = [NSMutableArray array];
+  for (NYPLBookLocation *loc in genericMarks) {
+    NSData *const data = [loc.locationString dataUsingEncoding:NSUTF8StringEncoding];
     MinitexPDFPage *const page = [MinitexPDFPage fromData:data];
-    NYPLLOG_F(@"Returning to PDF Location: %@", page);
-    pdfViewController = [MinitexPDFViewControllerFactory createWithFileUrl:url openToPage:page bookmarks:nil annotations:nil];
-  } else {
-    pdfViewController = [MinitexPDFViewControllerFactory createWithFileUrl:url openToPage:nil bookmarks:nil annotations:nil];
+    [bookmarks addObject:page];
   }
+
+  MinitexPDFPage *startingPage;
+  NYPLBookLocation *const startingBookLocation = [[NYPLBookRegistry sharedRegistry] locationForIdentifier:book.identifier];
+  NSData *const data = [startingBookLocation.locationString dataUsingEncoding:NSUTF8StringEncoding];
+  if (data) {
+    startingPage = [MinitexPDFPage fromData:data];
+    NYPLLOG_F(@"Returning to PDF Location: %@", startingPage);
+  }
+
+  id<MinitexPDFViewController> pdfViewController = [MinitexPDFViewControllerFactory createWithFileUrl:url openToPage:startingPage bookmarks:bookmarks annotations:nil];
 
   if (pdfViewController) {
     pdfViewController.delegate = [[NYPLPDFViewControllerDelegate alloc] initWithBookIdentifier:book.identifier];
