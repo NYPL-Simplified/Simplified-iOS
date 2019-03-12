@@ -65,7 +65,7 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
        location:(NYPLBookLocation *)location
           state:(NYPLBookState)state
   fulfillmentId:(NSString *)fulfillmentId
-      bookmarks:(NSArray<NYPLReadiumBookmark *> *)bookmarks;
+      readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)bookmarks;
 
 // This method should be called whenever new book information is retrieved from a server. Doing so
 // ensures that once the user has seen the new information, they will continue to do so when
