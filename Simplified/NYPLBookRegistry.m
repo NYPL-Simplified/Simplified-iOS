@@ -535,7 +535,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
   }
 }
 
-- (NSArray<NYPLReadiumBookmark *> *)bookmarksForIdentifier:(NSString *)identifier
+- (NSArray<NYPLReadiumBookmark *> *)readiumBookmarksForIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
@@ -548,17 +548,24 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
       return NSOrderedSame;
     }];
 
-    return sortedArray;
+    if (sortedArray) {
+      return sortedArray;
+    } else {
+      return [NSArray array];
+    }
   }
 }
   
--(void)addBookmark:(NYPLReadiumBookmark *)bookmark forIdentifier:(NSString *)identifier
+-(void)addReadiumBookmark:(NYPLReadiumBookmark *)bookmark forIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
     
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
       
     NSMutableArray<NYPLReadiumBookmark *> *bookmarks = record.readiumBookmarks.mutableCopy;
+    if (!bookmarks) {
+      bookmarks = [NSMutableArray array];
+    }
     [bookmarks addObject:bookmark];
     
     self.identifiersToRecords[identifier] = [record recordWithReadiumBookmarks:bookmarks];
@@ -567,13 +574,16 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
   }
 }
   
-- (void)deleteBookmark:(NYPLReadiumBookmark *)bookmark forIdentifier:(NSString *)identifier
+- (void)deleteReadiumBookmark:(NYPLReadiumBookmark *)bookmark forIdentifier:(NSString *)identifier
 {
   @synchronized(self) {
       
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
       
     NSMutableArray<NYPLReadiumBookmark *> *bookmarks = record.readiumBookmarks.mutableCopy;
+    if (!bookmarks) {
+      return;
+    }
     [bookmarks removeObject:bookmark];
     
     self.identifiersToRecords[identifier] = [record recordWithReadiumBookmarks:bookmarks];
@@ -589,11 +599,63 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
     NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
     
     NSMutableArray<NYPLReadiumBookmark *> *bookmarks = record.readiumBookmarks.mutableCopy;
+    if (!bookmarks) {
+      return;
+    }
     [bookmarks removeObject:oldBookmark];
     [bookmarks addObject:newBookmark];
 
     self.identifiersToRecords[identifier] = [record recordWithReadiumBookmarks:bookmarks];
     
+    [[NYPLBookRegistry sharedRegistry] save];
+  }
+}
+
+- (NSArray<NYPLBookLocation *> *)genericBookmarksForIdentifier:(NSString *)identifier
+{
+  @synchronized(self) {
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+    return record.genericBookmarks;
+  }
+}
+
+- (void)addGenericBookmark:(NYPLBookLocation *)bookmark forIdentifier:(NSString *)identifier
+{
+  @synchronized(self) {
+
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+
+    NSMutableArray<NYPLBookLocation *> *bookmarks = record.genericBookmarks.mutableCopy;
+    if (!bookmarks) {
+      bookmarks = [NSMutableArray array];
+    }
+    [bookmarks addObject:bookmark];
+
+    self.identifiersToRecords[identifier] = [record recordWithGenericBookmarks:bookmarks];
+
+    [[NYPLBookRegistry sharedRegistry] save];
+  }
+}
+
+- (void)deleteGenericBookmark:(NYPLBookLocation *)bookmark forIdentifier:(NSString *)identifier
+{
+  @synchronized(self) {
+
+    NYPLBookRegistryRecord *const record = self.identifiersToRecords[identifier];
+
+    NSMutableArray<NYPLBookLocation *> *bookmarks = record.genericBookmarks.mutableCopy;
+    if (!bookmarks) {
+      return;
+    }
+    NSArray<NYPLBookLocation *> *filteredArray =
+    [bookmarks filteredArrayUsingPredicate:
+     [NSPredicate predicateWithBlock:
+      ^BOOL(NYPLBookLocation *object, __unused NSDictionary *bindings) {
+        return [object.locationString isEqualToString:bookmark.locationString] == NO;
+      }]];
+
+    self.identifiersToRecords[identifier] = [record recordWithGenericBookmarks:filteredArray];
+
     [[NYPLBookRegistry sharedRegistry] save];
   }
 }

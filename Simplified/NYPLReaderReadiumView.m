@@ -528,8 +528,8 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                           inBook:(NSString *)bookID
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
-  [registry addBookmark:bookmark forIdentifier:bookID];
-  self.bookmarkElements = [registry bookmarksForIdentifier:bookID];
+  [registry addReadiumBookmark:bookmark forIdentifier:bookID];
+  self.bookmarkElements = [registry readiumBookmarksForIdentifier:bookID];
 }
 
 #pragma mark -
@@ -624,7 +624,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
   completionHandler(NO, nil);   //Remove bookmark icon at beginning of page turn
   
-  NSArray *bookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.book.identifier];
+  NSArray *bookmarks = [[NYPLBookRegistry sharedRegistry] readiumBookmarksForIdentifier:self.book.identifier];
   for (NYPLReadiumBookmark *bookmark in bookmarks) {
     if ([bookmark.idref isEqualToString:idref]) {
       NSString *js = [NSString stringWithFormat:@"ReadiumSDK.reader.isVisibleSpineItemElementCfi('%@', '%@')",
@@ -706,12 +706,12 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 - (void)deleteBookmark:(NYPLReadiumBookmark*)bookmark
 {
   NYPLBookRegistry *registry = [NYPLBookRegistry sharedRegistry];
-  [registry deleteBookmark:bookmark forIdentifier:self.book.identifier];
+  [registry deleteReadiumBookmark:bookmark forIdentifier:self.book.identifier];
   
   [self.delegate updateBookmarkIcon:NO];
   [self.delegate updateCurrentBookmark:nil];
   
-  self.bookmarkElements = [registry bookmarksForIdentifier:self.book.identifier];
+  self.bookmarkElements = [registry readiumBookmarksForIdentifier:self.book.identifier];
   
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
 
@@ -983,7 +983,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   // otherwise, grab the bookmarks from the registry
   _bookmarkElements = [[NYPLBookRegistry sharedRegistry]
-                       bookmarksForIdentifier:self.book.identifier];
+                       readiumBookmarksForIdentifier:self.book.identifier];
   
   return _bookmarkElements;
 }

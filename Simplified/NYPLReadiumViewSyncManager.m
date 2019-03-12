@@ -246,14 +246,14 @@ const double RequestTimeInterval = 120;
      if (!reachable) {
        NYPLLOG(@"Error: host was not reachable for bookmark sync attempt.");
        if (completion) {
-         completion(NO, [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+         completion(NO, [[NYPLBookRegistry sharedRegistry] readiumBookmarksForIdentifier:self.bookID]);
        }
        return;
      }
 
      // First check for and upload any local bookmarks that have never been saved to the server.
      // Wait til that's finished, then download the server's bookmark list and filter out any that can be deleted.
-     NSArray<NYPLReadiumBookmark *> *localBookmarks = [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID];
+     NSArray<NYPLReadiumBookmark *> *localBookmarks = [[NYPLBookRegistry sharedRegistry] readiumBookmarksForIdentifier:self.bookID];
      [NYPLAnnotations uploadLocalBookmarks:localBookmarks forBook:self.bookID completion:^(NSArray<NYPLReadiumBookmark *> * _Nonnull bookmarksUploaded, NSArray<NYPLReadiumBookmark *> * _Nonnull bookmarksFailedToUpload) {
 
        // Replace local bookmarks with server versions
@@ -270,7 +270,7 @@ const double RequestTimeInterval = 120;
          if (!serverBookmarks) {
            NYPLLOG(@"Ending sync without running completion. Returning original list of bookmarks.");
            if (completion) {
-             completion(NO, [[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+             completion(NO, [[NYPLBookRegistry sharedRegistry] readiumBookmarksForIdentifier:self.bookID]);
            }
            return;
          } else if (serverBookmarks.count == 0) {
@@ -307,7 +307,7 @@ const double RequestTimeInterval = 120;
 
          for (NYPLReadiumBookmark *localBookmark in localBookmarks) {
            if (![localBookmarksToKeep containsObject:localBookmark]) {
-             [[NYPLBookRegistry sharedRegistry] deleteBookmark:localBookmark forIdentifier:self.bookID];
+             [[NYPLBookRegistry sharedRegistry] deleteReadiumBookmark:localBookmark forIdentifier:self.bookID];
              [localBookmarksToDelete addObject:localBookmark];
            }
          }
@@ -324,7 +324,7 @@ const double RequestTimeInterval = 120;
          }
 
          for (NYPLReadiumBookmark *bookmark in bookmarksToAdd) {
-           [[NYPLBookRegistry sharedRegistry] addBookmark:bookmark forIdentifier:self.bookID];
+           [[NYPLBookRegistry sharedRegistry] addReadiumBookmark:bookmark forIdentifier:self.bookID];
          }
 
          if (serverBookmarksToDelete.count > 0) {
@@ -332,7 +332,7 @@ const double RequestTimeInterval = 120;
          }
 
          if (completion) {
-           completion(YES,[[NYPLBookRegistry sharedRegistry] bookmarksForIdentifier:self.bookID]);
+           completion(YES,[[NYPLBookRegistry sharedRegistry] readiumBookmarksForIdentifier:self.bookID]);
          }
        }];
      }];

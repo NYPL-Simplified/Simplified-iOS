@@ -113,16 +113,25 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks;
 - (NSString *)fulfillmentIdForIdentifier:(NSString *)identifier;
     
 // Returns the bookmarks for a book given its identifier
-- (NSArray *)bookmarksForIdentifier:(NSString *)identifier;
+- (NSArray<NYPLReadiumBookmark *> *)readiumBookmarksForIdentifier:(NSString *)identifier;
   
 // Add bookmark for a book given its identifier
-- (void)addBookmark:(NYPLReadiumBookmark *)bookmark forIdentifier:(NSString *)identifier;
+- (void)addReadiumBookmark:(NYPLReadiumBookmark *)bookmark forIdentifier:(NSString *)identifier;
   
 // Delete bookmark for a book given its identifer
-- (void)deleteBookmark:(NYPLReadiumBookmark *)bookmark forIdentifier:(NSString *)identifier;
+- (void)deleteReadiumBookmark:(NYPLReadiumBookmark *)bookmark forIdentifier:(NSString *)identifier;
 
 // Replace a bookmark with another, given its identifer
 - (void)replaceBookmark:(NYPLReadiumBookmark *)oldBookmark with:(NYPLReadiumBookmark *)newBookmark forIdentifier:(NSString *)identifier;
+
+// Returns the generic bookmarks for a any renderer's bookmarks given its identifier
+- (NSArray<NYPLBookLocation *> *)genericBookmarksForIdentifier:(NSString *)identifier;
+
+// Add a generic bookmark (book location) for a book given its identifier
+- (void)addGenericBookmark:(NYPLBookLocation *)bookmark forIdentifier:(NSString *)identifier;
+
+// Delete a generic bookmark (book location) for a book given its identifier
+- (void)deleteGenericBookmark:(NYPLBookLocation *)bookmark forIdentifier:(NSString *)identifier;
 
 // Given an identifier, this method removes a book from the registry. Attempting to remove a book
 // that is not present will result in an error being logged.
