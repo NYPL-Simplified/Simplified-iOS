@@ -13,6 +13,7 @@
 @property (nonatomic, readonly) NYPLBookState state;
 @property (nonatomic, readonly) NSString *fulfillmentId; // nilable
 @property (nonatomic, readonly) NSArray<NYPLReadiumBookmark *> *readiumBookmarks; // nilable
+@property (nonatomic, readonly) NSArray<NYPLBookLocation *> *genericBookmarks;
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
@@ -22,7 +23,8 @@
                     location:(NYPLBookLocation *)location
                        state:(NYPLBookState)state
                fulfillmentId:(NSString *)fulfillmentId
-            readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)readiumBookmarks;
+            readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
+            genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks;
 
 // designated initializer
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
@@ -38,5 +40,7 @@
 - (instancetype)recordWithFulfillmentId:(NSString *)fulfillmentId;
 
 - (instancetype)recordWithReadiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)bookmarks;
-  
+
+- (instancetype)recordWithGenericBookmarks:(NSArray<NYPLBookLocation *> *)bookmarks;
+
 @end

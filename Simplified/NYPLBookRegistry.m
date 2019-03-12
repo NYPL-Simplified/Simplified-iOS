@@ -332,7 +332,7 @@ static NSString *const RecordsKey = @"records";
            if(existingBook) {
              [self updateBook:book];
            } else {
-             [self addBook:book location:nil state:NYPLBookStateDownloadNeeded fulfillmentId:nil readiumBookmarks:nil];
+             [self addBook:book location:nil state:NYPLBookStateDownloadNeeded fulfillmentId:nil readiumBookmarks:nil genericBookmarks:nil];
            }
          }
          for (NSString *identifier in identifiersToRemove) {
@@ -380,7 +380,8 @@ static NSString *const RecordsKey = @"records";
        location:(NYPLBookLocation *const)location
           state:(NYPLBookState)state
   fulfillmentId:(NSString *)fulfillmentId
-readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)bookmarks
+readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
+genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 {
   if(!book) {
     @throw NSInvalidArgumentException;
@@ -397,7 +398,8 @@ readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)bookmarks
                                                   location:location
                                                   state:state
                                                   fulfillmentId:fulfillmentId
-                                                  readiumBookmarks:bookmarks];
+                                                  readiumBookmarks:readiumBookmarks
+                                                  genericBookmarks:genericBookmarks];
     [self broadcastChange];
   }
 }

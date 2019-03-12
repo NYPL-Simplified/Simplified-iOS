@@ -12,6 +12,7 @@
 @property (nonatomic) NYPLBookState state;
 @property (nonatomic) NSString *fulfillmentId;
 @property (nonatomic) NSArray<NYPLReadiumBookmark *> *readiumBookmarks;
+@property (nonatomic) NSArray<NYPLBookLocation *> *genericBookmarks;
 
 @end
 
@@ -20,6 +21,7 @@ static NSString *const LocationKey = @"location";
 static NSString *const StateKey = @"state";
 static NSString *const FulfillmentIdKey = @"fulfillmentId";
 static NSString *const ReadiumBookmarksKey = @"bookmarks";
+static NSString *const GenericBookmarksKey = @"genericBookmarks";
 
 @implementation NYPLBookRegistryRecord
 
@@ -28,6 +30,7 @@ static NSString *const ReadiumBookmarksKey = @"bookmarks";
                        state:(NYPLBookState)state
                fulfillmentId:(NSString *)fulfillmentId
             readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
+            genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 {
   self = [super init];
   if(!self) return nil;
@@ -41,6 +44,7 @@ static NSString *const ReadiumBookmarksKey = @"bookmarks";
   self.state = state;
   self.fulfillmentId = fulfillmentId;
   self.readiumBookmarks = readiumBookmarks;
+  self.genericBookmarks = genericBookmarks;
 
   if (!book.defaultAcquisition) {
     // Since the book has no default acqusition, there is no reliable way to
@@ -108,11 +112,17 @@ static NSString *const ReadiumBookmarksKey = @"bookmarks";
   
   self.fulfillmentId = NYPLNullToNil(dictionary[FulfillmentIdKey]);
   
-  NSMutableArray<NYPLReadiumBookmark *> *bookmarks = [NSMutableArray array];
+  NSMutableArray<NYPLReadiumBookmark *> *readiumBookmarks = [NSMutableArray array];
   for (NSDictionary *dict in NYPLNullToNil(dictionary[ReadiumBookmarksKey])) {
-    [bookmarks addObject:[[NYPLReadiumBookmark alloc] initWithDictionary:dict]];
+    [readiumBookmarks addObject:[[NYPLReadiumBookmark alloc] initWithDictionary:dict]];
   }
-  self.readiumBookmarks = bookmarks;
+  self.readiumBookmarks = readiumBookmarks;
+
+  NSMutableArray<NYPLBookLocation *> *genericBookmarks = [NSMutableArray array];
+  for (NSDictionary *dict in NYPLNullToNil(dictionary[GenericBookmarksKey])) {
+    [genericBookmarks addObject:[[NYPLBookLocation alloc] initWithDictionary:dict]];
+  }
+  self.genericBookmarks = genericBookmarks;
   
   return self;
 }
@@ -133,27 +143,32 @@ static NSString *const ReadiumBookmarksKey = @"bookmarks";
 
 - (instancetype)recordWithBook:(NYPLBook *const)book
 {
-  return [[[self class] alloc] initWithBook:book location:self.location state:self.state fulfillmentId:self.fulfillmentId readiumBookmarks:self.readiumBookmarks];
+  return [[[self class] alloc] initWithBook:book location:self.location state:self.state fulfillmentId:self.fulfillmentId readiumBookmarks:self.readiumBookmarks genericBookmarks:self.genericBookmarks];
 }
 
 - (instancetype)recordWithLocation:(NYPLBookLocation *const)location
 {
-  return [[[self class] alloc] initWithBook:self.book location:location state:self.state fulfillmentId:self.fulfillmentId readiumBookmarks:self.readiumBookmarks];
+  return [[[self class] alloc] initWithBook:self.book location:location state:self.state fulfillmentId:self.fulfillmentId readiumBookmarks:self.readiumBookmarks genericBookmarks:self.genericBookmarks];
 }
 
 - (instancetype)recordWithState:(NYPLBookState const)state
 {
-  return [[[self class] alloc] initWithBook:self.book location:self.location state:state fulfillmentId:self.fulfillmentId readiumBookmarks:self.readiumBookmarks];
+  return [[[self class] alloc] initWithBook:self.book location:self.location state:state fulfillmentId:self.fulfillmentId readiumBookmarks:self.readiumBookmarks genericBookmarks:self.genericBookmarks];
 }
 
 - (instancetype)recordWithFulfillmentId:(NSString *)fulfillmentId
 {
-  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:fulfillmentId readiumBookmarks:self.readiumBookmarks];
+  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:fulfillmentId readiumBookmarks:self.readiumBookmarks genericBookmarks:self.genericBookmarks];
 }
   
 - (instancetype)recordWithReadiumBookmarks:(NSArray *)bookmarks
 {
-  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:self.fulfillmentId readiumBookmarks:bookmarks];
+  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:self.fulfillmentId readiumBookmarks:bookmarks genericBookmarks:self.genericBookmarks];
+}
+
+- (instancetype)recordWithGenericBookmarks:(NSArray<NYPLBookLocation *> *)bookmarks
+{
+  return [[[self class] alloc] initWithBook:self.book location:self.location state:self.state fulfillmentId:self.fulfillmentId readiumBookmarks:self.readiumBookmarks genericBookmarks:bookmarks];
 }
   
 @end
