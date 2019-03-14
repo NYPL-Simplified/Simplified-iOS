@@ -4,7 +4,7 @@
 
 @class NYPLBook;
 @class NYPLBookLocation;
-@class NYPLReaderBookmark;
+@class NYPLReadiumBookmark;
 
 @interface NYPLBookRegistryRecord : NSObject
 
@@ -12,7 +12,8 @@
 @property (nonatomic, readonly) NYPLBookLocation *location; // nilable
 @property (nonatomic, readonly) NYPLBookState state;
 @property (nonatomic, readonly) NSString *fulfillmentId; // nilable
-@property (nonatomic, readonly) NSArray<NYPLReaderBookmark *> *bookmarks;
+@property (nonatomic, readonly) NSArray<NYPLReadiumBookmark *> *readiumBookmarks; // nilable
+@property (nonatomic, readonly) NSArray<NYPLBookLocation *> *genericBookmarks; // nilable
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
@@ -22,7 +23,8 @@
                     location:(NYPLBookLocation *)location
                        state:(NYPLBookState)state
                fulfillmentId:(NSString *)fulfillmentId
-                   bookmarks:(NSArray<NYPLReaderBookmark *> *)bookmarks;
+            readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
+            genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks;
 
 // designated initializer
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
@@ -37,6 +39,8 @@
 
 - (instancetype)recordWithFulfillmentId:(NSString *)fulfillmentId;
 
-- (instancetype)recordWithBookmarks:(NSArray<NYPLReaderBookmark *> *)bookmarks;
-  
+- (instancetype)recordWithReadiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)bookmarks;
+
+- (instancetype)recordWithGenericBookmarks:(NSArray<NYPLBookLocation *> *)bookmarks;
+
 @end

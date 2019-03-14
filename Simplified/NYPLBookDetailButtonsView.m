@@ -196,6 +196,7 @@
                          HintKey: [NSString stringWithFormat:NSLocalizedString(@"Opens audiobook %@ for listening", nil), self.book.title],
                          AddIndicatorKey: @(YES)};
           break;
+        case NYPLBookContentTypePDF:
         case NYPLBookContentTypeEPUB:
           buttonInfo = @{ButtonKey: self.readButton,
                          TitleKey: NSLocalizedString(@"Read", nil),

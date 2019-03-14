@@ -25,6 +25,6 @@
 - (NSString*) currentChapter;
 
 - (void) addBookmark;
-- (void) deleteBookmark:(NYPLReaderBookmark*)bookmark;
+- (void) deleteBookmark:(NYPLReadiumBookmark*)bookmark;
 
 @end

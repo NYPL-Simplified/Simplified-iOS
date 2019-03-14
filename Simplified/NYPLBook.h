@@ -91,12 +91,12 @@
 /// relation, else @c nil.
 - (NYPLOPDSAcquisition *)defaultAcquisitionIfOpenAccess __deprecated;
 
-/// The client can currently only support one default content type per
-/// OPDS entry.
+/// Assigns the book content type based on the inner-most type listed
+/// in the acquistion path. If multiple acquisition paths exist, default
+/// to epub+zip before moving down to other supported types. The UI
+/// does not yet support more than one supported type.
 ///
-/// @return The default content type. Returns `unsupported` if either
-/// no supported content type exists OR there was more than one
-/// supported content type available.
+/// @return The default NYPLBookContentType
 - (NYPLBookContentType)defaultBookContentType __deprecated;
 
 @end

@@ -31,7 +31,7 @@
 @property (nonatomic) UIBarButtonItem *settingsBarButtonItem;
 @property (nonatomic) UIBarButtonItem *bookmarkBarButtonItem;
 @property (nonatomic) UIBarButtonItem *contentsBarButtonItem;
-@property (nonatomic) NYPLReaderBookmark *currentBookmark;
+@property (nonatomic) NYPLReadiumBookmark *currentBookmark;
 @property (nonatomic) BOOL shouldHideInterfaceOnNextAppearance;
 @property (nonatomic) UIView *bottomView;
 @property (nonatomic) UIImageView *bottomViewImageView;
@@ -565,7 +565,7 @@ spineItemTitle:(NSString *const)title
     }
   });
 }
-- (void)updateCurrentBookmark:(NYPLReaderBookmark *)bookmark
+- (void)updateCurrentBookmark:(NYPLReadiumBookmark *)bookmark
 {
   self.currentBookmark = bookmark;
 }
@@ -609,7 +609,7 @@ spineItemTitle:(NSString *const)title
 }
 
 - (void)TOCViewController:(__attribute__((unused))NYPLReaderTOCViewController *)controller
-        didSelectBookmark:(NYPLReaderBookmark *)bookmark
+        didSelectBookmark:(NYPLReadiumBookmark *)bookmark
 {
   [self.rendererView gotoBookmark:bookmark];
   
@@ -625,13 +625,13 @@ spineItemTitle:(NSString *const)title
 }
 
 - (void)TOCViewController:(__unused NYPLReaderTOCViewController *)controller
-        didDeleteBookmark:(NYPLReaderBookmark *)bookmark
+        didDeleteBookmark:(NYPLReadiumBookmark *)bookmark
 {
   [self.rendererView deleteBookmark:bookmark];
 }
 
 - (void)TOCViewController:(__unused NYPLReaderTOCViewController *)controller
-didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReaderBookmark *> *))completion
+didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReadiumBookmark *> *))completion
 {
   [self.rendererView.syncManager syncBookmarksWithCompletion:completion];
 }

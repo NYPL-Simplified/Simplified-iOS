@@ -36,7 +36,8 @@
       ContentTypeBearerToken,
       ContentTypeEpubZip,
       ContentTypeFindaway,
-      ContentTypeOpenAccessAudiobook
+      ContentTypeOpenAccessAudiobook,
+      ContentTypeOpenAccessPDF
     ]];
   }
 

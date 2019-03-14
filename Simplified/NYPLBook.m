@@ -558,17 +558,30 @@ static NSString *const UpdatedKey = @"updated";
    allowedRelations:NYPLOPDSAcquisitionRelationSetAll
    acquisitions:self.acquisitions];
 
-  NSMutableSet<NSString *> *const finalTypes = [NSMutableSet set];
+  NSMutableArray<NSString *> *const finalTypes = [NSMutableArray array];
   for (NYPLBookAcquisitionPath *const path in paths) {
     [finalTypes addObject:path.types.lastObject];
   }
 
-  if (finalTypes.count != 1) {
-    NYPLLOG(@"UnsupportedBookContentType: Cannot handle anything other than 1 supported book content type.");
-    return NYPLBookContentTypeUnsupported;
+  if (finalTypes.count == 1) {
+    return NYPLBookContentTypeFromMIMEType(finalTypes.firstObject);
+  } else if (finalTypes.count > 1) {
+    // Defualt to epub if it exists, else assign a random supported type if one exists.
+    NYPLBookContentType defaultType = NYPLBookContentTypeUnsupported;
+    for (NSString *const type in finalTypes) {
+      NYPLBookContentType const contentType = NYPLBookContentTypeFromMIMEType(type);
+      if (contentType != NYPLBookContentTypeUnsupported) {
+        defaultType = contentType;
+        if (contentType == NYPLBookContentTypeEPUB) {
+          break;
+        }
+      }
+    }
+    return defaultType;
   }
 
-  return NYPLBookContentTypeFromMIMEType(finalTypes.anyObject);
+  NYPLLOG(@"Invalid argument: No mime type in acquisition path/s");
+  @throw NSInvalidArgumentException;
 }
 
 @end

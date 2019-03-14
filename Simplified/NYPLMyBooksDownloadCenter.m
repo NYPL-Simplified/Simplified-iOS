@@ -134,14 +134,15 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
     } else if ([downloadTask.response.MIMEType
-                isEqualToString:@"application/vnd.librarysimplified.bearer-token+json"])
-    {
+                isEqualToString:@"application/vnd.librarysimplified.bearer-token+json"]) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
         [[self downloadInfoForBookIdentifier:book.identifier]
          withRightsManagement:NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON];
     } else {
       NYPLLOG_F(@"Presuming no DRM for unrecognized MIME type \"%@\".", downloadTask.response.MIMEType);
-      NYPLMyBooksDownloadInfo *info = [[self downloadInfoForBookIdentifier:book.identifier] withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
+      NYPLMyBooksDownloadInfo *info =
+      [[self downloadInfoForBookIdentifier:book.identifier]
+       withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
       if (info) {
         self.bookIdentifierToDownloadInfo[book.identifier] = info;
       }
@@ -581,7 +582,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    location:nil
    state:NYPLBookStateDownloadFailed
    fulfillmentId:nil
-   bookmarks:nil];
+   readiumBookmarks:nil
+   genericBookmarks:nil];
   
   dispatch_async(dispatch_get_main_queue(), ^{
     NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"DownloadFailed" message:@"DownloadCouldNotBeCompletedFormat", book.title];
@@ -648,7 +650,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
      location:nil
      state:NYPLBookStateDownloadNeeded
      fulfillmentId:nil
-     bookmarks:nil];
+     readiumBookmarks:nil
+     genericBookmarks:nil];
 
     if(borrowCompletion) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -689,7 +692,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
          location:nil
          state:NYPLBookStateDownloadNeeded
          fulfillmentId:nil
-         bookmarks:nil];
+         readiumBookmarks:nil
+         genericBookmarks:nil];
         state = NYPLBookStateDownloadNeeded;
         loginRequired = NO;
       }
@@ -747,7 +751,8 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
        location:nil
        state:NYPLBookStateDownloading
        fulfillmentId:nil
-       bookmarks:nil];
+       readiumBookmarks:nil
+       genericBookmarks:nil];
       
       // It is important to issue this immediately because a previous download may have left the
       // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
