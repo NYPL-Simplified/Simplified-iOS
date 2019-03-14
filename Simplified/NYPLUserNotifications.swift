@@ -74,6 +74,12 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
     }
   }
 
+  /// Depending on which Notificaitons are supported, only perform an expensive
+  /// network operation if it's needed.
+  class func backgroundFetchIsNeeded() -> Bool {
+    return NYPLBookRegistry.shared().heldBooks.count > 0
+  }
+
   private class func createNotificationForReadyCheckout(book: NYPLBook)
   {
     let unCenter = UNUserNotificationCenter.current()
