@@ -110,8 +110,14 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   // Sometimes we get back JUST an entry, and in that case we just want to construct a feed with
   // nothing set other than the entry.
   if ([feedXML.name isEqual:@"entry"]) {
-    self.entries = @[[[NYPLOPDSEntry alloc] initWithXML:feedXML]];
-    return self;
+    NYPLOPDSEntry const* entry = [[NYPLOPDSEntry alloc] initWithXML:feedXML];
+    if (entry) {
+      self.entries = @[entry];
+      return self;
+    } else {
+      NYPLLOG(@"Error creating single OPDS entry from feed.");
+      return nil;
+    }
   }
   
   if(!((self.identifier = [feedXML firstChildWithName:@"id"].value))) {
