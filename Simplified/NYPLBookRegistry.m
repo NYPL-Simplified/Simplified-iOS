@@ -121,6 +121,10 @@ static NSString *const RecordsKey = @"records";
   if(!self.shouldBroadcast) {
     return;
   }
+
+  if([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+    return;
+  }
   
   // We send the notification out on the next run through the run loop to avoid deadlocks that could
   // occur due to calling synchronized methods on this object in response to a broadcast that
