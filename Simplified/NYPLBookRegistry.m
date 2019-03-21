@@ -261,7 +261,7 @@ static NSString *const RecordsKey = @"records";
   [self syncWithCompletionHandler:handler backgroundFetchHandler:nil];
 }
 
-- (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
+- (void)syncWithCompletionHandler:(void (^)(BOOL success))completion
             backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchHandler
 {
   @synchronized(self) {
@@ -275,7 +275,7 @@ static NSString *const RecordsKey = @"records";
       return;
     } else if (![[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        if(handler) handler(NO);
+        if(completion) completion(NO);
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
         [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
       }];
@@ -296,7 +296,7 @@ static NSString *const RecordsKey = @"records";
        [self broadcastChange];
        [[NSOperationQueue mainQueue]
         addOperationWithBlock:^{
-          if(handler) handler(NO);
+          if(completion) completion(NO);
           if(fetchHandler) fetchHandler(UIBackgroundFetchResultFailed);
           [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
         }];
@@ -352,7 +352,7 @@ static NSString *const RecordsKey = @"records";
        [[NSOperationQueue mainQueue]
         addOperationWithBlock:^{
           [NYPLUserNotifications updateAppIconBadgeWithHeldBooks:[self heldBooks]];
-          if(handler) handler(YES);
+          if(completion) completion(YES);
           if(fetchHandler) fetchHandler(UIBackgroundFetchResultNewData);
           [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
         }];

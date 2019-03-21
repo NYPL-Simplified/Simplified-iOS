@@ -44,17 +44,31 @@ static NSString *const NYPLBookProcessingDidChangeNotification =
 
 - (void)justLoad;
 
-// Calls syncWithCompletionHandler:backgroundFetchHandler: with no backgroundFetchHandler.
+/**
+ Grandfathering original sync method. Passes nil for the background fetch handler.
+
+ @param handler Completion Handler is on main thread, but not gauranteed to be called.
+ */
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler;
 
-// Syncs the latest content from the server. Attempts to sync while a sync is already in progress
-// will simply be ignored. Resetting the registry while a sync is in progress will cause the handler
-// not to be called. `fetchHandler` should only be used from the background fetch delegate.
+/**
+ Syncs the latest loans content from the server. Attempting to sync while one is
+ already in progress will be ignored. Resetting the registry while a sync is in
+ progress will cause the handler not to be called.
+
+ @param handler Called on completion on the main thread. Not gauranteed to be
+ called.
+ @param fetchHandler Called on completion on the main thread while exceuting
+ from a Background App State, like from the App Delegate method. Calls to this
+ block should be balanced with calls to the method.
+ */
 - (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
             backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchHandler;
 
-// Calls syncWithCompletionHandler: with a handler that presents standard success/failure alerts on
-// completion.
+/**
+ Calls syncWithCompletionHandler: with a handler that presents standard
+ success/failure alerts on completion.
+ */
 - (void)syncWithStandardAlertsOnCompletion;
 
 // Adds a book to the book registry until it is manually removed. It allows the application to
