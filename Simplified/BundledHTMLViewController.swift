@@ -51,13 +51,21 @@ import WebKit
                  decidePolicyFor navigationAction: WKNavigationAction,
                  decisionHandler: @escaping (WKNavigationActionPolicy) -> Void)
     {
-      if navigationAction.navigationType == .linkActivated {
-        if let url = navigationAction.request.url {
-          UIApplication.shared.openURL(url)
-          decisionHandler(.allow)
+      if navigationAction.navigationType == .linkActivated,
+        let url = navigationAction.request.url {
+        if !UIApplication.shared.canOpenURL(url) {
+          decisionHandler(.cancel)
+        } else {
+          if #available(iOS 10.0, *) {
+            UIApplication.shared.open(url)
+          } else {
+            UIApplication.shared.openURL(url)
+          }
+          decisionHandler(.cancel)
         }
+      } else {
+        decisionHandler(.allow)
       }
-      decisionHandler(.cancel)
     }
   }
 }
