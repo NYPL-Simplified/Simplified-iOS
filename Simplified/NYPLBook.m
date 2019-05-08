@@ -563,11 +563,11 @@ static NSString *const UpdatedKey = @"updated";
     [finalTypes addObject:path.types.lastObject];
   }
 
+  NYPLBookContentType defaultType = NYPLBookContentTypeUnsupported;
   if (finalTypes.count == 1) {
-    return NYPLBookContentTypeFromMIMEType(finalTypes.firstObject);
+    defaultType = NYPLBookContentTypeFromMIMEType(finalTypes.firstObject);
   } else if (finalTypes.count > 1) {
     // Defualt to epub if it exists, else assign a random supported type if one exists.
-    NYPLBookContentType defaultType = NYPLBookContentTypeUnsupported;
     for (NSString *const type in finalTypes) {
       NYPLBookContentType const contentType = NYPLBookContentTypeFromMIMEType(type);
       if (contentType != NYPLBookContentTypeUnsupported) {
@@ -577,11 +577,9 @@ static NSString *const UpdatedKey = @"updated";
         }
       }
     }
-    return defaultType;
   }
-
-  NYPLLOG(@"Invalid argument: No mime type in acquisition path/s");
-  @throw NSInvalidArgumentException;
+  
+  return defaultType;
 }
 
 @end
