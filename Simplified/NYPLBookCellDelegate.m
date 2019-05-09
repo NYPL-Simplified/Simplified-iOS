@@ -189,11 +189,11 @@
   __weak AudiobookPlayerViewController *weakAudiobookVC = audiobookVC;
   [manager setPlaybackCompletionHandler:^{
     NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, ContentTypeOpenAccessAudiobook, nil];
-    NSSet<NYPLBookAcquisitionPath *> *paths = [NYPLBookAcquisitionPath
-                                               supportedAcquisitionPathsForAllowedTypes:types
-                                               allowedRelations:(NYPLOPDSAcquisitionRelationSetBorrow |
-                                                                 NYPLOPDSAcquisitionRelationSetGeneric)
-                                               acquisitions:book.acquisitions];
+    NSArray<NYPLBookAcquisitionPath *> *paths = [NYPLBookAcquisitionPath
+                                                 supportedAcquisitionPathsForAllowedTypes:types
+                                                 allowedRelations:(NYPLOPDSAcquisitionRelationSetBorrow |
+                                                                   NYPLOPDSAcquisitionRelationSetGeneric)
+                                                 acquisitions:book.acquisitions];
     if (paths.count > 0) {
       UIAlertController *alert = [NYPLReturnPromptHelper audiobookPromptWithCompletion:^(BOOL returnWasChosen) {
         if (returnWasChosen) {

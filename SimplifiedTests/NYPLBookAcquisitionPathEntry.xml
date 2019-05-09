@@ -30,6 +30,7 @@
     <opds:indirectAcquisition type="application/unsupported">
       <opds:indirectAcquisition type="application/epub+zip"/>
     </opds:indirectAcquisition>
+    <opds:indirectAcquisition type="application/pdf"/>
     <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
       <opds:indirectAcquisition type="application/pdf"/>
     </opds:indirectAcquisition>

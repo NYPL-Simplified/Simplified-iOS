@@ -523,12 +523,12 @@ static NSString *const UpdatedKey = @"updated";
   }
 
   for (NYPLOPDSAcquisition *const acquisition in self.acquisitions) {
-    NSSet *const pathSet = [NYPLBookAcquisitionPath
+    NSArray *const paths = [NYPLBookAcquisitionPath
                             supportedAcquisitionPathsForAllowedTypes:[NYPLBookAcquisitionPath supportedTypes]
                             allowedRelations:NYPLOPDSAcquisitionRelationSetAll
                             acquisitions:@[acquisition]];
 
-    if (pathSet.count >= 1) {
+    if (paths.count >= 1) {
       return acquisition;
     }
   }
@@ -552,26 +552,32 @@ static NSString *const UpdatedKey = @"updated";
 
 - (NYPLBookContentType)defaultBookContentType
 {
-  NSSet<NYPLBookAcquisitionPath *> *const paths =
+  NYPLOPDSAcquisition *acquisition = [self defaultAcquisition];
+  if (!acquisition) {
+    // Avoid crashing by attempting to put nil in an array below
+    return NYPLBookContentTypeUnsupported;
+  }
+  
+  NSArray<NYPLBookAcquisitionPath *> *const paths =
   [NYPLBookAcquisitionPath
    supportedAcquisitionPathsForAllowedTypes:[NYPLBookAcquisitionPath supportedTypes]
    allowedRelations:NYPLOPDSAcquisitionRelationSetAll
-   acquisitions:self.acquisitions];
-
-  NSMutableArray<NSString *> *const finalTypes = [NSMutableArray array];
-  for (NYPLBookAcquisitionPath *const path in paths) {
-    [finalTypes addObject:path.types.lastObject];
-  }
+   acquisitions:@[acquisition]];
 
   NYPLBookContentType defaultType = NYPLBookContentTypeUnsupported;
-  // Defualt to epub if it exists, else assign a random supported type if one exists.
-  for (NSString *const type in finalTypes) {
-    NYPLBookContentType const contentType = NYPLBookContentTypeFromMIMEType(type);
-    if (contentType != NYPLBookContentTypeUnsupported) {
+  for (NYPLBookAcquisitionPath *const path in paths) {
+    NSString *finalTypeString = path.types.lastObject;
+    NYPLBookContentType const contentType = NYPLBookContentTypeFromMIMEType(finalTypeString);
+    
+    // Prefer EPUB, because we have the best support for them
+    if (contentType == NYPLBookContentTypeEPUB) {
       defaultType = contentType;
-      if (contentType == NYPLBookContentTypeEPUB) {
-        break;
-      }
+      break;
+    }
+    
+    // Assign the first supported type, to fall back on if EPUB isn't an option
+    if (defaultType == NYPLBookContentTypeUnsupported) {
+      defaultType = contentType;
     }
   }
   

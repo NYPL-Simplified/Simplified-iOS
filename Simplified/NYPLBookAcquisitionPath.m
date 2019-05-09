@@ -126,12 +126,13 @@ mutableTypePaths(
 }
 
 
-+ (NSSet<NYPLBookAcquisitionPath *> *_Nonnull)
++ (NSArray<NYPLBookAcquisitionPath *> *_Nonnull)
 supportedAcquisitionPathsForAllowedTypes:(NSSet<NSString *> *_Nonnull)types
 allowedRelations:(NYPLOPDSAcquisitionRelationSet)relations
 acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
 {
-  NSMutableSet *const mutableAcquisitionPaths = [NSMutableSet set];
+  NSMutableSet *const mutableAcquisitionPathSet = [NSMutableSet set];
+  NSMutableArray *const mutableAcquisitionPaths = [NSMutableArray array];
 
   for (NYPLOPDSAcquisition *const acquisition in acquisitions) {
     if ([types containsObject:acquisition.type]
@@ -157,7 +158,10 @@ acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
              initWithRelation:acquisition.relation
              types:[mutableTypePath copy]
              url:acquisition.hrefURL];
-            [mutableAcquisitionPaths addObject:acquisitionPath];
+            if (![mutableAcquisitionPathSet containsObject:acquisitionPath]) {
+              [mutableAcquisitionPaths addObject:acquisitionPath];
+              [mutableAcquisitionPathSet addObject:acquisitionPath];
+            }
           }
         }
       }
