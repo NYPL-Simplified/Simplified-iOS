@@ -564,17 +564,13 @@ static NSString *const UpdatedKey = @"updated";
   }
 
   NYPLBookContentType defaultType = NYPLBookContentTypeUnsupported;
-  if (finalTypes.count == 1) {
-    defaultType = NYPLBookContentTypeFromMIMEType(finalTypes.firstObject);
-  } else if (finalTypes.count > 1) {
-    // Defualt to epub if it exists, else assign a random supported type if one exists.
-    for (NSString *const type in finalTypes) {
-      NYPLBookContentType const contentType = NYPLBookContentTypeFromMIMEType(type);
-      if (contentType != NYPLBookContentTypeUnsupported) {
-        defaultType = contentType;
-        if (contentType == NYPLBookContentTypeEPUB) {
-          break;
-        }
+  // Defualt to epub if it exists, else assign a random supported type if one exists.
+  for (NSString *const type in finalTypes) {
+    NYPLBookContentType const contentType = NYPLBookContentTypeFromMIMEType(type);
+    if (contentType != NYPLBookContentTypeUnsupported) {
+      defaultType = contentType;
+      if (contentType == NYPLBookContentTypeEPUB) {
+        break;
       }
     }
   }
