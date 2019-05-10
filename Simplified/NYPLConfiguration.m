@@ -51,7 +51,7 @@
 + (BOOL)releaseStageIsBeta
 {
   NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
-  return ([[receiptURL path] rangeOfString:@"sandboxReceipt"].location != NSNotFound);
+  return ([[receiptURL path] rangeOfString:@"sandboxReceipt"].location != NSNotFound) || TARGET_OS_SIMULATOR;
 }
 
 + (NSURL *)mainFeedURL

@@ -37,10 +37,11 @@ static NSString * const _Nonnull ContentTypeOpenAccessPDF = @"application/pdf";
 
 /// O(n).
 /// @param types The types by which to limit the search for supported paths.
+/// Paths will also be limited by supported sub-types.
 /// @param acqusitions The OPDS acquisitions to search.
-/// @return The set of possible acquisition paths supported by the application
-/// limited by the types and relations supplied.
-+ (NSSet<NYPLBookAcquisitionPath *> *_Nonnull)
+/// @return The array of possible acquisition paths supported by the application, limited
+/// by the types and relations supplied, deduplicated, in the order they appear.
++ (NSArray<NYPLBookAcquisitionPath *> *_Nonnull)
 supportedAcquisitionPathsForAllowedTypes:(NSSet<NSString *> *_Nonnull)types
 allowedRelations:(NYPLOPDSAcquisitionRelationSet)relations
 acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions;

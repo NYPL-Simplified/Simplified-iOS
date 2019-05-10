@@ -43,6 +43,34 @@
 
   return types;
 }
+  
++ (NSSet<NSString *> *_Nonnull)supportedSubtypesForType:(NSString *)type
+{
+  static NSDictionary<NSString *, NSSet<NSString *> *> *subtypesForTypes = nil;
+  
+  if (!subtypesForTypes) {
+    subtypesForTypes = @{
+      ContentTypeOPDSCatalog: [NSSet setWithArray:@[
+        ContentTypeAdobeAdept,
+        ContentTypeBearerToken,
+        ContentTypeFindaway,
+        ContentTypeEpubZip,
+        ContentTypeOpenAccessPDF,
+        ContentTypeOpenAccessAudiobook
+      ]],
+      ContentTypeAdobeAdept: [NSSet setWithArray:@[ContentTypeEpubZip]],
+      ContentTypeBearerToken: [NSSet setWithArray:@[
+        ContentTypeEpubZip,
+        ContentTypeOpenAccessPDF,
+        ContentTypeOpenAccessAudiobook
+      ]]
+    };
+  }
+  
+  NSSet<NSString *> *types = subtypesForTypes[type];
+  
+  return types ?: [NSSet set];
+}
 
 - (BOOL)isEqual:(id const)object
 {
@@ -75,8 +103,13 @@ mutableTypePaths(
     if (indirectAcquisition.indirectAcquisitions.count == 0) {
       return [NSMutableArray arrayWithObject:[NSMutableArray arrayWithObject:indirectAcquisition.type]];
     } else {
+      NSMutableSet<NSString *> *supportedSubtypes = [[NYPLBookAcquisitionPath supportedSubtypesForType:indirectAcquisition.type] mutableCopy];
+      [supportedSubtypes intersectSet:allowedTypes];
       NSMutableArray<NSMutableArray<NSString *> *> *const mutableTypePathsResults = [NSMutableArray array];
       for (NYPLOPDSIndirectAcquisition *const nestedIndirectAcquisition in indirectAcquisition.indirectAcquisitions) {
+        if (![supportedSubtypes containsObject:nestedIndirectAcquisition.type]) {
+          continue;
+        }
         for (NSMutableArray<NSString *> *const mutableTypePath
              in mutableTypePaths(nestedIndirectAcquisition, allowedTypes))
         {
@@ -93,12 +126,13 @@ mutableTypePaths(
 }
 
 
-+ (NSSet<NYPLBookAcquisitionPath *> *_Nonnull)
++ (NSArray<NYPLBookAcquisitionPath *> *_Nonnull)
 supportedAcquisitionPathsForAllowedTypes:(NSSet<NSString *> *_Nonnull)types
 allowedRelations:(NYPLOPDSAcquisitionRelationSet)relations
 acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
 {
-  NSMutableSet *const mutableAcquisitionPaths = [NSMutableSet set];
+  NSMutableSet *const mutableAcquisitionPathSet = [NSMutableSet set];
+  NSMutableArray *const mutableAcquisitionPaths = [NSMutableArray array];
 
   for (NYPLOPDSAcquisition *const acquisition in acquisitions) {
     if ([types containsObject:acquisition.type]
@@ -111,7 +145,12 @@ acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
           types:@[acquisition.type]
           url:acquisition.hrefURL]];
       } else {
+        NSMutableSet<NSString *> *supportedSubtypes = [[NYPLBookAcquisitionPath supportedSubtypesForType:acquisition.type] mutableCopy];
+        [supportedSubtypes intersectSet:types];
         for (NYPLOPDSIndirectAcquisition *const indirectAcquisition in acquisition.indirectAcquisitions) {
+          if (![supportedSubtypes containsObject:indirectAcquisition.type]) {
+            continue;
+          }
           for (NSMutableArray<NSString *> *const mutableTypePath in mutableTypePaths(indirectAcquisition, types)) {
             [mutableTypePath insertObject:acquisition.type atIndex:0];
             NYPLBookAcquisitionPath *const acquisitionPath =
@@ -119,7 +158,10 @@ acquisitions:(NSArray<NYPLOPDSAcquisition *> *_Nonnull)acquisitions
              initWithRelation:acquisition.relation
              types:[mutableTypePath copy]
              url:acquisition.hrefURL];
-            [mutableAcquisitionPaths addObject:acquisitionPath];
+            if (![mutableAcquisitionPathSet containsObject:acquisitionPath]) {
+              [mutableAcquisitionPaths addObject:acquisitionPath];
+              [mutableAcquisitionPathSet addObject:acquisitionPath];
+            }
           }
         }
       }

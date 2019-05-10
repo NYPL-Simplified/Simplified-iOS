@@ -13,22 +13,25 @@ class NYPLBookAcquisitionPathTests: XCTestCase {
       .acquisitions;
 
   func testSimplifiedAdeptEpubAcquisition() {
-    let acquisitionPaths: Set<NYPLBookAcquisitionPath> =
+    let acquisitionPaths: Array<NYPLBookAcquisitionPath> =
       NYPLBookAcquisitionPath.supportedAcquisitionPaths(
         forAllowedTypes: NYPLBookAcquisitionPath.supportedTypes(),
         allowedRelations: [.borrow, .openAccess],
         acquisitions: acquisitions)
 
-    XCTAssert(acquisitionPaths.count == 1)
+    XCTAssert(acquisitionPaths.count == 2)
 
-    let acquisitionPath: NYPLBookAcquisitionPath = acquisitionPaths.first!
-
-    XCTAssert(acquisitionPath.relation == NYPLOPDSAcquisitionRelation.borrow)
-
-    XCTAssert(acquisitionPath.types == [
+    XCTAssert(acquisitionPaths[0].relation == NYPLOPDSAcquisitionRelation.borrow)
+    XCTAssert(acquisitionPaths[0].types == [
       "application/atom+xml;type=entry;profile=opds-catalog",
       "application/vnd.adobe.adept+xml",
       "application/epub+zip"
     ])
+    
+    XCTAssert(acquisitionPaths[1].relation == NYPLOPDSAcquisitionRelation.borrow)
+    XCTAssert(acquisitionPaths[1].types == [
+      "application/atom+xml;type=entry;profile=opds-catalog",
+      "application/pdf"
+      ])
   }
 }
