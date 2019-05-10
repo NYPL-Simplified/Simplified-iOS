@@ -77,6 +77,7 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   let defaults: UserDefaults
   let logo: UIImage
   let id:Int
+  let uuid:String?
   let pathComponent:String
   let name:String
   let subtitle:String?
@@ -136,6 +137,7 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     name = json["name"] as! String
     subtitle = json["subtitle"] as? String
     id = json["id_numeric"] as! Int
+    uuid = nil
     pathComponent = "\(id)"
     needsAuth = json["needsAuth"] as! Bool
     supportsReservations = json["supportsReservations"] as! Bool
@@ -165,6 +167,43 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     } else {
       authPasscodeLength = 0
     }
+  }
+  
+  init(publication: OPDS2Publication) {
+    defaults = UserDefaults.standard
+    
+    name = publication.metadata.title
+    subtitle = publication.metadata.description
+    id = 0
+    uuid = publication.metadata.id
+    pathComponent = publication.metadata.id
+    
+    // These are all in the authentication document
+    needsAuth = true
+    supportsReservations = true
+    supportsSimplyESync = true
+    supportsBarcodeScanner = true
+    supportsBarcodeDisplay = true
+    supportsCardCreator = true
+    cardCreatorUrl = nil
+    mainColor = nil
+    patronIDKeyboard = .standard
+    pinKeyboard = .standard
+    authPasscodeLength = 0
+    
+    catalogUrl = publication.links.first(where: { $0.rel == "http://opds-spec.org/catalog" })?.href
+    supportEmail = publication.links.first(where: { $0.rel == "help" })?.href.replacingOccurrences(of: "mailto:", with: "")
+    
+    let logoString = publication.images?.first(where: { $0.rel == "http://opds-spec.org/image/thumbnail" })?.href
+    if let modString = logoString?.replacingOccurrences(of: "data:image/png;base64,", with: ""),
+      let logoData = Data.init(base64Encoded: modString),
+      let logoImage = UIImage(data: logoData) {
+      logo = logoImage
+    } else {
+      logo = UIImage.init(named: "LibraryLogoMagic")!
+    }
+    
+    inProduction = true
   }
 
   func setURL(_ URL: URL, forLicense urlType: URLType) -> Void {
