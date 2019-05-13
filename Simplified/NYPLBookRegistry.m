@@ -118,18 +118,18 @@ static NSString *const RecordsKey = @"records";
 
 - (void)broadcastChange
 {
-  if(!self.shouldBroadcast) {
+  if (!self.shouldBroadcast) {
     return;
   }
 
-  if([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
-    return;
-  }
-  
   // We send the notification out on the next run through the run loop to avoid deadlocks that could
   // occur due to calling synchronized methods on this object in response to a broadcast that
   // originated from within a synchronized block.
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+      return;
+    }
+
     [[NSNotificationCenter defaultCenter]
      postNotificationName:NYPLBookRegistryDidChangeNotification
      object:self];
