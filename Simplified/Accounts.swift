@@ -55,6 +55,31 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     } catch {
       Log.error(#file, "Accounts.json was invalid. Error: \(error.localizedDescription)")
     }
+    
+    super.init()
+    loadCatalogs(completion: {_ in })
+  }
+  
+  func loadCatalogs(completion: @escaping (Bool) -> ()) {
+    guard let url = URL(string: "http://libraryregistry.librarysimplified.org/libraries") else {
+      return;
+    }
+    DispatchQueue.global().async {
+      do {
+        let data = try Data(contentsOf: url)
+        let catalogsFeed = try OPDS2CatalogsFeed.fromData(data)
+        var id = 0
+        self.accounts = catalogsFeed.catalogs.map {
+          let account = Account(publication: $0, id: id)
+          id += 1
+          return account
+        }
+        completion(true)
+      } catch (let error) {
+        Log.error(#file, "Couldn't load catalogs. Error: \(error.localizedDescription)")
+        completion(false)
+      }
+    }
   }
   
   func account(_ id:Int) -> Account?
@@ -74,27 +99,79 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 /// choose to sign up for multiple Accounts.
 @objcMembers final class Account:NSObject
 {
-  let defaults: UserDefaults
-  let logo: UIImage
+  let defaults:UserDefaults
+  let logo:UIImage
   let id:Int
   let uuid:String?
   let pathComponent:String
   let name:String
   let subtitle:String?
-  let needsAuth:Bool
-  let authPasscodeLength:UInt
-  let patronIDKeyboard:LoginKeyboard
-  let pinKeyboard:LoginKeyboard
-  let supportsSimplyESync:Bool
-  let supportsBarcodeScanner:Bool
-  let supportsBarcodeDisplay:Bool
-  let supportsCardCreator:Bool
-  let supportsReservations:Bool
+  var needsAuth:Bool
+  var authPasscodeLength:UInt
+  var patronIDKeyboard:LoginKeyboard
+  var pinKeyboard:LoginKeyboard
+  var supportsSimplyESync:Bool
+  var supportsBarcodeScanner:Bool
+  var supportsBarcodeDisplay:Bool
+  var supportsCardCreator:Bool
+  var supportsReservations:Bool
   let catalogUrl:String?
-  let cardCreatorUrl:String?
+  var cardCreatorUrl:String?
   let supportEmail:String?
-  let mainColor:String?
+  var mainColor:String?
   let inProduction:Bool
+  var userProfileUrl:String?
+  
+  let authenticationDocumentUrl:String?
+  var authenticationDocument:OPDS2AuthenticationDocument? {
+    didSet {
+      guard let authenticationDocument = authenticationDocument else {
+        return
+      }
+      needsAuth = !authenticationDocument.authentication.isEmpty
+      
+      supportsReservations = authenticationDocument.features.disabled?.contains("https://librarysimplified.org/rel/policy/reservations") != true
+      userProfileUrl = authenticationDocument.links.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/user-profile" })?.href
+      supportsSimplyESync = userProfileUrl != nil
+      cardCreatorUrl = authenticationDocument.links.first(where: { $0.rel == "register" })?.href
+      supportsCardCreator = false // TODO: Set to true based on a custom URL scheme
+      
+      if let urlString = authenticationDocument.links.first(where: { $0.rel == "privacy-policy" })?.href,
+        let url = URL(string: urlString) {
+        setURL(url, forLicense: .privacyPolicy)
+      }
+      
+      if let urlString = authenticationDocument.links.first(where: { $0.rel == "terms-of-service" })?.href,
+        let url = URL(string: urlString) {
+        setURL(url, forLicense: .eula)
+      }
+      
+      if let urlString = authenticationDocument.links.first(where: { $0.rel == "license" })?.href,
+        let url = URL(string: urlString) {
+        setURL(url, forLicense: .contentLicenses)
+      }
+      
+      if let urlString = authenticationDocument.links.first(where: { $0.rel == "copyright" })?.href,
+        let url = URL(string: urlString) {
+        setURL(url, forLicense: .acknowledgements)
+      }
+      
+      mainColor = authenticationDocument.colorScheme
+      
+      supportsBarcodeScanner = false
+      supportsBarcodeDisplay = false
+      // TODO: Should we preference different authentication details, rather than just getting the first?
+      if let auth = authenticationDocument.authentication.first {
+        patronIDKeyboard = LoginKeyboard(auth.inputs.login.keyboard) ?? .standard
+        pinKeyboard = LoginKeyboard(auth.inputs.password.keyboard) ?? .standard
+        // Default to 100; a value of 0 means "don't show this UI element at all", not "unlimited characters"
+        authPasscodeLength = auth.inputs.password.maximumLength ?? 99
+        // In the future there could be more formats, but we only know how to support this one
+        supportsBarcodeScanner = auth.inputs.login.barcodeFormat == "Codabar"
+        supportsBarcodeDisplay = supportsBarcodeScanner
+      }
+    }
+  }
   
   fileprivate var urlAnnotations:URL?
   fileprivate var urlAcknowledgements:URL?
@@ -137,7 +214,7 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     name = json["name"] as! String
     subtitle = json["subtitle"] as? String
     id = json["id_numeric"] as! Int
-    uuid = nil
+    uuid = json["id_uuid"] as? String
     pathComponent = "\(id)"
     needsAuth = json["needsAuth"] as! Bool
     supportsReservations = json["supportsReservations"] as! Bool
@@ -167,32 +244,36 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     } else {
       authPasscodeLength = 0
     }
+    
+    authenticationDocumentUrl = nil
   }
   
-  init(publication: OPDS2Publication) {
+  init(publication: OPDS2Publication, id: Int) {
     defaults = UserDefaults.standard
     
     name = publication.metadata.title
     subtitle = publication.metadata.description
-    id = 0
+    self.id = id
     uuid = publication.metadata.id
     pathComponent = publication.metadata.id
     
     // These are all in the authentication document
     needsAuth = true
-    supportsReservations = true
-    supportsSimplyESync = true
-    supportsBarcodeScanner = true
-    supportsBarcodeDisplay = true
-    supportsCardCreator = true
+    supportsReservations = false
+    supportsSimplyESync = false
+    supportsBarcodeScanner = false
+    supportsBarcodeDisplay = false
+    supportsCardCreator = false
     cardCreatorUrl = nil
     mainColor = nil
     patronIDKeyboard = .standard
     pinKeyboard = .standard
-    authPasscodeLength = 0
+    authPasscodeLength = 99
     
     catalogUrl = publication.links.first(where: { $0.rel == "http://opds-spec.org/catalog" })?.href
     supportEmail = publication.links.first(where: { $0.rel == "help" })?.href.replacingOccurrences(of: "mailto:", with: "")
+    
+    authenticationDocumentUrl = publication.links.first(where: { $0.type == "application/vnd.opds.authentication.v1.0+json" })?.href
     
     let logoString = publication.images?.first(where: { $0.rel == "http://opds-spec.org/image/thumbnail" })?.href
     if let modString = logoString?.replacingOccurrences(of: "data:image/png;base64,", with: ""),
@@ -204,6 +285,23 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     }
     
     inProduction = true
+  }
+  
+  func loadAuthenticationDocument(completion: @escaping (Bool) -> ()) {
+    guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
+      completion(false)
+      return
+    }
+    DispatchQueue.global().async { [weak self] in
+      do {
+        let data = try Data(contentsOf: url)
+        self?.authenticationDocument = try OPDS2AuthenticationDocument.fromData(data)
+        completion(true)
+      } catch (let error) {
+        Log.error(#file, "Failed to load authentication document for library: \(error.localizedDescription)")
+        completion(false)
+      }
+    }
   }
 
   func setURL(_ URL: URL, forLicense urlType: URLType) -> Void {

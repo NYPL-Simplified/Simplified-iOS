@@ -20,15 +20,16 @@ struct OPDS2AuthenticationDocument: Codable {
   }
   
   struct Features: Codable {
-    let disabled: [String]
-    let enabled: [String]
+    let disabled: [String]?
+    let enabled: [String]?
   }
   
   struct Authentication: Codable {
     struct Inputs: Codable {
       struct Input: Codable {
-        let barcodeFormat: String
-        let keyboard: String // TODO: Use enum instead
+        let barcodeFormat: String?
+        let maximumLength: UInt?
+        let keyboard: String // TODO: Use enum instead (or not; it could break if new values are added)
       }
       
       let login: Input
@@ -47,7 +48,7 @@ struct OPDS2AuthenticationDocument: Codable {
   }
   
   let publicKey: PublicKey
-  let webColorScheme: ColorScheme
+  let webColorScheme: ColorScheme?
   let features: Features
   let links: [OPDS2Link]
   let title: String
@@ -55,4 +56,11 @@ struct OPDS2AuthenticationDocument: Codable {
   let serviceDescription: String?
   let colorScheme: String?
   let id: String
+  
+  static func fromData(_ data: Data) throws -> OPDS2AuthenticationDocument {
+    let jsonDecoder = JSONDecoder()
+    jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
+    
+    return try jsonDecoder.decode(OPDS2AuthenticationDocument.self, from: data)
+  }
 }

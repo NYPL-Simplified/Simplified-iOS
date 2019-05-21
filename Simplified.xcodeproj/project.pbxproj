@@ -186,6 +186,10 @@
 		B51C1E0022861BAD003B49A5 /* OPDS2Link.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51C1DFF22861BAD003B49A5 /* OPDS2Link.swift */; };
 		B51C1E0222861BBF003B49A5 /* OPDS2Publication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51C1E0122861BBF003B49A5 /* OPDS2Publication.swift */; };
 		B51C1E0422861C1A003B49A5 /* OPDS2AuthenticationDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51C1E0322861C1A003B49A5 /* OPDS2AuthenticationDocument.swift */; };
+		B51C1E17229456E2003B49A5 /* acl_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = B51C1E13229456E2003B49A5 /* acl_authentication_document.json */; };
+		B51C1E18229456E2003B49A5 /* gpl_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = B51C1E14229456E2003B49A5 /* gpl_authentication_document.json */; };
+		B51C1E19229456E2003B49A5 /* nypl_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = B51C1E15229456E2003B49A5 /* nypl_authentication_document.json */; };
+		B51C1E1A229456E2003B49A5 /* dpl_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = B51C1E16229456E2003B49A5 /* dpl_authentication_document.json */; };
 		B5ED41DA1B8F6E2E009FC164 /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */; };
 		D787E8441FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787E8431FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift */; };
 		E6202A021DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6202A011DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m */; };
@@ -564,6 +568,10 @@
 		B51C1DFF22861BAD003B49A5 /* OPDS2Link.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OPDS2Link.swift; sourceTree = "<group>"; };
 		B51C1E0122861BBF003B49A5 /* OPDS2Publication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OPDS2Publication.swift; sourceTree = "<group>"; };
 		B51C1E0322861C1A003B49A5 /* OPDS2AuthenticationDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OPDS2AuthenticationDocument.swift; sourceTree = "<group>"; };
+		B51C1E13229456E2003B49A5 /* acl_authentication_document.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = acl_authentication_document.json; sourceTree = "<group>"; };
+		B51C1E14229456E2003B49A5 /* gpl_authentication_document.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gpl_authentication_document.json; sourceTree = "<group>"; };
+		B51C1E15229456E2003B49A5 /* nypl_authentication_document.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = nypl_authentication_document.json; sourceTree = "<group>"; };
+		B51C1E16229456E2003B49A5 /* dpl_authentication_document.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = dpl_authentication_document.json; sourceTree = "<group>"; };
 		B5ED41D81B8F6E2E009FC164 /* NYPLBookButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookButtonsView.h; sourceTree = "<group>"; };
 		B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookButtonsView.m; sourceTree = "<group>"; };
 		CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Simplified.xcconfig; sourceTree = "<group>"; };
@@ -600,7 +608,6 @@
 		E6D848E22171334800CEC142 /* NYPLContentTypeBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLContentTypeBadge.swift; sourceTree = "<group>"; };
 		E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookAuthor.swift; sourceTree = "<group>"; };
 		E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLDirectoryManager.swift; sourceTree = "<group>"; };
-		E6FAFBFE1F7A9D870026F0EE /* SimplyE-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyE-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1105,7 +1112,6 @@
 				E6C91BC01FD5F63B00A32F42 /* NYPLZXingEncoder.h */,
 				E6C91BC11FD5F63B00A32F42 /* NYPLZXingEncoder.m */,
 				145798F5215BE9E300F68AFD /* ProblemReportEmail.swift */,
-				E6FAFBFE1F7A9D870026F0EE /* SimplyE-Bridging-Header.h */,
 				A823D817192BABA400B55DE2 /* Supporting Files */,
 				2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */,
 				2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */,
@@ -1158,6 +1164,10 @@
 			isa = PBXGroup;
 			children = (
 				B51C1DFB22860513003B49A5 /* OPDS2CatalogsFeed.json */,
+				B51C1E13229456E2003B49A5 /* acl_authentication_document.json */,
+				B51C1E16229456E2003B49A5 /* dpl_authentication_document.json */,
+				B51C1E14229456E2003B49A5 /* gpl_authentication_document.json */,
+				B51C1E15229456E2003B49A5 /* nypl_authentication_document.json */,
 				2D2B47761D08F808007F7764 /* Info.plist */,
 				A823D832192BABA400B55DE2 /* InfoPlist.strings */,
 				111559F019B8FAA10003BE94 /* invalid.xml */,
@@ -1363,6 +1373,10 @@
 			files = (
 				2D8790A320129AC400E2763F /* NYPLBookAcquisitionPathEntry.xml in Resources */,
 				2D2B478E1D08FDF5007F7764 /* UpdateCheckNeedsUpdate.json in Resources */,
+				B51C1E18229456E2003B49A5 /* gpl_authentication_document.json in Resources */,
+				B51C1E19229456E2003B49A5 /* nypl_authentication_document.json in Resources */,
+				B51C1E17229456E2003B49A5 /* acl_authentication_document.json in Resources */,
+				B51C1E1A229456E2003B49A5 /* dpl_authentication_document.json in Resources */,
 				2D2B478F1D08FDF5007F7764 /* UpdateCheckUnknown.json in Resources */,
 				B51C1DFC22860513003B49A5 /* OPDS2CatalogsFeed.json in Resources */,
 				2D2B47841D08F8E2007F7764 /* UpdateCheckUpToDate.json in Resources */,

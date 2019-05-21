@@ -68,6 +68,8 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) Account *selectedAccount;
 @property (nonatomic) NYPLAccount *selectedNYPLAccount;
 
+@property (nonatomic) BOOL loading;
+
 @property (nonatomic) UITableViewCell *registrationCell;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITableViewCell *ageCheckCell;
@@ -155,7 +157,45 @@ double const requestTimeoutInterval = 25.0;
   
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
+  
+  if (self.selectedAccount.authenticationDocumentUrl) {
+    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray];
+    activityIndicator.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
+    [self.view addSubview:activityIndicator];
+    [activityIndicator startAnimating];
+    self.loading = true;
+    
+    [self.selectedAccount loadAuthenticationDocumentWithCompletion:^(BOOL success) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [activityIndicator removeFromSuperview];
+        if (success) {
+          self.loading = false;
+          [self setupViews];
+          
+          self.hiddenPIN = YES;
+          [self accountDidChange];
+          [self.tableView reloadData];
+          [self updateShowHidePINState];
+        } else {
+          // TODO: localize
+          [self displayErrorMessage:@"Failed to load library details"];
+        }
+      });
+    }];
+  } else {
+    [self setupViews];
+  }
+}
 
+- (void)displayErrorMessage:(NSString *)errorMessage {
+  UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+  label.text = errorMessage;
+  [label sizeToFit];
+  label.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
+  [self.view addSubview:label];
+}
+
+- (void)setupViews {
   self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.usernameTextField.delegate = self;
   self.usernameTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
@@ -1068,7 +1108,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return self.tableData.count;
+  return self.loading ? 0 : self.tableData.count;
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -1129,6 +1169,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     titleLabel.text = self.selectedAccount.name;
     titleLabel.font = [UIFont systemFontOfSize:14];
     subtitleLabel.text = self.selectedAccount.subtitle;
+    if (subtitleLabel.text == nil || [subtitleLabel.text isEqualToString:@""]) {
+      subtitleLabel.text = @" "; // Make sure it takes up at least some space
+    }
     subtitleLabel.font = [UIFont fontWithName:@"AvenirNext-Regular" size:12];
     
     [containerView addSubview:titleLabel];
