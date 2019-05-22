@@ -1,3 +1,5 @@
+static NSInteger const Version = 1;
+
 static NSString *const NYPLSettingsDidChangeNotification = @"NYPLSettingsDidChangeNotification";
 static NSString *const NYPLCurrentAccountDidChangeNotification = @"NYPLCurrentAccountDidChangeNotification";
 static NSString *const NYPLSyncBeganNotification = @"NYPLSyncBeganNotification";
@@ -32,6 +34,7 @@ static NSString *const NYPLUserAgreementURLString = @"http://www.librarysimplifi
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
+- (void)migrate;
 
 + (NYPLSettings *)sharedSettings;
 

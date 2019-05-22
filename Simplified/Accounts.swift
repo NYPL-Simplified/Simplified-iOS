@@ -11,6 +11,11 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 @objcMembers final class AccountsManager: NSObject
 {
   static let shared = AccountsManager()
+  static let NYPLAccountUUIDs = [
+    "urn:uuid:065c0c11-0d0f-42a3-82e4-277b18786949",
+    "urn:uuid:edef2358-9f6a-4ce6-b64f-9b351ec68ac4",
+    "urn:uuid:56906f26-2c9a-4ae9-bd02-552557720b99"
+  ]
   
   // For Objective-C classes
   class func sharedInstance() -> AccountsManager
@@ -22,14 +27,14 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   var accounts = [Account]()
   var currentAccount: Account {
     get {
-      if account(defaults.integer(forKey: currentAccountIdentifierKey)) == nil
+      if account(defaults.string(forKey: currentAccountIdentifierKey) ?? "") == nil
       {
-        defaults.set(0, forKey: currentAccountIdentifierKey)
+        defaults.set(AccountsManager.NYPLAccountUUIDs[0], forKey: currentAccountIdentifierKey)
       }
-      return account(defaults.integer(forKey: currentAccountIdentifierKey))!
+      return account(defaults.string(forKey: currentAccountIdentifierKey) ?? "")!
     }
     set {
-      defaults.set(newValue.id, forKey: currentAccountIdentifierKey)
+      defaults.set(newValue.uuid, forKey: currentAccountIdentifierKey)
       NotificationCenter.default.post(name: NSNotification.Name(rawValue: NYPLCurrentAccountDidChangeNotification), object: nil)
     }
   }
@@ -57,14 +62,14 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     }
   }
   
-  func account(_ id:Int) -> Account?
+  func account(_ uuid:String) -> Account?
   {
-    return self.accounts.filter{ $0.id == id }.first
+    return self.accounts.filter{ $0.uuid == uuid }.first
   }
   
-  func changeCurrentAccount(identifier id: Int)
+  func changeCurrentAccount(identifier uuid: String)
   {
-    if let account = account(id) {
+    if let account = account(uuid) {
       self.currentAccount = account
     }
   }
@@ -76,8 +81,7 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 {
   let defaults: UserDefaults
   let logo: UIImage
-  let id:Int
-  let pathComponent:String
+  let uuid:String
   let name:String
   let subtitle:String?
   let needsAuth:Bool
@@ -135,8 +139,7 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     
     name = json["name"] as! String
     subtitle = json["subtitle"] as? String
-    id = json["id_numeric"] as! Int
-    pathComponent = "\(id)"
+    uuid = json["id_uuid"] as! String
     needsAuth = json["needsAuth"] as! Bool
     supportsReservations = json["supportsReservations"] as! Bool
     supportsSimplyESync = json["supportsSimplyESync"] as! Bool
@@ -233,16 +236,16 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   }
   
   fileprivate func setAccountDictionaryKey(_ key: String, toValue value: AnyObject) {
-    if var savedDict = defaults.value(forKey: self.pathComponent) as? [String: AnyObject] {
+    if var savedDict = defaults.value(forKey: self.uuid) as? [String: AnyObject] {
       savedDict[key] = value
-      defaults.set(savedDict, forKey: self.pathComponent)
+      defaults.set(savedDict, forKey: self.uuid)
     } else {
-      defaults.set([key:value], forKey: self.pathComponent)
+      defaults.set([key:value], forKey: self.uuid)
     }
   }
   
   fileprivate func getAccountDictionaryKey(_ key: String) -> AnyObject? {
-    let savedDict = defaults.value(forKey: self.pathComponent) as? [String: AnyObject]
+    let savedDict = defaults.value(forKey: self.uuid) as? [String: AnyObject]
     guard let result = savedDict?[key] else { return nil }
     return result
   }
