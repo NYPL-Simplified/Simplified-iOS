@@ -21,6 +21,15 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   let defaults: UserDefaults
   var accounts = [Account]()
   
+  var accountsHaveLoaded: Bool {
+    return !accounts.isEmpty
+  }
+  
+  var loadingCompletionHandlers = [(Bool) -> ()]()
+  var accountsAreLoading: Bool {
+    return !loadingCompletionHandlers.isEmpty
+  }
+  
   var currentAccount: Account? {
     get {
       return account(defaults.integer(forKey: currentAccountIdentifierKey))
@@ -40,12 +49,35 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     loadCatalogs(preferringCache: true, completion: {_ in })
   }
   
+  let completionHandlerAccessQueue = DispatchQueue(label: "libraryListCompletionHandlerAccessQueue")
+  
+  // Returns whether loading was happening already
+  func addLoadingCompletionHandler(_ handler: @escaping (Bool) -> ()) -> Bool {
+    var wasEmpty = false
+    completionHandlerAccessQueue.sync {
+      wasEmpty = loadingCompletionHandlers.isEmpty
+      loadingCompletionHandlers.append(handler)
+    }
+    return !wasEmpty
+  }
+  
+  func callAndClearLoadingCompletionHandlers(_ success: Bool) {
+    var handlers = [(Bool) -> ()]()
+    completionHandlerAccessQueue.sync {
+      handlers = loadingCompletionHandlers
+      loadingCompletionHandlers.removeAll()
+    }
+    for handler in handlers {
+      handler(success)
+    }
+  }
+  
   func loadCatalogs(preferringCache: Bool, completion: @escaping (Bool) -> ()) {
     let isBeta = NYPLConfiguration.releaseStageIsBeta() && !UserDefaults.standard.bool(forKey: "prod_only")
     let betaUrl = URL(string: "http://libraryregistry.librarysimplified.org/libraries")
     let prodUrl = URL(string: "http://libraryregistry.librarysimplified.org/libraries") // TODO: This needs to be replaced once there's a new endpoint
     guard let url = isBeta ? betaUrl : prodUrl else {
-      return;
+      return
     }
     
     let handleData = { (data: Data) in
@@ -67,14 +99,19 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
               NYPLSettings.shared()?.accountMainFeedURL = URL(string: self.currentAccount?.catalogUrl ?? "")
               UIApplication.shared.delegate?.window??.tintColor = NYPLConfiguration.mainColor()
               NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
-              completion(true)
+              self.callAndClearLoadingCompletionHandlers(true)
             }
           })
         }
       } catch (let error) {
         Log.error(#file, "Couldn't load catalogs. Error: \(error.localizedDescription)")
-        completion(false)
+        self.callAndClearLoadingCompletionHandlers(false)
       }
+    }
+    
+    let wasAlreadyLoading = addLoadingCompletionHandler(completion)
+    if wasAlreadyLoading {
+      return
     }
     
     let cachesUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
@@ -96,7 +133,7 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
       guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
         Log.error(#file, "Couldn't load catalogs. Error: \(error?.localizedDescription ?? "")")
-        completion(false)
+        self.callAndClearLoadingCompletionHandlers(false)
         return
       }
       try? data.write(to: libraryListCacheUrl)
