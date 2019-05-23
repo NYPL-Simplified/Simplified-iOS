@@ -612,7 +612,7 @@ double const requestTimeoutInterval = 25.0;
     if (success) {
       [self.selectedNYPLAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
 
-      if (self.selectedAccountId == [AccountsManager shared].currentAccount.uuid) {
+      if ([self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]) {
         void (^handler)(void) = self.completionHandler;
         self.completionHandler = nil;
         if(handler) handler();
@@ -1467,7 +1467,7 @@ replacementString:(NSString *)string
                                                  if (completion) { completion(NO); }
                                                }]];
 
-  if (self.selectedAccountId == [AccountsManager NYPLAccountUUIDs][2]) {
+  if ([self.selectedAccountId isEqualToString:[AccountsManager NYPLAccountUUIDs][2]]) {
     [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
   }
 }
@@ -1540,7 +1540,7 @@ replacementString:(NSString *)string
   return ((self.selectedAccount.supportsSimplyESync) &&
           ([self.selectedAccount getLicenseURL:URLTypeAnnotations] &&
            [self.selectedNYPLAccount hasBarcodeAndPIN]) &&
-           (self.selectedAccountId == [AccountsManager shared].currentAccount.uuid));
+           ([self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]));
 }
 
 - (void)didSelectCancel

@@ -718,7 +718,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 
 - (void)reset:(NSString *)account
 {
-  if ([AccountsManager shared].currentAccount.uuid == account)
+  if ([[AccountsManager shared].currentAccount.uuid isEqualToString:account])
   {
     [self reset];
   }
@@ -818,7 +818,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 - (void)performUsingAccount:(NSString * const)account block:(void (^const __nonnull)(void))block
 {
   @synchronized (self) {
-    if (account == [AccountsManager sharedInstance].currentAccount.uuid) {
+    if ([account isEqualToString:[AccountsManager sharedInstance].currentAccount.uuid]) {
       // Since we're already set to the account, do not reload data. Doing so would
       // be inefficient, but, more importantly, it would also wipe out download states.
       block();

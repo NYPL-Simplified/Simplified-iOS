@@ -36,7 +36,7 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
     }
   }
   
-  if (account != [AccountsManager NYPLAccountUUIDs][0])
+  if (![account isEqualToString:[AccountsManager NYPLAccountUUIDs][0]])
   {
     barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode", account];
     authorizationIdentifierKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAuthorization", account];

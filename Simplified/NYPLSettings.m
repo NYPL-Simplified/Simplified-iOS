@@ -231,11 +231,9 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
           // Migrate accounts
           NSMutableArray* newLibraryAccountsList = [NSMutableArray arrayWithCapacity:libraryAccounts.count];
           for (id account in libraryAccounts) {
-            if (account) {
-              id uuidObj = [idToUuidMap objectForKey:[account stringValue]];
-              if (uuidObj) {
-                [newLibraryAccountsList addObject:uuidObj];
-              }
+            id uuidObj = [idToUuidMap objectForKey:[account stringValue]];
+            if (uuidObj) {
+              [newLibraryAccountsList addObject:uuidObj];
             }
           }
           [[NSUserDefaults standardUserDefaults] setObject:newLibraryAccountsList forKey:settingsLibraryAccountsKey];

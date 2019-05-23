@@ -844,7 +844,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)reset:(NSString *)account
 {
-  if ([AccountsManager shared].currentAccount.uuid == account)
+  if ([[AccountsManager shared].currentAccount.uuid isEqualToString:account])
   {
     [self reset];
   }
