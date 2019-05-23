@@ -158,14 +158,13 @@ double const requestTimeoutInterval = 25.0;
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
   
-  if (self.selectedAccount.authenticationDocumentUrl) {
+  if (self.selectedAccount.details == nil) {
     UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleGray];
     activityIndicator.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
     [self.view addSubview:activityIndicator];
     [activityIndicator startAnimating];
     self.loading = true;
-    
-    [self.selectedAccount loadAuthenticationDocumentWithCompletion:^(BOOL success) {
+    [self.selectedAccount loadAuthenticationDocumentWithPreferringCache:NO completion:^(BOOL success) {
       dispatch_async(dispatch_get_main_queue(), ^{
         [activityIndicator removeFromSuperview];
         if (success) {
@@ -177,8 +176,7 @@ double const requestTimeoutInterval = 25.0;
           [self.tableView reloadData];
           [self updateShowHidePINState];
         } else {
-          // TODO: localize
-          [self displayErrorMessage:@"Failed to load library details"];
+          [self displayErrorMessage:NSLocalizedString(@"CheckConnection", nil)];
         }
       });
     }];
@@ -200,7 +198,7 @@ double const requestTimeoutInterval = 25.0;
   self.usernameTextField.delegate = self;
   self.usernameTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
 
-  switch (self.selectedAccount.patronIDKeyboard) {
+  switch (self.selectedAccount.details.patronIDKeyboard) {
     case LoginKeyboardStandard:
     case LoginKeyboardNone:
       self.usernameTextField.keyboardType = UIKeyboardTypeASCIICapable;
@@ -228,7 +226,7 @@ double const requestTimeoutInterval = 25.0;
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
 
-  switch (self.selectedAccount.pinKeyboard) {
+  switch (self.selectedAccount.details.pinKeyboard) {
     case LoginKeyboardStandard:
     case LoginKeyboardNone:
       self.PINTextField.keyboardType = UIKeyboardTypeASCIICapable;
@@ -265,9 +263,9 @@ double const requestTimeoutInterval = 25.0;
 - (void)setupTableData
 {
   NSMutableArray *section0;
-  if (!self.selectedAccount.needsAuth) {
+  if (!self.selectedAccount.details.needsAuth) {
     section0 = @[@(CellKindAgeCheck)].mutableCopy;
-  } else if (self.selectedAccount.pinKeyboard != LoginKeyboardNone) {
+  } else if (self.selectedAccount.details.pinKeyboard != LoginKeyboardNone) {
     section0 = @[@(CellKindBarcode),
                  @(CellKindPIN),
                  @(CellKindLogInSignOut)].mutableCopy;
@@ -284,10 +282,10 @@ double const requestTimeoutInterval = 25.0;
     [section0 insertObject:@(CellKindBarcodeImage) atIndex: 0];
   }
   NSMutableArray *section2 = [[NSMutableArray alloc] init];
-  if ([self.selectedAccount getLicenseURL:URLTypePrivacyPolicy]) {
+  if ([self.selectedAccount.details getLicenseURL:URLTypePrivacyPolicy]) {
     [section2 addObject:@(CellKindPrivacyPolicy)];
   }
-  if ([self.selectedAccount getLicenseURL:URLTypeContentLicenses]) {
+  if ([self.selectedAccount.details getLicenseURL:URLTypeContentLicenses]) {
     [section2 addObject:@(CellKindContentLicense)];
   }
   NSMutableArray *section1 = [[NSMutableArray alloc] init];
@@ -349,7 +347,7 @@ double const requestTimeoutInterval = 25.0;
   // is signed in, and has an authorization ID returned from the loans feed.
   return ((self.selectedNYPLAccount.hasBarcodeAndPIN) &&
           (self.selectedNYPLAccount.authorizationIdentifier) &&
-          (self.selectedAccount.supportsBarcodeDisplay));
+          (self.selectedAccount.details.supportsBarcodeDisplay));
 }
 
 - (void)scanLibraryCard
@@ -680,11 +678,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   switch(cellKind) {
     case CellKindAgeCheck: {
       UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-      if (self.selectedAccount.userAboveAgeLimit == YES) {
+      if (self.selectedAccount.details.userAboveAgeLimit == YES) {
         [self confirmAgeChange:^(BOOL under13) {
           if (under13) {
             cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
-            self.selectedAccount.userAboveAgeLimit = NO;
+            self.selectedAccount.details.userAboveAgeLimit = NO;
             //Delete Books in My Books
             [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountType];
             [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountType];
@@ -695,7 +693,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         }];
       } else {
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOn"]];
-        self.selectedAccount.userAboveAgeLimit = YES;
+        self.selectedAccount.details.userAboveAgeLimit = YES;
         NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
         [catalog popToRootViewControllerAnimated:NO];
         [catalog updateFeedAndRegistryOnAccountChange];
@@ -749,7 +747,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       
-      if (self.selectedAccount.supportsCardCreator) {
+      if (self.selectedAccount.details.supportsCardCreator) {
 
       __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
       CardCreatorConfiguration *const configuration =
@@ -786,7 +784,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       else
       {
         
-        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:self.selectedAccount.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:self.selectedAccount.details.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
         
         UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webViewController];
         
@@ -839,7 +837,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindAbout: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
-                                      initWithURL:[self.selectedAccount getLicenseURL:URLTypeAcknowledgements]
+                                      initWithURL:[self.selectedAccount.details getLicenseURL:URLTypeAcknowledgements]
                                       title:NSLocalizedString(@"About", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       [self.navigationController pushViewController:vc animated:YES];
@@ -847,7 +845,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindPrivacyPolicy: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
-                                      initWithURL:[self.selectedAccount getLicenseURL:URLTypePrivacyPolicy]
+                                      initWithURL:[self.selectedAccount.details getLicenseURL:URLTypePrivacyPolicy]
                                       title:NSLocalizedString(@"PrivacyPolicy", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       [self.navigationController pushViewController:vc animated:YES];
@@ -855,7 +853,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     }
     case CellKindContentLicense: {
       RemoteHTMLViewController *vc = [[RemoteHTMLViewController alloc]
-                                      initWithURL:[self.selectedAccount getLicenseURL:URLTypeContentLicenses]
+                                      initWithURL:[self.selectedAccount.details getLicenseURL:URLTypeContentLicenses]
                                       title:NSLocalizedString(@"ContentLicenses", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       [self.navigationController pushViewController:vc animated:YES];
@@ -909,7 +907,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                                ofView:[self.usernameTextField superview]
                                            withOffset:-verticalMarginPadding];
 
-        if (self.selectedAccount.supportsBarcodeScanner) {
+        if (self.selectedAccount.details.supportsBarcodeScanner) {
           [cell.contentView addSubview:self.barcodeScanButton];
           CGFloat rightMargin = cell.layoutMargins.right;
           self.barcodeScanButton.contentEdgeInsets = UIEdgeInsetsMake(0, rightMargin * 2, 0, rightMargin);
@@ -996,7 +994,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.ageCheckCell = [[UITableViewCell alloc]
                            initWithStyle:UITableViewCellStyleDefault
                            reuseIdentifier:nil];
-      if (self.selectedAccount.userAboveAgeLimit) {
+      if (self.selectedAccount.details.userAboveAgeLimit) {
         self.ageCheckCell.accessoryView = [[UIImageView alloc] initWithImage:
                                            [UIImage imageNamed:@"CheckboxOn"]];
       } else {
@@ -1014,7 +1012,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       UITableViewCell *const cell = [[UITableViewCell alloc]
                                      initWithStyle:UITableViewCellStyleDefault
                                      reuseIdentifier:nil];
-      self.syncSwitch.on = self.selectedAccount.syncPermissionGranted;
+      self.syncSwitch.on = self.selectedAccount.details.syncPermissionGranted;
       cell.accessoryView = self.syncSwitch;
       [self.syncSwitch addTarget:self action:@selector(syncSwitchChanged:) forControlEvents:UIControlEventValueChanged];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -1038,7 +1036,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = [NSString stringWithFormat:@"About %@",self.selectedAccount.name];
-      cell.hidden = ([self.selectedAccount getLicenseURL:URLTypeAcknowledgements]) ? NO : YES;
+      cell.hidden = ([self.selectedAccount.details getLicenseURL:URLTypeAcknowledgements]) ? NO : YES;
       return cell;
     }
     case CellKindPrivacyPolicy: {
@@ -1048,7 +1046,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"PrivacyPolicy", nil);
-      cell.hidden = ([self.selectedAccount getLicenseURL:URLTypePrivacyPolicy]) ? NO : YES;
+      cell.hidden = ([self.selectedAccount.details getLicenseURL:URLTypePrivacyPolicy]) ? NO : YES;
       return cell;
     }
     case CellKindContentLicense: {
@@ -1058,7 +1056,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
       cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
       cell.textLabel.text = NSLocalizedString(@"ContentLicenses", nil);
-      cell.hidden = ([self.selectedAccount getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
+      cell.hidden = ([self.selectedAccount.details getLicenseURL:URLTypeContentLicenses]) ? NO : YES;
       return cell;
     }
     case CellKindAdvancedSettings: {
@@ -1202,7 +1200,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
 {
-  if ((section == 0 && [self.selectedAccount getLicenseURL:URLTypeEula]) ||
+  if ((section == 0 && [self.selectedAccount.details getLicenseURL:URLTypeEula]) ||
       (section == 1 && [self syncButtonShouldBeVisible])) {
 
     UIView *container = [[UIView alloc] init];
@@ -1276,7 +1274,7 @@ replacementString:(NSString *)string
   }
 
   if(textField == self.usernameTextField &&
-     self.selectedAccount.patronIDKeyboard != LoginKeyboardEmail) {
+     self.selectedAccount.details.patronIDKeyboard != LoginKeyboardEmail) {
     // Barcodes are numeric and usernames are alphanumeric.
     if([string stringByTrimmingCharactersInSet:[NSCharacterSet alphanumericCharacterSet]].length > 0) {
       return NO;
@@ -1291,16 +1289,16 @@ replacementString:(NSString *)string
   if(textField == self.PINTextField) {
     
     NSCharacterSet *charSet = [NSCharacterSet decimalDigitCharacterSet];
-    bool alphanumericPin = self.selectedAccount.pinKeyboard != LoginKeyboardNumeric;
+    bool alphanumericPin = self.selectedAccount.details.pinKeyboard != LoginKeyboardNumeric;
     bool containsNonNumericChar = [string stringByTrimmingCharactersInSet:charSet].length > 0;
-    bool abovePinCharLimit = [textField.text stringByReplacingCharactersInRange:range withString:string].length > self.selectedAccount.authPasscodeLength;
+    bool abovePinCharLimit = [textField.text stringByReplacingCharactersInRange:range withString:string].length > self.selectedAccount.details.authPasscodeLength;
     
     // PIN's support numeric or alphanumeric.
     if (!alphanumericPin && containsNonNumericChar) {
       return NO;
     }
     // PIN's character limit. Zero is unlimited.
-    if (self.selectedAccount.authPasscodeLength == 0) {
+    if (self.selectedAccount.details.authPasscodeLength == 0) {
       return YES;
     } else if (abovePinCharLimit) {
       return NO;
@@ -1433,7 +1431,7 @@ replacementString:(NSString *)string
                                  stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
     BOOL const pinHasText = [self.PINTextField.text
                              stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
-    BOOL const pinIsNotRequired = self.selectedAccount.pinKeyboard == LoginKeyboardNone;
+    BOOL const pinIsNotRequired = self.selectedAccount.details.pinKeyboard == LoginKeyboardNone;
     if((barcodeHasText && pinHasText) || (barcodeHasText && pinIsNotRequired)) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
@@ -1531,7 +1529,7 @@ replacementString:(NSString *)string
 - (BOOL)registrationIsPossible
 {
   return ([NYPLConfiguration cardCreationEnabled] &&
-          (self.selectedAccount.supportsCardCreator || self.selectedAccount.cardCreatorUrl) &&
+          (self.selectedAccount.details.supportsCardCreator || self.selectedAccount.details.cardCreatorUrl) &&
           ![self.selectedNYPLAccount hasBarcodeAndPIN]);
 }
 
@@ -1543,23 +1541,23 @@ replacementString:(NSString *)string
     self.syncSwitch.enabled = NO;
     [NYPLAnnotations updateServerSyncSettingToEnabled:YES completion:^(BOOL success) {
       if (success) {
-        self.selectedAccount.syncPermissionGranted = YES;
+        self.selectedAccount.details.syncPermissionGranted = YES;
         self.syncSwitch.on = YES;
       } else {
-        self.selectedAccount.syncPermissionGranted = NO;
+        self.selectedAccount.details.syncPermissionGranted = NO;
         self.syncSwitch.on = NO;
       }
       self.syncSwitch.enabled = YES;
     }];
   } else {
-    self.selectedAccount.syncPermissionGranted = NO;
+    self.selectedAccount.details.syncPermissionGranted = NO;
     self.syncSwitch.on = NO;
   }
 }
 
 - (void)checkSyncPermissionForCurrentPatron
 {
-  if (self.permissionCheckIsInProgress || !self.selectedAccount.supportsSimplyESync) {
+  if (self.permissionCheckIsInProgress || !self.selectedAccount.details.supportsSimplyESync) {
     NYPLLOG(@"Skipping sync setting check. Request already in progress or sync not supported.");
     return;
   }
@@ -1569,7 +1567,7 @@ replacementString:(NSString *)string
 
   [NYPLAnnotations requestServerSyncStatusForAccount:self.selectedNYPLAccount completion:^(BOOL enableSync) {
     if (enableSync == YES) {
-      self.selectedAccount.syncPermissionGranted = enableSync;
+      self.selectedAccount.details.syncPermissionGranted = enableSync;
     }
     self.syncSwitch.on = enableSync;
     self.syncSwitch.enabled = YES;
@@ -1580,8 +1578,8 @@ replacementString:(NSString *)string
 - (BOOL)syncButtonShouldBeVisible
 {
   // Only supported for now on current active library account
-  return ((self.selectedAccount.supportsSimplyESync) &&
-          ([self.selectedAccount getLicenseURL:URLTypeAnnotations] &&
+  return ((self.selectedAccount.details.supportsSimplyESync) &&
+          ([self.selectedAccount.details getLicenseURL:URLTypeAnnotations] &&
            [self.selectedNYPLAccount hasBarcodeAndPIN]) &&
            (self.selectedAccountType == [AccountsManager shared].currentAccount.id));
 }

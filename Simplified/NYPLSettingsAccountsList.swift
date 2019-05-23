@@ -57,7 +57,7 @@
 
     }
     
-    self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount.id }
+    self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount?.id }
     
     updateSettingsAccountList()
 
@@ -69,13 +69,13 @@
     
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(reloadAfterAccountChange),
-                                           name: NSNotification.Name(rawValue: NYPLCurrentAccountDidChangeNotification),
+                                           name: NSNotification.Name.NYPLCurrentAccountDidChange,
                                            object: nil)
   }
   
   func reloadAfterAccountChange() {
     accounts = NYPLSettings.shared().settingsAccountsList as! [Int]
-    self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount.id }
+    self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount?.id }
     self.tableView.reloadData()
   }
   
@@ -114,7 +114,7 @@
     }
 
     for userAccount in sortedLibraryAccounts {
-      if (!userAddedSecondaryAccounts.contains(userAccount.id) && userAccount.id != manager.currentAccount.id) {
+      if (!userAddedSecondaryAccounts.contains(userAccount.id) && userAccount.id != manager.currentAccount?.id) {
         alert.addAction(UIAlertAction(title: userAccount.name,
           style: .default,
           handler: { action in
@@ -132,8 +132,11 @@
   }
   
   func updateSettingsAccountList() {
+    guard let id = manager.currentAccount?.id else {
+      return
+    }
     var array = userAddedSecondaryAccounts!
-    array.append(manager.currentAccount.id)
+    array.append(id)
     NYPLSettings.shared().settingsAccountsList = array
   }
   
@@ -141,7 +144,7 @@
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
-      return 1
+      return self.manager.currentAccount != nil ? 1 : 0
     } else {
       return userAddedSecondaryAccounts.count
     }
@@ -153,7 +156,11 @@
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if (indexPath.section == 0) {
-      return cellForLibrary(self.manager.currentAccount, indexPath)
+      guard let account = self.manager.currentAccount else {
+        // Should never happen, but better than crashing
+        return UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "cell")
+      }
+      return cellForLibrary(account, indexPath)
     } else {
       return cellForLibrary(AccountsManager.shared.account(userAddedSecondaryAccounts[indexPath.row])!, indexPath)
     }
@@ -216,7 +223,7 @@
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     var account: Int
     if (indexPath.section == 0) {
-      account = self.manager.currentAccount.id
+      account = self.manager.currentAccount?.id ?? -1
     } else {
       account = userAddedSecondaryAccounts[indexPath.row]
     }

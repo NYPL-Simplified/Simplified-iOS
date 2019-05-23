@@ -20,7 +20,7 @@ import UIKit
     let settings = NYPLSettings.shared()
 
     if (settings?.userHasSeenFirstTimeSyncMessage == true &&
-        AccountsManager.shared.currentAccount.syncPermissionGranted == false) {
+        AccountsManager.shared.currentAccount?.details?.syncPermissionGranted == false) {
       completion(false)
       return
     }
@@ -65,7 +65,7 @@ import UIKit
   // how to respond based on the server's info.
   class func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->()) {
     if (NYPLAccount.shared().hasBarcodeAndPIN() &&
-      AccountsManager.shared.currentAccount.supportsSimplyESync) {
+      AccountsManager.shared.currentAccount?.details?.supportsSimplyESync == true) {
       guard let patronAnnotationSettingUrl = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("patrons/me/") else {
         Log.error(#file, "Could not create Annotations URL from Main Feed URL. Abandoning attempt to update sync setting.")
         completion(false)
@@ -621,12 +621,12 @@ import UIKit
   
   class func syncIsPossible(_ account: NYPLAccount) -> Bool {
     let library = AccountsManager.shared.currentAccount
-    return account.hasBarcodeAndPIN() && library.supportsSimplyESync
+    return account.hasBarcodeAndPIN() && library?.details?.supportsSimplyESync == true
   }
 
   class func syncIsPossibleAndPermitted() -> Bool {
     let acct = AccountsManager.shared.currentAccount
-    return syncIsPossible(NYPLAccount.shared()) && acct.syncPermissionGranted
+    return syncIsPossible(NYPLAccount.shared()) && acct?.details?.syncPermissionGranted == true
   }
 
   class func setDefaultAnnotationHeaders(forRequest request: inout URLRequest) {
@@ -653,7 +653,7 @@ import UIKit
   }
 
   private class func addToOfflineQueue(_ bookID: String?, _ url: URL, _ parameters: [String:Any]) {
-    let libraryID = AccountsManager.shared.currentAccount.id
+    let libraryID = AccountsManager.shared.currentAccount?.id ?? -1
     let parameterData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted])
     NetworkQueue.shared().addRequest(libraryID, bookID, url, .POST, parameterData, headers)
   }

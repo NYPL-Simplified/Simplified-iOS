@@ -5,7 +5,10 @@ import Foundation
 @objcMembers final class DirectoryManager : NSObject {
   
   class func current() -> URL? {
-    return directory(AccountsManager.shared.currentAccount.id)
+    guard let account = AccountsManager.shared.currentAccount else {
+      return nil
+    }
+    return directory(account.id)
   }
   
   class func directory(_ account: Int) -> URL? {

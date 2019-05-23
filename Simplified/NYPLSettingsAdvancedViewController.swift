@@ -68,7 +68,7 @@ import UIKit
     NYPLAnnotations.updateServerSyncSetting(toEnabled: false, completion: { success in
       self.dismiss(animated: true, completion: nil)
       if (success) {
-        self.account.syncPermissionGranted = false;
+        self.account.details?.syncPermissionGranted = false;
         NYPLSettings.shared().userHasSeenFirstTimeSyncMessage = false;
         self.navigationController?.popViewController(animated: true)
       }

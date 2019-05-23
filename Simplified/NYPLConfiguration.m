@@ -86,8 +86,8 @@
 {
   Account *const account = [AccountsManager shared].currentAccount;
 
-  if (account.mainColor) {
-    return [NYPLAppTheme themeColorFromStringWithName:account.mainColor];
+  if (account.details.mainColor) {
+    return [NYPLAppTheme themeColorFromStringWithName:account.details.mainColor];
   } else {
     return [UIColor blackColor];
   }

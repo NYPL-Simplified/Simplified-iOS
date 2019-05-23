@@ -116,7 +116,7 @@
   [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLAccount sharedAccount] completion:^(BOOL enableSync) {
     if (enableSync == YES) {
       Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-      currentAccount.syncPermissionGranted = enableSync;
+      currentAccount.details.syncPermissionGranted = enableSync;
     }
   }];
 }

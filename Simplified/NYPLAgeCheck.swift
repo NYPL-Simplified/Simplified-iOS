@@ -4,14 +4,17 @@ import Foundation
 
   class func verifyCurrentAccountAgeRequirement(_ completion: ((Bool) -> ())?) -> Void
   {
-    let account = AccountsManager.shared.currentAccount
+    guard let accountDetails = AccountsManager.shared.currentAccount?.details else {
+      completion?(false)
+      return
+    }
     
-    if account.needsAuth == true || account.userAboveAgeLimit {
+    if accountDetails.needsAuth == true || accountDetails.userAboveAgeLimit {
       completion?(true)
       return
     }
     
-    if !account.userAboveAgeLimit && NYPLSettings.shared().userPresentedAgeCheck {
+    if !accountDetails.userAboveAgeLimit && NYPLSettings.shared().userPresentedAgeCheck {
       completion?(false)
       return
     }
@@ -19,10 +22,10 @@ import Foundation
     presentAgeVerificationView { over13 in
       NYPLSettings.shared().userPresentedAgeCheck = true
       if (over13) {
-        account.userAboveAgeLimit = true
+        accountDetails.userAboveAgeLimit = true
         completion?(true)
       } else {
-        account.userAboveAgeLimit = false
+        accountDetails.userAboveAgeLimit = false
         completion?(false)
       }
     }

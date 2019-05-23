@@ -138,8 +138,12 @@ extension NYPLUserNotifications: UNUserNotificationCenterDelegate
                               withCompletionHandler completionHandler: @escaping () -> Void)
   {
     if response.actionIdentifier == DefaultActionIdentifier {
-      let currentAccount = AccountsManager.shared.currentAccount
-      if currentAccount.supportsReservations {
+      guard let currentAccount = AccountsManager.shared.currentAccount else {
+        Log.error(#file, "Error moving to Holds tab from notification; there was no current account.")
+        completionHandler()
+        return
+      }
+      if currentAccount.details?.supportsReservations == true {
         if let holdsTab = NYPLRootTabBarController.shared()?.viewControllers?[2],
         holdsTab.isKind(of: NYPLHoldsNavigationController.self) {
           NYPLRootTabBarController.shared()?.selectedIndex = 2
