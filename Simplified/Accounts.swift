@@ -389,6 +389,7 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
         return
       }
       
+      try? data.write(to: authDocumentCacheUrl)
       handleData(data)
     }
     dataTask.resume()
