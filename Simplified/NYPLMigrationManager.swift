@@ -13,10 +13,10 @@ class MigrationManager: NSObject {
 
     // Fetch and parse app version
     let appVersion = NYPLSettings.shared().appVersion ?? ""
-    let appVersionTokens = appVersion.filter({ $0.isNumber || $0 == "." }).split(separator: ".").map({ Int($0)! })
+    let appVersionTokens = appVersion.split(separator: ".").compactMap({ Int($0) })
     
     // Run through migration stages
-    if versionComparator(appVersionTokens, [3, 2, 0]) { // v3.2.0
+    if versionIsLessThan(appVersionTokens, [3, 2, 0]) { // v3.2.0
       migrate1();
     }
 
@@ -28,7 +28,7 @@ class MigrationManager: NSObject {
   }
 
   // Less-than comparator operation
-  private static func versionComparator(_ a: [Int], _ b:[Int]) -> Bool {
+  private static func versionIsLessThan(_ a: [Int], _ b:[Int]) -> Bool {
     var i = 0
     while i < a.count && i < b.count {
       if (a[i] < b[i]) {
@@ -49,11 +49,8 @@ class MigrationManager: NSObject {
         let accountsDataObj = try JSONSerialization.jsonObject(with: accountsData, options: .allowFragments)
         if let accountsDataArray = accountsDataObj as? [[String: AnyObject]] {
           for jsonDict in accountsDataArray {
-            if let numericIdNullable = jsonDict["id_numeric"] {
-              let numericId = numericIdNullable as! Int
-              if let uuid = jsonDict["id_uuid"] {
-                accountMap[numericId] = (uuid as! String)
-              }
+            if let numericId = jsonDict["id_numeric"] as? Int, let uuid = jsonDict["id_uuid"] as? String {
+              accountMap[numericId] = uuid
             }
           }
         }
@@ -65,23 +62,14 @@ class MigrationManager: NSObject {
     }
 
     // Migrate user defaults
-    var oldAccountsList = [Int]()
-    if let libraryAccounts = NYPLSettings.shared().settingsAccountsList {
-      var newLibraryAccountsList = [String]()
-      for account in libraryAccounts
-      {
-        if let accountString = account as? String {
-          newLibraryAccountsList.append(accountString)
-        } else if let accountId = account as? Int {
-          if let accountUuid = accountMap[accountId] {
-            oldAccountsList.append(accountId)
-            newLibraryAccountsList.append(accountUuid)
-          }
-        }
-      }
-      // Assign new uuid account list
-      NYPLSettings.shared().settingsAccountsList = newLibraryAccountsList
-    }
+    let oldAccountsList = NYPLSettings.shared().settingsAccountsList?.compactMap({ $0 as? Int }) ?? [Int]()
+    let newAccountsList = NYPLSettings.shared().settingsAccountsList?.compactMap({
+      let idInt = $0 as? Int
+      return $0 as? String ?? (idInt != nil ? accountMap[idInt!] : nil)
+    }) ?? [String]()
+
+    // Assign new uuid account list
+    NYPLSettings.shared().settingsAccountsList = newAccountsList
 
     // Migrate file storage
     for accountId in oldAccountsList {
