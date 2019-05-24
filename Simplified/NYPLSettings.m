@@ -109,6 +109,11 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   }
 }
 
+- (NSString *) appVersion
+{
+  return [[NSUserDefaults standardUserDefaults] stringForKey:versionKey];
+}
+
 - (NYPLCardApplicationModel *)currentCardApplication
 {
   NSData *currentCardApplicationSerialization = [[NSUserDefaults standardUserDefaults] objectForKey:currentCardApplicationSerializationKey];
@@ -184,6 +189,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (void)setAppVersion:(NSString *)version
+{
+  [[NSUserDefaults standardUserDefaults] setObject:version forKey:versionKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (NYPLSettingsRenderingEngine)renderingEngine
 {
   return RenderingEngineFromString([[NSUserDefaults standardUserDefaults]
@@ -200,55 +211,6 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLSettingsDidChangeNotification
    object:self];
-}
-
-- (void)migrate
-{
-  NSInteger version = [[NSUserDefaults standardUserDefaults] integerForKey:versionKey];
-  while (version < Version) {
-    switch (version) {
-      case 0: {
-        NSArray *libraryAccounts = [[NSUserDefaults standardUserDefaults] arrayForKey:settingsLibraryAccountsKey];
-        if (!libraryAccounts) {
-          break;
-        }
-        
-        // Load Accounts.json
-        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"Accounts" ofType:@"json"];
-        if (filePath) {
-          NSData *data = [NSData dataWithContentsOfFile:filePath];
-          __autoreleasing NSError* error = nil;
-          NSArray *accountList = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-          NSMutableDictionary *idToUuidMap = [[NSMutableDictionary alloc] init];
-          for (NSDictionary *account in accountList) {
-            id numericVal = [account objectForKey:@"id_numeric"];
-            id uuidVal = [account objectForKey:@"id_uuid"];
-            if (numericVal && uuidVal) {
-              [idToUuidMap setObject:uuidVal forKey:[numericVal stringValue]];
-            }
-          }
-          
-          // Migrate accounts
-          NSMutableArray* newLibraryAccountsList = [NSMutableArray arrayWithCapacity:libraryAccounts.count];
-          for (id account in libraryAccounts) {
-            id uuidObj = [idToUuidMap objectForKey:[account stringValue]];
-            if (uuidObj) {
-              [newLibraryAccountsList addObject:uuidObj];
-            }
-          }
-          [[NSUserDefaults standardUserDefaults] setObject:newLibraryAccountsList forKey:settingsLibraryAccountsKey];
-        } else {
-          [[NSUserDefaults standardUserDefaults] removeObjectForKey:settingsLibraryAccountsKey];
-        }
-        [[NSUserDefaults standardUserDefaults] synchronize];
-      }
-        break;
-      default:
-        break;
-    }
-    version += 1;
-  }
-  [[NSUserDefaults standardUserDefaults] setInteger:Version forKey:versionKey];
 }
 
 @end
