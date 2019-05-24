@@ -175,14 +175,14 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks;
 - (void)reset;
 
 // Resets the registry for a specific account
-- (void)reset:(NSInteger)account;
+- (void)reset:(NSString *)account;
 
 /// Returns all book identifiers in the registry for a given account.
 /// @note The identifiers returned should not be passed to @c -[NYPLBookRegistry @c bookForIdentifier:]
 ///       or similar methods unless the account provided to this method is also the currently active account.
 /// @param account The id of the account to inspect.
 /// @return A possibly empty array of book identifiers.
-- (NSArray<NSString *> *__nonnull)bookIdentifiersForAccount:(NSInteger)account;
+- (NSArray<NSString *> *__nonnull)bookIdentifiersForAccount:(NSString *)account;
 
 // Delay committing any changes from a sync indefinitely.
 - (void)delaySyncCommit;
@@ -197,6 +197,6 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks;
 ///          behavior.
 /// @param account The account to use while @c block is executing.
 /// @param block   The function to execute while the registry is set to another account.
-- (void)performUsingAccount:(NSInteger)account block:(void (^__nonnull)(void))block;
+- (void)performUsingAccount:(NSString *)account block:(void (^__nonnull)(void))block;
 
 @end

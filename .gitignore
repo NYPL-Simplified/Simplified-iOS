@@ -4,6 +4,7 @@ xcuserdata
 Pods
 DerivedData
 .idea
+.vscode
 Build
 adobe-rmsdk
 ReaderClientCert.sig

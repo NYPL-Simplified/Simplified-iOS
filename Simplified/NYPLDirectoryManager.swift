@@ -8,19 +8,19 @@ import Foundation
     guard let account = AccountsManager.shared.currentAccount else {
       return nil
     }
-    return directory(account.id)
+    return directory(account.uuid)
   }
   
-  class func directory(_ account: Int) -> URL? {
+  class func directory(_ account: String) -> URL? {
     let paths = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true)
     
     if paths.count != 1 { return nil }
     
-    if (account == 0) { performNYPLDirectoryMigration() }
+    if (account == AccountsManager.NYPLAccountUUIDs[0]) { performNYPLDirectoryMigration() }
     
     var directoryURL = URL.init(fileURLWithPath: paths[0]).appendingPathComponent(Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String)
     
-    if (account != 0) {
+    if (account != AccountsManager.NYPLAccountUUIDs[0]) {
       directoryURL = URL.init(fileURLWithPath: paths[0]).appendingPathComponent(Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String).appendingPathComponent(String(account))
     }
     return directoryURL

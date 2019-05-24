@@ -64,7 +64,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
 @property (nonatomic) UIButton *barcodeScanButton;
-@property (nonatomic) NSInteger selectedAccountType;
+@property (nonatomic) NSString *selectedAccountId;
 @property (nonatomic) Account *selectedAccount;
 @property (nonatomic) NYPLAccount *selectedNYPLAccount;
 
@@ -88,11 +88,11 @@ double const requestTimeoutInterval = 25.0;
 
 #pragma mark NSObject
 
-- (instancetype)initWithAccount:(NSInteger)account
+- (instancetype)initWithAccount:(NSString *)account
 {
-  self.selectedAccountType = account;
-  self.selectedAccount = [[AccountsManager sharedInstance] account:self.selectedAccountType];
-  self.selectedNYPLAccount = [NYPLAccount sharedAccount:self.selectedAccountType];
+  self.selectedAccountId = account;
+  self.selectedAccount = [[AccountsManager sharedInstance] account:self.selectedAccountId];
+  self.selectedNYPLAccount = [NYPLAccount sharedAccount:self.selectedAccountId];
   return [self init];
 }
 
@@ -460,8 +460,8 @@ double const requestTimeoutInterval = 25.0;
     [self removeActivityTitle];
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountType];
-    [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountType];
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
+    [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
     
     [self.selectedNYPLAccount removeAll];
     [self setupTableData];
@@ -471,7 +471,7 @@ double const requestTimeoutInterval = 25.0;
   NSDictionary *licensor = [self.selectedNYPLAccount licensor];
   if (!licensor) {
     NYPLLOG(@"No Licensor available to deauthorize device. Signing out NYPLAccount creds anyway.");
-    [NYPLBugsnagLogs bugsnagLogInvalidLicensorWithAccountType:self.selectedAccountType];
+    [NYPLBugsnagLogs bugsnagLogInvalidLicensorWithAccountId:self.selectedAccountId];
     afterDeauthorization();
     return;
   }
@@ -535,7 +535,7 @@ double const requestTimeoutInterval = 25.0;
        NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
 
        if (loansFeed.authorizationIdentifier) {
-         [[NYPLAccount sharedAccount:self.selectedAccountType] setAuthorizationIdentifier:loansFeed.authorizationIdentifier];
+         [[NYPLAccount sharedAccount:self.selectedAccountId] setAuthorizationIdentifier:loansFeed.authorizationIdentifier];
        } else {
          NYPLLOG(@"Authorization ID (Barcode String) was nil.");
        }
@@ -647,10 +647,10 @@ double const requestTimeoutInterval = 25.0;
     [self removeActivityTitle];
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
-    if(success) {
+    if (success) {
       [self.selectedNYPLAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
 
-      if(self.selectedAccountType == [AccountsManager shared].currentAccount.id) {
+      if ([self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]) {
         void (^handler)(void) = self.completionHandler;
         self.completionHandler = nil;
         if(handler) handler();
@@ -684,8 +684,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CheckboxOff"]];
             self.selectedAccount.details.userAboveAgeLimit = NO;
             //Delete Books in My Books
-            [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountType];
-            [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountType];
+            [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
+            [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
             NYPLCatalogNavigationController *catalog = (NYPLCatalogNavigationController*)[NYPLRootTabBarController sharedController].viewControllers[0];
             [catalog popToRootViewControllerAnimated:NO];
             [catalog updateFeedAndRegistryOnAccountChange];
@@ -805,7 +805,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     }
     case CellKindAdvancedSettings: {
-      NYPLSettingsAdvancedViewController *vc = [[NYPLSettingsAdvancedViewController alloc] initWithAccount:self.selectedAccountType];
+      NYPLSettingsAdvancedViewController *vc = [[NYPLSettingsAdvancedViewController alloc] initWithAccount:self.selectedAccountId];
       [self.navigationController pushViewController:vc animated:YES];
       break;
     }
@@ -1508,7 +1508,7 @@ replacementString:(NSString *)string
                                                  if (completion) { completion(NO); }
                                                }]];
 
-  if (self.selectedAccountType == 2) {
+  if ([self.selectedAccountId isEqualToString:[AccountsManager NYPLAccountUUIDs][2]]) {
     [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
   }
 }
@@ -1581,7 +1581,7 @@ replacementString:(NSString *)string
   return ((self.selectedAccount.details.supportsSimplyESync) &&
           ([self.selectedAccount.details getLicenseURL:URLTypeAnnotations] &&
            [self.selectedNYPLAccount hasBarcodeAndPIN]) &&
-           (self.selectedAccountType == [AccountsManager shared].currentAccount.id));
+           ([self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]));
 }
 
 - (void)didSelectCancel

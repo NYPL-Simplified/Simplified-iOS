@@ -33,6 +33,11 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
 @objcMembers final class AccountsManager: NSObject
 {
   static let shared = AccountsManager()
+  static let NYPLAccountUUIDs = [
+    "urn:uuid:065c0c11-0d0f-42a3-82e4-277b18786949",
+    "urn:uuid:edef2358-9f6a-4ce6-b64f-9b351ec68ac4",
+    "urn:uuid:56906f26-2c9a-4ae9-bd02-552557720b99"
+  ]
   
   // For Objective-C classes
   class func sharedInstance() -> AccountsManager
@@ -54,10 +59,14 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   
   var currentAccount: Account? {
     get {
-      return account(defaults.integer(forKey: currentAccountIdentifierKey))
+      if account(defaults.string(forKey: currentAccountIdentifierKey) ?? "") == nil
+      {
+        defaults.set(AccountsManager.NYPLAccountUUIDs[0], forKey: currentAccountIdentifierKey)
+      }
+      return account(defaults.string(forKey: currentAccountIdentifierKey) ?? "")
     }
     set {
-      defaults.set(newValue?.id, forKey: currentAccountIdentifierKey)
+      defaults.set(newValue?.uuid, forKey: currentAccountIdentifierKey)
       NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
     }
   }
@@ -104,13 +113,8 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   private func loadCatalogs(data: Data, preferringCache: Bool, completion: @escaping (Bool) -> ()) {
     do {
       let catalogsFeed = try OPDS2CatalogsFeed.fromData(data)
-      var id = 0
       let hadAccount = self.currentAccount != nil
-      self.accounts = catalogsFeed.catalogs.map {
-        let account = Account(publication: $0, id: id)
-        id += 1
-        return account
-      }
+      self.accounts = catalogsFeed.catalogs.map { Account(publication: $0) }
       if hadAccount != (self.currentAccount != nil) {
         self.currentAccount?.loadAuthenticationDocument(preferringCache: preferringCache, completion: { (success) in
           if !success {
@@ -156,14 +160,14 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
     }
   }
   
-  func account(_ id:Int) -> Account?
+  func account(_ uuid:String) -> Account?
   {
-    return self.accounts.filter{ $0.id == id }.first
+    return self.accounts.filter{ $0.uuid == uuid }.first
   }
   
-  func changeCurrentAccount(identifier id: Int)
+  func changeCurrentAccount(identifier uuid: String)
   {
-    if let account = account(id) {
+    if let account = account(uuid) {
       self.currentAccount = account
     }
   }
@@ -173,7 +177,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
 @objcMembers final class AccountDetails: NSObject {
   let defaults:UserDefaults
   let needsAuth:Bool
-  let pathComponent:String
+  let uuid:String
   let authPasscodeLength:UInt
   let patronIDKeyboard:LoginKeyboard
   let pinKeyboard:LoginKeyboard
@@ -223,7 +227,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   init(authenticationDocument: OPDS2AuthenticationDocument, uuid: String) {
     defaults = .standard
     needsAuth = !authenticationDocument.authentication.isEmpty
-    pathComponent = uuid
+    self.uuid = uuid
     
     supportsReservations = authenticationDocument.features.disabled?.contains("https://librarysimplified.org/rel/policy/reservations") != true
     userProfileUrl = authenticationDocument.links.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/user-profile" })?.href
@@ -272,7 +276,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
       setURL(url, forLicense: .acknowledgements)
     }
   }
-  
+
   func setURL(_ URL: URL, forLicense urlType: URLType) -> Void {
     switch urlType {
     case .acknowledgements:
@@ -339,16 +343,16 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   }
   
   fileprivate func setAccountDictionaryKey(_ key: String, toValue value: AnyObject) {
-    if var savedDict = defaults.value(forKey: self.pathComponent) as? [String: AnyObject] {
+    if var savedDict = defaults.value(forKey: self.uuid) as? [String: AnyObject] {
       savedDict[key] = value
-      defaults.set(savedDict, forKey: self.pathComponent)
+      defaults.set(savedDict, forKey: self.uuid)
     } else {
-      defaults.set([key:value], forKey: self.pathComponent)
+      defaults.set([key:value], forKey: self.uuid)
     }
   }
   
   fileprivate func getAccountDictionaryKey(_ key: String) -> AnyObject? {
-    let savedDict = defaults.value(forKey: self.pathComponent) as? [String: AnyObject]
+    let savedDict = defaults.value(forKey: self.uuid) as? [String: AnyObject]
     guard let result = savedDict?[key] else { return nil }
     return result
   }
@@ -359,7 +363,6 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
 @objcMembers final class Account: NSObject
 {
   let logo:UIImage
-  let id:Int
   let uuid:String
   let name:String
   let subtitle:String?
@@ -383,11 +386,10 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
     return applicationSupportUrl.appendingPathComponent("authentication_document_\(nonColonUuid).json")
   }
   
-  init(publication: OPDS2Publication, id: Int) {
+  init(publication: OPDS2Publication) {
     
     name = publication.metadata.title
     subtitle = publication.metadata.description
-    self.id = id
     uuid = publication.metadata.id
     
     catalogUrl = publication.links.first(where: { $0.rel == "http://opds-spec.org/catalog" })?.href

@@ -3,16 +3,16 @@
 @objcMembers class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   weak var tableView: UITableView!
-  fileprivate var accounts: [Int] {
+  fileprivate var accounts: [String] {
     didSet {
       //update NYPLSettings
     }
   }
   fileprivate var libraryAccounts: [Account]
-  fileprivate var userAddedSecondaryAccounts: [Int]!
+  fileprivate var userAddedSecondaryAccounts: [String]!
   fileprivate let manager: AccountsManager
   
-  required init(accounts: [Int]) {
+  required init(accounts: [String]) {
     self.accounts = accounts
     self.manager = AccountsManager.shared
     self.libraryAccounts = manager.accounts
@@ -33,13 +33,13 @@
   
   override func loadView() {
     self.view = UITableView(frame: CGRect.zero, style: .grouped)
-    self.tableView = self.view as! UITableView
+    self.tableView = self.view as? UITableView
     self.tableView.delegate = self
     self.tableView.dataSource = self
     
     
     // cleanup accounts, remove demo account or accounts not supported through accounts.json // will be refactored when implementing librsry registry
-    var accountsToRemove = [Int]()
+    var accountsToRemove = [String]()
     
     for account in accounts
     {
@@ -57,7 +57,7 @@
 
     }
     
-    self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount?.id }
+    self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount?.uuid }
     
     updateSettingsAccountList()
 
@@ -74,8 +74,8 @@
   }
   
   func reloadAfterAccountChange() {
-    accounts = NYPLSettings.shared().settingsAccountsList as! [Int]
-    self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount?.id }
+    accounts = NYPLSettings.shared().settingsAccountsList as! [String]
+    self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount?.uuid }
     self.tableView.reloadData()
   }
   
@@ -116,10 +116,12 @@
     let sortedLibraryAccounts = self.libraryAccounts.sorted { (a, b) in
       // Check if we're one of the three "special" libraries that always come first.
       // This is a complete hack.
-      if a.id <= 2 || b.id <= 2 {
+      let idA = AccountsManager.NYPLAccountUUIDs.firstIndex(of: a.uuid) ?? Int.max
+      let idB = AccountsManager.NYPLAccountUUIDs.firstIndex(of: b.uuid) ?? Int.max
+      if idA <= 2 || idB <= 2 {
         // One of the libraries is special, so sort it first. Lower ids are "more
         // special" than higher ids and thus show up earlier.
-        return a.id < b.id
+        return idA < idB
       } else {
         // Neither library is special so we just go alphabetically.
         return a.name.localizedCaseInsensitiveCompare(b.name) == .orderedAscending
@@ -127,14 +129,14 @@
     }
 
     for userAccount in sortedLibraryAccounts {
-      if (!userAddedSecondaryAccounts.contains(userAccount.id) && userAccount.id != manager.currentAccount?.id) {
+      if (!userAddedSecondaryAccounts.contains(userAccount.uuid) && userAccount.uuid != manager.currentAccount?.uuid) {
         alert.addAction(UIAlertAction(title: userAccount.name,
-                                      style: .default,
-                                      handler: { action in
-                                        self.userAddedSecondaryAccounts.append(userAccount.id)
-                                        self.updateSettingsAccountList()
-                                        self.updateUI()
-                                        self.tableView.reloadData()
+          style: .default,
+          handler: { action in
+            self.userAddedSecondaryAccounts.append(userAccount.uuid)
+            self.updateSettingsAccountList()
+            self.updateUI()
+            self.tableView.reloadData()
         }))
       }
     }
@@ -145,11 +147,11 @@
   }
   
   func updateSettingsAccountList() {
-    guard let id = manager.currentAccount?.id else {
+    guard let uuid = manager.currentAccount?.uuid else {
       return
     }
     var array = userAddedSecondaryAccounts!
-    array.append(id)
+    array.append(uuid)
     NYPLSettings.shared().settingsAccountsList = array
   }
   
@@ -234,9 +236,9 @@
   // MARK: UITableViewDelegate
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    var account: Int
+    var account: String
     if (indexPath.section == 0) {
-      account = self.manager.currentAccount?.id ?? -1
+      account = self.manager.currentAccount?.uuid ?? ""
     } else {
       account = userAddedSecondaryAccounts[indexPath.row]
     }

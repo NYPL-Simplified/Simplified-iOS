@@ -653,7 +653,7 @@ import UIKit
   }
 
   private class func addToOfflineQueue(_ bookID: String?, _ url: URL, _ parameters: [String:Any]) {
-    let libraryID = AccountsManager.shared.currentAccount?.id ?? -1
+    let libraryID = AccountsManager.shared.currentAccount?.uuid ?? ""
     let parameterData = try? JSONSerialization.data(withJSONObject: parameters, options: [.prettyPrinted])
     NetworkQueue.shared().addRequest(libraryID, bookID, url, .POST, parameterData, headers)
   }
