@@ -108,14 +108,14 @@
   }
 }
 
-+ (void)bugsnagLogInvalidLicensorWithAccountType:(NSInteger)type
++ (void)bugsnagLogInvalidLicensorWithAccountId:(NSString *)accountId
 {
   [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:3 userInfo:nil]
                  block:^(BugsnagCrashReport * _Nonnull report) {
                    report.context = @"NYPLSettingsAccountDetailViewController";
                    report.severity = BSGSeverityWarning;
                    report.errorMessage = @"No Valid Licensor available to deauthorize device. Signing out NYPLAccount credentials anyway with no message to the user.";
-                   NSDictionary *metadata = @{@"accountTypeID" : @(type)};
+                   NSDictionary *metadata = @{@"accountTypeID" : accountId};
                    [report addMetadata:metadata toTabWithName:@"Extra Data"];
                  }];
 }
@@ -135,11 +135,11 @@
 }
 
 + (void)reportExpiredBackgroundFetch {
-  NSInteger libraryID = AccountsManager.shared.currentAccount.id;
+  NSString *libraryID = AccountsManager.shared.currentAccount.uuid;
   NSString *exceptionName = [NSString stringWithFormat:@"BackgroundFetchExpired-Library-%ld", (long)libraryID];
   NSException *exception = [[NSException alloc] initWithName:exceptionName reason:nil userInfo:nil];
   NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
-  if (libraryID) [metadataParams setObject:[NSNumber numberWithInteger:libraryID] forKey:@"Library"];
+  if (libraryID) [metadataParams setObject:libraryID forKey:@"Library"];
   [Bugsnag notify:exception block:^(BugsnagCrashReport * _Nonnull report) {
     report.groupingHash = exceptionName;
     report.severity = BSGSeverityWarning;

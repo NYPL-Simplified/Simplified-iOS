@@ -5,7 +5,7 @@ import UIKit
   
   var account: Account
 
-  init(account id: Int) {
+  init(account id: String) {
     self.account = AccountsManager.shared.account(id)!
     super.init(nibName: nil, bundle: nil)
   }

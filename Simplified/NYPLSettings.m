@@ -27,6 +27,8 @@ static NSString *const settingsOfflineQueueKey = @"NYPLSettingsOfflineQueueKey";
 
 static NSString *const settingsAnnotationsOfflineQueueKey = @"NYPLSettingsAnnotationsOfflineQueueKey";
 
+static NSString *const versionKey = @"NYPLSettingsVersionKey";
+
 
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
 {
@@ -99,8 +101,8 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   NSArray *libraryAccounts = [[NSUserDefaults standardUserDefaults] arrayForKey:settingsLibraryAccountsKey];
   // If user has not selected any accounts yet, return the "currentAccount"
   if (!libraryAccounts) {
-    NSInteger currentLibrary = [AccountsManager shared].currentAccount.id;
-    [self setSettingsAccountsList:@[@(currentLibrary), @2]];
+    NSString *currentLibrary = [AccountsManager shared].currentAccount.uuid;
+    [self setSettingsAccountsList:@[currentLibrary, [AccountsManager NYPLAccountUUIDs][2]]];
     return [self settingsAccountsList];
   } else {
     return libraryAccounts;
@@ -190,7 +192,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 
 - (void)setRenderingEngine:(NYPLSettingsRenderingEngine const)renderingEngine
 {
-  if(renderingEngine == self.renderingEngine) return;
+  if (renderingEngine == self.renderingEngine) return;
   
   [[NSUserDefaults standardUserDefaults] setObject:StringFromRenderingEngine(renderingEngine)
                                             forKey:renderingEngineKey];
@@ -198,6 +200,55 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLSettingsDidChangeNotification
    object:self];
+}
+
+- (void)migrate
+{
+  NSInteger version = [[NSUserDefaults standardUserDefaults] integerForKey:versionKey];
+  while (version < Version) {
+    switch (version) {
+      case 0: {
+        NSArray *libraryAccounts = [[NSUserDefaults standardUserDefaults] arrayForKey:settingsLibraryAccountsKey];
+        if (!libraryAccounts) {
+          break;
+        }
+        
+        // Load Accounts.json
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"Accounts" ofType:@"json"];
+        if (filePath) {
+          NSData *data = [NSData dataWithContentsOfFile:filePath];
+          __autoreleasing NSError* error = nil;
+          NSArray *accountList = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+          NSMutableDictionary *idToUuidMap = [[NSMutableDictionary alloc] init];
+          for (NSDictionary *account in accountList) {
+            id numericVal = [account objectForKey:@"id_numeric"];
+            id uuidVal = [account objectForKey:@"id_uuid"];
+            if (numericVal && uuidVal) {
+              [idToUuidMap setObject:uuidVal forKey:[numericVal stringValue]];
+            }
+          }
+          
+          // Migrate accounts
+          NSMutableArray* newLibraryAccountsList = [NSMutableArray arrayWithCapacity:libraryAccounts.count];
+          for (id account in libraryAccounts) {
+            id uuidObj = [idToUuidMap objectForKey:[account stringValue]];
+            if (uuidObj) {
+              [newLibraryAccountsList addObject:uuidObj];
+            }
+          }
+          [[NSUserDefaults standardUserDefaults] setObject:newLibraryAccountsList forKey:settingsLibraryAccountsKey];
+        } else {
+          [[NSUserDefaults standardUserDefaults] removeObjectForKey:settingsLibraryAccountsKey];
+        }
+        [[NSUserDefaults standardUserDefaults] synchronize];
+      }
+        break;
+      default:
+        break;
+    }
+    version += 1;
+  }
+  [[NSUserDefaults standardUserDefaults] setInteger:Version forKey:versionKey];
 }
 
 @end

@@ -21,11 +21,11 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
 
 + (instancetype)sharedAccount
 {
-  NSInteger library = [AccountsManager shared].currentAccount.id;
+  NSString *library = [AccountsManager shared].currentAccount.uuid;
   return [self sharedAccount:library];
 }
 
-+ (instancetype)sharedAccount:(NSInteger)account
++ (instancetype)sharedAccount:(NSString *)account
 {
   static NYPLAccount *sharedAccount = nil;
   
@@ -36,20 +36,19 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
     }
   }
   
-  if (account != 0)
+  if (![account isEqualToString:[AccountsManager NYPLAccountUUIDs][0]])
   {
-    barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode",[@(account) stringValue]];
-    authorizationIdentifierKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAuthorization",[@(account) stringValue]];
-    PINKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPIN",[@(account) stringValue]];
-    adobeTokenKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAdobeTokenKey",[@(account) stringValue]];
-    patronKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPatronKey",[@(account) stringValue]];
-    authTokenKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAuthTokenKey",[@(account) stringValue]];
-    adobeVendorKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAdobeVendorKey",[@(account) stringValue]];
-    providerKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountProviderKey",[@(account) stringValue]];
-    userIDKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountUserIDKey",[@(account) stringValue]];
-    deviceIDKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountDeviceIDKey",[@(account) stringValue]];
-    licensorKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountLicensorKey",[@(account) stringValue]];
-
+    barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode", account];
+    authorizationIdentifierKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAuthorization", account];
+    PINKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPIN", account];
+    adobeTokenKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAdobeTokenKey", account];
+    patronKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPatronKey", account];
+    authTokenKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAuthTokenKey", account];
+    adobeVendorKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAdobeVendorKey", account];
+    providerKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountProviderKey", account];
+    userIDKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountUserIDKey", account];
+    deviceIDKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountDeviceIDKey", account];
+    licensorKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountLicensorKey", account];
   }
   else
   {
@@ -64,9 +63,7 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
     userIDKey = @"NYPLAccountUserIDKey";
     deviceIDKey = @"NYPLAccountDeviceIDKey";
     licensorKey = @"NYPLAccountLicensorKey";
-
   }
-
 
   return sharedAccount;
 }

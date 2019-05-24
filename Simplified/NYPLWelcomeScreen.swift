@@ -150,10 +150,10 @@ import PureLayout
       return
     }
     let listVC = NYPLWelcomeScreenAccountList { account in
-      if (account.id != 2) {
-        NYPLSettings.shared().settingsAccountsList = [account.id, 2]
+      if account.uuid != AccountsManager.NYPLAccountUUIDs[2] {
+        NYPLSettings.shared().settingsAccountsList = [account.uuid, AccountsManager.NYPLAccountUUIDs[2]]
       } else {
-        NYPLSettings.shared().settingsAccountsList = [2]
+        NYPLSettings.shared().settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
       }
       self.completion?(account)
     }
@@ -161,8 +161,8 @@ import PureLayout
   }
 
   func instantClassicsTapped() {
-    NYPLSettings.shared().settingsAccountsList = [2]
-    self.completion?(AccountsManager.shared.account(2)!)
+    NYPLSettings.shared().settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
+    self.completion?(AccountsManager.shared.account(AccountsManager.NYPLAccountUUIDs[2])!)
   }
 }
 
@@ -197,8 +197,8 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
     //FIXME Replace with SettingsAccounts improvements to library selection VC
     //once that gets finalized and merged in.
     self.accounts.sort { $0.name < $1.name }
-    self.nyplAccounts = self.accounts.filter { $0.id < 3 }
-    self.accounts = self.accounts.filter {  $0.id >= 3  }
+    self.nyplAccounts = self.accounts.filter { AccountsManager.NYPLAccountUUIDs.contains($0.uuid) }
+    self.accounts = self.accounts.filter { !AccountsManager.NYPLAccountUUIDs.contains($0.uuid) }
 
     self.title = NSLocalizedString("LibraryListTitle", comment: "Title that also informs the user that they should choose a library from the list.")
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()

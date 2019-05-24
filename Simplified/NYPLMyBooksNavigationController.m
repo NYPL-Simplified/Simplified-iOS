@@ -81,7 +81,7 @@
   NSArray *accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
   
   for (int i = 0; i < (int)accounts.count; i++) {
-    Account *account = [[AccountsManager sharedInstance] account:[accounts[i] intValue]];
+    Account *account = [[AccountsManager sharedInstance] account:accounts[i]];
     if (!account) {
       continue;
     }

@@ -15,7 +15,7 @@
 
 + (void)loginAlertError:(NSError *)error code:(NSInteger)code libraryName:(NSString *)name;
 
-+ (void)bugsnagLogInvalidLicensorWithAccountType:(NSInteger)type;
++ (void)bugsnagLogInvalidLicensorWithAccountId:(NSString *)accountId;
 
 + (void)reportNewActiveSession;
 

@@ -70,14 +70,14 @@ static NSString *const RecordsKey = @"records";
 
   return URL;
 }
-- (NSURL *)registryDirectory:(NSInteger)account
+- (NSURL *)registryDirectory:(NSString *)account
 {
   NSURL *URL = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"registry"];
   
   return URL;
 }
 
-- (NSArray<NSString *> *__nonnull)bookIdentifiersForAccount:(NSInteger const)account
+- (NSArray<NSString *> *__nonnull)bookIdentifiersForAccount:(NSString * const)account
 {
   NSURL *const url = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"registry/registry.json"];
   NSData *const data = [NSData dataWithContentsOfURL:url];
@@ -149,11 +149,11 @@ static NSString *const RecordsKey = @"records";
 
 - (void)load
 {
-  [self loadWithoutBroadcastingForAccount:[AccountsManager sharedInstance].currentAccount.id];
+  [self loadWithoutBroadcastingForAccount:[AccountsManager sharedInstance].currentAccount.uuid];
   [self broadcastChange];
 }
 
-- (void)loadWithoutBroadcastingForAccount:(NSInteger)account
+- (void)loadWithoutBroadcastingForAccount:(NSString *)account
 {
   @synchronized(self) {
     self.identifiersToRecords = [NSMutableDictionary dictionary];
@@ -716,9 +716,9 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
   return [self.coverRegistry cachedThumbnailImageForBook:book];
 }
 
-- (void)reset:(NSInteger)account
+- (void)reset:(NSString *)account
 {
-  if ([AccountsManager shared].currentAccount.id == account)
+  if ([[AccountsManager shared].currentAccount.uuid isEqualToString:account])
   {
     [self reset];
   }
@@ -815,10 +815,10 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
   }
 }
 
-- (void)performUsingAccount:(NSInteger const)account block:(void (^const __nonnull)(void))block
+- (void)performUsingAccount:(NSString * const)account block:(void (^const __nonnull)(void))block
 {
   @synchronized (self) {
-    if (account == [AccountsManager sharedInstance].currentAccount.id) {
+    if ([account isEqualToString:[AccountsManager sharedInstance].currentAccount.uuid]) {
       // Since we're already set to the account, do not reload data. Doing so would
       // be inefficient, but, more importantly, it would also wipe out download states.
       block();
