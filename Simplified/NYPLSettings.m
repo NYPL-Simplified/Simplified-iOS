@@ -5,7 +5,7 @@
 #import "NYPLConfiguration.h"
 #import "SimplyE-Swift.h"
 
-const NSInteger Version = 0;
+const NSInteger Version = 1;
 
 NSString *const NYPLSettingsDidChangeNotification = @"NYPLSettingsDidChangeNotification";
 NSString *const NYPLCurrentAccountDidChangeNotification = @"NYPLCurrentAccountDidChangeNotification";
