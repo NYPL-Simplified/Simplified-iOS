@@ -92,6 +92,19 @@
   }
   
   func addAccount() {
+    AccountsManager.shared.loadCatalogs(preferringCache: false) { (success) in
+      guard success else {
+        let alert = NYPLAlertController.alert(withTitle:nil, singleMessage:NSLocalizedString("CheckConnection", comment: ""))
+        alert?.present(fromViewControllerOrNil:self, animated:true, completion:nil)
+        return
+      }
+      DispatchQueue.main.async {
+        self.showAddAccountList()
+      }
+    }
+  }
+  
+  func showAddAccountList() {
     let alert = UIAlertController(title: NSLocalizedString(
       "SettingsAccountLibrariesViewControllerAlertTitle",
       comment: "Title to tell a user that they can add another account to the list"),
@@ -116,12 +129,12 @@
     for userAccount in sortedLibraryAccounts {
       if (!userAddedSecondaryAccounts.contains(userAccount.id) && userAccount.id != manager.currentAccount?.id) {
         alert.addAction(UIAlertAction(title: userAccount.name,
-          style: .default,
-          handler: { action in
-            self.userAddedSecondaryAccounts.append(userAccount.id)
-            self.updateSettingsAccountList()
-            self.updateUI()
-            self.tableView.reloadData()
+                                      style: .default,
+                                      handler: { action in
+                                        self.userAddedSecondaryAccounts.append(userAccount.id)
+                                        self.updateSettingsAccountList()
+                                        self.updateUI()
+                                        self.tableView.reloadData()
         }))
       }
     }

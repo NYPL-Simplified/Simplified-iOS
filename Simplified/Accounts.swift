@@ -5,6 +5,28 @@ let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
 let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
 let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
+func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completion: @escaping (Data?) -> ()) {
+  let modified = (try? FileManager.default.attributesOfItem(atPath: cacheUrl.path)[.modificationDate]) as? Date
+  if let modified = modified, let expiry = Calendar.current.date(byAdding: .day, value: 1, to: modified), expiry > Date() || preferringCache {
+    if let data = try? Data(contentsOf: cacheUrl) {
+      completion(data)
+      return
+    }
+  }
+  
+  // Load data from the internet if either the cache wasn't recent enough (or preferred), or somehow failed to load
+  let request = URLRequest.init(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 60)
+  
+  let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
+    guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+      completion(nil)
+      return
+    }
+    try? data.write(to: cacheUrl)
+    completion(data)
+  }
+  dataTask.resume()
+}
 
 /// Manage the library accounts for the app.
 /// Initialized with JSON.
@@ -72,74 +94,66 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     }
   }
   
+  func libraryListCacheUrl(beta: Bool) -> URL {
+    let applicationSupportUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+    let url = applicationSupportUrl.appendingPathComponent("library_list_\(beta ? "beta" : "prod").json")
+    return url
+  }
+  
+  // Take the library list data (either from cache or the internet), load it into self.accounts, and load the auth document for the current account if necessary
+  private func loadCatalogs(data: Data, preferringCache: Bool, completion: @escaping (Bool) -> ()) {
+    do {
+      let catalogsFeed = try OPDS2CatalogsFeed.fromData(data)
+      var id = 0
+      let hadAccount = self.currentAccount != nil
+      self.accounts = catalogsFeed.catalogs.map {
+        let account = Account(publication: $0, id: id)
+        id += 1
+        return account
+      }
+      if hadAccount != (self.currentAccount != nil) {
+        self.currentAccount?.loadAuthenticationDocument(preferringCache: preferringCache, completion: { (success) in
+          if !success {
+            Log.error(#file, "Failed to load authentication document for current account; a bunch of things likely won't work")
+          }
+          DispatchQueue.main.async {
+            NYPLSettings.shared()?.accountMainFeedURL = URL(string: self.currentAccount?.catalogUrl ?? "")
+            UIApplication.shared.delegate?.window??.tintColor = NYPLConfiguration.mainColor()
+            NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
+            completion(true)
+          }
+        })
+      } else {
+        completion(true)
+      }
+    } catch (let error) {
+      Log.error(#file, "Couldn't load catalogs. Error: \(error.localizedDescription)")
+      completion(false)
+    }
+  }
+  
   func loadCatalogs(preferringCache: Bool, completion: @escaping (Bool) -> ()) {
     let isBeta = NYPLConfiguration.releaseStageIsBeta() && !UserDefaults.standard.bool(forKey: "prod_only")
-    let betaUrl = URL(string: "http://libraryregistry.librarysimplified.org/libraries")
-    let prodUrl = URL(string: "http://libraryregistry.librarysimplified.org/libraries") // TODO: This needs to be replaced once there's a new endpoint
-    guard let url = isBeta ? betaUrl : prodUrl else {
-      return
-    }
-    
-    let handleData = { (data: Data) in
-      do {
-        let catalogsFeed = try OPDS2CatalogsFeed.fromData(data)
-        var id = 0
-        let hadAccount = self.currentAccount != nil
-        self.accounts = catalogsFeed.catalogs.map {
-          let account = Account(publication: $0, id: id)
-          id += 1
-          return account
-        }
-        if hadAccount != (self.currentAccount != nil) {
-          self.currentAccount?.loadAuthenticationDocument(preferringCache: preferringCache, completion: { (success) in
-            if !success {
-              Log.error(#file, "Failed to load authentication document for current account; a bunch of things likely won't work")
-            }
-            DispatchQueue.main.async {
-              NYPLSettings.shared()?.accountMainFeedURL = URL(string: self.currentAccount?.catalogUrl ?? "")
-              UIApplication.shared.delegate?.window??.tintColor = NYPLConfiguration.mainColor()
-              NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
-              self.callAndClearLoadingCompletionHandlers(true)
-            }
-          })
-        }
-      } catch (let error) {
-        Log.error(#file, "Couldn't load catalogs. Error: \(error.localizedDescription)")
-        self.callAndClearLoadingCompletionHandlers(false)
-      }
-    }
+    let betaUrl = URL(string: "http://libraryregistry.librarysimplified.org/libraries")!
+    let prodUrl = URL(string: "http://libraryregistry.librarysimplified.org/libraries")! // TODO: This needs to be replaced once there's a new endpoint
+    let url = isBeta ? betaUrl : prodUrl
     
     let wasAlreadyLoading = addLoadingCompletionHandler(completion)
     if wasAlreadyLoading {
       return
     }
     
-    let cachesUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-    let libraryListCacheUrl = cachesUrl.appendingPathComponent("library_list_\(isBeta ? "beta" : "prod").json")
-    let modified = (try? FileManager.default.attributesOfItem(atPath: libraryListCacheUrl.path)[.modificationDate]) as? Date
-    if let modified = modified, let expiry = Calendar.current.date(byAdding: .day, value: 1, to: modified), expiry > Date() || preferringCache {
-      if let data = try? Data(contentsOf: libraryListCacheUrl) {
-        handleData(data)
-        return
-      }
-    }
+    let cacheUrl = libraryListCacheUrl(beta: isBeta)
     
-    // Load data from the internet if either the cache wasn't recent enough (or preferred), or somehow failed to load
-    var request = URLRequest.init(url: url,
-                                  cachePolicy: .reloadIgnoringLocalCacheData,
-                                  timeoutInterval: 60)
-    request.httpMethod = "GET"
-    
-    let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-      guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-        Log.error(#file, "Couldn't load catalogs. Error: \(error?.localizedDescription ?? "")")
+    loadDataWithCache(url: url, cacheUrl: cacheUrl, preferringCache: preferringCache) { (data) in
+      if let data = data {
+        self.loadCatalogs(data: data, preferringCache: preferringCache) { (success) in
+          self.callAndClearLoadingCompletionHandlers(success)
+        }
+      } else {
         self.callAndClearLoadingCompletionHandlers(false)
-        return
       }
-      try? data.write(to: libraryListCacheUrl)
-      handleData(data)
     }
-    dataTask.resume()
   }
   
   func account(_ id:Int) -> Account?
@@ -363,6 +377,12 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     }
   }
   
+  var authenticationDocumentCacheUrl: URL {
+    let applicationSupportUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+    let nonColonUuid = uuid.replacingOccurrences(of: ":", with: "_")
+    return applicationSupportUrl.appendingPathComponent("authentication_document_\(nonColonUuid).json")
+  }
+  
   init(publication: OPDS2Publication, id: Int) {
     
     name = publication.metadata.title
@@ -392,44 +412,21 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
       return
     }
     
-    let handleData = { (data: Data) in
-      do {
-        self.authenticationDocument = try OPDS2AuthenticationDocument.fromData(data)
-        completion(true)
-        
-      } catch (let error) {
-        Log.error(#file, "Failed to load authentication document for library: \(error.localizedDescription)")
+    loadDataWithCache(url: url, cacheUrl: authenticationDocumentCacheUrl, preferringCache: preferringCache) { (data) in
+      if let data = data {
+        do {
+          self.authenticationDocument = try OPDS2AuthenticationDocument.fromData(data)
+          completion(true)
+          
+        } catch (let error) {
+          Log.error(#file, "Failed to load authentication document for library: \(error.localizedDescription)")
+          completion(false)
+        }
+      } else {
+        Log.error(#file, "Failed to load data of authentication document from cache or network")
         completion(false)
       }
     }
-    
-    let cachesUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-    let nonColonUuid = uuid.replacingOccurrences(of: ":", with: "_")
-    let authDocumentCacheUrl = cachesUrl.appendingPathComponent("authentication_document_\(nonColonUuid).json")
-    let modified = (try? FileManager.default.attributesOfItem(atPath: authDocumentCacheUrl.path)[.modificationDate]) as? Date
-    if let modified = modified, let expiry = Calendar.current.date(byAdding: .day, value: 1, to: modified), expiry > Date() || preferringCache {
-      if let data = try? Data(contentsOf: authDocumentCacheUrl) {
-        handleData(data)
-        return
-      }
-    }
-    
-    var request = URLRequest.init(url: url,
-                                  cachePolicy: .useProtocolCachePolicy,
-                                  timeoutInterval: 60)
-    request.httpMethod = "GET"
-    
-    let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-      guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-        Log.error(#file, "Failed to load authentication document for library: \(error?.localizedDescription ?? "")")
-        completion(false)
-        return
-      }
-      
-      try? data.write(to: authDocumentCacheUrl)
-      handleData(data)
-    }
-    dataTask.resume()
   }
 }
 
