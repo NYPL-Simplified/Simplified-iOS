@@ -50,10 +50,10 @@ class OPDS2CatalogsFeedTests: XCTestCase {
       let data = try Data(contentsOf: testFeedUrl)
       let feed = try OPDS2CatalogsFeed.fromData(data)
       
-      let gpl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "Glendora Public Library" })!, id: 1)
-      let acl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "Alameda County Library" })!, id: 2)
-      let dpl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "Digital Public Library of America" })!, id: 3)
-      let nypl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "The New York Public Library" })!, id: 4)
+      let gpl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "Glendora Public Library" })!)
+      let acl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "Alameda County Library" })!)
+      let dpl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "Digital Public Library of America" })!)
+      let nypl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "The New York Public Library" })!)
       
       XCTAssertEqual(gpl.name, "Glendora Public Library")
       XCTAssertEqual(gpl.subtitle, "Connecting people to the world of ideas, information, and imagination")
@@ -97,10 +97,10 @@ class OPDS2CatalogsFeedTests: XCTestCase {
       let data = try Data(contentsOf: testFeedUrl)
       let feed = try OPDS2CatalogsFeed.fromData(data)
       
-      let gpl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "Glendora Public Library" })!, id: 1)
-      let acl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "Alameda County Library" })!, id: 2)
-      let dpl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "Digital Public Library of America" })!, id: 3)
-      let nypl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "The New York Public Library" })!, id: 4)
+      let gpl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "Glendora Public Library" })!)
+      let acl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "Alameda County Library" })!)
+      let dpl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "Digital Public Library of America" })!)
+      let nypl = Account(publication: feed.catalogs.first(where: { $0.metadata.title == "The New York Public Library" })!)
       
       gpl.authenticationDocument = try OPDS2AuthenticationDocument.fromData(try Data(contentsOf: gplAuthUrl))
       acl.authenticationDocument = try OPDS2AuthenticationDocument.fromData(try Data(contentsOf: aclAuthUrl))
@@ -108,7 +108,7 @@ class OPDS2CatalogsFeedTests: XCTestCase {
       nypl.authenticationDocument = try OPDS2AuthenticationDocument.fromData(try Data(contentsOf: nyplAuthUrl))
       
       XCTAssertEqual(gpl.details?.needsAuth, true)
-      XCTAssertEqual(gpl.details?.pathComponent, gpl.uuid)
+      XCTAssertEqual(gpl.details?.uuid, gpl.uuid)
       XCTAssertEqual(gpl.details?.supportsReservations, true)
       XCTAssertEqual(gpl.details?.userProfileUrl, "http://califa108.simplye-ca.org/CAGLEN/patrons/me/")
       XCTAssertEqual(gpl.details?.supportsSimplyESync, true)
@@ -126,7 +126,7 @@ class OPDS2CatalogsFeedTests: XCTestCase {
       XCTAssertEqual(gpl.details?.authPasscodeLength, 99)
       
       XCTAssertEqual(acl.details?.needsAuth, true)
-      XCTAssertEqual(acl.details?.pathComponent, acl.uuid)
+      XCTAssertEqual(acl.details?.uuid, acl.uuid)
       XCTAssertEqual(acl.details?.supportsReservations, true)
       XCTAssertEqual(acl.details?.userProfileUrl, "http://acl.simplye-ca.org/CALMDA/patrons/me/")
       XCTAssertEqual(acl.details?.supportsSimplyESync, true)
@@ -144,7 +144,7 @@ class OPDS2CatalogsFeedTests: XCTestCase {
       XCTAssertEqual(acl.details?.authPasscodeLength, 99)
       
       XCTAssertEqual(dpl.details?.needsAuth, false)
-      XCTAssertEqual(dpl.details?.pathComponent, dpl.uuid)
+      XCTAssertEqual(dpl.details?.uuid, dpl.uuid)
       XCTAssertEqual(dpl.details?.supportsReservations, false)
       XCTAssertEqual(dpl.details?.userProfileUrl, "http://openbookshelf.dp.la/OB/patrons/me/")
       XCTAssertEqual(dpl.details?.supportsSimplyESync, true)
@@ -162,7 +162,7 @@ class OPDS2CatalogsFeedTests: XCTestCase {
       XCTAssertEqual(dpl.details?.authPasscodeLength, 99)
       
       XCTAssertEqual(nypl.details?.needsAuth, true)
-      XCTAssertEqual(nypl.details?.pathComponent, nypl.uuid)
+      XCTAssertEqual(nypl.details?.uuid, nypl.uuid)
       XCTAssertEqual(nypl.details?.supportsReservations, true)
       XCTAssertEqual(nypl.details?.userProfileUrl, "https://circulation.librarysimplified.org/NYNYPL/patrons/me/")
       XCTAssertEqual(nypl.details?.supportsSimplyESync, true)
