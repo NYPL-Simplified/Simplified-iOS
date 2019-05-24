@@ -70,6 +70,13 @@ class MigrationManager: NSObject {
 
     // Assign new uuid account list
     NYPLSettings.shared().settingsAccountsList = newAccountsList
+    
+    // Migrate currentAccount
+    let userDefaults = UserDefaults.standard
+    if let currentAccountIntId = userDefaults.object(forKey: currentAccountIdentifierKey) as? Int,
+        let currentAccountUuid = accountMap[currentAccountIntId] {
+      userDefaults.set(currentAccountUuid, forKey: currentAccountIdentifierKey)
+    }
 
     // Migrate file storage
     for accountId in oldAccountsList {
