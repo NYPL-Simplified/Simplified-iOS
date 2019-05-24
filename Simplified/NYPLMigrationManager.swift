@@ -1,5 +1,11 @@
 import Foundation
 
+/**
+Manages data migrations as they are needed throughout the app's life
+
+App version is cached in UserDefaults and last cached value is checked against current build version
+and updates are applied as required
+*/ 
 class MigrationManager: NSObject {
   @objc static func migrate() {
     // Fetch target version
@@ -21,6 +27,7 @@ class MigrationManager: NSObject {
     NYPLSettings.shared().appVersion = targetVersion
   }
 
+  // Less-than comparator operation
   private static func versionComparator(_ a: [Int], _ b:[Int]) -> Bool {
     var i = 0
     while i < a.count && i < b.count {
@@ -72,6 +79,7 @@ class MigrationManager: NSObject {
           }
         }
       }
+      // Assign new uuid account list
       NYPLSettings.shared().settingsAccountsList = newLibraryAccountsList
     }
 
