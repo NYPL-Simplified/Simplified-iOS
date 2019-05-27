@@ -73,9 +73,8 @@ class MigrationManager: NSObject {
     
     // Migrate currentAccount
     let userDefaults = UserDefaults.standard
-    if let currentAccountIntId = userDefaults.object(forKey: currentAccountIdentifierKey) as? Int,
-        let currentAccountUuid = accountMap[currentAccountIntId] {
-      userDefaults.set(currentAccountUuid, forKey: currentAccountIdentifierKey)
+    if let currentAccountIntId = userDefaults.object(forKey: currentAccountIdentifierKey) as? Int {
+      userDefaults.set(accountMap[currentAccountIntId], forKey: currentAccountIdentifierKey)
     }
 
     // Migrate file storage

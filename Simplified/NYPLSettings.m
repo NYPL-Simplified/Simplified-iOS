@@ -23,10 +23,6 @@ static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCu
 
 static NSString *const settingsLibraryAccountsKey = @"NYPLSettingsLibraryAccountsKey";
 
-static NSString *const settingsOfflineQueueKey = @"NYPLSettingsOfflineQueueKey";
-
-static NSString *const settingsAnnotationsOfflineQueueKey = @"NYPLSettingsAnnotationsOfflineQueueKey";
-
 static NSString *const versionKey = @"NYPLSettingsVersionKey";
 
 
