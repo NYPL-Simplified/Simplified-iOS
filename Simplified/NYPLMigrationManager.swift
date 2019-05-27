@@ -5,6 +5,10 @@ Manages data migrations as they are needed throughout the app's life
 
 App version is cached in UserDefaults and last cached value is checked against current build version
 and updates are applied as required
+
+NetworkQueue migration is invoked from here, but the logic is self-contained in the NetworkQueue class.
+This is because DB-related operations should likely be scoped to that file in the event the DB framework or logic changes,
+that module would know best how to handle changes.
 */ 
 class MigrationManager: NSObject {
   @objc static func migrate() {
