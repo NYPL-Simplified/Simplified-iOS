@@ -133,7 +133,7 @@ CGFloat const marginPadding = 2.0;
   self.usernameTextField.delegate = self;
   self.usernameTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
 
-  switch (self.currentAccount.patronIDKeyboard) {
+  switch (self.currentAccount.details.patronIDKeyboard) {
     case LoginKeyboardStandard:
     case LoginKeyboardNone:
       self.usernameTextField.keyboardType = UIKeyboardTypeASCIICapable;
@@ -156,7 +156,7 @@ CGFloat const marginPadding = 2.0;
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
 
-  switch (self.currentAccount.pinKeyboard) {
+  switch (self.currentAccount.details.pinKeyboard) {
     case LoginKeyboardStandard:
     case LoginKeyboardNone:
       self.PINTextField.keyboardType = UIKeyboardTypeASCIICapable;
@@ -199,7 +199,7 @@ CGFloat const marginPadding = 2.0;
 - (void)setupTableData
 {
   NSArray *section0;
-  if (self.currentAccount.pinKeyboard != LoginKeyboardNone) {
+  if (self.currentAccount.details.pinKeyboard != LoginKeyboardNone) {
     section0 = @[@(CellKindBarcode),
                  @(CellKindPIN),
                  @(CellKindLogInSignOut)];
@@ -270,7 +270,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       
-      if (self.currentAccount.supportsCardCreator) {
+      if (self.currentAccount.details.supportsCardCreator) {
         __weak NYPLAccountSignInViewController *const weakSelf = self;
         CardCreatorConfiguration *const configuration =
           [[CardCreatorConfiguration alloc]
@@ -306,7 +306,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       else
       {
         
-        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:self.currentAccount.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:self.currentAccount.details.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
         
         UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webViewController];
        
@@ -352,7 +352,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                                ofView:[self.usernameTextField superview]
                                            withOffset:-marginPadding];
 
-        if (self.currentAccount.supportsBarcodeScanner) {
+        if (self.currentAccount.details.supportsBarcodeScanner) {
           [cell.contentView addSubview:self.barcodeScanButton];
           CGFloat rightMargin = cell.layoutMargins.right;
           self.barcodeScanButton.contentEdgeInsets = UIEdgeInsetsMake(0, rightMargin * 2, 0, rightMargin);
@@ -398,7 +398,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (BOOL)registrationIsPossible
 {
   return ([NYPLConfiguration cardCreationEnabled] &&
-          ([[AccountsManager sharedInstance] currentAccount].supportsCardCreator || [[AccountsManager sharedInstance] currentAccount].cardCreatorUrl) &&
+          ([[AccountsManager sharedInstance] currentAccount].details.supportsCardCreator || [[AccountsManager sharedInstance] currentAccount].details.cardCreatorUrl) &&
           ![[NYPLAccount sharedAccount] hasBarcodeAndPIN]);
 }
 
@@ -464,7 +464,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
 {
-  if (section == SectionCredentials && [self.currentAccount getLicenseURL:URLTypeEula]) {
+  if (section == SectionCredentials && [self.currentAccount.details getLicenseURL:URLTypeEula]) {
     UIView *container = [[UIView alloc] init];
     container.preservesSuperviewLayoutMargins = YES;
     UILabel *footerLabel = [[UILabel alloc] init];
@@ -520,7 +520,7 @@ replacementString:(NSString *)string
   }
   
   if(textField == self.usernameTextField &&
-     self.currentAccount.patronIDKeyboard != LoginKeyboardEmail) {
+     self.currentAccount.details.patronIDKeyboard != LoginKeyboardEmail) {
     // Barcodes are numeric and usernames are alphanumeric.
     if([string stringByTrimmingCharactersInSet:[NSCharacterSet alphanumericCharacterSet]].length > 0) {
       return NO;
@@ -535,16 +535,16 @@ replacementString:(NSString *)string
   if(textField == self.PINTextField) {
     
     NSCharacterSet *charSet = [NSCharacterSet decimalDigitCharacterSet];
-    bool alphanumericPin = self.currentAccount.pinKeyboard != LoginKeyboardNumeric;
+    bool alphanumericPin = self.currentAccount.details.pinKeyboard != LoginKeyboardNumeric;
     bool containsNonNumericChar = [string stringByTrimmingCharactersInSet:charSet].length > 0;
-    bool abovePinCharLimit = [textField.text stringByReplacingCharactersInRange:range withString:string].length > self.currentAccount.authPasscodeLength;
+    bool abovePinCharLimit = [textField.text stringByReplacingCharactersInRange:range withString:string].length > self.currentAccount.details.authPasscodeLength;
     
     // PIN's support numeric or alphanumeric.
     if (!alphanumericPin && containsNonNumericChar) {
       return NO;
     }
     // PIN's character limit. Zero is unlimited.
-    if (self.currentAccount.authPasscodeLength == 0) {
+    if (self.currentAccount.details.authPasscodeLength == 0) {
       return YES;
     } else if (abovePinCharLimit) {
       return NO;
@@ -774,7 +774,7 @@ completionHandler:(void (^)(void))handler
                                  stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
     BOOL const pinHasText = [self.PINTextField.text
                              stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
-    BOOL const pinIsNotRequired = self.currentAccount.pinKeyboard == LoginKeyboardNone;
+    BOOL const pinIsNotRequired = self.currentAccount.details.pinKeyboard == LoginKeyboardNone;
     if((barcodeHasText && pinHasText) || (barcodeHasText && pinIsNotRequired)) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];

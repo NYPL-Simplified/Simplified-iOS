@@ -20,7 +20,7 @@
   if(!self) return nil;
   
   self.title = NSLocalizedString(@"EULA", nil);
-  self.eulaURL = [account getLicenseURL:URLTypeEula];
+  self.eulaURL = [account.details getLicenseURL:URLTypeEula];
   
   return self;
 }

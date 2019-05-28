@@ -181,6 +181,16 @@
 		AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77E4AF64208439F78B3D73 /* NYPLOPDSEntry.m */; };
 		AE77EB0CB5B94AEC591E2D91 /* NYPLOPDSLink.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77ECC029F3DABDB46A64EB /* NYPLOPDSLink.m */; };
 		AE77EE7AACC975280BAB9A4C /* NYPLOPDSFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77E94D56B65997B861C0C0 /* NYPLOPDSFeed.m */; };
+		B51C1DFA2285FDF9003B49A5 /* OPDS2CatalogsFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51C1DF92285FDF9003B49A5 /* OPDS2CatalogsFeed.swift */; };
+		B51C1DFC22860513003B49A5 /* OPDS2CatalogsFeed.json in Resources */ = {isa = PBXBuildFile; fileRef = B51C1DFB22860513003B49A5 /* OPDS2CatalogsFeed.json */; };
+		B51C1DFE22860563003B49A5 /* OPDS2CatalogsFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51C1DFD22860563003B49A5 /* OPDS2CatalogsFeedTests.swift */; };
+		B51C1E0022861BAD003B49A5 /* OPDS2Link.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51C1DFF22861BAD003B49A5 /* OPDS2Link.swift */; };
+		B51C1E0222861BBF003B49A5 /* OPDS2Publication.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51C1E0122861BBF003B49A5 /* OPDS2Publication.swift */; };
+		B51C1E0422861C1A003B49A5 /* OPDS2AuthenticationDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51C1E0322861C1A003B49A5 /* OPDS2AuthenticationDocument.swift */; };
+		B51C1E17229456E2003B49A5 /* acl_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = B51C1E13229456E2003B49A5 /* acl_authentication_document.json */; };
+		B51C1E18229456E2003B49A5 /* gpl_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = B51C1E14229456E2003B49A5 /* gpl_authentication_document.json */; };
+		B51C1E19229456E2003B49A5 /* nypl_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = B51C1E15229456E2003B49A5 /* nypl_authentication_document.json */; };
+		B51C1E1A229456E2003B49A5 /* dpl_authentication_document.json in Resources */ = {isa = PBXBuildFile; fileRef = B51C1E16229456E2003B49A5 /* dpl_authentication_document.json */; };
 		B5ED41DA1B8F6E2E009FC164 /* NYPLBookButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */; };
 		D787E8441FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D787E8431FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift */; };
 		E6202A021DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6202A011DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m */; };
@@ -554,6 +564,16 @@
 		AE77ECC029F3DABDB46A64EB /* NYPLOPDSLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLink.m; sourceTree = "<group>"; };
 		AE77EDCF05BE5D54CF8E0E70 /* NYPLOPDSType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSType.h; sourceTree = "<group>"; };
 		AE77EFD5622206475B6715A9 /* NYPLOPDSType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSType.m; sourceTree = "<group>"; };
+		B51C1DF92285FDF9003B49A5 /* OPDS2CatalogsFeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OPDS2CatalogsFeed.swift; sourceTree = "<group>"; };
+		B51C1DFB22860513003B49A5 /* OPDS2CatalogsFeed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = OPDS2CatalogsFeed.json; sourceTree = "<group>"; };
+		B51C1DFD22860563003B49A5 /* OPDS2CatalogsFeedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OPDS2CatalogsFeedTests.swift; sourceTree = "<group>"; };
+		B51C1DFF22861BAD003B49A5 /* OPDS2Link.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OPDS2Link.swift; sourceTree = "<group>"; };
+		B51C1E0122861BBF003B49A5 /* OPDS2Publication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OPDS2Publication.swift; sourceTree = "<group>"; };
+		B51C1E0322861C1A003B49A5 /* OPDS2AuthenticationDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OPDS2AuthenticationDocument.swift; sourceTree = "<group>"; };
+		B51C1E13229456E2003B49A5 /* acl_authentication_document.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = acl_authentication_document.json; sourceTree = "<group>"; };
+		B51C1E14229456E2003B49A5 /* gpl_authentication_document.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gpl_authentication_document.json; sourceTree = "<group>"; };
+		B51C1E15229456E2003B49A5 /* nypl_authentication_document.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = nypl_authentication_document.json; sourceTree = "<group>"; };
+		B51C1E16229456E2003B49A5 /* dpl_authentication_document.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = dpl_authentication_document.json; sourceTree = "<group>"; };
 		B5ED41D81B8F6E2E009FC164 /* NYPLBookButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookButtonsView.h; sourceTree = "<group>"; };
 		B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookButtonsView.m; sourceTree = "<group>"; };
 		CAE35BBA1B86289500BF9BC5 /* Simplified.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Simplified.xcconfig; sourceTree = "<group>"; };
@@ -590,7 +610,6 @@
 		E6D848E22171334800CEC142 /* NYPLContentTypeBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLContentTypeBadge.swift; sourceTree = "<group>"; };
 		E6DA7E9F1F2A718600CFBEC8 /* NYPLBookAuthor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookAuthor.swift; sourceTree = "<group>"; };
 		E6F26E721DFF672F00C103CA /* NYPLDirectoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLDirectoryManager.swift; sourceTree = "<group>"; };
-		E6FAFBFE1F7A9D870026F0EE /* SimplyE-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyE-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1022,6 +1041,7 @@
 				2D382BD61D08BA99002C423D /* Log.swift */,
 				110AF8881961D652004887C3 /* My Books */,
 				AE77E8DE5454517F1AE119BF /* OPDS */,
+				B51C1DF42285FD51003B49A5 /* OPDS2 */,
 				119504051994061E009FB788 /* Reader */,
 				11C5DCEE1976D19E005A9945 /* Settings */,
 				11172762197F31280043EFBF /* NYPLAccount.h */,
@@ -1095,7 +1115,6 @@
 				E6C91BC01FD5F63B00A32F42 /* NYPLZXingEncoder.h */,
 				E6C91BC11FD5F63B00A32F42 /* NYPLZXingEncoder.m */,
 				145798F5215BE9E300F68AFD /* ProblemReportEmail.swift */,
-				E6FAFBFE1F7A9D870026F0EE /* SimplyE-Bridging-Header.h */,
 				A823D817192BABA400B55DE2 /* Supporting Files */,
 				2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */,
 				2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */,
@@ -1134,6 +1153,7 @@
 				11C5DD171977335E005A9945 /* NYPLKeychainTests.m */,
 				11616E12196B2FB8003D60D9 /* NYPLMyBooksRegistryTests.m */,
 				111559EE19B8FA8E0003BE94 /* NYPLXMLTests.m */,
+				B51C1DFD22860563003B49A5 /* OPDS2CatalogsFeedTests.swift */,
 				1183F34D194F775400DC322F /* OPDS */,
 				2D2B47621D08F1ED007F7764 /* SimplyETests-Bridging-Header.h */,
 				A823D830192BABA400B55DE2 /* Supporting Files */,
@@ -1146,6 +1166,11 @@
 		A823D830192BABA400B55DE2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				B51C1DFB22860513003B49A5 /* OPDS2CatalogsFeed.json */,
+				B51C1E13229456E2003B49A5 /* acl_authentication_document.json */,
+				B51C1E16229456E2003B49A5 /* dpl_authentication_document.json */,
+				B51C1E14229456E2003B49A5 /* gpl_authentication_document.json */,
+				B51C1E15229456E2003B49A5 /* nypl_authentication_document.json */,
 				2D2B47761D08F808007F7764 /* Info.plist */,
 				A823D832192BABA400B55DE2 /* InfoPlist.strings */,
 				111559F019B8FAA10003BE94 /* invalid.xml */,
@@ -1189,6 +1214,17 @@
 				AE77EFD5622206475B6715A9 /* NYPLOPDSType.m */,
 			);
 			name = OPDS;
+			sourceTree = "<group>";
+		};
+		B51C1DF42285FD51003B49A5 /* OPDS2 */ = {
+			isa = PBXGroup;
+			children = (
+				B51C1E0322861C1A003B49A5 /* OPDS2AuthenticationDocument.swift */,
+				B51C1DF92285FDF9003B49A5 /* OPDS2CatalogsFeed.swift */,
+				B51C1DFF22861BAD003B49A5 /* OPDS2Link.swift */,
+				B51C1E0122861BBF003B49A5 /* OPDS2Publication.swift */,
+			);
+			name = OPDS2;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1340,7 +1376,12 @@
 			files = (
 				2D8790A320129AC400E2763F /* NYPLBookAcquisitionPathEntry.xml in Resources */,
 				2D2B478E1D08FDF5007F7764 /* UpdateCheckNeedsUpdate.json in Resources */,
+				B51C1E18229456E2003B49A5 /* gpl_authentication_document.json in Resources */,
+				B51C1E19229456E2003B49A5 /* nypl_authentication_document.json in Resources */,
+				B51C1E17229456E2003B49A5 /* acl_authentication_document.json in Resources */,
+				B51C1E1A229456E2003B49A5 /* dpl_authentication_document.json in Resources */,
 				2D2B478F1D08FDF5007F7764 /* UpdateCheckUnknown.json in Resources */,
+				B51C1DFC22860513003B49A5 /* OPDS2CatalogsFeed.json in Resources */,
 				2D2B47841D08F8E2007F7764 /* UpdateCheckUpToDate.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1432,6 +1473,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B51C1DFE22860563003B49A5 /* OPDS2CatalogsFeedTests.swift in Sources */,
 				2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */,
 				2D8790A520129AF200E2763F /* NYPLBookAcquisitionPathTests.swift in Sources */,
 				2D2B477E1D08F82C007F7764 /* Log.swift in Sources */,
@@ -1453,6 +1495,7 @@
 				081387571BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m in Sources */,
 				11369D48199527C200BB11F8 /* NYPLJSON.m in Sources */,
 				116A5EB91947B57500491A21 /* NYPLConfiguration.m in Sources */,
+				B51C1E0222861BBF003B49A5 /* OPDS2Publication.swift in Sources */,
 				E671FF7D1E3A7068002AB13F /* NYPLNetworkQueue.swift in Sources */,
 				116A5EAF194767B200491A21 /* NYPLMyBooksNavigationController.m in Sources */,
 				1120749319D20BF9008203A4 /* NYPLBookCellCollectionViewController.m in Sources */,
@@ -1470,6 +1513,7 @@
 				11BFDB36199C08E900378691 /* NYPLReaderTOCElement.m in Sources */,
 				2DC8D9DC1D09F797007DD125 /* UpdateCheck.swift in Sources */,
 				11BFDB33199C01F700378691 /* NYPLReaderTOCViewController.m in Sources */,
+				B51C1DFA2285FDF9003B49A5 /* OPDS2CatalogsFeed.swift in Sources */,
 				2D62568B1D412BCB0080A81F /* BundledHTMLViewController.swift in Sources */,
 				110AF8961961D94D004887C3 /* NYPLBookDetailView.m in Sources */,
 				0813875A1BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m in Sources */,
@@ -1527,6 +1571,7 @@
 				5D60D3542297353C001080D0 /* NYPLMigrationManager.swift in Sources */,
 				111E757A1A80165C00718AD7 /* NYPLSettingsSplitViewController.m in Sources */,
 				A96CAE7D220B61950055FE51 /* NYPLBugnsagLogs.m in Sources */,
+				B51C1E0422861C1A003B49A5 /* OPDS2AuthenticationDocument.swift in Sources */,
 				112C694D197301FE00C48F95 /* NYPLBookRegistryRecord.m in Sources */,
 				E627B554216D4A9700A7D1D5 /* NYPLBookContentType.m in Sources */,
 				2D754BC22002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m in Sources */,
@@ -1553,6 +1598,7 @@
 				085D31DF1BE3CD3C007F7672 /* NSURLRequest+NYPLURLRequestAdditions.m in Sources */,
 				11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */,
 				E63F2C6C1EAA81B3002B6373 /* ExtendedNavBarView.swift in Sources */,
+				B51C1E0022861BAD003B49A5 /* OPDS2Link.swift in Sources */,
 				E6DA7EA01F2A718600CFBEC8 /* NYPLBookAuthor.swift in Sources */,
 				118A0B1B19915BDF00792DDE /* NYPLCatalogSearchViewController.m in Sources */,
 				A4E254FA1B0E610900193FE4 /* NYPLBasicAuth.m in Sources */,

@@ -143,26 +143,72 @@ import PureLayout
     
     return tempView
   }
+  
+  func loadingOverlayView() -> UIView {
+    let overlayView = UIView()
+    overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+    let activityView = UIActivityIndicatorView(style: .whiteLarge)
+    overlayView.addSubview(activityView)
+    activityView.autoCenterInSuperviewMargins()
+    activityView.startAnimating()
+    return overlayView
+  }
 
   func pickYourLibraryTapped() {
     if completion == nil {
       self.dismiss(animated: true, completion: nil)
       return
     }
-    let listVC = NYPLWelcomeScreenAccountList { account in
+    
+    let pickLibrary = {
+      let listVC = NYPLWelcomeScreenAccountList { account in
       if account.uuid != AccountsManager.NYPLAccountUUIDs[2] {
         NYPLSettings.shared().settingsAccountsList = [account.uuid, AccountsManager.NYPLAccountUUIDs[2]]
       } else {
         NYPLSettings.shared().settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
       }
-      self.completion?(account)
+        self.completion?(account)
+      }
+      self.navigationController?.pushViewController(listVC, animated: true)
     }
-    self.navigationController?.pushViewController(listVC, animated: true)
+
+    if AccountsManager.shared.accountsHaveLoaded {
+      pickLibrary()
+    } else {
+      let loadingOverlay = loadingOverlayView()
+      view.addSubview(loadingOverlay)
+      loadingOverlay.autoPinEdgesToSuperviewEdges()
+      AccountsManager.shared.loadCatalogs(preferringCache: true) { (success) in
+        loadingOverlay.removeFromSuperview()
+        guard success else {
+          return
+        }
+        DispatchQueue.main.async(execute: pickLibrary)
+      }
+    }
   }
 
   func instantClassicsTapped() {
-    NYPLSettings.shared().settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
-    self.completion?(AccountsManager.shared.account(AccountsManager.NYPLAccountUUIDs[2])!)
+    let selectInstantClassics = {
+      NYPLSettings.shared().settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
+      self.completion?(AccountsManager.shared.account(AccountsManager.NYPLAccountUUIDs[2])!)
+    }
+    
+    if AccountsManager.shared.accountsHaveLoaded {
+      selectInstantClassics()
+    } else {
+      let loadingOverlay = loadingOverlayView()
+      view.addSubview(loadingOverlay)
+      loadingOverlay.autoPinEdgesToSuperviewEdges()
+      
+      AccountsManager.shared.loadCatalogs(preferringCache: true) { (success) in
+        loadingOverlay.removeFromSuperview()
+        guard success else {
+          return
+        }
+        DispatchQueue.main.async(execute: selectInstantClassics)
+      }
+    }
   }
 }
 
@@ -188,7 +234,7 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
   
   override func viewDidLoad() {
     self.view = UITableView(frame: .zero, style: .grouped)
-    self.tableView = self.view as! UITableView
+    self.tableView = self.view as? UITableView
     self.tableView.delegate = self
     self.tableView.dataSource = self
     

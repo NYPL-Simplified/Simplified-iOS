@@ -33,7 +33,7 @@
   
   override func loadView() {
     self.view = UITableView(frame: CGRect.zero, style: .grouped)
-    self.tableView = self.view as! UITableView
+    self.tableView = self.view as? UITableView
     self.tableView.delegate = self
     self.tableView.dataSource = self
     
@@ -57,7 +57,7 @@
 
     }
     
-    self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount.uuid }
+    self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount?.uuid }
     
     updateSettingsAccountList()
 
@@ -69,13 +69,13 @@
     
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(reloadAfterAccountChange),
-                                           name: NSNotification.Name(rawValue: NYPLCurrentAccountDidChangeNotification),
+                                           name: NSNotification.Name.NYPLCurrentAccountDidChange,
                                            object: nil)
   }
   
   func reloadAfterAccountChange() {
     accounts = NYPLSettings.shared().settingsAccountsList as! [String]
-    self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount.uuid }
+    self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount?.uuid }
     self.tableView.reloadData()
   }
   
@@ -92,6 +92,19 @@
   }
   
   func addAccount() {
+    AccountsManager.shared.loadCatalogs(preferringCache: false) { (success) in
+      guard success else {
+        let alert = NYPLAlertController.alert(withTitle:nil, singleMessage:NSLocalizedString("CheckConnection", comment: ""))
+        alert?.present(fromViewControllerOrNil:self, animated:true, completion:nil)
+        return
+      }
+      DispatchQueue.main.async {
+        self.showAddAccountList()
+      }
+    }
+  }
+  
+  func showAddAccountList() {
     let alert = UIAlertController(title: NSLocalizedString(
       "SettingsAccountLibrariesViewControllerAlertTitle",
       comment: "Title to tell a user that they can add another account to the list"),
@@ -116,7 +129,7 @@
     }
 
     for userAccount in sortedLibraryAccounts {
-      if (!userAddedSecondaryAccounts.contains(userAccount.uuid) && userAccount.uuid != manager.currentAccount.uuid) {
+      if (!userAddedSecondaryAccounts.contains(userAccount.uuid) && userAccount.uuid != manager.currentAccount?.uuid) {
         alert.addAction(UIAlertAction(title: userAccount.name,
           style: .default,
           handler: { action in
@@ -134,8 +147,11 @@
   }
   
   func updateSettingsAccountList() {
+    guard let uuid = manager.currentAccount?.uuid else {
+      return
+    }
     var array = userAddedSecondaryAccounts!
-    array.append(manager.currentAccount.uuid)
+    array.append(uuid)
     NYPLSettings.shared().settingsAccountsList = array
   }
   
@@ -143,7 +159,7 @@
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
-      return 1
+      return self.manager.currentAccount != nil ? 1 : 0
     } else {
       return userAddedSecondaryAccounts.count
     }
@@ -155,7 +171,11 @@
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if (indexPath.section == 0) {
-      return cellForLibrary(self.manager.currentAccount, indexPath)
+      guard let account = self.manager.currentAccount else {
+        // Should never happen, but better than crashing
+        return UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "cell")
+      }
+      return cellForLibrary(account, indexPath)
     } else {
       return cellForLibrary(AccountsManager.shared.account(userAddedSecondaryAccounts[indexPath.row])!, indexPath)
     }
@@ -218,7 +238,7 @@
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     var account: String
     if (indexPath.section == 0) {
-      account = self.manager.currentAccount.uuid
+      account = self.manager.currentAccount?.uuid ?? ""
     } else {
       account = userAddedSecondaryAccounts[indexPath.row]
     }

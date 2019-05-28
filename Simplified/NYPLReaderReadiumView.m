@@ -715,7 +715,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
 
-  if (currentAccount.syncPermissionGranted && bookmark.annotationId.length > 0) {
+  if (currentAccount.details.syncPermissionGranted && bookmark.annotationId.length > 0) {
     [NYPLAnnotations deleteBookmarkWithAnnotationId:bookmark.annotationId
                                   completionHandler:^(BOOL success) {
                                     if (success) {

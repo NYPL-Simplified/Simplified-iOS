@@ -70,7 +70,7 @@
 - (void)setTabViewControllers
 {
   Account *const currentAccount = [AccountsManager shared].currentAccount;
-  if (currentAccount.supportsReservations) {
+  if (currentAccount.details.supportsReservations) {
     self.viewControllers = @[self.catalogNavigationController,
                              self.myBooksNavigationController,
                              self.holdsNavigationController,

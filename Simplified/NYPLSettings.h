@@ -1,9 +1,9 @@
-static NSInteger const Version = 1;
+extern const NSInteger Version;
 
-static NSString *const NYPLSettingsDidChangeNotification = @"NYPLSettingsDidChangeNotification";
-static NSString *const NYPLCurrentAccountDidChangeNotification = @"NYPLCurrentAccountDidChangeNotification";
-static NSString *const NYPLSyncBeganNotification = @"NYPLSyncBeganNotification";
-static NSString *const NYPLSyncEndedNotification = @"NYPLSyncEndedNotification";
+extern NSString *const NYPLSettingsDidChangeNotification;
+extern NSString *const NYPLCurrentAccountDidChangeNotification;
+extern NSString *const NYPLSyncBeganNotification;
+extern NSString *const NYPLSyncEndedNotification;
 
 static NSString *const userHasSeenWelcomeScreenKey = @"NYPLUserHasSeenWelcomeScreenKey";
 

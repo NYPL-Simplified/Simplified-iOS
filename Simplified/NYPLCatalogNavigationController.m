@@ -131,8 +131,20 @@
                          completion:nil];
       } else {
         [[NYPLBookRegistry sharedRegistry] save];
-        [AccountsManager shared].currentAccount = account;
-        [self updateFeedAndRegistryOnAccountChange];
+        [account loadAuthenticationDocumentWithPreferringCache:YES completion:^(BOOL success) {
+          dispatch_async(dispatch_get_main_queue(), ^{
+            if (success) {
+              [AccountsManager shared].currentAccount = account;
+              [self updateFeedAndRegistryOnAccountChange];
+            } else {
+              [self presentViewController:[NYPLAlertController
+                                           alertWithTitle:@""
+                                           message:@"UnknownRequestError"]
+                                 animated:YES
+                               completion:nil];
+            }
+          });
+        }];
       }
     }]];
   }

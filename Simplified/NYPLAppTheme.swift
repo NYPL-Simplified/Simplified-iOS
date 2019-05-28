@@ -4,19 +4,19 @@
     case red
     case pink
     case purple
-    case deepPurple
+    case deepPurple = "lightpurple"
     case indigo
     case blue
-    case lightBlue
+    case lightBlue = "lightblue"
     case cyan
     case teal
     case green
     case amber
     case orange
-    case deepOrange
+    case deepOrange = "lightorange"
     case brown
     case grey
-    case blueGrey
+    case blueGrey = "bluegrey"
     case black
   }
 

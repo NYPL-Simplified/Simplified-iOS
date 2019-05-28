@@ -474,7 +474,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   // Process Adobe Return
 #if defined(FEATURE_DRM_CONNECTOR)
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
-  if (fulfillmentId && [[AccountsManager sharedInstance] currentAccount].needsAuth) {
+  if (fulfillmentId && [[AccountsManager sharedInstance] currentAccount].details.needsAuth) {
     NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
     [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
                                     userID:[[NYPLAccount sharedAccount] userID]
@@ -686,7 +686,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   switch(state) {
     case NYPLBookStateUnregistered:
-      if(!book.defaultAcquisitionIfBorrow && (book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)) {
+      if(!book.defaultAcquisitionIfBorrow && (book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].details.needsAuth)) {
         [[NYPLBookRegistry sharedRegistry]
          addBook:book
          location:nil

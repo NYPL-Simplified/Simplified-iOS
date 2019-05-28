@@ -5,6 +5,13 @@
 #import "NYPLConfiguration.h"
 #import "SimplyE-Swift.h"
 
+const NSInteger Version = 1;
+
+NSString *const NYPLSettingsDidChangeNotification = @"NYPLSettingsDidChangeNotification";
+NSString *const NYPLCurrentAccountDidChangeNotification = @"NYPLCurrentAccountDidChangeNotification";
+NSString *const NYPLSyncBeganNotification = @"NYPLSyncBeganNotification";
+NSString *const NYPLSyncEndedNotification = @"NYPLSyncEndedNotification";
+
 static NSString *const customMainFeedURLKey = @"NYPLSettingsCustomMainFeedURL";
 
 static NSString *const accountMainFeedURLKey = @"NYPLSettingsAccountMainFeedURL";
