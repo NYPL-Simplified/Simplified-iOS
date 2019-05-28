@@ -59,6 +59,7 @@ The primary services/singletons within the program are as follows:
 * `NYPLConfiguration`
 * `NYPLKeychain`
 * `NYPLMyBooksDownloadCenter`
+* `NYPLMigrationManager`
 
 All of the above contain appropriate documentation in the header files.
 

@@ -120,7 +120,7 @@ final class NetworkQueue: NSObject {
     }
   }
 
-  @objc func migrate()
+  func migrate()
   {
     self.serialQueue.async {
       guard let db = self.startDatabaseConnection() else {

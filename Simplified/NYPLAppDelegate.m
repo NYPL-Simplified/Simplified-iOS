@@ -44,8 +44,7 @@ const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 24;
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
   // Perform data migrations as early as possible before anything has a chance to access them
-  [[NYPLSettings sharedSettings] migrate];
-  [[NetworkQueue shared] migrate];
+  [MigrationManager migrate];
 
   [NYPLKeychainManager validateKeychain];
   

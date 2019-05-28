@@ -28,13 +28,13 @@ static NSString *const NYPLUserAgreementURLString = @"http://www.librarysimplifi
 @property (atomic) BOOL userHasSeenFirstTimeSyncMessage;
 @property (atomic) NYPLCardApplicationModel *currentCardApplication;
 @property (atomic) NSArray* settingsAccountsList;
+@property (atomic) NSString *appVersion;
 
 // Leaving this set to |NYPLSettingsRenderingEngineAutomatic| (the default) is *highly* recommended.
 @property (atomic) NYPLSettingsRenderingEngine renderingEngine;
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
-- (void)migrate;
 
 + (NYPLSettings *)sharedSettings;
 
