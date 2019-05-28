@@ -41,10 +41,10 @@ struct OPDS2AuthenticationDocument: Codable {
       let password: String
     }
     
-    let inputs: Inputs
-    let labels: Labels
+    let inputs: Inputs?
+    let labels: Labels?
     let type: String
-    let description: String
+    let description: String?
   }
   
   let publicKey: PublicKey

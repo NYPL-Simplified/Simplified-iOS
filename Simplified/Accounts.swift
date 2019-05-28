@@ -135,8 +135,8 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   
   func loadCatalogs(preferringCache: Bool, completion: @escaping (Bool) -> ()) {
     let isBeta = NYPLConfiguration.releaseStageIsBeta() && !UserDefaults.standard.bool(forKey: "prod_only")
-    let betaUrl = URL(string: "http://libraryregistry.librarysimplified.org/libraries")!
-    let prodUrl = URL(string: "http://libraryregistry.librarysimplified.org/libraries")! // TODO: This needs to be replaced once there's a new endpoint
+    let betaUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries/qa")!
+    let prodUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries")!
     let url = isBeta ? betaUrl : prodUrl
     
     let wasAlreadyLoading = addLoadingCompletionHandler(completion)
@@ -234,12 +234,12 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
     
     // TODO: Should we preference different authentication schemes, rather than just getting the first?
     let auth = authenticationDocument.authentication.first
-    patronIDKeyboard = LoginKeyboard(auth?.inputs.login.keyboard) ?? .standard
-    pinKeyboard = LoginKeyboard(auth?.inputs.password.keyboard) ?? .standard
+    patronIDKeyboard = LoginKeyboard(auth?.inputs?.login.keyboard) ?? .standard
+    pinKeyboard = LoginKeyboard(auth?.inputs?.password.keyboard) ?? .standard
     // Default to 100; a value of 0 means "don't show this UI element at all", not "unlimited characters"
-    authPasscodeLength = auth?.inputs.password.maximumLength ?? 99
+    authPasscodeLength = auth?.inputs?.password.maximumLength ?? 99
     // In the future there could be more formats, but we only know how to support this one
-    supportsBarcodeScanner = auth?.inputs.login.barcodeFormat == "Codabar"
+    supportsBarcodeScanner = auth?.inputs?.login.barcodeFormat == "Codabar"
     supportsBarcodeDisplay = supportsBarcodeScanner
     
     let registerUrl = authenticationDocument.links.first(where: { $0.rel == "register" })?.href
