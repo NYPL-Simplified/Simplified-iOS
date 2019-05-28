@@ -53,9 +53,6 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   }
   
   var loadingCompletionHandlers = [(Bool) -> ()]()
-  var accountsAreLoading: Bool {
-    return !loadingCompletionHandlers.isEmpty
-  }
   
   var currentAccount: Account? {
     get {
