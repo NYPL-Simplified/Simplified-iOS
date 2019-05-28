@@ -13,8 +13,6 @@ import Foundation
     
     if paths.count != 1 { return nil }
     
-    if (account == AccountsManager.NYPLAccountUUIDs[0]) { performNYPLDirectoryMigration() }
-    
     var directoryURL = URL.init(fileURLWithPath: paths[0]).appendingPathComponent(Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String)
     
     if (account != AccountsManager.NYPLAccountUUIDs[0]) {
@@ -22,9 +20,4 @@ import Foundation
     }
     return directoryURL
   }
-  
-  fileprivate class func performNYPLDirectoryMigration() -> Void {
-    
-  }
-  
 }
