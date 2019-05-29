@@ -56,10 +56,6 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   
   var currentAccount: Account? {
     get {
-      if account(defaults.string(forKey: currentAccountIdentifierKey) ?? "") == nil
-      {
-        defaults.set(AccountsManager.NYPLAccountUUIDs[0], forKey: currentAccountIdentifierKey)
-      }
       return account(defaults.string(forKey: currentAccountIdentifierKey) ?? "")
     }
     set {
@@ -172,8 +168,15 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
 
 // Extra data that gets loaded from an OPDS2AuthenticationDocument,
 @objcMembers final class AccountDetails: NSObject {
+  enum AuthType: String {
+    case basic = "http://opds-spec.org/auth/basic"
+    case coppa = "http://librarysimplified.org/terms/authentication/gate/coppa"
+    case anonymous = "http://librarysimplified.org/rel/auth/anonymous"
+    case none
+  }
+  
   let defaults:UserDefaults
-  let needsAuth:Bool
+  let authType:AuthType
   let uuid:String
   let authPasscodeLength:UInt
   let patronIDKeyboard:LoginKeyboard
@@ -186,6 +189,13 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   let mainColor:String?
   let userProfileUrl:String?
   let cardCreatorUrl:String?
+  
+  var needsAuth:Bool {
+    return authType == .basic
+  }
+  var needsAgeCheck:Bool {
+    return authType == .coppa
+  }
   
   fileprivate var urlAnnotations:URL?
   fileprivate var urlAcknowledgements:URL?
@@ -223,17 +233,21 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   
   init(authenticationDocument: OPDS2AuthenticationDocument, uuid: String) {
     defaults = .standard
-    needsAuth = !authenticationDocument.authentication.isEmpty
     self.uuid = uuid
     
-    supportsReservations = authenticationDocument.features.disabled?.contains("https://librarysimplified.org/rel/policy/reservations") != true
-    userProfileUrl = authenticationDocument.links.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/user-profile" })?.href
+    supportsReservations = authenticationDocument.features?.disabled?.contains("https://librarysimplified.org/rel/policy/reservations") != true
+    userProfileUrl = authenticationDocument.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/user-profile" })?.href
     supportsSimplyESync = userProfileUrl != nil
     
     mainColor = authenticationDocument.colorScheme
     
     // TODO: Should we preference different authentication schemes, rather than just getting the first?
-    let auth = authenticationDocument.authentication.first
+    let auth = authenticationDocument.authentication?.first
+    if let auth = auth {
+      authType = AuthType(rawValue: auth.type) ?? .none
+    } else {
+      authType = .none
+    }
     patronIDKeyboard = LoginKeyboard(auth?.inputs?.login.keyboard) ?? .standard
     pinKeyboard = LoginKeyboard(auth?.inputs?.password.keyboard) ?? .standard
     // Default to 100; a value of 0 means "don't show this UI element at all", not "unlimited characters"
@@ -242,7 +256,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
     supportsBarcodeScanner = auth?.inputs?.login.barcodeFormat == "Codabar"
     supportsBarcodeDisplay = supportsBarcodeScanner
     
-    let registerUrl = authenticationDocument.links.first(where: { $0.rel == "register" })?.href
+    let registerUrl = authenticationDocument.links?.first(where: { $0.rel == "register" })?.href
     if let url = registerUrl, url.hasPrefix("nypl.card-creator:") == true {
       supportsCardCreator = true
       cardCreatorUrl = String(url.dropFirst("nypl.card-creator:".count))
@@ -253,22 +267,22 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
     
     super.init()
     
-    if let urlString = authenticationDocument.links.first(where: { $0.rel == "privacy-policy" })?.href,
+    if let urlString = authenticationDocument.links?.first(where: { $0.rel == "privacy-policy" })?.href,
       let url = URL(string: urlString) {
       setURL(url, forLicense: .privacyPolicy)
     }
     
-    if let urlString = authenticationDocument.links.first(where: { $0.rel == "terms-of-service" })?.href,
+    if let urlString = authenticationDocument.links?.first(where: { $0.rel == "terms-of-service" })?.href,
       let url = URL(string: urlString) {
       setURL(url, forLicense: .eula)
     }
     
-    if let urlString = authenticationDocument.links.first(where: { $0.rel == "license" })?.href,
+    if let urlString = authenticationDocument.links?.first(where: { $0.rel == "license" })?.href,
       let url = URL(string: urlString) {
       setURL(url, forLicense: .contentLicenses)
     }
     
-    if let urlString = authenticationDocument.links.first(where: { $0.rel == "copyright" })?.href,
+    if let urlString = authenticationDocument.links?.first(where: { $0.rel == "copyright" })?.href,
       let url = URL(string: urlString) {
       setURL(url, forLicense: .acknowledgements)
     }

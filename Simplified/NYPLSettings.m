@@ -105,7 +105,10 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   // If user has not selected any accounts yet, return the "currentAccount"
   if (!libraryAccounts) {
     NSString *currentLibrary = [AccountsManager shared].currentAccount.uuid;
-    [self setSettingsAccountsList:@[currentLibrary, [AccountsManager NYPLAccountUUIDs][2]]];
+    // Avoid crash in case currentLibrary isn't set yet
+    NSArray *accountsList = currentLibrary ? @[currentLibrary] : @[];
+    accountsList = [accountsList arrayByAddingObject:[AccountsManager NYPLAccountUUIDs][2]];
+    [self setSettingsAccountsList:accountsList];
     return [self settingsAccountsList];
   } else {
     return libraryAccounts;
