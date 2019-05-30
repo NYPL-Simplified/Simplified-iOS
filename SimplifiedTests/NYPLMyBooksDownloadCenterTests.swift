@@ -3,9 +3,11 @@ import XCTest
 @testable import SimplyE
 
 class NYPLMyBooksDownloadCenterTests: XCTestCase {
-  func testDeleteBook() {
+  func testDeleteLocalContent() {
     let fileManager = FileManager.default
     let emptyUrl = URL.init(fileURLWithPath: "")
+
+    // Setup dummy values for fake books per book type
     let configs = [
       [
         "identifier": "fakeEpub",
@@ -22,6 +24,7 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
       ]
     ]
     for config in configs {
+      // Create fake books and relevant structures required to invoke 
       let fakeAcquisition = NYPLOPDSAcquisition.init(
         relation: .generic,
         type: config["type"]!,
@@ -51,8 +54,14 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
         revokeURL: emptyUrl,
         report: emptyUrl
       )
+
+      // Calculate target filepath to use as "book location"
       let bookUrl = NYPLMyBooksDownloadCenter.shared()?.fileURL(forBookIndentifier: fakeBook?.identifier)
+
+      // Create dummy book file at path
       fileManager.createFile(atPath: bookUrl!.path, contents: "Hello world!".data(using: .utf8), attributes: [FileAttributeKey : Any]())
+
+      // Register fake book with registry
       NYPLBookRegistry.shared()?.add(
         fakeBook,
         location: NYPLBookLocation.init(locationString: bookUrl?.path, renderer: ""),
@@ -61,6 +70,8 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
         readiumBookmarks: [NYPLReadiumBookmark](),
         genericBookmarks: [NYPLBookLocation]()
       )
+
+      // Perform file deletion test
       XCTAssert(fileManager.fileExists(atPath: bookUrl!.path))
       NYPLMyBooksDownloadCenter.shared()?.deleteLocalContent(forBookIdentifier: fakeBook?.identifier)
       XCTAssert(!fileManager.fileExists(atPath: bookUrl!.path))
