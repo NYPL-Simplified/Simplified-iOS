@@ -187,6 +187,9 @@ static NSString *const RecordsKey = @"records";
 
 - (void)save
 {
+  if ([AccountsManager.sharedInstance currentAccount] == nil) {
+    return;
+  }
   @synchronized(self) {
     NSError *error = nil;
     if(![[NSFileManager defaultManager]

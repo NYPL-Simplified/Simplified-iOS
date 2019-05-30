@@ -263,8 +263,10 @@ double const requestTimeoutInterval = 25.0;
 - (void)setupTableData
 {
   NSMutableArray *section0;
-  if (!self.selectedAccount.details.needsAuth) {
+  if (self.selectedAccount.details.needsAgeCheck) {
     section0 = @[@(CellKindAgeCheck)].mutableCopy;
+  } else if (!self.selectedAccount.details.needsAuth) {
+    section0 = [NSMutableArray new];
   } else if (self.selectedAccount.details.pinKeyboard != LoginKeyboardNone) {
     section0 = @[@(CellKindBarcode),
                  @(CellKindPIN),

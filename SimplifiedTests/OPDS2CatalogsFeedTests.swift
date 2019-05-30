@@ -45,6 +45,31 @@ class OPDS2CatalogsFeedTests: XCTestCase {
     }
   }
   
+  // This test will take a while, and shouldn't normally be run because it relies on the network
+  func disabledTestLoadAllAuthenticationDocuments() {
+    var errors: [String] = []
+    do {
+      let data = try Data(contentsOf: testFeedUrl)
+      let feed = try OPDS2CatalogsFeed.fromData(data)
+      
+      XCTAssertEqual(feed.catalogs.count, 171)
+      XCTAssertEqual(feed.links.count, 4)
+      
+      for publication in feed.catalogs {
+        do {
+          let authDocumentUrl = publication.links.first(where: { $0.type == "application/vnd.opds.authentication.v1.0+json" })!.href
+          let authData = try Data(contentsOf: URL(string: authDocumentUrl)!)
+          let _ = try OPDS2AuthenticationDocument.fromData(authData)
+        } catch (let error) {
+          errors.append("\(publication.metadata.title): \(error)")
+        }
+      }
+    } catch (let error) {
+      XCTAssert(false, error.localizedDescription)
+    }
+    XCTAssertEqual(errors, [])
+  }
+  
   func testInitAccountsWithPublication() {
     do {
       let data = try Data(contentsOf: testFeedUrl)
