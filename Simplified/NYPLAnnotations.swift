@@ -66,13 +66,13 @@ import UIKit
   class func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->()) {
     if (NYPLAccount.shared().hasBarcodeAndPIN() &&
       AccountsManager.shared.currentAccount?.details?.supportsSimplyESync == true) {
-      guard let patronAnnotationSettingUrl = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("patrons/me/") else {
-        Log.error(#file, "Could not create Annotations URL from Main Feed URL. Abandoning attempt to update sync setting.")
+      guard let userProfileUrl = URL(string: AccountsManager.shared.currentAccount?.details?.userProfileUrl ?? "") else {
+        Log.error(#file, "Could not create user profile URL from string. Abandoning attempt to update sync setting.")
         completion(false)
         return
       }
       let parameters = ["settings": ["simplified:synchronize_annotations": enabled]] as [String : Any]
-      syncSettingUrlRequest(patronAnnotationSettingUrl, parameters, 20, { success in
+      syncSettingUrlRequest(userProfileUrl, parameters, 20, { success in
         if !success {
           handleSyncSettingError()
         }
@@ -83,12 +83,12 @@ import UIKit
 
   private class func permissionUrlRequest(completionHandler: @escaping (_ initialized: Bool, _ syncIsPermitted: Bool) -> ()) {
 
-    guard let annotationSettingsUrl = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("patrons/me/") else {
-      Log.error(#file, "Failed to create Annotations URL. Abandoning attempt to retrieve sync setting.")
+    guard let userProfileUrl = URL(string: AccountsManager.shared.currentAccount?.details?.userProfileUrl ?? "") else {
+      Log.error(#file, "Failed to create user profile URL from string. Abandoning attempt to retrieve sync setting.")
       return
     }
 
-    var request = URLRequest.init(url: annotationSettingsUrl,
+    var request = URLRequest.init(url: userProfileUrl,
                                   cachePolicy: .reloadIgnoringLocalCacheData,
                                   timeoutInterval: 60)
     request.httpMethod = "GET"
