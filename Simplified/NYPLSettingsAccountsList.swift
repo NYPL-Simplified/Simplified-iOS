@@ -95,6 +95,7 @@
     AccountsManager.shared.loadCatalogs(preferringCache: false) { (success) in
       guard success else {
         let alert = NYPLAlertController.alert(withTitle:nil, singleMessage:NSLocalizedString("CheckConnection", comment: ""))
+        alert?.addAction(UIAlertAction.init(title: NSLocalizedString("OK", comment: ""), style: .cancel))
         alert?.present(fromViewControllerOrNil:self, animated:true, completion:nil)
         return
       }
