@@ -97,7 +97,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   }
   
   func libraryListCacheUrl(beta: Bool) -> URL {
-    let applicationSupportUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+    let applicationSupportUrl = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
     let url = applicationSupportUrl.appendingPathComponent("library_list_\(beta ? "beta" : "prod").json")
     return url
   }
@@ -392,7 +392,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   }
   
   var authenticationDocumentCacheUrl: URL {
-    let applicationSupportUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+    let applicationSupportUrl = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
     let nonColonUuid = uuid.replacingOccurrences(of: ":", with: "_")
     return applicationSupportUrl.appendingPathComponent("authentication_document_\(nonColonUuid).json")
   }
