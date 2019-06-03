@@ -114,10 +114,23 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
             Log.error(#file, "Failed to load authentication document for current account; a bunch of things likely won't work")
           }
           DispatchQueue.main.async {
-            NYPLSettings.shared()?.accountMainFeedURL = URL(string: self.currentAccount?.catalogUrl ?? "")
-            UIApplication.shared.delegate?.window??.tintColor = NYPLConfiguration.mainColor()
-            NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
-            completion(true)
+            var mainFeed = URL(string: self.currentAccount?.catalogUrl ?? "")
+            let resolveFn = {
+              NYPLSettings.shared()?.accountMainFeedURL = mainFeed
+              UIApplication.shared.delegate?.window??.tintColor = NYPLConfiguration.mainColor()
+              NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
+              completion(true)
+            }
+            if self.currentAccount?.details?.needsAgeCheck ?? false {
+              AgeCheck.shared().verifyCurrentAccountAgeRequirement { meetsAgeRequirement in
+                DispatchQueue.main.async {
+                  mainFeed = meetsAgeRequirement ? self.currentAccount?.details?.coppaOverUrl : self.currentAccount?.details?.coppaUnderUrl
+                  resolveFn()
+                }
+              }
+            } else {
+              resolveFn()
+            }
           }
         })
       } else {
@@ -189,6 +202,8 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   let mainColor:String?
   let userProfileUrl:String?
   let cardCreatorUrl:String?
+  let coppaUnderUrl:URL?
+  let coppaOverUrl:URL?
   
   var needsAuth:Bool {
     return authType == .basic
@@ -255,6 +270,8 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
     // In the future there could be more formats, but we only know how to support this one
     supportsBarcodeScanner = auth?.inputs?.login.barcodeFormat == "Codabar"
     supportsBarcodeDisplay = supportsBarcodeScanner
+    coppaUnderUrl = URL.init(string: auth?.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-not-met" })?.href ?? "")
+    coppaOverUrl = URL.init(string: auth?.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-met" })?.href ?? "")
     
     let registerUrl = authenticationDocument.links?.first(where: { $0.rel == "register" })?.href
     if let url = registerUrl, url.hasPrefix("nypl.card-creator:") == true {

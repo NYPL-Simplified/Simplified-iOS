@@ -35,6 +35,7 @@ struct OPDS2AuthenticationDocument: Codable {
     let labels: Labels?
     let type: String
     let description: String?
+    let links: [OPDS2Link]?
   }
   
   let features: Features?
