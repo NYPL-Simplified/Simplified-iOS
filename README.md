@@ -6,7 +6,7 @@
 02. `cd Simplified-iOS`
 03. `git submodule update --init --recursive`
 04. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
-05. `carthage bootstrap --platform ios --use-ssh`. Note: If `carthage bootstrap` fails, you may need to create an installer package from our fork: https://github.com/NYPL-Simplified/Carthage.
+05. `carthage bootstrap --platform ios --use-ssh`. Note: If `carthage bootstrap` fails, you may need to create an installer package from our fork: https://github.com/NYPL-Simplified/Carthage. Specifically, there is a branch `dwarfdump-fix` which resolves https://github.com/Carthage/Carthage/issues/2514
 06. Symlink the unzipped "DRM_Connector_Prerelease" directory to "adobe-rmsdk" within the "Simplified-iOS" directory. (You will need to have obtained this binary from Adobe.)
 07. Build OpenSSL and cURL as described in the following "Building OpenSSL and cURL" section. Ensure you're in the "Simplified-iOS" directory before continuing to the next step.
 08. `sh adobe-rmsdk-build.sh`

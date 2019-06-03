@@ -444,6 +444,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
            error:&error]){
         NYPLLOG_F(@"Failed to remove local content for download: %@", error.localizedDescription);
       }
+      break;
     }
     case NYPLBookContentTypeAudiobook: {
       NSData *const data = [NSData dataWithContentsOfURL:
@@ -454,6 +455,15 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       id const json = NYPLJSONObjectFromData([NSData dataWithContentsOfURL:
                                               [self fileURLForBookIndentifier:book.identifier account:account]]);
       [[AudiobookFactory audiobook:json] deleteLocalContent];
+      break;
+    }
+    case NYPLBookContentTypePDF: {
+      NSError *error = nil;
+      if (![[NSFileManager defaultManager]
+          removeItemAtURL:[self fileURLForBookIndentifier:identifier account:account]
+          error:&error]) {
+        NYPLLOG_F(@"Failed to remove local content for download: %@", error.localizedDescription);
+      }
       break;
     }
     case NYPLBookContentTypeUnsupported:
