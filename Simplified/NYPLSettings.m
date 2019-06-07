@@ -5,6 +5,13 @@
 #import "NYPLConfiguration.h"
 #import "SimplyE-Swift.h"
 
+const NSInteger Version = 1;
+
+NSString *const NYPLSettingsDidChangeNotification = @"NYPLSettingsDidChangeNotification";
+NSString *const NYPLCurrentAccountDidChangeNotification = @"NYPLCurrentAccountDidChangeNotification";
+NSString *const NYPLSyncBeganNotification = @"NYPLSyncBeganNotification";
+NSString *const NYPLSyncEndedNotification = @"NYPLSyncEndedNotification";
+
 static NSString *const customMainFeedURLKey = @"NYPLSettingsCustomMainFeedURL";
 
 static NSString *const accountMainFeedURLKey = @"NYPLSettingsAccountMainFeedURL";
@@ -23,9 +30,7 @@ static NSString *const currentCardApplicationSerializationKey = @"NYPLSettingsCu
 
 static NSString *const settingsLibraryAccountsKey = @"NYPLSettingsLibraryAccountsKey";
 
-static NSString *const settingsOfflineQueueKey = @"NYPLSettingsOfflineQueueKey";
-
-static NSString *const settingsAnnotationsOfflineQueueKey = @"NYPLSettingsAnnotationsOfflineQueueKey";
+static NSString *const versionKey = @"NYPLSettingsVersionKey";
 
 
 static NYPLSettingsRenderingEngine RenderingEngineFromString(NSString *const string)
@@ -99,12 +104,20 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   NSArray *libraryAccounts = [[NSUserDefaults standardUserDefaults] arrayForKey:settingsLibraryAccountsKey];
   // If user has not selected any accounts yet, return the "currentAccount"
   if (!libraryAccounts) {
-    NSInteger currentLibrary = [AccountsManager shared].currentAccount.id;
-    [self setSettingsAccountsList:@[@(currentLibrary), @2]];
+    NSString *currentLibrary = [AccountsManager shared].currentAccount.uuid;
+    // Avoid crash in case currentLibrary isn't set yet
+    NSArray *accountsList = currentLibrary ? @[currentLibrary] : @[];
+    accountsList = [accountsList arrayByAddingObject:[AccountsManager NYPLAccountUUIDs][2]];
+    [self setSettingsAccountsList:accountsList];
     return [self settingsAccountsList];
   } else {
     return libraryAccounts;
   }
+}
+
+- (NSString *) appVersion
+{
+  return [[NSUserDefaults standardUserDefaults] stringForKey:versionKey];
 }
 
 - (NYPLCardApplicationModel *)currentCardApplication
@@ -182,6 +195,12 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (void)setAppVersion:(NSString *)version
+{
+  [[NSUserDefaults standardUserDefaults] setObject:version forKey:versionKey];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (NYPLSettingsRenderingEngine)renderingEngine
 {
   return RenderingEngineFromString([[NSUserDefaults standardUserDefaults]
@@ -190,7 +209,7 @@ static NSString *StringFromRenderingEngine(NYPLSettingsRenderingEngine const ren
 
 - (void)setRenderingEngine:(NYPLSettingsRenderingEngine const)renderingEngine
 {
-  if(renderingEngine == self.renderingEngine) return;
+  if (renderingEngine == self.renderingEngine) return;
   
   [[NSUserDefaults standardUserDefaults] setObject:StringFromRenderingEngine(renderingEngine)
                                             forKey:renderingEngineKey];

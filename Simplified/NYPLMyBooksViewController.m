@@ -367,7 +367,7 @@ OK:
 - (void)didSelectSync
 {
   Account *const account = [AccountsManager shared].currentAccount;
-  if (account.needsAuth) {
+  if (account.details.needsAuth) {
     if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
       [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
     } else {

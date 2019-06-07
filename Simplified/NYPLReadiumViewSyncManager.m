@@ -219,7 +219,7 @@ const double RequestTimeInterval = 120;
             forBook:(NSString *)bookID
 {
   Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-  if (currentAccount.syncPermissionGranted) {
+  if (currentAccount.details.syncPermissionGranted) {
     [NYPLAnnotations postBookmarkForBook:bookID toURL:nil bookmark:bookmark
                        completionHandler:^(NSString * _Nullable serverAnnotationID) {
                          if (serverAnnotationID) {

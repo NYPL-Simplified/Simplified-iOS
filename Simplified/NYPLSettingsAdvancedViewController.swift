@@ -5,7 +5,7 @@ import UIKit
   
   var account: Account
 
-  init(account id: Int) {
+  init(account id: String) {
     self.account = AccountsManager.shared.account(id)!
     super.init(nibName: nil, bundle: nil)
   }
@@ -68,7 +68,7 @@ import UIKit
     NYPLAnnotations.updateServerSyncSetting(toEnabled: false, completion: { success in
       self.dismiss(animated: true, completion: nil)
       if (success) {
-        self.account.syncPermissionGranted = false;
+        self.account.details?.syncPermissionGranted = false;
         NYPLSettings.shared().userHasSeenFirstTimeSyncMessage = false;
         self.navigationController?.popViewController(animated: true)
       }

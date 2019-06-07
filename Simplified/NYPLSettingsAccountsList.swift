@@ -3,16 +3,16 @@
 @objcMembers class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
   weak var tableView: UITableView!
-  fileprivate var accounts: [Int] {
+  fileprivate var accounts: [String] {
     didSet {
       //update NYPLSettings
     }
   }
   fileprivate var libraryAccounts: [Account]
-  fileprivate var userAddedSecondaryAccounts: [Int]!
+  fileprivate var userAddedSecondaryAccounts: [String]!
   fileprivate let manager: AccountsManager
   
-  required init(accounts: [Int]) {
+  required init(accounts: [String]) {
     self.accounts = accounts
     self.manager = AccountsManager.shared
     self.libraryAccounts = manager.accounts
@@ -33,13 +33,13 @@
   
   override func loadView() {
     self.view = UITableView(frame: CGRect.zero, style: .grouped)
-    self.tableView = self.view as! UITableView
+    self.tableView = self.view as? UITableView
     self.tableView.delegate = self
     self.tableView.dataSource = self
     
     
     // cleanup accounts, remove demo account or accounts not supported through accounts.json // will be refactored when implementing librsry registry
-    var accountsToRemove = [Int]()
+    var accountsToRemove = [String]()
     
     for account in accounts
     {
@@ -57,7 +57,7 @@
 
     }
     
-    self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount.id }
+    self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount?.uuid }
     
     updateSettingsAccountList()
 
@@ -69,13 +69,13 @@
     
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(reloadAfterAccountChange),
-                                           name: NSNotification.Name(rawValue: NYPLCurrentAccountDidChangeNotification),
+                                           name: NSNotification.Name.NYPLCurrentAccountDidChange,
                                            object: nil)
   }
   
   func reloadAfterAccountChange() {
-    accounts = NYPLSettings.shared().settingsAccountsList as! [Int]
-    self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount.id }
+    accounts = NYPLSettings.shared().settingsAccountsList as! [String]
+    self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount?.uuid }
     self.tableView.reloadData()
   }
   
@@ -92,6 +92,20 @@
   }
   
   func addAccount() {
+    AccountsManager.shared.loadCatalogs(preferringCache: false) { (success) in
+      guard success else {
+        let alert = NYPLAlertController.alert(withTitle:nil, singleMessage:NSLocalizedString("CheckConnection", comment: ""))
+        alert?.addAction(UIAlertAction.init(title: NSLocalizedString("OK", comment: ""), style: .cancel))
+        alert?.present(fromViewControllerOrNil:self, animated:true, completion:nil)
+        return
+      }
+      DispatchQueue.main.async {
+        self.showAddAccountList()
+      }
+    }
+  }
+  
+  func showAddAccountList() {
     let alert = UIAlertController(title: NSLocalizedString(
       "SettingsAccountLibrariesViewControllerAlertTitle",
       comment: "Title to tell a user that they can add another account to the list"),
@@ -103,10 +117,12 @@
     let sortedLibraryAccounts = self.libraryAccounts.sorted { (a, b) in
       // Check if we're one of the three "special" libraries that always come first.
       // This is a complete hack.
-      if a.id <= 2 || b.id <= 2 {
+      let idA = AccountsManager.NYPLAccountUUIDs.firstIndex(of: a.uuid) ?? Int.max
+      let idB = AccountsManager.NYPLAccountUUIDs.firstIndex(of: b.uuid) ?? Int.max
+      if idA <= 2 || idB <= 2 {
         // One of the libraries is special, so sort it first. Lower ids are "more
         // special" than higher ids and thus show up earlier.
-        return a.id < b.id
+        return idA < idB
       } else {
         // Neither library is special so we just go alphabetically.
         return a.name.localizedCaseInsensitiveCompare(b.name) == .orderedAscending
@@ -114,11 +130,11 @@
     }
 
     for userAccount in sortedLibraryAccounts {
-      if (!userAddedSecondaryAccounts.contains(userAccount.id) && userAccount.id != manager.currentAccount.id) {
+      if (!userAddedSecondaryAccounts.contains(userAccount.uuid) && userAccount.uuid != manager.currentAccount?.uuid) {
         alert.addAction(UIAlertAction(title: userAccount.name,
           style: .default,
           handler: { action in
-            self.userAddedSecondaryAccounts.append(userAccount.id)
+            self.userAddedSecondaryAccounts.append(userAccount.uuid)
             self.updateSettingsAccountList()
             self.updateUI()
             self.tableView.reloadData()
@@ -132,8 +148,11 @@
   }
   
   func updateSettingsAccountList() {
+    guard let uuid = manager.currentAccount?.uuid else {
+      return
+    }
     var array = userAddedSecondaryAccounts!
-    array.append(manager.currentAccount.id)
+    array.append(uuid)
     NYPLSettings.shared().settingsAccountsList = array
   }
   
@@ -141,7 +160,7 @@
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
-      return 1
+      return self.manager.currentAccount != nil ? 1 : 0
     } else {
       return userAddedSecondaryAccounts.count
     }
@@ -153,7 +172,11 @@
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if (indexPath.section == 0) {
-      return cellForLibrary(self.manager.currentAccount, indexPath)
+      guard let account = self.manager.currentAccount else {
+        // Should never happen, but better than crashing
+        return UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "cell")
+      }
+      return cellForLibrary(account, indexPath)
     } else {
       return cellForLibrary(AccountsManager.shared.account(userAddedSecondaryAccounts[indexPath.row])!, indexPath)
     }
@@ -214,9 +237,9 @@
   // MARK: UITableViewDelegate
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    var account: Int
+    var account: String
     if (indexPath.section == 0) {
-      account = self.manager.currentAccount.id
+      account = self.manager.currentAccount?.uuid ?? ""
     } else {
       account = userAddedSecondaryAccounts[indexPath.row]
     }

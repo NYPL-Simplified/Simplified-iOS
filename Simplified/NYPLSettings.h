@@ -1,7 +1,9 @@
-static NSString *const NYPLSettingsDidChangeNotification = @"NYPLSettingsDidChangeNotification";
-static NSString *const NYPLCurrentAccountDidChangeNotification = @"NYPLCurrentAccountDidChangeNotification";
-static NSString *const NYPLSyncBeganNotification = @"NYPLSyncBeganNotification";
-static NSString *const NYPLSyncEndedNotification = @"NYPLSyncEndedNotification";
+extern const NSInteger Version;
+
+extern NSString *const NYPLSettingsDidChangeNotification;
+extern NSString *const NYPLCurrentAccountDidChangeNotification;
+extern NSString *const NYPLSyncBeganNotification;
+extern NSString *const NYPLSyncEndedNotification;
 
 static NSString *const userHasSeenWelcomeScreenKey = @"NYPLUserHasSeenWelcomeScreenKey";
 
@@ -26,6 +28,7 @@ static NSString *const NYPLUserAgreementURLString = @"http://www.librarysimplifi
 @property (atomic) BOOL userHasSeenFirstTimeSyncMessage;
 @property (atomic) NYPLCardApplicationModel *currentCardApplication;
 @property (atomic) NSArray* settingsAccountsList;
+@property (atomic) NSString *appVersion;
 
 // Leaving this set to |NYPLSettingsRenderingEngineAutomatic| (the default) is *highly* recommended.
 @property (atomic) NYPLSettingsRenderingEngine renderingEngine;

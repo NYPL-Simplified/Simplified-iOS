@@ -425,10 +425,10 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)deleteLocalContentForBookIdentifier:(NSString *const)identifier
 {
-  [self deleteLocalContentForBookIdentifier:identifier account:[AccountsManager sharedInstance].currentAccount.id];
+  [self deleteLocalContentForBookIdentifier:identifier account:[AccountsManager sharedInstance].currentAccount.uuid];
 }
 
-- (void)deleteLocalContentForBookIdentifier:(NSString *const)identifier account:(NSInteger const)account
+- (void)deleteLocalContentForBookIdentifier:(NSString *const)identifier account:(NSString * const)account
 {
   NYPLBook *const book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
   if (!book) {
@@ -484,7 +484,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   // Process Adobe Return
 #if defined(FEATURE_DRM_CONNECTOR)
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
-  if (fulfillmentId && [[AccountsManager sharedInstance] currentAccount].needsAuth) {
+  if (fulfillmentId && [[AccountsManager sharedInstance] currentAccount].details.needsAuth) {
     NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
     [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
                                     userID:[[NYPLAccount sharedAccount] userID]
@@ -550,10 +550,10 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (NSURL *)contentDirectoryURL
 {
-  return [self contentDirectoryURL:[AccountsManager sharedInstance].currentAccount.id];
+  return [self contentDirectoryURL:[AccountsManager sharedInstance].currentAccount.uuid];
 }
 
-- (NSURL *)contentDirectoryURL:(NSInteger)account
+- (NSURL *)contentDirectoryURL:(NSString *)account
 {
   NSURL *directoryURL = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"content"];
   
@@ -571,10 +571,10 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier
 {
-  return [self fileURLForBookIndentifier:identifier account:[AccountsManager sharedInstance].currentAccount.id];
+  return [self fileURLForBookIndentifier:identifier account:[AccountsManager sharedInstance].currentAccount.uuid];
 }
   
-- (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier account:(NSInteger const)account
+- (NSURL *)fileURLForBookIndentifier:(NSString *const)identifier account:(NSString * const)account
 {
   if(!identifier) return nil;
   
@@ -696,7 +696,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   
   switch(state) {
     case NYPLBookStateUnregistered:
-      if(!book.defaultAcquisitionIfBorrow && (book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].needsAuth)) {
+      if(!book.defaultAcquisitionIfBorrow && (book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].details.needsAuth)) {
         [[NYPLBookRegistry sharedRegistry]
          addBook:book
          location:nil
@@ -836,7 +836,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    show];
 }
 
-- (void)deleteAudiobooksForAccount:(NSInteger const)account
+- (void)deleteAudiobooksForAccount:(NSString * const)account
 {
   [[NYPLBookRegistry sharedRegistry]
    performUsingAccount:account
@@ -852,9 +852,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    }];
 }
 
-- (void)reset:(NSInteger)account
+- (void)reset:(NSString *)account
 {
-  if ([AccountsManager shared].currentAccount.id == account)
+  if ([[AccountsManager shared].currentAccount.uuid isEqualToString:account])
   {
     [self reset];
   }
@@ -870,7 +870,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
 - (void)reset
 {
-  [self deleteAudiobooksForAccount:[AccountsManager sharedInstance].currentAccount.id];
+  [self deleteAudiobooksForAccount:[AccountsManager sharedInstance].currentAccount.uuid];
   
   for(NYPLMyBooksDownloadInfo *const info in [self.bookIdentifierToDownloadInfo allValues]) {
     [info.downloadTask cancelByProducingResumeData:^(__unused NSData *resumeData) {}];

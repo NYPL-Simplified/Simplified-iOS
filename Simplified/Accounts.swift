@@ -5,12 +5,39 @@ let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
 let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
 let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
+func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completion: @escaping (Data?) -> ()) {
+  let modified = (try? FileManager.default.attributesOfItem(atPath: cacheUrl.path)[.modificationDate]) as? Date
+  if let modified = modified, let expiry = Calendar.current.date(byAdding: .day, value: 1, to: modified), expiry > Date() || preferringCache {
+    if let data = try? Data(contentsOf: cacheUrl) {
+      completion(data)
+      return
+    }
+  }
+  
+  // Load data from the internet if either the cache wasn't recent enough (or preferred), or somehow failed to load
+  let request = URLRequest.init(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 60)
+  
+  let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
+    guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+      completion(nil)
+      return
+    }
+    try? data.write(to: cacheUrl)
+    completion(data)
+  }
+  dataTask.resume()
+}
 
 /// Manage the library accounts for the app.
 /// Initialized with JSON.
 @objcMembers final class AccountsManager: NSObject
 {
   static let shared = AccountsManager()
+  static let NYPLAccountUUIDs = [
+    "urn:uuid:065c0c11-0d0f-42a3-82e4-277b18786949",
+    "urn:uuid:edef2358-9f6a-4ce6-b64f-9b351ec68ac4",
+    "urn:uuid:56906f26-2c9a-4ae9-bd02-552557720b99"
+  ]
   
   // For Objective-C classes
   class func sharedInstance() -> AccountsManager
@@ -20,67 +47,150 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   
   let defaults: UserDefaults
   var accounts = [Account]()
-  var currentAccount: Account {
+  
+  var accountsHaveLoaded: Bool {
+    return !accounts.isEmpty
+  }
+  
+  var loadingCompletionHandlers = [(Bool) -> ()]()
+  
+  var currentAccount: Account? {
     get {
-      if account(defaults.integer(forKey: currentAccountIdentifierKey)) == nil
-      {
-        defaults.set(0, forKey: currentAccountIdentifierKey)
-      }
-      return account(defaults.integer(forKey: currentAccountIdentifierKey))!
+      return account(defaults.string(forKey: currentAccountIdentifierKey) ?? "")
     }
     set {
-      defaults.set(newValue.id, forKey: currentAccountIdentifierKey)
-      NotificationCenter.default.post(name: NSNotification.Name(rawValue: NYPLCurrentAccountDidChangeNotification), object: nil)
+      defaults.set(newValue?.uuid, forKey: currentAccountIdentifierKey)
+      NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
     }
   }
 
   fileprivate override init()
   {
     self.defaults = UserDefaults.standard
-    let url = Bundle.main.url(forResource: "Accounts", withExtension: "json")
-    let data = try? Data(contentsOf: url!)
-    do {
-      let object = try JSONSerialization.jsonObject(with: data!, options: .allowFragments)
-      if let array = object as? [[String: AnyObject]]
-      {
-        for jsonDict in array
-        {
-          let account = Account(json: jsonDict)
-          if (account.inProduction ||
-            (NYPLConfiguration.releaseStageIsBeta() && !UserDefaults.standard.bool(forKey: "prod_only"))) {
-            self.accounts.append(account)
-          }
-        }
-      }
-    } catch {
-      Log.error(#file, "Accounts.json was invalid. Error: \(error.localizedDescription)")
+    
+    super.init()
+    
+    loadCatalogs(preferringCache: true, completion: {_ in })
+  }
+  
+  let completionHandlerAccessQueue = DispatchQueue(label: "libraryListCompletionHandlerAccessQueue")
+  
+  // Returns whether loading was happening already
+  func addLoadingCompletionHandler(_ handler: @escaping (Bool) -> ()) -> Bool {
+    var wasEmpty = false
+    completionHandlerAccessQueue.sync {
+      wasEmpty = loadingCompletionHandlers.isEmpty
+      loadingCompletionHandlers.append(handler)
+    }
+    return !wasEmpty
+  }
+  
+  func callAndClearLoadingCompletionHandlers(_ success: Bool) {
+    var handlers = [(Bool) -> ()]()
+    completionHandlerAccessQueue.sync {
+      handlers = loadingCompletionHandlers
+      loadingCompletionHandlers.removeAll()
+    }
+    for handler in handlers {
+      handler(success)
     }
   }
   
-  func account(_ id:Int) -> Account?
-  {
-    return self.accounts.filter{ $0.id == id }.first
+  func libraryListCacheUrl(beta: Bool) -> URL {
+    let applicationSupportUrl = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+    let url = applicationSupportUrl.appendingPathComponent("library_list_\(beta ? "beta" : "prod").json")
+    return url
   }
   
-  func changeCurrentAccount(identifier id: Int)
+  // Take the library list data (either from cache or the internet), load it into self.accounts, and load the auth document for the current account if necessary
+  private func loadCatalogs(data: Data, preferringCache: Bool, completion: @escaping (Bool) -> ()) {
+    do {
+      let catalogsFeed = try OPDS2CatalogsFeed.fromData(data)
+      let hadAccount = self.currentAccount != nil
+      self.accounts = catalogsFeed.catalogs.map { Account(publication: $0) }
+      if hadAccount != (self.currentAccount != nil) {
+        self.currentAccount?.loadAuthenticationDocument(preferringCache: preferringCache, completion: { (success) in
+          if !success {
+            Log.error(#file, "Failed to load authentication document for current account; a bunch of things likely won't work")
+          }
+          DispatchQueue.main.async {
+            var mainFeed = URL(string: self.currentAccount?.catalogUrl ?? "")
+            let resolveFn = {
+              NYPLSettings.shared()?.accountMainFeedURL = mainFeed
+              UIApplication.shared.delegate?.window??.tintColor = NYPLConfiguration.mainColor()
+              NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
+              completion(true)
+            }
+            if self.currentAccount?.details?.needsAgeCheck ?? false {
+              AgeCheck.shared().verifyCurrentAccountAgeRequirement { meetsAgeRequirement in
+                DispatchQueue.main.async {
+                  mainFeed = meetsAgeRequirement ? self.currentAccount?.details?.coppaOverUrl : self.currentAccount?.details?.coppaUnderUrl
+                  resolveFn()
+                }
+              }
+            } else {
+              resolveFn()
+            }
+          }
+        })
+      } else {
+        completion(true)
+      }
+    } catch (let error) {
+      Log.error(#file, "Couldn't load catalogs. Error: \(error.localizedDescription)")
+      completion(false)
+    }
+  }
+  
+  func loadCatalogs(preferringCache: Bool, completion: @escaping (Bool) -> ()) {
+    let isBeta = NYPLConfiguration.releaseStageIsBeta() && !UserDefaults.standard.bool(forKey: "prod_only")
+    let betaUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries/qa")!
+    let prodUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries")!
+    let url = isBeta ? betaUrl : prodUrl
+    
+    let wasAlreadyLoading = addLoadingCompletionHandler(completion)
+    if wasAlreadyLoading {
+      return
+    }
+    
+    let cacheUrl = libraryListCacheUrl(beta: isBeta)
+    
+    loadDataWithCache(url: url, cacheUrl: cacheUrl, preferringCache: preferringCache) { (data) in
+      if let data = data {
+        self.loadCatalogs(data: data, preferringCache: preferringCache) { (success) in
+          self.callAndClearLoadingCompletionHandlers(success)
+        }
+      } else {
+        self.callAndClearLoadingCompletionHandlers(false)
+      }
+    }
+  }
+  
+  func account(_ uuid:String) -> Account?
   {
-    if let account = account(id) {
+    return self.accounts.filter{ $0.uuid == uuid }.first
+  }
+  
+  func changeCurrentAccount(identifier uuid: String)
+  {
+    if let account = account(uuid) {
       self.currentAccount = account
     }
   }
 }
 
-/// Object representing one library account in the app. Patrons may
-/// choose to sign up for multiple Accounts.
-@objcMembers final class Account:NSObject
-{
-  let defaults: UserDefaults
-  let logo: UIImage
-  let id:Int
-  let pathComponent:String
-  let name:String
-  let subtitle:String?
-  let needsAuth:Bool
+// Extra data that gets loaded from an OPDS2AuthenticationDocument,
+@objcMembers final class AccountDetails: NSObject {
+  enum AuthType: String {
+    case basic = "http://opds-spec.org/auth/basic"
+    case coppa = "http://librarysimplified.org/terms/authentication/gate/coppa"
+    case anonymous = "http://librarysimplified.org/rel/auth/anonymous"
+    case none
+  }
+  
+  let defaults:UserDefaults
+  let authType:AuthType
+  let uuid:String
   let authPasscodeLength:UInt
   let patronIDKeyboard:LoginKeyboard
   let pinKeyboard:LoginKeyboard
@@ -89,11 +199,18 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   let supportsBarcodeDisplay:Bool
   let supportsCardCreator:Bool
   let supportsReservations:Bool
-  let catalogUrl:String?
-  let cardCreatorUrl:String?
-  let supportEmail:String?
   let mainColor:String?
-  let inProduction:Bool
+  let userProfileUrl:String?
+  let cardCreatorUrl:String?
+  let coppaUnderUrl:URL?
+  let coppaOverUrl:URL?
+  
+  var needsAuth:Bool {
+    return authType == .basic
+  }
+  var needsAgeCheck:Bool {
+    return authType == .coppa
+  }
   
   fileprivate var urlAnnotations:URL?
   fileprivate var urlAcknowledgements:URL?
@@ -129,41 +246,62 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     }
   }
   
-  init(json: [String: AnyObject])
-  {
-    defaults = UserDefaults.standard
+  init(authenticationDocument: OPDS2AuthenticationDocument, uuid: String) {
+    defaults = .standard
+    self.uuid = uuid
     
-    name = json["name"] as! String
-    subtitle = json["subtitle"] as? String
-    id = json["id_numeric"] as! Int
-    pathComponent = "\(id)"
-    needsAuth = json["needsAuth"] as! Bool
-    supportsReservations = json["supportsReservations"] as! Bool
-    supportsSimplyESync = json["supportsSimplyESync"] as! Bool
-    supportsBarcodeScanner = json["supportsBarcodeScanner"] as! Bool
-    supportsBarcodeDisplay = json["supportsBarcodeDisplay"] as! Bool
-    supportsCardCreator = json["supportsCardCreator"] as! Bool
-    catalogUrl = json["catalogUrl"] as? String
-    cardCreatorUrl = json["cardCreatorUrl"] as? String
-    supportEmail = json["supportEmail"] as? String
-    mainColor = json["mainColor"] as? String
-    patronIDKeyboard = LoginKeyboard(json["loginKeyboard"] as? String) ?? .standard
-    pinKeyboard = LoginKeyboard(json["pinKeyboard"] as? String) ?? .standard
-    inProduction = json["inProduction"] as! Bool
-
-    let logoString = json["logo"] as? String
-    if let modString = logoString?.replacingOccurrences(of: "data:image/png;base64,", with: ""),
-      let logoData = Data.init(base64Encoded: modString),
-      let logoImage = UIImage(data: logoData) {
-      logo = logoImage
+    supportsReservations = authenticationDocument.features?.disabled?.contains("https://librarysimplified.org/rel/policy/reservations") != true
+    userProfileUrl = authenticationDocument.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/user-profile" })?.href
+    supportsSimplyESync = userProfileUrl != nil
+    
+    mainColor = authenticationDocument.colorScheme
+    
+    // TODO: Should we preference different authentication schemes, rather than just getting the first?
+    let auth = authenticationDocument.authentication?.first
+    if let auth = auth {
+      authType = AuthType(rawValue: auth.type) ?? .none
     } else {
-      logo = UIImage.init(named: "LibraryLogoMagic")!
+      authType = .none
     }
-
-    if let length = json["authPasscodeLength"] as? UInt {
-      authPasscodeLength = length
+    patronIDKeyboard = LoginKeyboard(auth?.inputs?.login.keyboard) ?? .standard
+    pinKeyboard = LoginKeyboard(auth?.inputs?.password.keyboard) ?? .standard
+    // Default to 100; a value of 0 means "don't show this UI element at all", not "unlimited characters"
+    authPasscodeLength = auth?.inputs?.password.maximumLength ?? 99
+    // In the future there could be more formats, but we only know how to support this one
+    supportsBarcodeScanner = auth?.inputs?.login.barcodeFormat == "Codabar"
+    supportsBarcodeDisplay = supportsBarcodeScanner
+    coppaUnderUrl = URL.init(string: auth?.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-not-met" })?.href ?? "")
+    coppaOverUrl = URL.init(string: auth?.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-met" })?.href ?? "")
+    
+    let registerUrl = authenticationDocument.links?.first(where: { $0.rel == "register" })?.href
+    if let url = registerUrl, url.hasPrefix("nypl.card-creator:") == true {
+      supportsCardCreator = true
+      cardCreatorUrl = String(url.dropFirst("nypl.card-creator:".count))
     } else {
-      authPasscodeLength = 0
+      supportsCardCreator = false
+      cardCreatorUrl = registerUrl
+    }
+    
+    super.init()
+    
+    if let urlString = authenticationDocument.links?.first(where: { $0.rel == "privacy-policy" })?.href,
+      let url = URL(string: urlString) {
+      setURL(url, forLicense: .privacyPolicy)
+    }
+    
+    if let urlString = authenticationDocument.links?.first(where: { $0.rel == "terms-of-service" })?.href,
+      let url = URL(string: urlString) {
+      setURL(url, forLicense: .eula)
+    }
+    
+    if let urlString = authenticationDocument.links?.first(where: { $0.rel == "license" })?.href,
+      let url = URL(string: urlString) {
+      setURL(url, forLicense: .contentLicenses)
+    }
+    
+    if let urlString = authenticationDocument.links?.first(where: { $0.rel == "copyright" })?.href,
+      let url = URL(string: urlString) {
+      setURL(url, forLicense: .acknowledgements)
     }
   }
 
@@ -233,18 +371,92 @@ let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   }
   
   fileprivate func setAccountDictionaryKey(_ key: String, toValue value: AnyObject) {
-    if var savedDict = defaults.value(forKey: self.pathComponent) as? [String: AnyObject] {
+    if var savedDict = defaults.value(forKey: self.uuid) as? [String: AnyObject] {
       savedDict[key] = value
-      defaults.set(savedDict, forKey: self.pathComponent)
+      defaults.set(savedDict, forKey: self.uuid)
     } else {
-      defaults.set([key:value], forKey: self.pathComponent)
+      defaults.set([key:value], forKey: self.uuid)
     }
   }
   
   fileprivate func getAccountDictionaryKey(_ key: String) -> AnyObject? {
-    let savedDict = defaults.value(forKey: self.pathComponent) as? [String: AnyObject]
+    let savedDict = defaults.value(forKey: self.uuid) as? [String: AnyObject]
     guard let result = savedDict?[key] else { return nil }
     return result
+  }
+}
+
+/// Object representing one library account in the app. Patrons may
+/// choose to sign up for multiple Accounts.
+@objcMembers final class Account: NSObject
+{
+  let logo:UIImage
+  let uuid:String
+  let name:String
+  let subtitle:String?
+  let supportEmail:String?
+  let catalogUrl:String?
+  var details:AccountDetails?
+  
+  let authenticationDocumentUrl:String?
+  var authenticationDocument:OPDS2AuthenticationDocument? {
+    didSet {
+      guard let authenticationDocument = authenticationDocument else {
+        return
+      }
+      details = AccountDetails(authenticationDocument: authenticationDocument, uuid: uuid)
+    }
+  }
+  
+  var authenticationDocumentCacheUrl: URL {
+    let applicationSupportUrl = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+    let nonColonUuid = uuid.replacingOccurrences(of: ":", with: "_")
+    return applicationSupportUrl.appendingPathComponent("authentication_document_\(nonColonUuid).json")
+  }
+  
+  init(publication: OPDS2Publication) {
+    
+    name = publication.metadata.title
+    subtitle = publication.metadata.description
+    uuid = publication.metadata.id
+    
+    catalogUrl = publication.links.first(where: { $0.rel == "http://opds-spec.org/catalog" })?.href
+    supportEmail = publication.links.first(where: { $0.rel == "help" })?.href.replacingOccurrences(of: "mailto:", with: "")
+    
+    authenticationDocumentUrl = publication.links.first(where: { $0.type == "application/vnd.opds.authentication.v1.0+json" })?.href
+    
+    let logoString = publication.images?.first(where: { $0.rel == "http://opds-spec.org/image/thumbnail" })?.href
+    if let modString = logoString?.replacingOccurrences(of: "data:image/png;base64,", with: ""),
+      let logoData = Data.init(base64Encoded: modString),
+      let logoImage = UIImage(data: logoData) {
+      logo = logoImage
+    } else {
+      logo = UIImage.init(named: "LibraryLogoMagic")!
+    }
+  }
+  
+  func loadAuthenticationDocument(preferringCache: Bool, completion: @escaping (Bool) -> ()) {
+    guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
+      Log.error(#file, "Invalid or missing authentication document URL")
+      completion(false)
+      return
+    }
+    
+    loadDataWithCache(url: url, cacheUrl: authenticationDocumentCacheUrl, preferringCache: preferringCache) { (data) in
+      if let data = data {
+        do {
+          self.authenticationDocument = try OPDS2AuthenticationDocument.fromData(data)
+          completion(true)
+          
+        } catch (let error) {
+          Log.error(#file, "Failed to load authentication document for library: \(error.localizedDescription)")
+          completion(false)
+        }
+      } else {
+        Log.error(#file, "Failed to load data of authentication document from cache or network")
+        completion(false)
+      }
+    }
   }
 }
 

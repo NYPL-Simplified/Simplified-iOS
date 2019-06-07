@@ -109,7 +109,7 @@
   NSArray *accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
   
   for (int i = 0; i < (int)accounts.count; i++) {
-    Account *account = [[AccountsManager sharedInstance] account:[accounts[i] intValue]];
+    Account *account = [[AccountsManager sharedInstance] account:accounts[i]];
     if (!account) {
       continue;
     }
@@ -131,8 +131,20 @@
                          completion:nil];
       } else {
         [[NYPLBookRegistry sharedRegistry] save];
-        [AccountsManager shared].currentAccount = account;
-        [self updateFeedAndRegistryOnAccountChange];
+        [account loadAuthenticationDocumentWithPreferringCache:YES completion:^(BOOL success) {
+          dispatch_async(dispatch_get_main_queue(), ^{
+            if (success) {
+              [AccountsManager shared].currentAccount = account;
+              [self updateFeedAndRegistryOnAccountChange];
+            } else {
+              [self presentViewController:[NYPLAlertController
+                                           alertWithTitle:@""
+                                           message:@"UnknownRequestError"]
+                                 animated:YES
+                               completion:nil];
+            }
+          });
+        }];
       }
     }]];
   }
@@ -159,19 +171,32 @@
 - (void)updateFeedAndRegistryOnAccountChange
 {
   Account *account = [[AccountsManager sharedInstance] currentAccount];
-  [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
-  [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
-
-  [[NYPLBookRegistry sharedRegistry] justLoad];
-  [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
-    if (success) {
-      [[NYPLBookRegistry sharedRegistry] save];
-    }
-  }];
-
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLCurrentAccountDidChangeNotification
-   object:nil];
+  __block NSURL *mainFeedUrl = [NSURL URLWithString:account.catalogUrl];
+  void (^completion)(void) = ^() {
+    [[NYPLSettings sharedSettings] setAccountMainFeedURL:mainFeedUrl];
+    [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
+    
+    [[NYPLBookRegistry sharedRegistry] justLoad];
+    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+      if (success) {
+        [[NYPLBookRegistry sharedRegistry] save];
+      }
+    }];
+    
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:NYPLCurrentAccountDidChangeNotification
+     object:nil];
+  };
+  if (account.details.needsAgeCheck) {
+    [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        mainFeedUrl = isOfAge ? account.details.coppaOverUrl : account.details.coppaUnderUrl;
+        completion();
+      });
+    }];
+  } else {
+    completion();
+  }
 }
 
 - (void)viewDidLoad
@@ -180,12 +205,27 @@
   NYPLSettings *settings = [NYPLSettings sharedSettings];
   if (settings.userHasSeenWelcomeScreen == YES) {
     Account *account = [[AccountsManager sharedInstance] currentAccount];
-    [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:account.catalogUrl]];
-    [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
 
-    [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLCurrentAccountDidChangeNotification
-     object:nil];
+    __block NSURL *mainFeedUrl = [NSURL URLWithString:account.catalogUrl];
+    void (^completion)(void) = ^() {
+      [[NYPLSettings sharedSettings] setAccountMainFeedURL:mainFeedUrl];
+      [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
+
+      [[NSNotificationCenter defaultCenter]
+      postNotificationName:NYPLCurrentAccountDidChangeNotification
+      object:nil];
+    };
+
+    if (account.details.needsAgeCheck) {
+      [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          mainFeedUrl = isOfAge ? account.details.coppaOverUrl : account.details.coppaUnderUrl;
+          completion();
+        });
+      }];
+    } else {
+      completion();
+    }
   }
 }
 
@@ -201,26 +241,40 @@
   
   if (settings.userHasSeenWelcomeScreen == NO) {
     Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-    [[NYPLSettings sharedSettings] setAccountMainFeedURL:[NSURL URLWithString:currentAccount.catalogUrl]];
-    [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
-    
-    NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(Account *const account) {
-      [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
-      [[NYPLBookRegistry sharedRegistry] save];
-      [AccountsManager sharedInstance].currentAccount = account;
-      [self updateFeedAndRegistryOnAccountChange];
-      [self dismissViewControllerAnimated:YES completion:nil];
-    }];
 
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
+    __block NSURL *mainFeedUrl = [NSURL URLWithString:currentAccount.catalogUrl];
+    void (^completion)(void) = ^() {
+      [[NYPLSettings sharedSettings] setAccountMainFeedURL:mainFeedUrl];
+      [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
+      
+      NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(Account *const account) {
+        [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
+        [[NYPLBookRegistry sharedRegistry] save];
+        [AccountsManager sharedInstance].currentAccount = account;
+        [self updateFeedAndRegistryOnAccountChange];
+        [self dismissViewControllerAnimated:YES completion:nil];
+      }];
 
-    if([[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
-      [navController setModalPresentationStyle:UIModalPresentationFormSheet];
+      UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
+
+      if([[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
+        [navController setModalPresentationStyle:UIModalPresentationFormSheet];
+      }
+      [navController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+
+      NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
+      [vc safelyPresentViewController:navController animated:YES completion:nil];
+    };
+    if (currentAccount.details.needsAgeCheck) {
+      [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+          mainFeedUrl = isOfAge ? currentAccount.details.coppaOverUrl : currentAccount.details.coppaUnderUrl;
+          completion();
+        });
+      }];
+    } else {
+      completion();
     }
-    [navController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
-
-    NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
-    [vc safelyPresentViewController:navController animated:YES completion:nil];
   }
 }
 

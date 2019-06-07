@@ -279,13 +279,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * _Nonnull __unused action) {
                                                        [defaults setBool:NO forKey:@"prod_only"];
-                                                       exit(0);
                                                      }];
   UIAlertAction *prodAction = [UIAlertAction actionWithTitle:@"Production Only"
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * _Nonnull __unused action) {
                                                        [defaults setBool:YES forKey:@"prod_only"];
-                                                       exit(0);
                                                      }];
   UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
 

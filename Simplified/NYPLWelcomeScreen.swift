@@ -143,26 +143,139 @@ import PureLayout
     
     return tempView
   }
+  
+  func showLoadingFailureAlert() {
+    let alert = NYPLAlertController.alert(withTitle:nil, singleMessage:NSLocalizedString("CheckConnection", comment: ""))
+    alert?.addAction(UIAlertAction.init(title: NSLocalizedString("OK", comment: ""), style: .cancel))
+    alert?.present(fromViewControllerOrNil:self, animated:true, completion:nil)
+  }
+  
+  func loadingOverlayView() -> UIView {
+    let overlayView = UIView()
+    overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+    let activityView = UIActivityIndicatorView(style: .whiteLarge)
+    overlayView.addSubview(activityView)
+    activityView.autoCenterInSuperviewMargins()
+    activityView.startAnimating()
+    return overlayView
+  }
+  
+  func addLoadingOverlayView(toVC viewController: UIViewController? = nil) -> UIView {
+    let vc = viewController ?? self
+    let loadingOverlay = loadingOverlayView()
+    if !Thread.isMainThread {
+      DispatchQueue.main.async {
+        vc.view.addSubview(loadingOverlay)
+        loadingOverlay.autoPinEdgesToSuperviewEdges()
+      }
+    } else {
+      vc.view.addSubview(loadingOverlay)
+      loadingOverlay.autoPinEdgesToSuperviewEdges()
+    }
+    return loadingOverlay
+  }
+  
+  func removeLoadingOverlayView(_ view: UIView?) {
+    if !Thread.isMainThread {
+      DispatchQueue.main.async {
+        view?.removeFromSuperview()
+      }
+    } else {
+      view?.removeFromSuperview()
+    }
+  }
 
   func pickYourLibraryTapped() {
     if completion == nil {
       self.dismiss(animated: true, completion: nil)
       return
     }
-    let listVC = NYPLWelcomeScreenAccountList { account in
-      if (account.id != 2) {
-        NYPLSettings.shared().settingsAccountsList = [account.id, 2]
-      } else {
-        NYPLSettings.shared().settingsAccountsList = [2]
+    
+    let pickLibrary = {
+      let listVC = NYPLWelcomeScreenAccountList { account in
+        if account.details != nil {
+          self.completion?(account)
+        } else {
+          // Show loading overlay while we load the auth document
+          let loadingOverlay = self.addLoadingOverlayView(toVC: self.navigationController)
+          account.loadAuthenticationDocument(preferringCache: true, completion: { success in
+            self.removeLoadingOverlayView(loadingOverlay)
+            guard success else {
+              self.showLoadingFailureAlert()
+              return
+            }
+            if account.uuid != AccountsManager.NYPLAccountUUIDs[2] {
+              NYPLSettings.shared().settingsAccountsList = [account.uuid, AccountsManager.NYPLAccountUUIDs[2]]
+            } else {
+              NYPLSettings.shared().settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
+            }
+            self.completion?(account)
+          })
+        }
       }
-      self.completion?(account)
+      self.navigationController?.pushViewController(listVC, animated: true)
     }
-    self.navigationController?.pushViewController(listVC, animated: true)
+
+    if AccountsManager.shared.accountsHaveLoaded {
+      pickLibrary()
+    } else {
+      // Show loading overlay while loading library list, which is required for pickLibrary
+      let loadingOverlay = addLoadingOverlayView()
+      AccountsManager.shared.loadCatalogs(preferringCache: true) { (success) in
+        DispatchQueue.main.async {
+          self.removeLoadingOverlayView(loadingOverlay)
+          guard success else {
+            self.showLoadingFailureAlert()
+            return
+          }
+          pickLibrary()
+        }
+      }
+    }
   }
 
   func instantClassicsTapped() {
-    NYPLSettings.shared().settingsAccountsList = [2]
-    self.completion?(AccountsManager.shared.account(2)!)
+    let classicsId = AccountsManager.NYPLAccountUUIDs[2]
+    var loadingOverlay: UIView? = nil
+    
+    let selectInstantClassics = {
+      guard let classicsAccount = AccountsManager.shared.account(classicsId) else {
+        self.removeLoadingOverlayView(loadingOverlay)
+        self.showLoadingFailureAlert()
+        return
+      }
+      // If we didn't add the loading overlay to load the library list, we need to add it now to load the auth document
+      if loadingOverlay == nil {
+        loadingOverlay = self.addLoadingOverlayView()
+      }
+      // Load the auth document for the classics library
+      classicsAccount.loadAuthenticationDocument(preferringCache: true, completion: { (authSuccess) in
+        DispatchQueue.main.async {
+          self.removeLoadingOverlayView(loadingOverlay)
+          if authSuccess {
+            NYPLSettings.shared().settingsAccountsList = [classicsId]
+            self.completion?(AccountsManager.shared.account(classicsId)!)
+          } else {
+            self.showLoadingFailureAlert()
+          }
+        }
+      })
+    }
+    
+    if AccountsManager.shared.accountsHaveLoaded {
+      selectInstantClassics()
+    } else {
+      // Make sure the library list is loaded
+      loadingOverlay = addLoadingOverlayView()
+      AccountsManager.shared.loadCatalogs(preferringCache: true) { (success) in
+        if success {
+          selectInstantClassics()
+        } else {
+          self.removeLoadingOverlayView(loadingOverlay)
+          self.showLoadingFailureAlert()
+        }
+      }
+    }
   }
 }
 
@@ -188,7 +301,7 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
   
   override func viewDidLoad() {
     self.view = UITableView(frame: .zero, style: .grouped)
-    self.tableView = self.view as! UITableView
+    self.tableView = self.view as? UITableView
     self.tableView.delegate = self
     self.tableView.dataSource = self
     
@@ -197,8 +310,8 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
     //FIXME Replace with SettingsAccounts improvements to library selection VC
     //once that gets finalized and merged in.
     self.accounts.sort { $0.name < $1.name }
-    self.nyplAccounts = self.accounts.filter { $0.id < 3 }
-    self.accounts = self.accounts.filter {  $0.id >= 3  }
+    self.nyplAccounts = self.accounts.filter { AccountsManager.NYPLAccountUUIDs.contains($0.uuid) }
+    self.accounts = self.accounts.filter { !AccountsManager.NYPLAccountUUIDs.contains($0.uuid) }
 
     self.title = NSLocalizedString("LibraryListTitle", comment: "Title that also informs the user that they should choose a library from the list.")
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()

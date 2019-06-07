@@ -38,7 +38,7 @@ static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
 /// @warning The book should still be in the registry when this is called.
 /// @param identifier The identifier of the book whose content should be deleted.
 /// @param account    The id of the account within which a book identified by @c identifier resides.
-- (void)deleteLocalContentForBookIdentifier:(NSString *const)identifier account:(NSInteger const)account;
+- (void)deleteLocalContentForBookIdentifier:(NSString *const)identifier account:(NSString *const)account;
 
 // Returns a borrowed book, cancels a held book, or "returns" a kept book.
 - (void)returnBookWithIdentifier:(NSString *)identifier;
@@ -47,7 +47,7 @@ static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
 - (void)reset;
 
 // Deletes all local content for a specific account
-- (void)reset:(NSInteger)account;
+- (void)reset:(NSString *)account;
 
 // The value returned is in the range [0.0, 1.0].
 - (double)downloadProgressForBookIdentifier:(NSString *)bookIdentifier;
