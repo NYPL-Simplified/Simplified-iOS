@@ -193,9 +193,10 @@
   [self.activityIndicatorView stopAnimating];
   self.activityIndicatorLabel.hidden = YES;
   
-  self.reloadView.hidden = NO;
-
-  [NYPLBugsnagLogs catalogLoadError:error URL:self.URL];
+  if (connection.currentRequest.URL) {
+    self.reloadView.hidden = NO;
+    [NYPLBugsnagLogs catalogLoadError:error URL:self.URL];
+  }
 
   self.connection = nil;
   self.data = [NSMutableData data];
