@@ -33,9 +33,9 @@
   
   self.primaryNavigationController = [[NYPLSettingsPrimaryNavigationController alloc] init];
   self.primaryNavigationController.primaryTableViewController.delegate = self;
+  self.viewControllers = @[self.primaryNavigationController];
   
   self.presentsWithGesture = NO;
-  self.preferredDisplayMode = UISplitViewControllerDisplayModeAllVisible;
   
   return self;
 }
@@ -46,22 +46,20 @@
   
   NSArray *accounts = [[NYPLSettings sharedSettings] settingsAccountsList];
   
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+  if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
      (self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact)) {
-    
     
     self.viewControllers = @[self.primaryNavigationController,
                              [[UINavigationController alloc] initWithRootViewController:
                               [[NYPLSettingsAccountsTableViewController alloc] initWithAccounts:accounts]]];
+    
     [self highlightFirstTableViewRow:YES];
-    
-    
   } else {
     self.viewControllers = @[self.primaryNavigationController];
   }
   
+  self.preferredDisplayMode = UISplitViewControllerDisplayModeAllVisible;
   self.isFirstLoad = YES;
-  
 }
 
 - (void)highlightFirstTableViewRow:(bool)highlight
