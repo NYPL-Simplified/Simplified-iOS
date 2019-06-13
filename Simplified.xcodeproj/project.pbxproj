@@ -176,7 +176,7 @@
 		A92FB0F921CDCE3D004740F4 /* NYPLReturnPromptHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92FB0F821CDCE3D004740F4 /* NYPLReturnPromptHelper.swift */; };
 		A93F9F9721CDACF700BD3B0C /* NYPLAppReviewPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93F9F9621CDACF700BD3B0C /* NYPLAppReviewPrompt.swift */; };
 		A949984F2235826500CE4241 /* NYPLPDFViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A949984E2235826500CE4241 /* NYPLPDFViewControllerDelegate.swift */; };
-		A96CAE7D220B61950055FE51 /* NYPLBugnsagLogs.m in Sources */ = {isa = PBXBuildFile; fileRef = A96CAE7C220B61950055FE51 /* NYPLBugnsagLogs.m */; };
+		A96CAE7D220B61950055FE51 /* NYPLBugsnagLogs.m in Sources */ = {isa = PBXBuildFile; fileRef = A96CAE7C220B61950055FE51 /* NYPLBugsnagLogs.m */; };
 		A9AD99402225D4AF009FF54A /* PDFRendererProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9AD993F2225D4AF009FF54A /* PDFRendererProvider.framework */; };
 		AE77E7E37D89FB3EED630624 /* NYPLOPDSType.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77EFD5622206475B6715A9 /* NYPLOPDSType.m */; };
 		AE77E9B832371587493FF281 /* NYPLOPDSEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = AE77E4AF64208439F78B3D73 /* NYPLOPDSEntry.m */; };
@@ -555,7 +555,7 @@
 		A93F9F9621CDACF700BD3B0C /* NYPLAppReviewPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAppReviewPrompt.swift; sourceTree = "<group>"; };
 		A949984E2235826500CE4241 /* NYPLPDFViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLPDFViewControllerDelegate.swift; sourceTree = "<group>"; };
 		A96CAE77220B61820055FE51 /* NYPLBugsnagLogs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLBugsnagLogs.h; sourceTree = "<group>"; };
-		A96CAE7C220B61950055FE51 /* NYPLBugnsagLogs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLBugnsagLogs.m; sourceTree = "<group>"; };
+		A96CAE7C220B61950055FE51 /* NYPLBugsnagLogs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLBugsnagLogs.m; sourceTree = "<group>"; };
 		A9AD993F2225D4AF009FF54A /* PDFRendererProvider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PDFRendererProvider.framework; path = Carthage/Build/iOS/PDFRendererProvider.framework; sourceTree = "<group>"; };
 		AE77E0F3FB181D0C1529C865 /* NYPLOPDSLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSLink.h; sourceTree = "<group>"; };
 		AE77E304AA30ABF2921B6393 /* NYPLOPDSFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLOPDSFeed.h; sourceTree = "<group>"; };
@@ -1063,7 +1063,7 @@
 				A4E254F81B0E610900193FE4 /* NYPLBasicAuth.h */,
 				A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */,
 				A96CAE77220B61820055FE51 /* NYPLBugsnagLogs.h */,
-				A96CAE7C220B61950055FE51 /* NYPLBugnsagLogs.m */,
+				A96CAE7C220B61950055FE51 /* NYPLBugsnagLogs.m */,
 				E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
@@ -1574,8 +1574,9 @@
 				D787E8441FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift in Sources */,
 				5D60D3542297353C001080D0 /* NYPLMigrationManager.swift in Sources */,
 				111E757A1A80165C00718AD7 /* NYPLSettingsSplitViewController.m in Sources */,
-				A96CAE7D220B61950055FE51 /* NYPLBugnsagLogs.m in Sources */,
+				A96CAE7D220B61950055FE51 /* NYPLBugsnagLogs.m in Sources */,
 				B51C1E0422861C1A003B49A5 /* OPDS2AuthenticationDocument.swift in Sources */,
+				A96CAE7D220B61950055FE51 /* NYPLBugsnagLogs.m in Sources */,
 				112C694D197301FE00C48F95 /* NYPLBookRegistryRecord.m in Sources */,
 				E627B554216D4A9700A7D1D5 /* NYPLBookContentType.m in Sources */,
 				2D754BC22002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m in Sources */,
@@ -1785,7 +1786,7 @@
 				);
 				PRODUCT_NAME = SimplyE;
 				SDKROOT = iphoneos;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1839,7 +1840,7 @@
 				PRODUCT_NAME = SimplyE;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
