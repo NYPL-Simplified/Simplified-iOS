@@ -221,7 +221,7 @@ import PureLayout
     } else {
       // Show loading overlay while loading library list, which is required for pickLibrary
       let loadingOverlay = addLoadingOverlayView()
-      AccountsManager.shared.loadCatalogs(preferringCache: true) { (success) in
+      AccountsManager.shared.loadCatalogs(options: .offline) { (success) in
         DispatchQueue.main.async {
           self.removeLoadingOverlayView(loadingOverlay)
           guard success else {
@@ -267,7 +267,7 @@ import PureLayout
     } else {
       // Make sure the library list is loaded
       loadingOverlay = addLoadingOverlayView()
-      AccountsManager.shared.loadCatalogs(preferringCache: true) { (success) in
+      AccountsManager.shared.loadCatalogs(options: .offline) { (success) in
         if success {
           selectInstantClassics()
         } else {
@@ -305,7 +305,7 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
     self.tableView.delegate = self
     self.tableView.dataSource = self
     
-    self.accounts = AccountsManager.shared.accounts
+    self.accounts = AccountsManager.shared.accounts()
 
     //FIXME Replace with SettingsAccounts improvements to library selection VC
     //once that gets finalized and merged in.

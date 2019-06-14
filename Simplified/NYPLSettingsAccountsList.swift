@@ -15,7 +15,7 @@
   required init(accounts: [String]) {
     self.accounts = accounts
     self.manager = AccountsManager.shared
-    self.libraryAccounts = manager.accounts
+    self.libraryAccounts = manager.accounts()
 
     super.init(nibName:nil, bundle:nil)
   }
@@ -64,35 +64,45 @@
     self.title = NSLocalizedString("Accounts",
                                    comment: "A title for a list of libraries the user may select or add to.")
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
-    
+    self.navigationItem.rightBarButtonItem =
+      UIBarButtonItem(title: NSLocalizedString("Add Library", comment: "Title of button to add a new library"),
+                      style: .plain,
+                      target: self,
+                      action: #selector(addAccount))
     updateUI()
     
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(reloadAfterAccountChange),
                                            name: NSNotification.Name.NYPLCurrentAccountDidChange,
                                            object: nil)
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(catalogChangeHandler),
+                                           name: NSNotification.Name.NYPLCatalogDidLoad,
+                                           object: nil)
   }
   
   func reloadAfterAccountChange() {
     accounts = NYPLSettings.shared.settingsAccountsList
     self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount?.uuid }
-    self.tableView.reloadData()
-  }
-  
-  func updateUI() {
-    if (userAddedSecondaryAccounts.count + 1 < libraryAccounts.count) {
-      self.navigationItem.rightBarButtonItem =
-        UIBarButtonItem(title: NSLocalizedString("Add Library", comment: "Title of button to add a new library"),
-                        style: .plain,
-                        target: self,
-                        action: #selector(addAccount))
-    } else {
-      self.navigationItem.rightBarButtonItem = nil
+    DispatchQueue.main.async {
+      self.tableView.reloadData()
     }
   }
   
+  func catalogChangeHandler() {
+    self.libraryAccounts = AccountsManager.shared.accounts()
+    DispatchQueue.main.async {
+      self.updateUI()
+    }
+  }
+  
+  func updateUI() {
+    let enable = self.userAddedSecondaryAccounts.count + 1 < self.libraryAccounts.count
+    self.navigationItem.rightBarButtonItem?.isEnabled = enable
+  }
+  
   func addAccount() {
-    AccountsManager.shared.loadCatalogs(preferringCache: false) { (success) in
+    AccountsManager.shared.loadCatalogs(options: .online) { (success) in
       guard success else {
         let alert = NYPLAlertController.alert(withTitle:nil, singleMessage:NSLocalizedString("CheckConnection", comment: ""))
         alert?.addAction(UIAlertAction.init(title: NSLocalizedString("OK", comment: ""), style: .cancel))
@@ -100,6 +110,7 @@
         return
       }
       DispatchQueue.main.async {
+        self.libraryAccounts = AccountsManager.shared.accounts()
         self.showAddAccountList()
       }
     }

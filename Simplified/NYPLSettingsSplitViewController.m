@@ -122,7 +122,10 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
                                          withExtension:@"html"]
                         title:NSLocalizedString(@"SoftwareLicenses", nil)];
       break;
-    case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
+    case NYPLSettingsPrimaryTableViewControllerItemDeveloperSettings:
+      viewController = [[NYPLDeveloperSettingsTableViewController alloc] init];
+      break;
+    default:
       return;
   }
   
