@@ -28,7 +28,7 @@ SettingsItemFromIndexPath(NSIndexPath *const indexPath)
     case 2:
       switch (indexPath.row) {
         case 0:
-          return NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL;
+          return NYPLSettingsPrimaryTableViewControllerItemDeveloperSettings;
         default:
           @throw NSInvalidArgumentException;
       }
@@ -49,17 +49,17 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
       return [NSIndexPath indexPathForRow:1 inSection:1];
     case NYPLSettingsPrimaryTableViewControllerItemSoftwareLicenses:
       return [NSIndexPath indexPathForRow:2 inSection:1];
-    case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL:
+    case NYPLSettingsPrimaryTableViewControllerItemDeveloperSettings:
       return [NSIndexPath indexPathForRow:0 inSection:2];
     default:
       @throw NSInvalidArgumentException;
   }
 }
 
-@interface NYPLSettingsPrimaryTableViewController () <UITextFieldDelegate>
+@interface NYPLSettingsPrimaryTableViewController ()
 
 @property (nonatomic, strong) UILabel *infoLabel;
-@property (nonatomic) BOOL shouldShowEmptyCustomODPSURLField;
+@property (nonatomic) BOOL shouldShowDeveloperMenuItem;
 
 @end
 
@@ -83,16 +83,8 @@ NSIndexPath *NYPLSettingsPrimaryTableViewControllerIndexPathFromSettingsItem(
 
 - (void)viewDidLoad
 {
-  [super viewDidLoad];  
+  [super viewDidLoad];
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
-
-  if ([NYPLConfiguration releaseStageIsBeta]) {
-    UIBarButtonItem *betaButton = [[UIBarButtonItem alloc] initWithTitle:@"Beta"
-                                                                   style:UIBarButtonItemStyleDone
-                                                                  target:self
-                                                                  action:@selector(betaWasPressed)];
-    self.navigationItem.rightBarButtonItems = @[betaButton];
-  }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -134,7 +126,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.infoLabel.textAlignment = NSTextAlignmentCenter;
       [self.infoLabel sizeToFit];
 
-      UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(revealCustomFeedUrl)];
+      UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(revealDeveloperSettings)];
       tap.numberOfTapsRequired = 7;
       [self.infoLabel setUserInteractionEnabled:YES];
       [self.infoLabel addGestureRecognizer:tap];
@@ -162,23 +154,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case NYPLSettingsPrimaryTableViewControllerItemAbout: {
       return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"AboutApp", nil)];
     }
-    case NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL: {
-      UITableViewCell *const cell = [[UITableViewCell alloc]
-                                     initWithStyle:UITableViewCellStyleDefault
-                                     reuseIdentifier:nil];
-      UITextField *field = [[UITextField alloc] initWithFrame:CGRectMake(15, 0, cell.frame.size.width-30, cell.frame.size.height)];
-      field.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-      field.delegate = self;
-      field.text = [NYPLSettings sharedSettings].customMainFeedURL.absoluteString;
-      field.placeholder = NSLocalizedString(@"CustomOPDSURL", nil);
-      field.keyboardType = UIKeyboardTypeURL;
-      field.returnKeyType = UIReturnKeyDone;
-      field.clearButtonMode = UITextFieldViewModeWhileEditing;
-      field.spellCheckingType = UITextSpellCheckingTypeNo;
-      field.autocorrectionType = UITextAutocorrectionTypeNo;
-      field.autocapitalizationType = UITextAutocapitalizationTypeNone;
-      [cell.contentView addSubview:field];
-      return cell;
+    case NYPLSettingsPrimaryTableViewControllerItemDeveloperSettings: {
+      return [self settingsPrimaryTableViewCellWithText:NSLocalizedString(@"Testing", nil)];
     }
     default:
       return nil;
@@ -202,29 +179,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (NSInteger)numberOfSectionsInTableView:(__attribute__((unused)) UITableView *)tableView
 {
-  return 2 + (self.shouldShowEmptyCustomODPSURLField || !![NYPLSettings sharedSettings].customMainFeedURL);
+  return 2 + (self.shouldShowDeveloperMenuItem || !![NYPLSettings sharedSettings].customMainFeedURL);
 }
 
 -(BOOL)tableView:(__attribute__((unused)) UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  if (SettingsItemFromIndexPath(indexPath) == NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL) {
+  if (SettingsItemFromIndexPath(indexPath) == NYPLSettingsPrimaryTableViewControllerItemDeveloperSettings) {
     return true;
   }
   return false;
-}
-
--(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-  
-  if (SettingsItemFromIndexPath(indexPath) == NYPLSettingsPrimaryTableViewControllerItemCustomFeedURL && editingStyle == UITableViewCellEditingStyleDelete) {
-    
-    [NYPLSettings sharedSettings].customMainFeedURL = nil;
-    
-    [tableView reloadData];
-    
-    [self exitApp];
-    
-  }
 }
 
 - (NSInteger)tableView:(__attribute__((unused)) UITableView *)tableView
@@ -238,75 +201,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-#pragma mark - UITextFieldDelegate
-
-- (BOOL)textFieldShouldReturn:(UITextField *const)textField
-{
-  [textField resignFirstResponder];
-  
-  return YES;
-}
--(void)textFieldDidEndEditing:(__attribute__((unused)) UITextField *)textField
-{
-  NSString *const feed = [textField.text stringByTrimmingCharactersInSet:
-                          [NSCharacterSet whitespaceCharacterSet]];
-  
-  if(feed.length) {
-    [NYPLSettings sharedSettings].customMainFeedURL = [NSURL URLWithString:feed];
-  } else {
-    [NYPLSettings sharedSettings].customMainFeedURL = nil;
-  }
-  
-  [self exitApp];
-}
-
 #pragma mark -
 
-- (void)revealCustomFeedUrl
+- (void)revealDeveloperSettings
 {
   // Insert a URL to force the field to show.
-  self.shouldShowEmptyCustomODPSURLField = YES;
+  self.shouldShowDeveloperMenuItem = YES;
   
   [self.tableView reloadData];
-}
-
-- (void)betaWasPressed {
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Beta Libraries"
-                                                                 message:@"Choose libraries only in production, or all libaries. App will restart."
-                                                          preferredStyle:UIAlertControllerStyleAlert];
-  UIAlertAction *betaAction = [UIAlertAction actionWithTitle:@"All Libraries"
-                                                       style:UIAlertActionStyleDefault
-                                                     handler:^(UIAlertAction * _Nonnull __unused action) {
-                                                       [defaults setBool:NO forKey:@"prod_only"];
-                                                     }];
-  UIAlertAction *prodAction = [UIAlertAction actionWithTitle:@"Production Only"
-                                                       style:UIAlertActionStyleDefault
-                                                     handler:^(UIAlertAction * _Nonnull __unused action) {
-                                                       [defaults setBool:YES forKey:@"prod_only"];
-                                                     }];
-  UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-
-  [alert addAction:betaAction];
-  [alert addAction:prodAction];
-  [alert addAction:cancelAction];
-  [self presentViewController:alert animated:YES completion:nil];
-}
-
-- (void)exitApp
-{
-  UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Restart Required", nil)
-                                                                               message:NSLocalizedString(@"You need to restart the app to use a new OPDS feed. Select Exit and then restart the app from the home screen.", nil)
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-  [alertViewController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Not Now", nil)
-                                                          style:UIAlertActionStyleDefault
-                                                        handler:nil]];
-  [alertViewController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Exit", nil)
-                                                          style:UIAlertActionStyleDefault
-                                                        handler:^(__attribute__((unused)) UIAlertAction * action) {
-                                                          exit(0);
-                                                        }]];
-  [self presentViewController:alertViewController animated:YES completion:nil];
 }
 
 @end

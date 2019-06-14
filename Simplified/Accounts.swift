@@ -143,7 +143,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   }
   
   func loadCatalogs(preferringCache: Bool, completion: @escaping (Bool) -> ()) {
-    let isBeta = NYPLConfiguration.releaseStageIsBeta() && !UserDefaults.standard.bool(forKey: "prod_only")
+    let isBeta = !UserDefaults.standard.bool(forKey: "prod_only")
     let betaUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries/qa")!
     let prodUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries")!
     let url = isBeta ? betaUrl : prodUrl
