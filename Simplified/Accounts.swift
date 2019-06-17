@@ -116,7 +116,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
           DispatchQueue.main.async {
             var mainFeed = URL(string: self.currentAccount?.catalogUrl ?? "")
             let resolveFn = {
-              NYPLSettings.shared()?.accountMainFeedURL = mainFeed
+              NYPLSettings.shared.accountMainFeedURL = mainFeed
               UIApplication.shared.delegate?.window??.tintColor = NYPLConfiguration.mainColor()
               NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
               completion(true)
@@ -143,7 +143,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
   }
   
   func loadCatalogs(preferringCache: Bool, completion: @escaping (Bool) -> ()) {
-    let isBeta = NYPLConfiguration.releaseStageIsBeta() && !UserDefaults.standard.bool(forKey: "prod_only")
+    let isBeta = NYPLSettings.shared.useBetaLibraries
     let betaUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries/qa")!
     let prodUrl = URL(string: "https://libraryregistry.librarysimplified.org/libraries")!
     let url = isBeta ? betaUrl : prodUrl

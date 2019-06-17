@@ -7,7 +7,6 @@
 #import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
 #import "NYPLOPDS.h"
-#import "NYPLSettings.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "SimplyE-Swift.h"
 
@@ -269,7 +268,7 @@ static NSString *const RecordsKey = @"records";
 {
   @synchronized(self) {
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncBegan object:nil];
 
     if(self.syncing) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -280,7 +279,7 @@ static NSString *const RecordsKey = @"records";
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(completion) completion(NO);
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
-        [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
       }];
       return;
     } else {
@@ -301,7 +300,7 @@ static NSString *const RecordsKey = @"records";
         addOperationWithBlock:^{
           if(completion) completion(NO);
           if(fetchHandler) fetchHandler(UIBackgroundFetchResultFailed);
-          [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+          [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
         }];
        return;
      }
@@ -357,7 +356,7 @@ static NSString *const RecordsKey = @"records";
           [NYPLUserNotifications updateAppIconBadgeWithHeldBooks:[self heldBooks]];
           if(completion) completion(YES);
           if(fetchHandler) fetchHandler(UIBackgroundFetchResultNewData);
-          [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+          [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
         }];
      };
      

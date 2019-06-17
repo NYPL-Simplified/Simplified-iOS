@@ -13,7 +13,7 @@
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
 #import "UIView+NYPLViewAdditions.h"
-#import "NYPLSettings.h"
+
 #import "SimplyE-Swift.h"
 #import "NYPLCatalogUngroupedFeedViewController.h"
 
@@ -140,7 +140,7 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
   }
   
   [refreshControl endRefreshing];
-  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+  [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
 }
 
 #pragma mark UICollectionViewDataSource

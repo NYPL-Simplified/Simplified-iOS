@@ -3,7 +3,7 @@
 #import "NYPLBookDetailButtonsView.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
-#import "NYPLSettings.h"
+
 #import "NYPLRootTabBarController.h"
 #import "NYPLOPDS.h"
 #import <PureLayout/PureLayout.h>

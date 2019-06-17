@@ -74,7 +74,7 @@
   }
   
   func reloadAfterAccountChange() {
-    accounts = NYPLSettings.shared().settingsAccountsList as! [String]
+    accounts = NYPLSettings.shared.settingsAccountsList
     self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount?.uuid }
     self.tableView.reloadData()
   }
@@ -153,7 +153,7 @@
     }
     var array = userAddedSecondaryAccounts!
     array.append(uuid)
-    NYPLSettings.shared().settingsAccountsList = array
+    NYPLSettings.shared.settingsAccountsList = array
   }
   
   // MARK: UITableViewDataSource

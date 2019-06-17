@@ -28,7 +28,7 @@ import Foundation
         return
       }
       
-      if !accountDetails.userAboveAgeLimit && NYPLSettings.shared().userPresentedAgeCheck {
+      if !accountDetails.userAboveAgeLimit && NYPLSettings.shared.userPresentedAgeCheck {
         completion?(false)
         return
       }
@@ -44,7 +44,7 @@ import Foundation
       // Perform alert presentation
       self.isPresenting = true
       self.presentAgeVerificationView { over13 in
-        NYPLSettings.shared().userPresentedAgeCheck = true
+        NYPLSettings.shared.userPresentedAgeCheck = true
         if (over13) {
           accountDetails.userAboveAgeLimit = true
           completion?(true)

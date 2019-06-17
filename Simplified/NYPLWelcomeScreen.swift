@@ -205,9 +205,9 @@ import PureLayout
               return
             }
             if account.uuid != AccountsManager.NYPLAccountUUIDs[2] {
-              NYPLSettings.shared().settingsAccountsList = [account.uuid, AccountsManager.NYPLAccountUUIDs[2]]
+              NYPLSettings.shared.settingsAccountsList = [account.uuid, AccountsManager.NYPLAccountUUIDs[2]]
             } else {
-              NYPLSettings.shared().settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
+              NYPLSettings.shared.settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
             }
             self.completion?(account)
           })
@@ -253,7 +253,7 @@ import PureLayout
         DispatchQueue.main.async {
           self.removeLoadingOverlayView(loadingOverlay)
           if authSuccess {
-            NYPLSettings.shared().settingsAccountsList = [classicsId]
+            NYPLSettings.shared.settingsAccountsList = [classicsId]
             self.completion?(AccountsManager.shared.account(classicsId)!)
           } else {
             self.showLoadingFailureAlert()

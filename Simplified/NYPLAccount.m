@@ -1,7 +1,7 @@
 #import "NYPLKeychain.h"
 
 #import "NYPLAccount.h"
-#import "NYPLSettings.h"
+
 #import "SimplyE-Swift.h"
 
 NSString * authorizationIdentifierKey = @"NYPLAccountAuthorization";

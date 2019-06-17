@@ -69,7 +69,7 @@ import UIKit
       self.dismiss(animated: true, completion: nil)
       if (success) {
         self.account.details?.syncPermissionGranted = false;
-        NYPLSettings.shared().userHasSeenFirstTimeSyncMessage = false;
+        NYPLSettings.shared.userHasSeenFirstTimeSyncMessage = false;
         self.navigationController?.popViewController(animated: true)
       }
     })

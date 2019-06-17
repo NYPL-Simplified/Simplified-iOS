@@ -1,5 +1,5 @@
 #import "NYPLConfiguration.h"
-#import "NYPLSettings.h"
+#import "SimplyE-Swift.h"
 
 #import "NYPLSettingsPrimaryTableViewController.h"
 
@@ -271,19 +271,18 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 }
 
 - (void)betaWasPressed {
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Beta Libraries"
                                                                  message:@"Choose libraries only in production, or all libaries. App will restart."
                                                           preferredStyle:UIAlertControllerStyleAlert];
   UIAlertAction *betaAction = [UIAlertAction actionWithTitle:@"All Libraries"
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * _Nonnull __unused action) {
-                                                       [defaults setBool:NO forKey:@"prod_only"];
+                                                       [[NYPLSettings shared] setUseBetaLibraries:YES];
                                                      }];
   UIAlertAction *prodAction = [UIAlertAction actionWithTitle:@"Production Only"
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * _Nonnull __unused action) {
-                                                       [defaults setBool:YES forKey:@"prod_only"];
+                                                       [[NYPLSettings shared] setUseBetaLibraries:NO];
                                                      }];
   UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
 

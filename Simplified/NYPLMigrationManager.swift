@@ -16,7 +16,7 @@ class MigrationManager: NSObject {
     let targetVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
 
     // Fetch and parse app version
-    let appVersion = NYPLSettings.shared().appVersion ?? ""
+    let appVersion = NYPLSettings.shared.appVersion ?? ""
     let appVersionTokens = appVersion.split(separator: ".").compactMap({ Int($0) })
     
     // Run through migration stages
@@ -28,7 +28,7 @@ class MigrationManager: NSObject {
     NetworkQueue.sharedInstance.migrate()
 
     // Update app version
-    NYPLSettings.shared().appVersion = targetVersion
+    NYPLSettings.shared.appVersion = targetVersion
   }
 
   // Less-than comparator operation
@@ -66,14 +66,15 @@ class MigrationManager: NSObject {
     }
 
     // Migrate user defaults
-    let oldAccountsList = NYPLSettings.shared().settingsAccountsList?.compactMap({ $0 as? Int }) ?? [Int]()
-    let newAccountsList = NYPLSettings.shared().settingsAccountsList?.compactMap({
+    // Note: Can't use NYPLSettings because the swift version stops using optionals and performs coerscions
+    let oldAccountsList = UserDefaults.standard.array(forKey: "NYPLSettingsLibraryAccountsKey")?.compactMap({ $0 as? Int }) ?? [Int]()
+    let newAccountsList = UserDefaults.standard.array(forKey: "NYPLSettingsLibraryAccountsKey")?.compactMap({
       let idInt = $0 as? Int
       return $0 as? String ?? (idInt != nil ? accountMap[idInt!] : nil)
     }) ?? [String]()
 
     // Assign new uuid account list
-    NYPLSettings.shared().settingsAccountsList = newAccountsList
+    NYPLSettings.shared.settingsAccountsList = newAccountsList
     
     // Migrate currentAccount
     let userDefaults = UserDefaults.standard

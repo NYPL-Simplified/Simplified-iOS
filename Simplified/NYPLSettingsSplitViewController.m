@@ -1,7 +1,6 @@
 #import "NYPLSettingsPrimaryNavigationController.h"
 #import "NYPLSettingsPrimaryTableViewController.h"
 #import "NYPLSettingsEULAViewController.h"
-#import "NYPLSettings.h"
 #import "NYPLBook.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLRootTabBarController.h"
@@ -106,13 +105,13 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
       break;
     case NYPLSettingsPrimaryTableViewControllerItemAbout:
       viewController = [[RemoteHTMLViewController alloc]
-                        initWithURL:[NSURL URLWithString:NYPLAcknowledgementsURLString]
+                        initWithURL:[NSURL URLWithString: NYPLSettings.NYPLAcknowledgementsURLString]
                         title:NSLocalizedString(@"AboutApp", nil)
                         failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       break;
     case NYPLSettingsPrimaryTableViewControllerItemEULA:
       viewController = [[RemoteHTMLViewController alloc]
-                        initWithURL:[NSURL URLWithString:NYPLUserAgreementURLString]
+                        initWithURL:[NSURL URLWithString: NYPLSettings.NYPLUserAgreementURLString]
                         title:NSLocalizedString(@"EULA", nil)
                         failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       break;

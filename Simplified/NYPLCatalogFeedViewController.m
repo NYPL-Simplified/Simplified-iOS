@@ -6,7 +6,7 @@
 #import "NYPLOPDS.h"
 #import "NYPLXML.h"
 #import "SimplyE-Swift.h"
-#import "NYPLSettings.h"
+
 
 #import "NYPLCatalogFeedViewController.h"
 
@@ -102,7 +102,7 @@
   } else {
     /// Performs with a delay because on a fresh launch, the application state takes
     /// a moment to accurately update.
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncBegan object:nil];
     [self performSelector:@selector(syncBookRegistryForNewFeed) withObject:self afterDelay:2.0];
   }
 }

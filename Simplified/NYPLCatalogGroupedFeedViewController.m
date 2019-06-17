@@ -12,7 +12,7 @@
 #import "NYPLSession.h"
 #import "NYPLXML.h"
 #import "UIView+NYPLViewAdditions.h"
-#import "NYPLSettings.h"
+
 #import "NYPLCatalogFacet.h"
 #import "SimplyE-Swift.h"
 #import "NYPLCatalogGroupedFeedViewController.h"
@@ -147,7 +147,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   }
   
   [refreshControl endRefreshing];
-  [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+  [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated

@@ -5,7 +5,6 @@
 #import "NYPLTenPrintCoverView+NYPLImageAdditions.h"
 
 #import "NYPLBookCoverRegistry.h"
-#import "NYPLSettings.h"
 #import "SimplyE-Swift.h"
 
 @interface NYPLBookCoverRegistry ()

@@ -6,7 +6,7 @@
 #import "NYPLCatalogSearchViewController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLOpenSearchDescription.h"
-#import "NYPLSettings.h"
+
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLOPDS.h"
 #import <PureLayout/PureLayout.h>
@@ -53,12 +53,12 @@
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(syncEnded)
-   name:NYPLSyncEndedNotification object:nil];
+   name:NSNotification.NYPLSyncEnded object:nil];
   
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(syncBegan)
-   name:NYPLSyncBeganNotification object:nil];
+   name:NSNotification.NYPLSyncBegan object:nil];
 
   return self;
 }
@@ -124,7 +124,7 @@
       if (self.collectionView.numberOfSections == 0) {
         self.collectionView.contentOffset = CGPointMake(0, -self.collectionView.contentInset.top);
       }
-      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];\
+      [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];\
     } else {
       self.navigationItem.leftBarButtonItem.enabled = NO;
     }
@@ -256,11 +256,11 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     } else {
       [NYPLAccountSignInViewController requestCredentialsUsingExistingBarcode:NO completionHandler:nil];
       [self.refreshControl endRefreshing];
-      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+      [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
     }
   } else {
     [[NYPLBookRegistry sharedRegistry] justLoad];
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
   }
 }
 

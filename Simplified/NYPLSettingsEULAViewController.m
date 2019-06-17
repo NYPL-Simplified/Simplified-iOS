@@ -1,7 +1,7 @@
 @import WebKit;
 
 #import "NYPLConfiguration.h"
-#import "NYPLSettings.h"
+
 #import "NYPLSettingsEULAViewController.h"
 
 @interface NYPLSettingsEULAViewController ()
@@ -31,7 +31,7 @@
   if(!self) return nil;
   
   self.title = NSLocalizedString(@"EULA", nil);
-  self.eulaURL = [NSURL URLWithString:NYPLUserAgreementURLString];
+  self.eulaURL = [NSURL URLWithString:NYPLSettings.NYPLUserAgreementURLString];
   
   return self;
 }
