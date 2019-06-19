@@ -1,3 +1,5 @@
+@import Bugsnag;
+
 #import "NYPLAlertController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLReaderSettings.h"
@@ -256,6 +258,18 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       NYPLReadiumBookmark *bookmark = self.bookmarks[indexPath.row];
       [self.bookmarks removeObjectAtIndex:indexPath.row];
       [self.delegate TOCViewController:self didDeleteBookmark:bookmark];
+    } else { // This is to catch SIMPLY-740. Remove if we haven't seen such a problem.
+      NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
+      [metadataParams setObject:[NSNumber numberWithLong:indexPath.row] forKey:@"rowIndex"];
+      [metadataParams setObject:[NSNumber numberWithLong:self.bookmarks.count] forKey:@"bookmarkCount"];
+      [Bugsnag notifyError:[NSError errorWithDomain:@"org.nypl.labs.SimplyE" code:11 userInfo:nil]
+                     block:^(BugsnagCrashReport * _Nonnull report) {
+                       report.context = @"NYPLReaderTOCViewController";
+                       report.severity = BSGSeverityWarning;
+                       report.errorMessage = @"Attempting to delete bookmark out of bounds.";
+                       [report addMetadata:metadataParams toTabWithName:@"Extra Data"];
+                     }
+       ];
     }
     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:(UITableViewRowAnimationFade)];
   }
