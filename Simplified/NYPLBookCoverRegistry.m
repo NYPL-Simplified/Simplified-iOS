@@ -64,16 +64,20 @@ static NSUInteger const memoryCacheInMegabytes = 2;
 {
   NSURL *URL = [[DirectoryManager current] URLByAppendingPathComponent:@"pinned-thumbnail-images"];
 
-  @synchronized(self) {
-    NSError *error = nil;
-    if(![[NSFileManager defaultManager]
-         createDirectoryAtURL:URL
-         withIntermediateDirectories:YES
-         attributes:nil
-         error:&error]) {
-      NYPLLOG(@"Failed to create directory.");
-      return nil;
+  if (URL != nil) {
+    @synchronized(self) {
+      NSError *error = nil;
+      if(![[NSFileManager defaultManager]
+           createDirectoryAtURL:URL
+           withIntermediateDirectories:YES
+           attributes:nil
+           error:&error]) {
+        NYPLLOG(@"Failed to create directory.");
+        return nil;
+      }
     }
+  } else {
+    NYPLLOG(@"[pinnedThumbnailImageDirectoryURL] nil directory");
   }
   
   return URL;
