@@ -23,6 +23,9 @@ class MigrationManager: NSObject {
     if versionIsLessThan(appVersionTokens, [3, 2, 0]) { // v3.2.0
       migrate1();
     }
+    if versionIsLessThan(appVersionTokens, [3, 3, 0]) { // v3.3.0
+      migrate2();
+    }
 
     // Migrate Network Queue DB
     NetworkQueue.sharedInstance.migrate()
@@ -45,6 +48,7 @@ class MigrationManager: NSObject {
 
   // v3.2.0
   private static func migrate1() -> Void {
+    Log.info(#file, "Running 3.2.0 migration")
     // Build account map
     var accountMap = [Int: String]()
     if let accountsUrl = Bundle.main.url(forResource: "Accounts", withExtension: "json") {
@@ -107,6 +111,24 @@ class MigrationManager: NSObject {
           Log.error(#file, "Could not move directory from \(oldDirectoryPath.path) to \(newDirectoryPath.path) \(error)")
         }
       }
+    }
+  }
+  
+  // v3.3.0
+  private static func migrate2() -> Void {
+    Log.info(#file, "Running 3.3.0 migration")
+    
+    // Cache locations are changing for catalogs
+    let applicationSupportUrl = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+    let origBetaUrl = applicationSupportUrl.appendingPathComponent("library_list_beta.json")
+    let origProdUrl = applicationSupportUrl.appendingPathComponent("library_list_prod.json")
+    try? FileManager.default.removeItem(at: origBetaUrl)
+    try? FileManager.default.removeItem(at: origProdUrl)
+    if FileManager.default.fileExists(atPath: origBetaUrl.absoluteString) {
+      Log.warn(#file, "Old beta cache still exists")
+    }
+    if FileManager.default.fileExists(atPath: origProdUrl.absoluteString) {
+      Log.warn(#file, "Old prod cache still exists")
     }
   }
 }
