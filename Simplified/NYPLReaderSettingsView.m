@@ -2,6 +2,7 @@
 
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReaderReadiumView.h"
+#import "SimplyE-Swift.h"
 
 @interface NYPLReaderSettingsView ()
 

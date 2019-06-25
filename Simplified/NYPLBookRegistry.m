@@ -271,12 +271,14 @@ static NSString *const RecordsKey = @"records";
 
     [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncBeganNotification object:nil];
 
-    if(self.syncing) {
+    if (self.syncing) {
+      NYPLLOG(@"[syncWithCompletionHandler] Already syncing");
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
       }];
       return;
     } else if (![[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+      NYPLLOG(@"[syncWithCompletionHandler] No barcode and PIN");
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(completion) completion(NO);
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
@@ -307,6 +309,7 @@ static NSString *const RecordsKey = @"records";
      }
      
      if(!self.syncShouldCommit) {
+       NYPLLOG(@"[syncWithCompletionHandler] Sync shouldn't commit");
        // A reset must have occurred.
        self.syncing = NO;
        [self broadcastChange];
@@ -361,7 +364,12 @@ static NSString *const RecordsKey = @"records";
         }];
      };
      
-     if(self.delaySync) {
+     if (self.delaySync) {
+       if (self.delayedSyncBlock) {
+         NYPLLOG(@"[syncWithCompletionHandler] Delaying sync; block already exists!");
+       } else {
+         NYPLLOG(@"[syncWithCompletionHandler] Delaying sync");
+       }
        self.delayedSyncBlock = commitBlock;
      } else {
        commitBlock();

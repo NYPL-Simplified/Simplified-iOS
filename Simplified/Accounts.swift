@@ -63,6 +63,9 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
       NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
     }
   }
+  var currentAccountId: String? {
+    return defaults.string(forKey: currentAccountIdentifierKey)
+  }
 
   fileprivate override init()
   {
@@ -70,7 +73,9 @@ func loadDataWithCache(url: URL, cacheUrl: URL, preferringCache: Bool, completio
     
     super.init()
     
-    loadCatalogs(preferringCache: true, completion: {_ in })
+    DispatchQueue.main.async {
+      self.loadCatalogs(preferringCache: true, completion: {_ in })
+    }
   }
   
   let completionHandlerAccessQueue = DispatchQueue(label: "libraryListCompletionHandlerAccessQueue")

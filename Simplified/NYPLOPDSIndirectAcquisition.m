@@ -1,6 +1,7 @@
 #import "NYPLOPDSIndirectAcquisition.h"
 
 #import "NYPLXML.h"
+#import "SimplyE-Swift.h"
 
 #pragma mark Dictionary Keys
 

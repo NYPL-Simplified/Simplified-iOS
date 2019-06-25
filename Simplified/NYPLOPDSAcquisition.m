@@ -3,6 +3,7 @@
 #import "NYPLOPDSAcquisitionAvailability.h"
 #import "NYPLOPDSIndirectAcquisition.h"
 #import "NYPLXML.h"
+#import "SimplyE-Swift.h"
 
 static NSString *const borrowRelationString = @"http://opds-spec.org/acquisition/borrow";
 static NSString *const buyRelationString = @"http://opds-spec.org/acquisition/buy";

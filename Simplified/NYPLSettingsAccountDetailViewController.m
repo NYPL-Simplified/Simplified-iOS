@@ -11,7 +11,6 @@
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLBugsnagLogs.h"
 #import "NYPLCatalogNavigationController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
@@ -621,7 +620,7 @@ double const requestTimeoutInterval = 25.0;
                                                                   animated:YES
                                                                 completion:nil];
   [self removeActivityTitle];
-  [NYPLBugsnagLogs loginAlertError:error code:error.code libraryName:self.selectedAccount.name];
+  [NYPLBugsnagLogs loginAlertErrorWithError:error code:error.code libraryName:self.selectedAccount.name];
 }
 
 - (void)showLogoutAlertWithError:(NSError *)error responseCode:(NSInteger)code

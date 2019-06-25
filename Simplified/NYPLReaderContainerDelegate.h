@@ -1,6 +1,5 @@
 #import "NYPLReadium.h"
-#import <Foundation/Foundation.h>
+#import "NYPLReaderContainerDelegateBase.h"
 
-@interface NYPLReaderContainerDelegate : NSObject <RDContainerDelegate>
-
+@interface NYPLReaderContainerDelegate : NYPLReaderContainerDelegateBase <RDContainerDelegate>
 @end

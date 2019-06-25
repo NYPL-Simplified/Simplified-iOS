@@ -9,6 +9,7 @@
 #import "NYPLAlertController.h"
 #import "NYPLProblemDocument.h"
 #import "NYPLRootTabBarController.h"
+#import "SimplyE-Swift.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>

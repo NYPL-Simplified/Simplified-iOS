@@ -8,7 +8,6 @@
 #import "NYPLBook.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLBugsnagLogs.h"
 #import "NYPLOPDS.h"
 #import "NYPLSession.h"
 #import "NYPLProblemDocument.h"
@@ -478,7 +477,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
   if (!book.identifier) {
-    [NYPLBugsnagLogs recordUnexpectedNilIdentifierForBook:book identifier:identifier title:bookTitle];
+    [NYPLBugsnagLogs recordUnexpectedNilIdentifierWithBook:book identifier:identifier title:bookTitle];
   }
 
   // Process Adobe Return
@@ -940,7 +939,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
     if (![self fileURLForBookIndentifier:book.identifier]) {
       [self failDownloadForBook:book];
-      [NYPLBugsnagLogs recordFailureToCopy:book];
+      [NYPLBugsnagLogs recordFailureToCopyWithBook:book];
       return;
     }
     

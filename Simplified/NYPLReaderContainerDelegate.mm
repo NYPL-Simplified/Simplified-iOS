@@ -14,7 +14,7 @@
    handleSdkError:(NSString * const)message
 isSevereEpubError:(__unused const BOOL)isSevereEpubError
 {
-  NYPLLOG(message);
+  [self log:message];
 
   // Ignore the error and continue.
   return YES;

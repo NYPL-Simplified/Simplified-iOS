@@ -3,6 +3,7 @@
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
 #import <PureLayout/PureLayout.h>
+#import "SimplyE-Swift.h"
 
 #import "NYPLFacetView.h"
 
