@@ -24,20 +24,20 @@
 
 In theory, following the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf", you should be able to build OpenSSL (section 12.1) and cURL (section 12.3) since Adobe provides this package to their developers.
 The following are some smoother steps to achieving this:
-- From `adobe-rmsdk/thirdparty/openssl` run `mkdir public; mv iOS-openssl/ public/ios/`
-- Download openssl 1.0.1 (1.0.1u should suffice) to `adobe-rmsdk/thirdparty/openssl/public/ios/openssl-1.0.1u.tar.gz` (note that the build script is expecting a tarball; as of this writing the download can be found at: https://www.openssl.org/source/old/1.0.1/)
-- Modify the `adobe-rmsdk/thirdparty/openssl/public/ios/build.sh` such that:
+01. From `adobe-rmsdk/thirdparty/openssl` run `mkdir public; mv iOS-openssl/ public/ios/`
+02. Download openssl 1.0.1 (1.0.1u should suffice) to `adobe-rmsdk/thirdparty/openssl/public/ios/openssl-1.0.1u.tar.gz` (note that the build script is expecting a tarball; as of this writing the download can be found at: https://www.openssl.org/source/old/1.0.1/)
+03. Modify the `adobe-rmsdk/thirdparty/openssl/public/ios/build.sh` such that:
     - `OPENSSL_VERSION` reflects the version you downloaded, in this case "1.0.1u"
     - `SDK_VERSION` reflects the iOS SDK you're using (you can check what you have installed using `xcodebuild -showsdks`)
     - `MIN_VERSION` is "9.0"
-- From the directory of the build script (this will take a while): `bash ./build.sh`
-- Download curl (7.64.1 is known to work) to `adobe-rmsdk/thirdparty/curl/ios-libCurl/curl-7.64.1.zip` (note that the build script expects a ZIP, not tarball; as of this writing this download can be found at: https://curl.haxx.se/download/)
-- Replace `adobe-rmsdk/thirdparty/curl/ios/build.sh` with `build_curl.sh`, a fixed version of the build script
-- Modify the build script similary to the openssl one:
+04. From the directory of the build script (this will take a while): `bash ./build.sh`
+05. Download curl (7.64.1 is known to work) to `adobe-rmsdk/thirdparty/curl/ios-libCurl/curl-7.64.1.zip` (note that the build script expects a ZIP, not tarball; as of this writing this download can be found at: https://curl.haxx.se/download/)
+06. Replace `adobe-rmsdk/thirdparty/curl/ios/build.sh` with `build_curl.sh`, a fixed version of the build script
+07. Modify the build script similary to the openssl one:
     - `CURL_VERSION` reflects the version you downloaded, in this case "7.64.1"
     - `SDK_VERSION` reflects the iOS SDK you're using (you can check what you have installed using `xcodebuild -showsdks`)
     - `MIN_VERSION` is "9.0"
-- From the directory of the build script (this will take a while): `bash ./build.sh` (or whatever you named the copied script)
+08. From the directory of the build script (this will take a while): `bash ./build.sh` (or whatever you named the copied script)
 
 Be sure to note the following:
 
