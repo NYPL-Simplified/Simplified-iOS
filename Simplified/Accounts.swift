@@ -101,6 +101,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, options: AccountsManager.LoadOpt
       NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
     }
   }
+  
   var currentAccountId: String? {
     return defaults.string(forKey: currentAccountIdentifierKey)
   }

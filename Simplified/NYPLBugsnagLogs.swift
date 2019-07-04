@@ -16,6 +16,7 @@ fileprivate let tabName = "Extra Data"
   class func addAccountInfoToMetadata(_ metadata: inout [AnyHashable : Any]) {
     metadata["currentAccount"] = AccountsManager.shared.currentAccount ?? nullString
     metadata["currentAccountId"] = AccountsManager.shared.currentAccountId ?? nullString
+    metadata["currentAccountSet"] = AccountsManager.shared.accountSet
     metadata["numAccounts"] = AccountsManager.shared.accounts().count
   }
   
