@@ -3,7 +3,7 @@
 #import "NYPLMyBooksNavigationController.h"
 #import "NYPLMyBooksViewController.h"
 #import "NYPLReaderViewController.h"
-#import "NYPLSettings.h"
+
 #import "NYPLSettingsSplitViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "SimplyE-Swift.h"
@@ -52,7 +52,7 @@
   
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(setTabViewControllers)
-                                               name:NYPLCurrentAccountDidChangeNotification
+                                               name:NSNotification.NYPLCurrentAccountDidChange
                                              object:nil];
 
   [[NSNotificationCenter defaultCenter] addObserver:self

@@ -30,7 +30,7 @@ import Foundation
   // is already logged in when finding a username/pin stored in the keychain
   // from a previous app install.
   private class func removeItemsFromPreviousInstalls() {
-    if (UserDefaults.standard.object(forKey: userHasSeenWelcomeScreenKey) != nil) {
+    if (NYPLSettings.shared.appVersion != nil) {
       return
     }
     Log.info(#file, "Fresh install detected. Purging any existing keychain items...")

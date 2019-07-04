@@ -14,7 +14,7 @@
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReachability.h"
-#import "NYPLSettings.h"
+
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLRootTabBarController.h"
@@ -1037,7 +1037,7 @@ completionHandler:(void (^)(void))handler
     } else {
       [[NYPLAccount sharedAccount] removeAll];
       [self accountDidChange];
-      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+      [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
       [self showLoginAlertWithError:error];
     }
   }];

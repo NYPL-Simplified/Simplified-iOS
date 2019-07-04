@@ -17,9 +17,9 @@ import UIKit
       return
     }
 
-    let settings = NYPLSettings.shared()
+    let settings = NYPLSettings.shared
 
-    if (settings?.userHasSeenFirstTimeSyncMessage == true &&
+    if (settings.userHasSeenFirstTimeSyncMessage == true &&
         AccountsManager.shared.currentAccount?.details?.syncPermissionGranted == false) {
       completion(false)
       return
@@ -29,22 +29,22 @@ import UIKit
 
       if (initialized && syncIsPermitted) {
         completion(true)
-        settings?.userHasSeenFirstTimeSyncMessage = true;
+        settings.userHasSeenFirstTimeSyncMessage = true;
         Log.debug(#file, "Sync has already been enabled on the server. Enable here as well.")
         return
-      } else if (!initialized && settings?.userHasSeenFirstTimeSyncMessage == false) {
+      } else if (!initialized && settings.userHasSeenFirstTimeSyncMessage == false) {
         Log.debug(#file, "Sync has never been initialized for the patron. Showing UIAlertController flow.")
         let title = "SimplyE Sync"
         let message = "Enable sync to save your reading position and bookmarks to your other devices.\n\nYou can change this any time in Settings."
         let alertController = NYPLAlertController.init(title: title, message: message, preferredStyle: .alert)
         let notNowAction = UIAlertAction.init(title: "Not Now", style: .default, handler: { action in
           completion(false)
-          settings?.userHasSeenFirstTimeSyncMessage = true;
+          settings.userHasSeenFirstTimeSyncMessage = true;
         })
         let enableSyncAction = UIAlertAction.init(title: "Enable Sync", style: .default, handler: { action in
           self.updateServerSyncSetting(toEnabled: true) { success in
             completion(success)
-            settings?.userHasSeenFirstTimeSyncMessage = true;
+            settings.userHasSeenFirstTimeSyncMessage = true;
           }
         })
         alertController.addAction(notNowAction)

@@ -15,7 +15,7 @@
 #import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksDownloadInfo.h"
-#import "NYPLSettings.h"
+
 #import "NYPLMyBooksSimplifiedBearerToken.h"
 #import "SimplyE-Swift.h"
 

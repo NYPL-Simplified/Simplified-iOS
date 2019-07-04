@@ -2,7 +2,7 @@
 #import "NYPLConfiguration.h"
 
 #import "NYPLCatalogNavigationController.h"
-#import "NYPLSettings.h"
+
 #import "NYPLAccount.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLRootTabBarController.h"
@@ -62,9 +62,9 @@
   
   [self loadTopLevelCatalogViewController];
   
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NYPLCurrentAccountDidChangeNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncBegan) name:NYPLSyncBeganNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncEnded) name:NYPLSyncEndedNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NSNotification.NYPLCurrentAccountDidChange object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncBegan) name:NSNotification.NYPLSyncBegan object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncEnded) name:NSNotification.NYPLSyncEnded object:nil];
   
   return self;
 }
@@ -184,7 +184,7 @@
     }];
     
     [[NSNotificationCenter defaultCenter]
-     postNotificationName:NYPLCurrentAccountDidChangeNotification
+     postNotificationName:NSNotification.NYPLCurrentAccountDidChange
      object:nil];
   };
   if (account.details.needsAgeCheck) {
@@ -212,7 +212,7 @@
       [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
 
       [[NSNotificationCenter defaultCenter]
-      postNotificationName:NYPLCurrentAccountDidChangeNotification
+      postNotificationName:NSNotification.NYPLCurrentAccountDidChange
       object:nil];
     };
 

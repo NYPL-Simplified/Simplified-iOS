@@ -16,7 +16,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLSettings.h"
+
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIFont+NYPLSystemFontOverride.h"
@@ -663,7 +663,7 @@ double const requestTimeoutInterval = 25.0;
         }];
       }
     } else {
-      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+      [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
       [self showLoginAlertWithError:error];
     }
   }];

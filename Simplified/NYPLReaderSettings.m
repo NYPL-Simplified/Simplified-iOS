@@ -3,7 +3,7 @@
 #import "UIColor+NYPLColorAdditions.h"
 
 #import "NYPLReaderSettings.h"
-#import "NYPLSettings.h"
+
 #import "SimplyE-Swift.h"
 
 BOOL NYPLReaderSettingsDecreasedFontSize(NYPLReaderSettingsFontSize const input,

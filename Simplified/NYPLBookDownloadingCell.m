@@ -1,7 +1,8 @@
 #import "NYPLBook.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
-#import "NYPLSettings.h"
+#import "SimplyE-Swift.h"
+
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLLocalization.h"
 
@@ -29,7 +30,7 @@
   
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(setup)
-                                               name:NYPLCurrentAccountDidChangeNotification
+                                               name:NSNotification.NYPLCurrentAccountDidChange
                                              object:nil];
   return self;
 }

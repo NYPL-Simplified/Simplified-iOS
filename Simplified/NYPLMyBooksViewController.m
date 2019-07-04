@@ -9,7 +9,7 @@
 #import "NYPLFacetView.h"
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLAccountSignInViewController.h"
-#import "NYPLSettings.h"
+
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import <PureLayout/PureLayout.h>
@@ -100,12 +100,12 @@ typedef NS_ENUM(NSInteger, FacetSort) {
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(syncEnded)
-   name:NYPLSyncEndedNotification object:nil];
+   name:NSNotification.NYPLSyncEnded object:nil];
   
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(syncBegan)
-   name:NYPLSyncBeganNotification object:nil];
+   name:NSNotification.NYPLSyncBegan object:nil];
   
   return self;
 }
@@ -169,7 +169,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
     BOOL isSyncing = [NYPLBookRegistry sharedRegistry].syncing;
     if(!isSyncing) {
       [self.refreshControl endRefreshing];
-      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+      [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
     } else {
       self.navigationItem.leftBarButtonItem.enabled = NO;
     }
@@ -373,11 +373,11 @@ OK:
     } else {
       [NYPLAccountSignInViewController requestCredentialsUsingExistingBarcode:NO completionHandler:nil];
       [self.refreshControl endRefreshing];
-      [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+      [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
     }
   } else {
     [[NYPLBookRegistry sharedRegistry] justLoad];
-    [[NSNotificationCenter defaultCenter] postNotificationName:NYPLSyncEndedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
   }
 }
 

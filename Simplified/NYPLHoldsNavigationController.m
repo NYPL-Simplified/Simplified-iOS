@@ -1,7 +1,7 @@
 #import "NYPLHoldsViewController.h"
 
 #import "NYPLHoldsNavigationController.h"
-#import "NYPLSettings.h"
+
 #import "NYPLAccount.h"
 #import "NYPLAlertController.h"
 #import "NYPLBookRegistry.h"
@@ -36,7 +36,7 @@
   holdsViewController.navigationItem.leftBarButtonItem.accessibilityLabel = NSLocalizedString(@"AccessibilitySwitchLibrary", nil);
   holdsViewController.navigationItem.leftBarButtonItem.enabled = YES;
   
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NYPLCurrentAccountDidChangeNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentAccountChanged) name:NSNotification.NYPLCurrentAccountDidChange object:nil];
   
   return self;
 }

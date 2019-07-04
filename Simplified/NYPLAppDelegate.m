@@ -9,7 +9,7 @@
 #import "NYPLReachability.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLRootTabBarController.h"
-#import "NYPLSettings.h"
+
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -44,9 +44,8 @@ const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 24;
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
   // Perform data migrations as early as possible before anything has a chance to access them
-  [MigrationManager migrate];
-
   [NYPLKeychainManager validateKeychain];
+  [MigrationManager migrate];
   
   self.audiobookLifecycleManager = [[AudiobookLifecycleManager alloc] init];
   [self.audiobookLifecycleManager didFinishLaunching];

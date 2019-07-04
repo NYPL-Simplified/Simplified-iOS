@@ -15,7 +15,7 @@
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLReaderViewController.h"
 #import "NYPLRootTabBarController.h"
-#import "NYPLSettings.h"
+
 #import "NSURLRequest+NYPLURLRequestAdditions.h"
 #import "NYPLJSON.h"
 #import "NYPLReachabilityManager.h"
