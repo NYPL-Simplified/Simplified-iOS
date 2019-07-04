@@ -5,7 +5,6 @@
 #import "NYPLAlertController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLBugsnagLogs.h"
 #import "NYPLReachability.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLRootTabBarController.h"
@@ -86,6 +85,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
     [application endBackgroundTask:bgTask];
   }];
 
+  NYPLLOG(@"[BackgroundFetch] Starting background fetch block");
   if ([NYPLUserNotifications backgroundFetchIsNeeded]) {
     // Only the "current library" account syncs during a background fetch.
     [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
@@ -93,10 +93,12 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
         [[NYPLBookRegistry sharedRegistry] save];
       }
     } backgroundFetchHandler:^(UIBackgroundFetchResult result) {
+      NYPLLOG(@"[BackgroundFetch] Completed with result");
       backgroundFetchHandler(result);
       [application endBackgroundTask:bgTask];
     }];
   } else {
+    NYPLLOG(@"[BackgroundFetch] Fetch wasn't needed");
     backgroundFetchHandler(UIBackgroundFetchResultNewData);
     [application endBackgroundTask:bgTask];
   }

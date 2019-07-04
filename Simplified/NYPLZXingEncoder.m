@@ -1,5 +1,5 @@
 #import "NYPLZXingEncoder.h"
-#import "NYPLBugsnagLogs.h"
+#import "SimplyE-Swift.h"
 
 @implementation NYPLZXingEncoder
 
@@ -37,7 +37,7 @@
   }
   @catch (NSException *exception) {
     NYPLLOG_F(@"Exception thrown during barcode image encoding: %@",exception.name);
-    if (exception.name && exception.reason) [NYPLBugsnagLogs logExceptionToBugsnag:exception library:library];
+    if (exception.name && exception.reason) [NYPLBugsnagLogs logExceptionToBugsnagWithException:exception library:library];
     return nil;
   }
 }

@@ -1,5 +1,7 @@
 #import "NYPLKeychain.h"
 
+#import "SimplyE-Swift.h"
+
 @implementation NYPLKeychain
 
 + (instancetype)sharedKeychain

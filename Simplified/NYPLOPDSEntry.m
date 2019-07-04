@@ -5,6 +5,7 @@
 #import "NYPLOPDSLink.h"
 #import "NYPLOPDSRelation.h"
 #import "NYPLXML.h"
+#import "SimplyE-Swift.h"
 
 #import "NYPLOPDSEntry.h"
 

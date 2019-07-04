@@ -3,7 +3,6 @@
 #import "NYPLConfiguration.h"
 #import "NYPLAccount.h"
 #import "NYPLAppDelegate.h"
-#import "NYPLBugsnagLogs.h"
 
 #import "UILabel+NYPLAppearanceAdditions.h"
 #import "UIButton+NYPLAppearanceAdditions.h"

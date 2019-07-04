@@ -1,4 +1,3 @@
-#import "NYPLBugsnagLogs.h"
 #import "NYPLConfiguration.h"
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
@@ -6,6 +5,8 @@
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLAlertController.h"
 #import "NYPLProblemDocument.h"
+#import "SimplyE-Swift.h"
+
 #import <PureLayout/PureLayout.h>
 
 @interface NYPLRemoteViewController () <NSURLConnectionDataDelegate>
@@ -195,7 +196,7 @@
   
   if (connection.currentRequest.URL) {
     self.reloadView.hidden = NO;
-    [NYPLBugsnagLogs catalogLoadError:error URL:self.URL];
+    [NYPLBugsnagLogs catalogLoadErrorWithError:error url:self.URL];
   }
 
   self.connection = nil;

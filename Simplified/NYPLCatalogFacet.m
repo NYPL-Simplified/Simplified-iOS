@@ -1,4 +1,5 @@
 #import "NYPLOPDS.h"
+#import "SimplyE-Swift.h"
 
 #import "NYPLCatalogFacet.h"
 

@@ -16,6 +16,7 @@
 
 @import PureLayout;
 #import <AudioToolbox/AudioToolbox.h>
+#import "SimplyE-Swift.h"
 #import "NYPLBarcodeScanningViewController.h"
 
 @interface NYPLBarcodeScanningViewController ()

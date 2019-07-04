@@ -4,5 +4,4 @@ import UIKit
 
   @IBOutlet weak var chapterLabel: UILabel!
   @IBOutlet weak var pageNumberLabel: UILabel!
-  
 }

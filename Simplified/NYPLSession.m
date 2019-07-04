@@ -1,6 +1,7 @@
 #import "NYPLAccount.h"
 #import "NYPLAsync.h"
 #import "NYPLBasicAuth.h"
+#import "SimplyE-Swift.h"
 
 #import "NYPLSession.h"
 

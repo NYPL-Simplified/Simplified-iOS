@@ -101,6 +101,10 @@ func loadDataWithCache(url: URL, cacheUrl: URL, options: AccountsManager.LoadOpt
       NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
     }
   }
+  
+  var currentAccountId: String? {
+    return defaults.string(forKey: currentAccountIdentifierKey)
+  }
 
   fileprivate override init() {
     self.defaults = UserDefaults.standard
@@ -114,8 +118,12 @@ func loadDataWithCache(url: URL, cacheUrl: URL, options: AccountsManager.LoadOpt
       name: NSNotification.Name.NYPLUseBetaDidChange,
       object: nil
     )
-    loadCatalogs(options: .offline, completion: {_ in })
-    loadCatalogs(options: .strict_offline, url: NYPLSettings.shared.useBetaLibraries ? prodUrl : betaUrl, completion: {_ in })
+    DispatchQueue.main.async {
+      self.loadCatalogs(options: .offline, completion: {_ in })
+    }
+    DispatchQueue.main.async {
+      self.loadCatalogs(options: .strict_offline, url: NYPLSettings.shared.useBetaLibraries ? prodUrl : betaUrl, completion: { _ in })
+    }
   }
   
   let completionHandlerAccessQueue = DispatchQueue(label: "libraryListCompletionHandlerAccessQueue")

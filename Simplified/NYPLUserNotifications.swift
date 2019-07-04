@@ -77,6 +77,7 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
   /// Depending on which Notificaitons are supported, only perform an expensive
   /// network operation if it's needed.
   class func backgroundFetchIsNeeded() -> Bool {
+    Log.info(#file, "[backgroundFetchIsNeeded] Held Books: \(NYPLBookRegistry.shared().heldBooks.count)")
     return NYPLBookRegistry.shared().heldBooks.count > 0
   }
 
