@@ -6,7 +6,6 @@
 #import "NYPLOPDS.h"
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLConfiguration.h"
-#import "NYPLSettings.h"
 #import "SimplyE-Swift.h"
 
 #import "NYPLCatalogUngroupedFeed.h"

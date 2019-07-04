@@ -16,7 +16,7 @@ fileprivate let tabName = "Extra Data"
   class func addAccountInfoToMetadata(_ metadata: inout [AnyHashable : Any]) {
     metadata["currentAccount"] = AccountsManager.shared.currentAccount ?? nullString
     metadata["currentAccountId"] = AccountsManager.shared.currentAccountId ?? nullString
-    metadata["numAccounts"] = AccountsManager.shared.accounts.count
+    metadata["numAccounts"] = AccountsManager.shared.accounts().count
   }
   
   class func recordUnexpectedNilIdentifier(book: NYPLBook?, identifier: String?, title: String?) {

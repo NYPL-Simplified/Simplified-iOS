@@ -14,7 +14,7 @@
 #import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksDownloadInfo.h"
-#import "NYPLSettings.h"
+
 #import "NYPLMyBooksSimplifiedBearerToken.h"
 #import "SimplyE-Swift.h"
 
@@ -556,14 +556,18 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 {
   NSURL *directoryURL = [[DirectoryManager directory:account] URLByAppendingPathComponent:@"content"];
   
-  NSError *error = nil;
-  if(![[NSFileManager defaultManager]
-       createDirectoryAtURL:directoryURL
-       withIntermediateDirectories:YES
-       attributes:nil
-       error:&error]) {
-    NYPLLOG(@"Failed to create directory.");
-    return nil;
+  if (directoryURL != nil) {
+    NSError *error = nil;
+    if(![[NSFileManager defaultManager]
+         createDirectoryAtURL:directoryURL
+         withIntermediateDirectories:YES
+         attributes:nil
+         error:&error]) {
+      NYPLLOG(@"Failed to create directory.");
+      return nil;
+    }
+  } else {
+    NYPLLOG(@"[contentDirectoryURL] nil directory.");
   }
   return directoryURL;
 }

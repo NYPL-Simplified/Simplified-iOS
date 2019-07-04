@@ -1,7 +1,7 @@
 #import "NYPLConfiguration.h"
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
-#import "NYPLSettings.h"
+
 #import "UIView+NYPLViewAdditions.h"
 #import "NYPLAlertController.h"
 #import "NYPLProblemDocument.h"
