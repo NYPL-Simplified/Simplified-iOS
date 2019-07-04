@@ -47,9 +47,12 @@ class MigrationManager: NSObject {
   }
 
   // v3.2.0
+  // Account IDs are changing, so we need to migrate resources accordingly
   private static func migrate1() -> Void {
     Log.info(#file, "Running 3.2.0 migration")
-    // Build account map
+    
+    // Build account map where the key is the old account ID and the value is the new account ID
+    // This will help us perform the rest of the migrations logic
     var accountMap = [Int: String]()
     if let accountsUrl = Bundle.main.url(forResource: "Accounts", withExtension: "json") {
       do {
@@ -69,7 +72,7 @@ class MigrationManager: NSObject {
       Log.error(#file, "Accounts.json doesn't exist!")
     }
 
-    // Migrate user defaults
+    // Build old & new lists for reference in logic
     // Note: Can't use NYPLSettings because the swift version stops using optionals and performs coerscions
     let oldAccountsList = UserDefaults.standard.array(forKey: "NYPLSettingsLibraryAccountsKey")?.compactMap({ $0 as? Int }) ?? [Int]()
     let newAccountsList = UserDefaults.standard.array(forKey: "NYPLSettingsLibraryAccountsKey")?.compactMap({
@@ -78,15 +81,19 @@ class MigrationManager: NSObject {
     }) ?? [String]()
 
     // Assign new uuid account list
+    // The list of accounts would have been integers before; they will now be stored as a list of strings
     NYPLSettings.shared.settingsAccountsList = newAccountsList
     
     // Migrate currentAccount
+    // The old account ID that's being stored in the user defaults will be replaces with the string UUID
     let userDefaults = UserDefaults.standard
     if let currentAccountIntId = userDefaults.object(forKey: currentAccountIdentifierKey) as? Int {
       userDefaults.set(accountMap[currentAccountIntId], forKey: currentAccountIdentifierKey)
     }
 
     // Migrate file storage
+    // Some resources are based on their account IDs, which have changed from integers to UUIDs
+    // This will move them from the old destination to the new one
     for accountId in oldAccountsList {
       if accountId == 0 {
         continue
@@ -115,10 +122,11 @@ class MigrationManager: NSObject {
   }
   
   // v3.3.0
+  // Cached library registry results locations are changing
   private static func migrate2() -> Void {
     Log.info(#file, "Running 3.3.0 migration")
     
-    // Cache locations are changing for catalogs
+    // Cache locations are changing for catalogs, so we'll simply remove anything at the old locations
     let applicationSupportUrl = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
     let origBetaUrl = applicationSupportUrl.appendingPathComponent("library_list_beta.json")
     let origProdUrl = applicationSupportUrl.appendingPathComponent("library_list_prod.json")

@@ -9,6 +9,16 @@ let prodUrl = URL(string: "https://libraryregistry.librarysimplified.org/librari
 let betaUrlHash = betaUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
 let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
 
+/**
+ Switchboard for fetching data, whether it's from a cache source or fresh from the endpoint.
+ @param url target URL to fetch from
+ @param cacheUrl the target file URL to save the data to
+ @param options load options to determine the behaviour of this method;
+ noCache - don't fetch from cache under any circumstances
+ preferCache - fetches from cache if cache exists
+ cacheOnly - only fetch from cache, unless `noCache` is specified
+ @param completion callback method when this is complete, providing the data or nil if unsuccessful
+ */
 func loadDataWithCache(url: URL, cacheUrl: URL, options: AccountsManager.LoadOptions, completion: @escaping (Data?) -> ()) {
   if !options.contains(.noCache) {
     let modified = (try? FileManager.default.attributesOfItem(atPath: cacheUrl.path)[.modificationDate]) as? Date
@@ -123,6 +133,12 @@ func loadDataWithCache(url: URL, cacheUrl: URL, options: AccountsManager.LoadOpt
     return !wasEmpty
   }
   
+  /**
+   Resolves any complation handlers that may have been queued waiting for a registry fetch
+   and clears the queue.
+   @param key the key for the completion handler list, since there are multiple
+   @param success success indicator to pass on to each handler
+   */
   func callAndClearLoadingCompletionHandlers(key: String, _ success: Bool) {
     var handlers = [(Bool) -> ()]()
     completionHandlerAccessQueue.sync {
