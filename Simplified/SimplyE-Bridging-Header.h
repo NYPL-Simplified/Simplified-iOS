@@ -10,7 +10,6 @@
 #import "NYPLAccount.h"
 #import "NYPLSettingsAccountDetailViewController.h"
 #import "NYPLRoundedButton.h"
-#import "NYPLAlertController.h"
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLXML.h"
 #import "UIFont+NYPLSystemFontOverride.h"
@@ -32,3 +31,6 @@
 #import "NYPLHoldsNavigationController.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLBookLocation.h"
+#if defined(FEATURE_DRM_CONNECTOR)
+#import "ADEPT/NYPLADEPTErrors.h"
+#endif

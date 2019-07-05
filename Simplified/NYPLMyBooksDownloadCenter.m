@@ -2,7 +2,6 @@
 
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccount.h"
-#import "NYPLAlertController.h"
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBook.h"
@@ -10,7 +9,6 @@
 #import "NYPLBookRegistry.h"
 #import "NYPLOPDS.h"
 #import "NYPLSession.h"
-#import "NYPLProblemDocument.h"
 #import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksDownloadInfo.h"
@@ -181,7 +179,11 @@ didFinishDownloadingToURL:(NSURL *const)location
   NYPLProblemDocument *problemDocument = nil;
   if ([downloadTask.response.MIMEType isEqualToString:@"application/problem+json"]
        || [downloadTask.response.MIMEType isEqualToString:@"application/api-problem+json"]) {
-    problemDocument = [NYPLProblemDocument problemDocumentWithData:[NSData dataWithContentsOfURL:location]];
+    NSError *problemDocumentParseError = nil;
+    problemDocument = [NYPLProblemDocument fromData:[NSData dataWithContentsOfURL:location] error:&problemDocumentParseError];
+    if (problemDocumentParseError) {
+      [NYPLBugsnagLogs logProblemDocumentParseErrorWithError:problemDocumentParseError url:location];
+    }
     [[NSFileManager defaultManager] removeItemAtURL:location error:NULL];
     success = NO;
   }
@@ -200,8 +202,9 @@ didFinishDownloadingToURL:(NSURL *const)location
         NSString *PDFString = @">application/pdf</dc:format>";
         if([[[NSString alloc] initWithData:ACSMData encoding:NSUTF8StringEncoding] containsString:PDFString]) {
           dispatch_async(dispatch_get_main_queue(), ^{
-            NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"PDFNotSupported" message:@"PDFNotSupportedDescriptionFormat", book.title];
-            [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+            NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"PDFNotSupportedDescriptionFormat", nil), book.title];
+            UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"PDFNotSupported" message:formattedMessage];
+            [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
           });
           
           [[NYPLBookRegistry sharedRegistry]
@@ -285,19 +288,19 @@ didFinishDownloadingToURL:(NSURL *const)location
   
   if (!success) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      NYPLAlertController *alert = [NYPLAlertController
-                                    alertWithTitle:@"DownloadFailed"
-                                    message:@"DownloadCouldNotBeCompletedFormat", book.title];
+      NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil), book.title];
+      UIAlertController *alert = [NYPLAlertUtils
+                                  alertWithTitle:@"DownloadFailed"
+                                  message:formattedMessage];
       if (problemDocument) {
-        [alert setProblemDocument:problemDocument displayDocumentMessage:YES];
+        [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
         
-        if ([problemDocument.type isEqualToString:NYPLProblemDocumentTypeNoActiveLoan])
+        if ([problemDocument.type isEqualToString:NYPLProblemDocument.TypeNoActiveLoan])
         {
           [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:book.identifier];
         }
       }
-      
-      [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+      [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
     });
     
     [[NYPLBookRegistry sharedRegistry]
@@ -520,21 +523,21 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
           NYPLLOG(@"Failed to create book from entry. Book not removed from registry.");
         }
       } else {
-        if([error[@"type"] isEqualToString:NYPLProblemDocumentTypeNoActiveLoan]) {
+        if([error[@"type"] isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
           if(downloaded) {
             [self deleteLocalContentForBookIdentifier:identifier];
           }
           [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
         } else {
           [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            NYPLAlertController *const alert = [NYPLAlertController
-                                                alertWithTitle:@"ReturnFailed"
-                                                message:@"ReturnCouldNotBeCompletedFormat", bookTitle];
-            if(error) {
-              [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error]
-                 displayDocumentMessage:YES];
+            NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"ReturnCouldNotBeCompletedFormat", nil), bookTitle];
+            UIAlertController *alert = [NYPLAlertUtils
+                                        alertWithTitle:@"ReturnFailed"
+                                        message:formattedMessage];
+            if (error) {
+              [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:error] append:YES];
             }
-            [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+            [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
           }];
         }
       }
@@ -599,8 +602,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
    genericBookmarks:nil];
   
   dispatch_async(dispatch_get_main_queue(), ^{
-    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"DownloadFailed" message:@"DownloadCouldNotBeCompletedFormat", book.title];
-    [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+    NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"DownloadCouldNotBeCompletedFormat", nil), book.title];
+    UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"DownloadFailed" message:formattedMessage];
+    [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
   });
   
   [self broadcastUpdate];
@@ -614,7 +618,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   [NYPLOPDSFeed withURL:book.defaultAcquisitionIfBorrow.hrefURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
 
-    if(error || !feed || feed.entries.count < 1) {
+    if (error || !feed || feed.entries.count < 1) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if (borrowCompletion) {
           borrowCompletion();
@@ -622,22 +626,22 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
         }
 
         // create an alert to display for error, feed, or feed count conditions
-        NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"BorrowFailed" message:@"BorrowCouldNotBeCompletedFormat", book.title];
+        NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"BorrowCouldNotBeCompletedFormat", nil), book.title];
+        UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"BorrowFailed" message:formattedMessage];
 
         // set different message for special type of error or just add document message for generic error
         if (error) {
-          if([error[@"type"] isEqualToString:NYPLProblemDocumentTypeLoanAlreadyExists]) {
-            alert = [NYPLAlertController alertWithTitle:@"BorrowFailed"
-                                                message:NSLocalizedString(@"You have already checked out this loan. You may need to refresh your My Books list to download the title.",
-                                                  comment: @"When book is already checked out on patron's other device(s), they will get this message"),
-                                                book.title];
+          if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeLoanAlreadyExists]) {
+            formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"You have already checked out this loan. You may need to refresh your My Books list to download the title.",
+                                                                            comment: @"When book is already checked out on patron's other device(s), they will get this message"), book.title];
+            alert = [NYPLAlertUtils alertWithTitle:@"BorrowFailed" message:formattedMessage];
           } else {
-            [alert setProblemDocument:[NYPLProblemDocument problemDocumentWithDictionary:error] displayDocumentMessage:YES];
+            [NYPLAlertUtils setProblemDocumentWithController:alert document:[NYPLProblemDocument fromDictionary:error] append:YES];
           }
         }
 
         // display the alert
-        [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+        [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
       }];
       return;
     }
@@ -650,10 +654,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
           borrowCompletion();
           return;
         }
-        NYPLAlertController *const alert = [NYPLAlertController
-                                            alertWithTitle:@"BorrowFailed"
-                                            message:@"BorrowCouldNotBeCompletedFormat", book.title];
-        [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+        NSString *formattedMessage = [NSString stringWithFormat:NSLocalizedString(@"BorrowCouldNotBeCompletedFormat", nil), book.title];
+        UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"BorrowFailed" message:formattedMessage];
+        [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
       }];
       return;
     }

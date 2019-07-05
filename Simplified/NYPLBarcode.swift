@@ -70,7 +70,7 @@ fileprivate func ZXBarcodeFormatFor(_ NYPLBarcodeType:NYPLBarcodeType) -> ZXBarc
 
   private class func presentCameraPrivacyAlert()
   {
-    let alertController = NYPLAlertController(
+    let alertController = UIAlertController(
       title: NSLocalizedString("Camera Access Disabled",
                                comment: "An alert title stating the user has disallowed the app to access the user's location"),
       message: NSLocalizedString(
@@ -91,7 +91,7 @@ fileprivate func ZXBarcodeFormatFor(_ NYPLBarcodeType:NYPLBarcodeType) -> ZXBarc
       style: .cancel,
       handler: nil))
 
-    alertController.present(fromViewControllerOrNil: nil, animated: true, completion: nil)
+    NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alertController, viewController: nil, animated: true, completion: nil)
   }
 
   private func imageWidthFor(_ superviewWidth: CGFloat) -> CGFloat

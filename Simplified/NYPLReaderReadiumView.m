@@ -18,7 +18,6 @@
 #import "UIColor+NYPLColorAdditions.h"
 #import "NSURL+NYPLURLAdditions.h"
 #import "NYPLConfiguration.h"
-#import "NYPLAlertController.h"
 #import "NYPLRootTabBarController.h"
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLReachability.h"
@@ -695,10 +694,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     [self.delegate updateCurrentBookmark:bookmark];
     [self.syncManager addBookmark:bookmark withCFI:location.locationString forBook:self.book.identifier];
   } else {
-    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:@"Bookmarking Error" singleMessage:@"A bookmark could not be created on the current page."];
+    UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"Bookmarking Error" message:@"A bookmark could not be created on the current page."];
     UIAlertAction *action = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil];
     [alert addAction:action];
-    [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+    [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
   }
 }
 

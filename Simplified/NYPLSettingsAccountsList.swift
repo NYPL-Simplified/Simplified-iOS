@@ -104,9 +104,8 @@
   func addAccount() {
     AccountsManager.shared.loadCatalogs(options: .online) { (success) in
       guard success else {
-        let alert = NYPLAlertController.alert(withTitle:nil, singleMessage:NSLocalizedString("CheckConnection", comment: ""))
-        alert?.addAction(UIAlertAction.init(title: NSLocalizedString("OK", comment: ""), style: .cancel))
-        alert?.present(fromViewControllerOrNil:self, animated:true, completion:nil)
+        let alert = NYPLAlertUtils.alert(title:nil, message:"CheckConnection", style: .cancel)
+        NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert, viewController: self, animated: true, completion: nil)
         return
       }
       DispatchQueue.main.async {

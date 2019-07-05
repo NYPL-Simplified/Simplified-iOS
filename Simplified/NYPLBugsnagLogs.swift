@@ -170,4 +170,20 @@ fileprivate let tabName = "Extra Data"
       report.addMetadata(metadata, toTabWithName: tabName)
     })
   }
+  
+  class func logProblemDocumentParseError(error: NSError?, url: URL?) {
+    guard let err = error else {
+      Log.warn(#file, "Could not log bugsnag catalogLoadError because error was nil")
+      return
+    }
+    var metadata = [AnyHashable : Any]()
+    metadata["url"] = url ?? nullString
+    addAccountInfoToMetadata(&metadata)
+    addLogfileToMetadata(&metadata)
+    
+    Bugsnag.notifyError(err, block: { report in
+      report.groupingHash = "problemDocumentParseError"
+      report.addMetadata(metadata, toTabWithName: tabName)
+    })
+  }
 }

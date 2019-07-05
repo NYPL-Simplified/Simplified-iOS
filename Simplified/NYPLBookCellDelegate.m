@@ -6,7 +6,6 @@
 #import "NYPLAccount.h"
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLSession.h"
-#import "NYPLAlertController.h"
 #import "NYPLBook.h"
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
@@ -277,8 +276,8 @@
 {
   NSString *title = NSLocalizedString(@"Unsupported Item", nil);
   NSString *message = NSLocalizedString(@"The item you are trying to open is not currently supported by SimplyE.", nil);
-  NYPLAlertController *alert = [NYPLAlertController alertWithTitle:title message:message];
-  [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+  UIAlertController *alert = [NYPLAlertUtils alertWithTitle:title message:message];
+  [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate
