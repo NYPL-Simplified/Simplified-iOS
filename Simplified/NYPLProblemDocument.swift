@@ -1,5 +1,8 @@
 import Foundation
 
+/**
+  Represents a Problem Document, outlined in https://tools.ietf.org/html/rfc7807
+ */
 @objcMembers class NYPLProblemDocument: NSObject, Codable {
   static let TypeNoActiveLoan =
     "http://librarysimplified.org/terms/problem/no-active-loan";
@@ -21,6 +24,11 @@ import Foundation
     super.init()
   }
   
+  /**
+    Factory method that creates a ProblemDocument from data
+    @param data data with which to populate the ProblemDocument
+    @return a ProblemDocument built from the given data
+   */
   @objc static func fromData(_ data: Data) throws -> NYPLProblemDocument {
     let jsonDecoder = JSONDecoder()
     jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -28,6 +36,11 @@ import Foundation
     return try jsonDecoder.decode(NYPLProblemDocument.self, from: data)
   }
   
+  /**
+    Factory method that creates a ProblemDocument from a dictionary
+    @param dict data with which to populate the ProblemDocument
+    @return a ProblemDocument built from the given dicationary
+   */
   @objc static func fromDictionary(_ dict: [String : Any]) -> NYPLProblemDocument {
     return NYPLProblemDocument(dict)
   }

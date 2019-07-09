@@ -2,6 +2,12 @@ import Foundation
 import UIKit
 
 @objcMembers class NYPLAlertUtils : NSObject {
+  /**
+    Generates an alert view from errors of domains: NSURLErrorDomain, NYPLADEPTErrorDomain
+    @param title the alert title; can be localization key
+    @param error the error
+    @return the alert
+   */
   class func alert(title: String?, error: NSError?) -> UIAlertController {
     var message = "UnknownError"
     let domain = error?.domain ?? ""
@@ -33,11 +39,24 @@ import UIKit
     return alert(title: title, message: message)
   }
   
-  class func alert(title: String?, message: String?)-> UIAlertController {
+  /**
+    Generates an alert view with localized strings and default style
+    @param title the alert title; can be localization key
+    @param message the alert message; can be localization key
+    @return the alert
+   */
+  class func alert(title: String?, message: String?) -> UIAlertController {
     return alert(title: title, message: message, style: .default)
   }
   
-  class func alert(title: String?, message: String?, style: UIAlertAction.Style)-> UIAlertController {
+  /**
+    Generates an alert view with localized strings
+    @param title the alert title; can be localization key
+    @param message the alert message; can be localization key
+    @param style the OK action style
+    @return the alert
+   */
+  class func alert(title: String?, message: String?, style: UIAlertAction.Style) -> UIAlertController {
     let alertTitle = (title?.count ?? 0) > 0 ? NSLocalizedString(title!, comment: "") : "Alert"
     let alertMessage = (message?.count ?? 0) > 0 ? NSLocalizedString(message!, comment: "") : ""
     let alertController = UIAlertController.init(
@@ -49,6 +68,13 @@ import UIKit
     return alertController
   }
   
+  /**
+    Adds a problem document's contents to the alert
+    @param controller the alert to modify
+    @param document the problem document
+    @param append appends the problem document title and details to the alert if true; sets the alert title and message to problem document contents otherwise
+    @return
+   */
   class func setProblemDocument(controller: UIAlertController?, document: NYPLProblemDocument?, append: Bool) {
     guard let controller = controller else {
       return
@@ -70,6 +96,14 @@ import UIKit
     }
   }
   
+  /**
+    Presents an alert view from another given view
+    @param alertController the alert to display
+    @param viewController the view from which the alert is displayed
+    @param animated true/false for animation
+    @param completion callback passed on to UIViewcontroller::present
+    @return
+   */
   class func presentFromViewControllerOrNil(alertController: UIAlertController?, viewController: UIViewController?, animated: Bool, completion: (() -> Void)?) {
     guard let alertController = alertController else {
       return

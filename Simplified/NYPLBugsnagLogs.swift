@@ -7,12 +7,22 @@ fileprivate let tabName = "Extra Data"
 
 @objcMembers class NYPLBugsnagLogs : NSObject {
   
+  /**
+    Helper method for other logging functions that adds logfile to bugsnag report
+    @param metadata report metadata dictionary
+    @return
+   */
   class func addLogfileToMetadata(_ metadata: inout [AnyHashable : Any]) {
     Log.logQueue.sync {
       metadata["log"] = (try? String.init(contentsOfFile: Log.logUrl.path, encoding: .utf8)) ?? ""
     }
   }
   
+  /**
+    Helper method for other logging functions that adds relevant account info to bugsnag report
+    @param metadata report metadata dictionary
+    @return
+   */
   class func addAccountInfoToMetadata(_ metadata: inout [AnyHashable : Any]) {
     metadata["currentAccount"] = AccountsManager.shared.currentAccount ?? nullString
     metadata["currentAccountId"] = AccountsManager.shared.currentAccountId ?? nullString
@@ -20,6 +30,13 @@ fileprivate let tabName = "Extra Data"
     metadata["numAccounts"] = AccountsManager.shared.accounts().count
   }
   
+  /**
+    Report when there's a null book identifier
+    @param book book
+    @param identifier book ID
+    @param title book title
+    @return
+   */
   class func recordUnexpectedNilIdentifier(book: NYPLBook?, identifier: String?, title: String?) {
     var metadata = [AnyHashable : Any]()
     metadata["incomingIdentifierString"] = identifier ?? nullString
@@ -36,6 +53,11 @@ fileprivate let tabName = "Extra Data"
     })
   }
   
+  /**
+    Report when there's an error copying the book from RMSDK to app storage
+    @param book target book
+    @return
+   */
   class func recordFailureToCopy(book: NYPLBook?) {
     var metadata = [AnyHashable : Any]()
     metadata["bookIdentifier"] = book?.identifier ?? nullString
@@ -51,6 +73,14 @@ fileprivate let tabName = "Extra Data"
     })
   }
   
+  /**
+    Report when there's a null CFI
+    @param location CFI location in the EPUB
+    @param locationDictionary
+    @param bookId id of the book
+    @param title name of the book
+    @return
+   */
   class func reportNilContentCFIToBugsnag(location: NYPLBookLocation?, locationDictionary: Dictionary<String, Any>?, bookId: String?, title: String?) {
     var metadata = [AnyHashable : Any]()
     metadata["bookID"] = bookId ?? nullString
@@ -70,6 +100,10 @@ fileprivate let tabName = "Extra Data"
     })
   }
   
+  /**
+    Report when there's an error deauthorizing device at RMSDK level
+    @return
+   */
   class func deauthorizationError() {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
@@ -83,6 +117,13 @@ fileprivate let tabName = "Extra Data"
     })
   }
   
+  /**
+    Report when there's an error logging in to an account
+    @param error related error
+    @param code HTTP status code
+    @param libraryName name of the library
+    @return
+   */
   class func loginAlertError(error: NSError?, code: Int, libraryName: String?) {
     //FIXME: Remove Bugsnag log when DRM Activation moves to the auth document
     if error?.domain == NSURLErrorDomain {
@@ -100,6 +141,11 @@ fileprivate let tabName = "Extra Data"
     }
   }
   
+  /**
+    Report when there's missing licensor data during deauthorization
+    @param accountId id of the account
+    @return
+   */
   class func bugsnagLogInvalidLicensorWith(accountId: String?) {
     var metadata = [AnyHashable : Any]()
     metadata["accountTypeID"] = accountId ?? nullString
@@ -114,6 +160,10 @@ fileprivate let tabName = "Extra Data"
     })
   }
   
+  /**
+    Report new app session
+    @return
+   */
   class func reportNewActiveSession() {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
@@ -126,6 +176,10 @@ fileprivate let tabName = "Extra Data"
     })
   }
   
+  /**
+    Report when there's an issue downloading the holds in the background
+    @return
+   */
   class func reportExpiredBackgroundFetch() {
     var metadata = [AnyHashable : Any]()
     metadata["loanUrl"] = NYPLConfiguration.loanURL() ?? nullString
@@ -142,6 +196,12 @@ fileprivate let tabName = "Extra Data"
     })
   }
   
+  /**
+    Report when there's an issue with barcode image encoding
+    @param exception the related exception
+    @param library library for which the barcode is being created
+    @return
+   */
   class func logExceptionToBugsnag(exception: NSException?, library: String?) {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
@@ -155,6 +215,12 @@ fileprivate let tabName = "Extra Data"
     })
   }
   
+  /**
+    Report when there's an issue loading a catalog
+    @param error the parsing error
+    @param url the url the catalog is being fetched from
+    @return
+   */
   class func catalogLoadError(error: NSError?, url: URL?) {
     guard let err = error else {
       Log.warn(#file, "Could not log bugsnag catalogLoadError because error was nil")
@@ -171,6 +237,12 @@ fileprivate let tabName = "Extra Data"
     })
   }
   
+  /**
+    Report when there's an issue parsing a problem document
+    @param error the parsing error
+    @param url the url the problem document is being fetched from
+    @return
+   */
   class func logProblemDocumentParseError(error: NSError?, url: URL?) {
     guard let err = error else {
       Log.warn(#file, "Could not log bugsnag catalogLoadError because error was nil")
