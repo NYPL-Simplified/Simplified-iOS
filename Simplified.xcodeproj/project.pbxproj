@@ -150,6 +150,8 @@
 		5A6929241B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js in Resources */ = {isa = PBXBuildFile; fileRef = 5A6929231B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js */; };
 		5A6929251B95C93B00FB4C10 /* readium-shared-js_all.js.map in Resources */ = {isa = PBXBuildFile; fileRef = 5A69291D1B95C8AD00FB4C10 /* readium-shared-js_all.js.map */; };
 		5AEA9E011B947419009F71DB /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 119503EA1993F91E009FB788 /* libc++.dylib */; };
+		5D3A28CC22D3DA850042B3BD /* NYPLProtocolDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3A28CB22D3DA850042B3BD /* NYPLProtocolDocument.swift */; };
+		5D3A28D522D400D00042B3BD /* ProtocolDocumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3A28D322D3FBB90042B3BD /* ProtocolDocumentTests.swift */; };
 		5D60D3542297353C001080D0 /* NYPLMigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D60D3532297353C001080D0 /* NYPLMigrationManager.swift */; };
 		5D73DA4322A080BA00162CB8 /* NYPLMyBooksDownloadCenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D73DA3D22A07B9A00162CB8 /* NYPLMyBooksDownloadCenterTests.swift */; };
 		5D7CF86422C19EBA007CAA34 /* NYPLReaderContainerDelegateBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF86322C19EBA007CAA34 /* NYPLReaderContainerDelegateBase.m */; };
@@ -517,6 +519,8 @@
 		5A69291D1B95C8AD00FB4C10 /* readium-shared-js_all.js.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = "readium-shared-js_all.js.map"; path = "readium-shared-js/build-output/_single-bundle/readium-shared-js_all.js.map"; sourceTree = SOURCE_ROOT; };
 		5A6929231B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "readium-shared-js_all.js.bundles.js"; path = "readium-shared-js/build-output/_single-bundle/readium-shared-js_all.js.bundles.js"; sourceTree = SOURCE_ROOT; };
 		5A7048911B94A6700046FFF0 /* Adobe Content Filter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Adobe Content Filter.xcodeproj"; path = "adobe-content-filter/build/iOS/Adobe Content Filter.xcodeproj"; sourceTree = "<group>"; };
+		5D3A28CB22D3DA850042B3BD /* NYPLProtocolDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLProtocolDocument.swift; sourceTree = "<group>"; };
+		5D3A28D322D3FBB90042B3BD /* ProtocolDocumentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolDocumentTests.swift; sourceTree = "<group>"; };
 		5D60D3532297353C001080D0 /* NYPLMigrationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLMigrationManager.swift; sourceTree = "<group>"; };
 		5D73DA3D22A07B9A00162CB8 /* NYPLMyBooksDownloadCenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLMyBooksDownloadCenterTests.swift; sourceTree = "<group>"; };
 		5D7CF86322C19EBA007CAA34 /* NYPLReaderContainerDelegateBase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderContainerDelegateBase.m; sourceTree = "<group>"; };
@@ -1107,6 +1111,7 @@
 				119BEBB819902A8800121439 /* NYPLOpenSearchDescription.m */,
 				085D31C21BE2987E007F7672 /* NYPLProblemDocument.h */,
 				085D31C31BE2987E007F7672 /* NYPLProblemDocument.m */,
+				5D3A28CB22D3DA850042B3BD /* NYPLProtocolDocument.swift */,
 				2DB436361D4C049200F8E69D /* NYPLReachability.h */,
 				2DB436371D4C049200F8E69D /* NYPLReachability.m */,
 				E69404081E4A789800E566ED /* NYPLReachabilityManager.h */,
@@ -1160,6 +1165,7 @@
 		A823D82F192BABA400B55DE2 /* SimplifiedTests */ = {
 			isa = PBXGroup;
 			children = (
+				5D7CF8BA22C427F6007CAA34 /* LogTests.swift */,
 				1157E92D19CA0009003BFDBF /* NSString+NYPLStringAdditionsTests.m */,
 				2D8790A420129AF200E2763F /* NYPLBookAcquisitionPathTests.swift */,
 				1142E4E719EEC7C500D9B3D9 /* NYPLCatalogFacetTests.m */,
@@ -1168,13 +1174,13 @@
 				5D73DA3D22A07B9A00162CB8 /* NYPLMyBooksDownloadCenterTests.swift */,
 				11616E12196B2FB8003D60D9 /* NYPLMyBooksRegistryTests.m */,
 				111559EE19B8FA8E0003BE94 /* NYPLXMLTests.m */,
-				B51C1DFD22860563003B49A5 /* OPDS2CatalogsFeedTests.swift */,
 				1183F34D194F775400DC322F /* OPDS */,
+				B51C1DFD22860563003B49A5 /* OPDS2CatalogsFeedTests.swift */,
+				5D3A28D322D3FBB90042B3BD /* ProtocolDocumentTests.swift */,
 				2D2B47621D08F1ED007F7764 /* SimplyETests-Bridging-Header.h */,
 				A823D830192BABA400B55DE2 /* Supporting Files */,
 				11A14DF51A1BFBED00D6C510 /* UIColor+NYPLColorAdditionsTests.m */,
 				2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */,
-				5D7CF8BA22C427F6007CAA34 /* LogTests.swift */,
 			);
 			path = SimplifiedTests;
 			sourceTree = "<group>";
@@ -1489,6 +1495,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D3A28D522D400D00042B3BD /* ProtocolDocumentTests.swift in Sources */,
 				B51C1DFE22860563003B49A5 /* OPDS2CatalogsFeedTests.swift in Sources */,
 				5D73DA4322A080BA00162CB8 /* NYPLMyBooksDownloadCenterTests.swift in Sources */,
 				5D7CF8BC22C42AE2007CAA34 /* LogTests.swift in Sources */,
@@ -1642,6 +1649,7 @@
 				112C6953197309C500C48F95 /* NYPLBookState.m in Sources */,
 				11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */,
 				1158812E1A894F4E008672C3 /* NYPLAccountSignInViewController.m in Sources */,
+				5D3A28CC22D3DA850042B3BD /* NYPLProtocolDocument.swift in Sources */,
 				03F94CD11DD6288C00CE8F4F /* Accounts.swift in Sources */,
 				52592BB821220A1100587288 /* NYPLLocalization.m in Sources */,
 				E6D775421F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m in Sources */,

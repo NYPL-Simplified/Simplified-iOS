@@ -288,6 +288,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, options: AccountsManager.LoadOpt
   let cardCreatorUrl:String?
   let coppaUnderUrl:URL?
   let coppaOverUrl:URL?
+  let loansUrl:URL?
   
   var needsAuth:Bool {
     return authType == .basic
@@ -336,6 +337,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, options: AccountsManager.LoadOpt
     
     supportsReservations = authenticationDocument.features?.disabled?.contains("https://librarysimplified.org/rel/policy/reservations") != true
     userProfileUrl = authenticationDocument.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/user-profile" })?.href
+    loansUrl = URL.init(string: authenticationDocument.links?.first(where: { $0.rel == "http://opds-spec.org/shelf" })?.href ?? "")
     supportsSimplyESync = userProfileUrl != nil
     
     mainColor = authenticationDocument.colorScheme
@@ -496,6 +498,10 @@ func loadDataWithCache(url: URL, cacheUrl: URL, options: AccountsManager.LoadOpt
     let applicationSupportUrl = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
     let nonColonUuid = uuid.replacingOccurrences(of: ":", with: "_")
     return applicationSupportUrl.appendingPathComponent("authentication_document_\(nonColonUuid).json")
+  }
+  
+  var loansUrl: URL? {
+    return details?.loansUrl
   }
   
   init(publication: OPDS2Publication) {

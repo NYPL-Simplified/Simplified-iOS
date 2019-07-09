@@ -15,8 +15,6 @@
 // This can be overriden by setting |customMainFeedURL| in NYPLSettings.
 + (NSURL *)mainFeedURL;
 
-+ (NSURL *)loanURL;
-
 + (NSURL *)minimumVersionURL;
 
 + (UIColor *)mainColor;

@@ -843,7 +843,8 @@ completionHandler:(void (^)(void))handler
 - (void)validateCredentials
 {
   NSMutableURLRequest *const request =
-    [NSMutableURLRequest requestWithURL:[NYPLConfiguration loanURL]];
+    [NSMutableURLRequest requestWithURL:[NSURL URLWithString:
+      [[[[AccountsManager sharedInstance] currentAccount] details] userProfileUrl]]];
   
   request.timeoutInterval = 20.0;
   
@@ -859,70 +860,69 @@ completionHandler:(void (^)(void))handler
 
        NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
        
-       if(statusCode == 200) {
-         
-#if defined(FEATURE_DRM_CONNECTOR)        
-
-         NYPLXML *loansXML = [NYPLXML XMLWithData:data];
-         NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
-
-         if (loansFeed.authorizationIdentifier) {
-           [[NYPLAccount sharedAccount] setAuthorizationIdentifier:loansFeed.authorizationIdentifier];
-         } else {
-           NYPLLOG(@"Authorization ID (Barcode String) was nil.");
-         }
-         if (loansFeed.licensor) {
-           [[NYPLAccount sharedAccount] setLicensor:loansFeed.licensor];
-         } else {
-           NYPLLOG(@"Login Failed: No Licensor Token received or parsed from OPDS Loans feed");
+       if (statusCode == 200) {
+#if defined(FEATURE_DRM_CONNECTOR)
+         NSError *pDocError = nil;
+         ProtocolDocument *pDoc = [ProtocolDocument fromData:data error:&pDocError];
+         if (!pDoc) {
+           [NYPLBugsnagLogs reportProtocolDocumentErrorWithError:pDocError];
            [self authorizationAttemptDidFinish:NO error:nil];
            return;
-         }
-         
-         NSMutableArray *licensorItems = [[loansFeed.licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
-         NSString *tokenPassword = [licensorItems lastObject];
-         [licensorItems removeLastObject];
-         NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
-         
-         NYPLLOG(@"***DRM Auth/Activation Attempt***");
-         NYPLLOG_F(@"\nLicensor: %@\n",loansFeed.licensor);
-         NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
-         NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
-         
-         [[NYPLADEPT sharedInstance]
-          authorizeWithVendorID:[[NYPLAccount sharedAccount] licensor][@"vendor"]
-          username:tokenUsername
-          password:tokenPassword
-          completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
+         } else {
+           if (pDoc.authorizationIdentifier) {
+             [[NYPLAccount sharedAccount] setAuthorizationIdentifier:pDoc.authorizationIdentifier];
+           } else {
+             NYPLLOG(@"Authorization ID (Barcode String) was nil.");
+           }
+           if (pDoc.drm.count > 0 && pDoc.drm[0].clientToken && pDoc.drm[0].vendor) {
+             [[NYPLAccount sharedAccount] setLicensor:pDoc.drm[0].licensor];
+           } else {
+             NYPLLOG(@"Login Failed: No Licensor Token received or parsed from OPDS Loans feed");
+             [self authorizationAttemptDidFinish:NO error:nil];
+             return;
+           }
+           
+           NSMutableArray *licensorItems = [[pDoc.drm[0].clientToken stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
+           NSString *tokenPassword = [licensorItems lastObject];
+           [licensorItems removeLastObject];
+           NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
+           
+           NYPLLOG(@"***DRM Auth/Activation Attempt***");
+           NYPLLOG_F(@"\nLicensor: %@\n",pDoc.drm[0].licensor);
+           NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
+           NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
+           
+           [[NYPLADEPT sharedInstance]
+            authorizeWithVendorID:[[NYPLAccount sharedAccount] licensor][@"vendor"]
+            username:tokenUsername
+            password:tokenPassword
+            completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
 
-            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-              [NSObject cancelPreviousPerformRequestsWithTarget:self];
+              [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                [NSObject cancelPreviousPerformRequestsWithTarget:self];
+              }];
+
+              NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
+              NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
+              NYPLLOG_F(@"UserID: %@\n",userID);
+              NYPLLOG_F(@"DeviceID: %@\n",deviceID);
+              NYPLLOG(@"***DRM Auth/Activation Completion***");
+              
+              if (success) {
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                  [[NYPLAccount sharedAccount] setUserID:userID];
+                  [[NYPLAccount sharedAccount] setDeviceID:deviceID];
+                }];
+              }
+              
+              [self authorizationAttemptDidFinish:success error:error];
             }];
 
-            NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
-            NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
-            NYPLLOG_F(@"UserID: %@\n",userID);
-            NYPLLOG_F(@"DeviceID: %@\n",deviceID);
-            NYPLLOG(@"***DRM Auth/Activation Completion***");
-            
-            if (success) {
-              [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                [[NYPLAccount sharedAccount] setUserID:userID];
-                [[NYPLAccount sharedAccount] setDeviceID:deviceID];
-              }];
-            }
-            
-            [self authorizationAttemptDidFinish:success error:error];
-          }];
-
-         [self performSelector:@selector(dismissAfterUnexpectedDRMDelay) withObject:self afterDelay:25];
-         
+           [self performSelector:@selector(dismissAfterUnexpectedDRMDelay) withObject:self afterDelay:25];
+         }
 #else
-         
          [self authorizationAttemptDidFinish:YES error:nil];
-         
 #endif
-
          return;
        }
        
