@@ -145,9 +145,8 @@ import PureLayout
   }
   
   func showLoadingFailureAlert() {
-    let alert = NYPLAlertController.alert(withTitle:nil, singleMessage:NSLocalizedString("CheckConnection", comment: ""))
-    alert?.addAction(UIAlertAction.init(title: NSLocalizedString("OK", comment: ""), style: .cancel))
-    alert?.present(fromViewControllerOrNil:self, animated:true, completion:nil)
+    let alert = NYPLAlertUtils.alert(title:nil, message:"CheckConnection", style: .cancel)
+    present(alert, animated: true, completion: nil)
   }
   
   func loadingOverlayView() -> UIView {

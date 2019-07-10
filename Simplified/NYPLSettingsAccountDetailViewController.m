@@ -6,7 +6,6 @@
 #import "NYPLSettingsAccountDetailViewController.h"
 
 #import "NYPLAccount.h"
-#import "NYPLAlertController.h"
 #import "NYPLBarcodeScanningViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
@@ -386,7 +385,7 @@ double const requestTimeoutInterval = 25.0;
   
   if([NYPLADEPT sharedInstance].workflowsInProgress ||
      [NYPLBookRegistry sharedRegistry].syncing == YES) {
-    [self presentViewController:[NYPLAlertController
+    [self presentViewController:[NYPLAlertUtils
                                  alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
                                  message:@"SettingsAccountViewControllerCannotLogOutMessage"]
                        animated:YES
@@ -616,7 +615,7 @@ double const requestTimeoutInterval = 25.0;
 - (void)showLoginAlertWithError:(NSError *)error
 {
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:
-   [NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
+   [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
                                                                   animated:YES
                                                                 completion:nil];
   [self removeActivityTitle];
@@ -637,7 +636,7 @@ double const requestTimeoutInterval = 25.0;
     title = @"SettingsAccountViewControllerLogoutFailed";
     message = NSLocalizedString(@"An unknown error occurred while trying to sign out.", nil);
   }
-  [self presentViewController:[NYPLAlertController alertWithTitle:title message:message]
+  [self presentViewController:[NYPLAlertUtils alertWithTitle:title message:message]
                      animated:YES
                    completion:nil];
 }
@@ -1491,7 +1490,7 @@ replacementString:(NSString *)string
 
 - (void)confirmAgeChange:(void (^)(BOOL))completion
 {
-  NYPLAlertController *alertCont = [NYPLAlertController
+  UIAlertController *alertCont = [UIAlertController
                                     alertControllerWithTitle:NSLocalizedString(@"Age Verification", @"An alert title indicating the user needs to verify their age")
                                     message:NSLocalizedString(@"SettingsAccountViewControllerAgeCheckMessage",
                                                               @"An alert message warning the user they will lose their downloaded books if they continue.")
@@ -1510,7 +1509,7 @@ replacementString:(NSString *)string
                                                }]];
 
   if ([self.selectedAccountId isEqualToString:[AccountsManager NYPLAccountUUIDs][2]]) {
-    [alertCont presentFromViewControllerOrNil:nil animated:YES completion:nil];
+    [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alertCont viewController:nil animated:YES completion:nil];
   }
 }
 

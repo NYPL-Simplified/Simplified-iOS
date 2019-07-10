@@ -69,18 +69,18 @@ import Foundation
   fileprivate func presentAgeVerificationView(_ completion: @escaping (Bool) -> ()) -> Void
   {
     DispatchQueue.main.async {
-      let alertCont = NYPLAlertController.alert(withTitle: NSLocalizedString("WelcomeScreenAgeVerifyTitle", comment: "An alert title indicating the user needs to verify their age"), singleMessage: NSLocalizedString("WelcomeScreenAgeVerifyMessage", comment: "An alert message telling the user they must be at least 13 years old and asking how old they are"))
-      
-      alertCont?.addAction(UIAlertAction.init(title: "Under 13", style: .default, handler: { _ in
+      let alertCont = UIAlertController.init(
+        title: NSLocalizedString("WelcomeScreenAgeVerifyTitle", comment: "An alert title indicating the user needs to verify their age"),
+        message: NSLocalizedString("WelcomeScreenAgeVerifyMessage", comment: "An alert message telling the user they must be at least 13 years old and asking how old they are"),
+        preferredStyle: .alert
+      )
+      alertCont.addAction(UIAlertAction.init(title: "Under 13", style: .default, handler: { _ in
         completion(false)
       }))
-      alertCont?.addAction(UIAlertAction.init(title: "13 or Older", style: .default, handler: { _ in
+      alertCont.addAction(UIAlertAction.init(title: "13 or Older", style: .default, handler: { _ in
         completion(true)
       }))
-      
-      if let alertCont = alertCont {
-        UIApplication.shared.keyWindow?.rootViewController?.present(alertCont, animated: true, completion: nil)
-      }
+      UIApplication.shared.keyWindow?.rootViewController?.present(alertCont, animated: true, completion: nil)
     }
   }
 }

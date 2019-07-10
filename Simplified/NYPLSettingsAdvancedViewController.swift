@@ -36,7 +36,7 @@ import UIKit
       cell?.setSelected(false, animated: true)
       
       let message = "Selecting \"Delete\" will remove all bookmarks from the server for \(account.name)."
-      let alert = NYPLAlertController.init(title: nil, message: message, preferredStyle: .actionSheet)
+      let alert = UIAlertController.init(title: nil, message: message, preferredStyle: .actionSheet)
       
       let deleteAction = UIAlertAction.init(title: NSLocalizedString("Delete", comment:""), style: .destructive, handler: { (action) in
         self.disableSync()
@@ -49,7 +49,7 @@ import UIKit
       alert.addAction(deleteAction)
       alert.addAction(cancelAction)
       
-      alert.present(fromViewControllerOrNil: nil, animated: true, completion: nil)
+      NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert, viewController: nil, animated: true, completion: nil)
     }
   }
   

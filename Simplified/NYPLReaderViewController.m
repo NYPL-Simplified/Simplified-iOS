@@ -139,10 +139,10 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
     item.enabled = NO;
   }
   self.interfaceHidden = NO;
-  NYPLAlertController *alert = [NYPLAlertController
-                                alertWithTitle:NSLocalizedString(@"ReaderViewControllerCorruptTitle", nil)
-                                message:NSLocalizedString(@"ReaderViewControllerCorruptMessage", nil)];
-  [alert presentFromViewControllerOrNil:self animated:YES completion:nil];
+  UIAlertController *alert = [NYPLAlertUtils
+                              alertWithTitle:@"ReaderViewControllerCorruptTitle"
+                              message:@"ReaderViewControllerCorruptMessage"];
+  [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)rendererDidFinishLoading:(__attribute__((unused)) id<NYPLReaderRenderer>)renderer

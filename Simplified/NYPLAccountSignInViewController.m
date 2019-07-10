@@ -4,7 +4,6 @@
 #import "SimplyE-Swift.h"
 
 #import "NYPLAccount.h"
-#import "NYPLAlertController.h"
 #import "NYPLAppDelegate.h"
 #import "NYPLBarcodeScanningViewController.h"
 #import "NYPLBasicAuth.h"
@@ -953,23 +952,22 @@ completionHandler:(void (^)(void))handler
 {
   __weak NYPLAccountSignInViewController *const weakSelf = self;
 
-  NYPLAlertController *alert;
   NSString *title = NSLocalizedString(@"Sign In Error", nil);
   NSString *message = NSLocalizedString(@"The DRM Library is taking longer than expected. Please wait and try again later.\n\nIf the problem persists, try to sign out and back in again from the Library Settings menu.", nil);
 
-  alert = [NYPLAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
   [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
                                             style:UIAlertActionStyleDefault
                                           handler:^(UIAlertAction * _Nonnull __unused action) {
                                             [weakSelf dismissViewControllerAnimated:YES completion:nil];
                                           }]];
-  [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+  [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
 }
 
 - (void)showLoginAlertWithError:(NSError *)error
 {
   [[NYPLRootTabBarController sharedController] safelyPresentViewController:
-   [NYPLAlertController alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
+   [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
                                                                   animated:YES
                                                                 completion:nil];
   [self updateLoginLogoutCellAppearance];

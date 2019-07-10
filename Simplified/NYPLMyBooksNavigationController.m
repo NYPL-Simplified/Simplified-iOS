@@ -2,7 +2,6 @@
 
 #import "NYPLMyBooksNavigationController.h"
 #import "NYPLAccount.h"
-#import "NYPLAlertController.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogFeedViewController.h"
 #import "NYPLConfiguration.h"
@@ -95,7 +94,7 @@
     #endif
 
       if(workflowsInProgress) {
-        [self presentViewController:[NYPLAlertController
+        [self presentViewController:[NYPLAlertUtils
                                      alertWithTitle:@"PleaseWait"
                                      message:@"PleaseWaitMessage"]
                            animated:YES

@@ -13,7 +13,6 @@
 #import "SimplyE-Swift.h"
 #import "NYPLAppDelegate.h"
 #import "NSString+NYPLStringAdditions.h"
-#import "NYPLAlertController.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -124,9 +123,10 @@
     #endif
 
       if(workflowsInProgress) {
-        [self presentViewController:[NYPLAlertController
-                                     alertWithTitle:@"PleaseWait"
-                                     message:@"PleaseWaitMessage"]
+        UIAlertController *alert = [NYPLAlertUtils
+                                    alertWithTitle:@"PleaseWait"
+                                    message:@"PleaseWaitMessage"];
+        [self presentViewController:alert
                            animated:YES
                          completion:nil];
       } else {
@@ -137,9 +137,10 @@
               [AccountsManager shared].currentAccount = account;
               [self updateFeedAndRegistryOnAccountChange];
             } else {
-              [self presentViewController:[NYPLAlertController
-                                           alertWithTitle:@""
-                                           message:@"UnknownRequestError"]
+              UIAlertController *alert = [NYPLAlertUtils
+                                          alertWithTitle:@""
+                                          message:@"UnknownRequestError"];
+              [self presentViewController:alert
                                  animated:YES
                                completion:nil];
             }
