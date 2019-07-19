@@ -3,7 +3,6 @@
 #import "NYPLHoldsNavigationController.h"
 
 #import "NYPLAccount.h"
-#import "NYPLAlertController.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogFeedViewController.h"
 #import "NYPLConfiguration.h"
@@ -92,8 +91,8 @@
       workflowsInProgress = ([NYPLBookRegistry sharedRegistry].syncing == YES);
     #endif
 
-      if(workflowsInProgress) {
-        [self presentViewController:[NYPLAlertController
+      if (workflowsInProgress) {
+        [self presentViewController:[NYPLAlertUtils
                                      alertWithTitle:@"PleaseWait"
                                      message:@"PleaseWaitMessage"]
                            animated:YES

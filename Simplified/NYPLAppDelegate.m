@@ -2,7 +2,6 @@
 
 #import "SimplyE-Swift.h"
 
-#import "NYPLAlertController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLReachability.h"
@@ -115,10 +114,11 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
   NYPLOPDSEntry *entry = [[NYPLOPDSEntry alloc] initWithXML:xml];
   
   NYPLBook *book = [NYPLBook bookWithEntry:entry];
-  if(!book) {
+  if (!book) {
     NSString *alertTitle = @"Error Opening Link";
     NSString *alertMessage = @"There was an error opening the linked book.";
-    [NYPLAlertController alertWithTitle:alertTitle message:alertMessage];
+    UIAlertController *alert = [NYPLAlertUtils alertWithTitle:alertTitle message:alertMessage];
+    [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
     NYPLLOG(@"Failed to create book from deep-linked URL.");
     return NO;
   }

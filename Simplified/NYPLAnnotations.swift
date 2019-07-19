@@ -36,7 +36,7 @@ import UIKit
         Log.debug(#file, "Sync has never been initialized for the patron. Showing UIAlertController flow.")
         let title = "SimplyE Sync"
         let message = "Enable sync to save your reading position and bookmarks to your other devices.\n\nYou can change this any time in Settings."
-        let alertController = NYPLAlertController.init(title: title, message: message, preferredStyle: .alert)
+        let alertController = UIAlertController.init(title: title, message: message, preferredStyle: .alert)
         let notNowAction = UIAlertAction.init(title: "Not Now", style: .default, handler: { action in
           completion(false)
           settings.userHasSeenFirstTimeSyncMessage = true;
@@ -52,7 +52,7 @@ import UIKit
         if #available(iOS 9.0, *) {
           alertController.preferredAction = enableSyncAction
         }
-        alertController.present(fromViewControllerOrNil: nil, animated: true, completion: nil)
+        NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alertController, viewController: nil, animated: true, completion: nil)
       } else {
         completion(false)
       }
@@ -179,9 +179,9 @@ import UIKit
   class func handleSyncSettingError() {
     let title = NSLocalizedString("Error Changing Sync Setting", comment: "")
     let message = NSLocalizedString("There was a problem contacting the server.\nPlease make sure you are connected to the internet, or try again later.", comment: "")
-    let alert = NYPLAlertController.init(title: title, message: message, preferredStyle: .alert)
+    let alert = UIAlertController.init(title: title, message: message, preferredStyle: .alert)
     alert.addAction(UIAlertAction.init(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
-    alert.present(fromViewControllerOrNil: nil, animated: true, completion: nil)
+    NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert, viewController: nil, animated: true, completion: nil)
   }
 
   // MARK: - Reading Position

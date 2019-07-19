@@ -1,6 +1,5 @@
 @import Bugsnag;
 
-#import "NYPLAlertController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCCell.h"
@@ -320,9 +319,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)showAlertForFailedSync
 {
-  NSString *alertTitle = NSLocalizedString(@"Error Syncing Bookmarks", nil);
-  NSString *alertMessage = NSLocalizedString(@"There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later.", nil);
-  NYPLAlertController *alert = [NYPLAlertController alertWithTitle:alertTitle message:alertMessage];
+  UIAlertController *alert = [NYPLAlertUtils
+                              alertWithTitle:@"Error Syncing Bookmarks"
+                              message:@"There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later."];
   [self presentViewController:alert animated:YES completion:nil];
 }
 

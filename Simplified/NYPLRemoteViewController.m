@@ -3,8 +3,6 @@
 #import "NYPLRemoteViewController.h"
 
 #import "UIView+NYPLViewAdditions.h"
-#import "NYPLAlertController.h"
-#import "NYPLProblemDocument.h"
 #import "SimplyE-Swift.h"
 
 #import <PureLayout/PureLayout.h>
@@ -149,19 +147,25 @@
 {
   [self.activityIndicatorView stopAnimating];
   self.activityIndicatorLabel.hidden = YES;
+  BOOL mimeTypeMatches = [self.response.MIMEType isEqualToString:@"application/problem+json"] ||
+    [self.response.MIMEType isEqualToString:@"application/api-problem+json"];
   
-  if ([(NSHTTPURLResponse *)self.response statusCode] != 200
-      && ([self.response.MIMEType isEqualToString:@"application/problem+json"]
-          || [self.response.MIMEType isEqualToString:@"application/api-problem+json"])) {
-    NYPLProblemDocument *problem = [NYPLProblemDocument problemDocumentWithData:self.data];
-    NYPLAlertController *alert = [NYPLAlertController alertWithTitle:problem.title message:problem.detail];
-    [alert setProblemDocument:problem displayDocumentMessage:NO];
+  if ([(NSHTTPURLResponse *)self.response statusCode] != 200 && mimeTypeMatches) {
+    NSError *problemDocumentParseError = nil;
+    NYPLProblemDocument *pDoc = [NYPLProblemDocument fromData:self.data error:&problemDocumentParseError];
+    UIAlertController *alert;
+    if (problemDocumentParseError) {
+      [NYPLBugsnagLogs logProblemDocumentParseErrorWithError:problemDocumentParseError url:[self.response URL]];
+      alert = [NYPLAlertUtils alertWithTitle:@"Error" message:@"Unknown error parsing problem document"];
+    } else {
+      alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
+    }
     [self presentViewController:alert animated:YES completion:nil];
   }
   
   UIViewController *const viewController = self.handler(self, self.data, self.response);
   
-  if(viewController) {
+  if (viewController) {
     [self addChildViewController:viewController];
     viewController.view.frame = self.view.bounds;
     [self.view addSubview:viewController.view];

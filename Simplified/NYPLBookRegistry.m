@@ -382,10 +382,9 @@ static NSString *const RecordsKey = @"records";
     if(success) {
       [self save];
     } else {
-      NYPLAlertController *alert =
-      [NYPLAlertController alertWithTitle:NSLocalizedString(@"SyncFailed", nil)
-                                  message:NSLocalizedString(@"CheckConnection", nil)];
-      [alert presentFromViewControllerOrNil:nil animated:YES completion:nil];
+      UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SyncFailed"
+                                                        message:@"CheckConnection"];
+      [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
     }
   }];
 }
