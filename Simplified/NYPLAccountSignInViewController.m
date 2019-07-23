@@ -862,9 +862,9 @@ completionHandler:(void (^)(void))handler
        if (statusCode == 200) {
 #if defined(FEATURE_DRM_CONNECTOR)
          NSError *pDocError = nil;
-         ProtocolDocument *pDoc = [ProtocolDocument fromData:data error:&pDocError];
+         UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
          if (!pDoc) {
-           [NYPLBugsnagLogs reportProtocolDocumentErrorWithError:pDocError];
+           [NYPLBugsnagLogs reportUserProfileDocumentErrorWithError:pDocError];
            [self authorizationAttemptDidFinish:NO error:nil];
            return;
          } else {
@@ -876,7 +876,7 @@ completionHandler:(void (^)(void))handler
            if (pDoc.drm.count > 0 && pDoc.drm[0].clientToken && pDoc.drm[0].vendor) {
              [[NYPLAccount sharedAccount] setLicensor:pDoc.drm[0].licensor];
            } else {
-             NYPLLOG(@"Login Failed: No Licensor Token received or parsed from OPDS Loans feed");
+             NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
              [self authorizationAttemptDidFinish:NO error:nil];
              return;
            }

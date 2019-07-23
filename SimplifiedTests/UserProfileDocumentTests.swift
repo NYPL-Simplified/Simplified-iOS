@@ -2,7 +2,7 @@ import XCTest
 
 @testable import SimplyE
 
-class ProtocolDocumentTests: XCTestCase {
+class UserProfileDocumentTests: XCTestCase {
   func testParse() {
     let rawJson = """
 {
@@ -29,7 +29,7 @@ class ProtocolDocumentTests: XCTestCase {
     let data = rawJson.data(using: .utf8)
     XCTAssertNotNil(data)
     do {
-      let pDoc = try ProtocolDocument.fromData(data!)
+      let pDoc = try UserProfileDocument.fromData(data!)
       
       XCTAssert(pDoc.authorizationIdentifier == "23333999999915")
       XCTAssertNotNil(pDoc.authorizationExpires)

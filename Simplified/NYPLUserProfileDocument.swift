@@ -1,6 +1,6 @@
 import Foundation
 
-@objcMembers public class ProtocolDocument : NSObject, Codable {
+@objcMembers public class UserProfileDocument : NSObject, Codable {
   @objc @objcMembers public class DRMObject : NSObject, Codable {
     let vendor: String?
     let clientToken: String?
@@ -60,13 +60,13 @@ import Foundation
     return ""
   }
   
-  @objc static func fromData(_ data: Data) throws -> ProtocolDocument {
+  @objc static func fromData(_ data: Data) throws -> UserProfileDocument {
     let jsonDecoder = JSONDecoder()
     jsonDecoder.keyDecodingStrategy = .useDefaultKeys
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     jsonDecoder.dateDecodingStrategy = .formatted(dateFormatter)
     
-    return try jsonDecoder.decode(ProtocolDocument.self, from: data)
+    return try jsonDecoder.decode(UserProfileDocument.self, from: data)
   }
 }

@@ -264,7 +264,7 @@ fileprivate let tabName = "Extra Data"
     @param error the parsing error
     @return
    */
-  class func reportProtocolDocumentError(error: NSError?) {
+  class func reportUserProfileDocumentError(error: NSError?) {
     let err = error ?? NSError.init(domain: "org.nypl.labs.SimplyE", code: 14, userInfo: nil)
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
