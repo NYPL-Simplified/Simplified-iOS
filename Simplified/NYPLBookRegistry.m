@@ -292,7 +292,7 @@ static NSString *const RecordsKey = @"records";
   }
   
   [NYPLOPDSFeed
-   withURL:[NYPLConfiguration loanURL]
+   withURL:[[[AccountsManager sharedInstance] currentAccount] loansUrl]
    completionHandler:^(NYPLOPDSFeed *const feed, __unused NSDictionary *error) {
      if(!feed) {
        NYPLLOG(@"Failed to obtain sync data.");

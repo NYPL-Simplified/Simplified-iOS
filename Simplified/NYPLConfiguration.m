@@ -65,11 +65,6 @@
   return nil;
 }
 
-+ (NSURL *)loanURL
-{
-  return [[self mainFeedURL] URLByAppendingPathComponent:@"loans"];
-}
-
 + (BOOL)cardCreationEnabled
 {
   return YES;

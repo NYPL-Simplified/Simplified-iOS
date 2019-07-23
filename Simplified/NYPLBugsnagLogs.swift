@@ -182,7 +182,7 @@ fileprivate let tabName = "Extra Data"
    */
   class func reportExpiredBackgroundFetch() {
     var metadata = [AnyHashable : Any]()
-    metadata["loanUrl"] = NYPLConfiguration.loanURL() ?? nullString
+    metadata["loanUrl"] = AccountsManager.shared.currentAccount?.loansUrl ?? nullString
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     
@@ -255,6 +255,22 @@ fileprivate let tabName = "Extra Data"
     
     Bugsnag.notifyError(err, block: { report in
       report.groupingHash = "problemDocumentParseError"
+      report.addMetadata(metadata, toTabWithName: tabName)
+    })
+  }
+  
+  /**
+    Report when there's an issue parsing a protocol document
+    @param error the parsing error
+    @return
+   */
+  class func reportUserProfileDocumentError(error: NSError?) {
+    let err = error ?? NSError.init(domain: "org.nypl.labs.SimplyE", code: 14, userInfo: nil)
+    var metadata = [AnyHashable : Any]()
+    addAccountInfoToMetadata(&metadata)
+    addLogfileToMetadata(&metadata)
+    
+    Bugsnag.notifyError(err, block: { report in
       report.addMetadata(metadata, toTabWithName: tabName)
     })
   }

@@ -399,7 +399,7 @@ double const requestTimeoutInterval = 25.0;
   
   // Get a fresh licensor token before attempting to deauthorize
   NSMutableURLRequest *const request =
-  [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[self.selectedAccount catalogUrl]] URLByAppendingPathComponent:@"loans"]];
+  [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
   
   request.timeoutInterval = requestTimeoutInterval;
   
@@ -411,15 +411,23 @@ double const requestTimeoutInterval = 25.0;
                        __unused NSError *const error) {
      
      NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
-     if(statusCode == 200) {
-       
-       NYPLXML *loansXML = [NYPLXML XMLWithData:data];
-       NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
-       [self.selectedNYPLAccount setLicensor:loansFeed.licensor];
-       NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",loansFeed.licensor[@"clientToken"],self.selectedNYPLAccount.userID);
-       
-       [self deauthorizeDevice];
-
+     if (statusCode == 200) {
+       NSError *pDocError = nil;
+       UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
+       if (!pDoc) {
+         [NYPLBugsnagLogs reportUserProfileDocumentErrorWithError:pDocError];
+         [self showLogoutAlertWithError:pDocError responseCode:statusCode];
+         [self removeActivityTitle];
+         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+       } else {
+         if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
+           [self.selectedNYPLAccount setLicensor:[pDoc.drm[0] licensor]];
+           NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@", pDoc.drm[0].clientToken, self.selectedNYPLAccount.userID);
+         } else {
+           NYPLLOG_F(@"\nLicensor Token Invalid: %@", [pDoc toJson])
+         }
+         [self deauthorizeDevice];
+       }
      } else {
        [self showLogoutAlertWithError:error responseCode:statusCode];
        [self removeActivityTitle];
@@ -514,7 +522,7 @@ double const requestTimeoutInterval = 25.0;
 - (void)validateCredentials
 {
   NSMutableURLRequest *const request =
-  [NSMutableURLRequest requestWithURL:[[NSURL URLWithString:[self.selectedAccount catalogUrl]] URLByAppendingPathComponent:@"loans"]];
+  [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
 
   request.timeoutInterval = requestTimeoutInterval;
 
@@ -524,69 +532,66 @@ double const requestTimeoutInterval = 25.0;
    completionHandler:^(__unused NSData *data,
                        NSURLResponse *const response,
                        NSError *const error) {
-
-     NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
-
-     if(statusCode == 200) {
-       
+      NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
+     
+      if (statusCode == 200) {
 #if defined(FEATURE_DRM_CONNECTOR)
-
-       NYPLXML *loansXML = [NYPLXML XMLWithData:data];
-       NYPLOPDSFeed *loansFeed = [[NYPLOPDSFeed alloc] initWithXML:loansXML];
-
-       if (loansFeed.authorizationIdentifier) {
-         [[NYPLAccount sharedAccount:self.selectedAccountId] setAuthorizationIdentifier:loansFeed.authorizationIdentifier];
-       } else {
-         NYPLLOG(@"Authorization ID (Barcode String) was nil.");
-       }
-       if (loansFeed.licensor) {
-         [self.selectedNYPLAccount setLicensor:loansFeed.licensor];
-       } else {
-         NYPLLOG(@"Login Failed: No Licensor Token received or parsed from OPDS Loans feed");
-         [self authorizationAttemptDidFinish:NO error:nil];
-         return;
-       }
-       
-       NSMutableArray *licensorItems = [[loansFeed.licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
-       NSString *tokenPassword = [licensorItems lastObject];
-       [licensorItems removeLastObject];
-       NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
-       
-       NYPLLOG(@"***DRM Auth/Activation Attempt***");
-       NYPLLOG_F(@"\nLicensor: %@\n",loansFeed.licensor);
-       NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
-       NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
-       
-       [[NYPLADEPT sharedInstance]
-        authorizeWithVendorID:[self.selectedNYPLAccount licensor][@"vendor"]
-        username:tokenUsername
-        password:tokenPassword
-        completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
-
-          NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
-          NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
-          NYPLLOG_F(@"UserID: %@\n",userID);
-          NYPLLOG_F(@"DeviceID: %@\n",deviceID);
-          NYPLLOG(@"***DRM Auth/Activation Completion***");
-          
-          if (success) {
-            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-              [self.selectedNYPLAccount setUserID:userID];
-              [self.selectedNYPLAccount setDeviceID:deviceID];
-            }];
+        NSError *pDocError = nil;
+        UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
+        if (!pDoc) {
+          [NYPLBugsnagLogs reportUserProfileDocumentErrorWithError:pDocError];
+          [self authorizationAttemptDidFinish:NO error:nil];
+          return;
+        } else {
+          if (pDoc.authorizationIdentifier) {
+           [[NYPLAccount sharedAccount:self.selectedAccountId] setAuthorizationIdentifier:pDoc.authorizationIdentifier];
+          } else {
+           NYPLLOG(@"Authorization ID (Barcode String) was nil.");
           }
-          
-          [self authorizationAttemptDidFinish:success error:error];
-        }];
+          if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
+           [self.selectedNYPLAccount setLicensor:[pDoc.drm[0] licensor]];
+          } else {
+           NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
+           [self authorizationAttemptDidFinish:NO error:nil];
+           return;
+          }
 
+          NSMutableArray *licensorItems = [[pDoc.drm[0].clientToken stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
+          NSString *tokenPassword = [licensorItems lastObject];
+          [licensorItems removeLastObject];
+          NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
+
+          NYPLLOG(@"***DRM Auth/Activation Attempt***");
+          NYPLLOG_F(@"\nLicensor: %@\n",[pDoc.drm[0] licensor]);
+          NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
+          NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
+
+          [[NYPLADEPT sharedInstance]
+           authorizeWithVendorID:[self.selectedNYPLAccount licensor][@"vendor"]
+           username:tokenUsername
+           password:tokenPassword
+           completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
+            NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
+            NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
+            NYPLLOG_F(@"UserID: %@\n",userID);
+            NYPLLOG_F(@"DeviceID: %@\n",deviceID);
+            NYPLLOG(@"***DRM Auth/Activation Completion***");
+            
+            if (success) {
+              [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                [self.selectedNYPLAccount setUserID:userID];
+                [self.selectedNYPLAccount setDeviceID:deviceID];
+              }];
+            }
+            
+            [self authorizationAttemptDidFinish:success error:error];
+          }];
+        }
 #else
-       
-       [self authorizationAttemptDidFinish:YES error:nil];
-       
+        [self authorizationAttemptDidFinish:YES error:nil];
 #endif
-
-       return;
-     }
+        return;
+      }
      
      [self removeActivityTitle];
      [[UIApplication sharedApplication] endIgnoringInteractionEvents];
