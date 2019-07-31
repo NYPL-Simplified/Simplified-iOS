@@ -122,7 +122,7 @@
       workflowsInProgress = ([NYPLBookRegistry sharedRegistry].syncing == YES);
     #endif
 
-      if(workflowsInProgress) {
+      if (workflowsInProgress) {
         UIAlertController *alert = [NYPLAlertUtils
                                     alertWithTitle:@"PleaseWait"
                                     message:@"PleaseWaitMessage"];
@@ -139,7 +139,7 @@
             } else {
               UIAlertController *alert = [NYPLAlertUtils
                                           alertWithTitle:@""
-                                          message:@"UnknownRequestError"];
+                                          message:@"LibraryLoadError"];
               [self presentViewController:alert
                                  animated:YES
                                completion:nil];
