@@ -383,7 +383,7 @@ static NSString *const RecordsKey = @"records";
       [self save];
     } else {
       UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SyncFailed"
-                                                        message:@"LibraryLoadError"];
+                                                        message:@"DataError"];
       [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
     }
   }];
