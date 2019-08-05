@@ -30,6 +30,7 @@
 "ConnectionFailedDescription" = "Unable to load the web page at this time.";
 "Contact" = "Contact";
 "ContentLicenses" = "Content Licenses";
+"DataError" = "We found a problem. Please check your connection or close and reopen the app to retry.";
 "Delete" = "Delete";
 "Description" = "Description";
 "DeviceAuthorizationError" = "An error occurred while authorizing this device.";
@@ -43,6 +44,7 @@
 "Hide" = "Hide";
 "Information" = "Information";
 "LibraryCard" = "Library Card";
+"LibraryLoadError" = "We can’t get your library right now. Please close and reopen the app to try again.";
 "Licenses" = "Licenses";
 "LogIn" = "Log In";
 "ManageAccounts" = "Manage Accounts";

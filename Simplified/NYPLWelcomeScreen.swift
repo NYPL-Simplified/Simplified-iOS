@@ -145,7 +145,7 @@ import PureLayout
   }
   
   func showLoadingFailureAlert() {
-    let alert = NYPLAlertUtils.alert(title:nil, message:"CheckConnection", style: .cancel)
+    let alert = NYPLAlertUtils.alert(title:nil, message:"LibraryLoadError", style: .cancel)
     present(alert, animated: true, completion: nil)
   }
   
