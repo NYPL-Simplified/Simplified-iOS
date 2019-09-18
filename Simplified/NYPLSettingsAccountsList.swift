@@ -37,7 +37,7 @@
     self.tableView.delegate = self
     self.tableView.dataSource = self
     
-    
+
     // cleanup accounts, remove demo account or accounts not supported through accounts.json // will be refactored when implementing librsry registry
     var accountsToRemove = [String]()
     
@@ -69,7 +69,6 @@
                       style: .plain,
                       target: self,
                       action: #selector(addAccount))
-    updateUI()
     
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(reloadAfterAccountChange),
@@ -79,6 +78,9 @@
                                            selector: #selector(catalogChangeHandler),
                                            name: NSNotification.Name.NYPLCatalogDidLoad,
                                            object: nil)
+
+    self.libraryAccounts = manager.accounts()
+    updateUI()
   }
   
   func reloadAfterAccountChange() {
