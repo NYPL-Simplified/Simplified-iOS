@@ -82,6 +82,9 @@
   if (account.details.mainColor) {
     return [NYPLAppTheme themeColorFromStringWithName:account.details.mainColor];
   } else {
+    if (@available(iOS 13, *)) {
+      return [UIColor labelColor];
+    }
     return [UIColor blackColor];
   }
 }
@@ -93,6 +96,9 @@
 
 + (UIColor *)backgroundColor
 {
+  if (@available(iOS 13, *)) {
+    return UIColor.secondarySystemBackgroundColor;
+  }
   return [UIColor colorWithWhite:250/255.0 alpha:1.0];
 }
 
@@ -119,6 +125,9 @@
 }
 
 +(UIColor *)iconLogoBlueColor {
+  if (@available(iOS 13, *)) {
+    return [UIColor colorNamed: @"ColorIconLogoBlue"];
+  }
   return [UIColor colorWithRed:17.0/255.0 green:50.0/255.0 blue:84.0/255.0 alpha:1.0];
 }
 

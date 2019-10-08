@@ -999,13 +999,16 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       self.ageCheckCell = [[UITableViewCell alloc]
                            initWithStyle:UITableViewCellStyleDefault
                            reuseIdentifier:nil];
-      if (self.selectedAccount.details.userAboveAgeLimit) {
-        self.ageCheckCell.accessoryView = [[UIImageView alloc] initWithImage:
-                                           [UIImage imageNamed:@"CheckboxOn"]];
+      
+      UIImageView *accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:(self.selectedAccount.details.userAboveAgeLimit ? @"CheckboxOn" : @"CheckboxOff")]];
+      accessoryView.image = [accessoryView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+      if (@available(iOS 13, *)) {
+        accessoryView.tintColor = [UIColor labelColor];
       } else {
-        self.ageCheckCell.accessoryView = [[UIImageView alloc] initWithImage:
-                                           [UIImage imageNamed:@"CheckboxOff"]];
+        accessoryView.tintColor = [UIColor blackColor];
       }
+      self.ageCheckCell.accessoryView = accessoryView;
+      
       self.ageCheckCell.selectionStyle = UITableViewCellSelectionStyleNone;
       self.ageCheckCell.textLabel.font = [UIFont systemFontOfSize:13];
       self.ageCheckCell.textLabel.text = NSLocalizedString(@"SettingsAccountAgeCheckbox",
