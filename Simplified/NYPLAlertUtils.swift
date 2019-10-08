@@ -20,15 +20,17 @@ import UIKit
         message = "Cancelled"
       } else if code == NSURLErrorTimedOut {
         message = "TimedOut"
+      } else if code == NSURLErrorUnsupportedURL {
+        message = "UnsupportedURL"
       } else {
         message = "UnknownRequestError"
       }
     }
     #if FEATURE_DRM_CONNECTOR
     if domain == NYPLADEPTErrorDomain {
-      if code == NYPLADEPTErrorAuthenticationFailed {
+      if code == NYPLADEPTError.authenticationFailed.rawValue {
         message = "SettingsAccountViewControllerInvalidCredentials"
-      } else if code == NYPLADEPTErrorTooManyActivations {
+      } else if code == NYPLADEPTError.tooManyActivations.rawValue {
         message = "SettingsAccountViewControllerMessageTooManyActivations"
       } else {
         message = "UnknownAdeptError"
