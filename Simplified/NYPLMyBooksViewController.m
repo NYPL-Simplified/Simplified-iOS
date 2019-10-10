@@ -4,7 +4,6 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogSearchViewController.h"
-#import "NYPLConfiguration.h"
 #import "NYPLFacetBarView.h"
 #import "NYPLFacetView.h"
 #import "NYPLOpenSearchDescription.h"
@@ -121,7 +120,7 @@ typedef NS_ENUM(NSInteger, FacetSort) {
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   
   self.activeFacetShow = FacetShowAll;
   self.activeFacetSort = FacetSortAuthor;

@@ -2,7 +2,6 @@
 #import "NYPLAttributedString.h"
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
 #import "NYPLBookCellDelegate.h"
 #import "SimplyE-Swift.h"
@@ -99,7 +98,7 @@
     self.unreadImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Unread"]];
     self.unreadImageView.image = [self.unreadImageView.image
                                   imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    self.unreadImageView.tintColor = [NYPLConfiguration accentColor];
+    self.unreadImageView.tintColor = [NYPLConfiguration shared].accentColor;
     [self.contentView addSubview:self.unreadImageView];
   }
   

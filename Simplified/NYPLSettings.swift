@@ -29,14 +29,14 @@ let NYPLUserAgreementURLString = "http://www.librarysimplified.org/EULA.html"
   static let NYPLAcknowledgementsURLString = "http://www.librarysimplified.org/acknowledgments.html"
   static let NYPLUserAgreementURLString = "http://www.librarysimplified.org/EULA.html"
   
-  static fileprivate let customMainFeedURLKey = "NYPLSettingsCustomMainFeedURL"
-  static fileprivate let accountMainFeedURLKey = "NYPLSettingsAccountMainFeedURL"
-  static fileprivate let userHasSeenWelcomeScreenKey = "NYPLUserHasSeenWelcomeScreenKey"
-  static fileprivate let userPresentedAgeCheckKey = "NYPLUserPresentedAgeCheckKey"
-  static fileprivate let userSeenFirstTimeSyncMessageKey = "userSeenFirstTimeSyncMessageKey"
-  static fileprivate let useBetaLibrariesKey = "NYPLUseBetaLibrariesKey"
-  static fileprivate let settingsLibraryAccountsKey = "NYPLSettingsLibraryAccountsKey"
-  static fileprivate let versionKey = "NYPLSettingsVersionKey"
+  static let customMainFeedURLKey = "NYPLSettingsCustomMainFeedURL"
+  static let accountMainFeedURLKey = "NYPLSettingsAccountMainFeedURL"
+  static let userHasSeenWelcomeScreenKey = "NYPLUserHasSeenWelcomeScreenKey"
+  static let userPresentedAgeCheckKey = "NYPLUserPresentedAgeCheckKey"
+  static let userSeenFirstTimeSyncMessageKey = "userSeenFirstTimeSyncMessageKey"
+  static let useBetaLibrariesKey = "NYPLUseBetaLibrariesKey"
+  static let settingsLibraryAccountsKey = "NYPLSettingsLibraryAccountsKey"
+  static let versionKey = "NYPLSettingsVersionKey"
   
   @objc class func sharedSettings() -> NYPLSettings {
     return NYPLSettings.shared

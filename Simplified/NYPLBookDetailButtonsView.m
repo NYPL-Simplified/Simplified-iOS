@@ -1,7 +1,6 @@
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLBookDetailButtonsView.h"
-#import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
 
 #import "NYPLRootTabBarController.h"
@@ -58,7 +57,7 @@
   [self addSubview:self.cancelButton];
   
   self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-  self.activityIndicator.color = [NYPLConfiguration mainColor];
+  self.activityIndicator.color = [NYPLConfiguration shared].mainColor;
   self.activityIndicator.hidesWhenStopped = YES;
   [self addSubview:self.activityIndicator];
   

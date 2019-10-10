@@ -1,4 +1,4 @@
-#import "NYPLConfiguration.h"
+#import "SimplyE-Swift.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 
 @implementation UIFont (NYPLSystemFontOverride)
@@ -16,7 +16,7 @@
   NSDictionary *attributes = @{UIFontDescriptorTraitsAttribute:@{UIFontWeightTrait:weight}};
   UIFontDescriptor *newDescriptor = [[[UIFontDescriptor fontDescriptorWithName:preferredFont.fontName
                                                                           size:preferredFont.pointSize]
-                                                      fontDescriptorWithFamily:[NYPLConfiguration systemFontFamilyName]]
+                                                      fontDescriptorWithFamily:[NYPLConfiguration shared].systemFontFamilyName]
                                               fontDescriptorByAddingAttributes:attributes];
   
   return [UIFont fontWithDescriptor:newDescriptor size:preferredFont.pointSize * multiplier];
@@ -27,7 +27,7 @@
   NSDictionary *attributes = @{UIFontDescriptorTraitsAttribute:@{UIFontWeightTrait:@(UIFontWeightBold)}};
   UIFontDescriptor *newDescriptor = [[[UIFontDescriptor fontDescriptorWithName:preferredFont.fontName
                                                                           size:preferredFont.pointSize]
-                                      fontDescriptorWithFamily:[NYPLConfiguration systemFontFamilyName]]
+                                      fontDescriptorWithFamily:[NYPLConfiguration shared].systemFontFamilyName]
                                      fontDescriptorByAddingAttributes:attributes];
   
   return [UIFont fontWithDescriptor:newDescriptor size:preferredFont.pointSize];

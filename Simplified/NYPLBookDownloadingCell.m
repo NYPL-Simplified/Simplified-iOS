@@ -1,5 +1,4 @@
 #import "NYPLBook.h"
-#import "NYPLConfiguration.h"
 #import "NYPLRoundedButton.h"
 #import "SimplyE-Swift.h"
 
@@ -97,15 +96,15 @@
 
 - (void)setup
 {
-  self.backgroundColor = [NYPLConfiguration mainColor];
+  self.backgroundColor = [NYPLConfiguration shared].mainColor;
   
   self.authorsLabel = [[UILabel alloc] init];
   self.authorsLabel.font = [UIFont systemFontOfSize:12];
-  self.authorsLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.authorsLabel.textColor = [NYPLConfiguration shared].backgroundColor;
   [self.contentView addSubview:self.authorsLabel];
   
   self.cancelButton = [NYPLRoundedButton button];
-  self.cancelButton.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.cancelButton.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   self.cancelButton.layer.borderWidth = 0;
   [self.cancelButton setTitle:NSLocalizedString(@"Cancel", nil)
                      forState:UIControlStateNormal];
@@ -117,24 +116,24 @@
   self.downloadingLabel = [[UILabel alloc] init];
   self.downloadingLabel.font = [UIFont systemFontOfSize:12];
   self.downloadingLabel.text = NSLocalizedString(@"Downloading", nil);
-  self.downloadingLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.downloadingLabel.textColor = [NYPLConfiguration shared].backgroundColor;
   [self.contentView addSubview:self.downloadingLabel];
   
   self.percentageLabel = [[UILabel alloc] init];
   self.percentageLabel.font = [UIFont systemFontOfSize:12];
-  self.percentageLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.percentageLabel.textColor = [NYPLConfiguration shared].backgroundColor;
   self.percentageLabel.textAlignment = NSTextAlignmentRight;
   self.percentageLabel.text = NYPLLocalizationNotNeeded(@"0%");
   [self.contentView addSubview:self.percentageLabel];
   
   self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
   self.progressView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5];
-  self.progressView.tintColor = [NYPLConfiguration backgroundColor];
+  self.progressView.tintColor = [NYPLConfiguration shared].backgroundColor;
   [self.contentView addSubview:self.progressView];
   
   self.titleLabel = [[UILabel alloc] init];
   self.titleLabel.font = [UIFont boldSystemFontOfSize:17];
-  self.titleLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.titleLabel.textColor = [NYPLConfiguration shared].backgroundColor;
   [self.contentView addSubview:self.titleLabel];
 }
 

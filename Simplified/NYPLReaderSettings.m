@@ -1,4 +1,3 @@
-#import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
 #import "UIColor+NYPLColorAdditions.h"
 
@@ -350,11 +349,11 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
 {
   switch(self.colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
-      return [NYPLConfiguration backgroundSepiaColor];
+      return [NYPLConfiguration shared].backgroundSepiaColor;
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
-      return [NYPLConfiguration backgroundColor];
+      return [NYPLConfiguration shared].backgroundColor;
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-      return [NYPLConfiguration backgroundDarkColor];
+      return [NYPLConfiguration shared].backgroundDarkColor;
   }
 }
 
@@ -362,11 +361,11 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
 {
   switch(self.colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
-      return [NYPLConfiguration backgroundMediaOverlayHighlightSepiaColor];
+      return [NYPLConfiguration shared].backgroundMediaOverlayHighlightSepiaColor;
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
-      return [NYPLConfiguration backgroundMediaOverlayHighlightColor];
+      return [NYPLConfiguration shared].backgroundMediaOverlayHighlightColor;
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-      return [NYPLConfiguration backgroundMediaOverlayHighlightDarkColor];
+      return [NYPLConfiguration shared].backgroundMediaOverlayHighlightDarkColor;
   }
 }
 

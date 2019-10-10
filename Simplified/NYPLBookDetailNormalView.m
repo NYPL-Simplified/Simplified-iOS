@@ -1,12 +1,12 @@
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLBook.h"
-#import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLBookButtonsView.h"
 #import "NYPLOPDS.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import <PureLayout/PureLayout.h>
+#import "SimplyE-Swift.h"
 
 #import "NYPLBookDetailNormalView.h"
 
@@ -32,7 +32,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-  self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.messageLabel.textColor = [NYPLConfiguration shared].backgroundColor;
   self.messageLabel.numberOfLines = 0;
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
   [self addSubview:self.messageLabel];
@@ -69,7 +69,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
   CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x, bounds.origin.y);
   CGPathCloseSubpath(visiblePath);
   
-  UIColor *aColor = [NYPLConfiguration mainColor];
+  UIColor *aColor = [NYPLConfiguration shared].mainColor;
   [aColor setFill];
   CGContextAddPath(context, visiblePath);
   CGContextFillPath(context);

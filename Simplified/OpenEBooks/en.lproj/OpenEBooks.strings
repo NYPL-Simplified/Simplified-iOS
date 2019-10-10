@@ -1,0 +1,24 @@
+// Generic
+
+// NYPLEULAViewController && NYPLSettingsEULAViewController
+"Accept" = "Accept";
+"Reject" = "Reject";
+"EULA" = "User Agreement";
+"EULAHaveToAgree" = "You must accept the End User License Agreement to use this application.";
+"NOTICE" = "NOTICE";
+
+// NYPLSettingsPrivacyPolicyViewController
+"RestorePreloadedContent" = "Restore Preloaded Content";
+"PreloadedContent" = "Preloaded Content";
+"PreloadedContentRestoredMessage" = "Preloaded content restored";
+"PreloadedContentNothingRestoredMessage" = "All preloaded content available";
+
+// NYPLTutorial*
+
+"TutorialWelcomeViewControllerDescription" = "Welcome to Open eBooks.";
+"TutorialEligibilityViewControllerDescription" =
+  "The Open eBooks app provides free books to the children who need them the most.\n\nThe collection includes thousands of popular and award-winning titles as well as hundreds of public domain works.\n\nChildren from low-income areas may qualify for access in several ways.";
+"TutorialChoiceViewControllerDescription" = "You need to login to access the collection.";
+"TutorialChoiceUseExistingCode" = "Use Existing Code";
+"TutorialChoiceUseClever" = "Login With Clever";
+"TutorialChoiceRequestCodes" = "Request New Codes";

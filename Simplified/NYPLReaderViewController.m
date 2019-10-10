@@ -2,7 +2,6 @@
 
 #import "NYPLBook.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLConfiguration.h"
 #import "NYPLReaderReadiumView.h"
 #import "NYPLReadiumViewSyncManager.h"
 #import "NYPLReaderSettingsView.h"
@@ -70,7 +69,7 @@ typedef NS_ENUM(NSInteger, NYPLReaderViewControllerDirection) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
       self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
       self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-      self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration shared].backgroundSepiaColor;
       self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
       self.headerViewLabel.textColor = [UIColor darkGrayColor];
       self.footerViewLabel.textColor = [UIColor darkGrayColor];
@@ -78,7 +77,7 @@ typedef NS_ENUM(NSInteger, NYPLReaderViewControllerDirection) {
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
       self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-      self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundColor];
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration shared].backgroundColor;
       self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
       self.headerViewLabel.textColor = [UIColor darkGrayColor];
       self.footerViewLabel.textColor = [UIColor darkGrayColor];
@@ -86,7 +85,7 @@ typedef NS_ENUM(NSInteger, NYPLReaderViewControllerDirection) {
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
       self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
       self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-      self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration shared].backgroundDarkColor;
       self.bottomViewImageViewTopBorder.backgroundColor = [UIColor darkGrayColor];
       self.headerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
       self.footerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
@@ -185,7 +184,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   [UINavigationBar setAnimationDuration:0.25];
   self.navigationController.navigationBar.translucent = YES;
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   
   // Table of Contents button
   NYPLRoundedButton *const contentsButton = [NYPLRoundedButton button];
@@ -274,7 +273,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   self.headerViewLabel = [[UILabel alloc] init];
   self.headerViewLabel.numberOfLines = 2;
-  self.headerViewLabel.textColor = [NYPLConfiguration mainColor];
+  self.headerViewLabel.textColor = [NYPLConfiguration shared].mainColor;
   self.headerViewLabel.textAlignment = NSTextAlignmentCenter;
   [self.headerViewLabel setFont:[UIFont systemFontOfSize:13]];
   
@@ -309,7 +308,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   self.footerViewLabel = [[UILabel alloc] init];
   self.footerViewLabel.numberOfLines = 1;
-  self.footerViewLabel.textColor = [NYPLConfiguration mainColor];
+  self.footerViewLabel.textColor = [NYPLConfiguration shared].mainColor;
   self.footerViewLabel.textAlignment = NSTextAlignmentCenter;
   [self.footerViewLabel setFont:[UIFont systemFontOfSize:13]];
   
@@ -357,7 +356,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   
   self.bottomViewImageView = [[UIImageView alloc] init];
   self.bottomViewImageView.translatesAutoresizingMaskIntoConstraints = NO;
-  self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.bottomViewImageView.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   self.bottomViewImageView.frame = self.bottomView.frame;
   
   CGSize mainViewSize = self.bottomViewImageView.bounds.size;
@@ -395,7 +394,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
   self.bottomViewProgressLabel = [[UILabel alloc] init];
   self.bottomViewProgressLabel.translatesAutoresizingMaskIntoConstraints = NO;
   self.bottomViewProgressLabel.backgroundColor = [UIColor clearColor];
-  self.bottomViewProgressLabel.textColor = [NYPLConfiguration mainColor];
+  self.bottomViewProgressLabel.textColor = [NYPLConfiguration shared].mainColor;
   [self.bottomViewProgressLabel setFont:[UIFont systemFontOfSize:13]];
   
   [self.bottomView addSubview:self.bottomViewProgressLabel];

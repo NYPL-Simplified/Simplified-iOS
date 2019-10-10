@@ -1,0 +1,67 @@
+PODS:
+  - AFNetworking (2.7.0):
+    - AFNetworking/NSURLConnection (= 2.7.0)
+    - AFNetworking/NSURLSession (= 2.7.0)
+    - AFNetworking/Reachability (= 2.7.0)
+    - AFNetworking/Security (= 2.7.0)
+    - AFNetworking/Serialization (= 2.7.0)
+    - AFNetworking/UIKit (= 2.7.0)
+  - AFNetworking/NSURLConnection (2.7.0):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.7.0):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.7.0)
+  - AFNetworking/Security (2.7.0)
+  - AFNetworking/Serialization (2.7.0)
+  - AFNetworking/UIKit (2.7.0):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
+  - HelpStack (1.1.2):
+    - AFNetworking (~> 2.0)
+    - HelpStack/Core (= 1.1.2)
+    - HelpStack/Stacks (= 1.1.2)
+    - HelpStack/UI (= 1.1.2)
+    - HelpStack/Util (= 1.1.2)
+  - HelpStack/Core (1.1.2):
+    - AFNetworking (~> 2.0)
+    - HelpStack/Util
+  - HelpStack/Stacks (1.1.2):
+    - AFNetworking (~> 2.0)
+    - HelpStack/Core
+    - HelpStack/Util
+  - HelpStack/UI (1.1.2):
+    - AFNetworking (~> 2.0)
+    - HelpStack/Core
+    - HelpStack/Stacks
+    - HelpStack/Util
+  - HelpStack/Util (1.1.2):
+    - AFNetworking (~> 2.0)
+
+DEPENDENCIES:
+  - HelpStack (from `https://github.com/NYPL-Simplified/helpstack-ios.git`, branch `feature/openebooks_merge`)
+
+SPEC REPOS:
+  trunk:
+    - AFNetworking
+
+EXTERNAL SOURCES:
+  HelpStack:
+    :branch: feature/openebooks_merge
+    :git: https://github.com/NYPL-Simplified/helpstack-ios.git
+
+CHECKOUT OPTIONS:
+  HelpStack:
+    :commit: 451f28ea32cb9d179010f95ac7f867c29c926b1e
+    :git: https://github.com/NYPL-Simplified/helpstack-ios.git
+
+SPEC CHECKSUMS:
+  AFNetworking: 8dd5f9b9691e09186393069a12cc3b5ed7c8b511
+  HelpStack: a9067738597ef81835d84ac8bb75ee346e34f000
+
+PODFILE CHECKSUM: 7f2b9014c2aa9e1c0568d7704a7efa7d9a4bb57f
+
+COCOAPODS: 1.8.4

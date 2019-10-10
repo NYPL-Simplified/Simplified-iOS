@@ -17,7 +17,6 @@
 #import "NYPLReaderReadiumView.h"
 #import "UIColor+NYPLColorAdditions.h"
 #import "NSURL+NYPLURLAdditions.h"
-#import "NYPLConfiguration.h"
 #import "NYPLRootTabBarController.h"
 #import "NSDate+NYPLDateAdditions.h"
 #import "NYPLReachability.h"
@@ -323,7 +322,7 @@ static void generateTOCElements(NSArray *const navigationElements,
                            \
                            reader.off(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \
                            reader.on(ReadiumSDK.Events.CONTENT_DOCUMENT_LOADED, eventCb); \
-                           ", [NYPLConfiguration backgroundMediaOverlayHighlightColor].javascriptHexString] ;
+                           ", [NYPLConfiguration shared].backgroundMediaOverlayHighlightColor.javascriptHexString] ;
   [self sequentiallyEvaluateJavaScript:javascript];
 }
 

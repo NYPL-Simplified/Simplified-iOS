@@ -182,7 +182,7 @@
   }];
 
   audiobookVC.hidesBottomBarWhenPushed = YES;
-  audiobookVC.view.tintColor = [NYPLConfiguration mainColor];
+  audiobookVC.view.tintColor = [NYPLConfiguration shared].mainColor;
   [[NYPLRootTabBarController sharedController] pushViewController:audiobookVC animated:YES];
 
   __weak AudiobookPlayerViewController *weakAudiobookVC = audiobookVC;

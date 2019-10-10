@@ -4,7 +4,6 @@
 #import "NYPLBook.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistryRecord.h"
-#import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
 #import "NYPLOPDS.h"
 #import "NYPLMyBooksDownloadCenter.h"

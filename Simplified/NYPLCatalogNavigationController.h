@@ -1,7 +1,10 @@
 // Despite the name, this class has nothing to do with OPDS navigation feeds. It's simply the
 // UINavigationController for the catalog portion of the application.
+@class NYPLCatalogFeedViewController;
 
 @interface NYPLCatalogNavigationController : UINavigationController
+
+@property (nonatomic) NYPLCatalogFeedViewController *const viewController;
 
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNavigationBarClass:(Class)navigationBarClass
@@ -12,4 +15,5 @@
 // designated initializer
 - (instancetype)init;
 - (void)updateFeedAndRegistryOnAccountChange;
+- (void)loadTopLevelCatalogViewController;
 @end

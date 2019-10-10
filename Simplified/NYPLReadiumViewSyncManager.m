@@ -5,7 +5,6 @@
 #import "NYPLBook.h"
 #import "NYPLBookLocation.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLConfiguration.h"
 #import "NYPLJSON.h"
 #import "NYPLReachability.h"
 #import "NYPLReaderSettings.h"
@@ -239,7 +238,7 @@ const double RequestTimeInterval = 120;
 - (void)syncBookmarksWithCompletion:(void(^)(BOOL success, NSArray<NYPLReadiumBookmark *> *bookmarks))completion
 {
   [[NYPLReachability sharedReachability]
-   reachabilityForURL:[NYPLConfiguration mainFeedURL]
+   reachabilityForURL:[NYPLConfiguration shared].mainFeedURL
    timeoutInternal:8.0
    handler:^(BOOL reachable) {
 

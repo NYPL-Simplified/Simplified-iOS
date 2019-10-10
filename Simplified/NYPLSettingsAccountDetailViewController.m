@@ -11,7 +11,6 @@
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogNavigationController.h"
-#import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
 
@@ -153,7 +152,7 @@ double const requestTimeoutInterval = 25.0;
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
   
   if (self.selectedAccount.details == nil) {
@@ -742,7 +741,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                     style:UIAlertActionStyleCancel
                                     handler:nil]];
         [self presentViewController:alertController animated:YES completion:^{
-          alertController.view.tintColor = [NYPLConfiguration mainColor];
+          alertController.view.tintColor = [NYPLConfiguration shared].mainColor;
         }];
       } else {
         [self logIn];
@@ -944,7 +943,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           self.barcodeImageLabel = [[UILabel alloc] init];
           self.barcodeImageLabel.text = NSLocalizedString(@"Show Barcode", nil);
           self.barcodeImageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
-          self.barcodeImageLabel.textColor = [NYPLConfiguration mainColor];
+          self.barcodeImageLabel.textColor = [NYPLConfiguration shared].mainColor;
 
           [cell.contentView addSubview:self.barcodeImageView];
           [cell.contentView addSubview:self.barcodeImageLabel];
@@ -1090,7 +1089,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   regTitle.text = NSLocalizedString(@"SettingsAccountRegistrationTitle", @"Title for registration. Asking the user if they already have a library card.");
   regButton.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   regButton.text = NSLocalizedString(@"SignUp", nil);
-  regButton.textColor = [NYPLConfiguration mainColor];
+  regButton.textColor = [NYPLConfiguration shared].mainColor;
 
   [containerView addSubview:regTitle];
   [containerView addSubview:regButton];
@@ -1427,7 +1426,7 @@ replacementString:(NSString *)string
   if([self.selectedNYPLAccount hasBarcodeAndPIN]) {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
-    self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
+    self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration shared].mainColor;
     self.logInSignOutCell.userInteractionEnabled = YES;
   } else {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"LogIn", nil);
@@ -1439,7 +1438,7 @@ replacementString:(NSString *)string
     BOOL const pinIsNotRequired = self.selectedAccount.details.pinKeyboard == LoginKeyboardNone;
     if((barcodeHasText && pinHasText) || (barcodeHasText && pinIsNotRequired)) {
       self.logInSignOutCell.userInteractionEnabled = YES;
-      self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
+      self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration shared].mainColor;
     } else {
       self.logInSignOutCell.userInteractionEnabled = NO;
       self.logInSignOutCell.textLabel.textColor = [UIColor lightGrayColor];
@@ -1533,7 +1532,7 @@ replacementString:(NSString *)string
 
 - (BOOL)registrationIsPossible
 {
-  return ([NYPLConfiguration cardCreationEnabled] &&
+  return ([NYPLConfiguration shared].cardCreationEnabled &&
           (self.selectedAccount.details.supportsCardCreator || self.selectedAccount.details.cardCreatorUrl) &&
           ![self.selectedNYPLAccount hasBarcodeAndPIN]);
 }

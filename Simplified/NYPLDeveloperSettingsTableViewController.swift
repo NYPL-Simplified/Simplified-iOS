@@ -27,7 +27,7 @@ import Foundation
     self.tableView.dataSource = self
     
     self.title = NSLocalizedString("Testing", comment: "Developer Settings")
-    self.view.backgroundColor = NYPLConfiguration.backgroundColor()
+    self.view.backgroundColor = NYPLConfiguration.shared.backgroundColor
   }
   
   // MARK: UITableViewDataSource

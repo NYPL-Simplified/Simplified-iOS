@@ -1,6 +1,5 @@
 @import PureLayout;
 #import "NYPLBook.h"
-#import "NYPLConfiguration.h"
 #import "SimplyE-Swift.h"
 
 #import "NYPLCatalogLaneCell.h"
@@ -24,7 +23,7 @@
   
   self.laneIndex = laneIndex;
   
-  self.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   
   self.contentView.autoresizingMask = (UIViewAutoresizingFlexibleWidth
                                        | UIViewAutoresizingFlexibleHeight);

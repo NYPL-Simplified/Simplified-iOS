@@ -22,7 +22,7 @@ import UIKit
     let tableView = UITableView.init(frame: .zero, style: .grouped)
     tableView.delegate = self
     tableView.dataSource = self
-    tableView.backgroundColor = NYPLConfiguration.backgroundColor()
+    tableView.backgroundColor = NYPLConfiguration.shared.backgroundColor
     self.view.addSubview(tableView)
     tableView.autoPinEdgesToSuperviewEdges()
   }

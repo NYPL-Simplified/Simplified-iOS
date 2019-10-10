@@ -6,7 +6,6 @@
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogSearchViewController.h"
-#import "NYPLConfiguration.h"
 #import "NYPLIndeterminateProgressView.h"
 #import "NYPLOpenSearchDescription.h"
 #import "NYPLSession.h"
@@ -67,7 +66,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   
   self.refreshControl = [[UIRefreshControl alloc] init];
   [self.refreshControl addTarget:self action:@selector(userDidRefresh:) forControlEvents:UIControlEventValueChanged];
@@ -76,7 +75,7 @@ static CGFloat const kTableViewCrossfadeDuration = 0.3;
   self.tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                      UIViewAutoresizingFlexibleHeight);
   self.tableView.alpha = 0.0;
-  self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.tableView.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
   self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -256,7 +255,7 @@ viewForHeaderInSection:(NSInteger const)section
   CGRect const frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), kSectionHeaderHeight);
   UIView *const view = [[UIView alloc] initWithFrame:frame];
   view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-  view.backgroundColor = [[NYPLConfiguration backgroundColor] colorWithAlphaComponent:0.9];
+  view.backgroundColor = [[NYPLConfiguration shared].backgroundColor colorWithAlphaComponent:0.9];
   
   {
     UIButton *const button = [UIButton buttonWithType:UIButtonTypeSystem];

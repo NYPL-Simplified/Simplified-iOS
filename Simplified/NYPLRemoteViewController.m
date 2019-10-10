@@ -1,4 +1,3 @@
-#import "NYPLConfiguration.h"
 #import "NYPLReloadView.h"
 #import "NYPLRemoteViewController.h"
 
@@ -79,7 +78,7 @@
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   
   self.activityIndicatorView = [[UIActivityIndicatorView alloc]
                                 initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -206,6 +205,26 @@
   self.connection = nil;
   self.data = [NSMutableData data];
   self.response = nil;
+}
+
+- (void)connection:(NSURLConnection *) __unused connection
+willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+  if ([challenge.protectionSpace.authenticationMethod
+      isEqualToString:NSURLAuthenticationMethodHTTPBasic]) {
+    if (challenge.previousFailureCount == 0) {
+      NSString *const barcode = [NYPLAccount sharedAccount].barcode;
+      NSString *const PIN = [NYPLAccount sharedAccount].PIN;
+      NSURLCredential *newCredential = [NSURLCredential
+                                        credentialWithUser:barcode
+                                        password:PIN
+                                        persistence:NSURLCredentialPersistenceNone];
+      [[challenge sender] useCredential:newCredential forAuthenticationChallenge:challenge];
+      return;
+    } else {
+      [[challenge sender] cancelAuthenticationChallenge:challenge];
+    }
+  }
+  [[challenge sender] performDefaultHandlingForAuthenticationChallenge:challenge];
 }
 
 @end

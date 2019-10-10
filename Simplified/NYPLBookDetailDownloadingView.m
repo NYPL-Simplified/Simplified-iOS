@@ -1,4 +1,4 @@
-#import "NYPLConfiguration.h"
+#import "SimplyE-Swift.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -29,14 +29,14 @@
   self.progressLabel = [[UILabel alloc] init];
   self.progressLabel.font = [UIFont systemFontOfSize:14];
   self.progressLabel.text = NSLocalizedString(@"Requesting", nil);
-  self.progressLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.progressLabel.textColor = [NYPLConfiguration shared].backgroundColor;
   [self addSubview:self.progressLabel];
   [self.progressLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
   [self.progressLabel autoPinEdgeToSuperviewEdge:ALEdgeLeading withInset:sidePadding];
   
   self.percentageLabel = [[UILabel alloc] init];
   self.percentageLabel.font = [UIFont systemFontOfSize:14];
-  self.percentageLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.percentageLabel.textColor = [NYPLConfiguration shared].backgroundColor;
   self.percentageLabel.textAlignment = NSTextAlignmentRight;
   self.percentageLabel.text = NYPLLocalizationNotNeeded(@"0%");
   [self addSubview:self.percentageLabel];
@@ -46,7 +46,7 @@
   
   self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
   self.progressView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5];
-  self.progressView.tintColor = [NYPLConfiguration backgroundColor];
+  self.progressView.tintColor = [NYPLConfiguration shared].backgroundColor;
   [self addSubview:self.progressView];
   [self.progressView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
   [self.progressView autoPinEdge:ALEdgeLeading toEdge:ALEdgeTrailing ofView:self.progressLabel withOffset:sidePadding*2];
@@ -69,7 +69,7 @@
   CGPathAddLineToPoint(visiblePath, NULL, bounds.origin.x, bounds.origin.y);
   CGPathCloseSubpath(visiblePath);
   
-  UIColor *aColor = [NYPLConfiguration mainColor];
+  UIColor *aColor = [NYPLConfiguration shared].mainColor;
   [aColor setFill];
   CGContextAddPath(context, visiblePath);
   CGContextFillPath(context);

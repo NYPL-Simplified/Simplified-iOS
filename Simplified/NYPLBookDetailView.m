@@ -11,9 +11,7 @@
 #import "NYPLCatalogGroupedFeedViewController.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogUngroupedFeed.h"
-#import "NYPLConfiguration.h"
 #import "NYPLBookDetailView.h"
-#import "NYPLConfiguration.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLOPDSAcquisition.h"
 #import "NYPLOPDSFeed.h"
@@ -90,7 +88,7 @@ static NSString *DetailHTMLTemplate = nil;
   
   self.book = book;
   self.detailViewDelegate = delegate;
-  self.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   self.alwaysBounceVertical = YES;
   self.translatesAutoresizingMaskIntoConstraints = NO;
   
@@ -138,7 +136,7 @@ static NSString *DetailHTMLTemplate = nil;
      [[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     self.closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.closeButton setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
-    [self.closeButton setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
+    [self.closeButton setTitleColor:[NYPLConfiguration shared].mainColor forState:UIControlStateNormal];
     [self.closeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
     [self.closeButton setContentEdgeInsets:UIEdgeInsetsMake(0, 2, 0, 0)];
     [self.closeButton addTarget:self action:@selector(closeButtonPressed) forControlEvents:UIControlEventTouchDown];
@@ -187,7 +185,7 @@ static NSString *DetailHTMLTemplate = nil;
   self.summaryTextView.textContainerInset = UIEdgeInsetsZero;
   
   NSString *htmlString = [NSString stringWithFormat:DetailHTMLTemplate,
-                          [NYPLConfiguration systemFontName],
+                          [NYPLConfiguration shared].systemFontName,
                           self.book.summary ? self.book.summary : @""];
   htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<p>" withString:@"<span>"];
   htmlString = [htmlString stringByReplacingOccurrencesOfString:@"</p>" withString:@"</span>"];
@@ -206,7 +204,7 @@ static NSString *DetailHTMLTemplate = nil;
   
   [self.readMoreLabel setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
   [self.readMoreLabel setTitle:NSLocalizedString(@"More...", nil) forState:UIControlStateNormal];
-  [self.readMoreLabel setTitleColor:[NYPLConfiguration mainColor] forState:UIControlStateNormal];
+  [self.readMoreLabel setTitleColor:[NYPLConfiguration shared].mainColor forState:UIControlStateNormal];
 }
 
 - (void)createHeaderLabels

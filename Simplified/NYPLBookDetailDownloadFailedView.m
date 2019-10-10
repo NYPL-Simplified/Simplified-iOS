@@ -1,4 +1,4 @@
-#import "NYPLConfiguration.h"
+#import "SimplyE-Swift.h"
 #import "NYPLLinearView.h"
 #import "NYPLRoundedButton.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -28,7 +28,7 @@
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
-  self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
+  self.messageLabel.textColor = [NYPLConfiguration shared].backgroundColor;
   self.messageLabel.text = NSLocalizedString(@"DownloadCouldNotBeCompleted", nil);
   [self addSubview:self.messageLabel];
   [self.messageLabel autoPinEdgesToSuperviewEdges];

@@ -1,6 +1,6 @@
 @import WebKit;
 
-#import "NYPLConfiguration.h"
+#import "SimplyE-Swift.h"
 
 #import "NYPLSettingsEULAViewController.h"
 
@@ -40,12 +40,12 @@
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration shared].backgroundColor;
 
   self.webView = [[WKWebView alloc] initWithFrame:self.view.bounds];
   self.webView.autoresizingMask = (UIViewAutoresizingFlexibleHeight
                                    | UIViewAutoresizingFlexibleWidth);
-  self.webView.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.webView.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   self.webView.navigationDelegate = self;
   
   NSURLRequest *const request = [NSURLRequest requestWithURL:self.eulaURL

@@ -4,7 +4,6 @@
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLBookNormalCell.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLOPDS.h"
 #import "SimplyE-Swift.h"
@@ -92,7 +91,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.delegate = [NYPLBookCellDelegate sharedDelegate];
       cell.downloadProgress = [[NYPLMyBooksDownloadCenter sharedDownloadCenter]
                                downloadProgressForBookIdentifier:book.identifier];
-      cell.backgroundColor = [NYPLConfiguration mainColor];
+      cell.backgroundColor = [NYPLConfiguration shared].mainColor;
       return cell;
     }
     case NYPLBookStateDownloadFailed:

@@ -1,5 +1,3 @@
-#import "NYPLConfiguration.h"
-
 #import "NYPLReaderSettingsView.h"
 #import "NYPLReaderReadiumView.h"
 #import "SimplyE-Swift.h"
@@ -37,7 +35,7 @@
 
   self.observers = [NSMutableArray array];
   
-  self.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.backgroundColor = [NYPLConfiguration shared].backgroundColor;
 
   [self sizeToFit];
 
@@ -48,7 +46,7 @@
   
   
   self.sansButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"SansFont", nil)];
-  self.sansButton.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.sansButton.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   [self.sansButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   self.sansButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:24];
   [self.sansButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
@@ -65,7 +63,7 @@
   
   self.serifButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.serifButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"SerifFont", nil)];
-  self.serifButton.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.serifButton.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   [self.serifButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   self.serifButton.titleLabel.font = [UIFont fontWithName:@"Georgia" size:24];
   [self.serifButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
@@ -83,7 +81,7 @@
   
   self.openDyslexicButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.openDyslexicButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"OpenDyslexicFont", nil)];
-  self.openDyslexicButton.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.openDyslexicButton.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   [self.openDyslexicButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   self.openDyslexicButton.titleLabel.font = [UIFont fontWithName:@"OpenDyslexic3" size:20];
   [self.openDyslexicButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontType", nil)
@@ -100,7 +98,7 @@
 
   self.whiteOnBlackButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.whiteOnBlackButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"WhiteOnBlackText", nil)];
-  self.whiteOnBlackButton.backgroundColor = [NYPLConfiguration backgroundDarkColor];
+  self.whiteOnBlackButton.backgroundColor = [NYPLConfiguration shared].backgroundDarkColor;
   
   NSDictionary *whiteColourWithoutUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone), NSForegroundColorAttributeName : [UIColor whiteColor] };
   NSDictionary *whiteColourWithUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSForegroundColorAttributeName : [UIColor whiteColor] };
@@ -119,9 +117,9 @@
 
   self.blackOnSepiaButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.blackOnSepiaButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"BlackOnSepiaText", nil)];
-  self.blackOnSepiaButton.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+  self.blackOnSepiaButton.backgroundColor = [NYPLConfiguration shared].backgroundSepiaColor;
   [self.blackOnSepiaButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.blackOnSepiaButton setTitleColor:[NYPLConfiguration mainColor]
+  [self.blackOnSepiaButton setTitleColor:[NYPLConfiguration shared].mainColor
                                 forState:UIControlStateDisabled];
   
   [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
@@ -137,9 +135,9 @@
 
   self.blackOnWhiteButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.blackOnWhiteButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"BlackOnWhiteText", nil)];
-  self.blackOnWhiteButton.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.blackOnWhiteButton.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   [self.blackOnWhiteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-  [self.blackOnWhiteButton setTitleColor:[NYPLConfiguration mainColor]
+  [self.blackOnWhiteButton setTitleColor:[NYPLConfiguration shared].mainColor
                                 forState:UIControlStateDisabled];
   
   [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
@@ -155,7 +153,7 @@
 
   self.decreaseButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.decreaseButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"DecreaseFontSize", nil)];
-  self.decreaseButton.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.decreaseButton.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   [self.decreaseButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [self.decreaseButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
   [self.decreaseButton setTitle:@"A" forState:UIControlStateNormal];
@@ -388,21 +386,21 @@
       self.blackOnSepiaButton.enabled = NO;
       self.blackOnWhiteButton.enabled = YES;
       self.whiteOnBlackButton.enabled = YES;
-      backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+      backgroundColor = [NYPLConfiguration shared].backgroundSepiaColor;
       foregroundColor = [UIColor blackColor];
       break;
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       self.blackOnSepiaButton.enabled = YES;
       self.blackOnWhiteButton.enabled = NO;
       self.whiteOnBlackButton.enabled = YES;
-      backgroundColor = [NYPLConfiguration backgroundColor];
+      backgroundColor = [NYPLConfiguration shared].backgroundColor;
       foregroundColor = [UIColor blackColor];
       break;
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
       self.blackOnSepiaButton.enabled = YES;
       self.blackOnWhiteButton.enabled = YES;
       self.whiteOnBlackButton.enabled = NO;
-      backgroundColor = [NYPLConfiguration backgroundDarkColor];
+      backgroundColor = [NYPLConfiguration shared].backgroundDarkColor;
       foregroundColor = [UIColor whiteColor];
       break;
   }

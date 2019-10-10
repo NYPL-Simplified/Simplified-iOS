@@ -4,7 +4,6 @@
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogSearchViewController.h"
-#import "NYPLConfiguration.h"
 #import "NYPLOpenSearchDescription.h"
 
 #import "NYPLAccountSignInViewController.h"
@@ -78,7 +77,7 @@
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   
   self.collectionView.dataSource = self;
   self.collectionView.delegate = self;
@@ -187,7 +186,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
       [view addSubview:title];
     }
     if([self bookArrayForSection:indexPath.section] == self.reservedBooks) {
-      view.layer.backgroundColor = [NYPLConfiguration mainColor].CGColor;
+      view.layer.backgroundColor = [NYPLConfiguration shared].mainColor.CGColor;
       title.text = NSLocalizedString(@"AvailableForCheckoutHeader", nil);
     } else {
       view.layer.backgroundColor = [UIColor colorWithRed:172.0/255.0 green:177.0/255.0 blue:182.0/255 alpha:1.0].CGColor;

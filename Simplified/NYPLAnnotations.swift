@@ -267,7 +267,7 @@ import UIKit
       return
     }
     // If no specific URL is provided, post to annotation URL provided by OPDS Main Feed.
-    let mainFeedAnnotationURL = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
+    let mainFeedAnnotationURL = NYPLConfiguration.shared.mainFeedURL?.appendingPathComponent("annotations/")
     guard let annotationsURL = annotationsURL ?? mainFeedAnnotationURL else {
         Log.error(#file, "Required parameter was nil.")
         return
@@ -585,7 +585,7 @@ import UIKit
       completionHandler(nil)
       return
     }
-    let mainFeedAnnotationURL = NYPLConfiguration.mainFeedURL()?.appendingPathComponent("annotations/")
+    let mainFeedAnnotationURL = NYPLConfiguration.shared.mainFeedURL?.appendingPathComponent("annotations/")
     guard let annotationsURL = annotationsURL ?? mainFeedAnnotationURL else {
         Log.error(#file, "Required parameter was nil.")
         completionHandler(nil)

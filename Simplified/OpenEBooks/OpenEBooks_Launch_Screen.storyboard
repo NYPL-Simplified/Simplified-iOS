@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="EHf-IW-A2E">
+            <objects>
+                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="hnf-Sh-G1E"/>
+                        <viewControllerLayoutGuide type="bottom" id="h92-FP-pw9"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="app_launch_screen_image" translatesAutoresizingMaskIntoConstraints="NO" id="WQk-C9-w5B">
+                                <rect key="frame" x="62.5" y="258.5" width="250" height="150"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="WQk-C9-w5B" secondAttribute="height" multiplier="5:3" id="UIv-lt-lRN"/>
+                                    <constraint firstAttribute="width" constant="350" id="ofM-36-bFR"/>
+                                    <constraint firstAttribute="height" constant="150" id="qVt-IC-ov7"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="ofM-36-bFR"/>
+                                    </mask>
+                                </variation>
+                                <variation key="widthClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="ofM-36-bFR"/>
+                                        <exclude reference="qVt-IC-ov7"/>
+                                    </mask>
+                                </variation>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Discover Books" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7QQ-PE-Pf0" userLabel="app_launch_screen_label">
+                                <rect key="frame" x="46" y="438" width="283" height="37"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="61"/>
+                                <color key="textColor" red="0.59607843137254901" green="0.77214223150000005" blue="0.3332334757" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="widthClass=compact">
+                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="31"/>
+                                </variation>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="7QQ-PE-Pf0" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="30" id="3BZ-Sw-Ohy"/>
+                            <constraint firstItem="WQk-C9-w5B" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="AhI-aL-EQY"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="7QQ-PE-Pf0" secondAttribute="trailing" constant="30" id="Mw7-Iw-43Q"/>
+                            <constraint firstItem="WQk-C9-w5B" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="aou-Oy-Z9S"/>
+                            <constraint firstItem="7QQ-PE-Pf0" firstAttribute="top" secondItem="WQk-C9-w5B" secondAttribute="bottom" constant="30" id="kZm-0c-UFr"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="52" y="374.66266866566718"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="app_launch_screen_image" width="480" height="480"/>
+    </resources>
+</document>

@@ -18,7 +18,7 @@ final class NYPLContentBadgeImageView: UIImageView {
 
   @objc required init(badgeImage: NYPLBadgeImage) {
     super.init(image: UIImage(named: badgeImage.assetName()))
-    backgroundColor = NYPLConfiguration.mainColor()
+    backgroundColor = NYPLConfiguration.shared.mainColor
     contentMode = .scaleAspectFit
   }
 

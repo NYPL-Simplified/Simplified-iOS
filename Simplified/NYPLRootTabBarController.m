@@ -4,16 +4,14 @@
 #import "NYPLMyBooksViewController.h"
 #import "NYPLReaderViewController.h"
 
-#import "NYPLSettingsSplitViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "SimplyE-Swift.h"
 
 @interface NYPLRootTabBarController () <UITabBarControllerDelegate>
 
-@property (nonatomic) NYPLCatalogNavigationController *catalogNavigationController;
 @property (nonatomic) NYPLMyBooksNavigationController *myBooksNavigationController;
 @property (nonatomic) NYPLHoldsNavigationController *holdsNavigationController;
-@property (nonatomic) NYPLSettingsSplitViewController *settingsSplitViewController;
+@property (nonatomic) UISplitViewController *settingsSplitViewController;
 
 @end
 
@@ -67,7 +65,17 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)setTabViewControllers
+- (void)setTabViewControllers {
+  if (![NSThread isMainThread]) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self setTabViewControllersInternal];
+    });
+  } else {
+    [self setTabViewControllersInternal];
+  }
+}
+
+- (void)setTabViewControllersInternal
 {
   Account *const currentAccount = [AccountsManager shared].currentAccount;
   if (currentAccount.details.supportsReservations) {
@@ -81,6 +89,26 @@
                              self.settingsSplitViewController];
     [self setSelectedIndex:0];
   }
+}
+
+- (void)setCatalogNavController:(NYPLCatalogNavigationController*)controller {
+  _catalogNavigationController = controller;
+  [self setTabViewControllers];
+}
+
+- (void)setMyBooksNavController:(NYPLMyBooksNavigationController*)controller {
+  _myBooksNavigationController = controller;
+  [self setTabViewControllers];
+}
+
+- (void)setHoldsNavController:(NYPLHoldsNavigationController*)controller {
+  _holdsNavigationController = controller;
+  [self setTabViewControllers];
+}
+
+- (void)setSettingsSplitViewController:(UISplitViewController*)controller {
+  _settingsSplitViewController = controller;
+  [self setTabViewControllers];
 }
 
 #pragma mark - UITabBarControllerDelegate

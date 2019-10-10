@@ -1,6 +1,5 @@
 @import Bugsnag;
 
-#import "NYPLConfiguration.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCCell.h"
 #import "NYPLReaderTOCElement.h"
@@ -87,18 +86,18 @@ segmentControlTypeWithInteger(NSInteger const integer)
 
   switch([NYPLReaderSettings sharedSettings].colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
-    self.tableView.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
-    self.view.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
-    self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
+    self.tableView.backgroundColor = [NYPLConfiguration shared].backgroundSepiaColor;
+    self.view.backgroundColor = [NYPLConfiguration shared].backgroundSepiaColor;
+    self.segmentedControl.tintColor = [NYPLConfiguration shared].mainColor;
     break;
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
-    self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
-    self.view.backgroundColor = [NYPLConfiguration backgroundColor];
-    self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
+    self.tableView.backgroundColor = [NYPLConfiguration shared].backgroundColor;
+    self.view.backgroundColor = [NYPLConfiguration shared].backgroundColor;
+    self.segmentedControl.tintColor = [NYPLConfiguration shared].mainColor;
     break;
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-    self.tableView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
-    self.view.backgroundColor = [NYPLConfiguration backgroundDarkColor];
+    self.tableView.backgroundColor = [NYPLConfiguration shared].backgroundDarkColor;
+    self.view.backgroundColor = [NYPLConfiguration shared].backgroundDarkColor;
     self.segmentedControl.tintColor = [UIColor whiteColor];
     self.darkColorScheme = YES;
     break;
@@ -156,7 +155,7 @@ segmentControlTypeWithInteger(NSInteger const integer)
       cell.leadingEdgeConstraint.constant = toc.nestingLevel * 20 + 10;
       cell.titleLabel.text = toc.title;
 
-      cell.background.layer.borderColor = [NYPLConfiguration mainColor].CGColor;
+      cell.background.layer.borderColor = [NYPLConfiguration shared].mainColor.CGColor;
       cell.background.layer.borderWidth = 1;
       cell.background.layer.cornerRadius = 3;
 

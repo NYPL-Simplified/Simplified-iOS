@@ -2,9 +2,9 @@
 #import "NYPLBookCell.h"
 #import "NYPLBookDownloadingCell.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLConfiguration.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "UIView+NYPLViewAdditions.h"
+#import "SimplyE-Swift.h"
 
 #import "NYPLBookCellCollectionViewController.h"
 
@@ -41,7 +41,7 @@
 {
   [super viewDidLoad];
   
-  self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.view.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   
   self.collectionView = [[UICollectionView alloc]
                          initWithFrame:self.view.bounds
@@ -50,7 +50,7 @@
   self.collectionView.alwaysBounceVertical = YES;
   self.collectionView.autoresizingMask = (UIViewAutoresizingFlexibleWidth |
                                           UIViewAutoresizingFlexibleHeight);
-  self.collectionView.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.collectionView.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   [self.view addSubview:self.collectionView];
 }
 
@@ -129,7 +129,7 @@
   // inadvertently alter the intended behavior of subclasses. Attempting to save the property and
   // then reset it to its previous state in the completion block would give rise to race conditions.
   UIView *const shieldView = [[UIView alloc] initWithFrame:self.collectionView.frame];
-  shieldView.backgroundColor = [NYPLConfiguration backgroundColor];
+  shieldView.backgroundColor = [NYPLConfiguration shared].backgroundColor;
   shieldView.autoresizingMask = (UIViewAutoresizingFlexibleHeight |
                                  UIViewAutoresizingFlexibleWidth);
   [self.view addSubview:shieldView];
