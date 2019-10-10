@@ -350,7 +350,7 @@
 		112C6951197309C500C48F95 /* NYPLBookState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookState.h; sourceTree = "<group>"; };
 		112C6952197309C500C48F95 /* NYPLBookState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NYPLBookState.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		113137E51A48DAB90082954E /* NYPLReaderReadiumView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReaderReadiumView.h; sourceTree = "<group>"; };
-		113137E61A48DAB90082954E /* NYPLReaderReadiumView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderReadiumView.m; sourceTree = "<group>"; };
+		113137E61A48DAB90082954E /* NYPLReaderReadiumView.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderReadiumView.m; sourceTree = "<group>"; tabWidth = 2; };
 		11369D46199527C200BB11F8 /* NYPLJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLJSON.h; sourceTree = "<group>"; };
 		11369D47199527C200BB11F8 /* NYPLJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLJSON.m; sourceTree = "<group>"; };
 		11396FB7193D289100E16EE8 /* NSDate+NYPLDateAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NYPLDateAdditions.h"; sourceTree = "<group>"; };
@@ -448,7 +448,7 @@
 		11D521991A44980D00636240 /* librmservices_iphone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librmservices_iphone.a; path = "../../Code/RMSDK-10_0_2014-08-25/samples/rmservices/build/xc3/build/Release-iphoneos/librmservices_iphone.a"; sourceTree = "<group>"; };
 		11D5219B1A449ABA00636240 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		11DC19261A12F92500721DBA /* NYPLReaderSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReaderSettingsView.h; sourceTree = "<group>"; };
-		11DC19271A12F92500721DBA /* NYPLReaderSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderSettingsView.m; sourceTree = "<group>"; };
+		11DC19271A12F92500721DBA /* NYPLReaderSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderSettingsView.m; sourceTree = "<group>"; tabWidth = 2; };
 		11E0208B197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+NYPLSystemFontOverride.h"; sourceTree = "<group>"; };
 		11E0208C197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+NYPLSystemFontOverride.m"; sourceTree = "<group>"; };
 		11F3771D19DB62B000487769 /* NYPLFacetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLFacetView.h; sourceTree = "<group>"; };
@@ -592,7 +592,7 @@
 		D787E8431FB6B0290016D9D5 /* NYPLSettingsAdvancedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSettingsAdvancedViewController.swift; sourceTree = "<group>"; };
 		E61D7F631F6AC78B0091C781 /* SimplyE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SimplyE.entitlements; sourceTree = "<group>"; };
 		E6202A001DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsAccountDetailViewController.h; sourceTree = "<group>"; };
-		E6202A011DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAccountDetailViewController.m; sourceTree = "<group>"; };
+		E6202A011DD4E6F300C99553 /* NYPLSettingsAccountDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAccountDetailViewController.m; sourceTree = "<group>"; tabWidth = 2; };
 		E6202A031DD52B8600C99553 /* NYPLWelcomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLWelcomeScreen.swift; sourceTree = "<group>"; };
 		E6207B642118973800864143 /* NYPLAppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLAppTheme.swift; sourceTree = "<group>"; };
 		E627B553216D4A9700A7D1D5 /* NYPLBookContentType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLBookContentType.m; sourceTree = "<group>"; };
@@ -611,7 +611,7 @@
 		E69404091E4A789800E566ED /* NYPLReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReachabilityManager.m; sourceTree = "<group>"; };
 		E699BA3F2166598B00A0736A /* NYPLEntryPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLEntryPointView.swift; sourceTree = "<group>"; };
 		E6B1F4FA1DD20EA900D73CA1 /* NYPLSettingsAccountsList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSettingsAccountsList.swift; sourceTree = "<group>"; };
-		E6B3269E1EE066DE00DB877A /* NYPLBookDetailTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBookDetailTableView.swift; sourceTree = "<group>"; };
+		E6B3269E1EE066DE00DB877A /* NYPLBookDetailTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = NYPLBookDetailTableView.swift; sourceTree = "<group>"; tabWidth = 2; };
 		E6B6E76E1F6859A4007EE361 /* NYPLKeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLKeychainManager.swift; sourceTree = "<group>"; };
 		E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteHTMLViewController.swift; sourceTree = "<group>"; };
 		E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLAgeCheck.swift; sourceTree = "<group>"; };

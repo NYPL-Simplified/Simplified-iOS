@@ -87,18 +87,18 @@ segmentControlTypeWithInteger(NSInteger const integer)
 
   switch([NYPLReaderSettings sharedSettings].colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
-    self.tableView.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
-    self.view.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+    self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
+    self.view.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
     self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
     break;
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
-    self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
-    self.view.backgroundColor = [NYPLConfiguration backgroundColor];
+    self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundColor];
+    self.view.backgroundColor = [NYPLConfiguration readerBackgroundColor];
     self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
     break;
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-    self.tableView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
-    self.view.backgroundColor = [NYPLConfiguration backgroundDarkColor];
+    self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
+    self.view.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
     self.segmentedControl.tintColor = [UIColor whiteColor];
     self.darkColorScheme = YES;
     break;

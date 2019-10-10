@@ -1215,7 +1215,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     container.preservesSuperviewLayoutMargins = YES;
     UILabel *footerLabel = [[UILabel alloc] init];
     footerLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleCaption1];
-    footerLabel.textColor = [UIColor lightGrayColor];
     footerLabel.numberOfLines = 0;
     footerLabel.userInteractionEnabled = YES;
 
@@ -1230,13 +1229,16 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       eulaString = [[NSMutableAttributedString alloc]
                     initWithString:NSLocalizedString(@"SigningInAgree", nil) attributes:linkAttributes];
     } else {
-
-      footerLabel.textColor = [UIColor blackColor];
+      NSDictionary *attrs;
+      if (@available(iOS 13.0, *)) {
+        attrs = @{ NSForegroundColorAttributeName : [UIColor labelColor] };
+      } else {
+        attrs = @{ NSForegroundColorAttributeName : [UIColor blackColor] };
+      }
       eulaString = [[NSMutableAttributedString alloc]
                     initWithString:NSLocalizedString(@"SettingsAccountSyncFooterTitle",
                                                      @"Explain to the user they can save their bookmarks in the cloud across all their devices.")
-                    attributes:nil];
-
+                    attributes:attrs];
     }
     footerLabel.attributedText = eulaString;
 
@@ -1412,9 +1414,17 @@ replacementString:(NSString *)string
     } else {
       self.usernameTextField.text = nil;
       self.usernameTextField.enabled = YES;
-      self.usernameTextField.textColor = [UIColor blackColor];
+      if (@available(iOS 13.0, *)) {
+        self.usernameTextField.textColor = [UIColor labelColor];
+      } else {
+        self.usernameTextField.textColor = [UIColor blackColor];
+      }
       self.PINTextField.text = nil;
-      self.PINTextField.textColor = [UIColor blackColor];
+      if (@available(iOS 13.0, *)) {
+        self.PINTextField.textColor = [UIColor labelColor];
+      } else {
+        self.PINTextField.textColor = [UIColor blackColor];
+      }
       self.barcodeScanButton.hidden = NO;
     }
     
@@ -1445,16 +1455,25 @@ replacementString:(NSString *)string
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     } else {
       self.logInSignOutCell.userInteractionEnabled = NO;
-      self.logInSignOutCell.textLabel.textColor = [UIColor lightGrayColor];
+      if (@available(iOS 13.0, *)) {
+        self.logInSignOutCell.textLabel.textColor = [UIColor systemGray2Color];
+      } else {
+        self.logInSignOutCell.textLabel.textColor = [UIColor lightGrayColor];
+      }
     }
   }
 }
 
 - (void)setActivityTitleWithText:(NSString *)text
 {
-  UIActivityIndicatorView *const activityIndicatorView =
-  [[UIActivityIndicatorView alloc]
-   initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  UIActivityIndicatorView *aiv;
+  if (@available(iOS 13.0, *)) {
+    aiv = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
+    aiv.color = [UIColor labelColor];
+  } else {
+    aiv = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+  }
+  UIActivityIndicatorView *const activityIndicatorView = aiv;
   
   [activityIndicatorView startAnimating];
   

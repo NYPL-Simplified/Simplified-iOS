@@ -100,7 +100,7 @@
 
   self.whiteOnBlackButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.whiteOnBlackButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"WhiteOnBlackText", nil)];
-  self.whiteOnBlackButton.backgroundColor = [NYPLConfiguration backgroundDarkColor];
+  self.whiteOnBlackButton.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
   
   NSDictionary *whiteColourWithoutUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone), NSForegroundColorAttributeName : [UIColor whiteColor] };
   NSDictionary *whiteColourWithUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSForegroundColorAttributeName : [UIColor whiteColor] };
@@ -119,7 +119,7 @@
 
   self.blackOnSepiaButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.blackOnSepiaButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"BlackOnSepiaText", nil)];
-  self.blackOnSepiaButton.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+  self.blackOnSepiaButton.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
   [self.blackOnSepiaButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [self.blackOnSepiaButton setTitleColor:[NYPLConfiguration mainColor]
                                 forState:UIControlStateDisabled];
@@ -137,7 +137,7 @@
 
   self.blackOnWhiteButton = [UIButton buttonWithType:UIButtonTypeCustom];
   self.blackOnWhiteButton.accessibilityLabel = [[NSString alloc] initWithFormat:NSLocalizedString(@"BlackOnWhiteText", nil)];
-  self.blackOnWhiteButton.backgroundColor = [NYPLConfiguration backgroundColor];
+  self.blackOnWhiteButton.backgroundColor = [NYPLConfiguration readerBackgroundColor];
   [self.blackOnWhiteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
   [self.blackOnWhiteButton setTitleColor:[NYPLConfiguration mainColor]
                                 forState:UIControlStateDisabled];
@@ -388,21 +388,21 @@
       self.blackOnSepiaButton.enabled = NO;
       self.blackOnWhiteButton.enabled = YES;
       self.whiteOnBlackButton.enabled = YES;
-      backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+      backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
       foregroundColor = [UIColor blackColor];
       break;
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       self.blackOnSepiaButton.enabled = YES;
       self.blackOnWhiteButton.enabled = NO;
       self.whiteOnBlackButton.enabled = YES;
-      backgroundColor = [NYPLConfiguration backgroundColor];
+      backgroundColor = [NYPLConfiguration readerBackgroundColor];
       foregroundColor = [UIColor blackColor];
       break;
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
       self.blackOnSepiaButton.enabled = YES;
       self.blackOnWhiteButton.enabled = YES;
       self.whiteOnBlackButton.enabled = NO;
-      backgroundColor = [NYPLConfiguration backgroundDarkColor];
+      backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
       foregroundColor = [UIColor whiteColor];
       break;
   }
@@ -446,8 +446,8 @@
                                                                               attributes:fontColourWithUnderline] forState:UIControlStateDisabled];
   
   
-  NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
-  NSDictionary *noUnderlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone)};
+  NSDictionary *blackColourWithUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSForegroundColorAttributeName : [UIColor blackColor] };
+  NSDictionary *blackColourWithoutUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone), NSForegroundColorAttributeName : [UIColor blackColor] };
   NSDictionary *whiteColourWithUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSForegroundColorAttributeName : [UIColor whiteColor] };
   NSDictionary *whiteColourWithoutUnderline = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone), NSForegroundColorAttributeName : [UIColor whiteColor] };
   
@@ -458,16 +458,16 @@
                                                                               attributes:whiteColourWithUnderline] forState:UIControlStateDisabled];
   
   [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
-                                                                              attributes:noUnderlineAttribute] forState:UIControlStateNormal];
+                                                                              attributes:blackColourWithoutUnderline] forState:UIControlStateNormal];
   
   [self.blackOnSepiaButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
-                                                                              attributes:underlineAttribute] forState:UIControlStateDisabled];
+                                                                              attributes:blackColourWithUnderline] forState:UIControlStateDisabled];
   
   [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
-                                                                              attributes:noUnderlineAttribute] forState:UIControlStateNormal];
+                                                                              attributes:blackColourWithoutUnderline] forState:UIControlStateNormal];
   
   [self.blackOnWhiteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"AlphabetFontStyle", nil)
-                                                                              attributes:underlineAttribute] forState:UIControlStateDisabled];
+                                                                              attributes:blackColourWithUnderline] forState:UIControlStateDisabled];
 }
 
 - (void)didSelectSans

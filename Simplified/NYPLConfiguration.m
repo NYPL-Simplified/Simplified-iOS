@@ -97,29 +97,39 @@
 + (UIColor *)backgroundColor
 {
   if (@available(iOS 13, *)) {
-    return UIColor.secondarySystemBackgroundColor;
+    return [UIColor colorNamed: @"ColorBackground"];
   }
   return [UIColor colorWithWhite:250/255.0 alpha:1.0];
 }
 
-+ (UIColor *)backgroundDarkColor
++ (UIColor *)readerBackgroundColor
+{
+  return [UIColor colorWithWhite:250/255.0 alpha:1.0];
+}
+
+// OK to leave as static color because it's reader-only
++ (UIColor *)readerBackgroundDarkColor
 {
   return [UIColor colorWithWhite:5/255.0 alpha:1.0];
 }
 
-+ (UIColor *)backgroundSepiaColor
+// OK to leave as static color because it's reader-only
++ (UIColor *)readerBackgroundSepiaColor
 {
   return [UIColor colorWithRed:242/255.0 green:228/255.0 blue:203/255.0 alpha:1.0];
 }
 
+// OK to leave as static color because it's reader-only
 +(UIColor *)backgroundMediaOverlayHighlightColor {
   return [UIColor yellowColor];
 }
 
+// OK to leave as static color because it's reader-only
 +(UIColor *)backgroundMediaOverlayHighlightDarkColor {
   return [UIColor orangeColor];
 }
 
+// OK to leave as static color because it's reader-only
 +(UIColor *)backgroundMediaOverlayHighlightSepiaColor {
   return [UIColor yellowColor];
 }

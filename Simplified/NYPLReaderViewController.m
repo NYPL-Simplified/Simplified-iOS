@@ -70,7 +70,7 @@ typedef NS_ENUM(NSInteger, NYPLReaderViewControllerDirection) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
       self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
       self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-      self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
       self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
       self.headerViewLabel.textColor = [UIColor darkGrayColor];
       self.footerViewLabel.textColor = [UIColor darkGrayColor];
@@ -78,7 +78,7 @@ typedef NS_ENUM(NSInteger, NYPLReaderViewControllerDirection) {
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
       self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-      self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundColor];
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundColor];
       self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
       self.headerViewLabel.textColor = [UIColor darkGrayColor];
       self.footerViewLabel.textColor = [UIColor darkGrayColor];
@@ -86,7 +86,7 @@ typedef NS_ENUM(NSInteger, NYPLReaderViewControllerDirection) {
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
       self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
       self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-      self.bottomViewImageView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
       self.bottomViewImageViewTopBorder.backgroundColor = [UIColor darkGrayColor];
       self.headerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
       self.footerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
