@@ -430,7 +430,7 @@
 		11B6020319806CD300800DA9 /* NYPLBookDownloadingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLBookDownloadingCell.h; sourceTree = "<group>"; };
 		11B6020419806CD300800DA9 /* NYPLBookDownloadingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLBookDownloadingCell.m; sourceTree = "<group>"; };
 		11BFDB31199C01F700378691 /* NYPLReaderTOCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReaderTOCViewController.h; sourceTree = "<group>"; };
-		11BFDB32199C01F700378691 /* NYPLReaderTOCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderTOCViewController.m; sourceTree = "<group>"; };
+		11BFDB32199C01F700378691 /* NYPLReaderTOCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderTOCViewController.m; sourceTree = "<group>"; tabWidth = 2; };
 		11BFDB34199C08E900378691 /* NYPLReaderTOCElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReaderTOCElement.h; sourceTree = "<group>"; };
 		11BFDB35199C08E900378691 /* NYPLReaderTOCElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderTOCElement.m; sourceTree = "<group>"; };
 		11BFDB37199C117B00378691 /* NYPLReaderTOCCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLReaderTOCCell.h; sourceTree = "<group>"; };
