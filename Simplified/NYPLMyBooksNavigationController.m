@@ -58,7 +58,13 @@
 
 - (void)currentAccountChanged
 {
-  [self popToRootViewControllerAnimated:NO];
+  if (![NSThread isMainThread]) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self popToRootViewControllerAnimated:NO];
+    });
+  } else {
+    [self popToRootViewControllerAnimated:NO];
+  }
 }
 
 - (void) switchLibrary

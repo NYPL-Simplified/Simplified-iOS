@@ -31,6 +31,17 @@
 /// view controller pointed at the current catalog URL.
 - (void)loadTopLevelCatalogViewController
 {
+  if (![NSThread isMainThread]) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self loadTopLevelCatalogViewControllerInternal];
+    });
+  } else {
+    [self loadTopLevelCatalogViewControllerInternal];
+  }
+}
+
+- (void)loadTopLevelCatalogViewControllerInternal
+{
   self.viewController = [[NYPLCatalogFeedViewController alloc]
                          initWithURL:[NYPLSettings sharedSettings].accountMainFeedURL];
   
@@ -196,7 +207,13 @@
       });
     }];
   } else {
-    completion();
+    if (![NSThread isMainThread]) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        completion();
+      });
+    } else {
+      completion();
+    }
   }
 }
 
@@ -249,11 +266,13 @@
       [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
       
       NYPLWelcomeScreenViewController *welcomeScreenVC = [[NYPLWelcomeScreenViewController alloc] initWithCompletion:^(Account *const account) {
-        [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
-        [[NYPLBookRegistry sharedRegistry] save];
-        [AccountsManager sharedInstance].currentAccount = account;
-        [self updateFeedAndRegistryOnAccountChange];
-        [self dismissViewControllerAnimated:YES completion:nil];
+        if (![NSThread isMainThread]) {
+          dispatch_async(dispatch_get_main_queue(), ^{
+            [self welcomeScreenCompletionHandlerForAccount:account];
+          });
+        } else {
+          [self welcomeScreenCompletionHandlerForAccount:account];
+        }
       }];
 
       UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:welcomeScreenVC];
@@ -268,15 +287,22 @@
     };
     if (currentAccount.details.needsAgeCheck) {
       [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-          mainFeedUrl = isOfAge ? currentAccount.details.coppaOverUrl : currentAccount.details.coppaUnderUrl;
-          completion();
-        });
+        mainFeedUrl = isOfAge ? currentAccount.details.coppaOverUrl : currentAccount.details.coppaUnderUrl;
+        completion();
       }];
     } else {
       completion();
     }
   }
+}
+
+-(void) welcomeScreenCompletionHandlerForAccount:(Account *const)account
+{
+  [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
+  [[NYPLBookRegistry sharedRegistry] save];
+  [AccountsManager sharedInstance].currentAccount = account;
+  [self updateFeedAndRegistryOnAccountChange];
+  [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
