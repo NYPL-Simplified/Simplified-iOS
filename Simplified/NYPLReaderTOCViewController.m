@@ -185,6 +185,8 @@ segmentControlTypeWithInteger(NSInteger const integer)
       cell.backgroundColor = [UIColor clearColor];
       if (self.darkColorScheme) {
         cell.titleLabel.textColor = [UIColor whiteColor];
+      } else {
+        cell.titleLabel.textColor = [UIColor blackColor];
       }
       
       if ([self.currentChapter isEqualToString:toc.title])
@@ -216,6 +218,9 @@ segmentControlTypeWithInteger(NSInteger const integer)
       if (self.darkColorScheme) {
         cell.chapterLabel.textColor = [UIColor whiteColor];
         cell.pageNumberLabel.textColor = [UIColor whiteColor];
+      } else {
+        cell.chapterLabel.textColor = [UIColor blackColor];
+        cell.pageNumberLabel.textColor = [UIColor blackColor];
       }
       
       return cell;
