@@ -260,6 +260,8 @@
 
       if([[NYPLRootTabBarController sharedController] traitCollection].horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
         [navController setModalPresentationStyle:UIModalPresentationFormSheet];
+      } else {
+        [navController setModalPresentationStyle:UIModalPresentationFullScreen];
       }
       [navController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
 
