@@ -88,42 +88,44 @@ segmentControlTypeWithInteger(NSInteger const integer)
 
   switch([NYPLReaderSettings sharedSettings].colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
-    self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
-    self.view.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
-    if (@available(iOS 13.0, *)) {
-      self.segmentedControl.selectedSegmentTintColor = [NYPLConfiguration mainColor];
-      [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor blackColor]} forState:UIControlStateNormal];
-      [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor blackColor]} forState:UIControlStateSelected];
-    } else {
-      self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
-    }
-    self.noBookmarksLabel.textColor = [UIColor blackColor];
-    break;
+      self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
+      self.view.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
+      if (@available(iOS 13.0, *)) {
+        self.segmentedControl.selectedSegmentTintColor = [NYPLConfiguration mainColor];
+        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [NYPLConfiguration mainColor]} forState:UIControlStateNormal];
+        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor]} forState:UIControlStateSelected];
+      } else {
+        self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
+      }
+      self.noBookmarksLabel.textColor = [UIColor blackColor];
+      break;
+      
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
-    self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundColor];
-    self.view.backgroundColor = [NYPLConfiguration readerBackgroundColor];
-    if (@available(iOS 13.0, *)) {
-      self.segmentedControl.selectedSegmentTintColor = [NYPLConfiguration mainColor];
-      [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor blackColor]} forState:UIControlStateNormal];
-      [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor blackColor]} forState:UIControlStateSelected];
-    } else {
-      self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
-    }
-    self.noBookmarksLabel.textColor = [UIColor blackColor];
-    break;
+      self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundColor];
+      self.view.backgroundColor = [NYPLConfiguration readerBackgroundColor];
+      if (@available(iOS 13.0, *)) {
+        self.segmentedControl.selectedSegmentTintColor = [NYPLConfiguration mainColor];
+        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [NYPLConfiguration mainColor]} forState:UIControlStateNormal];
+        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor]} forState:UIControlStateSelected];
+      } else {
+        self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
+      }
+      self.noBookmarksLabel.textColor = [UIColor blackColor];
+      break;
+      
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-    self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
-    self.view.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
-    if (@available(iOS 13.0, *)) {
-      self.segmentedControl.selectedSegmentTintColor =  [UIColor whiteColor];
-      [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor]} forState:UIControlStateNormal];
-      [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor blackColor]} forState:UIControlStateSelected];
-    } else {
-      self.segmentedControl.tintColor = [UIColor whiteColor];
-    }
-    self.noBookmarksLabel.textColor = [UIColor whiteColor];
-    self.darkColorScheme = YES;
-    break;
+      self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
+      self.view.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
+      if (@available(iOS 13.0, *)) {
+        self.segmentedControl.selectedSegmentTintColor =  [UIColor whiteColor];
+        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor]} forState:UIControlStateNormal];
+        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor blackColor]} forState:UIControlStateSelected];
+      } else {
+        self.segmentedControl.tintColor = [UIColor whiteColor];
+      }
+      self.noBookmarksLabel.textColor = [UIColor whiteColor];
+      self.darkColorScheme = YES;
+      break;
   }
 
   [self.tableView reloadData];
