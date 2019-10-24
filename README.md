@@ -4,8 +4,8 @@
 
 01. `git clone https://github.com/NYPL-Simplified/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
 02. `cd Simplified-iOS`
-03. `git submodule deinit adept-ios && git rm -rf adept-ios` (if you encounte errror: error: could not lock config file, this is ok, continue to step 4)  
-04. `git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter` (if you encounte errror: error: could not lock config file, this is ok, continue to step 5)  
+03. `git submodule deinit adept-ios && git rm -rf adept-ios` (if you encounter error: could not lock config file, this is ok, continue to step 4)  
+04. `git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter` (if you encounter error: could not lock config file, this is ok, continue to step 5)  
 05. `git submodule update --init --recursive`
 06. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
 07. Remove "NYPL-Simplified/NYPLAEToolkit" and "AudioEngine.json" in `Cartfile` and `Cartfile.resolved`.
