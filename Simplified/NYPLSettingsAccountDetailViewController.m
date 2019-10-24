@@ -440,15 +440,15 @@ double const requestTimeoutInterval = 25.0;
 #else
 
   if([NYPLBookRegistry sharedRegistry].syncing == YES) {
-    [self presentViewController:[NYPLAlertController
+    [self presentViewController:[NYPLAlertUtils
                                  alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
                                  message:@"SettingsAccountViewControllerCannotLogOutMessage"]
                        animated:YES
                      completion:nil];
   } else {
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountType];
-    [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountType];
-    [[NYPLAccount sharedAccount:self.selectedAccountType] removeAll];
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
+    [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
+    [[NYPLAccount sharedAccount:self.selectedAccountId] removeAll];
     [self setupTableData];
     [self.tableView reloadData];
     [self removeActivityTitle];
@@ -462,7 +462,7 @@ double const requestTimeoutInterval = 25.0;
 - (void)deauthorizeDevice
 {
 
-#if defined(FEATURE_DRM_CONNECTOR)
+#if FEATURE_DRM_CONNECTOR
 
   void (^afterDeauthorization)(void) = ^() {
     [self removeActivityTitle];
@@ -535,7 +535,7 @@ double const requestTimeoutInterval = 25.0;
       NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
      
       if (statusCode == 200) {
-#if defined(FEATURE_DRM_CONNECTOR)
+#if FEATURE_DRM_CONNECTOR
         NSError *pDocError = nil;
         UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
         if (!pDoc) {
