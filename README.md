@@ -8,8 +8,8 @@
 04. `git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter` (if you encounter error: could not lock config file, this is ok, continue to step 5)  
 05. `git submodule update --init --recursive`
 06. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
-07. Remove "NYPL-Simplified/" in `Cartfile`
-08. Remove "NYPL-Simplified/NYPLAEToolkit" and "AudioEngine.json" `Cartfile.resolved`.
+07. Remove "NYPL-Simplified-iOS/" in `Cartfile`
+08. Remove "NYPL-Simplified-iOS/NYPLAEToolkit" and "AudioEngine.json" `Cartfile.resolved`.
 09. `carthage bootstrap --platform ios --use-ssh`
 10. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
 11. `cp Accounts.json.example Simplified/Accounts.json`.
