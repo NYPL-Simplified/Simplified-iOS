@@ -8,16 +8,17 @@
 04. `git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter` (if you encounter error: could not lock config file, this is ok, continue to step 5)  
 05. `git submodule update --init --recursive`
 06. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
-07. Remove "NYPL-Simplified/NYPLAEToolkit" and "AudioEngine.json" in `Cartfile` and `Cartfile.resolved`.
-08. `carthage bootstrap --platform ios --use-ssh`
-09. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
-10. `cp Accounts.json.example Simplified/Accounts.json`.
-11. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
-12. `open Simplified.xcodeproj`
-13. Remove import of "Simplified+RMSDK.xcconfig" from "Simplified.xcconfig".
-14. Delete `NYPLAEToolkit.framework` and `AudioEngine.framework` from "Link Binary with Libraries", and remove input and output filepaths for `AudioEngine.framework` and `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)`.
-15. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
-16. Build.
+07. Remove "NYPL-Simplified/" in `Cartfile`
+08. Remove "NYPL-Simplified/NYPLAEToolkit" and "AudioEngine.json" `Cartfile.resolved`.
+09. `carthage bootstrap --platform ios --use-ssh`
+10. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
+11. `cp Accounts.json.example Simplified/Accounts.json`.
+12. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
+13. `open Simplified.xcodeproj`
+14. Remove import of "Simplified+RMSDK.xcconfig" from "Simplified.xcconfig".
+15. Delete `NYPLAEToolkit.framework` and `AudioEngine.framework` from "Link Binary with Libraries", and remove input and output filepaths for `AudioEngine.framework` and `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)`.
+16. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
+17. Build.
 
 # Contributing
 
