@@ -16,9 +16,10 @@
 12. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
 13. `open Simplified.xcodeproj`
 14. Remove import of "Simplified+RMSDK.xcconfig" from "Simplified.xcconfig".
-15. Delete `NYPLAEToolkit.framework` and `AudioEngine.framework` from "Link Binary with Libraries", and remove input and output filepaths for `AudioEngine.framework` and `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)`.
-16. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
-17. Build.
+15. Remove "libAdept.a" "libAdobe Content Filter.a" from "Link Binary with Libraries"
+16. Delete `NYPLAEToolkit.framework` and `AudioEngine.framework` from "Link Binary with Libraries", and remove input and output filepaths for `AudioEngine.framework` and `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)`.
+17. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
+18. Build.
 
 # Contributing
 
