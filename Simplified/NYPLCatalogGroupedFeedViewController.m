@@ -15,7 +15,6 @@
 #import "NYPLCatalogFacet.h"
 #import "SimplyE-Swift.h"
 #import "NYPLCatalogGroupedFeedViewController.h"
-#import "NYPLFacetBarView.h"
 
 #import <PureLayout/PureLayout.h>
 

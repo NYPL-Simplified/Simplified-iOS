@@ -195,6 +195,10 @@ static NSString *DetailHTMLTemplate = nil;
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     NSAttributedString *atrString = [[NSAttributedString alloc] initWithData:htmlData options:attributes documentAttributes:nil error:nil];
     self.summaryTextView.attributedText = atrString;
+
+    if (@available(iOS 13, *)) {
+      self.summaryTextView.textColor = UIColor.labelColor;
+    }
   }];
 
   self.readMoreLabel = [[UIButton alloc] init];

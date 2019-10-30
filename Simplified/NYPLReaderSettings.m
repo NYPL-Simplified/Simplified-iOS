@@ -349,11 +349,11 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
 {
   switch(self.colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
-      return [NYPLConfiguration shared].backgroundSepiaColor;
+      return [NYPLConfiguration shared].readerBackgroundSepiaColor;
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
-      return [NYPLConfiguration shared].backgroundColor;
+      return [NYPLConfiguration shared].readerBackgroundColor;
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-      return [NYPLConfiguration shared].backgroundDarkColor;
+      return [NYPLConfiguration shared].readerBackgroundDarkColor;
   }
 }
 

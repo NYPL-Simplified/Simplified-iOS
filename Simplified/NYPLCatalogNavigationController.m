@@ -33,7 +33,6 @@
 - (void)loadTopLevelCatalogViewControllerInternal
 {
   self.viewController = [[NYPLCatalogFeedViewController alloc] initWithURL:[NYPLSettings sharedSettings].accountMainFeedURL];
-  
   self.viewController.title = NSLocalizedString(@"Catalog", nil);
   self.viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;
   self.viewController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -153,5 +152,4 @@
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
   }
 }
-
 @end
