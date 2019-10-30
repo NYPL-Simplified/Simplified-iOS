@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>${PRODUCT_NAME}</string>
+	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
@@ -47,7 +47,7 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>SimplyE requires access to the camera in order to scan your library card.</string>
+	<string>Open eBooks requires access to the camera in order to scan your library card.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This service is available to New York State residents only. In order to determine your location, please allow access</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
