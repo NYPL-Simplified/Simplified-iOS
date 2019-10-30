@@ -68,6 +68,7 @@ segmentControlTypeWithInteger(NSInteger const integer)
   self.navigationController.navigationBar.translucent = YES;
   self.navigationController.navigationBar.barTintColor = nil;
   
+  self.tableView.separatorColor = [UIColor grayColor];
   [self.tableView reloadData];
   
   switch (segmentControlTypeWithInteger(self.segmentedControl.selectedSegmentIndex)) {
@@ -87,21 +88,44 @@ segmentControlTypeWithInteger(NSInteger const integer)
 
   switch([NYPLReaderSettings sharedSettings].colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
-    self.tableView.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
-    self.view.backgroundColor = [NYPLConfiguration backgroundSepiaColor];
-    self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
-    break;
+      self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
+      self.view.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
+      if (@available(iOS 13.0, *)) {
+        self.segmentedControl.selectedSegmentTintColor = [NYPLConfiguration mainColor];
+        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [NYPLConfiguration mainColor]} forState:UIControlStateNormal];
+        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor]} forState:UIControlStateSelected];
+      } else {
+        self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
+      }
+      self.noBookmarksLabel.textColor = [UIColor blackColor];
+      break;
+      
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
-    self.tableView.backgroundColor = [NYPLConfiguration backgroundColor];
-    self.view.backgroundColor = [NYPLConfiguration backgroundColor];
-    self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
-    break;
+      self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundColor];
+      self.view.backgroundColor = [NYPLConfiguration readerBackgroundColor];
+      if (@available(iOS 13.0, *)) {
+        self.segmentedControl.selectedSegmentTintColor = [NYPLConfiguration mainColor];
+        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [NYPLConfiguration mainColor]} forState:UIControlStateNormal];
+        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor]} forState:UIControlStateSelected];
+      } else {
+        self.segmentedControl.tintColor = [NYPLConfiguration mainColor];
+      }
+      self.noBookmarksLabel.textColor = [UIColor blackColor];
+      break;
+      
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-    self.tableView.backgroundColor = [NYPLConfiguration backgroundDarkColor];
-    self.view.backgroundColor = [NYPLConfiguration backgroundDarkColor];
-    self.segmentedControl.tintColor = [UIColor whiteColor];
-    self.darkColorScheme = YES;
-    break;
+      self.tableView.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
+      self.view.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
+      if (@available(iOS 13.0, *)) {
+        self.segmentedControl.selectedSegmentTintColor =  [UIColor whiteColor];
+        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor]} forState:UIControlStateNormal];
+        [self.segmentedControl setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor blackColor]} forState:UIControlStateSelected];
+      } else {
+        self.segmentedControl.tintColor = [UIColor whiteColor];
+      }
+      self.noBookmarksLabel.textColor = [UIColor whiteColor];
+      self.darkColorScheme = YES;
+      break;
   }
 
   [self.tableView reloadData];
@@ -163,8 +187,9 @@ segmentControlTypeWithInteger(NSInteger const integer)
       cell.backgroundColor = [UIColor clearColor];
       if (self.darkColorScheme) {
         cell.titleLabel.textColor = [UIColor whiteColor];
+      } else {
+        cell.titleLabel.textColor = [UIColor blackColor];
       }
-
       
       if ([self.currentChapter isEqualToString:toc.title])
       {
@@ -195,6 +220,9 @@ segmentControlTypeWithInteger(NSInteger const integer)
       if (self.darkColorScheme) {
         cell.chapterLabel.textColor = [UIColor whiteColor];
         cell.pageNumberLabel.textColor = [UIColor whiteColor];
+      } else {
+        cell.chapterLabel.textColor = [UIColor blackColor];
+        cell.pageNumberLabel.textColor = [UIColor blackColor];
       }
       
       return cell;

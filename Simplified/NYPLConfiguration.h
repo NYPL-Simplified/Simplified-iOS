@@ -23,9 +23,11 @@
 
 + (UIColor *)backgroundColor;
 
-+ (UIColor *)backgroundDarkColor;
++ (UIColor *)readerBackgroundColor;
 
-+ (UIColor *)backgroundSepiaColor;
++ (UIColor *)readerBackgroundDarkColor;
+
++ (UIColor *)readerBackgroundSepiaColor;
 
 + (UIColor *)iconLogoBlueColor;
 
