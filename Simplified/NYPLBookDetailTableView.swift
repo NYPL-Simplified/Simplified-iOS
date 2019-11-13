@@ -4,6 +4,7 @@ import PureLayout
 @objc protocol BookDetailTableViewDelegate {
   func reportProblemTapped()
   func moreBooksTapped(forLane: NYPLCatalogLane)
+  func viewIssuesTapped()
 }
 
 
@@ -46,6 +47,16 @@ private let standardCellHeight: CGFloat = 44.0
     case groupedFeedDownloadPending = "Loading Related Books"
     case groupedFeedLane = "Related Books"
     case reportAProblem = "Report a Problem"
+    case viewIssues = "View Issues"
+  }
+  
+  class func createCell(type: BookDetailCellType) -> (UITableViewCell,BookDetailCellType) {
+    let cell = UITableViewCell()
+    cell.accessoryType = .disclosureIndicator
+    cell.backgroundColor = UIColor.clear
+    cell.textLabel?.font = UIFont.customFont(forTextStyle: .body)
+    cell.textLabel?.text = type.rawValue
+    return (cell,type)
   }
   
   weak var viewDelegate: BookDetailTableViewDelegate?
@@ -54,6 +65,7 @@ private let standardCellHeight: CGFloat = 44.0
   var book: NYPLBook
   
   var standardCells = [(UITableViewCell,BookDetailCellType)]()
+  let viewIssueCell = createCell(type: BookDetailCellType.viewIssues)
   var catalogLaneCells = [NYPLCatalogLaneCell]()
   var catalogLanes = [NYPLCatalogLane]()
   
@@ -66,8 +78,9 @@ private let standardCellHeight: CGFloat = 44.0
     NotificationCenter.default.addObserver(self, selector: #selector(self.updateFonts), name: UIContentSizeCategory.didChangeNotification, object: nil)
     
     if book.reportURL != nil {
-      standardCells.append(createCell(type: .reportAProblem))
+      standardCells.append(NYPLBookDetailTableViewDelegate.createCell(type: .reportAProblem))
     }
+    configureViewIssuesCell()
     refresh()
     
     guard let url = self.book.relatedWorksURL else {
@@ -141,15 +154,6 @@ private let standardCellHeight: CGFloat = 44.0
     }
   }
 
-  func createCell(type: BookDetailCellType) -> (UITableViewCell,BookDetailCellType) {
-    let cell = UITableViewCell()
-    cell.accessoryType = .disclosureIndicator
-    cell.backgroundColor = UIColor.clear
-    cell.textLabel?.font = UIFont.customFont(forTextStyle: .body)
-    cell.textLabel?.text = type.rawValue
-    return (cell,type)
-  }
-
   func createPendingActivityCell() -> (UITableViewCell,BookDetailCellType) {
     let cell = UITableViewCell()
     cell.backgroundColor = .clear
@@ -178,23 +182,43 @@ private let standardCellHeight: CGFloat = 44.0
   func moreBooksTapped(sender: UIButton) {
     self.viewDelegate?.moreBooksTapped(forLane: self.catalogLanes[sender.tag])
   }
+  
+  @objc func configureViewIssuesCell() {
+    // It seems tuple equality operator can't handle optionals. So we do the long check.
+    let lastStandardCell = self.standardCells.last
+    let lastCellIsViewIssue = (lastStandardCell != nil) && (lastStandardCell! == self.viewIssueCell)
+    
+    if NYPLProblemDocumentCacheManager.shared.getLastCachedDoc(self.book.identifier) == nil {
+      if lastCellIsViewIssue {
+        self.standardCells.removeLast()
+      }
+    } else {
+      if !lastCellIsViewIssue {
+        self.standardCells.append(self.viewIssueCell)
+      }
+    }
+  }
 
   // MARK: - UITableView Delegate Methods
 
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    let rowCount: Int
     if (section < self.catalogLaneCells.count) {
-      return 1
+      rowCount = 1
     } else {
-      return self.standardCells.count
+      rowCount = self.standardCells.count
     }
+    return rowCount
   }
   
   func numberOfSections(in tableView: UITableView) -> Int {
+    let sectionCount: Int
     if (self.catalogLaneCells.count == 0) {
-      return 1
+      sectionCount = 1
     } else {
-      return 1 + self.catalogLaneCells.count
+      sectionCount =  1 + self.catalogLaneCells.count
     }
+    return sectionCount
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -210,6 +234,8 @@ private let standardCellHeight: CGFloat = 44.0
       switch self.standardCells[indexPath.row].1 {
       case .reportAProblem:
         self.viewDelegate?.reportProblemTapped()
+      case .viewIssues:
+        self.viewDelegate?.viewIssuesTapped()
       default:
         break
       }
@@ -218,11 +244,13 @@ private let standardCellHeight: CGFloat = 44.0
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    let height: CGFloat
     if (indexPath.section < self.catalogLaneCells.count) {
-      return laneCellHeight
+      height = laneCellHeight
     } else {
-      return standardCellHeight
+      height = standardCellHeight
     }
+    return height
   }
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

@@ -35,8 +35,8 @@
 "Description" = "Description";
 "DeviceAuthorizationError" = "An error occurred while authorizing this device.";
 "Download" = "Download";
-"DownloadCouldNotBeCompleted" = "The download could not be completed.";
-"DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.";
+"DownloadCouldNotBeCompleted" = "The download could not be completed.\nScroll down to 'View Issues' to see details.";
+"DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.\nScroll down to 'View Issues' to see details.";
 "DownloadFailed" = "Download Failed";
 "Downloading" = "Downloading";
 "Feedback" = "Feedback";

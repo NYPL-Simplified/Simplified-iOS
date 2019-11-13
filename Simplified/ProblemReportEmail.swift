@@ -12,6 +12,14 @@ import UIKit
     presentingViewController: UIViewController,
     book: NYPLBook?)
   {
+    beginComposing(to: emailAddress, presentingViewController: presentingViewController, body: generateBody(book: book))
+  }
+  
+  func beginComposing(
+    to emailAddress: String,
+    presentingViewController: UIViewController,
+    body: String)
+  {
     guard MFMailComposeViewController.canSendMail() else {
       let alertController = UIAlertController(
         title: NSLocalizedString("NoEmailAccountSet", comment: "Alert title"),
@@ -27,7 +35,18 @@ import UIKit
     }
     
     self.lastPresentingViewController = presentingViewController
-    
+  
+    let mailComposeViewController = MFMailComposeViewController.init()
+    mailComposeViewController.mailComposeDelegate = self
+    mailComposeViewController.setSubject(NYPLLocalizationNotNeeded("Problem Report"))
+    mailComposeViewController.setToRecipients([emailAddress])
+    mailComposeViewController.setMessageBody(body, isHTML: false)
+    presentingViewController.present(mailComposeViewController, animated: true)
+  }
+  
+  func generateBody(book: NYPLBook?) -> String {
+    let nativeHeight = UIScreen.main.nativeBounds.height
+    let systemVersion = UIDevice.current.systemVersion
     let idiom: String
     switch UIDevice.current.userInterfaceIdiom {
     case .carPlay:
@@ -41,13 +60,6 @@ import UIKit
     case .unspecified:
       idiom = "unspecified"
     }
-    let nativeHeight = UIScreen.main.nativeBounds.height
-    let systemVersion = UIDevice.current.systemVersion
-  
-    let mailComposeViewController = MFMailComposeViewController.init()
-    mailComposeViewController.mailComposeDelegate = self
-    mailComposeViewController.setSubject(NYPLLocalizationNotNeeded("Problem Report"))
-    mailComposeViewController.setToRecipients([emailAddress])
     let bodyWithoutBook = "\n\n---\nIdiom: \(idiom)\nHeight: \(nativeHeight)\nOS: \(systemVersion)"
     let body: String
     if let book = book {
@@ -55,8 +67,7 @@ import UIKit
     } else {
       body = bodyWithoutBook
     }
-    mailComposeViewController.setMessageBody(body, isHTML: false)
-    presentingViewController.present(mailComposeViewController, animated: true)
+    return body
   }
 }
 

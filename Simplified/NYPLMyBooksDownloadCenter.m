@@ -293,10 +293,10 @@ didFinishDownloadingToURL:(NSURL *const)location
                                   alertWithTitle:@"DownloadFailed"
                                   message:formattedMessage];
       if (problemDocument) {
+        [[NYPLProblemDocumentCacheManager sharedInstance] cacheProblemDocument:problemDocument key:book.identifier];
         [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
         
-        if ([problemDocument.type isEqualToString:NYPLProblemDocument.TypeNoActiveLoan])
-        {
+        if ([problemDocument.type isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
           [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:book.identifier];
         }
       }

@@ -23,13 +23,14 @@
   self = [super init];
   if(!self) return nil;
   
-  self.backgroundColor = [UIColor grayColor];
+  self.backgroundColor = [NYPLConfiguration mainColor];
   
   self.messageLabel = [[UILabel alloc] init];
   self.messageLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
   self.messageLabel.textColor = [NYPLConfiguration backgroundColor];
   self.messageLabel.text = NSLocalizedString(@"DownloadCouldNotBeCompleted", nil);
+  self.messageLabel.numberOfLines = 0;
   [self addSubview:self.messageLabel];
   [self.messageLabel autoPinEdgesToSuperviewEdges];
   
