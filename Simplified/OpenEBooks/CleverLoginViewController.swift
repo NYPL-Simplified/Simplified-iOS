@@ -66,7 +66,8 @@ class CleverLoginViewController: UIViewController, WKNavigationDelegate {
   func handleRedirectURL(url: URL) {
 
     self.navigationItem.leftBarButtonItem?.isEnabled = false
-
+    
+    // Short-circuit check
     if (!url.absoluteString.hasPrefix("open-ebooks-clever")
       || !(url.absoluteString.contains("error") || url.absoluteString.contains("access_token")))
     {
@@ -86,29 +87,24 @@ class CleverLoginViewController: UIViewController, WKNavigationDelegate {
       }
     }
 
+    // Short-circuit check
     if let error = kvpairs["error"] {
       if let errorJson = error.replacingOccurrences(of: "+", with: " ").removingPercentEncoding?.parseJSONString {
         debugPrint(errorJson)
-
         self.showErrorMessage((errorJson as? [String : Any])?["title"] as? String)
-
+        return
       }
     }
 
-    if let auth_token = kvpairs["access_token"],
-      let patron_info = kvpairs["patron_info"]
-    {
-      if let patronJson = patron_info.replacingOccurrences(of: "+", with: " ").removingPercentEncoding?.parseJSONString
-      {
+    if let auth_token = kvpairs["access_token"], let patron_info = kvpairs["patron_info"] {
+      if let patronJson = patron_info.replacingOccurrences(of: "+", with: " ").removingPercentEncoding?.parseJSONString {
         var request = URLRequest(url: OEConfiguration.oeShared.circulationURL.appendingPathComponent("AdobeAuth/authdata"))
         request.httpMethod = "GET"
         request.setValue("Bearer \(auth_token)", forHTTPHeaderField: "Authorization")
 
         let dataTask = URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) in
-          if let stringData = data
-          {
-            if let adobe_token:String = NSString(data: stringData, encoding: String.Encoding.utf8.rawValue) as String?
-            {
+          if let stringData = data {
+            if let adobe_token:String = NSString(data: stringData, encoding: String.Encoding.utf8.rawValue) as String? {
               self.cleverAuth = (auth_token,patronJson,adobe_token)
 
               debugPrint(auth_token)
@@ -120,8 +116,12 @@ class CleverLoginViewController: UIViewController, WKNavigationDelegate {
           }
         })
         dataTask.resume()
+        return
       }
     }
+    
+    // We failed somewhere validating kvpairs
+    self.showErrorMessage("Error validating Clever information")
   }
   
     @objc func didSelectCancel()
@@ -222,7 +222,8 @@ extension String {
     
     if let jsonData = data {
       // Will return an object or nil if JSON decoding fails
-      return try! JSONSerialization.jsonObject(with: jsonData, options: JSONSerialization.ReadingOptions.mutableContainers) as AnyObject?
+      let obj = try? JSONSerialization.jsonObject(with: jsonData, options: JSONSerialization.ReadingOptions.mutableContainers)
+      return obj as AnyObject?
     } else {
       // Lossless conversion of the string was not possible
       return nil
