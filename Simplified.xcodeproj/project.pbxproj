@@ -2414,7 +2414,7 @@
 					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
 					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Release-iphoneos",
 				);
-				MARKETING_VERSION = 1.7.7;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.OpenEbooks;
 				PRODUCT_NAME = "Open eBooks";
 				PROVISIONING_PROFILE = "2e185b6c-271e-4b02-a05e-860b8c3831f6";
@@ -2470,7 +2470,7 @@
 					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
 					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Release-iphoneos",
 				);
-				MARKETING_VERSION = 1.7.7;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.OpenEbooks;
 				PRODUCT_NAME = "Open eBooks";
 				PROVISIONING_PROFILE = "b3d9154d-70e1-48d6-a0c5-869431277a5c";
