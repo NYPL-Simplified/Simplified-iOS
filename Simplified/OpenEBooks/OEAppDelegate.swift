@@ -78,7 +78,7 @@ class OEAppDelegate : NYPLAppDelegate, UIApplicationDelegate {
         title: "Account",
         selectionHandler: { (splitVC, tableVC) in
           if NYPLAccount.shared()?.hasCredentials() ?? false {
-            splitVC.show(
+            splitVC.showDetailViewController(
               NYPLSettingsPrimaryTableItem.handleVCWrap(
                 NYPLSettingsAccountDetailViewController(
                   account: AccountsManager.shared.currentAccountId

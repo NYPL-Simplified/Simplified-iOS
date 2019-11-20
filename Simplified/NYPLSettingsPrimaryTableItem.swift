@@ -39,9 +39,6 @@ class NYPLSettingsPrimaryTableItem {
       title: title,
       failureMessage: NSLocalizedString("SettingsConnectionFailureMessage", comment: "")
     )
-    if UIDevice.current.userInterfaceIdiom == .pad {
-      return UINavigationController.init(rootViewController: remoteView)
-    }
-    return remoteView
+    return handleVCWrap(remoteView)
   }
 }
