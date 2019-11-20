@@ -148,14 +148,19 @@ class CleverLoginViewController: UIViewController, WKNavigationDelegate {
       let adobeToken = self.cleverAuth?.adobeToken
     {
       guard let loansUrl = AccountsManager.shared.currentAccount?.loansUrl else {
-        self.authorizationAttemptDidFinish(false, error: NSError.init(
-          domain: "OpenEBooks",
-          code: -1,
-          userInfo: [
-            "message" : "No loans URL for current account",
-            "context" : "CleverLogin::validateCredentials"
-          ]
-        ))
+        self.authorizationAttemptDidFinish(
+          false,
+          error: NSError.init(
+            domain: "OpenEBooks",
+            code: -1,
+            userInfo: [
+              "message" : "No loans URL for current account",
+              "context" : "CleverLogin::validateCredentials"
+            ]
+          ),
+          deviceId: nil,
+          userId: nil
+        )
         return
       }
       
@@ -165,18 +170,18 @@ class CleverLoginViewController: UIViewController, WKNavigationDelegate {
 
       let dataTask = URLSession.shared.dataTask(with: request, completionHandler: { (data, response, responseError) in
         #if FEATURE_DRM_CONNECTOR
-          NYPLADEPT.sharedInstance().authorize(withVendorID: "OEI", username: adobeToken, password: "", completion: { (success, error, deviceID, userID) in
-            self.authorizationAttemptDidFinish(success, error: error)
+          NYPLADEPT.sharedInstance().authorize(withVendorID: "OEI", username: adobeToken, password: "", completion: { (success, error, deviceId, userId) in
+            self.authorizationAttemptDidFinish(success, error: error, deviceId: deviceId, userId: userId)
           })
         #else
-          self.authorizationAttemptDidFinish(true, error: nil)
+          self.authorizationAttemptDidFinish(true, error: nil, deviceId: nil, userId: nil)
         #endif
       })
       dataTask.resume()
     }
   }
   
-  func authorizationAttemptDidFinish(_ success:Bool, error:Error?)
+  func authorizationAttemptDidFinish(_ success:Bool, error:Error?, deviceId:String?, userId:String?)
   {
     OperationQueue.main.addOperation {
       if success {
@@ -187,6 +192,8 @@ class CleverLoginViewController: UIViewController, WKNavigationDelegate {
           NYPLAccount.shared().setAdobeToken(adobeToken, patron: patron)
           NYPLAccount.shared().setAuthToken(authToken)
           NYPLAccount.shared().setProvider(OEUtils.LocalizedString("Clever"))
+          NYPLAccount.shared().setUserID(userId)
+          NYPLAccount.shared().setDeviceID(deviceId)
           
           self.dismiss(animated: false, completion: nil)
           

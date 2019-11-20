@@ -40,7 +40,8 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindAbout,
   CellKindPrivacyPolicy,
   CellKindContentLicense,
-  CellReportIssue
+  CellReportIssue,
+  CellKindProvider
 };
 
 @interface NYPLSettingsAccountDetailViewController () <NSURLSessionDelegate, UITextFieldDelegate, UIAlertViewDelegate>
@@ -264,6 +265,9 @@ double const requestTimeoutInterval = 25.0;
     section0 = @[@(CellKindAgeCheck)].mutableCopy;
   } else if (!self.selectedAccount.details.needsAuth) {
     section0 = [NSMutableArray new];
+  } else if (self.selectedNYPLAccount.authToken) {
+    section0 = @[@(CellKindProvider),
+                 @(CellKindLogInSignOut)].mutableCopy;
   } else if (self.selectedAccount.details.pinKeyboard != LoginKeyboardNone) {
     section0 = @[@(CellKindBarcode),
                  @(CellKindPIN),
@@ -400,6 +404,11 @@ double const requestTimeoutInterval = 25.0;
   NSMutableURLRequest *const request =
   [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
   
+  if ([[NYPLAccount sharedAccount] hasAuthToken]) {
+    NSString *authValue = [NSString stringWithFormat:@"Bearer %@", [[NYPLAccount sharedAccount] authToken]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+  }
+
   request.timeoutInterval = requestTimeoutInterval;
   
   NSURLSessionDataTask *const task =
@@ -474,19 +483,28 @@ double const requestTimeoutInterval = 25.0;
     [self setupTableData];
     [self.tableView reloadData];
   };
+  
+  NSString *tokenUsername;
+  NSString *tokenPassword;
+  NSDictionary *licensor;
+  if ([[NYPLAccount sharedAccount] hasAdobeToken]) {
+    tokenUsername = [[NYPLAccount sharedAccount] adobeToken];
+    tokenPassword = @"";
+    licensor = nil;
+  } else {
+    licensor = [self.selectedNYPLAccount licensor];
+    if (!licensor) {
+      NYPLLOG(@"No Licensor available to deauthorize device. Signing out NYPLAccount creds anyway.");
+      [NYPLBugsnagLogs bugsnagLogInvalidLicensorWithAccountId:self.selectedAccountId];
+      afterDeauthorization();
+      return;
+    }
 
-  NSDictionary *licensor = [self.selectedNYPLAccount licensor];
-  if (!licensor) {
-    NYPLLOG(@"No Licensor available to deauthorize device. Signing out NYPLAccount creds anyway.");
-    [NYPLBugsnagLogs bugsnagLogInvalidLicensorWithAccountId:self.selectedAccountId];
-    afterDeauthorization();
-    return;
+    NSMutableArray *licensorItems = [[licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
+    tokenPassword = [licensorItems lastObject];
+    [licensorItems removeLastObject];
+    tokenUsername = [licensorItems componentsJoinedByString:@"|"];
   }
-
-  NSMutableArray *licensorItems = [[licensor[@"clientToken"] stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
-  NSString *tokenPassword = [licensorItems lastObject];
-  [licensorItems removeLastObject];
-  NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
   
   NYPLLOG(@"***DRM Deactivation Attempt***");
   NYPLLOG_F(@"\nLicensor: %@\n",licensor);
@@ -713,7 +731,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindLogInSignOut: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       NSString *logoutString;
-      if([self.selectedNYPLAccount hasBarcodeAndPIN]) {
+      if([self.selectedNYPLAccount hasCredentials]) {
         if ([self syncButtonShouldBeVisible] && !self.syncSwitch.on) {
           logoutString = NSLocalizedString(@"SettingsAccountViewControllerLogoutMessageSync", nil);
         } else {
@@ -861,6 +879,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                       title:NSLocalizedString(@"ContentLicenses", nil)
                                       failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
       [self.navigationController pushViewController:vc animated:YES];
+      break;
+    }
+    case CellKindProvider: {
+      [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       break;
     }
   }
@@ -1075,6 +1097,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.textLabel.text = NSLocalizedString(@"Advanced", nil);
       return cell;
     }
+    case CellKindProvider: {
+      UITableViewCell *cell = [[UITableViewCell alloc]
+                               initWithStyle:UITableViewCellStyleDefault
+                               reuseIdentifier:nil];
+      cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+      cell.textLabel.text = [NSString stringWithFormat: @"Provider: %@", self.selectedNYPLAccount.provider];
+      cell.selectionStyle = UITableViewCellSelectionStyleNone;
+      return cell;
+    }
     default: {
       return nil;
     }
@@ -1198,9 +1229,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     
     return containerView;
   } else {
-
-
-
     return nil;
   }
 }
@@ -1436,7 +1464,7 @@ replacementString:(NSString *)string
 
 - (void)updateLoginLogoutCellAppearance
 {
-  if([self.selectedNYPLAccount hasBarcodeAndPIN]) {
+  if([self.selectedNYPLAccount hasCredentials]) {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration shared].mainColor;
