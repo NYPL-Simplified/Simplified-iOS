@@ -566,52 +566,54 @@ requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
 authorizeImmediately:(BOOL)authorizeImmediately
 completionHandler:(void (^)(void))handler
 {
-  NYPLAccountSignInViewController *const accountViewController = [[self alloc] init];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    NYPLAccountSignInViewController *const accountViewController = [[self alloc] init];
 
-  accountViewController.completionHandler = handler;
+    accountViewController.completionHandler = handler;
 
-  // Tell |accountViewController| to create its text fields so we can set their properties.
-  [accountViewController view];
+    // Tell |accountViewController| to create its text fields so we can set their properties.
+    [accountViewController view];
 
-  if(useExistingBarcode) {
-    NSString *const barcode = [NYPLAccount sharedAccount].barcode;
-    if(!barcode) {
-      @throw NSInvalidArgumentException;
-    }
-    accountViewController.usernameTextField.text = barcode;
-  } else {
-    accountViewController.usernameTextField.text = @"";
-  }
-
-  accountViewController.PINTextField.text = @"";
-
-  UIBarButtonItem *const cancelBarButtonItem =
-  [[UIBarButtonItem alloc]
-   initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-   target:accountViewController
-   action:@selector(didSelectCancel)];
-
-  accountViewController.navigationItem.leftBarButtonItem = cancelBarButtonItem;
-
-  UIViewController *const viewController = [[UINavigationController alloc]
-                                            initWithRootViewController:accountViewController];
-  viewController.modalPresentationStyle = UIModalPresentationFormSheet;
-
-  [[NYPLRootTabBarController sharedController]
-   safelyPresentViewController:viewController
-   animated:YES
-   completion:nil];
-
-  if (authorizeImmediately && [NYPLAccount sharedAccount].hasBarcodeAndPIN) {
-    accountViewController.PINTextField.text = [NYPLAccount sharedAccount].PIN;
-    [accountViewController logIn];
-  } else {
     if(useExistingBarcode) {
-      [accountViewController.PINTextField becomeFirstResponder];
+      NSString *const barcode = [NYPLAccount sharedAccount].barcode;
+      if(!barcode) {
+        @throw NSInvalidArgumentException;
+      }
+      accountViewController.usernameTextField.text = barcode;
     } else {
-      [accountViewController.usernameTextField becomeFirstResponder];
+      accountViewController.usernameTextField.text = @"";
     }
-  }
+
+    accountViewController.PINTextField.text = @"";
+
+    UIBarButtonItem *const cancelBarButtonItem =
+    [[UIBarButtonItem alloc]
+     initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+     target:accountViewController
+     action:@selector(didSelectCancel)];
+
+    accountViewController.navigationItem.leftBarButtonItem = cancelBarButtonItem;
+
+    UIViewController *const viewController = [[UINavigationController alloc]
+                                              initWithRootViewController:accountViewController];
+    viewController.modalPresentationStyle = UIModalPresentationFormSheet;
+
+    [[NYPLRootTabBarController sharedController]
+      safelyPresentViewController:viewController
+      animated:YES
+      completion:nil];
+
+    if (authorizeImmediately && [NYPLAccount sharedAccount].hasBarcodeAndPIN) {
+      accountViewController.PINTextField.text = [NYPLAccount sharedAccount].PIN;
+      [accountViewController logIn];
+    } else {
+      if(useExistingBarcode) {
+        [accountViewController.PINTextField becomeFirstResponder];
+      } else {
+        [accountViewController.usernameTextField becomeFirstResponder];
+      }
+    }
+  });
 }
 
 + (void)requestCredentialsUsingExistingBarcode:(BOOL)useExistingBarcode
