@@ -732,14 +732,22 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
       return;
   }
   
-  if([NYPLAccount sharedAccount].hasBarcodeAndPIN || !loginRequired) {
+  if([NYPLAccount sharedAccount].hasCredentials || !loginRequired) {
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
       [self startBorrowForBook:book attemptDownload:YES borrowCompletion:nil];
     } else {
       // Actually download the book.
       NSURL *URL = book.defaultAcquisition.hrefURL;
-      NSURLRequest *const request = [NSURLRequest requestWithURL:URL];
+      NSURLRequest *request;
+      if ([[NYPLAccount sharedAccount] hasAuthToken]) {
+        NSMutableURLRequest *mRequest = [[NSMutableURLRequest alloc] initWithURL:URL];
+        NSString *authValue = [NSString stringWithFormat:@"Bearer %@", [[NYPLAccount sharedAccount] authToken]];
+        [mRequest setValue:authValue forHTTPHeaderField:@"Authorization"];
+        request = mRequest;
+      } else {
+        request = [NSURLRequest requestWithURL:URL];
+      }
       
       if(!request.URL) {
         // Originally this code just let the request fail later on, but apparently resuming an

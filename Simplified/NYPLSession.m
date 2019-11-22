@@ -90,6 +90,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   
   NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:URL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
   
+  if ([[NYPLAccount sharedAccount] hasAuthToken]) {
+    [req setValue:[NSString stringWithFormat:@"Bearer %@", [[NYPLAccount sharedAccount] authToken]] forHTTPHeaderField:@"Authorization"];
+  }
+  
   NSString *lpe = [URL lastPathComponent];
   if ([lpe isEqualToString:@"borrow"])
     [req setHTTPMethod:@"PUT"];
