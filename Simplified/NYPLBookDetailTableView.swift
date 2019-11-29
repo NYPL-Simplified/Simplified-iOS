@@ -188,6 +188,15 @@ private let standardCellHeight: CGFloat = 44.0
     let lastStandardCell = self.standardCells.last
     let lastCellIsViewIssue = (lastStandardCell != nil) && (lastStandardCell! == self.viewIssueCell)
     
+    // Don't show "view issue" if there's no library support email
+    if AccountsManager.shared.currentAccount?.supportEmail == nil {
+      if lastCellIsViewIssue {
+        self.standardCells.removeLast()
+      }
+      return
+    }
+    
+    // Visibility logic
     if NYPLProblemDocumentCacheManager.shared.getLastCachedDoc(self.book.identifier) == nil {
       if lastCellIsViewIssue {
         self.standardCells.removeLast()
