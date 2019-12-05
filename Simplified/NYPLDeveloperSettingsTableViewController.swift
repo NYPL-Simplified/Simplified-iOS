@@ -37,17 +37,22 @@ import Foundation
   }
   
   func numberOfSections(in tableView: UITableView) -> Int {
-    return 1
+    return 2
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    return cellForBetaLibraries()
+    if indexPath.section == 0 {
+      return cellForBetaLibraries()
+    }
+    return cellForClearCache()
   }
   
   func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
     switch section {
     case 0:
       return "Library Settings"
+    case 1:
+      return "Data Management"
     default:
       return ""
     }
@@ -64,10 +69,23 @@ import Foundation
     return cell
   }
   
+  func cellForClearCache() -> UITableViewCell {
+    let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "clearCacheCell")
+    cell.selectionStyle = .none
+    cell.textLabel?.text = "Clear Cached Data"
+    return cell
+  }
+  
   // MARK: UITableViewDelegate
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     self.tableView.deselectRow(at: indexPath, animated: true)
+    
+    if indexPath.section == 1 {
+      AccountsManager.shared.clearCache()
+      let alert = NYPLAlertUtils.alert(title: "Data Management", message: "Cache Cleared")
+      self.present(alert, animated: true, completion: nil)
+    }
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

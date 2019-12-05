@@ -261,7 +261,38 @@ func loadDataWithCache(url: URL, cacheUrl: URL, options: AccountsManager.LoadOpt
       loadCatalogs(options: .offline, completion: {_ in })
     }
   }
+  
+  func clearCache() {
+    do {
+      let applicationSupportUrl = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+      let appSupportDirContents = try FileManager.default.contentsOfDirectory(at: applicationSupportUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsPackageDescendants, .skipsSubdirectoryDescendants])
+      let libraryListCaches = appSupportDirContents.filter { (url) -> Bool in
+        return url.lastPathComponent.starts(with: "library_list_") && url.pathExtension == "json"
+      }
+      let authDocCaches = appSupportDirContents.filter { (url) -> Bool in
+        return url.lastPathComponent.starts(with: "authentication_document_") && url.pathExtension == "json"
+      }
+      for cache in libraryListCaches {
+        do {
+          try FileManager.default.removeItem(at: cache)
+        } catch {
+          Log.error("ClearCache", "Unable to clear cache for: \(cache)")
+        }
+      }
+      for cache in authDocCaches {
+        do {
+          try FileManager.default.removeItem(at: cache)
+        } catch {
+          Log.error("ClearCache", "Unable to clear cache for: \(cache)")
+        }
+      }
+    } catch {
+      Log.error("ClearCache", "Unable to clear cache")
+    }
+  }
 }
+
+// MARK: AccountDetails
 
 // Extra data that gets loaded from an OPDS2AuthenticationDocument,
 @objcMembers final class AccountDetails: NSObject {
@@ -472,6 +503,8 @@ func loadDataWithCache(url: URL, cacheUrl: URL, options: AccountsManager.LoadOpt
   }
 }
 
+// MARK: Account
+
 /// Object representing one library account in the app. Patrons may
 /// choose to sign up for multiple Accounts.
 @objcMembers final class Account: NSObject
@@ -550,6 +583,8 @@ func loadDataWithCache(url: URL, cacheUrl: URL, options: AccountsManager.LoadOpt
   }
 }
 
+// MARK: URLType
+
 @objc enum URLType: Int {
   case acknowledgements
   case contentLicenses
@@ -557,6 +592,8 @@ func loadDataWithCache(url: URL, cacheUrl: URL, options: AccountsManager.LoadOpt
   case privacyPolicy
   case annotations
 }
+
+// MARK: LoginKeyboard
 
 @objc enum LoginKeyboard: Int {
   case standard
