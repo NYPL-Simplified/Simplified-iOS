@@ -194,7 +194,7 @@ double const requestTimeoutInterval = 25.0;
 - (void)setupViews {
   self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.usernameTextField.delegate = self;
-  self.usernameTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
+  self.usernameTextField.placeholder = self.selectedAccount.details.patronIDLabel ?: NSLocalizedString(@"BarcodeOrUsername", nil);
 
   switch (self.selectedAccount.details.patronIDKeyboard) {
     case LoginKeyboardStandard:
@@ -222,7 +222,7 @@ double const requestTimeoutInterval = 25.0;
                    forControlEvents:UIControlEventTouchUpInside];
   
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
-  self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
+  self.PINTextField.placeholder = self.selectedAccount.details.pinLabel ?: NSLocalizedString(@"PIN", nil);
 
   switch (self.selectedAccount.details.pinKeyboard) {
     case LoginKeyboardStandard:
