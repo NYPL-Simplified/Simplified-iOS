@@ -689,5 +689,8 @@ static NSString *DetailHTMLTemplate = nil;
   [self.topFootnoteSeparater autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.summaryTextView withOffset:VerticalPadding];
 }
 
+- (void)viewIssuesTapped {
+  [self.detailViewDelegate didSelectViewIssuesForBook:self.book sender:self];
+}
 
 @end

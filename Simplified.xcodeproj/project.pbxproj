@@ -165,7 +165,9 @@
 		84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3441B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf */; };
 		84B7A3481B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3451B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf */; };
 		84FCD2611B7BA79200BFEDD9 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */; };
+		8C40D6A72375FF8B006EA63B /* NYPLProblemDocumentCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C40D6A62375FF8B006EA63B /* NYPLProblemDocumentCacheManager.swift */; };
 		8C835DD5234D0B900050A18D /* NYPLFacetBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C835DD4234D0B900050A18D /* NYPLFacetBarView.swift */; };
+		8CE9C471237F84820072E964 /* NYPLBookDetailsProblemDocumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CE9C470237F84820072E964 /* NYPLBookDetailsProblemDocumentViewController.swift */; };
 		8CC26F832370C1DF0000D8E1 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC26F822370C1DF0000D8E1 /* Account.swift */; };
 		A4276F481B00046300CA7194 /* NYPLMyBooksDownloadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */; };
 		A42E0DF11B3F5A490095EBAE /* NYPLRemoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E0DF01B3F5A490095EBAE /* NYPLRemoteViewController.m */; };
@@ -534,7 +536,9 @@
 		84B7A3441B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenDyslexic3-Bold.ttf"; sourceTree = "<group>"; };
 		84B7A3451B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenDyslexic3-Regular.ttf"; sourceTree = "<group>"; };
 		84FCD2601B7BA79200BFEDD9 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		8C40D6A62375FF8B006EA63B /* NYPLProblemDocumentCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLProblemDocumentCacheManager.swift; sourceTree = "<group>"; };
 		8C835DD4234D0B900050A18D /* NYPLFacetBarView.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = NYPLFacetBarView.swift; sourceTree = "<group>"; tabWidth = 2; };
+		8CE9C470237F84820072E964 /* NYPLBookDetailsProblemDocumentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookDetailsProblemDocumentViewController.swift; sourceTree = "<group>"; };
 		8CC26F822370C1DF0000D8E1 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		A4276F461B00046300CA7194 /* NYPLMyBooksDownloadInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLMyBooksDownloadInfo.h; sourceTree = "<group>"; };
 		A4276F471B00046300CA7194 /* NYPLMyBooksDownloadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLMyBooksDownloadInfo.m; sourceTree = "<group>"; };
@@ -787,20 +791,21 @@
 			children = (
 				B5ED41D81B8F6E2E009FC164 /* NYPLBookButtonsView.h */,
 				B5ED41D91B8F6E2E009FC164 /* NYPLBookButtonsView.m */,
-				E66A6C421EAFB63300AA282D /* NYPLBookDetailButtonsView.h */,
-				E66A6C431EAFB63300AA282D /* NYPLBookDetailButtonsView.m */,
 				11580AC61986A77B00949A15 /* NYPLBookCell.h */,
 				11580AC71986A77B00949A15 /* NYPLBookCell.m */,
 				1120749119D20BF9008203A4 /* NYPLBookCellCollectionViewController.h */,
 				1120749219D20BF9008203A4 /* NYPLBookCellCollectionViewController.m */,
 				111197261986B43B0014462F /* NYPLBookCellDelegate.h */,
 				111197271986B43B0014462F /* NYPLBookCellDelegate.m */,
+				E66A6C421EAFB63300AA282D /* NYPLBookDetailButtonsView.h */,
+				E66A6C431EAFB63300AA282D /* NYPLBookDetailButtonsView.m */,
 				1111973D1988226F0014462F /* NYPLBookDetailDownloadFailedView.h */,
 				1111973E1988226F0014462F /* NYPLBookDetailDownloadFailedView.m */,
 				11119740198827850014462F /* NYPLBookDetailDownloadingView.h */,
 				11119741198827850014462F /* NYPLBookDetailDownloadingView.m */,
 				111197371987F4070014462F /* NYPLBookDetailNormalView.h */,
 				111197381987F4070014462F /* NYPLBookDetailNormalView.m */,
+				8CE9C470237F84820072E964 /* NYPLBookDetailsProblemDocumentViewController.swift */,
 				E6B3269E1EE066DE00DB877A /* NYPLBookDetailTableView.swift */,
 				110AF8941961D94D004887C3 /* NYPLBookDetailView.h */,
 				110AF8951961D94D004887C3 /* NYPLBookDetailView.m */,
@@ -1134,6 +1139,7 @@
 				A823D817192BABA400B55DE2 /* Supporting Files */,
 				2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */,
 				2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */,
+				8C40D6A62375FF8B006EA63B /* NYPLProblemDocumentCacheManager.swift */,
 			);
 			path = Simplified;
 			sourceTree = "<group>";
@@ -1639,10 +1645,12 @@
 				5D7CF8B922C3FC06007CAA34 /* NYPLBugsnagLogs.swift in Sources */,
 				A499BF261B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m in Sources */,
 				1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */,
+				8C40D6A72375FF8B006EA63B /* NYPLProblemDocumentCacheManager.swift in Sources */,
 				E66A6C441EAFB63300AA282D /* NYPLBookDetailButtonsView.m in Sources */,
 				2DEF10BA201ECCEA0082843A /* NYPLMyBooksSimplifiedBearerToken.m in Sources */,
 				2DF321831DC3B83500E1858F /* NYPLAnnotations.swift in Sources */,
 				E6BA02B81DE4B6F600F76404 /* RemoteHTMLViewController.swift in Sources */,
+				8CE9C471237F84820072E964 /* NYPLBookDetailsProblemDocumentViewController.swift in Sources */,
 				A4BA1D131B43046B006F83DF /* NYPLCatalogGroupedFeed.m in Sources */,
 				112C6953197309C500C48F95 /* NYPLBookState.m in Sources */,
 				11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */,
@@ -1876,6 +1884,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1896,6 +1905,7 @@
 					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
 					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Release-iphoneos",
 				);
+				MARKETING_VERSION = 3.3.3;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "2e185b6c-271e-4b02-a05e-860b8c3831f6";
@@ -1926,6 +1936,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1950,6 +1961,7 @@
 					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Debug-iphoneos",
 					"$(PROJECT_DIR)/readium-sdk/Platform/Apple/build/Release-iphoneos",
 				);
+				MARKETING_VERSION = 3.3.3;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "b3d9154d-70e1-48d6-a0c5-869431277a5c";

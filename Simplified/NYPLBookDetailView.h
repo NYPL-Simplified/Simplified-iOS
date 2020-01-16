@@ -4,6 +4,7 @@
 @class NYPLBookDetailView;
 @class NYPLBookDetailTableViewDelegate;
 @class NYPLCatalogLane;
+@class NYPLBookDetailTableView;
 @protocol NYPLCatalogLaneCellDelegate;
 
 @protocol NYPLBookDetailViewDelegate
@@ -13,6 +14,7 @@
 - (void)didSelectCloseButton:(NYPLBookDetailView *)detailView;
 - (void)didSelectMoreBooksForLane:(NYPLCatalogLane *)lane;
 - (void)didSelectReportProblemForBook:(NYPLBook *)book sender:(id)sender;
+- (void)didSelectViewIssuesForBook:(NYPLBook *)book sender:(id)sender;
 
 @end
 
@@ -27,6 +29,7 @@ static CGFloat const SummaryTextAbbreviatedHeight = 150.0;
 @property (nonatomic) NYPLBookDetailTableViewDelegate *tableViewDelegate;
 @property (nonatomic, readonly) UIButton *readMoreLabel;
 @property (nonatomic, readonly) UITextView *summaryTextView;
+@property (nonatomic, readonly) NYPLBookDetailTableView *footerTableView;
 
 
 + (id)new NS_UNAVAILABLE;

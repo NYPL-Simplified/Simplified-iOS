@@ -22,6 +22,8 @@
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) NYPLBookDetailView *bookDetailView;
 
+-(void)didCacheProblemDocument;
+
 @end
 
 @implementation NYPLBookDetailViewController
@@ -79,6 +81,11 @@
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(didChangePreferredContentSize)
                                                name:UIContentSizeCategoryDidChangeNotification
+                                             object:nil];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(didCacheProblemDocument)
+                                               name:NSNotification.NYPLProblemDocumentWasCached
                                              object:nil];
   
   return self;
@@ -246,6 +253,31 @@
     return UIModalPresentationFormSheet;
   } else {
     return UIModalPresentationNone;
+  }
+}
+
+-(void)didCacheProblemDocument {
+  if (![NSThread isMainThread]) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self.bookDetailView.tableViewDelegate configureViewIssuesCell];
+      [self.bookDetailView.footerTableView reloadData];
+      [self.bookDetailView.footerTableView invalidateIntrinsicContentSize];
+    });
+  } else {
+    [self.bookDetailView.tableViewDelegate configureViewIssuesCell];
+    [self.bookDetailView.footerTableView reloadData];
+    [self.bookDetailView.footerTableView invalidateIntrinsicContentSize];
+  }
+}
+
+- (void)didSelectViewIssuesForBook:(NYPLBook *)book sender:(id)__unused sender {
+  NYPLProblemDocument* pDoc = [[NYPLProblemDocumentCacheManager shared] getLastCachedDoc:book.identifier];
+  if (pDoc) {
+    NYPLBookDetailsProblemDocumentViewController* vc = [[NYPLBookDetailsProblemDocumentViewController alloc] initWithProblemDocument:pDoc book:book];
+    UINavigationController* navVC = [self navigationController];
+    if (navVC) {
+      [navVC pushViewController:vc animated:YES];
+    }
   }
 }
 
