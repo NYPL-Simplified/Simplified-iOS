@@ -853,7 +853,7 @@ completionHandler:(void (^)(void))handler
   NSURLSessionDataTask *const task =
     [self.session
      dataTaskWithRequest:request
-     completionHandler:^(__unused NSData *data,
+     completionHandler:^(NSData *data,
                          NSURLResponse *const response,
                          NSError *const error) {
        
@@ -867,7 +867,7 @@ completionHandler:(void (^)(void))handler
          UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
          if (!pDoc) {
            [NYPLBugsnagLogs reportUserProfileDocumentErrorWithError:pDocError];
-           [self authorizationAttemptDidFinish:NO error:nil];
+           [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Error parsing user profile doc" }]];
            return;
          } else {
            if (pDoc.authorizationIdentifier) {
@@ -879,7 +879,7 @@ completionHandler:(void (^)(void))handler
              [[NYPLAccount sharedAccount] setLicensor:pDoc.drm[0].licensor];
            } else {
              NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
-             [self authorizationAttemptDidFinish:NO error:nil];
+             [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Trouble locating DRMs in profile doc" }]];
              return;
            }
            
@@ -914,6 +914,8 @@ completionHandler:(void (^)(void))handler
                   [[NYPLAccount sharedAccount] setUserID:userID];
                   [[NYPLAccount sharedAccount] setDeviceID:deviceID];
                 }];
+              } else {
+                [NYPLBugsnagLogs reportLocalAuthFailedWithError:error libraryName:self.currentAccount.name];
               }
               
               [self authorizationAttemptDidFinish:success error:error];
@@ -937,14 +939,32 @@ completionHandler:(void (^)(void))handler
          [self textFieldsDidChange];
          [self.PINTextField becomeFirstResponder];
        }
-       
-       if (statusCode == 401) {
-         NSError *error401 = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
-         [self showLoginAlertWithError:error401];
-         return;
+
+       // Report event to bugsnag that login failed
+       [NYPLBugsnagLogs reportRemoteLoginErrorWithUrl:request.URL response:response error:error libraryName:self.currentAccount.name];
+    
+       if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
+         // TODO: Maybe do something special for when we supposedly didn't supply credentials
+       } else if ([response.MIMEType isEqualToString:@"application/problem+json"] || [response.MIMEType isEqualToString:@"application/api-problem+json"]) {
+         NSError *problemDocumentParseError = nil;
+         NYPLProblemDocument *problemDocument = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
+         if (problemDocumentParseError) {
+           [NYPLBugsnagLogs logProblemDocumentParseErrorWithError:problemDocumentParseError url:request.URL];
+         } else if (problemDocument) {
+           UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:@"SettingsAccountViewControllerLoginFailed"];
+           [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
+           [[NYPLRootTabBarController sharedController] safelyPresentViewController: alert animated:YES completion:nil];
+           return; // Short-circuit!! Early return
+         }
        }
-       [self showLoginAlertWithError:error];
-       
+     
+       // Fallthrough case: show alert
+       [[NYPLRootTabBarController sharedController] safelyPresentViewController:
+        [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
+                                                                     animated:YES
+                                                                   completion:nil];
+
+       return;
      }];
   
   [task resume];
@@ -1028,7 +1048,7 @@ completionHandler:(void (^)(void))handler
       void (^handler)(void) = self.completionHandler;
       self.completionHandler = nil;
       if(handler) handler();
-      [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+      [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
         if (success) {
           [[NYPLBookRegistry sharedRegistry] save];
         }

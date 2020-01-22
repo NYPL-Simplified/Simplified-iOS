@@ -24,7 +24,7 @@ fileprivate let tabName = "Extra Data"
     @return
    */
   class func addAccountInfoToMetadata(_ metadata: inout [AnyHashable : Any]) {
-    metadata["currentAccount"] = AccountsManager.shared.currentAccount ?? nullString
+    metadata["currentAccountName"] = AccountsManager.shared.currentAccount?.name ?? nullString
     metadata["currentAccountId"] = AccountsManager.shared.currentAccountId ?? nullString
     metadata["currentAccountSet"] = AccountsManager.shared.accountSet
     metadata["numAccounts"] = AccountsManager.shared.accounts().count
@@ -118,27 +118,53 @@ fileprivate let tabName = "Extra Data"
   }
   
   /**
-    Report when there's an error logging in to an account
+    Report when there's an error logging in to an account remotely for credentials
+    @param url target url being requested
+    @param response HTTP response object
     @param error related error
-    @param code HTTP status code
     @param libraryName name of the library
     @return
    */
-  class func loginAlertError(error: NSError?, code: Int, libraryName: String?) {
-    //FIXME: Remove Bugsnag log when DRM Activation moves to the auth document
-    if error?.domain == NSURLErrorDomain {
-      var metadata = [AnyHashable : Any]()
-      metadata["libraryName"] = libraryName ?? nullString
-      metadata["errorCode"] = code
-      addAccountInfoToMetadata(&metadata)
-      addLogfileToMetadata(&metadata)
-      
-      Bugsnag.notifyError(NSError.init(domain: simplyeDomain, code: 10, userInfo: nil), block: { report in
-        report.severity = .info
-        report.errorMessage = "Login Failed With Error"
-        report.addMetadata(metadata, toTabWithName: tabName)
-      })
+  class func reportRemoteLoginError(url: NSURL?, response: URLResponse?, error: NSError?, libraryName: String?) {
+    var metadata = [AnyHashable : Any]()
+    metadata["libraryName"] = libraryName ?? nullString
+    metadata["errorDescription"] = error?.localizedDescription ?? nullString
+    metadata["errorCode"] = error?.code ?? 0
+    metadata["targetUrl"] = url?.absoluteString ?? nullString
+    if response != nil {
+      let realResponse: URLResponse = response!
+      let httpResponse = realResponse as! HTTPURLResponse
+      metadata["responseStatusCode"] = httpResponse.statusCode
+      metadata["responseMime"] = httpResponse.mimeType ?? nullString
     }
+    addAccountInfoToMetadata(&metadata)
+    addLogfileToMetadata(&metadata)
+    
+    Bugsnag.notifyError(NSError.init(domain: simplyeDomain, code: 10, userInfo: nil), block: { report in
+      report.severity = .info
+      report.errorMessage = "Remote Login Failed With Error"
+      report.addMetadata(metadata, toTabWithName: tabName)
+    })
+  }
+  
+  /**
+    Report when there's an error logging in to an account locally
+    @param error related error
+    @param libraryName name of the library
+    @return
+   */
+  class func reportLocalAuthFailed(error: NSError?, libraryName: String?) {
+    var metadata = [AnyHashable : Any]()
+    metadata["libraryName"] = libraryName ?? nullString
+    metadata["errorDescription"] = error?.localizedDescription ?? nullString
+    addAccountInfoToMetadata(&metadata)
+    addLogfileToMetadata(&metadata)
+    
+    Bugsnag.notifyError(NSError.init(domain: simplyeDomain, code: 11, userInfo: nil), block: { report in
+      report.severity = .info
+      report.errorMessage = "Local Login Failed With Error"
+      report.addMetadata(metadata, toTabWithName: tabName)
+    })
   }
   
   /**
@@ -228,6 +254,7 @@ fileprivate let tabName = "Extra Data"
     }
     var metadata = [AnyHashable : Any]()
     metadata["url"] = url ?? nullString
+    metadata["errorDescription"] = error?.localizedDescription ?? nullString
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     
@@ -250,6 +277,7 @@ fileprivate let tabName = "Extra Data"
     }
     var metadata = [AnyHashable : Any]()
     metadata["url"] = url ?? nullString
+    metadata["errorDescription"] = error?.localizedDescription ?? nullString
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     
@@ -267,6 +295,7 @@ fileprivate let tabName = "Extra Data"
   class func reportUserProfileDocumentError(error: NSError?) {
     let err = error ?? NSError.init(domain: "org.nypl.labs.SimplyE", code: 14, userInfo: nil)
     var metadata = [AnyHashable : Any]()
+    metadata["errorDescription"] = error?.localizedDescription ?? nullString
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     

@@ -9,6 +9,7 @@ import UIKit
     @return the alert
    */
   class func alert(title: String?, error: NSError?) -> UIAlertController {
+    let customMessage = error?.userInfo["message"]
     var message = "UnknownError"
     let domain = error?.domain ?? ""
     let code = error?.code ?? 0
@@ -37,7 +38,9 @@ import UIKit
       }
     }
     #endif
-    
+    if customMessage != nil {
+      message = customMessage as! String
+    }
     return alert(title: title, message: message)
   }
   

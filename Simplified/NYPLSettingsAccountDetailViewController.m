@@ -529,7 +529,7 @@ double const requestTimeoutInterval = 25.0;
   NSURLSessionDataTask *const task =
   [self.session
    dataTaskWithRequest:request
-   completionHandler:^(__unused NSData *data,
+   completionHandler:^(NSData *data,
                        NSURLResponse *const response,
                        NSError *const error) {
       NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
@@ -540,7 +540,7 @@ double const requestTimeoutInterval = 25.0;
         UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
         if (!pDoc) {
           [NYPLBugsnagLogs reportUserProfileDocumentErrorWithError:pDocError];
-          [self authorizationAttemptDidFinish:NO error:nil];
+          [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Error parsing user profile doc" }]];
           return;
         } else {
           if (pDoc.authorizationIdentifier) {
@@ -552,7 +552,7 @@ double const requestTimeoutInterval = 25.0;
            [self.selectedNYPLAccount setLicensor:[pDoc.drm[0] licensor]];
           } else {
            NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
-           [self authorizationAttemptDidFinish:NO error:nil];
+           [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Trouble locating DRMs in profile doc" }]];
            return;
           }
 
@@ -582,6 +582,8 @@ double const requestTimeoutInterval = 25.0;
                 [self.selectedNYPLAccount setUserID:userID];
                 [self.selectedNYPLAccount setDeviceID:deviceID];
               }];
+            } else {
+              [NYPLBugsnagLogs reportLocalAuthFailedWithError:error libraryName:self.selectedAccount.name];
             }
             
             [self authorizationAttemptDidFinish:success error:error];
@@ -603,28 +605,34 @@ double const requestTimeoutInterval = 25.0;
        [self textFieldsDidChange];
        [self.PINTextField becomeFirstResponder];
      }
-     
-     if (statusCode == 401) {
-       NSError *error401 = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
-       [self showLoginAlertWithError:error401];
-     } else {
-       [self showLoginAlertWithError:error];
-     }
 
+     // Report event to bugsnag that login failed
+     [NYPLBugsnagLogs reportRemoteLoginErrorWithUrl:request.URL response:response error:error libraryName:self.selectedAccount.name];
+    
+     if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
+       // TODO: Maybe do something special for when we supposedly didn't supply credentials
+     } else if ([response.MIMEType isEqualToString:@"application/problem+json"] || [response.MIMEType isEqualToString:@"application/api-problem+json"]) {
+       NSError *problemDocumentParseError = nil;
+       NYPLProblemDocument *problemDocument = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
+       if (problemDocumentParseError) {
+         [NYPLBugsnagLogs logProblemDocumentParseErrorWithError:problemDocumentParseError url:request.URL];
+       } else if (problemDocument) {
+         UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:@"SettingsAccountViewControllerLoginFailed"];
+         [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
+         [[NYPLRootTabBarController sharedController] safelyPresentViewController: alert animated:YES completion:nil];
+         return; // Short-circuit!! Early return
+       }
+     }
+     
+     // Fallthrough case: show alert
+     [[NYPLRootTabBarController sharedController] safelyPresentViewController:
+      [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
+                                                                     animated:YES
+                                                                   completion:nil];
      return;
    }];
   
   [task resume];
-}
-
-- (void)showLoginAlertWithError:(NSError *)error
-{
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:
-   [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
-                                                                  animated:YES
-                                                                completion:nil];
-  [self removeActivityTitle];
-  [NYPLBugsnagLogs loginAlertErrorWithError:error code:error.code libraryName:self.selectedAccount.name];
 }
 
 - (void)showLogoutAlertWithError:(NSError *)error responseCode:(NSInteger)code
@@ -659,7 +667,7 @@ double const requestTimeoutInterval = 25.0;
         void (^handler)(void) = self.completionHandler;
         self.completionHandler = nil;
         if(handler) handler();
-        [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL __unused success) {
+        [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
           if (success) {
             [[NYPLBookRegistry sharedRegistry] save];
           }
@@ -667,7 +675,10 @@ double const requestTimeoutInterval = 25.0;
       }
     } else {
       [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
-      [self showLoginAlertWithError:error];
+      [[NYPLRootTabBarController sharedController] safelyPresentViewController:
+       [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
+                                                                      animated:YES
+                                                                    completion:nil];
     }
   }];
 }
