@@ -3,21 +3,30 @@
 ## Building the Application
 
 01. Install the latest Xcode in `/Applications`, open it and make sure to install additional components if it asks you.
-02. Fork https://github.com/NYPL-Simplified/Simplified-iOS
-03. `git clone git@github.com:<YOUR_GITHUB>/Simplified-iOS.git`
-04. Clone external repo containing various private details (in particular, API keys, AudioEngine binary for NYPLAEToolkit, and a script to upload symbols to Bugsnag): `git clone git@github.com:NYPL-Simplified/Certificates.git`
-05. `cd Simplified-iOS; git checkout master`
-06. `git submodule update --init --recursive` (please check you have repo access to the submodules, notably the private repos)
-07. `cp ../Certificates/SimplyE/iOS/AudioEngine.json ../Certificates/SimplyE/iOS/bugsnag-dsym-upload.rb .`
-08. `cp ../Certificates/SimplyE/iOS/APIKeys.swift Simplified/`
-09. Build Carthage libraries following "Building Carthage Dependencies" section below.
-08. Symlink an unzipped copy of Adobe RMSDK to "adobe-rmsdk" within the "Simplified-iOS" directory. (You will need to have obtained this archive from Adobe; please contact team lead for this archive), e.g.:
-`ln -s ~/Documents/AdobeRMSDK/DRM_Connector_Prerelease adobe-rmsdk`
-07. Build OpenSSL and cURL as described in the following "Building OpenSSL and cURL" section. Ensure you're in the "Simplified-iOS" directory before continuing to the next step.
-08. `sh adobe-rmsdk-build.sh`
-09. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
-12. `open Simplified.xcodeproj`
-13. Build
+02. Contact project lead and ensure you have repo access to all required submodules, including private ones. Also request a copy of the Adobe RMSDK archive, which is currently not on Github.
+03. Fork https://github.com/NYPL-Simplified/Simplified-iOS
+04. Run:
+```bash
+git clone git@github.com:<YOUR_GITHUB>/Simplified-iOS.git
+git clone git@github.com:NYPL-Simplified/Certificates.git
+cd Simplified-iOS
+git checkout master
+git submodule update --init --recursive
+cp ../Certificates/SimplyE/iOS/AudioEngine.json ../Certificates/SimplyE/iOS/bugsnag-dsym-upload.rb .
+cp ../Certificates/SimplyE/iOS/APIKeys.swift Simplified/
+```
+04. Build Carthage libraries following "Building Carthage Dependencies" section below.
+05. Symlink the unzipped Adobe RMSDK to "adobe-rmsdk" within the "Simplified-iOS" directory, e.g.:
+```bash
+ln -s ~/Documents/AdobeRMSDK/DRM_Connector_Prerelease adobe-rmsdk
+```
+07. Build OpenSSL and cURL as described in the following "Building OpenSSL and cURL" section.
+08. Ensure you're in the "Simplified-iOS" directory before continuing to the next step, then run:
+```bash
+sh adobe-rmsdk-build.sh
+(cd readium-sdk; sh MakeHeaders.sh Apple)
+```
+09. Open Simplified.xcodeproj and Build!
 
 ## Building Carthage Dependencies
 
@@ -25,20 +34,22 @@ Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
 ```bash
 carthage checkout --use-ssh
 ```
-Hack alert! Simplified-iOS and NYPLAEToolkit depend on the AudioEngine framework. The AudioEngine zip specified in the Certificates repo contains 2 versions of the framework (Debug and Release) and carthage does not allow that, and therefore cannot resolve the dependency. Therefore we are manually installing the Debug build -- this is for development purposes, similar steps would apply for building for Release.
+Hack alert! Simplified-iOS and NYPLAEToolkit depend on the AudioEngine framework. The AudioEngine zip specified in the Certificates repo contains 2 versions of the framework (Debug and Release) and since Carthage no longer allows that, it cannot resolve the dependency. Therefore we are manually installing the Debug build -- this is for development purposes, similar steps would apply for building for Release.
 ```bash
 cd Carthage
+chmod ugo+x ../../Certificates/SimplyE/iOS/AudioEngineZipURLExtractor.swift
 AUDIOENGINE_ZIP_URL=$( ../../Certificates/SimplyE/iOS/AudioEngineZipURLExtractor.swift ../../Certificates/SimplyE/iOS/AudioEngine.json )
 curl -O $AUDIOENGINE_ZIP_URL
 unzip `basename $AUDIOENGINE_ZIP_URL`
 mkdir -p Build/iOS
 cp -R AudioEngine/Debug/AudioEngine.framework Build/iOS
 ```
-Carthage gets confused by the fact that NYPLAEToolkit expresses a dependency on AudioEngine in its Cartfile and Cartfile.resolved: but since we've already addressed that dependency at steps above, let's remove it from Carthage eyes before finally building:
+Carthage gets confused by the fact that NYPLAEToolkit expresses a dependency on AudioEngine in its Cartfile and Cartfile.resolved: but since we've already addressed that dependency at steps above, let's remove it from Carthage's eyes before building:
 ```bash
 sed -i '' '/binary "AudioEngine.json".*/d' Checkouts/NYPLAEToolkit/Cartfile
 sed -i '' '/binary "AudioEngine.json".*/d' Checkouts/NYPLAEToolkit/Cartfile.resolved
-cd .. && carthage build --platform ios
+cd ..
+carthage build --platform ios
 ```
 
 ## Building OpenSSL and cURL
