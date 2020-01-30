@@ -2,23 +2,42 @@
 
 ## Building the Application
 
-01. `git clone https://github.com/NYPL-Simplified/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
-02. `cd Simplified-iOS`
-03. Ensure you have xcode CLI tools installed; `xcode-select --install`
-04. `git submodule update --init --recursive` (please check you have repo access to the submodules, notably the private repos)
-05. Populate the following files accordingly (external to repo for security reasons; please contact team lead for locating these files):
-    - `AudioEngine.json` (as a requirement to build NYPLAEToolkit)
-    - `bugsnag-dsym-upload.rb` (a post-build script to upload symbols to bugsnag)
-    - `Simplified/ReaderClientCert.sig` (RMSDK certificate)
-    - `Simplified/APIKeys.swift` (file that holds various API keys; sample exists in repo at `APIKeys.swift.example`)
-06. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
-07. `carthage bootstrap --platform ios --use-ssh`. Note: If `carthage bootstrap` fails, you may need to create an installer package from our fork: https://github.com/NYPL-Simplified/Carthage. Specifically, there is a branch `dwarfdump-fix` which resolves https://github.com/Carthage/Carthage/issues/2514
+01. Install the latest Xcode in `/Applications`, open it and make sure to install additional components if it asks you.
+02. Fork https://github.com/NYPL-Simplified/Simplified-iOS
+03. `git clone git@github.com:<YOUR_GITHUB>/Simplified-iOS.git`
+04. Clone external repo containing various private details (in particular, API keys, AudioEngine binary for NYPLAEToolkit, and a script to upload symbols to Bugsnag): `git clone git@github.com:NYPL-Simplified/Certificates.git`
+05. `cd Simplified-iOS; git checkout master`
+06. `git submodule update --init --recursive` (please check you have repo access to the submodules, notably the private repos)
+07. `cp ../Certificates/SimplyE/iOS/AudioEngine.json ../Certificates/SimplyE/iOS/bugsnag-dsym-upload.rb .`
+08. `cp ../Certificates/SimplyE/iOS/APIKeys.swift Simplified/`
+09. Build Carthage libraries following "Building Carthage Dependencies" section below.
 08. Symlink an unzipped copy of Adobe RMSDK to "adobe-rmsdk" within the "Simplified-iOS" directory. (You will need to have obtained this archive from Adobe; please contact team lead for this archive)
 07. Build OpenSSL and cURL as described in the following "Building OpenSSL and cURL" section. Ensure you're in the "Simplified-iOS" directory before continuing to the next step.
 08. `sh adobe-rmsdk-build.sh`
 09. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
 12. `open Simplified.xcodeproj`
 13. Build
+
+## Building Carthage Dependencies
+
+01. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already. Using `brew` is recommended.
+02. `carthage checkout --use-ssh`
+
+Hack alert! Simplified-iOS and NYPLAEToolkit depend on the AudioEngine framework. The AudioEngine zip specified in the Certificates repo contains 2 versions of the framework (Debug and Release) and carthage does not allow that, and therefore cannot resolve the dependency. Therefore we are manually installing the Debug build -- this is for development purposes, similar steps would apply for building for Release.
+
+03. `cd Carthage`
+04. `AUDIOENGINE_ZIP_URL=$( ../../Certificates/SimplyE/iOS/AudioEngineZipURLExtractor.swift ../../Certificates/SimplyE/iOS/AudioEngine.json )`
+05. `curl -O $AUDIOENGINE_ZIP_URL`
+06. ``unzip `basename $AUDIOENGINE_ZIP_URL` ``
+07. `mkdir -p Build/iOS`
+08. `cp -R AudioEngine/Debug/AudioEngine.framework Build/iOS`
+09. Carthage gets confused by the fact that NYPLAEToolkit expresses a dependency on AudioEngine in its Cartfile and Cartfile.resolved: but since we've already addressed that dependency at steps above, let's remove it from Carthage eyes.:
+```
+sed -i '' '/binary "AudioEngine.json".*/d' Checkouts/NYPLAEToolkit/Cartfile
+sed -i '' '/binary "AudioEngine.json".*/d' Checkouts/NYPLAEToolkit/Cartfile.resolved
+```
+10. `cd .. && carthage build --platform ios`
+
 
 ## Building OpenSSL and cURL
 
