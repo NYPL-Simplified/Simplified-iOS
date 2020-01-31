@@ -1,85 +1,40 @@
+# System Requirements
+
+- Install the latest Xcode in `/Applications`, open it and make sure to install additional components if it asks you.
+- Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already. Using `brew` is recommended.
+
 # Building With Adobe DRM
 
 ## Building the Application
 
-01. Install the latest Xcode in `/Applications`, open it and make sure to install additional components if it asks you.
-02. Contact project lead and ensure you have repo access to all required submodules, including private ones. Also request a copy of the Adobe RMSDK archive, which is currently not on Github.
-03. Fork https://github.com/NYPL-Simplified/Simplified-iOS
-04. Run:
+01. Contact project lead and ensure you have repo access to all required submodules, including private ones. Also request a copy of the Adobe RMSDK archive, which is currently not on Github, unzip it and place it in a place of your choice.
+02. Then run:
 ```bash
-git clone git@github.com:<YOUR_GITHUB>/Simplified-iOS.git
+git clone git@github.com:NYPL-Simplified/Simplified-iOS.git
 git clone git@github.com:NYPL-Simplified/Certificates.git
 cd Simplified-iOS
+ln -s <rmsdk_path>/DRM_Connector_Prerelease adobe-rmsdk
 git checkout master
 git submodule update --init --recursive
-cp ../Certificates/SimplyE/iOS/AudioEngine.json ../Certificates/SimplyE/iOS/bugsnag-dsym-upload.rb .
-cp ../Certificates/SimplyE/iOS/APIKeys.swift Simplified/
 ```
-04. Build Carthage libraries following "Building Carthage Dependencies" section below.
-05. Symlink the unzipped Adobe RMSDK to "adobe-rmsdk" within the "Simplified-iOS" directory, e.g.:
+03. Build dependencies (carthage, OpenSSL, cURL). You can also use this script at any other time if you never need to rebuild them: it should be idempotent. The non-optional parameter specifies which configuration of the AudioEngine framework to use. Note that the Release build of AudioEngine does not contain slices for Simulator architectures, causing a Carthage build failure.
 ```bash
-ln -s ~/Documents/AdobeRMSDK/DRM_Connector_Prerelease adobe-rmsdk
+build-3rd-parties-dependencies.sh <Debug | Release>
 ```
-07. Build OpenSSL and cURL as described in the following "Building OpenSSL and cURL" section.
-08. Ensure you're in the "Simplified-iOS" directory before continuing to the next step, then run:
+04. Open Simplified.xcodeproj and Build!
+
+
+## Building Dependencies Individually
+
+To build all Carthage dependencies from scratch you can use the following script. Note that this will wipe the Carthage folder if you already have it:
 ```bash
-sh adobe-rmsdk-build.sh
-(cd readium-sdk; sh MakeHeaders.sh Apple)
+build-carthage.sh <Debug | Release>
 ```
-09. Open Simplified.xcodeproj and Build!
-
-## Building Carthage Dependencies
-
-Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already. Using `brew` is recommended.
+To build OpenSSL and cURL from scratch, you can use the following script:
 ```bash
-carthage checkout --use-ssh
+build-openssl-curl.sh
 ```
-Hack alert! Simplified-iOS and NYPLAEToolkit depend on the AudioEngine framework. The AudioEngine zip specified in the Certificates repo contains 2 versions of the framework (Debug and Release) and since Carthage no longer allows that, it cannot resolve the dependency. Therefore we are manually installing the Debug build -- this is for development purposes, similar steps would apply for building for Release.
-```bash
-cd Carthage
-chmod ugo+x ../../Certificates/SimplyE/iOS/AudioEngineZipURLExtractor.swift
-AUDIOENGINE_ZIP_URL=$( ../../Certificates/SimplyE/iOS/AudioEngineZipURLExtractor.swift ../../Certificates/SimplyE/iOS/AudioEngine.json )
-curl -O $AUDIOENGINE_ZIP_URL
-unzip `basename $AUDIOENGINE_ZIP_URL`
-mkdir -p Build/iOS
-cp -R AudioEngine/Debug/AudioEngine.framework Build/iOS
-```
-Carthage gets confused by the fact that NYPLAEToolkit expresses a dependency on AudioEngine in its Cartfile and Cartfile.resolved: but since we've already addressed that dependency at steps above, let's remove it from Carthage's eyes before building:
-```bash
-sed -i '' '/binary "AudioEngine.json".*/d' Checkouts/NYPLAEToolkit/Cartfile
-sed -i '' '/binary "AudioEngine.json".*/d' Checkouts/NYPLAEToolkit/Cartfile.resolved
-cd ..
-carthage build --platform ios
-```
-
-## Building OpenSSL and cURL
-
-In theory, following the instructions in "adobe-rmsdk/RMSDK_User_Manual(obj).pdf", you should be able to build OpenSSL (section 12.1) and cURL (section 12.3) since Adobe provides this package to their developers. The following are some smoother steps to achieving that.
-
-Note: if you want/need to use an Xcode installed at a location other than `/Applications`, you'll need to update the $DEVELOPER env variable mentioned at the top of both the `build.sh` / `build_curl.sh` scripts below.
-
-With the assumption that we are still in the root of Simplified-iOS:
-```bash
-cp build_curl.sh adobe-rmsdk/thirdparty/curl/iOS-libcurl/
-SDKVERSION=`xcodebuild -version -sdk iphoneos | grep SDKVersion | sed 's/SDKVersion[: ]*//'`
-
-cd adobe-rmsdk/thirdparty/openssl
-mkdir public
-mv iOS-openssl/ public/ios/
-cd public/ios
-curl -O https://www.openssl.org/source/old/1.0.1/openssl-1.0.1u.tar.gz
-sed -i '' 's/OPENSSL_VERSION=".*"/OPENSSL_VERSION="1.0.1u"/' build.sh
-sed -i '' "s/SDK_VERSION=\".*\"/SDK_VERSION=\"$SDKVERSION\"/" build.sh
-sed -i '' 's/MIN_VERSION=".*"/MIN_VERSION="9.0"/' build.sh
-bash ./build.sh  #this will take a while
-
-cd ../../../curl/iOS-libcurl
-curl -O https://curl.haxx.se/download/curl-7.64.1.zip
-sed -i '' 's/CURL_VERSION=".*"/CURL_VERSION="7.64.1"/' build_curl.sh
-sed -i '' "s/SDK_VERSION=\".*\"/SDK_VERSION=\"$SDKVERSION\"/" build_curl.sh
-sed -i '' 's/MIN_VERSION=".*"/MIN_VERSION="9.0"/' build_curl.sh
-bash ./build_curl.sh  #this will take a while
-```
+Both scripts must be run from the Simplified-iOS repo root.
 
 # Building Without Adobe DRM
 
