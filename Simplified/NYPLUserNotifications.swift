@@ -162,7 +162,7 @@ extension NYPLUserNotifications: UNUserNotificationCenterDelegate
         return
       }
       guard let downloadCenter = NYPLMyBooksDownloadCenter.shared(),
-        let book = NYPLBookRegistry.shared()?.book(forIdentifier: bookID) else {
+        let book = NYPLBookRegistry.shared().book(forIdentifier: bookID) else {
           Log.error(#file, "Problem creating book or download center singleton. BookID: \(bookID)")
           return
       }
