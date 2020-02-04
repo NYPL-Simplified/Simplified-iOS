@@ -21,7 +21,10 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
+# deep clean to avoid any caching issues
+rm -rf ~/Library/Caches/org.carthage.CarthageKit
 rm -rf Carthage
+
 carthage checkout --use-ssh
 
 # Simplified-iOS and NYPLAEToolkit depend on the AudioEngine framework. Normally
@@ -29,12 +32,12 @@ carthage checkout --use-ssh
 #
 #   binary "AudioEngine.json" "6.1.15"
 #
-# However, the AudioEngine zip specified in the Certificates repo contains 2 builds
-# of the framework (Debug and Release) and since Carthage no longer allows that,
-# it cannot resolve the dependency and would produce an error along these lines:
+# We've experienced build issues where Carthage may error out with something like:
 #
 #   A shell task (/usr/bin/xcrun dwarfdump --uuid /Users/xyz/git/NYPLAEToolkit/Carthage/Build/iOS/AudioEngine.framework/AudioEngine) failed with exit code 1:
 #   error: /Users/xyz/git/NYPLAEToolkit/Carthage/Build/iOS/AudioEngine.framework/AudioEngine: Invalid data was encountered while parsing the file
+#
+# E.g. That seems to happen when building with `carthage build --configuration Release`
 #
 # We maintain a fork of Carthage that solved the dwarfdump issue above, but using
 # that will produce the following error:
@@ -45,12 +48,13 @@ carthage checkout --use-ssh
 #       to:
 #     file:///Users/xyz/git/Simplified-iOS/Carthage/Build/iOS/AudioEngine.framework/
 #
-# Therefore, we are renouncing to use Carthage for managing this dependency.
-# Since it's a dylib binary, the cost is not too high: there's nothing to
-# actually build, all we need to do is placing the framework into the correct
-# location with the other Carthage frameworks. Here we're using Debug build for
-# development purposes (since it includes Simulator lipo slices, which the
-# Release build does not), but similar steps would apply for building for Release.
+# The problem is that the AudioEngine zip specified in the Certificates repo contains
+# 2 builds of the framework (Debug and Release) but Carthage no longer allows that, per
+# https://github.com/Carthage/Carthage#archive-prebuilt-frameworks-into-one-zip-file .
+# Occasionally Carthage may be still able to build, but it is not certain which
+# build of AudioEngine is actually going to use. To control this better, especially
+# when preparing app Release builds) we are manually managing this dependency by
+# copying the pre-built framework binary into the location Carthage expects it:
 
 cd Carthage
 AE_BUILD_CONFIG=$1
@@ -62,10 +66,8 @@ mkdir -p Build/iOS
 echo "Using $AE_BUILD_CONFIG configuration for AudioEngine..."
 cp -R AudioEngine/$AE_BUILD_CONFIG/AudioEngine.framework Build/iOS
 
-# Carthage gets confused by the fact that NYPLAEToolkit expresses a dependency
-# on AudioEngine in its Cartfile and Cartfile.resolved: but since we've already
-# addressed that dependency at steps above, let's remove it from Carthage's
-# eyes before building:
+# Carthage may also get confused by the fact that NYPLAEToolkit expresses the same dependency
+# on AudioEngine. Since we've already handled that, we can just remove it from there:
 
 sed -i '' '/binary "AudioEngine.json".*/d' Checkouts/NYPLAEToolkit/Cartfile
 sed -i '' '/binary "AudioEngine.json".*/d' Checkouts/NYPLAEToolkit/Cartfile.resolved
