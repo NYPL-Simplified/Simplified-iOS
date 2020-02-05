@@ -17,14 +17,20 @@
 cp build_curl.sh adobe-rmsdk/thirdparty/curl/iOS-libcurl/
 SDKVERSION=`xcodebuild -version -sdk iphoneos | grep SDKVersion | sed 's/SDKVersion[: ]*//'`
 
+# edit as required if OpenSSL and cURL need updating or retargeting
+OPENSSL_VERSION="1.0.1u"
+OPENSSL_URL="https://www.openssl.org/source/old/1.0.1/openssl-1.0.1u.tar.gz"
+CURL_VERSION="7.64.1"
+CURL_URL="https://curl.haxx.se/download/curl-7.64.1.zip"
+
 echo "======================================="
 echo "Building OpenSSL..."
 cd adobe-rmsdk/thirdparty/openssl
-mkdir public
-mv iOS-openssl/ public/ios/
+mkdir -p public
+[ -d "iOS-openssl" ] && [ ! -d "public/ios" ] && mv iOS-openssl public/ios
 cd public/ios
-curl -O https://www.openssl.org/source/old/1.0.1/openssl-1.0.1u.tar.gz
-sed -i '' 's/OPENSSL_VERSION=".*"/OPENSSL_VERSION="1.0.1u"/' build.sh
+curl -O $OPENSSL_URL
+sed -i '' "s/OPENSSL_VERSION=\".*\"/OPENSSL_VERSION=\"$OPENSSL_VERSION\"/" build.sh
 sed -i '' "s/SDK_VERSION=\".*\"/SDK_VERSION=\"$SDKVERSION\"/" build.sh
 sed -i '' 's/MIN_VERSION=".*"/MIN_VERSION="9.0"/' build.sh
 bash ./build.sh  #this will take a while
@@ -32,8 +38,8 @@ bash ./build.sh  #this will take a while
 echo "======================================="
 echo "Building cURL..."
 cd ../../../curl/iOS-libcurl
-curl -O https://curl.haxx.se/download/curl-7.64.1.zip
-sed -i '' 's/CURL_VERSION=".*"/CURL_VERSION="7.64.1"/' build_curl.sh
+curl -O $CURL_URL
+sed -i '' "s/CURL_VERSION=\".*\"/CURL_VERSION=\"$CURL_VERSION\"/" build_curl.sh
 sed -i '' "s/SDK_VERSION=\".*\"/SDK_VERSION=\"$SDKVERSION\"/" build_curl.sh
 sed -i '' 's/MIN_VERSION=".*"/MIN_VERSION="9.0"/' build_curl.sh
 bash ./build_curl.sh  #this will take a while
