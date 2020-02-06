@@ -1,6 +1,5 @@
-binary "AudioEngine.json" "6.1.15"
 github "NYPL-Simplified/CardCreator-iOS" "v1.1.2"
-github "NYPL-Simplified/NYPLAEToolkit" "b36363509f72db2f1cc3103f9f700cf3492ae52d"
+github "NYPL-Simplified/NYPLAEToolkit" "27c08e76cb46985f7861cce50782972b8e05e6fa"
 github "NYPL-Simplified/NYPLAudiobookToolkit" "010c2b066c51672fc0bbb4abac485b0cdde1025e"
 github "NYPL-Simplified/PDFRendererProvider-iOS" "b0ee13aa74e0d88193a401c29624dda8120a340d"
 github "PureLayout/PureLayout" "v3.1.5"
