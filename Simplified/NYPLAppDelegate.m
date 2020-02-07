@@ -1,4 +1,5 @@
 @import NYPLAudiobookToolkit;
+@import Firebase;
 
 #import "SimplyE-Swift.h"
 
@@ -41,6 +42,7 @@ const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 24;
 - (BOOL)application:(__attribute__((unused)) UIApplication *)application
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
+  [FIRApp configure];
   // Perform data migrations as early as possible before anything has a chance to access them
   [NYPLKeychainManager validateKeychain];
   [MigrationManager migrate];
