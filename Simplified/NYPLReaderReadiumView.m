@@ -26,7 +26,7 @@
 #import "SimplyE-Swift.h"
 
 @interface NYPLReaderReadiumView ()
-  <NYPLReaderRenderer, RDPackageResourceServerDelegate, NYPLReadiumViewSyncManagerDelegate, WKNavigationDelegate, WKUIDelegate>
+  <NYPLReaderRenderer, RDPackageResourceServerDelegate, NYPLReadiumViewSyncManagerDelegate, NYPLBackgroundWorkOwner, WKNavigationDelegate, WKUIDelegate>
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) BOOL bookIsCorrupt;
@@ -57,6 +57,7 @@
 @property (nonatomic) BOOL performingLongLoad;
 @property (nonatomic) BOOL updateSettingsInProgress;
 
+@property (nonatomic) NYPLBackgroundExecutor *backgroundHelper;
 @end
 
 static NSString *const localhost = @"127.0.0.1";
@@ -177,6 +178,8 @@ static void generateTOCElements(NSArray *const navigationElements,
   self.javaScriptHandlerQueue = [NSMutableArray array];
   self.javaScriptStringQueue = [NSMutableArray array];
   
+  self.backgroundHelper = [[NYPLBackgroundExecutor alloc]
+                           initWithOwner:self taskName:@"NYPLReadiumInit"];
   return self;
 }
 
@@ -580,43 +583,10 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                   [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
   [self sequentiallyEvaluateJavaScript:openBookJavascript];
 
-  [self dispatchBackgroundWork];
+  [self.backgroundHelper dispatchBackgroundWork];
 
   self.loaded = YES;
   [self.delegate rendererDidFinishLoading:self];
-}
-
-- (void)dispatchBackgroundWork
-{
-  __weak NYPLReaderReadiumView *weakSelf = self;
-
-  __block UIBackgroundTaskIdentifier bgTask;
-
-  void (^endBackgroundTask)(NSString *) = ^(NSString *context) {
-    if (bgTask != UIBackgroundTaskInvalid) {
-      NYPLLOG_F(@"[BGTask] %@ background task %lu", context, bgTask);
-      [[UIApplication sharedApplication] endBackgroundTask:bgTask];
-      bgTask = UIBackgroundTaskInvalid;
-    }
-  };
-
-  bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-    endBackgroundTask(@"Aborting");
-  }];
-
-  NYPLLOG_F(@"[BGTask] Beginning background task %lu", bgTask);
-  if (bgTask == UIBackgroundTaskInvalid) {
-    NYPLLOG(@"[BGTask] Unable to run background task");
-  }
-  
-  self.backgroundWorkItem = dispatch_block_create(0, ^{
-    [weakSelf performBackgroundWork];
-    endBackgroundTask(@"Finishing up");
-    weakSelf.backgroundWorkItem = nil;
-  });
-
-  dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
-  dispatch_async(backgroundQueue, self.backgroundWorkItem);
 }
 
 /// Executes expensive / long running initialization tasks:
@@ -624,7 +594,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 ///   - then on main queue: initialize sync manager
 - (void)performBackgroundWork
 {
-  NYPLLOG(@"[BGTask] Performing init background work for Readium view...");
+  NYPLLOG(@"Performing init background work for Readium view...");
   self.bookMapDictionary = [self generateBookDictionary];
 
   dispatch_sync(dispatch_get_main_queue(), ^{
@@ -637,13 +607,14 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   });
 }
 
-- (void)setUpWorkItemForBackgroundWork:(void(^)(void))backgroundWorkWrapper
+- (dispatch_block_t)setUpWorkItemWrappingBackgroundWork:(void (^ _Nonnull)(void))backgroundWork
 {
   __weak NYPLReaderReadiumView *weakSelf = self;
   self.backgroundWorkItem = dispatch_block_create(0, ^{
-    backgroundWorkWrapper();
+    backgroundWork();
     weakSelf.backgroundWorkItem = nil;
   });
+  return self.backgroundWorkItem;
 }
 
 - (void)checkForExistingBookmarkAtLocation:(NSString*)idref
