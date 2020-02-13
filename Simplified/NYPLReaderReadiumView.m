@@ -26,7 +26,7 @@
 #import "SimplyE-Swift.h"
 
 @interface NYPLReaderReadiumView ()
-  <NYPLReaderRenderer, RDPackageResourceServerDelegate, NYPLReadiumViewSyncManagerDelegate, WKNavigationDelegate, WKUIDelegate>
+  <NYPLReaderRenderer, RDPackageResourceServerDelegate, NYPLReadiumViewSyncManagerDelegate, NYPLBackgroundWorkOwner, WKNavigationDelegate, WKUIDelegate>
 
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) BOOL bookIsCorrupt;
@@ -57,6 +57,7 @@
 @property (nonatomic) BOOL performingLongLoad;
 @property (nonatomic) BOOL updateSettingsInProgress;
 
+@property (nonatomic) NYPLBackgroundExecutor *backgroundHelper;
 @end
 
 static NSString *const localhost = @"127.0.0.1";
@@ -177,6 +178,8 @@ static void generateTOCElements(NSArray *const navigationElements,
   self.javaScriptHandlerQueue = [NSMutableArray array];
   self.javaScriptStringQueue = [NSMutableArray array];
   
+  self.backgroundHelper = [[NYPLBackgroundExecutor alloc]
+                           initWithOwner:self taskName:@"NYPLReadiumInit"];
   return self;
 }
 
@@ -447,6 +450,7 @@ createWebViewWithConfiguration:(__unused WKWebViewConfiguration *)configuration
   return nil;
 }
 
+// called when going into reading a book. May be called multiple times for same book
 - (void)webView:(__unused WKWebView *)webView
 decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction
 decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
@@ -579,41 +583,38 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                   [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
   [self sequentiallyEvaluateJavaScript:openBookJavascript];
 
-  [self dispatchBackgroundWork];
+  [self.backgroundHelper dispatchBackgroundWork];
 
   self.loaded = YES;
   [self.delegate rendererDidFinishLoading:self];
 }
 
-/// Background Queue: Generate Book Length Dictionary
-/// Then, Main Queue: Initialize Sync Manager
-/// Cancel entire work item (long running) if app goes to background state so
-/// that self can dealloc immediately.
-- (void)dispatchBackgroundWork
+/// Executes expensive / long running initialization tasks:
+///   - on background queue: generate book length dictionary
+///   - then on main queue: initialize sync manager
+- (void)performBackgroundWork
+{
+  NYPLLOG(@"Performing init background work for Readium view...");
+  self.bookMapDictionary = [self generateBookDictionary];
+
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    self.syncManager = [[NYPLReadiumViewSyncManager alloc]
+                        initWithBookID:self.book.identifier
+                        annotationsURL:self.book.annotationsURL
+                        bookMap:self.bookMapDictionary
+                        delegate:self];
+    [self.syncManager syncAllAnnotationsWithPackage:self.package.dictionary];
+  });
+}
+
+- (dispatch_block_t)setUpWorkItemWrappingBackgroundWork:(void (^ _Nonnull)(void))backgroundWork
 {
   __weak NYPLReaderReadiumView *weakSelf = self;
-  __block UIBackgroundTaskIdentifier bgTask = [[UIApplication sharedApplication]
-                                               beginBackgroundTaskWithExpirationHandler:^{
-                                                 [[UIApplication sharedApplication] endBackgroundTask:bgTask];
-                                               }];
-
   self.backgroundWorkItem = dispatch_block_create(0, ^{
-    weakSelf.bookMapDictionary = [weakSelf asyncGenerateBookDictionary];
-
-     dispatch_sync(dispatch_get_main_queue(), ^{
-      weakSelf.syncManager = [[NYPLReadiumViewSyncManager alloc] initWithBookID:weakSelf.book.identifier
-                                                                 annotationsURL:weakSelf.book.annotationsURL
-                                                                        bookMap:weakSelf.bookMapDictionary
-                                                                       delegate:weakSelf];
-      [weakSelf.syncManager syncAllAnnotationsWithPackage:weakSelf.package.dictionary];
-    });
-
-    [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+    backgroundWork();
     weakSelf.backgroundWorkItem = nil;
   });
-
-  dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
-  dispatch_async(backgroundQueue, self.backgroundWorkItem);
+  return self.backgroundWorkItem;
 }
 
 - (void)checkForExistingBookmarkAtLocation:(NSString*)idref
@@ -804,7 +805,12 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
   });
 }
 
-- (NSDictionary *)asyncGenerateBookDictionary
+/**
+ This method generates the bookMapDictionary synchronously: therefore since
+ it's an expensive operation, it should be called on a background queue,
+ or at least not on the main queue.
+ */
+- (NSDictionary *)generateBookDictionary
 {
   NSDecimalNumber *totalLength = [NSDecimalNumber zero];
   NSMutableDictionary *bookDicts = [[NSMutableDictionary alloc] init];
@@ -813,7 +819,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
     if (self.backgroundWorkItem) {
       if (dispatch_block_testcancel(self.backgroundWorkItem)) {
-        return nil;
+        return nil; // bail since the dispatch block was canceled
       }
     }
 

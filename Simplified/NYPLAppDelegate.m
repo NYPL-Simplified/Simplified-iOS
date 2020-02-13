@@ -75,31 +75,28 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   return YES;
 }
 
+// note: this appears to always be called on main thread while app is on background
 - (void)application:(__attribute__((unused)) UIApplication *)application
 performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundFetchHandler
 {
-  __block UIBackgroundTaskIdentifier bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
-    [NYPLBugsnagLogs reportExpiredBackgroundFetch];
-    backgroundFetchHandler(UIBackgroundFetchResultFailed);
-    [application endBackgroundTask:bgTask];
-  }];
-
-  NYPLLOG(@"[BackgroundFetch] Starting background fetch block");
+  NSDate *startDate = [NSDate date];
   if ([NYPLUserNotifications backgroundFetchIsNeeded]) {
+    NYPLLOG_F(@"[Background Fetch] Starting book registry sync. "
+              "ElapsedTime=%f", -startDate.timeIntervalSinceNow);
     // Only the "current library" account syncs during a background fetch.
     [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
       if (success) {
         [[NYPLBookRegistry sharedRegistry] save];
       }
     } backgroundFetchHandler:^(UIBackgroundFetchResult result) {
-      NYPLLOG(@"[BackgroundFetch] Completed with result");
+      NYPLLOG_F(@"[Background Fetch] Completed with result %lu. "
+                "ElapsedTime=%f", result, -startDate.timeIntervalSinceNow);
       backgroundFetchHandler(result);
-      [application endBackgroundTask:bgTask];
     }];
   } else {
-    NYPLLOG(@"[BackgroundFetch] Fetch wasn't needed");
+    NYPLLOG_F(@"[Background Fetch] Registry sync not needed. "
+              "ElapsedTime=%f", -startDate.timeIntervalSinceNow);
     backgroundFetchHandler(UIBackgroundFetchResultNewData);
-    [application endBackgroundTask:bgTask];
   }
 }
 
