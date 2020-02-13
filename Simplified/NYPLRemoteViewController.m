@@ -169,17 +169,22 @@
     [self addChildViewController:viewController];
     viewController.view.frame = self.view.bounds;
     [self.view addSubview:viewController.view];
-    // If `viewController` does not have its own bar button items or title, use whatever
-    // has been set on `self` by default.
+
+    // If `viewController` has its own bar button items or title, use whatever
+    // has been set by default.
     if(viewController.navigationItem.rightBarButtonItems) {
       self.navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems;
     }
     if(viewController.navigationItem.leftBarButtonItems) {
       self.navigationItem.leftBarButtonItems = viewController.navigationItem.leftBarButtonItems;
     }
+    if(viewController.navigationItem.backBarButtonItem) {
+      self.navigationItem.backBarButtonItem = viewController.navigationItem.backBarButtonItem;
+    }
     if(viewController.navigationItem.title) {
       self.navigationItem.title = viewController.navigationItem.title;
     }
+
     [viewController didMoveToParentViewController:self];
   } else {
     self.reloadView.hidden = NO;
