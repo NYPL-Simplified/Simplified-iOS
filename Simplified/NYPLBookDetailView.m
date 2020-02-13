@@ -7,7 +7,6 @@
 #import "NYPLBookDetailNormalView.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogGroupedFeed.h"
-#import "NYPLCatalogFeedViewController.h"
 #import "NYPLCatalogGroupedFeedViewController.h"
 #import "NYPLCatalogLaneCell.h"
 #import "NYPLCatalogUngroupedFeed.h"

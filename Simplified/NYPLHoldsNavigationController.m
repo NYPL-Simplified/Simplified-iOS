@@ -4,7 +4,6 @@
 
 #import "NYPLAccount.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLCatalogFeedViewController.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLCatalogNavigationController.h"
