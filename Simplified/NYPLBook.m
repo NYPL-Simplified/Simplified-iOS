@@ -33,12 +33,12 @@
 
 // NOTE: Be cautious of these values!
 // Do NOT reuse them when declaring new keys.
-__deprecated static NSString *const DeprecatedAcquisitionKey = @"acquisition";
-__deprecated static NSString *const DeprecatedAvailableCopiesKey = @"available-copies";
-__deprecated static NSString *const DeprecatedAvailableUntilKey = @"available-until";
-__deprecated static NSString *const DeprecatedAvailabilityStatusKey = @"availability-status";
-__deprecated static NSString *const DeprecatedHoldsPositionKey = @"holds-position";
-__deprecated static NSString *const DeprecatedTotalCopiesKey = @"total-copies";
+static NSString *const DeprecatedAcquisitionKey = @"acquisition";
+static NSString *const DeprecatedAvailableCopiesKey = @"available-copies";
+static NSString *const DeprecatedAvailableUntilKey = @"available-until";
+static NSString *const DeprecatedAvailabilityStatusKey = @"availability-status";
+static NSString *const DeprecatedHoldsPositionKey = @"holds-position";
+static NSString *const DeprecatedTotalCopiesKey = @"total-copies";
 
 static NSString *const AcquisitionsKey = @"acquisitions";
 static NSString *const AlternateURLKey = @"alternate";

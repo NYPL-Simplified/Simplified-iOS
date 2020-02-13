@@ -3,7 +3,10 @@
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wno-all"
+#pragma clang diagnostic ignored "-Wunused-function"
+#pragma clang diagnostic ignored "-Wunused-parameter"
+#pragma clang diagnostic ignored "-Wignored-qualifiers"
+#pragma clang diagnostic ignored "-Wdelete-non-abstract-non-virtual-dtor"
 #import <adept_filter.h>
 #pragma clang diagnostic pop
 #endif

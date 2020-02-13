@@ -92,8 +92,7 @@ ontoPrimaryViewController:(__attribute__((unused)) UIViewController *)primaryVie
 
 #pragma mark NYPLSettingsPrimaryTableViewControllerDelegate
 
-- (void)settingsPrimaryTableViewController:(NYPLSettingsPrimaryTableViewController *const)
-                                           settingsPrimaryTableViewController
+- (void)settingsPrimaryTableViewController:(__attribute__((unused)) NYPLSettingsPrimaryTableViewController *const)settingsPrimaryTableVC
                              didSelectItem:(NYPLSettingsPrimaryTableViewControllerItem const)item
 {
   UIViewController *viewController;

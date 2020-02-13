@@ -65,38 +65,50 @@
 
 - (NSDictionary *)dictionaryRepresentation;
 
+/// @discussion
 /// A compatibility method to allow the app to continue to function until the
 /// user interface and other components support handling multiple valid
 /// acquisition possibilities. Its use should be avoided wherever possible and
 /// it will eventually be removed.
 ///
+/// @seealso @b https://jira.nypl.org/browse/SIMPLY-2588
+///
 /// @return An acquisition leading to an EPUB or @c nil.
-- (NYPLOPDSAcquisition *)defaultAcquisition __deprecated;
+- (NYPLOPDSAcquisition *)defaultAcquisition;
 
+/// @discussion
 /// A compatibility method to allow the app to continue to function until the
 /// user interface and other components support handling multiple valid
 /// acquisition possibilities. Its use should be avoided wherever possible and
 /// it will eventually be removed.
+///
+/// @seealso @b https://jira.nypl.org/browse/SIMPLY-2588
 ///
 /// @return The default acquisition leading to an EPUB if it has a borrow
 /// relation, else @c nil.
-- (NYPLOPDSAcquisition *)defaultAcquisitionIfBorrow __deprecated;
+- (NYPLOPDSAcquisition *)defaultAcquisitionIfBorrow;
 
+/// @discussion
 /// A compatibility method to allow the app to continue to function until the
 /// user interface and other components support handling multiple valid
 /// acquisition possibilities. Its use should be avoided wherever possible and
 /// it will eventually be removed.
 ///
+/// @seealso @b https://jira.nypl.org/browse/SIMPLY-2588
+///
 /// @return The default acquisition leading to an EPUB if it has an open access
 /// relation, else @c nil.
-- (NYPLOPDSAcquisition *)defaultAcquisitionIfOpenAccess __deprecated;
+- (NYPLOPDSAcquisition *)defaultAcquisitionIfOpenAccess;
 
+/// @discussion
 /// Assigns the book content type based on the inner-most type listed
 /// in the acquistion path. If multiple acquisition paths exist, default
 /// to epub+zip before moving down to other supported types. The UI
 /// does not yet support more than one supported type.
 ///
+/// @seealso @b https://jira.nypl.org/browse/SIMPLY-2588
+///
 /// @return The default NYPLBookContentType
-- (NYPLBookContentType)defaultBookContentType __deprecated;
+- (NYPLBookContentType)defaultBookContentType;
 
 @end
