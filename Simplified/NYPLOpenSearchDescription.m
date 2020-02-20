@@ -1,6 +1,7 @@
 #import "NYPLAsync.h"
 #import "NYPLSession.h"
 #import "NYPLXML.h"
+#import "NSString+NYPLStringAdditions.h"
 #import "SimplyE-Swift.h"
 
 #import "NYPLOpenSearchDescription.h"
@@ -88,6 +89,14 @@ completionHandler:(void (^)(NYPLOpenSearchDescription *))handler
   self.books = books;
   self.humanReadableDescription = title;
   return self;
+}
+
+- (NSURL *)OPDSURLForSearchingString:(NSString *)searchString
+{
+  NSString *urlStr = [self.OPDSURLTemplate
+                      stringByReplacingOccurrencesOfString:@"{searchTerms}"
+                      withString:[searchString stringURLEncodedAsQueryParamValue]];
+  return [NSURL URLWithString:urlStr];
 }
 
 @end
