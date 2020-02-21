@@ -24,9 +24,6 @@ static NSString *const NYPLMyBooksDownloadCenterDidChangeNotification =
 // This works for both failed downloads (to reset their state) and for downloads in progress.
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier;
 
-// Removes local content and removes the book from the registry, after presenting a confirmation dialog.
-- (void)removeCompletedDownloadForBookIdentifier:(NSString *)identifier;
-
 // Deletes the downloaded book, but doesn't touch the registry. The book should still be in the
 // registry when this is called.
 - (void)deleteLocalContentForBookIdentifier:(NSString *)identifier;

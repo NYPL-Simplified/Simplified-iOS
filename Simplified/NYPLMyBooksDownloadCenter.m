@@ -23,7 +23,7 @@
 #endif
 
 @interface NYPLMyBooksDownloadCenter ()
-  <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, UIAlertViewDelegate>
+  <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate>
 
 @property (nonatomic) NSString *bookIdentifierOfBookToRemove;
 @property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadInfo;
@@ -408,19 +408,6 @@ didCompleteWithError:(NSError *)error
     [self failDownloadForBook:book];
     return;
   }
-}
-
-#pragma mark UIAlertViewDelegate
-
-- (void)alertView:(UIAlertView *)alertView
-didDismissWithButtonIndex:(NSInteger const)buttonIndex
-{
-  if(buttonIndex == alertView.firstOtherButtonIndex) {
-    [self deleteLocalContentForBookIdentifier:self.bookIdentifierOfBookToRemove];
-    [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:self.bookIdentifierOfBookToRemove];
-  }
-  
-  self.bookIdentifierOfBookToRemove = nil;
 }
 
 #pragma mark -
@@ -820,26 +807,6 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
     [[NYPLBookRegistry sharedRegistry]
      setState:NYPLBookStateDownloadNeeded forIdentifier:identifier];
   }
-}
-
-- (void)removeCompletedDownloadForBookIdentifier:(NSString *const)identifier
-{
-  if(self.bookIdentifierOfBookToRemove) {
-    NYPLLOG(@"Ignoring delete while still handling previous delete.");
-    return;
-  }
-  
-  self.bookIdentifierOfBookToRemove = identifier;
-  
-  NSString *title = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier].title;
-  [[[UIAlertView alloc]
-    initWithTitle:NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
-    message:[NSString stringWithFormat:
-             NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil), title]
-    delegate:self
-    cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-    otherButtonTitles:NSLocalizedString(@"Delete", nil), nil]
-   show];
 }
 
 - (void)deleteAudiobooksForAccount:(NSString * const)account

@@ -41,7 +41,7 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionRegistration = 1
 };
 
-@interface NYPLAccountSignInViewController () <NSURLSessionDelegate, UITextFieldDelegate, UIAlertViewDelegate>
+@interface NYPLAccountSignInViewController () <NSURLSessionDelegate, UITextFieldDelegate>
 
 @property (nonatomic) Account *currentAccount;
 @property (nonatomic) BOOL isLoggingInAfterSignUp;

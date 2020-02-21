@@ -6,6 +6,10 @@
 
 - (NSString *)SHA256;
 
-- (NSString *)stringByURLEncoding;
+/**
+ @returns A string made with the assumption that the receiver is a query
+ param value.
+ */
+- (NSString *)stringURLEncodedAsQueryParamValue;
 
 @end

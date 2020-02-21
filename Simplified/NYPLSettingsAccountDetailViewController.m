@@ -6,7 +6,6 @@
 #import "NYPLSettingsAccountDetailViewController.h"
 
 #import "NYPLAccount.h"
-#import "NYPLBarcodeScanningViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
@@ -44,7 +43,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellReportIssue
 };
 
-@interface NYPLSettingsAccountDetailViewController () <NSURLSessionDelegate, UITextFieldDelegate, UIAlertViewDelegate>
+@interface NYPLSettingsAccountDetailViewController () <NSURLSessionDelegate, UITextFieldDelegate>
 
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;

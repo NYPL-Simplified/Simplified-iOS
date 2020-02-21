@@ -64,8 +64,12 @@
   self.activityIndicatorLabel.hidden = YES;
   [NSTimer scheduledTimerWithTimeInterval: activityLabelTimer target: self
                                  selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
-  
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  // TODO: SIMPLY-2589 Replace with NSURLSession
   self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+#pragma clang diagnostic pop
   self.data = [NSMutableData data];
   
   [self.activityIndicatorView startAnimating];

@@ -832,7 +832,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
       NSHTTPURLResponse *response;
       NSError *headError;
       int responseStatusCode = 0;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+      // TODO: SIMPLY-2589
       [NSURLConnection sendSynchronousRequest: request returningResponse: &response error: &headError];
+#pragma clang diagnostic pop
+
       if ([response respondsToSelector:@selector(allHeaderFields)]) {
         
         responseStatusCode = (int)[response statusCode];
