@@ -1,4 +1,7 @@
-import Bugsnag
+//
+//  SimplyE
+//  Copyright © 2020 NYPL Labs. All rights reserved.
+//
 
 @objcMembers final class NYPLReturnPromptHelper: NSObject {
 
@@ -46,7 +49,7 @@ fileprivate func logKeepAction()
   let keepException = NSException(name:NSExceptionName(rawValue: "NYPLAudiobookKeepException"),
                                   reason:"User chose to keep the audiobook, and not return it.",
                                   userInfo:nil)
-  Bugsnag.notify(keepException)
+  NYPLBugsnagLogs.logException(keepException)
 }
 
 fileprivate func logReturnAction()
@@ -54,5 +57,5 @@ fileprivate func logReturnAction()
   let returnException = NSException(name:NSExceptionName(rawValue: "NYPLAudiobookReturnException"),
                                     reason:"User chose to return the Audiobook early.",
                                     userInfo:nil)
-  Bugsnag.notify(returnException)
+  NYPLBugsnagLogs.logException(returnException)
 }
