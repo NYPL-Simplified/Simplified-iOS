@@ -20,14 +20,11 @@ extension Notification.Name {
 
 let Version = 1
 
-let NYPLAcknowledgementsURLString = "http://www.librarysimplified.org/acknowledgments.html"
-let NYPLUserAgreementURLString = "http://www.librarysimplified.org/EULA.html"
-
 @objcMembers class NYPLSettings: NSObject {
   static let shared = NYPLSettings()
   
-  static let NYPLAcknowledgementsURLString = "http://www.librarysimplified.org/acknowledgments.html"
-  static let NYPLUserAgreementURLString = "http://www.librarysimplified.org/EULA.html"
+  static let NYPLAboutSimplyEURLString = "https://librarysimplified.org/simplye/"
+  static let NYPLUserAgreementURLString = "https://www.librarysimplified.org/EULA/"
   
   static fileprivate let customMainFeedURLKey = "NYPLSettingsCustomMainFeedURL"
   static fileprivate let accountMainFeedURLKey = "NYPLSettingsAccountMainFeedURL"
