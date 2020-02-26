@@ -153,7 +153,7 @@
 		5D60D3542297353C001080D0 /* NYPLMigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D60D3532297353C001080D0 /* NYPLMigrationManager.swift */; };
 		5D73DA4322A080BA00162CB8 /* NYPLMyBooksDownloadCenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D73DA3D22A07B9A00162CB8 /* NYPLMyBooksDownloadCenterTests.swift */; };
 		5D7CF86422C19EBA007CAA34 /* NYPLReaderContainerDelegateBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF86322C19EBA007CAA34 /* NYPLReaderContainerDelegateBase.m */; };
-		5D7CF8B922C3FC06007CAA34 /* NYPLBugsnagLogs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF8B422C3FC06007CAA34 /* NYPLBugsnagLogs.swift */; };
+		5D7CF8B922C3FC06007CAA34 /* NYPLErrorLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF8B422C3FC06007CAA34 /* NYPLErrorLogger.swift */; };
 		5D7CF8BC22C42AE2007CAA34 /* LogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF8BA22C427F6007CAA34 /* LogTests.swift */; };
 		5DD5674522B303DF001F0C83 /* NYPLDeveloperSettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD5674422B303DF001F0C83 /* NYPLDeveloperSettingsTableViewController.swift */; };
 		5DD5677222B7ECE3001F0C83 /* NYPLSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD5677122B7ECE3001F0C83 /* NYPLSettings.swift */; };
@@ -529,7 +529,7 @@
 		5D73DA3D22A07B9A00162CB8 /* NYPLMyBooksDownloadCenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLMyBooksDownloadCenterTests.swift; sourceTree = "<group>"; };
 		5D7CF86322C19EBA007CAA34 /* NYPLReaderContainerDelegateBase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderContainerDelegateBase.m; sourceTree = "<group>"; };
 		5D7CF86922C1A2F1007CAA34 /* NYPLReaderContainerDelegateBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLReaderContainerDelegateBase.h; sourceTree = "<group>"; };
-		5D7CF8B422C3FC06007CAA34 /* NYPLBugsnagLogs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLBugsnagLogs.swift; sourceTree = "<group>"; };
+		5D7CF8B422C3FC06007CAA34 /* NYPLErrorLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLErrorLogger.swift; sourceTree = "<group>"; };
 		5D7CF8BA22C427F6007CAA34 /* LogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogTests.swift; sourceTree = "<group>"; };
 		5DD5674422B303DF001F0C83 /* NYPLDeveloperSettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLDeveloperSettingsTableViewController.swift; sourceTree = "<group>"; };
 		5DD5677122B7ECE3001F0C83 /* NYPLSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSettings.swift; sourceTree = "<group>"; };
@@ -1102,7 +1102,7 @@
 				114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */,
 				A4E254F81B0E610900193FE4 /* NYPLBasicAuth.h */,
 				A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */,
-				5D7CF8B422C3FC06007CAA34 /* NYPLBugsnagLogs.swift */,
+				5D7CF8B422C3FC06007CAA34 /* NYPLErrorLogger.swift */,
 				E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
@@ -1672,7 +1672,7 @@
 				113DB8A719C24E54004E1154 /* NYPLIndeterminateProgressView.m in Sources */,
 				119BEB89198C43A600121439 /* NSString+NYPLStringAdditions.m in Sources */,
 				E6B6E76F1F6859A4007EE361 /* NYPLKeychainManager.swift in Sources */,
-				5D7CF8B922C3FC06007CAA34 /* NYPLBugsnagLogs.swift in Sources */,
+				5D7CF8B922C3FC06007CAA34 /* NYPLErrorLogger.swift in Sources */,
 				A499BF261B39EFC7002F8B8B /* NYPLOPDSEntryGroupAttributes.m in Sources */,
 				1196F75B1970727C00F62670 /* NYPLMyBooksDownloadCenter.m in Sources */,
 				8C40D6A72375FF8B006EA63B /* NYPLProblemDocumentCacheManager.swift in Sources */,

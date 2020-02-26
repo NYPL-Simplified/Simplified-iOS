@@ -14,7 +14,7 @@ fileprivate let tabName = "Extra Data"
   case error, warning, info
 }
 
-@objcMembers class NYPLBugsnagLogs : NSObject {
+@objcMembers class NYPLErrorLogger : NSObject {
   class func configureCrashAnalytics() {
     let config = BugsnagConfiguration()
     config.apiKey = APIKeys.bugsnagID
@@ -119,7 +119,7 @@ fileprivate let tabName = "Extra Data"
     @param title name of the book
     @return
    */
-  class func reportNilContentCFIToBugsnag(location: NYPLBookLocation?, locationDictionary: Dictionary<String, Any>?, bookId: String?, title: String?) {
+  class func reportNilContentCFI(location: NYPLBookLocation?, locationDictionary: Dictionary<String, Any>?, bookId: String?, title: String?) {
     var metadata = [AnyHashable : Any]()
     metadata["bookID"] = bookId ?? nullString
     metadata["bookTitle"] = title ?? nullString
@@ -210,7 +210,7 @@ fileprivate let tabName = "Extra Data"
     @param accountId id of the account
     @return
    */
-  class func bugsnagLogInvalidLicensorWith(accountId: String?) {
+  class func logInvalidLicensor(withAccountID accountId: String?) {
     var metadata = [AnyHashable : Any]()
     metadata["accountTypeID"] = accountId ?? nullString
     addAccountInfoToMetadata(&metadata)

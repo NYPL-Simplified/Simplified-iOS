@@ -18,8 +18,8 @@
   dispatch_once (&onceToken, ^{
     dispatch_async(dispatch_get_main_queue(), ^{
       if (!TARGET_OS_SIMULATOR) {
-        [NYPLBugsnagLogs configureCrashAnalytics];
-        [NYPLBugsnagLogs reportNewActiveSession];
+        [NYPLErrorLogger configureCrashAnalytics];
+        [NYPLErrorLogger reportNewActiveSession];
       }
     });
   });

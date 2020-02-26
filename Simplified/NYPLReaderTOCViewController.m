@@ -290,7 +290,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       NSError *err = [NSError errorWithDomain:@"org.nypl.labs.SimplyE"
                                          code:11
                                      userInfo:nil];
-      [NYPLBugsnagLogs reportError:err
+      [NYPLErrorLogger reportError:err
                            message:@"Attempting to delete bookmark out of bounds."
                           severity:NYPLSeverityWarning
                       groupingHash:nil

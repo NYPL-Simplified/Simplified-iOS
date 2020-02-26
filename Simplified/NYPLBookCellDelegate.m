@@ -226,10 +226,10 @@
 {
   [DefaultAudiobookManager setLogHandler:^(enum LogLevel level, NSString * _Nonnull message, NSError * _Nullable error) {
     if (error) {
-      [NYPLBugsnagLogs reportError:error message:message];
+      [NYPLErrorLogger reportError:error message:message];
     } else {
       NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:0 userInfo:nil];
-      [NYPLBugsnagLogs reportError:error
+      [NYPLErrorLogger reportError:error
                            message:[NSString stringWithFormat:@"Level: %ld. Message: %@",
                                     (long)level, message]];
     }

@@ -49,7 +49,7 @@ fileprivate func logKeepAction()
   let keepException = NSException(name:NSExceptionName(rawValue: "NYPLAudiobookKeepException"),
                                   reason:"User chose to keep the audiobook, and not return it.",
                                   userInfo:nil)
-  NYPLBugsnagLogs.logException(keepException)
+  NYPLErrorLogger.logException(keepException)
 }
 
 fileprivate func logReturnAction()
@@ -57,5 +57,5 @@ fileprivate func logReturnAction()
   let returnException = NSException(name:NSExceptionName(rawValue: "NYPLAudiobookReturnException"),
                                     reason:"User chose to return the Audiobook early.",
                                     userInfo:nil)
-  NYPLBugsnagLogs.logException(returnException)
+  NYPLErrorLogger.logException(returnException)
 }
