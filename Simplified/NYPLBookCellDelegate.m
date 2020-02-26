@@ -1,4 +1,3 @@
-@import Bugsnag;
 @import MediaPlayer;
 @import NYPLAudiobookToolkit;
 @import PDFRendererProvider;
@@ -227,14 +226,12 @@
 {
   [DefaultAudiobookManager setLogHandler:^(enum LogLevel level, NSString * _Nonnull message, NSError * _Nullable error) {
     if (error) {
-      [Bugsnag notifyError:error block:^(BugsnagCrashReport * _Nonnull report) {
-        report.errorMessage = message;
-      }];
+      [NYPLErrorLogger reportError:error message:message];
     } else {
       NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:0 userInfo:nil];
-      [Bugsnag notifyError:error block:^(BugsnagCrashReport * _Nonnull report) {
-        report.errorMessage = [NSString stringWithFormat:@"Level: %ld. Message: %@", (long)level, message];
-      }];
+      [NYPLErrorLogger reportError:error
+                           message:[NSString stringWithFormat:@"Level: %ld. Message: %@",
+                                    (long)level, message]];
     }
   }];
 }

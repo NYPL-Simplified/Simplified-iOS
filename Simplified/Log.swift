@@ -30,15 +30,11 @@ final class Log: NSObject {
   }
   
   class func log(_ level: Level, _ tag: String, _ message: String, error: Error? = nil) {
-    #if DEBUG
-      let shouldLog = true
-    #else
-      let shouldLog = level != .debug
+    #if !DEBUG
+      guard level != .debug else {
+        return
+      }
     #endif
-    
-    if !shouldLog {
-      return
-    }
     
     // Generate timestamp
     let dateFormatter = DateFormatter()

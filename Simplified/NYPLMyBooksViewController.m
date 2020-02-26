@@ -158,6 +158,12 @@ typedef NS_ENUM(NSInteger, FacetSort) {
                        action:@selector(didSelectSearch)];
   self.searchButton.accessibilityLabel = NSLocalizedString(@"Search", nil);
   self.navigationItem.rightBarButtonItem = self.searchButton;
+
+  // prevent possible unusable Search box when going to Search page
+  self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc]
+                                           initWithTitle:NSLocalizedString(@"Back", @"Back button text")
+                                           style:UIBarButtonItemStylePlain
+                                           target:nil action:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated

@@ -86,6 +86,7 @@
 "UnknownRequestError" =
     "An unknown error occurred. Please check your connection or try again later.";
 "Verifying" = "Verifying";
+"Back" = "Back";
 
 // NYPLAccountSignInViewController
 "SigningInAgree" = "By signing in, you agree to the End User License Agreement.";

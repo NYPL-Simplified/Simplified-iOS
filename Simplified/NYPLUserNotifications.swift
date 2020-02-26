@@ -7,7 +7,7 @@ let DefaultActionIdentifier = "UNNotificationDefaultActionIdentifier"
 @available (iOS 10.0, *)
 @objcMembers class NYPLUserNotifications: NSObject
 {
-  let unCenter = UNUserNotificationCenter.current()
+  private let unCenter = UNUserNotificationCenter.current()
 
   /// If a user has not yet been presented with Notifications authorization,
   /// defer the presentation for later to maximize acceptance rate. Otherwise,
@@ -144,6 +144,7 @@ extension NYPLUserNotifications: UNUserNotificationCenterDelegate
         completionHandler()
         return
       }
+
       if currentAccount.details?.supportsReservations == true {
         if let holdsTab = NYPLRootTabBarController.shared()?.viewControllers?[2],
         holdsTab.isKind(of: NYPLHoldsNavigationController.self) {
@@ -157,25 +158,60 @@ extension NYPLUserNotifications: UNUserNotificationCenterDelegate
     else if response.actionIdentifier == CheckOutActionIdentifier {
       Log.debug(#file, "'Check Out' Notification Action.")
       let userInfo = response.notification.request.content.userInfo
+      
       guard let bookID = userInfo["bookID"] as? String else {
         Log.error(#file, "Bad user info in Local Notification. UserInfo: \n\(userInfo)")
+        completionHandler()
         return
       }
-      guard let downloadCenter = NYPLMyBooksDownloadCenter.shared(),
-        let book = NYPLBookRegistry.shared()?.book(forIdentifier: bookID) else {
-          Log.error(#file, "Problem creating book or download center singleton. BookID: \(bookID)")
+      guard let downloadCenter = NYPLMyBooksDownloadCenter.shared() else {
+          Log.error(#file, "Download center singleton is nil!")
+          completionHandler()
+          return
+      }
+      guard let book = NYPLBookRegistry.shared().book(forIdentifier: bookID) else {
+          Log.error(#file, "Problem creating book. BookID: \(bookID)")
+          completionHandler()
           return
       }
 
-      // Asynchronous network task in the background app state.
-      let bgTask = UIApplication.shared.beginBackgroundTask {
-        Log.error(#file, "Background task expired before borrow action could complete.")
-        completionHandler()
-      }
-      downloadCenter.startBorrow(for: book, attemptDownload: false) {
-        completionHandler()
+      borrow(book, inBackgroundFrom: downloadCenter, completion: completionHandler)
+    }
+    else {
+      Log.warn(#file, "Unknown action identifier: \(response.actionIdentifier)")
+      completionHandler()
+    }
+  }
+
+  private func borrow(_ book: NYPLBook,
+                      inBackgroundFrom downloadCenter: NYPLMyBooksDownloadCenter,
+                      completion: @escaping () -> Void) {
+    // Asynchronous network task in the background app state.
+    var bgTask: UIBackgroundTaskIdentifier = .invalid
+    bgTask = UIApplication.shared.beginBackgroundTask {
+      if bgTask != .invalid {
+        Log.warn(#file, "Expiring background borrow task \(bgTask.rawValue)")
+        completion()
         UIApplication.shared.endBackgroundTask(bgTask)
+        bgTask = .invalid
       }
+    }
+
+    Log.debug(#file, "Beginning background borrow task \(bgTask.rawValue)")
+
+    if bgTask == .invalid {
+      Log.debug(#file, "Unable to run borrow task in background")
+    }
+
+    // bg task body
+    downloadCenter.startBorrow(for: book, attemptDownload: false) {
+      completion()
+      guard bgTask != .invalid else {
+        return
+      }
+      Log.info(#file, "Finishing up background borrow task \(bgTask.rawValue)")
+      UIApplication.shared.endBackgroundTask(bgTask)
+      bgTask = .invalid
     }
   }
 }

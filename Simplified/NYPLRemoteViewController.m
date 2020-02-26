@@ -64,8 +64,12 @@
   self.activityIndicatorLabel.hidden = YES;
   [NSTimer scheduledTimerWithTimeInterval: activityLabelTimer target: self
                                  selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
-  
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  // TODO: SIMPLY-2589 Replace with NSURLSession
   self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+#pragma clang diagnostic pop
   self.data = [NSMutableData data];
   
   [self.activityIndicatorView startAnimating];
@@ -155,7 +159,7 @@
     NYPLProblemDocument *pDoc = [NYPLProblemDocument fromData:self.data error:&problemDocumentParseError];
     UIAlertController *alert;
     if (problemDocumentParseError) {
-      [NYPLBugsnagLogs logProblemDocumentParseErrorWithError:problemDocumentParseError url:[self.response URL]];
+      [NYPLErrorLogger logProblemDocumentParseErrorWithError:problemDocumentParseError url:[self.response URL]];
       alert = [NYPLAlertUtils alertWithTitle:@"Error" message:@"Unknown error parsing problem document"];
     } else {
       alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
@@ -169,17 +173,22 @@
     [self addChildViewController:viewController];
     viewController.view.frame = self.view.bounds;
     [self.view addSubview:viewController.view];
-    // If `viewController` does not have its own bar button items or title, use whatever
-    // has been set on `self` by default.
+
+    // If `viewController` has its own bar button items or title, use whatever
+    // has been set by default.
     if(viewController.navigationItem.rightBarButtonItems) {
       self.navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems;
     }
     if(viewController.navigationItem.leftBarButtonItems) {
       self.navigationItem.leftBarButtonItems = viewController.navigationItem.leftBarButtonItems;
     }
+    if(viewController.navigationItem.backBarButtonItem) {
+      self.navigationItem.backBarButtonItem = viewController.navigationItem.backBarButtonItem;
+    }
     if(viewController.navigationItem.title) {
       self.navigationItem.title = viewController.navigationItem.title;
     }
+
     [viewController didMoveToParentViewController:self];
   } else {
     self.reloadView.hidden = NO;
@@ -200,7 +209,7 @@
   
   if (connection.currentRequest.URL) {
     self.reloadView.hidden = NO;
-    [NYPLBugsnagLogs catalogLoadErrorWithError:error url:self.URL];
+    [NYPLErrorLogger catalogLoadErrorWithError:error url:self.URL];
   }
 
   self.connection = nil;

@@ -1,3 +1,8 @@
+//
+//  SimplyE
+//  Copyright © 2020 NYPL Labs. All rights reserved.
+//
+
 import Foundation
 import Bugsnag
 
@@ -5,8 +10,41 @@ fileprivate let simplyeDomain = "org.nypl.labs.SimplyE"
 fileprivate let nullString = "null"
 fileprivate let tabName = "Extra Data"
 
-@objcMembers class NYPLBugsnagLogs : NSObject {
-  
+@objc enum NYPLSeverity: NSInteger {
+  case error, warning, info
+}
+
+@objcMembers class NYPLErrorLogger : NSObject {
+  class func configureCrashAnalytics() {
+    let config = BugsnagConfiguration()
+    config.apiKey = APIKeys.bugsnagID
+
+    #if DEBUG
+    config.releaseStage = "development"
+    #else
+    if releaseStageIsBeta() {
+      config.releaseStage = "beta"
+      if let userID = NYPLAccount.shared()?.barcode {
+        config.setUser(userID, withName: nil, andEmail: nil)
+      }
+    } else {
+      config.releaseStage = "production"
+    }
+    #endif
+
+    Bugsnag.start(with: config)
+  }
+
+  private class func releaseStageIsBeta() -> Bool {
+    guard let receiptURLPath = Bundle.main.appStoreReceiptURL?.path else {
+      // returning true here is somewhat odd, but it was left for backward
+      // compatibility reasons with previous objc code
+      return true
+    }
+
+    return receiptURLPath.contains("sandboxReceipt")
+  }
+
   /**
     Helper method for other logging functions that adds logfile to bugsnag report
     @param metadata report metadata dictionary
@@ -81,7 +119,7 @@ fileprivate let tabName = "Extra Data"
     @param title name of the book
     @return
    */
-  class func reportNilContentCFIToBugsnag(location: NYPLBookLocation?, locationDictionary: Dictionary<String, Any>?, bookId: String?, title: String?) {
+  class func reportNilContentCFI(location: NYPLBookLocation?, locationDictionary: Dictionary<String, Any>?, bookId: String?, title: String?) {
     var metadata = [AnyHashable : Any]()
     metadata["bookID"] = bookId ?? nullString
     metadata["bookTitle"] = title ?? nullString
@@ -172,7 +210,7 @@ fileprivate let tabName = "Extra Data"
     @param accountId id of the account
     @return
    */
-  class func bugsnagLogInvalidLicensorWith(accountId: String?) {
+  class func logInvalidLicensor(withAccountID accountId: String?) {
     var metadata = [AnyHashable : Any]()
     metadata["accountTypeID"] = accountId ?? nullString
     addAccountInfoToMetadata(&metadata)
@@ -185,7 +223,7 @@ fileprivate let tabName = "Extra Data"
       report.addMetadata(metadata, toTabWithName: tabName)
     })
   }
-  
+
   /**
     Report new app session
     @return
@@ -228,7 +266,7 @@ fileprivate let tabName = "Extra Data"
     @param library library for which the barcode is being created
     @return
    */
-  class func logExceptionToBugsnag(exception: NSException?, library: String?) {
+  class func logBarcodeException(_ exception: NSException?, library: String?) {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
@@ -239,6 +277,13 @@ fileprivate let tabName = "Extra Data"
       report.errorMessage = "\(library ?? nullString): \(exception?.name.rawValue ?? nullString). \(exception?.reason ?? nullString)"
       report.addMetadata(metadata, toTabWithName: tabName)
     })
+  }
+
+
+  /// Logs a generic exception.
+  /// - Parameter exception: The exception to be logged.
+  class func logException(_ exception: NSException) {
+    Bugsnag.notify(exception)
   }
   
   /**
@@ -302,5 +347,51 @@ fileprivate let tabName = "Extra Data"
     Bugsnag.notifyError(err, block: { report in
       report.addMetadata(metadata, toTabWithName: tabName)
     })
+  }
+
+
+  /// Report a generic error with a given message.
+  /// - Parameters:
+  ///   - error: The error that occurred.
+  ///   - message: The message to append for more context.
+  /// - Note: Only use from Objc. From Swift, use
+  /// report(:with:severity:groupingHash:context:metadata:).
+  @objc(reportError:message:)
+  class func objc_reportError(_ error: Error, message: String) {
+    report(error, with: message)
+  }
+
+
+  /// Logs a generic error with associated information.
+  /// - Parameters:
+  ///   - error: The error that occurred.
+  ///   - message: An optional message.
+  ///   - severity: How severe the error is.
+  ///   - groupingHash: A string to group similar errors.
+  ///   - context: A string identifying the page/VC where the error occurred.
+  ///   - metadata: Any additional metadata.
+  @objc(reportError:message:severity:groupingHash:context:metadata:)
+  class func report(_ error: Error,
+                    with message: String? = nil,
+                    severity: NYPLSeverity = .error,
+                    groupingHash: String? = nil,
+                    context: String? = nil,
+                    metadata: [AnyHashable : Any]? = nil) {
+    Bugsnag.notifyError(error) { report in
+      report.errorMessage = message
+      switch severity {
+      case .error:
+        report.severity = .error
+      case .warning:
+        report.severity = .warning
+      case .info:
+        report.severity = .info
+      }
+      report.groupingHash = groupingHash
+      report.context = context
+      if let metadata = metadata {
+        report.addMetadata(metadata, toTabWithName: tabName)
+      }
+    }
   }
 }

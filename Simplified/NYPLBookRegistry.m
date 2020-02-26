@@ -39,6 +39,7 @@ static NSString *const RecordsKey = @"records";
     sharedRegistry = [[self alloc] init];
     if(!sharedRegistry) {
       NYPLLOG(@"Failed to create shared registry.");
+      @throw NSMallocException;
     }
     
     [sharedRegistry load];

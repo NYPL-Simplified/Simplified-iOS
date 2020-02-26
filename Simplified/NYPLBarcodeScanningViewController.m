@@ -85,6 +85,9 @@
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+// TODO: remove after fixing SIMPLY-2590
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
   return toInterfaceOrientation == UIInterfaceOrientationPortrait;
 }
@@ -93,6 +96,7 @@
 	[super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 	[self applyOrientation];
 }
+#pragma clang diagnostic pop
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
 	[super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];

@@ -84,6 +84,12 @@ static const CGFloat kCollectionViewCrossfadeDuration = 0.3;
                                               action:@selector(didSelectSearch)];
     self.navigationItem.rightBarButtonItem.accessibilityLabel = NSLocalizedString(@"Search", nil);
     self.navigationItem.rightBarButtonItem.enabled = NO;
+
+    // prevent possible unusable Search box when going to Search page
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc]
+                                             initWithTitle:NSLocalizedString(@"Back", @"Back button text")
+                                             style:UIBarButtonItemStylePlain
+                                             target:nil action:nil];
     
     [self fetchOpenSearchDescription];
   }

@@ -6,7 +6,6 @@
 #import "NYPLSettingsAccountDetailViewController.h"
 
 #import "NYPLAccount.h"
-#import "NYPLBarcodeScanningViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
@@ -14,7 +13,6 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
-
 #import "NYPLSettingsEULAViewController.h"
 #import "NYPLRootTabBarController.h"
 #import "UIFont+NYPLSystemFontOverride.h"
@@ -22,6 +20,8 @@
 #import "SimplyE-Swift.h"
 #import "NYPLXML.h"
 #import "NYPLOPDS.h"
+#import "NYPLSettingsAccountURLSessionChallengeHandler.h"
+
 #import <PureLayout/PureLayout.h>
 #import <ZXingObjC/ZXingObjC.h>
 
@@ -44,7 +44,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellReportIssue
 };
 
-@interface NYPLSettingsAccountDetailViewController () <NSURLSessionDelegate, UITextFieldDelegate, UIAlertViewDelegate>
+@interface NYPLSettingsAccountDetailViewController () <UITextFieldDelegate, NYPLSettingsAccountUIDelegate>
 
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
@@ -59,7 +59,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic, copy) void (^completionHandler)(void);
 @property (nonatomic) BOOL hiddenPIN;
 @property (nonatomic) UITextField *PINTextField;
-@property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
 @property (nonatomic) UIButton *barcodeScanButton;
 @property (nonatomic) NSString *selectedAccountId;
@@ -74,6 +73,9 @@ typedef NS_ENUM(NSInteger, CellKind) {
 
 @property (nonatomic) UISwitch *syncSwitch;
 @property (nonatomic) BOOL permissionCheckIsInProgress;
+
+@property (nonatomic) NSURLSession *session;
+@property (nonatomic) NYPLSettingsAccountURLSessionChallengeHandler *urlSessionDelegate;
 
 @end
 
@@ -134,9 +136,12 @@ double const requestTimeoutInterval = 25.0;
   NSURLSessionConfiguration *const configuration =
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
 
+  _urlSessionDelegate = [[NYPLSettingsAccountURLSessionChallengeHandler alloc]
+                         initWithUIDelegate:self];
+
   self.session = [NSURLSession
                   sessionWithConfiguration:configuration
-                  delegate:self
+                  delegate:_urlSessionDelegate
                   delegateQueue:[NSOperationQueue mainQueue]];
   
   return self;
@@ -361,6 +366,18 @@ double const requestTimeoutInterval = 25.0;
   }];
 }
 
+#pragma mark - NYPLSettingsAccountUIDelegate
+
+- (NSString *)username
+{
+  return self.usernameTextField.text;
+}
+
+- (NSString *)pin
+{
+  return self.PINTextField.text;
+}
+
 #pragma mark - Account SignIn/SignOut
 
 - (void)logIn
@@ -415,7 +432,7 @@ double const requestTimeoutInterval = 25.0;
        NSError *pDocError = nil;
        UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
        if (!pDoc) {
-         [NYPLBugsnagLogs reportUserProfileDocumentErrorWithError:pDocError];
+         [NYPLErrorLogger reportUserProfileDocumentErrorWithError:pDocError];
          [self showLogoutAlertWithError:pDocError responseCode:statusCode];
          [self removeActivityTitle];
          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
@@ -479,7 +496,7 @@ double const requestTimeoutInterval = 25.0;
   NSDictionary *licensor = [self.selectedNYPLAccount licensor];
   if (!licensor) {
     NYPLLOG(@"No Licensor available to deauthorize device. Signing out NYPLAccount creds anyway.");
-    [NYPLBugsnagLogs bugsnagLogInvalidLicensorWithAccountId:self.selectedAccountId];
+    [NYPLErrorLogger logInvalidLicensorWithAccountID:self.selectedAccountId];
     afterDeauthorization();
     return;
   }
@@ -506,7 +523,7 @@ double const requestTimeoutInterval = 25.0;
      if(!success) {
        // Even though we failed, let the user continue to log out.
        // The most likely reason is a user changing their PIN.
-       [NYPLBugsnagLogs deauthorizationError];
+       [NYPLErrorLogger deauthorizationError];
      }
      else {
        NYPLLOG(@"***Successful DRM Deactivation***");
@@ -526,113 +543,129 @@ double const requestTimeoutInterval = 25.0;
 
   request.timeoutInterval = requestTimeoutInterval;
 
+  __weak __auto_type weakSelf = self;
   NSURLSessionDataTask *const task =
   [self.session
    dataTaskWithRequest:request
    completionHandler:^(NSData *data,
                        NSURLResponse *const response,
                        NSError *const error) {
-      NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
-     
-      if (statusCode == 200) {
+    NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
+
+    if (statusCode == 200) {
 #if defined(FEATURE_DRM_CONNECTOR)
-        NSError *pDocError = nil;
-        UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
-        if (!pDoc) {
-          [NYPLBugsnagLogs reportUserProfileDocumentErrorWithError:pDocError];
-          [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Error parsing user profile doc" }]];
-          return;
-        } else {
-          if (pDoc.authorizationIdentifier) {
-           [[NYPLAccount sharedAccount:self.selectedAccountId] setAuthorizationIdentifier:pDoc.authorizationIdentifier];
-          } else {
-           NYPLLOG(@"Authorization ID (Barcode String) was nil.");
-          }
-          if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
-           [self.selectedNYPLAccount setLicensor:[pDoc.drm[0] licensor]];
-          } else {
-           NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
-           [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Trouble locating DRMs in profile doc" }]];
-           return;
-          }
-
-          NSMutableArray *licensorItems = [[pDoc.drm[0].clientToken stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
-          NSString *tokenPassword = [licensorItems lastObject];
-          [licensorItems removeLastObject];
-          NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
-
-          NYPLLOG(@"***DRM Auth/Activation Attempt***");
-          NYPLLOG_F(@"\nLicensor: %@\n",[pDoc.drm[0] licensor]);
-          NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
-          NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
-
-          [[NYPLADEPT sharedInstance]
-           authorizeWithVendorID:[self.selectedNYPLAccount licensor][@"vendor"]
-           username:tokenUsername
-           password:tokenPassword
-           completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
-            NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
-            NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
-            NYPLLOG_F(@"UserID: %@\n",userID);
-            NYPLLOG_F(@"DeviceID: %@\n",deviceID);
-            NYPLLOG(@"***DRM Auth/Activation Completion***");
-            
-            if (success) {
-              [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                [self.selectedNYPLAccount setUserID:userID];
-                [self.selectedNYPLAccount setDeviceID:deviceID];
-              }];
-            } else {
-              [NYPLBugsnagLogs reportLocalAuthFailedWithError:error libraryName:self.selectedAccount.name];
-            }
-            
-            [self authorizationAttemptDidFinish:success error:error];
-          }];
-        }
+      [weakSelf processCredsValidationSuccessUsingDRMWithData:data];
 #else
-        [self authorizationAttemptDidFinish:YES error:nil];
+      [weakSelf authorizationAttemptDidFinish:YES error:nil];
 #endif
-        return;
-      }
-     
-     [self removeActivityTitle];
-     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-     
-     if (error.code == NSURLErrorCancelled) {
-       // We cancelled the request when asked to answer the server's challenge a second time
-       // because we don't have valid credentials.
-       self.PINTextField.text = @"";
-       [self textFieldsDidChange];
-       [self.PINTextField becomeFirstResponder];
-     }
-
-     // Report event to bugsnag that login failed
-     [NYPLBugsnagLogs reportRemoteLoginErrorWithUrl:request.URL response:response error:error libraryName:self.selectedAccount.name];
-    
-     if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
-       // TODO: Maybe do something special for when we supposedly didn't supply credentials
-     } else if ([response.MIMEType isEqualToString:@"application/problem+json"] || [response.MIMEType isEqualToString:@"application/api-problem+json"]) {
-       NSError *problemDocumentParseError = nil;
-       NYPLProblemDocument *problemDocument = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
-       if (problemDocumentParseError) {
-         [NYPLBugsnagLogs logProblemDocumentParseErrorWithError:problemDocumentParseError url:request.URL];
-       } else if (problemDocument) {
-         UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:@"SettingsAccountViewControllerLoginFailed"];
-         [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
-         [[NYPLRootTabBarController sharedController] safelyPresentViewController: alert animated:YES completion:nil];
-         return; // Short-circuit!! Early return
-       }
-     }
-     
-     // Fallthrough case: show alert
-     [[NYPLRootTabBarController sharedController] safelyPresentViewController:
-      [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
-                                                                     animated:YES
-                                                                   completion:nil];
-     return;
-   }];
+    } else {
+      [weakSelf processCredsValidationFailureWithData:data
+                                                error:error
+                                           forRequest:request
+                                             response:response];
+    }
+  }];
   
   [task resume];
+}
+
+- (void)processCredsValidationSuccessUsingDRMWithData:(NSData*)data
+{
+  NSError *pDocError = nil;
+  UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
+  if (!pDoc) {
+    [NYPLErrorLogger reportUserProfileDocumentErrorWithError:pDocError];
+    [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Error parsing user profile doc" }]];
+    return;
+  }
+
+  if (pDoc.authorizationIdentifier) {
+    [[NYPLAccount sharedAccount:self.selectedAccountId] setAuthorizationIdentifier:pDoc.authorizationIdentifier];
+  } else {
+    NYPLLOG(@"Authorization ID (Barcode String) was nil.");
+  }
+
+  if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
+    [self.selectedNYPLAccount setLicensor:[pDoc.drm[0] licensor]];
+  } else {
+    NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
+    [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Trouble locating DRMs in profile doc" }]];
+    return;
+  }
+
+  NSMutableArray *licensorItems = [[pDoc.drm[0].clientToken stringByReplacingOccurrencesOfString:@"\n" withString:@""] componentsSeparatedByString:@"|"].mutableCopy;
+  NSString *tokenPassword = [licensorItems lastObject];
+  [licensorItems removeLastObject];
+  NSString *tokenUsername = [licensorItems componentsJoinedByString:@"|"];
+
+  NYPLLOG(@"***DRM Auth/Activation Attempt***");
+  NYPLLOG_F(@"\nLicensor: %@\n",[pDoc.drm[0] licensor]);
+  NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
+  NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
+
+  [[NYPLADEPT sharedInstance]
+   authorizeWithVendorID:[self.selectedNYPLAccount licensor][@"vendor"]
+   username:tokenUsername
+   password:tokenPassword
+   completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
+    NYPLLOG_F(@"Activation Success: %@\n", success ? @"Yes" : @"No");
+    NYPLLOG_F(@"Error: %@\n",error.localizedDescription);
+    NYPLLOG_F(@"UserID: %@\n",userID);
+    NYPLLOG_F(@"DeviceID: %@\n",deviceID);
+    NYPLLOG(@"***DRM Auth/Activation Completion***");
+
+    if (success) {
+      [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [self.selectedNYPLAccount setUserID:userID];
+        [self.selectedNYPLAccount setDeviceID:deviceID];
+      }];
+    } else {
+      [NYPLErrorLogger reportLocalAuthFailedWithError:error libraryName:self.selectedAccount.name];
+    }
+
+    [self authorizationAttemptDidFinish:success error:error];
+  }];
+}
+
+- (void)processCredsValidationFailureWithData:(NSData * const)data
+                                        error:(NSError * const)error
+                                   forRequest:(NSURLRequest * const)request
+                                     response:(NSURLResponse * const)response
+{
+  [self removeActivityTitle];
+  [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+
+  if (error.code == NSURLErrorCancelled) {
+    // We cancelled the request when asked to answer the server's challenge a second time
+    // because we don't have valid credentials.
+    self.PINTextField.text = @"";
+    [self textFieldsDidChange];
+    [self.PINTextField becomeFirstResponder];
+  }
+
+  // Report event that login failed
+  [NYPLErrorLogger reportRemoteLoginErrorWithUrl:request.URL response:response error:error libraryName:self.selectedAccount.name];
+
+  if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
+    // TODO: Maybe do something special for when we supposedly didn't supply credentials
+  } else if ([response.MIMEType isEqualToString:@"application/problem+json"] || [response.MIMEType isEqualToString:@"application/api-problem+json"]) {
+    NSError *problemDocumentParseError = nil;
+    NYPLProblemDocument *problemDocument = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
+    if (problemDocumentParseError) {
+      [NYPLErrorLogger logProblemDocumentParseErrorWithError:problemDocumentParseError url:request.URL];
+    } else if (problemDocument) {
+      UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:@"SettingsAccountViewControllerLoginFailed"];
+      [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
+      [[NYPLRootTabBarController sharedController] safelyPresentViewController: alert animated:YES completion:nil];
+      return; // Short-circuit!! Early return
+    }
+  }
+
+  // Fallthrough case: show alert
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:
+   [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
+                                                                  animated:YES
+                                                                completion:nil];
 }
 
 - (void)showLogoutAlertWithError:(NSError *)error responseCode:(NSInteger)code
@@ -1268,20 +1301,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (BOOL)textFieldShouldBeginEditing:(__unused UITextField *)textField
 {
   return ![self.selectedNYPLAccount hasBarcodeAndPIN];
-}
-
-#pragma mark NSURLSessionDelegate
-
-- (void)URLSession:(__attribute__((unused)) NSURLSession *)session
-              task:(__attribute__((unused)) NSURLSessionTask *)task
-didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
- completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
-                             NSURLCredential *credential))completionHandler
-{
-  NYPLBasicAuthCustomHandler(challenge,
-                             completionHandler,
-                             self.usernameTextField.text,
-                             self.PINTextField.text);
 }
 
 #pragma mark UITextFieldDelegate
