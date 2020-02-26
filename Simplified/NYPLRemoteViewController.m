@@ -159,7 +159,7 @@
     NYPLProblemDocument *pDoc = [NYPLProblemDocument fromData:self.data error:&problemDocumentParseError];
     UIAlertController *alert;
     if (problemDocumentParseError) {
-      [NYPLBugsnagLogs logProblemDocumentParseErrorWithError:problemDocumentParseError url:[self.response URL]];
+      [NYPLErrorLogger logProblemDocumentParseErrorWithError:problemDocumentParseError url:[self.response URL]];
       alert = [NYPLAlertUtils alertWithTitle:@"Error" message:@"Unknown error parsing problem document"];
     } else {
       alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
@@ -209,7 +209,7 @@
   
   if (connection.currentRequest.URL) {
     self.reloadView.hidden = NO;
-    [NYPLBugsnagLogs catalogLoadErrorWithError:error url:self.URL];
+    [NYPLErrorLogger catalogLoadErrorWithError:error url:self.URL];
   }
 
   self.connection = nil;

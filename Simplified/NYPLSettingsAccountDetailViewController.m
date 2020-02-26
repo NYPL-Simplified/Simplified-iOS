@@ -432,7 +432,7 @@ double const requestTimeoutInterval = 25.0;
        NSError *pDocError = nil;
        UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
        if (!pDoc) {
-         [NYPLBugsnagLogs reportUserProfileDocumentErrorWithError:pDocError];
+         [NYPLErrorLogger reportUserProfileDocumentErrorWithError:pDocError];
          [self showLogoutAlertWithError:pDocError responseCode:statusCode];
          [self removeActivityTitle];
          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
@@ -496,7 +496,7 @@ double const requestTimeoutInterval = 25.0;
   NSDictionary *licensor = [self.selectedNYPLAccount licensor];
   if (!licensor) {
     NYPLLOG(@"No Licensor available to deauthorize device. Signing out NYPLAccount creds anyway.");
-    [NYPLBugsnagLogs bugsnagLogInvalidLicensorWithAccountId:self.selectedAccountId];
+    [NYPLErrorLogger logInvalidLicensorWithAccountID:self.selectedAccountId];
     afterDeauthorization();
     return;
   }
@@ -523,7 +523,7 @@ double const requestTimeoutInterval = 25.0;
      if(!success) {
        // Even though we failed, let the user continue to log out.
        // The most likely reason is a user changing their PIN.
-       [NYPLBugsnagLogs deauthorizationError];
+       [NYPLErrorLogger deauthorizationError];
      }
      else {
        NYPLLOG(@"***Successful DRM Deactivation***");
@@ -574,7 +574,7 @@ double const requestTimeoutInterval = 25.0;
   NSError *pDocError = nil;
   UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
   if (!pDoc) {
-    [NYPLBugsnagLogs reportUserProfileDocumentErrorWithError:pDocError];
+    [NYPLErrorLogger reportUserProfileDocumentErrorWithError:pDocError];
     [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Error parsing user profile doc" }]];
     return;
   }
@@ -620,7 +620,7 @@ double const requestTimeoutInterval = 25.0;
         [self.selectedNYPLAccount setDeviceID:deviceID];
       }];
     } else {
-      [NYPLBugsnagLogs reportLocalAuthFailedWithError:error libraryName:self.selectedAccount.name];
+      [NYPLErrorLogger reportLocalAuthFailedWithError:error libraryName:self.selectedAccount.name];
     }
 
     [self authorizationAttemptDidFinish:success error:error];
@@ -643,8 +643,8 @@ double const requestTimeoutInterval = 25.0;
     [self.PINTextField becomeFirstResponder];
   }
 
-  // Report event to bugsnag that login failed
-  [NYPLBugsnagLogs reportRemoteLoginErrorWithUrl:request.URL response:response error:error libraryName:self.selectedAccount.name];
+  // Report event that login failed
+  [NYPLErrorLogger reportRemoteLoginErrorWithUrl:request.URL response:response error:error libraryName:self.selectedAccount.name];
 
   if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
     // TODO: Maybe do something special for when we supposedly didn't supply credentials
@@ -652,7 +652,7 @@ double const requestTimeoutInterval = 25.0;
     NSError *problemDocumentParseError = nil;
     NYPLProblemDocument *problemDocument = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
     if (problemDocumentParseError) {
-      [NYPLBugsnagLogs logProblemDocumentParseErrorWithError:problemDocumentParseError url:request.URL];
+      [NYPLErrorLogger logProblemDocumentParseErrorWithError:problemDocumentParseError url:request.URL];
     } else if (problemDocument) {
       UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:@"SettingsAccountViewControllerLoginFailed"];
       [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
