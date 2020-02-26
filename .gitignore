@@ -12,3 +12,5 @@ Simplified/APIKeys.swift
 AudioEngine.json
 Carthage
 bugsnag-dsym-upload.rb
+GoogleService-Info.plist
+

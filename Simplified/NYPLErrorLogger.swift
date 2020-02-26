@@ -5,6 +5,7 @@
 
 import Foundation
 import Bugsnag
+import Firebase
 
 fileprivate let simplyeDomain = "org.nypl.labs.SimplyE"
 fileprivate let nullString = "null"
@@ -33,6 +34,7 @@ fileprivate let tabName = "Extra Data"
     #endif
 
     Bugsnag.start(with: config)
+    FirebaseApp.configure()
   }
 
   private class func releaseStageIsBeta() -> Bool {

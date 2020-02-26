@@ -21,6 +21,7 @@ fi
 AE_BUILD_CONFIG=$1
 
 cp ../Certificates/SimplyE/iOS/AudioEngine.json ../Certificates/SimplyE/iOS/bugsnag-dsym-upload.rb .
+cp ../Certificates/SimplyE/iOS/GoogleService-Info.plist .
 cp ../Certificates/SimplyE/iOS/APIKeys.swift Simplified/
 cp ../Certificates/SimplyE/iOS/ReaderClientCertProduction.sig Simplified/ReaderClientCert.sig
 build-carthage.sh $AE_BUILD_CONFIG

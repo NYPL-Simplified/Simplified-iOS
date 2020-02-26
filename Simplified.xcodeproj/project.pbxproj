@@ -113,7 +113,7 @@
 		145DA4922154464F0055DB93 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145DA4912154464F0055DB93 /* SQLite.framework */; };
 		145DA49421544A3F0055DB93 /* NYPLCardCreator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145DA49321544A3F0055DB93 /* NYPLCardCreator.framework */; };
 		145DA49621544A430055DB93 /* PureLayout.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145DA49521544A420055DB93 /* PureLayout.framework */; };
-		148B1C2D21768EAA00FF64AB /* NYPLAEToolkit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C1721710C6800FF64AB /* NYPLAEToolkit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		148B1C2D21768EAA00FF64AB /* NYPLAEToolkit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C1721710C6800FF64AB /* NYPLAEToolkit.framework */; };
 		148B1C2E21768EAA00FF64AB /* NYPLAudiobookToolkit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C1C21710C6800FF64AB /* NYPLAudiobookToolkit.framework */; };
 		148B1C392176900F00FF64AB /* AudioEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 148B1C342176900E00FF64AB /* AudioEngine.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */; };
@@ -164,7 +164,23 @@
 		7307A5F423FF2A6000DE53DE /* NYPLStringAdditionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7307A5F323FF2A6000DE53DE /* NYPLStringAdditionsTests.swift */; };
 		7327A89323EE017300954748 /* NYPLMainThreadChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7327A89223EE017300954748 /* NYPLMainThreadChecker.swift */; };
 		732F929323ECB51F0099244C /* NYPLBackgroundExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */; };
+		738EF2D02405E38800F388FB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 738EF2CB2405E38800F388FB /* GoogleService-Info.plist */; };
+		738EF2DB2405EA6000F388FB /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D22405EA5F00F388FB /* Firebase.framework */; };
+		738EF2DC2405EA6000F388FB /* FirebaseCoreDiagnostics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D32405EA5F00F388FB /* FirebaseCoreDiagnostics.framework */; };
+		738EF2DD2405EA6000F388FB /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D42405EA5F00F388FB /* FirebaseCore.framework */; };
+		738EF2DE2405EA6000F388FB /* FirebaseAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D52405EA5F00F388FB /* FirebaseAnalytics.framework */; };
+		738EF2DF2405EA6000F388FB /* FirebaseInstanceID.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D62405EA6000F388FB /* FirebaseInstanceID.framework */; };
+		738EF2E02405EA6000F388FB /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D72405EA6000F388FB /* nanopb.framework */; };
+		738EF2E12405EA6000F388FB /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D82405EA6000F388FB /* GoogleUtilities.framework */; };
+		738EF2E22405EA6000F388FB /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D92405EA6000F388FB /* GoogleAppMeasurement.framework */; };
+		738EF2E32405EA6000F388FB /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2DA2405EA6000F388FB /* FIRAnalyticsConnector.framework */; };
+		738EF2E72405EBAD00F388FB /* GoogleDataTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */; };
+		738EF2E92405EBC100F388FB /* GoogleDataTransportCCTSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */; };
+		738EF2EA2405EC1100F388FB /* FirebaseInstallations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */; };
+		738EF2EC2405EC5900F388FB /* PromisesObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2EB2405EC5900F388FB /* PromisesObjC.framework */; };
 		73A3EAED2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A3EAEC2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m */; };
+		73DA43AB2404CA2800985482 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73DA43A92404CA2800985482 /* Fabric.framework */; };
+		73DA43AC2404CA2800985482 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73DA43AA2404CA2800985482 /* Crashlytics.framework */; };
 		841B55431B740F2700FAC1AF /* NYPLSettingsEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */; };
 		84B7A3461B84E8FE00584FB2 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3431B84E8FE00584FB2 /* OFL.txt */; };
 		84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3441B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf */; };
@@ -539,8 +555,33 @@
 		7307A5F323FF2A6000DE53DE /* NYPLStringAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLStringAdditionsTests.swift; sourceTree = "<group>"; };
 		7327A89223EE017300954748 /* NYPLMainThreadChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLMainThreadChecker.swift; sourceTree = "<group>"; };
 		732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBackgroundExecutor.swift; sourceTree = "<group>"; };
+		738EF2CB2405E38800F388FB /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
+		738EF2D12405E3D900F388FB /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
+		738EF2D22405EA5F00F388FB /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Firebase.framework; path = Carthage/Build/iOS/Firebase.framework; sourceTree = "<group>"; };
+		738EF2D32405EA5F00F388FB /* FirebaseCoreDiagnostics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCoreDiagnostics.framework; path = Carthage/Build/iOS/FirebaseCoreDiagnostics.framework; sourceTree = "<group>"; };
+		738EF2D42405EA5F00F388FB /* FirebaseCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseCore.framework; path = Carthage/Build/iOS/FirebaseCore.framework; sourceTree = "<group>"; };
+		738EF2D52405EA5F00F388FB /* FirebaseAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseAnalytics.framework; path = Carthage/Build/iOS/FirebaseAnalytics.framework; sourceTree = "<group>"; };
+		738EF2D62405EA6000F388FB /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstanceID.framework; path = Carthage/Build/iOS/FirebaseInstanceID.framework; sourceTree = "<group>"; };
+		738EF2D72405EA6000F388FB /* nanopb.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = nanopb.framework; path = Carthage/Build/iOS/nanopb.framework; sourceTree = "<group>"; };
+		738EF2D82405EA6000F388FB /* GoogleUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleUtilities.framework; path = Carthage/Build/iOS/GoogleUtilities.framework; sourceTree = "<group>"; };
+		738EF2D92405EA6000F388FB /* GoogleAppMeasurement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleAppMeasurement.framework; path = Carthage/Build/iOS/GoogleAppMeasurement.framework; sourceTree = "<group>"; };
+		738EF2DA2405EA6000F388FB /* FIRAnalyticsConnector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FIRAnalyticsConnector.framework; path = Carthage/Build/iOS/FIRAnalyticsConnector.framework; sourceTree = "<group>"; };
+		738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstallations.framework; path = Carthage/Build/iOS/FirebaseInstallations.framework; sourceTree = "<group>"; };
+		738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleDataTransport.framework; path = Carthage/Build/iOS/GoogleDataTransport.framework; sourceTree = "<group>"; };
+		738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleDataTransportCCTSupport.framework; path = Carthage/Build/iOS/GoogleDataTransportCCTSupport.framework; sourceTree = "<group>"; };
+		738EF2EB2405EC5900F388FB /* PromisesObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromisesObjC.framework; path = Carthage/Build/iOS/PromisesObjC.framework; sourceTree = "<group>"; };
 		73A3EAEB2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsAccountURLSessionChallengeHandler.h; sourceTree = "<group>"; };
 		73A3EAEC2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAccountURLSessionChallengeHandler.m; sourceTree = "<group>"; };
+		73DA43A02404B4A900985482 /* Crashlytics.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Crashlytics.json; sourceTree = SOURCE_ROOT; };
+		73DA43A12404B4A900985482 /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = SOURCE_ROOT; };
+		73DA43A32404B92E00985482 /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = SOURCE_ROOT; };
+		73DA43A42404B95B00985482 /* AudioEngine.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AudioEngine.json; sourceTree = SOURCE_ROOT; };
+		73DA43A52404BA5500985482 /* build-3rd-parties-dependencies.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-3rd-parties-dependencies.sh"; sourceTree = SOURCE_ROOT; };
+		73DA43A62404BA5600985482 /* build-carthage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-carthage.sh"; sourceTree = SOURCE_ROOT; };
+		73DA43A72404BA5600985482 /* build_curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_curl.sh; sourceTree = SOURCE_ROOT; };
+		73DA43A82404BA5600985482 /* build-openssl-curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-openssl-curl.sh"; sourceTree = SOURCE_ROOT; };
+		73DA43A92404CA2800985482 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Carthage/Build/iOS/Fabric.framework; sourceTree = "<group>"; };
+		73DA43AA2404CA2800985482 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Carthage/Build/iOS/Crashlytics.framework; sourceTree = "<group>"; };
 		841B55411B740F2700FAC1AF /* NYPLSettingsEULAViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsEULAViewController.h; sourceTree = "<group>"; };
 		841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsEULAViewController.m; sourceTree = "<group>"; };
 		84B7A3431B84E8FE00584FB2 /* OFL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
@@ -680,12 +721,27 @@
 				119503E91993F919009FB788 /* libz.dylib in Frameworks */,
 				119503E71993F914009FB788 /* libxml2.dylib in Frameworks */,
 				145DA48E215441A70055DB93 /* ZXingObjC.framework in Frameworks */,
-				145DA4902154429E0055DB93 /* Bugsnag.framework in Frameworks */,
 				145DA49421544A3F0055DB93 /* NYPLCardCreator.framework in Frameworks */,
 				145DA49621544A430055DB93 /* PureLayout.framework in Frameworks */,
 				145DA4922154464F0055DB93 /* SQLite.framework in Frameworks */,
 				148B1C2D21768EAA00FF64AB /* NYPLAEToolkit.framework in Frameworks */,
 				148B1C2E21768EAA00FF64AB /* NYPLAudiobookToolkit.framework in Frameworks */,
+				145DA4902154429E0055DB93 /* Bugsnag.framework in Frameworks */,
+				738EF2DB2405EA6000F388FB /* Firebase.framework in Frameworks */,
+				738EF2DC2405EA6000F388FB /* FirebaseCoreDiagnostics.framework in Frameworks */,
+				738EF2DD2405EA6000F388FB /* FirebaseCore.framework in Frameworks */,
+				738EF2DE2405EA6000F388FB /* FirebaseAnalytics.framework in Frameworks */,
+				738EF2DF2405EA6000F388FB /* FirebaseInstanceID.framework in Frameworks */,
+				738EF2E02405EA6000F388FB /* nanopb.framework in Frameworks */,
+				738EF2E12405EA6000F388FB /* GoogleUtilities.framework in Frameworks */,
+				738EF2E22405EA6000F388FB /* GoogleAppMeasurement.framework in Frameworks */,
+				738EF2E32405EA6000F388FB /* FIRAnalyticsConnector.framework in Frameworks */,
+				738EF2E72405EBAD00F388FB /* GoogleDataTransport.framework in Frameworks */,
+				738EF2E92405EBC100F388FB /* GoogleDataTransportCCTSupport.framework in Frameworks */,
+				738EF2EA2405EC1100F388FB /* FirebaseInstallations.framework in Frameworks */,
+				738EF2EC2405EC5900F388FB /* PromisesObjC.framework in Frameworks */,
+				73DA43AB2404CA2800985482 /* Fabric.framework in Frameworks */,
+				73DA43AC2404CA2800985482 /* Crashlytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1037,6 +1093,21 @@
 		A823D80F192BABA400B55DE2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				738EF2EB2405EC5900F388FB /* PromisesObjC.framework */,
+				738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */,
+				738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */,
+				738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */,
+				738EF2DA2405EA6000F388FB /* FIRAnalyticsConnector.framework */,
+				738EF2D22405EA5F00F388FB /* Firebase.framework */,
+				738EF2D52405EA5F00F388FB /* FirebaseAnalytics.framework */,
+				738EF2D42405EA5F00F388FB /* FirebaseCore.framework */,
+				738EF2D32405EA5F00F388FB /* FirebaseCoreDiagnostics.framework */,
+				738EF2D62405EA6000F388FB /* FirebaseInstanceID.framework */,
+				738EF2D92405EA6000F388FB /* GoogleAppMeasurement.framework */,
+				738EF2D82405EA6000F388FB /* GoogleUtilities.framework */,
+				738EF2D72405EA6000F388FB /* nanopb.framework */,
+				73DA43AA2404CA2800985482 /* Crashlytics.framework */,
+				73DA43A92404CA2800985482 /* Fabric.framework */,
 				A9AD993F2225D4AF009FF54A /* PDFRendererProvider.framework */,
 				148B1C342176900E00FF64AB /* AudioEngine.framework */,
 				148B1C1721710C6800FF64AB /* NYPLAEToolkit.framework */,
@@ -1160,10 +1231,10 @@
 				145798F5215BE9E300F68AFD /* ProblemReportEmail.swift */,
 				119504051994061E009FB788 /* Reader */,
 				11C5DCEE1976D19E005A9945 /* Settings */,
-				7327A88D23EE00FE00954748 /* Utilities */,
-				A823D817192BABA400B55DE2 /* Supporting Files */,
 				2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */,
 				2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */,
+				7327A88D23EE00FE00954748 /* Utilities */,
+				A823D817192BABA400B55DE2 /* Supporting Files */,
 			);
 			path = Simplified;
 			sourceTree = "<group>";
@@ -1185,6 +1256,16 @@
 				2D382BCF1D08B1F5002C423D /* SimplyE-Bridging-Header.h */,
 				E61D7F631F6AC78B0091C781 /* SimplyE.entitlements */,
 				2D6256901D41582A0080A81F /* software-licenses.html */,
+				738EF2D12405E3D900F388FB /* .gitignore */,
+				73DA43A72404BA5600985482 /* build_curl.sh */,
+				73DA43A52404BA5500985482 /* build-3rd-parties-dependencies.sh */,
+				73DA43A62404BA5600985482 /* build-carthage.sh */,
+				73DA43A82404BA5600985482 /* build-openssl-curl.sh */,
+				73DA43A42404B95B00985482 /* AudioEngine.json */,
+				73DA43A12404B4A900985482 /* Cartfile */,
+				73DA43A32404B92E00985482 /* Cartfile.resolved */,
+				73DA43A02404B4A900985482 /* Crashlytics.json */,
+				738EF2CB2405E38800F388FB /* GoogleService-Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1308,6 +1389,7 @@
 				A823D80B192BABA400B55DE2 /* Resources */,
 				145DA48C215441260055DB93 /* Copy Frameworks (Carthage) */,
 				FE8719C55955B22F68EDF819 /* Upload Bugsnag dSYM */,
+				73DA43AD2404CA9500985482 /* Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -1461,6 +1543,7 @@
 				11C113D219F842BE005B3F63 /* host_app_feedback.js in Resources */,
 				5A6929241B95C8B400FB4C10 /* readium-shared-js_all.js.bundles.js in Resources */,
 				84B7A3481B84E8FE00584FB2 /* OpenDyslexic3-Regular.ttf in Resources */,
+				738EF2D02405E38800F388FB /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1502,6 +1585,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+		};
+		73DA43AD2404CA9500985482 /* Crashlytics */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+				"${BUILT_PRODUCTS_DIR}/${FULL_PRODUCT_NAME}/GoogleService-Info.plist",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+			);
+			name = Crashlytics;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" == \"Release\" ]; then\n  \"${PROJECT_DIR}/Carthage/Build/iOS/Fabric.framework/upload-symbols\" -gsp \"$SCRIPT_INPUT_FILE_1\" -p ios \"$SCRIPT_INPUT_FILE_2\"\nelse\n  \"${PROJECT_DIR}/Carthage/Build/iOS/Fabric.framework/run\"\nfi\n";
 		};
 		FE8719C55955B22F68EDF819 /* Upload Bugsnag dSYM */ = {
 			isa = PBXShellScriptBuildPhase;
