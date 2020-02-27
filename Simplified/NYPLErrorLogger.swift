@@ -68,13 +68,14 @@ fileprivate let nullString = "null"
   // MARK:- Generic helpers
 
   /**
-   Helper method for other logging functions that adds logfile to our
+   Helper method for other logging functions that adds logs to our
    crash reporting system.
-   - parameter metadata: report metadata dictionary
    */
-  class func addLogfileToMetadata(_ metadata: inout [AnyHashable : Any]) {
+  private class func reportLogs() {
     Log.logQueue.sync {
-      metadata["log"] = (try? String.init(contentsOfFile: Log.logUrl.path, encoding: .utf8)) ?? ""
+      if let logs = (try? String(contentsOfFile: Log.logUrl.path, encoding: .utf8)) {
+        CLSNSLogv("%@",  getVaList([logs]))
+      }
     }
   }
   
@@ -133,7 +134,7 @@ fileprivate let nullString = "null"
     metadata["bookTitle"] = book?.title ?? nullString
     metadata["revokeLink"] = book?.revokeURL?.absoluteString ?? nullString
     addAccountInfoToMetadata(&metadata)
-    addLogfileToMetadata(&metadata)
+    reportLogs()
     let userInfo = additionalInfo(
       severity: .warning,
       message: "The book identifier was unexpectedly nil when attempting to return.",
@@ -157,7 +158,7 @@ fileprivate let nullString = "null"
     metadata["bookIdentifier"] = book?.identifier ?? nullString
     metadata["bookTitle"] = book?.title ?? nullString
     addAccountInfoToMetadata(&metadata)
-    addLogfileToMetadata(&metadata)
+    reportLogs()
     let userInfo = additionalInfo(
       severity: .warning,
       message: message,
@@ -190,7 +191,7 @@ fileprivate let nullString = "null"
     metadata["renderer"] = location?.renderer ?? nullString
     metadata["openPageRequest idref"] = locationDictionary?["idref"] ?? nullString
     addAccountInfoToMetadata(&metadata)
-    addLogfileToMetadata(&metadata)
+    reportLogs()
     
     let userInfo = additionalInfo(
       severity: .warning,
@@ -209,7 +210,7 @@ fileprivate let nullString = "null"
   class func deauthorizationError() {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
-    addLogfileToMetadata(&metadata)
+    reportLogs()
     
     let userInfo = additionalInfo(
       severity: .info,
@@ -244,7 +245,7 @@ fileprivate let nullString = "null"
       metadata["responseMime"] = httpResponse.mimeType ?? nullString
     }
     addAccountInfoToMetadata(&metadata)
-    addLogfileToMetadata(&metadata)
+    reportLogs()
 
     let userInfo = additionalInfo(
       severity: .info,
@@ -277,7 +278,7 @@ fileprivate let nullString = "null"
     metadata["libraryName"] = libraryName ?? nullString
     metadata["errorDescription"] = error?.localizedDescription ?? nullString
     addAccountInfoToMetadata(&metadata)
-    addLogfileToMetadata(&metadata)
+    reportLogs()
     
     let userInfo = additionalInfo(
       severity: .info,
@@ -310,7 +311,7 @@ fileprivate let nullString = "null"
     var metadata = [AnyHashable : Any]()
     metadata["accountTypeID"] = accountId ?? nullString
     addAccountInfoToMetadata(&metadata)
-    addLogfileToMetadata(&metadata)
+    reportLogs()
     
     let userInfo = additionalInfo(
       severity: .warning,
@@ -330,7 +331,7 @@ fileprivate let nullString = "null"
   class func reportNewAppLaunch() {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
-    addLogfileToMetadata(&metadata)
+    reportLogs()
     
     let userInfo = additionalInfo(severity: .info, metadata: metadata)
     let err = NSError(domain: simplyeDomain,
@@ -367,7 +368,7 @@ fileprivate let nullString = "null"
     var metadata = [AnyHashable : Any]()
     metadata["loanUrl"] = AccountsManager.shared.currentAccount?.loansUrl ?? nullString
     addAccountInfoToMetadata(&metadata)
-    addLogfileToMetadata(&metadata)
+    reportLogs()
 
     let userInfo = additionalInfo(
       severity: .error,
@@ -388,7 +389,7 @@ fileprivate let nullString = "null"
   class func logBarcodeException(_ exception: NSException?, library: String?) {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
-    addLogfileToMetadata(&metadata)
+    reportLogs()
     
     let userInfo = additionalInfo(
       severity: .info,
@@ -413,7 +414,7 @@ fileprivate let nullString = "null"
     metadata["url"] = url ?? nullString
     metadata["errorDescription"] = error.localizedDescription
     addAccountInfoToMetadata(&metadata)
-    addLogfileToMetadata(&metadata)
+    reportLogs()
 
     let userInfo = additionalInfo(
       severity: .error,
@@ -435,7 +436,7 @@ fileprivate let nullString = "null"
     metadata["url"] = url ?? nullString
     metadata["errorDescription"] = error.localizedDescription
     addAccountInfoToMetadata(&metadata)
-    addLogfileToMetadata(&metadata)
+    reportLogs()
     
     let userInfo = additionalInfo(
       severity: .error,
@@ -457,7 +458,7 @@ fileprivate let nullString = "null"
     var metadata = [AnyHashable : Any]()
     metadata["errorDescription"] = error?.localizedDescription ?? nullString
     addAccountInfoToMetadata(&metadata)
-    addLogfileToMetadata(&metadata)
+    reportLogs()
 
     let userInfo = additionalInfo(severity: .error, metadata: metadata)
     Crashlytics.sharedInstance().recordError(err,
