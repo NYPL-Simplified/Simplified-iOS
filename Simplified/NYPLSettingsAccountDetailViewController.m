@@ -652,7 +652,8 @@ double const requestTimeoutInterval = 25.0;
     NSError *problemDocumentParseError = nil;
     NYPLProblemDocument *problemDocument = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
     if (problemDocumentParseError) {
-      [NYPLErrorLogger logProblemDocumentParseErrorWithError:problemDocumentParseError url:request.URL];
+      [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                                                url:request.URL];
     } else if (problemDocument) {
       UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:@"SettingsAccountViewControllerLoginFailed"];
       [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];

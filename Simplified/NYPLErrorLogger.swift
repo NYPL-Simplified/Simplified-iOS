@@ -76,7 +76,7 @@ fileprivate let nullString = "null"
    to our crash reporting system.
    - parameter metadata: report metadata dictionary
    */
-  class func addAccountInfoToMetadata(_ metadata: inout [AnyHashable : Any]) {
+  private class func addAccountInfoToMetadata(_ metadata: inout [AnyHashable : Any]) {
     metadata["currentAccountName"] = AccountsManager.shared.currentAccount?.name ?? nullString
     metadata["currentAccountId"] = AccountsManager.shared.currentAccountId ?? nullString
     metadata["currentAccountSet"] = AccountsManager.shared.accountSet
@@ -401,14 +401,10 @@ fileprivate let nullString = "null"
     @param url the url the catalog is being fetched from
     @return
    */
-  class func catalogLoadError(error: NSError?, url: URL?) {
-    guard let err = error else {
-      Log.warn(#file, "Could not log catalogLoadError because error was nil")
-      return
-    }
+  class func reportCatalogLoadError(_ error: NSError, url: URL?) {
     var metadata = [AnyHashable : Any]()
     metadata["url"] = url ?? nullString
-    metadata["errorDescription"] = error?.localizedDescription ?? nullString
+    metadata["errorDescription"] = error.localizedDescription
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
 
@@ -417,7 +413,7 @@ fileprivate let nullString = "null"
       metadata: metadata,
       groupingHash: "catalog-load-error")
 
-    Crashlytics.sharedInstance().recordError(err,
+    Crashlytics.sharedInstance().recordError(error,
                                              withAdditionalUserInfo: userInfo)
   }
   
@@ -427,14 +423,10 @@ fileprivate let nullString = "null"
     @param url the url the problem document is being fetched from
     @return
    */
-  class func logProblemDocumentParseError(error: NSError?, url: URL?) {
-    guard let err = error else {
-      Log.warn(#file, "Could not log a problemDocumentParserError because error was nil")
-      return
-    }
+  class func logProblemDocumentParseError(_ error: NSError, url: URL?) {
     var metadata = [AnyHashable : Any]()
     metadata["url"] = url ?? nullString
-    metadata["errorDescription"] = error?.localizedDescription ?? nullString
+    metadata["errorDescription"] = error.localizedDescription
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     
@@ -442,7 +434,7 @@ fileprivate let nullString = "null"
       severity: .error,
       metadata: metadata,
       groupingHash: "problemDocumentParseError")
-    Crashlytics.sharedInstance().recordError(err,
+    Crashlytics.sharedInstance().recordError(error,
                                              withAdditionalUserInfo: userInfo)
   }
   
