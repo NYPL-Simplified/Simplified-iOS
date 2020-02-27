@@ -11,13 +11,20 @@ fileprivate let nullString = "null"
 
 @objc enum NYPLSeverity: NSInteger {
   case error, warning, info
+
+  func stringValue() -> String {
+    switch self {
+    case .error: return "error"
+    case .warning: return "warning"
+    case .info: return "info"
+    }
+  }
 }
 
 @objcMembers class NYPLErrorLogger : NSObject {
   class func configureCrashAnalytics() {
     FirebaseApp.configure()
   }
-
 
   /// Broad areas providing some kind of operating context for error reporting.
   /// These are meant to be related to the code base more than functionality,
@@ -95,7 +102,7 @@ fileprivate let nullString = "null"
                                     context: String? = nil,
                                     metadata: [AnyHashable : Any]? = nil,
                                     groupingHash: String? = nil) -> [String : Any] {
-    var dict: [String: Any] = ["severity": severity]
+    var dict: [String: Any] = ["severity": severity.stringValue()]
     if let message = message {
       dict["message"] = message
     }
