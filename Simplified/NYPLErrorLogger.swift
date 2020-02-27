@@ -18,6 +18,25 @@ fileprivate let nullString = "null"
     FirebaseApp.configure()
   }
 
+  enum ErrorCode: Int {
+    case nilCFI = 0
+    case nilObject = 2
+    case invalidLicensor = 3
+    case deAuthFail = 4
+    case bookCopyFail = 5
+    case barcodeException = 8
+    case appLaunch = 9
+    case remoteLoginError = 10
+    case nilAccount = 11
+    case filePathFail = 12
+    case userProfileDocFail = 14
+    case audiobookEvent = 100
+    case deleteBookmarkFail = 101 //previously reported as 11
+    case expiredBackgroundFetch = 200
+  }
+
+  // MARK:- Generic helpers
+
   /**
    Helper method for other logging functions that adds logfile to our
    crash reporting system.
@@ -69,6 +88,8 @@ fileprivate let nullString = "null"
     return dict
   }
 
+  // MARK:- Error reporting
+
   /**
     Report when there's a null book identifier
     @param book book
@@ -88,7 +109,9 @@ fileprivate let nullString = "null"
       message: "The book identifier was unexpectedly nil when attempting to return.",
       context: "NYPLMyBooksDownloadCenter",
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain, code: 2, userInfo: userInfo)
+    let err = NSError(domain: simplyeDomain,
+                      code: ErrorCode.nilObject.rawValue,
+                      userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
   }
@@ -109,7 +132,9 @@ fileprivate let nullString = "null"
       message: "fileURLForBookIndentifier returned nil, so no destination to copy file to.",
       context: "NYPLMyBooksDownloadCenter",
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain, code: 5, userInfo: userInfo)
+    let err = NSError(domain: simplyeDomain,
+                      code: ErrorCode.bookCopyFail.rawValue,
+                      userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
   }
@@ -138,7 +163,7 @@ fileprivate let nullString = "null"
       context: "NYPLReaderReadiumView",
       metadata: metadata,
       groupingHash: "open-book-nil-cfi")
-    let err = NSError(domain: simplyeDomain, code: 0, userInfo: userInfo)
+    let err = NSError(domain: simplyeDomain, code: ErrorCode.nilCFI.rawValue, userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
   }
@@ -157,7 +182,9 @@ fileprivate let nullString = "null"
       message: "User has lost an activation on signout due to NYPLAdept Error.",
       context: "NYPLSettingsAccountDetailViewController",
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain, code: 4, userInfo: userInfo)
+    let err = NSError(domain: simplyeDomain,
+                      code: ErrorCode.deAuthFail.rawValue,
+                      userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
   }
@@ -189,14 +216,18 @@ fileprivate let nullString = "null"
       severity: .info,
       message: "Remote Login Failed With Error",
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain, code: 10, userInfo: userInfo)
+    let err = NSError(domain: simplyeDomain,
+                      code: ErrorCode.remoteLoginError.rawValue,
+                      userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
   }
 
   class func reportUnexpectedNilAccount(context: String) {
     let userInfo = additionalInfo(severity: .error, context: context)
-    let err = NSError(domain: simplyeDomain, code: 11, userInfo: userInfo)
+    let err = NSError(domain: simplyeDomain,
+                      code: ErrorCode.nilAccount.rawValue,
+                      userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
   }
@@ -230,7 +261,9 @@ fileprivate let nullString = "null"
                                   message: message,
                                   context: context,
                                   metadata: metadata)
-    let err = NSError(domain: simplyeDomain, code: 11, userInfo: userInfo)
+    let err = NSError(domain: simplyeDomain,
+                      code: ErrorCode.deleteBookmarkFail.rawValue,
+                      userInfo: userInfo)
     Crashlytics.sharedInstance().recordError(err)
   }
 
@@ -250,7 +283,9 @@ fileprivate let nullString = "null"
       message: "No Valid Licensor available to deauthorize device. Signing out NYPLAccount credentials anyway with no message to the user.",
       context: "NYPLSettingsAccountDetailViewController",
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain, code: 3, userInfo: userInfo)
+    let err = NSError(domain: simplyeDomain,
+                      code: ErrorCode.invalidLicensor.rawValue,
+                      userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
   }
@@ -267,7 +302,9 @@ fileprivate let nullString = "null"
       severity: .info,
       metadata: metadata,
       groupingHash: "simplye-app-launch")
-    let err = NSError(domain: simplyeDomain, code: 9, userInfo: userInfo)
+    let err = NSError(domain: simplyeDomain,
+                      code: ErrorCode.appLaunch.rawValue,
+                      userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
   }
@@ -284,7 +321,9 @@ fileprivate let nullString = "null"
     let userInfo = additionalInfo(severity: severity,
                                   message: message,
                                   context: context)
-    let err = NSError(domain: simplyeDomain, code: 12, userInfo: userInfo)
+    let err = NSError(domain: simplyeDomain,
+                      code: ErrorCode.filePathFail.rawValue,
+                      userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
   }
@@ -303,7 +342,9 @@ fileprivate let nullString = "null"
       severity: .error,
       metadata: metadata,
       groupingHash: "BackgroundFetchExpired")
-    let err = NSError(domain: simplyeDomain, code: 666, userInfo: userInfo)
+    let err = NSError(domain: simplyeDomain,
+                      code: ErrorCode.expiredBackgroundFetch.rawValue,
+                      userInfo: userInfo)
     Crashlytics.sharedInstance().recordError(err)
   }
   
@@ -323,7 +364,9 @@ fileprivate let nullString = "null"
       message: "\(library ?? nullString): \(exception?.name.rawValue ?? nullString). \(exception?.reason ?? nullString)",
       context: "NYPLZXingEncoder",
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain, code: 8, userInfo: userInfo)
+    let err = NSError(domain: simplyeDomain,
+                      code: ErrorCode.barcodeException.rawValue,
+                      userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
   }
@@ -385,7 +428,9 @@ fileprivate let nullString = "null"
     @return
    */
   class func reportUserProfileDocumentError(error: NSError?) {
-    let err = error ?? NSError.init(domain: "org.nypl.labs.SimplyE", code: 14, userInfo: nil)
+    let err = error ?? NSError.init(domain: simplyeDomain,
+                                    code: ErrorCode.userProfileDocFail.rawValue,
+                                    userInfo: nil)
     var metadata = [AnyHashable : Any]()
     metadata["errorDescription"] = error?.localizedDescription ?? nullString
     addAccountInfoToMetadata(&metadata)
@@ -407,7 +452,9 @@ fileprivate let nullString = "null"
     let userInfo = additionalInfo(severity: .info,
                                   message: message,
                                   context: context)
-    let err = NSError(domain: simplyeDomain, code: 0, userInfo: userInfo)
+    let err = NSError(domain: simplyeDomain,
+                      code: ErrorCode.audiobookEvent.rawValue,
+                      userInfo: userInfo)
     Crashlytics.sharedInstance().recordError(err)
   }
 }
