@@ -4,12 +4,10 @@
 //
 
 import Foundation
-import Bugsnag
 import Firebase
 
 fileprivate let simplyeDomain = "org.nypl.labs.SimplyE"
 fileprivate let nullString = "null"
-fileprivate let tabName = "Extra Data"
 
 @objc enum NYPLSeverity: NSInteger {
   case error, warning, info
@@ -17,40 +15,13 @@ fileprivate let tabName = "Extra Data"
 
 @objcMembers class NYPLErrorLogger : NSObject {
   class func configureCrashAnalytics() {
-    let config = BugsnagConfiguration()
-    config.apiKey = APIKeys.bugsnagID
-
-    #if DEBUG
-    config.releaseStage = "development"
-    #else
-    if releaseStageIsBeta() {
-      config.releaseStage = "beta"
-      if let userID = NYPLAccount.shared()?.barcode {
-        config.setUser(userID, withName: nil, andEmail: nil)
-      }
-    } else {
-      config.releaseStage = "production"
-    }
-    #endif
-
-    Bugsnag.start(with: config)
     FirebaseApp.configure()
   }
 
-  private class func releaseStageIsBeta() -> Bool {
-    guard let receiptURLPath = Bundle.main.appStoreReceiptURL?.path else {
-      // returning true here is somewhat odd, but it was left for backward
-      // compatibility reasons with previous objc code
-      return true
-    }
-
-    return receiptURLPath.contains("sandboxReceipt")
-  }
-
   /**
-    Helper method for other logging functions that adds logfile to bugsnag report
-    @param metadata report metadata dictionary
-    @return
+   Helper method for other logging functions that adds logfile to our
+   crash reporting system.
+   - parameter metadata: report metadata dictionary
    */
   class func addLogfileToMetadata(_ metadata: inout [AnyHashable : Any]) {
     Log.logQueue.sync {
@@ -59,9 +30,9 @@ fileprivate let tabName = "Extra Data"
   }
   
   /**
-    Helper method for other logging functions that adds relevant account info to bugsnag report
-    @param metadata report metadata dictionary
-    @return
+   Helper method for other logging functions that adds relevant account info
+   to our crash reporting system.
+   - parameter metadata: report metadata dictionary
    */
   class func addAccountInfoToMetadata(_ metadata: inout [AnyHashable : Any]) {
     metadata["currentAccountName"] = AccountsManager.shared.currentAccount?.name ?? nullString
@@ -69,7 +40,35 @@ fileprivate let tabName = "Extra Data"
     metadata["currentAccountSet"] = AccountsManager.shared.accountSet
     metadata["numAccounts"] = AccountsManager.shared.accounts().count
   }
-  
+
+  /// Creates a dictionary with information to be logged in relation to an event.
+  /// - Parameters:
+  ///   - severity: How severe the event is.
+  ///   - message: An optional message.
+  ///   - context: A string identifying the page/VC where the error occurred.
+  ///   - metadata: Any additional metadata.
+  ///   - groupingHash: A string to group similar errors.
+  private class func additionalInfo(severity: NYPLSeverity,
+                                    message: String? = nil,
+                                    context: String? = nil,
+                                    metadata: [AnyHashable : Any]? = nil,
+                                    groupingHash: String? = nil) -> [String : Any] {
+    var dict: [String: Any] = ["severity": severity]
+    if let message = message {
+      dict["message"] = message
+    }
+    if let context = context {
+      dict["context"] = context
+    }
+    if let metadata = metadata {
+      dict["metadata"] = metadata
+    }
+    if let groupingHash = groupingHash {
+      dict["groupingHash"] = groupingHash
+    }
+    return dict
+  }
+
   /**
     Report when there's a null book identifier
     @param book book
@@ -84,13 +83,14 @@ fileprivate let tabName = "Extra Data"
     metadata["revokeLink"] = book?.revokeURL?.absoluteString ?? nullString
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
-    
-    Bugsnag.notifyError(NSError.init(domain: simplyeDomain, code: 2, userInfo: nil), block: { report in
-      report.context = "NYPLMyBooksDownloadCenter"
-      report.severity = .warning
-      report.errorMessage = "The book identifier was unexpectedly nil when attempting to return."
-      report.addMetadata(metadata, toTabWithName: tabName)
-    })
+    let userInfo = additionalInfo(
+      severity: .warning,
+      message: "The book identifier was unexpectedly nil when attempting to return.",
+      context: "NYPLMyBooksDownloadCenter",
+      metadata: metadata)
+    let err = NSError(domain: simplyeDomain, code: 2, userInfo: userInfo)
+
+    Crashlytics.sharedInstance().recordError(err)
   }
   
   /**
@@ -104,13 +104,14 @@ fileprivate let tabName = "Extra Data"
     metadata["bookTitle"] = book?.title ?? nullString
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
-    
-    Bugsnag.notifyError(NSError.init(domain: simplyeDomain, code: 5, userInfo: nil), block: { report in
-      report.context = "NYPLMyBooksDownloadCenter"
-      report.severity = .warning
-      report.errorMessage = "fileURLForBookIndentifier returned nil, so no destination to copy file to."
-      report.addMetadata(metadata, toTabWithName: tabName)
-    })
+    let userInfo = additionalInfo(
+      severity: .warning,
+      message: "fileURLForBookIndentifier returned nil, so no destination to copy file to.",
+      context: "NYPLMyBooksDownloadCenter",
+      metadata: metadata)
+    let err = NSError(domain: simplyeDomain, code: 5, userInfo: userInfo)
+
+    Crashlytics.sharedInstance().recordError(err)
   }
   
   /**
@@ -131,13 +132,15 @@ fileprivate let tabName = "Extra Data"
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     
-    Bugsnag.notifyError(NSError.init(domain: simplyeDomain, code: 0, userInfo: nil), block: { report in
-      report.context = "NYPLReaderReadiumView"
-      report.severity = .warning
-      report.groupingHash = "open-book-nil-cfi"
-      report.errorMessage = "No CFI parsed from NYPLBookLocation, or Readium failed to generate a CFI."
-      report.addMetadata(metadata, toTabWithName: tabName)
-    })
+    let userInfo = additionalInfo(
+      severity: .warning,
+      message: "No CFI parsed from NYPLBookLocation, or Readium failed to generate a CFI.",
+      context: "NYPLReaderReadiumView",
+      metadata: metadata,
+      groupingHash: "open-book-nil-cfi")
+    let err = NSError(domain: simplyeDomain, code: 0, userInfo: userInfo)
+
+    Crashlytics.sharedInstance().recordError(err)
   }
   
   /**
@@ -149,12 +152,14 @@ fileprivate let tabName = "Extra Data"
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     
-    Bugsnag.notifyError(NSError.init(domain: simplyeDomain, code: 4, userInfo: nil), block: { report in
-      report.context = "NYPLSettingsAccountDetailViewController"
-      report.severity = .info
-      report.errorMessage = "User has lost an activation on signout due to NYPLAdept Error."
-      report.addMetadata(metadata, toTabWithName: tabName)
-    })
+    let userInfo = additionalInfo(
+      severity: .info,
+      message: "User has lost an activation on signout due to NYPLAdept Error.",
+      context: "NYPLSettingsAccountDetailViewController",
+      metadata: metadata)
+    let err = NSError(domain: simplyeDomain, code: 4, userInfo: userInfo)
+
+    Crashlytics.sharedInstance().recordError(err)
   }
   
   /**
@@ -179,14 +184,23 @@ fileprivate let tabName = "Extra Data"
     }
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
-    
-    Bugsnag.notifyError(NSError.init(domain: simplyeDomain, code: 10, userInfo: nil), block: { report in
-      report.severity = .info
-      report.errorMessage = "Remote Login Failed With Error"
-      report.addMetadata(metadata, toTabWithName: tabName)
-    })
+
+    let userInfo = additionalInfo(
+      severity: .info,
+      message: "Remote Login Failed With Error",
+      metadata: metadata)
+    let err = NSError(domain: simplyeDomain, code: 10, userInfo: userInfo)
+
+    Crashlytics.sharedInstance().recordError(err)
   }
-  
+
+  class func reportUnexpectedNilAccount(context: String) {
+    let userInfo = additionalInfo(severity: .error, context: context)
+    let err = NSError(domain: simplyeDomain, code: 11, userInfo: userInfo)
+
+    Crashlytics.sharedInstance().recordError(err)
+  }
+
   /**
     Report when there's an error logging in to an account locally
     @param error related error
@@ -200,13 +214,26 @@ fileprivate let tabName = "Extra Data"
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     
-    Bugsnag.notifyError(NSError.init(domain: simplyeDomain, code: 11, userInfo: nil), block: { report in
-      report.severity = .info
-      report.errorMessage = "Local Login Failed With Error"
-      report.addMetadata(metadata, toTabWithName: tabName)
-    })
+    let userInfo = additionalInfo(
+      severity: .info,
+      message: "Local Login Failed With Error",
+      metadata: metadata)
+    let err = NSError(domain: simplyeDomain, code: 11, userInfo: userInfo)
+
+    Crashlytics.sharedInstance().recordError(err)
   }
   
+  class func reportDeleteBookmarkError(message: String,
+                                       context: String,
+                                       metadata: [String: Any]) {
+    let userInfo = additionalInfo(severity: .warning,
+                                  message: message,
+                                  context: context,
+                                  metadata: metadata)
+    let err = NSError(domain: simplyeDomain, code: 11, userInfo: userInfo)
+    Crashlytics.sharedInstance().recordError(err)
+  }
+
   /**
     Report when there's missing licensor data during deauthorization
     @param accountId id of the account
@@ -218,30 +245,50 @@ fileprivate let tabName = "Extra Data"
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     
-    Bugsnag.notifyError(NSError.init(domain: simplyeDomain, code: 3, userInfo: nil), block: { report in
-      report.context = "NYPLSettingsAccountDetailViewController"
-      report.severity = .warning
-      report.errorMessage = "No Valid Licensor available to deauthorize device. Signing out NYPLAccount credentials anyway with no message to the user."
-      report.addMetadata(metadata, toTabWithName: tabName)
-    })
+    let userInfo = additionalInfo(
+      severity: .warning,
+      message: "No Valid Licensor available to deauthorize device. Signing out NYPLAccount credentials anyway with no message to the user.",
+      context: "NYPLSettingsAccountDetailViewController",
+      metadata: metadata)
+    let err = NSError(domain: simplyeDomain, code: 3, userInfo: userInfo)
+
+    Crashlytics.sharedInstance().recordError(err)
   }
 
   /**
-    Report new app session
-    @return
+    Report when user launches the app.
    */
-  class func reportNewActiveSession() {
+  class func reportNewAppLaunch() {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     
-    Bugsnag.notifyError(NSError.init(domain: simplyeDomain, code: 9, userInfo: nil), block: { report in
-      report.severity = .info
-      report.groupingHash = "simplye-app-launch"
-      report.addMetadata(metadata, toTabWithName: tabName)
-    })
+    let userInfo = additionalInfo(
+      severity: .info,
+      metadata: metadata,
+      groupingHash: "simplye-app-launch")
+    let err = NSError(domain: simplyeDomain, code: 9, userInfo: userInfo)
+
+    Crashlytics.sharedInstance().recordError(err)
   }
-  
+
+  /**
+   Report a generic path issue when dealing with file system apis.
+   - parameter severity: how critical the user experience is impacted.
+   - parameter message: Message to associate with report.
+   - parameter context: Where this issue arose.
+   */
+  class func reportFilePathIssue(severity: NYPLSeverity,
+                                 message: String,
+                                 context: String) {
+    let userInfo = additionalInfo(severity: severity,
+                                  message: message,
+                                  context: context)
+    let err = NSError(domain: simplyeDomain, code: 12, userInfo: userInfo)
+
+    Crashlytics.sharedInstance().recordError(err)
+  }
+
   /**
     Report when there's an issue downloading the holds in the background
     @return
@@ -251,15 +298,13 @@ fileprivate let tabName = "Extra Data"
     metadata["loanUrl"] = AccountsManager.shared.currentAccount?.loansUrl ?? nullString
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
-    
-    let exception = NSException.init(name: NSExceptionName.init(
-      rawValue: "BackgroundFetchExpired"),reason: nil, userInfo: nil)
-    
-    Bugsnag.notify(exception, block: { report in
-      report.severity = .warning
-      report.groupingHash = "BackgroundFetchExpired"
-      report.addMetadata(metadata, toTabWithName: tabName)
-    })
+
+    let userInfo = additionalInfo(
+      severity: .error,
+      metadata: metadata,
+      groupingHash: "BackgroundFetchExpired")
+    let err = NSError(domain: simplyeDomain, code: 666, userInfo: userInfo)
+    Crashlytics.sharedInstance().recordError(err)
   }
   
   /**
@@ -273,21 +318,16 @@ fileprivate let tabName = "Extra Data"
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     
-    Bugsnag.notifyError(NSError.init(domain: simplyeDomain, code: 8, userInfo: nil), block: { report in
-      report.context = "NYPLZXingEncoder"
-      report.severity = .info
-      report.errorMessage = "\(library ?? nullString): \(exception?.name.rawValue ?? nullString). \(exception?.reason ?? nullString)"
-      report.addMetadata(metadata, toTabWithName: tabName)
-    })
+    let userInfo = additionalInfo(
+      severity: .info,
+      message: "\(library ?? nullString): \(exception?.name.rawValue ?? nullString). \(exception?.reason ?? nullString)",
+      context: "NYPLZXingEncoder",
+      metadata: metadata)
+    let err = NSError(domain: simplyeDomain, code: 8, userInfo: userInfo)
+
+    Crashlytics.sharedInstance().recordError(err)
   }
 
-
-  /// Logs a generic exception.
-  /// - Parameter exception: The exception to be logged.
-  class func logException(_ exception: NSException) {
-    Bugsnag.notify(exception)
-  }
-  
   /**
     Report when there's an issue loading a catalog
     @param error the parsing error
@@ -296,7 +336,7 @@ fileprivate let tabName = "Extra Data"
    */
   class func catalogLoadError(error: NSError?, url: URL?) {
     guard let err = error else {
-      Log.warn(#file, "Could not log bugsnag catalogLoadError because error was nil")
+      Log.warn(#file, "Could not log catalogLoadError because error was nil")
       return
     }
     var metadata = [AnyHashable : Any]()
@@ -304,11 +344,14 @@ fileprivate let tabName = "Extra Data"
     metadata["errorDescription"] = error?.localizedDescription ?? nullString
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
-    
-    Bugsnag.notifyError(err, block: { report in
-      report.groupingHash = "catalog-load-error"
-      report.addMetadata(metadata, toTabWithName: tabName)
-    })
+
+    let userInfo = additionalInfo(
+      severity: .error,
+      metadata: metadata,
+      groupingHash: "catalog-load-error")
+
+    Crashlytics.sharedInstance().recordError(err,
+                                             withAdditionalUserInfo: userInfo)
   }
   
   /**
@@ -319,7 +362,7 @@ fileprivate let tabName = "Extra Data"
    */
   class func logProblemDocumentParseError(error: NSError?, url: URL?) {
     guard let err = error else {
-      Log.warn(#file, "Could not log bugsnag catalogLoadError because error was nil")
+      Log.warn(#file, "Could not log a problemDocumentParserError because error was nil")
       return
     }
     var metadata = [AnyHashable : Any]()
@@ -328,10 +371,12 @@ fileprivate let tabName = "Extra Data"
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     
-    Bugsnag.notifyError(err, block: { report in
-      report.groupingHash = "problemDocumentParseError"
-      report.addMetadata(metadata, toTabWithName: tabName)
-    })
+    let userInfo = additionalInfo(
+      severity: .error,
+      metadata: metadata,
+      groupingHash: "problemDocumentParseError")
+    Crashlytics.sharedInstance().recordError(err,
+                                             withAdditionalUserInfo: userInfo)
   }
   
   /**
@@ -345,55 +390,24 @@ fileprivate let tabName = "Extra Data"
     metadata["errorDescription"] = error?.localizedDescription ?? nullString
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
-    
-    Bugsnag.notifyError(err, block: { report in
-      report.addMetadata(metadata, toTabWithName: tabName)
-    })
+
+    let userInfo = additionalInfo(severity: .error, metadata: metadata)
+    Crashlytics.sharedInstance().recordError(err,
+                                             withAdditionalUserInfo: userInfo)
   }
 
-
-  /// Report a generic error with a given message.
-  /// - Parameters:
-  ///   - error: The error that occurred.
-  ///   - message: The message to append for more context.
-  /// - Note: Only use from Objc. From Swift, use
-  /// report(:with:severity:groupingHash:context:metadata:).
-  @objc(reportError:message:)
-  class func objc_reportError(_ error: Error, message: String) {
-    report(error, with: message)
+  class func reportAudiobookIssue(_ error: NSError,
+                                  severity: NYPLSeverity,
+                                  message: String? = nil) {
+    let userInfo = additionalInfo(severity: severity, message: message)
+    Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: userInfo)
   }
 
-
-  /// Logs a generic error with associated information.
-  /// - Parameters:
-  ///   - error: The error that occurred.
-  ///   - message: An optional message.
-  ///   - severity: How severe the error is.
-  ///   - groupingHash: A string to group similar errors.
-  ///   - context: A string identifying the page/VC where the error occurred.
-  ///   - metadata: Any additional metadata.
-  @objc(reportError:message:severity:groupingHash:context:metadata:)
-  class func report(_ error: Error,
-                    with message: String? = nil,
-                    severity: NYPLSeverity = .error,
-                    groupingHash: String? = nil,
-                    context: String? = nil,
-                    metadata: [AnyHashable : Any]? = nil) {
-    Bugsnag.notifyError(error) { report in
-      report.errorMessage = message
-      switch severity {
-      case .error:
-        report.severity = .error
-      case .warning:
-        report.severity = .warning
-      case .info:
-        report.severity = .info
-      }
-      report.groupingHash = groupingHash
-      report.context = context
-      if let metadata = metadata {
-        report.addMetadata(metadata, toTabWithName: tabName)
-      }
-    }
+  class func reportAudiobookInfoEvent(message: String, context: String) {
+    let userInfo = additionalInfo(severity: .info,
+                                  message: message,
+                                  context: context)
+    let err = NSError(domain: simplyeDomain, code: 0, userInfo: userInfo)
+    Crashlytics.sharedInstance().recordError(err)
   }
 }

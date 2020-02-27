@@ -6,5 +6,4 @@ github "NYPL-Simplified/NYPLAudiobookToolkit" "010c2b066c51672fc0bbb4abac485b0cd
 github "NYPL-Simplified/PDFRendererProvider-iOS" "b0ee13aa74e0d88193a401c29624dda8120a340d"
 github "PureLayout/PureLayout" "v3.1.5"
 github "TheLevelUp/ZXingObjC" "3.6.4"
-github "bugsnag/bugsnag-cocoa" "v5.23.0"
 github "stephencelis/SQLite.swift" "0.11.6"

@@ -226,12 +226,16 @@
 {
   [DefaultAudiobookManager setLogHandler:^(enum LogLevel level, NSString * _Nonnull message, NSError * _Nullable error) {
     if (error) {
-      [NYPLErrorLogger reportError:error message:message];
+      [NYPLErrorLogger reportAudiobookIssue:error
+                                   severity:NYPLSeverityError
+                                    message:message];
     } else {
       NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:0 userInfo:nil];
-      [NYPLErrorLogger reportError:error
-                           message:[NSString stringWithFormat:@"Level: %ld. Message: %@",
-                                    (long)level, message]];
+      NSString *msg = [NSString stringWithFormat:@"Level: %ld. Message: %@",
+                       (long)level, message];
+      [NYPLErrorLogger reportAudiobookIssue:error
+                                   severity:NYPLSeverityInfo
+                                    message:msg];
     }
   }];
 }

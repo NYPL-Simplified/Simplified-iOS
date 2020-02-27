@@ -19,7 +19,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
       if (!TARGET_OS_SIMULATOR) {
         [NYPLErrorLogger configureCrashAnalytics];
-        [NYPLErrorLogger reportNewActiveSession];
+        [NYPLErrorLogger reportNewAppLaunch];
       }
     });
   });

@@ -201,8 +201,8 @@
 
 #pragma mark NSURLConnectionDelegate
 
-- (void)connection:(__attribute__((unused)) NSURLConnection *)connection
-  didFailWithError:(__attribute__((unused)) NSError *)error
+- (void)connection:(NSURLConnection *)connection
+  didFailWithError:(NSError *)error
 {
   [self.activityIndicatorView stopAnimating];
   self.activityIndicatorLabel.hidden = YES;

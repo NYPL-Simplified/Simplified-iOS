@@ -27,7 +27,9 @@
       title: NSLocalizedString("Keep", comment: ""),
       style: .cancel,
       handler: { action in
-        logKeepAction()
+        NYPLErrorLogger.reportAudiobookInfoEvent(
+          message: "User chose to keep the audiobook, and not return it.",
+          context: "audiobook-keep")
         handler()
     })
   }
@@ -38,24 +40,10 @@
       title: NSLocalizedString("Return", comment: ""),
       style: .default,
       handler: { action in
-        logReturnAction()
+        NYPLErrorLogger.reportAudiobookInfoEvent(
+          message: "User chose to return the Audiobook early.",
+          context: "audiobook-return")
         handler()
     })
   }
-}
-
-fileprivate func logKeepAction()
-{
-  let keepException = NSException(name:NSExceptionName(rawValue: "NYPLAudiobookKeepException"),
-                                  reason:"User chose to keep the audiobook, and not return it.",
-                                  userInfo:nil)
-  NYPLErrorLogger.logException(keepException)
-}
-
-fileprivate func logReturnAction()
-{
-  let returnException = NSException(name:NSExceptionName(rawValue: "NYPLAudiobookReturnException"),
-                                    reason:"User chose to return the Audiobook early.",
-                                    userInfo:nil)
-  NYPLErrorLogger.logException(returnException)
 }

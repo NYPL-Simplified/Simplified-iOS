@@ -6,9 +6,7 @@ import Foundation
   
   class func current() -> URL? {
     guard let account = AccountsManager.shared.currentAccount else {
-      NYPLErrorLogger.report(NSError(domain:"org.nypl.labs.SimplyE", code:11, userInfo:nil),
-                             groupingHash: "unexpected-nil-account",
-                             context: "DirectoryManager::current")
+      NYPLErrorLogger.reportUnexpectedNilAccount(context: "DirectoryManager::current")
       return nil
     }
     return directory(account.uuid)
@@ -18,15 +16,14 @@ import Foundation
     let paths = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true)
     
     if paths.count < 1 {
-      NYPLErrorLogger.report(NSError(domain:"org.nypl.labs.SimplyE", code:12, userInfo:nil),
-                             with: "No valid paths",
-                             groupingHash: "directory-manager")
+      NYPLErrorLogger.reportFilePathIssue(severity: .error,
+                                          message: "No valid paths",
+                                          context: "DirectoryManager")
       return nil
     } else if paths.count > 1 {
-      NYPLErrorLogger.report(NSError(domain:"org.nypl.labs.SimplyE", code:12, userInfo:nil),
-                             with: "Multiple paths",
-                             severity: .warning,
-                             groupingHash: "directory-manager")
+      NYPLErrorLogger.reportFilePathIssue(severity: .warning,
+                                          message: "Multiple paths",
+                                          context: "DirectoryManager")
     }
     
     var directoryURL = URL.init(fileURLWithPath: paths[0]).appendingPathComponent(Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String)
