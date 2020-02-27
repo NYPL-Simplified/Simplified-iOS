@@ -18,21 +18,44 @@ fileprivate let nullString = "null"
     FirebaseApp.configure()
   }
 
+
+  /// Broad areas providing some kind of operating context for error reporting.
+  /// These are meant to be related to the code base more than functionality,
+  /// (e.g. an error related to audiobooks may happen in different classes)
+  /// although the two things may obviously overlap.
+  enum Context: String {
+    case bookDownload
+    case audiobooks
+    case myBooks
+    case readium
+  }
+
   enum ErrorCode: Int {
-    case nilCFI = 0
-    case nilObject = 2
-    case invalidLicensor = 3
-    case deAuthFail = 4
-    case bookCopyFail = 5
-    case barcodeException = 8
-    case appLaunch = 9
-    case remoteLoginError = 10
-    case nilAccount = 11
-    case filePathFail = 12
-    case userProfileDocFail = 14
-    case audiobookEvent = 100
-    case deleteBookmarkFail = 101 //previously reported as 11
-    case expiredBackgroundFetch = 200
+    // low-level / system related
+    case fileSystemFail = 1
+
+    // generic app related
+    case appLaunch = 100
+    case expiredBackgroundFetch = 101
+
+    // book registry
+    case nilBookIdentifier = 200 // caused by book registry, downloads
+    case nilCFI = 201
+    case missingBookFile = 202
+
+    // sign in/out
+    case invalidLicensor = 300
+    case deAuthFail = 301
+    case barcodeException = 302
+    case remoteLoginError = 303
+    case nilAccount = 304
+    case userProfileDocFail = 305
+
+    // audiobooks
+    case audiobookEvent = 400
+
+    // ereader
+    case deleteBookmarkFail = 500
   }
 
   // MARK:- Generic helpers
@@ -64,7 +87,7 @@ fileprivate let nullString = "null"
   /// - Parameters:
   ///   - severity: How severe the event is.
   ///   - message: An optional message.
-  ///   - context: A string identifying the page/VC where the error occurred.
+  ///   - context: Page/VC name or anything that can help identify the in-code location where the error occurred.
   ///   - metadata: Any additional metadata.
   ///   - groupingHash: A string to group similar errors.
   private class func additionalInfo(severity: NYPLSeverity,
@@ -97,20 +120,20 @@ fileprivate let nullString = "null"
     @param title book title
     @return
    */
-  class func recordUnexpectedNilIdentifier(book: NYPLBook?, identifier: String?, title: String?) {
+  class func recordUnexpectedNilIdentifier(_ identifier: String?, book: NYPLBook?) {
     var metadata = [AnyHashable : Any]()
     metadata["incomingIdentifierString"] = identifier ?? nullString
-    metadata["bookTitle"] = title ?? nullString
+    metadata["bookTitle"] = book?.title ?? nullString
     metadata["revokeLink"] = book?.revokeURL?.absoluteString ?? nullString
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     let userInfo = additionalInfo(
       severity: .warning,
       message: "The book identifier was unexpectedly nil when attempting to return.",
-      context: "NYPLMyBooksDownloadCenter",
+      context: Context.myBooks.rawValue,
       metadata: metadata)
     let err = NSError(domain: simplyeDomain,
-                      code: ErrorCode.nilObject.rawValue,
+                      code: ErrorCode.nilBookIdentifier.rawValue,
                       userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
@@ -121,7 +144,8 @@ fileprivate let nullString = "null"
     @param book target book
     @return
    */
-  class func recordFailureToCopy(book: NYPLBook?) {
+  class func recordMissingFileURLAfterDownloadingBook(_ book: NYPLBook?,
+                                                      message: String) {
     var metadata = [AnyHashable : Any]()
     metadata["bookIdentifier"] = book?.identifier ?? nullString
     metadata["bookTitle"] = book?.title ?? nullString
@@ -129,11 +153,11 @@ fileprivate let nullString = "null"
     addLogfileToMetadata(&metadata)
     let userInfo = additionalInfo(
       severity: .warning,
-      message: "fileURLForBookIndentifier returned nil, so no destination to copy file to.",
-      context: "NYPLMyBooksDownloadCenter",
+      message: message,
+      context: Context.bookDownload.rawValue,
       metadata: metadata)
     let err = NSError(domain: simplyeDomain,
-                      code: ErrorCode.bookCopyFail.rawValue,
+                      code: ErrorCode.missingBookFile.rawValue,
                       userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
@@ -147,7 +171,11 @@ fileprivate let nullString = "null"
     @param title name of the book
     @return
    */
-  class func reportNilContentCFI(location: NYPLBookLocation?, locationDictionary: Dictionary<String, Any>?, bookId: String?, title: String?) {
+  class func reportNilContentCFI(location: NYPLBookLocation?,
+                                 locationDictionary: Dictionary<String, Any>?,
+                                 bookId: String?,
+                                 title: String?,
+                                 message: String?) {
     var metadata = [AnyHashable : Any]()
     metadata["bookID"] = bookId ?? nullString
     metadata["bookTitle"] = title ?? nullString
@@ -159,10 +187,9 @@ fileprivate let nullString = "null"
     
     let userInfo = additionalInfo(
       severity: .warning,
-      message: "No CFI parsed from NYPLBookLocation, or Readium failed to generate a CFI.",
-      context: "NYPLReaderReadiumView",
-      metadata: metadata,
-      groupingHash: "open-book-nil-cfi")
+      message: message,
+      context: Context.readium.rawValue,
+      metadata: metadata)
     let err = NSError(domain: simplyeDomain, code: ErrorCode.nilCFI.rawValue, userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
@@ -298,10 +325,7 @@ fileprivate let nullString = "null"
     addAccountInfoToMetadata(&metadata)
     addLogfileToMetadata(&metadata)
     
-    let userInfo = additionalInfo(
-      severity: .info,
-      metadata: metadata,
-      groupingHash: "simplye-app-launch")
+    let userInfo = additionalInfo(severity: .info, metadata: metadata)
     let err = NSError(domain: simplyeDomain,
                       code: ErrorCode.appLaunch.rawValue,
                       userInfo: userInfo)
@@ -315,14 +339,14 @@ fileprivate let nullString = "null"
    - parameter message: Message to associate with report.
    - parameter context: Where this issue arose.
    */
-  class func reportFilePathIssue(severity: NYPLSeverity,
-                                 message: String,
-                                 context: String) {
+  class func reportFileSystemIssue(severity: NYPLSeverity,
+                                   message: String,
+                                   context: String) {
     let userInfo = additionalInfo(severity: severity,
                                   message: message,
                                   context: context)
     let err = NSError(domain: simplyeDomain,
-                      code: ErrorCode.filePathFail.rawValue,
+                      code: ErrorCode.fileSystemFail.rawValue,
                       userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
@@ -448,10 +472,10 @@ fileprivate let nullString = "null"
     Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: userInfo)
   }
 
-  class func reportAudiobookInfoEvent(message: String, context: String) {
+  class func reportAudiobookInfoEvent(message: String) {
     let userInfo = additionalInfo(severity: .info,
                                   message: message,
-                                  context: context)
+                                  context: Context.audiobooks.rawValue)
     let err = NSError(domain: simplyeDomain,
                       code: ErrorCode.audiobookEvent.rawValue,
                       userInfo: userInfo)

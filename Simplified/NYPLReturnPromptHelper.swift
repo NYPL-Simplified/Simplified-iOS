@@ -28,8 +28,7 @@
       style: .cancel,
       handler: { action in
         NYPLErrorLogger.reportAudiobookInfoEvent(
-          message: "User chose to keep the audiobook, and not return it.",
-          context: "audiobook-keep")
+          message: "User chose to keep the audiobook, and not return it.")
         handler()
     })
   }
@@ -41,8 +40,7 @@
       style: .default,
       handler: { action in
         NYPLErrorLogger.reportAudiobookInfoEvent(
-          message: "User chose to return the Audiobook early.",
-          context: "audiobook-return")
+          message: "User chose to return the Audiobook early.")
         handler()
     })
   }
