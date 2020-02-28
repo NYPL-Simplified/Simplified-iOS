@@ -468,7 +468,7 @@ didCompleteWithError:(NSError *)error
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
   if (!book.identifier) {
-    [NYPLErrorLogger recordUnexpectedNilIdentifier:identifier book:book];
+    [NYPLErrorLogger logUnexpectedNilIdentifier:identifier book:book];
   }
 
   // Process Adobe Return
@@ -915,7 +915,7 @@ didCompleteWithError:(NSError *)error
     if (![self fileURLForBookIndentifier:book.identifier]) {
       [self failDownloadForBook:book];
       [NYPLErrorLogger
-       recordMissingFileURLAfterDownloadingBook:book
+       logMissingFileURLAfterDownloadingBook:book
        message:@"fileURLForBookIndentifier returned nil, so no destination to copy file to."];
       return;
     }

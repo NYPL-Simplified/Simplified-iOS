@@ -210,7 +210,7 @@
   
   if (connection.currentRequest.URL) {
     self.reloadView.hidden = NO;
-    [NYPLErrorLogger reportCatalogLoadError:error url:self.URL];
+    [NYPLErrorLogger logCatalogLoadError:error url:self.URL];
   }
 
   self.connection = nil;

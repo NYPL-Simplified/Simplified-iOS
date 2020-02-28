@@ -287,9 +287,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
       [metadataParams setObject:[NSNumber numberWithLong:indexPath.row] forKey:@"rowIndex"];
       [metadataParams setObject:[NSNumber numberWithLong:self.bookmarks.count] forKey:@"bookmarkCount"];
-      [NYPLErrorLogger reportDeleteBookmarkErrorWithMessage:@"Attempting to delete bookmark out of bounds."
-                                                    context:@"NYPLReaderTOCViewController"
-                                                   metadata:metadataParams];
+      [NYPLErrorLogger logDeleteBookmarkErrorWithMessage:@"Attempting to delete bookmark out of bounds."
+                                                 context:@"NYPLReaderTOCViewController"
+                                                metadata:metadataParams];
     }
     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:(UITableViewRowAnimationFade)];
   }

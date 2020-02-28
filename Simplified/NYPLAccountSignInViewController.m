@@ -866,7 +866,7 @@ completionHandler:(void (^)(void))handler
          NSError *pDocError = nil;
          UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
          if (!pDoc) {
-           [NYPLErrorLogger reportUserProfileDocumentErrorWithError:pDocError];
+           [NYPLErrorLogger logUserProfileDocumentErrorWithError:pDocError];
            [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Error parsing user profile doc" }]];
            return;
          } else {
@@ -915,7 +915,7 @@ completionHandler:(void (^)(void))handler
                   [[NYPLAccount sharedAccount] setDeviceID:deviceID];
                 }];
               } else {
-                [NYPLErrorLogger reportLocalAuthFailedWithError:error libraryName:self.currentAccount.name];
+                [NYPLErrorLogger logLocalAuthFailedWithError:error libraryName:self.currentAccount.name];
               }
               
               [self authorizationAttemptDidFinish:success error:error];
@@ -941,7 +941,7 @@ completionHandler:(void (^)(void))handler
        }
 
        // Report event that login failed
-       [NYPLErrorLogger reportRemoteLoginErrorWithUrl:request.URL response:response error:error libraryName:self.currentAccount.name];
+       [NYPLErrorLogger logRemoteLoginErrorWithUrl:request.URL response:response error:error libraryName:self.currentAccount.name];
     
        if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
          // TODO: Maybe do something special for when we supposedly didn't supply credentials

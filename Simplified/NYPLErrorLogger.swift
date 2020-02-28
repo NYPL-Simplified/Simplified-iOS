@@ -119,7 +119,7 @@ fileprivate let nullString = "null"
     return dict
   }
 
-  // MARK:- Error reporting
+  // MARK:- Error Logging
 
   /**
     Report when there's a null book identifier
@@ -128,7 +128,7 @@ fileprivate let nullString = "null"
     @param title book title
     @return
    */
-  class func recordUnexpectedNilIdentifier(_ identifier: String?, book: NYPLBook?) {
+  class func logUnexpectedNilIdentifier(_ identifier: String?, book: NYPLBook?) {
     var metadata = [AnyHashable : Any]()
     metadata["incomingIdentifierString"] = identifier ?? nullString
     metadata["bookTitle"] = book?.title ?? nullString
@@ -152,7 +152,7 @@ fileprivate let nullString = "null"
     @param book target book
     @return
    */
-  class func recordMissingFileURLAfterDownloadingBook(_ book: NYPLBook?,
+  class func logMissingFileURLAfterDownloadingBook(_ book: NYPLBook?,
                                                       message: String) {
     var metadata = [AnyHashable : Any]()
     metadata["bookIdentifier"] = book?.identifier ?? nullString
@@ -179,11 +179,11 @@ fileprivate let nullString = "null"
     @param title name of the book
     @return
    */
-  class func reportNilContentCFI(location: NYPLBookLocation?,
-                                 locationDictionary: Dictionary<String, Any>?,
-                                 bookId: String?,
-                                 title: String?,
-                                 message: String?) {
+  class func logNilContentCFI(location: NYPLBookLocation?,
+                              locationDictionary: Dictionary<String, Any>?,
+                              bookId: String?,
+                              title: String?,
+                              message: String?) {
     var metadata = [AnyHashable : Any]()
     metadata["bookID"] = bookId ?? nullString
     metadata["bookTitle"] = title ?? nullString
@@ -207,7 +207,7 @@ fileprivate let nullString = "null"
     Report when there's an error deauthorizing device at RMSDK level
     @return
    */
-  class func deauthorizationError() {
+  class func logDeauthorizationError() {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
     reportLogs()
@@ -232,7 +232,7 @@ fileprivate let nullString = "null"
     @param libraryName name of the library
     @return
    */
-  class func reportRemoteLoginError(url: NSURL?, response: URLResponse?, error: NSError?, libraryName: String?) {
+  class func logRemoteLoginError(url: NSURL?, response: URLResponse?, error: NSError?, libraryName: String?) {
     var metadata = [AnyHashable : Any]()
     metadata["libraryName"] = libraryName ?? nullString
     metadata["errorDescription"] = error?.localizedDescription ?? nullString
@@ -258,7 +258,7 @@ fileprivate let nullString = "null"
     Crashlytics.sharedInstance().recordError(err)
   }
 
-  class func reportUnexpectedNilAccount(context: String) {
+  class func logUnexpectedNilAccount(context: String) {
     let userInfo = additionalInfo(severity: .error, context: context)
     let err = NSError(domain: simplyeDomain,
                       code: ErrorCode.nilAccount.rawValue,
@@ -273,7 +273,7 @@ fileprivate let nullString = "null"
     @param libraryName name of the library
     @return
    */
-  class func reportLocalAuthFailed(error: NSError?, libraryName: String?) {
+  class func logLocalAuthFailed(error: NSError?, libraryName: String?) {
     var metadata = [AnyHashable : Any]()
     metadata["libraryName"] = libraryName ?? nullString
     metadata["errorDescription"] = error?.localizedDescription ?? nullString
@@ -289,9 +289,9 @@ fileprivate let nullString = "null"
     Crashlytics.sharedInstance().recordError(err)
   }
   
-  class func reportDeleteBookmarkError(message: String,
-                                       context: String,
-                                       metadata: [String: Any]) {
+  class func logDeleteBookmarkError(message: String,
+                                    context: String,
+                                    metadata: [String: Any]) {
     let userInfo = additionalInfo(severity: .warning,
                                   message: message,
                                   context: context,
@@ -328,7 +328,7 @@ fileprivate let nullString = "null"
   /**
     Report when user launches the app.
    */
-  class func reportNewAppLaunch() {
+  class func logNewAppLaunch() {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
     reportLogs()
@@ -347,9 +347,9 @@ fileprivate let nullString = "null"
    - parameter message: Message to associate with report.
    - parameter context: Where this issue arose.
    */
-  class func reportFileSystemIssue(severity: NYPLSeverity,
-                                   message: String,
-                                   context: String) {
+  class func logFileSystemIssue(severity: NYPLSeverity,
+                                message: String,
+                                context: String) {
     let userInfo = additionalInfo(severity: severity,
                                   message: message,
                                   context: context)
@@ -364,7 +364,7 @@ fileprivate let nullString = "null"
     Report when there's an issue downloading the holds in the background
     @return
    */
-  class func reportExpiredBackgroundFetch() {
+  class func logExpiredBackgroundFetch() {
     var metadata = [AnyHashable : Any]()
     metadata["loanUrl"] = AccountsManager.shared.currentAccount?.loansUrl ?? nullString
     addAccountInfoToMetadata(&metadata)
@@ -409,7 +409,7 @@ fileprivate let nullString = "null"
     @param url the url the catalog is being fetched from
     @return
    */
-  class func reportCatalogLoadError(_ error: NSError, url: URL?) {
+  class func logCatalogLoadError(_ error: NSError, url: URL?) {
     var metadata = [AnyHashable : Any]()
     metadata["url"] = url ?? nullString
     metadata["errorDescription"] = error.localizedDescription
@@ -451,7 +451,7 @@ fileprivate let nullString = "null"
     @param error the parsing error
     @return
    */
-  class func reportUserProfileDocumentError(error: NSError?) {
+  class func logUserProfileDocumentError(error: NSError?) {
     let err = error ?? NSError.init(domain: simplyeDomain,
                                     code: ErrorCode.userProfileDocFail.rawValue,
                                     userInfo: nil)
@@ -465,14 +465,14 @@ fileprivate let nullString = "null"
                                              withAdditionalUserInfo: userInfo)
   }
 
-  class func reportAudiobookIssue(_ error: NSError,
-                                  severity: NYPLSeverity,
-                                  message: String? = nil) {
+  class func logAudiobookIssue(_ error: NSError,
+                               severity: NYPLSeverity,
+                               message: String? = nil) {
     let userInfo = additionalInfo(severity: severity, message: message)
     Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: userInfo)
   }
 
-  class func reportAudiobookInfoEvent(message: String) {
+  class func logAudiobookInfoEvent(message: String) {
     let userInfo = additionalInfo(severity: .info,
                                   message: message,
                                   context: Context.audiobooks.rawValue)

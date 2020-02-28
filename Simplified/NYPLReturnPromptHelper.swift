@@ -27,7 +27,7 @@
       title: NSLocalizedString("Keep", comment: ""),
       style: .cancel,
       handler: { action in
-        NYPLErrorLogger.reportAudiobookInfoEvent(
+        NYPLErrorLogger.logAudiobookInfoEvent(
           message: "User chose to keep the audiobook, and not return it.")
         handler()
     })
@@ -39,7 +39,7 @@
       title: NSLocalizedString("Return", comment: ""),
       style: .default,
       handler: { action in
-        NYPLErrorLogger.reportAudiobookInfoEvent(
+        NYPLErrorLogger.logAudiobookInfoEvent(
           message: "User chose to return the Audiobook early.")
         handler()
     })

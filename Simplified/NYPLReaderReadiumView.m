@@ -563,11 +563,11 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     NSString *contentCFI = locationDictionary[@"contentCFI"];
     if (!contentCFI) {
       contentCFI = @"";
-      [NYPLErrorLogger reportNilContentCFIWithLocation:location
-                                    locationDictionary:locationDictionary
-                                                bookId:self.book.identifier
-                                                 title:self.book.title
-                                               message:@"No CFI from NYPLLocation"];
+      [NYPLErrorLogger logNilContentCFIWithLocation:location
+                                 locationDictionary:locationDictionary
+                                             bookId:self.book.identifier
+                                              title:self.book.title
+                                            message:@"No CFI from NYPLLocation"];
     }
     dictionary[@"openPageRequest"] = @{@"idref": locationDictionary[@"idref"], @"elementCfi": contentCFI};
     NYPLLOG_F(@"Readium Initialize: Open Page Req idref: %@ elementCfi: %@", locationDictionary[@"idref"], contentCFI);
@@ -770,11 +770,11 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 
        if(!result || [result isKindOfClass:[NSNull class]]) {
          NYPLLOG(@"Readium failed to generate a CFI. This is a bug in Readium.");
-         [NYPLErrorLogger reportNilContentCFIWithLocation:nil
-                                       locationDictionary:nil
-                                                   bookId:nil
-                                                    title:nil
-                                                  message:@"Readium failed to generate a CFI"];
+         [NYPLErrorLogger logNilContentCFIWithLocation:nil
+                                    locationDictionary:nil
+                                                bookId:nil
+                                                 title:nil
+                                               message:@"Readium failed to generate a CFI"];
          return;
        }
        NSString *const locationJSON = result;
