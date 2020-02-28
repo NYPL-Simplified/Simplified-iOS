@@ -56,7 +56,7 @@
   
   NSTimeInterval timeoutInterval = 30.0;
   NSTimeInterval activityLabelTimer = 10.0;
-  
+
   NSURLRequest *const request = [NSURLRequest requestWithURL:self.URL
                                                  cachePolicy:NSURLRequestUseProtocolCachePolicy
                                              timeoutInterval:timeoutInterval];
@@ -160,7 +160,8 @@
     UIAlertController *alert;
     if (problemDocumentParseError) {
       [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
-                                                url:[self.response URL]];
+                                                url:[self.response URL]
+                                            context:@"RemoteVC-errorResponse"];
       alert = [NYPLAlertUtils alertWithTitle:@"Error" message:@"Unknown error parsing problem document"];
     } else {
       alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];

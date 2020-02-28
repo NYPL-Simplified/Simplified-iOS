@@ -183,7 +183,8 @@ didFinishDownloadingToURL:(NSURL *const)location
     problemDocument = [NYPLProblemDocument fromData:[NSData dataWithContentsOfURL:location] error:&problemDocumentParseError];
     if (problemDocumentParseError) {
       [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
-                                                url:location];
+                                                url:location
+                                            context:@"myBooks-download-finish"];
     }
     [[NSFileManager defaultManager] removeItemAtURL:location error:NULL];
     success = NO;

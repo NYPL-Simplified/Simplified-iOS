@@ -950,7 +950,8 @@ completionHandler:(void (^)(void))handler
          NYPLProblemDocument *problemDocument = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
          if (problemDocumentParseError) {
            [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
-                                                     url:request.URL];
+                                                     url:request.URL
+                                                 context:@"AccountSignInVC-validateCreds"];
          } else if (problemDocument) {
            UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:@"SettingsAccountViewControllerLoginFailed"];
            [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];

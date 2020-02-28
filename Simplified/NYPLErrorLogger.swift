@@ -31,6 +31,7 @@ fileprivate let nullString = "null"
   /// (e.g. an error related to audiobooks may happen in different classes)
   /// although the two things may obviously overlap.
   enum Context: String {
+    case catalog
     case bookDownload
     case audiobooks
     case myBooks
@@ -97,12 +98,10 @@ fileprivate let nullString = "null"
   ///   - message: An optional message.
   ///   - context: Page/VC name or anything that can help identify the in-code location where the error occurred.
   ///   - metadata: Any additional metadata.
-  ///   - groupingHash: A string to group similar errors.
   private class func additionalInfo(severity: NYPLSeverity,
                                     message: String? = nil,
                                     context: String? = nil,
-                                    metadata: [AnyHashable : Any]? = nil,
-                                    groupingHash: String? = nil) -> [String : Any] {
+                                    metadata: [AnyHashable: Any]? = nil) -> [String: Any] {
     var dict: [String: Any] = ["severity": severity.stringValue()]
     if let message = message {
       dict["message"] = message
@@ -112,9 +111,6 @@ fileprivate let nullString = "null"
     }
     if let metadata = metadata {
       dict["metadata"] = metadata
-    }
-    if let groupingHash = groupingHash {
-      dict["groupingHash"] = groupingHash
     }
     return dict
   }
@@ -153,7 +149,7 @@ fileprivate let nullString = "null"
     @return
    */
   class func logMissingFileURLAfterDownloadingBook(_ book: NYPLBook?,
-                                                      message: String) {
+                                                   message: String) {
     var metadata = [AnyHashable : Any]()
     metadata["bookIdentifier"] = book?.identifier ?? nullString
     metadata["bookTitle"] = book?.title ?? nullString
@@ -370,10 +366,7 @@ fileprivate let nullString = "null"
     addAccountInfoToMetadata(&metadata)
     reportLogs()
 
-    let userInfo = additionalInfo(
-      severity: .error,
-      metadata: metadata,
-      groupingHash: "BackgroundFetchExpired")
+    let userInfo = additionalInfo(severity: .error, metadata: metadata)
     let err = NSError(domain: simplyeDomain,
                       code: ErrorCode.expiredBackgroundFetch.rawValue,
                       userInfo: userInfo)
@@ -418,20 +411,22 @@ fileprivate let nullString = "null"
 
     let userInfo = additionalInfo(
       severity: .error,
-      metadata: metadata,
-      groupingHash: "catalog-load-error")
+      context: Context.catalog.rawValue,
+      metadata: metadata)
 
     Crashlytics.sharedInstance().recordError(error,
                                              withAdditionalUserInfo: userInfo)
   }
   
   /**
-    Report when there's an issue parsing a problem document
-    @param error the parsing error
-    @param url the url the problem document is being fetched from
-    @return
+   Report when there's an issue parsing a problem document.
+   - parameter error: the parsing error.
+   - parameter url: the url the problem document is being fetched from.
+   - parameter context: client-provided operating context.
    */
-  class func logProblemDocumentParseError(_ error: NSError, url: URL?) {
+  class func logProblemDocumentParseError(_ error: NSError,
+                                          url: URL?,
+                                          context: String) {
     var metadata = [AnyHashable : Any]()
     metadata["url"] = url ?? nullString
     metadata["errorDescription"] = error.localizedDescription
@@ -440,8 +435,8 @@ fileprivate let nullString = "null"
     
     let userInfo = additionalInfo(
       severity: .error,
-      metadata: metadata,
-      groupingHash: "problemDocumentParseError")
+      context: context,
+      metadata: metadata)
     Crashlytics.sharedInstance().recordError(error,
                                              withAdditionalUserInfo: userInfo)
   }
