@@ -287,15 +287,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       NSMutableDictionary *metadataParams = [NSMutableDictionary dictionary];
       [metadataParams setObject:[NSNumber numberWithLong:indexPath.row] forKey:@"rowIndex"];
       [metadataParams setObject:[NSNumber numberWithLong:self.bookmarks.count] forKey:@"bookmarkCount"];
-      NSError *err = [NSError errorWithDomain:@"org.nypl.labs.SimplyE"
-                                         code:11
-                                     userInfo:nil];
-      [NYPLErrorLogger reportError:err
-                           message:@"Attempting to delete bookmark out of bounds."
-                          severity:NYPLSeverityWarning
-                      groupingHash:nil
-                           context:@"NYPLReaderTOCViewController"
-                          metadata:metadataParams];
+      [NYPLErrorLogger logDeleteBookmarkErrorWithMessage:@"Attempting to delete bookmark out of bounds."
+                                                 context:@"NYPLReaderTOCViewController"
+                                                metadata:metadataParams];
     }
     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:(UITableViewRowAnimationFade)];
   }

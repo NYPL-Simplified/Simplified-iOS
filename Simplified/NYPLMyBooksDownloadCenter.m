@@ -182,7 +182,9 @@ didFinishDownloadingToURL:(NSURL *const)location
     NSError *problemDocumentParseError = nil;
     problemDocument = [NYPLProblemDocument fromData:[NSData dataWithContentsOfURL:location] error:&problemDocumentParseError];
     if (problemDocumentParseError) {
-      [NYPLErrorLogger logProblemDocumentParseErrorWithError:problemDocumentParseError url:location];
+      [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                                                url:location
+                                            context:@"myBooks-download-finish"];
     }
     [[NSFileManager defaultManager] removeItemAtURL:location error:NULL];
     success = NO;
@@ -467,7 +469,7 @@ didCompleteWithError:(NSError *)error
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
   if (!book.identifier) {
-    [NYPLErrorLogger recordUnexpectedNilIdentifierWithBook:book identifier:identifier title:bookTitle];
+    [NYPLErrorLogger logUnexpectedNilIdentifier:identifier book:book];
   }
 
   // Process Adobe Return
@@ -913,7 +915,9 @@ didCompleteWithError:(NSError *)error
 
     if (![self fileURLForBookIndentifier:book.identifier]) {
       [self failDownloadForBook:book];
-      [NYPLErrorLogger recordFailureToCopyWithBook:book];
+      [NYPLErrorLogger
+       logMissingFileURLAfterDownloadingBook:book
+       message:@"fileURLForBookIndentifier returned nil, so no destination to copy file to."];
       return;
     }
     

@@ -432,7 +432,7 @@ double const requestTimeoutInterval = 25.0;
        NSError *pDocError = nil;
        UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
        if (!pDoc) {
-         [NYPLErrorLogger reportUserProfileDocumentErrorWithError:pDocError];
+         [NYPLErrorLogger logUserProfileDocumentErrorWithError:pDocError];
          [self showLogoutAlertWithError:pDocError responseCode:statusCode];
          [self removeActivityTitle];
          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
@@ -523,7 +523,7 @@ double const requestTimeoutInterval = 25.0;
      if(!success) {
        // Even though we failed, let the user continue to log out.
        // The most likely reason is a user changing their PIN.
-       [NYPLErrorLogger deauthorizationError];
+       [NYPLErrorLogger logDeauthorizationError];
      }
      else {
        NYPLLOG(@"***Successful DRM Deactivation***");
@@ -574,7 +574,7 @@ double const requestTimeoutInterval = 25.0;
   NSError *pDocError = nil;
   UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
   if (!pDoc) {
-    [NYPLErrorLogger reportUserProfileDocumentErrorWithError:pDocError];
+    [NYPLErrorLogger logUserProfileDocumentErrorWithError:pDocError];
     [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Error parsing user profile doc" }]];
     return;
   }
@@ -620,7 +620,7 @@ double const requestTimeoutInterval = 25.0;
         [self.selectedNYPLAccount setDeviceID:deviceID];
       }];
     } else {
-      [NYPLErrorLogger reportLocalAuthFailedWithError:error libraryName:self.selectedAccount.name];
+      [NYPLErrorLogger logLocalAuthFailedWithError:error libraryName:self.selectedAccount.name];
     }
 
     [self authorizationAttemptDidFinish:success error:error];
@@ -644,7 +644,7 @@ double const requestTimeoutInterval = 25.0;
   }
 
   // Report event that login failed
-  [NYPLErrorLogger reportRemoteLoginErrorWithUrl:request.URL response:response error:error libraryName:self.selectedAccount.name];
+  [NYPLErrorLogger logRemoteLoginErrorWithUrl:request.URL response:response error:error libraryName:self.selectedAccount.name];
 
   if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
     // TODO: Maybe do something special for when we supposedly didn't supply credentials
@@ -652,7 +652,9 @@ double const requestTimeoutInterval = 25.0;
     NSError *problemDocumentParseError = nil;
     NYPLProblemDocument *problemDocument = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
     if (problemDocumentParseError) {
-      [NYPLErrorLogger logProblemDocumentParseErrorWithError:problemDocumentParseError url:request.URL];
+      [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                                                url:request.URL
+                                            context:@"SettingsAccountDetailVC-processCreds"];
     } else if (problemDocument) {
       UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:@"SettingsAccountViewControllerLoginFailed"];
       [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];

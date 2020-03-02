@@ -56,7 +56,7 @@
   
   NSTimeInterval timeoutInterval = 30.0;
   NSTimeInterval activityLabelTimer = 10.0;
-  
+
   NSURLRequest *const request = [NSURLRequest requestWithURL:self.URL
                                                  cachePolicy:NSURLRequestUseProtocolCachePolicy
                                              timeoutInterval:timeoutInterval];
@@ -159,7 +159,9 @@
     NYPLProblemDocument *pDoc = [NYPLProblemDocument fromData:self.data error:&problemDocumentParseError];
     UIAlertController *alert;
     if (problemDocumentParseError) {
-      [NYPLErrorLogger logProblemDocumentParseErrorWithError:problemDocumentParseError url:[self.response URL]];
+      [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                                                url:[self.response URL]
+                                            context:@"RemoteVC-errorResponse"];
       alert = [NYPLAlertUtils alertWithTitle:@"Error" message:@"Unknown error parsing problem document"];
     } else {
       alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
@@ -201,15 +203,15 @@
 
 #pragma mark NSURLConnectionDelegate
 
-- (void)connection:(__attribute__((unused)) NSURLConnection *)connection
-  didFailWithError:(__attribute__((unused)) NSError *)error
+- (void)connection:(NSURLConnection *)connection
+  didFailWithError:(NSError *)error
 {
   [self.activityIndicatorView stopAnimating];
   self.activityIndicatorLabel.hidden = YES;
   
   if (connection.currentRequest.URL) {
     self.reloadView.hidden = NO;
-    [NYPLErrorLogger catalogLoadErrorWithError:error url:self.URL];
+    [NYPLErrorLogger logCatalogLoadError:error url:self.URL];
   }
 
   self.connection = nil;
