@@ -90,7 +90,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
       }
     } backgroundFetchHandler:^(UIBackgroundFetchResult result) {
       NYPLLOG_F(@"[Background Fetch] Completed with result %lu. "
-                "ElapsedTime=%f", result, -startDate.timeIntervalSinceNow);
+                "ElapsedTime=%f", (unsigned long)result, -startDate.timeIntervalSinceNow);
       backgroundFetchHandler(result);
     }];
   } else {
