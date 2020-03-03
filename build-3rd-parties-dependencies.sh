@@ -24,8 +24,8 @@ cp ../Certificates/SimplyE/iOS/AudioEngine.json .
 cp ../Certificates/SimplyE/iOS/GoogleService-Info.plist .
 cp ../Certificates/SimplyE/iOS/APIKeys.swift Simplified/
 cp ../Certificates/SimplyE/iOS/ReaderClientCertProduction.sig Simplified/ReaderClientCert.sig
-build-carthage.sh $AE_BUILD_CONFIG
-build-openssl-curl.sh
+./build-carthage.sh $AE_BUILD_CONFIG
+./build-openssl-curl.sh
 
 # these commands must always be run from the Simplified-iOS repo root.
 sh adobe-rmsdk-build.sh
