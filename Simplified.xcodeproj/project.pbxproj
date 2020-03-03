@@ -744,16 +744,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0345BFE31DBF010100398B6F /* Annotations */ = {
-			isa = PBXGroup;
-			children = (
-				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
-				E6845D951FB38D1300EBF69A /* NYPLReadiumViewSyncManager.h */,
-				E6845D961FB38D1300EBF69A /* NYPLReadiumViewSyncManager.m */,
-			);
-			name = Annotations;
-			sourceTree = "<group>";
-		};
 		0345BFEE1DBF031B00398B6F /* CardCreator */ = {
 			isa = PBXGroup;
 			children = (
@@ -932,6 +922,7 @@
 		119504051994061E009FB788 /* Reader */ = {
 			isa = PBXGroup;
 			children = (
+				119503EE1993FB90009FB788 /* NYPLReadium.h */,
 				03690E281EB2B44300F75D5F /* NYPLReadiumBookmark.swift */,
 				03690E221EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift */,
 				E63F2C6B1EAA81B3002B6373 /* ExtendedNavBarView.swift */,
@@ -955,6 +946,8 @@
 				11BFDB32199C01F700378691 /* NYPLReaderTOCViewController.m */,
 				119504091994075B009FB788 /* NYPLReaderViewController.h */,
 				1195040A1994075B009FB788 /* NYPLReaderViewController.m */,
+				E6845D951FB38D1300EBF69A /* NYPLReadiumViewSyncManager.h */,
+				E6845D961FB38D1300EBF69A /* NYPLReadiumViewSyncManager.m */,
 			);
 			name = Reader;
 			sourceTree = "<group>";
@@ -1156,7 +1149,6 @@
 			isa = PBXGroup;
 			children = (
 				110AF8891961D66C004887C3 /* Additions */,
-				0345BFE31DBF010100398B6F /* Annotations */,
 				110AF8901961D822004887C3 /* Book */,
 				0345BFEE1DBF031B00398B6F /* CardCreator */,
 				1183F349194F74EF00DC322F /* Catalog */,
@@ -1169,6 +1161,7 @@
 				1158812D1A894F4E008672C3 /* NYPLAccountSignInViewController.m */,
 				E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */,
 				5D1B142922CC179F0006C964 /* NYPLAlertUtils.swift */,
+				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
 				A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */,
 				A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */,
 				A93F9F9621CDACF700BD3B0C /* NYPLAppReviewPrompt.swift */,
@@ -1211,7 +1204,6 @@
 				2DB436371D4C049200F8E69D /* NYPLReachability.m */,
 				E69404081E4A789800E566ED /* NYPLReachabilityManager.h */,
 				E69404091E4A789800E566ED /* NYPLReachabilityManager.m */,
-				119503EE1993FB90009FB788 /* NYPLReadium.h */,
 				11B20E6C19D9F6DD00877A23 /* NYPLReloadView.h */,
 				11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */,
 				A42E0DEF1B3F5A490095EBAE /* NYPLRemoteViewController.h */,

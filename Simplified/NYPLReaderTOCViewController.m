@@ -1,15 +1,11 @@
+#import <PureLayout/PureLayout.h>
+
 #import "NYPLConfiguration.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderTOCCell.h"
 #import "NYPLReaderTOCElement.h"
-#import "NYPLReadium.h"
-#import <PureLayout/PureLayout.h>
 #import "NYPLReaderTOCViewController.h"
-#import "NYPLReadiumViewSyncManager.h"
-
-#import "NYPLReaderReadiumView.h"
 #import "SimplyE-Swift.h"
-#import "NSDate+NYPLDateAdditions.h"
 
 
 @interface NYPLReaderTOCViewController () <UITableViewDataSource, UITableViewDelegate>
