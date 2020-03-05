@@ -456,7 +456,6 @@ fileprivate let nullString = "null"
     reportLogs()
 
     let userInfo = additionalInfo(severity: .error, metadata: metadata)
-    print("Sending record to Crashlytics")
     Crashlytics.sharedInstance().recordError(err,
                                              withAdditionalUserInfo: userInfo)
   }
