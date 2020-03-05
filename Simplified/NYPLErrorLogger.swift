@@ -450,12 +450,13 @@ fileprivate let nullString = "null"
     let err = error ?? NSError.init(domain: simplyeDomain,
                                     code: ErrorCode.userProfileDocFail.rawValue,
                                     userInfo: nil)
-    var metadata = [AnyHashable : Any]()
+    var metadata: [AnyHashable : Any] = error?.userInfo ?? [AnyHashable : Any]()
     metadata["errorDescription"] = error?.localizedDescription ?? nullString
     addAccountInfoToMetadata(&metadata)
     reportLogs()
 
     let userInfo = additionalInfo(severity: .error, metadata: metadata)
+    print("Sending record to Crashlytics")
     Crashlytics.sharedInstance().recordError(err,
                                              withAdditionalUserInfo: userInfo)
   }

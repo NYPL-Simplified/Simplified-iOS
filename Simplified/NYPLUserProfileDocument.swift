@@ -1,6 +1,13 @@
 import Foundation
 
 @objcMembers public class UserProfileDocument : NSObject, Codable {
+  static let parseErrorKey: String = "NYPLParseProfileErrorKey"
+  static let parseErrorDescription: String = "NYPLParseProfileErrorDescription"
+  static let parseErrorCodingPath: String = "NYPLParseProfileErrorCodingPath"
+
+  static let decodingErrorCodeInvalid: Int = 4864
+  static let decodingErrorCodeNotFound: Int = 4865
+    
   @objc @objcMembers public class DRMObject : NSObject, Codable {
     let vendor: String?
     let clientToken: String?
@@ -50,6 +57,13 @@ import Foundation
     case authorizationExpires = "simplified:authorization_expires"
     case settings = "settings"
   }
+    
+  enum NYPLParseProfileErrorKey: Int {
+    case dataCorrupted = 1001
+    case typeMismatch = 1002
+    case valueNotFound = 1003
+    case keyNotFound = 1004
+  }
   
   func toJson() -> String {
     let jsonEncoder = JSONEncoder()
@@ -67,6 +81,32 @@ import Foundation
     dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     jsonDecoder.dateDecodingStrategy = .formatted(dateFormatter)
     
-    return try jsonDecoder.decode(UserProfileDocument.self, from: data)
+    do {
+      return try jsonDecoder.decode(UserProfileDocument.self, from: data)
+    } catch let DecodingError.dataCorrupted(context) {
+      throw NSError(domain: NSCocoaErrorDomain,
+                    code: decodingErrorCodeInvalid,
+                    userInfo: [parseErrorKey: NYPLParseProfileErrorKey.dataCorrupted.rawValue,
+                               parseErrorDescription: context.debugDescription,
+                               parseErrorCodingPath: context.codingPath])
+    } catch let DecodingError.typeMismatch(_, context) {
+      throw NSError(domain: NSCocoaErrorDomain,
+                    code: decodingErrorCodeInvalid,
+                    userInfo: [parseErrorKey: NYPLParseProfileErrorKey.typeMismatch.rawValue,
+                               parseErrorDescription: context.debugDescription,
+                               parseErrorCodingPath: context.codingPath])
+    } catch let DecodingError.valueNotFound(_, context) {
+      throw NSError(domain: NSCocoaErrorDomain,
+                    code: decodingErrorCodeNotFound,
+                    userInfo: [parseErrorKey: NYPLParseProfileErrorKey.valueNotFound.rawValue,
+                               parseErrorDescription: context.debugDescription,
+                               parseErrorCodingPath: context.codingPath])
+    } catch let DecodingError.keyNotFound(_, context) {
+      throw NSError(domain: NSCocoaErrorDomain,
+                    code: decodingErrorCodeNotFound,
+                    userInfo: [parseErrorKey: NYPLParseProfileErrorKey.keyNotFound.rawValue,
+                               parseErrorDescription: context.debugDescription,
+                               parseErrorCodingPath: context.codingPath])
+    }
   }
 }
