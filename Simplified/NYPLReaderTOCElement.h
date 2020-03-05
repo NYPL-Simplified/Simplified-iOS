@@ -1,5 +1,3 @@
-@class RDNavigationElement;
-
 @class NYPLReaderRendererOpaqueLocation;
 
 @interface NYPLReaderTOCElement : NSObject

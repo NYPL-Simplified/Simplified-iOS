@@ -544,13 +544,13 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
     self.bookIsCorrupt = YES;
     [self.delegate renderer:self didEncounterCorruptionForBook:self.book];
     return;
-  } else {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-      weakSelf.webView.isAccessibilityElement = NO;
-      UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
-    });
   }
-  
+
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    weakSelf.webView.isAccessibilityElement = NO;
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+  });
+
   self.package.rootURL = [NSString stringWithFormat:@"http://%@:%d/", localhost, self.server.port];
 
   NSMutableDictionary *const dictionary = [NSMutableDictionary dictionary];
