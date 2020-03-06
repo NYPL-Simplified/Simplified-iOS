@@ -1,4 +1,5 @@
-#import "NYPLReadium.h"
+#import <Main/RDContainer.h>
+
 #import "NYPLReaderContainerDelegateBase.h"
 
 @interface NYPLReaderContainerDelegate : NYPLReaderContainerDelegateBase <RDContainerDelegate>

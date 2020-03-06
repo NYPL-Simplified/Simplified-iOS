@@ -165,6 +165,7 @@
 		731DA5FC240711F5009CC191 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731DA5FB240711F5009CC191 /* Fabric.framework */; };
 		7327A89323EE017300954748 /* NYPLMainThreadChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7327A89223EE017300954748 /* NYPLMainThreadChecker.swift */; };
 		732F929323ECB51F0099244C /* NYPLBackgroundExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */; };
+		7360891C240DFBF7007EE66F /* NYPLErrorLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF8B422C3FC06007CAA34 /* NYPLErrorLogger.swift */; };
 		738EF2D02405E38800F388FB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 738EF2CB2405E38800F388FB /* GoogleService-Info.plist */; };
 		738EF2DB2405EA6000F388FB /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D22405EA5F00F388FB /* Firebase.framework */; };
 		738EF2DC2405EA6000F388FB /* FirebaseCoreDiagnostics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D32405EA5F00F388FB /* FirebaseCoreDiagnostics.framework */; };
@@ -743,16 +744,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0345BFE31DBF010100398B6F /* Annotations */ = {
-			isa = PBXGroup;
-			children = (
-				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
-				E6845D951FB38D1300EBF69A /* NYPLReadiumViewSyncManager.h */,
-				E6845D961FB38D1300EBF69A /* NYPLReadiumViewSyncManager.m */,
-			);
-			name = Annotations;
-			sourceTree = "<group>";
-		};
 		0345BFEE1DBF031B00398B6F /* CardCreator */ = {
 			isa = PBXGroup;
 			children = (
@@ -931,6 +922,7 @@
 		119504051994061E009FB788 /* Reader */ = {
 			isa = PBXGroup;
 			children = (
+				119503EE1993FB90009FB788 /* NYPLReadium.h */,
 				03690E281EB2B44300F75D5F /* NYPLReadiumBookmark.swift */,
 				03690E221EB2B35000F75D5F /* NYPLReaderBookmarkCell.swift */,
 				E63F2C6B1EAA81B3002B6373 /* ExtendedNavBarView.swift */,
@@ -954,6 +946,8 @@
 				11BFDB32199C01F700378691 /* NYPLReaderTOCViewController.m */,
 				119504091994075B009FB788 /* NYPLReaderViewController.h */,
 				1195040A1994075B009FB788 /* NYPLReaderViewController.m */,
+				E6845D951FB38D1300EBF69A /* NYPLReadiumViewSyncManager.h */,
+				E6845D961FB38D1300EBF69A /* NYPLReadiumViewSyncManager.m */,
 			);
 			name = Reader;
 			sourceTree = "<group>";
@@ -1035,10 +1029,32 @@
 		7327A88D23EE00FE00954748 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				7327A89223EE017300954748 /* NYPLMainThreadChecker.swift */,
+				1183F359194F847100DC322F /* NYPLAsync.h */,
+				1183F35A194F847100DC322F /* NYPLAsync.m */,
+				114C8CD519BE2FD300719B72 /* NYPLAttributedString.h */,
+				114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */,
 				732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */,
+				11369D46199527C200BB11F8 /* NYPLJSON.h */,
+				11369D47199527C200BB11F8 /* NYPLJSON.m */,
+				52592BBB21220A4F00587288 /* NYPLLocalization.h */,
+				52592BB721220A1100587288 /* NYPLLocalization.m */,
+				11068C53196DD37900E8A94B /* NYPLNull.h */,
+				11068C54196DD37900E8A94B /* NYPLNull.m */,
+				7327A89223EE017300954748 /* NYPLMainThreadChecker.swift */,
+				111559EB19B8FA530003BE94 /* NYPLXML.h */,
+				111559EC19B8FA590003BE94 /* NYPLXML.m */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		7360891B240DFB93007EE66F /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				2D382BD61D08BA99002C423D /* Log.swift */,
+				5D7CF8B422C3FC06007CAA34 /* NYPLErrorLogger.swift */,
+				1114A6AC1958B215007507A2 /* NYPLLOG.h */,
+			);
+			name = Logging;
 			sourceTree = "<group>";
 		};
 		84B7A3421B84E8FE00584FB2 /* OpenDyslexicFont */ = {
@@ -1145,12 +1161,11 @@
 			isa = PBXGroup;
 			children = (
 				110AF8891961D66C004887C3 /* Additions */,
-				0345BFE31DBF010100398B6F /* Annotations */,
 				110AF8901961D822004887C3 /* Book */,
 				0345BFEE1DBF031B00398B6F /* CardCreator */,
 				1183F349194F74EF00DC322F /* Catalog */,
 				11C5DCEF1976D1BA005A9945 /* Holds */,
-				2D382BD61D08BA99002C423D /* Log.swift */,
+				7360891B240DFB93007EE66F /* Logging */,
 				110AF8881961D652004887C3 /* My Books */,
 				11172762197F31280043EFBF /* NYPLAccount.h */,
 				11172763197F31280043EFBF /* NYPLAccount.m */,
@@ -1158,16 +1173,12 @@
 				1158812D1A894F4E008672C3 /* NYPLAccountSignInViewController.m */,
 				E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */,
 				5D1B142922CC179F0006C964 /* NYPLAlertUtils.swift */,
+				2DF321821DC3B83500E1858F /* NYPLAnnotations.swift */,
 				A823D81F192BABA400B55DE2 /* NYPLAppDelegate.h */,
 				A823D820192BABA400B55DE2 /* NYPLAppDelegate.m */,
 				A93F9F9621CDACF700BD3B0C /* NYPLAppReviewPrompt.swift */,
-				1183F359194F847100DC322F /* NYPLAsync.h */,
-				1183F35A194F847100DC322F /* NYPLAsync.m */,
-				114C8CD519BE2FD300719B72 /* NYPLAttributedString.h */,
-				114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */,
 				A4E254F81B0E610900193FE4 /* NYPLBasicAuth.h */,
 				A4E254F91B0E610900193FE4 /* NYPLBasicAuth.m */,
-				5D7CF8B422C3FC06007CAA34 /* NYPLErrorLogger.swift */,
 				E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */,
 				116A5EB71947B57500491A21 /* NYPLConfiguration.h */,
 				116A5EB81947B57500491A21 /* NYPLConfiguration.m */,
@@ -1180,20 +1191,13 @@
 				11F3771E19DB62B000487769 /* NYPLFacetView.m */,
 				113DB8A519C24E54004E1154 /* NYPLIndeterminateProgressView.h */,
 				113DB8A619C24E54004E1154 /* NYPLIndeterminateProgressView.m */,
-				11369D46199527C200BB11F8 /* NYPLJSON.h */,
-				11369D47199527C200BB11F8 /* NYPLJSON.m */,
 				11C5DD14197727A6005A9945 /* NYPLKeychain.h */,
 				11C5DD15197727A6005A9945 /* NYPLKeychain.m */,
 				E6B6E76E1F6859A4007EE361 /* NYPLKeychainManager.swift */,
 				1111973A19880E8D0014462F /* NYPLLinearView.h */,
 				1111973B19880E8D0014462F /* NYPLLinearView.m */,
-				52592BBB21220A4F00587288 /* NYPLLocalization.h */,
-				52592BB721220A1100587288 /* NYPLLocalization.m */,
-				1114A6AC1958B215007507A2 /* NYPLLOG.h */,
 				5D60D3532297353C001080D0 /* NYPLMigrationManager.swift */,
 				E671FF7C1E3A7068002AB13F /* NYPLNetworkQueue.swift */,
-				11068C53196DD37900E8A94B /* NYPLNull.h */,
-				11068C54196DD37900E8A94B /* NYPLNull.m */,
 				119BEBB719902A8800121439 /* NYPLOpenSearchDescription.h */,
 				119BEBB819902A8800121439 /* NYPLOpenSearchDescription.m */,
 				5D1B141422CBE3570006C964 /* NYPLProblemDocument.swift */,
@@ -1202,7 +1206,6 @@
 				2DB436371D4C049200F8E69D /* NYPLReachability.m */,
 				E69404081E4A789800E566ED /* NYPLReachabilityManager.h */,
 				E69404091E4A789800E566ED /* NYPLReachabilityManager.m */,
-				119503EE1993FB90009FB788 /* NYPLReadium.h */,
 				11B20E6C19D9F6DD00877A23 /* NYPLReloadView.h */,
 				11B20E6D19D9F6DD00877A23 /* NYPLReloadView.m */,
 				A42E0DEF1B3F5A490095EBAE /* NYPLRemoteViewController.h */,
@@ -1216,8 +1219,6 @@
 				118B7ABE195CBF72005CE3E7 /* NYPLSession.m */,
 				5D3A28CB22D3DA850042B3BD /* NYPLUserProfileDocument.swift */,
 				E6202A031DD52B8600C99553 /* NYPLWelcomeScreen.swift */,
-				111559EB19B8FA530003BE94 /* NYPLXML.h */,
-				111559EC19B8FA590003BE94 /* NYPLXML.m */,
 				E6C91BC01FD5F63B00A32F42 /* NYPLZXingEncoder.h */,
 				E6C91BC11FD5F63B00A32F42 /* NYPLZXingEncoder.m */,
 				AE77E8DE5454517F1AE119BF /* OPDS */,
@@ -1596,7 +1597,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" == \"Release\" ]; then\n  \"${PROJECT_DIR}/Carthage/Build/iOS/Fabric.framework/upload-symbols\" -gsp \"$SCRIPT_INPUT_FILE_1\" -p ios \"$SCRIPT_INPUT_FILE_2\"\nelse\n  \"${PROJECT_DIR}/Carthage/Build/iOS/Fabric.framework/run\"\nfi\n";
+			shellScript = "\"${PROJECT_DIR}/Carthage/Build/iOS/Fabric.framework/run\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1612,6 +1613,7 @@
 				5D7CF8BC22C42AE2007CAA34 /* LogTests.swift in Sources */,
 				2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */,
 				7307A5F423FF2A6000DE53DE /* NYPLStringAdditionsTests.swift in Sources */,
+				7360891C240DFBF7007EE66F /* NYPLErrorLogger.swift in Sources */,
 				2D8790A520129AF200E2763F /* NYPLBookAcquisitionPathTests.swift in Sources */,
 				2D2B477E1D08F82C007F7764 /* Log.swift in Sources */,
 			);
@@ -2005,7 +2007,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2018,7 +2020,7 @@
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.3.5;
+				MARKETING_VERSION = 3.3.6;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "2e185b6c-271e-4b02-a05e-860b8c3831f6";
@@ -2049,7 +2051,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2066,7 +2068,7 @@
 				INFOPLIST_FILE = "Simplified/Simplified-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.3.5;
+				MARKETING_VERSION = 3.3.6;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "b3d9154d-70e1-48d6-a0c5-869431277a5c";

@@ -1,4 +1,3 @@
-#import "NYPLConfiguration.h"
 #import "NYPLReachability.h"
 #import "NYPLReachabilityManager.h"
 #import "SimplyE-Swift.h"

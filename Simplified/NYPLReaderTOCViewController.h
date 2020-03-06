@@ -1,6 +1,5 @@
 @class NYPLReaderRendererOpaqueLocation;
 @class NYPLReaderTOCViewController;
-@class RDNavigationElement;
 @class NYPLReadiumBookmark;
 
 @protocol NYPLReaderTOCViewControllerDelegate

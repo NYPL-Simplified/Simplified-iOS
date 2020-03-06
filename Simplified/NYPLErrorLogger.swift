@@ -64,6 +64,12 @@ fileprivate let nullString = "null"
 
     // ereader
     case deleteBookmarkFail = 500
+    
+    // Parse failure
+    case parseProfileDataCorrupted = 600
+    case parseProfileTypeMismatch = 601
+    case parseProfileValueNotFound = 602
+    case parseProfileKeyNotFound = 603
   }
 
   // MARK:- Generic helpers
