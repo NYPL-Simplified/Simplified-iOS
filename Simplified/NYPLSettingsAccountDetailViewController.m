@@ -167,7 +167,7 @@ double const requestTimeoutInterval = 25.0;
     [self.view addSubview:activityIndicator];
     [activityIndicator startAnimating];
     self.loading = true;
-    [self.selectedAccount loadAuthenticationDocumentWithPreferringCache:NO completion:^(BOOL success) {
+    [self.selectedAccount loadAuthenticationDocumentWithCompletion:^(BOOL success) {
       dispatch_async(dispatch_get_main_queue(), ^{
         [activityIndicator removeFromSuperview];
         if (success) {

@@ -310,14 +310,14 @@
     }
   }
   
-  func loadAuthenticationDocument(preferringCache: Bool, completion: @escaping (Bool) -> ()) {
+  func loadAuthenticationDocument(completion: @escaping (Bool) -> ()) {
     guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
       Log.error(#file, "Invalid or missing authentication document URL")
       completion(false)
       return
     }
     
-    loadDataWithCache(url: url, cacheUrl: authenticationDocumentCacheUrl, options: preferringCache ? .preferCache : []) { (data) in
+    loadDataWithCache(url: url, cacheUrl: authenticationDocumentCacheUrl, expiryUnit: .hour, expiryValue: 1, options: []) { (data) in
       if let data = data {
         do {
           self.authenticationDocument = try OPDS2AuthenticationDocument.fromData(data)
