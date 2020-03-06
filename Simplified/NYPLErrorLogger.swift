@@ -450,7 +450,7 @@ fileprivate let nullString = "null"
     let err = error ?? NSError.init(domain: simplyeDomain,
                                     code: ErrorCode.userProfileDocFail.rawValue,
                                     userInfo: nil)
-    var metadata: [AnyHashable : Any] = error?.userInfo ?? [AnyHashable : Any]()
+    var metadata = [AnyHashable : Any]()
     metadata["errorDescription"] = error?.localizedDescription ?? nullString
     addAccountInfoToMetadata(&metadata)
     reportLogs()
