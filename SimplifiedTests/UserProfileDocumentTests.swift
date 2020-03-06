@@ -208,10 +208,13 @@ class UserProfileDocumentTests: XCTestCase {
       XCTAssert(false)
     } catch {
       let err = error as NSError
-      XCTAssertEqual(err.code, UserProfileDocument.decodingErrorCodeInvalid)
+      XCTAssertEqual(err.code, NSCoderReadCorruptError)
         
-      let customErrorCode = err.userInfo[UserProfileDocument.parseErrorKey] as? Int ?? -1
-      XCTAssertEqual(customErrorCode, UserProfileDocument.NYPLParseProfileErrorKey.dataCorrupted.rawValue)
+      guard let customErrorCode = err.userInfo[UserProfileDocument.parseErrorKey] as? Int else {
+        XCTFail()
+        return
+      }
+      XCTAssertEqual(customErrorCode, NYPLErrorLogger.ErrorCode.parseProfileDataCorrupted.rawValue)
     }
   }
     
@@ -224,10 +227,13 @@ class UserProfileDocumentTests: XCTestCase {
       XCTAssert(false)
     } catch {
       let err = error as NSError
-      XCTAssertEqual(err.code, UserProfileDocument.decodingErrorCodeNotFound)
+      XCTAssertEqual(err.code, NSCoderValueNotFoundError)
         
-      let customErrorCode = err.userInfo[UserProfileDocument.parseErrorKey] as? Int ?? -1
-      XCTAssertEqual(customErrorCode, UserProfileDocument.NYPLParseProfileErrorKey.keyNotFound.rawValue)
+      guard let customErrorCode = err.userInfo[UserProfileDocument.parseErrorKey] as? Int else {
+        XCTFail()
+        return
+      }
+      XCTAssertEqual(customErrorCode, NYPLErrorLogger.ErrorCode.parseProfileKeyNotFound.rawValue)
     }
   }
     
@@ -240,10 +246,13 @@ class UserProfileDocumentTests: XCTestCase {
       XCTAssert(false)
     } catch {
       let err = error as NSError
-      XCTAssertEqual(err.code, UserProfileDocument.decodingErrorCodeInvalid)
+      XCTAssertEqual(err.code, NSCoderReadCorruptError)
         
-      let customErrorCode = err.userInfo[UserProfileDocument.parseErrorKey] as? Int ?? -1
-      XCTAssertEqual(customErrorCode, UserProfileDocument.NYPLParseProfileErrorKey.typeMismatch.rawValue)
+      guard let customErrorCode = err.userInfo[UserProfileDocument.parseErrorKey] as? Int else {
+        XCTFail()
+        return
+      }
+      XCTAssertEqual(customErrorCode, NYPLErrorLogger.ErrorCode.parseProfileTypeMismatch.rawValue)
     }
   }
     
@@ -256,10 +265,13 @@ class UserProfileDocumentTests: XCTestCase {
       XCTAssert(false)
     } catch {
       let err = error as NSError
-      XCTAssertEqual(err.code, UserProfileDocument.decodingErrorCodeNotFound)
+      XCTAssertEqual(err.code, NSCoderValueNotFoundError)
         
-      let customErrorCode = err.userInfo[UserProfileDocument.parseErrorKey] as? Int ?? -1
-      XCTAssertEqual(customErrorCode, UserProfileDocument.NYPLParseProfileErrorKey.valueNotFound.rawValue)
+      guard let customErrorCode = err.userInfo[UserProfileDocument.parseErrorKey] as? Int else {
+        XCTFail()
+        return
+      }
+      XCTAssertEqual(customErrorCode, NYPLErrorLogger.ErrorCode.parseProfileValueNotFound.rawValue)
     }
   }
 }
