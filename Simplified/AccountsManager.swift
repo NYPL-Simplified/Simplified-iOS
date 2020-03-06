@@ -19,10 +19,10 @@ let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSafe().trim
  cacheOnly - only fetch from cache, unless `noCache` is specified
  @param completion callback method when this is complete, providing the data or nil if unsuccessful
  */
-func loadDataWithCache(url: URL, cacheUrl: URL, options: AccountsManager.LoadOptions, completion: @escaping (Data?) -> ()) {
+func loadDataWithCache(url: URL, cacheUrl: URL, expiryComponent: Calendar.Component = .day, expiryValue: Int = 1, options: AccountsManager.LoadOptions, completion: @escaping (Data?) -> ()) {
   if !options.contains(.noCache) {
     let modified = (try? FileManager.default.attributesOfItem(atPath: cacheUrl.path)[.modificationDate]) as? Date
-    if let modified = modified, let expiry = Calendar.current.date(byAdding: .hour, value: 1, to: modified), expiry > Date() || options.contains(.preferCache) {
+    if let modified = modified, let expiry = Calendar.current.date(byAdding: expiryComponent, value: expiryValue, to: modified), expiry > Date() {
       if let data = try? Data(contentsOf: cacheUrl) {
         completion(data)
         return
