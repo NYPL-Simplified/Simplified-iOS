@@ -19,10 +19,10 @@ let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSafe().trim
  cacheOnly - only fetch from cache, unless `noCache` is specified
  @param completion callback method when this is complete, providing the data or nil if unsuccessful
  */
-func loadDataWithCache(url: URL, cacheUrl: URL, expiryComponent: Calendar.Component = .day, expiryValue: Int = 1, options: AccountsManager.LoadOptions, completion: @escaping (Data?) -> ()) {
+func loadDataWithCache(url: URL, cacheUrl: URL, expiryUnit: Calendar.Component = .day, expiryValue: Int = 1, options: AccountsManager.LoadOptions, completion: @escaping (Data?) -> ()) {
   if !options.contains(.noCache) {
     let modified = (try? FileManager.default.attributesOfItem(atPath: cacheUrl.path)[.modificationDate]) as? Date
-    if let modified = modified, let expiry = Calendar.current.date(byAdding: expiryComponent, value: expiryValue, to: modified), expiry > Date() {
+    if let modified = modified, let expiry = Calendar.current.date(byAdding: expiryUnit, value: expiryValue, to: modified), expiry > Date() {
       if let data = try? Data(contentsOf: cacheUrl) {
         completion(data)
         return
@@ -173,7 +173,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, expiryComponent: Calendar.Compon
       let hadAccount = self.currentAccount != nil
       self.accountSets[key] = catalogsFeed.catalogs.map { Account(publication: $0) }
       if hadAccount != (self.currentAccount != nil) {
-        self.currentAccount?.loadAuthenticationDocument(preferringCache: options.contains(.preferCache), completion: { (success) in
+        self.currentAccount?.loadAuthenticationDocument(completion: { (success) in
           if !success {
             Log.error(#file, "Failed to load authentication document for current account; a bunch of things likely won't work")
           }
