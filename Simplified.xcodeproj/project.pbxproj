@@ -796,7 +796,6 @@
 				081387591BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m */,
 				5DD567B422B97344001F0C83 /* Data+Base64.swift */,
 				5DD567AE22B95A30001F0C83 /* String+MD5.swift */,
-				179699D024131BA500EC309F /* UIColor+LabelColor.swift */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -1046,6 +1045,7 @@
 				7327A89223EE017300954748 /* NYPLMainThreadChecker.swift */,
 				111559EB19B8FA530003BE94 /* NYPLXML.h */,
 				111559EC19B8FA590003BE94 /* NYPLXML.m */,
+				179699D024131BA500EC309F /* UIColor+LabelColor.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
