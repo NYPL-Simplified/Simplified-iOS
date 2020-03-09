@@ -30,6 +30,7 @@
 #import "NYPLBookRegistryRecord.h"
 #import "NYPLHoldsNavigationController.h"
 #import "NYPLMyBooksDownloadCenter.h"
+#import "NYPLMyBooksViewController.h"
 #import "NYPLBookLocation.h"
 #if FEATURE_DRM_CONNECTOR
 #import "ADEPT/NYPLADEPTErrors.h"

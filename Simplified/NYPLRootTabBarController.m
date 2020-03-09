@@ -1,7 +1,6 @@
 #import "NYPLCatalogNavigationController.h"
 #import "NYPLHoldsNavigationController.h"
 #import "NYPLMyBooksNavigationController.h"
-#import "NYPLMyBooksViewController.h"
 #import "NYPLReaderViewController.h"
 
 #import "NYPLSettingsSplitViewController.h"
@@ -59,6 +58,7 @@
                                            selector:@selector(dismissReaderUponEnteringBackground)
                                                name:UIApplicationDidEnterBackgroundNotification
                                              object:nil];
+  self.appModule = [[AppModule alloc] init];
   return self;
 }
 
