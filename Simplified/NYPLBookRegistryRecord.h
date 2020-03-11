@@ -1,10 +1,9 @@
 // This class is intended for internal use by NYPLBookRegistry.
 
-#import "NYPLBookState.h"
-
 @class NYPLBook;
 @class NYPLBookLocation;
 @class NYPLReadiumBookmark;
+typedef NS_ENUM(NSInteger, NYPLBookState);
 
 @interface NYPLBookRegistryRecord : NSObject
 

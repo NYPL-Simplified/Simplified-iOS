@@ -1,10 +1,10 @@
 // This class encapsulates all access to book metadata and covers. All methods are thread-safe.
 
-#import "NYPLBookState.h"
-
 @class NYPLBook;
 @class NYPLBookLocation;
 @class NYPLReadiumBookmark;
+
+typedef NS_ENUM(NSInteger, NYPLBookState);
 
 // This is broadcast whenever the book registry is modified.
 static NSString *const _Nonnull NYPLBookRegistryDidChangeNotification =
@@ -104,6 +104,10 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 
 // Sets the state for a book previously registered given its identifier.
 - (void)setState:(NYPLBookState)state forIdentifier:(nonnull NSString *)identifier;
+
+// For Swift, since setState method above is not being compiled into the bridging header
+// possibly due to the enum NYPLBookState is being declared in both Swift and ObjC
+- (void)setStateWithKey:(nonnull NSString *)stateKey forIdentifier:(nonnull NSString *)identifier;
 
 // Returns the state of a book given its identifier.
 - (NYPLBookState)stateForIdentifier:(nonnull NSString *)identifier;

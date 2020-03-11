@@ -108,7 +108,7 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
                    initWithDictionary:NYPLNullToNil(dictionary[LocationKey])];
   if(self.location && ![self.location isKindOfClass:[NYPLBookLocation class]]) return nil;
   
-  self.state = NYPLBookStateFromString(dictionary[StateKey]);
+  self.state = [NYPLBookStateHelper getStateFrom:dictionary[StateKey]];
   
   self.fulfillmentId = NYPLNullToNil(dictionary[FulfillmentIdKey]);
   
@@ -141,7 +141,7 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
   
   return @{BookKey: [self.book dictionaryRepresentation],
            LocationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
-           StateKey: NYPLBookStateToString(self.state),
+           StateKey: @"NYPLBookstatetodo",
            FulfillmentIdKey: NYPLNullFromNil(self.fulfillmentId),
            ReadiumBookmarksKey: NYPLNullFromNil(readiumBookmarks),
            GenericBookmarksKey: NYPLNullFromNil(genericBookmarks)};

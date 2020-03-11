@@ -492,6 +492,12 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
   }
 }
 
+- (void)setStateWithKey:(nonnull NSString *)stateKey forIdentifier:(nonnull NSString *)identifier
+{
+    NYPLBookState state = [NYPLBookStateHelper getStateFrom:stateKey];
+    [self setState:state forIdentifier:identifier];
+}
+
 - (NYPLBookState)stateForIdentifier:(NSString *const)identifier
 {
   @synchronized(self) {
