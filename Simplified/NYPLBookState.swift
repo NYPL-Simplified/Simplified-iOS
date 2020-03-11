@@ -1,11 +1,3 @@
-//
-//  .swift
-//  SimplyE
-//
-//  Created by Ernest Fan on 2020-03-09.
-//  Copyright © 2020 NYPL Labs. All rights reserved.
-//
-
 import Foundation
 
 let DownloadingKey = "downloading"
