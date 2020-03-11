@@ -4,7 +4,6 @@
 
 @class NYPLBook;
 @class NYPLBookCell;
-typedef NS_ENUM(NSInteger, NYPLBookState);
 
 // This is exposed to help classes implement collection view layout delegates.
 NSInteger NYPLBookCellColumnCountForCollectionViewWidth(CGFloat screenWidth);

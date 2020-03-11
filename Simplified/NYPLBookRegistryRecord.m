@@ -141,7 +141,7 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
   
   return @{BookKey: [self.book dictionaryRepresentation],
            LocationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
-           StateKey: @"NYPLBookstatetodo",
+           StateKey: [NYPLBookStateHelper getStringFrom:self.state],
            FulfillmentIdKey: NYPLNullFromNil(self.fulfillmentId),
            ReadiumBookmarksKey: NYPLNullFromNil(readiumBookmarks),
            GenericBookmarksKey: NYPLNullFromNil(genericBookmarks)};
