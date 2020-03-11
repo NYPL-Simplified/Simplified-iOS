@@ -55,10 +55,7 @@
   if (account.details.mainColor) {
     return [NYPLAppTheme themeColorFromStringWithName:account.details.mainColor];
   } else {
-    if (@available(iOS 13, *)) {
-      return [UIColor labelColor];
-    }
-    return [UIColor blackColor];
+    return [UIColor defaultLabelColor];
   }
 }
 
