@@ -1,5 +1,3 @@
-//#import "NYPLBookState.h"
-//#import "SimplyE-Swift.h"
 
 @class NYPLBook;
 @class NYPLBookDetailView;

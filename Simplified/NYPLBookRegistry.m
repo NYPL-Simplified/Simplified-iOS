@@ -492,6 +492,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
   }
 }
 
+// TODO: Remove when migration to Swift completed
 - (void)setStateWithKey:(nonnull NSString *)stateKey forIdentifier:(nonnull NSString *)identifier
 {
     NYPLBookState state = [NYPLBookStateHelper getStateFrom:stateKey];
