@@ -74,7 +74,7 @@ static NSString *const _Nonnull NYPLBookProcessingDidChangeNotification =
 // Adds a book to the book registry until it is manually removed. It allows the application to
 // present information about obtained books when offline. Attempting to add a book already present
 // will overwrite the existing book as if |updateBook:| were called. The location may be nil. The
-// state provided must not be |NYPLBookStateUnregistered|.
+// state provided must be one of NYPLBookState and must not be |NYPLBookStateUnregistered|.
 - (void)addBook:(nonnull NYPLBook *)book
        location:(nullable NYPLBookLocation *)location
           state:(NSInteger)state

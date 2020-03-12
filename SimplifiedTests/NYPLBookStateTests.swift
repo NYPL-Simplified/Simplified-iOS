@@ -39,18 +39,6 @@ class NYPLBookStateTests: XCTestCase {
       XCTAssertEqual(-1, NYPLBookStateHelper.bookState(fromString: "InvalidString"))
     }
     
-    func testBookStateFromCode() {
-      XCTAssertEqual(NYPLBookState.Unregistered.rawValue, NYPLBookStateHelper.bookState(fromCode: 0))
-      XCTAssertEqual(NYPLBookState.DownloadNeeded.rawValue, NYPLBookStateHelper.bookState(fromCode: 1))
-      XCTAssertEqual(NYPLBookState.Downloading.rawValue, NYPLBookStateHelper.bookState(fromCode: 2))
-      XCTAssertEqual(NYPLBookState.DownloadFailed.rawValue, NYPLBookStateHelper.bookState(fromCode: 3))
-      XCTAssertEqual(NYPLBookState.DownloadSuccessful.rawValue, NYPLBookStateHelper.bookState(fromCode: 4))
-      XCTAssertEqual(NYPLBookState.Holding.rawValue, NYPLBookStateHelper.bookState(fromCode: 5))
-      XCTAssertEqual(NYPLBookState.Used.rawValue, NYPLBookStateHelper.bookState(fromCode: 6))
-      XCTAssertEqual(NYPLBookState.Unsupported.rawValue, NYPLBookStateHelper.bookState(fromCode: 7))
-      XCTAssertEqual(-1, NYPLBookStateHelper.bookState(fromCode: -10))
-    }
-    
     func testAllBookState() {
         XCTAssertEqual(NYPLBookStateHelper.allBookStates(), NYPLBookState.allCases.map{ $0.rawValue })
     }
