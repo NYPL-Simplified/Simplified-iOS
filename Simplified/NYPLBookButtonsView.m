@@ -255,7 +255,7 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
   
   BOOL fulfillmentIdRequired = NO;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier];
-  BOOL hasRevokeLink = (self.book.revokeURL && state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed));
+  BOOL hasRevokeLink = (self.book.revokeURL && (state == NYPLBookStateDownloadSuccessful || state == NYPLBookStateUsed));
 
   #if defined(FEATURE_DRM_CONNECTOR)
   
