@@ -75,6 +75,7 @@ static NSString *const _Nonnull NYPLBookProcessingDidChangeNotification =
 // present information about obtained books when offline. Attempting to add a book already present
 // will overwrite the existing book as if |updateBook:| were called. The location may be nil. The
 // state provided must be one of NYPLBookState and must not be |NYPLBookStateUnregistered|.
+// TODO: Use NYPLBookState instead of NSInteger when migrate to Swift
 - (void)addBook:(nonnull NYPLBook *)book
        location:(nullable NYPLBookLocation *)location
           state:(NSInteger)state
@@ -108,6 +109,7 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 // For Swift, since setState method above is not being compiled into the bridging header
 // possibly due to the enum NYPLBookState is being declared in both Swift and ObjC
 // stateCode should always be one of NYPLBookState cases
+// TODO: Remove when migrate to Swift, use setState:forIdentifier: instead
 - (void)setStateWithCode:(NSInteger)stateCode forIdentifier:(nonnull NSString *)identifier;
 
 // Returns the state of a book given its identifier.
