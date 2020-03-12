@@ -347,7 +347,7 @@ static NSString *const RecordsKey = @"records";
          }
          for (NSString *identifier in identifiersToRemove) {
            NYPLBookRegistryRecord *record = [self.identifiersToRecords objectForKey:identifier];
-           if (record.state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed)) {
+           if (record.state == NYPLBookStateDownloadSuccessful || record.state == NYPLBookStateUsed) {
              [[NYPLMyBooksDownloadCenter sharedDownloadCenter] deleteLocalContentForBookIdentifier:identifier];
            }
            [self removeBookForIdentifier:identifier];
@@ -495,7 +495,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 // TODO: Remove when migration to Swift completed
 - (void)setStateWithKey:(nonnull NSString *)stateKey forIdentifier:(nonnull NSString *)identifier
 {
-    NYPLBookState state = [NYPLBookStateHelper getStateFrom:stateKey];
+    NYPLBookState state = [NYPLBookStateHelper bookStateFromString:stateKey];
     [self setState:state forIdentifier:identifier];
 }
 
@@ -781,26 +781,25 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 
 - (NSArray *)allBooks
 {
-  return [self booksMatchingStateMask:~0];
+  return [self booksMatchingStates:@[]];
 }
 
 - (NSArray *)heldBooks
 {
-  return [self booksMatchingStateMask:NYPLBookStateHolding];
+  return [self booksMatchingStates:@[@(NYPLBookStateHolding)]];
 }
 
 - (NSArray *)myBooks
 {
-  return [self booksMatchingStateMask:
-          (NYPLBookStateDownloadNeeded
-           | NYPLBookStateDownloading
-           | NYPLBookStateDownloadFailed
-           | NYPLBookStateDownloadSuccessful
-           | NYPLBookStateUsed)];
+  return [self booksMatchingStates:@[@(NYPLBookStateDownloadNeeded),
+                                     @(NYPLBookStateDownloading),
+                                     @(NYPLBookStateDownloadFailed),
+                                     @(NYPLBookStateDownloadSuccessful),
+                                     @(NYPLBookStateUsed)]];
 }
 
-- (NSArray *)booksMatchingStateMask:(NSUInteger)mask
-{
+// An empty array will be treated as a convention for all enum cases
+- (NSArray *)booksMatchingStates:(NSArray * _Nonnull)states {
   @synchronized(self) {
     NSMutableArray *const books =
     [NSMutableArray arrayWithCapacity:self.identifiersToRecords.count];
@@ -809,7 +808,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
      enumerateKeysAndObjectsUsingBlock:^(__attribute__((unused)) NSString *identifier,
                                          NYPLBookRegistryRecord *const record,
                                          __attribute__((unused)) BOOL *stop) {
-       if (record.state & mask) {
+       if (states.count == 0 || [states containsObject:@(record.state)]) {
          [books addObject:record.book];
        }
      }];

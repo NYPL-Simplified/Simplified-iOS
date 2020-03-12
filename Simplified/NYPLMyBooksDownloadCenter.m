@@ -467,7 +467,7 @@ didCompleteWithError:(NSError *)error
   NYPLBook *book = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier];
   NSString *bookTitle = book.title;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
-  BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
+  BOOL downloaded = state == NYPLBookStateDownloadSuccessful || state == NYPLBookStateUsed;
   if (!book.identifier) {
     [NYPLErrorLogger logUnexpectedNilIdentifier:identifier book:book];
   }

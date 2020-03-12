@@ -79,13 +79,7 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
 
   if (!actuallyOnHold) {
     // Set the correct non-holding state.
-    if (!((NYPLBookStateDownloadFailed |
-           NYPLBookStateDownloading |
-           NYPLBookStateDownloadNeeded |
-           NYPLBookStateDownloadSuccessful |
-           NYPLBookStateUsed)
-          & self.state)
-        && self.state != NYPLBookStateUnregistered)
+    if (self.state == NYPLBookStateHolding || self.state == NYPLBookStateUnsupported)
     {
       // Since we're not in some download-related state and we're not unregistered,
       // we must need to be downloaded.
@@ -108,7 +102,7 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
                    initWithDictionary:NYPLNullToNil(dictionary[LocationKey])];
   if(self.location && ![self.location isKindOfClass:[NYPLBookLocation class]]) return nil;
   
-  self.state = [NYPLBookStateHelper getStateFrom:dictionary[StateKey]];
+  self.state = [NYPLBookStateHelper bookStateFromString:dictionary[StateKey]];
   
   self.fulfillmentId = NYPLNullToNil(dictionary[FulfillmentIdKey]);
   
@@ -141,7 +135,7 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
   
   return @{BookKey: [self.book dictionaryRepresentation],
            LocationKey: NYPLNullFromNil([self.location dictionaryRepresentation]),
-           StateKey: [NYPLBookStateHelper getStringFrom:self.state],
+           StateKey: [NYPLBookStateHelper stringValueFromBookState:self.state],
            FulfillmentIdKey: NYPLNullFromNil(self.fulfillmentId),
            ReadiumBookmarksKey: NYPLNullFromNil(readiumBookmarks),
            GenericBookmarksKey: NYPLNullFromNil(genericBookmarks)};
