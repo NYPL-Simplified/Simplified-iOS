@@ -72,4 +72,5 @@ cp -R AudioEngine/$AE_BUILD_CONFIG/AudioEngine.framework Build/iOS
 sed -i '' '/binary "AudioEngine.json".*/d' Checkouts/NYPLAEToolkit/Cartfile
 sed -i '' '/binary "AudioEngine.json".*/d' Checkouts/NYPLAEToolkit/Cartfile.resolved
 cd ..
+sed -i '' '/binary "AudioEngine.json".*/d' Cartfile.resolved
 carthage build --platform ios

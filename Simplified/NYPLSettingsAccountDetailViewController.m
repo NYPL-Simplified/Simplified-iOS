@@ -1048,11 +1048,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       
       UIImageView *accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:(self.selectedAccount.details.userAboveAgeLimit ? @"CheckboxOn" : @"CheckboxOff")]];
       accessoryView.image = [accessoryView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-      if (@available(iOS 13, *)) {
-        accessoryView.tintColor = [UIColor labelColor];
-      } else {
-        accessoryView.tintColor = [UIColor blackColor];
-      }
+      accessoryView.tintColor = [UIColor defaultLabelColor];
       self.ageCheckCell.accessoryView = accessoryView;
       
       self.ageCheckCell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -1276,11 +1272,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                     initWithString:NSLocalizedString(@"SigningInAgree", nil) attributes:linkAttributes];
     } else {
       NSDictionary *attrs;
-      if (@available(iOS 13.0, *)) {
-        attrs = @{ NSForegroundColorAttributeName : [UIColor labelColor] };
-      } else {
-        attrs = @{ NSForegroundColorAttributeName : [UIColor blackColor] };
-      }
+      attrs = @{ NSForegroundColorAttributeName : [UIColor defaultLabelColor] };
       eulaString = [[NSMutableAttributedString alloc]
                     initWithString:NSLocalizedString(@"SettingsAccountSyncFooterTitle",
                                                      @"Explain to the user they can save their bookmarks in the cloud across all their devices.")
@@ -1446,17 +1438,9 @@ replacementString:(NSString *)string
     } else {
       self.usernameTextField.text = nil;
       self.usernameTextField.enabled = YES;
-      if (@available(iOS 13.0, *)) {
-        self.usernameTextField.textColor = [UIColor labelColor];
-      } else {
-        self.usernameTextField.textColor = [UIColor blackColor];
-      }
+      self.usernameTextField.textColor = [UIColor defaultLabelColor];
       self.PINTextField.text = nil;
-      if (@available(iOS 13.0, *)) {
-        self.PINTextField.textColor = [UIColor labelColor];
-      } else {
-        self.PINTextField.textColor = [UIColor blackColor];
-      }
+      self.PINTextField.textColor = [UIColor defaultLabelColor];
       self.barcodeScanButton.hidden = NO;
     }
     
