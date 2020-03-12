@@ -107,6 +107,7 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 
 // For Swift, since setState method above is not being compiled into the bridging header
 // possibly due to the enum NYPLBookState is being declared in both Swift and ObjC
+// stateCode should always be one of NYPLBookState cases
 - (void)setStateWithCode:(NSInteger)stateCode forIdentifier:(nonnull NSString *)identifier;
 
 // Returns the state of a book given its identifier.

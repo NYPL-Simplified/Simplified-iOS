@@ -9,7 +9,7 @@ let HoldingKey = "holding"
 let UsedKey = "used"
 let UnsupportedKey = "unsupported"
 
-@objc public enum NYPLBookState : Int {
+@objc public enum NYPLBookState : Int, CaseIterable {
   case Unregistered = 0
   case DownloadNeeded = 1
   case Downloading
@@ -77,22 +77,8 @@ class NYPLBookStateHelper : NSObject {
     return NYPLBookState.init(string)?.rawValue ?? -1
   }
     
-  @objc(bookStateFromCode:)
-  static func bookState(fromCode code: Int) -> Int {
-    return NYPLBookState.init(rawValue: code)?.rawValue ?? -1
-  }
-    
   @objc static func allBookStates() -> [NYPLBookState.RawValue] {
-    return [
-      NYPLBookState.Unregistered.rawValue,
-      NYPLBookState.DownloadNeeded.rawValue,
-      NYPLBookState.Downloading.rawValue,
-      NYPLBookState.DownloadFailed.rawValue,
-      NYPLBookState.DownloadSuccessful.rawValue,
-      NYPLBookState.Holding.rawValue,
-      NYPLBookState.Used.rawValue,
-      NYPLBookState.Unsupported.rawValue
-    ]
+    return NYPLBookState.allCases.map{ $0.rawValue }
   }
 }
 

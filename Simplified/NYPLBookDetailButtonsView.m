@@ -259,7 +259,7 @@
   
   BOOL fulfillmentIdRequired = NO;
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier];
-  BOOL hasRevokeLink = (self.book.revokeURL && (state == NYPLBookStateDownloadSuccessful || state == NYPLBookStateUsed));
+  BOOL hasRevokeLink = (self.book.revokeURL && state && (state == NYPLBookStateDownloadSuccessful || state == NYPLBookStateUsed));
 
   #if defined(FEATURE_DRM_CONNECTOR)
   

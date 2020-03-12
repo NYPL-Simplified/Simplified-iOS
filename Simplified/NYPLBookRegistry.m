@@ -175,7 +175,7 @@ static NSString *const RecordsKey = @"records";
       NYPLBookRegistryRecord *const record = [[NYPLBookRegistryRecord alloc]
                                               initWithDictionary:recordDictionary];
       // If a download was still in progress when we quit, it must now be failed.
-      if(record.state == NYPLBookStateDownloading) {
+      if(record.state && record.state == NYPLBookStateDownloading) {
         self.identifiersToRecords[record.book.identifier] =
         [record recordWithState:NYPLBookStateDownloadFailed];
       } else {
@@ -347,7 +347,7 @@ static NSString *const RecordsKey = @"records";
          }
          for (NSString *identifier in identifiersToRemove) {
            NYPLBookRegistryRecord *record = [self.identifiersToRecords objectForKey:identifier];
-           if (record.state == NYPLBookStateDownloadSuccessful || record.state == NYPLBookStateUsed) {
+           if (record.state && (record.state == NYPLBookStateDownloadSuccessful || record.state == NYPLBookStateUsed)) {
              [[NYPLMyBooksDownloadCenter sharedDownloadCenter] deleteLocalContentForBookIdentifier:identifier];
            }
            [self removeBookForIdentifier:identifier];
@@ -401,7 +401,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
     @throw NSInvalidArgumentException;
   }
   
-  if(state == NYPLBookStateUnregistered) {
+  if(state && state == NYPLBookStateUnregistered) {
     @throw NSInvalidArgumentException;
   }
   
