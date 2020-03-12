@@ -79,7 +79,7 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
 
   if (!actuallyOnHold) {
     // Set the correct non-holding state.
-    if (self.state && (self.state == NYPLBookStateHolding || self.state == NYPLBookStateUnsupported))
+    if (self.state == NYPLBookStateHolding || self.state == NYPLBookStateUnsupported)
     {
       // Since we're not in some download-related state and we're not unregistered,
       // we must need to be downloaded.
