@@ -77,7 +77,7 @@ static NSString *const _Nonnull NYPLBookProcessingDidChangeNotification =
 // state provided must not be |NYPLBookStateUnregistered|.
 - (void)addBook:(nonnull NYPLBook *)book
        location:(nullable NYPLBookLocation *)location
-          state:(NYPLBookState)state
+          state:(NSInteger)state
   fulfillmentId:(nullable NSString *)fulfillmentId
 readiumBookmarks:(nullable NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
 genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
@@ -107,7 +107,7 @@ genericBookmarks:(nullable NSArray<NYPLBookLocation *> *)genericBookmarks;
 
 // For Swift, since setState method above is not being compiled into the bridging header
 // possibly due to the enum NYPLBookState is being declared in both Swift and ObjC
-- (void)setStateWithKey:(nonnull NSString *)stateKey forIdentifier:(nonnull NSString *)identifier;
+- (void)setStateWithCode:(NSInteger)stateCode forIdentifier:(nonnull NSString *)identifier;
 
 // Returns the state of a book given its identifier.
 - (NYPLBookState)stateForIdentifier:(nonnull NSString *)identifier;
