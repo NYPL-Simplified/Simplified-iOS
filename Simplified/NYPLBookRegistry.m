@@ -392,7 +392,7 @@ static NSString *const RecordsKey = @"records";
 
 - (void)addBook:(NYPLBook *const)book
        location:(NYPLBookLocation *const)location
-          state:(NYPLBookState)state
+          state:(NSInteger)state
   fulfillmentId:(NSString *)fulfillmentId
 readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
 genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
@@ -493,10 +493,9 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 }
 
 // TODO: Remove when migration to Swift completed
-- (void)setStateWithKey:(nonnull NSString *)stateKey forIdentifier:(nonnull NSString *)identifier
+- (void)setStateWithCode:(NSInteger)stateCode forIdentifier:(nonnull NSString *)identifier
 {
-    NYPLBookState state = [NYPLBookStateHelper bookStateFromString:stateKey];
-    [self setState:state forIdentifier:identifier];
+  [self setState:stateCode forIdentifier:identifier];
 }
 
 - (NYPLBookState)stateForIdentifier:(NSString *const)identifier

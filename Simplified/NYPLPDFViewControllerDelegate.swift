@@ -7,7 +7,7 @@ import PDFRendererProvider
 
   @objc init(bookIdentifier: String) {
     self.bookIdentifier = bookIdentifier
-    NYPLBookRegistry.shared().setStateWithKey(NYPLBookState.Used.stringValue(), forIdentifier: bookIdentifier)
+    NYPLBookRegistry.shared().setStateWithCode(NYPLBookState.Used.rawValue, forIdentifier: bookIdentifier)
   }
 
   func userDidNavigate(toPage page: MinitexPDFPage) {
