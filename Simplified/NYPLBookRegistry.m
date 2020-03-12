@@ -781,7 +781,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 
 - (NSArray *)allBooks
 {
-  return [self booksMatchingStates:@[]];
+  return [self booksMatchingStates:[NYPLBookStateHelper allBookStates]];
 }
 
 - (NSArray *)heldBooks
@@ -798,7 +798,6 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
                                      @(NYPLBookStateUsed)]];
 }
 
-// An empty array will be treated as a convention for all enum cases
 - (NSArray *)booksMatchingStates:(NSArray * _Nonnull)states {
   @synchronized(self) {
     NSMutableArray *const books =
@@ -808,10 +807,10 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
      enumerateKeysAndObjectsUsingBlock:^(__attribute__((unused)) NSString *identifier,
                                          NYPLBookRegistryRecord *const record,
                                          __attribute__((unused)) BOOL *stop) {
-       if (states.count == 0 || [states containsObject:@(record.state)]) {
-         [books addObject:record.book];
-       }
-     }];
+      if (record.state && [states containsObject:@(record.state)]) {
+        [books addObject:record.book];
+      }
+    }];
     
     return books;
   }

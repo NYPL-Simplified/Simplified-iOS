@@ -66,7 +66,7 @@ let UnsupportedKey = "unsupported"
 
 // For Objective-C, since Obj-C enum is not allowed to have methods
 // TODO: Remove when migration to Swift completed
-@objc class NYPLBookStateHelper : NSObject {
+class NYPLBookStateHelper : NSObject {
   @objc(stringValueFromBookState:)
   static func stringValue(from state: NYPLBookState) -> String {
     return state.stringValue()
@@ -75,6 +75,19 @@ let UnsupportedKey = "unsupported"
   @objc(bookStateFromString:)
   static func bookState(fromString string: String) -> Int {
     return NYPLBookState.init(string)?.rawValue ?? -1
+  }
+    
+  @objc static func allBookStates() -> [NYPLBookState.RawValue] {
+    return [
+      NYPLBookState.Unregistered.rawValue,
+      NYPLBookState.DownloadNeeded.rawValue,
+      NYPLBookState.Downloading.rawValue,
+      NYPLBookState.DownloadFailed.rawValue,
+      NYPLBookState.DownloadSuccessful.rawValue,
+      NYPLBookState.Holding.rawValue,
+      NYPLBookState.Used.rawValue,
+      NYPLBookState.Unsupported.rawValue
+    ]
   }
 }
 
