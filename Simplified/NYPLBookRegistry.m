@@ -176,7 +176,7 @@ static NSString *const RecordsKey = @"records";
                                               initWithDictionary:recordDictionary];
       // If record doesn't exist, proceed to next record
       if (!record) {
-        break;
+        continue;
       }
       // If a download was still in progress when we quit, it must now be failed.
       if(record.state == NYPLBookStateDownloading) {
