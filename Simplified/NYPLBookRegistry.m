@@ -174,8 +174,12 @@ static NSString *const RecordsKey = @"records";
     for(NSDictionary *const recordDictionary in dictionary[RecordsKey]) {
       NYPLBookRegistryRecord *const record = [[NYPLBookRegistryRecord alloc]
                                               initWithDictionary:recordDictionary];
+      // If record doesn't exist, proceed to next record
+      if (!record) {
+        break;
+      }
       // If a download was still in progress when we quit, it must now be failed.
-      if(record.state && record.state == NYPLBookStateDownloading) {
+      if(record.state == NYPLBookStateDownloading) {
         self.identifiersToRecords[record.book.identifier] =
         [record recordWithState:NYPLBookStateDownloadFailed];
       } else {
@@ -347,7 +351,7 @@ static NSString *const RecordsKey = @"records";
          }
          for (NSString *identifier in identifiersToRemove) {
            NYPLBookRegistryRecord *record = [self.identifiersToRecords objectForKey:identifier];
-           if (record.state && (record.state == NYPLBookStateDownloadSuccessful || record.state == NYPLBookStateUsed)) {
+           if (record && (record.state == NYPLBookStateDownloadSuccessful || record.state == NYPLBookStateUsed)) {
              [[NYPLMyBooksDownloadCenter sharedDownloadCenter] deleteLocalContentForBookIdentifier:identifier];
            }
            [self removeBookForIdentifier:identifier];
