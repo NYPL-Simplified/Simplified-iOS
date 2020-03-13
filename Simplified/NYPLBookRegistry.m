@@ -174,6 +174,10 @@ static NSString *const RecordsKey = @"records";
     for(NSDictionary *const recordDictionary in dictionary[RecordsKey]) {
       NYPLBookRegistryRecord *const record = [[NYPLBookRegistryRecord alloc]
                                               initWithDictionary:recordDictionary];
+      // If record doesn't exist, proceed to next record
+      if (!record) {
+        continue;
+      }
       // If a download was still in progress when we quit, it must now be failed.
       if(record.state == NYPLBookStateDownloading) {
         self.identifiersToRecords[record.book.identifier] =
@@ -347,7 +351,7 @@ static NSString *const RecordsKey = @"records";
          }
          for (NSString *identifier in identifiersToRemove) {
            NYPLBookRegistryRecord *record = [self.identifiersToRecords objectForKey:identifier];
-           if (record.state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed)) {
+           if (record && (record.state == NYPLBookStateDownloadSuccessful || record.state == NYPLBookStateUsed)) {
              [[NYPLMyBooksDownloadCenter sharedDownloadCenter] deleteLocalContentForBookIdentifier:identifier];
            }
            [self removeBookForIdentifier:identifier];
@@ -392,7 +396,7 @@ static NSString *const RecordsKey = @"records";
 
 - (void)addBook:(NYPLBook *const)book
        location:(NYPLBookLocation *const)location
-          state:(NYPLBookState)state
+          state:(NSInteger)state
   fulfillmentId:(NSString *)fulfillmentId
 readiumBookmarks:(NSArray<NYPLReadiumBookmark *> *)readiumBookmarks
 genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
@@ -401,7 +405,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
     @throw NSInvalidArgumentException;
   }
   
-  if(state == NYPLBookStateUnregistered) {
+  if(state && state == NYPLBookStateUnregistered) {
     @throw NSInvalidArgumentException;
   }
   
@@ -490,6 +494,12 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
     
     [self broadcastChange];
   }
+}
+
+// TODO: Remove when migration to Swift completed
+- (void)setStateWithCode:(NSInteger)stateCode forIdentifier:(nonnull NSString *)identifier
+{
+  [self setState:stateCode forIdentifier:identifier];
 }
 
 - (NYPLBookState)stateForIdentifier:(NSString *const)identifier
@@ -774,26 +784,24 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
 
 - (NSArray *)allBooks
 {
-  return [self booksMatchingStateMask:~0];
+  return [self booksMatchingStates:[NYPLBookStateHelper allBookStates]];
 }
 
 - (NSArray *)heldBooks
 {
-  return [self booksMatchingStateMask:NYPLBookStateHolding];
+  return [self booksMatchingStates:@[@(NYPLBookStateHolding)]];
 }
 
 - (NSArray *)myBooks
 {
-  return [self booksMatchingStateMask:
-          (NYPLBookStateDownloadNeeded
-           | NYPLBookStateDownloading
-           | NYPLBookStateDownloadFailed
-           | NYPLBookStateDownloadSuccessful
-           | NYPLBookStateUsed)];
+  return [self booksMatchingStates:@[@(NYPLBookStateDownloadNeeded),
+                                     @(NYPLBookStateDownloading),
+                                     @(NYPLBookStateDownloadFailed),
+                                     @(NYPLBookStateDownloadSuccessful),
+                                     @(NYPLBookStateUsed)]];
 }
 
-- (NSArray *)booksMatchingStateMask:(NSUInteger)mask
-{
+- (NSArray *)booksMatchingStates:(NSArray * _Nonnull)states {
   @synchronized(self) {
     NSMutableArray *const books =
     [NSMutableArray arrayWithCapacity:self.identifiersToRecords.count];
@@ -802,10 +810,10 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
      enumerateKeysAndObjectsUsingBlock:^(__attribute__((unused)) NSString *identifier,
                                          NYPLBookRegistryRecord *const record,
                                          __attribute__((unused)) BOOL *stop) {
-       if (record.state & mask) {
-         [books addObject:record.book];
-       }
-     }];
+      if (record.state && [states containsObject:@(record.state)]) {
+        [books addObject:record.book];
+      }
+    }];
     
     return books;
   }
