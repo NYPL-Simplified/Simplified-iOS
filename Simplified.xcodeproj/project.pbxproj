@@ -203,11 +203,10 @@
 		73A22997240F3900006B9EAD /* R2Navigator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73A22993240F3900006B9EAD /* R2Navigator.framework */; };
 		73A22998240F3900006B9EAD /* R2Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73A22994240F3900006B9EAD /* R2Shared.framework */; };
 		73A22999240F3900006B9EAD /* R2Streamer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73A22995240F3900006B9EAD /* R2Streamer.framework */; };
-		73A2299B240F3B9B006B9EAD /* AppModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A2299A240F3B9B006B9EAD /* AppModule.swift */; };
+		73A2299B240F3B9B006B9EAD /* NYPLR2Owner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A2299A240F3B9B006B9EAD /* NYPLR2Owner.swift */; };
 		73A229A0240F3BEB006B9EAD /* LibraryModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A2299C240F3BEA006B9EAD /* LibraryModule.swift */; };
-		73A229A1240F3BEB006B9EAD /* LibraryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A2299D240F3BEA006B9EAD /* LibraryError.swift */; };
 		73A229A2240F3BEB006B9EAD /* LibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A2299E240F3BEA006B9EAD /* LibraryService.swift */; };
-		73A229A5240F3D1B006B9EAD /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A229A4240F3D1B006B9EAD /* Result.swift */; };
+		73A229A5240F3D1B006B9EAD /* CancellableResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A229A4240F3D1B006B9EAD /* CancellableResult.swift */; };
 		73A229A7240F40C2006B9EAD /* ReaderModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A229A6240F40C2006B9EAD /* ReaderModule.swift */; };
 		73A229AB241021F2006B9EAD /* ReaderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A229AA241021F2006B9EAD /* ReaderError.swift */; };
 		73A229AD2410221E006B9EAD /* EPUBModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A229AC2410221E006B9EAD /* EPUBModule.swift */; };
@@ -221,9 +220,8 @@
 		73F71364241723B100C63B81 /* UserSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73F7135D241723B100C63B81 /* UserSettings.storyboard */; };
 		73F71365241723B100C63B81 /* UserSettingsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F7135F241723B100C63B81 /* UserSettingsNavigationController.swift */; };
 		73F71366241723B100C63B81 /* FontSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F71360241723B100C63B81 /* FontSelectionViewController.swift */; };
-		73F713682417240100C63B81 /* UIViewController+R2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F713672417240100C63B81 /* UIViewController+R2.swift */; };
+		73F713682417240100C63B81 /* UIViewController+NYPL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F713672417240100C63B81 /* UIViewController+NYPL.swift */; };
 		73F7136A2417243200C63B81 /* AssociatedColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F713692417243200C63B81 /* AssociatedColors.swift */; };
-		73F713722417265700C63B81 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F713712417265600C63B81 /* Toast.swift */; };
 		841B55431B740F2700FAC1AF /* NYPLSettingsEULAViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */; };
 		84B7A3461B84E8FE00584FB2 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3431B84E8FE00584FB2 /* OFL.txt */; };
 		84B7A3471B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84B7A3441B84E8FE00584FB2 /* OpenDyslexic3-Bold.ttf */; };
@@ -628,11 +626,10 @@
 		73A22993240F3900006B9EAD /* R2Navigator.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = R2Navigator.framework; path = Carthage/Build/iOS/R2Navigator.framework; sourceTree = "<group>"; };
 		73A22994240F3900006B9EAD /* R2Shared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = R2Shared.framework; path = Carthage/Build/iOS/R2Shared.framework; sourceTree = "<group>"; };
 		73A22995240F3900006B9EAD /* R2Streamer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = R2Streamer.framework; path = Carthage/Build/iOS/R2Streamer.framework; sourceTree = "<group>"; };
-		73A2299A240F3B9B006B9EAD /* AppModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppModule.swift; sourceTree = "<group>"; };
+		73A2299A240F3B9B006B9EAD /* NYPLR2Owner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLR2Owner.swift; sourceTree = "<group>"; };
 		73A2299C240F3BEA006B9EAD /* LibraryModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryModule.swift; sourceTree = "<group>"; };
-		73A2299D240F3BEA006B9EAD /* LibraryError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryError.swift; sourceTree = "<group>"; };
 		73A2299E240F3BEA006B9EAD /* LibraryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryService.swift; sourceTree = "<group>"; };
-		73A229A4240F3D1B006B9EAD /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
+		73A229A4240F3D1B006B9EAD /* CancellableResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancellableResult.swift; sourceTree = "<group>"; };
 		73A229A6240F40C2006B9EAD /* ReaderModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderModule.swift; sourceTree = "<group>"; };
 		73A229AA241021F2006B9EAD /* ReaderError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderError.swift; sourceTree = "<group>"; };
 		73A229AC2410221E006B9EAD /* EPUBModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EPUBModule.swift; sourceTree = "<group>"; };
@@ -655,9 +652,8 @@
 		73F7135E241723B100C63B81 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/UserSettings.storyboard; sourceTree = "<group>"; };
 		73F7135F241723B100C63B81 /* UserSettingsNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSettingsNavigationController.swift; sourceTree = "<group>"; };
 		73F71360241723B100C63B81 /* FontSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontSelectionViewController.swift; sourceTree = "<group>"; };
-		73F713672417240100C63B81 /* UIViewController+R2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIViewController+R2.swift"; path = "Simplified/Reader2/UI/UIViewController+R2.swift"; sourceTree = SOURCE_ROOT; };
+		73F713672417240100C63B81 /* UIViewController+NYPL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIViewController+NYPL.swift"; path = "Simplified/Reader2/UI/UIViewController+NYPL.swift"; sourceTree = SOURCE_ROOT; };
 		73F713692417243200C63B81 /* AssociatedColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AssociatedColors.swift; path = Simplified/Reader2/UI/AssociatedColors.swift; sourceTree = SOURCE_ROOT; };
-		73F713712417265600C63B81 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Toast.swift; path = "../../../../r2-workspace-swift/r2-testapp-swift/r2-testapp-swift/Reader/Toast.swift"; sourceTree = "<group>"; };
 		841B55411B740F2700FAC1AF /* NYPLSettingsEULAViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsEULAViewController.h; sourceTree = "<group>"; };
 		841B55421B740F2700FAC1AF /* NYPLSettingsEULAViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsEULAViewController.m; sourceTree = "<group>"; };
 		84B7A3431B84E8FE00584FB2 /* OFL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
@@ -1133,13 +1129,13 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		7335279E24172A81009E3F19 /* Outline */ = {
+		7335279E24172A81009E3F19 /* TOC */ = {
 			isa = PBXGroup;
 			children = (
 				7335279F24172A81009E3F19 /* OutlineTableViewController.swift */,
 				733527A024172A81009E3F19 /* Outline.storyboard */,
 			);
-			path = Outline;
+			path = TOC;
 			sourceTree = "<group>";
 		};
 		7360891B240DFB93007EE66F /* Logging */ = {
@@ -1156,7 +1152,7 @@
 			isa = PBXGroup;
 			children = (
 				733DEC91241090C7008C74BC /* NYPLReaderExtensions.swift */,
-				73A2299A240F3B9B006B9EAD /* AppModule.swift */,
+				73A2299A240F3B9B006B9EAD /* NYPLR2Owner.swift */,
 				73F7136D2417260700C63B81 /* UI */,
 				73DB2D0924132C8B008346ED /* Internal */,
 			);
@@ -1166,8 +1162,7 @@
 		73DB2D0924132C8B008346ED /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				73A229A4240F3D1B006B9EAD /* Result.swift */,
-				73A2299D240F3BEA006B9EAD /* LibraryError.swift */,
+				73A229A4240F3D1B006B9EAD /* CancellableResult.swift */,
 				73A229AA241021F2006B9EAD /* ReaderError.swift */,
 				73A2299C240F3BEA006B9EAD /* LibraryModule.swift */,
 				73A2299E240F3BEA006B9EAD /* LibraryService.swift */,
@@ -1182,12 +1177,12 @@
 		73F71358241723B100C63B81 /* User Settings */ = {
 			isa = PBXGroup;
 			children = (
-				73F71359241723B100C63B81 /* UserSettings.strings */,
 				73F7135B241723B100C63B81 /* UserSettingsTableViewController.swift */,
 				73F7135C241723B100C63B81 /* AdvancedSettingsViewController.swift */,
-				73F7135D241723B100C63B81 /* UserSettings.storyboard */,
 				73F7135F241723B100C63B81 /* UserSettingsNavigationController.swift */,
 				73F71360241723B100C63B81 /* FontSelectionViewController.swift */,
+				73F71359241723B100C63B81 /* UserSettings.strings */,
+				73F7135D241723B100C63B81 /* UserSettings.storyboard */,
 			);
 			name = "User Settings";
 			path = "Simplified/Reader2/UI/User Settings";
@@ -1196,13 +1191,12 @@
 		73F7136D2417260700C63B81 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				733527A424172BD6009E3F19 /* ReaderFactory.swift */,
 				73F713552417200F00C63B81 /* ReaderViewController.swift */,
 				73F713502417200F00C63B81 /* EPUBViewController.swift */,
-				73F713672417240100C63B81 /* UIViewController+R2.swift */,
+				733527A424172BD6009E3F19 /* ReaderFactory.swift */,
+				73F713672417240100C63B81 /* UIViewController+NYPL.swift */,
 				73F713692417243200C63B81 /* AssociatedColors.swift */,
-				73F713712417265600C63B81 /* Toast.swift */,
-				7335279E24172A81009E3F19 /* Outline */,
+				7335279E24172A81009E3F19 /* TOC */,
 				73F71358241723B100C63B81 /* User Settings */,
 			);
 			path = UI;
@@ -1823,9 +1817,8 @@
 				114C8CD719BE2FD300719B72 /* NYPLAttributedString.m in Sources */,
 				73A229AD2410221E006B9EAD /* EPUBModule.swift in Sources */,
 				5DD5677222B7ECE3001F0C83 /* NYPLSettings.swift in Sources */,
-				73A229A5240F3D1B006B9EAD /* Result.swift in Sources */,
+				73A229A5240F3D1B006B9EAD /* CancellableResult.swift in Sources */,
 				E6BC315D1E009F3E0021B65E /* NYPLAgeCheck.swift in Sources */,
-				73A229A1240F3BEB006B9EAD /* LibraryError.swift in Sources */,
 				2D382BD71D08BA99002C423D /* Log.swift in Sources */,
 				11616E11196B0531003D60D9 /* NYPLBookRegistry.m in Sources */,
 				081387571BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m in Sources */,
@@ -1879,7 +1872,7 @@
 				8C835DD5234D0B900050A18D /* NYPLFacetBarView.swift in Sources */,
 				111197341986D7550014462F /* NYPLDismissibleViewController.m in Sources */,
 				A823D81D192BABA400B55DE2 /* main.m in Sources */,
-				73F713682417240100C63B81 /* UIViewController+R2.swift in Sources */,
+				73F713682417240100C63B81 /* UIViewController+NYPL.swift in Sources */,
 				1107835E19816E3D0071AB1E /* UIView+NYPLViewAdditions.m in Sources */,
 				111E75831A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m in Sources */,
 				11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */,
@@ -1942,7 +1935,6 @@
 				5DD567B522B97344001F0C83 /* Data+Base64.swift in Sources */,
 				A823D821192BABA400B55DE2 /* NYPLAppDelegate.m in Sources */,
 				73F71365241723B100C63B81 /* UserSettingsNavigationController.swift in Sources */,
-				73F713722417265700C63B81 /* Toast.swift in Sources */,
 				112C684F19EF003300106973 /* NYPLCatalogFacetGroup.m in Sources */,
 				2D754BBB2002E2FB0061D34F /* NYPLOPDSAcquisition.m in Sources */,
 				085D31DF1BE3CD3C007F7672 /* NSURLRequest+NYPLURLRequestAdditions.m in Sources */,
@@ -1975,7 +1967,7 @@
 				2DF321831DC3B83500E1858F /* NYPLAnnotations.swift in Sources */,
 				E6BA02B81DE4B6F600F76404 /* RemoteHTMLViewController.swift in Sources */,
 				8CE9C471237F84820072E964 /* NYPLBookDetailsProblemDocumentViewController.swift in Sources */,
-				73A2299B240F3B9B006B9EAD /* AppModule.swift in Sources */,
+				73A2299B240F3B9B006B9EAD /* NYPLR2Owner.swift in Sources */,
 				A4BA1D131B43046B006F83DF /* NYPLCatalogGroupedFeed.m in Sources */,
 				11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */,
 				1158812E1A894F4E008672C3 /* NYPLAccountSignInViewController.m in Sources */,

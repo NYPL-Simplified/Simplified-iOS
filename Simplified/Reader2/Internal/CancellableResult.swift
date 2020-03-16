@@ -1,6 +1,5 @@
 //
-//  Result.swift
-//  r2-testapp-swift
+//  CancellableResult.swift
 //
 //  Created by Mickaël Menu on 01.02.19.
 //

@@ -14,13 +14,11 @@ import R2Shared
 import R2Navigator
 import UIKit
 
-protocol OutlineTableViewControllerFactory {
-  func make(publication: Publication) -> OutlineTableViewController
-}
-
 protocol OutlineTableViewControllerDelegate: AnyObject {
 
+  // TODO: SIMPLY-2608
 //  var bookmarksDataSource: BookmarkDataSource? { get }
+
   func outline(_ outlineTableViewController: OutlineTableViewController, goTo location: Locator)
 
 }
@@ -37,6 +35,7 @@ final class OutlineTableViewController: UITableViewController {
   // Outlines (list of links) to display for each section.
   private var outlines: [Section: [(level: Int, link: Link)]] = [:]
 
+  // TODO: SIMPLY-2608
 //  var bookmarksDataSource: BookmarkDataSource? {
 //    return delegate?.bookmarksDataSource
 //  }
@@ -72,13 +71,12 @@ final class OutlineTableViewController: UITableViewController {
 
     outlines = [
       .tableOfContents: flatten(publication.tableOfContents),
-//      .landmarks: flatten(publication.landmarks),
-//      .pageList: flatten(publication.pageList)
     ]
   }
 
   func locator(at indexPath: IndexPath) -> Locator? {
     switch section {
+      // TODO: SIMPLY-2608
 //    case .bookmarks:
 //      guard let bookmark = bookmarksDataSource?.bookmark(at: indexPath.row) else {
 //        return nil
@@ -118,6 +116,7 @@ final class OutlineTableViewController: UITableViewController {
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     switch section {
 
+      // TODO: SIMPLY-2608
 //    case .bookmarks:
 //      let cell: BookmarkCell = {
 //        if let cell = tableView.dequeueReusableCell(withIdentifier: kBookmarkCell) as? BookmarkCell {
@@ -179,6 +178,7 @@ final class OutlineTableViewController: UITableViewController {
 
   override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
     switch section {
+      // TODO: SIMPLY-2608
 //    case .bookmarks:
 //      if editingStyle == .delete {
 //        if (self.bookmarksDataSource?.removeBookmark(index: indexPath.item) ?? false) {

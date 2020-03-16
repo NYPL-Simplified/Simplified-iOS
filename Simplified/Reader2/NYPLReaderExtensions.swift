@@ -35,53 +35,35 @@ extension NYPLBook {
     }
 
     return urlStr
-//    guard let noPercentEscapes = urlStr.removingPercentEncoding else {
-//      return urlStr
-//    }
-//    return noPercentEscapes
   }
 
   var progressionLocator: Locator? {
-    // TODO: XXXX
+    // TODO: SIMPLY-2609
     return nil
   }
 }
 
 @objc extension NYPLRootTabBarController {
-  func presentBook(_ book: NYPLBook, fromLibrary lib: LibraryService? = nil) {
-
-    guard let libModule = appModule?.library as? LibraryModule else {
+  func presentBook(_ book: NYPLBook) {
+    guard let libModule = r2Owner?.libraryModule else {
       return
     }
 
-    let library = libModule.library
+    let libService = libModule.libraryService
 
-    guard let (publication, container) = library.parsePublication(for: book) else {
+    guard let (publication, container) = libService.parsePublication(for: book) else {
       return
     }
 
-    library.preparePresentation(of: publication, book: book, with: container)
+    libService.preparePresentation(of: publication, book: book, with: container)
 
-    let objcPublication = OBJCPublication(publication: publication)
     guard let navVC = NYPLRootTabBarController.shared().selectedViewController as? UINavigationController else {
-//    guard let navVC = self.navigationController else {
       fatalError("No navigation controller, unable to present reader")
     }
 
-    appModule.library.delegate?.libraryDidSelectPublication(objcPublication,
-                                                            book: book,
-                                                            inNavVC: navVC) {
-//      self.loadingIndicator.removeFromSuperview()
-//      collectionView.isUserInteractionEnabled = true
-    }
+    r2Owner.readerModule.presentPublication(publication: publication,
+                                            book: book,
+                                            in: navVC) {}
   }
 }
 
-@objc class OBJCPublication: NSObject {
-  let publication: Publication
-
-  init(publication: Publication) {
-    self.publication = publication
-    super.init()
-  }
-}

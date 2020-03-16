@@ -16,25 +16,31 @@ import R2Shared
 
 
 final class EPUBModule: ReaderFormatModule {
-    
-    weak var delegate: ReaderFormatModuleDelegate?
-    
-    init(delegate: ReaderFormatModuleDelegate?) {
-        self.delegate = delegate
-    }
-
-    var publicationFormats: [Publication.Format] {
-        return [.epub, .webpub]
-    }
-    
-    func makeReaderViewController(for publication: Publication, book: NYPLBook, drm: DRM?, resourcesServer: ResourcesServer) throws -> UIViewController {
-        guard publication.metadata.identifier != nil else {
-            throw ReaderError.epubNotValid
-        }
-
-        let epubViewController = EPUBViewController(publication: publication, book: book, drm: drm, resourcesServer: resourcesServer)
-        epubViewController.moduleDelegate = delegate
-        return epubViewController
+  
+  weak var delegate: ReaderFormatModuleDelegate?
+  
+  init(delegate: ReaderFormatModuleDelegate?) {
+    self.delegate = delegate
+  }
+  
+  var publicationFormats: [Publication.Format] {
+    return [.epub, .webpub]
+  }
+  
+  func makeReaderVC(for publication: Publication,
+                    book: NYPLBook,
+                    drm: DRM?,
+                    resourcesServer: ResourcesServer) throws -> UIViewController {
+    guard publication.metadata.identifier != nil else {
+      throw ReaderError.epubNotValid
     }
     
+    let epubVC = EPUBViewController(publication: publication,
+                                    book: book,
+                                    drm: drm,
+                                    resourcesServer: resourcesServer)
+    epubVC.moduleDelegate = delegate
+    return epubVC
+  }
+  
 }

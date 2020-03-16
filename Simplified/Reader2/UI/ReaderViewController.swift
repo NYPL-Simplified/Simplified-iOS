@@ -26,6 +26,7 @@ class ReaderViewController: UIViewController, Loggable {
   let book: NYPLBook
   let drm: DRM?
 
+  // TODO: SIMPLY-2608
 //  lazy var bookmarksDataSource: BookmarkDataSource? = BookmarkDataSource(publicationID: publication.metadata.identifier ?? "")
 
   private(set) var stackView: UIStackView!
@@ -118,7 +119,7 @@ class ReaderViewController: UIViewController, Loggable {
                                    target: self,
                                    action: #selector(presentOutline)))
 
-    // DRM management
+    // TODO: SIMPLY-2650 DRM management
 //    if drm != nil {
 //      buttons.append(UIBarButtonItem(image: #imageLiteral(resourceName: "drm"), style: .plain, target: self, action: #selector(presentDRMManagement)))
 //    }
@@ -145,15 +146,7 @@ class ReaderViewController: UIViewController, Loggable {
     return navigationBarHidden && !UIAccessibility.isVoiceOverRunning
   }
 
-
-  // MARK: - Locations
-  /// FIXME: This should be implemented in a shared Navigator interface, using Locators.
-
-  var currentBookmark: Bookmark? {
-    fatalError("Not implemented")
-  }
-
-
+  //----------------------------------------------------------------------------
   // MARK: - Outlines
 
   @objc func presentOutline() {
@@ -163,7 +156,13 @@ class ReaderViewController: UIViewController, Loggable {
 
   // MARK: - Bookmarks
 
+  // TODO: SIMPLY-2608
+  //  var currentBookmark: Bookmark? {
+  //    return nil
+  //  }
+
   @objc func bookmarkCurrentPosition() {
+    // TODO: SIMPLY-2608
 //    guard let dataSource = bookmarksDataSource,
 //      let bookmark = currentBookmark,
 //      dataSource.addBookmark(bookmark: bookmark) else
@@ -174,17 +173,7 @@ class ReaderViewController: UIViewController, Loggable {
 //    toast(NSLocalizedString("reader_bookmark_success_message", comment: "Success message when adding a bookmark"), on: view, duration: 1)
   }
 
-
-  // MARK: - DRM
-
-  @objc func presentDRMManagement() {
-    //        guard let drm = drm else {
-    //            return
-    //        }
-    //        moduleDelegate?.presentDRM(drm, from: self)
-  }
-
-
+  //----------------------------------------------------------------------------
   // MARK: - Accessibility
 
   /// Constraint used to shift the content under the navigation bar, since it is always visible when VoiceOver is running.
@@ -243,15 +232,18 @@ class ReaderViewController: UIViewController, Loggable {
 
 }
 
+//------------------------------------------------------------------------------
+// MARK: - NavigatorDelegate
+
 extension ReaderViewController: NavigatorDelegate {
 
   func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
-    do {
-      //TODO: XXXX
+//    do {
+//      //TODO: SIMPLY-2609
 //      try BooksDatabase.shared.books.saveProgression(locator, of: book)
-    } catch {
-      log(.error, error)
-    }
+//    } catch {
+//      log(.error, error)
+//    }
 
     positionLabel.text = {
       if let position = locator.locations.position {
@@ -278,6 +270,9 @@ extension ReaderViewController: NavigatorDelegate {
 
 }
 
+//------------------------------------------------------------------------------
+// MARK: - VisualNavigatorDelegate
+
 extension ReaderViewController: VisualNavigatorDelegate {
 
   func navigator(_ navigator: VisualNavigator, didTapAt point: CGPoint) {
@@ -297,6 +292,9 @@ extension ReaderViewController: VisualNavigatorDelegate {
   }
 
 }
+
+//------------------------------------------------------------------------------
+// MARK: - OutlineTableViewControllerDelegate
 
 extension ReaderViewController: OutlineTableViewControllerDelegate {
 

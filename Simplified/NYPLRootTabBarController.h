@@ -1,4 +1,4 @@
-@class AppModule;
+@class NYPLR2Owner;
 
 @interface NYPLRootTabBarController : UITabBarController
 
@@ -9,7 +9,7 @@
 
 + (instancetype)sharedController;
 
-@property (nonatomic) AppModule *appModule;
+@property (readonly) NYPLR2Owner *r2Owner;
 
 /// This method will present a view controller from the receiver, or from the
 /// controller currently being presented from the receiver, or from the

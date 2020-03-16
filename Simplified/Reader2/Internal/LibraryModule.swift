@@ -15,76 +15,28 @@ import R2Shared
 import R2Streamer
 import UIKit
 
+// TODO: SIMPLY-2656 Review "module" nomenclature
 
 /// The Library module handles the presentation of the bookshelf, and the publications' management.
 protocol LibraryModuleAPI {
-
-  var delegate: LibraryModuleDelegate? { get }
-
-  /// Root navigation controller containing the Library.
-  /// Can be used to present the library to the user.
-//  var rootViewController: UINavigationController { get }
-
-  /// Adds a new publication to the library, from a local file URL.
-  /// To be called from UIApplicationDelegate(open:options:).
-  /// - Returns: Whether the URL was handled.
-//  func addPublication(at url: URL, from downloadTask: URLSessionDownloadTask?) -> Bool
-
-  /// Downloads a remote publication (eg. OPDS entry) to the library.
-  func downloadPublication(_ publication: Publication?, at link: Link, completion: @escaping (Bool) -> Void)
-
+  var libraryService: LibraryService {get}
+  
   /// Loads the R2 DRM object for the given publication.
   func loadDRM(for book: NYPLBook, completion: @escaping (CancellableResult<DRM?>) -> Void)
 }
 
-@objc protocol LibraryModuleDelegate: ModuleDelegate {
-  /// Called when the user tap on a publication in the library.
-  func libraryDidSelectPublication(_ publicationWrapper: OBJCPublication,
-                                   book: NYPLBook,
-                                   inNavVC navVC: UINavigationController,
-                                   completion: @escaping () -> Void)
-}
-
+// TODO: SIMPLY-2656 Do we even need this class?
 
 final class LibraryModule: LibraryModuleAPI {
 
-  weak var delegate: LibraryModuleDelegate?
+  let libraryService: LibraryService
 
-  let library: LibraryService
-//  private let factory: LibraryFactory
-
-  init(delegate: LibraryModuleDelegate?, server: PublicationServer) {
-    self.library = LibraryService(publicationServer: server)
-//    self.factory = LibraryFactory(libraryService: library)
-    self.delegate = delegate
-  }
-
-//  private(set) lazy var rootViewController: UINavigationController = {
-//    //return UINavigationController(rootViewController: libraryViewController)
-//    return NYPLRootTabBarController.shared()! //TODO
-//  }()
-
-  // TODO: SIMPLY-2463 might need to uncomment at some point
-//  private lazy var libraryViewController: LibraryViewController = {
-//    let library: LibraryViewController = factory.make()
-//    library.libraryDelegate = delegate
-//    return library
-//  }()
-
-//  func addPublication(at url: URL, from downloadTask: URLSessionDownloadTask?) -> Bool {
-//    if url.isFileURL {
-//      return library.movePublicationToLibrary(from: url, downloadTask: downloadTask)
-//    } else {
-//      return library.addPublication(at: url, downloadTask: downloadTask)
-//    }
-//  }
-
-  func downloadPublication(_ publication: Publication?, at link: Link, completion: @escaping (Bool) -> Void) {
-    library.downloadPublication(publication, at: link, completion: completion)
+  init(server: PublicationServer) {
+    self.libraryService = LibraryService(publicationServer: server)
   }
 
   func loadDRM(for book: NYPLBook, completion: @escaping (CancellableResult<DRM?>) -> Void) {
-    library.loadDRM(for: book, completion: completion)
+    libraryService.loadDRM(for: book, completion: completion)
   }
 
 }

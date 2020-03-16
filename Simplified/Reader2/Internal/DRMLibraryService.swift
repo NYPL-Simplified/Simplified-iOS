@@ -12,6 +12,7 @@
 import Foundation
 import R2Shared
 
+// TODO: SIMPLY-2650 Integrate DRM within R2
 
 struct DRMFulfilledPublication {
     let localURL: URL

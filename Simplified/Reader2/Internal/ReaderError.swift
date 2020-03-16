@@ -12,6 +12,8 @@
 
 import Foundation
 
+// TODO: SIMPLY-2656 Merge with other localized strings
+
 enum ReaderError: LocalizedError {
     case formatNotSupported
     case epubNotValid
