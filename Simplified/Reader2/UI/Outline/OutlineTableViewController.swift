@@ -47,7 +47,7 @@ final class OutlineTableViewController: UITableViewController {
   }
 
   private enum Section: Int {
-    case tableOfContents = 0, bookmarks, pageList, landmarks
+    case tableOfContents = 0, bookmarks//, pageList, landmarks
   }
 
   private var section: Section {
@@ -72,8 +72,8 @@ final class OutlineTableViewController: UITableViewController {
 
     outlines = [
       .tableOfContents: flatten(publication.tableOfContents),
-      .landmarks: flatten(publication.landmarks),
-      .pageList: flatten(publication.pageList)
+//      .landmarks: flatten(publication.landmarks),
+//      .pageList: flatten(publication.pageList)
     ]
   }
 
