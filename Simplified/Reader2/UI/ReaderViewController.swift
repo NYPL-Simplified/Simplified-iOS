@@ -107,17 +107,22 @@ class ReaderViewController: UIViewController, Loggable {
 
   func makeNavigationBarButtons() -> [UIBarButtonItem] {
     var buttons: [UIBarButtonItem] = []
-    // Table of Contents
-    buttons.append(UIBarButtonItem(image: UIImage(named: "TOC"), style: .plain, target: self, action: #selector(presentOutline)))
+
+    buttons.append(UIBarButtonItem(image: UIImage(named: "BookmarkOff"),
+                                   style: .plain,
+                                   target: self,
+                                   action: #selector(bookmarkCurrentPosition)))
+
+    buttons.append(UIBarButtonItem(image: UIImage(named: "TOC"),
+                                   style: .plain,
+                                   target: self,
+                                   action: #selector(presentOutline)))
+
     // DRM management
 //    if drm != nil {
 //      buttons.append(UIBarButtonItem(image: #imageLiteral(resourceName: "drm"), style: .plain, target: self, action: #selector(presentDRMManagement)))
 //    }
     // Bookmarks
-    buttons.append(UIBarButtonItem(image: UIImage(named: "BookmarkOff"),
-                                   style: .plain,
-                                   target: self,
-                                   action: #selector(bookmarkCurrentPosition)))
 
     return buttons
   }
