@@ -18,24 +18,25 @@ extension NYPLBook {
   /// or a file url "file:/some/path/abc.epub",
   /// "file:///some/path/abc.epub"
   var fileName: String? {
-    let url = URL(string: href)
+    //let url = URL(string: href) //TODO: SIMPLY-2656
     guard url?.scheme == nil || (url?.isFileURL ?? false) else {
       return nil
     }
-    return href
+    return url?.absoluteString
   }
 
   var url: URL? {
     return NYPLMyBooksDownloadCenter.shared()?.fileURL(forBookIndentifier: identifier)
   }
 
-  var href: String {
-    guard let urlStr = url?.absoluteString else {
-      fatalError("TODO: the URL for \(self) is nil")
-    }
-
-    return urlStr
-  }
+  //TODO: SIMPLY-2656 this property seems architecturally unsound
+//  var href: String {
+//    guard let urlStr = url?.absoluteString else {
+//      fatalError("TODO: the URL for \(self) is nil")
+//    }
+//
+//    return urlStr
+//  }
 
   var progressionLocator: Locator? {
     // TODO: SIMPLY-2609
