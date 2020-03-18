@@ -3,7 +3,11 @@ binary "https://dl.google.com/dl/firebase/ios/carthage/FirebaseAnalyticsBinary.j
 github "NYPL-Simplified/CardCreator-iOS" ~> 1.1.2
 github "NYPL-Simplified/NYPLAEToolkit" "master"
 github "NYPL-Simplified/NYPLAudiobookToolkit" "master"
+github "NYPL-Simplified/PDFRendererProvider-iOS" "master"
 github "PureLayout/PureLayout" ~> 3.1.2
 github "TheLevelUp/ZXingObjC" ~> 3.3
-github "stephencelis/SQLite.swift" ~> 0.11.5
-github "NYPL-Simplified/PDFRendererProvider-iOS" "master"
+github "stephencelis/SQLite.swift" == 0.12.2
+github "readium/r2-shared-swift" == 1.4.3
+github "readium/r2-streamer-swift" == 1.2.5
+github "readium/r2-navigator-swift" == 1.2.6
+github "readium/readium-opds-swift" == 1.2.3
