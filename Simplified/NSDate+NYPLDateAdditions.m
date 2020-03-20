@@ -113,4 +113,24 @@
 #pragma clang diagnostic pop
 }
 
+- (NSString *)RFC1123String
+{
+  static NSDateFormatter *df;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+
+    // Example: Sun, 06 Nov 1994 08:49:37 GMT
+
+    df = [[NSDateFormatter alloc] init];
+    [df setFormatterBehavior:NSDateFormatterBehavior10_4];
+
+    // For some reason, using zzz in the format string produces GMT+00:00
+    [df setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+    [df setDateFormat:@"EEE, dd MMM y HH:mm:ss 'GMT'"];
+    [df setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+  });
+
+  return [df stringFromDate:self];
+}
+
 @end

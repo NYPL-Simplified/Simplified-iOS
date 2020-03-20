@@ -284,12 +284,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     }
   }
   
-  var authenticationDocumentCacheUrl: URL {
-    let applicationSupportUrl = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-    let nonColonUuid = uuid.replacingOccurrences(of: ":", with: "_")
-    return applicationSupportUrl.appendingPathComponent("authentication_document_\(nonColonUuid).json")
-  }
-  
+
   var loansUrl: URL? {
     return details?.loansUrl
   }
@@ -322,14 +317,11 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
       return
     }
     
-    loadDataWithCache(url: url,
-                      cacheUrl: authenticationDocumentCacheUrl,
-                      options: []) { data in
+    loadDataWithCache(url: url) { data in
       if let data = data {
         do {
           self.authenticationDocument = try OPDS2AuthenticationDocument.fromData(data)
           completion(true)
-          
         } catch (let error) {
           Log.error(#file, "Failed to load authentication document for library: \(error.localizedDescription)")
           completion(false)

@@ -104,7 +104,7 @@
   }
   
   func addAccount() {
-    AccountsManager.shared.loadCatalogs(options: .online) { (success) in
+    AccountsManager.shared.loadCatalogs() { (success) in
       guard success else {
         let alert = NYPLAlertUtils.alert(title:nil, message:"LibraryLoadError", style: .cancel)
         NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert, viewController: self, animated: true, completion: nil)

@@ -10,84 +10,20 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
 /**
  Switchboard for fetching data, whether it's from a cache source or fresh from the endpoint.
  - parameter url: Target URL to fetch from.
- - parameter cacheUrl: The target file URL to save the data to.
- - parameter options: Load options to determine the behaviour of this method.
  - parameter completion: Callback invoked when call finishes, providing the
  data or nil if unsuccessful.
  */
 func loadDataWithCache(url: URL,
-                       cacheUrl: URL,
-                       options: AccountsManager.LoadOptions,
                        completion: @escaping (Data?) -> ()) {
-
-  switch NYPLNetworkExecutor.shared.cacheControlForResource(at: url) {
-  case .notCached:
-    // the resource DOES NOT appear in the executor's cache at all. This means
-    // we have to issue a request and this will hit the network.
-    break
-  case .correct:
-    // the resource DOES appear in the executor's cache and it HAS the cache
-    // control headers we want. This means that we can issue a request to
-    // the executor and that will hit its cache if that's not expired,
-    // otherwise it will hit the network.
-    break
-  case .incorrect:
-    // the resource DOES appear in the cache but it's there ephemerally,
-    // because it HAS NOT the correct cache control headers. This would be the
-    // case of an api response from libraries that did not implement cache
-    // control headers. Let's see if it was cached manually on disk.
-    let completed = loadDataFromManualCache(cacheUrl: cacheUrl,
-                                            options: options,
-                                            completion: completion)
-    if completed {
-      return
-    }
-  }
 
   NYPLNetworkExecutor.shared.executeRequest(url) { result in
     switch result {
     case .success(let serverData):
-      if !serverData.responseHasCorrectCacheControlHeaders {
-        // manual caching, later used in the "incorrect" case above
-        try? serverData.data.write(to: cacheUrl)
-      }
       completion(serverData.data)
     case .failure(_):
       completion(nil)
     }
   }
-}
-
-/**
- Read cached data from our manual cache
- - parameter cacheUrl: The target file URL to save the data to.
- - parameter expiryUnit: The unit of measure for `expiryValue`.
- - parameter expiryValue: How many `expiryUnit`s to keep the cache before expiring it
- - parameter options: Load options to determine the behaviour of this method.
- - parameter completion: Callback invoked if `options` included caching options.
- - returns: `true` if `completion` was invoked, `false` otherwise.
- */
-private func loadDataFromManualCache(cacheUrl: URL,
-                                     expiryUnit: Calendar.Component = .hour,
-                                     expiryValue: Int = 3,
-                                     options: AccountsManager.LoadOptions,
-                                     completion: @escaping (Data?) -> ()) -> Bool {
-  if !options.contains(.noCache) {
-    let modified = (try? FileManager.default.attributesOfItem(atPath: cacheUrl.path)[.modificationDate]) as? Date
-    if let modified = modified, let expiry = Calendar.current.date(byAdding: expiryUnit, value: expiryValue, to: modified), expiry > Date() {
-      if let data = try? Data(contentsOf: cacheUrl) {
-        completion(data)
-        return true
-      }
-    }
-
-    if options.contains(.cacheOnly) {
-      completion(nil)
-      return true
-    }
-  }
-
-  return false
 }
 
 /// Manage the library accounts for the app.
@@ -160,12 +96,12 @@ private func loadDataFromManualCache(cacheUrl: URL,
       object: nil
     )
     DispatchQueue.main.async {
-      self.loadCatalogs(options: .offline, completion: {_ in })
+      self.loadCatalogs(completion: {_ in })
     }
   }
   
   let completionHandlerAccessQueue = DispatchQueue(label: "libraryListCompletionHandlerAccessQueue")
-  
+
   // Returns whether loading was happening already
   func addLoadingCompletionHandler(key: String, _ handler: @escaping (Bool) -> ()) -> Bool {
     var wasEmpty = false
@@ -197,24 +133,17 @@ private func loadDataFromManualCache(cacheUrl: URL,
       handler(success)
     }
   }
-  
-  private func libraryListCacheUrl(name: String) -> URL {
-    let applicationSupportUrl = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-    let url = applicationSupportUrl.appendingPathComponent("library_list_\(name).json")
-    return url
-  }
 
   /**
    Take the library list data (either from cache or the internet), load it into
    self.accounts, and load the auth document for the current account if
    necessary.
    - parameter data: The library list data.
-   - parameter options: Load options to determine the behaviour of this method.
    - parameter key: ???
    - parameter completion: Always invoked at the end no matter what, providing
    `true` in case of success and `false` otherwise.
    */
-  private func loadCatalogs(data: Data, options: LoadOptions, key: String, completion: @escaping (Bool) -> ()) {
+  private func loadCatalogs(data: Data, key: String, completion: @escaping (Bool) -> ()) {
     do {
       let catalogsFeed = try OPDS2CatalogsFeed.fromData(data)
       let hadAccount = self.currentAccount != nil
@@ -256,22 +185,19 @@ private func loadDataFromManualCache(cacheUrl: URL,
     }
   }
   
-  func loadCatalogs(options: LoadOptions, completion: @escaping (Bool) -> ()) {
+  func loadCatalogs(completion: @escaping (Bool) -> ()) {
     let targetUrl = NYPLSettings.shared.useBetaLibraries ? betaUrl : prodUrl
-    let hash = targetUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
+    let hash = targetUrl.absoluteString.md5().base64EncodedStringUrlSafe()
+      .trimmingCharacters(in: ["="])
     
     let wasAlreadyLoading = addLoadingCompletionHandler(key: hash, completion)
     if wasAlreadyLoading {
       return
     }
-    
-    let cacheUrl = libraryListCacheUrl(name: hash)
-    
-    loadDataWithCache(url: targetUrl,
-                      cacheUrl: cacheUrl,
-                      options: options) { data in
+
+    loadDataWithCache(url: targetUrl) { data in
       if let data = data {
-        self.loadCatalogs(data: data, options: options, key: hash) { (success) in
+        self.loadCatalogs(data: data, key: hash) { (success) in
           self.callAndClearLoadingCompletionHandlers(key: hash, success)
           NotificationCenter.default.post(name: NSNotification.Name.NYPLCatalogDidLoad, object: nil)
         }
@@ -308,7 +234,7 @@ private func loadDataFromManualCache(cacheUrl: URL,
   func updateAccountSetFromSettings() {
     self.accountSet = NYPLSettings.shared.useBetaLibraries ? betaUrlHash : prodUrlHash
     if self.accounts().isEmpty {
-      loadCatalogs(options: .offline, completion: {_ in })
+      loadCatalogs(completion: {_ in })
     }
   }
 
