@@ -176,6 +176,8 @@
 		731DA5FC240711F5009CC191 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731DA5FB240711F5009CC191 /* Fabric.framework */; };
 		7327A89323EE017300954748 /* NYPLMainThreadChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7327A89223EE017300954748 /* NYPLMainThreadChecker.swift */; };
 		732F929323ECB51F0099244C /* NYPLBackgroundExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */; };
+		733875652423E1B0000FEB67 /* NYPLNetworkExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733875642423E1B0000FEB67 /* NYPLNetworkExecutor.swift */; };
+		733875672423E540000FEB67 /* NYPLCaching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733875662423E540000FEB67 /* NYPLCaching.swift */; };
 		7360891C240DFBF7007EE66F /* NYPLErrorLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF8B422C3FC06007CAA34 /* NYPLErrorLogger.swift */; };
 		738EF2D02405E38800F388FB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 738EF2CB2405E38800F388FB /* GoogleService-Info.plist */; };
 		738EF2DB2405EA6000F388FB /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D22405EA5F00F388FB /* Firebase.framework */; };
@@ -568,6 +570,8 @@
 		731DA5FB240711F5009CC191 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Carthage/Build/iOS/Fabric.framework; sourceTree = "<group>"; };
 		7327A89223EE017300954748 /* NYPLMainThreadChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLMainThreadChecker.swift; sourceTree = "<group>"; };
 		732F929223ECB51F0099244C /* NYPLBackgroundExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBackgroundExecutor.swift; sourceTree = "<group>"; };
+		733875642423E1B0000FEB67 /* NYPLNetworkExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLNetworkExecutor.swift; sourceTree = "<group>"; };
+		733875662423E540000FEB67 /* NYPLCaching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLCaching.swift; sourceTree = "<group>"; };
 		738EF2CB2405E38800F388FB /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		738EF2D12405E3D900F388FB /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 		738EF2D22405EA5F00F388FB /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Firebase.framework; path = Carthage/Build/iOS/Firebase.framework; sourceTree = "<group>"; };
@@ -1059,6 +1063,15 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		7338755E2423E108000FEB67 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				733875642423E1B0000FEB67 /* NYPLNetworkExecutor.swift */,
+				733875662423E540000FEB67 /* NYPLCaching.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
 		7360891B240DFB93007EE66F /* Logging */ = {
 			isa = PBXGroup;
 			children = (
@@ -1179,6 +1192,7 @@
 				11C5DCEF1976D1BA005A9945 /* Holds */,
 				7360891B240DFB93007EE66F /* Logging */,
 				110AF8881961D652004887C3 /* My Books */,
+				7338755E2423E108000FEB67 /* Network */,
 				11172762197F31280043EFBF /* NYPLAccount.h */,
 				11172763197F31280043EFBF /* NYPLAccount.m */,
 				1158812C1A894F4E008672C3 /* NYPLAccountSignInViewController.h */,
@@ -1704,6 +1718,7 @@
 				8C835DD5234D0B900050A18D /* NYPLFacetBarView.swift in Sources */,
 				111197341986D7550014462F /* NYPLDismissibleViewController.m in Sources */,
 				A823D81D192BABA400B55DE2 /* main.m in Sources */,
+				733875672423E540000FEB67 /* NYPLCaching.swift in Sources */,
 				1107835E19816E3D0071AB1E /* UIView+NYPLViewAdditions.m in Sources */,
 				111E75831A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m in Sources */,
 				11E0208D197F05D9009DEA93 /* UIFont+NYPLSystemFontOverride.m in Sources */,
@@ -1714,6 +1729,7 @@
 				A42E0DF41B40F4E00095EBAE /* NYPLCatalogFeedViewController.m in Sources */,
 				11B6020519806CD300800DA9 /* NYPLBookDownloadingCell.m in Sources */,
 				114B7F161A3644CF00B8582B /* NYPLTenPrintCoverView+NYPLImageAdditions.m in Sources */,
+				733875652423E1B0000FEB67 /* NYPLNetworkExecutor.swift in Sources */,
 				2D87909D20127AA300E2763F /* NYPLBookAcquisitionPath.m in Sources */,
 				2DCB71EE2017DFB5000E041A /* NYPLOPDSAcquisitionAvailability.m in Sources */,
 				2DB436381D4C049200F8E69D /* NYPLReachability.m in Sources */,

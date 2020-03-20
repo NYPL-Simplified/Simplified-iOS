@@ -45,6 +45,7 @@ fileprivate let nullString = "null"
     // generic app related
     case appLaunch = 100
     case expiredBackgroundFetch = 101
+    case apiCall = 102
 
     // book registry
     case nilBookIdentifier = 200 // caused by book registry, downloads
@@ -453,9 +454,9 @@ fileprivate let nullString = "null"
     @return
    */
   class func logUserProfileDocumentError(error: NSError?) {
-    let err = error ?? NSError.init(domain: simplyeDomain,
-                                    code: ErrorCode.userProfileDocFail.rawValue,
-                                    userInfo: nil)
+    let err = error ?? NSError(domain: simplyeDomain,
+                               code: ErrorCode.userProfileDocFail.rawValue,
+                               userInfo: nil)
     var metadata = [AnyHashable : Any]()
     metadata["errorDescription"] = error?.localizedDescription ?? nullString
     addAccountInfoToMetadata(&metadata)
@@ -481,5 +482,41 @@ fileprivate let nullString = "null"
                       code: ErrorCode.audiobookEvent.rawValue,
                       userInfo: userInfo)
     Crashlytics.sharedInstance().recordError(err)
+  }
+
+  class func logNetworkError(_ error: Error? = nil,
+                             requestURL: URL,
+                             response: URLResponse? = nil,
+                             message: String? = nil) -> Error {
+    // compute metadata
+    var metadata = [AnyHashable : Any]()
+    metadata["requestURL"] = requestURL
+    if let response = response {
+      metadata["response"] = response
+    }
+    if let message = message {
+      metadata["api_call_fail_reason"] = message
+    }
+    addAccountInfoToMetadata(&metadata)
+
+    // build actual error object
+    let err: Error = {
+      if let error = error {
+        return error
+      }
+
+      return NSError(domain: simplyeDomain,
+                     code: NYPLErrorLogger.ErrorCode.apiCall.rawValue,
+                     userInfo: nil)
+
+    }()
+
+    Log.error(#file, "Request with URL \(requestURL) failed. Error: \(err)")
+    reportLogs()
+
+    let userInfo = additionalInfo(severity: .error, metadata: metadata)
+    Crashlytics.sharedInstance().recordError(err,
+                                             withAdditionalUserInfo: userInfo)
+    return err
   }
 }

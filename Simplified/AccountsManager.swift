@@ -9,42 +9,85 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
 
 /**
  Switchboard for fetching data, whether it's from a cache source or fresh from the endpoint.
- @param url target URL to fetch from
- @param cacheUrl the target file URL to save the data to
- @param options load options to determine the behaviour of this method;
- noCache - don't fetch from cache under any circumstances
- preferCache - fetches from cache if cache exists
- cacheOnly - only fetch from cache, unless `noCache` is specified
- @param completion callback method when this is complete, providing the data or nil if unsuccessful
+ - parameter url: Target URL to fetch from.
+ - parameter cacheUrl: The target file URL to save the data to.
+ - parameter options: Load options to determine the behaviour of this method.
+ - parameter completion: Callback invoked when call finishes, providing the
+ data or nil if unsuccessful.
  */
-func loadDataWithCache(url: URL, cacheUrl: URL, expiryUnit: Calendar.Component = .day, expiryValue: Int = 1, options: AccountsManager.LoadOptions, completion: @escaping (Data?) -> ()) {
+func loadDataWithCache(url: URL,
+                       cacheUrl: URL,
+                       options: AccountsManager.LoadOptions,
+                       completion: @escaping (Data?) -> ()) {
+
+  switch NYPLNetworkExecutor.shared.cacheControlForResource(at: url) {
+  case .notCached:
+    // the resource DOES NOT appear in the executor's cache at all. This means
+    // we have to issue a request and this will hit the network.
+    break
+  case .correct:
+    // the resource DOES appear in the executor's cache and it HAS the cache
+    // control headers we want. This means that we can issue a request to
+    // the executor and that will hit its cache if that's not expired,
+    // otherwise it will hit the network.
+    break
+  case .incorrect:
+    // the resource DOES appear in the cache but it's there ephemerally,
+    // because it HAS NOT the correct cache control headers. This would be the
+    // case of an api response from libraries that did not implement cache
+    // control headers. Let's see if it was cached manually on disk.
+    let completed = loadDataFromManualCache(cacheUrl: cacheUrl,
+                                            options: options,
+                                            completion: completion)
+    if completed {
+      return
+    }
+  }
+
+  NYPLNetworkExecutor.shared.executeRequest(url) { result in
+    switch result {
+    case .success(let serverData):
+      if !serverData.responseHasCorrectCacheControlHeaders {
+        // manual caching, later used in the "incorrect" case above
+        try? serverData.data.write(to: cacheUrl)
+      }
+      completion(serverData.data)
+    case .failure(_):
+      completion(nil)
+    }
+  }
+}
+
+/**
+ Read cached data from our manual cache
+ - parameter cacheUrl: The target file URL to save the data to.
+ - parameter expiryUnit: The unit of measure for `expiryValue`.
+ - parameter expiryValue: How many `expiryUnit`s to keep the cache before expiring it
+ - parameter options: Load options to determine the behaviour of this method.
+ - parameter completion: Callback invoked if `options` included caching options.
+ - returns: `true` if `completion` was invoked, `false` otherwise.
+ */
+private func loadDataFromManualCache(cacheUrl: URL,
+                                     expiryUnit: Calendar.Component = .hour,
+                                     expiryValue: Int = 3,
+                                     options: AccountsManager.LoadOptions,
+                                     completion: @escaping (Data?) -> ()) -> Bool {
   if !options.contains(.noCache) {
     let modified = (try? FileManager.default.attributesOfItem(atPath: cacheUrl.path)[.modificationDate]) as? Date
     if let modified = modified, let expiry = Calendar.current.date(byAdding: expiryUnit, value: expiryValue, to: modified), expiry > Date() {
       if let data = try? Data(contentsOf: cacheUrl) {
         completion(data)
-        return
+        return true
       }
     }
 
     if options.contains(.cacheOnly) {
       completion(nil)
-      return
+      return true
     }
   }
 
-  // Load data from the internet if either the cache wasn't recent enough (or preferred), or somehow failed to load
-  let request = URLRequest.init(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 60)
-
-  let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-    guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-      completion(nil)
-      return
-    }
-    try? data.write(to: cacheUrl)
-    completion(data)
-  }
-  dataTask.resume()
+  return false
 }
 
 /// Manage the library accounts for the app.
@@ -270,6 +313,7 @@ func loadDataWithCache(url: URL, cacheUrl: URL, expiryUnit: Calendar.Component =
   }
 
   func clearCache() {
+    NYPLNetworkExecutor.shared.clearCache()
     do {
       let applicationSupportUrl = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
       let appSupportDirContents = try FileManager.default.contentsOfDirectory(at: applicationSupportUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsPackageDescendants, .skipsSubdirectoryDescendants])

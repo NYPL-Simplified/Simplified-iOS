@@ -322,7 +322,9 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
       return
     }
     
-    loadDataWithCache(url: url, cacheUrl: authenticationDocumentCacheUrl, expiryUnit: .hour, expiryValue: 1, options: []) { (data) in
+    loadDataWithCache(url: url,
+                      cacheUrl: authenticationDocumentCacheUrl,
+                      options: []) { data in
       if let data = data {
         do {
           self.authenticationDocument = try OPDS2AuthenticationDocument.fromData(data)
