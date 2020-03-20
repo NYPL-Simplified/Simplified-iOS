@@ -21,7 +21,16 @@ git submodule update --init --recursive
 ```bash
 ./build-3rd-parties-dependencies.sh <Debug | Release>
 ```
-04. Open Simplified.xcodeproj and Build!
+04. Generate NYPLSecrets.swift from Simplified-iOS folder. Executing the script without argument will generate the .swift file in /Simplified-iOS/Simplified/.
+```bash
+swift ../Certificates/SimplyE/iOS/KeyObfuscator.swift
+```
+ You can also add an output path as the argument.
+ ```bash
+ swift ../Certificates/SimplyE/iOS/KeyObfuscator.swift /Simplified/Utilities/
+ ```
+
+05. Open Simplified.xcodeproj and Build!
 
 
 ## Building Dependencies Individually
