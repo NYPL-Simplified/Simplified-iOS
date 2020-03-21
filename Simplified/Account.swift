@@ -1,3 +1,8 @@
+
+private let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
+private let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
+private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
+
 // MARK: AccountDetails
 // Extra data that gets loaded from an OPDS2AuthenticationDocument,
 @objcMembers final class AccountDetails: NSObject {
