@@ -8,18 +8,141 @@
 
 import Foundation
 
+//------------------------------------------------------------------------------
 extension HTTPURLResponse {
-  var hasCorrectCacheControlHeaders: Bool {
+  var hasCorrectCachingHeaders: Bool {
+    return cacheControlHeader != nil && expiresHeader != nil
+  }
+
+  var cacheControlMaxAge: TimeInterval? {
+    guard let cacheControl = cacheControlHeader else {
+      return nil
+    }
+
+    let directives = cacheControl.split(separator: ",")
+    let maxAgeDirectives = directives.filter {
+      $0.trimmingCharacters(in: .whitespacesAndNewlines)
+        .lowercased()
+        .starts(with: "max-age")
+    }
+    guard let maxAgeDirective = maxAgeDirectives.first else {
+      return nil
+    }
+
+    var separator = Character("=")
+    if maxAgeDirective.contains(":") {
+      separator = Character(":")
+    }
+    var maxAgeKeyAndValue = maxAgeDirective.split(separator: separator)
+    // since we're splitting a key-value pair (e.g. "maxAge=123") we'll need
+    // at least 2 elements in the split array
+    guard maxAgeKeyAndValue.count >= 2 else {
+      return nil
+    }
+
+    maxAgeKeyAndValue.removeFirst() // discard key
+    let maxAgeStr = maxAgeKeyAndValue.first?
+      .trimmingCharacters(in: .whitespacesAndNewlines)
+
+    if let maxAgeStr = maxAgeStr, let maxAgeVal = TimeInterval(maxAgeStr) {
+      return maxAgeVal
+    }
+
+    return nil
+  }
+
+  var cacheControlHeader: String? {
     let responseHeaders = self.allHeaderFields
-    return responseHeaders["Cache-Control"] != nil
-      || responseHeaders["cache-control"] != nil
-      || responseHeaders["CACHE-CONTROL"] != nil
+
+    if let cacheControl = responseHeaders["Cache-Control"] as? String {
+      return cacheControl
+    }
+
+    if let cacheControl = responseHeaders["CACHE-CONTROL"] as? String {
+      return cacheControl
+    }
+
+    if let cacheControl = responseHeaders["cache-control"] as? String {
+      return cacheControl
+    }
+
+    return nil
+  }
+
+  var expiresHeader: String? {
+    let responseHeaders = self.allHeaderFields
+
+    if let expires = responseHeaders["Expires"] as? String {
+      return expires
+    }
+
+    if let expires = responseHeaders["EXPIRES"] as? String {
+      return expires
+    }
+
+    if let expires = responseHeaders["expires"] as? String {
+      return expires
+    }
+
+    return nil
   }
 }
 
+//------------------------------------------------------------------------------
+extension URLCache {
+  func replaceCachedResponse(_ response: HTTPURLResponse,
+                             data: Data,
+                             for req: URLRequest) {
+    // convert existing headers into a [String: String] dictionary we can use
+    // later
+    let headerPairs: [(String, String)] = response.allHeaderFields.compactMap {
+      if let key = $0.key as? String, let val = $0.value as? String {
+        return (key, val)
+      }
+      return nil
+    }
+    var headers = [String: String](uniqueKeysWithValues: headerPairs)
+
+    // add manual 3 hours caching if needed
+    if response.expiresHeader == nil {
+      let maxAge: TimeInterval = {
+        if let age = response.cacheControlMaxAge {
+          return age
+        }
+        return 60 * 60 * 3
+      }()
+      let in3HoursDate = NSDate().addingTimeInterval(maxAge)
+      headers["Expires"] = in3HoursDate.rfc1123String()
+    }
+    if response.cacheControlHeader == nil {
+      headers["Cache-Control"] = "public, max-age=10800"
+    }
+
+    // new response with added caching
+    guard
+      let url = req.url,
+      let newResponse = HTTPURLResponse(
+        url: url,
+        statusCode: response.statusCode,
+        httpVersion: nil,
+        headerFields: headers) else {
+          Log.error(#file, """
+            Unable to create HTTPURLResponse with added cache-control headers \
+            for url \(req). Original response: \(response)
+            """)
+          return
+    }
+
+    self.removeCachedResponse(for: req)
+    let cachedResponse = CachedURLResponse(response: newResponse, data: data)
+    self.storeCachedResponse(cachedResponse, for: req)
+  }
+}
+
+//------------------------------------------------------------------------------
 class NYPLCaching {
 
-  /// Makes a URLSEssionCongiguration for standard HTTP requests with in-memory
+  /// Makes a URLSessionConfiguration for standard HTTP requests with in-memory
   /// and disk caching enabled if the server sends appropriate cache-control
   /// headers.
   class func makeURLSessionConfiguration() -> URLSessionConfiguration {

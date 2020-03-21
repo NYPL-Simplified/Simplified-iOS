@@ -19,7 +19,7 @@ func loadDataWithCache(url: URL,
   NYPLNetworkExecutor.shared.executeRequest(url) { result in
     switch result {
     case .success(let serverData):
-      completion(serverData.data)
+      completion(serverData)
     case .failure(_):
       completion(nil)
     }

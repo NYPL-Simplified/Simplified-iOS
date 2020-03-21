@@ -13,22 +13,6 @@ enum Result<Success> {
   case failure(Error)
 }
 
-struct NYPLServerData {
-  let data: Data
-  let responseHasCorrectCacheControlHeaders: Bool
-
-  init(data: Data, httpResponse: HTTPURLResponse) {
-    self.data = data
-    self.responseHasCorrectCacheControlHeaders = httpResponse.hasCorrectCacheControlHeaders
-  }
-}
-
-enum NYPLCachedControl {
-  case correct
-  case incorrect
-  case notCached
-}
-
 class NYPLNetworkExecutor: NSObject {
   var urlSession: URLSession
 
@@ -44,13 +28,8 @@ class NYPLNetworkExecutor: NSObject {
   /// to centralize network traffic, this shared object could be used.
   static let shared = NYPLNetworkExecutor()
 
-  private func request(for url: URL) -> URLRequest {
-    return URLRequest(url: url,
-                      cachePolicy: urlSession.configuration.requestCachePolicy)
-  }
-
   func executeRequest(_ reqURL: URL,
-                      completion: @escaping (_ result: Result<NYPLServerData>) -> Void) {
+                      completion: @escaping (_ result: Result<Data>) -> Void) {
 
     let req = request(for: reqURL)
 
@@ -88,67 +67,22 @@ class NYPLNetworkExecutor: NSObject {
         return
       }
 
-      if !httpResponse.hasCorrectCacheControlHeaders {
-        self.manuallyCache(data, response: httpResponse, for: req)
+      if !httpResponse.hasCorrectCachingHeaders {
+        self.urlSession.configuration.urlCache?
+          .replaceCachedResponse(httpResponse, data: data, for: req)
       }
 
-      completion(.success(NYPLServerData(data: data,
-                                         httpResponse: httpResponse)))
+      completion(.success(data))
     }
 
     task.resume()
   }
+}
 
-  func manuallyCache(_ data: Data, response: HTTPURLResponse, for req: URLRequest) {
-    // convert existing headers into a [String: String] dictionary we can use
-    // later
-    let headerPairs: [(String, String)] = response.allHeaderFields.compactMap {
-      if let key = $0.key as? String, let val = $0.value as? String {
-        return (key, val)
-      }
-      return nil
-    }
-    var headers = [String: String](uniqueKeysWithValues: headerPairs)
-
-    // add manual 3 hours caching. Note
-    headers["Cache-Control"] = "public, max-age: 10800"
-    let in3HoursData = NSDate().addingTimeInterval(60 * 60 * 3)
-    headers["Expires"] = in3HoursData.rfc1123String()
-
-    // new response with added caching
-    guard
-      let url = req.url,
-      let newResponse = HTTPURLResponse(
-        url: url,
-        statusCode: response.statusCode,
-        httpVersion: nil,
-        headerFields: headers) else {
-          Log.error(#file, """
-            Unable to create HTTPURLResponse with added cache-control headers \
-            for url \(req). Original response: \(response)
-            """)
-          return
-    }
-
-    let cachedResponse = CachedURLResponse(response: newResponse, data: data)
-    let cache = urlSession.configuration.urlCache
-    cache?.removeCachedResponse(for: req)
-    cache?.storeCachedResponse(cachedResponse, for: req)
-  }
-
-  func cacheControlForResource(at url: URL) -> NYPLCachedControl {
-    let req = request(for: url)
-    let cached = urlSession.configuration.urlCache?.cachedResponse(for: req)
-
-    guard let httpResponse = cached?.response as? HTTPURLResponse else {
-      return .notCached
-    }
-
-    if httpResponse.hasCorrectCacheControlHeaders {
-      return .correct
-    } else {
-      return .incorrect
-    }
+extension NYPLNetworkExecutor {
+  private func request(for url: URL) -> URLRequest {
+    return URLRequest(url: url,
+                      cachePolicy: urlSession.configuration.requestCachePolicy)
   }
 
   func clearCache() {
