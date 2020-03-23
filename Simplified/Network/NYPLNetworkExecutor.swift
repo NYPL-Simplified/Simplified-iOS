@@ -13,78 +13,64 @@ enum NYPLResult<SuccessInfo> {
   case failure(Error)
 }
 
+
+/// A class that is capable of executing network requests in a thread-safe way.
+/// This class implements caching according to server response caching headers,
+/// but can also be configured to have a fallback mechanism to cache responses
+/// that lack a sufficient set of caching headers. This fallback cache attempts
+/// to use the value found in the `max-age` directive of the `Cache-Control`
+/// header if present, otherwise defaults to 3 hours.
+///
+/// The cache lives on both memory and disk.
 class NYPLNetworkExecutor {
   private let urlSession: URLSession
 
-  init() {
+  /// The delegate of the URLSession.
+  private let responder: NYPLNetworkResponder
+
+  /// Whether the fallback caching system should be active or not.
+  let shouldEnableFallbackCaching: Bool
+
+  /// Designated initializer.
+  /// - Parameter shouldEnableFallbackCaching: If set to `true`, the executor
+  /// will attempt to cache responses even when these lack a sufficient set of
+  /// caching headers. The default is `false`.
+  init(shouldEnableFallbackCaching: Bool = false) {
+    self.shouldEnableFallbackCaching = shouldEnableFallbackCaching
+    self.responder = NYPLNetworkResponder()
     let config = NYPLCaching.makeURLSessionConfiguration()
-    self.urlSession = URLSession(configuration: config)
+    self.urlSession = URLSession(configuration: config,
+                                 delegate: self.responder,
+                                 delegateQueue: nil)
   }
 
   deinit {
     urlSession.invalidateAndCancel()
   }
 
-  /// Singleton interface
-  /// - Note: There's no real reason why this should be a singleton. One
-  /// could create multiple executors as needed with no problems. However,
-  /// this shared object can be used as a quick interface to centralize
-  /// network traffic,
-  static let shared = NYPLNetworkExecutor()
+  /// A shared generic executor with enabled fallback caching.
+  static let shared = NYPLNetworkExecutor(shouldEnableFallbackCaching: true)
 
-  /// By setting this to `true`, one can enable caching even if the response is
-  /// missing the required caching headers. This works by modifying the headers
-  /// of the cached response in order to enforce a 3 hour caching window.
-  var shouldEnableFallbackCaching: Bool = true
-
-  func executeRequest(_ reqURL: URL,
-                      completion: @escaping (_ result: NYPLResult<Data>) -> Void) {
-
+  /// Performs a GET request using the specified URL
+  /// - Parameters:
+  ///   - reqURL: URL of the resource to GET.
+  ///   - completion: Always called when the resource is either fetched from
+  /// the network or from the cache.
+  func GET(_ reqURL: URL,
+           completion: @escaping (_ result: NYPLResult<Data>) -> Void) {
     let req = request(for: reqURL)
+    executeRequest(req, completion: completion)
+  }
 
-    let startDate = Date()
-    let task = urlSession.dataTask(with: req) { data, response, error in
-      let endDate = Date()
-      Log.info(#file, """
-        Request \(String(describing: req.httpMethod)) \(req) took \
-        \(endDate.timeIntervalSince(startDate)) secs
-        """)
-
-      if let error = error {
-        let err = NYPLErrorLogger.logNetworkError(error,
-                                                  requestURL: reqURL,
-                                                  response: response)
-        completion(.failure(err))
-        return
-      }
-
-      guard let httpResponse = response as? HTTPURLResponse else {
-        let err = NYPLErrorLogger.logNetworkError(requestURL: reqURL,
-                                                  response: response,
-                                                  message: "Not a HTTPURLResponse")
-        completion(.failure(err))
-        return
-      }
-      Log.debug(#file, "Response for \(req): \(httpResponse)")
-
-      guard let data = data else {
-        let err = NYPLErrorLogger.logNetworkError(requestURL: reqURL,
-                                                  response: response,
-                                                  message: "No data received")
-        completion(.failure(err))
-        return
-      }
-
-      if self.shouldEnableFallbackCaching {
-        if !httpResponse.hasSufficientCachingHeaders {
-          self.urlSession.configuration.urlCache?
-            .replaceCachedResponse(httpResponse, data: data, for: req)
-        }
-      }
-
-      completion(.success(data))
-    }
-
+  /// Executes a given request.
+  /// - Parameters:
+  ///   - req: The request to perform.
+  ///   - completion: Always called when the resource is either fetched from
+  /// the network or from the cache.
+  func executeRequest(_ req: URLRequest,
+           completion: @escaping (_ result: NYPLResult<Data>) -> Void) {
+    let task = urlSession.dataTask(with: req)
+    responder.addCompletion(completion, taskID: task.taskIdentifier)
     task.resume()
   }
 }

@@ -16,7 +16,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
 func loadDataWithCache(url: URL,
                        completion: @escaping (Data?) -> ()) {
 
-  NYPLNetworkExecutor.shared.executeRequest(url) { result in
+  NYPLNetworkExecutor.shared.GET(url) { result in
     DispatchQueue.main.async {
       switch result {
       case .success(let serverData):

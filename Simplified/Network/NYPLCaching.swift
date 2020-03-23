@@ -13,15 +13,18 @@ extension HTTPURLResponse {
   /**
    It appears that a `Cache-Control` header alone is not sufficient for having
    URLSession cache the response AND use that cached response without incurring
-   in a second roundtrip, even if `max-age`/`s-max-age` is included.
+   in a second roundtrip, even if `max-age`/`s-maxage` is included. When using
+   the `Cache-Control` header, empirical observations suggest that either the
+   `Expires` OR `Last-Modified` header needs to be present as well.
 
-   Empirically, the `Expires` or `Last-Modified` headers seem to be necessary if used in conjuction with `Cache-Control`. Alternatively, `Expires` can be used
+   Alternatively (i.e. without using `Cache-Control`), `Expires` can be used
    in conjuction with `Last-Modified` or `ETag`, or the latter two can be used
    together.
 
    - Note: If `Cache-Control` contains a `must-revalidate` directive, URLSession
-   will always perform a GET roundtrip to validate the cache, but this computed
-   variable does not check for its presence.
+   will always perform a GET roundtrip to validate the cache. This computed
+   property does not check for its presence since in that case the server
+   explicitly demands a revalidation.
    */
   var hasSufficientCachingHeaders: Bool {
     if cacheControlHeader != nil {
@@ -44,7 +47,7 @@ extension HTTPURLResponse {
   }
 
   /**
-   Extracts the value of `max-age` directive from `Cache-Control` header.
+   Extracts the value of the `max-age` directive from the `Cache-Control` header.
    */
   var cacheControlMaxAge: TimeInterval? {
     guard let cacheControl = cacheControlHeader else {
@@ -127,7 +130,8 @@ extension HTTPURLResponse {
   /// Creates a new response by adding caching headers sufficient to avoid
   /// a roundtrip. The caching headers being added are `Cache-Control` and
   /// `Expires` and they are only added if they were missing from the original
-  /// response (i.e. `self`). The added caching window is 3 hours.
+  /// response (i.e. `self`). The added caching window is either `max-age` if
+  /// that directive is present in `Cache-Control`, otherwise it's 3 hours.
   func modifyingCacheHeaders() -> HTTPURLResponse {
     // convert existing headers into a [String: String] dictionary we can use
     // later
@@ -139,7 +143,8 @@ extension HTTPURLResponse {
     }
     var headers = [String: String](uniqueKeysWithValues: headerPairs)
 
-    // add manual 3 hours caching if needed
+    // use `max-age` value if present, otherwise use 3 hours for both
+    // `max-age` and `Expires`.
     if self.expiresHeader == nil {
       let maxAge: TimeInterval = {
         if let age = self.cacheControlMaxAge {
@@ -170,18 +175,6 @@ extension HTTPURLResponse {
     }
 
     return newResponse
-  }
-}
-
-//------------------------------------------------------------------------------
-extension URLCache {
-  func replaceCachedResponse(_ response: HTTPURLResponse,
-                             data: Data,
-                             for req: URLRequest) {
-    let newResponse = response.modifyingCacheHeaders()
-    self.removeCachedResponse(for: req)
-    let cachedResponse = CachedURLResponse(response: newResponse, data: data)
-    self.storeCachedResponse(cachedResponse, for: req)
   }
 }
 
