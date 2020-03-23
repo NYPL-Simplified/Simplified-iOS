@@ -484,13 +484,16 @@ fileprivate let nullString = "null"
     Crashlytics.sharedInstance().recordError(err)
   }
 
+  @discardableResult
   class func logNetworkError(_ error: Error? = nil,
-                             requestURL: URL,
+                             requestURL: URL? = nil,
                              response: URLResponse? = nil,
                              message: String? = nil) -> Error {
     // compute metadata
     var metadata = [AnyHashable : Any]()
-    metadata["requestURL"] = requestURL
+    if let requestURL = requestURL {
+      metadata["requestURL"] = requestURL
+    }
     if let response = response {
       metadata["response"] = response
     }
@@ -508,10 +511,12 @@ fileprivate let nullString = "null"
       return NSError(domain: simplyeDomain,
                      code: NYPLErrorLogger.ErrorCode.apiCall.rawValue,
                      userInfo: nil)
-
     }()
 
-    Log.error(#file, "Request with URL \(requestURL) failed. Error: \(err)")
+    Log.error(#file, """
+      Request with URL \(String(describing: requestURL)) failed. \
+      Message: \(message ?? "<>"). Error: \(err)
+      """)
     reportLogs()
 
     let userInfo = additionalInfo(severity: .error, metadata: metadata)

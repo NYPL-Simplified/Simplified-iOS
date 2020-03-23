@@ -86,16 +86,11 @@ extension HTTPURLResponse {
 
     return nil
   }
-}
 
-//------------------------------------------------------------------------------
-extension URLCache {
-  func replaceCachedResponse(_ response: HTTPURLResponse,
-                             data: Data,
-                             for req: URLRequest) {
+  func modifyingCacheHeaders(for req: URLRequest) -> HTTPURLResponse {
     // convert existing headers into a [String: String] dictionary we can use
     // later
-    let headerPairs: [(String, String)] = response.allHeaderFields.compactMap {
+    let headerPairs: [(String, String)] = self.allHeaderFields.compactMap {
       if let key = $0.key as? String, let val = $0.value as? String {
         return (key, val)
       }
@@ -104,9 +99,9 @@ extension URLCache {
     var headers = [String: String](uniqueKeysWithValues: headerPairs)
 
     // add manual 3 hours caching if needed
-    if response.expiresHeader == nil {
+    if self.expiresHeader == nil {
       let maxAge: TimeInterval = {
-        if let age = response.cacheControlMaxAge {
+        if let age = self.cacheControlMaxAge {
           return age
         }
         return 60 * 60 * 3
@@ -114,7 +109,7 @@ extension URLCache {
       let in3HoursDate = NSDate().addingTimeInterval(maxAge)
       headers["Expires"] = in3HoursDate.rfc1123String()
     }
-    if response.cacheControlHeader == nil {
+    if self.cacheControlHeader == nil {
       headers["Cache-Control"] = "public, max-age=10800"
     }
 
@@ -123,16 +118,26 @@ extension URLCache {
       let url = req.url,
       let newResponse = HTTPURLResponse(
         url: url,
-        statusCode: response.statusCode,
+        statusCode: statusCode,
         httpVersion: nil,
         headerFields: headers) else {
           Log.error(#file, """
             Unable to create HTTPURLResponse with added cache-control headers \
-            for url \(req). Original response: \(response)
+            for url \(req). Original response: \(self)
             """)
-          return
+          return self
     }
 
+    return newResponse
+  }
+}
+
+//------------------------------------------------------------------------------
+extension URLCache {
+  func replaceCachedResponse(_ response: HTTPURLResponse,
+                             data: Data,
+                             for req: URLRequest) {
+    let newResponse = response.modifyingCacheHeaders(for: req)
     self.removeCachedResponse(for: req)
     let cachedResponse = CachedURLResponse(response: newResponse, data: data)
     self.storeCachedResponse(cachedResponse, for: req)

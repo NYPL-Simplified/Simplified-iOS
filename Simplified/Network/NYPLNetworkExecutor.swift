@@ -8,18 +8,21 @@
 
 import Foundation
 
-enum Result<Success> {
-  case success(Success)
+enum NYPLResult<SuccessInfo> {
+  case success(SuccessInfo)
   case failure(Error)
 }
 
-class NYPLNetworkExecutor: NSObject {
-  var urlSession: URLSession
+class NYPLNetworkExecutor {
+  private let urlSession: URLSession
 
-  override init() {
+  init() {
     let config = NYPLCaching.makeURLSessionConfiguration()
     self.urlSession = URLSession(configuration: config)
-    super.init()
+  }
+
+  deinit {
+    urlSession.invalidateAndCancel()
   }
 
   /// Singleton interface
@@ -29,7 +32,7 @@ class NYPLNetworkExecutor: NSObject {
   static let shared = NYPLNetworkExecutor()
 
   func executeRequest(_ reqURL: URL,
-                      completion: @escaping (_ result: Result<Data>) -> Void) {
+                      completion: @escaping (_ result: NYPLResult<Data>) -> Void) {
 
     let req = request(for: reqURL)
 

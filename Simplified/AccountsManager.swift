@@ -17,11 +17,13 @@ func loadDataWithCache(url: URL,
                        completion: @escaping (Data?) -> ()) {
 
   NYPLNetworkExecutor.shared.executeRequest(url) { result in
-    switch result {
-    case .success(let serverData):
-      completion(serverData)
-    case .failure(_):
-      completion(nil)
+    DispatchQueue.main.async {
+      switch result {
+      case .success(let serverData):
+        completion(serverData)
+      case .failure(_):
+        completion(nil)
+      }
     }
   }
 }
@@ -95,9 +97,8 @@ func loadDataWithCache(url: URL,
       name: NSNotification.Name.NYPLUseBetaDidChange,
       object: nil
     )
-    DispatchQueue.main.async {
-      self.loadCatalogs(completion: {_ in })
-    }
+
+    self.loadCatalogs(completion: {_ in })
   }
   
   let completionHandlerAccessQueue = DispatchQueue(label: "libraryListCompletionHandlerAccessQueue")
