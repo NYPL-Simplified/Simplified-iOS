@@ -26,17 +26,30 @@ class NYPLNetworkExecutor {
   }
 
   /// Singleton interface
-  /// - Note: There's no real reason why this should be a singleton. In theory
-  /// one could create multiple executors as needed, but as a quick interface
-  /// to centralize network traffic, this shared object could be used.
+  /// - Note: There's no real reason why this should be a singleton. One
+  /// could create multiple executors as needed with no problems. However,
+  /// this shared object can be used as a quick interface to centralize
+  /// network traffic,
   static let shared = NYPLNetworkExecutor()
+
+  /// By setting this to `true`, one can enable caching even if the response is
+  /// missing the required caching headers. This works by modifying the headers
+  /// of the cached response in order to enforce a 3 hour caching window.
+  var shouldEnableFallbackCaching: Bool = true
 
   func executeRequest(_ reqURL: URL,
                       completion: @escaping (_ result: NYPLResult<Data>) -> Void) {
 
     let req = request(for: reqURL)
 
+    let startDate = Date()
     let task = urlSession.dataTask(with: req) { data, response, error in
+      let endDate = Date()
+      Log.info(#file, """
+        Request \(String(describing: req.httpMethod)) \(req) took \
+        \(endDate.timeIntervalSince(startDate)) secs
+        """)
+
       if let error = error {
         let err = NYPLErrorLogger.logNetworkError(error,
                                                   requestURL: reqURL,
@@ -54,14 +67,6 @@ class NYPLNetworkExecutor {
       }
       Log.debug(#file, "Response for \(req): \(httpResponse)")
 
-      guard httpResponse.statusCode == 200 else {
-        let err = NYPLErrorLogger.logNetworkError(requestURL: reqURL,
-                                                  response: httpResponse,
-                                                  message: "Response code != 200")
-        completion(.failure(err))
-        return
-      }
-
       guard let data = data else {
         let err = NYPLErrorLogger.logNetworkError(requestURL: reqURL,
                                                   response: response,
@@ -70,9 +75,11 @@ class NYPLNetworkExecutor {
         return
       }
 
-      if !httpResponse.hasCorrectCachingHeaders {
-        self.urlSession.configuration.urlCache?
-          .replaceCachedResponse(httpResponse, data: data, for: req)
+      if self.shouldEnableFallbackCaching {
+        if !httpResponse.hasSufficientCachingHeaders {
+          self.urlSession.configuration.urlCache?
+            .replaceCachedResponse(httpResponse, data: data, for: req)
+        }
       }
 
       completion(.success(data))

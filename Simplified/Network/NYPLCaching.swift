@@ -10,10 +10,42 @@ import Foundation
 
 //------------------------------------------------------------------------------
 extension HTTPURLResponse {
-  var hasCorrectCachingHeaders: Bool {
-    return cacheControlHeader != nil && expiresHeader != nil
+  /**
+   It appears that a `Cache-Control` header alone is not sufficient for having
+   URLSession cache the response AND use that cached response without incurring
+   in a second roundtrip, even if `max-age`/`s-max-age` is included.
+
+   Empirically, the `Expires` or `Last-Modified` headers seem to be necessary if used in conjuction with `Cache-Control`. Alternatively, `Expires` can be used
+   in conjuction with `Last-Modified` or `ETag`, or the latter two can be used
+   together.
+
+   - Note: If `Cache-Control` contains a `must-revalidate` directive, URLSession
+   will always perform a GET roundtrip to validate the cache, but this computed
+   variable does not check for its presence.
+   */
+  var hasSufficientCachingHeaders: Bool {
+    if cacheControlHeader != nil {
+      if lastModifiedHeader != nil || expiresHeader != nil {
+        return true
+      }
+    }
+
+    if expiresHeader != nil {
+      if  lastModifiedHeader != nil || eTagHeader != nil {
+        return true
+      }
+    }
+
+    if lastModifiedHeader != nil && eTagHeader != nil {
+      return true
+    }
+
+    return false
   }
 
+  /**
+   Extracts the value of `max-age` directive from `Cache-Control` header.
+   */
   var cacheControlMaxAge: TimeInterval? {
     guard let cacheControl = cacheControlHeader else {
       return nil
@@ -52,42 +84,51 @@ extension HTTPURLResponse {
   }
 
   var cacheControlHeader: String? {
-    let responseHeaders = self.allHeaderFields
-
-    if let cacheControl = responseHeaders["Cache-Control"] as? String {
-      return cacheControl
-    }
-
-    if let cacheControl = responseHeaders["CACHE-CONTROL"] as? String {
-      return cacheControl
-    }
-
-    if let cacheControl = responseHeaders["cache-control"] as? String {
-      return cacheControl
-    }
-
-    return nil
+    return header(named: "Cache-Control")
   }
 
   var expiresHeader: String? {
+    return header(named: "Expires")
+  }
+
+  var lastModifiedHeader: String? {
+    return header(named: "Last-Modified")
+  }
+
+  var eTagHeader: String? {
+    return header(named: "ETag")
+  }
+
+  /// Checks capitalization of given header key, including capitalized,
+  /// lowercase and uppercase variations.
+  /// - Parameter header: The name of a header to check.
+  private func header(named header: String) -> String? {
     let responseHeaders = self.allHeaderFields
 
-    if let expires = responseHeaders["Expires"] as? String {
-      return expires
+    if let value = responseHeaders[header] as? String {
+      return value
     }
 
-    if let expires = responseHeaders["EXPIRES"] as? String {
-      return expires
+    if let value = responseHeaders[header.capitalized] as? String {
+      return value
     }
 
-    if let expires = responseHeaders["expires"] as? String {
-      return expires
+    if let value = responseHeaders[header.uppercased()] as? String {
+      return value
+    }
+
+    if let value = responseHeaders[header.lowercased()] as? String {
+      return value
     }
 
     return nil
   }
 
-  func modifyingCacheHeaders(for req: URLRequest) -> HTTPURLResponse {
+  /// Creates a new response by adding caching headers sufficient to avoid
+  /// a roundtrip. The caching headers being added are `Cache-Control` and
+  /// `Expires` and they are only added if they were missing from the original
+  /// response (i.e. `self`). The added caching window is 3 hours.
+  func modifyingCacheHeaders() -> HTTPURLResponse {
     // convert existing headers into a [String: String] dictionary we can use
     // later
     let headerPairs: [(String, String)] = self.allHeaderFields.compactMap {
@@ -115,15 +156,15 @@ extension HTTPURLResponse {
 
     // new response with added caching
     guard
-      let url = req.url,
+      let url = self.url,
       let newResponse = HTTPURLResponse(
         url: url,
         statusCode: statusCode,
         httpVersion: nil,
         headerFields: headers) else {
           Log.error(#file, """
-            Unable to create HTTPURLResponse with added cache-control headers \
-            for url \(req). Original response: \(self)
+            Unable to create new HTTPURLResponse with added cache-control \
+            headers from original response: \(self)
             """)
           return self
     }
@@ -137,7 +178,7 @@ extension URLCache {
   func replaceCachedResponse(_ response: HTTPURLResponse,
                              data: Data,
                              for req: URLRequest) {
-    let newResponse = response.modifyingCacheHeaders(for: req)
+    let newResponse = response.modifyingCacheHeaders()
     self.removeCachedResponse(for: req)
     let cachedResponse = CachedURLResponse(response: newResponse, data: data)
     self.storeCachedResponse(cachedResponse, for: req)
@@ -148,8 +189,7 @@ extension URLCache {
 class NYPLCaching {
 
   /// Makes a URLSessionConfiguration for standard HTTP requests with in-memory
-  /// and disk caching enabled if the server sends appropriate cache-control
-  /// headers.
+  /// and disk caching enabled.
   class func makeURLSessionConfiguration() -> URLSessionConfiguration {
     let config = URLSessionConfiguration.default
     config.networkServiceType = .responsiveData
@@ -162,13 +202,10 @@ class NYPLCaching {
 
     if #available(iOS 11.0, *) {
       Log.debug(#file, "waitsForConnectivity: \(config.waitsForConnectivity)")
-      //config.waitsForConnectivity = true
+      config.waitsForConnectivity = true
     }
 
     if #available(iOS 13.0, *) {
-      Log.debug(#file, "allowsExpensiveNetworkAccess: \(config.allowsExpensiveNetworkAccess)")
-      Log.debug(#file, "allowsConstrainedNetworkAccess: \(config.allowsConstrainedNetworkAccess)")
-
       // we probably want this set to true because SimplyE might be used
       // with personal hotspots
       config.allowsExpensiveNetworkAccess = true
@@ -180,10 +217,10 @@ class NYPLCaching {
     return config
   }
 
-  // note: iPhone 4S (currently the smallest device we support on iOS 9.3) has
+  // Note: iPhone 4S (currently the smallest device we support on iOS 9.3) has
   // 512 MB RAM and 8 Gb disk. These sizes are automatically purged by the
   // system if needed.
-  private static let maxMemoryCapacity = 50 * 1024 * 1024 // 50 MB
+  private static let maxMemoryCapacity = 20 * 1024 * 1024 // 20 MB
   private static let maxDiskCapacity = 1024 * 1024 * 1024 // 1 GB
 
   private class func makeCache() -> URLCache {
