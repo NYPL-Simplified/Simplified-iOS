@@ -24,6 +24,8 @@ cp ../Certificates/SimplyE/iOS/AudioEngine.json .
 cp ../Certificates/SimplyE/iOS/GoogleService-Info.plist .
 cp ../Certificates/SimplyE/iOS/APIKeys.swift Simplified/
 cp ../Certificates/SimplyE/iOS/ReaderClientCertProduction.sig Simplified/ReaderClientCert.sig
+git update-index --skip-worktree Simplified/NYPLSecrets.swift
+swift ../Certificates/SimplyE/iOS/KeyObfuscator.swift
 ./build-carthage.sh $AE_BUILD_CONFIG
 ./build-openssl-curl.sh
 
