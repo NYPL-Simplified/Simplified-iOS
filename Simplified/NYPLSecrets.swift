@@ -8,6 +8,10 @@ enum NYPLSecrets {
     return decode(encoded, cipher: salt)
   }
 
+  static var feedbooksInfo:[String:Any] {
+    return [:]
+  }
+
   static var cardCreator:String {
     let encoded: [UInt8] = [0]
     return decode(encoded, cipher: salt)
