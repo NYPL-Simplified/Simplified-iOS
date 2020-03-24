@@ -53,16 +53,16 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
         seriesURL: emptyUrl,
         revokeURL: emptyUrl,
         report: emptyUrl
-      )
+      )!
 
       // Calculate target filepath to use as "book location"
-      let bookUrl = NYPLMyBooksDownloadCenter.shared()?.fileURL(forBookIndentifier: fakeBook?.identifier)
+      let bookUrl = NYPLMyBooksDownloadCenter.shared()?.fileURL(forBookIndentifier: fakeBook.identifier)
 
       // Create dummy book file at path
       fileManager.createFile(atPath: bookUrl!.path, contents: "Hello world!".data(using: .utf8), attributes: [FileAttributeKey : Any]())
 
       // Register fake book with registry
-      NYPLBookRegistry.shared()?.add(
+      NYPLBookRegistry.shared().add(
         fakeBook,
         location: NYPLBookLocation.init(locationString: bookUrl?.path, renderer: ""),
         state: .init(),
@@ -73,7 +73,7 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
 
       // Perform file deletion test
       XCTAssert(fileManager.fileExists(atPath: bookUrl!.path))
-      NYPLMyBooksDownloadCenter.shared()?.deleteLocalContent(forBookIdentifier: fakeBook?.identifier)
+      NYPLMyBooksDownloadCenter.shared()?.deleteLocalContent(forBookIdentifier: fakeBook.identifier)
       XCTAssert(!fileManager.fileExists(atPath: bookUrl!.path))
     }
   }

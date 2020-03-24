@@ -37,7 +37,9 @@
   }
   @catch (NSException *exception) {
     NYPLLOG_F(@"Exception thrown during barcode image encoding: %@",exception.name);
-    if (exception.name && exception.reason) [NYPLBugsnagLogs logExceptionToBugsnagWithException:exception library:library];
+    if (exception.name && exception.reason) {
+      [NYPLErrorLogger logBarcodeException:exception library:library];
+    }
     return nil;
   }
 }

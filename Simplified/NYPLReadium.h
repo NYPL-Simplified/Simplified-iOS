@@ -7,7 +7,6 @@
 #import <Main/RDNavigationElement.h>
 #import <Main/RDPackage.h>
 #import <Main/RDPackageResourceServer.h>
-#import <Main/RDSmilData.h>
 #import <Main/RDSpineItem.h>
 
 #pragma clang diagnostic pop

@@ -4,7 +4,6 @@
 #import "NYPLCatalogFeedViewController.h"
 #import "NYPLCatalogLane.h"
 #import "NYPLCatalogLaneCell.h"
-#import "NYPLCatalogSearchViewController.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksDownloadInfo.h"
 #import "NYPLReaderViewController.h"
@@ -206,22 +205,6 @@
 
 - (void)presentFromViewController:(UIViewController *)viewController{
   NSUInteger index = [[NYPLRootTabBarController sharedController] selectedIndex];
-  UINavigationItem *navItem = viewController.navigationItem;
-  if ([viewController isKindOfClass:[NYPLCatalogSearchViewController class]]) {
-    [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Search", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
-  }
-  else if (index == 0) {
-    if (viewController.navigationController.viewControllers.count <= 1 &&
-        viewController.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
-      [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Catalog", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
-    }
-  }
-  else if (index == 1) {
-    [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"MyBooksViewControllerTitle", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
-  }
-  else if (index == 2) {
-    [navItem setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"HoldsViewControllerTitle", nil) style:UIBarButtonItemStylePlain target:nil action:nil]];
-  }
 
   UIViewController *currentVCTab = [[[NYPLRootTabBarController sharedController] viewControllers] objectAtIndex:index];
   // If a VC is already presented as a form sheet (iPad), we push the next one
