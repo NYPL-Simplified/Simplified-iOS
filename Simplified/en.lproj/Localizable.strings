@@ -1,11 +1,6 @@
 // Accessibility Labels
 
 "AccessibilitySwitchLibrary" = "Change Library Account";
-"AccessibilityEULAChecked" = "I agree to the terms of the End User License Agreement: Yes.";
-"AccessibilityEULAUnchecked" = "I agree to the terms of the End User License Agreement: No.";
-"AccessibilityEULAHintChecked" = "Select if you no longer agree to the terms. You will not be able to sign in.";
-"AccessibilityEULAHintUnchecked" = "Select if you agree to the terms so that you can sign in.";
-
 
 // Generic
 "AlphabetFontType" = "Aa";
@@ -28,7 +23,6 @@
 "Close" = "Close";
 "ConnectionFailed" = "Connection Failed";
 "ConnectionFailedDescription" = "Unable to load the web page at this time.";
-"Contact" = "Contact";
 "ContentLicenses" = "Content Licenses";
 "DataError" = "We found a problem. Please check your connection or close and reopen the app to retry.";
 "Delete" = "Delete";
@@ -45,7 +39,6 @@
 "Information" = "Information";
 "LibraryCard" = "Library Card";
 "LibraryLoadError" = "We can’t get your library right now. Please close and reopen the app to try again.";
-"Licenses" = "Licenses";
 "LogIn" = "Log In";
 "ManageAccounts" = "Manage Accounts";
 "More..." = "More…";
@@ -65,8 +58,6 @@
 "Publisher" = "Publisher";
 "Read" = "Read"; // present tense
 "Remove" = "Remove";
-"ReportProblem" = "Report a Problem";
-"ReportProblemSent" = "Sent Report";
 "Reserve" = "Reserve";
 "Return" = "Return";
 "ReturnCouldNotBeCompletedFormat" = "The return of %@ could not be completed.";
@@ -86,6 +77,7 @@
 "UnknownRequestError" =
     "An unknown error occurred. Please check your connection or try again later.";
 "Verifying" = "Verifying";
+"Back" = "Back";
 
 // NYPLAccountSignInViewController
 "SigningInAgree" = "By signing in, you agree to the End User License Agreement.";

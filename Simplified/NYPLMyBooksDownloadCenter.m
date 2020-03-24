@@ -23,7 +23,7 @@
 #endif
 
 @interface NYPLMyBooksDownloadCenter ()
-  <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, UIAlertViewDelegate>
+  <NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate>
 
 @property (nonatomic) NSString *bookIdentifierOfBookToRemove;
 @property (nonatomic) NSMutableDictionary *bookIdentifierToDownloadInfo;
@@ -182,7 +182,9 @@ didFinishDownloadingToURL:(NSURL *const)location
     NSError *problemDocumentParseError = nil;
     problemDocument = [NYPLProblemDocument fromData:[NSData dataWithContentsOfURL:location] error:&problemDocumentParseError];
     if (problemDocumentParseError) {
-      [NYPLBugsnagLogs logProblemDocumentParseErrorWithError:problemDocumentParseError url:location];
+      [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                                                url:location
+                                            context:@"myBooks-download-finish"];
     }
     [[NSFileManager defaultManager] removeItemAtURL:location error:NULL];
     success = NO;
@@ -410,19 +412,6 @@ didCompleteWithError:(NSError *)error
   }
 }
 
-#pragma mark UIAlertViewDelegate
-
-- (void)alertView:(UIAlertView *)alertView
-didDismissWithButtonIndex:(NSInteger const)buttonIndex
-{
-  if(buttonIndex == alertView.firstOtherButtonIndex) {
-    [self deleteLocalContentForBookIdentifier:self.bookIdentifierOfBookToRemove];
-    [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:self.bookIdentifierOfBookToRemove];
-  }
-  
-  self.bookIdentifierOfBookToRemove = nil;
-}
-
 #pragma mark -
 
 - (void)deleteLocalContentForBookIdentifier:(NSString *const)identifier
@@ -480,7 +469,7 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   NYPLBookState state = [[NYPLBookRegistry sharedRegistry] stateForIdentifier:identifier];
   BOOL downloaded = state & (NYPLBookStateDownloadSuccessful | NYPLBookStateUsed);
   if (!book.identifier) {
-    [NYPLBugsnagLogs recordUnexpectedNilIdentifierWithBook:book identifier:identifier title:bookTitle];
+    [NYPLErrorLogger logUnexpectedNilIdentifier:identifier book:book];
   }
 
   // Process Adobe Return
@@ -822,26 +811,6 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
   }
 }
 
-- (void)removeCompletedDownloadForBookIdentifier:(NSString *const)identifier
-{
-  if(self.bookIdentifierOfBookToRemove) {
-    NYPLLOG(@"Ignoring delete while still handling previous delete.");
-    return;
-  }
-  
-  self.bookIdentifierOfBookToRemove = identifier;
-  
-  NSString *title = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:identifier].title;
-  [[[UIAlertView alloc]
-    initWithTitle:NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitle", nil)
-    message:[NSString stringWithFormat:
-             NSLocalizedString(@"MyBooksDownloadCenterConfirmDeleteTitleMessageFormat", nil), title]
-    delegate:self
-    cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-    otherButtonTitles:NSLocalizedString(@"Delete", nil), nil]
-   show];
-}
-
 - (void)deleteAudiobooksForAccount:(NSString * const)account
 {
   [[NYPLBookRegistry sharedRegistry]
@@ -946,7 +915,9 @@ didDismissWithButtonIndex:(NSInteger const)buttonIndex
 
     if (![self fileURLForBookIndentifier:book.identifier]) {
       [self failDownloadForBook:book];
-      [NYPLBugsnagLogs recordFailureToCopyWithBook:book];
+      [NYPLErrorLogger
+       logMissingFileURLAfterDownloadingBook:book
+       message:@"fileURLForBookIndentifier returned nil, so no destination to copy file to."];
       return;
     }
     

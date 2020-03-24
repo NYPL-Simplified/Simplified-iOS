@@ -1,5 +1,3 @@
-@import Bugsnag;
-
 #import "NYPLConfiguration.h"
 #import "NYPLAccount.h"
 #import "NYPLAppDelegate.h"
@@ -19,37 +17,12 @@
   static dispatch_once_t onceToken;
   dispatch_once (&onceToken, ^{
     dispatch_async(dispatch_get_main_queue(), ^{
-      [self configureCrashAnalytics];
+      if (!TARGET_OS_SIMULATOR) {
+        [NYPLErrorLogger configureCrashAnalytics];
+        [NYPLErrorLogger logNewAppLaunch];
+      }
     });
   });
-}
-
-+ (void)configureCrashAnalytics
-{
-  if (!TARGET_OS_SIMULATOR) {
-    BugsnagConfiguration *config = [BugsnagConfiguration new];
-    config.apiKey = [APIKeys bugsnagID];
-
-    if (DEBUG) {
-      config.releaseStage = @"development";
-    } else if ([self releaseStageIsBeta]) {
-      config.releaseStage = @"beta";
-      if ([[NYPLAccount sharedAccount] barcode]) {
-        [config setUser:[[NYPLAccount sharedAccount] barcode] withName:nil andEmail:nil];
-      }
-    } else {
-      config.releaseStage = @"production";
-    }
-
-    [Bugsnag startBugsnagWithConfiguration:config];
-    [NYPLBugsnagLogs reportNewActiveSession];
-  }
-}
-
-+ (BOOL)releaseStageIsBeta
-{
-  NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
-  return ([[receiptURL path] rangeOfString:@"sandboxReceipt"].location != NSNotFound) || TARGET_OS_SIMULATOR;
 }
 
 + (NSURL *)mainFeedURL

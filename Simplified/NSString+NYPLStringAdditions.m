@@ -56,15 +56,17 @@
                                 encoding:NSASCIIStringEncoding];
 }
 
-- (NSString *)stringByURLEncoding
+- (NSString *)stringURLEncodedAsQueryParamValue
 {
-  CFStringRef const s = CFURLCreateStringByAddingPercentEscapes(NULL,
-                                                                (__bridge CFStringRef)self,
-                                                                NULL,
-                                                                CFSTR(";/?:@&=$+{}<>,"),
-                                                                kCFStringEncodingUTF8);
-  
-  return CFBridgingRelease(s);
+  // chars allowed in a full query section of a url, e.g. `?k=v&k1=v1`
+  NSMutableCharacterSet *noEscapingCharSet = [[NSMutableCharacterSet
+                                               URLQueryAllowedCharacterSet] mutableCopy];
+  // remove some of the allowed chars in a query because here we are just
+  // interested in escaping a value of one query param key.
+  [noEscapingCharSet removeCharactersInString:@";/?:@&=$+,"];
+
+  // escape everything except our defined set
+  return [self stringByAddingPercentEncodingWithAllowedCharacters:noEscapingCharSet];
 }
 
 @end

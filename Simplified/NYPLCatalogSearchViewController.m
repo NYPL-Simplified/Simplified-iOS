@@ -242,10 +242,8 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
     }]];
     [self updateUIAfterSearchSuccess:YES];
   } else {
-    NSURL *searchURL = [NSURL URLWithString:
-                        [self.searchDescription.OPDSURLTemplate
-                         stringByReplacingOccurrencesOfString:@"{searchTerms}"
-                         withString:[self.searchBar.text stringByURLEncoding]]];
+    NSURL *searchURL = [self.searchDescription
+                        OPDSURLForSearchingString:self.searchBar.text];
     [self fetchUngroupedFeedFromURL:searchURL];
   }
 }
