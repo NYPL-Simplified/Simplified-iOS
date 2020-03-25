@@ -133,6 +133,11 @@ extension HTTPURLResponse {
   /// response (i.e. `self`). The added caching window is either `max-age` if
   /// that directive is present in `Cache-Control`, otherwise it's 3 hours.
   func modifyingCacheHeaders() -> HTTPURLResponse {
+    // don't mess with failed responses 
+    guard statusCode >= 200 && statusCode <= 299 else {
+      return self
+    }
+
     // convert existing headers into a [String: String] dictionary we can use
     // later
     let headerPairs: [(String, String)] = self.allHeaderFields.compactMap {
