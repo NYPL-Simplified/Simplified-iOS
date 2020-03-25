@@ -13,10 +13,4 @@
 
 - (NSDateComponents *)UTCComponents;
 
-/**
- * Gets the current date and time, formatted properly (according to RFC 1123)
- * for insertion into an HTTP header.
- */
-- (NSString *)RFC1123String;
-
 @end

@@ -133,7 +133,7 @@ extension HTTPURLResponse {
   /// response (i.e. `self`). The added caching window is either `max-age` if
   /// that directive is present in `Cache-Control`, otherwise it's 3 hours.
   func modifyingCacheHeaders() -> HTTPURLResponse {
-    // don't mess with failed responses 
+    // don't mess with failed responses
     guard statusCode >= 200 && statusCode <= 299 else {
       return self
     }
@@ -157,8 +157,8 @@ extension HTTPURLResponse {
         }
         return 60 * 60 * 3
       }()
-      let in3HoursDate = NSDate().addingTimeInterval(maxAge)
-      headers["Expires"] = in3HoursDate.rfc1123String()
+      let in3HoursDate = Date().addingTimeInterval(maxAge)
+      headers["Expires"] = in3HoursDate.rfc1123String
     }
     if self.cacheControlHeader == nil {
       headers["Cache-Control"] = "public, max-age=10800"

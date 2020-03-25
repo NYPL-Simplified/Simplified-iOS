@@ -30,7 +30,7 @@ class NYPLCachingTests: XCTestCase {
       httpVersion: "HTTP/1.1",
       headerFields: [
         "cache-control" : "public, no-transform, max-age: 43200, s-maxage: 21600",
-        "Expires": (expiresDate as NSDate).rfc1123String()
+        "Expires": expiresDate.rfc1123String
     ])!
 
     missingMaxAgeResponse = HTTPURLResponse(
@@ -58,7 +58,7 @@ class NYPLCachingTests: XCTestCase {
       statusCode: 200,
       httpVersion: "HTTP/1.1",
       headerFields: [
-        "EXPIRES" : NSDate().rfc1123String(),
+        "EXPIRES" : Date().rfc1123String,
         "etag": "23bad3"
     ])!
     XCTAssertTrue(sufficientHeadersResponse2.hasSufficientCachingHeaders)
@@ -68,7 +68,7 @@ class NYPLCachingTests: XCTestCase {
       statusCode: 200,
       httpVersion: "HTTP/1.1",
       headerFields: [
-        "Last-Modified" : NSDate().rfc1123String(),
+        "Last-Modified" : Date().rfc1123String,
         "etag": "23bad3"
     ])!
     XCTAssertTrue(sufficientHeadersResponse3.hasSufficientCachingHeaders)
@@ -78,7 +78,7 @@ class NYPLCachingTests: XCTestCase {
       statusCode: 200,
       httpVersion: "HTTP/1.1",
       headerFields: [
-        "Expires" : NSDate().rfc1123String(),
+        "Expires" : Date().rfc1123String,
     ])!
     XCTAssertFalse(insufficientHeadersResponse.hasSufficientCachingHeaders)
   }
