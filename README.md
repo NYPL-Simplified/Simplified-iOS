@@ -21,6 +21,7 @@ git submodule update --init --recursive
 ```bash
 ./build-3rd-parties-dependencies.sh <Debug | Release>
 ```
+
 04. Open Simplified.xcodeproj and Build!
 
 
