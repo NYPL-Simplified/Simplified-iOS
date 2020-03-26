@@ -29,6 +29,6 @@ enum NYPLSecrets {
 
   static func decode(_ encoded: [UInt8], cipher: [UInt8]) -> String? {
     var decrypted = [UInt8]()
-    return String(bytes: decrypted, encoding: .utf8) ?? nil
+    return String(bytes: decrypted, encoding: .utf8)
   }
 }
