@@ -104,13 +104,13 @@
   }
   
   func addAccount() {
-    AccountsManager.shared.loadCatalogs() { (success) in
-      guard success else {
-        let alert = NYPLAlertUtils.alert(title:nil, message:"LibraryLoadError", style: .cancel)
-        NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert, viewController: self, animated: true, completion: nil)
-        return
-      }
+    AccountsManager.shared.loadCatalogs() { success in
       DispatchQueue.main.async {
+        guard success else {
+          let alert = NYPLAlertUtils.alert(title:nil, message:"LibraryLoadError", style: .cancel)
+          NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert, viewController: self, animated: true, completion: nil)
+          return
+        }
         self.libraryAccounts = AccountsManager.shared.accounts()
         self.showAddAccountList()
       }

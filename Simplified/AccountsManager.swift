@@ -7,26 +7,6 @@ private let prodUrl = URL(string: "https://libraryregistry.librarysimplified.org
 private let betaUrlHash = betaUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
 private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
 
-/**
- Switchboard for fetching data, whether it's from a cache source or fresh from the endpoint.
- - parameter url: Target URL to fetch from.
- - parameter completion: Callback invoked when call finishes, providing the
- data or nil if unsuccessful.
- */
-func loadDataWithCache(url: URL,
-                       completion: @escaping (Data?) -> ()) {
-
-  NYPLNetworkExecutor.shared.GET(url) { result in
-    DispatchQueue.main.async {
-      switch result {
-      case .success(let serverData):
-        completion(serverData)
-      case .failure(_):
-        completion(nil)
-      }
-    }
-  }
-}
 
 /// Manage the library accounts for the app.
 /// Initialized with JSON.
@@ -69,7 +49,7 @@ func loadDataWithCache(url: URL,
     return false
   }
   
-  var loadingCompletionHandlers = [String: [(Bool) -> ()]]()
+  private var loadingCompletionHandlers = [String: [(Bool) -> ()]]()
   
   var currentAccount: Account? {
     get {
@@ -104,7 +84,8 @@ func loadDataWithCache(url: URL,
   let completionHandlerAccessQueue = DispatchQueue(label: "libraryListCompletionHandlerAccessQueue")
 
   // Returns whether loading was happening already
-  func addLoadingCompletionHandler(key: String, _ handler: @escaping (Bool) -> ()) -> Bool {
+  private func addLoadingCompletionHandler(key: String,
+                                           _ handler: @escaping (Bool) -> ()) -> Bool {
     var wasEmpty = false
     completionHandlerAccessQueue.sync {
       if loadingCompletionHandlers[key] == nil {
@@ -142,7 +123,8 @@ func loadDataWithCache(url: URL,
    - parameter data: The library list data.
    - parameter key: ???
    - parameter completion: Always invoked at the end no matter what, providing
-   `true` in case of success and `false` otherwise.
+   `true` in case of success and `false` otherwise. No guarantees are being made
+   about whether this will be called on the main thread or not.
    */
   private func loadCatalogs(data: Data, key: String, completion: @escaping (Bool) -> ()) {
     do {
@@ -185,7 +167,11 @@ func loadDataWithCache(url: URL,
       completion(false)
     }
   }
-  
+
+  /// Loads library catalogs from the network, or cache if available.
+  /// - Parameter completion: Always invoked at the end of the load process.
+  /// No guarantees are being made about whether this is called on the main
+  /// thread or not.
   func loadCatalogs(completion: @escaping (Bool) -> ()) {
     let targetUrl = NYPLSettings.shared.useBetaLibraries ? betaUrl : prodUrl
     let hash = targetUrl.absoluteString.md5().base64EncodedStringUrlSafe()
@@ -196,13 +182,14 @@ func loadDataWithCache(url: URL,
       return
     }
 
-    loadDataWithCache(url: targetUrl) { data in
-      if let data = data {
-        self.loadCatalogs(data: data, key: hash) { (success) in
+    NYPLNetworkExecutor.shared.GET(targetUrl) { result in
+      switch result {
+      case .success(let data):
+        self.loadCatalogs(data: data, key: hash) { success in
           self.callAndClearLoadingCompletionHandlers(key: hash, success)
           NotificationCenter.default.post(name: NSNotification.Name.NYPLCatalogDidLoad, object: nil)
         }
-      } else {
+      case .failure(_):
         self.callAndClearLoadingCompletionHandlers(key: hash, false)
       }
     }
