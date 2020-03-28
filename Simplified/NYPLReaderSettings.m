@@ -6,6 +6,18 @@
 
 #import "SimplyE-Swift.h"
 
+NSString *const NYPLReaderSettingsColorSchemeDidChangeNotification =
+@"NYPLReaderSettingsColorSchemeDidChange";
+
+NSString *const NYPLReaderSettingsFontFaceDidChangeNotification =
+@"NYPLReaderSettingsFontFaceDidChange";
+
+NSString *const NYPLReaderSettingsFontSizeDidChangeNotification =
+@"NYPLReaderSettingsFontSizeDidChange";
+
+NSString *const NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification =
+@"NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification";
+
 BOOL NYPLReaderSettingsDecreasedFontSize(NYPLReaderSettingsFontSize const input,
                                          NYPLReaderSettingsFontSize *const output)
 {
