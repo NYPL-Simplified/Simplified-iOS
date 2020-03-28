@@ -17,6 +17,8 @@ import R2Navigator
 class EPUBViewController: ReaderViewController {
   
   var popoverUserconfigurationAnchor: UIBarButtonItem?
+
+  // TODO: SIMPLY-2656 Remove once R2 work is complete
   var userSettingNavigationController: UserSettingsNavigationController
 
   init(publication: Publication, book: NYPLBook, drm: DRM?, resourcesServer: ResourcesServer) {
@@ -46,8 +48,7 @@ class EPUBViewController: ReaderViewController {
       setUIColor(for: appearance)
     }
 
-    let userSettings = epubNavigator.userSettings
-    userSettingNavigationController.userSettings = userSettings
+    userSettingNavigationController.userSettings = userSettings.r2UserSettings
     userSettingNavigationController.modalPresentationStyle = .popover
     userSettingNavigationController.usdelegate = self
     userSettingNavigationController.userSettingsTableViewController.publication = publication
@@ -97,49 +98,28 @@ class EPUBViewController: ReaderViewController {
 //  }
 
   @objc func presentUserSettings() {
-    let popoverPresentationController = userSettingNavigationController.popoverPresentationController!
-
-    popoverPresentationController.delegate = self
-    popoverPresentationController.barButtonItem = popoverUserconfigurationAnchor
-
+    // TODO: SIMPLY-2626: publication is used to handle changes related to
+    // page margins, line height, word/letter spacing, columnar layout, text
+    // alignment
     userSettingNavigationController.publication = publication
-    present(userSettingNavigationController, animated: true) {
-      // Makes sure that the popover is dismissed also when tapping on one of the other UIBarButtonItems.
+
+    let vc = NYPLUserSettingsVC(delegate: self)
+    vc.modalPresentationStyle = .popover
+    vc.popoverPresentationController?.delegate = self
+    vc.popoverPresentationController?.barButtonItem = popoverUserconfigurationAnchor
+
+    present(vc, animated: true) {
+      // Makes sure that the popover is dismissed also when tapping on one of
+      // the other UIBarButtonItems.
       // ie. http://karmeye.com/2014/11/20/ios8-popovers-and-passthroughviews/
-      popoverPresentationController.passthroughViews = nil
-    }
-  }
-
-}
-
-extension EPUBViewController: EPUBNavigatorDelegate {
-
-}
-
-extension EPUBViewController: UIGestureRecognizerDelegate {
-
-  func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-    return true
-  }
-
-}
-
-extension EPUBViewController: UserSettingsNavigationControllerDelegate {
-
-  internal func getUserSettings() -> UserSettings {
-    return epubNavigator.userSettings
-  }
-
-  internal func updateUserSettingsStyle() {
-    DispatchQueue.main.async {
-      self.epubNavigator.updateUserSettingStyle()
+      vc.popoverPresentationController?.passthroughViews = nil
     }
   }
 
   /// Synchronyze the UI appearance to the UserSettings.Appearance.
   ///
   /// - Parameter appearance: The appearance.
-  internal func setUIColor(for appearance: UserProperty) {
+  func setUIColor(for appearance: UserProperty) {
     let colors = AssociatedColors.getColors(for: appearance)
 
     navigator.view.backgroundColor = colors.mainColor
@@ -149,8 +129,47 @@ extension EPUBViewController: UserSettingsNavigationControllerDelegate {
     navigationController?.navigationBar.tintColor = colors.textColor
     navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: colors.textColor]
   }
-
 }
+
+// MARK: - NYPLUserSettingsReaderDelegate
+
+extension EPUBViewController: NYPLUserSettingsReaderDelegate {
+  var userSettings: NYPLR1R2UserSettings {
+    return NYPLR1R2UserSettings(r2UserSettings: epubNavigator.userSettings)
+  }
+
+  func applyCurrentSettings() {
+    DispatchQueue.main.async {
+      self.epubNavigator.updateUserSettingStyle()
+    }
+  }
+
+  func setUIColor(forR2 appearanceIndex: Int) {
+    guard let appearance = userSettings.r2UserSettings?.userProperties.getProperty(
+      reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable else {
+        return
+    }
+    appearance.index = appearanceIndex
+    applyCurrentSettings()
+
+    setUIColor(for: appearance)
+  }
+}
+
+// MARK: - EPUBNavigatorDelegate
+
+extension EPUBViewController: EPUBNavigatorDelegate {
+}
+
+// MARK: - UIGestureRecognizerDelegate
+
+extension EPUBViewController: UIGestureRecognizerDelegate {
+  func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    return true
+  }
+}
+
+// MARK: - UIPopoverPresentationControllerDelegate
 
 extension EPUBViewController: UIPopoverPresentationControllerDelegate {
   // Prevent the popOver to be presented fullscreen on iPhones.

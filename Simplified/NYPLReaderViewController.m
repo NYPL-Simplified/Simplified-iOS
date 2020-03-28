@@ -20,7 +20,7 @@
 #define EDGE_OF_SCREEN_POINT_FRACTION    0.2
 
 @interface NYPLReaderViewController ()
-  <NYPLReaderSettingsViewDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate, UIPopoverPresentationControllerDelegate>
+  <NYPLUserSettingsReaderDelegate, NYPLReaderTOCViewControllerDelegate, NYPLReaderRendererDelegate, UIPopoverPresentationControllerDelegate>
 
 @property (nonatomic) UIViewController *activePopoverController;
 @property (nonatomic) NSString *bookIdentifier;
@@ -56,42 +56,6 @@ typedef NS_ENUM(NSInteger, NYPLReaderViewControllerDirection) {
 };
 
 @implementation NYPLReaderViewController
-
-- (void)applyCurrentSettings
-{
-  self.navigationController.navigationBar.barTintColor =
-    [NYPLReaderSettings sharedSettings].backgroundColor;
-
-  self.activePopoverController.view.backgroundColor =
-  [NYPLReaderSettings sharedSettings].backgroundColor;
-  
-  switch([NYPLReaderSettings sharedSettings].colorScheme) {
-    case NYPLReaderSettingsColorSchemeBlackOnSepia:
-      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
-      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
-      self.headerViewLabel.textColor = [UIColor darkGrayColor];
-      self.footerViewLabel.textColor = [UIColor darkGrayColor];
-      break;
-    case NYPLReaderSettingsColorSchemeBlackOnWhite:
-      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundColor];
-      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
-      self.headerViewLabel.textColor = [UIColor darkGrayColor];
-      self.footerViewLabel.textColor = [UIColor darkGrayColor];
-      break;
-    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
-      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
-      self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
-      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor darkGrayColor];
-      self.headerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
-      self.footerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
-      break;
-  }
-}
 
 - (instancetype)initWithBookIdentifier:(NSString *const)bookIdentifier
 {
@@ -627,42 +591,54 @@ didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReadiumBookmar
   [self.rendererView.syncManager syncBookmarksWithCompletion:completion];
 }
 
-#pragma mark NYPLReaderSettingsViewDelegate
+#pragma mark NYPLUserSettingsReaderDelegate
 
-- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-       didSelectBrightness:(CGFloat const)brightness
+- (void)applyCurrentSettings
 {
-  [UIScreen mainScreen].brightness = brightness;
+  self.navigationController.navigationBar.barTintColor =
+  [NYPLReaderSettings sharedSettings].backgroundColor;
+
+  self.activePopoverController.view.backgroundColor =
+  [NYPLReaderSettings sharedSettings].backgroundColor;
+
+  switch([NYPLReaderSettings sharedSettings].colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundSepiaColor];
+      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
+      self.headerViewLabel.textColor = [UIColor darkGrayColor];
+      self.footerViewLabel.textColor = [UIColor darkGrayColor];
+      break;
+
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+      self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundColor];
+      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor lightGrayColor];
+      self.headerViewLabel.textColor = [UIColor darkGrayColor];
+      self.footerViewLabel.textColor = [UIColor darkGrayColor];
+      break;
+
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+      self.activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
+      self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+      self.bottomViewImageView.backgroundColor = [NYPLConfiguration readerBackgroundDarkColor];
+      self.bottomViewImageViewTopBorder.backgroundColor = [UIColor darkGrayColor];
+      self.headerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
+      self.footerViewLabel.textColor = [UIColor colorWithWhite: 0.80 alpha:1];
+      break;
+  }
 }
 
-- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-      didSelectColorScheme:(NYPLReaderSettingsColorScheme const)colorScheme
+- (NYPLR1R2UserSettings *)userSettings
 {
-  [NYPLReaderSettings sharedSettings].colorScheme = colorScheme;
-  
-  [self applyCurrentSettings];
+  return [[NYPLR1R2UserSettings alloc] init];
 }
 
-- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-         didSelectFontSize:(NYPLReaderSettingsFontSize const)fontSize
+- (void)setUIColorForR2:(__attribute__((unused)) NSInteger)appearanceIndex
 {
-  [NYPLReaderSettings sharedSettings].fontSize = fontSize;
-  
-  [self applyCurrentSettings];
-}
-
-- (void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-         didSelectFontFace:(NYPLReaderSettingsFontFace)fontFace
-{
-  [NYPLReaderSettings sharedSettings].fontFace = fontFace;
-  
-  [self applyCurrentSettings];
-}
-
--(void)readerSettingsView:(__attribute__((unused)) NYPLReaderSettingsView *)readerSettingsView
-      didSelectMediaOverlaysEnableClick:(NYPLReaderSettingsMediaOverlaysEnableClick) mediaOverlaysEnableClick {
-  [NYPLReaderSettings sharedSettings].mediaOverlaysEnableClick = mediaOverlaysEnableClick;
-  [self applyCurrentSettings];
+  // nothing to do since this delegate method is only for Readium 2
 }
 
 #pragma mark UIPopoverPresentationControllerDelegate
@@ -735,33 +711,19 @@ traitCollection:(__attribute__((unused)) UITraitCollection *)traitCollection
 
 - (void)didSelectSettings
 {
-  CGFloat const width =
-  (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
-   self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact)
-  ? 320 : 300;
-  
-  NYPLReaderSettingsView *const readerSettingsView =
-  [[NYPLReaderSettingsView alloc] initWithWidth:width];
-  readerSettingsView.delegate = self;
-  readerSettingsView.colorScheme = [NYPLReaderSettings sharedSettings].colorScheme;
-  readerSettingsView.fontSize = [NYPLReaderSettings sharedSettings].fontSize;
-  readerSettingsView.fontFace = [NYPLReaderSettings sharedSettings].fontFace;
-  
-  UIViewController *const vc = [[UIViewController alloc] init];
-  vc.view = readerSettingsView;
-  vc.preferredContentSize = vc.view.bounds.size;
   if (self.activePopoverController && self.activePopoverController == self.presentedViewController) {
     [self dismissViewControllerAnimated:NO completion:nil];
   }
+
+  NYPLUserSettingsVC *vc = [[NYPLUserSettingsVC alloc] initWithDelegate:self];
   self.activePopoverController = vc;
-  vc.view.backgroundColor = [NYPLReaderSettings sharedSettings].backgroundColor;
-  self.activePopoverController.modalPresentationStyle = UIModalPresentationPopover;
-  self.activePopoverController.popoverPresentationController.delegate = self;
-  self.activePopoverController.popoverPresentationController.barButtonItem = self.settingsBarButtonItem;
-  [self presentViewController:self.activePopoverController animated:YES completion:^{
+  vc.modalPresentationStyle = UIModalPresentationPopover;
+  vc.popoverPresentationController.delegate = self;
+  vc.popoverPresentationController.barButtonItem = self.settingsBarButtonItem;
+  [self presentViewController:vc animated:YES completion:^{
     vc.popoverPresentationController.passthroughViews = nil;
   }];
-  UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.activePopoverController);
+  UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, vc);
 }
 
 - (void)didSelectContents

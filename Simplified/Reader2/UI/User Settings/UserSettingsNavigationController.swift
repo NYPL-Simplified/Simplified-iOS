@@ -14,15 +14,12 @@ import UIKit
 import R2Navigator
 import R2Shared
 
-protocol UserSettingsNavigationControllerDelegate: class {
-  func getUserSettings() -> UserSettings
-  func updateUserSettingsStyle()
-  func setUIColor(for appearance: UserProperty)
-}
-
+// TODO: SIMPLY-2656
+// This class should be removed once we are done with R2 work. The only reason
+// it's here is to provide help during R2 integration into SimplyE.
 internal class UserSettingsNavigationController: UINavigationController {
 
-  weak var usdelegate: UserSettingsNavigationControllerDelegate!
+  weak var usdelegate: NYPLUserSettingsReaderDelegate!
   var userSettings: UserSettings!
   weak var publication: Publication?
 
@@ -34,7 +31,7 @@ internal class UserSettingsNavigationController: UINavigationController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    userSettings = usdelegate.getUserSettings()
+    userSettings = usdelegate.userSettings.r2UserSettings
 
     userSettingsTableViewController.modalPresentationStyle = .popover
     userSettingsTableViewController.delegate = self
@@ -52,7 +49,7 @@ internal class UserSettingsNavigationController: UINavigationController {
   func publisherSettingsDidChange() {
     if let publisherDefault = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.publisherDefault.rawValue) as? Switchable {
       publisherDefault.switchValue()
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 }
@@ -69,19 +66,14 @@ extension UserSettingsNavigationController: UserSettingsDelegate {
       } else {
         fontSize.decrement()
       }
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 
   /// Appearance
 
   func appearanceDidChange(to appearanceIndex: Int) {
-    if let appearance = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable {
-      appearance.index = appearanceIndex
-      usdelegate?.updateUserSettingsStyle()
-      // Change view appearance.
-      usdelegate?.setUIColor(for: appearance)
-    }
+    usdelegate?.setUIColor(forR2: appearanceIndex)
   }
 
   /// Vertical scroll
@@ -89,7 +81,7 @@ extension UserSettingsNavigationController: UserSettingsDelegate {
   func scrollModeDidChange() {
     if let scroll = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.scroll.rawValue) as? Switchable {
       scroll.switchValue()
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 
@@ -126,7 +118,7 @@ extension UserSettingsNavigationController: FontSelectionDelegate {
         fontOverride.on = false
       }
       userSettingsTableViewController.setSelectedFontLabel(to: fontFamily.toString())
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 }
@@ -139,7 +131,7 @@ extension UserSettingsNavigationController: AdvancedSettingsDelegate {
   func textAlignementDidChange(to textAlignmentIndex: Int) {
     if let textAlignment = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.textAlignment.rawValue) as? Enumerable {
       textAlignment.index = textAlignmentIndex
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 
@@ -147,14 +139,14 @@ extension UserSettingsNavigationController: AdvancedSettingsDelegate {
   func incrementWordSpacing() {
     if let wordSpacing = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.wordSpacing.rawValue) as? Incrementable {
       wordSpacing.increment()
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 
   func decrementWordSpacing() {
     if let wordSpacing = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.wordSpacing.rawValue) as? Incrementable {
       wordSpacing.decrement()
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 
@@ -169,14 +161,14 @@ extension UserSettingsNavigationController: AdvancedSettingsDelegate {
   func incrementLetterSpacing() {
     if let letterSpacing = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.letterSpacing.rawValue) as? Incrementable {
       letterSpacing.increment()
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 
   func decrementLetterSpacing() {
     if let letterSpacing = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.letterSpacing.rawValue) as? Incrementable {
       letterSpacing.decrement()
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 
@@ -191,7 +183,7 @@ extension UserSettingsNavigationController: AdvancedSettingsDelegate {
   func columnCountDidChange(to columnCountIndex: Int) {
     if let columnCount = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.columnCount.rawValue) as? Enumerable {
       columnCount.index = columnCountIndex
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 
@@ -200,14 +192,14 @@ extension UserSettingsNavigationController: AdvancedSettingsDelegate {
   func incrementPageMargins() {
     if let pageMargins = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.pageMargins.rawValue) as? Incrementable {
       pageMargins.increment()
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 
   func decrementPageMargins() {
     if let pageMargins = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.pageMargins.rawValue) as? Incrementable {
       pageMargins.decrement()
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 
@@ -222,14 +214,14 @@ extension UserSettingsNavigationController: AdvancedSettingsDelegate {
   func incrementLineHeight() {
     if let lineHeight = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.lineHeight.rawValue) as? Incrementable {
       lineHeight.increment()
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 
   func decrementLineHeight() {
     if let lineHeight = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.lineHeight.rawValue) as? Incrementable {
       lineHeight.decrement()
-      usdelegate?.updateUserSettingsStyle()
+      usdelegate?.applyCurrentSettings()
     }
   }
 

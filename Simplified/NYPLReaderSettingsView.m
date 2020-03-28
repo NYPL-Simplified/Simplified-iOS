@@ -538,30 +538,26 @@
 
 - (void)didSelectDecrease
 {
-  NYPLReaderSettingsFontSize newFontSize;
-  
-  if(!NYPLReaderSettingsDecreasedFontSize(self.fontSize, &newFontSize)) {
-    NYPLLOG(@"Ignorning attempt to set font size below the minimum.");
+  if (self.fontSize == NYPLReaderSettingsFontSizeSmallest) {
+    NYPLLOG(@"Ignoring attempt to set font size below the minimum.");
     return;
   }
-  
-  self.fontSize = newFontSize;
-  
-  [self.delegate readerSettingsView:self didSelectFontSize:self.fontSize];
+
+  self.fontSize = [self.delegate
+                   readerSettingsView:self
+                   didChangeFontSize:NYPLReaderFontSizeChangeDecrease];
 }
 
 - (void)didSelectIncrease
 {
-  NYPLReaderSettingsFontSize newFontSize;
-  
-  if(!NYPLReaderSettingsIncreasedFontSize(self.fontSize, &newFontSize)) {
-    NYPLLOG(@"Ignorning attempt to set font size above the maximum.");
+  if (self.fontSize == NYPLReaderSettingsFontSizeXXXLarge) {
+    NYPLLOG(@"Ignoring attempt to set font size above the max.");
     return;
   }
-  
-  self.fontSize = newFontSize;
-  
-  [self.delegate readerSettingsView:self didSelectFontSize:self.fontSize];
+
+  self.fontSize = [self.delegate
+                   readerSettingsView:self
+                   didChangeFontSize:NYPLReaderFontSizeChangeIncrease];
 }
 
 - (void)updateLineViews

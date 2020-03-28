@@ -366,6 +366,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       return [NYPLConfiguration readerBackgroundColor];
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    default:
       return [NYPLConfiguration readerBackgroundDarkColor];
   }
 }
@@ -378,6 +379,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       return [NYPLConfiguration backgroundMediaOverlayHighlightColor];
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    default:
       return [NYPLConfiguration backgroundMediaOverlayHighlightDarkColor];
   }
 }
@@ -390,6 +392,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       return [UIColor blackColor];
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    default:
       return [UIColor whiteColor];
   }
 }
