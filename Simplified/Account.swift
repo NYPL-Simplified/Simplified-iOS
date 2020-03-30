@@ -284,12 +284,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     }
   }
   
-  var authenticationDocumentCacheUrl: URL {
-    let applicationSupportUrl = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-    let nonColonUuid = uuid.replacingOccurrences(of: ":", with: "_")
-    return applicationSupportUrl.appendingPathComponent("authentication_document_\(nonColonUuid).json")
-  }
-  
+
   var loansUrl: URL? {
     return details?.loansUrl
   }
@@ -314,26 +309,37 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
       logo = UIImage.init(named: "LibraryLogoMagic")!
     }
   }
-  
+
+
+  /// Load authentication documents from the network or cache.
+  /// - Parameter completion: Always invoked at the end of the load process.
+  /// No guarantees are being made about whether this is called on the main
+  /// thread or not.
   func loadAuthenticationDocument(completion: @escaping (Bool) -> ()) {
     guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
       Log.error(#file, "Invalid or missing authentication document URL")
       completion(false)
       return
     }
-    
-    loadDataWithCache(url: url, cacheUrl: authenticationDocumentCacheUrl, expiryUnit: .hour, expiryValue: 1, options: []) { (data) in
-      if let data = data {
+
+    NYPLNetworkExecutor.shared.GET(url) { result in
+      switch result {
+      case .success(let serverData):
         do {
-          self.authenticationDocument = try OPDS2AuthenticationDocument.fromData(data)
+          self.authenticationDocument = try
+            OPDS2AuthenticationDocument.fromData(serverData)
           completion(true)
-          
         } catch (let error) {
-          Log.error(#file, "Failed to load authentication document for library: \(error.localizedDescription)")
+          Log.error(#file, """
+            Failed to parse authentication document data for URL \(url). Error:
+            \(error.localizedDescription)
+            """)
           completion(false)
         }
-      } else {
-        Log.error(#file, "Failed to load data of authentication document from cache or network")
+      case .failure(let error):
+        Log.error(#file, """
+          Failed to load authentication document at URL \(url). Error: \(error)
+          """)
         completion(false)
       }
     }
