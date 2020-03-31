@@ -35,10 +35,10 @@ final class EPUBModule: ReaderFormatModule {
       throw ReaderError.epubNotValid
     }
     
-    let epubVC = EPUBViewController(publication: publication,
-                                    book: book,
-                                    drm: drm,
-                                    resourcesServer: resourcesServer)
+    let epubVC = NYPLEPUBViewController(publication: publication,
+                                        book: book,
+                                        drm: drm,
+                                        resourcesServer: resourcesServer)
     epubVC.moduleDelegate = delegate
     return epubVC
   }

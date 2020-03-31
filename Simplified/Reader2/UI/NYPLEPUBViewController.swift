@@ -1,6 +1,5 @@
 //
-//  EPUBViewController.swift
-//  r2-testapp-swift
+//  NYPLEPUBViewController.swift
 //
 //  Created by Alexandre Camilleri on 7/3/17.
 //
@@ -14,7 +13,7 @@ import UIKit
 import R2Shared
 import R2Navigator
 
-class EPUBViewController: ReaderViewController {
+class NYPLEPUBViewController: ReaderViewController {
   
   var popoverUserconfigurationAnchor: UIBarButtonItem?
 
@@ -133,7 +132,7 @@ class EPUBViewController: ReaderViewController {
 
 // MARK: - NYPLUserSettingsReaderDelegate
 
-extension EPUBViewController: NYPLUserSettingsReaderDelegate {
+extension NYPLEPUBViewController: NYPLUserSettingsReaderDelegate {
   var userSettings: NYPLR1R2UserSettings {
     return NYPLR1R2UserSettings(r2UserSettings: epubNavigator.userSettings)
   }
@@ -158,12 +157,12 @@ extension EPUBViewController: NYPLUserSettingsReaderDelegate {
 
 // MARK: - EPUBNavigatorDelegate
 
-extension EPUBViewController: EPUBNavigatorDelegate {
+extension NYPLEPUBViewController: EPUBNavigatorDelegate {
 }
 
 // MARK: - UIGestureRecognizerDelegate
 
-extension EPUBViewController: UIGestureRecognizerDelegate {
+extension NYPLEPUBViewController: UIGestureRecognizerDelegate {
   func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
     return true
   }
@@ -171,7 +170,7 @@ extension EPUBViewController: UIGestureRecognizerDelegate {
 
 // MARK: - UIPopoverPresentationControllerDelegate
 
-extension EPUBViewController: UIPopoverPresentationControllerDelegate {
+extension NYPLEPUBViewController: UIPopoverPresentationControllerDelegate {
   // Prevent the popOver to be presented fullscreen on iPhones.
   func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle
   {
