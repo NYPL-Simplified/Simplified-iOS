@@ -21,7 +21,8 @@ typedef NS_ENUM(NSInteger, NYPLReaderSettingsFontSize) {
   NYPLReaderSettingsFontSizeLarge = 4,
   NYPLReaderSettingsFontSizeXLarge = 5,
   NYPLReaderSettingsFontSizeXXLarge = 6,
-  NYPLReaderSettingsFontSizeXXXLarge = 7
+  NYPLReaderSettingsFontSizeXXXLarge = 7,
+  NYPLReaderSettingsFontSizeLargest = 7
 };
 
 typedef NS_ENUM(NSInteger, NYPLReaderSettingsMediaOverlaysEnableClick) {

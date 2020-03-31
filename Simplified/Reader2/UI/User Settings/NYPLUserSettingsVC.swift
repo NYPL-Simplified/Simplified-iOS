@@ -90,28 +90,27 @@ extension NYPLUserSettingsVC: NYPLReaderSettingsViewDelegate {
                           didChangeFontSize change: NYPLReaderFontSizeChange) -> NYPLReaderSettingsFontSize {
     //  R1
     var newSize = settingsView.fontSize
-    let r1Changed = NYPLReaderSettingsIncreasedFontSize(settingsView.fontSize,
-                                                      &newSize)
+    let r1Changed: Bool = {
+      switch change {
+      case .increase:
+        return NYPLReaderSettingsIncreasedFontSize(settingsView.fontSize,
+                                                   &newSize)
+      case .decrease:
+        return NYPLReaderSettingsDecreasedFontSize(settingsView.fontSize,
+                                                   &newSize)
+      }
+    }()
     if r1Changed {
       userSettings?.r1UserSettings.fontSize = newSize
     }
 
     // R2
-    if let fontSize = userSettings?.r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.fontSize.rawValue) as? Incrementable {
+    // we always modify the R2 value because we don't have a way to understand
+    // that if a book was already downloaded and partially read with R1 but
+    // never displayed in R2, we still need a way to set the R2 value
+    userSettings?.modifyR2FontSize(fromR1: newSize)
 
-      // Note, R2's `increment`/`decrement` functions do bound checks, so e.g.
-      // calling `increment` when fontSize is already the max results in a no-op
-      switch change {
-      case .increase:
-        fontSize.increment()
-      case .decrease:
-        fontSize.decrement()
-      }
-
-      delegate?.applyCurrentSettings()
-    } else if r1Changed {
-      delegate?.applyCurrentSettings()
-    }
+    delegate?.applyCurrentSettings()
 
     return newSize
   }

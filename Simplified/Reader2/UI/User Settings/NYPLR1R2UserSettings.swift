@@ -8,6 +8,7 @@
 
 import Foundation
 import R2Navigator
+import R2Shared
 
 /// Wrapper class for Readium 1 and Readium 2 reader user settings.
 class NYPLR1R2UserSettings: NSObject {
@@ -28,33 +29,17 @@ class NYPLR1R2UserSettings: NSObject {
     super.init()
   }
 
-//  /// Converts the R2 font size value to a R1 value we can use in SimplyE.
-//  func r1FontSize() -> NYPLReaderSettingsFontSize {
-//    guard let r2FontSize = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.fontSize.rawValue) as? Incrementable else {
-//      return .normal
-//    }
-//
-//    // R2 values may reach the bounds min / max values
-//    let r2Range = r2FontSize.max - r2FontSize.min
-//
-//    // convert R2 value inside the [0...1] range
-//    let percValue: Float = {
-//      let val = (r2FontSize.value - r2FontSize.min)
-//      if val < 0 {
-//        return r2FontSize.min
-//      }
-//      return val / r2Range
-//    }()
-//
-//    // range between 0...7 inclusive
-//    let r1Range = Float(NYPLReaderSettingsFontSizeMaxValue)
-//    let r1Value = Int(round(percValue * r1Range))
-//
-//    // sanity check
-//    if r1Value > NYPLReaderSettingsFontSize.xxxLarge.rawValue {
-//      return NYPLReaderSettingsFontSize.xxxLarge
-//    }
-//
-//    return NYPLReaderSettingsFontSize(rawValue: r1Value) ?? .normal
-//  }
+  func modifyR2FontSize(fromR1 r1Value: NYPLReaderSettingsFontSize) {
+    guard let r2FontSize = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.fontSize.rawValue) as? Incrementable else {
+      return
+    }
+
+    // convert R1 value into the [0...1] range
+    let r1Range = Float(NYPLReaderSettingsFontSize.largest.rawValue - NYPLReaderSettingsFontSize.smallest.rawValue)
+    let percValue = Float(r1Value.rawValue - NYPLReaderSettingsFontSize.smallest.rawValue) / r1Range
+
+    // convert the percentage range into R2
+    let r2Range = r2FontSize.max - r2FontSize.min
+    r2FontSize.value = r2FontSize.min + percValue * r2Range
+  }
 }
