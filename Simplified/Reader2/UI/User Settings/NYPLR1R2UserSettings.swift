@@ -29,6 +29,9 @@ class NYPLR1R2UserSettings: NSObject {
     super.init()
   }
 
+  /// Converts the R1 value for font size into something that R2 can understand
+  /// and applies that value to the related R2 user setting.
+  /// - Parameter r1Value: The font size value as it comes from R1.
   func modifyR2FontSize(fromR1 r1Value: NYPLReaderSettingsFontSize) {
     guard let r2FontSize = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.fontSize.rawValue) as? Incrementable else {
       return
@@ -41,5 +44,11 @@ class NYPLR1R2UserSettings: NSObject {
     // convert the percentage range into R2
     let r2Range = r2FontSize.max - r2FontSize.min
     r2FontSize.value = r2FontSize.min + percValue * r2Range
+  }
+
+  /// Persists both R1 and R2 user settings.
+  func save() {
+    r1UserSettings.save()
+    r2UserSettings?.save()
   }
 }

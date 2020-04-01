@@ -82,8 +82,8 @@ extension NYPLUserSettingsVC: NYPLReaderSettingsViewDelegate {
   func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
                           didSelect colorScheme: NYPLReaderSettingsColorScheme) {
     userSettings?.r1UserSettings.colorScheme = colorScheme
-    
     delegate?.setR2ColorScheme(colorScheme)
+    userSettings?.save()
     delegate?.applyCurrentSettings()
   }
 
@@ -111,6 +111,7 @@ extension NYPLUserSettingsVC: NYPLReaderSettingsViewDelegate {
     // never displayed in R2, we still need a way to set the R2 value
     userSettings?.modifyR2FontSize(fromR1: newSize)
 
+    userSettings?.save()
     delegate?.applyCurrentSettings()
 
     return newSize
@@ -119,6 +120,7 @@ extension NYPLUserSettingsVC: NYPLReaderSettingsViewDelegate {
   func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
                           didSelect fontFace: NYPLReaderSettingsFontFace) {
     userSettings?.r1UserSettings.fontFace = fontFace
+    userSettings?.save()
     delegate?.applyCurrentSettings()
   }
 }

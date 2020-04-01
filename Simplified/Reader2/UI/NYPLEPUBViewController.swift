@@ -68,7 +68,7 @@ class NYPLEPUBViewController: ReaderViewController {
 
   override open func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    epubNavigator.userSettings.save()
+    NYPLR1R2UserSettings(r2UserSettings: epubNavigator.userSettings).save()
   }
 
   override func makeNavigationBarButtons() -> [UIBarButtonItem] {
