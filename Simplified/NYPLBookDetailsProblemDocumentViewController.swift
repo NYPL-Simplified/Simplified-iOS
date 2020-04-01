@@ -196,6 +196,6 @@
         body: body
       )
     }))
-    self.present(alert, animated: false, completion: nil)
+    self.present(alert, animated: true, completion: nil)
   }
 }
