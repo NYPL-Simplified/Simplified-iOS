@@ -96,6 +96,7 @@
     self.submitButton = submitButton
     submitButton.translatesAutoresizingMaskIntoConstraints = false
     submitButton.setTitle("Send to Support", for: .normal)
+    submitButton.isEnabled = AccountsManager.shared.currentAccount?.supportEmail != nil
     submitButton.addTarget(self, action: #selector(submitButtonWasPressed), for: .touchDown)
     
     scrollView.addSubview(label)
