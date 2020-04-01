@@ -181,6 +181,8 @@
 		733527A524172BD6009E3F19 /* ReaderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733527A424172BD6009E3F19 /* ReaderFactory.swift */; };
 		733DEC9024108D8D008C74BC /* DRMLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC8B24108D8D008C74BC /* DRMLibraryService.swift */; };
 		733DEC92241090C7008C74BC /* NYPLReaderExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC91241090C7008C74BC /* NYPLReaderExtensions.swift */; };
+		734917D1242D77D800059AA5 /* NYPLUserSettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734917D0242D77D800059AA5 /* NYPLUserSettingsVC.swift */; };
+		734917DA242EB79700059AA5 /* NYPLR1R2UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734917D9242EB79700059AA5 /* NYPLR1R2UserSettings.swift */; };
 		7360891C240DFBF7007EE66F /* NYPLErrorLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF8B422C3FC06007CAA34 /* NYPLErrorLogger.swift */; };
 		738EF2D02405E38800F388FB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 738EF2CB2405E38800F388FB /* GoogleService-Info.plist */; };
 		738EF2DB2405EA6000F388FB /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D22405EA5F00F388FB /* Firebase.framework */; };
@@ -212,7 +214,7 @@
 		73A229AD2410221E006B9EAD /* EPUBModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A229AC2410221E006B9EAD /* EPUBModule.swift */; };
 		73A229AF24102272006B9EAD /* ReaderFormatModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A229AE24102272006B9EAD /* ReaderFormatModule.swift */; };
 		73A3EAED2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A3EAEC2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m */; };
-		73F713562417200F00C63B81 /* EPUBViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F713502417200F00C63B81 /* EPUBViewController.swift */; };
+		73F713562417200F00C63B81 /* NYPLEPUBViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F713502417200F00C63B81 /* NYPLEPUBViewController.swift */; };
 		73F713572417200F00C63B81 /* ReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F713552417200F00C63B81 /* ReaderViewController.swift */; };
 		73F71361241723B100C63B81 /* UserSettings.strings in Resources */ = {isa = PBXBuildFile; fileRef = 73F71359241723B100C63B81 /* UserSettings.strings */; };
 		73F71362241723B100C63B81 /* UserSettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F7135B241723B100C63B81 /* UserSettingsTableViewController.swift */; };
@@ -604,6 +606,8 @@
 		733527A424172BD6009E3F19 /* ReaderFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderFactory.swift; sourceTree = "<group>"; };
 		733DEC8B24108D8D008C74BC /* DRMLibraryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DRMLibraryService.swift; sourceTree = "<group>"; };
 		733DEC91241090C7008C74BC /* NYPLReaderExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLReaderExtensions.swift; sourceTree = "<group>"; };
+		734917D0242D77D800059AA5 /* NYPLUserSettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserSettingsVC.swift; sourceTree = "<group>"; };
+		734917D9242EB79700059AA5 /* NYPLR1R2UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLR1R2UserSettings.swift; sourceTree = "<group>"; };
 		738EF2CB2405E38800F388FB /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		738EF2D12405E3D900F388FB /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
 		738EF2D22405EA5F00F388FB /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Firebase.framework; path = Carthage/Build/iOS/Firebase.framework; sourceTree = "<group>"; };
@@ -644,7 +648,7 @@
 		73DA43A62404BA5600985482 /* build-carthage.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-carthage.sh"; sourceTree = SOURCE_ROOT; };
 		73DA43A72404BA5600985482 /* build_curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_curl.sh; sourceTree = SOURCE_ROOT; };
 		73DA43A82404BA5600985482 /* build-openssl-curl.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "build-openssl-curl.sh"; sourceTree = SOURCE_ROOT; };
-		73F713502417200F00C63B81 /* EPUBViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EPUBViewController.swift; path = Simplified/Reader2/UI/EPUBViewController.swift; sourceTree = SOURCE_ROOT; };
+		73F713502417200F00C63B81 /* NYPLEPUBViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NYPLEPUBViewController.swift; path = Simplified/Reader2/UI/NYPLEPUBViewController.swift; sourceTree = SOURCE_ROOT; };
 		73F713552417200F00C63B81 /* ReaderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReaderViewController.swift; path = Simplified/Reader2/UI/ReaderViewController.swift; sourceTree = SOURCE_ROOT; };
 		73F7135A241723B100C63B81 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/UserSettings.strings; sourceTree = "<group>"; };
 		73F7135B241723B100C63B81 /* UserSettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSettingsTableViewController.swift; sourceTree = "<group>"; };
@@ -1177,6 +1181,8 @@
 		73F71358241723B100C63B81 /* User Settings */ = {
 			isa = PBXGroup;
 			children = (
+				734917D0242D77D800059AA5 /* NYPLUserSettingsVC.swift */,
+				734917D9242EB79700059AA5 /* NYPLR1R2UserSettings.swift */,
 				73F7135B241723B100C63B81 /* UserSettingsTableViewController.swift */,
 				73F7135C241723B100C63B81 /* AdvancedSettingsViewController.swift */,
 				73F7135F241723B100C63B81 /* UserSettingsNavigationController.swift */,
@@ -1192,7 +1198,7 @@
 			isa = PBXGroup;
 			children = (
 				73F713552417200F00C63B81 /* ReaderViewController.swift */,
-				73F713502417200F00C63B81 /* EPUBViewController.swift */,
+				73F713502417200F00C63B81 /* NYPLEPUBViewController.swift */,
 				733527A424172BD6009E3F19 /* ReaderFactory.swift */,
 				73F713672417240100C63B81 /* UIViewController+NYPL.swift */,
 				73F713692417243200C63B81 /* AssociatedColors.swift */,
@@ -1822,6 +1828,7 @@
 				2D382BD71D08BA99002C423D /* Log.swift in Sources */,
 				11616E11196B0531003D60D9 /* NYPLBookRegistry.m in Sources */,
 				081387571BC574DA003DEA6A /* UILabel+NYPLAppearanceAdditions.m in Sources */,
+				734917D1242D77D800059AA5 /* NYPLUserSettingsVC.swift in Sources */,
 				11369D48199527C200BB11F8 /* NYPLJSON.m in Sources */,
 				7327A89323EE017300954748 /* NYPLMainThreadChecker.swift in Sources */,
 				116A5EB91947B57500491A21 /* NYPLConfiguration.m in Sources */,
@@ -1913,6 +1920,7 @@
 				E627B554216D4A9700A7D1D5 /* NYPLBookContentType.m in Sources */,
 				73A229A0240F3BEB006B9EAD /* LibraryModule.swift in Sources */,
 				2D754BC22002F1B10061D34F /* NYPLOPDSIndirectAcquisition.m in Sources */,
+				734917DA242EB79700059AA5 /* NYPLR1R2UserSettings.swift in Sources */,
 				116A5EB3194767DC00491A21 /* NYPLMyBooksViewController.m in Sources */,
 				E6B3269F1EE066DE00DB877A /* NYPLBookDetailTableView.swift in Sources */,
 				8CC26F832370C1DF0000D8E1 /* Account.swift in Sources */,
@@ -1940,7 +1948,7 @@
 				085D31DF1BE3CD3C007F7672 /* NSURLRequest+NYPLURLRequestAdditions.m in Sources */,
 				11548C0B1939136C009DBF2E /* NYPLRootTabBarController.m in Sources */,
 				E63F2C6C1EAA81B3002B6373 /* ExtendedNavBarView.swift in Sources */,
-				73F713562417200F00C63B81 /* EPUBViewController.swift in Sources */,
+				73F713562417200F00C63B81 /* NYPLEPUBViewController.swift in Sources */,
 				B51C1E0022861BAD003B49A5 /* OPDS2Link.swift in Sources */,
 				E6DA7EA01F2A718600CFBEC8 /* NYPLBookAuthor.swift in Sources */,
 				118A0B1B19915BDF00792DDE /* NYPLCatalogSearchViewController.m in Sources */,

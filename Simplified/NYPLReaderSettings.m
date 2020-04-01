@@ -6,6 +6,18 @@
 
 #import "SimplyE-Swift.h"
 
+NSString *const NYPLReaderSettingsColorSchemeDidChangeNotification =
+@"NYPLReaderSettingsColorSchemeDidChange";
+
+NSString *const NYPLReaderSettingsFontFaceDidChangeNotification =
+@"NYPLReaderSettingsFontFaceDidChange";
+
+NSString *const NYPLReaderSettingsFontSizeDidChangeNotification =
+@"NYPLReaderSettingsFontSizeDidChange";
+
+NSString *const NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification =
+@"NYPLReaderSettingsMediaClickOverlayAlwaysEnableDidChangeNotification";
+
 BOOL NYPLReaderSettingsDecreasedFontSize(NYPLReaderSettingsFontSize const input,
                                          NYPLReaderSettingsFontSize *const output)
 {
@@ -354,6 +366,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       return [NYPLConfiguration readerBackgroundColor];
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    default:
       return [NYPLConfiguration readerBackgroundDarkColor];
   }
 }
@@ -366,6 +379,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       return [NYPLConfiguration backgroundMediaOverlayHighlightColor];
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    default:
       return [NYPLConfiguration backgroundMediaOverlayHighlightDarkColor];
   }
 }
@@ -378,6 +392,7 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       return [UIColor blackColor];
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    default:
       return [UIColor whiteColor];
   }
 }
