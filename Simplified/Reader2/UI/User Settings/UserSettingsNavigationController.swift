@@ -73,7 +73,14 @@ extension UserSettingsNavigationController: UserSettingsDelegate {
   /// Appearance
 
   func appearanceDidChange(to appearanceIndex: Int) {
-    usdelegate?.setUIColor(forR2: appearanceIndex)
+    switch appearanceIndex {
+    case 1:
+      usdelegate?.setR2ColorScheme(.blackOnSepia)
+    case 2:
+      usdelegate?.setR2ColorScheme(.whiteOnBlack)
+    default:
+      usdelegate?.setR2ColorScheme(.blackOnWhite)
+    }
   }
 
   /// Vertical scroll

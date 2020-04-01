@@ -143,13 +143,13 @@ extension NYPLEPUBViewController: NYPLUserSettingsReaderDelegate {
     }
   }
 
-  func setUIColor(forR2 appearanceIndex: Int) {
+  func setR2ColorScheme(_ colorScheme: NYPLReaderSettingsColorScheme) {
     guard let appearance = userSettings.r2UserSettings?.userProperties.getProperty(
       reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable else {
         return
     }
-    appearance.index = appearanceIndex
-    applyCurrentSettings()
+    appearance.index = colorScheme.rawValue
+    //applyCurrentSettings()
 
     setUIColor(for: appearance)
   }

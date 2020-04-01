@@ -636,7 +636,7 @@ didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReadiumBookmar
   return [[NYPLR1R2UserSettings alloc] init];
 }
 
-- (void)setUIColorForR2:(__attribute__((unused)) NSInteger)appearanceIndex
+- (void)setR2ColorScheme:(__attribute__((unused)) NYPLReaderSettingsColorScheme)scheme
 {
   // nothing to do since this delegate method is only for Readium 2
 }

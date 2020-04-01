@@ -17,17 +17,16 @@ import R2Navigator
 /// Readium 1 or Readium 2.
 @objc protocol NYPLUserSettingsReaderDelegate: NSObjectProtocol {
 
-  /// Apply the user settings to the reader screen
+  /// Apply all the current user settings to the reader screen.
   func applyCurrentSettings()
 
-  /// Obtain the current user settings
-  var userSettings: NYPLR1R2UserSettings { get }
+  /// Set the color scheme in the R2 user settings system. Implementors
+  /// should call `applyCurrentSettings` after calling this method.
+  /// - Parameter colorScheme: The color scheme chosen by the user.
+  func setR2ColorScheme(_ colorScheme: NYPLReaderSettingsColorScheme)
 
-  /// Only used by R2-related code to update the appearance.
-  /// - Parameter appearanceIndex: Value corresponding to a UserProperty index
-  /// property for the appearance settings.
-  /// - TODO: SIMPLY-2604
-  func setUIColor(forR2 appearanceIndex: Int)
+  /// Obtain the current user settings.
+  var userSettings: NYPLR1R2UserSettings { get }
 }
 
 //==============================================================================
@@ -83,6 +82,8 @@ extension NYPLUserSettingsVC: NYPLReaderSettingsViewDelegate {
   func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
                           didSelect colorScheme: NYPLReaderSettingsColorScheme) {
     userSettings?.r1UserSettings.colorScheme = colorScheme
+    
+    delegate?.setR2ColorScheme(colorScheme)
     delegate?.applyCurrentSettings()
   }
 
@@ -118,12 +119,6 @@ extension NYPLUserSettingsVC: NYPLReaderSettingsViewDelegate {
   func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
                           didSelect fontFace: NYPLReaderSettingsFontFace) {
     userSettings?.r1UserSettings.fontFace = fontFace
-    delegate?.applyCurrentSettings()
-  }
-
-  func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
-                          didSelect flag: NYPLReaderSettingsMediaOverlaysEnableClick) {
-    userSettings?.r1UserSettings.mediaOverlaysEnableClick = flag
     delegate?.applyCurrentSettings()
   }
 }
