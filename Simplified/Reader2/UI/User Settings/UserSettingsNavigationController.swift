@@ -73,13 +73,13 @@ extension UserSettingsNavigationController: UserSettingsDelegate {
   /// Appearance
 
   func appearanceDidChange(to appearanceIndex: Int) {
-    switch appearanceIndex {
-    case 1:
-      usdelegate?.setR2ColorScheme(.blackOnSepia)
-    case 2:
-      usdelegate?.setR2ColorScheme(.whiteOnBlack)
-    default:
-      usdelegate?.setR2ColorScheme(.blackOnWhite)
+    if let appearance = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable {
+      appearance.index = appearanceIndex
+      usdelegate?.applyCurrentSettings()
+      // Change view appearance.
+      if let epubVC = usdelegate as? NYPLEPUBViewController {
+        epubVC.setUIColor(for: appearance)
+      }
     }
   }
 

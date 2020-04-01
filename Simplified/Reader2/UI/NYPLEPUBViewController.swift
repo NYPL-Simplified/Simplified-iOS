@@ -68,7 +68,7 @@ class NYPLEPUBViewController: ReaderViewController {
 
   override open func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    NYPLR1R2UserSettings(r2UserSettings: epubNavigator.userSettings).save()
+    userSettings.save()
   }
 
   override func makeNavigationBarButtons() -> [UIBarButtonItem] {
@@ -138,20 +138,13 @@ extension NYPLEPUBViewController: NYPLUserSettingsReaderDelegate {
   }
 
   func applyCurrentSettings() {
-    DispatchQueue.main.async {
+    NYPLMainThreadRun.asyncIfNeeded {
+      if let appearance = self.userSettings.r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable {
+        self.setUIColor(for: appearance)
+      }
+
       self.epubNavigator.updateUserSettingStyle()
     }
-  }
-
-  func setR2ColorScheme(_ colorScheme: NYPLReaderSettingsColorScheme) {
-    guard let appearance = userSettings.r2UserSettings?.userProperties.getProperty(
-      reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable else {
-        return
-    }
-    appearance.index = colorScheme.rawValue
-    //applyCurrentSettings()
-
-    setUIColor(for: appearance)
   }
 }
 
