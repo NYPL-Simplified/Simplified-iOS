@@ -92,9 +92,11 @@ class ReaderViewController: UIViewController, Loggable {
   }
 
   override func willMove(toParent parent: UIViewController?) {
-    // Restore library's default UI colors
-    navigationController?.navigationBar.tintColor = .black
-    navigationController?.navigationBar.barTintColor = .white
+    super.willMove(toParent: parent)
+
+    if parent == nil {
+      NYPLBookRegistry.shared().save()
+    }
   }
 
 

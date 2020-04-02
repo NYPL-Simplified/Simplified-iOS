@@ -76,10 +76,6 @@ extension UserSettingsNavigationController: UserSettingsDelegate {
     if let appearance = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable {
       appearance.index = appearanceIndex
       usdelegate?.applyCurrentSettings()
-      // Change view appearance.
-      if let epubVC = usdelegate as? NYPLEPUBViewController {
-        epubVC.setUIColor(for: appearance)
-      }
     }
   }
 
