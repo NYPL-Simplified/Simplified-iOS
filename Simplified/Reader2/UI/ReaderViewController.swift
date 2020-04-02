@@ -55,7 +55,7 @@ class ReaderViewController: UIViewController, Loggable {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    view.backgroundColor = .white
+    view.backgroundColor = NYPLConfiguration.backgroundColor()
 
     navigationItem.rightBarButtonItems = makeNavigationBarButtons()
     updateNavigationBar(animated: false)

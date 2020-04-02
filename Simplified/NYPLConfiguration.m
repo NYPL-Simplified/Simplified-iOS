@@ -86,32 +86,37 @@
 // OK to leave as static color because it's reader-only
 + (UIColor *)readerBackgroundSepiaColor
 {
-  return [UIColor colorWithRed:242/255.0 green:228/255.0 blue:203/255.0 alpha:1.0];
+  return [UIColor colorWithRed:250/255.0 green:244/255.0 blue:232/255.0 alpha:1.0];
 }
 
 // OK to leave as static color because it's reader-only
-+(UIColor *)backgroundMediaOverlayHighlightColor {
++ (UIColor *)backgroundMediaOverlayHighlightColor
+{
   return [UIColor yellowColor];
 }
 
 // OK to leave as static color because it's reader-only
-+(UIColor *)backgroundMediaOverlayHighlightDarkColor {
++ (UIColor *)backgroundMediaOverlayHighlightDarkColor
+{
   return [UIColor orangeColor];
 }
 
 // OK to leave as static color because it's reader-only
-+(UIColor *)backgroundMediaOverlayHighlightSepiaColor {
++ (UIColor *)backgroundMediaOverlayHighlightSepiaColor
+{
   return [UIColor yellowColor];
 }
 
-+(UIColor *)iconLogoBlueColor {
++ (UIColor *)iconLogoBlueColor
+{
   if (@available(iOS 13, *)) {
     return [UIColor colorNamed: @"ColorIconLogoBlue"];
   }
   return [UIColor colorWithRed:17.0/255.0 green:50.0/255.0 blue:84.0/255.0 alpha:1.0];
 }
 
-+(UIColor *)iconLogoGreenColor {
++ (UIColor *)iconLogoGreenColor
+{
   return [UIColor colorWithRed:141.0/255.0 green:199.0/255.0 blue:64.0/255.0 alpha:1.0];
 }
 

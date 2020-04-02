@@ -29,6 +29,27 @@ class NYPLR1R2UserSettings: NSObject {
     super.init()
   }
 
+  /// Get associated colors for a specific appearance setting.
+  /// - parameter appearance: The selected appearance.
+  /// - Returns: A tuple with a background color and a text color.
+  static func colors(for appearance: UserProperty) -> (backgroundColor: UIColor, textColor: UIColor) {
+    var backgroundColor, textColor: UIColor
+
+    switch appearance.toString() {
+    case "readium-sepia-on":
+      backgroundColor = NYPLConfiguration.readerBackgroundSepiaColor()
+      textColor = UIColor.black
+    case "readium-night-on":
+      backgroundColor = NYPLConfiguration.readerBackgroundDarkColor()
+      textColor = UIColor.white
+    default:
+      backgroundColor = UIColor.white
+      textColor = UIColor.black
+    }
+
+    return (backgroundColor, textColor)
+  }
+
   /// Persists both R1 and R2 user settings.
   func save() {
     r1UserSettings.save()
