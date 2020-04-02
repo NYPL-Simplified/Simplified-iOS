@@ -73,7 +73,10 @@ extension UserSettingsNavigationController: UserSettingsDelegate {
   /// Appearance
 
   func appearanceDidChange(to appearanceIndex: Int) {
-    usdelegate?.setUIColor(forR2: appearanceIndex)
+    if let appearance = userSettings.userProperties.getProperty(reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable {
+      appearance.index = appearanceIndex
+      usdelegate?.applyCurrentSettings()
+    }
   }
 
   /// Vertical scroll

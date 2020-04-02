@@ -39,13 +39,16 @@ class NYPLEPUBViewController: ReaderViewController {
     return navigator as! EPUBNavigatorViewController
   }
 
+  override func willMove(toParent parent: UIViewController?) {
+    super.willMove(toParent: parent)
+
+    // Restore catalog default UI colors
+    navigationController?.navigationBar.barStyle = .default
+    navigationController?.navigationBar.barTintColor = nil
+  }
+
   override func viewDidLoad() {
     super.viewDidLoad()
-
-    /// Set initial UI appearance.
-    if let appearance = publication.userProperties.getProperty(reference: ReadiumCSSReference.appearance.rawValue) {
-      setUIColor(for: appearance)
-    }
 
     userSettingNavigationController.userSettings = userSettings.r2UserSettings
     userSettingNavigationController.modalPresentationStyle = .popover
@@ -66,9 +69,14 @@ class NYPLEPUBViewController: ReaderViewController {
     }
   }
 
+  override open func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    self.applyCurrentSettings()
+  }
+
   override open func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    epubNavigator.userSettings.save()
+    userSettings.save()
   }
 
   override func makeNavigationBarButtons() -> [UIBarButtonItem] {
@@ -114,20 +122,6 @@ class NYPLEPUBViewController: ReaderViewController {
       vc.popoverPresentationController?.passthroughViews = nil
     }
   }
-
-  /// Synchronyze the UI appearance to the UserSettings.Appearance.
-  ///
-  /// - Parameter appearance: The appearance.
-  func setUIColor(for appearance: UserProperty) {
-    let colors = AssociatedColors.getColors(for: appearance)
-
-    navigator.view.backgroundColor = colors.mainColor
-    view.backgroundColor = colors.mainColor
-
-    navigationController?.navigationBar.barTintColor = colors.mainColor
-    navigationController?.navigationBar.tintColor = colors.textColor
-    navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: colors.textColor]
-  }
 }
 
 // MARK: - NYPLUserSettingsReaderDelegate
@@ -138,20 +132,26 @@ extension NYPLEPUBViewController: NYPLUserSettingsReaderDelegate {
   }
 
   func applyCurrentSettings() {
-    DispatchQueue.main.async {
+    NYPLMainThreadRun.asyncIfNeeded {
+      if let appearance = self.userSettings.r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable {
+
+        let colors = NYPLR1R2UserSettings.colors(for: appearance)
+        self.navigator.view.backgroundColor = colors.backgroundColor
+        self.view.backgroundColor = colors.backgroundColor
+        self.navigationController?.navigationBar.barTintColor = colors.backgroundColor
+      }
+
+      switch self.userSettings.r1UserSettings.colorScheme {
+      case .blackOnSepia:
+        self.navigationController?.navigationBar.barStyle = .default
+      case .blackOnWhite:
+        self.navigationController?.navigationBar.barStyle = .default
+      case .whiteOnBlack:
+        self.navigationController?.navigationBar.barStyle = .black
+      }
+
       self.epubNavigator.updateUserSettingStyle()
     }
-  }
-
-  func setUIColor(forR2 appearanceIndex: Int) {
-    guard let appearance = userSettings.r2UserSettings?.userProperties.getProperty(
-      reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable else {
-        return
-    }
-    appearance.index = appearanceIndex
-    applyCurrentSettings()
-
-    setUIColor(for: appearance)
   }
 }
 

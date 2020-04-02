@@ -17,17 +17,11 @@ import R2Navigator
 /// Readium 1 or Readium 2.
 @objc protocol NYPLUserSettingsReaderDelegate: NSObjectProtocol {
 
-  /// Apply the user settings to the reader screen
+  /// Apply all the current user settings to the reader screen.
   func applyCurrentSettings()
 
-  /// Obtain the current user settings
+  /// Obtain the current user settings.
   var userSettings: NYPLR1R2UserSettings { get }
-
-  /// Only used by R2-related code to update the appearance.
-  /// - Parameter appearanceIndex: Value corresponding to a UserProperty index
-  /// property for the appearance settings.
-  /// - TODO: SIMPLY-2604
-  func setUIColor(forR2 appearanceIndex: Int)
 }
 
 //==============================================================================
@@ -40,15 +34,15 @@ import R2Navigator
 @objc class NYPLUserSettingsVC: UIViewController {
 
   weak var delegate: NYPLUserSettingsReaderDelegate?
-  var userSettings: NYPLR1R2UserSettings?
+  let userSettings: NYPLR1R2UserSettings
 
   /// The designated initializer.
   /// - Parameter delegate: The object responsible to handle callbacks in
   /// response to User Settings UI changes.
   @objc init(delegate: NYPLUserSettingsReaderDelegate) {
-    super.init(nibName: nil, bundle: nil)
     self.delegate = delegate
     self.userSettings = delegate.userSettings
+    super.init(nibName: nil, bundle: nil)
   }
 
   /// Instantiting this class in a xib/storyboard is not supported.
@@ -82,34 +76,17 @@ extension NYPLUserSettingsVC: NYPLReaderSettingsViewDelegate {
 
   func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
                           didSelect colorScheme: NYPLReaderSettingsColorScheme) {
-    userSettings?.r1UserSettings.colorScheme = colorScheme
+    userSettings.setColorScheme(colorScheme)
+    userSettings.save()
     delegate?.applyCurrentSettings()
   }
 
   func readerSettingsView(_ settingsView: NYPLReaderSettingsView,
                           didChangeFontSize change: NYPLReaderFontSizeChange) -> NYPLReaderSettingsFontSize {
-    //  R1
-    var newSize = settingsView.fontSize
-    let r1Changed: Bool = {
-      switch change {
-      case .increase:
-        return NYPLReaderSettingsIncreasedFontSize(settingsView.fontSize,
-                                                   &newSize)
-      case .decrease:
-        return NYPLReaderSettingsDecreasedFontSize(settingsView.fontSize,
-                                                   &newSize)
-      }
-    }()
-    if r1Changed {
-      userSettings?.r1UserSettings.fontSize = newSize
-    }
 
-    // R2
-    // we always modify the R2 value because we don't have a way to understand
-    // that if a book was already downloaded and partially read with R1 but
-    // never displayed in R2, we still need a way to set the R2 value
-    userSettings?.modifyR2FontSize(fromR1: newSize)
-
+    let newSize = userSettings.modifyFontSize(fromOldValue: settingsView.fontSize,
+                                              effectuating: change)
+    userSettings.save()
     delegate?.applyCurrentSettings()
 
     return newSize
@@ -117,13 +94,8 @@ extension NYPLUserSettingsVC: NYPLReaderSettingsViewDelegate {
 
   func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
                           didSelect fontFace: NYPLReaderSettingsFontFace) {
-    userSettings?.r1UserSettings.fontFace = fontFace
-    delegate?.applyCurrentSettings()
-  }
-
-  func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
-                          didSelect flag: NYPLReaderSettingsMediaOverlaysEnableClick) {
-    userSettings?.r1UserSettings.mediaOverlaysEnableClick = flag
+    userSettings.r1UserSettings.fontFace = fontFace
+    userSettings.save()
     delegate?.applyCurrentSettings()
   }
 }

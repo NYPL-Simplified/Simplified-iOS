@@ -23,8 +23,6 @@ typedef NS_ENUM(NSUInteger, NYPLReaderFontSizeChange) {
 - (void)readerSettingsView:(nonnull NYPLReaderSettingsView *)readerSettingsView
          didSelectFontFace:(NYPLReaderSettingsFontFace)fontFace;
 
-- (void)readerSettingsView:(nonnull NYPLReaderSettingsView *)readerSettingsView
-    didSelectMediaOverlaysEnableClick:(NYPLReaderSettingsMediaOverlaysEnableClick)fontFace;
 @end
 
 //==============================================================================

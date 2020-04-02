@@ -55,7 +55,7 @@ class ReaderViewController: UIViewController, Loggable {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    view.backgroundColor = .white
+    view.backgroundColor = NYPLConfiguration.backgroundColor()
 
     navigationItem.rightBarButtonItems = makeNavigationBarButtons()
     updateNavigationBar(animated: false)
@@ -92,9 +92,11 @@ class ReaderViewController: UIViewController, Loggable {
   }
 
   override func willMove(toParent parent: UIViewController?) {
-    // Restore library's default UI colors
-    navigationController?.navigationBar.tintColor = .black
-    navigationController?.navigationBar.barTintColor = .white
+    super.willMove(toParent: parent)
+
+    if parent == nil {
+      NYPLBookRegistry.shared().save()
+    }
   }
 
 

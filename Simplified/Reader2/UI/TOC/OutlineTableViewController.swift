@@ -202,10 +202,10 @@ extension OutlineTableViewController {
   ///
   /// - Parameter appearance: The appearance.
   public func setUIColor(for appearance: UserProperty) {
-    let colors = AssociatedColors.getColors(for: appearance)
+    let colors = NYPLR1R2UserSettings.colors(for: appearance)
 
     tableView.tintColor = colors.textColor
-    tableView.backgroundColor = colors.mainColor
+    tableView.backgroundColor = colors.backgroundColor
     tableView.reloadData()
   }
 
