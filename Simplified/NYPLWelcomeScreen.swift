@@ -197,7 +197,7 @@ import PureLayout
         } else {
           // Show loading overlay while we load the auth document
           let loadingOverlay = self.addLoadingOverlayView(toVC: self.navigationController)
-          account.loadAuthenticationDocument(preferringCache: true, completion: { success in
+          account.loadAuthenticationDocument { (success) in
             self.removeLoadingOverlayView(loadingOverlay)
             guard success else {
               self.showLoadingFailureAlert()
@@ -209,7 +209,7 @@ import PureLayout
               NYPLSettings.shared.settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
             }
             self.completion?(account)
-          })
+          }
         }
       }
       self.navigationController?.pushViewController(listVC, animated: true)
@@ -248,7 +248,7 @@ import PureLayout
         loadingOverlay = self.addLoadingOverlayView()
       }
       // Load the auth document for the classics library
-      classicsAccount.loadAuthenticationDocument(preferringCache: true, completion: { (authSuccess) in
+      classicsAccount.loadAuthenticationDocument { (authSuccess) in
         DispatchQueue.main.async {
           self.removeLoadingOverlayView(loadingOverlay)
           if authSuccess {
@@ -258,7 +258,7 @@ import PureLayout
             self.showLoadingFailureAlert()
           }
         }
-      })
+      }
     }
     
     if AccountsManager.shared.accountsHaveLoaded {

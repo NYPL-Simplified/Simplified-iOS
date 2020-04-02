@@ -1,3 +1,8 @@
+
+private let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
+private let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
+private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
+
 // MARK: AccountDetails
 // Extra data that gets loaded from an OPDS2AuthenticationDocument,
 @objcMembers final class AccountDetails: NSObject {
@@ -310,14 +315,14 @@
     }
   }
   
-  func loadAuthenticationDocument(preferringCache: Bool, completion: @escaping (Bool) -> ()) {
+  func loadAuthenticationDocument(completion: @escaping (Bool) -> ()) {
     guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
       Log.error(#file, "Invalid or missing authentication document URL")
       completion(false)
       return
     }
     
-    loadDataWithCache(url: url, cacheUrl: authenticationDocumentCacheUrl, options: preferringCache ? .preferCache : []) { (data) in
+    loadDataWithCache(url: url, cacheUrl: authenticationDocumentCacheUrl, expiryUnit: .hour, expiryValue: 1, options: []) { (data) in
       if let data = data {
         do {
           self.authenticationDocument = try OPDS2AuthenticationDocument.fromData(data)

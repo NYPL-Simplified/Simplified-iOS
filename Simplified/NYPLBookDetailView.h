@@ -1,10 +1,10 @@
-#import "NYPLBookState.h"
 
 @class NYPLBook;
 @class NYPLBookDetailView;
 @class NYPLBookDetailTableViewDelegate;
 @class NYPLCatalogLane;
 @class NYPLBookDetailTableView;
+typedef NS_ENUM(NSInteger, NYPLBookState);
 @protocol NYPLCatalogLaneCellDelegate;
 
 @protocol NYPLBookDetailViewDelegate

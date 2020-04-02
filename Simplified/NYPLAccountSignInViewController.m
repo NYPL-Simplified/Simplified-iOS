@@ -740,17 +740,9 @@ completionHandler:(void (^)(void))handler
     } else {
       self.usernameTextField.text = nil;
       self.usernameTextField.enabled = YES;
-      if (@available(iOS 13.0, *)) {
-        self.usernameTextField.textColor = [UIColor labelColor];
-      } else {
-        self.usernameTextField.textColor = [UIColor blackColor];
-      }
+      self.usernameTextField.textColor = [UIColor defaultLabelColor];
       self.PINTextField.text = nil;
-      if (@available(iOS 13.0, *)) {
-        self.PINTextField.textColor = [UIColor labelColor];
-      } else {
-        self.PINTextField.textColor = [UIColor blackColor];
-      }
+      self.PINTextField.textColor = [UIColor defaultLabelColor];
     }
     
     [self.tableView reloadData];

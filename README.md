@@ -28,11 +28,15 @@ git submodule update --init --recursive
 
 To build all Carthage dependencies from scratch you can use the following script. Note that this will wipe the Carthage folder if you already have it:
 ```bash
-build-carthage.sh <Debug | Release>
+./build-carthage.sh <Debug | Release>
+```
+To run a `carthage update`, use the following script to avoid AudioEngine errors. Note, this will rebuild all Carthage dependencies:
+```bash
+./carthage-update-simplye.sh <Debug | Release>
 ```
 To build OpenSSL and cURL from scratch, you can use the following script:
 ```bash
-build-openssl-curl.sh
+./build-openssl-curl.sh
 ```
 Both scripts must be run from the Simplified-iOS repo root.
 

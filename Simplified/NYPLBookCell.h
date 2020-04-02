@@ -2,8 +2,6 @@
 // simply to encapsulate dequeueing cells from a UICollectionView so that the logic does not need to
 // be repeated for every part of the application that displays book cells.
 
-#import "NYPLBookState.h"
-
 @class NYPLBook;
 @class NYPLBookCell;
 
