@@ -149,7 +149,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     mainColor = authenticationDocument.colorScheme
     
     let registerUrl = authenticationDocument.links?.first(where: { $0.rel == "register" })?.href
-    if let url = registerUrl, url.hasPrefix("nypl.card-creator:") == true {
+    if let url = registerUrl, url.trimmingCharacters(in: .whitespacesAndNewlines).lowercased().hasPrefix("nypl.card-creator:") {
       supportsCardCreator = true
       cardCreatorUrl = String(url.dropFirst("nypl.card-creator:".count))
     } else {
