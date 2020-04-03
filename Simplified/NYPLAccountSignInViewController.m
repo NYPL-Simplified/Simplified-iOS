@@ -269,11 +269,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       
-      if (self.currentAccount.details.supportsCardCreator) {
+      if (self.currentAccount.details.supportsCardCreator
+          && self.currentAccount.details.signUpUrl != nil) {
         __weak NYPLAccountSignInViewController *const weakSelf = self;
         CardCreatorConfiguration *const configuration =
         [[CardCreatorConfiguration alloc]
-         initWithEndpointURL:[APIKeys cardCreatorEndpointURL]
+         initWithEndpointURL:self.currentAccount.details.signUpUrl
          endpointVersion:[APIKeys cardCreatorVersion]
          endpointUsername:[APIKeys cardCreatorUsername]
          endpointPassword:[APIKeys cardCreatorPassword]
