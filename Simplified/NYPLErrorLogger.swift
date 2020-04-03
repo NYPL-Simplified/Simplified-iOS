@@ -37,14 +37,14 @@ fileprivate let nullString = "null"
   case nilCFI = 201
   case missingBookFile = 202
 
-  // sign in/out
+  // sign in/out/up
   case invalidLicensor = 300
   case deAuthFail = 301
   case barcodeException = 302
   case remoteLoginError = 303
   case nilAccount = 304
   case userProfileDocFail = 305
-  case nilCardCreatorURL = 306
+  case nilSignUpURL = 306
 
   // audiobooks
   case audiobookEvent = 400

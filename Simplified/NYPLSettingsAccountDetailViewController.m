@@ -830,30 +830,21 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
         [self presentViewController:navigationController animated:YES completion:nil];
       }
-      else
+      else // does not support card creator
       {
-        if (self.selectedAccount.details.cardCreatorUrl == nil) {
+        if (self.selectedAccount.details.signUpUrl == nil) {
+          // this situation should be impossible, but let's log it if it happens
           [NYPLErrorLogger logSignUpError:nil
-                                     code:NYPLErrorCodeNilCardCreatorURL
-                                  message:@"CardCreatorURL from account is nil"];
+                                     code:NYPLErrorCodeNilSignUpURL
+                                  message:@"signUpUrl from selected account is nil"];
           return;
         }
 
-        NSURL * cardCreatorURL = [[NSURL alloc] initWithString:
-                                  self.selectedAccount.details.cardCreatorUrl];
-        if (cardCreatorURL == nil) {
-          NSString *s = [NSString stringWithFormat:@"cardCreatorURL from account: %@",
-                         self.selectedAccount.details.cardCreatorUrl];
-          [NYPLErrorLogger logSignUpError:nil
-                                     code:NYPLErrorCodeNilCardCreatorURL
-                                  message:s];
-          return;
-        }
-
-        RemoteHTMLViewController *webVC = [[RemoteHTMLViewController alloc]
-                                           initWithURL:cardCreatorURL
-                                           title:@"eCard"
-                                           failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
+        RemoteHTMLViewController *webVC =
+        [[RemoteHTMLViewController alloc]
+         initWithURL:self.selectedAccount.details.signUpUrl
+         title:@"eCard"
+         failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
         
         UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webVC];
         
@@ -1590,7 +1581,7 @@ replacementString:(NSString *)string
 - (BOOL)registrationIsPossible
 {
   return ([NYPLConfiguration cardCreationEnabled] &&
-          (self.selectedAccount.details.supportsCardCreator || self.selectedAccount.details.cardCreatorUrl) &&
+          self.selectedAccount.details.signUpUrl != nil &&
           ![self.selectedNYPLAccount hasBarcodeAndPIN]);
 }
 
