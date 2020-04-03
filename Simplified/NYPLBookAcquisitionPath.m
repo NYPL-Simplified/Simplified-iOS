@@ -37,7 +37,8 @@
       ContentTypeEpubZip,
       ContentTypeFindaway,
       ContentTypeOpenAccessAudiobook,
-      ContentTypeOpenAccessPDF
+      ContentTypeOpenAccessPDF,
+      ContentTypeFeedbooksAudiobook
     ]];
   }
 
@@ -56,7 +57,8 @@
         ContentTypeFindaway,
         ContentTypeEpubZip,
         ContentTypeOpenAccessPDF,
-        ContentTypeOpenAccessAudiobook
+        ContentTypeOpenAccessAudiobook,
+        ContentTypeFeedbooksAudiobook
       ]],
       ContentTypeAdobeAdept: [NSSet setWithArray:@[ContentTypeEpubZip]],
       ContentTypeBearerToken: [NSSet setWithArray:@[
