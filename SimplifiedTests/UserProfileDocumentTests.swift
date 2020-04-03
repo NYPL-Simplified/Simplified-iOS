@@ -214,7 +214,7 @@ class UserProfileDocumentTests: XCTestCase {
         XCTFail()
         return
       }
-      XCTAssertEqual(customErrorCode, NYPLErrorLogger.ErrorCode.parseProfileDataCorrupted.rawValue)
+      XCTAssertEqual(customErrorCode, NYPLErrorCode.parseProfileDataCorrupted.rawValue)
     }
   }
     
@@ -233,7 +233,7 @@ class UserProfileDocumentTests: XCTestCase {
         XCTFail()
         return
       }
-      XCTAssertEqual(customErrorCode, NYPLErrorLogger.ErrorCode.parseProfileKeyNotFound.rawValue)
+      XCTAssertEqual(customErrorCode, NYPLErrorCode.parseProfileKeyNotFound.rawValue)
     }
   }
     
@@ -252,7 +252,7 @@ class UserProfileDocumentTests: XCTestCase {
         XCTFail()
         return
       }
-      XCTAssertEqual(customErrorCode, NYPLErrorLogger.ErrorCode.parseProfileTypeMismatch.rawValue)
+      XCTAssertEqual(customErrorCode, NYPLErrorCode.parseProfileTypeMismatch.rawValue)
     }
   }
     
@@ -271,7 +271,7 @@ class UserProfileDocumentTests: XCTestCase {
         XCTFail()
         return
       }
-      XCTAssertEqual(customErrorCode, NYPLErrorLogger.ErrorCode.parseProfileValueNotFound.rawValue)
+      XCTAssertEqual(customErrorCode, NYPLErrorCode.parseProfileValueNotFound.rawValue)
     }
   }
 }
