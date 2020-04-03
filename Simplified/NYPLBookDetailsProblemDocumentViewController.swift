@@ -96,6 +96,7 @@
     self.submitButton = submitButton
     submitButton.translatesAutoresizingMaskIntoConstraints = false
     submitButton.setTitle("Send to Support", for: .normal)
+    submitButton.isEnabled = AccountsManager.shared.currentAccount?.supportEmail != nil
     submitButton.addTarget(self, action: #selector(submitButtonWasPressed), for: .touchDown)
     
     scrollView.addSubview(label)
@@ -171,6 +172,11 @@
   }
   
   func submitButtonWasPressed() {
+    guard let supportEmail = AccountsManager.shared.currentAccount?.supportEmail else {
+      Log.error(#file, "Missing support email for library \(AccountsManager.shared.currentAccountId ?? "")")
+      return
+    }
+    
     let alert = UIAlertController.init(title: "Report a Problem", message: "Are you sure you want to email this error log to \(AccountsManager.shared.currentAccount?.name ?? "library") support?", preferredStyle: .alert)
     alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: nil))
     alert.addAction(UIAlertAction.init(title: "Send email", style: .default, handler: { (action) in
@@ -185,10 +191,11 @@
         BookIdentifier:\n\(self.book?.identifier ?? "n/a")\n\n
       """
       ProblemReportEmail.sharedInstance.beginComposing(
-        to: AccountsManager.shared.currentAccount?.supportEmail ?? "gethelp@nypl.org",
+        to: supportEmail,
         presentingViewController: self,
         body: body
       )
     }))
+    self.present(alert, animated: true, completion: nil)
   }
 }

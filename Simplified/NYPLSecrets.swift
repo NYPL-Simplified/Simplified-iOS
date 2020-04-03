@@ -1,6 +1,6 @@
 import Foundation
 
-enum AudioBookVendors: String {
+enum AudioBookVendors: String, CaseIterable {
   case cantook = "cantook"
 }
 
@@ -27,7 +27,7 @@ enum NYPLSecrets {
     return info[name.rawValue] ?? [:]
   }
 
-  static func decode(_ encoded: [UInt8], cipher: [UInt8]) -> String? {
+  private static func decode(_ encoded: [UInt8], cipher: [UInt8]) -> String? {
     var decrypted = [UInt8]()
     return String(bytes: decrypted, encoding: .utf8)
   }
