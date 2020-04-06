@@ -17,11 +17,23 @@ class NYPLEPUBViewController: ReaderViewController {
   
   var popoverUserconfigurationAnchor: UIBarButtonItem?
 
+  let userSettings: NYPLR1R2UserSettings
+
   // TODO: SIMPLY-2656 Remove once R2 work is complete
   var userSettingNavigationController: UserSettingsNavigationController
 
   init(publication: Publication, book: NYPLBook, drm: DRM?, resourcesServer: ResourcesServer) {
-    let navigator = EPUBNavigatorViewController(publication: publication, license: drm?.license, initialLocation: book.progressionLocator, resourcesServer: resourcesServer)
+    let navigator = EPUBNavigatorViewController(publication: publication,
+                                                license: drm?.license,
+                                                initialLocation: book.progressionLocator,
+                                                resourcesServer: resourcesServer)
+    userSettings = NYPLR1R2UserSettings(r2UserSettings: navigator.userSettings)
+
+    // EPUBNavigatorViewController::init creates a UserSettings object and sets
+    // it into the publication. However, that UserSettings object will have the
+    // defaults options for the various user properties (fonts etc), so we need
+    // to re-set that to reflect our ad-hoc configuration.
+    publication.userProperties = navigator.userSettings.userProperties
 
     let settingsStoryboard = UIStoryboard(name: "UserSettings", bundle: nil)
     userSettingNavigationController = settingsStoryboard.instantiateViewController(withIdentifier: "UserSettingsNavigationController") as! UserSettingsNavigationController
@@ -127,10 +139,6 @@ class NYPLEPUBViewController: ReaderViewController {
 // MARK: - NYPLUserSettingsReaderDelegate
 
 extension NYPLEPUBViewController: NYPLUserSettingsReaderDelegate {
-  var userSettings: NYPLR1R2UserSettings {
-    return NYPLR1R2UserSettings(r2UserSettings: epubNavigator.userSettings)
-  }
-
   func applyCurrentSettings() {
     NYPLMainThreadRun.asyncIfNeeded {
       if let appearance = self.userSettings.r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable {

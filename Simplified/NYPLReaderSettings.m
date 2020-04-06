@@ -112,19 +112,26 @@ NSString *fontFaceToString(NYPLReaderSettingsFontFace const fontFace)
     case NYPLReaderSettingsFontFaceSerif:
       return @"serif";
     case NYPLReaderSettingsFontFaceOpenDyslexic:
-      return @"OpenDyslexic3";
+      return @"OpenDyslexic";
   }
 }
 
-NYPLReaderSettingsFontFace fontFaceFromString(NSString *const string)
+NYPLReaderSettingsFontFace fontFaceFromString(NSString *const stringKey)
 {
-  NSNumber *const fontFaceNumber =
-    @{@"sans": @(NYPLReaderSettingsFontFaceSans),
-      @"serif": @(NYPLReaderSettingsFontFaceSerif),
-      @"OpenDyslexic3": @(NYPLReaderSettingsFontFaceOpenDyslexic)}[string];
+  NSDictionary *possibleValues = @{
+    @"sans": @(NYPLReaderSettingsFontFaceSans),
+    @"serif": @(NYPLReaderSettingsFontFaceSerif),
+    @"OpenDyslexic": @(NYPLReaderSettingsFontFaceOpenDyslexic),
+    @"OpenDyslexic3": @(NYPLReaderSettingsFontFaceOpenDyslexic)
+  };
+  NSNumber *const fontFaceNumber = possibleValues[stringKey];
   
-  if(!fontFaceNumber) {
+  if(fontFaceNumber == nil) {
+#if DEBUG
     @throw NSInternalInconsistencyException;
+#else
+    fontFaceNumber = NYPLReaderSettingsFontFaceSans;
+#endif
   }
   
   return [fontFaceNumber integerValue];

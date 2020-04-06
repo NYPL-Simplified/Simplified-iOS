@@ -46,6 +46,10 @@ protocol ModuleDelegate: AnyObject {
     // Set Readium 2's logging minimum level.
     R2EnableLog(withMinimumSeverityLevel: .debug)
   }
+
+  deinit {
+    Log.warn(#file, "NYPLR2Owner being dealloced")
+  }
 }
 
 extension NYPLR2Owner: ModuleDelegate {

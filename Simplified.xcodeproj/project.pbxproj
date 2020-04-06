@@ -1179,6 +1179,7 @@
 			children = (
 				733DEC91241090C7008C74BC /* NYPLReaderExtensions.swift */,
 				73A2299A240F3B9B006B9EAD /* NYPLR2Owner.swift */,
+				734917D9242EB79700059AA5 /* NYPLR1R2UserSettings.swift */,
 				73F7136D2417260700C63B81 /* UI */,
 				73DB2D0924132C8B008346ED /* Internal */,
 			);
@@ -1215,7 +1216,6 @@
 			isa = PBXGroup;
 			children = (
 				734917D0242D77D800059AA5 /* NYPLUserSettingsVC.swift */,
-				734917D9242EB79700059AA5 /* NYPLR1R2UserSettings.swift */,
 				73F7135B241723B100C63B81 /* UserSettingsTableViewController.swift */,
 				73F7135C241723B100C63B81 /* AdvancedSettingsViewController.swift */,
 				73F7135F241723B100C63B81 /* UserSettingsNavigationController.swift */,

@@ -94,7 +94,7 @@ extension NYPLUserSettingsVC: NYPLReaderSettingsViewDelegate {
 
   func readerSettingsView(_ readerSettingsView: NYPLReaderSettingsView,
                           didSelect fontFace: NYPLReaderSettingsFontFace) {
-    userSettings.r1UserSettings.fontFace = fontFace
+    userSettings.setFontFace(fontFace)
     userSettings.save()
     delegate?.applyCurrentSettings()
   }

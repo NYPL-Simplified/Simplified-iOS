@@ -15,7 +15,7 @@ class NYPLR1R2UserSettings: NSObject {
   @objc let r1UserSettings: NYPLReaderSettings
   let r2UserSettings: UserSettings?
 
-  /// Use this convenience initializer only if calling from ObjC.
+  /// Use this convenience initializer only if calling from ObjC or R1 context.
   @objc override convenience init() {
     self.init(r2UserSettings: nil)
   }
@@ -27,6 +27,7 @@ class NYPLR1R2UserSettings: NSObject {
     self.r1UserSettings = NYPLReaderSettings.shared()
     self.r2UserSettings = r2UserSettings
     super.init()
+    configR2Fonts()
   }
 
   /// Get associated colors for a specific appearance setting.
@@ -58,12 +59,33 @@ class NYPLR1R2UserSettings: NSObject {
 
   /// Sets the color scheme in both R1 and R2 user reader settings.
   /// - Parameter colorScheme: The chosen color scheme to set.
-  /// - Note: This does not persist the change.
+  /// - Note: This does not persist the change. Call `save()` for that.
   func setColorScheme(_ colorScheme: NYPLReaderSettingsColorScheme) {
     r1UserSettings.colorScheme = colorScheme
 
     if let appearance = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.appearance.rawValue) as? Enumerable {
       appearance.index = colorScheme.rawValue
+    }
+  }
+
+  /// Sets the font family to be used in both R1 and R2 user settings.
+  /// - Parameter fontFace: The font chosen by the user.
+  /// - Note: This does not persist the change. Call `save()` for that.
+  func setFontFace(_ fontFace: NYPLReaderSettingsFontFace) {
+    r1UserSettings.fontFace = fontFace
+
+    let fontFamily = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.fontFamily.rawValue) as? Enumerable
+    let fontOverride = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.fontOverride.rawValue) as? Switchable
+
+    if let fontFamily = fontFamily {
+      // we don't use the "Original" font, so we add 1 to the chosen index
+      fontFamily.index = fontFace.rawValue + 1
+      if let fontOverride = fontOverride {
+        // if we had to use the Original font, we would need to set the
+        // `fontOverride.on` setting to false. Since in our use case this is
+        // never true, we can just set it to true.
+        fontOverride.on = true
+      }
     }
   }
 
@@ -117,5 +139,41 @@ class NYPLR1R2UserSettings: NSObject {
     // convert the percentage range into R2
     let r2Range = r2FontSize.max - r2FontSize.min
     r2FontSize.value = r2FontSize.min + percValue * r2Range
+  }
+
+  private func configR2Fonts() {
+    // before removing the default fontFamily set up by R2Streamer, we should
+    // read the current user selection from NSUserDefaults so we can apply it
+    // to our new set-up
+    let fontFamily = r2UserSettings?.userProperties.getProperty(reference: ReadiumCSSReference.fontFamily.rawValue) as? Enumerable
+    let currentFontfamily: Int
+    if let fontFamily = fontFamily {
+      currentFontfamily = fontFamily.index
+    } else {
+      currentFontfamily = 1
+    }
+
+    // this wipes out the default R2Streamer font families
+    r2UserSettings?.userProperties.removeProperty(forReference: ReadiumCSSReference.fontFamily)
+
+    // "Original" represents the publication's default font. Even if we don't
+    // use it, it _must_ be present as the first value.
+    r2UserSettings?.userProperties
+      .addEnumerable(index: currentFontfamily,
+                     values: ["Original", "Helvetica", "Georgia", "OpenDyslexic"],
+                     reference: ReadiumCSSReference.fontFamily.rawValue,
+                     name: ReadiumCSSName.fontFamily.rawValue)
+  }
+}
+
+// MARK: -
+
+public extension UserProperties {
+  /// Removes a property matching a CSS reference.
+  /// - Parameter ref: The CSS reference of the property to be removed.
+  func removeProperty(forReference ref: ReadiumCSSReference) {
+    properties.removeAll {
+      $0.reference == ref.rawValue
+    }
   }
 }
