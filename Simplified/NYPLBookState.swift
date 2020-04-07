@@ -73,8 +73,12 @@ class NYPLBookStateHelper : NSObject {
   }
     
   @objc(bookStateFromString:)
-  static func bookState(fromString string: String) -> Int {
-    return NYPLBookState.init(string)?.rawValue ?? -1
+  static func bookState(fromString string: String) -> NSNumber? {
+    guard let state = NYPLBookState(string) else {
+      return nil
+    }
+
+    return NSNumber(integerLiteral: state.rawValue)
   }
     
   @objc static func allBookStates() -> [NYPLBookState.RawValue] {

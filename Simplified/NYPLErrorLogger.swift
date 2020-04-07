@@ -36,6 +36,7 @@ fileprivate let nullString = "null"
   case nilBookIdentifier = 200 // caused by book registry, downloads
   case nilCFI = 201
   case missingBookFile = 202
+  case unknownBookState = 203
 
   // sign in/out/up
   case invalidLicensor = 300
@@ -127,6 +128,17 @@ fileprivate let nullString = "null"
   }
 
   // MARK:- Error Logging
+
+  /// Reports a generic error situation.
+  /// - Parameters:
+  ///   - error: Any originating error obtained that occurred, if available.
+  ///   - code: A code identifying the error situation.
+  ///   - message: A string for further context.
+  class func logError(_ error: Error? = nil,
+                      code: NYPLErrorCode = .noErr,
+                      message: String) {
+    logError(error, code: code, message: message)
+  }
 
   /**
     Report when there's a null book identifier
@@ -481,24 +493,10 @@ fileprivate let nullString = "null"
   class func logSignUpError(_ error: Error? = nil,
                             code: NYPLErrorCode = .noErr,
                             message: String) {
-    var metadata = [AnyHashable : Any]()
-    addAccountInfoToMetadata(&metadata)
-
-    let err: Error = {
-      if let error = error {
-        return error
-      }
-
-      return NSError(domain: simplyeDomain, code: code.rawValue, userInfo: nil)
-    }()
-
-    let userInfo = additionalInfo(severity: .error,
-                                  message: message,
-                                  context: Context.signUp.rawValue,
-                                  metadata: metadata)
-    reportLogs()
-    Crashlytics.sharedInstance().recordError(err,
-                                             withAdditionalUserInfo: userInfo)
+    logError(error,
+             code: code,
+             context: Context.signUp.rawValue,
+             message: message)
   }
 
   class func logAudiobookIssue(_ error: NSError,
@@ -557,4 +555,38 @@ fileprivate let nullString = "null"
                                              withAdditionalUserInfo: userInfo)
     return err
   }
+
+  //----------------------------------------------------------------------------
+  // MARK: -
+
+  /// Reports a sign up error.
+  /// - Parameters:
+  ///   - error: Any error obtained during the sign up process, if present.
+  ///   - code: A code identifying the error situation.
+  ///   - context: Operating context to help identify where the error occurred.
+  ///   - message: A string for further context.
+  private class func logError(_ error: Error? = nil,
+                              code: NYPLErrorCode = .noErr,
+                              context: String? = nil,
+                              message: String) {
+    var metadata = [AnyHashable : Any]()
+    addAccountInfoToMetadata(&metadata)
+
+    let err: Error = {
+      if let error = error {
+        return error
+      }
+
+      return NSError(domain: simplyeDomain, code: code.rawValue, userInfo: nil)
+    }()
+
+    let userInfo = additionalInfo(severity: .error,
+                                  message: message,
+                                  context: context,
+                                  metadata: metadata)
+    reportLogs()
+    Crashlytics.sharedInstance().recordError(err,
+                                             withAdditionalUserInfo: userInfo)
+  }
+
 }

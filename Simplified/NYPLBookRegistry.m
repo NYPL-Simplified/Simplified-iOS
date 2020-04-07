@@ -405,7 +405,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
     @throw NSInvalidArgumentException;
   }
   
-  if(state && state == NYPLBookStateUnregistered) {
+  if(state == NYPLBookStateUnregistered) {
     @throw NSInvalidArgumentException;
   }
   
