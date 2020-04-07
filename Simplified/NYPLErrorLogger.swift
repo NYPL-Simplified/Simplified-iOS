@@ -65,6 +65,10 @@ fileprivate let nullString = "null"
     FirebaseApp.configure()
   }
 
+  class func setUserID(_ userID: String?) {
+    Crashlytics.sharedInstance().setUserIdentifier(userID)
+  }
+
   /// Broad areas providing some kind of operating context for error reporting.
   /// These are meant to be related to the code base more than functionality,
   /// (e.g. an error related to audiobooks may happen in different classes)

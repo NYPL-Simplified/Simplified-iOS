@@ -175,6 +175,11 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
   
   [[NYPLKeychain sharedKeychain] setObject:barcode forKey:barcodeKey];
   [[NYPLKeychain sharedKeychain] setObject:PIN forKey:PINKey];
+
+  // make sure to set the barcode related to the current account (aka library)
+  // not the one we just signed in to, because we could have signed in into
+  // library A, but still browsing the catalog of library B.
+  [NYPLErrorLogger setUserID:[[NYPLAccount sharedAccount] barcode]];
   
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLAccountDidChangeNotification

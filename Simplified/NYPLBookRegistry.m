@@ -311,6 +311,8 @@ static NSString *const RecordsKey = @"records";
         }];
        return;
      }
+
+    [NYPLErrorLogger setUserID:[[NYPLAccount sharedAccount] barcode]];
      
      if(!self.syncShouldCommit) {
        NYPLLOG(@"[syncWithCompletionHandler] Sync shouldn't commit");

@@ -58,6 +58,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
     set {
       UserDefaults.standard.set(newValue?.uuid,
                                 forKey: currentAccountIdentifierKey)
+      NYPLErrorLogger.setUserID(NYPLAccount.shared()?.barcode)
       NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
     }
   }
