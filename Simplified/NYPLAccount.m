@@ -25,7 +25,7 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
   return [self sharedAccount:library];
 }
 
-+ (instancetype)sharedAccount:(NSString *)account
++ (instancetype)sharedAccount:(NSString *)libraryUUID
 {
   static NYPLAccount *sharedAccount = nil;
   
@@ -36,19 +36,19 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
     }
   }
   
-  if (![account isEqualToString:[AccountsManager NYPLAccountUUIDs][0]])
+  if (![libraryUUID isEqualToString:[AccountsManager NYPLAccountUUIDs][0]])
   {
-    barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode", account];
-    authorizationIdentifierKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAuthorization", account];
-    PINKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPIN", account];
-    adobeTokenKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAdobeTokenKey", account];
-    patronKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPatronKey", account];
-    authTokenKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAuthTokenKey", account];
-    adobeVendorKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAdobeVendorKey", account];
-    providerKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountProviderKey", account];
-    userIDKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountUserIDKey", account];
-    deviceIDKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountDeviceIDKey", account];
-    licensorKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountLicensorKey", account];
+    barcodeKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountBarcode", libraryUUID];
+    authorizationIdentifierKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAuthorization", libraryUUID];
+    PINKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPIN", libraryUUID];
+    adobeTokenKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAdobeTokenKey", libraryUUID];
+    patronKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountPatronKey", libraryUUID];
+    authTokenKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAuthTokenKey", libraryUUID];
+    adobeVendorKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountAdobeVendorKey", libraryUUID];
+    providerKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountProviderKey", libraryUUID];
+    userIDKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountUserIDKey", libraryUUID];
+    deviceIDKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountDeviceIDKey", libraryUUID];
+    licensorKey = [NSString stringWithFormat:@"%@_%@",@"NYPLAccountLicensorKey", libraryUUID];
   }
   else
   {
@@ -70,45 +70,29 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
 
 - (BOOL)hasCredentials
 {
-  if (self.hasAuthToken || self.hasBarcodeAndPIN) return YES;
-  if (!self.hasAuthToken && !self.hasBarcodeAndPIN) return NO;
-  
-  @throw NSInternalInconsistencyException;
+  return self.hasAuthToken || self.hasBarcodeAndPIN;
 }
 
 - (BOOL)hasBarcodeAndPIN
 {
-  if(self.barcode && self.PIN) return YES;
-  
-  if(!self.barcode && !self.PIN) return NO;
-  
-  @throw NSInternalInconsistencyException;
+  return self.barcode != nil && self.PIN != nil;
 }
 
 - (BOOL)hasAuthToken
 {
-  if(self.authToken) return YES;
-  
-  if(!self.authToken) return NO;
-  
-  @throw NSInternalInconsistencyException;
+  return self.authToken != nil;
 }
+
 - (BOOL)hasAdobeToken
 {
-  if(self.adobeToken) return YES;
-  
-  if(!self.adobeToken) return NO;
-  
-  @throw NSInternalInconsistencyException;
+  return self.adobeToken != nil;
 }
+
 - (BOOL)hasLicensor
 {
-  if(self.licensor) return YES;
-  
-  if(!self.licensor) return NO;
-  
-  @throw NSInternalInconsistencyException;
+  return self.licensor != nil;
 }
+
 - (NSString *)authorizationIdentifier
 {
   return [[NYPLKeychain sharedKeychain] objectForKey:authorizationIdentifierKey];
@@ -143,36 +127,38 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
 {
   return [[NYPLKeychain sharedKeychain] objectForKey:patronKey];
 }
+
 - (NSString *)patronFullName
 {
   return [NSString stringWithFormat:@"%@ %@ %@", self.patron[@"name"][@"first"], self.patron[@"name"][@"middle"],self.patron[@"name"][@"last"]];
 }
 
-
 - (NSString *)authToken
 {
   return [[NYPLKeychain sharedKeychain] objectForKey:authTokenKey];
 }
+
 - (NSString *)provider
 {
   return [[NYPLKeychain sharedKeychain] objectForKey:providerKey];
 }
+
 - (NSString *)userID
 {
   return [[NYPLKeychain sharedKeychain] objectForKey:userIDKey];
 }
+
 - (NSString *)deviceID
 {
   return [[NYPLKeychain sharedKeychain] objectForKey:deviceIDKey];
 }
-
 
 - (void)setBarcode:(NSString *const)barcode PIN:(NSString *)PIN
 {
   if(!(barcode && PIN)) {
     @throw NSInvalidArgumentException;
   }
-  
+
   [[NYPLKeychain sharedKeychain] setObject:barcode forKey:barcodeKey];
   [[NYPLKeychain sharedKeychain] setObject:PIN forKey:PINKey];
 
@@ -280,18 +266,20 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
    postNotificationName:NYPLAccountDidChangeNotification
    object:self];
 }
+
 - (void)setUserID:(NSString *)userID
 {
   if(!(userID)) {
     @throw NSInvalidArgumentException;
   }
-  
+
   [[NYPLKeychain sharedKeychain] setObject:userID forKey:userIDKey];
   
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLAccountDidChangeNotification
    object:self];
 }
+
 - (void)setDeviceID:(NSString *)deviceID
 {
   if(!(deviceID)) {
@@ -307,9 +295,6 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
 
 - (void)removeAll
 {
-  [[NYPLKeychain sharedKeychain] removeObjectForKey:barcodeKey];
-  [[NYPLKeychain sharedKeychain] removeObjectForKey:authorizationIdentifierKey];
-  [[NYPLKeychain sharedKeychain] removeObjectForKey:PINKey];
   [[NYPLKeychain sharedKeychain] removeObjectForKey:adobeTokenKey];
   [[NYPLKeychain sharedKeychain] removeObjectForKey:patronKey];
   [[NYPLKeychain sharedKeychain] removeObjectForKey:authTokenKey];
@@ -317,20 +302,8 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
   [[NYPLKeychain sharedKeychain] removeObjectForKey:providerKey];
   [[NYPLKeychain sharedKeychain] removeObjectForKey:userIDKey];
   [[NYPLKeychain sharedKeychain] removeObjectForKey:deviceIDKey];
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLAccountDidChangeNotification
-   object:self];
-}
 
-
-- (void)removeObject:(NSString *const)key
-{
-  [[NYPLKeychain sharedKeychain] removeObjectForKey:key];
-  
-  [[NSNotificationCenter defaultCenter]
-   postNotificationName:NYPLAccountDidChangeNotification
-   object:self];
+  [self removeBarcodeAndPIN];
 }
 
 - (void)removeBarcodeAndPIN
@@ -338,7 +311,7 @@ NSString * deviceIDKey = @"NYPLAccountDeviceIDKey";
   [[NYPLKeychain sharedKeychain] removeObjectForKey:barcodeKey];
   [[NYPLKeychain sharedKeychain] removeObjectForKey:authorizationIdentifierKey];
   [[NYPLKeychain sharedKeychain] removeObjectForKey:PINKey];
-  
+
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLAccountDidChangeNotification
    object:self];
