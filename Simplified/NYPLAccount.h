@@ -60,8 +60,6 @@ static NSString *const NYPLAccountLoginDidChangeNotification =
 
 - (void)removeAll;
 
-- (void)removeObject:(NSString *const)key;
-
 - (NSDictionary *)licensor;
 
 @end

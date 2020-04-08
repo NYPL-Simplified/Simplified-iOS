@@ -144,6 +144,11 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
   return YES;
 }
 
+-(void)applicationDidBecomeActive:(__unused UIApplication *)app
+{
+  [NYPLErrorLogger setUserID:[[NYPLAccount sharedAccount] barcode]];
+}
+
 - (void)applicationWillResignActive:(__attribute__((unused)) UIApplication *)application
 {
   [[NYPLBookRegistry sharedRegistry] save];

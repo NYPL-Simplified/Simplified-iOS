@@ -269,28 +269,29 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       
-      if (self.currentAccount.details.supportsCardCreator) {
+      if (self.currentAccount.details.supportsCardCreator
+          && self.currentAccount.details.signUpUrl != nil) {
         __weak NYPLAccountSignInViewController *const weakSelf = self;
         CardCreatorConfiguration *const configuration =
-          [[CardCreatorConfiguration alloc]
-           initWithEndpointURL:[APIKeys cardCreatorEndpointURL]
-           endpointVersion:[APIKeys cardCreatorVersion]
-           endpointUsername:[APIKeys cardCreatorUsername]
-           endpointPassword:[APIKeys cardCreatorPassword]
-           requestTimeoutInterval:20.0
-           completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
-             if (userInitiated) {
-               // Dismiss CardCreator & SignInVC when user finishes Credential Review
-               [weakSelf dismissViewControllerAnimated:YES completion:nil];
-               [weakSelf dismissViewControllerAnimated:YES completion:nil];
-             } else {
-               weakSelf.usernameTextField.text = username;
-               weakSelf.PINTextField.text = PIN;
-               [weakSelf updateLoginLogoutCellAppearance];
-               self.isLoggingInAfterSignUp = YES;
-               [weakSelf logIn];
-             }
-           }];
+        [[CardCreatorConfiguration alloc]
+         initWithEndpointURL:self.currentAccount.details.signUpUrl
+         endpointVersion:[APIKeys cardCreatorVersion]
+         endpointUsername:[APIKeys cardCreatorUsername]
+         endpointPassword:[APIKeys cardCreatorPassword]
+         requestTimeoutInterval:20.0
+         completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
+          if (userInitiated) {
+            // Dismiss CardCreator & SignInVC when user finishes Credential Review
+            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+          } else {
+            weakSelf.usernameTextField.text = username;
+            weakSelf.PINTextField.text = PIN;
+            [weakSelf updateLoginLogoutCellAppearance];
+            self.isLoggingInAfterSignUp = YES;
+            [weakSelf logIn];
+          }
+        }];
         
         UINavigationController *const navigationController =
           [CardCreator initialNavigationControllerWithConfiguration:configuration];
@@ -302,12 +303,23 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
         [self presentViewController:navigationController animated:YES completion:nil];
       }
-      else
+      else // does not support card creator
       {
+        if (self.currentAccount.details.signUpUrl == nil) {
+          // this situation should be impossible, but let's log it if it happens
+          [NYPLErrorLogger logSignUpError:nil
+                                     code:NYPLErrorCodeNilSignUpURL
+                                  message:@"signUpUrl from current account is nil"];
+          return;
+        }
+
+        RemoteHTMLViewController *webVC =
+        [[RemoteHTMLViewController alloc]
+         initWithURL:self.currentAccount.details.signUpUrl
+         title:@"eCard"
+         failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
         
-        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:self.currentAccount.details.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
-        
-        UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webViewController];
+        UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webVC];
        
         navigationController.navigationBar.topItem.leftBarButtonItem =
         [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil)
@@ -397,7 +409,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (BOOL)registrationIsPossible
 {
   return ([NYPLConfiguration cardCreationEnabled] &&
-          ([[AccountsManager sharedInstance] currentAccount].details.supportsCardCreator || [[AccountsManager sharedInstance] currentAccount].details.cardCreatorUrl) &&
+          [[AccountsManager sharedInstance] currentAccount].details.signUpUrl != nil &&
           ![[NYPLAccount sharedAccount] hasBarcodeAndPIN]);
 }
 

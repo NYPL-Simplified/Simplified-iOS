@@ -102,7 +102,18 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
                    initWithDictionary:NYPLNullToNil(dictionary[LocationKey])];
   if(self.location && ![self.location isKindOfClass:[NYPLBookLocation class]]) return nil;
   
-  self.state = [NYPLBookStateHelper bookStateFromString:dictionary[StateKey]];
+  NSNumber *state = [NYPLBookStateHelper bookStateFromString:dictionary[StateKey]];
+  if (state) {
+    self.state = state.integerValue;
+  } else {
+    NSString *msg = [NSString stringWithFormat:
+                     @"Received state: %@ during BookRecord init. Input dict=%@",
+                     state, dictionary];
+    [NYPLErrorLogger logError:nil
+                         code:NYPLErrorCodeUnknownBookState
+                      message:msg];
+    @throw NSInvalidArgumentException;
+  }
   
   self.fulfillmentId = NYPLNullToNil(dictionary[FulfillmentIdKey]);
   

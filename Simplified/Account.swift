@@ -48,7 +48,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   
   let mainColor:String?
   let userProfileUrl:String?
-  let cardCreatorUrl:String?
+  let signUpUrl:URL?
   let loansUrl:URL?
   
   var authType: AuthType {
@@ -148,13 +148,22 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     
     mainColor = authenticationDocument.colorScheme
     
-    let registerUrl = authenticationDocument.links?.first(where: { $0.rel == "register" })?.href
-    if let url = registerUrl, url.hasPrefix("nypl.card-creator:") == true {
-      supportsCardCreator = true
-      cardCreatorUrl = String(url.dropFirst("nypl.card-creator:".count))
+    let registerUrlStr = authenticationDocument.links?.first(where: { $0.rel == "register" })?.href
+    if let registerUrlStr = registerUrlStr {
+      let trimmedUrlStr = registerUrlStr.trimmingCharacters(in: .whitespacesAndNewlines)
+      if trimmedUrlStr.lowercased().hasPrefix("nypl.card-creator:") {
+        let cartCreatorUrlStr = String(trimmedUrlStr.dropFirst("nypl.card-creator:".count))
+        signUpUrl = URL(string: cartCreatorUrlStr)
+        supportsCardCreator = (signUpUrl != nil)
+      } else {
+        // fallback to attempt to use the URL we got even though it doesn't
+        // have the scheme we expected.
+        signUpUrl = URL(string: trimmedUrlStr)
+        supportsCardCreator = false
+      }
     } else {
+      signUpUrl = nil
       supportsCardCreator = false
-      cardCreatorUrl = registerUrl
     }
     
     super.init()
@@ -343,6 +352,27 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
         completion(false)
       }
     }
+  }
+}
+
+extension AccountDetails {
+  override var debugDescription: String {
+    return """
+    supportsSimplyESync=\(supportsSimplyESync)
+    supportsCardCreator=\(supportsCardCreator)
+    supportsReservations=\(supportsReservations)
+    """
+  }
+}
+
+extension Account {
+  override var debugDescription: String {
+    return """
+    uuid=\(uuid)
+    catalogURL=\(String(describing: catalogUrl))
+    authDocURL=\(String(describing: authenticationDocumentUrl))
+    details=\(String(describing: details?.debugDescription))
+    """
   }
 }
 

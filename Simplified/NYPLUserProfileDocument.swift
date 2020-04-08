@@ -76,25 +76,25 @@ import Foundation
     } catch let DecodingError.dataCorrupted(context) {
       throw NSError(domain: NSCocoaErrorDomain,
                     code: NSCoderReadCorruptError,
-                    userInfo: [parseErrorKey: NYPLErrorLogger.ErrorCode.parseProfileDataCorrupted.rawValue,
+                    userInfo: [parseErrorKey: NYPLErrorCode.parseProfileDataCorrupted.rawValue,
                                parseErrorDescription: context.debugDescription,
                                parseErrorCodingPath: context.codingPath])
     } catch let DecodingError.typeMismatch(_, context) {
       throw NSError(domain: NSCocoaErrorDomain,
                     code: NSCoderReadCorruptError,
-                    userInfo: [parseErrorKey: NYPLErrorLogger.ErrorCode.parseProfileTypeMismatch.rawValue,
+                    userInfo: [parseErrorKey: NYPLErrorCode.parseProfileTypeMismatch.rawValue,
                                parseErrorDescription: context.debugDescription,
                                parseErrorCodingPath: context.codingPath])
     } catch let DecodingError.valueNotFound(_, context) {
       throw NSError(domain: NSCocoaErrorDomain,
                     code: NSCoderValueNotFoundError,
-                    userInfo: [parseErrorKey: NYPLErrorLogger.ErrorCode.parseProfileValueNotFound.rawValue,
+                    userInfo: [parseErrorKey: NYPLErrorCode.parseProfileValueNotFound.rawValue,
                                parseErrorDescription: context.debugDescription,
                                parseErrorCodingPath: context.codingPath])
     } catch let DecodingError.keyNotFound(_, context) {
       throw NSError(domain: NSCocoaErrorDomain,
                     code: NSCoderValueNotFoundError,
-                    userInfo: [parseErrorKey: NYPLErrorLogger.ErrorCode.parseProfileKeyNotFound.rawValue,
+                    userInfo: [parseErrorKey: NYPLErrorCode.parseProfileKeyNotFound.rawValue,
                                parseErrorDescription: context.debugDescription,
                                parseErrorCodingPath: context.codingPath])
     }

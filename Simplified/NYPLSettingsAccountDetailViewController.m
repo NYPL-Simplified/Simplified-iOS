@@ -798,46 +798,56 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindRegistration: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       
-      if (self.selectedAccount.details.supportsCardCreator) {
+      if (self.selectedAccount.details.supportsCardCreator
+          && self.selectedAccount.details.signUpUrl != nil) {
+        __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
+        CardCreatorConfiguration *const configuration =
+        [[CardCreatorConfiguration alloc]
+         initWithEndpointURL:self.selectedAccount.details.signUpUrl
+         endpointVersion:[APIKeys cardCreatorVersion]
+         endpointUsername:[APIKeys cardCreatorUsername]
+         endpointPassword:[APIKeys cardCreatorPassword]
+         requestTimeoutInterval:requestTimeoutInterval
+         completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
+          if (userInitiated) {
+            // Dismiss CardCreator when user finishes Credential Review
+            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+          } else {
+            weakSelf.usernameTextField.text = username;
+            weakSelf.PINTextField.text = PIN;
+            [weakSelf updateLoginLogoutCellAppearance];
+            self.isLoggingInAfterSignUp = YES;
+            [weakSelf logIn];
+          }
+        }];
 
-      __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
-      CardCreatorConfiguration *const configuration =
-      [[CardCreatorConfiguration alloc]
-       initWithEndpointURL:[APIKeys cardCreatorEndpointURL]
-       endpointVersion:[APIKeys cardCreatorVersion]
-       endpointUsername:[APIKeys cardCreatorUsername]
-       endpointPassword:[APIKeys cardCreatorPassword]
-       requestTimeoutInterval:requestTimeoutInterval
-       completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
-         if (userInitiated) {
-           // Dismiss CardCreator when user finishes Credential Review
-           [weakSelf dismissViewControllerAnimated:YES completion:nil];
-         } else {
-           weakSelf.usernameTextField.text = username;
-           weakSelf.PINTextField.text = PIN;
-           [weakSelf updateLoginLogoutCellAppearance];
-           self.isLoggingInAfterSignUp = YES;
-           [weakSelf logIn];
-         }
-       }];
-      
-      UINavigationController *const navigationController =
-      [CardCreator initialNavigationControllerWithConfiguration:configuration];
-      navigationController.navigationBar.topItem.leftBarButtonItem =
-      [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
-                                       style:UIBarButtonItemStylePlain
-                                      target:self
-                                      action:@selector(didSelectCancelForSignUp)];
-      navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-      [self presentViewController:navigationController animated:YES completion:nil];
-      
+        UINavigationController *const navigationController =
+        [CardCreator initialNavigationControllerWithConfiguration:configuration];
+        navigationController.navigationBar.topItem.leftBarButtonItem =
+        [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                         style:UIBarButtonItemStylePlain
+                                        target:self
+                                        action:@selector(didSelectCancelForSignUp)];
+        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:navigationController animated:YES completion:nil];
       }
-      else
+      else // does not support card creator
       {
+        if (self.selectedAccount.details.signUpUrl == nil) {
+          // this situation should be impossible, but let's log it if it happens
+          [NYPLErrorLogger logSignUpError:nil
+                                     code:NYPLErrorCodeNilSignUpURL
+                                  message:@"signUpUrl from selected account is nil"];
+          return;
+        }
+
+        RemoteHTMLViewController *webVC =
+        [[RemoteHTMLViewController alloc]
+         initWithURL:self.selectedAccount.details.signUpUrl
+         title:@"eCard"
+         failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
         
-        RemoteHTMLViewController *webViewController = [[RemoteHTMLViewController alloc] initWithURL:[[NSURL alloc] initWithString:self.selectedAccount.details.cardCreatorUrl] title:@"eCard" failureMessage:NSLocalizedString(@"SettingsConnectionFailureMessage", nil)];
-        
-        UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webViewController];
+        UINavigationController *const navigationController = [[UINavigationController alloc] initWithRootViewController:webVC];
         
         navigationController.navigationBar.topItem.leftBarButtonItem =
         [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Close", nil)
@@ -1572,7 +1582,7 @@ replacementString:(NSString *)string
 - (BOOL)registrationIsPossible
 {
   return ([NYPLConfiguration cardCreationEnabled] &&
-          (self.selectedAccount.details.supportsCardCreator || self.selectedAccount.details.cardCreatorUrl) &&
+          self.selectedAccount.details.signUpUrl != nil &&
           ![self.selectedNYPLAccount hasBarcodeAndPIN]);
 }
 
