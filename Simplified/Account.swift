@@ -355,6 +355,27 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   }
 }
 
+extension AccountDetails {
+  override var debugDescription: String {
+    return """
+    supportsSimplyESync=\(supportsSimplyESync)
+    supportsCardCreator=\(supportsCardCreator)
+    supportsReservations=\(supportsReservations)
+    """
+  }
+}
+
+extension Account {
+  override var debugDescription: String {
+    return """
+    uuid=\(uuid)
+    catalogURL=\(String(describing: catalogUrl))
+    authDocURL=\(String(describing: authenticationDocumentUrl))
+    details=\(String(describing: details?.debugDescription))
+    """
+  }
+}
+
 // MARK: URLType
 @objc enum URLType: Int {
   case acknowledgements

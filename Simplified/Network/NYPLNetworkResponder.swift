@@ -116,12 +116,15 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
     Log.debug(#file, "Task \(taskID) completed, elapsed time: \(elapsed) sec")
 
     if let error = error {
+      currentTaskInfo.completion(.failure(error))
+
+      // logging the error after the completion call so that the error report
+      // will include any eventual logging done in the completion handler.
       NYPLErrorLogger.logNetworkError(
         error,
         requestURL: task.originalRequest?.url,
         response: task.response,
         message: "Task \(taskID) completed with error")
-      currentTaskInfo.completion(.failure(error))
       return
     }
 

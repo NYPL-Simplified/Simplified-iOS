@@ -43,9 +43,11 @@ fileprivate let nullString = "null"
   case deAuthFail = 301
   case barcodeException = 302
   case remoteLoginError = 303
-  case nilAccount = 304
   case userProfileDocFail = 305
   case nilSignUpURL = 306
+
+  /// Deprecated: use nilCurrentAccountUUID instead
+  case nilAccount = 304
 
   // audiobooks
   case audiobookEvent = 400
@@ -58,11 +60,20 @@ fileprivate let nullString = "null"
   case parseProfileTypeMismatch = 601
   case parseProfileValueNotFound = 602
   case parseProfileKeyNotFound = 603
+
+  // account management
+  case authDocLoadFail = 700
+  case errorProcessingAuthDoc = 701
+  case nilCurrentAccountUUID = 702
+  case catalogLoadError = 703
 }
 
 @objcMembers class NYPLErrorLogger : NSObject {
   class func configureCrashAnalytics() {
     FirebaseApp.configure()
+
+    let deviceID = UIDevice.current.identifierForVendor
+    Crashlytics.sharedInstance().setObjectValue(deviceID, forKey: "NYPLDeviceID")
   }
 
   class func setUserID(_ userID: String?) {
@@ -137,14 +148,14 @@ fileprivate let nullString = "null"
 
   // MARK:- Error Logging
 
-  /// Reports a generic error situation.
+  /// Reports an error situation.
   /// - Parameters:
   ///   - error: Any originating error obtained that occurred, if available.
   ///   - code: A code identifying the error situation.
   ///   - message: A string for further context.
   class func logError(_ error: Error? = nil,
-                      code: NYPLErrorCode = .noErr,
-                      message: String) {
+                      code: NYPLErrorCode,
+                      message: String? = nil) {
     logError(error, code: code, message: message)
   }
 
@@ -567,16 +578,16 @@ fileprivate let nullString = "null"
   //----------------------------------------------------------------------------
   // MARK: -
 
-  /// Reports a sign up error.
+  /// Helper to log a generic error to Crashlytics.
   /// - Parameters:
-  ///   - error: Any error obtained during the sign up process, if present.
+  ///   - error: Any originating error obtained that occurred, if available.
   ///   - code: A code identifying the error situation.
   ///   - context: Operating context to help identify where the error occurred.
   ///   - message: A string for further context.
   private class func logError(_ error: Error? = nil,
-                              code: NYPLErrorCode = .noErr,
+                              code: NYPLErrorCode,
                               context: String? = nil,
-                              message: String) {
+                              message: String? = nil) {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
 
