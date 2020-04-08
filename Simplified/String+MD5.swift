@@ -17,4 +17,8 @@ extension String {
     
     return digestData
   }
+
+  public func md5hex() -> String {
+    return md5().map { String(format: "%02hhx", $0) }.joined()
+  }
 }

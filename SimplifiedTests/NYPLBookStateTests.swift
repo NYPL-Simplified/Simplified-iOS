@@ -28,15 +28,15 @@ class NYPLBookStateTests: XCTestCase {
     }
     
     func testBookStateFromString() {
-      XCTAssertEqual(NYPLBookState.Unregistered.rawValue, NYPLBookStateHelper.bookState(fromString: UnregisteredKey))
-      XCTAssertEqual(NYPLBookState.DownloadNeeded.rawValue, NYPLBookStateHelper.bookState(fromString: DownloadNeededKey))
-      XCTAssertEqual(NYPLBookState.Downloading.rawValue, NYPLBookStateHelper.bookState(fromString: DownloadingKey))
-      XCTAssertEqual(NYPLBookState.DownloadFailed.rawValue, NYPLBookStateHelper.bookState(fromString: DownloadFailedKey))
-      XCTAssertEqual(NYPLBookState.DownloadSuccessful.rawValue, NYPLBookStateHelper.bookState(fromString: DownloadSuccessfulKey))
-      XCTAssertEqual(NYPLBookState.Holding.rawValue, NYPLBookStateHelper.bookState(fromString: HoldingKey))
-      XCTAssertEqual(NYPLBookState.Used.rawValue, NYPLBookStateHelper.bookState(fromString: UsedKey))
-      XCTAssertEqual(NYPLBookState.Unsupported.rawValue, NYPLBookStateHelper.bookState(fromString: UnsupportedKey))
-      XCTAssertEqual(-1, NYPLBookStateHelper.bookState(fromString: "InvalidString"))
+      XCTAssertEqual(NYPLBookState.Unregistered.rawValue, NYPLBookStateHelper.bookState(fromString: UnregisteredKey)?.intValue)
+      XCTAssertEqual(NYPLBookState.DownloadNeeded.rawValue, NYPLBookStateHelper.bookState(fromString: DownloadNeededKey)?.intValue)
+      XCTAssertEqual(NYPLBookState.Downloading.rawValue, NYPLBookStateHelper.bookState(fromString: DownloadingKey)?.intValue)
+      XCTAssertEqual(NYPLBookState.DownloadFailed.rawValue, NYPLBookStateHelper.bookState(fromString: DownloadFailedKey)?.intValue)
+      XCTAssertEqual(NYPLBookState.DownloadSuccessful.rawValue, NYPLBookStateHelper.bookState(fromString: DownloadSuccessfulKey)?.intValue)
+      XCTAssertEqual(NYPLBookState.Holding.rawValue, NYPLBookStateHelper.bookState(fromString: HoldingKey)?.intValue)
+      XCTAssertEqual(NYPLBookState.Used.rawValue, NYPLBookStateHelper.bookState(fromString: UsedKey)?.intValue)
+      XCTAssertEqual(NYPLBookState.Unsupported.rawValue, NYPLBookStateHelper.bookState(fromString: UnsupportedKey)?.intValue)
+      XCTAssertNil(NYPLBookStateHelper.bookState(fromString: "InvalidString"))
     }
     
     func testAllBookState() {

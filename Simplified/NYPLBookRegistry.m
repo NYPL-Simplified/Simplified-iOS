@@ -311,6 +311,8 @@ static NSString *const RecordsKey = @"records";
         }];
        return;
      }
+
+    [NYPLErrorLogger setUserID:[[NYPLAccount sharedAccount] barcode]];
      
      if(!self.syncShouldCommit) {
        NYPLLOG(@"[syncWithCompletionHandler] Sync shouldn't commit");
@@ -405,7 +407,7 @@ genericBookmarks:(NSArray<NYPLBookLocation *> *)genericBookmarks
     @throw NSInvalidArgumentException;
   }
   
-  if(state && state == NYPLBookStateUnregistered) {
+  if(state == NYPLBookStateUnregistered) {
     @throw NSInvalidArgumentException;
   }
   
