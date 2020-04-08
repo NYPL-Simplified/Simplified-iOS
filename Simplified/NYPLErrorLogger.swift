@@ -66,7 +66,11 @@ fileprivate let nullString = "null"
   }
 
   class func setUserID(_ userID: String?) {
-    Crashlytics.sharedInstance().setUserIdentifier(userID)
+    if let userIDmd5 = userID?.md5hex() {
+      Crashlytics.sharedInstance().setUserIdentifier(userIDmd5)
+    } else {
+      Crashlytics.sharedInstance().setUserIdentifier(nil)
+    }
   }
 
   /// Broad areas providing some kind of operating context for error reporting.
