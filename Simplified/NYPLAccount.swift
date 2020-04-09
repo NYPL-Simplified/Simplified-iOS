@@ -1,10 +1,12 @@
 import Foundation
 
-let NYPLAccountDidChangeNotification = "NYPLAccountDidChangeNotification"
-let NYPLAccountLoginDidChangeNotification = "NYPLAccountLoginDidChangeNotification"
+extension Notification.Name {
+  static let NYPLAccountDidChange = Notification.Name("NYPLAccountDidChangeNotification")
+  static let NYPLAccountLoginDidChange = Notification.Name("NYPLAccountLoginDidChangeNotification")
+}
 
 @objcMembers class NYPLAccountSwift : NSObject {
-  static private var shared = NYPLAccountSwift()
+  static private let shared = NYPLAccountSwift()
     
   private var authorizationIdentifierKey = "NYPLAccountAuthorization"
   private var barcodeKey = "NYPLAccountBarcode"
@@ -141,66 +143,185 @@ let NYPLAccountLoginDidChangeNotification = "NYPLAccountLoginDidChangeNotificati
     
   @objc(setBarcode:PIN:)
   func setBarcode(barcode: String, PIN: String) {
-      
+    guard let sharedKeychain = NYPLKeychain.shared() else {
+      return
+    }
+    
+    sharedKeychain.setObject(barcode, forKey: barcodeKey)
+    sharedKeychain.setObject(PIN, forKey: PINKey)
+    
+    // make sure to set the barcode related to the current account (aka library)
+    // not the one we just signed in to, because we could have signed in into
+    // library A, but still browsing the catalog of library B.
+    NYPLErrorLogger.setUserID(NYPLAccountSwift.sharedAccount().barcode)
+    
+    NotificationCenter.default.post(
+      name: Notification.Name.NYPLAccountDidChange,
+      object: self
+    )
   }
     
   @objc(setAdobeToken:patron:)
   func setAdobeToken(token: String, patron: [String : Any]) {
-      
+    guard let sharedKeychain = NYPLKeychain.shared() else {
+      return
+    }
+    
+    sharedKeychain.setObject(token, forKey: adobeTokenKey)
+    sharedKeychain.setObject(patron, forKey: patronKey)
+    
+    NotificationCenter.default.post(
+      name: Notification.Name.NYPLAccountDidChange,
+      object: self
+    )
   }
   
   @objc(setAdobeVender:)
   func setAdobeVender(vendor: String) {
-      
+    guard let sharedKeychain = NYPLKeychain.shared() else {
+      return
+    }
+    
+    sharedKeychain.setObject(vendor, forKey: adobeVendorKey)
+    
+    NotificationCenter.default.post(
+      name: Notification.Name.NYPLAccountDidChange,
+      object: self
+    )
   }
   
   @objc(setAdobeToken:)
   func setAdobeToken(token: String) {
-      
+    guard let sharedKeychain = NYPLKeychain.shared() else {
+      return
+    }
+    
+    sharedKeychain.setObject(token, forKey: adobeTokenKey)
+    
+    NotificationCenter.default.post(
+      name: Notification.Name.NYPLAccountDidChange,
+      object: self
+    )
   }
   
   @objc(setLicensor:)
   func setLicensor(licensor: [String : Any]) {
-      
+    guard let sharedKeychain = NYPLKeychain.shared() else {
+      return
+    }
+    
+    sharedKeychain.setObject(licensor, forKey: licensorKey)
   }
   
   @objc(setAuthorizationIdentifier:)
   func setAuthorizationIdentifier(identifier: String) {
-      
+    guard let sharedKeychain = NYPLKeychain.shared() else {
+      return
+    }
+    
+    sharedKeychain.setObject(identifier, forKey: authorizationIdentifierKey)
   }
   
   @objc(setPatron:)
   func setPatron(patron: [String : Any]) {
-      
+    guard let sharedKeychain = NYPLKeychain.shared() else {
+      return
+    }
+    
+    sharedKeychain.setObject(patron, forKey: patronKey)
+    
+    NotificationCenter.default.post(
+      name: Notification.Name.NYPLAccountDidChange,
+      object: self
+    )
   }
   
   @objc(setAuthToken:)
   func setAuthToken(token: String) {
-      
+    guard let sharedKeychain = NYPLKeychain.shared() else {
+      return
+    }
+    
+    sharedKeychain.setObject(token, forKey: authTokenKey)
+    
+    NotificationCenter.default.post(
+      name: Notification.Name.NYPLAccountDidChange,
+      object: self
+    )
   }
   
   @objc(setProvider:)
   func setProvider(provider: String) {
-      
+    guard let sharedKeychain = NYPLKeychain.shared() else {
+      return
+    }
+    
+    sharedKeychain.setObject(provider, forKey: providerKey)
+    
+    NotificationCenter.default.post(
+      name: Notification.Name.NYPLAccountDidChange,
+      object: self
+    )
   }
   
   @objc(setUserID:)
   func setUserID(id: String) {
-      
+    guard let sharedKeychain = NYPLKeychain.shared() else {
+      return
+    }
+    
+    sharedKeychain.setObject(id, forKey: userIDKey)
+    
+    NotificationCenter.default.post(
+      name: Notification.Name.NYPLAccountDidChange,
+      object: self
+    )
   }
   
   @objc(setDeviceID:)
   func setDeviceID(id: String) {
-      
+    guard let sharedKeychain = NYPLKeychain.shared() else {
+      return
+    }
+    
+    sharedKeychain.setObject(id, forKey: deviceIDKey)
+    
+    NotificationCenter.default.post(
+      name: Notification.Name.NYPLAccountDidChange,
+      object: self
+    )
   }
     
   // MARK: - Remove
     
   func removeBarcodeAndPIN() {
-      
+    guard let sharedKeychain = NYPLKeychain.shared() else {
+      return
+    }
+    
+    sharedKeychain.removeObject(forKey: barcodeKey)
+    sharedKeychain.removeObject(forKey: authorizationIdentifierKey)
+    sharedKeychain.removeObject(forKey: PINKey)
+    
+    NotificationCenter.default.post(
+      name: Notification.Name.NYPLAccountDidChange,
+      object: self
+    )
   }
   
   func removeAll() {
-      
+    guard let sharedKeychain = NYPLKeychain.shared() else {
+      return
+    }
+    
+    sharedKeychain.removeObject(forKey: adobeTokenKey)
+    sharedKeychain.removeObject(forKey: patronKey)
+    sharedKeychain.removeObject(forKey: authTokenKey)
+    sharedKeychain.removeObject(forKey: adobeVendorKey)
+    sharedKeychain.removeObject(forKey: providerKey)
+    sharedKeychain.removeObject(forKey: userIDKey)
+    sharedKeychain.removeObject(forKey: deviceIDKey)
+    
+    removeBarcodeAndPIN()
   }
 }
