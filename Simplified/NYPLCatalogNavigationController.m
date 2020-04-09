@@ -3,7 +3,7 @@
 
 #import "NYPLCatalogNavigationController.h"
 
-#import "NYPLAccount.h"
+//#import "NYPLAccount.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLMyBooksNavigationController.h"

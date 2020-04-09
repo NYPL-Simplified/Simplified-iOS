@@ -5,8 +5,8 @@ extension Notification.Name {
   static let NYPLAccountLoginDidChange = Notification.Name("NYPLAccountLoginDidChangeNotification")
 }
 
-@objcMembers class NYPLAccountSwift : NSObject {
-  static private let shared = NYPLAccountSwift()
+@objcMembers class NYPLAccount : NSObject {
+  static private let shared = NYPLAccount()
     
   private var authorizationIdentifierKey = "NYPLAccountAuthorization"
   private var barcodeKey = "NYPLAccountBarcode"
@@ -20,13 +20,13 @@ extension Notification.Name {
   private var userIDKey = "NYPLAccountUserIDKey"
   private var deviceIDKey = "NYPLAccountDeviceIDKey"
 
-  @objc class func sharedAccount() -> NYPLAccountSwift
+  @objc class func sharedAccount() -> NYPLAccount
   {
     return sharedAccount(libraryUUID: AccountsManager.shared.currentAccount?.uuid)
   }
     
   @objc(sharedAccount:)
-  class func sharedAccount(libraryUUID: String?) -> NYPLAccountSwift
+  class func sharedAccount(libraryUUID: String?) -> NYPLAccount
   {
     if let uuid = libraryUUID,
         uuid != AccountsManager.NYPLAccountUUIDs[0]
@@ -153,7 +153,7 @@ extension Notification.Name {
     // make sure to set the barcode related to the current account (aka library)
     // not the one we just signed in to, because we could have signed in into
     // library A, but still browsing the catalog of library B.
-    NYPLErrorLogger.setUserID(NYPLAccountSwift.sharedAccount().barcode)
+    NYPLErrorLogger.setUserID(NYPLAccount.sharedAccount().barcode)
     
     NotificationCenter.default.post(
       name: Notification.Name.NYPLAccountDidChange,

@@ -64,7 +64,7 @@ import UIKit
   // The closure expects "enabled" which is strictly to inform this single client
   // how to respond based on the server's info.
   class func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->()) {
-    if (NYPLAccount.shared().hasBarcodeAndPIN() &&
+    if (NYPLAccount.sharedAccount().hasBarcodeAndPIN() &&
       AccountsManager.shared.currentAccount?.details?.supportsSimplyESync == true) {
       guard let userProfileUrl = URL(string: AccountsManager.shared.currentAccount?.details?.userProfileUrl ?? "") else {
         Log.error(#file, "Could not create user profile URL from string. Abandoning attempt to update sync setting.")
@@ -286,7 +286,7 @@ import UIKit
       ],
       "body": [
         "http://librarysimplified.org/terms/time" : NSDate().rfc3339String(),
-        "http://librarysimplified.org/terms/device" : NYPLAccount.shared().deviceID
+        "http://librarysimplified.org/terms/device" : NYPLAccount.sharedAccount().deviceID
       ]
       ] as [String : Any]
     
@@ -626,7 +626,7 @@ import UIKit
 
   class func syncIsPossibleAndPermitted() -> Bool {
     let acct = AccountsManager.shared.currentAccount
-    return syncIsPossible(NYPLAccount.shared()) && acct?.details?.syncPermissionGranted == true
+    return syncIsPossible(NYPLAccount.sharedAccount()) && acct?.details?.syncPermissionGranted == true
   }
 
   class func setDefaultAnnotationHeaders(forRequest request: inout URLRequest) {
@@ -636,7 +636,7 @@ import UIKit
   }
   
   class var headers: [String:String] {
-    if let barcode = NYPLAccount.shared().barcode, let pin = NYPLAccount.shared().pin {
+    if let barcode = NYPLAccount.sharedAccount().barcode, let pin = NYPLAccount.sharedAccount().PIN {
       let authenticationString = "\(barcode):\(pin)"
       if let authenticationData = authenticationString.data(using: String.Encoding.ascii) {
         let authenticationValue = "Basic \(authenticationData.base64EncodedString(options: .lineLength64Characters))"

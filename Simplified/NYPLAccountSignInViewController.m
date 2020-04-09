@@ -3,7 +3,7 @@
 
 #import "SimplyE-Swift.h"
 
-#import "NYPLAccount.h"
+//#import "NYPLAccount.h"
 #import "NYPLAppDelegate.h"
 #import "NYPLBarcodeScanningViewController.h"
 #import "NYPLBasicAuth.h"
@@ -76,7 +76,7 @@ CGFloat const marginPadding = 2.0;
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(accountDidChange)
-   name:NYPLAccountDidChangeNotification
+   name:NSNotification.NYPLCurrentAccountDidChange
    object:nil];
   
   [[NSNotificationCenter defaultCenter]

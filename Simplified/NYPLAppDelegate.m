@@ -11,7 +11,7 @@
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
-#import "NYPLAccount.h"
+//#import "NYPLAccount.h"
 #import "NYPLAccountSignInViewController.h"
 #endif
 

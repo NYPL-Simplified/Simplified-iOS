@@ -5,7 +5,7 @@
 
 #import "NYPLSettingsAccountDetailViewController.h"
 
-#import "NYPLAccount.h"
+//#import "NYPLAccount.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
@@ -106,7 +106,7 @@ double const requestTimeoutInterval = 25.0;
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(accountDidChange)
-   name:NYPLAccountDidChangeNotification
+   name:NSNotification.NYPLCurrentAccountDidChange
    object:nil];
   
   [[NSNotificationCenter defaultCenter]
