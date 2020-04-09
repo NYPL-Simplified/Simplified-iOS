@@ -1,3 +1,4 @@
+import Firebase
 import Foundation
 
 final class Log: NSObject {
@@ -44,25 +45,16 @@ final class Log: NSObject {
     // Format string
     let formattedMsg = "[\(levelToString(level))] [\(timestamp)] \(tag): \(message)\(error == nil ? "" : "\n\(error!)")\n"
     
-    // Write to console
-    NSLog(formattedMsg)
-    
-    // Write to file
-    var overwrite = false
-    if let size = try? FileManager.default.attributesOfItem(atPath: logUrl.path)[FileAttributeKey.size] as! Int {
-      if size > 1048576 {
-        overwrite = true
-      }
-    }
-    if overwrite {
-      try? formattedMsg.write(to: logUrl, atomically: false, encoding: .utf8)
+    if level != .debug {
+      #if DEBUG
+      CLSNSLogv("%@", getVaList([formattedMsg]))
+      #else
+      CLSLogv("%@", getVaList([formattedMsg]))
+      #endif
     } else {
-      if let outputStream = OutputStream(url: logUrl, append: true) {
-        let buf = [UInt8](formattedMsg.utf8)
-        outputStream.open()
-        outputStream.write(buf, maxLength: buf.count)
-        outputStream.close()
-      }
+      #if DEBUG
+      NSLog(formattedMsg)
+      #endif
     }
   }
   
