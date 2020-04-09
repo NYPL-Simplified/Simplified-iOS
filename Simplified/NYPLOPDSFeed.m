@@ -62,26 +62,55 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   if(!handler) {
     @throw NSInvalidArgumentException;
   }
-  
-  [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data, NSURLResponse *response, __attribute__((unused))NSError *error) {
-//    NSDictionary *infoDict = error ? @{@"error":[error localizedDescription]} : nil;
-    if(!data) {
-      NYPLLOG(@"Failed to retrieve data.");
+
+  __block NSURLRequest *request = nil;
+  request = [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+
+    if (error != nil) {
+      // NYPLSession already logged this.
       NYPLAsyncDispatch(^{handler(nil, nil);});
       return;
     }
-    
-    if ([(NSHTTPURLResponse *)response statusCode] != 200
-        && ([response.MIMEType isEqualToString:@"application/problem+json"]
-            || [response.MIMEType isEqualToString:@"application/api-problem+json"])) {
-          NSDictionary *error = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
-          NYPLAsyncDispatch(^{handler(nil, error);});
-          return;
+
+    if (data == nil) {
+      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOpdsFeedNoData
+                                context:@"NYPLOPDSFeed"
+                                message:[NSString stringWithFormat:@"%@ - Response: %@", [request loggableString], response]];
+      NYPLAsyncDispatch(^{handler(nil, nil);});
+      return;
+    }
+
+    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+      NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*)response;
+
+      if (httpResp.statusCode < 200 || httpResp.statusCode > 299) {
+        // this captures a situation where (e.g.) borrow requests to the
+        // Brooklyn lib come back with a 500 status code, no error, and non-nil
+        // data containing "An internal error occurred" plain text.
+        NSString *msg = [NSString stringWithFormat:@"Got %ld HTTP status with no error object. Received data: `%@`", (long)httpResp.statusCode, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
+        [NYPLErrorLogger logNetworkError:nil
+                                 request:request
+                                response:response
+                                 message:msg];
+
+        NSDictionary *errorDict = nil;
+        if ([response.MIMEType isEqualToString:@"application/problem+json"]
+            || [response.MIMEType isEqualToString:@"application/api-problem+json"]) {
+          errorDict = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
         }
+
+        NYPLAsyncDispatch(^{handler(nil, errorDict);});
+        return;
+      }
+    }
     
     NYPLXML *const feedXML = [NYPLXML XMLWithData:data];
     if(!feedXML) {
       NYPLLOG(@"Failed to parse data as XML.");
+      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeFeedParseFail
+                                context:@"NYPLOPDSFeed"
+                                message:[NSString stringWithFormat:@"%@ - Response: %@", [request loggableString], response]];
+      // this error may be nil
       NSDictionary *error = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
       NYPLAsyncDispatch(^{handler(nil, error);});
       return;
@@ -90,6 +119,9 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:feedXML];
     if(!feed) {
       NYPLLOG(@"Could not interpret XML as OPDS.");
+      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOpdsFeedParseFail
+                                context:@"NYPLOPDSFeed"
+                                message:[NSString stringWithFormat:@"%@ - Response: %@", [request loggableString], response]];
       NYPLAsyncDispatch(^{handler(nil, nil);});
       return;
     }

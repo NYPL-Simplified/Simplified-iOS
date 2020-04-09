@@ -54,7 +54,6 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
   var currentAccount: Account? {
     get {
       guard let uuid = currentAccountId else {
-        NYPLErrorLogger.logError(code: .nilCurrentAccountUUID)
         return nil
       }
 
@@ -147,8 +146,10 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
       if hadAccount != (self.currentAccount != nil) {
         self.currentAccount?.loadAuthenticationDocument { success in
           if !success {
-            NYPLErrorLogger.logError(code: .authDocLoadFail,
-                                     message: """
+            NYPLErrorLogger.logError(
+              withCode: .authDocLoadFail,
+              context: NYPLErrorLogger.Context.accountManagement.rawValue,
+              message: """
               Failed to load authentication document for current account: \
               \(self.currentAccount.debugDescription). A bunch of things \
               likely won't work.
@@ -181,7 +182,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
         completion(true)
       }
     } catch (let error) {
-      NYPLErrorLogger.logError(error, code: .errorProcessingAuthDoc,
+      NYPLErrorLogger.logError(error, 
                                message: "An error was thrown during loadAccountSetsAndAuthDoc")
       completion(false)
     }
@@ -210,7 +211,6 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
         }
       case .failure(let error):
         NYPLErrorLogger.logError(error,
-                                 code: .catalogLoadError,
                                  message: "Catalog failed to load from \(targetUrl)")
         self.callAndClearLoadingCompletionHandlers(key: hash, false)
       }
