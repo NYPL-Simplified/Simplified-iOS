@@ -109,9 +109,9 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
     NSString *msg = [NSString stringWithFormat:
                      @"Received state: %@ during BookRecord init. Input dict=%@",
                      state, dictionary];
-    [NYPLErrorLogger logError:nil
-                         code:NYPLErrorCodeUnknownBookState
-                      message:msg];
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnknownBookState
+                              context:@"NYPLBookRegistryRecord"
+                              message:msg];
     @throw NSInvalidArgumentException;
   }
   

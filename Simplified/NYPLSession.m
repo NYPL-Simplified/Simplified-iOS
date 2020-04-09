@@ -82,7 +82,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                      completionHandler:handler] resume];
 }
 
-- (void)withURL:(NSURL *const)URL completionHandler:(void (^)(NSData *data, NSURLResponse *response, NSError *error))handler
+- (NSURLRequest*)withURL:(NSURL *const)URL
+       completionHandler:(void (^)(NSData *data,
+                                   NSURLResponse *response,
+                                   NSError *error))handler
 {
   if(!handler) {
     @throw NSInvalidArgumentException;
@@ -101,53 +104,20 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
     completionHandler:^(NSData *const data,
                         NSURLResponse *response,
                         NSError *const error) {
-    if(error) {
+    if (error) {
+      NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+      [NYPLErrorLogger logNetworkError:error
+                               request:req
+                              response:response
+                               message:dataString];
       handler(nil, response, error);
       return;
     }
-    
+
     handler(data, response, nil);
   }] resume];
-}
 
-- (void)withURLs:(NSSet *const)URLs handler:(void (^)(NSDictionary *URLsToDataOrNull))handler
-{
-  if(!URLs || !handler) {
-    @throw NSInvalidArgumentException;
-  }
-  
-  if(!URLs.count) {
-    NYPLAsyncDispatch(^{handler(@{});});
-    return;
-  }
-  
-  for(id const object in URLs) {
-    if(![object isKindOfClass:[NSURL class]]) {
-      @throw NSInvalidArgumentException;
-    }
-  }
-  
-  NSLock *const lock = [[NSLock alloc] init];
-  NSMutableDictionary *const URLsToDataOrNull = [NSMutableDictionary dictionary];
-  __block NSUInteger remaining = URLs.count;
-  
-  for(NSURL *const URL in URLs) {
-    [self withURL:URL completionHandler:^(NSData *const data, __unused NSURLResponse *response, __unused NSError *error) {
-      [lock lock];
-      URLsToDataOrNull[URL] = data ? data : [NSNull null];
-      --remaining;
-      if(!remaining) {
-        NYPLAsyncDispatch(^{handler(URLsToDataOrNull);});
-      }
-      [lock unlock];
-    }];
-  }
-}
-
-- (NSData *)cachedDataForURL:(NSURL *)URL
-{
-  return [self.session.configuration.URLCache
-           cachedResponseForRequest:[NSURLRequest requestWithURL:URL]].data;
+  return req;
 }
 
 @end
