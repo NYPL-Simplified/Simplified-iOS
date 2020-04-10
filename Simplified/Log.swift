@@ -44,18 +44,18 @@ final class Log: NSObject {
     
     // Format string
     let formattedMsg = "[\(levelToString(level))] [\(timestamp)] \(tag): \(message)\(error == nil ? "" : "\n\(error!)")\n"
-    
+
+    #if targetEnvironment(simulator)
+    NSLog(formattedMsg)
+    #elseif DEBUG
     if level != .debug {
-      #if DEBUG
       CLSNSLogv("%@", getVaList([formattedMsg]))
-      #else
-      CLSLogv("%@", getVaList([formattedMsg]))
-      #endif
     } else {
-      #if DEBUG
       NSLog(formattedMsg)
-      #endif
     }
+    #else
+    CLSLogv("%@", getVaList([formattedMsg]))
+    #endif
   }
   
   @objc class func log(_ message: String) {
