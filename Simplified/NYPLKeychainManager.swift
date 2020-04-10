@@ -84,7 +84,6 @@ import Foundation
     let lastResultCode = withUnsafeMutablePointer(to: &result) {
       SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
     }
-    Log.debug(#file, "Result of keychain query: \(lastResultCode)")
 
     var values = [String:AnyObject]()
     if lastResultCode == noErr {
@@ -121,7 +120,6 @@ import Foundation
     let lastResultCode = withUnsafeMutablePointer(to: &result) {
       SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
     }
-    Log.debug(#file, "Result of keychain query: \(lastResultCode)")
 
     var values = [String:AnyObject]()
     if lastResultCode == noErr {
