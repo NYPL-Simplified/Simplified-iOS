@@ -590,6 +590,7 @@
 		738EF2EB2405EC5900F388FB /* PromisesObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromisesObjC.framework; path = Carthage/Build/iOS/PromisesObjC.framework; sourceTree = "<group>"; };
 		73A3EAEB2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsAccountURLSessionChallengeHandler.h; sourceTree = "<group>"; };
 		73A3EAEC2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsAccountURLSessionChallengeHandler.m; sourceTree = "<group>"; };
+		73C3A33F244108F200AFE44D /* carthage-update-simplye.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "carthage-update-simplye.sh"; sourceTree = SOURCE_ROOT; };
 		73CDA120243EDAD8009CC6A6 /* URLRequest+NYPL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+NYPL.swift"; sourceTree = "<group>"; };
 		73DA43A02404B4A900985482 /* Crashlytics.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Crashlytics.json; sourceTree = SOURCE_ROOT; };
 		73DA43A12404B4A900985482 /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = SOURCE_ROOT; };
@@ -1289,6 +1290,7 @@
 				73DA43A52404BA5500985482 /* build-3rd-parties-dependencies.sh */,
 				73DA43A62404BA5600985482 /* build-carthage.sh */,
 				73DA43A82404BA5600985482 /* build-openssl-curl.sh */,
+				73C3A33F244108F200AFE44D /* carthage-update-simplye.sh */,
 				73DA43A42404B95B00985482 /* AudioEngine.json */,
 				73DA43A12404B4A900985482 /* Cartfile */,
 				73DA43A32404B92E00985482 /* Cartfile.resolved */,
