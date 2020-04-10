@@ -659,7 +659,7 @@ double const requestTimeoutInterval = 25.0;
                                                 url:request.URL
                                             context:@"SettingsAccountDetailVC-processCreds"];
     } else if (problemDocument) {
-      UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:@"SettingsAccountViewControllerLoginFailed"];
+      UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:nil];
       [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
       [[NYPLRootTabBarController sharedController] safelyPresentViewController: alert animated:YES completion:nil];
       return; // Short-circuit!! Early return

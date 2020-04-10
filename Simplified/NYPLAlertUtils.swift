@@ -91,17 +91,32 @@ import UIKit
     guard let document = document else {
       return
     }
-    if append {
-      let titleMsg = document.title != nil ? "\nErrorTitle: \(document.title!)" : ""
-      let detailMsg = document.detail != nil ? "\nErrorDetails: \(document.detail!)" : ""
-      controller.message = "\(controller.message ?? "")\(titleMsg)\(detailMsg)"
+
+    if append == false {
+      controller.title = document.title
+      controller.message = document.detail
+      return
+    }
+
+    var titleWasAdded = false
+    if controller.title?.isEmpty ?? true {
+      controller.title = document.title
+      titleWasAdded = true
+    }
+
+    let existingMsg: String = {
+      if let existingMsg = controller.message, !existingMsg.isEmpty {
+        return existingMsg + "\n"
+      }
+      return ""
+    }()
+
+    let docDetail: String = document.detail ?? ""
+
+    if !titleWasAdded, let docTitle = document.title, !docTitle.isEmpty {
+      controller.message = "\(existingMsg)\(docTitle)\n\(docDetail)"
     } else {
-      if document.title != nil {
-        controller.title = document.title
-      }
-      if document.detail != nil {
-        controller.message = document.detail
-      }
+      controller.message = "\(existingMsg)\(docDetail)"
     }
   }
   
