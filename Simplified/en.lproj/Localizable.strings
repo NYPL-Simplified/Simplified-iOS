@@ -178,6 +178,10 @@
 
 // NYPLSettingsAccountViewController
 
+"Add Library" = "Add Library";
+"Report an Issue" = "Report an Issue";
+"Show Barcode" = "Show Barcode";
+"Hide Barcode" = "Hide Barcode";
 "SettingsAccountAgeCheckbox" = "I am 13 years of age or older.";
 "SettingsAccountEULACheckbox" = "I agree to the terms of the End User License Agreement.";
 "SettingsAccountRegistrationTitle" = "Don't have a library card?";
