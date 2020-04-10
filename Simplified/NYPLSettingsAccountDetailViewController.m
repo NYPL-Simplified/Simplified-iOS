@@ -63,7 +63,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) UIButton *barcodeScanButton;
 @property (nonatomic) NSString *selectedAccountId;
 @property (nonatomic) Account *selectedAccount;
-@property (nonatomic) NYPLAccount *selectedNYPLAccount;
 
 @property (nonatomic) BOOL loading;
 
@@ -92,8 +91,12 @@ double const requestTimeoutInterval = 25.0;
 {
   self.selectedAccountId = account;
   self.selectedAccount = [[AccountsManager sharedInstance] account:self.selectedAccountId];
-  self.selectedNYPLAccount = [NYPLAccount sharedAccount:self.selectedAccountId];
   return [self init];
+}
+
+- (NYPLAccount *)selectedNYPLAccount
+{
+  return [NYPLAccount sharedAccount:self.selectedAccountId];
 }
 
 - (instancetype)init
@@ -1006,7 +1009,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           [cell.contentView addSubview:self.barcodeImageLabel];
           [self.barcodeImageView autoAlignAxisToSuperviewAxis:ALAxisVertical];
           [self.barcodeImageView autoSetDimension:ALDimensionWidth toSize:self.tableView.bounds.size.width];
-          [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultHigh forConstraints:^{
+          [NSLayoutConstraint autoSetPriority:UILayoutPriorityRequired forConstraints:^{
             // Hidden to start
             self.barcodeHeightConstraint = [self.barcodeImageView autoSetDimension:ALDimensionHeight toSize:0];
             self.barcodeLabelSpaceConstraint = [self.barcodeImageView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.barcodeImageLabel withOffset:0];
