@@ -162,7 +162,10 @@
       [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
                                                 url:[self.response URL]
                                             context:@"RemoteVC-errorResponse"];
-      alert = [NYPLAlertUtils alertWithTitle:@"Error" message:@"Unknown error parsing problem document"];
+      alert = [NYPLAlertUtils
+               alertWithTitle:NSLocalizedString(@"Error", @"Title for a generic error")
+               message:NSLocalizedString(@"Unknown error parsing problem document",
+                                         @"Message for a problem document error")];
     } else {
       alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
     }
