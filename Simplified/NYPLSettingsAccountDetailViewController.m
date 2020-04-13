@@ -63,7 +63,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) UIButton *barcodeScanButton;
 @property (nonatomic) NSString *selectedAccountId;
 @property (nonatomic) Account *selectedAccount;
-@property (nonatomic) NYPLAccount *selectedNYPLAccount;
 
 @property (nonatomic) BOOL loading;
 
@@ -92,8 +91,12 @@ double const requestTimeoutInterval = 25.0;
 {
   self.selectedAccountId = account;
   self.selectedAccount = [[AccountsManager sharedInstance] account:self.selectedAccountId];
-  self.selectedNYPLAccount = [NYPLAccount sharedAccount:self.selectedAccountId];
   return [self init];
+}
+
+- (NYPLAccount *)selectedNYPLAccount
+{
+  return [NYPLAccount sharedAccount:self.selectedAccountId];
 }
 
 - (instancetype)init
@@ -656,7 +659,7 @@ double const requestTimeoutInterval = 25.0;
                                                 url:request.URL
                                             context:@"SettingsAccountDetailVC-processCreds"];
     } else if (problemDocument) {
-      UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:@"SettingsAccountViewControllerLoginFailed"];
+      UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:nil];
       [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
       [[NYPLRootTabBarController sharedController] safelyPresentViewController: alert animated:YES completion:nil];
       return; // Short-circuit!! Early return
@@ -1006,7 +1009,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
           [cell.contentView addSubview:self.barcodeImageLabel];
           [self.barcodeImageView autoAlignAxisToSuperviewAxis:ALAxisVertical];
           [self.barcodeImageView autoSetDimension:ALDimensionWidth toSize:self.tableView.bounds.size.width];
-          [NSLayoutConstraint autoSetPriority:UILayoutPriorityDefaultHigh forConstraints:^{
+          [NSLayoutConstraint autoSetPriority:UILayoutPriorityRequired forConstraints:^{
             // Hidden to start
             self.barcodeHeightConstraint = [self.barcodeImageView autoSetDimension:ALDimensionHeight toSize:0];
             self.barcodeLabelSpaceConstraint = [self.barcodeImageView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.barcodeImageLabel withOffset:0];
@@ -1632,9 +1635,9 @@ replacementString:(NSString *)string
 {
   // Only supported for now on current active library account
   return ((self.selectedAccount.details.supportsSimplyESync) &&
-          ([self.selectedAccount.details getLicenseURL:URLTypeAnnotations] &&
-           [self.selectedNYPLAccount hasBarcodeAndPIN]) &&
-           ([self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]));
+          [self.selectedAccount.details getLicenseURL:URLTypeAnnotations] &&
+          [self.selectedNYPLAccount hasBarcodeAndPIN] &&
+          [self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]);
 }
 
 - (void)didSelectCancel

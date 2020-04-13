@@ -12,19 +12,6 @@
 
 @implementation NYPLConfiguration
 
-+ (void)initialize
-{
-  static dispatch_once_t onceToken;
-  dispatch_once (&onceToken, ^{
-    dispatch_async(dispatch_get_main_queue(), ^{
-      if (!TARGET_OS_SIMULATOR) {
-        [NYPLErrorLogger configureCrashAnalytics];
-        [NYPLErrorLogger logNewAppLaunch];
-      }
-    });
-  });
-}
-
 + (NSURL *)mainFeedURL
 {
   NSURL *const customURL = [NYPLSettings sharedSettings].customMainFeedURL;
