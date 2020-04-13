@@ -1635,9 +1635,9 @@ replacementString:(NSString *)string
 {
   // Only supported for now on current active library account
   return ((self.selectedAccount.details.supportsSimplyESync) &&
-          ([self.selectedAccount.details getLicenseURL:URLTypeAnnotations] &&
-           [self.selectedNYPLAccount hasBarcodeAndPIN]) &&
-           ([self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]));
+          [self.selectedAccount.details getLicenseURL:URLTypeAnnotations] &&
+          [self.selectedNYPLAccount hasBarcodeAndPIN] &&
+          [self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]);
 }
 
 - (void)didSelectCancel

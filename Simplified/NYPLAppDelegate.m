@@ -41,6 +41,10 @@ const NSTimeInterval MinimumBackgroundFetchInterval = 60 * 60 * 24;
 - (BOOL)application:(__attribute__((unused)) UIApplication *)application
 didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOptions
 {
+#if !TARGET_OS_SIMULATOR
+  [NYPLErrorLogger configureCrashAnalytics];
+#endif
+
   // Perform data migrations as early as possible before anything has a chance to access them
   [NYPLKeychainManager validateKeychain];
   [MigrationManager migrate];
@@ -55,10 +59,6 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
     [self.notificationsManager authorizeIfNeeded];
   }
 
-  // This is normally not called directly, but we put all programmatic appearance setup in
-  // NYPLConfiguration's class initializer.
-  [NYPLConfiguration initialize];
-
   [[NetworkQueue shared] addObserverForOfflineQueue];
   self.reachabilityManager = [NYPLReachability sharedReachability];
   
@@ -69,9 +69,13 @@ didFinishLaunchingWithOptions:(__attribute__((unused)) NSDictionary *)launchOpti
   
   NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
   self.window.rootViewController = vc;
-    
+
   [self beginCheckingForUpdates];
-  
+
+#if !TARGET_OS_SIMULATOR
+  [NYPLErrorLogger logNewAppLaunch];
+#endif
+
   return YES;
 }
 

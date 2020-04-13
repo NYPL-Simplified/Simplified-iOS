@@ -35,15 +35,16 @@ import UIKit
       let cell = tableView.cellForRow(at: indexPath)
       cell?.setSelected(false, animated: true)
       
-      let message = "Selecting \"Delete\" will remove all bookmarks from the server for \(account.name)."
-      let alert = UIAlertController.init(title: nil, message: message, preferredStyle: .actionSheet)
-      
+      let message = String.localizedStringWithFormat(NSLocalizedString("Selecting \"Delete\" will remove all bookmarks from the server for %@.", comment: "Message warning alert for removing all bookmarks from the server"), account.name)
+
+      let alert = UIAlertController.init(title: nil, message: message, preferredStyle: .alert)
+
       let deleteAction = UIAlertAction.init(title: NSLocalizedString("Delete", comment:""), style: .destructive, handler: { (action) in
         self.disableSync()
       })
       
       let cancelAction = UIAlertAction.init(title: NSLocalizedString("Cancel", comment:""), style: .cancel, handler: { (action) in
-        Log.debug(#file, "User cancelled bookmark server delete.")
+        Log.info(#file, "User cancelled bookmark server delete.")
       })
       
       alert.addAction(deleteAction)
@@ -54,9 +55,8 @@ import UIKit
   }
   
   private func disableSync() {
-
     //Disable UI while working
-    let alert = UIAlertController(title: nil, message: "Please wait...", preferredStyle: .alert)
+    let alert = UIAlertController(title: nil, message: NSLocalizedString("Please wait...", comment:"Generic Wait message"), preferredStyle: .alert)
     let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
     loadingIndicator.hidesWhenStopped = true
     loadingIndicator.style = UIActivityIndicatorView.Style.gray
