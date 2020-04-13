@@ -3,7 +3,6 @@
 
 #import "SimplyE-Swift.h"
 
-//#import "NYPLAccount.h"
 #import "NYPLAppDelegate.h"
 #import "NYPLBarcodeScanningViewController.h"
 #import "NYPLBasicAuth.h"

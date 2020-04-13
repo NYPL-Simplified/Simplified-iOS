@@ -7,6 +7,8 @@ extension Notification.Name {
   static let NYPLSyncBegan = Notification.Name("NYPLSyncBegan")
   static let NYPLSyncEnded = Notification.Name("NYPLSyncEnded")
   static let NYPLUseBetaDidChange = Notification.Name("NYPLUseBetaDidChange")
+  static let NYPLAccountDidChange = Notification.Name("NYPLAccountDidChangeNotification")
+  static let NYPLAccountLoginDidChange = Notification.Name("NYPLAccountLoginDidChangeNotification")
 }
 
 @objc extension NSNotification {
@@ -16,6 +18,8 @@ extension Notification.Name {
   public static let NYPLSyncBegan = Notification.Name.NYPLSyncBegan
   public static let NYPLSyncEnded = Notification.Name.NYPLSyncEnded
   public static let NYPLUseBetaDidChange = Notification.Name.NYPLUseBetaDidChange
+  public static let NYPLAccountDidChange = Notification.Name.NYPLAccountDidChange
+  public static let NYPLAccountLoginDidChange = Notification.Name.NYPLAccountLoginDidChange
 }
 
 let Version = 1

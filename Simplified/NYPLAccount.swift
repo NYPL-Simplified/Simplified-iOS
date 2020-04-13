@@ -1,10 +1,5 @@
 import Foundation
 
-extension Notification.Name {
-  static let NYPLAccountDidChange = Notification.Name("NYPLAccountDidChangeNotification")
-  static let NYPLAccountLoginDidChange = Notification.Name("NYPLAccountLoginDidChangeNotification")
-}
-
 @objcMembers class NYPLAccount : NSObject {
   static private let shared = NYPLAccount()
     
