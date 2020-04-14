@@ -11,7 +11,6 @@
 /// sets of items will be correctly displayed, however.)
 ///
 /// For more information, see Apple's documentation on view controller containers.
-
 @interface NYPLRemoteViewController : UIViewController
 
 /// After changing this, you must call |load| to see the effect.
@@ -22,11 +21,16 @@
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
-/// |handler| may not be nil. |handler| is strongly retained. |data| will never be nil as the handler
-/// is only called if the data was downloaded successfully. The handler may return nil to indicate
-/// that there is something wrong with the data.
+/**
+ This is the designated initializer.
+ @param URL The URL where to fetch the data at.
+ @param handler Must not be nil. It is strongly retained. The @p data parameter
+ will never be @p nil as this handler is only called if the download was
+ successful. This may return nil to indicate that there's something wrong
+ with the downloaded data.
+ */
 - (instancetype)initWithURL:(NSURL *)URL
-          completionHandler:(UIViewController *(^)(NYPLRemoteViewController *remoteViewController,
+                    handler:(UIViewController *(^)(NYPLRemoteViewController *remoteViewController,
                                                    NSData *data,
                                                    NSURLResponse *response))handler;
 

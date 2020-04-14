@@ -8,7 +8,6 @@
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLOPDS.h"
-#import "NYPLSession.h"
 #import "NYPLJSON.h"
 #import "NYPLMyBooksDownloadCenter.h"
 #import "NYPLMyBooksDownloadInfo.h"
