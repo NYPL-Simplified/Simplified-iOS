@@ -50,7 +50,13 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
   // MARK: - URLSessionDelegate
 
   func urlSession(_ session: URLSession, didBecomeInvalidWithError err: Error?) {
-    NYPLErrorLogger.logNetworkError(err, message: "URLSession became invalid")
+    if let err = err {
+      NYPLErrorLogger.logError(err, message: "URLSession became invalid")
+    } else {
+      NYPLErrorLogger.logError(withCode: .invalidURLSession,
+                               context: NYPLErrorLogger.Context.infrastructure.rawValue,
+                               message: "URLSession became invalid")
+    }
 
     taskInfoLock.lock()
     defer {
@@ -104,7 +110,7 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
 
     guard let currentTaskInfo = taskInfo.removeValue(forKey: taskID) else {
       NYPLErrorLogger.logNetworkError(
-        requestURL: task.originalRequest?.url,
+        request: task.originalRequest,
         response: task.response,
         message: "No task info available for task \(taskID)")
       return
@@ -116,12 +122,15 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
     Log.debug(#file, "Task \(taskID) completed, elapsed time: \(elapsed) sec")
 
     if let error = error {
+      currentTaskInfo.completion(.failure(error))
+
+      // logging the error after the completion call so that the error report
+      // will include any eventual logging done in the completion handler.
       NYPLErrorLogger.logNetworkError(
         error,
-        requestURL: task.originalRequest?.url,
+        request: task.originalRequest,
         response: task.response,
         message: "Task \(taskID) completed with error")
-      currentTaskInfo.completion(.failure(error))
       return
     }
 

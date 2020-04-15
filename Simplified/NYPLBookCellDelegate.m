@@ -4,7 +4,6 @@
 
 #import "NYPLAccount.h"
 #import "NYPLAccountSignInViewController.h"
-#import "NYPLSession.h"
 #import "NYPLBook.h"
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
@@ -237,12 +236,16 @@
                                 severity:NYPLSeverityError
                                  message:message];
     } else {
-      NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:0 userInfo:nil];
-      NSString *msg = [NSString stringWithFormat:@"Level: %ld. Message: %@",
-                       (long)level, message];
-      [NYPLErrorLogger logAudiobookIssue:error
-                                severity:NYPLSeverityInfo
-                                 message:msg];
+      if (level != LogLevelDebug) {
+        NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:0 userInfo:nil];
+        NSString *msg = [NSString stringWithFormat:@"Level: %ld. Message: %@",
+                         (long)level, message];
+        
+        NYPLSeverity severity = level == LogLevelInfo ? NYPLSeverityInfo : level == LogLevelWarn ? NYPLSeverityWarning : NYPLSeverityError;
+        [NYPLErrorLogger logAudiobookIssue:error
+                                  severity:severity
+                                   message:msg];
+      }
     }
   }];
 }

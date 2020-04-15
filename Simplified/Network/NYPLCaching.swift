@@ -199,7 +199,6 @@ class NYPLCaching {
     config.urlCache = makeCache()
 
     if #available(iOS 11.0, *) {
-      Log.debug(#file, "waitsForConnectivity: \(config.waitsForConnectivity)")
       config.waitsForConnectivity = true
     }
 

@@ -53,11 +53,16 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
   
   var currentAccount: Account? {
     get {
-      return account(UserDefaults.standard.string(forKey: currentAccountIdentifierKey) ?? "")
+      guard let uuid = currentAccountId else {
+        return nil
+      }
+
+      return account(uuid)
     }
     set {
       UserDefaults.standard.set(newValue?.uuid,
                                 forKey: currentAccountIdentifierKey)
+      NYPLErrorLogger.setUserID(NYPLAccount.shared()?.barcode)
       NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
     }
   }
@@ -120,25 +125,37 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
    Take the library list data (either from cache or the internet), load it into
    self.accounts, and load the auth document for the current account if
    necessary.
-   - parameter data: The library list data.
-   - parameter key: ???
+   - parameter data: The library catalog list data obtained from fetching either
+   `prodUrl` or `betaUrl`. This is parsed assuming it's in the OPDS2 format.
+   - parameter key: The key to enter the `accountSets` dictionary with.
    - parameter completion: Always invoked at the end no matter what, providing
    `true` in case of success and `false` otherwise. No guarantees are being made
    about whether this will be called on the main thread or not.
    */
-  private func loadCatalogs(data: Data, key: String, completion: @escaping (Bool) -> ()) {
+  private func loadAccountSetsAndAuthDoc(fromCatalogData data: Data,
+                                         key: String,
+                                         completion: @escaping (Bool) -> ()) {
     do {
       let catalogsFeed = try OPDS2CatalogsFeed.fromData(data)
       let hadAccount = self.currentAccount != nil
+
       self.accountSets[key] = catalogsFeed.catalogs.map { Account(publication: $0) }
 
       // note: `currentAccount` computed property feeds off of `accountSets`, so
       // changing the `accountsSets` dictionary will also change `currentAccount`
       if hadAccount != (self.currentAccount != nil) {
-        self.currentAccount?.loadAuthenticationDocument(completion: { (success) in
+        self.currentAccount?.loadAuthenticationDocument { success in
           if !success {
-            Log.error(#file, "Failed to load authentication document for current account; a bunch of things likely won't work")
+            NYPLErrorLogger.logError(
+              withCode: .authDocLoadFail,
+              context: NYPLErrorLogger.Context.accountManagement.rawValue,
+              message: """
+              Failed to load authentication document for current account: \
+              \(self.currentAccount.debugDescription). A bunch of things \
+              likely won't work.
+              """)
           }
+
           DispatchQueue.main.async {
             var mainFeed = URL(string: self.currentAccount?.catalogUrl ?? "")
             let resolveFn = {
@@ -158,12 +175,15 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
               resolveFn()
             }
           }
-        })
+        }
       } else {
+        // we pass `true` because at this point we know the catalogs loaded
+        // successfully
         completion(true)
       }
     } catch (let error) {
-      Log.error(#file, "Couldn't load catalogs. Error: \(error.localizedDescription)")
+      NYPLErrorLogger.logError(error, 
+                               message: "An error was thrown during loadAccountSetsAndAuthDoc")
       completion(false)
     }
   }
@@ -185,11 +205,13 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
     NYPLNetworkExecutor.shared.GET(targetUrl) { result in
       switch result {
       case .success(let data):
-        self.loadCatalogs(data: data, key: hash) { success in
+        self.loadAccountSetsAndAuthDoc(fromCatalogData: data, key: hash) { success in
           self.callAndClearLoadingCompletionHandlers(key: hash, success)
           NotificationCenter.default.post(name: NSNotification.Name.NYPLCatalogDidLoad, object: nil)
         }
-      case .failure(_):
+      case .failure(let error):
+        NYPLErrorLogger.logError(error,
+                                 message: "Catalog failed to load from \(targetUrl)")
         self.callAndClearLoadingCompletionHandlers(key: hash, false)
       }
     }

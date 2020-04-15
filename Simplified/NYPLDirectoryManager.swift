@@ -6,7 +6,6 @@ import Foundation
   
   class func current() -> URL? {
     guard let account = AccountsManager.shared.currentAccount else {
-      NYPLErrorLogger.logUnexpectedNilAccount(context: "DirectoryManager::current")
       return nil
     }
     return directory(account.uuid)

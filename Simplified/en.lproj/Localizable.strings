@@ -33,6 +33,7 @@
 "DownloadCouldNotBeCompletedFormat" = "The download for %@ could not be completed.\nScroll down to 'View Issues' to see details.";
 "DownloadFailed" = "Download Failed";
 "Downloading" = "Downloading";
+"Error" = "Error";
 "Feedback" = "Feedback";
 "Help" = "Frequently Asked Questions";
 "Hide" = "Hide";
@@ -74,6 +75,7 @@
 "SyncFailed" = "Sync Failed";
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";
 "TryAgain" = "Try Again";
+"Unknown error parsing problem document" = "Unknown error parsing problem document";
 "UnknownRequestError" =
     "An unknown error occurred. Please check your connection or try again later.";
 "Verifying" = "Verifying";
@@ -95,9 +97,7 @@
 "BookButtonsViewRemoveHoldMessage" = "Are you sure you want to remove \"%@\" from your reservations? You will no longer be in line for this book.";
 "BookButtonsViewRemoveHoldConfirm" = "Remove";
 
-
 // NYPLBookDetailViewControllerTitle
-
 "BookDetailViewControllerTitle" = "Details";
 "BookDetailViewControllerDownloadNeededTitle" = "Your book has not yet been downloaded.";
 "BookDetailViewControllerDownloadSuccessfulTitle" = "Your book is ready to read!";
@@ -107,6 +107,10 @@
 "BookDetailViewControllerHoldingTitleFormat" = "Available for checkout in less than %@.";
 "BookDetailViewControllerReservedTitleFormat" = "This reservation will be automatically cancelled in %@.";
 "BookDetailViewControllerDistributedByFormat" = "Distributed by: ";
+
+// NYPLBookCellDelegate
+"Unsupported Item" = "Unsupported Item";
+"The item you are trying to open is not currently supported by SimplyE." = "The item you are trying to open is not currently supported by SimplyE.";
 
 // NYPLFacetView
 
@@ -178,12 +182,14 @@
 
 // NYPLSettingsAccountViewController
 
+"Add Library" = "Add Library";
+"Report an Issue" = "Report an Issue";
+"Show Barcode" = "Show Barcode";
+"Hide Barcode" = "Hide Barcode";
 "SettingsAccountAgeCheckbox" = "I am 13 years of age or older.";
 "SettingsAccountEULACheckbox" = "I agree to the terms of the End User License Agreement.";
 "SettingsAccountRegistrationTitle" = "Don't have a library card?";
-"SettingsAccountSetAccountTitle" = "Set to Active Account";
 "SettingsBookmarkSyncTitle" = "Sync Bookmarks";
-"SettingsGlobalSync" =  "Automatically update your bookmarks and last reading position across all of your devices.";
 "SettingsAccountSyncFooterTitle" = "Save your reading position and bookmarks to all your other devices.";
 "SettingsAccountViewControllerAuthenticationReason" = "Authenticate to reveal your PIN.";
 "SettingsAccountViewControllerCannotLogOutTitle" =
@@ -232,3 +238,10 @@
 "WelcomeScreenSubtitle2" = "E-books free to download and read without a library card.";
 "WelcomeScreenButtonTitle2" = "Add a Library Later";
 "LibraryListTitle" = "Pick Your Library";
+
+// NYPLSettingsAdvancedViewController
+"Advanced" = "Advanced";
+"Selecting \"Delete\" will remove all bookmarks from the server for %@." = "Selecting \"Delete\" will remove all bookmarks from the server for %@.";
+"Delete Server Data" = "Delete Server Data";
+"Please wait..." = "Please wait...";
+"Delete all the bookmarks you have saved in the cloud." = "Delete all the bookmarks you have saved in the cloud.";

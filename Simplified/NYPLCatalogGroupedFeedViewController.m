@@ -9,7 +9,6 @@
 #import "NYPLConfiguration.h"
 #import "NYPLIndeterminateProgressView.h"
 #import "NYPLOpenSearchDescription.h"
-#import "NYPLSession.h"
 #import "NYPLXML.h"
 #import "UIView+NYPLViewAdditions.h"
 

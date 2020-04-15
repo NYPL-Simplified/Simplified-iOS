@@ -22,32 +22,36 @@ fileprivate let nullString = "null"
 }
 
 @objc enum NYPLErrorCode: Int {
-  case noErr = 0
+  case ignore = 0
 
   // low-level / system related
   case fileSystemFail = 1
 
   // generic app related
   case appLaunch = 100
-  case expiredBackgroundFetch = 101
+  case invalidURLSession = 101
   case apiCall = 102
 
   // book registry
   case nilBookIdentifier = 200 // caused by book registry, downloads
   case nilCFI = 201
   case missingBookFile = 202
+  case unknownBookState = 203
 
   // sign in/out/up
   case invalidLicensor = 300
   case deAuthFail = 301
   case barcodeException = 302
   case remoteLoginError = 303
-  case nilAccount = 304
   case userProfileDocFail = 305
   case nilSignUpURL = 306
+  case adeptAuthFail = 307
+
+  /// Deprecated: use nilCurrentAccountUUID instead
+  case nilAccount = 304
 
   // audiobooks
-  case audiobookEvent = 400
+  case audiobookUserEvent = 400
 
   // ereader
   case deleteBookmarkFail = 500
@@ -57,11 +61,30 @@ fileprivate let nullString = "null"
   case parseProfileTypeMismatch = 601
   case parseProfileValueNotFound = 602
   case parseProfileKeyNotFound = 603
+  case feedParseFail = 604
+  case opdsFeedParseFail = 605
+
+  // account management
+  case authDocLoadFail = 700
+
+  // feeds
+  case opdsFeedNoData = 800
 }
 
 @objcMembers class NYPLErrorLogger : NSObject {
   class func configureCrashAnalytics() {
     FirebaseApp.configure()
+
+    let deviceID = UIDevice.current.identifierForVendor
+    Crashlytics.sharedInstance().setObjectValue(deviceID, forKey: "NYPLDeviceID")
+  }
+
+  class func setUserID(_ userID: String?) {
+    if let userIDmd5 = userID?.md5hex() {
+      Crashlytics.sharedInstance().setUserIdentifier(userIDmd5)
+    } else {
+      Crashlytics.sharedInstance().setUserIdentifier(nil)
+    }
   }
 
   /// Broad areas providing some kind of operating context for error reporting.
@@ -69,28 +92,21 @@ fileprivate let nullString = "null"
   /// (e.g. an error related to audiobooks may happen in different classes)
   /// although the two things may obviously overlap.
   enum Context: String {
-    case catalog
-    case bookDownload
+    case accountManagement
     case audiobooks
+    case bookDownload
+    case catalog
+    case ereader
+    case infrastructure
     case myBooks
-    case readium
+    case opds
+    case signIn
+    case signOut
     case signUp
   }
 
   // MARK:- Generic helpers
 
-  /**
-   Helper method for other logging functions that adds logs to our
-   crash reporting system.
-   */
-  private class func reportLogs() {
-    Log.logQueue.sync {
-      if let logs = (try? String(contentsOfFile: Log.logUrl.path, encoding: .utf8)) {
-        CLSNSLogv("%@",  getVaList([logs]))
-      }
-    }
-  }
-  
   /**
    Helper method for other logging functions that adds relevant account info
    to our crash reporting system.
@@ -128,6 +144,29 @@ fileprivate let nullString = "null"
 
   // MARK:- Error Logging
 
+  /// Reports an error.
+  /// - Parameters:
+  ///   - error: Any originating error that occurred.
+  ///   - message: A string for further context.
+  class func logError(_ error: Error, message: String? = nil) {
+    logError(error, message: message)
+  }
+
+
+  /// Reports an error situation.
+  /// - Parameters:
+  ///   - code: A code identifying the error situation. Searchable in
+  ///   Crashlytics UI.
+  ///   - context: Choose from `Context` enum or provide a string that can
+  ///   be used to group similar errors. This will be the top line (searchable)
+  ///   in Crashlytics UI.
+  ///   - message: A string for further context.
+  class func logError(withCode code: NYPLErrorCode,
+                      context: String,
+                      message: String? = nil) {
+    logError(nil, code: code, context: context, message: message)
+  }
+
   /**
     Report when there's a null book identifier
     @param book book
@@ -141,13 +180,12 @@ fileprivate let nullString = "null"
     metadata["bookTitle"] = book?.title ?? nullString
     metadata["revokeLink"] = book?.revokeURL?.absoluteString ?? nullString
     addAccountInfoToMetadata(&metadata)
-    reportLogs()
+
     let userInfo = additionalInfo(
       severity: .warning,
       message: "The book identifier was unexpectedly nil when attempting to return.",
-      context: Context.myBooks.rawValue,
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain,
+    let err = NSError(domain: Context.myBooks.rawValue,
                       code: NYPLErrorCode.nilBookIdentifier.rawValue,
                       userInfo: userInfo)
 
@@ -165,13 +203,12 @@ fileprivate let nullString = "null"
     metadata["bookIdentifier"] = book?.identifier ?? nullString
     metadata["bookTitle"] = book?.title ?? nullString
     addAccountInfoToMetadata(&metadata)
-    reportLogs()
+
     let userInfo = additionalInfo(
       severity: .warning,
       message: message,
-      context: Context.bookDownload.rawValue,
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain,
+    let err = NSError(domain: Context.bookDownload.rawValue,
                       code: NYPLErrorCode.missingBookFile.rawValue,
                       userInfo: userInfo)
 
@@ -198,14 +235,12 @@ fileprivate let nullString = "null"
     metadata["renderer"] = location?.renderer ?? nullString
     metadata["openPageRequest idref"] = locationDictionary?["idref"] ?? nullString
     addAccountInfoToMetadata(&metadata)
-    reportLogs()
     
     let userInfo = additionalInfo(
       severity: .warning,
       message: message,
-      context: Context.readium.rawValue,
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain,
+    let err = NSError(domain: Context.ereader.rawValue,
                       code: NYPLErrorCode.nilCFI.rawValue,
                       userInfo: userInfo)
 
@@ -219,14 +254,13 @@ fileprivate let nullString = "null"
   class func logDeauthorizationError() {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
-    reportLogs()
     
     let userInfo = additionalInfo(
       severity: .info,
       message: "User has lost an activation on signout due to NYPLAdept Error.",
       context: "NYPLSettingsAccountDetailViewController",
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain,
+    let err = NSError(domain: Context.signOut.rawValue,
                       code: NYPLErrorCode.deAuthFail.rawValue,
                       userInfo: userInfo)
 
@@ -254,23 +288,13 @@ fileprivate let nullString = "null"
       metadata["responseMime"] = httpResponse.mimeType ?? nullString
     }
     addAccountInfoToMetadata(&metadata)
-    reportLogs()
 
     let userInfo = additionalInfo(
       severity: .info,
       message: "Remote Login Failed With Error",
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain,
+    let err = NSError(domain: Context.signIn.rawValue,
                       code: NYPLErrorCode.remoteLoginError.rawValue,
-                      userInfo: userInfo)
-
-    Crashlytics.sharedInstance().recordError(err)
-  }
-
-  class func logUnexpectedNilAccount(context: String) {
-    let userInfo = additionalInfo(severity: .error, context: context)
-    let err = NSError(domain: simplyeDomain,
-                      code: NYPLErrorCode.nilAccount.rawValue,
                       userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
@@ -287,13 +311,14 @@ fileprivate let nullString = "null"
     metadata["libraryName"] = libraryName ?? nullString
     metadata["errorDescription"] = error?.localizedDescription ?? nullString
     addAccountInfoToMetadata(&metadata)
-    reportLogs()
     
     let userInfo = additionalInfo(
       severity: .info,
       message: "Local Login Failed With Error",
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain, code: 11, userInfo: userInfo)
+    let err = NSError(domain: Context.signIn.rawValue,
+                      code: NYPLErrorCode.adeptAuthFail.rawValue,
+                      userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)
   }
@@ -305,7 +330,7 @@ fileprivate let nullString = "null"
                                   message: message,
                                   context: context,
                                   metadata: metadata)
-    let err = NSError(domain: simplyeDomain,
+    let err = NSError(domain: Context.ereader.rawValue,
                       code: NYPLErrorCode.deleteBookmarkFail.rawValue,
                       userInfo: userInfo)
     Crashlytics.sharedInstance().recordError(err)
@@ -320,14 +345,13 @@ fileprivate let nullString = "null"
     var metadata = [AnyHashable : Any]()
     metadata["accountTypeID"] = accountId ?? nullString
     addAccountInfoToMetadata(&metadata)
-    reportLogs()
     
     let userInfo = additionalInfo(
       severity: .warning,
       message: "No Valid Licensor available to deauthorize device. Signing out NYPLAccount credentials anyway with no message to the user.",
       context: "NYPLSettingsAccountDetailViewController",
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain,
+    let err = NSError(domain: Context.signOut.rawValue,
                       code: NYPLErrorCode.invalidLicensor.rawValue,
                       userInfo: userInfo)
 
@@ -340,7 +364,6 @@ fileprivate let nullString = "null"
   class func logNewAppLaunch() {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
-    reportLogs()
     
     let userInfo = additionalInfo(severity: .info, metadata: metadata)
     let err = NSError(domain: simplyeDomain,
@@ -370,23 +393,6 @@ fileprivate let nullString = "null"
   }
 
   /**
-    Report when there's an issue downloading the holds in the background
-    @return
-   */
-  class func logExpiredBackgroundFetch() {
-    var metadata = [AnyHashable : Any]()
-    metadata["loanUrl"] = AccountsManager.shared.currentAccount?.loansUrl ?? nullString
-    addAccountInfoToMetadata(&metadata)
-    reportLogs()
-
-    let userInfo = additionalInfo(severity: .error, metadata: metadata)
-    let err = NSError(domain: simplyeDomain,
-                      code: NYPLErrorCode.expiredBackgroundFetch.rawValue,
-                      userInfo: userInfo)
-    Crashlytics.sharedInstance().recordError(err)
-  }
-  
-  /**
     Report when there's an issue with barcode image encoding
     @param exception the related exception
     @param library library for which the barcode is being created
@@ -395,14 +401,13 @@ fileprivate let nullString = "null"
   class func logBarcodeException(_ exception: NSException?, library: String?) {
     var metadata = [AnyHashable : Any]()
     addAccountInfoToMetadata(&metadata)
-    reportLogs()
     
     let userInfo = additionalInfo(
       severity: .info,
       message: "\(library ?? nullString): \(exception?.name.rawValue ?? nullString). \(exception?.reason ?? nullString)",
       context: "NYPLZXingEncoder",
       metadata: metadata)
-    let err = NSError(domain: simplyeDomain,
+    let err = NSError(domain: Context.signIn.rawValue,
                       code: NYPLErrorCode.barcodeException.rawValue,
                       userInfo: userInfo)
 
@@ -420,7 +425,6 @@ fileprivate let nullString = "null"
     metadata["url"] = url ?? nullString
     metadata["errorDescription"] = error.localizedDescription
     addAccountInfoToMetadata(&metadata)
-    reportLogs()
 
     let userInfo = additionalInfo(
       severity: .error,
@@ -444,7 +448,6 @@ fileprivate let nullString = "null"
     metadata["url"] = url ?? nullString
     metadata["errorDescription"] = error.localizedDescription
     addAccountInfoToMetadata(&metadata)
-    reportLogs()
     
     let userInfo = additionalInfo(
       severity: .error,
@@ -460,13 +463,12 @@ fileprivate let nullString = "null"
     @return
    */
   class func logUserProfileDocumentError(error: NSError?) {
-    let err = error ?? NSError(domain: simplyeDomain,
+    let err = error ?? NSError(domain: Context.signIn.rawValue,
                                code: NYPLErrorCode.userProfileDocFail.rawValue,
                                userInfo: nil)
     var metadata = [AnyHashable : Any]()
     metadata["errorDescription"] = error?.localizedDescription ?? nullString
     addAccountInfoToMetadata(&metadata)
-    reportLogs()
 
     let userInfo = additionalInfo(severity: .error, metadata: metadata)
     Crashlytics.sharedInstance().recordError(err,
@@ -479,26 +481,12 @@ fileprivate let nullString = "null"
   ///   - code: A code identifying the error situation.
   ///   - message: A string for further context.
   class func logSignUpError(_ error: Error? = nil,
-                            code: NYPLErrorCode = .noErr,
+                            code: NYPLErrorCode,
                             message: String) {
-    var metadata = [AnyHashable : Any]()
-    addAccountInfoToMetadata(&metadata)
-
-    let err: Error = {
-      if let error = error {
-        return error
-      }
-
-      return NSError(domain: simplyeDomain, code: code.rawValue, userInfo: nil)
-    }()
-
-    let userInfo = additionalInfo(severity: .error,
-                                  message: message,
-                                  context: Context.signUp.rawValue,
-                                  metadata: metadata)
-    reportLogs()
-    Crashlytics.sharedInstance().recordError(err,
-                                             withAdditionalUserInfo: userInfo)
+    logError(error,
+             code: code,
+             context: Context.signUp.rawValue,
+             message: message)
   }
 
   class func logAudiobookIssue(_ error: NSError,
@@ -512,21 +500,65 @@ fileprivate let nullString = "null"
     let userInfo = additionalInfo(severity: .info,
                                   message: message,
                                   context: Context.audiobooks.rawValue)
-    let err = NSError(domain: simplyeDomain,
-                      code: NYPLErrorCode.audiobookEvent.rawValue,
+    let err = NSError(domain: Context.audiobooks.rawValue,
+                      code: NYPLErrorCode.audiobookUserEvent.rawValue,
                       userInfo: userInfo)
     Crashlytics.sharedInstance().recordError(err)
   }
 
+  /// Use this function for logging low-level errors occurring in api execution
+  /// when there's no other more relevant context available, or when it's more
+  /// relevant to log URL and response objects.
+  /// - Parameters:
+  ///   - error: Any originating error obtained that occurred, if available.
+  ///   - requestURL: The URL of the endpoint that returned an error response.
+  ///   - response: Useful to understand if the error originated on the server.
+  ///   - message: A string for further context.
+  /// - Returns: The error that was logged.
   @discardableResult
   class func logNetworkError(_ error: Error? = nil,
-                             requestURL: URL? = nil,
-                             response: URLResponse? = nil,
+                             requestURL: URL?,
+                             response: URLResponse?,
                              message: String? = nil) -> Error {
+    return logNetworkError(error,
+                           requestString: requestURL?.absoluteString,
+                           response: response,
+                           message: message)
+  }
+
+  /// Use this function for logging low-level errors occurring in api execution
+  /// when there's no other more relevant context available, or when it's more
+  /// relevant to log request and response objects.
+  /// - Parameters:
+  ///   - error: Any originating error obtained that occurred, if available.
+  ///   - request: Only the output of `loggableString` will be attached to the
+  ///   report, to ensure privacy.
+  ///   - response: Useful to understand if the error originated on the server.
+  ///   - message: A string for further context.
+  /// - Returns: The error that was logged.
+  @discardableResult
+  class func logNetworkError(_ error: Error? = nil,
+                             request: URLRequest?,
+                             response: URLResponse?,
+                             message: String? = nil) -> Error {
+    return logNetworkError(error,
+                           requestString: request?.loggableString,
+                           response: response,
+                           message: message)
+  }
+
+  //----------------------------------------------------------------------------
+  // MARK: - Private helpers
+
+  @discardableResult
+  private class func logNetworkError(_ error: Error? = nil,
+                                     requestString: String?,
+                                     response: URLResponse?,
+                                     message: String? = nil) -> Error {
     // compute metadata
     var metadata = [AnyHashable : Any]()
-    if let requestURL = requestURL {
-      metadata["requestURL"] = requestURL
+    if let requestString = requestString {
+      metadata["request"] = requestString
     }
     if let response = response {
       metadata["response"] = response
@@ -539,16 +571,15 @@ fileprivate let nullString = "null"
         return error
       }
 
-      return NSError(domain: simplyeDomain,
+      return NSError(domain: Context.infrastructure.rawValue,
                      code: NYPLErrorCode.apiCall.rawValue,
                      userInfo: nil)
     }()
 
     Log.error(#file, """
-      Request with URL \(String(describing: requestURL)) failed. \
+      Request \(requestString ?? "") failed. \
       Message: \(message ?? "<>"). Error: \(err)
       """)
-    reportLogs()
 
     let userInfo = additionalInfo(severity: .error,
                                   message: message,
@@ -557,4 +588,38 @@ fileprivate let nullString = "null"
                                              withAdditionalUserInfo: userInfo)
     return err
   }
+
+  /// Helper to log a generic error to Crashlytics.
+  /// - Parameters:
+  ///   - error: Any originating error obtained that occurred, if available.
+  ///   - code: A code identifying the error situation. This is ignored if
+  ///   `error` is not nil.
+  ///   - context: Operating context to help identify where the error occurred.
+  ///   - message: A string for further context.
+  private class func logError(_ error: Error?,
+                              code: NYPLErrorCode = .ignore,
+                              context: String? = nil,
+                              message: String? = nil) {
+    var metadata = [AnyHashable : Any]()
+    addAccountInfoToMetadata(&metadata)
+
+    let err: Error = {
+      if let error = error {
+        return error
+      }
+
+      return NSError(domain: context ?? simplyeDomain,
+                     code: code.rawValue,
+                     userInfo: nil)
+    }()
+
+    let userInfo = additionalInfo(severity: .error,
+                                  message: message,
+                                  context: context,
+                                  metadata: metadata)
+
+    Crashlytics.sharedInstance().recordError(err,
+                                             withAdditionalUserInfo: userInfo)
+  }
+
 }
