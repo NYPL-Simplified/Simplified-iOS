@@ -1,9 +1,13 @@
 @import LocalAuthentication;
 @import NYPLCardCreator;
+@import CoreLocation;
+
+#import <PureLayout/PureLayout.h>
 
 #import "SimplyE-Swift.h"
 
 #import "NYPLAccount.h"
+#import "NYPLAccountSignInViewController.h"
 #import "NYPLAppDelegate.h"
 #import "NYPLBarcodeScanningViewController.h"
 #import "NYPLBasicAuth.h"
@@ -12,18 +16,14 @@
 #import "NYPLConfiguration.h"
 #import "NYPLLinearView.h"
 #import "NYPLMyBooksDownloadCenter.h"
-#import "NYPLReachability.h"
-
-#import "NYPLAccountSignInViewController.h"
-#import "NYPLSettingsEULAViewController.h"
-#import "NYPLRootTabBarController.h"
-#import "NYPLXML.h"
 #import "NYPLOPDSFeed.h"
+#import "NYPLReachability.h"
+#import "NYPLRootTabBarController.h"
+#import "NYPLSettingsEULAViewController.h"
+#import "NYPLUserAccountFrontEndValidation.h"
+#import "NYPLXML.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "UIFont+NYPLSystemFontOverride.h"
-#import <PureLayout/PureLayout.h>
-@import CoreLocation;
-
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
@@ -41,26 +41,27 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionRegistration = 1
 };
 
-@interface NYPLAccountSignInViewController () <NSURLSessionDelegate, UITextFieldDelegate>
+@interface NYPLAccountSignInViewController () <NSURLSessionDelegate, NYPLUserAccountInputProvider>
 
 @property (nonatomic) Account *currentAccount;
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
 @property (nonatomic) BOOL isCurrentlySigningIn;
-@property (nonatomic) UITextField *usernameTextField;
 @property (nonatomic) UIButton *barcodeScanButton;
 @property (nonatomic, copy) void (^completionHandler)(void);
 @property (nonatomic) BOOL hiddenPIN;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
-@property (nonatomic) UITextField *PINTextField;
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
 @property (nonatomic) bool rotated;
 @property (nonatomic) NSArray *tableData;
-
+@property NYPLUserAccountFrontEndValidation *frontEndValidator;
 @end
 
 @implementation NYPLAccountSignInViewController
+
+@synthesize usernameTextField;
+@synthesize PINTextField;
 
 CGFloat const marginPadding = 2.0;
 
@@ -108,7 +109,9 @@ CGFloat const marginPadding = 2.0;
                   delegateQueue:[NSOperationQueue mainQueue]];
   
   self.currentAccount = [[AccountsManager sharedInstance] currentAccount];
-  
+  self.frontEndValidator = [[NYPLUserAccountFrontEndValidation alloc]
+                            initWithAccount:self.currentAccount
+                            inputProvider:self];
   return self;
 }
 
@@ -126,10 +129,8 @@ CGFloat const marginPadding = 2.0;
   self.view.backgroundColor = [NYPLConfiguration backgroundColor];
   self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
 
-  self.currentAccount = [AccountsManager shared].currentAccount;
-  
   self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectZero];
-  self.usernameTextField.delegate = self;
+  self.usernameTextField.delegate = self.frontEndValidator;
   self.usernameTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
 
   switch (self.currentAccount.details.patronIDKeyboard) {
@@ -169,7 +170,7 @@ CGFloat const marginPadding = 2.0;
   }
 
   self.PINTextField.secureTextEntry = YES;
-  self.PINTextField.delegate = self;
+  self.PINTextField.delegate = self.frontEndValidator;
   [self.PINTextField
    addTarget:self
    action:@selector(textFieldsDidChange)
@@ -520,57 +521,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                              self.PINTextField.text);
 }
 
-#pragma mark UITextFieldDelegate
-
-- (BOOL)textField:(UITextField *)textField
-shouldChangeCharactersInRange:(NSRange)range
-replacementString:(NSString *)string
-{
-  if(![string canBeConvertedToEncoding:NSASCIIStringEncoding]) {
-    return NO;
-  }
-  
-  if(textField == self.usernameTextField &&
-     self.currentAccount.details.patronIDKeyboard != LoginKeyboardEmail) {
-    // Barcodes are numeric and usernames are alphanumeric.
-    if([string stringByTrimmingCharactersInSet:[NSCharacterSet alphanumericCharacterSet]].length > 0) {
-      return NO;
-    }
-    
-    // Usernames cannot be longer than 25 characters.
-    if([textField.text stringByReplacingCharactersInRange:range withString:string].length > 25) {
-      return NO;
-    }
-  }
-  
-  if(textField == self.PINTextField) {
-    
-    NSCharacterSet *charSet = [NSCharacterSet decimalDigitCharacterSet];
-    bool alphanumericPin = self.currentAccount.details.pinKeyboard != LoginKeyboardNumeric;
-    bool containsNonNumericChar = [string stringByTrimmingCharactersInSet:charSet].length > 0;
-    bool abovePinCharLimit = [textField.text stringByReplacingCharactersInRange:range withString:string].length > self.currentAccount.details.authPasscodeLength;
-    
-    // PIN's support numeric or alphanumeric.
-    if (!alphanumericPin && containsNonNumericChar) {
-      return NO;
-    }
-    // PIN's character limit. Zero is unlimited.
-    if (self.currentAccount.details.authPasscodeLength == 0) {
-      return YES;
-    } else if (abovePinCharLimit) {
-      return NO;
-    }
-  }
-
-  return YES;
-}
-
-- (BOOL)textFieldShouldBeginEditing:(__unused UITextField *)textField
-{
-  return ![[NYPLAccount sharedAccount] hasBarcodeAndPIN];
-}
-
-#pragma mark Class Methods
+#pragma mark - Class Methods
 
 
 + (void)
@@ -640,6 +591,11 @@ completionHandler:(void (^)(void))handler
 }
 
 #pragma mark -
+
+- (void)textFieldsDidChange
+{
+  [self updateLoginLogoutCellAppearance];
+}
 
 - (void)scanLibraryCard
 {
@@ -1006,11 +962,6 @@ completionHandler:(void (^)(void))handler
    [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
                                                                   animated:YES
                                                                 completion:nil];
-  [self updateLoginLogoutCellAppearance];
-}
-
-- (void)textFieldsDidChange
-{
   [self updateLoginLogoutCellAppearance];
 }
 
