@@ -43,6 +43,7 @@ Both scripts must be run from the Simplified-iOS repo root.
 
 # Building Without Adobe DRM
 
+**Note:** In order to build dependencies, you need Xcode 11.4 or higher.
 **Note:** This configuration is not currently supported. In the interim, you _should_ be able to get it to build via the following steps:
 
 01. `git clone https://github.com/NYPL-Simplified/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
@@ -51,16 +52,19 @@ Both scripts must be run from the Simplified-iOS repo root.
 04. `git submodule deinit adobe-content-filter && git rm -rf adobe-content-filter`
 05. `git submodule update --init --recursive`
 06. Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already.
-07. Remove "NYPL-Simplified/NYPLAEToolkit" and "AudioEngine.json" in `Cartfile` and `Cartfile.resolved`.
+07. Remove "NYPL-Simplified/NYPLAEToolkit" from `Cartfile` and `Cartfile.resolved`.
 08. `carthage bootstrap --platform ios --use-ssh`
 09. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
 10. `cp Accounts.json.example Simplified/Accounts.json`.
-11. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
-12. `open Simplified.xcodeproj`
-13. Remove import of "Simplified+RMSDK.xcconfig" from "Simplified.xcconfig".
-14. Delete `NYPLAEToolkit.framework` and `AudioEngine.framework` from "Link Binary with Libraries", and remove input and output filepaths for `AudioEngine.framework` and `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)`.
-15. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
-16. Build.
+11. `cp GoogleService-Info.plist.example GoogleService-Info.plist` and edit with you firebase project config.
+12. `cp ReaderClientCert.sig.example Simplified/ReaderClientCert.sig` **Note:** This is skeleton only, contact project admins to obtain a copy of a real file. 
+13. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
+14. `open Simplified.xcodeproj`
+15. Comment out/remove line with include of "Simplified+RMSDK.xcconfig" in "Simplified.xcconfig".
+16. Delete `NYPLAEToolkit.framework`, `AudioEngine.framework`, `libADEPT.a` and `libAdobe Content Filter.a` from _General_ -> _Frameworks, Libraries, and Embedded Content_ section in project settings.
+17. Remove input and output filepaths for `AudioEngine.framework` and `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)` _Build Phase_ in project settings.
+18. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
+19. Build.
 
 # Contributing
 

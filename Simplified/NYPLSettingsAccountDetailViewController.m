@@ -466,15 +466,15 @@ double const requestTimeoutInterval = 25.0;
 #else
 
   if([NYPLBookRegistry sharedRegistry].syncing == YES) {
-    [self presentViewController:[NYPLAlertController
+    [self presentViewController:[NYPLAlertUtils
                                  alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
                                  message:@"SettingsAccountViewControllerCannotLogOutMessage"]
                        animated:YES
                      completion:nil];
   } else {
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountType];
-    [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountType];
-    [[NYPLAccount sharedAccount:self.selectedAccountType] removeAll];
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedNYPLAccount.userID];
+    [[NYPLBookRegistry sharedRegistry] reset:self.selectedNYPLAccount.userID];
+    [[NYPLAccount sharedAccount:self.selectedNYPLAccount.userID] removeAll];
     [self setupTableData];
     [self.tableView reloadData];
     [self removeActivityTitle];
@@ -578,6 +578,7 @@ double const requestTimeoutInterval = 25.0;
   [task resume];
 }
 
+#if defined(FEATURE_DRM_CONNECTOR)
 - (void)processCredsValidationSuccessUsingDRMWithData:(NSData*)data
 {
   NSError *pDocError = nil;
@@ -635,6 +636,7 @@ double const requestTimeoutInterval = 25.0;
     [self authorizationAttemptDidFinish:success error:error];
   }];
 }
+#endif
 
 - (void)processCredsValidationFailureWithData:(NSData * const)data
                                         error:(NSError * const)error
