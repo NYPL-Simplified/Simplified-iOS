@@ -1,6 +1,6 @@
 # System Requirements
 
-- Install the latest Xcode in `/Applications`, open it and make sure to install additional components if it asks you.
+- Install the latest Xcode (11.4 or higher) in `/Applications`, open it and make sure to install additional components if it asks you.
 - Install [Carthage](https://github.com/Carthage/Carthage) if you haven't already. Using `brew` is recommended.
 
 # Building With Adobe DRM
@@ -43,7 +43,6 @@ Both scripts must be run from the Simplified-iOS repo root.
 
 # Building Without Adobe DRM
 
-**Note:** In order to build dependencies, you need Xcode 11.4 or higher.
 **Note:** This configuration is not currently supported. In the interim, you _should_ be able to get it to build via the following steps:
 
 01. `git clone https://github.com/NYPL-Simplified/Simplified-iOS.git` or `git clone git@github.com:NYPL-Simplified/Simplified-iOS.git`
@@ -61,10 +60,11 @@ Both scripts must be run from the Simplified-iOS repo root.
 13. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
 14. `open Simplified.xcodeproj`
 15. Comment out/remove line with include of "Simplified+RMSDK.xcconfig" in "Simplified.xcconfig".
-16. Delete `NYPLAEToolkit.framework`, `AudioEngine.framework`, `libADEPT.a` and `libAdobe Content Filter.a` from _General_ -> _Frameworks, Libraries, and Embedded Content_ section in project settings.
-17. Remove input and output filepaths for `AudioEngine.framework` and `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)` _Build Phase_ in project settings.
-18. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
-19. Build.
+16. Remove `FEATURE_DRM_CONNECTOR` entries in _Build Settings_ -> _Swift Compiler - Custom Flags_ -> _Active Compilation Conditions_ in project settings
+17. Delete `NYPLAEToolkit.framework`, `AudioEngine.framework`, `libADEPT.a` and `libAdobe Content Filter.a` from _General_ -> _Frameworks, Libraries, and Embedded Content_ section in project settings.
+18. Remove input and output filepaths for `AudioEngine.framework` and `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)` _Build Phase_ in project settings.
+19. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
+20. Build.
 
 # Contributing
 
