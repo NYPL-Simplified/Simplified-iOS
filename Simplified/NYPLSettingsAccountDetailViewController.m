@@ -472,9 +472,9 @@ double const requestTimeoutInterval = 25.0;
                        animated:YES
                      completion:nil];
   } else {
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedNYPLAccount.userID];
-    [[NYPLBookRegistry sharedRegistry] reset:self.selectedNYPLAccount.userID];
-    [[NYPLAccount sharedAccount:self.selectedNYPLAccount.userID] removeAll];
+    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
+    [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
+    [[NYPLAccount sharedAccount:self.selectedAccountId] removeAll];
     [self setupTableData];
     [self.tableView reloadData];
     [self removeActivityTitle];
