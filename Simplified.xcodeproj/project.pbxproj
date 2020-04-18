@@ -524,7 +524,6 @@
 		11F54C2919423A040086FCAF /* NYPLOPDSLinkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLOPDSLinkTests.m; sourceTree = "<group>"; };
 		145798F5215BE9E300F68AFD /* ProblemReportEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProblemReportEmail.swift; sourceTree = "<group>"; };
 		145DA48D215441A70055DB93 /* ZXingObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZXingObjC.framework; path = Carthage/Build/iOS/ZXingObjC.framework; sourceTree = "<group>"; };
-		145DA48F2154429E0055DB93 /* Bugsnag.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bugsnag.framework; path = Carthage/Build/iOS/Bugsnag.framework; sourceTree = "<group>"; };
 		145DA4912154464F0055DB93 /* SQLite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite.framework; path = Carthage/Build/iOS/SQLite.framework; sourceTree = "<group>"; };
 		145DA49321544A3F0055DB93 /* NYPLCardCreator.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NYPLCardCreator.framework; path = Carthage/Build/iOS/NYPLCardCreator.framework; sourceTree = "<group>"; };
 		145DA49521544A420055DB93 /* PureLayout.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PureLayout.framework; path = Carthage/Build/iOS/PureLayout.framework; sourceTree = "<group>"; };
@@ -1316,7 +1315,6 @@
 				145DA49521544A420055DB93 /* PureLayout.framework */,
 				145DA49321544A3F0055DB93 /* NYPLCardCreator.framework */,
 				145DA4912154464F0055DB93 /* SQLite.framework */,
-				145DA48F2154429E0055DB93 /* Bugsnag.framework */,
 				145DA48D215441A70055DB93 /* ZXingObjC.framework */,
 				03B0922F1E78871A00AD338D /* MediaPlayer.framework */,
 				03B0922D1E7886ED00AD338D /* CoreVideo.framework */,
