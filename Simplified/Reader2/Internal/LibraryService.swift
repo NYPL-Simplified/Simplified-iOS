@@ -55,15 +55,14 @@ final class LibraryService: NSObject, Loggable {
       return
     }
 
-    guard let drmService = drmLibraryServices.first(where: { $0.brand == drm.brand }),
-      let url = URL(string: container.rootFile.rootPath) else
-    {
+    guard let drmService = drmLibraryServices.first(where: { $0.brand == drm.brand }) else {
       // TODO: SIMPLY-2650
       //delegate?.libraryService(self, presentError: LibraryError.drmNotSupported(drm.brand))
       completion(.success(nil))
       return
     }
 
+    let url = URL(fileURLWithPath: container.rootFile.rootPath)
     drmService.loadPublication(at: url, drm: drm) { result in
       switch result {
       case .success(let drm):
