@@ -21,9 +21,7 @@ git submodule update --init --recursive
 ```bash
 ./build-3rd-parties-dependencies.sh <Debug | Release>
 ```
-
 04. Open Simplified.xcodeproj and Build!
-
 
 ## Building Dependencies Individually
 
@@ -61,6 +59,23 @@ Both scripts must be run from the Simplified-iOS repo root.
 14. Delete `NYPLAEToolkit.framework` and `AudioEngine.framework` from "Link Binary with Libraries", and remove input and output filepaths for `AudioEngine.framework` and `NYPLAEToolkit.framework` from `Copy Frameworks (Carthage)`.
 15. Note: For now, we recommend keeping any unstaged changes as a single git stash until better dynamic build support is added.
 16. Build.
+
+# Building for Readium 2 Integration
+
+For working on integrating R2 into SimplyE, use the `feature/readium2` branch. First build the app following the steps above for building with/without DRM.
+
+Then we recommend using the SimplifiedR2.workspace. This assumes you have checked out the following frameworks (clone them as siblings of `Simplified-iOS` on the file system):
+```bash
+cd Simplified-iOS/..
+git clone https://github.com/readium/r2-shared-swift
+git clone https://github.com/readium/r2-streamer-swift
+git clone https://github.com/readium/r2-navigator-swift
+```
+You can then remove the related lines from the Cartfile (for a faster build) and run:
+```bash
+./carthage-update-simplye.sh Debug
+```
+Open the workspace and use the `SimplyE-R2dev` target to build the app.
 
 # Contributing
 
