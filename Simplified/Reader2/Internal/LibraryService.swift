@@ -55,15 +55,14 @@ final class LibraryService: NSObject, Loggable {
       return
     }
 
-    guard let drmService = drmLibraryServices.first(where: { $0.brand == drm.brand }),
-      let url = URL(string: container.rootFile.rootPath) else
-    {
+    guard let drmService = drmLibraryServices.first(where: { $0.brand == drm.brand }) else {
       // TODO: SIMPLY-2650
       //delegate?.libraryService(self, presentError: LibraryError.drmNotSupported(drm.brand))
       completion(.success(nil))
       return
     }
 
+    let url = URL(fileURLWithPath: container.rootFile.rootPath)
     drmService.loadPublication(at: url, drm: drm) { result in
       switch result {
       case .success(let drm):
@@ -81,15 +80,16 @@ final class LibraryService: NSObject, Loggable {
   }
 
   func preparePresentation(of publication: Publication, book: NYPLBook, with container: Container) {
-    // If the book is a webpub, it means it is loaded remotely from a URL, and it doesn't need to be added to the publication server.
+    // If the book is a webpub, it means it is loaded remotely from a URL,
+    // and it doesn't need to be added to the publication server.
     if publication.format != .webpub {
       publicationServer.removeAll()
-      guard let bookURLStr = book.url?.absoluteString else {
+      guard let bookRelativePath = book.url?.lastPathComponent else {
         log(.error, "Book with ID \(book.identifier ?? "''") has no usable URL")
         return
       }
       do {
-        try publicationServer.add(publication, with: container, at: bookURLStr)
+        try publicationServer.add(publication, with: container, at: bookRelativePath)
       } catch {
         log(.error, error)
       }

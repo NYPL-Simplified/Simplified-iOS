@@ -1,4 +1,6 @@
-#import "SimplyE-Swift.h"
+@import WebKit;
+
+@class Account;
 
 @interface NYPLSettingsEULAViewController : UIViewController <WKNavigationDelegate>
 
