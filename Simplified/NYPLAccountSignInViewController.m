@@ -76,7 +76,7 @@ CGFloat const marginPadding = 2.0;
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(accountDidChange)
-   name:NSNotification.NYPLCurrentAccountDidChange
+   name:NSNotification.NYPLUserAccountDidChange
    object:nil];
   
   [[NSNotificationCenter defaultCenter]
