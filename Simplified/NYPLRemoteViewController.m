@@ -13,8 +13,7 @@
 @property (nonatomic) UILabel *activityIndicatorLabel;
 @property (nonatomic) NSURLConnection *connection;
 @property (nonatomic) NSMutableData *data;
-@property (nonatomic, strong)
-  UIViewController *(^handler)(NYPLRemoteViewController *remoteViewController, NSData *data, NSURLResponse *response);
+@property (nonatomic, copy) UIViewController *(^handler)(NYPLRemoteViewController *remoteViewController, NSData *data, NSURLResponse *response);
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic, strong) NSURLResponse *response;
 
@@ -23,12 +22,12 @@
 @implementation NYPLRemoteViewController
 
 - (instancetype)initWithURL:(NSURL *const)URL
-          completionHandler:(UIViewController *(^ const)
+                    handler:(UIViewController *(^ const)
                              (NYPLRemoteViewController *remoteViewController,
                               NSData *data,
                               NSURLResponse *response))handler
 {
-  self = [super init];
+  self = [super initWithNibName:nil bundle:nil];
   if(!self) return nil;
   
   if(!handler) {
@@ -162,7 +161,10 @@
       [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
                                                 url:[self.response URL]
                                             context:@"RemoteVC-errorResponse"];
-      alert = [NYPLAlertUtils alertWithTitle:@"Error" message:@"Unknown error parsing problem document"];
+      alert = [NYPLAlertUtils
+               alertWithTitle:NSLocalizedString(@"Error", @"Title for a generic error")
+               message:NSLocalizedString(@"Unknown error parsing problem document",
+                                         @"Message for a problem document error")];
     } else {
       alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
     }

@@ -6,8 +6,6 @@
 #import "NYPLOPDS.h"
 #import "NYPLXML.h"
 #import "SimplyE-Swift.h"
-
-
 #import "NYPLCatalogFeedViewController.h"
 
 @implementation NYPLCatalogFeedViewController
@@ -15,54 +13,61 @@
 - (instancetype)initWithURL:(NSURL *const)URL
 {
   self = [super initWithURL:URL
-          completionHandler:^UIViewController *
-          (NYPLRemoteViewController *const remoteViewController,
-           NSData *const data,
-           NSURLResponse *const response) {
-            if ([response.MIMEType isEqualToString:@"application/atom+xml"]) {
-              NYPLXML *const XML = [NYPLXML XMLWithData:data];
-              if(!XML) {
-                NYPLLOG(@"Cannot initialize due to invalid XML.");
-                return nil;
-              }
-              NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:XML];
-              if(!feed) {
-                NYPLLOG(@"Cannot initialize due to XML not representing an OPDS feed.");
-                return nil;
-              }
-              switch(feed.type) {
-                case NYPLOPDSFeedTypeAcquisitionGrouped:
-                  return [[NYPLCatalogGroupedFeedViewController alloc]
-                          initWithGroupedFeed:[[NYPLCatalogGroupedFeed alloc]
-                                               initWithOPDSFeed:feed]
-                          remoteViewController:remoteViewController];
-                case NYPLOPDSFeedTypeAcquisitionUngrouped:
-                  return [[NYPLCatalogUngroupedFeedViewController alloc]
-                          initWithUngroupedFeed:[[NYPLCatalogUngroupedFeed alloc]
-                                                 initWithOPDSFeed:feed]
-                          remoteViewController:remoteViewController];
-                case NYPLOPDSFeedTypeInvalid:
-                  NYPLLOG(@"Cannot initialize due to invalid feed.");
-                  return nil;
-                case NYPLOPDSFeedTypeNavigation: {
-                  return [self navigationFeedWithData:XML remoteVC:remoteViewController];
-                }
-              }
-            }
-            else {
-              NYPLLOG(@"Did not recieve XML atom feed, cannot initialize");
-              return nil;
-            }
-          }];
-  
-  if(!self) return nil;
+                    handler:^UIViewController *(NYPLRemoteViewController *remoteVC,
+                                                NSData *data,
+                                                NSURLResponse *response) {
+
+    return [NYPLCatalogFeedViewController makeWithRemoteVC:remoteVC
+                                                      data:data
+                                               urlResponse:response];
+  }];
   
   return self;
 }
 
++ (UIViewController*)makeWithRemoteVC:(NYPLRemoteViewController *)remoteVC
+                                 data:(NSData*)data
+                          urlResponse:(NSURLResponse*)response
+{
+  if (![response.MIMEType isEqualToString:@"application/atom+xml"]) {
+    NYPLLOG(@"Did not recieve XML atom feed, cannot initialize");
+    return nil;
+  }
+
+  NYPLXML *const XML = [NYPLXML XMLWithData:data];
+  if(!XML) {
+    NYPLLOG(@"Cannot initialize due to invalid XML.");
+    return nil;
+  }
+  NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:XML];
+  if(!feed) {
+    NYPLLOG(@"Cannot initialize due to XML not representing an OPDS feed.");
+    return nil;
+  }
+  switch(feed.type) {
+    case NYPLOPDSFeedTypeAcquisitionGrouped:
+      return [[NYPLCatalogGroupedFeedViewController alloc]
+              initWithGroupedFeed:[[NYPLCatalogGroupedFeed alloc]
+                                   initWithOPDSFeed:feed]
+              remoteViewController:remoteVC];
+    case NYPLOPDSFeedTypeAcquisitionUngrouped:
+      return [[NYPLCatalogUngroupedFeedViewController alloc]
+              initWithUngroupedFeed:[[NYPLCatalogUngroupedFeed alloc]
+                                     initWithOPDSFeed:feed]
+              remoteViewController:remoteVC];
+    case NYPLOPDSFeedTypeInvalid:
+      NYPLLOG(@"Cannot initialize due to invalid feed.");
+      return nil;
+    case NYPLOPDSFeedTypeNavigation: {
+      return [NYPLCatalogFeedViewController navigationFeedWithData:XML
+                                                          remoteVC:remoteVC];
+    }
+  }
+}
+
 // Only NavigationType Feed currently supported in the app is for two
 // "Instant Classic" feeds presented based on user's age.
-- (UIViewController *)navigationFeedWithData:(NYPLXML *)data remoteVC:(NYPLRemoteViewController *)vc
++ (UIViewController *)navigationFeedWithData:(NYPLXML *)data remoteVC:(NYPLRemoteViewController *)vc
 {
   NYPLXML *gatedXML = [data firstChildWithName:@"gate"];
   if (!gatedXML) {

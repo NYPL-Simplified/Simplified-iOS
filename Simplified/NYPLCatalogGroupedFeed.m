@@ -5,7 +5,6 @@
 #import "NYPLNull.h"
 #import "NYPLOPDS.h"
 #import "NYPLOpenSearchDescription.h"
-#import "NYPLSession.h"
 #import "NYPLXML.h"
 
 #import "NYPLConfiguration.h"

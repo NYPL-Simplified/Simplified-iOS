@@ -3,7 +3,6 @@
 @import PDFRendererProvider;
 
 #import "NYPLAccountSignInViewController.h"
-#import "NYPLSession.h"
 #import "NYPLBook.h"
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
