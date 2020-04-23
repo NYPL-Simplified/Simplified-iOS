@@ -12,6 +12,7 @@ extension Notification.Name {
 
 @objcMembers class NYPLUserAccount : NSObject {
   static private let shared = NYPLUserAccount()
+  static private let accountInfoLock = NSRecursiveLock()
     
   private var authorizationIdentifierKey = "NYPLAccountAuthorization"
   private var barcodeKey = "NYPLAccountBarcode"
@@ -33,6 +34,10 @@ extension Notification.Name {
   @objc(sharedAccount:)
   class func sharedAccount(libraryUUID: String?) -> NYPLUserAccount
   {
+    accountInfoLock.lock()
+    defer {
+      accountInfoLock.unlock()
+    }
     if let uuid = libraryUUID,
         uuid != AccountsManager.NYPLUserAccountUUIDs[0]
     {
@@ -152,6 +157,11 @@ extension Notification.Name {
       return
     }
     
+    NYPLUserAccount.accountInfoLock.lock()
+    defer {
+        NYPLUserAccount.accountInfoLock.unlock()
+    }
+    
     sharedKeychain.setObject(barcode, forKey: barcodeKey)
     sharedKeychain.setObject(PIN, forKey: PINKey)
     
@@ -172,6 +182,11 @@ extension Notification.Name {
       return
     }
     
+    NYPLUserAccount.accountInfoLock.lock()
+    defer {
+        NYPLUserAccount.accountInfoLock.unlock()
+    }
+    
     sharedKeychain.setObject(token, forKey: adobeTokenKey)
     sharedKeychain.setObject(patron, forKey: patronKey)
     
@@ -185,6 +200,11 @@ extension Notification.Name {
   func setAdobeVender(vendor: String) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
+    }
+    
+    NYPLUserAccount.accountInfoLock.lock()
+    defer {
+        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(vendor, forKey: adobeVendorKey)
@@ -201,6 +221,11 @@ extension Notification.Name {
       return
     }
     
+    NYPLUserAccount.accountInfoLock.lock()
+    defer {
+        NYPLUserAccount.accountInfoLock.unlock()
+    }
+    
     sharedKeychain.setObject(token, forKey: adobeTokenKey)
     
     NotificationCenter.default.post(
@@ -215,6 +240,11 @@ extension Notification.Name {
       return
     }
     
+    NYPLUserAccount.accountInfoLock.lock()
+    defer {
+        NYPLUserAccount.accountInfoLock.unlock()
+    }
+    
     sharedKeychain.setObject(licensor, forKey: licensorKey)
   }
   
@@ -224,6 +254,11 @@ extension Notification.Name {
       return
     }
     
+    NYPLUserAccount.accountInfoLock.lock()
+    defer {
+        NYPLUserAccount.accountInfoLock.unlock()
+    }
+    
     sharedKeychain.setObject(identifier, forKey: authorizationIdentifierKey)
   }
   
@@ -231,6 +266,11 @@ extension Notification.Name {
   func setPatron(patron: [String : Any]) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
+    }
+    
+    NYPLUserAccount.accountInfoLock.lock()
+    defer {
+        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(patron, forKey: patronKey)
@@ -247,6 +287,11 @@ extension Notification.Name {
       return
     }
     
+    NYPLUserAccount.accountInfoLock.lock()
+    defer {
+        NYPLUserAccount.accountInfoLock.unlock()
+    }
+    
     sharedKeychain.setObject(token, forKey: authTokenKey)
     
     NotificationCenter.default.post(
@@ -259,6 +304,11 @@ extension Notification.Name {
   func setProvider(provider: String) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
+    }
+    
+    NYPLUserAccount.accountInfoLock.lock()
+    defer {
+        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(provider, forKey: providerKey)
@@ -275,6 +325,11 @@ extension Notification.Name {
       return
     }
     
+    NYPLUserAccount.accountInfoLock.lock()
+    defer {
+        NYPLUserAccount.accountInfoLock.unlock()
+    }
+    
     sharedKeychain.setObject(id, forKey: userIDKey)
     
     NotificationCenter.default.post(
@@ -287,6 +342,11 @@ extension Notification.Name {
   func setDeviceID(id: String) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
+    }
+    
+    NYPLUserAccount.accountInfoLock.lock()
+    defer {
+        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(id, forKey: deviceIDKey)
@@ -304,6 +364,11 @@ extension Notification.Name {
       return
     }
     
+    NYPLUserAccount.accountInfoLock.lock()
+    defer {
+        NYPLUserAccount.accountInfoLock.unlock()
+    }
+    
     sharedKeychain.removeObject(forKey: barcodeKey)
     sharedKeychain.removeObject(forKey: authorizationIdentifierKey)
     sharedKeychain.removeObject(forKey: PINKey)
@@ -317,6 +382,11 @@ extension Notification.Name {
   func removeAll() {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
+    }
+    
+    NYPLUserAccount.accountInfoLock.lock()
+    defer {
+        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.removeObject(forKey: adobeTokenKey)
