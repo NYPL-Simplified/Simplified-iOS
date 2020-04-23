@@ -256,7 +256,7 @@ didSelectItemAtIndexPath:(NSIndexPath *const)indexPath
 {  
   Account *const account = [AccountsManager shared].currentAccount;
   if (account.details.needsAuth) {
-    if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+    if([[NYPLUserAccount sharedAccount] hasBarcodeAndPIN]) {
       [[NYPLBookRegistry sharedRegistry] syncWithStandardAlertsOnCompletion];
     } else {
       [NYPLAccountSignInViewController requestCredentialsUsingExistingBarcode:NO completionHandler:nil];

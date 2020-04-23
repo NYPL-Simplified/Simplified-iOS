@@ -26,7 +26,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
     static let strict_offline: LoadOptions = [.preferCache, .cacheOnly]
   }
 
-  static let NYPLAccountUUIDs = [
+  static let NYPLUserAccountUUIDs = [
     "urn:uuid:065c0c11-0d0f-42a3-82e4-277b18786949",
     "urn:uuid:edef2358-9f6a-4ce6-b64f-9b351ec68ac4",
     "urn:uuid:56906f26-2c9a-4ae9-bd02-552557720b99"
@@ -62,7 +62,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
     set {
       UserDefaults.standard.set(newValue?.uuid,
                                 forKey: currentAccountIdentifierKey)
-      NYPLErrorLogger.setUserID(NYPLAccount.sharedAccount().barcode)
+      NYPLErrorLogger.setUserID(NYPLUserAccount.sharedAccount().barcode)
       NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
     }
   }

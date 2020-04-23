@@ -280,7 +280,7 @@ static NSString *const RecordsKey = @"records";
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
       }];
       return;
-    } else if (![[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
+    } else if (![[NYPLUserAccount sharedAccount] hasBarcodeAndPIN]) {
       NYPLLOG(@"[syncWithCompletionHandler] No barcode and PIN");
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(completion) completion(NO);
@@ -311,7 +311,7 @@ static NSString *const RecordsKey = @"records";
        return;
      }
 
-    [NYPLErrorLogger setUserID:[[NYPLAccount sharedAccount] barcode]];
+    [NYPLErrorLogger setUserID:[[NYPLUserAccount sharedAccount] barcode]];
      
      if(!self.syncShouldCommit) {
        NYPLLOG(@"[syncWithCompletionHandler] Sync shouldn't commit");
@@ -329,8 +329,8 @@ static NSString *const RecordsKey = @"records";
        [self performSynchronizedWithoutBroadcasting:^{
 
          if (feed.licensor) {
-           [[NYPLAccount sharedAccount] setLicensor:feed.licensor];
-           NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",feed.licensor[@"clientToken"],[NYPLAccount sharedAccount].userID);
+           [[NYPLUserAccount sharedAccount] setLicensor:feed.licensor];
+           NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@",feed.licensor[@"clientToken"],[NYPLUserAccount sharedAccount].userID);
          } else {
            NYPLLOG(@"A Licensor Token was not received or parsed from the OPDS feed.");
          }

@@ -691,7 +691,7 @@ decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
                                   progressWithinChapter:progressWithinChapter
                                   progressWithinBook:self.progressWithinBook
                                   time:nil
-                                  device:[[NYPLAccount sharedAccount] deviceID]];
+                                  device:[[NYPLUserAccount sharedAccount] deviceID]];
   
   if (bookmark) {
     [self.delegate updateBookmarkIcon:YES];

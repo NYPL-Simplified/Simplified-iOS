@@ -73,9 +73,9 @@
 { 
   #if defined(FEATURE_DRM_CONNECTOR)
     // Try to prevent blank books bug
-    if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount] userID]
-                                           withDevice:[[NYPLAccount sharedAccount] deviceID]]) &&
-        ([[NYPLAccount sharedAccount] hasBarcodeAndPIN])) {
+    if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLUserAccount sharedAccount] userID]
+                                           withDevice:[[NYPLUserAccount sharedAccount] deviceID]]) &&
+        ([[NYPLUserAccount sharedAccount] hasBarcodeAndPIN])) {
       [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:^{
         [self openBook:book];   // with successful DRM activation
       }];
@@ -110,7 +110,7 @@
 - (void)openEPUB:(NYPLBook *)book {
   NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
   [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
-  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLAccount sharedAccount] completion:^(BOOL enableSync) {
+  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
     if (enableSync == YES) {
       Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
       currentAccount.details.syncPermissionGranted = enableSync;

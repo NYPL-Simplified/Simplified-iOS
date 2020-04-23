@@ -93,9 +93,9 @@ double const requestTimeoutInterval = 25.0;
   return [self init];
 }
 
-- (NYPLAccount *)selectedNYPLAccount
+- (NYPLUserAccount *)selectedNYPLUserAccount
 {
-  return [NYPLAccount sharedAccount:self.selectedAccountId];
+  return [NYPLUserAccount sharedAccount:self.selectedAccountId];
 }
 
 - (instancetype)init
@@ -352,8 +352,8 @@ double const requestTimeoutInterval = 25.0;
 {
   // For now, only supports libraries granted access in Accounts.json,
   // is signed in, and has an authorization ID returned from the loans feed.
-  return ((self.selectedNYPLAccount.hasBarcodeAndPIN) &&
-          (self.selectedNYPLAccount.authorizationIdentifier) &&
+  return ((self.selectedNYPLUserAccount.hasBarcodeAndPIN) &&
+          (self.selectedNYPLUserAccount.authorizationIdentifier) &&
           (self.selectedAccount.details.supportsBarcodeDisplay));
 }
 
@@ -440,8 +440,8 @@ double const requestTimeoutInterval = 25.0;
          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
        } else {
          if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
-           [self.selectedNYPLAccount setLicensor:[pDoc.drm[0] licensor]];
-           NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@", pDoc.drm[0].clientToken, self.selectedNYPLAccount.userID);
+           [self.selectedNYPLUserAccount setLicensor:[pDoc.drm[0] licensor]];
+           NYPLLOG_F(@"\nLicensor Token Updated: %@\nFor account: %@", pDoc.drm[0].clientToken, self.selectedNYPLUserAccount.userID);
          } else {
            NYPLLOG_F(@"\nLicensor Token Invalid: %@", [pDoc toJson])
          }
@@ -490,12 +490,12 @@ double const requestTimeoutInterval = 25.0;
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
     [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
     
-    [self.selectedNYPLAccount removeAll];
+    [self.selectedNYPLUserAccount removeAll];
     [self setupTableData];
     [self.tableView reloadData];
   };
 
-  NSDictionary *licensor = [self.selectedNYPLAccount licensor];
+  NSDictionary *licensor = [self.selectedNYPLUserAccount licensor];
   if (!licensor) {
     NYPLLOG(@"No Licensor available to deauthorize device. Signing out NYPLAccount creds anyway.");
     [NYPLErrorLogger logInvalidLicensorWithAccountID:self.selectedAccountId];
@@ -512,14 +512,14 @@ double const requestTimeoutInterval = 25.0;
   NYPLLOG_F(@"\nLicensor: %@\n",licensor);
   NYPLLOG_F(@"Token Username: %@\n",tokenUsername);
   NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
-  NYPLLOG_F(@"UserID: %@\n",[self.selectedNYPLAccount userID]);
-  NYPLLOG_F(@"DeviceID: %@\n",[self.selectedNYPLAccount deviceID]);
+  NYPLLOG_F(@"UserID: %@\n",[self.selectedNYPLUserAccount userID]);
+  NYPLLOG_F(@"DeviceID: %@\n",[self.selectedNYPLUserAccount deviceID]);
   
   [[NYPLADEPT sharedInstance]
    deauthorizeWithUsername:tokenUsername
    password:tokenPassword
-   userID:[self.selectedNYPLAccount userID]
-   deviceID:[self.selectedNYPLAccount deviceID]
+   userID:[self.selectedNYPLUserAccount userID]
+   deviceID:[self.selectedNYPLUserAccount deviceID]
    completion:^(BOOL success, __unused NSError *error) {
      
      if(!success) {
@@ -582,13 +582,13 @@ double const requestTimeoutInterval = 25.0;
   }
 
   if (pDoc.authorizationIdentifier) {
-    [[NYPLAccount sharedAccount:self.selectedAccountId] setAuthorizationIdentifier:pDoc.authorizationIdentifier];
+    [[NYPLUserAccount sharedAccount:self.selectedAccountId] setAuthorizationIdentifier:pDoc.authorizationIdentifier];
   } else {
     NYPLLOG(@"Authorization ID (Barcode String) was nil.");
   }
 
   if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
-    [self.selectedNYPLAccount setLicensor:[pDoc.drm[0] licensor]];
+    [self.selectedNYPLUserAccount setLicensor:[pDoc.drm[0] licensor]];
   } else {
     NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
     [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Trouble locating DRMs in profile doc" }]];
@@ -606,7 +606,7 @@ double const requestTimeoutInterval = 25.0;
   NYPLLOG_F(@"Token Password: %@\n",tokenPassword);
 
   [[NYPLADEPT sharedInstance]
-   authorizeWithVendorID:[self.selectedNYPLAccount licensor][@"vendor"]
+   authorizeWithVendorID:[self.selectedNYPLUserAccount licensor][@"vendor"]
    username:tokenUsername
    password:tokenPassword
    completion:^(BOOL success, NSError *error, NSString *deviceID, NSString *userID) {
@@ -618,8 +618,8 @@ double const requestTimeoutInterval = 25.0;
 
     if (success) {
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [self.selectedNYPLAccount setUserID:userID];
-        [self.selectedNYPLAccount setDeviceID:deviceID];
+        [self.selectedNYPLUserAccount setUserID:userID];
+        [self.selectedNYPLUserAccount setDeviceID:deviceID];
       }];
     } else {
       [NYPLErrorLogger logLocalAuthFailedWithError:error libraryName:self.selectedAccount.name];
@@ -698,7 +698,7 @@ double const requestTimeoutInterval = 25.0;
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if (success) {
-      [self.selectedNYPLAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
+      [self.selectedNYPLUserAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
 
       if ([self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]) {
         void (^handler)(void) = self.completionHandler;
@@ -762,7 +762,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindLogInSignOut: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       NSString *logoutString;
-      if([self.selectedNYPLAccount hasBarcodeAndPIN]) {
+      if([self.selectedNYPLUserAccount hasBarcodeAndPIN]) {
         if ([self syncButtonShouldBeVisible] && !self.syncSwitch.on) {
           logoutString = NSLocalizedString(@"SettingsAccountViewControllerLogoutMessageSync", nil);
         } else {
@@ -993,7 +993,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         NYPLLOG(@"A nonvalid library was attempting to create a barcode image.");
       } else {
         NYPLBarcode *barcode = [[NYPLBarcode alloc] initWithLibrary:self.selectedAccount.name];
-        UIImage *barcodeImage = [barcode imageFromString:self.selectedNYPLAccount.authorizationIdentifier
+        UIImage *barcodeImage = [barcode imageFromString:self.selectedNYPLUserAccount.authorizationIdentifier
                                           superviewWidth:self.tableView.bounds.size.width
                                                     type:NYPLBarcodeTypeCodabar];
 
@@ -1306,7 +1306,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (BOOL)textFieldShouldBeginEditing:(__unused UITextField *)textField
 {
-  return ![self.selectedNYPLAccount hasBarcodeAndPIN];
+  return ![self.selectedNYPLUserAccount hasBarcodeAndPIN];
 }
 
 #pragma mark UITextFieldDelegate
@@ -1439,12 +1439,12 @@ replacementString:(NSString *)string
 - (void)accountDidChange
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if(self.selectedNYPLAccount.hasBarcodeAndPIN) {
+    if(self.selectedNYPLUserAccount.hasBarcodeAndPIN) {
       [self checkSyncPermissionForCurrentPatron];
-      self.usernameTextField.text = self.selectedNYPLAccount.barcode;
+      self.usernameTextField.text = self.selectedNYPLUserAccount.barcode;
       self.usernameTextField.enabled = NO;
       self.usernameTextField.textColor = [UIColor grayColor];
-      self.PINTextField.text = self.selectedNYPLAccount.PIN;
+      self.PINTextField.text = self.selectedNYPLUserAccount.PIN;
       self.PINTextField.textColor = [UIColor grayColor];
       self.barcodeScanButton.hidden = YES;
     } else {
@@ -1465,7 +1465,7 @@ replacementString:(NSString *)string
 
 - (void)updateLoginLogoutCellAppearance
 {
-  if([self.selectedNYPLAccount hasBarcodeAndPIN]) {
+  if([self.selectedNYPLUserAccount hasBarcodeAndPIN]) {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
@@ -1585,7 +1585,7 @@ replacementString:(NSString *)string
 {
   return ([NYPLConfiguration cardCreationEnabled] &&
           self.selectedAccount.details.signUpUrl != nil &&
-          ![self.selectedNYPLAccount hasBarcodeAndPIN]);
+          ![self.selectedNYPLUserAccount hasBarcodeAndPIN]);
 }
 
 - (void)syncSwitchChanged:(UISwitch*)sender
@@ -1620,7 +1620,7 @@ replacementString:(NSString *)string
   self.permissionCheckIsInProgress = YES;
   self.syncSwitch.enabled = NO;
 
-  [NYPLAnnotations requestServerSyncStatusForAccount:self.selectedNYPLAccount completion:^(BOOL enableSync) {
+  [NYPLAnnotations requestServerSyncStatusForAccount:self.selectedNYPLUserAccount completion:^(BOOL enableSync) {
     if (enableSync == YES) {
       self.selectedAccount.details.syncPermissionGranted = enableSync;
     }
@@ -1635,7 +1635,7 @@ replacementString:(NSString *)string
   // Only supported for now on current active library account
   return ((self.selectedAccount.details.supportsSimplyESync) &&
           [self.selectedAccount.details getLicenseURL:URLTypeAnnotations] &&
-          [self.selectedNYPLAccount hasBarcodeAndPIN] &&
+          [self.selectedNYPLUserAccount hasBarcodeAndPIN] &&
           [self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]);
 }
 

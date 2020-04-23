@@ -27,7 +27,7 @@ import Foundation
     
     var directoryURL = URL.init(fileURLWithPath: paths[0]).appendingPathComponent(Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String)
     
-    if (account != AccountsManager.NYPLAccountUUIDs[0]) {
+    if (account != AccountsManager.NYPLUserAccountUUIDs[0]) {
       directoryURL = URL.init(fileURLWithPath: paths[0]).appendingPathComponent(Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String).appendingPathComponent(String(account))
     }
     return directoryURL

@@ -1,17 +1,17 @@
 import Foundation
 
 extension Notification.Name {
-  static let NYPLAccountDidChange = Notification.Name("NYPLAccountDidChangeNotification")
-  static let NYPLAccountLoginDidChange = Notification.Name("NYPLAccountLoginDidChangeNotification")
+  static let NYPLUserAccountDidChange = Notification.Name("NYPLUserAccountDidChangeNotification")
+  static let NYPLUserAccountLoginDidChange = Notification.Name("NYPLUserAccountLoginDidChangeNotification")
 }
 
 @objc extension NSNotification {
-  public static let NYPLAccountDidChange = Notification.Name.NYPLAccountDidChange
-  public static let NYPLAccountLoginDidChange = Notification.Name.NYPLAccountLoginDidChange
+  public static let NYPLUserAccountDidChange = Notification.Name.NYPLUserAccountDidChange
+  public static let NYPLUserAccountLoginDidChange = Notification.Name.NYPLUserAccountLoginDidChange
 }
 
-@objcMembers class NYPLAccount : NSObject {
-  static private let shared = NYPLAccount()
+@objcMembers class NYPLUserAccount : NSObject {
+  static private let shared = NYPLUserAccount()
     
   private var authorizationIdentifierKey = "NYPLAccountAuthorization"
   private var barcodeKey = "NYPLAccountBarcode"
@@ -25,16 +25,16 @@ extension Notification.Name {
   private var userIDKey = "NYPLAccountUserIDKey"
   private var deviceIDKey = "NYPLAccountDeviceIDKey"
 
-  @objc class func sharedAccount() -> NYPLAccount
+  @objc class func sharedAccount() -> NYPLUserAccount
   {
     return sharedAccount(libraryUUID: AccountsManager.shared.currentAccount?.uuid)
   }
     
   @objc(sharedAccount:)
-  class func sharedAccount(libraryUUID: String?) -> NYPLAccount
+  class func sharedAccount(libraryUUID: String?) -> NYPLUserAccount
   {
     if let uuid = libraryUUID,
-        uuid != AccountsManager.NYPLAccountUUIDs[0]
+        uuid != AccountsManager.NYPLUserAccountUUIDs[0]
     {
       shared.barcodeKey = "NYPLAccountBarcode_\(uuid)"
       shared.authorizationIdentifierKey = "NYPLAccountAuthorization_\(uuid)"
@@ -158,10 +158,10 @@ extension Notification.Name {
     // make sure to set the barcode related to the current account (aka library)
     // not the one we just signed in to, because we could have signed in into
     // library A, but still browsing the catalog of library B.
-    NYPLErrorLogger.setUserID(NYPLAccount.sharedAccount().barcode)
+    NYPLErrorLogger.setUserID(NYPLUserAccount.sharedAccount().barcode)
     
     NotificationCenter.default.post(
-      name: Notification.Name.NYPLAccountDidChange,
+      name: Notification.Name.NYPLUserAccountDidChange,
       object: self
     )
   }
@@ -176,7 +176,7 @@ extension Notification.Name {
     sharedKeychain.setObject(patron, forKey: patronKey)
     
     NotificationCenter.default.post(
-      name: Notification.Name.NYPLAccountDidChange,
+      name: Notification.Name.NYPLUserAccountDidChange,
       object: self
     )
   }
@@ -190,7 +190,7 @@ extension Notification.Name {
     sharedKeychain.setObject(vendor, forKey: adobeVendorKey)
     
     NotificationCenter.default.post(
-      name: Notification.Name.NYPLAccountDidChange,
+      name: Notification.Name.NYPLUserAccountDidChange,
       object: self
     )
   }
@@ -204,7 +204,7 @@ extension Notification.Name {
     sharedKeychain.setObject(token, forKey: adobeTokenKey)
     
     NotificationCenter.default.post(
-      name: Notification.Name.NYPLAccountDidChange,
+      name: Notification.Name.NYPLUserAccountDidChange,
       object: self
     )
   }
@@ -236,7 +236,7 @@ extension Notification.Name {
     sharedKeychain.setObject(patron, forKey: patronKey)
     
     NotificationCenter.default.post(
-      name: Notification.Name.NYPLAccountDidChange,
+      name: Notification.Name.NYPLUserAccountDidChange,
       object: self
     )
   }
@@ -250,7 +250,7 @@ extension Notification.Name {
     sharedKeychain.setObject(token, forKey: authTokenKey)
     
     NotificationCenter.default.post(
-      name: Notification.Name.NYPLAccountDidChange,
+      name: Notification.Name.NYPLUserAccountDidChange,
       object: self
     )
   }
@@ -264,7 +264,7 @@ extension Notification.Name {
     sharedKeychain.setObject(provider, forKey: providerKey)
     
     NotificationCenter.default.post(
-      name: Notification.Name.NYPLAccountDidChange,
+      name: Notification.Name.NYPLUserAccountDidChange,
       object: self
     )
   }
@@ -278,7 +278,7 @@ extension Notification.Name {
     sharedKeychain.setObject(id, forKey: userIDKey)
     
     NotificationCenter.default.post(
-      name: Notification.Name.NYPLAccountDidChange,
+      name: Notification.Name.NYPLUserAccountDidChange,
       object: self
     )
   }
@@ -292,7 +292,7 @@ extension Notification.Name {
     sharedKeychain.setObject(id, forKey: deviceIDKey)
     
     NotificationCenter.default.post(
-      name: Notification.Name.NYPLAccountDidChange,
+      name: Notification.Name.NYPLUserAccountDidChange,
       object: self
     )
   }
@@ -309,7 +309,7 @@ extension Notification.Name {
     sharedKeychain.removeObject(forKey: PINKey)
     
     NotificationCenter.default.post(
-      name: Notification.Name.NYPLAccountDidChange,
+      name: Notification.Name.NYPLUserAccountDidChange,
       object: self
     )
   }
