@@ -108,7 +108,7 @@ double const requestTimeoutInterval = 25.0;
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(accountDidChange)
-   name:NSNotification.NYPLAccountDidChange
+   name:NSNotification.NYPLUserAccountDidChange
    object:nil];
   
   [[NSNotificationCenter defaultCenter]
@@ -1563,7 +1563,7 @@ replacementString:(NSString *)string
                                                  if (completion) { completion(NO); }
                                                }]];
 
-  if ([self.selectedAccountId isEqualToString:[AccountsManager NYPLAccountUUIDs][2]]) {
+  if ([self.selectedAccountId isEqualToString:[AccountsManager NYPLUserAccountUUIDs][2]]) {
     [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alertCont viewController:nil animated:YES completion:nil];
   }
 }
