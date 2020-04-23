@@ -120,7 +120,7 @@ let Version = 1
       if let currentLibrary = AccountsManager.shared.currentAccount?.uuid {
         accountsList.append(currentLibrary)
       }
-      accountsList.append(AccountsManager.NYPLUserAccountUUIDs[2])
+      accountsList.append(AccountsManager.NYPLAccountUUIDs[2])
       self.settingsAccountsList = accountsList
       return accountsList
     }

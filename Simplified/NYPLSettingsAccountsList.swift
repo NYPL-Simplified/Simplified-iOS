@@ -129,8 +129,8 @@
     let sortedLibraryAccounts = self.libraryAccounts.sorted { (a, b) in
       // Check if we're one of the three "special" libraries that always come first.
       // This is a complete hack.
-      let idA = AccountsManager.NYPLUserAccountUUIDs.firstIndex(of: a.uuid) ?? Int.max
-      let idB = AccountsManager.NYPLUserAccountUUIDs.firstIndex(of: b.uuid) ?? Int.max
+      let idA = AccountsManager.NYPLAccountUUIDs.firstIndex(of: a.uuid) ?? Int.max
+      let idB = AccountsManager.NYPLAccountUUIDs.firstIndex(of: b.uuid) ?? Int.max
       if idA <= 2 || idB <= 2 {
         // One of the libraries is special, so sort it first. Lower ids are "more
         // special" than higher ids and thus show up earlier.

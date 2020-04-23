@@ -39,7 +39,7 @@ extension Notification.Name {
       accountInfoLock.unlock()
     }
     if let uuid = libraryUUID,
-        uuid != AccountsManager.NYPLUserAccountUUIDs[0]
+        uuid != AccountsManager.NYPLAccountUUIDs[0]
     {
       shared.barcodeKey = "NYPLAccountBarcode_\(uuid)"
       shared.authorizationIdentifierKey = "NYPLAccountAuthorization_\(uuid)"

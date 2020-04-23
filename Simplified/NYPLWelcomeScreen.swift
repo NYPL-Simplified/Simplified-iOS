@@ -198,10 +198,10 @@ import PureLayout
                 self.showLoadingFailureAlert()
                 return
               }
-              if account.uuid != AccountsManager.NYPLUserAccountUUIDs[2] {
-                NYPLSettings.shared.settingsAccountsList = [account.uuid, AccountsManager.NYPLUserAccountUUIDs[2]]
+              if account.uuid != AccountsManager.NYPLAccountUUIDs[2] {
+                NYPLSettings.shared.settingsAccountsList = [account.uuid, AccountsManager.NYPLAccountUUIDs[2]]
               } else {
-                NYPLSettings.shared.settingsAccountsList = [AccountsManager.NYPLUserAccountUUIDs[2]]
+                NYPLSettings.shared.settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
               }
               self.completion?(account)
             }
@@ -230,7 +230,7 @@ import PureLayout
   }
 
   func instantClassicsTapped() {
-    let classicsId = AccountsManager.NYPLUserAccountUUIDs[2]
+    let classicsId = AccountsManager.NYPLAccountUUIDs[2]
     var loadingOverlay: UIView? = nil
     
     let selectInstantClassics = {
@@ -284,7 +284,7 @@ import PureLayout
 final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
   var accounts: [Account]!
-  var nyplUserAccounts: [Account]!
+  var nyplAccounts: [Account]!
   let completion: (Account) -> ()
   weak var tableView : UITableView!
   
@@ -309,8 +309,8 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
     //FIXME Replace with SettingsAccounts improvements to library selection VC
     //once that gets finalized and merged in.
     self.accounts.sort { $0.name < $1.name }
-    self.nyplUserAccounts = self.accounts.filter { AccountsManager.NYPLUserAccountUUIDs.contains($0.uuid) }
-    self.accounts = self.accounts.filter { !AccountsManager.NYPLUserAccountUUIDs.contains($0.uuid) }
+    self.nyplAccounts = self.accounts.filter { AccountsManager.NYPLAccountUUIDs.contains($0.uuid) }
+    self.accounts = self.accounts.filter { !AccountsManager.NYPLAccountUUIDs.contains($0.uuid) }
 
     self.title = NSLocalizedString("LibraryListTitle", comment: "Title that also informs the user that they should choose a library from the list.")
     self.view.backgroundColor = NYPLConfiguration.backgroundColor()
@@ -322,7 +322,7 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     if indexPath.section == 0 {
-      completion(nyplUserAccounts[indexPath.row])
+      completion(nyplAccounts[indexPath.row])
     } else {
       completion(accounts[indexPath.row])
     }
@@ -334,7 +334,7 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 {
-      return self.nyplUserAccounts.count
+      return self.nyplAccounts.count
     } else {
       return self.accounts.count
     }
@@ -342,7 +342,7 @@ final class NYPLWelcomeScreenAccountList: UIViewController, UITableViewDelegate,
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if indexPath.section == 0 {
-      return cellForLibrary(self.nyplUserAccounts[indexPath.row])
+      return cellForLibrary(self.nyplAccounts[indexPath.row])
     } else {
       return cellForLibrary(self.accounts[indexPath.row])
     }
