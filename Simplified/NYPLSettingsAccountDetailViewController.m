@@ -1523,7 +1523,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                                  if (completion) { completion(NO); }
                                                }]];
 
-  if ([self.selectedAccountId isEqualToString:[AccountsManager NYPLUserAccountUUIDs][2]]) {
+  if ([self.selectedAccountId isEqualToString:[AccountsManager NYPLAccountUUIDs][2]]) {
     [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alertCont viewController:nil animated:YES completion:nil];
   }
 }
