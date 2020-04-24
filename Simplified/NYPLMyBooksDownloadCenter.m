@@ -1,7 +1,6 @@
 @import NYPLAudiobookToolkit;
 
 #import "NSString+NYPLStringAdditions.h"
-#import "NYPLAccount.h"
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBook.h"
@@ -214,12 +213,12 @@ didFinishDownloadingToURL:(NSURL *const)location
           
         } else {
           
-          NYPLLOG_F(@"Download finished. Fulfilling with userID: %@",[[NYPLAccount sharedAccount] userID]);
+          NYPLLOG_F(@"Download finished. Fulfilling with userID: %@",[[NYPLUserAccount sharedAccount] userID]);
           [[NYPLADEPT sharedInstance]
            fulfillWithACSMData:ACSMData
            tag:book.identifier
-           userID:[[NYPLAccount sharedAccount] userID]
-           deviceID:[[NYPLAccount sharedAccount] deviceID]];
+           userID:[[NYPLUserAccount sharedAccount] userID]
+           deviceID:[[NYPLUserAccount sharedAccount] deviceID]];
         }
         
 #endif        
@@ -475,10 +474,10 @@ didCompleteWithError:(NSError *)error
 #if defined(FEATURE_DRM_CONNECTOR)
   NSString *fulfillmentId = [[NYPLBookRegistry sharedRegistry] fulfillmentIdForIdentifier:identifier];
   if (fulfillmentId && [[AccountsManager sharedInstance] currentAccount].details.needsAuth) {
-    NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLAccount sharedAccount] userID]);
+    NYPLLOG_F(@"Return attempt for book. userID: %@",[[NYPLUserAccount sharedAccount] userID]);
     [[NYPLADEPT sharedInstance] returnLoan:fulfillmentId
-                                    userID:[[NYPLAccount sharedAccount] userID]
-                                  deviceID:[[NYPLAccount sharedAccount] deviceID]
+                                    userID:[[NYPLUserAccount sharedAccount] userID]
+                                  deviceID:[[NYPLUserAccount sharedAccount] deviceID]
                                 completion:^(BOOL success, __unused NSError *error) {
                                   if(!success) {
                                     NYPLLOG(@"Failed to return loan via NYPLAdept.");
@@ -720,7 +719,7 @@ didCompleteWithError:(NSError *)error
       return;
   }
   
-  if([NYPLAccount sharedAccount].hasBarcodeAndPIN || !loginRequired) {
+  if([NYPLUserAccount sharedAccount].hasBarcodeAndPIN || !loginRequired) {
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
       [self startBorrowForBook:book attemptDownload:YES borrowCompletion:nil];

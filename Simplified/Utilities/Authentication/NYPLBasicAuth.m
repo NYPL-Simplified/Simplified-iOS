@@ -1,4 +1,3 @@
-#import "NYPLAccount.h"
 #import "SimplyE-Swift.h"
 
 #import "NYPLBasicAuth.h"
@@ -9,9 +8,9 @@ void NYPLBasicAuthHandler(NSURLAuthenticationChallenge *const challenge,
                            NSURLCredential *credential))
 {
   if([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodHTTPBasic]) {
-    if([[NYPLAccount sharedAccount] hasBarcodeAndPIN]) {
-      NSString *const barcode = [NYPLAccount sharedAccount].barcode;
-      NSString *const PIN = [NYPLAccount sharedAccount].PIN;
+    if([[NYPLUserAccount sharedAccount] hasBarcodeAndPIN]) {
+      NSString *const barcode = [NYPLUserAccount sharedAccount].barcode;
+      NSString *const PIN = [NYPLUserAccount sharedAccount].PIN;
       NYPLBasicAuthCustomHandler(challenge, completionHandler, barcode, PIN);
     } else {
       completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);

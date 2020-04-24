@@ -8,7 +8,6 @@
 
 #import "SimplyE-Swift.h"
 #import "NYPLUserAccountFrontEndValidation.h"
-#import "NYPLAccount.h"
 
 
 @interface NYPLUserAccountFrontEndValidation ()
@@ -34,7 +33,7 @@
 
 - (BOOL)textFieldShouldBeginEditing:(__unused UITextField *)textField
 {
-  return ![[NYPLAccount sharedAccount] hasBarcodeAndPIN];
+  return ![[NYPLUserAccount sharedAccount] hasBarcodeAndPIN];
 }
 
 - (BOOL)textField:(UITextField *)textField

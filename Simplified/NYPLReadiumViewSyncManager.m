@@ -1,7 +1,6 @@
 #import "NYPLReadiumViewSyncManager.h"
 
 #import "NSDate+NYPLDateAdditions.h"
-#import "NYPLAccount.h"
 #import "NYPLBook.h"
 #import "NYPLBookLocation.h"
 #import "NYPLBookRegistry.h"
@@ -202,7 +201,7 @@ const double RequestTimeInterval = 120;
     // 1 - The most recent page on the server comes from the same device
     // 2 - The server and the client have the same page marked
     // 3 - There is no recent page saved on the server
-    if ((currentLocationString && [deviceIDString isEqualToString:[NYPLAccount sharedAccount].deviceID]) ||
+    if ((currentLocationString && [deviceIDString isEqualToString:[NYPLUserAccount sharedAccount].deviceID]) ||
         [currentLocationString isEqualToString:serverLocationString] ||
         !serverLocationString) {
       weakSelf.shouldPostLastRead = YES;
@@ -299,7 +298,7 @@ const double RequestTimeInterval = 120;
            [localBookmarksToKeep addObjectsFromArray:matchingBookmarks];
 
            if (matchingBookmarks.count == 0 &&
-               [serverBookmark.device isEqualToString:[[NYPLAccount sharedAccount] deviceID]]) {
+               [serverBookmark.device isEqualToString:[[NYPLUserAccount sharedAccount] deviceID]]) {
              [serverBookmarksToDelete addObject:serverBookmark];
              [serverBookmarksToKeep removeObject:serverBookmark];
            }
