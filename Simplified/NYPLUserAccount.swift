@@ -12,7 +12,7 @@ extension Notification.Name {
 
 @objcMembers class NYPLUserAccount : NSObject {
   static private let shared = NYPLUserAccount()
-  static private let accountInfoLock = NSRecursiveLock()
+  private let accountInfoLock = NSRecursiveLock()
     
   private var authorizationIdentifierKey = "NYPLAccountAuthorization"
   private var barcodeKey = "NYPLAccountBarcode"
@@ -34,9 +34,9 @@ extension Notification.Name {
   @objc(sharedAccount:)
   class func sharedAccount(libraryUUID: String?) -> NYPLUserAccount
   {
-    accountInfoLock.lock()
+    shared.accountInfoLock.lock()
     defer {
-      accountInfoLock.unlock()
+        shared.accountInfoLock.unlock()
     }
     if let uuid = libraryUUID,
         uuid != AccountsManager.NYPLAccountUUIDs[0]
@@ -94,72 +94,90 @@ extension Notification.Name {
   // MARK: - GET
     
   var barcode: String? {
-    return NYPLKeychain.shared()?.object(forKey: barcodeKey) as? String ?? nil
+    return NYPLKeychain.shared()?.object(forKey: barcodeKey) as? String
   }
     
   var authorizationIdentifier: String? {
-    return NYPLKeychain.shared()?.object(forKey: authorizationIdentifierKey) as? String ?? nil
+    return NYPLKeychain.shared()?.object(forKey: authorizationIdentifierKey) as? String
   }
   
   var PIN: String? {
-    return NYPLKeychain.shared()?.object(forKey: PINKey) as? String ?? nil
+    return NYPLKeychain.shared()?.object(forKey: PINKey) as? String
   }
   
   var deviceID: String? {
-    return NYPLKeychain.shared()?.object(forKey: deviceIDKey) as? String ?? nil
+    return NYPLKeychain.shared()?.object(forKey: deviceIDKey) as? String
   }
   
   var userID: String? {
-    return NYPLKeychain.shared()?.object(forKey: userIDKey) as? String ?? nil
+    return NYPLKeychain.shared()?.object(forKey: userIDKey) as? String
   }
     
   var adobeVendor: String? {
-    return NYPLKeychain.shared()?.object(forKey: adobeVendorKey) as? String ?? nil
+    return NYPLKeychain.shared()?.object(forKey: adobeVendorKey) as? String
   }
     
   var provider: String? {
-    return NYPLKeychain.shared()?.object(forKey: providerKey) as? String ?? nil
+    return NYPLKeychain.shared()?.object(forKey: providerKey) as? String
   }
     
   var patron: [String:Any]? {
-    return NYPLKeychain.shared()?.object(forKey: patronKey) as? [String:Any] ?? nil
+    return NYPLKeychain.shared()?.object(forKey: patronKey) as? [String:Any]
   }
     
   var patronFullName: String? {
     if let patron = patron,
-      let name = patron["name"] as? [String:String],
-      let first = name["first"],
-      let middle = name["middle"],
-      let last = name["last"]
+      let name = patron["name"] as? [String:String]
     {
-      return "\(first) \(middle) \(last)"
+      var fullname = ""
+      
+      if let first = name["first"] {
+        fullname.append(first)
+      }
+      
+      if let middle = name["middle"] {
+        if fullname.count > 0 {
+          fullname.append(" ")
+        }
+        fullname.append(middle)
+      }
+      
+      if let last = name["last"] {
+        if fullname.count > 0 {
+          fullname.append(" ")
+        }
+        fullname.append(last)
+      }
+      
+      return fullname.count > 0 ? fullname : nil
     }
+    
     return nil
   }
     
   var authToken: String? {
-    return NYPLKeychain.shared()?.object(forKey: authTokenKey) as? String ?? nil
+    return NYPLKeychain.shared()?.object(forKey: authTokenKey) as? String
   }
     
   var adobeToken: String? {
-    return NYPLKeychain.shared()?.object(forKey: adobeTokenKey) as? String ?? nil
+    return NYPLKeychain.shared()?.object(forKey: adobeTokenKey) as? String
   }
     
   var licensor: [String:Any]? {
-    return NYPLKeychain.shared()?.object(forKey: licensorKey) as? [String:Any] ?? nil
+    return NYPLKeychain.shared()?.object(forKey: licensorKey) as? [String:Any]
   }
     
   // MARK: - SET
     
   @objc(setBarcode:PIN:)
-  func setBarcode(barcode: String, PIN: String) {
+  func setBarcode(_ barcode: String, PIN: String) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
     }
     
-    NYPLUserAccount.accountInfoLock.lock()
+    accountInfoLock.lock()
     defer {
-        NYPLUserAccount.accountInfoLock.unlock()
+        accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(barcode, forKey: barcodeKey)
@@ -177,14 +195,14 @@ extension Notification.Name {
   }
     
   @objc(setAdobeToken:patron:)
-  func setAdobeToken(token: String, patron: [String : Any]) {
+  func setAdobeToken(_ token: String, patron: [String : Any]) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
     }
     
-    NYPLUserAccount.accountInfoLock.lock()
+    accountInfoLock.lock()
     defer {
-        NYPLUserAccount.accountInfoLock.unlock()
+        accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(token, forKey: adobeTokenKey)
@@ -196,15 +214,10 @@ extension Notification.Name {
     )
   }
   
-  @objc(setAdobeVender:)
-  func setAdobeVender(vendor: String) {
+  @objc(setAdobeVendor:)
+  func setAdobeVendor(_ vendor: String) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
-    }
-    
-    NYPLUserAccount.accountInfoLock.lock()
-    defer {
-        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(vendor, forKey: adobeVendorKey)
@@ -216,14 +229,9 @@ extension Notification.Name {
   }
   
   @objc(setAdobeToken:)
-  func setAdobeToken(token: String) {
+  func setAdobeToken(_ token: String) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
-    }
-    
-    NYPLUserAccount.accountInfoLock.lock()
-    defer {
-        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(token, forKey: adobeTokenKey)
@@ -235,42 +243,27 @@ extension Notification.Name {
   }
   
   @objc(setLicensor:)
-  func setLicensor(licensor: [String : Any]) {
+  func setLicensor(_ licensor: [String : Any]) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
-    }
-    
-    NYPLUserAccount.accountInfoLock.lock()
-    defer {
-        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(licensor, forKey: licensorKey)
   }
   
   @objc(setAuthorizationIdentifier:)
-  func setAuthorizationIdentifier(identifier: String) {
+  func setAuthorizationIdentifier(_ identifier: String) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
-    }
-    
-    NYPLUserAccount.accountInfoLock.lock()
-    defer {
-        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(identifier, forKey: authorizationIdentifierKey)
   }
   
   @objc(setPatron:)
-  func setPatron(patron: [String : Any]) {
+  func setPatron(_ patron: [String : Any]) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
-    }
-    
-    NYPLUserAccount.accountInfoLock.lock()
-    defer {
-        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(patron, forKey: patronKey)
@@ -282,14 +275,9 @@ extension Notification.Name {
   }
   
   @objc(setAuthToken:)
-  func setAuthToken(token: String) {
+  func setAuthToken(_ token: String) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
-    }
-    
-    NYPLUserAccount.accountInfoLock.lock()
-    defer {
-        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(token, forKey: authTokenKey)
@@ -301,14 +289,9 @@ extension Notification.Name {
   }
   
   @objc(setProvider:)
-  func setProvider(provider: String) {
+  func setProvider(_ provider: String) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
-    }
-    
-    NYPLUserAccount.accountInfoLock.lock()
-    defer {
-        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(provider, forKey: providerKey)
@@ -320,14 +303,9 @@ extension Notification.Name {
   }
   
   @objc(setUserID:)
-  func setUserID(id: String) {
+  func setUserID(_ id: String) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
-    }
-    
-    NYPLUserAccount.accountInfoLock.lock()
-    defer {
-        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(id, forKey: userIDKey)
@@ -339,14 +317,9 @@ extension Notification.Name {
   }
   
   @objc(setDeviceID:)
-  func setDeviceID(id: String) {
+  func setDeviceID(_ id: String) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
-    }
-    
-    NYPLUserAccount.accountInfoLock.lock()
-    defer {
-        NYPLUserAccount.accountInfoLock.unlock()
     }
     
     sharedKeychain.setObject(id, forKey: deviceIDKey)
@@ -364,9 +337,9 @@ extension Notification.Name {
       return
     }
     
-    NYPLUserAccount.accountInfoLock.lock()
+    accountInfoLock.lock()
     defer {
-        NYPLUserAccount.accountInfoLock.unlock()
+        accountInfoLock.unlock()
     }
     
     sharedKeychain.removeObject(forKey: barcodeKey)
@@ -384,9 +357,9 @@ extension Notification.Name {
       return
     }
     
-    NYPLUserAccount.accountInfoLock.lock()
+    accountInfoLock.lock()
     defer {
-        NYPLUserAccount.accountInfoLock.unlock()
+        accountInfoLock.unlock()
     }
     
     sharedKeychain.removeObject(forKey: adobeTokenKey)
