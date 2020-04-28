@@ -395,9 +395,32 @@ static NSString *const MediaOverlaysEnableClick = @"mediaOverlaysEnableClick";
 {
   switch(self.colorScheme) {
     case NYPLReaderSettingsColorSchemeBlackOnSepia:
-      return [UIColor blackColor];
     case NYPLReaderSettingsColorSchemeBlackOnWhite:
       return [UIColor blackColor];
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    default:
+      return [UIColor whiteColor];
+  }
+}
+
+- (UIColor *)selectedForegroundColor
+{
+  switch(self.colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      return [UIColor whiteColor];
+    case NYPLReaderSettingsColorSchemeWhiteOnBlack:
+    default:
+      return [UIColor blackColor];
+  }
+}
+
+- (UIColor *)tintColor
+{
+  switch(self.colorScheme) {
+    case NYPLReaderSettingsColorSchemeBlackOnSepia:
+    case NYPLReaderSettingsColorSchemeBlackOnWhite:
+      return [NYPLConfiguration mainColor];
     case NYPLReaderSettingsColorSchemeWhiteOnBlack:
     default:
       return [UIColor whiteColor];

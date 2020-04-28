@@ -30,10 +30,5 @@ protocol ReaderFormatModule {
 }
 
 protocol ReaderFormatModuleDelegate: ModuleDelegate {
-
-  /// Shows the reader's outline from the given links.
-  func presentOutline(of publication: Publication,
-                      delegate: OutlineTableViewControllerDelegate?,
-                      from viewController: UIViewController)
 }
 

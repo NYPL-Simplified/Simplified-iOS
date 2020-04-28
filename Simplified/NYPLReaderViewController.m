@@ -153,7 +153,7 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
                                 initWithImage:[UIImage imageNamed:@"TOC"]
                                 style:UIBarButtonItemStylePlain
                                 target:self
-                                action:@selector(didSelectContents)];
+                                action:@selector(didSelectTOC)];
   self.contentsBarButtonItem.accessibilityLabel = NSLocalizedString(@"TOC", nil);
 
   self.settingsBarButtonItem = [[UIBarButtonItem alloc]
@@ -537,6 +537,14 @@ spineItemTitle:(NSString *const)title
   }
 }
 
+- (UIModalPresentationStyle)
+adaptivePresentationStyleForPresentationController:(__attribute__((unused))  UIPresentationController *)controller
+traitCollection:(__attribute__((unused)) UITraitCollection *)traitCollection
+{
+  // Prevent the popOver to be presented fullscreen on iPhones.
+  return UIModalPresentationNone;
+}
+
 #pragma mark UIScrollViewDelegate
 
 - (UIView *)viewForZoomingInScrollView:(__attribute__((unused)) UIScrollView *)scrollView
@@ -636,16 +644,6 @@ didRequestSyncBookmarksWithCompletion:(void (^)(BOOL, NSArray<NYPLReadiumBookmar
   return [[NYPLR1R2UserSettings alloc] init];
 }
 
-#pragma mark UIPopoverPresentationControllerDelegate
-
-- (UIModalPresentationStyle)
-adaptivePresentationStyleForPresentationController:(__attribute__((unused))  UIPresentationController *)controller
-traitCollection:(__attribute__((unused)) UITraitCollection *)traitCollection
-{
-  // Prevent the popOver to be presented fullscreen on iPhones.
-  return UIModalPresentationNone;
-}
-
 #pragma mark -
 
 - (void)setInterfaceHidden:(BOOL)interfaceHidden animated:(BOOL)animated
@@ -721,31 +719,28 @@ traitCollection:(__attribute__((unused)) UITraitCollection *)traitCollection
   UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, vc);
 }
 
-- (void)didSelectContents
+- (void)didSelectTOC
 {
   UIStoryboard *sb = [UIStoryboard storyboardWithName:@"NYPLReaderTOC" bundle:nil];
-  NYPLReaderTOCViewController *viewController = [sb instantiateViewControllerWithIdentifier:@"NYPLReaderTOC"];
-  viewController.delegate = self;
-  viewController.tableOfContents = self.rendererView.TOCElements;
-  viewController.bookTitle = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
-  viewController.bookmarks = self.rendererView.bookmarkElements.mutableCopy;
-  NYPLReaderReadiumView *rv = self.rendererView;
-  viewController.currentChapter = [rv currentChapter];
+  NYPLReaderTOCViewController *tocVC = [sb instantiateViewControllerWithIdentifier:@"NYPLReaderTOC"];
+  tocVC.delegate = self;
+  tocVC.tableOfContents = self.rendererView.TOCElements;
+  tocVC.bookTitle = [[NYPLBookRegistry sharedRegistry] bookForIdentifier:self.bookIdentifier].title;
+  tocVC.bookmarks = self.rendererView.bookmarkElements.mutableCopy;
+  tocVC.currentChapter = [self.rendererView currentChapter];
   
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
      self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
     if (self.activePopoverController && self.activePopoverController == self.presentedViewController) {
       [self dismissViewControllerAnimated:NO completion:nil];
     }
-    self.activePopoverController = viewController;
-    self.activePopoverController.view.backgroundColor =
-      [NYPLReaderSettings sharedSettings].backgroundColor;
-    self.activePopoverController.modalPresentationStyle = UIModalPresentationPopover;
-    self.activePopoverController.popoverPresentationController.delegate = self;
-    self.activePopoverController.popoverPresentationController.barButtonItem = self.contentsBarButtonItem;
-    [self presentViewController:self.activePopoverController animated:YES completion:nil];
+    tocVC.modalPresentationStyle = UIModalPresentationPopover;
+    tocVC.popoverPresentationController.delegate = self;
+    tocVC.popoverPresentationController.barButtonItem = self.contentsBarButtonItem;
+    self.activePopoverController = tocVC;
+    [self presentViewController:tocVC animated:YES completion:nil];
   } else {
-    [self.navigationController pushViewController:viewController animated:YES];
+    [self.navigationController pushViewController:tocVC animated:YES];
   }
 }
 
