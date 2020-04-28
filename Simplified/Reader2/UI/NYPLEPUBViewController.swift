@@ -19,9 +19,6 @@ class NYPLEPUBViewController: ReaderViewController {
 
   let userSettings: NYPLR1R2UserSettings
 
-  // TODO: SIMPLY-2656 Remove once R2 work is complete
-  var userSettingNavigationController: UserSettingsNavigationController
-
   init(publication: Publication, book: NYPLBook, drm: DRM?, resourcesServer: ResourcesServer) {
     let navigator = EPUBNavigatorViewController(publication: publication,
                                                 license: drm?.license,
@@ -34,13 +31,6 @@ class NYPLEPUBViewController: ReaderViewController {
     // defaults options for the various user properties (fonts etc), so we need
     // to re-set that to reflect our ad-hoc configuration.
     publication.userProperties = navigator.userSettings.userProperties
-
-    let settingsStoryboard = UIStoryboard(name: "UserSettings", bundle: nil)
-    userSettingNavigationController = settingsStoryboard.instantiateViewController(withIdentifier: "UserSettingsNavigationController") as! UserSettingsNavigationController
-    userSettingNavigationController.fontSelectionViewController =
-      (settingsStoryboard.instantiateViewController(withIdentifier: "FontSelectionViewController") as! FontSelectionViewController)
-    userSettingNavigationController.advancedSettingsViewController =
-      (settingsStoryboard.instantiateViewController(withIdentifier: "AdvancedSettingsViewController") as! AdvancedSettingsViewController)
 
     super.init(navigator: navigator, publication: publication, book: book, drm: drm)
 
@@ -57,28 +47,6 @@ class NYPLEPUBViewController: ReaderViewController {
     // Restore catalog default UI colors
     navigationController?.navigationBar.barStyle = .default
     navigationController?.navigationBar.barTintColor = nil
-  }
-
-  override func viewDidLoad() {
-    super.viewDidLoad()
-
-    userSettingNavigationController.userSettings = userSettings.r2UserSettings
-    userSettingNavigationController.modalPresentationStyle = .popover
-    userSettingNavigationController.usdelegate = self
-    userSettingNavigationController.userSettingsTableViewController.publication = publication
-
-
-    publication.userSettingsUIPresetUpdated = { [weak self] preset in
-      guard let `self` = self, let presetScrollValue:Bool = preset?[.scroll] else {
-        return
-      }
-
-      if let scroll = self.userSettingNavigationController.userSettings.userProperties.getProperty(reference: ReadiumCSSReference.scroll.rawValue) as? Switchable {
-        if scroll.on != presetScrollValue {
-          self.userSettingNavigationController.scrollModeDidChange()
-        }
-      }
-    }
   }
 
   override open func viewWillAppear(_ animated: Bool) {
@@ -117,11 +85,6 @@ class NYPLEPUBViewController: ReaderViewController {
 //  }
 
   @objc func presentUserSettings() {
-    // TODO: SIMPLY-2626: publication is used to handle changes related to
-    // page margins, line height, word/letter spacing, columnar layout, text
-    // alignment
-    userSettingNavigationController.publication = publication
-
     let vc = NYPLUserSettingsVC(delegate: self)
     vc.modalPresentationStyle = .popover
     vc.popoverPresentationController?.delegate = self
