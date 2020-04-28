@@ -51,7 +51,6 @@
 		1112A8431A3249B4002B8CC1 /* libTenPrintCover.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1112A81F1A322C53002B8CC1 /* libTenPrintCover.a */; };
 		1114A6A1195884CB007507A2 /* NYPLCatalogUngroupedFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 1114A6A0195884CB007507A2 /* NYPLCatalogUngroupedFeed.m */; };
 		111559ED19B8FA590003BE94 /* NYPLXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 111559EC19B8FA590003BE94 /* NYPLXML.m */; };
-		11172764197F31280043EFBF /* NYPLAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 11172763197F31280043EFBF /* NYPLAccount.m */; };
 		111E757A1A80165C00718AD7 /* NYPLSettingsSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111E75791A80165C00718AD7 /* NYPLSettingsSplitViewController.m */; };
 		111E757D1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111E757C1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.m */; };
 		111E75831A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 111E75821A815CFB00718AD7 /* NYPLSettingsPrimaryTableViewController.m */; };
@@ -118,6 +117,7 @@
 		171966A924170819007BB87E /* NYPLBookState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171966A824170819007BB87E /* NYPLBookState.swift */; };
 		173F0823241AAA4E00A64658 /* NYPLBookStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */; };
 		179699D124131BA500EC309F /* UIColor+LabelColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179699D024131BA500EC309F /* UIColor+LabelColor.swift */; };
+		17CE5305243C020800315E63 /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
 		2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */; };
 		2D2B47841D08F8E2007F7764 /* UpdateCheckUpToDate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */; };
 		2D2B478E1D08FDF5007F7764 /* UpdateCheckNeedsUpdate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D2B478A1D08FC78007F7764 /* UpdateCheckNeedsUpdate.json */; };
@@ -208,7 +208,7 @@
 		739E6048244A0D8600D00301 /* UpdateCheckShim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */; };
 		739E6049244A0D8600D00301 /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0345BFD61DBF002E00398B6F /* APIKeys.swift */; };
 		739E604A244A0D8600D00301 /* DRMLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733DEC8B24108D8D008C74BC /* DRMLibraryService.swift */; };
-		739E604B244A0D8600D00301 /* NYPLAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 11172763197F31280043EFBF /* NYPLAccount.m */; };
+		739E604B244A0D8600D00301 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		739E604C244A0D8600D00301 /* ReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F713552417200F00C63B81 /* ReaderViewController.swift */; };
 		739E604D244A0D8600D00301 /* NYPLAttributedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 114C8CD619BE2FD300719B72 /* NYPLAttributedString.m */; };
 		739E604E244A0D8600D00301 /* EPUBModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A229AC2410221E006B9EAD /* EPUBModule.swift */; };
@@ -464,6 +464,7 @@
 		73A229AD2410221E006B9EAD /* EPUBModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A229AC2410221E006B9EAD /* EPUBModule.swift */; };
 		73A229AF24102272006B9EAD /* ReaderFormatModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A229AE24102272006B9EAD /* ReaderFormatModule.swift */; };
 		73A3EAED2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A3EAEC2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m */; };
+		73CCB6F724588C9000ADD3AD /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
 		73CDA121243EDAD8009CC6A6 /* URLRequest+NYPL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CDA120243EDAD8009CC6A6 /* URLRequest+NYPL.swift */; };
 		73E4959D244E5FA500BD8F15 /* R2Streamer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B12244A1D6500A7A649 /* R2Streamer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73E84FC624465083009071D8 /* NYPLUserAccountFrontEndValidation.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E84FC524465083009071D8 /* NYPLUserAccountFrontEndValidation.m */; };
@@ -667,8 +668,6 @@
 		111559EE19B8FA8E0003BE94 /* NYPLXMLTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLXMLTests.m; sourceTree = "<group>"; };
 		111559F019B8FAA10003BE94 /* invalid.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = invalid.xml; sourceTree = "<group>"; };
 		111559F119B8FAA10003BE94 /* valid.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = valid.xml; sourceTree = "<group>"; };
-		11172762197F31280043EFBF /* NYPLAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLAccount.h; sourceTree = "<group>"; };
-		11172763197F31280043EFBF /* NYPLAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLAccount.m; sourceTree = "<group>"; };
 		111E75781A80165C00718AD7 /* NYPLSettingsSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsSplitViewController.h; sourceTree = "<group>"; };
 		111E75791A80165C00718AD7 /* NYPLSettingsSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYPLSettingsSplitViewController.m; sourceTree = "<group>"; };
 		111E757B1A801A6F00718AD7 /* NYPLSettingsPrimaryNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYPLSettingsPrimaryNavigationController.h; sourceTree = "<group>"; };
@@ -804,6 +803,7 @@
 		171966A824170819007BB87E /* NYPLBookState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookState.swift; sourceTree = "<group>"; };
 		173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookStateTests.swift; sourceTree = "<group>"; };
 		179699D024131BA500EC309F /* UIColor+LabelColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+LabelColor.swift"; sourceTree = "<group>"; };
+		17CE5304243C020800315E63 /* NYPLUserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccount.swift; sourceTree = "<group>"; };
 		2D2B47621D08F1ED007F7764 /* SimplyETests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyETests-Bridging-Header.h"; sourceTree = "<group>"; };
 		2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheckTests.swift; sourceTree = "<group>"; };
 		2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = UpdateCheckUpToDate.json; sourceTree = "<group>"; };
@@ -1679,8 +1679,7 @@
 				7360891B240DFB93007EE66F /* Logging */,
 				110AF8881961D652004887C3 /* My Books */,
 				7338755E2423E108000FEB67 /* Network */,
-				11172762197F31280043EFBF /* NYPLAccount.h */,
-				11172763197F31280043EFBF /* NYPLAccount.m */,
+				17CE5304243C020800315E63 /* NYPLUserAccount.swift */,
 				1158812C1A894F4E008672C3 /* NYPLAccountSignInViewController.h */,
 				1158812D1A894F4E008672C3 /* NYPLAccountSignInViewController.m */,
 				E6BC315C1E009F3E0021B65E /* NYPLAgeCheck.swift */,
@@ -2283,7 +2282,7 @@
 				739E6048244A0D8600D00301 /* UpdateCheckShim.swift in Sources */,
 				739E6049244A0D8600D00301 /* APIKeys.swift in Sources */,
 				739E604A244A0D8600D00301 /* DRMLibraryService.swift in Sources */,
-				739E604B244A0D8600D00301 /* NYPLAccount.m in Sources */,
+				739E604B244A0D8600D00301 /* (null) in Sources */,
 				739E604C244A0D8600D00301 /* ReaderViewController.swift in Sources */,
 				739E604D244A0D8600D00301 /* NYPLAttributedString.m in Sources */,
 				739E604E244A0D8600D00301 /* EPUBModule.swift in Sources */,
@@ -2461,6 +2460,7 @@
 				739E60FA244A0D8600D00301 /* NYPLOPDSType.m in Sources */,
 				739E60FB244A0D8600D00301 /* NYPLPDFViewControllerDelegate.swift in Sources */,
 				739E60FC244A0D8600D00301 /* OutlineTableViewController.swift in Sources */,
+				73CCB6F724588C9000ADD3AD /* NYPLUserAccount.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2473,10 +2473,11 @@
 				03DE7BE91DBF0DE400E89064 /* UpdateCheckShim.swift in Sources */,
 				0345BFE81DBF027200398B6F /* APIKeys.swift in Sources */,
 				733DEC9024108D8D008C74BC /* DRMLibraryService.swift in Sources */,
-				11172764197F31280043EFBF /* NYPLAccount.m in Sources */,
 				73F713572417200F00C63B81 /* ReaderViewController.swift in Sources */,
 				114C8CD719BE2FD300719B72 /* NYPLAttributedString.m in Sources */,
 				73A229AD2410221E006B9EAD /* EPUBModule.swift in Sources */,
+				114C8CD719BE2FD300719B72 /* NYPLAttributedString.m in Sources */,
+				17CE5305243C020800315E63 /* NYPLUserAccount.swift in Sources */,
 				5DD5677222B7ECE3001F0C83 /* NYPLSettings.swift in Sources */,
 				73A229A5240F3D1B006B9EAD /* CancellableResult.swift in Sources */,
 				E6BC315D1E009F3E0021B65E /* NYPLAgeCheck.swift in Sources */,

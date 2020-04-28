@@ -6,7 +6,6 @@
 #import <PureLayout/PureLayout.h>
 #import <ZXingObjC/ZXingObjC.h>
 
-#import "NYPLAccount.h"
 #import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
@@ -87,9 +86,9 @@ NSInteger const linearViewTag = 1;
 CGFloat const verticalMarginPadding = 2.0;
 double const requestTimeoutInterval = 25.0;
 
-- (NYPLAccount *)selectedUserAccount
+- (NYPLUserAccount *)selectedUserAccount
 {
-  return [NYPLAccount sharedAccount:self.selectedAccountId];
+  return [NYPLUserAccount sharedAccount:self.selectedAccountId];
 }
 
 #pragma mark NSObject
@@ -115,7 +114,7 @@ double const requestTimeoutInterval = 25.0;
   [[NSNotificationCenter defaultCenter]
    addObserver:self
    selector:@selector(accountDidChange)
-   name:NYPLAccountDidChangeNotification
+   name:NSNotification.NYPLUserAccountDidChange
    object:nil];
   
   [[NSNotificationCenter defaultCenter]
@@ -590,7 +589,7 @@ double const requestTimeoutInterval = 25.0;
   }
 
   if (pDoc.authorizationIdentifier) {
-    [[NYPLAccount sharedAccount:self.selectedAccountId] setAuthorizationIdentifier:pDoc.authorizationIdentifier];
+    [[NYPLUserAccount sharedAccount:self.selectedAccountId] setAuthorizationIdentifier:pDoc.authorizationIdentifier];
   } else {
     NYPLLOG(@"Authorization ID (Barcode String) was nil.");
   }

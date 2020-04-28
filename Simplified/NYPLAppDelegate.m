@@ -11,7 +11,6 @@
 
 #if defined(FEATURE_DRM_CONNECTOR)
 #import <ADEPT/ADEPT.h>
-#import "NYPLAccount.h"
 #import "NYPLAccountSignInViewController.h"
 #endif
 
@@ -150,7 +149,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 
 -(void)applicationDidBecomeActive:(__unused UIApplication *)app
 {
-  [NYPLErrorLogger setUserID:[[NYPLAccount sharedAccount] barcode]];
+  [NYPLErrorLogger setUserID:[[NYPLUserAccount sharedAccount] barcode]];
 }
 
 - (void)applicationWillResignActive:(__attribute__((unused)) UIApplication *)application

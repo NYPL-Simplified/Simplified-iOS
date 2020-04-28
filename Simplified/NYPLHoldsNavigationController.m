@@ -2,7 +2,6 @@
 
 #import "NYPLHoldsNavigationController.h"
 
-#import "NYPLAccount.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRootTabBarController.h"

@@ -1,7 +1,6 @@
 #import "NYPLMyBooksViewController.h"
 
 #import "NYPLMyBooksNavigationController.h"
-#import "NYPLAccount.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
 #import "NYPLRootTabBarController.h"

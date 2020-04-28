@@ -6,7 +6,6 @@
 #import "NYPLSession.h"
 #import "NYPLXML.h"
 #import "SimplyE-Swift.h"
-#import "NYPLAccount.h"
 #import "NYPLOPDSFeed.h"
 
 #if defined(FEATURE_DRM_CONNECTOR)

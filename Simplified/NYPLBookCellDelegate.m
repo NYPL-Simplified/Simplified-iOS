@@ -2,7 +2,6 @@
 @import NYPLAudiobookToolkit;
 @import PDFRendererProvider;
 
-#import "NYPLAccount.h"
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLBook.h"
 #import "NYPLBookDownloadFailedCell.h"
@@ -73,9 +72,9 @@
 { 
   #if defined(FEATURE_DRM_CONNECTOR)
     // Try to prevent blank books bug
-    if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount] userID]
-                                           withDevice:[[NYPLAccount sharedAccount] deviceID]]) &&
-        ([[NYPLAccount sharedAccount] hasBarcodeAndPIN])) {
+    if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLUserAccount sharedAccount] userID]
+                                           withDevice:[[NYPLUserAccount sharedAccount] deviceID]]) &&
+        ([[NYPLUserAccount sharedAccount] hasBarcodeAndPIN])) {
       [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:^{
         [self openBook:book];   // with successful DRM activation
       }];
@@ -117,7 +116,7 @@
   // R2
   [[NYPLRootTabBarController sharedController] presentBook:book];
 
-  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLAccount sharedAccount] completion:^(BOOL enableSync) {
+  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
     if (enableSync == YES) {
       Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
       currentAccount.details.syncPermissionGranted = enableSync;

@@ -7,7 +7,6 @@
 #import "NYPLBookDetailView.h"
 #import "NYPLBookDetailViewController.h"
 #import "NYPLBookRegistry.h"
-#import "NYPLAccount.h"
 #import "NYPLSettingsAccountDetailViewController.h"
 #import "NYPLRoundedButton.h"
 #import "NSDate+NYPLDateAdditions.h"
