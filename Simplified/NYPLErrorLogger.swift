@@ -52,6 +52,7 @@ fileprivate let nullString = "null"
 
   // audiobooks
   case audiobookUserEvent = 400
+  case audiobookCorrupted = 401
 
   // ereader
   case deleteBookmarkFail = 500
