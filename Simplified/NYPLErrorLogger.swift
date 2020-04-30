@@ -150,7 +150,7 @@ fileprivate let nullString = "null"
   ///   - error: Any originating error that occurred.
   ///   - message: A string for further context.
   class func logError(_ error: Error, message: String? = nil) {
-    logError(error, message: message)
+    logError(error, code: .ignore, message: message)
   }
 
 
