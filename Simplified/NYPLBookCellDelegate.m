@@ -152,6 +152,11 @@
 - (void)openAudiobook:(NYPLBook *)book {
   NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
   NSData *const data = [NSData dataWithContentsOfURL:url];
+  if (data == nil) {
+    [self presentCorruptedItemErrorForBook:book fromURL:url];
+    return;
+  }
+
   id const json = NYPLJSONObjectFromData(data);
   id<Audiobook> const audiobook = [AudiobookFactory audiobook:json];
 
@@ -281,6 +286,19 @@
   NSString *message = NSLocalizedString(@"The item you are trying to open is not currently supported by SimplyE.", nil);
   UIAlertController *alert = [NYPLAlertUtils alertWithTitle:title message:message];
   [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
+}
+
+- (void)presentCorruptedItemErrorForBook:(NYPLBook*)book fromURL:(NSURL*)url
+{
+  NSString *title = NSLocalizedString(@"Corrupted Audiobook", nil);
+  NSString *message = NSLocalizedString(@"The audiobook you are trying to open appears to be corrupted. Try downloading it again.", nil);
+  UIAlertController *alert = [NYPLAlertUtils alertWithTitle:title message:message];
+  [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
+
+  NSString *logMsg = [NSString stringWithFormat:@"bookID: %@; fileURL: %@", book.identifier, url];
+  [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAudiobookCorrupted
+                            context:@"audiobooks"
+                            message:logMsg];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate
