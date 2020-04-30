@@ -123,4 +123,14 @@
   return @"Avenir Next";
 }
 
++ (CGFloat)defaultTOCRowHeight
+{
+  return 56;
+}
+
++ (CGFloat)defaultBookmarkRowHeight
+{
+  return 100;
+}
+
 @end

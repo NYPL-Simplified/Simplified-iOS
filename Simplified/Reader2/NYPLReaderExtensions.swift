@@ -59,7 +59,7 @@ extension NYPLBook {
     libService.preparePresentation(of: publication, book: book, with: container)
 
     guard let navVC = NYPLRootTabBarController.shared().selectedViewController as? UINavigationController else {
-      fatalError("No navigation controller, unable to present reader")
+      preconditionFailure("No navigation controller, unable to present reader")
     }
 
     r2Owner.readerModule.presentPublication(publication: publication,

@@ -47,9 +47,7 @@ final class ReaderModule: ReaderModuleAPI {
   /// Sub-modules to handle different publication formats (eg. EPUB, CBZ)
   var formatModules: [ReaderFormatModule] = []
 
-  private let factory = ReaderFactory()
-
-  init(delegate: ReaderModuleDelegate?, resourcesServer: ResourcesServer) {
+  init(delegate: ReaderModuleDelegate, resourcesServer: ResourcesServer) {
     self.delegate = delegate
     self.resourcesServer = resourcesServer
 
@@ -68,12 +66,12 @@ final class ReaderModule: ReaderModuleAPI {
                           in navigationController: UINavigationController,
                           completion: @escaping () -> Void) {
     guard let delegate = delegate else {
-      fatalError("Reader delegate not set")
+      preconditionFailure("Reader delegate not set")
     }
 
     func present(_ viewController: UIViewController) {
       let backItem = UIBarButtonItem()
-      backItem.title = ""
+      backItem.title = NSLocalizedString("Back", comment: "Text for Back button")
       viewController.navigationItem.backBarButtonItem = backItem
       viewController.hidesBottomBarWhenPushed = true
       // sealso: NYPLBookCellDelegate::openEPUB:
@@ -114,15 +112,6 @@ final class ReaderModule: ReaderModuleAPI {
 
 
 extension ReaderModule: ReaderFormatModuleDelegate {
-
-  func presentOutline(of publication: Publication,
-                      delegate: OutlineTableViewControllerDelegate?,
-                      from vc: UIViewController) {
-    let outlineTableVC = factory.makeTOCVC(for: publication)
-    outlineTableVC.delegate = delegate
-    vc.present(UINavigationController(rootViewController: outlineTableVC),
-               animated: true)
-  }
 
   func presentAlert(_ title: String,
                     message: String,

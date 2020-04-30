@@ -48,13 +48,15 @@ BOOL NYPLReaderSettingsIncreasedFontSize(NYPLReaderSettingsFontSize input,
 
 + (nonnull NYPLReaderSettings *)sharedSettings;
 
-@property (nonnull, nonatomic, readonly) UIColor *backgroundColor;
-@property (nonnull, nonatomic, readonly) UIColor *backgroundMediaOverlayHighlightColor;
 @property (nonatomic) NYPLReaderSettingsColorScheme colorScheme;
 @property (nonatomic) NYPLReaderSettingsFontFace fontFace;
 @property (nonatomic) NYPLReaderSettingsFontSize fontSize;
 @property (nonatomic) NYPLReaderSettingsMediaOverlaysEnableClick mediaOverlaysEnableClick;
+@property (nonnull, nonatomic, readonly) UIColor *backgroundColor;
+@property (nonnull, nonatomic, readonly) UIColor *backgroundMediaOverlayHighlightColor;
 @property (nonnull, nonatomic, readonly) UIColor *foregroundColor;
+@property (nonnull, nonatomic, readonly) UIColor *selectedForegroundColor;
+@property (nonnull, nonatomic, readonly) UIColor *tintColor;
 
 - (void)save;
 

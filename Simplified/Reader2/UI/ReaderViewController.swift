@@ -26,6 +26,8 @@ class ReaderViewController: UIViewController, Loggable {
   let book: NYPLBook
   let drm: DRM?
 
+  var tocBarButton: UIBarButtonItem?
+
   // TODO: SIMPLY-2608
 //  lazy var bookmarksDataSource: BookmarkDataSource? = BookmarkDataSource(publicationID: publication.metadata.identifier ?? "")
 
@@ -116,10 +118,12 @@ class ReaderViewController: UIViewController, Loggable {
                                    target: self,
                                    action: #selector(bookmarkCurrentPosition)))
 
-    buttons.append(UIBarButtonItem(image: UIImage(named: "TOC"),
-                                   style: .plain,
-                                   target: self,
-                                   action: #selector(presentOutline)))
+    let tocButton = UIBarButtonItem(image: UIImage(named: "TOC"),
+                                    style: .plain,
+                                    target: self,
+                                    action: #selector(presentTOC))
+    buttons.append(tocButton)
+    tocBarButton = tocButton
 
     // TODO: SIMPLY-2650 DRM management
 //    if drm != nil {
@@ -149,12 +153,33 @@ class ReaderViewController: UIViewController, Loggable {
   }
 
   //----------------------------------------------------------------------------
-  // MARK: - Outlines
+  // MARK: - TOC
 
-  @objc func presentOutline() {
-    moduleDelegate?.presentOutline(of: publication, delegate: self, from: self)
+  private func shouldPresentAsPopover() -> Bool {
+    return UIDevice.current.userInterfaceIdiom == .pad && traitCollection.horizontalSizeClass != .compact
   }
 
+  @objc func presentTOC() {
+    // for current location also see: https://github.com/readium/architecture/blob/master/models/locators/other/locator-api.md
+    let currentLocation = navigator.currentLocation
+
+    let positionsVC = NYPLReaderPositionsVC.newInstance()
+    positionsVC.businessLogic = NYPLReaderTOCBusinessLogic(book: book, r2Publication: publication, currentLocation: currentLocation)
+    positionsVC.delegate = self
+
+    if shouldPresentAsPopover() {
+      positionsVC.modalPresentationStyle = .popover
+      positionsVC.popoverPresentationController?.barButtonItem = tocBarButton
+      present(positionsVC, animated: true) {
+        // Makes sure that the popover is dismissed also when tapping on one of
+        // the other UIBarButtonItems.
+        // ie. http://karmeye.com/2014/11/20/ios8-popovers-and-passthroughviews
+        positionsVC.popoverPresentationController?.passthroughViews = nil
+      }
+    } else {
+      navigationController?.pushViewController(positionsVC, animated: true)
+    }
+  }
 
   // MARK: - Bookmarks
 
@@ -296,12 +321,31 @@ extension ReaderViewController: VisualNavigatorDelegate {
 }
 
 //------------------------------------------------------------------------------
-// MARK: - OutlineTableViewControllerDelegate
+// MARK: - NYPLReaderTOCDelegate
 
-extension ReaderViewController: OutlineTableViewControllerDelegate {
+extension ReaderViewController: NYPLReaderTOCDelegate {
+  func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didSelectTOCLocation loc: Any) {
+    if shouldPresentAsPopover() {
+      positionsVC.dismiss(animated: true)
+    } else {
+      navigationController?.popViewController(animated: true)
+    }
 
-  func outline(_ outlineTableViewController: OutlineTableViewController, goTo location: Locator) {
-    navigator.go(to: location)
+    if let location = loc as? Locator {
+      navigator.go(to: location)
+    }
   }
 
+  func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didSelectBookmark bookmark: NYPLReadiumBookmark) {
+    // TODO: SIMPLY-2608
+  }
+
+  func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didDeleteBookmark bookmark: NYPLReadiumBookmark) {
+    // TODO: SIMPLY-2608
+  }
+
+  func positionsVC(_ positionsVC: NYPLReaderPositionsVC,
+                   didRequestSyncBookmarksWithCompletion completion: (_ success: Bool, _ bookmarks: [NYPLReadiumBookmark]) -> Void) {
+    // TODO: SIMPLY-2608
+  }
 }
