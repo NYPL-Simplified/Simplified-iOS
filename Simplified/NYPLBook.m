@@ -86,7 +86,7 @@ static NSString *const UpdatedKey = @"updated";
     return nil;
   }
   
-  NSURL *revoke, *image, *imageThumbnail, *annotations, *report = nil;
+  NSURL *revoke, *image, *imageThumbnail, *report = nil;
 
   NSMutableArray<NYPLBookAuthor *> *authors = [[NSMutableArray alloc] init];
   for (int i = 0; i < (int)entry.authorStrings.count; i++) {
@@ -114,10 +114,6 @@ static NSString *const UpdatedKey = @"updated";
     }
     if([link.rel isEqualToString:NYPLOPDSRelationAcquisitionIssues]) {
       report = link.href;
-      continue;
-    }
-    if([link.rel isEqualToString:NYPLOPDSRelationAnnotations]) {
-      annotations = link.href;
       continue;
     }
   }
