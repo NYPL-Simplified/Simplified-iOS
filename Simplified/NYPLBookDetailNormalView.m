@@ -103,7 +103,7 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
 {
   _state = state;
   
-  NSString *newMessageString;
+  NSString *newMessageString = @"";
   switch(state) {
     case NYPLBookButtonsStateCanBorrow:
       newMessageString = NSLocalizedString(@"BookDetailViewControllerAvailableToBorrowTitle", nil);
@@ -133,7 +133,6 @@ typedef NS_ENUM (NSInteger, NYPLProblemReportButtonState) {
     case NYPLBookButtonsStateDownloadInProgress:
       break;
     default:
-      newMessageString = nil;
       break;
   }
   

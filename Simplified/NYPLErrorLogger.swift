@@ -52,6 +52,7 @@ fileprivate let nullString = "null"
 
   // audiobooks
   case audiobookUserEvent = 400
+  case audiobookCorrupted = 401
 
   // ereader
   case deleteBookmarkFail = 500
@@ -149,7 +150,7 @@ fileprivate let nullString = "null"
   ///   - error: Any originating error that occurred.
   ///   - message: A string for further context.
   class func logError(_ error: Error, message: String? = nil) {
-    logError(error, message: message)
+    logError(error, code: .ignore, message: message)
   }
 
 
