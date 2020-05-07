@@ -4,14 +4,26 @@ import UIKit
 
   // MARK: - Sync Settings
 
-  // The Alert Controller introduces Sync as an opt-in feature.
-  // If the user has never seen it before, show it.
-  // If the user has seen it on one of their other devices, suppress it.
-  // Opting in will attempt to enable on the server, with appropriate error handling.
-  class func requestServerSyncStatus(forAccount account: NYPLUserAccount,
+  /// Shows (if needed) the opt-in flow for syncing the user bookmarks and
+  /// reading position on the server.
+  ///
+  /// This is implemented with an alert that is displayed once for the current
+  /// library once the user is signed in, i.e.:
+  /// - If the user has never seen it before, show it.
+  /// - If the user has seen it on one of their other devices, don't show it.
+  /// Opting in will attempt to enable on the server, with appropriate error handling.
+  /// - Note: This flow will be run only for the user account on the currently
+  /// selected library. Anything else will result in a no-op.
+  /// - Parameters:
+  ///   - userAccount: the account to attempt to enable annotations-syncing on.
+  ///   - completion: if a network request is actually performed, this block
+  /// is guaranteed to be called on the Main queue. Otherwise, this is called
+  /// either on the same thread the function was invoked on or on the main
+  /// thread.
+  class func requestServerSyncStatus(forAccount userAccount: NYPLUserAccount,
                                      completion: @escaping (_ enableSync: Bool) -> ()) {
     
-    if !syncIsPossible(account) {
+    guard syncIsPossible(userAccount) else {
       Log.debug(#file, "Account does not satisfy conditions for sync setting request.")
       completion(false)
       return
@@ -49,9 +61,7 @@ import UIKit
         })
         alertController.addAction(notNowAction)
         alertController.addAction(enableSyncAction)
-        if #available(iOS 9.0, *) {
-          alertController.preferredAction = enableSyncAction
-        }
+        alertController.preferredAction = enableSyncAction
         NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alertController, viewController: nil, animated: true, completion: nil)
       } else {
         completion(false)
@@ -59,10 +69,16 @@ import UIKit
     }
   }
 
-  // Ask the server to enable Annotations. Server will return null, true, or false. Null
-  // assumes the user has never been introduced to the feature ("initialized").
-  // The closure expects "enabled" which is strictly to inform this single client
-  // how to respond based on the server's info.
+  /// Ask the server to enable Annotations on the current user account for the
+  /// currently selected library. Server will return null, true, or false. Null
+  /// assumes the user has never been introduced to the feature ("initialized").
+  /// The closure expects "enabled" which is strictly to inform this single client
+  /// how to respond based on the server's info.
+  /// - Parameters:
+  ///   - enabled: whether to enable annotation-syncing or not.
+  ///   - completion: if a network request is actually performed, this block
+  /// is guaranteed to be called on the Main queue. Otherwise, this is called
+  /// on the same thread the function was invoked on.
   class func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->()) {
     if (NYPLUserAccount.sharedAccount().hasBarcodeAndPIN() &&
       AccountsManager.shared.currentAccount?.details?.supportsSimplyESync == true) {
@@ -81,7 +97,10 @@ import UIKit
     }
   }
 
-  private class func permissionUrlRequest(completionHandler: @escaping (_ initialized: Bool, _ syncIsPermitted: Bool) -> ()) {
+
+  /// - Parameter successHandler: Called only if the request succeeds.
+  /// Always called on the main thread.
+  private class func permissionUrlRequest(successHandler: @escaping (_ initialized: Bool, _ syncIsPermitted: Bool) -> ()) {
 
     guard let userProfileUrl = URL(string: AccountsManager.shared.currentAccount?.details?.userProfileUrl ?? "") else {
       Log.error(#file, "Failed to create user profile URL from string. Abandoning attempt to retrieve sync setting.")
@@ -113,9 +132,9 @@ import UIKit
             let settings = json["settings"] as? [String:Any],
             let syncSetting = settings["simplified:synchronize_annotations"] {
             if syncSetting is NSNull {
-              completionHandler(false, false)
+              successHandler(false, false)
             } else {
-              completionHandler(true, syncSetting as? Bool ?? false)
+              successHandler(true, syncSetting as? Bool ?? false)
             }
           } else {
             Log.error(#file, "Error parsing JSON or finding sync-setting key/value.")
@@ -127,7 +146,10 @@ import UIKit
     }
     dataTask.resume()
   }
-  
+
+  /// - parameter completion: if a network request is actually performed, this
+  /// is guaranteed to be called on the Main queue. Otherwise, this is called
+  /// on the same thread the function was invoked on.
   private class func syncSettingUrlRequest(_ url: URL,
                                            _ parameters: [String:Any],
                                            _ timeout: Double?,
@@ -618,7 +640,9 @@ import UIKit
   }
 
   // MARK: -
-  
+
+  /// Annotation-syncing is possible only if the given `account` is signed-in
+  /// and if the currently selected library supports it.
   class func syncIsPossible(_ account: NYPLUserAccount) -> Bool {
     let library = AccountsManager.shared.currentAccount
     return account.hasBarcodeAndPIN() && library?.details?.supportsSimplyESync == true
