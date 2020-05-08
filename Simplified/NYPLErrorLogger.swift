@@ -47,7 +47,7 @@ fileprivate let nullString = "null"
   case nilSignUpURL = 306
   case adeptAuthFail = 307
 
-  /// Deprecated: use nilCurrentAccountUUID instead
+  /// Deprecated: don't use
   case nilAccount = 304
 
   // audiobooks

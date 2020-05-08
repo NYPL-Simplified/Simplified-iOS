@@ -42,19 +42,26 @@ typedef NS_ENUM(NSInteger, Section) {
 
 @interface NYPLAccountSignInViewController () <NSURLSessionDelegate, NYPLUserAccountInputProvider>
 
-@property (nonatomic) Account *currentAccount;
+// state machine
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
 @property (nonatomic) BOOL isCurrentlySigningIn;
-@property (nonatomic) UIButton *barcodeScanButton;
-@property (nonatomic, copy) void (^completionHandler)(void);
 @property (nonatomic) BOOL hiddenPIN;
+
+// UI
+@property (nonatomic) UIButton *barcodeScanButton;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
-@property (nonatomic) NSURLSession *session;
 @property (nonatomic) UIButton *PINShowHideButton;
-@property (nonatomic) bool rotated;
 @property (nonatomic) NSArray *tableData;
+
+// account state
 @property NYPLUserAccountFrontEndValidation *frontEndValidator;
+@property (nonatomic) NYPLSignInBusinessLogic *businessLogic;
+
+// networking
+@property (nonatomic) NSURLSession *session;
+@property (nonatomic, copy) void (^completionHandler)(void);
+
 @end
 
 @implementation NYPLAccountSignInViewController
@@ -64,13 +71,22 @@ typedef NS_ENUM(NSInteger, Section) {
 
 CGFloat const marginPadding = 2.0;
 
+#pragma mark - Computed variables
+
+- (Account *)currentAccount
+{
+  return self.businessLogic.libraryAccount;
+}
+
 #pragma mark NSObject
 
 - (instancetype)init
 {
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
-  
+
+  self.businessLogic = [[NYPLSignInBusinessLogic alloc] initWithLibraryAccountID:[[AccountsManager shared] currentAccountId]];
+
   self.title = NSLocalizedString(@"SignIn", nil);
 
   [[NSNotificationCenter defaultCenter]
@@ -107,7 +123,6 @@ CGFloat const marginPadding = 2.0;
                   delegate:self
                   delegateQueue:[NSOperationQueue mainQueue]];
   
-  self.currentAccount = [[AccountsManager sharedInstance] currentAccount];
   self.frontEndValidator = [[NYPLUserAccountFrontEndValidation alloc]
                             initWithAccount:self.currentAccount
                             inputProvider:self];
@@ -209,7 +224,7 @@ CGFloat const marginPadding = 2.0;
                  @(CellKindLogInSignOut)];
   }
   NSArray *section1;
-  if ([self registrationIsPossible]) {
+  if ([self.businessLogic registrationIsPossible]) {
     section1 = @[@(CellKindRegistration)];
   } else {
     section1 = @[];
@@ -406,13 +421,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-- (BOOL)registrationIsPossible
-{
-  return ([NYPLConfiguration cardCreationEnabled] &&
-          [[AccountsManager sharedInstance] currentAccount].details.signUpUrl != nil &&
-          ![[NYPLUserAccount sharedAccount] hasBarcodeAndPIN]);
-}
-
 - (UITableViewCell *)createRegistrationCell
 {
   UIView *containerView = [[UIView alloc] init];
@@ -475,7 +483,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
 {
-  if (section == SectionCredentials && [self.currentAccount.details getLicenseURL:URLTypeEula]) {
+  if (section == SectionCredentials && [self.businessLogic shouldShowEULALink]) {
     UIView *container = [[UIView alloc] init];
     container.preservesSuperviewLayoutMargins = YES;
     UILabel *footerLabel = [[UILabel alloc] init];
@@ -720,8 +728,7 @@ completionHandler:(void (^)(void))handler
 
 - (void)showEULA
 {
-  Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
-  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] initWithAccount:currentAccount];
+  UIViewController *eulaViewController = [[NYPLSettingsEULAViewController alloc] initWithAccount:self.currentAccount];
   UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:eulaViewController];
   [self.navigationController presentViewController:navVC animated:YES completion:nil];
 }
@@ -812,7 +819,7 @@ completionHandler:(void (^)(void))handler
 {
   NSMutableURLRequest *const request =
     [NSMutableURLRequest requestWithURL:[NSURL URLWithString:
-      [[[[AccountsManager sharedInstance] currentAccount] details] userProfileUrl]]];
+                                         [self.currentAccount.details userProfileUrl]]];
   
   request.timeoutInterval = 20.0;
   
