@@ -174,6 +174,7 @@ static const NSInteger sSection1Sync = 1;
 
 - (void)dealloc
 {
+  [self.session finishTasksAndInvalidate];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
