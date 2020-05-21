@@ -155,7 +155,6 @@
 		5D73DA4322A080BA00162CB8 /* NYPLMyBooksDownloadCenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D73DA3D22A07B9A00162CB8 /* NYPLMyBooksDownloadCenterTests.swift */; };
 		5D7CF86422C19EBA007CAA34 /* NYPLReaderContainerDelegateBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF86322C19EBA007CAA34 /* NYPLReaderContainerDelegateBase.m */; };
 		5D7CF8B922C3FC06007CAA34 /* NYPLErrorLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF8B422C3FC06007CAA34 /* NYPLErrorLogger.swift */; };
-		5D7CF8BC22C42AE2007CAA34 /* LogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF8BA22C427F6007CAA34 /* LogTests.swift */; };
 		5DD5674522B303DF001F0C83 /* NYPLDeveloperSettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD5674422B303DF001F0C83 /* NYPLDeveloperSettingsTableViewController.swift */; };
 		5DD5677222B7ECE3001F0C83 /* NYPLSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD5677122B7ECE3001F0C83 /* NYPLSettings.swift */; };
 		5DD567AF22B95A30001F0C83 /* String+MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD567AE22B95A30001F0C83 /* String+MD5.swift */; };
@@ -557,7 +556,6 @@
 		5D7CF86322C19EBA007CAA34 /* NYPLReaderContainerDelegateBase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderContainerDelegateBase.m; sourceTree = "<group>"; };
 		5D7CF86922C1A2F1007CAA34 /* NYPLReaderContainerDelegateBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLReaderContainerDelegateBase.h; sourceTree = "<group>"; };
 		5D7CF8B422C3FC06007CAA34 /* NYPLErrorLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLErrorLogger.swift; sourceTree = "<group>"; };
-		5D7CF8BA22C427F6007CAA34 /* LogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogTests.swift; sourceTree = "<group>"; };
 		5DD5674422B303DF001F0C83 /* NYPLDeveloperSettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLDeveloperSettingsTableViewController.swift; sourceTree = "<group>"; };
 		5DD5677122B7ECE3001F0C83 /* NYPLSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSettings.swift; sourceTree = "<group>"; };
 		5DD567AE22B95A30001F0C83 /* String+MD5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+MD5.swift"; sourceTree = "<group>"; };
@@ -1320,7 +1318,6 @@
 			isa = PBXGroup;
 			children = (
 				7384C803242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift */,
-				5D7CF8BA22C427F6007CAA34 /* LogTests.swift */,
 				1157E92D19CA0009003BFDBF /* NSString+NYPLStringAdditionsTests.m */,
 				2D8790A420129AF200E2763F /* NYPLBookAcquisitionPathTests.swift */,
 				173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */,
@@ -1667,7 +1664,6 @@
 				B51C1DFE22860563003B49A5 /* OPDS2CatalogsFeedTests.swift in Sources */,
 				5D73DA4322A080BA00162CB8 /* NYPLMyBooksDownloadCenterTests.swift in Sources */,
 				735F41A3243E381D00046182 /* String+NYPLAdditionsTests.swift in Sources */,
-				5D7CF8BC22C42AE2007CAA34 /* LogTests.swift in Sources */,
 				173F0823241AAA4E00A64658 /* NYPLBookStateTests.swift in Sources */,
 				2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */,
 				7307A5F423FF2A6000DE53DE /* NYPLStringAdditionsTests.swift in Sources */,
