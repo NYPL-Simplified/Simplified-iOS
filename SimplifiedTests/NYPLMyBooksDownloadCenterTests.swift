@@ -65,7 +65,7 @@ class NYPLMyBooksDownloadCenterTests: XCTestCase {
       NYPLBookRegistry.shared().add(
         fakeBook,
         location: NYPLBookLocation.init(locationString: bookUrl?.path, renderer: ""),
-        state: .init(),
+        state: NYPLBookState.DownloadSuccessful.rawValue,
         fulfillmentId: "",
         readiumBookmarks: [NYPLReadiumBookmark](),
         genericBookmarks: [NYPLBookLocation]()

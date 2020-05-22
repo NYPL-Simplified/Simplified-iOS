@@ -76,8 +76,8 @@
 "TimedOut" = "The server did not respond. Please check your connection or try again later.";
 "TryAgain" = "Try Again";
 "Unknown error parsing problem document" = "Unknown error parsing problem document";
-"UnknownRequestError" =
-    "An unknown error occurred. Please check your connection or try again later.";
+"UnknownRequestError" = "An unknown error occurred. Please check your connection or try again later.";
+"UnknownError" = "An error occurred. Please try again later.";
 "Verifying" = "Verifying";
 "Back" = "Back";
 
@@ -183,7 +183,6 @@
 "SettingsConnectionFailureMessage" = "The page could not load due to a connection error.";
 
 // NYPLSettingsAccountViewController
-
 "Add Library" = "Add Library";
 "Report an Issue" = "Report an Issue";
 "Show Barcode" = "Show Barcode";
@@ -212,6 +211,8 @@
   "Your PIN has changed. Enter your new PIN.";
 "Location" = "Location";
 "LocationRequiredMessage" = "Location information is required for Sign Up. Please allow access to location information in the iOS settings";
+"Error parsing user profile document." = "Error parsing user profile document. Please try again.";
+"Trouble locating DRM in profile document." = "Trouble locating DRM in profile document. Please try again.";
 
 // NYPLSettingsEULAViewController
 "Accept" = "Accept";

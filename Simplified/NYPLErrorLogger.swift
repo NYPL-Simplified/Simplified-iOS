@@ -6,7 +6,7 @@
 import Foundation
 import Firebase
 
-fileprivate let simplyeDomain = "org.nypl.labs.SimplyE"
+let NYPLSimplyEDomain = "org.nypl.labs.SimplyE"
 fileprivate let nullString = "null"
 
 @objc enum NYPLSeverity: NSInteger {
@@ -31,6 +31,7 @@ fileprivate let nullString = "null"
   case appLaunch = 100
   case invalidURLSession = 101
   case apiCall = 102
+  case genericErrorMsgDisplayed = 103
 
   // book registry
   case nilBookIdentifier = 200 // caused by book registry, downloads
@@ -104,6 +105,7 @@ fileprivate let nullString = "null"
     case signIn
     case signOut
     case signUp
+    case errorHandling
   }
 
   // MARK:- Generic helpers
@@ -367,7 +369,7 @@ fileprivate let nullString = "null"
     addAccountInfoToMetadata(&metadata)
     
     let userInfo = additionalInfo(severity: .info, metadata: metadata)
-    let err = NSError(domain: simplyeDomain,
+    let err = NSError(domain: NYPLSimplyEDomain,
                       code: NYPLErrorCode.appLaunch.rawValue,
                       userInfo: userInfo)
 
@@ -386,7 +388,7 @@ fileprivate let nullString = "null"
     let userInfo = additionalInfo(severity: severity,
                                   message: message,
                                   context: context)
-    let err = NSError(domain: simplyeDomain,
+    let err = NSError(domain: NYPLSimplyEDomain,
                       code: NYPLErrorCode.fileSystemFail.rawValue,
                       userInfo: userInfo)
 
@@ -609,7 +611,7 @@ fileprivate let nullString = "null"
         return error
       }
 
-      return NSError(domain: context ?? simplyeDomain,
+      return NSError(domain: context ?? NYPLSimplyEDomain,
                      code: code.rawValue,
                      userInfo: nil)
     }()

@@ -289,10 +289,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         __weak NYPLAccountSignInViewController *const weakSelf = self;
         CardCreatorConfiguration *const configuration =
         [[CardCreatorConfiguration alloc]
-         initWithEndpointURL:self.currentAccount.details.signUpUrl
+         initWithEndpointURL:self.currentAccount.details.signUpUrl ?: APIKeys.cardCreatorEndpointURL
          endpointVersion:[APIKeys cardCreatorVersion]
-         endpointUsername:[APIKeys cardCreatorUsername]
-         endpointPassword:[APIKeys cardCreatorPassword]
+         endpointUsername:NYPLSecrets.cardCreatorUsername
+         endpointPassword:NYPLSecrets.cardCreatorPassword
          requestTimeoutInterval:20.0
          completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
           if (userInitiated) {
@@ -841,7 +841,7 @@ completionHandler:(void (^)(void))handler
          UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
          if (!pDoc) {
            [NYPLErrorLogger logUserProfileDocumentErrorWithError:pDocError];
-           [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Error parsing user profile doc" }]];
+           [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Error parsing user profile document." }]];
            return;
          } else {
            if (pDoc.authorizationIdentifier) {
@@ -853,7 +853,7 @@ completionHandler:(void (^)(void))handler
              [[NYPLUserAccount sharedAccount] setLicensor:pDoc.drm[0].licensor];
            } else {
              NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
-             [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Trouble locating DRMs in profile doc" }]];
+             [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Trouble locating DRM in profile document." }]];
              return;
            }
            

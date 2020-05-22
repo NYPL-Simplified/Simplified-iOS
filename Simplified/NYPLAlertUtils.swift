@@ -4,16 +4,17 @@ import UIKit
 @objcMembers class NYPLAlertUtils : NSObject {
   /**
     Generates an alert view from errors of domains: NSURLErrorDomain, NYPLADEPTErrorDomain
-    @param title the alert title; can be localization key
-    @param error the error
-    @return the alert
+
+   - Parameter title: The alert title; can be a localization key.
+    - Parameter error: An error. If the error contains a localizedDescription, that will be used for the alert message.
+    - Returns: The alert controller to be presented.
    */
   class func alert(title: String?, error: NSError?) -> UIAlertController {
-    let customMessage = error?.userInfo["message"]
     var message = ""
     let domain = error?.domain ?? ""
     let code = error?.code ?? 0
-    
+
+    // handle common iOS networking errors
     if domain == NSURLErrorDomain {
       if code == NSURLErrorNotConnectedToInternet {
         message = "NotConnected"
@@ -38,13 +39,20 @@ import UIKit
       }
     }
     #endif
-    
-    if customMessage != nil { // Custom message override
-      message = customMessage as! String
-    } else if message.isEmpty { // Handle unassigned message
-      message = "UnknownError"
+
+    if message.isEmpty {
+      // since it wasn't a networking or Adobe DRM error, show the error
+      // description if present
+      if let errorDescription = error?.localizedDescription, !errorDescription.isEmpty {
+        message = errorDescription
+      } else {
+        message = "UnknownError"
+        NYPLErrorLogger.logError(withCode: .genericErrorMsgDisplayed,
+                                 context: NYPLErrorLogger.Context.errorHandling.rawValue,
+                                 message: "Error \(error?.description ?? "") contained no usable error message for the user, so we defaulted to a generic one.")
+      }
     }
-    
+
     return alert(title: title, message: message)
   }
   

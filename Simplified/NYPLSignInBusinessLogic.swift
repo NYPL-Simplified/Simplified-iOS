@@ -12,6 +12,7 @@ class NYPLSignInBusinessLogic: NSObject {
 
   @objc let libraryAccountID: String
   private let permissionsCheckLock = NSLock()
+  @objc let requestTimeoutInterval: TimeInterval = 25.0
 
   @objc init(libraryAccountID: String) {
     self.libraryAccountID = libraryAccountID
