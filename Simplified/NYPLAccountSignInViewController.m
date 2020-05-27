@@ -287,7 +287,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (self.currentAccount.details.supportsCardCreator
           && self.currentAccount.details.signUpUrl != nil) {
         __weak NYPLAccountSignInViewController *const weakSelf = self;
-        CardCreatorConfiguration *const config = self.businessLogic.cardCreatorConfiguration;
+
+        CardCreatorConfiguration *const config = [self.businessLogic makeRegularCardCreationConfiguration];
         config.completionHandler = ^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
           if (userInitiated) {
             // Dismiss CardCreator & SignInVC when user finishes Credential Review
