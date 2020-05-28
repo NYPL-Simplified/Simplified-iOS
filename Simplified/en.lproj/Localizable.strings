@@ -213,8 +213,8 @@
 "Trouble locating DRM in profile document." = "Trouble locating DRM in profile document. Please try again.";
 "SigningInAgree" = "By signing in, you agree to the End User License Agreement.";
 "Want a card for your child?" = "Want a card for your child?";
-"We are unable to read your library card, which is necessary in order to create a dependent card." = "We are unable to read your library card, which is necessary in order to create a dependent card.";
-"Try to sign out, sign back in, then try again." = "Try to sign out, sign back in, then try again.";
+"Cannot confirm library card eligibility." = "Cannot confirm library card eligibility.";
+"Please log out and try your card information again." = "Please log out and try your card information again.";
 
 // NYPLSettingsEULAViewController
 "Accept" = "Accept";

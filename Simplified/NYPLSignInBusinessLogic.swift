@@ -217,8 +217,8 @@ class NYPLSignInBusinessLogic: NSObject {
     juvenileAuthIsOngoing = true
 
     guard let parentBarcode = userAccount.barcode else {
-      let description = NSLocalizedString("We are unable to read your library card, which is necessary in order to create a dependent card.", comment: "Message describing the fact that a patron's barcode is not readable and therefore we cannot create a dependent juvenile card")
-      let recoveryMsg = NSLocalizedString("Try to sign out, sign back in, then try again.", comment: "An error recovery suggestion")
+      let description = NSLocalizedString("Cannot confirm library card eligibility.", comment: "Message describing the fact that a patron's barcode is not readable and therefore we cannot establish eligibility to create dependent juvenile cards")
+      let recoveryMsg = NSLocalizedString("Please log out and try your card information again.", comment: "A error recovery suggestion related to missing login info")
 
       let error = NSError(domain: NYPLSimplyEDomain,
                           code: NYPLErrorCode.missingParentBarcodeForJuvenile.rawValue,
