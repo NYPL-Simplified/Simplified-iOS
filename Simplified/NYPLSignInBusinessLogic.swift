@@ -179,7 +179,8 @@ class NYPLSignInBusinessLogic: NSObject {
 
   /// Factory method.
   /// - Parameter parentBarcode: The barcode of the user creating the juvenile
-  /// account.
+  /// account. Differently from the sign-in process, this MUST be a barcode --
+  /// the username will not work.
   /// - Returns: A coordinator instance to handle the juvenile card creator flow.
   private func makeJuvenileCardCreationCoordinator(using parentBarcode: String) -> JuvenileFlowCoordinator {
 
@@ -204,6 +205,29 @@ class NYPLSignInBusinessLogic: NSObject {
     return JuvenileFlowCoordinator(configuration: config)
   }
 
+  /// Utility method to resolve the user barcode, accounting for NYPL-specific
+  /// knowledge.
+  private func userBarcode() -> String? {
+    // For NYPL specifically, the authorizationIdentifier is always a valid
+    // barcode.
+    if libraryAccountID == AccountsManager.NYPLAccountUUID {
+      return userAccount.authorizationIdentifier ?? userAccount.barcode
+    }
+
+    return userAccount.barcode
+  }
+
+  /// The entry point to the juvenile card creation flow.
+  /// - Note: This is available only for NYPL accounts.
+  /// - Parameters:
+  ///   - eligibilityCompletion: Always called at the end of an initial
+  ///   api call that determines whether the user is eligible or not to
+  ///   create juvenile accounts. If that's possible, the handler returns
+  ///   a navigation controller containing the VCs for the whole flow.
+  ///   All the client has to do is to present this navigation controller
+  ///   in whatever way it sees fit.
+  ///   - flowCompletion: Called when/if the user completes the whole juvenile
+  ///   card-creation flow.
   @objc
   func startJuvenileCardCreation(
     eligibilityCompletion: @escaping (UINavigationController?, Error?) -> Void,
@@ -216,7 +240,7 @@ class NYPLSignInBusinessLogic: NSObject {
 
     juvenileAuthIsOngoing = true
 
-    guard let parentBarcode = userAccount.barcode else {
+    guard let parentBarcode = userBarcode() else {
       let description = NSLocalizedString("Cannot confirm library card eligibility.", comment: "Message describing the fact that a patron's barcode is not readable and therefore we cannot establish eligibility to create dependent juvenile cards")
       let recoveryMsg = NSLocalizedString("Please log out and try your card information again.", comment: "A error recovery suggestion related to missing login info")
 
