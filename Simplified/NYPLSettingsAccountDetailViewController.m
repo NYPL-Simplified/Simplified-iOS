@@ -45,66 +45,81 @@ typedef NS_ENUM(NSInteger, CellKind) {
 
 @interface NYPLSettingsAccountDetailViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate>
 
+// State machine
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
 @property (nonatomic) BOOL loggingInAfterBarcodeScan;
+@property (nonatomic) BOOL loading;
+@property (nonatomic) BOOL hiddenPIN;
+
+// UI
 @property (nonatomic) UIImageView *barcodeImageView;
 @property (nonatomic) UILabel *barcodeImageLabel;
 @property (nonatomic) NSLayoutConstraint *barcodeHeightConstraint;
 @property (nonatomic) NSLayoutConstraint *barcodeLabelSpaceConstraint;
 @property (nonatomic) float userBrightnessSetting;
-
 @property (nonatomic) NSMutableArray *tableData;
-@property (nonatomic, copy) void (^completionHandler)(void);
-@property (nonatomic) BOOL hiddenPIN;
 @property (nonatomic) UIButton *PINShowHideButton;
 @property (nonatomic) UIButton *barcodeScanButton;
-@property (nonatomic) NSString *selectedAccountId;
-@property (nonatomic) Account *selectedAccount;
-@property NYPLUserAccountFrontEndValidation *frontEndValidator;
-
-@property (nonatomic) BOOL loading;
-
-@property (nonatomic) UITableViewCell *registrationCell;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITableViewCell *ageCheckCell;
-
 @property (nonatomic) UISwitch *syncSwitch;
-@property (nonatomic) BOOL permissionCheckIsInProgress;
 
+// account state
+@property NYPLUserAccountFrontEndValidation *frontEndValidator;
+@property (nonatomic) NYPLSignInBusinessLogic *businessLogic;
+
+// networking
 @property (nonatomic) NSURLSession *session;
 @property (nonatomic) NYPLSettingsAccountURLSessionChallengeHandler *urlSessionDelegate;
 
 @end
 
+static const NSInteger sLinearViewTag = 1;
+static const CGFloat sVerticalMarginPadding = 2.0;
+
+// table view sections indeces
+static const NSInteger sSection0AccountInfo = 0;
+static const NSInteger sSection1Sync = 1;
 
 @implementation NYPLSettingsAccountDetailViewController
 
 @synthesize usernameTextField;
 @synthesize PINTextField;
 
-NSInteger const linearViewTag = 1;
-CGFloat const verticalMarginPadding = 2.0;
-double const requestTimeoutInterval = 25.0;
+#pragma mark - Computed variables
+
+- (NSString *)selectedAccountId
+{
+  return self.businessLogic.libraryAccountID;
+}
+
+- (nullable Account *)selectedAccount
+{
+  return self.businessLogic.libraryAccount;
+}
 
 - (NYPLUserAccount *)selectedUserAccount
 {
-  return [NYPLUserAccount sharedAccount:self.selectedAccountId];
+  return self.businessLogic.userAccount;
 }
 
-#pragma mark NSObject
+#pragma mark - NSObject
 
-- (instancetype)initWithAccount:(NSString *)account
+// Overriding superclass's designated initializer
+- (instancetype)initWithStyle:(__unused UITableViewStyle)style
 {
-  self.selectedAccountId = account;
-  self.selectedAccount = [[AccountsManager sharedInstance] account:self.selectedAccountId];
-  return [self init];
+  NSString *libraryID = [[AccountsManager shared] currentAccountId];
+  NSAssert(libraryID, @"Tried to initialize NYPLSettingsAccountDetailViewController with the current library ID but that appears to be nil. A release build will continue with an empty library ID but this will likely produce unexpected behavior.");
+  return [self initWithLibraryAccountID:libraryID ?: @""];
 }
 
-- (instancetype)init
+- (instancetype)initWithLibraryAccountID:(NSString *)libraryUUID
 {
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
-  
+
+  self.businessLogic = [[NYPLSignInBusinessLogic alloc] initWithLibraryAccountID:libraryUUID];
+
   self.title = NSLocalizedString(@"Account", nil);
 
   self.frontEndValidator = [[NYPLUserAccountFrontEndValidation alloc]
@@ -121,12 +136,6 @@ double const requestTimeoutInterval = 25.0;
    addObserver:self
    selector:@selector(keyboardDidShow:)
    name:UIKeyboardWillShowNotification
-   object:nil];
-  
-  [[NSNotificationCenter defaultCenter]
-   addObserver:self
-   selector:@selector(keyboardWillHide)
-   name:UIKeyboardWillHideNotification
    object:nil];
   
   [[NSNotificationCenter defaultCenter]
@@ -157,10 +166,11 @@ double const requestTimeoutInterval = 25.0;
 
 - (void)dealloc
 {
+  [self.session finishTasksAndInvalidate];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-#pragma mark UIViewController
+#pragma mark - UIViewController + Views Preparation
 
 - (void)viewDidLoad
 {
@@ -273,61 +283,55 @@ double const requestTimeoutInterval = 25.0;
 
 - (void)setupTableData
 {
-  NSMutableArray *section0;
+  NSMutableArray *section0AcctInfo;
   if (self.selectedAccount.details.needsAgeCheck) {
-    section0 = @[@(CellKindAgeCheck)].mutableCopy;
+    section0AcctInfo = @[@(CellKindAgeCheck)].mutableCopy;
   } else if (!self.selectedAccount.details.needsAuth) {
-    section0 = [NSMutableArray new];
+    section0AcctInfo = [NSMutableArray new];
   } else if (self.selectedAccount.details.pinKeyboard != LoginKeyboardNone) {
-    section0 = @[@(CellKindBarcode),
-                 @(CellKindPIN),
-                 @(CellKindLogInSignOut)].mutableCopy;
+    section0AcctInfo = @[@(CellKindBarcode), @(CellKindPIN), @(CellKindLogInSignOut)].mutableCopy;
   } else {
     //Server expects a blank string. Passes local textfield validation.
     self.PINTextField.text = @"";
-    section0 = @[@(CellKindBarcode),
-                 @(CellKindLogInSignOut)].mutableCopy;
+    section0AcctInfo = @[@(CellKindBarcode), @(CellKindLogInSignOut)].mutableCopy;
   }
-  
-  NSMutableArray *sectionRegister = @[@(CellKindRegistration)].mutableCopy;
+  if ([self.businessLogic librarySupportsBarcodeDisplay]) {
+    [section0AcctInfo insertObject:@(CellKindBarcodeImage) atIndex: 0];
+  }
 
-  if ([self librarySupportsBarcodeDisplay]) {
-    [section0 insertObject:@(CellKindBarcodeImage) atIndex: 0];
-  }
-  NSMutableArray *section2 = [[NSMutableArray alloc] init];
+  NSMutableArray *section2About = [[NSMutableArray alloc] init];
   if ([self.selectedAccount.details getLicenseURL:URLTypePrivacyPolicy]) {
-    [section2 addObject:@(CellKindPrivacyPolicy)];
+    [section2About addObject:@(CellKindPrivacyPolicy)];
   }
   if ([self.selectedAccount.details getLicenseURL:URLTypeContentLicenses]) {
-    [section2 addObject:@(CellKindContentLicense)];
+    [section2About addObject:@(CellKindContentLicense)];
   }
-  NSMutableArray *section1 = [[NSMutableArray alloc] init];
-  if ([self syncButtonShouldBeVisible]) {
-    [section1 addObject:@(CellKindSyncButton)];
-    [section2 addObject:@(CellKindAdvancedSettings)];
-  }
-  
-  if ([self registrationIsPossible]) {
-    self.tableData = @[section0, sectionRegister, section1].mutableCopy;
-  }
-  else{
-    self.tableData = @[section0, section1].mutableCopy;
+  NSMutableArray *section1Sync = [[NSMutableArray alloc] init];
+  if ([self.businessLogic shouldShowSyncButton]) {
+    [section1Sync addObject:@(CellKindSyncButton)];
+    [section2About addObject:@(CellKindAdvancedSettings)];
   }
   
-  NSMutableArray *reportIssue = [[NSMutableArray alloc] init];
-  if (self.selectedAccount.supportEmail != nil)
-  {
-    [reportIssue addObject:@(CellReportIssue)];
-    [self.tableData addObject:reportIssue];
+  if ([self.businessLogic registrationIsPossible]) {
+    self.tableData = @[section0AcctInfo, @[@(CellKindRegistration)], section1Sync].mutableCopy;
+  } else {
+    self.tableData = @[section0AcctInfo, section1Sync].mutableCopy;
   }
-  [self.tableData addObject:section2];
 
-  
-  NSMutableArray *newArray = [[NSMutableArray alloc] init];
-  for (NSMutableArray *section in self.tableData) {
-    if ([section count] != 0) { [newArray addObject:section]; }
+  if (self.selectedAccount.supportEmail != nil) {
+    [self.tableData addObject:@[@(CellReportIssue)]];
   }
-  self.tableData = newArray;
+  
+  [self.tableData addObject:section2About];
+
+  // compute final tableview contents, adding all non-empty sections
+  NSMutableArray *finalTableContents = [[NSMutableArray alloc] init];
+  for (NSArray *section in self.tableData) {
+    if ([section count] != 0) {
+      [finalTableContents addObject:section];
+    }
+  }
+  self.tableData = finalTableContents;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -341,7 +345,6 @@ double const requestTimeoutInterval = 25.0;
   } else {
     self.hiddenPIN = YES;
     [self accountDidChange];
-    [self.tableView reloadData];
     [self updateShowHidePINState];
   }
 }
@@ -354,13 +357,10 @@ double const requestTimeoutInterval = 25.0;
   }
 }
 
-- (BOOL)librarySupportsBarcodeDisplay
+- (void)viewWillTransitionToSize:(__unused CGSize)size
+       withTransitionCoordinator:(__unused id<UIViewControllerTransitionCoordinator>)coordinator
 {
-  // For now, only supports libraries granted access in Accounts.json,
-  // is signed in, and has an authorization ID returned from the loans feed.
-  return ((self.selectedUserAccount.hasBarcodeAndPIN) &&
-          (self.selectedUserAccount.authorizationIdentifier) &&
-          (self.selectedAccount.details.supportsBarcodeDisplay));
+  [self.tableView reloadData];
 }
 
 - (void)scanLibraryCard
@@ -426,7 +426,7 @@ double const requestTimeoutInterval = 25.0;
   NSMutableURLRequest *const request =
   [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
   
-  request.timeoutInterval = requestTimeoutInterval;
+  request.timeoutInterval = self.businessLogic.requestTimeoutInterval;
   
   NSURLSessionDataTask *const task =
   [self.session
@@ -549,7 +549,7 @@ double const requestTimeoutInterval = 25.0;
   NSMutableURLRequest *const request =
   [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
 
-  request.timeoutInterval = requestTimeoutInterval;
+  request.timeoutInterval = self.businessLogic.requestTimeoutInterval;
 
   __weak __auto_type weakSelf = self;
   NSURLSessionDataTask *const task =
@@ -584,7 +584,7 @@ double const requestTimeoutInterval = 25.0;
   UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
   if (!pDoc) {
     [NYPLErrorLogger logUserProfileDocumentErrorWithError:pDocError];
-    [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Error parsing user profile doc" }]];
+    [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Error parsing user profile document." }]];
     return;
   }
 
@@ -598,7 +598,7 @@ double const requestTimeoutInterval = 25.0;
     [self.selectedUserAccount setLicensor:[pDoc.drm[0] licensor]];
   } else {
     NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
-    [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Trouble locating DRMs in profile doc" }]];
+    [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Trouble locating DRM in profile document." }]];
     return;
   }
 
@@ -709,9 +709,6 @@ double const requestTimeoutInterval = 25.0;
       [self.selectedUserAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
 
       if ([self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]) {
-        void (^handler)(void) = self.completionHandler;
-        self.completionHandler = nil;
-        if(handler) handler();
         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
           if (success) {
             [[NYPLBookRegistry sharedRegistry] save];
@@ -728,7 +725,7 @@ double const requestTimeoutInterval = 25.0;
   }];
 }
 
-#pragma mark - UITableViewDelegate
+#pragma mark - UITableViewDataSource / UITableViewDelegate + related methods
 
 - (void)tableView:(__attribute__((unused)) UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
@@ -771,7 +768,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       NSString *logoutString;
       if([self.selectedUserAccount hasBarcodeAndPIN]) {
-        if ([self syncButtonShouldBeVisible] && !self.syncSwitch.on) {
+        if ([self.businessLogic shouldShowSyncButton] && !self.syncSwitch.on) {
           logoutString = NSLocalizedString(@"SettingsAccountViewControllerLogoutMessageSync", nil);
         } else {
           logoutString = NSLocalizedString(@"SettingsAccountViewControllerLogoutMessageDefault", nil);
@@ -813,11 +810,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
         CardCreatorConfiguration *const configuration =
         [[CardCreatorConfiguration alloc]
-         initWithEndpointURL:self.selectedAccount.details.signUpUrl
+         initWithEndpointURL:self.selectedAccount.details.signUpUrl ?: APIKeys.cardCreatorEndpointURL
          endpointVersion:[APIKeys cardCreatorVersion]
-         endpointUsername:[APIKeys cardCreatorUsername]
-         endpointPassword:[APIKeys cardCreatorPassword]
-         requestTimeoutInterval:requestTimeoutInterval
+         endpointUsername:NYPLSecrets.cardCreatorUsername
+         endpointPassword:NYPLSecrets.cardCreatorPassword
+         requestTimeoutInterval:self.businessLogic.requestTimeoutInterval
          completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
           if (userInitiated) {
             // Dismiss CardCreator when user finishes Credential Review
@@ -866,10 +863,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                         action:@selector(didSelectCancelForSignUp)];
         navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
         [self presentViewController:navigationController animated:YES completion:nil];
-        
-        
       }
-      
       break;
     }
     case CellKindSyncButton: {
@@ -883,7 +877,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindBarcodeImage: {
       [self.tableView beginUpdates];
       // Collapse barcode by adjusting certain constraints
-      if (self.barcodeHeightConstraint.constant > 0) {
+      if (self.barcodeImageView.bounds.size.height > 0) {
         self.barcodeHeightConstraint.constant = 0.0;
         self.barcodeLabelSpaceConstraint.constant = 0.0;
         self.barcodeImageLabel.text = NSLocalizedString(@"Show Barcode", nil);
@@ -933,25 +927,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-- (void)showDetailVC:(UIViewController *)vc fromIndexPath:(NSIndexPath *)indexPath
-{
-  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
-     self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassCompact) {
-    [self.splitViewController showDetailViewController:[[UINavigationController alloc]
-                                                        initWithRootViewController:vc]
-                                                sender:self];
-  } else {
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    [self.splitViewController showDetailViewController:vc sender:self];
-  }
-}
-
 - (void)didSelectCancelForSignUp
 {
   [self dismissViewControllerAnimated:YES completion:nil];
 }
-
-#pragma mark UITableViewDataSource
 
 - (UITableViewCell *)tableView:(__attribute__((unused)) UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *const)indexPath
@@ -973,10 +952,10 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self.usernameTextField autoPinEdgeToSuperviewMargin:ALEdgeLeft];
         [self.usernameTextField autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop
                                                ofView:[self.usernameTextField superview]
-                                           withOffset:verticalMarginPadding];
+                                           withOffset:sVerticalMarginPadding];
         [self.usernameTextField autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom
                                                ofView:[self.usernameTextField superview]
-                                           withOffset:-verticalMarginPadding];
+                                           withOffset:-sVerticalMarginPadding];
 
         if (self.selectedAccount.details.supportsBarcodeScanner) {
           [cell.contentView addSubview:self.barcodeScanButton];
@@ -996,8 +975,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                      reuseIdentifier:nil];
       cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
-
-      if (![self librarySupportsBarcodeDisplay]) {
+      if (![self.businessLogic librarySupportsBarcodeDisplay]) {
         NYPLLOG(@"A nonvalid library was attempting to create a barcode image.");
       } else {
         NYPLBarcode *barcode = [[NYPLBarcode alloc] initWithLibrary:self.selectedAccount.name];
@@ -1160,8 +1138,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [containerView addSubview:regTitle];
   [containerView addSubview:regButton];
   [regTitle autoPinEdgeToSuperviewMargin:ALEdgeLeft];
-  [regTitle autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop ofView:[regTitle superview] withOffset:verticalMarginPadding];
-  [regTitle autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom ofView:[regTitle superview] withOffset:-verticalMarginPadding];
+  [regTitle autoConstrainAttribute:ALAttributeTop toAttribute:ALAttributeMarginTop ofView:[regTitle superview] withOffset:sVerticalMarginPadding];
+  [regTitle autoConstrainAttribute:ALAttributeBottom toAttribute:ALAttributeMarginBottom ofView:[regTitle superview] withOffset:-sVerticalMarginPadding];
   [regButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:regTitle withOffset:8.0 relation:NSLayoutRelationGreaterThanOrEqual];
   [regButton autoPinEdgeToSuperviewMargin:ALEdgeRight];
   [regButton autoAlignAxisToSuperviewMarginAxis:ALAxisHorizontal];
@@ -1191,7 +1169,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (CGFloat)tableView:(__unused UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-  if (section == 0) {
+  if (section == sSection0AccountInfo) {
     return UITableViewAutomaticDimension;
   } else {
     return 0;
@@ -1203,7 +1181,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 }
 -(CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section
 {
-  if (section == 0) {
+  if (section == sSection0AccountInfo) {
     return 80;
   } else {
     return 0;
@@ -1225,7 +1203,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (UIView *)tableView:(__unused UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-  if (section == 0) {
+  if (section == sSection0AccountInfo) {
     UIView *containerView = [[UIView alloc] init];
     containerView.preservesSuperviewLayoutMargins = YES;
     UILabel *titleLabel = [[UILabel alloc] init];
@@ -1261,17 +1239,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     
     return containerView;
   } else {
-
-
-
     return nil;
   }
 }
 
 - (UIView *)tableView:(UITableView *)__unused tableView viewForFooterInSection:(NSInteger)section
 {
-  if ((section == 0 && [self.selectedAccount.details getLicenseURL:URLTypeEula]) ||
-      (section == 1 && [self syncButtonShouldBeVisible])) {
+  if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
+      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton])) {
 
     UIView *container = [[UIView alloc] init];
     container.preservesSuperviewLayoutMargins = YES;
@@ -1281,7 +1256,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     footerLabel.userInteractionEnabled = YES;
 
     NSMutableAttributedString *eulaString;
-    if (section == 0) {
+    if (section == sSection0AccountInfo) {
       [footerLabel addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEULA)]];
 
       NSDictionary *linkAttributes = @{ NSForegroundColorAttributeName :
@@ -1290,7 +1265,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                           @(NSUnderlineStyleSingle) };
       eulaString = [[NSMutableAttributedString alloc]
                     initWithString:NSLocalizedString(@"SigningInAgree", nil) attributes:linkAttributes];
-    } else {
+    } else { // sync section
       NSDictionary *attrs;
       attrs = @{ NSForegroundColorAttributeName : [UIColor defaultLabelColor] };
       eulaString = [[NSMutableAttributedString alloc]
@@ -1312,26 +1287,15 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-#pragma mark -
+#pragma mark - Text Input
 
 - (void)textFieldsDidChange
 {
   [self updateLoginLogoutCellAppearance];
 }
 
-- (void)keyboardWillHide
-{
-  self.registrationCell.textLabel.enabled = YES;
-  self.registrationCell.detailTextLabel.enabled = YES;
-  self.registrationCell.userInteractionEnabled = YES;
-}
-
 - (void)keyboardDidShow:(NSNotification *const)notification
 {
-  self.registrationCell.textLabel.enabled = NO;
-  self.registrationCell.detailTextLabel.enabled = NO;
-  self.registrationCell.userInteractionEnabled = NO;
-  
   // This nudges the scroll view up slightly so that the log in button is clearly visible even on
   // older 3:2 iPhone displays. I wish there were a more general way to do this, but this does at
   // least work very well.
@@ -1357,12 +1321,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 }
 
 #pragma mark -
-
-- (void)didSelectReveal
-{
-  self.hiddenPIN = NO;
-  [self.tableView reloadData];
-}
 
 - (void)PINShowHideSelected
 {
@@ -1474,7 +1432,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   UIView *const rightPaddingView = [[UIView alloc] initWithFrame:activityIndicatorView.bounds];
   
   NYPLLinearView *const linearView = [[NYPLLinearView alloc] init];
-  linearView.tag = linearViewTag;
+  linearView.tag = sLinearViewTag;
   linearView.contentVerticalAlignment = NYPLLinearViewContentVerticalAlignmentMiddle;
   linearView.padding = 5.0;
   [linearView addSubview:activityIndicatorView];
@@ -1484,14 +1442,14 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [linearView autoSetDimensionsToSize:CGSizeMake(linearView.frame.size.width, linearView.frame.size.height)];
   
   self.logInSignOutCell.textLabel.text = nil;
-  if (![self.logInSignOutCell.contentView viewWithTag:linearViewTag]) {
+  if (![self.logInSignOutCell.contentView viewWithTag:sLinearViewTag]) {
     [self.logInSignOutCell.contentView addSubview:linearView];
   }
   [linearView autoCenterInSuperview];
 }
 
 - (void)removeActivityTitle {
-  UIView *view = [self.logInSignOutCell.contentView viewWithTag:linearViewTag];
+  UIView *view = [self.logInSignOutCell.contentView viewWithTag:sLinearViewTag];
   [view removeFromSuperview];
   [self updateLoginLogoutCellAppearance];
 }
@@ -1541,62 +1499,32 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-- (BOOL)registrationIsPossible
-{
-  return ([NYPLConfiguration cardCreationEnabled] &&
-          self.selectedAccount.details.signUpUrl != nil &&
-          ![self.selectedUserAccount hasBarcodeAndPIN]);
-}
-
 - (void)syncSwitchChanged:(UISwitch*)sender
 {
-  // When switching on, attempt to enable on the server.
-  // When switching off, just ignore the server's annotations.
+  const BOOL currentSwitchState = sender.on;
+
   if (sender.on) {
     self.syncSwitch.enabled = NO;
-    [NYPLAnnotations updateServerSyncSettingToEnabled:YES completion:^(BOOL success) {
-      if (success) {
-        self.selectedAccount.details.syncPermissionGranted = YES;
-        self.syncSwitch.on = YES;
-      } else {
-        self.selectedAccount.details.syncPermissionGranted = NO;
-        self.syncSwitch.on = NO;
-      }
-      self.syncSwitch.enabled = YES;
-    }];
   } else {
-    self.selectedAccount.details.syncPermissionGranted = NO;
     self.syncSwitch.on = NO;
   }
+
+  __weak __auto_type weakSelf = self;
+  [self.businessLogic changeSyncPermissionTo:currentSwitchState
+                    postServerSyncCompletion:^(BOOL success) {
+    weakSelf.syncSwitch.enabled = YES;
+    weakSelf.syncSwitch.on = success;
+  }];
 }
 
 - (void)checkSyncPermissionForCurrentPatron
 {
-  if (self.permissionCheckIsInProgress || !self.selectedAccount.details.supportsSimplyESync) {
-    NYPLLOG(@"Skipping sync setting check. Request already in progress or sync not supported.");
-    return;
-  }
-
-  self.permissionCheckIsInProgress = YES;
-  self.syncSwitch.enabled = NO;
-
-  [NYPLAnnotations requestServerSyncStatusForAccount:self.selectedUserAccount completion:^(BOOL enableSync) {
-    if (enableSync == YES) {
-      self.selectedAccount.details.syncPermissionGranted = enableSync;
-    }
+  [self.businessLogic checkSyncPermissionWithPreWork:^{
+    self.syncSwitch.enabled = NO;
+  } postWork:^(BOOL enableSync){
     self.syncSwitch.on = enableSync;
     self.syncSwitch.enabled = YES;
-    self.permissionCheckIsInProgress = NO;
   }];
-}
-
-- (BOOL)syncButtonShouldBeVisible
-{
-  // Only supported for now on current active library account
-  return ((self.selectedAccount.details.supportsSimplyESync) &&
-          [self.selectedAccount.details getLicenseURL:URLTypeAnnotations] &&
-          [self.selectedUserAccount hasBarcodeAndPIN] &&
-          [self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]);
 }
 
 - (void)didSelectCancel
@@ -1605,8 +1533,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
    dismissViewControllerAnimated:YES
    completion:nil];
 }
-
-#pragma mark - View Controller Methods
 
 - (void)willResignActive
 {
@@ -1621,12 +1547,6 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self updateShowHidePINState];
   }];
-}
-
-- (void)viewWillTransitionToSize:(__unused CGSize)size
-       withTransitionCoordinator:(__unused id<UIViewControllerTransitionCoordinator>)coordinator
-{
-  [self.tableView reloadData];
 }
 
 @end

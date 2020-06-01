@@ -154,7 +154,6 @@
 		5D73DA4322A080BA00162CB8 /* NYPLMyBooksDownloadCenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D73DA3D22A07B9A00162CB8 /* NYPLMyBooksDownloadCenterTests.swift */; };
 		5D7CF86422C19EBA007CAA34 /* NYPLReaderContainerDelegateBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF86322C19EBA007CAA34 /* NYPLReaderContainerDelegateBase.m */; };
 		5D7CF8B922C3FC06007CAA34 /* NYPLErrorLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF8B422C3FC06007CAA34 /* NYPLErrorLogger.swift */; };
-		5D7CF8BC22C42AE2007CAA34 /* LogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7CF8BA22C427F6007CAA34 /* LogTests.swift */; };
 		5DD5674522B303DF001F0C83 /* NYPLDeveloperSettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD5674422B303DF001F0C83 /* NYPLDeveloperSettingsTableViewController.swift */; };
 		5DD5677222B7ECE3001F0C83 /* NYPLSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD5677122B7ECE3001F0C83 /* NYPLSettings.swift */; };
 		5DD567AF22B95A30001F0C83 /* String+MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD567AE22B95A30001F0C83 /* String+MD5.swift */; };
@@ -171,6 +170,7 @@
 		731B2B25244A2B6E00A7A649 /* R2Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 739E6157244A0F6D00D00301 /* R2Shared.framework */; };
 		731B2B26244A2B6F00A7A649 /* R2Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 739E6157244A0F6D00D00301 /* R2Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		731B2B27244A2B7100A7A649 /* R2Streamer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731B2B12244A1D6500A7A649 /* R2Streamer.framework */; };
+		731A5B1224621F2B00B5E663 /* NYPLSignInBusinessLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */; };
 		731DA5FA2407105F009CC191 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731DA5F52407105E009CC191 /* Crashlytics.framework */; };
 		731DA5FC240711F5009CC191 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731DA5FB240711F5009CC191 /* Fabric.framework */; };
 		7327A89323EE017300954748 /* NYPLMainThreadChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7327A89223EE017300954748 /* NYPLMainThreadChecker.swift */; };
@@ -844,7 +844,6 @@
 		5D7CF86322C19EBA007CAA34 /* NYPLReaderContainerDelegateBase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NYPLReaderContainerDelegateBase.m; sourceTree = "<group>"; };
 		5D7CF86922C1A2F1007CAA34 /* NYPLReaderContainerDelegateBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NYPLReaderContainerDelegateBase.h; sourceTree = "<group>"; };
 		5D7CF8B422C3FC06007CAA34 /* NYPLErrorLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLErrorLogger.swift; sourceTree = "<group>"; };
-		5D7CF8BA22C427F6007CAA34 /* LogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogTests.swift; sourceTree = "<group>"; };
 		5DD5674422B303DF001F0C83 /* NYPLDeveloperSettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLDeveloperSettingsTableViewController.swift; sourceTree = "<group>"; };
 		5DD5677122B7ECE3001F0C83 /* NYPLSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSettings.swift; sourceTree = "<group>"; };
 		5DD567AE22B95A30001F0C83 /* String+MD5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+MD5.swift"; sourceTree = "<group>"; };
@@ -857,6 +856,7 @@
 		731B2B1B244A1EB400A7A649 /* GCDWebServer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GCDWebServer.framework; path = "../r2-streamer-swift/Carthage/Build/iOS/GCDWebServer.framework"; sourceTree = "<group>"; };
 		731B2B1C244A1EB400A7A649 /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = "../r2-streamer-swift/Carthage/Build/iOS/CryptoSwift.framework"; sourceTree = "<group>"; };
 		731B2B1D244A1EB400A7A649 /* Minizip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Minizip.framework; path = "../r2-streamer-swift/Carthage/Build/iOS/Minizip.framework"; sourceTree = "<group>"; };
+		731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLSignInBusinessLogic.swift; sourceTree = "<group>"; };
 		731DA5F52407105E009CC191 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Carthage/Build/iOS/Crashlytics.framework; sourceTree = "<group>"; };
 		731DA5FB240711F5009CC191 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Carthage/Build/iOS/Fabric.framework; sourceTree = "<group>"; };
 		7327A89223EE017300954748 /* NYPLMainThreadChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLMainThreadChecker.swift; sourceTree = "<group>"; };
@@ -1390,6 +1390,7 @@
 				111E75781A80165C00718AD7 /* NYPLSettingsSplitViewController.h */,
 				111E75791A80165C00718AD7 /* NYPLSettingsSplitViewController.m */,
 				E6BA02B71DE4B6F600F76404 /* RemoteHTMLViewController.swift */,
+				731A5B1124621F2B00B5E663 /* NYPLSignInBusinessLogic.swift */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -1741,7 +1742,6 @@
 			isa = PBXGroup;
 			children = (
 				7384C803242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift */,
-				5D7CF8BA22C427F6007CAA34 /* LogTests.swift */,
 				1157E92D19CA0009003BFDBF /* NSString+NYPLStringAdditionsTests.m */,
 				2D8790A420129AF200E2763F /* NYPLBookAcquisitionPathTests.swift */,
 				173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */,
@@ -2219,7 +2219,6 @@
 				B51C1DFE22860563003B49A5 /* OPDS2CatalogsFeedTests.swift in Sources */,
 				5D73DA4322A080BA00162CB8 /* NYPLMyBooksDownloadCenterTests.swift in Sources */,
 				735F41A3243E381D00046182 /* String+NYPLAdditionsTests.swift in Sources */,
-				5D7CF8BC22C42AE2007CAA34 /* LogTests.swift in Sources */,
 				173F0823241AAA4E00A64658 /* NYPLBookStateTests.swift in Sources */,
 				2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */,
 				7307A5F423FF2A6000DE53DE /* NYPLStringAdditionsTests.swift in Sources */,
@@ -2446,6 +2445,7 @@
 				116A5EAF194767B200491A21 /* NYPLMyBooksNavigationController.m in Sources */,
 				1120749319D20BF9008203A4 /* NYPLBookCellCollectionViewController.m in Sources */,
 				111559ED19B8FA590003BE94 /* NYPLXML.m in Sources */,
+				731A5B1224621F2B00B5E663 /* NYPLSignInBusinessLogic.swift in Sources */,
 				11580AC81986A77B00949A15 /* NYPLBookCell.m in Sources */,
 				085640CE1BB99FC30088BDBF /* NSURL+NYPLURLAdditions.m in Sources */,
 				1183F35B194F847100DC322F /* NYPLAsync.m in Sources */,
@@ -2929,7 +2929,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2946,7 +2946,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "2e185b6c-271e-4b02-a05e-860b8c3831f6";
-				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Development (Keychain Migration)";
+				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Development";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG FEATURE_DRM_CONNECTOR";
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
@@ -2976,7 +2976,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES_ERROR;
 				CODE_SIGN_ENTITLEMENTS = Simplified/SimplyE.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 7262U6ST2R;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2997,7 +2997,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.nypl.labs.SimplyE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "b3d9154d-70e1-48d6-a0c5-869431277a5c";
-				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Distribution 2019";
+				PROVISIONING_PROFILE_SPECIFIER = "SimplyE Distribution";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = FEATURE_DRM_CONNECTOR;
 				SWIFT_OBJC_BRIDGING_HEADER = "Simplified/SimplyE-Bridging-Header.h";
