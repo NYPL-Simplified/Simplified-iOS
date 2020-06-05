@@ -19,6 +19,8 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   init(book: NYPLBook, r2Publication: Publication) {
     self.book = book
     self.publication = r2Publication
+    let registry = NYPLBookRegistry.shared()
+    bookmarks = registry.readiumBookmarks(forIdentifier: book.identifier)
   }
 
   func bookmark(at index: Int) -> NYPLReadiumBookmark? {
