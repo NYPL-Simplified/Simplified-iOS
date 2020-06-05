@@ -15,7 +15,6 @@ typealias NYPLReaderTOCLink = (level: Int, link: Link)
 /// for a given Readium 2 Publication.
 class NYPLReaderTOCBusinessLogic {
   var tocElements: [NYPLReaderTOCLink] = []
-  var bookmarks: [NYPLReadiumBookmark] = []
   private let book: NYPLBook
   private let publication: Publication
   private let currentLocation: Locator? // for current chapter
@@ -61,34 +60,5 @@ class NYPLReaderTOCBusinessLogic {
     }
 
     return title.lowercased() == currentLocationTitle
-  }
-
-  // MARK: -
-  // TODO: SIMPLY-2608 Move/expand this section to its own "BookmarksLogic" class.
-
-  var noBookmarksText: String {
-    return NSLocalizedString("There are no bookmarks for this book.", comment: "Text showing in bookmarks view when there are no bookmarks")
-  }
-
-  func shouldSelectBookmark(at index: Int) -> Bool {
-    return true
-  }
-
-  // TODO: SIMPLY-2608 not sure how this translates to R2. It might require
-  // server side changes
-  func refreshBookmarks(inVC vc: NYPLReaderPositionsVC) {
-//    let syncMgr = NYPLReadiumSyncManager()
-//    syncMgr.syncBookmarksWithCompletion { [weak self] success, bookmarks in
-//      NYPLMainThreadRun.asyncIfNeeded { [weak self] in
-//        self?.bookmarks = bookmarks
-//        vc.tableView.reloadData()
-//        vc.refreshControl.endRefreshing()
-//        if !success {
-//          let alert = NYPLAlertUtils.alert(title: "Error Syncing Bookmarks",
-//                                           message: "There was an error syncing bookmarks to the server. Ensure your device is connected to the internet or try again later.")
-//          vc.present(alert, animated: true)
-//        }
-//      }
-//    }
   }
 }

@@ -6,7 +6,7 @@
 #import "NYPLReaderTOCViewController.h"
 #import "SimplyE-Swift.h"
 
-
+// Deprecated: this is used only by R1. R2 uses NYPLReaderPositionsVC.
 @interface NYPLReaderTOCViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -18,8 +18,8 @@
 
 @end
 
-static NSString *const reuseIdentifierTOC = @"contentCell";
-static NSString *const reuseIdentifierBookmark = @"bookmarkCell";
+static NSString *const reuseIDTOC = @"contentCell";
+static NSString *const reuseIDBookmark = @"bookmarkCell";
 
 typedef NS_ENUM(NSInteger, SegmentControlType) {
   SegmentControlTypeTOC,
@@ -140,7 +140,7 @@ segmentControlTypeWithInteger(NSInteger const integer)
   switch (segmentControlTypeWithInteger(self.segmentedControl.selectedSegmentIndex)) {
     case SegmentControlTypeTOC:{
       NYPLReaderTOCCell *cell = [self.tableView
-                                 dequeueReusableCellWithIdentifier:reuseIdentifierTOC
+                                 dequeueReusableCellWithIdentifier:reuseIDTOC
                                  forIndexPath:indexPath];
 
       NYPLReaderTOCElement *const tocElement = self.tableOfContents[indexPath.row];
@@ -152,24 +152,15 @@ segmentControlTypeWithInteger(NSInteger const integer)
       return cell;
     }
     case SegmentControlTypeBookmark: {
-      NYPLReaderBookmarkCell *cell = [self.tableView dequeueReusableCellWithIdentifier:reuseIdentifierBookmark];
-      cell.backgroundColor = [UIColor clearColor];
-      
+      NYPLReaderBookmarkCell *cell = [self.tableView
+                                      dequeueReusableCellWithIdentifier:reuseIDBookmark
+                                      forIndexPath:indexPath];
       NYPLReadiumBookmark *const bookmark = self.bookmarks[indexPath.row];
-      
-      cell.chapterLabel.text = bookmark.chapter;
-      
-      NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
-      dateFormatter.timeStyle = NSDateFormatterShortStyle;
-      dateFormatter.dateStyle = NSDateFormatterShortStyle;
-      
-      NSDate *date = [NSDate dateWithRFC3339String:bookmark.time];
-      NSString *prettyDate = [dateFormatter stringFromDate:date];
-
-      cell.pageNumberLabel.text = [NSString stringWithFormat:@"%@ - %@ through chapter",prettyDate, bookmark.percentInChapter];
-      UIColor *textColor = [NYPLReaderSettings sharedSettings].foregroundColor;
-      cell.chapterLabel.textColor = textColor;
-      cell.pageNumberLabel.textColor = textColor;
+      if (bookmark != nil) {
+        [cell configWithChapterName:bookmark.chapter ?: @""
+                   percentInChapter:bookmark.percentInChapter
+                  rfc3339DateString:bookmark.time];
+      }
 
       return cell;
     }
