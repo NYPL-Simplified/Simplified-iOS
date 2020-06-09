@@ -9,9 +9,10 @@
 import UIKit
 import PureLayout
 
-/// A protocol to delegate actions whose scope and consequences are outside
-/// of NYPLReaderTOCVC's competencies.
-protocol NYPLReaderTOCDelegate: class {
+/// A protocol describing callbacks for the possible user actions related
+/// to TOC items and bookmarks (aka positions).
+/// - See: `NYPLReaderPositionsVC`
+protocol NYPLReaderPositionsDelegate: class {
   func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didSelectTOCLocation loc: Any)
   func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didSelectBookmark bookmark: NYPLReadiumBookmark)
   func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didDeleteBookmark bookmark: NYPLReadiumBookmark)
@@ -20,20 +21,25 @@ protocol NYPLReaderTOCDelegate: class {
 
 // MARK: -
 
-/// A view controller for displaying of the Table of Contents.
-/// See `NYPLReaderTOCBusinessLogic` for anything related to actual product
-/// business logic related to the TOC.
+/// A view controller for displaying "positions" inside a publication,
+/// where a position is either an element inside the Table of Contents or
+/// a Bookmarks saved by the user.
+///
+/// See `NYPLReaderTOCBusinessLogic` for anything related to actual TOC product
+/// business logic, and `NYPLReaderBookmarksBusinessLogic` for bookmarks logic.
 class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var segmentedControl: UISegmentedControl!
   @IBOutlet weak var noBookmarksLabel: UILabel!
-  var refreshControl: UIRefreshControl?
+  private var bookmarksRefreshControl: UIRefreshControl?
 
   private let reuseIdentifierTOC = "contentCell"
   private let reuseIdentifierBookmark = "bookmarkCell"
 
-  weak var delegate: NYPLReaderTOCDelegate?
-  var businessLogic: NYPLReaderTOCBusinessLogic?
+  weak var delegate: NYPLReaderPositionsDelegate?
+
+  var tocBusinessLogic: NYPLReaderTOCBusinessLogic?
+  var bookmarksBusinessLogic: NYPLReaderBookmarksBusinessLogic?
 
   private enum Tab: Int {
     case toc = 0
@@ -61,9 +67,7 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
         tableView.isHidden = false
       }
     case .bookmarks:
-      if businessLogic?.bookmarks.count == 0 {
-        tableView.isHidden = true
-      }
+      tableView.isHidden = (bookmarksBusinessLogic?.bookmarks.count == 0)
     }
   }
 
@@ -71,12 +75,12 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    title = businessLogic?.tocDisplayTitle
+    title = tocBusinessLogic?.tocDisplayTitle
 
     tableView.dataSource = self
     tableView.delegate = self
 
-    noBookmarksLabel.text = businessLogic?.noBookmarksText
+    noBookmarksLabel.text = bookmarksBusinessLogic?.noBookmarksText
     view.insertSubview(noBookmarksLabel, belowSubview: tableView)
     noBookmarksLabel.autoCenterInSuperview()
     noBookmarksLabel.autoSetDimension(.width, toSize: 250)
@@ -117,28 +121,39 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     switch currentTab {
     case .toc:
-      return businessLogic?.tocElements.count ?? 0
+      return tocBusinessLogic?.tocElements.count ?? 0
     case .bookmarks:
-      return businessLogic?.bookmarks.count ?? 0
+      return bookmarksBusinessLogic?.bookmarks.count ?? 0
     }
   }
 
-  @objc func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+  @objc func tableView(_ tableView: UITableView,
+                       cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     switch currentTab {
+
     case .toc:
       let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifierTOC,
                                                for: indexPath)
       if let cell = cell as? NYPLReaderTOCCell,
-        let (title, level) = businessLogic?.titleAndLevel(forItemAt: indexPath.row) {
+        let (title, level) = tocBusinessLogic?.titleAndLevel(forItemAt: indexPath.row) {
 
         cell.config(withTitle: title,
                     nestingLevel: level,
-                    isForCurrentChapter: businessLogic?.isCurrentChapterTitled(title) ?? false)
+                    isForCurrentChapter: tocBusinessLogic?.isCurrentChapterTitled(title) ?? false)
       }
       return cell
+
     case .bookmarks:
-      //TODO: SIMPLY-2608 bookmarks
-      return UITableViewCell()
+      let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifierBookmark,
+                                               for: indexPath)
+      let bookmark = self.bookmarksBusinessLogic?.bookmark(at: indexPath.row)
+
+      if let cell = cell as? NYPLReaderBookmarkCell, let bookmark = bookmark {
+        cell.config(withChapterName: bookmark.chapter ?? "",
+                    percentInChapter: bookmark.percentInChapter,
+                    rfc3339DateString: bookmark.time)
+      }
+      return cell
     }
   }
 
@@ -160,14 +175,16 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
   }
 
   func tableView(_ tv: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-    guard let bizLogic = businessLogic else {
-      return nil
-    }
-
     switch currentTab {
     case .toc:
+      guard let bizLogic = tocBusinessLogic else {
+        return nil
+      }
       return bizLogic.shouldSelectTOCItem(at: indexPath.row) ? indexPath : nil
     case .bookmarks:
+      guard let bizLogic = bookmarksBusinessLogic else {
+        return nil
+      }
       return bizLogic.shouldSelectBookmark(at: indexPath.row) ? indexPath : nil
     }
   }
@@ -179,13 +196,13 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
 
     switch currentTab {
     case .toc:
-      if let locator = businessLogic?.tocLocator(at: indexPath.row) {
+      if let locator = tocBusinessLogic?.tocLocator(at: indexPath.row) {
         delegate?.positionsVC(self, didSelectTOCLocation: locator)
       }
-
     case .bookmarks:
-      //TODO: SIMPLY-2608
-      break
+      if let bookmark = bookmarksBusinessLogic?.bookmark(at: indexPath.row) {
+        delegate?.positionsVC(self, didSelectBookmark: bookmark)
+      }
     }
   }
 
@@ -216,10 +233,10 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
       break;
     case .bookmarks:
       if editingStyle == .delete {
-        // TODO: SIMPLY-2608
-//        if (self.bookmarksDataSource?.removeBookmark(index: indexPath.item) ?? false) {
-//          tableView.deleteRows(at: [indexPath], with: .fade)
-//        }
+        if let removedBookmark = bookmarksBusinessLogic?.removeBookmark(at: indexPath.row) {
+          delegate?.positionsVC(self, didDeleteBookmark: removedBookmark)
+          tableView.deleteRows(at: [indexPath], with: .fade)
+        }
       }
     }
   }
@@ -227,20 +244,20 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
   // MARK: - Helpers
 
   @objc(userDidRefreshBookmarksWith:)
-  func userDidRefreshBookmarks(with refreshControl: UIRefreshControl) {
-    businessLogic?.refreshBookmarks(inVC: self)
+  private func userDidRefreshBookmarks(with refreshControl: UIRefreshControl) {
+    bookmarksBusinessLogic?.refreshBookmarks(inVC: self)
   }
 
   private func configRefreshControl() {
     switch currentTab {
     case .toc:
-      if let refreshControl = refreshControl, tableView.subviews.contains(refreshControl) {
+      if let refreshControl = bookmarksRefreshControl, tableView.subviews.contains(refreshControl) {
         refreshControl.removeFromSuperview()
       }
     case .bookmarks:
-      if NYPLAnnotations.syncIsPossibleAndPermitted() {
+      if bookmarksBusinessLogic?.shouldAllowRefresh() ?? false {
         let refreshCtrl = UIRefreshControl()
-        refreshControl = refreshCtrl
+        bookmarksRefreshControl = refreshCtrl
         refreshCtrl.addTarget(self,
                               action: #selector(userDidRefreshBookmarks(with:)),
                               for: .valueChanged)

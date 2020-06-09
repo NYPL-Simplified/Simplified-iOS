@@ -20,6 +20,8 @@
   }
   
   var device:String?
+
+  /// Date formatted as per RFC 3339
   let time:String
   
   init?(annotationId:String?,

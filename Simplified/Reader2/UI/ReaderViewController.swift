@@ -164,7 +164,8 @@ class ReaderViewController: UIViewController, Loggable {
     let currentLocation = navigator.currentLocation
 
     let positionsVC = NYPLReaderPositionsVC.newInstance()
-    positionsVC.businessLogic = NYPLReaderTOCBusinessLogic(book: book, r2Publication: publication, currentLocation: currentLocation)
+    positionsVC.tocBusinessLogic = NYPLReaderTOCBusinessLogic(book: book, r2Publication: publication, currentLocation: currentLocation)
+    positionsVC.bookmarksBusinessLogic = NYPLReaderBookmarksBusinessLogic(book: book, r2Publication: publication)
     positionsVC.delegate = self
 
     if shouldPresentAsPopover() {
@@ -216,7 +217,7 @@ class ReaderViewController: UIViewController, Loggable {
   }()
 
   private lazy var accessibilityToolbar: UIToolbar = {
-    func makeItem(_ item: UIBarButtonItem.SystemItem, label: String? = nil, action: Selector? = nil) -> UIBarButtonItem {
+    func makeItem(_ item: UIBarButtonItem.SystemItem, label: String? = nil, action: UIKit.Selector? = nil) -> UIBarButtonItem {
       let button = UIBarButtonItem(barButtonSystemItem: item, target: (action != nil) ? self : nil, action: action)
       button.accessibilityLabel = label
       return button
@@ -225,9 +226,9 @@ class ReaderViewController: UIViewController, Loggable {
     let toolbar = UIToolbar(frame: .zero)
     toolbar.items = [
       makeItem(.flexibleSpace),
-      makeItem(.rewind, label: NSLocalizedString("reader_backward_a11y_label", comment: "Accessibility label to go backward in the publication"), action: #selector(goBackward)),
+      makeItem(.rewind, label: NSLocalizedString("Previous Chapter", comment: "Accessibility label to go backward in the publication"), action: #selector(goBackward)),
       makeItem(.flexibleSpace),
-      makeItem(.fastForward, label: NSLocalizedString("reader_forward_a11y_label", comment: "Accessibility label to go forward in the publication"), action: #selector(goForward)),
+      makeItem(.fastForward, label: NSLocalizedString("Next Chapter", comment: "Accessibility label to go forward in the publication"), action: #selector(goForward)),
       makeItem(.flexibleSpace),
     ]
     toolbar.isHidden = !UIAccessibility.isVoiceOverRunning
@@ -321,9 +322,9 @@ extension ReaderViewController: VisualNavigatorDelegate {
 }
 
 //------------------------------------------------------------------------------
-// MARK: - NYPLReaderTOCDelegate
+// MARK: - NYPLReaderPositionsDelegate
 
-extension ReaderViewController: NYPLReaderTOCDelegate {
+extension ReaderViewController: NYPLReaderPositionsDelegate {
   func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didSelectTOCLocation loc: Any) {
     if shouldPresentAsPopover() {
       positionsVC.dismiss(animated: true)

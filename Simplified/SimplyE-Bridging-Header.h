@@ -32,6 +32,7 @@
 #import "NYPLBookLocation.h"
 #import "NYPLReaderSettings.h"
 #import "NYPLReaderSettingsView.h"
+#import "NYPLReadiumViewSyncManager.h"
 #if FEATURE_DRM_CONNECTOR
 #import "ADEPT/NYPLADEPTErrors.h"
 #import "ADEPT/NYPLADEPT.h"
