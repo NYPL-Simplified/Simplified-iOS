@@ -189,8 +189,8 @@ class NYPLSignInBusinessLogic: NSObject {
     let credentials = cardCreatorCredentials()
     let platformAPI = NYPLPlatformAPIInfo(
       oauthTokenURL: APIKeys.PlatformAPI.oauthTokenURL,
-      clientID: NYPLSecrets.clientID,
-      clientSecret: NYPLSecrets.clientSecret,
+      clientID: NYPLSecrets.platformClientID,
+      clientSecret: NYPLSecrets.platformClientSecret,
       baseURL: APIKeys.PlatformAPI.baseURL)
 
     let config = CardCreatorConfiguration(
