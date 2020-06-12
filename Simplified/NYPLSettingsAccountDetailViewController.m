@@ -433,7 +433,7 @@ static const NSInteger sSection1Sync = 1;
    dataTaskWithRequest:request
    completionHandler:^(NSData *data,
                        NSURLResponse *const response,
-                       __unused NSError *const error) {
+                       NSError *const error) {
      
      NSInteger statusCode = ((NSHTTPURLResponse *) response).statusCode;
      if (statusCode == 200) {
@@ -454,6 +454,18 @@ static const NSInteger sSection1Sync = 1;
          [self deauthorizeDevice];
        }
      } else {
+       if (statusCode == 401) {
+         [self deauthorizeDevice];
+       }
+       if (error) {
+         [NYPLErrorLogger logNetworkError:error
+                                  request:request
+                                 response:response
+                                  message:@"Sign-out error"];
+       } else {
+         [NYPLErrorLogger logSignOutErrorForRequest:request response:response];
+       }
+
        [self showLogoutAlertWithError:error responseCode:statusCode];
        [self removeActivityTitle];
        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
@@ -686,7 +698,6 @@ static const NSInteger sSection1Sync = 1;
   if (code == 401) {
     title = @"Unexpected Credentials";
     message = @"Your username or password may have changed since the last time you logged in.\n\nIf you believe this is an error, please contact your library.";
-    [self deauthorizeDevice];
   } else if (error) {
     title = @"SettingsAccountViewControllerLogoutFailed";
     message = error.localizedDescription;

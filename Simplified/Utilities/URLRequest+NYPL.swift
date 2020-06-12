@@ -13,7 +13,12 @@ extension URLRequest {
   /// Since a request can include sensitive data such as access tokens, etc,
   /// this computed variable includes a "safe" set of data that we can log.
   var loggableString: String {
-    return "\(httpMethod ?? "") \(url?.absoluteString ?? "")"
+    let methodAndURL = "\(httpMethod ?? "") \(url?.absoluteString ?? "")"
+    let headers = allHTTPHeaderFields?.filter {
+      $0.key.lowercased() != "authorization"
+    } ?? [:]
+
+    return "\(methodAndURL)\n  headers: \(headers)"
   }
 }
 
