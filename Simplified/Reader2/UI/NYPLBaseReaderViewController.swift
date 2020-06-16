@@ -17,7 +17,7 @@ import R2Shared
 
 
 /// This class is meant to be subclassed by each publication format view controller. It contains the shared behavior, eg. navigation bar toggling.
-class ReaderViewController: UIViewController, Loggable {
+class NYPLBaseReaderViewController: UIViewController, NYPLBackgroundWorkOwner, Loggable {
 
   weak var moduleDelegate: ReaderFormatModuleDelegate?
 
@@ -27,9 +27,12 @@ class ReaderViewController: UIViewController, Loggable {
   let drm: DRM?
 
   var tocBarButton: UIBarButtonItem?
+  // TODO: SIMPLY-2804
+//  let backgroundHelper: NYPLBackgroundExecutor
+//  let syncManager: NYPLReadiumViewSyncManager?
 
-  // TODO: SIMPLY-2608
-//  lazy var bookmarksDataSource: BookmarkDataSource? = BookmarkDataSource(publicationID: publication.metadata.identifier ?? "")
+  // TODO: SIMPLY-2802
+  //lazy var bookmarksDataSource: BookmarkDataSource? = BookmarkDataSource(publicationID: publication.metadata.identifier ?? "")
 
   private(set) var stackView: UIStackView!
   private lazy var positionLabel = UILabel()
@@ -39,6 +42,9 @@ class ReaderViewController: UIViewController, Loggable {
     self.publication = publication
     self.book = book
     self.drm = drm
+
+    // TODO: SIMPLY-2804
+    //backgroundHelper = NYPLBackgroundExecutor(owner: self, taskName: "R2init")
 
     super.init(nibName: nil, bundle: nil)
 
@@ -153,10 +159,26 @@ class ReaderViewController: UIViewController, Loggable {
   }
 
   //----------------------------------------------------------------------------
-  // MARK: - TOC
+  // MARK: - NYPLBackgroundWorkOwner
+  // TODO: SIMPLY-2804
+
+  func setUpWorkItem(wrapping backgroundWork: @escaping () -> Void) -> (() -> Void)? {
+    return { }
+  }
+
+  func performBackgroundWork() {
+//    let bookMapDict: [AnyHashable : Any] = [:]//NYPLReaderReadiumView.generateBookDictionary
+//    self.syncManager = NYPLReadiumViewSyncManager(bookID: book.identifier,
+//                                                  annotationsURL: book.annotationsURL,
+//                                                  bookMap: bookMapDict,
+//                                                  delegate: bookmarksBusinessLogic)
+  }
+
+  //----------------------------------------------------------------------------
+  // MARK: - TOC / Bookmarks
 
   private func shouldPresentAsPopover() -> Bool {
-    return UIDevice.current.userInterfaceIdiom == .pad && traitCollection.horizontalSizeClass != .compact
+    return UIDevice.current.userInterfaceIdiom == .pad
   }
 
   @objc func presentTOC() {
@@ -182,23 +204,25 @@ class ReaderViewController: UIViewController, Loggable {
     }
   }
 
-  // MARK: - Bookmarks
-
-  // TODO: SIMPLY-2608
-  //  var currentBookmark: Bookmark? {
-  //    return nil
-  //  }
+  var currentBookmark: NYPLR2Bookmark? {
+    // Default implementation does nothing because this depends on the type
+    // of publication we are dealing with.
+    return nil
+  }
 
   @objc func bookmarkCurrentPosition() {
-    // TODO: SIMPLY-2608
+    // TODO: SIMPLY-2802
 //    guard let dataSource = bookmarksDataSource,
 //      let bookmark = currentBookmark,
 //      dataSource.addBookmark(bookmark: bookmark) else
 //    {
-//      toast(NSLocalizedString("reader_bookmark_failure_message", comment: "Error message when adding a new bookmark failed"), on: view, duration: 2)
+//      let alert = NYPLAlertUtils.alert(title: "R2 TODO", message: NSLocalizedString("reader_bookmark_failure_message", comment: "Error message when adding a new bookmark failed"))
+//      present(alert, animated: true, completion: nil)
 //      return
 //    }
-//    toast(NSLocalizedString("reader_bookmark_success_message", comment: "Success message when adding a bookmark"), on: view, duration: 1)
+//
+//    let alert = NYPLAlertUtils.alert(title: "R2 TODO", message: NSLocalizedString("reader_bookmark_success_message", comment: "Success message when adding a bookmark"))
+//    present(alert, animated: true, completion: nil)
   }
 
   //----------------------------------------------------------------------------
@@ -263,7 +287,7 @@ class ReaderViewController: UIViewController, Loggable {
 //------------------------------------------------------------------------------
 // MARK: - NavigatorDelegate
 
-extension ReaderViewController: NavigatorDelegate {
+extension NYPLBaseReaderViewController: NavigatorDelegate {
 
   func navigator(_ navigator: Navigator, locationDidChange locator: Locator) {
 //    do {
@@ -301,7 +325,7 @@ extension ReaderViewController: NavigatorDelegate {
 //------------------------------------------------------------------------------
 // MARK: - VisualNavigatorDelegate
 
-extension ReaderViewController: VisualNavigatorDelegate {
+extension NYPLBaseReaderViewController: VisualNavigatorDelegate {
 
   func navigator(_ navigator: VisualNavigator, didTapAt point: CGPoint) {
     let viewport = navigator.view.bounds
@@ -324,7 +348,7 @@ extension ReaderViewController: VisualNavigatorDelegate {
 //------------------------------------------------------------------------------
 // MARK: - NYPLReaderPositionsDelegate
 
-extension ReaderViewController: NYPLReaderPositionsDelegate {
+extension NYPLBaseReaderViewController: NYPLReaderPositionsDelegate {
   func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didSelectTOCLocation loc: Any) {
     if shouldPresentAsPopover() {
       positionsVC.dismiss(animated: true)
@@ -337,16 +361,28 @@ extension ReaderViewController: NYPLReaderPositionsDelegate {
     }
   }
 
-  func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didSelectBookmark bookmark: NYPLReadiumBookmark) {
-    // TODO: SIMPLY-2608
+  func positionsVC(_ positionsVC: NYPLReaderPositionsVC,
+                   didSelectBookmark bookmark: NYPLReadiumBookmark) {
+
+    if shouldPresentAsPopover() {
+      dismiss(animated: true)
+    } else {
+      navigationController?.popViewController(animated: true)
+    }
+
+    let r2bookmark = bookmark.convertToR2(from: publication)
+    if let locator = r2bookmark?.locator {
+      navigator.go(to: locator)
+    }
   }
 
-  func positionsVC(_ positionsVC: NYPLReaderPositionsVC, didDeleteBookmark bookmark: NYPLReadiumBookmark) {
-    // TODO: SIMPLY-2608
+  func positionsVC(_ positionsVC: NYPLReaderPositionsVC,
+                   didDeleteBookmark bookmark: NYPLReadiumBookmark) {
+    // TODO: SIMPLY-2803
   }
 
   func positionsVC(_ positionsVC: NYPLReaderPositionsVC,
                    didRequestSyncBookmarksWithCompletion completion: (_ success: Bool, _ bookmarks: [NYPLReadiumBookmark]) -> Void) {
-    // TODO: SIMPLY-2608
+    // TODO: SIMPLY-2804
   }
 }
