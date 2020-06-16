@@ -13,7 +13,7 @@ import UIKit
 import R2Shared
 import R2Navigator
 
-class NYPLEPUBViewController: ReaderViewController {
+class NYPLEPUBViewController: NYPLBaseReaderViewController {
   
   var popoverUserconfigurationAnchor: UIBarButtonItem?
 
@@ -73,16 +73,17 @@ class NYPLEPUBViewController: ReaderViewController {
     return buttons
   }
 
-  // TODO: SIMPLY-2608
-//  override var currentBookmark: Bookmark? {
-//    guard let publicationID = publication.metadata.identifier,
-//      let locator = navigator.currentLocation,
-//      let resourceIndex = publication.readingOrder.firstIndex(withHref: locator.href) else
-//    {
-//      return nil
-//    }
-//    return Bookmark(publicationID: publicationID, resourceIndex: resourceIndex, locator: locator)
-//  }
+  override var currentBookmark: NYPLR2Bookmark? {
+    guard let publicationID = publication.metadata.identifier,
+      let locator = navigator.currentLocation,
+      let resourceIndex = publication.readingOrder.firstIndex(withHref: locator.href) else
+    {
+      return nil
+    }
+    return NYPLR2Bookmark(publicationID: publicationID,
+                          resourceIndex: resourceIndex,
+                          locator: locator)
+  }
 
   @objc func presentUserSettings() {
     let vc = NYPLUserSettingsVC(delegate: self)

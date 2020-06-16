@@ -18,6 +18,10 @@ import R2Streamer
 
 final class LibraryService: NSObject, Loggable {
 
+  let workQueue = DispatchQueue(label: "org.nypl.reader.libservice",
+                                qos: .userInitiated,
+                                target: .global(qos: .userInitiated))
+
   let publicationServer: PublicationServer
 
   /// Publications waiting to be added to the PublicationServer (first opening).
@@ -79,7 +83,7 @@ final class LibraryService: NSObject, Loggable {
     }
   }
 
-  func preparePresentation(of publication: Publication, book: NYPLBook, with container: Container) {
+  private func preparePresentation(of publication: Publication, book: NYPLBook, with container: Container) {
     // If the book is a webpub, it means it is loaded remotely from a URL,
     // and it doesn't need to be added to the publication server.
     if publication.format != .webpub {
@@ -96,7 +100,40 @@ final class LibraryService: NSObject, Loggable {
     }
   }
 
-  func parsePublication(for book: NYPLBook) -> PubBox? {
+  /// Parses a book asynchronously off of the main queue.
+  ///
+  /// Parsing a book into a Publication object is expensive, therefore should
+  /// never be done on the main queue. This method does the job asynchronously
+  /// in an internal serial queue, and completes it on the main queue.
+  ///
+  /// - Parameters:
+  ///   - book: The book to parse into a Publication object.
+  ///   - parseSuccessCompletion: Called on the main queue once the book is
+  /// parsed. Not called if parsing fails for any reason.
+  func parseBookAsync(_ book: NYPLBook,
+                      parseSuccessCompletion: @escaping (_: Publication) -> Void) {
+    workQueue.async { [weak self] in
+      guard let self = self else {
+        // not calling completion bc if there's no lib service, there's nothing
+        // to present from
+        return
+      }
+
+      guard let (publication, container) = self.parsePublication(for: book) else {
+        // not calling completion bc if there's no publication, there's nothing
+        // to present
+        return
+      }
+
+      self.preparePresentation(of: publication, book: book, with: container)
+
+      DispatchQueue.main.async {
+        parseSuccessCompletion(publication)
+      }
+    }
+  }
+
+  private func parsePublication(for book: NYPLBook) -> PubBox? {
     guard let url = book.url else {
       return nil
     }
@@ -104,7 +141,7 @@ final class LibraryService: NSObject, Loggable {
     return parsePublication(at: url)
   }
 
-  func parsePublication(atPath path: String) -> PubBox? {
+  private func parsePublication(atPath path: String) -> PubBox? {
     let path: String = {
       // Relative to Documents/ or the App bundle?
       if !path.hasPrefix("/") {
@@ -137,7 +174,7 @@ final class LibraryService: NSObject, Loggable {
     return parsePublication(at: URL(fileURLWithPath: path))
   }
 
-  func parsePublication(at url: URL) -> PubBox? {
+  private func parsePublication(at url: URL) -> PubBox? {
     do {
       guard let (pubBox, parsingCallback) = try Publication.parse(at: url) else {
         return nil

@@ -52,19 +52,15 @@ extension NYPLBook {
 
     let libService = libModule.libraryService
 
-    guard let (publication, container) = libService.parsePublication(for: book) else {
-      return
+    libService.parseBookAsync(book) { [weak self] publication in
+      guard let navVC = self?.selectedViewController as? UINavigationController else {
+        preconditionFailure("No navigation controller, unable to present reader")
+      }
+
+      self?.r2Owner.readerModule.presentPublication(publication,
+                                                    book: book,
+                                                    in: navVC) {}
     }
-
-    libService.preparePresentation(of: publication, book: book, with: container)
-
-    guard let navVC = NYPLRootTabBarController.shared().selectedViewController as? UINavigationController else {
-      preconditionFailure("No navigation controller, unable to present reader")
-    }
-
-    r2Owner.readerModule.presentPublication(publication: publication,
-                                            book: book,
-                                            in: navVC) {}
   }
 }
 
