@@ -32,6 +32,8 @@ final class LibraryService: NSObject, Loggable {
     #if LCP
     drmLibraryServices.append(LCPLibraryService())
     #endif
+    
+    drmLibraryServices.append(ACSLibraryService())
   }
 
   /// Complementary parsing of the publication.
@@ -39,7 +41,7 @@ final class LibraryService: NSObject, Loggable {
   /// using the DRM object of the publication.container.
   func loadDRM(for book: NYPLBook, completion: @escaping (CancellableResult<DRM?>) -> Void) {
 
-    guard let filename = book.fileName, let (container, parsingCallback) = items[filename] else {
+    guard let filename = book.fileName, let fileUrl = URL(string: filename), let (container, parsingCallback) = items[fileUrl.lastPathComponent] else {
       completion(.success(nil))
       return
     }
