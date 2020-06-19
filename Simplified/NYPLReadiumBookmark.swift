@@ -110,6 +110,12 @@
   }
 }
 
+extension NYPLReadiumBookmark {
+  override var description: String {
+    return "\(dictionaryRepresentation)"
+  }
+}
+
 extension Float {
   func roundTo(decimalPlaces: Int) -> String {
     return String(format: "%.\(decimalPlaces)f%%", self) as String
