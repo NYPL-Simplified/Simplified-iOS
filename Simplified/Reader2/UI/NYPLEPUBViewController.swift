@@ -73,18 +73,6 @@ class NYPLEPUBViewController: NYPLBaseReaderViewController {
     return buttons
   }
 
-  override var currentBookmark: NYPLR2Bookmark? {
-    guard let publicationID = publication.metadata.identifier,
-      let locator = navigator.currentLocation,
-      let resourceIndex = publication.readingOrder.firstIndex(withHref: locator.href) else
-    {
-      return nil
-    }
-    return NYPLR2Bookmark(publicationID: publicationID,
-                          resourceIndex: resourceIndex,
-                          locator: locator)
-  }
-
   @objc func presentUserSettings() {
     let vc = NYPLUserSettingsVC(delegate: self)
     vc.modalPresentationStyle = .popover
