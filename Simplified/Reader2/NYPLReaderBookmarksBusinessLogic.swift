@@ -148,12 +148,38 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
     return bookmark
   }
 
-  func removeBookmark(at index: Int) -> NYPLReadiumBookmark? {
+  func deleteBookmark(_ bookmark: NYPLReadiumBookmark) {
+    var wasDeleted = false
+    bookmarks.removeAll  {
+      let isMatching = $0.isEqual(bookmark)
+      if isMatching {
+        wasDeleted = true
+      }
+      return isMatching
+    }
+
+    if wasDeleted {
+      didDeleteBookmark(bookmark)
+    }
+  }
+
+  func deleteBookmark(at index: Int) -> NYPLReadiumBookmark? {
     guard index >= 0 && index < bookmarks.count else {
       return nil
     }
 
-    return bookmarks.remove(at: index)
+    let bookmark = bookmarks.remove(at: index)
+    didDeleteBookmark(bookmark)
+
+    return bookmark
+  }
+
+  private func didDeleteBookmark(_ bookmark: NYPLReadiumBookmark) {
+    let registry = NYPLBookRegistry.shared()
+    registry.delete(bookmark, forIdentifier: book.identifier)
+
+    // TODO: SIMPLY-2804 (syncing)
+    // see NYPLReaderReadiumView::deleteBookmark
   }
 
   var noBookmarksText: String {
@@ -163,6 +189,8 @@ class NYPLReaderBookmarksBusinessLogic: NSObject, NYPLReadiumViewSyncManagerDele
   func shouldSelectBookmark(at index: Int) -> Bool {
     return true
   }
+
+  // MARK: - Syncing
 
   func shouldAllowRefresh() -> Bool {
     return NYPLAnnotations.syncIsPossibleAndPermitted()

@@ -274,11 +274,23 @@ class NYPLBaseReaderViewController: UIViewController, NYPLBackgroundWorkOwner, L
     updateBookmarkButton(withState: true)
   }
 
-  // TODO: SIMPLY-2803
   private func deleteBookmark(_ bookmark: NYPLReadiumBookmark) {
-    // see NYPLReaderReadiumView::deleteBookmark
-    updateBookmarkButton(withState: false)
+    bookmarksBusinessLogic.deleteBookmark(bookmark)
+    didDeleteBookmark(bookmark)
   }
+
+  private func didDeleteBookmark(_ bookmark: NYPLReadiumBookmark) {
+    // at this point the bookmark has already been removed, so we just need
+    // to verify that the user is not at the same location of another bookmark,
+    // in which case the bookmark icon will be lit up and should stay lit up.
+    if
+      let loc = bookmarksBusinessLogic.currentLocation(in: navigator),
+      bookmarksBusinessLogic.isBookmarkExisting(at: loc) == nil {
+
+      updateBookmarkButton(withState: false)
+    }
+  }
+
 
   //----------------------------------------------------------------------------
   // MARK: - Accessibility
@@ -433,7 +445,7 @@ extension NYPLBaseReaderViewController: NYPLReaderPositionsDelegate {
 
   func positionsVC(_ positionsVC: NYPLReaderPositionsVC,
                    didDeleteBookmark bookmark: NYPLReadiumBookmark) {
-    // TODO: SIMPLY-2803
+    didDeleteBookmark(bookmark)
   }
 
   func positionsVC(_ positionsVC: NYPLReaderPositionsVC,
