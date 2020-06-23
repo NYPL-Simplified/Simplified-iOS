@@ -4,7 +4,8 @@ typedef NS_ENUM(NSInteger, NYPLMyBooksDownloadRightsManagement) {
   NYPLMyBooksDownloadRightsManagementUnknown,
   NYPLMyBooksDownloadRightsManagementNone,
   NYPLMyBooksDownloadRightsManagementAdobe,
-  NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON
+  NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON,
+  NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON
 };
 
 @interface NYPLMyBooksDownloadInfo : NSObject
