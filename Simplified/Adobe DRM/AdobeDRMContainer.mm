@@ -22,9 +22,9 @@
 static id acsdrm_lock = nil;
 
 @interface AdobeDRMContainer () {
-    @private std::shared_ptr<ePub3::Container> m_container;
-    @private ePub3::Container::PackageList m_packageList;
-    @private ePub3::Package *m_package;
+    @private std::shared_ptr<ePub3::Container> container;
+    @private ePub3::Container::PackageList packageList;
+    @private ePub3::Package *package;
     @private ePub3::ConstManifestItemPtr manifestItem;
 }
 @end
@@ -58,7 +58,7 @@ static id acsdrm_lock = nil;
         ePub3::AdeptFilter::Register();
 
         try {
-            m_container = ePub3::Container::OpenContainer(path.UTF8String);
+            container = ePub3::Container::OpenContainer(path.UTF8String);
             
         }
         catch (std::exception& e) { // includes ePub3::ContentModuleException
@@ -68,16 +68,16 @@ static id acsdrm_lock = nil;
         catch (...) {
         }
         
-        if (m_container == nullptr) {
+        if (container == nullptr) {
             return nil;
         }
 
-        m_packageList = m_container->Packages();
-        for (auto i = m_packageList.begin(); i != m_packageList.end(); i++) {
+        packageList = container->Packages();
+        for (auto i = packageList.begin(); i != packageList.end(); i++) {
             ePub3::Package *p = (ePub3::Package *)i->get();
-            m_package = p;
+            package = p;
             ePub3::string s = ePub3::string(@"toc.ncx".UTF8String);
-            manifestItem = m_package->ManifestItemAtRelativePath(s);
+            manifestItem = package->ManifestItemAtRelativePath(s);
         }
     }
     return self;
@@ -86,7 +86,7 @@ static id acsdrm_lock = nil;
 - (void *)getDecodedByteStream:(void *)currentByteStream isRangeRequest:(BOOL)isRangeRequest {
         // Get the manifest item initWithURL: saves for further use
         ePub3::ManifestItemPtr m = std::const_pointer_cast<ePub3::ManifestItem>(manifestItem);
-        size_t numFilters = m_package->GetFilterChainSize(m);
+        size_t numFilters = package->GetFilterChainSize(m);
         ePub3::ByteStream *byteStream = nullptr;
         ePub3::SeekableByteStream *rawInput = (ePub3::SeekableByteStream *)currentByteStream;
         
@@ -96,15 +96,15 @@ static id acsdrm_lock = nil;
         }
         else if (numFilters == 1 && isRangeRequest)
         {
-            byteStream = m_package->GetFilterChainByteStreamRange(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
+            byteStream = package->GetFilterChainByteStreamRange(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
             if (byteStream == nullptr)
             {
-                byteStream = m_package->GetFilterChainByteStream(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
+                byteStream = package->GetFilterChainByteStream(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
             }
         }
         else
         {
-            byteStream = m_package->GetFilterChainByteStream(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
+            byteStream = package->GetFilterChainByteStream(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
         }
         
         return byteStream;
