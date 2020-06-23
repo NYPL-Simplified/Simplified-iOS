@@ -249,27 +249,23 @@ fileprivate let nullString = "null"
 
     Crashlytics.sharedInstance().recordError(err)
   }
-  
-  /**
-    Report when there's an error deauthorizing device at RMSDK level
-    @return
-   */
-  class func logDeauthorizationError() {
-    var metadata = [AnyHashable : Any]()
-    addAccountInfoToMetadata(&metadata)
-    
-    let userInfo = additionalInfo(
-      severity: .info,
-      message: "User has lost an activation on signout due to NYPLAdept Error.",
-      context: "NYPLSettingsAccountDetailViewController",
-      metadata: metadata)
-    let err = NSError(domain: Context.signOut.rawValue,
-                      code: NYPLErrorCode.deAuthFail.rawValue,
-                      userInfo: userInfo)
 
-    Crashlytics.sharedInstance().recordError(err)
+  // MARK: Sign up/in/out errors
+
+  /// Reports a sign up error.
+  /// - Parameters:
+  ///   - error: Any error obtained during the sign up process, if present.
+  ///   - code: A code identifying the error situation.
+  ///   - message: A string for further context.
+  class func logSignUpError(_ error: Error? = nil,
+                            code: NYPLErrorCode,
+                            message: String) {
+    logError(error,
+             code: code,
+             context: Context.signUp.rawValue,
+             message: message)
   }
-  
+
   /**
     Report when there's an error logging in to an account remotely for credentials
     @param url target url being requested
@@ -326,23 +322,28 @@ fileprivate let nullString = "null"
     Crashlytics.sharedInstance().recordError(err)
   }
   
-  class func logDeleteBookmarkError(message: String,
-                                    context: String,
-                                    metadata: [String: Any]) {
-    let userInfo = additionalInfo(severity: .warning,
-                                  message: message,
-                                  context: context,
-                                  metadata: metadata)
-    let err = NSError(domain: Context.ereader.rawValue,
-                      code: NYPLErrorCode.deleteBookmarkFail.rawValue,
+  /**
+   Report when there's an error deauthorizing device at RMSDK level
+   */
+  class func logDeauthorizationError() {
+    var metadata = [AnyHashable : Any]()
+    addAccountInfoToMetadata(&metadata)
+
+    let userInfo = additionalInfo(
+      severity: .info,
+      message: "User has lost an activation on signout due to NYPLAdept Error.",
+      context: "NYPLSettingsAccountDetailViewController",
+      metadata: metadata)
+    let err = NSError(domain: Context.signOut.rawValue,
+                      code: NYPLErrorCode.deAuthFail.rawValue,
                       userInfo: userInfo)
+
     Crashlytics.sharedInstance().recordError(err)
   }
 
   /**
     Report when there's missing licensor data during deauthorization
-    @param accountId id of the account
-    @return
+    - Parameter accountId: id of the library account.
    */
   class func logInvalidLicensor(withAccountID accountId: String?) {
     var metadata = [AnyHashable : Any]()
@@ -358,6 +359,28 @@ fileprivate let nullString = "null"
                       code: NYPLErrorCode.invalidLicensor.rawValue,
                       userInfo: userInfo)
 
+    Crashlytics.sharedInstance().recordError(err)
+  }
+
+  @objc(logSignOutErrorForRequest:response:)
+  class func logSignOutError(for request: URLRequest, response: URLResponse) {
+    logNetworkError(requestString: request.loggableString,
+                    response: response,
+                    context: .signOut)
+  }
+
+  // MARK: Misc
+
+  class func logDeleteBookmarkError(message: String,
+                                    context: String,
+                                    metadata: [String: Any]) {
+    let userInfo = additionalInfo(severity: .warning,
+                                  message: message,
+                                  context: context,
+                                  metadata: metadata)
+    let err = NSError(domain: Context.ereader.rawValue,
+                      code: NYPLErrorCode.deleteBookmarkFail.rawValue,
+                      userInfo: userInfo)
     Crashlytics.sharedInstance().recordError(err)
   }
 
@@ -478,20 +501,6 @@ fileprivate let nullString = "null"
                                              withAdditionalUserInfo: userInfo)
   }
 
-  /// Reports a sign up error.
-  /// - Parameters:
-  ///   - error: Any error obtained during the sign up process, if present.
-  ///   - code: A code identifying the error situation.
-  ///   - message: A string for further context.
-  class func logSignUpError(_ error: Error? = nil,
-                            code: NYPLErrorCode,
-                            message: String) {
-    logError(error,
-             code: code,
-             context: Context.signUp.rawValue,
-             message: message)
-  }
-
   class func logAudiobookIssue(_ error: NSError,
                                severity: NYPLSeverity,
                                message: String? = nil) {
@@ -526,6 +535,7 @@ fileprivate let nullString = "null"
     return logNetworkError(error,
                            requestString: requestURL?.absoluteString,
                            response: response,
+                           context: .infrastructure,
                            message: message)
   }
 
@@ -547,6 +557,7 @@ fileprivate let nullString = "null"
     return logNetworkError(error,
                            requestString: request?.loggableString,
                            response: response,
+                           context: .infrastructure,
                            message: message)
   }
 
@@ -557,6 +568,7 @@ fileprivate let nullString = "null"
   private class func logNetworkError(_ error: Error? = nil,
                                      requestString: String?,
                                      response: URLResponse?,
+                                     context: Context,
                                      message: String? = nil) -> Error {
     // compute metadata
     var metadata = [AnyHashable : Any]()
@@ -574,7 +586,7 @@ fileprivate let nullString = "null"
         return error
       }
 
-      return NSError(domain: Context.infrastructure.rawValue,
+      return NSError(domain: context.rawValue,
                      code: NYPLErrorCode.apiCall.rawValue,
                      userInfo: nil)
     }()
