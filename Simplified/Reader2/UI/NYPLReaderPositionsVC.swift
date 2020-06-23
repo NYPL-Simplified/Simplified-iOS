@@ -232,11 +232,13 @@ class NYPLReaderPositionsVC: UIViewController, UITableViewDataSource, UITableVie
     case .toc:
       break;
     case .bookmarks:
-      if editingStyle == .delete {
-        if let removedBookmark = bookmarksBusinessLogic?.removeBookmark(at: indexPath.row) {
-          delegate?.positionsVC(self, didDeleteBookmark: removedBookmark)
-          tableView.deleteRows(at: [indexPath], with: .fade)
-        }
+      guard editingStyle == .delete else {
+        return
+      }
+      
+      if let removedBookmark = bookmarksBusinessLogic?.deleteBookmark(at: indexPath.row) {
+        delegate?.positionsVC(self, didDeleteBookmark: removedBookmark)
+        tableView.deleteRows(at: [indexPath], with: .fade)
       }
     }
   }
