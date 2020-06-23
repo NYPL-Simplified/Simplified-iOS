@@ -9,7 +9,7 @@
 #import "AdobeDRMContainer.h"
 
 #include <memory>
-
+#import <ePub3/nav_table.h>
 #import <ePub3/container.h>
 #import <ePub3/initialization.h>
 #import <ePub3/utilities/byte_stream.h>
@@ -23,7 +23,6 @@ static id acsdrm_lock = nil;
 
 @interface AdobeDRMContainer () {
     @private std::shared_ptr<ePub3::Container> container;
-    @private ePub3::Container::PackageList packageList;
     @private ePub3::Package *package;
     @private ePub3::ConstManifestItemPtr manifestItem;
 }
@@ -38,7 +37,7 @@ static id acsdrm_lock = nil;
         
         acsdrm_lock = [[NSObject alloc] init];
         
-        NSLog(@"ACSDRMContainer initWithURL: %@", fileURL.path);
+//        NSLog(@"ACSDRMContainer initWithURL: %@", fileURL.path);
         
         NSString *path = fileURL.path;
         
@@ -72,14 +71,10 @@ static id acsdrm_lock = nil;
             return nil;
         }
 
-        packageList = container->Packages();
-        for (auto i = packageList.begin(); i != packageList.end(); i++) {
-            ePub3::Package *p = (ePub3::Package *)i->get();
-            package = p;
-            ePub3::string s = ePub3::string(@"toc.ncx".UTF8String);
-            manifestItem = package->ManifestItemAtRelativePath(s);
-        }
-    }
+        package = container->DefaultPackage().get();
+        ePub3::string s = package->TableOfContents()->SourceHref();
+        manifestItem = package->ManifestItemAtRelativePath(s);
+}
     return self;
 }
 
