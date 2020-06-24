@@ -129,24 +129,30 @@ import UIKit
   }
   
   /**
-    Presents an alert view from another given view
-    @param alertController the alert to display
-    @param viewController the view from which the alert is displayed
-    @param animated true/false for animation
-    @param completion callback passed on to UIViewcontroller::present
-    @return
+   Presents an alert view from another given view
+
+   - Parameters:
+     - alertController: The alert to display.
+     - viewController: The view from which the alert is displayed.
+     - animated: Whether to animate the presentation of the alert or not.
+     - completion: Callback passed on to UIViewcontroller::present().
    */
-  class func presentFromViewControllerOrNil(alertController: UIAlertController?, viewController: UIViewController?, animated: Bool, completion: (() -> Void)?) {
+  class func presentFromViewControllerOrNil(alertController: UIAlertController?,
+                                            viewController: UIViewController?,
+                                            animated: Bool,
+                                            completion: (() -> Void)?) {
     guard let alertController = alertController else {
       return
     }
-    if (viewController == nil) {
+
+    guard let vc = viewController else {
       NYPLRootTabBarController.shared()?.safelyPresentViewController(alertController, animated: animated, completion: completion)
-    } else {
-      viewController!.present(alertController, animated: animated, completion: completion)
-      if alertController.message != nil {
-        Log.info(#file, alertController.message!)
-      }
+      return
+    }
+
+    vc.present(alertController, animated: animated, completion: completion)
+    if let msg = alertController.message {
+      Log.info(#file, msg)
     }
   }
 }

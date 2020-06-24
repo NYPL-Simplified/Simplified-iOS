@@ -1,16 +1,16 @@
 @interface NSDate (NYPLDateAdditions)
 
 // This correctly parses fractional seconds, but ignores them due to |NSDate| limitations.
-+ (NSDate *)dateWithRFC3339String:(NSString *)string;
++ (nullable NSDate *)dateWithRFC3339String:(nullable NSString *)string;
 
-+ (NSDate *)dateWithISO8601DateString:(NSString *)string;
++ (nullable NSDate *)dateWithISO8601DateString:(nullable NSString *)string;
 
-- (NSString *)RFC3339String;
+- (nonnull NSString *)RFC3339String;
 
-- (NSString *)shortTimeUntilString;
+- (nonnull NSString *)shortTimeUntilString;
 
-- (NSString *)longTimeUntilString;
+- (nonnull NSString *)longTimeUntilString;
 
-- (NSDateComponents *)UTCComponents;
+- (nonnull NSDateComponents *)UTCComponents;
 
 @end

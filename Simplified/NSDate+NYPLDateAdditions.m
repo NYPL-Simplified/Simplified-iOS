@@ -4,6 +4,11 @@
 
 + (NSDate *)dateWithRFC3339String:(NSString *const)string
 {
+  // sanity check
+  if (string == nil) {
+    return nil;
+  }
+
   NSDateFormatter *const dateFormatter = [[NSDateFormatter alloc] init];
   
   dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
@@ -22,6 +27,11 @@
 
 + (NSDate *)dateWithISO8601DateString:(NSString *const)string
 {
+  // sanity check
+  if (string == nil) {
+    return nil;
+  }
+
   NSISO8601DateFormatter *const ISODateFormatter = [[NSISO8601DateFormatter alloc] init];
   
   ISODateFormatter.formatOptions = NSISO8601DateFormatWithFullDate;

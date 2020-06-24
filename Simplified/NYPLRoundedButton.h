@@ -5,16 +5,16 @@ typedef NS_ENUM(NSInteger, NYPLRoundedButtonType) {
 
 @interface NYPLRoundedButton : UIButton
 
-+ (id)buttonWithType:(UIButtonType)buttonType NS_UNAVAILABLE;
-+ (id)new NS_UNAVAILABLE;
-- (id)init NS_UNAVAILABLE;
-- (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
-- (id)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
++ (nonnull id)buttonWithType:(UIButtonType)buttonType NS_UNAVAILABLE;
++ (nonnull id)new NS_UNAVAILABLE;
+- (nonnull id)init NS_UNAVAILABLE;
+- (nullable id)initWithCoder:(nonnull NSCoder *)aDecoder NS_UNAVAILABLE;
+- (nonnull id)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
 
 @property (nonatomic) NYPLRoundedButtonType type;
-@property (nonatomic) NSDate *endDate;
+@property (nonatomic, nullable) NSDate *endDate;
 @property (nonatomic) BOOL fromDetailView;
 
-+ (instancetype)button;
++ (nonnull instancetype)button;
 
 @end

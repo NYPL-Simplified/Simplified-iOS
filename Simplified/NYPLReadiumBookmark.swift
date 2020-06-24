@@ -1,6 +1,6 @@
 /// Bookmark representation for the Readium-1 epub renderer.
 @objcMembers final class NYPLReadiumBookmark: NSObject {
-  
+  // I think this is the bookmark ID
   var annotationId:String?
 
   var chapter:String?
@@ -107,6 +107,12 @@
       return true
     }
     return false
+  }
+}
+
+extension NYPLReadiumBookmark {
+  override var description: String {
+    return "\(dictionaryRepresentation)"
   }
 }
 
