@@ -78,7 +78,7 @@ build()
     export CFLAGS="-arch ${ARCH} -pipe -Os -gdwarf-2 -isysroot ${SDK} -miphoneos-version-min=${MIN_VERSION}"
     export CPPFLAGS=${MOREFLAGS}
     export LDFLAGS="-arch ${ARCH} -isysroot ${SDK}"
-    ./configure --disable-shared --enable-static --enable-ipv6 --host=${HOST} --prefix="/tmp/curl-${CURL_VERSION}-${ARCH}" --with-darwinssl --enable-threaded-resolver &> "/tmp/curl-${CURL_VERSION}-${ARCH}.log"
+    ./configure --disable-shared --enable-static --enable-ipv6 --host=${HOST} --prefix="/tmp/curl-${CURL_VERSION}-${ARCH}" --with-darwinssl --without-libidn2 --enable-threaded-resolver &> "/tmp/curl-${CURL_VERSION}-${ARCH}.log"
     make -j `sysctl -n hw.logicalcpu_max` &> "/tmp/curl-${CURL_VERSION}-${ARCH}-build.log"
     make install &> "/tmp/curl-${CURL_VERSION}-${ARCH}-install.log"
     popd

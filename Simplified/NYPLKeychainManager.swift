@@ -24,6 +24,7 @@ import Foundation
     removeItemsFromPreviousInstalls()
     migrateItemsFromOldKeychain()
     updateKeychainForBackgroundFetch()
+    manageFeedbooksData()
   }
 
   // The app does not handle DRM Authentication logic when assuming a user
@@ -83,7 +84,6 @@ import Foundation
     let lastResultCode = withUnsafeMutablePointer(to: &result) {
       SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
     }
-    Log.debug(#file, "Result of keychain query: \(lastResultCode)")
 
     var values = [String:AnyObject]()
     if lastResultCode == noErr {
@@ -120,7 +120,6 @@ import Foundation
     let lastResultCode = withUnsafeMutablePointer(to: &result) {
       SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
     }
-    Log.debug(#file, "Result of keychain query: \(lastResultCode)")
 
     var values = [String:AnyObject]()
     if lastResultCode == noErr {
@@ -139,6 +138,60 @@ import Foundation
       NYPLKeychain.shared().removeObject(forKey: key)
       NYPLKeychain.shared().setObject(value, forKey: key)
       Log.debug(#file, "Keychain item \"\(key)\" updated with new accessible security level...")
+    }
+  }
+  
+  // Load feedbooks profile secrets
+  private class func manageFeedbooksData() {
+    // Go through each vendor and add their data to keychain so audiobook component can access securely
+    for vendor in AudioBookVendors.allCases {
+      guard let keyData = NYPLSecrets.feedbookKeys(forVendor: vendor)?.data(using: .utf8),
+        let profile = NYPLSecrets.feedbookInfo(forVendor: vendor)["profile"],
+        let tag = "feedbook_drm_profile_\(profile)".data(using: .utf8) else {
+          Log.error(#file, "Could not load secrets for Feedbook vendor: \(vendor.rawValue)")
+          continue
+      }
+        
+      let addQuery: [String: Any] = [
+        kSecClass as String: kSecClassKey,
+        kSecAttrApplicationTag as String: tag,
+        kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
+        kSecValueData as String: keyData
+      ]
+      let status = SecItemAdd(addQuery as CFDictionary, nil)
+      if status != errSecSuccess && status != errSecDuplicateItem {
+        // This is unexpected
+        var errMsg = ""
+        if #available(iOS 11.3, *) {
+          errMsg = (SecCopyErrorMessageString(status, nil) as String?) ?? ""
+        }
+        if errMsg.isEmpty {
+          switch status {
+          case errSecUnimplemented:
+            errMsg = "errSecUnimplemented"
+          case errSecDiskFull:
+            errMsg = "errSecDiskFull"
+          case errSecIO:
+            errMsg = "errSecIO"
+          case errSecOpWr:
+            errMsg = "errSecOpWr"
+          case errSecParam:
+            errMsg = "errSecParam"
+          case errSecWrPerm:
+            errMsg = "errSecWrPerm"
+          case errSecAllocate:
+            errMsg = "errSecAllocate"
+          case errSecUserCanceled:
+            errMsg = "errSecUserCanceled"
+          case errSecBadReq:
+            errMsg = "errSecBadReq"
+          default:
+            errMsg = "Unknown OSStatus: \(status)"
+          }
+        }
+        
+        Log.error(#file, "FeedbookKeyManagement Error: \(errMsg)")
+      }
     }
   }
 }

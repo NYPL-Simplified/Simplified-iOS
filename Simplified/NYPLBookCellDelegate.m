@@ -2,9 +2,7 @@
 @import NYPLAudiobookToolkit;
 @import PDFRendererProvider;
 
-#import "NYPLAccount.h"
 #import "NYPLAccountSignInViewController.h"
-#import "NYPLSession.h"
 #import "NYPLBook.h"
 #import "NYPLBookDownloadFailedCell.h"
 #import "NYPLBookDownloadingCell.h"
@@ -74,9 +72,9 @@
 { 
   #if defined(FEATURE_DRM_CONNECTOR)
     // Try to prevent blank books bug
-    if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLAccount sharedAccount] userID]
-                                           withDevice:[[NYPLAccount sharedAccount] deviceID]]) &&
-        ([[NYPLAccount sharedAccount] hasBarcodeAndPIN])) {
+    if ((![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLUserAccount sharedAccount] userID]
+                                           withDevice:[[NYPLUserAccount sharedAccount] deviceID]]) &&
+        ([[NYPLUserAccount sharedAccount] hasBarcodeAndPIN])) {
       [NYPLAccountSignInViewController authorizeUsingExistingBarcodeAndPinWithCompletionHandler:^{
         [self openBook:book];   // with successful DRM activation
       }];
@@ -111,7 +109,7 @@
 - (void)openEPUB:(NYPLBook *)book {
   NYPLReaderViewController *readerVC = [[NYPLReaderViewController alloc] initWithBookIdentifier:book.identifier];
   [[NYPLRootTabBarController sharedController] pushViewController:readerVC animated:YES];
-  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLAccount sharedAccount] completion:^(BOOL enableSync) {
+  [NYPLAnnotations requestServerSyncStatusForAccount:[NYPLUserAccount sharedAccount] completion:^(BOOL enableSync) {
     if (enableSync == YES) {
       Account *currentAccount = [[AccountsManager sharedInstance] currentAccount];
       currentAccount.details.syncPermissionGranted = enableSync;
@@ -154,6 +152,11 @@
 - (void)openAudiobook:(NYPLBook *)book {
   NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:book.identifier];
   NSData *const data = [NSData dataWithContentsOfURL:url];
+  if (data == nil) {
+    [self presentCorruptedItemErrorForBook:book fromURL:url];
+    return;
+  }
+
   id const json = NYPLJSONObjectFromData(data);
   id<Audiobook> const audiobook = [AudiobookFactory audiobook:json];
 
@@ -186,7 +189,7 @@
 
   __weak AudiobookPlayerViewController *weakAudiobookVC = audiobookVC;
   [manager setPlaybackCompletionHandler:^{
-    NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, ContentTypeOpenAccessAudiobook, nil];
+    NSSet<NSString *> *types = [[NSSet alloc] initWithObjects:ContentTypeFindaway, ContentTypeOpenAccessAudiobook, ContentTypeFeedbooksAudiobook, nil];
     NSArray<NYPLBookAcquisitionPath *> *paths = [NYPLBookAcquisitionPath
                                                  supportedAcquisitionPathsForAllowedTypes:types
                                                  allowedRelations:(NYPLOPDSAcquisitionRelationSetBorrow |
@@ -230,12 +233,16 @@
                                 severity:NYPLSeverityError
                                  message:message];
     } else {
-      NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:0 userInfo:nil];
-      NSString *msg = [NSString stringWithFormat:@"Level: %ld. Message: %@",
-                       (long)level, message];
-      [NYPLErrorLogger logAudiobookIssue:error
-                                severity:NYPLSeverityInfo
-                                 message:msg];
+      if (level != LogLevelDebug) {
+        NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:0 userInfo:nil];
+        NSString *msg = [NSString stringWithFormat:@"Level: %ld. Message: %@",
+                         (long)level, message];
+        
+        NYPLSeverity severity = level == LogLevelInfo ? NYPLSeverityInfo : level == LogLevelWarn ? NYPLSeverityWarning : NYPLSeverityError;
+        [NYPLErrorLogger logAudiobookIssue:error
+                                  severity:severity
+                                   message:msg];
+      }
     }
   }];
 }
@@ -279,6 +286,19 @@
   NSString *message = NSLocalizedString(@"The item you are trying to open is not currently supported by SimplyE.", nil);
   UIAlertController *alert = [NYPLAlertUtils alertWithTitle:title message:message];
   [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
+}
+
+- (void)presentCorruptedItemErrorForBook:(NYPLBook*)book fromURL:(NSURL*)url
+{
+  NSString *title = NSLocalizedString(@"Corrupted Audiobook", nil);
+  NSString *message = NSLocalizedString(@"The audiobook you are trying to open appears to be corrupted. Try downloading it again.", nil);
+  UIAlertController *alert = [NYPLAlertUtils alertWithTitle:title message:message];
+  [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
+
+  NSString *logMsg = [NSString stringWithFormat:@"bookID: %@; fileURL: %@", book.identifier, url];
+  [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAudiobookCorrupted
+                            context:@"audiobooks"
+                            message:logMsg];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate

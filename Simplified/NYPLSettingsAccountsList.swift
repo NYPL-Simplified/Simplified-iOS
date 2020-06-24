@@ -104,13 +104,13 @@
   }
   
   func addAccount() {
-    AccountsManager.shared.loadCatalogs(options: .online) { (success) in
-      guard success else {
-        let alert = NYPLAlertUtils.alert(title:nil, message:"LibraryLoadError", style: .cancel)
-        NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert, viewController: self, animated: true, completion: nil)
-        return
-      }
+    AccountsManager.shared.loadCatalogs() { success in
       DispatchQueue.main.async {
+        guard success else {
+          let alert = NYPLAlertUtils.alert(title:nil, message:"LibraryLoadError", style: .cancel)
+          NYPLAlertUtils.presentFromViewControllerOrNil(alertController: alert, viewController: self, animated: true, completion: nil)
+          return
+        }
         self.libraryAccounts = AccountsManager.shared.accounts()
         self.showAddAccountList()
       }
@@ -154,7 +154,7 @@
       }
     }
 
-    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler:nil))
+    alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel button title"), style: .cancel, handler:nil))
     
     self.present(alert, animated: true, completion: nil)
   }
@@ -255,9 +255,9 @@
     } else {
       account = userAddedSecondaryAccounts[indexPath.row]
     }
-    let viewController = NYPLSettingsAccountDetailViewController(account: account)
+    let vc = NYPLSettingsAccountDetailViewController(libraryAccountID: account)
     self.tableView.deselectRow(at: indexPath, animated: true)
-    self.navigationController?.pushViewController(viewController!, animated: true)
+    self.navigationController?.pushViewController(vc, animated: true)
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -159,7 +159,7 @@ import PureLayout
     return overlayView
   }
   
-  func addLoadingOverlayView(toVC viewController: UIViewController? = nil) -> UIView {
+  private func addLoadingOverlayView(toVC viewController: UIViewController? = nil) -> UIView {
     let vc = viewController ?? self
     let loadingOverlay = loadingOverlayView()
     if !Thread.isMainThread {
@@ -174,14 +174,8 @@ import PureLayout
     return loadingOverlay
   }
   
-  func removeLoadingOverlayView(_ view: UIView?) {
-    if !Thread.isMainThread {
-      DispatchQueue.main.async {
-        view?.removeFromSuperview()
-      }
-    } else {
-      view?.removeFromSuperview()
-    }
+  private func removeLoadingOverlayView(_ view: UIView?) {
+    view?.removeFromSuperview()
   }
 
   func pickYourLibraryTapped() {
@@ -198,17 +192,19 @@ import PureLayout
           // Show loading overlay while we load the auth document
           let loadingOverlay = self.addLoadingOverlayView(toVC: self.navigationController)
           account.loadAuthenticationDocument { (success) in
-            self.removeLoadingOverlayView(loadingOverlay)
-            guard success else {
-              self.showLoadingFailureAlert()
-              return
+            DispatchQueue.main.async {
+              self.removeLoadingOverlayView(loadingOverlay)
+              guard success else {
+                self.showLoadingFailureAlert()
+                return
+              }
+              if account.uuid != AccountsManager.NYPLAccountUUIDs[2] {
+                NYPLSettings.shared.settingsAccountsList = [account.uuid, AccountsManager.NYPLAccountUUIDs[2]]
+              } else {
+                NYPLSettings.shared.settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
+              }
+              self.completion?(account)
             }
-            if account.uuid != AccountsManager.NYPLAccountUUIDs[2] {
-              NYPLSettings.shared.settingsAccountsList = [account.uuid, AccountsManager.NYPLAccountUUIDs[2]]
-            } else {
-              NYPLSettings.shared.settingsAccountsList = [AccountsManager.NYPLAccountUUIDs[2]]
-            }
-            self.completion?(account)
           }
         }
       }
@@ -220,7 +216,7 @@ import PureLayout
     } else {
       // Show loading overlay while loading library list, which is required for pickLibrary
       let loadingOverlay = addLoadingOverlayView()
-      AccountsManager.shared.loadCatalogs(options: .offline) { (success) in
+      AccountsManager.shared.loadCatalogs() { (success) in
         DispatchQueue.main.async {
           self.removeLoadingOverlayView(loadingOverlay)
           guard success else {
@@ -239,8 +235,10 @@ import PureLayout
     
     let selectInstantClassics = {
       guard let classicsAccount = AccountsManager.shared.account(classicsId) else {
-        self.removeLoadingOverlayView(loadingOverlay)
-        self.showLoadingFailureAlert()
+        DispatchQueue.main.async {
+          self.removeLoadingOverlayView(loadingOverlay)
+          self.showLoadingFailureAlert()
+        }
         return
       }
       // If we didn't add the loading overlay to load the library list, we need to add it now to load the auth document
@@ -266,12 +264,14 @@ import PureLayout
     } else {
       // Make sure the library list is loaded
       loadingOverlay = addLoadingOverlayView()
-      AccountsManager.shared.loadCatalogs(options: .offline) { (success) in
-        if success {
-          selectInstantClassics()
-        } else {
-          self.removeLoadingOverlayView(loadingOverlay)
-          self.showLoadingFailureAlert()
+      AccountsManager.shared.loadCatalogs() { success in
+        DispatchQueue.main.async {
+          if success {
+            selectInstantClassics()
+          } else {
+            self.removeLoadingOverlayView(loadingOverlay)
+            self.showLoadingFailureAlert()
+          }
         }
       }
     }

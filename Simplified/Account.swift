@@ -48,7 +48,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   
   let mainColor:String?
   let userProfileUrl:String?
-  let cardCreatorUrl:String?
+  let signUpUrl:URL?
   let loansUrl:URL?
   
   var authType: AuthType {
@@ -148,13 +148,22 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     
     mainColor = authenticationDocument.colorScheme
     
-    let registerUrl = authenticationDocument.links?.first(where: { $0.rel == "register" })?.href
-    if let url = registerUrl, url.hasPrefix("nypl.card-creator:") == true {
-      supportsCardCreator = true
-      cardCreatorUrl = String(url.dropFirst("nypl.card-creator:".count))
+    let registerUrlStr = authenticationDocument.links?.first(where: { $0.rel == "register" })?.href
+    if let registerUrlStr = registerUrlStr {
+      let trimmedUrlStr = registerUrlStr.trimmingCharacters(in: .whitespacesAndNewlines)
+      if trimmedUrlStr.lowercased().hasPrefix("nypl.card-creator:") {
+        let cartCreatorUrlStr = String(trimmedUrlStr.dropFirst("nypl.card-creator:".count))
+        signUpUrl = URL(string: cartCreatorUrlStr)
+        supportsCardCreator = (signUpUrl != nil)
+      } else {
+        // fallback to attempt to use the URL we got even though it doesn't
+        // have the scheme we expected.
+        signUpUrl = URL(string: trimmedUrlStr)
+        supportsCardCreator = false
+      }
     } else {
+      signUpUrl = nil
       supportsCardCreator = false
-      cardCreatorUrl = registerUrl
     }
     
     super.init()
@@ -284,12 +293,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     }
   }
   
-  var authenticationDocumentCacheUrl: URL {
-    let applicationSupportUrl = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-    let nonColonUuid = uuid.replacingOccurrences(of: ":", with: "_")
-    return applicationSupportUrl.appendingPathComponent("authentication_document_\(nonColonUuid).json")
-  }
-  
+
   var loansUrl: URL? {
     return details?.loansUrl
   }
@@ -314,29 +318,61 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
       logo = UIImage.init(named: "LibraryLogoMagic")!
     }
   }
-  
+
+
+  /// Load authentication documents from the network or cache.
+  /// - Parameter completion: Always invoked at the end of the load process.
+  /// No guarantees are being made about whether this is called on the main
+  /// thread or not.
   func loadAuthenticationDocument(completion: @escaping (Bool) -> ()) {
     guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
       Log.error(#file, "Invalid or missing authentication document URL")
       completion(false)
       return
     }
-    
-    loadDataWithCache(url: url, cacheUrl: authenticationDocumentCacheUrl, expiryUnit: .hour, expiryValue: 1, options: []) { (data) in
-      if let data = data {
+
+    NYPLNetworkExecutor.shared.GET(url) { result in
+      switch result {
+      case .success(let serverData):
         do {
-          self.authenticationDocument = try OPDS2AuthenticationDocument.fromData(data)
+          self.authenticationDocument = try
+            OPDS2AuthenticationDocument.fromData(serverData)
           completion(true)
-          
         } catch (let error) {
-          Log.error(#file, "Failed to load authentication document for library: \(error.localizedDescription)")
+          Log.error(#file, """
+            Failed to parse authentication document data for URL \(url). Error:
+            \(error.localizedDescription)
+            """)
           completion(false)
         }
-      } else {
-        Log.error(#file, "Failed to load data of authentication document from cache or network")
+      case .failure(let error):
+        Log.error(#file, """
+          Failed to load authentication document at URL \(url). Error: \(error)
+          """)
         completion(false)
       }
     }
+  }
+}
+
+extension AccountDetails {
+  override var debugDescription: String {
+    return """
+    supportsSimplyESync=\(supportsSimplyESync)
+    supportsCardCreator=\(supportsCardCreator)
+    supportsReservations=\(supportsReservations)
+    """
+  }
+}
+
+extension Account {
+  override var debugDescription: String {
+    return """
+    uuid=\(uuid)
+    catalogURL=\(String(describing: catalogUrl))
+    authDocURL=\(String(describing: authenticationDocumentUrl))
+    details=\(String(describing: details?.debugDescription))
+    """
   }
 }
 

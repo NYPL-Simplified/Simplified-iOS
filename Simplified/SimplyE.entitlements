@@ -5,7 +5,6 @@
 	<key>keychain-access-groups</key>
 	<array>
 		<string>7262U6ST2R.org.nypl.labs.SharedKeychainGroup</string>
-		<string>NLJ22T6E9W.org.nypl.labs.SimplyE</string>
 	</array>
 </dict>
 </plist>

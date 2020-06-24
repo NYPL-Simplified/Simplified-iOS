@@ -7,45 +7,6 @@ private let prodUrl = URL(string: "https://libraryregistry.librarysimplified.org
 private let betaUrlHash = betaUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
 private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
 
-/**
- Switchboard for fetching data, whether it's from a cache source or fresh from the endpoint.
- @param url target URL to fetch from
- @param cacheUrl the target file URL to save the data to
- @param options load options to determine the behaviour of this method;
- noCache - don't fetch from cache under any circumstances
- preferCache - fetches from cache if cache exists
- cacheOnly - only fetch from cache, unless `noCache` is specified
- @param completion callback method when this is complete, providing the data or nil if unsuccessful
- */
-func loadDataWithCache(url: URL, cacheUrl: URL, expiryUnit: Calendar.Component = .day, expiryValue: Int = 1, options: AccountsManager.LoadOptions, completion: @escaping (Data?) -> ()) {
-  if !options.contains(.noCache) {
-    let modified = (try? FileManager.default.attributesOfItem(atPath: cacheUrl.path)[.modificationDate]) as? Date
-    if let modified = modified, let expiry = Calendar.current.date(byAdding: expiryUnit, value: expiryValue, to: modified), expiry > Date() {
-      if let data = try? Data(contentsOf: cacheUrl) {
-        completion(data)
-        return
-      }
-    }
-
-    if options.contains(.cacheOnly) {
-      completion(nil)
-      return
-    }
-  }
-
-  // Load data from the internet if either the cache wasn't recent enough (or preferred), or somehow failed to load
-  let request = URLRequest.init(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 60)
-
-  let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-    guard let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-      completion(nil)
-      return
-    }
-    try? data.write(to: cacheUrl)
-    completion(data)
-  }
-  dataTask.resume()
-}
 
 /// Manage the library accounts for the app.
 /// Initialized with JSON.
@@ -88,15 +49,20 @@ func loadDataWithCache(url: URL, cacheUrl: URL, expiryUnit: Calendar.Component =
     return false
   }
   
-  var loadingCompletionHandlers = [String: [(Bool) -> ()]]()
+  private var loadingCompletionHandlers = [String: [(Bool) -> ()]]()
   
   var currentAccount: Account? {
     get {
-      return account(UserDefaults.standard.string(forKey: currentAccountIdentifierKey) ?? "")
+      guard let uuid = currentAccountId else {
+        return nil
+      }
+
+      return account(uuid)
     }
     set {
       UserDefaults.standard.set(newValue?.uuid,
                                 forKey: currentAccountIdentifierKey)
+      NYPLErrorLogger.setUserID(NYPLUserAccount.sharedAccount().barcode)
       NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
     }
   }
@@ -116,15 +82,15 @@ func loadDataWithCache(url: URL, cacheUrl: URL, expiryUnit: Calendar.Component =
       name: NSNotification.Name.NYPLUseBetaDidChange,
       object: nil
     )
-    DispatchQueue.main.async {
-      self.loadCatalogs(options: .offline, completion: {_ in })
-    }
+
+    self.loadCatalogs(completion: {_ in })
   }
   
   let completionHandlerAccessQueue = DispatchQueue(label: "libraryListCompletionHandlerAccessQueue")
-  
+
   // Returns whether loading was happening already
-  func addLoadingCompletionHandler(key: String, _ handler: @escaping (Bool) -> ()) -> Bool {
+  private func addLoadingCompletionHandler(key: String,
+                                           _ handler: @escaping (Bool) -> ()) -> Bool {
     var wasEmpty = false
     completionHandlerAccessQueue.sync {
       if loadingCompletionHandlers[key] == nil {
@@ -154,36 +120,42 @@ func loadDataWithCache(url: URL, cacheUrl: URL, expiryUnit: Calendar.Component =
       handler(success)
     }
   }
-  
-  private func libraryListCacheUrl(name: String) -> URL {
-    let applicationSupportUrl = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-    let url = applicationSupportUrl.appendingPathComponent("library_list_\(name).json")
-    return url
-  }
 
   /**
    Take the library list data (either from cache or the internet), load it into
    self.accounts, and load the auth document for the current account if
    necessary.
-   - parameter data: The library list data.
-   - parameter options: Load options to determine the behaviour of this method.
-   - parameter key: ???
+   - parameter data: The library catalog list data obtained from fetching either
+   `prodUrl` or `betaUrl`. This is parsed assuming it's in the OPDS2 format.
+   - parameter key: The key to enter the `accountSets` dictionary with.
    - parameter completion: Always invoked at the end no matter what, providing
-   `true` in case of success and `false` otherwise.
+   `true` in case of success and `false` otherwise. No guarantees are being made
+   about whether this will be called on the main thread or not.
    */
-  private func loadCatalogs(data: Data, options: LoadOptions, key: String, completion: @escaping (Bool) -> ()) {
+  private func loadAccountSetsAndAuthDoc(fromCatalogData data: Data,
+                                         key: String,
+                                         completion: @escaping (Bool) -> ()) {
     do {
       let catalogsFeed = try OPDS2CatalogsFeed.fromData(data)
       let hadAccount = self.currentAccount != nil
+
       self.accountSets[key] = catalogsFeed.catalogs.map { Account(publication: $0) }
 
       // note: `currentAccount` computed property feeds off of `accountSets`, so
       // changing the `accountsSets` dictionary will also change `currentAccount`
       if hadAccount != (self.currentAccount != nil) {
-        self.currentAccount?.loadAuthenticationDocument(completion: { (success) in
+        self.currentAccount?.loadAuthenticationDocument { success in
           if !success {
-            Log.error(#file, "Failed to load authentication document for current account; a bunch of things likely won't work")
+            NYPLErrorLogger.logError(
+              withCode: .authDocLoadFail,
+              context: NYPLErrorLogger.Context.accountManagement.rawValue,
+              message: """
+              Failed to load authentication document for current account: \
+              \(self.currentAccount.debugDescription). A bunch of things \
+              likely won't work.
+              """)
           }
+
           DispatchQueue.main.async {
             var mainFeed = URL(string: self.currentAccount?.catalogUrl ?? "")
             let resolveFn = {
@@ -203,36 +175,43 @@ func loadDataWithCache(url: URL, cacheUrl: URL, expiryUnit: Calendar.Component =
               resolveFn()
             }
           }
-        })
+        }
       } else {
+        // we pass `true` because at this point we know the catalogs loaded
+        // successfully
         completion(true)
       }
     } catch (let error) {
-      Log.error(#file, "Couldn't load catalogs. Error: \(error.localizedDescription)")
+      NYPLErrorLogger.logError(error, 
+                               message: "An error was thrown during loadAccountSetsAndAuthDoc")
       completion(false)
     }
   }
-  
-  func loadCatalogs(options: LoadOptions, completion: @escaping (Bool) -> ()) {
+
+  /// Loads library catalogs from the network, or cache if available.
+  /// - Parameter completion: Always invoked at the end of the load process.
+  /// No guarantees are being made about whether this is called on the main
+  /// thread or not.
+  func loadCatalogs(completion: @escaping (Bool) -> ()) {
     let targetUrl = NYPLSettings.shared.useBetaLibraries ? betaUrl : prodUrl
-    let hash = targetUrl.absoluteString.md5().base64EncodedStringUrlSafe().trimmingCharacters(in: ["="])
+    let hash = targetUrl.absoluteString.md5().base64EncodedStringUrlSafe()
+      .trimmingCharacters(in: ["="])
     
     let wasAlreadyLoading = addLoadingCompletionHandler(key: hash, completion)
     if wasAlreadyLoading {
       return
     }
-    
-    let cacheUrl = libraryListCacheUrl(name: hash)
-    
-    loadDataWithCache(url: targetUrl,
-                      cacheUrl: cacheUrl,
-                      options: options) { data in
-      if let data = data {
-        self.loadCatalogs(data: data, options: options, key: hash) { (success) in
+
+    NYPLNetworkExecutor.shared.GET(targetUrl) { result in
+      switch result {
+      case .success(let data):
+        self.loadAccountSetsAndAuthDoc(fromCatalogData: data, key: hash) { success in
           self.callAndClearLoadingCompletionHandlers(key: hash, success)
           NotificationCenter.default.post(name: NSNotification.Name.NYPLCatalogDidLoad, object: nil)
         }
-      } else {
+      case .failure(let error):
+        NYPLErrorLogger.logError(error,
+                                 message: "Catalog failed to load from \(targetUrl)")
         self.callAndClearLoadingCompletionHandlers(key: hash, false)
       }
     }
@@ -265,11 +244,12 @@ func loadDataWithCache(url: URL, cacheUrl: URL, expiryUnit: Calendar.Component =
   func updateAccountSetFromSettings() {
     self.accountSet = NYPLSettings.shared.useBetaLibraries ? betaUrlHash : prodUrlHash
     if self.accounts().isEmpty {
-      loadCatalogs(options: .offline, completion: {_ in })
+      loadCatalogs(completion: {_ in })
     }
   }
 
   func clearCache() {
+    NYPLNetworkExecutor.shared.clearCache()
     do {
       let applicationSupportUrl = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
       let appSupportDirContents = try FileManager.default.contentsOfDirectory(at: applicationSupportUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsPackageDescendants, .skipsSubdirectoryDescendants])

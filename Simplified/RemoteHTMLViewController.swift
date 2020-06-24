@@ -10,7 +10,7 @@ import WebKit
   var webView: WKWebView
   var activityView: UIActivityIndicatorView!
   
-  required init(URL: Foundation.URL, title: String, failureMessage: String) {
+  required init(URL: URL, title: String, failureMessage: String) {
     self.fileURL = URL
     self.failureMessage = failureMessage
     self.webView = WKWebView()
