@@ -144,7 +144,9 @@ final class LibraryService: NSObject, Loggable {
       guard let (pubBox, parsingCallback) = try Publication.parse(at: url) else {
         return nil
       }
-      let (publication, container) = pubBox
+      var (publication, container) = pubBox
+      // Parse .ncx document to update TOC and page list
+      parseNCXDocument(from: container, to: &publication)
       items[url.lastPathComponent] = (container, parsingCallback)
       return (publication, container)
 
@@ -156,3 +158,34 @@ final class LibraryService: NSObject, Loggable {
 
 }
 
+extension LibraryService {
+    /*
+     Parse .ncx document after the app creates container and publication.
+     This step is a workaround for current Readium 2 issue with encrypted TOC.
+     */
+    private func parseNCXDocument(from container: Container, to publication: inout Publication) {
+        // Get the link in the readingOrder pointing to the NCX document.
+        guard let ncxLink = publication.resources.first(where: { $0.type == "application/x-dtbncx+xml" }),
+            let ncxDocumentData = try? container.data(relativePath: ncxLink.href) else
+        {
+            return
+        }
+
+        var data = ncxDocumentData
+        let publicationUrl = URL(fileURLWithPath: container.rootFile.rootPath)
+        let license = AdobeDRMLicense(with: publicationUrl)
+        if let optionalDecipheredData = try? license.decipher(ncxDocumentData),
+            let decipheredData = optionalDecipheredData {
+            data = decipheredData
+        }
+        
+        let ncx = NCXParser(data: data, at: ncxLink.href)
+        
+        if publication.tableOfContents.isEmpty {
+            publication.tableOfContents = ncx.links(for: .tableOfContents)
+        }
+        if publication.pageList.isEmpty {
+            publication.pageList = ncx.links(for: .pageList)
+        }
+    }
+}
