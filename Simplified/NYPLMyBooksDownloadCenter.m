@@ -150,13 +150,12 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
     }
   }
   
-  // If the book is protected by Adobe DRM or a Simplified bearer token flow, the download will be very tiny and a later
+  // If the book is protected by Adobe DRM or a Simplified bearer token flow/Overdrive manifest JSON, the download will be very tiny and a later
   // fulfillment step will be required to get the actual content. As such, we do not report progress.
-  if([self downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementAdobe
-     || ([self downloadInfoForBookIdentifier:book.identifier].rightsManagement
-         != NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON)
-     || ([self downloadInfoForBookIdentifier:book.identifier].rightsManagement
-         != NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON))
+  NYPLMyBooksDownloadRightsManagement rightManagement = [self downloadInfoForBookIdentifier:book.identifier].rightsManagement;
+  if((rightManagement != NYPLMyBooksDownloadRightsManagementAdobe)
+     && (rightManagement != NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON)
+     && (rightManagement != NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON))
   {
     if(totalBytesExpectedToWrite > 0) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
@@ -272,19 +271,7 @@ didFinishDownloadingToURL:(NSURL *const)location
         break;
       }
       case NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON: {
-          NSError *error = nil;
-          success = [[NSFileManager defaultManager] replaceItemAtURL:[self fileURLForBookIndentifier:book.identifier]
-                                                       withItemAtURL:location
-                                                      backupItemName:@""
-                                                             options:NSFileManagerItemReplacementUsingNewMetadataOnly
-                                                    resultingItemURL:nil
-                                                               error:&error];
-          
-          if(success) {
-            [[NYPLBookRegistry sharedRegistry]
-             setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
-            [[NYPLBookRegistry sharedRegistry] save];
-          }
+          success = [self moveDownloadedFileAtURL:location book:book];
           break;
       }
       case NYPLMyBooksDownloadRightsManagementNone: {
@@ -468,9 +455,9 @@ didCompleteWithError:(NSError *)error
       id const json = NYPLJSONObjectFromData([NSData dataWithContentsOfURL:
                                               [self fileURLForBookIndentifier:book.identifier account:account]]);
         
-      NSMutableDictionary *dict;
+      NSMutableDictionary *dict = nil;
         
-      if ([book.distributor isEqualToString:@"Overdrive"]) {
+      if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
         dict = [(NSMutableDictionary *)json mutableCopy];
         dict[@"id"] = book.identifier;
       }
@@ -755,14 +742,14 @@ didCompleteWithError:(NSError *)error
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
       [self startBorrowForBook:book attemptDownload:YES borrowCompletion:nil];
-    } else if ([book.distributor isEqualToString:@"Overdrive"]) {
+    } else if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
       NSURL *URL = book.defaultAcquisition.hrefURL;
         
       [[OverdriveAPIExecutor shared] fulfillBookWithUrlString:URL.absoluteString
                                                      username:[[NYPLUserAccount sharedAccount] barcode]
                                                           PIN:[[NYPLUserAccount sharedAccount] PIN]
                                                    completion:^(NSDictionary<NSString *,id> * _Nullable responseHeader, NSError * _Nullable _) {
-        if (responseHeader && responseHeader[@"X-Overdrive-Scope"] && responseHeader[@"Location"]) {
+        if (responseHeader[@"X-Overdrive-Scope"] && responseHeader[@"Location"]) {
             
             [[OverdriveAPIExecutor shared] refreshPatronTokenWithKey:NYPLSecrets.overdriveClientKey secret:NYPLSecrets.overdriveClientSecret username:[[NYPLUserAccount sharedAccount] barcode] PIN:[[NYPLUserAccount sharedAccount] PIN] scope:responseHeader[@"X-Overdrive-Scope"] completion:^(NSError * _Nullable error) {
               if (!error) {
@@ -801,6 +788,10 @@ didCompleteWithError:(NSError *)error
 
 - (void)addDownloadTaskWithRequest:(NSURLRequest *)request
                               book:(NYPLBook *)book {
+  if (book == nil) {
+    return;
+  }
+    
   NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
   
   self.bookIdentifierToDownloadInfo[book.identifier] =
@@ -943,6 +934,24 @@ didCompleteWithError:(NSError *)error
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
    object:self];
+}
+
+- (BOOL)moveDownloadedFileAtURL:(NSURL *)location
+                           book:(NYPLBook *)book
+{
+  BOOL success = [[NSFileManager defaultManager] replaceItemAtURL:[self fileURLForBookIndentifier:book.identifier]
+                                                    withItemAtURL:location
+                                                   backupItemName:nil
+                                                          options:NSFileManagerItemReplacementUsingNewMetadataOnly
+                                                 resultingItemURL:nil
+                                                            error:nil];
+  
+  if(success) {
+    [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+    [[NYPLBookRegistry sharedRegistry] save];
+  }
+
+  return success;
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)

@@ -57,6 +57,11 @@
   return self;
 }
 
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 #pragma mark NYPLBookButtonsDelegate
 
 - (void)didSelectReturnForBook:(NYPLBook *)book
@@ -160,14 +165,14 @@
 
   id const json = NYPLJSONObjectFromData(data);
     
-  NSMutableDictionary *dict;
+  NSMutableDictionary *dict = nil;
     
-  if ([book.distributor isEqualToString:@"Overdrive"]) {
+  if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
     dict = [(NSMutableDictionary *)json mutableCopy];
     dict[@"id"] = book.identifier;
   }
   
-  id<Audiobook> audiobook = [AudiobookFactory audiobook: dict ?: json];
+  id<Audiobook> const audiobook = [AudiobookFactory audiobook: dict ?: json];
 
   if (!audiobook) {
     [self presentUnsupportedItemError];
@@ -347,7 +352,7 @@
 }
 
 - (void)updateODAudiobookManifest {
-  if ([[NYPLMyBooksDownloadCenter sharedDownloadCenter] downloadProgressForBookIdentifier:self.book.identifier] == 1) {
+  if ([[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier] == NYPLBookStateDownloadSuccessful) {
     OverdriveAudiobook *odAudiobook = (OverdriveAudiobook *)self.manager.audiobook;
 
     NSURL *const url = [[NYPLMyBooksDownloadCenter sharedDownloadCenter] fileURLForBookIndentifier:self.book.identifier];
@@ -367,6 +372,8 @@
 
     DefaultAudiobookManager *audiobookManager = (DefaultAudiobookManager *)_manager;
     [audiobookManager updateAudiobookWith:odAudiobook.spine];
+      
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
   }
 }
 
