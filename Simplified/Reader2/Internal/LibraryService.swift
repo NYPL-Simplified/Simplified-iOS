@@ -145,8 +145,10 @@ final class LibraryService: NSObject, Loggable {
         return nil
       }
       var (publication, container) = pubBox
-      // Parse .ncx document to update TOC and page list
-      parseNCXDocument(from: container, to: &publication)
+      // Parse .ncx document to update TOC and page list if publication doesn't contain TOC
+      if publication.tableOfContents.isEmpty {
+        parseNCXDocument(from: container, to: &publication)
+      }
       items[url.lastPathComponent] = (container, parsingCallback)
       return (publication, container)
 
