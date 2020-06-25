@@ -39,6 +39,9 @@ extern NSString * const _Nonnull ContentTypeOverdriveAudiobook;
 /// intermediate indirect acqusition types.
 + (NSSet<NSString *> *_Nonnull)supportedTypes;
 
+/// @return Audiobook types of acqusitions 
++ (NSSet<NSString *> *_Nonnull)audiobookTypes;
+
 /// O(n).
 /// @param types The types by which to limit the search for supported paths.
 /// Paths will also be limited by supported sub-types.

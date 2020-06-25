@@ -80,6 +80,13 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobook = @"application/vnd.over
   return types ?: [NSSet set];
 }
 
++ (NSSet<NSString *> *_Nonnull)audiobookTypes {
+  return [NSSet setWithArray:@[ContentTypeFindaway,
+                               ContentTypeOpenAccessAudiobook,
+                               ContentTypeFeedbooksAudiobook,
+                               ContentTypeOverdriveAudiobook]];
+}
+
 - (BOOL)isEqual:(id const)object
 {
   if (![object isKindOfClass:[NYPLBookAcquisitionPath class]]) {
