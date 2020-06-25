@@ -1537,6 +1537,7 @@
 				73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */,
 				73F7136D2417260700C63B81 /* UI */,
 				73DB2D0924132C8B008346ED /* Internal */,
+				21F238B72498F7FB004DC0B1 /* Adobe DRM */,
 			);
 			path = Reader2;
 			sourceTree = "<group>";
@@ -1756,7 +1757,6 @@
 				145798F5215BE9E300F68AFD /* ProblemReportEmail.swift */,
 				119504051994061E009FB788 /* Reader */,
 				73A22980240F26C6006B9EAD /* Reader2 */,
-				21F238B72498F7FB004DC0B1 /* Adobe DRM */,
 				11C5DCEE1976D19E005A9945 /* Settings */,
 				2DC8D9DB1D09F797007DD125 /* UpdateCheck.swift */,
 				2DC8D9DD1D09F9B4007DD125 /* UpdateCheckShim.swift */,
