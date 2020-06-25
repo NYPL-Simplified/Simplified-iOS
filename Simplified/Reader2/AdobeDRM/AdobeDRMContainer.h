@@ -13,7 +13,11 @@
 
 @interface AdobeDRMContainer : NSObject
 - (instancetype)init NS_UNAVAILABLE;
+/// Inits DRM container for the file
+/// @param fileURL file URL
 - (instancetype)initWithURL:(NSURL *)fileURL;
+/// Decrypt encrypted data
+/// @param data Encrypted data
 - (NSData *)decodeData:(NSData *)data;
 @end
 
