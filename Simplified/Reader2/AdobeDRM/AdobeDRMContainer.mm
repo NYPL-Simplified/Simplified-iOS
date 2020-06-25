@@ -15,7 +15,6 @@
 #import <ePub3/utilities/byte_stream.h>
 #import <ePub3/utilities/error_handler.h>
 #import "adept_filter.h"
-#import "ADEPT/ADEPT.h"
 #import "ePub3/utilities/make_unique.h"
 #import "DataByteStream.h"
 
