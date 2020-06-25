@@ -65,6 +65,7 @@ fileprivate let nullString = "null"
   case parseProfileKeyNotFound = 603
   case feedParseFail = 604
   case opdsFeedParseFail = 605
+  case overdriveFulfillResponseParseFail = 606
 
   // account management
   case authDocLoadFail = 700
@@ -514,6 +515,16 @@ fileprivate let nullString = "null"
                                   context: Context.audiobooks.rawValue)
     let err = NSError(domain: Context.audiobooks.rawValue,
                       code: NYPLErrorCode.audiobookUserEvent.rawValue,
+                      userInfo: userInfo)
+    Crashlytics.sharedInstance().recordError(err)
+  }
+
+  class func logOverdriveInvalidResponse(message: String, response: [String: Any]) {
+    let userInfo = additionalInfo(severity: .error,
+                                  message: message,
+                                  context: Context.bookDownload.rawValue)
+    let err = NSError(domain: Context.bookDownload.rawValue,
+                      code: NYPLErrorCode.overdriveFulfillResponseParseFail.rawValue,
                       userInfo: userInfo)
     Crashlytics.sharedInstance().recordError(err)
   }
