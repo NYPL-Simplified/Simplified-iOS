@@ -48,14 +48,12 @@ DataByteStream::size_type DataByteStream::ReadAllBytes(void** buf) {
   unsigned char rdbuf [4096] = {0};
   size_t rdbuflen = 4096;
   std::size_t count = this->ReadBytes(rdbuf, rdbuflen);
-  if(count)
-  {
+  if(count) {
     resbuf = (unsigned char*)malloc(count);
     memcpy(resbuf, rdbuf, count);
     resbuflen = count;
   }
-  while(count)
-  {
+  while(count) {
     count = this->ReadBytes(rdbuf, rdbuflen);
     
     temp = (unsigned char*)malloc(count + resbuflen);
@@ -66,8 +64,9 @@ DataByteStream::size_type DataByteStream::ReadAllBytes(void** buf) {
     resbuflen += count;
   }
   
-  if (resbuflen > 0)
+  if (resbuflen > 0) {
     *buf = resbuf;
+  }
   
   return resbuflen;
 }
