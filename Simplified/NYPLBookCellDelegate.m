@@ -30,6 +30,7 @@
 @property (nonatomic) NYPLBook *book;
 @property (nonatomic) id<AudiobookManager> manager;
 @property (nonatomic, weak) AudiobookPlayerViewController *audiobookViewController;
+@property (strong) NSLock *refreshAudiobookLock;
 
 @end
 
@@ -53,6 +54,8 @@
 - (instancetype)init
 {
   self = [super init];
+    
+  _refreshAudiobookLock = [[NSLock alloc] init];
   
   return self;
 }
@@ -340,7 +343,7 @@
 #pragma mark Audiobook Manager Refresh Delegate
 
 - (void)audiobookManagerDidRequestRefresh {
-  if ([[OverdriveAPIExecutor shared] patronToken]) {
+  if (![self.refreshAudiobookLock tryLock]) {
     return;
   }
     
@@ -374,6 +377,8 @@
     [audiobookManager updateAudiobookWith:odAudiobook.spine];
       
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+      
+    [self.refreshAudiobookLock unlock];
   }
 }
 

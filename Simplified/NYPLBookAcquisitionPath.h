@@ -12,8 +12,8 @@ static NSString * const _Nonnull ContentTypeFindaway = @"application/vnd.library
 static NSString * const _Nonnull ContentTypeOpenAccessAudiobook = @"application/audiobook+json";
 static NSString * const _Nonnull ContentTypeOpenAccessPDF = @"application/pdf";
 static NSString * const _Nonnull ContentTypeFeedbooksAudiobook = @"application/audiobook+json;profile=\"http://www.feedbooks.com/audiobooks/access-restriction\"";
-static NSString * const _Nonnull ContentTypeOverdriveCatalog = @"application/atom+xml;type=entry;profile=opds-catalog";
-static NSString * const _Nonnull ContentTypeOverdriveAudiobook = @"application/vnd.overdrive.circulation.api+json;profile=audiobook";
+extern NSString * const _Nonnull ContentTypeOverdriveCatalog;
+extern NSString * const _Nonnull ContentTypeOverdriveAudiobook;
 
 
 /// Represents a single path the application can take through an acquisition

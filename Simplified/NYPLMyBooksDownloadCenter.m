@@ -749,14 +749,23 @@ didCompleteWithError:(NSError *)error
                                                      username:[[NYPLUserAccount sharedAccount] barcode]
                                                           PIN:[[NYPLUserAccount sharedAccount] PIN]
                                                    completion:^(NSDictionary<NSString *,id> * _Nullable responseHeader, NSError * _Nullable _) {
-        if (responseHeader[@"X-Overdrive-Scope"] && responseHeader[@"Location"]) {
-            
-            [[OverdriveAPIExecutor shared] refreshPatronTokenWithKey:NYPLSecrets.overdriveClientKey secret:NYPLSecrets.overdriveClientSecret username:[[NYPLUserAccount sharedAccount] barcode] PIN:[[NYPLUserAccount sharedAccount] PIN] scope:responseHeader[@"X-Overdrive-Scope"] completion:^(NSError * _Nullable error) {
-              if (!error) {
-                NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:responseHeader[@"Location"]];
-                [self addDownloadTaskWithRequest:request book:book];
-              }
-            }];
+        if (!responseHeader[@"X-Overdrive-Scope"] || !responseHeader[@"Location"]) {
+          return;
+        }
+          
+        if ([[OverdriveAPIExecutor shared] patronToken] && ![[[OverdriveAPIExecutor shared] patronToken] isExpired]) {
+          // Use existing Patron Token
+          NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:responseHeader[@"Location"]];
+          [self addDownloadTaskWithRequest:request book:book];
+        } else {
+          [[OverdriveAPIExecutor shared] refreshPatronTokenWithKey:NYPLSecrets.overdriveClientKey secret:NYPLSecrets.overdriveClientSecret username:[[NYPLUserAccount sharedAccount] barcode] PIN:[[NYPLUserAccount sharedAccount] PIN] scope:responseHeader[@"X-Overdrive-Scope"] completion:^(NSError * _Nullable error) {
+            if (error) {
+              return;
+            }
+              
+            NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:responseHeader[@"Location"]];
+            [self addDownloadTaskWithRequest:request book:book];
+          }];
         }
       }];
         
