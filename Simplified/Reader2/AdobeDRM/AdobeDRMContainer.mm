@@ -37,8 +37,6 @@ static id acsdrm_lock = nil;
     
     acsdrm_lock = [[NSObject alloc] init];
     
-    //        NSLog(@"ACSDRMContainer initWithURL: %@", fileURL.path);
-    
     NSString *path = fileURL.path;
     
     ePub3::ErrorHandlerFn sdkErrorHandler = ^(const ePub3::error_details& err) {
@@ -110,46 +108,30 @@ static id acsdrm_lock = nil;
 - (NSData *)decodeData:(NSData *)data {
   
   @synchronized (acsdrm_lock) {
-    
-    NSData *m_data;
-    NSUInteger m_contentLength;
-    NSUInteger m_contentLengthCheck;
-    UInt8 m_buffer[1024 * 256];
-    std::unique_ptr<ePub3::ByteStream> m_byteStream;
-    DataByteStream *dataByteStream;
-    
-    dataByteStream = new DataByteStream((unsigned char *)[data bytes], (unsigned long)data.length);
-    
-    if (m_data == nil) {
-      m_byteStream.reset((ePub3::ByteStream *)[self getDecodedByteStream:dataByteStream isRangeRequest:NO]);
-      m_contentLength = m_byteStream->BytesAvailable();
-      m_contentLengthCheck = 0;
-      
-      
-      NSMutableData *md = [[NSMutableData alloc] initWithCapacity:m_contentLength == 0 ? 1 : m_contentLength];
-      m_contentLengthCheck = 0;
-      while (YES)
-      {
-        std::size_t count = m_byteStream->ReadBytes(m_buffer, sizeof(m_buffer));
-        if (count == 0) {
-          break;
-        }
-        m_contentLengthCheck += count;
-        [md appendBytes:m_buffer length:count];
+    NSUInteger contentLength;
+    NSUInteger contentLengthCheck;
+    UInt8 buffer[1024 * 256];
+    std::unique_ptr<ePub3::ByteStream> byteStream;
+    // DataByteStream converts NSData to SeekableByteStream for content filters
+    DataByteStream *dataByteStream = new DataByteStream((unsigned char *)[data bytes], (unsigned long)data.length);
+    byteStream.reset((ePub3::ByteStream *)[self getDecodedByteStream:dataByteStream isRangeRequest:NO]);
+    contentLength = byteStream->BytesAvailable();
+    contentLengthCheck = 0;
+    // Create NSData from decrypted byte stream
+    NSMutableData *md = [[NSMutableData alloc] initWithCapacity:contentLength == 0 ? 1 : contentLength];
+    while (YES)
+    {
+      std::size_t count = byteStream->ReadBytes(buffer, sizeof(buffer));
+      if (count == 0) {
+        break;
       }
-      if (m_contentLength != m_contentLengthCheck)
-      {
-        // place breakpoint here to debug (should occur with Content Filter, greater or smaller size is possible)
-        m_contentLength = m_contentLengthCheck;
-      }
-      m_data = md;
+      [md appendBytes:buffer length:count];
     }
-    
-    NSMutableData *result = [m_data mutableCopy];
+    // The last byte defines the amount of bytes to cut from data
+    // in R2Streamer FullDRMInputStream.swift
     const char padding[] = {1};
-    [result appendBytes:padding length:1];
-    return [result copy];
-    
+    [md appendBytes:padding length:1];
+    return [md copy];
   }
 }
 
