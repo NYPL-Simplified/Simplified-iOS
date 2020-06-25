@@ -1448,7 +1448,7 @@
 			name = Holds;
 			sourceTree = "<group>";
 		};
-		21F238B72498F7FB004DC0B1 /* Adobe DRM */ = {
+		21F238B72498F7FB004DC0B1 /* AdobeDRM */ = {
 			isa = PBXGroup;
 			children = (
 				218A040324A245D300178959 /* Normalise.swift */,
@@ -1461,7 +1461,7 @@
 				21F238C724991A2A004DC0B1 /* ACSLibraryService.swift */,
 				21F238C824991A2A004DC0B1 /* ACSLicense.swift */,
 			);
-			path = "Adobe DRM";
+			path = AdobeDRM;
 			sourceTree = "<group>";
 		};
 		5A569A271B8351C6003B5B61 /* Products */ = {
@@ -1537,7 +1537,7 @@
 				73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */,
 				73F7136D2417260700C63B81 /* UI */,
 				73DB2D0924132C8B008346ED /* Internal */,
-				21F238B72498F7FB004DC0B1 /* Adobe DRM */,
+				21F238B72498F7FB004DC0B1 /* AdobeDRM */,
 			);
 			path = Reader2;
 			sourceTree = "<group>";
