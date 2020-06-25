@@ -815,10 +815,10 @@
 		173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookStateTests.swift; sourceTree = "<group>"; };
 		179699D024131BA500EC309F /* UIColor+LabelColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+LabelColor.swift"; sourceTree = "<group>"; };
 		17CE5304243C020800315E63 /* NYPLUserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccount.swift; sourceTree = "<group>"; };
+		2153990C24A4EDF1005A94DC /* DataByteStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataByteStream.h; sourceTree = "<group>"; };
 		218A03F624A23B6000178959 /* NCXParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NCXParser.swift; sourceTree = "<group>"; };
 		218A03FD24A2408A00178959 /* NavigationDocumentParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationDocumentParser.swift; sourceTree = "<group>"; };
 		218A040324A245D300178959 /* Normalise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Normalise.swift; sourceTree = "<group>"; };
-		21F238BF2499155E004DC0B1 /* DataByteStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataByteStream.h; sourceTree = "<group>"; };
 		21F238C02499155E004DC0B1 /* AdobeDRMContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdobeDRMContainer.h; sourceTree = "<group>"; };
 		21F238C12499155E004DC0B1 /* AdobeDRMContainer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AdobeDRMContainer.mm; sourceTree = "<group>"; };
 		21F238C22499155E004DC0B1 /* DataByteStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataByteStream.cpp; sourceTree = "<group>"; };
@@ -1456,8 +1456,8 @@
 				218A03FD24A2408A00178959 /* NavigationDocumentParser.swift */,
 				21F238C02499155E004DC0B1 /* AdobeDRMContainer.h */,
 				21F238C12499155E004DC0B1 /* AdobeDRMContainer.mm */,
+				2153990C24A4EDF1005A94DC /* DataByteStream.h */,
 				21F238C22499155E004DC0B1 /* DataByteStream.cpp */,
-				21F238BF2499155E004DC0B1 /* DataByteStream.h */,
 				21F238C724991A2A004DC0B1 /* ACSLibraryService.swift */,
 				21F238C824991A2A004DC0B1 /* ACSLicense.swift */,
 			);
