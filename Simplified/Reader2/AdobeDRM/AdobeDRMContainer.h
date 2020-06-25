@@ -19,6 +19,8 @@
 /// Decrypt encrypted data
 /// @param data Encrypted data
 - (NSData *)decodeData:(NSData *)data;
+/// Initialization error message from underlying classes
+@property (nonatomic, strong) NSString * _Nullable epubDecodingError;
 @end
 
 #endif /* AdobeDRMContainer_h */

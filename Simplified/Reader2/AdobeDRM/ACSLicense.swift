@@ -19,6 +19,9 @@ class AdobeDRMLicense: DRMLicense {
   /// - Parameter fileURL: .epub file URL
   init(with fileURL: URL) {
     container = AdobeDRMContainer(url: fileURL)
+    if let errorMessage = container?.epubDecodingError {
+      NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: errorMessage)
+    }
   }
   
   /// Depichers the given encrypted data to be displayed in the reader.

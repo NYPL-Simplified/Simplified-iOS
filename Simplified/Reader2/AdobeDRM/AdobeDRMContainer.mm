@@ -40,18 +40,17 @@ static id acsdrm_lock = nil;
     NSString *path = fileURL.path;
     
     ePub3::ErrorHandlerFn sdkErrorHandler = ^(const ePub3::error_details& err) {
-      BOOL isSevereEpubError = NO;
-      if (err.is_spec_error()
-          && (err.severity() == ePub3::ViolationSeverity::Critical
-              || err.severity() == ePub3::ViolationSeverity::Major))
-        isSevereEpubError = YES;
-      
-      return ePub3::DefaultErrorHandler(err);
+      const char * msg = err.message();
+      self.epubDecodingError = [[NSString alloc] initWithCString:msg encoding:NSUTF8StringEncoding];
+      // Original reader code always ignores the error, return true
+      return true;
     };
     ePub3::SetErrorHandler(sdkErrorHandler);
-    
+    // Initialize internal objects
     ePub3::InitializeSdk();
+    // Create filters
     ePub3::PopulateFilterManager();
+    // Register ADEPT filter
     ePub3::AdeptFilter::Register();
     
     try {
@@ -60,15 +59,18 @@ static id acsdrm_lock = nil;
     }
     catch (std::exception& e) { // includes ePub3::ContentModuleException
       auto msg = e.what();
-      std::cout << msg << std::endl;
+      self.epubDecodingError = [[NSString alloc] initWithCString:msg encoding:NSUTF8StringEncoding];
     }
     catch (...) {
+      self.epubDecodingError = @"Unknown error";
     }
     
     if (container == nullptr) {
       return nil;
     }
     
+    // Initializer stores manifestItem for TOC for further use.
+    // It is essential for decoding other ePub files
     package = container->DefaultPackage().get();
     ePub3::string s = package->TableOfContents()->SourceHref();
     manifestItem = package->ManifestItemAtRelativePath(s);

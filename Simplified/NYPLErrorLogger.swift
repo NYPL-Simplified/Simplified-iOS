@@ -71,6 +71,10 @@ fileprivate let nullString = "null"
 
   // feeds
   case opdsFeedNoData = 800
+  
+  // DRM
+  case epubDecodingError = 900
+
 }
 
 @objcMembers class NYPLErrorLogger : NSObject {
