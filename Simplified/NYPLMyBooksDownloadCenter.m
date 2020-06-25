@@ -748,8 +748,16 @@ didCompleteWithError:(NSError *)error
       [[OverdriveAPIExecutor shared] fulfillBookWithUrlString:URL.absoluteString
                                                      username:[[NYPLUserAccount sharedAccount] barcode]
                                                           PIN:[[NYPLUserAccount sharedAccount] PIN]
-                                                   completion:^(NSDictionary<NSString *,id> * _Nullable responseHeader, NSError * _Nullable _) {
+                                                   completion:^(NSDictionary<NSString *,id> * _Nullable responseHeader, NSError * _Nullable error) {
+        if (error) {
+          [NYPLErrorLogger logError:error message:@"An error was thrown during fulfillBookWithUrlString:username:PIN:completion:"];
+          [self failDownloadForBook:book];
+          return;
+        }
+          
         if (!responseHeader[@"X-Overdrive-Scope"] || !responseHeader[@"Location"]) {
+          [NYPLErrorLogger logOverdriveInvalidResponseWithMessage:@"Overdrive book fulfillment response does not contain valid data" response:responseHeader];
+          [self failDownloadForBook:book];
           return;
         }
           
@@ -760,6 +768,8 @@ didCompleteWithError:(NSError *)error
         } else {
           [[OverdriveAPIExecutor shared] refreshPatronTokenWithKey:NYPLSecrets.overdriveClientKey secret:NYPLSecrets.overdriveClientSecret username:[[NYPLUserAccount sharedAccount] barcode] PIN:[[NYPLUserAccount sharedAccount] PIN] scope:responseHeader[@"X-Overdrive-Scope"] completion:^(NSError * _Nullable error) {
             if (error) {
+              [NYPLErrorLogger logError:error message:@"An error was thrown during refreshPatronTokenWithKey:secret:PIN:scope:completion:"];
+              [self failDownloadForBook:book];
               return;
             }
               
