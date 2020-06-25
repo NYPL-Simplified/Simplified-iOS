@@ -84,12 +84,15 @@ int DataByteStream::Error() const _NOEXCEPT {
 DataByteStream::size_type DataByteStream::Seek(DataByteStream::size_type by, std::ios::seekdir dir) {
   switch (dir) {
     case std::__1::ios_base::beg:
+      // seeking starting from the beginning of the byte array, boundary check
       position = by >= length ? length : by;
       break;
     case std::__1::ios_base::cur:
+      // seeking fom the current position, boundary check
       position = (position + by) >= length ? length : position + by;
       break;
     case std::__1::ios_base::end:
+      // seeking from the end of the array, boundary check
       position = (length - by) <= 0 ? 0 : length - by;
       break;
   }
