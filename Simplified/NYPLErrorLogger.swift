@@ -47,9 +47,8 @@ fileprivate let nullString = "null"
   case userProfileDocFail = 305
   case nilSignUpURL = 306
   case adeptAuthFail = 307
-
-  /// Deprecated: don't use
-  case nilAccount = 304
+  case missingParentBarcodeForJuvenile = 308
+  case cardCreatorCredentialsDecodeFail = 309
 
   // audiobooks
   case audiobookUserEvent = 400
@@ -71,6 +70,9 @@ fileprivate let nullString = "null"
 
   // feeds
   case opdsFeedNoData = 800
+
+  /// Deprecated: don't use
+  case nilAccount = 304
 }
 
 @objcMembers class NYPLErrorLogger : NSObject {

@@ -36,6 +36,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindPIN,
   CellKindLogInSignOut,
   CellKindRegistration,
+  CellKindJuvenile,
   CellKindSyncButton,
   CellKindAbout,
   CellKindPrivacyPolicy,
@@ -63,6 +64,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITableViewCell *ageCheckCell;
 @property (nonatomic) UISwitch *syncSwitch;
+@property (nonatomic) UIActivityIndicatorView *juvenileActivityView;
 
 // account state
 @property NYPLUserAccountFrontEndValidation *frontEndValidator;
@@ -83,7 +85,19 @@ static const NSInteger sSection1Sync = 1;
 
 @implementation NYPLSettingsAccountDetailViewController
 
+/*
+ For NYPL, this field can accept any of the following:
+ - a username
+ - a 14-digit NYPL-issued barcode
+ - a 16-digit NYC ID issued by the city of New York to its residents. Patrons
+ can set up the NYC ID as a NYPL barcode even if they already have a NYPL card.
+ All of these types of authentication can be used with the PIN to sign in.
+ - Note: A patron can have multiple barcodes, because patrons may lose
+their library card and get a new one with a different barcode.
+Authenticating with any of those barcodes should work.
+ */
 @synthesize usernameTextField;
+
 @synthesize PINTextField;
 
 #pragma mark - Computed variables
@@ -316,6 +330,10 @@ static const NSInteger sSection1Sync = 1;
     self.tableData = @[section0AcctInfo, @[@(CellKindRegistration)], section1Sync].mutableCopy;
   } else {
     self.tableData = @[section0AcctInfo, section1Sync].mutableCopy;
+  }
+
+  if ([self.businessLogic juvenileCardsManagementIsPossible]) {
+    [self.tableData addObject:@[@(CellKindJuvenile)]];
   }
 
   if (self.selectedAccount.supportEmail != nil) {
@@ -819,14 +837,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (self.selectedAccount.details.supportsCardCreator
           && self.selectedAccount.details.signUpUrl != nil) {
         __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
-        CardCreatorConfiguration *const configuration =
-        [[CardCreatorConfiguration alloc]
-         initWithEndpointURL:self.selectedAccount.details.signUpUrl ?: APIKeys.cardCreatorEndpointURL
-         endpointVersion:[APIKeys cardCreatorVersion]
-         endpointUsername:NYPLSecrets.cardCreatorUsername
-         endpointPassword:NYPLSecrets.cardCreatorPassword
-         requestTimeoutInterval:self.businessLogic.requestTimeoutInterval
-         completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
+
+        CardCreatorConfiguration *config = [self.businessLogic makeRegularCardCreationConfiguration];
+        config.completionHandler = ^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
           if (userInitiated) {
             // Dismiss CardCreator when user finishes Credential Review
             [weakSelf dismissViewControllerAnimated:YES completion:nil];
@@ -834,20 +847,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             weakSelf.usernameTextField.text = username;
             weakSelf.PINTextField.text = PIN;
             [weakSelf updateLoginLogoutCellAppearance];
-            self.isLoggingInAfterSignUp = YES;
+            weakSelf.isLoggingInAfterSignUp = YES;
             [weakSelf logIn];
           }
-        }];
+        };
 
-        UINavigationController *const navigationController =
-        [CardCreator initialNavigationControllerWithConfiguration:configuration];
-        navigationController.navigationBar.topItem.leftBarButtonItem =
+        UINavigationController *const navController = [CardCreator initialNavigationControllerWithConfiguration:config];
+        navController.navigationBar.topItem.leftBarButtonItem =
         [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                          style:UIBarButtonItemStylePlain
                                         target:self
                                         action:@selector(didSelectCancelForSignUp)];
-        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:navigationController animated:YES completion:nil];
+        navController.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:navController animated:YES completion:nil];
       }
       else // does not support card creator
       {
@@ -876,6 +888,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self presentViewController:navigationController animated:YES completion:nil];
       }
       break;
+    }
+    case CellKindJuvenile: {
+      [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+      UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+      [self didSelectJuvenileSignupOnCell:cell];
     }
     case CellKindSyncButton: {
       break;
@@ -936,6 +953,84 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     }
   }
+}
+
+- (UITableViewCell *)setUpJuvenileFlowCell
+{
+  UITableViewCell *cell = [[UITableViewCell alloc]
+                           initWithStyle:UITableViewCellStyleDefault
+                           reuseIdentifier:nil];
+  cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+  cell.textLabel.text = NSLocalizedString(@"Want a card for your child?", nil);
+  [self addActivityIndicatorToJuvenileCell:cell];
+  return cell;
+}
+
+- (void)addActivityIndicatorToJuvenileCell:(UITableViewCell *)cell
+{
+  UIActivityIndicatorViewStyle style;
+  if (@available(iOS 13, *)) {
+    style = UIActivityIndicatorViewStyleMedium;
+  } else {
+    style = UIActivityIndicatorViewStyleGray;
+  }
+  self.juvenileActivityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:style];
+  self.juvenileActivityView.center = CGPointMake(cell.bounds.size.width / 2,
+                                                 cell.bounds.size.height / 2);
+  [self.juvenileActivityView integralizeFrame];
+  self.juvenileActivityView.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin |
+                                                UIViewAutoresizingFlexibleRightMargin |
+                                                UIViewAutoresizingFlexibleBottomMargin |
+                                                UIViewAutoresizingFlexibleLeftMargin);
+  self.juvenileActivityView.hidesWhenStopped = YES;
+  [cell addSubview:self.juvenileActivityView];
+
+  if (self.businessLogic.juvenileAuthIsOngoing) {
+    [cell setUserInteractionEnabled:NO];
+    cell.textLabel.hidden = YES;
+    [self.juvenileActivityView startAnimating];
+  } else {
+    [cell setUserInteractionEnabled:YES];
+    cell.textLabel.hidden = NO;
+    [self.juvenileActivityView stopAnimating];
+  }
+}
+
+- (void)didSelectJuvenileSignupOnCell:(UITableViewCell *)cell
+{
+  [cell setUserInteractionEnabled:NO];
+  cell.textLabel.hidden = YES;
+  [self.juvenileActivityView startAnimating];
+
+  __weak __auto_type weakSelf = self;
+  [self.businessLogic startJuvenileCardCreationWithEligibilityCompletion:^(UINavigationController * _Nullable navVC, NSError * _Nullable error) {
+
+    [weakSelf.juvenileActivityView stopAnimating];
+    cell.textLabel.hidden = NO;
+    [cell setUserInteractionEnabled:YES];
+
+    if (error) {
+      UIAlertController *alert = [NYPLAlertUtils
+                                  alertWithTitle:NSLocalizedString(@"Error", "Alert title")
+                                  error:error];
+      [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert
+                                                         viewController:nil
+                                                               animated:YES
+                                                             completion:nil];
+      return;
+    }
+
+    navVC.navigationBar.topItem.leftBarButtonItem =
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                     style:UIBarButtonItemStylePlain
+                                    target:weakSelf
+                                    action:@selector(didSelectCancelForSignUp)];
+    navVC.modalPresentationStyle = UIModalPresentationFormSheet;
+    [weakSelf presentViewController:navVC animated:YES completion:nil];
+
+  } flowCompletion:^{
+    [weakSelf dismissViewControllerAnimated:YES completion:nil];
+  }];
 }
 
 - (void)didSelectCancelForSignUp
@@ -1079,6 +1174,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.textLabel.text = NSLocalizedString(@"SettingsBookmarkSyncTitle",
                                               @"Title for switch to turn on or off syncing.");
       return cell;
+    }
+    case CellKindJuvenile: {
+      return [self setUpJuvenileFlowCell];
     }
     case CellReportIssue: {
       UITableViewCell *cell = [[UITableViewCell alloc]

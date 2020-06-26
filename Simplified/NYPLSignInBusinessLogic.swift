@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import NYPLCardCreator
 
 class NYPLSignInBusinessLogic: NSObject {
 
@@ -14,13 +15,21 @@ class NYPLSignInBusinessLogic: NSObject {
   private let permissionsCheckLock = NSLock()
   @objc let requestTimeoutInterval: TimeInterval = 25.0
 
+  private let juvenileAuthLock = NSLock()
+  @objc private(set) var juvenileAuthIsOngoing = false
+  private var juvenileCardCreationCoordinator: JuvenileFlowCoordinator?
+
   @objc init(libraryAccountID: String) {
     self.libraryAccountID = libraryAccountID
     super.init()
   }
 
+  private static func sharedLibraryAccount(_ libAccountID: String) -> Account? {
+    return AccountsManager.shared.account(libAccountID)
+  }
+
   @objc var libraryAccount: Account? {
-    return AccountsManager.shared.account(libraryAccountID)
+    return NYPLSignInBusinessLogic.sharedLibraryAccount(libraryAccountID)
   }
 
   @objc var userAccount: NYPLUserAccount {
@@ -48,6 +57,9 @@ class NYPLSignInBusinessLogic: NSObject {
       return false
     }
     guard libraryAccount?.details?.supportsCardCreator ?? false else {
+      return false
+    }
+    guard libraryAccountID == AccountsManager.NYPLAccountUUID else {
       return false
     }
 
@@ -122,6 +134,149 @@ class NYPLSignInBusinessLogic: NSObject {
       }
 
       self.permissionsCheckLock.unlock()
+    }
+  }
+
+  // MARK: - Card Creation
+
+  private func cardCreatorCredentials() -> (username: String, password: String) {
+    // the likeliness of this username/password to be nil is close to zero
+    // because these strings are decoded from static byte arrays. So any error
+    // should be detected during QA. Even in the case where these are nil, by
+    // using the "" default for initializing the CardCreatorConfiguration (see
+    // below) we'll run into an error soon after, at the 1st screen of the flow.
+    if NYPLSecrets.cardCreatorUsername == nil {
+      NYPLErrorLogger.logError(withCode: NYPLErrorCode.cardCreatorCredentialsDecodeFail,
+                               context: NYPLErrorLogger.Context.signUp.rawValue,
+                               message: "Unable to decode cardCreator username")
+    }
+    if NYPLSecrets.cardCreatorPassword == nil {
+      NYPLErrorLogger.logError(withCode: NYPLErrorCode.cardCreatorCredentialsDecodeFail,
+                               context: NYPLErrorLogger.Context.signUp.rawValue,
+                               message: "Unable to decode cardCreator password")
+    }
+
+    return (username: NYPLSecrets.cardCreatorUsername ?? "",
+            password: NYPLSecrets.cardCreatorPassword ?? "")
+  }
+
+  /// Factory method.
+  /// - Returns: A configuration to be used in the regular card creation flow.
+  @objc func makeRegularCardCreationConfiguration() -> CardCreatorConfiguration {
+    let libAcct = NYPLSignInBusinessLogic.sharedLibraryAccount(libraryAccountID)
+    let simplifiedBaseURL = libAcct?.details?.signUpUrl ?? APIKeys.cardCreatorEndpointURL
+
+    let credentials = cardCreatorCredentials()
+    let cardCreatorConfiguration = CardCreatorConfiguration(
+      endpointURL: simplifiedBaseURL,
+      endpointVersion: APIKeys.cardCreatorVersion,
+      endpointUsername: credentials.username,
+      endpointPassword: credentials.password,
+      requestTimeoutInterval: requestTimeoutInterval)
+
+    return cardCreatorConfiguration
+  }
+
+  /// Factory method.
+  /// - Parameter parentBarcode: The barcode of the user creating the juvenile
+  /// account. Differently from the sign-in process, this MUST be a barcode --
+  /// the username will not work.
+  /// - Returns: A coordinator instance to handle the juvenile card creator flow.
+  private func makeJuvenileCardCreationCoordinator(using parentBarcode: String) -> JuvenileFlowCoordinator {
+
+    let libAcct = NYPLSignInBusinessLogic.sharedLibraryAccount(libraryAccountID)
+    let simplifiedBaseURL = libAcct?.details?.signUpUrl ?? APIKeys.cardCreatorEndpointURL
+    let credentials = cardCreatorCredentials()
+    let platformAPI = NYPLPlatformAPIInfo(
+      oauthTokenURL: APIKeys.PlatformAPI.oauthTokenURL,
+      clientID: NYPLSecrets.platformClientID,
+      clientSecret: NYPLSecrets.platformClientSecret,
+      baseURL: APIKeys.PlatformAPI.baseURL)
+
+    let config = CardCreatorConfiguration(
+      endpointURL: simplifiedBaseURL,
+      endpointVersion: APIKeys.cardCreatorVersion,
+      endpointUsername: credentials.username,
+      endpointPassword: credentials.password,
+      juvenileParentBarcode: parentBarcode,
+      juvenilePlatformAPIInfo: platformAPI,
+      requestTimeoutInterval: requestTimeoutInterval)
+
+    return JuvenileFlowCoordinator(configuration: config)
+  }
+
+  /// Utility method to resolve the user barcode, accounting for NYPL-specific
+  /// knowledge.
+  private func userBarcode() -> String? {
+    // For NYPL specifically, the authorizationIdentifier is always a valid
+    // barcode.
+    if libraryAccountID == AccountsManager.NYPLAccountUUID {
+      return userAccount.authorizationIdentifier ?? userAccount.barcode
+    }
+
+    return userAccount.barcode
+  }
+
+  /// The entry point to the juvenile card creation flow.
+  /// - Note: This is available only for NYPL accounts.
+  /// - Parameters:
+  ///   - eligibilityCompletion: Always called at the end of an initial
+  ///   api call that determines whether the user is eligible or not to
+  ///   create juvenile accounts. If that's possible, the handler returns
+  ///   a navigation controller containing the VCs for the whole flow.
+  ///   All the client has to do is to present this navigation controller
+  ///   in whatever way it sees fit.
+  ///   - flowCompletion: Called when/if the user completes the whole juvenile
+  ///   card-creation flow.
+  @objc
+  func startJuvenileCardCreation(
+    eligibilityCompletion: @escaping (UINavigationController?, Error?) -> Void,
+    flowCompletion: @escaping () -> Void) {
+
+    guard juvenileAuthLock.try() else {
+      // not calling any completion because this means a flow is already going
+      return
+    }
+
+    juvenileAuthIsOngoing = true
+
+    guard let parentBarcode = userBarcode() else {
+      let description = NSLocalizedString("Cannot confirm library card eligibility.", comment: "Message describing the fact that a patron's barcode is not readable and therefore we cannot establish eligibility to create dependent juvenile cards")
+      let recoveryMsg = NSLocalizedString("Please log out and try your card information again.", comment: "A error recovery suggestion related to missing login info")
+
+      let error = NSError(domain: NYPLSimplyEDomain,
+                          code: NYPLErrorCode.missingParentBarcodeForJuvenile.rawValue,
+                          userInfo: [
+                            NSLocalizedDescriptionKey: description,
+                            NSLocalizedRecoverySuggestionErrorKey: recoveryMsg])
+      NYPLErrorLogger.logError(error)
+      eligibilityCompletion(nil, error)
+      juvenileAuthIsOngoing = false
+      juvenileAuthLock.unlock()
+      return
+    }
+
+    let coordinator = makeJuvenileCardCreationCoordinator(using: parentBarcode)
+    juvenileCardCreationCoordinator = coordinator
+
+    coordinator.configuration.completionHandler = { [weak self] _, _, userInitiated in
+      if userInitiated {
+        self?.juvenileCardCreationCoordinator = nil
+        flowCompletion()
+      }
+    }
+
+    coordinator.startJuvenileFlow { [weak self] result in
+      switch result {
+      case .success(let navVC):
+        eligibilityCompletion(navVC, nil)
+      case .fail(let error):
+        NYPLErrorLogger.logError(error)
+        self?.juvenileCardCreationCoordinator = nil
+        eligibilityCompletion(nil, error)
+      }
+      self?.juvenileAuthIsOngoing = false
+      self?.juvenileAuthLock.unlock()
     }
   }
 }

@@ -43,7 +43,7 @@ import UIKit
     if message.isEmpty {
       // since it wasn't a networking or Adobe DRM error, show the error
       // description if present
-      if let errorDescription = error?.localizedDescription, !errorDescription.isEmpty {
+      if let errorDescription = error?.localizedDescriptionWithRecovery, !errorDescription.isEmpty {
         message = errorDescription
       } else {
         message = "UnknownError"
