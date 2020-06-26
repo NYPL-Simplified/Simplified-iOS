@@ -1,5 +1,5 @@
 //
-//  ACSLicense.swift
+//  AdobeDRMLicense.swift
 //  SimplyE
 //
 //  Created by Vladimir Fedorov on 13.05.2020.

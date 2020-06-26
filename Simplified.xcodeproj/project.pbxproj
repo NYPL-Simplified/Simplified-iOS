@@ -129,8 +129,8 @@
 		21F238C62499155E004DC0B1 /* DataByteStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C22499155E004DC0B1 /* DataByteStream.cpp */; };
 		21F238C924991A2B004DC0B1 /* ACSLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C724991A2A004DC0B1 /* ACSLibraryService.swift */; };
 		21F238CA24991A2B004DC0B1 /* ACSLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C724991A2A004DC0B1 /* ACSLibraryService.swift */; };
-		21F238CB24991A2B004DC0B1 /* ACSLicense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C824991A2A004DC0B1 /* ACSLicense.swift */; };
-		21F238CC24991A2B004DC0B1 /* ACSLicense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C824991A2A004DC0B1 /* ACSLicense.swift */; };
+		21F238CB24991A2B004DC0B1 /* AdobeDRMLicense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C824991A2A004DC0B1 /* AdobeDRMLicense.swift */; };
+		21F238CC24991A2B004DC0B1 /* AdobeDRMLicense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C824991A2A004DC0B1 /* AdobeDRMLicense.swift */; };
 		2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */; };
 		2D2B47841D08F8E2007F7764 /* UpdateCheckUpToDate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */; };
 		2D2B478E1D08FDF5007F7764 /* UpdateCheckNeedsUpdate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D2B478A1D08FC78007F7764 /* UpdateCheckNeedsUpdate.json */; };
@@ -823,7 +823,7 @@
 		21F238C12499155E004DC0B1 /* AdobeDRMContainer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AdobeDRMContainer.mm; sourceTree = "<group>"; };
 		21F238C22499155E004DC0B1 /* DataByteStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataByteStream.cpp; sourceTree = "<group>"; };
 		21F238C724991A2A004DC0B1 /* ACSLibraryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACSLibraryService.swift; sourceTree = "<group>"; };
-		21F238C824991A2A004DC0B1 /* ACSLicense.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACSLicense.swift; sourceTree = "<group>"; };
+		21F238C824991A2A004DC0B1 /* AdobeDRMLicense.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdobeDRMLicense.swift; sourceTree = "<group>"; };
 		2D2B47621D08F1ED007F7764 /* SimplyETests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyETests-Bridging-Header.h"; sourceTree = "<group>"; };
 		2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheckTests.swift; sourceTree = "<group>"; };
 		2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = UpdateCheckUpToDate.json; sourceTree = "<group>"; };
@@ -1459,7 +1459,7 @@
 				2153990C24A4EDF1005A94DC /* DataByteStream.h */,
 				21F238C22499155E004DC0B1 /* DataByteStream.cpp */,
 				21F238C724991A2A004DC0B1 /* ACSLibraryService.swift */,
-				21F238C824991A2A004DC0B1 /* ACSLicense.swift */,
+				21F238C824991A2A004DC0B1 /* AdobeDRMLicense.swift */,
 			);
 			path = AdobeDRM;
 			sourceTree = "<group>";
@@ -2426,7 +2426,7 @@
 				739E60BD244A0D8600D00301 /* NYPLZXingEncoder.m in Sources */,
 				739E60BE244A0D8600D00301 /* NYPLProblemReportViewController.m in Sources */,
 				739E60BF244A0D8600D00301 /* NYPLHoldsNavigationController.m in Sources */,
-				21F238CC24991A2B004DC0B1 /* ACSLicense.swift in Sources */,
+				21F238CC24991A2B004DC0B1 /* AdobeDRMLicense.swift in Sources */,
 				739E60C0244A0D8600D00301 /* NYPLRemoteViewController.m in Sources */,
 				739E60C1244A0D8600D00301 /* NYPLWelcomeScreen.swift in Sources */,
 				739E60C2244A0D8600D00301 /* NYPLSettingsAccountURLSessionChallengeHandler.m in Sources */,
@@ -2627,7 +2627,7 @@
 				E6202A041DD52B8600C99553 /* NYPLWelcomeScreen.swift in Sources */,
 				73A3EAED2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m in Sources */,
 				110AD83D19E497D6005724C3 /* NYPLOPDSAttribute.m in Sources */,
-				21F238CB24991A2B004DC0B1 /* ACSLicense.swift in Sources */,
+				21F238CB24991A2B004DC0B1 /* AdobeDRMLicense.swift in Sources */,
 				1114A6A1195884CB007507A2 /* NYPLCatalogUngroupedFeed.m in Sources */,
 				73A229A7240F40C2006B9EAD /* ReaderModule.swift in Sources */,
 				11C5DCF51976D22F005A9945 /* NYPLHoldsViewController.m in Sources */,
