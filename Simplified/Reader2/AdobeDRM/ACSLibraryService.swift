@@ -11,10 +11,7 @@ import UIKit
 import R2Shared
 
 class ACSLibraryService: DRMLibraryService {
-  
-  /// [LicenseDocument.id: passphrase callback]
-  private var authenticationCallbacks: [String: (String?) -> Void] = [:]
-  
+    
   /// Library service brand
   var brand: DRM.Brand {
     return .adobe
