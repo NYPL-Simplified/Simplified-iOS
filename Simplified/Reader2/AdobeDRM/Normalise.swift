@@ -6,6 +6,9 @@
 //  Copyright © 2020 NYPL Labs. All rights reserved.
 //
 
+// TODO: SIMPLY-2840
+// This file should be removed as a part of the cleanup
+
 import Foundation
 
 /*

@@ -182,10 +182,13 @@ final class LibraryService: NSObject, Loggable {
         return nil
       }
       var (publication, container) = pubBox
+      // TODO: SIMPLY-2840
       // Parse .ncx document to update TOC and page list if publication doesn't contain TOC
+      // -- the code below should be removed as described in SIMPLY-2840 --
       if publication.tableOfContents.isEmpty {
         parseNCXDocument(from: container, to: &publication)
       }
+      // -- end of cleanup --
       items[url.lastPathComponent] = (container, parsingCallback)
       return (publication, container)
 
@@ -196,6 +199,11 @@ final class LibraryService: NSObject, Loggable {
   }
 
 }
+
+
+
+// TODO: SIMPLY-2840
+// This extension should be removed as a part of the cleanup
 
 extension LibraryService {
     /*

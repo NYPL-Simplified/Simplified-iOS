@@ -4,6 +4,8 @@
  copied to support TOC decryption
  
  */
+// TODO: SIMPLY-2840
+// This file should be removed as a part of the cleanup
 
 //
 //  NCXParser.swift
