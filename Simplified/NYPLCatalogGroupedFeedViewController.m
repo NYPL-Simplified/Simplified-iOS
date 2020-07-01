@@ -373,8 +373,15 @@ viewForHeaderInSection:(NSInteger const)section
 
 - (void)entryPointViewDidSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet {
   NSURL *const newURL = entryPointFacet.href;
-  self.remoteViewController.URL = newURL;
-  [self.remoteViewController load];
+
+  if (newURL != nil) {
+    [self.remoteViewController loadWithURL:newURL];
+  } else {
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                              context:NSStringFromClass([self class])
+                              message:@"Catalog facet missing href URL"
+                             metadata:nil];
+  }
 }
 
 - (NSArray<NYPLCatalogFacet *> *)facetsForEntryPointView

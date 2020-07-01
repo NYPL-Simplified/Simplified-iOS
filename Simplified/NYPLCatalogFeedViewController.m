@@ -30,7 +30,7 @@
                           urlResponse:(NSURLResponse*)response
 {
   if (![response.MIMEType isEqualToString:@"application/atom+xml"]) {
-    NYPLLOG(@"Did not recieve XML atom feed, cannot initialize");
+    NYPLLOG(@"Did not receive XML atom feed, cannot initialize");
     [NYPLErrorLogger
      logCatalogInitErrorWithCode:NYPLErrorCodeInvalidResponseMimeType];
     return nil;
@@ -95,8 +95,17 @@
     } else {
       url = [NSURL URLWithString:gatedXML.attributes[@"restriction-not-met"]];
     }
-    [vc setURL:url];
-    [vc load];
+    if (url != nil) {
+      [vc loadWithURL:url];
+    } else {
+      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                                context:NSStringFromClass([self class])
+                                message:@"Server response for age verification lacks a URL to load."
+                               metadata:@{
+                                 @"ageAboveLimit": @(ageAboveLimit),
+                                 @"gateElementXMLAttributes": gatedXML.attributes,
+                               }];
+    }
   }];
   
   return [[UIViewController alloc] init];

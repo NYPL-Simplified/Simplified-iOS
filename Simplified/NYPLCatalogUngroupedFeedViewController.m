@@ -210,8 +210,17 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 {
   NYPLCatalogFacetGroup *const group = self.feed.facetGroups[[indexPath indexAtPosition:0]];
   NYPLCatalogFacet *const facet = group.facets[[indexPath indexAtPosition:1]];
-  self.remoteViewController.URL = facet.href;
-  [self.remoteViewController load];
+
+  NSURL *facetURL = facet.href;
+  if (facetURL != nil) {
+    [self.remoteViewController loadWithURL:facetURL];
+  } else {
+    NSString *msg = [NSString stringWithFormat:@"Facet %@ is missing the `href` URL to load", facet.title];
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                              context:NSStringFromClass([self class])
+                              message:msg
+                             metadata:@{@"methodName": @"facetView:didSelectFacetAtIndexPath:"}];
+  }
 }
 
 #pragma mark NYPLEntryPointViewDelegate
@@ -219,8 +228,16 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
 - (void)entryPointViewDidSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet
 {
   NSURL *const newURL = entryPointFacet.href;
-  self.remoteViewController.URL = newURL;
-  [self.remoteViewController load];
+
+  if (newURL != nil) {
+    [self.remoteViewController loadWithURL:newURL];
+  } else {
+    NSString *msg = [NSString stringWithFormat:@"Facet %@ is missing the `href` URL to load", entryPointFacet.title];
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                              context:NSStringFromClass([self class])
+                              message:msg
+                             metadata:@{@"methodName": @"entryPointViewDidSelectWithEntryPointFacet:"}];
+  }
 }
 
 - (NSArray<NYPLCatalogFacet *> *)facetsForEntryPointView
