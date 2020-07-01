@@ -298,7 +298,8 @@
   NSString *logMsg = [NSString stringWithFormat:@"bookID: %@; fileURL: %@", book.identifier, url];
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAudiobookCorrupted
                             context:@"audiobooks"
-                            message:logMsg];
+                            message:logMsg
+                           metadata:nil];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate

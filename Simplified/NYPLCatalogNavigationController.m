@@ -41,8 +41,19 @@
 
 - (void)loadTopLevelCatalogViewControllerInternal
 {
+  NSURL *urlToLoad = [NYPLSettings sharedSettings].accountMainFeedURL;
+  if (urlToLoad == nil) {
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                              context:NSStringFromClass([self class])
+                              message:@"sharedSettings has no main feed URL"
+                             metadata:@{
+                               @"methodName": @"loadTopLevelCatalogViewControllerInternal"
+                             }];
+
+  }
+  
   self.viewController = [[NYPLCatalogFeedViewController alloc]
-                         initWithURL:[NYPLSettings sharedSettings].accountMainFeedURL];
+                         initWithURL:urlToLoad];
   
   self.viewController.title = NSLocalizedString(@"Catalog", nil);
   self.viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;

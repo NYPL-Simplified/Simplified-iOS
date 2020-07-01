@@ -31,19 +31,27 @@
 {
   if (![response.MIMEType isEqualToString:@"application/atom+xml"]) {
     NYPLLOG(@"Did not recieve XML atom feed, cannot initialize");
+    [NYPLErrorLogger
+     logCatalogInitErrorWithCode:NYPLErrorCodeInvalidResponseMimeType];
     return nil;
   }
 
   NYPLXML *const XML = [NYPLXML XMLWithData:data];
   if(!XML) {
     NYPLLOG(@"Cannot initialize due to invalid XML.");
+    [NYPLErrorLogger
+     logCatalogInitErrorWithCode:NYPLErrorCodeInvalidXML];
     return nil;
   }
+
   NYPLOPDSFeed *const feed = [[NYPLOPDSFeed alloc] initWithXML:XML];
   if(!feed) {
     NYPLLOG(@"Cannot initialize due to XML not representing an OPDS feed.");
+    [NYPLErrorLogger
+     logCatalogInitErrorWithCode:NYPLErrorCodeOpdsFeedParseFail];
     return nil;
   }
+
   switch(feed.type) {
     case NYPLOPDSFeedTypeAcquisitionGrouped:
       return [[NYPLCatalogGroupedFeedViewController alloc]
@@ -57,6 +65,7 @@
               remoteViewController:remoteVC];
     case NYPLOPDSFeedTypeInvalid:
       NYPLLOG(@"Cannot initialize due to invalid feed.");
+      [NYPLErrorLogger logCatalogInitErrorWithCode:NYPLErrorCodeInvalidFeedType];
       return nil;
     case NYPLOPDSFeedTypeNavigation: {
       return [NYPLCatalogFeedViewController navigationFeedWithData:XML
@@ -72,6 +81,10 @@
   NYPLXML *gatedXML = [data firstChildWithName:@"gate"];
   if (!gatedXML) {
     NYPLLOG(@"Cannot initialize due to lack of support for navigation feeds.");
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoAgeGateElement
+                              context:NSStringFromClass([self class])
+                              message:@"Data received from Server lacks `gate` element for age-check."
+                             metadata:nil];
     return nil;
   }
   
@@ -123,12 +136,19 @@
 }
 
 /// Only sync the book registry for a new feed if the app is in the active state.
-- (void)syncBookRegistryForNewFeed {
+- (void)syncBookRegistryForNewFeed
+{
   UIApplicationState applicationState = [[UIApplication sharedApplication] applicationState];
   if (applicationState == UIApplicationStateActive) {
+    __weak __auto_type wSelf = self;
     [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
       if (success) {
         [[NYPLBookRegistry sharedRegistry] save];
+      } else {
+        [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeRegistrySyncFailure
+                                  context:NSStringFromClass([wSelf class])
+                                  message:@"Book registry sync failed"
+                                 metadata:@{@"Catalog feed URL": wSelf.URL ?: @"none"}];
       }
     }];
   }

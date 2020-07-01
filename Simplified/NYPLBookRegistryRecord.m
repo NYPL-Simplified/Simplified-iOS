@@ -111,7 +111,8 @@ static NSString *const GenericBookmarksKey = @"genericBookmarks";
                      state, dictionary];
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnknownBookState
                               context:@"NYPLBookRegistryRecord"
-                              message:msg];
+                              message:msg
+                             metadata:nil];
     @throw NSInvalidArgumentException;
   }
   

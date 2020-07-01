@@ -74,7 +74,11 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     if (data == nil) {
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOpdsFeedNoData
                                 context:@"NYPLOPDSFeed"
-                                message:[NSString stringWithFormat:@"%@ - Response: %@", [request loggableString], response]];
+                                message:@"Received no data from server"
+                               metadata:@{
+                                 @"Request": [request loggableString],
+                                 @"Response": response,
+                               }];
       NYPLAsyncDispatch(^{handler(nil, nil);});
       return;
     }
@@ -108,7 +112,8 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
       NYPLLOG(@"Failed to parse data as XML.");
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeFeedParseFail
                                 context:@"NYPLOPDSFeed"
-                                message:[NSString stringWithFormat:@"%@ - Response: %@", [request loggableString], response]];
+                                message:[NSString stringWithFormat:@"%@ - Response: %@", [request loggableString], response]
+                               metadata:nil];
       // this error may be nil
       NSDictionary *error = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
       NYPLAsyncDispatch(^{handler(nil, error);});
@@ -120,7 +125,8 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
       NYPLLOG(@"Could not interpret XML as OPDS.");
       [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeOpdsFeedParseFail
                                 context:@"NYPLOPDSFeed"
-                                message:[NSString stringWithFormat:@"%@ - Response: %@", [request loggableString], response]];
+                                message:[NSString stringWithFormat:@"%@ - Response: %@", [request loggableString], response]
+                               metadata:nil];
       NYPLAsyncDispatch(^{handler(nil, nil);});
       return;
     }
