@@ -7,132 +7,138 @@
 //
 
 #import "AdobeDRMContainer.h"
-
-#include <memory>
-#import <ePub3/nav_table.h>
-#import <ePub3/container.h>
-#import <ePub3/initialization.h>
-#import <ePub3/utilities/byte_stream.h>
-#import <ePub3/utilities/error_handler.h>
-#import "adept_filter.h"
-#import "ePub3/utilities/make_unique.h"
-#import "DataByteStream.h"
+#include "dp_all.h"
 
 static id acsdrm_lock = nil;
 
 @interface AdobeDRMContainer () {
-  @private std::shared_ptr<ePub3::Container> container;
-  @private ePub3::Package *package;
-  @private ePub3::ConstManifestItemPtr manifestItem;
+  @private dpdev::Device *device;
+  @private dp::Data rightsXMLData;
+  @private NSData *encryptionData;
 }
 @end
 
 
 @implementation AdobeDRMContainer: NSObject
 
-- (instancetype)initWithURL:(NSURL *)fileURL {
+- (instancetype)initWithURL:(NSURL *)fileURL encryptionData:(NSData *)data {
   
   if (self = [super init]) {
-    
     acsdrm_lock = [[NSObject alloc] init];
-    
+    encryptionData = data;
     NSString *path = fileURL.path;
-    
-    ePub3::ErrorHandlerFn sdkErrorHandler = ^(const ePub3::error_details& err) {
-      const char * msg = err.message();
-      self.epubDecodingError = [[NSString alloc] initWithCString:msg encoding:NSUTF8StringEncoding];
-      // Original reader code always ignores the error, return true
-      return true;
-    };
-    ePub3::SetErrorHandler(sdkErrorHandler);
-    // Initialize internal objects
-    ePub3::InitializeSdk();
-    // Create filters
-    ePub3::PopulateFilterManager();
-    // Register ADEPT filter
-    ePub3::AdeptFilter::Register();
-    
-    try {
-      container = ePub3::Container::OpenContainer(path.UTF8String);
-      
+
+    // Device data
+    dpdev::DeviceProvider *deviceProvider = dpdev::DeviceProvider::getProvider(0);
+    if (deviceProvider != NULL) {
+      device = deviceProvider->getDevice(0);
     }
-    catch (std::exception& e) { // includes ePub3::ContentModuleException
-      auto msg = e.what();
-      self.epubDecodingError = [[NSString alloc] initWithCString:msg encoding:NSUTF8StringEncoding];
-    }
-    catch (...) {
-      self.epubDecodingError = @"Unknown error";
-    }
+
+    // *_rights.xml file contents
+    NSString *rightsSuffix = @"_rights.xml";
+    NSString *rightsPath = [NSString stringWithFormat:@"%@%@", path, rightsSuffix];
+    NSData *rightsData = [NSData dataWithContentsOfFile:rightsPath];
+    size_t rightsLen = rightsData.length;
+    unsigned char *rightsContent = (unsigned char *)rightsData.bytes;
+    rightsXMLData = dp::Data(rightsContent, rightsLen);
     
-    if (container == nullptr) {
-      return nil;
-    }
-    
-    // Initializer stores manifestItem for TOC for further use.
-    // It is essential for decoding other ePub files
-    package = container->DefaultPackage().get();
-    ePub3::string s = package->TableOfContents()->SourceHref();
-    manifestItem = package->ManifestItemAtRelativePath(s);
   }
   return self;
 }
 
-- (void *)getDecodedByteStream:(void *)currentByteStream isRangeRequest:(BOOL)isRangeRequest {
-  // Get the manifest item initWithURL: saves for further use
-  ePub3::ManifestItemPtr m = std::const_pointer_cast<ePub3::ManifestItem>(manifestItem);
-  size_t numFilters = package->GetFilterChainSize(m);
-  ePub3::ByteStream *byteStream = nullptr;
-  ePub3::SeekableByteStream *rawInput = (ePub3::SeekableByteStream *)currentByteStream;
-  
-  if (numFilters == 0)
-  {
-    byteStream = (ePub3::ByteStream *) currentByteStream; // is actually a SeekableByteStream
+/// Searches encryption data for the first encrypted file
+/// @param data encryption.xml data
+- (NSString *)firstPathElement:(NSData *)data {
+  NSString *encryptionString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+  NSError *error;
+  // looking for encrypted file path
+  NSRegularExpression *filesRegEx = [NSRegularExpression regularExpressionWithPattern:@"CipherReference URI=\"(.+)\"" options:NSRegularExpressionCaseInsensitive error:&error];
+  if (error) {
+    return nil;
   }
-  else if (numFilters == 1 && isRangeRequest)
-  {
-    byteStream = package->GetFilterChainByteStreamRange(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
-    if (byteStream == nullptr)
-    {
-      byteStream = package->GetFilterChainByteStream(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
-    }
+  NSTextCheckingResult *result =  [filesRegEx firstMatchInString:encryptionString options:0 range:NSMakeRange(0, encryptionString.length)];
+  NSRange resultRange = [result rangeAtIndex:(result.numberOfRanges - 1)];
+  if (resultRange.location == NSNotFound) {
+    return nil;
   }
-  else
-  {
-    byteStream = package->GetFilterChainByteStream(m, rawInput).release(); // is *not* a SeekableByteStream, but wraps one
-  }
-  
-  return byteStream;
-  
+  return [encryptionString substringWithRange:resultRange];
 }
 
-
 - (NSData *)decodeData:(NSData *)data {
-  
+  // When file path is not provided, we use the first element to get its path
+  // and later its encryption algorithm
+  NSString *firstElementPath = [self firstPathElement:encryptionData];
+  if (firstElementPath) {
+    return [self decodeData:data at:firstElementPath];
+  } else {
+    return data;
+  }
+}
+
+- (NSData *)decodeData:(NSData *)data at:(NSString *)path {
+
   @synchronized (acsdrm_lock) {
-    NSUInteger contentLength;
-    NSUInteger contentLengthCheck;
-    UInt8 buffer[1024 * 256];
-    std::unique_ptr<ePub3::ByteStream> byteStream;
-    // DataByteStream converts NSData to SeekableByteStream for content filters
-    DataByteStream *dataByteStream = new DataByteStream((unsigned char *)[data bytes], (unsigned long)data.length);
-    byteStream.reset((ePub3::ByteStream *)[self getDecodedByteStream:dataByteStream isRangeRequest:NO]);
-    contentLength = byteStream->BytesAvailable();
-    contentLengthCheck = 0;
-    // Create NSData from decrypted byte stream
-    NSMutableData *md = [[NSMutableData alloc] initWithCapacity:contentLength == 0 ? 1 : contentLength];
-    while (YES)
-    {
-      std::size_t count = byteStream->ReadBytes(buffer, sizeof(buffer));
-      if (count == 0) {
-        break;
-      }
-      [md appendBytes:buffer length:count];
+    // clear any error
+    self.epubDecodingError = nil;
+
+    // itemInfo describes encription protocol for a file in encryption.xml
+    // this way decryptor knows how to decode a block of data
+    // Encryption metadata for the file from encryption.xml
+    size_t encryptionLen = encryptionData.length;
+    unsigned char *encryptionContent = (unsigned char *)encryptionData.bytes;
+    dp::Data encryptionXMLData (encryptionContent, encryptionLen);
+    dp::ref<dputils::EncryptionMetadata> encryptionMetadata = dputils::EncryptionMetadata::createFromXMLData(encryptionXMLData);
+    uft::String itemPath (path.UTF8String);
+    dp::ref<dputils::EncryptionItemInfo> itemInfo = encryptionMetadata->getItemForURI(itemPath);
+
+    if (!itemInfo) {
+      self.epubDecodingError = @"Missing EncryptionItemInfo";
+      return data;
     }
-    // The last byte defines the amount of bytes to cut from data
-    // in R2Streamer FullDRMInputStream.swift
+    
+    if (rightsXMLData.isNull()) {
+      self.epubDecodingError = @"Missing Rights XML Data";
+      return data;
+    }
+    
+    if (!device) {
+      self.epubDecodingError = @"Device information is empty";
+      return data;
+    }
+
+    // Create decryptor
+    dp::String decryptorEerror;
+    dp::ref<dputils::EPubManifestItemDecryptor> decryptor = dpdrm::DRMProcessor::createEPubManifestItemDecryptor(itemInfo, rightsXMLData, device, decryptorEerror);
+
+    if (!decryptor) {
+      if (!decryptorEerror.isNull()) {
+        self.epubDecodingError = [NSString stringWithUTF8String:decryptorEerror.utf8()];
+      }
+      return data;
+    }
+    
+    // Buffer for decrypted data
+    dp::ref<dp::Buffer> filteredData = NULL;
+    // data is the first and the last block (the whole block of data is decoded at once)
+    int blockType = dputils::EPubManifestItemDecryptor::FIRST_BLOCK | dputils::EPubManifestItemDecryptor::FINAL_BLOCK;
+    size_t len = data.length;
+    uint8_t *encryptedData = (uint8_t *)data.bytes;
+    dp::String error = decryptor->decryptBlock(blockType, encryptedData, len, NULL, filteredData);
+    if (!error.isNull()) {
+      self.epubDecodingError = [NSString stringWithUTF8String:error.utf8()];
+      return data;
+    }
+    // Copy filtered data from Buffer to an array of bytes
+    unsigned char *output = new unsigned char[filteredData->length()];
+    size_t outputLen = filteredData->length();
+    memcpy(output, filteredData->data(), outputLen);
+    NSData *decryptedData = [NSData dataWithBytes:output length: NSUInteger(outputLen)];
+    NSMutableData *result = [NSMutableData dataWithData:decryptedData];
+    // Data padding is required in Readium 2
+    // number of bytes to trim from the result (1 means this last byte will be cut off)
     const char padding[] = {1};
-    [md appendBytes:padding length:1];
-    return [md copy];
+    [result appendBytes:padding length:1];
+    return [result copy];
   }
 }
 

@@ -67,7 +67,13 @@ final class LibraryService: NSObject, Loggable {
       completion(.success(nil))
       return
     }
-
+    
+    // Load DRM service with publication data
+    // If it's Adobe DRM, set contaiener for decrypting
+    if let adobeDrmService = drmService as? ACSLibraryService {
+      adobeDrmService.container = container
+    }
+    
     let url = URL(fileURLWithPath: container.rootFile.rootPath)
     drmService.loadPublication(at: url, drm: drm) { result in
       switch result {
@@ -219,8 +225,7 @@ extension LibraryService {
         }
 
         var data = ncxDocumentData
-        let publicationUrl = URL(fileURLWithPath: container.rootFile.rootPath)
-        let license = AdobeDRMLicense(with: publicationUrl)
+        let license = AdobeDRMLicense(for: container)
         if let optionalDecipheredData = try? license.decipher(ncxDocumentData),
             let decipheredData = optionalDecipheredData {
             data = decipheredData

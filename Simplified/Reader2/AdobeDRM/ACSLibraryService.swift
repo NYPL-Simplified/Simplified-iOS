@@ -9,9 +9,13 @@
 import Foundation
 import UIKit
 import R2Shared
+import R2Streamer
 
 class ACSLibraryService: DRMLibraryService {
     
+  /// Publication for DRM Conntector
+  var container: Container?
+  
   /// Library service brand
   var brand: DRM.Brand {
     return .adobe
@@ -58,7 +62,12 @@ class ACSLibraryService: DRMLibraryService {
   ///   - authentication: DRMLibraryService
   ///   - completion: license for the file, AdobeDRMLicense
   func retrieveLicense(from publication: URL, authentication: DRMLibraryService?, completion: (_ license: AdobeDRMLicense?, _ error: Error?) -> ()) {
-    completion(AdobeDRMLicense(with: publication), nil)
+    guard let container = container else {
+      NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: "Container is not initialized")
+      completion(nil, nil)
+      return
+    }
+    completion(AdobeDRMLicense(for: container), nil)
   }
   
 }

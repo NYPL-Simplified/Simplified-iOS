@@ -8,25 +8,41 @@
 
 import Foundation
 import R2Shared
+import R2Streamer
 
 /// DRM License for Adobe DRM
 class AdobeDRMLicense: DRMLicense {
   
+  var publicationContainer: Container?
+  
   /// DRM container for file
-  var container: AdobeDRMContainer?
+  var adobeDRMContainer: AdobeDRMContainer?
   
   /// DRM license for file
-  /// - Parameter fileURL: .epub file URL
-  init(with fileURL: URL) {
-    container = AdobeDRMContainer(url: fileURL)
-    if let errorMessage = container?.epubDecodingError {
-      NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: errorMessage)
+  /// - Parameter container: .epub file container
+  init(for container: Container) {
+    publicationContainer = container
+    let fileUrl = URL(fileURLWithPath: container.rootFile.rootPath)
+    let encryptionPath = "META-INF/encryption.xml"
+    do {
+      let data = try container.data(relativePath: encryptionPath)
+      adobeDRMContainer = AdobeDRMContainer(url: fileUrl, encryptionData: data)
+      if let errorMessage = adobeDRMContainer?.epubDecodingError {
+        NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: errorMessage)
+      }
+    } catch {
+      NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: error.localizedDescription)
     }
+    
   }
   
   /// Depichers the given encrypted data to be displayed in the reader.
   func decipher(_ data: Data) throws -> Data? {
-    guard let container = container else { return data }
-    return container.decode(data)
+    guard let container = adobeDRMContainer else { return data }
+    let decodedData = container.decode(data)
+    if let errorMessage = adobeDRMContainer?.epubDecodingError {
+      NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: errorMessage)
+    }
+    return decodedData
   }
 }
