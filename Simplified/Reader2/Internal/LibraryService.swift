@@ -187,12 +187,12 @@ final class LibraryService: NSObject, Loggable {
       guard let (pubBox, parsingCallback) = try Publication.parse(at: url) else {
         return nil
       }
-      var (publication, container) = pubBox
+      let (publication, container) = pubBox
       // TODO: SIMPLY-2840
       // Parse .ncx document to update TOC and page list if publication doesn't contain TOC
       // -- the code below should be removed as described in SIMPLY-2840 --
       if publication.tableOfContents.isEmpty {
-        parseNCXDocument(from: container, to: &publication)
+        publication.otherCollections.append(contentsOf: parseNCXDocument(in: container, links: publication.links))
       }
       // -- end of cleanup --
       items[url.lastPathComponent] = (container, parsingCallback)
@@ -210,34 +210,60 @@ final class LibraryService: NSObject, Loggable {
 
 // TODO: SIMPLY-2840
 // This extension should be removed as a part of the cleanup
-
 extension LibraryService {
-    /*
-     Parse .ncx document after the app creates container and publication.
-     This step is a workaround for current Readium 2 issue with encrypted TOC.
-     */
-    private func parseNCXDocument(from container: Container, to publication: inout Publication) {
-        // Get the link in the readingOrder pointing to the NCX document.
-        guard let ncxLink = publication.resources.first(where: { $0.type == "application/x-dtbncx+xml" }),
-            let ncxDocumentData = try? container.data(relativePath: ncxLink.href) else
-        {
-            return
-        }
+  /*
+   Parse .ncx document after the app creates container and publication.
+   This step is a workaround for current Readium 2 issue with encrypted TOC.
+   */
+  private func parseNCXDocument(in container: Container, links: [Link]) -> [PublicationCollection] {
+      // Get the link in the readingOrder pointing to the NCX document.
+      guard let ncxLink = links.first(withType: .ncx),
+          let ncxDocumentData = try? container.data(relativePath: ncxLink.href) else
+      {
+          return []
+      }
 
-        var data = ncxDocumentData
-        let license = AdobeDRMLicense(for: container)
-        if let optionalDecipheredData = try? license.decipher(ncxDocumentData),
-            let decipheredData = optionalDecipheredData {
-            data = decipheredData
-        }
-        
-        let ncx = NCXParser(data: data, at: ncxLink.href)
-        
-        if publication.tableOfContents.isEmpty {
-            publication.tableOfContents = ncx.links(for: .tableOfContents)
-        }
-        if publication.pageList.isEmpty {
-            publication.pageList = ncx.links(for: .pageList)
+      // this part is added to decrypt ncx data
+      var data = ncxDocumentData
+      let license = AdobeDRMLicense(for: container)
+      if let optionalDecipheredData = try? license.decipher(ncxDocumentData),
+          let decipheredData = optionalDecipheredData {
+          data = decipheredData
+      }
+      // NCXParser here parses data instead of ncxDocumentData
+      let ncx = NCXParser(data: data, at: ncxLink.href)
+
+      func makeCollection(_ type: NCXParser.NavType, role: String) -> PublicationCollection? {
+          let links = ncx.links(for: type)
+          guard !links.isEmpty else {
+              return nil
+          }
+          return PublicationCollection(role: role, links: links)
+      }
+
+      return [
+          makeCollection(.tableOfContents, role: "toc"),
+          makeCollection(.pageList, role: "pageList")
+      ].compactMap { $0 }
+  }
+}
+
+// TODO: SIMPLY-2840
+// This extension should be removed as a part of the cleanup
+extension Array where Element == Link {
+
+    func first(withType type: MediaType, recursively: Bool = false) -> Link? {
+        return first(recursively: recursively) { link in
+            // Checks that the link's type is contained by the given `type`.
+            link.type.map { type.contains($0) } ?? false
         }
     }
+
+    func filter(byType type: MediaType) -> Self {
+        return filter { link in
+            // Checks that the link's type is contained by the given `type`.
+            link.type.map { type.contains($0) } ?? false
+        }
+    }
+
 }
