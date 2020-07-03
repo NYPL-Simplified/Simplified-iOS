@@ -38,12 +38,18 @@
 
 /// This may be called more than once to reload the data accessible at the previously provided URL.
 /// This message must be sent on the main thread.
-/// If the @p URL property is nil, this results in a no-op.
+/// If the @p URL property is nil, this results in a no-op. 
 - (void)load;
-
 
 /// Updates the @p URL property with the input @p url and calls @p load.
 /// @param url The new URL to load.
 - (void)loadWithURL:(NSURL*)url;
+
+/**
+ Shows a view with an error message and a reload button.
+ @param message The message to display. If nil, a default "Check your internet
+ connection" error message will be displayed.
+ */
+- (void)showReloadViewWithMessage:(NSString*)message;
 
 @end

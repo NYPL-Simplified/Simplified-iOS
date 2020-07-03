@@ -21,8 +21,15 @@
                                                       data:data
                                                urlResponse:response];
   }];
-  
+
+  NYPLLOG_F(@"init'ing %@ with URL: %@", self, URL);
+
   return self;
+}
+
+- (void)dealloc
+{
+  NYPLLOG_F(@"dealloc %@", self);
 }
 
 + (UIViewController*)makeWithRemoteVC:(NYPLRemoteViewController *)remoteVC
@@ -76,7 +83,8 @@
 
 // Only NavigationType Feed currently supported in the app is for two
 // "Instant Classic" feeds presented based on user's age.
-+ (UIViewController *)navigationFeedWithData:(NYPLXML *)data remoteVC:(NYPLRemoteViewController *)vc
++ (UIViewController *)navigationFeedWithData:(NYPLXML *)data
+                                    remoteVC:(NYPLRemoteViewController *)remoteVC
 {
   NYPLXML *gatedXML = [data firstChildWithName:@"gate"];
   if (!gatedXML) {
@@ -87,27 +95,30 @@
                              metadata:nil];
     return nil;
   }
-  
+
   [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL ageAboveLimit) {
-    NSURL *url;
-    if (ageAboveLimit) {
-      url = [NSURL URLWithString:gatedXML.attributes[@"restriction-met"]];
-    } else {
-      url = [NSURL URLWithString:gatedXML.attributes[@"restriction-not-met"]];
-    }
-    if (url != nil) {
-      [vc loadWithURL:url];
-    } else {
-      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                                context:NSStringFromClass([self class])
-                                message:@"Server response for age verification lacks a URL to load."
-                               metadata:@{
-                                 @"ageAboveLimit": @(ageAboveLimit),
-                                 @"gateElementXMLAttributes": gatedXML.attributes,
-                               }];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+      NSURL *url;
+      if (ageAboveLimit) {
+        url = [NSURL URLWithString:gatedXML.attributes[@"restriction-met"]];
+      } else {
+        url = [NSURL URLWithString:gatedXML.attributes[@"restriction-not-met"]];
+      }
+      if (url != nil) {
+        [remoteVC loadWithURL:url];
+      } else {
+        [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                                  context:NSStringFromClass([self class])
+                                  message:@"Server response for age verification lacks a URL to load."
+                                 metadata:@{
+                                   @"ageAboveLimit": @(ageAboveLimit),
+                                   @"gateElementXMLAttributes": gatedXML.attributes,
+                                 }];
+        [remoteVC showReloadViewWithMessage:NSLocalizedString(@"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.", @"Generic error message indicating that the URL the user was trying to load is missing.")];
+      }
+    });
   }];
-  
+
   return [[UIViewController alloc] init];
 }
 
@@ -132,10 +143,6 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncBegan object:nil];
     [self performSelector:@selector(syncBookRegistryForNewFeed) withObject:self afterDelay:2.0];
   }
-}
-
-- (void) reloadCatalogue {
-  [self load];
 }
 
 - (void)viewWillAppear:(__attribute__((unused)) BOOL)animated

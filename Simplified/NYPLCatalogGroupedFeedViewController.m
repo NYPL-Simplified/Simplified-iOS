@@ -381,6 +381,7 @@ viewForHeaderInSection:(NSInteger const)section
                               context:NSStringFromClass([self class])
                               message:@"Catalog facet missing href URL"
                              metadata:nil];
+    [self.remoteViewController showReloadViewWithMessage:NSLocalizedString(@"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.", @"Generic error message indicating that the URL the user was trying to load is missing.")];
   }
 }
 
@@ -425,7 +426,7 @@ viewForHeaderInSection:(NSInteger const)section
 
   NSURL *urlToLoad = lane.subsectionURL;
   if (urlToLoad == nil) {
-    NSString *msg = [NSString stringWithFormat:@"Lane %@ has no subsection URL",
+    NSString *msg = [NSString stringWithFormat:@"Lane %@ has no subsection URL to display category",
                      lane.title];
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
                               context:NSStringFromClass([self class])

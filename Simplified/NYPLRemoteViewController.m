@@ -41,6 +41,17 @@
   return self;
 }
 
+- (void)showReloadViewWithMessage:(NSString*)message
+{
+  if (message != nil) {
+    [self.reloadView setMessage:message];
+  } else {
+    [self.reloadView setDefaultMessage];
+  }
+
+  self.reloadView.hidden = NO;
+}
+
 - (void)loadWithURL:(NSURL*)url
 {
   self.URL = url;
@@ -49,8 +60,27 @@
 
 - (void)load
 {
-  // no point in loading if we have no URL. This will also prevent inconsistent
-  // display of the wrong UI elements.
+  self.reloadView.hidden = YES;
+  
+  while(self.childViewControllers.count > 0) {
+    UIViewController *const childViewController = self.childViewControllers[0];
+    [childViewController.view removeFromSuperview];
+    [childViewController removeFromParentViewController];
+    [childViewController didMoveToParentViewController:nil];
+  }
+  
+  [self.connection cancel];
+
+  [self.activityIndicatorView startAnimating];
+
+  // TODO: SIMPLY-2862
+  // From the point of view of this VC, there is no point in attempting to
+  // load a remote page if we have no URL.
+  // Upon inspection of the codebase, this happens only at navigation
+  // controllers initialization time, when basically they are initialized
+  // with dummy VCs that have nil URLs which will be replaced once we obtain
+  // the catalog from the authentication document. Expressing this in code
+  // is the point of SIMPLY-2862.
   if (self.URL == nil) {
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
                               context:@"RemoteViewController"
@@ -62,17 +92,6 @@
     return;
   }
 
-  self.reloadView.hidden = YES;
-  
-  while(self.childViewControllers.count > 0) {
-    UIViewController *const childViewController = self.childViewControllers[0];
-    [childViewController.view removeFromSuperview];
-    [childViewController removeFromParentViewController];
-    [childViewController didMoveToParentViewController:nil];
-  }
-  
-  [self.connection cancel];
-  
   NSTimeInterval timeoutInterval = 30.0;
   NSTimeInterval activityLabelTimer = 10.0;
 
@@ -91,8 +110,6 @@
   self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 #pragma clang diagnostic pop
   self.data = [NSMutableData data];
-  
-  [self.activityIndicatorView startAnimating];
   
   [self.connection start];
 }

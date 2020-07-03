@@ -220,6 +220,7 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
                               context:NSStringFromClass([self class])
                               message:msg
                              metadata:@{@"methodName": @"facetView:didSelectFacetAtIndexPath:"}];
+    [self.remoteViewController showReloadViewWithMessage:NSLocalizedString(@"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.", @"Generic error message indicating that the URL the user was trying to load is missing.")];
   }
 }
 
@@ -237,6 +238,7 @@ didSelectFacetAtIndexPath:(NSIndexPath *const)indexPath
                               context:NSStringFromClass([self class])
                               message:msg
                              metadata:@{@"methodName": @"entryPointViewDidSelectWithEntryPointFacet:"}];
+    [self.remoteViewController showReloadViewWithMessage:NSLocalizedString(@"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.", @"Generic error message indicating that the URL the user was trying to load is missing.")];
   }
 }
 

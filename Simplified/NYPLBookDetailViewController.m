@@ -178,7 +178,7 @@
 {
   NSURL *urlToLoad = lane.subsectionURL;
   if (urlToLoad == nil) {
-    NSString *msg = [NSString stringWithFormat:@"Lane %@ has no subsection URL",
+    NSString *msg = [NSString stringWithFormat:@"Lane %@ has no subsection URL to display more books",
                      lane.title];
     [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
                               context:NSStringFromClass([self class])
