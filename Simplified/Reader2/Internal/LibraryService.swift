@@ -13,7 +13,7 @@
 import Foundation
 import UIKit
 import R2Shared
-import R2Streamer
+@testable import R2Streamer // uses internal class NCXParser
 
 
 final class LibraryService: NSObject, Loggable {
@@ -246,24 +246,4 @@ extension LibraryService {
           makeCollection(.pageList, role: "pageList")
       ].compactMap { $0 }
   }
-}
-
-// TODO: SIMPLY-2840
-// This extension should be removed as a part of the cleanup
-extension Array where Element == Link {
-
-    func first(withType type: MediaType, recursively: Bool = false) -> Link? {
-        return first(recursively: recursively) { link in
-            // Checks that the link's type is contained by the given `type`.
-            link.type.map { type.contains($0) } ?? false
-        }
-    }
-
-    func filter(byType type: MediaType) -> Self {
-        return filter { link in
-            // Checks that the link's type is contained by the given `type`.
-            link.type.map { type.contains($0) } ?? false
-        }
-    }
-
 }
