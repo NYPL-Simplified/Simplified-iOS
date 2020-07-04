@@ -326,7 +326,12 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   /// thread or not.
   func loadAuthenticationDocument(completion: @escaping (Bool) -> ()) {
     guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
-      Log.error(#file, "Invalid or missing authentication document URL")
+      NYPLErrorLogger.logError(
+        withCode: .noURL,
+        context: NYPLErrorLogger.Context.accountManagement.rawValue,
+        message: "Failed to load authentication document because its URL is invalid",
+        metadata: ["self.uuid": uuid]
+      )
       completion(false)
       return
     }
@@ -339,16 +344,21 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
             OPDS2AuthenticationDocument.fromData(serverData)
           completion(true)
         } catch (let error) {
-          Log.error(#file, """
-            Failed to parse authentication document data for URL \(url). Error:
-            \(error.localizedDescription)
-            """)
+          NYPLErrorLogger.logError(
+            withCode: .authDocParseFail,
+            context: NYPLErrorLogger.Context.accountManagement.rawValue,
+            message: "Failed to parse authentication document data obtained from \(url)",
+            metadata: ["underlyingError": error]
+          )
           completion(false)
         }
       case .failure(let error):
-        Log.error(#file, """
-          Failed to load authentication document at URL \(url). Error: \(error)
-          """)
+        NYPLErrorLogger.logError(
+          withCode: .authDocLoadFail,
+          context: NYPLErrorLogger.Context.accountManagement.rawValue,
+          message: "Request to load authentication document at \(url) failed.",
+          metadata: ["underlyingError": error]
+        )
         completion(false)
       }
     }

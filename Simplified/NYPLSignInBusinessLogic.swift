@@ -8,13 +8,37 @@
 
 import UIKit
 
+@objc protocol NYPLBookRegistrySyncing: NSObjectProtocol {
+  var syncing: Bool {get}
+  func reset(_ libraryAccountUUID: String)
+  func sync(completionHandler: ((_ success: Bool) -> Void)?)
+  func save()
+}
+
+@objc protocol NYPLDRMAuthorizing: NSObjectProtocol {
+  var workflowsInProgress: Bool {get}
+}
+
+@objc protocol NYPLLogOutExecutor: NSObjectProtocol {
+  func performLogOut()
+}
+
+extension NYPLADEPT: NYPLDRMAuthorizing {}
+extension NYPLBookRegistry: NYPLBookRegistrySyncing {}
+
 class NYPLSignInBusinessLogic: NSObject {
 
   @objc let libraryAccountID: String
   private let permissionsCheckLock = NSLock()
+  private let bookRegistry: NYPLBookRegistrySyncing
+  weak private var drmAuthorizer: NYPLDRMAuthorizing?
 
-  @objc init(libraryAccountID: String) {
+  @objc init(libraryAccountID: String,
+             bookRegistry: NYPLBookRegistrySyncing,
+             drmAuthorizer: NYPLDRMAuthorizing?) {
     self.libraryAccountID = libraryAccountID
+    self.bookRegistry = bookRegistry
+    self.drmAuthorizer = drmAuthorizer
     super.init()
   }
 
@@ -86,7 +110,6 @@ class NYPLSignInBusinessLogic: NSObject {
     }
   }
 
-
   /// Checks with the annotations sync status with the server, adding logic
   /// to make sure only one such requests is being executed at a time.
   /// - Parameters:
@@ -122,5 +145,42 @@ class NYPLSignInBusinessLogic: NSObject {
 
       self.permissionsCheckLock.unlock()
     }
+  }
+
+  /// Performs log out using the given executor verifying no book registry
+  /// syncing or book downloads/returns authorizations are in progress.
+  /// - Parameter logOutExecutor: The object actually performing the log out.
+  /// - Returns: An alert the caller needs to present.
+  @objc func logOutOrWarn(using logOutExecutor: NYPLLogOutExecutor) -> UIAlertController? {
+
+    let title = NSLocalizedString("SignOut",
+                                  comment: "Title for sign out action")
+    let msg: String
+    if bookRegistry.syncing {
+      msg = NSLocalizedString("Your bookmarks and reading positions are in the process of being saved to the server. Would you like to stop that and continue logging out?",
+                              comment: "Warning message offering the user the choice of interrupting book registry syncing to log out immediately, or waiting until that finishes.")
+    } else if let drm = drmAuthorizer, drm.workflowsInProgress {
+      msg = NSLocalizedString("It looks like you may have a book download or return in progress. Would you like to stop that and continue logging out?",
+                              comment: "Warning message offering the user the choice of interrupting the download or return of a book to log out immediately, or waiting until that finishes.")
+    } else {
+      logOutExecutor.performLogOut()
+      return nil
+    }
+
+    let alert = UIAlertController(title: title,
+                                  message: msg,
+                                  preferredStyle: .alert)
+    alert.addAction(
+      UIAlertAction(title: title,
+                    style: .destructive,
+                    handler: { _ in
+                      logOutExecutor.performLogOut()
+      }))
+    alert.addAction(
+      UIAlertAction(title: NSLocalizedString("Wait", comment: "button title"),
+                    style: .cancel,
+                    handler: nil))
+
+    return alert
   }
 }
