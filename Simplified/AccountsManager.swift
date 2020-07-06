@@ -152,10 +152,11 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
               NotificationCenter.default.post(name: NSNotification.Name.NYPLCurrentAccountDidChange, object: nil)
               completion(true)
             }
-            if self.currentAccount?.details?.needsAgeCheck ?? false {
+
+            if self.currentAccount?.details?.defaultAuth?.needsAgeCheck ?? false {
               AgeCheck.shared().verifyCurrentAccountAgeRequirement { meetsAgeRequirement in
                 DispatchQueue.main.async {
-                  mainFeed = meetsAgeRequirement ? self.currentAccount?.details?.coppaOverUrl : self.currentAccount?.details?.coppaUnderUrl
+                  mainFeed = meetsAgeRequirement ? self.currentAccount?.details?.defaultAuth?.coppaOverUrl : self.currentAccount?.details?.defaultAuth?.coppaUnderUrl
                   resolveFn()
                 }
               }
@@ -186,18 +187,16 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
       .trimmingCharacters(in: ["="])
     
     let wasAlreadyLoading = addLoadingCompletionHandler(key: hash, completion)
-    if wasAlreadyLoading {
-      return
-    }
+    guard !wasAlreadyLoading else { return }
 
     NYPLNetworkExecutor.shared.GET(targetUrl) { result in
       switch result {
-      case .success(let data):
+      case .success(let data, _):
         self.loadAccountSetsAndAuthDoc(fromCatalogData: data, key: hash) { success in
           self.callAndClearLoadingCompletionHandlers(key: hash, success)
           NotificationCenter.default.post(name: NSNotification.Name.NYPLCatalogDidLoad, object: nil)
         }
-      case .failure(let error):
+      case .failure(let error, _):
         NYPLErrorLogger.logError(error,
                                  message: "Catalog failed to load from \(targetUrl)")
         self.callAndClearLoadingCompletionHandlers(key: hash, false)

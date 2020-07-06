@@ -198,10 +198,10 @@
      postNotificationName:NSNotification.NYPLCurrentAccountDidChange
      object:nil];
   };
-  if (account.details.needsAgeCheck) {
+  if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
     [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
       dispatch_async(dispatch_get_main_queue(), ^{
-        mainFeedUrl = isOfAge ? account.details.coppaOverUrl : account.details.coppaUnderUrl;
+        mainFeedUrl = isOfAge ? NYPLUserAccount.sharedAccount.authDefinition.coppaOverUrl : NYPLUserAccount.sharedAccount.authDefinition.coppaUnderUrl;
         completion();
       });
     }];
@@ -233,10 +233,10 @@
       object:nil];
     };
 
-    if (account.details.needsAgeCheck) {
+    if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
       [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
         dispatch_async(dispatch_get_main_queue(), ^{
-          mainFeedUrl = isOfAge ? account.details.coppaOverUrl : account.details.coppaUnderUrl;
+          mainFeedUrl = isOfAge ? NYPLUserAccount.sharedAccount.authDefinition.coppaOverUrl : NYPLUserAccount.sharedAccount.authDefinition.coppaUnderUrl;
           completion();
         });
       }];
@@ -286,9 +286,9 @@
       NYPLRootTabBarController *vc = [NYPLRootTabBarController sharedController];
       [vc safelyPresentViewController:navController animated:YES completion:nil];
     };
-    if (currentAccount.details.needsAgeCheck) {
+    if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
       [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
-        mainFeedUrl = isOfAge ? currentAccount.details.coppaOverUrl : currentAccount.details.coppaUnderUrl;
+        mainFeedUrl = isOfAge ? NYPLUserAccount.sharedAccount.authDefinition.coppaOverUrl : NYPLUserAccount.sharedAccount.authDefinition.coppaUnderUrl;
         completion();
       }];
     } else {
@@ -302,8 +302,11 @@
   [[NYPLSettings sharedSettings] setUserHasSeenWelcomeScreen:YES];
   [[NYPLBookRegistry sharedRegistry] save];
   [AccountsManager sharedInstance].currentAccount = account;
-  [self updateFeedAndRegistryOnAccountChange];
-  [self dismissViewControllerAnimated:YES completion:nil];
+  [self dismissViewControllerAnimated:YES completion:^{
+    [self updateFeedAndRegistryOnAccountChange];
+  }];
+//  [self updateFeedAndRegistryOnAccountChange];
+//  [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

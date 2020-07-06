@@ -9,7 +9,6 @@
 #import "NYPLAccountSignInViewController.h"
 #import "NYPLAppDelegate.h"
 #import "NYPLBarcodeScanningViewController.h"
-#import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLConfiguration.h"
@@ -18,8 +17,8 @@
 #import "NYPLOPDSFeed.h"
 #import "NYPLReachability.h"
 #import "NYPLRootTabBarController.h"
+#import "NYPLSettingsAccountURLSessionChallengeHandler.h"
 #import "NYPLSettingsEULAViewController.h"
-#import "NYPLUserAccountFrontEndValidation.h"
 #import "NYPLXML.h"
 #import "UIView+NYPLViewAdditions.h"
 #import "UIFont+NYPLSystemFontOverride.h"
@@ -40,7 +39,7 @@ typedef NS_ENUM(NSInteger, Section) {
   SectionRegistration = 1
 };
 
-@interface NYPLAccountSignInViewController () <NSURLSessionDelegate, NYPLUserAccountInputProvider>
+@interface NYPLAccountSignInViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate>
 
 // state machine
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
@@ -60,7 +59,7 @@ typedef NS_ENUM(NSInteger, Section) {
 
 // networking
 @property (nonatomic) NSURLSession *session;
-@property (nonatomic, copy) void (^completionHandler)(void);
+@property (nonatomic) NYPLSettingsAccountURLSessionChallengeHandler *urlSessionDelegate;
 
 @end
 
@@ -117,14 +116,18 @@ CGFloat const marginPadding = 2.0;
     [NSURLSessionConfiguration ephemeralSessionConfiguration];
   
   configuration.timeoutIntervalForResource = 15.0;
-  
+
+  _urlSessionDelegate = [[NYPLSettingsAccountURLSessionChallengeHandler alloc]
+                           initWithUIDelegate:self];
+
   self.session = [NSURLSession
                   sessionWithConfiguration:configuration
-                  delegate:self
+                  delegate:_urlSessionDelegate
                   delegateQueue:[NSOperationQueue mainQueue]];
-  
+
   self.frontEndValidator = [[NYPLUserAccountFrontEndValidation alloc]
                             initWithAccount:self.currentAccount
+                            businessLogic:self.businessLogic
                             inputProvider:self];
   return self;
 }
@@ -147,7 +150,7 @@ CGFloat const marginPadding = 2.0;
   self.usernameTextField.delegate = self.frontEndValidator;
   self.usernameTextField.placeholder = NSLocalizedString(@"BarcodeOrUsername", nil);
 
-  switch (self.currentAccount.details.patronIDKeyboard) {
+  switch (self.businessLogic.selectedAuthentication.patronIDKeyboard) {
     case LoginKeyboardStandard:
     case LoginKeyboardNone:
       self.usernameTextField.keyboardType = UIKeyboardTypeASCIICapable;
@@ -170,7 +173,7 @@ CGFloat const marginPadding = 2.0;
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.PINTextField.placeholder = NSLocalizedString(@"PIN", nil);
 
-  switch (self.currentAccount.details.pinKeyboard) {
+  switch (self.businessLogic.selectedAuthentication.pinKeyboard) {
     case LoginKeyboardStandard:
     case LoginKeyboardNone:
       self.PINTextField.keyboardType = UIKeyboardTypeASCIICapable;
@@ -253,7 +256,7 @@ CGFloat const marginPadding = 2.0;
 {
   [super viewDidAppear:animated];
   if (![[NYPLADEPT sharedInstance] isUserAuthorized:[[NYPLUserAccount sharedAccount] userID] withDevice:[[NYPLUserAccount sharedAccount] deviceID]]) {
-    if ([[NYPLUserAccount sharedAccount] hasBarcodeAndPIN] && !self.isCurrentlySigningIn) {
+    if (self.businessLogic.isSignedIn && !self.isCurrentlySigningIn) {
       self.usernameTextField.text = [NYPLUserAccount sharedAccount].barcode;
       self.PINTextField.text = [NYPLUserAccount sharedAccount].PIN;
       [self logIn];
@@ -292,8 +295,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         config.completionHandler = ^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
           if (userInitiated) {
             // Dismiss CardCreator & SignInVC when user finishes Credential Review
-            [weakSelf dismissViewControllerAnimated:YES completion:nil];
-            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+            [weakSelf.presentingViewController dismissViewControllerAnimated:YES completion:nil];
           } else {
             weakSelf.usernameTextField.text = username;
             weakSelf.PINTextField.text = PIN;
@@ -373,7 +375,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                                ofView:[self.usernameTextField superview]
                                            withOffset:-marginPadding];
 
-        if (self.currentAccount.details.supportsBarcodeScanner) {
+        if (self.businessLogic.selectedAuthentication.supportsBarcodeScanner) {
           [cell.contentView addSubview:self.barcodeScanButton];
           CGFloat rightMargin = cell.layoutMargins.right;
           self.barcodeScanButton.contentEdgeInsets = UIEdgeInsetsMake(0, rightMargin * 2, 0, rightMargin);
@@ -509,22 +511,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   }
 }
 
-#pragma mark NSURLSessionDelegate
+#pragma mark - NYPLSettingsAccountUIDelegate
 
-- (void)URLSession:(__attribute__((unused)) NSURLSession *)session
-              task:(__attribute__((unused)) NSURLSessionTask *)task
-didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
- completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
-                             NSURLCredential *credential))completionHandler
+- (NSString *)username
 {
-  NYPLBasicAuthCustomHandler(challenge,
-                             completionHandler,
-                             self.usernameTextField.text,
-                             self.PINTextField.text);
+    return self.usernameTextField.text;
+}
+
+- (NSString *)pin
+{
+    return self.PINTextField.text;
 }
 
 #pragma mark - Class Methods
-
 
 + (void)
 requestCredentialsUsingExistingBarcode:(BOOL const)useExistingBarcode
@@ -701,7 +700,7 @@ completionHandler:(void (^)(void))handler
 - (void)accountDidChange
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if([NYPLUserAccount sharedAccount].hasBarcodeAndPIN) {
+    if(self.businessLogic.isSignedIn) {
       self.usernameTextField.text = [NYPLUserAccount sharedAccount].barcode;
       self.usernameTextField.enabled = NO;
       self.usernameTextField.textColor = [UIColor grayColor];
@@ -733,7 +732,7 @@ completionHandler:(void (^)(void))handler
   if (self.isCurrentlySigningIn) {
     return;
   }
-  if([[NYPLUserAccount sharedAccount] hasBarcodeAndPIN]) {
+  if(self.businessLogic.isSignedIn) {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
@@ -1006,14 +1005,19 @@ completionHandler:(void (^)(void))handler
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
-      [[NYPLUserAccount sharedAccount] setBarcode:self.usernameTextField.text
-                                          PIN:self.PINTextField.text];
-      if (!self.isLoggingInAfterSignUp) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-      }
+        [self.businessLogic.userAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
+
+      self.businessLogic.userAccount.authDefinition = self.businessLogic.selectedAuthentication;
+
       void (^handler)(void) = self.completionHandler;
       self.completionHandler = nil;
-      if(handler) handler();
+      if (!self.isLoggingInAfterSignUp) {
+        [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
+          if (handler) handler();
+        }];
+      } else {
+        if(handler) handler();
+      }
       [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
         if (success) {
           [[NYPLBookRegistry sharedRegistry] save];

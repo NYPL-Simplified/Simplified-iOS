@@ -6,7 +6,6 @@
 #import <PureLayout/PureLayout.h>
 #import <ZXingObjC/ZXingObjC.h>
 
-#import "NYPLBasicAuth.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLCatalogNavigationController.h"
@@ -18,7 +17,6 @@
 #import "NYPLSettingsAccountDetailViewController.h"
 #import "NYPLSettingsAccountURLSessionChallengeHandler.h"
 #import "NYPLSettingsEULAViewController.h"
-#import "NYPLUserAccountFrontEndValidation.h"
 #import "NYPLXML.h"
 #import "UIFont+NYPLSystemFontOverride.h"
 #import "UIView+NYPLViewAdditions.h"
@@ -64,6 +62,9 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITableViewCell *ageCheckCell;
 @property (nonatomic) UISwitch *syncSwitch;
+@property (nonatomic) UIView *accountInfoHeaderView;
+@property (nonatomic) UIView *accountInfoFooterView;
+@property (nonatomic) UIView *syncFooterView;
 @property (nonatomic) UIActivityIndicatorView *juvenileActivityView;
 
 // account state
@@ -138,6 +139,7 @@ Authenticating with any of those barcodes should work.
 
   self.frontEndValidator = [[NYPLUserAccountFrontEndValidation alloc]
                             initWithAccount:self.selectedAccount
+                            businessLogic:self.businessLogic
                             inputProvider:self];
 
   [[NSNotificationCenter defaultCenter]
@@ -231,9 +233,10 @@ Authenticating with any of those barcodes should work.
 - (void)setupViews {
   self.usernameTextField = [[UITextField alloc] initWithFrame:CGRectZero];
   self.usernameTextField.delegate = self.frontEndValidator;
-  self.usernameTextField.placeholder = self.selectedAccount.details.patronIDLabel ?: NSLocalizedString(@"BarcodeOrUsername", nil);
+  self.usernameTextField.placeholder =
+  self.businessLogic.selectedAuthentication.patronIDLabel ?: NSLocalizedString(@"BarcodeOrUsername", nil);
 
-  switch (self.selectedAccount.details.patronIDKeyboard) {
+  switch (self.businessLogic.selectedAuthentication.patronIDKeyboard) {
     case LoginKeyboardStandard:
     case LoginKeyboardNone:
       self.usernameTextField.keyboardType = UIKeyboardTypeASCIICapable;
@@ -259,9 +262,9 @@ Authenticating with any of those barcodes should work.
                    forControlEvents:UIControlEventTouchUpInside];
   
   self.PINTextField = [[UITextField alloc] initWithFrame:CGRectZero];
-  self.PINTextField.placeholder = self.selectedAccount.details.pinLabel ?: NSLocalizedString(@"PIN", nil);
+  self.PINTextField.placeholder = self.businessLogic.selectedAuthentication.pinLabel ?: NSLocalizedString(@"PIN", nil);
 
-  switch (self.selectedAccount.details.pinKeyboard) {
+  switch (self.businessLogic.selectedAuthentication.pinKeyboard) {
     case LoginKeyboardStandard:
     case LoginKeyboardNone:
       self.PINTextField.keyboardType = UIKeyboardTypeASCIICapable;
@@ -503,7 +506,7 @@ Authenticating with any of those barcodes should work.
   } else {
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
     [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
-    [[NYPLAccount sharedAccount:self.selectedAccountId] removeAll];
+    [self.businessLogic.userAccount removeAll];
     [self setupTableData];
     [self.tableView reloadData];
     [self removeActivityTitle];
@@ -516,7 +519,6 @@ Authenticating with any of those barcodes should work.
 
 - (void)deauthorizeDevice
 {
-
 #if defined(FEATURE_DRM_CONNECTOR)
 
   void (^afterDeauthorization)(void) = ^() {
@@ -526,7 +528,7 @@ Authenticating with any of those barcodes should work.
     [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
     [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
     
-    [self.selectedUserAccount removeAll];
+    [self.businessLogic.userAccount removeAll];
     [self setupTableData];
     [self.tableView reloadData];
   };
@@ -619,7 +621,7 @@ Authenticating with any of those barcodes should work.
   }
 
   if (pDoc.authorizationIdentifier) {
-    [[NYPLUserAccount sharedAccount:self.selectedAccountId] setAuthorizationIdentifier:pDoc.authorizationIdentifier];
+    [self.businessLogic.userAccount setAuthorizationIdentifier:pDoc.authorizationIdentifier];
   } else {
     NYPLLOG(@"Authorization ID (Barcode String) was nil.");
   }
@@ -737,6 +739,8 @@ Authenticating with any of those barcodes should work.
     if (success) {
       [self.selectedUserAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
 
+      self.businessLogic.userAccount.authDefinition = self.businessLogic.selectedAuthentication;
+
       if ([self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]) {
         [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
           if (success) {
@@ -796,7 +800,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindLogInSignOut: {
       [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
       NSString *logoutString;
-      if([self.selectedUserAccount hasBarcodeAndPIN]) {
+      if([self.selectedUserAccount hasCredentials]) {
         if ([self.businessLogic shouldShowSyncButton] && !self.syncSwitch.on) {
           logoutString = NSLocalizedString(@"SettingsAccountViewControllerLogoutMessageSync", nil);
         } else {
@@ -1063,7 +1067,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                                ofView:[self.usernameTextField superview]
                                            withOffset:-sVerticalMarginPadding];
 
-        if (self.selectedAccount.details.supportsBarcodeScanner) {
+        if (self.businessLogic.selectedAuthentication.supportsBarcodeScanner) {
           [cell.contentView addSubview:self.barcodeScanButton];
           CGFloat rightMargin = cell.layoutMargins.right;
           self.barcodeScanButton.contentEdgeInsets = UIEdgeInsetsMake(0, rightMargin * 2, 0, rightMargin);
@@ -1286,7 +1290,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 }
 - (CGFloat)tableView:(__unused UITableView *)tableView heightForFooterInSection:(__unused NSInteger)section
 {
-  return UITableViewAutomaticDimension;
+  if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
+      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton])) {
+    return UITableViewAutomaticDimension;
+  } else {
+    return 0;
+  }
 }
 -(CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section
 {
@@ -1298,7 +1307,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 }
 - (CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForFooterInSection:(__unused NSInteger)section
 {
-  return 44;
+  if ((section == sSection0AccountInfo && [self.businessLogic shouldShowEULALink]) ||
+      (section == sSection1Sync && [self.businessLogic shouldShowSyncButton])) {
+    return 44;
+  } else {
+    return 0;
+  }
 }
 
 - (CGFloat)tableView:(__unused UITableView *)tableView estimatedHeightForRowAtIndexPath:(__unused NSIndexPath *)indexPath
@@ -1345,7 +1359,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     [subtitleLabel autoPinEdge:ALEdgeRight toEdge:ALEdgeRight ofView:titleLabel];
     [subtitleLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:titleLabel withOffset:0];
     [subtitleLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:20];
-    
+
+    self.accountInfoHeaderView = containerView;
     return containerView;
   } else {
     return nil;
@@ -1389,6 +1404,12 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     [footerLabel autoPinEdgeToSuperviewMargin:ALEdgeRight];
     [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:8.0];
     [footerLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:16.0 relation:NSLayoutRelationGreaterThanOrEqual];
+
+    if (section == sSection0AccountInfo) {
+      self.accountInfoFooterView = container;
+    } else if (section == sSection1Sync) {
+      self.syncFooterView = container;
+    }
 
     return container;
   } else {
@@ -1466,7 +1487,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (void)accountDidChange
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    if(self.selectedUserAccount.hasBarcodeAndPIN) {
+    if(self.selectedUserAccount.hasCredentials) {
       [self checkSyncPermissionForCurrentPatron];
       self.usernameTextField.text = self.selectedUserAccount.barcode;
       self.usernameTextField.enabled = NO;
@@ -1492,7 +1513,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 
 - (void)updateLoginLogoutCellAppearance
 {
-  if([self.selectedUserAccount hasBarcodeAndPIN]) {
+  if([self.selectedUserAccount hasCredentials]) {
     self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
@@ -1504,7 +1525,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
                                  stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
     BOOL const pinHasText = [self.PINTextField.text
                              stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
-    BOOL const pinIsNotRequired = self.selectedAccount.details.pinKeyboard == LoginKeyboardNone;
+    BOOL const pinIsNotRequired = self.businessLogic.selectedAuthentication.pinKeyboard == LoginKeyboardNone;
     if((barcodeHasText && pinHasText) || (barcodeHasText && pinIsNotRequired)) {
       self.logInSignOutCell.userInteractionEnabled = YES;
       self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];

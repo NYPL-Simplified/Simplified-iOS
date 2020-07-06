@@ -80,7 +80,7 @@ import UIKit
   /// is guaranteed to be called on the Main queue. Otherwise, this is called
   /// on the same thread the function was invoked on.
   class func updateServerSyncSetting(toEnabled enabled: Bool, completion:@escaping (Bool)->()) {
-    if (NYPLUserAccount.sharedAccount().hasBarcodeAndPIN() &&
+    if (NYPLUserAccount.sharedAccount().hasCredentials() &&
       AccountsManager.shared.currentAccount?.details?.supportsSimplyESync == true) {
       guard let userProfileUrl = URL(string: AccountsManager.shared.currentAccount?.details?.userProfileUrl ?? "") else {
         Log.error(#file, "Could not create user profile URL from string. Abandoning attempt to update sync setting.")
@@ -645,7 +645,7 @@ import UIKit
   /// and if the currently selected library supports it.
   class func syncIsPossible(_ account: NYPLUserAccount) -> Bool {
     let library = AccountsManager.shared.currentAccount
-    return account.hasBarcodeAndPIN() && library?.details?.supportsSimplyESync == true
+    return account.hasCredentials() && library?.details?.supportsSimplyESync == true
   }
 
   class func syncIsPossibleAndPermitted() -> Bool {

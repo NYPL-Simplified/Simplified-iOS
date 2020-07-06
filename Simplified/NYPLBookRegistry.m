@@ -280,8 +280,8 @@ static NSString *const RecordsKey = @"records";
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);
       }];
       return;
-    } else if (![[NYPLUserAccount sharedAccount] hasBarcodeAndPIN]) {
-      NYPLLOG(@"[syncWithCompletionHandler] No barcode and PIN");
+    } else if (!NYPLUserAccount.sharedAccount.hasCredentials || !AccountsManager.shared.currentAccount.loansUrl) {
+      NYPLLOG(@"[syncWithCompletionHandler] No valid credentials");
       [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         if(completion) completion(NO);
         if(fetchHandler) fetchHandler(UIBackgroundFetchResultNoData);

@@ -315,7 +315,7 @@ static NSString *const UpdatedKey = @"updated";
 
     NSMutableArray<NYPLOPDSAcquisition *> *const mutableAcquisitions = [NSMutableArray array];
 
-    NSString *const applicationEPUBZIP = @"application/epub+zip";
+    NSString *const applicationEPUBZIP = ContentTypeEpubZip;
 
     NSString *const genericString = NYPLNullToNil(dictionary[DeprecatedAcquisitionKey][@"generic"]);
     NSURL *const genericURL = genericString ? [NSURL URLWithString:genericString] : nil;

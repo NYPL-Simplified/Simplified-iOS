@@ -11,11 +11,9 @@
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) UILabel *activityIndicatorLabel;
-@property (nonatomic) NSURLConnection *connection;
-@property (nonatomic) NSMutableData *data;
 @property (nonatomic, copy) UIViewController *(^handler)(NYPLRemoteViewController *remoteViewController, NSData *data, NSURLResponse *response);
 @property (nonatomic) NYPLReloadView *reloadView;
-@property (nonatomic, strong) NSURLResponse *response;
+@property (nonatomic, strong) NSURLSessionDataTask *dataTask;
 
 @end
 
@@ -51,29 +49,103 @@
     [childViewController didMoveToParentViewController:nil];
   }
   
-  [self.connection cancel];
+  [self.dataTask cancel];
   
   NSTimeInterval timeoutInterval = 30.0;
   NSTimeInterval activityLabelTimer = 10.0;
 
-  NSURLRequest *const request = [NSURLRequest requestWithURL:self.URL
-                                                 cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                             timeoutInterval:timeoutInterval];
-  
+    NSMutableURLRequest *const request = [[NSURLRequest requestWithURL:self.URL
+                                                           cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                       timeoutInterval:timeoutInterval] mutableCopy];
+
+
   self.activityIndicatorLabel.hidden = YES;
   [NSTimer scheduledTimerWithTimeInterval: activityLabelTimer target: self
                                  selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-  // TODO: SIMPLY-2589 Replace with NSURLSession
-  self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-#pragma clang diagnostic pop
-  self.data = [NSMutableData data];
-  
-  [self.activityIndicatorView startAnimating];
-  
-  [self.connection start];
+  request.cachePolicy = NSURLRequestReloadIgnoringCacheData;
+  self.dataTask = [NYPLNetworkExecutor.shared execute:request
+                           completion:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self.activityIndicatorView stopAnimating];
+      self.activityIndicatorLabel.hidden = YES;
+      self.dataTask = nil;
+
+      if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
+        self.reloadView.hidden = false;
+        [NYPLAccountSignInViewController requestCredentialsUsingExistingBarcode:([NYPLUserAccount sharedAccount].barcode) completionHandler:^{
+          [self load];
+        }];
+        return;
+      }
+
+      if (error) {
+        self.reloadView.hidden = NO;
+        [NYPLErrorLogger logCatalogLoadError:error url:self.URL];
+        return;
+      }
+
+      BOOL mimeTypeMatches = [response.MIMEType isEqualToString:@"application/problem+json"] ||
+      [response.MIMEType isEqualToString:@"application/api-problem+json"];
+
+      if ([(NSHTTPURLResponse *)response statusCode] != 200 && mimeTypeMatches) {
+        NSError *problemDocumentParseError = nil;
+        NYPLProblemDocument *pDoc = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
+        UIAlertController *alert;
+        if (problemDocumentParseError) {
+          [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                                                    url:[response URL]
+                                                context:@"RemoteVC-errorResponse"];
+          alert = [NYPLAlertUtils
+                   alertWithTitle:NSLocalizedString(@"Error", @"Title for a generic error")
+                   message:NSLocalizedString(@"Unknown error parsing problem document",
+                                             @"Message for a problem document error")];
+        } else {
+          alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
+        }
+        [self presentViewController:alert animated:YES completion:nil];
+      }
+
+      UIViewController *const viewController = self.handler(self, data, response);
+
+      if (viewController) {
+        [self addChildViewController:viewController];
+        viewController.view.frame = self.view.bounds;
+        [self.view addSubview:viewController.view];
+
+        // If `viewController` has its own bar button items or title, use whatever
+        // has been set by default.
+        if(viewController.navigationItem.rightBarButtonItems) {
+          self.navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems;
+        }
+        if(viewController.navigationItem.leftBarButtonItems) {
+          self.navigationItem.leftBarButtonItems = viewController.navigationItem.leftBarButtonItems;
+        }
+        if(viewController.navigationItem.backBarButtonItem) {
+          self.navigationItem.backBarButtonItem = viewController.navigationItem.backBarButtonItem;
+        }
+        if(viewController.navigationItem.title) {
+          self.navigationItem.title = viewController.navigationItem.title;
+        }
+
+        [viewController didMoveToParentViewController:self];
+      } else {
+        self.reloadView.hidden = NO;
+      }
+    });
+  }];
+
+//#pragma clang diagnostic push
+//#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+//  // TODO: SIMPLY-2589 Replace with NSURLSession
+//  self.connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+//#pragma clang diagnostic pop
+//  self.data = [NSMutableData data];
+//
+//  [self.activityIndicatorView startAnimating];
+//
+//  [self.connection start];
 }
 
 #pragma mark UIViewController
@@ -97,7 +169,7 @@
   [self.activityIndicatorLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.activityIndicatorView withOffset:8.0];
   
   // We always nil out the connection when not in use so this is reliable.
-  if(self.connection) {
+  if(self.dataTask) {
     [self.activityIndicatorView startAnimating];
   }
   
@@ -131,94 +203,6 @@
                     } completion:nil];
   }
   [timer invalidate];
-}
-
-#pragma mark NSURLConnectionDataDelegate
-
-- (void)connection:(__attribute__((unused)) NSURLConnection *)connection
-    didReceiveData:(NSData *const)data
-{
-  [self.data appendData:data];
-}
-
-- (void)connection:(__attribute__((unused)) NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-{
-  self.response = response;
-}
-
-- (void)connectionDidFinishLoading:(__attribute__((unused)) NSURLConnection *)connection
-{
-  [self.activityIndicatorView stopAnimating];
-  self.activityIndicatorLabel.hidden = YES;
-  BOOL mimeTypeMatches = [self.response.MIMEType isEqualToString:@"application/problem+json"] ||
-    [self.response.MIMEType isEqualToString:@"application/api-problem+json"];
-  
-  if ([(NSHTTPURLResponse *)self.response statusCode] != 200 && mimeTypeMatches) {
-    NSError *problemDocumentParseError = nil;
-    NYPLProblemDocument *pDoc = [NYPLProblemDocument fromData:self.data error:&problemDocumentParseError];
-    UIAlertController *alert;
-    if (problemDocumentParseError) {
-      [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
-                                                url:[self.response URL]
-                                            context:@"RemoteVC-errorResponse"];
-      alert = [NYPLAlertUtils
-               alertWithTitle:NSLocalizedString(@"Error", @"Title for a generic error")
-               message:NSLocalizedString(@"Unknown error parsing problem document",
-                                         @"Message for a problem document error")];
-    } else {
-      alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
-    }
-    [self presentViewController:alert animated:YES completion:nil];
-  }
-  
-  UIViewController *const viewController = self.handler(self, self.data, self.response);
-  
-  if (viewController) {
-    [self addChildViewController:viewController];
-    viewController.view.frame = self.view.bounds;
-    [self.view addSubview:viewController.view];
-
-    // If `viewController` has its own bar button items or title, use whatever
-    // has been set by default.
-    if(viewController.navigationItem.rightBarButtonItems) {
-      self.navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems;
-    }
-    if(viewController.navigationItem.leftBarButtonItems) {
-      self.navigationItem.leftBarButtonItems = viewController.navigationItem.leftBarButtonItems;
-    }
-    if(viewController.navigationItem.backBarButtonItem) {
-      self.navigationItem.backBarButtonItem = viewController.navigationItem.backBarButtonItem;
-    }
-    if(viewController.navigationItem.title) {
-      self.navigationItem.title = viewController.navigationItem.title;
-    }
-
-    [viewController didMoveToParentViewController:self];
-  } else {
-    self.reloadView.hidden = NO;
-  }
-  
-  self.response = nil;
-  self.connection = nil;
-  self.data = [NSMutableData data];
-}
-
-#pragma mark NSURLConnectionDelegate
-
-- (void)connection:(NSURLConnection *)connection
-  didFailWithError:(NSError *)error
-{
-  [self.activityIndicatorView stopAnimating];
-  self.activityIndicatorLabel.hidden = YES;
-  
-  if (connection.currentRequest.URL) {
-    self.reloadView.hidden = NO;
-    [NYPLErrorLogger logCatalogLoadError:error url:self.URL];
-  }
-
-  self.connection = nil;
-  self.data = [NSMutableData data];
-  self.response = nil;
 }
 
 @end

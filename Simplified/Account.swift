@@ -6,14 +6,18 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 // MARK: AccountDetails
 // Extra data that gets loaded from an OPDS2AuthenticationDocument,
 @objcMembers final class AccountDetails: NSObject {
-  enum AuthType: String {
+  enum AuthType: String, Codable {
     case basic = "http://opds-spec.org/auth/basic"
     case coppa = "http://librarysimplified.org/terms/authentication/gate/coppa"
     case anonymous = "http://librarysimplified.org/rel/auth/anonymous"
+    case oauthIntermediary = "http://librarysimplified.org/authtype/OAuth-with-intermediary"
+    case saml = "http://librarysimplified.org/authtype/SAML-2.0"
     case none
   }
   
-  struct Authentication {
+  @objc(AccountDetailsAuthentication)
+  @objcMembers
+  class Authentication: NSObject, Codable, NSCoding {
     let authType:AuthType
     let authPasscodeLength:UInt
     let patronIDKeyboard:LoginKeyboard
@@ -34,23 +38,58 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
       pinLabel = auth.labels?.password
       supportsBarcodeScanner = auth.inputs?.login.barcodeFormat == "Codabar"
       supportsBarcodeDisplay = supportsBarcodeScanner
-      coppaUnderUrl = URL.init(string: auth.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-not-met" })?.href ?? "")
-      coppaOverUrl = URL.init(string: auth.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-met" })?.href ?? "")
+
+      switch authType {
+      case .coppa:
+        coppaUnderUrl = URL.init(string: auth.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-not-met" })?.href ?? "")
+        coppaOverUrl = URL.init(string: auth.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-met" })?.href ?? "")
+
+      case .none, .basic, .anonymous:
+        coppaUnderUrl = nil
+        coppaOverUrl = nil
+
+      }
+    }
+
+    var isCatalogSecured: Bool {
+      return authType == .oauthIntermediary || authType == .saml
+    }
+
+    func encode(with coder: NSCoder) {
+      let jsonEncoder = JSONEncoder()
+      guard let data = try? jsonEncoder.encode(self) else { return }
+      coder.encode(data as NSData)
+    }
+
+    required init?(coder: NSCoder) {
+      guard let data = coder.decodeData() else { return nil }
+      let jsonDecoder = JSONDecoder()
+      guard let authentication = try? jsonDecoder.decode(Authentication.self, from: data) else { return nil }
+
+      authType = authentication.authType
+      authPasscodeLength = authentication.authPasscodeLength
+      patronIDKeyboard = authentication.patronIDKeyboard
+      pinKeyboard = authentication.pinKeyboard
+      patronIDLabel = authentication.patronIDLabel
+      pinLabel = authentication.pinLabel
+      supportsBarcodeScanner = authentication.supportsBarcodeScanner
+      supportsBarcodeDisplay = authentication.supportsBarcodeDisplay
+      coppaUnderUrl = authentication.coppaUnderUrl
+      coppaOverUrl = authentication.coppaOverUrl
     }
   }
-  
+
   let defaults:UserDefaults
   let uuid:String
   let supportsSimplyESync:Bool
   let supportsCardCreator:Bool
   let supportsReservations:Bool
   let auths: [Authentication]
-  
+
   let mainColor:String?
   let userProfileUrl:String?
   let signUpUrl:URL?
   let loansUrl:URL?
-  
   var authType: AuthType {
     return auths.first?.authType ?? .none
   }
@@ -83,22 +122,15 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     return auths.first?.coppaOverUrl
   }
 
-  var patronIDLabel: String? {
-    return auths.first?.patronIDLabel
-  }
-  
-  var pinLabel: String? {
-    return auths.first?.pinLabel
-  }
-  
   var needsAuth:Bool {
     return authType == .basic
   }
   
-  var needsAgeCheck:Bool {
-    return authType == .coppa
+  var defaultAuth: Authentication? {
+    guard auths.count > 1 else { return auths.first }
+    return auths.first(where: { !$0.isCatalogSecured }) ?? auths.first
   }
-  
+
   fileprivate var urlAnnotations:URL?
   fileprivate var urlAcknowledgements:URL?
   fileprivate var urlContentLicenses:URL?
@@ -333,7 +365,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
     NYPLNetworkExecutor.shared.GET(url) { result in
       switch result {
-      case .success(let serverData):
+      case .success(let serverData, _):
         do {
           self.authenticationDocument = try
             OPDS2AuthenticationDocument.fromData(serverData)
@@ -345,7 +377,7 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
             """)
           completion(false)
         }
-      case .failure(let error):
+      case .failure(let error, _):
         Log.error(#file, """
           Failed to load authentication document at URL \(url). Error: \(error)
           """)
@@ -386,7 +418,7 @@ extension Account {
 }
 
 // MARK: LoginKeyboard
-@objc enum LoginKeyboard: Int {
+@objc enum LoginKeyboard: Int, Codable {
   case standard
   case email
   case numeric

@@ -18,12 +18,13 @@ import Foundation
   func verifyCurrentAccountAgeRequirement(_ completion: ((Bool) -> ())?) -> Void
   {
     serialQueue.async {
+      let userAccount = NYPLUserAccount.sharedAccount()
       guard let accountDetails = AccountsManager.shared.currentAccount?.details else {
         completion?(false)
         return
       }
       
-      if accountDetails.needsAuth == true || accountDetails.userAboveAgeLimit {
+      if userAccount.needsAuth == true || accountDetails.userAboveAgeLimit {
         completion?(true)
         return
       }

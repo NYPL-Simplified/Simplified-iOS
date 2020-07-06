@@ -9,11 +9,12 @@
 import UIKit
 import NYPLCardCreator
 
+@objcMembers
 class NYPLSignInBusinessLogic: NSObject {
 
-  @objc let libraryAccountID: String
+  let libraryAccountID: String
   private let permissionsCheckLock = NSLock()
-  @objc let requestTimeoutInterval: TimeInterval = 25.0
+  let requestTimeoutInterval: TimeInterval = 25.0
 
   private let juvenileAuthLock = NSLock()
   @objc private(set) var juvenileAuthIsOngoing = false
@@ -32,23 +33,38 @@ class NYPLSignInBusinessLogic: NSObject {
     return NYPLSignInBusinessLogic.sharedLibraryAccount(libraryAccountID)
   }
 
-  @objc var userAccount: NYPLUserAccount {
+  private var _selectedAuthentication: AccountDetails.Authentication?
+  var selectedAuthentication: AccountDetails.Authentication? {
+    get {
+      guard _selectedAuthentication == nil else { return _selectedAuthentication }
+      guard userAccount.authDefinition == nil else { return userAccount.authDefinition }
+      guard let auths = libraryAccount?.details?.auths else { return nil }
+      guard auths.count > 1 else { return auths.first }
+
+      return nil
+    }
+    set {
+      _selectedAuthentication = newValue
+    }
+  }
+
+  var userAccount: NYPLUserAccount {
     return NYPLUserAccount.sharedAccount(libraryUUID: libraryAccountID)
   }
 
-  @objc func librarySupportsBarcodeDisplay() -> Bool {
+  func librarySupportsBarcodeDisplay() -> Bool {
     // For now, only supports libraries granted access in Accounts.json,
     // is signed in, and has an authorization ID returned from the loans feed.
     return userAccount.hasBarcodeAndPIN() &&
       userAccount.authorizationIdentifier != nil &&
-      (libraryAccount?.details?.supportsBarcodeDisplay ?? false)
+      (selectedAuthentication?.supportsBarcodeDisplay ?? false)
   }
 
   @objc func isSignedIn() -> Bool {
     return userAccount.hasBarcodeAndPIN()
   }
 
-  @objc func registrationIsPossible() -> Bool {
+  func registrationIsPossible() -> Bool {
     return !isSignedIn() && NYPLConfiguration.cardCreationEnabled() && libraryAccount?.details?.signUpUrl != nil
   }
 
@@ -77,7 +93,7 @@ class NYPLSignInBusinessLogic: NSObject {
 
     return libraryDetails.supportsSimplyESync &&
       libraryDetails.getLicenseURL(.annotations) != nil &&
-      userAccount.hasBarcodeAndPIN() &&
+      userAccount.hasCredentials() &&
       libraryAccountID == AccountsManager.shared.currentAccount?.uuid
   }
 

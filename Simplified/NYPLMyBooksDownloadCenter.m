@@ -2,7 +2,6 @@
 
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccountSignInViewController.h"
-#import "NYPLBasicAuth.h"
 #import "NYPLBook.h"
 #import "NYPLBookCoverRegistry.h"
 #import "NYPLBookRegistry.h"
@@ -120,16 +119,16 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
   // We update the rights management status based on the MIME type given to us by the server. We do
   // this only once at the point when we first start receiving data.
   if(bytesWritten == totalBytesWritten) {
-    if([downloadTask.response.MIMEType isEqualToString:@"application/vnd.adobe.adept+xml"]) {
+    if([downloadTask.response.MIMEType isEqualToString:ContentTypeAdobeAdept]) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementAdobe];
-    } else if([downloadTask.response.MIMEType isEqualToString:@"application/epub+zip"]) {
+    } else if([downloadTask.response.MIMEType isEqualToString:ContentTypeEpubZip]) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
       [[self downloadInfoForBookIdentifier:book.identifier]
        withRightsManagement:NYPLMyBooksDownloadRightsManagementNone];
     } else if ([downloadTask.response.MIMEType
-                isEqualToString:@"application/vnd.librarysimplified.bearer-token+json"]) {
+                isEqualToString:ContentTypeBearerToken]) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
         [[self downloadInfoForBookIdentifier:book.identifier]
          withRightsManagement:NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON];
@@ -322,7 +321,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
-  NYPLBasicAuthHandler(challenge, completionHandler);
+  [NYPLBasicAuth authHandlerWithChallenge:challenge completionHandler:completionHandler];
 }
 
 // This is implemented in order to be able to handle redirects when using
@@ -510,7 +509,7 @@ didCompleteWithError:(NSError *)error
           NYPLLOG(@"Failed to create book from entry. Book not removed from registry.");
         }
       } else {
-        if([error[@"type"] isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
+        if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeNoActiveLoan]) {
           if(downloaded) {
             [self deleteLocalContentForBookIdentifier:identifier];
           }
@@ -689,7 +688,7 @@ didCompleteWithError:(NSError *)error
   
   switch(state) {
     case NYPLBookStateUnregistered:
-      if(!book.defaultAcquisitionIfBorrow && (book.defaultAcquisitionIfOpenAccess || ![[AccountsManager sharedInstance] currentAccount].details.needsAuth)) {
+      if(!book.defaultAcquisitionIfBorrow && (book.defaultAcquisitionIfOpenAccess || !NYPLUserAccount.sharedAccount.authDefinition.needsAuth)) {
         [[NYPLBookRegistry sharedRegistry]
          addBook:book
          location:nil
@@ -719,7 +718,7 @@ didCompleteWithError:(NSError *)error
       return;
   }
   
-  if([NYPLUserAccount sharedAccount].hasBarcodeAndPIN || !loginRequired) {
+  if([NYPLUserAccount sharedAccount].hasCredentials || !loginRequired) {
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
       [self startBorrowForBook:book attemptDownload:YES borrowCompletion:nil];
