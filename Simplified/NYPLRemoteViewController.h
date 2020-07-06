@@ -3,7 +3,7 @@
 /// |NYPLRemoteViewController| can be told to load the data present at some URL. While the data is
 /// downloading, it will display a progress indicator. Once the data has been retreived, the handler
 /// function provided will be called. That handler then returns a new view controller that is
-/// presented by the instance of |NYPLRemoteViewController|.
+/// added as a child vc by the instance of |NYPLRemoteViewController|.
 ///
 /// The current left and right bar buttons of the presented view controller, as well as the current
 /// title, will be displayed. Changes to said properties later on will not be shown, so be sure they
@@ -14,7 +14,8 @@
 @interface NYPLRemoteViewController : UIViewController
 
 /// After changing this, you must call |load| to see the effect.
-@property (atomic) NSURL *URL;
+/// For this class to work in a meaningful way, @p URL must be not-nil.
+@property (atomic, readonly) NSURL *URL;
 
 + (id)new NS_UNAVAILABLE;
 - (id)init NS_UNAVAILABLE;
@@ -27,7 +28,8 @@
  @param handler Must not be nil. It is strongly retained. The @p data parameter
  will never be @p nil as this handler is only called if the download was
  successful. This may return nil to indicate that there's something wrong
- with the downloaded data.
+ with the downloaded data. If a view controller is returned, it will be added
+ as a child view controller.
  */
 - (instancetype)initWithURL:(NSURL *)URL
                     handler:(UIViewController *(^)(NYPLRemoteViewController *remoteViewController,
@@ -35,6 +37,19 @@
                                                    NSURLResponse *response))handler;
 
 /// This may be called more than once to reload the data accessible at the previously provided URL.
+/// This message must be sent on the main thread.
+/// If the @p URL property is nil, this results in a no-op. 
 - (void)load;
+
+/// Updates the @p URL property with the input @p url and calls @p load.
+/// @param url The new URL to load.
+- (void)loadWithURL:(NSURL*)url;
+
+/**
+ Shows a view with an error message and a reload button.
+ @param message The message to display. If nil, a default "Check your internet
+ connection" error message will be displayed.
+ */
+- (void)showReloadViewWithMessage:(NSString*)message;
 
 @end
