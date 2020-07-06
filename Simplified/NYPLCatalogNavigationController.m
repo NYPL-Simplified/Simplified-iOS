@@ -3,6 +3,7 @@
 
 #import "NYPLCatalogNavigationController.h"
 
+#import "NYPLAccountSignInViewController.h"
 #import "NYPLBookRegistry.h"
 #import "NYPLRootTabBarController.h"
 #import "NYPLMyBooksNavigationController.h"
@@ -202,6 +203,13 @@
     [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
       dispatch_async(dispatch_get_main_queue(), ^{
         mainFeedUrl = isOfAge ? NYPLUserAccount.sharedAccount.authDefinition.coppaOverUrl : NYPLUserAccount.sharedAccount.authDefinition.coppaUnderUrl;
+        completion();
+      });
+    }];
+  } else if (NYPLUserAccount.sharedAccount.isCatalogSecured && !NYPLUserAccount.sharedAccount.hasCredentials) {
+    // sign in
+    [NYPLAccountSignInViewController authorizeUsingIntermediaryWithCompletionHandler:^{
+      dispatch_async(dispatch_get_main_queue(), ^{
         completion();
       });
     }];

@@ -339,6 +339,7 @@
   
   switch([[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier]) {
     case NYPLBookStateUsed:
+    case NYPLBookStateSAMLStarted:
     case NYPLBookStateDownloading:
     case NYPLBookStateUnregistered:
     case NYPLBookStateDownloadFailed:
@@ -403,6 +404,7 @@
 - (void)didSelectCancel
 {
   switch([[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier]) {
+    case NYPLBookStateSAMLStarted:
     case NYPLBookStateDownloading: {
       [self.downloadingDelegate didSelectCancelForBookDetailDownloadingView:self];
       break;

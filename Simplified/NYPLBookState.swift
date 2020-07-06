@@ -8,6 +8,7 @@ let UnregisteredKey = "unregistered"
 let HoldingKey = "holding"
 let UsedKey = "used"
 let UnsupportedKey = "unsupported"
+let SAMLStartedKey = "saml-started"
 
 @objc public enum NYPLBookState : Int, CaseIterable {
   case Unregistered = 0
@@ -18,7 +19,8 @@ let UnsupportedKey = "unsupported"
   case Holding
   case Used
   case Unsupported
-    
+  case SAMLStarted
+
   init?(_ stringValue: String) {
     switch stringValue {
       case DownloadingKey:
@@ -37,6 +39,8 @@ let UnsupportedKey = "unsupported"
         self = .Used
       case UnsupportedKey:
         self = .Unsupported
+      case SAMLStartedKey:
+        self = .SAMLStarted
       default:
         return nil
     }
@@ -60,6 +64,8 @@ let UnsupportedKey = "unsupported"
         return UsedKey;
       case .Unsupported:
         return UnsupportedKey;
+    case .SAMLStarted:
+      return SAMLStartedKey;
     }
   }
 }

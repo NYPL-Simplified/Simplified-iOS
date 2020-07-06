@@ -33,6 +33,9 @@ class NYPLSignInBusinessLogic: NSObject {
     return NYPLSignInBusinessLogic.sharedLibraryAccount(libraryAccountID)
   }
 
+  var selectedIDP: SamlIDP?
+  var forceLogIn: Bool = false
+  var sessionRefreshed: Bool = false
   private var _selectedAuthentication: AccountDetails.Authentication?
   var selectedAuthentication: AccountDetails.Authentication? {
     get {
@@ -60,8 +63,8 @@ class NYPLSignInBusinessLogic: NSObject {
       (selectedAuthentication?.supportsBarcodeDisplay ?? false)
   }
 
-  @objc func isSignedIn() -> Bool {
-    return userAccount.hasBarcodeAndPIN()
+  func isSignedIn() -> Bool {
+    return (!forceLogIn || sessionRefreshed) && userAccount.hasCredentials()
   }
 
   func registrationIsPossible() -> Bool {
@@ -295,4 +298,20 @@ class NYPLSignInBusinessLogic: NSObject {
       self?.juvenileAuthLock.unlock()
     }
   }
+}
+
+extension NSString {
+
+    @objc var parseJSONString: AnyObject? {
+
+        let data = self.data(using: String.Encoding.utf8.rawValue, allowLossyConversion: false)
+
+        if let jsonData = data {
+            // Will return an object or nil if JSON decoding fails
+            return try! JSONSerialization.jsonObject(with: jsonData, options: JSONSerialization.ReadingOptions.mutableContainers) as AnyObject?
+        } else {
+            // Lossless conversion of the string was not possible
+            return nil
+        }
+    }
 }

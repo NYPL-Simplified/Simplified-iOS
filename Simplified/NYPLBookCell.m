@@ -83,6 +83,7 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.state = NYPLBookButtonsStateDownloadSuccessful;
       return cell;
     }
+    case NYPLBookStateSAMLStarted:
     case NYPLBookStateDownloading:
     {
       NYPLBookDownloadingCell *const cell =

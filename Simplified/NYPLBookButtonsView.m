@@ -336,6 +336,7 @@ NYPLBookButtonsViewStateWithAvailability(id<NYPLOPDSAcquisitionAvailability> con
   
   switch([[NYPLBookRegistry sharedRegistry] stateForIdentifier:self.book.identifier]) {
     case NYPLBookStateUsed:
+    case NYPLBookStateSAMLStarted:
     case NYPLBookStateDownloading:
     case NYPLBookStateUnregistered:
     case NYPLBookStateDownloadFailed:

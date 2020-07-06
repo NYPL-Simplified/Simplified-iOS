@@ -3,6 +3,25 @@ private let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
 private let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
 private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
+
+@objcMembers
+class SamlIDP: NSObject, Codable {
+  let url: URL
+
+  private let displayNames: [String: String]?
+  private let descriptions: [String: String]?
+
+  var displayName: String? { displayNames?["en"] }
+  var idpDescription: String? { descriptions?["en"] }
+
+  init?(opdsLink: OPDS2Link) {
+    guard let url = URL(string: opdsLink.href) else { return nil }
+    self.url = url
+    self.displayNames = opdsLink.displayNames?.reduce(into: [String: String]()) { $0[$1.language] = $1.value }
+    self.descriptions = opdsLink.descriptions?.reduce(into: [String: String]()) { $0[$1.language] = $1.value }
+  }
+}
+
 // MARK: AccountDetails
 // Extra data that gets loaded from an OPDS2AuthenticationDocument,
 @objcMembers final class AccountDetails: NSObject {
@@ -28,14 +47,20 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
     let supportsBarcodeDisplay:Bool
     let coppaUnderUrl:URL?
     let coppaOverUrl:URL?
-    
+    let oauthIntermediaryUrl:URL?
+    let methodDescription: String?
+
+    let samlIdps: [SamlIDP]?
+
     init(auth: OPDS2AuthenticationDocument.Authentication) {
-      authType = AuthType(rawValue: auth.type) ?? .none
+      let authType = AuthType(rawValue: auth.type) ?? .none
+      self.authType = authType
       authPasscodeLength = auth.inputs?.password.maximumLength ?? 99
       patronIDKeyboard = LoginKeyboard.init(auth.inputs?.login.keyboard) ?? .standard
       pinKeyboard = LoginKeyboard.init(auth.inputs?.password.keyboard) ?? .standard
       patronIDLabel = auth.labels?.login
       pinLabel = auth.labels?.password
+      methodDescription = auth.description
       supportsBarcodeScanner = auth.inputs?.login.barcodeFormat == "Codabar"
       supportsBarcodeDisplay = supportsBarcodeScanner
 
@@ -43,12 +68,36 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
       case .coppa:
         coppaUnderUrl = URL.init(string: auth.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-not-met" })?.href ?? "")
         coppaOverUrl = URL.init(string: auth.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/authentication/restriction-met" })?.href ?? "")
+        oauthIntermediaryUrl = nil
+        samlIdps = nil
 
-      case .none, .basic, .anonymous:
+      case .oauthIntermediary:
+        oauthIntermediaryUrl = URL.init(string: auth.links?.first(where: { $0.rel == "authenticate" })?.href ?? "")
+        coppaUnderUrl = nil
+        coppaOverUrl = nil
+        samlIdps = nil
+
+      case .saml:
+        samlIdps = auth.links?.filter { $0.rel == "authenticate" }.compactMap { SamlIDP(opdsLink: $0) }
+        oauthIntermediaryUrl = nil
         coppaUnderUrl = nil
         coppaOverUrl = nil
 
+      case .none, .basic, .anonymous:
+        oauthIntermediaryUrl = nil
+        coppaUnderUrl = nil
+        coppaOverUrl = nil
+        samlIdps = nil
+
       }
+    }
+
+    var needsAuth:Bool {
+      return authType == .basic || authType == .oauthIntermediary || authType == .saml
+    }
+
+    var needsAgeCheck:Bool {
+      return authType == .coppa
     }
 
     var isCatalogSecured: Bool {
@@ -76,6 +125,9 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
       supportsBarcodeDisplay = authentication.supportsBarcodeDisplay
       coppaUnderUrl = authentication.coppaUnderUrl
       coppaOverUrl = authentication.coppaOverUrl
+      oauthIntermediaryUrl = authentication.oauthIntermediaryUrl
+      methodDescription = authentication.methodDescription
+      samlIdps = authentication.samlIdps
     }
   }
 
@@ -90,42 +142,6 @@ private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
   let userProfileUrl:String?
   let signUpUrl:URL?
   let loansUrl:URL?
-  var authType: AuthType {
-    return auths.first?.authType ?? .none
-  }
-  
-  var authPasscodeLength: UInt {
-    return auths.first?.authPasscodeLength ?? 99
-  }
-  
-  var patronIDKeyboard: LoginKeyboard {
-    return auths.first?.patronIDKeyboard ?? .standard
-  }
-  
-  var pinKeyboard: LoginKeyboard {
-    return auths.first?.pinKeyboard ?? .standard
-  }
-  
-  var supportsBarcodeScanner: Bool {
-    return auths.first?.supportsBarcodeScanner ?? false
-  }
-  
-  var supportsBarcodeDisplay: Bool {
-    return auths.first?.supportsBarcodeDisplay ?? false
-  }
-  
-  var coppaUnderUrl: URL? {
-    return auths.first?.coppaUnderUrl
-  }
-  
-  var coppaOverUrl: URL? {
-    return auths.first?.coppaOverUrl
-  }
-
-  var needsAuth:Bool {
-    return authType == .basic
-  }
-  
   var defaultAuth: Authentication? {
     guard auths.count > 1 else { return auths.first }
     return auths.first(where: { !$0.isCatalogSecured }) ?? auths.first

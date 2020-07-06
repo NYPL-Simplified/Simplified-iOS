@@ -18,4 +18,6 @@
 // and pin.
 + (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)(void))handler;
 
++ (void)authorizeUsingIntermediaryWithCompletionHandler:(void (^)(void))handler;
+
 @end

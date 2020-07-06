@@ -8,7 +8,9 @@ import Foundation
     "http://librarysimplified.org/terms/problem/no-active-loan";
   static let TypeLoanAlreadyExists =
     "http://librarysimplified.org/terms/problem/loan-already-exists";
-  
+  static let TypeInvalidCredentials =
+    "http://librarysimplified.org/terms/problem/credentials-invalid";
+
   let type: String?
   let title: String?
   let status: Int?

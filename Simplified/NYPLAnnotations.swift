@@ -653,12 +653,20 @@ import UIKit
     return syncIsPossible(NYPLUserAccount.sharedAccount()) && acct?.details?.syncPermissionGranted == true
   }
 
-  class func setDefaultAnnotationHeaders(forRequest request: inout URLRequest) {
-    for (headerKey, headerValue) in NYPLAnnotations.headers {
-      request.setValue(headerValue, forHTTPHeaderField: headerKey)
+    @objc class func addingDefaultAnnotationHeaders(to request: URLRequest) -> URLRequest {
+        var request = request
+        for (headerKey, headerValue) in NYPLAnnotations.headers {
+            request.setValue(headerValue, forHTTPHeaderField: headerKey)
+        }
+        return request
     }
+
+  class func setDefaultAnnotationHeaders(forRequest request: inout URLRequest) {
+      for (headerKey, headerValue) in NYPLAnnotations.headers {
+          request.setValue(headerValue, forHTTPHeaderField: headerKey)
+      }
   }
-  
+
   class var headers: [String:String] {
     if let barcode = NYPLUserAccount.sharedAccount().barcode, let pin = NYPLUserAccount.sharedAccount().PIN {
       let authenticationString = "\(barcode):\(pin)"
@@ -669,8 +677,12 @@ import UIKit
       } else {
         Log.error(#file, "Error formatting auth headers.")
       }
+    } else if let authToken = NYPLUserAccount.sharedAccount().authToken {
+        let authenticationValue = "Bearer \(authToken)"
+        return ["Authorization" : "\(authenticationValue)",
+            "Content-Type" : "application/json"]
     } else {
-      Log.error(#file, "Attempted to create authorization header without a barcode or pin.")
+      Log.error(#file, "Attempted to create authorization header with neither an oauth token nor a barcode and pin pair.")
     }
     return ["Authorization" : "",
             "Content-Type" : "application/json"]

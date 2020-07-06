@@ -71,7 +71,13 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
       object: nil
     )
 
-    self.loadCatalogs(completion: {_ in })
+    // It needs to be done asynchronously, so that init returns prior to calling it
+    // Otherwise it would try to access itself before intialization is finished
+    // Network executor will try to access shared accounts manager, as it needs it to get headers data
+    // Thik of this async block as you would about viewDidLoad which is triggered after a view is loaded
+    OperationQueue.current?.underlyingQueue?.async {
+      self.loadCatalogs(completion: {_ in })
+    }
   }
   
   let completionHandlerAccessQueue = DispatchQueue(label: "libraryListCompletionHandlerAccessQueue")
