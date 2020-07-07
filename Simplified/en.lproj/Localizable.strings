@@ -80,6 +80,7 @@
 "UnknownError" = "An error occurred. Please try again later.";
 "Verifying" = "Verifying";
 "Back" = "Back";
+"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk." = "This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.";
 
 
 // NYPLAppDelegate

@@ -42,8 +42,15 @@
 
 - (void)loadTopLevelCatalogViewControllerInternal
 {
+  // TODO: SIMPLY-2862
+  // unfortunately it is possible to get here with a nil feed URL. This is
+  // the result of an early initialization of the navigation controller
+  // while the account is not yet set up. While this is definitely not
+  // ideal, in my observations this seems to always be followed by
+  // another `load` command once the authentication document is received.
+  NSURL *urlToLoad = [NYPLSettings sharedSettings].accountMainFeedURL;
   self.viewController = [[NYPLCatalogFeedViewController alloc]
-                         initWithURL:[NYPLSettings sharedSettings].accountMainFeedURL];
+                         initWithURL:urlToLoad];
   
   self.viewController.title = NSLocalizedString(@"Catalog", nil);
   self.viewController.navigationItem.title = [AccountsManager shared].currentAccount.name;
@@ -235,7 +242,7 @@
     void (^completion)(void) = ^() {
       [[NYPLSettings sharedSettings] setAccountMainFeedURL:mainFeedUrl];
       [UIApplication sharedApplication].delegate.window.tintColor = [NYPLConfiguration mainColor];
-
+      // TODO: SIMPLY-2862 should this be posted only if actually different?
       [[NSNotificationCenter defaultCenter]
       postNotificationName:NSNotification.NYPLCurrentAccountDidChange
       object:nil];

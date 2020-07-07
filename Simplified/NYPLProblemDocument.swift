@@ -10,10 +10,14 @@ import Foundation
     "http://librarysimplified.org/terms/problem/loan-already-exists";
   static let TypeInvalidCredentials =
     "http://librarysimplified.org/terms/problem/credentials-invalid";
+  static let noStatus: Int = -1
 
   let type: String?
   let title: String?
+
+  /// The HTTP status code.
   let status: Int?
+
   let detail: String?
   let instance: String?
   
@@ -45,5 +49,15 @@ import Foundation
    */
   @objc static func fromDictionary(_ dict: [String : Any]) -> NYPLProblemDocument {
     return NYPLProblemDocument(dict)
+  }
+
+  @objc var debugDictionary: [String: Any] {
+    return [
+      "type": type ?? "",
+      "title": title ?? "",
+      "status": status ?? NYPLProblemDocument.noStatus,
+      "detail": detail ?? "",
+      "instance": instance ?? "",
+    ]
   }
 }

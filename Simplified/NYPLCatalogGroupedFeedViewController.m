@@ -373,8 +373,16 @@ viewForHeaderInSection:(NSInteger const)section
 
 - (void)entryPointViewDidSelectWithEntryPointFacet:(NYPLCatalogFacet *)entryPointFacet {
   NSURL *const newURL = entryPointFacet.href;
-  self.remoteViewController.URL = newURL;
-  [self.remoteViewController load];
+
+  if (newURL != nil) {
+    [self.remoteViewController loadWithURL:newURL];
+  } else {
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                              context:NSStringFromClass([self class])
+                              message:@"Catalog facet missing href URL"
+                             metadata:nil];
+    [self.remoteViewController showReloadViewWithMessage:NSLocalizedString(@"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.", @"Generic error message indicating that the URL the user was trying to load is missing.")];
+  }
 }
 
 - (NSArray<NYPLCatalogFacet *> *)facetsForEntryPointView
@@ -415,9 +423,21 @@ viewForHeaderInSection:(NSInteger const)section
 - (void)didSelectCategory:(UIButton *const)button
 {
   NYPLCatalogLane *const lane = self.feed.lanes[button.tag];
-  
+
+  NSURL *urlToLoad = lane.subsectionURL;
+  if (urlToLoad == nil) {
+    NSString *msg = [NSString stringWithFormat:@"Lane %@ has no subsection URL to display category",
+                     lane.title];
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                              context:NSStringFromClass([self class])
+                              message:msg
+                             metadata:@{
+                               @"methodName": @"didSelectCategory:"
+                             }];
+  }
+
   UIViewController *const viewController = [[NYPLCatalogFeedViewController alloc]
-                                            initWithURL:lane.subsectionURL];
+                                            initWithURL:urlToLoad];
   
   viewController.title = lane.title;
 
