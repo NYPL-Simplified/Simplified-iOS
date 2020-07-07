@@ -13,7 +13,7 @@ import R2Streamer
 
 class AdobeDRMLibraryService: DRMLibraryService {
     
-  /// Publication for DRM Conntector
+  /// Publication container for DRM Container
   var container: Container?
   
   /// Library service brand
