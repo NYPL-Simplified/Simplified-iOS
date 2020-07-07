@@ -279,8 +279,10 @@
 
     if (problemDocumentParseError) {
       [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                                            barcode:nil
                                                 url:[self.response URL]
-                                            context:@"RemoteViewController"];
+                                            context:@"RemoteViewController"
+                                            message:@"Server-side api call (likely related to Catalog loading) failed and couldn't parse the problem doc either"];
       alert = [NYPLAlertUtils
                alertWithTitle:NSLocalizedString(@"Error", @"Title for a generic error")
                message:NSLocalizedString(@"Unknown error parsing problem document",

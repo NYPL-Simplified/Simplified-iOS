@@ -105,10 +105,19 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
                         NSError *const error) {
     if (error) {
       NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+      if (dataString == nil) {
+        dataString = [NSString stringWithFormat:@"datalength=%lu",
+                      (unsigned long)data.length];
+      }
       [NYPLErrorLogger logNetworkError:error
+                                  code:NYPLErrorCodeApiCall
+                               context:NSStringFromClass([self class])
                                request:req
                               response:response
-                               message:dataString];
+                               message:@"NYPLSession error"
+                              metadata:@{
+                                @"receivedData": dataString ?: @""
+                              }];
       handler(nil, response, error);
       return;
     }
