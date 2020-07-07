@@ -121,8 +121,8 @@
 		21F238C42499155E004DC0B1 /* AdobeDRMContainer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C12499155E004DC0B1 /* AdobeDRMContainer.mm */; };
 		21F238C52499155E004DC0B1 /* DataByteStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C22499155E004DC0B1 /* DataByteStream.cpp */; };
 		21F238C62499155E004DC0B1 /* DataByteStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C22499155E004DC0B1 /* DataByteStream.cpp */; };
-		21F238C924991A2B004DC0B1 /* ACSLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C724991A2A004DC0B1 /* ACSLibraryService.swift */; };
-		21F238CA24991A2B004DC0B1 /* ACSLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C724991A2A004DC0B1 /* ACSLibraryService.swift */; };
+		21F238C924991A2B004DC0B1 /* AdobeDRMLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C724991A2A004DC0B1 /* AdobeDRMLibraryService.swift */; };
+		21F238CA24991A2B004DC0B1 /* AdobeDRMLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C724991A2A004DC0B1 /* AdobeDRMLibraryService.swift */; };
 		21F238CB24991A2B004DC0B1 /* AdobeDRMLicense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C824991A2A004DC0B1 /* AdobeDRMLicense.swift */; };
 		21F238CC24991A2B004DC0B1 /* AdobeDRMLicense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C824991A2A004DC0B1 /* AdobeDRMLicense.swift */; };
 		2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */; };
@@ -813,7 +813,7 @@
 		21F238C02499155E004DC0B1 /* AdobeDRMContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdobeDRMContainer.h; sourceTree = "<group>"; };
 		21F238C12499155E004DC0B1 /* AdobeDRMContainer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AdobeDRMContainer.mm; sourceTree = "<group>"; };
 		21F238C22499155E004DC0B1 /* DataByteStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataByteStream.cpp; sourceTree = "<group>"; };
-		21F238C724991A2A004DC0B1 /* ACSLibraryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACSLibraryService.swift; sourceTree = "<group>"; };
+		21F238C724991A2A004DC0B1 /* AdobeDRMLibraryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdobeDRMLibraryService.swift; sourceTree = "<group>"; };
 		21F238C824991A2A004DC0B1 /* AdobeDRMLicense.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdobeDRMLicense.swift; sourceTree = "<group>"; };
 		2D2B47621D08F1ED007F7764 /* SimplyETests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyETests-Bridging-Header.h"; sourceTree = "<group>"; };
 		2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheckTests.swift; sourceTree = "<group>"; };
@@ -1446,7 +1446,7 @@
 				21F238C12499155E004DC0B1 /* AdobeDRMContainer.mm */,
 				2153990C24A4EDF1005A94DC /* DataByteStream.h */,
 				21F238C22499155E004DC0B1 /* DataByteStream.cpp */,
-				21F238C724991A2A004DC0B1 /* ACSLibraryService.swift */,
+				21F238C724991A2A004DC0B1 /* AdobeDRMLibraryService.swift */,
 				21F238C824991A2A004DC0B1 /* AdobeDRMLicense.swift */,
 			);
 			path = AdobeDRM;
@@ -2337,7 +2337,7 @@
 				739E6076244A0D8600D00301 /* NYPLOPDSCategory.m in Sources */,
 				739E6077244A0D8600D00301 /* NYPLNull.m in Sources */,
 				739E6078244A0D8600D00301 /* NYPLLinearView.m in Sources */,
-				21F238CA24991A2B004DC0B1 /* ACSLibraryService.swift in Sources */,
+				21F238CA24991A2B004DC0B1 /* AdobeDRMLibraryService.swift in Sources */,
 				739E6079244A0D8600D00301 /* ReaderFormatModule.swift in Sources */,
 				739E607A244A0D8600D00301 /* NSDate+NYPLDateAdditions.m in Sources */,
 				739E607B244A0D8600D00301 /* NYPLBook.m in Sources */,
@@ -2661,7 +2661,7 @@
 				5D3A28CC22D3DA850042B3BD /* NYPLUserProfileDocument.swift in Sources */,
 				03F94CD11DD6288C00CE8F4F /* AccountsManager.swift in Sources */,
 				52592BB821220A1100587288 /* NYPLLocalization.m in Sources */,
-				21F238C924991A2B004DC0B1 /* ACSLibraryService.swift in Sources */,
+				21F238C924991A2B004DC0B1 /* AdobeDRMLibraryService.swift in Sources */,
 				17071065242A923400E2648F /* NYPLSecrets.swift in Sources */,
 				E6D775421F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m in Sources */,
 				1111973F1988226F0014462F /* NYPLBookDetailDownloadFailedView.m in Sources */,

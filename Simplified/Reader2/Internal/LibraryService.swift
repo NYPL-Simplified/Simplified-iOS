@@ -37,7 +37,7 @@ final class LibraryService: NSObject, Loggable {
     drmLibraryServices.append(LCPLibraryService())
     #endif
     
-    drmLibraryServices.append(ACSLibraryService())
+    drmLibraryServices.append(AdobeDRMLibraryService())
   }
 
   /// Complementary parsing of the publication.
@@ -70,7 +70,7 @@ final class LibraryService: NSObject, Loggable {
     
     // Load DRM service with publication data
     // If it's Adobe DRM, set contaiener for decrypting
-    if let adobeDrmService = drmService as? ACSLibraryService {
+    if let adobeDrmService = drmService as? AdobeDRMLibraryService {
       adobeDrmService.container = container
     }
     

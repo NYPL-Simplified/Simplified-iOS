@@ -1,5 +1,5 @@
 //
-//  ACSLibraryService.swift
+//  AdobeDRMLibraryService.swift
 //  SimplyE
 //
 //  Created by Vladimir Fedorov on 13.05.2020.
@@ -11,7 +11,7 @@ import UIKit
 import R2Shared
 import R2Streamer
 
-class ACSLibraryService: DRMLibraryService {
+class AdobeDRMLibraryService: DRMLibraryService {
     
   /// Publication for DRM Conntector
   var container: Container?
