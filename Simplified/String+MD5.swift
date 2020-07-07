@@ -22,3 +22,9 @@ extension String {
     return md5().map { String(format: "%02hhx", $0) }.joined()
   }
 }
+
+@objc extension NSString {
+  public func md5String() -> NSString {
+    return (self as String).md5hex() as NSString
+  }
+}

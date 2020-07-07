@@ -46,7 +46,7 @@ import UIKit
       if let errorDescription = error?.localizedDescriptionWithRecovery, !errorDescription.isEmpty {
         message = errorDescription
       } else {
-        message = "UnknownError"
+        message = "An error occurred. Please try again later or report an issue from the Settings tab."
         NYPLErrorLogger.logError(withCode: .genericErrorMsgDisplayed,
                                  context: NYPLErrorLogger.Context.errorHandling.rawValue,
                                  message: "Error \(error?.description ?? "") contained no usable error message for the user, so we defaulted to a generic one.")

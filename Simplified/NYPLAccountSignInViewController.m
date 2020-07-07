@@ -85,7 +85,10 @@ CGFloat const marginPadding = 2.0;
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
 
-  self.businessLogic = [[NYPLSignInBusinessLogic alloc] initWithLibraryAccountID:[[AccountsManager shared] currentAccountId]];
+  self.businessLogic = [[NYPLSignInBusinessLogic alloc]
+                        initWithLibraryAccountID:[[AccountsManager shared] currentAccountId]
+                        bookRegistry:[NYPLBookRegistry sharedRegistry]
+                        drmAuthorizer:[NYPLADEPT sharedInstance]];
 
   self.title = NSLocalizedString(@"SignIn", nil);
 
@@ -734,7 +737,7 @@ completionHandler:(void (^)(void))handler
     return;
   }
   if([[NYPLUserAccount sharedAccount] hasBarcodeAndPIN]) {
-    self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
+    self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", @"Title for sign out action");
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     self.logInSignOutCell.userInteractionEnabled = YES;
@@ -817,7 +820,8 @@ completionHandler:(void (^)(void))handler
                                          [self.currentAccount.details userProfileUrl]]];
   
   request.timeoutInterval = 20.0;
-  
+
+  NSString * const barcode = self.usernameTextField.text;
   self.isCurrentlySigningIn = YES;
   NSURLSessionDataTask *const task =
     [self.session
@@ -835,7 +839,9 @@ completionHandler:(void (^)(void))handler
          NSError *pDocError = nil;
          UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
          if (!pDoc) {
-           [NYPLErrorLogger logUserProfileDocumentErrorWithError:pDocError];
+           [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
+                                                    context:@"SignIn-modal"
+                                                    barcode:barcode];
            [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Error parsing user profile document." }]];
            return;
          } else {
@@ -843,12 +849,25 @@ completionHandler:(void (^)(void))handler
              [[NYPLUserAccount sharedAccount] setAuthorizationIdentifier:pDoc.authorizationIdentifier];
            } else {
              NYPLLOG(@"Authorization ID (Barcode String) was nil.");
+             [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoAuthorizationIdentifier
+                                       context:@"SignIn-modal"
+                                       message:@"The UserProfileDocument obtained from the server contained no authorization identifier."
+                                      metadata:@{
+                                        @"hashedBarcode": barcode.md5String
+                                      }];
            }
            if (pDoc.drm.count > 0 && pDoc.drm[0].clientToken && pDoc.drm[0].vendor) {
              [[NYPLUserAccount sharedAccount] setLicensor:pDoc.drm[0].licensor];
            } else {
              NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
-             [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Trouble locating DRM in profile document." }]];
+             [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoLicensorToken
+                                       context:@"SignIn-modal"
+                                       message:@"The UserProfileDocument obtained from the server contained no licensor token."
+                                      metadata:@{
+                                        @"hashedBarcode": barcode.md5String
+                                      }];
+
+             [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"No credentials were received to authorize access to books with DRM." }]];
              return;
            }
            
@@ -884,7 +903,11 @@ completionHandler:(void (^)(void))handler
                   [[NYPLUserAccount sharedAccount] setDeviceID:deviceID];
                 }];
               } else {
-                [NYPLErrorLogger logLocalAuthFailedWithError:error libraryName:self.currentAccount.name];
+                [NYPLErrorLogger logLocalAuthFailedWithError:error
+                                                     library:self.currentAccount
+                                                    metadata:@{
+                                                      @"hashedBarcode": barcode.md5String
+                                                    }];
               }
               
               [self authorizationAttemptDidFinish:success error:error];
@@ -909,23 +932,46 @@ completionHandler:(void (^)(void))handler
          [self.PINTextField becomeFirstResponder];
        }
 
-       // Report event that login failed
-       [NYPLErrorLogger logRemoteLoginErrorWithUrl:request.URL response:response error:error libraryName:self.currentAccount.name];
-    
        if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
-         // TODO: Maybe do something special for when we supposedly didn't supply credentials
+         [NYPLErrorLogger logRemoteLoginError:error
+                                      barcode:barcode
+                                      request:request
+                                     response:response
+                                      library:self.currentAccount
+                                      message:@"Sign-in failed via SignIn-modal, no problem doc"];
        } else if ([response.MIMEType isEqualToString:@"application/problem+json"] || [response.MIMEType isEqualToString:@"application/api-problem+json"]) {
          NSError *problemDocumentParseError = nil;
          NYPLProblemDocument *problemDocument = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
          if (problemDocumentParseError) {
            [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                                                 barcode:barcode
                                                      url:request.URL
-                                                 context:@"AccountSignInVC-validateCreds"];
+                                                 context:@"AccountSignInVC-validateCreds"
+                                                 message:@"Sign-in failed via SignIn-modal, problem doc parsing failed"];
          } else if (problemDocument) {
-           UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:@"SettingsAccountViewControllerLoginFailed"];
+           [NYPLErrorLogger logLoginError:error
+                                  barcode:barcode
+                                  library:self.currentAccount
+                                  request:request
+                          problemDocument:problemDocument
+                                 metadata:@{
+                                   @"message": @"Sign-in failed via SignIn-modal, got a problem doc"
+                                 }];
+           NSString *msg = NSLocalizedString(@"A server error occurred. Please try again later, and if the problem persists, contact your library's Help Desk.", @"Error message for when a server error occurs.");
+           msg = [NSString stringWithFormat:@"%@\n\n(Error details: %@)", msg,
+                  (problemDocument.detail ?: problemDocument.title)];
+           UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+                                                             message:msg];
            [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
            [[NYPLRootTabBarController sharedController] safelyPresentViewController: alert animated:YES completion:nil];
            return; // Short-circuit!! Early return
+         } else {
+           [NYPLErrorLogger logRemoteLoginError:error
+                                        barcode:barcode
+                                        request:request
+                                       response:response
+                                        library:self.currentAccount
+                                        message:@"Sign-in failed via SignIn-modal"];
          }
        }
      
@@ -1007,7 +1053,7 @@ completionHandler:(void (^)(void))handler
     
     if(success) {
       [[NYPLUserAccount sharedAccount] setBarcode:self.usernameTextField.text
-                                          PIN:self.PINTextField.text];
+                                              PIN:self.PINTextField.text];
       if (!self.isLoggingInAfterSignUp) {
         [self dismissViewControllerAnimated:YES completion:nil];
       }
