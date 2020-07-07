@@ -7,4 +7,7 @@
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
 
+- (void)setDefaultMessage;
+- (void)setMessage:(NSString *)msg;
+
 @end
