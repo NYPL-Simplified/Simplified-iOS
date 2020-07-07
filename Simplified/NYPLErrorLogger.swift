@@ -73,7 +73,7 @@ fileprivate let nullString = "null"
   case opdsFeedNoData = 800
   
   // DRM
-  case epubDecodingError = 900
+  case epubDecodingError = 1000
 
 }
 
