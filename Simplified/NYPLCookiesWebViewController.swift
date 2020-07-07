@@ -82,9 +82,6 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
           webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie) { [model, webView] in
             cookiesLeft -= 1
             if cookiesLeft == 0, let request = model?.request {
-              webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { (cookies) in
-                print("szyjson loaded \(cookies)")
-              }
               webView.load(request)
             }
           }
@@ -117,8 +114,7 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
         if let destination = navigationAction.request.url, destination.absoluteString.hasPrefix("https://skyneck.pl/login") {
           decisionHandler(.cancel)
 
-          webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { [model, weak self] (cookies) in
-            print("szyjson login \(cookies)")
+          webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { [weak self] (cookies) in
             loginHandler(destination, cookies)
             NYPLCookiesWebViewController.automaticBrowserStroage[self?.uuid ?? ""] = nil
           }
