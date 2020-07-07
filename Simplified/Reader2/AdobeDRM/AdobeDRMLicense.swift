@@ -29,6 +29,8 @@ class AdobeDRMLicense: DRMLicense {
       let data = try container.data(relativePath: encryptionPath)
       adobeDRMContainer = AdobeDRMContainer(url: fileUrl, encryptionData: data)
       if let errorMessage = adobeDRMContainer?.epubDecodingError {
+        // TODO: SIMPLY-2656
+        // There may be a better logger method for this
         NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: errorMessage)
       }
     } catch {
@@ -45,6 +47,8 @@ class AdobeDRMLicense: DRMLicense {
     guard let container = adobeDRMContainer else { return data }
     let decodedData = container.decode(data)
     if let errorMessage = adobeDRMContainer?.epubDecodingError {
+      // TODO: SIMPLY-2656
+      // There may be a better logger method for this
       NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: errorMessage)
     }
     return decodedData

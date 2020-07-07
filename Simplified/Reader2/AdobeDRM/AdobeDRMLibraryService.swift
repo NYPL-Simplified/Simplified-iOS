@@ -63,6 +63,8 @@ class AdobeDRMLibraryService: DRMLibraryService {
   ///   - completion: license for the file, AdobeDRMLicense
   func retrieveLicense(from publication: URL, authentication: DRMLibraryService?, completion: (_ license: AdobeDRMLicense?, _ error: Error?) -> ()) {
     guard let container = container else {
+      // TODO: SIMPLY-2656
+      // There may be a better logger method for this
       NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: "AdobeDRMLibraryService container is not initialized")
       completion(nil, nil)
       return
