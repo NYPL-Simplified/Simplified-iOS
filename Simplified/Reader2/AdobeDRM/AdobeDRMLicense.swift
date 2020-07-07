@@ -23,6 +23,7 @@ class AdobeDRMLicense: DRMLicense {
   init(for container: Container) {
     publicationContainer = container
     let fileUrl = URL(fileURLWithPath: container.rootFile.rootPath)
+    // META-INF is a part of epub structure
     let encryptionPath = "META-INF/encryption.xml"
     do {
       let data = try container.data(relativePath: encryptionPath)
@@ -31,7 +32,10 @@ class AdobeDRMLicense: DRMLicense {
         NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: errorMessage)
       }
     } catch {
-      NYPLErrorLogger.logError(withCode: .epubDecodingError, context: NYPLErrorLogger.Context.ereader.rawValue, message: error.localizedDescription)
+      // This is not an error, container doesn't have a method to check the file existance
+      // If epub file contains no DRM, encryption.xml doesn't exist.
+      // In this case, container.data(...) will throw an error,
+      // no need to do anything about it.
     }
     
   }
