@@ -91,17 +91,26 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
 
     NSURLRequest *req;
     void (^completionWrapper)(NSData * _Nullable, NSURLResponse * _Nullable, NSError * _Nullable) = ^ void (NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
-        if (error) {
-            NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            [NYPLErrorLogger logNetworkError:error
-                                     request:req
-                                    response:response
-                                     message:dataString];
-            handler(nil, response, error);
-            return;
+      if (error) {
+        NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if (dataString == nil) {
+          dataString = [NSString stringWithFormat:@"datalength=%lu",
+                        (unsigned long)data.length];
         }
+        [NYPLErrorLogger logNetworkError:error
+                                    code:NYPLErrorCodeApiCall
+                                 context:NSStringFromClass([self class])
+                                 request:req
+                                response:response
+                                 message:@"NYPLSession error"
+                                metadata:@{
+                                  @"receivedData": dataString ?: @""
+                                }];
+        handler(nil, response, error);
+        return;
+      }
 
-        handler(data, response, nil);
+      handler(data, response, nil);
     };
 
   NSString *lpe = [URL lastPathComponent];

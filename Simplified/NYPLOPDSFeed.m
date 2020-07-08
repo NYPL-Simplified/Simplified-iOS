@@ -92,11 +92,23 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
         // this captures a situation where (e.g.) borrow requests to the
         // Brooklyn lib come back with a 500 status code, no error, and non-nil
         // data containing "An internal error occurred" plain text.
-        NSString *msg = [NSString stringWithFormat:@"Got %ld HTTP status with no error object. Received data: `%@`", (long)httpResp.statusCode, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
-        [NYPLErrorLogger logNetworkError:nil
+        NSString *msg = [NSString stringWithFormat:@"Got %ld HTTP status with no error object.", (long)httpResp.statusCode];
+
+        NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if (dataString == nil) {
+          dataString = [NSString stringWithFormat:@"datalength=%lu",
+                        (unsigned long)data.length];
+        }
+
+        [NYPLErrorLogger logNetworkError:error
+                                    code:NYPLErrorCodeApiCall
+                                 context:NSStringFromClass([self class])
                                  request:request
                                 response:response
-                                 message:msg];
+                                 message:msg
+                                metadata:@{
+                                  @"receivedData": dataString ?: @""
+                                }];
 
         NSDictionary *errorDict = nil;
         if ([response.MIMEType isEqualToString:@"application/problem+json"]

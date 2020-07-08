@@ -112,6 +112,8 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
 
     guard let currentTaskInfo = taskInfo.removeValue(forKey: taskID) else {
       NYPLErrorLogger.logNetworkError(
+        error,
+        code: .noTaskInfoAvailable,
         request: task.originalRequest,
         response: task.response,
         message: "No task info available for task \(taskID)")
