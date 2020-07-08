@@ -62,8 +62,6 @@ final class LibraryService: NSObject, Loggable {
     }
 
     guard let drmService = drmLibraryServices.first(where: { $0.brand == drm.brand }) else {
-      // TODO: SIMPLY-2650
-      //delegate?.libraryService(self, presentError: LibraryError.drmNotSupported(drm.brand))
       completion(.success(nil))
       return
     }
