@@ -43,7 +43,7 @@ class AdobeDRMLibraryService: DRMLibraryService {
   ///   - drm: DRM
   ///   - completion: result of retrieving a license for the publication, CancellableResult<DRM?>
   func loadPublication(at publication: URL, drm: DRM, completion: @escaping (CancellableResult<DRM?>) -> Void) {
-    retrieveLicense(from: publication, authentication: self) { (license, error) in
+    retrieveLicense { (license, error) in
       if let license = license {
         var drm = drm
         drm.license = license as DRMLicense
@@ -58,10 +58,8 @@ class AdobeDRMLibraryService: DRMLibraryService {
   
   /// Retrieve license for the publication
   /// - Parameters:
-  ///   - publication: file URL
-  ///   - authentication: DRMLibraryService
   ///   - completion: license for the file, AdobeDRMLicense
-  func retrieveLicense(from publication: URL, authentication: DRMLibraryService?, completion: (_ license: AdobeDRMLicense?, _ error: Error?) -> ()) {
+  func retrieveLicense(completion: (_ license: AdobeDRMLicense?, _ error: Error?) -> ()) {
     guard let container = container else {
       // TODO: SIMPLY-2656
       // There may be a better logger method for this
