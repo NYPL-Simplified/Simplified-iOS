@@ -71,10 +71,13 @@ For working on integrating R2 into SimplyE, use the `feature/readium2` branch. F
 Then we recommend using the SimplifiedR2.workspace. This assumes you have checked out the following frameworks (clone them as siblings of `Simplified-iOS` on the file system):
 ```bash
 cd Simplified-iOS/..
-git clone https://github.com/readium/r2-shared-swift
-git clone https://github.com/readium/r2-streamer-swift
+git clone https://github.com/NYPL-Simplified/r2-shared-swift
+git clone https://github.com/NYPL-Simplified/r2-streamer-swift
 git clone https://github.com/readium/r2-navigator-swift
 ```
+These framworks contain patched `R2Shared` and `R2Streamer` frameworks to enable Adobe DRM in Readium 2.
+
+
 You can then remove the related lines from the Cartfile (for a faster build) and run:
 ```bash
 ./carthage-update-simplye.sh Debug

@@ -13,7 +13,7 @@
 import Foundation
 import UIKit
 import R2Shared
-import R2Streamer
+@testable import R2Streamer // uses internal class NCXParser
 
 
 final class LibraryService: NSObject, Loggable {
@@ -36,6 +36,8 @@ final class LibraryService: NSObject, Loggable {
     #if LCP
     drmLibraryServices.append(LCPLibraryService())
     #endif
+    
+    drmLibraryServices.append(AdobeDRMLibraryService())
   }
 
   /// Complementary parsing of the publication.
@@ -43,7 +45,7 @@ final class LibraryService: NSObject, Loggable {
   /// using the DRM object of the publication.container.
   func loadDRM(for book: NYPLBook, completion: @escaping (CancellableResult<DRM?>) -> Void) {
 
-    guard let filename = book.fileName, let (container, parsingCallback) = items[filename] else {
+    guard let filename = book.fileName, let fileUrl = URL(string: filename), let (container, parsingCallback) = items[fileUrl.lastPathComponent] else {
       completion(.success(nil))
       return
     }
@@ -60,12 +62,16 @@ final class LibraryService: NSObject, Loggable {
     }
 
     guard let drmService = drmLibraryServices.first(where: { $0.brand == drm.brand }) else {
-      // TODO: SIMPLY-2650
-      //delegate?.libraryService(self, presentError: LibraryError.drmNotSupported(drm.brand))
       completion(.success(nil))
       return
     }
-
+    
+    // Load DRM service with publication data
+    // If it's Adobe DRM, set contaiener for decrypting
+    if let adobeDrmService = drmService as? AdobeDRMLibraryService {
+      adobeDrmService.container = container
+    }
+    
     let url = URL(fileURLWithPath: container.rootFile.rootPath)
     drmService.loadPublication(at: url, drm: drm) { result in
       switch result {
@@ -180,10 +186,19 @@ final class LibraryService: NSObject, Loggable {
         return nil
       }
       let (publication, container) = pubBox
+      // TODO: SIMPLY-2840
+      // Parse .ncx document to update TOC and page list if publication doesn't contain TOC
+      // -- the code below should be removed as described in SIMPLY-2840 --
+      if publication.tableOfContents.isEmpty {
+        publication.otherCollections.append(contentsOf: parseNCXDocument(in: container, links: publication.links))
+      }
+      // -- end of cleanup --
       items[url.lastPathComponent] = (container, parsingCallback)
       return (publication, container)
 
     } catch {
+      // TODO: SIMPLY-2656
+      // we can log this error to Crashalytics as well
       log(.error, "Error parsing publication at '\(url.absoluteString)': \(error.localizedDescription)")
       return nil
     }
@@ -191,3 +206,44 @@ final class LibraryService: NSObject, Loggable {
 
 }
 
+
+
+// TODO: SIMPLY-2840
+// This extension should be removed as a part of the cleanup
+extension LibraryService {
+  /*
+   Parse .ncx document after the app creates container and publication.
+   This step is a workaround for current Readium 2 issue with encrypted TOC.
+   */
+  private func parseNCXDocument(in container: Container, links: [Link]) -> [PublicationCollection] {
+      // Get the link in the readingOrder pointing to the NCX document.
+      guard let ncxLink = links.first(withType: .ncx),
+          let ncxDocumentData = try? container.data(relativePath: ncxLink.href) else
+      {
+          return []
+      }
+
+      // this part is added to decrypt ncx data
+      var data = ncxDocumentData
+      let license = AdobeDRMLicense(for: container)
+      if let optionalDecipheredData = try? license.decipher(ncxDocumentData),
+          let decipheredData = optionalDecipheredData {
+          data = decipheredData
+      }
+      // NCXParser here parses data instead of ncxDocumentData
+      let ncx = NCXParser(data: data, at: ncxLink.href)
+
+      func makeCollection(_ type: NCXParser.NavType, role: String) -> PublicationCollection? {
+          let links = ncx.links(for: type)
+          guard !links.isEmpty else {
+              return nil
+          }
+          return PublicationCollection(role: role, links: links)
+      }
+
+      return [
+          makeCollection(.tableOfContents, role: "toc"),
+          makeCollection(.pageList, role: "pageList")
+      ].compactMap { $0 }
+  }
+}

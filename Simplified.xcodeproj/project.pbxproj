@@ -117,6 +117,12 @@
 		173F0823241AAA4E00A64658 /* NYPLBookStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */; };
 		179699D124131BA500EC309F /* UIColor+LabelColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179699D024131BA500EC309F /* UIColor+LabelColor.swift */; };
 		17CE5305243C020800315E63 /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
+		21F238C32499155E004DC0B1 /* AdobeDRMContainer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C12499155E004DC0B1 /* AdobeDRMContainer.mm */; };
+		21F238C42499155E004DC0B1 /* AdobeDRMContainer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C12499155E004DC0B1 /* AdobeDRMContainer.mm */; };
+		21F238C924991A2B004DC0B1 /* AdobeDRMLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C724991A2A004DC0B1 /* AdobeDRMLibraryService.swift */; };
+		21F238CA24991A2B004DC0B1 /* AdobeDRMLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C724991A2A004DC0B1 /* AdobeDRMLibraryService.swift */; };
+		21F238CB24991A2B004DC0B1 /* AdobeDRMLicense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C824991A2A004DC0B1 /* AdobeDRMLicense.swift */; };
+		21F238CC24991A2B004DC0B1 /* AdobeDRMLicense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F238C824991A2A004DC0B1 /* AdobeDRMLicense.swift */; };
 		2D2B477C1D08F821007F7764 /* UpdateCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */; };
 		2D2B47841D08F8E2007F7764 /* UpdateCheckUpToDate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */; };
 		2D2B478E1D08FDF5007F7764 /* UpdateCheckNeedsUpdate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2D2B478A1D08FC78007F7764 /* UpdateCheckNeedsUpdate.json */; };
@@ -801,6 +807,10 @@
 		173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookStateTests.swift; sourceTree = "<group>"; };
 		179699D024131BA500EC309F /* UIColor+LabelColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+LabelColor.swift"; sourceTree = "<group>"; };
 		17CE5304243C020800315E63 /* NYPLUserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccount.swift; sourceTree = "<group>"; };
+		21F238C02499155E004DC0B1 /* AdobeDRMContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdobeDRMContainer.h; sourceTree = "<group>"; };
+		21F238C12499155E004DC0B1 /* AdobeDRMContainer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AdobeDRMContainer.mm; sourceTree = "<group>"; };
+		21F238C724991A2A004DC0B1 /* AdobeDRMLibraryService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdobeDRMLibraryService.swift; sourceTree = "<group>"; };
+		21F238C824991A2A004DC0B1 /* AdobeDRMLicense.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdobeDRMLicense.swift; sourceTree = "<group>"; };
 		2D2B47621D08F1ED007F7764 /* SimplyETests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SimplyETests-Bridging-Header.h"; sourceTree = "<group>"; };
 		2D2B47631D08F1ED007F7764 /* UpdateCheckTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCheckTests.swift; sourceTree = "<group>"; };
 		2D2B47691D08F264007F7764 /* UpdateCheckUpToDate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = UpdateCheckUpToDate.json; sourceTree = "<group>"; };
@@ -1425,6 +1435,17 @@
 			name = Holds;
 			sourceTree = "<group>";
 		};
+		21F238B72498F7FB004DC0B1 /* AdobeDRM */ = {
+			isa = PBXGroup;
+			children = (
+				21F238C02499155E004DC0B1 /* AdobeDRMContainer.h */,
+				21F238C12499155E004DC0B1 /* AdobeDRMContainer.mm */,
+				21F238C724991A2A004DC0B1 /* AdobeDRMLibraryService.swift */,
+				21F238C824991A2A004DC0B1 /* AdobeDRMLicense.swift */,
+			);
+			path = AdobeDRM;
+			sourceTree = "<group>";
+		};
 		5A569A271B8351C6003B5B61 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1498,6 +1519,7 @@
 				73DEB5462486FDFC00B5FF0A /* NYPLBookmarkR2Location.swift */,
 				73F7136D2417260700C63B81 /* UI */,
 				73DB2D0924132C8B008346ED /* Internal */,
+				21F238B72498F7FB004DC0B1 /* AdobeDRM */,
 			);
 			path = Reader2;
 			sourceTree = "<group>";
@@ -2309,6 +2331,7 @@
 				739E6076244A0D8600D00301 /* NYPLOPDSCategory.m in Sources */,
 				739E6077244A0D8600D00301 /* NYPLNull.m in Sources */,
 				739E6078244A0D8600D00301 /* NYPLLinearView.m in Sources */,
+				21F238CA24991A2B004DC0B1 /* AdobeDRMLibraryService.swift in Sources */,
 				739E6079244A0D8600D00301 /* ReaderFormatModule.swift in Sources */,
 				739E607A244A0D8600D00301 /* NSDate+NYPLDateAdditions.m in Sources */,
 				739E607B244A0D8600D00301 /* NYPLBook.m in Sources */,
@@ -2377,11 +2400,13 @@
 				739E60B7244A0D8600D00301 /* Account.swift in Sources */,
 				739E60B8244A0D8600D00301 /* NYPLBookDownloadFailedCell.m in Sources */,
 				739E60B9244A0D8600D00301 /* NYPLBookDetailViewController.m in Sources */,
+				21F238C42499155E004DC0B1 /* AdobeDRMContainer.mm in Sources */,
 				739E60BB244A0D8600D00301 /* NYPLDirectoryManager.swift in Sources */,
 				739E60BC244A0D8600D00301 /* NYPLContentTypeBadge.swift in Sources */,
 				739E60BD244A0D8600D00301 /* NYPLZXingEncoder.m in Sources */,
 				739E60BE244A0D8600D00301 /* NYPLProblemReportViewController.m in Sources */,
 				739E60BF244A0D8600D00301 /* NYPLHoldsNavigationController.m in Sources */,
+				21F238CC24991A2B004DC0B1 /* AdobeDRMLicense.swift in Sources */,
 				739E60C0244A0D8600D00301 /* NYPLRemoteViewController.m in Sources */,
 				739E60C1244A0D8600D00301 /* NYPLWelcomeScreen.swift in Sources */,
 				739E60C2244A0D8600D00301 /* NYPLSettingsAccountURLSessionChallengeHandler.m in Sources */,
@@ -2576,6 +2601,7 @@
 				E6202A041DD52B8600C99553 /* NYPLWelcomeScreen.swift in Sources */,
 				73A3EAED2400A9560061A7FB /* NYPLSettingsAccountURLSessionChallengeHandler.m in Sources */,
 				110AD83D19E497D6005724C3 /* NYPLOPDSAttribute.m in Sources */,
+				21F238CB24991A2B004DC0B1 /* AdobeDRMLicense.swift in Sources */,
 				1114A6A1195884CB007507A2 /* NYPLCatalogUngroupedFeed.m in Sources */,
 				73A229A7240F40C2006B9EAD /* ReaderModule.swift in Sources */,
 				11C5DCF51976D22F005A9945 /* NYPLHoldsViewController.m in Sources */,
@@ -2622,10 +2648,12 @@
 				73A2299B240F3B9B006B9EAD /* NYPLR2Owner.swift in Sources */,
 				A4BA1D131B43046B006F83DF /* NYPLCatalogGroupedFeed.m in Sources */,
 				11F3773319E0876F00487769 /* NYPLCatalogFacet.m in Sources */,
+				21F238C32499155E004DC0B1 /* AdobeDRMContainer.mm in Sources */,
 				1158812E1A894F4E008672C3 /* NYPLAccountSignInViewController.m in Sources */,
 				5D3A28CC22D3DA850042B3BD /* NYPLUserProfileDocument.swift in Sources */,
 				03F94CD11DD6288C00CE8F4F /* AccountsManager.swift in Sources */,
 				52592BB821220A1100587288 /* NYPLLocalization.m in Sources */,
+				21F238C924991A2B004DC0B1 /* AdobeDRMLibraryService.swift in Sources */,
 				17071065242A923400E2648F /* NYPLSecrets.swift in Sources */,
 				E6D775421F9FE0AF00C0B722 /* NYPLBarcodeScanningViewController.m in Sources */,
 				1111973F1988226F0014462F /* NYPLBookDetailDownloadFailedView.m in Sources */,

@@ -154,12 +154,6 @@ class NYPLBaseReaderViewController: UIViewController, NYPLBackgroundWorkOwner, L
     bookmarkBarButton = bookmarkBtn
     updateBookmarkButton(withState: false)
 
-    // TODO: SIMPLY-2650 DRM management
-//    if drm != nil {
-//      buttons.append(UIBarButtonItem(image: #imageLiteral(resourceName: "drm"), style: .plain, target: self, action: #selector(presentDRMManagement)))
-//    }
-    // Bookmarks
-
     return buttons
   }
 
