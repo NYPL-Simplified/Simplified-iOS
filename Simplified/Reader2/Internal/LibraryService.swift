@@ -199,6 +199,8 @@ final class LibraryService: NSObject, Loggable {
       return (publication, container)
 
     } catch {
+      // TODO: SIMPLY-2656
+      // we can log this error to Crashalytics as well
       log(.error, "Error parsing publication at '\(url.absoluteString)': \(error.localizedDescription)")
       return nil
     }
