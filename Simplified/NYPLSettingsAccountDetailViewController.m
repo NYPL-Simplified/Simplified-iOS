@@ -228,8 +228,8 @@ static const NSInteger sSection1Sync = 1;
   UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
   label.text = errorMessage;
   [label sizeToFit];
-  label.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
   [self.view addSubview:label];
+  [label centerInSuperviewWithOffset:self.tableView.contentOffset];
 }
 
 - (void)setupViews {

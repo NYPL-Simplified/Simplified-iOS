@@ -154,10 +154,7 @@
   [super viewWillLayoutSubviews];
 
   [self.activityIndicatorView centerInSuperview];
-  [self.activityIndicatorView integralizeFrame];
-  
   [self.reloadView centerInSuperview];
-  [self.reloadView integralizeFrame];
 }
 
 - (void)addActivityIndicatorLabel:(NSTimer*)timer
