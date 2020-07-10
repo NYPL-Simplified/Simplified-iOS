@@ -163,6 +163,10 @@ class OPDS2SamlIDP: NSObject, Codable {
     guard auths.count > 1 else { return auths.first }
     return auths.first(where: { !$0.isCatalogSecured }) ?? auths.first
   }
+  var needsAgeCheck: Bool {
+    // this will tell if any authentication method requires age check
+    return auths.reduce(false) { $0 || $1.needsAgeCheck }
+  }
 
   fileprivate var urlAnnotations:URL?
   fileprivate var urlAcknowledgements:URL?
@@ -201,11 +205,17 @@ class OPDS2SamlIDP: NSObject, Codable {
   init(authenticationDocument: OPDS2AuthenticationDocument, uuid: String) {
     defaults = .standard
     self.uuid = uuid
-    
+
     auths = authenticationDocument.authentication?.map({ (opdsAuth) -> Authentication in
       return Authentication.init(auth: opdsAuth)
     }) ?? []
-    
+
+//    // TODO: Code below will remove all oauth only auth methods, this behaviour wasn't tested though
+//    // and may produce undefined results in viewcontrollers that do present auth methods if none are available
+//    auths = authenticationDocument.authentication?.map({ (opdsAuth) -> Authentication in
+//      return Authentication.init(auth: opdsAuth)
+//    }).filter { $0.authType != .oauthIntermediary } ?? []
+
     supportsReservations = authenticationDocument.features?.disabled?.contains("https://librarysimplified.org/rel/policy/reservations") != true
     userProfileUrl = authenticationDocument.links?.first(where: { $0.rel == "http://librarysimplified.org/terms/rel/user-profile" })?.href
     loansUrl = URL.init(string: authenticationDocument.links?.first(where: { $0.rel == "http://opds-spec.org/shelf" })?.href ?? "")

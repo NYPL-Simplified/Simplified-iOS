@@ -140,7 +140,6 @@
         httpResponse = (NSHTTPURLResponse *) response;
         if (httpResponse.statusCode != 200) {
           [self handleErrorResponse:httpResponse withData:data];
-          return;
         }
       }
 
@@ -172,8 +171,8 @@
                                   context:@"RemoteViewController"
                                   message:@"Failed to create VC after loading from server"
                                  metadata:@{
-                                   @"HTTPstatusCode": @(httpResponse.statusCode),
-                                   @"mimeType": httpResponse.MIMEType,
+                                   @"HTTPstatusCode": @(httpResponse.statusCode ?: -1),
+                                   @"mimeType": response.MIMEType ?: @"N/A",
                                    @"URL": self.URL ?: @"N/A",
                                    @"response.URL": response.URL ?: @"N/A"
                                  }];

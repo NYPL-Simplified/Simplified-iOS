@@ -1002,6 +1002,7 @@ completionHandler:(void (^)(void))handler
   }
 
   NSMutableDictionary *kvpairs = [[NSMutableDictionary alloc] init];
+  // This handles both Oauth2 Intermediate and SAML, one of them provides data in fragment, the other in query parameter
   NSString *responseData = url.fragment != nil ? url.fragment : url.query;
   for (NSString *param in [responseData componentsSeparatedByString:@"&"]) {
     NSArray *elts = [param componentsSeparatedByString:@"="];
@@ -1344,6 +1345,7 @@ completionHandler:(void (^)(void))handler
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
     
     if(success) {
+      self.businessLogic.forceLogIn = false; // no need to force a login, as I just logged successfully
       if (self.businessLogic.selectedAuthentication.isOauth) {
         [self.businessLogic.userAccount setAuthToken:self.authToken];
         [self.businessLogic.userAccount setPatron:self.patron];

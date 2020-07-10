@@ -37,14 +37,16 @@ class NYPLKeychainVariable<VariableType>: Keyable {
   }
 
   func read() -> VariableType? {
-    // If currently cached value is valid, return from cache
-    guard !alreadyInited else { return cachedValue }
+    transaction.perform {
+      // If currently cached value is valid, return from cache
+      guard !alreadyInited else { return }
 
-    // Otherwise, obtain the latest value from keychain
-    cachedValue = NYPLKeychain.shared()?.object(forKey: key) as? VariableType
+      // Otherwise, obtain the latest value from keychain
+      cachedValue = NYPLKeychain.shared()?.object(forKey: key) as? VariableType
 
-    // set a flag indicating that current cache is good to use
-    alreadyInited = true
+      // set a flag indicating that current cache is good to use
+      alreadyInited = true
+    }
 
     // return cached value
     return cachedValue
@@ -74,10 +76,12 @@ class NYPLKeychainVariable<VariableType>: Keyable {
 
 class NYPLKeychainCodableVariable<VariableType: Codable>: NYPLKeychainVariable<VariableType> {
   override func read() -> VariableType? {
-    guard !alreadyInited else { return cachedValue }
-    guard let data = NYPLKeychain.shared()?.object(forKey: key) as? Data else { cachedValue = nil; alreadyInited = true; return nil }
-    cachedValue = try? JSONDecoder().decode(VariableType.self, from: data)
-    alreadyInited = true
+    transaction.perform {
+      guard !alreadyInited else { return }
+      guard let data = NYPLKeychain.shared()?.object(forKey: key) as? Data else { cachedValue = nil; alreadyInited = true; return }
+      cachedValue = try? JSONDecoder().decode(VariableType.self, from: data)
+      alreadyInited = true
+    }
     return cachedValue
   }
 
@@ -104,8 +108,6 @@ class NYPLKeychainVariableTransaction {
   }
 
   func perform(tasks: () -> Void) {
-    guard NYPLKeychain.shared() != nil else { return }
-
     accountInfoLock.lock()
     defer {
       accountInfoLock.unlock()

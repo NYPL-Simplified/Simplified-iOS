@@ -600,6 +600,7 @@ Authenticating with any of those barcodes should work.
   }
 
   NSMutableDictionary *kvpairs = [[NSMutableDictionary alloc] init];
+  // Oauth2 Intermediate may use provide the auth token in fragment instead of a parameter
   NSString *responseData = url.fragment != nil ? url.fragment : url.query;
   for (NSString *param in [responseData componentsSeparatedByString:@"&"]) {
     NSArray *elts = [param componentsSeparatedByString:@"="];

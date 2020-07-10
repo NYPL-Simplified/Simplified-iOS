@@ -9,6 +9,7 @@
 import UIKit
 import WebKit
 
+// WARNING: This does not work  well for iOS versions lower than 11
 @objcMembers
 class NYPLCookiesWebViewModel: NSObject {
   let cookies: [HTTPCookie]
@@ -35,7 +36,7 @@ class NYPLCookiesWebViewModel: NSObject {
 class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
   private let uuid: String = UUID().uuidString
   private static var automaticBrowserStorage: [String: NYPLCookiesWebViewController] = [:]
-  var model: NYPLCookiesWebViewModel! // must be set before view loads
+  var model: NYPLCookiesWebViewModel? // must be set before view loads
   private var domainCookies: [String: HTTPCookie] = [:] // (<domain><cookiename>) is a key, use for ios < 11 only
   private var rawCookies: [HTTPCookie] {
     // use for ios < 11 only
@@ -67,14 +68,16 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    assert(model != nil, "You nneed to set the model first!")
 
-    if model.autoPresentIfNeeded {
+    if model?.autoPresentIfNeeded == true {
       NYPLCookiesWebViewController.automaticBrowserStorage[uuid] = self
     }
 
     navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Cancel", comment: ""), style: .plain, target: self, action: #selector(didSelectCancel))
 
     webView.navigationDelegate = self
+    guard let model = model else { return }
     if !model.cookies.isEmpty {
       // if there are cookies to inject
       var cookiesLeft = model.cookies.count
@@ -83,8 +86,8 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
           // inject them one by one to the cookie store
           webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie) { [model, webView] in
             cookiesLeft -= 1
-            if cookiesLeft == 0, let request = model?.request {
-              webView.load(request)
+            if cookiesLeft == 0 {
+              webView.load(model.request)
             }
           }
         } else {
@@ -93,8 +96,8 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
           self.domainCookies[cookie.domain + cookie.name] = cookie
 
           cookiesLeft -= 1
-          if cookiesLeft == 0, let request = model?.request {
-            loadWebPage(request: request)
+          if cookiesLeft == 0 {
+            loadWebPage(request: model.request)
           }
         }
       }
@@ -118,7 +121,7 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
     previousRequest = navigationAction.request
 
     // if model has some way of procesing login completion
-    if let loginHandler = model.loginCompletionHandler {
+    if let loginHandler = model?.loginCompletionHandler {
       // and login process just did complete
       if let destination = navigationAction.request.url, destination.absoluteString.hasPrefix(NYPLSettings.shared.authenticationUniversalLink.absoluteString) {
 
@@ -208,7 +211,7 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
     }
 
     // if model has a way of handling a book file
-    if let bookHandler = model.bookFoundHandler {
+    if let bookHandler = model?.bookFoundHandler {
       // get a list of supported mime types for books
       let supportedTypes = NYPLBookAcquisitionPath.supportedTypes()
 
@@ -226,7 +229,7 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
             NYPLCookiesWebViewController.automaticBrowserStorage[uuid] = nil
 
             // if we chose to let this webview controller present on its own, it should dismiss itself as well
-            if self?.model.autoPresentIfNeeded == true {
+            if self?.model?.autoPresentIfNeeded == true {
               (self?.navigationController?.presentingViewController ?? self?.presentingViewController)?.dismiss(animated: true, completion: nil)
             }
           }
@@ -234,7 +237,7 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
           // pass the request that caused this response and new cookies to the model
           bookHandler(previousRequest, rawCookies)
           NYPLCookiesWebViewController.automaticBrowserStorage[uuid] = nil
-          if model.autoPresentIfNeeded == true {
+          if model?.autoPresentIfNeeded == true {
             (navigationController?.presentingViewController ?? presentingViewController)?.dismiss(animated: true, completion: nil)
           }
 
@@ -245,14 +248,14 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
     }
 
     // if model can handle a problem document
-    if let problemHandler = model.problemFound {
+    if let problemHandler = model?.problemFound {
       // and problem document just happend
       if let responseType = navigationResponse.response.mimeType, responseType == "application/problem+json" || responseType == "application/api-problem+json" {
 
         // discard further loading
         decisionHandler(.cancel)
         let presenter = navigationController?.presentingViewController ?? presentingViewController
-        if let presentingVC = presenter, model.autoPresentIfNeeded {
+        if let presentingVC = presenter, model?.autoPresentIfNeeded == true {
           presentingVC.dismiss(animated: true, completion: { [uuid] in
             problemHandler(nil)
             NYPLCookiesWebViewController.automaticBrowserStorage[uuid] = nil
@@ -275,7 +278,7 @@ class NYPLCookiesWebViewController: UIViewController, WKNavigationDelegate {
 
     // when loading just finished
     // and this controller is asked to autopresent itself if needed
-    if model.autoPresentIfNeeded {
+    if model?.autoPresentIfNeeded == true {
       // delay is needed in case IDP will want to do a redirect after initial load (from within the page)
       OperationQueue.current?.underlyingQueue?.asyncAfter(deadline: .now() + 0.5) { [weak self] in
         // once the time comes, we check if the controller still exists

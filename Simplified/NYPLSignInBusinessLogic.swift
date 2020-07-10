@@ -91,7 +91,8 @@ class NYPLSignInBusinessLogic: NSObject {
   }
 
   func isSignedIn() -> Bool {
-    return userAccount.hasCredentials() || (!userAccount.hasCredentials() && forceLogIn)
+    guard !forceLogIn else { return false }
+    return userAccount.hasCredentials()
   }
 
   func registrationIsPossible() -> Bool {
