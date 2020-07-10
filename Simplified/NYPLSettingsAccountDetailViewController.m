@@ -600,7 +600,8 @@ Authenticating with any of those barcodes should work.
   }
 
   NSMutableDictionary *kvpairs = [[NSMutableDictionary alloc] init];
-  // Oauth2 Intermediate may use provide the auth token in fragment instead of a parameter
+  // Oauth2Intermediate auth method may provide the auth token in fragment
+  // instead of query parameter
   NSString *responseData = url.fragment != nil ? url.fragment : url.query;
   for (NSString *param in [responseData componentsSeparatedByString:@"&"]) {
     NSArray *elts = [param componentsSeparatedByString:@"="];
@@ -608,14 +609,22 @@ Authenticating with any of those barcodes should work.
     [kvpairs setObject:[elts lastObject] forKey:[elts firstObject]];
   }
 
-  if (kvpairs[@"error"]) {
-    NSString *error = [[kvpairs[@"error"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByRemovingPercentEncoding];
+  NSString *rawError = kvpairs[@"error"];
+  if (rawError) {
+    NSString *error = [[rawError stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByRemovingPercentEncoding];
 
     NSDictionary *parsedError = [error parseJSONString];
-
     if (parsedError) {
       [self displayErrorMessage:parsedError[@"title"]];
     }
+
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeSignInRedirectError
+                              context:NSStringFromClass([self class])
+                              message:@"An error was encountered while handling Sign-In redirection"
+                             metadata:@{
+                               NSUnderlyingErrorKey: rawError ?: @"N/A",
+                               @"redirectURL": url ?: @"N/A"
+                             }];
   }
 
   NSString *auth_token = kvpairs[@"access_token"];

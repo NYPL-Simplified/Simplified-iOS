@@ -1020,13 +1020,21 @@ completionHandler:(void (^)(void))handler
   NSString *rawError = kvpairs[@"error"];
 
   if (rawError) {
-    NSString *error = [[kvpairs[@"error"] stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByRemovingPercentEncoding];
+    NSString *error = [[rawError stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByRemovingPercentEncoding];
 
     NSDictionary *parsedError = [error parseJSONString];
 
     if (parsedError) {
       [self displayErrorMessage:parsedError[@"title"]];
     }
+
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeSignInRedirectError
+                              context:NSStringFromClass([self class])
+                              message:@"An error was encountered while handling Sign-In redirection"
+                             metadata:@{
+                               NSUnderlyingErrorKey: rawError ?: @"N/A",
+                               @"redirectURL": url ?: @"N/A"
+                             }];
   }
 
   NSString *auth_token = kvpairs[@"access_token"];
