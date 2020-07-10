@@ -162,7 +162,7 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
 
 - (void)URLSession:(__attribute__((unused)) NSURLSession *)session
       downloadTask:(NSURLSessionDownloadTask *const)downloadTask
-didFinishDownloadingToURL:(NSURL *const)location
+didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
 {
   NYPLBook *const book = self.taskIdentifierToBook[@(downloadTask.taskIdentifier)];
   
@@ -175,24 +175,35 @@ didFinishDownloadingToURL:(NSURL *const)location
   
   BOOL success = YES; 
   NYPLProblemDocument *problemDocument = nil;
-  if ([downloadTask.response.MIMEType isEqualToString:@"application/problem+json"]
-       || [downloadTask.response.MIMEType isEqualToString:@"application/api-problem+json"]) {
+  NYPLMyBooksDownloadRightsManagement rights = [self downloadInfoForBookIdentifier:book.identifier].rightsManagement;
+
+  if ([downloadTask.response isProblemDocument]) {
     NSError *problemDocumentParseError = nil;
-    problemDocument = [NYPLProblemDocument fromData:[NSData dataWithContentsOfURL:location] error:&problemDocumentParseError];
+    problemDocument = [NYPLProblemDocument
+                       fromData:[NSData dataWithContentsOfURL:tmpSavedFileURL]
+                       error:&problemDocumentParseError];
     if (problemDocumentParseError) {
-      [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
-                                            barcode:NYPLUserAccount.sharedAccount.barcode
-                                                url:location
-                                            context:@"myBooks-download-finish"
-                                            message:@"Error downloading book"];
-    }
-    [[NSFileManager defaultManager] removeItemAtURL:location error:NULL];
+      [NYPLErrorLogger
+       logProblemDocumentParseError:problemDocumentParseError
+       barcode:NYPLUserAccount.sharedAccount.barcode
+       url:tmpSavedFileURL
+       context:@"myBooks-download-finish"
+       message:@"Error downloading book"];
+    }// we are not logging the problem doc error here but we do further down
+    [[NSFileManager defaultManager] removeItemAtURL:tmpSavedFileURL error:NULL];
     success = NO;
-  }
-  
-  if (success) {
-    switch([self downloadInfoForBookIdentifier:book.identifier].rightsManagement) {
+  } else {
+    // we did NOT get a problem document
+    switch(rights) {
       case NYPLMyBooksDownloadRightsManagementUnknown:
+        [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnknownRightsManagement
+                                  context:@"myBooksDownload"
+                                  message:[NSString stringWithFormat:@"Unknown rights mgmt after downloading book %@", [book loggableShortString]]
+                                 metadata:@{
+                                   @"taskOriginalRequest": downloadTask.originalRequest.loggableString,
+                                   @"taskCurrentRequest": downloadTask.currentRequest.loggableString,
+                                   @"response": downloadTask.response ?: @"N/A"
+                                 }];
         @throw NSInternalInconsistencyException;
             
       case NYPLMyBooksDownloadRightsManagementAdobe:
@@ -200,7 +211,7 @@ didFinishDownloadingToURL:(NSURL *const)location
         
 #if defined(FEATURE_DRM_CONNECTOR)
         
-        NSData *ACSMData = [NSData dataWithContentsOfURL:location];
+        NSData *ACSMData = [NSData dataWithContentsOfURL:tmpSavedFileURL];
         NSString *PDFString = @">application/pdf</dc:format>";
         if([[[NSString alloc] initWithData:ACSMData encoding:NSUTF8StringEncoding] containsString:PDFString]) {
           dispatch_async(dispatch_get_main_queue(), ^{
@@ -212,7 +223,17 @@ didFinishDownloadingToURL:(NSURL *const)location
           [[NYPLBookRegistry sharedRegistry]
            setState:NYPLBookStateDownloadFailed
            forIdentifier:book.identifier];
-          
+
+          [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnexpectedFormat
+                                    context:@"myBooksDownload"
+                                    message:[NSString stringWithFormat:
+                                             @"Received PDF after downloading a Adobe DRM book %@",
+                                             [book loggableShortString]]
+                                   metadata:@{
+                                     @"taskOriginalRequest": downloadTask.originalRequest.loggableString,
+                                     @"taskCurrentRequest": downloadTask.currentRequest.loggableString,
+                                     @"response": downloadTask.response ?: @"N/A"
+                                   }];
         } else {
           
           NYPLLOG_F(@"Download finished. Fulfilling with userID: %@",[[NYPLUserAccount sharedAccount] userID]);
@@ -227,7 +248,7 @@ didFinishDownloadingToURL:(NSURL *const)location
         break;
       }
       case NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON: {
-        NSData *const data = [NSData dataWithContentsOfURL:location];
+        NSData *const data = [NSData dataWithContentsOfURL:tmpSavedFileURL];
         if (!data) {
           [self failDownloadForBook:book];
           break;
@@ -266,21 +287,32 @@ didFinishDownloadingToURL:(NSURL *const)location
         break;
       }
       case NYPLMyBooksDownloadRightsManagementNone: {
-        NSError *error = nil;
-        
+        NSError *removeError = nil, *moveError = nil;
+        NSURL *finalFileURL = [self fileURLForBookIndentifier:book.identifier];
+
         [[NSFileManager defaultManager]
-         removeItemAtURL:[self fileURLForBookIndentifier:book.identifier]
-         error:NULL];
-        
+         removeItemAtURL:finalFileURL
+         error:&removeError];
+
         success = [[NSFileManager defaultManager]
-                   moveItemAtURL:location
-                   toURL:[self fileURLForBookIndentifier:book.identifier]
-                   error:&error];
-        
+                   moveItemAtURL:tmpSavedFileURL
+                   toURL:finalFileURL
+                   error:&moveError];
+
         if(success) {
           [[NYPLBookRegistry sharedRegistry]
            setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
           [[NYPLBookRegistry sharedRegistry] save];
+        } else if (moveError) {
+          [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeFileMoveFail
+                                    context:@"myBooksDownload"
+                                    message:@"Error moving downloaded book from temporary file location to final URL"
+                                   metadata:@{
+                                     NSUnderlyingErrorKey: moveError,
+                                     @"removeError": removeError.debugDescription ?: @"N/A",
+                                     @"tmpSavedFileURL": tmpSavedFileURL ?: @"N/A",
+                                     @"final file location": finalFileURL ?: @"N/A"
+                                   }];
         }
         
         break;
@@ -302,6 +334,19 @@ didFinishDownloadingToURL:(NSURL *const)location
           [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:book.identifier];
         }
       }
+
+      NSString *logMsg = [NSString stringWithFormat:@"Downloading book %@ failed", [book loggableShortString]];
+      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeDownloadFail
+                                context:@"myBooksDownload"
+                                message:logMsg
+                               metadata:@{
+                                 @"problemDoc": problemDocument.debugDictionary ?: @"N/A",
+                                 @"rightsManagement": @(rights),
+                                 @"taskOriginalRequest": downloadTask.originalRequest.loggableString,
+                                 @"taskCurrentRequest": downloadTask.currentRequest.loggableString,
+                                 @"response": downloadTask.response ?: @"N/A"
+                               }];
+
       [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
     });
     
@@ -595,7 +640,13 @@ didCompleteWithError:(NSError *)error
     UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"DownloadFailed" message:formattedMessage];
     [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert viewController:nil animated:YES completion:nil];
   });
-  
+
+  [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeDownloadFail
+                            context:@"MyBooksDownloadCenter::failDownloadForBook"
+                            message:[NSString stringWithFormat:@"%@ book download failed", book.distributor]
+                           metadata: @{
+                             @"book": book.loggableDictionary
+                           }];
   [self broadcastUpdate];
 }
 
