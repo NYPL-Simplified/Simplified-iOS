@@ -866,7 +866,7 @@ completionHandler:(void (^)(void))handler
            } else {
              NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
              [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoLicensorToken
-                                       context:@"SignIn-settingsTab"
+                                       context:@"SignIn-modal"
                                        message:@"The UserProfileDocument obtained from the server contained no licensor token."
                                       metadata:@{
                                         @"hashedBarcode": barcode.md5String
