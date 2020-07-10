@@ -96,7 +96,7 @@
     return nil;
   }
 
-  [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL ageAboveLimit) {
+  [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL ageAboveLimit) {
     dispatch_async(dispatch_get_main_queue(), ^{
       NSURL *url;
       if (ageAboveLimit) {

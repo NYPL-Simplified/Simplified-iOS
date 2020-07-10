@@ -1,5 +1,5 @@
 //
-//  SamlIDPCell.swift
+//  NYPLSamlIDPCell.swift
 //  SimplyE
 //
 //  Created by Jacek Szyja on 29/06/2020.
@@ -9,7 +9,7 @@
 import UIKit
 
 @objcMembers
-class SamlIDPCell: UITableViewCell {
+class NYPLSamlIDPCell: UITableViewCell {
 
   let idpName: UILabel = {
     let label = UILabel()

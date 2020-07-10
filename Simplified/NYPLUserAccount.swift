@@ -11,6 +11,8 @@ extension Notification.Name {
 }
 
 private enum StorageKey: String {
+  // .barcode, .PIN, .authToken became legacy, as storage for those types was moved into .credentials enum
+
   case authorizationIdentifier = "NYPLAccountAuthorization"
   case barcode = "NYPLAccountBarcode" // legacy
   case PIN = "NYPLAccountPIN" // legacy
@@ -35,7 +37,7 @@ private enum StorageKey: String {
 @objcMembers class NYPLUserAccount : NSObject {
   static private let shared = NYPLUserAccount()
   private let accountInfoLock = NSRecursiveLock()
-  private lazy var keychainTransaction = KeychainVariableTransaction(accountInfoLock: accountInfoLock)
+  private lazy var keychainTransaction = NYPLKeychainVariableTransaction(accountInfoLock: accountInfoLock)
     
   private var libraryUUID: String? {
     didSet {
@@ -62,7 +64,6 @@ private enum StorageKey: String {
       for (key, var value) in variables {
         value.key = key.keyForLibrary(uuid: libraryUUID)
       }
-//      removeAll() // to clean keychain data for a library <- REMOVE ME
     }
   }
 
@@ -89,9 +90,9 @@ private enum StorageKey: String {
         }
 
         if self.needsAgeCheck {
-          AgeCheck.shared().verifyCurrentAccountAgeRequirement { [weak self] meetsAgeRequirement in
+          NYPLAgeCheck.shared().verifyCurrentAccountAgeRequirement { [weak self] meetsAgeRequirement in
             DispatchQueue.main.async {
-              mainFeed = meetsAgeRequirement ? self?.authDefinition?.coppaOverUrl : self?.authDefinition?.coppaUnderUrl
+              mainFeed = self?.authDefinition?.coppaURL(isOfAge: meetsAgeRequirement)
               resolveFn()
             }
           }
@@ -104,23 +105,27 @@ private enum StorageKey: String {
     }
   }
 
-  public private(set) var credentials: Credentials? {
+  public private(set) var credentials: NYPLCredentials? {
     get {
       var credentials = _credentials.read()
 
       if credentials == nil {
-        // try to load legacy values
+        // if there are no credentials in memory, try to migrate from legacy storage keys
         if let barcode = legacyBarcode, let pin = legacyPin {
+          // barcode and pin was used previously
           credentials = .barcodeAndPin(barcode: barcode, pin: pin)
 
+          // remove legacy storage and save into new place
           keychainTransaction.perform {
             _credentials.write(credentials)
             _barcode.write(nil)
             _pin.write(nil)
           }
         } else if let authToken = legacyAuthToken {
+          // auth token was used previously
           credentials = .token(authToken: authToken)
 
+          // remove legacy storage and save into new place
           keychainTransaction.perform {
             _credentials.write(credentials)
             _authToken.write(nil)
@@ -175,55 +180,55 @@ private enum StorageKey: String {
   }
 
   // MARK: - Storage
-  private lazy var _authorizationIdentifier: KeychainVariable<String> = StorageKey.authorizationIdentifier
+  private lazy var _authorizationIdentifier: NYPLKeychainVariable<String> = StorageKey.authorizationIdentifier
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
-  private lazy var _adobeToken: KeychainVariable<String> = StorageKey.adobeToken
+  private lazy var _adobeToken: NYPLKeychainVariable<String> = StorageKey.adobeToken
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
-  private lazy var _licensor: KeychainVariable<[String:Any]> = StorageKey.licensor
+  private lazy var _licensor: NYPLKeychainVariable<[String:Any]> = StorageKey.licensor
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
-  private lazy var _patron: KeychainVariable<[String:Any]> = StorageKey.patron
+  private lazy var _patron: NYPLKeychainVariable<[String:Any]> = StorageKey.patron
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
-  private lazy var _adobeVendor: KeychainVariable<String> = StorageKey.adobeVendor
+  private lazy var _adobeVendor: NYPLKeychainVariable<String> = StorageKey.adobeVendor
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
-  private lazy var _provider: KeychainVariable<String> = StorageKey.provider
+  private lazy var _provider: NYPLKeychainVariable<String> = StorageKey.provider
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
-  private lazy var _userID: KeychainVariable<String> = StorageKey.userID
+  private lazy var _userID: NYPLKeychainVariable<String> = StorageKey.userID
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
-  private lazy var _deviceID: KeychainVariable<String> = StorageKey.deviceID
+  private lazy var _deviceID: NYPLKeychainVariable<String> = StorageKey.deviceID
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
-  private lazy var _credentials: KeychainCodableVariable<Credentials> = StorageKey.credentials
+  private lazy var _credentials: NYPLKeychainCodableVariable<NYPLCredentials> = StorageKey.credentials
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainCodableVariable(with: accountInfoLock)
-  private lazy var _authDefinition: KeychainCodableVariable<AccountDetails.Authentication> = StorageKey.authDefinition
+  private lazy var _authDefinition: NYPLKeychainCodableVariable<AccountDetails.Authentication> = StorageKey.authDefinition
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainCodableVariable(with: accountInfoLock)
-  private lazy var _cookies: KeychainVariable<[HTTPCookie]> = StorageKey.cookies
+  private lazy var _cookies: NYPLKeychainVariable<[HTTPCookie]> = StorageKey.cookies
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
 
   // Legacy
-  private lazy var _barcode: KeychainVariable<String> = StorageKey.barcode
+  private lazy var _barcode: NYPLKeychainVariable<String> = StorageKey.barcode
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
-  private lazy var _pin: KeychainVariable<String> = StorageKey.PIN
+  private lazy var _pin: NYPLKeychainVariable<String> = StorageKey.PIN
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
-  private lazy var _authToken: KeychainVariable<String> = StorageKey.authToken
+  private lazy var _authToken: NYPLKeychainVariable<String> = StorageKey.authToken
     .keyForLibrary(uuid: libraryUUID)
     .asKeychainVariable(with: accountInfoLock)
 
   // MARK: - Check
     
   func hasBarcodeAndPIN() -> Bool {
-    if let credentials = credentials, case Credentials.barcodeAndPin = credentials {
+    if let credentials = credentials, case NYPLCredentials.barcodeAndPin = credentials {
       return true
     } else {
       return false
@@ -231,7 +236,7 @@ private enum StorageKey: String {
   }
   
   func hasAuthToken() -> Bool {
-    if let credentials = credentials, case Credentials.token = credentials {
+    if let credentials = credentials, case NYPLCredentials.token = credentials {
       return true
     } else {
       return false
@@ -273,7 +278,7 @@ private enum StorageKey: String {
   /// features of platform.nypl.org will work if you give them a 14-digit
   /// barcode but not a 7-letter username or a 16-digit NYC ID.
   var barcode: String? {
-    if let credentials = credentials, case let Credentials.barcodeAndPin(barcode: barcode, pin: _) = credentials {
+    if let credentials = credentials, case let NYPLCredentials.barcodeAndPin(barcode: barcode, pin: _) = credentials {
       return barcode
     } else {
       return nil
@@ -296,7 +301,7 @@ private enum StorageKey: String {
   var authorizationIdentifier: String? { _authorizationIdentifier.read() }
 
   var PIN: String? {
-    if let credentials = credentials, case let Credentials.barcodeAndPin(barcode: _, pin: pin) = credentials {
+    if let credentials = credentials, case let NYPLCredentials.barcodeAndPin(barcode: _, pin: pin) = credentials {
       return pin
     } else {
       return nil
@@ -324,7 +329,7 @@ private enum StorageKey: String {
   var cookies: [HTTPCookie]? { _cookies.read() }
 
   var authToken: String? {
-    if let credentials = credentials, case let Credentials.token(authToken: token) = credentials {
+    if let credentials = credentials, case let NYPLCredentials.token(authToken: token) = credentials {
       return token
     } else {
       return nil

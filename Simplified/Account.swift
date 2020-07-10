@@ -3,9 +3,10 @@ private let userAcceptedEULAKey          = "NYPLSettingsUserAcceptedEULA"
 private let userAboveAgeKey              = "NYPLSettingsUserAboveAgeKey"
 private let accountSyncEnabledKey        = "NYPLAccountSyncEnabledKey"
 
-
+/// This class is used for mapping details of SAML Identity Provider received in authentication document
 @objcMembers
-class SamlIDP: NSObject, Codable {
+class OPDS2SamlIDP: NSObject, Codable {
+  /// url to begin SAML login process with a given IDP
   let url: URL
 
   private let displayNames: [String: String]?
@@ -50,7 +51,7 @@ class SamlIDP: NSObject, Codable {
     let oauthIntermediaryUrl:URL?
     let methodDescription: String?
 
-    let samlIdps: [SamlIDP]?
+    let samlIdps: [OPDS2SamlIDP]?
 
     init(auth: OPDS2AuthenticationDocument.Authentication) {
       let authType = AuthType(rawValue: auth.type) ?? .none
@@ -78,7 +79,7 @@ class SamlIDP: NSObject, Codable {
         samlIdps = nil
 
       case .saml:
-        samlIdps = auth.links?.filter { $0.rel == "authenticate" }.compactMap { SamlIDP(opdsLink: $0) }
+        samlIdps = auth.links?.filter { $0.rel == "authenticate" }.compactMap { OPDS2SamlIDP(opdsLink: $0) }
         oauthIntermediaryUrl = nil
         coppaUnderUrl = nil
         coppaOverUrl = nil
@@ -100,7 +101,23 @@ class SamlIDP: NSObject, Codable {
       return authType == .coppa
     }
 
+    func coppaURL(isOfAge: Bool) -> URL? {
+      isOfAge ? coppaOverUrl : coppaUnderUrl
+    }
+
+    // use for Objective-C only, authType is the prefered way to do it in Swift
+    var isOauth: Bool {
+      return authType == .oauthIntermediary
+    }
+
+    // use for Objective-C only, authType is the prefered way to do it in Swift
+    var isSaml: Bool {
+      return authType == .saml
+    }
+
+    /// secured catalog would require user to log in prior to accessing it
     var isCatalogSecured: Bool {
+      // you need an oauth token in order to access catalogs if authentication type is either oauth with intermediary (ex. Clever), or SAML
       return authType == .oauthIntermediary || authType == .saml
     }
 

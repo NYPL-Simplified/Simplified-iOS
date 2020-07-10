@@ -58,9 +58,11 @@ class NYPLSignInBusinessLogic: NSObject {
     return NYPLSignInBusinessLogic.sharedLibraryAccount(libraryAccountID)
   }
 
-  var selectedIDP: SamlIDP?
+  var selectedIDP: OPDS2SamlIDP?
+
+  // this overrides the sign in view controller logic to behave as if user isn't authenticated
+  // it's useful if we already have credentials, but the session expired
   var forceLogIn: Bool = false
-  var sessionRefreshed: Bool = false
   private var _selectedAuthentication: AccountDetails.Authentication?
   var selectedAuthentication: AccountDetails.Authentication? {
     get {
@@ -89,11 +91,15 @@ class NYPLSignInBusinessLogic: NSObject {
   }
 
   func isSignedIn() -> Bool {
-    return (!forceLogIn || sessionRefreshed) && userAccount.hasCredentials()
+    return userAccount.hasCredentials() || (!userAccount.hasCredentials() && forceLogIn)
   }
 
   func registrationIsPossible() -> Bool {
     return !isSignedIn() && NYPLConfiguration.cardCreationEnabled() && libraryAccount?.details?.signUpUrl != nil
+  }
+
+  func isSamlPossible() -> Bool {
+    libraryAccount?.details?.auths.contains { $0.isSaml } ?? false
   }
 
   @objc func juvenileCardsManagementIsPossible() -> Bool {
@@ -359,20 +365,4 @@ class NYPLSignInBusinessLogic: NSObject {
 
     return alert
   }
-}
-
-extension NSString {
-
-    @objc var parseJSONString: AnyObject? {
-
-        let data = self.data(using: String.Encoding.utf8.rawValue, allowLossyConversion: false)
-
-        if let jsonData = data {
-            // Will return an object or nil if JSON decoding fails
-            return try! JSONSerialization.jsonObject(with: jsonData, options: JSONSerialization.ReadingOptions.mutableContainers) as AnyObject?
-        } else {
-            // Lossless conversion of the string was not possible
-            return nil
-        }
-    }
 }

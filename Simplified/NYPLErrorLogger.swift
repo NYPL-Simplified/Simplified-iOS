@@ -53,6 +53,9 @@ fileprivate let nullString = "null"
   case loginErrorWithProblemDoc = 310
   case missingParentBarcodeForJuvenile = 311
   case cardCreatorCredentialsDecodeFail = 312
+  case oauthPatronInfoDecodeFail = 313
+  case unrecognizedLoginUniversalLink = 314
+  case validationWithoutAuthToken = 315
 
   // audiobooks
   case audiobookUserEvent = 400

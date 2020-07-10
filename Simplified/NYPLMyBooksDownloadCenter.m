@@ -305,7 +305,7 @@ didFinishDownloadingToURL:(NSURL *const)location
     dispatch_async(dispatch_get_main_queue(), ^{
       if (problemDocument) {
         if ([problemDocument.type isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
-          NYPLLOG(@"Invalid credentials problem, present sign in VC");
+          NYPLLOG(@"Invalid credentials problem when downloading a book, present sign in VC");
           [NYPLAccountSignInViewController
            requestCredentialsUsingExistingBarcode:NO
            completionHandler:^{
@@ -548,7 +548,7 @@ didCompleteWithError:(NSError *)error
           }
           [[NYPLBookRegistry sharedRegistry] removeBookForIdentifier:identifier];
         } else if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
-          NYPLLOG(@"Invalid credentials problem, present sign in VC");
+          NYPLLOG(@"Invalid credentials problem when returning a book, present sign in VC");
           [NYPLAccountSignInViewController
            requestCredentialsUsingExistingBarcode:NO
            completionHandler:^{
@@ -662,7 +662,7 @@ didCompleteWithError:(NSError *)error
                                                                             comment: @"When book is already checked out on patron's other device(s), they will get this message"), book.title];
             alert = [NYPLAlertUtils alertWithTitle:@"BorrowFailed" message:formattedMessage];
           } if ([error[@"type"] isEqualToString:NYPLProblemDocument.TypeInvalidCredentials]) {
-            NYPLLOG(@"Invalid credentials problem, present sign in VC");
+            NYPLLOG(@"Invalid credentials problem when borrowing a book, present sign in VC");
             [NYPLAccountSignInViewController
              requestCredentialsUsingExistingBarcode:NO
              completionHandler:^{
@@ -808,26 +808,32 @@ didCompleteWithError:(NSError *)error
 
           mutableRequest.cachePolicy = NSURLRequestReloadIgnoringCacheData;
 
-          CookiesWebViewModel *model = [[CookiesWebViewModel alloc] initWithCookies:someCookies
-                                                                            request:mutableRequest
-                                                             loginCompletionHandler:nil
-                                                                 loginCancelHandler:^{
+          void (^loginCancelHandler)(void) = ^{
             [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadNeeded forIdentifier:book.identifier];
             [weakSelf cancelDownloadForBookIdentifier:book.identifier];
-          }
-                                                                   bookFoundHandler:^(NSURLRequest * _Nullable request, NSArray<NSHTTPCookie *> * _Nonnull cookies) {
+          };
+
+          void (^bookFoundHandler)(NSURLRequest * _Nullable, NSArray<NSHTTPCookie *> * _Nonnull) = ^(NSURLRequest * _Nullable request, NSArray<NSHTTPCookie *> * _Nonnull cookies) {
             [NYPLUserAccount.sharedAccount setCookies:cookies];
             [weakSelf startDownloadForBook:book withRequest:request];
-          }
-                                                                problemFoundHandler:^(NYPLProblemDocument * _Nullable problemDocument) {
+          };
+
+          void (^problemFoundHandler)(NYPLProblemDocument * _Nullable) = ^(NYPLProblemDocument * _Nullable problemDocument) {
             [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadNeeded forIdentifier:book.identifier];
             [NYPLAccountSignInViewController
              requestCredentialsUsingExistingBarcode:NO
              completionHandler:^{
               [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
             }];
-          }
-                                                                autoPresentIfNeeded:YES]; // <- this will cause a web view to retain a cycle
+          };
+
+          NYPLCookiesWebViewModel *model = [[NYPLCookiesWebViewModel alloc] initWithCookies:someCookies
+                                                                                    request:mutableRequest
+                                                                     loginCompletionHandler:nil
+                                                                         loginCancelHandler:loginCancelHandler
+                                                                           bookFoundHandler:bookFoundHandler
+                                                                        problemFoundHandler:problemFoundHandler
+                                                                        autoPresentIfNeeded:YES]; // <- this will cause a web view to retain a cycle
 
           NYPLCookiesWebViewController *cookiesVC = [[NYPLCookiesWebViewController alloc] initWithModel:model];
           [cookiesVC loadViewIfNeeded];

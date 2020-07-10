@@ -14,7 +14,6 @@
 @property (nonatomic, copy) UIViewController *(^handler)(NYPLRemoteViewController *remoteViewController, NSData *data, NSURLResponse *response);
 @property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic, strong) NSURLSessionDataTask *dataTask;
-@property (nonatomic, strong) NSURLResponse *response;
 @property (atomic, readwrite) NSURL *URL;
 
 @end
@@ -94,7 +93,6 @@
                               context:@"RemoteViewController"
                               message:@"Prevented attempt to load without a URL."
                              metadata:@{
-                               @"Response": self.response ?: @"N/A",
                                @"ChildVCs": self.childViewControllers
                              }];
     return;
@@ -105,7 +103,7 @@
   [NSTimer scheduledTimerWithTimeInterval: activityLabelTimer target: self
                                  selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
 
-  self.dataTask = [NYPLNetworkExecutor.shared execute:request
+  self.dataTask = [NYPLNetworkExecutor.shared addBearerAndExecute:request
                            completion:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
 
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -140,11 +138,10 @@
       NSHTTPURLResponse *httpResponse;
       if ([response isKindOfClass: [NSHTTPURLResponse class]]) {
         httpResponse = (NSHTTPURLResponse *) response;
-      }
-
-      if (httpResponse.statusCode != 200) {
-        [self handleErrorResponse:httpResponse withData:data];
-        return;
+        if (httpResponse.statusCode != 200) {
+          [self handleErrorResponse:httpResponse withData:data];
+          return;
+        }
       }
 
       UIViewController *const viewController = self.handler(self, data, response);
@@ -178,7 +175,7 @@
                                    @"HTTPstatusCode": @(httpResponse.statusCode),
                                    @"mimeType": httpResponse.MIMEType,
                                    @"URL": self.URL ?: @"N/A",
-                                   @"response.URL": httpResponse.URL ?: @"N/A"
+                                   @"response.URL": response.URL ?: @"N/A"
                                  }];
         self.reloadView.hidden = NO;
       }
@@ -249,8 +246,8 @@
 
 - (void)handleErrorResponse:(NSHTTPURLResponse *)httpResponse withData:(NSData * _Nullable) data
 {
-  BOOL mimeTypeMatches = [self.response.MIMEType isEqualToString:@"application/problem+json"] ||
-  [self.response.MIMEType isEqualToString:@"application/api-problem+json"];
+  BOOL mimeTypeMatches = [httpResponse.MIMEType isEqualToString:@"application/problem+json"] ||
+  [httpResponse.MIMEType isEqualToString:@"application/api-problem+json"];
 
   if (mimeTypeMatches) {
     NSError *problemDocumentParseError = nil;

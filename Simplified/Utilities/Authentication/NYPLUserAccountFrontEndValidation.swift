@@ -51,6 +51,7 @@ extension NYPLUserAccountFrontEndValidation: UITextFieldDelegate {
         let textRange = Range(range, in: text) {
 
         let updatedText = text.replacingCharacters(in: textRange, with: string)
+        // Usernames cannot be longer than 25 characters.
         guard updatedText.count <= 25 else { return false }
       }
     }

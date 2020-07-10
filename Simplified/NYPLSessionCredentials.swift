@@ -9,21 +9,18 @@
 import Foundation
 import WebKit
 
-enum Credentials {
-//  case token(authToken: String, patron: [String:Any])
+enum NYPLCredentials {
   case token(authToken: String)
   case barcodeAndPin(barcode: String, pin: String)
   case cookies([HTTPCookie])
-  case open
 }
 
-extension Credentials: Codable {
+extension NYPLCredentials: Codable {
   // warning, order is important for proper decoding!
   enum TypeID: Int, Codable {
     case token
     case barcodeAndPin
     case cookies
-    case open
   }
 
   private var typeID: TypeID {
@@ -31,7 +28,6 @@ extension Credentials: Codable {
     case .token: return .token
     case .barcodeAndPin: return .barcodeAndPin
     case .cookies: return .cookies
-    case .open: return .open
     }
   }
 
@@ -63,11 +59,6 @@ extension Credentials: Codable {
     case .token:
       let additionalInfo = try values.nestedContainer(keyedBy: TokenKeys.self, forKey: .associatedTokenData)
       let token = try additionalInfo.decode(String.self, forKey: .authToken)
-//      let patronData = try additionalInfo.decode(Data.self, forKey: .patron)
-//      guard let patron = try JSONSerialization.jsonObject(with: patronData, options: .allowFragments) as? [String: Any] else {
-//        throw NSError()
-//      }
-//      self = .token(authToken: token, patron: patron)
       self = .token(authToken: token)
 
     case .barcodeAndPin:
@@ -84,8 +75,6 @@ extension Credentials: Codable {
       }
       let cookies = properties.compactMap { HTTPCookie(properties: $0) }
       self = .cookies(cookies)
-
-    case .open: self = .open
     }
   }
 
@@ -94,12 +83,9 @@ extension Credentials: Codable {
     try container.encode(typeID, forKey: .type)
 
     switch self {
-//    case let .token(authToken: token, patron: info):
     case let .token(authToken: token):
       var additionalInfo = container.nestedContainer(keyedBy: TokenKeys.self, forKey: .associatedTokenData)
       try additionalInfo.encode(token, forKey: .authToken)
-//      let data = try JSONSerialization.data(withJSONObject: info, options: [])
-//      try additionalInfo.encode(data, forKey: .patron)
 
     case let .barcodeAndPin(barcode: barcode, pin: pin):
       var additionalInfo = container.nestedContainer(keyedBy: BarcodeAndPinKeys.self, forKey: .associatedBarcodeAndPinData)
@@ -111,18 +97,16 @@ extension Credentials: Codable {
       let properties: [[HTTPCookiePropertyKey : Any]] = cookies.compactMap { $0.properties }
       let data = try JSONSerialization.data(withJSONObject: properties, options: [])
       try additionalInfo.encode(data, forKey: .cookiesData)
-
-    case .open: break
     }
   }
 }
 
 extension String {
-  func asKeychainVariable<VariableType>(with accountInfoLock: NSRecursiveLock) -> KeychainVariable<VariableType> {
-    return KeychainVariable<VariableType>(key: self, accountInfoLock: accountInfoLock)
+  func asKeychainVariable<VariableType>(with accountInfoLock: NSRecursiveLock) -> NYPLKeychainVariable<VariableType> {
+    return NYPLKeychainVariable<VariableType>(key: self, accountInfoLock: accountInfoLock)
   }
 
-  func asKeychainCodableVariable<VariableType: Codable>(with accountInfoLock: NSRecursiveLock) -> KeychainCodableVariable<VariableType> {
-    return KeychainCodableVariable<VariableType>(key: self, accountInfoLock: accountInfoLock)
+  func asKeychainCodableVariable<VariableType: Codable>(with accountInfoLock: NSRecursiveLock) -> NYPLKeychainCodableVariable<VariableType> {
+    return NYPLKeychainCodableVariable<VariableType>(key: self, accountInfoLock: accountInfoLock)
   }
 }

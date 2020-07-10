@@ -1,5 +1,5 @@
 //
-//  LibraryDescriptionCell.swift
+//  NYPLLibraryDescriptionCell.swift
 //  SimplyE
 //
 //  Created by Jacek Szyja on 29/06/2020.
@@ -9,7 +9,7 @@
 import UIKit
 
 @objcMembers
-class LibraryDescriptionCell: UITableViewCell {
+class NYPLLibraryDescriptionCell: UITableViewCell {
 
   let descriptionLabel: UILabel = {
     let label = UILabel()

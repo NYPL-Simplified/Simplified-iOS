@@ -7,6 +7,18 @@
 - (id)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 
+// Present sign in view controller to begin a login process
+/**
+ * Present sign in view controller to begin a login process.
+ *
+ * @param useExistingBarcode      Should the screen be filled with barcode and pin when available?
+ * @param authorizeImmediately  Should the authentication process begin automatically after presenting? For Oauth2 and SAML it would mean opening a webview
+ * @param completionHandler         Completion handler that gets called uppon successful authentication
+ */
++ (void)requestCredentialsUsingExistingBarcode:(BOOL const)useExistingCredentials
+                          authorizeImmediately:(BOOL)authorizeImmediately
+                             completionHandler:(void (^)(void))handler;
+
 // TODO: All calls to this method probably should go through NYPLAccount.
 // The existing barcode may only be used if set in the shared NYPLAccount.
 + (void)requestCredentialsUsingExistingBarcode:(BOOL)useExistingBarcode
@@ -17,7 +29,5 @@
 // ADEPT the device is not authorized. To be used, the account must have a barcode
 // and pin.
 + (void)authorizeUsingExistingBarcodeAndPinWithCompletionHandler:(void (^)(void))handler;
-
-+ (void)authorizeUsingIntermediaryWithCompletionHandler:(void (^)(void))handler;
 
 @end

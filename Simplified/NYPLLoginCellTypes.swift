@@ -1,5 +1,5 @@
 //
-//  LoginCellTypes.swift
+//  NYPLLoginCellTypes.swift
 //  SimplyE
 //
 //  Created by Jacek Szyja on 23/06/2020.
@@ -9,7 +9,7 @@
 import Foundation
 
 @objcMembers
-class AuthMethodCellType: NSObject {
+class NYPLAuthMethodCellType: NSObject {
   let authenticationMethod: AccountDetails.Authentication
 
   init(authenticationMethod: AccountDetails.Authentication) {
@@ -18,7 +18,7 @@ class AuthMethodCellType: NSObject {
 }
 
 @objcMembers
-class InfoHeaderCellType: NSObject {
+class NYPLInfoHeaderCellType: NSObject {
   let information: String
 
   init(information: String) {
@@ -27,11 +27,10 @@ class InfoHeaderCellType: NSObject {
 }
 
 @objcMembers
-class SamlIdpCellType: NSObject {
-  let idp: SamlIDP
+class NYPLSamlIdpCellType: NSObject {
+  let idp: OPDS2SamlIDP
 
-  init(idp: SamlIDP) {
+  init(idp: OPDS2SamlIDP) {
     self.idp = idp
   }
 }
-

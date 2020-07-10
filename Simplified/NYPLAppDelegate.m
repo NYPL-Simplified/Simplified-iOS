@@ -105,7 +105,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
 {
-    if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb] && [userActivity.webpageURL.host isEqualToString:@"skyneck.pl"]) {
+    if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb] && [userActivity.webpageURL.host isEqualToString:NYPLSettings.shared.authenticationUniversalLink.host]) {
         [[NSNotificationCenter defaultCenter]
          postNotificationName:@"NYPLAppDelegateDidReceiveCleverRedirectURL"
          object:userActivity.webpageURL];

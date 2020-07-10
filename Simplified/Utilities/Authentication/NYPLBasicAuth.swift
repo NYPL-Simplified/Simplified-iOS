@@ -23,7 +23,7 @@ import Foundation
                                   username: barcode,
                                   password: pin)
             } else {
-                completionHandler(.performDefaultHandling, nil)
+                completionHandler(.cancelAuthenticationChallenge, nil)
             }
 
         case NSURLAuthenticationMethodServerTrust:
@@ -47,7 +47,7 @@ import Foundation
                                                 persistence: .none)
                 completionHandler(.useCredential, credentials)
             } else {
-                completionHandler(.performDefaultHandling, nil)
+                completionHandler(.cancelAuthenticationChallenge, nil)
             }
 
         default:

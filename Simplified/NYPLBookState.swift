@@ -19,6 +19,7 @@ let SAMLStartedKey = "saml-started"
   case Holding
   case Used
   case Unsupported
+  // This state means that user is logged using SAML environment and app begun download process, but didn't transition to download center yet
   case SAMLStarted
 
   init?(_ stringValue: String) {

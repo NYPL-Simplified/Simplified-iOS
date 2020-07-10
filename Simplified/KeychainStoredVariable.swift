@@ -1,5 +1,5 @@
 //
-//  KeychainStoredVariable.swift
+//  NYPLKeychainStoredVariable.swift
 //  SimplyE
 //
 //  Created by Jacek Szyja on 22/05/2020.
@@ -12,7 +12,7 @@ protocol Keyable {
   var key: String { get set }
 }
 
-class KeychainVariable<VariableType>: Keyable {
+class NYPLKeychainVariable<VariableType>: Keyable {
   var key: String {
     didSet {
       guard key != oldValue else { return }
@@ -22,7 +22,7 @@ class KeychainVariable<VariableType>: Keyable {
     }
   }
 
-  fileprivate let transaction: KeychainVariableTransaction
+  fileprivate let transaction: NYPLKeychainVariableTransaction
 
   // marks whether or not was the `cachedValue` initialized
   fileprivate var alreadyInited = false
@@ -33,7 +33,7 @@ class KeychainVariable<VariableType>: Keyable {
 
   init(key: String, accountInfoLock: NSRecursiveLock) {
     self.key = key
-    self.transaction = KeychainVariableTransaction(accountInfoLock: accountInfoLock)
+    self.transaction = NYPLKeychainVariableTransaction(accountInfoLock: accountInfoLock)
   }
 
   func read() -> VariableType? {
@@ -72,7 +72,7 @@ class KeychainVariable<VariableType>: Keyable {
   }
 }
 
-class KeychainCodableVariable<VariableType: Codable>: KeychainVariable<VariableType> {
+class NYPLKeychainCodableVariable<VariableType: Codable>: NYPLKeychainVariable<VariableType> {
   override func read() -> VariableType? {
     guard !alreadyInited else { return cachedValue }
     guard let data = NYPLKeychain.shared()?.object(forKey: key) as? Data else { cachedValue = nil; alreadyInited = true; return nil }
@@ -96,14 +96,14 @@ class KeychainCodableVariable<VariableType: Codable>: KeychainVariable<VariableT
   }
 }
 
-class KeychainVariableTransaction {
+class NYPLKeychainVariableTransaction {
   fileprivate let accountInfoLock: NSRecursiveLock
 
   init(accountInfoLock: NSRecursiveLock) {
     self.accountInfoLock = accountInfoLock
   }
 
-  func perform(operations: () -> Void) {
+  func perform(tasks: () -> Void) {
     guard NYPLKeychain.shared() != nil else { return }
 
     accountInfoLock.lock()
@@ -111,6 +111,6 @@ class KeychainVariableTransaction {
       accountInfoLock.unlock()
     }
 
-    operations()
+    tasks()
   }
 }

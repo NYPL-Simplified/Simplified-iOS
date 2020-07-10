@@ -160,9 +160,9 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
             }
 
             if self.currentAccount?.details?.defaultAuth?.needsAgeCheck ?? false {
-              AgeCheck.shared().verifyCurrentAccountAgeRequirement { meetsAgeRequirement in
+              NYPLAgeCheck.shared().verifyCurrentAccountAgeRequirement { meetsAgeRequirement in
                 DispatchQueue.main.async {
-                  mainFeed = meetsAgeRequirement ? self.currentAccount?.details?.defaultAuth?.coppaOverUrl : self.currentAccount?.details?.defaultAuth?.coppaUnderUrl
+                  mainFeed = self.currentAccount?.details?.defaultAuth?.coppaURL(isOfAge: meetsAgeRequirement)
                   resolveFn()
                 }
               }

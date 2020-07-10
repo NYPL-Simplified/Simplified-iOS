@@ -207,15 +207,15 @@
      object:nil];
   };
   if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
-    [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+    [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
       dispatch_async(dispatch_get_main_queue(), ^{
-        mainFeedUrl = isOfAge ? NYPLUserAccount.sharedAccount.authDefinition.coppaOverUrl : NYPLUserAccount.sharedAccount.authDefinition.coppaUnderUrl;
+        mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
         completion();
       });
     }];
   } else if (NYPLUserAccount.sharedAccount.isCatalogSecured && !NYPLUserAccount.sharedAccount.hasCredentials) {
     // sign in
-    [NYPLAccountSignInViewController authorizeUsingIntermediaryWithCompletionHandler:^{
+    [NYPLAccountSignInViewController requestCredentialsUsingExistingBarcode:NO authorizeImmediately:YES completionHandler:^{
       dispatch_async(dispatch_get_main_queue(), ^{
         completion();
       });
@@ -249,9 +249,9 @@
     };
 
     if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
-      [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+      [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
         dispatch_async(dispatch_get_main_queue(), ^{
-          mainFeedUrl = isOfAge ? NYPLUserAccount.sharedAccount.authDefinition.coppaOverUrl : NYPLUserAccount.sharedAccount.authDefinition.coppaUnderUrl;
+          mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
           completion();
         });
       }];
@@ -302,8 +302,8 @@
       [vc safelyPresentViewController:navController animated:YES completion:nil];
     };
     if (NYPLUserAccount.sharedAccount.authDefinition.needsAgeCheck) {
-      [[AgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
-        mainFeedUrl = isOfAge ? NYPLUserAccount.sharedAccount.authDefinition.coppaOverUrl : NYPLUserAccount.sharedAccount.authDefinition.coppaUnderUrl;
+      [[NYPLAgeCheck shared] verifyCurrentAccountAgeRequirement:^(BOOL isOfAge) {
+        mainFeedUrl = [NYPLUserAccount.sharedAccount.authDefinition coppaURLWithIsOfAge:isOfAge];
         completion();
       }];
     } else {
