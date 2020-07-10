@@ -87,10 +87,17 @@ CGFloat const marginPadding = 2.0;
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
 
+#if FEATURE_DRM_CONNECTOR
   self.businessLogic = [[NYPLSignInBusinessLogic alloc]
                         initWithLibraryAccountID:[[AccountsManager shared] currentAccountId]
                         bookRegistry:[NYPLBookRegistry sharedRegistry]
                         drmAuthorizer:[NYPLADEPT sharedInstance]];
+#else
+  self.businessLogic = [[NYPLSignInBusinessLogic alloc]
+                        initWithLibraryAccountID:[[AccountsManager shared] currentAccountId]
+                        bookRegistry:[NYPLBookRegistry sharedRegistry]
+                        drmAuthorizer:nil];
+#endif
 
   self.title = NSLocalizedString(@"SignIn", nil);
 

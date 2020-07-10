@@ -24,7 +24,9 @@ import NYPLCardCreator
   func performLogOut()
 }
 
+#if FEATURE_DRM_CONNECTOR
 extension NYPLADEPT: NYPLDRMAuthorizing {}
+#endif
 extension NYPLBookRegistry: NYPLBookRegistrySyncing {}
 
 @objcMembers
