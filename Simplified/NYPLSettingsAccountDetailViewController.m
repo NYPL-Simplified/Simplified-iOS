@@ -356,8 +356,8 @@ Authenticating with any of those barcodes should work.
     // user needs to sign in
 
     if (self.businessLogic.isSamlPossible) {
-      // add an information header that authentication is required
-      NSString *libraryInfo = [NSString stringWithFormat:@"Log in to %@ required to download materials.", self.businessLogic.libraryAccount.name];
+      // TODO: SIMPLY-2884 add an information header that authentication is required
+      NSString *libraryInfo = [NSString stringWithFormat:@"Log in to %@ required to download books.", self.businessLogic.libraryAccount.name];
       [workingSection addObject:[[NYPLInfoHeaderCellType alloc] initWithInformation:libraryInfo]];
     }
 
@@ -595,7 +595,10 @@ Authenticating with any of those barcodes should work.
                                @"loginUrl": url.absoluteString
                              }];
 
-    [self displayErrorMessage:nil];
+    // TODO: SIMPLY-2884 validate this string with product
+    [self displayErrorMessage:
+     NSLocalizedString(@"An error occurred during the authentication process",
+                       @"Generic error message while handling sign-in redirection during authentication")];
     return;
   }
 
