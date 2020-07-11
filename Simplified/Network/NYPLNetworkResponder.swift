@@ -22,7 +22,7 @@ fileprivate struct NYPLNetworkTaskInfo {
 }
 
 //------------------------------------------------------------------------------
-class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate {
+class NYPLNetworkResponder: NSObject {
   typealias TaskID = Int
 
   private var taskInfo: [TaskID: NYPLNetworkTaskInfo]
@@ -45,10 +45,11 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
 
     taskInfo[taskID] = NYPLNetworkTaskInfo(completion: completion)
   }
+}
 
   //----------------------------------------------------------------------------
   // MARK: - URLSessionDelegate
-
+extension NYPLNetworkResponder: URLSessionDelegate {
   func urlSession(_ session: URLSession, didBecomeInvalidWithError err: Error?) {
     if let err = err {
       NYPLErrorLogger.logError(err, message: "URLSession became invalid")
@@ -65,10 +66,11 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
 
     taskInfo.removeAll()
   }
+}
 
   //----------------------------------------------------------------------------
   // MARK: - URLSessionDataDelegate
-
+extension NYPLNetworkResponder: URLSessionDataDelegate {
   func urlSession(_ session: URLSession,
                   dataTask: URLSessionDataTask,
                   didReceive data: Data) {
@@ -124,7 +126,7 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
     Log.debug(#file, "Task \(taskID) completed, elapsed time: \(elapsed) sec")
 
     if let error = error {
-      currentTaskInfo.completion(.failure(error))
+      currentTaskInfo.completion(.failure(error, task.response))
 
       // logging the error after the completion call so that the error report
       // will include any eventual logging done in the completion handler.
@@ -136,7 +138,23 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
       return
     }
 
-    currentTaskInfo.completion(.success(currentTaskInfo.progressData))
+    currentTaskInfo.completion(.success(currentTaskInfo.progressData, task.response))
   }
 
+}
+
+//----------------------------------------------------------------------------
+// MARK: - URLSessionTaskDelegate
+extension NYPLNetworkResponder: URLSessionTaskDelegate {
+    func urlSession(_ session: URLSession,
+                    task: URLSessionTask,
+                    didReceive challenge: URLAuthenticationChallenge,
+                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
+    {
+//        NYPLLOG_F(@"NSURLSessionTask: %@. Challenge Received: %@",
+//                   task.currentRequest.URL.absoluteString,
+//                   challenge.protectionSpace.authenticationMethod);
+
+        NYPLBasicAuth.authHandler(challenge: challenge, completionHandler: completionHandler)
+    }
 }

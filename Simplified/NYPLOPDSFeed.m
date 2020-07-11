@@ -63,7 +63,9 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
   }
 
   __block NSURLRequest *request = nil;
-  request = [[NYPLSession sharedSession] withURL:URL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+  request = [[[NYPLNetworkExecutor shared] GET:URL
+                                   cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                    completion:^(NSData *data, NSURLResponse *response, NSError *error) {
 
     if (error != nil) {
       // NYPLSession already logged this.
@@ -144,7 +146,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
     }
     
     NYPLAsyncDispatch(^{handler(feed, nil);});
-  }];
+  }] originalRequest];
 }
 
 - (instancetype)initWithXML:(NYPLXML *const)feedXML

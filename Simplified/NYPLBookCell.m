@@ -83,6 +83,9 @@ NYPLBookCell *NYPLBookCellDequeue(UICollectionView *const collectionView,
       cell.state = NYPLBookButtonsStateDownloadSuccessful;
       return cell;
     }
+    // SAML started is part of download process, in this step app does authenticate user but didn't begin file downloading yet
+    // The cell should present progress bar and "Requesting" description on its side
+    case NYPLBookStateSAMLStarted:
     case NYPLBookStateDownloading:
     {
       NYPLBookDownloadingCell *const cell =

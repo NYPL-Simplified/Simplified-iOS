@@ -1,12 +1,12 @@
 import Foundation
 
-@objcMembers final class AgeCheck : NSObject {
+@objcMembers final class NYPLAgeCheck : NSObject {
   // Static methods and vars
-  static let sharedInstance = AgeCheck()
+  static let sharedInstance = NYPLAgeCheck()
 
-  @objc class func shared() -> AgeCheck
+  @objc class func shared() -> NYPLAgeCheck
   {
-    return AgeCheck.sharedInstance
+    return NYPLAgeCheck.sharedInstance
   }
   
 
@@ -18,12 +18,13 @@ import Foundation
   func verifyCurrentAccountAgeRequirement(_ completion: ((Bool) -> ())?) -> Void
   {
     serialQueue.async {
+      let userAccount = NYPLUserAccount.sharedAccount()
       guard let accountDetails = AccountsManager.shared.currentAccount?.details else {
         completion?(false)
         return
       }
       
-      if accountDetails.needsAuth == true || accountDetails.userAboveAgeLimit {
+      if userAccount.needsAuth == true || accountDetails.userAboveAgeLimit {
         completion?(true)
         return
       }

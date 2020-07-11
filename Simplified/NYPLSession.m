@@ -1,5 +1,4 @@
 #import "NYPLAsync.h"
-#import "NYPLBasicAuth.h"
 #import "SimplyE-Swift.h"
 
 #import "NYPLSession.h"
@@ -69,7 +68,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
             task.currentRequest.URL.absoluteString,
             challenge.protectionSpace.authenticationMethod);
 
-  NYPLBasicAuthHandler(challenge, completionHandler);
+    [NYPLBasicAuth authHandlerWithChallenge:challenge completionHandler:completionHandler];
 }
 
 #pragma mark -
@@ -89,41 +88,36 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *const)challenge
   if(!handler) {
     @throw NSInvalidArgumentException;
   }
-  
-  NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:URL cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0];
-  
+
+    NSURLRequest *req;
+    void (^completionWrapper)(NSData * _Nullable, NSURLResponse * _Nullable, NSError * _Nullable) = ^ void (NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error){
+      if (error) {
+        NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if (dataString == nil) {
+          dataString = [NSString stringWithFormat:@"datalength=%lu",
+                        (unsigned long)data.length];
+        }
+        [NYPLErrorLogger logNetworkError:error
+                                    code:NYPLErrorCodeApiCall
+                                 context:NSStringFromClass([self class])
+                                 request:req
+                                response:response
+                                 message:@"NYPLSession error"
+                                metadata:@{
+                                  @"receivedData": dataString ?: @""
+                                }];
+        handler(nil, response, error);
+        return;
+      }
+
+      handler(data, response, nil);
+    };
+
   NSString *lpe = [URL lastPathComponent];
   if ([lpe isEqualToString:@"borrow"])
-    [req setHTTPMethod:@"PUT"];
+    req = [[NYPLNetworkExecutor.shared PUT:URL completion:completionWrapper] originalRequest];
   else
-    [req setHTTPMethod:@"GET"];
-  
-  [[self.session
-    dataTaskWithRequest:req
-    completionHandler:^(NSData *const data,
-                        NSURLResponse *response,
-                        NSError *const error) {
-    if (error) {
-      NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-      if (dataString == nil) {
-        dataString = [NSString stringWithFormat:@"datalength=%lu",
-                      (unsigned long)data.length];
-      }
-      [NYPLErrorLogger logNetworkError:error
-                                  code:NYPLErrorCodeApiCall
-                               context:NSStringFromClass([self class])
-                               request:req
-                              response:response
-                               message:@"NYPLSession error"
-                              metadata:@{
-                                @"receivedData": dataString ?: @""
-                              }];
-      handler(nil, response, error);
-      return;
-    }
-
-    handler(data, response, nil);
-  }] resume];
+    req = [[NYPLNetworkExecutor.shared GET:URL cachePolicy:NSURLRequestUseProtocolCachePolicy completion:completionWrapper] originalRequest];
 
   return req;
 }
