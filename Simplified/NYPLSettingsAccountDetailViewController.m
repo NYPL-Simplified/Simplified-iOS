@@ -234,8 +234,8 @@ Authenticating with any of those barcodes should work.
   UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
   label.text = errorMessage;
   [label sizeToFit];
-  label.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
   [self.view addSubview:label];
+  [label centerInSuperviewWithOffset:self.tableView.contentOffset];
 }
 
 - (void)setupViews {
@@ -785,8 +785,8 @@ Authenticating with any of those barcodes should work.
  @note This method is not doing any logging in case `success` is false.
 
  @param success Whether Adobe DRM authorization was successful or not.
- @param error If errorMessage is absent, this will be used to derive a messsage
- to present to the user. This error is always logged no matter what.
+ @param error If errorMessage is absent, this will be used to derive a message
+ to present to the user.
  @param errorMessage Will be presented to the user and will be used as a
  localization key to attempt to localize it.
  */

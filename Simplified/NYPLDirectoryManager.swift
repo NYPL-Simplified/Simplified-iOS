@@ -15,14 +15,11 @@ import Foundation
     let paths = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true)
     
     if paths.count < 1 {
-      NYPLErrorLogger.logFileSystemIssue(severity: .error,
-                                         message: "No valid paths",
-                                         context: "DirectoryManager::directory")
+      NYPLErrorLogger.logError(withCode: .missingSystemPaths,
+                               context: "DirectoryManager::directory",
+                               message: "No valid search paths in iOS's ApplicationSupport directory in the UserDomain",
+                               metadata: ["account": account])
       return nil
-    } else if paths.count > 1 {
-      NYPLErrorLogger.logFileSystemIssue(severity: .warning,
-                                         message: "Multiple paths",
-                                         context: "DirectoryManager::directory")
     }
     
     var directoryURL = URL.init(fileURLWithPath: paths[0]).appendingPathComponent(Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String)

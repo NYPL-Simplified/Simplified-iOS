@@ -456,8 +456,8 @@ didEncounterCorruptionForBook:(__attribute__((unused)) NYPLBook *)book
 
 - (void)viewWillLayoutSubviews
 {
+  [super viewWillLayoutSubviews];
   [self.activityIndicatorView centerInSuperview];
-  [self.activityIndicatorView integralizeFrame];
 }
 
 - (void)willTransitionToTraitCollection:(__unused UITraitCollection *)newCollection

@@ -61,7 +61,6 @@ static CGFloat const width = 280;
   {
     [self.titleLabel sizeToFit];
     [self.titleLabel centerInSuperview];
-    [self.titleLabel integralizeFrame];
     CGRect frame = self.titleLabel.frame;
     frame.origin.y = 0;
     self.titleLabel.frame = frame;
@@ -80,7 +79,6 @@ static CGFloat const width = 280;
   {
     [self.reloadButton sizeToFit];
     [self.reloadButton centerInSuperview];
-    [self.reloadButton integralizeFrame];
     CGRect frame = self.reloadButton.frame;
     frame.origin.y = CGRectGetMaxY(self.messageLabel.frame) + padding;
     self.reloadButton.frame = frame;

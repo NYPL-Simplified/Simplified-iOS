@@ -5,6 +5,8 @@
 
 - (void)centerInSuperview;
 
+- (void)centerInSuperviewWithOffset:(CGPoint)offset;
+
 - (void)integralizeFrame;
 
 @end
