@@ -26,9 +26,6 @@ fileprivate let nullString = "null"
 @objc enum NYPLErrorCode: Int {
   case ignore = 0
 
-  // low-level / system related
-  case fileSystemFail = 1
-
   // generic app related
   case appLaunch = 100
 
@@ -89,6 +86,15 @@ fileprivate let nullString = "null"
   case problemDocMessageDisplayed = 905
   case unableToMakeVCAfterLoading = 906
   case noTaskInfoAvailable = 907
+  case downloadFail = 908
+
+  // wrong content
+  case unknownRightsManagement = 1100
+  case unexpectedFormat = 1101
+
+  // low-level / system related
+  case missingSystemPaths = 1200
+  case fileMoveFail = 1201
 }
 
 @objcMembers class NYPLErrorLogger : NSObject {
@@ -481,25 +487,6 @@ fileprivate let nullString = "null"
     let userInfo = additionalInfo(severity: .info, metadata: metadata)
     let err = NSError(domain: simplyeDomain,
                       code: NYPLErrorCode.appLaunch.rawValue,
-                      userInfo: userInfo)
-
-    Crashlytics.sharedInstance().recordError(err)
-  }
-
-  /**
-   Report a generic path issue when dealing with file system apis.
-   - parameter severity: how critical the user experience is impacted.
-   - parameter message: Message to associate with report.
-   - parameter context: Where this issue arose.
-   */
-  class func logFileSystemIssue(severity: NYPLSeverity,
-                                message: String,
-                                context: String) {
-    let userInfo = additionalInfo(severity: severity,
-                                  message: message,
-                                  context: context)
-    let err = NSError(domain: simplyeDomain,
-                      code: NYPLErrorCode.fileSystemFail.rawValue,
                       userInfo: userInfo)
 
     Crashlytics.sharedInstance().recordError(err)

@@ -115,7 +115,6 @@
   [self.noResultsLabel integralizeFrame];
 
   [self.reloadView centerInSuperview];
-  [self.reloadView integralizeFrame];
 }
 
 - (void)viewDidLayoutSubviews

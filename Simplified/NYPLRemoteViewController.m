@@ -11,10 +11,10 @@
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) UILabel *activityIndicatorLabel;
+@property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) NSURLConnection *connection;
 @property (nonatomic) NSMutableData *data;
 @property (nonatomic, copy) UIViewController *(^handler)(NYPLRemoteViewController *remoteViewController, NSData *data, NSURLResponse *response);
-@property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic, strong) NSURLResponse *response;
 @property (atomic, readwrite) NSURL *URL;
 
@@ -50,6 +50,8 @@
   }
 
   self.reloadView.hidden = NO;
+  self.activityIndicatorLabel.hidden = YES;
+  [self.activityIndicatorView stopAnimating];
 }
 
 - (void)loadWithURL:(NSURL*)url
@@ -75,20 +77,31 @@
 
   // TODO: SIMPLY-2862
   // From the point of view of this VC, there is no point in attempting to
-  // load a remote page if we have no URL.
-  // Upon inspection of the codebase, this happens only at navigation
-  // controllers initialization time, when basically they are initialized
-  // with dummy VCs that have nil URLs which will be replaced once we obtain
-  // the catalog from the authentication document. Expressing this in code
-  // is the point of SIMPLY-2862.
+  // load a remote page if we have no URL. Upon inspection of the codebase,
+  // this happens only in 2 situations:
+  // 1. at navigation controllers / app initialization time, when they are
+  //    initialized with dummy VCs that have nil URLs. These VCs will be
+  //    replaced once we obtain the catalog from the authentication document of
+  //    the current library. Expressing this in code is the point of SIMPLY-2862.
+  // 2. If the request for loading the library accounts and the current
+  //    library's authentication document fail.
+  // These 2 situations are hard to distinguish from here. However, both
+  // can be handled by attempting a reload of the library accounts
+  // and auth doc. This is ok even for case #1 bc there's instrumentation in
+  // AccountManager for ignoring a call if there's one already ongoing.
+  // If those request succeed, there's instrumentation in AccountManager and
+  // NYPLRootTabBarController to trigger the creation of a new
+  // NYPLRemoteViewController furnished this time with a non-nil catalog URL.
+  //
+  // There's a 3rd case to consider also, and that is if the VC was purposedly
+  // set up with a nil URL. While that looks like a programmer error, it will
+  // result in a needless reload of the accounts/auth doc, but it will end up
+  // showing the reload UI anyway.
+  //
+  // Obviously this level of coupling is dreadful, and SIMPLY-2862 should
+  // address this as well.
   if (self.URL == nil) {
-    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
-                              context:@"RemoteViewController"
-                              message:@"Prevented attempt to load without a URL."
-                             metadata:@{
-                               @"Response": self.response ?: @"N/A",
-                               @"ChildVCs": self.childViewControllers
-                             }];
+    [self reloadAccountsAndAuthenticationDocument];
     return;
   }
 
@@ -112,6 +125,30 @@
   self.data = [NSMutableData data];
   
   [self.connection start];
+}
+
+// TODO: SIMPLY-2862 This method should be removed as part of this ticket
+- (void)reloadAccountsAndAuthenticationDocument
+{
+  NYPLLOG_F(@"Reloading accounts from RemoteVC: %@", self.title);
+  [AccountsManager.shared updateAccountSetWithCompletion:^(BOOL success) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (success) {
+        // since we have the accounts, now we can do a proper reload
+        [self load];
+      } else {
+        [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                                  context:@"RemoteViewController"
+                                  message:@"Failed to reload accounts after having found nil URL"
+                                 metadata:@{
+                                   @"currentURL": self.URL ?: @"N/A",
+                                   @"Response": self.response ?: @"N/A",
+                                   @"ChildVCs": self.childViewControllers
+                                 }];
+        [self showReloadViewWithMessage:nil];
+      }
+    });
+  }];
 }
 
 #pragma mark UIViewController
@@ -154,10 +191,7 @@
   [super viewWillLayoutSubviews];
 
   [self.activityIndicatorView centerInSuperview];
-  [self.activityIndicatorView integralizeFrame];
-  
   [self.reloadView centerInSuperview];
-  [self.reloadView integralizeFrame];
 }
 
 - (void)addActivityIndicatorLabel:(NSTimer*)timer
@@ -252,7 +286,7 @@
   };
   [NYPLErrorLogger logError:error
                     context:@"RemoteViewController"
-                    message:@"Server-side api call (likely related to Catalog loading) failed"
+                    message:@"Server-side api call (likely related to Catalog loading) did fail with network error"
                    metadata:metadata];
 
   [self resetConnectionInfo];
