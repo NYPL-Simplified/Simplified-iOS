@@ -36,6 +36,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindPIN,
   CellKindLogInSignOut,
   CellKindRegistration,
+  CellKindJuvenile,
   CellKindSyncButton,
   CellKindAbout,
   CellKindPrivacyPolicy,
@@ -43,7 +44,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellReportIssue
 };
 
-@interface NYPLSettingsAccountDetailViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate>
+@interface NYPLSettingsAccountDetailViewController () <NYPLUserAccountInputProvider, NYPLSettingsAccountUIDelegate, NYPLLogOutExecutor>
 
 // State machine
 @property (nonatomic) BOOL isLoggingInAfterSignUp;
@@ -63,6 +64,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITableViewCell *ageCheckCell;
 @property (nonatomic) UISwitch *syncSwitch;
+@property (nonatomic) UIActivityIndicatorView *juvenileActivityView;
 
 // account state
 @property NYPLUserAccountFrontEndValidation *frontEndValidator;
@@ -83,7 +85,19 @@ static const NSInteger sSection1Sync = 1;
 
 @implementation NYPLSettingsAccountDetailViewController
 
+/*
+ For NYPL, this field can accept any of the following:
+ - a username
+ - a 14-digit NYPL-issued barcode
+ - a 16-digit NYC ID issued by the city of New York to its residents. Patrons
+ can set up the NYC ID as a NYPL barcode even if they already have a NYPL card.
+ All of these types of authentication can be used with the PIN to sign in.
+ - Note: A patron can have multiple barcodes, because patrons may lose
+their library card and get a new one with a different barcode.
+Authenticating with any of those barcodes should work.
+ */
 @synthesize usernameTextField;
+
 @synthesize PINTextField;
 
 #pragma mark - Computed variables
@@ -118,7 +132,15 @@ static const NSInteger sSection1Sync = 1;
   self = [super initWithStyle:UITableViewStyleGrouped];
   if(!self) return nil;
 
-  self.businessLogic = [[NYPLSignInBusinessLogic alloc] initWithLibraryAccountID:libraryUUID];
+  id<NYPLDRMAuthorizing> drmAuthorizer = nil;
+#if defined(FEATURE_DRM_CONNECTOR)
+  drmAuthorizer = [NYPLADEPT sharedInstance];
+#endif
+
+  self.businessLogic = [[NYPLSignInBusinessLogic alloc]
+                        initWithLibraryAccountID:libraryUUID
+                        bookRegistry:[NYPLBookRegistry sharedRegistry]
+                        drmAuthorizer:drmAuthorizer];
 
   self.title = NSLocalizedString(@"Account", nil);
 
@@ -197,6 +219,8 @@ static const NSInteger sSection1Sync = 1;
           [self.tableView reloadData];
           [self updateShowHidePINState];
         } else {
+          // ok not to log error, since it's done by
+          // loadAuthenticationDocumentWithCompletion
           [self displayErrorMessage:NSLocalizedString(@"CheckConnection", nil)];
         }
       });
@@ -210,8 +234,8 @@ static const NSInteger sSection1Sync = 1;
   UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
   label.text = errorMessage;
   [label sizeToFit];
-  label.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
   [self.view addSubview:label];
+  [label centerInSuperviewWithOffset:self.tableView.contentOffset];
 }
 
 - (void)setupViews {
@@ -318,6 +342,10 @@ static const NSInteger sSection1Sync = 1;
     self.tableData = @[section0AcctInfo, section1Sync].mutableCopy;
   }
 
+  if ([self.businessLogic juvenileCardsManagementIsPossible]) {
+    [self.tableData addObject:@[@(CellKindJuvenile)]];
+  }
+
   if (self.selectedAccount.supportEmail != nil) {
     [self.tableData addObject:@[@(CellReportIssue)]];
   }
@@ -398,26 +426,21 @@ static const NSInteger sSection1Sync = 1;
   
   [self setActivityTitleWithText:NSLocalizedString(@"Verifying", nil)];
   
-  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-  
   [self validateCredentials];
 }
 
 - (void)logOut
 {
-  
-#if defined(FEATURE_DRM_CONNECTOR)
-  
-  if([NYPLADEPT sharedInstance].workflowsInProgress ||
-     [NYPLBookRegistry sharedRegistry].syncing == YES) {
-    [self presentViewController:[NYPLAlertUtils
-                                 alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
-                                 message:@"SettingsAccountViewControllerCannotLogOutMessage"]
-                       animated:YES
-                     completion:nil];
-    return;
+  UIAlertController *alert = [self.businessLogic logOutOrWarnUsing:self];
+  if (alert) {
+    [self presentViewController:alert animated:YES completion:nil];
   }
-  
+}
+
+- (void)performLogOut
+{
+#if defined(FEATURE_DRM_CONNECTOR)
+
   [self setActivityTitleWithText:NSLocalizedString(@"SigningOut", nil)];
   [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
   
@@ -428,6 +451,7 @@ static const NSInteger sSection1Sync = 1;
   
   request.timeoutInterval = self.businessLogic.requestTimeoutInterval;
   
+  NSString * const currentBarcode = [[self selectedUserAccount] barcode];
   NSURLSessionDataTask *const task =
   [self.session
    dataTaskWithRequest:request
@@ -440,7 +464,9 @@ static const NSInteger sSection1Sync = 1;
        NSError *pDocError = nil;
        UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
        if (!pDoc) {
-         [NYPLErrorLogger logUserProfileDocumentErrorWithError:pDocError];
+         [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
+                                                  context:@"signOut"
+                                                  barcode:currentBarcode];
          [self showLogoutAlertWithError:pDocError responseCode:statusCode];
          [self removeActivityTitle];
          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
@@ -451,21 +477,22 @@ static const NSInteger sSection1Sync = 1;
          } else {
            NYPLLOG_F(@"\nLicensor Token Invalid: %@", [pDoc toJson])
          }
-         [self deauthorizeDevice];
+         [self deauthorizeDevice]; // will call endIgnoringInteractionEvents
        }
      } else {
        if (statusCode == 401) {
          [self deauthorizeDevice];
        }
-       if (error) {
-         [NYPLErrorLogger logNetworkError:error
-                                  request:request
-                                 response:response
-                                  message:@"Sign-out error"];
-       } else {
-         [NYPLErrorLogger logSignOutErrorForRequest:request response:response];
-       }
 
+       NSString *msg = [NSString stringWithFormat:@"Error signing out for barcode %@",
+                        currentBarcode.md5String];
+       [NYPLErrorLogger logNetworkError:error
+                                   code:NYPLErrorCodeApiCall
+                                context:@"signOut"
+                                request:request
+                               response:response
+                                message:msg
+                               metadata:nil];
        [self showLogoutAlertWithError:error responseCode:statusCode];
        [self removeActivityTitle];
        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
@@ -476,24 +503,15 @@ static const NSInteger sSection1Sync = 1;
   
 #else
 
-  if([NYPLBookRegistry sharedRegistry].syncing == YES) {
-    [self presentViewController:[NYPLAlertUtils
-                                 alertWithTitle:@"SettingsAccountViewControllerCannotLogOutTitle"
-                                 message:@"SettingsAccountViewControllerCannotLogOutMessage"]
-                       animated:YES
-                     completion:nil];
-  } else {
-    [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
-    [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
-    [[NYPLAccount sharedAccount:self.selectedAccountId] removeAll];
-    [self setupTableData];
-    [self.tableView reloadData];
-    [self removeActivityTitle];
-    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-  }
+  [[NYPLMyBooksDownloadCenter sharedDownloadCenter] reset:self.selectedAccountId];
+  [[NYPLBookRegistry sharedRegistry] reset:self.selectedAccountId];
+  [[NYPLAccount sharedAccount:self.selectedAccountId] removeAll];
+  [self setupTableData];
+  [self.tableView reloadData];
+  [self removeActivityTitle];
+  [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 
 #endif
-  
 }
 
 - (void)deauthorizeDevice
@@ -538,12 +556,12 @@ static const NSInteger sSection1Sync = 1;
    password:tokenPassword
    userID:[self.selectedUserAccount userID]
    deviceID:[self.selectedUserAccount deviceID]
-   completion:^(BOOL success, __unused NSError *error) {
+   completion:^(BOOL success, NSError *error) {
      
      if(!success) {
        // Even though we failed, let the user continue to log out.
        // The most likely reason is a user changing their PIN.
-       [NYPLErrorLogger logDeauthorizationError];
+       [NYPLErrorLogger logDeauthorizationError:error];
      }
      else {
        NYPLLOG(@"***Successful DRM Deactivation***");
@@ -558,6 +576,8 @@ static const NSInteger sSection1Sync = 1;
 
 - (void)validateCredentials
 {
+  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+
   NSMutableURLRequest *const request =
   [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
 
@@ -572,11 +592,12 @@ static const NSInteger sSection1Sync = 1;
                        NSError *const error) {
     NSInteger const statusCode = ((NSHTTPURLResponse *) response).statusCode;
 
+    // all methods methods below call UIApplication::endIgnoringInteractionEvents
     if (statusCode == 200) {
 #if defined(FEATURE_DRM_CONNECTOR)
       [weakSelf processCredsValidationSuccessUsingDRMWithData:data];
 #else
-      [weakSelf authorizationAttemptDidFinish:YES error:nil];
+      [weakSelf authorizationAttemptDidFinish:YES error:nil errorMessage:nil];
 #endif
     } else {
       [weakSelf processCredsValidationFailureWithData:data
@@ -590,13 +611,20 @@ static const NSInteger sSection1Sync = 1;
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)
+// This will call UIApplication::endIgnoringInteractionEvents although it may
+// do so asynchronously.
 - (void)processCredsValidationSuccessUsingDRMWithData:(NSData*)data
 {
   NSError *pDocError = nil;
+  NSString * const barcode = self.usernameTextField.text;
   UserProfileDocument *pDoc = [UserProfileDocument fromData:data error:&pDocError];
   if (!pDoc) {
-    [NYPLErrorLogger logUserProfileDocumentErrorWithError:pDocError];
-    [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Error parsing user profile document." }]];
+    [self authorizationAttemptDidFinish:NO
+                                  error:nil
+                           errorMessage:@"Error parsing user profile doc"];
+    [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
+                                             context:@"SignIn-settingsTab"
+                                             barcode:barcode];
     return;
   }
 
@@ -604,13 +632,28 @@ static const NSInteger sSection1Sync = 1;
     [[NYPLUserAccount sharedAccount:self.selectedAccountId] setAuthorizationIdentifier:pDoc.authorizationIdentifier];
   } else {
     NYPLLOG(@"Authorization ID (Barcode String) was nil.");
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoAuthorizationIdentifier
+                              context:@"SignIn-settingsTab"
+                              message:@"The UserProfileDocument obtained from the server contained no authorization identifier."
+                             metadata:@{
+                               @"hashedBarcode": barcode.md5String
+                             }];
   }
 
   if (pDoc.drm.count > 0 && pDoc.drm[0].vendor && pDoc.drm[0].clientToken) {
     [self.selectedUserAccount setLicensor:[pDoc.drm[0] licensor]];
   } else {
     NYPLLOG(@"Login Failed: No Licensor Token received or parsed from user profile document");
-    [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Trouble locating DRM in profile document." }]];
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoLicensorToken
+                              context:@"SignIn-settingsTab"
+                              message:@"The UserProfileDocument obtained from the server contained no licensor token."
+                             metadata:@{
+                               @"hashedBarcode": barcode.md5String
+                             }];
+
+    [self authorizationAttemptDidFinish:NO
+                                  error:nil
+                           errorMessage:@"No credentials were received to authorize access to books with DRM."];
     return;
   }
 
@@ -641,10 +684,14 @@ static const NSInteger sSection1Sync = 1;
         [self.selectedUserAccount setDeviceID:deviceID];
       }];
     } else {
-      [NYPLErrorLogger logLocalAuthFailedWithError:error libraryName:self.selectedAccount.name];
+      [NYPLErrorLogger logLocalAuthFailedWithError:error
+                                           library:self.selectedAccount
+                                          metadata:@{
+                                            @"hashedBarcode": barcode.md5String
+                                          }];
     }
 
-    [self authorizationAttemptDidFinish:success error:error];
+    [self authorizationAttemptDidFinish:success error:error errorMessage:nil];
   }];
 }
 #endif
@@ -654,6 +701,7 @@ static const NSInteger sSection1Sync = 1;
                                    forRequest:(NSURLRequest * const)request
                                      response:(NSURLResponse * const)response
 {
+  NSString * const barcode = self.usernameTextField.text;
   [self removeActivityTitle];
   [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 
@@ -665,23 +713,46 @@ static const NSInteger sSection1Sync = 1;
     [self.PINTextField becomeFirstResponder];
   }
 
-  // Report event that login failed
-  [NYPLErrorLogger logRemoteLoginErrorWithUrl:request.URL response:response error:error libraryName:self.selectedAccount.name];
-
   if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
-    // TODO: Maybe do something special for when we supposedly didn't supply credentials
+    [NYPLErrorLogger logRemoteLoginError:error
+                                 barcode:barcode
+                                 request:request
+                                response:response
+                                 library:self.selectedAccount
+                                 message:@"Sign-in failed without a problem doc"];
   } else if ([response.MIMEType isEqualToString:@"application/problem+json"] || [response.MIMEType isEqualToString:@"application/api-problem+json"]) {
     NSError *problemDocumentParseError = nil;
     NYPLProblemDocument *problemDocument = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
     if (problemDocumentParseError) {
       [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                                            barcode:barcode
                                                 url:request.URL
-                                            context:@"SettingsAccountDetailVC-processCreds"];
+                                            context:@"SettingsAccountDetailVC-processCreds"
+                                            message:@"Sign-in failed, got a problem doc"];
     } else if (problemDocument) {
-      UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" message:nil];
+      [NYPLErrorLogger logLoginError:error
+                             barcode:barcode
+                             library:self.selectedAccount
+                             request:request
+                     problemDocument:problemDocument
+                            metadata:@{
+                              @"message": @"Sign-in failed, got a problem doc"
+                            }];
+      NSString *msg = NSLocalizedString(@"A server error occurred. Please try again later, and if the problem persists, contact your library's Help Desk.", @"Error message for when a server error occurs.");
+      msg = [NSString stringWithFormat:@"%@\n\n(Error details: %@)", msg,
+             (problemDocument.detail ?: problemDocument.title)];
+      UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+                                                        message:msg];
       [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
       [[NYPLRootTabBarController sharedController] safelyPresentViewController: alert animated:YES completion:nil];
       return; // Short-circuit!! Early return
+    } else {
+      [NYPLErrorLogger logRemoteLoginError:error
+                                   barcode:barcode 
+                                   request:request
+                                  response:response
+                                   library:self.selectedAccount
+                                   message:@"Sign-in failed"];
     }
   }
 
@@ -710,7 +781,18 @@ static const NSInteger sSection1Sync = 1;
                    completion:nil];
 }
 
-- (void)authorizationAttemptDidFinish:(BOOL)success error:(NSError *)error
+/**
+ @note This method is not doing any logging in case `success` is false.
+
+ @param success Whether Adobe DRM authorization was successful or not.
+ @param error If errorMessage is absent, this will be used to derive a message
+ to present to the user.
+ @param errorMessage Will be presented to the user and will be used as a
+ localization key to attempt to localize it.
+ */
+- (void)authorizationAttemptDidFinish:(BOOL)success
+                                error:(NSError *)error
+                         errorMessage:(NSString*)errorMessage
 {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [self removeActivityTitle];
@@ -728,10 +810,22 @@ static const NSInteger sSection1Sync = 1;
       }
     } else {
       [[NSNotificationCenter defaultCenter] postNotificationName:NSNotification.NYPLSyncEnded object:nil];
-      [[NYPLRootTabBarController sharedController] safelyPresentViewController:
-       [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
-                                                                      animated:YES
-                                                                    completion:nil];
+
+      UIAlertController *vc;
+      if (errorMessage) {
+        vc = [NYPLAlertUtils
+              alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+              message:errorMessage];
+      } else {
+        vc = [NYPLAlertUtils
+              alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+              error:error];
+      }
+
+      [[NYPLRootTabBarController sharedController]
+       safelyPresentViewController:vc
+       animated:YES
+       completion:nil];
     }
   }];
 }
@@ -796,7 +890,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         alertController.popoverPresentationController.sourceRect = self.view.bounds;
         alertController.popoverPresentationController.sourceView = self.view;
         [alertController addAction:[UIAlertAction
-                                    actionWithTitle:NSLocalizedString(@"SignOut", nil)
+                                    actionWithTitle:NSLocalizedString(@"SignOut", @"Title for sign out action")
                                     style:UIAlertActionStyleDestructive
                                     handler:^(__attribute__((unused)) UIAlertAction *action) {
                                       [self logOut];
@@ -819,14 +913,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (self.selectedAccount.details.supportsCardCreator
           && self.selectedAccount.details.signUpUrl != nil) {
         __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
-        CardCreatorConfiguration *const configuration =
-        [[CardCreatorConfiguration alloc]
-         initWithEndpointURL:self.selectedAccount.details.signUpUrl ?: APIKeys.cardCreatorEndpointURL
-         endpointVersion:[APIKeys cardCreatorVersion]
-         endpointUsername:NYPLSecrets.cardCreatorUsername
-         endpointPassword:NYPLSecrets.cardCreatorPassword
-         requestTimeoutInterval:self.businessLogic.requestTimeoutInterval
-         completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
+
+        CardCreatorConfiguration *config = [self.businessLogic makeRegularCardCreationConfiguration];
+        config.completionHandler = ^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
           if (userInitiated) {
             // Dismiss CardCreator when user finishes Credential Review
             [weakSelf dismissViewControllerAnimated:YES completion:nil];
@@ -834,20 +923,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             weakSelf.usernameTextField.text = username;
             weakSelf.PINTextField.text = PIN;
             [weakSelf updateLoginLogoutCellAppearance];
-            self.isLoggingInAfterSignUp = YES;
+            weakSelf.isLoggingInAfterSignUp = YES;
             [weakSelf logIn];
           }
-        }];
+        };
 
-        UINavigationController *const navigationController =
-        [CardCreator initialNavigationControllerWithConfiguration:configuration];
-        navigationController.navigationBar.topItem.leftBarButtonItem =
+        UINavigationController *const navController = [CardCreator initialNavigationControllerWithConfiguration:config];
+        navController.navigationBar.topItem.leftBarButtonItem =
         [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                          style:UIBarButtonItemStylePlain
                                         target:self
                                         action:@selector(didSelectCancelForSignUp)];
-        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:navigationController animated:YES completion:nil];
+        navController.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:navController animated:YES completion:nil];
       }
       else // does not support card creator
       {
@@ -876,6 +964,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
         [self presentViewController:navigationController animated:YES completion:nil];
       }
       break;
+    }
+    case CellKindJuvenile: {
+      [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+      UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+      [self didSelectJuvenileSignupOnCell:cell];
     }
     case CellKindSyncButton: {
       break;
@@ -936,6 +1029,84 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     }
   }
+}
+
+- (UITableViewCell *)setUpJuvenileFlowCell
+{
+  UITableViewCell *cell = [[UITableViewCell alloc]
+                           initWithStyle:UITableViewCellStyleDefault
+                           reuseIdentifier:nil];
+  cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+  cell.textLabel.text = NSLocalizedString(@"Want a card for your child?", nil);
+  [self addActivityIndicatorToJuvenileCell:cell];
+  return cell;
+}
+
+- (void)addActivityIndicatorToJuvenileCell:(UITableViewCell *)cell
+{
+  UIActivityIndicatorViewStyle style;
+  if (@available(iOS 13, *)) {
+    style = UIActivityIndicatorViewStyleMedium;
+  } else {
+    style = UIActivityIndicatorViewStyleGray;
+  }
+  self.juvenileActivityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:style];
+  self.juvenileActivityView.center = CGPointMake(cell.bounds.size.width / 2,
+                                                 cell.bounds.size.height / 2);
+  [self.juvenileActivityView integralizeFrame];
+  self.juvenileActivityView.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin |
+                                                UIViewAutoresizingFlexibleRightMargin |
+                                                UIViewAutoresizingFlexibleBottomMargin |
+                                                UIViewAutoresizingFlexibleLeftMargin);
+  self.juvenileActivityView.hidesWhenStopped = YES;
+  [cell addSubview:self.juvenileActivityView];
+
+  if (self.businessLogic.juvenileAuthIsOngoing) {
+    [cell setUserInteractionEnabled:NO];
+    cell.textLabel.hidden = YES;
+    [self.juvenileActivityView startAnimating];
+  } else {
+    [cell setUserInteractionEnabled:YES];
+    cell.textLabel.hidden = NO;
+    [self.juvenileActivityView stopAnimating];
+  }
+}
+
+- (void)didSelectJuvenileSignupOnCell:(UITableViewCell *)cell
+{
+  [cell setUserInteractionEnabled:NO];
+  cell.textLabel.hidden = YES;
+  [self.juvenileActivityView startAnimating];
+
+  __weak __auto_type weakSelf = self;
+  [self.businessLogic startJuvenileCardCreationWithEligibilityCompletion:^(UINavigationController * _Nullable navVC, NSError * _Nullable error) {
+
+    [weakSelf.juvenileActivityView stopAnimating];
+    cell.textLabel.hidden = NO;
+    [cell setUserInteractionEnabled:YES];
+
+    if (error) {
+      UIAlertController *alert = [NYPLAlertUtils
+                                  alertWithTitle:NSLocalizedString(@"Error", "Alert title")
+                                  error:error];
+      [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert
+                                                         viewController:nil
+                                                               animated:YES
+                                                             completion:nil];
+      return;
+    }
+
+    navVC.navigationBar.topItem.leftBarButtonItem =
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                     style:UIBarButtonItemStylePlain
+                                    target:weakSelf
+                                    action:@selector(didSelectCancelForSignUp)];
+    navVC.modalPresentationStyle = UIModalPresentationFormSheet;
+    [weakSelf presentViewController:navVC animated:YES completion:nil];
+
+  } flowCompletion:^{
+    [weakSelf dismissViewControllerAnimated:YES completion:nil];
+  }];
 }
 
 - (void)didSelectCancelForSignUp
@@ -1079,6 +1250,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.textLabel.text = NSLocalizedString(@"SettingsBookmarkSyncTitle",
                                               @"Title for switch to turn on or off syncing.");
       return cell;
+    }
+    case CellKindJuvenile: {
+      return [self setUpJuvenileFlowCell];
     }
     case CellReportIssue: {
       UITableViewCell *cell = [[UITableViewCell alloc]
@@ -1340,14 +1514,18 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthentication error:NULL]) {
       [context evaluatePolicy:LAPolicyDeviceOwnerAuthentication
               localizedReason:NSLocalizedString(@"SettingsAccountViewControllerAuthenticationReason", nil)
-                        reply:^(__unused BOOL success,
-                                __unused NSError *_Nullable error) {
-                          if(success) {
-                            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                              [self togglePINShowHideState];
-                            }];
-                          }
-                        }];
+                        reply:^(BOOL success, NSError *_Nullable error) {
+        if(success) {
+          [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [self togglePINShowHideState];
+          }];
+        } else {
+          [NYPLErrorLogger logError:error
+                            context:@"Show/Hide PIN"
+                            message:@"Error while trying to show the PIN"
+                           metadata:nil];
+        }
+      }];
     } else {
       [self togglePINShowHideState];
     }
@@ -1395,7 +1573,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
 - (void)updateLoginLogoutCellAppearance
 {
   if([self.selectedUserAccount hasBarcodeAndPIN]) {
-    self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", nil);
+    self.logInSignOutCell.textLabel.text = NSLocalizedString(@"SignOut", @"Title for sign out action");
     self.logInSignOutCell.textLabel.textAlignment = NSTextAlignmentCenter;
     self.logInSignOutCell.textLabel.textColor = [NYPLConfiguration mainColor];
     self.logInSignOutCell.userInteractionEnabled = YES;

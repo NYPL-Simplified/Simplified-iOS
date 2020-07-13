@@ -43,10 +43,10 @@ import UIKit
     if message.isEmpty {
       // since it wasn't a networking or Adobe DRM error, show the error
       // description if present
-      if let errorDescription = error?.localizedDescription, !errorDescription.isEmpty {
+      if let errorDescription = error?.localizedDescriptionWithRecovery, !errorDescription.isEmpty {
         message = errorDescription
       } else {
-        message = "UnknownError"
+        message = "An error occurred. Please try again later or report an issue from the Settings tab."
         NYPLErrorLogger.logError(withCode: .genericErrorMsgDisplayed,
                                  context: NYPLErrorLogger.Context.errorHandling.rawValue,
                                  message: "Error \(error?.description ?? "") contained no usable error message for the user, so we defaulted to a generic one.")

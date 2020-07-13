@@ -235,16 +235,17 @@
 - (void)registerCallbackForLogHandler
 {
   [DefaultAudiobookManager setLogHandler:^(enum LogLevel level, NSString * _Nonnull message, NSError * _Nullable error) {
+    NSString *msg = [NSString stringWithFormat:@"Level: %ld. Message: %@",
+                     (long)level, message];
+
     if (error) {
       [NYPLErrorLogger logAudiobookIssue:error
                                 severity:NYPLSeverityError
-                                 message:message];
+                                 message:msg];
     } else {
-      if (level != LogLevelDebug) {
+      if (level > LogLevelDebug) {
         NSError *error = [NSError errorWithDomain:@"org.nypl.labs.audiobookToolkit" code:0 userInfo:nil];
-        NSString *msg = [NSString stringWithFormat:@"Level: %ld. Message: %@",
-                         (long)level, message];
-        
+
         NYPLSeverity severity = level == LogLevelInfo ? NYPLSeverityInfo : level == LogLevelWarn ? NYPLSeverityWarning : NYPLSeverityError;
         [NYPLErrorLogger logAudiobookIssue:error
                                   severity:severity
@@ -305,7 +306,8 @@
   NSString *logMsg = [NSString stringWithFormat:@"bookID: %@; fileURL: %@", book.identifier, url];
   [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeAudiobookCorrupted
                             context:@"audiobooks"
-                            message:logMsg];
+                            message:logMsg
+                           metadata:nil];
 }
 
 #pragma mark NYPLBookDownloadFailedDelegate

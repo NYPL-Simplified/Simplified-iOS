@@ -2,7 +2,16 @@
 /// can then log in and adjust settings after selecting Accounts.
 @objcMembers class NYPLSettingsAccountsTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+  enum LoadState {
+    case loading
+    case failure
+    case success
+  }
+
   weak var tableView: UITableView!
+  var reloadView: NYPLReloadView!
+  var spinner: UIActivityIndicatorView!
+
   fileprivate var accounts: [String] {
     didSet {
       //update NYPLSettings
@@ -36,25 +45,32 @@
     self.tableView = self.view as? UITableView
     self.tableView.delegate = self
     self.tableView.dataSource = self
-    
+
+    spinner = UIActivityIndicatorView(style: .gray)
+    view.addSubview(spinner)
+
+    reloadView = NYPLReloadView()
+    reloadView.handler = { [weak self] in
+      guard let self = self else {
+        return
+      }
+      self.reloadAccounts()
+    }
+    view.addSubview(reloadView)
 
     // cleanup accounts, remove demo account or accounts not supported through accounts.json // will be refactored when implementing librsry registry
     var accountsToRemove = [String]()
     
-    for account in accounts
-    {
-      if (AccountsManager.shared.account(account) == nil)
-      {
+    for account in accounts {
+      if (AccountsManager.shared.account(account) == nil) {
         accountsToRemove.append(account)
       }
     }
 
-    for remove in accountsToRemove
-    {
+    for remove in accountsToRemove {
       if let index = accounts.index(of: remove) {
         accounts.remove(at: index)
       }
-
     }
     
     self.userAddedSecondaryAccounts = accounts.filter { $0 != AccountsManager.shared.currentAccount?.uuid }
@@ -80,9 +96,56 @@
                                            object: nil)
 
     self.libraryAccounts = manager.accounts()
-    updateUI()
+    updateNavBar()
   }
-  
+
+  override func viewWillLayoutSubviews() {
+    super.viewWillLayoutSubviews()
+    spinner.centerInSuperview(withOffset: tableView.contentOffset)
+    reloadView.centerInSuperview(withOffset: tableView.contentOffset)
+  }
+
+  // MARK: -
+
+  func showLoadingUI(loadState: LoadState) {
+    switch loadState {
+    case .loading:
+      spinner.isHidden = false
+      spinner.startAnimating()
+      reloadView.isHidden = true
+      view.bringSubviewToFront(spinner)
+    case .failure:
+      spinner.stopAnimating()
+      reloadView.isHidden = false
+      view.bringSubviewToFront(reloadView)
+    case .success:
+      spinner.stopAnimating()
+      reloadView.isHidden = true
+    }
+  }
+
+  func reloadAccounts() {
+    showLoadingUI(loadState: .loading)
+
+    manager.updateAccountSet { [weak self] success in
+      NYPLMainThreadRun.asyncIfNeeded { [weak self] in
+        guard let self = self else {
+          return
+        }
+        if success {
+          self.showLoadingUI(loadState: .success)
+        } else {
+          self.showLoadingUI(loadState: .failure)
+          NYPLErrorLogger.logError(withCode: .apiCall,
+                                   context: "NYPLSettingsAccountsList",
+                                   message: "Accounts list failed to load",
+                                   metadata: [
+                                    "currentLibrary": self.manager.currentAccount?.debugDescription ?? "N/A"])
+        }
+      }
+    }
+  }
+
   func reloadAfterAccountChange() {
     accounts = NYPLSettings.shared.settingsAccountsList
     self.userAddedSecondaryAccounts = accounts.filter { $0 != manager.currentAccount?.uuid }
@@ -94,16 +157,16 @@
   func catalogChangeHandler() {
     self.libraryAccounts = AccountsManager.shared.accounts()
     DispatchQueue.main.async {
-      self.updateUI()
+      self.updateNavBar()
     }
   }
   
-  func updateUI() {
+  private func updateNavBar() {
     let enable = self.userAddedSecondaryAccounts.count + 1 < self.libraryAccounts.count
     self.navigationItem.rightBarButtonItem?.isEnabled = enable
   }
-  
-  func addAccount() {
+
+  @objc private func addAccount() {
     AccountsManager.shared.loadCatalogs() { success in
       DispatchQueue.main.async {
         guard success else {
@@ -117,7 +180,7 @@
     }
   }
   
-  func showAddAccountList() {
+  private func showAddAccountList() {
     let alert = UIAlertController(title: NSLocalizedString(
       "SettingsAccountLibrariesViewControllerAlertTitle",
       comment: "Title to tell a user that they can add another account to the list"),
@@ -148,7 +211,7 @@
           handler: { action in
             self.userAddedSecondaryAccounts.append(userAccount.uuid)
             self.updateSettingsAccountList()
-            self.updateUI()
+            self.updateNavBar()
             self.tableView.reloadData()
         }))
       }
@@ -161,8 +224,10 @@
   
   func updateSettingsAccountList() {
     guard let uuid = manager.currentAccount?.uuid else {
+      showLoadingUI(loadState: .failure)
       return
     }
+    showLoadingUI(loadState: .success)
     var array = userAddedSecondaryAccounts!
     array.append(uuid)
     NYPLSettings.shared.settingsAccountsList = array
@@ -171,11 +236,14 @@
   // MARK: UITableViewDataSource
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    let numRows: Int
     if section == 0 {
-      return self.manager.currentAccount != nil ? 1 : 0
+      numRows = self.manager.currentAccount != nil ? 1 : 0
     } else {
-      return userAddedSecondaryAccounts.count
+      numRows = userAddedSecondaryAccounts.count
     }
+
+    return numRows
   }
   
   func numberOfSections(in tableView: UITableView) -> Int {
@@ -281,7 +349,7 @@
       userAddedSecondaryAccounts.remove(at: indexPath.row)
       tableView.deleteRows(at: [indexPath], with: .fade)
       updateSettingsAccountList()
-      updateUI()
+      updateNavBar()
       self.tableView.reloadData()
     }
   }

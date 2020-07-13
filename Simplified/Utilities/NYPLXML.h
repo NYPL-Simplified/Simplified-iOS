@@ -1,8 +1,13 @@
-/* Note: This class does not intelligently support mixed-content elements: All children are always
+/**
+ Wrapper around NSXMLParser.
+
+ @note This class does not do any logging to Crashlytics.
+
+ @note This class does not intelligently support mixed-content elements: All children are always
 NYPLXML objects representing elements, and all text nodes within the parent are concatenated into a
 single value. This is simple and convenient for parsing most data formats (e.g. OPDS), but it is not
-suitable for handling markup (e.g. XHTML). */
-
+suitable for handling markup (e.g. XHTML).
+ */
 @interface NYPLXML : NSObject
 
 @property (nonatomic, readonly) NSDictionary *attributes;
