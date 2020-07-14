@@ -66,7 +66,7 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
     
     NotificationCenter.default.addObserver(
       self,
-      selector: #selector(updateAccountSetFromSettings),
+      selector: #selector(updateAccountSet),
       name: NSNotification.Name.NYPLUseBetaDidChange,
       object: nil
     )
@@ -144,10 +144,13 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
               withCode: .authDocLoadFail,
               context: NYPLErrorLogger.Context.accountManagement.rawValue,
               message: """
-              Failed to load authentication document for current account: \
-              \(self.currentAccount.debugDescription). A bunch of things \
-              likely won't work.
-              """)
+              Failed to load authentication document for current library: \
+              \(self.currentAccount?.name ?? "N/A"). Will still attempt to \
+              load catalogURL \(self.currentAccount?.catalogUrl ?? "N/A").
+              """,
+              metadata: [
+                "currentLibrary": self.currentAccount?.debugDescription ?? "N/A"
+            ])
           }
 
           DispatchQueue.main.async {
@@ -188,7 +191,11 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
     }
   }
 
-  /// Loads library catalogs from the network, or cache if available.
+  /// Loads library catalogs from the network or cache if available.
+  ///
+  /// After loading the library accounts, the authentication document
+  /// for the current library will be loaded in sequence.
+  ///
   /// - Parameter completion: Always invoked at the end of the load process.
   /// No guarantees are being made about whether this is called on the main
   /// thread or not.
@@ -239,10 +246,10 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
     return self.accountSets[k] ?? []
   }
   
-  func updateAccountSetFromSettings() {
+  func updateAccountSet(completion: @escaping (Bool) -> () = { _ in }) {
     self.accountSet = NYPLSettings.shared.useBetaLibraries ? betaUrlHash : prodUrlHash
     if self.accounts().isEmpty {
-      loadCatalogs(completion: {_ in })
+      loadCatalogs(completion: completion)
     }
   }
 

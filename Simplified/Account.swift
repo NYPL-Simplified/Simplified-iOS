@@ -398,7 +398,7 @@ class OPDS2SamlIDP: NSObject, Codable {
   /// Load authentication documents from the network or cache.
   /// - Parameter completion: Always invoked at the end of the load process.
   /// No guarantees are being made about whether this is called on the main
-  /// thread or not.
+  /// thread or not. This closure is not retained by `self`.
   func loadAuthenticationDocument(completion: @escaping (Bool) -> ()) {
     guard let urlString = authenticationDocumentUrl, let url = URL(string: urlString) else {
       NYPLErrorLogger.logError(
@@ -419,11 +419,15 @@ class OPDS2SamlIDP: NSObject, Codable {
             OPDS2AuthenticationDocument.fromData(serverData)
           completion(true)
         } catch (let error) {
+          let responseBody = String(data: serverData, encoding: .utf8)
           NYPLErrorLogger.logError(
             withCode: .authDocParseFail,
             context: NYPLErrorLogger.Context.accountManagement.rawValue,
             message: "Failed to parse authentication document data obtained from \(url)",
-            metadata: ["underlyingError": error]
+            metadata: [
+              "underlyingError": error,
+              "responseBody": responseBody ?? ""
+            ]
           )
           completion(false)
         }
@@ -453,6 +457,7 @@ extension AccountDetails {
 extension Account {
   override var debugDescription: String {
     return """
+    name=\(name)
     uuid=\(uuid)
     catalogURL=\(String(describing: catalogUrl))
     authDocURL=\(String(describing: authenticationDocumentUrl))

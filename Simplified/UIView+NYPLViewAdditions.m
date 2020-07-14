@@ -16,6 +16,14 @@
 {
   self.center = CGPointMake(CGRectGetWidth(self.superview.bounds) * 0.5,
                             CGRectGetHeight(self.superview.bounds) * 0.5);
+  [self integralizeFrame];
+}
+
+- (void)centerInSuperviewWithOffset:(CGPoint)offset
+{
+  self.center = CGPointMake(CGRectGetWidth(self.superview.bounds) * 0.5 + offset.x,
+                            CGRectGetHeight(self.superview.bounds) * 0.5 + offset.y);
+  [self integralizeFrame];
 }
 
 - (void)integralizeFrame

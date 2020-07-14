@@ -138,6 +138,17 @@ extension NYPLNetworkResponder: URLSessionDataDelegate {
       return
     }
 
+    // TODO: SIMPLY-2881
+    // Note: we purposedly ignore looking at the HTTP status code to
+    // determine if we had an actual success or failure because currently
+    // upper/application level classes sometimes parse the Problem Document
+    // that may be returned in the `progressData`.
+    //
+    // So while we currently must consider that (and anything that didn't
+    // generate an actual `error`) a "successful" result here, ideally (per
+    // SIMPLY-2881) NYPLNetworkResponder should check for presence of a problem
+    // document instead of having other classes do that work elsewhere.
+
     currentTaskInfo.completion(.success(currentTaskInfo.progressData, task.response))
   }
 
