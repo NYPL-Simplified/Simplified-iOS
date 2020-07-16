@@ -109,6 +109,7 @@ class NYPLNetworkResponder: NSObject, URLSessionDelegate, URLSessionDataDelegate
     taskInfoLock.lock()
 
     guard let currentTaskInfo = taskInfo.removeValue(forKey: taskID) else {
+      taskInfoLock.unlock()
       NYPLErrorLogger.logNetworkError(
         error,
         code: .noTaskInfoAvailable,
