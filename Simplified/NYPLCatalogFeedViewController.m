@@ -162,7 +162,7 @@
         [[NYPLBookRegistry sharedRegistry] save];
       } else {
         [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeRegistrySyncFailure
-                                  context:NSStringFromClass([wSelf class])
+                                  context:NSStringFromClass([wSelf class]) ?: @"NYPLCatalogFeedViewController"
                                   message:@"Book registry sync failed"
                                  metadata:@{@"Catalog feed URL": wSelf.URL ?: @"none"}];
       }
