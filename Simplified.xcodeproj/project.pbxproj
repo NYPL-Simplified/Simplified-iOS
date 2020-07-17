@@ -406,6 +406,8 @@
 		735350B724918432006021BD /* URLRequest+NYPLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735350B624918432006021BD /* URLRequest+NYPLTests.swift */; };
 		735F41A3243E381D00046182 /* String+NYPLAdditionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735F41A2243E381D00046182 /* String+NYPLAdditionsTests.swift */; };
 		735FED262427494900144C97 /* NYPLNetworkResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735FED252427494900144C97 /* NYPLNetworkResponder.swift */; };
+		7360D0D524BFCB9700C8AD16 /* NYPLUserFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */; };
+		7360D0D624BFCB9700C8AD16 /* NYPLUserFriendlyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */; };
 		7384C800242BB43400D5F960 /* NYPLCachingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C7FF242BB43300D5F960 /* NYPLCachingTests.swift */; };
 		7384C802242BCC4800D5F960 /* Date+NYPLAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C801242BCC4800D5F960 /* Date+NYPLAdditions.swift */; };
 		7384C804242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7384C803242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift */; };
@@ -826,6 +828,7 @@
 		735F41A2243E381D00046182 /* String+NYPLAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+NYPLAdditionsTests.swift"; sourceTree = "<group>"; };
 		735FED252427494900144C97 /* NYPLNetworkResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLNetworkResponder.swift; sourceTree = "<group>"; };
 		73609AD8245B53CB00F0E08B /* update-certificates.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "update-certificates.sh"; sourceTree = SOURCE_ROOT; };
+		7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserFriendlyError.swift; sourceTree = "<group>"; };
 		7384C7FF242BB43300D5F960 /* NYPLCachingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLCachingTests.swift; sourceTree = "<group>"; };
 		7384C801242BCC4800D5F960 /* Date+NYPLAdditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+NYPLAdditions.swift"; sourceTree = "<group>"; };
 		7384C803242BCE5900D5F960 /* Date+NYPLAdditionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+NYPLAdditionsTests.swift"; sourceTree = "<group>"; };
@@ -1389,6 +1392,7 @@
 				733875642423E1B0000FEB67 /* NYPLNetworkExecutor.swift */,
 				733875662423E540000FEB67 /* NYPLCaching.swift */,
 				735FED252427494900144C97 /* NYPLNetworkResponder.swift */,
+				7360D0D424BFCB9700C8AD16 /* NYPLUserFriendlyError.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -2236,6 +2240,7 @@
 				7347F0C1245A4DE200558D7F /* NSString+NYPLStringAdditions.m in Sources */,
 				7347F0C2245A4DE200558D7F /* NYPLKeychainManager.swift in Sources */,
 				7347F0C3245A4DE200558D7F /* NYPLErrorLogger.swift in Sources */,
+				7360D0D624BFCB9700C8AD16 /* NYPLUserFriendlyError.swift in Sources */,
 				7347F0C4245A4DE200558D7F /* NYPLOPDSEntryGroupAttributes.m in Sources */,
 				7347F0C5245A4DE200558D7F /* NYPLMyBooksDownloadCenter.m in Sources */,
 				7347F0C6245A4DE200558D7F /* NYPLProblemDocumentCacheManager.swift in Sources */,
@@ -2309,6 +2314,7 @@
 				1139DA6519C7755D00A07810 /* NYPLBookCoverRegistry.m in Sources */,
 				11119742198827850014462F /* NYPLBookDetailDownloadingView.m in Sources */,
 				2DFAC8ED1CD8DDD1003D9EC0 /* NYPLOPDSCategory.m in Sources */,
+				7360D0D524BFCB9700C8AD16 /* NYPLUserFriendlyError.swift in Sources */,
 				11068C55196DD37900E8A94B /* NYPLNull.m in Sources */,
 				1111973C19880E8D0014462F /* NYPLLinearView.m in Sources */,
 				11396FB9193D289100E16EE8 /* NSDate+NYPLDateAdditions.m in Sources */,

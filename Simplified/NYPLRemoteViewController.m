@@ -259,9 +259,9 @@
                               message:@"Failed to create VC after loading from server"
                              metadata:@{
                                @"HTTPstatusCode": @(httpResponse.statusCode),
-                               @"mimeType": httpResponse.MIMEType,
+                               @"response.mimeType": httpResponse.MIMEType ?: @"N/A",
                                @"URL": self.URL ?: @"N/A",
-                               @"response.URL": httpResponse.URL ?: @"N/A"
+                               @"response": httpResponse ?: @"N/A"
                              }];
     self.reloadView.hidden = NO;
   }
@@ -303,16 +303,14 @@
 
 - (void)handleErrorResponse:(NSHTTPURLResponse *)httpResponse
 {
-  BOOL mimeTypeMatches = [self.response.MIMEType isEqualToString:@"application/problem+json"] ||
-  [self.response.MIMEType isEqualToString:@"application/api-problem+json"];
-
-  if (mimeTypeMatches) {
+  if (httpResponse.isProblemDocument) {
     NSError *problemDocumentParseError = nil;
     NYPLProblemDocument *pDoc = [NYPLProblemDocument fromData:self.data error:&problemDocumentParseError];
     UIAlertController *alert;
 
     if (problemDocumentParseError) {
       [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                                problemDocumentData:self.data
                                             barcode:nil
                                                 url:[self.response URL]
                                             context:@"RemoteViewController"

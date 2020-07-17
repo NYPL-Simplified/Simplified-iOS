@@ -8,11 +8,11 @@
 
 import Foundation
 
+/// Use this enum to express either-or semantics in a result.
 enum NYPLResult<SuccessInfo> {
   case success(SuccessInfo)
-  case failure(Error)
+  case failure(NYPLUserFriendlyError)
 }
-
 
 /// A class that is capable of executing network requests in a thread-safe way.
 /// This class implements caching according to server response caching headers,
@@ -68,7 +68,7 @@ class NYPLNetworkExecutor {
   ///   - completion: Always called when the resource is either fetched from
   /// the network or from the cache.
   func executeRequest(_ req: URLRequest,
-           completion: @escaping (_ result: NYPLResult<Data>) -> Void) {
+                      completion: @escaping (_: NYPLResult<Data>) -> Void) {
     let task = urlSession.dataTask(with: req)
     responder.addCompletion(completion, taskID: task.taskIdentifier)
     task.resume()
