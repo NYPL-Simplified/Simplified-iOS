@@ -205,8 +205,13 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
           NotificationCenter.default.post(name: NSNotification.Name.NYPLCatalogDidLoad, object: nil)
         }
       case .failure(let error):
-        NYPLErrorLogger.logError(error,
-                                 message: "Catalog failed to load from \(targetUrl)")
+        NYPLErrorLogger.logError(
+          withCode: .libraryListLoadFail,
+          context: NYPLErrorLogger.Context.accountManagement.rawValue,
+          message: "Libraries list failed to load from \(targetUrl)",
+          metadata: [
+            NSUnderlyingErrorKey: error,
+        ])
         self.callAndClearLoadingCompletionHandlers(key: hash, false)
       }
     }

@@ -109,8 +109,7 @@ static NYPLOPDSFeedType TypeImpliedByEntry(NYPLOPDSEntry *const entry)
                                 }];
 
         NSDictionary *errorDict = nil;
-        if ([response.MIMEType isEqualToString:@"application/problem+json"]
-            || [response.MIMEType isEqualToString:@"application/api-problem+json"]) {
+        if (response.isProblemDocument) {
           errorDict = [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)0 error:nil];
         }
 

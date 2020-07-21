@@ -713,52 +713,53 @@ Authenticating with any of those barcodes should work.
     [self.PINTextField becomeFirstResponder];
   }
 
-  if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
-    [NYPLErrorLogger logRemoteLoginError:error
-                                 barcode:barcode
-                                 request:request
-                                response:response
-                                 library:self.selectedAccount
-                                 message:@"Sign-in failed without a problem doc"];
-  } else if ([response.MIMEType isEqualToString:@"application/problem+json"] || [response.MIMEType isEqualToString:@"application/api-problem+json"]) {
-    NSError *problemDocumentParseError = nil;
-    NYPLProblemDocument *problemDocument = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
-    if (problemDocumentParseError) {
-      [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
-                                            barcode:barcode
-                                                url:request.URL
-                                            context:@"SettingsAccountDetailVC-processCreds"
-                                            message:@"Sign-in failed, got a problem doc"];
-    } else if (problemDocument) {
-      [NYPLErrorLogger logLoginError:error
-                             barcode:barcode
-                             library:self.selectedAccount
-                             request:request
-                     problemDocument:problemDocument
-                            metadata:@{
-                              @"message": @"Sign-in failed, got a problem doc"
-                            }];
+  NYPLProblemDocument *problemDocument = nil;
+  UIAlertController *alert = nil;
+  NSError *problemDocumentParseError = nil;
+  if (response.isProblemDocument) {
+    problemDocument = [NYPLProblemDocument fromData:data
+                                              error:&problemDocumentParseError];
+    if (problemDocumentParseError == nil && problemDocument != nil) {
       NSString *msg = NSLocalizedString(@"A server error occurred. Please try again later, and if the problem persists, contact your library's Help Desk.", @"Error message for when a server error occurs.");
-      msg = [NSString stringWithFormat:@"%@\n\n(Error details: %@)", msg,
-             (problemDocument.detail ?: problemDocument.title)];
-      UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
-                                                        message:msg];
-      [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
-      [[NYPLRootTabBarController sharedController] safelyPresentViewController: alert animated:YES completion:nil];
-      return; // Short-circuit!! Early return
-    } else {
-      [NYPLErrorLogger logRemoteLoginError:error
-                                   barcode:barcode 
-                                   request:request
-                                  response:response
-                                   library:self.selectedAccount
-                                   message:@"Sign-in failed"];
+      NSString *errorDetails = (problemDocument.detail ?: problemDocument.title);
+      if (errorDetails) {
+        msg = [NSString stringWithFormat:@"%@\n\n(Error details: %@)", msg,
+               errorDetails];
+      }
+      alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+                                     message:msg];
+      [NYPLAlertUtils setProblemDocumentWithController:alert
+                                              document:problemDocument
+                                                append:YES];
     }
   }
 
-  // Fallthrough case: show alert
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:
-   [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
+  // error logging
+  if (problemDocumentParseError != nil) {
+    [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                              problemDocumentData:data
+                                          barcode:barcode
+                                              url:request.URL
+                                          context:@"SettingsAccountDetailVC-processCreds"
+                                          message:@"Sign-in failed, got a corrupted problem doc"];
+  } else if (problemDocument) {
+    [NYPLErrorLogger logLoginError:error
+                           barcode:barcode
+                           library:self.selectedAccount
+                           request:request
+                          response:response
+                   problemDocument:problemDocument
+                          metadata:@{
+                            @"message": @"Sign-in failed, got a problem doc"
+                          }];
+  }
+
+  // notify user of error
+  if (alert == nil) {
+    alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+                                     error:error];
+  }
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
                                                                   animated:YES
                                                                 completion:nil];
 }

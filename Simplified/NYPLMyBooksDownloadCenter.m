@@ -179,12 +179,14 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
 
   if ([downloadTask.response isProblemDocument]) {
     NSError *problemDocumentParseError = nil;
+    NSData *problemDocData = [NSData dataWithContentsOfURL:tmpSavedFileURL];
     problemDocument = [NYPLProblemDocument
-                       fromData:[NSData dataWithContentsOfURL:tmpSavedFileURL]
+                       fromData:problemDocData
                        error:&problemDocumentParseError];
     if (problemDocumentParseError) {
       [NYPLErrorLogger
        logProblemDocumentParseError:problemDocumentParseError
+       problemDocumentData:problemDocData
        barcode:NYPLUserAccount.sharedAccount.barcode
        url:tmpSavedFileURL
        context:@"myBooks-download-finish"
