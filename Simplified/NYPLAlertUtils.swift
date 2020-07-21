@@ -42,7 +42,7 @@ import UIKit
     if customMessage != nil { // Custom message override
       message = customMessage as! String
     } else if message.isEmpty { // Handle unassigned message
-      message = "UnknownError"
+      message = "An error occurred. Please try again later or report an issue from the Settings tab."
     }
     
     return alert(title: title, message: message)

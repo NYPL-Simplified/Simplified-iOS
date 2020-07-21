@@ -80,6 +80,7 @@
     "An unknown error occurred. Please check your connection or try again later.";
 "Verifying" = "Verifying";
 "Back" = "Back";
+"This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk." = "This URL cannot be found. Please close the app entirely and reload it. If the problem persists, please contact your library's Help Desk.";
 
 // NYPLAccountSignInViewController
 "SigningInAgree" = "By signing in, you agree to the End User License Agreement.";

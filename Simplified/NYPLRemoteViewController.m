@@ -11,11 +11,12 @@
 
 @property (nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic) UILabel *activityIndicatorLabel;
+@property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic) NSURLConnection *connection;
 @property (nonatomic) NSMutableData *data;
 @property (nonatomic, copy) UIViewController *(^handler)(NYPLRemoteViewController *remoteViewController, NSData *data, NSURLResponse *response);
-@property (nonatomic) NYPLReloadView *reloadView;
 @property (nonatomic, strong) NSURLResponse *response;
+@property (atomic, readwrite) NSURL *URL;
 
 @end
 
@@ -40,6 +41,25 @@
   return self;
 }
 
+- (void)showReloadViewWithMessage:(NSString*)message
+{
+  if (message != nil) {
+    [self.reloadView setMessage:message];
+  } else {
+    [self.reloadView setDefaultMessage];
+  }
+
+  self.reloadView.hidden = NO;
+  self.activityIndicatorLabel.hidden = YES;
+  [self.activityIndicatorView stopAnimating];
+}
+
+- (void)loadWithURL:(NSURL*)url
+{
+  self.URL = url;
+  [self load];
+}
+
 - (void)load
 {
   self.reloadView.hidden = YES;
@@ -52,14 +72,47 @@
   }
   
   [self.connection cancel];
-  
+
+  [self.activityIndicatorView startAnimating];
+
+  // TODO: SIMPLY-2862
+  // From the point of view of this VC, there is no point in attempting to
+  // load a remote page if we have no URL. Upon inspection of the codebase,
+  // this happens only in 2 situations:
+  // 1. at navigation controllers / app initialization time, when they are
+  //    initialized with dummy VCs that have nil URLs. These VCs will be
+  //    replaced once we obtain the catalog from the authentication document of
+  //    the current library. Expressing this in code is the point of SIMPLY-2862.
+  // 2. If the request for loading the library accounts and the current
+  //    library's authentication document fail.
+  // These 2 situations are hard to distinguish from here. However, both
+  // can be handled by attempting a reload of the library accounts
+  // and auth doc. This is ok even for case #1 bc there's instrumentation in
+  // AccountManager for ignoring a call if there's one already ongoing.
+  // If those request succeed, there's instrumentation in AccountManager and
+  // NYPLRootTabBarController to trigger the creation of a new
+  // NYPLRemoteViewController furnished this time with a non-nil catalog URL.
+  //
+  // There's a 3rd case to consider also, and that is if the VC was purposedly
+  // set up with a nil URL. While that looks like a programmer error, it will
+  // result in a needless reload of the accounts/auth doc, but it will end up
+  // showing the reload UI anyway.
+  //
+  // Obviously this level of coupling is dreadful, and SIMPLY-2862 should
+  // address this as well.
+  if (self.URL == nil) {
+    [self reloadAccountsAndAuthenticationDocument];
+    return;
+  }
+
   NSTimeInterval timeoutInterval = 30.0;
   NSTimeInterval activityLabelTimer = 10.0;
 
   NSURLRequest *const request = [NSURLRequest requestWithURL:self.URL
                                                  cachePolicy:NSURLRequestUseProtocolCachePolicy
                                              timeoutInterval:timeoutInterval];
-  
+
+  // show "slow loading" label after `activityLabelTimer` seconds
   self.activityIndicatorLabel.hidden = YES;
   [NSTimer scheduledTimerWithTimeInterval: activityLabelTimer target: self
                                  selector: @selector(addActivityIndicatorLabel:) userInfo: nil repeats: NO];
@@ -71,9 +124,31 @@
 #pragma clang diagnostic pop
   self.data = [NSMutableData data];
   
-  [self.activityIndicatorView startAnimating];
-  
   [self.connection start];
+}
+
+// TODO: SIMPLY-2862 This method should be removed as part of this ticket
+- (void)reloadAccountsAndAuthenticationDocument
+{
+  NYPLLOG_F(@"Reloading accounts from RemoteVC: %@", self.title);
+  [AccountsManager.shared updateAccountSetWithCompletion:^(BOOL success) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (success) {
+        // since we have the accounts, now we can do a proper reload
+        [self load];
+      } else {
+        [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                                  context:@"RemoteViewController"
+                                  message:@"Failed to reload accounts after having found nil URL"
+                                 metadata:@{
+                                   @"currentURL": self.URL ?: @"N/A",
+                                   @"Response": self.response ?: @"N/A",
+                                   @"ChildVCs": self.childViewControllers
+                                 }];
+        [self showReloadViewWithMessage:nil];
+      }
+    });
+  }];
 }
 
 #pragma mark UIViewController
@@ -113,11 +188,10 @@
 
 - (void)viewWillLayoutSubviews
 {
+  [super viewWillLayoutSubviews];
+
   [self.activityIndicatorView centerInSuperview];
-  [self.activityIndicatorView integralizeFrame];
-  
   [self.reloadView centerInSuperview];
-  [self.reloadView integralizeFrame];
 }
 
 - (void)addActivityIndicatorLabel:(NSTimer*)timer
@@ -150,57 +224,49 @@
 {
   [self.activityIndicatorView stopAnimating];
   self.activityIndicatorLabel.hidden = YES;
-  BOOL mimeTypeMatches = [self.response.MIMEType isEqualToString:@"application/problem+json"] ||
-    [self.response.MIMEType isEqualToString:@"application/api-problem+json"];
-  
-  if ([(NSHTTPURLResponse *)self.response statusCode] != 200 && mimeTypeMatches) {
-    NSError *problemDocumentParseError = nil;
-    NYPLProblemDocument *pDoc = [NYPLProblemDocument fromData:self.data error:&problemDocumentParseError];
-    UIAlertController *alert;
-    if (problemDocumentParseError) {
-      [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
-                                                url:[self.response URL]
-                                            context:@"RemoteVC-errorResponse"];
-      alert = [NYPLAlertUtils
-               alertWithTitle:NSLocalizedString(@"Error", @"Title for a generic error")
-               message:NSLocalizedString(@"Unknown error parsing problem document",
-                                         @"Message for a problem document error")];
-    } else {
-      alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
-    }
-    [self presentViewController:alert animated:YES completion:nil];
+
+  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)self.response;
+  if ([httpResponse statusCode] != 200) {
+    [self handleErrorResponse:httpResponse];
   }
   
-  UIViewController *const viewController = self.handler(self, self.data, self.response);
+  UIViewController *const vc = self.handler(self, self.data, self.response);
   
-  if (viewController) {
-    [self addChildViewController:viewController];
-    viewController.view.frame = self.view.bounds;
-    [self.view addSubview:viewController.view];
+  if (vc) {
+    [self addChildViewController:vc];
+    vc.view.frame = self.view.bounds;
+    [self.view addSubview:vc.view];
 
-    // If `viewController` has its own bar button items or title, use whatever
+    // If `vc` has its own bar button items or title, use whatever
     // has been set by default.
-    if(viewController.navigationItem.rightBarButtonItems) {
-      self.navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems;
+    if(vc.navigationItem.rightBarButtonItems) {
+      self.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems;
     }
-    if(viewController.navigationItem.leftBarButtonItems) {
-      self.navigationItem.leftBarButtonItems = viewController.navigationItem.leftBarButtonItems;
+    if(vc.navigationItem.leftBarButtonItems) {
+      self.navigationItem.leftBarButtonItems = vc.navigationItem.leftBarButtonItems;
     }
-    if(viewController.navigationItem.backBarButtonItem) {
-      self.navigationItem.backBarButtonItem = viewController.navigationItem.backBarButtonItem;
+    if(vc.navigationItem.backBarButtonItem) {
+      self.navigationItem.backBarButtonItem = vc.navigationItem.backBarButtonItem;
     }
-    if(viewController.navigationItem.title) {
-      self.navigationItem.title = viewController.navigationItem.title;
+    if(vc.navigationItem.title) {
+      self.navigationItem.title = vc.navigationItem.title;
     }
 
-    [viewController didMoveToParentViewController:self];
+    [vc didMoveToParentViewController:self];
   } else {
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnableToMakeVCAfterLoading
+                              context:@"RemoteViewController"
+                              message:@"Failed to create VC after loading from server"
+                             metadata:@{
+                               @"HTTPstatusCode": @(httpResponse.statusCode),
+                               @"mimeType": httpResponse.MIMEType,
+                               @"URL": self.URL ?: @"N/A",
+                               @"response.URL": httpResponse.URL ?: @"N/A"
+                             }];
     self.reloadView.hidden = NO;
   }
-  
-  self.response = nil;
-  self.connection = nil;
-  self.data = [NSMutableData data];
+
+  [self resetConnectionInfo];
 }
 
 #pragma mark NSURLConnectionDelegate
@@ -211,14 +277,71 @@
   [self.activityIndicatorView stopAnimating];
   self.activityIndicatorLabel.hidden = YES;
   
-  if (connection.currentRequest.URL) {
-    self.reloadView.hidden = NO;
-    [NYPLErrorLogger logCatalogLoadError:error url:self.URL];
-  }
+  self.reloadView.hidden = NO;
+  
+  NSDictionary<NSString*, NSObject*> *metadata = @{
+    @"remoteVC.URL": self.URL ?: @"none",
+    @"connection.currentRequest": connection.currentRequest.loggableString ?: @"none",
+    @"connection.originalRequest": connection.originalRequest.loggableString ?: @"none",
+  };
+  [NYPLErrorLogger logError:error
+                    context:@"RemoteViewController"
+                    message:@"Server-side api call (likely related to Catalog loading) did fail with network error"
+                   metadata:metadata];
 
+  [self resetConnectionInfo];
+}
+
+#pragma mark Private Helpers
+
+- (void)resetConnectionInfo
+{
+  self.response = nil;
   self.connection = nil;
   self.data = [NSMutableData data];
-  self.response = nil;
+}
+
+- (void)handleErrorResponse:(NSHTTPURLResponse *)httpResponse
+{
+  BOOL mimeTypeMatches = [self.response.MIMEType isEqualToString:@"application/problem+json"] ||
+  [self.response.MIMEType isEqualToString:@"application/api-problem+json"];
+
+  if (mimeTypeMatches) {
+    NSError *problemDocumentParseError = nil;
+    NYPLProblemDocument *pDoc = [NYPLProblemDocument fromData:self.data error:&problemDocumentParseError];
+    UIAlertController *alert;
+
+    if (problemDocumentParseError) {
+      [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                                            barcode:nil
+                                                url:[self.response URL]
+                                            context:@"RemoteViewController"
+                                            message:@"Server-side api call (likely related to Catalog loading) failed and couldn't parse the problem doc either"];
+      alert = [NYPLAlertUtils
+               alertWithTitle:NSLocalizedString(@"Error", @"Title for a generic error")
+               message:NSLocalizedString(@"Unknown error parsing problem document",
+                                         @"Message for a problem document error")];
+    } else {
+      [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeProblemDocMessageDisplayed
+                                context:@"RemoteViewController"
+                                message:@"Server-side api call (likely related to Catalog loading) failed"
+                               metadata:pDoc.debugDictionary];
+      alert = [NYPLAlertUtils alertWithTitle:pDoc.title message:pDoc.detail];
+    }
+    [self presentViewController:alert animated:YES completion:nil];
+  } else {
+    // not a 200 but also no problem doc: this could be an error or not
+    // depending on the mimeType and the data
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeUnexpectedHTTPCodeWarning
+                              context:@"RemoteViewController"
+                              message:@"Server-side api call (likely related to Catalog loading) returned a non-200 HTTP status"
+                             metadata:@{
+                               @"HTTPstatusCode": @(httpResponse.statusCode),
+                               @"mimeType": httpResponse.MIMEType,
+                               @"URL": self.URL ?: @"N/A",
+                               @"response.URL": httpResponse.URL ?: @"N/A"
+                             }];
+  }
 }
 
 @end

@@ -176,8 +176,20 @@
 
 - (void)didSelectMoreBooksForLane:(NYPLCatalogLane *)lane
 {
+  NSURL *urlToLoad = lane.subsectionURL;
+  if (urlToLoad == nil) {
+    NSString *msg = [NSString stringWithFormat:@"Lane %@ has no subsection URL to display more books",
+                     lane.title];
+    [NYPLErrorLogger logErrorWithCode:NYPLErrorCodeNoURL
+                              context:NSStringFromClass([self class])
+                              message:msg
+                             metadata:@{
+                               @"methodName": @"didSelectMoreBooksForLane:"
+                             }];
+  }
+
   UIViewController *const viewController = [[NYPLCatalogFeedViewController alloc]
-                                            initWithURL:lane.subsectionURL];
+                                            initWithURL:urlToLoad];
   viewController.title = lane.title;
   [self.navigationController pushViewController:viewController animated:YES];
 }

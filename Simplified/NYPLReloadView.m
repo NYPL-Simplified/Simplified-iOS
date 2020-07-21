@@ -11,7 +11,7 @@
 
 @end
 
-static CGFloat const width = 250;
+static CGFloat const width = 280;
 
 @implementation NYPLReloadView
 
@@ -29,10 +29,10 @@ static CGFloat const width = 250;
   [self addSubview:self.titleLabel];
   
   self.messageLabel = [[UILabel alloc] init];
-  self.messageLabel.numberOfLines = 2;
+  self.messageLabel.numberOfLines = 3;
   self.messageLabel.textAlignment = NSTextAlignmentCenter;
   self.messageLabel.font = [UIFont systemFontOfSize:12];
-  self.messageLabel.text = NSLocalizedString(@"CheckConnection", nil);
+  [self setDefaultMessage];
   self.messageLabel.textColor = [UIColor grayColor];
   [self addSubview:self.messageLabel];
   
@@ -55,12 +55,12 @@ static CGFloat const width = 250;
 
 - (void)layoutSubviews
 {
+  [super layoutSubviews];
   CGFloat const padding = 5.0;
   
   {
     [self.titleLabel sizeToFit];
     [self.titleLabel centerInSuperview];
-    [self.titleLabel integralizeFrame];
     CGRect frame = self.titleLabel.frame;
     frame.origin.y = 0;
     self.titleLabel.frame = frame;
@@ -79,7 +79,6 @@ static CGFloat const width = 250;
   {
     [self.reloadButton sizeToFit];
     [self.reloadButton centerInSuperview];
-    [self.reloadButton integralizeFrame];
     CGRect frame = self.reloadButton.frame;
     frame.origin.y = CGRectGetMaxY(self.messageLabel.frame) + padding;
     self.reloadButton.frame = frame;
@@ -88,9 +87,25 @@ static CGFloat const width = 250;
 
 #pragma mark -
 
+- (void)setDefaultMessage
+{
+  self.messageLabel.text = NSLocalizedString(@"CheckConnection", nil);
+  [self setNeedsLayout];
+}
+
+- (void)setMessage:(NSString *)msg
+{
+  self.messageLabel.text = msg;
+  [self setNeedsLayout];
+}
+
 - (void)didSelectReload
 {
-  if(self.handler) self.handler();
+  if(self.handler) {
+    self.handler();
+  }
+
+  [self setDefaultMessage];
 }
 
 @end
