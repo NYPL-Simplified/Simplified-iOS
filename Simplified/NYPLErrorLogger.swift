@@ -145,7 +145,6 @@ fileprivate let nullString = "null"
     let currentLibrary = AccountsManager.shared.currentAccount
     metadata["currentAccountName"] = currentLibrary?.name ?? nullString
     metadata["currentAccountId"] = AccountsManager.shared.currentAccountId ?? nullString
-    metadata["currentAccountSet"] = AccountsManager.shared.accountSet
     metadata["currentAccountCatalogURL"] = currentLibrary?.catalogUrl ?? nullString
     metadata["currentAccountAuthDocURL"] = currentLibrary?.authenticationDocumentUrl ?? nullString
     metadata["currentAccountLoansURL"] = currentLibrary?.loansUrl ?? nullString

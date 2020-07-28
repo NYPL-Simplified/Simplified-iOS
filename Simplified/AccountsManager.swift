@@ -27,11 +27,17 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
     return shared
   }
   
-  var accountSet: String
+  private var accountSet: String
   private var accountSets = [String: [Account]]()
+  private var accountSetsWorkQueue = DispatchQueue(label: "org.nypl.labs.SimplyE.AccountsManager.workQueue", attributes: .concurrent)
   
   var accountsHaveLoaded: Bool {
-    if let accounts = accountSets[accountSet] {
+    var accounts: [Account]?
+    accountSetsWorkQueue.sync {
+      accounts = accountSets[accountSet]
+    }
+
+    if let accounts = accounts {
       return !accounts.isEmpty
     }
     return false
@@ -127,7 +133,9 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
       let catalogsFeed = try OPDS2CatalogsFeed.fromData(data)
       let hadAccount = self.currentAccount != nil
 
-      self.accountSets[key] = catalogsFeed.catalogs.map { Account(publication: $0) }
+      accountSetsWorkQueue.sync(flags: .barrier) {
+        accountSets[key] = catalogsFeed.catalogs.map { Account(publication: $0) }
+      }
 
       // note: `currentAccount` computed property feeds off of `accountSets`, so
       // changing the `accountsSets` dictionary will also change `currentAccount`
@@ -218,31 +226,50 @@ private let prodUrlHash = prodUrl.absoluteString.md5().base64EncodedStringUrlSaf
   }
   
   func account(_ uuid:String) -> Account? {
+    // get accountSets dictionary first for thread-safety
+    var accountSetsCopy = [String: [Account]]()
+    var accountSetKey = ""
+    accountSetsWorkQueue.sync {
+      accountSetsCopy = self.accountSets
+      accountSetKey = self.accountSet
+    }
+
     // Check primary account set first
-    if let accounts = self.accountSets[self.accountSet] {
+    if let accounts = accountSetsCopy[accountSetKey] {
       if let account = accounts.filter({ $0.uuid == uuid }).first {
         return account
       }
     }
+
     // Check existing account lists
-    for accountEntry in self.accountSets {
-      if accountEntry.key == self.accountSet {
+    for accountEntry in accountSetsCopy {
+      if accountEntry.key == accountSetKey {
         continue
       }
       if let account = accountEntry.value.filter({ $0.uuid == uuid }).first {
         return account
       }
     }
+
     return nil
   }
   
   func accounts(_ key: String? = nil) -> [Account] {
-    let k = key != nil ? key! : self.accountSet
-    return self.accountSets[k] ?? []
+    var accounts: [Account]? = []
+
+    accountSetsWorkQueue.sync {
+      let k = key ?? self.accountSet
+      accounts = self.accountSets[k]
+    }
+
+    return accounts ?? []
   }
   
   func updateAccountSet(completion: @escaping (Bool) -> () = { _ in }) {
-    self.accountSet = NYPLSettings.shared.useBetaLibraries ? betaUrlHash : prodUrlHash
+    accountSetsWorkQueue.sync(flags: .barrier) {
+      self.accountSet = NYPLSettings.shared.useBetaLibraries ? betaUrlHash : prodUrlHash
+    }
+
     if self.accounts().isEmpty {
       loadCatalogs(completion: completion)
     }

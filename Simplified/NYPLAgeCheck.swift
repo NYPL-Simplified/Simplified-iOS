@@ -74,10 +74,10 @@ import Foundation
         message: NSLocalizedString("WelcomeScreenAgeVerifyMessage", comment: "An alert message telling the user they must be at least 13 years old and asking how old they are"),
         preferredStyle: .alert
       )
-      alertCont.addAction(UIAlertAction.init(title: "Under 13", style: .default, handler: { _ in
+      alertCont.addAction(UIAlertAction.init(title: NSLocalizedString("Under 13", comment:"A button title indicating an under-age range"), style: .default, handler: { _ in
         completion(false)
       }))
-      alertCont.addAction(UIAlertAction.init(title: "13 or Older", style: .default, handler: { _ in
+      alertCont.addAction(UIAlertAction.init(title: NSLocalizedString("13 or Older", comment: "A button title indicating an age range"), style: .default, handler: { _ in
         completion(true)
       }))
       UIApplication.shared.keyWindow?.rootViewController?.present(alertCont, animated: true, completion: nil)
