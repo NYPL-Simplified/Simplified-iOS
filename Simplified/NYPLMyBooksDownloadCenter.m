@@ -296,7 +296,7 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
         break;
       }
       case NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON: {
-          success = [self moveDownloadedFileAtURL:location book:book];
+          success = [self moveDownloadedFileAtURL:tmpSavedFileURL book:book];
           break;
       }
       case NYPLMyBooksDownloadRightsManagementNone: {
@@ -805,7 +805,15 @@ didCompleteWithError:(NSError *)error
                                                           PIN:[[NYPLUserAccount sharedAccount] PIN]
                                                    completion:^(NSDictionary<NSString *,id> * _Nullable responseHeader, NSError * _Nullable error) {
         if (error) {
-          [NYPLErrorLogger logError:error message:@"An error was thrown during fulfillBookWithUrlString:username:PIN:completion:"];
+          [NYPLErrorLogger logError:error
+                            context:@"myBooksDownload"
+                            message:@"An error occurred fulfilling Overdrive book"
+                           metadata:@{
+                             @"responseHEaders": responseHeader ?: @"N/A",
+                             @"acquisitionURL": URL ?: @"N/A",
+                             @"book": book.loggableDictionary,
+                             @"bookRegistryState": [NYPLBookStateHelper stringValueFromBookState:state]
+                           }];
           [self failDownloadForBook:book];
           return;
         }
@@ -823,7 +831,16 @@ didCompleteWithError:(NSError *)error
         } else {
           [[OverdriveAPIExecutor shared] refreshPatronTokenWithKey:NYPLSecrets.overdriveClientKey secret:NYPLSecrets.overdriveClientSecret username:[[NYPLUserAccount sharedAccount] barcode] PIN:[[NYPLUserAccount sharedAccount] PIN] scope:responseHeader[@"X-Overdrive-Scope"] completion:^(NSError * _Nullable error) {
             if (error) {
-              [NYPLErrorLogger logError:error message:@"An error was thrown during refreshPatronTokenWithKey:secret:PIN:scope:completion:"];
+              [NYPLErrorLogger logError:error
+                                context:@"myBooksDownload"
+                                message:@"An error occurred refreshing Overdrive patron token"
+                               metadata:@{
+                                 @"responseHEaders": responseHeader ?: @"N/A",
+                                 @"acquisitionURL": URL ?: @"N/A",
+                                 @"book": book.loggableDictionary,
+                                 @"bookRegistryState": [NYPLBookStateHelper stringValueFromBookState:state]
+                               }];
+
               [self failDownloadForBook:book];
               return;
             }
