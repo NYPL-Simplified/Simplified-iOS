@@ -621,7 +621,7 @@ Authenticating with any of those barcodes should work.
   if (!pDoc) {
     [self authorizationAttemptDidFinish:NO
                                   error:nil
-                           errorMessage:@"Error parsing user profile doc"];
+                           errorMessage:@"Error parsing user profile document"];
     [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
                                              context:@"SignIn-settingsTab"
                                              barcode:barcode];
