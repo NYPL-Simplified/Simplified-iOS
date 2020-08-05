@@ -46,7 +46,15 @@ import Foundation
   let links: [Link]?
   let authorizationExpires: Date?
   let settings: Settings?
-  
+
+  private static var dateFormatter: DateFormatter = {
+    var formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.timeZone = TimeZone(secondsFromGMT: 0)
+    return formatter
+  }()
+
   enum CodingKeys: String, CodingKey {
     case authorizationIdentifier = "simplified:authorization_identifier"
     case drm = "drm"
@@ -67,10 +75,8 @@ import Foundation
   @objc static func fromData(_ data: Data) throws -> UserProfileDocument {
     let jsonDecoder = JSONDecoder()
     jsonDecoder.keyDecodingStrategy = .useDefaultKeys
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     jsonDecoder.dateDecodingStrategy = .formatted(dateFormatter)
-    
+
     do {
       return try jsonDecoder.decode(UserProfileDocument.self, from: data)
     } catch let DecodingError.dataCorrupted(context) {

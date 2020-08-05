@@ -13,3 +13,7 @@
 @interface NYPLOpenSearchDescription ()
 @property (nonatomic, readwrite) NSString *OPDSURLTemplate;
 @end
+
+@interface NSDate ()
++ (NSDate *)dateWithISO8601DateStringDeprecated:(NSString *const)string;
+@end

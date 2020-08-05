@@ -28,4 +28,17 @@ class Date_NYPLAdditionsTests: XCTestCase {
       }
     }
   }
+
+  func testISO8601FullDateParsing() {
+    let dateString = "2020-06-02"
+    let iOS10Date = NSDate(iso8601DateString: dateString)
+    XCTAssertNotNil(iOS10Date)
+    XCTAssertEqual(iOS10Date?.utcComponents()?.year, 2020)
+    XCTAssertEqual(iOS10Date?.utcComponents()?.month, 6)
+    XCTAssertEqual(iOS10Date?.utcComponents()?.day, 2)
+
+    let iOS9Date = NSDate(iso8601DateStringDeprecated: dateString)
+    XCTAssertNotNil(iOS9Date)
+    XCTAssertEqual(iOS10Date, iOS9Date)
+  }
 }
