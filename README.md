@@ -54,7 +54,7 @@ Both scripts must be run from the Simplified-iOS repo root.
 09. `cp APIKeys.swift.example Simplified/APIKeys.swift` and edit accordingly.
 10. `cp Accounts.json.example Simplified/Accounts.json`.
 11. `cp GoogleService-Info.plist.example GoogleService-Info.plist` and edit with you firebase project config.
-12. `cp ReaderClientCert.sig.example Simplified/ReaderClientCert.sig` **Note:** This is skeleton only, contact project admins to obtain a copy of a real file. 
+12. `cp ReaderClientCert.sig.example Simplified/ReaderClientCert.sig` **Note:** This is skeleton only, contact project admins to obtain a copy of a real file.
 13. `(cd readium-sdk; sh MakeHeaders.sh Apple)` (parentheses included) to generate the headers for Readium.
 14. `open Simplified.xcodeproj`
 15. Comment out/remove line with include of "Simplified+RMSDK.xcconfig" in "Simplified.xcconfig".
@@ -68,21 +68,32 @@ Both scripts must be run from the Simplified-iOS repo root.
 
 For working on integrating R2 into SimplyE, use the `feature/readium2` branch. First build the app following the steps above for building with/without DRM.
 
-Then we recommend using the SimplifiedR2.workspace. This assumes you have checked out the following frameworks (clone them as siblings of `Simplified-iOS` on the file system):
+Then we recommend using the `SimplifiedR2.workspace`. This assumes you have checked out the following frameworks (clone them as siblings of `Simplified-iOS` on the file system):
 ```bash
 cd Simplified-iOS/..
 git clone https://github.com/NYPL-Simplified/r2-shared-swift
 git clone https://github.com/NYPL-Simplified/r2-streamer-swift
 git clone https://github.com/readium/r2-navigator-swift
 ```
-These framworks contain patched `R2Shared` and `R2Streamer` frameworks to enable Adobe DRM in Readium 2.
+The first 2 repos contain patched versions of `R2Shared` and `R2Streamer` to enable Adobe DRM in Readium 2.
 
-
-You can then remove the related lines from the Cartfile (for a faster build) and run:
+Build their own Carthage dependencies first:
+```bash
+cd r2-shared-swift
+carthage checkout --use-ssh
+carthage build --platform ios
+cd ../r2-streamer-swift
+carthage checkout --use-ssh
+carthage build --platform ios
+cd ../r2-navigator-swift
+carthage checkout --use-ssh
+carthage build --platform ios
+```
+Then finally build Carthage for SimplyE (for a faster build, you can remove the related R2 lines from SimplyE's Cartfile since the `SimplyE-R2dev` target in `SimplifiedR2.workspace` refers to the manually cloned R2 repos):
 ```bash
 ./carthage-update-simplye.sh Debug
 ```
-Open the workspace and use the `SimplyE-R2dev` target to build the app.
+Finally, open the workspace and use the `SimplyE-R2dev` target to build the app.
 
 # Contributing
 
