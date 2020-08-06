@@ -1,4 +1,4 @@
-﻿// Accessibility Labels
+// Accessibility Labels
 
 "AccessibilitySwitchLibrary" = "Cambia biblioteca";
 
@@ -62,8 +62,8 @@
 "Settings" = "Impostazioni";
 "Show" = "Mostra";
 "SignOut" = "Disconnessione";
-"SigningOut" = "Firma out";
-"SignUp" = "Registrazione";
+"SigningOut" = "Disconnessione in corso";
+"SignUp" = "Registrati";
 "SoftwareLicenses" = "Licenze software";
 "SyncFailed" = "Sincronizzazione non riuscita";
 "TimedOut" = "Tempo scaduto";
@@ -233,12 +233,14 @@
 "WelcomeScreenAgeVerifyTitle" = "Verifica dell'età";
 "WelcomeScreenAgeVerifyMessage" = "Devi avere almeno 13 anni per scaricare alcuni dei libri nella nostra collection. Quanti anni hai?";
 "WelcomeScreenTitle1" = "Leggi ebook dalla tua biblioteca";
-"WelcomeScreenSubtitle1" = "Consulta il catalog, prendi a prestito e leggi gratuitamente libri dalla tua biblioteca locale.";
+"WelcomeScreenSubtitle1" = "Consulta il catalogo, prendi dei libri in prestito dalla tua biblioteca locale e leggili gratuitamente.";
 "WelcomeScreenButtonTitle1" = "Trova la tua biblioteca";
 "WelcomeScreenTitle2" = "La collezione SimplyE";
 "WelcomeScreenSubtitle2" = "Ebooks gratis da scaricare e leggere senza una tessera di biblioteca.";
 "WelcomeScreenButtonTitle2" = "Aggiungi una biblioteca più tardi";
 "LibraryListTitle" = "Scegli la tua biblioteca";
+"Under 13" = "Meno di 13";
+"13 or Older" = "13 o di più";
 
 // NYPLSettingsAdvancedViewController
 "Advanced" = "Impostazioni avanzate";
