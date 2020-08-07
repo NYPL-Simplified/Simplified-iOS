@@ -1,4 +1,5 @@
 @import NYPLAudiobookToolkit;
+@import OverdriveProcessor;
 
 #import "NSString+NYPLStringAdditions.h"
 #import "NYPLAccountSignInViewController.h"
@@ -133,6 +134,11 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
       self.bookIdentifierToDownloadInfo[book.identifier] =
         [[self downloadInfoForBookIdentifier:book.identifier]
          withRightsManagement:NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON];
+    } else if ([downloadTask.response.MIMEType
+                   isEqualToString:@"application/json"]) {
+         self.bookIdentifierToDownloadInfo[book.identifier] =
+           [[self downloadInfoForBookIdentifier:book.identifier]
+            withRightsManagement:NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON];
     } else {
       NYPLLOG_F(@"Presuming no DRM for unrecognized MIME type \"%@\".", downloadTask.response.MIMEType);
       NYPLMyBooksDownloadInfo *info =
@@ -144,11 +150,12 @@ totalBytesExpectedToWrite:(int64_t const)totalBytesExpectedToWrite
     }
   }
   
-  // If the book is protected by Adobe DRM or a Simplified bearer token flow, the download will be very tiny and a later
+  // If the book is protected by Adobe DRM or a Simplified bearer token flow/Overdrive manifest JSON, the download will be very tiny and a later
   // fulfillment step will be required to get the actual content. As such, we do not report progress.
-  if([self downloadInfoForBookIdentifier:book.identifier].rightsManagement != NYPLMyBooksDownloadRightsManagementAdobe
-     || ([self downloadInfoForBookIdentifier:book.identifier].rightsManagement
-         != NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON))
+  NYPLMyBooksDownloadRightsManagement rightManagement = [self downloadInfoForBookIdentifier:book.identifier].rightsManagement;
+  if((rightManagement != NYPLMyBooksDownloadRightsManagementAdobe)
+     && (rightManagement != NYPLMyBooksDownloadRightsManagementSimplifiedBearerTokenJSON)
+     && (rightManagement != NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON))
   {
     if(totalBytesExpectedToWrite > 0) {
       self.bookIdentifierToDownloadInfo[book.identifier] =
@@ -179,12 +186,14 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
 
   if ([downloadTask.response isProblemDocument]) {
     NSError *problemDocumentParseError = nil;
+    NSData *problemDocData = [NSData dataWithContentsOfURL:tmpSavedFileURL];
     problemDocument = [NYPLProblemDocument
-                       fromData:[NSData dataWithContentsOfURL:tmpSavedFileURL]
+                       fromData:problemDocData
                        error:&problemDocumentParseError];
     if (problemDocumentParseError) {
       [NYPLErrorLogger
        logProblemDocumentParseError:problemDocumentParseError
+       problemDocumentData:problemDocData
        barcode:NYPLUserAccount.sharedAccount.barcode
        url:tmpSavedFileURL
        context:@"myBooks-download-finish"
@@ -285,6 +294,10 @@ didFinishDownloadingToURL:(NSURL *const)tmpSavedFileURL
         [task resume];
 
         break;
+      }
+      case NYPLMyBooksDownloadRightsManagementOverdriveManifestJSON: {
+          success = [self moveDownloadedFileAtURL:tmpSavedFileURL book:book];
+          break;
       }
       case NYPLMyBooksDownloadRightsManagementNone: {
         NSError *removeError = nil, *moveError = nil;
@@ -490,7 +503,15 @@ didCompleteWithError:(NSError *)error
       }
       id const json = NYPLJSONObjectFromData([NSData dataWithContentsOfURL:
                                               [self fileURLForBookIndentifier:book.identifier account:account]]);
-      [[AudiobookFactory audiobook:json] deleteLocalContent];
+        
+      NSMutableDictionary *dict = nil;
+        
+      if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
+        dict = [(NSMutableDictionary *)json mutableCopy];
+        dict[@"id"] = book.identifier;
+      }
+      
+      [[AudiobookFactory audiobook:dict ?: json] deleteLocalContent];
       break;
     }
     case NYPLBookContentTypePDF: {
@@ -776,11 +797,65 @@ didCompleteWithError:(NSError *)error
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
       [self startBorrowForBook:book attemptDownload:YES borrowCompletion:nil];
+    } else if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
+      NSURL *URL = book.defaultAcquisition.hrefURL;
+        
+      [[OverdriveAPIExecutor shared] fulfillBookWithUrlString:URL.absoluteString
+                                                     username:[[NYPLUserAccount sharedAccount] barcode]
+                                                          PIN:[[NYPLUserAccount sharedAccount] PIN]
+                                                   completion:^(NSDictionary<NSString *,id> * _Nullable responseHeader, NSError * _Nullable error) {
+        if (error) {
+          [NYPLErrorLogger logError:error
+                            context:@"myBooksDownload"
+                            message:@"An error occurred fulfilling Overdrive book"
+                           metadata:@{
+                             @"responseHEaders": responseHeader ?: @"N/A",
+                             @"acquisitionURL": URL ?: @"N/A",
+                             @"book": book.loggableDictionary,
+                             @"bookRegistryState": [NYPLBookStateHelper stringValueFromBookState:state]
+                           }];
+          [self failDownloadForBook:book];
+          return;
+        }
+          
+        if (!responseHeader[@"X-Overdrive-Scope"] || !responseHeader[@"Location"]) {
+          [NYPLErrorLogger logOverdriveInvalidResponseWithMessage:@"Overdrive book fulfillment response does not contain valid data" response:responseHeader];
+          [self failDownloadForBook:book];
+          return;
+        }
+          
+        if ([[OverdriveAPIExecutor shared] patronToken] && ![[[OverdriveAPIExecutor shared] patronToken] isExpired]) {
+          // Use existing Patron Token
+          NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:responseHeader[@"Location"]];
+          [self addDownloadTaskWithRequest:request book:book];
+        } else {
+          [[OverdriveAPIExecutor shared] refreshPatronTokenWithKey:NYPLSecrets.overdriveClientKey secret:NYPLSecrets.overdriveClientSecret username:[[NYPLUserAccount sharedAccount] barcode] PIN:[[NYPLUserAccount sharedAccount] PIN] scope:responseHeader[@"X-Overdrive-Scope"] completion:^(NSError * _Nullable error) {
+            if (error) {
+              [NYPLErrorLogger logError:error
+                                context:@"myBooksDownload"
+                                message:@"An error occurred refreshing Overdrive patron token"
+                               metadata:@{
+                                 @"responseHEaders": responseHeader ?: @"N/A",
+                                 @"acquisitionURL": URL ?: @"N/A",
+                                 @"book": book.loggableDictionary,
+                                 @"bookRegistryState": [NYPLBookStateHelper stringValueFromBookState:state]
+                               }];
+
+              [self failDownloadForBook:book];
+              return;
+            }
+              
+            NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:responseHeader[@"Location"]];
+            [self addDownloadTaskWithRequest:request book:book];
+          }];
+        }
+      }];
+        
     } else {
       // Actually download the book.
       NSURL *URL = book.defaultAcquisition.hrefURL;
       NSURLRequest *const request = [NSURLRequest requestWithURL:URL];
-      
+        
       if(!request.URL) {
         // Originally this code just let the request fail later on, but apparently resuming an
         // NSURLSessionDownloadTask created from a request with a nil URL pathetically results in a
@@ -790,32 +865,7 @@ didCompleteWithError:(NSError *)error
         return;
       }
       
-      NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
-      
-      self.bookIdentifierToDownloadInfo[book.identifier] =
-        [[NYPLMyBooksDownloadInfo alloc]
-         initWithDownloadProgress:0.0
-         downloadTask:task
-         rightsManagement:NYPLMyBooksDownloadRightsManagementUnknown];
-      
-      self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
-      
-      [task resume];
-      
-      [[NYPLBookRegistry sharedRegistry]
-       addBook:book
-       location:nil
-       state:NYPLBookStateDownloading
-       fulfillmentId:nil
-       readiumBookmarks:nil
-       genericBookmarks:nil];
-      
-      // It is important to issue this immediately because a previous download may have left the
-      // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
-      // the user. As such, calling |broadcastUpdate| is not appropriate due to the delay.
-      [[NSNotificationCenter defaultCenter]
-       postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
-       object:self];
+      [self addDownloadTaskWithRequest:request book:book];
     }
 
   } else {
@@ -825,6 +875,40 @@ didCompleteWithError:(NSError *)error
        [[NYPLMyBooksDownloadCenter sharedDownloadCenter] startDownloadForBook:book];
      }];
   }
+}
+
+- (void)addDownloadTaskWithRequest:(NSURLRequest *)request
+                              book:(NYPLBook *)book {
+  if (book == nil) {
+    return;
+  }
+    
+  NSURLSessionDownloadTask *const task = [self.session downloadTaskWithRequest:request];
+  
+  self.bookIdentifierToDownloadInfo[book.identifier] =
+    [[NYPLMyBooksDownloadInfo alloc]
+     initWithDownloadProgress:0.0
+     downloadTask:task
+     rightsManagement:NYPLMyBooksDownloadRightsManagementUnknown];
+  
+  self.taskIdentifierToBook[@(task.taskIdentifier)] = book;
+  
+  [task resume];
+  
+  [[NYPLBookRegistry sharedRegistry]
+   addBook:book
+   location:nil
+   state:NYPLBookStateDownloading
+   fulfillmentId:nil
+   readiumBookmarks:nil
+   genericBookmarks:nil];
+  
+  // It is important to issue this immediately because a previous download may have left the
+  // progress for the book at greater than 0.0 and we do not want that to be temporarily shown to
+  // the user. As such, calling |broadcastUpdate| is not appropriate due to the delay.
+  [[NSNotificationCenter defaultCenter]
+   postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
+   object:self];
 }
 
 - (void)cancelDownloadForBookIdentifier:(NSString *)identifier
@@ -941,6 +1025,24 @@ didCompleteWithError:(NSError *)error
   [[NSNotificationCenter defaultCenter]
    postNotificationName:NYPLMyBooksDownloadCenterDidChangeNotification
    object:self];
+}
+
+- (BOOL)moveDownloadedFileAtURL:(NSURL *)location
+                           book:(NYPLBook *)book
+{
+  BOOL success = [[NSFileManager defaultManager] replaceItemAtURL:[self fileURLForBookIndentifier:book.identifier]
+                                                    withItemAtURL:location
+                                                   backupItemName:nil
+                                                          options:NSFileManagerItemReplacementUsingNewMetadataOnly
+                                                 resultingItemURL:nil
+                                                            error:nil];
+  
+  if(success) {
+    [[NYPLBookRegistry sharedRegistry] setState:NYPLBookStateDownloadSuccessful forIdentifier:book.identifier];
+    [[NYPLBookRegistry sharedRegistry] save];
+  }
+
+  return success;
 }
 
 #if defined(FEATURE_DRM_CONNECTOR)

@@ -36,6 +36,7 @@ typedef NS_ENUM(NSInteger, CellKind) {
   CellKindPIN,
   CellKindLogInSignOut,
   CellKindRegistration,
+  CellKindJuvenile,
   CellKindSyncButton,
   CellKindAbout,
   CellKindPrivacyPolicy,
@@ -60,10 +61,10 @@ typedef NS_ENUM(NSInteger, CellKind) {
 @property (nonatomic) NSMutableArray *tableData;
 @property (nonatomic) UIButton *PINShowHideButton;
 @property (nonatomic) UIButton *barcodeScanButton;
-@property (nonatomic) UITableViewCell *registrationCell;
 @property (nonatomic) UITableViewCell *logInSignOutCell;
 @property (nonatomic) UITableViewCell *ageCheckCell;
 @property (nonatomic) UISwitch *syncSwitch;
+@property (nonatomic) UIActivityIndicatorView *juvenileActivityView;
 
 // account state
 @property NYPLUserAccountFrontEndValidation *frontEndValidator;
@@ -77,7 +78,6 @@ typedef NS_ENUM(NSInteger, CellKind) {
 
 static const NSInteger sLinearViewTag = 1;
 static const CGFloat sVerticalMarginPadding = 2.0;
-static const double sRequestTimeoutInterval = 25.0;
 
 // table view sections indeces
 static const NSInteger sSection0AccountInfo = 0;
@@ -85,7 +85,19 @@ static const NSInteger sSection1Sync = 1;
 
 @implementation NYPLSettingsAccountDetailViewController
 
+/*
+ For NYPL, this field can accept any of the following:
+ - a username
+ - a 14-digit NYPL-issued barcode
+ - a 16-digit NYC ID issued by the city of New York to its residents. Patrons
+ can set up the NYC ID as a NYPL barcode even if they already have a NYPL card.
+ All of these types of authentication can be used with the PIN to sign in.
+ - Note: A patron can have multiple barcodes, because patrons may lose
+their library card and get a new one with a different barcode.
+Authenticating with any of those barcodes should work.
+ */
 @synthesize usernameTextField;
+
 @synthesize PINTextField;
 
 #pragma mark - Computed variables
@@ -95,7 +107,7 @@ static const NSInteger sSection1Sync = 1;
   return self.businessLogic.libraryAccountID;
 }
 
-- (Account *)selectedAccount
+- (nullable Account *)selectedAccount
 {
   return self.businessLogic.libraryAccount;
 }
@@ -146,12 +158,6 @@ static const NSInteger sSection1Sync = 1;
    addObserver:self
    selector:@selector(keyboardDidShow:)
    name:UIKeyboardWillShowNotification
-   object:nil];
-  
-  [[NSNotificationCenter defaultCenter]
-   addObserver:self
-   selector:@selector(keyboardWillHide)
-   name:UIKeyboardWillHideNotification
    object:nil];
   
   [[NSNotificationCenter defaultCenter]
@@ -336,6 +342,10 @@ static const NSInteger sSection1Sync = 1;
     self.tableData = @[section0AcctInfo, section1Sync].mutableCopy;
   }
 
+  if ([self.businessLogic juvenileCardsManagementIsPossible]) {
+    [self.tableData addObject:@[@(CellKindJuvenile)]];
+  }
+
   if (self.selectedAccount.supportEmail != nil) {
     [self.tableData addObject:@[@(CellReportIssue)]];
   }
@@ -363,7 +373,6 @@ static const NSInteger sSection1Sync = 1;
   } else {
     self.hiddenPIN = YES;
     [self accountDidChange];
-    [self.tableView reloadData];
     [self updateShowHidePINState];
   }
 }
@@ -440,7 +449,7 @@ static const NSInteger sSection1Sync = 1;
   NSMutableURLRequest *const request =
   [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
   
-  request.timeoutInterval = sRequestTimeoutInterval;
+  request.timeoutInterval = self.businessLogic.requestTimeoutInterval;
   
   NSString * const currentBarcode = [[self selectedUserAccount] barcode];
   NSURLSessionDataTask *const task =
@@ -471,6 +480,10 @@ static const NSInteger sSection1Sync = 1;
          [self deauthorizeDevice]; // will call endIgnoringInteractionEvents
        }
      } else {
+       if (statusCode == 401) {
+         [self deauthorizeDevice];
+       }
+
        NSString *msg = [NSString stringWithFormat:@"Error signing out for barcode %@",
                         currentBarcode.md5String];
        [NYPLErrorLogger logNetworkError:error
@@ -568,7 +581,7 @@ static const NSInteger sSection1Sync = 1;
   NSMutableURLRequest *const request =
   [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[self.selectedAccount details] userProfileUrl]]];
 
-  request.timeoutInterval = sRequestTimeoutInterval;
+  request.timeoutInterval = self.businessLogic.requestTimeoutInterval;
 
   __weak __auto_type weakSelf = self;
   NSURLSessionDataTask *const task =
@@ -700,52 +713,53 @@ static const NSInteger sSection1Sync = 1;
     [self.PINTextField becomeFirstResponder];
   }
 
-  if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
-    [NYPLErrorLogger logRemoteLoginError:error
-                                 barcode:barcode
-                                 request:request
-                                response:response
-                                 library:self.selectedAccount
-                                 message:@"Sign-in failed without a problem doc"];
-  } else if ([response.MIMEType isEqualToString:@"application/problem+json"] || [response.MIMEType isEqualToString:@"application/api-problem+json"]) {
-    NSError *problemDocumentParseError = nil;
-    NYPLProblemDocument *problemDocument = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
-    if (problemDocumentParseError) {
-      [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
-                                            barcode:barcode
-                                                url:request.URL
-                                            context:@"SettingsAccountDetailVC-processCreds"
-                                            message:@"Sign-in failed, got a problem doc"];
-    } else if (problemDocument) {
-      [NYPLErrorLogger logLoginError:error
-                             barcode:barcode
-                             library:self.selectedAccount
-                             request:request
-                     problemDocument:problemDocument
-                            metadata:@{
-                              @"message": @"Sign-in failed, got a problem doc"
-                            }];
+  NYPLProblemDocument *problemDocument = nil;
+  UIAlertController *alert = nil;
+  NSError *problemDocumentParseError = nil;
+  if (response.isProblemDocument) {
+    problemDocument = [NYPLProblemDocument fromData:data
+                                              error:&problemDocumentParseError];
+    if (problemDocumentParseError == nil && problemDocument != nil) {
       NSString *msg = NSLocalizedString(@"A server error occurred. Please try again later, and if the problem persists, contact your library's Help Desk.", @"Error message for when a server error occurs.");
-      msg = [NSString stringWithFormat:@"%@\n\n(Error details: %@)", msg,
-             (problemDocument.detail ?: problemDocument.title)];
-      UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
-                                                        message:msg];
-      [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
-      [[NYPLRootTabBarController sharedController] safelyPresentViewController: alert animated:YES completion:nil];
-      return; // Short-circuit!! Early return
-    } else {
-      [NYPLErrorLogger logRemoteLoginError:error
-                                   barcode:barcode 
-                                   request:request
-                                  response:response
-                                   library:self.selectedAccount
-                                   message:@"Sign-in failed"];
+      NSString *errorDetails = (problemDocument.detail ?: problemDocument.title);
+      if (errorDetails) {
+        msg = [NSString stringWithFormat:@"%@\n\n(Error details: %@)", msg,
+               errorDetails];
+      }
+      alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+                                     message:msg];
+      [NYPLAlertUtils setProblemDocumentWithController:alert
+                                              document:problemDocument
+                                                append:YES];
     }
   }
 
-  // Fallthrough case: show alert
-  [[NYPLRootTabBarController sharedController] safelyPresentViewController:
-   [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
+  // error logging
+  if (problemDocumentParseError != nil) {
+    [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
+                              problemDocumentData:data
+                                          barcode:barcode
+                                              url:request.URL
+                                          context:@"SettingsAccountDetailVC-processCreds"
+                                          message:@"Sign-in failed, got a corrupted problem doc"];
+  } else if (problemDocument) {
+    [NYPLErrorLogger logLoginError:error
+                           barcode:barcode
+                           library:self.selectedAccount
+                           request:request
+                          response:response
+                   problemDocument:problemDocument
+                          metadata:@{
+                            @"message": @"Sign-in failed, got a problem doc"
+                          }];
+  }
+
+  // notify user of error
+  if (alert == nil) {
+    alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+                                     error:error];
+  }
+  [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
                                                                   animated:YES
                                                                 completion:nil];
 }
@@ -756,7 +770,6 @@ static const NSInteger sSection1Sync = 1;
   if (code == 401) {
     title = @"Unexpected Credentials";
     message = @"Your username or password may have changed since the last time you logged in.\n\nIf you believe this is an error, please contact your library.";
-    [self deauthorizeDevice];
   } else if (error) {
     title = @"SettingsAccountViewControllerLogoutFailed";
     message = error.localizedDescription;
@@ -901,14 +914,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (self.selectedAccount.details.supportsCardCreator
           && self.selectedAccount.details.signUpUrl != nil) {
         __weak NYPLSettingsAccountDetailViewController *const weakSelf = self;
-        CardCreatorConfiguration *const configuration =
-        [[CardCreatorConfiguration alloc]
-         initWithEndpointURL:self.selectedAccount.details.signUpUrl
-         endpointVersion:[APIKeys cardCreatorVersion]
-         endpointUsername:[APIKeys cardCreatorUsername]
-         endpointPassword:[APIKeys cardCreatorPassword]
-         requestTimeoutInterval:sRequestTimeoutInterval
-         completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
+
+        CardCreatorConfiguration *config = [self.businessLogic makeRegularCardCreationConfiguration];
+        config.completionHandler = ^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
           if (userInitiated) {
             // Dismiss CardCreator when user finishes Credential Review
             [weakSelf dismissViewControllerAnimated:YES completion:nil];
@@ -916,20 +924,19 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             weakSelf.usernameTextField.text = username;
             weakSelf.PINTextField.text = PIN;
             [weakSelf updateLoginLogoutCellAppearance];
-            self.isLoggingInAfterSignUp = YES;
+            weakSelf.isLoggingInAfterSignUp = YES;
             [weakSelf logIn];
           }
-        }];
+        };
 
-        UINavigationController *const navigationController =
-        [CardCreator initialNavigationControllerWithConfiguration:configuration];
-        navigationController.navigationBar.topItem.leftBarButtonItem =
+        UINavigationController *const navController = [CardCreator initialNavigationControllerWithConfiguration:config];
+        navController.navigationBar.topItem.leftBarButtonItem =
         [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                          style:UIBarButtonItemStylePlain
                                         target:self
                                         action:@selector(didSelectCancelForSignUp)];
-        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-        [self presentViewController:navigationController animated:YES completion:nil];
+        navController.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:navController animated:YES completion:nil];
       }
       else // does not support card creator
       {
@@ -959,6 +966,11 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       }
       break;
     }
+    case CellKindJuvenile: {
+      [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+      UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+      [self didSelectJuvenileSignupOnCell:cell];
+    }
     case CellKindSyncButton: {
       break;
     }
@@ -970,7 +982,7 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
     case CellKindBarcodeImage: {
       [self.tableView beginUpdates];
       // Collapse barcode by adjusting certain constraints
-      if (self.barcodeHeightConstraint.constant > 0) {
+      if (self.barcodeImageView.bounds.size.height > 0) {
         self.barcodeHeightConstraint.constant = 0.0;
         self.barcodeLabelSpaceConstraint.constant = 0.0;
         self.barcodeImageLabel.text = NSLocalizedString(@"Show Barcode", nil);
@@ -1018,6 +1030,84 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       break;
     }
   }
+}
+
+- (UITableViewCell *)setUpJuvenileFlowCell
+{
+  UITableViewCell *cell = [[UITableViewCell alloc]
+                           initWithStyle:UITableViewCellStyleDefault
+                           reuseIdentifier:nil];
+  cell.textLabel.font = [UIFont customFontForTextStyle:UIFontTextStyleBody];
+  cell.textLabel.text = NSLocalizedString(@"Want a card for your child?", nil);
+  [self addActivityIndicatorToJuvenileCell:cell];
+  return cell;
+}
+
+- (void)addActivityIndicatorToJuvenileCell:(UITableViewCell *)cell
+{
+  UIActivityIndicatorViewStyle style;
+  if (@available(iOS 13, *)) {
+    style = UIActivityIndicatorViewStyleMedium;
+  } else {
+    style = UIActivityIndicatorViewStyleGray;
+  }
+  self.juvenileActivityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:style];
+  self.juvenileActivityView.center = CGPointMake(cell.bounds.size.width / 2,
+                                                 cell.bounds.size.height / 2);
+  [self.juvenileActivityView integralizeFrame];
+  self.juvenileActivityView.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin |
+                                                UIViewAutoresizingFlexibleRightMargin |
+                                                UIViewAutoresizingFlexibleBottomMargin |
+                                                UIViewAutoresizingFlexibleLeftMargin);
+  self.juvenileActivityView.hidesWhenStopped = YES;
+  [cell addSubview:self.juvenileActivityView];
+
+  if (self.businessLogic.juvenileAuthIsOngoing) {
+    [cell setUserInteractionEnabled:NO];
+    cell.textLabel.hidden = YES;
+    [self.juvenileActivityView startAnimating];
+  } else {
+    [cell setUserInteractionEnabled:YES];
+    cell.textLabel.hidden = NO;
+    [self.juvenileActivityView stopAnimating];
+  }
+}
+
+- (void)didSelectJuvenileSignupOnCell:(UITableViewCell *)cell
+{
+  [cell setUserInteractionEnabled:NO];
+  cell.textLabel.hidden = YES;
+  [self.juvenileActivityView startAnimating];
+
+  __weak __auto_type weakSelf = self;
+  [self.businessLogic startJuvenileCardCreationWithEligibilityCompletion:^(UINavigationController * _Nullable navVC, NSError * _Nullable error) {
+
+    [weakSelf.juvenileActivityView stopAnimating];
+    cell.textLabel.hidden = NO;
+    [cell setUserInteractionEnabled:YES];
+
+    if (error) {
+      UIAlertController *alert = [NYPLAlertUtils
+                                  alertWithTitle:NSLocalizedString(@"Error", "Alert title")
+                                  error:error];
+      [NYPLAlertUtils presentFromViewControllerOrNilWithAlertController:alert
+                                                         viewController:nil
+                                                               animated:YES
+                                                             completion:nil];
+      return;
+    }
+
+    navVC.navigationBar.topItem.leftBarButtonItem =
+    [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                     style:UIBarButtonItemStylePlain
+                                    target:weakSelf
+                                    action:@selector(didSelectCancelForSignUp)];
+    navVC.modalPresentationStyle = UIModalPresentationFormSheet;
+    [weakSelf presentViewController:navVC animated:YES completion:nil];
+
+  } flowCompletion:^{
+    [weakSelf dismissViewControllerAnimated:YES completion:nil];
+  }];
 }
 
 - (void)didSelectCancelForSignUp
@@ -1161,6 +1251,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       cell.textLabel.text = NSLocalizedString(@"SettingsBookmarkSyncTitle",
                                               @"Title for switch to turn on or off syncing.");
       return cell;
+    }
+    case CellKindJuvenile: {
+      return [self setUpJuvenileFlowCell];
     }
     case CellReportIssue: {
       UITableViewCell *cell = [[UITableViewCell alloc]
@@ -1387,19 +1480,8 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
   [self updateLoginLogoutCellAppearance];
 }
 
-- (void)keyboardWillHide
-{
-  self.registrationCell.textLabel.enabled = YES;
-  self.registrationCell.detailTextLabel.enabled = YES;
-  self.registrationCell.userInteractionEnabled = YES;
-}
-
 - (void)keyboardDidShow:(NSNotification *const)notification
 {
-  self.registrationCell.textLabel.enabled = NO;
-  self.registrationCell.detailTextLabel.enabled = NO;
-  self.registrationCell.userInteractionEnabled = NO;
-  
   // This nudges the scroll view up slightly so that the log in button is clearly visible even on
   // older 3:2 iPhone displays. I wish there were a more general way to do this, but this does at
   // least work very well.

@@ -4,16 +4,17 @@ import UIKit
 @objcMembers class NYPLAlertUtils : NSObject {
   /**
     Generates an alert view from errors of domains: NSURLErrorDomain, NYPLADEPTErrorDomain
-    @param title the alert title; can be localization key
-    @param error the error
-    @return the alert
+
+   - Parameter title: The alert title; can be a localization key.
+    - Parameter error: An error. If the error contains a localizedDescription, that will be used for the alert message.
+    - Returns: The alert controller to be presented.
    */
   class func alert(title: String?, error: NSError?) -> UIAlertController {
-    let customMessage = error?.userInfo["message"]
     var message = ""
     let domain = error?.domain ?? ""
     let code = error?.code ?? 0
-    
+
+    // handle common iOS networking errors
     if domain == NSURLErrorDomain {
       if code == NSURLErrorNotConnectedToInternet {
         message = "NotConnected"
@@ -38,13 +39,20 @@ import UIKit
       }
     }
     #endif
-    
-    if customMessage != nil { // Custom message override
-      message = customMessage as! String
-    } else if message.isEmpty { // Handle unassigned message
-      message = "An error occurred. Please try again later or report an issue from the Settings tab."
+
+    if message.isEmpty {
+      // since it wasn't a networking or Adobe DRM error, show the error
+      // description if present
+      if let errorDescription = error?.localizedDescriptionWithRecovery, !errorDescription.isEmpty {
+        message = errorDescription
+      } else {
+        message = "An error occurred. Please try again later or report an issue from the Settings tab."
+        NYPLErrorLogger.logError(withCode: .genericErrorMsgDisplayed,
+                                 context: NYPLErrorLogger.Context.errorHandling.rawValue,
+                                 message: "Error \(error?.description ?? "") contained no usable error message for the user, so we defaulted to a generic one.")
+      }
     }
-    
+
     return alert(title: title, message: message)
   }
   
@@ -85,7 +93,7 @@ import UIKit
     @return
    */
   class func setProblemDocument(controller: UIAlertController?, document: NYPLProblemDocument?, append: Bool) {
-    guard let controller = controller else {
+    guard let alert = controller else {
       return
     }
     guard let document = document else {
@@ -93,19 +101,19 @@ import UIKit
     }
 
     if append == false {
-      controller.title = document.title
-      controller.message = document.detail
+      alert.title = document.title
+      alert.message = document.detail
       return
     }
 
     var titleWasAdded = false
-    if controller.title?.isEmpty ?? true {
-      controller.title = document.title
+    if alert.title?.isEmpty ?? true {
+      alert.title = document.title
       titleWasAdded = true
     }
 
     let existingMsg: String = {
-      if let existingMsg = controller.message, !existingMsg.isEmpty {
+      if let existingMsg = alert.message, !existingMsg.isEmpty {
         return existingMsg + "\n"
       }
       return ""
@@ -114,31 +122,37 @@ import UIKit
     let docDetail: String = document.detail ?? ""
 
     if !titleWasAdded, let docTitle = document.title, !docTitle.isEmpty {
-      controller.message = "\(existingMsg)\(docTitle)\n\(docDetail)"
+      alert.message = "\(existingMsg)\(docTitle)\n\(docDetail)"
     } else {
-      controller.message = "\(existingMsg)\(docDetail)"
+      alert.message = "\(existingMsg)\(docDetail)"
     }
   }
   
   /**
-    Presents an alert view from another given view
-    @param alertController the alert to display
-    @param viewController the view from which the alert is displayed
-    @param animated true/false for animation
-    @param completion callback passed on to UIViewcontroller::present
-    @return
+   Presents an alert view from another given view
+
+   - Parameters:
+     - alertController: The alert to display.
+     - viewController: The view from which the alert is displayed.
+     - animated: Whether to animate the presentation of the alert or not.
+     - completion: Callback passed on to UIViewcontroller::present().
    */
-  class func presentFromViewControllerOrNil(alertController: UIAlertController?, viewController: UIViewController?, animated: Bool, completion: (() -> Void)?) {
+  class func presentFromViewControllerOrNil(alertController: UIAlertController?,
+                                            viewController: UIViewController?,
+                                            animated: Bool,
+                                            completion: (() -> Void)?) {
     guard let alertController = alertController else {
       return
     }
-    if (viewController == nil) {
+
+    guard let vc = viewController else {
       NYPLRootTabBarController.shared()?.safelyPresentViewController(alertController, animated: animated, completion: completion)
-    } else {
-      viewController!.present(alertController, animated: animated, completion: completion)
-      if alertController.message != nil {
-        Log.info(#file, alertController.message!)
-      }
+      return
+    }
+
+    vc.present(alertController, animated: animated, completion: completion)
+    if let msg = alertController.message {
+      Log.info(#file, msg)
     }
   }
 }

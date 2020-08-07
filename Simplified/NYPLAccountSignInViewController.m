@@ -290,14 +290,9 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
       if (self.currentAccount.details.supportsCardCreator
           && self.currentAccount.details.signUpUrl != nil) {
         __weak NYPLAccountSignInViewController *const weakSelf = self;
-        CardCreatorConfiguration *const configuration =
-        [[CardCreatorConfiguration alloc]
-         initWithEndpointURL:self.currentAccount.details.signUpUrl
-         endpointVersion:[APIKeys cardCreatorVersion]
-         endpointUsername:[APIKeys cardCreatorUsername]
-         endpointPassword:[APIKeys cardCreatorPassword]
-         requestTimeoutInterval:20.0
-         completionHandler:^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
+
+        CardCreatorConfiguration *const config = [self.businessLogic makeRegularCardCreationConfiguration];
+        config.completionHandler = ^(NSString *const username, NSString *const PIN, BOOL const userInitiated) {
           if (userInitiated) {
             // Dismiss CardCreator & SignInVC when user finishes Credential Review
             [weakSelf dismissViewControllerAnimated:YES completion:nil];
@@ -306,13 +301,13 @@ didSelectRowAtIndexPath:(NSIndexPath *const)indexPath
             weakSelf.usernameTextField.text = username;
             weakSelf.PINTextField.text = PIN;
             [weakSelf updateLoginLogoutCellAppearance];
-            self.isLoggingInAfterSignUp = YES;
+            weakSelf.isLoggingInAfterSignUp = YES;
             [weakSelf logIn];
           }
-        }];
+        };
         
         UINavigationController *const navigationController =
-          [CardCreator initialNavigationControllerWithConfiguration:configuration];
+          [CardCreator initialNavigationControllerWithConfiguration:config];
         navigationController.navigationBar.topItem.leftBarButtonItem =
           [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                            style:UIBarButtonItemStylePlain
@@ -847,7 +842,7 @@ completionHandler:(void (^)(void))handler
            [NYPLErrorLogger logUserProfileDocumentAuthError:pDocError
                                                     context:@"SignIn-modal"
                                                     barcode:barcode];
-           [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ @"message":@"Error parsing user profile doc" }]];
+           [self authorizationAttemptDidFinish:NO error:[NSError errorWithDomain:@"NYPLAuth" code:20 userInfo:@{ NSLocalizedDescriptionKey: @"Error parsing user profile document." }]];
            return;
          } else {
            if (pDoc.authorizationIdentifier) {
@@ -937,57 +932,55 @@ completionHandler:(void (^)(void))handler
          [self.PINTextField becomeFirstResponder];
        }
 
-       if ([response.MIMEType isEqualToString:@"application/vnd.opds.authentication.v1.0+json"]) {
-         [NYPLErrorLogger logRemoteLoginError:error
-                                      barcode:barcode
-                                      request:request
-                                     response:response
-                                      library:self.currentAccount
-                                      message:@"Sign-in failed via SignIn-modal, no problem doc"];
-       } else if ([response.MIMEType isEqualToString:@"application/problem+json"] || [response.MIMEType isEqualToString:@"application/api-problem+json"]) {
-         NSError *problemDocumentParseError = nil;
-         NYPLProblemDocument *problemDocument = [NYPLProblemDocument fromData:data error:&problemDocumentParseError];
-         if (problemDocumentParseError) {
-           [NYPLErrorLogger logProblemDocumentParseError:problemDocumentParseError
-                                                 barcode:barcode
-                                                     url:request.URL
-                                                 context:@"AccountSignInVC-validateCreds"
-                                                 message:@"Sign-in failed via SignIn-modal, problem doc parsing failed"];
-         } else if (problemDocument) {
-           [NYPLErrorLogger logLoginError:error
-                                  barcode:barcode
-                                  library:self.currentAccount
-                                  request:request
-                          problemDocument:problemDocument
-                                 metadata:@{
-                                   @"message": @"Sign-in failed via SignIn-modal, got a problem doc"
-                                 }];
-           NSString *msg = NSLocalizedString(@"A server error occurred. Please try again later, and if the problem persists, contact your library's Help Desk.", @"Error message for when a server error occurs.");
-           msg = [NSString stringWithFormat:@"%@\n\n(Error details: %@)", msg,
-                  (problemDocument.detail ?: problemDocument.title)];
-           UIAlertController *alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
-                                                             message:msg];
-           [NYPLAlertUtils setProblemDocumentWithController:alert document:problemDocument append:YES];
-           [[NYPLRootTabBarController sharedController] safelyPresentViewController: alert animated:YES completion:nil];
-           return; // Short-circuit!! Early return
-         } else {
-           [NYPLErrorLogger logRemoteLoginError:error
-                                        barcode:barcode
-                                        request:request
-                                       response:response
-                                        library:self.currentAccount
-                                        message:@"Sign-in failed via SignIn-modal"];
-         }
-       }
-     
-       // Fallthrough case: show alert
-       [[NYPLRootTabBarController sharedController] safelyPresentViewController:
-        [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error]
-                                                                     animated:YES
-                                                                   completion:nil];
+      NYPLProblemDocument *problemDocument = nil;
+      UIAlertController *alert = nil;
+      NSError *problemDocParseError = nil;
+      if (response.isProblemDocument) {
+        problemDocument = [NYPLProblemDocument fromData:data
+                                                  error:&problemDocParseError];
+        if (problemDocParseError == nil && problemDocument != nil) {
+          NSString *msg = NSLocalizedString(@"A server error occurred. Please try again later, and if the problem persists, contact your library's Help Desk.", @"Error message for when a server error occurs.");
+          NSString *errorDetails = (problemDocument.detail ?: problemDocument.title);
+          if (errorDetails) {
+            msg = [NSString stringWithFormat:@"%@\n\n(Error details: %@)", msg,
+                 errorDetails];
+          }
+          alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed"
+                                         message:msg];
+          [NYPLAlertUtils setProblemDocumentWithController:alert
+                                                  document:problemDocument
+                                                    append:YES];
+        }
+      }
 
-       return;
-     }];
+      // error logging
+      if (problemDocParseError) {
+        [NYPLErrorLogger logProblemDocumentParseError:problemDocParseError
+                                  problemDocumentData:data
+                                              barcode:barcode
+                                                  url:request.URL
+                                              context:@"AccountSignInVC-validateCreds"
+                                              message:@"Sign-in failed via SignIn-modal, problem doc parsing failed"];
+      } else {
+        [NYPLErrorLogger logLoginError:error
+                               barcode:barcode
+                               library:self.currentAccount
+                               request:request
+                              response:response
+                       problemDocument:problemDocument
+                              metadata:@{
+                                @"message": @"Sign-in failed via SignIn-modal"
+                              }];
+      }
+
+      // notify user of error
+      if (alert == nil) {
+        alert = [NYPLAlertUtils alertWithTitle:@"SettingsAccountViewControllerLoginFailed" error:error];
+      }
+      [[NYPLRootTabBarController sharedController] safelyPresentViewController:alert
+                                                                      animated:YES
+                                                                    completion:nil];
+    }];
   
   [task resume];
 }

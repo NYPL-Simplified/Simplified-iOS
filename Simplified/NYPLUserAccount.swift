@@ -38,8 +38,7 @@ extension Notification.Name {
     defer {
         shared.accountInfoLock.unlock()
     }
-    if let uuid = libraryUUID,
-        uuid != AccountsManager.NYPLAccountUUIDs[0]
+    if let uuid = libraryUUID, uuid != AccountsManager.NYPLAccountUUID
     {
       shared.barcodeKey = "NYPLAccountBarcode_\(uuid)"
       shared.authorizationIdentifierKey = "NYPLAccountAuthorization_\(uuid)"
@@ -92,15 +91,37 @@ extension Notification.Name {
   }
     
   // MARK: - GET
-    
+
+  /// The barcode of this user; for NYPL, this is either an actual barcode
+  /// or a username.
+  /// You should be able to use either one as authentication with the
+  /// circulation manager and platform.nypl.org, because they both pass auth
+  /// information to the ILS, which is the source of truth. The ILS will
+  /// validate credentials the same whether the patron identifier is a
+  /// username or one of their barcodes. However, it's possible that some
+  /// features of platform.nypl.org will work if you give them a 14-digit
+  /// barcode but not a 7-letter username or a 16-digit NYC ID.
   var barcode: String? {
     return NYPLKeychain.shared()?.object(forKey: barcodeKey) as? String
   }
-    
+
+  /// For any library but the NYPL, this identifier can be anything they want.
+  ///
+  /// For NYPL, this is *a* barcode, either a 14-digit NYPL-issued barcode, or
+  /// a 16-digit "NYC ID" barcode issued by New York City. It's in fact
+  /// possible for NYC residents to get a NYC ID and set that up **as a**
+  /// NYPL barcode, even if they already have a NYPL card. We use
+  /// authorization_identifier to mean the "number that's probably on the
+  ///  piece of plastic the patron uses as their library card".
+  /// - Note: A patron can have multiple barcodes, because patrons may lose
+  /// their library card and get a new one with a different barcode.
+  /// Authenticating with any of those barcodes should work.
+  /// - Note: This is NOT the unique ILS ID. That's internal-only and it's not
+  /// exposed to the public.
   var authorizationIdentifier: String? {
     return NYPLKeychain.shared()?.object(forKey: authorizationIdentifierKey) as? String
   }
-  
+
   var PIN: String? {
     return NYPLKeychain.shared()?.object(forKey: PINKey) as? String
   }
@@ -108,7 +129,8 @@ extension Notification.Name {
   var deviceID: String? {
     return NYPLKeychain.shared()?.object(forKey: deviceIDKey) as? String
   }
-  
+
+  /// The user ID to use with Adobe DRM.
   var userID: String? {
     return NYPLKeychain.shared()?.object(forKey: userIDKey) as? String
   }
@@ -250,7 +272,13 @@ extension Notification.Name {
     
     sharedKeychain.setObject(licensor, forKey: licensorKey)
   }
-  
+
+  /// This authorization identifier is returned by the circulation manager
+  /// upon successful sign-in.
+  /// - parameter identifier: For NYPL, this can either be
+  /// a 14-digit NYPL-issued barcode, or a 16-digit "NYC ID"
+  /// barcode issued by New York City. For other libraries,
+  /// this can be any string they want.
   @objc(setAuthorizationIdentifier:)
   func setAuthorizationIdentifier(_ identifier: String) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
@@ -265,9 +293,9 @@ extension Notification.Name {
     guard let sharedKeychain = NYPLKeychain.shared() else {
       return
     }
-    
+
     sharedKeychain.setObject(patron, forKey: patronKey)
-    
+
     NotificationCenter.default.post(
       name: Notification.Name.NYPLUserAccountDidChange,
       object: self
@@ -301,7 +329,8 @@ extension Notification.Name {
       object: self
     )
   }
-  
+
+  /// - parameter id: The user ID to use for Adobe DRM.
   @objc(setUserID:)
   func setUserID(_ id: String) {
     guard let sharedKeychain = NYPLKeychain.shared() else {
