@@ -7,7 +7,12 @@
 //
 
 #import "AdobeDRMContainer.h"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreorder"
+#pragma clang diagnostic ignored "-Wunused-parameter"
+#pragma clang diagnostic ignored "-Wshift-negative-value"
 #include "dp_all.h"
+#pragma clang diagnostic pop
 
 static id acsdrm_lock = nil;
 
