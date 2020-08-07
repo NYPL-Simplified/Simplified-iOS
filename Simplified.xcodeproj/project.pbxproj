@@ -432,7 +432,6 @@
 		7347F100245A4DE200558D7F /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D92405EA6000F388FB /* GoogleAppMeasurement.framework */; };
 		7347F101245A4DE200558D7F /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2DA2405EA6000F388FB /* FIRAnalyticsConnector.framework */; };
 		7347F102245A4DE200558D7F /* GoogleDataTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */; };
-		7347F103245A4DE200558D7F /* GoogleDataTransportCCTSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */; };
 		7347F104245A4DE200558D7F /* FirebaseInstallations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */; };
 		7347F105245A4DE200558D7F /* PromisesObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2EB2405EC5900F388FB /* PromisesObjC.framework */; };
 		7347F106245A4DE200558D7F /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731DA5FB240711F5009CC191 /* Fabric.framework */; };
@@ -491,7 +490,6 @@
 		738EF2E22405EA6000F388FB /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D92405EA6000F388FB /* GoogleAppMeasurement.framework */; };
 		738EF2E32405EA6000F388FB /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2DA2405EA6000F388FB /* FIRAnalyticsConnector.framework */; };
 		738EF2E72405EBAD00F388FB /* GoogleDataTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */; };
-		738EF2E92405EBC100F388FB /* GoogleDataTransportCCTSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */; };
 		738EF2EA2405EC1100F388FB /* FirebaseInstallations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */; };
 		738EF2EC2405EC5900F388FB /* PromisesObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2EB2405EC5900F388FB /* PromisesObjC.framework */; };
 		739E6046244A0D8600D00301 /* NYPLCirculationAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66AE32F1DC0FCFC00124AE2 /* NYPLCirculationAnalytics.swift */; };
@@ -709,7 +707,6 @@
 		739E6123244A0D8600D00301 /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2D92405EA6000F388FB /* GoogleAppMeasurement.framework */; };
 		739E6124244A0D8600D00301 /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2DA2405EA6000F388FB /* FIRAnalyticsConnector.framework */; };
 		739E6125244A0D8600D00301 /* GoogleDataTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */; };
-		739E6126244A0D8600D00301 /* GoogleDataTransportCCTSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */; };
 		739E6127244A0D8600D00301 /* FirebaseInstallations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */; };
 		739E6128244A0D8600D00301 /* PromisesObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2EB2405EC5900F388FB /* PromisesObjC.framework */; };
 		739E6129244A0D8600D00301 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 731DA5FB240711F5009CC191 /* Fabric.framework */; };
@@ -1208,7 +1205,6 @@
 		738EF2DA2405EA6000F388FB /* FIRAnalyticsConnector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FIRAnalyticsConnector.framework; path = Carthage/Build/iOS/FIRAnalyticsConnector.framework; sourceTree = "<group>"; };
 		738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstallations.framework; path = Carthage/Build/iOS/FirebaseInstallations.framework; sourceTree = "<group>"; };
 		738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleDataTransport.framework; path = Carthage/Build/iOS/GoogleDataTransport.framework; sourceTree = "<group>"; };
-		738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleDataTransportCCTSupport.framework; path = Carthage/Build/iOS/GoogleDataTransportCCTSupport.framework; sourceTree = "<group>"; };
 		738EF2EB2405EC5900F388FB /* PromisesObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromisesObjC.framework; path = Carthage/Build/iOS/PromisesObjC.framework; sourceTree = "<group>"; };
 		739E6151244A0D8600D00301 /* SimplyE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimplyE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		739E6157244A0F6D00D00301 /* R2Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = R2Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1392,7 +1388,6 @@
 				7347F100245A4DE200558D7F /* GoogleAppMeasurement.framework in Frameworks */,
 				7347F101245A4DE200558D7F /* FIRAnalyticsConnector.framework in Frameworks */,
 				7347F102245A4DE200558D7F /* GoogleDataTransport.framework in Frameworks */,
-				7347F103245A4DE200558D7F /* GoogleDataTransportCCTSupport.framework in Frameworks */,
 				7347F104245A4DE200558D7F /* FirebaseInstallations.framework in Frameworks */,
 				7347F105245A4DE200558D7F /* PromisesObjC.framework in Frameworks */,
 				7347F106245A4DE200558D7F /* Fabric.framework in Frameworks */,
@@ -1453,7 +1448,6 @@
 				739E6123244A0D8600D00301 /* GoogleAppMeasurement.framework in Frameworks */,
 				739E6124244A0D8600D00301 /* FIRAnalyticsConnector.framework in Frameworks */,
 				739E6125244A0D8600D00301 /* GoogleDataTransport.framework in Frameworks */,
-				739E6126244A0D8600D00301 /* GoogleDataTransportCCTSupport.framework in Frameworks */,
 				739E6127244A0D8600D00301 /* FirebaseInstallations.framework in Frameworks */,
 				739E6128244A0D8600D00301 /* PromisesObjC.framework in Frameworks */,
 				739E6129244A0D8600D00301 /* Fabric.framework in Frameworks */,
@@ -1509,7 +1503,6 @@
 				738EF2E22405EA6000F388FB /* GoogleAppMeasurement.framework in Frameworks */,
 				738EF2E32405EA6000F388FB /* FIRAnalyticsConnector.framework in Frameworks */,
 				738EF2E72405EBAD00F388FB /* GoogleDataTransport.framework in Frameworks */,
-				738EF2E92405EBC100F388FB /* GoogleDataTransportCCTSupport.framework in Frameworks */,
 				738EF2EA2405EC1100F388FB /* FirebaseInstallations.framework in Frameworks */,
 				738EF2EC2405EC5900F388FB /* PromisesObjC.framework in Frameworks */,
 				731DA5FC240711F5009CC191 /* Fabric.framework in Frameworks */,
@@ -1984,7 +1977,6 @@
 				731DA5FB240711F5009CC191 /* Fabric.framework */,
 				731DA5F52407105E009CC191 /* Crashlytics.framework */,
 				738EF2EB2405EC5900F388FB /* PromisesObjC.framework */,
-				738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */,
 				738EF2E42405EBAD00F388FB /* FirebaseInstallations.framework */,
 				738EF2E52405EBAD00F388FB /* GoogleDataTransport.framework */,
 				738EF2DA2405EA6000F388FB /* FIRAnalyticsConnector.framework */,
