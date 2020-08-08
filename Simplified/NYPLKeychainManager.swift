@@ -1,4 +1,5 @@
 import Foundation
+import NYPLAudiobookToolkit
 
 @objcMembers final class NYPLKeychainManager: NSObject {
 
@@ -25,6 +26,7 @@ import Foundation
     migrateItemsFromOldKeychain()
     updateKeychainForBackgroundFetch()
     manageFeedbooksData()
+    manageFeedbookDrmPrivateKey()
   }
 
   // The app does not handle DRM Authentication logic when assuming a user
@@ -160,38 +162,67 @@ import Foundation
       ]
       let status = SecItemAdd(addQuery as CFDictionary, nil)
       if status != errSecSuccess && status != errSecDuplicateItem {
-        // This is unexpected
-        var errMsg = ""
-        if #available(iOS 11.3, *) {
-          errMsg = (SecCopyErrorMessageString(status, nil) as String?) ?? ""
-        }
-        if errMsg.isEmpty {
-          switch status {
-          case errSecUnimplemented:
-            errMsg = "errSecUnimplemented"
-          case errSecDiskFull:
-            errMsg = "errSecDiskFull"
-          case errSecIO:
-            errMsg = "errSecIO"
-          case errSecOpWr:
-            errMsg = "errSecOpWr"
-          case errSecParam:
-            errMsg = "errSecParam"
-          case errSecWrPerm:
-            errMsg = "errSecWrPerm"
-          case errSecAllocate:
-            errMsg = "errSecAllocate"
-          case errSecUserCanceled:
-            errMsg = "errSecUserCanceled"
-          case errSecBadReq:
-            errMsg = "errSecBadReq"
-          default:
-            errMsg = "Unknown OSStatus: \(status)"
-          }
-        }
-        
-        Log.error(#file, "FeedbookKeyManagement Error: \(errMsg)")
+        logKeychainError(for: status, with: "FeedbookKeyManagement Error:")
       }
     }
+  }
+    
+  private class func manageFeedbookDrmPrivateKey() {
+    for vendor in AudioBookVendors.allCases {
+      guard let privateKeyString = NYPLSecrets.drmCertificate(forVendor: vendor),
+        let privateKeyData = Data(base64Encoded: RSAUtils.stripPEMKeyHeader(privateKeyString)),
+        let tag = "\(FeedbookDRMPrivateKeyTag)\(vendor.rawValue)".data(using: .utf8) else {
+          Log.error(#file, "Could not load drm private key for vendor: \(vendor.rawValue)")
+          continue
+      }
+    
+      let addQuery: [String: Any] = [
+        kSecClass as String: kSecClassKey,
+        kSecAttrKeyType as String: kSecAttrKeyTypeRSA,
+        kSecAttrApplicationTag as String: tag,
+        kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
+        kSecValueData as String: privateKeyData,
+        kSecAttrKeyClass as String: kSecAttrKeyClassPrivate
+      ]
+        
+      let status = SecItemAdd(addQuery as CFDictionary, nil)
+      if status != errSecSuccess && status != errSecDuplicateItem {
+        logKeychainError(for: status, with: "FeedbookDrmPrivateKeyManagement Error:")
+      }
+    }
+  }
+    
+  private class func logKeychainError(for status: OSStatus, with message: String) {
+    // This is unexpected
+    var errMsg = ""
+    if #available(iOS 11.3, *) {
+      errMsg = (SecCopyErrorMessageString(status, nil) as String?) ?? ""
+    }
+    if errMsg.isEmpty {
+      switch status {
+      case errSecUnimplemented:
+        errMsg = "errSecUnimplemented"
+      case errSecDiskFull:
+        errMsg = "errSecDiskFull"
+      case errSecIO:
+        errMsg = "errSecIO"
+      case errSecOpWr:
+        errMsg = "errSecOpWr"
+      case errSecParam:
+        errMsg = "errSecParam"
+      case errSecWrPerm:
+        errMsg = "errSecWrPerm"
+      case errSecAllocate:
+        errMsg = "errSecAllocate"
+      case errSecUserCanceled:
+        errMsg = "errSecUserCanceled"
+      case errSecBadReq:
+        errMsg = "errSecBadReq"
+      default:
+        errMsg = "Unknown OSStatus: \(status)"
+      }
+    }
+    
+    Log.error(#file, "\(message) \(errMsg)")
   }
 }
