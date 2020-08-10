@@ -2,7 +2,6 @@
 
 #import "NYPLBookAcquisitionPath.h"
 
-NSString * const _Nonnull ContentTypeOverdriveCatalog = @"application/atom+xml;type=entry;profile=opds-catalog";
 NSString * const _Nonnull ContentTypeOverdriveAudiobook = @"application/vnd.overdrive.circulation.api+json;profile=audiobook";
 
 @interface NYPLBookAcquisitionPath ()
@@ -42,7 +41,6 @@ NSString * const _Nonnull ContentTypeOverdriveAudiobook = @"application/vnd.over
       ContentTypeOpenAccessAudiobook,
       ContentTypeOpenAccessPDF,
       ContentTypeFeedbooksAudiobook,
-      ContentTypeOverdriveCatalog,
       ContentTypeOverdriveAudiobook
     ]];
   }
