@@ -12,7 +12,6 @@ static NSString * const _Nonnull ContentTypeFindaway = @"application/vnd.library
 static NSString * const _Nonnull ContentTypeOpenAccessAudiobook = @"application/audiobook+json";
 static NSString * const _Nonnull ContentTypeOpenAccessPDF = @"application/pdf";
 static NSString * const _Nonnull ContentTypeFeedbooksAudiobook = @"application/audiobook+json;profile=\"http://www.feedbooks.com/audiobooks/access-restriction\"";
-extern NSString * const _Nonnull ContentTypeOverdriveCatalog;
 extern NSString * const _Nonnull ContentTypeOverdriveAudiobook;
 
 
