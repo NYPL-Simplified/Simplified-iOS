@@ -797,7 +797,7 @@ didCompleteWithError:(NSError *)error
     if(state == NYPLBookStateUnregistered || state == NYPLBookStateHolding) {
       // Check out the book
       [self startBorrowForBook:book attemptDownload:YES borrowCompletion:nil];
-    } else if ([book.distributor isEqualToString:OverdriveDistributorKey]) {
+    } else if ([book.distributor isEqualToString:OverdriveDistributorKey] && book.defaultBookContentType == NYPLBookContentTypeAudiobook) {
       NSURL *URL = book.defaultAcquisition.hrefURL;
         
       [[OverdriveAPIExecutor shared] fulfillBookWithUrlString:URL.absoluteString
