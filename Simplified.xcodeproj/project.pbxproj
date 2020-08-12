@@ -116,7 +116,7 @@
 		17071065242A923400E2648F /* NYPLSecrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17071060242A923400E2648F /* NYPLSecrets.swift */; };
 		171966A924170819007BB87E /* NYPLBookState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171966A824170819007BB87E /* NYPLBookState.swift */; };
 		173F0823241AAA4E00A64658 /* NYPLBookStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */; };
-		1785717024DB7CAD00E0EDC5 /* RSAUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1785716F24DB7CAD00E0EDC5 /* RSAUtils.swift */; };
+		175E47DE24E477710066A6CF /* GoogleDataTransportCCTSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738EF2E82405EBC100F388FB /* GoogleDataTransportCCTSupport.framework */; };
 		179699D124131BA500EC309F /* UIColor+LabelColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179699D024131BA500EC309F /* UIColor+LabelColor.swift */; };
 		17CE5305243C020800315E63 /* NYPLUserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE5304243C020800315E63 /* NYPLUserAccount.swift */; };
 		17D08381248E938000092AA9 /* OverdriveProcessor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */; };
@@ -751,7 +751,6 @@
 		17071060242A923400E2648F /* NYPLSecrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYPLSecrets.swift; sourceTree = "<group>"; };
 		171966A824170819007BB87E /* NYPLBookState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookState.swift; sourceTree = "<group>"; };
 		173F0822241AAA4E00A64658 /* NYPLBookStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLBookStateTests.swift; sourceTree = "<group>"; };
-		1785716F24DB7CAD00E0EDC5 /* RSAUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAUtils.swift; sourceTree = "<group>"; };
 		179699D024131BA500EC309F /* UIColor+LabelColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+LabelColor.swift"; sourceTree = "<group>"; };
 		17CE5304243C020800315E63 /* NYPLUserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYPLUserAccount.swift; sourceTree = "<group>"; };
 		17D08378248E8EEB00092AA9 /* OverdriveProcessor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OverdriveProcessor.framework; path = Carthage/Build/iOS/OverdriveProcessor.framework; sourceTree = "<group>"; };
@@ -1062,6 +1061,7 @@
 				148B1C2E21768EAA00FF64AB /* NYPLAudiobookToolkit.framework in Frameworks */,
 				738EF2DB2405EA6000F388FB /* Firebase.framework in Frameworks */,
 				738EF2DC2405EA6000F388FB /* FirebaseCoreDiagnostics.framework in Frameworks */,
+				175E47DE24E477710066A6CF /* GoogleDataTransportCCTSupport.framework in Frameworks */,
 				738EF2DD2405EA6000F388FB /* FirebaseCore.framework in Frameworks */,
 				738EF2DE2405EA6000F388FB /* FirebaseAnalytics.framework in Frameworks */,
 				738EF2E02405EA6000F388FB /* nanopb.framework in Frameworks */,
@@ -1385,7 +1385,6 @@
 				732327B12478504500A041E6 /* NSError+NYPLAdditions.swift */,
 				7340DA6124B7E45C00361387 /* URLResponse+NYPL.swift */,
 				7340DA6724B7F27900361387 /* NYPLBook+Additions.swift */,
-				1785716F24DB7CAD00E0EDC5 /* RSAUtils.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -2315,7 +2314,6 @@
 				B51C1DFA2285FDF9003B49A5 /* OPDS2CatalogsFeed.swift in Sources */,
 				2D62568B1D412BCB0080A81F /* BundledHTMLViewController.swift in Sources */,
 				110AF8961961D94D004887C3 /* NYPLBookDetailView.m in Sources */,
-				1785717024DB7CAD00E0EDC5 /* RSAUtils.swift in Sources */,
 				0813875A1BC5767F003DEA6A /* UIButton+NYPLAppearanceAdditions.m in Sources */,
 				1139DA6519C7755D00A07810 /* NYPLBookCoverRegistry.m in Sources */,
 				11119742198827850014462F /* NYPLBookDetailDownloadingView.m in Sources */,

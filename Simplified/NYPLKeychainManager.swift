@@ -169,6 +169,8 @@ import NYPLAudiobookToolkit
     
   private class func manageFeedbookDrmPrivateKey() {
     for vendor in AudioBookVendors.allCases {
+      // Header of PEM key needed to be stripped in order to create SecKey in NYPLAudiobookToolkit
+      // Performing the strip here to avoid converting the data to string back and forth after retrieval
       guard let privateKeyString = NYPLSecrets.drmCertificate(forVendor: vendor),
         let privateKeyData = Data(base64Encoded: RSAUtils.stripPEMKeyHeader(privateKeyString)),
         let tag = "\(FeedbookDRMPrivateKeyTag)\(vendor.rawValue)".data(using: .utf8) else {
