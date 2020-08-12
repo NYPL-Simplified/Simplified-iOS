@@ -262,13 +262,17 @@ static NSString *const RecordsKey = @"records";
   [self broadcastChange];
 }
 
-- (void)syncWithCompletionHandler:(void (^)(BOOL success))handler
+- (void)syncResettingCache:(BOOL)shouldResetCache
+         completionHandler:(void (^)(BOOL success))handler
 {
-  [self syncWithCompletionHandler:handler backgroundFetchHandler:nil];
+  [self syncResettingCache:shouldResetCache
+         completionHandler:handler
+    backgroundFetchHandler:nil];
 }
 
-- (void)syncWithCompletionHandler:(void (^)(BOOL success))completion
-            backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchHandler
+- (void)syncResettingCache:(BOOL)shouldResetCache
+         completionHandler:(void (^)(BOOL success))completion
+    backgroundFetchHandler:(void (^)(UIBackgroundFetchResult))fetchHandler
 {
   @synchronized(self) {
 
@@ -297,6 +301,7 @@ static NSString *const RecordsKey = @"records";
   
   [NYPLOPDSFeed
    withURL:[[[AccountsManager sharedInstance] currentAccount] loansUrl]
+   shouldResetCache:shouldResetCache
    completionHandler:^(NYPLOPDSFeed *const feed, __unused NSDictionary *error) {
      if(!feed) {
        NYPLLOG(@"Failed to obtain sync data.");
@@ -384,7 +389,7 @@ static NSString *const RecordsKey = @"records";
 
 - (void)syncWithStandardAlertsOnCompletion
 {
-  [self syncWithCompletionHandler:^(BOOL success) {
+  [self syncResettingCache:YES completionHandler:^(BOOL success) {
     if(success) {
       [self save];
     } else {

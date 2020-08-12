@@ -562,7 +562,7 @@ didCompleteWithError:(NSError *)error
     [[NYPLBookRegistry sharedRegistry] save];
   } else {
     [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-    [NYPLOPDSFeed withURL:book.revokeURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
+    [NYPLOPDSFeed withURL:book.revokeURL shouldResetCache:NO completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
 
       [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
       
@@ -676,7 +676,7 @@ didCompleteWithError:(NSError *)error
           borrowCompletion:(void (^)(void))borrowCompletion
 {
   [[NYPLBookRegistry sharedRegistry] setProcessing:YES forIdentifier:book.identifier];
-  [NYPLOPDSFeed withURL:book.defaultAcquisitionIfBorrow.hrefURL completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
+  [NYPLOPDSFeed withURL:book.defaultAcquisitionIfBorrow.hrefURL shouldResetCache:NO completionHandler:^(NYPLOPDSFeed *feed, NSDictionary *error) {
     [[NYPLBookRegistry sharedRegistry] setProcessing:NO forIdentifier:book.identifier];
 
     if (error || !feed || feed.entries.count < 1) {
