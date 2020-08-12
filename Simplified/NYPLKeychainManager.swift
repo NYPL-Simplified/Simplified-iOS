@@ -162,7 +162,7 @@ import NYPLAudiobookToolkit
       ]
       let status = SecItemAdd(addQuery as CFDictionary, nil)
       if status != errSecSuccess && status != errSecDuplicateItem {
-        logKeychainError(for: status, with: "FeedbookKeyManagement Error:")
+        logKeychainError(for: status, with: "FeedbookKeyManagement Vendor: \(vendor.rawValue) Error:")
       }
     }
   }
@@ -189,7 +189,7 @@ import NYPLAudiobookToolkit
         
       let status = SecItemAdd(addQuery as CFDictionary, nil)
       if status != errSecSuccess && status != errSecDuplicateItem {
-        logKeychainError(for: status, with: "FeedbookDrmPrivateKeyManagement Error:")
+        logKeychainError(for: status, with: "FeedbookDrmPrivateKeyManagement Vendor: \(vendor.rawValue) Error:")
       }
     }
   }
@@ -225,6 +225,9 @@ import NYPLAudiobookToolkit
       }
     }
     
-    Log.error(#file, "\(message) \(errMsg)")
+    NYPLErrorLogger.logError(withCode: .keychainItemAddFail,
+                             context: NYPLErrorLogger.Context.keychainManagement.rawValue,
+                             message: "\(message) \(errMsg)",
+                            metadata: nil)
   }
 }
