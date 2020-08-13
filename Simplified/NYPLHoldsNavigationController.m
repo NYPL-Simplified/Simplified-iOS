@@ -68,7 +68,7 @@
   NYPLHoldsViewController *viewController = (NYPLHoldsViewController *)self.visibleViewController;
 
   UIAlertControllerStyle style;
-  if (viewController) {
+  if (viewController && viewController.navigationItem.leftBarButtonItem) {
     style = UIAlertControllerStyleActionSheet;
   } else {
     style = UIAlertControllerStyleAlert;
