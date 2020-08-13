@@ -803,7 +803,7 @@ Authenticating with any of those barcodes should work.
       [self.selectedUserAccount setBarcode:self.usernameTextField.text PIN:self.PINTextField.text];
 
       if ([self.selectedAccountId isEqualToString:[AccountsManager shared].currentAccount.uuid]) {
-        [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+        [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
           if (success) {
             [[NYPLBookRegistry sharedRegistry] save];
           }

@@ -87,7 +87,7 @@ performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))backgroundF
     NYPLLOG_F(@"[Background Fetch] Starting book registry sync. "
               "ElapsedTime=%f", -startDate.timeIntervalSinceNow);
     // Only the "current library" account syncs during a background fetch.
-    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
       if (success) {
         [[NYPLBookRegistry sharedRegistry] save];
       }

@@ -1058,7 +1058,7 @@ completionHandler:(void (^)(void))handler
       void (^handler)(void) = self.completionHandler;
       self.completionHandler = nil;
       if(handler) handler();
-      [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+      [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
         if (success) {
           [[NYPLBookRegistry sharedRegistry] save];
         }

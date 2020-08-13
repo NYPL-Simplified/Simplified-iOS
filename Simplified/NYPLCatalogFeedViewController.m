@@ -157,7 +157,7 @@
   UIApplicationState applicationState = [[UIApplication sharedApplication] applicationState];
   if (applicationState == UIApplicationStateActive) {
     __weak __auto_type wSelf = self;
-    [[NYPLBookRegistry sharedRegistry] syncWithCompletionHandler:^(BOOL success) {
+    [[NYPLBookRegistry sharedRegistry] syncResettingCache:NO completionHandler:^(BOOL success) {
       if (success) {
         [[NYPLBookRegistry sharedRegistry] save];
       } else {
