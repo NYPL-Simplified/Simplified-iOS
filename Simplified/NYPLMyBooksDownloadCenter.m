@@ -817,8 +817,8 @@ didCompleteWithError:(NSError *)error
           [self failDownloadForBook:book];
           return;
         }
-          
-        if (!responseHeader[@"X-Overdrive-Scope"] || !responseHeader[@"Location"]) {
+
+        if (!responseHeader[@"x-overdrive-scope"] || !responseHeader[@"location"]) {
           [NYPLErrorLogger logOverdriveInvalidResponseWithMessage:@"Overdrive book fulfillment response does not contain valid data" response:responseHeader];
           [self failDownloadForBook:book];
           return;
@@ -826,10 +826,10 @@ didCompleteWithError:(NSError *)error
           
         if ([[OverdriveAPIExecutor shared] patronToken] && ![[[OverdriveAPIExecutor shared] patronToken] isExpired]) {
           // Use existing Patron Token
-          NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:responseHeader[@"Location"]];
+          NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:responseHeader[@"location"]];
           [self addDownloadTaskWithRequest:request book:book];
         } else {
-          [[OverdriveAPIExecutor shared] refreshPatronTokenWithKey:NYPLSecrets.overdriveClientKey secret:NYPLSecrets.overdriveClientSecret username:[[NYPLUserAccount sharedAccount] barcode] PIN:[[NYPLUserAccount sharedAccount] PIN] scope:responseHeader[@"X-Overdrive-Scope"] completion:^(NSError * _Nullable error) {
+          [[OverdriveAPIExecutor shared] refreshPatronTokenWithKey:NYPLSecrets.overdriveClientKey secret:NYPLSecrets.overdriveClientSecret username:[[NYPLUserAccount sharedAccount] barcode] PIN:[[NYPLUserAccount sharedAccount] PIN] scope:responseHeader[@"x-overdrive-scope"] completion:^(NSError * _Nullable error) {
             if (error) {
               [NYPLErrorLogger logError:error
                                 context:@"myBooksDownload"
@@ -845,7 +845,7 @@ didCompleteWithError:(NSError *)error
               return;
             }
               
-            NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:responseHeader[@"Location"]];
+            NSURLRequest *request = [[OverdriveAPIExecutor shared] getManifestRequestWithUrlString:responseHeader[@"location"]];
             [self addDownloadTaskWithRequest:request book:book];
           }];
         }
